@@ -1,0 +1,23 @@
+# Cloudflare Worker 配置 — Maso AI proxy
+#
+# 部署前要做的:
+#   1. wrangler login
+#   2. wrangler secret put DEEPSEEK_API_KEY     ← 输入你的 DeepSeek API key
+#   3. wrangler secret put MASO_CLIENT_TOKEN    ← 任意长随机字符串, 跟 iOS app baked token 一致
+#   4. wrangler deploy
+#
+# 部署后 endpoint: https://maso-ai.<your-account-subdomain>.workers.dev/v1/chat/completions
+
+name = "maso-ai"
+main = "worker.js"
+compatibility_date = "2025-01-01"
+
+# 如果你想绑自定义域 (e.g. api.maso.app/v1/chat/completions):
+# routes = [
+#   { pattern = "api.maso.app/v1/chat/completions", zone_name = "maso.app" }
+# ]
+
+# 资源限制 — Worker 默认免费版每天 100k 请求, 单次 10ms CPU, 够用.
+# 真要上付费 ($5/月 10M req) 再开:
+# [vars]
+# (无 plain vars; 敏感的全走 secret)

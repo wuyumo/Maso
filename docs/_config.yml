@@ -1,0 +1,18 @@
+# GitHub Pages / Jekyll 配置 — Maso 文档站点
+# 启用: Repo Settings → Pages → Source = "Deploy from a branch" → Branch: main, Folder: /docs
+
+# 用最干净的内置主题 (无依赖, 渲染快)
+theme: jekyll-theme-cayman
+
+# 站点元信息
+title: Maso
+description: Your personal AI trainer
+
+# 内部文档不公开 — exclude 之后, GitHub Pages 不会渲染这些为可访问页面.
+# privacy-policy.md 不在列表里, 它是 public 的.
+exclude:
+  - app-store-metadata.md
+  - cloudkit-todo.md
+  - exercise-hd-upgrade.md
+  - exercise-media-upgrade.md
+  - i18n-workflow.md

@@ -1,0 +1,21 @@
+# Xcode
+build/
+DerivedData/
+*.xcuserstate
+xcuserdata/
+*.xcworkspace/xcuserdata/
+
+# CocoaPods (not used but standard)
+Pods/
+
+# Swift Package Manager
+.swiftpm/
+.build/
+Package.resolved
+
+# 生成产物
+.DS_Store
+*.log
+
+# 本地 secrets — DeepSeek API key 等敏感信息. 改这个文件不要 commit.
+Maso/Secrets.xcconfig

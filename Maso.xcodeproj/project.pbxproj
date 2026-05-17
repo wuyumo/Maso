@@ -1,0 +1,966 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		01CB4AC5DDE5ABD17EBFFEE9 /* LottieView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0248671AE93BF975A90389AD /* LottieView.swift */; };
+		04BF37E058F0FB0D5085E382 /* PlateCalculatorSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D7C1393538F9AEC41B4A7F /* PlateCalculatorSheet.swift */; };
+		065D18A391A35FE37DAE4455 /* MusclesPickerSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9B75264B14BF7AA46A5CC5A /* MusclesPickerSheet.swift */; };
+		073B17B64DFD1C33740E76AB /* WorkoutCalendarScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E971064231D3F55030DBE2F5 /* WorkoutCalendarScreen.swift */; };
+		0C9DFCCE90F73336451E893C /* HealthKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9CFBD927255937085E3C209 /* HealthKitService.swift */; };
+		1047791541144FB813063EC2 /* SoundPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B91FB80311BBA14D7AAC8FBF /* SoundPlayer.swift */; };
+		1605075E6DF23E750E90BD9A /* MasoBrandLogo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80FD6F69FE62071220B54EDF /* MasoBrandLogo.swift */; };
+		17D9E2729D5EB223EF42F762 /* AppRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 749D14202F2DADE9E946D07D /* AppRouter.swift */; };
+		182CFCDB8E25839EB82276AC /* CrossFadeFrames.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0070D8A3C7E1513A852DFDDA /* CrossFadeFrames.swift */; };
+		1A52CF157E55BE3997571C63 /* LanguagePickerSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4161A34A2AE629582280FF70 /* LanguagePickerSheet.swift */; };
+		1AE2486CCEC33A12D7CF7800 /* ExerciseNames.strings in Resources */ = {isa = PBXBuildFile; fileRef = E2E00DBACD40F632F11EE481 /* ExerciseNames.strings */; };
+		1BF1C9F054E628089F2B6CDF /* NumStepperField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C2072C444E5B90F0EC1A07C /* NumStepperField.swift */; };
+		1E75AB0DB92635528D580692 /* TrainingSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D7F0F064D3300FEAAE9ABE8 /* TrainingSession.swift */; };
+		20C953FA7A818738E35FD6F2 /* FeedbackStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354F3329C6D8C991F0297879 /* FeedbackStore.swift */; };
+		21EE6684F038A29EB4A5DB01 /* TrainingActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E94E7A863D7DD87C5C4EB7D /* TrainingActivityAttributes.swift */; };
+		295AC2CEBA8187E2ECECB643 /* ShareImageRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23B6D56681E2D7861F4E5E2 /* ShareImageRenderer.swift */; };
+		2977FB3704410158FB0D2391 /* SettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEDA5CD52A27EE48B089AD46 /* SettingsScreen.swift */; };
+		2D2BA8727CE9F97CB82972D4 /* SpeechManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3901E5D4EB6430B5A6682418 /* SpeechManager.swift */; };
+		2F004DE222001D4A20537ECF /* TrainingMiniBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62E064A64B1EC7A66DB6C306 /* TrainingMiniBar.swift */; };
+		30768B59B80E718006BC449F /* WeeklyFrequencyShareCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AE16FB98CDFE5B432B63488 /* WeeklyFrequencyShareCard.swift */; };
+		30EB12DEC512BD89893DFB8E /* ExerciseNames.strings in Resources */ = {isa = PBXBuildFile; fileRef = EB3560394A16487A7EEE3878 /* ExerciseNames.strings */; };
+		31264938BC7DA74E6910F618 /* ExerciseTagsRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DACD2EC09799CF0ACC9176F /* ExerciseTagsRow.swift */; };
+		31BF55F4883B0DBAD9BAD245 /* QuickWorkoutScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC12963E5718515334FAF5A8 /* QuickWorkoutScreen.swift */; };
+		37D0EB70BF12A1DC0AA2ACD7 /* MuscleSynergy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E46EC3F68E92686D08B88D5 /* MuscleSynergy.swift */; };
+		3BC977ED7E2B3A1E025D95F5 /* ExerciseNames.strings in Resources */ = {isa = PBXBuildFile; fileRef = EBEE5F4AC98038E6FF91A036 /* ExerciseNames.strings */; };
+		3F3CEED43BD71A229C85F0AD /* ExerciseNames.strings in Resources */ = {isa = PBXBuildFile; fileRef = EE856F9D7F052C3A645C8341 /* ExerciseNames.strings */; };
+		4045DC14ACF646BD6B5E5B20 /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2C7B1AA85268521E018CA24 /* Formatters.swift */; };
+		4921E4C7CD778A4E81EBEBA8 /* Anatomy.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEE409128074A2BE3999170 /* Anatomy.swift */; };
+		56D4D47EC11CD4F3E8AA99C6 /* TodayScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A2FC82B09BFE985CB928FDB /* TodayScreen.swift */; };
+		56E3B748AC3176A24A1F72B9 /* FilterMenuButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E392D3BCA567E27D36082C9C /* FilterMenuButton.swift */; };
+		5C1112A8B977725E80E52406 /* ExerciseNames.strings in Resources */ = {isa = PBXBuildFile; fileRef = D3874EAC939D9AEC79F24DCB /* ExerciseNames.strings */; };
+		5E76B801E37532F221C5EA18 /* ShareCardFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59EC9219101B66F7B497AB18 /* ShareCardFooter.swift */; };
+		6076960B399F6AEE4BE34B89 /* HistoryScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 604E1A67DFCA8AEA8D2EB767 /* HistoryScreen.swift */; };
+		675F46DE13174897BC8316A7 /* LanguageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9791F0998275E09C5575AD /* LanguageManager.swift */; };
+		688D1CA5D81E668665F0EBC6 /* DataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEB924488C05EA5A27B8B504 /* DataStore.swift */; };
+		6C9D32CC850C9DCBA8556101 /* MasoTrainingLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = F23A1B6576340183A91DC77A /* MasoTrainingLiveActivity.swift */; };
+		6D60477E08F4B84BC1C8DF8E /* MasoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88FD8C8AE888DB6357031DB6 /* MasoApp.swift */; };
+		70639D2DC8C6A85D484742AC /* RestNotificationScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B068DFBBE373F9C69D094F3 /* RestNotificationScheduler.swift */; };
+		73731653E1B5D8523F41DFA4 /* ExerciseLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32577D31F28D36498F96BE6B /* ExerciseLibrary.swift */; };
+		7569DFE706941F606D7A84A0 /* SessionShareCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FAF7A7E839EEE640A8B4CC9 /* SessionShareCard.swift */; };
+		76F9805CDA3E261CA146C7A5 /* AIWorkoutService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A869CB4AC4EF2FD9CFD9D31C /* AIWorkoutService.swift */; };
+		7F99DAA5C4425C59687E0ED0 /* ShareImageButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFAD46757159C0D547E762E2 /* ShareImageButton.swift */; };
+		7FA131AFD2BFD47BA0383693 /* lottie-pulse.json in Resources */ = {isa = PBXBuildFile; fileRef = D805C0F10BBF8B4FC50C3569 /* lottie-pulse.json */; };
+		824F7863E8635C58E60C147B /* PlanPlayerScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B2A99CE9D2DD17926946D6B /* PlanPlayerScreen.swift */; };
+		82EF7E005BD1C31B054E49B7 /* OnboardingScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AA4A06581D27DA14D0FDE78 /* OnboardingScreen.swift */; };
+		863D6EFF12C5C90BDD733E57 /* MasoWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 77A945F8200B0EA1A6D6261B /* MasoWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		88B007435E601164A2241EDE /* LayoutToggle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F761A3AFFC27FB54D554AC8 /* LayoutToggle.swift */; };
+		919C25BB4DF2299218BEEE94 /* TimelineBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = F96CC6B018F159D5FA8FE982 /* TimelineBar.swift */; };
+		94726ECFE4CED09904E4FBA1 /* Exercise.swift in Sources */ = {isa = PBXBuildFile; fileRef = D77C73F79BDCE3D7C90EF2C7 /* Exercise.swift */; };
+		94D4CE6164253560EE728358 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA133CA664EEBFD23357FBF5 /* Colors.swift */; };
+		95676F299C926544BE383ED7 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C987F88D32D400102494F9EC /* RootView.swift */; };
+		95E99052293069BEA6956C93 /* WorkoutCompleteShareCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4643C30D54A587474C3ED458 /* WorkoutCompleteShareCard.swift */; };
+		972195D3BEE4D2BC034B5299 /* ExerciseLibraryBrowser.swift in Sources */ = {isa = PBXBuildFile; fileRef = B83F25C9BAC855E570E52876 /* ExerciseLibraryBrowser.swift */; };
+		97A61A2BDCBA7FEDB45DBABD /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 31990508FD012FF9FC4CE295 /* Lottie */; };
+		9859B4F11B0CC09D31368050 /* MuscleStatusShareCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC61BDA12796DCF77FEDA908 /* MuscleStatusShareCard.swift */; };
+		9B673C9CDB2F429C5E2CB401 /* ExerciseNames.strings in Resources */ = {isa = PBXBuildFile; fileRef = 30EDAFBBBD8718F175FC179D /* ExerciseNames.strings */; };
+		9CCA9C0B50357A55CB879DBF /* RecommendedPrograms.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9D16DE103E8C679BEDCC59E /* RecommendedPrograms.swift */; };
+		9F8AE1A6DE0870B670608C42 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03E88525E276032B0BCAB227 /* Settings.swift */; };
+		A1A4011C52823387ECB4E407 /* MasoWidgetsBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71828AB12DF85E9E6B7E3650 /* MasoWidgetsBundle.swift */; };
+		A8ADD0D5AB7BBA43162FA3C2 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 51297D208F41269DA8453899 /* PrivacyInfo.xcprivacy */; };
+		ACB7B9B537CDB3B86452670C /* PlansScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15DEC30C6EAE1F3C697B06DB /* PlansScreen.swift */; };
+		B0C205CAE1EB28ACE11F596E /* TabBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81EFCAD8ECDFB89EADB9B3E8 /* TabBarView.swift */; };
+		B29DFD334141BC5684FD57A6 /* Haptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = F72504052FBF96C8AFDFAA91 /* Haptics.swift */; };
+		B695690D9B19F6DD4C248428 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 65A12AE0FF2F890344E8D991 /* Localizable.strings */; };
+		B6A3B8B511C76752980A5157 /* TrainingActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E94E7A863D7DD87C5C4EB7D /* TrainingActivityAttributes.swift */; };
+		B9A9B0E1423D577E7729F574 /* ExerciseNames.strings in Resources */ = {isa = PBXBuildFile; fileRef = 442FF14A64291FEEEC144E6F /* ExerciseNames.strings */; };
+		BB29ABF8E0E2590167AEA372 /* WorkoutCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2A600A7E0E002CC5B8B3253 /* WorkoutCard.swift */; };
+		BFE86B39FF7F61F784028E92 /* free-exercise-db.LICENSE.md in Resources */ = {isa = PBXBuildFile; fileRef = 66C38DF43C2C4CF7451159A7 /* free-exercise-db.LICENSE.md */; };
+		C0D2F202AEE7F46CF8FBF69B /* FeedbackTransport.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC00B9B59687C5502999A3DA /* FeedbackTransport.swift */; };
+		C17EA63579305A76D115C431 /* Plan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DC4E04539409F755E9C7B77 /* Plan.swift */; };
+		C5AF019E72EFE3F7EB910534 /* FeedbackSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56BF1DAA41EE256A9EDA30F /* FeedbackSheet.swift */; };
+		C5CE4E5E20D80EBC46E0A117 /* ExerciseImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 041577FA74CB0C00E92E4233 /* ExerciseImageCache.swift */; };
+		C5CF734E8DD3CCD6D7F11C95 /* ExerciseImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 402229E63028077115335B66 /* ExerciseImage.swift */; };
+		C60847C2A1C0CE9C0B1BA78E /* ExerciseNames.strings in Resources */ = {isa = PBXBuildFile; fileRef = F9455C31F410D59FAF29C740 /* ExerciseNames.strings */; };
+		C85F5BE3BD95975C8474DF9D /* ExerciseNames.strings in Resources */ = {isa = PBXBuildFile; fileRef = BD9A9CAB2F5D846C5969CE4A /* ExerciseNames.strings */; };
+		CE995F4FE19088CC54F0C21C /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C228082523E5BD38F52B6B76 /* PersistenceController.swift */; };
+		CFACBB04C2B2F7715D76D273 /* MuscleSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = C85CFB727541762C8447F7E4 /* MuscleSelector.swift */; };
+		D2A5A66A03EA5AFD75D478EB /* PhotoPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19E60279DA5B5FE740DC4A8D /* PhotoPicker.swift */; };
+		D3C467BCD7239BC40C99C25E /* PaywallScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61B0293ADD8C41CCBB12FA12 /* PaywallScreen.swift */; };
+		D7DE905316F3FFBC4156F3CE /* exercises.json in Resources */ = {isa = PBXBuildFile; fileRef = DA0ACB9DAE29B94B2DAB494F /* exercises.json */; };
+		E323A8AF473C4F34CBCE4C65 /* ExerciseNames.strings in Resources */ = {isa = PBXBuildFile; fileRef = 54490E099790791764E2B160 /* ExerciseNames.strings */; };
+		E40B7C038FA77F3BD95F0E5D /* MasoMarkIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1D591C5E30FA068C933520 /* MasoMarkIcon.swift */; };
+		E713BB3AD37D051B6B9D716A /* PlanSegments.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE94CDA9C13C06FBE6DD8572 /* PlanSegments.swift */; };
+		E78F1A3F512D37B2BFA4A286 /* BodyHint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54145EB316E1E581619F6C65 /* BodyHint.swift */; };
+		E7F227189AAF7F9E428F5297 /* MuscleGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 652661E7A8B67B3B7F5E7241 /* MuscleGroup.swift */; };
+		F539563C25B1A76F848BE0BC /* LiveActivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31363EC52103D24538FBFF39 /* LiveActivityManager.swift */; };
+		F712495D92EF9A778FC3AA30 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CDA3B6F67C353E227D0E2E8C /* Assets.xcassets */; };
+		FAC553FB745EB0A76A8DFE67 /* ExerciseNames.strings in Resources */ = {isa = PBXBuildFile; fileRef = 28A14D6778D16758B5E550FE /* ExerciseNames.strings */; };
+		FF90D3253FAF4F45542D0ED5 /* SplashScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DD9BAA3FD1E35EC871F4DEC /* SplashScreen.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		3B039DC788233C4D75072D89 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 42D8EA3365C5EB4B4D4E3DEC /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E7AD83B4EB28D42D152914A5;
+			remoteInfo = MasoWidgets;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		00BE3E8151BEC7C8DDB97648 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				863D6EFF12C5C90BDD733E57 /* MasoWidgets.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		004E051B960215DECB2DA0D6 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		0070D8A3C7E1513A852DFDDA /* CrossFadeFrames.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrossFadeFrames.swift; sourceTree = "<group>"; };
+		0248671AE93BF975A90389AD /* LottieView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LottieView.swift; sourceTree = "<group>"; };
+		03E88525E276032B0BCAB227 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
+		041577FA74CB0C00E92E4233 /* ExerciseImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseImageCache.swift; sourceTree = "<group>"; };
+		0B9791F0998275E09C5575AD /* LanguageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageManager.swift; sourceTree = "<group>"; };
+		0C2072C444E5B90F0EC1A07C /* NumStepperField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumStepperField.swift; sourceTree = "<group>"; };
+		0E5ED395DA98D0C38BD3D208 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
+		15DEC30C6EAE1F3C697B06DB /* PlansScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlansScreen.swift; sourceTree = "<group>"; };
+		19E60279DA5B5FE740DC4A8D /* PhotoPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoPicker.swift; sourceTree = "<group>"; };
+		264A3B2099C9AE258C18FEAF /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
+		28A14D6778D16758B5E550FE /* ExerciseNames.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ExerciseNames.strings; path = "pt-BR.lproj/ExerciseNames.strings"; sourceTree = "<group>"; };
+		30EDAFBBBD8718F175FC179D /* ExerciseNames.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ExerciseNames.strings; path = ru.lproj/ExerciseNames.strings; sourceTree = "<group>"; };
+		31363EC52103D24538FBFF39 /* LiveActivityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivityManager.swift; sourceTree = "<group>"; };
+		32577D31F28D36498F96BE6B /* ExerciseLibrary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseLibrary.swift; sourceTree = "<group>"; };
+		354F3329C6D8C991F0297879 /* FeedbackStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackStore.swift; sourceTree = "<group>"; };
+		3901E5D4EB6430B5A6682418 /* SpeechManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechManager.swift; sourceTree = "<group>"; };
+		402229E63028077115335B66 /* ExerciseImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseImage.swift; sourceTree = "<group>"; };
+		4161A34A2AE629582280FF70 /* LanguagePickerSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguagePickerSheet.swift; sourceTree = "<group>"; };
+		442FF14A64291FEEEC144E6F /* ExerciseNames.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ExerciseNames.strings; path = ar.lproj/ExerciseNames.strings; sourceTree = "<group>"; };
+		4643C30D54A587474C3ED458 /* WorkoutCompleteShareCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutCompleteShareCard.swift; sourceTree = "<group>"; };
+		48B7B566CD63ADD4E7CF7352 /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/Localizable.strings; sourceTree = "<group>"; };
+		4A2FC82B09BFE985CB928FDB /* TodayScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayScreen.swift; sourceTree = "<group>"; };
+		4AA4A06581D27DA14D0FDE78 /* OnboardingScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingScreen.swift; sourceTree = "<group>"; };
+		4DACD2EC09799CF0ACC9176F /* ExerciseTagsRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseTagsRow.swift; sourceTree = "<group>"; };
+		4E46EC3F68E92686D08B88D5 /* MuscleSynergy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuscleSynergy.swift; sourceTree = "<group>"; };
+		4E94E7A863D7DD87C5C4EB7D /* TrainingActivityAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingActivityAttributes.swift; sourceTree = "<group>"; };
+		4EF4511878FECE72A1591873 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/Localizable.strings; sourceTree = "<group>"; };
+		4FAF7A7E839EEE640A8B4CC9 /* SessionShareCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionShareCard.swift; sourceTree = "<group>"; };
+		51297D208F41269DA8453899 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		54145EB316E1E581619F6C65 /* BodyHint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BodyHint.swift; sourceTree = "<group>"; };
+		54490E099790791764E2B160 /* ExerciseNames.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ExerciseNames.strings; path = ko.lproj/ExerciseNames.strings; sourceTree = "<group>"; };
+		59C7BDAC04AF21A0F6FBE566 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
+		59EC9219101B66F7B497AB18 /* ShareCardFooter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareCardFooter.swift; sourceTree = "<group>"; };
+		5AE16FB98CDFE5B432B63488 /* WeeklyFrequencyShareCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeeklyFrequencyShareCard.swift; sourceTree = "<group>"; };
+		5B068DFBBE373F9C69D094F3 /* RestNotificationScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestNotificationScheduler.swift; sourceTree = "<group>"; };
+		5F761A3AFFC27FB54D554AC8 /* LayoutToggle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutToggle.swift; sourceTree = "<group>"; };
+		604E1A67DFCA8AEA8D2EB767 /* HistoryScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryScreen.swift; sourceTree = "<group>"; };
+		61B0293ADD8C41CCBB12FA12 /* PaywallScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaywallScreen.swift; sourceTree = "<group>"; };
+		62E064A64B1EC7A66DB6C306 /* TrainingMiniBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingMiniBar.swift; sourceTree = "<group>"; };
+		652661E7A8B67B3B7F5E7241 /* MuscleGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuscleGroup.swift; sourceTree = "<group>"; };
+		653DD0BED86D314FCD0EA9CF /* Secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig; sourceTree = "<group>"; };
+		66C38DF43C2C4CF7451159A7 /* free-exercise-db.LICENSE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "free-exercise-db.LICENSE.md"; sourceTree = "<group>"; };
+		6D25C3388775F8C9E7931C3D /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		6DC4E04539409F755E9C7B77 /* Plan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Plan.swift; sourceTree = "<group>"; };
+		71828AB12DF85E9E6B7E3650 /* MasoWidgetsBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasoWidgetsBundle.swift; sourceTree = "<group>"; };
+		749D14202F2DADE9E946D07D /* AppRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRouter.swift; sourceTree = "<group>"; };
+		77A945F8200B0EA1A6D6261B /* MasoWidgets.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = MasoWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		7D7F0F064D3300FEAAE9ABE8 /* TrainingSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingSession.swift; sourceTree = "<group>"; };
+		7DD9BAA3FD1E35EC871F4DEC /* SplashScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreen.swift; sourceTree = "<group>"; };
+		80FD6F69FE62071220B54EDF /* MasoBrandLogo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasoBrandLogo.swift; sourceTree = "<group>"; };
+		81EFCAD8ECDFB89EADB9B3E8 /* TabBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarView.swift; sourceTree = "<group>"; };
+		88FD8C8AE888DB6357031DB6 /* MasoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasoApp.swift; sourceTree = "<group>"; };
+		8B2A99CE9D2DD17926946D6B /* PlanPlayerScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanPlayerScreen.swift; sourceTree = "<group>"; };
+		8BDFF5A1E76EC5EEC94DEE3E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		9948120308813EC096C3F00A /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/Localizable.strings; sourceTree = "<group>"; };
+		A869CB4AC4EF2FD9CFD9D31C /* AIWorkoutService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIWorkoutService.swift; sourceTree = "<group>"; };
+		AC00B9B59687C5502999A3DA /* FeedbackTransport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackTransport.swift; sourceTree = "<group>"; };
+		B56BF1DAA41EE256A9EDA30F /* FeedbackSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackSheet.swift; sourceTree = "<group>"; };
+		B83F25C9BAC855E570E52876 /* ExerciseLibraryBrowser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseLibraryBrowser.swift; sourceTree = "<group>"; };
+		B91FB80311BBA14D7AAC8FBF /* SoundPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundPlayer.swift; sourceTree = "<group>"; };
+		BB254159F807BC6F943ED96C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		BC1D591C5E30FA068C933520 /* MasoMarkIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasoMarkIcon.swift; sourceTree = "<group>"; };
+		BD9A9CAB2F5D846C5969CE4A /* ExerciseNames.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ExerciseNames.strings; path = es.lproj/ExerciseNames.strings; sourceTree = "<group>"; };
+		BFAD46757159C0D547E762E2 /* ShareImageButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareImageButton.swift; sourceTree = "<group>"; };
+		C228082523E5BD38F52B6B76 /* PersistenceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceController.swift; sourceTree = "<group>"; };
+		C23B6D56681E2D7861F4E5E2 /* ShareImageRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareImageRenderer.swift; sourceTree = "<group>"; };
+		C85CFB727541762C8447F7E4 /* MuscleSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuscleSelector.swift; sourceTree = "<group>"; };
+		C987F88D32D400102494F9EC /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		C9CFBD927255937085E3C209 /* HealthKitService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitService.swift; sourceTree = "<group>"; };
+		CC12963E5718515334FAF5A8 /* QuickWorkoutScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickWorkoutScreen.swift; sourceTree = "<group>"; };
+		CDA3B6F67C353E227D0E2E8C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		CEEE409128074A2BE3999170 /* Anatomy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Anatomy.swift; sourceTree = "<group>"; };
+		D3874EAC939D9AEC79F24DCB /* ExerciseNames.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ExerciseNames.strings; path = fr.lproj/ExerciseNames.strings; sourceTree = "<group>"; };
+		D77C73F79BDCE3D7C90EF2C7 /* Exercise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Exercise.swift; sourceTree = "<group>"; };
+		D805C0F10BBF8B4FC50C3569 /* lottie-pulse.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "lottie-pulse.json"; sourceTree = "<group>"; };
+		D9D16DE103E8C679BEDCC59E /* RecommendedPrograms.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendedPrograms.swift; sourceTree = "<group>"; };
+		DA0ACB9DAE29B94B2DAB494F /* exercises.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = exercises.json; sourceTree = "<group>"; };
+		DBF51B1DD43C75F613B45A5C /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
+		DE94CDA9C13C06FBE6DD8572 /* PlanSegments.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanSegments.swift; sourceTree = "<group>"; };
+		E2E00DBACD40F632F11EE481 /* ExerciseNames.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ExerciseNames.strings; path = ja.lproj/ExerciseNames.strings; sourceTree = "<group>"; };
+		E392D3BCA567E27D36082C9C /* FilterMenuButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterMenuButton.swift; sourceTree = "<group>"; };
+		E6BB99772BABDEBDE4A63981 /* Maso.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Maso.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E971064231D3F55030DBE2F5 /* WorkoutCalendarScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutCalendarScreen.swift; sourceTree = "<group>"; };
+		EA133CA664EEBFD23357FBF5 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
+		EB3560394A16487A7EEE3878 /* ExerciseNames.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ExerciseNames.strings; path = "zh-Hans.lproj/ExerciseNames.strings"; sourceTree = "<group>"; };
+		EBEE5F4AC98038E6FF91A036 /* ExerciseNames.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ExerciseNames.strings; path = de.lproj/ExerciseNames.strings; sourceTree = "<group>"; };
+		EE856F9D7F052C3A645C8341 /* ExerciseNames.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ExerciseNames.strings; path = "zh-Hant.lproj/ExerciseNames.strings"; sourceTree = "<group>"; };
+		F1079358C55D1B06EF4D262E /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		F23A1B6576340183A91DC77A /* MasoTrainingLiveActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasoTrainingLiveActivity.swift; sourceTree = "<group>"; };
+		F2A600A7E0E002CC5B8B3253 /* WorkoutCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutCard.swift; sourceTree = "<group>"; };
+		F2C7B1AA85268521E018CA24 /* Formatters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Formatters.swift; sourceTree = "<group>"; };
+		F64DFBAF4A91D0EE022A4F5E /* Maso.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Maso.entitlements; sourceTree = "<group>"; };
+		F6D1D5380B5956ECD3FACEB0 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
+		F72504052FBF96C8AFDFAA91 /* Haptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Haptics.swift; sourceTree = "<group>"; };
+		F8D7C1393538F9AEC41B4A7F /* PlateCalculatorSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlateCalculatorSheet.swift; sourceTree = "<group>"; };
+		F9455C31F410D59FAF29C740 /* ExerciseNames.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ExerciseNames.strings; path = it.lproj/ExerciseNames.strings; sourceTree = "<group>"; };
+		F96CC6B018F159D5FA8FE982 /* TimelineBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineBar.swift; sourceTree = "<group>"; };
+		F9B75264B14BF7AA46A5CC5A /* MusclesPickerSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusclesPickerSheet.swift; sourceTree = "<group>"; };
+		FC61BDA12796DCF77FEDA908 /* MuscleStatusShareCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuscleStatusShareCard.swift; sourceTree = "<group>"; };
+		FC99B70FE754501BBE53A4D8 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		FEB924488C05EA5A27B8B504 /* DataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStore.swift; sourceTree = "<group>"; };
+		FEDA5CD52A27EE48B089AD46 /* SettingsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsScreen.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		AF99EC383555E2CB12885F7A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				97A61A2BDCBA7FEDB45DBABD /* Lottie in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		0FAFB116E9872C55E3036EB1 /* Tabs */ = {
+			isa = PBXGroup;
+			children = (
+				81EFCAD8ECDFB89EADB9B3E8 /* TabBarView.swift */,
+				62E064A64B1EC7A66DB6C306 /* TrainingMiniBar.swift */,
+			);
+			path = Tabs;
+			sourceTree = "<group>";
+		};
+		20AC45277040F8992D7D0742 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				A869CB4AC4EF2FD9CFD9D31C /* AIWorkoutService.swift */,
+				CEEE409128074A2BE3999170 /* Anatomy.swift */,
+				FEB924488C05EA5A27B8B504 /* DataStore.swift */,
+				041577FA74CB0C00E92E4233 /* ExerciseImageCache.swift */,
+				32577D31F28D36498F96BE6B /* ExerciseLibrary.swift */,
+				354F3329C6D8C991F0297879 /* FeedbackStore.swift */,
+				AC00B9B59687C5502999A3DA /* FeedbackTransport.swift */,
+				C9CFBD927255937085E3C209 /* HealthKitService.swift */,
+				0B9791F0998275E09C5575AD /* LanguageManager.swift */,
+				4E46EC3F68E92686D08B88D5 /* MuscleSynergy.swift */,
+				C228082523E5BD38F52B6B76 /* PersistenceController.swift */,
+				DE94CDA9C13C06FBE6DD8572 /* PlanSegments.swift */,
+				D9D16DE103E8C679BEDCC59E /* RecommendedPrograms.swift */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
+		237C68F2A30D4DD96015635A /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				749D14202F2DADE9E946D07D /* AppRouter.swift */,
+				C987F88D32D400102494F9EC /* RootView.swift */,
+				7DD9BAA3FD1E35EC871F4DEC /* SplashScreen.swift */,
+				A5BA9075AC7E87212053E8BA /* Components */,
+				C180427F43F87F8FE554AA62 /* Onboarding */,
+				2FBABE2B5A3A6BB003DC88ED /* Screens */,
+				0FAFB116E9872C55E3036EB1 /* Tabs */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		240F276C4191EBDCF42E93A8 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E6BB99772BABDEBDE4A63981 /* Maso.app */,
+				77A945F8200B0EA1A6D6261B /* MasoWidgets.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		2FBABE2B5A3A6BB003DC88ED /* Screens */ = {
+			isa = PBXGroup;
+			children = (
+				B83F25C9BAC855E570E52876 /* ExerciseLibraryBrowser.swift */,
+				B56BF1DAA41EE256A9EDA30F /* FeedbackSheet.swift */,
+				604E1A67DFCA8AEA8D2EB767 /* HistoryScreen.swift */,
+				4161A34A2AE629582280FF70 /* LanguagePickerSheet.swift */,
+				61B0293ADD8C41CCBB12FA12 /* PaywallScreen.swift */,
+				8B2A99CE9D2DD17926946D6B /* PlanPlayerScreen.swift */,
+				15DEC30C6EAE1F3C697B06DB /* PlansScreen.swift */,
+				F8D7C1393538F9AEC41B4A7F /* PlateCalculatorSheet.swift */,
+				CC12963E5718515334FAF5A8 /* QuickWorkoutScreen.swift */,
+				FEDA5CD52A27EE48B089AD46 /* SettingsScreen.swift */,
+				4A2FC82B09BFE985CB928FDB /* TodayScreen.swift */,
+				E971064231D3F55030DBE2F5 /* WorkoutCalendarScreen.swift */,
+			);
+			path = Screens;
+			sourceTree = "<group>";
+		};
+		37601A7DD4663945227A193A /* State */ = {
+			isa = PBXGroup;
+			children = (
+				F72504052FBF96C8AFDFAA91 /* Haptics.swift */,
+				31363EC52103D24538FBFF39 /* LiveActivityManager.swift */,
+				5B068DFBBE373F9C69D094F3 /* RestNotificationScheduler.swift */,
+				B91FB80311BBA14D7AAC8FBF /* SoundPlayer.swift */,
+				3901E5D4EB6430B5A6682418 /* SpeechManager.swift */,
+				7D7F0F064D3300FEAAE9ABE8 /* TrainingSession.swift */,
+			);
+			path = State;
+			sourceTree = "<group>";
+		};
+		3B57AEA45B3EC10DCBB6E5F5 /* Share */ = {
+			isa = PBXGroup;
+			children = (
+				FC61BDA12796DCF77FEDA908 /* MuscleStatusShareCard.swift */,
+				19E60279DA5B5FE740DC4A8D /* PhotoPicker.swift */,
+				4FAF7A7E839EEE640A8B4CC9 /* SessionShareCard.swift */,
+				59EC9219101B66F7B497AB18 /* ShareCardFooter.swift */,
+				BFAD46757159C0D547E762E2 /* ShareImageButton.swift */,
+				C23B6D56681E2D7861F4E5E2 /* ShareImageRenderer.swift */,
+				5AE16FB98CDFE5B432B63488 /* WeeklyFrequencyShareCard.swift */,
+				4643C30D54A587474C3ED458 /* WorkoutCompleteShareCard.swift */,
+			);
+			path = Share;
+			sourceTree = "<group>";
+		};
+		552A088840F793B0F8ADDCC3 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				D77C73F79BDCE3D7C90EF2C7 /* Exercise.swift */,
+				652661E7A8B67B3B7F5E7241 /* MuscleGroup.swift */,
+				6DC4E04539409F755E9C7B77 /* Plan.swift */,
+				03E88525E276032B0BCAB227 /* Settings.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		57F58672FAE29A88CC418056 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				4E94E7A863D7DD87C5C4EB7D /* TrainingActivityAttributes.swift */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		905E25EA984AF4D712E4DBD8 = {
+			isa = PBXGroup;
+			children = (
+				F75C4FAD9C84A32FC08E329D /* Maso */,
+				B1AC4483354FC2E37F33ACD0 /* MasoWidgets */,
+				240F276C4191EBDCF42E93A8 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A5BA9075AC7E87212053E8BA /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				54145EB316E1E581619F6C65 /* BodyHint.swift */,
+				0070D8A3C7E1513A852DFDDA /* CrossFadeFrames.swift */,
+				402229E63028077115335B66 /* ExerciseImage.swift */,
+				4DACD2EC09799CF0ACC9176F /* ExerciseTagsRow.swift */,
+				E392D3BCA567E27D36082C9C /* FilterMenuButton.swift */,
+				5F761A3AFFC27FB54D554AC8 /* LayoutToggle.swift */,
+				0248671AE93BF975A90389AD /* LottieView.swift */,
+				80FD6F69FE62071220B54EDF /* MasoBrandLogo.swift */,
+				BC1D591C5E30FA068C933520 /* MasoMarkIcon.swift */,
+				C85CFB727541762C8447F7E4 /* MuscleSelector.swift */,
+				F9B75264B14BF7AA46A5CC5A /* MusclesPickerSheet.swift */,
+				0C2072C444E5B90F0EC1A07C /* NumStepperField.swift */,
+				F96CC6B018F159D5FA8FE982 /* TimelineBar.swift */,
+				F2A600A7E0E002CC5B8B3253 /* WorkoutCard.swift */,
+				3B57AEA45B3EC10DCBB6E5F5 /* Share */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		AE11494BA09D643E381497F1 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				442FF14A64291FEEEC144E6F /* ExerciseNames.strings */,
+				EBEE5F4AC98038E6FF91A036 /* ExerciseNames.strings */,
+				BD9A9CAB2F5D846C5969CE4A /* ExerciseNames.strings */,
+				D3874EAC939D9AEC79F24DCB /* ExerciseNames.strings */,
+				F9455C31F410D59FAF29C740 /* ExerciseNames.strings */,
+				E2E00DBACD40F632F11EE481 /* ExerciseNames.strings */,
+				54490E099790791764E2B160 /* ExerciseNames.strings */,
+				28A14D6778D16758B5E550FE /* ExerciseNames.strings */,
+				30EDAFBBBD8718F175FC179D /* ExerciseNames.strings */,
+				EB3560394A16487A7EEE3878 /* ExerciseNames.strings */,
+				EE856F9D7F052C3A645C8341 /* ExerciseNames.strings */,
+				DA0ACB9DAE29B94B2DAB494F /* exercises.json */,
+				66C38DF43C2C4CF7451159A7 /* free-exercise-db.LICENSE.md */,
+				D805C0F10BBF8B4FC50C3569 /* lottie-pulse.json */,
+				65A12AE0FF2F890344E8D991 /* Localizable.strings */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		B1AC4483354FC2E37F33ACD0 /* MasoWidgets */ = {
+			isa = PBXGroup;
+			children = (
+				8BDFF5A1E76EC5EEC94DEE3E /* Info.plist */,
+				F23A1B6576340183A91DC77A /* MasoTrainingLiveActivity.swift */,
+				71828AB12DF85E9E6B7E3650 /* MasoWidgetsBundle.swift */,
+			);
+			path = MasoWidgets;
+			sourceTree = "<group>";
+		};
+		B435039E3E92269484C78C35 /* Theme */ = {
+			isa = PBXGroup;
+			children = (
+				EA133CA664EEBFD23357FBF5 /* Colors.swift */,
+				F2C7B1AA85268521E018CA24 /* Formatters.swift */,
+			);
+			path = Theme;
+			sourceTree = "<group>";
+		};
+		C180427F43F87F8FE554AA62 /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				4AA4A06581D27DA14D0FDE78 /* OnboardingScreen.swift */,
+			);
+			path = Onboarding;
+			sourceTree = "<group>";
+		};
+		F75C4FAD9C84A32FC08E329D /* Maso */ = {
+			isa = PBXGroup;
+			children = (
+				CDA3B6F67C353E227D0E2E8C /* Assets.xcassets */,
+				BB254159F807BC6F943ED96C /* Info.plist */,
+				F64DFBAF4A91D0EE022A4F5E /* Maso.entitlements */,
+				88FD8C8AE888DB6357031DB6 /* MasoApp.swift */,
+				51297D208F41269DA8453899 /* PrivacyInfo.xcprivacy */,
+				653DD0BED86D314FCD0EA9CF /* Secrets.xcconfig */,
+				20AC45277040F8992D7D0742 /* Data */,
+				552A088840F793B0F8ADDCC3 /* Models */,
+				AE11494BA09D643E381497F1 /* Resources */,
+				57F58672FAE29A88CC418056 /* Shared */,
+				37601A7DD4663945227A193A /* State */,
+				B435039E3E92269484C78C35 /* Theme */,
+				237C68F2A30D4DD96015635A /* Views */,
+			);
+			path = Maso;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		E7AD83B4EB28D42D152914A5 /* MasoWidgets */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C95CDA834D1005B742FF88D7 /* Build configuration list for PBXNativeTarget "MasoWidgets" */;
+			buildPhases = (
+				454916B322668C682D87C113 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MasoWidgets;
+			packageProductDependencies = (
+			);
+			productName = MasoWidgets;
+			productReference = 77A945F8200B0EA1A6D6261B /* MasoWidgets.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		F25294344E87B000A48A56AC /* Maso */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A97EE1697D510373EBF5F10E /* Build configuration list for PBXNativeTarget "Maso" */;
+			buildPhases = (
+				8D14F1C193111097F477A2F1 /* Sources */,
+				7D5CDF0ABB801E3CA9B314B9 /* Resources */,
+				AF99EC383555E2CB12885F7A /* Frameworks */,
+				00BE3E8151BEC7C8DDB97648 /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				FFE7044942A251ED2F554A00 /* PBXTargetDependency */,
+			);
+			name = Maso;
+			packageProductDependencies = (
+				31990508FD012FF9FC4CE295 /* Lottie */,
+			);
+			productName = Maso;
+			productReference = E6BB99772BABDEBDE4A63981 /* Maso.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		42D8EA3365C5EB4B4D4E3DEC /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 2600;
+				TargetAttributes = {
+					E7AD83B4EB28D42D152914A5 = {
+						DevelopmentTeam = UR6F66266C;
+						ProvisioningStyle = Automatic;
+					};
+					F25294344E87B000A48A56AC = {
+						DevelopmentTeam = UR6F66266C;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 1C138ABB57CE0A0610B6FFAB /* Build configuration list for PBXProject "Maso" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				ar,
+				de,
+				en,
+				es,
+				fr,
+				it,
+				ja,
+				ko,
+				"pt-BR",
+				ru,
+				"zh-Hans",
+				"zh-Hant",
+			);
+			mainGroup = 905E25EA984AF4D712E4DBD8;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				D96E17F3D8BC8A17FEA09E0F /* XCRemoteSwiftPackageReference "lottie-spm" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 240F276C4191EBDCF42E93A8 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				F25294344E87B000A48A56AC /* Maso */,
+				E7AD83B4EB28D42D152914A5 /* MasoWidgets */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		7D5CDF0ABB801E3CA9B314B9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F712495D92EF9A778FC3AA30 /* Assets.xcassets in Resources */,
+				3BC977ED7E2B3A1E025D95F5 /* ExerciseNames.strings in Resources */,
+				B9A9B0E1423D577E7729F574 /* ExerciseNames.strings in Resources */,
+				30EB12DEC512BD89893DFB8E /* ExerciseNames.strings in Resources */,
+				1AE2486CCEC33A12D7CF7800 /* ExerciseNames.strings in Resources */,
+				C85F5BE3BD95975C8474DF9D /* ExerciseNames.strings in Resources */,
+				C60847C2A1C0CE9C0B1BA78E /* ExerciseNames.strings in Resources */,
+				E323A8AF473C4F34CBCE4C65 /* ExerciseNames.strings in Resources */,
+				3F3CEED43BD71A229C85F0AD /* ExerciseNames.strings in Resources */,
+				FAC553FB745EB0A76A8DFE67 /* ExerciseNames.strings in Resources */,
+				9B673C9CDB2F429C5E2CB401 /* ExerciseNames.strings in Resources */,
+				5C1112A8B977725E80E52406 /* ExerciseNames.strings in Resources */,
+				B695690D9B19F6DD4C248428 /* Localizable.strings in Resources */,
+				A8ADD0D5AB7BBA43162FA3C2 /* PrivacyInfo.xcprivacy in Resources */,
+				D7DE905316F3FFBC4156F3CE /* exercises.json in Resources */,
+				BFE86B39FF7F61F784028E92 /* free-exercise-db.LICENSE.md in Resources */,
+				7FA131AFD2BFD47BA0383693 /* lottie-pulse.json in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		454916B322668C682D87C113 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6C9D32CC850C9DCBA8556101 /* MasoTrainingLiveActivity.swift in Sources */,
+				A1A4011C52823387ECB4E407 /* MasoWidgetsBundle.swift in Sources */,
+				B6A3B8B511C76752980A5157 /* TrainingActivityAttributes.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8D14F1C193111097F477A2F1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				76F9805CDA3E261CA146C7A5 /* AIWorkoutService.swift in Sources */,
+				4921E4C7CD778A4E81EBEBA8 /* Anatomy.swift in Sources */,
+				17D9E2729D5EB223EF42F762 /* AppRouter.swift in Sources */,
+				E78F1A3F512D37B2BFA4A286 /* BodyHint.swift in Sources */,
+				94D4CE6164253560EE728358 /* Colors.swift in Sources */,
+				182CFCDB8E25839EB82276AC /* CrossFadeFrames.swift in Sources */,
+				688D1CA5D81E668665F0EBC6 /* DataStore.swift in Sources */,
+				94726ECFE4CED09904E4FBA1 /* Exercise.swift in Sources */,
+				C5CF734E8DD3CCD6D7F11C95 /* ExerciseImage.swift in Sources */,
+				C5CE4E5E20D80EBC46E0A117 /* ExerciseImageCache.swift in Sources */,
+				73731653E1B5D8523F41DFA4 /* ExerciseLibrary.swift in Sources */,
+				972195D3BEE4D2BC034B5299 /* ExerciseLibraryBrowser.swift in Sources */,
+				31264938BC7DA74E6910F618 /* ExerciseTagsRow.swift in Sources */,
+				C5AF019E72EFE3F7EB910534 /* FeedbackSheet.swift in Sources */,
+				20C953FA7A818738E35FD6F2 /* FeedbackStore.swift in Sources */,
+				C0D2F202AEE7F46CF8FBF69B /* FeedbackTransport.swift in Sources */,
+				56E3B748AC3176A24A1F72B9 /* FilterMenuButton.swift in Sources */,
+				4045DC14ACF646BD6B5E5B20 /* Formatters.swift in Sources */,
+				B29DFD334141BC5684FD57A6 /* Haptics.swift in Sources */,
+				0C9DFCCE90F73336451E893C /* HealthKitService.swift in Sources */,
+				6076960B399F6AEE4BE34B89 /* HistoryScreen.swift in Sources */,
+				675F46DE13174897BC8316A7 /* LanguageManager.swift in Sources */,
+				1A52CF157E55BE3997571C63 /* LanguagePickerSheet.swift in Sources */,
+				88B007435E601164A2241EDE /* LayoutToggle.swift in Sources */,
+				F539563C25B1A76F848BE0BC /* LiveActivityManager.swift in Sources */,
+				01CB4AC5DDE5ABD17EBFFEE9 /* LottieView.swift in Sources */,
+				6D60477E08F4B84BC1C8DF8E /* MasoApp.swift in Sources */,
+				1605075E6DF23E750E90BD9A /* MasoBrandLogo.swift in Sources */,
+				E40B7C038FA77F3BD95F0E5D /* MasoMarkIcon.swift in Sources */,
+				E7F227189AAF7F9E428F5297 /* MuscleGroup.swift in Sources */,
+				CFACBB04C2B2F7715D76D273 /* MuscleSelector.swift in Sources */,
+				9859B4F11B0CC09D31368050 /* MuscleStatusShareCard.swift in Sources */,
+				37D0EB70BF12A1DC0AA2ACD7 /* MuscleSynergy.swift in Sources */,
+				065D18A391A35FE37DAE4455 /* MusclesPickerSheet.swift in Sources */,
+				1BF1C9F054E628089F2B6CDF /* NumStepperField.swift in Sources */,
+				82EF7E005BD1C31B054E49B7 /* OnboardingScreen.swift in Sources */,
+				D3C467BCD7239BC40C99C25E /* PaywallScreen.swift in Sources */,
+				CE995F4FE19088CC54F0C21C /* PersistenceController.swift in Sources */,
+				D2A5A66A03EA5AFD75D478EB /* PhotoPicker.swift in Sources */,
+				C17EA63579305A76D115C431 /* Plan.swift in Sources */,
+				824F7863E8635C58E60C147B /* PlanPlayerScreen.swift in Sources */,
+				E713BB3AD37D051B6B9D716A /* PlanSegments.swift in Sources */,
+				ACB7B9B537CDB3B86452670C /* PlansScreen.swift in Sources */,
+				04BF37E058F0FB0D5085E382 /* PlateCalculatorSheet.swift in Sources */,
+				31BF55F4883B0DBAD9BAD245 /* QuickWorkoutScreen.swift in Sources */,
+				9CCA9C0B50357A55CB879DBF /* RecommendedPrograms.swift in Sources */,
+				70639D2DC8C6A85D484742AC /* RestNotificationScheduler.swift in Sources */,
+				95676F299C926544BE383ED7 /* RootView.swift in Sources */,
+				7569DFE706941F606D7A84A0 /* SessionShareCard.swift in Sources */,
+				9F8AE1A6DE0870B670608C42 /* Settings.swift in Sources */,
+				2977FB3704410158FB0D2391 /* SettingsScreen.swift in Sources */,
+				5E76B801E37532F221C5EA18 /* ShareCardFooter.swift in Sources */,
+				7F99DAA5C4425C59687E0ED0 /* ShareImageButton.swift in Sources */,
+				295AC2CEBA8187E2ECECB643 /* ShareImageRenderer.swift in Sources */,
+				1047791541144FB813063EC2 /* SoundPlayer.swift in Sources */,
+				2D2BA8727CE9F97CB82972D4 /* SpeechManager.swift in Sources */,
+				FF90D3253FAF4F45542D0ED5 /* SplashScreen.swift in Sources */,
+				B0C205CAE1EB28ACE11F596E /* TabBarView.swift in Sources */,
+				919C25BB4DF2299218BEEE94 /* TimelineBar.swift in Sources */,
+				56D4D47EC11CD4F3E8AA99C6 /* TodayScreen.swift in Sources */,
+				21EE6684F038A29EB4A5DB01 /* TrainingActivityAttributes.swift in Sources */,
+				2F004DE222001D4A20537ECF /* TrainingMiniBar.swift in Sources */,
+				1E75AB0DB92635528D580692 /* TrainingSession.swift in Sources */,
+				30768B59B80E718006BC449F /* WeeklyFrequencyShareCard.swift in Sources */,
+				073B17B64DFD1C33740E76AB /* WorkoutCalendarScreen.swift in Sources */,
+				BB29ABF8E0E2590167AEA372 /* WorkoutCard.swift in Sources */,
+				95E99052293069BEA6956C93 /* WorkoutCompleteShareCard.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		FFE7044942A251ED2F554A00 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E7AD83B4EB28D42D152914A5 /* MasoWidgets */;
+			targetProxy = 3B039DC788233C4D75072D89 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		65A12AE0FF2F890344E8D991 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				9948120308813EC096C3F00A /* ar */,
+				DBF51B1DD43C75F613B45A5C /* de */,
+				FC99B70FE754501BBE53A4D8 /* en */,
+				F6D1D5380B5956ECD3FACEB0 /* es */,
+				264A3B2099C9AE258C18FEAF /* fr */,
+				48B7B566CD63ADD4E7CF7352 /* it */,
+				0E5ED395DA98D0C38BD3D208 /* ja */,
+				4EF4511878FECE72A1591873 /* ko */,
+				6D25C3388775F8C9E7931C3D /* pt-BR */,
+				59C7BDAC04AF21A0F6FBE566 /* ru */,
+				004E051B960215DECB2DA0D6 /* zh-Hans */,
+				F1079358C55D1B06EF4D262E /* zh-Hant */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		32B1150286F581ADC2F30524 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = UR6F66266C;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_STRICT_CONCURRENCY = minimal;
+				SWIFT_VERSION = 5.10;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		36AD142E7E61D7493DD0BBAF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = UR6F66266C;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = MasoWidgets/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Maso Widgets";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.maso.app.widgets;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		40AEE95330C6EA3B7AC092D4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = UR6F66266C;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = MasoWidgets/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Maso Widgets";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.maso.app.widgets;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		8BF8B3B50FC41F3A6F5C5DB9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 653DD0BED86D314FCD0EA9CF /* Secrets.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Maso/Maso.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = UR6F66266C;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Maso/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.maso.app;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		9D452DF85F165FD1BFD06E94 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 653DD0BED86D314FCD0EA9CF /* Secrets.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Maso/Maso.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = UR6F66266C;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Maso/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.maso.app;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		F76292AB4B8F98E572590A6E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = UR6F66266C;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_STRICT_CONCURRENCY = minimal;
+				SWIFT_VERSION = 5.10;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1C138ABB57CE0A0610B6FFAB /* Build configuration list for PBXProject "Maso" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				32B1150286F581ADC2F30524 /* Debug */,
+				F76292AB4B8F98E572590A6E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		A97EE1697D510373EBF5F10E /* Build configuration list for PBXNativeTarget "Maso" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9D452DF85F165FD1BFD06E94 /* Debug */,
+				8BF8B3B50FC41F3A6F5C5DB9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		C95CDA834D1005B742FF88D7 /* Build configuration list for PBXNativeTarget "MasoWidgets" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				40AEE95330C6EA3B7AC092D4 /* Debug */,
+				36AD142E7E61D7493DD0BBAF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		D96E17F3D8BC8A17FEA09E0F /* XCRemoteSwiftPackageReference "lottie-spm" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/airbnb/lottie-spm";
+			requirement = {
+				kind = exactVersion;
+				version = 4.5.2;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		31990508FD012FF9FC4CE295 /* Lottie */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D96E17F3D8BC8A17FEA09E0F /* XCRemoteSwiftPackageReference "lottie-spm" */;
+			productName = Lottie;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 42D8EA3365C5EB4B4D4E3DEC /* Project object */;
+}

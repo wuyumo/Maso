@@ -1,0 +1,452 @@
+/* Maso — 简体中文 */
+
+/* ── Tabs ──────────────────────────────────────────── */
+"Plans" = "训练计划";
+"History" = "训练记录";
+"Quick Workout" = "自由组";
+
+/* ── Today screen ──────────────────────────────────── */
+"Today" = "今天";
+"Late Night" = "深夜好";
+"Good Morning" = "早上好";
+"Good Afternoon" = "下午好";
+"Good Evening" = "晚上好";
+"Recommended" = "今日推荐";
+"Start Workout" = "开始训练";
+"Build Your Own" = "自己搭一个";
+"No training plans yet" = "还没有训练计划";
+
+/* ── History ───────────────────────────────────────── */
+"Muscles trained in the last 7 days" = "近 7 天激活的肌群";
+"No training this week yet" = "本周还没训练";
+"Workouts" = "训练记录";
+"No workouts yet" = "还没有训练记录";
+"Yesterday" = "昨天";
+"Repeat Workout" = "再次训练";
+"Exercises" = "动作列表";
+
+/* ── Plan detail ───────────────────────────────────── */
+"Edit Workout" = "编辑训练";
+"Workout" = "训练计划";
+"Workout name" = "训练名称";
+"Add Exercise" = "添加动作";
+"No exercises yet — tap “Add Exercise” to start" = "还没有动作 — 点下方「添加动作」开始";
+"Edit Exercise" = "编辑动作";
+"Delete Exercise" = "删除动作";
+"Remove this exercise?" = "删除这个动作?";
+"Remove" = "删除";
+"Cancel" = "取消";
+"Sets" = "组数";
+"Reps" = "次数";
+"Weight" = "重量";
+"Duration" = "时长";
+"Set rest" = "组间休息";
+"Search exercises…" = "搜索动作…";
+"All" = "全部";
+"Strength" = "力量";
+"Cardio" = "有氧";
+"Flexibility" = "灵活";
+"No exercises match your search" = "没有找到匹配的动作";
+
+/* ── Player ────────────────────────────────────────── */
+"End this workout?" = "确定结束本次训练吗?";
+"End" = "结束";
+"Keep going" = "继续训练";
+"Sets you've completed will be kept." = "已记录的组数会保留。";
+"Rest" = "休息中";
+"Switching" = "切换动作";
+"Up Next" = "下一段";
+"Next Exercise" = "下一动作";
+"Almost done" = "即将完成";
+"Playlist" = "训练计划";
+"Workout Complete" = "训练完成";
+"Done" = "完成";
+
+/* ── Quick Workout ─────────────────────────────────── */
+"Pick muscles" = "选择肌群";
+"Pick exercises" = "选择动作";
+"Pick at least one muscle" = "请至少选一个肌群";
+"Pick at least one exercise" = "请至少选一个动作";
+"Close" = "关闭";
+"Back" = "返回";
+
+/* ── Settings ──────────────────────────────────────── */
+"Settings" = "设置";
+"Units" = "单位";
+"Distance" = "距离";
+"Training" = "训练";
+"Exercise rest" = "动作间休息";
+"Quick-start from center tab" = "中间按钮快捷启动";
+"Tap the highlighted center tab again to jump straight into today's recommended workout" = "再次点击已高亮的中间按钮 = 直接启动今日推荐训练";
+"Data" = "数据";
+"Exercise library" = "动作库";
+"Plans and workout records stay on your device." = "训练计划和训练记录仍保存在你的设备上。";
+
+/* ── Paywall / Pro Banner ──────────────────────────── */
+"Maso Pro" = "Maso Pro";
+"Try Maso Pro" = "试用 Maso Pro";
+"Unlimited plans, full history, custom moves, and more." = "无限训练计划、完整历史、自定义动作以及更多。";
+"Unlock everything" = "解锁全部功能";
+"Unlimited plans · Full history · Custom moves" = "无限计划 · 完整历史 · 自定义动作";
+"Unlock your full training." = "解锁你的完整训练。";
+"Unlimited workout plans" = "无限训练计划";
+"No more 3-plan cap — build a plan for every split." = "不再限制 3 张计划 — 想分几张就建几张。";
+"Full history" = "完整训练历史";
+"Permanent record + PR tracking + volume trends." = "永久保留 + PR 追踪 + 训练量趋势。";
+"Advanced analytics" = "进阶数据分析";
+"Muscle balance, weekly volume, weak spots." = "肌群平衡、周训练量、薄弱环节。";
+"Custom exercises" = "自定义动作";
+"Add your own moves with notes and photos." = "添加自己的动作, 带备注和照片。";
+"Apple Health sync" = "Apple Health 同步";
+"Two-way sync — workouts go in, weight comes out." = "双向同步 — 训练数据进, 体重数据出。";
+"Cloud sync" = "云同步";
+"Plans + history follow you across devices." = "计划和记录在多设备间同步。";
+"Start 7-day free trial" = "开始 7 天免费试用";
+"You're now Maso Pro!" = "已成为 Maso Pro!";
+"Enjoy unlimited plans, full history, and everything else. Welcome aboard." = "享受无限计划、完整历史以及所有功能。欢迎加入。";
+"Restore Purchases" = "恢复购买";
+"Terms" = "条款";
+"Privacy" = "隐私";
+
+/* ── Onboarding ────────────────────────────────────── */
+"Tell us about your training" = "先聊聊你的训练偏好";
+"Three quick questions — we'll use them to recommend a plan that fits." = "三个小问题, 选完直接确认 — 后续会按你的情况排出推荐计划。";
+"About you" = "你的基础信息";
+"Age" = "年龄";
+"How many days a week do you train?" = "一周通常训练几次?";
+"Which muscles do you want to focus on?" = "想加强哪些肌群?";
+"Confirm & build my plan" = "确认, 生成计划";
+"Male" = "男";
+"Female" = "女";
+"Other" = "其他";
+
+/* ── Muscle group display names ─────────────────────── */
+"Chest" = "胸";
+"Upper Chest" = "上胸";
+"Mid Chest" = "中胸";
+"Lower Chest" = "下胸";
+"Lats" = "阔背";
+"Upper Traps" = "上斜方";
+"Mid Traps" = "中斜方";
+"Lower Traps" = "下斜方";
+"Lower Back" = "下背";
+"Shoulders" = "肩";
+"Front Delts" = "前束";
+"Side Delts" = "侧束";
+"Rear Delts" = "后束";
+"Biceps" = "二头";
+"Biceps (Long)" = "二头长头";
+"Biceps (Short)" = "二头短头";
+"Brachialis" = "肱肌";
+"Triceps" = "三头";
+"Triceps (Long)" = "三头长头";
+"Triceps (Lateral)" = "三头外侧";
+"Triceps (Medial)" = "三头内侧";
+"Core" = "核心";
+"Abs" = "腹";
+"Upper Abs" = "上腹";
+"Lower Abs" = "下腹";
+"Obliques" = "腹斜肌";
+"Quads" = "股四头";
+"Rectus Femoris" = "股直肌";
+"Vastus Lateralis" = "股外侧肌";
+"Vastus Medialis" = "股内侧肌";
+"Hamstrings" = "腘绳";
+"Biceps Femoris" = "股二头";
+"Semitendinosus" = "半腱肌";
+"Glutes" = "臀";
+"Gluteus Maximus" = "臀大肌";
+"Gluteus Medius" = "臀中肌";
+"Calves" = "小腿";
+"Gastrocnemius" = "腓肠肌";
+"Soleus" = "比目鱼肌";
+
+/* ── Pluralization ────────────────────────────────── */
+"%d exercises" = "%d 个动作";
+"%d sets" = "%d 组";
+"%d days ago" = "%d 天前";
+"%d day ago" = "%d 天前";
+
+/* ── Added: extended muscle taxonomy + Today's Workout ── */
+"Today's Workout" = "今日训练";
+"Upper Lats" = "上背阔";
+"Lower Lats" = "下背阔";
+"Rhomboids" = "菱形肌";
+"Teres" = "大圆肌";
+"Rotator Cuff" = "肩袖";
+"Brachioradialis" = "肱桡肌";
+"Forearms" = "前臂";
+"Forearm Flexors" = "前臂屈肌";
+"Forearm Extensors" = "前臂伸肌";
+"Arms" = "手臂";
+"Serratus" = "前锯肌";
+"Neck" = "颈部";
+"Legs" = "腿部";
+"Tibialis Anterior" = "胫骨前肌";
+"Adductors" = "内收肌";
+
+/* ── Added: feedback strings ── */
+"Help us improve" = "帮助我们改进";
+"Send feedback" = "发送反馈";
+"Send Feedback" = "发送反馈";
+"Bug reports, feature requests, complaints — all bundled into a daily digest and emailed to the team." = "Bug、功能建议、吐槽 — 每天汇总成一封邮件发给开发团队。";
+"Tell us what's broken, missing, or worth changing." = "告诉我们哪里有问题、缺什么、想改什么。";
+"Your feedback gets bundled into a daily digest and emailed to the team. No account, no tracking." = "反馈每天汇总成一封邮件发给团队。不需要注册,不做追踪。";
+"Type your feedback here…" = "在这里输入反馈…";
+"Submit feedback" = "提交反馈";
+"Sent — thank you" = "已发送 — 谢谢";
+
+"Back muscle" = "背部";
+
+/* ── History / Calendar ── */
+"Trained muscles fade over 3 days, reset on day 4." = "训练过的肌肉 3 天内逐渐变浅,第 4 天恢复默认色。";
+"2 days ago" = "2 天前";
+"Needs work" = "需补";
+"Workout calendar" = "训练日历";
+"Previous month" = "上个月";
+"Next month" = "下个月";
+"Days this month" = "本月训练天数";
+"Current streak" = "连续训练";
+
+/* ── HealthKit + Training freq ── */
+"Integrations" = "应用集成";
+"Apple Fitness sync" = "Apple Fitness 同步";
+"Maso writes finished workouts to Apple Health. They show up in Apple Fitness Activity rings and the Workouts tab. Heart rate is not collected." = "完成的训练会写到 Apple Health,然后在 Apple Fitness 的圆环和 Workouts 里展示。心率不会被采集。";
+"Not available on this device" = "本设备不支持";
+"Tap to grant access" = "点击授予访问";
+"Denied — enable in Settings › Health" = "已拒绝 — 去 设置 › 健康 开启";
+"On — finished workouts go to Health" = "已开启 — 完成的训练写入 Health";
+"Off" = "已关闭";
+"Synced %d workout(s) to Health" = "已同步 %d 次训练到 Health";
+"Days per week" = "每周训练天数";
+
+/* ── center-tab hint ── */
+"Tap to start today's workout" = "点这里开始今天的训练";
+
+/* ── ExercisePicker 2nd tier ── */
+"All %@" = "全部 %@";
+
+/* ── AI Workout ── */
+"AI Workout" = "AI 训练计划";
+"Each day, Maso bundles your profile + recent training + frequency into a prompt and asks Claude to generate today's plan. Your API key is stored locally on this device." = "每天 Maso 把你的基础信息、最近训练记录、频率打包发给 Claude,让它生成今日训练计划。API key 仅保存在本机。";
+"Generate plan with AI" = "用 AI 生成训练计划";
+"Enter your API key above first" = "先在上方输入 API key";
+"Each day a new plan is built from your training history" = "每天根据你的训练记录生成新计划";
+"Not generated yet" = "还未生成";
+"Generating…" = "生成中…";
+"Today's plan ready" = "今日计划已就绪";
+"Last attempt failed" = "上次尝试失败";
+"Tap Refresh to build today's plan" = "点 Refresh 立即生成今日计划";
+"Refresh" = "刷新";
+
+/* ── ExercisePicker modes ── */
+"Body Map" = "身体图";
+"By Muscle" = "按肌群";
+"Tap a muscle on the body to filter" = "点身上的肌肉块来筛选动作";
+"Clear" = "清除";
+
+/* ── Splash tagline ── */
+"Train Smart with AI." = "智能训练,AI 加持。";
+
+/* ── Train the gaps ── */
+"Train the gaps" = "补练空缺";
+"Catch-up: %@" = "补练: %@";
+
+/* ── AI Workout Pro paywall ── */
+"AI generates a personalized plan from your profile + history each day. Pro feature." = "AI 每天根据你的资料 + 训练记录生成个性化计划。Pro 功能。";
+"Pro feature · personalized daily plan" = "Pro 功能 · 每日个性化计划";
+"Tap and hold to configure API key" = "长按以配置 API key";
+"On — refreshed daily" = "已开启 — 每日刷新";
+"Developer · AI API" = "开发者 · AI API";
+"DeepSeek (OpenAI-compatible). Get a key at platform.deepseek.com → API Keys." = "DeepSeek (OpenAI 兼容)。去 platform.deepseek.com → API Keys 创建 key。";
+"Enable AI generation" = "启用 AI 生成";
+"Enter key above first" = "先在上方输入 key";
+"Auto refresh once a day" = "每天自动刷新一次";
+"Test" = "测试";
+
+/* ── Splash tagline v2 ── */
+"Your personal AI trainer" = "你的私人 AI 教练";
+
+/* ── batch i18n audit ── */
+"Close paywall" = "关闭付费墙";
+"Close settings" = "关闭设置";
+"End workout" = "结束训练";
+"New workout" = "新建训练";
+"Previous" = "上一个";
+"Force-quit and reopen the app to fully switch the language." = "强制退出并重开 App 才能完全切换语言。";
+"Keep current" = "保留当前";
+"OK" = "好的";
+"One-time purchase. No subscription, no recurring charges." = "一次性购买。无订阅、无周期扣费。";
+"Replace" = "替换";
+"Restart Maso to apply" = "重启 Maso 应用更改";
+"Starting this will replace the workout you're in. Continue?" = "开始这个会替换当前进行中的训练,继续吗?";
+"Language" = "语言";
+
+/* ── free workout + ex detail ── */
+"Free workout" = "自由训练";
+"Pick your own exercises and go" = "自己挑动作直接开练";
+"Add to workout" = "加入训练";
+"Target Muscles" = "目标肌群";
+"Instructions" = "动作说明";
+
+/* ── Finish here (early end workout) ── */
+"Finish here" = "结束训练";
+"Finish here?" = "结束训练?";
+"Skip the remaining sets and mark this workout complete." = "跳过剩余组,把这次训练标记为完成。";
+"Finish" = "完成";
+
+/* ── History muscle recovery legend ── */
+"Fatigued" = "刚练完";
+"Recovering" = "恢复中";
+"Almost fresh" = "接近恢复";
+"Ready to train" = "可以训练";
+
+/* ── QuickWorkout Step 1 — chip color helper ── */
+"Light green = synergist · worked along the way, no need to pick." = "浅绿色 = 协同肌 · 训练时自动带到，不用单独选";
+"Pick best for me" = "帮我自动选";
+"Replace with smart pick" = "换成智能推荐";
+
+/* ── i18n audit 2026-05-16 — missing UI keys ── */
+/* 品牌 / 标签 (一般不翻译) */
+"Maso" = "Maso";
+"AI" = "AI";
+"PRO" = "PRO";
+"MASO PRO" = "MASO PRO";
+"FROM $2.50/MO" = "$2.50/月起";
+
+/* RootView — 训练替换确认 */
+"Another workout is in progress" = "当前有训练正在进行中";
+
+/* PlanPlayerScreen — 播放列表切换 a11y */
+"Hide playlist" = "隐藏播放列表";
+"Show playlist" = "显示播放列表";
+
+/* WorkoutCard — 开始按钮 a11y (小写 w 版本) */
+"Start workout" = "开始训练";
+
+/* ── i18n architectural pass 2026-05-16 ── */
+"Pause" = "暂停";
+"Resume" = "继续";
+"Skip rest" = "跳过休息";
+"Complete set" = "完成本组";
+"Selected" = "已选";
+"Brought along during training" = "训练时会被带到";
+"System Default" = "跟随系统";
+"kg" = "kg";
+"lb" = "lb";
+"km" = "km";
+"mi" = "mi";
+"Save 50%" = "省 50%";
+"Pay once, own it" = "一次买断,终身使用";
+"Billed monthly" = "按月续费";
+"Monthly" = "月度";
+"Yearly" = "年度";
+"Lifetime" = "终身";
+"POPULAR" = "热门";
+"/ month" = "/月";
+"/ year" = "/年";
+"once" = "一次";
+
+/* ── Settings — Muscle subdivisions toggle ── */
+"Show muscle subdivisions" = "肌肉细分";
+"Off: pick the whole muscle (chest, back) — no upper/mid/lower split. On: full anatomical detail." = "关:只能选大肌群 (胸/背) ,没有上中下分支。开:完整解剖学细分。";
+
+/* ── Settings — Backup / Export / Import ── */
+"Backup" = "备份";
+"Export data" = "导出数据";
+"Save plans, workouts, settings as a JSON file" = "把训练计划、记录、设置打包成 JSON 文件";
+"Import data" = "导入数据";
+"Restore from a Maso backup file" = "从 Maso 备份文件还原";
+"New iPhone? Your data restores automatically from iCloud Backup. Or export anytime — it's a plain JSON file." = "换新手机?iCloud 备份自动恢复你的数据。也可以随时导出 — 就是一个 JSON 文件,你完全掌握。";
+"Replace current data?" = "替换当前数据?";
+"Replace" = "替换";
+
+/* ── QuickWorkout Step 2 — AI auto-pick states ── */
+"Asking the coach…" = "AI 思考中…";
+"Using local picker" = "用本地推荐";
+"Couldn't reach the AI coach. Using a local recommendation instead." = "AI 教练暂时不可用,改用本地推荐。";
+"New Workout" = "新训练";
+
+/* ── Plan step contextMenu ── */
+"Move up" = "上移";
+"Move down" = "下移";
+"Delete" = "删除";
+
+/* ── Plate calculator ── */
+"Plate calculator" = "杠铃配重计算器";
+"Target" = "目标重量";
+"Per side" = "每侧";
+"Bar weight" = "杆重";
+"Bar only — no plates needed" = "只用杆,不需要片";
+
+/* ── Rest notifications ── */
+"Time to switch exercise" = "该换动作了";
+"Rest's up — next set" = "休息结束 — 下一组";
+
+/* Edit current step sheet (training-time parameter editing) */
+"Weight (kg)" = "重量 (kg)";
+"Duration (sec)" = "时长 (秒)";
+"Edit exercise parameters" = "编辑动作参数";
+"Changes apply to this session only. To save permanently, edit the plan." = "改动只影响本次训练。要永久保存请编辑训练计划。";
+
+/* Delete plan flow */
+"Delete Plan" = "删除计划";
+"Delete this plan?" = "确认删除该计划？";
+"Your training history will be kept." = "训练历史会被保留。";
+
+/* Equipment filter chips */
+"Any equipment" = "全部器械";
+"equipment.barbell" = "杠铃";
+"equipment.dumbbell" = "哑铃";
+"equipment.body only" = "自重";
+"equipment.cable" = "绳索";
+"equipment.machine" = "器械";
+"equipment.kettlebells" = "壶铃";
+"equipment.bands" = "弹力带";
+"equipment.e-z curl bar" = "EZ 杆";
+"equipment.medicine ball" = "药球";
+"equipment.exercise ball" = "瑜伽球";
+"equipment.foam roll" = "泡沫滚筒";
+"equipment.other" = "其它";
+
+/* History tab renamed to Muscle Status */
+"Muscle Status" = "肌肉状态";
+
+/* Settings: Profile + Muscles to focus */
+"" = "";
+
+/* Settings: Profile + Muscles to focus */
+"Profile" = "个人信息";
+"Gender" = "性别";
+"Male" = "男";
+"Female" = "女";
+"Other" = "其他";
+"Age" = "年龄";
+"yrs" = "岁";
+"Body weight" = "体重";
+"Muscles to focus" = "想加强的肌群";
+"Pick the muscle groups you want to prioritize. Today's recommendations and AI plans will favor these." = "选择你想优先加强的肌群。今日推荐和 AI 训练计划会优先围绕这些肌群安排。";
+
+/* Share customize sheet — add photo flow */
+"Customize" = "自定义";
+"Camera" = "相机";
+"Photos" = "相册";
+
+/* Recently added Swift literals (i18n audit fix) */
+"Add some exercises to the plan first, then start training." = "先在训练计划里加几个动作再开始训练。";
+"Hide older workouts" = "收起较早的训练";
+"My Muscle Status" = "我的肌肉状态";
+"My Week" = "我的一周";
+"My Workout" = "我的训练";
+"Save" = "保存";
+"Share" = "分享";
+"Show %d older workout(s)" = "显示 %d 条更早的训练";
+"This Week" = "本周";
+"This workout has no exercises yet" = "这次训练还没添加动作";
+
+/* Smart pick button */
+"Smart pick" = "智能推荐";
+
+/* Free workout: save to plan library after finishing */
+"Save as plan" = "保存为训练计划";
+"Saved" = "已保存";

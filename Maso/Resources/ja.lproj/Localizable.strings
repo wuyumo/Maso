@@ -1,0 +1,449 @@
+/* Maso — 日本語 */
+
+"Plans" = "プラン";
+"History" = "履歴";
+"Quick Workout" = "クイック";
+
+"Today" = "今日";
+"Late Night" = "こんばんは";
+"Good Morning" = "おはよう";
+"Good Afternoon" = "こんにちは";
+"Good Evening" = "こんばんは";
+"Recommended" = "おすすめ";
+"Start Workout" = "ワークアウト開始";
+"Build Your Own" = "自分で作る";
+"No training plans yet" = "プランがありません";
+
+"Muscles trained in the last 7 days" = "過去7日間に鍛えた筋肉";
+"No training this week yet" = "今週はまだトレーニングしていません";
+"Workouts" = "ワークアウト";
+"No workouts yet" = "まだワークアウトがありません";
+"Yesterday" = "昨日";
+"Repeat Workout" = "もう一度";
+"Exercises" = "エクササイズ";
+
+"Edit Workout" = "ワークアウトを編集";
+"Workout" = "ワークアウト";
+"Workout name" = "ワークアウト名";
+"Add Exercise" = "エクササイズを追加";
+"No exercises yet — tap “Add Exercise” to start" = "エクササイズがありません — 「追加」をタップ";
+"Edit Exercise" = "エクササイズを編集";
+"Delete Exercise" = "エクササイズを削除";
+"Remove this exercise?" = "このエクササイズを削除しますか?";
+"Remove" = "削除";
+"Cancel" = "キャンセル";
+"Sets" = "セット";
+"Reps" = "回数";
+"Weight" = "重量";
+"Duration" = "時間";
+"Set rest" = "セット間休憩";
+"Search exercises…" = "エクササイズを検索…";
+"All" = "すべて";
+"Strength" = "筋力";
+"Cardio" = "有酸素";
+"Flexibility" = "柔軟性";
+"No exercises match your search" = "該当するエクササイズなし";
+
+"End this workout?" = "ワークアウトを終了しますか?";
+"End" = "終了";
+"Keep going" = "続ける";
+"Sets you've completed will be kept." = "完了したセットは保存されます。";
+"Rest" = "休憩";
+"Switching" = "切替";
+"Up Next" = "次へ";
+"Next Exercise" = "次のエクササイズ";
+"Almost done" = "もうすぐ完了";
+"Playlist" = "プレイリスト";
+"Workout Complete" = "ワークアウト完了";
+"Done" = "完了";
+
+"Pick muscles" = "筋肉を選択";
+"Pick exercises" = "エクササイズを選択";
+"Pick at least one muscle" = "筋肉を1つ以上選択";
+"Pick at least one exercise" = "エクササイズを1つ以上選択";
+"Close" = "閉じる";
+"Back" = "戻る";
+"Target Muscles" = "ターゲット筋肉";
+"Selected" = "選択中";
+"Brought along during training" = "トレーニング中に連動";
+"Continue" = "続ける";
+"Start" = "開始";
+
+"Settings" = "設定";
+"Units" = "単位";
+"Distance" = "距離";
+"Training" = "トレーニング";
+"Exercise rest" = "エクササイズ間休憩";
+"Quick-start from center tab" = "中央タブから即開始";
+"Tap the highlighted center tab again to jump straight into today's recommended workout" = "中央タブを再タップで今日のおすすめワークアウトを開始";
+"Data" = "データ";
+"Exercise library" = "エクササイズライブラリ";
+"Plans and workout records stay on your device." = "プランと記録は端末内に保存されます。";
+"Language" = "言語";
+"App Language" = "App 言語";
+"System Default" = "システムに従う";
+
+"Maso Pro" = "Maso Pro";
+"Try Maso Pro" = "Maso Pro を試す";
+"Unlimited plans, full history, custom moves, and more." = "無制限プラン、完全履歴、カスタムエクササイズなど。";
+"Unlock everything" = "すべての機能を解除";
+"Unlimited plans · Full history · Custom moves" = "無制限プラン · 完全履歴 · カスタム";
+"Unlock your full training." = "すべてのトレーニング機能をアンロック。";
+"Start 7-day free trial" = "7日間無料トライアル開始";
+"Restore Purchases" = "購入を復元";
+"Terms" = "利用規約";
+"Privacy" = "プライバシー";
+
+"Tell us about your training" = "トレーニングについて教えてください";
+"About you" = "あなたについて";
+"Age" = "年齢";
+"How many days a week do you train?" = "週に何回トレーニングしますか?";
+"Which muscles do you want to focus on?" = "どの筋肉を重点的に?";
+"Confirm & build my plan" = "確認してプラン作成";
+"Male" = "男性";
+"Female" = "女性";
+"Other" = "その他";
+
+"Chest" = "胸";
+"Upper Chest" = "上部胸";
+"Mid Chest" = "中部胸";
+"Lower Chest" = "下部胸";
+"Lats" = "広背筋";
+"Upper Traps" = "上部僧帽筋";
+"Mid Traps" = "中部僧帽筋";
+"Lower Traps" = "下部僧帽筋";
+"Lower Back" = "下背部";
+"Shoulders" = "肩";
+"Front Delts" = "前部三角筋";
+"Side Delts" = "中部三角筋";
+"Rear Delts" = "後部三角筋";
+"Biceps" = "上腕二頭筋";
+"Biceps (Long)" = "二頭筋長頭";
+"Biceps (Short)" = "二頭筋短頭";
+"Brachialis" = "上腕筋";
+"Triceps" = "上腕三頭筋";
+"Triceps (Long)" = "三頭筋長頭";
+"Triceps (Lateral)" = "三頭筋外側頭";
+"Triceps (Medial)" = "三頭筋内側頭";
+"Core" = "体幹";
+"Abs" = "腹筋";
+"Upper Abs" = "上腹筋";
+"Lower Abs" = "下腹筋";
+"Obliques" = "腹斜筋";
+"Quads" = "大腿四頭筋";
+"Hamstrings" = "ハムストリング";
+"Glutes" = "臀部";
+"Calves" = "ふくらはぎ";
+
+"%d exercises" = "%d 種目";
+"%d sets" = "%d セット";
+"%d days ago" = "%d 日前";
+"%d day ago" = "%d 日前";
+
+/* ── Added: extended muscle taxonomy + Today's Workout ── */
+"Today's Workout" = "今日のトレーニング";
+"Upper Lats" = "広背筋(上)";
+"Lower Lats" = "広背筋(下)";
+"Rhomboids" = "菱形筋";
+"Teres" = "大円筋";
+"Rotator Cuff" = "ローテーターカフ";
+"Brachioradialis" = "腕橈骨筋";
+"Forearms" = "前腕";
+"Forearm Flexors" = "前腕屈筋";
+"Forearm Extensors" = "前腕伸筋";
+"Arms" = "腕";
+"Serratus" = "前鋸筋";
+"Neck" = "首";
+"Legs" = "脚";
+"Tibialis Anterior" = "前脛骨筋";
+"Adductors" = "内転筋";
+
+/* ── Added: feedback strings ── */
+"Help us improve" = "改善にご協力ください";
+"Send feedback" = "フィードバックを送る";
+"Send Feedback" = "フィードバック送信";
+"Bug reports, feature requests, complaints — all bundled into a daily digest and emailed to the team." = "バグ・要望・不満 — 1日分まとめてチームへ送信されます。";
+"Tell us what's broken, missing, or worth changing." = "壊れている・足りない・変えたい点を教えてください。";
+"Your feedback gets bundled into a daily digest and emailed to the team. No account, no tracking." = "ご意見は1日分まとめてチームへ送信されます。アカウント不要、追跡なし。";
+"Type your feedback here…" = "ここにフィードバックを入力…";
+"Submit feedback" = "送信";
+"Sent — thank you" = "送信しました — ありがとう";
+
+"Back muscle" = "背中";
+
+/* ── History / Calendar ── */
+"Trained muscles fade over 3 days, reset on day 4." = "鍛えた筋肉は3日かけて薄まり、4日目で元の色に戻ります。";
+"2 days ago" = "2日前";
+"Needs work" = "要補強";
+"Workout calendar" = "トレーニングカレンダー";
+"Previous month" = "前の月";
+"Next month" = "次の月";
+"Days this month" = "今月のトレーニング日";
+"Current streak" = "連続日数";
+
+/* ── HealthKit + Training freq ── */
+"Integrations" = "連携";
+"Apple Fitness sync" = "Apple Fitness 連携";
+"Maso writes finished workouts to Apple Health. They show up in Apple Fitness Activity rings and the Workouts tab. Heart rate is not collected." = "完了したトレーニングは Apple Health に書き込まれ、Apple Fitness のリングと Workouts に表示されます。心拍数は記録しません。";
+"Not available on this device" = "このデバイスでは利用できません";
+"Tap to grant access" = "タップして許可";
+"Denied — enable in Settings › Health" = "拒否済み — 設定 › ヘルス で許可";
+"On — finished workouts go to Health" = "オン — 完了したトレーニングは Health へ";
+"Off" = "オフ";
+"Synced %d workout(s) to Health" = "%d 件のトレーニングを Health に同期";
+"Days per week" = "週何回";
+
+/* ── center-tab hint ── */
+"Tap to start today's workout" = "ここをタップして今日のトレーニングを開始";
+
+/* ── ExercisePicker 2nd tier ── */
+"All %@" = "%@ すべて";
+
+/* ── AI Workout ── */
+"AI Workout" = "AI ワークアウト";
+"Each day, Maso bundles your profile + recent training + frequency into a prompt and asks Claude to generate today's plan. Your API key is stored locally on this device." = "毎日プロフィール・直近の履歴・頻度を Claude に送って当日のプランを生成します。API キーはこの端末にのみ保存されます。";
+"Generate plan with AI" = "AI でプランを生成";
+"Enter your API key above first" = "上に API キーを入力";
+"Each day a new plan is built from your training history" = "毎日履歴から新しいプランを生成";
+"Not generated yet" = "未生成";
+"Generating…" = "生成中…";
+"Today's plan ready" = "今日のプラン完成";
+"Last attempt failed" = "前回の試行に失敗";
+"Tap Refresh to build today's plan" = "Refresh をタップして今日のプランを生成";
+"Refresh" = "更新";
+
+/* ── ExercisePicker modes ── */
+"Body Map" = "ボディマップ";
+"By Muscle" = "筋肉別";
+"Tap a muscle on the body to filter" = "体の筋肉をタップして絞り込む";
+"Clear" = "クリア";
+
+/* ── Splash tagline ── */
+"Train Smart with AI." = "AI でスマートにトレーニング。";
+
+/* ── Train the gaps ── */
+"Train the gaps" = "ギャップを埋める";
+"Catch-up: %@" = "キャッチアップ: %@";
+
+/* ── AI Workout Pro paywall ── */
+"AI generates a personalized plan from your profile + history each day. Pro feature." = "AI が毎日プロフィールと履歴からパーソナルプランを生成。Pro 機能。";
+"Pro feature · personalized daily plan" = "Pro 機能 · 毎日のパーソナルプラン";
+"Tap and hold to configure API key" = "長押しで API キーを設定";
+"On — refreshed daily" = "オン — 毎日更新";
+"Developer · AI API" = "開発者 · AI API";
+"DeepSeek (OpenAI-compatible). Get a key at platform.deepseek.com → API Keys." = "DeepSeek (OpenAI 互換)。platform.deepseek.com → API Keys でキーを取得。";
+"Enable AI generation" = "AI 生成を有効化";
+"Enter key above first" = "上にキーを入力";
+"Auto refresh once a day" = "1日1回自動更新";
+"Test" = "テスト";
+
+/* ── Splash tagline v2 ── */
+"Your personal AI trainer" = "あなた専属の AI トレーナー";
+
+/* ── batch i18n audit ── */
+"Close paywall" = "ペイウォールを閉じる";
+"Close settings" = "設定を閉じる";
+"End workout" = "ワークアウト終了";
+"New workout" = "新規ワークアウト";
+"Previous" = "前へ";
+"Force-quit and reopen the app to fully switch the language." = "完全に切り替えるには App を強制終了して再起動してください。";
+"Keep current" = "現在を維持";
+"OK" = "OK";
+"One-time purchase. No subscription, no recurring charges." = "買い切り。サブスクなし、自動課金なし。";
+"Replace" = "置き換える";
+"Restart Maso to apply" = "Maso を再起動して適用";
+"Starting this will replace the workout you're in. Continue?" = "現在のワークアウトが置き換えられます。続行しますか?";
+
+/* ── free workout + ex detail ── */
+"Free workout" = "フリーワークアウト";
+"Pick your own exercises and go" = "好きな種目を選んで開始";
+"Add to workout" = "ワークアウトに追加";
+"Instructions" = "やり方";
+
+/* ── Finish here (early end workout) ── */
+"Finish here" = "ここで終了";
+"Finish here?" = "ここで終了?";
+"Skip the remaining sets and mark this workout complete." = "残りのセットをスキップしてこのワークアウトを完了にします。";
+"Finish" = "完了";
+
+/* ── History muscle recovery legend ── */
+"Fatigued" = "疲労";
+"Recovering" = "回復中";
+"Almost fresh" = "ほぼ回復";
+"Ready to train" = "訓練可能";
+
+/* ── QuickWorkout Step 1 — chip color helper ── */
+"Light green = synergist · worked along the way, no need to pick." = "薄緑＝協働筋 · 一緒に鍛えられる、別途選択不要";
+"Pick best for me" = "おすすめを自動選択";
+"Replace with smart pick" = "スマート選択に置換";
+
+/* ── i18n audit 2026-05-16 — missing UI keys ── */
+/* ブランド / バッジ (通常は翻訳しない) */
+"Maso" = "Maso";
+"AI" = "AI";
+"PRO" = "PRO";
+"MASO PRO" = "MASO PRO";
+"FROM $2.50/MO" = "$2.50/月から";
+
+/* RootView — トレーニング置換の確認 */
+"Another workout is in progress" = "別のトレーニングが進行中です";
+
+/* PlanPlayerScreen — プレイリスト切替 a11y */
+"Hide playlist" = "プレイリストを隠す";
+"Show playlist" = "プレイリストを表示";
+
+/* WorkoutCard — 開始ボタン a11y (小文字 w 版) */
+"Start workout" = "トレーニング開始";
+
+/* ── i18n architectural pass 2026-05-16 ── */
+"Pause" = "一時停止";
+"Resume" = "再開";
+"Skip rest" = "休憩スキップ";
+"Complete set" = "セット完了";
+"Selected" = "選択中";
+"Brought along during training" = "一緒に鍛えられる";
+"System Default" = "システム既定";
+"kg" = "kg";
+"lb" = "lb";
+"km" = "km";
+"mi" = "mi";
+"Save 50%" = "50% お得";
+"Pay once, own it" = "買い切り、ずっと使える";
+"Billed monthly" = "月額課金";
+"Monthly" = "月額";
+"Yearly" = "年額";
+"Lifetime" = "永久";
+"POPULAR" = "人気";
+"/ month" = "/月";
+"/ year" = "/年";
+"once" = "1回";
+
+/* ── Settings — Muscle subdivisions toggle ── */
+"Show muscle subdivisions" = "筋肉の細分化";
+"Off: pick the whole muscle (chest, back) — no upper/mid/lower split. On: full anatomical detail." = "オフ:大筋群 (胸/背中) のみ選択。オン:上部/中部/下部などの細分化。";
+
+/* ── Settings — Backup / Export / Import ── */
+"Backup" = "バックアップ";
+"Export data" = "データを書き出す";
+"Save plans, workouts, settings as a JSON file" = "プラン・記録・設定を JSON ファイルとして保存";
+"Import data" = "データを読み込む";
+"Restore from a Maso backup file" = "Maso バックアップファイルから復元";
+"New iPhone? Your data restores automatically from iCloud Backup. Or export anytime — it's a plain JSON file." = "新しい iPhone?iCloud バックアップから自動復元。または好きな時に書き出せる — ただの JSON ファイル、あなたの所有物。";
+"Replace current data?" = "現在のデータを置き換える?";
+"Replace" = "置き換える";
+
+/* ── QuickWorkout Step 2 — AI auto-pick states ── */
+"Asking the coach…" = "コーチに相談中…";
+"Using local picker" = "ローカル推薦を使用";
+"Couldn't reach the AI coach. Using a local recommendation instead." = "AIコーチに接続できません。ローカルの推薦を使用します。";
+"New Workout" = "新規ワークアウト";
+
+/* ── Plan step contextMenu ── */
+"Move up" = "上に移動";
+"Move down" = "下に移動";
+"Delete" = "削除";
+
+/* ── Plate calculator ── */
+"Plate calculator" = "プレート計算機";
+"Target" = "目標重量";
+"Per side" = "片側";
+"Bar weight" = "バー重量";
+"Bar only — no plates needed" = "バーのみ、プレート不要";
+
+/* ── Rest notifications ── */
+"Time to switch exercise" = "種目を切り替え";
+"Rest's up — next set" = "休憩終了 — 次のセット";
+
+/* Edit current step sheet (training-time parameter editing) */
+"Weight (kg)" = "重量 (kg)";
+"Duration (sec)" = "時間 (秒)";
+"Edit exercise parameters" = "エクササイズ設定を編集";
+"Changes apply to this session only. To save permanently, edit the plan." = "変更は今回のセッションのみ。恒久保存はプランを編集してください。";
+
+/* Delete plan flow */
+"Delete Plan" = "プランを削除";
+"Delete this plan?" = "このプランを削除しますか？";
+"Your training history will be kept." = "トレーニング履歴は保持されます。";
+
+/* Equipment filter chips */
+"Any equipment" = "すべての器具";
+"equipment.barbell" = "バーベル";
+"equipment.dumbbell" = "ダンベル";
+"equipment.body only" = "自重";
+"equipment.cable" = "ケーブル";
+"equipment.machine" = "マシン";
+"equipment.kettlebells" = "ケトルベル";
+"equipment.bands" = "バンド";
+"equipment.e-z curl bar" = "EZバー";
+"equipment.medicine ball" = "メディシンボール";
+"equipment.exercise ball" = "バランスボール";
+"equipment.foam roll" = "フォームローラー";
+"equipment.other" = "その他";
+
+/* History tab renamed to Muscle Status */
+"Muscle Status" = "筋肉ステータス";
+
+/* Settings: Profile + Muscles to focus */
+"" = "";
+
+/* Settings: Profile + Muscles to focus */
+"Profile" = "プロフィール";
+"Gender" = "性別";
+"Male" = "男性";
+"Female" = "女性";
+"Other" = "その他";
+"Age" = "年齢";
+"yrs" = "歳";
+"Body weight" = "体重";
+"Muscles to focus" = "重点筋肉";
+"Pick the muscle groups you want to prioritize. Today's recommendations and AI plans will favor these." = "優先的に鍛えたい筋肉を選んでください。今日のおすすめと AI プランがこれらを優先します。";
+
+/* Share customize sheet */
+"Customize" = "カスタマイズ";
+"Camera" = "カメラ";
+"Photos" = "写真";
+
+/* Recently added Swift literals (i18n audit fix) */
+"Add some exercises to the plan first, then start training." = "まずトレーニングプランにエクササイズを追加してください。";
+"Hide older workouts" = "古いトレーニングを隠す";
+"My Muscle Status" = "私の筋肉ステータス";
+"My Week" = "私の今週";
+"My Workout" = "私のトレーニング";
+"Save" = "保存";
+"Share" = "共有";
+"Show %d older workout(s)" = "%d 件の古いトレーニングを表示";
+"This Week" = "今週";
+"This workout has no exercises yet" = "このトレーニングにはまだエクササイズがありません";
+
+/* Auto-translated by scripts/auto_translate.py (anthropic) */
+"Add your own moves with notes and photos." = "メモや写真で自分だけの種目を追加しよう";
+"Advanced analytics" = "高度な分析";
+"Apple Health sync" = "Apple Health同期";
+"Biceps Femoris" = "大腿二頭筋";
+"Cloud sync" = "クラウド同期";
+"Custom exercises" = "カスタム種目";
+"Enjoy unlimited plans, full history, and everything else. Welcome aboard." = "無制限のプラン、完全な履歴、そしてすべての機能を楽しもう。ようこそ！";
+"Full history" = "完全な履歴";
+"Gastrocnemius" = "腓腹筋";
+"Gluteus Maximus" = "大臀筋";
+"Gluteus Medius" = "中臀筋";
+"Muscle balance, weekly volume, weak spots." = "筋バランス、週間ボリューム、弱点を分析";
+"No more 3-plan cap — build a plan for every split." = "3プランの制限なし — あらゆる分割法に対応";
+"Permanent record + PR tracking + volume trends." = "永久保存 + 自己記録追跡 + ボリューム推移";
+"Plans + history follow you across devices." = "プランと履歴がすべてのデバイスで同期";
+"Rectus Femoris" = "大腿直筋";
+"Semitendinosus" = "半腱様筋";
+"Soleus" = "ヒラメ筋";
+"Three quick questions — we'll use them to recommend a plan that fits." = "3つの質問に答えるだけ — あなたにぴったりのプランをおすすめします";
+"Two-way sync — workouts go in, weight comes out." = "双方向同期 — ワークアウトを記録、体重データを取得";
+"Unlimited workout plans" = "無制限のワークアウトプラン";
+"Vastus Lateralis" = "外側広筋";
+"Vastus Medialis" = "内側広筋";
+"You're now Maso Pro!" = "Maso Proになりました！";
+
+/* Smart pick button */
+"Smart pick" = "おまかせ選択";
+
+/* Free workout: save to plan library after finishing */
+"Save as plan" = "プランとして保存";
+"Saved" = "保存済み";

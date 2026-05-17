@@ -1,0 +1,453 @@
+/* Maso — English localization (default / source locale) */
+
+/* ── Tabs ──────────────────────────────────────────── */
+"Plans" = "Plans";
+"History" = "History";
+"Quick Workout" = "Quick Workout";
+
+/* ── Today screen ──────────────────────────────────── */
+"Today" = "Today";
+"Late Night" = "Late Night";
+"Good Morning" = "Good Morning";
+"Good Afternoon" = "Good Afternoon";
+"Good Evening" = "Good Evening";
+"Recommended" = "Recommended";
+"Start Workout" = "Start Workout";
+"Build Your Own" = "Build Your Own";
+"No training plans yet" = "No training plans yet";
+
+/* ── History ───────────────────────────────────────── */
+"Muscles trained in the last 7 days" = "Muscles trained in the last 7 days";
+"No training this week yet" = "No training this week yet";
+"Workouts" = "Workouts";
+"No workouts yet" = "No workouts yet";
+"Today" = "Today";
+"Yesterday" = "Yesterday";
+"Repeat Workout" = "Repeat Workout";
+"Exercises" = "Exercises";
+
+/* ── Plan detail ───────────────────────────────────── */
+"Edit Workout" = "Edit Workout";
+"Workout" = "Workout";
+"Workout name" = "Workout name";
+"Add Exercise" = "Add Exercise";
+"No exercises yet — tap “Add Exercise” to start" = "No exercises yet — tap “Add Exercise” to start";
+"Edit Exercise" = "Edit Exercise";
+"Delete Exercise" = "Delete Exercise";
+"Remove this exercise?" = "Remove this exercise?";
+"Remove" = "Remove";
+"Cancel" = "Cancel";
+"Sets" = "Sets";
+"Reps" = "Reps";
+"Weight" = "Weight";
+"Duration" = "Duration";
+"Set rest" = "Set rest";
+"Search exercises…" = "Search exercises…";
+"All" = "All";
+"Strength" = "Strength";
+"Cardio" = "Cardio";
+"Flexibility" = "Flexibility";
+"No exercises match your search" = "No exercises match your search";
+
+/* ── Player ────────────────────────────────────────── */
+"End this workout?" = "End this workout?";
+"End" = "End";
+"Keep going" = "Keep going";
+"Sets you've completed will be kept." = "Sets you've completed will be kept.";
+"Rest" = "Rest";
+"Switching" = "Switching";
+"Up Next" = "Up Next";
+"Next Exercise" = "Next Exercise";
+"Almost done" = "Almost done";
+"Playlist" = "Playlist";
+"Workout Complete" = "Workout Complete";
+"Done" = "Done";
+
+/* ── Quick Workout ─────────────────────────────────── */
+"Pick muscles" = "Pick muscles";
+"Pick exercises" = "Pick exercises";
+"Pick at least one muscle" = "Pick at least one muscle";
+"Pick at least one exercise" = "Pick at least one exercise";
+"Close" = "Close";
+"Back" = "Back";
+
+/* ── Settings ──────────────────────────────────────── */
+"Settings" = "Settings";
+"Units" = "Units";
+"Distance" = "Distance";
+"Training" = "Training";
+"Exercise rest" = "Exercise rest";
+"Quick-start from center tab" = "Quick-start from center tab";
+"Tap the highlighted center tab again to jump straight into today's recommended workout" = "Tap the highlighted center tab again to jump straight into today's recommended workout";
+"Data" = "Data";
+"Exercise library" = "Exercise library";
+"Plans and workout records stay on your device." = "Plans and workout records stay on your device.";
+
+/* ── Paywall / Pro Banner ──────────────────────────── */
+"Maso Pro" = "Maso Pro";
+"Try Maso Pro" = "Try Maso Pro";
+"Unlimited plans, full history, custom moves, and more." = "Unlimited plans, full history, custom moves, and more.";
+"Unlock everything" = "Unlock everything";
+"Unlimited plans · Full history · Custom moves" = "Unlimited plans · Full history · Custom moves";
+"Unlock your full training." = "Unlock your full training.";
+"Unlimited workout plans" = "Unlimited workout plans";
+"No more 3-plan cap — build a plan for every split." = "No more 3-plan cap — build a plan for every split.";
+"Full history" = "Full history";
+"Permanent record + PR tracking + volume trends." = "Permanent record + PR tracking + volume trends.";
+"Advanced analytics" = "Advanced analytics";
+"Muscle balance, weekly volume, weak spots." = "Muscle balance, weekly volume, weak spots.";
+"Custom exercises" = "Custom exercises";
+"Add your own moves with notes and photos." = "Add your own moves with notes and photos.";
+"Apple Health sync" = "Apple Health sync";
+"Two-way sync — workouts go in, weight comes out." = "Two-way sync — workouts go in, weight comes out.";
+"Cloud sync" = "Cloud sync";
+"Plans + history follow you across devices." = "Plans + history follow you across devices.";
+"Start 7-day free trial" = "Start 7-day free trial";
+"You're now Maso Pro!" = "You're now Maso Pro!";
+"Enjoy unlimited plans, full history, and everything else. Welcome aboard." = "Enjoy unlimited plans, full history, and everything else. Welcome aboard.";
+"Restore Purchases" = "Restore Purchases";
+"Terms" = "Terms";
+"Privacy" = "Privacy";
+
+/* ── Onboarding ────────────────────────────────────── */
+"Tell us about your training" = "Tell us about your training";
+"Three quick questions — we'll use them to recommend a plan that fits." = "Three quick questions — we'll use them to recommend a plan that fits.";
+"About you" = "About you";
+"Age" = "Age";
+"How many days a week do you train?" = "How many days a week do you train?";
+"Which muscles do you want to focus on?" = "Which muscles do you want to focus on?";
+"Confirm & build my plan" = "Confirm & build my plan";
+"Male" = "Male";
+"Female" = "Female";
+"Other" = "Other";
+
+/* ── Muscle group display names ─────────────────────── */
+"Chest" = "Chest";
+"Upper Chest" = "Upper Chest";
+"Mid Chest" = "Mid Chest";
+"Lower Chest" = "Lower Chest";
+"Lats" = "Lats";
+"Upper Traps" = "Upper Traps";
+"Mid Traps" = "Mid Traps";
+"Lower Traps" = "Lower Traps";
+"Lower Back" = "Lower Back";
+"Shoulders" = "Shoulders";
+"Front Delts" = "Front Delts";
+"Side Delts" = "Side Delts";
+"Rear Delts" = "Rear Delts";
+"Biceps" = "Biceps";
+"Biceps (Long)" = "Biceps (Long)";
+"Biceps (Short)" = "Biceps (Short)";
+"Brachialis" = "Brachialis";
+"Triceps" = "Triceps";
+"Triceps (Long)" = "Triceps (Long)";
+"Triceps (Lateral)" = "Triceps (Lateral)";
+"Triceps (Medial)" = "Triceps (Medial)";
+"Core" = "Core";
+"Abs" = "Abs";
+"Upper Abs" = "Upper Abs";
+"Lower Abs" = "Lower Abs";
+"Obliques" = "Obliques";
+"Quads" = "Quads";
+"Rectus Femoris" = "Rectus Femoris";
+"Vastus Lateralis" = "Vastus Lateralis";
+"Vastus Medialis" = "Vastus Medialis";
+"Hamstrings" = "Hamstrings";
+"Biceps Femoris" = "Biceps Femoris";
+"Semitendinosus" = "Semitendinosus";
+"Glutes" = "Glutes";
+"Gluteus Maximus" = "Gluteus Maximus";
+"Gluteus Medius" = "Gluteus Medius";
+"Calves" = "Calves";
+"Gastrocnemius" = "Gastrocnemius";
+"Soleus" = "Soleus";
+
+/* ── Pluralization (treat singular/plural the same for non-EN locales) ── */
+"%d exercises" = "%d exercises";
+"%d sets" = "%d sets";
+"%d days ago" = "%d days ago";
+"%d day ago" = "%d day ago";
+
+/* ── Added: extended muscle taxonomy + Today's Workout ── */
+"Today's Workout" = "Today's Workout";
+"Upper Lats" = "Upper Lats";
+"Lower Lats" = "Lower Lats";
+"Rhomboids" = "Rhomboids";
+"Teres" = "Teres";
+"Rotator Cuff" = "Rotator Cuff";
+"Brachioradialis" = "Brachioradialis";
+"Forearms" = "Forearms";
+"Forearm Flexors" = "Forearm Flexors";
+"Forearm Extensors" = "Forearm Extensors";
+"Arms" = "Arms";
+"Serratus" = "Serratus";
+"Neck" = "Neck";
+"Legs" = "Legs";
+"Tibialis Anterior" = "Tibialis Anterior";
+"Adductors" = "Adductors";
+
+/* ── Added: feedback strings ── */
+"Help us improve" = "Help us improve";
+"Send feedback" = "Send feedback";
+"Send Feedback" = "Send Feedback";
+"Bug reports, feature requests, complaints — all bundled into a daily digest and emailed to the team." = "Bug reports, feature requests, complaints — all bundled into a daily digest and emailed to the team.";
+"Tell us what's broken, missing, or worth changing." = "Tell us what's broken, missing, or worth changing.";
+"Your feedback gets bundled into a daily digest and emailed to the team. No account, no tracking." = "Your feedback gets bundled into a daily digest and emailed to the team. No account, no tracking.";
+"Type your feedback here…" = "Type your feedback here…";
+"Submit feedback" = "Submit feedback";
+"Sent — thank you" = "Sent — thank you";
+
+"Back muscle" = "Back";
+
+/* ── History / Calendar ── */
+"Trained muscles fade over 3 days, reset on day 4." = "Trained muscles fade over 3 days, reset on day 4.";
+"2 days ago" = "2 days ago";
+"Needs work" = "Needs work";
+"Workout calendar" = "Workout calendar";
+"Previous month" = "Previous month";
+"Next month" = "Next month";
+"Days this month" = "Days this month";
+"Current streak" = "Current streak";
+
+/* ── HealthKit + Training freq ── */
+"Integrations" = "Integrations";
+"Apple Fitness sync" = "Apple Fitness sync";
+"Maso writes finished workouts to Apple Health. They show up in Apple Fitness Activity rings and the Workouts tab. Heart rate is not collected." = "Maso writes finished workouts to Apple Health. They show up in Apple Fitness Activity rings and the Workouts tab. Heart rate is not collected.";
+"Not available on this device" = "Not available on this device";
+"Tap to grant access" = "Tap to grant access";
+"Denied — enable in Settings › Health" = "Denied — enable in Settings › Health";
+"On — finished workouts go to Health" = "On — finished workouts go to Health";
+"Off" = "Off";
+"Synced %d workout(s) to Health" = "Synced %d workout(s) to Health";
+"Days per week" = "Days per week";
+
+/* ── center-tab hint ── */
+"Tap to start today's workout" = "Tap to start today's workout";
+
+/* ── ExercisePicker 2nd tier ── */
+"All %@" = "All %@";
+
+/* ── AI Workout ── */
+"AI Workout" = "AI Workout";
+"Each day, Maso bundles your profile + recent training + frequency into a prompt and asks Claude to generate today's plan. Your API key is stored locally on this device." = "Each day, Maso bundles your profile + recent training + frequency into a prompt and asks Claude to generate today's plan. Your API key is stored locally on this device.";
+"Generate plan with AI" = "Generate plan with AI";
+"Enter your API key above first" = "Enter your API key above first";
+"Each day a new plan is built from your training history" = "Each day a new plan is built from your training history";
+"Not generated yet" = "Not generated yet";
+"Generating…" = "Generating…";
+"Today's plan ready" = "Today's plan ready";
+"Last attempt failed" = "Last attempt failed";
+"Tap Refresh to build today's plan" = "Tap Refresh to build today's plan";
+"Refresh" = "Refresh";
+
+/* ── ExercisePicker modes ── */
+"Body Map" = "Body Map";
+"By Muscle" = "By Muscle";
+"Tap a muscle on the body to filter" = "Tap a muscle on the body to filter";
+"Clear" = "Clear";
+
+/* ── Splash tagline ── */
+"Train Smart with AI." = "Train Smart with AI.";
+
+/* ── Train the gaps ── */
+"Train the gaps" = "Train the gaps";
+"Catch-up: %@" = "Catch-up: %@";
+
+/* ── AI Workout Pro paywall ── */
+"AI generates a personalized plan from your profile + history each day. Pro feature." = "AI generates a personalized plan from your profile + history each day. Pro feature.";
+"Pro feature · personalized daily plan" = "Pro feature · personalized daily plan";
+"Tap and hold to configure API key" = "Tap and hold to configure API key";
+"On — refreshed daily" = "On — refreshed daily";
+"Developer · AI API" = "Developer · AI API";
+"DeepSeek (OpenAI-compatible). Get a key at platform.deepseek.com → API Keys." = "DeepSeek (OpenAI-compatible). Get a key at platform.deepseek.com → API Keys.";
+"Enable AI generation" = "Enable AI generation";
+"Enter key above first" = "Enter key above first";
+"Auto refresh once a day" = "Auto refresh once a day";
+"Test" = "Test";
+
+/* ── Splash tagline v2 ── */
+"Your personal AI trainer" = "Your personal AI trainer";
+
+/* ── batch i18n audit ── */
+"Close paywall" = "Close paywall";
+"Close settings" = "Close settings";
+"End workout" = "End workout";
+"New workout" = "New workout";
+"Previous" = "Previous";
+"Force-quit and reopen the app to fully switch the language." = "Force-quit and reopen the app to fully switch the language.";
+"Keep current" = "Keep current";
+"OK" = "OK";
+"One-time purchase. No subscription, no recurring charges." = "One-time purchase. No subscription, no recurring charges.";
+"Replace" = "Replace";
+"Restart Maso to apply" = "Restart Maso to apply";
+"Starting this will replace the workout you're in. Continue?" = "Starting this will replace the workout you're in. Continue?";
+"Language" = "Language";
+
+/* ── free workout + ex detail ── */
+"Free workout" = "Free workout";
+"Pick your own exercises and go" = "Pick your own exercises and go";
+"Add to workout" = "Add to workout";
+"Target Muscles" = "Target Muscles";
+"Instructions" = "Instructions";
+
+/* ── Finish here (early end workout) ── */
+"Finish here" = "Finish here";
+"Finish here?" = "Finish here?";
+"Skip the remaining sets and mark this workout complete." = "Skip the remaining sets and mark this workout complete.";
+"Finish" = "Finish";
+
+/* ── History muscle recovery legend (replaces Today/Yesterday/N days ago semantics) ── */
+"Fatigued" = "Fatigued";
+"Recovering" = "Recovering";
+"Almost fresh" = "Almost fresh";
+"Ready to train" = "Ready to train";
+
+/* ── QuickWorkout Step 1 — chip color helper ── */
+"Light green = synergist · worked along the way, no need to pick." = "Light green = synergist · worked along the way, no need to pick.";
+"Pick best for me" = "Pick best for me";
+"Replace with smart pick" = "Replace with smart pick";
+
+/* ── i18n audit 2026-05-16 — missing UI keys ── */
+/* Brand / badges (rarely translated) */
+"Maso" = "Maso";
+"AI" = "AI";
+"PRO" = "PRO";
+"MASO PRO" = "MASO PRO";
+"FROM $2.50/MO" = "FROM $2.50/MO";
+
+/* RootView — replace-workout alert */
+"Another workout is in progress" = "Another workout is in progress";
+
+/* PlanPlayerScreen — playlist toggle a11y */
+"Hide playlist" = "Hide playlist";
+"Show playlist" = "Show playlist";
+
+/* WorkoutCard — start-button a11y (lowercase variant of "Start Workout") */
+"Start workout" = "Start workout";
+
+/* ── i18n architectural pass 2026-05-16 — strings now using LocalizedStringKey ── */
+"Pause" = "Pause";
+"Resume" = "Resume";
+"Skip rest" = "Skip rest";
+"Complete set" = "Complete set";
+"Selected" = "Selected";
+"Brought along during training" = "Brought along during training";
+"System Default" = "System Default";
+"kg" = "kg";
+"lb" = "lb";
+"km" = "km";
+"mi" = "mi";
+"Save 50%" = "Save 50%";
+"Pay once, own it" = "Pay once, own it";
+"Billed monthly" = "Billed monthly";
+"Monthly" = "Monthly";
+"Yearly" = "Yearly";
+"Lifetime" = "Lifetime";
+"POPULAR" = "POPULAR";
+"/ month" = "/ month";
+"/ year" = "/ year";
+"once" = "once";
+
+/* ── Settings — Muscle subdivisions toggle ── */
+"Show muscle subdivisions" = "Show muscle subdivisions";
+"Off: pick the whole muscle (chest, back) — no upper/mid/lower split. On: full anatomical detail." = "Off: pick the whole muscle (chest, back) — no upper/mid/lower split. On: full anatomical detail.";
+
+/* ── Settings — Backup / Export / Import ── */
+"Backup" = "Backup";
+"Export data" = "Export data";
+"Save plans, workouts, settings as a JSON file" = "Save plans, workouts, settings as a JSON file";
+"Import data" = "Import data";
+"Restore from a Maso backup file" = "Restore from a Maso backup file";
+"New iPhone? Your data restores automatically from iCloud Backup. Or export anytime — it's a plain JSON file." = "New iPhone? Your data restores automatically from iCloud Backup. Or export anytime — it's a plain JSON file.";
+"Replace current data?" = "Replace current data?";
+"Replace" = "Replace";
+
+/* ── QuickWorkout Step 2 — AI auto-pick states ── */
+"Asking the coach…" = "Asking the coach…";
+"Using local picker" = "Using local picker";
+"Couldn't reach the AI coach. Using a local recommendation instead." = "Couldn't reach the AI coach. Using a local recommendation instead.";
+"New Workout" = "New Workout";
+
+/* ── Plan step contextMenu ── */
+"Move up" = "Move up";
+"Move down" = "Move down";
+"Delete" = "Delete";
+
+/* ── Plate calculator ── */
+"Plate calculator" = "Plate calculator";
+"Target" = "Target";
+"Per side" = "Per side";
+"Bar weight" = "Bar weight";
+"Bar only — no plates needed" = "Bar only — no plates needed";
+
+/* ── Rest notifications ── */
+"Time to switch exercise" = "Time to switch exercise";
+"Rest's up — next set" = "Rest's up — next set";
+
+/* Edit current step sheet (training-time parameter editing) */
+"Weight (kg)" = "Weight (kg)";
+"Duration (sec)" = "Duration (sec)";
+"Edit exercise parameters" = "Edit exercise parameters";
+"Changes apply to this session only. To save permanently, edit the plan." = "Changes apply to this session only. To save permanently, edit the plan.";
+
+/* Delete plan flow (PlansScreen contextMenu + PlanDetailSheet ellipsis menu) */
+"Delete Plan" = "Delete Plan";
+"Delete this plan?" = "Delete this plan?";
+"Your training history will be kept." = "Your training history will be kept.";
+
+/* Equipment filter chips (ExercisePickerSheet) */
+"Any equipment" = "Any equipment";
+"equipment.barbell" = "Barbell";
+"equipment.dumbbell" = "Dumbbell";
+"equipment.body only" = "Body only";
+"equipment.cable" = "Cable";
+"equipment.machine" = "Machine";
+"equipment.kettlebells" = "Kettlebells";
+"equipment.bands" = "Bands";
+"equipment.e-z curl bar" = "EZ-bar";
+"equipment.medicine ball" = "Medicine ball";
+"equipment.exercise ball" = "Exercise ball";
+"equipment.foam roll" = "Foam roller";
+"equipment.other" = "Other";
+
+/* History tab renamed to Muscle Status */
+"Muscle Status" = "Muscle Status";
+
+/* Settings: Profile + Muscles to focus */
+"" = "";
+
+/* Settings: Profile + Muscles to focus */
+"Profile" = "Profile";
+"Gender" = "Gender";
+"Male" = "Male";
+"Female" = "Female";
+"Other" = "Other";
+"Age" = "Age";
+"yrs" = "yrs";
+"Body weight" = "Body weight";
+"Muscles to focus" = "Muscles to focus";
+"Pick the muscle groups you want to prioritize. Today's recommendations and AI plans will favor these." = "Pick the muscle groups you want to prioritize. Today's recommendations and AI plans will favor these.";
+
+/* Share customize sheet — add photo flow */
+"Customize" = "Customize";
+"Camera" = "Camera";
+"Photos" = "Photos";
+
+/* Recently added Swift literals that were not registered (i18n audit fix) */
+"Add some exercises to the plan first, then start training." = "Add some exercises to the plan first, then start training.";
+"Hide older workouts" = "Hide older workouts";
+"My Muscle Status" = "My Muscle Status";
+"My Week" = "My Week";
+"My Workout" = "My Workout";
+"Save" = "Save";
+"Share" = "Share";
+"Show %d older workout(s)" = "Show %d older workout(s)";
+"This Week" = "This Week";
+"This workout has no exercises yet" = "This workout has no exercises yet";
+
+/* Smart pick button in QuickWorkout */
+"Smart pick" = "Smart pick";
+
+/* Free workout: save to plan library after finishing */
+"Save as plan" = "Save as plan";
+"Saved" = "Saved";

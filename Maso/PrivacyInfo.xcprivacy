@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Maso Privacy Manifest — iOS 17+ 强制要求.
+
+  声明项:
+    NSPrivacyTracking — false (我们不做 user tracking)
+    NSPrivacyTrackingDomains — 空 (没接 ATT 追踪)
+    NSPrivacyCollectedDataTypes — 空 (除 AI 流程外不收集任何数据;
+      AI 数据通过 backend proxy 临时转发, 不构成 "collection" 定义)
+    NSPrivacyAccessedAPITypes — Required Reason API 用了哪些 + 用途 code
+
+  Required Reason API codes 参考 Apple 官方文档:
+    https://developer.apple.com/documentation/bundleresources/privacy_manifest_files/describing_use_of_required_reason_api
+
+  我们用了以下 Required Reason API:
+    - User Defaults (UserDefaults): C56D.1 (read/write data this app created)
+    - File timestamp (DataStore JSON 文件): C617.1 (display to user) — DataStore.save 时打 modifyTime
+    - System boot time (Date / TimeInterval 计算): 35F9.1 (measure time elapsed for client-side operations)
+    - Disk space (没用 — 我们不查磁盘剩余空间)
+    - Active keyboard (没用)
+-->
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>NSPrivacyTracking</key>
+    <false/>
+
+    <key>NSPrivacyTrackingDomains</key>
+    <array/>
+
+    <key>NSPrivacyCollectedDataTypes</key>
+    <array/>
+
+    <key>NSPrivacyAccessedAPITypes</key>
+    <array>
+        <!--
+          UserDefaults — 用来存语言偏好, plan card layout, splash 已看过 flag 等.
+          C56D.1 = "Access info from same app, per documentation"
+        -->
+        <dict>
+            <key>NSPrivacyAccessedAPIType</key>
+            <string>NSPrivacyAccessedAPICategoryUserDefaults</string>
+            <key>NSPrivacyAccessedAPITypeReasons</key>
+            <array>
+                <string>CA92.1</string>
+            </array>
+        </dict>
+
+        <!--
+          File timestamp — DataStore JSON 文件保存时, FileManager 会更新 modificationDate.
+          C617.1 = "Display file timestamps to the user"
+          (实际是 iOS 框架自动行为, 我们不主动读, 但保守声明)
+        -->
+        <dict>
+            <key>NSPrivacyAccessedAPIType</key>
+            <string>NSPrivacyAccessedAPICategoryFileTimestamp</string>
+            <key>NSPrivacyAccessedAPITypeReasons</key>
+            <array>
+                <string>C617.1</string>
+            </array>
+        </dict>
+
+        <!--
+          System boot time — 计算 session 持续时间 / 训练倒计时用 Date() / Date.timeIntervalSinceNow,
+          底层走 mach_absolute_time, Apple 认为属于这类 API.
+          35F9.1 = "Measure time elapsed for events that begin and end in the app"
+        -->
+        <dict>
+            <key>NSPrivacyAccessedAPIType</key>
+            <string>NSPrivacyAccessedAPICategorySystemBootTime</string>
+            <key>NSPrivacyAccessedAPITypeReasons</key>
+            <array>
+                <string>35F9.1</string>
+            </array>
+        </dict>
+
+        <!--
+          Disk space — 如果将来 cache UIImage 图片到 disk 时检查空间, 用这个.
+          目前没用, 暂留空; 如果加 disk cache, 取消注释:
+        -->
+        <!--
+        <dict>
+            <key>NSPrivacyAccessedAPIType</key>
+            <string>NSPrivacyAccessedAPICategoryDiskSpace</string>
+            <key>NSPrivacyAccessedAPITypeReasons</key>
+            <array>
+                <string>E174.1</string>
+            </array>
+        </dict>
+        -->
+    </array>
+</dict>
+</plist>

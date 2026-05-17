@@ -1,0 +1,123 @@
+name: Maso
+options:
+  bundleIdPrefix: com.maso
+  deploymentTarget:
+    iOS: "18.0"
+  developmentLanguage: en
+  xcodeVersion: "26.0"
+
+packages:
+  Lottie:
+    url: https://github.com/airbnb/lottie-spm
+    exactVersion: "4.5.2"
+
+settings:
+  base:
+    SWIFT_VERSION: "5.10"
+    IPHONEOS_DEPLOYMENT_TARGET: "18.0"
+    TARGETED_DEVICE_FAMILY: "1,2"  # iPhone + iPad
+    ENABLE_USER_SCRIPT_SANDBOXING: NO
+    SWIFT_STRICT_CONCURRENCY: minimal
+    DEVELOPMENT_TEAM: UR6F66266C  # 自动签名给开发证书 (nomorefish@163.com)
+    CODE_SIGN_STYLE: Automatic
+
+targets:
+  Maso:
+    type: application
+    platform: iOS
+    dependencies:
+      - package: Lottie
+      # Widget extension — 内嵌进 .ipa, 锁屏 / Dynamic Island Live Activity 走它
+      - target: MasoWidgets
+    # Secrets.xcconfig 把 DeepSeek API key 等敏感信息注入 build setting,
+    # 再通过 Info.plist 暴露给 app. 文件不入 git, 改 key 不会污染 commit.
+    configFiles:
+      Debug: Maso/Secrets.xcconfig
+      Release: Maso/Secrets.xcconfig
+    sources:
+      - path: Maso
+        excludes:
+          - "**/.DS_Store"
+          - "Secrets.xcconfig"
+          - "Secrets.xcconfig.example"
+    entitlements:
+      path: Maso/Maso.entitlements
+      properties:
+        # HealthKit — 让 Maso 把训练数据写到 Apple Fitness / Health
+        # 不写 .access — 免费开发账号 / 自动签名只支持基础 HealthKit, sub-capability
+        # (clinical / verifiable health records) 需要付费 program 单独申请.
+        com.apple.developer.healthkit: true
+    info:
+      path: Maso/Info.plist
+      properties:
+        CFBundleDisplayName: Maso
+        UILaunchScreen:
+          UIColorName: launchBackground
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: false
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        UIRequiresFullScreen: true
+        UIStatusBarStyle: UIStatusBarStyleLightContent
+        UIUserInterfaceStyle: Dark
+        # HealthKit 使用说明 — 苹果要求强制描述
+        NSHealthShareUsageDescription: Maso reads basic workout history from Health to keep your training timeline consistent across devices.
+        NSHealthUpdateUsageDescription: Maso saves your completed workouts to Apple Fitness so they appear in your Activity rings and Health timeline.
+        # 相机 / 相册 — 让用户在分享时加自己的照片到 share card. 没这两个 key, iOS 会直接 crash.
+        NSCameraUsageDescription: Maso uses the camera so you can add a selfie to your shareable workout summary.
+        NSPhotoLibraryUsageDescription: Maso reads a photo you pick from your library so you can add it to your shareable workout summary.
+        # AI 后端代理 — Cloudflare Worker. 从 Secrets.xcconfig 注入.
+        # MasoAIProxyURL 是 worker base URL (e.g. https://maso-ai.you.workers.dev),
+        # MasoClientToken 是轻量防滥用 token (跟 worker secret MASO_CLIENT_TOKEN 同值).
+        # 两个都空 → AI 功能 disabled. 真正的 DeepSeek API key 在 worker 端 server-side.
+        MasoAIProxyURL: $(MASO_AI_PROXY_URL)
+        MasoClientToken: $(MASO_CLIENT_TOKEN)
+        # Live Activity 支持 — 让 app 能 start ActivityKit Activity
+        # (锁屏 + Dynamic Island 上的训练状态小窗).
+        NSSupportsLiveActivities: true
+        NSSupportsLiveActivitiesFrequentUpdates: true
+        CFBundleLocalizations:
+          - en
+          - zh-Hans
+          - zh-Hant
+          - ja
+          - ko
+          - es
+          - fr
+          - de
+          - it
+          - pt-BR
+          - ru
+          - ar
+        CFBundleDevelopmentRegion: en
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.maso.app
+        DEVELOPMENT_TEAM: UR6F66266C  # 跟项目级一致, 不再清空
+        CODE_SIGN_STYLE: Automatic
+        GENERATE_INFOPLIST_FILE: NO
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+
+  # Live Activity widget extension — 锁屏 + Dynamic Island 训练状态展示
+  MasoWidgets:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: MasoWidgets
+      # 跟 main app 共享 ActivityAttributes schema
+      - path: Maso/Shared
+    info:
+      path: MasoWidgets/Info.plist
+      properties:
+        CFBundleDisplayName: Maso Widgets
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.maso.app.widgets
+        DEVELOPMENT_TEAM: UR6F66266C
+        CODE_SIGN_STYLE: Automatic
+        GENERATE_INFOPLIST_FILE: NO
+        SKIP_INSTALL: YES
+        INFOPLIST_KEY_CFBundleDisplayName: Maso Widgets

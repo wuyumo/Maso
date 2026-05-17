@@ -1,0 +1,449 @@
+/* Maso — Português (Brasil) */
+
+"Plans" = "Planos";
+"History" = "Histórico";
+"Quick Workout" = "Rápido";
+
+"Today" = "Hoje";
+"Late Night" = "Boa noite";
+"Good Morning" = "Bom dia";
+"Good Afternoon" = "Boa tarde";
+"Good Evening" = "Boa noite";
+"Recommended" = "Recomendado";
+"Start Workout" = "Iniciar treino";
+"Build Your Own" = "Criar o seu";
+"No training plans yet" = "Ainda sem planos";
+
+"Muscles trained in the last 7 days" = "Músculos treinados em 7 dias";
+"No training this week yet" = "Sem treino esta semana";
+"Workouts" = "Treinos";
+"No workouts yet" = "Ainda sem treinos";
+"Yesterday" = "Ontem";
+"Repeat Workout" = "Repetir treino";
+"Exercises" = "Exercícios";
+
+"Edit Workout" = "Editar treino";
+"Workout" = "Treino";
+"Workout name" = "Nome do treino";
+"Add Exercise" = "Adicionar exercício";
+"No exercises yet — tap “Add Exercise” to start" = "Sem exercícios — toque em \"Adicionar\"";
+"Edit Exercise" = "Editar exercício";
+"Delete Exercise" = "Excluir exercício";
+"Remove this exercise?" = "Remover este exercício?";
+"Remove" = "Remover";
+"Cancel" = "Cancelar";
+"Sets" = "Séries";
+"Reps" = "Reps";
+"Weight" = "Peso";
+"Duration" = "Duração";
+"Set rest" = "Descanso entre séries";
+"Search exercises…" = "Pesquisar exercícios…";
+"All" = "Todos";
+"Strength" = "Força";
+"Cardio" = "Cardio";
+"Flexibility" = "Flexibilidade";
+"No exercises match your search" = "Nenhum exercício encontrado";
+
+"End this workout?" = "Encerrar o treino?";
+"End" = "Encerrar";
+"Keep going" = "Continuar";
+"Sets you've completed will be kept." = "Séries concluídas serão mantidas.";
+"Rest" = "Descanso";
+"Switching" = "Trocando";
+"Up Next" = "Próximo";
+"Next Exercise" = "Próximo exercício";
+"Almost done" = "Quase lá";
+"Playlist" = "Playlist";
+"Workout Complete" = "Treino concluído";
+"Done" = "Feito";
+
+"Pick muscles" = "Escolher músculos";
+"Pick exercises" = "Escolher exercícios";
+"Pick at least one muscle" = "Selecione ao menos um músculo";
+"Pick at least one exercise" = "Selecione ao menos um exercício";
+"Close" = "Fechar";
+"Back" = "Voltar";
+"Target Muscles" = "Músculos alvo";
+"Selected" = "Selecionado";
+"Brought along during training" = "Ativado durante o treino";
+"Continue" = "Continuar";
+"Start" = "Iniciar";
+
+"Settings" = "Ajustes";
+"Units" = "Unidades";
+"Distance" = "Distância";
+"Training" = "Treino";
+"Exercise rest" = "Descanso entre exercícios";
+"Quick-start from center tab" = "Início rápido pela aba central";
+"Tap the highlighted center tab again to jump straight into today's recommended workout" = "Toque novamente na aba central para iniciar o treino recomendado";
+"Data" = "Dados";
+"Exercise library" = "Biblioteca de exercícios";
+"Plans and workout records stay on your device." = "Planos e registros ficam no seu dispositivo.";
+"Language" = "Idioma";
+"App Language" = "Idioma do app";
+"System Default" = "Padrão do sistema";
+
+"Maso Pro" = "Maso Pro";
+"Try Maso Pro" = "Experimente Maso Pro";
+"Unlimited plans, full history, custom moves, and more." = "Planos ilimitados, histórico completo, exercícios personalizados e mais.";
+"Unlock everything" = "Desbloquear tudo";
+"Unlimited plans · Full history · Custom moves" = "Planos ilimitados · Histórico · Personalizado";
+"Unlock your full training." = "Desbloqueie todo o seu treino.";
+"Start 7-day free trial" = "Começar teste grátis de 7 dias";
+"Restore Purchases" = "Restaurar compras";
+"Terms" = "Termos";
+"Privacy" = "Privacidade";
+
+"Tell us about your training" = "Conte-nos sobre seu treino";
+"About you" = "Sobre você";
+"Age" = "Idade";
+"How many days a week do you train?" = "Quantos dias por semana você treina?";
+"Which muscles do you want to focus on?" = "Em quais músculos quer focar?";
+"Confirm & build my plan" = "Confirmar e criar plano";
+"Male" = "Masculino";
+"Female" = "Feminino";
+"Other" = "Outro";
+
+"Chest" = "Peito";
+"Upper Chest" = "Peito superior";
+"Mid Chest" = "Peito médio";
+"Lower Chest" = "Peito inferior";
+"Lats" = "Dorsais";
+"Upper Traps" = "Trapézio superior";
+"Mid Traps" = "Trapézio médio";
+"Lower Traps" = "Trapézio inferior";
+"Lower Back" = "Lombar";
+"Shoulders" = "Ombros";
+"Front Delts" = "Deltoide anterior";
+"Side Delts" = "Deltoide lateral";
+"Rear Delts" = "Deltoide posterior";
+"Biceps" = "Bíceps";
+"Biceps (Long)" = "Bíceps (longa)";
+"Biceps (Short)" = "Bíceps (curta)";
+"Brachialis" = "Braquial";
+"Triceps" = "Tríceps";
+"Triceps (Long)" = "Tríceps (longa)";
+"Triceps (Lateral)" = "Tríceps (lateral)";
+"Triceps (Medial)" = "Tríceps (medial)";
+"Core" = "Core";
+"Abs" = "Abdômen";
+"Upper Abs" = "Abdômen superior";
+"Lower Abs" = "Abdômen inferior";
+"Obliques" = "Oblíquos";
+"Quads" = "Quadríceps";
+"Hamstrings" = "Posteriores";
+"Glutes" = "Glúteos";
+"Calves" = "Panturrilhas";
+
+"%d exercises" = "%d exercícios";
+"%d sets" = "%d séries";
+"%d days ago" = "há %d dias";
+"%d day ago" = "há %d dia";
+
+/* ── Added: extended muscle taxonomy + Today's Workout ── */
+"Today's Workout" = "Treino de hoje";
+"Upper Lats" = "Dorsal superior";
+"Lower Lats" = "Dorsal inferior";
+"Rhomboids" = "Romboides";
+"Teres" = "Redondo maior";
+"Rotator Cuff" = "Manguito rotador";
+"Brachioradialis" = "Braquiorradial";
+"Forearms" = "Antebraços";
+"Forearm Flexors" = "Flexores";
+"Forearm Extensors" = "Extensores";
+"Arms" = "Braços";
+"Serratus" = "Serrátil";
+"Neck" = "Pescoço";
+"Legs" = "Pernas";
+"Tibialis Anterior" = "Tibial anterior";
+"Adductors" = "Adutores";
+
+/* ── Added: feedback strings ── */
+"Help us improve" = "Ajude-nos a melhorar";
+"Send feedback" = "Enviar feedback";
+"Send Feedback" = "Enviar feedback";
+"Bug reports, feature requests, complaints — all bundled into a daily digest and emailed to the team." = "Bugs, sugestões, reclamações — tudo num resumo diário enviado à equipe.";
+"Tell us what's broken, missing, or worth changing." = "Diga o que está quebrado, falta ou vale a pena mudar.";
+"Your feedback gets bundled into a daily digest and emailed to the team. No account, no tracking." = "Seu feedback vai para a equipe num resumo diário. Sem conta, sem rastreio.";
+"Type your feedback here…" = "Digite seu feedback aqui…";
+"Submit feedback" = "Enviar";
+"Sent — thank you" = "Enviado — obrigado";
+
+"Back muscle" = "Costas";
+
+/* ── History / Calendar ── */
+"Trained muscles fade over 3 days, reset on day 4." = "Os músculos treinados desbotam em 3 dias e voltam ao padrão no 4º dia.";
+"2 days ago" = "Há 2 dias";
+"Needs work" = "Pendente";
+"Workout calendar" = "Calendário";
+"Previous month" = "Mês anterior";
+"Next month" = "Próximo mês";
+"Days this month" = "Dias neste mês";
+"Current streak" = "Sequência atual";
+
+/* ── HealthKit + Training freq ── */
+"Integrations" = "Integrações";
+"Apple Fitness sync" = "Sincronizar com Apple Fitness";
+"Maso writes finished workouts to Apple Health. They show up in Apple Fitness Activity rings and the Workouts tab. Heart rate is not collected." = "Os treinos concluídos são gravados no Apple Health e aparecem nos anéis do Apple Fitness. A frequência cardíaca não é coletada.";
+"Not available on this device" = "Indisponível neste dispositivo";
+"Tap to grant access" = "Toque para conceder acesso";
+"Denied — enable in Settings › Health" = "Negado — habilite em Ajustes › Saúde";
+"On — finished workouts go to Health" = "Ativado — treinos vão para Saúde";
+"Off" = "Desativado";
+"Synced %d workout(s) to Health" = "%d treinos sincronizados com Saúde";
+"Days per week" = "Dias por semana";
+
+/* ── center-tab hint ── */
+"Tap to start today's workout" = "Toque aqui para começar o treino de hoje";
+
+/* ── ExercisePicker 2nd tier ── */
+"All %@" = "Tudo %@";
+
+/* ── AI Workout ── */
+"AI Workout" = "Treino IA";
+"Each day, Maso bundles your profile + recent training + frequency into a prompt and asks Claude to generate today's plan. Your API key is stored locally on this device." = "Maso envia diariamente seu perfil + histórico + frequência ao Claude para gerar o treino de hoje. A chave de API fica neste aparelho.";
+"Generate plan with AI" = "Gerar plano com IA";
+"Enter your API key above first" = "Insira a chave de API acima";
+"Each day a new plan is built from your training history" = "Um novo plano por dia com base no histórico";
+"Not generated yet" = "Ainda não gerado";
+"Generating…" = "Gerando…";
+"Today's plan ready" = "Plano de hoje pronto";
+"Last attempt failed" = "Última tentativa falhou";
+"Tap Refresh to build today's plan" = "Toque em Refresh para gerar o plano";
+"Refresh" = "Atualizar";
+
+/* ── ExercisePicker modes ── */
+"Body Map" = "Mapa corporal";
+"By Muscle" = "Por músculo";
+"Tap a muscle on the body to filter" = "Toque um músculo para filtrar";
+"Clear" = "Limpar";
+
+/* ── Splash tagline ── */
+"Train Smart with AI." = "Treine inteligente com IA.";
+
+/* ── Train the gaps ── */
+"Train the gaps" = "Trabalhar as áreas em falta";
+"Catch-up: %@" = "Recuperar: %@";
+
+/* ── AI Workout Pro paywall ── */
+"AI generates a personalized plan from your profile + history each day. Pro feature." = "A IA gera um plano personalizado todos os dias. Recurso Pro.";
+"Pro feature · personalized daily plan" = "Pro · plano personalizado diário";
+"Tap and hold to configure API key" = "Toque e segure para configurar API key";
+"On — refreshed daily" = "Ativado — atualiza diariamente";
+"Developer · AI API" = "Desenvolvedor · API IA";
+"DeepSeek (OpenAI-compatible). Get a key at platform.deepseek.com → API Keys." = "DeepSeek (compatível com OpenAI). Crie a chave em platform.deepseek.com.";
+"Enable AI generation" = "Ativar geração de IA";
+"Enter key above first" = "Insira a chave acima primeiro";
+"Auto refresh once a day" = "Atualiza automaticamente uma vez ao dia";
+"Test" = "Testar";
+
+/* ── Splash tagline v2 ── */
+"Your personal AI trainer" = "Seu personal trainer com IA";
+
+/* ── batch i18n audit ── */
+"Close paywall" = "Fechar paywall";
+"Close settings" = "Fechar ajustes";
+"End workout" = "Encerrar treino";
+"New workout" = "Novo treino";
+"Previous" = "Anterior";
+"Force-quit and reopen the app to fully switch the language." = "Force-quit e abra o app novamente para trocar o idioma totalmente.";
+"Keep current" = "Manter atual";
+"OK" = "OK";
+"One-time purchase. No subscription, no recurring charges." = "Compra única. Sem assinatura, sem cobranças recorrentes.";
+"Replace" = "Substituir";
+"Restart Maso to apply" = "Reinicie o Maso para aplicar";
+"Starting this will replace the workout you're in. Continue?" = "Isto vai substituir o treino atual. Continuar?";
+
+/* ── free workout + ex detail ── */
+"Free workout" = "Treino livre";
+"Pick your own exercises and go" = "Escolha seus exercícios e comece";
+"Add to workout" = "Adicionar ao treino";
+"Instructions" = "Instruções";
+
+/* ── Finish here (early end workout) ── */
+"Finish here" = "Encerrar aqui";
+"Finish here?" = "Encerrar aqui?";
+"Skip the remaining sets and mark this workout complete." = "Pular as séries restantes e marcar este treino como concluído.";
+"Finish" = "Encerrar";
+
+/* ── History muscle recovery legend ── */
+"Fatigued" = "Fadigado";
+"Recovering" = "Recuperando";
+"Almost fresh" = "Quase pronto";
+"Ready to train" = "Pronto para treinar";
+
+/* ── QuickWorkout Step 1 — chip color helper ── */
+"Light green = synergist · worked along the way, no need to pick." = "Verde claro = sinergista · trabalhado junto, não precisa selecionar";
+"Pick best for me" = "Escolher por mim";
+"Replace with smart pick" = "Substituir por seleção inteligente";
+
+/* ── i18n audit 2026-05-16 — missing UI keys ── */
+/* Marca / selos (em geral não traduzidos) */
+"Maso" = "Maso";
+"AI" = "IA";
+"PRO" = "PRO";
+"MASO PRO" = "MASO PRO";
+"FROM $2.50/MO" = "A PARTIR DE $2,50/MÊS";
+
+/* RootView — confirmação de substituição de treino */
+"Another workout is in progress" = "Outro treino está em andamento";
+
+/* PlanPlayerScreen — a11y do toggle da playlist */
+"Hide playlist" = "Ocultar playlist";
+"Show playlist" = "Mostrar playlist";
+
+/* WorkoutCard — a11y do botão iniciar (variante minúscula) */
+"Start workout" = "Começar treino";
+
+/* ── i18n architectural pass 2026-05-16 ── */
+"Pause" = "Pausar";
+"Resume" = "Retomar";
+"Skip rest" = "Pular descanso";
+"Complete set" = "Concluir série";
+"Selected" = "Selecionado";
+"Brought along during training" = "Trabalhado em paralelo";
+"System Default" = "Padrão do sistema";
+"kg" = "kg";
+"lb" = "lb";
+"km" = "km";
+"mi" = "mi";
+"Save 50%" = "Economize 50%";
+"Pay once, own it" = "Pague uma vez, é seu";
+"Billed monthly" = "Cobrado mensalmente";
+"Monthly" = "Mensal";
+"Yearly" = "Anual";
+"Lifetime" = "Vitalício";
+"POPULAR" = "POPULAR";
+"/ month" = "/ mês";
+"/ year" = "/ ano";
+"once" = "única";
+
+/* ── Settings — Muscle subdivisions toggle ── */
+"Show muscle subdivisions" = "Subdivisões musculares";
+"Off: pick the whole muscle (chest, back) — no upper/mid/lower split. On: full anatomical detail." = "Off: apenas músculos principais (peito, costas) — sem divisão superior/médio/inferior. On: detalhamento anatômico completo.";
+
+/* ── Settings — Backup / Export / Import ── */
+"Backup" = "Backup";
+"Export data" = "Exportar dados";
+"Save plans, workouts, settings as a JSON file" = "Salva planos, treinos e ajustes em um arquivo JSON";
+"Import data" = "Importar dados";
+"Restore from a Maso backup file" = "Restaurar a partir de um backup do Maso";
+"New iPhone? Your data restores automatically from iCloud Backup. Or export anytime — it's a plain JSON file." = "iPhone novo? Seus dados são restaurados automaticamente do iCloud Backup. Ou exporte quando quiser — é um JSON simples, seu.";
+"Replace current data?" = "Substituir os dados atuais?";
+"Replace" = "Substituir";
+
+/* ── QuickWorkout Step 2 — AI auto-pick states ── */
+"Asking the coach…" = "Consultando o coach…";
+"Using local picker" = "Usando seletor local";
+"Couldn't reach the AI coach. Using a local recommendation instead." = "Não foi possível contatar o coach IA. Usando recomendação local.";
+"New Workout" = "Novo treino";
+
+/* ── Plan step contextMenu ── */
+"Move up" = "Mover para cima";
+"Move down" = "Mover para baixo";
+"Delete" = "Excluir";
+
+/* ── Plate calculator ── */
+"Plate calculator" = "Calculadora de anilhas";
+"Target" = "Alvo";
+"Per side" = "Por lado";
+"Bar weight" = "Peso da barra";
+"Bar only — no plates needed" = "Apenas a barra — sem anilhas";
+
+/* ── Rest notifications ── */
+"Time to switch exercise" = "Trocar de exercício";
+"Rest's up — next set" = "Fim do descanso — próxima série";
+
+/* Edit current step sheet (training-time parameter editing) */
+"Weight (kg)" = "Peso (kg)";
+"Duration (sec)" = "Duração (seg)";
+"Edit exercise parameters" = "Editar parâmetros do exercício";
+"Changes apply to this session only. To save permanently, edit the plan." = "As mudanças valem só para esta sessão. Para salvá-las, edite o plano.";
+
+/* Delete plan flow */
+"Delete Plan" = "Excluir plano";
+"Delete this plan?" = "Excluir este plano?";
+"Your training history will be kept." = "Seu histórico de treinos será mantido.";
+
+/* Equipment filter chips */
+"Any equipment" = "Qualquer equipamento";
+"equipment.barbell" = "Barra";
+"equipment.dumbbell" = "Halter";
+"equipment.body only" = "Peso corporal";
+"equipment.cable" = "Cabo";
+"equipment.machine" = "Máquina";
+"equipment.kettlebells" = "Kettlebell";
+"equipment.bands" = "Elásticos";
+"equipment.e-z curl bar" = "Barra EZ";
+"equipment.medicine ball" = "Medicine ball";
+"equipment.exercise ball" = "Bola de exercício";
+"equipment.foam roll" = "Rolo de espuma";
+"equipment.other" = "Outro";
+
+/* History tab renamed to Muscle Status */
+"Muscle Status" = "Estado muscular";
+
+/* Settings: Profile + Muscles to focus */
+"" = "";
+
+/* Settings: Profile + Muscles to focus */
+"Profile" = "Perfil";
+"Gender" = "Gênero";
+"Male" = "Masculino";
+"Female" = "Feminino";
+"Other" = "Outro";
+"Age" = "Idade";
+"yrs" = "anos";
+"Body weight" = "Peso corporal";
+"Muscles to focus" = "Músculos prioritários";
+"Pick the muscle groups you want to prioritize. Today's recommendations and AI plans will favor these." = "Selecione os grupos musculares prioritários. Recomendações de hoje e planos de IA os priorizarão.";
+
+/* Share customize sheet */
+"Customize" = "Personalizar";
+"Camera" = "Câmera";
+"Photos" = "Fotos";
+
+/* Recently added Swift literals (i18n audit fix) */
+"Add some exercises to the plan first, then start training." = "Adicione exercícios ao plano antes de começar o treino.";
+"Hide older workouts" = "Ocultar treinos antigos";
+"My Muscle Status" = "Meu Estado Muscular";
+"My Week" = "Minha Semana";
+"My Workout" = "Meu Treino";
+"Save" = "Salvar";
+"Share" = "Compartilhar";
+"Show %d older workout(s)" = "Mostrar %d treino(s) antigo(s)";
+"This Week" = "Esta Semana";
+"This workout has no exercises yet" = "Este treino ainda não tem exercícios";
+
+/* Auto-translated by scripts/auto_translate.py (anthropic) */
+"Add your own moves with notes and photos." = "Adicione seus próprios exercícios com notas e fotos.";
+"Advanced analytics" = "Análises avançadas";
+"Apple Health sync" = "Sincronização com Apple Health";
+"Biceps Femoris" = "Bíceps Femoral";
+"Cloud sync" = "Sincronização na nuvem";
+"Custom exercises" = "Exercícios personalizados";
+"Enjoy unlimited plans, full history, and everything else. Welcome aboard." = "Aproveite planos ilimitados, histórico completo e tudo mais. Bem-vindo a bordo.";
+"Full history" = "Histórico completo";
+"Gastrocnemius" = "Gastrocnêmio";
+"Gluteus Maximus" = "Glúteo Máximo";
+"Gluteus Medius" = "Glúteo Médio";
+"Muscle balance, weekly volume, weak spots." = "Equilíbrio muscular, volume semanal, pontos fracos.";
+"No more 3-plan cap — build a plan for every split." = "Sem mais limite de 3 planos — crie um plano para cada divisão.";
+"Permanent record + PR tracking + volume trends." = "Registro permanente + acompanhamento de PRs + tendências de volume.";
+"Plans + history follow you across devices." = "Planos + histórico te acompanham em todos os dispositivos.";
+"Rectus Femoris" = "Reto Femoral";
+"Semitendinosus" = "Semitendíneo";
+"Soleus" = "Sóleo";
+"Three quick questions — we'll use them to recommend a plan that fits." = "Três perguntas rápidas — vamos usá-las para recomendar um plano ideal pra você.";
+"Two-way sync — workouts go in, weight comes out." = "Sincronização bidirecional — treinos entram, peso sai.";
+"Unlimited workout plans" = "Planos de treino ilimitados";
+"Vastus Lateralis" = "Vasto Lateral";
+"Vastus Medialis" = "Vasto Medial";
+"You're now Maso Pro!" = "Agora você é Maso Pro!";
+
+/* Smart pick button */
+"Smart pick" = "Seleção inteligente";
+
+/* Free workout: save to plan library after finishing */
+"Save as plan" = "Salvar como plano";
+"Saved" = "Salvo";

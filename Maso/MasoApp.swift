@@ -1,0 +1,59 @@
+import SwiftUI
+
+// Maso — 简单的健身记录 (iOS native port)
+//
+// 视觉语言:
+//   - 深色优先, Spotify 风格
+//   - 单一强调色 #1ED760 (绿)
+//   - 大字号, 高对比, 单手可达
+//   - 训练时优先, 营销第二
+//
+// 架构:
+//   - SwiftUI + Observation (iOS 17+)
+//   - SplashScreen → RootView, 中间用 .transition(.opacity) 平滑过渡
+//   - 单根 RootView 持有 TabBarView, 切换 3 个主屏 (Plans / Today / History)
+//   - TrainingSessionStore 是全局 ObservableObject, 训练状态独立于路由
+//   - 数据层暂时用 in-memory mock (DataStore), 后续可接 SwiftData
+@main
+struct MasoApp: App {
+    @Environment(\.scenePhase) private var scenePhase
+    @State private var session = TrainingSessionStore()
+    // bootstrap() 优先从 PersistenceController (Documents/maso-data.json) 加载持久化数据.
+    // 没有 → 走 mock 兜底 (seed 推荐 plan + sample sets). 同时把 mock 写一次文件, 下次有持久化.
+    // 改自 .makeMock(): 之前每次启动都重置数据, 现在用户的 plans / sets / settings 都保留.
+    @State private var dataStore = DataStore.bootstrap()
+    @State private var splashDone = false
+    /// 启动时 init 一次, 让它从 UserDefaults 读上次选的语言, 立刻 apply 到 Bundle.
+    /// observe 这个 manager 保证语言切换时 SwiftUI 整树 re-render.
+    @State private var languageManager = LanguageManager.shared
+
+    var body: some Scene {
+        WindowGroup {
+            ZStack {
+                if splashDone {
+                    RootView()
+                        .environment(session)
+                        .environment(dataStore)
+                        .transition(.opacity)
+                } else {
+                    SplashScreen { withAnimation(.easeOut(duration: 0.3)) { splashDone = true } }
+                        .transition(.opacity)
+                }
+            }
+            .preferredColorScheme(.dark)
+            // 全局 tint 改成白色 — 让 alert Cancel / contextMenu icon / NavigationLink chevron 等
+            // system 默认走 control 颜色都白. accent 绿留给 explicit 强调位 (Pro banner / 选中 chip /
+            // primary 按钮), 避免到处都是绿. iOS dark theme 下白色作 default control 颜色更自然.
+            .tint(MasoColor.text)
+            // 跟 effectiveLanguage 绑定的 id —— 语言变了 → ZStack 整体重建 → 所有 Text 重读
+            .id(languageManager.effectiveLanguage.rawValue)
+            // App 进后台 → 强制持久化一次, 防止用户改了 settings 没 save 就被系统挂起.
+            // (Settings 里 toggle 不直接调 dataStore.save(), 走默认 SwiftUI @Bindable mutate.)
+            .onChange(of: scenePhase) { _, newPhase in
+                if newPhase == .background || newPhase == .inactive {
+                    dataStore.save()
+                }
+            }
+        }
+    }
+}
