@@ -23,22 +23,70 @@ struct HistoryScreen: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                // 顶部 padding 给一点空间 (之前的 page title 移进卡片了)
-                Spacer().frame(height: MasoMetrics.pagePaddingTop - 24)
-
-                // 肌肉衰减卡 — 跟 web 端"训练状态"同款:
-                //   今天训练 = 全绿; 昨天 = 0.7; 前天 = 0.4; 3 天以前 = 默认灰
                 let lastMap = muscleLastTrainedMap()
                 let hasAny = !lastMap.isEmpty
-                VStack(spacing: 12) {
-                    // Page title 移进卡片顶部 — 之前在 ScrollView 顶层占地, 现在跟 BodyHint 同卡, 更紧凑
-                    Text("Muscle Status")
-                        .font(.system(size: 22, weight: .bold))
-                        .foregroundStyle(MasoColor.text)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.horizontal, MasoMetrics.cardPadding)
-                        .padding(.top, 4)
 
+                // Page title row — 跟 Today / Plans 同款 26pt bold + 右上角操作按钮.
+                // Share 入口从原"肌肉状态卡 overlay"挪到标题行右侧, 跟其他 tab 视觉对齐.
+                HStack(alignment: .top, spacing: 12) {
+                    Text("Muscle Status")
+                        .font(.system(size: 26, weight: .bold))
+                        .foregroundStyle(MasoColor.text)
+                    Spacer()
+                    // 三个 section data 始终算好传入; toggle 状态由卡内 inline toggle / ShareCardMode 控制.
+                    let workoutData = mostRecentWorkoutSection()
+                    let muscleData = MuscleStatusSectionData(
+                        muscleOpacity: { m in opacityFor(muscle: m, lastMap: lastMap) },
+                        coarseOnly: !data.settings.muscleDetailEnabled,
+                        workoutsThisWeek: workoutsThisWeekCount,
+                        totalSetsThisWeek: totalSetsThisWeek,
+                        muscleSectionsHit: muscleSectionsHitThisWeek
+                    )
+                    let calendarData = CalendarSectionData(
+                        sessionDates: workoutDateSet(),
+                        totalSets: totalSetsThisWeek,
+                        streakDays: currentStreakDays
+                    )
+                    ShareImageButton(
+                        previewTitle: NSLocalizedString("My Muscle Status", comment: ""),
+                        // Muscle Status tab 入口 — 默认只开"肌肉状态 + 本周训练频率",
+                        // 不开 workout section (用户在 Tab 3 视角更关心"本周整体", 不是单次训练)
+                        defaultSections: ShareSections(muscleStatus: true, calendar: true),
+                        shareContent: { photo, onTapAdd, mode in
+                            switch mode {
+                            case .editing(let binding):
+                                UnifiedShareCard(
+                                    userPhoto: photo,
+                                    onTapAddPhoto: onTapAdd,
+                                    workoutSection: workoutData,
+                                    muscleStatusSection: muscleData,
+                                    calendarSection: calendarData,
+                                    editToggles: binding
+                                )
+                            case .rendering(let visible):
+                                UnifiedShareCard(
+                                    userPhoto: photo,
+                                    onTapAddPhoto: onTapAdd,
+                                    workoutSection: workoutData,
+                                    muscleStatusSection: muscleData,
+                                    calendarSection: calendarData,
+                                    visibleSections: visible
+                                )
+                            }
+                        },
+                        label: {
+                            Image(systemName: "square.and.arrow.up")
+                                .font(.system(size: 16, weight: .bold))
+                                .foregroundStyle(MasoColor.text)
+                                .frame(width: 34, height: 34)
+                                .background(MasoColor.surface)
+                                .clipShape(Circle())
+                        }
+                    )
+                    .accessibilityLabel("Share muscle status")
+                }
+                .padding(.top, MasoMetrics.pagePaddingTop)
+                VStack(spacing: 12) {
                     BodyHint(
                         muscles: [],
                         height: MasoMetrics.bodyHintHistory,
@@ -82,7 +130,7 @@ struct HistoryScreen: View {
                         }
                         .buttonStyle(.plain)
 
-                        // Train the gaps — 白色实色按钮.
+                        // Train the gaps — accent 绿色实色按钮.
                         // 点击 → 找出 ≥3 天没练的 section → 自动拼一个 plan → 直接开练.
                         // disabled 当所有 section 最近都练过.
                         Button(action: startGapWorkout) {
@@ -95,9 +143,9 @@ struct HistoryScreen: View {
                             .foregroundStyle(.black)
                             .padding(.horizontal, 14)
                             .padding(.vertical, 8)
-                            .background(Color.white)
+                            .background(MasoColor.accent)
                             .clipShape(Capsule())
-                            .shadow(color: .white.opacity(0.25), radius: 8, y: 2)
+                            .shadow(color: MasoColor.accent.opacity(0.4), radius: 8, y: 2)
                         }
                         .buttonStyle(.plain)
                         .disabled(gapSections().isEmpty)
@@ -108,28 +156,7 @@ struct HistoryScreen: View {
                 .frame(maxWidth: .infinity)
                 .background(MasoColor.surface)
                 .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
-                // 右上角 Share 按钮 overlay — 分享当天/本周肌肉状态
-                .overlay(alignment: .topTrailing) {
-                    ShareImageButton(previewTitle: NSLocalizedString("My Muscle Status", comment: "")) { photo, onTapAdd in
-                        MuscleStatusShareCard(
-                            muscleOpacity: { m in opacityFor(muscle: m, lastMap: lastMap) },
-                            workoutsThisWeek: workoutsThisWeekCount,
-                            totalSetsThisWeek: totalSetsThisWeek,
-                            muscleSectionsHit: muscleSectionsHitThisWeek,
-                            coarseOnly: !data.settings.muscleDetailEnabled,
-                            userPhoto: photo,
-                            onTapAddPhoto: onTapAdd
-                        )
-                    } label: {
-                        Image(systemName: "square.and.arrow.up")
-                            .font(.system(size: 13, weight: .heavy))
-                            .foregroundStyle(MasoColor.textDim)
-                            .frame(width: 32, height: 32)
-                            .background(MasoColor.surfaceHi)
-                            .clipShape(Circle())
-                    }
-                    .padding(12)
-                }
+                // (Share button 已搬到 title row, 不再在卡片上做 overlay)
 
                 // 训练记录 — 卡片样式 (一张卡 = 一次完整训练)
                 // 7 天前的 sessions 收到"Show older"折叠按钮下面 — 减少 default 视觉负担,
@@ -235,37 +262,47 @@ struct HistoryScreen: View {
 
     // MARK: - Train the gaps
 
-    /// 找出 "需补" 的顶层 section — 该 section 下所有解剖肌肉都 ≥3 天没被练 (或从没练过).
-    /// 返回的是 [chest, back, ...] 这种顶层 section.
-    private func gapSections() -> [MuscleGroup] {
+    /// "可训练大肌群"集合 — 来自 MuscleSelector.groupedRows 的 major 维度.
+    /// 之前 gapSections 只走 6 个顶层 section (chest/back/shoulders/arms/core/legs),
+    /// 漏了 biceps / triceps / forearms / quads / hams / glutes / calves / adductors 等更细的肌群.
+    /// 现在 1:1 对齐 picker 的 12 个 major chip — "用户能选" = "gap 能补".
+    ///
+    /// 注意: arms / legs / core 这三个 section "聚合"概念不在这, 因为我们已经按
+    /// biceps/triceps/forearms (替代 arms) + quads/hams/glutes/calves/adductors (替代 legs)
+    /// 拆开了, 重复算 arms/legs 会导致同一肌群被 catch-up 多次.
+    private static let trainableMajorMuscles: [MuscleGroup] = [
+        .chest, .back, .shoulders,
+        .biceps, .triceps, .forearms,
+        .core,
+        .quads, .hamstrings, .glutes, .adductors, .calves,
+    ]
+
+    /// 找出"需补"的 major 肌群 — 该肌群下所有 anatomy 肌肉都 ≥3 天没被练 (或从没练过).
+    /// 返回顺序按 trainableMajorMuscles 列表 (chest 优先, calves 兜底).
+    private func gapMajorMuscles() -> [MuscleGroup] {
         let lastMap = muscleLastTrainedMap()
         let now = Date()
         let cutoff: TimeInterval = 3 * 86400
-        let topSections: [MuscleGroup] = [.chest, .back, .shoulders, .arms, .core, .legs]
         var gaps: [MuscleGroup] = []
-        for sec in topSections {
-            // 该 section 的所有 anatomy muscles (composites 展开)
-            let anatomy = expandAnatomyMuscles([sec]).filter { $0.section == sec }
+        for major in Self.trainableMajorMuscles {
+            // 把这个 major 展开成它在 anatomy 上的所有 sub. 例 chest → upperChest/midChest/lowerChest.
+            // 用 composites + 自己 — expandAnatomyMuscles 自动处理.
+            let anatomy = expandAnatomyMuscles([major])
             guard !anatomy.isEmpty else { continue }
             let allStale = anatomy.allSatisfy { m in
                 guard let last = lastMap[m] else { return true }
                 return now.timeIntervalSince(last) >= cutoff
             }
-            if allStale { gaps.append(sec) }
+            if allStale { gaps.append(major) }
         }
         return gaps
     }
 
-    /// 每个 section 的"招牌动作" — 库里最经典的 compound + accessory.
-    /// 用于 Train the gaps 一键生成 plan 时挑选动作.
-    private static let signatureExercises: [MuscleGroup: [String]] = [
-        .chest:     ["Barbell_Bench_Press_-_Medium_Grip", "Incline_Dumbbell_Press"],
-        .back:      ["Pullups", "Bent_Over_Barbell_Row"],
-        .shoulders: ["Standing_Military_Press", "Side_Lateral_Raise"],
-        .arms:      ["Barbell_Curl", "Triceps_Pushdown"],
-        .core:      ["Cable_Crunch", "Plank"],
-        .legs:      ["Barbell_Squat", "Romanian_Deadlift"],
-    ]
+    /// 兼容旧 UI 调用 (`Train the gaps` 按钮 disabled state).
+    /// 实际选动作仍走 gapMajorMuscles → 更细粒度.
+    private func gapSections() -> [MuscleGroup] {
+        gapMajorMuscles()
+    }
 
     /// 单个 SessionCard + tap handler — 给 recent / older 两个 list 共享.
     /// 长按 → contextMenu Delete → alert 二次确认. (HistoryScreen 顶部有 muscle status hero card,
@@ -274,6 +311,7 @@ struct HistoryScreen: View {
     private func sessionCardRow(_ session: SessionSummary) -> some View {
         SessionCard(
             session: session,
+            photo: data.sessionPhoto(forSessionId: session.id),
             onReplay: replayPlan(for: session).map { plan in
                 { onReplay(plan) }
             }
@@ -293,7 +331,28 @@ struct HistoryScreen: View {
         }
     }
 
-    // MARK: - Share data 计算 (给 MuscleStatusShareCard 用)
+    // MARK: - Share data 计算 (给 UnifiedShareCard 各 section 用)
+
+    /// 最新一次 session 的 WorkoutSectionData — 给"肌肉状态卡"的"也加上 workout section"toggle 用.
+    /// 没有 session → 返回 nil (UnifiedShareCard 会自动跳过该 section).
+    private func mostRecentWorkoutSection() -> WorkoutSectionData? {
+        let sessions = groupedSessions()
+        guard let s = sessions.first else { return nil }
+        let df = DateFormatter()
+        df.dateStyle = .full
+        df.timeStyle = .none
+        let names = exerciseStats(for: s).map { $0.exercise.displayName }
+        return WorkoutSectionData(
+            dateLabel: df.string(from: s.day),
+            planName: s.planName ?? NSLocalizedString("Free workout", comment: ""),
+            durationLabel: "~\(max(5, s.setCount * 2))m",
+            setCount: s.setCount,
+            exerciseCount: s.exerciseCount,
+            prCount: s.prCount,
+            muscles: s.muscles,
+            exerciseNames: names
+        )
+    }
 
     /// 本周 (最近 7 天) 训练 session 数 — 不同 calendar 日算 1 次
     private var workoutsThisWeekCount: Int {
@@ -338,20 +397,56 @@ struct HistoryScreen: View {
         return sections.count
     }
 
-    /// 一键: 找 gap → 拼 plan → 启动训练
+    /// 一键: 找 gap → 智能挑动作 → 拼 plan → 启动训练
+    ///
+    /// 算法 (per gap major muscle):
+    /// 1. expandAnatomyMuscles 拿到该 major 的全部 sub
+    /// 2. 在 ExerciseDB strength 类动作里, 用 QuickWorkoutScreen 同款 score(_:against:) 算分
+    /// 3. 收藏 (favoriteExerciseIds) 命中的优先排前
+    /// 4. 取 top 1-2 个作为这个 gap 的动作
+    /// 5. 全部 gap 累加, 最多 12 个动作 (单次训练不要太长)
+    ///
+    /// 跟之前的差别: 之前用 6 个固定 signatureExercises 字典, 只覆盖 6 个 section,
+    /// 漏了 biceps/triceps/forearms/quads/hams/glutes/calves/adductors 等. 现在按 picker
+    /// 12 个 major 全覆盖, 而且按用户的收藏 + ExerciseDB 评分智能挑.
     private func startGapWorkout() {
-        let gaps = gapSections()
+        let gaps = gapMajorMuscles()
         guard !gaps.isEmpty else { return }
+        let favSet = Set(data.settings.favoriteExerciseIds)
+        var seenExerciseIds = Set<String>()   // 避免一个 plan 里同一动作出现两次 (e.g. squat 命中 quads + glutes)
         var steps: [PlanStep] = []
         var idx = 0
-        for sec in gaps {
-            let ids = Self.signatureExercises[sec] ?? []
-            for id in ids {
-                guard let ex = data.exById[id] else { continue }
+        // 单次训练动作上限 — 12 个 (gap 数量 × 1.5 平均, 12 gap × 1 = 12 ok). 太多用户做不完.
+        let maxSteps = 12
+
+        for major in gaps {
+            // 1. 计算这个 major 对应的全部 anatomy 肌肉 (匹配用)
+            let targetMuscles = expandAnatomyMuscles([major])
+            // 2. 在所有 strength 动作里打分
+            //    (gap workout 默认走 strength —— 衰减状态做拉伸/cardio 反馈不准, 用户期待是补练)
+            struct Scored { let ex: Exercise; let score: Int; let isFav: Bool }
+            var scored: [Scored] = []
+            for ex in data.exercises where ex.category == .strength {
+                if seenExerciseIds.contains(ex.id) { continue }
+                let s = gapScore(ex, against: targetMuscles)
+                if s > 0 {
+                    scored.append(Scored(ex: ex, score: s, isFav: favSet.contains(ex.id)))
+                }
+            }
+            // 3. 收藏前置 + score 降序
+            scored.sort { lhs, rhs in
+                if lhs.isFav != rhs.isFav { return lhs.isFav && !rhs.isFav }
+                return lhs.score > rhs.score
+            }
+            // 4. 取 top 1-2 个 (compound 通常是 top 1, accessory top 2)
+            let picksPerGap = 2
+            for pick in scored.prefix(picksPerGap) {
+                let ex = pick.ex
+                seenExerciseIds.insert(ex.id)
                 let isStrength = ex.category == .strength
                 steps.append(PlanStep(
-                    id: "gap-\(idx)-\(id)",
-                    exerciseId: id,
+                    id: "gap-\(idx)-\(ex.id)",
+                    exerciseId: ex.id,
                     sets: 3,
                     reps: isStrength ? 10 : nil,
                     weight: isStrength ? 0 : nil,
@@ -360,9 +455,9 @@ struct HistoryScreen: View {
                     rest: 0
                 ))
                 idx += 1
-                if steps.count >= 8 { break }   // 单次训练总动作上限
+                if steps.count >= maxSteps { break }
             }
-            if steps.count >= 8 { break }
+            if steps.count >= maxSteps { break }
         }
         guard !steps.isEmpty else { return }
         let now = Date()
@@ -382,20 +477,22 @@ struct HistoryScreen: View {
         onReplay(plan)
     }
 
-    /// 每个 anatomy 直接肌肉 → 最近一次被训练的时间.
-    /// 用于 BodyHint opacityFor — 跟 web 端 muscleLastTrained 同义.
-    private func muscleLastTrainedMap() -> [MuscleGroup: Date] {
-        var map: [MuscleGroup: Date] = [:]
-        for s in data.sets {
-            guard let ex = data.exById[s.exerciseId] else { continue }
-            // expandAnatomyMuscles 把 chest → upperChest/midChest/lowerChest 都点亮
-            let expanded = expandAnatomyMuscles(ex.muscleGroups)
-            for m in expanded {
-                if let prev = map[m], prev > s.performedAt { continue }
-                map[m] = s.performedAt
+    /// score 跟 QuickWorkoutScreen.score(_:against:) 同款 — 复制一份避免 cross-screen private 调用.
+    /// 公式: Σ max(20, 100 - idx*18). idx 越靠前 (primary) 加分越高.
+    private func gapScore(_ ex: Exercise, against targets: Set<MuscleGroup>) -> Int {
+        var total = 0
+        for (idx, mg) in ex.muscleGroups.enumerated() {
+            if targets.contains(mg) {
+                total += max(20, 100 - idx * 18)
             }
         }
-        return map
+        return total
+    }
+
+    /// 每个 anatomy 直接肌肉 → 最近一次被训练的时间.
+    /// 走 MuscleStatusCompute 共享逻辑 — 跟 SessionDetailSheet / QuickMuscleStep 同一份兜底.
+    private func muscleLastTrainedMap() -> [MuscleGroup: Date] {
+        MuscleStatusCompute.muscleLastTrainedMap(sets: data.sets, exById: data.exById)
     }
 
     /// 衰减映射 — 间距加大让三档对比明显:
@@ -403,12 +500,7 @@ struct HistoryScreen: View {
     /// 之前 1.0/0.7/0.4 三档视觉差异不够明显 (人眼对低 alpha 差异不敏感),
     /// 现在 0.4 + 0.3 + 0.3 间隔, 整体更分明.
     private func opacityFor(muscle m: MuscleGroup, lastMap: [MuscleGroup: Date]) -> Double? {
-        guard let last = lastMap[m] else { return nil }
-        let days = Date().timeIntervalSince(last) / 86400
-        if days < 1 { return 1.0 }
-        if days < 2 { return 0.6 }
-        if days < 3 { return 0.3 }
-        return nil
+        MuscleStatusCompute.opacityFor(muscle: m, lastMap: lastMap)
     }
 
     /// 用户有训练的日历日集合 (供日历高亮)
@@ -569,11 +661,17 @@ struct SessionExerciseStat: Identifiable, Hashable {
 
 private struct SessionCard: View {
     let session: SessionSummary
+    /// 用户为该 session 加的照片 (DataStore.sessionPhoto). nil = 无照片, 不渲染缩略图.
+    /// 卡片左侧渲染一个 48x48 圆角缩略图 — 跟 PlanRow / Exercise list 的 56pt thumbnail 同款大小区间,
+    /// 但用户照片更 "个人化", 视觉上稍小一点低调.
+    var photo: UIImage? = nil
     /// 点右下角播放按钮 → "再次训练这次的内容". nil 时不显示按钮.
     let onReplay: (() -> Void)?
 
     private var kicker: String {
-        session.planName == nil ? NSLocalizedString("Free workout", comment: "") : prettyDay(session.day)
+        // 始终显示训练时间 (Today / Yesterday / X days ago / "5月8日"),
+        // 即使是自由训练 — 之前 kicker 跟 title 都显示"自由训练"重复, 现在 kicker 是时间.
+        prettyDay(session.day)
     }
     private var title: String {
         session.planName ?? NSLocalizedString("Free workout", comment: "")
@@ -587,7 +685,10 @@ private struct SessionCard: View {
         //   行0: 日期 kicker (TODAY / YESTERDAY / ...)
         //   行1: title + 右箭头 (整行 tap 进 detail)
         //   行2: exercises · sets
-        //   行3: BodyHint + 右下角圆形播放按钮 (开始训练 — 走 onReplay 回放)
+        //   行3: [photo (有时)] [BodyHint 居中] [右下角 replay 按钮]
+        //
+        // 照片之前是 48×48 缩略图挂在 title 左侧, 现在挪到底部跟 BodyHint 并列 —
+        // 让 muscle map + 训练照同时映入眼帘, 加强"训练日记"感.
         VStack(alignment: .leading, spacing: 6) {
             // History 独有: 训练日期
             Text(kicker.uppercased())
@@ -628,18 +729,36 @@ private struct SessionCard: View {
                 .foregroundStyle(MasoColor.textDim)
                 .lineLimit(1)
 
+            // 底部布局: 照片 + BodyHint 作为一组居中 (两边 Spacer 撑开), replay 按钮做
+            // bottomTrailing overlay 浮在右下角, 不参与居中计算 —
+            //   - 没照片时: 仅 BodyHint, 在 card 内居中
+            //   - 有照片时: [Photo 80×80] [12pt] [BodyHint] 整体作为一个 unit 居中
             ZStack(alignment: .bottomTrailing) {
-                HStack {
-                    Spacer()
+                HStack(alignment: .center, spacing: 12) {
+                    Spacer(minLength: 0)
+                    if let img = photo {
+                        Image(uiImage: img)
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 80, height: 80)
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .stroke(MasoColor.borderSoft, lineWidth: 0.5)
+                            )
+                            .accessibilityLabel("Workout photo")
+                    }
                     BodyHint(
                         muscles: session.muscles,
-                        height: 90,
+                        height: 80,
                         region: .full
                     )
-                    Spacer()
+                    Spacer(minLength: 0)
                 }
 
-                // History 卡的播放按钮 = "再次训练这次的内容"; 跟 Plans 同款样式
+                // History 卡的"再次训练"按钮 — 用 arrow.clockwise (循环箭头) 表达"重做这次"
+                // 比 play.fill 更准确 (这不是"开始一个新训练", 是"再做一遍刚才的训练").
+                // overlay 模式: 不参与 HStack 布局, 不影响 photo+BodyHint 的居中.
                 if let onReplay {
                     Button(action: onReplay) {
                         ZStack {
@@ -649,10 +768,9 @@ private struct SessionCard: View {
                                     Circle().stroke(MasoColor.accent.opacity(0.4), lineWidth: 0.5)
                                 )
                                 .frame(width: 36, height: 36)
-                            Image(systemName: "play.fill")
-                                .font(.system(size: 12, weight: .heavy))
+                            Image(systemName: "arrow.clockwise")
+                                .font(.system(size: 14, weight: .heavy))
                                 .foregroundStyle(MasoColor.accent)
-                                .offset(x: 0.5)
                         }
                     }
                     .buttonStyle(.plain)
@@ -661,6 +779,7 @@ private struct SessionCard: View {
             }
             .padding(.top, 4)
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
         .padding(MasoMetrics.cardPadding - 4)
         .background(MasoColor.surface)
         .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
@@ -687,12 +806,25 @@ private struct SessionDetailSheet: View {
     @State private var detailExercise: Exercise? = nil
     /// 右滑删除 — 待删 exerciseId. 二次确认 alert 触发实际删除.
     @State private var pendingDeleteExerciseId: String? = nil
+    /// 加/换/删训练照片 — 跟 ShareCustomizeSheet 同款 confirmationDialog + PhotoPicker flow.
+    @State private var showPhotoOptions: Bool = false
+    @State private var activePicker: PhotoPickerSource? = nil
+    @State private var pickedPhoto: UIImage? = nil
+    @State private var isCameraAvailable: Bool = UIImagePickerController.isSourceTypeAvailable(.camera)
 
     var body: some View {
         NavigationStack {
             // List + Section 让 stepListSection 里的 ForEach 能用原生 .swipeActions (不支持 onMove —
             // 历史时间顺序是 ground truth, 不允许重排). 跟 PlanDetailSheet 同模式, 用户跨 tab 体验一致.
             List {
+                // 用户照片 banner — 有照片 tap 弹换/删 dialog; 没照片显示"加照片"占位也可点.
+                // 视觉跟 share card 顶部的 SharePhotoBanner 同款 (1:1 正方形).
+                Section {
+                    sessionPhotoBlock
+                        .listRowSeparator(.hidden)
+                        .listRowInsets(EdgeInsets(top: 12, leading: 0, bottom: 0, trailing: 0))
+                        .listRowBackground(Color.clear)
+                }
                 Section {
                     headerCard
                         .listRowSeparator(.hidden)
@@ -728,6 +860,37 @@ private struct SessionDetailSheet: View {
             .sheet(item: $detailExercise) { ex in
                 ExerciseDetailSheet(exercise: ex)
             }
+            // 加/换/删训练照片 dialog + picker — 跟 ShareCustomizeSheet 同一套 flow
+            .confirmationDialog(
+                NSLocalizedString("Add photo", comment: ""),
+                isPresented: $showPhotoOptions,
+                titleVisibility: .visible
+            ) {
+                if isCameraAvailable {
+                    Button(NSLocalizedString("Take Photo", comment: "")) {
+                        activePicker = .camera
+                    }
+                }
+                Button(NSLocalizedString("Choose from Library", comment: "")) {
+                    activePicker = .photoLibrary
+                }
+                if data.sessionPhoto(forSessionId: session.id) != nil {
+                    Button(NSLocalizedString("Remove Photo", comment: ""), role: .destructive) {
+                        data.removeSessionPhoto(forSessionId: session.id)
+                    }
+                }
+                Button("Cancel", role: .cancel) {}
+            }
+            .sheet(item: $activePicker) { source in
+                PhotoPicker(image: $pickedPhoto, source: source)
+                    .ignoresSafeArea()
+            }
+            .onChange(of: pickedPhoto) { _, newPhoto in
+                if let img = newPhoto {
+                    data.setSessionPhoto(img, forSessionId: session.id)
+                    pickedPhoto = nil   // 重置, 下次再 pick 还能触发 onChange
+                }
+            }
             // 右滑 / contextMenu 删除单个 exercise 的二次确认
             .alert("Delete exercise from this workout?", isPresented: Binding(
                 get: { pendingDeleteExerciseId != nil },
@@ -750,33 +913,110 @@ private struct SessionDetailSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    // 分享这次训练 — 生成 SessionShareCard 图分享出去
-                    ShareImageButton(previewTitle: NSLocalizedString("My Workout", comment: "")) { photo, onTapAdd in
-                        SessionShareCard(
-                            session: session,
-                            exerciseNames: exerciseStats.prefix(4).map { $0.exercise.displayName },
-                            userPhoto: photo,
-                            onTapAddPhoto: onTapAdd
-                        )
-                    } label: {
-                        Image(systemName: "square.and.arrow.up")
-                            .font(.system(size: 14, weight: .semibold))
-                            .foregroundStyle(MasoColor.textDim)
-                    }
+                    // 分享这次训练 — 生成 UnifiedShareCard (workout section default on).
+                    // 三个 section data 始终算好传入; toggle 状态由卡内 inline toggle / ShareCardMode 控制.
+                    let workoutData = sessionWorkoutSection()
+                    let muscleData = sessionMuscleStatusSection()
+                    let calendarData = sessionCalendarSection()
+                    ShareImageButton(
+                        previewTitle: NSLocalizedString("My Workout", comment: ""),
+                        defaultSections: ShareSections(workout: true),
+                        initialPhoto: data.sessionPhoto(forSessionId: session.id),
+                        shareContent: { photo, onTapAdd, mode in
+                            switch mode {
+                            case .editing(let binding):
+                                UnifiedShareCard(
+                                    userPhoto: photo,
+                                    onTapAddPhoto: onTapAdd,
+                                    workoutSection: workoutData,
+                                    muscleStatusSection: muscleData,
+                                    calendarSection: calendarData,
+                                    editToggles: binding
+                                )
+                            case .rendering(let visible):
+                                UnifiedShareCard(
+                                    userPhoto: photo,
+                                    onTapAddPhoto: onTapAdd,
+                                    workoutSection: workoutData,
+                                    muscleStatusSection: muscleData,
+                                    calendarSection: calendarData,
+                                    visibleSections: visible
+                                )
+                            }
+                        },
+                        onPersistPhoto: { image in
+                            if let image {
+                                data.setSessionPhoto(image, forSessionId: session.id)
+                            } else {
+                                data.removeSessionPhoto(forSessionId: session.id)
+                            }
+                        },
+                        label: {
+                            Image(systemName: "square.and.arrow.up")
+                                .font(.system(size: 14, weight: .semibold))
+                                .foregroundStyle(MasoColor.textDim)
+                        }
+                    )
                 }
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: { dismiss() }) {
-                        Image(systemName: "xmark")
-                            .font(.system(size: 14, weight: .semibold))
-                            .foregroundStyle(MasoColor.textDim)
-                    }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Done") { dismiss() }
                 }
                 ToolbarItem(placement: .principal) {
-                    Text(session.planName ?? "Free workout")
-                        .font(.system(size: 14, weight: .bold))
-                        .foregroundStyle(MasoColor.text)
+                    Text(session.planName ?? NSLocalizedString("Free workout", comment: ""))
+                        .font(.headline)
+                        .lineLimit(1)
                 }
             }
+            .tint(MasoColor.text)
+        }
+    }
+
+    /// 训练照片 block — 有照片显示 240pt 正方形, 没照片显示"加照片" row (跟动作列表行同款 row 高度).
+    @ViewBuilder
+    private var sessionPhotoBlock: some View {
+        if let photo = data.sessionPhoto(forSessionId: session.id) {
+            // 已加照片: 严格 1:1 圆角正方形 — 用 Color.clear 强制 aspect ratio,
+            // 图片 overlay 内 fill + clipped 裁中, 这样容器一定是正方形不会被父布局压扁.
+            Color.clear
+                .aspectRatio(1, contentMode: .fit)
+                .overlay {
+                    Image(uiImage: photo)
+                        .resizable()
+                        .scaledToFill()
+                }
+                .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
+                .overlay(
+                    RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium)
+                        .stroke(MasoColor.borderSoft, lineWidth: 1)
+                )
+                .contentShape(Rectangle())
+                .onTapGesture { showPhotoOptions = true }
+        } else {
+            // 未加照片: 紧凑 row, 高度像动作列表 row (56pt), 全宽 + 虚线描边占位感
+            Button(action: { showPhotoOptions = true }) {
+                HStack(spacing: 12) {
+                    Image(systemName: "photo.badge.plus")
+                        .font(.system(size: 18, weight: .light))
+                        .foregroundStyle(MasoColor.textDim)
+                        .frame(width: 32, height: 32)
+                    Text("Add a photo")
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundStyle(MasoColor.textDim)
+                    Spacer()
+                }
+                .padding(.horizontal, 14)
+                .frame(height: 56)
+                .background(MasoColor.surface.opacity(0.4))
+                .overlay(
+                    RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium)
+                        .strokeBorder(
+                            MasoColor.borderSoft,
+                            style: StrokeStyle(lineWidth: 1.2, dash: [5, 3])
+                        )
+                )
+                .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
+            }
+            .buttonStyle(.plain)
         }
     }
 
@@ -877,6 +1117,102 @@ private struct SessionDetailSheet: View {
         .padding(MasoMetrics.cardPadding)
         .background(MasoColor.surface)
         .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
+    }
+
+    // MARK: - Share section data helpers
+
+    /// 这次 session 的 WorkoutSectionData — 主要分享内容.
+    fileprivate func sessionWorkoutSection() -> WorkoutSectionData {
+        let df = DateFormatter()
+        df.dateStyle = .full
+        df.timeStyle = .none
+        return WorkoutSectionData(
+            dateLabel: df.string(from: session.day),
+            planName: session.planName ?? NSLocalizedString("Free workout", comment: ""),
+            durationLabel: "~\(max(5, session.setCount * 2))m",
+            setCount: session.setCount,
+            exerciseCount: session.exerciseCount,
+            prCount: session.prCount,
+            muscles: session.muscles,
+            exerciseNames: exerciseStats.prefix(4).map { $0.exercise.displayName }
+        )
+    }
+
+    /// 本周肌肉状态 (用 DataStore 全局衰减 mapping).
+    fileprivate func sessionMuscleStatusSection() -> MuscleStatusSectionData {
+        let lastMap = muscleLastTrainedMap()
+        return MuscleStatusSectionData(
+            muscleOpacity: { m in shareOpacityFor(muscle: m, lastMap: lastMap) },
+            coarseOnly: !data.settings.muscleDetailEnabled,
+            workoutsThisWeek: workoutsThisWeekCount(),
+            totalSetsThisWeek: totalSetsThisWeek(),
+            muscleSectionsHit: muscleSectionsHitThisWeek()
+        )
+    }
+
+    /// 本周训练日历 frequency.
+    fileprivate func sessionCalendarSection() -> CalendarSectionData {
+        CalendarSectionData(
+            sessionDates: workoutDateSet(),
+            totalSets: totalSetsThisWeek(),
+            streakDays: currentStreakDays()
+        )
+    }
+
+    // 内部计算 — 走共享 MuscleStatusCompute, 跟 HistoryScreen / QuickMuscleStep 同一份兜底.
+    private func muscleLastTrainedMap() -> [MuscleGroup: Date] {
+        MuscleStatusCompute.muscleLastTrainedMap(sets: data.sets, exById: data.exById)
+    }
+
+    private func shareOpacityFor(muscle m: MuscleGroup, lastMap: [MuscleGroup: Date]) -> Double? {
+        MuscleStatusCompute.opacityFor(muscle: m, lastMap: lastMap)
+    }
+
+    private func workoutsThisWeekCount() -> Int {
+        let cal = Calendar.current
+        let cutoff = cal.startOfDay(for: cal.date(byAdding: .day, value: -6, to: Date())!)
+        let days = Set(data.sets.filter { $0.performedAt >= cutoff }.map { cal.startOfDay(for: $0.performedAt) })
+        return days.count
+    }
+
+    private func totalSetsThisWeek() -> Int {
+        let cal = Calendar.current
+        let cutoff = cal.startOfDay(for: cal.date(byAdding: .day, value: -6, to: Date())!)
+        return data.sets.filter { $0.performedAt >= cutoff }.count
+    }
+
+    private func muscleSectionsHitThisWeek() -> Int {
+        let cal = Calendar.current
+        let cutoff = cal.startOfDay(for: cal.date(byAdding: .day, value: -6, to: Date())!)
+        var sections = Set<MuscleGroup>()
+        for set in data.sets where set.performedAt >= cutoff {
+            guard let ex = data.exById[set.exerciseId] else { continue }
+            for m in ex.muscleGroups {
+                if let s = m.section { sections.insert(s) }
+            }
+        }
+        return sections.count
+    }
+
+    private func currentStreakDays() -> Int {
+        let cal = Calendar.current
+        let days = workoutDateSet()
+        var streak = 0
+        var cursor = cal.startOfDay(for: Date())
+        while days.contains(cursor) {
+            streak += 1
+            cursor = cal.date(byAdding: .day, value: -1, to: cursor)!
+        }
+        return streak
+    }
+
+    private func workoutDateSet() -> Set<Date> {
+        let cal = Calendar.current
+        var out: Set<Date> = []
+        for s in data.sets {
+            out.insert(cal.startOfDay(for: s.performedAt))
+        }
+        return out
     }
 }
 

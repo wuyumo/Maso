@@ -21,6 +21,12 @@ struct Exercise: Identifiable, Hashable, Codable, Sendable {
     let name: String
     let category: ExerciseCategory
     let tags: [String]
+    /// 主练肌 — 严格筛选用 (Picker / Library "按肌肉" 过滤命中这一组).
+    /// 来源: yuhonas JSON 的 `primaryMuscles` 字段, 不含 secondary.
+    /// 即"做这个动作主要练什么", deadlift 只有 `lowerBack` 不会有 `core/glutes/hamstrings`.
+    let primaryMuscles: [MuscleGroup]
+    /// 全部肌群 = primary + secondary, 去重保留顺序.
+    /// 详情页 / 协同肌计算 / 训练后肌肉状态等需要"全景"的地方用这个.
     let muscleGroups: [MuscleGroup]
     /// yuhonas 图片文件夹名 = exercise.id; 用于拼 CDN URL
     let imageFolder: String?
@@ -67,10 +73,15 @@ struct Exercise: Identifiable, Hashable, Codable, Sendable {
 
     /// 全 app 共用的"器械列表"(按 yuhonas 数据频次降序). nil 跟 "other" 合并.
     /// Picker / Library / Quick workout 共享这一份, 加新器械只改这.
+    ///
+    /// `stretching` 是"伪器械" — yuhonas 数据没这一项, 我们在 ExerciseLibrary.toExercise
+    /// 里 post-load 覆写: 凡是 raw name 含 "stretch" 的动作 equipment 一律改成 stretching.
+    /// (中文翻译里"拉伸"对应英文 "stretch", 1:1 命中, 不需要查翻译表.)
     static let knownEquipments: [String] = [
         "barbell", "dumbbell", "body only", "cable", "machine",
         "kettlebells", "bands", "e-z curl bar", "medicine ball",
-        "exercise ball", "foam roll", "other",
+        "exercise ball", "foam roll", "stretching",
+        "other",
     ]
 
     /// 简化版动作说明 — 1-3 个关键要点, 跟着 locale 显示.

@@ -86,20 +86,13 @@ struct PlateCalculatorSheet: View {
             }
             .background(MasoColor.background.ignoresSafeArea())
             .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle("Plate calculator")
             .toolbar {
-                ToolbarItem(placement: .principal) {
-                    Text("Plate calculator")
-                        .font(.system(size: 14, weight: .bold))
-                        .foregroundStyle(MasoColor.text)
-                }
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: { dismiss() }) {
-                        Image(systemName: "xmark")
-                            .font(.system(size: 14, weight: .semibold))
-                            .foregroundStyle(MasoColor.textDim)
-                    }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Done") { dismiss() }
                 }
             }
+            .tint(MasoColor.text)
         }
     }
 

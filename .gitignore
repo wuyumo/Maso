@@ -19,3 +19,6 @@ Package.resolved
 
 # 本地 secrets — DeepSeek API key 等敏感信息. 改这个文件不要 commit.
 Maso/Secrets.xcconfig
+
+# Cloudflare Worker 本地 build cache — wrangler dev / wrangler deploy 产物.
+backend/cloudflare-worker/.wrangler/

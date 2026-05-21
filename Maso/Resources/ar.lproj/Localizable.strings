@@ -320,6 +320,7 @@
 
 /* ── Settings — Muscle subdivisions toggle ── */
 "Show muscle subdivisions" = "تقسيمات العضلات";
+"Show muscle status" = "عرض حالة العضلات";
 "Off: pick the whole muscle (chest, back) — no upper/mid/lower split. On: full anatomical detail." = "إيقاف: العضلات الرئيسية فقط (الصدر، الظهر) — دون تقسيم علوي/أوسط/سفلي. تشغيل: التفاصيل التشريحية الكاملة.";
 
 /* ── Settings — Backup / Export / Import ── */
@@ -378,6 +379,7 @@
 "equipment.medicine ball" = "كرة طبية";
 "equipment.exercise ball" = "كرة رياضية";
 "equipment.foam roll" = "أسطوانة فوم";
+"equipment.stretching" = "تمدد";
 "equipment.other" = "أخرى";
 
 /* History tab renamed to Muscle Status */
@@ -400,6 +402,7 @@
 
 /* Share customize sheet */
 "Customize" = "تخصيص";
+"Share Card" = "بطاقة المشاركة";
 "Camera" = "الكاميرا";
 "Photos" = "الصور";
 
@@ -447,3 +450,179 @@
 /* Free workout: save to plan library after finishing */
 "Save as plan" = "حفظ كخطة";
 "Saved" = "تم الحفظ";
+
+/* ── تدقيق i18n 2026-05-17 — مفاتيح واجهة مفقودة ── */
+
+/* اختيار الصورة */
+"Add a photo" = "إضافة صورة";
+"Add photo" = "إضافة صورة";
+"Take Photo" = "التقاط صورة";
+"Choose from Library" = "اختيار من المكتبة";
+"Remove Photo" = "إزالة الصورة";
+
+/* المفضلة */
+"Add to favorites" = "إضافة إلى المفضلة";
+"Remove from favorites" = "إزالة من المفضلة";
+
+/* فلاتر التمارين */
+"All muscles" = "كل العضلات";
+"Clear all" = "مسح الكل";
+
+/* مربعات الحذف */
+"Delete plan?" = "حذف الخطة؟";
+"Delete this workout?" = "حذف هذه التمرينة؟";
+"Delete workout" = "حذف التمرينة";
+"Delete exercise from plan?" = "حذف التمرين من الخطة؟";
+"Delete exercise from this workout?" = "حذف التمرين من هذه التمرينة؟";
+"All sets and PRs from this workout will be removed. Your plans stay." = "ستُحذف جميع المجموعات والأرقام القياسية لهذه التمرينة. خططك تبقى كما هي.";
+"All sets of this exercise from this workout will be removed." = "ستُحذف جميع مجموعات هذا التمرين من التمرينة.";
+"This only removes it from the current workout. Save changes at the end to update the plan." = "تُحذف من التمرينة الحالية فقط. احفظ في النهاية لتحديث الخطة.";
+"This only removes the exercise from this plan, not from your library." = "تُحذف من هذه الخطة فقط، ولا تتأثر مكتبتك.";
+
+/* تفاصيل التمرين */
+"Detail" = "تفصيل";
+"Muscle" = "عضلة";
+"Equipment" = "المعدات";
+"None" = "لا شيء";
+"Optional" = "اختياري";
+"How to do it" = "طريقة الأداء";
+"Show full instructions" = "عرض التعليمات كاملة";
+"Show less" = "عرض أقل";
+
+/* القراءة الصوتية */
+"Listen" = "استماع";
+"Read instructions aloud" = "قراءة التعليمات بصوت عالٍ";
+"Stop reading" = "إيقاف القراءة";
+"Stop" = "إيقاف";
+
+/* تحرير الخطة / التمرينة */
+"Edit" = "تحرير";
+"Long press to reorder" = "اضغط مطولاً لإعادة الترتيب";
+"No exercises in this workout" = "لا توجد تمارين في هذه التمرينة";
+
+/* المشاركة */
+"Share workout" = "مشاركة التمرينة";
+
+/* نهاية التمرينة — حفظ في الخطة */
+"Skip & close" = "تخطي وإغلاق";
+"Save changes & end" = "حفظ وإنهاء";
+"End without saving" = "إنهاء بدون حفظ";
+"Save changes to plan" = "حفظ في الخطة";
+"Saved to plan" = "تم الحفظ في الخطة";
+"You changed sets, reps, weight, or order during this workout. Save the changes back to the plan?" = "غيّرت المجموعات أو التكرارات أو الوزن أو الترتيب أثناء هذه التمرينة. هل تريد حفظ التغييرات في الخطة؟";
+"You changed some parameters during this workout." = "غيّرت بعض الإعدادات أثناء هذه التمرينة.";
+
+/* إمكانية الوصول */
+"Show details for %@" = "عرض تفاصيل %@";
+
+/* خطوة التهيئة / Quick Workout */
+"STEP %lld / 2" = "الخطوة %lld / 2";
+"STEP %lld / 3" = "الخطوة %lld / 3";
+
+/* تلميح تقسيمات العضلات */
+"Enable \"Show muscle subdivisions\" in Settings to pick details like upper chest or rear delts." = "فعّل «عرض تقسيمات العضلات» في الإعدادات لاختيار تفاصيل مثل أعلى الصدر أو الكتف الخلفي.";
+
+/* تذييل النسخة التجريبية */
+"Free for 7 days, then %@. Cancel anytime in Settings." = "مجاناً لمدة 7 أيام، ثم %@. يمكنك الإلغاء في أي وقت من الإعدادات.";
+
+/* PlanRationaleCard — علامة تبويب الخطط */
+"FOR YOU" = "مخصّص لك";
+"%lld days / week" = "%lld أيام / الأسبوع";
+"Focus: %@" = "التركيز: %@";
+"Full-body" = "جسم كامل";
+"Upper-lower split" = "تقسيم علوي/سفلي";
+"Body-part split" = "تقسيم حسب العضلات";
+"Full-body coverage — each muscle group rotates through the week." = "تغطية شاملة للجسم — كل مجموعة عضلية يأتي دورها خلال الأسبوع.";
+"High frequency — focus muscles hit 2–3× per week, accessories rotate for recovery." = "تردد عالٍ — العضلات الأساسية تُدرَّب 2–3× أسبوعياً، والمساعِدة تتناوب للتعافي.";
+"Each focus muscle is trained 2× per week — enough stimulus, full recovery between." = "كل عضلة أساسية تُدرَّب 2× أسبوعياً — تحفيز كافٍ مع تعافٍ كامل بينهما.";
+"2× per week is enough to maintain steady progress — focus muscles rotate in." = "2× أسبوعياً تكفي للحفاظ على تقدّم ثابت — العضلات الأساسية تتناوب في الجدول.";
+"Adjust training preferences" = "ضبط تفضيلات التدريب";
+"FROM YOUR PLAN" = "من خطتك";
+"Weekly Workouts" = "تكرار التدريب الأسبوعي";
+"White areas were just trained" = "المناطق البيضاء هي عضلات تم تدريبها لتوّها";
+"Today's Status" = "حالة اليوم";
+
+/* ── Community (社区精选训练计划) ── */
+"Browse community plans" = "تصفح خطط المجتمع";
+"See what others train" = "شاهد ماذا يتدرّب الآخرون";
+"Community" = "المجتمع";
+"Curated workout plans. Add any to your library." = "خطط تدريب مختارة. أضف أيًا منها إلى مكتبتك.";
+"Want to publish your plan? Coming soon." = "هل تريد نشر خطتك؟ قريبًا.";
+"Want to share your plan? Open it in Plans → tap Share." = "هل تريد مشاركة خطتك؟ افتحها في الخطط ← انقر مشاركة.";
+"Share plan" = "مشاركة الخطة";
+"Imported plan" = "خطة مستوردة";
+"Got a plan from a friend? Tap Add to save it to your library." = "هل أرسل لك صديق خطة؟ انقر إضافة لحفظها في مكتبتك.";
+"Add to my plans" = "أضف إلى خططي";
+"Added" = "تمت الإضافة";
+"Beginner" = "مبتدئ";
+"Intermediate" = "متوسط";
+"Advanced" = "متقدم";
+"%lld days/wk" = "%lld أيام/أسبوع";
+"%lld exercises" = "%lld تمارين";
+"community_plan_beginner_fb_3day_name" = "تدريب الجسم الكامل للمبتدئين 3 أيام/أسبوع";
+"community_plan_beginner_fb_3day_desc" = "جلستان متناوبتان لتعلم الحركات الأساسية وبناء قاعدة قوية.";
+"community_plan_5x5_strength_name" = "قوة 5x5";
+"community_plan_5x5_strength_desc" = "تدريب ثقيل بـ 5 تكرارات — تقدم خطي على طريقة Madcow.";
+"community_plan_ppl_6day_name" = "دفع / سحب / أرجل 6 أيام/أسبوع";
+"community_plan_ppl_6day_desc" = "كل مجموعة عضلية مرتين أسبوعيًا — تكرار عالٍ وحجم كبير.";
+"community_plan_upper_lower_4day_name" = "علوي / سفلي 4 أيام/أسبوع";
+"community_plan_upper_lower_4day_desc" = "تقسيم كلاسيكي للمستوى المتوسط — قوة وتضخم متوازنان.";
+"community_plan_bro_split_5day_name" = "بروسبليت 5 أيام/أسبوع";
+"community_plan_bro_split_5day_desc" = "كلاسيكي في كمال الأجسام — مجموعة عضلية في اليوم.";
+"community_plan_calisthenics_name" = "أساسيات تمارين وزن الجسم";
+"community_plan_calisthenics_desc" = "بناء قوة أساسية باستخدام وزن جسمك فقط.";
+"community_plan_powerlifting_name" = "تحضير رفع الأثقال الثلاثي";
+"community_plan_powerlifting_desc" = "السكوات والبنش والديدليفت — مجموعات ثلاثية لقوة خالصة.";
+"community_plan_push_pull_4day_name" = "دفع / سحب 4 أيام/أسبوع";
+"community_plan_push_pull_4day_desc" = "تقسيم بسيط — دفع وسحب، مرتين لكل منهما.";
+"community_session_full_body_a" = "الجسم الكامل A";
+"community_session_full_body_b" = "الجسم الكامل B";
+"community_session_strength_a" = "قوة A";
+"community_session_strength_b" = "قوة B";
+"community_session_push_heavy" = "دفع (ثقيل)";
+"community_session_pull_heavy" = "سحب (ثقيل)";
+"community_session_legs_quads" = "أرجل (الفخذ الأمامي)";
+"community_session_upper" = "علوي";
+"community_session_lower" = "سفلي";
+"community_session_chest_day" = "يوم الصدر";
+"community_session_back_day" = "يوم الظهر";
+"community_session_leg_day" = "يوم الأرجل";
+"community_session_shoulder_day" = "يوم الأكتاف";
+"community_session_arm_day" = "يوم الذراعين";
+"community_session_push_day" = "يوم الدفع";
+"community_session_pull_day" = "يوم السحب";
+"community_session_legs_core_day" = "أرجل + جذع";
+"community_session_squat_day" = "يوم السكوات";
+"community_session_bench_day" = "يوم البنش";
+"community_session_deadlift_day" = "يوم الديدليفت";
+"community_session_accessory_day" = "يوم التمارين المساعدة";
+"community_session_push_simple" = "دفع";
+"community_session_pull_simple" = "سحب";
+"Favorite" = "إضافة";
+"Unfavorite" = "إزالة";
+
+/* StoreKit / IAP — Maso Pro */
+"Couldn't load subscription options. Try again later." = "تعذّر تحميل خيارات الاشتراك. حاول مرة أخرى لاحقًا.";
+"Purchase pending approval." = "عملية الشراء بانتظار الموافقة.";
+"Purchase verification failed. Try again or contact support." = "فشل التحقق من عملية الشراء. حاول مرة أخرى أو تواصل مع الدعم.";
+"Free for 7 days, then auto-renews. Cancel anytime in Settings." = "مجاني لمدة 7 أيام، ثم يتجدّد تلقائيًا. يمكن الإلغاء في أي وقت من «الإعدادات».";
+
+/* History / سجل التمارين */
+"Workout photo" = "صورة التمرين";
+"Share muscle status" = "مشاركة حالة العضلات";
+"Toggle muscle status overlay" = "إظهار/إخفاء حالة العضلات";
+
+/* Deep link / plan sharing */
+"IMPORTED PLAN" = "خطة مستوردة";
+"This Maso link is damaged or unsupported. Ask your friend to share again." = "رابط Maso هذا تالف أو غير مدعوم. اطلب من صديقك مشاركته مرة أخرى.";
+
+/* Misc */
+"details" = "التفاصيل";
+
+/* Settings — Health & Safety + About */
+"Health & Safety" = "الصحة والسلامة";
+"About" = "حول التطبيق";
+"Privacy Policy" = "سياسة الخصوصية";
+"Terms of Service" = "شروط الخدمة";
+"Version" = "الإصدار";
+"Maso is for informational and motivational purposes only — not medical advice. Consult a physician before starting any new exercise program, especially if you have a medical condition, are pregnant, or have not exercised recently. Stop immediately and seek help if you feel pain, dizziness, or shortness of breath." = "Maso مخصص للأغراض المعلوماتية والتحفيزية فقط، وليس استشارة طبية. استشر طبيبًا قبل بدء أي برنامج تمارين جديد، خاصةً إذا كنت تعاني من حالة طبية أو كنتِ حاملًا أو لم تمارس الرياضة مؤخرًا. توقّف فورًا واطلب المساعدة إذا شعرت بألم أو دوخة أو ضيق في التنفس.";

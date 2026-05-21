@@ -10,12 +10,14 @@ enum SubscriptionTier: String, Codable, Sendable {
     case monthly, yearly, lifetime
 }
 
-struct ProSubscription: Codable, Sendable {
+struct ProSubscription: Codable, Sendable, Equatable {
     let tier: SubscriptionTier
     let startedAt: Date
     /// nil = lifetime (没有结束日)
     let renewsAt: Date?
 }
+
+extension SubscriptionTier: Equatable {}
 
 // 用户设置 — 跟 web 端的 Settings 1:1 对齐
 struct UserSettings: Codable, Sendable {
@@ -82,6 +84,12 @@ struct UserSettings: Codable, Sendable {
     /// (e.g. Library / ExercisePickerSheet / QuickWorkout Step 2 都用.)
     /// Set<String> Codable 自动 work, 用 Array 持久化 (Set 跨语言 Codable 不稳).
     var favoriteExerciseIds: [String] = []
+
+    /// Session 用户照片 — key = SessionSummary.id (e.g. "plan-full-1-1715900000"),
+    /// value = JPEG data.
+    /// 用户在 ShareCustomizeSheet 加的照片存这里, History 列表 + Session 详情页都会展示.
+    /// JPEG 压缩到 quality 0.7 — 在分享视觉清晰度和持久化体积之间妥协 (典型照片 ~100-300KB).
+    var sessionPhotos: [String: Data] = [:]
 }
 
 // MARK: - Free 用户的软上限

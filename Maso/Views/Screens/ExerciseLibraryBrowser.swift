@@ -19,8 +19,10 @@ struct ExerciseLibraryBrowser: View {
     private var filtered: [Exercise] {
         var arr = data.exercises
         if let m = muscleFilter {
+            // 严格筛选 — 只看 primaryMuscles (主练肌), 跟 ExercisePickerSheet 同一行为.
+            // 不再因为某个动作 secondary 含 m 就出现 (e.g. deadlift secondary 含 core 也不算 core 动作).
             arr = arr.filter { ex in
-                ex.muscleGroups.contains(where: { $0.section == m })
+                ex.primaryMuscles.contains(where: { $0.section == m })
             }
         }
         if let eq = equipmentFilter {
@@ -62,8 +64,9 @@ struct ExerciseLibraryBrowser: View {
                         || ex.displayName.lowercased().contains(q)
                         || ex.tags.contains(where: { $0.lowercased().contains(q) }) else { continue }
             }
+            // 跟 filtered 行为一致用 primaryMuscles — 否则 chip "可点", 点了 0 结果.
             for sec in Self.muscleSections {
-                if ex.muscleGroups.contains(where: { $0.section == sec }) {
+                if ex.primaryMuscles.contains(where: { $0.section == sec }) {
                     out.insert(sec)
                 }
             }
@@ -76,7 +79,8 @@ struct ExerciseLibraryBrowser: View {
         var out: Set<String> = []
         for ex in data.exercises {
             if let m = muscleFilter {
-                guard ex.muscleGroups.contains(where: { $0.section == m }) else { continue }
+                // 严格用 primary, 跟 filtered 一致
+                guard ex.primaryMuscles.contains(where: { $0.section == m }) else { continue }
             }
             let q = query.trimmingCharacters(in: .whitespaces).lowercased()
             if !q.isEmpty {
@@ -153,41 +157,57 @@ struct ExerciseLibraryBrowser: View {
                 ScrollView {
                     LazyVStack(spacing: 6) {
                         ForEach(filtered) { ex in
-                            // 视觉跟"训练中" InlinePlaylist.playlistRow 完全对齐 — 全 app 动作行统一规格.
-                            // 收藏的动作右侧加心形 icon, 提示用户"这个在你的收藏里".
-                            Button(action: { selected = ex }) {
-                                HStack(spacing: 14) {
-                                    ExerciseImage(
-                                        category: ex.category,
-                                        imageFolder: ex.imageFolder,
-                                        cornerRadius: 8,
-                                        size: 56,
-                                        animated: false
-                                    )
-                                    VStack(alignment: .leading, spacing: 5) {
-                                        Text(ex.displayName)
-                                            .font(.system(size: 15, weight: .bold))
-                                            .foregroundStyle(MasoColor.text)
-                                            .lineLimit(1)
-                                        ExerciseTagsRow(
-                                            muscleGroups: ex.muscleGroups,
-                                            equipment: ex.equipment,
-                                            muscleLimit: 1
+                            // SwipeableRow 包裹 — 左滑出一个 Favorite / Unfavorite 按钮.
+                            // tap 内容区进详情 sheet, swipe 左侧收藏/取消收藏.
+                            let isFav = data.isFavorite(ex.id)
+                            SwipeableRow(
+                                content: {
+                                    HStack(spacing: 14) {
+                                        ExerciseImage(
+                                            category: ex.category,
+                                            imageFolder: ex.imageFolder,
+                                            cornerRadius: 8,
+                                            size: 56,
+                                            animated: false
                                         )
+                                        VStack(alignment: .leading, spacing: 5) {
+                                            Text(ex.displayName)
+                                                .font(.system(size: 15, weight: .bold))
+                                                .foregroundStyle(MasoColor.text)
+                                                .lineLimit(1)
+                                            ExerciseTagsRow(
+                                                muscleGroups: ex.muscleGroups,
+                                                equipment: ex.equipment,
+                                                muscleLimit: 1
+                                            )
+                                        }
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                        if isFav {
+                                            Image(systemName: "heart.fill")
+                                                .font(.system(size: 12, weight: .heavy))
+                                                .foregroundStyle(MasoColor.accent)
+                                        }
                                     }
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                    if data.isFavorite(ex.id) {
-                                        Image(systemName: "heart.fill")
-                                            .font(.system(size: 12, weight: .heavy))
-                                            .foregroundStyle(MasoColor.accent)
-                                    }
-                                }
-                                .padding(.horizontal, MasoMetrics.rowPaddingH)
-                                .padding(.vertical, 10)
-                                .background(MasoColor.surface)
-                                .clipShape(RoundedRectangle(cornerRadius: 14))
-                            }
-                            .buttonStyle(.plain)
+                                    .padding(.horizontal, MasoMetrics.rowPaddingH)
+                                    .padding(.vertical, 10)
+                                    .background(MasoColor.surface)
+                                    .clipShape(RoundedRectangle(cornerRadius: 14))
+                                },
+                                actions: [
+                                    SwipeAction(
+                                        label: isFav ? "Unfavorite" : "Favorite",
+                                        systemImage: "heart",
+                                        color: MasoColor.accent,
+                                        foreground: .black,
+                                        action: {
+                                            data.toggleFavorite(ex.id)
+                                            Haptics.tap()
+                                        }
+                                    )
+                                ],
+                                onContentTap: { selected = ex },
+                                cornerRadius: 14
+                            )
                         }
                     }
                     .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
@@ -196,21 +216,14 @@ struct ExerciseLibraryBrowser: View {
             }
             .background(MasoColor.background.ignoresSafeArea())
             .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle("Exercise library")
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .principal) {
-                    Text("Exercise library")
-                        .font(.system(size: 14, weight: .bold))
-                        .foregroundStyle(MasoColor.text)
-                }
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: { dismiss() }) {
-                        Image(systemName: "xmark")
-                            .font(.system(size: 14, weight: .semibold))
-                            .foregroundStyle(MasoColor.textDim)
-                    }
-                    .accessibilityLabel("Close")
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Done") { dismiss() }
                 }
             }
+            .tint(MasoColor.text)
             .sheet(item: $selected) { ex in
                 ExerciseDetailSheet(exercise: ex)
             }
@@ -426,30 +439,24 @@ struct ExerciseDetailSheet: View {
             .background(MasoColor.background.ignoresSafeArea())
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                // 收藏按钮 — 心形 toggle. 收藏后所有"选择动作"列表把这个动作排到最前.
+                // 收藏按钮 — 心形 toggle (iOS 默认风格, 系统自动 tint)
                 ToolbarItem(placement: .topBarLeading) {
                     let favorited = data.isFavorite(exercise.id)
-                    Button(action: {
+                    Button {
                         data.toggleFavorite(exercise.id)
                         Haptics.tap()
-                    }) {
+                    } label: {
                         Image(systemName: favorited ? "heart.fill" : "heart")
-                            .font(.system(size: 15, weight: .semibold))
-                            .foregroundStyle(favorited ? MasoColor.accent : MasoColor.textDim)
                     }
                     .accessibilityLabel(favorited
                                         ? NSLocalizedString("Remove from favorites", comment: "")
                                         : NSLocalizedString("Add to favorites", comment: ""))
                 }
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: { dismiss() }) {
-                        Image(systemName: "xmark")
-                            .font(.system(size: 14, weight: .semibold))
-                            .foregroundStyle(MasoColor.textDim)
-                    }
-                    .accessibilityLabel("Close")
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Done") { dismiss() }
                 }
             }
+            .tint(MasoColor.text)
         }
         .presentationDetents([.medium, .large])
         // sheet 关闭时停掉朗读 — 不让用户切走 sheet 后还在念

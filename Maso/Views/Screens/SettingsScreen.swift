@@ -5,7 +5,7 @@ struct SettingsScreen: View {
     @Environment(\.dismiss) private var dismiss
     @State private var showPaywall: Bool = false
     @State private var showLanguagePicker: Bool = false
-    @State private var showMusclePicker: Bool = false
+    // showMusclePicker / musclesSummaryText 已搬到 TrainingSettingsSection 内部
     /// 跟着 LanguageManager 走 — 切换时强制本页 re-render 显示新语言
     @State private var languageManager = LanguageManager.shared
     /// Exercise library 浏览 sheet
@@ -15,18 +15,10 @@ struct SettingsScreen: View {
         @Bindable var data = data
         content
             .toolbar {
-                // 设置页 sheet 形态 — 右上角关闭按钮 (iOS Mail / Music 风格)
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: { dismiss() }) {
-                        Image(systemName: "xmark")
-                            .font(.system(size: 14, weight: .bold))
-                            .foregroundStyle(MasoColor.text)
-                            .frame(width: 30, height: 30)
-                            .background(MasoColor.surfaceHi)
-                            .clipShape(Circle())
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel("Close settings")
+                // iOS 默认风格 — 系统自带"Done"文字按钮 (Settings sheet 关闭)
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Done") { dismiss() }
+                        .tint(MasoColor.text)
                 }
             }
     }
@@ -76,71 +68,10 @@ struct SettingsScreen: View {
                     }
                 }
 
-                // 训练 — 跟 Profile (个人信息) 一起放上面, 都属于"用户偏好"
+                // 训练 — 跟 Profile (个人信息) 一起放上面, 都属于"用户偏好".
+                // 6 行内容抽到 TrainingSettingsSection (共享给 PlanRationaleCard 的快捷 sheet).
                 Section_(title: "Training") {
-                    // 频率 — 改这个就 auto-regenerate 推荐计划 (1-3 全身 / 4-5 分化 / 6+ PPL)
-                    Row(label: "Days per week") {
-                        IntStepperContent(
-                            value: Binding(
-                                get: { data.settings.weeklyTrainingDays },
-                                set: { newVal in
-                                    data.settings.weeklyTrainingDays = newVal
-                                    data.regenerateRecommendedPlans()
-                                }
-                            ),
-                            range: 1...7
-                        )
-                    }
-                    Divider().background(MasoColor.borderSoft)
-                    // 想加强的肌群 — 紧跟 Days per week, 都是"训练目标偏好"维度.
-                    // 展示策略: 不再只显示数字, 而是显示具体选了哪些 — 让用户一眼看到偏好,
-                    // 不用点进去才知道. 多于 2 个用 "Chest, Back +2" 简写.
-                    Button(action: { showMusclePicker = true }) {
-                        Row(label: "Muscles to focus") {
-                            HStack(spacing: 6) {
-                                Text(musclesSummaryText)
-                                    .font(.system(size: 13))
-                                    .foregroundStyle(MasoColor.textDim)
-                                    .lineLimit(1)
-                                Image(systemName: "chevron.right")
-                                    .font(.system(size: 11, weight: .semibold))
-                                    .foregroundStyle(MasoColor.textFaint)
-                            }
-                        }
-                    }
-                    .buttonStyle(.plain)
-                    Divider().background(MasoColor.borderSoft)
-                    Row(label: "Set rest") {
-                        IntStepperContent(
-                            value: $data.settings.defaultRestSeconds,
-                            range: 15...300,
-                            step: 15,
-                            suffix: "s"
-                        )
-                    }
-                    Divider().background(MasoColor.borderSoft)
-                    Row(label: "Exercise rest") {
-                        IntStepperContent(
-                            value: $data.settings.defaultBetweenExerciseRestSeconds,
-                            range: 0...600,
-                            step: 15,
-                            suffix: "s"
-                        )
-                    }
-                    Divider().background(MasoColor.borderSoft)
-                    ToggleRow(
-                        title: "Quick-start from center tab",
-                        desc: "Tap the highlighted center tab again to jump straight into today's recommended workout",
-                        isOn: $data.settings.quickStartOnActiveTab
-                    )
-                    Divider().background(MasoColor.borderSoft)
-                    // 肌肉分区颗粒度切换 — 默认开 (跟解剖学一致暴露 sub muscle).
-                    // 关掉之后 UI 只暴露大肌群入口, 给追求"简洁"的用户用.
-                    ToggleRow(
-                        title: "Show muscle subdivisions",
-                        desc: "Off: pick the whole muscle (chest, back) — no upper/mid/lower split. On: full anatomical detail.",
-                        isOn: $data.settings.muscleDetailEnabled
-                    )
+                    TrainingSettingsSection()
                 }
 
                 // 单位
@@ -196,6 +127,42 @@ struct SettingsScreen: View {
                     // 紧贴上面 section (顶层 VStack spacing 24, 这里抵消 16 → 实际间距 8pt)
                     .padding(.top, -16)
 
+                // 健康提示 + 法律链接 — Apple 1.4.1 要求健身类 app 给出医疗免责;
+                // Terms / Privacy 是 paywall + App Store metadata 强制要求的合规链接.
+                Section_(title: "Health & Safety") {
+                    Text("Maso is for informational and motivational purposes only — not medical advice. Consult a physician before starting any new exercise program, especially if you have a medical condition, are pregnant, or have not exercised recently. Stop immediately and seek help if you feel pain, dizziness, or shortness of breath.")
+                        .font(.system(size: 12))
+                        .foregroundStyle(MasoColor.textDim)
+                        .lineSpacing(2)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 14)
+                }
+
+                Section_(title: "About") {
+                    Link(destination: PaywallScreen.privacyURL) {
+                        Row(label: "Privacy Policy") {
+                            Image(systemName: "arrow.up.right.square")
+                                .font(.system(size: 13, weight: .semibold))
+                                .foregroundStyle(MasoColor.textFaint)
+                        }
+                    }
+                    .buttonStyle(.plain)
+                    Link(destination: PaywallScreen.termsURL) {
+                        Row(label: "Terms of Service") {
+                            Image(systemName: "arrow.up.right.square")
+                                .font(.system(size: 13, weight: .semibold))
+                                .foregroundStyle(MasoColor.textFaint)
+                        }
+                    }
+                    .buttonStyle(.plain)
+                    Row(label: "Version") {
+                        Text(appVersionLabel)
+                            .font(.system(size: 13).monospacedDigit())
+                            .foregroundStyle(MasoColor.textDim)
+                    }
+                }
+
                 Spacer(minLength: MasoMetrics.pageBottomInset)
             }
             .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
@@ -213,40 +180,14 @@ struct SettingsScreen: View {
         .sheet(isPresented: $showExerciseLibrary) {
             ExerciseLibraryBrowser()
         }
-        .sheet(isPresented: $showMusclePicker) {
-            MusclesPickerSheet(
-                selected: Binding(
-                    get: { Set(data.settings.wantStrengthen) },
-                    set: { data.settings.wantStrengthen = Array($0) }
-                )
-            )
-            .presentationDetents([.medium, .large])
-        }
+        // (showMusclePicker sheet 已搬到 TrainingSettingsSection 内部)
     }
 
-    // MARK: - Muscles summary label
-
-    /// "Muscles to focus" 行右侧文案:
-    ///   - 空 → "None"
-    ///   - 1-2 个 major → "Chest" / "Chest, Back"
-    ///   - 3+ → "Chest, Back +2"
-    ///   - 有 sub 被选 → "Chest +3 details" (major + N 个细分)
-    /// 利用 MuscleSelector.summary 拿到稳定排序的 majors + sub 计数.
-    private var musclesSummaryText: String {
-        let set = Set(data.settings.wantStrengthen)
-        guard !set.isEmpty else { return NSLocalizedString("None", comment: "") }
-        let (majors, extraSub) = MuscleSelector.summary(set)
-        // majors 已按 groupedRows 顺序排好 — 取前 2 个显示, 其它用 +N
-        let shown = majors.prefix(2).map(\.displayName).joined(separator: ", ")
-        let restMajor = max(0, majors.count - 2)
-        var out = shown
-        if restMajor > 0 { out += " +\(restMajor)" }
-        if extraSub > 0 {
-            // i18n: details 这个词单复数有时区分, 用 LocalizedStringKey 让翻译方决定.
-            // 临时 stringsdict-free 处理: 直接拼接, 后续要单复数再做 stringsdict.
-            out += " (\(extraSub) " + NSLocalizedString("details", comment: "muscle subdivisions") + ")"
-        }
-        return out
+    /// App 版本号 — "1.0 (1)" 格式. 从 Bundle 读 CFBundleShortVersionString + CFBundleVersion.
+    private var appVersionLabel: String {
+        let short = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "—"
+        let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "—"
+        return "\(short) (\(build))"
     }
 
     // MARK: - Maso Pro banner / status row
@@ -346,8 +287,12 @@ private extension ProSubscription {
 }
 
 // MARK: - Helpers (跟 web 端 Section / Row / Toggle 视觉对齐)
+//
+// 这一段 helper 不再是 private — TrainingSettingsSection 也用它们,
+// 让 PlanRationaleCard 的"快捷设置 sheet"和 Settings 这边视觉/行为完全一致.
+// 同步改 helper 就同时影响两处, 单一来源.
 
-private struct Section_<Content: View>: View {
+struct Section_<Content: View>: View {
     let title: String
     @ViewBuilder let content: () -> Content
     var body: some View {
@@ -366,7 +311,7 @@ private struct Section_<Content: View>: View {
     }
 }
 
-private struct Row<Content: View>: View {
+struct Row<Content: View>: View {
     let label: String
     @ViewBuilder let content: () -> Content
     var body: some View {
@@ -395,7 +340,7 @@ private struct Row<Content: View>: View {
 // 数字宽度固定 70pt + 右对齐 — 让 5 行 stepper 数字竖向对齐, 不会因为 "3" / "100"
 // 字符数差异让 Stepper 横向跳动.
 
-private struct IntStepperContent: View {
+struct IntStepperContent: View {
     @Binding var value: Int
     let range: ClosedRange<Int>
     var step: Int = 1
@@ -561,7 +506,7 @@ private struct Choice<Value: Hashable>: View {
     }
 }
 
-private struct ToggleRow: View {
+struct ToggleRow: View {
     let title: String
     let desc: String?
     @Binding var isOn: Bool

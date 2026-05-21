@@ -49,18 +49,11 @@ struct LanguagePickerSheet: View {
             .navigationTitle("Language")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: { dismiss() }) {
-                        Image(systemName: "xmark")
-                            .font(.system(size: 14, weight: .bold))
-                            .foregroundStyle(MasoColor.text)
-                            .frame(width: 30, height: 30)
-                            .background(MasoColor.surfaceHi)
-                            .clipShape(Circle())
-                    }
-                    .buttonStyle(.plain)
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Done") { dismiss() }
                 }
             }
+            .tint(MasoColor.text)
         }
     }
 

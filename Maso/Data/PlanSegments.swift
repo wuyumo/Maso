@@ -40,7 +40,10 @@ func expandPlan(
     for (stepIdx, step) in plan.steps.enumerated() {
         guard let ex = exById[step.exerciseId] else { continue }
         let totalSets = max(1, step.sets)
-        let isCountdown = ex.category != .strength && step.duration != nil
+        // 仅 cardio 用倒计时; flexibility (拉伸) 跟 strength 一样用打勾 button 完成组.
+        // 之前 `!= .strength` 把拉伸也丢进倒计时, 改了之后拉伸保留 duration 字段 (作为
+        // 建议时长展示) 但不再自动倒计时, 用户按完一组打勾即可.
+        let isCountdown = ex.category == .cardio && step.duration != nil
         for setN in 1...totalSets {
             out.append(Segment(
                 id: uid(),

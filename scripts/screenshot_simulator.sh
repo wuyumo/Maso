@@ -16,10 +16,12 @@
 #
 # 拍完所有图后, 文件在 build/screenshots/, 直接拖进 App Store Connect.
 
-set -euo pipefail
+set -eu  # 不开 pipefail — grep 没命中时 silent exit 隐藏不了错误
 
 # ━━━ 配置 ━━━
-DEVICE_NAME="iPhone 15 Pro Max"   # 6.7" 主推机型
+# 默认用 iPhone 17 Pro Max (6.9" 屏, App Store 接受为 6.7"+ 类别).
+# 如果你装的别的型号, export DEVICE_NAME=... 跑脚本.
+DEVICE_NAME="${DEVICE_NAME:-iPhone 17 Pro Max}"
 OUTPUT_DIR="build/screenshots"
 BUNDLE_ID="com.maso.app"
 SCHEME="Maso"

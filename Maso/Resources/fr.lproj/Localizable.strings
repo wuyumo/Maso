@@ -320,6 +320,7 @@
 
 /* ── Settings — Muscle subdivisions toggle ── */
 "Show muscle subdivisions" = "Subdivisions musculaires";
+"Show muscle status" = "Afficher l'état musculaire";
 "Off: pick the whole muscle (chest, back) — no upper/mid/lower split. On: full anatomical detail." = "Off : muscles principaux uniquement (poitrine, dos) — pas de division supérieur/moyen/inférieur. On : détail anatomique complet.";
 
 /* ── Settings — Backup / Export / Import ── */
@@ -378,6 +379,7 @@
 "equipment.medicine ball" = "Medecine ball";
 "equipment.exercise ball" = "Swiss ball";
 "equipment.foam roll" = "Rouleau mousse";
+"equipment.stretching" = "Étirement";
 "equipment.other" = "Autre";
 
 /* History tab renamed to Muscle Status */
@@ -400,6 +402,7 @@
 
 /* Share customize sheet */
 "Customize" = "Personnaliser";
+"Share Card" = "Carte à partager";
 "Camera" = "Caméra";
 "Photos" = "Photos";
 
@@ -447,3 +450,179 @@
 /* Free workout: save to plan library after finishing */
 "Save as plan" = "Enregistrer comme plan";
 "Saved" = "Enregistré";
+
+/* ── i18n audit 2026-05-17 — clés UI manquantes ── */
+
+/* Sélection de photo (feuille de personnalisation) */
+"Add a photo" = "Ajouter une photo";
+"Add photo" = "Ajouter une photo";
+"Take Photo" = "Prendre une photo";
+"Choose from Library" = "Choisir depuis la bibliothèque";
+"Remove Photo" = "Retirer la photo";
+
+/* Favoris */
+"Add to favorites" = "Ajouter aux favoris";
+"Remove from favorites" = "Retirer des favoris";
+
+/* Filtre exercices */
+"All muscles" = "Tous les muscles";
+"Clear all" = "Tout effacer";
+
+/* Dialogues de suppression */
+"Delete plan?" = "Supprimer le plan ?";
+"Delete this workout?" = "Supprimer cette séance ?";
+"Delete workout" = "Supprimer la séance";
+"Delete exercise from plan?" = "Supprimer l'exercice du plan ?";
+"Delete exercise from this workout?" = "Supprimer l'exercice de la séance ?";
+"All sets and PRs from this workout will be removed. Your plans stay." = "Toutes les séries et les PR de cette séance seront supprimés. Vos plans restent intacts.";
+"All sets of this exercise from this workout will be removed." = "Toutes les séries de cet exercice dans la séance seront supprimées.";
+"This only removes it from the current workout. Save changes at the end to update the plan." = "Retiré uniquement de la séance actuelle. Enregistrer à la fin mettra le plan à jour.";
+"This only removes the exercise from this plan, not from your library." = "Retiré uniquement de ce plan, votre bibliothèque reste intacte.";
+
+/* Détail exercice */
+"Detail" = "Détail";
+"Muscle" = "Muscle";
+"Equipment" = "Matériel";
+"None" = "Aucun";
+"Optional" = "Optionnel";
+"How to do it" = "Comment faire";
+"Show full instructions" = "Voir les consignes complètes";
+"Show less" = "Réduire";
+
+/* Lecture audio */
+"Listen" = "Écouter";
+"Read instructions aloud" = "Lire les consignes à voix haute";
+"Stop reading" = "Arrêter la lecture";
+"Stop" = "Arrêter";
+
+/* Édition plan / séance */
+"Edit" = "Modifier";
+"Long press to reorder" = "Maintenir pour réordonner";
+"No exercises in this workout" = "Aucun exercice dans cette séance";
+
+/* Partage */
+"Share workout" = "Partager la séance";
+
+/* Fin de séance — sauvegarder dans le plan */
+"Skip & close" = "Passer et fermer";
+"Save changes & end" = "Enregistrer et terminer";
+"End without saving" = "Terminer sans enregistrer";
+"Save changes to plan" = "Enregistrer dans le plan";
+"Saved to plan" = "Enregistré dans le plan";
+"You changed sets, reps, weight, or order during this workout. Save the changes back to the plan?" = "Vous avez changé les séries, répétitions, poids ou ordre pendant la séance. Reporter les modifications dans le plan ?";
+"You changed some parameters during this workout." = "Vous avez modifié des paramètres pendant la séance.";
+
+/* Accessibilité */
+"Show details for %@" = "Voir les détails de %@";
+
+/* Onboarding / Étape Quick Workout */
+"STEP %lld / 2" = "ÉTAPE %lld / 2";
+"STEP %lld / 3" = "ÉTAPE %lld / 3";
+
+/* Astuce sous-groupes musculaires */
+"Enable \"Show muscle subdivisions\" in Settings to pick details like upper chest or rear delts." = "Activez « Sous-groupes musculaires » dans les réglages pour choisir des détails comme le haut des pectoraux ou l'arrière des épaules.";
+
+/* Paywall — note d'essai */
+"Free for 7 days, then %@. Cancel anytime in Settings." = "7 jours gratuits, puis %@. Annulable à tout moment dans les réglages.";
+
+/* PlanRationaleCard — onglet Plans */
+"FOR YOU" = "POUR VOUS";
+"%lld days / week" = "%lld jours / semaine";
+"Focus: %@" = "Priorité : %@";
+"Full-body" = "Full-body";
+"Upper-lower split" = "Split haut/bas";
+"Body-part split" = "Split par groupes musculaires";
+"Full-body coverage — each muscle group rotates through the week." = "Couverture full-body — chaque groupe musculaire passe au fil de la semaine.";
+"High frequency — focus muscles hit 2–3× per week, accessories rotate for recovery." = "Fréquence élevée — les muscles prioritaires sont sollicités 2–3× par semaine, les accessoires alternent pour récupérer.";
+"Each focus muscle is trained 2× per week — enough stimulus, full recovery between." = "Chaque muscle prioritaire est travaillé 2× par semaine — stimulus suffisant, récupération complète entre les deux.";
+"2× per week is enough to maintain steady progress — focus muscles rotate in." = "2× par semaine suffisent pour progresser régulièrement — les muscles prioritaires entrent en rotation.";
+"Adjust training preferences" = "Ajuster les préférences d'entraînement";
+"FROM YOUR PLAN" = "DEPUIS VOTRE PLAN";
+"Weekly Workouts" = "Fréquence hebdo";
+"White areas were just trained" = "Les zones blanches viennent d'être entraînées";
+"Today's Status" = "État du jour";
+
+/* ── Community (社区精选训练计划) ── */
+"Browse community plans" = "Parcourir les plans de la communauté";
+"See what others train" = "Voir ce que les autres font";
+"Community" = "Communauté";
+"Curated workout plans. Add any to your library." = "Plans d'entraînement sélectionnés. Ajoutez-en à votre bibliothèque.";
+"Want to publish your plan? Coming soon." = "Vous voulez publier votre plan ? Bientôt disponible.";
+"Want to share your plan? Open it in Plans → tap Share." = "Vous voulez partager votre plan ? Ouvrez-le dans Plans → appuyez sur Partager.";
+"Share plan" = "Partager le plan";
+"Imported plan" = "Plan importé";
+"Got a plan from a friend? Tap Add to save it to your library." = "Un ami vous a partagé un plan ? Appuyez sur Ajouter pour l'enregistrer dans votre bibliothèque.";
+"Add to my plans" = "Ajouter à mes plans";
+"Added" = "Ajouté";
+"Beginner" = "Débutant";
+"Intermediate" = "Intermédiaire";
+"Advanced" = "Avancé";
+"%lld days/wk" = "%lld j/sem";
+"%lld exercises" = "%lld exercices";
+"community_plan_beginner_fb_3day_name" = "Full body débutant 3 j/sem";
+"community_plan_beginner_fb_3day_desc" = "Deux séances alternées pour apprendre les mouvements clés.";
+"community_plan_5x5_strength_name" = "Force 5x5";
+"community_plan_5x5_strength_desc" = "Travail à la barre 5 reps lourd — progression linéaire Madcow.";
+"community_plan_ppl_6day_name" = "Push/Pull/Legs 6 j/sem";
+"community_plan_ppl_6day_desc" = "Chaque muscle 2× par semaine — haute fréquence, gros volume.";
+"community_plan_upper_lower_4day_name" = "Haut / Bas 4 j/sem";
+"community_plan_upper_lower_4day_desc" = "Split intermédiaire classique — force et hypertrophie équilibrées.";
+"community_plan_bro_split_5day_name" = "Bro Split 5 j/sem";
+"community_plan_bro_split_5day_desc" = "Classique du bodybuilding — un groupe musculaire par jour.";
+"community_plan_calisthenics_name" = "Bases du calisthénie";
+"community_plan_calisthenics_desc" = "Force de base avec seulement votre poids de corps.";
+"community_plan_powerlifting_name" = "Prépa powerlifting";
+"community_plan_powerlifting_desc" = "Squat, dév. couché, soulevé — 3 reps pour la force pure.";
+"community_plan_push_pull_4day_name" = "Push / Pull 4 j/sem";
+"community_plan_push_pull_4day_desc" = "Split simple en deux — pousser et tirer, deux fois chacun.";
+"community_session_full_body_a" = "Full body A";
+"community_session_full_body_b" = "Full body B";
+"community_session_strength_a" = "Force A";
+"community_session_strength_b" = "Force B";
+"community_session_push_heavy" = "Push (lourd)";
+"community_session_pull_heavy" = "Pull (lourd)";
+"community_session_legs_quads" = "Jambes (quadriceps)";
+"community_session_upper" = "Haut";
+"community_session_lower" = "Bas";
+"community_session_chest_day" = "Pecs";
+"community_session_back_day" = "Dos";
+"community_session_leg_day" = "Jambes";
+"community_session_shoulder_day" = "Épaules";
+"community_session_arm_day" = "Bras";
+"community_session_push_day" = "Push";
+"community_session_pull_day" = "Pull";
+"community_session_legs_core_day" = "Jambes + gainage";
+"community_session_squat_day" = "Squat";
+"community_session_bench_day" = "Dév. couché";
+"community_session_deadlift_day" = "Soulevé de terre";
+"community_session_accessory_day" = "Accessoires";
+"community_session_push_simple" = "Push";
+"community_session_pull_simple" = "Pull";
+"Favorite" = "Favori";
+"Unfavorite" = "Retirer";
+
+/* StoreKit / IAP — Maso Pro */
+"Couldn't load subscription options. Try again later." = "Impossible de charger les options d’abonnement. Réessayez plus tard.";
+"Purchase pending approval." = "Achat en attente d’approbation.";
+"Purchase verification failed. Try again or contact support." = "Échec de la vérification de l’achat. Réessayez ou contactez le support.";
+"Free for 7 days, then auto-renews. Cancel anytime in Settings." = "Gratuit pendant 7 jours, puis renouvellement automatique. Annulable à tout moment dans Réglages.";
+
+/* History / Historique */
+"Workout photo" = "Photo d’entraînement";
+"Share muscle status" = "Partager l’état des muscles";
+"Toggle muscle status overlay" = "Afficher/masquer l’état des muscles";
+
+/* Deep link / plan sharing */
+"IMPORTED PLAN" = "PLAN IMPORTÉ";
+"This Maso link is damaged or unsupported. Ask your friend to share again." = "Ce lien Maso est endommagé ou non pris en charge. Demandez à votre ami de le partager à nouveau.";
+
+/* Misc */
+"details" = "détails";
+
+/* Settings — Health & Safety + About */
+"Health & Safety" = "Santé et sécurité";
+"About" = "À propos";
+"Privacy Policy" = "Politique de confidentialité";
+"Terms of Service" = "Conditions d’utilisation";
+"Version" = "Version";
+"Maso is for informational and motivational purposes only — not medical advice. Consult a physician before starting any new exercise program, especially if you have a medical condition, are pregnant, or have not exercised recently. Stop immediately and seek help if you feel pain, dizziness, or shortness of breath." = "Maso a une vocation uniquement informative et motivationnelle, et ne constitue pas un avis médical. Consultez un médecin avant de commencer tout nouveau programme d’exercice, en particulier si vous souffrez d’un problème de santé, êtes enceinte ou n’avez pas fait de sport récemment. Arrêtez immédiatement et demandez de l’aide si vous ressentez une douleur, des vertiges ou un essoufflement.";

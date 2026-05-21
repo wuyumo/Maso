@@ -6,7 +6,8 @@ title: Maso
 
 A fitness tracking app for people who actually train.
 
-- [Privacy Policy](./privacy-policy)
+- [Privacy Policy](./privacy-policy.html)
+- [Terms of Service](./terms.html)
 
 ---
 

@@ -320,6 +320,7 @@
 
 /* ── Settings — Muscle subdivisions toggle ── */
 "Show muscle subdivisions" = "Подгруппы мышц";
+"Show muscle status" = "Показать состояние мышц";
 "Off: pick the whole muscle (chest, back) — no upper/mid/lower split. On: full anatomical detail." = "Выкл: только крупные мышцы (грудь, спина) — без верх/середина/низ. Вкл: полное анатомическое деление.";
 
 /* ── Settings — Backup / Export / Import ── */
@@ -378,6 +379,7 @@
 "equipment.medicine ball" = "Медбол";
 "equipment.exercise ball" = "Фитбол";
 "equipment.foam roll" = "Массажный ролик";
+"equipment.stretching" = "Растяжка";
 "equipment.other" = "Другое";
 
 /* History tab renamed to Muscle Status */
@@ -400,6 +402,7 @@
 
 /* Share customize sheet */
 "Customize" = "Настроить";
+"Share Card" = "Карточка для шеринга";
 "Camera" = "Камера";
 "Photos" = "Фото";
 
@@ -447,3 +450,179 @@
 /* Free workout: save to plan library after finishing */
 "Save as plan" = "Сохранить как план";
 "Saved" = "Сохранено";
+
+/* ── i18n-аудит 2026-05-17 — недостающие UI-ключи ── */
+
+/* Выбор фото */
+"Add a photo" = "Добавить фото";
+"Add photo" = "Добавить фото";
+"Take Photo" = "Сделать фото";
+"Choose from Library" = "Выбрать из медиатеки";
+"Remove Photo" = "Удалить фото";
+
+/* Избранное */
+"Add to favorites" = "В избранное";
+"Remove from favorites" = "Убрать из избранного";
+
+/* Фильтры упражнений */
+"All muscles" = "Все мышцы";
+"Clear all" = "Очистить всё";
+
+/* Диалоги удаления */
+"Delete plan?" = "Удалить план?";
+"Delete this workout?" = "Удалить тренировку?";
+"Delete workout" = "Удалить тренировку";
+"Delete exercise from plan?" = "Удалить упражнение из плана?";
+"Delete exercise from this workout?" = "Удалить упражнение из тренировки?";
+"All sets and PRs from this workout will be removed. Your plans stay." = "Все подходы и PR этой тренировки будут удалены. Планы останутся.";
+"All sets of this exercise from this workout will be removed." = "Все подходы этого упражнения в тренировке будут удалены.";
+"This only removes it from the current workout. Save changes at the end to update the plan." = "Удаляется только из текущей тренировки. Сохраните в конце, чтобы обновить план.";
+"This only removes the exercise from this plan, not from your library." = "Удаляется только из плана, библиотека не меняется.";
+
+/* Детали упражнения */
+"Detail" = "Детали";
+"Muscle" = "Мышца";
+"Equipment" = "Инвентарь";
+"None" = "Нет";
+"Optional" = "По желанию";
+"How to do it" = "Техника";
+"Show full instructions" = "Полная инструкция";
+"Show less" = "Свернуть";
+
+/* Озвучивание */
+"Listen" = "Прослушать";
+"Read instructions aloud" = "Озвучить инструкцию";
+"Stop reading" = "Остановить чтение";
+"Stop" = "Стоп";
+
+/* Редактирование плана / тренировки */
+"Edit" = "Изменить";
+"Long press to reorder" = "Удерживайте, чтобы изменить порядок";
+"No exercises in this workout" = "В тренировке нет упражнений";
+
+/* Поделиться */
+"Share workout" = "Поделиться тренировкой";
+
+/* Конец тренировки — сохранить в план */
+"Skip & close" = "Пропустить и закрыть";
+"Save changes & end" = "Сохранить и закончить";
+"End without saving" = "Закончить без сохранения";
+"Save changes to plan" = "Сохранить в план";
+"Saved to plan" = "Сохранено в план";
+"You changed sets, reps, weight, or order during this workout. Save the changes back to the plan?" = "Вы изменили подходы, повторы, вес или порядок во время тренировки. Сохранить изменения в план?";
+"You changed some parameters during this workout." = "Во время тренировки вы изменили часть параметров.";
+
+/* Универсальный доступ */
+"Show details for %@" = "Подробнее о %@";
+
+/* Онбординг / шаг Quick Workout */
+"STEP %lld / 2" = "ШАГ %lld / 2";
+"STEP %lld / 3" = "ШАГ %lld / 3";
+
+/* Подсказка о подгруппах мышц */
+"Enable \"Show muscle subdivisions\" in Settings to pick details like upper chest or rear delts." = "Включите «Подгруппы мышц» в настройках, чтобы выбирать детали — например, верх груди или задние дельты.";
+
+/* Пэйвол — пробный период */
+"Free for 7 days, then %@. Cancel anytime in Settings." = "7 дней бесплатно, затем %@. Можно отменить в настройках в любой момент.";
+
+/* PlanRationaleCard — вкладка «Планы» */
+"FOR YOU" = "ДЛЯ ВАС";
+"%lld days / week" = "%lld дн. / неделю";
+"Focus: %@" = "Фокус: %@";
+"Full-body" = "Full-body";
+"Upper-lower split" = "Сплит верх/низ";
+"Body-part split" = "Сплит по группам мышц";
+"Full-body coverage — each muscle group rotates through the week." = "Полное покрытие тела — каждая группа мышц по очереди проходит за неделю.";
+"High frequency — focus muscles hit 2–3× per week, accessories rotate for recovery." = "Высокая частота — приоритетные мышцы прорабатываются 2–3× в неделю, вспомогательные чередуются для восстановления.";
+"Each focus muscle is trained 2× per week — enough stimulus, full recovery between." = "Каждая приоритетная мышца тренируется 2× в неделю — достаточный стимул и полное восстановление между сессиями.";
+"2× per week is enough to maintain steady progress — focus muscles rotate in." = "2× в неделю достаточно для стабильного прогресса — приоритетные мышцы появляются по ротации.";
+"Adjust training preferences" = "Настроить параметры тренировок";
+"FROM YOUR PLAN" = "ИЗ ВАШЕГО ПЛАНА";
+"Weekly Workouts" = "Тренировки за неделю";
+"White areas were just trained" = "Белые зоны — мышцы, тренированные только что";
+"Today's Status" = "Сегодня";
+
+/* ── Community (社区精选训练计划) ── */
+"Browse community plans" = "Просмотреть планы сообщества";
+"See what others train" = "Тренировки других людей";
+"Community" = "Сообщество";
+"Curated workout plans. Add any to your library." = "Подборка тренировочных планов. Добавляйте в свою библиотеку.";
+"Want to publish your plan? Coming soon." = "Хотите опубликовать свой план? Скоро.";
+"Want to share your plan? Open it in Plans → tap Share." = "Хотите поделиться планом? Откройте его в Планах → нажмите Поделиться.";
+"Share plan" = "Поделиться планом";
+"Imported plan" = "Импортированный план";
+"Got a plan from a friend? Tap Add to save it to your library." = "Друг прислал план? Нажмите Добавить, чтобы сохранить его в библиотеке.";
+"Add to my plans" = "Добавить в мои планы";
+"Added" = "Добавлено";
+"Beginner" = "Начинающий";
+"Intermediate" = "Средний";
+"Advanced" = "Продвинутый";
+"%lld days/wk" = "%lld дн/нед";
+"%lld exercises" = "%lld упражнений";
+"community_plan_beginner_fb_3day_name" = "Полное тело для начинающих 3 раза/нед";
+"community_plan_beginner_fb_3day_desc" = "Две чередующиеся тренировки для освоения базовых упражнений.";
+"community_plan_5x5_strength_name" = "Сила 5x5";
+"community_plan_5x5_strength_desc" = "Тяжёлая работа на 5 повторов — линейная прогрессия в стиле Madcow.";
+"community_plan_ppl_6day_name" = "Push / Pull / Legs 6 раз/нед";
+"community_plan_ppl_6day_desc" = "Каждая группа мышц 2 раза в неделю — высокая частота и объём.";
+"community_plan_upper_lower_4day_name" = "Верх / Низ 4 раза/нед";
+"community_plan_upper_lower_4day_desc" = "Классический сплит для среднего уровня — баланс силы и гипертрофии.";
+"community_plan_bro_split_5day_name" = "Bro-сплит 5 раз/нед";
+"community_plan_bro_split_5day_desc" = "Классика бодибилдинга — одна группа мышц в день.";
+"community_plan_calisthenics_name" = "Основы калистеники";
+"community_plan_calisthenics_desc" = "Базовая сила с использованием только веса тела.";
+"community_plan_powerlifting_name" = "Подготовка к пауэрлифтингу";
+"community_plan_powerlifting_desc" = "Присед, жим, тяга — тройки для чистой силы.";
+"community_plan_push_pull_4day_name" = "Push / Pull 4 раза/нед";
+"community_plan_push_pull_4day_desc" = "Простой сплит — толкай и тяни, по два раза.";
+"community_session_full_body_a" = "Полное тело A";
+"community_session_full_body_b" = "Полное тело B";
+"community_session_strength_a" = "Сила A";
+"community_session_strength_b" = "Сила B";
+"community_session_push_heavy" = "Толчок (тяжёлый)";
+"community_session_pull_heavy" = "Тяга (тяжёлая)";
+"community_session_legs_quads" = "Ноги (квадрицепсы)";
+"community_session_upper" = "Верх";
+"community_session_lower" = "Низ";
+"community_session_chest_day" = "День груди";
+"community_session_back_day" = "День спины";
+"community_session_leg_day" = "День ног";
+"community_session_shoulder_day" = "День плеч";
+"community_session_arm_day" = "День рук";
+"community_session_push_day" = "День толчка";
+"community_session_pull_day" = "День тяги";
+"community_session_legs_core_day" = "Ноги + кор";
+"community_session_squat_day" = "День приседа";
+"community_session_bench_day" = "День жима";
+"community_session_deadlift_day" = "День тяги";
+"community_session_accessory_day" = "Вспомогательный день";
+"community_session_push_simple" = "Толчок";
+"community_session_pull_simple" = "Тяга";
+"Favorite" = "В избранное";
+"Unfavorite" = "Убрать";
+
+/* StoreKit / IAP — Maso Pro */
+"Couldn't load subscription options. Try again later." = "Не удалось загрузить варианты подписки. Повторите попытку позже.";
+"Purchase pending approval." = "Покупка ожидает подтверждения.";
+"Purchase verification failed. Try again or contact support." = "Не удалось подтвердить покупку. Повторите попытку или обратитесь в поддержку.";
+"Free for 7 days, then auto-renews. Cancel anytime in Settings." = "7 дней бесплатно, затем автопродление. Отменить можно в любой момент в «Настройках».";
+
+/* History / История тренировок */
+"Workout photo" = "Фото тренировки";
+"Share muscle status" = "Поделиться состоянием мышц";
+"Toggle muscle status overlay" = "Показать/скрыть состояние мышц";
+
+/* Deep link / plan sharing */
+"IMPORTED PLAN" = "ИМПОРТИРОВАННЫЙ ПЛАН";
+"This Maso link is damaged or unsupported. Ask your friend to share again." = "Эта ссылка Maso повреждена или не поддерживается. Попросите друга поделиться ею снова.";
+
+/* Misc */
+"details" = "подробнее";
+
+/* Settings — Health & Safety + About */
+"Health & Safety" = "Здоровье и безопасность";
+"About" = "О приложении";
+"Privacy Policy" = "Политика конфиденциальности";
+"Terms of Service" = "Условия использования";
+"Version" = "Версия";
+"Maso is for informational and motivational purposes only — not medical advice. Consult a physician before starting any new exercise program, especially if you have a medical condition, are pregnant, or have not exercised recently. Stop immediately and seek help if you feel pain, dizziness, or shortness of breath." = "Maso предназначен только для информационных и мотивационных целей и не является медицинской рекомендацией. Перед началом любой новой программы тренировок проконсультируйтесь с врачом, особенно если у вас есть заболевание, вы беременны или давно не тренировались. Немедленно прекратите занятие и обратитесь за помощью, если почувствуете боль, головокружение или одышку.";

@@ -17,21 +17,16 @@ struct PlansScreen: View {
     let onNewPlan: () -> Void
 
     @State private var selectedPlan: Plan?
-    @State private var paywallPresented: Bool = false
     /// 右滑删除前的二次确认 — 存待删 plan, alert 弹出. 用户确认才真删.
     @State private var pendingDeletePlanId: String? = nil
+    /// Community sheet — tap 列表底部 "See what others train" 弹出
+    @State private var communityPresented: Bool = false
 
     var body: some View {
         // List 替代 ScrollView+VStack — 一举三得: 原生 .onMove 拖拽排序 + .swipeActions 右滑删除
         // + 清掉 List 默认样式后视觉跟原 VStack 几乎一致.
         List {
-            // Pro 展示位 — Pro 用户隐藏
-            if !data.settings.isPro {
-                ProBanner { paywallPresented = true }
-                    .listRowSeparator(.hidden)
-                    .listRowInsets(EdgeInsets(top: 24, leading: 0, bottom: 28, trailing: 0))
-                    .listRowBackground(Color.clear)
-            }
+            // (ProBanner 已挪到 TodayScreen 顶部, Plans tab 不再展示)
 
             // 标题行 — Plans 标题 + 右侧 + 按钮同一行
             HStack(spacing: 12) {
@@ -51,8 +46,17 @@ struct PlansScreen: View {
                 .accessibilityLabel("New workout")
             }
             .listRowSeparator(.hidden)
-            .listRowInsets(EdgeInsets(top: data.settings.isPro ? MasoMetrics.pagePaddingTop : 0, leading: 0, bottom: 16, trailing: 0))
+            .listRowInsets(EdgeInsets(top: MasoMetrics.pagePaddingTop, leading: 0, bottom: 16, trailing: 0))
             .listRowBackground(Color.clear)
+
+            // Rationale card — 解释当前 plan 列表是按你哪些偏好生成的.
+            // 有 plan 才显示 (空状态下没东西可解释).
+            if !data.plans.isEmpty {
+                PlanRationaleCard()
+                    .listRowSeparator(.hidden)
+                    .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 16, trailing: 0))
+                    .listRowBackground(Color.clear)
+            }
 
             // 计划列表 — .onMove 长按拖拽; .swipeActions 右滑删除 + alert 二次确认
             ForEach(data.plans) { plan in
@@ -67,15 +71,14 @@ struct PlansScreen: View {
                 .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 12, trailing: 0))
                 .listRowBackground(Color.clear)
                 .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                    // Delete — 红底; Edit — accent 绿 (Maso brand). 用 .tint 显式指定颜色,
-                    // 否则被全 app 全局 .tint(MasoColor.text) 白色覆盖.
-                    // allowsFullSwipe=false 防 full-swipe 直接删, 强制 tap → 再 confirm.
+                    // iOS 原生 swipe — button 高度对齐 cell bounds, 跟可视卡片有 12pt 视觉差.
+                    // 接受这个 trade-off, 换 iOS 默认风格的一致性.
                     Button(NSLocalizedString("Delete", comment: ""), role: .destructive) {
                         pendingDeletePlanId = plan.id
                     }
                     .tint(.red)
                     Button(NSLocalizedString("Edit", comment: "")) {
-                        selectedPlan = plan  // 跟整行 tap 同流程, 弹 PlanDetailSheet
+                        selectedPlan = plan
                     }
                     .tint(MasoColor.accent)
                 }
@@ -84,6 +87,12 @@ struct PlansScreen: View {
                 data.reorderPlans(from: source, to: destination)
                 Haptics.tap()
             }
+
+            // 社区精选入口 — 在所有 PlanRow 之后, 跟 PlanRow 同等高度 + surface bg
+            CommunityEntryRow(onTap: { communityPresented = true })
+                .listRowSeparator(.hidden)
+                .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 12, trailing: 0))
+                .listRowBackground(Color.clear)
         }
         .listStyle(.plain)
         .scrollContentBackground(.hidden)
@@ -114,89 +123,163 @@ struct PlansScreen: View {
             )
             .presentationDetents([.medium, .large])
         }
-        .sheet(isPresented: $paywallPresented) {
-            PaywallScreen()
+        .sheet(isPresented: $communityPresented) {
+            CommunityScreen()
         }
+        // (paywall sheet 跟着 ProBanner 一起搬到 TodayScreen)
     }
 }
 
-// MARK: - ProBanner — 第一个 Tab 顶部的付费展示位
-//
-// 设计思路 (参考 Strava / Hevy / Apple 自家 App 顶部的 promotional cell):
-//   - 整张可点的卡片, 视觉上跟普通 PlanRow 明显区分:
-//     · accent 绿色细描边
-//     · 内嵌一个 accent 色块 (装着 Maso M, 像个小 logo 卡)
-//     · 顶部 radial 微辉光, 制造 premium 感
-//   - 信息层次清楚:
-//     · kicker "MASO PRO" 上方提示 (accent 绿, 小字, 大字距)
-//     · 主标题 "Unlock everything" (黑色大字)
-//     · 副标题 1 行总结主要价值 (淡灰)
-//     · 右侧价格锚点 "from $2.50/mo" (绿色, 强调便宜)
-//   - Pro 用户看不到这张卡 — Plans 顶部直接给 title
-private struct ProBanner: View {
+// MARK: - CommunityEntryRow — Plans 列表底部"社区精选" 入口
+
+private struct CommunityEntryRow: View {
     let onTap: () -> Void
 
     var body: some View {
         Button(action: onTap) {
             HStack(spacing: 12) {
-                // 跟 Settings 页面的 logo 完全一致 — 40×40 MasoMarkIcon, accent 色, 无 shadow.
-                // 让 brand 在两个页面上呈现规格一致, 不再因为"banner 大点小点"出现两种规格.
-                MasoMarkIcon(color: MasoColor.accent)
-                    .frame(width: 40, height: 40)
-
-                // 中间文字栈 — kicker 行把"MASO PRO"和"FROM $2.50/mo"并排放, 节省纵向空间
-                VStack(alignment: .leading, spacing: 4) {
-                    HStack(spacing: 6) {
-                        Text("MASO PRO")
-                            .font(.system(size: 10, weight: .heavy))
-                            .tracking(1.5)
-                            .foregroundStyle(MasoColor.accent)
-                        Circle()
-                            .fill(MasoColor.accent.opacity(0.6))
-                            .frame(width: 3, height: 3)
-                        Text("FROM $2.50/MO")
-                            .font(.system(size: 10, weight: .heavy))
-                            .tracking(1)
-                            .foregroundStyle(MasoColor.accent)
-                    }
-                    Text("Unlock everything")
-                        // 统一所有卡片标题为 17pt bold (跟 WorkoutCard / PlanRow 对齐, iOS HIG Headline)
-                        .font(.system(size: 17, weight: .bold))
-                        .foregroundStyle(MasoColor.text)
-                        .lineLimit(1)
-                    Text("Unlimited plans · Full history · Custom moves")
-                        .font(.system(size: 11))
-                        .foregroundStyle(MasoColor.textDim)
-                        .lineLimit(1)
-                        .truncationMode(.tail)
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-
-                // 右侧 — 仅一个 chevron, 不再占文字宽度
-                Image(systemName: "chevron.right")
-                    .font(.system(size: 13, weight: .heavy))
+                Image(systemName: "person.2.fill")
+                    .font(.system(size: 16, weight: .semibold))
                     .foregroundStyle(MasoColor.accent)
+                    .frame(width: 36, height: 36)
+                Text("See what others train")
+                    .font(.system(size: 15, weight: .bold))
+                    .foregroundStyle(MasoColor.text)
+                    .lineLimit(1)
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 12, weight: .heavy))
+                    .foregroundStyle(MasoColor.textFaint)
             }
-            .padding(MasoMetrics.cardPadding - 2)
-            .background(
-                ZStack {
-                    MasoColor.surface
-                    // 顶左微辉光, 让卡片有"高级感", 不是死的色块
-                    RadialGradient(
-                        colors: [MasoColor.accent.opacity(0.20), .clear],
-                        center: .topLeading,
-                        startRadius: 10,
-                        endRadius: 240
-                    )
-                }
-            )
+            .padding(MasoMetrics.rowPaddingH)
+            .frame(maxWidth: .infinity, minHeight: 56, alignment: .leading)
+            .background(MasoColor.surface)
             .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
-            .overlay(
-                RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium)
-                    .stroke(MasoColor.accent.opacity(0.30), lineWidth: 0.5)
-            )
         }
         .buttonStyle(.plain)
+        .accessibilityLabel("See what others train")
+    }
+}
+
+// MARK: - PlanRationaleCard — 解释为什么 plans 长这样
+//
+// 设计哲学 (style "A" — 冷静解释型):
+//   - 不做激励 slogan, 给用户事实
+//   - kicker (FOR YOU / 为你设计) + data row (每周 N · style · 重点 muscles) + 一句 rationale
+//   - 数据全部从 settings 拿, 用户改了 onboarding 偏好 → card 自动更新
+//   - Plan 列表空时不显示 (没东西可解释)
+//
+// rationale 副文案逻辑:
+//   - 没填 wantStrengthen → 走 "全身均衡" 文案
+//   - days >= 5 → 高频
+//   - days 3-4 → 中频 (经典每周 2× / muscle)
+//   - days 1-2 → 维持频率
+private struct PlanRationaleCard: View {
+    @Environment(DataStore.self) private var data
+    /// 右上角 pencil 按钮触发的"快捷训练设置"sheet
+    @State private var showTrainingSettings = false
+
+    var body: some View {
+        let s = data.settings
+        // wantStrengthen 可能含 sub-muscle (e.g. upper chest, lower lats);
+        // 用 summary collapse 回 major (chest, back) 让 chip 行不啰嗦.
+        let majors = MuscleSelector.summary(Set(s.wantStrengthen)).majors
+        let muscleNames = majors.prefix(3).map(\.displayName).joined(separator: " / ")
+        let muscleSuffix = majors.count > 3 ? " +\(majors.count - 3)" : ""
+
+        let daysStr = String(
+            format: NSLocalizedString("%lld days / week", comment: "weekly training frequency"),
+            s.weeklyTrainingDays
+        )
+        let dataParts: [String] = [
+            daysStr,
+            programStyleName(s.programStyle),
+            majors.isEmpty ? "" : String(
+                format: NSLocalizedString("Focus: %@", comment: "muscle focus list"),
+                muscleNames + muscleSuffix
+            )
+        ].filter { !$0.isEmpty }
+        let dataLine = dataParts.joined(separator: " · ")
+        let explanation = rationale(days: s.weeklyTrainingDays, hasFocus: !majors.isEmpty)
+
+        return VStack(alignment: .leading, spacing: 8) {
+            // 顶行: FOR YOU kicker + 右上角 pencil 编辑入口
+            HStack(alignment: .center, spacing: 8) {
+                Text("FOR YOU")
+                    .font(.system(size: 10, weight: .heavy))
+                    .tracking(1.5)
+                    .foregroundStyle(MasoColor.accent)
+                Spacer()
+                // pencil 按钮 — 弹 TrainingSettingsSheet, 内容跟 Settings → Training 完全一致
+                Button(action: { showTrainingSettings = true }) {
+                    Image(systemName: "slider.horizontal.3")
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundStyle(MasoColor.accent)
+                        .frame(width: 28, height: 28)
+                        .background(MasoColor.accent.opacity(0.12))
+                        .clipShape(Circle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(Text("Adjust training preferences"))
+            }
+            Text(dataLine)
+                .font(.system(size: 14, weight: .semibold))
+                .foregroundStyle(MasoColor.text)
+                .fixedSize(horizontal: false, vertical: true)
+            Text(explanation)
+                .font(.system(size: 12))
+                .foregroundStyle(MasoColor.textDim)
+                .fixedSize(horizontal: false, vertical: true)
+                .lineSpacing(2)
+        }
+        .padding(MasoMetrics.cardPadding - 2)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(MasoColor.surface)
+        .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
+        // 整张卡也可点 — pencil 是显式 affordance, 但用户点空白处也算 "想改"
+        .contentShape(Rectangle())
+        .onTapGesture { showTrainingSettings = true }
+        .sheet(isPresented: $showTrainingSettings) {
+            TrainingSettingsSheet()
+                .presentationDetents([.medium, .large])
+        }
+    }
+
+    private func programStyleName(_ style: ProgramStyle) -> String {
+        switch style {
+        case .fullBody:
+            return NSLocalizedString("Full-body", comment: "training program style")
+        case .balanced:
+            return NSLocalizedString("Upper-lower split", comment: "training program style")
+        case .split:
+            return NSLocalizedString("Body-part split", comment: "training program style")
+        }
+    }
+
+    /// 根据 frequency + 是否有 focus 选副文案. 4 个 bucket.
+    private func rationale(days: Int, hasFocus: Bool) -> String {
+        if !hasFocus {
+            return NSLocalizedString(
+                "Full-body coverage — each muscle group rotates through the week.",
+                comment: "rationale when no focus muscle set"
+            )
+        }
+        if days >= 5 {
+            return NSLocalizedString(
+                "High frequency — focus muscles hit 2–3× per week, accessories rotate for recovery.",
+                comment: "rationale: 5+ days/week"
+            )
+        } else if days >= 3 {
+            return NSLocalizedString(
+                "Each focus muscle is trained 2× per week — enough stimulus, full recovery between.",
+                comment: "rationale: 3-4 days/week"
+            )
+        } else {
+            return NSLocalizedString(
+                "2× per week is enough to maintain steady progress — focus muscles rotate in.",
+                comment: "rationale: 1-2 days/week"
+            )
+        }
     }
 }
 
@@ -327,6 +410,10 @@ struct PlanDetailSheet: View {
     /// 动作列表的视图模式 — 单列 row (default) 还是 2 列 grid card.
     /// 持久化到 UserDefaults — 跨 sheet 开关 / app 重启都保留, 用户偏好一旦设定不会"忘".
     @AppStorage("planStepCardLayout") private var useCardLayout: Bool = false
+    /// Share plan — 点 toolbar 分享按钮 → 拉起 UIActivityViewController 分享 maso:// 链接.
+    @State private var shareURL: URL? = nil
+    /// Share encode 失败时弹的简单 alert (理论上不会触发).
+    @State private var shareFailed: Bool = false
 
     init(initialPlan: Plan, onStart: @escaping (Plan) -> Void) {
         self.initialPlan = initialPlan
@@ -374,39 +461,43 @@ struct PlanDetailSheet: View {
             .contentMargins(.horizontal, MasoMetrics.pagePaddingHorizontal, for: .scrollContent)
             .background(MasoColor.background.ignoresSafeArea())
             .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle("Edit Workout")
             .toolbar {
                 // 左侧 "…" overflow menu — 装 destructive 操作 (Delete Plan).
                 // iOS 习惯把删除整个对象的操作放 toolbar menu, 不放主显眼按钮.
                 ToolbarItem(placement: .topBarLeading) {
                     Menu {
+                        Button {
+                            handleSharePlan()
+                        } label: {
+                            Label("Share plan", systemImage: "square.and.arrow.up")
+                        }
+                        Divider()
                         Button(role: .destructive) {
                             confirmDelete = true
                         } label: {
-                            Label {
-                                Text("Delete Plan")
-                            } icon: {
-                                Image(systemName: "trash").foregroundStyle(.white)
-                            }
+                            Label("Delete Plan", systemImage: "trash")
                         }
                     } label: {
                         Image(systemName: "ellipsis")
-                            .font(.system(size: 14, weight: .semibold))
-                            .foregroundStyle(MasoColor.textDim)
                     }
                 }
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: { dismiss() }) {
-                        Image(systemName: "xmark")
-                            .font(.system(size: 14, weight: .semibold))
-                            .foregroundStyle(MasoColor.textDim)
-                    }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Done") { dismiss() }
                 }
-                ToolbarItem(placement: .principal) {
-                    Text("Edit Workout")
-                        .font(.system(size: 14, weight: .bold))
-                        .foregroundStyle(MasoColor.text)
-                        .lineLimit(1)
+            }
+            // Share sheet — UIActivityViewController 桥. shareURL 设了就弹, 取消/分享完置 nil.
+            .sheet(isPresented: Binding(
+                get: { shareURL != nil },
+                set: { if !$0 { shareURL = nil } }
+            )) {
+                if let url = shareURL {
+                    ShareActivityView(activityItems: [url])
+                        .presentationDetents([.medium, .large])
                 }
+            }
+            .alert("Couldn't create share link", isPresented: $shareFailed) {
+                Button("OK", role: .cancel) {}
             }
             .alert("Delete this plan?", isPresented: $confirmDelete) {
                 Button("Delete", role: .destructive) {
@@ -480,6 +571,7 @@ struct PlanDetailSheet: View {
             .sheet(item: $detailExercise) { ex in
                 ExerciseDetailSheet(exercise: ex)
             }
+            .tint(MasoColor.text)
         }
     }
 
@@ -487,6 +579,17 @@ struct PlanDetailSheet: View {
     private func commit() {
         draft.updatedAt = Date()
         data.updatePlan(draft)
+    }
+
+    /// Share — 编码 draft 成 maso:// URL → 弹系统 share sheet.
+    /// encode 失败 (理论不会, Plan 一直 Codable) → 弹 alert 兜底, 不静默.
+    private func handleSharePlan() {
+        guard let url = PlanShareCodec.shareURL(for: draft) else {
+            shareFailed = true
+            return
+        }
+        Haptics.tap()
+        shareURL = url
     }
 
     // 顶部信息卡 — 简化版.
@@ -919,14 +1022,8 @@ private struct EditStepView: View {
             .padding(.bottom, 32)
         }
         .background(MasoColor.background.ignoresSafeArea())
+        .navigationTitle("Edit Exercise")
         .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .principal) {
-                Text("Edit Exercise")
-                    .font(.system(size: 14, weight: .bold))
-                    .foregroundStyle(MasoColor.text)
-            }
-        }
         .alert("Remove this exercise?", isPresented: $confirmDelete) {
             Button("Remove", role: .destructive) {
                 onDelete()
@@ -1066,17 +1163,19 @@ private struct ExercisePickerSheet: View {
     ) -> [Exercise] {
         var result = arr
         if let m = muscle {
+            // 严格筛选 — 只匹配 primaryMuscles (主练肌), 不含 secondary/协同肌.
+            // 例: deadlift primaryMuscles = [lowerBack], 选 "core" 时不会出现 (即使它 secondary 含 core).
             result = result.filter { ex in
-                ex.muscleGroups.contains(where: { $0.section == m })
+                ex.primaryMuscles.contains(where: { $0.section == m })
             }
         }
         if let s = sub {
-            // sub narrow — 选 Mid Chest 只看 mid chest 动作 (含解剖子节点匹配).
-            // 之前是 sort hint, 跟 muscle / equipment 一致后改 narrow, 用户感知"映射关系"清晰.
+            // sub narrow — 选 Mid Chest 只看 primary 含 mid chest 的动作 (含解剖子节点匹配).
+            // 同步用 primaryMuscles 严格匹配, 跟一级 muscle filter 一致.
             let anatomySubs = expandAnatomyMuscles([s])
             result = result.filter { ex in
-                ex.muscleGroups.contains(s) ||
-                ex.muscleGroups.contains(where: { anatomySubs.contains($0) })
+                ex.primaryMuscles.contains(s) ||
+                ex.primaryMuscles.contains(where: { anatomySubs.contains($0) })
             }
         }
         if let eq = equipment {
@@ -1124,12 +1223,13 @@ private struct ExercisePickerSheet: View {
     }
 
     /// 当前 equipment/text filter (不算 muscle) 下还有动作的 muscle section set.
+    /// 用 primaryMuscles 跟 filter 实际行为对齐 — 不然 chip 显示"有"但点了 0 结果.
     private var availableMuscles: Set<MuscleGroup> {
         let arr = applyFilters(data.exercises, muscle: nil, sub: nil, equipment: equipmentFilter, text: query)
         var out: Set<MuscleGroup> = []
         for ex in arr {
             for sec in Self.muscleSections {
-                if ex.muscleGroups.contains(where: { $0.section == sec }) {
+                if ex.primaryMuscles.contains(where: { $0.section == sec }) {
                     out.insert(sec)
                 }
             }
@@ -1138,7 +1238,7 @@ private struct ExercisePickerSheet: View {
     }
 
     /// 当前 muscle + equipment + text 下 (不算 subFilter), 哪些 sub-muscle 还有动作.
-    /// 给 sub-muscle chip 用 dim 提示.
+    /// 给 sub-muscle chip 用 dim 提示. 同步 primary 严格筛选, 跟 filter 行为对齐.
     private var availableSubMuscles: Set<MuscleGroup> {
         guard let section = muscleFilter else { return [] }
         let arr = applyFilters(data.exercises, muscle: section, sub: nil, equipment: equipmentFilter, text: query)
@@ -1146,8 +1246,8 @@ private struct ExercisePickerSheet: View {
         for sub in section.sectionSubs {
             let anatomySubs = expandAnatomyMuscles([sub])
             if arr.contains(where: { ex in
-                ex.muscleGroups.contains(sub) ||
-                ex.muscleGroups.contains(where: { anatomySubs.contains($0) })
+                ex.primaryMuscles.contains(sub) ||
+                ex.primaryMuscles.contains(where: { anatomySubs.contains($0) })
             }) {
                 out.insert(sub)
             }
@@ -1179,21 +1279,14 @@ private struct ExercisePickerSheet: View {
                 ExerciseDetailSheet(exercise: ex, onAdd: { onPick(ex) })
             }
             .background(MasoColor.background.ignoresSafeArea())
+            .navigationTitle("Add Exercise")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .principal) {
-                    Text("Add Exercise")
-                        .font(.system(size: 14, weight: .bold))
-                        .foregroundStyle(MasoColor.text)
-                }
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: { dismiss() }) {
-                        Image(systemName: "xmark")
-                            .font(.system(size: 14, weight: .semibold))
-                            .foregroundStyle(MasoColor.textDim)
-                    }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Done") { dismiss() }
                 }
             }
+            .tint(MasoColor.text)
         }
     }
 
@@ -1418,40 +1511,56 @@ private struct ExercisePickerSheet: View {
         ScrollView {
             LazyVStack(spacing: 6) {
                 ForEach(filtered) { ex in
-                    // 视觉跟"训练中" InlinePlaylist.playlistRow 完全对齐 — 全 app 动作行统一规格.
-                    Button(action: { detailExercise = ex }) {
-                        HStack(spacing: 14) {
-                            ExerciseImage(
-                                category: ex.category,
-                                imageFolder: ex.imageFolder,
-                                cornerRadius: 8,
-                                size: 56,
-                                animated: false
-                            )
-                            VStack(alignment: .leading, spacing: 5) {
-                                Text(ex.displayName)
-                                    .font(.system(size: 15, weight: .bold))
-                                    .foregroundStyle(MasoColor.text)
-                                    .lineLimit(1)
-                                ExerciseTagsRow(
-                                    muscleGroups: ex.muscleGroups,
-                                    equipment: ex.equipment,
-                                    muscleLimit: 1
+                    // SwipeableRow — 左滑出 Favorite/Unfavorite 按钮, tap 进详情
+                    let isFav = data.isFavorite(ex.id)
+                    SwipeableRow(
+                        content: {
+                            HStack(spacing: 14) {
+                                ExerciseImage(
+                                    category: ex.category,
+                                    imageFolder: ex.imageFolder,
+                                    cornerRadius: 8,
+                                    size: 56,
+                                    animated: false
                                 )
+                                VStack(alignment: .leading, spacing: 5) {
+                                    Text(ex.displayName)
+                                        .font(.system(size: 15, weight: .bold))
+                                        .foregroundStyle(MasoColor.text)
+                                        .lineLimit(1)
+                                    ExerciseTagsRow(
+                                        muscleGroups: ex.muscleGroups,
+                                        equipment: ex.equipment,
+                                        muscleLimit: 1
+                                    )
+                                }
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                if isFav {
+                                    Image(systemName: "heart.fill")
+                                        .font(.system(size: 12, weight: .heavy))
+                                        .foregroundStyle(MasoColor.accent)
+                                }
                             }
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            if data.isFavorite(ex.id) {
-                                Image(systemName: "heart.fill")
-                                    .font(.system(size: 12, weight: .heavy))
-                                    .foregroundStyle(MasoColor.accent)
-                            }
-                        }
-                        .padding(.horizontal, MasoMetrics.rowPaddingH)
-                        .padding(.vertical, 10)
-                        .background(MasoColor.surface)
-                        .clipShape(RoundedRectangle(cornerRadius: 14))
-                    }
-                    .buttonStyle(.plain)
+                            .padding(.horizontal, MasoMetrics.rowPaddingH)
+                            .padding(.vertical, 10)
+                            .background(MasoColor.surface)
+                            .clipShape(RoundedRectangle(cornerRadius: 14))
+                        },
+                        actions: [
+                            SwipeAction(
+                                label: isFav ? "Unfavorite" : "Favorite",
+                                systemImage: "heart",
+                                color: MasoColor.accent,
+                                foreground: .black,
+                                action: {
+                                    data.toggleFavorite(ex.id)
+                                    Haptics.tap()
+                                }
+                            )
+                        ],
+                        onContentTap: { detailExercise = ex },
+                        cornerRadius: 14
+                    )
                 }
                 if filtered.isEmpty {
                     Text("No exercises match your search")
@@ -1532,4 +1641,17 @@ private extension Array {
     subscript(safe i: Int) -> Element? {
         indices.contains(i) ? self[i] : nil
     }
+}
+
+// MARK: - ShareActivityView — UIActivityViewController 桥
+//
+// 用于"分享计划"功能 — 把 maso:// URL 丢给系统 share sheet, 用户选 Messages/AirDrop/Copy/...
+// (跟 SettingsScreen 里的 ShareSheet 是同款桥, 但放这里方便 PlanDetailSheet 直接用,
+//  不想跨文件依赖私有类型.)
+private struct ShareActivityView: UIViewControllerRepresentable {
+    let activityItems: [Any]
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
+    }
+    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }

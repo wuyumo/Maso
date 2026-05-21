@@ -48,7 +48,9 @@ final class SpeechManager: NSObject {
                 options: [.duckOthers, .mixWithOthers]
             )
         } catch {
+            #if DEBUG
             print("[Speech] AVAudioSession setup failed: \(error)")
+            #endif
         }
     }
 

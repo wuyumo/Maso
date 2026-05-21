@@ -73,25 +73,17 @@ struct MusclesPickerSheet: View {
             .toolbarBackground(MasoColor.background, for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button(action: { dismiss() }) {
-                        Image(systemName: "xmark")
-                            .font(.system(size: 14, weight: .semibold))
-                            .foregroundStyle(MasoColor.textDim)
-                    }
-                    .accessibilityLabel("Cancel")
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") { dismiss() }
                 }
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: save) {
-                        Text("Save")
-                            .font(.system(size: 14, weight: .heavy))
-                            .foregroundStyle(isDirty ? MasoColor.accent : MasoColor.textFaint)
-                    }
-                    .disabled(!isDirty)
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Save", action: save)
+                        .disabled(!isDirty)
                 }
             }
             .onAppear { initializeDraft() }
         }
+        .tint(MasoColor.text)
         .presentationBackground(MasoColor.background)
     }
 

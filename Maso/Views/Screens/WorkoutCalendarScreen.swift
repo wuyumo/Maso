@@ -13,6 +13,7 @@ struct WorkoutCalendarScreen: View {
     var streakDaysCount: Int = 0
 
     @Environment(\.dismiss) private var dismiss
+    @Environment(DataStore.self) private var data
     @State private var monthAnchor: Date = Calendar.current.startOfMonth(for: Date())
 
     private var calendar: Calendar { Calendar.current }
@@ -44,37 +45,55 @@ struct WorkoutCalendarScreen: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    // 分享本周训练频率 — 生成 WeeklyFrequencyShareCard
-                    ShareImageButton(previewTitle: NSLocalizedString("My Week", comment: "")) { photo, onTapAdd in
-                        WeeklyFrequencyShareCard(
-                            sessionDates: sessionDates,
-                            totalSets: totalSetsThisWeek,
-                            streakDays: streakDaysCount,
-                            userPhoto: photo,
-                            onTapAddPhoto: onTapAdd
-                        )
-                    } label: {
-                        Image(systemName: "square.and.arrow.up")
-                            .font(.system(size: 14, weight: .bold))
-                            .foregroundStyle(MasoColor.text)
-                            .frame(width: 30, height: 30)
-                            .background(MasoColor.surfaceHi)
-                            .clipShape(Circle())
-                    }
+                    // 分享本周训练频率 — 生成 UnifiedShareCard (calendar section default on).
+                    // 三个 section data 始终算好传入; toggle 状态由卡内 inline toggle / ShareCardMode 控制.
+                    let workoutData = mostRecentWorkoutSection()
+                    let muscleData = muscleStatusSection()
+                    let calendarData = CalendarSectionData(
+                        sessionDates: sessionDates,
+                        totalSets: totalSetsThisWeek,
+                        streakDays: streakDaysCount
+                    )
+                    ShareImageButton(
+                        previewTitle: NSLocalizedString("My Week", comment: ""),
+                        defaultSections: ShareSections(calendar: true),
+                        shareContent: { photo, onTapAdd, mode in
+                            switch mode {
+                            case .editing(let binding):
+                                UnifiedShareCard(
+                                    userPhoto: photo,
+                                    onTapAddPhoto: onTapAdd,
+                                    workoutSection: workoutData,
+                                    muscleStatusSection: muscleData,
+                                    calendarSection: calendarData,
+                                    editToggles: binding
+                                )
+                            case .rendering(let visible):
+                                UnifiedShareCard(
+                                    userPhoto: photo,
+                                    onTapAddPhoto: onTapAdd,
+                                    workoutSection: workoutData,
+                                    muscleStatusSection: muscleData,
+                                    calendarSection: calendarData,
+                                    visibleSections: visible
+                                )
+                            }
+                        },
+                        label: {
+                            Image(systemName: "square.and.arrow.up")
+                                .font(.system(size: 14, weight: .bold))
+                                .foregroundStyle(MasoColor.text)
+                                .frame(width: 30, height: 30)
+                                .background(MasoColor.surfaceHi)
+                                .clipShape(Circle())
+                        }
+                    )
                 }
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: { dismiss() }) {
-                        Image(systemName: "xmark")
-                            .font(.system(size: 14, weight: .bold))
-                            .foregroundStyle(MasoColor.text)
-                            .frame(width: 30, height: 30)
-                            .background(MasoColor.surfaceHi)
-                            .clipShape(Circle())
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel("Close")
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Done") { dismiss() }
                 }
             }
+            .tint(MasoColor.text)
         }
     }
 
@@ -282,6 +301,105 @@ struct WorkoutCalendarScreen: View {
         }
         return n
     }
+
+    // MARK: - Share section data (UnifiedShareCard)
+
+    /// 最近一次 session 的 WorkoutSectionData — 让 calendar 入口可以也启用 workout section.
+    /// 没有任何 session → 返回 nil.
+    fileprivate func mostRecentWorkoutSection() -> WorkoutSectionData? {
+        let cal = calendar
+        // 把 sets 聚合成 (planId, day) → 取最近的一组
+        struct Key: Hashable { let planId: String; let day: Date }
+        var bucket: [Key: [SetRecord]] = [:]
+        for rec in data.sets {
+            let day = cal.startOfDay(for: rec.performedAt)
+            let key = Key(planId: rec.planId ?? "free", day: day)
+            bucket[key, default: []].append(rec)
+        }
+        guard let (key, recs) = bucket.max(by: {
+            let a = $0.value.map { $0.performedAt }.max() ?? Date.distantPast
+            let b = $1.value.map { $0.performedAt }.max() ?? Date.distantPast
+            return a < b
+        }) else { return nil }
+
+        let planName: String = {
+            if key.planId == "free" { return NSLocalizedString("Free workout", comment: "") }
+            return data.plans.first(where: { $0.id == key.planId })?.name
+                ?? NSLocalizedString("Free workout", comment: "")
+        }()
+        var seenMuscles = Set<MuscleGroup>()
+        var muscles: [MuscleGroup] = []
+        var seenIds = Set<String>()
+        var names: [String] = []
+        for r in recs {
+            guard let ex = data.exById[r.exerciseId] else { continue }
+            if seenIds.insert(ex.id).inserted { names.append(ex.displayName) }
+            for m in ex.muscleGroups where seenMuscles.insert(m).inserted {
+                muscles.append(m)
+            }
+        }
+        let prCount = recs.reduce(0) { $0 + (data.isPR($1) ? 1 : 0) }
+        let df = DateFormatter()
+        df.dateStyle = .full
+        df.timeStyle = .none
+        return WorkoutSectionData(
+            dateLabel: df.string(from: key.day),
+            planName: planName,
+            durationLabel: "~\(max(5, recs.count * 2))m",
+            setCount: recs.count,
+            exerciseCount: seenIds.count,
+            prCount: prCount,
+            muscles: muscles,
+            exerciseNames: names
+        )
+    }
+
+    /// 本周肌肉状态 — 用 DataStore 全局衰减 mapping.
+    fileprivate func muscleStatusSection() -> MuscleStatusSectionData {
+        let lastMap = muscleLastTrainedMap()
+        let cal = calendar
+        let cutoff = cal.startOfDay(for: cal.date(byAdding: .day, value: -6, to: Date())!)
+
+        let workoutsThisWeek = Set(data.sets.filter { $0.performedAt >= cutoff }
+            .map { cal.startOfDay(for: $0.performedAt) }).count
+        let totalSets = data.sets.filter { $0.performedAt >= cutoff }.count
+        var sections = Set<MuscleGroup>()
+        for set in data.sets where set.performedAt >= cutoff {
+            guard let ex = data.exById[set.exerciseId] else { continue }
+            for m in ex.muscleGroups {
+                if let s = m.section { sections.insert(s) }
+            }
+        }
+        return MuscleStatusSectionData(
+            muscleOpacity: { m in shareOpacityFor(muscle: m, lastMap: lastMap) },
+            coarseOnly: !data.settings.muscleDetailEnabled,
+            workoutsThisWeek: workoutsThisWeek,
+            totalSetsThisWeek: totalSets,
+            muscleSectionsHit: sections.count
+        )
+    }
+
+    private func muscleLastTrainedMap() -> [MuscleGroup: Date] {
+        var map: [MuscleGroup: Date] = [:]
+        for s in data.sets {
+            guard let ex = data.exById[s.exerciseId] else { continue }
+            let expanded = expandAnatomyMuscles(ex.muscleGroups)
+            for m in expanded {
+                if let prev = map[m], prev > s.performedAt { continue }
+                map[m] = s.performedAt
+            }
+        }
+        return map
+    }
+
+    private func shareOpacityFor(muscle m: MuscleGroup, lastMap: [MuscleGroup: Date]) -> Double? {
+        guard let last = lastMap[m] else { return nil }
+        let days = Date().timeIntervalSince(last) / 86400
+        if days < 1 { return 1.0 }
+        if days < 2 { return 0.6 }
+        if days < 3 { return 0.3 }
+        return nil
+    }
 }
 
 private extension Calendar {
@@ -298,4 +416,5 @@ private extension Calendar {
         Calendar.current.startOfDay(for: Date().addingTimeInterval(-86400 * 3)),
         Calendar.current.startOfDay(for: Date().addingTimeInterval(-86400 * 6)),
     ])
+    .environment(DataStore.makeMock())
 }

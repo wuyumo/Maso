@@ -320,6 +320,7 @@
 
 /* ── Settings — Muscle subdivisions toggle ── */
 "Show muscle subdivisions" = "筋肉の細分化";
+"Show muscle status" = "筋肉の状態を表示";
 "Off: pick the whole muscle (chest, back) — no upper/mid/lower split. On: full anatomical detail." = "オフ:大筋群 (胸/背中) のみ選択。オン:上部/中部/下部などの細分化。";
 
 /* ── Settings — Backup / Export / Import ── */
@@ -378,6 +379,7 @@
 "equipment.medicine ball" = "メディシンボール";
 "equipment.exercise ball" = "バランスボール";
 "equipment.foam roll" = "フォームローラー";
+"equipment.stretching" = "ストレッチ";
 "equipment.other" = "その他";
 
 /* History tab renamed to Muscle Status */
@@ -400,6 +402,7 @@
 
 /* Share customize sheet */
 "Customize" = "カスタマイズ";
+"Share Card" = "共有カード";
 "Camera" = "カメラ";
 "Photos" = "写真";
 
@@ -447,3 +450,179 @@
 /* Free workout: save to plan library after finishing */
 "Save as plan" = "プランとして保存";
 "Saved" = "保存済み";
+
+/* ── i18n audit 2026-05-17 — 不足キーの追加 ── */
+
+/* 写真選択 (カスタマイズシート) */
+"Add a photo" = "写真を追加";
+"Add photo" = "写真を追加";
+"Take Photo" = "写真を撮る";
+"Choose from Library" = "ライブラリから選ぶ";
+"Remove Photo" = "写真を削除";
+
+/* お気に入り切り替え */
+"Add to favorites" = "お気に入りに追加";
+"Remove from favorites" = "お気に入りを解除";
+
+/* 種目フィルター */
+"All muscles" = "すべての筋肉";
+"Clear all" = "すべてクリア";
+
+/* 削除ダイアログ */
+"Delete plan?" = "プランを削除しますか?";
+"Delete this workout?" = "このワークアウトを削除しますか?";
+"Delete workout" = "ワークアウトを削除";
+"Delete exercise from plan?" = "プランから種目を削除しますか?";
+"Delete exercise from this workout?" = "ワークアウトから種目を削除しますか?";
+"All sets and PRs from this workout will be removed. Your plans stay." = "このワークアウトのすべてのセットと PR が削除されます。プランは残ります。";
+"All sets of this exercise from this workout will be removed." = "このワークアウトの当該種目のセットがすべて削除されます。";
+"This only removes it from the current workout. Save changes at the end to update the plan." = "現在のワークアウトからのみ削除されます。終了時に保存するとプランも更新されます。";
+"This only removes the exercise from this plan, not from your library." = "このプランからのみ削除されます。動作ライブラリには影響しません。";
+
+/* 種目詳細 (解剖/解説) */
+"Detail" = "詳細";
+"Muscle" = "筋肉";
+"Equipment" = "器具";
+"None" = "なし";
+"Optional" = "任意";
+"How to do it" = "やり方";
+"Show full instructions" = "詳しい説明を見る";
+"Show less" = "閉じる";
+
+/* 読み上げ */
+"Listen" = "読み上げ";
+"Read instructions aloud" = "説明を読み上げ";
+"Stop reading" = "読み上げを停止";
+"Stop" = "停止";
+
+/* プラン/ワークアウト編集 */
+"Edit" = "編集";
+"Long press to reorder" = "長押しで並び替え";
+"No exercises in this workout" = "このワークアウトに種目はありません";
+
+/* シェア */
+"Share workout" = "ワークアウトを共有";
+
+/* ワークアウト終了 — プランへ反映 */
+"Skip & close" = "スキップして閉じる";
+"Save changes & end" = "保存して終了";
+"End without saving" = "保存せず終了";
+"Save changes to plan" = "プランに保存";
+"Saved to plan" = "プランに保存しました";
+"You changed sets, reps, weight, or order during this workout. Save the changes back to the plan?" = "このワークアウトでセット数 / 回数 / 重量 / 順序を変更しました。変更をプランに反映しますか?";
+"You changed some parameters during this workout." = "このワークアウト中にパラメーターを変更しました。";
+
+/* アクセシビリティ */
+"Show details for %@" = "%@ の詳細を表示";
+
+/* オンボーディング / Quick Workout ステップ */
+"STEP %lld / 2" = "ステップ %lld / 2";
+"STEP %lld / 3" = "ステップ %lld / 3";
+
+/* 筋肉細分の案内 */
+"Enable \"Show muscle subdivisions\" in Settings to pick details like upper chest or rear delts." = "設定で「筋肉の細分表示」をオンにすると、上部胸筋や三角筋後部などを選べます。";
+
+/* ペイウォール — 試用フッター */
+"Free for 7 days, then %@. Cancel anytime in Settings." = "7 日間無料、その後 %@。いつでも設定から解約できます。";
+
+/* PlanRationaleCard — プランタブ */
+"FOR YOU" = "あなたへ";
+"%lld days / week" = "週 %lld 回";
+"Focus: %@" = "重点: %@";
+"Full-body" = "全身";
+"Upper-lower split" = "上下肢分割";
+"Body-part split" = "部位別分割";
+"Full-body coverage — each muscle group rotates through the week." = "全身をバランスよくカバー — 各筋群が週の中で順番に登場します。";
+"High frequency — focus muscles hit 2–3× per week, accessories rotate for recovery." = "高頻度設計 — 重点筋群を週 2–3× 刺激し、補助筋は回復を挟みつつ交替で配置。";
+"Each focus muscle is trained 2× per week — enough stimulus, full recovery between." = "重点筋群は週 2× — 十分な刺激と、その間の完全な回復を両立。";
+"2× per week is enough to maintain steady progress — focus muscles rotate in." = "週 2× で安定した進歩を維持 — 重点筋群が順に組み込まれます。";
+"Adjust training preferences" = "トレーニング設定を調整";
+"FROM YOUR PLAN" = "あなたのプランから";
+"Weekly Workouts" = "週の頻度";
+"White areas were just trained" = "白い部分は直前に鍛えた筋肉";
+"Today's Status" = "今日の状態";
+
+/* ── Community (社区精选训练计划) ── */
+"Browse community plans" = "コミュニティのトレーニングを見る";
+"See what others train" = "みんなのトレーニングを見る";
+"Community" = "コミュニティ";
+"Curated workout plans. Add any to your library." = "厳選されたトレーニング計画。お気に入りをライブラリに追加";
+"Want to publish your plan? Coming soon." = "自分のプランを公開したい?近日公開";
+"Want to share your plan? Open it in Plans → tap Share." = "自分のプランを共有したい?プランで開いて → 共有をタップ";
+"Share plan" = "プランを共有";
+"Imported plan" = "インポートしたプラン";
+"Got a plan from a friend? Tap Add to save it to your library." = "友達からプランが届いた?「追加」をタップしてライブラリに保存";
+"Add to my plans" = "プランに追加";
+"Added" = "追加しました";
+"Beginner" = "初心者";
+"Intermediate" = "中級";
+"Advanced" = "上級";
+"%lld days/wk" = "週 %lld 回";
+"%lld exercises" = "%lld 種目";
+"community_plan_beginner_fb_3day_name" = "初心者向け全身 週3回";
+"community_plan_beginner_fb_3day_desc" = "2 つのセッションを交互に行い、主要種目を覚えてベースを作る";
+"community_plan_5x5_strength_name" = "5x5 ストレングス";
+"community_plan_5x5_strength_desc" = "5レップの重い種目で線形プログレッション";
+"community_plan_ppl_6day_name" = "プッシュ / プル / レッグ 週6回";
+"community_plan_ppl_6day_desc" = "各筋肉を週2回 — 高頻度・高ボリューム";
+"community_plan_upper_lower_4day_name" = "上半身 / 下半身 週4回";
+"community_plan_upper_lower_4day_desc" = "中級者向けクラシック分割 — 力と筋肥大のバランス";
+"community_plan_bro_split_5day_name" = "ブロースプリット 週5回";
+"community_plan_bro_split_5day_desc" = "ボディビル定番 — 1日1部位";
+"community_plan_calisthenics_name" = "自重トレーニング入門";
+"community_plan_calisthenics_desc" = "自重だけで基礎の力を作る";
+"community_plan_powerlifting_name" = "パワーリフティング準備";
+"community_plan_powerlifting_desc" = "スクワット / ベンチ / デッドリフト — 3レップで純粋な力を伸ばす";
+"community_plan_push_pull_4day_name" = "プッシュ / プル 週4回";
+"community_plan_push_pull_4day_desc" = "シンプルな2分割 — プッシュとプルをそれぞれ2回";
+"community_session_full_body_a" = "全身 A";
+"community_session_full_body_b" = "全身 B";
+"community_session_strength_a" = "ストレングス A";
+"community_session_strength_b" = "ストレングス B";
+"community_session_push_heavy" = "プッシュ(高重量)";
+"community_session_pull_heavy" = "プル(高重量)";
+"community_session_legs_quads" = "脚(大腿四頭)";
+"community_session_upper" = "上半身";
+"community_session_lower" = "下半身";
+"community_session_chest_day" = "胸の日";
+"community_session_back_day" = "背中の日";
+"community_session_leg_day" = "脚の日";
+"community_session_shoulder_day" = "肩の日";
+"community_session_arm_day" = "腕の日";
+"community_session_push_day" = "プッシュの日";
+"community_session_pull_day" = "プルの日";
+"community_session_legs_core_day" = "脚 + 体幹";
+"community_session_squat_day" = "スクワットの日";
+"community_session_bench_day" = "ベンチの日";
+"community_session_deadlift_day" = "デッドリフトの日";
+"community_session_accessory_day" = "アクセサリーの日";
+"community_session_push_simple" = "プッシュ";
+"community_session_pull_simple" = "プル";
+"Favorite" = "お気に入り";
+"Unfavorite" = "解除";
+
+/* StoreKit / IAP — Maso Pro */
+"Couldn't load subscription options. Try again later." = "サブスクリプションオプションを読み込めませんでした。後でもう一度お試しください。";
+"Purchase pending approval." = "購入は承認待ちです。";
+"Purchase verification failed. Try again or contact support." = "購入の確認に失敗しました。もう一度お試しいただくか、サポートにお問い合わせください。";
+"Free for 7 days, then auto-renews. Cancel anytime in Settings." = "7日間無料、その後自動更新されます。「設定」からいつでも解約できます。";
+
+/* History / トレーニング履歴 */
+"Workout photo" = "ワークアウト写真";
+"Share muscle status" = "筋肉ステータスをシェア";
+"Toggle muscle status overlay" = "筋肉ステータスの表示切替";
+
+/* Deep link / plan sharing */
+"IMPORTED PLAN" = "インポート済みプラン";
+"This Maso link is damaged or unsupported. Ask your friend to share again." = "この Maso リンクは破損しているか、サポートされていません。友達にもう一度共有してもらってください。";
+
+/* Misc */
+"details" = "詳細";
+
+/* Settings — Health & Safety + About */
+"Health & Safety" = "健康と安全";
+"About" = "このアプリについて";
+"Privacy Policy" = "プライバシーポリシー";
+"Terms of Service" = "利用規約";
+"Version" = "バージョン";
+"Maso is for informational and motivational purposes only — not medical advice. Consult a physician before starting any new exercise program, especially if you have a medical condition, are pregnant, or have not exercised recently. Stop immediately and seek help if you feel pain, dizziness, or shortness of breath." = "Maso は情報提供と運動のモチベーション維持を目的としたものであり、医学的アドバイスではありません。新しい運動プログラムを始める前には医師にご相談ください。特に持病がある方、妊娠中の方、最近運動していない方は必ず確認してください。痛み、めまい、息切れを感じた場合はただちに中止し、医療機関へ相談してください。";

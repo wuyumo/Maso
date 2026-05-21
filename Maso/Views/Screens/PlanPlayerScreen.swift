@@ -109,6 +109,9 @@ struct PlanPlayerScreen: View {
                     setCount: store.session?.completedSets.count ?? 0,
                     prCount: completedPRCount,
                     muscles: completedMuscles,
+                    exerciseNames: completedExerciseNames,
+                    exerciseCount: completedExerciseCount,
+                    sessionId: completedSessionId,
                     onSavePlan: canSaveCurrentPlan ? { saveCurrentPlanToLibrary() } : nil,
                     onSaveChanges: canSaveChangesToPlan ? { saveChangesToCurrentPlan() } : nil,
                     onClose: {
@@ -586,6 +589,32 @@ struct PlanPlayerScreen: View {
         let started = session.startedAt
         let recent = data.sets.filter { $0.planId == session.planId && $0.performedAt >= started }
         return recent.filter { data.isPR($0) }.count
+    }
+
+    /// 本次训练的前几个动作名 (分享卡 chip 用).
+    private var completedExerciseNames: [String] {
+        guard let plan = store.plan else { return [] }
+        var seen = Set<String>()
+        var names: [String] = []
+        for step in plan.steps {
+            guard let ex = data.exById[step.exerciseId], seen.insert(ex.id).inserted else { continue }
+            names.append(ex.displayName)
+        }
+        return names
+    }
+
+    /// 本次训练动作数 (唯一 exercise 数) — 跟 SessionSummary.exerciseCount 同义.
+    private var completedExerciseCount: Int {
+        guard let plan = store.plan else { return 0 }
+        return Set(plan.steps.map { $0.exerciseId }).count
+    }
+
+    /// sessionId — 跟 HistoryScreen.groupedSessions 同公式生成. 给分享卡持久化照片用.
+    /// 公式: "\(planId)-\(Int(startOfDay(startedAt).timeIntervalSince1970))"
+    private var completedSessionId: String? {
+        guard let session = store.session else { return nil }
+        let day = Calendar.current.startOfDay(for: session.startedAt)
+        return "\(session.planId)-\(Int(day.timeIntervalSince1970))"
     }
 
     /// 每个 step 已完成的组数 —— stepId → completedSets.count.
@@ -1253,11 +1282,17 @@ private struct DragHandle: View {
 //   - 标题统一显示 "训练完成", plan 名作为副标题 (淡色, 在标题下)
 //   - 大圆 ✓ + 标题 + 副标题, 整体居中, 视觉重心放在主标题
 private struct CompletedView: View {
+    @Environment(DataStore.self) private var data
     let planName: String
     let durationSeconds: Int
     let setCount: Int
     let prCount: Int
     let muscles: [MuscleGroup]
+    /// 训练涉及的动作名 (顺序保留 plan.steps), 给分享卡 chip 用.
+    var exerciseNames: [String] = []
+    var exerciseCount: Int = 0
+    /// sessionId — 用来在 DataStore 持久化照片. nil = 无法生成 id (session 状态异常).
+    var sessionId: String? = nil
     /// 自由训练 (临时 plan) 完成时 caller 传非 nil — 显示 "Save as plan" 按钮.
     /// 用户点了 → onSavePlan() 触发 caller 把 plan 写入 data.plans.
     let onSavePlan: (() -> Void)?
@@ -1300,17 +1335,63 @@ private struct CompletedView: View {
             // 关闭次要, 用文字按钮形式 (无背景, 灰色) 让"跳过分享"也清晰但不抢眼.
             VStack(spacing: 12) {
                 // 主 CTA — Share workout (拉起 ShareCustomizeSheet, 跟之前 Share icon 按钮同流程)
-                ShareImageButton(previewTitle: NSLocalizedString("My Workout", comment: "")) { photo, onTapAdd in
-                    WorkoutCompleteShareCard(
-                        planName: planName,
-                        durationSeconds: durationSeconds,
-                        setCount: setCount,
-                        prCount: prCount,
-                        muscles: muscles,
-                        userPhoto: photo,
-                        onTapAddPhoto: onTapAdd
-                    )
-                } label: {
+                // 三个 section data 始终算好传入; toggle 状态由卡内 inline toggle / ShareCardMode 控制.
+                let workoutData = WorkoutSectionData(
+                    planName: planName.isEmpty ? NSLocalizedString("Free workout", comment: "") : planName,
+                    durationLabel: durationLabel,
+                    setCount: setCount,
+                    exerciseCount: exerciseCount,
+                    prCount: prCount,
+                    muscles: muscles,
+                    exerciseNames: exerciseNames
+                )
+                let muscleData = MuscleStatusSectionData(
+                    muscleOpacity: muscleOpacityClosure,
+                    coarseOnly: !data.settings.muscleDetailEnabled,
+                    workoutsThisWeek: workoutsThisWeekCount,
+                    totalSetsThisWeek: totalSetsThisWeek,
+                    muscleSectionsHit: muscleSectionsHitThisWeek
+                )
+                let calendarData = CalendarSectionData(
+                    sessionDates: workoutDateSet(),
+                    totalSets: totalSetsThisWeek,
+                    streakDays: currentStreakDays
+                )
+                ShareImageButton(
+                    previewTitle: NSLocalizedString("My Workout", comment: ""),
+                    defaultSections: ShareSections(workout: true),
+                    initialPhoto: sessionId.flatMap { data.sessionPhoto(forSessionId: $0) },
+                    shareContent: { photo, onTapAdd, mode in
+                        switch mode {
+                        case .editing(let binding):
+                            UnifiedShareCard(
+                                userPhoto: photo,
+                                onTapAddPhoto: onTapAdd,
+                                workoutSection: workoutData,
+                                muscleStatusSection: muscleData,
+                                calendarSection: calendarData,
+                                editToggles: binding
+                            )
+                        case .rendering(let visible):
+                            UnifiedShareCard(
+                                userPhoto: photo,
+                                onTapAddPhoto: onTapAdd,
+                                workoutSection: workoutData,
+                                muscleStatusSection: muscleData,
+                                calendarSection: calendarData,
+                                visibleSections: visible
+                            )
+                        }
+                    },
+                    onPersistPhoto: { image in
+                        guard let id = sessionId else { return }
+                        if let image {
+                            data.setSessionPhoto(image, forSessionId: id)
+                        } else {
+                            data.removeSessionPhoto(forSessionId: id)
+                        }
+                    }
+                ) {
                     HStack(spacing: 8) {
                         Image(systemName: "square.and.arrow.up")
                             .font(.system(size: 15, weight: .heavy))
@@ -1324,84 +1405,89 @@ private struct CompletedView: View {
                     .clipShape(Capsule())
                 }
 
-                // 次 CTA — 跳过分享直接关闭. 文字按钮 + xmark icon, 无背景灰色.
-                Button(action: onClose) {
-                    HStack(spacing: 6) {
-                        Image(systemName: "xmark")
-                            .font(.system(size: 11, weight: .heavy))
-                        Text("Skip & close")
-                            .font(.system(size: 13, weight: .semibold))
-                    }
-                    .foregroundStyle(MasoColor.textDim)
-                    .padding(.horizontal, 18).padding(.vertical, 10)
-                    .contentShape(Capsule())
-                }
-                .buttonStyle(.plain)
-            }
-            .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
-            .padding(.top, 36)
-
-            // 自由训练的 plan 完成时显示 "Save as plan" 选项. 用户主动决定是否入库.
-            // 已保存后切换成"Saved ✓" disabled 状态.
-            if let save = onSavePlan {
-                Button(action: {
-                    save()
-                    withAnimation { planSaved = true }
-                }) {
-                    HStack(spacing: 6) {
-                        Image(systemName: planSaved ? "checkmark" : "plus.square.on.square")
-                            .font(.system(size: 12, weight: .heavy))
-                        Text(planSaved
-                             ? NSLocalizedString("Saved", comment: "")
-                             : NSLocalizedString("Save as plan", comment: ""))
-                            .font(.system(size: 13, weight: .semibold))
-                    }
-                    .foregroundStyle(planSaved ? MasoColor.textDim : MasoColor.accent)
-                    .padding(.horizontal, 18).padding(.vertical, 9)
-                    .background(MasoColor.accent.opacity(planSaved ? 0.05 : 0.12))
-                    .overlay(
-                        Capsule().stroke(MasoColor.accent.opacity(planSaved ? 0.2 : 0.4), lineWidth: 0.8)
-                    )
-                    .clipShape(Capsule())
-                }
-                .buttonStyle(.plain)
-                .disabled(planSaved)
-                .padding(.top, 18)
-            }
-
-            // 训练中改了参数 (sets/reps/weight/duration/顺序) → 提示保存到原 plan.
-            // 跟 Save as plan 互斥 — 不可能同时显示 (autoGenerated 走前者, 已有 plan 走后者).
-            if let saveChanges = onSaveChanges {
-                VStack(spacing: 6) {
-                    Text("You changed some parameters during this workout.")
-                        .font(.system(size: 11))
-                        .foregroundStyle(MasoColor.textFaint)
-                        .multilineTextAlignment(.center)
-                    Button(action: {
-                        saveChanges()
-                        withAnimation { changesSaved = true }
-                    }) {
+                // 次 CTA 行 — Skip & close 左, Save as plan / Save changes 右 (并排, 等宽).
+                // 没 onSavePlan / onSaveChanges 时 Skip & close 单独占满全行.
+                HStack(spacing: 10) {
+                    Button(action: onClose) {
                         HStack(spacing: 6) {
-                            Image(systemName: changesSaved ? "checkmark" : "square.and.arrow.down")
-                                .font(.system(size: 12, weight: .heavy))
-                            Text(changesSaved
-                                 ? NSLocalizedString("Saved to plan", comment: "")
-                                 : NSLocalizedString("Save changes to plan", comment: ""))
+                            Image(systemName: "xmark")
+                                .font(.system(size: 11, weight: .heavy))
+                            Text("Skip & close")
                                 .font(.system(size: 13, weight: .semibold))
                         }
-                        .foregroundStyle(changesSaved ? MasoColor.textDim : MasoColor.accent)
-                        .padding(.horizontal, 18).padding(.vertical, 9)
-                        .background(MasoColor.accent.opacity(changesSaved ? 0.05 : 0.12))
+                        .foregroundStyle(MasoColor.textDim)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 10)
+                        .background(MasoColor.surface)
                         .overlay(
-                            Capsule().stroke(MasoColor.accent.opacity(changesSaved ? 0.2 : 0.4), lineWidth: 0.8)
+                            Capsule().stroke(MasoColor.borderSoft, lineWidth: 0.8)
                         )
                         .clipShape(Capsule())
                     }
                     .buttonStyle(.plain)
-                    .disabled(changesSaved)
+
+                    if let save = onSavePlan {
+                        Button(action: {
+                            save()
+                            withAnimation { planSaved = true }
+                        }) {
+                            HStack(spacing: 6) {
+                                Image(systemName: planSaved ? "checkmark" : "plus.square.on.square")
+                                    .font(.system(size: 12, weight: .heavy))
+                                Text(planSaved
+                                     ? NSLocalizedString("Saved", comment: "")
+                                     : NSLocalizedString("Save as plan", comment: ""))
+                                    .font(.system(size: 13, weight: .semibold))
+                            }
+                            .foregroundStyle(planSaved ? MasoColor.textDim : MasoColor.accent)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 10)
+                            .background(MasoColor.accent.opacity(planSaved ? 0.05 : 0.12))
+                            .overlay(
+                                Capsule().stroke(MasoColor.accent.opacity(planSaved ? 0.2 : 0.4), lineWidth: 0.8)
+                            )
+                            .clipShape(Capsule())
+                        }
+                        .buttonStyle(.plain)
+                        .disabled(planSaved)
+                    } else if let saveChanges = onSaveChanges {
+                        Button(action: {
+                            saveChanges()
+                            withAnimation { changesSaved = true }
+                        }) {
+                            HStack(spacing: 6) {
+                                Image(systemName: changesSaved ? "checkmark" : "square.and.arrow.down")
+                                    .font(.system(size: 12, weight: .heavy))
+                                Text(changesSaved
+                                     ? NSLocalizedString("Saved to plan", comment: "")
+                                     : NSLocalizedString("Save changes to plan", comment: ""))
+                                    .font(.system(size: 13, weight: .semibold))
+                            }
+                            .foregroundStyle(changesSaved ? MasoColor.textDim : MasoColor.accent)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 10)
+                            .background(MasoColor.accent.opacity(changesSaved ? 0.05 : 0.12))
+                            .overlay(
+                                Capsule().stroke(MasoColor.accent.opacity(changesSaved ? 0.2 : 0.4), lineWidth: 0.8)
+                            )
+                            .clipShape(Capsule())
+                        }
+                        .buttonStyle(.plain)
+                        .disabled(changesSaved)
+                    }
                 }
-                .padding(.top, 18)
-                .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
+            }
+            .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
+            .padding(.top, 36)
+
+            // 训练中改了参数的解释文案 — 放到 2 列按钮下方
+            if onSaveChanges != nil {
+                Text("You changed some parameters during this workout.")
+                    .font(.system(size: 11))
+                    .foregroundStyle(MasoColor.textFaint)
+                    .multilineTextAlignment(.center)
+                    .padding(.top, 10)
+                    .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
             }
 
             Spacer()
@@ -1409,6 +1495,96 @@ private struct CompletedView: View {
         // 整屏纯黑底 — 覆盖 sheet 默认的 systemBackground (避免出现灰色 material)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.black.ignoresSafeArea())
+    }
+
+    // MARK: - Share helper data (for UnifiedShareCard)
+
+    /// "12m 30s" / "30s" — duration label for ShareStat.
+    private var durationLabel: String {
+        let m = durationSeconds / 60
+        let s = durationSeconds % 60
+        if m > 0 { return "\(m)m \(s)s" }
+        return "\(s)s"
+    }
+
+    /// 每个 anatomy 直接肌肉 → 最近一次被训练的时间.
+    /// 公式跟 HistoryScreen.muscleLastTrainedMap 同义.
+    private func muscleLastTrainedMap() -> [MuscleGroup: Date] {
+        var map: [MuscleGroup: Date] = [:]
+        for s in data.sets {
+            guard let ex = data.exById[s.exerciseId] else { continue }
+            let expanded = expandAnatomyMuscles(ex.muscleGroups)
+            for m in expanded {
+                if let prev = map[m], prev > s.performedAt { continue }
+                map[m] = s.performedAt
+            }
+        }
+        return map
+    }
+
+    /// 衰减映射 — 跟 HistoryScreen.opacityFor 同义.
+    private var muscleOpacityClosure: (MuscleGroup) -> Double? {
+        let lastMap = muscleLastTrainedMap()
+        return { m in
+            guard let last = lastMap[m] else { return nil }
+            let days = Date().timeIntervalSince(last) / 86400
+            if days < 1 { return 1.0 }
+            if days < 2 { return 0.6 }
+            if days < 3 { return 0.3 }
+            return nil
+        }
+    }
+
+    /// 本周训练 session 数 — 不同日历日算 1 次
+    private var workoutsThisWeekCount: Int {
+        let cal = Calendar.current
+        let cutoff = cal.startOfDay(for: cal.date(byAdding: .day, value: -6, to: Date())!)
+        let days = Set(data.sets.filter { $0.performedAt >= cutoff }.map { cal.startOfDay(for: $0.performedAt) })
+        return days.count
+    }
+
+    /// 本周总组数
+    private var totalSetsThisWeek: Int {
+        let cal = Calendar.current
+        let cutoff = cal.startOfDay(for: cal.date(byAdding: .day, value: -6, to: Date())!)
+        return data.sets.filter { $0.performedAt >= cutoff }.count
+    }
+
+    /// 本周练到的大肌群 section 数
+    private var muscleSectionsHitThisWeek: Int {
+        let cal = Calendar.current
+        let cutoff = cal.startOfDay(for: cal.date(byAdding: .day, value: -6, to: Date())!)
+        var sections = Set<MuscleGroup>()
+        for set in data.sets where set.performedAt >= cutoff {
+            guard let ex = data.exById[set.exerciseId] else { continue }
+            for m in ex.muscleGroups {
+                if let s = m.section { sections.insert(s) }
+            }
+        }
+        return sections.count
+    }
+
+    /// 连续训练天数 (相对今天)
+    private var currentStreakDays: Int {
+        let cal = Calendar.current
+        let days = workoutDateSet()
+        var streak = 0
+        var cursor = cal.startOfDay(for: Date())
+        while days.contains(cursor) {
+            streak += 1
+            cursor = cal.date(byAdding: .day, value: -1, to: cursor)!
+        }
+        return streak
+    }
+
+    /// 用户有训练的日历日集合
+    private func workoutDateSet() -> Set<Date> {
+        let cal = Calendar.current
+        var out: Set<Date> = []
+        for s in data.sets {
+            out.insert(cal.startOfDay(for: s.performedAt))
+        }
+        return out
     }
 }
 

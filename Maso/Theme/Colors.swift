@@ -52,8 +52,8 @@ enum MasoMetrics {
     static let rowPaddingH: CGFloat = 12
     static let rowPaddingV: CGFloat = 8
 
-    // TabBar
-    static let bottomNavHeight: CGFloat = 78
+    // TabBar — pill 高度. 缩了一圈, 78 → 62 (上下各减 8)
+    static let bottomNavHeight: CGFloat = 62
     static let pillWidthActive: CGFloat = 248
 
     // BodyHint 在各场景的高度 — 同类场景全局一致

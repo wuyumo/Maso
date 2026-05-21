@@ -50,26 +50,112 @@ private struct RawExercise: Decodable {
     let images: [String]
 }
 
+// MARK: - 维护提示
+//
+// 这个文件是 yuhonas/free-exercise-db → app 内 Exercise 模型 的"映射 + 兜底推断"层.
+// 上游 JSON 是只读快照, 这里两类后处理让数据能贴合 app 的需求:
+//
+// 1. equipment 覆写 (Task 1 / future):
+//    - raw name 含 "stretch" → equipment 强制 "stretching" (不管 yuhonas 原标的什么器械)
+//
+// 2. muscleGroups 增强 (Task 5 / future):
+//    - yuhonas 只有 17 个 muscle 词, 没 "obliques" / "rotator cuff" / etc.
+//    - 用 name 关键词 (oblique, twist, rotation, side bend, side plank) 推断 obliques
+//    - 关键词分两档:
+//        - "Primary" 候选 → 加进 primaryMuscles + muscleGroups 前部
+//          (oblique / side plank / side bend / russian twist / wood chop)
+//        - "Secondary" 候选 → 加进 muscleGroups 末尾 (作为辅助肌)
+//          (twist / rotation, 但限"abdominal" 已经是 primary 的, 避免误判肩关节内外旋)
+//    - 推断规则集中写在 inferExtraMuscles() 里, 改维护规则只改这一处.
+//
+// 想新增"keyword → muscle" 规则: 在 inferExtraMuscles() 加 case, 跑一次 build, 在
+// Library 浏览页验证肌群标签是否符合预期. 详见 docs/exercise-data-mapping.md.
+
 private func toExercise(_ r: RawExercise) -> Exercise {
-    let primary = r.primaryMuscles.flatMap(muscleMap)
-    let secondary = r.secondaryMuscles.flatMap(muscleMap)
+    var primary = r.primaryMuscles.flatMap(muscleMap)
+    var secondary = r.secondaryMuscles.flatMap(muscleMap)
+
+    // ── Muscle inference (post-load) ──
+    // yuhonas 原数据没分 obliques (它把所有腹肌都标 "abdominals" 而我们的 .obliques 是独立 enum).
+    // 用 name 关键词推断给一些被低估的动作补 .obliques (Russian Twist / Side Plank / Wood Chop ...).
+    let (extraPrimary, extraSecondary) = inferExtraMuscles(name: r.name, existingPrimary: primary)
+    primary.append(contentsOf: extraPrimary)
+    secondary.append(contentsOf: extraSecondary)
+
     let allMuscles = orderedUnique(primary + secondary)
     let cat = mapCategory(r.category)
     let lvl = ExerciseLevel(rawValue: r.level ?? "")
     let force = ExerciseForce(rawValue: r.force ?? "")
     let primaryTag = r.primaryMuscles.first.map(displayMuscleName) ?? ""
+
+    // ── Equipment 覆写 (post-load) ──
+    // raw name 含 "stretch" → 视为拉伸器械 (即使 yuhonas 给的是 nil / body only / other).
+    // 让 UI 上"拉伸"成为一个独立筛选项, 用户能一键过滤所有拉伸动作.
+    let inferredEquipment: String? = {
+        let lower = r.name.lowercased()
+        if lower.contains("stretch") { return "stretching" }
+        return r.equipment
+    }()
+
     return Exercise(
         id: r.id,
         name: r.name, // 暂时用英文名; 后续可加中文翻译表
         category: cat,
         tags: primaryTag.isEmpty ? [] : [primaryTag],
-        muscleGroups: allMuscles,
+        primaryMuscles: orderedUnique(primary),  // 严格筛选用 — 只保留 yuhonas 标的 primary
+        muscleGroups: allMuscles,                // 全景 (primary + secondary) — 详情页/协同肌用
         imageFolder: r.id,
         level: lvl,
         force: force,
-        equipment: r.equipment,
+        equipment: inferredEquipment,
         instructions: r.instructions
     )
+}
+
+// MARK: - Muscle inference rules
+//
+// 兜底规则: 看动作 raw English name 含的关键词, 补一些 yuhonas 缺标的肌群.
+// 目前只针对 obliques (上游 yuhonas 词汇表里没 "obliques", 只有 "abdominals").
+// 其他肌肉以后再加规则.
+//
+// 设计权衡:
+//   - "primary" 关键词 (oblique / side plank / side bend / russian twist / wood chop):
+//     这些动作 obliques 是主动力, 必须当 primary, 让 picker 严格筛选能命中.
+//   - "secondary" 关键词 (twist / rotation):
+//     需要做"是否相关"门控 — "internal/external rotation" 是肩袖动作, 不是核心.
+//     兜底: 只对 raw primary 已含 abdominals (yuhonas 词) 的动作, twist/rotation
+//     才追加 obliques 当 secondary. 这样肩关节旋转动作不会被误判.
+//
+// 返回值: (extraPrimary, extraSecondary)
+private func inferExtraMuscles(
+    name: String,
+    existingPrimary: [MuscleGroup]
+) -> (primary: [MuscleGroup], secondary: [MuscleGroup]) {
+    let lower = name.lowercased()
+    var extraPrimary: [MuscleGroup] = []
+    var extraSecondary: [MuscleGroup] = []
+
+    let strongObliquesKeywords = [
+        "oblique",      // "Oblique Crunches" / "Decline Oblique Crunch" / ...
+        "side plank",   // "Push Up to Side Plank"
+        "side bend",    // "Barbell Side Bend" / "Dumbbell Side Bend"
+        "russian twist",
+        "wood chop",
+    ]
+    let weakObliquesKeywords = ["twist", "rotation"]
+
+    // Primary: 强信号 → 直接当主动肌
+    if strongObliquesKeywords.contains(where: { lower.contains($0) }) {
+        extraPrimary.append(.obliques)
+    } else if weakObliquesKeywords.contains(where: { lower.contains($0) }) {
+        // Secondary: 弱信号 — 只有已经在练 abs/core 的动作才追加 (避免肩袖旋转误判)
+        let trainsAbs = existingPrimary.contains(.core) || existingPrimary.contains(.abs)
+        if trainsAbs {
+            extraSecondary.append(.obliques)
+        }
+    }
+
+    return (extraPrimary, extraSecondary)
 }
 
 private func mapCategory(_ raw: String) -> ExerciseCategory {

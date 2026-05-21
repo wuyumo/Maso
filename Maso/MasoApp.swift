@@ -22,6 +22,9 @@ struct MasoApp: App {
     // 没有 → 走 mock 兜底 (seed 推荐 plan + sample sets). 同时把 mock 写一次文件, 下次有持久化.
     // 改自 .makeMock(): 之前每次启动都重置数据, 现在用户的 plans / sets / settings 都保留.
     @State private var dataStore = DataStore.bootstrap()
+    /// StoreKit 2 订阅管理器 — load products / listen transactions / 回写 DataStore entitlement.
+    /// 在 .task 里 configure(), 注入 callback 让它把 entitlement 变化同步到 dataStore.settings.
+    @State private var subscriptions = SubscriptionManager()
     @State private var splashDone = false
     /// 启动时 init 一次, 让它从 UserDefaults 读上次选的语言, 立刻 apply 到 Bundle.
     /// observe 这个 manager 保证语言切换时 SwiftUI 整树 re-render.
@@ -34,6 +37,7 @@ struct MasoApp: App {
                     RootView()
                         .environment(session)
                         .environment(dataStore)
+                        .environment(subscriptions)
                         .transition(.opacity)
                 } else {
                     SplashScreen { withAnimation(.easeOut(duration: 0.3)) { splashDone = true } }
@@ -52,6 +56,21 @@ struct MasoApp: App {
             .onChange(of: scenePhase) { _, newPhase in
                 if newPhase == .background || newPhase == .inactive {
                     dataStore.save()
+                }
+                // 回前台 → 刷一次 entitlements (用户可能在 Settings.app 改了订阅状态)
+                if newPhase == .active {
+                    Task { await subscriptions.refreshEntitlements() }
+                }
+            }
+            // configure SubscriptionManager — 注入 callback 让 StoreKit entitlement 变化时
+            // 自动写到 dataStore.settings.proSubscription. .task 保证只跑一次.
+            .task {
+                subscriptions.configure { newSub in
+                    // 只在变化时写 + save, 避免每次 currentEntitlements 触发都 mark dirty.
+                    if dataStore.settings.proSubscription != newSub {
+                        dataStore.settings.proSubscription = newSub
+                        dataStore.save()
+                    }
                 }
             }
         }

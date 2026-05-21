@@ -320,6 +320,7 @@
 
 /* ── Settings — Muscle subdivisions toggle ── */
 "Show muscle subdivisions" = "근육 세분화";
+"Show muscle status" = "근육 상태 보기";
 "Off: pick the whole muscle (chest, back) — no upper/mid/lower split. On: full anatomical detail." = "끄기: 대근육군 (가슴/등)만 선택. 켜기: 상/중/하부까지 세분화.";
 
 /* ── Settings — Backup / Export / Import ── */
@@ -378,6 +379,7 @@
 "equipment.medicine ball" = "메디신 볼";
 "equipment.exercise ball" = "짐볼";
 "equipment.foam roll" = "폼롤러";
+"equipment.stretching" = "스트레칭";
 "equipment.other" = "기타";
 
 /* History tab renamed to Muscle Status */
@@ -400,6 +402,7 @@
 
 /* Share customize sheet */
 "Customize" = "사용자 지정";
+"Share Card" = "공유 카드";
 "Camera" = "카메라";
 "Photos" = "사진";
 
@@ -447,3 +450,179 @@
 /* Free workout: save to plan library after finishing */
 "Save as plan" = "플랜으로 저장";
 "Saved" = "저장됨";
+
+/* ── i18n audit 2026-05-17 — 누락된 UI 키 추가 ── */
+
+/* 사진 선택 (사용자 지정 시트) */
+"Add a photo" = "사진 추가";
+"Add photo" = "사진 추가";
+"Take Photo" = "사진 촬영";
+"Choose from Library" = "보관함에서 선택";
+"Remove Photo" = "사진 제거";
+
+/* 즐겨찾기 토글 */
+"Add to favorites" = "즐겨찾기에 추가";
+"Remove from favorites" = "즐겨찾기에서 제거";
+
+/* 운동 필터 */
+"All muscles" = "모든 근육";
+"Clear all" = "모두 지우기";
+
+/* 삭제 대화상자 */
+"Delete plan?" = "플랜을 삭제하시겠어요?";
+"Delete this workout?" = "이 운동을 삭제하시겠어요?";
+"Delete workout" = "운동 삭제";
+"Delete exercise from plan?" = "플랜에서 운동을 삭제하시겠어요?";
+"Delete exercise from this workout?" = "이 운동에서 동작을 삭제하시겠어요?";
+"All sets and PRs from this workout will be removed. Your plans stay." = "이 운동의 모든 세트와 PR이 삭제됩니다. 플랜은 유지됩니다.";
+"All sets of this exercise from this workout will be removed." = "이 운동에서 해당 동작의 모든 세트가 삭제됩니다.";
+"This only removes it from the current workout. Save changes at the end to update the plan." = "현재 운동에서만 제거됩니다. 종료 시 저장하면 플랜이 갱신됩니다.";
+"This only removes the exercise from this plan, not from your library." = "이 플랜에서만 제거되며, 동작 라이브러리에는 영향이 없습니다.";
+
+/* 동작 상세 (해부/설명) */
+"Detail" = "세부";
+"Muscle" = "근육";
+"Equipment" = "장비";
+"None" = "없음";
+"Optional" = "선택";
+"How to do it" = "동작 방법";
+"Show full instructions" = "전체 설명 보기";
+"Show less" = "접기";
+
+/* 음성 안내 */
+"Listen" = "듣기";
+"Read instructions aloud" = "설명 읽어주기";
+"Stop reading" = "읽기 중지";
+"Stop" = "중지";
+
+/* 플랜 / 운동 편집 */
+"Edit" = "편집";
+"Long press to reorder" = "길게 눌러 순서 변경";
+"No exercises in this workout" = "이 운동에 동작이 없습니다";
+
+/* 공유 */
+"Share workout" = "운동 공유";
+
+/* 운동 종료 — 변경사항을 플랜에 반영 */
+"Skip & close" = "건너뛰고 닫기";
+"Save changes & end" = "저장하고 종료";
+"End without saving" = "저장하지 않고 종료";
+"Save changes to plan" = "플랜에 저장";
+"Saved to plan" = "플랜에 저장됨";
+"You changed sets, reps, weight, or order during this workout. Save the changes back to the plan?" = "이번 운동에서 세트, 반복, 무게, 순서를 변경했습니다. 플랜에 반영할까요?";
+"You changed some parameters during this workout." = "이번 운동 중 일부 설정을 변경했습니다.";
+
+/* 접근성 */
+"Show details for %@" = "%@ 세부 정보 보기";
+
+/* 온보딩 / Quick Workout 단계 */
+"STEP %lld / 2" = "단계 %lld / 2";
+"STEP %lld / 3" = "단계 %lld / 3";
+
+/* 근육 세분 안내 */
+"Enable \"Show muscle subdivisions\" in Settings to pick details like upper chest or rear delts." = "설정에서 \"근육 세분화\"를 켜면 상부 가슴이나 후면 삼각근 같은 세부 부위를 선택할 수 있어요.";
+
+/* 페이월 — 체험 안내 */
+"Free for 7 days, then %@. Cancel anytime in Settings." = "7일간 무료, 이후 %@. 설정에서 언제든 해지할 수 있어요.";
+
+/* PlanRationaleCard — 플랜 탭 */
+"FOR YOU" = "당신을 위한";
+"%lld days / week" = "주 %lld 회";
+"Focus: %@" = "중점: %@";
+"Full-body" = "전신";
+"Upper-lower split" = "상하체 분할";
+"Body-part split" = "부위별 분할";
+"Full-body coverage — each muscle group rotates through the week." = "전신을 고르게 — 각 근육 그룹이 한 주 안에서 순환합니다.";
+"High frequency — focus muscles hit 2–3× per week, accessories rotate for recovery." = "고빈도 구성 — 중점 근육은 주 2–3×, 보조 근육은 회복을 두고 교차 배치.";
+"Each focus muscle is trained 2× per week — enough stimulus, full recovery between." = "중점 근육은 주 2× — 충분한 자극과 사이의 완전한 회복을 함께.";
+"2× per week is enough to maintain steady progress — focus muscles rotate in." = "주 2× 면 꾸준한 진전을 유지하기에 충분 — 중점 근육이 순환해 등장합니다.";
+"Adjust training preferences" = "트레이닝 설정 조정";
+"FROM YOUR PLAN" = "내 플랜에서";
+"Weekly Workouts" = "주간 빈도";
+"White areas were just trained" = "흰색 영역은 방금 훈련한 근육";
+"Today's Status" = "오늘의 상태";
+
+/* ── Community (社区精选训练计划) ── */
+"Browse community plans" = "커뮤니티 운동 계획 둘러보기";
+"See what others train" = "다른 사람들의 운동 보기";
+"Community" = "커뮤니티";
+"Curated workout plans. Add any to your library." = "엄선된 운동 계획. 라이브러리에 추가하세요";
+"Want to publish your plan? Coming soon." = "내 계획을 공유하고 싶나요? 곧 출시";
+"Want to share your plan? Open it in Plans → tap Share." = "계획을 공유하고 싶나요? 계획에서 열고 → 공유를 탭하세요";
+"Share plan" = "계획 공유";
+"Imported plan" = "가져온 계획";
+"Got a plan from a friend? Tap Add to save it to your library." = "친구에게서 계획을 받았나요? 추가를 탭하여 라이브러리에 저장하세요";
+"Add to my plans" = "내 계획에 추가";
+"Added" = "추가됨";
+"Beginner" = "초보자";
+"Intermediate" = "중급";
+"Advanced" = "고급";
+"%lld days/wk" = "주 %lld회";
+"%lld exercises" = "운동 %lld개";
+"community_plan_beginner_fb_3day_name" = "초보자 전신 주 3회";
+"community_plan_beginner_fb_3day_desc" = "두 가지 세션을 번갈아 하며 주요 운동을 익히고 기초를 다집니다";
+"community_plan_5x5_strength_name" = "5x5 스트렝스";
+"community_plan_5x5_strength_desc" = "5회 무거운 바벨 운동 — Madcow 방식 선형 진행";
+"community_plan_ppl_6day_name" = "Push / Pull / Legs 주 6회";
+"community_plan_ppl_6day_desc" = "각 근육을 주 2회 — 고빈도 고볼륨";
+"community_plan_upper_lower_4day_name" = "상체 / 하체 주 4회";
+"community_plan_upper_lower_4day_desc" = "고전적인 중급 분할 — 근력과 비대 균형";
+"community_plan_bro_split_5day_name" = "브로 스플릿 주 5회";
+"community_plan_bro_split_5day_desc" = "보디빌딩 클래식 — 하루에 한 근육군";
+"community_plan_calisthenics_name" = "맨몸 운동 기초";
+"community_plan_calisthenics_desc" = "맨몸만으로 기초 근력 만들기";
+"community_plan_powerlifting_name" = "파워리프팅 프렙";
+"community_plan_powerlifting_desc" = "스쿼트 / 벤치 / 데드 — 3회 세트로 순수 근력 향상";
+"community_plan_push_pull_4day_name" = "푸시 / 풀 주 4회";
+"community_plan_push_pull_4day_desc" = "단순한 2분할 — 미는 근육과 당기는 근육 각 2회";
+"community_session_full_body_a" = "전신 A";
+"community_session_full_body_b" = "전신 B";
+"community_session_strength_a" = "스트렝스 A";
+"community_session_strength_b" = "스트렝스 B";
+"community_session_push_heavy" = "푸시 (헤비)";
+"community_session_pull_heavy" = "풀 (헤비)";
+"community_session_legs_quads" = "다리 (대퇴사두)";
+"community_session_upper" = "상체";
+"community_session_lower" = "하체";
+"community_session_chest_day" = "가슴 데이";
+"community_session_back_day" = "등 데이";
+"community_session_leg_day" = "다리 데이";
+"community_session_shoulder_day" = "어깨 데이";
+"community_session_arm_day" = "팔 데이";
+"community_session_push_day" = "푸시 데이";
+"community_session_pull_day" = "풀 데이";
+"community_session_legs_core_day" = "다리 + 코어";
+"community_session_squat_day" = "스쿼트 데이";
+"community_session_bench_day" = "벤치 데이";
+"community_session_deadlift_day" = "데드 데이";
+"community_session_accessory_day" = "보조 운동 데이";
+"community_session_push_simple" = "푸시";
+"community_session_pull_simple" = "풀";
+"Favorite" = "즐겨찾기";
+"Unfavorite" = "해제";
+
+/* StoreKit / IAP — Maso Pro */
+"Couldn't load subscription options. Try again later." = "구독 옵션을 불러올 수 없습니다. 잠시 후 다시 시도해 주세요.";
+"Purchase pending approval." = "구매 승인 대기 중입니다.";
+"Purchase verification failed. Try again or contact support." = "구매 인증에 실패했습니다. 다시 시도하거나 고객 지원에 문의하세요.";
+"Free for 7 days, then auto-renews. Cancel anytime in Settings." = "7일간 무료, 이후 자동 갱신됩니다. 언제든지 ‘설정’에서 취소할 수 있습니다.";
+
+/* History / 운동 기록 */
+"Workout photo" = "운동 사진";
+"Share muscle status" = "근육 상태 공유";
+"Toggle muscle status overlay" = "근육 상태 표시 전환";
+
+/* Deep link / plan sharing */
+"IMPORTED PLAN" = "가져온 플랜";
+"This Maso link is damaged or unsupported. Ask your friend to share again." = "이 Maso 링크가 손상되었거나 지원되지 않습니다. 친구에게 다시 공유를 요청하세요.";
+
+/* Misc */
+"details" = "세부 정보";
+
+/* Settings — Health & Safety + About */
+"Health & Safety" = "건강 및 안전";
+"About" = "정보";
+"Privacy Policy" = "개인정보 처리방침";
+"Terms of Service" = "서비스 약관";
+"Version" = "버전";
+"Maso is for informational and motivational purposes only — not medical advice. Consult a physician before starting any new exercise program, especially if you have a medical condition, are pregnant, or have not exercised recently. Stop immediately and seek help if you feel pain, dizziness, or shortness of breath." = "Maso는 정보 제공 및 동기 부여를 위한 것이며 의학적 조언이 아닙니다. 새로운 운동 프로그램을 시작하기 전에는 의사와 상담하세요. 특히 질환이 있거나 임신 중이거나 최근에 운동하지 않은 경우에는 반드시 확인이 필요합니다. 통증, 어지러움 또는 호흡 곤란이 느껴지면 즉시 중단하고 도움을 요청하세요.";

@@ -52,22 +52,27 @@ struct QuickWorkoutScreen: View {
 
     private var header: some View {
         HStack(spacing: 12) {
-            // 关闭 / 返回 — step 2 时变 < 返回到 step 1
+            // 关闭 / 返回 — step 1 用 "Cancel" 文字, step 2 用 chevron + 文字, 都跟 iOS 默认 nav bar 风格一致.
             Button(action: {
                 if step == 1 { dismiss() }
                 else { withAnimation(.easeOut(duration: 0.25)) { step = 1 } }
             }) {
-                // step 1 → xmark (关闭 sheet); step 2 → chevron.left (返回上一步),
-                // 跟 iOS 标准 nav bar 返回按钮一致.
-                Image(systemName: step == 1 ? "xmark" : "chevron.left")
-                    .font(.system(size: 14, weight: .bold))
+                if step == 1 {
+                    Text("Cancel")
+                        .font(.system(size: 16))
+                        .foregroundStyle(MasoColor.text)
+                } else {
+                    HStack(spacing: 4) {
+                        Image(systemName: "chevron.backward")
+                            .font(.system(size: 14, weight: .semibold))
+                        Text("Back")
+                            .font(.system(size: 16))
+                    }
                     .foregroundStyle(MasoColor.text)
-                    .frame(width: 30, height: 30)
-                    .background(MasoColor.surfaceHi)
-                    .clipShape(Circle())
+                }
             }
             .buttonStyle(.plain)
-            .accessibilityLabel(step == 1 ? "Close" : "Back")
+            .accessibilityLabel(step == 1 ? "Cancel" : "Back")
 
             Spacer()
             VStack(spacing: 2) {
@@ -80,8 +85,8 @@ struct QuickWorkoutScreen: View {
                     .foregroundStyle(MasoColor.text)
             }
             Spacer()
-            // 占位 — 让标题居中
-            Color.clear.frame(width: 30, height: 30)
+            // 占位 — 让标题视觉居中. 宽度大致等同左侧 button.
+            Color.clear.frame(width: 60, height: 30)
         }
         .padding(.top, 12)
         .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
@@ -201,6 +206,12 @@ private struct QuickMuscleStep: View {
     /// 同时 BodyHint 走 coarseOnly = true (合并描边).
     private var detailEnabled: Bool { data.settings.muscleDetailEnabled }
 
+    /// "显示肌肉状态" toggle — 默认 off. 开了之后 BodyHint 不再亮选中的肌肉,
+    /// 改成显示衰减热图 (跟 HistoryScreen 顶部 Muscle Status 卡片同款), 让用户挑肌群时
+    /// 能直观看出"哪些已经累了, 哪些可以练".
+    /// 状态只在选肌群步骤内本地, 不持久化 (用户每次新建 Quick workout 默认 off).
+    @State private var showMuscleStatus: Bool = false
+
     /// 选中的肌群的协同肌 (淡绿色显示) — 跟随 selected 自动算
     private var synergistsArr: [MuscleGroup] {
         Array(MuscleSynergy.synergists(for: selected))
@@ -218,25 +229,74 @@ private struct QuickMuscleStep: View {
             // hit-test 落到具体 sub (e.g. upperChest), 用 MuscleSelector.majorOf 折叠回 UI
             // 暴露的 major chip (chest / back / biceps / quads etc.), 让 tap = "选这一整块",
             // 跟 chip 操作语义一致.
+            //
+            // 当 showMuscleStatus = true 时切换到衰减热图模式: 传入 opacityFor 让 BodyHint
+            // 根据每个肌肉最近被训练的时间渲染, 用户看着衰减状况挑肌群.
+            // 此时点 tap 仍走 onMuscleTap (能直接点击未恢复肌肉填进去), 行为不变.
             HStack {
                 Spacer()
-                BodyHint(
-                    muscles: Array(selected),
-                    synergists: synergistsArr,
-                    height: MasoMetrics.bodyHintLarge,
-                    // region 也把协同肌算进去 — 选 chest 会带到 triceps, 必须保留 full 视图
-                    region: detectBodyRegion(Array(selected) + synergistsArr),
-                    onMuscleTap: { m in
-                        let key = MuscleSelector.majorOf(m)
-                        toggle(key)
-                        Haptics.tap()  // 轻触反馈 — 让 tap 操作有"已识别"的感觉
-                    },
-                    coarseOnly: !detailEnabled
-                )
+                if showMuscleStatus {
+                    let lastMap = MuscleStatusCompute.muscleLastTrainedMap(
+                        sets: data.sets, exById: data.exById
+                    )
+                    BodyHint(
+                        muscles: Array(selected),
+                        synergists: synergistsArr,
+                        height: MasoMetrics.bodyHintLarge,
+                        region: detectBodyRegion(Array(selected) + synergistsArr),
+                        opacityFor: { m in MuscleStatusCompute.opacityFor(muscle: m, lastMap: lastMap) },
+                        onMuscleTap: { m in
+                            let key = MuscleSelector.majorOf(m)
+                            toggle(key)
+                            Haptics.tap()
+                        },
+                        coarseOnly: !detailEnabled
+                    )
+                } else {
+                    BodyHint(
+                        muscles: Array(selected),
+                        synergists: synergistsArr,
+                        height: MasoMetrics.bodyHintLarge,
+                        // region 也把协同肌算进去 — 选 chest 会带到 triceps, 必须保留 full 视图
+                        region: detectBodyRegion(Array(selected) + synergistsArr),
+                        onMuscleTap: { m in
+                            let key = MuscleSelector.majorOf(m)
+                            toggle(key)
+                            Haptics.tap()  // 轻触反馈 — 让 tap 操作有"已识别"的感觉
+                        },
+                        coarseOnly: !detailEnabled
+                    )
+                }
                 Spacer()
             }
             .padding(.top, 12)
             .padding(.bottom, 2)
+
+            // "显示肌肉状态" 小按钮 — 把 BodyHint 从默认 "选中高亮" 切到 decay overlay 模式.
+            // 现在的行为: 开了之后, 选中部位仍然在分区图里亮起来; 若选中的部位"刚练完" (满 opacity),
+            // 用白色警告颜色显示, 提醒用户这块刚练.
+            HStack {
+                Spacer()
+                muscleStatusButton
+                Spacer()
+            }
+            .padding(.bottom, 6)
+
+            // 警告 hint — 选中的肌肉里有"刚练完"的, 提示用户白色 = 刚练完
+            if showMuscleStatus && anySelectedJustTrained {
+                HStack(spacing: 6) {
+                    Circle().fill(.white).frame(width: 7, height: 7)
+                    Text("White areas were just trained")
+                        .font(.system(size: 11, weight: .semibold))
+                        .foregroundStyle(MasoColor.text)
+                }
+                .padding(.horizontal, 10)
+                .padding(.vertical, 5)
+                .background(MasoColor.surfaceHi)
+                .clipShape(Capsule())
+                .padding(.bottom, 6)
+                .transition(.opacity)
+            }
 
             // 颜色讲解 legend — 跟标题 / chip 一起左对齐 (除了顶部 BodyHint, 其它都靠左).
             legendStrip
@@ -294,7 +354,50 @@ private struct QuickMuscleStep: View {
         if cleaned != selected { selected = cleaned }
     }
 
+    /// 选中的肌群里是否有刚练完 (opacity 满) 的 — 用来决定是否显示白色警告 hint
+    private var anySelectedJustTrained: Bool {
+        guard showMuscleStatus, !selected.isEmpty else { return false }
+        let lastMap = MuscleStatusCompute.muscleLastTrainedMap(
+            sets: data.sets, exById: data.exById
+        )
+        let expanded = expandAnatomyMuscles(Array(selected))
+        for m in expanded {
+            if let op = MuscleStatusCompute.opacityFor(muscle: m, lastMap: lastMap), op >= 0.95 {
+                return true
+            }
+        }
+        return false
+    }
+
     // MARK: - Legend (under body image) + section header
+
+    /// "显示肌肉状态" 小 chip 按钮 — 两态:
+    ///   - off (默认): outline lightbulb + textDim 灰 + surface 底, 视觉低调
+    ///   - on (点亮):  lightbulb.fill + 黑字 + accent 实底, 醒目
+    /// 比之前的全宽 Toggle 小很多, 更适合放在 BodyHint 下方做"开关".
+    @ViewBuilder
+    private var muscleStatusButton: some View {
+        Button {
+            withAnimation(.easeOut(duration: 0.2)) {
+                showMuscleStatus.toggle()
+            }
+            Haptics.tap()
+        } label: {
+            HStack(spacing: 5) {
+                Image(systemName: showMuscleStatus ? "lightbulb.fill" : "lightbulb")
+                    .font(.system(size: 11, weight: .bold))
+                Text("Muscle Status")
+                    .font(.system(size: 11, weight: .semibold))
+            }
+            .foregroundStyle(showMuscleStatus ? .black : MasoColor.textDim)
+            .padding(.horizontal, 10)
+            .padding(.vertical, 6)
+            .background(showMuscleStatus ? MasoColor.accent : MasoColor.surface)
+            .clipShape(Capsule())
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel("Toggle muscle status overlay")
+    }
 
     /// 颜色讲解 strip — 放在 BodyHint 正下方靠左 (跟 Target Muscles header / chip 左对齐统一).
     /// 只在用户有选中 (产生协同肌) 时出现, 不抢初始焦点
@@ -648,61 +751,71 @@ private struct QuickExerciseStep: View {
     private func exerciseRow(_ scored: ScoredExercise) -> some View {
         let ex = scored.exercise
         let picked = pickedIds.contains(ex.id)
-        // 视觉跟"训练中" InlinePlaylist.playlistRow 完全对齐 — 全 app 动作行统一规格.
-        // 唯一不同: trailing 区有 MatchBadge + picked indicator (保留 picker 特有的交互).
-        // 双 hit-zone: 图片是独立 Button (tap → 详情), 整行其余区域 onTapGesture 切 picked.
-        return HStack(spacing: 14) {
-            Button(action: { detailExercise = ex }) {
-                ExerciseImage(
-                    category: ex.category,
-                    imageFolder: ex.imageFolder,
-                    cornerRadius: 8,
-                    size: 56,
-                    animated: false
-                )
-            }
-            .buttonStyle(.plain)
-            .accessibilityLabel(String(format: NSLocalizedString("Show details for %@", comment: "exercise detail a11y"), ex.displayName))
+        let isFav = data.isFavorite(ex.id)
+        // SwipeableRow 包裹 — 左滑 Favorite/Unfavorite; tap toggle picked (跟原行为一致).
+        return SwipeableRow(
+            content: {
+                HStack(spacing: 14) {
+                    Button(action: { detailExercise = ex }) {
+                        ExerciseImage(
+                            category: ex.category,
+                            imageFolder: ex.imageFolder,
+                            cornerRadius: 8,
+                            size: 56,
+                            animated: false
+                        )
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(String(format: NSLocalizedString("Show details for %@", comment: "exercise detail a11y"), ex.displayName))
 
-            VStack(alignment: .leading, spacing: 5) {
-                Text(ex.displayName)
-                    .font(.system(size: 15, weight: .bold))
-                    .foregroundStyle(MasoColor.text)
-                    .lineLimit(1)
-                // muscleLimit 0 — 这页按 muscle section 分组渲染, muscle 信息冗余, 只显 equipment.
-                ExerciseTagsRow(
-                    muscleGroups: ex.muscleGroups,
-                    equipment: ex.equipment,
-                    muscleLimit: 0
+                    VStack(alignment: .leading, spacing: 5) {
+                        Text(ex.displayName)
+                            .font(.system(size: 15, weight: .bold))
+                            .foregroundStyle(MasoColor.text)
+                            .lineLimit(1)
+                        ExerciseTagsRow(
+                            muscleGroups: ex.muscleGroups,
+                            equipment: ex.equipment,
+                            muscleLimit: 0
+                        )
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    if isFav {
+                        Image(systemName: "heart.fill")
+                            .font(.system(size: 12, weight: .heavy))
+                            .foregroundStyle(MasoColor.accent)
+                    }
+                    MatchBadge(score: scored.score)
+                    Image(systemName: picked ? "checkmark.circle.fill" : "plus.circle")
+                        .font(.system(size: 20, weight: .semibold))
+                        .foregroundStyle(picked ? MasoColor.accent : MasoColor.textFaint)
+                }
+                .padding(.horizontal, MasoMetrics.rowPaddingH)
+                .padding(.vertical, 10)
+                .background(picked ? MasoColor.accent.opacity(0.10) : MasoColor.surface)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 14)
+                        .stroke(picked ? MasoColor.accent.opacity(0.4) : Color.clear, lineWidth: 1)
                 )
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            // 收藏标记 — 排序已经把 favorites 置顶, 这里再加 icon 视觉确认
-            if data.isFavorite(ex.id) {
-                Image(systemName: "heart.fill")
-                    .font(.system(size: 12, weight: .heavy))
-                    .foregroundStyle(MasoColor.accent)
-            }
-            // 匹配度 badge — 跟 web 的 MatchBadge 一致
-            MatchBadge(score: scored.score)
-            // 选中状态
-            Image(systemName: picked ? "checkmark.circle.fill" : "plus.circle")
-                .font(.system(size: 20, weight: .semibold))
-                .foregroundStyle(picked ? MasoColor.accent : MasoColor.textFaint)
-        }
-        .padding(.horizontal, MasoMetrics.rowPaddingH)
-        .padding(.vertical, 10)
-        .background(picked ? MasoColor.accent.opacity(0.10) : MasoColor.surface)
-        .overlay(
-            RoundedRectangle(cornerRadius: 14)
-                .stroke(picked ? MasoColor.accent.opacity(0.4) : Color.clear, lineWidth: 1)
+                .clipShape(RoundedRectangle(cornerRadius: 14))
+            },
+            actions: [
+                SwipeAction(
+                    label: isFav ? "Unfavorite" : "Favorite",
+                    systemImage: "heart",
+                    color: MasoColor.accent,
+                    foreground: .black,
+                    action: {
+                        data.toggleFavorite(ex.id)
+                        Haptics.tap()
+                    }
+                )
+            ],
+            onContentTap: {
+                if picked { pickedIds.remove(ex.id) } else { pickedIds.insert(ex.id) }
+            },
+            cornerRadius: 14
         )
-        .clipShape(RoundedRectangle(cornerRadius: 14))
-        // tap 行其它区域 → toggle picked. 图片那块 Button 优先级更高, 不会触发这个.
-        .contentShape(Rectangle())
-        .onTapGesture {
-            if picked { pickedIds.remove(ex.id) } else { pickedIds.insert(ex.id) }
-        }
     }
 
     /// 给定 muscle, 找到匹配度 top-6 的 strength + cardio + flexibility 动作 (应用 equipment 筛选)

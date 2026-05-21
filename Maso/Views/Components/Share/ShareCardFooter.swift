@@ -50,9 +50,6 @@ struct SharePhotoBanner: View {
                             Text("Add a photo")
                                 .font(.system(size: 14, weight: .semibold))
                                 .foregroundStyle(MasoColor.textDim)
-                            Text("Optional")
-                                .font(.system(size: 11))
-                                .foregroundStyle(MasoColor.textFaint)
                         }
                     }
                     .background(MasoColor.surface.opacity(0.4))
@@ -83,7 +80,7 @@ struct ShareCardFooter: View {
                     MasoMarkIcon(color: MasoColor.accent)
                         .frame(width: 32, height: 32)
                     VStack(alignment: .leading, spacing: 1) {
-                        Text("MASO")
+                        Text(verbatim: "MASO")
                             .font(.system(size: 13, weight: .heavy))
                             .tracking(2)
                             .foregroundStyle(MasoColor.text)

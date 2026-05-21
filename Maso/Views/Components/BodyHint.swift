@@ -195,22 +195,39 @@ struct BodyHint: View {
         let dx = origin.x + (panelSize.width - drawW) / 2
         let dy = origin.y + (panelSize.height - drawH) / 2
 
-        // 圆角半径 — anatomy 单位下 2.5, 比 web 端 1.4 更柔和,
-        // 让肌肉块边角圆润不生硬. 转到 pixel 坐标乘以 scale.
+        // 圆角半径 — anatomy 单位下 2.5, 比 web 端 1.4 更柔和.
+        // 转到 pixel 坐标乘以 scale.
         let cornerRadius = 2.5 * s
 
         let idleGray = Color(red: 0.165, green: 0.165, blue: 0.165)  // #2A2A2A
         // 协同肌的填色 — 35% 透明的 accent, 跟 web 的 rgba(30,215,96,0.35) 对齐.
         // 用 opacity 表达即可, Canvas 会做 alpha blend.
         let synergistColor = color.opacity(0.35)
+        // 是否复合模式 (decay 底 + selected overlay) — caller 同时传 opacityFor 和 muscles 时启用
+        let isCombinedMode = (opacityFor != nil) && !muscles.isEmpty
         for poly in polys {
             guard poly.points.count >= 3 else { continue }
             let fillColor: Color
             if poly.muscle == .fullBody {
                 fillColor = idleGray
+            } else if isCombinedMode, let opacityFor {
+                // 复合模式: 衰减底 + 选中 overlay.
+                // - 选中 + 满 opacity (刚练完) → 白色警告
+                // - 选中 + 部分衰减 → accent (正常选中)
+                // - 协同肌 → synergistColor
+                // - 未选 → 衰减 opacity (history mode 同款)
+                let isSelected = expanded.contains(poly.muscle)
+                let isSyn = !isSelected && synergistsExpanded.contains(poly.muscle)
+                let op = opacityFor(poly.muscle) ?? 0
+                if isSelected {
+                    fillColor = op >= 0.95 ? Color.white : color
+                } else if isSyn {
+                    fillColor = synergistColor
+                } else {
+                    fillColor = op > 0 ? color.opacity(op) : idleGray
+                }
             } else if let opacityFor {
-                // History 衰减模式: caller 决定每个 muscle 的 opacity.
-                // 0/nil → 默认灰底 ("需补"); 否则 accent * opacity.
+                // 纯衰减模式 (没 selected): caller 决定每个 muscle 的 opacity.
                 let op = opacityFor(poly.muscle) ?? 0
                 fillColor = op > 0 ? color.opacity(op) : idleGray
             } else {
@@ -243,6 +260,9 @@ struct BodyHint: View {
 
 /// 给闭合多边形做圆角处理 — 每个顶点用 quadCurve 替换直角 (跟 web 端 roundedPath 等效)
 /// radius 单位 = 跟传入 pts 同一坐标系
+///
+/// v3.5 起 anatomy 数据用 sub polygon 共享 major 外轮廓 vertex (而不是 splitHorizontalY 切片),
+/// 所以不再需要识别"水平切割边". 每个顶点统一施加圆角 (受相邻 edge 长度限制).
 private func roundedPolygonPath(_ pts: [CGPoint], radius: CGFloat) -> Path {
     let n = pts.count
     var path = Path()
@@ -252,7 +272,6 @@ private func roundedPolygonPath(_ pts: [CGPoint], radius: CGFloat) -> Path {
         path.closeSubpath()
         return path
     }
-    // 每个顶点 cur, 计算从 prev 进入的剪短点 + 朝 next 出去的剪短点, quadCurve 连起来
     var enterPoints: [CGPoint] = []
     var exitPoints: [CGPoint] = []
     for i in 0..<n {
@@ -265,7 +284,6 @@ private func roundedPolygonPath(_ pts: [CGPoint], radius: CGFloat) -> Path {
         let dyNext = next.y - cur.y
         let lenPrev = max(0.0001, sqrt(dxPrev * dxPrev + dyPrev * dyPrev))
         let lenNext = max(0.0001, sqrt(dxNext * dxNext + dyNext * dyNext))
-        // 半径不能超过 edge 长度的一半 (避免相邻顶点的圆角重叠)
         let r = min(radius, min(lenPrev, lenNext) * 0.5)
         let enter = CGPoint(x: cur.x + dxPrev / lenPrev * r,
                             y: cur.y + dyPrev / lenPrev * r)
@@ -274,13 +292,10 @@ private func roundedPolygonPath(_ pts: [CGPoint], radius: CGFloat) -> Path {
         enterPoints.append(enter)
         exitPoints.append(exit)
     }
-    // 起点从 exitPoints[0] 开始 (= 顶点 0 出去那侧)
     path.move(to: exitPoints[0])
     for i in 0..<n {
         let next = (i + 1) % n
-        // 从 exit[i] 直线到 enter[next]
         path.addLine(to: enterPoints[next])
-        // 在 next 顶点处做圆角: quadCurve, 控制点 = 真实顶点
         path.addQuadCurve(to: exitPoints[next], control: pts[next])
     }
     path.closeSubpath()

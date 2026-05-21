@@ -207,9 +207,12 @@ final class TrainingSessionStore {
     func advance(record: ((SetRecord) -> Void)? = nil) {
         guard var s = session else { return }
         let curWasRest = currentSegment?.isRest ?? false
+        // "完成组" 触觉 + 上行 chime — 适用于 manual-confirm 类型的组
+        // (打勾按钮: strength + flexibility). cardio 自动倒计时不算 — 倒计时结束已有
+        // restEnded 的反馈, 不再二次提示.
         let curWasStrength: Bool = {
             if case .exercise(let ex, _, _, _, _, _, let countdown) = currentSegment?.kind {
-                return ex.category == .strength && !countdown
+                return !countdown && (ex.category == .strength || ex.category == .flexibility)
             }
             return false
         }()

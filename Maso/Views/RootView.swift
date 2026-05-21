@@ -1,6 +1,11 @@
 import HealthKit
 import SwiftUI
 
+// Tab 顺序 (左 → 中 → 右) = today / plans / history.
+// 之前是 plans / today / history (today 在中间 big circle), 用户决定让 plans 上位中间 hub.
+// 注意 enum case 的"声明顺序"和"UI 显示顺序"现在分开管理:
+//   - case 排列保留 (避免影响其他用 RootTab 的代码)
+//   - UI 实际渲染顺序在 TabBarView 里手动按 today → plans → history 排
 enum RootTab: Hashable { case plans, today, history }
 
 // 顶级路由 — 跟 web 端 App.tsx 1:1
@@ -33,6 +38,10 @@ struct RootView: View {
     @State private var lastCreatedPlanId: String?
     /// Free 用户撞到 plan 上限时弹的 paywall
     @State private var paywallPresented: Bool = false
+    /// Imported plan from maso:// deep link — set ≠ nil 时弹 ImportedPlanSheet
+    @State private var importedPlan: Plan? = nil
+    /// 解析 deep link 出错 (base64 invalid / JSON invalid / 链接残破) → 弹通用错误 alert
+    @State private var importFailed: Bool = false
 
     /// Marketing screenshot mode — set MASO_SHOWCASE env var on simulator launch to land on a specific screen.
     /// Values: today (default) / history / settings / player / free_workout / rest
@@ -73,74 +82,39 @@ struct RootView: View {
             OnboardingScreen { /* onDone */ }
                 .transition(.opacity)
         } else {
-            ZStack(alignment: .bottom) {
-                MasoColor.background.ignoresSafeArea()
+            // iOS 默认 TabView — 3 个 tab 用系统标准 bar
+            // MiniBar 通过 .safeAreaInset(edge:.bottom) 应用到每个 tab 的内容上
+            // (而不是整个 TabView), 这样系统 TabBar 始终留在底部, MiniBar 紧贴 TabBar 上方,
+            // 两者并排显示. 之前在 TabView 上加 safeAreaInset 会出现 MiniBar 跟 TabBar
+            // 视觉粘在一起像一个大方块的情况.
+            TabView(selection: $tab) {
+                TodayScreen(
+                    onStart: startTraining,
+                    onFreeWorkout: { quickWorkoutPresented = true },
+                    onOpenSettings: { settingsPresented = true }
+                )
+                .safeAreaInset(edge: .bottom, spacing: 0) { miniBarContent }
+                .tabItem {
+                    Label("Today", systemImage: "figure.strengthtraining.traditional")
+                }
+                .tag(RootTab.today)
 
-                // 主屏内容
-                Group {
-                    switch tab {
-                    case .plans:    PlansScreen(onStart: startTraining, onNewPlan: handleNewPlan)
-                    case .today:    TodayScreen(
-                                        onStart: startTraining,
-                                        onFreeWorkout: { quickWorkoutPresented = true }
-                                    )
-                    case .history:  HistoryScreen(onReplay: startTraining)
+                PlansScreen(onStart: startTraining, onNewPlan: handleNewPlan)
+                    .safeAreaInset(edge: .bottom, spacing: 0) { miniBarContent }
+                    .tabItem {
+                        Label("Plans", systemImage: "list.bullet")
                     }
-                }
-                .safeAreaInset(edge: .bottom) {
-                    // MiniBar (60pt) 出现时, 给上面的主屏多让 60pt 空间, 避免内容被 MiniBar 盖住
-                    Color.clear.frame(
-                        height: MasoMetrics.bottomNavHeight + (hasActiveSession ? 60 : 0)
-                    )
-                }
+                    .tag(RootTab.plans)
 
-                // 右上角浮动按钮 — 按当前 tab 切换:
-                //   Today / Plans → + (新建一份训练计划)
-                //   History → ⚙ (设置)
-                VStack {
-                    HStack {
-                        Spacer()
-                        topRightAction
-                            .padding(12)
+                HistoryScreen(onReplay: startTraining)
+                    .safeAreaInset(edge: .bottom, spacing: 0) { miniBarContent }
+                    .tabItem {
+                        Label("Muscle Status", systemImage: "clock.fill")
                     }
-                    Spacer()
-                }
-                .padding(.top, 8).padding(.trailing, 4)
-
-                // 首次提示气泡 — 指向中间 Tab 的开始训练按钮.
-                // 只在 (1) 用户没看过过 (2) 没有 active session (3) 当前在 Today tab 时显示.
-                // 任意位置 tap / 中间 tab tap → flag = true, 消失.
-                if shouldShowCenterTabHint {
-                    centerTabHint
-                        .transition(.opacity.combined(with: .scale(scale: 0.92)))
-                        .zIndex(50)
-                }
-
-                // 底部: MiniBar (训练中) + TabBar
-                VStack(spacing: 0) {
-                    if hasActiveSession, let seg = session.currentSegment {
-                        TrainingMiniBar(
-                            segment: seg,
-                            playing: session.session?.playing ?? true,
-                            remaining: session.remainingSeconds,
-                            nextExercise: nextExerciseAfter(seg),
-                            isCrossExercise: isCrossExerciseRest(seg),
-                            onTap: { playerPresented = true },
-                            onAdvance: { session.advance { rec in data.recordSet(rec) } },
-                            onTogglePlay: { session.togglePlay() }
-                        )
-                        .transition(.move(edge: .bottom).combined(with: .opacity))
-                    }
-                    TabBarView(
-                        selection: $tab,
-                        onCenterPrimary: handleCenterPrimary,
-                        // 中间 tab 长按菜单的 "New workout" — 走跟 Plans + 按钮同款的"新建空白 plan → 编辑详情"流程.
-                        // 之前是拉 QuickWorkoutScreen, 现在 unify (那个 muscle picker 入口留在 Today card 下方).
-                        onNewWorkout: handleNewPlan
-                    )
-                }
-                .animation(.easeOut(duration: 0.25), value: hasActiveSession)
+                    .tag(RootTab.history)
             }
+            .tint(MasoColor.accent)
+            .animation(.easeOut(duration: 0.25), value: hasActiveSession)
             // 1Hz tick — 不管 PlanPlayer sheet 开没开, 只要有 active session 就在 tick.
             // 之前 SessionTickerView 只挂在 PlanPlayerScreen 里, sheet 一收 timer 也跟着停,
             // MiniBar 上的倒计时就定住了. 挪到 RootView 顶层后, MiniBar 跟 Player 都靠它驱动.
@@ -202,6 +176,41 @@ struct RootView: View {
             .sheet(isPresented: $quickWorkoutPresented) {
                 QuickWorkoutScreen(onStart: startTraining)
             }
+            // maso://import?plan=<base64> — 拦截 deep link, 解码 → 弹 ImportedPlanSheet.
+            // 失败 (链接残破 / base64 invalid / JSON 解码错) 弹通用 alert, 不静默吞掉.
+            .onOpenURL { url in
+                if let plan = PlanShareCodec.decodePlan(from: url) {
+                    importedPlan = plan
+                } else if url.scheme == PlanShareCodec.urlScheme {
+                    // 是我们的 scheme 但内容坏掉 — 才报错;
+                    // 别的 scheme (不太可能, 因为系统按 scheme 路由) 默认忽略.
+                    importFailed = true
+                }
+            }
+            // Imported plan 预览 sheet — 用户在外面点 maso:// 链接 → 在这里弹
+            .sheet(item: $importedPlan) { plan in
+                ImportedPlanSheet(
+                    plan: plan,
+                    onAdd: { p in
+                        // 先 dismiss sheet 再写 data — 跟 community add 同步骤,
+                        // 防 sheet 关闭过渡中引用的旧 plan 副本闪一下.
+                        importedPlan = nil
+                        DispatchQueue.main.async {
+                            data.plans.append(p)
+                            data.save()
+                            Haptics.tap()
+                            // 落到 Plans tab, 让用户看到新加的 plan
+                            tab = .plans
+                        }
+                    }
+                )
+                .presentationDetents([.medium, .large])
+            }
+            .alert("Invalid plan link", isPresented: $importFailed) {
+                Button("OK", role: .cancel) {}
+            } message: {
+                Text("This Maso link is damaged or unsupported. Ask your friend to share again.")
+            }
             // + 按钮创建的新 plan — 关 sheet 时如果空了自动清理
             .sheet(item: $newPlanForEdit, onDismiss: {
                 if let planId = lastCreatedPlanId { data.removePlanIfEmpty(planId) }
@@ -244,48 +253,22 @@ struct RootView: View {
         }
     }
 
-    /// Tab 切换决定右上角浮动按钮: Today → +, Plans → 无 (按钮挪到 PlansScreen 的标题行了),
-    /// History → ⚙
+    /// Tab 切换决定右上角浮动按钮:
+    ///   - 所有 tab 都不再用 RootView 右上角浮动按钮 — Today 的 settings 入口
+    ///     挪到 TodayScreen 标题行里, 跟 GOOD AFTERNOON 同一 section 视觉对齐.
     @ViewBuilder
     private var topRightAction: some View {
-        switch tab {
-        case .today:
-            Button(action: handleNewPlan) {
-                Image(systemName: "plus")
-                    .font(.system(size: 18, weight: .bold))
-                    .foregroundStyle(MasoColor.text)
-                    .frame(width: 34, height: 34)
-                    .background(MasoColor.surface.opacity(0.9))
-                    .clipShape(Circle())
-            }
-            .buttonStyle(.plain)
-            .accessibilityLabel("New workout")
-        case .plans:
-            EmptyView()  // + 按钮已经在 PlansScreen 标题行里
-        case .history:
-            Button { settingsPresented = true } label: {
-                Image(systemName: "gearshape.fill")
-                    .font(.system(size: 16, weight: .semibold))
-                    .foregroundStyle(MasoColor.textDim)
-                    .frame(width: 34, height: 34)
-                    .background(MasoColor.surface.opacity(0.9))
-                    .clipShape(Circle())
-            }
-            .buttonStyle(.plain)
-            .accessibilityLabel("Settings")
-        }
+        EmptyView()
     }
 
     /// + 按钮 — 建一个空白 plan, 弹出编辑 sheet.
     ///
-    /// ⚠️ TODO[deploy-restore-paywall]: 测试阶段暂时关掉了"撞 plan 上限弹 paywall" 的检查,
-    /// 用户不论 free / pro 都能直接新建. **deploy 前必须恢复下面注释的 4 行**, 否则 free
-    /// 用户能无限新建 plan, 失去付费动力. (项目根 PRE_DEPLOY.md 也记了这一项.)
+    /// Free 用户撞到 plan 上限 (FreeLimit.maxPlans) 弹 paywall; Pro 用户无限新建.
     private func handleNewPlan() {
-        // if !data.settings.isPro && data.plans.count >= FreeLimit.maxPlans {
-        //     paywallPresented = true
-        //     return
-        // }
+        if !data.settings.isPro && data.plans.count >= FreeLimit.maxPlans {
+            paywallPresented = true
+            return
+        }
         let plan = data.createBlankPlan()
         lastCreatedPlanId = plan.id
         newPlanForEdit = plan
@@ -295,6 +278,25 @@ struct RootView: View {
     private var hasActiveSession: Bool {
         guard let s = session.session else { return false }
         return !s.completed && session.currentSegment != nil
+    }
+
+    /// MiniBar 内容 — 给每个 tab 的 .safeAreaInset 复用. 用 @ViewBuilder 让它能在
+    /// hasActiveSession=false 时返回 EmptyView (MiniBarHost 会判断是否实际渲染).
+    @ViewBuilder
+    private var miniBarContent: some View {
+        if hasActiveSession, let seg = session.currentSegment {
+            TrainingMiniBar(
+                segment: seg,
+                playing: session.session?.playing ?? true,
+                remaining: session.remainingSeconds,
+                nextExercise: nextExerciseAfter(seg),
+                isCrossExercise: isCrossExerciseRest(seg),
+                onTap: { playerPresented = true },
+                onAdvance: { session.advance { rec in data.recordSet(rec) } },
+                onTogglePlay: { session.togglePlay() }
+            )
+            .transition(.move(edge: .bottom).combined(with: .opacity))
+        }
     }
 
     private func nextExerciseAfter(_ cur: Segment) -> Exercise? {
@@ -329,8 +331,8 @@ struct RootView: View {
     }
 
     private func handleCenterPrimary() {
-        // 1) 不在 Today tab → 优先切到 Today (即使训练中也是先切 tab, 不直接拉 player).
-        //    这样"训练中点中间 tab" 第一下是回 Today, 第二下才唤起 player.
+        // 大圆按钮 (左侧) = Today tab.
+        // 1) 不在 Today tab → 切到 Today (跟其他 side tab tap 行为一致).
         if tab != .today {
             tab = .today
             return
@@ -340,12 +342,9 @@ struct RootView: View {
             playerPresented = true
             return
         }
-        // 3) 已在 Today + 没训练 → 看 quickStart 开关; 如果开了, 直接开练今日推荐
+        // 3) 已在 Today + 没训练 → quickStart 开了就直接开练今日推荐 (muscle memory: 选中 tab 再点 = 开始)
         let quickStart = data.settings.quickStartOnActiveTab
         guard quickStart else { return }
-        // 跟 TodayScreen.suggested 一致 — aiTodayPlan 优先, fallback 系统推荐.
-        // 之前只用 todayRecommendedPlan 导致跟 Today 卡片显示的 plan 不一致, 而且没 guard
-        // plan.steps 为空 → expandPlan 返回 [] → currentSegment nil → 空白训练屏 bug.
         let plan = data.aiTodayPlan ?? data.todayRecommendedPlan
         guard let plan, !plan.steps.isEmpty else { return }
         startTraining(plan)
@@ -409,12 +408,11 @@ struct RootView: View {
 
     // MARK: - 首次提示
 
-    /// 是否应该展示首次"中间 tab"提示
+    /// 是否应该展示首次"中间 tab"提示.
+    /// 现在中间 tab 是 plans (不再是 today), 原文案"Tap to start today's workout"语义不再对,
+    /// 暂时关掉. Today tab 上 WorkoutCard 自带 play button 已经是显眼的开始训练入口.
     private var shouldShowCenterTabHint: Bool {
-        !hasSeenCenterTabHint
-            && !hasActiveSession
-            && tab == .today
-            && data.settings.onboardingCompleted
+        false
     }
 
     /// 把 hint 标成已读 — 第一次 tap 任意位置后调.
@@ -525,3 +523,4 @@ private struct Triangle: Shape {
         return p
     }
 }
+

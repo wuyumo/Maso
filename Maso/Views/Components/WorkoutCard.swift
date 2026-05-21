@@ -3,13 +3,25 @@ import SwiftUI
 // 今日训练卡片 — Home 页核心元素
 // 跟 web 端 WorkoutCard.tsx 对应: 显示 plan 名 + 推断肌群 BodyHint + 步骤摘要 + 大开始按钮
 struct WorkoutCard: View {
+    @Environment(DataStore.self) private var data
+
     let plan: Plan
     let exById: [String: Exercise]
-    var kicker: String = "Recommended"
+    /// Caller 显式覆盖卡片顶部 kicker (e.g. "TODAY"). 默认 nil → 内部 derive:
+    ///   - AI 生成 → 不显示 (AI badge 已表达)
+    ///   - 该 plan 在用户的 plans 数组里 → "FROM YOUR PLAN" (今日推荐时让用户知道来自自己的计划)
+    ///   - 其他 → 不显示
+    /// 显式传 "" 可以强制不显示.
+    var kicker: String? = nil
     var onStart: () -> Void
     /// 可选 — 整张卡可点查看 plan 详情 (动作列表 + sets/reps/weight).
     /// 当 caller 传了这个 callback, 卡片整体变成 button. 没传 → 纯展示.
     var onShowDetail: (() -> Void)? = nil
+
+    /// 被 LimitedFlowLayout 截断的 exercise pill 个数 — 用于动态构造 "+N more" 文案.
+    /// Layout 在 placeSubviews 里通过 onTruncate callback async 写回, SwiftUI 下一轮 re-render
+    /// 拿到正确数字. 一般 1-2 帧就稳定 (truncated 数收敛即停).
+    @State private var truncatedCount: Int = 0
 
     private var inferredMuscles: [MuscleGroup] {
         var seen = Set<MuscleGroup>()
@@ -38,11 +50,11 @@ struct WorkoutCard: View {
         return out
     }
 
-    /// 今天会练的动作名预览 — 前 4 个 step. 超出在 UI 用 "+N more" chip 兜底.
+    /// 今天会练的动作名预览 — 全部 step 都拿到, LimitedFlowLayout 负责"最多 3 行 + 自动 +N".
     /// 跟 summarizedMuscles 不一样, 这个列具体动作 (e.g. "Bench Press") 而非部位 (e.g. "Chest").
     /// 用户视角更直接 — "今天要做什么"比"今天练什么部位"更可执行.
     private var exercisePreview: [String] {
-        plan.steps.prefix(4).compactMap { step in
+        plan.steps.compactMap { step in
             // 用 displayName 而非 raw name — 中文环境下 chip 跟点开后的标题语言一致
             exById[step.exerciseId]?.displayName
         }
@@ -55,8 +67,42 @@ struct WorkoutCard: View {
         plan.id.hasPrefix("plan-ai-")
     }
 
+    /// 该 plan 是不是用户自己 plans 数组里挑的 (今日推荐走 pickTodayPlan 命中用户某条 plan).
+    /// 用来在卡片顶部显示 "FROM YOUR PLAN" — 让用户明确"今日卡 = 我自己设的计划"而非随机生成.
+    private var isFromUserPlan: Bool {
+        data.plans.contains(where: { $0.id == plan.id })
+    }
+
+    /// 实际渲染的 kicker 文案. nil → 不渲染 kicker 行.
+    /// 优先级: caller 显式覆盖 > AI 屏蔽 > Plan source > nil
+    private var resolvedKicker: String? {
+        // Caller 显式传值 (包括 "") — 完全交给 caller. 空串视为"强制不显示".
+        if let k = kicker {
+            return k.isEmpty ? nil : NSLocalizedString(k, comment: "WorkoutCard kicker")
+        }
+        // AI 已经有 badge, kicker 不重复表达来源
+        if isAIGenerated { return nil }
+        if isFromUserPlan {
+            return NSLocalizedString("FROM YOUR PLAN", comment: "Today card source — user plan")
+        }
+        return nil
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
+            // Kicker 行 — 表达来源 (FROM YOUR PLAN / 来自训练计划).
+            // accent 绿小 caps + 大字距, 跟 TodayScreen 顶部"GOOD AFTERNOON"同款风格.
+            // resolvedKicker == nil 时整行不渲染 (AI 生成 / 没匹配到 plan / caller 显式置空).
+            if let kicker = resolvedKicker {
+                Text(kicker)
+                    .font(.system(size: 10, weight: .heavy))
+                    .tracking(1.5)
+                    .foregroundStyle(MasoColor.accent)
+                    .padding(.horizontal, MasoMetrics.cardPadding)
+                    .padding(.top, MasoMetrics.cardPadding + 8)
+                    .padding(.bottom, 4)
+            }
+
             // 标题行: [AI badge] + plan name + 右侧 chevron 进 detail
             HStack(alignment: .center, spacing: 8) {
                 if isAIGenerated {
@@ -87,7 +133,8 @@ struct WorkoutCard: View {
                 }
             }
             .padding(.horizontal, MasoMetrics.cardPadding)
-            .padding(.top, MasoMetrics.cardPadding + 8)
+            // 有 kicker 时, 上 padding 已经在 kicker 行给了, title 只给一点点隔行 spacing
+            .padding(.top, resolvedKicker == nil ? MasoMetrics.cardPadding + 8 : 0)
 
             // exercises · sets — 单行文字格式, 跟 Plans tab 的 PlanRow 一致 (不再用 pill capsule)
             Text("\(pluralizedExercises(plan.steps.count)) · \(pluralizedSets(plan.steps.reduce(0) { $0 + $1.sets }))")
@@ -107,17 +154,24 @@ struct WorkoutCard: View {
             .padding(.top, 24)
             .padding(.bottom, 20)
 
-            // 卡片底部: 列出今天会练的动作 (取前 4 个 step 的 exercise 名).
+            // 卡片底部: 列出今天会练的动作.
+            // 最多 3 行 — LimitedFlowLayout 自动挤"+N more" 占位在最后一行末尾
+            // (空间不够会回吐 pill 给 "+N more" 让位).
             // 之前显示"部位 chip" (Chest / Back / ...), 信息太抽象 — 用户更想知道"今天练什么动作".
-            // 超过 4 个用 "+N more" 收尾, 避免 chip 撑爆.
             if !plan.steps.isEmpty {
-                FlowLayout(spacing: 6) {
-                    ForEach(exercisePreview, id: \.self) { name in
+                LimitedFlowLayout(
+                    spacing: 6,
+                    maxRows: 3,
+                    onTruncate: { newCount in
+                        // Layout 算出"几个 pill 没放下" → 异步写回 state, 下一帧 overflow 文案就对了
+                        if truncatedCount != newCount { truncatedCount = newCount }
+                    }
+                ) {
+                    ForEach(Array(exercisePreview.enumerated()), id: \.offset) { _, name in
                         ExercisePill(name: name)
                     }
-                    if plan.steps.count > 4 {
-                        ExercisePill(name: "+\(plan.steps.count - 4) more")
-                    }
+                    // 最后一个 subview 是 overflow indicator. Layout 没截断时不画.
+                    ExercisePill(name: "+\(truncatedCount) more")
                 }
                 .padding(.leading, MasoMetrics.cardPadding)
                 // 给 play 按钮让位: 36pt 圆 + 一点 buffer, 避免最后一行 chip 跟按钮重叠.

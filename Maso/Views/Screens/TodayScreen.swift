@@ -5,9 +5,13 @@ struct TodayScreen: View {
     let onStart: (Plan) -> Void
     /// 拉起"自由训练" flow — Today 卡片下方按钮触发, 走 QuickWorkout sheet 选肌肉 / 动作 / 开练
     let onFreeWorkout: () -> Void
+    /// 标题行右上角齿轮 → 弹 Settings sheet (RootView 持有 sheet state)
+    let onOpenSettings: () -> Void
 
     /// 卡片 tap → 弹 plan detail sheet 查看动作 + 每组 sets/reps/weight
     @State private var detailPlan: Plan? = nil
+    /// 顶部 ProBanner tap → 弹 paywall (跟以前 Plans tab 上的 banner 同款)
+    @State private var paywallPresented: Bool = false
 
     private var suggested: Plan? {
         // 优先 AI 生成的今日计划; 没有 (AI 关闭 / API key 未填 / 网络失败) → fallback 系统推荐
@@ -31,30 +35,47 @@ struct TodayScreen: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
-                // DESIGN §2.4: page 顶部留白 56pt
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(greeting.uppercased())
-                        .font(.system(size: 10, weight: .bold))
-                        .tracking(3)
-                        .foregroundStyle(MasoColor.accent)
-                    // 标题: 跟 Plans / History 一样的 26pt bold, 全 tab 视觉对齐.
-                    // 长翻译仍允许换行 (lineLimit 3), 但默认环境通常 1 行就放下.
-                    Text("Today's Workout")
-                        // 中间 tab (Today) 是"主屏" — 标题比左右两个 tab (Plans/History 26pt) 大一档,
-                        // iOS HIG Title 1 标准 28pt, 视觉上凸显这是 app 的核心入口.
-                        .font(.system(size: 28, weight: .bold))
-                        .foregroundStyle(MasoColor.text)
-                        .lineLimit(3)
-                        .multilineTextAlignment(.leading)
-                        .fixedSize(horizontal: false, vertical: true)
+                // Pro 展示位 — Pro 用户隐藏. 之前在 Plans tab 顶部, tab 重排后挪到 Today.
+                if !data.settings.isPro {
+                    ProBanner { paywallPresented = true }
+                        .padding(.top, 24)
                 }
-                .padding(.top, MasoMetrics.pagePaddingTop)
+
+                // DESIGN §2.4: page 顶部留白 56pt.
+                // Title row 跟 settings 齿轮同行, alignment 用 .top 让齿轮顶部跟 "GOOD AFTERNOON" 对齐.
+                HStack(alignment: .top, spacing: 12) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(greeting.uppercased())
+                            .font(.system(size: 10, weight: .bold))
+                            .tracking(3)
+                            .foregroundStyle(MasoColor.accent)
+                        Text("Today's Workout")
+                            .font(.system(size: 28, weight: .bold))
+                            .foregroundStyle(MasoColor.text)
+                            .lineLimit(3)
+                            .multilineTextAlignment(.leading)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    Spacer()
+                    // Settings 齿轮 — 跟 Plans + 按钮同款样式 (text + surface bg + 34×34 圆)
+                    Button(action: onOpenSettings) {
+                        Image(systemName: "gearshape.fill")
+                            .font(.system(size: 16, weight: .bold))
+                            .foregroundStyle(MasoColor.text)
+                            .frame(width: 34, height: 34)
+                            .background(MasoColor.surface)
+                            .clipShape(Circle())
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("Settings")
+                }
+                .padding(.top, data.settings.isPro ? MasoMetrics.pagePaddingTop : 4)
 
                 if let plan = suggested {
+                    // kicker 不传 — WorkoutCard 内部自动 derive (FROM YOUR PLAN / AI / nil).
                     WorkoutCard(
                         plan: plan,
                         exById: data.exById,
-                        kicker: "Recommended",
                         onStart: { onStart(plan) },
                         onShowDetail: { detailPlan = plan }
                     )
@@ -114,6 +135,9 @@ struct TodayScreen: View {
                 }
             )
             .presentationDetents([.medium, .large])
+        }
+        .sheet(isPresented: $paywallPresented) {
+            PaywallScreen()
         }
     }
 }

@@ -62,7 +62,7 @@
 "Barbell Shoulder Press" = "杠铃肩推";
 "Barbell Shrug" = "杠铃耸肩";
 "Barbell Shrug Behind The Back" = "杠铃耸肩背后";
-"Barbell Side Bend" = "杠铃侧侧弯";
+"Barbell Side Bend" = "杠铃体侧弯";
 "Barbell Side Split Squat" = "杠铃侧分腿蹲";
 "Barbell Squat" = "杠铃深蹲";
 "Barbell Squat To A Bench" = "杠铃深蹲至卧推凳";
@@ -97,7 +97,7 @@
 "Bodyweight Mid Row" = "自重中位划船";
 "Bodyweight Squat" = "自重深蹲";
 "Bodyweight Walking Lunge" = "自重行走弓步";
-"Bosu Ball Cable Crunch With Side Bends" = "Bosu球绳索卷腹配侧侧弯";
+"Bosu Ball Cable Crunch With Side Bends" = "Bosu球绳索卷腹配体侧弯";
 "Bottoms Up" = "底部向上";
 "Bottoms-Up Clean From The Hang Position" = "底部向上翻举从悬垂姿势";
 "Box Jump (Multiple Response)" = "跳箱(多反应)";
@@ -229,7 +229,7 @@
 "Dumbbell Seated One-Leg Calf Raise" = "哑铃坐姿单腿提踵";
 "Dumbbell Shoulder Press" = "哑铃肩推";
 "Dumbbell Shrug" = "哑铃耸肩";
-"Dumbbell Side Bend" = "哑铃侧侧弯";
+"Dumbbell Side Bend" = "哑铃体侧弯";
 "Dumbbell Squat" = "哑铃深蹲";
 "Dumbbell Squat To A Bench" = "哑铃深蹲至卧推凳";
 "Dumbbell Step Ups" = "哑铃登阶";
@@ -439,7 +439,7 @@
 "One Leg Barbell Squat" = "单腿杠铃深蹲";
 "One-Arm Dumbbell Row" = "单臂哑铃划船";
 "One-Arm Flat Bench Dumbbell Flye" = "单臂平板卧推凳哑铃Flye";
-"One-Arm High-Pulley Cable Side Bends" = "单臂High - pulley绳索侧侧弯";
+"One-Arm High-Pulley Cable Side Bends" = "单臂High - pulley绳索体侧弯";
 "One-Arm Incline Lateral Raise" = "单臂上斜侧平举";
 "One-Arm Kettlebell Clean" = "单臂壶铃翻举";
 "One-Arm Kettlebell Clean and Jerk" = "单臂壶铃挺举";
@@ -569,7 +569,7 @@
 "Seated Overhead Stretch" = "坐姿过头拉伸";
 "Seated Palm-Up Barbell Wrist Curl" = "坐姿Palm - up杠铃腕弯举";
 "Seated Palms-Down Barbell Wrist Curl" = "坐姿Palms - down杠铃腕弯举";
-"Seated Side Lateral Raise" = "坐姿侧侧平举";
+"Seated Side Lateral Raise" = "坐姿侧平举";
 "Seated Triceps Press" = "坐姿三头推举";
 "Seated Two-Arm Palms-Up Low-Pulley Wrist Curl" = "坐姿双臂Palms - upLow - pulley腕弯举";
 "See-Saw Press (Alternating Side Press)" = "翘翘板推举(交替侧推举)";
@@ -581,7 +581,7 @@
 "Side Bridge" = "侧桥式";
 "Side Hop-Sprint" = "侧跳冲刺";
 "Side Jackknife" = "侧抬腿";
-"Side Lateral Raise" = "侧侧平举";
+"Side Lateral Raise" = "侧平举";
 "Side Leg Raises" = "侧腿举起";
 "Side Lying Groin Stretch" = "侧卧姿腹股沟拉伸";
 "Side Neck Stretch" = "侧颈拉伸";
@@ -732,7 +732,7 @@
 "V-Bar Pullup" = "V杆引体向上";
 "Vertical Swing" = "垂直摇摆";
 "Weighted Ball Hyperextension" = "负重球山羊挺身";
-"Weighted Ball Side Bend" = "负重球侧侧弯";
+"Weighted Ball Side Bend" = "负重球体侧弯";
 "Weighted Bench Dip" = "负重卧推凳臂屈伸";
 "Weighted Crunches" = "负重卷腹";
 "Weighted Jump Squat" = "负重跳跃深蹲";

@@ -124,10 +124,22 @@ struct MuscleSelector: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            ForEach(Self.groupedRows, id: \.major) { row in
-                muscleRow(major: row.major, subs: row.subs)
+        if detailEnabled {
+            // 细分开启: 每行 = 1 major + 它的 subs, 行内 wrap, 不同 major 跨行.
+            VStack(alignment: .leading, spacing: 14) {
+                ForEach(Self.groupedRows, id: \.major) { row in
+                    muscleRow(major: row.major, subs: row.subs)
+                }
             }
+        } else {
+            // 细分关闭: 只剩 12 个 major chip — 全部塞到同一个 FlowLayout,
+            // 让它们横向 wrap 填满整行, 不再每个独占一行靠左.
+            FlowLayout(spacing: 8, alignment: .leading) {
+                ForEach(Self.groupedRows, id: \.major) { row in
+                    majorChip(row.major)
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
     }
 

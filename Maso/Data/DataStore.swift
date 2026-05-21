@@ -1,5 +1,6 @@
 import Foundation
 import Observation
+import UIKit
 
 // 应用级数据仓库 — MVP 阶段用 in-memory mock; 后续可接 SwiftData / CoreData
 //
@@ -103,13 +104,9 @@ final class DataStore {
         let library = ExerciseLibrary.all
         let byId = ExerciseLibrary.byId
         let now = Date()
-        // 测试期默认 Pro 状态, 方便 AI Workout 等 Pro 功能直接用.
-        // TODO[deploy-restore-paywall]: 上线前改回 nil (让 free 用户撞 paywall).
-        let testProSub = ProSubscription(
-            tier: .yearly,
-            startedAt: now.addingTimeInterval(-86400 * 7),
-            renewsAt: now.addingTimeInterval(86400 * 365)
-        )
+        // Free tier by default — 新用户撞 plan 上限会被 paywall 拦住, 走 IAP 升级 Pro.
+        // (开发时如果需要临时解锁所有 Pro 功能, 把 proSubscription 改成一个非 nil 的
+        // ProSubscription 实例; 上线前必须改回 nil.)
         let settings = UserSettings(
             onboardingCompleted: true,
             weeklyTrainingDays: 3,
@@ -120,7 +117,7 @@ final class DataStore {
             gender: .male,
             age: 30,
             weight: 75,
-            proSubscription: testProSub
+            proSubscription: nil
         )
         // 推荐 plan 列表跟 weeklyTrainingDays 对齐 (跟 web 的 recommendProgram 一致)
         let plans = RecommendedPrograms.plans(forDays: settings.weeklyTrainingDays,
@@ -294,6 +291,32 @@ final class DataStore {
         let favs = exercises.filter { favSet.contains($0.id) }
         let rest = exercises.filter { !favSet.contains($0.id) }
         return favs + rest
+    }
+
+    // MARK: - Session photos — 用户在分享卡加的照片, 持久化绑到 sessionId
+
+    /// 保存用户为某个 session 添加的照片. 重复 set 会覆盖.
+    /// id = SessionSummary.id (e.g. "plan-full-1-1715900000"), 由 groupedSessions 生成.
+    /// 训练完成入口可以用相同的 id 模板: "\(planId ?? "free")-\(Int(day.startOfDay.timeIntervalSince1970))"
+    func setSessionPhoto(_ image: UIImage, forSessionId id: String) {
+        // quality 0.7 — 视觉无明显损失, 体积约为 0.9 的 60%.
+        if let data = image.jpegData(compressionQuality: 0.7) {
+            settings.sessionPhotos[id] = data
+            save()
+        }
+    }
+
+    /// 读取已存的照片 (nil = 该 session 没存过).
+    func sessionPhoto(forSessionId id: String) -> UIImage? {
+        guard let data = settings.sessionPhotos[id] else { return nil }
+        return UIImage(data: data)
+    }
+
+    /// 移除一张照片. 用户在 ShareCustomizeSheet 点 Remove Photo 时触发.
+    func removeSessionPhoto(forSessionId id: String) {
+        if settings.sessionPhotos.removeValue(forKey: id) != nil {
+            save()
+        }
     }
 
     /// 删除一个 session 内某个 exercise 的所有 SetRecord — 用于 SessionDetailSheet 右滑删除单个动作.

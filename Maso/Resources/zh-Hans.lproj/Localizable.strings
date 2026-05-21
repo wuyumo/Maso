@@ -349,6 +349,7 @@
 
 /* ── Settings — Muscle subdivisions toggle ── */
 "Show muscle subdivisions" = "肌肉细分";
+"Show muscle status" = "显示肌肉状态";
 "Off: pick the whole muscle (chest, back) — no upper/mid/lower split. On: full anatomical detail." = "关:只能选大肌群 (胸/背) ,没有上中下分支。开:完整解剖学细分。";
 
 /* ── Settings — Backup / Export / Import ── */
@@ -407,6 +408,7 @@
 "equipment.medicine ball" = "药球";
 "equipment.exercise ball" = "瑜伽球";
 "equipment.foam roll" = "泡沫滚筒";
+"equipment.stretching" = "拉伸";
 "equipment.other" = "其它";
 
 /* History tab renamed to Muscle Status */
@@ -429,6 +431,7 @@
 
 /* Share customize sheet — add photo flow */
 "Customize" = "自定义";
+"Share Card" = "分享卡片";
 "Camera" = "相机";
 "Photos" = "相册";
 
@@ -450,3 +453,182 @@
 /* Free workout: save to plan library after finishing */
 "Save as plan" = "保存为训练计划";
 "Saved" = "已保存";
+
+/* ── i18n audit 2026-05-17 — 补齐缺失的 UI keys ── */
+"App Language" = "应用语言";
+"Continue" = "继续";
+"Start" = "开始";
+
+/* 照片选择 (自定义分享卡) */
+"Add a photo" = "添加照片";
+"Add photo" = "添加照片";
+"Take Photo" = "拍摄照片";
+"Choose from Library" = "从相册选择";
+"Remove Photo" = "移除照片";
+
+/* 收藏开关 */
+"Add to favorites" = "加入收藏";
+"Remove from favorites" = "取消收藏";
+
+/* 动作筛选 */
+"All muscles" = "全部肌群";
+"Clear all" = "全部清除";
+
+/* 删除计划 / 训练 / 动作 对话框 */
+"Delete plan?" = "删除计划?";
+"Delete this workout?" = "删除这次训练?";
+"Delete workout" = "删除训练";
+"Delete exercise from plan?" = "从计划中删除该动作?";
+"Delete exercise from this workout?" = "从训练中删除该动作?";
+"All sets and PRs from this workout will be removed. Your plans stay." = "本次训练所有组数和 PR 将被移除,训练计划保持不变。";
+"All sets of this exercise from this workout will be removed." = "该动作在本次训练里所有组数将被移除。";
+"This only removes it from the current workout. Save changes at the end to update the plan." = "仅从当前训练中移除,结束时保存可更新计划。";
+"This only removes the exercise from this plan, not from your library." = "仅从该计划中移除,不影响动作库。";
+
+/* 动作详情 (解剖图/说明) */
+"Detail" = "细分";
+"Muscle" = "肌群";
+"Equipment" = "器械";
+"None" = "无";
+"Optional" = "选填";
+"How to do it" = "动作要领";
+"Show full instructions" = "查看完整说明";
+"Show less" = "收起";
+
+/* 朗读控制 */
+"Listen" = "朗读";
+"Read instructions aloud" = "朗读说明";
+"Stop reading" = "停止朗读";
+"Stop" = "停止";
+
+/* 计划 / 训练编辑 */
+"Edit" = "编辑";
+"Long press to reorder" = "长按拖动排序";
+"No exercises in this workout" = "本次训练没有动作";
+
+/* 分享训练 */
+"Share workout" = "分享训练";
+
+/* 训练结束 — 是否同步到计划 */
+"Skip & close" = "跳过并关闭";
+"Save changes & end" = "保存并结束";
+"End without saving" = "不保存退出";
+"Save changes to plan" = "保存到计划";
+"Saved to plan" = "已保存到计划";
+"You changed sets, reps, weight, or order during this workout. Save the changes back to the plan?" = "本次训练中修改了组数 / 次数 / 重量 / 顺序,是否同步到训练计划?";
+"You changed some parameters during this workout." = "本次训练中修改了一些参数。";
+
+/* 无障碍 */
+"Show details for %@" = "查看 %@ 详情";
+
+/* 引导 / Quick Workout 步骤 */
+"STEP %lld / 2" = "第 %lld 步 / 共 2 步";
+"STEP %lld / 3" = "第 %lld 步 / 共 3 步";
+
+/* 肌群细分提示 */
+"Enable \"Show muscle subdivisions\" in Settings to pick details like upper chest or rear delts." = "在设置中开启「肌肉细分」即可选择上胸、后束等更细的部位。";
+
+/* 付费页 — 试用脚注 */
+"Free for 7 days, then %@. Cancel anytime in Settings." = "7 天免费试用,之后 %@。可随时在设置中取消。";
+
+/* PlanRationaleCard — 训练计划页顶部 */
+"FOR YOU" = "为你设计";
+"%lld days / week" = "每周 %lld 次";
+"Focus: %@" = "重点 %@";
+"Full-body" = "全身分化";
+"Upper-lower split" = "上下肢分化";
+"Body-part split" = "部位分化";
+"Full-body coverage — each muscle group rotates through the week." = "全身均衡覆盖,各肌群轮替触达。";
+"High frequency — focus muscles hit 2–3× per week, accessories rotate for recovery." = "高频节奏 — 重点肌群每周触达 2-3 次,辅练肌穿插恢复。";
+"Each focus muscle is trained 2× per week — enough stimulus, full recovery between." = "每个重点肌群每周触达 2 次,既保证刺激,又留出恢复。";
+"2× per week is enough to maintain steady progress — focus muscles rotate in." = "每周 2 次足以维持稳定进步,重点肌群轮转出现。";
+"Adjust training preferences" = "调整训练偏好";
+"FROM YOUR PLAN" = "来自训练计划";
+"Weekly Workouts" = "本周训练频率";
+"White areas were just trained" = "白色区域是刚练完的肌肉";
+"Today's Status" = "今日状态";
+
+/* ── Community (社区精选训练计划) ── */
+"Browse community plans" = "浏览社区训练计划";
+"See what others train" = "看看大家在练什么";
+"Community" = "社区";
+"Curated workout plans. Add any to your library." = "精选训练计划,添加到你的计划库";
+"Want to publish your plan? Coming soon." = "想发布自己的计划?即将上线";
+"Want to share your plan? Open it in Plans → tap Share." = "想分享你的计划?在计划里打开 → 点分享";
+"Share plan" = "分享计划";
+"Imported plan" = "导入的计划";
+"Got a plan from a friend? Tap Add to save it to your library." = "朋友分享给你的计划?点添加保存到你的库";
+"Add to my plans" = "添加到我的计划";
+"Added" = "已添加";
+"Beginner" = "新手";
+"Intermediate" = "中级";
+"Advanced" = "进阶";
+"%lld days/wk" = "每周 %lld 次";
+"%lld exercises" = "%lld 个动作";
+"community_plan_beginner_fb_3day_name" = "新手全身 3 练/周";
+"community_plan_beginner_fb_3day_desc" = "两个交替练日,学会主要动作并打好基础";
+"community_plan_5x5_strength_name" = "5x5 力量";
+"community_plan_5x5_strength_desc" = "5 次大重量杠铃训练 — Madcow 风格线性进阶";
+"community_plan_ppl_6day_name" = "推 / 拉 / 腿 6 练/周";
+"community_plan_ppl_6day_desc" = "每个肌群每周练 2 次 — 高频率高量";
+"community_plan_upper_lower_4day_name" = "上肢 / 下肢 4 练/周";
+"community_plan_upper_lower_4day_desc" = "经典中级分化 — 力量与肌肥大兼顾";
+"community_plan_bro_split_5day_name" = "Bro Split 5 练/周";
+"community_plan_bro_split_5day_desc" = "健美经典分化 — 每天专注一个肌群";
+"community_plan_calisthenics_name" = "自重训练入门";
+"community_plan_calisthenics_desc" = "只靠自身体重打造基础力量";
+"community_plan_powerlifting_name" = "力量举三大项";
+"community_plan_powerlifting_desc" = "深蹲 / 卧推 / 硬拉 — 三大项 3 次组提升纯力量";
+"community_plan_push_pull_4day_name" = "推 / 拉 4 练/周";
+"community_plan_push_pull_4day_desc" = "简化两分化 — 推肌群和拉肌群各练 2 次";
+"community_session_full_body_a" = "全身 A";
+"community_session_full_body_b" = "全身 B";
+"community_session_strength_a" = "力量 A";
+"community_session_strength_b" = "力量 B";
+"community_session_push_heavy" = "推 (重)";
+"community_session_pull_heavy" = "拉 (重)";
+"community_session_legs_quads" = "腿 (股四头)";
+"community_session_upper" = "上肢";
+"community_session_lower" = "下肢";
+"community_session_chest_day" = "胸日";
+"community_session_back_day" = "背日";
+"community_session_leg_day" = "腿日";
+"community_session_shoulder_day" = "肩日";
+"community_session_arm_day" = "手臂日";
+"community_session_push_day" = "推日";
+"community_session_pull_day" = "拉日";
+"community_session_legs_core_day" = "腿 + 核心";
+"community_session_squat_day" = "深蹲日";
+"community_session_bench_day" = "卧推日";
+"community_session_deadlift_day" = "硬拉日";
+"community_session_accessory_day" = "辅助日";
+"community_session_push_simple" = "推";
+"community_session_pull_simple" = "拉";
+"Favorite" = "收藏";
+"Unfavorite" = "取消收藏";
+
+/* StoreKit / IAP — Maso Pro 付费流 */
+"Couldn't load subscription options. Try again later." = "无法加载订阅选项,请稍后重试。";
+"Purchase pending approval." = "购买等待审批。";
+"Purchase verification failed. Try again or contact support." = "购买验证失败,请重试或联系客服。";
+"Free for 7 days, then auto-renews. Cancel anytime in Settings." = "免费试用 7 天,之后自动续订。可随时在“设置”中取消。";
+
+/* History / 训练记录 */
+"Workout photo" = "训练照片";
+"Share muscle status" = "分享肌肉状态";
+"Toggle muscle status overlay" = "显示/隐藏肌肉状态";
+
+/* Deep link / plan sharing */
+"IMPORTED PLAN" = "已导入的计划";
+"This Maso link is damaged or unsupported. Ask your friend to share again." = "此 Maso 链接已损坏或不受支持,请让朋友重新分享。";
+
+/* Misc */
+"details" = "详情";
+
+/* Settings — Health & Safety + About */
+"Health & Safety" = "健康与安全";
+"About" = "关于";
+"Privacy Policy" = "隐私政策";
+"Terms of Service" = "服务条款";
+"Version" = "版本";
+"Maso is for informational and motivational purposes only — not medical advice. Consult a physician before starting any new exercise program, especially if you have a medical condition, are pregnant, or have not exercised recently. Stop immediately and seek help if you feel pain, dizziness, or shortness of breath." = "Maso 仅供参考与激励之用,并非医学建议。开始任何新的锻炼计划之前请咨询医生,尤其是当你有疾病、怀孕或近期未运动时。如出现疼痛、头晕或呼吸急促,请立即停止并寻求帮助。";

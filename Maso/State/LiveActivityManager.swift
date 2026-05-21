@@ -34,7 +34,9 @@ final class LiveActivityManager {
         let info = ActivityAuthorizationInfo()
         // 预检 — 不阻塞主线程, 立即返回. 真正请求走 Task.
         guard info.areActivitiesEnabled else {
+            #if DEBUG
             print("[LiveActivity] disabled by user/system — skipping start")
+            #endif
             return
         }
         Task { @MainActor in
@@ -49,10 +51,14 @@ final class LiveActivityManager {
                     content: content,
                     pushType: nil   // 不走远程 push, 全本地 ActivityKit update
                 )
+                #if DEBUG
                 print("[LiveActivity] started: \(planName)")
+                #endif
             } catch {
                 // start 失败 — log 但不抛, 训练主流程继续
+                #if DEBUG
                 print("[LiveActivity] start failed: \(error)")
+                #endif
             }
         }
     }
