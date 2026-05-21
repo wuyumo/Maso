@@ -12,7 +12,9 @@ description: Your personal AI trainer
 # privacy-policy.md 不在列表里, 它是 public 的.
 exclude:
   - app-store-metadata.md
+  - app-store-connect-walkthrough.md
   - cloudkit-todo.md
   - exercise-hd-upgrade.md
   - exercise-media-upgrade.md
+  - exercise-data-mapping.md
   - i18n-workflow.md
