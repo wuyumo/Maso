@@ -131,8 +131,11 @@ struct PaywallScreen: View {
                        desc: "Add your own moves with notes and photos.")
             FeatureRow(icon: "heart.text.square", title: "Apple Health sync",
                        desc: "Two-way sync — workouts go in, weight comes out.")
-            FeatureRow(icon: "icloud.fill", title: "Cloud sync",
-                       desc: "Plans + history follow you across devices.")
+            // ⚠️ "Cloud sync" 行暂时下架 — iCloud Drive ubiquity 兑现没做, 不能在
+            // paywall 列了用户却用不上, 否则 Apple 审核会按"功能未兑现"打回 + 用户投诉退款.
+            // 实现后 (见 docs/cloudkit-todo.md), 把这一行恢复:
+            // FeatureRow(icon: "icloud.fill", title: "Cloud sync",
+            //            desc: "Plans + history follow you across devices.")
         }
         .padding(.horizontal, 4)
     }
