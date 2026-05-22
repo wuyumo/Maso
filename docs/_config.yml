@@ -18,3 +18,4 @@ exclude:
   - exercise-media-upgrade.md
   - exercise-data-mapping.md
   - i18n-workflow.md
+  - session-memory-*.md
