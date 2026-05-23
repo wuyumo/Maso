@@ -147,9 +147,14 @@ extension HKWorkoutActivityType {
         for c in cats { counts[c, default: 0] += 1 }
         let top = counts.max(by: { $0.value < $1.value })?.key ?? .strength
         switch top {
-        case .strength:    return .functionalStrengthTraining
-        case .cardio:      return .other  // 太宽泛, Maso 没区分 running/cycling — 用 .other 让 Health 不强分类
-        case .flexibility: return .flexibility
+        case .strength, .hypertrophyFocus, .calisthenics:
+            return .functionalStrengthTraining
+        case .cardio:
+            return .other  // 太宽泛, Maso 没区分 running/cycling — 用 .other 让 Health 不强分类
+        case .stretching, .flexibility, .mobility:
+            return .flexibility
+        case .plyometric:
+            return .crossTraining
         }
     }
 }

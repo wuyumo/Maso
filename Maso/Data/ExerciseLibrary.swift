@@ -1,22 +1,53 @@
 import Foundation
 
-// 加载 bundled exercises.json (源: yuhonas/free-exercise-db, Unlicense)
-// → 转成我们的 Exercise 模型
+// MARK: - Exercise library loader
 //
-// JSON 原始字段:
-//   name (英文), force, level, mechanic, equipment, primaryMuscles[], secondaryMuscles[],
-//   instructions[], category (strength|stretching|cardio|...), images[], id
+// 加载 bundled exercises.json → Exercise 模型.
 //
-// 映射:
-//   - id: 直接复用 (= 图片文件夹名)
-//   - muscleGroups: primary + secondary, yuhonas 英文名 → 我们的 MuscleGroup 枚举
-//   - category: yuhonas "strength" / "stretching" / 等 → 我们的 ExerciseCategory
-//   - imageFolder: 跟 id 一致, 用来拼 CDN URL
-//   - tags: 用 primaryMuscles 第一个的中文名作 tag
+// Schema 历史:
+//   v1 (yuhonas/free-exercise-db): flat name 字符串, primaryMuscles 字符串数组, equipment 单值
+//   v2 (2026-05 重做): nested name {en, zh-Hans}, muscles {primary[{major, sub}], secondary},
+//       equipment 数组, 加 movementPattern/tempo/unilateral/mechanic/calories/dangerWarnings/video_url
+//
+// 自动 detection: 看 JSON 数组第一个 object 的 name 字段是 string 还是 dict.
+//
+// 兼容旧持久化: 老库 ID (e.g. "Barbell_Bench_Press") 可能存在用户的 plans / sets / favorites 里.
+// 新库 ID (e.g. "bench_press_barbell") 跟旧不一样. parser 通过 fuzzy-match 阶段产出的 imageFolder
+// 字段保留映射 (新库每个 exercise 的 imageFolder = 对应旧库的 id).
+//
+// 用户数据迁移见 DataStore.migrateExerciseIdsIfNeeded() (Phase 3c, 暂未实现).
 
 enum ExerciseLibrary {
     static let all: [Exercise] = loadFromBundle()
-    static let byId: [String: Exercise] = Dictionary(uniqueKeysWithValues: all.map { ($0.id, $0) })
+
+    /// Lookup map. 包含新库 id (主键) + 旧库 imageFolder 作 alias.
+    /// 老用户保存的 plans / sets / favorites 用的是 v1 ID (e.g. "Barbell_Bench_Press") → 透过
+    /// imageFolder alias 还能 resolve 到新 Exercise. 不需要一次性 migration, 自然过渡.
+    /// 多个 new exercise 可能共享同一个 imageFolder (image sharing for variants), 只取第一个.
+    static let byId: [String: Exercise] = {
+        var m: [String: Exercise] = [:]
+        for ex in all {
+            m[ex.id] = ex
+        }
+        // Add legacy imageFolder aliases (不覆盖已存在的真 id)
+        for ex in all {
+            if let folder = ex.imageFolder, m[folder] == nil {
+                m[folder] = ex
+            }
+        }
+        return m
+    }()
+
+    /// 反向 map: 旧库 imageFolder ID → 新库 Exercise. 给需要明确区分新旧 ID 的代码 (e.g. data migration).
+    static let byLegacyImageFolder: [String: Exercise] = {
+        var m: [String: Exercise] = [:]
+        for ex in all {
+            if let folder = ex.imageFolder, m[folder] == nil {
+                m[folder] = ex
+            }
+        }
+        return m
+    }()
 
     private static func loadFromBundle() -> [Exercise] {
         guard let url = Bundle.main.url(forResource: "exercises", withExtension: "json") else {
@@ -25,8 +56,19 @@ enum ExerciseLibrary {
         }
         do {
             let data = try Data(contentsOf: url)
-            let raw = try JSONDecoder().decode([RawExercise].self, from: data)
-            return raw.map(toExercise)
+            // Sniff schema: v2 has objects with `name: {en, zh-Hans}`; v1 has `name: "string"`.
+            if let array = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]],
+               let first = array.first,
+               let nameField = first["name"],
+               nameField is [String: Any] {
+                // v2 schema
+                let raw = try JSONDecoder().decode([RawExerciseV2].self, from: data)
+                return raw.map(toExerciseV2)
+            } else {
+                // v1 schema (yuhonas legacy)
+                let raw = try JSONDecoder().decode([RawExerciseV1].self, from: data)
+                return raw.map(toExerciseV1)
+            }
         } catch {
             assertionFailure("Failed to load exercises.json: \(error)")
             return []
@@ -34,9 +76,160 @@ enum ExerciseLibrary {
     }
 }
 
-// MARK: - yuhonas JSON schema
+// MARK: - v2 schema (2026-05 redo)
 
-private struct RawExercise: Decodable {
+private struct RawExerciseV2: Decodable {
+    let id: String
+    let name: [String: String]                  // {en, zh-Hans}
+    let muscles: V2Muscles
+    let equipment: [String]
+    let category: String                         // "strength", "stretching", etc.
+    let movementPattern: String?
+    let mechanic: String?                        // "compound" | "isolation"
+    let unilateral: Bool
+    let tempo: String
+    let level: String
+    let force: String                            // "push" | "pull" | "static"
+    let imageFolder: String?                     // = legacy v1 id, or null
+    let instructions: [String: [String]]?
+    let video_url: String?
+    let calories_estimate: V2Calories?
+    let danger_warnings: [String: [String]]?
+}
+
+private struct V2Muscles: Decodable {
+    let primary: [V2Muscle]
+    let secondary: [V2Muscle]
+}
+
+private struct V2Muscle: Decodable {
+    let major: String
+    let sub: String
+}
+
+private struct V2Calories: Decodable {
+    let low: Int
+    let med: Int
+    let high: Int
+}
+
+private func toExerciseV2(_ r: RawExerciseV2) -> Exercise {
+    let primaryMuscles = r.muscles.primary.compactMap(muscleFromV2Pair)
+    let secondaryMuscles = r.muscles.secondary.compactMap(muscleFromV2Pair)
+    let allMuscles = orderedUnique(primaryMuscles + secondaryMuscles)
+
+    let category = mapCategoryV2(r.category)
+    let level = ExerciseLevel(rawValue: r.level)?.normalized
+    let force = ExerciseForce(rawValue: r.force)
+    let movement = r.movementPattern.flatMap(MovementPattern.init(rawValue:))
+    let mechanic = r.mechanic.flatMap(ExerciseMechanic.init(rawValue:))
+    let tempo = Tempo(rawValue: r.tempo)
+    let videoURL = r.video_url.flatMap(URL.init(string:))
+
+    let primaryEquipment = r.equipment.first
+    let calories = r.calories_estimate.map { CaloriesEstimate(low: $0.low, med: $0.med, high: $0.high) }
+
+    let englishName = r.name["en"] ?? r.id
+
+    return Exercise(
+        id: r.id,
+        name: englishName,
+        category: category,
+        tags: primaryMuscles.first.map { [$0.displayName] } ?? [],
+        primaryMuscles: orderedUnique(primaryMuscles),
+        muscleGroups: allMuscles,
+        imageFolder: r.imageFolder,
+        level: level,
+        force: force,
+        equipment: primaryEquipment,
+        equipmentAll: r.equipment,
+        instructions: r.instructions?["en"] ?? [],
+        movementPattern: movement,
+        mechanic: mechanic,
+        unilateral: r.unilateral,
+        tempo: tempo,
+        videoURL: videoURL,
+        caloriesEstimate: calories,
+        dangerWarnings: r.danger_warnings?["en"],
+        localizedInstructions: r.instructions,
+        localizedName: r.name,
+        localizedDangerWarnings: r.danger_warnings
+    )
+}
+
+private func mapCategoryV2(_ raw: String) -> ExerciseCategory {
+    switch raw {
+    case "strength":         return .strength
+    case "hypertrophy_focus": return .hypertrophyFocus
+    case "cardio":           return .cardio
+    case "stretching":       return .stretching
+    case "mobility":         return .mobility
+    case "plyometric":       return .plyometric
+    case "calisthenics":     return .calisthenics
+    default:                 return .strength
+    }
+}
+
+/// 把新 schema 的 (major, sub) pair 映射到现有 MuscleGroup enum.
+/// 现有 enum 已经覆盖了大部分 sub-muscle, 这里是 string → enum 的字符串映射.
+private func muscleFromV2Pair(_ p: V2Muscle) -> MuscleGroup? {
+    // 优先 sub 匹配, 没有 fallback 到 major
+    switch p.sub {
+    // Chest
+    case "upper_chest":     return .upperChest
+    case "middle_chest":    return .midChest
+    case "lower_chest":     return .lowerChest
+    // Back
+    case "lats":            return .lats
+    case "lower_back":      return .lowerBack
+    case "rear_delt":       return .rearDelts
+    case "traps_upper":     return .upperTraps
+    case "traps_middle":    return .midTraps
+    case "traps_lower":     return .lowerTraps
+    case "rhomboids":       return .rhomboids
+    case "neck":            return .neck
+    // Shoulders
+    case "front_delt":      return .frontDelts
+    case "side_delt":       return .sideDelts
+    case "rotator_cuff":    return .rotatorCuff
+    // Arms
+    case "biceps":          return .biceps
+    case "triceps":         return .triceps
+    case "forearms":        return .forearms
+    case "brachialis":      return .brachialis
+    // Core
+    case "abs_upper":       return .upperAbs
+    case "abs_lower":       return .lowerAbs
+    case "obliques":        return .obliques
+    case "transverse":      return .serratus    // proxy: 腹横肌没独立 polygon, 用 serratus 占位
+    case "serratus":        return .serratus
+    // Legs
+    case "quads":           return .quads
+    case "hamstrings":      return .hamstrings
+    case "glutes":          return .glutes
+    case "glutes_med":      return .gluteusMedius
+    case "calves":          return .calves
+    case "adductors":       return .adductors
+    case "abductors":       return .gluteusMedius  // proxy: 髋外展主要靠 glute med
+    case "tibialis":        return .tibialisAnterior
+    case "hip_flexors":     return .legs           // proxy: 髂腰肌没独立 enum, 归 legs
+    default: break
+    }
+    // sub 没命中 → 用 major 顶级
+    switch p.major {
+    case "chest":     return .chest
+    case "back":      return .back
+    case "shoulders": return .shoulders
+    case "arms":      return .arms
+    case "legs":      return .legs
+    case "core":      return .core
+    default:          return nil
+    }
+}
+
+// MARK: - v1 schema (yuhonas legacy)
+
+private struct RawExerciseV1: Decodable {
     let id: String
     let name: String
     let force: String?
@@ -50,47 +243,25 @@ private struct RawExercise: Decodable {
     let images: [String]
 }
 
-// MARK: - 维护提示
+// MARK: - 维护提示 (legacy)
 //
 // 这个文件是 yuhonas/free-exercise-db → app 内 Exercise 模型 的"映射 + 兜底推断"层.
-// 上游 JSON 是只读快照, 这里两类后处理让数据能贴合 app 的需求:
-//
-// 1. equipment 覆写 (Task 1 / future):
-//    - raw name 含 "stretch" → equipment 强制 "stretching" (不管 yuhonas 原标的什么器械)
-//
-// 2. muscleGroups 增强 (Task 5 / future):
-//    - yuhonas 只有 17 个 muscle 词, 没 "obliques" / "rotator cuff" / etc.
-//    - 用 name 关键词 (oblique, twist, rotation, side bend, side plank) 推断 obliques
-//    - 关键词分两档:
-//        - "Primary" 候选 → 加进 primaryMuscles + muscleGroups 前部
-//          (oblique / side plank / side bend / russian twist / wood chop)
-//        - "Secondary" 候选 → 加进 muscleGroups 末尾 (作为辅助肌)
-//          (twist / rotation, 但限"abdominal" 已经是 primary 的, 避免误判肩关节内外旋)
-//    - 推断规则集中写在 inferExtraMuscles() 里, 改维护规则只改这一处.
-//
-// 想新增"keyword → muscle" 规则: 在 inferExtraMuscles() 加 case, 跑一次 build, 在
-// Library 浏览页验证肌群标签是否符合预期. 详见 docs/exercise-data-mapping.md.
+// 跟新 v2 schema 共存, 由 loadFromBundle() 的 schema 嗅探决定走哪一条路径.
 
-private func toExercise(_ r: RawExercise) -> Exercise {
-    var primary = r.primaryMuscles.flatMap(muscleMap)
-    var secondary = r.secondaryMuscles.flatMap(muscleMap)
+private func toExerciseV1(_ r: RawExerciseV1) -> Exercise {
+    var primary = r.primaryMuscles.flatMap(muscleMapV1)
+    var secondary = r.secondaryMuscles.flatMap(muscleMapV1)
 
-    // ── Muscle inference (post-load) ──
-    // yuhonas 原数据没分 obliques (它把所有腹肌都标 "abdominals" 而我们的 .obliques 是独立 enum).
-    // 用 name 关键词推断给一些被低估的动作补 .obliques (Russian Twist / Side Plank / Wood Chop ...).
-    let (extraPrimary, extraSecondary) = inferExtraMuscles(name: r.name, existingPrimary: primary)
+    let (extraPrimary, extraSecondary) = inferExtraMusclesV1(name: r.name, existingPrimary: primary)
     primary.append(contentsOf: extraPrimary)
     secondary.append(contentsOf: extraSecondary)
 
     let allMuscles = orderedUnique(primary + secondary)
-    let cat = mapCategory(r.category)
+    let cat = mapCategoryV1(r.category)
     let lvl = ExerciseLevel(rawValue: r.level ?? "")
     let force = ExerciseForce(rawValue: r.force ?? "")
     let primaryTag = r.primaryMuscles.first.map(displayMuscleName) ?? ""
 
-    // ── Equipment 覆写 (post-load) ──
-    // raw name 含 "stretch" → 视为拉伸器械 (即使 yuhonas 给的是 nil / body only / other).
-    // 让 UI 上"拉伸"成为一个独立筛选项, 用户能一键过滤所有拉伸动作.
     let inferredEquipment: String? = {
         let lower = r.name.lowercased()
         if lower.contains("stretch") { return "stretching" }
@@ -99,35 +270,21 @@ private func toExercise(_ r: RawExercise) -> Exercise {
 
     return Exercise(
         id: r.id,
-        name: r.name, // 暂时用英文名; 后续可加中文翻译表
+        name: r.name,
         category: cat,
         tags: primaryTag.isEmpty ? [] : [primaryTag],
-        primaryMuscles: orderedUnique(primary),  // 严格筛选用 — 只保留 yuhonas 标的 primary
-        muscleGroups: allMuscles,                // 全景 (primary + secondary) — 详情页/协同肌用
+        primaryMuscles: orderedUnique(primary),
+        muscleGroups: allMuscles,
         imageFolder: r.id,
         level: lvl,
         force: force,
         equipment: inferredEquipment,
+        equipmentAll: inferredEquipment.map { [$0] },
         instructions: r.instructions
     )
 }
 
-// MARK: - Muscle inference rules
-//
-// 兜底规则: 看动作 raw English name 含的关键词, 补一些 yuhonas 缺标的肌群.
-// 目前只针对 obliques (上游 yuhonas 词汇表里没 "obliques", 只有 "abdominals").
-// 其他肌肉以后再加规则.
-//
-// 设计权衡:
-//   - "primary" 关键词 (oblique / side plank / side bend / russian twist / wood chop):
-//     这些动作 obliques 是主动力, 必须当 primary, 让 picker 严格筛选能命中.
-//   - "secondary" 关键词 (twist / rotation):
-//     需要做"是否相关"门控 — "internal/external rotation" 是肩袖动作, 不是核心.
-//     兜底: 只对 raw primary 已含 abdominals (yuhonas 词) 的动作, twist/rotation
-//     才追加 obliques 当 secondary. 这样肩关节旋转动作不会被误判.
-//
-// 返回值: (extraPrimary, extraSecondary)
-private func inferExtraMuscles(
+private func inferExtraMusclesV1(
     name: String,
     existingPrimary: [MuscleGroup]
 ) -> (primary: [MuscleGroup], secondary: [MuscleGroup]) {
@@ -135,20 +292,12 @@ private func inferExtraMuscles(
     var extraPrimary: [MuscleGroup] = []
     var extraSecondary: [MuscleGroup] = []
 
-    let strongObliquesKeywords = [
-        "oblique",      // "Oblique Crunches" / "Decline Oblique Crunch" / ...
-        "side plank",   // "Push Up to Side Plank"
-        "side bend",    // "Barbell Side Bend" / "Dumbbell Side Bend"
-        "russian twist",
-        "wood chop",
-    ]
+    let strongObliquesKeywords = ["oblique", "side plank", "side bend", "russian twist", "wood chop"]
     let weakObliquesKeywords = ["twist", "rotation"]
 
-    // Primary: 强信号 → 直接当主动肌
     if strongObliquesKeywords.contains(where: { lower.contains($0) }) {
         extraPrimary.append(.obliques)
     } else if weakObliquesKeywords.contains(where: { lower.contains($0) }) {
-        // Secondary: 弱信号 — 只有已经在练 abs/core 的动作才追加 (避免肩袖旋转误判)
         let trainsAbs = existingPrimary.contains(.core) || existingPrimary.contains(.abs)
         if trainsAbs {
             extraSecondary.append(.obliques)
@@ -158,23 +307,20 @@ private func inferExtraMuscles(
     return (extraPrimary, extraSecondary)
 }
 
-private func mapCategory(_ raw: String) -> ExerciseCategory {
+private func mapCategoryV1(_ raw: String) -> ExerciseCategory {
     switch raw {
     case "strength", "powerlifting", "olympic weightlifting", "strongman":
         return .strength
     case "cardio":
         return .cardio
     case "stretching", "plyometrics":
-        return .flexibility
+        return .stretching
     default:
         return .strength
     }
 }
 
-// yuhonas 英文肌群 → 我们的 MuscleGroup (1 个 in → 1 或多个 out)
-// 例: "lats" → [.lats, .upperLats, .lowerLats]? 不展开, 只给主级别即可,
-//     高亮渲染时 expandAnatomyMuscles 会自动展子级
-private func muscleMap(_ raw: String) -> [MuscleGroup] {
+private func muscleMapV1(_ raw: String) -> [MuscleGroup] {
     switch raw {
     case "abdominals": return [.core, .abs]
     case "abductors":  return [.gluteusMedius]
@@ -197,40 +343,12 @@ private func muscleMap(_ raw: String) -> [MuscleGroup] {
     }
 }
 
-// 主肌群 → 英文短标签 (用作 Exercise.tags 显示)
-private func displayMuscleName(_ raw: String) -> String {
-    switch raw {
-    case "abdominals":   return "Abs"
-    case "abductors":    return "Abductors"
-    case "adductors":    return "Adductors"
-    case "biceps":       return "Biceps"
-    case "calves":       return "Calves"
-    case "chest":        return "Chest"
-    case "forearms":     return "Forearms"
-    case "glutes":       return "Glutes"
-    case "hamstrings":   return "Hamstrings"
-    case "lats":         return "Lats"
-    case "lower back":   return "Lower Back"
-    case "middle back":  return "Mid Back"
-    case "neck":         return "Neck"
-    case "quadriceps":   return "Quads"
-    case "shoulders":    return "Shoulders"
-    case "traps":        return "Traps"
-    case "triceps":      return "Triceps"
-    default:             return raw.capitalized
-    }
-}
-
-private func orderedUnique(_ arr: [MuscleGroup]) -> [MuscleGroup] {
-    var seen: Set<MuscleGroup> = []
-    return arr.filter { seen.insert($0).inserted }
-}
-
 // MARK: - CDN URL helper
 
 enum ExerciseImageURL {
-    /// jsdelivr GitHub CDN — 比 GitHub raw 稳定, 有边缘节点缓存
+    /// jsdelivr GitHub CDN — 比 GitHub raw 稳定, 有边缘节点缓存.
     /// 例: https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Bench_Press_-_Medium-Grip/0.jpg
+    /// (新 DB 仍引用 yuhonas 旧 image folder; folder 来源 fuzzy match.)
     static func url(folder: String, frame: Int) -> URL? {
         let base = "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises"
         guard let escaped = folder.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) else {
@@ -238,4 +356,21 @@ enum ExerciseImageURL {
         }
         return URL(string: "\(base)/\(escaped)/\(frame).jpg")
     }
+}
+
+// MARK: - Shared helpers
+
+private func orderedUnique<T: Hashable>(_ array: [T]) -> [T] {
+    var seen = Set<T>()
+    var result: [T] = []
+    for item in array {
+        if seen.insert(item).inserted {
+            result.append(item)
+        }
+    }
+    return result
+}
+
+private func displayMuscleName(_ raw: String) -> String {
+    raw.split(separator: " ").map { $0.capitalized }.joined(separator: " ")
 }

@@ -43,9 +43,12 @@ struct ExerciseImage: View {
     private var gradient: LinearGradient {
         let colors: [Color] = {
             switch category {
-            case .strength:    return [Color.green.opacity(0.6), Color.green.opacity(0.95)]
-            case .cardio:      return [Color.pink.opacity(0.6), Color.pink.opacity(0.95)]
-            case .flexibility: return [Color.orange.opacity(0.6), Color.orange.opacity(0.95)]
+            case .strength, .hypertrophyFocus, .calisthenics:
+                return [Color.green.opacity(0.6), Color.green.opacity(0.95)]
+            case .cardio, .plyometric:
+                return [Color.pink.opacity(0.6), Color.pink.opacity(0.95)]
+            case .flexibility, .stretching, .mobility:
+                return [Color.orange.opacity(0.6), Color.orange.opacity(0.95)]
             }
         }()
         return LinearGradient(colors: colors, startPoint: .topLeading, endPoint: .bottomTrailing)
@@ -53,9 +56,14 @@ struct ExerciseImage: View {
 
     private var iconName: String {
         switch category {
-        case .strength:    return "dumbbell.fill"
-        case .cardio:      return "figure.run"
-        case .flexibility: return "figure.flexibility"
+        case .strength, .hypertrophyFocus, .calisthenics:
+            return "dumbbell.fill"
+        case .cardio:
+            return "figure.run"
+        case .plyometric:
+            return "figure.jumprope"
+        case .flexibility, .stretching, .mobility:
+            return "figure.flexibility"
         }
     }
 }

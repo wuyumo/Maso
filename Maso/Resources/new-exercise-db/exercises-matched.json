@@ -1353,7 +1353,7 @@
     "tempo": "explosive",
     "level": "intermediate",
     "force": "push",
-    "imageFolder": null,
+    "imageFolder": "Air_Bike",
     "instructions": {
       "en": [
         "Grip handles, push and pull aggressively.",
@@ -1380,11 +1380,7 @@
         "强度极高 — 新手循序渐进."
       ]
     },
-    "_pending_review": {
-      "old_candidate": "Air_Bike",
-      "old_name": "Air Bike",
-      "score": 76.9
-    }
+    "_match_score": "manual_yes"
   },
   {
     "id": "axle_bar_curl",
@@ -1921,7 +1917,7 @@
     "tempo": "endurance",
     "level": "beginner",
     "force": "push",
-    "imageFolder": null,
+    "imageFolder": "Monster_Walk",
     "instructions": {
       "en": [
         "Mini-band above knees, half-squat.",
@@ -1946,11 +1942,7 @@
       "en": [],
       "zh-Hans": []
     },
-    "_pending_review": {
-      "old_candidate": "Monster_Walk",
-      "old_name": "Monster Walk",
-      "score": 82.7
-    }
+    "_match_score": "manual_yes"
   },
   {
     "id": "banded_shoulder_dislocation",
@@ -2877,7 +2869,7 @@
     "tempo": "explosive",
     "level": "intermediate",
     "force": "push",
-    "imageFolder": null,
+    "imageFolder": "Battling_Ropes",
     "instructions": {
       "en": [
         "Raise ropes overhead, full extension.",
@@ -2900,11 +2892,7 @@
       "en": [],
       "zh-Hans": []
     },
-    "_pending_review": {
-      "old_candidate": "Battling_Ropes",
-      "old_name": "Battling Ropes",
-      "score": 80.0
-    }
+    "_match_score": "manual_yes"
   },
   {
     "id": "bayesian_curl",
@@ -44779,7 +44767,7 @@
     "tempo": "hypertrophy",
     "level": "beginner",
     "force": "pull",
-    "imageFolder": null,
+    "imageFolder": "Reverse_Flyes",
     "instructions": {
       "en": [
         "Sit facing machine, chest against pad.",
@@ -44804,11 +44792,7 @@
       "en": [],
       "zh-Hans": []
     },
-    "_pending_review": {
-      "old_candidate": "Reverse_Flyes",
-      "old_name": "Reverse Flyes",
-      "score": 83.3
-    }
+    "_match_score": "manual_yes"
   },
   {
     "id": "reverse_wrist_curl",

@@ -653,9 +653,12 @@ private struct FullBleedExerciseImage: View {
     private var categoryGradient: LinearGradient {
         let colors: [Color] = {
             switch exercise.category {
-            case .strength:    return [Color.green.opacity(0.4), Color.black]
-            case .cardio:      return [Color.pink.opacity(0.4), Color.black]
-            case .flexibility: return [Color.orange.opacity(0.4), Color.black]
+            case .strength, .hypertrophyFocus, .calisthenics:
+                return [Color.green.opacity(0.4), Color.black]
+            case .cardio, .plyometric:
+                return [Color.pink.opacity(0.4), Color.black]
+            case .flexibility, .stretching, .mobility:
+                return [Color.orange.opacity(0.4), Color.black]
             }
         }()
         return LinearGradient(colors: colors, startPoint: .topLeading, endPoint: .bottomTrailing)

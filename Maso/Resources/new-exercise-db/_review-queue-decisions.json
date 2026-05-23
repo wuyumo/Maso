@@ -1,0 +1,866 @@
+[
+  {
+    "new_id": "ab_wheel_rollout_kneeling",
+    "new_name": "Ab Wheel Rollout (Kneeling)",
+    "old_id_from_file": "Barbell_Rollout_from_Bench",
+    "old_name": "Barbell Rollout from Bench",
+    "decision": "NO",
+    "reason": "Ab wheel vs barbell rollout — different equipment family"
+  },
+  {
+    "new_id": "ab_wheel_rollout_standing",
+    "new_name": "Ab Wheel Rollout (Standing)",
+    "old_id_from_file": "Barbell_Rollout_from_Bench",
+    "old_name": "Barbell Rollout from Bench",
+    "decision": "NO",
+    "reason": "Ab wheel vs barbell rollout — different equipment"
+  },
+  {
+    "new_id": "abduction_cable",
+    "new_name": "Cable Hip Abduction",
+    "old_id_from_file": "Thigh_Abductor",
+    "old_name": "Thigh Abductor",
+    "decision": "NO",
+    "reason": "Cable hip abduction vs Thigh Abductor machine — different equipment family"
+  },
+  {
+    "new_id": "ankle_dorsiflexion_wall",
+    "new_name": "Ankle Dorsiflexion (Wall)",
+    "old_id_from_file": "Plank",
+    "old_name": "Plank",
+    "decision": "NO",
+    "reason": "Ankle mobility vs core plank — unrelated"
+  },
+  {
+    "new_id": "assault_bike",
+    "new_name": "Assault Bike",
+    "old_id_from_file": "Air_Bike",
+    "old_name": "Air Bike",
+    "decision": "YES",
+    "reason": "Assault Bike is the brand name for Air Bike — same machine"
+  },
+  {
+    "new_id": "back_extension_45_degree",
+    "new_name": "Back Extension (45°)",
+    "old_id_from_file": "Cable_Incline_Triceps_Extension",
+    "old_name": "Cable Incline Triceps Extension",
+    "decision": "NO",
+    "reason": "Back extension ≠ triceps extension — different muscles"
+  },
+  {
+    "new_id": "back_extension_swiss_ball",
+    "new_name": "Back Extension (Swiss Ball)",
+    "old_id_from_file": "Cable_Incline_Triceps_Extension",
+    "old_name": "Cable Incline Triceps Extension",
+    "decision": "NO",
+    "reason": "Back extension ≠ triceps extension — different muscles"
+  },
+  {
+    "new_id": "back_lever",
+    "new_name": "Back Lever",
+    "old_id_from_file": "Back_Flyes_-_With_Bands",
+    "old_name": "Back Flyes - With Bands",
+    "decision": "NO",
+    "reason": "Gymnastic hold vs rear-delt fly — different exercises"
+  },
+  {
+    "new_id": "banded_lateral_walk",
+    "new_name": "Banded Lateral Walk",
+    "old_id_from_file": "Monster_Walk",
+    "old_name": "Monster Walk",
+    "decision": "YES",
+    "reason": "Same exercise, different names"
+  },
+  {
+    "new_id": "banded_shoulder_dislocation",
+    "new_name": "Banded Shoulder Dislocation",
+    "old_id_from_file": "Shoulder_Raise",
+    "old_name": "Shoulder Raise",
+    "decision": "NO",
+    "reason": "Mobility drill vs strength raise — different purpose/movement"
+  },
+  {
+    "new_id": "battle_rope_slams",
+    "new_name": "Battle Rope (Slams)",
+    "old_id_from_file": "Battling_Ropes",
+    "old_name": "Battling Ropes",
+    "decision": "YES",
+    "reason": "Same exercise family — battle rope variations"
+  },
+  {
+    "new_id": "bayesian_curl",
+    "new_name": "Bayesian Curl",
+    "old_id_from_file": "Drag_Curl",
+    "old_name": "Drag Curl",
+    "decision": "NO",
+    "reason": "Different curl variations — Bayesian is cable-behind-back, Drag is bar-to-body"
+  },
+  {
+    "new_id": "bicycle_kicks",
+    "new_name": "Bicycle Kicks",
+    "old_id_from_file": "Flutter_Kicks",
+    "old_name": "Flutter Kicks",
+    "decision": "NO",
+    "reason": "Bicycle kicks ≠ flutter kicks (per criteria example)"
+  },
+  {
+    "new_id": "burpee",
+    "new_name": "Burpee",
+    "old_id_from_file": "Freehand_Jump_Squat",
+    "old_name": "Freehand Jump Squat",
+    "decision": "NO",
+    "reason": "Burpee includes push-up; jump squat does not (per criteria example)"
+  },
+  {
+    "new_id": "burpee_broad_jump",
+    "new_name": "Burpee (Broad Jump)",
+    "old_id_from_file": "Freehand_Jump_Squat",
+    "old_name": "Freehand Jump Squat",
+    "decision": "NO",
+    "reason": "Burpee variation ≠ jump squat"
+  },
+  {
+    "new_id": "burpee_no_pushup",
+    "new_name": "Burpee (No Push-Up)",
+    "old_id_from_file": "Freehand_Jump_Squat",
+    "old_name": "Freehand Jump Squat",
+    "decision": "NO",
+    "reason": "Still a burpee — squat thrust + jump, not jump squat"
+  },
+  {
+    "new_id": "burpee_squat_jump",
+    "new_name": "Burpee",
+    "old_id_from_file": "Freehand_Jump_Squat",
+    "old_name": "Freehand Jump Squat",
+    "decision": "NO",
+    "reason": "Burpee ≠ jump squat"
+  },
+  {
+    "new_id": "cable_woodchopper_reverse",
+    "new_name": "Woodchopper Reverse (Cable)",
+    "old_id_from_file": "Cable_Reverse_Crunch",
+    "old_name": "Cable Reverse Crunch",
+    "decision": "NO",
+    "reason": "Rotation chop vs reverse crunch — different patterns"
+  },
+  {
+    "new_id": "chest_dip_korean",
+    "new_name": "Korean Dip",
+    "old_id_from_file": "Ring_Dips",
+    "old_name": "Ring Dips",
+    "decision": "NO",
+    "reason": "Korean dip is unique behind-back bench dip variant — not ring dip"
+  },
+  {
+    "new_id": "clamshell",
+    "new_name": "Clamshell",
+    "old_id_from_file": "Clean",
+    "old_name": "Clean",
+    "decision": "NO",
+    "reason": "Clamshell hip abduction vs Olympic Clean — unrelated"
+  },
+  {
+    "new_id": "clamshell_banded",
+    "new_name": "Clamshell (Banded)",
+    "old_id_from_file": "Clean",
+    "old_name": "Clean",
+    "decision": "NO",
+    "reason": "Clamshell hip abduction vs Olympic Clean — unrelated"
+  },
+  {
+    "new_id": "dead_hang_one_arm",
+    "new_name": "Single-Arm Dead Hang",
+    "old_id_from_file": "Single-Arm_Push-Up",
+    "old_name": "Single-Arm Push-Up",
+    "decision": "NO",
+    "reason": "Hang from bar vs push-up — different movements"
+  },
+  {
+    "new_id": "deep_squat_hold",
+    "new_name": "Deep Squat Hold",
+    "old_id_from_file": "Speed_Squats",
+    "old_name": "Speed Squats",
+    "decision": "NO",
+    "reason": "Isometric squat hold vs speed/dynamic squats — different"
+  },
+  {
+    "new_id": "depth_drop_landing",
+    "new_name": "Depth Drop (Landing)",
+    "old_id_from_file": "Depth_Jump_Leap",
+    "old_name": "Depth Jump Leap",
+    "decision": "NO",
+    "reason": "Depth drop is landing only; depth jump includes leap out — different"
+  },
+  {
+    "new_id": "dip_assisted_machine",
+    "new_name": "Assisted Dip (Machine)",
+    "old_id_from_file": "Band_Assisted_Pull-Up",
+    "old_name": "Band Assisted Pull-Up",
+    "decision": "NO",
+    "reason": "Assisted dip ≠ assisted pull-up — opposite movement"
+  },
+  {
+    "new_id": "dip_korean",
+    "new_name": "Korean Dip",
+    "old_id_from_file": "Ring_Dips",
+    "old_name": "Ring Dips",
+    "decision": "NO",
+    "reason": "Korean dip is unique behind-back variant — not ring dip"
+  },
+  {
+    "new_id": "double_biceps_pose_hold",
+    "new_name": "Double Biceps Pose Hold",
+    "old_id_from_file": "Seated_Biceps",
+    "old_name": "Seated Biceps",
+    "decision": "NO",
+    "reason": "Bodybuilding pose hold vs seated biceps curl — different"
+  },
+  {
+    "new_id": "farmer_carry_cardio",
+    "new_name": "Farmer Carry (Cardio)",
+    "old_id_from_file": "Rickshaw_Carry",
+    "old_name": "Rickshaw Carry",
+    "decision": "NO",
+    "reason": "Farmer carry uses dumbbells/handles; rickshaw is specific frame — different equipment"
+  },
+  {
+    "new_id": "fire_hydrant",
+    "new_name": "Fire Hydrant",
+    "old_id_from_file": "Freehand_Jump_Squat",
+    "old_name": "Freehand Jump Squat",
+    "decision": "NO",
+    "reason": "Fire hydrant hip abduction vs jump squat — unrelated"
+  },
+  {
+    "new_id": "foam_roll_chest",
+    "new_name": "Foam Roll Chest",
+    "old_id_from_file": "Chest_Push_multiple_response",
+    "old_name": "Chest Push (multiple response)",
+    "decision": "NO",
+    "reason": "Foam rolling vs pressing — different categories"
+  },
+  {
+    "new_id": "foam_roll_glutes",
+    "new_name": "Foam Roll Glutes",
+    "old_id_from_file": "Lying_Glute",
+    "old_name": "Lying Glute",
+    "decision": "NO",
+    "reason": "Foam rolling vs lying glute exercise — different"
+  },
+  {
+    "new_id": "foam_roll_it_band",
+    "new_name": "Foam Roll IT Band",
+    "old_id_from_file": "Squat_with_Bands",
+    "old_name": "Squat with Bands",
+    "decision": "NO",
+    "reason": "Foam rolling vs squat — unrelated"
+  },
+  {
+    "new_id": "foam_roll_thoracic_extension",
+    "new_name": "Thoracic Extension (Foam Roller)",
+    "old_id_from_file": "Leg_Extensions",
+    "old_name": "Leg Extensions",
+    "decision": "NO",
+    "reason": "Thoracic mobility vs leg extension — unrelated"
+  },
+  {
+    "new_id": "foam_roll_upper_back",
+    "new_name": "Foam Roll Upper Back",
+    "old_id_from_file": "Upper_Back_Stretch",
+    "old_name": "Upper Back Stretch",
+    "decision": "NO",
+    "reason": "Foam rolling vs static stretch — different modality"
+  },
+  {
+    "new_id": "front_lever_full",
+    "new_name": "Front Lever",
+    "old_id_from_file": "Front_Leg_Raises",
+    "old_name": "Front Leg Raises",
+    "decision": "NO",
+    "reason": "Gymnastic front lever vs leg raises — different"
+  },
+  {
+    "new_id": "front_lever_tuck",
+    "new_name": "Front Lever (Tuck)",
+    "old_id_from_file": "Front_Leg_Raises",
+    "old_name": "Front Leg Raises",
+    "decision": "NO",
+    "reason": "Gymnastic front lever tuck vs leg raises — different"
+  },
+  {
+    "new_id": "front_raise_dumbbell_hammer",
+    "new_name": "Hammer-Grip Front Raise (Dumbbell)",
+    "old_id_from_file": "Front_Cable_Raise",
+    "old_name": "Front Cable Raise",
+    "decision": "NO",
+    "reason": "Different equipment (DB vs cable) and grip — conservative NO"
+  },
+  {
+    "new_id": "gorilla_row",
+    "new_name": "Gorilla Row",
+    "old_id_from_file": "Gorilla_Chin_Crunch",
+    "old_name": "Gorilla Chin/Crunch",
+    "decision": "NO",
+    "reason": "Gorilla row (bent-over) vs Gorilla Chin/Crunch (pull-up variant) — different"
+  },
+  {
+    "new_id": "high_knees_run",
+    "new_name": "High Knees",
+    "old_id_from_file": "Hug_Knees_To_Chest",
+    "old_name": "Hug Knees To Chest",
+    "decision": "NO",
+    "reason": "High knees running cardio vs static knee-hug stretch — different"
+  },
+  {
+    "new_id": "hip_90_90_switch",
+    "new_name": "90/90 Hip Switch",
+    "old_id_from_file": "90_90_Hamstring",
+    "old_name": "90/90 Hamstring",
+    "decision": "NO",
+    "reason": "Hip switch (mobility) vs hamstring stretch — different exercises"
+  },
+  {
+    "new_id": "hollow_body_hold",
+    "new_name": "Hollow Body Hold",
+    "old_id_from_file": "Body-Up",
+    "old_name": "Body-Up",
+    "decision": "NO",
+    "reason": "Hollow hold isometric vs body-up dynamic — different"
+  },
+  {
+    "new_id": "jumping_jacks",
+    "new_name": "Jumping Jacks",
+    "old_id_from_file": "Rope_Jumping",
+    "old_name": "Rope Jumping",
+    "decision": "NO",
+    "reason": "Jumping jacks ≠ jump rope — different exercises"
+  },
+  {
+    "new_id": "jumping_lunges",
+    "new_name": "Jumping Lunges",
+    "old_id_from_file": "Barbell_Walking_Lunge",
+    "old_name": "Barbell Walking Lunge",
+    "decision": "NO",
+    "reason": "Jumping lunges vs walking lunge — different"
+  },
+  {
+    "new_id": "kick_up_handstand",
+    "new_name": "Kick Up to Handstand",
+    "old_id_from_file": "Handstand_Push-Ups",
+    "old_name": "Handstand Push-Ups",
+    "decision": "NO",
+    "reason": "Handstand entry vs handstand press — different"
+  },
+  {
+    "new_id": "kickback_band",
+    "new_name": "Triceps Kickback (Resistance Band)",
+    "old_id_from_file": "Tricep_Dumbbell_Kickback",
+    "old_name": "Tricep Dumbbell Kickback",
+    "decision": "NO",
+    "reason": "Same movement but different equipment — conservative NO"
+  },
+  {
+    "new_id": "kickback_cable_both_arms",
+    "new_name": "Triceps Kickback (Cable)",
+    "old_id_from_file": "One-Legged_Cable_Kickback",
+    "old_name": "One-Legged Cable Kickback",
+    "decision": "NO",
+    "reason": "Triceps kickback vs glute kickback — different muscle groups"
+  },
+  {
+    "new_id": "kickback_cable_single_arm",
+    "new_name": "Triceps Kickback (Cable, Single-Arm)",
+    "old_id_from_file": "One-Legged_Cable_Kickback",
+    "old_name": "One-Legged Cable Kickback",
+    "decision": "NO",
+    "reason": "Triceps kickback vs glute kickback — different muscle groups"
+  },
+  {
+    "new_id": "kickback_single_arm_floor",
+    "new_name": "Floor Triceps Kickback (Single-Arm)",
+    "old_id_from_file": "Tricep_Dumbbell_Kickback",
+    "old_name": "Tricep Dumbbell Kickback",
+    "decision": "NO",
+    "reason": "Floor variant vs bench/bent-over — different setup, conservative NO"
+  },
+  {
+    "new_id": "kroc_row",
+    "new_name": "Kroc Row",
+    "old_id_from_file": "Bent_Over_One-Arm_Long_Bar_Row",
+    "old_name": "Bent Over One-Arm Long Bar Row",
+    "decision": "NO",
+    "reason": "Kroc row uses DB, long-bar row uses landmine — different"
+  },
+  {
+    "new_id": "lateral_lunge_dumbbell_curtsy",
+    "new_name": "Curtsy Lunge (Reverse)",
+    "old_id_from_file": "Dumbbell_Rear_Lunge",
+    "old_name": "Dumbbell Rear Lunge",
+    "decision": "NO",
+    "reason": "Curtsy lunge crosses behind ≠ rear lunge straight back"
+  },
+  {
+    "new_id": "leg_raise_captains_chair_knee",
+    "new_name": "Captain's Chair Knee Raise",
+    "old_id_from_file": "Air_Bike",
+    "old_name": "Air Bike",
+    "decision": "NO",
+    "reason": "Captain's chair knee raise vs air bike — unrelated"
+  },
+  {
+    "new_id": "lizard_pose",
+    "new_name": "Lizard Pose",
+    "old_id_from_file": "Childs_Pose",
+    "old_name": "Child's Pose",
+    "decision": "NO",
+    "reason": "Different yoga poses — lizard is hip opener, child is back stretch"
+  },
+  {
+    "new_id": "lunge_3way",
+    "new_name": "3-Way Lunge",
+    "old_id_from_file": "Dumbbell_Rear_Lunge",
+    "old_name": "Dumbbell Rear Lunge",
+    "decision": "NO",
+    "reason": "3-direction lunge ≠ single rear lunge"
+  },
+  {
+    "new_id": "lunge_curtsy_bodyweight",
+    "new_name": "Curtsy Lunge",
+    "old_id_from_file": "Dumbbell_Rear_Lunge",
+    "old_name": "Dumbbell Rear Lunge",
+    "decision": "NO",
+    "reason": "Curtsy ≠ rear lunge"
+  },
+  {
+    "new_id": "lunge_curtsy_dumbbell",
+    "new_name": "Curtsy Lunge (Dumbbell)",
+    "old_id_from_file": "Dumbbell_Rear_Lunge",
+    "old_name": "Dumbbell Rear Lunge",
+    "decision": "NO",
+    "reason": "Curtsy ≠ rear lunge"
+  },
+  {
+    "new_id": "lunge_deficit_dumbbell",
+    "new_name": "Deficit Lunge (Dumbbell)",
+    "old_id_from_file": "Deficit_Deadlift",
+    "old_name": "Deficit Deadlift",
+    "decision": "NO",
+    "reason": "Deficit lunge ≠ deficit deadlift"
+  },
+  {
+    "new_id": "lunge_forward_barbell",
+    "new_name": "Forward Lunge (Barbell)",
+    "old_id_from_file": "Dumbbell_Rear_Lunge",
+    "old_name": "Dumbbell Rear Lunge",
+    "decision": "NO",
+    "reason": "Forward lunge ≠ rear lunge"
+  },
+  {
+    "new_id": "lunge_forward_bodyweight",
+    "new_name": "Forward Lunge",
+    "old_id_from_file": "Dumbbell_Rear_Lunge",
+    "old_name": "Dumbbell Rear Lunge",
+    "decision": "NO",
+    "reason": "Forward lunge ≠ rear lunge"
+  },
+  {
+    "new_id": "lunge_jumping_alternating",
+    "new_name": "Alternating Jumping Lunge",
+    "old_id_from_file": "Lying_Glute",
+    "old_name": "Lying Glute",
+    "decision": "NO",
+    "reason": "Plyometric lunge vs lying glute exercise — different"
+  },
+  {
+    "new_id": "lunge_pulse",
+    "new_name": "Pulse Lunge",
+    "old_id_from_file": "Crossover_Reverse_Lunge",
+    "old_name": "Crossover Reverse Lunge",
+    "decision": "NO",
+    "reason": "Pulse lunge (small reps) ≠ crossover reverse lunge"
+  },
+  {
+    "new_id": "lunge_static",
+    "new_name": "Static Lunge",
+    "old_id_from_file": "Elevated_Back_Lunge",
+    "old_name": "Elevated Back Lunge",
+    "decision": "NO",
+    "reason": "Static lunge ≠ elevated back lunge"
+  },
+  {
+    "new_id": "lying_abduction_dumbbell",
+    "new_name": "Hip Abduction (Side-Lying, Dumbbell)",
+    "old_id_from_file": "Thigh_Abductor",
+    "old_name": "Thigh Abductor",
+    "decision": "NO",
+    "reason": "Same primary muscle but bodyweight/DB vs machine — different setup"
+  },
+  {
+    "new_id": "machine_chest_fly_unilateral",
+    "new_name": "Single-Arm Chest Fly (Machine)",
+    "old_id_from_file": "Single-Arm_Push-Up",
+    "old_name": "Single-Arm Push-Up",
+    "decision": "NO",
+    "reason": "Chest fly (isolation) ≠ push-up (compound)"
+  },
+  {
+    "new_id": "meadows_row",
+    "new_name": "Meadows Row",
+    "old_id_from_file": "Sled_Row",
+    "old_name": "Sled Row",
+    "decision": "NO",
+    "reason": "Meadows row uses landmine; sled row uses sled — different equipment"
+  },
+  {
+    "new_id": "neck_cars",
+    "new_name": "Neck CAR",
+    "old_id_from_file": "Neck-SMR",
+    "old_name": "Neck-SMR",
+    "decision": "NO",
+    "reason": "CARs are active mobility; SMR is myofascial release — different modality"
+  },
+  {
+    "new_id": "nordic_curl",
+    "new_name": "Nordic Curl",
+    "old_id_from_file": "Seated_Band_Hamstring_Curl",
+    "old_name": "Seated Band Hamstring Curl",
+    "decision": "NO",
+    "reason": "Nordic curl (eccentric/bodyweight) ≠ seated band curl"
+  },
+  {
+    "new_id": "nordic_curl_assisted",
+    "new_name": "Nordic Curl (Assisted)",
+    "old_id_from_file": "Seated_Band_Hamstring_Curl",
+    "old_name": "Seated Band Hamstring Curl",
+    "decision": "NO",
+    "reason": "Nordic curl ≠ seated band curl"
+  },
+  {
+    "new_id": "pec_deck",
+    "new_name": "Pec Deck",
+    "old_id_from_file": "Leverage_Decline_Chest_Press",
+    "old_name": "Leverage Decline Chest Press",
+    "decision": "NO",
+    "reason": "Pec deck fly ≠ decline press"
+  },
+  {
+    "new_id": "pec_deck_reverse",
+    "new_name": "Reverse Pec Deck (Chest Variant)",
+    "old_id_from_file": "Reverse_Hyperextension",
+    "old_name": "Reverse Hyperextension",
+    "decision": "NO",
+    "reason": "Reverse pec deck (rear delt) vs reverse hyper (low back) — different"
+  },
+  {
+    "new_id": "pendlay_row",
+    "new_name": "Pendlay Row",
+    "old_id_from_file": "Suspended_Row",
+    "old_name": "Suspended Row",
+    "decision": "NO",
+    "reason": "Pendlay (barbell from floor) ≠ suspended (TRX) row"
+  },
+  {
+    "new_id": "prone_w_raise",
+    "new_name": "Prone W-Raise",
+    "old_id_from_file": "Side_Laterals_to_Front_Raise",
+    "old_name": "Side Laterals to Front Raise",
+    "decision": "NO",
+    "reason": "Prone W raise (rear delt/posture) ≠ DB combo raise"
+  },
+  {
+    "new_id": "prone_y_raise",
+    "new_name": "Prone Y-Raise",
+    "old_id_from_file": "Side_Laterals_to_Front_Raise",
+    "old_name": "Side Laterals to Front Raise",
+    "decision": "NO",
+    "reason": "Prone Y raise ≠ DB combo raise"
+  },
+  {
+    "new_id": "puppy_pose",
+    "new_name": "Puppy Pose",
+    "old_id_from_file": "Childs_Pose",
+    "old_name": "Child's Pose",
+    "decision": "NO",
+    "reason": "Different yoga poses"
+  },
+  {
+    "new_id": "reverse_pec_deck",
+    "new_name": "Reverse Pec Deck",
+    "old_id_from_file": "Reverse_Flyes",
+    "old_name": "Reverse Flyes",
+    "decision": "YES",
+    "reason": "Reverse pec deck IS a reverse fly on machine — same movement"
+  },
+  {
+    "new_id": "spin_bike",
+    "new_name": "Spin Bike",
+    "old_id_from_file": "Air_Bike",
+    "old_name": "Air Bike",
+    "decision": "NO",
+    "reason": "Spin bike (legs only) ≠ air bike (arms+legs fan)"
+  },
+  {
+    "new_id": "spine_cars",
+    "new_name": "Spine CAR",
+    "old_id_from_file": "Kneeling_Single-Arm_High_Pulley_Row",
+    "old_name": "Kneeling Single-Arm High Pulley Row",
+    "decision": "NO",
+    "reason": "Spine controlled articular rotation vs pulley row — unrelated"
+  },
+  {
+    "new_id": "sprint_intervals_track",
+    "new_name": "Sprint Intervals (Track)",
+    "old_id_from_file": "Bench_Sprint",
+    "old_name": "Bench Sprint",
+    "decision": "NO",
+    "reason": "Track sprint cardio ≠ bench sprint plyo"
+  },
+  {
+    "new_id": "stair_climbing",
+    "new_name": "Stair Climbing",
+    "old_id_from_file": "Star_Jump",
+    "old_name": "Star Jump",
+    "decision": "NO",
+    "reason": "Stair climb cardio ≠ star jump plyo"
+  },
+  {
+    "new_id": "standing_forward_fold",
+    "new_name": "Standing Forward Fold",
+    "old_id_from_file": "Standing_Hip_Flexors",
+    "old_name": "Standing Hip Flexors",
+    "decision": "NO",
+    "reason": "Forward fold (hamstring/back) ≠ hip flexor stretch"
+  },
+  {
+    "new_id": "step_down",
+    "new_name": "Step-Down",
+    "old_id_from_file": "Step-up_with_Knee_Raise",
+    "old_name": "Step-up with Knee Raise",
+    "decision": "NO",
+    "reason": "Step down (eccentric) ≠ step up with knee raise"
+  },
+  {
+    "new_id": "step_up_bulgarian_box",
+    "new_name": "Bulgarian Box Step-Up",
+    "old_id_from_file": "Box_Skip",
+    "old_name": "Box Skip",
+    "decision": "NO",
+    "reason": "Step up (strength) ≠ box skip (plyo)"
+  },
+  {
+    "new_id": "step_up_curtsy",
+    "new_name": "Curtsy Step-Up",
+    "old_id_from_file": "Dumbbell_Step_Ups",
+    "old_name": "Dumbbell Step Ups",
+    "decision": "NO",
+    "reason": "Curtsy step-up (lateral cross) ≠ standard step-up"
+  },
+  {
+    "new_id": "step_up_jumping",
+    "new_name": "Jumping Step-Up",
+    "old_id_from_file": "Rope_Jumping",
+    "old_name": "Rope Jumping",
+    "decision": "NO",
+    "reason": "Jumping step-up ≠ jump rope"
+  },
+  {
+    "new_id": "suitcase_carry",
+    "new_name": "Suitcase Carry",
+    "old_id_from_file": "Rickshaw_Carry",
+    "old_name": "Rickshaw Carry",
+    "decision": "NO",
+    "reason": "Suitcase carry (single-arm DB) ≠ rickshaw carry (specific frame)"
+  },
+  {
+    "new_id": "swimming_backstroke",
+    "new_name": "Swimming (Backstroke)",
+    "old_id_from_file": "Vertical_Swing",
+    "old_name": "Vertical Swing",
+    "decision": "NO",
+    "reason": "Swimming stroke vs kettlebell swing — unrelated"
+  },
+  {
+    "new_id": "swimming_breaststroke",
+    "new_name": "Swimming (Breaststroke)",
+    "old_id_from_file": "Vertical_Swing",
+    "old_name": "Vertical Swing",
+    "decision": "NO",
+    "reason": "Swimming stroke vs kettlebell swing — unrelated"
+  },
+  {
+    "new_id": "swimming_butterfly",
+    "new_name": "Swimming (Butterfly)",
+    "old_id_from_file": "Vertical_Swing",
+    "old_name": "Vertical Swing",
+    "decision": "NO",
+    "reason": "Swimming stroke vs kettlebell swing — unrelated"
+  },
+  {
+    "new_id": "swimming_freestyle",
+    "new_name": "Swimming (Freestyle)",
+    "old_id_from_file": "Vertical_Swing",
+    "old_name": "Vertical Swing",
+    "decision": "NO",
+    "reason": "Swimming stroke vs kettlebell swing — unrelated"
+  },
+  {
+    "new_id": "thoracic_extension_foam_roller",
+    "new_name": "Thoracic Extension (Foam Roller)",
+    "old_id_from_file": "Leg_Extensions",
+    "old_name": "Leg Extensions",
+    "decision": "NO",
+    "reason": "Thoracic mobility vs leg extension — unrelated"
+  },
+  {
+    "new_id": "thoracic_rotation_open_book",
+    "new_name": "Thoracic Rotation (Open Book)",
+    "old_id_from_file": "Pallof_Press_With_Rotation",
+    "old_name": "Pallof Press With Rotation",
+    "decision": "NO",
+    "reason": "Open book mobility ≠ Pallof press rotation"
+  },
+  {
+    "new_id": "thors_hammer",
+    "new_name": "Thor's Hammer",
+    "old_id_from_file": "Hammer_Curls",
+    "old_name": "Hammer Curls",
+    "decision": "NO",
+    "reason": "Thor's hammer (wrist/forearm rotation) ≠ hammer curl (biceps)"
+  },
+  {
+    "new_id": "tibialis_raise",
+    "new_name": "Tibialis Raise",
+    "old_id_from_file": "Posterior_Tibialis_Stretch",
+    "old_name": "Posterior Tibialis Stretch",
+    "decision": "NO",
+    "reason": "Anterior tib raise (strengthening) ≠ posterior tib stretch — different muscle and modality"
+  },
+  {
+    "new_id": "tibialis_raise_band",
+    "new_name": "Tibialis Raise (Band)",
+    "old_id_from_file": "Posterior_Tibialis_Stretch",
+    "old_name": "Posterior Tibialis Stretch",
+    "decision": "NO",
+    "reason": "Anterior tib raise ≠ posterior tib stretch"
+  },
+  {
+    "new_id": "tibialis_raise_dumbbell",
+    "new_name": "Tibialis Raise (Dumbbell)",
+    "old_id_from_file": "Posterior_Tibialis_Stretch",
+    "old_name": "Posterior Tibialis Stretch",
+    "decision": "NO",
+    "reason": "Anterior tib raise ≠ posterior tib stretch"
+  },
+  {
+    "new_id": "tibialis_raise_machine",
+    "new_name": "Tibialis Raise (Machine)",
+    "old_id_from_file": "Posterior_Tibialis_Stretch",
+    "old_name": "Posterior Tibialis Stretch",
+    "decision": "NO",
+    "reason": "Anterior tib raise ≠ posterior tib stretch"
+  },
+  {
+    "new_id": "toes_to_bar",
+    "new_name": "Toes to Bar",
+    "old_id_from_file": "Toe_Touchers",
+    "old_name": "Toe Touchers",
+    "decision": "NO",
+    "reason": "Hanging toes-to-bar ≠ lying toe touch"
+  },
+  {
+    "new_id": "towel_pull_up_hold",
+    "new_name": "Towel Hang",
+    "old_id_from_file": "Bottoms-Up_Clean_From_The_Hang_Position",
+    "old_name": "Bottoms-Up Clean From The Hang Position",
+    "decision": "NO",
+    "reason": "Towel hang ≠ KB clean — different"
+  },
+  {
+    "new_id": "trap_3_raise",
+    "new_name": "Trap-3 Raise",
+    "old_id_from_file": "Dumbbell_Lying_One-Arm_Rear_Lateral_Raise",
+    "old_name": "Dumbbell Lying One-Arm Rear Lateral Raise",
+    "decision": "NO",
+    "reason": "Trap-3 raise (lower-trap specific prone Y) ≠ rear lateral raise"
+  },
+  {
+    "new_id": "waiters_curl",
+    "new_name": "Waiter's Curl",
+    "old_id_from_file": "Standing_Dumbbell_Reverse_Curl",
+    "old_name": "Standing Dumbbell Reverse Curl",
+    "decision": "NO",
+    "reason": "Waiter's curl (plate held flat) ≠ reverse curl (overhand grip)"
+  },
+  {
+    "new_id": "wall_sit",
+    "new_name": "Wall Sit",
+    "old_id_from_file": "Linear_Acceleration_Wall_Drill",
+    "old_name": "Linear Acceleration Wall Drill",
+    "decision": "NO",
+    "reason": "Wall sit isometric ≠ wall sprint drill"
+  },
+  {
+    "new_id": "wall_sit_dumbbell",
+    "new_name": "Wall Sit (Dumbbell)",
+    "old_id_from_file": "Linear_Acceleration_Wall_Drill",
+    "old_name": "Linear Acceleration Wall Drill",
+    "decision": "NO",
+    "reason": "Wall sit ≠ wall sprint drill"
+  },
+  {
+    "new_id": "wall_sit_single_leg",
+    "new_name": "Wall Sit (Single-Leg)",
+    "old_id_from_file": "Linear_Acceleration_Wall_Drill",
+    "old_name": "Linear Acceleration Wall Drill",
+    "decision": "NO",
+    "reason": "Wall sit ≠ wall sprint drill"
+  },
+  {
+    "new_id": "wall_slides",
+    "new_name": "Wall Slides",
+    "old_id_from_file": "Isometric_Neck_Exercise_-_Sides",
+    "old_name": "Isometric Neck Exercise - Sides",
+    "decision": "NO",
+    "reason": "Wall slides shoulder mobility ≠ isometric neck"
+  },
+  {
+    "new_id": "wall_squat_isometric",
+    "new_name": "Wall Sit (Isometric Hold)",
+    "old_id_from_file": "Linear_Acceleration_Wall_Drill",
+    "old_name": "Linear Acceleration Wall Drill",
+    "decision": "NO",
+    "reason": "Wall sit ≠ wall sprint drill"
+  },
+  {
+    "new_id": "wall_walk",
+    "new_name": "Wall Walk",
+    "old_id_from_file": "Sled_Overhead_Backward_Walk",
+    "old_name": "Sled Overhead Backward Walk",
+    "decision": "NO",
+    "reason": "Wall walk (handstand walk up wall) ≠ sled backward walk"
+  },
+  {
+    "new_id": "windshield_wiper",
+    "new_name": "Windshield Wipers",
+    "old_id_from_file": "Wind_Sprints",
+    "old_name": "Wind Sprints",
+    "decision": "NO",
+    "reason": "Windshield wiper abs ≠ wind sprint"
+  },
+  {
+    "new_id": "wrist_pronation_supination",
+    "new_name": "Wrist Pronation/Supination",
+    "old_id_from_file": "Wrist_Roller",
+    "old_name": "Wrist Roller",
+    "decision": "NO",
+    "reason": "Pronation/supination ≠ wrist roller — different forearm movements"
+  },
+  {
+    "new_id": "yates_row",
+    "new_name": "Yates Row",
+    "old_id_from_file": "Sled_Row",
+    "old_name": "Sled Row",
+    "decision": "NO",
+    "reason": "Yates row (underhand BB) ≠ sled row"
+  }
+]

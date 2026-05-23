@@ -1,121 +1,230 @@
 import Foundation
 
+// MARK: - Top-level Category (扩展为 7 类, 跟新 DB schema 对齐)
+
 enum ExerciseCategory: String, Codable, Hashable, Sendable {
     case strength
+    case hypertrophyFocus = "hypertrophy_focus"
     case cardio
-    case flexibility
+    case stretching
+    case mobility
+    case plyometric
+    case calisthenics
+    // Legacy compatibility (old DB had .flexibility → maps to .stretching when loading)
+    case flexibility       // ⚠️ Legacy — present in old DataStore-persisted plans. New DB never emits this.
+}
+
+extension ExerciseCategory {
+    /// Normalize legacy category → modern. Use this in UI / filter logic.
+    var normalized: ExerciseCategory {
+        if self == .flexibility { return .stretching }
+        return self
+    }
+
+    /// Backwards compat helper — old code that branches on `.flexibility` (e.g. stretching detection)
+    /// should keep working. Returns true for both `.flexibility` (legacy) and `.stretching` (new).
+    var isStretching: Bool { self == .flexibility || self == .stretching }
 }
 
 enum ExerciseLevel: String, Codable, Hashable, Sendable {
     case beginner, intermediate, expert
+    /// New DB uses `advanced`; old DB used `expert`. Map both.
+    case advanced
+}
+
+extension ExerciseLevel {
+    /// Normalize advanced → expert (legacy plans use expert).
+    var normalized: ExerciseLevel {
+        if self == .advanced { return .expert }
+        return self
+    }
 }
 
 enum ExerciseForce: String, Codable, Hashable, Sendable {
     case push, pull, `static`
 }
 
-/// 一个动作 (= web 端 Exercise type) — 跟 yuhonas/free-exercise-db 字段对齐
+// MARK: - New fields introduced with the 2026-05-23 exercise DB overhaul
+
+/// Biomechanical movement pattern. nil for isolation movements that don't fit.
+enum MovementPattern: String, Codable, Hashable, Sendable {
+    case pushHorizontal = "push_horizontal"   // Bench press, push-up
+    case pushVertical = "push_vertical"       // OHP, pike push-up
+    case pullHorizontal = "pull_horizontal"   // Bent-over row
+    case pullVertical = "pull_vertical"       // Pull-up, lat pulldown
+    case hinge                                 // Deadlift, RDL
+    case squat                                 // Squat, lunge
+    case lunge                                 // Split-stance (treated separately from squat)
+    case rotation                              // Wood chop, med ball throw
+}
+
+enum Tempo: String, Codable, Hashable, Sendable {
+    case strength       // 1-5 reps, max effort
+    case hypertrophy    // 6-12 reps
+    case endurance      // 15+ reps
+    case explosive      // plyometric speed
+    case isometric      // hold
+}
+
+enum ExerciseMechanic: String, Codable, Hashable, Sendable {
+    case compound, isolation
+}
+
+/// Per-bodyweight tier kcal/10min estimate.
+struct CaloriesEstimate: Codable, Hashable, Sendable {
+    let low: Int    // ~60kg
+    let med: Int    // ~75kg
+    let high: Int   // ~90kg+
+}
+
+// MARK: - Exercise
+
+/// 一个动作 — 跟 2026-05 重做的 schema 1:1 (见 docs/exercise-db-overhaul-plan.md §0.1).
+/// 新字段全部 optional, 老 schema 数据也能 decode (向后兼容).
 struct Exercise: Identifiable, Hashable, Codable, Sendable {
     let id: String
-    /// 原始英文名 (yuhonas JSON 出的). 持久化 / 比较都用这个 — 用户切语言不会"丢" plan.
+
+    /// 原始英文名 (Hevy 命名: 'Bench Press (Dumbbell)'). 持久化 / 比较都用这个.
     let name: String
+
+    /// 顶层类别. 老库 strength/cardio/flexibility 仍兼容 (decode 时映射).
     let category: ExerciseCategory
+
+    /// 显示用 tags (= primaryMuscles 第一个 + 关键词).
     let tags: [String]
-    /// 主练肌 — 严格筛选用 (Picker / Library "按肌肉" 过滤命中这一组).
-    /// 来源: yuhonas JSON 的 `primaryMuscles` 字段, 不含 secondary.
-    /// 即"做这个动作主要练什么", deadlift 只有 `lowerBack` 不会有 `core/glutes/hamstrings`.
+
+    /// 主练肌 — 严格筛选用. 来源新库 `muscles.primary[].sub` 映射成 MuscleGroup.
     let primaryMuscles: [MuscleGroup]
+
     /// 全部肌群 = primary + secondary, 去重保留顺序.
-    /// 详情页 / 协同肌计算 / 训练后肌肉状态等需要"全景"的地方用这个.
     let muscleGroups: [MuscleGroup]
-    /// yuhonas 图片文件夹名 = exercise.id; 用于拼 CDN URL
+
+    /// jsdelivr CDN 的 image folder. 来源新库 fuzzy match (preserve old) 或 nil (新动作无图).
     let imageFolder: String?
+
     /// 难度
     var level: ExerciseLevel?
+
     /// 主要肌群发力方向
     var force: ExerciseForce?
-    /// 器械: body only / barbell / dumbbell / cable / machine / kettlebells / other
+
+    /// 器械: barbell / dumbbell / cable / machine / kettlebell / ... 老库单值, 新库多值取首.
     var equipment: String?
-    /// 指导步骤 (yuhonas instructions, 英文; 后续可翻)
+
+    /// 完整 equipment 数组 (新 schema). 老库自动包装成 [equipment]. UI 可以筛选多器械动作.
+    var equipmentAll: [String]? = nil
+
+    /// 指导步骤 (英文). UI 通过 simplifiedInstructions / localizedInstructions 取本地化.
     var instructions: [String]
 
-    /// 本地化展示名 — UI 层都用这个, 不直接用 raw `name`.
-    /// 查 `ExerciseNames.strings` (lproj 内自动按 locale 解析). 没找到 key 自动 fallback 英文 raw name.
-    ///
-    /// 翻译覆盖率 (zh-Hans, 2026-05): ~70% (873 个动作中 ~607 个).
-    /// 长尾 30% (含品牌名 / 罕用动作变体) 自动 fallback 英文显示, 不会出现中英混杂.
+    // --- 2026-05 新字段 (全 optional, 向后兼容) ---
+
+    /// 动作模式. nil = isolation / 不分类的动作.
+    var movementPattern: MovementPattern? = nil
+
+    /// 复合 / 孤立动作.
+    var mechanic: ExerciseMechanic? = nil
+
+    /// true = 单边动作 (Bulgarian Split Squat, Single-Arm Row 等).
+    var unilateral: Bool? = nil
+
+    /// 节奏 / 强度 profile (跟 reps 区间挂钩).
+    var tempo: Tempo? = nil
+
+    /// YouTube / 在线演示视频 URL. nil = 无.
+    var videoURL: URL? = nil
+
+    /// 每 10 分钟热量估算 (按体重 3 档).
+    var caloriesEstimate: CaloriesEstimate? = nil
+
+    /// 安全提示 (英文 raw, UI 通过 i18n 查 zh-Hans / 其它).
+    var dangerWarnings: [String]? = nil
+
+    /// 本地化 instructions (新库 schema 直接带 en + zh-Hans). UI 优先用这个; 没有 fallback 到
+    /// 英文 instructions[] (老 schema).
+    var localizedInstructions: [String: [String]]? = nil
+
+    /// 本地化名 (新库 schema 直接带 en + zh-Hans). UI 用 displayName 自动按 locale 选.
+    var localizedName: [String: String]? = nil
+
+    /// 本地化 danger warnings.
+    var localizedDangerWarnings: [String: [String]]? = nil
+
+    // MARK: - Display helpers
+
+    /// 本地化展示名 — UI 都用这个, 不直接用 raw `name`.
+    /// 优先级:
+    ///   1. `localizedName` 新库 schema 自带的 zh-Hans / en (locale-aware)
+    ///   2. 老查表机制 (ExerciseNames.strings)
+    ///   3. fallback 到英文 raw name
     var displayName: String {
+        if let map = localizedName {
+            let preferredLang = Bundle.main.preferredLocalizations.first ?? "en"
+            if let localized = map[preferredLang] ?? map["en"] {
+                return localized
+            }
+        }
+        // Old fallback path — ExerciseNames.strings lookup
         let key = self.name
         let localized = NSLocalizedString(
-            key,
-            tableName: "ExerciseNames",
-            bundle: .main,
-            value: key,
-            comment: "Exercise display name (i18n)"
+            key, tableName: "ExerciseNames", bundle: .main,
+            value: key, comment: "Exercise display name (i18n)"
         )
         return localized
     }
 
-    /// 器械字段的 i18n 显示名. nil → nil (调用方决定空时显示什么).
-    /// 之前 PlansScreen 私有维护一份, 提到 model 让所有 view (Picker / Library / Playlist / Grid) 共用.
     var equipmentDisplayName: String? {
         guard let raw = equipment else { return nil }
         return Exercise.equipmentDisplayName(for: raw)
     }
 
-    /// raw equipment 字符串 → i18n 显示文本. 没翻译就 fallback 英文 capitalize.
-    /// (e.g. "e-z curl bar" → 英文 "E-z Curl Bar" / 中文 "EZ 杠铃")
     static func equipmentDisplayName(for raw: String) -> String {
         let key = "equipment.\(raw)"
         let fallback = raw.split(separator: " ").map { $0.capitalized }.joined(separator: " ")
         return NSLocalizedString(key, value: fallback, comment: "equipment chip label")
     }
 
-    /// 全 app 共用的"器械列表"(按 yuhonas 数据频次降序). nil 跟 "other" 合并.
-    /// Picker / Library / Quick workout 共享这一份, 加新器械只改这.
-    ///
-    /// `stretching` 是"伪器械" — yuhonas 数据没这一项, 我们在 ExerciseLibrary.toExercise
-    /// 里 post-load 覆写: 凡是 raw name 含 "stretch" 的动作 equipment 一律改成 stretching.
-    /// (中文翻译里"拉伸"对应英文 "stretch", 1:1 命中, 不需要查翻译表.)
+    /// 全 app 共用的"器械列表" — 新库扩展了不少, 这里只列高频显示用. UI 筛选用 equipmentAll.
     static let knownEquipments: [String] = [
-        "barbell", "dumbbell", "body only", "cable", "machine",
-        "kettlebells", "bands", "e-z curl bar", "medicine ball",
-        "exercise ball", "foam roll", "stretching",
-        "other",
+        "barbell", "dumbbell", "body_only", "cable", "machine",
+        "kettlebell", "ez_curl_bar", "trap_bar", "smith_machine",
+        "bench_flat", "bench_incline", "bench_decline",
+        "pull_up_bar", "dip_station", "rings", "trx",
+        "medicine_ball", "exercise_ball", "foam_roller",
+        "resistance_band", "plyo_box", "sled", "battle_rope",
+        "jump_rope", "rowing_machine", "treadmill", "stationary_bike",
+        "stretching", "other",
     ]
 
-    /// 简化版动作说明 — 1-3 个关键要点, 跟着 locale 显示.
-    ///
-    /// 数据源 (优先级):
-    ///   1. `ExerciseInstructions.strings` 表 (跟 ExerciseNames 同模式, 每语言一份 .lproj).
-    ///      key = exercise.name (英文 raw), value = "\n" 分隔的 2-3 个精简步骤.
-    ///      由 scripts/simplify_instructions_llm.py LLM 批量生成 → auto_translate 翻译到 12 语言.
-    ///   2. Fallback: 原 instructions 前 3 条 + 每条截断到 80 字符 + "…" — 没翻译时 UI 仍能展示,
-    ///      不会出现空白; 但用户看到的是原英文 (yuhonas 数据本身就是英文).
-    ///
-    /// 跟 `displayName` 同模式 — 设计上 LLM 翻译覆盖 80%+, 长尾用 fallback 保持可用.
+    /// 简化版动作说明.
+    /// 优先级:
+    ///   1. 新库 schema localizedInstructions (zh-Hans / en, 直接简短的 2-4 条 form cue)
+    ///   2. 老库 ExerciseInstructions.strings 查表
+    ///   3. fallback 截断英文 instructions[]
     var simplifiedInstructions: [String] {
+        // 新库优先
+        if let map = localizedInstructions {
+            let preferredLang = Bundle.main.preferredLocalizations.first ?? "en"
+            if let arr = map[preferredLang] ?? map["en"], !arr.isEmpty {
+                return arr
+            }
+        }
+        // 老查表
         let key = self.name
         let i18nValue = NSLocalizedString(
-            key,
-            tableName: "ExerciseInstructions",
-            bundle: .main,
-            value: "",  // 空 → 走 fallback
-            comment: "Simplified exercise instructions (i18n)"
+            key, tableName: "ExerciseInstructions", bundle: .main,
+            value: "", comment: "Simplified exercise instructions (i18n)"
         )
         if !i18nValue.isEmpty {
-            // \n 分隔 → 数组. trim 每行空白防多余空格.
             return i18nValue
                 .split(separator: "\n", omittingEmptySubsequences: true)
                 .map { $0.trimmingCharacters(in: .whitespaces) }
                 .filter { !$0.isEmpty }
         }
-        // Fallback: 原 instructions 前 3 条 + 每条截断到 80 字符.
-        // verbose 数据 (yuhonas 每条 80-250 字符) → 截断后 ≤ 80 减少视觉冲击.
+        // Fallback: 老库截断
         return instructions.prefix(3).map { line in
             let trimmed = line.trimmingCharacters(in: .whitespaces)
             if trimmed.count > 80 {
-                // 在 80 字符之前找最后一个空格断词, 避免单词中间截
                 let cutoff = trimmed.prefix(80)
                 if let lastSpace = cutoff.lastIndex(of: " ") {
                     return String(cutoff[..<lastSpace]) + "…"
@@ -124,5 +233,16 @@ struct Exercise: Identifiable, Hashable, Codable, Sendable {
             }
             return trimmed
         }
+    }
+
+    /// 本地化的危险提示. 没有就空数组.
+    var localizedDangers: [String] {
+        if let map = localizedDangerWarnings {
+            let preferredLang = Bundle.main.preferredLocalizations.first ?? "en"
+            if let arr = map[preferredLang] ?? map["en"] {
+                return arr
+            }
+        }
+        return dangerWarnings ?? []
     }
 }
