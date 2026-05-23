@@ -144,15 +144,13 @@ struct WorkoutCard: View {
                 .padding(.horizontal, MasoMetrics.cardPadding)
                 .padding(.top, 6)
 
-            HStack {
-                Spacer()
-                // Today 卡片 BodyHint 比全局 large (260) 略小 — 用户反馈 260 偏大.
-                // 220pt 视觉收敛但仍能清晰看出肌群分布. QuickWorkout 那边继续用全局 large.
-                BodyHint(muscles: inferredMuscles, height: 220)
-                Spacer()
-            }
-            .padding(.top, 24)
-            .padding(.bottom, 20)
+            // Muscle Map 区域 — 跟 SessionCard 共用 MuscleVisualBlock.
+            // 左对齐 + 近正方形, 没照片 (WorkoutCard 不带 photo, 只渲染 muscle map).
+            // ⚠️ 这块跟 SessionCard 的代码层面一致, 改这里也要同步改 SessionCard.
+            MuscleVisualBlock(muscles: inferredMuscles, height: 110)
+                .padding(.horizontal, MasoMetrics.cardPadding)
+                .padding(.top, 14)
+                .padding(.bottom, 14)
 
             // 卡片底部: 列出今天会练的动作.
             // 最多 3 行 — LimitedFlowLayout 自动挤"+N more" 占位在最后一行末尾

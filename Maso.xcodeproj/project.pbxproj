@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		00A4D9E8097FD64B9A060964 /* MuscleVisualBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BFB5D5CE95E571387E9D1C0 /* MuscleVisualBlock.swift */; };
 		01CB4AC5DDE5ABD17EBFFEE9 /* LottieView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0248671AE93BF975A90389AD /* LottieView.swift */; };
 		04BF37E058F0FB0D5085E382 /* PlateCalculatorSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D7C1393538F9AEC41B4A7F /* PlateCalculatorSheet.swift */; };
 		065D18A391A35FE37DAE4455 /* MusclesPickerSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9B75264B14BF7AA46A5CC5A /* MusclesPickerSheet.swift */; };
@@ -179,6 +180,7 @@
 		354F3329C6D8C991F0297879 /* FeedbackStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackStore.swift; sourceTree = "<group>"; };
 		3901E5D4EB6430B5A6682418 /* SpeechManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechManager.swift; sourceTree = "<group>"; };
 		3B81F5BBF4E68644835BBCE7 /* 4-legs.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "4-legs.json"; sourceTree = "<group>"; };
+		3BFB5D5CE95E571387E9D1C0 /* MuscleVisualBlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuscleVisualBlock.swift; sourceTree = "<group>"; };
 		402229E63028077115335B66 /* ExerciseImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseImage.swift; sourceTree = "<group>"; };
 		4161A34A2AE629582280FF70 /* LanguagePickerSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguagePickerSheet.swift; sourceTree = "<group>"; };
 		42B82AED23B3DDCA887C1263 /* 5-core-stretching.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "5-core-stretching.json"; sourceTree = "<group>"; };
@@ -479,6 +481,7 @@
 				C85CFB727541762C8447F7E4 /* MuscleSelector.swift */,
 				F9B75264B14BF7AA46A5CC5A /* MusclesPickerSheet.swift */,
 				CFD21DF2E0041A5BFFACB388 /* MuscleStatusOverviewCard.swift */,
+				3BFB5D5CE95E571387E9D1C0 /* MuscleVisualBlock.swift */,
 				0C2072C444E5B90F0EC1A07C /* NumStepperField.swift */,
 				50A10E5E18C4925F0ACEC2C6 /* ProBanner.swift */,
 				1A36C4336039446730B6DF52 /* SwipeableRow.swift */,
@@ -758,6 +761,7 @@
 				3DD250B994DE2ECE262AAF96 /* MuscleStatusOverviewCard.swift in Sources */,
 				9859B4F11B0CC09D31368050 /* MuscleStatusShareCard.swift in Sources */,
 				37D0EB70BF12A1DC0AA2ACD7 /* MuscleSynergy.swift in Sources */,
+				00A4D9E8097FD64B9A060964 /* MuscleVisualBlock.swift in Sources */,
 				065D18A391A35FE37DAE4455 /* MusclesPickerSheet.swift in Sources */,
 				1BF1C9F054E628089F2B6CDF /* NumStepperField.swift in Sources */,
 				82EF7E005BD1C31B054E49B7 /* OnboardingScreen.swift in Sources */,

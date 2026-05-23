@@ -681,36 +681,16 @@ private struct SessionCard: View {
                 .foregroundStyle(MasoColor.textDim)
                 .lineLimit(1)
 
-            // 底部布局: 照片 + BodyHint 作为一组居中 (两边 Spacer 撑开), replay 按钮做
-            // bottomTrailing overlay 浮在右下角, 不参与居中计算 —
-            //   - 没照片时: 仅 BodyHint, 在 card 内居中
-            //   - 有照片时: [Photo 80×80] [12pt] [BodyHint] 整体作为一个 unit 居中
+            // Muscle Map (+ 可选照片) — 跟 WorkoutCard 用同一个 MuscleVisualBlock.
+            // ⚠️ 跟 WorkoutCard 视觉一致: 改这里同步改 WorkoutCard.
+            // replay 按钮单独做 overlay, 是 SessionCard 独有的差异元素.
             ZStack(alignment: .bottomTrailing) {
-                HStack(alignment: .center, spacing: 12) {
-                    Spacer(minLength: 0)
-                    if let img = photo {
-                        Image(uiImage: img)
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: 80, height: 80)
-                            .clipShape(RoundedRectangle(cornerRadius: 10))
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 10)
-                                    .stroke(MasoColor.borderSoft, lineWidth: 0.5)
-                            )
-                            .accessibilityLabel("Workout photo")
-                    }
-                    BodyHint(
-                        muscles: session.muscles,
-                        height: 80,
-                        region: .full
-                    )
-                    Spacer(minLength: 0)
-                }
+                MuscleVisualBlock(
+                    muscles: session.muscles,
+                    height: 110,
+                    photo: photo
+                )
 
-                // History 卡的"再次训练"按钮 — 用 arrow.clockwise (循环箭头) 表达"重做这次"
-                // 比 play.fill 更准确 (这不是"开始一个新训练", 是"再做一遍刚才的训练").
-                // overlay 模式: 不参与 HStack 布局, 不影响 photo+BodyHint 的居中.
                 if let onReplay {
                     Button(action: onReplay) {
                         ZStack {
