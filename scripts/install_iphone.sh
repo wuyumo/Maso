@@ -18,7 +18,8 @@
 #   - Personal Team (免费): 7 天过期, 过期后重新跑这个脚本即可
 #   - Paid Developer Team: 不过期 (但 Debug profile 仍然 30 天 refresh)
 
-set -eu
+set -euo pipefail   # pipefail — 让 `xcodebuild | tail` 仍然能传出 build 失败的 exit code
+                    # (之前没设, build 失败时脚本继续, 把旧 .app 装上去, 看着像更新了其实没.)
 
 # ━━━ 解析参数 ━━━
 DEVICE_HINT=""
@@ -107,6 +108,10 @@ echo "  devicectl UUID: $DEVICE_UDID"
 echo ""
 echo "🔨 Building Maso for device (Debug)..."
 DERIVED="build/DerivedData-Device"
+# 把 build log 落到临时文件 — failure 时 dump errors 给用户看, success 时只显示尾 3 行.
+BUILD_LOG=$(mktemp -t maso-build.XXXX.log)
+trap 'rm -f "$BUILD_LOG"' EXIT
+set +e   # 先关掉 pipefail 的硬终止, 自己 handle 退出码
 xcodebuild \
     -project Maso.xcodeproj \
     -scheme Maso \
@@ -114,14 +119,22 @@ xcodebuild \
     -destination "id=$HW_ID" \
     -derivedDataPath "$DERIVED" \
     -allowProvisioningUpdates \
-    build 2>&1 | tail -3
+    build > "$BUILD_LOG" 2>&1
+BUILD_EXIT=$?
+set -e
+tail -3 "$BUILD_LOG"
+if [ $BUILD_EXIT -ne 0 ]; then
+    echo ""
+    echo "❌ Build FAILED (exit $BUILD_EXIT). Errors:"
+    grep -E "error:" "$BUILD_LOG" | head -10
+    echo ""
+    echo "   Full log: $BUILD_LOG"
+    exit $BUILD_EXIT
+fi
 
 APP_PATH="$DERIVED/Build/Products/Debug-iphoneos/Maso.app"
 if [ ! -d "$APP_PATH" ]; then
-    echo "❌ Build product not found: $APP_PATH"
-    echo "   Re-run with full xcodebuild output to debug:"
-    echo "   xcodebuild -project Maso.xcodeproj -scheme Maso -configuration Debug \\"
-    echo "     -destination \"id=$HW_ID\" -derivedDataPath $DERIVED -allowProvisioningUpdates build"
+    echo "❌ Build succeeded but product not found: $APP_PATH"
     exit 1
 fi
 
