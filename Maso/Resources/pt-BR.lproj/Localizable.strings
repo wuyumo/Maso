@@ -626,3 +626,6 @@
 "Terms of Service" = "Termos de Serviço";
 "Version" = "Versão";
 "Maso is for informational and motivational purposes only — not medical advice. Consult a physician before starting any new exercise program, especially if you have a medical condition, are pregnant, or have not exercised recently. Stop immediately and seek help if you feel pain, dizziness, or shortness of breath." = "O Maso tem fins apenas informativos e motivacionais — não constitui orientação médica. Consulte um médico antes de começar qualquer novo programa de exercícios, especialmente se você tiver alguma condição de saúde, estiver grávida ou não tiver se exercitado recentemente. Pare imediatamente e procure ajuda se sentir dor, tontura ou falta de ar.";
+
+/* Tab label — workout records */
+"Workout Records" = "Histórico";

@@ -626,3 +626,6 @@
 "Terms of Service" = "利用規約";
 "Version" = "バージョン";
 "Maso is for informational and motivational purposes only — not medical advice. Consult a physician before starting any new exercise program, especially if you have a medical condition, are pregnant, or have not exercised recently. Stop immediately and seek help if you feel pain, dizziness, or shortness of breath." = "Maso は情報提供と運動のモチベーション維持を目的としたものであり、医学的アドバイスではありません。新しい運動プログラムを始める前には医師にご相談ください。特に持病がある方、妊娠中の方、最近運動していない方は必ず確認してください。痛み、めまい、息切れを感じた場合はただちに中止し、医療機関へ相談してください。";
+
+/* Tab label — workout records */
+"Workout Records" = "トレーニング記録";
