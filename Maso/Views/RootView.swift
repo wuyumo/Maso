@@ -106,12 +106,15 @@ struct RootView: View {
                     }
                     .tag(RootTab.plans)
 
-                HistoryScreen(onReplay: startTraining)
-                    .safeAreaInset(edge: .bottom, spacing: 0) { miniBarContent }
-                    .tabItem {
-                        Label("Workout Records", systemImage: "clock.fill")
-                    }
-                    .tag(RootTab.history)
+                HistoryScreen(
+                    onReplay: startTraining,
+                    onOpenSettings: { settingsPresented = true }
+                )
+                .safeAreaInset(edge: .bottom, spacing: 0) { miniBarContent }
+                .tabItem {
+                    Label("Workout Records", systemImage: "clock.fill")
+                }
+                .tag(RootTab.history)
             }
             .tint(MasoColor.accent)
             .animation(.easeOut(duration: 0.25), value: hasActiveSession)

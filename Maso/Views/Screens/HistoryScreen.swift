@@ -11,6 +11,8 @@ struct HistoryScreen: View {
     @Environment(DataStore.self) private var data
     /// 点 "再次训练" 时回调到 RootView, 用统一的 startTraining 入口启动
     let onReplay: (Plan) -> Void
+    /// 右上角齿轮 → 弹 Settings sheet (RootView 持有 sheet state)
+    let onOpenSettings: () -> Void
 
     @State private var selectedSession: SessionSummary?
     @State private var showCalendar: Bool = false
@@ -23,140 +25,27 @@ struct HistoryScreen: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                let lastMap = muscleLastTrainedMap()
-                let hasAny = !lastMap.isEmpty
-
-                // Page title row — 跟 Today / Plans 同款 26pt bold + 右上角操作按钮.
-                // Share 入口从原"肌肉状态卡 overlay"挪到标题行右侧, 跟其他 tab 视觉对齐.
+                // Page title row — 标题 + 右上角设置入口 (跟 TodayScreen 同款).
+                // 原"肌肉状态"卡 + Share 按钮已撤掉 — 肌肉状态 hero 卡挪到 Today tab,
+                // Share 入口走 SessionDetailSheet (点开一条记录里有). 这个 tab 现在
+                // 只剩纯粹的"训练记录列表", 标题改成 "Workout Records".
                 HStack(alignment: .top, spacing: 12) {
-                    Text("Muscle Status")
+                    Text("Workout Records")
                         .font(.system(size: 26, weight: .bold))
                         .foregroundStyle(MasoColor.text)
                     Spacer()
-                    // 三个 section data 始终算好传入; toggle 状态由卡内 inline toggle / ShareCardMode 控制.
-                    let workoutData = mostRecentWorkoutSection()
-                    let muscleData = MuscleStatusSectionData(
-                        muscleOpacity: { m in opacityFor(muscle: m, lastMap: lastMap) },
-                        coarseOnly: !data.settings.muscleDetailEnabled,
-                        workoutsThisWeek: workoutsThisWeekCount,
-                        totalSetsThisWeek: totalSetsThisWeek,
-                        muscleSectionsHit: muscleSectionsHitThisWeek
-                    )
-                    let calendarData = CalendarSectionData(
-                        sessionDates: workoutDateSet(),
-                        totalSets: totalSetsThisWeek,
-                        streakDays: currentStreakDays
-                    )
-                    ShareImageButton(
-                        previewTitle: NSLocalizedString("My Muscle Status", comment: ""),
-                        // Muscle Status tab 入口 — 默认只开"肌肉状态 + 本周训练频率",
-                        // 不开 workout section (用户在 Tab 3 视角更关心"本周整体", 不是单次训练)
-                        defaultSections: ShareSections(muscleStatus: true, calendar: true),
-                        shareContent: { photo, onTapAdd, mode in
-                            switch mode {
-                            case .editing(let binding):
-                                UnifiedShareCard(
-                                    userPhoto: photo,
-                                    onTapAddPhoto: onTapAdd,
-                                    workoutSection: workoutData,
-                                    muscleStatusSection: muscleData,
-                                    calendarSection: calendarData,
-                                    editToggles: binding
-                                )
-                            case .rendering(let visible):
-                                UnifiedShareCard(
-                                    userPhoto: photo,
-                                    onTapAddPhoto: onTapAdd,
-                                    workoutSection: workoutData,
-                                    muscleStatusSection: muscleData,
-                                    calendarSection: calendarData,
-                                    visibleSections: visible
-                                )
-                            }
-                        },
-                        label: {
-                            Image(systemName: "square.and.arrow.up")
-                                .font(.system(size: 16, weight: .bold))
-                                .foregroundStyle(MasoColor.text)
-                                .frame(width: 34, height: 34)
-                                .background(MasoColor.surface)
-                                .clipShape(Circle())
-                        }
-                    )
-                    .accessibilityLabel("Share muscle status")
+                    Button(action: onOpenSettings) {
+                        Image(systemName: "gearshape.fill")
+                            .font(.system(size: 16, weight: .bold))
+                            .foregroundStyle(MasoColor.text)
+                            .frame(width: 34, height: 34)
+                            .background(MasoColor.surface)
+                            .clipShape(Circle())
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("Settings")
                 }
                 .padding(.top, MasoMetrics.pagePaddingTop)
-                VStack(spacing: 12) {
-                    BodyHint(
-                        muscles: [],
-                        height: MasoMetrics.bodyHintHistory,
-                        opacityFor: { m in opacityFor(muscle: m, lastMap: lastMap) },
-                        coarseOnly: !data.settings.muscleDetailEnabled
-                    )
-                    .frame(maxWidth: .infinity)
-
-                    // hasAny 时不再加"3 天衰减"解释文案 — legend 自己用"Fatigued / Recovering /
-                    // Almost fresh / Ready to train"已经说清楚状态语义, 上面那句重复.
-                    // 没数据时还是要留个空状态提示.
-                    if !hasAny {
-                        Text("No training this week yet")
-                            .font(.system(size: 12))
-                            .foregroundStyle(MasoColor.textDim)
-                            .multilineTextAlignment(.center)
-                            .padding(.horizontal, 12)
-                    }
-
-                    // legend — 4 个色块: Fatigued / Recovering / Almost fresh / Ready to train
-                    legendRow
-
-                    // 按钮跟上方 element 之间稍微留点 padding (之前 14pt 让按钮显得太靠下)
-                    Spacer().frame(height: 6)
-
-                    // 两个按钮一行 — 左: 训练日历 (灰), 右: Train the gaps (白, 更显眼)
-                    HStack(spacing: 10) {
-                        Button(action: { showCalendar = true }) {
-                            HStack(spacing: 6) {
-                                Image(systemName: "calendar")
-                                    .font(.system(size: 12, weight: .semibold))
-                                Text("Workout calendar")
-                                    .font(.system(size: 12, weight: .bold))
-                            }
-                            .foregroundStyle(MasoColor.text)
-                            .padding(.horizontal, 14)
-                            .padding(.vertical, 8)
-                            .background(MasoColor.surfaceHi)
-                            .overlay(Capsule().stroke(MasoColor.borderSoft, lineWidth: 0.8))
-                            .clipShape(Capsule())
-                        }
-                        .buttonStyle(.plain)
-
-                        // Train the gaps — accent 绿色实色按钮.
-                        // 点击 → 找出 ≥3 天没练的 section → 自动拼一个 plan → 直接开练.
-                        // disabled 当所有 section 最近都练过.
-                        Button(action: startGapWorkout) {
-                            HStack(spacing: 6) {
-                                Image(systemName: "play.fill")
-                                    .font(.system(size: 11, weight: .heavy))
-                                Text("Train the gaps")
-                                    .font(.system(size: 12, weight: .heavy))
-                            }
-                            .foregroundStyle(.black)
-                            .padding(.horizontal, 14)
-                            .padding(.vertical, 8)
-                            .background(MasoColor.accent)
-                            .clipShape(Capsule())
-                            .shadow(color: MasoColor.accent.opacity(0.4), radius: 8, y: 2)
-                        }
-                        .buttonStyle(.plain)
-                        .disabled(gapSections().isEmpty)
-                        .opacity(gapSections().isEmpty ? 0.35 : 1)
-                    }
-                }
-                .padding(.vertical, MasoMetrics.cardPadding)
-                .frame(maxWidth: .infinity)
-                .background(MasoColor.surface)
-                .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
-                // (Share button 已搬到 title row, 不再在卡片上做 overlay)
 
                 // 训练记录 — 卡片样式 (一张卡 = 一次完整训练)
                 // 7 天前的 sessions 收到"Show older"折叠按钮下面 — 减少 default 视觉负担,
