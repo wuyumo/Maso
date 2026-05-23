@@ -136,46 +136,64 @@ struct WorkoutCard: View {
             // 有 kicker 时, 上 padding 已经在 kicker 行给了, title 只给一点点隔行 spacing
             .padding(.top, resolvedKicker == nil ? MasoMetrics.cardPadding + 8 : 0)
 
-            // exercises · sets — 单行文字格式, 跟 Plans tab 的 PlanRow 一致 (不再用 pill capsule)
-            Text("\(pluralizedExercises(plan.steps.count)) · \(pluralizedSets(plan.steps.reduce(0) { $0 + $1.sets }))")
-                .font(.system(size: 12).monospacedDigit())
-                .foregroundStyle(MasoColor.textDim)
-                .lineLimit(1)
-                .padding(.horizontal, MasoMetrics.cardPadding)
-                .padding(.top, 6)
+            // 中间核心区: 左 muscle map (140 square) + 右 column (元信息 + chip list + play 按钮).
+            // 右下角 play 按钮放进右栏底部, 跟 muscle map 严格等高的方块布局, 视觉对齐.
+            // ⚠️ MuscleVisualBlock 跟 SessionCard 共用; 右侧 metadata + play 是 WorkoutCard 差异元素.
+            HStack(alignment: .top, spacing: 14) {
+                MuscleVisualBlock(muscles: inferredMuscles, sideLength: 140)
+                    .frame(width: 140)
 
-            // Muscle Map 区域 — 跟 SessionCard 共用 MuscleVisualBlock.
-            // 左对齐 + 近正方形, 没照片 (WorkoutCard 不带 photo, 只渲染 muscle map).
-            // ⚠️ 这块跟 SessionCard 的代码层面一致, 改这里也要同步改 SessionCard.
-            MuscleVisualBlock(muscles: inferredMuscles, sideLength: 140)
-                .padding(.horizontal, MasoMetrics.cardPadding)
-                .padding(.top, 14)
-                .padding(.bottom, 14)
+                VStack(alignment: .leading, spacing: 6) {
+                    // exercises · sets
+                    Text("\(pluralizedExercises(plan.steps.count)) · \(pluralizedSets(plan.steps.reduce(0) { $0 + $1.sets }))")
+                        .font(.system(size: 12).monospacedDigit())
+                        .foregroundStyle(MasoColor.textDim)
+                        .lineLimit(1)
 
-            // 卡片底部: 列出今天会练的动作.
-            // 最多 3 行 — LimitedFlowLayout 自动挤"+N more" 占位在最后一行末尾
-            // (空间不够会回吐 pill 给 "+N more" 让位).
-            // 之前显示"部位 chip" (Chest / Back / ...), 信息太抽象 — 用户更想知道"今天练什么动作".
-            if !plan.steps.isEmpty {
-                LimitedFlowLayout(
-                    spacing: 6,
-                    maxRows: 3,
-                    onTruncate: { newCount in
-                        // Layout 算出"几个 pill 没放下" → 异步写回 state, 下一帧 overflow 文案就对了
-                        if truncatedCount != newCount { truncatedCount = newCount }
+                    // 今天会练的动作 chip list — 最多 3 行, 占据右栏中部, 右侧 64pt 留给 play 按钮.
+                    if !plan.steps.isEmpty {
+                        LimitedFlowLayout(
+                            spacing: 6,
+                            maxRows: 3,
+                            onTruncate: { newCount in
+                                if truncatedCount != newCount { truncatedCount = newCount }
+                            }
+                        ) {
+                            ForEach(Array(exercisePreview.enumerated()), id: \.offset) { _, name in
+                                ExercisePill(name: name)
+                            }
+                            ExercisePill(name: "+\(truncatedCount) more")
+                        }
+                        .padding(.trailing, 64)   // 留出 play 按钮宽度 + buffer
                     }
-                ) {
-                    ForEach(Array(exercisePreview.enumerated()), id: \.offset) { _, name in
-                        ExercisePill(name: name)
+
+                    Spacer(minLength: 0)
+
+                    // Play 按钮 — 右下角主 CTA. 56pt 圆, 实色 accent, 黑色三角, glow.
+                    HStack {
+                        Spacer()
+                        Button(action: onStart) {
+                            ZStack {
+                                Circle()
+                                    .fill(MasoColor.accent)
+                                    .frame(width: 56, height: 56)
+                                    .shadow(color: MasoColor.accent.opacity(0.45), radius: 12, y: 4)
+                                Image(systemName: "play.fill")
+                                    .font(.system(size: 20, weight: .heavy))
+                                    .foregroundStyle(.black)
+                                    .offset(x: 1)
+                            }
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel("Start workout")
                     }
-                    // 最后一个 subview 是 overflow indicator. Layout 没截断时不画.
-                    ExercisePill(name: "+\(truncatedCount) more")
                 }
-                .padding(.leading, MasoMetrics.cardPadding)
-                // 给 play 按钮让位: 56pt 大圆 + buffer, 避免 2 行 chip 跟按钮重叠.
-                .padding(.trailing, MasoMetrics.cardPadding + 64)
-                .padding(.bottom, MasoMetrics.cardPadding + 4)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .frame(height: 140)
             }
+            .padding(.horizontal, MasoMetrics.cardPadding)
+            .padding(.top, 12)
+            .padding(.bottom, MasoMetrics.cardPadding)
         }
         // 有 detail callback 时整张卡可点 (BodyHint hit-test 没接 onMuscleTap, 不冲突).
         // 用 contentShape + onTapGesture 而不是 Button — 避免 SwiftUI 给整卡套上 button style 改色.
@@ -183,27 +201,6 @@ struct WorkoutCard: View {
         .onTapGesture { onShowDetail?() }
         .background(MasoColor.surface)
         .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
-        // 右下角 play 按钮 — 主 CTA, 一键直接开练 (跳过详情 sheet 的 "Start" 二次点击).
-        // 尺寸 56pt ≈ 2 行 ExercisePill 高度 + spacing, 视觉占比跟左侧 2 行 chip block 对齐.
-        // 实色 accent + 黑色 icon + glow shadow — 跟 PaywallScreen / startGapWorkout 的"主 CTA"风格一致.
-        .overlay(alignment: .bottomTrailing) {
-            Button(action: onStart) {
-                ZStack {
-                    Circle()
-                        .fill(MasoColor.accent)
-                        .frame(width: 56, height: 56)
-                        .shadow(color: MasoColor.accent.opacity(0.45), radius: 12, y: 4)
-                    // play.fill 三角的几何中心略偏左, +1pt 视觉补偿对齐圆心
-                    Image(systemName: "play.fill")
-                        .font(.system(size: 20, weight: .heavy))
-                        .foregroundStyle(.black)
-                        .offset(x: 1)
-                }
-            }
-            .buttonStyle(.plain)
-            .padding(MasoMetrics.cardPadding)
-            .accessibilityLabel("Start workout")
-        }
     }
 }
 
