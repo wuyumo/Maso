@@ -22,6 +22,10 @@ struct MuscleVisualBlock: View {
     var sideLength: CGFloat = 110
     /// 用户该 session 的照片 (SessionCard 用; WorkoutCard 暂时不传).
     var photo: UIImage? = nil
+    /// 衰减热图模式 — MuscleStatusOverviewCard 用. 传了之后 BodyHint 走 opacityFor 路径 (忽略 muscles 参数).
+    var opacityFor: ((MuscleGroup) -> Double?)? = nil
+    /// 粗颗粒模式 — Settings.muscleDetailEnabled 取反时传 true.
+    var coarseOnly: Bool = false
 
     /// 人体 viewBox 自然宽高比 ~0.568, 两 panel 紧贴总宽高比 ~1.137.
     /// BodyHint height × 1.137 = 自然宽. 想让宽 = sideLength → height = sideLength / 1.137.
@@ -35,6 +39,8 @@ struct MuscleVisualBlock: View {
                 muscles: muscles,
                 height: bodyHintHeight,
                 region: .full,
+                opacityFor: opacityFor,
+                coarseOnly: coarseOnly,
                 panelSpacing: 0
             )
             .frame(width: sideLength, height: sideLength)

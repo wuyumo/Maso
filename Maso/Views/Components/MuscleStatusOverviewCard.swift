@@ -19,52 +19,51 @@ struct MuscleStatusOverviewCard: View {
     /// "Train the gaps" 按钮 — caller 构造 plan 并启动训练
     let onStartGapWorkout: () -> Void
 
+    /// Muscle map slot 边长. 卡片整体高度 = 标题行 + slot + padding.
+    /// 130 比之前 160 紧凑 ~20%, 同时仍能塞下右侧 4 行 legend + 2 个按钮.
+    private let slotSize: CGFloat = 130
+
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: 8) {
             // 卡片标题 — 跟其他 hero 卡 (WorkoutCard) 同款层级 / 字号
             Text("Muscle Status")
                 .font(.system(size: 16, weight: .bold))
                 .foregroundStyle(MasoColor.text)
 
-            HStack(alignment: .top, spacing: 14) {
-                // LEFT: BodyHint — front + back 紧凑显示, 视觉接近正方形
-                //   - panelSpacing 0  →  前后无缝 (默认 6 太分离)
-                //   - height 160      →  两 panel 自然 aspect 0.57 × 2 = 182 宽, 比例 1.14:1
-                // 数学上不完美 1:1, 但视觉上 "近正方形" 已经达到 (人体轮廓本身就比 panel 包络小).
-                BodyHint(
+            HStack(alignment: .top, spacing: 12) {
+                // LEFT: 复用共享 MuscleVisualBlock — 正方形 slot, opacityFor 启用衰减热图.
+                // ⚠️ 跟其它卡片 (WorkoutCard / SessionCard / PlanRow) 共用一份代码, 改这里同步影响所有.
+                MuscleVisualBlock(
                     muscles: [],
-                    height: 160,
+                    sideLength: slotSize,
                     opacityFor: { m in MuscleStatusCompute.opacityFor(muscle: m, lastMap: lastMap) },
-                    coarseOnly: !data.settings.muscleDetailEnabled,
-                    panelSpacing: 0
+                    coarseOnly: !data.settings.muscleDetailEnabled
                 )
+                .frame(width: slotSize)   // 不让它撑全宽, 右侧留给 legend + buttons
 
-                // RIGHT: legend (4 stacked) + 2 buttons (右对齐 + 自适应宽度)
+                // RIGHT: legend (4 stacked) + 2 capsule buttons
                 VStack(alignment: .trailing, spacing: 0) {
-                    // Legend — 竖排 4 行, 整组左对齐内部内容, 整组贴右
-                    VStack(alignment: .leading, spacing: 6) {
+                    VStack(alignment: .leading, spacing: 4) {
                         legendRow(opacity: 1.0, label: "Fatigued")
                         legendRow(opacity: 0.6, label: "Recovering")
                         legendRow(opacity: 0.3, label: "Almost fresh")
                         legendRow(opacity: nil, label: "Ready to train")
                     }
 
-                    Spacer(minLength: 8)
+                    Spacer(minLength: 6)
 
-                    // Action buttons — 竖排 2 个 capsule, fit-content (不 frame .infinity)
-                    // 之前用 .frame(maxWidth: .infinity) 让按钮撑满右侧空间, 视觉太重.
-                    VStack(alignment: .trailing, spacing: 6) {
+                    VStack(alignment: .trailing, spacing: 5) {
                         Button(action: onShowCalendar) {
                             HStack(spacing: 5) {
                                 Image(systemName: "calendar")
-                                    .font(.system(size: 11, weight: .semibold))
+                                    .font(.system(size: 10, weight: .semibold))
                                 Text("Workout calendar")
                                     .font(.system(size: 11, weight: .bold))
                                     .lineLimit(1)
                             }
                             .foregroundStyle(MasoColor.text)
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 7)
+                            .padding(.horizontal, 11)
+                            .padding(.vertical, 5)
                             .background(MasoColor.surfaceHi)
                             .overlay(Capsule().stroke(MasoColor.borderSoft, lineWidth: 0.8))
                             .clipShape(Capsule())
@@ -80,13 +79,15 @@ struct MuscleStatusOverviewCard: View {
                                     .font(.system(size: 11, weight: .heavy))
                                     .lineLimit(1)
                             }
-                            .foregroundStyle(.black)
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 7)
-                            .background(MasoColor.accent)
+                            // 透明 accent 绿样式 — accent 文字 + 16% accent 背景 + 40% accent 描边.
+                            // 跟 ExerciseDetailSheet 的 "Watch demo" / "Listen" 同款 ghost CTA 风格.
+                            .foregroundStyle(MasoColor.accent)
+                            .padding(.horizontal, 11)
+                            .padding(.vertical, 5)
+                            .background(MasoColor.accent.opacity(0.16))
+                            .overlay(Capsule().stroke(MasoColor.accent.opacity(0.4), lineWidth: 0.8))
                             .clipShape(Capsule())
                             .fixedSize(horizontal: true, vertical: false)
-                            .shadow(color: MasoColor.accent.opacity(0.35), radius: 6, y: 2)
                         }
                         .buttonStyle(.plain)
                         .disabled(gapMuscles.isEmpty)
@@ -94,8 +95,7 @@ struct MuscleStatusOverviewCard: View {
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .trailing)
-                // 跟 BodyHint 等高, 让 legend / buttons 在垂直方向自然撑开
-                .frame(height: 160)
+                .frame(height: slotSize)
             }
         }
         .padding(MasoMetrics.cardPadding - 4)
@@ -103,14 +103,14 @@ struct MuscleStatusOverviewCard: View {
         .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
     }
 
-    /// 单个 legend 行 — 跟 HistoryScreen 的 legendDot 视觉一致, 改成 row layout.
+    /// 单个 legend 行 — 跟 HistoryScreen 的 legendDot 视觉一致.
     private func legendRow(opacity: Double?, label: String) -> some View {
-        HStack(spacing: 7) {
+        HStack(spacing: 6) {
             RoundedRectangle(cornerRadius: 2)
                 .fill(opacity == nil
                       ? Color(red: 0.165, green: 0.165, blue: 0.165)
                       : MasoColor.accent.opacity(opacity!))
-                .frame(width: 10, height: 10)
+                .frame(width: 9, height: 9)
             Text(LocalizedStringKey(label))
                 .font(.system(size: 10))
                 .foregroundStyle(MasoColor.textDim)
