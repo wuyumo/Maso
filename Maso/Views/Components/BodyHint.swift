@@ -30,11 +30,13 @@ struct BodyHint: View {
     var onMuscleTap: ((MuscleGroup) -> Void)? = nil
     /// "粗颗粒模式" — 关闭 sub-muscle 分块显示. (目前实现没区分; v3 可加.)
     var coarseOnly: Bool = false
+    /// 前 / 后两个 panel 之间的间距. 默认 6pt; 紧凑 hero 卡片想拉近可传 0 甚至负值.
+    var panelSpacing: CGFloat = 6
 
     // MARK: - Body
 
     var body: some View {
-        HStack(spacing: 6) {
+        HStack(spacing: panelSpacing) {
             panel(side: .front)
             panel(side: .back)
         }

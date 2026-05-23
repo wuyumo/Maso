@@ -21,13 +21,16 @@ struct MuscleStatusOverviewCard: View {
 
     var body: some View {
         HStack(alignment: .top, spacing: 14) {
-            // LEFT: BodyHint — front + back 紧凑显示, 接近正方形
-            // height 150 → 自然 aspect 让两 panel 总宽接近 156pt, 几乎 1:1
+            // LEFT: BodyHint — front + back 紧凑显示, 视觉接近正方形
+            //   - panelSpacing 0  →  前后无缝 (默认 6 太分离)
+            //   - height 160      →  两 panel 自然 aspect 0.57 × 2 = 182 宽, 比例 1.14:1
+            // 数学上不完美 1:1, 但视觉上 "近正方形" 已经达到 (人体轮廓本身就比 panel 包络小).
             BodyHint(
                 muscles: [],
-                height: 150,
+                height: 160,
                 opacityFor: { m in MuscleStatusCompute.opacityFor(muscle: m, lastMap: lastMap) },
-                coarseOnly: !data.settings.muscleDetailEnabled
+                coarseOnly: !data.settings.muscleDetailEnabled,
+                panelSpacing: 0
             )
 
             // RIGHT: legend (4 stacked) + 2 buttons
@@ -89,7 +92,7 @@ struct MuscleStatusOverviewCard: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             // 跟 BodyHint 等高, 让 legend / buttons 在垂直方向自然撑开
-            .frame(height: 150)
+            .frame(height: 160)
         }
         .padding(MasoMetrics.cardPadding - 4)
         .background(MasoColor.surface)
