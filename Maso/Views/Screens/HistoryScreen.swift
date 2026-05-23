@@ -62,11 +62,7 @@ struct HistoryScreen: View {
                     let recent = allSessions.filter { $0.day >= cutoff }
                     let older = allSessions.filter { $0.day < cutoff }
 
-                    // section title — 放大成 18pt bold (从 10pt kicker)
-                    Text("Workouts")
-                        .font(.system(size: 18, weight: .bold))
-                        .foregroundStyle(MasoColor.text)
-                        .padding(.top, 8)
+                    // 删了 "Workouts" 二级标题 — 跟 tab 顶部 "训练记录" 重复, 直接显示卡片列表更干净.
 
                     VStack(spacing: 12) {
                         ForEach(recent) { session in
