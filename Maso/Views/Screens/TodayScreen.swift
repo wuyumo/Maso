@@ -43,7 +43,16 @@ struct TodayScreen: View {
                         .padding(.top, 24)
                 }
 
-                // DESIGN §2.4: page 顶部留白 56pt.
+                // 肌肉状态横版卡 — 移到 "Today's Workout" 标题之上, 当作页面真正的 hero.
+                // 横向布局: 左 BodyHint 近正方形 + 右 legend 竖排 + 训练日历 / Train the gaps 按钮.
+                MuscleStatusOverviewCard(
+                    lastMap: lastMap,
+                    gapMuscles: gapMuscles,
+                    onShowCalendar: { showCalendar = true },
+                    onStartGapWorkout: startGapWorkout
+                )
+                .padding(.top, data.settings.isPro ? MasoMetrics.pagePaddingTop : 4)
+
                 // Title row 跟 settings 齿轮同行, alignment 用 .top 让齿轮顶部跟 "GOOD AFTERNOON" 对齐.
                 HStack(alignment: .top, spacing: 12) {
                     VStack(alignment: .leading, spacing: 4) {
@@ -71,16 +80,6 @@ struct TodayScreen: View {
                     .buttonStyle(.plain)
                     .accessibilityLabel("Settings")
                 }
-                .padding(.top, data.settings.isPro ? MasoMetrics.pagePaddingTop : 4)
-
-                // 肌肉状态横版卡 — 顶部 hero, 给"今天可以练什么"提供上下文.
-                // 横向布局: 左 BodyHint 近正方形 + 右 legend 竖排 + 训练日历 / 补练空缺按钮.
-                MuscleStatusOverviewCard(
-                    lastMap: lastMap,
-                    gapMuscles: gapMuscles,
-                    onShowCalendar: { showCalendar = true },
-                    onStartGapWorkout: startGapWorkout
-                )
 
                 if let plan = suggested {
                     // kicker 不传 — WorkoutCard 内部自动 derive (FROM YOUR PLAN / AI / nil).

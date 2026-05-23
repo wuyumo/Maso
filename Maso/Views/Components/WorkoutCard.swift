@@ -164,22 +164,23 @@ struct WorkoutCard: View {
                             }
                             ExercisePill(name: "+\(truncatedCount) more")
                         }
-                        .padding(.trailing, 64)   // 留出 play 按钮宽度 + buffer
+                        .padding(.trailing, 52)   // 留出 44pt 按钮 + buffer
                     }
 
                     Spacer(minLength: 0)
 
-                    // Play 按钮 — 右下角主 CTA. 56pt 圆, 实色 accent, 黑色三角, glow.
+                    // Play 按钮 — 右下角主 CTA. 44pt 圆, 实色 accent, 黑色三角, 轻 glow.
+                    // 之前 56pt 用户反馈太大, 缩到 44pt 仍是明显主 CTA 但不喧宾夺主.
                     HStack {
                         Spacer()
                         Button(action: onStart) {
                             ZStack {
                                 Circle()
                                     .fill(MasoColor.accent)
-                                    .frame(width: 56, height: 56)
-                                    .shadow(color: MasoColor.accent.opacity(0.45), radius: 12, y: 4)
+                                    .frame(width: 44, height: 44)
+                                    .shadow(color: MasoColor.accent.opacity(0.4), radius: 8, y: 3)
                                 Image(systemName: "play.fill")
-                                    .font(.system(size: 20, weight: .heavy))
+                                    .font(.system(size: 16, weight: .heavy))
                                     .foregroundStyle(.black)
                                     .offset(x: 1)
                             }
