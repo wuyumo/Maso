@@ -636,3 +636,23 @@
 
 /* Tab labels — workout records (former "Muscle Status" tab, repurposed) */
 "Workout Records" = "Workout Records";
+
+/* Exercise detail — new schema metadata chips + sections (Phase 3b) */
+"Form cues" = "Form cues";
+"Watch demo" = "Watch demo";
+"Compound" = "Compound";
+"Isolation" = "Isolation";
+"Horizontal push" = "Horizontal push";
+"Vertical push" = "Vertical push";
+"Horizontal pull" = "Horizontal pull";
+"Vertical pull" = "Vertical pull";
+"Hinge" = "Hinge";
+"Squat" = "Squat";
+"Lunge" = "Lunge";
+"Rotation" = "Rotation";
+"Strength tempo" = "Strength tempo";
+"Hypertrophy tempo" = "Hypertrophy tempo";
+"Endurance tempo" = "Endurance tempo";
+"Explosive tempo" = "Explosive tempo";
+"Isometric hold" = "Isometric hold";
+"Unilateral" = "Unilateral";

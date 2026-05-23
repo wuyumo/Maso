@@ -260,6 +260,85 @@ struct ExerciseDetailSheet: View {
         speech.isSpeaking && speech.currentSource == exercise.id
     }
 
+    /// 顶部 metadata chip row — level / mechanic / movement / tempo / unilateral / equipment.
+    /// 每条都 nil-skip, 没有的字段不渲染 (老 schema 数据可能缺很多).
+    @ViewBuilder
+    private var metadataChipsRow: some View {
+        let chips = exerciseMetadataChips()
+        if !chips.isEmpty {
+            FlowLayout(spacing: 6) {
+                ForEach(Array(chips.enumerated()), id: \.offset) { _, label in
+                    Text(label)
+                        .font(.system(size: 10, weight: .semibold))
+                        .foregroundStyle(MasoColor.textDim)
+                        .padding(.horizontal, 8).padding(.vertical, 4)
+                        .background(MasoColor.surfaceHi)
+                        .clipShape(Capsule())
+                }
+            }
+        }
+    }
+
+    /// 把 Exercise 的 metadata 字段转成 localized chip 文案数组.
+    /// 顺序固定: level → mechanic → movement → tempo → unilateral → equipment.
+    private func exerciseMetadataChips() -> [String] {
+        var out: [String] = []
+        // Level
+        if let lvl = exercise.level {
+            let key: String = {
+                switch lvl {
+                case .beginner: return "Beginner"
+                case .intermediate: return "Intermediate"
+                case .expert, .advanced: return "Advanced"
+                }
+            }()
+            out.append(NSLocalizedString(key, comment: ""))
+        }
+        // Mechanic
+        if let mech = exercise.mechanic {
+            let key = mech == .compound ? "Compound" : "Isolation"
+            out.append(NSLocalizedString(key, comment: ""))
+        }
+        // Movement pattern
+        if let mp = exercise.movementPattern {
+            let key: String = {
+                switch mp {
+                case .pushHorizontal: return "Horizontal push"
+                case .pushVertical:   return "Vertical push"
+                case .pullHorizontal: return "Horizontal pull"
+                case .pullVertical:   return "Vertical pull"
+                case .hinge:          return "Hinge"
+                case .squat:          return "Squat"
+                case .lunge:          return "Lunge"
+                case .rotation:       return "Rotation"
+                }
+            }()
+            out.append(NSLocalizedString(key, comment: ""))
+        }
+        // Tempo
+        if let t = exercise.tempo {
+            let key: String = {
+                switch t {
+                case .strength:    return "Strength tempo"
+                case .hypertrophy: return "Hypertrophy tempo"
+                case .endurance:   return "Endurance tempo"
+                case .explosive:   return "Explosive tempo"
+                case .isometric:   return "Isometric hold"
+                }
+            }()
+            out.append(NSLocalizedString(key, comment: ""))
+        }
+        // Unilateral
+        if exercise.unilateral == true {
+            out.append(NSLocalizedString("Unilateral", comment: ""))
+        }
+        // Equipment — 仅显示首选 (Library 已经有 equipment filter, 详情页这里只补一个 chip)
+        if let eq = exercise.equipment {
+            out.append(Exercise.equipmentDisplayName(for: eq))
+        }
+        return out
+    }
+
     /// 语音播报按钮 — speaking 时显 stop, idle 时显 play. tap toggle.
     /// 朗读内容跟着 showFullInstructions 走 — 展开了就读全文, 没展开就读简化版.
     @ViewBuilder
@@ -332,6 +411,10 @@ struct ExerciseDetailSheet: View {
                         }
                     }
 
+                    // Metadata chips — level / mechanic / movement / tempo / unilateral / equipment
+                    // 全部走 nil-skip, 只展示存在的字段, 避免空 chip 占位.
+                    metadataChipsRow
+
                     // Muscles
                     if !exercise.muscleGroups.isEmpty {
                         VStack(alignment: .leading, spacing: 8) {
@@ -355,6 +438,38 @@ struct ExerciseDetailSheet: View {
                         }
                     }
 
+                    // Safety / form cues — 来自 danger_warnings 字段 (新 schema).
+                    // 高难度动作 (deadlift / squat / OHP / etc.) 才会有, isolation 通常空.
+                    let warnings = exercise.localizedDangers
+                    if !warnings.isEmpty {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Form cues")
+                                .font(.system(size: 10, weight: .heavy))
+                                .tracking(1.5)
+                                .foregroundStyle(MasoColor.textFaint)
+                            ForEach(Array(warnings.enumerated()), id: \.offset) { _, line in
+                                HStack(alignment: .top, spacing: 8) {
+                                    Image(systemName: "exclamationmark.triangle.fill")
+                                        .font(.system(size: 10, weight: .heavy))
+                                        .foregroundStyle(MasoColor.accent)
+                                        .padding(.top, 3)
+                                    Text(line)
+                                        .font(.system(size: 13))
+                                        .foregroundStyle(MasoColor.text)
+                                        .fixedSize(horizontal: false, vertical: true)
+                                }
+                            }
+                        }
+                        .padding(12)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(MasoColor.accent.opacity(0.08))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 12)
+                                .stroke(MasoColor.accent.opacity(0.25), lineWidth: 0.6)
+                        )
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                    }
+
                     // Instructions — 默认显示简化版 (LLM 提取的 2-3 个关键要点 / fallback 截断).
                     // 用户想看完整原文 → 点 "Show full instructions" 展开.
                     if !exercise.instructions.isEmpty {
@@ -365,6 +480,25 @@ struct ExerciseDetailSheet: View {
                                     .tracking(1.5)
                                     .foregroundStyle(MasoColor.textFaint)
                                 Spacer()
+                                // Watch demo — YouTube / 视频 link (新 schema 字段).
+                                // 只在 video_url 非空时显示. 系统会用默认浏览器 / YouTube app 打开.
+                                if let url = exercise.videoURL {
+                                    Link(destination: url) {
+                                        HStack(spacing: 4) {
+                                            Image(systemName: "play.rectangle.fill")
+                                                .font(.system(size: 11, weight: .heavy))
+                                            Text("Watch demo")
+                                                .font(.system(size: 11, weight: .semibold))
+                                        }
+                                        .foregroundStyle(MasoColor.accent)
+                                        .padding(.horizontal, 10).padding(.vertical, 5)
+                                        .background(MasoColor.accent.opacity(0.16))
+                                        .overlay(
+                                            Capsule().stroke(MasoColor.accent.opacity(0.4), lineWidth: 0.6)
+                                        )
+                                        .clipShape(Capsule())
+                                    }
+                                }
                                 // 语音播报按钮 — iOS AVSpeechSynthesizer 朗读 instructions
                                 // (跟 i18n / 系统语言对齐, Siri Voice 高质量自动用上).
                                 speakButton
