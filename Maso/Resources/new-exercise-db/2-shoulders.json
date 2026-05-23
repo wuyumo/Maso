@@ -1,0 +1,4453 @@
+[
+  {
+    "id": "overhead_press_barbell",
+    "name": { "en": "Overhead Press", "zh-Hans": "推举" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "front_delt" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "side_delt" },
+        { "major": "arms", "sub": "triceps" },
+        { "major": "core", "sub": "abs_upper" }
+      ]
+    },
+    "equipment": ["barbell"],
+    "category": "strength",
+    "movementPattern": "push_vertical",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "strength",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Bar at shoulder level, grip just outside shoulders.",
+        "Brace core, press bar straight up overhead.",
+        "Lock out arms, head through window at top.",
+        "Lower under control to clavicles."
+      ],
+      "zh-Hans": [
+        "杠铃在肩高, 握距略宽于肩.",
+        "核心收紧, 垂直推举过头.",
+        "顶部锁定手臂, 头部穿过.",
+        "缓慢下放至锁骨."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=2yjwXTZQDDI",
+    "calories_estimate": { "low": 5, "med": 7, "high": 10 },
+    "danger_warnings": {
+      "en": [
+        "Don't hyperextend lower back at lockout.",
+        "Squeeze glutes to protect spine."
+      ],
+      "zh-Hans": [
+        "顶部锁定时不要过度反弓下背.",
+        "收紧臀部保护脊柱."
+      ]
+    }
+  },
+  {
+    "id": "overhead_press_dumbbell_standing",
+    "name": { "en": "Overhead Press (Dumbbell)", "zh-Hans": "推举 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "front_delt" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "side_delt" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["dumbbell"],
+    "category": "strength",
+    "movementPattern": "push_vertical",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Stand tall, dumbbells at shoulder height.",
+        "Press up until arms fully extended.",
+        "Lower slowly to shoulder level."
+      ],
+      "zh-Hans": [
+        "站姿挺直, 哑铃在肩高.",
+        "向上推至手臂完全伸直.",
+        "缓慢下放至肩高."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=qEwKCR5JCog",
+    "calories_estimate": { "low": 5, "med": 7, "high": 9 },
+    "danger_warnings": {
+      "en": ["Keep core tight — no lower back arch."],
+      "zh-Hans": ["核心绷紧 — 不要反弓下背."]
+    }
+  },
+  {
+    "id": "overhead_press_dumbbell_seated",
+    "name": { "en": "Seated Overhead Press (Dumbbell)", "zh-Hans": "坐姿推举 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "front_delt" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "side_delt" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["dumbbell", "bench_flat"],
+    "category": "strength",
+    "movementPattern": "push_vertical",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Sit on upright bench, back supported.",
+        "Dumbbells at shoulder height, palms forward.",
+        "Press up to lockout, lower under control."
+      ],
+      "zh-Hans": [
+        "坐直立卧推凳, 背部贴靠.",
+        "哑铃在肩高, 掌心朝前.",
+        "推至锁定, 控制下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=qEwKCR5JCog",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "overhead_press_barbell_seated",
+    "name": { "en": "Seated Overhead Press", "zh-Hans": "坐姿推举" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "front_delt" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "side_delt" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["barbell", "bench_flat"],
+    "category": "strength",
+    "movementPattern": "push_vertical",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "strength",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Upright bench inside rack, bar at shoulder height.",
+        "Grip just outside shoulders.",
+        "Press up to lockout — no lower back arch.",
+        "Lower to clavicles."
+      ],
+      "zh-Hans": [
+        "直立卧推凳放架内, 杠铃在肩高.",
+        "握距略宽于肩.",
+        "推至锁定 — 下背不反弓.",
+        "下放至锁骨."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=Wse5cYJaCBg",
+    "calories_estimate": { "low": 4, "med": 6, "high": 9 },
+    "danger_warnings": {
+      "en": ["Brace core hard — don't let lower back overarch."],
+      "zh-Hans": ["核心绷紧 — 下背不要过度反弓."]
+    }
+  },
+  {
+    "id": "military_press",
+    "name": { "en": "Military Press", "zh-Hans": "军举" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "front_delt" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "side_delt" },
+        { "major": "arms", "sub": "triceps" },
+        { "major": "core", "sub": "abs_upper" }
+      ]
+    },
+    "equipment": ["barbell"],
+    "category": "strength",
+    "movementPattern": "push_vertical",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "strength",
+    "level": "advanced",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Stand with heels together, strict military stance.",
+        "Bar at front of shoulders, narrow grip.",
+        "Press strictly overhead — no leg drive.",
+        "Control bar back to shoulders."
+      ],
+      "zh-Hans": [
+        "脚跟并拢, 军姿站立.",
+        "杠铃在肩前, 较窄握距.",
+        "严格推举过头 — 不借腿力.",
+        "控制下放至肩部."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=2yjwXTZQDDI",
+    "calories_estimate": { "low": 5, "med": 7, "high": 10 },
+    "danger_warnings": {
+      "en": [
+        "Strict form means no leg drive — use lighter weight.",
+        "Brace core, no back arch."
+      ],
+      "zh-Hans": [
+        "严格动作不借腿力 — 用较轻重量.",
+        "核心绷紧, 不要反弓."
+      ]
+    }
+  },
+  {
+    "id": "push_press_barbell",
+    "name": { "en": "Push Press", "zh-Hans": "借力推举" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "front_delt" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "side_delt" },
+        { "major": "arms", "sub": "triceps" },
+        { "major": "legs", "sub": "quads" },
+        { "major": "legs", "sub": "glutes" }
+      ]
+    },
+    "equipment": ["barbell"],
+    "category": "strength",
+    "movementPattern": "push_vertical",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "explosive",
+    "level": "advanced",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Bar at front of shoulders, feet hip-width.",
+        "Quick dip with knees, drive up with legs.",
+        "Press bar overhead as legs lock out.",
+        "Lower back to shoulders under control."
+      ],
+      "zh-Hans": [
+        "杠铃在肩前, 脚与髋同宽.",
+        "膝盖快速下蹲, 腿部发力上推.",
+        "腿伸直时推举杠铃过头.",
+        "控制下放至肩部."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=iaBVSJm78ko",
+    "calories_estimate": { "low": 7, "med": 10, "high": 13 },
+    "danger_warnings": {
+      "en": [
+        "Time the leg drive — too late wastes momentum.",
+        "Don't push through pressed-out elbows."
+      ],
+      "zh-Hans": [
+        "腿部发力时机 — 太晚浪费动量.",
+        "锁定后不要继续推."
+      ]
+    }
+  },
+  {
+    "id": "push_press_dumbbell",
+    "name": { "en": "Push Press (Dumbbell)", "zh-Hans": "借力推举 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "front_delt" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "side_delt" },
+        { "major": "arms", "sub": "triceps" },
+        { "major": "legs", "sub": "quads" }
+      ]
+    },
+    "equipment": ["dumbbell"],
+    "category": "strength",
+    "movementPattern": "push_vertical",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "explosive",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Dumbbells at shoulders, feet hip-width.",
+        "Quick dip and drive with legs.",
+        "Press dumbbells overhead, lock out.",
+        "Lower back to shoulders."
+      ],
+      "zh-Hans": [
+        "哑铃在肩高, 脚与髋同宽.",
+        "膝盖快速下蹲, 腿部发力.",
+        "推举哑铃过头, 锁定.",
+        "下放至肩部."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=L8fvypPrzzs",
+    "calories_estimate": { "low": 6, "med": 9, "high": 12 },
+    "danger_warnings": {
+      "en": ["Don't collapse at the bottom of the dip."],
+      "zh-Hans": ["下蹲时不要塌陷."]
+    }
+  },
+  {
+    "id": "arnold_press",
+    "name": { "en": "Arnold Press", "zh-Hans": "阿诺德推举" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "front_delt" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "side_delt" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["dumbbell"],
+    "category": "strength",
+    "movementPattern": "push_vertical",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Start with palms facing you at shoulder height.",
+        "Rotate palms outward as you press up.",
+        "Top: palms forward, arms locked.",
+        "Reverse path back to start."
+      ],
+      "zh-Hans": [
+        "起始掌心朝自己, 哑铃在肩高.",
+        "上推过程中掌心向外旋转.",
+        "顶部掌心朝前, 手臂锁定.",
+        "原路返回."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=6Z15_WdXmVw",
+    "calories_estimate": { "low": 5, "med": 7, "high": 9 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "arnold_press_seated",
+    "name": { "en": "Seated Arnold Press", "zh-Hans": "坐姿阿诺德推举" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "front_delt" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "side_delt" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["dumbbell", "bench_flat"],
+    "category": "strength",
+    "movementPattern": "push_vertical",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Sit upright on bench, dumbbells at shoulders, palms in.",
+        "Press up while rotating palms forward.",
+        "Lock out at top, reverse to start."
+      ],
+      "zh-Hans": [
+        "坐直立凳, 哑铃在肩高, 掌心朝内.",
+        "上推同时掌心向外旋转.",
+        "顶部锁定, 原路返回."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=6Z15_WdXmVw",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "z_press",
+    "name": { "en": "Z Press", "zh-Hans": "Z字推举" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "front_delt" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "side_delt" },
+        { "major": "arms", "sub": "triceps" },
+        { "major": "core", "sub": "abs_upper" }
+      ]
+    },
+    "equipment": ["barbell"],
+    "category": "strength",
+    "movementPattern": "push_vertical",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "strength",
+    "level": "advanced",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Sit on floor, legs straight in front.",
+        "Bar at shoulders, narrow grip.",
+        "Press strictly overhead — no leg help.",
+        "Lower under control."
+      ],
+      "zh-Hans": [
+        "坐地, 双腿在身前伸直.",
+        "杠铃在肩高, 较窄握距.",
+        "严格推举过头 — 不借腿力.",
+        "缓慢下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=PA1KvWZvR9Q",
+    "calories_estimate": { "low": 5, "med": 7, "high": 10 },
+    "danger_warnings": {
+      "en": [
+        "Requires solid hip flexor mobility.",
+        "Brace core, no back arch."
+      ],
+      "zh-Hans": [
+        "需要良好的髋屈肌灵活性.",
+        "核心绷紧, 不要反弓."
+      ]
+    }
+  },
+  {
+    "id": "z_press_dumbbell",
+    "name": { "en": "Z Press (Dumbbell)", "zh-Hans": "Z字推举 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "front_delt" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "side_delt" },
+        { "major": "arms", "sub": "triceps" },
+        { "major": "core", "sub": "abs_upper" }
+      ]
+    },
+    "equipment": ["dumbbell"],
+    "category": "strength",
+    "movementPattern": "push_vertical",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Sit on floor, legs straight forward.",
+        "Dumbbells at shoulder height.",
+        "Press overhead — keep torso vertical.",
+        "Control back down."
+      ],
+      "zh-Hans": [
+        "坐地, 双腿在身前伸直.",
+        "哑铃在肩高.",
+        "推举过头 — 躯干保持垂直.",
+        "缓慢下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=PA1KvWZvR9Q",
+    "calories_estimate": { "low": 4, "med": 6, "high": 9 },
+    "danger_warnings": {
+      "en": ["Don't lean back to compensate for tight hip flexors."],
+      "zh-Hans": ["不要因髋屈肌紧而向后倾."]
+    }
+  },
+  {
+    "id": "landmine_press",
+    "name": { "en": "Landmine Press", "zh-Hans": "地雷管推举" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "front_delt" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "side_delt" },
+        { "major": "arms", "sub": "triceps" },
+        { "major": "core", "sub": "abs_upper" }
+      ]
+    },
+    "equipment": ["barbell", "landmine"],
+    "category": "strength",
+    "movementPattern": "push_vertical",
+    "mechanic": "compound",
+    "unilateral": true,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Stand facing landmine, end of bar at shoulder.",
+        "Hold bar with one hand, palm in.",
+        "Press up and slightly forward.",
+        "Lower under control."
+      ],
+      "zh-Hans": [
+        "站立面对地雷管, 杆端在肩上.",
+        "单手握杆, 掌心朝内.",
+        "向上略向前推.",
+        "缓慢下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=v0Nv9wNDV2g",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "landmine_press_kneeling",
+    "name": { "en": "Kneeling Landmine Press", "zh-Hans": "跪姿地雷管推举" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "front_delt" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "side_delt" },
+        { "major": "arms", "sub": "triceps" },
+        { "major": "core", "sub": "abs_upper" }
+      ]
+    },
+    "equipment": ["barbell", "landmine"],
+    "category": "strength",
+    "movementPattern": "push_vertical",
+    "mechanic": "compound",
+    "unilateral": true,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Half-kneel facing landmine.",
+        "Hold bar end at shoulder, opposite hand on hip.",
+        "Press up and forward, lock out.",
+        "Lower with control."
+      ],
+      "zh-Hans": [
+        "半跪面对地雷管.",
+        "杆端在肩, 对侧手叉腰.",
+        "向上向前推, 锁定.",
+        "控制下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=jdkW2J70CCs",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "landmine_press_half_kneeling",
+    "name": { "en": "Half-Kneeling Landmine Press", "zh-Hans": "半跪姿地雷管推举" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "front_delt" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "side_delt" },
+        { "major": "arms", "sub": "triceps" },
+        { "major": "core", "sub": "obliques" }
+      ]
+    },
+    "equipment": ["barbell", "landmine"],
+    "category": "strength",
+    "movementPattern": "push_vertical",
+    "mechanic": "compound",
+    "unilateral": true,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Down knee opposite pressing arm.",
+        "Bar end at shoulder, ribs over hips.",
+        "Press, resist rotation, lower slowly."
+      ],
+      "zh-Hans": [
+        "推举臂同侧腿在前, 异侧膝跪地.",
+        "杆端在肩, 胸腹叠加.",
+        "推举, 抗旋转, 缓慢下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=jdkW2J70CCs",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "overhead_press_smith_machine",
+    "name": { "en": "Overhead Press (Smith Machine)", "zh-Hans": "推举 (史密斯机)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "front_delt" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "side_delt" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["smith_machine"],
+    "category": "strength",
+    "movementPattern": "push_vertical",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Bar at shoulder height in Smith, grip outside shoulders.",
+        "Unrack, press straight up to lockout.",
+        "Lower under control to shoulder level."
+      ],
+      "zh-Hans": [
+        "史密斯杆在肩高, 握距略宽于肩.",
+        "解锁, 垂直推至锁定.",
+        "控制下放至肩高."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=cBJ0R9avtwM",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": {
+      "en": ["Adjust bench position so bar path is in front, not behind head."],
+      "zh-Hans": ["调整凳位让杆路径在头前, 不在脑后."]
+    }
+  },
+  {
+    "id": "overhead_press_smith_seated",
+    "name": { "en": "Seated Overhead Press (Smith Machine)", "zh-Hans": "坐姿推举 (史密斯机)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "front_delt" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "side_delt" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["smith_machine", "bench_flat"],
+    "category": "strength",
+    "movementPattern": "push_vertical",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Upright bench inside Smith rack, bar at chin height.",
+        "Grip just outside shoulders.",
+        "Press straight up, lower to chin level."
+      ],
+      "zh-Hans": [
+        "直立凳放史密斯架内, 杆在下巴高.",
+        "握距略宽于肩.",
+        "垂直推举, 下放至下巴."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=cBJ0R9avtwM",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "overhead_press_machine",
+    "name": { "en": "Overhead Press (Machine)", "zh-Hans": "推举 (器械)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "front_delt" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "side_delt" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["machine"],
+    "category": "strength",
+    "movementPattern": "push_vertical",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Adjust seat so handles at shoulder height.",
+        "Grip handles, press straight up to lockout.",
+        "Lower under control."
+      ],
+      "zh-Hans": [
+        "调整座位让手柄在肩高.",
+        "握住手柄, 垂直推举至锁定.",
+        "缓慢下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=Wqq43dKW1TU",
+    "calories_estimate": { "low": 4, "med": 5, "high": 7 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "overhead_press_cable",
+    "name": { "en": "Overhead Press (Cable)", "zh-Hans": "推举 (绳索)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "front_delt" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "side_delt" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["cable"],
+    "category": "strength",
+    "movementPattern": "push_vertical",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Set pulleys low, grab handles at shoulders.",
+        "Stand facing away, slight forward lean.",
+        "Press both handles up overhead.",
+        "Lower with control."
+      ],
+      "zh-Hans": [
+        "定滑轮低位, 双手握把在肩高.",
+        "背对器械, 身体略前倾.",
+        "双手向上推举过头.",
+        "控制下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=mWFp2sBQrwk",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "overhead_press_kettlebell",
+    "name": { "en": "Overhead Press (Kettlebell)", "zh-Hans": "推举 (壶铃)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "front_delt" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "side_delt" },
+        { "major": "arms", "sub": "triceps" },
+        { "major": "core", "sub": "abs_upper" }
+      ]
+    },
+    "equipment": ["kettlebell"],
+    "category": "strength",
+    "movementPattern": "push_vertical",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Kettlebells in rack position at shoulders.",
+        "Press up overhead — bells rotate as you press.",
+        "Lock out, lower back to rack."
+      ],
+      "zh-Hans": [
+        "壶铃架式在肩位.",
+        "向上推举 — 壶铃自然旋转.",
+        "锁定, 下放回架式."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=8jcULPSF4hY",
+    "calories_estimate": { "low": 5, "med": 7, "high": 10 },
+    "danger_warnings": {
+      "en": ["Maintain wrist alignment — don't let bells flop back."],
+      "zh-Hans": ["保持手腕中立 — 壶铃不要后翻."]
+    }
+  },
+  {
+    "id": "overhead_press_kettlebell_single_arm",
+    "name": { "en": "Single-Arm Overhead Press (Kettlebell)", "zh-Hans": "单臂推举 (壶铃)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "front_delt" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "side_delt" },
+        { "major": "arms", "sub": "triceps" },
+        { "major": "core", "sub": "obliques" }
+      ]
+    },
+    "equipment": ["kettlebell"],
+    "category": "strength",
+    "movementPattern": "push_vertical",
+    "mechanic": "compound",
+    "unilateral": true,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Kettlebell racked at one shoulder.",
+        "Press straight up overhead, resist side bend.",
+        "Lower to rack, switch sides."
+      ],
+      "zh-Hans": [
+        "壶铃架式在一侧肩.",
+        "垂直推举过头, 抗侧屈.",
+        "下放回架式, 换边."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=8jcULPSF4hY",
+    "calories_estimate": { "low": 4, "med": 6, "high": 9 },
+    "danger_warnings": {
+      "en": ["Keep ribs stacked over hips, don't lean."],
+      "zh-Hans": ["胸腹叠加在髋上, 不要侧倾."]
+    }
+  },
+  {
+    "id": "overhead_press_dumbbell_single_arm",
+    "name": { "en": "Single-Arm Overhead Press (Dumbbell)", "zh-Hans": "单臂推举 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "front_delt" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "side_delt" },
+        { "major": "arms", "sub": "triceps" },
+        { "major": "core", "sub": "obliques" }
+      ]
+    },
+    "equipment": ["dumbbell"],
+    "category": "strength",
+    "movementPattern": "push_vertical",
+    "mechanic": "compound",
+    "unilateral": true,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Stand tall, dumbbell at one shoulder.",
+        "Press straight up — brace core.",
+        "Lower with control, alternate or switch."
+      ],
+      "zh-Hans": [
+        "站姿挺直, 哑铃在一侧肩.",
+        "垂直推举 — 核心收紧.",
+        "控制下放, 交替或换边."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=Yzj_OZ7ssjQ",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "overhead_press_dumbbell_alternating",
+    "name": { "en": "Alternating Overhead Press (Dumbbell)", "zh-Hans": "交替推举 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "front_delt" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "side_delt" },
+        { "major": "arms", "sub": "triceps" },
+        { "major": "core", "sub": "obliques" }
+      ]
+    },
+    "equipment": ["dumbbell"],
+    "category": "strength",
+    "movementPattern": "push_vertical",
+    "mechanic": "compound",
+    "unilateral": true,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Dumbbells at both shoulders.",
+        "Press one up while other stays at shoulder.",
+        "Alternate arms each rep."
+      ],
+      "zh-Hans": [
+        "哑铃在双肩.",
+        "推举一臂, 另一臂保持肩高.",
+        "每次交替."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=qEwKCR5JCog",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "behind_the_neck_press",
+    "name": { "en": "Behind-the-Neck Press", "zh-Hans": "颈后推举" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "front_delt" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "side_delt" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["barbell"],
+    "category": "strength",
+    "movementPattern": "push_vertical",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "advanced",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Bar on upper traps, wide grip.",
+        "Press straight up to lockout.",
+        "Lower behind neck only as far as shoulder mobility allows."
+      ],
+      "zh-Hans": [
+        "杠铃放上斜方, 宽握.",
+        "垂直推举至锁定.",
+        "下放至肩部活动度允许的位置."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=9efgcAjQe7E",
+    "calories_estimate": { "low": 5, "med": 7, "high": 9 },
+    "danger_warnings": {
+      "en": [
+        "Requires excellent shoulder mobility — skip if tight.",
+        "Don't bounce the bar off neck.",
+        "Use lighter weight than front press."
+      ],
+      "zh-Hans": [
+        "需要良好的肩关节灵活性 — 紧不要做.",
+        "杠铃不要弹颈部.",
+        "比前推使用更轻重量."
+      ]
+    }
+  },
+  {
+    "id": "behind_the_neck_press_smith",
+    "name": { "en": "Behind-the-Neck Press (Smith Machine)", "zh-Hans": "颈后推举 (史密斯机)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "front_delt" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "side_delt" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["smith_machine"],
+    "category": "strength",
+    "movementPattern": "push_vertical",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Bar on upper traps, wide grip in Smith.",
+        "Press straight up, lower behind neck.",
+        "Stop at ear level — protect shoulders."
+      ],
+      "zh-Hans": [
+        "史密斯杆放上斜方, 宽握.",
+        "垂直推举, 下放至颈后.",
+        "停在耳高 — 保护肩部."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=cBJ0R9avtwM",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": {
+      "en": ["Don't go below ear level if mobility is limited."],
+      "zh-Hans": ["灵活性差不要低于耳高."]
+    }
+  },
+  {
+    "id": "viking_press",
+    "name": { "en": "Viking Press", "zh-Hans": "维京推举" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "front_delt" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "side_delt" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["barbell", "landmine"],
+    "category": "strength",
+    "movementPattern": "push_vertical",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "strength",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Stand at landmine handles, both hands.",
+        "Press up and slightly forward.",
+        "Lock out, lower under control."
+      ],
+      "zh-Hans": [
+        "站立握地雷管把手, 双手.",
+        "向上略向前推.",
+        "锁定, 缓慢下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=Q8kRdNJWFlc",
+    "calories_estimate": { "low": 5, "med": 7, "high": 10 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "bradford_press",
+    "name": { "en": "Bradford Press", "zh-Hans": "布拉德福推举" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "front_delt" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "side_delt" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["barbell"],
+    "category": "strength",
+    "movementPattern": "push_vertical",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "advanced",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Bar at front of shoulders, shoulder-width grip.",
+        "Press just over head, lower behind neck.",
+        "Press back over head to front. That's 1 rep."
+      ],
+      "zh-Hans": [
+        "杠铃在肩前, 与肩同宽握.",
+        "推过头顶, 下放颈后.",
+        "再推过头回到前. 算1次."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=NM_kRoOyR_Q",
+    "calories_estimate": { "low": 5, "med": 7, "high": 9 },
+    "danger_warnings": {
+      "en": [
+        "Skip if shoulder mobility limited.",
+        "Use light weight — focus is constant tension."
+      ],
+      "zh-Hans": [
+        "肩部活动度差不要做.",
+        "用轻重量 — 注重持续张力."
+      ]
+    }
+  },
+  {
+    "id": "bottom_up_press_kettlebell",
+    "name": { "en": "Bottoms-Up Press (Kettlebell)", "zh-Hans": "倒立推举 (壶铃)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "front_delt" }],
+      "secondary": [
+        { "major": "arms", "sub": "forearms" },
+        { "major": "shoulders", "sub": "side_delt" },
+        { "major": "core", "sub": "abs_upper" }
+      ]
+    },
+    "equipment": ["kettlebell"],
+    "category": "strength",
+    "movementPattern": "push_vertical",
+    "mechanic": "compound",
+    "unilateral": true,
+    "tempo": "strength",
+    "level": "advanced",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Kettlebell inverted (bell up) at shoulder.",
+        "Crush handle, press strictly overhead.",
+        "Lower with control, keep bell balanced."
+      ],
+      "zh-Hans": [
+        "壶铃倒立 (球向上) 在肩.",
+        "用力握把, 严格推举过头.",
+        "控制下放, 保持平衡."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=tCNAH3y8DvY",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": {
+      "en": [
+        "Use very light weight — grip is the limit.",
+        "Stop if grip fails — dropped bell is dangerous."
+      ],
+      "zh-Hans": [
+        "用很轻重量 — 握力是限制.",
+        "握不住就停 — 掉落很危险."
+      ]
+    }
+  },
+  {
+    "id": "overhead_press_log",
+    "name": { "en": "Log Press", "zh-Hans": "圆木推举" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "front_delt" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "side_delt" },
+        { "major": "arms", "sub": "triceps" },
+        { "major": "legs", "sub": "quads" }
+      ]
+    },
+    "equipment": ["other"],
+    "category": "strength",
+    "movementPattern": "push_vertical",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "strength",
+    "level": "advanced",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Clean log to shoulders, neutral grip.",
+        "Dip and drive — push press overhead.",
+        "Lock out, lower to shoulders."
+      ],
+      "zh-Hans": [
+        "翻举圆木至肩, 对握.",
+        "下蹲发力 — 借力推举过头.",
+        "锁定, 下放至肩."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=KKEcG23GBME",
+    "calories_estimate": { "low": 8, "med": 11, "high": 14 },
+    "danger_warnings": {
+      "en": [
+        "Strongman lift — requires coaching for safety.",
+        "Don't press from poor rack position."
+      ],
+      "zh-Hans": [
+        "大力士动作 — 需指导.",
+        "架式不好不要推."
+      ]
+    }
+  },
+  {
+    "id": "overhead_press_axle",
+    "name": { "en": "Axle Press", "zh-Hans": "粗杆推举" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "front_delt" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "side_delt" },
+        { "major": "arms", "sub": "triceps" },
+        { "major": "arms", "sub": "forearms" }
+      ]
+    },
+    "equipment": ["barbell"],
+    "category": "strength",
+    "movementPattern": "push_vertical",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "strength",
+    "level": "advanced",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Thick axle bar at shoulders.",
+        "Press strictly overhead — grip is hard.",
+        "Lower under control."
+      ],
+      "zh-Hans": [
+        "粗杆放肩部.",
+        "严格推举过头 — 握力很难.",
+        "缓慢下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=lH-OS3oXTQk",
+    "calories_estimate": { "low": 6, "med": 9, "high": 12 },
+    "danger_warnings": {
+      "en": ["Use straps or hook grip if grip slips."],
+      "zh-Hans": ["握不住可用助力带或勾握."]
+    }
+  },
+  {
+    "id": "thruster_barbell",
+    "name": { "en": "Thruster", "zh-Hans": "推举深蹲" },
+    "muscles": {
+      "primary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "legs", "sub": "quads" }
+      ],
+      "secondary": [
+        { "major": "legs", "sub": "glutes" },
+        { "major": "arms", "sub": "triceps" },
+        { "major": "shoulders", "sub": "side_delt" }
+      ]
+    },
+    "equipment": ["barbell"],
+    "category": "strength",
+    "movementPattern": "push_vertical",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "explosive",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Bar at front shoulders, feet shoulder-width.",
+        "Squat down to parallel.",
+        "Drive up explosively — press bar overhead.",
+        "Lower to shoulders, repeat."
+      ],
+      "zh-Hans": [
+        "杠铃在肩前, 脚与肩同宽.",
+        "深蹲至大腿平行.",
+        "爆发起身 — 推举杠铃过头.",
+        "下放至肩, 重复."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=L219ltL15zk",
+    "calories_estimate": { "low": 10, "med": 14, "high": 18 },
+    "danger_warnings": {
+      "en": ["Maintain front rack — don't lose bar position in squat."],
+      "zh-Hans": ["保持前架 — 蹲时不要松."]
+    }
+  },
+  {
+    "id": "thruster_dumbbell",
+    "name": { "en": "Thruster (Dumbbell)", "zh-Hans": "推举深蹲 (哑铃)" },
+    "muscles": {
+      "primary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "legs", "sub": "quads" }
+      ],
+      "secondary": [
+        { "major": "legs", "sub": "glutes" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["dumbbell"],
+    "category": "strength",
+    "movementPattern": "push_vertical",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "explosive",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Dumbbells at shoulders, feet shoulder-width.",
+        "Squat to parallel.",
+        "Drive up, press dumbbells overhead.",
+        "Lower to shoulders, repeat."
+      ],
+      "zh-Hans": [
+        "哑铃在肩, 脚与肩同宽.",
+        "下蹲至大腿平行.",
+        "起身推举哑铃过头.",
+        "下放至肩, 重复."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=8mU7gT9SDqQ",
+    "calories_estimate": { "low": 9, "med": 12, "high": 16 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "overhead_press_pin",
+    "name": { "en": "Pin Press (Overhead)", "zh-Hans": "高位推举 (顶杆)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "front_delt" }],
+      "secondary": [
+        { "major": "arms", "sub": "triceps" },
+        { "major": "shoulders", "sub": "side_delt" }
+      ]
+    },
+    "equipment": ["barbell", "power_rack"],
+    "category": "strength",
+    "movementPattern": "push_vertical",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "strength",
+    "level": "advanced",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Pins set at forehead/sticking point.",
+        "Press bar from dead stop to lockout.",
+        "Lower to pins, full reset each rep."
+      ],
+      "zh-Hans": [
+        "顶杆设在额头/最难点.",
+        "从死点推至锁定.",
+        "下放至顶杆, 每次重置."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=K1QkPjzVDtY",
+    "calories_estimate": { "low": 5, "med": 7, "high": 10 },
+    "danger_warnings": {
+      "en": ["Use safety pins — heavy weight at lockout fails fast."],
+      "zh-Hans": ["使用安全杆 — 重量大锁定快崩."]
+    }
+  },
+  {
+    "id": "overhead_press_band",
+    "name": { "en": "Overhead Press (Band)", "zh-Hans": "推举 (弹力带)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "front_delt" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "side_delt" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["resistance_band"],
+    "category": "strength",
+    "movementPattern": "push_vertical",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Stand on band, handles at shoulders.",
+        "Press up overhead, lock out.",
+        "Control band on the way down."
+      ],
+      "zh-Hans": [
+        "站在弹力带上, 把手在肩.",
+        "向上推举过头, 锁定.",
+        "控制下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=2dwzKQRk0AY",
+    "calories_estimate": { "low": 3, "med": 5, "high": 7 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "pike_push_up",
+    "name": { "en": "Pike Push-Up", "zh-Hans": "下犬式俯卧撑" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "front_delt" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "side_delt" },
+        { "major": "arms", "sub": "triceps" },
+        { "major": "chest", "sub": "upper_chest" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "calisthenics",
+    "movementPattern": "push_vertical",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "endurance",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Downward dog position, hips high.",
+        "Lower head to floor between hands.",
+        "Press back up, full elbow extension."
+      ],
+      "zh-Hans": [
+        "下犬式, 髋部高位.",
+        "头部下降至双手之间.",
+        "推起, 手肘完全伸直."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=EA8g7q9jauM",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "handstand_push_up",
+    "name": { "en": "Handstand Push-Up", "zh-Hans": "倒立俯卧撑" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "front_delt" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "side_delt" },
+        { "major": "arms", "sub": "triceps" },
+        { "major": "core", "sub": "abs_upper" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "calisthenics",
+    "movementPattern": "push_vertical",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "strength",
+    "level": "advanced",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Kick up to handstand against wall.",
+        "Lower head to floor in controlled descent.",
+        "Press back up to handstand."
+      ],
+      "zh-Hans": [
+        "踢腿至倒立靠墙.",
+        "控制下放, 头碰地.",
+        "推起回倒立."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=zsCAcgKWBO4",
+    "calories_estimate": { "low": 6, "med": 8, "high": 11 },
+    "danger_warnings": {
+      "en": [
+        "Use wall for safety until practiced.",
+        "Stack shoulders over wrists — protect neck."
+      ],
+      "zh-Hans": [
+        "熟练前一定靠墙.",
+        "肩对齐手腕 — 保护颈部."
+      ]
+    }
+  },
+  {
+    "id": "lateral_raise_dumbbell",
+    "name": { "en": "Lateral Raise (Dumbbell)", "zh-Hans": "侧平举 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "side_delt" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "back", "sub": "traps_upper" }
+      ]
+    },
+    "equipment": ["dumbbell"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Stand tall, dumbbells at sides.",
+        "Raise arms out to shoulder height.",
+        "Slight bend in elbows, pinky slightly up.",
+        "Lower slowly under control."
+      ],
+      "zh-Hans": [
+        "站姿挺直, 哑铃在体侧.",
+        "侧平举至肩高.",
+        "肘部微弯, 小指略上.",
+        "缓慢下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=3VcKaXpzqRo",
+    "calories_estimate": { "low": 3, "med": 4, "high": 6 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "lateral_raise_dumbbell_seated",
+    "name": { "en": "Seated Lateral Raise (Dumbbell)", "zh-Hans": "坐姿侧平举 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "side_delt" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "back", "sub": "traps_upper" }
+      ]
+    },
+    "equipment": ["dumbbell", "bench_flat"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Sit on bench, dumbbells at sides.",
+        "Raise to shoulder height — no momentum.",
+        "Pause, lower slowly."
+      ],
+      "zh-Hans": [
+        "坐姿, 哑铃在体侧.",
+        "上举至肩高 — 不借力.",
+        "停顿, 缓慢下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=PzsMitRdI_8",
+    "calories_estimate": { "low": 3, "med": 4, "high": 5 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "lateral_raise_cable",
+    "name": { "en": "Lateral Raise (Cable)", "zh-Hans": "侧平举 (绳索)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "side_delt" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "back", "sub": "traps_upper" }
+      ]
+    },
+    "equipment": ["cable"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Cable at lowest setting, handle in far hand.",
+        "Stand side-on, cable across body.",
+        "Raise arm out to shoulder height.",
+        "Lower with control — feel the side delt."
+      ],
+      "zh-Hans": [
+        "绳索调最低, 远侧手握把.",
+        "侧站, 绳索过身体.",
+        "侧平举至肩高.",
+        "控制下放 — 感受中三角."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=PPrzAvcCdJU",
+    "calories_estimate": { "low": 3, "med": 4, "high": 6 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "lateral_raise_cable_behind_back",
+    "name": { "en": "Behind-the-Back Lateral Raise (Cable)", "zh-Hans": "背后侧平举 (绳索)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "side_delt" }],
+      "secondary": [{ "major": "back", "sub": "traps_upper" }]
+    },
+    "equipment": ["cable"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Cable low, stand side-on with cable behind hand.",
+        "Raise arm out to side — cable behind back.",
+        "Increases tension in stretched position.",
+        "Lower slowly."
+      ],
+      "zh-Hans": [
+        "绳索低位, 侧站绳在手后.",
+        "侧平举 — 绳索从背后过.",
+        "拉伸位张力更大.",
+        "缓慢下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=Pl0RNoLwt7Q",
+    "calories_estimate": { "low": 3, "med": 4, "high": 6 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "lateral_raise_cable_two_arm",
+    "name": { "en": "Two-Arm Lateral Raise (Cable)", "zh-Hans": "双臂侧平举 (绳索)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "side_delt" }],
+      "secondary": [{ "major": "shoulders", "sub": "front_delt" }]
+    },
+    "equipment": ["cable"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Stand center of cable station, handles crossed.",
+        "Left hand grabs right cable, vice versa.",
+        "Raise both arms out to shoulder height.",
+        "Lower with control."
+      ],
+      "zh-Hans": [
+        "站在绳索机中间, 手交叉握把.",
+        "左手握右绳, 反之亦然.",
+        "双臂侧平举至肩高.",
+        "控制下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=PPrzAvcCdJU",
+    "calories_estimate": { "low": 4, "med": 5, "high": 7 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "lateral_raise_machine",
+    "name": { "en": "Lateral Raise (Machine)", "zh-Hans": "侧平举 (器械)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "side_delt" }],
+      "secondary": [{ "major": "back", "sub": "traps_upper" }]
+    },
+    "equipment": ["machine"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Adjust seat so arm pads align with elbows.",
+        "Raise arms out — pads lift to shoulder height.",
+        "Squeeze, lower slowly."
+      ],
+      "zh-Hans": [
+        "调座位让臂垫对齐肘.",
+        "上举 — 垫升至肩高.",
+        "收紧, 缓慢下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=8AeRJrU4dXg",
+    "calories_estimate": { "low": 3, "med": 4, "high": 5 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "lateral_raise_dumbbell_lying_side",
+    "name": { "en": "Lying Side Lateral Raise (Dumbbell)", "zh-Hans": "侧卧侧平举 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "side_delt" }],
+      "secondary": [{ "major": "shoulders", "sub": "front_delt" }]
+    },
+    "equipment": ["dumbbell", "bench_flat"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie on side on bench, top arm holds dumbbell.",
+        "Raise arm vertically — strict isolation.",
+        "Lower slowly — emphasize stretch position."
+      ],
+      "zh-Hans": [
+        "侧卧凳上, 上臂握哑铃.",
+        "垂直上举 — 严格隔离.",
+        "缓慢下放 — 重视拉伸位."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=p9zfpRJDeOg",
+    "calories_estimate": { "low": 3, "med": 4, "high": 6 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "lateral_raise_lying_incline",
+    "name": { "en": "Incline Lateral Raise (Dumbbell)", "zh-Hans": "上斜侧平举 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "side_delt" }],
+      "secondary": [{ "major": "shoulders", "sub": "front_delt" }]
+    },
+    "equipment": ["dumbbell", "bench_incline"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Sit on incline bench, dumbbells hanging at sides.",
+        "Raise arms out to shoulder height.",
+        "Greater stretch than standing version.",
+        "Lower slowly."
+      ],
+      "zh-Hans": [
+        "坐上斜凳, 哑铃在体侧下垂.",
+        "侧平举至肩高.",
+        "比站姿拉伸更大.",
+        "缓慢下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=NF94vQ45c5w",
+    "calories_estimate": { "low": 3, "med": 4, "high": 6 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "lateral_raise_leaning",
+    "name": { "en": "Leaning Lateral Raise (Dumbbell)", "zh-Hans": "倾身侧平举 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "side_delt" }],
+      "secondary": []
+    },
+    "equipment": ["dumbbell"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Hold pole/rack with one hand, lean away.",
+        "Other hand holds dumbbell down at side.",
+        "Raise arm out to shoulder height.",
+        "Leaning increases stretch on side delt."
+      ],
+      "zh-Hans": [
+        "一手扶柱/架, 身体远离.",
+        "另一手哑铃下垂.",
+        "侧平举至肩高.",
+        "倾身增加中三角拉伸."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=GtRH4cQHAGY",
+    "calories_estimate": { "low": 3, "med": 4, "high": 6 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "lateral_raise_leaning_cable",
+    "name": { "en": "Leaning Lateral Raise (Cable)", "zh-Hans": "倾身侧平举 (绳索)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "side_delt" }],
+      "secondary": []
+    },
+    "equipment": ["cable"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Cable at low pulley, hold post with near hand.",
+        "Lean body away from pulley.",
+        "Far hand raises cable to shoulder height.",
+        "Lower slowly."
+      ],
+      "zh-Hans": [
+        "绳索低位, 近侧手扶柱.",
+        "身体远离滑轮.",
+        "远侧手提绳至肩高.",
+        "缓慢下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=oCnxAJpwzbg",
+    "calories_estimate": { "low": 3, "med": 4, "high": 6 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "lateral_raise_partial",
+    "name": { "en": "1.5 Rep Lateral Raise (Dumbbell)", "zh-Hans": "1.5次侧平举 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "side_delt" }],
+      "secondary": [{ "major": "shoulders", "sub": "front_delt" }]
+    },
+    "equipment": ["dumbbell"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Raise dumbbells to shoulder height.",
+        "Lower halfway, raise back up.",
+        "Lower fully — that's 1 rep.",
+        "Use lighter weight than full reps."
+      ],
+      "zh-Hans": [
+        "侧平举至肩高.",
+        "下放一半, 再举起.",
+        "完全下放 — 算1次.",
+        "用比正常更轻重量."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=3VcKaXpzqRo",
+    "calories_estimate": { "low": 3, "med": 5, "high": 7 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "lateral_raise_around_the_world",
+    "name": { "en": "Around-the-World Raise (Dumbbell)", "zh-Hans": "环绕平举 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "side_delt" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "chest", "sub": "upper_chest" }
+      ]
+    },
+    "equipment": ["dumbbell"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Dumbbells at thighs, palms forward.",
+        "Sweep arms out and up in big arc.",
+        "Meet overhead, reverse path back.",
+        "Continuous tension throughout."
+      ],
+      "zh-Hans": [
+        "哑铃在大腿前, 掌心朝前.",
+        "双臂大弧形向上.",
+        "顶部相遇, 原路返回.",
+        "全程持续张力."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=ggW4_GMzVDg",
+    "calories_estimate": { "low": 4, "med": 5, "high": 7 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "lateral_raise_dumbbell_single_arm",
+    "name": { "en": "Single-Arm Lateral Raise (Dumbbell)", "zh-Hans": "单臂侧平举 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "side_delt" }],
+      "secondary": [{ "major": "shoulders", "sub": "front_delt" }]
+    },
+    "equipment": ["dumbbell"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Stand tall, dumbbell at one side.",
+        "Raise one arm to shoulder height.",
+        "Lower slowly, switch sides."
+      ],
+      "zh-Hans": [
+        "站姿挺直, 哑铃在一侧.",
+        "侧平举至肩高.",
+        "缓慢下放, 换边."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=3VcKaXpzqRo",
+    "calories_estimate": { "low": 3, "med": 4, "high": 5 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "lateral_raise_kettlebell",
+    "name": { "en": "Lateral Raise (Kettlebell)", "zh-Hans": "侧平举 (壶铃)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "side_delt" }],
+      "secondary": [{ "major": "back", "sub": "traps_upper" }]
+    },
+    "equipment": ["kettlebell"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Kettlebells at sides, neutral grip.",
+        "Raise to shoulder height — bells hang naturally.",
+        "Lower with control."
+      ],
+      "zh-Hans": [
+        "壶铃在体侧, 对握.",
+        "上举至肩高 — 壶铃自然下垂.",
+        "控制下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=tnpc3VKpJ4U",
+    "calories_estimate": { "low": 3, "med": 4, "high": 6 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "lateral_raise_band",
+    "name": { "en": "Lateral Raise (Band)", "zh-Hans": "侧平举 (弹力带)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "side_delt" }],
+      "secondary": [{ "major": "shoulders", "sub": "front_delt" }]
+    },
+    "equipment": ["resistance_band"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Stand on band center, handles at sides.",
+        "Raise arms to shoulder height.",
+        "Tension increases at top — squeeze.",
+        "Lower with control."
+      ],
+      "zh-Hans": [
+        "站在带中, 把手在体侧.",
+        "侧平举至肩高.",
+        "顶部张力更大 — 收紧.",
+        "控制下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=GgD33TQbVAo",
+    "calories_estimate": { "low": 3, "med": 4, "high": 5 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "lateral_raise_plate",
+    "name": { "en": "Lateral Raise (Plate)", "zh-Hans": "侧平举 (杠铃片)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "side_delt" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "forearms" }
+      ]
+    },
+    "equipment": ["weight_plate"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Hold plate by rim with one hand at side.",
+        "Raise to shoulder height like dumbbell.",
+        "Lower slowly, switch sides."
+      ],
+      "zh-Hans": [
+        "一手扣杠铃片边在体侧.",
+        "像哑铃一样侧平举.",
+        "缓慢下放, 换边."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=3VcKaXpzqRo",
+    "calories_estimate": { "low": 3, "med": 4, "high": 5 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "lateral_raise_lean_in",
+    "name": { "en": "Lean-In Lateral Raise (Dumbbell)", "zh-Hans": "前倾侧平举 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "side_delt" }],
+      "secondary": [{ "major": "shoulders", "sub": "rear_delt" }]
+    },
+    "equipment": ["dumbbell"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Stand, lean torso slightly forward.",
+        "Raise dumbbells to shoulder height.",
+        "Hits side delt at different angle.",
+        "Lower with control."
+      ],
+      "zh-Hans": [
+        "站立, 躯干略前倾.",
+        "侧平举至肩高.",
+        "中三角不同角度.",
+        "控制下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=3VcKaXpzqRo",
+    "calories_estimate": { "low": 3, "med": 4, "high": 6 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "lateral_raise_dumbbell_hold",
+    "name": { "en": "Iso-Hold Lateral Raise (Dumbbell)", "zh-Hans": "等长侧平举 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "side_delt" }],
+      "secondary": [{ "major": "shoulders", "sub": "front_delt" }]
+    },
+    "equipment": ["dumbbell"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "isometric",
+    "level": "intermediate",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Raise dumbbells to shoulder height.",
+        "Hold at top for 20-60 seconds.",
+        "Maintain elbow alignment with shoulders."
+      ],
+      "zh-Hans": [
+        "侧平举至肩高.",
+        "顶部保持 20-60 秒.",
+        "肘部与肩对齐."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=3VcKaXpzqRo",
+    "calories_estimate": { "low": 3, "med": 4, "high": 5 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "lateral_raise_y_raise",
+    "name": { "en": "Y-Raise (Dumbbell)", "zh-Hans": "Y字举 (哑铃)" },
+    "muscles": {
+      "primary": [
+        { "major": "shoulders", "sub": "side_delt" },
+        { "major": "shoulders", "sub": "front_delt" }
+      ],
+      "secondary": [
+        { "major": "back", "sub": "traps_lower" },
+        { "major": "back", "sub": "traps_upper" }
+      ]
+    },
+    "equipment": ["dumbbell"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Stand tall, dumbbells in front, palms in.",
+        "Raise arms up at 45° angle to form Y.",
+        "Arms above shoulders, thumbs up.",
+        "Lower slowly."
+      ],
+      "zh-Hans": [
+        "站姿挺直, 哑铃在身前, 掌心朝内.",
+        "双臂以45°向上举成Y形.",
+        "手臂高于肩, 拇指朝上.",
+        "缓慢下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=4yOOQTNJpDg",
+    "calories_estimate": { "low": 3, "med": 4, "high": 6 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "lateral_raise_machine_unilateral",
+    "name": { "en": "Single-Arm Lateral Raise (Machine)", "zh-Hans": "单臂侧平举 (器械)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "side_delt" }],
+      "secondary": [{ "major": "shoulders", "sub": "front_delt" }]
+    },
+    "equipment": ["machine"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Sit in machine, work one arm at a time.",
+        "Raise arm pad to shoulder height.",
+        "Squeeze, lower slowly, switch sides."
+      ],
+      "zh-Hans": [
+        "坐器械, 每次单臂.",
+        "臂垫上举至肩高.",
+        "收紧, 缓慢下放, 换边."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=8AeRJrU4dXg",
+    "calories_estimate": { "low": 3, "med": 4, "high": 5 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "lateral_raise_cable_low_to_high",
+    "name": { "en": "Low-to-High Lateral Raise (Cable)", "zh-Hans": "下至上侧平举 (绳索)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "side_delt" }],
+      "secondary": [{ "major": "shoulders", "sub": "front_delt" }]
+    },
+    "equipment": ["cable"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Cable at low pulley, far hand grabs handle.",
+        "Stand side-on, sweep arm up and out.",
+        "Stop at shoulder height.",
+        "Lower slowly."
+      ],
+      "zh-Hans": [
+        "绳索低位, 远侧手握把.",
+        "侧站, 上举划弧.",
+        "停在肩高.",
+        "缓慢下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=PPrzAvcCdJU",
+    "calories_estimate": { "low": 3, "med": 4, "high": 6 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "lateral_raise_dumbbell_paused",
+    "name": { "en": "Paused Lateral Raise (Dumbbell)", "zh-Hans": "停顿侧平举 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "side_delt" }],
+      "secondary": [{ "major": "shoulders", "sub": "front_delt" }]
+    },
+    "equipment": ["dumbbell"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Raise dumbbells to shoulder height.",
+        "Hold at top for 2-3 seconds.",
+        "Lower slowly under control."
+      ],
+      "zh-Hans": [
+        "侧平举至肩高.",
+        "顶部停顿 2-3 秒.",
+        "控制缓慢下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=3VcKaXpzqRo",
+    "calories_estimate": { "low": 3, "med": 4, "high": 6 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "lateral_raise_dumbbell_high",
+    "name": { "en": "High Lateral Raise (Dumbbell)", "zh-Hans": "高位侧平举 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "side_delt" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "rear_delt" },
+        { "major": "back", "sub": "traps_upper" }
+      ]
+    },
+    "equipment": ["dumbbell"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Raise dumbbells higher than shoulder — to ear level.",
+        "Elbows lead the movement.",
+        "Lower under control.",
+        "Activates upper traps too."
+      ],
+      "zh-Hans": [
+        "举高于肩 — 至耳高.",
+        "肘部引领动作.",
+        "控制下放.",
+        "同时激活上斜方."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=3VcKaXpzqRo",
+    "calories_estimate": { "low": 3, "med": 5, "high": 7 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "egyptian_lateral_raise",
+    "name": { "en": "Egyptian Lateral Raise (Cable)", "zh-Hans": "埃及式侧平举 (绳索)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "side_delt" }],
+      "secondary": []
+    },
+    "equipment": ["cable"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Hold pole with near hand, lean fully away.",
+        "Cable in far hand at low position.",
+        "Raise arm out to shoulder height.",
+        "Maximum stretch on side delt."
+      ],
+      "zh-Hans": [
+        "近侧手扶柱, 身体完全远离.",
+        "绳索在远侧手低位.",
+        "侧平举至肩高.",
+        "中三角最大拉伸."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=GtRH4cQHAGY",
+    "calories_estimate": { "low": 3, "med": 4, "high": 6 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "front_raise_dumbbell",
+    "name": { "en": "Front Raise (Dumbbell)", "zh-Hans": "前平举 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "front_delt" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "side_delt" },
+        { "major": "chest", "sub": "upper_chest" }
+      ]
+    },
+    "equipment": ["dumbbell"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Stand tall, dumbbells in front of thighs, palms in.",
+        "Raise one or both arms to shoulder height.",
+        "Slight bend in elbows.",
+        "Lower with control."
+      ],
+      "zh-Hans": [
+        "站姿挺直, 哑铃在大腿前, 掌心朝内.",
+        "单臂或双臂前举至肩高.",
+        "肘部微弯.",
+        "控制下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=hRJ6tR5-if0",
+    "calories_estimate": { "low": 3, "med": 4, "high": 6 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "front_raise_dumbbell_alternating",
+    "name": { "en": "Alternating Front Raise (Dumbbell)", "zh-Hans": "交替前平举 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "front_delt" }],
+      "secondary": [{ "major": "shoulders", "sub": "side_delt" }]
+    },
+    "equipment": ["dumbbell"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Dumbbells at sides, palms facing thighs.",
+        "Raise one arm forward to shoulder height.",
+        "Lower as other arm raises.",
+        "Alternate arms continuously."
+      ],
+      "zh-Hans": [
+        "哑铃在体侧, 掌心朝大腿.",
+        "一臂前举至肩高.",
+        "另一臂上举时下放.",
+        "持续交替."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=qPYP2GBmKvA",
+    "calories_estimate": { "low": 3, "med": 4, "high": 6 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "front_raise_dumbbell_hammer",
+    "name": { "en": "Hammer-Grip Front Raise (Dumbbell)", "zh-Hans": "锤式前平举 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "front_delt" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "side_delt" },
+        { "major": "arms", "sub": "biceps" }
+      ]
+    },
+    "equipment": ["dumbbell"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Dumbbells at sides, neutral (hammer) grip.",
+        "Raise to shoulder height — thumbs up.",
+        "Lower with control."
+      ],
+      "zh-Hans": [
+        "哑铃在体侧, 对握 (锤式).",
+        "前举至肩高 — 拇指朝上.",
+        "控制下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=sxBE2QlafdY",
+    "calories_estimate": { "low": 3, "med": 4, "high": 6 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "front_raise_barbell",
+    "name": { "en": "Front Raise (Barbell)", "zh-Hans": "前平举 (杠铃)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "front_delt" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "side_delt" },
+        { "major": "chest", "sub": "upper_chest" }
+      ]
+    },
+    "equipment": ["barbell"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Bar in front of thighs, shoulder-width grip.",
+        "Raise bar to shoulder height — arms straight.",
+        "Lower under control."
+      ],
+      "zh-Hans": [
+        "杠铃在大腿前, 与肩同宽握.",
+        "前举至肩高 — 手臂伸直.",
+        "控制下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=H6Aa3rWdSiE",
+    "calories_estimate": { "low": 3, "med": 5, "high": 7 },
+    "danger_warnings": {
+      "en": ["Don't use momentum or swing the bar."],
+      "zh-Hans": ["不要借力或摆动."]
+    }
+  },
+  {
+    "id": "front_raise_plate",
+    "name": { "en": "Plate Front Raise", "zh-Hans": "前平举 (杠铃片)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "front_delt" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "side_delt" },
+        { "major": "arms", "sub": "forearms" }
+      ]
+    },
+    "equipment": ["weight_plate"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Hold plate at 3 and 9 o'clock positions.",
+        "Raise plate in front to shoulder height.",
+        "Lower with control."
+      ],
+      "zh-Hans": [
+        "双手扣杠铃片 3 点和 9 点位.",
+        "前举至肩高.",
+        "控制下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=ZSdT-vUTGl4",
+    "calories_estimate": { "low": 3, "med": 5, "high": 7 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "front_raise_cable",
+    "name": { "en": "Front Raise (Cable)", "zh-Hans": "前平举 (绳索)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "front_delt" }],
+      "secondary": [{ "major": "shoulders", "sub": "side_delt" }]
+    },
+    "equipment": ["cable"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Cable at lowest setting, handle in hand.",
+        "Face away from pulley, cable behind leg.",
+        "Raise arm forward to shoulder height.",
+        "Lower slowly."
+      ],
+      "zh-Hans": [
+        "绳索调最低, 手握把.",
+        "背对滑轮, 绳索在腿后.",
+        "前举至肩高.",
+        "缓慢下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=8aHbktqRTwI",
+    "calories_estimate": { "low": 3, "med": 4, "high": 6 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "front_raise_cable_rope",
+    "name": { "en": "Front Raise (Rope)", "zh-Hans": "前平举 (绳索绳)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "front_delt" }],
+      "secondary": [{ "major": "shoulders", "sub": "side_delt" }]
+    },
+    "equipment": ["cable"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Rope on low pulley, face away.",
+        "Hold rope with thumbs facing up.",
+        "Raise rope to forehead height, pull apart.",
+        "Lower slowly."
+      ],
+      "zh-Hans": [
+        "绳低位, 背对滑轮.",
+        "握绳, 拇指朝上.",
+        "上举至额高, 分开.",
+        "缓慢下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=Bg2gJiP-Cy0",
+    "calories_estimate": { "low": 3, "med": 4, "high": 6 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "front_raise_landmine",
+    "name": { "en": "Landmine Front Raise", "zh-Hans": "地雷管前平举" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "front_delt" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "side_delt" },
+        { "major": "core", "sub": "abs_upper" }
+      ]
+    },
+    "equipment": ["barbell", "landmine"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Bar end at hip, both hands wrapped on top.",
+        "Raise bar forward and up to head height.",
+        "Lower with control."
+      ],
+      "zh-Hans": [
+        "杆端在髋, 双手握杆端.",
+        "前举至头高.",
+        "控制下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=Be4xvjf7Cqs",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "front_raise_dumbbell_incline",
+    "name": { "en": "Incline Front Raise (Dumbbell)", "zh-Hans": "上斜前平举 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "front_delt" }],
+      "secondary": [{ "major": "chest", "sub": "upper_chest" }]
+    },
+    "equipment": ["dumbbell", "bench_incline"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie face-down on incline bench.",
+        "Dumbbells hanging, palms facing down.",
+        "Raise arms forward to ear level.",
+        "Lower slowly."
+      ],
+      "zh-Hans": [
+        "面朝下趴上斜凳.",
+        "哑铃下垂, 掌心朝下.",
+        "前举至耳高.",
+        "缓慢下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=hRJ6tR5-if0",
+    "calories_estimate": { "low": 3, "med": 4, "high": 6 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "front_raise_dumbbell_single",
+    "name": { "en": "Single-Arm Front Raise (Dumbbell)", "zh-Hans": "单臂前平举 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "front_delt" }],
+      "secondary": [{ "major": "shoulders", "sub": "side_delt" }]
+    },
+    "equipment": ["dumbbell"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Stand tall, dumbbell in one hand.",
+        "Raise arm forward to shoulder height.",
+        "Lower slowly, switch sides."
+      ],
+      "zh-Hans": [
+        "站姿挺直, 单手哑铃.",
+        "前举至肩高.",
+        "缓慢下放, 换边."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=hRJ6tR5-if0",
+    "calories_estimate": { "low": 3, "med": 4, "high": 5 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "front_raise_band",
+    "name": { "en": "Front Raise (Band)", "zh-Hans": "前平举 (弹力带)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "front_delt" }],
+      "secondary": [{ "major": "shoulders", "sub": "side_delt" }]
+    },
+    "equipment": ["resistance_band"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Stand on band, handles in front of thighs.",
+        "Raise arms forward to shoulder height.",
+        "Lower with control."
+      ],
+      "zh-Hans": [
+        "站带上, 把手在大腿前.",
+        "前举至肩高.",
+        "控制下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=hRJ6tR5-if0",
+    "calories_estimate": { "low": 3, "med": 4, "high": 5 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "front_raise_ez_bar",
+    "name": { "en": "Front Raise (EZ Bar)", "zh-Hans": "前平举 (曲杠)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "front_delt" }],
+      "secondary": [{ "major": "shoulders", "sub": "side_delt" }]
+    },
+    "equipment": ["ez_curl_bar"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "EZ bar at thighs, narrow inner grip.",
+        "Raise bar to shoulder height.",
+        "Lower under control."
+      ],
+      "zh-Hans": [
+        "曲杠在大腿前, 较窄内握.",
+        "前举至肩高.",
+        "控制下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=H6Aa3rWdSiE",
+    "calories_estimate": { "low": 3, "med": 5, "high": 7 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "front_raise_dumbbell_pronated",
+    "name": { "en": "Pronated Front Raise (Dumbbell)", "zh-Hans": "正握前平举 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "front_delt" }],
+      "secondary": [{ "major": "shoulders", "sub": "side_delt" }]
+    },
+    "equipment": ["dumbbell"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Dumbbells in front, palms facing down.",
+        "Raise arms forward to shoulder height.",
+        "Lower with control — emphasize front delt."
+      ],
+      "zh-Hans": [
+        "哑铃在身前, 掌心向下.",
+        "前举至肩高.",
+        "控制下放 — 注重前束."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=hRJ6tR5-if0",
+    "calories_estimate": { "low": 3, "med": 4, "high": 6 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "front_raise_kettlebell",
+    "name": { "en": "Front Raise (Kettlebell)", "zh-Hans": "前平举 (壶铃)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "front_delt" }],
+      "secondary": [{ "major": "shoulders", "sub": "side_delt" }]
+    },
+    "equipment": ["kettlebell"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Hold kettlebell by horns with both hands at thighs.",
+        "Raise to shoulder height.",
+        "Lower with control."
+      ],
+      "zh-Hans": [
+        "双手握壶铃角在大腿前.",
+        "前举至肩高.",
+        "控制下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=ZSdT-vUTGl4",
+    "calories_estimate": { "low": 3, "med": 5, "high": 7 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "rear_delt_fly_dumbbell",
+    "name": { "en": "Rear Delt Fly (Dumbbell)", "zh-Hans": "后束飞鸟 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "rear_delt" }],
+      "secondary": [
+        { "major": "back", "sub": "rhomboids" },
+        { "major": "back", "sub": "traps_middle" }
+      ]
+    },
+    "equipment": ["dumbbell"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Bend at hips, torso nearly parallel to floor.",
+        "Dumbbells hang under shoulders, palms in.",
+        "Raise arms out to sides — squeeze shoulder blades.",
+        "Lower slowly."
+      ],
+      "zh-Hans": [
+        "髋部前倾, 躯干近水平.",
+        "哑铃在肩下垂, 掌心朝内.",
+        "侧平举 — 收紧肩胛骨.",
+        "缓慢下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=ttvfGg9d76c",
+    "calories_estimate": { "low": 3, "med": 4, "high": 6 },
+    "danger_warnings": {
+      "en": ["Keep back flat — don't round upper back."],
+      "zh-Hans": ["背部平直 — 不要弓背."]
+    }
+  },
+  {
+    "id": "rear_delt_fly_dumbbell_seated",
+    "name": { "en": "Seated Rear Delt Fly (Dumbbell)", "zh-Hans": "坐姿后束飞鸟 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "rear_delt" }],
+      "secondary": [
+        { "major": "back", "sub": "rhomboids" },
+        { "major": "back", "sub": "traps_middle" }
+      ]
+    },
+    "equipment": ["dumbbell", "bench_flat"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Sit on bench edge, chest on thighs.",
+        "Dumbbells under knees, palms in.",
+        "Raise arms out, pinky leading.",
+        "Squeeze upper back, lower slowly."
+      ],
+      "zh-Hans": [
+        "坐凳边, 胸贴大腿.",
+        "哑铃在膝下, 掌心朝内.",
+        "侧平举, 小指引领.",
+        "上背收紧, 缓慢下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=ttvfGg9d76c",
+    "calories_estimate": { "low": 3, "med": 4, "high": 5 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "rear_delt_fly_incline_bench",
+    "name": { "en": "Incline Rear Delt Fly (Dumbbell)", "zh-Hans": "俯卧后束飞鸟 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "rear_delt" }],
+      "secondary": [
+        { "major": "back", "sub": "rhomboids" },
+        { "major": "back", "sub": "traps_middle" }
+      ]
+    },
+    "equipment": ["dumbbell", "bench_incline"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie face-down on 30-45° incline bench.",
+        "Dumbbells hang, palms facing each other.",
+        "Raise arms out to sides — pinkies up.",
+        "Lower slowly."
+      ],
+      "zh-Hans": [
+        "面朝下趴 30-45° 上斜凳.",
+        "哑铃下垂, 掌心相对.",
+        "侧平举 — 小指朝上.",
+        "缓慢下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=EAxnj7r0RpY",
+    "calories_estimate": { "low": 3, "med": 4, "high": 6 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "reverse_pec_deck",
+    "name": { "en": "Reverse Pec Deck", "zh-Hans": "反向蝴蝶机" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "rear_delt" }],
+      "secondary": [
+        { "major": "back", "sub": "rhomboids" },
+        { "major": "back", "sub": "traps_middle" }
+      ]
+    },
+    "equipment": ["machine"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Sit facing machine, chest against pad.",
+        "Grip handles with arms forward.",
+        "Pull handles back and out — squeeze shoulder blades.",
+        "Return slowly."
+      ],
+      "zh-Hans": [
+        "面对器械坐, 胸贴垫.",
+        "手握把, 手臂前伸.",
+        "向后向外拉 — 收紧肩胛.",
+        "缓慢还原."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=FCYg6jc2OBw",
+    "calories_estimate": { "low": 3, "med": 4, "high": 6 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "face_pull",
+    "name": { "en": "Face Pull", "zh-Hans": "面拉" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "rear_delt" }],
+      "secondary": [
+        { "major": "back", "sub": "rhomboids" },
+        { "major": "back", "sub": "traps_middle" },
+        { "major": "shoulders", "sub": "rotator_cuff" }
+      ]
+    },
+    "equipment": ["cable"],
+    "category": "strength",
+    "movementPattern": "pull_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Rope at face height, palms facing in.",
+        "Pull rope to face — split ends apart.",
+        "Elbows high, externally rotate.",
+        "Slow return."
+      ],
+      "zh-Hans": [
+        "绳在脸高, 掌心相对.",
+        "拉绳至脸 — 两端分开.",
+        "肘部高位, 外旋.",
+        "缓慢还原."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=rep-qVOkqgk",
+    "calories_estimate": { "low": 3, "med": 5, "high": 7 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "face_pull_band",
+    "name": { "en": "Face Pull (Band)", "zh-Hans": "面拉 (弹力带)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "rear_delt" }],
+      "secondary": [
+        { "major": "back", "sub": "rhomboids" },
+        { "major": "shoulders", "sub": "rotator_cuff" }
+      ]
+    },
+    "equipment": ["resistance_band"],
+    "category": "strength",
+    "movementPattern": "pull_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Band anchored at face height.",
+        "Pull band to face, hands apart.",
+        "Squeeze shoulder blades, externally rotate.",
+        "Slow release."
+      ],
+      "zh-Hans": [
+        "弹力带固定在脸高.",
+        "拉带至脸, 双手分开.",
+        "收紧肩胛, 外旋.",
+        "缓慢还原."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=DBaqXyDMr3Q",
+    "calories_estimate": { "low": 2, "med": 3, "high": 5 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "face_pull_seated",
+    "name": { "en": "Seated Face Pull (Cable)", "zh-Hans": "坐姿面拉 (绳索)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "rear_delt" }],
+      "secondary": [
+        { "major": "back", "sub": "rhomboids" },
+        { "major": "back", "sub": "traps_middle" }
+      ]
+    },
+    "equipment": ["cable", "bench_flat"],
+    "category": "strength",
+    "movementPattern": "pull_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Sit on bench, rope at face height.",
+        "Pull rope to face, ends apart at temples.",
+        "Squeeze rear delts, hold.",
+        "Slow return."
+      ],
+      "zh-Hans": [
+        "坐凳上, 绳在脸高.",
+        "拉绳至脸, 两端分至太阳穴.",
+        "后束收紧, 停顿.",
+        "缓慢还原."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=rep-qVOkqgk",
+    "calories_estimate": { "low": 3, "med": 4, "high": 6 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "band_pull_apart",
+    "name": { "en": "Band Pull-Apart", "zh-Hans": "弹力带分开" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "rear_delt" }],
+      "secondary": [
+        { "major": "back", "sub": "rhomboids" },
+        { "major": "back", "sub": "traps_middle" }
+      ]
+    },
+    "equipment": ["resistance_band"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "endurance",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Hold band in front at shoulder height, arms straight.",
+        "Pull band apart — squeeze shoulder blades.",
+        "Band touches chest at top of squeeze.",
+        "Slow return."
+      ],
+      "zh-Hans": [
+        "弹力带在身前肩高, 手臂伸直.",
+        "向两侧拉开 — 收紧肩胛.",
+        "顶部弹力带触胸.",
+        "缓慢还原."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=CjnaXfHM7eY",
+    "calories_estimate": { "low": 2, "med": 3, "high": 4 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "prone_y_raise",
+    "name": { "en": "Prone Y-Raise", "zh-Hans": "俯卧Y字举" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "rear_delt" }],
+      "secondary": [
+        { "major": "back", "sub": "traps_lower" },
+        { "major": "back", "sub": "rhomboids" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie face-down, arms overhead in Y position.",
+        "Thumbs up, raise arms off floor.",
+        "Hold briefly, lower slowly."
+      ],
+      "zh-Hans": [
+        "面朝下趴, 手臂呈Y字举过头.",
+        "拇指朝上, 双臂抬离地面.",
+        "短暂保持, 缓慢下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=4yOOQTNJpDg",
+    "calories_estimate": { "low": 2, "med": 3, "high": 4 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "prone_t_raise",
+    "name": { "en": "Prone T-Raise", "zh-Hans": "俯卧T字举" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "rear_delt" }],
+      "secondary": [
+        { "major": "back", "sub": "traps_middle" },
+        { "major": "back", "sub": "rhomboids" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie face-down, arms out to sides in T.",
+        "Thumbs up, raise arms off floor.",
+        "Squeeze shoulder blades together.",
+        "Lower slowly."
+      ],
+      "zh-Hans": [
+        "面朝下趴, 手臂呈T字侧伸.",
+        "拇指朝上, 双臂抬离地面.",
+        "收紧肩胛骨.",
+        "缓慢下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=v3p23-jKr9c",
+    "calories_estimate": { "low": 2, "med": 3, "high": 4 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "prone_w_raise",
+    "name": { "en": "Prone W-Raise", "zh-Hans": "俯卧W字举" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "rear_delt" }],
+      "secondary": [
+        { "major": "back", "sub": "traps_lower" },
+        { "major": "shoulders", "sub": "rotator_cuff" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie face-down, elbows bent at 90° at sides.",
+        "Pull elbows back, forearms toward ears.",
+        "Forms W shape — squeeze rear delts.",
+        "Lower slowly."
+      ],
+      "zh-Hans": [
+        "面朝下趴, 肘部90°在体侧.",
+        "肘部后拉, 前臂朝耳.",
+        "形成W — 收紧后束.",
+        "缓慢下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=v3p23-jKr9c",
+    "calories_estimate": { "low": 2, "med": 3, "high": 4 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "rear_delt_row_single_arm",
+    "name": { "en": "Single-Arm Rear Delt Row (Dumbbell)", "zh-Hans": "单臂后束划船 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "rear_delt" }],
+      "secondary": [
+        { "major": "back", "sub": "rhomboids" },
+        { "major": "back", "sub": "lats" }
+      ]
+    },
+    "equipment": ["dumbbell", "bench_flat"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "One knee on bench, hand for support.",
+        "Dumbbell hangs straight down.",
+        "Row dumbbell up and out — elbow flared wide.",
+        "Targets rear delt more than back."
+      ],
+      "zh-Hans": [
+        "单膝跪凳, 手支撑.",
+        "哑铃自然下垂.",
+        "上拉并外展 — 肘部外展.",
+        "更针对后束."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=pYcpY20QaE8",
+    "calories_estimate": { "low": 3, "med": 5, "high": 7 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "rear_delt_row_cable",
+    "name": { "en": "Rear Delt Row (Cable)", "zh-Hans": "后束划船 (绳索)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "rear_delt" }],
+      "secondary": [
+        { "major": "back", "sub": "rhomboids" },
+        { "major": "back", "sub": "traps_middle" }
+      ]
+    },
+    "equipment": ["cable"],
+    "category": "strength",
+    "movementPattern": "pull_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Rope at shoulder height, palms in.",
+        "Pull rope to face, elbows flared high.",
+        "Squeeze rear delts, slow return."
+      ],
+      "zh-Hans": [
+        "绳在肩高, 掌心朝内.",
+        "拉至脸, 肘部高位外展.",
+        "后束收紧, 缓慢还原."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=rep-qVOkqgk",
+    "calories_estimate": { "low": 3, "med": 5, "high": 7 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "rear_delt_fly_cable",
+    "name": { "en": "Rear Delt Fly (Cable)", "zh-Hans": "后束飞鸟 (绳索)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "rear_delt" }],
+      "secondary": [
+        { "major": "back", "sub": "rhomboids" },
+        { "major": "back", "sub": "traps_middle" }
+      ]
+    },
+    "equipment": ["cable"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Stand center of cable station, cables crossed.",
+        "Left hand grabs right cable, vice versa.",
+        "Pull cables out to sides — like a reverse hug.",
+        "Squeeze rear delts, slow return."
+      ],
+      "zh-Hans": [
+        "站绳索机中间, 双绳交叉.",
+        "左手握右绳, 反之亦然.",
+        "向两侧拉 — 反向拥抱.",
+        "后束收紧, 缓慢还原."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=H_DUmFOJDko",
+    "calories_estimate": { "low": 4, "med": 5, "high": 7 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "rear_delt_fly_machine",
+    "name": { "en": "Rear Delt Fly (Machine)", "zh-Hans": "后束飞鸟 (器械)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "rear_delt" }],
+      "secondary": [
+        { "major": "back", "sub": "rhomboids" },
+        { "major": "back", "sub": "traps_middle" }
+      ]
+    },
+    "equipment": ["machine"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Face machine, chest on pad, arms forward.",
+        "Pull handles back and out.",
+        "Squeeze shoulder blades, slow return."
+      ],
+      "zh-Hans": [
+        "面对器械, 胸贴垫, 手臂前伸.",
+        "向后向外拉.",
+        "收紧肩胛, 缓慢还原."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=FCYg6jc2OBw",
+    "calories_estimate": { "low": 3, "med": 4, "high": 6 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "rear_delt_fly_single_cable",
+    "name": { "en": "Single-Arm Rear Delt Fly (Cable)", "zh-Hans": "单臂后束飞鸟 (绳索)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "rear_delt" }],
+      "secondary": [{ "major": "back", "sub": "rhomboids" }]
+    },
+    "equipment": ["cable"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Cable at shoulder height, far hand grabs handle.",
+        "Stand side-on, arm across body.",
+        "Pull arm out and back — squeeze rear delt.",
+        "Slow return."
+      ],
+      "zh-Hans": [
+        "绳在肩高, 远侧手握把.",
+        "侧站, 手臂过身体.",
+        "向外向后拉 — 收紧后束.",
+        "缓慢还原."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=H_DUmFOJDko",
+    "calories_estimate": { "low": 3, "med": 4, "high": 6 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "rear_delt_row_chest_supported",
+    "name": { "en": "Chest-Supported Rear Delt Row (Dumbbell)", "zh-Hans": "胸支撑后束划船 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "rear_delt" }],
+      "secondary": [
+        { "major": "back", "sub": "rhomboids" },
+        { "major": "back", "sub": "traps_middle" }
+      ]
+    },
+    "equipment": ["dumbbell", "bench_incline"],
+    "category": "strength",
+    "movementPattern": "pull_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie chest-down on 30-45° incline bench.",
+        "Dumbbells hanging, palms in.",
+        "Row up with elbows wide, pull to chest level.",
+        "Slow return."
+      ],
+      "zh-Hans": [
+        "胸朝下趴 30-45° 上斜凳.",
+        "哑铃下垂, 掌心朝内.",
+        "肘部外展上拉至胸高.",
+        "缓慢还原."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=qO8E_Xb6uvI",
+    "calories_estimate": { "low": 4, "med": 5, "high": 7 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "rear_delt_fly_kettlebell",
+    "name": { "en": "Rear Delt Fly (Kettlebell)", "zh-Hans": "后束飞鸟 (壶铃)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "rear_delt" }],
+      "secondary": [{ "major": "back", "sub": "rhomboids" }]
+    },
+    "equipment": ["kettlebell"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Bend at hips, kettlebells hang under shoulders.",
+        "Raise arms out to sides at shoulder height.",
+        "Slow return — keep back flat."
+      ],
+      "zh-Hans": [
+        "髋部前倾, 壶铃在肩下垂.",
+        "侧平举至肩高.",
+        "缓慢还原 — 背部平直."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=ttvfGg9d76c",
+    "calories_estimate": { "low": 3, "med": 4, "high": 6 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "face_pull_rope_high",
+    "name": { "en": "High Face Pull (Cable)", "zh-Hans": "高位面拉 (绳索)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "rear_delt" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "rotator_cuff" },
+        { "major": "back", "sub": "rhomboids" }
+      ]
+    },
+    "equipment": ["cable"],
+    "category": "strength",
+    "movementPattern": "pull_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Rope above head, palms facing in.",
+        "Pull rope down and apart toward face.",
+        "Externally rotate at finish — elbows high.",
+        "Slow return."
+      ],
+      "zh-Hans": [
+        "绳在头上方, 掌心朝内.",
+        "向下向脸拉开.",
+        "结束位外旋 — 肘部高位.",
+        "缓慢还原."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=rep-qVOkqgk",
+    "calories_estimate": { "low": 3, "med": 4, "high": 6 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "rear_delt_raise_dumbbell_seated_bent",
+    "name": { "en": "Seated Bent-Over Rear Delt Raise (Dumbbell)", "zh-Hans": "坐姿俯身后束举 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "rear_delt" }],
+      "secondary": [
+        { "major": "back", "sub": "rhomboids" },
+        { "major": "back", "sub": "traps_middle" }
+      ]
+    },
+    "equipment": ["dumbbell", "bench_flat"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Sit on bench, lean fully forward.",
+        "Chest near thighs, dumbbells under knees.",
+        "Raise arms out — squeeze rear delts.",
+        "Lower slowly."
+      ],
+      "zh-Hans": [
+        "坐凳, 完全前倾.",
+        "胸近大腿, 哑铃在膝下.",
+        "侧平举 — 后束收紧.",
+        "缓慢下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=ttvfGg9d76c",
+    "calories_estimate": { "low": 3, "med": 4, "high": 5 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "scarecrow",
+    "name": { "en": "Scarecrow (Dumbbell)", "zh-Hans": "稻草人 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "rotator_cuff" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "rear_delt" },
+        { "major": "back", "sub": "rhomboids" }
+      ]
+    },
+    "equipment": ["dumbbell"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Bent over, arms out at sides, elbows 90°.",
+        "Rotate forearms up — like a scarecrow.",
+        "Hold briefly, lower slowly.",
+        "Use very light weight."
+      ],
+      "zh-Hans": [
+        "俯身, 双臂侧伸, 肘部90°.",
+        "前臂向上旋转 — 像稻草人.",
+        "短暂保持, 缓慢下放.",
+        "用很轻重量."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=NaPj1B2tigE",
+    "calories_estimate": { "low": 2, "med": 3, "high": 4 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "rear_delt_pulldown_cable",
+    "name": { "en": "Rear Delt Pulldown (Cable)", "zh-Hans": "后束下拉 (绳索)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "rear_delt" }],
+      "secondary": [
+        { "major": "back", "sub": "rhomboids" },
+        { "major": "back", "sub": "traps_middle" }
+      ]
+    },
+    "equipment": ["cable"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Rope at high pulley, palms facing down.",
+        "Pull rope down to chin level, elbows wide.",
+        "Squeeze rear delts at end.",
+        "Slow return."
+      ],
+      "zh-Hans": [
+        "绳高位, 掌心朝下.",
+        "下拉至下巴高, 肘部外展.",
+        "结束位后束收紧.",
+        "缓慢还原."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=rep-qVOkqgk",
+    "calories_estimate": { "low": 3, "med": 4, "high": 6 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "rear_delt_fly_band",
+    "name": { "en": "Rear Delt Fly (Band)", "zh-Hans": "后束飞鸟 (弹力带)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "rear_delt" }],
+      "secondary": [{ "major": "back", "sub": "rhomboids" }]
+    },
+    "equipment": ["resistance_band"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Band in front at shoulder height, arms forward.",
+        "Pull band apart and back — squeeze rear delts.",
+        "Slow release."
+      ],
+      "zh-Hans": [
+        "弹力带在身前肩高, 手臂前伸.",
+        "向后向外拉 — 后束收紧.",
+        "缓慢还原."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=CjnaXfHM7eY",
+    "calories_estimate": { "low": 2, "med": 3, "high": 5 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "rear_delt_dumbbell_swing",
+    "name": { "en": "Rear Delt Swing (Dumbbell)", "zh-Hans": "后束摆动 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "rear_delt" }],
+      "secondary": [{ "major": "back", "sub": "rhomboids" }]
+    },
+    "equipment": ["dumbbell"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "explosive",
+    "level": "intermediate",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Bent over, dumbbells hang under shoulders.",
+        "Use slight body english to swing weights out.",
+        "Control the descent more than the lift.",
+        "Heavier than strict rear delt fly."
+      ],
+      "zh-Hans": [
+        "俯身, 哑铃在肩下.",
+        "略借力摆动哑铃.",
+        "控制下放, 不控上举.",
+        "比严格飞鸟更重."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=ttvfGg9d76c",
+    "calories_estimate": { "low": 4, "med": 5, "high": 7 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "shrug_barbell",
+    "name": { "en": "Shrug (Barbell)", "zh-Hans": "耸肩 (杠铃)" },
+    "muscles": {
+      "primary": [{ "major": "back", "sub": "traps_upper" }],
+      "secondary": [
+        { "major": "arms", "sub": "forearms" },
+        { "major": "back", "sub": "traps_middle" }
+      ]
+    },
+    "equipment": ["barbell"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Bar at thighs, shoulder-width grip.",
+        "Shrug shoulders straight up toward ears.",
+        "Squeeze at top, lower slowly.",
+        "Don't roll shoulders."
+      ],
+      "zh-Hans": [
+        "杠铃在大腿前, 与肩同宽握.",
+        "肩部直接向上耸至耳.",
+        "顶部收紧, 缓慢下放.",
+        "不要转肩."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=cJRVVxmytaM",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": {
+      "en": ["Don't roll shoulders — straight up and down only."],
+      "zh-Hans": ["不要转肩 — 只上下."]
+    }
+  },
+  {
+    "id": "shrug_dumbbell",
+    "name": { "en": "Shrug (Dumbbell)", "zh-Hans": "耸肩 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "back", "sub": "traps_upper" }],
+      "secondary": [
+        { "major": "arms", "sub": "forearms" },
+        { "major": "back", "sub": "traps_middle" }
+      ]
+    },
+    "equipment": ["dumbbell"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Dumbbells at sides, neutral grip.",
+        "Shrug shoulders straight up to ears.",
+        "Squeeze, lower under control."
+      ],
+      "zh-Hans": [
+        "哑铃在体侧, 对握.",
+        "肩部直接上耸至耳.",
+        "收紧, 控制下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=cJRVVxmytaM",
+    "calories_estimate": { "low": 4, "med": 5, "high": 7 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "shrug_smith_machine",
+    "name": { "en": "Shrug (Smith Machine)", "zh-Hans": "耸肩 (史密斯机)" },
+    "muscles": {
+      "primary": [{ "major": "back", "sub": "traps_upper" }],
+      "secondary": [
+        { "major": "arms", "sub": "forearms" },
+        { "major": "back", "sub": "traps_middle" }
+      ]
+    },
+    "equipment": ["smith_machine"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Smith bar at thigh level, grip just wider than shoulders.",
+        "Shrug straight up toward ears.",
+        "Squeeze at top, lower slowly."
+      ],
+      "zh-Hans": [
+        "史密斯杆在大腿高, 握距略宽于肩.",
+        "向上耸肩至耳.",
+        "顶部收紧, 缓慢下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=cJRVVxmytaM",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "shrug_behind_back_barbell",
+    "name": { "en": "Behind-the-Back Shrug (Barbell)", "zh-Hans": "背后耸肩 (杠铃)" },
+    "muscles": {
+      "primary": [{ "major": "back", "sub": "traps_upper" }],
+      "secondary": [
+        { "major": "arms", "sub": "forearms" },
+        { "major": "back", "sub": "traps_middle" }
+      ]
+    },
+    "equipment": ["barbell"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Bar behind glutes, hands at hip-width.",
+        "Shrug shoulders up toward ears.",
+        "Hits traps from different angle.",
+        "Lower slowly."
+      ],
+      "zh-Hans": [
+        "杠铃在臀后, 与髋同宽握.",
+        "向上耸肩至耳.",
+        "斜方不同角度.",
+        "缓慢下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=v0CTtH4hQB8",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "shrug_trap_bar",
+    "name": { "en": "Shrug (Trap Bar)", "zh-Hans": "耸肩 (六角杠)" },
+    "muscles": {
+      "primary": [{ "major": "back", "sub": "traps_upper" }],
+      "secondary": [
+        { "major": "arms", "sub": "forearms" },
+        { "major": "back", "sub": "traps_middle" }
+      ]
+    },
+    "equipment": ["trap_bar"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Stand inside trap bar, neutral grip.",
+        "Deadlift to standing, then shrug.",
+        "Squeeze traps at top, lower slowly."
+      ],
+      "zh-Hans": [
+        "站六角杠内, 对握.",
+        "硬拉至站立, 然后耸肩.",
+        "顶部斜方收紧, 缓慢下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=cJRVVxmytaM",
+    "calories_estimate": { "low": 5, "med": 7, "high": 9 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "shrug_cable",
+    "name": { "en": "Shrug (Cable)", "zh-Hans": "耸肩 (绳索)" },
+    "muscles": {
+      "primary": [{ "major": "back", "sub": "traps_upper" }],
+      "secondary": [{ "major": "arms", "sub": "forearms" }]
+    },
+    "equipment": ["cable"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Stand facing low cable, straight bar attachment.",
+        "Grip bar in front of thighs.",
+        "Shrug shoulders up to ears.",
+        "Lower with control."
+      ],
+      "zh-Hans": [
+        "站面对低位绳索, 直杆把.",
+        "握杆在大腿前.",
+        "向上耸肩至耳.",
+        "控制下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=cJRVVxmytaM",
+    "calories_estimate": { "low": 4, "med": 5, "high": 7 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "upright_row_barbell",
+    "name": { "en": "Upright Row (Barbell)", "zh-Hans": "直立划船 (杠铃)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "side_delt" }],
+      "secondary": [
+        { "major": "back", "sub": "traps_upper" },
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "biceps" }
+      ]
+    },
+    "equipment": ["barbell"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Bar at thighs, hands slightly wider than shoulders.",
+        "Pull bar up along body to chest level.",
+        "Elbows lead, stay above bar.",
+        "Lower slowly."
+      ],
+      "zh-Hans": [
+        "杠铃在大腿, 握距略宽于肩.",
+        "沿身体上拉至胸高.",
+        "肘部引领, 在杠铃上方.",
+        "缓慢下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=jb7Idj3GLPo",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": {
+      "en": [
+        "Don't go above chest level — risks shoulder impingement.",
+        "Use wider grip if shoulders feel cramped."
+      ],
+      "zh-Hans": [
+        "不要超过胸高 — 可能撞击肩部.",
+        "肩紧用宽握."
+      ]
+    }
+  },
+  {
+    "id": "upright_row_dumbbell",
+    "name": { "en": "Upright Row (Dumbbell)", "zh-Hans": "直立划船 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "side_delt" }],
+      "secondary": [
+        { "major": "back", "sub": "traps_upper" },
+        { "major": "shoulders", "sub": "front_delt" }
+      ]
+    },
+    "equipment": ["dumbbell"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Dumbbells in front of thighs, palms back.",
+        "Pull up to chest, elbows lead.",
+        "Stop at chest height, lower slowly."
+      ],
+      "zh-Hans": [
+        "哑铃在大腿前, 掌心朝后.",
+        "上拉至胸高, 肘部引领.",
+        "停在胸高, 缓慢下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=mNkb_PuJBoo",
+    "calories_estimate": { "low": 4, "med": 5, "high": 7 },
+    "danger_warnings": {
+      "en": ["Don't pull above chest level."],
+      "zh-Hans": ["不要拉过胸高."]
+    }
+  },
+  {
+    "id": "upright_row_cable",
+    "name": { "en": "Upright Row (Cable)", "zh-Hans": "直立划船 (绳索)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "side_delt" }],
+      "secondary": [
+        { "major": "back", "sub": "traps_upper" },
+        { "major": "shoulders", "sub": "front_delt" }
+      ]
+    },
+    "equipment": ["cable"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Low cable, straight bar at thighs.",
+        "Pull up along body to chest.",
+        "Elbows higher than wrists.",
+        "Lower slowly."
+      ],
+      "zh-Hans": [
+        "低位绳索, 直杆在大腿.",
+        "沿身体上拉至胸.",
+        "肘部高于腕.",
+        "缓慢下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=jb7Idj3GLPo",
+    "calories_estimate": { "low": 4, "med": 5, "high": 7 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "high_pull_kettlebell",
+    "name": { "en": "High Pull (Kettlebell)", "zh-Hans": "高拉 (壶铃)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "side_delt" }],
+      "secondary": [
+        { "major": "back", "sub": "traps_upper" },
+        { "major": "legs", "sub": "glutes" },
+        { "major": "legs", "sub": "hamstrings" }
+      ]
+    },
+    "equipment": ["kettlebell"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "explosive",
+    "level": "intermediate",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Kettlebell between feet, hinge hips back.",
+        "Swing up, pull bell to shoulder height.",
+        "Elbow high, wide stance at top.",
+        "Control descent."
+      ],
+      "zh-Hans": [
+        "壶铃在脚间, 髋后铰链.",
+        "向上摆动, 上拉至肩高.",
+        "肘部高位, 顶部肩宽.",
+        "控制下降."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=lLEqWWmO_BU",
+    "calories_estimate": { "low": 8, "med": 11, "high": 14 },
+    "danger_warnings": {
+      "en": ["Hip drive — don't use only arms."],
+      "zh-Hans": ["髋部发力 — 不要只用手臂."]
+    }
+  },
+  {
+    "id": "external_rotation_dumbbell",
+    "name": { "en": "External Rotation (Dumbbell)", "zh-Hans": "外旋 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "rotator_cuff" }],
+      "secondary": [{ "major": "shoulders", "sub": "rear_delt" }]
+    },
+    "equipment": ["dumbbell"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie on side, top arm holds light dumbbell.",
+        "Elbow pinned at 90°, forearm across belly.",
+        "Rotate forearm up — keep elbow tight.",
+        "Lower slowly."
+      ],
+      "zh-Hans": [
+        "侧卧, 上臂握轻哑铃.",
+        "肘部固定90°, 前臂过腹.",
+        "前臂向上旋转 — 肘部紧贴.",
+        "缓慢下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=fnzHvf6N3-c",
+    "calories_estimate": { "low": 2, "med": 3, "high": 4 },
+    "danger_warnings": {
+      "en": ["Use very light weight — rotator cuff is small muscle group."],
+      "zh-Hans": ["用很轻重量 — 肩袖肌肉很小."]
+    }
+  },
+  {
+    "id": "external_rotation_cable",
+    "name": { "en": "External Rotation (Cable)", "zh-Hans": "外旋 (绳索)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "rotator_cuff" }],
+      "secondary": [{ "major": "shoulders", "sub": "rear_delt" }]
+    },
+    "equipment": ["cable"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Stand side-on to cable at elbow height.",
+        "Far hand grabs cable, elbow at 90° at side.",
+        "Rotate forearm out away from body.",
+        "Slow return."
+      ],
+      "zh-Hans": [
+        "侧站绳索机, 绳在肘高.",
+        "远侧手握绳, 肘部90°在体侧.",
+        "前臂外旋远离身体.",
+        "缓慢还原."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=fnzHvf6N3-c",
+    "calories_estimate": { "low": 2, "med": 3, "high": 4 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "internal_rotation_cable",
+    "name": { "en": "Internal Rotation (Cable)", "zh-Hans": "内旋 (绳索)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "rotator_cuff" }],
+      "secondary": [{ "major": "shoulders", "sub": "front_delt" }]
+    },
+    "equipment": ["cable"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Stand side-on to cable at elbow height.",
+        "Near hand grabs cable, elbow at side at 90°.",
+        "Rotate forearm in across body.",
+        "Slow return."
+      ],
+      "zh-Hans": [
+        "侧站绳索机, 绳在肘高.",
+        "近侧手握绳, 肘部90°在体侧.",
+        "前臂内旋过身体.",
+        "缓慢还原."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=W_g-LnEUkmM",
+    "calories_estimate": { "low": 2, "med": 3, "high": 4 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "cuban_press_dumbbell",
+    "name": { "en": "Cuban Press (Dumbbell)", "zh-Hans": "古巴推举 (哑铃)" },
+    "muscles": {
+      "primary": [
+        { "major": "shoulders", "sub": "rotator_cuff" },
+        { "major": "shoulders", "sub": "front_delt" }
+      ],
+      "secondary": [
+        { "major": "shoulders", "sub": "rear_delt" },
+        { "major": "back", "sub": "traps_upper" }
+      ]
+    },
+    "equipment": ["dumbbell"],
+    "category": "strength",
+    "movementPattern": "push_vertical",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Dumbbells in front, upright row to chest.",
+        "Rotate forearms up — bells beside head.",
+        "Press overhead to lockout.",
+        "Reverse the entire path."
+      ],
+      "zh-Hans": [
+        "哑铃在身前, 直立划船至胸.",
+        "前臂向上旋转 — 哑铃在头侧.",
+        "推举过头至锁定.",
+        "原路返回."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=YJBOoTPo3eM",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": {
+      "en": ["Use very light weight — complex movement."],
+      "zh-Hans": ["用很轻重量 — 动作复杂."]
+    }
+  },
+  {
+    "id": "rear_delt_fly_lever_machine",
+    "name": { "en": "Rear Delt Fly (Lever)", "zh-Hans": "后束飞鸟 (杠杆器械)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "rear_delt" }],
+      "secondary": [
+        { "major": "back", "sub": "rhomboids" },
+        { "major": "back", "sub": "traps_middle" }
+      ]
+    },
+    "equipment": ["machine"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Face lever machine, chest on pad.",
+        "Grip handles, arms forward.",
+        "Pull handles back to T-position.",
+        "Squeeze, slow return."
+      ],
+      "zh-Hans": [
+        "面对杠杆器械, 胸贴垫.",
+        "握把手, 手臂前伸.",
+        "向后拉至T字位.",
+        "收紧, 缓慢还原."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=FCYg6jc2OBw",
+    "calories_estimate": { "low": 3, "med": 5, "high": 7 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "lateral_raise_dumbbell_drop_set",
+    "name": { "en": "Drop-Set Lateral Raise (Dumbbell)", "zh-Hans": "递减组侧平举 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "side_delt" }],
+      "secondary": [{ "major": "shoulders", "sub": "front_delt" }]
+    },
+    "equipment": ["dumbbell"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "3 sets of dumbbells, heaviest first.",
+        "Reps to failure with heaviest.",
+        "Drop to next, no rest, reps to failure.",
+        "Drop to lightest, final reps to failure."
+      ],
+      "zh-Hans": [
+        "3组哑铃, 最重的先做.",
+        "最重做到力竭.",
+        "换次重不休息, 做到力竭.",
+        "换最轻, 做到力竭."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=3VcKaXpzqRo",
+    "calories_estimate": { "low": 4, "med": 6, "high": 9 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "lateral_raise_dumbbell_21s",
+    "name": { "en": "21s Lateral Raise (Dumbbell)", "zh-Hans": "21次侧平举 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "side_delt" }],
+      "secondary": [{ "major": "shoulders", "sub": "front_delt" }]
+    },
+    "equipment": ["dumbbell"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "7 reps bottom half (sides to mid).",
+        "7 reps top half (mid to shoulder).",
+        "7 reps full range.",
+        "Use light weight — high TUT."
+      ],
+      "zh-Hans": [
+        "7次下半段 (体侧到中).",
+        "7次上半段 (中到肩高).",
+        "7次全程.",
+        "用轻重量 — 高紧张时间."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=3VcKaXpzqRo",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  }
+]

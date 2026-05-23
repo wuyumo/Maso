@@ -1,0 +1,2139 @@
+[
+  {
+    "id": "skullcrusher_ez_bar",
+    "name": { "en": "Skullcrusher (EZ-Bar)", "zh-Hans": "颈后臂屈伸 (EZ-杠)" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": []
+    },
+    "equipment": ["ez_bar", "bench_flat"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie on bench, EZ-bar held over chest, narrow grip.",
+        "Hinge at elbows, lower bar toward forehead.",
+        "Extend triceps to return — keep elbows fixed."
+      ],
+      "zh-Hans": [
+        "平躺凳上, EZ 杠胸前举起, 窄握.",
+        "肘部铰链, 下放至额头.",
+        "三头发力伸直 — 肘部固定."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=d_KZxkY_0cM",
+    "calories_estimate": { "low": 3, "med": 5, "high": 7 },
+    "danger_warnings": {
+      "en": ["Keep elbows tight — flaring increases shoulder strain."],
+      "zh-Hans": ["肘部内收 — 外翻容易伤肩."]
+    }
+  },
+  {
+    "id": "skullcrusher_barbell",
+    "name": { "en": "Skullcrusher (Barbell)", "zh-Hans": "颈后臂屈伸 (杠铃)" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": []
+    },
+    "equipment": ["barbell", "bench_flat"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie on bench, hold barbell over chest, shoulder-width.",
+        "Lower bar to forehead by bending elbows.",
+        "Press back up — elbows stay tucked."
+      ],
+      "zh-Hans": [
+        "平躺凳上, 杠铃举胸前, 与肩同宽.",
+        "屈肘下放至额头.",
+        "推起 — 肘部保持内收."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=ZJDg6awY3Lw",
+    "calories_estimate": { "low": 3, "med": 5, "high": 7 },
+    "danger_warnings": {
+      "en": ["Bar over forehead, not face — use spotter on heavy sets."],
+      "zh-Hans": ["杠在额头上方, 不要砸脸 — 大重量需保护."]
+    }
+  },
+  {
+    "id": "skullcrusher_dumbbell",
+    "name": { "en": "Skullcrusher (Dumbbell)", "zh-Hans": "颈后臂屈伸 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": []
+    },
+    "equipment": ["dumbbell", "bench_flat"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie on bench, dumbbells over chest, palms facing.",
+        "Bend elbows to lower dumbbells beside head.",
+        "Extend triceps to press back up."
+      ],
+      "zh-Hans": [
+        "平躺凳上, 哑铃举胸前, 对握.",
+        "屈肘下放至头侧.",
+        "三头发力推起."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=BUDLGr_kJk0",
+    "calories_estimate": { "low": 3, "med": 4, "high": 6 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "skullcrusher_incline_ez",
+    "name": { "en": "Incline Skullcrusher (EZ-Bar)", "zh-Hans": "上斜颈后臂屈伸 (EZ-杠)" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": []
+    },
+    "equipment": ["ez_bar", "bench_incline"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Set bench to 30-45° incline.",
+        "EZ-bar over chest, lower toward top of head.",
+        "Extend back up — extra stretch on long head."
+      ],
+      "zh-Hans": [
+        "卧推凳调至 30-45°.",
+        "EZ 杠胸前举起, 下放至头顶.",
+        "伸直推起 — 长头额外拉伸."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=2OOkrlNiyB4",
+    "calories_estimate": { "low": 3, "med": 5, "high": 7 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "skullcrusher_decline_ez",
+    "name": { "en": "Decline Skullcrusher (EZ-Bar)", "zh-Hans": "下斜颈后臂屈伸 (EZ-杠)" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": []
+    },
+    "equipment": ["ez_bar", "bench_decline"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Decline bench, feet locked, EZ-bar over chest.",
+        "Lower bar to forehead — constant tension.",
+        "Extend triceps to press up."
+      ],
+      "zh-Hans": [
+        "下斜凳, 脚固定, EZ 杠胸前举起.",
+        "下放至额头 — 持续张力.",
+        "三头发力推起."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=mfXrYXqIPMo",
+    "calories_estimate": { "low": 3, "med": 5, "high": 7 },
+    "danger_warnings": {
+      "en": ["Have spotter hand bar up — decline angle awkward."],
+      "zh-Hans": ["让保护递杠 — 下斜起身不便."]
+    }
+  },
+  {
+    "id": "skullcrusher_behind_head",
+    "name": { "en": "Behind-The-Head Skullcrusher (EZ-Bar)", "zh-Hans": "颈后臂屈伸 (过头, EZ-杠)" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": []
+    },
+    "equipment": ["ez_bar", "bench_flat"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie on bench, EZ-bar held over face.",
+        "Lower bar past forehead to behind head.",
+        "Maximum long-head stretch, extend back up."
+      ],
+      "zh-Hans": [
+        "平躺凳上, EZ 杠举脸上方.",
+        "下放越过额头至脑后.",
+        "长头最大拉伸, 伸直推起."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=tZ7BBxbT_aA",
+    "calories_estimate": { "low": 3, "med": 5, "high": 7 },
+    "danger_warnings": {
+      "en": ["Use lighter weight — increased shoulder leverage."],
+      "zh-Hans": ["重量减轻 — 肩部杠杆增大."]
+    }
+  },
+  {
+    "id": "skullcrusher_tempo",
+    "name": { "en": "Tempo Skullcrusher (EZ-Bar)", "zh-Hans": "节奏颈后臂屈伸 (EZ-杠)" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": []
+    },
+    "equipment": ["ez_bar", "bench_flat"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Standard skullcrusher setup, EZ-bar.",
+        "3-second eccentric, 1-second pause at bottom.",
+        "Explosive concentric — strict form."
+      ],
+      "zh-Hans": [
+        "标准颈后臂屈伸姿势, EZ 杠.",
+        "3 秒下放, 底部停 1 秒.",
+        "爆发推起 — 严格控制."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=d_KZxkY_0cM",
+    "calories_estimate": { "low": 3, "med": 5, "high": 7 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "jm_press",
+    "name": { "en": "JM Press", "zh-Hans": "JM 推" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": [
+        { "major": "chest", "sub": "middle_chest" },
+        { "major": "shoulders", "sub": "front_delt" }
+      ]
+    },
+    "equipment": ["barbell", "bench_flat"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "strength",
+    "level": "advanced",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Bench setup, narrow grip — hybrid of bench + skullcrusher.",
+        "Lower bar toward upper chest / chin, elbows forward.",
+        "Press up explosively — heavy triceps loading."
+      ],
+      "zh-Hans": [
+        "卧推姿势, 窄握 — 卧推与颈后屈伸结合.",
+        "下放至上胸 / 下巴, 肘部前推.",
+        "爆发推起 — 三头超负荷."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=u-1MWwQ7ZAY",
+    "calories_estimate": { "low": 4, "med": 6, "high": 9 },
+    "danger_warnings": {
+      "en": [
+        "Use safety pins — bar path close to neck.",
+        "Start light, learn the unique groove."
+      ],
+      "zh-Hans": [
+        "使用安全杠 — 杠路接近颈部.",
+        "从轻开始, 掌握独特轨迹."
+      ]
+    }
+  },
+  {
+    "id": "tate_press",
+    "name": { "en": "Tate Press", "zh-Hans": "Tate 推" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": []
+    },
+    "equipment": ["dumbbell", "bench_flat"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie on bench, dumbbells over chest, palms forward.",
+        "Bend elbows out, lower dumbbells to touch chest.",
+        "Extend triceps to press up — elbows flare out."
+      ],
+      "zh-Hans": [
+        "平躺凳上, 哑铃胸前, 掌心向前.",
+        "肘外展, 下放哑铃触胸.",
+        "三头发力推起 — 肘部外展."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=N7VDeUMSjjE",
+    "calories_estimate": { "low": 3, "med": 5, "high": 7 },
+    "danger_warnings": {
+      "en": ["Unusual elbow path — start light to learn."],
+      "zh-Hans": ["肘部轨迹特殊 — 从轻开始."]
+    }
+  },
+  {
+    "id": "california_press",
+    "name": { "en": "California Press", "zh-Hans": "加州推" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": [
+        { "major": "chest", "sub": "middle_chest" },
+        { "major": "shoulders", "sub": "front_delt" }
+      ]
+    },
+    "equipment": ["barbell", "bench_flat"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "strength",
+    "level": "advanced",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Bench setup, close grip — hybrid of skullcrusher + close-grip bench.",
+        "Lower bar to forehead first, then slide down to chest.",
+        "Press up reverse path — strong triceps emphasis."
+      ],
+      "zh-Hans": [
+        "卧推姿势, 窄握 — 颈后屈伸 + 窄距卧推混合.",
+        "先下放至额头, 再滑至胸口.",
+        "反向推起 — 强烈刺激三头."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=GsBifr0OqJU",
+    "calories_estimate": { "low": 4, "med": 6, "high": 9 },
+    "danger_warnings": {
+      "en": [
+        "Use safety pins or spotter.",
+        "Master skullcrusher and close-grip bench first."
+      ],
+      "zh-Hans": [
+        "使用安全杠或保护.",
+        "先掌握颈后屈伸和窄距卧推."
+      ]
+    }
+  },
+  {
+    "id": "board_press_close_grip",
+    "name": { "en": "Close-Grip Board Press", "zh-Hans": "窄距板上卧推" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": [
+        { "major": "chest", "sub": "middle_chest" },
+        { "major": "shoulders", "sub": "front_delt" }
+      ]
+    },
+    "equipment": ["barbell", "bench_flat"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "strength",
+    "level": "advanced",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Board (1-3 boards) on chest, narrow grip on barbell.",
+        "Lower bar to board, brief pause.",
+        "Press up — partial range, heavy triceps lockout."
+      ],
+      "zh-Hans": [
+        "胸上放木板 (1-3 块), 杠铃窄握.",
+        "下放至板, 短暂停顿.",
+        "推起 — 半程, 三头锁定."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=mEvOe6BlEdc",
+    "calories_estimate": { "low": 4, "med": 6, "high": 9 },
+    "danger_warnings": {
+      "en": ["Need partner to hold board or use velcro strap. Use spotter."],
+      "zh-Hans": ["需搭档扶板或绑带固定. 使用保护."]
+    }
+  },
+  {
+    "id": "skullcrusher_one_and_a_half",
+    "name": { "en": "1.5-Rep Skullcrusher (EZ-Bar)", "zh-Hans": "1.5 次颈后臂屈伸 (EZ-杠)" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": []
+    },
+    "equipment": ["ez_bar", "bench_flat"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lower EZ-bar to forehead, press halfway up.",
+        "Lower back down, then press to full lockout.",
+        "Counts as one rep — extra time under tension."
+      ],
+      "zh-Hans": [
+        "下放 EZ 杠至额头, 推至半程.",
+        "再次下放, 推至完全锁定.",
+        "算一次 — 额外张力时间."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=d_KZxkY_0cM",
+    "calories_estimate": { "low": 3, "med": 5, "high": 7 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "triceps_pushdown_straight_bar",
+    "name": { "en": "Triceps Pushdown", "zh-Hans": "三头推下" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": []
+    },
+    "equipment": ["cable"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Stand facing cable, high pulley, straight bar.",
+        "Elbows pinned at sides, push bar down to thighs.",
+        "Squeeze triceps at bottom, control return."
+      ],
+      "zh-Hans": [
+        "面对绳索机, 高位定滑轮, 直杆.",
+        "肘部固定体侧, 推至大腿前.",
+        "底部收紧三头, 控制回程."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=2-LAMcpzODU",
+    "calories_estimate": { "low": 3, "med": 4, "high": 5 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "triceps_pushdown_rope",
+    "name": { "en": "Triceps Pushdown (Rope)", "zh-Hans": "三头推下 (绳索)" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": []
+    },
+    "equipment": ["cable"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Face cable, high pulley, rope attachment.",
+        "Push rope down, separate hands at bottom.",
+        "Squeeze hard — pronate wrists outward."
+      ],
+      "zh-Hans": [
+        "面对绳索机, 高位, 绳索附件.",
+        "下推绳索, 底部双手分开.",
+        "用力收紧 — 手腕外旋."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=vB5OHsJ3EME",
+    "calories_estimate": { "low": 3, "med": 4, "high": 5 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "triceps_pushdown_v_bar",
+    "name": { "en": "Triceps Pushdown (V-Bar)", "zh-Hans": "三头推下 (V-杆)" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": []
+    },
+    "equipment": ["cable"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Face cable, high pulley, V-bar attachment.",
+        "Grip V-bar, elbows tucked, push down hard.",
+        "Lock out triceps, slow return."
+      ],
+      "zh-Hans": [
+        "面对绳索机, 高位, V-杆附件.",
+        "握 V-杆, 肘内收, 用力下推.",
+        "三头锁定, 缓慢回程."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=2-LAMcpzODU",
+    "calories_estimate": { "low": 3, "med": 4, "high": 5 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "triceps_pushdown_ez_bar",
+    "name": { "en": "Triceps Pushdown (EZ-Bar)", "zh-Hans": "三头推下 (EZ-杠)" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": []
+    },
+    "equipment": ["cable", "ez_bar"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Attach EZ-bar to high cable pulley.",
+        "Grip angled bend, elbows tight.",
+        "Push down — wrist neutral, squeeze bottom."
+      ],
+      "zh-Hans": [
+        "EZ 杠装高位绳索.",
+        "握斜把, 肘部内收.",
+        "下推 — 腕中立, 底部收紧."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=2-LAMcpzODU",
+    "calories_estimate": { "low": 3, "med": 4, "high": 5 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "triceps_pushdown_single_arm",
+    "name": { "en": "Triceps Pushdown (Single-Arm)", "zh-Hans": "三头推下 (单臂)" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": []
+    },
+    "equipment": ["cable"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Face cable, single-handle high pulley.",
+        "Elbow at side, push handle down to hip.",
+        "Squeeze, slow return — full range."
+      ],
+      "zh-Hans": [
+        "面对绳索机, 高位单手柄.",
+        "肘部固定, 下推至髋部.",
+        "收紧, 缓慢回程 — 全程."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=q9ldQzbF6tc",
+    "calories_estimate": { "low": 2, "med": 4, "high": 5 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "triceps_pushdown_reverse_grip",
+    "name": { "en": "Reverse-Grip Triceps Pushdown", "zh-Hans": "反握三头推下" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": [{ "major": "arms", "sub": "forearms" }]
+    },
+    "equipment": ["cable"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Face cable, high pulley, straight bar, underhand grip.",
+        "Elbows tucked, push down to thighs.",
+        "Emphasize medial head — lighter weight."
+      ],
+      "zh-Hans": [
+        "面对绳索机, 高位直杆, 反握.",
+        "肘部内收, 下推至大腿前.",
+        "强化内侧头 — 轻重量."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=RAGGT2yhTLM",
+    "calories_estimate": { "low": 3, "med": 4, "high": 5 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "triceps_pushdown_reverse_single_arm",
+    "name": { "en": "Reverse-Grip Triceps Pushdown (Single-Arm)", "zh-Hans": "反握三头推下 (单臂)" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": [{ "major": "arms", "sub": "forearms" }]
+    },
+    "equipment": ["cable"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Face cable, single handle, underhand grip.",
+        "Elbow pinned, push handle down to hip.",
+        "Strong medial head contraction at bottom."
+      ],
+      "zh-Hans": [
+        "面对绳索机, 单手柄反握.",
+        "肘部固定, 下推至髋部.",
+        "底部强烈刺激内侧头."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=Yzu_TQUlGcI",
+    "calories_estimate": { "low": 2, "med": 4, "high": 5 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "triceps_pushdown_band",
+    "name": { "en": "Triceps Pushdown (Resistance Band)", "zh-Hans": "三头推下 (弹力带)" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": []
+    },
+    "equipment": ["resistance_band"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Anchor band overhead, grip with both hands.",
+        "Elbows tucked, push down to thighs.",
+        "Resistance peaks at lockout."
+      ],
+      "zh-Hans": [
+        "弹力带固定头顶, 双手握紧.",
+        "肘部内收, 下推至大腿前.",
+        "锁定时阻力最大."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=jx0BlYOnsWA",
+    "calories_estimate": { "low": 2, "med": 3, "high": 5 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "triceps_pushdown_machine",
+    "name": { "en": "Triceps Pushdown (Machine)", "zh-Hans": "三头推下 (器械)" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": []
+    },
+    "equipment": ["machine"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Sit at triceps machine, grip handles.",
+        "Push handles down to full extension.",
+        "Squeeze triceps, slow return."
+      ],
+      "zh-Hans": [
+        "坐三头机, 握住手柄.",
+        "下推至完全伸直.",
+        "收紧三头, 缓慢回程."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=DkfeUEPYIvU",
+    "calories_estimate": { "low": 3, "med": 4, "high": 5 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "cable_extension_cross_body",
+    "name": { "en": "Cross-Body Cable Triceps Extension", "zh-Hans": "跨体绳索三头伸展" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": []
+    },
+    "equipment": ["cable"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Stand sideways to high cable, opposite arm grips handle.",
+        "Pull handle across body diagonally downward.",
+        "Squeeze triceps, control return."
+      ],
+      "zh-Hans": [
+        "侧对高位绳索, 对侧手握柄.",
+        "斜向下跨体伸展.",
+        "收紧三头, 控制回程."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=Z9OOzGV5OdQ",
+    "calories_estimate": { "low": 2, "med": 4, "high": 5 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "cable_extension_behind_back",
+    "name": { "en": "Behind-Back Cable Triceps Extension", "zh-Hans": "背后绳索三头伸展" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": []
+    },
+    "equipment": ["cable"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Face away from cable, grip rope behind head.",
+        "Elbows up, extend rope overhead and forward.",
+        "Stretch long head — slow return."
+      ],
+      "zh-Hans": [
+        "背对绳索, 脑后握绳索.",
+        "肘部上举, 向前向上伸展.",
+        "拉伸长头 — 缓慢回程."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=Y_7aHqXeCfQ",
+    "calories_estimate": { "low": 3, "med": 4, "high": 6 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "smith_close_grip_press_lying",
+    "name": { "en": "Close-Grip Bench Press (Smith Machine, Triceps Focus)", "zh-Hans": "窄距卧推 (史密斯机, 三头版)" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": [
+        { "major": "chest", "sub": "middle_chest" },
+        { "major": "shoulders", "sub": "front_delt" }
+      ]
+    },
+    "equipment": ["smith_machine", "bench_flat"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "strength",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Bench under Smith bar, narrow grip — elbows fully tucked.",
+        "Lower to lower chest, brief touch.",
+        "Press up — focus on triceps drive in lockout."
+      ],
+      "zh-Hans": [
+        "卧推凳置史密斯杠下, 窄握 — 肘完全内收.",
+        "下放至下胸, 轻触.",
+        "推起 — 锁定阶段三头发力."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=7DoiCXJ6mC0",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "overhead_extension_ez_bar",
+    "name": { "en": "Overhead Triceps Extension (EZ-Bar)", "zh-Hans": "过顶伸展 (EZ-杠)" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": []
+    },
+    "equipment": ["ez_bar"],
+    "category": "strength",
+    "movementPattern": "push_vertical",
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Stand or seated, EZ-bar overhead, narrow grip.",
+        "Lower bar behind head — elbows fixed, point forward.",
+        "Extend back overhead — squeeze triceps."
+      ],
+      "zh-Hans": [
+        "站或坐, EZ 杠过顶, 窄握.",
+        "下放脑后 — 肘部固定向前.",
+        "推回过顶 — 收紧三头."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=YbX7Wd8jQ-Q",
+    "calories_estimate": { "low": 3, "med": 5, "high": 7 },
+    "danger_warnings": {
+      "en": ["Keep elbows tight — flaring strains shoulders."],
+      "zh-Hans": ["肘部内收 — 外翻伤肩."]
+    }
+  },
+  {
+    "id": "overhead_extension_barbell",
+    "name": { "en": "Overhead Triceps Extension (Barbell)", "zh-Hans": "过顶伸展 (杠铃)" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": []
+    },
+    "equipment": ["barbell"],
+    "category": "strength",
+    "movementPattern": "push_vertical",
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Stand or seated, barbell overhead, shoulder-width.",
+        "Lower bar behind head — elbows forward.",
+        "Press back overhead, full extension."
+      ],
+      "zh-Hans": [
+        "站或坐, 杠铃过顶, 与肩同宽.",
+        "下放脑后 — 肘部向前.",
+        "推回过顶, 完全伸直."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=_gsUck-7M9I",
+    "calories_estimate": { "low": 3, "med": 5, "high": 7 },
+    "danger_warnings": {
+      "en": ["Use lighter weight — avoid shoulder impingement."],
+      "zh-Hans": ["使用轻重量 — 避免肩部撞击."]
+    }
+  },
+  {
+    "id": "overhead_extension_dumbbell_two_hand",
+    "name": { "en": "Overhead Triceps Extension (Dumbbell)", "zh-Hans": "过顶伸展 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": []
+    },
+    "equipment": ["dumbbell"],
+    "category": "strength",
+    "movementPattern": "push_vertical",
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Hold one dumbbell with both hands overhead.",
+        "Cup top plate, lower behind head with elbows tight.",
+        "Press back overhead — squeeze triceps."
+      ],
+      "zh-Hans": [
+        "双手共握一只哑铃过顶.",
+        "捧住上端片, 肘内收下放脑后.",
+        "推回过顶 — 收紧三头."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=YbX7Wd8jQ-Q",
+    "calories_estimate": { "low": 3, "med": 4, "high": 6 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "overhead_extension_dumbbell_single_arm",
+    "name": { "en": "Overhead Triceps Extension (Dumbbell, Single-Arm)", "zh-Hans": "过顶伸展 (哑铃, 单臂)" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": []
+    },
+    "equipment": ["dumbbell"],
+    "category": "strength",
+    "movementPattern": "push_vertical",
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Stand, dumbbell in one hand overhead.",
+        "Lower dumbbell behind head — elbow vertical.",
+        "Press back up — free hand can stabilize elbow."
+      ],
+      "zh-Hans": [
+        "站立, 单手哑铃过顶.",
+        "下放脑后 — 肘部垂直.",
+        "推回过顶 — 另一手稳定肘部."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=_gsUck-7M9I",
+    "calories_estimate": { "low": 2, "med": 4, "high": 5 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "overhead_extension_dumbbell_seated_two_hand",
+    "name": { "en": "Seated Overhead Triceps Extension (Dumbbell)", "zh-Hans": "坐姿过顶伸展 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": []
+    },
+    "equipment": ["dumbbell", "bench_flat"],
+    "category": "strength",
+    "movementPattern": "push_vertical",
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Sit on bench with back support, dumbbell overhead.",
+        "Lower behind head, hold contraction at stretch.",
+        "Extend back up, squeeze triceps."
+      ],
+      "zh-Hans": [
+        "坐有靠背凳上, 哑铃过顶.",
+        "下放脑后, 拉伸处停顿.",
+        "推回过顶, 收紧三头."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=_gsUck-7M9I",
+    "calories_estimate": { "low": 3, "med": 4, "high": 6 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "overhead_extension_cable_rope",
+    "name": { "en": "Overhead Triceps Extension (Cable, Rope)", "zh-Hans": "过顶伸展 (绳索)" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": []
+    },
+    "equipment": ["cable"],
+    "category": "strength",
+    "movementPattern": "push_vertical",
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Face away from low cable, rope behind head.",
+        "Lean slightly forward, elbows up beside ears.",
+        "Extend rope forward and up — separate at top."
+      ],
+      "zh-Hans": [
+        "背对低位绳索, 绳索置脑后.",
+        "略前倾, 肘部上举贴耳.",
+        "向前向上伸展 — 顶部分开."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=X1uOmoUGu0w",
+    "calories_estimate": { "low": 3, "med": 5, "high": 6 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "overhead_extension_cable_v_bar",
+    "name": { "en": "Overhead Triceps Extension (Cable, V-Bar)", "zh-Hans": "过顶伸展 (绳索, V-杆)" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": []
+    },
+    "equipment": ["cable"],
+    "category": "strength",
+    "movementPattern": "push_vertical",
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Face away from cable, low pulley, V-bar attachment.",
+        "Grip V-bar overhead, elbows beside ears.",
+        "Extend bar forward and up — full triceps stretch."
+      ],
+      "zh-Hans": [
+        "背对绳索机, 低位 V-杆.",
+        "V-杆过顶, 肘部贴耳.",
+        "向前向上伸展 — 三头充分拉伸."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=X1uOmoUGu0w",
+    "calories_estimate": { "low": 3, "med": 5, "high": 6 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "overhead_extension_cable_single_arm",
+    "name": { "en": "Overhead Triceps Extension (Cable, Single-Arm)", "zh-Hans": "过顶伸展 (绳索, 单臂)" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": []
+    },
+    "equipment": ["cable"],
+    "category": "strength",
+    "movementPattern": "push_vertical",
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Face away from low cable, single handle in one hand.",
+        "Elbow up beside ear, extend handle overhead.",
+        "Squeeze long head, slow return."
+      ],
+      "zh-Hans": [
+        "背对低位绳索, 单手柄.",
+        "肘部贴耳上举, 过顶伸展.",
+        "收紧长头, 缓慢回程."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=DvZTfeS-9HE",
+    "calories_estimate": { "low": 2, "med": 4, "high": 5 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "lying_overhead_extension_ez",
+    "name": { "en": "Lying Overhead Triceps Extension (EZ-Bar)", "zh-Hans": "仰卧过顶伸展 (EZ-杠)" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": []
+    },
+    "equipment": ["ez_bar", "bench_flat"],
+    "category": "strength",
+    "movementPattern": "push_vertical",
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie on bench, EZ-bar held over chest at angle toward head.",
+        "Lower bar past head — arms angled back.",
+        "Extend up at the same angle — strong long-head stretch."
+      ],
+      "zh-Hans": [
+        "平躺凳上, EZ 杠斜向头侧举起.",
+        "下放越过头部 — 双臂后倾.",
+        "同角度推起 — 长头强烈拉伸."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=AaWLLpyiBVE",
+    "calories_estimate": { "low": 3, "med": 5, "high": 7 },
+    "danger_warnings": {
+      "en": ["Use spotter — bar path near head."],
+      "zh-Hans": ["使用保护 — 杠路接近头部."]
+    }
+  },
+  {
+    "id": "french_press_barbell",
+    "name": { "en": "French Press (Barbell)", "zh-Hans": "法式推举 (杠铃)" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": []
+    },
+    "equipment": ["barbell", "bench_flat"],
+    "category": "strength",
+    "movementPattern": "push_vertical",
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Sit upright on bench, barbell overhead, narrow grip.",
+        "Lower bar behind head with elbows pointing forward.",
+        "Extend back up — focus on long head."
+      ],
+      "zh-Hans": [
+        "坐凳直立, 杠铃过顶窄握.",
+        "下放脑后, 肘部指向前.",
+        "推回上方 — 重点长头."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=_gsUck-7M9I",
+    "calories_estimate": { "low": 3, "med": 5, "high": 7 },
+    "danger_warnings": {
+      "en": ["Don't let bar drop on neck — control on descent."],
+      "zh-Hans": ["不要让杠砸颈部 — 控制下放."]
+    }
+  },
+  {
+    "id": "overhead_extension_kettlebell",
+    "name": { "en": "Overhead Triceps Extension (Kettlebell)", "zh-Hans": "过顶伸展 (壶铃)" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": []
+    },
+    "equipment": ["kettlebell"],
+    "category": "strength",
+    "movementPattern": "push_vertical",
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Hold kettlebell with both hands, bell behind head.",
+        "Lower kettlebell behind head — elbows in.",
+        "Extend overhead, squeeze triceps."
+      ],
+      "zh-Hans": [
+        "双手共握壶铃, 球部置脑后.",
+        "下放脑后 — 肘部内收.",
+        "过顶推起, 收紧三头."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=I_xgsiNqGgI",
+    "calories_estimate": { "low": 3, "med": 4, "high": 6 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "overhead_extension_band",
+    "name": { "en": "Overhead Triceps Extension (Resistance Band)", "zh-Hans": "过顶伸展 (弹力带)" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": []
+    },
+    "equipment": ["resistance_band"],
+    "category": "strength",
+    "movementPattern": "push_vertical",
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Anchor band low, grip handle overhead behind head.",
+        "Extend handle overhead — elbow stays in place.",
+        "Slow return to stretch."
+      ],
+      "zh-Hans": [
+        "弹力带固定低位, 脑后握手柄.",
+        "过顶伸展 — 肘部固定.",
+        "缓慢回程至拉伸."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=qPIQYO5y4kU",
+    "calories_estimate": { "low": 2, "med": 3, "high": 5 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "kickback_dumbbell_single_arm",
+    "name": { "en": "Triceps Kickback (Dumbbell, Single-Arm)", "zh-Hans": "三头后摆 (哑铃, 单臂)" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": []
+    },
+    "equipment": ["dumbbell", "bench_flat"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Knee and hand on bench, opposite foot planted.",
+        "Upper arm parallel to floor, dumbbell at 90°.",
+        "Extend arm back — squeeze triceps, slow return."
+      ],
+      "zh-Hans": [
+        "单膝单手撑凳, 对侧脚着地.",
+        "大臂与地面平行, 哑铃 90°.",
+        "向后伸直 — 收紧三头, 缓慢回程."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=ZqUNcXvyXTk",
+    "calories_estimate": { "low": 2, "med": 3, "high": 5 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "kickback_dumbbell_both_arms",
+    "name": { "en": "Triceps Kickback (Dumbbell)", "zh-Hans": "三头后摆 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": []
+    },
+    "equipment": ["dumbbell"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Stand hinged at hips, dumbbells in both hands.",
+        "Upper arms parallel to torso, elbows at 90°.",
+        "Extend both arms back — squeeze, slow return."
+      ],
+      "zh-Hans": [
+        "站立髋部前倾, 双手持哑铃.",
+        "大臂贴体侧, 肘部 90°.",
+        "双臂向后伸直 — 收紧, 缓慢回程."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=6SS6K3lAwY8",
+    "calories_estimate": { "low": 3, "med": 4, "high": 5 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "kickback_dumbbell_kneeling",
+    "name": { "en": "Kneeling Triceps Kickback (Dumbbell)", "zh-Hans": "跪姿三头后摆 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": []
+    },
+    "equipment": ["dumbbell", "bench_flat"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Both knees on bench, one hand supports, dumbbell in other.",
+        "Hinge forward, upper arm parallel to torso.",
+        "Extend back — fully lock arm at top."
+      ],
+      "zh-Hans": [
+        "双膝跪凳, 一手撑, 另一手持哑铃.",
+        "前倾, 大臂贴体侧.",
+        "向后伸直 — 顶部完全锁定."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=ZqUNcXvyXTk",
+    "calories_estimate": { "low": 2, "med": 3, "high": 5 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "kickback_cable_single_arm",
+    "name": { "en": "Triceps Kickback (Cable, Single-Arm)", "zh-Hans": "三头后摆 (绳索, 单臂)" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": []
+    },
+    "equipment": ["cable"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Face cable, low pulley, single handle.",
+        "Hinge forward, upper arm parallel to torso.",
+        "Extend handle back — constant tension."
+      ],
+      "zh-Hans": [
+        "面对绳索机, 低位单手柄.",
+        "前倾, 大臂贴体侧.",
+        "向后伸展 — 持续张力."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=2Ie3PXg1qFE",
+    "calories_estimate": { "low": 2, "med": 4, "high": 5 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "kickback_cable_both_arms",
+    "name": { "en": "Triceps Kickback (Cable)", "zh-Hans": "三头后摆 (绳索)" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": []
+    },
+    "equipment": ["cable"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Face cable, low rope attachment, hinge forward.",
+        "Upper arms parallel to torso, elbows at 90°.",
+        "Extend rope back, spread hands at end."
+      ],
+      "zh-Hans": [
+        "面对绳索机, 低位绳索, 前倾.",
+        "大臂贴体侧, 肘部 90°.",
+        "向后伸展, 末端双手分开."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=q9ldQzbF6tc",
+    "calories_estimate": { "low": 3, "med": 4, "high": 6 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "kickback_band",
+    "name": { "en": "Triceps Kickback (Resistance Band)", "zh-Hans": "三头后摆 (弹力带)" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": []
+    },
+    "equipment": ["resistance_band"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Anchor band low and forward, grip ends, hinge forward.",
+        "Upper arms tight at sides, extend elbows back.",
+        "Resistance peaks at lockout."
+      ],
+      "zh-Hans": [
+        "弹力带前下方固定, 握两端, 前倾.",
+        "大臂贴体侧, 后伸肘部.",
+        "锁定处阻力最大."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=Czf94IzWHTU",
+    "calories_estimate": { "low": 2, "med": 3, "high": 5 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "push_up_triceps",
+    "name": { "en": "Triceps Push-Up", "zh-Hans": "三头俯卧撑" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": [
+        { "major": "chest", "sub": "middle_chest" },
+        { "major": "shoulders", "sub": "front_delt" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "calisthenics",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "endurance",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Plank position, hands shoulder-width, elbows tucked.",
+        "Lower with elbows tracking along ribs.",
+        "Press up — strong triceps lockout."
+      ],
+      "zh-Hans": [
+        "平板支撑, 双手与肩同宽, 肘内收.",
+        "下放时肘沿肋骨方向.",
+        "推起 — 三头锁定发力."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=8E7HxOPmlSY",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "bench_dip",
+    "name": { "en": "Bench Dip", "zh-Hans": "椅上臂屈伸" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": [
+        { "major": "chest", "sub": "lower_chest" },
+        { "major": "shoulders", "sub": "front_delt" }
+      ]
+    },
+    "equipment": ["bench_flat"],
+    "category": "calisthenics",
+    "movementPattern": null,
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "endurance",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Sit on bench edge, hands beside hips, feet on floor.",
+        "Slide off bench, lower body by bending elbows.",
+        "Press back up — keep hips close to bench."
+      ],
+      "zh-Hans": [
+        "坐凳边, 双手撑髋两侧, 脚着地.",
+        "离开凳子, 屈肘下降身体.",
+        "推起 — 髋部贴近凳子."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=6kALZikXxLc",
+    "calories_estimate": { "low": 4, "med": 5, "high": 7 },
+    "danger_warnings": {
+      "en": ["Don't go too low — protects shoulders."],
+      "zh-Hans": ["不要下放过低 — 保护肩部."]
+    }
+  },
+  {
+    "id": "bench_dip_weighted",
+    "name": { "en": "Bench Dip (Weighted)", "zh-Hans": "椅上臂屈伸 (负重)" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": [
+        { "major": "chest", "sub": "lower_chest" },
+        { "major": "shoulders", "sub": "front_delt" }
+      ]
+    },
+    "equipment": ["bench_flat", "weight_plate"],
+    "category": "calisthenics",
+    "movementPattern": null,
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Bench dip setup, weight plate on lap.",
+        "Lower until arms at 90°, control descent.",
+        "Press up — keep plate balanced."
+      ],
+      "zh-Hans": [
+        "椅上臂屈伸姿势, 大腿上放杠片.",
+        "下降至大臂 90°, 控制下放.",
+        "推起 — 保持杠片平衡."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=6kALZikXxLc",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": {
+      "en": ["Don't shrug shoulders — keep them down and back."],
+      "zh-Hans": ["不要耸肩 — 双肩下沉后展."]
+    }
+  },
+  {
+    "id": "bench_dip_feet_elevated",
+    "name": { "en": "Feet-Elevated Bench Dip", "zh-Hans": "抬腿椅上臂屈伸" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": [
+        { "major": "chest", "sub": "lower_chest" },
+        { "major": "shoulders", "sub": "front_delt" }
+      ]
+    },
+    "equipment": ["bench_flat"],
+    "category": "calisthenics",
+    "movementPattern": null,
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "endurance",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Hands on one bench, feet on second bench.",
+        "Lower body, elbows bend to 90°.",
+        "Press back up — increased difficulty vs floor."
+      ],
+      "zh-Hans": [
+        "双手撑一凳, 双脚搭另一凳.",
+        "下降身体, 肘部 90°.",
+        "推起 — 比脚着地更难."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=6kALZikXxLc",
+    "calories_estimate": { "low": 4, "med": 6, "high": 7 },
+    "danger_warnings": {
+      "en": ["Watch shoulder strain — limit depth if uncomfortable."],
+      "zh-Hans": ["注意肩部压力 — 不适时减少深度."]
+    }
+  },
+  {
+    "id": "dip_parallel_bar_triceps",
+    "name": { "en": "Triceps Dip (Parallel Bars)", "zh-Hans": "双杠臂屈伸 (三头版)" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": [
+        { "major": "chest", "sub": "lower_chest" },
+        { "major": "shoulders", "sub": "front_delt" }
+      ]
+    },
+    "equipment": ["dip_bar"],
+    "category": "calisthenics",
+    "movementPattern": null,
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "endurance",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Grip parallel bars, body upright — no forward lean.",
+        "Lower with elbows tracking back behind body.",
+        "Press up to lockout — emphasize triceps."
+      ],
+      "zh-Hans": [
+        "握双杠, 身体直立 — 不要前倾.",
+        "下降时肘部向后.",
+        "推至锁定 — 强化三头."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=2z8JmcrW-As",
+    "calories_estimate": { "low": 5, "med": 7, "high": 10 },
+    "danger_warnings": {
+      "en": [
+        "Don't go below 90° elbow bend — shoulder strain.",
+        "Build up slowly — high difficulty."
+      ],
+      "zh-Hans": [
+        "肘部不要低于 90° — 伤肩.",
+        "缓慢进阶 — 难度高."
+      ]
+    }
+  },
+  {
+    "id": "dip_parallel_bar_triceps_weighted",
+    "name": { "en": "Triceps Dip (Parallel Bars, Weighted)", "zh-Hans": "双杠臂屈伸 (三头版, 负重)" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": [
+        { "major": "chest", "sub": "lower_chest" },
+        { "major": "shoulders", "sub": "front_delt" }
+      ]
+    },
+    "equipment": ["dip_bar", "dip_belt"],
+    "category": "calisthenics",
+    "movementPattern": null,
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "advanced",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Attach weight via belt, grip parallel bars upright.",
+        "Lower with control, elbows track back.",
+        "Press up — strict form essential."
+      ],
+      "zh-Hans": [
+        "腰带挂杠片, 握双杠直立.",
+        "控制下降, 肘部向后.",
+        "推起 — 严格动作至关重要."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=2z8JmcrW-As",
+    "calories_estimate": { "low": 6, "med": 8, "high": 11 },
+    "danger_warnings": {
+      "en": [
+        "Use a dip belt, not held weight — frees up grip.",
+        "Spotter useful for adding/removing weight."
+      ],
+      "zh-Hans": [
+        "使用腰带, 不要手持杠片 — 不占握力.",
+        "上下杠片有人帮忙更安全."
+      ]
+    }
+  },
+  {
+    "id": "dip_single_bar",
+    "name": { "en": "Single-Bar Dip", "zh-Hans": "单杠臂屈伸" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": [
+        { "major": "chest", "sub": "lower_chest" },
+        { "major": "shoulders", "sub": "front_delt" }
+      ]
+    },
+    "equipment": ["pull_up_bar"],
+    "category": "calisthenics",
+    "movementPattern": null,
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "endurance",
+    "level": "advanced",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Mount above single bar, palms facing forward, arms locked.",
+        "Lower body — feet stay forward for balance.",
+        "Press back up to support hold."
+      ],
+      "zh-Hans": [
+        "撑单杠上方, 掌心向前, 手臂锁定.",
+        "下放身体 — 双脚前伸保持平衡.",
+        "推回支撑位."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=hOFFI0qrkBE",
+    "calories_estimate": { "low": 5, "med": 7, "high": 10 },
+    "danger_warnings": {
+      "en": [
+        "Significant balance and strength demand — master double-bar dip first.",
+        "Practice on shorter bars for safety."
+      ],
+      "zh-Hans": [
+        "对平衡和力量要求高 — 先掌握双杠.",
+        "在低杠练习更安全."
+      ]
+    }
+  },
+  {
+    "id": "dip_ring_triceps",
+    "name": { "en": "Triceps Ring Dip", "zh-Hans": "吊环臂屈伸 (三头版)" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": [
+        { "major": "chest", "sub": "lower_chest" },
+        { "major": "shoulders", "sub": "front_delt" }
+      ]
+    },
+    "equipment": ["gymnastic_rings"],
+    "category": "calisthenics",
+    "movementPattern": null,
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "endurance",
+    "level": "advanced",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Mount rings, body upright, rings just outside hips.",
+        "Lower with elbows tracking back, body vertical.",
+        "Press up — rings turn out at top (RTO optional)."
+      ],
+      "zh-Hans": [
+        "上吊环, 身体直立, 环在髋两侧外.",
+        "下降时肘后, 躯干垂直.",
+        "推起 — 顶部可外旋环 (RTO 可选)."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=Qwxungm8XnA",
+    "calories_estimate": { "low": 5, "med": 8, "high": 11 },
+    "danger_warnings": {
+      "en": [
+        "Master parallel bar dips first — rings demand stability.",
+        "Don't drop into bottom — controlled descent."
+      ],
+      "zh-Hans": [
+        "先掌握双杠 — 吊环对稳定性要求高.",
+        "不要下坠到底 — 控制下放."
+      ]
+    }
+  },
+  {
+    "id": "dip_korean",
+    "name": { "en": "Korean Dip", "zh-Hans": "韩式臂屈伸" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": [
+        { "major": "chest", "sub": "lower_chest" },
+        { "major": "shoulders", "sub": "front_delt" }
+      ]
+    },
+    "equipment": ["pull_up_bar"],
+    "category": "calisthenics",
+    "movementPattern": null,
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "endurance",
+    "level": "advanced",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Hold single bar in front, palms forward, lean back.",
+        "Body angles back, lower with elbows tucked.",
+        "Press to lock — extreme triceps loading."
+      ],
+      "zh-Hans": [
+        "握身前单杠, 掌心向前, 后倾.",
+        "身体后倾, 下降肘内收.",
+        "推起锁定 — 三头超负荷."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=ZGgRtJ80U_w",
+    "calories_estimate": { "low": 5, "med": 7, "high": 10 },
+    "danger_warnings": {
+      "en": [
+        "High shoulder demand — master regular dips first.",
+        "Start with assist band or limited range."
+      ],
+      "zh-Hans": [
+        "肩部要求高 — 先掌握普通臂屈伸.",
+        "从弹力带辅助或半程开始."
+      ]
+    }
+  },
+  {
+    "id": "crush_grip_push_up",
+    "name": { "en": "Crush-Grip Push-Up", "zh-Hans": "夹挤俯卧撑" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": [
+        { "major": "chest", "sub": "middle_chest" },
+        { "major": "shoulders", "sub": "front_delt" }
+      ]
+    },
+    "equipment": ["dumbbell"],
+    "category": "calisthenics",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "endurance",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Place two dumbbells together, grip them in push-up position.",
+        "Press dumbbells together — chest and triceps engaged.",
+        "Push up while maintaining crush pressure."
+      ],
+      "zh-Hans": [
+        "两哑铃并紧, 俯卧撑姿势握紧.",
+        "夹紧哑铃 — 胸和三头收紧.",
+        "保持夹挤推起."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=ScG6Js9d_oI",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "triceps_extension_machine_seated",
+    "name": { "en": "Seated Triceps Extension (Machine)", "zh-Hans": "坐姿三头伸展 (器械)" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": []
+    },
+    "equipment": ["machine"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Adjust seat, grip handles, elbows on pad.",
+        "Press handles down to full extension.",
+        "Squeeze, slow return — full stretch at top."
+      ],
+      "zh-Hans": [
+        "调整座椅, 握手柄, 肘部置垫.",
+        "下推至完全伸直.",
+        "收紧, 缓慢回程 — 顶部充分拉伸."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=DkfeUEPYIvU",
+    "calories_estimate": { "low": 3, "med": 4, "high": 5 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "triceps_extension_machine_single_arm",
+    "name": { "en": "Single-Arm Triceps Extension (Machine)", "zh-Hans": "单臂三头伸展 (器械)" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": []
+    },
+    "equipment": ["machine"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Adjust machine, one arm at a time.",
+        "Press handle to full extension.",
+        "Slow return, full stretch — work side independently."
+      ],
+      "zh-Hans": [
+        "调整器械, 单臂操作.",
+        "推至完全伸直.",
+        "缓慢回程, 充分拉伸 — 单侧独立训练."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=DkfeUEPYIvU",
+    "calories_estimate": { "low": 2, "med": 3, "high": 5 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "med_ball_triceps_extension",
+    "name": { "en": "Overhead Triceps Extension (Medicine Ball)", "zh-Hans": "过顶伸展 (药球)" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": []
+    },
+    "equipment": ["medicine_ball"],
+    "category": "strength",
+    "movementPattern": "push_vertical",
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Stand holding medicine ball overhead with both hands.",
+        "Lower ball behind head — elbows in.",
+        "Extend ball overhead, squeeze triceps."
+      ],
+      "zh-Hans": [
+        "站立, 双手共握药球过顶.",
+        "下放脑后 — 肘部内收.",
+        "过顶伸展, 收紧三头."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=YbX7Wd8jQ-Q",
+    "calories_estimate": { "low": 3, "med": 4, "high": 5 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "rolling_dumbbell_extension",
+    "name": { "en": "Rolling Dumbbell Triceps Extension", "zh-Hans": "滚动哑铃三头伸展" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": []
+    },
+    "equipment": ["dumbbell", "bench_flat"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie on bench, dumbbells over chest.",
+        "Lower to forehead (skullcrusher), then roll back behind head.",
+        "Press from behind head — combined motion."
+      ],
+      "zh-Hans": [
+        "平躺凳上, 哑铃举胸前.",
+        "下放至额头, 然后滚至脑后.",
+        "从脑后推起 — 复合动作."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=BUDLGr_kJk0",
+    "calories_estimate": { "low": 3, "med": 5, "high": 7 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "skullcrusher_paused",
+    "name": { "en": "Paused Skullcrusher (EZ-Bar)", "zh-Hans": "暂停颈后臂屈伸 (EZ-杠)" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": []
+    },
+    "equipment": ["ez_bar", "bench_flat"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "strength",
+    "level": "advanced",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Standard skullcrusher setup, EZ-bar.",
+        "Lower to forehead, pause 2 seconds — full triceps stretch.",
+        "Extend back up under control."
+      ],
+      "zh-Hans": [
+        "标准颈后臂屈伸姿势, EZ 杠.",
+        "下放至额头, 停 2 秒 — 三头充分拉伸.",
+        "控制推起."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=d_KZxkY_0cM",
+    "calories_estimate": { "low": 3, "med": 5, "high": 7 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "close_grip_push_up_deficit",
+    "name": { "en": "Deficit Close-Grip Push-Up", "zh-Hans": "幅度窄距俯卧撑" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": [
+        { "major": "chest", "sub": "middle_chest" },
+        { "major": "shoulders", "sub": "front_delt" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "calisthenics",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "endurance",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Hands on plates or blocks, close grip, plank position.",
+        "Lower chest below hand level — increased range.",
+        "Press up, elbows tucked tight to body."
+      ],
+      "zh-Hans": [
+        "手撑杠片或砖块, 窄握, 平板支撑.",
+        "胸部下放至低于手位 — 加大幅度.",
+        "推起, 肘部紧贴身体."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=8E7HxOPmlSY",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "sphinx_push_up",
+    "name": { "en": "Sphinx Push-Up", "zh-Hans": "斯芬克斯俯卧撑" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": [
+        { "major": "chest", "sub": "middle_chest" },
+        { "major": "shoulders", "sub": "front_delt" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "calisthenics",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "endurance",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Start in plank, lower to forearms.",
+        "Press back up to plank using triceps.",
+        "Forearms touch floor each rep — pure triceps."
+      ],
+      "zh-Hans": [
+        "平板支撑, 下放至前臂.",
+        "三头发力推回平板支撑.",
+        "每次前臂触地 — 纯三头发力."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=8E7HxOPmlSY",
+    "calories_estimate": { "low": 4, "med": 5, "high": 7 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "triceps_extension_seated_dumbbell_neutral",
+    "name": { "en": "Seated Triceps Extension (Dumbbell, Neutral Grip)", "zh-Hans": "坐姿三头伸展 (哑铃, 对握)" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": []
+    },
+    "equipment": ["dumbbell", "bench_flat"],
+    "category": "strength",
+    "movementPattern": "push_vertical",
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Sit with back support, dumbbells overhead, palms facing.",
+        "Lower behind head with elbows in.",
+        "Press up — neutral grip protects elbows."
+      ],
+      "zh-Hans": [
+        "坐有靠背凳, 哑铃过顶对握.",
+        "下放脑后, 肘部内收.",
+        "推起 — 对握保护肘关节."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=_gsUck-7M9I",
+    "calories_estimate": { "low": 3, "med": 4, "high": 5 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "kickback_single_arm_floor",
+    "name": { "en": "Floor Triceps Kickback (Single-Arm)", "zh-Hans": "地面三头后摆 (单臂)" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": []
+    },
+    "equipment": ["dumbbell"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Kneel on all fours, dumbbell in one hand.",
+        "Upper arm parallel to torso, extend elbow back.",
+        "Squeeze triceps at lockout, slow return."
+      ],
+      "zh-Hans": [
+        "四足跪地, 单手持哑铃.",
+        "大臂贴体侧, 后伸肘部.",
+        "锁定时收紧三头, 缓慢回程."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=ZqUNcXvyXTk",
+    "calories_estimate": { "low": 2, "med": 3, "high": 4 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "triceps_pushdown_drag",
+    "name": { "en": "Drag Triceps Pushdown (Cable)", "zh-Hans": "拖拽三头推下 (绳索)" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": []
+    },
+    "equipment": ["cable"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Face cable, high pulley, straight bar.",
+        "Pull elbows behind body as bar comes down.",
+        "Lock arms at sides — increased ROM."
+      ],
+      "zh-Hans": [
+        "面对绳索机, 高位直杆.",
+        "下推时肘部后移过躯干.",
+        "锁定体侧 — 加大幅度."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=2-LAMcpzODU",
+    "calories_estimate": { "low": 3, "med": 4, "high": 5 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  }
+]

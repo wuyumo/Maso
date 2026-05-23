@@ -1,0 +1,436 @@
+{
+  "_meta": {
+    "purpose": "Canonical examples for all data-generation agents. EVERY exercise in the new DB MUST follow these exact field shapes + tone + naming conventions.",
+    "schema_version": "v1.1-final",
+    "naming_rule": "Hevy style: 'Movement' default (most common equipment, unstated). Variants add ' (Equipment)'. Modifiers go before. Example: 'Bench Press' / 'Bench Press (Dumbbell)' / 'Incline Bench Press (Dumbbell)'. Chinese mirrors English structure: '卧推' / '卧推 (哑铃)' / '上斜卧推 (哑铃)'.",
+    "muscle_taxonomy": "6 major × 27 sub. See docs/exercise-db-overhaul-plan.md §0.2.",
+    "instructions_rule": "2-4 SHORT bullet points per language. Form cues, not full essay. Cap at ~60 chars per bullet in English, ~30 chars in Chinese.",
+    "danger_warnings_rule": "Only include for advanced compound lifts (deadlift, squat, OHP, bench, pull-up) where injury risk is real. Skip for safe isolation exercises."
+  },
+  "examples": [
+    {
+      "_comment_": "Canonical compound — chest, dumbbell, intermediate",
+      "id": "bench_press_dumbbell",
+      "name": { "en": "Bench Press (Dumbbell)", "zh-Hans": "卧推 (哑铃)" },
+      "muscles": {
+        "primary": [{ "major": "chest", "sub": "middle_chest" }],
+        "secondary": [
+          { "major": "shoulders", "sub": "front_delt" },
+          { "major": "arms", "sub": "triceps" }
+        ]
+      },
+      "equipment": ["dumbbell", "bench_flat"],
+      "category": "strength",
+      "movementPattern": "push_horizontal",
+      "mechanic": "compound",
+      "unilateral": false,
+      "tempo": "hypertrophy",
+      "level": "intermediate",
+      "force": "push",
+      "imageFolder": null,
+      "instructions": {
+        "en": [
+          "Lie on flat bench, dumbbells at chest level.",
+          "Press up until arms fully extended.",
+          "Lower under control — feel the chest stretch."
+        ],
+        "zh-Hans": [
+          "平躺卧推凳, 哑铃放胸口高度.",
+          "推到手臂完全伸直.",
+          "缓慢下放, 感受胸部拉伸."
+        ]
+      },
+      "video_url": "https://www.youtube.com/watch?v=VmB1G1K7v94",
+      "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+      "danger_warnings": {
+        "en": ["Don't bounce dumbbells off chest at bottom."],
+        "zh-Hans": ["底部不要让哑铃砸在胸口."]
+      }
+    },
+    {
+      "_comment_": "Canonical isolation — biceps, cable, beginner",
+      "id": "bicep_curl_cable",
+      "name": { "en": "Bicep Curl (Cable)", "zh-Hans": "二头弯举 (绳索)" },
+      "muscles": {
+        "primary": [{ "major": "arms", "sub": "biceps" }],
+        "secondary": [
+          { "major": "arms", "sub": "brachialis" },
+          { "major": "arms", "sub": "forearms" }
+        ]
+      },
+      "equipment": ["cable"],
+      "category": "strength",
+      "movementPattern": null,
+      "mechanic": "isolation",
+      "unilateral": false,
+      "tempo": "hypertrophy",
+      "level": "beginner",
+      "force": "pull",
+      "imageFolder": null,
+      "instructions": {
+        "en": [
+          "Stand facing cable, low pulley, straight bar.",
+          "Curl up — keep elbows pinned at sides.",
+          "Squeeze at top, lower slowly."
+        ],
+        "zh-Hans": [
+          "面对绳索机, 低位定滑轮, 直杆.",
+          "上举弯举 — 肘部固定在体侧.",
+          "顶部收紧, 缓慢下放."
+        ]
+      },
+      "video_url": "https://www.youtube.com/watch?v=NFzTWp2qpiE",
+      "calories_estimate": { "low": 3, "med": 4, "high": 5 },
+      "danger_warnings": {
+        "en": [],
+        "zh-Hans": []
+      }
+    },
+    {
+      "_comment_": "Canonical heavy compound — back, barbell, advanced (with warning)",
+      "id": "deadlift_barbell_conventional",
+      "name": { "en": "Deadlift", "zh-Hans": "硬拉" },
+      "muscles": {
+        "primary": [
+          { "major": "back", "sub": "lower_back" },
+          { "major": "legs", "sub": "hamstrings" }
+        ],
+        "secondary": [
+          { "major": "legs", "sub": "glutes" },
+          { "major": "legs", "sub": "quads" },
+          { "major": "back", "sub": "lats" },
+          { "major": "back", "sub": "traps_middle" },
+          { "major": "core", "sub": "abs_lower" }
+        ]
+      },
+      "equipment": ["barbell"],
+      "category": "strength",
+      "movementPattern": "hinge",
+      "mechanic": "compound",
+      "unilateral": false,
+      "tempo": "strength",
+      "level": "advanced",
+      "force": "pull",
+      "imageFolder": null,
+      "instructions": {
+        "en": [
+          "Bar over mid-foot, shins close.",
+          "Brace core, hinge hips back, grip bar.",
+          "Drive heels into floor — keep back flat.",
+          "Lock out at top, hips and shoulders together."
+        ],
+        "zh-Hans": [
+          "杠铃在脚中, 小腿贴近.",
+          "核心收紧, 髋部后推抓杠.",
+          "脚跟发力 — 背部保持挺直.",
+          "顶部锁定, 髋和肩同时到位."
+        ]
+      },
+      "video_url": "https://www.youtube.com/watch?v=op9kVnSso6Q",
+      "calories_estimate": { "low": 8, "med": 11, "high": 14 },
+      "danger_warnings": {
+        "en": [
+          "Don't round lower back — straight spine, hinge from hips.",
+          "Hands at shoulder width, not too narrow.",
+          "Reset between reps if form breaks."
+        ],
+        "zh-Hans": [
+          "不要圆背 — 脊柱保持中立, 髋部铰链.",
+          "握距与肩同宽, 不要太窄.",
+          "如果动作变形, 在每次重复之间重置."
+        ]
+      }
+    },
+    {
+      "_comment_": "Canonical bodyweight — chest, push-up variant",
+      "id": "push_up",
+      "name": { "en": "Push-Up", "zh-Hans": "俯卧撑" },
+      "muscles": {
+        "primary": [{ "major": "chest", "sub": "middle_chest" }],
+        "secondary": [
+          { "major": "shoulders", "sub": "front_delt" },
+          { "major": "arms", "sub": "triceps" },
+          { "major": "core", "sub": "abs_upper" }
+        ]
+      },
+      "equipment": ["body_only"],
+      "category": "calisthenics",
+      "movementPattern": "push_horizontal",
+      "mechanic": "compound",
+      "unilateral": false,
+      "tempo": "endurance",
+      "level": "beginner",
+      "force": "push",
+      "imageFolder": null,
+      "instructions": {
+        "en": [
+          "Plank position, hands shoulder-width.",
+          "Lower chest to floor — body straight.",
+          "Press up, full elbow extension."
+        ],
+        "zh-Hans": [
+          "平板支撑, 双手与肩同宽.",
+          "胸部下降至接近地面 — 身体保持直线.",
+          "推起, 手肘完全伸直."
+        ]
+      },
+      "video_url": "https://www.youtube.com/watch?v=IODxDxX7oi4",
+      "calories_estimate": { "low": 5, "med": 7, "high": 9 },
+      "danger_warnings": {
+        "en": [],
+        "zh-Hans": []
+      }
+    },
+    {
+      "_comment_": "Canonical isolation incline — chest, upper chest specific",
+      "id": "incline_bench_press_dumbbell",
+      "name": { "en": "Incline Bench Press (Dumbbell)", "zh-Hans": "上斜卧推 (哑铃)" },
+      "muscles": {
+        "primary": [{ "major": "chest", "sub": "upper_chest" }],
+        "secondary": [
+          { "major": "shoulders", "sub": "front_delt" },
+          { "major": "arms", "sub": "triceps" }
+        ]
+      },
+      "equipment": ["dumbbell", "bench_incline"],
+      "category": "strength",
+      "movementPattern": "push_horizontal",
+      "mechanic": "compound",
+      "unilateral": false,
+      "tempo": "hypertrophy",
+      "level": "intermediate",
+      "force": "push",
+      "imageFolder": null,
+      "instructions": {
+        "en": [
+          "Bench at 30-45° incline.",
+          "Press dumbbells up and slightly inward.",
+          "Squeeze upper chest at top, lower under control."
+        ],
+        "zh-Hans": [
+          "卧推凳调至 30-45° 上斜.",
+          "推起哑铃, 略向内收.",
+          "顶部收紧上胸, 控制下放."
+        ]
+      },
+      "video_url": "https://www.youtube.com/watch?v=8iPEnn-ltC8",
+      "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+      "danger_warnings": {
+        "en": ["Don't arch lower back excessively at top of press."],
+        "zh-Hans": ["顶部不要过度反弓下背."]
+      }
+    },
+    {
+      "_comment_": "Canonical unilateral — lower body, no equipment",
+      "id": "bulgarian_split_squat",
+      "name": { "en": "Bulgarian Split Squat (Dumbbell)", "zh-Hans": "保加利亚分腿蹲 (哑铃)" },
+      "muscles": {
+        "primary": [{ "major": "legs", "sub": "quads" }],
+        "secondary": [
+          { "major": "legs", "sub": "glutes" },
+          { "major": "legs", "sub": "hamstrings" },
+          { "major": "legs", "sub": "adductors" }
+        ]
+      },
+      "equipment": ["dumbbell", "bench_flat"],
+      "category": "strength",
+      "movementPattern": "squat",
+      "mechanic": "compound",
+      "unilateral": true,
+      "tempo": "hypertrophy",
+      "level": "intermediate",
+      "force": "push",
+      "imageFolder": null,
+      "instructions": {
+        "en": [
+          "Rear foot on bench, front foot 2-3 feet ahead.",
+          "Lower until front thigh parallel to floor.",
+          "Drive through front heel back up."
+        ],
+        "zh-Hans": [
+          "后脚放卧推凳, 前脚距凳 60-90 cm.",
+          "下降至前腿大腿与地面平行.",
+          "前脚脚跟发力起身."
+        ]
+      },
+      "video_url": "https://www.youtube.com/watch?v=2C-uNgKwPLE",
+      "calories_estimate": { "low": 6, "med": 8, "high": 11 },
+      "danger_warnings": {
+        "en": ["Front knee should track over toes, not collapse inward."],
+        "zh-Hans": ["前膝盖跟脚尖方向一致, 不要内扣."]
+      }
+    },
+    {
+      "_comment_": "Canonical core — anti-rotation, isometric",
+      "id": "plank",
+      "name": { "en": "Plank", "zh-Hans": "平板支撑" },
+      "muscles": {
+        "primary": [
+          { "major": "core", "sub": "abs_upper" },
+          { "major": "core", "sub": "transverse" }
+        ],
+        "secondary": [
+          { "major": "core", "sub": "abs_lower" },
+          { "major": "core", "sub": "obliques" },
+          { "major": "shoulders", "sub": "front_delt" }
+        ]
+      },
+      "equipment": ["body_only"],
+      "category": "calisthenics",
+      "movementPattern": null,
+      "mechanic": "isolation",
+      "unilateral": false,
+      "tempo": "isometric",
+      "level": "beginner",
+      "force": "static",
+      "imageFolder": null,
+      "instructions": {
+        "en": [
+          "Forearms on floor, body in straight line.",
+          "Squeeze glutes + abs — neutral spine.",
+          "Hold for time, don't let hips sag."
+        ],
+        "zh-Hans": [
+          "前臂着地, 身体呈直线.",
+          "收紧臀部和腹部 — 脊柱中立.",
+          "保持时间, 不要让髋部下垂."
+        ]
+      },
+      "video_url": "https://www.youtube.com/watch?v=ASdvN_XEl_c",
+      "calories_estimate": { "low": 3, "med": 4, "high": 5 },
+      "danger_warnings": {
+        "en": [],
+        "zh-Hans": []
+      }
+    },
+    {
+      "_comment_": "Canonical stretching — static, no equipment",
+      "id": "hamstring_stretch_seated",
+      "name": { "en": "Seated Hamstring Stretch", "zh-Hans": "坐姿腘绳肌拉伸" },
+      "muscles": {
+        "primary": [{ "major": "legs", "sub": "hamstrings" }],
+        "secondary": [{ "major": "back", "sub": "lower_back" }]
+      },
+      "equipment": ["body_only"],
+      "category": "stretching",
+      "movementPattern": null,
+      "mechanic": "isolation",
+      "unilateral": false,
+      "tempo": "isometric",
+      "level": "beginner",
+      "force": "static",
+      "imageFolder": null,
+      "instructions": {
+        "en": [
+          "Sit on floor, one leg extended, other bent.",
+          "Hinge from hips, reach toward toes.",
+          "Hold 20-30s, feel stretch in back of thigh."
+        ],
+        "zh-Hans": [
+          "坐地, 一腿伸直一腿弯曲.",
+          "髋部前倾, 双手伸向脚尖.",
+          "保持 20-30 秒, 大腿后侧拉伸."
+        ]
+      },
+      "video_url": "https://www.youtube.com/watch?v=g_tea8ZNk5A",
+      "calories_estimate": { "low": 1, "med": 2, "high": 2 },
+      "danger_warnings": {
+        "en": [],
+        "zh-Hans": []
+      }
+    },
+    {
+      "_comment_": "Canonical cardio — machine",
+      "id": "rowing_machine",
+      "name": { "en": "Rowing Machine", "zh-Hans": "划船机" },
+      "muscles": {
+        "primary": [
+          { "major": "back", "sub": "lats" },
+          { "major": "legs", "sub": "quads" }
+        ],
+        "secondary": [
+          { "major": "back", "sub": "rhomboids" },
+          { "major": "legs", "sub": "glutes" },
+          { "major": "legs", "sub": "hamstrings" },
+          { "major": "arms", "sub": "biceps" },
+          { "major": "core", "sub": "abs_upper" }
+        ]
+      },
+      "equipment": ["rowing_machine"],
+      "category": "cardio",
+      "movementPattern": "pull_horizontal",
+      "mechanic": "compound",
+      "unilateral": false,
+      "tempo": "endurance",
+      "level": "beginner",
+      "force": "pull",
+      "imageFolder": null,
+      "instructions": {
+        "en": [
+          "Sit, feet strapped, grab handle.",
+          "Drive with legs first, then back, then arms.",
+          "Reverse: arms, back, legs — return slowly."
+        ],
+        "zh-Hans": [
+          "坐姿, 双脚扣紧, 抓住手柄.",
+          "腿先发力, 然后背, 最后手臂.",
+          "回程顺序相反: 手臂, 背, 腿 — 缓慢返回."
+        ]
+      },
+      "video_url": "https://www.youtube.com/watch?v=H0r_ZPXJLtg",
+      "calories_estimate": { "low": 10, "med": 14, "high": 20 },
+      "danger_warnings": {
+        "en": ["Don't yank with arms first — leads to back strain."],
+        "zh-Hans": ["不要先用手臂拉 — 容易拉伤背部."]
+      }
+    },
+    {
+      "_comment_": "Canonical plyometric — explosive lower body",
+      "id": "box_jump",
+      "name": { "en": "Box Jump", "zh-Hans": "跳箱" },
+      "muscles": {
+        "primary": [
+          { "major": "legs", "sub": "quads" },
+          { "major": "legs", "sub": "glutes" }
+        ],
+        "secondary": [
+          { "major": "legs", "sub": "hamstrings" },
+          { "major": "legs", "sub": "calves" }
+        ]
+      },
+      "equipment": ["plyo_box"],
+      "category": "plyometric",
+      "movementPattern": "squat",
+      "mechanic": "compound",
+      "unilateral": false,
+      "tempo": "explosive",
+      "level": "intermediate",
+      "force": "push",
+      "imageFolder": null,
+      "instructions": {
+        "en": [
+          "Stand 30 cm from box, feet shoulder-width.",
+          "Quarter squat, swing arms, jump explosively.",
+          "Land softly on box, full standing position."
+        ],
+        "zh-Hans": [
+          "站在箱前 30 cm, 双脚与肩同宽.",
+          "四分之一蹲, 摆臂, 爆发跳起.",
+          "轻柔落到箱上, 完全站立姿态."
+        ]
+      },
+      "video_url": "https://www.youtube.com/watch?v=hxldG9FX4j4",
+      "calories_estimate": { "low": 8, "med": 11, "high": 15 },
+      "danger_warnings": {
+        "en": [
+          "Step down — don't jump down (impacts knees/Achilles).",
+          "Use a box you can comfortably jump 80% of the time."
+        ],
+        "zh-Hans": [
+          "下来要走 — 不要跳下来 (冲击膝盖 / 跟腱).",
+          "选你能稳跳 80% 的箱高."
+        ]
+      }
+    }
+  ]
+}

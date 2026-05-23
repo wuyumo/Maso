@@ -1,0 +1,4398 @@
+[
+  {
+    "id": "bench_press_barbell",
+    "name": { "en": "Bench Press", "zh-Hans": "卧推" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["barbell", "bench_flat"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "strength",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie on bench, grip bar slightly wider than shoulders.",
+        "Unrack, lower bar to mid-chest under control.",
+        "Press up to lockout — feet planted, glutes tight."
+      ],
+      "zh-Hans": [
+        "平躺卧推凳, 握距略宽于肩.",
+        "出杠, 控制下放至胸口中部.",
+        "推至锁定 — 双脚踩实, 臀部收紧."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=rT7DgCr-3pg",
+    "calories_estimate": { "low": 5, "med": 7, "high": 10 },
+    "danger_warnings": {
+      "en": [
+        "Always use a spotter or safety pins on heavy sets.",
+        "Don't flare elbows 90° — tuck slightly to protect shoulders.",
+        "Keep wrists straight, bar over base of palm."
+      ],
+      "zh-Hans": [
+        "大重量时务必使用保护或安全杠.",
+        "肘部不要 90° 外翻 — 略微内收保护肩部.",
+        "保持手腕直立, 杠铃压在掌根."
+      ]
+    }
+  },
+  {
+    "id": "bench_press_dumbbell",
+    "name": { "en": "Bench Press (Dumbbell)", "zh-Hans": "卧推 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["dumbbell", "bench_flat"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie on flat bench, dumbbells at chest level.",
+        "Press up until arms fully extended.",
+        "Lower under control — feel the chest stretch."
+      ],
+      "zh-Hans": [
+        "平躺卧推凳, 哑铃放胸口高度.",
+        "推到手臂完全伸直.",
+        "缓慢下放, 感受胸部拉伸."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=VmB1G1K7v94",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": {
+      "en": ["Don't bounce dumbbells off chest at bottom."],
+      "zh-Hans": ["底部不要让哑铃砸在胸口."]
+    }
+  },
+  {
+    "id": "bench_press_smith",
+    "name": { "en": "Bench Press (Smith Machine)", "zh-Hans": "卧推 (史密斯机)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["smith_machine", "bench_flat"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Bench centered under Smith bar, grip just past shoulder-width.",
+        "Unrack with twist, lower to mid-chest.",
+        "Press up in fixed path — full lockout."
+      ],
+      "zh-Hans": [
+        "卧推凳对准史密斯杠, 握距略宽于肩.",
+        "旋转解锁, 下放至胸口中部.",
+        "沿固定轨迹推起 — 完全锁定."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=fGYBJ4q5gZ8",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": {
+      "en": ["Re-twist bar to lock at top before stepping away."],
+      "zh-Hans": ["离开前务必旋转锁杠."]
+    }
+  },
+  {
+    "id": "bench_press_machine",
+    "name": { "en": "Chest Press (Machine)", "zh-Hans": "卧推 (器械)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["machine"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Adjust seat so handles align with mid-chest.",
+        "Press handles forward to full extension.",
+        "Return under control — don't let stack slam."
+      ],
+      "zh-Hans": [
+        "调整座椅, 手柄与胸口中部齐平.",
+        "向前推至完全伸展.",
+        "控制回程 — 不要让配重砸下."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=xUm0BiZCWlQ",
+    "calories_estimate": { "low": 3, "med": 5, "high": 7 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "bench_press_cable",
+    "name": { "en": "Bench Press (Cable)", "zh-Hans": "卧推 (绳索)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["cable", "bench_flat"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Bench between low cable pulleys, handles at chest.",
+        "Press cables up and slightly inward.",
+        "Hold and squeeze at top, control eccentric."
+      ],
+      "zh-Hans": [
+        "卧推凳置于低位绳索之间, 手柄置胸口.",
+        "向上推, 略向内合拢.",
+        "顶部收紧, 控制下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=NfRPzn-jLE0",
+    "calories_estimate": { "low": 4, "med": 5, "high": 7 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "bench_press_close_grip",
+    "name": { "en": "Close-Grip Bench Press", "zh-Hans": "窄距卧推" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": [
+        { "major": "chest", "sub": "middle_chest" },
+        { "major": "shoulders", "sub": "front_delt" }
+      ]
+    },
+    "equipment": ["barbell", "bench_flat"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "strength",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Grip bar shoulder-width — not narrower.",
+        "Lower to lower chest, elbows tucked close.",
+        "Press up — focus on triceps lockout."
+      ],
+      "zh-Hans": [
+        "握距与肩同宽 — 不要更窄.",
+        "下放至下胸, 肘部贴近身体.",
+        "推起 — 三头发力锁定."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=nEF0bv2FW94",
+    "calories_estimate": { "low": 5, "med": 7, "high": 9 },
+    "danger_warnings": {
+      "en": [
+        "Don't grip narrower than shoulder-width — wrist strain.",
+        "Use spotter on heavy sets."
+      ],
+      "zh-Hans": [
+        "握距不要比肩窄 — 容易伤手腕.",
+        "大重量需要保护."
+      ]
+    }
+  },
+  {
+    "id": "bench_press_close_grip_smith",
+    "name": { "en": "Close-Grip Bench Press (Smith Machine)", "zh-Hans": "窄距卧推 (史密斯机)" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": [
+        { "major": "chest", "sub": "middle_chest" },
+        { "major": "shoulders", "sub": "front_delt" }
+      ]
+    },
+    "equipment": ["smith_machine", "bench_flat"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Grip narrower than shoulder-width on Smith bar.",
+        "Lower to lower chest with elbows tucked.",
+        "Press in fixed path — squeeze triceps at lockout."
+      ],
+      "zh-Hans": [
+        "史密斯杠上窄握, 略窄于肩.",
+        "下放至下胸, 肘部内收.",
+        "沿固定轨迹推起 — 顶部收紧三头."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=7DoiCXJ6mC0",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "bench_press_wide_grip",
+    "name": { "en": "Wide-Grip Bench Press", "zh-Hans": "宽距卧推" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["barbell", "bench_flat"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Grip bar wider than shoulder-width (~1.5x).",
+        "Lower to upper chest with controlled tempo.",
+        "Press up — emphasize outer chest stretch."
+      ],
+      "zh-Hans": [
+        "宽握距 (约 1.5 倍肩宽).",
+        "缓慢下放至上胸.",
+        "推起 — 强化外侧胸部拉伸."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=SCVCLChPQFY",
+    "calories_estimate": { "low": 5, "med": 7, "high": 9 },
+    "danger_warnings": {
+      "en": ["Wider grip = more shoulder stress. Don't go too wide."],
+      "zh-Hans": ["握距越宽对肩压力越大, 不要过宽."]
+    }
+  },
+  {
+    "id": "bench_press_paused",
+    "name": { "en": "Paused Bench Press", "zh-Hans": "暂停卧推" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["barbell", "bench_flat"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "strength",
+    "level": "advanced",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Standard bench setup, grip just past shoulders.",
+        "Lower bar to chest, pause 1-2 seconds — dead stop.",
+        "Press up explosively from pause."
+      ],
+      "zh-Hans": [
+        "标准卧推姿势, 握距略宽于肩.",
+        "下放触胸, 静止 1-2 秒 — 完全停顿.",
+        "暂停后爆发推起."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=4SBNoPiE1Ck",
+    "calories_estimate": { "low": 5, "med": 8, "high": 11 },
+    "danger_warnings": {
+      "en": [
+        "Pause kills momentum — start with 70% of normal bench load.",
+        "Always use safety pins or spotter."
+      ],
+      "zh-Hans": [
+        "停顿消除弹力 — 重量降到平时 70%.",
+        "务必使用安全杠或保护."
+      ]
+    }
+  },
+  {
+    "id": "incline_bench_press_barbell",
+    "name": { "en": "Incline Bench Press", "zh-Hans": "上斜卧推" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "upper_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["barbell", "bench_incline"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "strength",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Set bench to 30-45° incline.",
+        "Lower bar to upper chest under control.",
+        "Press up and slightly back, full lockout."
+      ],
+      "zh-Hans": [
+        "卧推凳调至 30-45° 上斜.",
+        "下放至上胸, 控制速度.",
+        "向上略向后推, 完全锁定."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=SrqOu55lrYU",
+    "calories_estimate": { "low": 5, "med": 7, "high": 9 },
+    "danger_warnings": {
+      "en": [
+        "Don't go above 45° — turns into shoulder press.",
+        "Use spotter on heavy sets."
+      ],
+      "zh-Hans": [
+        "角度不要超过 45° — 否则变成肩推.",
+        "大重量需要保护."
+      ]
+    }
+  },
+  {
+    "id": "incline_bench_press_dumbbell",
+    "name": { "en": "Incline Bench Press (Dumbbell)", "zh-Hans": "上斜卧推 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "upper_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["dumbbell", "bench_incline"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Bench at 30-45° incline.",
+        "Press dumbbells up and slightly inward.",
+        "Squeeze upper chest at top, lower under control."
+      ],
+      "zh-Hans": [
+        "卧推凳调至 30-45° 上斜.",
+        "推起哑铃, 略向内收.",
+        "顶部收紧上胸, 控制下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=8iPEnn-ltC8",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": {
+      "en": ["Don't arch lower back excessively at top of press."],
+      "zh-Hans": ["顶部不要过度反弓下背."]
+    }
+  },
+  {
+    "id": "incline_bench_press_smith",
+    "name": { "en": "Incline Bench Press (Smith Machine)", "zh-Hans": "上斜卧推 (史密斯机)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "upper_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["smith_machine", "bench_incline"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Set bench at 30-45° under Smith bar.",
+        "Lower to upper chest, controlled tempo.",
+        "Press up along fixed track."
+      ],
+      "zh-Hans": [
+        "卧推凳 30-45° 置于史密斯杠下.",
+        "下放至上胸, 控制速度.",
+        "沿固定轨道推起."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=t3jUzPdiR2k",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "incline_bench_press_machine",
+    "name": { "en": "Incline Chest Press (Machine)", "zh-Hans": "上斜卧推 (器械)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "upper_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["machine"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Adjust seat so handles align with upper chest.",
+        "Press up and slightly inward.",
+        "Lower with full control."
+      ],
+      "zh-Hans": [
+        "调整座椅, 手柄与上胸齐平.",
+        "向上略内推.",
+        "完全控制下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=LWNbVGGRJYM",
+    "calories_estimate": { "low": 3, "med": 5, "high": 7 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "incline_bench_press_cable",
+    "name": { "en": "Incline Bench Press (Cable)", "zh-Hans": "上斜卧推 (绳索)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "upper_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["cable", "bench_incline"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Incline bench between cable pulleys, handles at upper chest.",
+        "Press handles up and converge at top.",
+        "Squeeze upper chest, slow eccentric."
+      ],
+      "zh-Hans": [
+        "上斜凳置绳索之间, 手柄置上胸.",
+        "向上推至顶部合拢.",
+        "收紧上胸, 缓慢下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=Z9pl54fDc04",
+    "calories_estimate": { "low": 4, "med": 5, "high": 7 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "incline_bench_press_close_grip",
+    "name": { "en": "Close-Grip Incline Bench Press", "zh-Hans": "窄距上斜卧推" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "upper_chest" }],
+      "secondary": [
+        { "major": "arms", "sub": "triceps" },
+        { "major": "shoulders", "sub": "front_delt" }
+      ]
+    },
+    "equipment": ["barbell", "bench_incline"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Bench at 30°, grip shoulder-width.",
+        "Lower bar to upper chest, elbows tucked.",
+        "Press up — squeeze upper chest and triceps."
+      ],
+      "zh-Hans": [
+        "上斜凳 30°, 握距与肩同宽.",
+        "下放至上胸, 肘部内收.",
+        "推起 — 收紧上胸和三头."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=BR1pUf3Y4S0",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "low_incline_bench_press_dumbbell",
+    "name": { "en": "Low Incline Bench Press (Dumbbell)", "zh-Hans": "低位上斜卧推 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "upper_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["dumbbell", "bench_incline"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Bench at 15-20° low incline.",
+        "Press dumbbells up — between flat and incline path.",
+        "Targets upper-mid chest fibers."
+      ],
+      "zh-Hans": [
+        "卧推凳调至 15-20° 低斜.",
+        "推起哑铃 — 介于平推和上斜之间.",
+        "针对上中胸纤维."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=KEnyf3uH6Qg",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "decline_bench_press_barbell",
+    "name": { "en": "Decline Bench Press", "zh-Hans": "下斜卧推" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "lower_chest" }],
+      "secondary": [
+        { "major": "arms", "sub": "triceps" },
+        { "major": "shoulders", "sub": "front_delt" }
+      ]
+    },
+    "equipment": ["barbell", "bench_decline"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "strength",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Bench at 15-30° decline, lock feet in pads.",
+        "Unrack, lower to lower chest.",
+        "Press up — emphasize lower chest contraction."
+      ],
+      "zh-Hans": [
+        "下斜凳 15-30°, 双脚扣住固定垫.",
+        "出杠, 下放至下胸.",
+        "推起 — 强化下胸收缩."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=LfyQBUKR8SE",
+    "calories_estimate": { "low": 5, "med": 7, "high": 9 },
+    "danger_warnings": {
+      "en": [
+        "Always have a spotter — getting up is awkward.",
+        "Decline can spike blood pressure — avoid if hypertensive."
+      ],
+      "zh-Hans": [
+        "务必有保护 — 起身姿势不便.",
+        "下斜会升高血压 — 高血压者避免."
+      ]
+    }
+  },
+  {
+    "id": "decline_bench_press_dumbbell",
+    "name": { "en": "Decline Bench Press (Dumbbell)", "zh-Hans": "下斜卧推 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "lower_chest" }],
+      "secondary": [
+        { "major": "arms", "sub": "triceps" },
+        { "major": "shoulders", "sub": "front_delt" }
+      ]
+    },
+    "equipment": ["dumbbell", "bench_decline"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Decline bench, feet locked, dumbbells at lower chest.",
+        "Press up and slightly inward.",
+        "Lower under full control."
+      ],
+      "zh-Hans": [
+        "下斜凳, 脚固定, 哑铃置下胸.",
+        "向上略向内推.",
+        "完全控制下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=0G2_XV7slIg",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": {
+      "en": ["Have spotter hand dumbbells up — getting them up alone is risky."],
+      "zh-Hans": ["让保护递哑铃 — 自己抓起哑铃风险大."]
+    }
+  },
+  {
+    "id": "decline_bench_press_smith",
+    "name": { "en": "Decline Bench Press (Smith Machine)", "zh-Hans": "下斜卧推 (史密斯机)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "lower_chest" }],
+      "secondary": [
+        { "major": "arms", "sub": "triceps" },
+        { "major": "shoulders", "sub": "front_delt" }
+      ]
+    },
+    "equipment": ["smith_machine", "bench_decline"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Decline bench under Smith bar, feet locked.",
+        "Lower bar to lower chest, controlled.",
+        "Press up along fixed path."
+      ],
+      "zh-Hans": [
+        "下斜凳置史密斯杠下, 脚固定.",
+        "控制下放至下胸.",
+        "沿固定轨道推起."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=z3J94pwm2ME",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "decline_bench_press_machine",
+    "name": { "en": "Decline Chest Press (Machine)", "zh-Hans": "下斜卧推 (器械)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "lower_chest" }],
+      "secondary": [
+        { "major": "arms", "sub": "triceps" },
+        { "major": "shoulders", "sub": "front_delt" }
+      ]
+    },
+    "equipment": ["machine"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Adjust seat so handles align with lower chest.",
+        "Press handles down and forward.",
+        "Squeeze lower chest, slow return."
+      ],
+      "zh-Hans": [
+        "调整座椅, 手柄与下胸齐平.",
+        "向下向前推.",
+        "收紧下胸, 缓慢回程."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=NhX09n8wB3M",
+    "calories_estimate": { "low": 3, "med": 5, "high": 7 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "reverse_grip_bench_press",
+    "name": { "en": "Reverse-Grip Bench Press", "zh-Hans": "反握卧推" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "upper_chest" }],
+      "secondary": [
+        { "major": "arms", "sub": "triceps" },
+        { "major": "shoulders", "sub": "front_delt" }
+      ]
+    },
+    "equipment": ["barbell", "bench_flat"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "advanced",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Underhand grip, slightly wider than shoulders.",
+        "Lower bar to lower chest, elbows close.",
+        "Press up — targets upper chest hard."
+      ],
+      "zh-Hans": [
+        "反握, 握距略宽于肩.",
+        "下放至下胸, 肘部贴近.",
+        "推起 — 强烈刺激上胸."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=AjxoJVoBcZE",
+    "calories_estimate": { "low": 5, "med": 7, "high": 9 },
+    "danger_warnings": {
+      "en": [
+        "Always use a spotter — grip can fail.",
+        "Start light to learn the path."
+      ],
+      "zh-Hans": [
+        "务必有保护 — 反握易脱手.",
+        "从轻重量开始熟悉轨迹."
+      ]
+    }
+  },
+  {
+    "id": "floor_press_barbell",
+    "name": { "en": "Floor Press", "zh-Hans": "地板卧推" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [
+        { "major": "arms", "sub": "triceps" },
+        { "major": "shoulders", "sub": "front_delt" }
+      ]
+    },
+    "equipment": ["barbell"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "strength",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie on floor under bar, knees bent or extended.",
+        "Lower bar until upper arms touch floor.",
+        "Pause, press to lockout."
+      ],
+      "zh-Hans": [
+        "仰卧地面, 杠铃在上, 屈膝或伸腿.",
+        "下放至大臂贴地.",
+        "暂停, 推至锁定."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=cwsCXcwBmrU",
+    "calories_estimate": { "low": 4, "med": 6, "high": 9 },
+    "danger_warnings": {
+      "en": ["Use a power rack with safety pins set just above chest level."],
+      "zh-Hans": ["在深蹲架内做, 安全杠设在胸口上方."]
+    }
+  },
+  {
+    "id": "floor_press_dumbbell",
+    "name": { "en": "Floor Press (Dumbbell)", "zh-Hans": "地板卧推 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [
+        { "major": "arms", "sub": "triceps" },
+        { "major": "shoulders", "sub": "front_delt" }
+      ]
+    },
+    "equipment": ["dumbbell"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie on floor with dumbbells at chest.",
+        "Press up to full extension.",
+        "Lower until triceps lightly touch floor."
+      ],
+      "zh-Hans": [
+        "仰卧地面, 哑铃置胸口.",
+        "推至完全伸直.",
+        "下放至三头轻触地面."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=2gN5jOPgUJ8",
+    "calories_estimate": { "low": 4, "med": 5, "high": 7 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "floor_press_close_grip",
+    "name": { "en": "Close-Grip Floor Press", "zh-Hans": "窄距地板卧推" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": [
+        { "major": "chest", "sub": "middle_chest" },
+        { "major": "shoulders", "sub": "front_delt" }
+      ]
+    },
+    "equipment": ["barbell"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "strength",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie on floor, grip bar shoulder-width.",
+        "Lower until upper arms touch floor, elbows tucked.",
+        "Press up, focus on triceps lockout."
+      ],
+      "zh-Hans": [
+        "仰卧地面, 握距与肩同宽.",
+        "下放至大臂贴地, 肘部内收.",
+        "推起, 三头发力锁定."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=ck0VgNoP7Pk",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": {
+      "en": ["Always use rack safety pins."],
+      "zh-Hans": ["务必使用深蹲架安全杠."]
+    }
+  },
+  {
+    "id": "spoto_press",
+    "name": { "en": "Spoto Press", "zh-Hans": "Spoto 卧推 (悬停卧推)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["barbell", "bench_flat"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "strength",
+    "level": "advanced",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Standard bench setup, grip just past shoulders.",
+        "Lower bar, pause 1-2 inches above chest.",
+        "Hold pause, then press up."
+      ],
+      "zh-Hans": [
+        "标准卧推姿势, 握距略宽于肩.",
+        "下放, 停在胸口上方 2-5 cm.",
+        "维持暂停, 然后推起."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=zyZjAR1OUF8",
+    "calories_estimate": { "low": 5, "med": 7, "high": 10 },
+    "danger_warnings": {
+      "en": [
+        "Pause hover requires control — start light.",
+        "Use safety pins or spotter."
+      ],
+      "zh-Hans": [
+        "悬停需要控制 — 从轻开始.",
+        "使用安全杠或保护."
+      ]
+    }
+  },
+  {
+    "id": "squeeze_press_dumbbell",
+    "name": { "en": "Squeeze Press (Dumbbell)", "zh-Hans": "夹胸推 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [
+        { "major": "arms", "sub": "triceps" },
+        { "major": "shoulders", "sub": "front_delt" }
+      ]
+    },
+    "equipment": ["dumbbell", "bench_flat"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie on bench, press dumbbells together throughout set.",
+        "Press up while squeezing dumbbells.",
+        "Maintain inward pressure on every rep."
+      ],
+      "zh-Hans": [
+        "平躺凳上, 全程将哑铃夹紧.",
+        "夹紧哑铃同时推起.",
+        "每次重复都保持向内挤压."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=ScG6Js9d_oI",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "svend_press",
+    "name": { "en": "Svend Press", "zh-Hans": "Svend 夹胸推" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [{ "major": "shoulders", "sub": "front_delt" }]
+    },
+    "equipment": ["weight_plate"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Stand holding plate between palms at chest.",
+        "Press plate forward, squeezing throughout.",
+        "Return slowly — maintain plate squeeze."
+      ],
+      "zh-Hans": [
+        "站立, 双掌夹片置胸前.",
+        "向前推, 全程挤压.",
+        "缓慢回程 — 持续夹紧."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=okPCKVF1IkE",
+    "calories_estimate": { "low": 2, "med": 3, "high": 5 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "dumbbell_fly_flat",
+    "name": { "en": "Chest Fly (Dumbbell)", "zh-Hans": "飞鸟 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [{ "major": "shoulders", "sub": "front_delt" }]
+    },
+    "equipment": ["dumbbell", "bench_flat"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie on flat bench, arms over chest, slight elbow bend.",
+        "Open arms wide in arc until chest stretch.",
+        "Squeeze chest to bring dumbbells back together."
+      ],
+      "zh-Hans": [
+        "平躺凳上, 双臂胸前微屈.",
+        "弧线打开双臂至胸部拉伸.",
+        "胸部发力合拢哑铃."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=eozdVDA78K0",
+    "calories_estimate": { "low": 3, "med": 5, "high": 7 },
+    "danger_warnings": {
+      "en": ["Don't go too low — risk of shoulder strain. Stop at chest depth."],
+      "zh-Hans": ["不要过低 — 容易拉伤肩部, 与胸口齐平即可."]
+    }
+  },
+  {
+    "id": "dumbbell_fly_incline",
+    "name": { "en": "Incline Chest Fly (Dumbbell)", "zh-Hans": "上斜飞鸟 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "upper_chest" }],
+      "secondary": [{ "major": "shoulders", "sub": "front_delt" }]
+    },
+    "equipment": ["dumbbell", "bench_incline"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Bench at 30-45° incline, arms over upper chest.",
+        "Open arms wide in slow arc.",
+        "Squeeze upper chest to return."
+      ],
+      "zh-Hans": [
+        "上斜凳 30-45°, 双臂上胸前方.",
+        "缓慢弧线打开.",
+        "上胸发力合拢."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=Z57CtFmRMxA",
+    "calories_estimate": { "low": 3, "med": 5, "high": 7 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "dumbbell_fly_decline",
+    "name": { "en": "Decline Chest Fly (Dumbbell)", "zh-Hans": "下斜飞鸟 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "lower_chest" }],
+      "secondary": [{ "major": "shoulders", "sub": "front_delt" }]
+    },
+    "equipment": ["dumbbell", "bench_decline"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Decline bench, feet locked, arms over lower chest.",
+        "Open arms wide in arc.",
+        "Squeeze lower chest to close."
+      ],
+      "zh-Hans": [
+        "下斜凳, 脚固定, 双臂下胸前方.",
+        "弧线打开双臂.",
+        "下胸发力合拢."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=Nhvz9EzdJ4U",
+    "calories_estimate": { "low": 3, "med": 5, "high": 7 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "cable_fly_flat",
+    "name": { "en": "Chest Fly (Cable)", "zh-Hans": "飞鸟 (绳索)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [{ "major": "shoulders", "sub": "front_delt" }]
+    },
+    "equipment": ["cable", "bench_flat"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie on bench between mid-height pulleys.",
+        "Arms wide, slight bend, bring handles together over chest.",
+        "Squeeze, then open with control."
+      ],
+      "zh-Hans": [
+        "平躺凳上, 置中位绳索之间.",
+        "双臂打开微屈, 胸前合拢手柄.",
+        "顶部收紧, 控制打开."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=BJcDU4SU0EU",
+    "calories_estimate": { "low": 3, "med": 5, "high": 7 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "cable_fly_incline",
+    "name": { "en": "Incline Chest Fly (Cable)", "zh-Hans": "上斜飞鸟 (绳索)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "upper_chest" }],
+      "secondary": [{ "major": "shoulders", "sub": "front_delt" }]
+    },
+    "equipment": ["cable", "bench_incline"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Incline bench between low pulleys.",
+        "Pull handles up and inward over upper chest.",
+        "Squeeze upper chest, open with control."
+      ],
+      "zh-Hans": [
+        "上斜凳置低位绳索之间.",
+        "向上向内拉至上胸前方.",
+        "收紧上胸, 控制打开."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=Iwe6AmxVf7o",
+    "calories_estimate": { "low": 3, "med": 5, "high": 7 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "cable_fly_decline",
+    "name": { "en": "Decline Chest Fly (Cable)", "zh-Hans": "下斜飞鸟 (绳索)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "lower_chest" }],
+      "secondary": [{ "major": "shoulders", "sub": "front_delt" }]
+    },
+    "equipment": ["cable", "bench_decline"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Decline bench between high pulleys.",
+        "Pull handles down and across lower chest.",
+        "Squeeze, control return."
+      ],
+      "zh-Hans": [
+        "下斜凳置高位绳索之间.",
+        "向下向内拉至下胸前方.",
+        "收紧, 控制回程."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=AfvepHU8jKA",
+    "calories_estimate": { "low": 3, "med": 5, "high": 7 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "cable_crossover_high",
+    "name": { "en": "Cable Crossover (High to Low)", "zh-Hans": "绳索夹胸 (高位向下)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "lower_chest" }],
+      "secondary": [{ "major": "shoulders", "sub": "front_delt" }]
+    },
+    "equipment": ["cable"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Stand between high pulleys, slight forward lean.",
+        "Pull handles down and across midline, hands meet at waist.",
+        "Squeeze lower chest, open slowly."
+      ],
+      "zh-Hans": [
+        "站在高位绳索之间, 略前倾.",
+        "向下向内拉, 双手腰前交叉.",
+        "收紧下胸, 缓慢打开."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=taI4XduLpTk",
+    "calories_estimate": { "low": 3, "med": 5, "high": 7 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "cable_crossover_low",
+    "name": { "en": "Cable Crossover (Low to High)", "zh-Hans": "绳索夹胸 (低位向上)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "upper_chest" }],
+      "secondary": [{ "major": "shoulders", "sub": "front_delt" }]
+    },
+    "equipment": ["cable"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Stand between low pulleys, slight forward lean.",
+        "Pull handles up and inward to meet at chin level.",
+        "Squeeze upper chest, control return."
+      ],
+      "zh-Hans": [
+        "站在低位绳索之间, 略前倾.",
+        "向上向内拉至下巴前方.",
+        "收紧上胸, 控制回程."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=Iwe6AmxVf7o",
+    "calories_estimate": { "low": 3, "med": 5, "high": 7 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "cable_crossover_mid",
+    "name": { "en": "Cable Crossover (Mid)", "zh-Hans": "绳索夹胸 (中位)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [{ "major": "shoulders", "sub": "front_delt" }]
+    },
+    "equipment": ["cable"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Stand between mid-height pulleys, staggered stance.",
+        "Pull handles together at sternum, slight bend in elbows.",
+        "Squeeze, open with control."
+      ],
+      "zh-Hans": [
+        "站在中位绳索之间, 错步.",
+        "胸口前合拢手柄, 肘部微屈.",
+        "收紧, 控制打开."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=Mh1Gj5j0kHs",
+    "calories_estimate": { "low": 3, "med": 5, "high": 7 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "cable_crossover_single_arm",
+    "name": { "en": "Single-Arm Cable Crossover", "zh-Hans": "单臂绳索夹胸" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [{ "major": "shoulders", "sub": "front_delt" }]
+    },
+    "equipment": ["cable"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Stand sideways to cable, one handle in working arm.",
+        "Pull across body, squeezing chest.",
+        "Slow return — full stretch at end."
+      ],
+      "zh-Hans": [
+        "侧对绳索, 单手握手柄.",
+        "跨过身体内拉, 胸部发力.",
+        "缓慢回程 — 末端充分拉伸."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=K0wsuOOlrFs",
+    "calories_estimate": { "low": 2, "med": 4, "high": 6 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "pec_deck",
+    "name": { "en": "Pec Deck", "zh-Hans": "蝴蝶机夹胸" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [{ "major": "shoulders", "sub": "front_delt" }]
+    },
+    "equipment": ["machine"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Adjust seat — elbows or wrists align with shoulders.",
+        "Bring pads together by squeezing chest.",
+        "Open with control, feel the stretch."
+      ],
+      "zh-Hans": [
+        "调整座椅 — 肘或腕与肩齐平.",
+        "胸部发力合拢挡板.",
+        "控制打开, 感受拉伸."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=Z57CtFmRMxA",
+    "calories_estimate": { "low": 3, "med": 5, "high": 6 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "pec_deck_reverse",
+    "name": { "en": "Reverse Pec Deck (Chest Variant)", "zh-Hans": "蝴蝶机反向飞鸟 (胸版)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [{ "major": "shoulders", "sub": "front_delt" }]
+    },
+    "equipment": ["machine"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Sit facing pec deck pads, grip handles.",
+        "Press handles inward across chest.",
+        "Hold contraction at midline."
+      ],
+      "zh-Hans": [
+        "面对蝴蝶机坐下, 握住手柄.",
+        "向胸前内推合拢.",
+        "中线保持收紧."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=O-OBCfyh9Fk",
+    "calories_estimate": { "low": 3, "med": 4, "high": 6 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "machine_chest_fly",
+    "name": { "en": "Chest Fly (Machine)", "zh-Hans": "飞鸟 (器械)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [{ "major": "shoulders", "sub": "front_delt" }]
+    },
+    "equipment": ["machine"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Sit with back flat against pad, handles wide.",
+        "Bring handles together in front of chest.",
+        "Squeeze and return slow."
+      ],
+      "zh-Hans": [
+        "坐好背贴靠垫, 手柄两侧.",
+        "胸前合拢双手柄.",
+        "收紧并缓慢回程."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=eGjt4lk6g34",
+    "calories_estimate": { "low": 3, "med": 4, "high": 6 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "dumbbell_pullover",
+    "name": { "en": "Dumbbell Pullover", "zh-Hans": "哑铃曲臂上拉" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [
+        { "major": "back", "sub": "lats" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["dumbbell", "bench_flat"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie on bench, hold one dumbbell above chest with both hands.",
+        "Lower behind head in arc, slight elbow bend.",
+        "Pull back over chest, feel chest and lats."
+      ],
+      "zh-Hans": [
+        "平躺凳上, 双手抱一只哑铃于胸上方.",
+        "弧线下放至头后, 肘部微屈.",
+        "拉回胸前, 感受胸背."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=g42IDuyCYrM",
+    "calories_estimate": { "low": 4, "med": 5, "high": 7 },
+    "danger_warnings": {
+      "en": ["Don't go beyond shoulder mobility — risk of impingement."],
+      "zh-Hans": ["不要超过肩部活动范围 — 容易撞击."]
+    }
+  },
+  {
+    "id": "barbell_pullover",
+    "name": { "en": "Barbell Pullover", "zh-Hans": "杠铃曲臂上拉" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [
+        { "major": "back", "sub": "lats" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["barbell", "bench_flat"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie on bench, grip bar slightly narrower than shoulders.",
+        "Lower bar in arc behind head, slight elbow bend.",
+        "Pull back to over chest."
+      ],
+      "zh-Hans": [
+        "平躺凳上, 握距略窄于肩.",
+        "弧线下放杠铃至头后, 肘部微屈.",
+        "拉回至胸上方."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=cM4vMPi6Vrc",
+    "calories_estimate": { "low": 4, "med": 5, "high": 7 },
+    "danger_warnings": {
+      "en": ["Start with light weight — heavy shoulder demand."],
+      "zh-Hans": ["从轻重量开始 — 对肩压力大."]
+    }
+  },
+  {
+    "id": "cable_pullover_straight_arm",
+    "name": { "en": "Cable Pullover (Straight Arm)", "zh-Hans": "绳索直臂下拉" },
+    "muscles": {
+      "primary": [{ "major": "back", "sub": "lats" }],
+      "secondary": [
+        { "major": "chest", "sub": "middle_chest" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["cable"],
+    "category": "strength",
+    "movementPattern": "pull_vertical",
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Stand facing cable, high pulley, straight bar attachment.",
+        "Arms straight, pull bar down to thighs.",
+        "Hold, control back up."
+      ],
+      "zh-Hans": [
+        "面对绳索机, 高位定滑轮, 直杆.",
+        "手臂伸直, 下拉至大腿前.",
+        "保持收紧, 控制回程."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=ND_lN5fHTzg",
+    "calories_estimate": { "low": 3, "med": 5, "high": 7 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "push_up",
+    "name": { "en": "Push-Up", "zh-Hans": "俯卧撑" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" },
+        { "major": "core", "sub": "abs_upper" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "calisthenics",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "endurance",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Plank position, hands shoulder-width.",
+        "Lower chest to floor — body straight.",
+        "Press up, full elbow extension."
+      ],
+      "zh-Hans": [
+        "平板支撑, 双手与肩同宽.",
+        "胸部下降至接近地面 — 身体保持直线.",
+        "推起, 手肘完全伸直."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=IODxDxX7oi4",
+    "calories_estimate": { "low": 5, "med": 7, "high": 9 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "push_up_incline",
+    "name": { "en": "Incline Push-Up", "zh-Hans": "上斜俯卧撑" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "lower_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["body_only", "bench_flat"],
+    "category": "calisthenics",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "endurance",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Hands on bench, body in plank.",
+        "Lower chest to bench, body straight.",
+        "Press up to full extension."
+      ],
+      "zh-Hans": [
+        "双手撑凳, 身体呈平板.",
+        "下降至胸触凳, 身体保持直线.",
+        "推至完全伸直."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=4dF1DOWzf20",
+    "calories_estimate": { "low": 4, "med": 6, "high": 7 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "push_up_decline",
+    "name": { "en": "Decline Push-Up", "zh-Hans": "下斜俯卧撑" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "upper_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" },
+        { "major": "core", "sub": "abs_upper" }
+      ]
+    },
+    "equipment": ["body_only", "bench_flat"],
+    "category": "calisthenics",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "endurance",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Feet elevated on bench, hands on floor.",
+        "Lower upper chest to floor.",
+        "Press up — keep body line straight."
+      ],
+      "zh-Hans": [
+        "双脚抬高在凳上, 双手撑地.",
+        "上胸下降至接近地面.",
+        "推起 — 身体保持直线."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=SKPab2YC8BE",
+    "calories_estimate": { "low": 6, "med": 8, "high": 10 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "push_up_wide",
+    "name": { "en": "Wide Push-Up", "zh-Hans": "宽距俯卧撑" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "calisthenics",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "endurance",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Plank, hands wider than shoulders.",
+        "Lower chest to floor — emphasize chest stretch.",
+        "Press up to full extension."
+      ],
+      "zh-Hans": [
+        "平板支撑, 双手宽于肩.",
+        "胸部下降 — 强化胸部拉伸.",
+        "推至完全伸直."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=eUnY9LcGIeQ",
+    "calories_estimate": { "low": 5, "med": 7, "high": 9 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "push_up_diamond",
+    "name": { "en": "Diamond Push-Up", "zh-Hans": "钻石俯卧撑" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": [
+        { "major": "chest", "sub": "middle_chest" },
+        { "major": "shoulders", "sub": "front_delt" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "calisthenics",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "endurance",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Hands together, thumbs and index fingers forming diamond.",
+        "Lower chest to hands — elbows tucked.",
+        "Press up — squeeze triceps."
+      ],
+      "zh-Hans": [
+        "双手并拢, 拇指食指构成菱形.",
+        "胸部下降至手部 — 肘部内收.",
+        "推起 — 收紧三头."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=J0DnG1_S92I",
+    "calories_estimate": { "low": 5, "med": 7, "high": 9 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "push_up_close_grip",
+    "name": { "en": "Close-Grip Push-Up", "zh-Hans": "窄距俯卧撑" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": [
+        { "major": "chest", "sub": "middle_chest" },
+        { "major": "shoulders", "sub": "front_delt" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "calisthenics",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "endurance",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Plank, hands shoulder-width or slightly narrower.",
+        "Lower chest, elbows brushing ribs.",
+        "Press up — drive with triceps."
+      ],
+      "zh-Hans": [
+        "平板支撑, 双手与肩同宽或略窄.",
+        "胸部下降, 肘部贴近肋骨.",
+        "推起 — 三头发力."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=cfns5VDVVvk",
+    "calories_estimate": { "low": 5, "med": 7, "high": 9 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "push_up_knee",
+    "name": { "en": "Knee Push-Up", "zh-Hans": "跪姿俯卧撑" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "calisthenics",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "endurance",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Knees on floor, hands shoulder-width.",
+        "Lower chest to floor — body straight from knees to head.",
+        "Press up to full extension."
+      ],
+      "zh-Hans": [
+        "膝盖着地, 双手与肩同宽.",
+        "胸部下降 — 膝至头一条直线.",
+        "推至完全伸直."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=jWxvty2KROs",
+    "calories_estimate": { "low": 3, "med": 5, "high": 6 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "push_up_archer",
+    "name": { "en": "Archer Push-Up", "zh-Hans": "弓箭手俯卧撑" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "calisthenics",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": true,
+    "tempo": "endurance",
+    "level": "advanced",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Wide push-up start, hands far apart.",
+        "Lower toward one side, other arm extends straight.",
+        "Push back up, alternate sides."
+      ],
+      "zh-Hans": [
+        "宽距俯卧撑姿势, 双手分开很远.",
+        "下降至单侧, 另一臂伸直.",
+        "推起, 左右交替."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=Pq1xN8YxQOg",
+    "calories_estimate": { "low": 7, "med": 9, "high": 12 },
+    "danger_warnings": {
+      "en": ["High shoulder demand — master regular push-up first."],
+      "zh-Hans": ["对肩部要求高 — 先掌握标准俯卧撑."]
+    }
+  },
+  {
+    "id": "push_up_one_arm",
+    "name": { "en": "One-Arm Push-Up", "zh-Hans": "单臂俯卧撑" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" },
+        { "major": "core", "sub": "obliques" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "calisthenics",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": true,
+    "tempo": "strength",
+    "level": "advanced",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Wide foot stance, one hand behind back.",
+        "Lower torso to floor under control.",
+        "Press up — core resists rotation."
+      ],
+      "zh-Hans": [
+        "双脚宽距, 一手背后.",
+        "控制下放躯干至地面.",
+        "推起 — 核心抗旋转."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=lzcfTd-DAHE",
+    "calories_estimate": { "low": 8, "med": 11, "high": 14 },
+    "danger_warnings": {
+      "en": [
+        "Advanced movement — work up via archer push-ups.",
+        "Don't lower if you can't press back up."
+      ],
+      "zh-Hans": [
+        "进阶动作 — 先做弓箭手俯卧撑.",
+        "推不起就不要下放."
+      ]
+    }
+  },
+  {
+    "id": "push_up_clap",
+    "name": { "en": "Clap Push-Up", "zh-Hans": "击掌俯卧撑" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "plyometric",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "explosive",
+    "level": "advanced",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Standard push-up start, hands shoulder-width.",
+        "Lower fast, explode up — hands leave floor.",
+        "Clap in mid-air, land hands and absorb."
+      ],
+      "zh-Hans": [
+        "标准俯卧撑姿势, 双手与肩同宽.",
+        "快速下降, 爆发推起 — 双手离地.",
+        "空中击掌, 落地缓冲."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=fJxgwAJrn5w",
+    "calories_estimate": { "low": 9, "med": 12, "high": 16 },
+    "danger_warnings": {
+      "en": [
+        "High impact on wrists — build up wrist strength first.",
+        "Land with bent elbows to absorb impact."
+      ],
+      "zh-Hans": [
+        "手腕承受冲击 — 先练手腕力量.",
+        "屈肘落地缓冲冲击."
+      ]
+    }
+  },
+  {
+    "id": "push_up_plyo",
+    "name": { "en": "Plyo Push-Up", "zh-Hans": "爆发俯卧撑" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "plyometric",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "explosive",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Standard push-up position.",
+        "Lower, then explode up — hands leave floor.",
+        "Land softly with bent elbows."
+      ],
+      "zh-Hans": [
+        "标准俯卧撑姿势.",
+        "下降, 爆发推起 — 双手离地.",
+        "屈肘缓冲落地."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=ZpZGEoTRwzM",
+    "calories_estimate": { "low": 8, "med": 11, "high": 14 },
+    "danger_warnings": {
+      "en": ["High wrist stress — proper landing critical."],
+      "zh-Hans": ["手腕压力大 — 注意落地姿势."]
+    }
+  },
+  {
+    "id": "push_up_pseudo_planche",
+    "name": { "en": "Pseudo Planche Push-Up", "zh-Hans": "伪俯卧撑 (前倾)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "lower_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" },
+        { "major": "core", "sub": "abs_upper" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "calisthenics",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "strength",
+    "level": "advanced",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Hands at hip level, fingers pointing back.",
+        "Lean forward, shoulders past wrists.",
+        "Lower and press in leaning position."
+      ],
+      "zh-Hans": [
+        "双手置于髋部, 指尖向后.",
+        "前倾, 肩超过手腕.",
+        "前倾姿势下俯卧撑."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=pCt-WtNkpYI",
+    "calories_estimate": { "low": 8, "med": 10, "high": 13 },
+    "danger_warnings": {
+      "en": ["Heavy wrist load — warm wrists first."],
+      "zh-Hans": ["手腕负荷大 — 先充分热身手腕."]
+    }
+  },
+  {
+    "id": "push_up_pike",
+    "name": { "en": "Pike Push-Up", "zh-Hans": "俯卧撑 (倒立式)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "front_delt" }],
+      "secondary": [
+        { "major": "chest", "sub": "upper_chest" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "calisthenics",
+    "movementPattern": "push_vertical",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "endurance",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Downward dog position, hips high.",
+        "Lower head toward floor between hands.",
+        "Press back up — keep hips high."
+      ],
+      "zh-Hans": [
+        "下犬式, 髋部抬高.",
+        "头部下降至双手之间.",
+        "推起 — 髋部保持高位."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=EA8g7q9jauM",
+    "calories_estimate": { "low": 5, "med": 7, "high": 10 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "push_up_spiderman",
+    "name": { "en": "Spiderman Push-Up", "zh-Hans": "蜘蛛侠俯卧撑" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" },
+        { "major": "core", "sub": "obliques" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "calisthenics",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": true,
+    "tempo": "endurance",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Standard push-up position.",
+        "Lower while bringing one knee to outside elbow.",
+        "Press up, alternate knees."
+      ],
+      "zh-Hans": [
+        "标准俯卧撑姿势.",
+        "下降时一膝向外肘部移动.",
+        "推起, 左右交替."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=8RZ6q0PqOks",
+    "calories_estimate": { "low": 6, "med": 8, "high": 11 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "push_up_weighted",
+    "name": { "en": "Weighted Push-Up", "zh-Hans": "负重俯卧撑" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["body_only", "weight_plate"],
+    "category": "calisthenics",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "strength",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Weight plate or vest on upper back.",
+        "Push-up position, lower chest to floor.",
+        "Press up — maintain straight body line."
+      ],
+      "zh-Hans": [
+        "上背放杠铃片或穿负重背心.",
+        "俯卧撑姿势, 胸部下降至地.",
+        "推起 — 身体保持直线."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=jzbjkE3UMrI",
+    "calories_estimate": { "low": 6, "med": 8, "high": 11 },
+    "danger_warnings": {
+      "en": ["Have plate placed by partner — don't twist to add weight."],
+      "zh-Hans": ["让人帮忙放片 — 不要扭身放片."]
+    }
+  },
+  {
+    "id": "push_up_deficit",
+    "name": { "en": "Deficit Push-Up", "zh-Hans": "深度俯卧撑 (推手撑高)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["body_only", "push_up_handles"],
+    "category": "calisthenics",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Hands on push-up bars or elevated blocks.",
+        "Lower chest below hand level — full stretch.",
+        "Press up to full extension."
+      ],
+      "zh-Hans": [
+        "双手撑俯卧撑架或垫块.",
+        "胸部下降至低于手 — 充分拉伸.",
+        "推至完全伸直."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=KQQp8DiTH7Y",
+    "calories_estimate": { "low": 6, "med": 8, "high": 10 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "push_up_hindu",
+    "name": { "en": "Hindu Push-Up", "zh-Hans": "印度式俯卧撑" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" },
+        { "major": "core", "sub": "abs_upper" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "calisthenics",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "endurance",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Downward dog start, hips high.",
+        "Swoop chest forward and down in arc.",
+        "Finish in upward dog, reverse back."
+      ],
+      "zh-Hans": [
+        "下犬式起始, 髋部高.",
+        "弧线划过, 胸前下移.",
+        "结束于上犬式, 反向回到起点."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=k2NM7iWQyDc",
+    "calories_estimate": { "low": 6, "med": 8, "high": 10 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "push_up_typewriter",
+    "name": { "en": "Typewriter Push-Up", "zh-Hans": "打字机俯卧撑" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "calisthenics",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": true,
+    "tempo": "endurance",
+    "level": "advanced",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Wide push-up, lower body to one side.",
+        "Slide chest horizontally to opposite side.",
+        "Press up — repeat alternating."
+      ],
+      "zh-Hans": [
+        "宽距俯卧撑, 下降至一侧.",
+        "胸部水平滑动到另一侧.",
+        "推起 — 左右交替."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=lF9G7zJ3lTU",
+    "calories_estimate": { "low": 7, "med": 10, "high": 13 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "push_up_resistance_band",
+    "name": { "en": "Push-Up (Resistance Band)", "zh-Hans": "俯卧撑 (弹力带)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["body_only", "resistance_band"],
+    "category": "calisthenics",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Band across upper back, ends in palms.",
+        "Push-up position, hands shoulder-width.",
+        "Lower and press — band adds resistance at top."
+      ],
+      "zh-Hans": [
+        "弹力带绕过上背, 两端握在掌心.",
+        "俯卧撑姿势, 双手与肩同宽.",
+        "下放推起 — 顶部弹力增加阻力."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=ueFEcpu3PE0",
+    "calories_estimate": { "low": 5, "med": 7, "high": 9 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "dip_chest",
+    "name": { "en": "Chest Dip", "zh-Hans": "双杠臂屈伸 (胸版)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "lower_chest" }],
+      "secondary": [
+        { "major": "arms", "sub": "triceps" },
+        { "major": "shoulders", "sub": "front_delt" }
+      ]
+    },
+    "equipment": ["dip_bars"],
+    "category": "calisthenics",
+    "movementPattern": "push_vertical",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "On parallel bars, lean torso forward.",
+        "Lower until shoulders below elbows — chest stretch.",
+        "Press up — squeeze chest."
+      ],
+      "zh-Hans": [
+        "双杠上, 上身前倾.",
+        "下降至肩低于肘 — 胸部拉伸.",
+        "推起 — 胸部收紧."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=2z8JmcrW-As",
+    "calories_estimate": { "low": 6, "med": 8, "high": 11 },
+    "danger_warnings": {
+      "en": [
+        "Don't go too deep if you feel shoulder pain.",
+        "Build up to bodyweight slowly."
+      ],
+      "zh-Hans": [
+        "肩痛不要下太低.",
+        "逐步过渡到自重."
+      ]
+    }
+  },
+  {
+    "id": "dip_chest_weighted",
+    "name": { "en": "Weighted Chest Dip", "zh-Hans": "负重双杠臂屈伸 (胸版)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "lower_chest" }],
+      "secondary": [
+        { "major": "arms", "sub": "triceps" },
+        { "major": "shoulders", "sub": "front_delt" }
+      ]
+    },
+    "equipment": ["dip_bars", "dip_belt"],
+    "category": "calisthenics",
+    "movementPattern": "push_vertical",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "strength",
+    "level": "advanced",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Plate or dumbbell on dip belt.",
+        "Lean forward, lower to chest stretch.",
+        "Press up — keep chest engaged."
+      ],
+      "zh-Hans": [
+        "腰挂负重腰带或哑铃.",
+        "前倾, 下降至胸部拉伸.",
+        "推起 — 持续刺激胸部."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=O-iVE34LcjE",
+    "calories_estimate": { "low": 7, "med": 10, "high": 13 },
+    "danger_warnings": {
+      "en": [
+        "Master bodyweight dips before adding load.",
+        "Don't bounce out of bottom — shoulder injury risk."
+      ],
+      "zh-Hans": [
+        "先掌握自重双杠.",
+        "底部不要弹起 — 易伤肩."
+      ]
+    }
+  },
+  {
+    "id": "dip_assisted_machine",
+    "name": { "en": "Assisted Dip (Machine)", "zh-Hans": "助力双杠臂屈伸 (器械)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "lower_chest" }],
+      "secondary": [
+        { "major": "arms", "sub": "triceps" },
+        { "major": "shoulders", "sub": "front_delt" }
+      ]
+    },
+    "equipment": ["machine"],
+    "category": "strength",
+    "movementPattern": "push_vertical",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Kneel on assist pad, grip parallel bars.",
+        "Lean forward, lower until chest stretch.",
+        "Press up — machine takes some weight."
+      ],
+      "zh-Hans": [
+        "膝盖跪助力垫, 双杠握紧.",
+        "前倾下降至胸部拉伸.",
+        "推起 — 机器提供助力."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=4SBNoPiE1Ck",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "dip_machine",
+    "name": { "en": "Chest Dip (Machine)", "zh-Hans": "双杠臂屈伸 (器械)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "lower_chest" }],
+      "secondary": [
+        { "major": "arms", "sub": "triceps" },
+        { "major": "shoulders", "sub": "front_delt" }
+      ]
+    },
+    "equipment": ["machine"],
+    "category": "strength",
+    "movementPattern": "push_vertical",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Sit, grip handles wider than shoulders.",
+        "Press handles down by leaning forward.",
+        "Squeeze chest at bottom, slow return."
+      ],
+      "zh-Hans": [
+        "坐姿, 握距宽于肩.",
+        "前倾向下推手柄.",
+        "底部收紧胸部, 缓慢回程."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=fXkpAEFNcEU",
+    "calories_estimate": { "low": 4, "med": 5, "high": 7 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "dip_ring",
+    "name": { "en": "Ring Dip", "zh-Hans": "吊环臂屈伸" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "lower_chest" }],
+      "secondary": [
+        { "major": "arms", "sub": "triceps" },
+        { "major": "shoulders", "sub": "front_delt" }
+      ]
+    },
+    "equipment": ["rings"],
+    "category": "calisthenics",
+    "movementPattern": "push_vertical",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "strength",
+    "level": "advanced",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Support on rings, rings turned out at top.",
+        "Lower with chest forward, control rings.",
+        "Press up — turn rings out at top."
+      ],
+      "zh-Hans": [
+        "撑住吊环, 顶部外旋.",
+        "胸部前倾下降, 控制吊环.",
+        "推起 — 顶部外旋."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=ULTKsKkW7ag",
+    "calories_estimate": { "low": 8, "med": 11, "high": 14 },
+    "danger_warnings": {
+      "en": [
+        "Rings are unstable — master bar dips first.",
+        "Don't drop below 90° elbow if shoulders unstable."
+      ],
+      "zh-Hans": [
+        "吊环不稳 — 先掌握双杠.",
+        "肩部不稳不要降至肘 90°."
+      ]
+    }
+  },
+  {
+    "id": "dip_bench_chest",
+    "name": { "en": "Bench Dip", "zh-Hans": "凳上反屈伸" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": [
+        { "major": "chest", "sub": "lower_chest" },
+        { "major": "shoulders", "sub": "front_delt" }
+      ]
+    },
+    "equipment": ["body_only", "bench_flat"],
+    "category": "calisthenics",
+    "movementPattern": "push_vertical",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "endurance",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Hands on bench behind back, feet on floor.",
+        "Lower hips until elbows ~90°.",
+        "Press up to lockout."
+      ],
+      "zh-Hans": [
+        "双手撑凳, 脚在地面.",
+        "髋部下放至肘约 90°.",
+        "推至锁定."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=6kALZikXxLc",
+    "calories_estimate": { "low": 4, "med": 5, "high": 7 },
+    "danger_warnings": {
+      "en": ["Don't go too deep — shoulder strain in extreme range."],
+      "zh-Hans": ["不要下太低 — 极限位置易伤肩."]
+    }
+  },
+  {
+    "id": "landmine_press",
+    "name": { "en": "Landmine Press", "zh-Hans": "地雷管推举" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "upper_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" },
+        { "major": "core", "sub": "abs_upper" }
+      ]
+    },
+    "equipment": ["barbell", "landmine"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": true,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Hold end of barbell at shoulder, anchor on floor.",
+        "Press bar up and forward at angle.",
+        "Lower under control."
+      ],
+      "zh-Hans": [
+        "杠铃一端固定地面, 另一端置肩.",
+        "斜上方向前推.",
+        "控制下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=qPC6L-OQVdo",
+    "calories_estimate": { "low": 5, "med": 7, "high": 9 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "landmine_press_two_handed",
+    "name": { "en": "Two-Handed Landmine Press", "zh-Hans": "双手地雷管推举" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "upper_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["barbell", "landmine"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Both hands cup end of barbell at chest.",
+        "Press up and forward at angle.",
+        "Lower under control to chest."
+      ],
+      "zh-Hans": [
+        "双手抱杠铃一端置胸前.",
+        "斜上方向前推.",
+        "控制下放至胸口."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=ulZGn3Jbbm0",
+    "calories_estimate": { "low": 5, "med": 7, "high": 9 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "bench_press_single_arm_dumbbell",
+    "name": { "en": "Single-Arm Bench Press (Dumbbell)", "zh-Hans": "单臂卧推 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" },
+        { "major": "core", "sub": "obliques" }
+      ]
+    },
+    "equipment": ["dumbbell", "bench_flat"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": true,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie on bench, one dumbbell in working hand.",
+        "Press up — core resists rotation.",
+        "Lower under control, switch sides."
+      ],
+      "zh-Hans": [
+        "平躺凳上, 单手持哑铃.",
+        "推起 — 核心抗旋转.",
+        "控制下放, 换边."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=v_Pj9Z9R5L4",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "bench_press_neutral_grip_dumbbell",
+    "name": { "en": "Neutral-Grip Bench Press (Dumbbell)", "zh-Hans": "中立握卧推 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [
+        { "major": "arms", "sub": "triceps" },
+        { "major": "shoulders", "sub": "front_delt" }
+      ]
+    },
+    "equipment": ["dumbbell", "bench_flat"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie on bench, palms face each other.",
+        "Press dumbbells up with neutral grip.",
+        "Lower to chest, elbows tucked."
+      ],
+      "zh-Hans": [
+        "平躺凳上, 掌心相对.",
+        "中立握推起哑铃.",
+        "下放至胸口, 肘部内收."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=mDLeRvOpwHE",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "incline_bench_press_neutral_grip_dumbbell",
+    "name": { "en": "Neutral-Grip Incline Bench Press (Dumbbell)", "zh-Hans": "中立握上斜卧推 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "upper_chest" }],
+      "secondary": [
+        { "major": "arms", "sub": "triceps" },
+        { "major": "shoulders", "sub": "front_delt" }
+      ]
+    },
+    "equipment": ["dumbbell", "bench_incline"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Incline bench 30-45°, palms face each other.",
+        "Press dumbbells up.",
+        "Lower under control, elbows tucked."
+      ],
+      "zh-Hans": [
+        "上斜凳 30-45°, 掌心相对.",
+        "向上推起.",
+        "控制下放, 肘部内收."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=PWG9Gz5gJts",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "dumbbell_pec_squeeze",
+    "name": { "en": "Dumbbell Pec Squeeze", "zh-Hans": "哑铃挤胸" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [{ "major": "shoulders", "sub": "front_delt" }]
+    },
+    "equipment": ["dumbbell"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Hold one dumbbell horizontally between palms.",
+        "Squeeze palms together — push inward hard.",
+        "Hold contraction, repeat or hold isometric."
+      ],
+      "zh-Hans": [
+        "双掌横夹一只哑铃.",
+        "双掌向内挤压.",
+        "保持收紧, 重复或维持等长."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=ScG6Js9d_oI",
+    "calories_estimate": { "low": 2, "med": 3, "high": 4 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "guillotine_press",
+    "name": { "en": "Guillotine Press", "zh-Hans": "断头台卧推" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "upper_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["barbell", "bench_flat"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "advanced",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Bench press setup, wide grip, elbows flared.",
+        "Lower bar to throat/clavicle, slow tempo.",
+        "Press up — emphasizes upper chest."
+      ],
+      "zh-Hans": [
+        "卧推姿势, 宽握, 肘部外展.",
+        "缓慢下放至喉部/锁骨.",
+        "推起 — 强化上胸."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=NEi06_ZJqEU",
+    "calories_estimate": { "low": 5, "med": 7, "high": 9 },
+    "danger_warnings": {
+      "en": [
+        "High shoulder risk — start very light.",
+        "Always use safety pins or spotter."
+      ],
+      "zh-Hans": [
+        "对肩压力大 — 从极轻开始.",
+        "务必使用安全杠或保护."
+      ]
+    }
+  },
+  {
+    "id": "around_the_world_dumbbell",
+    "name": { "en": "Around the World (Dumbbell)", "zh-Hans": "环绕飞鸟 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [{ "major": "shoulders", "sub": "front_delt" }]
+    },
+    "equipment": ["dumbbell", "bench_flat"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie on bench, dumbbells at sides of hips.",
+        "Sweep in arc up and around to overhead.",
+        "Return along same arc — chest stays engaged."
+      ],
+      "zh-Hans": [
+        "平躺凳上, 哑铃置髋两侧.",
+        "弧线划过, 上举至头顶.",
+        "沿原路径回程 — 胸部持续发力."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=ToSCHA6Iq2k",
+    "calories_estimate": { "low": 3, "med": 5, "high": 6 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "cable_chest_press_standing",
+    "name": { "en": "Standing Cable Chest Press", "zh-Hans": "站姿绳索推胸" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" },
+        { "major": "core", "sub": "abs_upper" }
+      ]
+    },
+    "equipment": ["cable"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Stand facing away from cable, mid pulleys, handles at chest.",
+        "Press handles forward, slight downward arc.",
+        "Squeeze chest, slow eccentric."
+      ],
+      "zh-Hans": [
+        "背对绳索, 中位, 手柄置胸口.",
+        "向前推, 略向下弧线.",
+        "收紧胸部, 控制回程."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=NfRPzn-jLE0",
+    "calories_estimate": { "low": 4, "med": 5, "high": 7 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "cable_chest_press_single_arm",
+    "name": { "en": "Single-Arm Cable Chest Press", "zh-Hans": "单臂绳索推胸" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" },
+        { "major": "core", "sub": "obliques" }
+      ]
+    },
+    "equipment": ["cable"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": true,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Stand facing away from cable, one handle in working hand.",
+        "Press across body to opposite shoulder line.",
+        "Squeeze, slow return — core resists rotation."
+      ],
+      "zh-Hans": [
+        "背对绳索, 单手握手柄.",
+        "跨过身体向对侧推.",
+        "收紧, 缓慢回程 — 核心抗旋转."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=K0wsuOOlrFs",
+    "calories_estimate": { "low": 3, "med": 5, "high": 7 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "incline_cable_chest_press_standing",
+    "name": { "en": "Standing Low Cable Chest Press", "zh-Hans": "站姿低位绳索推胸" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "upper_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["cable"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Stand facing away from cable, low pulleys, handles at waist.",
+        "Press up and forward to upper chest height.",
+        "Squeeze upper chest, control return."
+      ],
+      "zh-Hans": [
+        "背对绳索, 低位, 手柄置腰.",
+        "向前向上推至上胸高度.",
+        "收紧上胸, 控制回程."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=Z9pl54fDc04",
+    "calories_estimate": { "low": 4, "med": 5, "high": 7 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "decline_cable_chest_press_standing",
+    "name": { "en": "Standing High Cable Chest Press", "zh-Hans": "站姿高位绳索推胸" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "lower_chest" }],
+      "secondary": [
+        { "major": "arms", "sub": "triceps" },
+        { "major": "shoulders", "sub": "front_delt" }
+      ]
+    },
+    "equipment": ["cable"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Stand facing away from cable, high pulleys, handles at shoulders.",
+        "Press down and forward to hip level.",
+        "Squeeze lower chest, slow return."
+      ],
+      "zh-Hans": [
+        "背对绳索, 高位, 手柄置肩部.",
+        "向下向前推至腰部.",
+        "收紧下胸, 缓慢回程."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=AfvepHU8jKA",
+    "calories_estimate": { "low": 4, "med": 5, "high": 7 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "kettlebell_floor_press",
+    "name": { "en": "Floor Press (Kettlebell)", "zh-Hans": "地板卧推 (壶铃)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [
+        { "major": "arms", "sub": "triceps" },
+        { "major": "shoulders", "sub": "front_delt" }
+      ]
+    },
+    "equipment": ["kettlebell"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie on floor with kettlebells at chest, knees bent.",
+        "Press up to lockout.",
+        "Lower until upper arms touch floor."
+      ],
+      "zh-Hans": [
+        "仰卧地面, 壶铃置胸口, 屈膝.",
+        "推至锁定.",
+        "下放至大臂贴地."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=ZH-D6Et4Xfk",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "kettlebell_bench_press",
+    "name": { "en": "Bench Press (Kettlebell)", "zh-Hans": "卧推 (壶铃)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["kettlebell", "bench_flat"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie on bench with kettlebells racked at shoulders.",
+        "Press up to lockout — bells rest on back of wrist.",
+        "Lower controlled — stable wrist."
+      ],
+      "zh-Hans": [
+        "平躺凳上, 壶铃置肩部.",
+        "推至锁定 — 壶铃靠在腕背.",
+        "控制下放 — 手腕稳定."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=v3CXrK_oZJ8",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "chest_press_resistance_band",
+    "name": { "en": "Chest Press (Resistance Band)", "zh-Hans": "推胸 (弹力带)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["resistance_band"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Anchor band behind, handles at chest.",
+        "Press forward to full extension.",
+        "Squeeze chest, slow return."
+      ],
+      "zh-Hans": [
+        "弹力带固定身后, 手柄置胸口.",
+        "向前推至完全伸直.",
+        "收紧胸部, 缓慢回程."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=lFkrnHHM_qE",
+    "calories_estimate": { "low": 3, "med": 4, "high": 6 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "fly_resistance_band",
+    "name": { "en": "Chest Fly (Resistance Band)", "zh-Hans": "飞鸟 (弹力带)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [{ "major": "shoulders", "sub": "front_delt" }]
+    },
+    "equipment": ["resistance_band"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Anchor band behind at shoulder height.",
+        "Arms wide, slight bend — bring hands together in arc.",
+        "Squeeze chest, control opening."
+      ],
+      "zh-Hans": [
+        "弹力带固定身后肩高.",
+        "双臂打开微屈 — 弧线合拢双手.",
+        "收紧胸部, 控制打开."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=BJcDU4SU0EU",
+    "calories_estimate": { "low": 3, "med": 4, "high": 6 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "explosive_push_up_med_ball",
+    "name": { "en": "Med Ball Push-Up", "zh-Hans": "药球俯卧撑" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" },
+        { "major": "core", "sub": "abs_upper" }
+      ]
+    },
+    "equipment": ["body_only", "medicine_ball"],
+    "category": "calisthenics",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "endurance",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "One hand on med ball, other on floor.",
+        "Lower chest toward floor.",
+        "Press up, optionally roll ball to other hand."
+      ],
+      "zh-Hans": [
+        "一手撑药球, 一手撑地.",
+        "胸部下降至接近地面.",
+        "推起, 可将球滚至另一手."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=mMSc6_wdz0U",
+    "calories_estimate": { "low": 6, "med": 8, "high": 10 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "scapular_push_up",
+    "name": { "en": "Scapular Push-Up", "zh-Hans": "肩胛俯卧撑" },
+    "muscles": {
+      "primary": [{ "major": "back", "sub": "rhomboids" }],
+      "secondary": [
+        { "major": "chest", "sub": "middle_chest" },
+        { "major": "shoulders", "sub": "front_delt" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "calisthenics",
+    "movementPattern": "push_horizontal",
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "endurance",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Push-up position, arms locked straight.",
+        "Squeeze shoulder blades together, chest dips.",
+        "Push apart, chest rises — arms stay locked."
+      ],
+      "zh-Hans": [
+        "俯卧撑姿势, 双臂锁直.",
+        "肩胛骨内收, 胸部下沉.",
+        "肩胛打开, 胸部上抬 — 手臂保持锁定."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=akgQbxhrhOc",
+    "calories_estimate": { "low": 2, "med": 3, "high": 4 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "ring_push_up",
+    "name": { "en": "Ring Push-Up", "zh-Hans": "吊环俯卧撑" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" },
+        { "major": "core", "sub": "abs_upper" }
+      ]
+    },
+    "equipment": ["rings"],
+    "category": "calisthenics",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "endurance",
+    "level": "advanced",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Rings just above floor, plank position.",
+        "Lower chest to rings, body straight.",
+        "Press up — turn rings out at top."
+      ],
+      "zh-Hans": [
+        "吊环略高于地, 平板姿势.",
+        "下降至胸接近吊环, 身体保持直线.",
+        "推起 — 顶部外旋."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=hmcaOZuoUkE",
+    "calories_estimate": { "low": 7, "med": 9, "high": 12 },
+    "danger_warnings": {
+      "en": ["Rings are unstable — master fixed push-ups first."],
+      "zh-Hans": ["吊环不稳定 — 先掌握普通俯卧撑."]
+    }
+  },
+  {
+    "id": "trx_chest_press",
+    "name": { "en": "Chest Press (TRX)", "zh-Hans": "推胸 (TRX)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" },
+        { "major": "core", "sub": "abs_upper" }
+      ]
+    },
+    "equipment": ["trx"],
+    "category": "calisthenics",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "endurance",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Grip TRX handles, lean forward — body straight.",
+        "Lower chest to handles, control descent.",
+        "Press back up to start."
+      ],
+      "zh-Hans": [
+        "握紧 TRX 手柄, 前倾 — 身体保持直线.",
+        "胸部下降至手柄, 控制下放.",
+        "推回起点."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=2RvL3yWGS5w",
+    "calories_estimate": { "low": 5, "med": 7, "high": 9 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "trx_chest_fly",
+    "name": { "en": "Chest Fly (TRX)", "zh-Hans": "飞鸟 (TRX)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [{ "major": "shoulders", "sub": "front_delt" }]
+    },
+    "equipment": ["trx"],
+    "category": "calisthenics",
+    "movementPattern": "push_horizontal",
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "endurance",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Grip TRX, lean forward, arms forward together.",
+        "Open arms wide in arc, lower chest.",
+        "Squeeze chest to close — slight elbow bend."
+      ],
+      "zh-Hans": [
+        "握 TRX, 前倾, 双臂前并拢.",
+        "弧线打开双臂, 胸部下沉.",
+        "胸部发力合拢 — 肘部微屈."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=ScG6Js9d_oI",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "trx_push_up",
+    "name": { "en": "Push-Up (TRX)", "zh-Hans": "俯卧撑 (TRX)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" },
+        { "major": "core", "sub": "abs_upper" }
+      ]
+    },
+    "equipment": ["trx"],
+    "category": "calisthenics",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "endurance",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Feet in TRX foot cradles, hands on floor.",
+        "Push-up with elevated, unstable feet.",
+        "Stabilize core throughout."
+      ],
+      "zh-Hans": [
+        "双脚扣 TRX 脚环, 双手撑地.",
+        "在抬高且不稳定的支撑下做俯卧撑.",
+        "全程稳定核心."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=H5oCAdmpb9c",
+    "calories_estimate": { "low": 6, "med": 8, "high": 11 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "bench_press_alternating_dumbbell",
+    "name": { "en": "Alternating Bench Press (Dumbbell)", "zh-Hans": "交替卧推 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" },
+        { "major": "core", "sub": "abs_upper" }
+      ]
+    },
+    "equipment": ["dumbbell", "bench_flat"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": true,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie on bench, both dumbbells at chest.",
+        "Press one up, lower while other presses.",
+        "Alternate continuously."
+      ],
+      "zh-Hans": [
+        "平躺凳上, 双哑铃置胸口.",
+        "推起一只, 推另一只时下放.",
+        "持续交替."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=4PRwUz4Bxhg",
+    "calories_estimate": { "low": 5, "med": 7, "high": 9 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "static_hold_bench_press",
+    "name": { "en": "Bench Press Static Hold", "zh-Hans": "卧推静态保持" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["barbell", "bench_flat"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "isometric",
+    "level": "advanced",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Unrack bar at lockout, hold straight-arm position.",
+        "Maintain tension for 20-60 seconds.",
+        "Rack carefully — fatigue is real."
+      ],
+      "zh-Hans": [
+        "出杠至锁定位, 保持伸臂.",
+        "维持紧张 20-60 秒.",
+        "小心放回 — 末段易力竭."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=4SBNoPiE1Ck",
+    "calories_estimate": { "low": 3, "med": 5, "high": 7 },
+    "danger_warnings": {
+      "en": [
+        "Always have a spotter for static holds.",
+        "Set safety pins at chest level."
+      ],
+      "zh-Hans": [
+        "静态保持务必有保护.",
+        "安全杠设在胸口高度."
+      ]
+    }
+  },
+  {
+    "id": "isometric_chest_squeeze",
+    "name": { "en": "Isometric Chest Squeeze", "zh-Hans": "等长挤胸" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [{ "major": "shoulders", "sub": "front_delt" }]
+    },
+    "equipment": ["body_only"],
+    "category": "calisthenics",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "isometric",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Press palms together at chest height.",
+        "Push inward — chest fully engaged.",
+        "Hold 15-30 seconds."
+      ],
+      "zh-Hans": [
+        "双掌胸前合拢.",
+        "向内挤压 — 胸部完全收紧.",
+        "保持 15-30 秒."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=OICRpknyAaA",
+    "calories_estimate": { "low": 2, "med": 3, "high": 4 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "incline_push_up_resistance_band",
+    "name": { "en": "Incline Push-Up (Resistance Band)", "zh-Hans": "上斜俯卧撑 (弹力带)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "lower_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["body_only", "resistance_band", "bench_flat"],
+    "category": "calisthenics",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Hands on bench, band across upper back.",
+        "Lower chest to bench, body straight.",
+        "Press up — band increases resistance at top."
+      ],
+      "zh-Hans": [
+        "双手撑凳, 弹力带绕上背.",
+        "胸部下降至凳, 身体保持直线.",
+        "推起 — 顶部弹力增强."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=ueFEcpu3PE0",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "smith_machine_chest_fly",
+    "name": { "en": "Chest Fly (Smith Machine)", "zh-Hans": "飞鸟 (史密斯机)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [{ "major": "shoulders", "sub": "front_delt" }]
+    },
+    "equipment": ["smith_machine"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Set Smith bar low, single dumbbell or single arm grip.",
+        "Use bar as anchor for cross-body fly motion.",
+        "Squeeze chest at end range."
+      ],
+      "zh-Hans": [
+        "史密斯杠置低位, 单手握杠或加哑铃.",
+        "杠作支点做交叉飞鸟动作.",
+        "末端收紧胸部."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=Z57CtFmRMxA",
+    "calories_estimate": { "low": 3, "med": 5, "high": 7 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "chest_dip_korean",
+    "name": { "en": "Korean Dip", "zh-Hans": "韩式臂屈伸 (反向)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "lower_chest" }],
+      "secondary": [
+        { "major": "arms", "sub": "triceps" },
+        { "major": "shoulders", "sub": "front_delt" }
+      ]
+    },
+    "equipment": ["dip_bars"],
+    "category": "calisthenics",
+    "movementPattern": "push_vertical",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "strength",
+    "level": "advanced",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Position back to bar, palms facing forward.",
+        "Lower body straight down, chest stretches forward.",
+        "Press back up — challenging shoulder position."
+      ],
+      "zh-Hans": [
+        "背对杠, 掌心向前.",
+        "身体直线下降, 胸部前展.",
+        "推起 — 肩部姿势具挑战性."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=PiwzeRRzPxs",
+    "calories_estimate": { "low": 7, "med": 9, "high": 12 },
+    "danger_warnings": {
+      "en": [
+        "Demands extreme shoulder mobility — work up gradually.",
+        "Stop if shoulders feel pinched."
+      ],
+      "zh-Hans": [
+        "需要极佳肩部活动度 — 逐步进步.",
+        "肩部不适立即停止."
+      ]
+    }
+  },
+  {
+    "id": "dumbbell_press_floor_single_arm",
+    "name": { "en": "Single-Arm Floor Press (Dumbbell)", "zh-Hans": "单臂地板卧推 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [
+        { "major": "arms", "sub": "triceps" },
+        { "major": "core", "sub": "obliques" }
+      ]
+    },
+    "equipment": ["dumbbell"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": true,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie on floor, one dumbbell in working hand, knees bent.",
+        "Press up to lockout — core anti-rotation.",
+        "Lower until tricep touches floor."
+      ],
+      "zh-Hans": [
+        "仰卧地面, 单手持哑铃, 屈膝.",
+        "推至锁定 — 核心抗旋转.",
+        "下放至三头触地."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=L8jXdfDR0Pg",
+    "calories_estimate": { "low": 3, "med": 5, "high": 7 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "cable_fly_high_to_low_single_arm",
+    "name": { "en": "Single-Arm Cable Crossover (High to Low)", "zh-Hans": "单臂绳索夹胸 (高位向下)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "lower_chest" }],
+      "secondary": [{ "major": "shoulders", "sub": "front_delt" }]
+    },
+    "equipment": ["cable"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Stand sideways to high pulley, working arm grabs handle.",
+        "Pull down and across body to opposite hip.",
+        "Squeeze, slow return."
+      ],
+      "zh-Hans": [
+        "侧对高位绳索, 单手握手柄.",
+        "向下跨过身体拉至对侧髋.",
+        "收紧, 缓慢回程."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=K0wsuOOlrFs",
+    "calories_estimate": { "low": 2, "med": 4, "high": 6 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "cable_fly_low_to_high_single_arm",
+    "name": { "en": "Single-Arm Cable Crossover (Low to High)", "zh-Hans": "单臂绳索夹胸 (低位向上)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "upper_chest" }],
+      "secondary": [{ "major": "shoulders", "sub": "front_delt" }]
+    },
+    "equipment": ["cable"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Stand sideways to low pulley, working arm grips handle.",
+        "Pull up and across body to opposite shoulder.",
+        "Squeeze upper chest, control eccentric."
+      ],
+      "zh-Hans": [
+        "侧对低位绳索, 单手握手柄.",
+        "向上跨过身体拉至对侧肩.",
+        "收紧上胸, 控制下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=qpsOuQ_ZkO0",
+    "calories_estimate": { "low": 2, "med": 4, "high": 6 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "push_up_handle",
+    "name": { "en": "Push-Up (Handles)", "zh-Hans": "俯卧撑 (推手架)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["body_only", "push_up_handles"],
+    "category": "calisthenics",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "endurance",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Grip push-up handles, shoulder-width.",
+        "Lower chest below handle level — deeper range.",
+        "Press up to full extension."
+      ],
+      "zh-Hans": [
+        "握住推手架, 与肩同宽.",
+        "胸部下降至低于握把 — 行程更深.",
+        "推至完全伸直."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=KQQp8DiTH7Y",
+    "calories_estimate": { "low": 5, "med": 7, "high": 9 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "dumbbell_fly_around_world",
+    "name": { "en": "Dumbbell Fly Around the World", "zh-Hans": "环绕飞鸟全程 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "back", "sub": "lats" }
+      ]
+    },
+    "equipment": ["dumbbell", "bench_flat"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie on bench, dumbbells start at sides of hips.",
+        "Arc up to overhead, then return to start.",
+        "Light weight only — full 180° motion."
+      ],
+      "zh-Hans": [
+        "平躺凳上, 哑铃从髋两侧开始.",
+        "弧线划过至头顶, 再回到起点.",
+        "仅用轻重量 — 完整 180° 行程."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=ToSCHA6Iq2k",
+    "calories_estimate": { "low": 3, "med": 5, "high": 7 },
+    "danger_warnings": {
+      "en": ["Use very light weight — extreme range stresses shoulders."],
+      "zh-Hans": ["仅用极轻重量 — 大行程对肩压力大."]
+    }
+  },
+  {
+    "id": "incline_dumbbell_fly_neutral",
+    "name": { "en": "Neutral-Grip Incline Chest Fly (Dumbbell)", "zh-Hans": "中立握上斜飞鸟 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "upper_chest" }],
+      "secondary": [{ "major": "shoulders", "sub": "front_delt" }]
+    },
+    "equipment": ["dumbbell", "bench_incline"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Incline bench 30-45°, palms face each other.",
+        "Open arms wide in arc, slight bend.",
+        "Squeeze upper chest to close."
+      ],
+      "zh-Hans": [
+        "上斜凳 30-45°, 掌心相对.",
+        "弧线打开双臂, 微屈肘.",
+        "收紧上胸合拢."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=Z57CtFmRMxA",
+    "calories_estimate": { "low": 3, "med": 5, "high": 7 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "machine_chest_fly_unilateral",
+    "name": { "en": "Single-Arm Chest Fly (Machine)", "zh-Hans": "单臂飞鸟 (器械)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [{ "major": "shoulders", "sub": "front_delt" }]
+    },
+    "equipment": ["machine"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Sit at pec deck, one arm only.",
+        "Squeeze chest to bring handle to midline.",
+        "Open with control, switch sides."
+      ],
+      "zh-Hans": [
+        "坐于蝴蝶机, 单臂操作.",
+        "胸部发力将手柄合至中线.",
+        "控制打开, 换边."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=eGjt4lk6g34",
+    "calories_estimate": { "low": 2, "med": 4, "high": 6 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "wall_push_up",
+    "name": { "en": "Wall Push-Up", "zh-Hans": "墙壁俯卧撑" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "calisthenics",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "endurance",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Face wall arm's length away, hands at chest height.",
+        "Lean in, lower chest to wall.",
+        "Push back to start, body straight."
+      ],
+      "zh-Hans": [
+        "面对墙一臂距, 双手胸高.",
+        "前倾, 胸接近墙面.",
+        "推回起点, 身体保持直线."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=2YnA3vK7C0Q",
+    "calories_estimate": { "low": 2, "med": 3, "high": 4 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "kneeling_chest_press_cable",
+    "name": { "en": "Kneeling Cable Chest Press", "zh-Hans": "跪姿绳索推胸" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" },
+        { "major": "core", "sub": "abs_upper" }
+      ]
+    },
+    "equipment": ["cable"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Kneel facing away from cable, handles at chest.",
+        "Press forward to full extension.",
+        "Slow return — core stays tight."
+      ],
+      "zh-Hans": [
+        "跪姿背对绳索, 手柄置胸口.",
+        "向前推至完全伸直.",
+        "缓慢回程 — 核心保持收紧."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=lFkrnHHM_qE",
+    "calories_estimate": { "low": 4, "med": 5, "high": 7 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "chest_supported_dumbbell_press",
+    "name": { "en": "Chest-Supported Dumbbell Press", "zh-Hans": "胸托哑铃推胸" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["dumbbell", "bench_flat"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Bench at slight incline (15-20°), chest supported.",
+        "Press dumbbells from outside chest upward.",
+        "Lower with control."
+      ],
+      "zh-Hans": [
+        "凳调至 15-20° 轻斜, 胸前贴凳.",
+        "哑铃从胸两侧向上推.",
+        "控制下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=KEnyf3uH6Qg",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "incline_smith_close_grip",
+    "name": { "en": "Close-Grip Incline Bench Press (Smith Machine)", "zh-Hans": "窄距上斜卧推 (史密斯机)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "upper_chest" }],
+      "secondary": [
+        { "major": "arms", "sub": "triceps" },
+        { "major": "shoulders", "sub": "front_delt" }
+      ]
+    },
+    "equipment": ["smith_machine", "bench_incline"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Set bench 30°, narrow grip on Smith bar.",
+        "Lower to upper chest, elbows tucked.",
+        "Press along fixed path — squeeze tris."
+      ],
+      "zh-Hans": [
+        "上斜凳 30°, 窄握史密斯杠.",
+        "下放至上胸, 肘部内收.",
+        "沿固定轨道推起 — 收紧三头."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=t3jUzPdiR2k",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "dumbbell_pullover_cross_bench",
+    "name": { "en": "Cross-Bench Dumbbell Pullover", "zh-Hans": "横躺哑铃曲臂上拉" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [
+        { "major": "back", "sub": "lats" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["dumbbell", "bench_flat"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "advanced",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie perpendicular on bench, only upper back on pad.",
+        "Hips low, both hands cup one dumbbell over chest.",
+        "Lower in arc behind head, return."
+      ],
+      "zh-Hans": [
+        "垂直横躺凳, 仅上背在凳上.",
+        "髋部低, 双手抱一只哑铃于胸上方.",
+        "弧线下放至头后, 回到起点."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=g42IDuyCYrM",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": {
+      "en": ["Drop hips low for max stretch — but watch shoulders."],
+      "zh-Hans": ["髋部下沉以增加拉伸 — 注意肩部."]
+    }
+  },
+  {
+    "id": "push_up_negative",
+    "name": { "en": "Negative Push-Up", "zh-Hans": "离心俯卧撑" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "calisthenics",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "endurance",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Start at top of push-up, body straight.",
+        "Lower over 3-5 seconds until chest touches floor.",
+        "Reset to top (knees if needed), repeat."
+      ],
+      "zh-Hans": [
+        "俯卧撑顶部姿势, 身体保持直线.",
+        "缓慢下放 3-5 秒至胸触地.",
+        "回到顶部 (必要时跪姿), 重复."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=eUnY9LcGIeQ",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "dive_bomber_push_up",
+    "name": { "en": "Dive Bomber Push-Up", "zh-Hans": "潜水员俯卧撑" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" },
+        { "major": "core", "sub": "abs_upper" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "calisthenics",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "endurance",
+    "level": "advanced",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Downward dog, hips high.",
+        "Swoop down then forward in deep arc.",
+        "Reverse motion back to start."
+      ],
+      "zh-Hans": [
+        "下犬式, 髋部高.",
+        "弧线下沉再前推.",
+        "反向回到起点."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=k2NM7iWQyDc",
+    "calories_estimate": { "low": 7, "med": 9, "high": 12 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "chest_press_machine_iso_lateral",
+    "name": { "en": "Iso-Lateral Chest Press (Machine)", "zh-Hans": "分臂推胸 (器械)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["machine"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": true,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Adjust seat — handles at chest height.",
+        "Press one arm at a time or both independently.",
+        "Squeeze chest at lockout."
+      ],
+      "zh-Hans": [
+        "调整座椅 — 手柄与胸齐.",
+        "单臂逐次或双臂独立推.",
+        "锁定位收紧胸部."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=xUm0BiZCWlQ",
+    "calories_estimate": { "low": 3, "med": 5, "high": 7 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "chest_press_machine_hammer_strength",
+    "name": { "en": "Chest Press (Hammer Strength)", "zh-Hans": "推胸 (悍马器械)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["machine"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Load plates, sit with back against pad.",
+        "Press handles forward, full extension.",
+        "Lower under control."
+      ],
+      "zh-Hans": [
+        "装片, 坐姿背贴靠垫.",
+        "向前推至完全伸直.",
+        "控制下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=fXkpAEFNcEU",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "chest_press_machine_incline_hammer",
+    "name": { "en": "Incline Chest Press (Hammer Strength)", "zh-Hans": "上斜推胸 (悍马器械)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "upper_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["machine"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Load plates, sit on incline seat.",
+        "Press handles up and forward.",
+        "Lower with control to chest."
+      ],
+      "zh-Hans": [
+        "装片, 坐于上斜座.",
+        "向上向前推.",
+        "控制下放至胸口."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=LWNbVGGRJYM",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "explosive_bench_press",
+    "name": { "en": "Speed Bench Press", "zh-Hans": "速度卧推" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["barbell", "bench_flat"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "explosive",
+    "level": "advanced",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Use 50-60% 1RM, standard bench setup.",
+        "Lower under control, explode up fast.",
+        "Reset, repeat — focus on speed."
+      ],
+      "zh-Hans": [
+        "用 1RM 的 50-60%, 标准卧推姿势.",
+        "控制下放, 爆发上推.",
+        "重置, 重复 — 注重速度."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=4SBNoPiE1Ck",
+    "calories_estimate": { "low": 4, "med": 6, "high": 9 },
+    "danger_warnings": {
+      "en": [
+        "Speed work needs perfect form — don't sacrifice control.",
+        "Always use spotter or safety pins."
+      ],
+      "zh-Hans": [
+        "速度训练要保持完美动作 — 不要失去控制.",
+        "务必有保护或安全杠."
+      ]
+    }
+  },
+  {
+    "id": "bench_press_with_chains",
+    "name": { "en": "Bench Press with Chains", "zh-Hans": "卧推 (链条)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["barbell", "bench_flat", "chains"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "strength",
+    "level": "advanced",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Drape chains over bar — links pile on floor at bottom.",
+        "Standard bench press — load increases at lockout.",
+        "Lower under control as chain weight drops off."
+      ],
+      "zh-Hans": [
+        "链条挂在杠铃两侧 — 底部链节堆地.",
+        "标准卧推 — 顶部负荷增加.",
+        "控制下放, 链条重量随之降低."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=ABr9eWqGCfY",
+    "calories_estimate": { "low": 5, "med": 7, "high": 10 },
+    "danger_warnings": {
+      "en": [
+        "Chains require careful setup — secure them.",
+        "Use safety pins."
+      ],
+      "zh-Hans": [
+        "链条要固定好 — 安装认真.",
+        "使用安全杠."
+      ]
+    }
+  },
+  {
+    "id": "bench_press_with_bands",
+    "name": { "en": "Bench Press with Bands", "zh-Hans": "卧推 (弹力带)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["barbell", "bench_flat", "resistance_band"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "strength",
+    "level": "advanced",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Anchor bands to bench or floor, loop around bar.",
+        "Bench press — bands tighten at lockout.",
+        "Strong tension at top, light at bottom."
+      ],
+      "zh-Hans": [
+        "弹力带固定凳或地面, 套在杠上.",
+        "卧推 — 顶部弹力增强.",
+        "顶部张力大, 底部小."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=ABr9eWqGCfY",
+    "calories_estimate": { "low": 5, "med": 7, "high": 10 },
+    "danger_warnings": {
+      "en": [
+        "Band setup must be secure — failure is dangerous.",
+        "Use safety pins."
+      ],
+      "zh-Hans": [
+        "弹力带固定要牢 — 失败有危险.",
+        "使用安全杠."
+      ]
+    }
+  },
+  {
+    "id": "chest_press_unilateral_machine_alternating",
+    "name": { "en": "Alternating Chest Press (Machine)", "zh-Hans": "交替推胸 (器械)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" },
+        { "major": "core", "sub": "abs_upper" }
+      ]
+    },
+    "equipment": ["machine"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": true,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Iso-lateral machine, sit with back against pad.",
+        "Press one arm, return, then press other.",
+        "Keep torso stable throughout."
+      ],
+      "zh-Hans": [
+        "分臂器械, 坐姿背贴靠垫.",
+        "推一臂, 回程, 再推另一臂.",
+        "全程躯干稳定."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=xUm0BiZCWlQ",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "incline_dumbbell_squeeze_press",
+    "name": { "en": "Incline Squeeze Press (Dumbbell)", "zh-Hans": "上斜夹胸推 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "upper_chest" }],
+      "secondary": [
+        { "major": "arms", "sub": "triceps" },
+        { "major": "shoulders", "sub": "front_delt" }
+      ]
+    },
+    "equipment": ["dumbbell", "bench_incline"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Incline bench, dumbbells pressed together at chest.",
+        "Press up while keeping dumbbells touching.",
+        "Maintain inward pressure throughout."
+      ],
+      "zh-Hans": [
+        "上斜凳, 哑铃胸前夹紧.",
+        "向上推, 哑铃保持接触.",
+        "全程保持向内挤压."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=ScG6Js9d_oI",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "incline_dumbbell_fly_decline_reverse_motion",
+    "name": { "en": "Reverse Grip Incline Dumbbell Fly", "zh-Hans": "反握上斜飞鸟 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "upper_chest" }],
+      "secondary": [{ "major": "shoulders", "sub": "front_delt" }]
+    },
+    "equipment": ["dumbbell", "bench_incline"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Incline bench 30-45°, palms face up underhand.",
+        "Open arms in wide arc, slight elbow bend.",
+        "Squeeze upper chest hard at top."
+      ],
+      "zh-Hans": [
+        "上斜凳 30-45°, 反握 (掌心向上).",
+        "弧线打开双臂, 肘微屈.",
+        "顶部强力收紧上胸."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=Z57CtFmRMxA",
+    "calories_estimate": { "low": 3, "med": 5, "high": 7 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "chest_press_cable_bilateral_seated",
+    "name": { "en": "Seated Cable Chest Press", "zh-Hans": "坐姿绳索推胸" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["cable", "bench_flat"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Sit on bench between mid pulleys, handles at chest.",
+        "Press handles forward to full extension.",
+        "Squeeze chest, slow return."
+      ],
+      "zh-Hans": [
+        "坐于凳上置中位绳索之间, 手柄置胸.",
+        "向前推至完全伸直.",
+        "收紧胸部, 缓慢回程."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=lFkrnHHM_qE",
+    "calories_estimate": { "low": 3, "med": 5, "high": 7 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  },
+  {
+    "id": "incline_chest_press_landmine",
+    "name": { "en": "Incline Landmine Press", "zh-Hans": "上斜地雷管推举" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "upper_chest" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["barbell", "landmine", "bench_incline"],
+    "category": "strength",
+    "movementPattern": "push_horizontal",
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Bench at low incline, behind landmine setup.",
+        "Both hands cup bar end at chest.",
+        "Press up and forward, slow return."
+      ],
+      "zh-Hans": [
+        "凳调至低斜, 置于地雷管设置后.",
+        "双手抱杠铃端置胸前.",
+        "向上向前推, 缓慢回程."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=ulZGn3Jbbm0",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": { "en": [], "zh-Hans": [] }
+  }
+]

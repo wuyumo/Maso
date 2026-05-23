@@ -1,4 +1,14 @@
-# Exercise DB Overhaul — Plan & Schema (v1.0 draft)
+# Exercise DB Overhaul — Plan & Schema (v1.1 — 用户拍板版)
+
+**变更 from v1.0 draft**:
+- ✅ Sub-muscle 名单 OK, 27 个不变
+- ✅ Schema 加 3 个字段: `video_url`, `calories_estimate`, `danger_warnings`
+- ⚠️ Anatomy 图需要**重画** (用户拍板, 接受前 4 次失败的风险)
+- ✅ 缺图 fallback: Placeholder + category icon
+
+---
+
+
 
 **目标**: 把现 873 动作的库扩到 ~1500, 加 2 层肌群层级 + 多维 category, Hevy 命名风格, 兼容现有图片素材.
 
@@ -40,11 +50,26 @@
   "force": "push",                     // push | pull | static
   "imageFolder": "Barbell_Bench_Press_-_Medium-Grip",  // 旧库 fuzzy match 出的 folder, null = 缺图
   "instructions": {
-    "en": ["Lie on bench...", "..."],
+    "en": ["Lie on bench...", "..."],          // 2-4 行 form cue, 不要超长 paragraph
     "zh-Hans": ["躺在卧推凳上...", "..."]
+  },
+  "video_url": "https://www.youtube.com/watch?v=xxx", // YouTube 链接, 国内访问问题让 v1.1 再优化
+  "calories_estimate": {
+    "low": 4,                                  // body weight 60kg, 10 min, kcal
+    "med": 6,                                  // body weight 75kg
+    "high": 9                                  // body weight 90kg+
+  },
+  "danger_warnings": {
+    "en": ["Don't round lower back at bottom of lift."],
+    "zh-Hans": ["底部不要圆背."]
   }
 }
 ```
+
+**注**:
+- `video_url`: 优先 YouTube, 因为 free + 全球可访问 (大陆需翻墙, 但有 v1.1 时间换 bilibili / 中间代理)
+- `calories_estimate`: 简化的 MET 表估算, 不是绝对值. 给 HealthKit 写入用
+- `danger_warnings`: 仅初/中阶动作不容易做错的不标; 中高阶 deadlift / squat / OHP 等才标
 
 ### 0.2 肌群层级 (2 层)
 

@@ -1,0 +1,4562 @@
+[
+  {
+    "id": "plank",
+    "name": { "en": "Plank", "zh-Hans": "平板支撑" },
+    "muscles": {
+      "primary": [
+        { "major": "core", "sub": "abs_upper" },
+        { "major": "core", "sub": "transverse" }
+      ],
+      "secondary": [
+        { "major": "core", "sub": "abs_lower" },
+        { "major": "core", "sub": "obliques" },
+        { "major": "legs", "sub": "glutes" },
+        { "major": "shoulders", "sub": "front_delt" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "calisthenics",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "isometric",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Forearms on floor, body in straight line.",
+        "Squeeze glutes + abs — neutral spine.",
+        "Hold for time, don't let hips sag."
+      ],
+      "zh-Hans": [
+        "前臂着地, 身体呈直线.",
+        "收紧臀部和腹部 — 脊柱中立.",
+        "保持时间, 不要让髋部下垂."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=ASdvN_XEl_c",
+    "calories_estimate": { "low": 3, "med": 4, "high": 5 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "plank_high",
+    "name": { "en": "Plank (High)", "zh-Hans": "高位平板支撑" },
+    "muscles": {
+      "primary": [
+        { "major": "core", "sub": "abs_upper" },
+        { "major": "core", "sub": "transverse" }
+      ],
+      "secondary": [
+        { "major": "core", "sub": "abs_lower" },
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "calisthenics",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "isometric",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Top of push-up position, arms locked.",
+        "Brace core, glutes tight, body straight.",
+        "Hold for time, breathe steadily."
+      ],
+      "zh-Hans": [
+        "俯卧撑顶端姿势, 手臂锁定.",
+        "核心收紧, 臀部夹紧, 身体直线.",
+        "保持时间, 稳定呼吸."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=cnFn09Zb8RU",
+    "calories_estimate": { "low": 3, "med": 4, "high": 5 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "plank_side",
+    "name": { "en": "Plank (Side)", "zh-Hans": "侧平板" },
+    "muscles": {
+      "primary": [
+        { "major": "core", "sub": "obliques" },
+        { "major": "core", "sub": "transverse" }
+      ],
+      "secondary": [
+        { "major": "core", "sub": "abs_upper" },
+        { "major": "legs", "sub": "glutes" },
+        { "major": "shoulders", "sub": "side_delt" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "calisthenics",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "isometric",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Side-lying, prop on one forearm.",
+        "Lift hips — body in straight line.",
+        "Hold for time, switch sides."
+      ],
+      "zh-Hans": [
+        "侧躺, 一侧前臂撑地.",
+        "抬起髋部 — 身体呈直线.",
+        "保持时间, 换边."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=K2VljzCC16g",
+    "calories_estimate": { "low": 3, "med": 4, "high": 5 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "plank_up",
+    "name": { "en": "Plank Up-Down", "zh-Hans": "平板上下" },
+    "muscles": {
+      "primary": [
+        { "major": "core", "sub": "abs_upper" },
+        { "major": "core", "sub": "transverse" }
+      ],
+      "secondary": [
+        { "major": "arms", "sub": "triceps" },
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "core", "sub": "obliques" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "calisthenics",
+    "movementPattern": null,
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "endurance",
+    "level": "intermediate",
+    "force": "push",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Start in forearm plank, body straight.",
+        "Push up to high plank one arm at a time.",
+        "Lower back to forearms, alternate lead arm."
+      ],
+      "zh-Hans": [
+        "前臂平板支撑, 身体直线.",
+        "一只手撑起到高位平板.",
+        "依次下放, 交替起手."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=YVZj0Jx3jBE",
+    "calories_estimate": { "low": 5, "med": 7, "high": 9 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "plank_hip_dip",
+    "name": { "en": "Plank with Hip Dip", "zh-Hans": "平板转髋" },
+    "muscles": {
+      "primary": [
+        { "major": "core", "sub": "obliques" },
+        { "major": "core", "sub": "transverse" }
+      ],
+      "secondary": [
+        { "major": "core", "sub": "abs_upper" },
+        { "major": "core", "sub": "abs_lower" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "calisthenics",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "endurance",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Forearm plank position, body straight.",
+        "Rotate hips, dip one side toward floor.",
+        "Return to center, alternate sides."
+      ],
+      "zh-Hans": [
+        "前臂平板, 身体直线.",
+        "旋转髋部, 一侧下沉接近地面.",
+        "回到中位, 交替进行."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=ePu1tnpWJYM",
+    "calories_estimate": { "low": 4, "med": 5, "high": 7 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "plank_rkc",
+    "name": { "en": "Plank (RKC)", "zh-Hans": "RKC 平板支撑" },
+    "muscles": {
+      "primary": [
+        { "major": "core", "sub": "abs_upper" },
+        { "major": "core", "sub": "transverse" }
+      ],
+      "secondary": [
+        { "major": "core", "sub": "abs_lower" },
+        { "major": "legs", "sub": "glutes" },
+        { "major": "legs", "sub": "quads" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "calisthenics",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "isometric",
+    "level": "intermediate",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Forearm plank, elbows under shoulders.",
+        "Max tension — squeeze glutes, quads, abs.",
+        "Hold 10-30s with full body tension."
+      ],
+      "zh-Hans": [
+        "前臂平板, 肘部置于肩下.",
+        "全力收紧 — 臀腿腹同时发力.",
+        "保持 10-30 秒, 全身张力."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=Jzd_pTufcEs",
+    "calories_estimate": { "low": 4, "med": 5, "high": 7 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "plank_weighted",
+    "name": { "en": "Plank (Weighted)", "zh-Hans": "负重平板支撑" },
+    "muscles": {
+      "primary": [
+        { "major": "core", "sub": "abs_upper" },
+        { "major": "core", "sub": "transverse" }
+      ],
+      "secondary": [
+        { "major": "core", "sub": "abs_lower" },
+        { "major": "core", "sub": "obliques" },
+        { "major": "legs", "sub": "glutes" }
+      ]
+    },
+    "equipment": ["weight_plate", "body_only"],
+    "category": "calisthenics",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "isometric",
+    "level": "intermediate",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Plank position, plate on upper back.",
+        "Brace core hard, don't let hips sag.",
+        "Hold for time — quality over duration."
+      ],
+      "zh-Hans": [
+        "平板支撑, 杠片放上背.",
+        "核心紧绷, 髋部不下垂.",
+        "保持时间 — 质量优先."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=ujzgEjOhqXk",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": {
+      "en": ["Have a partner place the plate — don't drop on spine."],
+      "zh-Hans": ["请同伴放置杠片 — 不要砸到脊柱."]
+    }
+  },
+  {
+    "id": "plank_side_raise",
+    "name": { "en": "Side Plank with Leg Raise", "zh-Hans": "侧平板抬腿" },
+    "muscles": {
+      "primary": [
+        { "major": "core", "sub": "obliques" },
+        { "major": "legs", "sub": "glutes" }
+      ],
+      "secondary": [
+        { "major": "core", "sub": "transverse" },
+        { "major": "legs", "sub": "adductors" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "calisthenics",
+    "movementPattern": null,
+    "mechanic": "compound",
+    "unilateral": true,
+    "tempo": "endurance",
+    "level": "intermediate",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Side plank position, body straight.",
+        "Lift top leg up while holding side plank.",
+        "Lower under control, switch sides after set."
+      ],
+      "zh-Hans": [
+        "侧平板姿势, 身体直线.",
+        "保持侧平板, 上腿向上抬起.",
+        "缓慢下放, 完成后换边."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=BunBOgtm4HM",
+    "calories_estimate": { "low": 4, "med": 5, "high": 7 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "plank_shoulder_tap",
+    "name": { "en": "Plank Shoulder Tap", "zh-Hans": "平板拍肩" },
+    "muscles": {
+      "primary": [
+        { "major": "core", "sub": "abs_upper" },
+        { "major": "core", "sub": "transverse" }
+      ],
+      "secondary": [
+        { "major": "core", "sub": "obliques" },
+        { "major": "shoulders", "sub": "front_delt" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "calisthenics",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "endurance",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "High plank, hands under shoulders.",
+        "Tap opposite shoulder with one hand.",
+        "Keep hips square — minimize rotation."
+      ],
+      "zh-Hans": [
+        "高位平板, 手在肩下.",
+        "一手拍向对侧肩膀.",
+        "髋部保持稳定 — 尽量不晃动."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=gWHQpMUd7vw",
+    "calories_estimate": { "low": 4, "med": 5, "high": 7 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "plank_reach",
+    "name": { "en": "Plank Reach", "zh-Hans": "平板伸手" },
+    "muscles": {
+      "primary": [
+        { "major": "core", "sub": "abs_upper" },
+        { "major": "core", "sub": "transverse" }
+      ],
+      "secondary": [
+        { "major": "core", "sub": "obliques" },
+        { "major": "shoulders", "sub": "front_delt" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "calisthenics",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "endurance",
+    "level": "intermediate",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "High plank, body straight.",
+        "Reach one arm forward, hold briefly.",
+        "Return, alternate arms — stay stable."
+      ],
+      "zh-Hans": [
+        "高位平板, 身体直线.",
+        "一只手向前伸, 短暂停顿.",
+        "收回, 交替 — 保持稳定."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=qWLcrYwTUiU",
+    "calories_estimate": { "low": 4, "med": 5, "high": 7 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "crunch",
+    "name": { "en": "Crunch", "zh-Hans": "卷腹" },
+    "muscles": {
+      "primary": [{ "major": "core", "sub": "abs_upper" }],
+      "secondary": [{ "major": "core", "sub": "transverse" }]
+    },
+    "equipment": ["body_only"],
+    "category": "calisthenics",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie on back, knees bent, hands at temples.",
+        "Curl upper body up — shoulders off floor.",
+        "Squeeze abs at top, lower slowly."
+      ],
+      "zh-Hans": [
+        "仰卧, 屈膝, 双手贴太阳穴.",
+        "上身卷起 — 肩部离地.",
+        "顶部收紧, 缓慢下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=Xyd_fa5zoEU",
+    "calories_estimate": { "low": 3, "med": 4, "high": 6 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "crunch_bicycle",
+    "name": { "en": "Bicycle Crunch", "zh-Hans": "自行车卷腹" },
+    "muscles": {
+      "primary": [
+        { "major": "core", "sub": "obliques" },
+        { "major": "core", "sub": "abs_upper" }
+      ],
+      "secondary": [{ "major": "core", "sub": "abs_lower" }]
+    },
+    "equipment": ["body_only"],
+    "category": "calisthenics",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "endurance",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie on back, hands at temples, legs raised.",
+        "Bring opposite elbow to knee, extend other leg.",
+        "Alternate sides in pedaling motion."
+      ],
+      "zh-Hans": [
+        "仰卧, 手贴太阳穴, 双腿抬起.",
+        "对侧肘碰膝, 另一腿伸出.",
+        "交替进行 — 像蹬自行车."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=9FGilxCbdz8",
+    "calories_estimate": { "low": 5, "med": 7, "high": 9 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "crunch_reverse",
+    "name": { "en": "Reverse Crunch", "zh-Hans": "反向卷腹" },
+    "muscles": {
+      "primary": [{ "major": "core", "sub": "abs_lower" }],
+      "secondary": [
+        { "major": "core", "sub": "abs_upper" },
+        { "major": "core", "sub": "transverse" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "calisthenics",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie on back, arms at sides, knees bent.",
+        "Curl knees toward chest — lift hips.",
+        "Lower slowly, don't let feet touch floor."
+      ],
+      "zh-Hans": [
+        "仰卧, 双手放体侧, 屈膝.",
+        "膝向胸卷起 — 髋部抬起.",
+        "缓慢下放, 双脚不触地."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=hyvCNMC2J6Q",
+    "calories_estimate": { "low": 3, "med": 5, "high": 7 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "crunch_decline",
+    "name": { "en": "Crunch (Decline)", "zh-Hans": "卷腹 (下斜)" },
+    "muscles": {
+      "primary": [{ "major": "core", "sub": "abs_upper" }],
+      "secondary": [
+        { "major": "core", "sub": "abs_lower" },
+        { "major": "legs", "sub": "hip_flexors" }
+      ]
+    },
+    "equipment": ["bench_decline"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie on decline bench, ankles hooked.",
+        "Curl torso up — keep lower back flat.",
+        "Squeeze at top, lower under control."
+      ],
+      "zh-Hans": [
+        "躺下斜凳, 脚踝勾住.",
+        "上身卷起 — 下背贴凳.",
+        "顶部收紧, 控制下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=ivR8e2vK5N4",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "crunch_weighted",
+    "name": { "en": "Crunch (Weighted)", "zh-Hans": "负重卷腹" },
+    "muscles": {
+      "primary": [{ "major": "core", "sub": "abs_upper" }],
+      "secondary": [{ "major": "core", "sub": "transverse" }]
+    },
+    "equipment": ["weight_plate"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie on back, knees bent, plate on chest.",
+        "Curl upper body up — shoulders off floor.",
+        "Squeeze abs, lower under control."
+      ],
+      "zh-Hans": [
+        "仰卧, 屈膝, 杠片放胸前.",
+        "上身卷起 — 肩离地.",
+        "腹部收紧, 缓慢下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=tutk2lJpFmA",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "crunch_cable",
+    "name": { "en": "Crunch (Cable)", "zh-Hans": "卷腹 (绳索)" },
+    "muscles": {
+      "primary": [{ "major": "core", "sub": "abs_upper" }],
+      "secondary": [{ "major": "core", "sub": "abs_lower" }]
+    },
+    "equipment": ["cable"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Kneel facing cable, rope at top.",
+        "Crunch down — bring elbows to thighs.",
+        "Curl spine, don't pull with arms."
+      ],
+      "zh-Hans": [
+        "跪姿面对绳索, 绳索置高位.",
+        "向下卷腹 — 肘部碰大腿.",
+        "脊柱弯曲, 不要用手臂拉."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=3qjoXDTuyOE",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "crunch_machine",
+    "name": { "en": "Crunch (Machine)", "zh-Hans": "卷腹 (器械)" },
+    "muscles": {
+      "primary": [{ "major": "core", "sub": "abs_upper" }],
+      "secondary": [{ "major": "core", "sub": "abs_lower" }]
+    },
+    "equipment": ["machine"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Sit on ab machine, grip handles.",
+        "Crunch torso forward — curl spine.",
+        "Squeeze at bottom, return slowly."
+      ],
+      "zh-Hans": [
+        "坐在卷腹器械上, 抓握手柄.",
+        "上身前卷 — 脊柱弯曲.",
+        "底部收紧, 缓慢返回."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=2zNCgmAj1RU",
+    "calories_estimate": { "low": 4, "med": 5, "high": 7 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "sit_up",
+    "name": { "en": "Sit-Up", "zh-Hans": "仰卧起坐" },
+    "muscles": {
+      "primary": [{ "major": "core", "sub": "abs_upper" }],
+      "secondary": [
+        { "major": "legs", "sub": "hip_flexors" },
+        { "major": "core", "sub": "abs_lower" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "calisthenics",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "endurance",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie on back, knees bent, feet flat.",
+        "Sit up fully — torso to thighs.",
+        "Lower with control to start."
+      ],
+      "zh-Hans": [
+        "仰卧, 屈膝, 双脚平放.",
+        "完全坐起 — 上身贴近大腿.",
+        "控制下放回起始."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=jDwoBqPH0jk",
+    "calories_estimate": { "low": 5, "med": 7, "high": 9 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "sit_up_decline",
+    "name": { "en": "Sit-Up (Decline)", "zh-Hans": "仰卧起坐 (下斜)" },
+    "muscles": {
+      "primary": [{ "major": "core", "sub": "abs_upper" }],
+      "secondary": [
+        { "major": "legs", "sub": "hip_flexors" },
+        { "major": "core", "sub": "abs_lower" }
+      ]
+    },
+    "equipment": ["bench_decline"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie on decline bench, ankles hooked.",
+        "Sit up fully against decline angle.",
+        "Lower with control, full range of motion."
+      ],
+      "zh-Hans": [
+        "躺下斜凳, 脚踝勾住.",
+        "对抗角度完全坐起.",
+        "控制下放, 全程动作."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=N0VbZ3RD3yI",
+    "calories_estimate": { "low": 6, "med": 8, "high": 11 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "sit_up_weighted",
+    "name": { "en": "Sit-Up (Weighted)", "zh-Hans": "负重仰卧起坐" },
+    "muscles": {
+      "primary": [{ "major": "core", "sub": "abs_upper" }],
+      "secondary": [
+        { "major": "legs", "sub": "hip_flexors" },
+        { "major": "core", "sub": "abs_lower" }
+      ]
+    },
+    "equipment": ["weight_plate"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie on back, knees bent, plate on chest.",
+        "Sit up fully — torso vertical.",
+        "Lower with control, plate stays on chest."
+      ],
+      "zh-Hans": [
+        "仰卧, 屈膝, 杠片放胸前.",
+        "完全坐起 — 上身垂直.",
+        "控制下放, 杠片保持胸前."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=H8gqcvz3GHU",
+    "calories_estimate": { "low": 6, "med": 8, "high": 11 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "sit_up_hollow_body",
+    "name": { "en": "Hollow Body Sit-Up", "zh-Hans": "空心仰卧起坐" },
+    "muscles": {
+      "primary": [
+        { "major": "core", "sub": "abs_upper" },
+        { "major": "core", "sub": "abs_lower" }
+      ],
+      "secondary": [{ "major": "core", "sub": "transverse" }]
+    },
+    "equipment": ["body_only"],
+    "category": "calisthenics",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie on back, arms overhead, legs straight.",
+        "Sit up while keeping legs and arms extended.",
+        "Lower with control — keep abs braced."
+      ],
+      "zh-Hans": [
+        "仰卧, 双臂过头, 双腿伸直.",
+        "保持手腿伸直, 完成坐起.",
+        "控制下放 — 腹部持续收紧."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=lTr0wnIMlsk",
+    "calories_estimate": { "low": 6, "med": 8, "high": 10 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "leg_raise_hanging",
+    "name": { "en": "Hanging Leg Raise", "zh-Hans": "悬挂举腿" },
+    "muscles": {
+      "primary": [{ "major": "core", "sub": "abs_lower" }],
+      "secondary": [
+        { "major": "core", "sub": "abs_upper" },
+        { "major": "legs", "sub": "hip_flexors" },
+        { "major": "arms", "sub": "forearms" }
+      ]
+    },
+    "equipment": ["pull_up_bar"],
+    "category": "calisthenics",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Hang from bar, arms straight.",
+        "Raise straight legs to 90° — no swinging.",
+        "Lower under control, repeat."
+      ],
+      "zh-Hans": [
+        "悬挂单杠, 手臂伸直.",
+        "直腿抬到 90° — 不要借力摆动.",
+        "缓慢下放, 重复."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=Pr1ieGZ5atk",
+    "calories_estimate": { "low": 6, "med": 8, "high": 11 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "leg_raise_hanging_knee",
+    "name": { "en": "Hanging Knee Raise", "zh-Hans": "悬挂屈膝举腿" },
+    "muscles": {
+      "primary": [{ "major": "core", "sub": "abs_lower" }],
+      "secondary": [
+        { "major": "legs", "sub": "hip_flexors" },
+        { "major": "arms", "sub": "forearms" }
+      ]
+    },
+    "equipment": ["pull_up_bar"],
+    "category": "calisthenics",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "endurance",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Hang from bar, arms straight.",
+        "Bring knees to chest — control swing.",
+        "Lower under control."
+      ],
+      "zh-Hans": [
+        "悬挂单杠, 手臂伸直.",
+        "屈膝上提至胸前 — 控制摆动.",
+        "缓慢下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=cPpDhJzxJKM",
+    "calories_estimate": { "low": 5, "med": 7, "high": 9 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "leg_raise_lying",
+    "name": { "en": "Lying Leg Raise", "zh-Hans": "仰卧抬腿" },
+    "muscles": {
+      "primary": [{ "major": "core", "sub": "abs_lower" }],
+      "secondary": [
+        { "major": "core", "sub": "abs_upper" },
+        { "major": "legs", "sub": "hip_flexors" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "calisthenics",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie on back, hands under hips.",
+        "Raise straight legs to 90° — slow.",
+        "Lower until just above floor."
+      ],
+      "zh-Hans": [
+        "仰卧, 双手垫臀下.",
+        "直腿抬到 90° — 缓慢.",
+        "下放至接近地面."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=l4kQd9eWclE",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "leg_raise_captains_chair",
+    "name": { "en": "Captain's Chair Leg Raise", "zh-Hans": "罗马椅举腿" },
+    "muscles": {
+      "primary": [{ "major": "core", "sub": "abs_lower" }],
+      "secondary": [
+        { "major": "core", "sub": "abs_upper" },
+        { "major": "legs", "sub": "hip_flexors" }
+      ]
+    },
+    "equipment": ["captains_chair"],
+    "category": "calisthenics",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Forearms on pads, back against pad.",
+        "Raise straight legs to 90°.",
+        "Lower under control — no swinging."
+      ],
+      "zh-Hans": [
+        "前臂支撑, 背贴靠垫.",
+        "直腿抬至 90°.",
+        "缓慢下放 — 不要借力."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=l9Y1S5_yvDM",
+    "calories_estimate": { "low": 5, "med": 7, "high": 9 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "leg_raise_captains_chair_knee",
+    "name": { "en": "Captain's Chair Knee Raise", "zh-Hans": "罗马椅屈膝抬腿" },
+    "muscles": {
+      "primary": [{ "major": "core", "sub": "abs_lower" }],
+      "secondary": [
+        { "major": "legs", "sub": "hip_flexors" }
+      ]
+    },
+    "equipment": ["captains_chair"],
+    "category": "calisthenics",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "endurance",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Forearms on pads, back against pad.",
+        "Bring knees to chest.",
+        "Lower with control, repeat."
+      ],
+      "zh-Hans": [
+        "前臂支撑, 背贴靠垫.",
+        "屈膝向胸前提拉.",
+        "缓慢下放, 重复."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=B3LjB4DqlfA",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "leg_raise_lying_bent",
+    "name": { "en": "Lying Knee Raise", "zh-Hans": "仰卧屈膝抬腿" },
+    "muscles": {
+      "primary": [{ "major": "core", "sub": "abs_lower" }],
+      "secondary": [
+        { "major": "legs", "sub": "hip_flexors" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "calisthenics",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "endurance",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie on back, hands under hips.",
+        "Bring knees toward chest.",
+        "Lower with control, repeat."
+      ],
+      "zh-Hans": [
+        "仰卧, 双手垫臀下.",
+        "屈膝向胸前提拉.",
+        "缓慢下放, 重复."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=jojrqlrxOms",
+    "calories_estimate": { "low": 3, "med": 5, "high": 7 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "russian_twist",
+    "name": { "en": "Russian Twist", "zh-Hans": "俄罗斯转体" },
+    "muscles": {
+      "primary": [{ "major": "core", "sub": "obliques" }],
+      "secondary": [
+        { "major": "core", "sub": "abs_upper" },
+        { "major": "core", "sub": "abs_lower" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "calisthenics",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "endurance",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Sit on floor, lean back, feet up.",
+        "Rotate torso side to side.",
+        "Keep core braced, chest tall."
+      ],
+      "zh-Hans": [
+        "坐地, 上身后倾, 双脚抬起.",
+        "上身左右转体.",
+        "核心收紧, 挺胸."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=DJQGX2J4IFw",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "russian_twist_weighted",
+    "name": { "en": "Russian Twist (Weighted)", "zh-Hans": "俄罗斯转体 (负重)" },
+    "muscles": {
+      "primary": [{ "major": "core", "sub": "obliques" }],
+      "secondary": [
+        { "major": "core", "sub": "abs_upper" },
+        { "major": "core", "sub": "abs_lower" }
+      ]
+    },
+    "equipment": ["dumbbell"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Sit on floor, lean back, holding weight.",
+        "Rotate torso side to side, tap weight.",
+        "Keep feet up, core braced."
+      ],
+      "zh-Hans": [
+        "坐地, 上身后倾, 握重物.",
+        "上身左右转体, 重物两侧轻触.",
+        "双脚抬起, 核心收紧."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=fNT80mghV6s",
+    "calories_estimate": { "low": 5, "med": 7, "high": 10 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "russian_twist_medicine_ball",
+    "name": { "en": "Russian Twist (Medicine Ball)", "zh-Hans": "俄罗斯转体 (药球)" },
+    "muscles": {
+      "primary": [{ "major": "core", "sub": "obliques" }],
+      "secondary": [
+        { "major": "core", "sub": "abs_upper" },
+        { "major": "core", "sub": "abs_lower" }
+      ]
+    },
+    "equipment": ["medicine_ball"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Sit on floor, lean back, hold ball.",
+        "Rotate torso, tap ball each side.",
+        "Feet up, controlled tempo."
+      ],
+      "zh-Hans": [
+        "坐地, 上身后倾, 握药球.",
+        "转体, 球两侧轻触.",
+        "双脚抬起, 节奏可控."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=wkD8rjkodUI",
+    "calories_estimate": { "low": 5, "med": 7, "high": 10 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "ab_wheel_rollout_kneeling",
+    "name": { "en": "Ab Wheel Rollout (Kneeling)", "zh-Hans": "跪姿腹轮" },
+    "muscles": {
+      "primary": [
+        { "major": "core", "sub": "abs_upper" },
+        { "major": "core", "sub": "transverse" }
+      ],
+      "secondary": [
+        { "major": "core", "sub": "abs_lower" },
+        { "major": "back", "sub": "lats" },
+        { "major": "shoulders", "sub": "front_delt" }
+      ]
+    },
+    "equipment": ["ab_wheel"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Kneel, grip ab wheel below shoulders.",
+        "Roll forward — extend arms, brace core.",
+        "Pull back to start, don't let hips sag."
+      ],
+      "zh-Hans": [
+        "跪姿, 双手握轮置肩下.",
+        "向前推 — 手臂伸展, 核心紧绷.",
+        "拉回起点, 髋部不下垂."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=cD5_Y7nwAEU",
+    "calories_estimate": { "low": 5, "med": 7, "high": 10 },
+    "danger_warnings": {
+      "en": ["Don't arch lower back — keep ribs tucked."],
+      "zh-Hans": ["不要塌腰 — 收紧肋骨."]
+    }
+  },
+  {
+    "id": "ab_wheel_rollout_standing",
+    "name": { "en": "Ab Wheel Rollout (Standing)", "zh-Hans": "站姿腹轮" },
+    "muscles": {
+      "primary": [
+        { "major": "core", "sub": "abs_upper" },
+        { "major": "core", "sub": "transverse" }
+      ],
+      "secondary": [
+        { "major": "core", "sub": "abs_lower" },
+        { "major": "back", "sub": "lats" },
+        { "major": "shoulders", "sub": "front_delt" }
+      ]
+    },
+    "equipment": ["ab_wheel"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "strength",
+    "level": "advanced",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Stand, bend at hips, grip ab wheel.",
+        "Roll forward — body extends, no sag.",
+        "Pull back to standing — full control."
+      ],
+      "zh-Hans": [
+        "站立, 髋部前屈, 握腹轮.",
+        "向前推 — 身体伸展, 不塌腰.",
+        "拉回站立 — 全程控制."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=KMxsONeOSx8",
+    "calories_estimate": { "low": 7, "med": 10, "high": 13 },
+    "danger_warnings": {
+      "en": ["Master kneeling version first — high injury risk."],
+      "zh-Hans": ["先掌握跪姿 — 受伤风险高."]
+    }
+  },
+  {
+    "id": "dead_bug",
+    "name": { "en": "Dead Bug", "zh-Hans": "死虫" },
+    "muscles": {
+      "primary": [
+        { "major": "core", "sub": "transverse" },
+        { "major": "core", "sub": "abs_lower" }
+      ],
+      "secondary": [
+        { "major": "core", "sub": "abs_upper" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "calisthenics",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "endurance",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie on back, arms up, knees at 90°.",
+        "Lower opposite arm and leg slowly.",
+        "Return, alternate sides — flat lower back."
+      ],
+      "zh-Hans": [
+        "仰卧, 双手举起, 屈膝 90°.",
+        "对侧手脚缓慢下放.",
+        "回起点, 交替 — 下背贴地."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=4XLEnwUr1d8",
+    "calories_estimate": { "low": 3, "med": 4, "high": 5 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "bird_dog",
+    "name": { "en": "Bird Dog", "zh-Hans": "鸟狗式" },
+    "muscles": {
+      "primary": [
+        { "major": "core", "sub": "transverse" },
+        { "major": "back", "sub": "lower_back" }
+      ],
+      "secondary": [
+        { "major": "legs", "sub": "glutes" },
+        { "major": "shoulders", "sub": "front_delt" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "calisthenics",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "endurance",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Quadruped, hands under shoulders.",
+        "Extend opposite arm and leg.",
+        "Hold briefly, return, alternate."
+      ],
+      "zh-Hans": [
+        "四点跪姿, 手在肩下.",
+        "对侧手脚伸展.",
+        "短暂停顿, 回起点, 交替."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=wiFNA3sqjCA",
+    "calories_estimate": { "low": 3, "med": 4, "high": 5 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "pallof_press_cable",
+    "name": { "en": "Pallof Press (Cable)", "zh-Hans": "Pallof 推举 (绳索)" },
+    "muscles": {
+      "primary": [
+        { "major": "core", "sub": "obliques" },
+        { "major": "core", "sub": "transverse" }
+      ],
+      "secondary": [
+        { "major": "core", "sub": "abs_upper" },
+        { "major": "shoulders", "sub": "front_delt" }
+      ]
+    },
+    "equipment": ["cable"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "endurance",
+    "level": "intermediate",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Stand sideways to cable at chest height.",
+        "Press handle straight out — resist rotation.",
+        "Hold, return, switch sides after set."
+      ],
+      "zh-Hans": [
+        "侧对绳索, 把手齐胸高.",
+        "把手直推 — 抗旋转.",
+        "保持, 收回, 完成后换边."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=AH_QZLm_0-s",
+    "calories_estimate": { "low": 4, "med": 5, "high": 7 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "pallof_press_band",
+    "name": { "en": "Pallof Press (Band)", "zh-Hans": "Pallof 推举 (弹力带)" },
+    "muscles": {
+      "primary": [
+        { "major": "core", "sub": "obliques" },
+        { "major": "core", "sub": "transverse" }
+      ],
+      "secondary": [
+        { "major": "core", "sub": "abs_upper" },
+        { "major": "shoulders", "sub": "front_delt" }
+      ]
+    },
+    "equipment": ["resistance_band"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "endurance",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Anchor band at chest height, stand sideways.",
+        "Press band out straight — resist pull.",
+        "Hold, return, switch sides."
+      ],
+      "zh-Hans": [
+        "弹力带固定齐胸高, 侧站.",
+        "弹力带直推 — 抗旋转.",
+        "保持, 收回, 换边."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=mPpf3GLT2gE",
+    "calories_estimate": { "low": 3, "med": 5, "high": 6 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "anti_rotation_press_cable",
+    "name": { "en": "Anti-Rotation Press (Cable)", "zh-Hans": "抗旋转推举 (绳索)" },
+    "muscles": {
+      "primary": [
+        { "major": "core", "sub": "obliques" },
+        { "major": "core", "sub": "transverse" }
+      ],
+      "secondary": [{ "major": "core", "sub": "abs_upper" }]
+    },
+    "equipment": ["cable"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "endurance",
+    "level": "intermediate",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Half-kneel beside cable, hold handle.",
+        "Press straight out — fight rotation.",
+        "Hold 2-3s, return, switch sides."
+      ],
+      "zh-Hans": [
+        "半跪侧对绳索, 握把手.",
+        "直推 — 抗旋转.",
+        "停顿 2-3 秒, 收回, 换边."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=KOpqLD3frRA",
+    "calories_estimate": { "low": 4, "med": 5, "high": 7 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "toes_to_bar",
+    "name": { "en": "Toes to Bar", "zh-Hans": "脚尖触杆" },
+    "muscles": {
+      "primary": [
+        { "major": "core", "sub": "abs_lower" },
+        { "major": "core", "sub": "abs_upper" }
+      ],
+      "secondary": [
+        { "major": "back", "sub": "lats" },
+        { "major": "legs", "sub": "hip_flexors" },
+        { "major": "arms", "sub": "forearms" }
+      ]
+    },
+    "equipment": ["pull_up_bar"],
+    "category": "calisthenics",
+    "movementPattern": null,
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "explosive",
+    "level": "advanced",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Hang from bar, slight kip swing.",
+        "Drive toes up to touch bar.",
+        "Lower under control, repeat."
+      ],
+      "zh-Hans": [
+        "悬挂单杠, 微微摆动.",
+        "脚尖向上踢碰杆.",
+        "控制下放, 重复."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=6NLDOd8a3qY",
+    "calories_estimate": { "low": 8, "med": 11, "high": 14 },
+    "danger_warnings": {
+      "en": ["Use chalk and a strong grip — risk of tearing hands."],
+      "zh-Hans": ["使用镁粉和稳定握法 — 防止手部撕裂."]
+    }
+  },
+  {
+    "id": "mountain_climber",
+    "name": { "en": "Mountain Climber", "zh-Hans": "登山者" },
+    "muscles": {
+      "primary": [
+        { "major": "core", "sub": "abs_upper" },
+        { "major": "core", "sub": "transverse" }
+      ],
+      "secondary": [
+        { "major": "legs", "sub": "hip_flexors" },
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "legs", "sub": "quads" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "calisthenics",
+    "movementPattern": null,
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "endurance",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "High plank position, body straight.",
+        "Drive knees toward chest alternately.",
+        "Fast pace — hips low, core tight."
+      ],
+      "zh-Hans": [
+        "高位平板, 身体直线.",
+        "交替屈膝向胸推进.",
+        "快速节奏 — 髋低, 核心紧."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=cnyTQDSE884",
+    "calories_estimate": { "low": 8, "med": 11, "high": 14 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "mountain_climber_cross",
+    "name": { "en": "Cross-Body Mountain Climber", "zh-Hans": "交叉登山者" },
+    "muscles": {
+      "primary": [
+        { "major": "core", "sub": "obliques" },
+        { "major": "core", "sub": "abs_upper" }
+      ],
+      "secondary": [
+        { "major": "legs", "sub": "hip_flexors" },
+        { "major": "shoulders", "sub": "front_delt" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "calisthenics",
+    "movementPattern": null,
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "endurance",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "High plank, drive knee to opposite elbow.",
+        "Alternate sides — controlled rotation.",
+        "Keep hips low, brace core."
+      ],
+      "zh-Hans": [
+        "高位平板, 膝向对侧肘.",
+        "交替进行 — 旋转可控.",
+        "髋部低, 核心紧."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=Tnx4VbiyTKE",
+    "calories_estimate": { "low": 8, "med": 11, "high": 14 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "dragon_flag",
+    "name": { "en": "Dragon Flag", "zh-Hans": "龙旗" },
+    "muscles": {
+      "primary": [
+        { "major": "core", "sub": "abs_upper" },
+        { "major": "core", "sub": "abs_lower" }
+      ],
+      "secondary": [
+        { "major": "core", "sub": "obliques" },
+        { "major": "core", "sub": "transverse" },
+        { "major": "legs", "sub": "glutes" }
+      ]
+    },
+    "equipment": ["bench_flat"],
+    "category": "calisthenics",
+    "movementPattern": null,
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "strength",
+    "level": "advanced",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie on bench, grip behind head.",
+        "Lift body straight — only shoulders touch.",
+        "Lower slowly, body in rigid line."
+      ],
+      "zh-Hans": [
+        "卧凳, 双手抓凳后.",
+        "整身抬起 — 仅肩部接触.",
+        "缓慢下放, 身体保持直线."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=pvz7k5gO-DM",
+    "calories_estimate": { "low": 8, "med": 12, "high": 15 },
+    "danger_warnings": {
+      "en": [
+        "Progress from tuck → straddle → full flag.",
+        "Risk of neck strain if form breaks."
+      ],
+      "zh-Hans": [
+        "进阶: 屈腿 → 分腿 → 完全龙旗.",
+        "动作变形可能拉伤颈部."
+      ]
+    }
+  },
+  {
+    "id": "v_up",
+    "name": { "en": "V-Up", "zh-Hans": "V 字两头起" },
+    "muscles": {
+      "primary": [
+        { "major": "core", "sub": "abs_upper" },
+        { "major": "core", "sub": "abs_lower" }
+      ],
+      "secondary": [
+        { "major": "legs", "sub": "hip_flexors" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "calisthenics",
+    "movementPattern": null,
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie flat, arms overhead, legs straight.",
+        "Simultaneously lift legs and torso to V.",
+        "Touch hands to feet, lower with control."
+      ],
+      "zh-Hans": [
+        "仰卧, 双手过头, 双腿伸直.",
+        "上身和双腿同时抬起成 V 形.",
+        "手碰脚, 控制下放."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=iP5UKr1KCB8",
+    "calories_estimate": { "low": 6, "med": 9, "high": 12 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "jackknife",
+    "name": { "en": "Jackknife", "zh-Hans": "折刀" },
+    "muscles": {
+      "primary": [
+        { "major": "core", "sub": "abs_lower" },
+        { "major": "core", "sub": "abs_upper" }
+      ],
+      "secondary": [
+        { "major": "legs", "sub": "hip_flexors" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "calisthenics",
+    "movementPattern": null,
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie flat, arms overhead, legs straight.",
+        "Bring knees in while sitting up.",
+        "Touch knees, lower flat under control."
+      ],
+      "zh-Hans": [
+        "仰卧, 双手过头, 双腿伸直.",
+        "屈膝上提同时坐起.",
+        "手碰膝, 控制下放回起点."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=eedf1OOWuGo",
+    "calories_estimate": { "low": 5, "med": 7, "high": 10 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "hollow_hold",
+    "name": { "en": "Hollow Hold", "zh-Hans": "空心支撑" },
+    "muscles": {
+      "primary": [
+        { "major": "core", "sub": "abs_upper" },
+        { "major": "core", "sub": "abs_lower" },
+        { "major": "core", "sub": "transverse" }
+      ],
+      "secondary": [
+        { "major": "legs", "sub": "hip_flexors" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "calisthenics",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "isometric",
+    "level": "intermediate",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie on back, low back pressed to floor.",
+        "Lift legs and shoulders — arms overhead.",
+        "Hold rigid hollow shape for time."
+      ],
+      "zh-Hans": [
+        "仰卧, 下背压地.",
+        "抬起腿和肩 — 双手过头.",
+        "保持空心姿势, 计时."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=LlDNef_Ztsc",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "hollow_rock",
+    "name": { "en": "Hollow Rock", "zh-Hans": "空心摇摆" },
+    "muscles": {
+      "primary": [
+        { "major": "core", "sub": "abs_upper" },
+        { "major": "core", "sub": "abs_lower" },
+        { "major": "core", "sub": "transverse" }
+      ],
+      "secondary": []
+    },
+    "equipment": ["body_only"],
+    "category": "calisthenics",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "endurance",
+    "level": "intermediate",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Hollow hold position — abs tight.",
+        "Rock back and forth as a rigid unit.",
+        "Maintain shape, don't lose hollow."
+      ],
+      "zh-Hans": [
+        "空心姿势 — 腹部紧绷.",
+        "整身前后摇摆, 保持刚性.",
+        "维持空心形态, 不变形."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=tSWBPHRtkRY",
+    "calories_estimate": { "low": 5, "med": 7, "high": 10 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "l_sit",
+    "name": { "en": "L-Sit", "zh-Hans": "L 字支撑" },
+    "muscles": {
+      "primary": [
+        { "major": "core", "sub": "abs_upper" },
+        { "major": "core", "sub": "abs_lower" }
+      ],
+      "secondary": [
+        { "major": "legs", "sub": "hip_flexors" },
+        { "major": "legs", "sub": "quads" },
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "arms", "sub": "triceps" }
+      ]
+    },
+    "equipment": ["parallel_bars"],
+    "category": "calisthenics",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "isometric",
+    "level": "advanced",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Support on parallel bars or floor.",
+        "Lift legs straight to horizontal.",
+        "Hold L shape — arms locked."
+      ],
+      "zh-Hans": [
+        "双杠或地面支撑.",
+        "直腿抬至水平.",
+        "保持 L 形 — 手臂锁定."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=2tM1LZ5stnI",
+    "calories_estimate": { "low": 6, "med": 9, "high": 12 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "flutter_kicks",
+    "name": { "en": "Flutter Kicks", "zh-Hans": "交替踢腿" },
+    "muscles": {
+      "primary": [{ "major": "core", "sub": "abs_lower" }],
+      "secondary": [
+        { "major": "core", "sub": "abs_upper" },
+        { "major": "legs", "sub": "hip_flexors" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "calisthenics",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "endurance",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie on back, legs straight, just off floor.",
+        "Alternate small up-down leg kicks.",
+        "Lower back pressed flat to floor."
+      ],
+      "zh-Hans": [
+        "仰卧, 双腿直, 微微抬起.",
+        "交替小幅上下踢腿.",
+        "下背贴地."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=cb0Aqrm8MGw",
+    "calories_estimate": { "low": 5, "med": 7, "high": 9 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "scissor_kicks",
+    "name": { "en": "Scissor Kicks", "zh-Hans": "剪刀腿" },
+    "muscles": {
+      "primary": [{ "major": "core", "sub": "abs_lower" }],
+      "secondary": [
+        { "major": "legs", "sub": "hip_flexors" },
+        { "major": "legs", "sub": "adductors" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "calisthenics",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "endurance",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie on back, legs straight, just off floor.",
+        "Cross legs horizontally — scissor pattern.",
+        "Lower back flat, controlled motion."
+      ],
+      "zh-Hans": [
+        "仰卧, 双腿直, 微抬起.",
+        "双腿水平交叉 — 剪刀动作.",
+        "下背贴地, 动作可控."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=NiyPI0OPbUM",
+    "calories_estimate": { "low": 5, "med": 7, "high": 9 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "bicycle_kicks",
+    "name": { "en": "Bicycle Kicks", "zh-Hans": "蹬自行车" },
+    "muscles": {
+      "primary": [{ "major": "core", "sub": "abs_lower" }],
+      "secondary": [
+        { "major": "core", "sub": "obliques" },
+        { "major": "legs", "sub": "hip_flexors" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "calisthenics",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "endurance",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie on back, legs raised.",
+        "Pedal legs in cycling motion.",
+        "Keep core engaged, lower back flat."
+      ],
+      "zh-Hans": [
+        "仰卧, 双腿抬起.",
+        "做蹬自行车的动作.",
+        "核心收紧, 下背贴地."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=Iwyvozckjak",
+    "calories_estimate": { "low": 5, "med": 7, "high": 10 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "side_bend_dumbbell",
+    "name": { "en": "Side Bend (Dumbbell)", "zh-Hans": "侧屈 (哑铃)" },
+    "muscles": {
+      "primary": [{ "major": "core", "sub": "obliques" }],
+      "secondary": [
+        { "major": "back", "sub": "lower_back" }
+      ]
+    },
+    "equipment": ["dumbbell"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Stand, dumbbell in one hand at side.",
+        "Bend laterally toward dumbbell side.",
+        "Return upright by squeezing opposite oblique."
+      ],
+      "zh-Hans": [
+        "站立, 单手持哑铃于体侧.",
+        "向哑铃侧屈干.",
+        "对侧腹斜肌发力起身."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=lL4q63ot1Hg",
+    "calories_estimate": { "low": 3, "med": 5, "high": 6 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "side_bend_cable",
+    "name": { "en": "Side Bend (Cable)", "zh-Hans": "侧屈 (绳索)" },
+    "muscles": {
+      "primary": [{ "major": "core", "sub": "obliques" }],
+      "secondary": [
+        { "major": "back", "sub": "lower_back" }
+      ]
+    },
+    "equipment": ["cable"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Stand sideways to cable, low pulley.",
+        "Grip handle, bend away from machine.",
+        "Return upright, controlled motion."
+      ],
+      "zh-Hans": [
+        "侧对绳索, 低位滑轮.",
+        "握把手, 向远离机器侧屈干.",
+        "返回直立, 动作可控."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=8fwhsx0u-2Q",
+    "calories_estimate": { "low": 3, "med": 5, "high": 6 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "windshield_wiper",
+    "name": { "en": "Windshield Wipers", "zh-Hans": "雨刷" },
+    "muscles": {
+      "primary": [
+        { "major": "core", "sub": "obliques" },
+        { "major": "core", "sub": "abs_lower" }
+      ],
+      "secondary": [
+        { "major": "core", "sub": "abs_upper" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "calisthenics",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie on back, arms out, legs straight up.",
+        "Rotate legs side to side — like wipers.",
+        "Shoulders flat, controlled tempo."
+      ],
+      "zh-Hans": [
+        "仰卧, 双手张开, 双腿垂直举起.",
+        "双腿左右摆动 — 像雨刷.",
+        "肩部平地, 节奏可控."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=5y8E5w9DqTM",
+    "calories_estimate": { "low": 6, "med": 8, "high": 11 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "windshield_wiper_hanging",
+    "name": { "en": "Hanging Windshield Wipers", "zh-Hans": "悬挂雨刷" },
+    "muscles": {
+      "primary": [
+        { "major": "core", "sub": "obliques" },
+        { "major": "core", "sub": "abs_lower" }
+      ],
+      "secondary": [
+        { "major": "back", "sub": "lats" },
+        { "major": "arms", "sub": "forearms" }
+      ]
+    },
+    "equipment": ["pull_up_bar"],
+    "category": "calisthenics",
+    "movementPattern": null,
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "strength",
+    "level": "advanced",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Hang from bar, raise legs to 90°.",
+        "Rotate legs side to side.",
+        "Controlled motion — no swinging."
+      ],
+      "zh-Hans": [
+        "悬挂单杠, 直腿抬至 90°.",
+        "双腿左右摆动.",
+        "动作可控 — 不要借力."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=Q5j5IZS_Hc4",
+    "calories_estimate": { "low": 8, "med": 11, "high": 14 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "cable_woodchopper",
+    "name": { "en": "Woodchopper (Cable)", "zh-Hans": "砍柴 (绳索)" },
+    "muscles": {
+      "primary": [{ "major": "core", "sub": "obliques" }],
+      "secondary": [
+        { "major": "core", "sub": "abs_upper" },
+        { "major": "shoulders", "sub": "front_delt" }
+      ]
+    },
+    "equipment": ["cable"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "compound",
+    "unilateral": true,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Cable at high pulley, stand sideways.",
+        "Pull handle down across body to opposite hip.",
+        "Return slowly, rotate from core."
+      ],
+      "zh-Hans": [
+        "绳索置高位, 侧对机器.",
+        "把手斜向下拉至对侧髋.",
+        "缓慢返回, 核心带动旋转."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=pAplQXk3dkU",
+    "calories_estimate": { "low": 6, "med": 8, "high": 11 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "cable_woodchopper_reverse",
+    "name": { "en": "Woodchopper Reverse (Cable)", "zh-Hans": "反向砍柴 (绳索)" },
+    "muscles": {
+      "primary": [{ "major": "core", "sub": "obliques" }],
+      "secondary": [
+        { "major": "core", "sub": "abs_upper" },
+        { "major": "shoulders", "sub": "side_delt" }
+      ]
+    },
+    "equipment": ["cable"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "compound",
+    "unilateral": true,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Cable at low pulley, stand sideways.",
+        "Pull handle up across body to opposite shoulder.",
+        "Return slowly, rotate from core."
+      ],
+      "zh-Hans": [
+        "绳索置低位, 侧对机器.",
+        "把手斜向上拉至对侧肩.",
+        "缓慢返回, 核心带动旋转."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=zVoOSL1J7vQ",
+    "calories_estimate": { "low": 6, "med": 8, "high": 11 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "toe_touch_crunch",
+    "name": { "en": "Toe Touch Crunch", "zh-Hans": "触脚卷腹" },
+    "muscles": {
+      "primary": [{ "major": "core", "sub": "abs_upper" }],
+      "secondary": [
+        { "major": "core", "sub": "abs_lower" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "calisthenics",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie on back, legs straight up.",
+        "Reach hands up to touch toes.",
+        "Lower with control, repeat."
+      ],
+      "zh-Hans": [
+        "仰卧, 双腿垂直抬起.",
+        "双手向上触脚尖.",
+        "控制下放, 重复."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=BWuvUaCsTeI",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "heel_touch",
+    "name": { "en": "Heel Touch", "zh-Hans": "触脚跟" },
+    "muscles": {
+      "primary": [{ "major": "core", "sub": "obliques" }],
+      "secondary": [
+        { "major": "core", "sub": "abs_upper" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "calisthenics",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "endurance",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie on back, knees bent, slight crunch.",
+        "Reach side to side to tap heels.",
+        "Keep shoulders off floor throughout."
+      ],
+      "zh-Hans": [
+        "仰卧, 屈膝, 微微卷腹.",
+        "左右触碰脚跟.",
+        "全程肩部离地."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=eJtmJqTfPMM",
+    "calories_estimate": { "low": 3, "med": 5, "high": 6 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "ab_crunch_machine",
+    "name": { "en": "Ab Crunch Machine", "zh-Hans": "腹肌器械" },
+    "muscles": {
+      "primary": [{ "major": "core", "sub": "abs_upper" }],
+      "secondary": [{ "major": "core", "sub": "abs_lower" }]
+    },
+    "equipment": ["machine"],
+    "category": "strength",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "beginner",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Sit on machine, adjust pad to shoulders.",
+        "Crunch torso forward against resistance.",
+        "Squeeze abs, return under control."
+      ],
+      "zh-Hans": [
+        "坐器械上, 靠垫调至肩部.",
+        "对抗阻力向前卷腹.",
+        "腹部收紧, 控制返回."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=2zNCgmAj1RU",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "sit_up_v",
+    "name": { "en": "V Sit-Up", "zh-Hans": "V 字仰卧起坐" },
+    "muscles": {
+      "primary": [
+        { "major": "core", "sub": "abs_upper" },
+        { "major": "core", "sub": "abs_lower" }
+      ],
+      "secondary": [
+        { "major": "legs", "sub": "hip_flexors" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "calisthenics",
+    "movementPattern": null,
+    "mechanic": "compound",
+    "unilateral": false,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Sit, hands behind, legs straight up at angle.",
+        "Lower torso back as legs lower.",
+        "Return to V — abs in constant tension."
+      ],
+      "zh-Hans": [
+        "坐姿, 手撑后, 双腿斜上方.",
+        "上身后倒同时双腿下放.",
+        "返回 V 形 — 腹部持续紧绷."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=g6sjuqyq6_M",
+    "calories_estimate": { "low": 6, "med": 9, "high": 12 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "side_plank_dip",
+    "name": { "en": "Side Plank Dip", "zh-Hans": "侧平板沉髋" },
+    "muscles": {
+      "primary": [{ "major": "core", "sub": "obliques" }],
+      "secondary": [
+        { "major": "core", "sub": "transverse" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "calisthenics",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "endurance",
+    "level": "intermediate",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Side plank position, body straight.",
+        "Lower hips toward floor, then raise.",
+        "Squeeze obliques at top, switch sides."
+      ],
+      "zh-Hans": [
+        "侧平板姿势, 身体直线.",
+        "髋部向地面下沉再抬起.",
+        "顶部收紧腹斜肌, 换边."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=fM-NyZ_ksHM",
+    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "leg_raise_hanging_oblique",
+    "name": { "en": "Hanging Oblique Leg Raise", "zh-Hans": "悬挂侧抬腿" },
+    "muscles": {
+      "primary": [
+        { "major": "core", "sub": "obliques" },
+        { "major": "core", "sub": "abs_lower" }
+      ],
+      "secondary": [
+        { "major": "legs", "sub": "hip_flexors" },
+        { "major": "arms", "sub": "forearms" }
+      ]
+    },
+    "equipment": ["pull_up_bar"],
+    "category": "calisthenics",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "hypertrophy",
+    "level": "intermediate",
+    "force": "pull",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Hang from bar, knees together.",
+        "Raise knees to one side at angle.",
+        "Lower, alternate sides — no swinging."
+      ],
+      "zh-Hans": [
+        "悬挂单杠, 双膝并拢.",
+        "膝向一侧斜向上提.",
+        "下放, 交替 — 不借力."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=KQRk0DyaC4w",
+    "calories_estimate": { "low": 6, "med": 8, "high": 11 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "hamstring_stretch_seated",
+    "name": { "en": "Hamstring Stretch (Seated)", "zh-Hans": "腘绳肌拉伸 (坐姿)" },
+    "muscles": {
+      "primary": [{ "major": "legs", "sub": "hamstrings" }],
+      "secondary": [{ "major": "back", "sub": "lower_back" }]
+    },
+    "equipment": ["body_only"],
+    "category": "stretching",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "isometric",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Sit on floor, one leg extended, other bent.",
+        "Hinge from hips, reach toward toes.",
+        "Hold 20-30s, feel stretch in back of thigh."
+      ],
+      "zh-Hans": [
+        "坐地, 一腿伸直一腿弯曲.",
+        "髋部前倾, 双手伸向脚尖.",
+        "保持 20-30 秒, 大腿后侧拉伸."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=g_tea8ZNk5A",
+    "calories_estimate": { "low": 1, "med": 2, "high": 2 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "hamstring_stretch_standing",
+    "name": { "en": "Hamstring Stretch (Standing Toe Touch)", "zh-Hans": "腘绳肌拉伸 (站姿触脚)" },
+    "muscles": {
+      "primary": [{ "major": "legs", "sub": "hamstrings" }],
+      "secondary": [
+        { "major": "back", "sub": "lower_back" },
+        { "major": "legs", "sub": "calves" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "stretching",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "isometric",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Stand, feet together, knees slightly bent.",
+        "Hinge from hips, hands reach to floor.",
+        "Relax neck, hold 20-30s."
+      ],
+      "zh-Hans": [
+        "站立, 双脚并拢, 微屈膝.",
+        "髋部前屈, 双手触地.",
+        "颈部放松, 保持 20-30 秒."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=RXJrCDqJV5o",
+    "calories_estimate": { "low": 1, "med": 2, "high": 2 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "hamstring_stretch_supine",
+    "name": { "en": "Hamstring Stretch (Supine)", "zh-Hans": "腘绳肌拉伸 (仰卧)" },
+    "muscles": {
+      "primary": [{ "major": "legs", "sub": "hamstrings" }],
+      "secondary": [{ "major": "legs", "sub": "calves" }]
+    },
+    "equipment": ["body_only"],
+    "category": "stretching",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "isometric",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie on back, lift one leg straight up.",
+        "Grip behind thigh, pull toward chest.",
+        "Hold 20-30s, switch legs."
+      ],
+      "zh-Hans": [
+        "仰卧, 单腿垂直抬起.",
+        "握大腿后侧, 拉向胸前.",
+        "保持 20-30 秒, 换腿."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=4hb-jBLBdJU",
+    "calories_estimate": { "low": 1, "med": 2, "high": 2 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "hamstring_stretch_supine_strap",
+    "name": { "en": "Hamstring Stretch (Supine, Strap)", "zh-Hans": "腘绳肌拉伸 (仰卧, 带子)" },
+    "muscles": {
+      "primary": [{ "major": "legs", "sub": "hamstrings" }],
+      "secondary": [{ "major": "legs", "sub": "calves" }]
+    },
+    "equipment": ["yoga_strap"],
+    "category": "stretching",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "isometric",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie on back, loop strap around one foot.",
+        "Lift leg straight, pull strap to deepen.",
+        "Hold 20-30s, switch legs."
+      ],
+      "zh-Hans": [
+        "仰卧, 弹力带绕脚.",
+        "直腿抬起, 拉带子加深拉伸.",
+        "保持 20-30 秒, 换腿."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=ueP2BfaqwGY",
+    "calories_estimate": { "low": 1, "med": 2, "high": 2 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "quad_stretch_standing",
+    "name": { "en": "Quad Stretch (Standing)", "zh-Hans": "股四头肌拉伸 (站姿)" },
+    "muscles": {
+      "primary": [{ "major": "legs", "sub": "quads" }],
+      "secondary": [{ "major": "legs", "sub": "hip_flexors" }]
+    },
+    "equipment": ["body_only"],
+    "category": "stretching",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "isometric",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Stand on one leg, grab other ankle behind.",
+        "Pull heel to glute, knees together.",
+        "Hold 20-30s, switch legs."
+      ],
+      "zh-Hans": [
+        "单腿站立, 后伸手抓另脚踝.",
+        "拉脚跟向臀部, 双膝并拢.",
+        "保持 20-30 秒, 换腿."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=Yfak4u8vj9M",
+    "calories_estimate": { "low": 1, "med": 2, "high": 2 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "quad_stretch_lying",
+    "name": { "en": "Quad Stretch (Lying)", "zh-Hans": "股四头肌拉伸 (侧卧)" },
+    "muscles": {
+      "primary": [{ "major": "legs", "sub": "quads" }],
+      "secondary": [{ "major": "legs", "sub": "hip_flexors" }]
+    },
+    "equipment": ["body_only"],
+    "category": "stretching",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "isometric",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie on side, grab top ankle.",
+        "Pull heel to glute, hip extended.",
+        "Hold 20-30s, switch sides."
+      ],
+      "zh-Hans": [
+        "侧卧, 抓住上方脚踝.",
+        "拉脚跟向臀部, 髋部伸展.",
+        "保持 20-30 秒, 换边."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=XK77JzL_8b8",
+    "calories_estimate": { "low": 1, "med": 2, "high": 2 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "couch_stretch",
+    "name": { "en": "Couch Stretch", "zh-Hans": "沙发拉伸" },
+    "muscles": {
+      "primary": [
+        { "major": "legs", "sub": "quads" },
+        { "major": "legs", "sub": "hip_flexors" }
+      ],
+      "secondary": []
+    },
+    "equipment": ["body_only"],
+    "category": "stretching",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "isometric",
+    "level": "intermediate",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Kneel with back shin against wall/bench.",
+        "Front foot forward, lean torso upright.",
+        "Hold 30-60s, switch sides."
+      ],
+      "zh-Hans": [
+        "跪姿, 后腿胫骨贴墙或凳.",
+        "前脚向前, 上身保持直立.",
+        "保持 30-60 秒, 换边."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=jaoxAqgmK8M",
+    "calories_estimate": { "low": 1, "med": 2, "high": 3 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "calf_stretch_wall",
+    "name": { "en": "Calf Stretch (Wall)", "zh-Hans": "小腿拉伸 (墙)" },
+    "muscles": {
+      "primary": [{ "major": "legs", "sub": "calves" }],
+      "secondary": [{ "major": "legs", "sub": "hamstrings" }]
+    },
+    "equipment": ["body_only"],
+    "category": "stretching",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "isometric",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Hands on wall, one leg back.",
+        "Back heel pressed flat to floor.",
+        "Hold 20-30s, switch sides."
+      ],
+      "zh-Hans": [
+        "双手扶墙, 一腿后撤.",
+        "后脚跟压紧地面.",
+        "保持 20-30 秒, 换边."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=FcKBaP9XX_8",
+    "calories_estimate": { "low": 1, "med": 2, "high": 2 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "calf_stretch_downward_dog",
+    "name": { "en": "Calf Stretch (Downward Dog)", "zh-Hans": "小腿拉伸 (下犬式)" },
+    "muscles": {
+      "primary": [{ "major": "legs", "sub": "calves" }],
+      "secondary": [
+        { "major": "legs", "sub": "hamstrings" },
+        { "major": "back", "sub": "lats" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "stretching",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "isometric",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Start in plank, lift hips into V shape.",
+        "Press heels toward floor.",
+        "Hold 20-30s, alternate pedal heels."
+      ],
+      "zh-Hans": [
+        "平板起, 髋部抬高成 V 形.",
+        "脚跟向下压地.",
+        "保持 20-30 秒, 可交替踩腿."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=4FF7P5lkM1k",
+    "calories_estimate": { "low": 1, "med": 2, "high": 3 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "soleus_stretch",
+    "name": { "en": "Soleus Stretch", "zh-Hans": "比目鱼肌拉伸" },
+    "muscles": {
+      "primary": [{ "major": "legs", "sub": "calves" }],
+      "secondary": []
+    },
+    "equipment": ["body_only"],
+    "category": "stretching",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "isometric",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Stand near wall, one leg back, knee bent.",
+        "Sink hips, both heels stay on floor.",
+        "Hold 20-30s, switch sides."
+      ],
+      "zh-Hans": [
+        "近墙站立, 一腿后撤屈膝.",
+        "下沉髋部, 双脚跟贴地.",
+        "保持 20-30 秒, 换边."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=UMWeR0ENJ7Q",
+    "calories_estimate": { "low": 1, "med": 2, "high": 2 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "hip_flexor_stretch_kneeling",
+    "name": { "en": "Hip Flexor Stretch (Kneeling)", "zh-Hans": "髂腰肌拉伸 (跪姿)" },
+    "muscles": {
+      "primary": [{ "major": "legs", "sub": "hip_flexors" }],
+      "secondary": [
+        { "major": "legs", "sub": "quads" },
+        { "major": "legs", "sub": "glutes" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "stretching",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "isometric",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Kneel with one knee, other foot forward.",
+        "Tuck pelvis, sink hips forward.",
+        "Hold 20-30s, switch sides."
+      ],
+      "zh-Hans": [
+        "单膝跪地, 另一脚前.",
+        "骨盆后倾, 髋部前推.",
+        "保持 20-30 秒, 换边."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=YQmpO9VT2X4",
+    "calories_estimate": { "low": 1, "med": 2, "high": 3 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "low_lunge_stretch",
+    "name": { "en": "Low Lunge Stretch", "zh-Hans": "低弓步拉伸" },
+    "muscles": {
+      "primary": [{ "major": "legs", "sub": "hip_flexors" }],
+      "secondary": [
+        { "major": "legs", "sub": "quads" },
+        { "major": "legs", "sub": "hamstrings" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "stretching",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "isometric",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lunge position, back knee on floor.",
+        "Raise arms overhead, lean back slightly.",
+        "Hold 20-30s, switch sides."
+      ],
+      "zh-Hans": [
+        "弓步, 后膝着地.",
+        "双手过头, 微微后仰.",
+        "保持 20-30 秒, 换边."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=cpUMUk26IRk",
+    "calories_estimate": { "low": 1, "med": 2, "high": 3 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "pigeon_pose",
+    "name": { "en": "Pigeon Pose", "zh-Hans": "鸽子式" },
+    "muscles": {
+      "primary": [{ "major": "legs", "sub": "glutes" }],
+      "secondary": [
+        { "major": "legs", "sub": "hip_flexors" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "stretching",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "isometric",
+    "level": "intermediate",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Front leg bent in front, shin angled.",
+        "Back leg extended straight behind.",
+        "Lean forward, hold 30-60s, switch."
+      ],
+      "zh-Hans": [
+        "前腿弯曲在前, 小腿斜放.",
+        "后腿向后伸直.",
+        "前倾, 保持 30-60 秒, 换边."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=cMTKUF8t6e8",
+    "calories_estimate": { "low": 1, "med": 2, "high": 3 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "figure_four_stretch",
+    "name": { "en": "Figure-4 Stretch", "zh-Hans": "4 字拉伸" },
+    "muscles": {
+      "primary": [{ "major": "legs", "sub": "glutes" }],
+      "secondary": []
+    },
+    "equipment": ["body_only"],
+    "category": "stretching",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "isometric",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie on back, cross one ankle over opposite knee.",
+        "Pull supporting thigh toward chest.",
+        "Hold 20-30s, switch sides."
+      ],
+      "zh-Hans": [
+        "仰卧, 一脚踝交叉放对侧膝上.",
+        "拉支撑腿大腿向胸前.",
+        "保持 20-30 秒, 换边."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=ZpyB4N0gE3Q",
+    "calories_estimate": { "low": 1, "med": 2, "high": 2 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "glute_stretch_supine",
+    "name": { "en": "Glute Stretch (Supine)", "zh-Hans": "臀肌拉伸 (仰卧)" },
+    "muscles": {
+      "primary": [{ "major": "legs", "sub": "glutes" }],
+      "secondary": [{ "major": "back", "sub": "lower_back" }]
+    },
+    "equipment": ["body_only"],
+    "category": "stretching",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "isometric",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie on back, pull one knee across body.",
+        "Use opposite hand to guide knee down.",
+        "Hold 20-30s, switch sides."
+      ],
+      "zh-Hans": [
+        "仰卧, 单膝拉向对侧.",
+        "对侧手引导膝下压.",
+        "保持 20-30 秒, 换边."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=NknqOzcK5HE",
+    "calories_estimate": { "low": 1, "med": 2, "high": 2 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "butterfly_stretch",
+    "name": { "en": "Butterfly Stretch", "zh-Hans": "蝴蝶拉伸" },
+    "muscles": {
+      "primary": [{ "major": "legs", "sub": "adductors" }],
+      "secondary": [{ "major": "back", "sub": "lower_back" }]
+    },
+    "equipment": ["body_only"],
+    "category": "stretching",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "isometric",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Sit, soles of feet together, knees out.",
+        "Hold ankles, gently press knees down.",
+        "Lean forward to deepen, hold 20-30s."
+      ],
+      "zh-Hans": [
+        "坐姿, 双脚掌相对, 膝外展.",
+        "抓脚踝, 轻压双膝向下.",
+        "前倾加深, 保持 20-30 秒."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=1OauUVxRtnk",
+    "calories_estimate": { "low": 1, "med": 2, "high": 2 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "frog_pose",
+    "name": { "en": "Frog Pose", "zh-Hans": "青蛙式" },
+    "muscles": {
+      "primary": [{ "major": "legs", "sub": "adductors" }],
+      "secondary": [{ "major": "legs", "sub": "hip_flexors" }]
+    },
+    "equipment": ["body_only"],
+    "category": "stretching",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "isometric",
+    "level": "intermediate",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "On all fours, knees wide, feet flexed.",
+        "Sink hips back, keep spine neutral.",
+        "Hold 30-60s, breathe slowly."
+      ],
+      "zh-Hans": [
+        "四点跪, 膝盖宽开, 脚背勾起.",
+        "髋部后坐, 脊柱中立.",
+        "保持 30-60 秒, 缓慢呼吸."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=ZyfV5LX5BfA",
+    "calories_estimate": { "low": 2, "med": 3, "high": 4 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "side_lunge_stretch",
+    "name": { "en": "Side Lunge Stretch", "zh-Hans": "侧弓步拉伸" },
+    "muscles": {
+      "primary": [{ "major": "legs", "sub": "adductors" }],
+      "secondary": [
+        { "major": "legs", "sub": "hamstrings" },
+        { "major": "legs", "sub": "glutes" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "stretching",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "isometric",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Stand wide, shift weight to one bent leg.",
+        "Other leg straight, foot flat.",
+        "Hold 20-30s, switch sides."
+      ],
+      "zh-Hans": [
+        "宽步距站立, 单腿屈膝下蹲.",
+        "另一腿伸直, 脚平贴地.",
+        "保持 20-30 秒, 换边."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=ZhM-DCJW0_Q",
+    "calories_estimate": { "low": 1, "med": 2, "high": 3 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "straddle_stretch",
+    "name": { "en": "Straddle Stretch", "zh-Hans": "横劈坐拉伸" },
+    "muscles": {
+      "primary": [{ "major": "legs", "sub": "adductors" }],
+      "secondary": [
+        { "major": "legs", "sub": "hamstrings" },
+        { "major": "back", "sub": "lower_back" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "stretching",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "isometric",
+    "level": "intermediate",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Sit on floor, legs out wide.",
+        "Hinge from hips, reach forward.",
+        "Hold 30-60s, breathe deeply."
+      ],
+      "zh-Hans": [
+        "坐地, 双腿大幅分开.",
+        "髋部前屈, 双手前伸.",
+        "保持 30-60 秒, 深呼吸."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=Tx33Bcl7sQk",
+    "calories_estimate": { "low": 1, "med": 2, "high": 3 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "chest_stretch_doorway",
+    "name": { "en": "Chest Stretch (Doorway)", "zh-Hans": "胸肌拉伸 (门框)" },
+    "muscles": {
+      "primary": [
+        { "major": "chest", "sub": "middle_chest" },
+        { "major": "chest", "sub": "upper_chest" }
+      ],
+      "secondary": [{ "major": "shoulders", "sub": "front_delt" }]
+    },
+    "equipment": ["body_only"],
+    "category": "stretching",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "isometric",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Stand in doorway, arms on frame at 90°.",
+        "Step forward to feel chest stretch.",
+        "Hold 20-30s, adjust arm height."
+      ],
+      "zh-Hans": [
+        "站门框中, 双臂 90° 撑门框.",
+        "前迈一步, 感受胸部拉伸.",
+        "保持 20-30 秒, 可调整高度."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=SLqnYZRBVx8",
+    "calories_estimate": { "low": 1, "med": 2, "high": 2 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "chest_stretch_wall",
+    "name": { "en": "Chest Stretch (Wall)", "zh-Hans": "胸肌拉伸 (墙)" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [{ "major": "shoulders", "sub": "front_delt" }]
+    },
+    "equipment": ["body_only"],
+    "category": "stretching",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "isometric",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Stand sideways near wall, one arm back.",
+        "Palm on wall, rotate body away.",
+        "Hold 20-30s, switch sides."
+      ],
+      "zh-Hans": [
+        "侧身靠墙, 单手后撑墙.",
+        "手掌贴墙, 上身向远离墙旋转.",
+        "保持 20-30 秒, 换边."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=YQ8L8aPZX-A",
+    "calories_estimate": { "low": 1, "med": 2, "high": 2 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "shoulder_stretch_cross_body",
+    "name": { "en": "Shoulder Stretch (Cross-Body)", "zh-Hans": "肩部拉伸 (跨身)" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "rear_delt" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "side_delt" },
+        { "major": "back", "sub": "rhomboids" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "stretching",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "isometric",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Pull one arm across body at chest height.",
+        "Opposite hand grips elbow, pull gently.",
+        "Hold 20-30s, switch sides."
+      ],
+      "zh-Hans": [
+        "单臂横跨胸前.",
+        "对侧手扣住肘部, 轻拉.",
+        "保持 20-30 秒, 换边."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=ZKK4Y_Z_zZA",
+    "calories_estimate": { "low": 1, "med": 2, "high": 2 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "shoulder_stretch_sleeper",
+    "name": { "en": "Sleeper Stretch", "zh-Hans": "睡眠者拉伸" },
+    "muscles": {
+      "primary": [{ "major": "shoulders", "sub": "rear_delt" }],
+      "secondary": [{ "major": "back", "sub": "rhomboids" }]
+    },
+    "equipment": ["body_only"],
+    "category": "stretching",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "isometric",
+    "level": "intermediate",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Side-lying, bottom arm out, elbow 90°.",
+        "Use top hand to push forearm down.",
+        "Hold 20-30s, switch sides."
+      ],
+      "zh-Hans": [
+        "侧卧, 下方手臂前伸, 肘 90°.",
+        "上方手向下推前臂.",
+        "保持 20-30 秒, 换边."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=qrx6X7AbA70",
+    "calories_estimate": { "low": 1, "med": 2, "high": 2 },
+    "danger_warnings": {
+      "en": ["Don't force — shoulder is delicate. Stop if sharp pain."],
+      "zh-Hans": ["不要强压 — 肩部脆弱, 锐痛立即停止."]
+    }
+  },
+  {
+    "id": "shoulder_dislocation_band",
+    "name": { "en": "Shoulder Dislocation (Band)", "zh-Hans": "肩部翻肩 (弹力带)" },
+    "muscles": {
+      "primary": [
+        { "major": "shoulders", "sub": "front_delt" },
+        { "major": "chest", "sub": "middle_chest" }
+      ],
+      "secondary": [{ "major": "back", "sub": "rhomboids" }]
+    },
+    "equipment": ["resistance_band"],
+    "category": "stretching",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "isometric",
+    "level": "intermediate",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Hold band wide overhead, arms straight.",
+        "Rotate band from front to behind back.",
+        "Reverse — smooth, controlled motion."
+      ],
+      "zh-Hans": [
+        "宽握弹力带于头顶, 手臂伸直.",
+        "弹力带从前向后翻至背后.",
+        "反向重复 — 动作平稳可控."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=O0H0qVuOI7g",
+    "calories_estimate": { "low": 2, "med": 3, "high": 4 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "triceps_stretch_overhead",
+    "name": { "en": "Triceps Stretch (Overhead)", "zh-Hans": "三头拉伸 (过顶)" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": [
+        { "major": "back", "sub": "lats" },
+        { "major": "shoulders", "sub": "side_delt" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "stretching",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "isometric",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Reach one arm overhead, bend at elbow.",
+        "Hand drops behind head.",
+        "Opposite hand pulls elbow, hold 20-30s."
+      ],
+      "zh-Hans": [
+        "单臂过头, 屈肘.",
+        "手掌下放至背后.",
+        "对侧手拉肘, 保持 20-30 秒."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=H1kj-ZkLLgM",
+    "calories_estimate": { "low": 1, "med": 2, "high": 2 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "triceps_stretch_behind_back",
+    "name": { "en": "Triceps Stretch (Behind Back)", "zh-Hans": "三头拉伸 (背后)" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "triceps" }],
+      "secondary": [
+        { "major": "shoulders", "sub": "rear_delt" },
+        { "major": "chest", "sub": "middle_chest" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "stretching",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "isometric",
+    "level": "intermediate",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "One hand reaches over shoulder, other below.",
+        "Clasp hands behind back.",
+        "Hold 20-30s, switch arms."
+      ],
+      "zh-Hans": [
+        "一手过肩, 一手从下穿过.",
+        "背后双手相扣.",
+        "保持 20-30 秒, 换手."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=fG5gQ2tT1Eo",
+    "calories_estimate": { "low": 1, "med": 2, "high": 2 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "biceps_stretch_wall",
+    "name": { "en": "Biceps Stretch (Wall)", "zh-Hans": "二头拉伸 (墙)" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "biceps" }],
+      "secondary": [
+        { "major": "chest", "sub": "middle_chest" },
+        { "major": "shoulders", "sub": "front_delt" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "stretching",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "isometric",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Place palm on wall behind you, arm straight.",
+        "Rotate body away from wall.",
+        "Hold 20-30s, switch sides."
+      ],
+      "zh-Hans": [
+        "手掌贴身后墙, 手臂伸直.",
+        "上身向远离墙方向转.",
+        "保持 20-30 秒, 换边."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=qN_DpKDFsZQ",
+    "calories_estimate": { "low": 1, "med": 2, "high": 2 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "lat_stretch_hanging",
+    "name": { "en": "Lat Stretch (Hanging)", "zh-Hans": "背阔肌拉伸 (悬挂)" },
+    "muscles": {
+      "primary": [{ "major": "back", "sub": "lats" }],
+      "secondary": [
+        { "major": "back", "sub": "lower_back" },
+        { "major": "arms", "sub": "forearms" }
+      ]
+    },
+    "equipment": ["pull_up_bar"],
+    "category": "stretching",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "isometric",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Hang from bar, arms straight.",
+        "Relax shoulders, let body decompress.",
+        "Hold 20-30s — focus on lat stretch."
+      ],
+      "zh-Hans": [
+        "悬挂单杠, 手臂伸直.",
+        "放松双肩, 身体下沉.",
+        "保持 20-30 秒 — 感受背阔肌拉伸."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=8mNlevPMTUk",
+    "calories_estimate": { "low": 2, "med": 3, "high": 4 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "lat_stretch_child_pose",
+    "name": { "en": "Lat Stretch (Child Pose)", "zh-Hans": "背阔肌拉伸 (婴儿式)" },
+    "muscles": {
+      "primary": [{ "major": "back", "sub": "lats" }],
+      "secondary": [
+        { "major": "back", "sub": "lower_back" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "stretching",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "isometric",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Kneel, sit on heels, fold forward.",
+        "Arms extended overhead, palms down.",
+        "Walk hands to one side to deepen lat."
+      ],
+      "zh-Hans": [
+        "跪坐脚跟上, 上身前折.",
+        "双臂向前伸, 手掌朝下.",
+        "双手移向一侧加深背阔肌拉伸."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=eqVMAPM00DM",
+    "calories_estimate": { "low": 1, "med": 2, "high": 3 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "lat_stretch_kneeling",
+    "name": { "en": "Lat Stretch (Kneeling)", "zh-Hans": "背阔肌拉伸 (跪姿)" },
+    "muscles": {
+      "primary": [{ "major": "back", "sub": "lats" }],
+      "secondary": [{ "major": "shoulders", "sub": "side_delt" }]
+    },
+    "equipment": ["body_only"],
+    "category": "stretching",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "isometric",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Kneel facing bench, forearms on bench.",
+        "Sit hips back, drop chest down.",
+        "Hold 30-60s, breathe deeply."
+      ],
+      "zh-Hans": [
+        "面对长凳跪姿, 前臂放凳上.",
+        "髋部后坐, 胸部下沉.",
+        "保持 30-60 秒, 深呼吸."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=zaQDvHt0J5w",
+    "calories_estimate": { "low": 2, "med": 3, "high": 4 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "cat_cow",
+    "name": { "en": "Cat-Cow Stretch", "zh-Hans": "猫牛式" },
+    "muscles": {
+      "primary": [
+        { "major": "back", "sub": "lower_back" },
+        { "major": "back", "sub": "upper_back" }
+      ],
+      "secondary": [{ "major": "core", "sub": "abs_upper" }]
+    },
+    "equipment": ["body_only"],
+    "category": "stretching",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "isometric",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Quadruped position, neutral spine.",
+        "Arch back, look up (cow).",
+        "Round back, tuck chin (cat) — alternate."
+      ],
+      "zh-Hans": [
+        "四点跪姿, 脊柱中立.",
+        "塌腰仰头 (牛式).",
+        "拱背收下巴 (猫式) — 交替."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=kqnua4rHVVA",
+    "calories_estimate": { "low": 2, "med": 3, "high": 4 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "child_pose",
+    "name": { "en": "Child Pose", "zh-Hans": "婴儿式" },
+    "muscles": {
+      "primary": [
+        { "major": "back", "sub": "lower_back" },
+        { "major": "back", "sub": "lats" }
+      ],
+      "secondary": [{ "major": "legs", "sub": "glutes" }]
+    },
+    "equipment": ["body_only"],
+    "category": "stretching",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "isometric",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Kneel, knees wide, big toes touching.",
+        "Sit on heels, fold forward, arms extended.",
+        "Forehead to floor, hold 30-60s."
+      ],
+      "zh-Hans": [
+        "跪姿, 双膝外开, 拇趾相对.",
+        "坐脚跟, 上身前折, 双臂伸展.",
+        "额头触地, 保持 30-60 秒."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=jcaT-7LwBA8",
+    "calories_estimate": { "low": 1, "med": 2, "high": 3 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "spinal_twist_supine",
+    "name": { "en": "Spinal Twist (Supine)", "zh-Hans": "脊柱扭转 (仰卧)" },
+    "muscles": {
+      "primary": [
+        { "major": "back", "sub": "lower_back" },
+        { "major": "core", "sub": "obliques" }
+      ],
+      "secondary": [{ "major": "legs", "sub": "glutes" }]
+    },
+    "equipment": ["body_only"],
+    "category": "stretching",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "isometric",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie on back, arms out wide.",
+        "Drop bent knees to one side.",
+        "Look opposite way, hold 20-30s."
+      ],
+      "zh-Hans": [
+        "仰卧, 双臂张开.",
+        "屈膝双腿落向一侧.",
+        "头看反方向, 保持 20-30 秒."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=8GTCAVlGcQg",
+    "calories_estimate": { "low": 1, "med": 2, "high": 2 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "spinal_twist_seated",
+    "name": { "en": "Spinal Twist (Seated)", "zh-Hans": "脊柱扭转 (坐姿)" },
+    "muscles": {
+      "primary": [
+        { "major": "back", "sub": "lower_back" },
+        { "major": "core", "sub": "obliques" }
+      ],
+      "secondary": [{ "major": "legs", "sub": "glutes" }]
+    },
+    "equipment": ["body_only"],
+    "category": "stretching",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "isometric",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Sit, one leg straight, other bent across.",
+        "Twist torso, opposite elbow on outer knee.",
+        "Hold 20-30s, switch sides."
+      ],
+      "zh-Hans": [
+        "坐姿, 一腿伸直, 另一腿屈膝交叉.",
+        "上身扭转, 对侧肘抵膝外.",
+        "保持 20-30 秒, 换边."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=8gQ7BBzNkc8",
+    "calories_estimate": { "low": 1, "med": 2, "high": 2 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "cobra_stretch",
+    "name": { "en": "Cobra Stretch", "zh-Hans": "眼镜蛇式" },
+    "muscles": {
+      "primary": [
+        { "major": "core", "sub": "abs_upper" },
+        { "major": "back", "sub": "lower_back" }
+      ],
+      "secondary": [{ "major": "chest", "sub": "middle_chest" }]
+    },
+    "equipment": ["body_only"],
+    "category": "stretching",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "isometric",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie face down, hands by chest.",
+        "Press up, arch back, hips on floor.",
+        "Hold 20-30s, feel abs stretch."
+      ],
+      "zh-Hans": [
+        "俯卧, 双手撑胸两侧.",
+        "推起仰头, 髋部贴地.",
+        "保持 20-30 秒, 感受腹部拉伸."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=JDcdhTuycOI",
+    "calories_estimate": { "low": 1, "med": 2, "high": 3 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "neck_stretch_side",
+    "name": { "en": "Neck Stretch (Side)", "zh-Hans": "颈部拉伸 (侧)" },
+    "muscles": {
+      "primary": [{ "major": "back", "sub": "neck" }],
+      "secondary": [{ "major": "back", "sub": "traps_upper" }]
+    },
+    "equipment": ["body_only"],
+    "category": "stretching",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "isometric",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Sit or stand, tall posture.",
+        "Tilt head to one side, ear to shoulder.",
+        "Hand gently assists, hold 15-20s."
+      ],
+      "zh-Hans": [
+        "坐或站, 挺直身体.",
+        "头向一侧倾, 耳贴肩.",
+        "同侧手轻辅助, 保持 15-20 秒."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=W2Hb89LtSiM",
+    "calories_estimate": { "low": 1, "med": 1, "high": 2 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "chin_tuck_stretch",
+    "name": { "en": "Chin Tuck Stretch", "zh-Hans": "下巴回缩拉伸" },
+    "muscles": {
+      "primary": [{ "major": "back", "sub": "neck" }],
+      "secondary": []
+    },
+    "equipment": ["body_only"],
+    "category": "stretching",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "isometric",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Sit or stand, head over shoulders.",
+        "Pull chin straight back — double chin.",
+        "Hold 5s, release, repeat 10-15x."
+      ],
+      "zh-Hans": [
+        "坐或站, 头在肩上方.",
+        "下巴向后收 — 出现双下巴.",
+        "保持 5 秒, 放松, 重复 10-15 次."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=Vse-aXCkpsM",
+    "calories_estimate": { "low": 1, "med": 1, "high": 2 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "neck_stretch_rotation",
+    "name": { "en": "Neck Stretch (Rotation)", "zh-Hans": "颈部拉伸 (旋转)" },
+    "muscles": {
+      "primary": [{ "major": "back", "sub": "neck" }],
+      "secondary": []
+    },
+    "equipment": ["body_only"],
+    "category": "stretching",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "isometric",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Sit or stand, shoulders relaxed.",
+        "Turn head slowly side to side.",
+        "Hold each side 15-20s."
+      ],
+      "zh-Hans": [
+        "坐或站, 肩部放松.",
+        "头缓慢左右转动.",
+        "每边保持 15-20 秒."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=N2YbT6XBfTI",
+    "calories_estimate": { "low": 1, "med": 1, "high": 2 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "foam_roll_quads",
+    "name": { "en": "Foam Roll Quads", "zh-Hans": "泡沫轴 - 股四头肌" },
+    "muscles": {
+      "primary": [{ "major": "legs", "sub": "quads" }],
+      "secondary": [{ "major": "legs", "sub": "hip_flexors" }]
+    },
+    "equipment": ["foam_roller"],
+    "category": "stretching",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "isometric",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Face down, foam roller under thighs.",
+        "Roll from hip to knee slowly.",
+        "Pause on tight spots 20-30s."
+      ],
+      "zh-Hans": [
+        "俯卧, 泡沫轴置大腿下.",
+        "缓慢从髋滚到膝.",
+        "紧绷点停留 20-30 秒."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=qmEXEevr5DA",
+    "calories_estimate": { "low": 2, "med": 3, "high": 4 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "foam_roll_hamstrings",
+    "name": { "en": "Foam Roll Hamstrings", "zh-Hans": "泡沫轴 - 腘绳肌" },
+    "muscles": {
+      "primary": [{ "major": "legs", "sub": "hamstrings" }],
+      "secondary": []
+    },
+    "equipment": ["foam_roller"],
+    "category": "stretching",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "isometric",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Sit, foam roller under one hamstring.",
+        "Use hands to push body, roll back of thigh.",
+        "Pause on tight spots, switch legs."
+      ],
+      "zh-Hans": [
+        "坐姿, 泡沫轴置大腿后.",
+        "双手撑地, 推动身体滚动.",
+        "紧绷点停留, 换腿."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=4uHTm_dG2YA",
+    "calories_estimate": { "low": 2, "med": 3, "high": 4 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "foam_roll_calves",
+    "name": { "en": "Foam Roll Calves", "zh-Hans": "泡沫轴 - 小腿" },
+    "muscles": {
+      "primary": [{ "major": "legs", "sub": "calves" }],
+      "secondary": []
+    },
+    "equipment": ["foam_roller"],
+    "category": "stretching",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "isometric",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Sit, foam roller under calves.",
+        "Lift hips, roll from knee to ankle.",
+        "Cross legs for more pressure."
+      ],
+      "zh-Hans": [
+        "坐姿, 泡沫轴置小腿后.",
+        "抬起髋部, 滚动膝至踝.",
+        "可叠腿增加压力."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=GUEdLyP9MWA",
+    "calories_estimate": { "low": 2, "med": 3, "high": 4 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "foam_roll_it_band",
+    "name": { "en": "Foam Roll IT Band", "zh-Hans": "泡沫轴 - 髂胫束" },
+    "muscles": {
+      "primary": [{ "major": "legs", "sub": "abductors" }],
+      "secondary": [{ "major": "legs", "sub": "quads" }]
+    },
+    "equipment": ["foam_roller"],
+    "category": "stretching",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "isometric",
+    "level": "intermediate",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie on side, foam roller under outer thigh.",
+        "Roll from hip to knee.",
+        "Pause on tender spots, switch sides."
+      ],
+      "zh-Hans": [
+        "侧卧, 泡沫轴置大腿外侧下.",
+        "滚动髋至膝.",
+        "紧绷点停留, 换边."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=oOWAxRPqxYU",
+    "calories_estimate": { "low": 2, "med": 3, "high": 4 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "foam_roll_glutes",
+    "name": { "en": "Foam Roll Glutes", "zh-Hans": "泡沫轴 - 臀肌" },
+    "muscles": {
+      "primary": [{ "major": "legs", "sub": "glutes" }],
+      "secondary": []
+    },
+    "equipment": ["foam_roller"],
+    "category": "stretching",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "isometric",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Sit on foam roller, cross one ankle to knee.",
+        "Lean to one side, roll over glute.",
+        "Pause on tight spots, switch sides."
+      ],
+      "zh-Hans": [
+        "坐泡沫轴上, 一脚踝交叉膝上.",
+        "侧倾压臀, 滚动.",
+        "紧绷点停留, 换边."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=yLjQ3lWfTcM",
+    "calories_estimate": { "low": 2, "med": 3, "high": 4 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "foam_roll_lats",
+    "name": { "en": "Foam Roll Lats", "zh-Hans": "泡沫轴 - 背阔肌" },
+    "muscles": {
+      "primary": [{ "major": "back", "sub": "lats" }],
+      "secondary": []
+    },
+    "equipment": ["foam_roller"],
+    "category": "stretching",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "isometric",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Side-lying, arm overhead, roller under lat.",
+        "Roll from armpit down ribs.",
+        "Pause on tender spots, switch sides."
+      ],
+      "zh-Hans": [
+        "侧卧, 单臂过头, 泡沫轴置背阔肌下.",
+        "滚动腋下至肋骨.",
+        "紧绷点停留, 换边."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=Q8sX3eUjOdg",
+    "calories_estimate": { "low": 2, "med": 3, "high": 4 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "foam_roll_upper_back",
+    "name": { "en": "Foam Roll Upper Back", "zh-Hans": "泡沫轴 - 上背" },
+    "muscles": {
+      "primary": [
+        { "major": "back", "sub": "upper_back" },
+        { "major": "back", "sub": "rhomboids" }
+      ],
+      "secondary": [{ "major": "back", "sub": "traps_middle" }]
+    },
+    "equipment": ["foam_roller"],
+    "category": "stretching",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "isometric",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie on back, roller under upper back.",
+        "Hands behind head, lift hips slightly.",
+        "Roll from mid-back to shoulders."
+      ],
+      "zh-Hans": [
+        "仰卧, 泡沫轴置上背下.",
+        "双手扶头, 微抬髋部.",
+        "中背滚动至肩部."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=PeKB0VKQGM0",
+    "calories_estimate": { "low": 2, "med": 3, "high": 4 },
+    "danger_warnings": {
+      "en": ["Avoid lower back — only upper thoracic spine."],
+      "zh-Hans": ["避开下背 — 只滚动胸椎部位."]
+    }
+  },
+  {
+    "id": "foam_roll_chest",
+    "name": { "en": "Foam Roll Chest", "zh-Hans": "泡沫轴 - 胸肌" },
+    "muscles": {
+      "primary": [{ "major": "chest", "sub": "middle_chest" }],
+      "secondary": [{ "major": "shoulders", "sub": "front_delt" }]
+    },
+    "equipment": ["foam_roller"],
+    "category": "stretching",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "isometric",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie face down, roller under one chest.",
+        "Move arm overhead to roll pec.",
+        "Pause on tight spots, switch sides."
+      ],
+      "zh-Hans": [
+        "俯卧, 泡沫轴置单侧胸下.",
+        "手臂过头滚动胸肌.",
+        "紧绷点停留, 换边."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=GnXyiBbXTfQ",
+    "calories_estimate": { "low": 2, "med": 3, "high": 4 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "foam_roll_thoracic_extension",
+    "name": { "en": "Thoracic Extension (Foam Roller)", "zh-Hans": "胸椎伸展 (泡沫轴)" },
+    "muscles": {
+      "primary": [{ "major": "back", "sub": "upper_back" }],
+      "secondary": [
+        { "major": "core", "sub": "abs_upper" },
+        { "major": "chest", "sub": "middle_chest" }
+      ]
+    },
+    "equipment": ["foam_roller"],
+    "category": "stretching",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "isometric",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie on back, roller under thoracic spine.",
+        "Hands behind head, extend over roller.",
+        "Hold 5-10s, slide up, repeat."
+      ],
+      "zh-Hans": [
+        "仰卧, 泡沫轴置胸椎下.",
+        "双手扶头, 上背向后伸展.",
+        "保持 5-10 秒, 上移, 重复."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=YwGCJTitNXg",
+    "calories_estimate": { "low": 2, "med": 3, "high": 4 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "world_greatest_stretch",
+    "name": { "en": "World's Greatest Stretch", "zh-Hans": "世界最佳拉伸" },
+    "muscles": {
+      "primary": [
+        { "major": "legs", "sub": "hip_flexors" },
+        { "major": "legs", "sub": "hamstrings" }
+      ],
+      "secondary": [
+        { "major": "back", "sub": "upper_back" },
+        { "major": "core", "sub": "obliques" },
+        { "major": "legs", "sub": "glutes" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "stretching",
+    "movementPattern": null,
+    "mechanic": "compound",
+    "unilateral": true,
+    "tempo": "isometric",
+    "level": "intermediate",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lunge forward, opposite hand on floor.",
+        "Reach inside-arm up to ceiling, rotate.",
+        "Hold 5-10s per rep, alternate sides."
+      ],
+      "zh-Hans": [
+        "前弓步, 对侧手撑地.",
+        "内侧手向上伸, 旋转上身.",
+        "每次保持 5-10 秒, 换边."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=O3RJZpoFlkc",
+    "calories_estimate": { "low": 3, "med": 4, "high": 6 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "thread_the_needle",
+    "name": { "en": "Thread the Needle", "zh-Hans": "穿针式" },
+    "muscles": {
+      "primary": [
+        { "major": "back", "sub": "upper_back" },
+        { "major": "back", "sub": "rhomboids" }
+      ],
+      "secondary": [{ "major": "shoulders", "sub": "rear_delt" }]
+    },
+    "equipment": ["body_only"],
+    "category": "stretching",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "isometric",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Start on all fours.",
+        "Slide one arm under body, shoulder to floor.",
+        "Hold 20-30s, switch sides."
+      ],
+      "zh-Hans": [
+        "四点跪姿.",
+        "单臂穿过身体, 肩部贴地.",
+        "保持 20-30 秒, 换边."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=RIcgYHKgz3w",
+    "calories_estimate": { "low": 1, "med": 2, "high": 3 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "wrist_stretch_extension",
+    "name": { "en": "Wrist Stretch (Extension)", "zh-Hans": "腕部拉伸 (伸)" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "forearms" }],
+      "secondary": []
+    },
+    "equipment": ["body_only"],
+    "category": "stretching",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "isometric",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Extend arm forward, palm up.",
+        "Other hand pulls fingers back gently.",
+        "Hold 15-20s, switch sides."
+      ],
+      "zh-Hans": [
+        "手臂前伸, 掌心朝上.",
+        "另一手轻拉指尖向后.",
+        "保持 15-20 秒, 换边."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=Cl7T6Wi2WCs",
+    "calories_estimate": { "low": 1, "med": 1, "high": 2 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "wrist_stretch_flexion",
+    "name": { "en": "Wrist Stretch (Flexion)", "zh-Hans": "腕部拉伸 (屈)" },
+    "muscles": {
+      "primary": [{ "major": "arms", "sub": "forearms" }],
+      "secondary": []
+    },
+    "equipment": ["body_only"],
+    "category": "stretching",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "isometric",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Extend arm forward, palm down.",
+        "Other hand pulls fingers down.",
+        "Hold 15-20s, switch sides."
+      ],
+      "zh-Hans": [
+        "手臂前伸, 掌心朝下.",
+        "另一手轻拉指尖向下.",
+        "保持 15-20 秒, 换边."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=mSZWSQSSEjE",
+    "calories_estimate": { "low": 1, "med": 1, "high": 2 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "happy_baby_pose",
+    "name": { "en": "Happy Baby Pose", "zh-Hans": "快乐婴儿式" },
+    "muscles": {
+      "primary": [
+        { "major": "legs", "sub": "adductors" },
+        { "major": "legs", "sub": "glutes" }
+      ],
+      "secondary": [{ "major": "back", "sub": "lower_back" }]
+    },
+    "equipment": ["body_only"],
+    "category": "stretching",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "isometric",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie on back, knees pulled to chest.",
+        "Grab outer feet, knees toward armpits.",
+        "Hold 30-60s, rock side to side."
+      ],
+      "zh-Hans": [
+        "仰卧, 双膝拉向胸前.",
+        "抓脚外侧, 膝盖拉向腋下.",
+        "保持 30-60 秒, 可左右摇晃."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=NlS9zKfg8K0",
+    "calories_estimate": { "low": 1, "med": 2, "high": 3 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "knees_to_chest",
+    "name": { "en": "Knees to Chest", "zh-Hans": "屈膝抱胸" },
+    "muscles": {
+      "primary": [{ "major": "back", "sub": "lower_back" }],
+      "secondary": [{ "major": "legs", "sub": "glutes" }]
+    },
+    "equipment": ["body_only"],
+    "category": "stretching",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "isometric",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie on back, knees bent.",
+        "Pull both knees to chest with hands.",
+        "Hold 20-30s, rock side to side gently."
+      ],
+      "zh-Hans": [
+        "仰卧, 屈膝.",
+        "双手抱双膝拉向胸.",
+        "保持 20-30 秒, 可左右轻摇."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=86KW4xC_Xw0",
+    "calories_estimate": { "low": 1, "med": 2, "high": 2 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "scorpion_stretch",
+    "name": { "en": "Scorpion Stretch", "zh-Hans": "蝎子式" },
+    "muscles": {
+      "primary": [
+        { "major": "core", "sub": "obliques" },
+        { "major": "back", "sub": "lower_back" }
+      ],
+      "secondary": [
+        { "major": "legs", "sub": "hip_flexors" },
+        { "major": "shoulders", "sub": "front_delt" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "stretching",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "isometric",
+    "level": "intermediate",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Lie face down, arms out wide.",
+        "Swing one leg over to opposite side.",
+        "Hold 20s, alternate sides."
+      ],
+      "zh-Hans": [
+        "俯卧, 双臂张开.",
+        "一腿翻向对侧.",
+        "保持 20 秒, 交替进行."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=ItQflqe6XHU",
+    "calories_estimate": { "low": 2, "med": 3, "high": 4 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "cossack_squat_stretch",
+    "name": { "en": "Cossack Squat Stretch", "zh-Hans": "哥萨克蹲拉伸" },
+    "muscles": {
+      "primary": [
+        { "major": "legs", "sub": "adductors" },
+        { "major": "legs", "sub": "hamstrings" }
+      ],
+      "secondary": [
+        { "major": "legs", "sub": "glutes" },
+        { "major": "legs", "sub": "quads" }
+      ]
+    },
+    "equipment": ["body_only"],
+    "category": "stretching",
+    "movementPattern": null,
+    "mechanic": "compound",
+    "unilateral": true,
+    "tempo": "isometric",
+    "level": "intermediate",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Stand wide stance, shift weight to one leg.",
+        "Squat low, other leg straight, toes up.",
+        "Hold 15-20s, switch sides."
+      ],
+      "zh-Hans": [
+        "宽步距站立, 重心移单腿.",
+        "下蹲低位, 另腿伸直, 脚尖上.",
+        "保持 15-20 秒, 换边."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=jjUWUH8eqfQ",
+    "calories_estimate": { "low": 3, "med": 5, "high": 7 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "standing_forward_fold",
+    "name": { "en": "Standing Forward Fold", "zh-Hans": "站立前屈" },
+    "muscles": {
+      "primary": [
+        { "major": "legs", "sub": "hamstrings" },
+        { "major": "back", "sub": "lower_back" }
+      ],
+      "secondary": [{ "major": "legs", "sub": "calves" }]
+    },
+    "equipment": ["body_only"],
+    "category": "stretching",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": false,
+    "tempo": "isometric",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Stand tall, hinge at hips forward.",
+        "Let head and arms hang heavy.",
+        "Soft knees, hold 30-60s."
+      ],
+      "zh-Hans": [
+        "直立, 髋部前屈.",
+        "头和双臂自然垂下.",
+        "微屈膝, 保持 30-60 秒."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=KdyNlt28J28",
+    "calories_estimate": { "low": 1, "med": 2, "high": 3 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "trap_stretch_seated",
+    "name": { "en": "Trap Stretch (Seated)", "zh-Hans": "斜方肌拉伸 (坐姿)" },
+    "muscles": {
+      "primary": [{ "major": "back", "sub": "traps_upper" }],
+      "secondary": [{ "major": "back", "sub": "neck" }]
+    },
+    "equipment": ["body_only"],
+    "category": "stretching",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "isometric",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Sit tall, one hand under thigh anchored.",
+        "Tilt head to opposite side, hand on head.",
+        "Hold 20-30s, switch sides."
+      ],
+      "zh-Hans": [
+        "坐姿挺直, 一手压大腿下.",
+        "头侧倾, 另一手扶头.",
+        "保持 20-30 秒, 换边."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=zPaMmTwIK7w",
+    "calories_estimate": { "low": 1, "med": 1, "high": 2 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "wall_pec_stretch",
+    "name": { "en": "Pec Stretch (Wall)", "zh-Hans": "胸大肌拉伸 (墙)" },
+    "muscles": {
+      "primary": [
+        { "major": "chest", "sub": "middle_chest" },
+        { "major": "chest", "sub": "upper_chest" }
+      ],
+      "secondary": [{ "major": "shoulders", "sub": "front_delt" }]
+    },
+    "equipment": ["body_only"],
+    "category": "stretching",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "isometric",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Stand facing wall, forearm against wall.",
+        "Step forward, rotate body away.",
+        "Hold 20-30s, switch sides."
+      ],
+      "zh-Hans": [
+        "面对墙, 前臂贴墙.",
+        "前迈一步, 上身向外转.",
+        "保持 20-30 秒, 换边."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=KIPgB8L7iAg",
+    "calories_estimate": { "low": 1, "med": 2, "high": 2 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  },
+  {
+    "id": "ankle_circles",
+    "name": { "en": "Ankle Circles", "zh-Hans": "踝关节绕环" },
+    "muscles": {
+      "primary": [{ "major": "legs", "sub": "calves" }],
+      "secondary": []
+    },
+    "equipment": ["body_only"],
+    "category": "stretching",
+    "movementPattern": null,
+    "mechanic": "isolation",
+    "unilateral": true,
+    "tempo": "isometric",
+    "level": "beginner",
+    "force": "static",
+    "imageFolder": null,
+    "instructions": {
+      "en": [
+        "Sit or stand, lift one foot.",
+        "Rotate ankle in full circles.",
+        "10 reps each direction, switch sides."
+      ],
+      "zh-Hans": [
+        "坐或站, 单脚抬起.",
+        "踝关节大范围画圈.",
+        "每方向 10 次, 换边."
+      ]
+    },
+    "video_url": "https://www.youtube.com/watch?v=v3SHvWE9CkM",
+    "calories_estimate": { "low": 1, "med": 1, "high": 2 },
+    "danger_warnings": {
+      "en": [],
+      "zh-Hans": []
+    }
+  }
+]
