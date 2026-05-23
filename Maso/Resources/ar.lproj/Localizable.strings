@@ -629,3 +629,23 @@
 
 /* Tab label — workout records */
 "Workout Records" = "سجل التمارين";
+
+/* Exercise detail — metadata chips + sections (Phase 3b) */
+"Form cues" = "نقاط الأداء";
+"Watch demo" = "شاهد العرض";
+"Compound" = "مركّب";
+"Isolation" = "عزل";
+"Horizontal push" = "دفع أفقي";
+"Vertical push" = "دفع عمودي";
+"Horizontal pull" = "سحب أفقي";
+"Vertical pull" = "سحب عمودي";
+"Hinge" = "مفصلة";
+"Squat" = "قرفصاء";
+"Lunge" = "اندفاع";
+"Rotation" = "تدوير";
+"Strength tempo" = "قوة";
+"Hypertrophy tempo" = "تضخيم";
+"Endurance tempo" = "تحمّل";
+"Explosive tempo" = "انفجاري";
+"Isometric hold" = "ثبات";
+"Unilateral" = "أحادي";

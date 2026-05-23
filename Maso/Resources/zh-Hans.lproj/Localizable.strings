@@ -635,3 +635,23 @@
 
 /* Tab label — workout records */
 "Workout Records" = "训练记录";
+
+/* Exercise detail — metadata chips + sections (Phase 3b) */
+"Form cues" = "动作要点";
+"Watch demo" = "看演示";
+"Compound" = "复合动作";
+"Isolation" = "孤立动作";
+"Horizontal push" = "水平推";
+"Vertical push" = "垂直推";
+"Horizontal pull" = "水平拉";
+"Vertical pull" = "垂直拉";
+"Hinge" = "髋铰链";
+"Squat" = "深蹲";
+"Lunge" = "弓步";
+"Rotation" = "旋转";
+"Strength tempo" = "力量节奏";
+"Hypertrophy tempo" = "增肌节奏";
+"Endurance tempo" = "耐力节奏";
+"Explosive tempo" = "爆发节奏";
+"Isometric hold" = "静态保持";
+"Unilateral" = "单边";

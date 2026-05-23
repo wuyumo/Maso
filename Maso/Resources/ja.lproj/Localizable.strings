@@ -629,3 +629,23 @@
 
 /* Tab label — workout records */
 "Workout Records" = "トレーニング記録";
+
+/* Exercise detail — metadata chips + sections (Phase 3b) */
+"Form cues" = "フォーム";
+"Watch demo" = "デモ";
+"Compound" = "複合種目";
+"Isolation" = "単関節";
+"Horizontal push" = "水平プッシュ";
+"Vertical push" = "垂直プッシュ";
+"Horizontal pull" = "水平プル";
+"Vertical pull" = "垂直プル";
+"Hinge" = "ヒンジ";
+"Squat" = "スクワット";
+"Lunge" = "ランジ";
+"Rotation" = "回旋";
+"Strength tempo" = "筋力";
+"Hypertrophy tempo" = "筋肥大";
+"Endurance tempo" = "持久";
+"Explosive tempo" = "爆発";
+"Isometric hold" = "静的保持";
+"Unilateral" = "片側";

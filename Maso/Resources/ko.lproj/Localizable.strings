@@ -629,3 +629,23 @@
 
 /* Tab label — workout records */
 "Workout Records" = "운동 기록";
+
+/* Exercise detail — metadata chips + sections (Phase 3b) */
+"Form cues" = "자세 팁";
+"Watch demo" = "시범 보기";
+"Compound" = "복합 운동";
+"Isolation" = "고립 운동";
+"Horizontal push" = "수평 밀기";
+"Vertical push" = "수직 밀기";
+"Horizontal pull" = "수평 당기기";
+"Vertical pull" = "수직 당기기";
+"Hinge" = "힌지";
+"Squat" = "스쿼트";
+"Lunge" = "런지";
+"Rotation" = "회전";
+"Strength tempo" = "근력";
+"Hypertrophy tempo" = "근비대";
+"Endurance tempo" = "지구력";
+"Explosive tempo" = "폭발력";
+"Isometric hold" = "정적 유지";
+"Unilateral" = "편측";

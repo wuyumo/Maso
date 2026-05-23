@@ -629,3 +629,23 @@
 
 /* Tab label — workout records */
 "Workout Records" = "Historique";
+
+/* Exercise detail — metadata chips + sections (Phase 3b) */
+"Form cues" = "Technique";
+"Watch demo" = "Voir démo";
+"Compound" = "Polyarticulaire";
+"Isolation" = "Isolation";
+"Horizontal push" = "Poussée horiz.";
+"Vertical push" = "Poussée vert.";
+"Horizontal pull" = "Tirage horiz.";
+"Vertical pull" = "Tirage vert.";
+"Hinge" = "Charnière";
+"Squat" = "Squat";
+"Lunge" = "Fente";
+"Rotation" = "Rotation";
+"Strength tempo" = "Force";
+"Hypertrophy tempo" = "Hypertrophie";
+"Endurance tempo" = "Endurance";
+"Explosive tempo" = "Explosif";
+"Isometric hold" = "Isométrique";
+"Unilateral" = "Unilatéral";

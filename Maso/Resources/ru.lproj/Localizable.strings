@@ -629,3 +629,23 @@
 
 /* Tab label — workout records */
 "Workout Records" = "История";
+
+/* Exercise detail — metadata chips + sections (Phase 3b) */
+"Form cues" = "Техника";
+"Watch demo" = "Демо";
+"Compound" = "Базовое";
+"Isolation" = "Изоляция";
+"Horizontal push" = "Жим горизонт.";
+"Vertical push" = "Жим вертик.";
+"Horizontal pull" = "Тяга горизонт.";
+"Vertical pull" = "Тяга вертик.";
+"Hinge" = "Шарнир";
+"Squat" = "Присед";
+"Lunge" = "Выпад";
+"Rotation" = "Ротация";
+"Strength tempo" = "Сила";
+"Hypertrophy tempo" = "Гипертрофия";
+"Endurance tempo" = "Выносливость";
+"Explosive tempo" = "Взрыв";
+"Isometric hold" = "Изометрия";
+"Unilateral" = "Односторон.";
