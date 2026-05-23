@@ -109,7 +109,7 @@ struct RootView: View {
                 HistoryScreen(onReplay: startTraining)
                     .safeAreaInset(edge: .bottom, spacing: 0) { miniBarContent }
                     .tabItem {
-                        Label("Muscle Status", systemImage: "clock.fill")
+                        Label("Workout Records", systemImage: "clock.fill")
                     }
                     .tag(RootTab.history)
             }

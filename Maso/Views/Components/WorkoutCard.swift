@@ -174,8 +174,8 @@ struct WorkoutCard: View {
                     ExercisePill(name: "+\(truncatedCount) more")
                 }
                 .padding(.leading, MasoMetrics.cardPadding)
-                // 给 play 按钮让位: 36pt 圆 + 一点 buffer, 避免最后一行 chip 跟按钮重叠.
-                .padding(.trailing, MasoMetrics.cardPadding + 44)
+                // 给 play 按钮让位: 56pt 大圆 + buffer, 避免 2 行 chip 跟按钮重叠.
+                .padding(.trailing, MasoMetrics.cardPadding + 64)
                 .padding(.bottom, MasoMetrics.cardPadding + 4)
             }
         }
@@ -185,23 +185,21 @@ struct WorkoutCard: View {
         .onTapGesture { onShowDetail?() }
         .background(MasoColor.surface)
         .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
-        // 右下角圆形 play 按钮 — 一键直接开练 (跳过详情 sheet 的 "Start" 二次点击).
-        // chevron 留在右上保留"展开详情"入口, 两个入口 = 两个意图清晰区分.
-        // 视觉跟 Plans tab 的 PlanRow play 按钮完全一致: 36×36 圆 + 12pt 三角.
+        // 右下角 play 按钮 — 主 CTA, 一键直接开练 (跳过详情 sheet 的 "Start" 二次点击).
+        // 尺寸 56pt ≈ 2 行 ExercisePill 高度 + spacing, 视觉占比跟左侧 2 行 chip block 对齐.
+        // 实色 accent + 黑色 icon + glow shadow — 跟 PaywallScreen / startGapWorkout 的"主 CTA"风格一致.
         .overlay(alignment: .bottomTrailing) {
             Button(action: onStart) {
                 ZStack {
                     Circle()
-                        .fill(MasoColor.accent.opacity(0.18))
-                        .overlay(
-                            Circle().stroke(MasoColor.accent.opacity(0.4), lineWidth: 0.5)
-                        )
-                        .frame(width: 36, height: 36)
-                    // play.fill 三角的几何中心略偏左, +0.5pt 视觉补偿对齐圆心
+                        .fill(MasoColor.accent)
+                        .frame(width: 56, height: 56)
+                        .shadow(color: MasoColor.accent.opacity(0.45), radius: 12, y: 4)
+                    // play.fill 三角的几何中心略偏左, +1pt 视觉补偿对齐圆心
                     Image(systemName: "play.fill")
-                        .font(.system(size: 12, weight: .heavy))
-                        .foregroundStyle(MasoColor.accent)
-                        .offset(x: 0.5)
+                        .font(.system(size: 20, weight: .heavy))
+                        .foregroundStyle(.black)
+                        .offset(x: 1)
                 }
             }
             .buttonStyle(.plain)

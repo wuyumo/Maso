@@ -633,3 +633,6 @@
 "Terms of Service" = "Terms of Service";
 "Version" = "Version";
 "Maso is for informational and motivational purposes only — not medical advice. Consult a physician before starting any new exercise program, especially if you have a medical condition, are pregnant, or have not exercised recently. Stop immediately and seek help if you feel pain, dizziness, or shortness of breath." = "Maso is for informational and motivational purposes only — not medical advice. Consult a physician before starting any new exercise program, especially if you have a medical condition, are pregnant, or have not exercised recently. Stop immediately and seek help if you feel pain, dizziness, or shortness of breath.";
+
+/* Tab labels — workout records (former "Muscle Status" tab, repurposed) */
+"Workout Records" = "Workout Records";
