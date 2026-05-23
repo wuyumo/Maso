@@ -1013,10 +1013,14 @@ private struct SessionDetailSheet: View {
                         .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 8, trailing: 0))
                         .listRowBackground(Color.clear)
                         .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                            Button(NSLocalizedString("Delete", comment: ""), role: .destructive) {
+                            // icon-only → 圆形按钮, tint negative (design.md).
+                            Button(role: .destructive) {
                                 pendingDeleteExerciseId = stat.exercise.id
+                            } label: {
+                                Image(systemName: "trash.fill")
                             }
-                            .tint(.red)
+                            .tint(MasoColor.negative)
+                            .accessibilityLabel(NSLocalizedString("Delete", comment: ""))
                         }
                 }
             }

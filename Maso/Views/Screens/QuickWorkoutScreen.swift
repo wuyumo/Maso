@@ -807,9 +807,10 @@ private struct QuickExerciseStep: View {
                 data.toggleFavorite(ex.id)
                 Haptics.tap()
             } label: {
-                Label(isFav ? "Unfavorite" : "Favorite", systemImage: isFav ? "heart.slash.fill" : "heart.fill")
+                Image(systemName: isFav ? "heart.slash.fill" : "heart.fill")
             }
             .tint(MasoColor.accent)
+            .accessibilityLabel(NSLocalizedString(isFav ? "Unfavorite" : "Favorite", comment: ""))
         }
     }
 

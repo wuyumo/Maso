@@ -1176,16 +1176,23 @@ private struct InlinePlaylist: View {
                             .listRowInsets(EdgeInsets())
                             .listRowBackground(Color.clear)
                             .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                                // Delete + Edit — Delete 红, Edit accent 绿.
+                                // icon-only → 圆形按钮; tint 走 design.md (negative 红粉 / accent 绿).
                                 // 训练中 Edit = session-local 改这 step 的 sets/reps/weight/duration.
-                                Button(NSLocalizedString("Delete", comment: ""), role: .destructive) {
+                                Button(role: .destructive) {
                                     onDelete?(step.id)
+                                } label: {
+                                    Image(systemName: "trash.fill")
                                 }
-                                .tint(.red)
-                                Button(NSLocalizedString("Edit", comment: "")) {
+                                .tint(MasoColor.negative)
+                                .accessibilityLabel(NSLocalizedString("Delete", comment: ""))
+
+                                Button {
                                     onEdit?(step.id)
+                                } label: {
+                                    Image(systemName: "pencil")
                                 }
                                 .tint(MasoColor.accent)
+                                .accessibilityLabel(NSLocalizedString("Edit", comment: ""))
                             }
                     }
                 }

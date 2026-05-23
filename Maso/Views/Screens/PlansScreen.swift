@@ -71,16 +71,23 @@ struct PlansScreen: View {
                 .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 12, trailing: 0))
                 .listRowBackground(Color.clear)
                 .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                    // iOS 原生 swipe — button 高度对齐 cell bounds, 跟可视卡片有 12pt 视觉差.
-                    // 接受这个 trade-off, 换 iOS 默认风格的一致性.
-                    Button(NSLocalizedString("Delete", comment: ""), role: .destructive) {
+                    // iOS 原生 swipe + icon-only → 圆形按钮. Delete 用 MasoColor.negative,
+                    // Edit 用 accent (跟 design.md 一致). VoiceOver 走 accessibilityLabel.
+                    Button(role: .destructive) {
                         pendingDeletePlanId = plan.id
+                    } label: {
+                        Image(systemName: "trash.fill")
                     }
-                    .tint(.red)
-                    Button(NSLocalizedString("Edit", comment: "")) {
+                    .tint(MasoColor.negative)
+                    .accessibilityLabel(NSLocalizedString("Delete", comment: ""))
+
+                    Button {
                         selectedPlan = plan
+                    } label: {
+                        Image(systemName: "pencil")
                     }
                     .tint(MasoColor.accent)
+                    .accessibilityLabel(NSLocalizedString("Edit", comment: ""))
                 }
             }
             .onMove { source, destination in
@@ -671,17 +678,23 @@ struct PlanDetailSheet: View {
                             .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 8, trailing: 0))
                             .listRowBackground(Color.clear)
                             .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                                // Delete + Edit — tint 显式指定颜色 (全 app 全局 .tint MasoColor.text 白
-                                // 会让默认 destructive 红底也变白). Edit 用 accent 绿跟 brand 一致.
-                                Button(NSLocalizedString("Delete", comment: ""), role: .destructive) {
+                                // icon-only → 圆形按钮; tint 走 design.md (negative 红粉 / accent 绿).
+                                Button(role: .destructive) {
                                     pendingDeleteStepId = stp.id
+                                } label: {
+                                    Image(systemName: "trash.fill")
                                 }
-                                .tint(.red)
-                                Button(NSLocalizedString("Edit", comment: "")) {
+                                .tint(MasoColor.negative)
+                                .accessibilityLabel(NSLocalizedString("Delete", comment: ""))
+
+                                Button {
                                     // programmatic push — 跟 NavigationLink tap 整行同 destination
                                     stepEditPath.append(stp.id)
+                                } label: {
+                                    Image(systemName: "pencil")
                                 }
                                 .tint(MasoColor.accent)
+                                .accessibilityLabel(NSLocalizedString("Edit", comment: ""))
                             }
                     }
                 }
@@ -1550,9 +1563,10 @@ private struct ExercisePickerSheet: View {
                         data.toggleFavorite(ex.id)
                         Haptics.tap()
                     } label: {
-                        Label(isFav ? "Unfavorite" : "Favorite", systemImage: isFav ? "heart.slash.fill" : "heart.fill")
+                        Image(systemName: isFav ? "heart.slash.fill" : "heart.fill")
                     }
                     .tint(MasoColor.accent)
+                    .accessibilityLabel(NSLocalizedString(isFav ? "Unfavorite" : "Favorite", comment: ""))
                 }
             }
             if filtered.isEmpty {
