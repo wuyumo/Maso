@@ -20,79 +20,83 @@ struct MuscleStatusOverviewCard: View {
     let onStartGapWorkout: () -> Void
 
     var body: some View {
-        HStack(alignment: .top, spacing: 14) {
-            // LEFT: BodyHint — front + back 紧凑显示, 视觉接近正方形
-            //   - panelSpacing 0  →  前后无缝 (默认 6 太分离)
-            //   - height 160      →  两 panel 自然 aspect 0.57 × 2 = 182 宽, 比例 1.14:1
-            // 数学上不完美 1:1, 但视觉上 "近正方形" 已经达到 (人体轮廓本身就比 panel 包络小).
-            BodyHint(
-                muscles: [],
-                height: 160,
-                opacityFor: { m in MuscleStatusCompute.opacityFor(muscle: m, lastMap: lastMap) },
-                coarseOnly: !data.settings.muscleDetailEnabled,
-                panelSpacing: 0
-            )
+        VStack(alignment: .leading, spacing: 10) {
+            // 卡片标题 — 跟其他 hero 卡 (WorkoutCard) 同款层级 / 字号
+            Text("Muscle Status")
+                .font(.system(size: 16, weight: .bold))
+                .foregroundStyle(MasoColor.text)
 
-            // RIGHT: legend (4 stacked) + 2 buttons
-            VStack(alignment: .leading, spacing: 0) {
-                // Legend — 竖排 4 行
-                VStack(alignment: .leading, spacing: 6) {
-                    legendRow(opacity: 1.0, label: "Fatigued")
-                    legendRow(opacity: 0.6, label: "Recovering")
-                    legendRow(opacity: 0.3, label: "Almost fresh")
-                    legendRow(opacity: nil, label: "Ready to train")
-                }
+            HStack(alignment: .top, spacing: 14) {
+                // LEFT: BodyHint — front + back 紧凑显示, 视觉接近正方形
+                //   - panelSpacing 0  →  前后无缝 (默认 6 太分离)
+                //   - height 160      →  两 panel 自然 aspect 0.57 × 2 = 182 宽, 比例 1.14:1
+                // 数学上不完美 1:1, 但视觉上 "近正方形" 已经达到 (人体轮廓本身就比 panel 包络小).
+                BodyHint(
+                    muscles: [],
+                    height: 160,
+                    opacityFor: { m in MuscleStatusCompute.opacityFor(muscle: m, lastMap: lastMap) },
+                    coarseOnly: !data.settings.muscleDetailEnabled,
+                    panelSpacing: 0
+                )
 
-                Spacer(minLength: 8)
-
-                // Action buttons — 竖排 2 个 capsule
-                VStack(spacing: 6) {
-                    Button(action: onShowCalendar) {
-                        HStack(spacing: 5) {
-                            Image(systemName: "calendar")
-                                .font(.system(size: 11, weight: .semibold))
-                            Text("Workout calendar")
-                                .font(.system(size: 11, weight: .bold))
-                                .lineLimit(1)
-                                .minimumScaleFactor(0.8)
-                            Spacer(minLength: 0)
-                        }
-                        .foregroundStyle(MasoColor.text)
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 7)
-                        .frame(maxWidth: .infinity)
-                        .background(MasoColor.surfaceHi)
-                        .overlay(Capsule().stroke(MasoColor.borderSoft, lineWidth: 0.8))
-                        .clipShape(Capsule())
+                // RIGHT: legend (4 stacked) + 2 buttons (右对齐 + 自适应宽度)
+                VStack(alignment: .trailing, spacing: 0) {
+                    // Legend — 竖排 4 行, 整组左对齐内部内容, 整组贴右
+                    VStack(alignment: .leading, spacing: 6) {
+                        legendRow(opacity: 1.0, label: "Fatigued")
+                        legendRow(opacity: 0.6, label: "Recovering")
+                        legendRow(opacity: 0.3, label: "Almost fresh")
+                        legendRow(opacity: nil, label: "Ready to train")
                     }
-                    .buttonStyle(.plain)
 
-                    Button(action: onStartGapWorkout) {
-                        HStack(spacing: 5) {
-                            Image(systemName: "play.fill")
-                                .font(.system(size: 10, weight: .heavy))
-                            Text("Train the gaps")
-                                .font(.system(size: 11, weight: .heavy))
-                                .lineLimit(1)
-                                .minimumScaleFactor(0.8)
-                            Spacer(minLength: 0)
+                    Spacer(minLength: 8)
+
+                    // Action buttons — 竖排 2 个 capsule, fit-content (不 frame .infinity)
+                    // 之前用 .frame(maxWidth: .infinity) 让按钮撑满右侧空间, 视觉太重.
+                    VStack(alignment: .trailing, spacing: 6) {
+                        Button(action: onShowCalendar) {
+                            HStack(spacing: 5) {
+                                Image(systemName: "calendar")
+                                    .font(.system(size: 11, weight: .semibold))
+                                Text("Workout calendar")
+                                    .font(.system(size: 11, weight: .bold))
+                                    .lineLimit(1)
+                            }
+                            .foregroundStyle(MasoColor.text)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 7)
+                            .background(MasoColor.surfaceHi)
+                            .overlay(Capsule().stroke(MasoColor.borderSoft, lineWidth: 0.8))
+                            .clipShape(Capsule())
+                            .fixedSize(horizontal: true, vertical: false)
                         }
-                        .foregroundStyle(.black)
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 7)
-                        .frame(maxWidth: .infinity)
-                        .background(MasoColor.accent)
-                        .clipShape(Capsule())
-                        .shadow(color: MasoColor.accent.opacity(0.35), radius: 6, y: 2)
+                        .buttonStyle(.plain)
+
+                        Button(action: onStartGapWorkout) {
+                            HStack(spacing: 5) {
+                                Image(systemName: "play.fill")
+                                    .font(.system(size: 10, weight: .heavy))
+                                Text("Train the gaps")
+                                    .font(.system(size: 11, weight: .heavy))
+                                    .lineLimit(1)
+                            }
+                            .foregroundStyle(.black)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 7)
+                            .background(MasoColor.accent)
+                            .clipShape(Capsule())
+                            .fixedSize(horizontal: true, vertical: false)
+                            .shadow(color: MasoColor.accent.opacity(0.35), radius: 6, y: 2)
+                        }
+                        .buttonStyle(.plain)
+                        .disabled(gapMuscles.isEmpty)
+                        .opacity(gapMuscles.isEmpty ? 0.35 : 1)
                     }
-                    .buttonStyle(.plain)
-                    .disabled(gapMuscles.isEmpty)
-                    .opacity(gapMuscles.isEmpty ? 0.35 : 1)
                 }
+                .frame(maxWidth: .infinity, alignment: .trailing)
+                // 跟 BodyHint 等高, 让 legend / buttons 在垂直方向自然撑开
+                .frame(height: 160)
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            // 跟 BodyHint 等高, 让 legend / buttons 在垂直方向自然撑开
-            .frame(height: 160)
         }
         .padding(MasoMetrics.cardPadding - 4)
         .background(MasoColor.surface)
