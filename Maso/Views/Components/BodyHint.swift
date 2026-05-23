@@ -44,7 +44,13 @@ struct BodyHint: View {
 
     @ViewBuilder
     private func panel(side: MuscleMap.BodySide) -> some View {
-        let view = MuscleMap.BodyView(gender: .male, side: side, style: bodyStyle)
+        // 默认 MuscleMap.BodyView 是 hideSubGroups=true, sub-muscle polygon (upperChest /
+        // frontDeltoid / upperAbs etc.) 全不渲染 → 我们打在 sub 上的高亮就看不见.
+        // 调 .showSubGroups() 启用 sub. coarseOnly=true 时跳过, 保持只显示 major.
+        var view = MuscleMap.BodyView(gender: .male, side: side, style: bodyStyle)
+        if !coarseOnly {
+            view = view.showSubGroups()
+        }
         let configured = applyHighlights(to: view)
 
         if let onTap = onMuscleTap {
