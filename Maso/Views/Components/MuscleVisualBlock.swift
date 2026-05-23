@@ -43,9 +43,10 @@ struct MuscleVisualBlock: View {
                     .accessibilityLabel("Workout photo")
             }
 
-            // 整体左对齐 (caller frame .infinity 时这个 Spacer 把内容推到左侧)
+            // 整体左对齐 (frame .infinity + .leading 显式约束, 不依赖 caller 是否撑全宽)
             Spacer(minLength: 0)
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
         .frame(height: height)
     }
 }
