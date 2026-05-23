@@ -27,10 +27,10 @@ struct MuscleVisualBlock: View {
     /// 粗颗粒模式 — Settings.muscleDetailEnabled 取反时传 true.
     var coarseOnly: Bool = false
 
-    /// 人体 viewBox 自然宽高比 ~0.568, 两 panel 紧贴总宽高比 ~1.137.
-    /// BodyHint height × 1.137 = 自然宽. 想让宽 = sideLength → height = sideLength / 1.137.
-    /// 留点透气保险, 取 0.86 (≈ 1/1.165).
-    private var bodyHintHeight: CGFloat { sideLength * 0.86 }
+    /// 人体 viewBox 自然宽高比 ~0.568, 两 panel + 4pt gap 总宽高比 ~1.18.
+    /// BodyHint height × 1.18 = 自然宽. 想让宽 ≈ sideLength → height = sideLength / 1.18.
+    /// 取 0.82 给左右各 ~3pt 透气, 不挨方框边. 跟 BodyHint.panelSpacing=4 一致.
+    private var bodyHintHeight: CGFloat { sideLength * 0.82 }
 
     var body: some View {
         HStack(alignment: .center, spacing: 12) {

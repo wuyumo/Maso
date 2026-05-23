@@ -344,10 +344,10 @@ private struct PlanRow: View {
                 .contentShape(Rectangle())
                 .onTapGesture { onTap() }
 
-            // anatomy + 右下角播放按钮 同一行. 用共享 MuscleVisualBlock — 跟 WorkoutCard /
-            // SessionCard 完全一致 (正方形区域 + 左对齐). 见 docs / memory feedback 文件.
+            // anatomy + 右下角播放按钮 同一行. 用共享 MuscleVisualBlock — 跟 SessionCard
+            // 严格一致 (sideLength + button 大小 + 内边距). 见 memory feedback 文件.
             ZStack(alignment: .bottomTrailing) {
-                MuscleVisualBlock(muscles: muscles, sideLength: 90)
+                MuscleVisualBlock(muscles: muscles, sideLength: 100)
                     .contentShape(Rectangle())
                 .onTapGesture { onTap() }
 
@@ -370,7 +370,7 @@ private struct PlanRow: View {
             }
             .padding(.top, 4)
         }
-        .padding(MasoMetrics.rowPaddingH)
+        .padding(MasoMetrics.cardPadding - 4)
         .background(MasoColor.surface)
         .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
         // 长按整卡 → 删除菜单. parent (PlansScreen) 接管 confirm — 跟右滑删除走同一 alert.
