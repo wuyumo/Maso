@@ -1508,70 +1508,71 @@ private struct ExercisePickerSheet: View {
 
     @ViewBuilder
     private func exerciseList(scrollTrackingEnabled: Bool) -> some View {
-        ScrollView {
-            LazyVStack(spacing: 6) {
-                ForEach(filtered) { ex in
-                    // SwipeableRow — 左滑出 Favorite/Unfavorite 按钮, tap 进详情
-                    let isFav = data.isFavorite(ex.id)
-                    SwipeableRow(
-                        content: {
-                            HStack(spacing: 14) {
-                                ExerciseImage(
-                                    category: ex.category,
-                                    imageFolder: ex.imageFolder,
-                                    cornerRadius: 8,
-                                    size: 56,
-                                    animated: false
-                                )
-                                VStack(alignment: .leading, spacing: 5) {
-                                    Text(ex.displayName)
-                                        .font(.system(size: 15, weight: .bold))
-                                        .foregroundStyle(MasoColor.text)
-                                        .lineLimit(1)
-                                    ExerciseTagsRow(
-                                        muscleGroups: ex.muscleGroups,
-                                        equipment: ex.equipment,
-                                        muscleLimit: 1
-                                    )
-                                }
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                if isFav {
-                                    Image(systemName: "heart.fill")
-                                        .font(.system(size: 12, weight: .heavy))
-                                        .foregroundStyle(MasoColor.accent)
-                                }
-                            }
-                            .padding(.horizontal, MasoMetrics.rowPaddingH)
-                            .padding(.vertical, 10)
-                            .background(MasoColor.surface)
-                            .clipShape(RoundedRectangle(cornerRadius: 14))
-                        },
-                        actions: [
-                            SwipeAction(
-                                label: isFav ? "Unfavorite" : "Favorite",
-                                systemImage: "heart",
-                                color: MasoColor.accent,
-                                foreground: .black,
-                                action: {
-                                    data.toggleFavorite(ex.id)
-                                    Haptics.tap()
-                                }
+        // List + 原生 .swipeActions — 替换自制 SwipeableRow.
+        // 自制版跟 ScrollView 的 vertical pan 抢手势 → 上下滑动失效.
+        List {
+            ForEach(filtered) { ex in
+                let isFav = data.isFavorite(ex.id)
+                Button {
+                    detailExercise = ex
+                } label: {
+                    HStack(spacing: 14) {
+                        ExerciseImage(
+                            category: ex.category,
+                            imageFolder: ex.imageFolder,
+                            cornerRadius: 8,
+                            size: 56,
+                            animated: false
+                        )
+                        VStack(alignment: .leading, spacing: 5) {
+                            Text(ex.displayName)
+                                .font(.system(size: 15, weight: .bold))
+                                .foregroundStyle(MasoColor.text)
+                                .lineLimit(1)
+                            ExerciseTagsRow(
+                                muscleGroups: ex.muscleGroups,
+                                equipment: ex.equipment,
+                                muscleLimit: 1
                             )
-                        ],
-                        onContentTap: { detailExercise = ex },
-                        cornerRadius: 14
-                    )
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        if isFav {
+                            Image(systemName: "heart.fill")
+                                .font(.system(size: 12, weight: .heavy))
+                                .foregroundStyle(MasoColor.accent)
+                        }
+                    }
+                    .padding(.horizontal, MasoMetrics.rowPaddingH)
+                    .padding(.vertical, 10)
+                    .background(MasoColor.surface)
+                    .clipShape(RoundedRectangle(cornerRadius: 14))
                 }
-                if filtered.isEmpty {
-                    Text("No exercises match your search")
-                        .font(.system(size: 13))
-                        .foregroundStyle(MasoColor.textDim)
-                        .padding(.vertical, 32)
+                .buttonStyle(.plain)
+                .listRowSeparator(.hidden)
+                .listRowBackground(Color.clear)
+                .listRowInsets(EdgeInsets(top: 3, leading: MasoMetrics.pagePaddingHorizontal, bottom: 3, trailing: MasoMetrics.pagePaddingHorizontal))
+                .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                    Button {
+                        data.toggleFavorite(ex.id)
+                        Haptics.tap()
+                    } label: {
+                        Label(isFav ? "Unfavorite" : "Favorite", systemImage: isFav ? "heart.slash.fill" : "heart.fill")
+                    }
+                    .tint(MasoColor.accent)
                 }
             }
-            .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
-            .padding(.bottom, 32)
+            if filtered.isEmpty {
+                Text("No exercises match your search")
+                    .font(.system(size: 13))
+                    .foregroundStyle(MasoColor.textDim)
+                    .padding(.vertical, 32)
+                    .frame(maxWidth: .infinity)
+                    .listRowSeparator(.hidden)
+                    .listRowBackground(Color.clear)
+            }
         }
+        .listStyle(.plain)
+        .scrollContentBackground(.hidden)
         // Body Map mode 启用 scroll tracking → BodyHint 跟着缩小
         .onScrollGeometryChange(for: CGFloat.self) { geo in
             geo.contentOffset.y

@@ -154,65 +154,63 @@ struct ExerciseLibraryBrowser: View {
                 .padding(.top, 12)
                 .padding(.bottom, 8)
 
-                ScrollView {
-                    LazyVStack(spacing: 6) {
-                        ForEach(filtered) { ex in
-                            // SwipeableRow 包裹 — 左滑出一个 Favorite / Unfavorite 按钮.
-                            // tap 内容区进详情 sheet, swipe 左侧收藏/取消收藏.
-                            let isFav = data.isFavorite(ex.id)
-                            SwipeableRow(
-                                content: {
-                                    HStack(spacing: 14) {
-                                        ExerciseImage(
-                                            category: ex.category,
-                                            imageFolder: ex.imageFolder,
-                                            cornerRadius: 8,
-                                            size: 56,
-                                            animated: false
-                                        )
-                                        VStack(alignment: .leading, spacing: 5) {
-                                            Text(ex.displayName)
-                                                .font(.system(size: 15, weight: .bold))
-                                                .foregroundStyle(MasoColor.text)
-                                                .lineLimit(1)
-                                            ExerciseTagsRow(
-                                                muscleGroups: ex.muscleGroups,
-                                                equipment: ex.equipment,
-                                                muscleLimit: 1
-                                            )
-                                        }
-                                        .frame(maxWidth: .infinity, alignment: .leading)
-                                        if isFav {
-                                            Image(systemName: "heart.fill")
-                                                .font(.system(size: 12, weight: .heavy))
-                                                .foregroundStyle(MasoColor.accent)
-                                        }
-                                    }
-                                    .padding(.horizontal, MasoMetrics.rowPaddingH)
-                                    .padding(.vertical, 10)
-                                    .background(MasoColor.surface)
-                                    .clipShape(RoundedRectangle(cornerRadius: 14))
-                                },
-                                actions: [
-                                    SwipeAction(
-                                        label: isFav ? "Unfavorite" : "Favorite",
-                                        systemImage: "heart",
-                                        color: MasoColor.accent,
-                                        foreground: .black,
-                                        action: {
-                                            data.toggleFavorite(ex.id)
-                                            Haptics.tap()
-                                        }
+                // List + 原生 .swipeActions — 替换之前的自制 SwipeableRow.
+                // 自制版本跟 ScrollView 的 vertical pan gesture 有冲突 (左滑 OK 但上下滑死掉).
+                // 原生 swipeActions 在 List 内是 OS 帮你管手势, 不会跟 List 自己的 scroll 抢.
+                List {
+                    ForEach(filtered) { ex in
+                        let isFav = data.isFavorite(ex.id)
+                        Button {
+                            selected = ex
+                        } label: {
+                            HStack(spacing: 14) {
+                                ExerciseImage(
+                                    category: ex.category,
+                                    imageFolder: ex.imageFolder,
+                                    cornerRadius: 8,
+                                    size: 56,
+                                    animated: false
+                                )
+                                VStack(alignment: .leading, spacing: 5) {
+                                    Text(ex.displayName)
+                                        .font(.system(size: 15, weight: .bold))
+                                        .foregroundStyle(MasoColor.text)
+                                        .lineLimit(1)
+                                    ExerciseTagsRow(
+                                        muscleGroups: ex.muscleGroups,
+                                        equipment: ex.equipment,
+                                        muscleLimit: 1
                                     )
-                                ],
-                                onContentTap: { selected = ex },
-                                cornerRadius: 14
-                            )
+                                }
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                if isFav {
+                                    Image(systemName: "heart.fill")
+                                        .font(.system(size: 12, weight: .heavy))
+                                        .foregroundStyle(MasoColor.accent)
+                                }
+                            }
+                            .padding(.horizontal, MasoMetrics.rowPaddingH)
+                            .padding(.vertical, 10)
+                            .background(MasoColor.surface)
+                            .clipShape(RoundedRectangle(cornerRadius: 14))
+                        }
+                        .buttonStyle(.plain)
+                        .listRowSeparator(.hidden)
+                        .listRowBackground(Color.clear)
+                        .listRowInsets(EdgeInsets(top: 3, leading: MasoMetrics.pagePaddingHorizontal, bottom: 3, trailing: MasoMetrics.pagePaddingHorizontal))
+                        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                            Button {
+                                data.toggleFavorite(ex.id)
+                                Haptics.tap()
+                            } label: {
+                                Label(isFav ? "Unfavorite" : "Favorite", systemImage: isFav ? "heart.slash.fill" : "heart.fill")
+                            }
+                            .tint(MasoColor.accent)
                         }
                     }
-                    .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
-                    .padding(.bottom, 32)
                 }
+                .listStyle(.plain)
+                .scrollContentBackground(.hidden)
             }
             .background(MasoColor.background.ignoresSafeArea())
             .navigationBarTitleDisplayMode(.inline)

@@ -473,18 +473,21 @@ private struct QuickExerciseStep: View {
     @State private var detailExercise: Exercise? = nil
 
     var body: some View {
-        // 中间动作列表用 ScrollView. 顶部 inset 只放 equipment filter (平铺 badge),
-        // 底部 inset 放 Smart pick + Start CTA. 底色全用 MasoColor.background, 不再用
-        // 毛玻璃 — 跟 sheet 整体视觉一致, 不抢眼.
-        ScrollView {
-            VStack(alignment: .leading, spacing: 20) {
-                ForEach(orderedMuscles, id: \.self) { m in
-                    section(for: m)
+        // List + Section — 替换之前的 ScrollView+VStack. 让 swipeActions 原生工作不抢手势.
+        List {
+            ForEach(orderedMuscles, id: \.self) { m in
+                Section {
+                    ForEach(topExercises(for: m), id: \.exercise.id) { scored in
+                        exerciseRow(scored)
+                    }
+                } header: {
+                    sectionHeader(for: m)
                 }
             }
-            .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
-            .padding(.vertical, 12)
         }
+        .listStyle(.plain)
+        .scrollContentBackground(.hidden)
+        .environment(\.defaultMinListHeaderHeight, 24)
         // 顶部 — equipment filter, 平铺 badge (横向滚动). 不再显示已选肌群 chips
         // (已经在 Step 1 选过 + 这页按 muscle 分组的 section header 已经展示, 冗余).
         .safeAreaInset(edge: .top, spacing: 0) {
@@ -723,99 +726,91 @@ private struct QuickExerciseStep: View {
         aiOrder = picked  // 本地排序也走 picked 的顺序, 让 playlist 按 muscle 顺序排
     }
 
-    /// 每个肌群一个 section: 标题 + top-N 推荐动作
+    /// Section header — 给 List Section 用. 透明背景, 不要 List 默认的 gray inset.
     @ViewBuilder
-    private func section(for muscle: MuscleGroup) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Text(muscle.displayName.uppercased())
-                    .font(.system(size: 10, weight: .heavy))
-                    .tracking(1.5)
-                    .foregroundStyle(MasoColor.accent)
-                Spacer()
-                let pickedInThisMuscle = pickedIds.intersection(Set(topExercises(for: muscle).map { $0.exercise.id })).count
-                if pickedInThisMuscle > 0 {
-                    Text("\(pickedInThisMuscle) picked")
-                        .font(.system(size: 10, weight: .bold))
-                        .foregroundStyle(MasoColor.textDim)
-                }
-            }
-            VStack(spacing: 6) {
-                ForEach(topExercises(for: muscle), id: \.exercise.id) { scored in
-                    exerciseRow(scored)
-                }
+    private func sectionHeader(for muscle: MuscleGroup) -> some View {
+        HStack {
+            Text(muscle.displayName.uppercased())
+                .font(.system(size: 10, weight: .heavy))
+                .tracking(1.5)
+                .foregroundStyle(MasoColor.accent)
+            Spacer()
+            let pickedInThisMuscle = pickedIds.intersection(Set(topExercises(for: muscle).map { $0.exercise.id })).count
+            if pickedInThisMuscle > 0 {
+                Text("\(pickedInThisMuscle) picked")
+                    .font(.system(size: 10, weight: .bold))
+                    .foregroundStyle(MasoColor.textDim)
             }
         }
+        .listRowInsets(EdgeInsets(top: 8, leading: MasoMetrics.pagePaddingHorizontal, bottom: 4, trailing: MasoMetrics.pagePaddingHorizontal))
+        .background(MasoColor.background)
     }
 
+    @ViewBuilder
     private func exerciseRow(_ scored: ScoredExercise) -> some View {
         let ex = scored.exercise
         let picked = pickedIds.contains(ex.id)
         let isFav = data.isFavorite(ex.id)
-        // SwipeableRow 包裹 — 左滑 Favorite/Unfavorite; tap toggle picked (跟原行为一致).
-        return SwipeableRow(
-            content: {
-                HStack(spacing: 14) {
-                    Button(action: { detailExercise = ex }) {
-                        ExerciseImage(
-                            category: ex.category,
-                            imageFolder: ex.imageFolder,
-                            cornerRadius: 8,
-                            size: 56,
-                            animated: false
-                        )
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel(String(format: NSLocalizedString("Show details for %@", comment: "exercise detail a11y"), ex.displayName))
-
-                    VStack(alignment: .leading, spacing: 5) {
-                        Text(ex.displayName)
-                            .font(.system(size: 15, weight: .bold))
-                            .foregroundStyle(MasoColor.text)
-                            .lineLimit(1)
-                        ExerciseTagsRow(
-                            muscleGroups: ex.muscleGroups,
-                            equipment: ex.equipment,
-                            muscleLimit: 0
-                        )
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    if isFav {
-                        Image(systemName: "heart.fill")
-                            .font(.system(size: 12, weight: .heavy))
-                            .foregroundStyle(MasoColor.accent)
-                    }
-                    MatchBadge(score: scored.score)
-                    Image(systemName: picked ? "checkmark.circle.fill" : "plus.circle")
-                        .font(.system(size: 20, weight: .semibold))
-                        .foregroundStyle(picked ? MasoColor.accent : MasoColor.textFaint)
+        Button {
+            if picked { pickedIds.remove(ex.id) } else { pickedIds.insert(ex.id) }
+        } label: {
+            HStack(spacing: 14) {
+                Button(action: { detailExercise = ex }) {
+                    ExerciseImage(
+                        category: ex.category,
+                        imageFolder: ex.imageFolder,
+                        cornerRadius: 8,
+                        size: 56,
+                        animated: false
+                    )
                 }
-                .padding(.horizontal, MasoMetrics.rowPaddingH)
-                .padding(.vertical, 10)
-                .background(picked ? MasoColor.accent.opacity(0.10) : MasoColor.surface)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 14)
-                        .stroke(picked ? MasoColor.accent.opacity(0.4) : Color.clear, lineWidth: 1)
-                )
-                .clipShape(RoundedRectangle(cornerRadius: 14))
-            },
-            actions: [
-                SwipeAction(
-                    label: isFav ? "Unfavorite" : "Favorite",
-                    systemImage: "heart",
-                    color: MasoColor.accent,
-                    foreground: .black,
-                    action: {
-                        data.toggleFavorite(ex.id)
-                        Haptics.tap()
-                    }
-                )
-            ],
-            onContentTap: {
-                if picked { pickedIds.remove(ex.id) } else { pickedIds.insert(ex.id) }
-            },
-            cornerRadius: 14
-        )
+                .buttonStyle(.plain)
+                .accessibilityLabel(String(format: NSLocalizedString("Show details for %@", comment: "exercise detail a11y"), ex.displayName))
+
+                VStack(alignment: .leading, spacing: 5) {
+                    Text(ex.displayName)
+                        .font(.system(size: 15, weight: .bold))
+                        .foregroundStyle(MasoColor.text)
+                        .lineLimit(1)
+                    ExerciseTagsRow(
+                        muscleGroups: ex.muscleGroups,
+                        equipment: ex.equipment,
+                        muscleLimit: 0
+                    )
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                if isFav {
+                    Image(systemName: "heart.fill")
+                        .font(.system(size: 12, weight: .heavy))
+                        .foregroundStyle(MasoColor.accent)
+                }
+                MatchBadge(score: scored.score)
+                Image(systemName: picked ? "checkmark.circle.fill" : "plus.circle")
+                    .font(.system(size: 20, weight: .semibold))
+                    .foregroundStyle(picked ? MasoColor.accent : MasoColor.textFaint)
+            }
+            .padding(.horizontal, MasoMetrics.rowPaddingH)
+            .padding(.vertical, 10)
+            .background(picked ? MasoColor.accent.opacity(0.10) : MasoColor.surface)
+            .overlay(
+                RoundedRectangle(cornerRadius: 14)
+                    .stroke(picked ? MasoColor.accent.opacity(0.4) : Color.clear, lineWidth: 1)
+            )
+            .clipShape(RoundedRectangle(cornerRadius: 14))
+        }
+        .buttonStyle(.plain)
+        .listRowSeparator(.hidden)
+        .listRowBackground(Color.clear)
+        .listRowInsets(EdgeInsets(top: 3, leading: MasoMetrics.pagePaddingHorizontal, bottom: 3, trailing: MasoMetrics.pagePaddingHorizontal))
+        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+            Button {
+                data.toggleFavorite(ex.id)
+                Haptics.tap()
+            } label: {
+                Label(isFav ? "Unfavorite" : "Favorite", systemImage: isFav ? "heart.slash.fill" : "heart.fill")
+            }
+            .tint(MasoColor.accent)
+        }
     }
 
     /// 给定 muscle, 找到匹配度 top-6 的 strength + cardio + flexibility 动作 (应用 equipment 筛选)
