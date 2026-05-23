@@ -622,11 +622,74 @@ struct HistoryScreen: View {
         }
     }
 
-    /// 回放: 如果这次 session 关联了一个 plan, 返回该 plan 让 RootView 调起播放
-    /// 自由组 session 返回 nil — 这一类不支持原样回放
+    /// 回放: 关联了 plan 的 session 直接拿原 plan; 自由训练的 session 从历史 set
+    /// 合成一个临时 plan (复用 exerciseStats 拿到当天动作 + 每动作的 set 数 / reps / weight).
+    /// 这样自由训练也能"再练一遍" — 跟 plan-based session 同款体验.
     private func replayPlan(for session: SessionSummary) -> Plan? {
-        guard let pid = session.planId else { return nil }
-        return data.plans.first(where: { $0.id == pid })
+        if let pid = session.planId {
+            return data.plans.first(where: { $0.id == pid })
+        }
+        return synthesizeFreeReplayPlan(for: session)
+    }
+
+    /// 自由训练 → 合成临时 Plan 用于回放. 不入 DataStore (id 固定 "session-replay-{sessionId}",
+    /// 反复点不会污染 Plans 列表; PlanPlayer 通过 startTrainingNow 拿到 Plan 直接展开 segments).
+    private func synthesizeFreeReplayPlan(for session: SessionSummary) -> Plan? {
+        let stats = exerciseStats(for: session)
+        guard !stats.isEmpty else { return nil }
+        let cal = Calendar.current
+        let dayRecs = data.sets.filter { rec in
+            cal.startOfDay(for: rec.performedAt) == session.day && rec.planId == nil
+        }
+        // 按 exerciseId 分桶, reps / weight / duration 取每动作的中位数 — 比 best 更代表
+        // "一般情况下的负荷", 用户回放时不会被某一次特别拼的组拖垮.
+        var perEx: [String: [SetRecord]] = [:]
+        for r in dayRecs { perEx[r.exerciseId, default: []].append(r) }
+
+        var steps: [PlanStep] = []
+        for (idx, stat) in stats.enumerated() {
+            guard let recs = perEx[stat.exercise.id], !recs.isEmpty else { continue }
+            let reps: Int? = median(recs.compactMap { $0.reps })
+            let weight: Double? = median(recs.compactMap { $0.weight }.map { Double($0) })
+            let duration: Int? = median(recs.compactMap { $0.duration })
+            steps.append(PlanStep(
+                id: "step-replay-\(session.id)-\(idx)",
+                exerciseId: stat.exercise.id,
+                sets: recs.count,
+                reps: reps,
+                weight: weight,
+                duration: duration,
+                restBetweenSets: 90,
+                rest: 0
+            ))
+        }
+        guard !steps.isEmpty else { return nil }
+        let name = NSLocalizedString("Free workout", comment: "")
+        return Plan(
+            id: "session-replay-\(session.id)",
+            name: name,
+            steps: steps,
+            createdAt: session.day,
+            updatedAt: Date()
+        )
+    }
+
+    /// 整数 / Double 通用的中位数 helper. 空数组 → nil.
+    private func median<T: Comparable & FloatingPoint>(_ arr: [T]) -> T? {
+        guard !arr.isEmpty else { return nil }
+        let sorted = arr.sorted()
+        if sorted.count.isMultiple(of: 2) {
+            return (sorted[sorted.count / 2 - 1] + sorted[sorted.count / 2]) / 2
+        }
+        return sorted[sorted.count / 2]
+    }
+    private func median(_ arr: [Int]) -> Int? {
+        guard !arr.isEmpty else { return nil }
+        let sorted = arr.sorted()
+        if sorted.count.isMultiple(of: 2) {
+            return (sorted[sorted.count / 2 - 1] + sorted[sorted.count / 2]) / 2
+        }
+        return sorted[sorted.count / 2]
     }
 }
 
