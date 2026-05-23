@@ -683,7 +683,7 @@ private struct SessionCard: View {
             ZStack(alignment: .bottomTrailing) {
                 MuscleVisualBlock(
                     muscles: session.muscles,
-                    height: 110,
+                    sideLength: 110,
                     photo: photo
                 )
 

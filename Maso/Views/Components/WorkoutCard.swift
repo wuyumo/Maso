@@ -147,7 +147,7 @@ struct WorkoutCard: View {
             // Muscle Map 区域 — 跟 SessionCard 共用 MuscleVisualBlock.
             // 左对齐 + 近正方形, 没照片 (WorkoutCard 不带 photo, 只渲染 muscle map).
             // ⚠️ 这块跟 SessionCard 的代码层面一致, 改这里也要同步改 SessionCard.
-            MuscleVisualBlock(muscles: inferredMuscles, height: 110)
+            MuscleVisualBlock(muscles: inferredMuscles, sideLength: 110)
                 .padding(.horizontal, MasoMetrics.cardPadding)
                 .padding(.top, 14)
                 .padding(.bottom, 14)

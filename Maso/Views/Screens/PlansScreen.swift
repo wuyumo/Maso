@@ -337,18 +337,11 @@ private struct PlanRow: View {
                 .contentShape(Rectangle())
                 .onTapGesture { onTap() }
 
-            // anatomy + 右下角播放按钮 同一行. Muscle map 左对齐 (跟 WorkoutCard / SessionCard 同款),
-            // 仅一个右侧 Spacer 把内容推到左边.
+            // anatomy + 右下角播放按钮 同一行. 用共享 MuscleVisualBlock — 跟 WorkoutCard /
+            // SessionCard 完全一致 (正方形区域 + 左对齐). 见 docs / memory feedback 文件.
             ZStack(alignment: .bottomTrailing) {
-                HStack {
-                    BodyHint(
-                        muscles: muscles,
-                        height: 90,
-                        region: detectBodyRegion(muscles)
-                    )
-                    Spacer()
-                }
-                .contentShape(Rectangle())
+                MuscleVisualBlock(muscles: muscles, sideLength: 90)
+                    .contentShape(Rectangle())
                 .onTapGesture { onTap() }
 
                 Button(action: onStart) {
@@ -618,11 +611,9 @@ struct PlanDetailSheet: View {
                     .stroke(MasoColor.borderSoft, lineWidth: 0.5)
             )
 
-            // BodyHint — 这个 plan 的"练什么部位"视觉锚, 左对齐 (跟 WorkoutCard / SessionCard 一致).
-            HStack {
-                BodyHint(muscles: muscles, height: 110, region: .full)
-                Spacer(minLength: 0)
-            }
+            // 用共享 MuscleVisualBlock — 正方形 muscle map slot, 左对齐 (跟 WorkoutCard /
+            // SessionCard / PlanRow 完全一致).
+            MuscleVisualBlock(muscles: muscles, sideLength: 110)
         }
     }
 
