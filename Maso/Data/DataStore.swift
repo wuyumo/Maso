@@ -22,8 +22,25 @@ final class DataStore {
     var aiTodayPlan: Plan? = nil
     var lastAIRefreshAt: Date? = nil
 
+    /// 包含两套 key:
+    ///   1. 新库 ID (`bench_press_barbell` 等) — Exercise.id 真主键
+    ///   2. 旧库 imageFolder ID (`Barbell_Bench_Press` 等) — 老用户的 plans / sets / favorites
+    ///      存的是这种 ID. 走 alias 让 lookup 透明 (不需要一次性 migration).
+    ///
+    /// 2026-05 schema 升级后必须双 key, 否则现有 plan 步骤全部 lookup 失败 → inferredMuscles
+    /// 空 → BodyHint 没高亮 / Plans 列表里动作图标全 fallback placeholder.
     var exById: [String: Exercise] {
-        Dictionary(uniqueKeysWithValues: exercises.map { ($0.id, $0) })
+        var m: [String: Exercise] = [:]
+        for ex in exercises {
+            m[ex.id] = ex
+        }
+        // Legacy alias — 不覆盖已存在的 key.
+        for ex in exercises {
+            if let folder = ex.imageFolder, m[folder] == nil {
+                m[folder] = ex
+            }
+        }
+        return m
     }
 
     init(exercises: [Exercise], plans: [Plan], sets: [SetRecord], settings: UserSettings) {

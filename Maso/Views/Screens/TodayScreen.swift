@@ -12,6 +12,8 @@ struct TodayScreen: View {
     @State private var detailPlan: Plan? = nil
     /// 顶部 ProBanner tap → 弹 paywall (跟以前 Plans tab 上的 banner 同款)
     @State private var paywallPresented: Bool = false
+    /// 肌肉状态卡上的"训练日历"按钮 → 弹 WorkoutCalendarScreen
+    @State private var showCalendar: Bool = false
 
     private var suggested: Plan? {
         // 优先 AI 生成的今日计划; 没有 (AI 关闭 / API key 未填 / 网络失败) → fallback 系统推荐
@@ -70,6 +72,15 @@ struct TodayScreen: View {
                     .accessibilityLabel("Settings")
                 }
                 .padding(.top, data.settings.isPro ? MasoMetrics.pagePaddingTop : 4)
+
+                // 肌肉状态横版卡 — 顶部 hero, 给"今天可以练什么"提供上下文.
+                // 横向布局: 左 BodyHint 近正方形 + 右 legend 竖排 + 训练日历 / 补练空缺按钮.
+                MuscleStatusOverviewCard(
+                    lastMap: lastMap,
+                    gapMuscles: gapMuscles,
+                    onShowCalendar: { showCalendar = true },
+                    onStartGapWorkout: startGapWorkout
+                )
 
                 if let plan = suggested {
                     // kicker 不传 — WorkoutCard 内部自动 derive (FROM YOUR PLAN / AI / nil).
@@ -139,5 +150,139 @@ struct TodayScreen: View {
         .sheet(isPresented: $paywallPresented) {
             PaywallScreen()
         }
+        .sheet(isPresented: $showCalendar) {
+            WorkoutCalendarScreen(
+                sessionDates: workoutDateSet(),
+                totalSetsThisWeek: totalSetsThisWeek,
+                streakDaysCount: currentStreakDays
+            )
+        }
+    }
+
+    // MARK: - 肌肉状态 + 训练日历计算 helpers
+    //
+    // 从 HistoryScreen 移过来的实现 — 现在两个屏都用同一份. 长期应该把这些挪到
+    // MuscleStatusCompute / DataStore extension, 暂时复制一份避免大改.
+
+    private var lastMap: [MuscleGroup: Date] {
+        MuscleStatusCompute.muscleLastTrainedMap(sets: data.sets, exById: data.exById)
+    }
+
+    private static let trainableMajorMuscles: [MuscleGroup] = [
+        .chest, .back, .shoulders,
+        .biceps, .triceps, .forearms,
+        .core,
+        .quads, .hamstrings, .glutes, .adductors, .calves,
+    ]
+
+    private var gapMuscles: [MuscleGroup] {
+        let map = lastMap
+        let now = Date()
+        let cutoff: TimeInterval = 3 * 86400
+        var gaps: [MuscleGroup] = []
+        for major in Self.trainableMajorMuscles {
+            let anatomy = expandAnatomyMuscles([major])
+            guard !anatomy.isEmpty else { continue }
+            let allStale = anatomy.allSatisfy { m in
+                guard let last = map[m] else { return true }
+                return now.timeIntervalSince(last) >= cutoff
+            }
+            if allStale { gaps.append(major) }
+        }
+        return gaps
+    }
+
+    private func workoutDateSet() -> Set<Date> {
+        let cal = Calendar.current
+        return Set(data.sets.map { cal.startOfDay(for: $0.performedAt) })
+    }
+
+    private var totalSetsThisWeek: Int {
+        let cal = Calendar.current
+        let cutoff = cal.startOfDay(for: cal.date(byAdding: .day, value: -6, to: Date())!)
+        return data.sets.filter { $0.performedAt >= cutoff }.count
+    }
+
+    private var currentStreakDays: Int {
+        let cal = Calendar.current
+        let days = workoutDateSet()
+        var streak = 0
+        var cursor = cal.startOfDay(for: Date())
+        while days.contains(cursor) {
+            streak += 1
+            cursor = cal.date(byAdding: .day, value: -1, to: cursor)!
+        }
+        return streak
+    }
+
+    /// 一键: 找 gap → 智能挑动作 → 拼 plan → 启动训练 (跟 HistoryScreen.startGapWorkout 同款).
+    private func startGapWorkout() {
+        let gaps = gapMuscles
+        guard !gaps.isEmpty else { return }
+        let favSet = Set(data.settings.favoriteExerciseIds)
+        var seenExerciseIds = Set<String>()
+        var steps: [PlanStep] = []
+        var idx = 0
+        let maxSteps = 12
+
+        for major in gaps {
+            let targetMuscles = expandAnatomyMuscles([major])
+            struct Scored { let ex: Exercise; let score: Int; let isFav: Bool }
+            var scored: [Scored] = []
+            for ex in data.exercises where ex.category == .strength {
+                if seenExerciseIds.contains(ex.id) { continue }
+                let s = gapScore(ex, against: targetMuscles)
+                if s > 0 {
+                    scored.append(Scored(ex: ex, score: s, isFav: favSet.contains(ex.id)))
+                }
+            }
+            scored.sort { lhs, rhs in
+                if lhs.isFav != rhs.isFav { return lhs.isFav && !rhs.isFav }
+                return lhs.score > rhs.score
+            }
+            for pick in scored.prefix(2) {
+                let ex = pick.ex
+                seenExerciseIds.insert(ex.id)
+                let isStrength = ex.category == .strength
+                steps.append(PlanStep(
+                    id: "gap-\(idx)-\(ex.id)",
+                    exerciseId: ex.id,
+                    sets: 3,
+                    reps: isStrength ? 10 : nil,
+                    weight: isStrength ? 0 : nil,
+                    duration: isStrength ? nil : 45,
+                    restBetweenSets: 90,
+                    rest: 0
+                ))
+                idx += 1
+                if steps.count >= maxSteps { break }
+            }
+            if steps.count >= maxSteps { break }
+        }
+        guard !steps.isEmpty else { return }
+        let now = Date()
+        let name = String(
+            format: NSLocalizedString("Catch-up: %@", comment: ""),
+            gaps.prefix(3).map(\.displayName).joined(separator: " + ")
+        )
+        let plan = Plan(
+            id: "plan-catchup",
+            name: name,
+            steps: steps,
+            createdAt: now,
+            updatedAt: now
+        )
+        data.updatePlan(plan)
+        onStart(plan)
+    }
+
+    private func gapScore(_ ex: Exercise, against targets: Set<MuscleGroup>) -> Int {
+        var total = 0
+        for (idx, mg) in ex.muscleGroups.enumerated() {
+            if targets.contains(mg) {
+                total += max(20, 100 - idx * 18)
+            }
+        }
+        return total
     }
 }

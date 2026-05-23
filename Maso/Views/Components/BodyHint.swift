@@ -44,26 +44,41 @@ struct BodyHint: View {
 
     @ViewBuilder
     private func panel(side: MuscleMap.BodySide) -> some View {
-        // 默认 MuscleMap.BodyView 是 hideSubGroups=true, sub-muscle polygon (upperChest /
-        // frontDeltoid / upperAbs etc.) 全不渲染 → 我们打在 sub 上的高亮就看不见.
-        // 调 .showSubGroups() 启用 sub. coarseOnly=true 时跳过, 保持只显示 major.
-        var view = MuscleMap.BodyView(gender: .male, side: side, style: bodyStyle)
-        if !coarseOnly {
-            view = view.showSubGroups()
-        }
-        let configured = applyHighlights(to: view)
+        // 纯链式调用 — 跟 MuscleMap demo 1:1 风格.
+        // 之前用 var view = ...; view = view.showSubGroups() 形式时高亮没出来,
+        // 怀疑跟 SwiftUI ViewBuilder 对 var 局部变量的处理有关.
+        let primaries = primaryMuscleMapMuscles
+        let synergists = synergistMuscleMapMuscles
 
         if let onTap = onMuscleTap {
-            configured
-                .onMuscleSelected { muscle, _ in
-                    onTap(muscle.masoMuscleGroup)
-                }
+            MuscleMap.BodyView(gender: .male, side: side, style: bodyStyle)
+                .showSubGroups()
+                .highlight(synergists, color: color, opacity: 0.35)
+                .highlight(primaries, color: color, opacity: 1.0)
+                .onMuscleSelected { muscle, _ in onTap(muscle.masoMuscleGroup) }
                 .frame(width: square ? height : nil, height: height)
         } else {
-            configured
+            MuscleMap.BodyView(gender: .male, side: side, style: bodyStyle)
+                .showSubGroups()
+                .highlight(synergists, color: color, opacity: 0.35)
+                .highlight(primaries, color: color, opacity: 1.0)
                 .frame(width: square ? height : nil, height: height)
         }
     }
+
+    /// 展开后 primary muscles → MuscleMap.Muscle 数组 (去重). opacityFor 模式留空 (callsite handles).
+    private var primaryMuscleMapMuscles: [Muscle] {
+        var out: Set<Muscle> = []
+        for mg in expanded { out.formUnion(mg.mmMuscles) }
+        return Array(out)
+    }
+
+    private var synergistMuscleMapMuscles: [Muscle] {
+        var out: Set<Muscle> = []
+        for mg in synergistsExpanded { out.formUnion(mg.mmMuscles) }
+        return Array(out)
+    }
+
 
     // MARK: - Highlight application
 
