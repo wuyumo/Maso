@@ -1,29 +1,110 @@
 import Foundation
 
-// 共享 "肌肉状态" 计算 — 把 HistoryScreen 顶部 Muscle Status 卡片用的两个核心函数
-// (`muscleLastTrainedMap` + `opacityFor`) 提到一个公共文件, 让其他 view 也能用同款衰减.
+// 共享 "肌肉状态" 计算 — 累计 volume + 时间衰减模型.
+//
+// 2026-05-24 改: 之前只看"上次训练时间", 用户反馈 "练 1 组" 和 "练 5 组" 在状态卡上长得一样,
+// 这是不科学的. 现在改成累计 volume + 指数衰减:
+//   1. 每条 SetRecord 贡献 stress — primary 肌肉 1.0 / synergist 0.4
+//   2. stress 随时间指数衰减, 半衰期 24h
+//        - 24h → 50%, 48h → 25%, 72h → 12.5%, 5天外 ~6% 直接忽略
+//   3. 总 stress → fatigue (0..1) 通过饱和指数:
+//        fatigue = 1 - exp(-stress / 2)
+//
+// 例子:
+//   - 今天 1 组腿 (primary): stress 1.0 → fatigue 0.39 (Recovering 起步)
+//   - 24h 后:                 stress 0.5 → fatigue 0.22 (Mostly recovered)
+//   - 今天 5 组腿:             stress 5.0 → fatigue 0.92 (Fatigued)
+//   - 24h 后:                 stress 2.5 → fatigue 0.71 (Fatigued)
 //
 // 用法 (典型 SwiftUI):
-//   let lastMap = MuscleStatusCompute.muscleLastTrainedMap(sets: data.sets, exById: data.exById)
+//   let fatigueMap = MuscleStatusCompute.muscleFatigueMap(sets: data.sets, exById: data.exById)
 //   BodyHint(
 //       muscles: [],
-//       opacityFor: { m in MuscleStatusCompute.opacityFor(muscle: m, lastMap: lastMap) }
+//       opacityFor: { m in MuscleStatusCompute.opacityFor(muscle: m, fatigueMap: fatigueMap) }
 //   )
 //
-// 之前两份逻辑分别在 HistoryScreen 顶部 + SessionDetailSheet 里复制一份, 这次又要给
-// QuickMuscleStep "显示肌肉状态" 开关用 — 第 3 处. 集中到这里避免代码漂移.
-//
-// 衰减档位 (跟 HistoryScreen legend 对齐):
-//   - 0..1 d → 1.0 (Fatigued, 满色)
-//   - 1..2 d → 0.6 (Recovering, 中色)
-//   - 2..3 d → 0.3 (Almost fresh, 浅色)
-//   - ≥ 3 d → nil  (Ready to train, 默认灰底)
+// 阈值 (跟 MuscleStatusOverviewCard legend 对齐):
+//   ≥ 0.65 → 1.0 (Fatigued)
+//   ≥ 0.35 → 0.6 (Recovering)
+//   ≥ 0.12 → 0.3 (Mostly recovered)
+//   < 0.12 → nil (Fresh, 走默认灰底)
 enum MuscleStatusCompute {
-    /// 每个 anatomy 肌肉 → 最近一次被训练的时间.
-    /// 用于 BodyHint opacityFor — 跟 web 端 muscleLastTrained 同义.
-    ///
-    /// 用 expandAnatomyMuscles 展开 — 训练动作的 .chest 自动点亮
-    /// .upperChest / .midChest / .lowerChest 三个 sub 的 lastTrained 时间.
+
+    // MARK: - 模型常数
+
+    /// 24h 半衰期 — 训练 24h 后 stress 衰减一半
+    private static let halfLifeSeconds: Double = 24 * 3600
+
+    /// fatigue 饱和参数 — 控制几组算"完全疲劳".
+    /// 2.0 → 5 set primary 后 fatigue ≈ 0.92 (基本到顶)
+    private static let saturation: Double = 2.0
+
+    /// primary 肌肉每组 stress
+    private static let primaryStressPerSet: Double = 1.0
+    /// 协同肌肉每组 stress (~40% of primary)
+    private static let synergistStressPerSet: Double = 0.4
+
+    /// 5 天以外的 set 直接跳过 (decay 已到 ~6%, 算了也是噪音)
+    private static let maxAgeSeconds: Double = 5 * 86400
+
+    // MARK: - 主计算
+
+    /// 每个 anatomy 肌肉 → 当前 fatigue 值 (0..1, 1=完全疲劳, 0=完全恢复).
+    /// 用 expandAnatomyMuscles 展开 — 训练动作的 .chest 自动点亮所有 sub-chest.
+    static func muscleFatigueMap(
+        sets: [SetRecord],
+        exById: [String: Exercise]
+    ) -> [MuscleGroup: Double] {
+        let now = Date()
+        let lambda = log(2.0) / halfLifeSeconds
+
+        var stressByMuscle: [MuscleGroup: Double] = [:]
+        for s in sets {
+            guard let ex = exById[s.exerciseId] else { continue }
+            let elapsed = now.timeIntervalSince(s.performedAt)
+            guard elapsed > 0, elapsed < maxAgeSeconds else { continue }
+            let decay = exp(-lambda * elapsed)
+
+            // 区分 primary / synergist — primary 肌肉吃 full stress, synergist 吃 40%
+            let primarySet = Set(ex.primaryMuscles)
+            let allSet = Set(ex.muscleGroups)
+            let synergistSet = allSet.subtracting(primarySet)
+
+            for m in primarySet {
+                let expanded = expandAnatomyMuscles([m])
+                for em in expanded {
+                    stressByMuscle[em, default: 0] += primaryStressPerSet * decay
+                }
+            }
+            for m in synergistSet {
+                let expanded = expandAnatomyMuscles([m])
+                for em in expanded {
+                    stressByMuscle[em, default: 0] += synergistStressPerSet * decay
+                }
+            }
+        }
+
+        // stress → fatigue (saturating exponential, 0..1)
+        var result: [MuscleGroup: Double] = [:]
+        for (m, stress) in stressByMuscle {
+            result[m] = 1.0 - exp(-stress / saturation)
+        }
+        return result
+    }
+
+    /// fatigue (0..1) → opacity. 4 档跟 legend 对齐.
+    static func opacityFor(muscle m: MuscleGroup, fatigueMap: [MuscleGroup: Double]) -> Double? {
+        guard let fatigue = fatigueMap[m], fatigue >= 0.12 else { return nil }
+        if fatigue >= 0.65 { return 1.0 }    // Fatigued
+        if fatigue >= 0.35 { return 0.6 }    // Recovering
+        return 0.3                            // Mostly recovered
+    }
+
+    // MARK: - 时间维度 (给 "Train the gaps" 等"老久没练"判断用)
+
+    /// 每个 anatomy 肌肉 → 最近一次被训练的时间. 跟 fatigue map 解耦 —
+    /// fatigue 看"练了多少 + 多久衰减", 这个看"上次什么时候碰过".
+    /// "Train the gaps" 按钮判断"3 天没碰" 用这个, 不用 fatigue.
     static func muscleLastTrainedMap(
         sets: [SetRecord],
         exById: [String: Exercise]
@@ -38,18 +119,5 @@ enum MuscleStatusCompute {
             }
         }
         return map
-    }
-
-    /// 衰减映射 — 间距加大让三档对比明显:
-    /// 0..1 d → 1.0 (满色); 1..2 d → 0.6; 2..3 d → 0.3; ≥ 3 d → nil (默认灰).
-    /// 之前 1.0/0.7/0.4 三档视觉差异不够明显 (人眼对低 alpha 差异不敏感),
-    /// 现在 0.4 + 0.3 + 0.3 间隔, 整体更分明.
-    static func opacityFor(muscle m: MuscleGroup, lastMap: [MuscleGroup: Date]) -> Double? {
-        guard let last = lastMap[m] else { return nil }
-        let days = Date().timeIntervalSince(last) / 86400
-        if days < 1 { return 1.0 }
-        if days < 2 { return 0.6 }
-        if days < 3 { return 0.3 }
-        return nil
     }
 }

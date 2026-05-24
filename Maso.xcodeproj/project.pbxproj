@@ -29,6 +29,7 @@
 		2911B010C07D8A9CE402F8A1 /* CommunityPlans.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4CD0A6C911CC31064AFC8D4 /* CommunityPlans.swift */; };
 		295AC2CEBA8187E2ECECB643 /* ShareImageRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23B6D56681E2D7861F4E5E2 /* ShareImageRenderer.swift */; };
 		2977FB3704410158FB0D2391 /* SettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEDA5CD52A27EE48B089AD46 /* SettingsScreen.swift */; };
+		2A8850718E62ACE893EEF2D8 /* AnimeBodyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7546A6BF24D431EDFC2405E6 /* AnimeBodyView.swift */; };
 		2D2BA8727CE9F97CB82972D4 /* SpeechManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3901E5D4EB6430B5A6682418 /* SpeechManager.swift */; };
 		2D3A7A870943A8CCBA2F97AD /* _orphan-old-exercises.md in Resources */ = {isa = PBXBuildFile; fileRef = 78E9AE6303C3221E696A4367 /* _orphan-old-exercises.md */; };
 		2E01B7CC1D7C6DEF94C4618B /* MuscleMapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1545AEA651F97CD56E65D4E5 /* MuscleMapping.swift */; };
@@ -123,6 +124,7 @@
 		E40B7C038FA77F3BD95F0E5D /* MasoMarkIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1D591C5E30FA068C933520 /* MasoMarkIcon.swift */; };
 		E713BB3AD37D051B6B9D716A /* PlanSegments.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE94CDA9C13C06FBE6DD8572 /* PlanSegments.swift */; };
 		E78F1A3F512D37B2BFA4A286 /* BodyHint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54145EB316E1E581619F6C65 /* BodyHint.swift */; };
+		E7BEFB80EC7A46518E7B59B9 /* InlineWorkoutCalendar.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC7BD7F1CA2B51B8BE76943 /* InlineWorkoutCalendar.swift */; };
 		E7F227189AAF7F9E428F5297 /* MuscleGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 652661E7A8B67B3B7F5E7241 /* MuscleGroup.swift */; };
 		F539563C25B1A76F848BE0BC /* LiveActivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31363EC52103D24538FBFF39 /* LiveActivityManager.swift */; };
 		F712495D92EF9A778FC3AA30 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CDA3B6F67C353E227D0E2E8C /* Assets.xcassets */; };
@@ -217,6 +219,7 @@
 		6DC4E04539409F755E9C7B77 /* Plan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Plan.swift; sourceTree = "<group>"; };
 		71828AB12DF85E9E6B7E3650 /* MasoWidgetsBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasoWidgetsBundle.swift; sourceTree = "<group>"; };
 		749D14202F2DADE9E946D07D /* AppRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRouter.swift; sourceTree = "<group>"; };
+		7546A6BF24D431EDFC2405E6 /* AnimeBodyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimeBodyView.swift; sourceTree = "<group>"; };
 		77A945F8200B0EA1A6D6261B /* MasoWidgets.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = MasoWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		78E9AE6303C3221E696A4367 /* _orphan-old-exercises.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "_orphan-old-exercises.md"; sourceTree = "<group>"; };
 		7D7F0F064D3300FEAAE9ABE8 /* TrainingSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingSession.swift; sourceTree = "<group>"; };
@@ -232,6 +235,7 @@
 		A312E7F5CEA8FACE3E0183FA /* _review-queue-decisions.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "_review-queue-decisions.json"; sourceTree = "<group>"; };
 		A869CB4AC4EF2FD9CFD9D31C /* AIWorkoutService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIWorkoutService.swift; sourceTree = "<group>"; };
 		AC00B9B59687C5502999A3DA /* FeedbackTransport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackTransport.swift; sourceTree = "<group>"; };
+		ADC7BD7F1CA2B51B8BE76943 /* InlineWorkoutCalendar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InlineWorkoutCalendar.swift; sourceTree = "<group>"; };
 		AFFACBCE14220218C3F49853 /* exercises-new.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "exercises-new.json"; sourceTree = "<group>"; };
 		B56BF1DAA41EE256A9EDA30F /* FeedbackSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackSheet.swift; sourceTree = "<group>"; };
 		B60786EDA8A1B901D6361BF3 /* _missing-image-new.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "_missing-image-new.md"; sourceTree = "<group>"; };
@@ -468,11 +472,13 @@
 		A5BA9075AC7E87212053E8BA /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				7546A6BF24D431EDFC2405E6 /* AnimeBodyView.swift */,
 				54145EB316E1E581619F6C65 /* BodyHint.swift */,
 				0070D8A3C7E1513A852DFDDA /* CrossFadeFrames.swift */,
 				402229E63028077115335B66 /* ExerciseImage.swift */,
 				4DACD2EC09799CF0ACC9176F /* ExerciseTagsRow.swift */,
 				E392D3BCA567E27D36082C9C /* FilterMenuButton.swift */,
+				ADC7BD7F1CA2B51B8BE76943 /* InlineWorkoutCalendar.swift */,
 				5F761A3AFFC27FB54D554AC8 /* LayoutToggle.swift */,
 				DFBD3B16C9810A2419F041FA /* LimitedFlowLayout.swift */,
 				0248671AE93BF975A90389AD /* LottieView.swift */,
@@ -723,6 +729,7 @@
 			files = (
 				76F9805CDA3E261CA146C7A5 /* AIWorkoutService.swift in Sources */,
 				4921E4C7CD778A4E81EBEBA8 /* Anatomy.swift in Sources */,
+				2A8850718E62ACE893EEF2D8 /* AnimeBodyView.swift in Sources */,
 				17D9E2729D5EB223EF42F762 /* AppRouter.swift in Sources */,
 				E78F1A3F512D37B2BFA4A286 /* BodyHint.swift in Sources */,
 				94D4CE6164253560EE728358 /* Colors.swift in Sources */,
@@ -745,6 +752,7 @@
 				0C9DFCCE90F73336451E893C /* HealthKitService.swift in Sources */,
 				6076960B399F6AEE4BE34B89 /* HistoryScreen.swift in Sources */,
 				B6A155A1009B7AD3E0B8F93A /* ImportedPlanSheet.swift in Sources */,
+				E7BEFB80EC7A46518E7B59B9 /* InlineWorkoutCalendar.swift in Sources */,
 				675F46DE13174897BC8316A7 /* LanguageManager.swift in Sources */,
 				1A52CF157E55BE3997571C63 /* LanguagePickerSheet.swift in Sources */,
 				88B007435E601164A2241EDE /* LayoutToggle.swift in Sources */,

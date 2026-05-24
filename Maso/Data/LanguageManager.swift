@@ -103,16 +103,48 @@ final class LanguageManager {
         return Self.systemLanguage
     }
 
-    private static let storageKey = "maso.selectedLanguage"
+    /// 全 app 的"当前语言 code"统一入口 — 替代散落各处的 `Bundle.main.preferredLocalizations.first`.
+    /// 原因: preferredLocalizations 是 launch-time 缓存, 用户在 app 内切换语言后不更新, 导致
+    /// Exercise.displayName / instructions / dangerWarnings 等运行时读到的还是老语言.
+    ///
+    /// `nonisolated(unsafe)` 缓存版 — 让 Exercise.displayName 等 non-MainActor 计算属性
+    /// 也能直接读. 写入只走 MainActor (applyToBundle), 读是非阻塞的指针/值 copy.
+    nonisolated(unsafe) static var currentLanguageCode: String = {
+        // 启动时从 UserDefaults 读, 没有就用系统
+        if let raw = UserDefaults.standard.string(forKey: storageKey),
+           let lang = SupportedLanguage(rawValue: raw) {
+            return lang.rawValue
+        }
+        return Locale.preferredLanguages.first.map { code -> String in
+            let lower = code.lowercased()
+            if lower.hasPrefix("zh-hans") || lower.hasPrefix("zh-cn") || lower.hasPrefix("zh-sg") { return "zh-Hans" }
+            if lower.hasPrefix("zh") { return "zh-Hant" }
+            if lower.hasPrefix("pt") { return "pt-BR" }
+            for l in SupportedLanguage.allCases where lower.hasPrefix(l.rawValue.lowercased()) {
+                return l.rawValue
+            }
+            return "en"
+        } ?? "en"
+    }()
+
+    /// 同上, 但给 DateFormatter / NumberFormatter 用的 Locale 实例.
+    nonisolated static var currentLocale: Locale {
+        Locale(identifier: currentLanguageCode)
+    }
+
+    // nonisolated 因为 currentLanguageCode 的 lazy initializer (nonisolated context) 也读它.
+    nonisolated private static let storageKey = "maso.selectedLanguage"
 
     private init() {
         // 从 UserDefaults 读上次选择
         if let raw = UserDefaults.standard.string(forKey: Self.storageKey),
            let lang = SupportedLanguage(rawValue: raw) {
             self.selectedLanguage = lang
-            // 不在 init 里调 didSet (Swift 行为), 手动 apply
-            applyToBundle()
         }
+        // 不管用户有没有显式选 (selectedLanguage 可能为 nil), 都 apply 一次 ——
+        // 这样 bundle swizzle 在 app 启动后立刻生效, Text("...") 第一帧就走 effectiveLanguage 而不是
+        // Bundle.main 默认 lookup. 走 didSet 路径会再 persist 一次冗余, 所以手动调.
+        applyToBundle()
     }
 
     /// 从系统当前语言推断出 SupportedLanguage (匹配不到的话默认英文)
@@ -148,6 +180,8 @@ final class LanguageManager {
     /// 把当前 effectiveLanguage 应用到 Bundle (覆盖 SwiftUI Text 的字符串查找)
     private func applyToBundle() {
         let code = effectiveLanguage.rawValue
+        // 0. 更新 non-isolated 缓存 — 让 Exercise.displayName 等不在 MainActor 上的 getter 立刻读到新值
+        Self.currentLanguageCode = code
         // 1. 写 AppleLanguages — 让 SwiftUI Text 内部的 LocalizedStringResource
         //    在下次 app 启动时走对应 .lproj. 这是 iOS 系统级 i18n 入口.
         UserDefaults.standard.set([code], forKey: "AppleLanguages")
@@ -167,16 +201,29 @@ final class LanguageManager {
 }
 
 // MARK: - LocalizedBundle — 运行时覆盖 main bundle 的字符串查找
-
-/// 用 swizzle 让 Bundle.main 走我们指定的语言子 bundle
-/// (跟"重启 app + AppleLanguages"相比, 这套方案的好处是 SwiftUI 实时切, 不需重启)
-final class LocalizedBundle: Bundle, @unchecked Sendable {
+//
+// 跟"重启 app + AppleLanguages"相比, 这套方案的好处是 SwiftUI Text 实时切, 不需重启.
+//
+// 实现方式 (2026-05-23 改): 之前用 `object_setClass(Bundle.main, LocalizedBundle.self)` 走
+// 整类换 (class swizzling). 在某些 iOS 版本上 Bundle.main 实际是 __NSCFBundle (CFBundleRef
+// bridge), re-class 后 Foundation 内部 cast 不一致, 导致 localizedString override 不生效,
+// 用户切了语言但 UI 完全没变.
+//
+// 现在改成 method exchange (objc_runtime method_exchangeImplementations): 直接把
+// NSBundle 的 `localizedStringForKey:value:table:` 实现跟我们写的 `mp_localizedStringForKey:...`
+// 互换. 这是 Foundation runtime 级 swap, 任何 NSBundle 子类 (包括 __NSCFBundle) 都会经过.
+//
+// 副作用: 全 Bundle 都会被 swap, 不只 Bundle.main. 但我们写的 impl 只在 main 上读
+// languageBundle, 其它 bundle 走 fallback 调用原方法, 行为等价.
+final class LocalizedBundle {
     private static var languageBundle: Bundle?
+    /// method exchange 只跑一次的标记 — 再次调 applyLanguage 只更新 languageBundle, 不重复 swap.
+    private static var didSwap = false
 
     static func applyLanguage(_ langCode: String) {
-        // 第一次调用 → swizzle Bundle.main 的 localizedString 方法
-        if Bundle.main.object_isClass(of: LocalizedBundle.self) == false {
-            object_setClass(Bundle.main, LocalizedBundle.self)
+        if !didSwap {
+            swizzleLocalizedString()
+            didSwap = true
         }
         // 找到对应语言的 .lproj 子 bundle
         if let path = Bundle.main.path(forResource: langCode, ofType: "lproj"),
@@ -187,16 +234,43 @@ final class LocalizedBundle: Bundle, @unchecked Sendable {
         }
     }
 
-    override func localizedString(forKey key: String, value: String?, table tableName: String?) -> String {
-        if let b = Self.languageBundle {
-            return b.localizedString(forKey: key, value: value, table: tableName)
+    /// 给 swizzled method 用的 hook — main bundle 走 languageBundle, 其它 bundle 走原 impl.
+    /// 因为 method exchange 是把 original ↔ swizzled 互换, 这里调"swizzled" 等价于调 original.
+    @objc fileprivate static func handleLocalizedString(
+        for bundle: Bundle,
+        key: String,
+        value: String?,
+        table: String?
+    ) -> String {
+        // 只 hook main bundle. 其它 bundle (e.g. 第三方 SDK 自带的) 直接走原查表.
+        if bundle === Bundle.main, let lang = languageBundle {
+            return lang.localizedString(forKey: key, value: value, table: table)
         }
-        return super.localizedString(forKey: key, value: value, table: tableName)
+        // 否则调原方法 (swap 后 mp_localizedStringForKey 等于原 localizedString)
+        return bundle.mp_localizedString(forKey: key, value: value, table: table)
+    }
+
+    private static func swizzleLocalizedString() {
+        let cls: AnyClass = Bundle.self
+        let original = #selector(Bundle.localizedString(forKey:value:table:))
+        let swizzled = #selector(Bundle.mp_localizedString(forKey:value:table:))
+        guard let originalMethod = class_getInstanceMethod(cls, original),
+              let swizzledMethod = class_getInstanceMethod(cls, swizzled) else {
+            assertionFailure("LocalizedBundle: failed to grab methods for swizzle")
+            return
+        }
+        method_exchangeImplementations(originalMethod, swizzledMethod)
     }
 }
 
-private extension NSObject {
-    func object_isClass<T: AnyObject>(of type: T.Type) -> Bool {
-        object_getClass(self) == type
+// Bundle 扩展 — 提供 method exchange 用的 selector.
+// swizzle 后:
+//   - `localizedString(forKey:value:table:)` (原方法名) → 跑下面 mp_ 的实现 → 经 LocalizedBundle 路由
+//   - `mp_localizedString(forKey:value:table:)`         → 跑原实现 (恢复用)
+private extension Bundle {
+    @objc func mp_localizedString(forKey key: String, value: String?, table: String?) -> String {
+        // swap 之后, "mp_localizedString" 这个 method 持有的是 ORIGINAL localizedString impl.
+        // 而 "localizedString" 持有的是这段代码 — 所以走 LocalizedBundle 路由.
+        LocalizedBundle.handleLocalizedString(for: self, key: key, value: value, table: table)
     }
 }

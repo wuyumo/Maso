@@ -161,7 +161,7 @@ struct ShareCustomizeSheet<ShareContent: View>: View {
                 .padding(.top, 16)
             }
             .background(MasoColor.background.ignoresSafeArea())
-            .navigationTitle("Share Card")
+            .navigationTitle("Customize")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {

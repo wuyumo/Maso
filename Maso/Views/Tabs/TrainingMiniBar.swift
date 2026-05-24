@@ -1,18 +1,21 @@
 import SwiftUI
 
-// "训练中" 横向迷你播放条 — iOS 默认 Now-Playing 风格 (Apple Music mini player).
+// "训练中" 横向迷你播放条 — Apple Music Now-Playing 风格的浮动胶囊.
 //
-// 位置: 通过 RootView 的 `.safeAreaInset(edge: .bottom)` 浮在系统 TabBar 之上
-//   - bar 跟 TabBar 同时可见, 不互相遮挡
-//   - 整 bar 用 .ultraThinMaterial 半透明背景, 跟 TabBar 视觉风格一致
-//   - 顶部一条 hairline 分隔; 底部 0 边距, 紧贴 TabBar
+// 视觉:
+//   - 胶囊 (Capsule) 形, 不再是满宽矩形 — 跟系统 TabBar 胶囊视觉一致
+//   - .ultraThinMaterial 半透明背景 (跟 TabBar 同材质)
+//   - 水平两侧留 ~12pt 边距, 不顶到屏边
+//   - 底部跟 TabBar 之间留 6pt gap, 两个胶囊明显分开
+//   - 极淡描边 (white@10% × 0.5pt) — 暗色背景下勾出胶囊轮廓
+//
+// 交互 (跟 Apple Music mini player 对齐):
+//   - 整 bar tap → 拉起 PlanPlayer (现有逻辑)
+//   - 按下时 scale 0.97 + spring 反弹, 给"可点"的物理反馈
+//   - 主控按钮 (✓ / pause / skip) 独立 Button — hitTest 优先于外层 tap, 不被吃
 //
 // 内容布局 (Apple Music mini player 1:1):
-//   [缩略图 44pt] [动作名 (粗) / 1/3 × 8 reps (淡)] ─────── [主控按钮 ✓ / 跳过 / 暂停 32pt]
-//
-// 交互:
-//   - 点 bar 主体 → 拉起 PlanPlayer
-//   - 点主控按钮 → advance / togglePlay (Button 自己 hitTest, 不被外层 onTapGesture 吃)
+//   [缩略图 36pt] [动作名 (粗) / 1/3 × 8 reps (淡)] ─── [主控按钮 ✓ / 跳过 / 暂停 32pt]
 struct TrainingMiniBar: View {
     let segment: Segment
     let playing: Bool
@@ -24,9 +27,12 @@ struct TrainingMiniBar: View {
     let onAdvance: () -> Void
     let onTogglePlay: () -> Void
 
+    /// 按下态 — 整 bar scale 反馈, 跟 Apple Music mini player 的"按一下凹一下"一致
+    @State private var pressed = false
+
     var body: some View {
         HStack(spacing: 10) {
-            // 缩略图 — 小一点, 跟 Apple Music 的 album art 同款 36pt
+            // 缩略图 36pt — Apple Music album art 同款大小
             ExerciseImage(
                 category: thumbCategory,
                 imageFolder: thumbFolder,
@@ -80,7 +86,7 @@ struct TrainingMiniBar: View {
             .onTapGesture { onTap() }
 
             // 主控按钮 — Button 自己 hitTest, 不被外层 onTapGesture 抢走.
-            // 尺寸跟 Apple Music mini player 一致 (32pt), 比之前的 40pt 紧凑.
+            // 32pt 跟 Apple Music mini player 一致.
             Button(action: handlePrimary) {
                 ZStack {
                     Circle().fill(actionBg).frame(width: 32, height: 32)
@@ -93,21 +99,29 @@ struct TrainingMiniBar: View {
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 8)
-        .frame(maxWidth: .infinity)
-        // 整 bar onTapGesture — 缩略图 / spacing 区域也能拉起 player
-        .contentShape(Rectangle())
-        .onTapGesture { onTap() }
-        // iOS 默认 Now-Playing 样式 — 半透明 material 背景 + 顶边 hairline.
-        // 跟系统 TabBar (也用 material) 视觉对齐, 两者并排时层次清晰.
-        .background(
-            ZStack(alignment: .top) {
-                Rectangle().fill(.ultraThinMaterial)
-                // 顶部 hairline — 跟 TabBar 顶边 separator 一致, 标识 bar 的上边界
-                Rectangle()
-                    .fill(Color.white.opacity(0.08))
-                    .frame(height: 0.33)
-            }
+        // 跟系统 TabBar 同款液态玻璃材质 (`.bar` material): iOS 18+ 在 TabView 底栏自动用,
+        // iOS 26+ 就是 Liquid Glass. 我们手动取这个 material, 让 MiniBar 和 TabBar 视觉融为一体.
+        .background(.bar, in: Capsule(style: .continuous))
+        // 极淡描边勾边界 — 跟 TabBar 同款 0.5pt × 8% 白
+        .overlay(
+            Capsule(style: .continuous)
+                .stroke(Color.white.opacity(0.08), lineWidth: 0.5)
         )
+        // 按下态 scale + spring — Apple Music mini player 同款"按一下凹一下"
+        .scaleEffect(pressed ? 0.97 : 1.0)
+        .animation(.spring(response: 0.28, dampingFraction: 0.65), value: pressed)
+        .contentShape(Capsule(style: .continuous))
+        .onTapGesture { onTap() }
+        .simultaneousGesture(
+            DragGesture(minimumDistance: 0)
+                .onChanged { _ in if !pressed { pressed = true } }
+                .onEnded { _ in pressed = false }
+        )
+        // 跟系统 home bar / TabBar 视觉宽度一致 — 不顶到屏边, 浮在中间. 跟 TabBar 是 centered
+        // floating capsule 的感觉对齐. 40pt 让 iPhone 主流尺寸下 MiniBar 跟 TabBar 看上去同款宽.
+        .padding(.horizontal, 40)
+        // 跟下方 TabBar 留 6pt gap — 两个 bar 明显分开, 不糊成一团
+        .padding(.bottom, 6)
     }
 
     private var thumbCategory: ExerciseCategory {

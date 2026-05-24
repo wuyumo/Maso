@@ -88,31 +88,45 @@ struct RootView: View {
             // 两者并排显示. 之前在 TabView 上加 safeAreaInset 会出现 MiniBar 跟 TabBar
             // 视觉粘在一起像一个大方块的情况.
             TabView(selection: $tab) {
-                TodayScreen(
-                    onStart: startTraining,
-                    onFreeWorkout: { quickWorkoutPresented = true },
-                    onOpenSettings: { settingsPresented = true }
-                )
+                // 三个 tab 都包 NavigationStack — 走 iOS 默认 navigationTitle + toolbar 样式.
+                // .tint(MasoColor.text) 覆盖系统默认 (Asset AccentColor 是绿) — toolbar 右上角按钮
+                // 走白色, 跟 dark theme 配色一致 (不再绿).
+                NavigationStack {
+                    TodayScreen(
+                        onStart: startTraining,
+                        onFreeWorkout: { quickWorkoutPresented = true },
+                        onOpenSettings: { settingsPresented = true }
+                    )
+                }
+                .tint(MasoColor.text)
                 .safeAreaInset(edge: .bottom, spacing: 0) { miniBarContent }
                 .tabItem {
                     Label("Today", systemImage: "figure.strengthtraining.traditional")
                 }
                 .tag(RootTab.today)
 
-                PlansScreen(onStart: startTraining, onNewPlan: handleNewPlan)
-                    .safeAreaInset(edge: .bottom, spacing: 0) { miniBarContent }
-                    .tabItem {
-                        Label("Plans", systemImage: "list.bullet")
-                    }
-                    .tag(RootTab.plans)
-
-                HistoryScreen(
-                    onReplay: startTraining,
-                    onOpenSettings: { settingsPresented = true }
-                )
+                NavigationStack {
+                    PlansScreen(onStart: startTraining, onNewPlan: handleNewPlan)
+                }
+                .tint(MasoColor.text)
                 .safeAreaInset(edge: .bottom, spacing: 0) { miniBarContent }
                 .tabItem {
-                    Label("Workout Records", systemImage: "clock.fill")
+                    Label("Plans", systemImage: "list.bullet")
+                }
+                .tag(RootTab.plans)
+
+                NavigationStack {
+                    HistoryScreen(
+                        onReplay: startTraining,
+                        onOpenSettings: { settingsPresented = true }
+                    )
+                }
+                .tint(MasoColor.text)
+                .safeAreaInset(edge: .bottom, spacing: 0) { miniBarContent }
+                .tabItem {
+                    // "History" 比 "Workout Records" 短一半 — Tab 3 不再溢出. 中文走 zh-Hans
+                    // Localizable.strings 里 "History" = "训练记录", 不影响中文显示.
+                    Label("History", systemImage: "clock.fill")
                 }
                 .tag(RootTab.history)
             }

@@ -534,6 +534,9 @@
 
 /* PlanRationaleCard — Plans tab top */
 "FOR YOU" = "FOR YOU";
+"TRAINING PREFERENCES" = "TRAINING PREFERENCES";
+"Training Preferences" = "Training Preferences";
+"Adjust" = "Adjust";
 "%lld days / week" = "%lld days / week";
 "Focus: %@" = "Focus: %@";
 "Full-body" = "Full-body";
@@ -548,6 +551,25 @@
 "Weekly Workouts" = "Weekly Workouts";
 "White areas were just trained" = "White areas were just trained";
 "Today's Status" = "Today's Status";
+/* Share card — renamed from "Today's Status" / "Share Card" */
+"My Workout" = "My Workout";
+"Customize" = "Customize";
+/* Plans tab restore-defaults button */
+"Restore recommended" = "Restore recommended";
+/* Settings — Week start day (Mon vs Sun) */
+"Week starts" = "Week starts";
+"Auto" = "Auto";
+"Sun" = "Sun";
+"Mon" = "Mon";
+/* History monthly stats — pair with existing weekly labels */
+"Days this month" = "Days this month";
+"Sets this month" = "Sets this month";
+/* Plans tab card kicker (re-used in Settings section title) */
+"Training Preferences" = "Training Preferences";
+/* Muscle status legend (volume-based fatigue model) */
+"Heavy fatigue" = "Heavy fatigue";
+"Mostly recovered" = "Mostly recovered";
+"Fresh" = "Fresh";
 
 /* ── Community (社区精选训练计划) ── */
 "Browse community plans" = "Browse community plans";
@@ -607,6 +629,14 @@
 "community_session_pull_simple" = "Pull";
 "Favorite" = "Favorite";
 "Unfavorite" = "Unfavorite";
+/* Pin / Unpin — 替换 Favorite 语义, "置顶" 而不是"收藏" */
+"Pin to top" = "Pin to top";
+"Pin" = "Pin";
+"Unpin" = "Unpin";
+/* Edit Workout swipe action */
+"Replace exercise" = "Replace exercise";
+/* Today tab — Muscle status hero kicker (renamed from "RECOVERY") */
+"MUSCLE STATUS" = "MUSCLE STATUS";
 
 /* StoreKit / IAP — Maso Pro 付费流 */
 "Couldn't load subscription options. Try again later." = "Couldn't load subscription options. Try again later.";

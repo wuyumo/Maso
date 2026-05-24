@@ -1,76 +1,74 @@
 import SwiftUI
 
-// "肌肉状态" 横向卡片 — TodayScreen 顶部 hero 用.
+// "肌肉恢复" hero 卡 — TodayScreen 顶部用.
 //
-// 跟 HistoryScreen 上的 muscle status 卡视觉差异:
-//   - 横版布局: 左 BodyHint 紧凑(近正方形) + 右 legend 竖排 + 右下两个按钮
-//   - 不带 Share 按钮 (Share 入口仍在 Muscle Status tab)
-//   - 不带 share card stats 数据 (Workouts / Total Sets / Groups Hit)
+// 2026-05-23 v3:
+//   - 顶部加 RECOVERY kicker (跟 Plans tab 的 "FOR YOU" 同款 visual style — accent color + tracking)
+//   - 卡片样式跟 PlanRationaleCard 完全对齐: 1pt accent stroke 40% + accent shadow (无底色)
+//   - 居中布局: 左 muscle map + 右 legend / CTA
 //
-// Callers 注入 lastMap (muscle → 最近一次训练时间) + 两个 button handler.
+// Callers 注入 lastMap (muscle → 最近一次训练时间) + gap workout handler.
 // 计算 (lastMap + gap muscles) 都放在 MuscleStatusCompute / DataStore, 不在 view 里.
 struct MuscleStatusOverviewCard: View {
     @Environment(DataStore.self) private var data
 
-    let lastMap: [MuscleGroup: Date]
+    /// 累计 volume + 时间衰减的 fatigue map — caller (TodayScreen) 用
+    /// MuscleStatusCompute.muscleFatigueMap 算好传进来.
+    let fatigueMap: [MuscleGroup: Double]
     let gapMuscles: [MuscleGroup]
-    /// "Workout calendar" 按钮 — 弹出训练日历 sheet
-    let onShowCalendar: () -> Void
     /// "Train the gaps" 按钮 — caller 构造 plan 并启动训练
     let onStartGapWorkout: () -> Void
 
-    /// Muscle map slot 边长. 卡片整体高度 = 标题行 + slot + padding.
-    /// 130 比之前 160 紧凑 ~20%, 同时仍能塞下右侧 4 行 legend + 2 个按钮.
+    /// Muscle map 正方形 slot 边长 — 跟 MuscleVisualBlock 昨天版本对齐 (正方形, 不放大).
     private let slotSize: CGFloat = 130
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            // 卡片标题 — 跟其他 hero 卡 (WorkoutCard) 同款层级 / 字号
-            Text("Muscle Status")
-                .font(.system(size: 16, weight: .bold))
-                .foregroundStyle(MasoColor.text)
+        VStack(alignment: .leading, spacing: 10) {
+            // 顶部 kicker — 跟 WorkoutCard "FROM YOUR PLAN" 完全同款字号 (10pt heavy + tracking 1.5)
+            // + 跟 FOR YOU 卡同款 icon + 文字 visual family.
+            // kicker 跟 Settings section header / "Today's Workout" 同款 textDim 灰,
+            // 不再 accent 绿. accent 留给真正的 CTA / 高亮状态, 不给 section 标签用.
+            HStack(alignment: .center, spacing: 6) {
+                Image(systemName: "waveform.path.ecg")
+                    .font(.system(size: 10, weight: .heavy))
+                    .foregroundStyle(MasoColor.textDim)
+                Text("MUSCLE STATUS")
+                    .font(.system(size: 10, weight: .heavy))
+                    .tracking(1.5)
+                    .foregroundStyle(MasoColor.textDim)
+                Spacer()
+            }
 
-            HStack(alignment: .top, spacing: 12) {
-                // LEFT: 复用共享 MuscleVisualBlock — 正方形 slot, opacityFor 启用衰减热图.
-                // ⚠️ 跟其它卡片 (WorkoutCard / SessionCard / PlanRow) 共用一份代码, 改这里同步影响所有.
-                MuscleVisualBlock(
-                    muscles: [],
-                    sideLength: slotSize,
-                    opacityFor: { m in MuscleStatusCompute.opacityFor(muscle: m, lastMap: lastMap) },
-                    coarseOnly: !data.settings.muscleDetailEnabled
-                )
-                .frame(width: slotSize)   // 不让它撑全宽, 右侧留给 legend + buttons
+            // 居中内容区: 左 Spacer + (map + 间距 + legend/CTA) + 右 Spacer.
+            // 内层 HStack 用 fixedSize, 让整组按自然宽度居中, 不再撑满.
+            HStack(alignment: .center, spacing: 0) {
+                Spacer(minLength: 0)
+                HStack(alignment: .center, spacing: 16) {
+                    // LEFT: 复用共享 MuscleVisualBlock — 正方形 slot, opacityFor 启用衰减热图.
+                    // ⚠️ 跟其它卡片 (WorkoutCard / SessionCard / PlanRow) 共用一份代码, 改这里同步影响所有.
+                    MuscleVisualBlock(
+                        muscles: [],
+                        sideLength: slotSize,
+                        opacityFor: { m in MuscleStatusCompute.opacityFor(muscle: m, fatigueMap: fatigueMap) },
+                        coarseOnly: !data.settings.muscleDetailEnabled
+                    )
+                    .frame(width: slotSize, height: slotSize)
 
-                // RIGHT: legend (4 stacked) + 2 capsule buttons
-                VStack(alignment: .trailing, spacing: 0) {
-                    VStack(alignment: .leading, spacing: 4) {
-                        legendRow(opacity: 1.0, label: "Fatigued")
-                        legendRow(opacity: 0.6, label: "Recovering")
-                        legendRow(opacity: 0.3, label: "Almost fresh")
-                        legendRow(opacity: nil, label: "Ready to train")
-                    }
-
-                    Spacer(minLength: 6)
-
-                    VStack(alignment: .trailing, spacing: 5) {
-                        Button(action: onShowCalendar) {
-                            HStack(spacing: 5) {
-                                Image(systemName: "calendar")
-                                    .font(.system(size: 10, weight: .semibold))
-                                Text("Workout calendar")
-                                    .font(.system(size: 11, weight: .bold))
-                                    .lineLimit(1)
-                            }
-                            .foregroundStyle(MasoColor.text)
-                            .padding(.horizontal, 11)
-                            .padding(.vertical, 5)
-                            .background(MasoColor.surfaceHi)
-                            .overlay(Capsule().stroke(MasoColor.borderSoft, lineWidth: 0.8))
-                            .clipShape(Capsule())
-                            .fixedSize(horizontal: true, vertical: false)
+                    // RIGHT: legend 4 行 + Train the gaps 按钮.
+                    // legend group → button 之间走 14pt — 之前 8pt 太挤, 用户反馈 button 跟最后一行
+                    // legend 贴在一起没有视觉呼吸. 14pt 让 button 明显是"另一组"操作元素.
+                    VStack(alignment: .leading, spacing: 14) {
+                        VStack(alignment: .leading, spacing: 4) {
+                            // 4 档 fatigue, 跟 MuscleStatusCompute.opacityFor 阈值对齐.
+                            // 改了文案 — 之前 "Almost fresh / Ready to train" 偏被动, 现在
+                            // 强调"需要休息 / 还在恢复 / 基本恢复 / 已恢复" 的状态主题.
+                            legendRow(opacity: 1.0, label: "Heavy fatigue")
+                            legendRow(opacity: 0.6, label: "Recovering")
+                            legendRow(opacity: 0.3, label: "Mostly recovered")
+                            legendRow(opacity: nil, label: "Fresh")
                         }
-                        .buttonStyle(.plain)
 
+                        // Train the gaps — ghost accent CTA, 没 gap 时 disabled.
                         Button(action: onStartGapWorkout) {
                             HStack(spacing: 5) {
                                 Image(systemName: "play.fill")
@@ -79,8 +77,6 @@ struct MuscleStatusOverviewCard: View {
                                     .font(.system(size: 11, weight: .heavy))
                                     .lineLimit(1)
                             }
-                            // 透明 accent 绿样式 — accent 文字 + 16% accent 背景 + 40% accent 描边.
-                            // 跟 ExerciseDetailSheet 的 "Watch demo" / "Listen" 同款 ghost CTA 风格.
                             .foregroundStyle(MasoColor.accent)
                             .padding(.horizontal, 11)
                             .padding(.vertical, 5)
@@ -93,14 +89,24 @@ struct MuscleStatusOverviewCard: View {
                         .disabled(gapMuscles.isEmpty)
                         .opacity(gapMuscles.isEmpty ? 0.35 : 1)
                     }
+                    .frame(height: slotSize, alignment: .center)
+                    .fixedSize(horizontal: true, vertical: false)
                 }
-                .frame(maxWidth: .infinity, alignment: .trailing)
-                .frame(height: slotSize)
+                Spacer(minLength: 0)
             }
         }
-        .padding(MasoMetrics.cardPadding - 4)
-        .background(MasoColor.surface)
-        .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
+        // 卡片内边距 — 跟 PlanRationaleCard ("FOR YOU" 卡) 完全对齐.
+        .padding(.horizontal, MasoMetrics.cardPadding)
+        .padding(.vertical, MasoMetrics.cardPadding - 2)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        // 视觉强化 (无底色 + 无炫光版, 跟 PlanRationaleCard 一致):
+        //   - 不要 .background — 整卡透到页面背景
+        //   - 0.5pt 浅白描边 — 唯一边缘 affordance, 比 accent 绿描边更克制, 跟其它系统 surface 一致
+        //   - 不要 shadow — 描边足够区分卡片边界
+        .overlay(
+            RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium)
+                .stroke(MasoColor.borderSoft, lineWidth: 0.5)
+        )
     }
 
     /// 单个 legend 行 — 跟 HistoryScreen 的 legendDot 视觉一致.

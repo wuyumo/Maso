@@ -159,7 +159,9 @@ struct Exercise: Identifiable, Hashable, Codable, Sendable {
     ///   3. fallback 到英文 raw name
     var displayName: String {
         if let map = localizedName {
-            let preferredLang = Bundle.main.preferredLocalizations.first ?? "en"
+            // ⚠️ 不能用 Bundle.main.preferredLocalizations — 这是 app launch 缓存, 用户在
+            // 应用内切换语言 (LanguageManager) 不会更新. 走 LanguageManager 才能跟随 in-app pick.
+            let preferredLang = LanguageManager.currentLanguageCode
             if let localized = map[preferredLang] ?? map["en"] {
                 return localized
             }
@@ -180,7 +182,11 @@ struct Exercise: Identifiable, Hashable, Codable, Sendable {
 
     static func equipmentDisplayName(for raw: String) -> String {
         let key = "equipment.\(raw)"
-        let fallback = raw.split(separator: " ").map { $0.capitalized }.joined(separator: " ")
+        // 数据里 equipment 大量用 snake_case (ez_curl_bar / smith_machine / pull_up_bar / ab_wheel ...).
+        // localization key 没全覆盖 → 走 fallback 时, 下划线先变空格再 cap, 不然 chip 上会出现
+        // "Ez_curl_bar" / "Smith_machine" 这种丑标签.
+        let pretty = raw.replacingOccurrences(of: "_", with: " ")
+        let fallback = pretty.split(separator: " ").map { $0.capitalized }.joined(separator: " ")
         return NSLocalizedString(key, value: fallback, comment: "equipment chip label")
     }
 
@@ -204,7 +210,9 @@ struct Exercise: Identifiable, Hashable, Codable, Sendable {
     var simplifiedInstructions: [String] {
         // 新库优先
         if let map = localizedInstructions {
-            let preferredLang = Bundle.main.preferredLocalizations.first ?? "en"
+            // ⚠️ 不能用 Bundle.main.preferredLocalizations — 这是 app launch 缓存, 用户在
+            // 应用内切换语言 (LanguageManager) 不会更新. 走 LanguageManager 才能跟随 in-app pick.
+            let preferredLang = LanguageManager.currentLanguageCode
             if let arr = map[preferredLang] ?? map["en"], !arr.isEmpty {
                 return arr
             }
@@ -238,7 +246,9 @@ struct Exercise: Identifiable, Hashable, Codable, Sendable {
     /// 本地化的危险提示. 没有就空数组.
     var localizedDangers: [String] {
         if let map = localizedDangerWarnings {
-            let preferredLang = Bundle.main.preferredLocalizations.first ?? "en"
+            // ⚠️ 不能用 Bundle.main.preferredLocalizations — 这是 app launch 缓存, 用户在
+            // 应用内切换语言 (LanguageManager) 不会更新. 走 LanguageManager 才能跟随 in-app pick.
+            let preferredLang = LanguageManager.currentLanguageCode
             if let arr = map[preferredLang] ?? map["en"] {
                 return arr
             }

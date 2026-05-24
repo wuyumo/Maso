@@ -154,15 +154,17 @@ struct TrainingSettingsSheet: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 20) {
-                    Section_(title: "Training") {
-                        TrainingSettingsSection()
-                    }
+                    // 不再有 section 标题 — nav title "Training Preferences" 已经够清楚,
+                    // 内部不重复 section header (用户反馈 Adjust 多余).
+                    TrainingSettingsSection()
                 }
                 .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
                 .padding(.top, 16)
             }
             .background(MasoColor.background.ignoresSafeArea())
-            .navigationTitle("Training")
+            // Nav title 跟 Plans tab 卡片 kicker 对齐 — 用户点 "TRAINING PREFERENCES" 卡进来,
+            // 看到 sheet 标题也是 "Training Preferences", 上下文连贯.
+            .navigationTitle("Training Preferences")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {

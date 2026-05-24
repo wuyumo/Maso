@@ -27,27 +27,7 @@ struct PlansScreen: View {
         // + 清掉 List 默认样式后视觉跟原 VStack 几乎一致.
         List {
             // (ProBanner 已挪到 TodayScreen 顶部, Plans tab 不再展示)
-
-            // 标题行 — Plans 标题 + 右侧 + 按钮同一行
-            HStack(spacing: 12) {
-                Text("Plans")
-                    .font(.system(size: 26, weight: .bold))
-                    .foregroundStyle(MasoColor.text)
-                Spacer()
-                Button(action: onNewPlan) {
-                    Image(systemName: "plus")
-                        .font(.system(size: 16, weight: .bold))
-                        .foregroundStyle(MasoColor.text)
-                        .frame(width: 34, height: 34)
-                        .background(MasoColor.surface)
-                        .clipShape(Circle())
-                }
-                .buttonStyle(.plain)
-                .accessibilityLabel("New workout")
-            }
-            .listRowSeparator(.hidden)
-            .listRowInsets(EdgeInsets(top: MasoMetrics.pagePaddingTop, leading: 0, bottom: 16, trailing: 0))
-            .listRowBackground(Color.clear)
+            // 标题 + 右上角按钮: 撤掉自定义 inline 标题行, 走系统 .navigationTitle + .toolbar.
 
             // Rationale card — 解释当前 plan 列表是按你哪些偏好生成的.
             // 有 plan 才显示 (空状态下没东西可解释).
@@ -106,6 +86,26 @@ struct PlansScreen: View {
         .contentMargins(.horizontal, MasoMetrics.pagePaddingHorizontal, for: .scrollContent)
         .contentMargins(.bottom, MasoMetrics.pageBottomInset, for: .scrollContent)
         .background(MasoColor.background.ignoresSafeArea())
+        // iOS 默认导航栏: 大标题 (滚动会自动收成 inline) + 系统 tint 的 toolbar 按钮
+        .navigationTitle("Plans")
+        .navigationBarTitleDisplayMode(.large)
+        .toolbar {
+            // Restore button — 只在用户把系统推荐 plan 全删光时显示, 一键拉回推荐
+            if hasNoRecommendedPlans {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(action: restoreRecommendedPlans) {
+                        Image(systemName: "arrow.counterclockwise")
+                    }
+                    .accessibilityLabel(NSLocalizedString("Restore recommended", comment: ""))
+                }
+            }
+            ToolbarItem(placement: .topBarTrailing) {
+                Button(action: onNewPlan) {
+                    Image(systemName: "plus")
+                }
+                .accessibilityLabel("New workout")
+            }
+        }
         .alert("Delete plan?", isPresented: Binding(
             get: { pendingDeletePlanId != nil },
             set: { if !$0 { pendingDeletePlanId = nil } }
@@ -135,6 +135,26 @@ struct PlansScreen: View {
         }
         // (paywall sheet 跟着 ProBanner 一起搬到 TodayScreen)
     }
+
+    // MARK: - Restore recommended plans
+
+    /// 系统生成的推荐 plan 用这些 id 前缀. RecommendedPrograms 出来的都是这套.
+    private static let recommendedPrefixes = ["plan-full", "plan-bal", "plan-push", "plan-pull", "plan-legs"]
+
+    /// 用户的 plans 里是不是已经没有任何系统推荐的 plan 了 — 用前缀 prefix-match 判断.
+    /// 没有任何推荐 plan → 显示 Restore 按钮; 还有一个就藏起来 (用户没完全清空).
+    private var hasNoRecommendedPlans: Bool {
+        !data.plans.contains { plan in
+            Self.recommendedPrefixes.contains { plan.id.hasPrefix($0) }
+        }
+    }
+
+    /// 拉回系统推荐 — 走 DataStore 已有的 regenerateRecommendedPlans() 入口, 跟 Onboarding /
+    /// Settings 修改 weeklyTrainingDays 时同一份 logic.
+    private func restoreRecommendedPlans() {
+        data.regenerateRecommendedPlans()
+        Haptics.tap()
+    }
 }
 
 // MARK: - CommunityEntryRow — Plans 列表底部"社区精选" 入口
@@ -149,8 +169,9 @@ private struct CommunityEntryRow: View {
                     .font(.system(size: 16, weight: .semibold))
                     .foregroundStyle(MasoColor.accent)
                     .frame(width: 36, height: 36)
+                // DESIGN.md §2.2: 列表行 label 走正文 14pt bold (跟 PlanRow title 同档).
                 Text("See what others train")
-                    .font(.system(size: 15, weight: .bold))
+                    .font(.system(size: 14, weight: .bold))
                     .foregroundStyle(MasoColor.text)
                     .lineLimit(1)
                 Spacer()
@@ -209,40 +230,56 @@ private struct PlanRationaleCard: View {
         let dataLine = dataParts.joined(separator: " · ")
         let explanation = rationale(days: s.weeklyTrainingDays, hasFocus: !majors.isEmpty)
 
-        return VStack(alignment: .leading, spacing: 8) {
-            // 顶行: FOR YOU kicker + 右上角 pencil 编辑入口
-            HStack(alignment: .center, spacing: 8) {
-                Text("FOR YOU")
+        return VStack(alignment: .leading, spacing: 10) {
+            // 顶行: 训练图标 + TRAINING PREFERENCES kicker + 右上角 pencil 入口.
+            // 字号跟 WorkoutCard "FROM YOUR PLAN" 完全对齐 (10pt heavy + tracking 1.5), 三个 kicker
+            // 在三个 tab 上视觉一致.
+            HStack(alignment: .center, spacing: 6) {
+                Image(systemName: "figure.run")
+                    .font(.system(size: 10, weight: .heavy))
+                    .foregroundStyle(MasoColor.accent)
+                Text("TRAINING PREFERENCES")
                     .font(.system(size: 10, weight: .heavy))
                     .tracking(1.5)
                     .foregroundStyle(MasoColor.accent)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.85)
                 Spacer()
                 // pencil 按钮 — 弹 TrainingSettingsSheet, 内容跟 Settings → Training 完全一致
                 Button(action: { showTrainingSettings = true }) {
                     Image(systemName: "slider.horizontal.3")
                         .font(.system(size: 13, weight: .semibold))
                         .foregroundStyle(MasoColor.accent)
-                        .frame(width: 28, height: 28)
-                        .background(MasoColor.accent.opacity(0.12))
+                        .frame(width: 30, height: 30)
+                        .background(MasoColor.accent.opacity(0.18))
                         .clipShape(Circle())
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel(Text("Adjust training preferences"))
             }
             Text(dataLine)
-                .font(.system(size: 14, weight: .semibold))
+                // DESIGN.md §2.2: 正文 14pt bold — FOR YOU 卡的"数据行"是主要可读信息, 走正文规格
+                .font(.system(size: 14, weight: .bold))
                 .foregroundStyle(MasoColor.text)
                 .fixedSize(horizontal: false, vertical: true)
             Text(explanation)
+                // 副文案: 比正文小一档 12pt, 弱化用 textDim
                 .font(.system(size: 12))
                 .foregroundStyle(MasoColor.textDim)
                 .fixedSize(horizontal: false, vertical: true)
                 .lineSpacing(2)
         }
-        .padding(MasoMetrics.cardPadding - 2)
+        .padding(.horizontal, MasoMetrics.cardPadding)
+        .padding(.vertical, MasoMetrics.cardPadding - 2)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(MasoColor.surface)
-        .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
+        // 视觉强化 (无底色 + 无炫光版):
+        //   - 不要 .background — 整卡透到页面背景 (跟 MuscleStatusOverviewCard 同款 hero 处理)
+        //   - 0.5pt 浅白描边 — 跟 MuscleStatusOverviewCard 同款, 比 accent 绿更克制
+        //   - 不要 shadow — 描边足够
+        .overlay(
+            RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium)
+                .stroke(MasoColor.borderSoft, lineWidth: 0.5)
+        )
         // 整张卡也可点 — pencil 是显式 affordance, 但用户点空白处也算 "想改"
         .contentShape(Rectangle())
         .onTapGesture { showTrainingSettings = true }
@@ -344,13 +381,22 @@ private struct PlanRow: View {
                 .contentShape(Rectangle())
                 .onTapGesture { onTap() }
 
-            // anatomy + 右下角播放按钮 同一行. 用共享 MuscleVisualBlock — 跟 SessionCard
-            // 严格一致 (sideLength + button 大小 + 内边距). 见 memory feedback 文件.
+            // anatomy + 播放按钮 — ZStack(.bottomTrailing): muscle map 水平居中,
+            // play button 浮在卡片右下角. 按钮到卡片底 / 右 距离都 = cardPadding (16pt), 视觉对称.
+            // 按钮缩小到 32pt (从 44pt) — 不再"主 CTA 强调", 而是"列表行点起"的辅助操作.
+            // ⚠️ SessionCard 同款布局, 改这里同步改 SessionCard.
             ZStack(alignment: .bottomTrailing) {
-                MuscleVisualBlock(muscles: muscles, sideLength: 100)
-                    .contentShape(Rectangle())
-                .onTapGesture { onTap() }
+                // 居中层 — muscle map 水平居中
+                HStack {
+                    Spacer()
+                    MuscleVisualBlock(muscles: muscles, sideLength: 100)
+                        .fixedSize()
+                        .contentShape(Rectangle())
+                        .onTapGesture { onTap() }
+                    Spacer()
+                }
 
+                // Play button — ZStack bottomTrailing → 自动贴右下角
                 Button(action: onStart) {
                     ZStack {
                         Circle()
@@ -358,9 +404,9 @@ private struct PlanRow: View {
                             .overlay(
                                 Circle().stroke(MasoColor.accent.opacity(0.4), lineWidth: 0.5)
                             )
-                            .frame(width: 36, height: 36)
+                            .frame(width: 32, height: 32)
                         Image(systemName: "play.fill")
-                            .font(.system(size: 12, weight: .heavy))
+                            .font(.system(size: 11, weight: .heavy))
                             .foregroundStyle(MasoColor.accent)
                             .offset(x: 0.5)
                     }
@@ -414,6 +460,10 @@ struct PlanDetailSheet: View {
     @State private var shareURL: URL? = nil
     /// Share encode 失败时弹的简单 alert (理论上不会触发).
     @State private var shareFailed: Bool = false
+    /// 右滑"替换动作"流程: stepId set 非 nil 时弹 ExercisePickerSheet 让用户挑新动作,
+    /// 选完后只换 exerciseId, 保留 sets/reps/weight 等参数 (用户调过的负荷不要被替换抹掉).
+    /// 跟 showAddPicker (append) 走两套 sheet, 语义清楚.
+    @State private var stepToReplaceId: String? = nil
 
     init(initialPlan: Plan, onStart: @escaping (Plan) -> Void) {
         self.initialPlan = initialPlan
@@ -460,8 +510,8 @@ struct PlanDetailSheet: View {
             .scrollContentBackground(.hidden)
             .contentMargins(.horizontal, MasoMetrics.pagePaddingHorizontal, for: .scrollContent)
             .background(MasoColor.background.ignoresSafeArea())
+            // 不显示 nav title — 用户要求 Edit Workout 系列页面都不要标题
             .navigationBarTitleDisplayMode(.inline)
-            .navigationTitle("Edit Workout")
             .toolbar {
                 // 左侧 "…" overflow menu — 装 destructive 操作 (Delete Plan).
                 // iOS 习惯把删除整个对象的操作放 toolbar menu, 不放主显眼按钮.
@@ -565,6 +615,13 @@ struct PlanDetailSheet: View {
                 )
                 .presentationDetents([.large])
             }
+            // 替换动作 sheet — 跟 add 走同款 ExercisePickerSheet, 但 onPick 只替换 exerciseId,
+            // 保留 sets/reps/weight 等强度参数. 用 isPresented bool binding 而不是 item, 因为
+            // body 已经很大, item: Binding 让编译器 type-check 超时.
+            .sheet(isPresented: replaceSheetPresented) {
+                ExercisePickerSheet(onPick: handleReplacePick)
+                    .presentationDetents([.large])
+            }
             // 点 PlanStepRow / Card 图片 → 弹动作详情 (跟其它 5 个列表共用 ExerciseDetailSheet).
             // 整行 tap 仍走 NavigationLink 进 EditStepView (改 sets/reps/weight). 图片是 Button,
             // hit-test 优先级高于 NavigationLink, 不会同时触发.
@@ -579,6 +636,35 @@ struct PlanDetailSheet: View {
     private func commit() {
         draft.updatedAt = Date()
         data.updatePlan(draft)
+    }
+
+    /// 替换动作 sheet 的 isPresented binding — 拆出来减轻 body type-check 负担.
+    private var replaceSheetPresented: Binding<Bool> {
+        Binding(
+            get: { stepToReplaceId != nil },
+            set: { if !$0 { stepToReplaceId = nil } }
+        )
+    }
+
+    /// 替换动作完成回调 — ExercisePickerSheet 选了新 ex 后调进来.
+    /// PlanStep.exerciseId 是 let, 不能直接改, 用整 step 替换 (保留 sets/reps/weight/duration
+    /// 等强度参数, 避免用户调过的负荷被抹).
+    private func handleReplacePick(_ newExercise: Exercise) {
+        defer { stepToReplaceId = nil }
+        guard let id = stepToReplaceId,
+              let idx = draft.steps.firstIndex(where: { $0.id == id }) else { return }
+        let old = draft.steps[idx]
+        draft.steps[idx] = PlanStep(
+            id: old.id,
+            exerciseId: newExercise.id,
+            sets: old.sets,
+            reps: old.reps,
+            weight: old.weight,
+            duration: old.duration,
+            restBetweenSets: old.restBetweenSets,
+            rest: old.rest
+        )
+        commit()
     }
 
     /// Share — 编码 draft 成 maso:// URL → 弹系统 share sheet.
@@ -618,9 +704,15 @@ struct PlanDetailSheet: View {
                     .stroke(MasoColor.borderSoft, lineWidth: 0.5)
             )
 
-            // 用共享 MuscleVisualBlock — 正方形 muscle map slot, 左对齐 (跟 WorkoutCard /
-            // SessionCard / PlanRow 完全一致).
-            MuscleVisualBlock(muscles: muscles, sideLength: 110)
+            // Muscle map — Edit Workout 顶部居中 (跟 PlanRow / SessionCard 列表行的左对齐不同).
+            // 这里没有右侧 play/replay 按钮压在同一行, 单纯展示 plan 命中的肌群; 居中视觉更
+            // 端正, 不会"左重右空"。fixedSize 阻止 MuscleVisualBlock 撑全宽 (它默认 maxWidth: .infinity).
+            HStack {
+                Spacer(minLength: 0)
+                MuscleVisualBlock(muscles: muscles, sideLength: 110)
+                    .fixedSize()
+                Spacer(minLength: 0)
+            }
         }
     }
 
@@ -679,6 +771,7 @@ struct PlanDetailSheet: View {
                             .listRowBackground(Color.clear)
                             .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                                 // icon-only → 圆形按钮; tint 走 design.md (negative 红粉 / accent 绿).
+                                // 顺序 (从右往左, 因为是 trailing edge): Delete → Edit → Replace
                                 Button(role: .destructive) {
                                     pendingDeleteStepId = stp.id
                                 } label: {
@@ -695,6 +788,16 @@ struct PlanDetailSheet: View {
                                 }
                                 .tint(MasoColor.accent)
                                 .accessibilityLabel(NSLocalizedString("Edit", comment: ""))
+
+                                // 替换动作 — 弹 ExercisePickerSheet, 选完只替换 exerciseId,
+                                // sets/reps/weight 等用户调过的参数全部保留 (替换是"动作换, 强度不变").
+                                Button {
+                                    stepToReplaceId = stp.id
+                                } label: {
+                                    Image(systemName: "arrow.triangle.2.circlepath")
+                                }
+                                .tint(MasoColor.accent)
+                                .accessibilityLabel(NSLocalizedString("Replace exercise", comment: ""))
                             }
                     }
                 }
@@ -1029,7 +1132,7 @@ private struct EditStepView: View {
             .padding(.bottom, 32)
         }
         .background(MasoColor.background.ignoresSafeArea())
-        .navigationTitle("Edit Exercise")
+        // 不显示 nav title — 用户要求 Edit Workout 系列页面都不要标题
         .navigationBarTitleDisplayMode(.inline)
         .alert("Remove this exercise?", isPresented: $confirmDelete) {
             Button("Remove", role: .destructive) {
@@ -1286,7 +1389,7 @@ private struct ExercisePickerSheet: View {
                 ExerciseDetailSheet(exercise: ex, onAdd: { onPick(ex) })
             }
             .background(MasoColor.background.ignoresSafeArea())
-            .navigationTitle("Add Exercise")
+            // 不显示 nav title — 用户要求 Edit Workout 系列页面都不要标题
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
@@ -1544,7 +1647,8 @@ private struct ExercisePickerSheet: View {
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
                         if isFav {
-                            Image(systemName: "heart.fill")
+                            // 置顶标识
+                            Image(systemName: "pin.fill")
                                 .font(.system(size: 12, weight: .heavy))
                                 .foregroundStyle(MasoColor.accent)
                         }
@@ -1563,10 +1667,10 @@ private struct ExercisePickerSheet: View {
                         data.toggleFavorite(ex.id)
                         Haptics.tap()
                     } label: {
-                        Image(systemName: isFav ? "heart.slash.fill" : "heart.fill")
+                        Image(systemName: isFav ? "pin.slash.fill" : "pin.fill")
                     }
                     .tint(MasoColor.accent)
-                    .accessibilityLabel(NSLocalizedString(isFav ? "Unfavorite" : "Favorite", comment: ""))
+                    .accessibilityLabel(NSLocalizedString(isFav ? "Unpin" : "Pin to top", comment: ""))
                 }
             }
             if filtered.isEmpty {

@@ -236,7 +236,7 @@ private struct QuickMuscleStep: View {
             HStack {
                 Spacer()
                 if showMuscleStatus {
-                    let lastMap = MuscleStatusCompute.muscleLastTrainedMap(
+                    let fatigueMap = MuscleStatusCompute.muscleFatigueMap(
                         sets: data.sets, exById: data.exById
                     )
                     BodyHint(
@@ -244,7 +244,7 @@ private struct QuickMuscleStep: View {
                         synergists: synergistsArr,
                         height: MasoMetrics.bodyHintLarge,
                         region: detectBodyRegion(Array(selected) + synergistsArr),
-                        opacityFor: { m in MuscleStatusCompute.opacityFor(muscle: m, lastMap: lastMap) },
+                        opacityFor: { m in MuscleStatusCompute.opacityFor(muscle: m, fatigueMap: fatigueMap) },
                         onMuscleTap: { m in
                             let key = MuscleSelector.majorOf(m)
                             toggle(key)
@@ -357,12 +357,12 @@ private struct QuickMuscleStep: View {
     /// 选中的肌群里是否有刚练完 (opacity 满) 的 — 用来决定是否显示白色警告 hint
     private var anySelectedJustTrained: Bool {
         guard showMuscleStatus, !selected.isEmpty else { return false }
-        let lastMap = MuscleStatusCompute.muscleLastTrainedMap(
+        let fatigueMap = MuscleStatusCompute.muscleFatigueMap(
             sets: data.sets, exById: data.exById
         )
         let expanded = expandAnatomyMuscles(Array(selected))
         for m in expanded {
-            if let op = MuscleStatusCompute.opacityFor(muscle: m, lastMap: lastMap), op >= 0.95 {
+            if let op = MuscleStatusCompute.opacityFor(muscle: m, fatigueMap: fatigueMap), op >= 0.95 {
                 return true
             }
         }
@@ -520,21 +520,25 @@ private struct QuickExerciseStep: View {
     /// 菜单"的交互. "Any" badge 在最左, 选它 = 清空 filter.
     private var equipmentBadgeRow: some View {
         let avail = availableEquipments
+        // 1) 用户当前选中的肌群下"真实存在"的器械才进 badge 行 —— 不再 dim disabled 选项.
+        // 2) 先按 knownEquipments 的策展顺序排, 再把数据里有但 known 列表没收录的器械 (e.g. ab_wheel,
+        //    smith_machine, pull_up_bar, kettlebell 旧拼写 etc.) 按字母补在后面, 让 ab_wheel / 各种
+        //    专项 machine 也能被筛.
+        let known = Exercise.knownEquipments.filter { avail.contains($0) }
+        let extras = avail.subtracting(Exercise.knownEquipments).sorted()
+        let displayList = known + extras
         return ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 6) {
                 equipmentBadge(
                     label: NSLocalizedString("Any equipment", comment: ""),
                     selected: equipmentFilter == nil,
-                    enabled: true,
                     action: { equipmentFilter = nil }
                 )
-                ForEach(Exercise.knownEquipments, id: \.self) { eq in
+                ForEach(displayList, id: \.self) { eq in
                     let isSel = equipmentFilter == eq
-                    let isEnabled = avail.contains(eq) || isSel
                     equipmentBadge(
                         label: Exercise.equipmentDisplayName(for: eq),
                         selected: isSel,
-                        enabled: isEnabled,
                         action: {
                             // 再点已选 = 取消; 否则切换到这个
                             equipmentFilter = isSel ? nil : eq
@@ -546,7 +550,7 @@ private struct QuickExerciseStep: View {
         }
     }
 
-    private func equipmentBadge(label: String, selected: Bool, enabled: Bool, action: @escaping () -> Void) -> some View {
+    private func equipmentBadge(label: String, selected: Bool, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Text(label)
                 .font(.system(size: 12, weight: .heavy))
@@ -554,10 +558,8 @@ private struct QuickExerciseStep: View {
                 .background(selected ? MasoColor.accent : MasoColor.surface)
                 .foregroundStyle(selected ? .black : MasoColor.textDim)
                 .clipShape(Capsule())
-                .opacity(enabled || selected ? 1 : 0.35)
         }
         .buttonStyle(.plain)
-        .disabled(!enabled && !selected)
     }
 
     /// 两个 CTA 等高常量 — 不靠 padding 计算, 显式 .frame(height) 兜底
@@ -780,7 +782,8 @@ private struct QuickExerciseStep: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 if isFav {
-                    Image(systemName: "heart.fill")
+                    // 置顶标识
+                    Image(systemName: "pin.fill")
                         .font(.system(size: 12, weight: .heavy))
                         .foregroundStyle(MasoColor.accent)
                 }
@@ -807,19 +810,24 @@ private struct QuickExerciseStep: View {
                 data.toggleFavorite(ex.id)
                 Haptics.tap()
             } label: {
-                Image(systemName: isFav ? "heart.slash.fill" : "heart.fill")
+                Image(systemName: isFav ? "pin.slash.fill" : "pin.fill")
             }
             .tint(MasoColor.accent)
-            .accessibilityLabel(NSLocalizedString(isFav ? "Unfavorite" : "Favorite", comment: ""))
+            .accessibilityLabel(NSLocalizedString(isFav ? "Unpin" : "Pin to top", comment: ""))
         }
     }
 
-    /// 给定 muscle, 找到匹配度 top-6 的 strength + cardio + flexibility 动作 (应用 equipment 筛选)
+    /// 给定 muscle, 找到匹配度 top-6 的训练动作 (应用 equipment 筛选).
+    /// 注意: 拉伸 / mobility 不计入"训练 picker" — 用户进这页是来"练 X 肌群"的, 拉伸主肌群也命中
+    /// 但语义不是训练 (e.g. chest_stretch_doorway 的 primary 是 chest, score 高过 bench press,
+    /// 不过滤的话 Smart pick 会把"胸部拉伸"塞进来, 跟用户预期严重不符).
     private func topExercises(for muscle: MuscleGroup) -> [ScoredExercise] {
         // 展开 → 子肌群 (例: chest → [chest, upperChest, midChest, lowerChest])
         let targets = expandAnatomyMuscles([muscle])
-        // 候选先过 equipment filter, 再打分
-        let candidates: [Exercise] = allExercises.filter { matchesEquipment($0) }
+        // 候选先过 training category + equipment filter, 再打分
+        let candidates: [Exercise] = allExercises.filter {
+            isTrainingCategory($0.category) && matchesEquipment($0)
+        }
         let scored: [ScoredExercise] = candidates.compactMap { ex in
             let s = score(ex, against: targets)
             return s > 0 ? ScoredExercise(exercise: ex, score: s) : nil
@@ -833,6 +841,16 @@ private struct QuickExerciseStep: View {
         return Array((favs + rest).prefix(6))
     }
 
+    /// "训练类" category — 用户进 Pick Exercise 想要的是练这块肌肉, 不是拉它.
+    /// strength / hypertrophy / calisthenics / plyometric / cardio 都算 — 都是"做组"语义.
+    /// stretching / mobility 排除 — 这俩属于 warmup/cooldown, 不该出现在训练动作列表.
+    private func isTrainingCategory(_ c: ExerciseCategory) -> Bool {
+        switch c {
+        case .stretching, .mobility: return false
+        default: return true
+        }
+    }
+
     /// equipment filter 命中? nil = 任何器械都行.
     private func matchesEquipment(_ ex: Exercise) -> Bool {
         guard let eq = equipmentFilter else { return true }
@@ -840,11 +858,13 @@ private struct QuickExerciseStep: View {
         return ex.equipment == eq
     }
 
-    /// 当前已选肌群下还有动作的 equipment set — menu 里 dim disabled 用.
+    /// 当前已选肌群下训练动作的 equipment set — equipment badge 行用.
+    /// 用 isTrainingCategory 跟 topExercises 一致, 不然会把 yoga_strap / foam_roller 这些
+    /// 只配拉伸的器械塞进 badge 行, 用户选了之后看不到任何匹配 exercise.
     private var availableEquipments: Set<String> {
         var out: Set<String> = []
-        // 只看在 selectedMuscles 任何一项下有匹配的动作; equipment 维度先不限.
-        for ex in allExercises {
+        // 只看在 selectedMuscles 任何一项下有匹配的训练动作; equipment 维度先不限.
+        for ex in allExercises where isTrainingCategory(ex.category) {
             var hits = false
             for m in selectedMuscles {
                 let targets = expandAnatomyMuscles([m])

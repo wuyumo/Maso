@@ -5,6 +5,34 @@ enum DistanceUnit: String, Codable, Sendable { case km, mi }
 enum Gender: String, Codable, Sendable { case male, female, other }
 enum ProgramStyle: String, Codable, Sendable { case fullBody = "full-body", balanced, split }
 
+/// 一周从哪天开始 — 影响日历 / 本周 stats / 周分组所有 calendar 计算.
+/// 默认 .system, 跟随用户 iOS 系统 locale (US/JP 默认周日 = 1, 中欧大陆默认周一 = 2).
+/// 用户可在 Settings 显式 override.
+enum WeekStartDay: String, Codable, Sendable, CaseIterable {
+    case system   // 跟随 iOS 系统 locale
+    case sunday
+    case monday
+
+    /// 解析成 Calendar.firstWeekday 兼容的 Int (1 = Sunday, 2 = Monday, etc.)
+    /// .system 时返回 nil — caller 用 Calendar.current 默认值.
+    var resolvedFirstWeekday: Int? {
+        switch self {
+        case .system: return nil
+        case .sunday: return 1
+        case .monday: return 2
+        }
+    }
+
+    /// 给 UI 显示的名字 (英文 — Localizable.strings 走 LocalizedStringKey 查表).
+    var displayName: String {
+        switch self {
+        case .system: return "System default"
+        case .sunday: return "Sunday"
+        case .monday: return "Monday"
+        }
+    }
+}
+
 // 订阅相关
 enum SubscriptionTier: String, Codable, Sendable {
     case monthly, yearly, lifetime
@@ -90,6 +118,25 @@ struct UserSettings: Codable, Sendable {
     /// 用户在 ShareCustomizeSheet 加的照片存这里, History 列表 + Session 详情页都会展示.
     /// JPEG 压缩到 quality 0.7 — 在分享视觉清晰度和持久化体积之间妥协 (典型照片 ~100-300KB).
     var sessionPhotos: [String: Data] = [:]
+
+    /// 一周从哪天开始. 默认 .system 跟随 iOS 系统 locale; 用户可在 Settings 显式 override.
+    /// 影响: History tab 的日历周排版 / 本周 stats 计算 / 任何 weekOfYear 分组.
+    var weekStartDay: WeekStartDay = .system
+}
+
+// MARK: - 派生 Calendar (跟着 UserSettings.weekStartDay)
+
+extension UserSettings {
+    /// 按用户偏好返回一个 Calendar — 整 app 跟"周"相关的 date math 走这个,
+    /// 不要直接 `Calendar.current`. 一改 settings, 整 app 周排版同步.
+    /// system 模式直接返回 Calendar.current (firstWeekday 跟系统 locale).
+    var calendar: Calendar {
+        var cal = Calendar.current
+        if let fw = weekStartDay.resolvedFirstWeekday {
+            cal.firstWeekday = fw
+        }
+        return cal
+    }
 }
 
 // MARK: - Free 用户的软上限

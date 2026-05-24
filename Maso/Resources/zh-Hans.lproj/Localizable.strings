@@ -533,6 +533,9 @@
 
 /* PlanRationaleCard — 训练计划页顶部 */
 "FOR YOU" = "为你设计";
+"TRAINING PREFERENCES" = "训练偏好";
+"Training Preferences" = "训练偏好";
+"Adjust" = "调整";
 "%lld days / week" = "每周 %lld 次";
 "Focus: %@" = "重点 %@";
 "Full-body" = "全身分化";
@@ -547,6 +550,23 @@
 "Weekly Workouts" = "本周训练频率";
 "White areas were just trained" = "白色区域是刚练完的肌肉";
 "Today's Status" = "今日状态";
+/* Share card — 重命名 */
+"My Workout" = "我的训练";
+"Customize" = "自定义";
+/* Plans tab 恢复推荐按钮 */
+"Restore recommended" = "恢复推荐";
+/* Settings — 一周从哪天开始 */
+"Week starts" = "周起始";
+"Auto" = "自动";
+"Sun" = "周日";
+"Mon" = "周一";
+/* History 月度 stats */
+"Days this month" = "本月天数";
+"Sets this month" = "本月组数";
+/* 肌肉状态 legend (累计 volume 衰减模型) */
+"Heavy fatigue" = "高度疲劳";
+"Mostly recovered" = "大部分恢复";
+"Fresh" = "充满活力";
 
 /* ── Community (社区精选训练计划) ── */
 "Browse community plans" = "浏览社区训练计划";
@@ -606,6 +626,14 @@
 "community_session_pull_simple" = "拉";
 "Favorite" = "收藏";
 "Unfavorite" = "取消收藏";
+/* Pin / Unpin — 语义换成"置顶"而非"收藏" */
+"Pin to top" = "置顶";
+"Pin" = "置顶";
+"Unpin" = "取消置顶";
+/* Edit Workout 右滑替换 */
+"Replace exercise" = "替换动作";
+/* Today tab — 肌肉状态 hero kicker (替换 "RECOVERY") */
+"MUSCLE STATUS" = "肌肉状态";
 
 /* StoreKit / IAP — Maso Pro 付费流 */
 "Couldn't load subscription options. Try again later." = "无法加载订阅选项,请稍后重试。";

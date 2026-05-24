@@ -181,6 +181,7 @@ private func muscleFromV2Pair(_ p: V2Muscle) -> MuscleGroup? {
     case "lower_chest":     return .lowerChest
     // Back
     case "lats":            return .lats
+    case "upper_back":      return .upperLats   // proxy: upper back = upper lats region
     case "lower_back":      return .lowerBack
     case "rear_delt":       return .rearDelts
     case "traps_upper":     return .upperTraps

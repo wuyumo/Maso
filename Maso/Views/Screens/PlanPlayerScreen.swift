@@ -762,15 +762,16 @@ private struct ExerciseInfo: View {
 
                     Spacer(minLength: 0)  // 把 edit btn 推到行最右端, pills 居左
 
-                    // 编辑按钮 — 贴右侧. icon 再小一号 (14→12pt), 点击热区 28×24 保持不变.
+                    // 编辑按钮 — iOS 默认 pencil icon + 标准 tint. 之前用 square.and.pencil
+                    // 偏"撰写"语义, 改回更通用的 pencil 让"编辑"语义直白.
                     Button(action: {
                         Haptics.tap()
                         editOpen = true
                     }) {
-                        Image(systemName: "square.and.pencil")
-                            .font(.system(size: 12, weight: .heavy))
-                            .foregroundStyle(MasoColor.textDim)
-                            .frame(width: 28, height: 24)  // hit target ≥ 24×24 不变
+                        Image(systemName: "pencil")
+                            .font(.system(size: 16, weight: .semibold))
+                            .foregroundStyle(MasoColor.text)
+                            .frame(width: 28, height: 24)  // hit target ≥ 24×24
                     }
                     .buttonStyle(.plain)
                     .accessibilityLabel(NSLocalizedString("Edit exercise parameters", comment: ""))

@@ -12,80 +12,38 @@ struct TodayScreen: View {
     @State private var detailPlan: Plan? = nil
     /// 顶部 ProBanner tap → 弹 paywall (跟以前 Plans tab 上的 banner 同款)
     @State private var paywallPresented: Bool = false
-    /// 肌肉状态卡上的"训练日历"按钮 → 弹 WorkoutCalendarScreen
-    @State private var showCalendar: Bool = false
 
     private var suggested: Plan? {
         // 优先 AI 生成的今日计划; 没有 (AI 关闭 / API key 未填 / 网络失败) → fallback 系统推荐
         data.aiTodayPlan ?? data.todayRecommendedPlan
     }
 
-    private var greeting: String {
-        let h = Calendar.current.component(.hour, from: Date())
-        let key: String
-        switch h {
-        case 0..<5:   key = "Late Night"
-        case 5..<12:  key = "Good Morning"
-        case 12..<18: key = "Good Afternoon"
-        default:      key = "Good Evening"
-        }
-        // 走 NSLocalizedString — Text("...") 的 LocalizedStringKey 自动查表只对字面量生效,
-        // 这里返回的是 var, 必须显式查表才能拿到译文
-        return NSLocalizedString(key, comment: "")
-    }
-
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
-                // Pro 展示位 — Pro 用户隐藏. 之前在 Plans tab 顶部, tab 重排后挪到 Today.
+                // Pro 展示位 — Pro 用户隐藏.
                 if !data.settings.isPro {
                     ProBanner { paywallPresented = true }
-                        .padding(.top, 24)
+                        .padding(.top, 8)
                 }
 
-                // 肌肉状态横版卡 — 移到 "Today's Workout" 标题之上, 当作页面真正的 hero.
-                // 横向布局: 左 BodyHint 近正方形 + 右 legend 竖排 + 训练日历 / Train the gaps 按钮.
+                // 肌肉状态 hero 卡
                 MuscleStatusOverviewCard(
-                    lastMap: lastMap,
+                    fatigueMap: fatigueMap,
                     gapMuscles: gapMuscles,
-                    onShowCalendar: { showCalendar = true },
                     onStartGapWorkout: startGapWorkout
                 )
-                .padding(.top, data.settings.isPro ? MasoMetrics.pagePaddingTop : 4)
 
-                // Title row 跟 settings 齿轮同行, alignment 用 .top 让齿轮顶部跟 "GOOD AFTERNOON" 对齐.
-                HStack(alignment: .top, spacing: 12) {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(greeting.uppercased())
-                            .font(.system(size: 10, weight: .bold))
-                            .tracking(3)
-                            .foregroundStyle(MasoColor.accent)
-                        Text("Today's Workout")
-                            .font(.system(size: 28, weight: .bold))
-                            .foregroundStyle(MasoColor.text)
-                            .lineLimit(3)
-                            .multilineTextAlignment(.leading)
-                            .fixedSize(horizontal: false, vertical: true)
-                    }
-                    Spacer()
-                    // Settings 齿轮 — 跟 Plans + 按钮同款样式 (text + surface bg + 34×34 圆)
-                    Button(action: onOpenSettings) {
-                        Image(systemName: "gearshape.fill")
-                            .font(.system(size: 16, weight: .bold))
-                            .foregroundStyle(MasoColor.text)
-                            .frame(width: 34, height: 34)
-                            .background(MasoColor.surface)
-                            .clipShape(Circle())
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel("Settings")
-                }
+                // 撤掉外面的 "Today's Workout" section title — 现在直接作为 kicker 进卡内.
 
                 if let plan = suggested {
-                    // kicker 不传 — WorkoutCard 内部自动 derive (FROM YOUR PLAN / AI / nil).
+                    // kicker 显式传 "Today's Workout" — 替代之前内部 derive 出来的 "FROM YOUR PLAN".
+                    // 跟 MuscleStatusOverviewCard 的 "MUSCLE STATUS" 同款样式 (textDim 灰小 caps),
+                    // 当作"section 标签"贴在卡顶, 用户一眼知道这块卡片对应哪个 section.
                     WorkoutCard(
                         plan: plan,
                         exById: data.exById,
+                        kicker: "Today's Workout",
                         onStart: { onStart(plan) },
                         onShowDetail: { detailPlan = plan }
                     )
@@ -106,8 +64,9 @@ struct TodayScreen: View {
                             .font(.system(size: 14, weight: .heavy))
                             .foregroundStyle(MasoColor.accent)
                         VStack(alignment: .leading, spacing: 2) {
+                            // DESIGN.md §2.2: 列表行 label = 正文 14pt bold (跟 PlanRow / Community 同档)
                             Text("Free workout")
-                                .font(.system(size: 15, weight: .bold))
+                                .font(.system(size: 14, weight: .bold))
                                 .foregroundStyle(MasoColor.text)
                             Text("Pick your own exercises and go")
                                 .font(.system(size: 11))
@@ -132,10 +91,18 @@ struct TodayScreen: View {
             }
             .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
         }
-        .background(MasoColor.background.ignoresSafeArea())
-        // 详情 sheet — 复用 PlanDetailSheet, 用户在里面可看每个动作的 sets/reps/weight,
-        // 也能编辑 (跟 Plans tab 进入是同款体验).
-        // onStart 回调走 TodayScreen 自己的 onStart, 让用户在 detail 内开练也走统一入口.
+        // iOS 默认导航栏 — 大标题 "Today" + 右上角 settings gear. 不再 .background 覆盖,
+        // 让 NavigationStack 拿到系统 navigation bar material (滚动出 blur, 跟 Plans / History 一致).
+        .navigationTitle("Today")
+        .navigationBarTitleDisplayMode(.large)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button(action: onOpenSettings) {
+                    Image(systemName: "gearshape")
+                }
+                .accessibilityLabel("Settings")
+            }
+        }
         .sheet(item: $detailPlan) { plan in
             PlanDetailSheet(
                 initialPlan: plan,
@@ -149,13 +116,6 @@ struct TodayScreen: View {
         .sheet(isPresented: $paywallPresented) {
             PaywallScreen()
         }
-        .sheet(isPresented: $showCalendar) {
-            WorkoutCalendarScreen(
-                sessionDates: workoutDateSet(),
-                totalSetsThisWeek: totalSetsThisWeek,
-                streakDaysCount: currentStreakDays
-            )
-        }
     }
 
     // MARK: - 肌肉状态 + 训练日历计算 helpers
@@ -163,6 +123,12 @@ struct TodayScreen: View {
     // 从 HistoryScreen 移过来的实现 — 现在两个屏都用同一份. 长期应该把这些挪到
     // MuscleStatusCompute / DataStore extension, 暂时复制一份避免大改.
 
+    /// Recovery 卡用 — 累计 volume 衰减模型, 跟 MuscleStatusOverviewCard 接.
+    private var fatigueMap: [MuscleGroup: Double] {
+        MuscleStatusCompute.muscleFatigueMap(sets: data.sets, exById: data.exById)
+    }
+
+    /// "Train the gaps" 判断"3 天没碰" 用 — 跟 fatigue 不是一个概念, 单独走时间维度.
     private var lastMap: [MuscleGroup: Date] {
         MuscleStatusCompute.muscleLastTrainedMap(sets: data.sets, exById: data.exById)
     }
@@ -189,29 +155,6 @@ struct TodayScreen: View {
             if allStale { gaps.append(major) }
         }
         return gaps
-    }
-
-    private func workoutDateSet() -> Set<Date> {
-        let cal = Calendar.current
-        return Set(data.sets.map { cal.startOfDay(for: $0.performedAt) })
-    }
-
-    private var totalSetsThisWeek: Int {
-        let cal = Calendar.current
-        let cutoff = cal.startOfDay(for: cal.date(byAdding: .day, value: -6, to: Date())!)
-        return data.sets.filter { $0.performedAt >= cutoff }.count
-    }
-
-    private var currentStreakDays: Int {
-        let cal = Calendar.current
-        let days = workoutDateSet()
-        var streak = 0
-        var cursor = cal.startOfDay(for: Date())
-        while days.contains(cursor) {
-            streak += 1
-            cursor = cal.date(byAdding: .day, value: -1, to: cursor)!
-        }
-        return streak
     }
 
     /// 一键: 找 gap → 智能挑动作 → 拼 plan → 启动训练 (跟 HistoryScreen.startGapWorkout 同款).

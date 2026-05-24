@@ -246,7 +246,7 @@ private struct TodayStatusSectionView: View {
             VStack(alignment: .leading, spacing: 4) {
                 SectionKicker(text: "Today")
                 HStack(alignment: .center, spacing: 8) {
-                    Text("Today's Status")
+                    Text("My Workout")
                         .font(.system(size: 22, weight: .bold))
                         .foregroundStyle(MasoColor.text)
                         .lineLimit(2)

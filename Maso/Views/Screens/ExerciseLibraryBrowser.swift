@@ -184,7 +184,8 @@ struct ExerciseLibraryBrowser: View {
                                 }
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 if isFav {
-                                    Image(systemName: "heart.fill")
+                                    // 置顶标识 — 跟动作列表右滑 swipeAction 同图标
+                                    Image(systemName: "pin.fill")
                                         .font(.system(size: 12, weight: .heavy))
                                         .foregroundStyle(MasoColor.accent)
                                 }
@@ -203,10 +204,11 @@ struct ExerciseLibraryBrowser: View {
                                 data.toggleFavorite(ex.id)
                                 Haptics.tap()
                             } label: {
-                                Image(systemName: isFav ? "heart.slash.fill" : "heart.fill")
+                                // pin.slash.fill (取消置顶) vs pin.fill (置顶) — 状态切换图标
+                                Image(systemName: isFav ? "pin.slash.fill" : "pin.fill")
                             }
                             .tint(MasoColor.accent)
-                            .accessibilityLabel(NSLocalizedString(isFav ? "Unfavorite" : "Favorite", comment: ""))
+                            .accessibilityLabel(NSLocalizedString(isFav ? "Unpin" : "Pin to top", comment: ""))
                         }
                     }
                 }
@@ -572,18 +574,18 @@ struct ExerciseDetailSheet: View {
             .background(MasoColor.background.ignoresSafeArea())
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                // 收藏按钮 — 心形 toggle (iOS 默认风格, 系统自动 tint)
+                // 置顶按钮 — pin toggle (语义从"收藏"改成"置顶到列表顶部")
                 ToolbarItem(placement: .topBarLeading) {
                     let favorited = data.isFavorite(exercise.id)
                     Button {
                         data.toggleFavorite(exercise.id)
                         Haptics.tap()
                     } label: {
-                        Image(systemName: favorited ? "heart.fill" : "heart")
+                        Image(systemName: favorited ? "pin.fill" : "pin")
                     }
                     .accessibilityLabel(favorited
-                                        ? NSLocalizedString("Remove from favorites", comment: "")
-                                        : NSLocalizedString("Add to favorites", comment: ""))
+                                        ? NSLocalizedString("Unpin", comment: "")
+                                        : NSLocalizedString("Pin to top", comment: ""))
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") { dismiss() }

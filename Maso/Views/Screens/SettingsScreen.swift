@@ -70,7 +70,7 @@ struct SettingsScreen: View {
 
                 // 训练 — 跟 Profile (个人信息) 一起放上面, 都属于"用户偏好".
                 // 6 行内容抽到 TrainingSettingsSection (共享给 PlanRationaleCard 的快捷 sheet).
-                Section_(title: "Training") {
+                Section_(title: "Training Preferences") {
                     TrainingSettingsSection()
                 }
 
@@ -82,6 +82,16 @@ struct SettingsScreen: View {
                     Divider().background(MasoColor.borderSoft)
                     Row(label: "Distance") {
                         Choice(value: $data.settings.distanceUnit, options: [(.km, "km"), (.mi, "mi")])
+                    }
+                    Divider().background(MasoColor.borderSoft)
+                    // "周从哪天开始" — 影响 History 日历 / 本周 stats / 任何 weekOfYear 分组.
+                    // 默认 Auto = 跟随 iOS 系统 locale (US/JP 周日, 欧洲中国周一).
+                    Row(label: "Week starts") {
+                        Choice(value: $data.settings.weekStartDay, options: [
+                            (.system, "Auto"),
+                            (.sunday, "Sun"),
+                            (.monday, "Mon"),
+                        ])
                     }
                 }
 

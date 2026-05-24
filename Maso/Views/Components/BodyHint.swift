@@ -1,195 +1,283 @@
 import SwiftUI
-import MuscleMap
 
 // 紧凑的双视图肌肉示意图 (正面 + 背面)
 //
-// 2026-05 重做 — 改用 MuscleMap SwiftUI SDK 渲染. 前 4 次 Claude 手画 polygon 都被毙了
-// (低多边形 / 边缘生硬), 这次改用真人插画家画的 bezier polygon, 36 个肌群含 14 个 sub.
-// 详见 docs/exercise-db-overhaul-plan.md §0.6 + _anatomy-research.md
-//
-// 对外 API 跟旧 BodyHint 一致 — 所有 caller 不用改.
+// 2026-05-24 — 撤回 MuscleMap SDK 路径, 改回 polygon Canvas 自渲染.
+// SDK 渲染的真人解剖图视觉太硬, 用户要的是低多边形 / 大肌群优先 / sub-muscle 作为切分而不是独立块.
+// 这个版本的"生成方式":
+//   - 直接 fill `ANTERIOR` / `POSTERIOR` 里的 polygon (react-body-highlighter 数据, 17 大肌群)
+//   - 每个 polygon = 一个 major muscle 的形状 (chest / lats / biceps...), 没有 sub-muscle 独立块
+//   - sub-muscle 命中通过 `expandAnatomyMuscles` 反向触发对应 major polygon 高亮 — 视觉是"切分", 不是另一块
+//   - 描边用极淡灰 (#1F1F1F, 0.25pt) 当作肌肉之间的分隔线, 不抢戏
+//   - 圆角 2.5pt — 让低多边形不那么尖锐
 //
 // 行为:
-//   - 默认 (square=false): aspect ratio 由 MuscleMap 内部决定 (~0.57:1), 自适应父容器
-//   - square=true: 锁正方形 (列表 / player thumbnail 用)
-//   - region: full / upper / lower — 走 mask 裁剪显示区
-//   - opacityFor: 给 history 衰减模式用 (caller 控制每块肌肉的 opacity)
-//   - onMuscleTap: 用户点身体某块肌肉, MuscleMap 帮我们做 hit-test 走 callback
+//   - 默认 (square=false): 每个 panel 宽度按 region viewBox 的自然 aspect 计算 (~0.5 wide × tall)
+//   - square=true: 每个 panel 锁定为 height × height (列表 / player thumbnail 用)
+//   - region: full / upper / lower 控制 viewBox 裁剪
+//   - opacityFor: per-muscle opacity 回调 (history 衰减热图模式)
+//   - panelSpacing: 前后 panel 间距 (默认 6, MuscleVisualBlock 通常传 0)
+//   - onMuscleTap: 用户点击身体某块肌肉时触发 — ray-cast point-in-polygon hit test
 struct BodyHint: View {
     let muscles: [MuscleGroup]
-    /// 协同肌 — 渲染成更淡的 accent. 通常 caller 传 secondary muscles.
+    /// 协同肌 — 渲染成 35% 透明的 accent ("带到的肌肉").
     var synergists: [MuscleGroup] = []
     var color: Color = MasoColor.accent
     var height: CGFloat = 110
     var region: BodyRegion = .full
-    /// true = 锁正方形 slot. MuscleMap BodyView 不强制 aspect, 我们用 frame + clipped 自己锁.
+    /// true = 每个 panel 锁成 height × height 的正方形 slot (列表 / player 用)
     var square: Bool = false
-    /// 可选 per-muscle opacity 回调. 传了之后忽略 muscles / synergists 参数.
+    /// 可选 per-muscle opacity 回调 (history 衰减模式). 传了之后 muscles / synergists 被忽略.
     var opacityFor: ((MuscleGroup) -> Double?)? = nil
     /// 可选 tap 回调 — 用户点身体某块肌肉时触发.
     var onMuscleTap: ((MuscleGroup) -> Void)? = nil
-    /// "粗颗粒模式" — 关闭 sub-muscle 分块显示. (目前实现没区分; v3 可加.)
+    /// "粗颗粒模式" — true 时不画 sub muscle 之间的细分描边, 让同一 major 的 polygon 视觉合并成一整块.
     var coarseOnly: Bool = false
-    /// 前 / 后两个 panel 之间的间距. 默认 4 — 之前 0 用户反馈"靠太近", 留一点透气保持视觉分离感
-    /// 同时仍保持近正方形整体. 想完全贴紧 / 拉开传 0 / 8.
-    var panelSpacing: CGFloat = 4
-
-    // MARK: - Body
-
-    var body: some View {
-        HStack(spacing: panelSpacing) {
-            panel(side: .front)
-            panel(side: .back)
-        }
-        .frame(maxHeight: height)
-        .modifier(RegionClipModifier(region: region))
-    }
-
-    @ViewBuilder
-    private func panel(side: MuscleMap.BodySide) -> some View {
-        // 纯链式调用 — 跟 MuscleMap demo 1:1 风格.
-        // 之前用 var view = ...; view = view.showSubGroups() 形式时高亮没出来,
-        // 怀疑跟 SwiftUI ViewBuilder 对 var 局部变量的处理有关.
-        let primaries = primaryMuscleMapMuscles
-        let synergists = synergistMuscleMapMuscles
-
-        if let onTap = onMuscleTap {
-            MuscleMap.BodyView(gender: .male, side: side, style: bodyStyle)
-                .showSubGroups()
-                .highlight(synergists, color: color, opacity: 0.35)
-                .highlight(primaries, color: color, opacity: 1.0)
-                .onMuscleSelected { muscle, _ in onTap(muscle.masoMuscleGroup) }
-                .frame(width: square ? height : nil, height: height)
-        } else {
-            MuscleMap.BodyView(gender: .male, side: side, style: bodyStyle)
-                .showSubGroups()
-                .highlight(synergists, color: color, opacity: 0.35)
-                .highlight(primaries, color: color, opacity: 1.0)
-                .frame(width: square ? height : nil, height: height)
-        }
-    }
-
-    /// 展开后 primary muscles → MuscleMap.Muscle 数组 (去重). opacityFor 模式留空 (callsite handles).
-    private var primaryMuscleMapMuscles: [Muscle] {
-        var out: Set<Muscle> = []
-        for mg in expanded { out.formUnion(mg.mmMuscles) }
-        return Array(out)
-    }
-
-    private var synergistMuscleMapMuscles: [Muscle] {
-        var out: Set<Muscle> = []
-        for mg in synergistsExpanded { out.formUnion(mg.mmMuscles) }
-        return Array(out)
-    }
-
-
-    // MARK: - Highlight application
-
-    private func applyHighlights(to view: MuscleMap.BodyView) -> MuscleMap.BodyView {
-        var result = view
-
-        if let opacityFor {
-            // 每肌群单独 opacity 模式 — 用于 history 衰减
-            for mg in MuscleGroup.allCases {
-                guard let op = opacityFor(mg), op > 0 else { continue }
-                let mms = mg.mmMuscles
-                if !mms.isEmpty {
-                    result = result.highlight(mms, color: color, opacity: op)
-                }
-            }
-            return result
-        }
-
-        // 标准模式: primary 全 opacity, synergists 35% opacity
-        var primaryMms: [Muscle] = []
-        var synergistMms: [Muscle] = []
-        for mg in expanded { primaryMms.append(contentsOf: mg.mmMuscles) }
-        for mg in synergistsExpanded { synergistMms.append(contentsOf: mg.mmMuscles) }
-        primaryMms = Array(Set(primaryMms))
-        synergistMms = Array(Set(synergistMms))
-
-        // 先涂 synergists (低 opacity) 再涂 primary — primary 覆盖共有的
-        if !synergistMms.isEmpty {
-            result = result.highlight(synergistMms, color: color, opacity: 0.35)
-        }
-        if !primaryMms.isEmpty {
-            result = result.highlight(primaryMms, color: color, opacity: 1.0)
-        }
-        return result
-    }
-
-    // MARK: - Helpers
+    /// 前 / 后 panel 之间的间距 (像素). 默认 6, MuscleVisualBlock 通常传 0 (锁正方形 slot).
+    var panelSpacing: CGFloat = 6
 
     private var expanded: Set<MuscleGroup> { expandAnatomyMuscles(muscles) }
     private var synergistsExpanded: Set<MuscleGroup> {
         expandAnatomyMuscles(synergists).subtracting(expanded)
     }
 
-    /// MuscleMap 风格 — 黑底 + 深灰 idle + 透明边. 跟 MasoColor.background / .surface 视觉对齐.
-    private var bodyStyle: MuscleMap.BodyViewStyle {
-        MuscleMap.BodyViewStyle(
-            defaultFillColor: Color(red: 0.165, green: 0.165, blue: 0.165),  // ~MasoColor.surface
-            strokeColor: .clear,
-            strokeWidth: 0,
-            selectionColor: color,
-            selectionStrokeColor: .clear,
-            selectionStrokeWidth: 0,
-            headColor: Color(red: 0.165, green: 0.165, blue: 0.165),
-            hairColor: Color(red: 0.122, green: 0.122, blue: 0.122),          // ~MasoColor.background
-            shadowColor: .clear,
-            shadowRadius: 0,
-            shadowOffset: .zero
+    /// 单 panel 在 "理想 anatomy 坐标系" 下的宽度
+    private var panelUnitWidth: CGFloat {
+        if square { return region.viewBox.height }
+        return AnatomyView.width
+    }
+
+    /// 显示像素下的单 panel 宽
+    private var displayPanelW: CGFloat {
+        square ? height : height * (AnatomyView.width / region.viewBox.height)
+    }
+    private var displayTotalW: CGFloat {
+        displayPanelW * 2 + panelSpacing
+    }
+    private var aspectRatio: CGFloat {
+        displayTotalW / height
+    }
+
+    var body: some View {
+        GeometryReader { geo in
+            Canvas { ctx, size in
+                draw(ctx: ctx, size: size)
+            }
+            .frame(width: geo.size.width, height: geo.size.height)
+            .contentShape(Rectangle())
+            .onTapGesture(coordinateSpace: .local) { location in
+                guard let onMuscleTap else { return }
+                if let m = hitTest(location: location, canvasSize: geo.size) {
+                    onMuscleTap(m)
+                }
+            }
+        }
+        .aspectRatio(aspectRatio, contentMode: .fit)
+        .frame(maxHeight: height)
+    }
+
+    // MARK: - Hit test (point-in-polygon)
+
+    private func hitTest(location p: CGPoint, canvasSize size: CGSize) -> MuscleGroup? {
+        let scale = size.height / height
+        let panelHpx = size.height
+        let panelWpx = displayPanelW * scale
+        let gapPx = panelSpacing * scale
+        let view = region.viewBox
+
+        let scaleX = panelWpx / AnatomyView.width
+        let scaleY = panelHpx / view.height
+        let s = min(scaleX, scaleY)
+        let drawW = AnatomyView.width * s
+        let drawH = view.height * s
+
+        if p.x < panelWpx {
+            let dx = (panelWpx - drawW) / 2
+            let dy = (panelHpx - drawH) / 2
+            let anatX = (p.x - dx) / s
+            let anatY = (p.y - dy) / s + view.yMin
+            return pointInPolygons(CGPoint(x: anatX, y: anatY), polys: ANTERIOR)
+        } else if p.x > panelWpx + gapPx {
+            let originX = panelWpx + gapPx
+            let dx = originX + (panelWpx - drawW) / 2
+            let dy = (panelHpx - drawH) / 2
+            let anatX = (p.x - dx) / s
+            let anatY = (p.y - dy) / s + view.yMin
+            return pointInPolygons(CGPoint(x: anatX, y: anatY), polys: POSTERIOR)
+        }
+        return nil
+    }
+
+    /// 反向遍历 polygon (后画的在上层, 优先 hit). 跳过 fullBody (装饰头).
+    private func pointInPolygons(_ p: CGPoint, polys: [AnatomyPolygon]) -> MuscleGroup? {
+        for poly in polys.reversed() where poly.muscle != .fullBody {
+            if pointInPolygon(p, polygon: poly.points) {
+                return poly.muscle
+            }
+        }
+        return nil
+    }
+
+    /// 标准 ray-casting point-in-polygon
+    private func pointInPolygon(_ p: CGPoint, polygon: [CGPoint]) -> Bool {
+        guard polygon.count >= 3 else { return false }
+        var inside = false
+        var j = polygon.count - 1
+        for i in 0..<polygon.count {
+            let pi = polygon[i]
+            let pj = polygon[j]
+            if (pi.y > p.y) != (pj.y > p.y) {
+                let x = pi.x + (p.y - pi.y) * (pj.x - pi.x) / (pj.y - pi.y)
+                if p.x < x { inside.toggle() }
+            }
+            j = i
+        }
+        return inside
+    }
+
+    // MARK: - 绘制
+
+    private func draw(ctx: GraphicsContext, size: CGSize) {
+        let scale = size.height / height
+        let panelHpx = size.height
+        let panelWpx = displayPanelW * scale
+        let gapPx = panelSpacing * scale
+
+        drawAnatomy(
+            ctx: ctx,
+            polys: ANTERIOR,
+            origin: CGPoint(x: 0, y: 0),
+            panelSize: CGSize(width: panelWpx, height: panelHpx)
+        )
+        drawAnatomy(
+            ctx: ctx,
+            polys: POSTERIOR,
+            origin: CGPoint(x: panelWpx + gapPx, y: 0),
+            panelSize: CGSize(width: panelWpx, height: panelHpx)
         )
     }
-}
 
-// MARK: - Region clipping
+    private func drawAnatomy(
+        ctx: GraphicsContext,
+        polys: [AnatomyPolygon],
+        origin: CGPoint,
+        panelSize: CGSize
+    ) {
+        let view = region.viewBox
+        let scaleX = panelSize.width / AnatomyView.width
+        let scaleY = panelSize.height / view.height
+        let s = min(scaleX, scaleY)
+        let drawW = AnatomyView.width * s
+        let drawH = view.height * s
+        let dx = origin.x + (panelSize.width - drawW) / 2
+        let dy = origin.y + (panelSize.height - drawH) / 2
 
-/// 用 mask 裁剪 BodyHint 的上半 / 下半显示.
-/// MuscleMap 没原生 region, 我们用 GeometryReader + 透明矩形 mask.
-private struct RegionClipModifier: ViewModifier {
-    let region: BodyRegion
+        // 圆角 — anatomy 单位 2.5 缩放到像素
+        let cornerRadius = 2.5 * s
 
-    func body(content: Content) -> some View {
-        switch region {
-        case .full:
-            content
-        case .upper:
-            // 显示上半 (head + chest + back + shoulders + arms): 留上 55%
-            content
-                .mask {
-                    GeometryReader { geo in
-                        Rectangle()
-                            .frame(width: geo.size.width, height: geo.size.height * 0.55)
-                            .position(x: geo.size.width / 2, y: geo.size.height * 0.275)
-                    }
+        let idleGray = Color(red: 0.165, green: 0.165, blue: 0.165)
+        let synergistColor = color.opacity(0.35)
+        let isCombinedMode = (opacityFor != nil) && !muscles.isEmpty
+        for poly in polys {
+            guard poly.points.count >= 3 else { continue }
+            let fillColor: Color
+            if poly.muscle == .fullBody {
+                fillColor = idleGray
+            } else if isCombinedMode, let opacityFor {
+                let isSelected = expanded.contains(poly.muscle)
+                let isSyn = !isSelected && synergistsExpanded.contains(poly.muscle)
+                let op = opacityFor(poly.muscle) ?? 0
+                if isSelected {
+                    fillColor = op >= 0.95 ? Color.white : color
+                } else if isSyn {
+                    fillColor = synergistColor
+                } else {
+                    fillColor = op > 0 ? color.opacity(op) : idleGray
                 }
-        case .lower:
-            // 显示下半 (waist + glutes + legs): 留下 55%
-            content
-                .mask {
-                    GeometryReader { geo in
-                        Rectangle()
-                            .frame(width: geo.size.width, height: geo.size.height * 0.55)
-                            .position(x: geo.size.width / 2, y: geo.size.height * 0.725)
-                    }
-                }
+            } else if let opacityFor {
+                let op = opacityFor(poly.muscle) ?? 0
+                fillColor = op > 0 ? color.opacity(op) : idleGray
+            } else {
+                let isHit = expanded.contains(poly.muscle)
+                let isSyn = !isHit && synergistsExpanded.contains(poly.muscle)
+                if isHit { fillColor = color }
+                else if isSyn { fillColor = synergistColor }
+                else { fillColor = idleGray }
+            }
+            let pts = poly.points.map { p -> CGPoint in
+                CGPoint(
+                    x: dx + p.x * s,
+                    y: dy + (p.y - view.yMin) * s
+                )
+            }
+            let path = roundedPolygonPath(pts, radius: cornerRadius)
+            ctx.fill(path, with: .color(fillColor))
+            // 暗灰描边 (0.25pt) 作为 sub-muscle 切分线. coarseOnly 模式下不画,
+            // 同 major 的 polygon 视觉合并成一整块.
+            if !coarseOnly {
+                ctx.stroke(path, with: .color(Color(white: 0.122)), lineWidth: 0.25)
+            }
         }
     }
 }
 
-// MARK: - Preview
-// (BodyRegion 在 Maso/Data/Anatomy.swift 里定义, 这里不重复)
+// MARK: - 圆角 polygon helper
 
-#Preview {
-    VStack(spacing: 16) {
-        BodyHint(muscles: [.chest, .triceps], synergists: [.frontDelts], height: 200)
-        HStack {
-            BodyHint(muscles: [.chest], height: 72, region: .upper, square: true)
-            BodyHint(muscles: [.hamstrings], height: 72, region: .lower, square: true)
-        }
+/// 给闭合多边形做圆角处理 — 每个顶点用 quadCurve 替换直角.
+/// radius 单位 = 跟传入 pts 同一坐标系.
+private func roundedPolygonPath(_ pts: [CGPoint], radius: CGFloat) -> Path {
+    let n = pts.count
+    var path = Path()
+    guard n >= 3 else {
+        if let first = pts.first { path.move(to: first) }
+        for p in pts.dropFirst() { path.addLine(to: p) }
+        path.closeSubpath()
+        return path
+    }
+    var enterPoints: [CGPoint] = []
+    var exitPoints: [CGPoint] = []
+    for i in 0..<n {
+        let prev = pts[(i + n - 1) % n]
+        let cur = pts[i]
+        let next = pts[(i + 1) % n]
+        let dxPrev = prev.x - cur.x
+        let dyPrev = prev.y - cur.y
+        let dxNext = next.x - cur.x
+        let dyNext = next.y - cur.y
+        let lenPrev = max(0.0001, sqrt(dxPrev * dxPrev + dyPrev * dyPrev))
+        let lenNext = max(0.0001, sqrt(dxNext * dxNext + dyNext * dyNext))
+        let r = min(radius, min(lenPrev, lenNext) * 0.5)
+        let enter = CGPoint(x: cur.x + dxPrev / lenPrev * r,
+                            y: cur.y + dyPrev / lenPrev * r)
+        let exit = CGPoint(x: cur.x + dxNext / lenNext * r,
+                           y: cur.y + dyNext / lenNext * r)
+        enterPoints.append(enter)
+        exitPoints.append(exit)
+    }
+    path.move(to: exitPoints[0])
+    for i in 0..<n {
+        let next = (i + 1) % n
+        path.addLine(to: enterPoints[next])
+        path.addQuadCurve(to: exitPoints[next], control: pts[next])
+    }
+    path.closeSubpath()
+    return path
+}
+
+// MARK: - Previews
+
+#Preview("Full body — h 200") {
+    BodyHint(muscles: [.chest, .frontDelts], height: 200)
+        .padding()
+        .background(MasoColor.background)
+}
+
+#Preview("Square slot — 100") {
+    HStack(spacing: 16) {
+        BodyHint(muscles: [.chest], height: 100, region: .full, square: true)
+        BodyHint(muscles: [.hamstrings, .glutes], height: 100, region: .full, square: true)
+        BodyHint(muscles: [.lats, .triceps], height: 100, region: .full, square: true)
     }
     .padding()
     .background(MasoColor.background)
-    .preferredColorScheme(.dark)
 }

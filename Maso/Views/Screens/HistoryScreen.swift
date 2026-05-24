@@ -15,41 +15,38 @@ struct HistoryScreen: View {
     let onOpenSettings: () -> Void
 
     @State private var selectedSession: SessionSummary?
-    @State private var showCalendar: Bool = false
     /// 7 天前的训练记录默认收折, 用户点 "Show older" 才展开.
     /// 7 天最近的训练对用户更相关 (回顾、规划), 更早的 long tail 不需要默认展开.
     @State private var showOlderSessions: Bool = false
     /// 长按 → contextMenu Delete → 二次确认 alert. 存待删 session (planId + day) 区分.
     @State private var pendingDeleteSession: SessionSummary? = nil
+    /// 训练日历的展开 / 收起态.
+    /// 默认 true (收起单行 strip) — 让用户进 tab 第一眼看到的是训练记录, 而不是日历占满一屏.
+    /// 用户点 strip 主动展开; scroll 也会强制 collapse. 收起后不再自动展开 — 完全用户主导.
+    @State private var calendarCollapsed: Bool = true
 
     var body: some View {
+        // 单一 ScrollView, 跟 PlansScreen 同款行为:
+        //   - stats + calendar 是 scroll content 的一部分, 跟 session 列表一起滚动
+        //   - 用户向上滑 → 标题从 large 收成 inline, headbar 出系统 material blur
+        //   - ScrollView 到顶后向下拖 (overscroll) → calendar 从 strip 展开成月
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                // Page title row — 标题 + 右上角设置入口 (跟 TodayScreen 同款).
-                // 原"肌肉状态"卡 + Share 按钮已撤掉 — 肌肉状态 hero 卡挪到 Today tab,
-                // Share 入口走 SessionDetailSheet (点开一条记录里有). 这个 tab 现在
-                // 只剩纯粹的"训练记录列表", 标题改成 "Workout Records".
-                HStack(alignment: .top, spacing: 12) {
-                    Text("Workout Records")
-                        .font(.system(size: 26, weight: .bold))
-                        .foregroundStyle(MasoColor.text)
-                    Spacer()
-                    Button(action: onOpenSettings) {
-                        Image(systemName: "gearshape.fill")
-                            .font(.system(size: 16, weight: .bold))
-                            .foregroundStyle(MasoColor.text)
-                            .frame(width: 34, height: 34)
-                            .background(MasoColor.surface)
-                            .clipShape(Circle())
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel("Settings")
-                }
-                .padding(.top, MasoMetrics.pagePaddingTop)
+                // 顶端 3 metrics 卡 — 跟着 calendar 状态切口径 (本周 / 本月)
+                statsRow
+                    .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
+                    .animation(.spring(response: 0.5, dampingFraction: 0.86), value: calendarCollapsed)
 
-                // 训练记录 — 卡片样式 (一张卡 = 一次完整训练)
-                // 7 天前的 sessions 收到"Show older"折叠按钮下面 — 减少 default 视觉负担,
-                // 长期用户的几百张卡不会一开就 dump 全屏.
+                // 训练日历 — 默认 7 天 strip, 点击 strip / chevron 展开整月.
+                // 用 surface + 圆角包成卡片, 跟 stats 卡风格一致.
+                InlineWorkoutCalendar(
+                    sessionDates: workoutDateSet(),
+                    musclesPerDay: musclesPerDayMap(),
+                    isCollapsed: $calendarCollapsed
+                )
+                .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
+
+                // 训练记录列表
                 let allSessions = groupedSessions()
                 if allSessions.isEmpty {
                     Text("No workouts yet")
@@ -62,15 +59,13 @@ struct HistoryScreen: View {
                     let recent = allSessions.filter { $0.day >= cutoff }
                     let older = allSessions.filter { $0.day < cutoff }
 
-                    // 删了 "Workouts" 二级标题 — 跟 tab 顶部 "训练记录" 重复, 直接显示卡片列表更干净.
-
                     VStack(spacing: 12) {
                         ForEach(recent) { session in
                             sessionCardRow(session)
                         }
                     }
+                    .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
 
-                    // 7 天前 sessions 折叠区 — 有更早的才显示这个 toggle
                     if !older.isEmpty {
                         Button(action: {
                             withAnimation(.easeOut(duration: 0.2)) { showOlderSessions.toggle() }
@@ -90,7 +85,7 @@ struct HistoryScreen: View {
                             .clipShape(Capsule())
                         }
                         .buttonStyle(.plain)
-                        .padding(.top, 4)
+                        .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
 
                         if showOlderSessions {
                             VStack(spacing: 12) {
@@ -98,6 +93,7 @@ struct HistoryScreen: View {
                                     sessionCardRow(session)
                                 }
                             }
+                            .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
                             .transition(.opacity.combined(with: .move(edge: .top)))
                         }
                     }
@@ -105,15 +101,19 @@ struct HistoryScreen: View {
 
                 Spacer(minLength: MasoMetrics.pageBottomInset)
             }
-            .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
         }
-        .background(MasoColor.background.ignoresSafeArea())
-        .sheet(isPresented: $showCalendar) {
-            WorkoutCalendarScreen(
-                sessionDates: workoutDateSet(),
-                totalSetsThisWeek: totalSetsThisWeek,
-                streakDaysCount: currentStreakDays
-            )
+        // (撤销 scroll-based 展开/收起 — 现在完全交给用户主动点击 strip / chevron 控制)
+        // iOS 默认导航栏 — 不再 .background(MasoColor.background.ignoresSafeArea()) 覆盖,
+        // 让 NavigationStack 拿到系统 navigation bar material (滚动时自动出 blur 跟 PlansScreen 一致).
+        .navigationTitle("History")
+        .navigationBarTitleDisplayMode(.large)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button(action: onOpenSettings) {
+                    Image(systemName: "gearshape")
+                }
+                .accessibilityLabel("Settings")
+            }
         }
         .sheet(item: $selectedSession) { session in
             SessionDetailSheet(
@@ -145,50 +145,6 @@ struct HistoryScreen: View {
         }
     }
 
-    // MARK: - Train the gaps
-
-    /// "可训练大肌群"集合 — 来自 MuscleSelector.groupedRows 的 major 维度.
-    /// 之前 gapSections 只走 6 个顶层 section (chest/back/shoulders/arms/core/legs),
-    /// 漏了 biceps / triceps / forearms / quads / hams / glutes / calves / adductors 等更细的肌群.
-    /// 现在 1:1 对齐 picker 的 12 个 major chip — "用户能选" = "gap 能补".
-    ///
-    /// 注意: arms / legs / core 这三个 section "聚合"概念不在这, 因为我们已经按
-    /// biceps/triceps/forearms (替代 arms) + quads/hams/glutes/calves/adductors (替代 legs)
-    /// 拆开了, 重复算 arms/legs 会导致同一肌群被 catch-up 多次.
-    private static let trainableMajorMuscles: [MuscleGroup] = [
-        .chest, .back, .shoulders,
-        .biceps, .triceps, .forearms,
-        .core,
-        .quads, .hamstrings, .glutes, .adductors, .calves,
-    ]
-
-    /// 找出"需补"的 major 肌群 — 该肌群下所有 anatomy 肌肉都 ≥3 天没被练 (或从没练过).
-    /// 返回顺序按 trainableMajorMuscles 列表 (chest 优先, calves 兜底).
-    private func gapMajorMuscles() -> [MuscleGroup] {
-        let lastMap = muscleLastTrainedMap()
-        let now = Date()
-        let cutoff: TimeInterval = 3 * 86400
-        var gaps: [MuscleGroup] = []
-        for major in Self.trainableMajorMuscles {
-            // 把这个 major 展开成它在 anatomy 上的所有 sub. 例 chest → upperChest/midChest/lowerChest.
-            // 用 composites + 自己 — expandAnatomyMuscles 自动处理.
-            let anatomy = expandAnatomyMuscles([major])
-            guard !anatomy.isEmpty else { continue }
-            let allStale = anatomy.allSatisfy { m in
-                guard let last = lastMap[m] else { return true }
-                return now.timeIntervalSince(last) >= cutoff
-            }
-            if allStale { gaps.append(major) }
-        }
-        return gaps
-    }
-
-    /// 兼容旧 UI 调用 (`Train the gaps` 按钮 disabled state).
-    /// 实际选动作仍走 gapMajorMuscles → 更细粒度.
-    private func gapSections() -> [MuscleGroup] {
-        gapMajorMuscles()
-    }
-
     /// 单个 SessionCard + tap handler — 给 recent / older 两个 list 共享.
     /// 长按 → contextMenu Delete → alert 二次确认. (HistoryScreen 顶部有 muscle status hero card,
     /// 没改成 List, 所以用 contextMenu 替代右滑 — 删除能力一致.)
@@ -216,179 +172,93 @@ struct HistoryScreen: View {
         }
     }
 
-    // MARK: - Share data 计算 (给 UnifiedShareCard 各 section 用)
+    // MARK: - 顶部 3 metrics 卡 (跟 calendar 状态切换本周 / 本月)
 
-    /// 最新一次 session 的 WorkoutSectionData — 给"肌肉状态卡"的"也加上 workout section"toggle 用.
-    /// 没有 session → 返回 nil (UnifiedShareCard 会自动跳过该 section).
-    private func mostRecentWorkoutSection() -> WorkoutSectionData? {
-        let sessions = groupedSessions()
-        guard let s = sessions.first else { return nil }
-        let df = DateFormatter()
-        df.dateStyle = .full
-        df.timeStyle = .none
-        let names = exerciseStats(for: s).map { $0.exercise.displayName }
-        return WorkoutSectionData(
-            dateLabel: df.string(from: s.day),
-            planName: s.planName ?? NSLocalizedString("Free workout", comment: ""),
-            durationLabel: "~\(max(5, s.setCount * 2))m",
-            setCount: s.setCount,
-            exerciseCount: s.exerciseCount,
-            prCount: s.prCount,
-            muscles: s.muscles,
-            exerciseNames: names
+    /// 顶部 stats row — 跟着 calendar 是 strip 还是月展示不同口径:
+    ///   - 7 天 strip (collapsed): "Days this week / Current streak / Sets this week"
+    ///   - 月 grid (expanded):   "Days this month / Current streak / Sets this month"
+    /// Streak 跟两种状态都用一样 (是绝对的"连续天数"概念, 跟周/月无关).
+    @ViewBuilder
+    private var statsRow: some View {
+        if calendarCollapsed {
+            weeklyStatsCard
+        } else {
+            monthlyStatsCard
+        }
+    }
+
+    /// 本周 stats — Days this week / Streak / Sets this week
+    @ViewBuilder
+    private var weeklyStatsCard: some View {
+        let cal = data.settings.calendar
+        let comps = cal.dateComponents([.yearForWeekOfYear, .weekOfYear], from: Date())
+        let weekStart = cal.date(from: comps) ?? Date()
+        let weekDays: Set<Date> = Set((0..<7).compactMap {
+            cal.date(byAdding: .day, value: $0, to: weekStart).map { cal.startOfDay(for: $0) }
+        })
+        let daysThisWeek = workoutDateSet().intersection(weekDays).count
+        statsCard(
+            value1: "\(daysThisWeek)", label1: "Days this week",
+            value2: "\(currentStreakDays())", label2: "Current streak",
+            value3: "\(setsThisWeekCount())", label3: "Sets this week"
         )
     }
 
-    /// 本周 (最近 7 天) 训练 session 数 — 不同 calendar 日算 1 次
-    private var workoutsThisWeekCount: Int {
-        let cal = Calendar.current
-        let cutoff = cal.startOfDay(for: cal.date(byAdding: .day, value: -6, to: Date())!)
-        let days = Set(data.sets.filter { $0.performedAt >= cutoff }.map { cal.startOfDay(for: $0.performedAt) })
-        return days.count
-    }
-
-    /// 本周总组数
-    private var totalSetsThisWeek: Int {
-        let cal = Calendar.current
-        let cutoff = cal.startOfDay(for: cal.date(byAdding: .day, value: -6, to: Date())!)
-        return data.sets.filter { $0.performedAt >= cutoff }.count
-    }
-
-    /// 连续训练天数 (相对今天向前数, 直到出现一个没训练的日子). 0 = 今天没训练.
-    private var currentStreakDays: Int {
-        let cal = Calendar.current
-        let days = workoutDateSet()
-        var streak = 0
-        var cursor = cal.startOfDay(for: Date())
-        // 包括今天 — 如果今天没训练, streak = 0
-        while days.contains(cursor) {
-            streak += 1
-            cursor = cal.date(byAdding: .day, value: -1, to: cursor)!
+    /// 本月 stats — Days this month / Streak / Sets this month
+    @ViewBuilder
+    private var monthlyStatsCard: some View {
+        let cal = data.settings.calendar
+        let monthDays: Set<Date> = workoutDateSet().filter {
+            cal.isDate($0, equalTo: Date(), toGranularity: .month)
         }
-        return streak
-    }
-
-    /// 本周练到的大肌群 section 数 (chest/back/shoulders/arms/core/legs 6 个里命中几个)
-    private var muscleSectionsHitThisWeek: Int {
-        let cal = Calendar.current
-        let cutoff = cal.startOfDay(for: cal.date(byAdding: .day, value: -6, to: Date())!)
-        var sections = Set<MuscleGroup>()
-        for set in data.sets where set.performedAt >= cutoff {
-            guard let ex = data.exById[set.exerciseId] else { continue }
-            for m in ex.muscleGroups {
-                if let s = m.section { sections.insert(s) }
-            }
-        }
-        return sections.count
-    }
-
-    /// 一键: 找 gap → 智能挑动作 → 拼 plan → 启动训练
-    ///
-    /// 算法 (per gap major muscle):
-    /// 1. expandAnatomyMuscles 拿到该 major 的全部 sub
-    /// 2. 在 ExerciseDB strength 类动作里, 用 QuickWorkoutScreen 同款 score(_:against:) 算分
-    /// 3. 收藏 (favoriteExerciseIds) 命中的优先排前
-    /// 4. 取 top 1-2 个作为这个 gap 的动作
-    /// 5. 全部 gap 累加, 最多 12 个动作 (单次训练不要太长)
-    ///
-    /// 跟之前的差别: 之前用 6 个固定 signatureExercises 字典, 只覆盖 6 个 section,
-    /// 漏了 biceps/triceps/forearms/quads/hams/glutes/calves/adductors 等. 现在按 picker
-    /// 12 个 major 全覆盖, 而且按用户的收藏 + ExerciseDB 评分智能挑.
-    private func startGapWorkout() {
-        let gaps = gapMajorMuscles()
-        guard !gaps.isEmpty else { return }
-        let favSet = Set(data.settings.favoriteExerciseIds)
-        var seenExerciseIds = Set<String>()   // 避免一个 plan 里同一动作出现两次 (e.g. squat 命中 quads + glutes)
-        var steps: [PlanStep] = []
-        var idx = 0
-        // 单次训练动作上限 — 12 个 (gap 数量 × 1.5 平均, 12 gap × 1 = 12 ok). 太多用户做不完.
-        let maxSteps = 12
-
-        for major in gaps {
-            // 1. 计算这个 major 对应的全部 anatomy 肌肉 (匹配用)
-            let targetMuscles = expandAnatomyMuscles([major])
-            // 2. 在所有 strength 动作里打分
-            //    (gap workout 默认走 strength —— 衰减状态做拉伸/cardio 反馈不准, 用户期待是补练)
-            struct Scored { let ex: Exercise; let score: Int; let isFav: Bool }
-            var scored: [Scored] = []
-            for ex in data.exercises where ex.category == .strength {
-                if seenExerciseIds.contains(ex.id) { continue }
-                let s = gapScore(ex, against: targetMuscles)
-                if s > 0 {
-                    scored.append(Scored(ex: ex, score: s, isFav: favSet.contains(ex.id)))
-                }
-            }
-            // 3. 收藏前置 + score 降序
-            scored.sort { lhs, rhs in
-                if lhs.isFav != rhs.isFav { return lhs.isFav && !rhs.isFav }
-                return lhs.score > rhs.score
-            }
-            // 4. 取 top 1-2 个 (compound 通常是 top 1, accessory top 2)
-            let picksPerGap = 2
-            for pick in scored.prefix(picksPerGap) {
-                let ex = pick.ex
-                seenExerciseIds.insert(ex.id)
-                let isStrength = ex.category == .strength
-                steps.append(PlanStep(
-                    id: "gap-\(idx)-\(ex.id)",
-                    exerciseId: ex.id,
-                    sets: 3,
-                    reps: isStrength ? 10 : nil,
-                    weight: isStrength ? 0 : nil,
-                    duration: isStrength ? nil : 45,
-                    restBetweenSets: 90,
-                    rest: 0
-                ))
-                idx += 1
-                if steps.count >= maxSteps { break }
-            }
-            if steps.count >= maxSteps { break }
-        }
-        guard !steps.isEmpty else { return }
-        let now = Date()
-        let name = String(
-            format: NSLocalizedString("Catch-up: %@", comment: ""),
-            gaps.prefix(3).map(\.displayName).joined(separator: " + ")
+        statsCard(
+            value1: "\(monthDays.count)", label1: "Days this month",
+            value2: "\(currentStreakDays())", label2: "Current streak",
+            value3: "\(setsThisMonthCount())", label3: "Sets this month"
         )
-        // 用稳定 id, 重复点 Train the gaps 时覆盖同一张 plan, 不污染 Plans 列表
-        let plan = Plan(
-            id: "plan-catchup",
-            name: name,
-            steps: steps,
-            createdAt: now,
-            updatedAt: now
-        )
-        data.updatePlan(plan)  // upsert by id
-        onReplay(plan)
     }
 
-    /// score 跟 QuickWorkoutScreen.score(_:against:) 同款 — 复制一份避免 cross-screen private 调用.
-    /// 公式: Σ max(20, 100 - idx*18). idx 越靠前 (primary) 加分越高.
-    private func gapScore(_ ex: Exercise, against targets: Set<MuscleGroup>) -> Int {
-        var total = 0
-        for (idx, mg) in ex.muscleGroups.enumerated() {
-            if targets.contains(mg) {
-                total += max(20, 100 - idx * 18)
-            }
+    /// 共享 stats 卡渲染 — 三列, 浅 surface 底色, 圆角.
+    private func statsCard(
+        value1: String, label1: String,
+        value2: String, label2: String,
+        value3: String, label3: String
+    ) -> some View {
+        HStack(spacing: 14) {
+            statColumn(value: value1, label: label1)
+            statDivider
+            statColumn(value: value2, label: label2)
+            statDivider
+            statColumn(value: value3, label: label3)
         }
-        return total
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 12)
+        .background(MasoColor.surface)
+        .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
     }
 
-    /// 每个 anatomy 直接肌肉 → 最近一次被训练的时间.
-    /// 走 MuscleStatusCompute 共享逻辑 — 跟 SessionDetailSheet / QuickMuscleStep 同一份兜底.
-    private func muscleLastTrainedMap() -> [MuscleGroup: Date] {
-        MuscleStatusCompute.muscleLastTrainedMap(sets: data.sets, exById: data.exById)
+    private var statDivider: some View {
+        Rectangle().fill(MasoColor.borderSoft).frame(width: 0.5, height: 28)
     }
 
-    /// 衰减映射 — 间距加大让三档对比明显:
-    /// 0..1 d → 1.0 (满色); 1..2 d → 0.6; 2..3 d → 0.3; ≥ 3 d → nil (默认灰).
-    /// 之前 1.0/0.7/0.4 三档视觉差异不够明显 (人眼对低 alpha 差异不敏感),
-    /// 现在 0.4 + 0.3 + 0.3 间隔, 整体更分明.
-    private func opacityFor(muscle m: MuscleGroup, lastMap: [MuscleGroup: Date]) -> Double? {
-        MuscleStatusCompute.opacityFor(muscle: m, lastMap: lastMap)
+    private func statColumn(value: String, label: String) -> some View {
+        VStack(spacing: 3) {
+            Text(value)
+                .font(.system(size: 20, weight: .heavy).monospacedDigit())
+                .foregroundStyle(MasoColor.accent)
+            Text(LocalizedStringKey(label))
+                .font(.system(size: 9, weight: .bold))
+                .tracking(0.6)
+                .textCase(.uppercase)
+                .foregroundStyle(MasoColor.textDim)
+                .lineLimit(1)
+        }
+        .frame(maxWidth: .infinity)
     }
 
-    /// 用户有训练的日历日集合 (供日历高亮)
+    // MARK: - 训练日历 helpers (InlineWorkoutCalendar 喂数据用)
+
+    /// 用户有训练的日历日集合 (供 InlineWorkoutCalendar 高亮)
     private func workoutDateSet() -> Set<Date> {
         let cal = Calendar.current
         var out: Set<Date> = []
@@ -398,34 +268,77 @@ struct HistoryScreen: View {
         return out
     }
 
-    /// 色块 legend — 解释颜色对应的"肌肉恢复状态", 不是"练了几天前".
-    /// 训练科学背景: 肌纤维修复 ~48-72h. legend 把抽象的"时间衰减"翻译成用户能行动的语言.
-    ///   - 1.0 满色 = 刚练完, 还在 fatigue 期 (今天)
-    ///   - 0.6 中色 = 修复中 (~昨天)
-    ///   - 0.3 浅色 = 接近 fresh (~2 天前)
-    ///   - nil 灰   = 完全 fresh / 该练了
-    @ViewBuilder
-    private var legendRow: some View {
-        HStack(spacing: 14) {
-            legendDot(opacity: 1.0, label: "Fatigued")
-            legendDot(opacity: 0.6, label: "Recovering")
-            legendDot(opacity: 0.3, label: "Almost fresh")
-            legendDot(opacity: nil, label: "Ready to train")
+    /// startOfDay → 当天命中的大肌群对应颜色 (最多 3 个).
+    /// 不同肌群分到不同 accent 衍生色, 让用户一眼看到"这天练了 chest+arms+core".
+    private func musclesPerDayMap() -> [Date: [Color]] {
+        let cal = Calendar.current
+        var bucket: [Date: [MuscleGroup]] = [:]
+        var seenPerDay: [Date: Set<MuscleGroup>] = [:]
+        for s in data.sets {
+            let day = cal.startOfDay(for: s.performedAt)
+            guard let ex = data.exById[s.exerciseId] else { continue }
+            for m in ex.muscleGroups {
+                // 折叠到大肌群 (e.g. upperChest → chest), 跟 picker / share 视觉一致
+                let major = MuscleSelector.majorOf(m)
+                var seen = seenPerDay[day] ?? []
+                if seen.insert(major).inserted {
+                    seenPerDay[day] = seen
+                    bucket[day, default: []].append(major)
+                }
+            }
+        }
+        // 按 mapping 转 Color. 取前 3 (再多 dot 太挤).
+        return bucket.mapValues { groups in
+            groups.prefix(3).map { Self.muscleDotColor(for: $0) }
         }
     }
 
-    private func legendDot(opacity: Double?, label: String) -> some View {
-        HStack(spacing: 5) {
-            RoundedRectangle(cornerRadius: 2)
-                .fill(opacity == nil
-                      ? Color(red: 0.165, green: 0.165, blue: 0.165)
-                      : MasoColor.accent.opacity(opacity!))
-                .frame(width: 10, height: 10)
-            // label 是 "Fatigued" / "Recovering" / "Almost fresh" / "Ready to train" — 走 LSK 查表
-            Text(LocalizedStringKey(label))
-                .font(.system(size: 10))
-                .foregroundStyle(MasoColor.textDim)
+    /// 大肌群 → 日历 dot 颜色. 6 个主要 group 各分一个颜色, 其它 fallback accent.
+    /// 选色: spotify 暗色背景下高对比 + 跟 accent 绿区分.
+    private static func muscleDotColor(for m: MuscleGroup) -> Color {
+        switch m {
+        case .chest:     return Color(red: 1.0, green: 0.42, blue: 0.42)   // 暖红
+        case .back:      return Color(red: 0.42, green: 0.78, blue: 1.0)   // 蓝
+        case .shoulders: return Color(red: 1.0, green: 0.75, blue: 0.20)   // 黄橙
+        case .biceps, .triceps, .forearms, .arms:
+            return Color(red: 0.78, green: 0.55, blue: 1.0)                // 紫
+        case .quads, .hamstrings, .glutes, .calves, .adductors, .legs:
+            return Color(red: 0.20, green: 0.82, blue: 0.62)               // 绿松
+        case .core:      return Color(red: 1.0, green: 0.55, blue: 0.85)   // 粉
+        default:         return MasoColor.accent.opacity(0.7)
         }
+    }
+
+    /// 本月组数 — InlineWorkoutCalendar stats 行 (expanded) 用
+    private func setsThisMonthCount() -> Int {
+        let cal = Calendar.current
+        let comps = cal.dateComponents([.year, .month], from: Date())
+        guard let startOfMonth = cal.date(from: comps) else { return 0 }
+        return data.sets.filter { $0.performedAt >= startOfMonth }.count
+    }
+
+    /// 本周组数 — collapsed strip 下面的 stats 用. 走 ISO 周 (yearForWeekOfYear)
+    /// 跟 InlineWorkoutCalendar.currentWeekDays() 同样口径, 确保 days 跟 sets 同源.
+    private func setsThisWeekCount() -> Int {
+        // 走 settings.calendar — 跟 weekStartDay 偏好对齐 (周日 vs 周一)
+        let cal = data.settings.calendar
+        let comps = cal.dateComponents([.yearForWeekOfYear, .weekOfYear], from: Date())
+        guard let weekStart = cal.date(from: comps) else { return 0 }
+        return data.sets.filter { $0.performedAt >= weekStart }.count
+    }
+
+    /// 当前连续训练天数 (从今天往回数, 直到遇到没训练的日子)
+    private func currentStreakDays() -> Int {
+        let cal = Calendar.current
+        let days = workoutDateSet()
+        var streak = 0
+        var cursor = cal.startOfDay(for: Date())
+        while days.contains(cursor) {
+            streak += 1
+            guard let prev = cal.date(byAdding: .day, value: -1, to: cursor) else { break }
+            cursor = cal.startOfDay(for: prev)
+        }
+        return streak
     }
 
     /// 把 SetRecord 按 (planId, 日历日) 聚合成 session 卡; 按时间倒序返回
@@ -510,36 +423,53 @@ struct HistoryScreen: View {
     /// 回放: 关联了 plan 的 session 直接拿原 plan; 自由训练的 session 从历史 set
     /// 合成一个临时 plan (复用 exerciseStats 拿到当天动作 + 每动作的 set 数 / reps / weight).
     /// 这样自由训练也能"再练一遍" — 跟 plan-based session 同款体验.
+    /// 找出某 session 的可回放 plan. 走两条路:
+    ///   1. session.planId 还存在于 data.plans 里 → 直接用原 plan (保留用户编辑后的最新版本)
+    ///   2. 原 plan 已删除 / session 是自由训练 → 从 SetRecord 现合成一份 (中位数取动作负荷)
+    /// 之前只在自由训练 case 走 synthesis, 导致用户删了 plan 后, 历史记录变得不能重播.
+    /// 现在保证: 只要有 SetRecord, 这个 session 就能重播.
     private func replayPlan(for session: SessionSummary) -> Plan? {
-        if let pid = session.planId {
-            return data.plans.first(where: { $0.id == pid })
+        if let pid = session.planId, let plan = data.plans.first(where: { $0.id == pid }) {
+            return plan
         }
         return synthesizeFreeReplayPlan(for: session)
     }
 
-    /// 自由训练 → 合成临时 Plan 用于回放. 不入 DataStore (id 固定 "session-replay-{sessionId}",
+    /// 从 SetRecord 合成临时 Plan 用于回放. 不入 DataStore (id 固定 "session-replay-{sessionId}",
     /// 反复点不会污染 Plans 列表; PlanPlayer 通过 startTrainingNow 拿到 Plan 直接展开 segments).
+    /// 支持两种情况:
+    ///   - session 是自由训练 (planId == nil)
+    ///   - session 原 plan 已删除 (planId != nil 但 data.plans 里查不到)
+    ///
+    /// 2026-05-24 改: 之前依赖 exerciseStats(for:) 拿 stats, 但 stats 里 compactMap 会把
+    /// data.exById 里查不到的 exerciseId 过滤掉. 老用户 (iPhone 真机) 数据里有 v1 schema 的
+    /// exerciseId 在 v2 库里没对应 (orphaned 572 个), 整 session 的 stats 就空了 → synthesis 返回 nil
+    /// → replay 按钮不显示. 现在直接从 SetRecord 构造 steps, 不要求 exerciseId 能 resolve.
+    /// PlanPlayer 拿不到 Exercise 时走 placeholder 兜底, 至少按钮总有.
     private func synthesizeFreeReplayPlan(for session: SessionSummary) -> Plan? {
-        let stats = exerciseStats(for: session)
-        guard !stats.isEmpty else { return nil }
         let cal = Calendar.current
         let dayRecs = data.sets.filter { rec in
-            cal.startOfDay(for: rec.performedAt) == session.day && rec.planId == nil
+            cal.startOfDay(for: rec.performedAt) == session.day && rec.planId == session.planId
         }
-        // 按 exerciseId 分桶, reps / weight / duration 取每动作的中位数 — 比 best 更代表
-        // "一般情况下的负荷", 用户回放时不会被某一次特别拼的组拖垮.
+        guard !dayRecs.isEmpty else { return nil }
+
+        // 按 exerciseId 分桶, 保持首次出现顺序 (匹配训练时的顺序)
+        var order: [String] = []
         var perEx: [String: [SetRecord]] = [:]
-        for r in dayRecs { perEx[r.exerciseId, default: []].append(r) }
+        for r in dayRecs.sorted(by: { $0.performedAt < $1.performedAt }) {
+            if perEx[r.exerciseId] == nil { order.append(r.exerciseId) }
+            perEx[r.exerciseId, default: []].append(r)
+        }
 
         var steps: [PlanStep] = []
-        for (idx, stat) in stats.enumerated() {
-            guard let recs = perEx[stat.exercise.id], !recs.isEmpty else { continue }
+        for (idx, exId) in order.enumerated() {
+            guard let recs = perEx[exId], !recs.isEmpty else { continue }
             let reps: Int? = median(recs.compactMap { $0.reps })
             let weight: Double? = median(recs.compactMap { $0.weight }.map { Double($0) })
             let duration: Int? = median(recs.compactMap { $0.duration })
             steps.append(PlanStep(
                 id: "step-replay-\(session.id)-\(idx)",
-                exerciseId: stat.exercise.id,
+                exerciseId: exId,
                 sets: recs.count,
                 reps: reps,
                 weight: weight,
@@ -677,16 +607,23 @@ private struct SessionCard: View {
                 .foregroundStyle(MasoColor.textDim)
                 .lineLimit(1)
 
-            // Muscle Map (+ 可选照片) — 跟 WorkoutCard 用同一个 MuscleVisualBlock.
-            // ⚠️ 跟 WorkoutCard 视觉一致: 改这里同步改 WorkoutCard.
-            // replay 按钮单独做 overlay, 是 SessionCard 独有的差异元素.
+            // Muscle Map + replay 按钮 — ZStack(.bottomTrailing): muscle map 水平居中,
+            // replay button 贴右下角. 按钮到卡片底 / 右 距离都 = cardPadding (16pt), 视觉对称.
+            // ⚠️ PlanRow 同款布局, 改这里同步改 PlanRow.
             ZStack(alignment: .bottomTrailing) {
-                MuscleVisualBlock(
-                    muscles: session.muscles,
-                    sideLength: 100,
-                    photo: photo
-                )
+                // 居中层 — muscle map 水平居中
+                HStack {
+                    Spacer()
+                    MuscleVisualBlock(
+                        muscles: session.muscles,
+                        sideLength: 100,
+                        photo: photo
+                    )
+                    .fixedSize()
+                    Spacer()
+                }
 
+                // Replay button — bottomTrailing 自动贴右下角, 32pt 跟 PlanRow 同款
                 if let onReplay {
                     Button(action: onReplay) {
                         ZStack {
@@ -695,9 +632,9 @@ private struct SessionCard: View {
                                 .overlay(
                                     Circle().stroke(MasoColor.accent.opacity(0.4), lineWidth: 0.5)
                                 )
-                                .frame(width: 36, height: 36)
+                                .frame(width: 32, height: 32)
                             Image(systemName: "arrow.clockwise")
-                                .font(.system(size: 14, weight: .heavy))
+                                .font(.system(size: 12, weight: .heavy))
                                 .foregroundStyle(MasoColor.accent)
                         }
                     }
@@ -1070,11 +1007,11 @@ private struct SessionDetailSheet: View {
         )
     }
 
-    /// 本周肌肉状态 (用 DataStore 全局衰减 mapping).
+    /// 本周肌肉状态 (用 DataStore 全局累计 fatigue mapping).
     fileprivate func sessionMuscleStatusSection() -> MuscleStatusSectionData {
-        let lastMap = muscleLastTrainedMap()
+        let fatigueMap = muscleFatigueMap()
         return MuscleStatusSectionData(
-            muscleOpacity: { m in shareOpacityFor(muscle: m, lastMap: lastMap) },
+            muscleOpacity: { m in shareOpacityFor(muscle: m, fatigueMap: fatigueMap) },
             coarseOnly: !data.settings.muscleDetailEnabled,
             workoutsThisWeek: workoutsThisWeekCount(),
             totalSetsThisWeek: totalSetsThisWeek(),
@@ -1091,13 +1028,13 @@ private struct SessionDetailSheet: View {
         )
     }
 
-    // 内部计算 — 走共享 MuscleStatusCompute, 跟 HistoryScreen / QuickMuscleStep 同一份兜底.
-    private func muscleLastTrainedMap() -> [MuscleGroup: Date] {
-        MuscleStatusCompute.muscleLastTrainedMap(sets: data.sets, exById: data.exById)
+    // 内部计算 — 走共享 MuscleStatusCompute. 累计 volume + 时间衰减.
+    private func muscleFatigueMap() -> [MuscleGroup: Double] {
+        MuscleStatusCompute.muscleFatigueMap(sets: data.sets, exById: data.exById)
     }
 
-    private func shareOpacityFor(muscle m: MuscleGroup, lastMap: [MuscleGroup: Date]) -> Double? {
-        MuscleStatusCompute.opacityFor(muscle: m, lastMap: lastMap)
+    private func shareOpacityFor(muscle m: MuscleGroup, fatigueMap: [MuscleGroup: Double]) -> Double? {
+        MuscleStatusCompute.opacityFor(muscle: m, fatigueMap: fatigueMap)
     }
 
     private func workoutsThisWeekCount() -> Int {

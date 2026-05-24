@@ -1,0 +1,2880 @@
+{
+  "alive": 147,
+  "checked_at": "2026-05-24T05:58:20Z",
+  "dead_count": 571,
+  "results": {
+    "https://www.youtube.com/watch?v=0G2_XV7slIg": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=0tn5K9NlCfo": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=140RTNMciH8": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=1BZM2Vre5oc": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=1FNMQ0CrLI4": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=1OauUVxRtnk": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=1QtVgPMC7Bc": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=1Tq3QdYUuHs": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=2-LAMcpzODU": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=2B8aCt7v9aw": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=2BS0DjLG4u4": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=2BV_Z3X5xFc": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=2C-uNgKwPLE": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=2Ie3PXg1qFE": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=2OOkrlNiyB4": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=2RvL3yWGS5w": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=2SHsk9AzdjA": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=2WpsZqzcoLY": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=2YnA3vK7C0Q": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=2dwzKQRk0AY": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=2gN5jOPgUJ8": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=2hZdYBhcAVI": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=2myDp9NRxL8": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=2nXf-NCRl5w": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=2qC5ZcvJP4o": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=2tM1LZ5stnI": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=2v6CTnGEcgI": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=2yjwXTZQDDI": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=2z8JmcrW-As": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=2zNCgmAj1RU": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=3SkBaVgGsCs": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=3UWi14O7XGA": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=3VcKaXpzqRo": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=3eYKVRC4ZvA": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=3pTRMSk7c2k": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=3qjoXDTuyOE": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=44ScXWFaVBs": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=4ANaUEf9JhM": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=4F7n2nU3VLM": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=4FF7P5lkM1k": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=4Hz_W8VyVDM": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=4KcL2-_5T20": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=4OHCgDe0ZhM": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=4OuPMW1NPjU": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=4PEEonsfDDc": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=4PRwUz4Bxhg": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=4QGiBN9HmTk": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=4SBNoPiE1Ck": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=4UNTcS6tNew": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=4XLEnwUr1d8": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=4_KAdSf9Vyg": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=4_p_g7uZIRk": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=4dF1DOWzf20": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=4hb-jBLBdJU": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=4uHTm_dG2YA": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=4yOOQTNJpDg": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=5HLW2AI1Ink": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=5w7BzKvlk2A": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=5y8E5w9DqTM": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=6NLDOd8a3qY": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=6SS6K3lAwY8": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=6Z15_WdXmVw": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=6kALZikXxLc": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=6kBVUlSmYKY": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=6yMdhi2DVao": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=7AaYbZyHObE": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=7BVEcuyj1ZI": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=7DoiCXJ6mC0": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=7M_J6jLQ7nQ": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=82jNjDS19lg": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=86KW4xC_Xw0": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=8AeRJrU4dXg": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=8E7HxOPmlSY": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=8GTCAVlGcQg": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=8Ms-CDw5tZk": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=8RZ6q0PqOks": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=8Vlz5frXM_E": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=8YHkbg25uxw": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=8Zv78xWfgEs": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=8ZwMl2qPzd4": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=8aHbktqRTwI": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=8bbE64NuDTU": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=8d-IkAjxA1k": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=8d6QHBYzpos": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=8fwhsx0u-2Q": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=8gQ7BBzNkc8": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=8iPEnn-ltC8": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=8jcULPSF4hY": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=8mNlevPMTUk": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=8mU7gT9SDqQ": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=8qH0G7Z4UY8": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=8tePR3lpvyM": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=8w0ucMqr3K0": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=8wjsRy6BqJ8": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=9CnE-D27p3Y": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=9FGilxCbdz8": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=9_RMRMnE0sk": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=9efgcAjQe7E": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=A-Q9c6Aix3o": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=A-cFYWvaHr0": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=A6_LdAvD3W4": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=A8RvOx-39zw": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=ABr9eWqGCfY": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=AH_QZLm_0-s": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=AKLW8MhwbBM": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=ALMlpFOoaeM": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=ASdvN_XEl_c": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=ATj2gE1bD-c": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=A_FvWfTHpKM": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=AaWLLpyiBVE": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=AfvepHU8jKA": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=AjxoJVoBcZE": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=AmF9eMt-Hl0": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=B2WJjGdHa14": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=B3LjB4DqlfA": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=B3Sl2cFwGcs": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=B4iGnnZh1RM": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=B66_zSBgRiE": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=BB8sxAuy_a8": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=BBP7Z7q8x6E": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=BBnLnIu5VRk": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=BJcDU4SU0EU": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=BJj9tXFFHsg": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=BLwlpVB-mY8": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=BPgX7ZAhWtA": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=BR1pUf3Y4S0": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=BUDLGr_kJk0": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=BWuvUaCsTeI": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=Be4xvjf7Cqs": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=BfRoCcDeJ_E": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=BfkE0ekapaY": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=Bg2gJiP-Cy0": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=Bj8s6hkdT0c": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=BunBOgtm4HM": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=CAwf7n6Luuc": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=CCxQwhBQc6c": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=CjnaXfHM7eY": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=Cl7T6Wi2WCs": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=Cms5xL2P_zE": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=Cn1RvPpA9rg": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=CzRf3Z4HE_M": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=Czf94IzWHTU": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=D7KaRcUTQeE": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=DBaqXyDMr3Q": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=DDjEqd91DAQ": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=DJQGX2J4IFw": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=DRTr-jHm8Hg": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=DZc7AbPMfQU": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=DfdOd0jOEAk": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=DjI8X0lt05o": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=DkfeUEPYIvU": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=DlKKjJBSEEs": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=DlPLNQzx5fM": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=DvD7smvQ3M0": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=DvZTfeS-9HE": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=DwYUegrtVSc": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=Dy28eq2PjcM": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=EA8g7q9jauM": {
+      "note": "Forbidden",
+      "status": 403
+    },
+    "https://www.youtube.com/watch?v=EAxnj7r0RpY": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=ELzd1IiZW7Y": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=EaaWfumcvBg": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=Eh00_rniF8E": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=Ej3rrTL_Vlk": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=FCYg6jc2OBw": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=FWJR5Ve8bnQ": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=FcKBaP9XX_8": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=FgYoc4O-cio": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=Fkzk_RqlYig": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=GBKEzPYbDS4": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=GBrSm4PoFmA": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=GFLeIrxGFXk": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=GUEdLyP9MWA": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=GZbfZ033f74": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=GdjEYV0CDic": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=GgD33TQbVAo": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=GnXyiBbXTfQ": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=GoyL5x1RmWg": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=GqEwwHj6gJg": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=GqQs2eAlR40": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=GsBifr0OqJU": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=GtRH4cQHAGY": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=GwBxRHzm56Q": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=H0r_ZPXJLtg": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=H1kj-ZkLLgM": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=H5oCAdmpb9c": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=H6Aa3rWdSiE": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=H7VPemoxHFw": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=H8gqcvz3GHU": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=HJSVR_67OlM": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=H_DUmFOJDko": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=Hov_-IBu_2c": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=HtjjBmZuJQc": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=Hxg6OurzfFs": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=Hy0LdYncl_o": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=I-Spq4_uS0Y": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=I6c66u4-FCE": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=IODxDxX7oi4": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=IZxyjW7MPJQ": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=I_xgsiNqGgI": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=ImNkjbHCm5o": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=ItQflqe6XHU": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=Iwe6AmxVf7o": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=Iwyvozckjak": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=Iz-Y2sjyzZk": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=J0DnG1_S92I": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=JDcdhTuycOI": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=JNGCcS4HSL4": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=JbyjNymZOt0": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=JjUk-O72_Pc": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=Jzd_pTufcEs": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=K0wsuOOlrFs": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=K1QkPjzVDtY": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=K2VljzCC16g": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=K33SsfvVMSI": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=K5j2KbZCJpY": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=K7tvY0xj_F0": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=KAOyAFCfu_I": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=KBmkQQOQVlE": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=KEnyf3uH6Qg": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=KGAcwSlJWDg": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=KH8gN6KznlA": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=KIPgB8L7iAg": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=KKEcG23GBME": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=KMxsONeOSx8": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=KOpqLD3frRA": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=KQQp8DiTH7Y": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=KQRk0DyaC4w": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=KSPtCv0J8oA": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=KZWRSmuFNAk": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=KaACZ3qFOgw": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=KbiqRGEz0HQ": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=KdyNlt28J28": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=Ki_8MoxYAvc": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=KrXoeQQw7Sk": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=KsuPHCl81OE": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=Ku45dEPmRu4": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=L0ttbcMr46o": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=L1nzVxRtLkM": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=L219ltL15zk": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=L8fvypPrzzs": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=L8jXdfDR0Pg": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=LM8XHLYJoYs": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=LWNbVGGRJYM": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=Ld5tJhuwjjY": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=LfyQBUKR8SE": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=Lh1uW2yVy6c": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=Lj1jpbRZkfg": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=LlDNef_Ztsc": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=Lo5Ja9LxRcA": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=MeIiIdhvXT4": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=Mg59hjPxjmA": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=Mh1Gj5j0kHs": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=N0VTyHKHfhM": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=N0VbZ3RD3yI": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=N2YbT6XBfTI": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=N4eW0xK8FwQ": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=N7VDeUMSjjE": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=NAIxz-zMfX0": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=NBY5-MMxqlA": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=NCsdSAvVuek": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=ND_lN5fHTzg": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=NDuiSc8Tw-c": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=NEFjMnsk4Bk": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=NEi06_ZJqEU": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=NF94vQ45c5w": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=NFzTWp2qpiE": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=NKa-cSyZmME": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=NLkKgGtsBJg": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=NM_kRoOyR_Q": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=NaPj1B2tigE": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=NeRYIFkce4o": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=NeWaYBPJD68": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=NfRPzn-jLE0": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=Ng_FylAFkc4": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=NhX09n8wB3M": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=Nhvz9EzdJ4U": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=NiyPI0OPbUM": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=NknqOzcK5HE": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=NlPzwQGuTSk": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=NlS9zKfg8K0": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=NptYxbahjJM": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=NyM1cjQ8U7s": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=Nz_dOSWFXm4": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=O-OBCfyh9Fk": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=O-iVE34LcjE": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=O0H0qVuOI7g": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=O1OHRJ_OQVk": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=O3PEYWyXyXY": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=O3RJZpoFlkc": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=O7v3rgM_ECs": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=OICRpknyAaA": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=Orxowest56U": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=Ozf-aXgKgKM": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=PA1KvWZvR9Q": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=PA77cqXgnsM": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=PCxq3vEMS_M": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=PFiQS8j_RKE": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=PIRYjpw_QcU": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=PJDvWlFmbgY": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=PJVgRDz3kRk": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=PNbDeTzKvbY": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=PPrzAvcCdJU": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=PRH0CKlqK_E": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=PWG9Gz5gJts": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=PXkW16_RsWA": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=PaUgwYJyqcA": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=PeKB0VKQGM0": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=PiwzeRRzPxs": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=Pl0RNoLwt7Q": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=Pp_Z0aJyZ9w": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=Pq1xN8YxQOg": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=Pr1ieGZ5atk": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=PsdoEMP6_iE": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=PzsMitRdI_8": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=Q-D4HsZGD-w": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=Q-pgT9wzr0g": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=Q1QylpCsuok": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=Q5HXxBDvkH8": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=Q5j5IZS_Hc4": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=Q8kRdNJWFlc": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=Q8sX3eUjOdg": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=Qwxungm8XnA": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=R5x5J_g5UYY": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=RAGGT2yhTLM": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=RA_RvNcYI4o": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=RIcgYHKgz3w": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=RXJrCDqJV5o": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=Raj4kQGAFG4": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=SCVCLChPQFY": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=SKPab2YC8BE": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=SLqnYZRBVx8": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=ScG6Js9d_oI": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=Sjt7sQs4LbQ": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=SqO-VUEAk5s": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=SrqOu55lrYU": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=TKt0-c83GSc": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=TU8QYVW0gDU": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=Tl1qiAEnAvY": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=Tnx4VbiyTKE": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=ToSCHA6Iq2k": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=Tx33Bcl7sQk": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=Tz1Llj9XKjE": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=ULTKsKkW7ag": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=ULkvT7DkbCM": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=UMWeR0ENJ7Q": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=Vb3rcpZUQg4": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=Vd35BR7TfE0": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=Vh-x_v1U4yE": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=VmB1G1K7v94": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=Vse-aXCkpsM": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=W2Hb89LtSiM": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=W3KQQS6FpFA": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=WCFCdxzFBa4": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=W_g-LnEUkmM": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=Wqq43dKW1TU": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=Wse5cYJaCBg": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=X1uOmoUGu0w": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=XGyswiBbg6E": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=XIeCMhNWFQQ": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=XK77JzL_8b8": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=Xyd_fa5zoEU": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=YA-h3cQDqjA": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=YEqMd-EpyM4": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=YEz5pY8b5Vg": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=YIxEFkkpKCY": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=YJBOoTPo3eM": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=YL27ScS0PSE": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=YPbcsB7gFFE": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=YQ8L8aPZX-A": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=YQmpO9VT2X4": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=YSxHifyI6s8": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=YVZj0Jx3jBE": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=Y_7aHqXeCfQ": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=YaXPRqUwItQ": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=YbX7Wd8jQ-Q": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=Yfak4u8vj9M": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=Yj7TFvFJsf8": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=YnTJfQQMcbk": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=YqOqM79McYY": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=YuWLA_yzbb8": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=YwGCJTitNXg": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=YyvSfVjQeL0": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=Yzj_OZ7ssjQ": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=Yzu_TQUlGcI": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=Z57CtFmRMxA": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=Z9OOzGV5OdQ": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=Z9pl54fDc04": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=ZBb0xLm7QlA": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=ZE-9wAJ-Q4w": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=ZF14p1A7q7g": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=ZGgRtJ80U_w": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=ZH-D6Et4Xfk": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=ZJDg6awY3Lw": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=ZKK4Y_Z_zZA": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=ZK_xj8EJN8I": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=ZP00cwInWFE": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=ZRZThuhAcGE": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=ZSdT-vUTGl4": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=ZW6Gi3qDjlA": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=ZbtVPb6Tu7s": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=ZdcjGZ0NJI4": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=Ze8mcF1jdc8": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=ZeRsNzFcQLA": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=ZhM-DCJW0_Q": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=ZpZGEoTRwzM": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=ZpyB4N0gE3Q": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=ZqKL_kxIM7Y": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=ZqUNcXvyXTk": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=ZrpRBgswtHs": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=ZuJesJYUE2c": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=ZuoEINdt77E": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=ZyfV5LX5BfA": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=_gsUck-7M9I": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=aajhW7DD1EA": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=ah0FjJg3VyM": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=akgQbxhrhOc": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=auBLPXO8Fww": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=brFHyOtTwH4": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=brhRXlOhsAM": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=c4DAnQ6DtF8": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=cAxRsGOhqVw": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=cBJ0R9avtwM": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=cD5_Y7nwAEU": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=cDfpvA9TQfM": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=cI9bSMaSe9I": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=cJRVVxmytaM": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=cJVuO9JsP-c": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=cKAJOKwc1f8": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=cKx8xE8jJZs": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=cM4vMPi6Vrc": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=cMNiwzAyXp0": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=cMTKUF8t6e8": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=cP24LzkvxBA": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=cPpDhJzxJKM": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=cQVOzKaWNoo": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=cR5d2KkSpJ0": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=cYr1Ux9ymCs": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=cb0Aqrm8MGw": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=cc6UVRS7PW4": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=cfns5VDVVvk": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=ck0VgNoP7Pk": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=cl5ZJh-9SUw": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=cnFn09Zb8RU": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=cnyTQDSE884": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=cpUMUk26IRk": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=cwsCXcwBmrU": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=dQqApCGd5Ss": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=d_KZxkY_0cM": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=ddvtVdjJjbE": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=djYWcHmZ74I": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=dvkIaarnf0g": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=eA4P0nMt4mY": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=eFAEbn78Tm0": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=eFWCn5iEbTU": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=eGjt4lk6g34": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=eGo4IYlbE5g": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=eIq5CB9JfKE": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=eJtmJqTfPMM": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=eMTy2KAj4uo": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=ePNplGv-2Lo": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=ePYRG-1GuY8": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=ePu1tnpWJYM": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=eR8cPdh7HhY": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=eUnY9LcGIeQ": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=eedf1OOWuGo": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=eozdVDA78K0": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=eqVMAPM00DM": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=ev6cF2vN6Yc": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=fG5gQ2tT1Eo": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=fGYBJ4q5gZ8": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=fIWP-FRFNU0": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=fJxgwAJrn5w": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=fL4nDw1iuVQ": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=fM-NyZ_ksHM": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=fNT80mghV6s": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=fOpBKB7vWcQ": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=fSyLuy7m8Bw": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=fT6chnSc_18": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=fXkpAEFNcEU": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=fbR1XX1Y0pQ": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=fjnamfDoVhg": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=fnzHvf6N3-c": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=g42IDuyCYrM": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=g4PNqdRwTLA": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=g6sjuqyq6_M": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=g9Vt-VnRfV0": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=gWHQpMUd7vw": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=g_aWvWy_J7g": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=g_tea8ZNk5A": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=ge8VOEz_5II": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=ggW4_GMzVDg": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=gwLzBJYoWlI": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=h2v3v6Wjf3Y": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=hCDzSR6bW10": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=hELvfO5JwxA": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=hMOaW3Hyb24": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=hO2gSCe2gJk": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=hOFFI0qrkBE": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=hPjnGZ7N5lE": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=hRJ6tR5-if0": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=hSdjpFCw6XQ": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=hTdcOG9muQk": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=hUk3DAuxK68": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=hXTc1mDnZCw": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=hjJBp29Vy7Q": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=hjV9N1eXdmA": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=hmcaOZuoUkE": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=hsWqVCXSqQs": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=hvoQiF75rdQ": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=hvtvOlYJOTI": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=hxldG9FX4j4": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=hyvCNMC2J6Q": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=iKr0RAFn5cg": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=iP5UKr1KCB8": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=iaBVSJm78ko": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=ihbU2cwmAUM": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=ivR8e2vK5N4": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=j3Igk5nyZE4": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=jDwoBqPH0jk": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=jEBh4ze1AHc": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=jEX7XscThHo": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=jEy_czb3RKA": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=jJpoBhgawjI": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=jOpx9XELjes": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=jUKB5N3xqwk": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=jWxvty2KROs": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=jaoxAqgmK8M": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=jb7Idj3GLPo": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=jbDuvjZ72bk": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=jcaT-7LwBA8": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=jdkW2J70CCs": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=jdkugdjnvUk": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=jewzcXqLR2c": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=jgh6sGwtTwk": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=jiCe_5UdCe8": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=jjUWUH8eqfQ": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=jjrU3dhfROc": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=jkRJsfqOZAQ": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=jojrqlrxOms": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=jx0BlYOnsWA": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=jzbjkE3UMrI": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=k0OF8Fa-w6Y": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=k0nrqCQqYj4": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=k2NM7iWQyDc": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=k2QyzBg6oGw": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=k4VHHyV1Vy0": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=k4lyTGqaH4M": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=k_kS59qBQt0": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=kqnua4rHVVA": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=kwG2ipFRgfo": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=l-Vz8QyIvuk": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=l4kQd9eWclE": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=l5Iu_K7yLqs": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=l5SkVbW1B6c": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=l6c-Rmh-y_M": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=l8yo7AfM-bY": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=l9Y1S5_yvDM": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=lF9G7zJ3lTU": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=lFkrnHHM_qE": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=lH-OS3oXTQk": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=lJxnk1ic7HM": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=lJyzGSiNa5o": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=lL4q63ot1Hg": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=lL6XaQ4f8KE": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=lLEqWWmO_BU": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=lQSGS4q2bAA": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=lTr0wnIMlsk": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=lWmpNzYWBdo": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=lcWHv1Ggk_w": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=lkcRCp2y76A": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=lkpY4suMz3Y": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=lzcfTd-DAHE": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=mDLeRvOpwHE": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=mEvOe6BlEdc": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=mFKHIsZNYAk": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=mFlNHN0DCQU": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=mFmbQwwKLPM": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=mMSc6_wdz0U": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=mNkb_PuJBoo": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=mPpf3GLT2gE": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=mQuGGTLnRoY": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=mSZWSQSSEjE": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=mWFp2sBQrwk": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=mYpKnT83y_o": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=mfXrYXqIPMo": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=mxsCgY8d8VM": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=nEF0bv2FW94": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=nRgxYX2Ve9w": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=nmwgirgXLYM": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=oA8wzpEAuRA": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=oAaSQpUbQbQ": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=oCnxAJpwzbg": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=oDdkytliOqE": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=oN2N98F1Xkk": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=oOWAxRPqxYU": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=oV6riOzfTLg": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=oXogtwfTUd0": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=ohgyk_dwbAo": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=okPCKVF1IkE": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=op9kVnSso6Q": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=oqYZ8z7p4Hc": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=p0fM5cYwxoo": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=p3Bcs7-fvnE": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=p3v8MEh8wEs": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=p4lT_KEuLk0": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=p9zfpRJDeOg": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=pAplQXk3dkU": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=pCt-WtNkpYI": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=pYcpY20QaE8": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=ph3pddpKzzw": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=poaT5XfMbfg": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=pvz7k5gO-DM": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=q-zsHE6lc-4": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=q4Hb3kRgrjI": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=q4P1ZESCB2c": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=q9ldQzbF6tc": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=qCaXMl1XdC0": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=qDcniqddTeE": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=qEwKCR5JCog": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=qIyKBwwk0Wo": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=qLBImHhCXSw": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=qN_DpKDFsZQ": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=qO4tNDk7Bjk": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=qO8E_Xb6uvI": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=qPC6L-OQVdo": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=qPIQYO5y4kU": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=qPYP2GBmKvA": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=qWLcrYwTUiU": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=qjwBlxN2bM4": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=qmEXEevr5DA": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=qpFFJqAhYwI": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=qpsOuQ_ZkO0": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=qrI66dxIxJ4": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=qrx6X7AbA70": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=rT7DgCr-3pg": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=rep-qVOkqgk": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=roCP6wCXPqo": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=sAq_ocpRh_I": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=sP_4vybjVJs": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=soxrZlIl35U": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=sxBE2QlafdY": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=t-iRzPbWGsg": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=t3jUzPdiR2k": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=t6YlyaFnh4U": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=t9Mc-zS_Le8": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=t9hgUDOMVDA": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=tCNAH3y8DvY": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=tD0gtaJaq04": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=tDcfMcb5tF8": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=tDfBcjPzZHA": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=tH5HwjJ0lvk": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=tQYxqe83Mu0": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=tRoP7ECjEjA": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=tSWBPHRtkRY": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=tZ7BBxbT_aA": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=tZuI_t6OE3M": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=taI4XduLpTk": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=tiSU8w7lp4Y": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=tlA7DPNc1CQ": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=tlBXEUhxs-c": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=tlfahNdNPPI": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=tn83Z2NJWmM": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=tnpc3VKpJ4U": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=tslEWSDsM3I": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=ttJ-EnsXt94": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=ttvfGg9d76c": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=tutk2lJpFmA": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=u-1MWwQ7ZAY": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=u1iqVuC1Lc8": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=u3RICmJlebw": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=u7BAlPiyPmM": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=u7NEnELjMq0": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=u_lpMTWODoo": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=ueFEcpu3PE0": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=ueOSyZb-7Cs": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=ueP2BfaqwGY": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=ujzgEjOhqXk": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=ulZGn3Jbbm0": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=ultWZbUMPL8": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=v0CTtH4hQB8": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=v3CXrK_oZJ8": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=v3SHvWE9CkM": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=v3p23-jKr9c": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=v5_2dY7gPYI": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=vB5OHsJ3EME": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=v_Pj9Z9R5L4": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=vmNPOjaGrVE": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=wADQz1G0_W4": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=wPM8icPu6H8": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=wYREQkVtvEc": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=wiFNA3sqjCA": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=wkD8rjkodUI": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=wxmKbWGEf4w": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=wxwk_QvLZ2Y": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=xUm0BiZCWlQ": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=xrPteyQLGAo": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=y-wV4Venusw": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=yLjQ3lWfTcM": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=ykJmrZ5v0Oo": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=z3J94pwm2ME": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=z6PJMT2y8GQ": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=zC3nLlEvin4": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=zCpRTk2HQQQ": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=zJBKkZhE2Hw": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=zNkbk8RvLgI": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=zPaMmTwIK7w": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=zQ82RYIFLN8": {
+      "note": "ok",
+      "status": 200
+    },
+    "https://www.youtube.com/watch?v=zUiMTfqDxXk": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=zVnGAr8eXKE": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=zVoOSL1J7vQ": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=zaQDvHt0J5w": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=zd1L1lpEoBM": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=zhJ-NDwzqXg": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=zoxbxXSU3nA": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=zsCAcgKWBO4": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=zsmsbfg6lAg": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=zwhI1Sg2hkM": {
+      "note": "Not Found",
+      "status": 404
+    },
+    "https://www.youtube.com/watch?v=zyZjAR1OUF8": {
+      "note": "Not Found",
+      "status": 404
+    }
+  },
+  "total": 718
+}
