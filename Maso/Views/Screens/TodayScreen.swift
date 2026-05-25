@@ -10,8 +10,6 @@ struct TodayScreen: View {
 
     /// 卡片 tap → 弹 plan detail sheet 查看动作 + 每组 sets/reps/weight
     @State private var detailPlan: Plan? = nil
-    /// 顶部 ProBanner tap → 弹 paywall (跟以前 Plans tab 上的 banner 同款)
-    @State private var paywallPresented: Bool = false
 
     private var suggested: Plan? {
         // 优先 AI 生成的今日计划; 没有 (AI 关闭 / API key 未填 / 网络失败) → fallback 系统推荐
@@ -21,11 +19,7 @@ struct TodayScreen: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
-                // Pro 展示位 — Pro 用户隐藏.
-                if !data.settings.isPro {
-                    ProBanner { paywallPresented = true }
-                        .padding(.top, 8)
-                }
+                // (ProBanner 已挪到 HistoryScreen 顶部 — Today tab 不再展示.)
 
                 // 肌肉状态 hero 卡
                 MuscleStatusOverviewCard(
@@ -112,9 +106,6 @@ struct TodayScreen: View {
                 }
             )
             .presentationDetents([.medium, .large])
-        }
-        .sheet(isPresented: $paywallPresented) {
-            PaywallScreen()
         }
     }
 

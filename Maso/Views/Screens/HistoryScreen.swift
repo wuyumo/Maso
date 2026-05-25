@@ -24,6 +24,9 @@ struct HistoryScreen: View {
     /// 默认 true (收起单行 strip) — 让用户进 tab 第一眼看到的是训练记录, 而不是日历占满一屏.
     /// 用户点 strip 主动展开; scroll 也会强制 collapse. 收起后不再自动展开 — 完全用户主导.
     @State private var calendarCollapsed: Bool = true
+    /// 顶部 ProBanner tap → 弹 paywall. 从 Today tab 挪过来 — History 用户回顾训练时
+    /// 自然产生"想看更多数据/解锁高级功能"的动机, banner 放这比放在 Today 干扰训练流程更顺.
+    @State private var paywallPresented: Bool = false
 
     var body: some View {
         // 单一 ScrollView, 跟 PlansScreen 同款行为:
@@ -32,6 +35,14 @@ struct HistoryScreen: View {
         //   - ScrollView 到顶后向下拖 (overscroll) → calendar 从 strip 展开成月
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
+                // Pro 展示位 — Pro 用户隐藏. 从 Today tab 搬过来 (Today 是训练入口, 不放营销卡;
+                // History 是用户主动来"看数据回顾"时, 看到 Pro 升级提示更自然).
+                if !data.settings.isPro {
+                    ProBanner { paywallPresented = true }
+                        .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
+                        .padding(.top, 4)
+                }
+
                 // 顶端 3 metrics 卡 — 跟着 calendar 状态切口径 (本周 / 本月)
                 statsRow
                     .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
@@ -126,6 +137,9 @@ struct HistoryScreen: View {
                 }
             )
             .presentationDetents([.medium, .large])
+        }
+        .sheet(isPresented: $paywallPresented) {
+            PaywallScreen()
         }
         // 删除 session 的二次确认 — 长按 SessionCard → contextMenu Delete 触发.
         // 删除是 destructive (清掉这场训练的所有 SetRecord, 包括 PR), 必须 confirm.
