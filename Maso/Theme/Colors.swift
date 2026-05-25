@@ -19,6 +19,10 @@ enum MasoColor {
 
     // 边框 / 分隔线
     static let borderSoft = Color.white.opacity(0.08)
+    /// "Hero 卡" 描边 — 比 borderSoft 强一档, 0.18 白. 用在没底色透到页面背景的卡片上
+    /// (MuscleStatusOverviewCard / PlanRationaleCard / TRAINING PREFERENCES). 这类卡靠
+    /// 描边唯一界定边界, borderSoft 在 NavigationStack 渐变区会被洗淡到几乎不可见.
+    static let borderHero = Color.white.opacity(0.18)
 
     // 警告色 — 取消等危险操作
     static let negative = Color(red: 243.0 / 255, green: 114.0 / 255, blue: 127.0 / 255)    // 柔和的红粉

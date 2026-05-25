@@ -274,11 +274,12 @@ private struct PlanRationaleCard: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         // 视觉强化 (无底色 + 无炫光版):
         //   - 不要 .background — 整卡透到页面背景 (跟 MuscleStatusOverviewCard 同款 hero 处理)
-        //   - 0.5pt 浅白描边 — 跟 MuscleStatusOverviewCard 同款, 比 accent 绿更克制
+        //   - 0.5pt borderHero 描边 — 跟 MuscleStatusOverviewCard 同款, 比 borderSoft 强一档
+        //     让卡片边在 large title 渐变区也看得清楚.
         //   - 不要 shadow — 描边足够
         .overlay(
             RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium)
-                .stroke(MasoColor.borderSoft, lineWidth: 0.5)
+                .stroke(MasoColor.borderHero, lineWidth: 0.5)
         )
         // 整张卡也可点 — pencil 是显式 affordance, 但用户点空白处也算 "想改"
         .contentShape(Rectangle())

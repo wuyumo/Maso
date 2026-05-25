@@ -101,11 +101,12 @@ struct MuscleStatusOverviewCard: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         // 视觉强化 (无底色 + 无炫光版, 跟 PlanRationaleCard 一致):
         //   - 不要 .background — 整卡透到页面背景
-        //   - 0.5pt 浅白描边 — 唯一边缘 affordance, 比 accent 绿描边更克制, 跟其它系统 surface 一致
+        //   - 0.5pt borderHero 描边 — 比 borderSoft 强一档 (0.18 vs 0.08), 因为 Today tab
+        //     顶端 large title 区会有 NavigationStack 的 material blur 把 0.08 边洗到看不见.
         //   - 不要 shadow — 描边足够区分卡片边界
         .overlay(
             RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium)
-                .stroke(MasoColor.borderSoft, lineWidth: 0.5)
+                .stroke(MasoColor.borderHero, lineWidth: 0.5)
         )
     }
 
