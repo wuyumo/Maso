@@ -404,6 +404,70 @@ final class TrainingSessionStore {
         syncLiveActivity()
     }
 
+    /// 训练中替换一个 step 的 exercise (sets/reps/weight/duration 全保留).
+    /// "动作换, 强度不变" — 跟 PlansScreen 的右滑 Replace 同语义, 区别只在这里是 session-local
+    /// (改 self.plan / segments). 结束时 planParamsDirty=true 触发"保存替换到 plan?"提示.
+    ///
+    /// 当前 segment 跟着 stepId+setN 在重 expand 后的 segments 里 re-find 位置, 用户不会跳段.
+    func replaceStepExercise(
+        _ stepId: String,
+        newExerciseId: String,
+        exById: [String: Exercise],
+        defaultRest: Int,
+        defaultBetweenExerciseRest: Int
+    ) {
+        guard var s = session, var p = plan else { return }
+        guard let stepIdx = p.steps.firstIndex(where: { $0.id == stepId }) else { return }
+
+        // 捕当前位置 — 跟 updateStep 同套路
+        let curStepId = currentSegment?.stepId
+        var curSetN: Int? = nil
+        if case .exercise(_, let sn, _, _, _, _, _) = currentSegment?.kind {
+            curSetN = sn
+        }
+        let wasRest = currentSegment?.isRest ?? false
+
+        // 替 exerciseId — PlanStep.exerciseId 是 let, 用整 step 重建保留其它字段.
+        let old = p.steps[stepIdx]
+        p.steps[stepIdx] = PlanStep(
+            id: old.id,
+            exerciseId: newExerciseId,
+            sets: old.sets,
+            reps: old.reps,
+            weight: old.weight,
+            duration: old.duration,
+            restBetweenSets: old.restBetweenSets,
+            rest: old.rest
+        )
+        self.plan = p
+
+        let newSegments = expandPlan(
+            p,
+            exById: exById,
+            defaultRest: defaultRest,
+            defaultBetweenExerciseRest: defaultBetweenExerciseRest
+        )
+        self.segments = newSegments
+
+        // 映射当前 segmentIndex 回去
+        var newIdx: Int? = nil
+        if let cstpid = curStepId, let csn = curSetN {
+            newIdx = newSegments.firstIndex(where: {
+                if $0.stepId == cstpid,
+                   case .exercise(_, let n, _, _, _, _, _) = $0.kind,
+                   n == csn { return true }
+                return false
+            })
+        } else if let cstpid = curStepId, wasRest {
+            newIdx = newSegments.firstIndex(where: { $0.stepId == cstpid && $0.isRest })
+        }
+        s.segmentIndex = min(max(0, newIdx ?? 0), max(0, newSegments.count - 1))
+        s.lastActiveAt = Date()
+        session = s
+        planParamsDirty = true
+        syncLiveActivity()
+    }
+
     func updateCurrentStep(
         sets newSets: Int,
         reps newReps: Int?,

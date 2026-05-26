@@ -1220,8 +1220,9 @@ private struct EditRow<Content: View>: View {
 }
 
 // MARK: - ExercisePickerSheet — 选一个动作加进 plan
+// 不再 private — PlanPlayer 的"替换动作"也复用同一个 sheet (训练中边练边换).
 
-private struct ExercisePickerSheet: View {
+struct ExercisePickerSheet: View {
     @Environment(DataStore.self) private var data
     @Environment(\.dismiss) private var dismiss
     let onPick: (Exercise) -> Void
