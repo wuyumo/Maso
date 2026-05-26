@@ -12,8 +12,10 @@ struct TodayScreen: View {
     @State private var detailPlan: Plan? = nil
 
     private var suggested: Plan? {
-        // 优先 AI 生成的今日计划; 没有 (AI 关闭 / API key 未填 / 网络失败) → fallback 系统推荐
-        data.aiTodayPlan ?? data.todayRecommendedPlan
+        // 默认推用户自己的 plans (pickTodayPlan: LRU 挑最久没练那张) —
+        // 这些 plan 是用户在 Plans tab 见过、可能调过的, 心智模型上是"我的训练计划",
+        // 比 AI 当场生成的陌生 plan 更可信任. AI 路径只在用户 plans 为空时兜底.
+        data.todayRecommendedPlan ?? data.aiTodayPlan
     }
 
     var body: some View {
