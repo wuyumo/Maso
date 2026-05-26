@@ -1212,6 +1212,10 @@ private struct InlinePlaylist: View {
 
     private func playlistRow(step: PlanStep, ex: Exercise) -> some View {
         let isCurrent = step.id == currentStepId
+        let done = progressN(for: step)
+        // 已完成 step: progress 达到 sets 上限, 且不是当前行 (current 的 progress 是"正在做的组数",
+        // 临界点 step.sets - 1 → step.sets 那一刻是用户做完最后一组的 transition, 此时 step 仍是 current).
+        let isCompleted = !isCurrent && done >= step.sets && step.sets > 0
         // Button 包整行处理 jump, 图片单独 Button 优先级高于外层, tap 图 → 详情而不是 jump.
         // 整体调大一档 (跟 iOS HIG 列表 cell 64pt 视觉一致): 图片 40→56, 名字 13→15pt,
         // 当前指示圆 6→7, 行内 spacing + padding 同步放大.
@@ -1225,23 +1229,36 @@ private struct InlinePlaylist: View {
                         size: 56,
                         animated: false  // 列表行不动, 节省 CPU + 减少干扰
                     )
+                    // 已完成 step 缩略图整体淡化 — 暗示"这一项已经过了, 不再是焦点".
+                    .opacity(isCompleted ? 0.45 : 1)
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel(String(format: NSLocalizedString("Show details for %@", comment: "exercise detail a11y"), ex.displayName))
                 VStack(alignment: .leading, spacing: 5) {
                     HStack(spacing: 7) {
-                        if isCurrent {
+                        if isCompleted {
+                            // 微妙的"已完成" affordance: 实心圆 + 内嵌对勾 (跟 current 的纯实心圆区分).
+                            // 14pt 半透 accent — 不抢戏, 但扫一眼就能看见.
+                            ZStack {
+                                Circle().fill(MasoColor.accent.opacity(0.85)).frame(width: 14, height: 14)
+                                Image(systemName: "checkmark")
+                                    .font(.system(size: 8, weight: .heavy))
+                                    .foregroundStyle(.black)
+                            }
+                        } else if isCurrent {
                             Circle().fill(MasoColor.accent).frame(width: 7, height: 7)
                         }
                         Text(ex.displayName)
                             .font(.system(size: 15, weight: .bold))
                             .lineLimit(1)
+                            // 已完成: 文字色降到 textDim + strikethrough — 视觉立刻区分 "已过去"
+                            .strikethrough(isCompleted, color: MasoColor.textDim)
                     }
                     HStack(spacing: 5) {
                         // 进度: 当前正在做的 step 用 currentSet; 其他用 completedSetsByStep.
                         // 已完成的 step → "3/3", 还没开始的 → "0/3", 当前 → "2/3".
                         // 让 playlist 上每一行都能看出整体进展, 不只是当前那行.
-                        Text("\(progressN(for: step))/\(step.sets)")
+                        Text("\(done)/\(step.sets)")
                             .font(.system(size: 12).monospacedDigit())
                         if let r = step.reps { Text("× \(r)").font(.system(size: 12).monospacedDigit()) }
                         if let w = step.weight, w > 0 { Text("· \(Int(w)) kg").font(.system(size: 12).monospacedDigit()) }
@@ -1255,6 +1272,7 @@ private struct InlinePlaylist: View {
                         equipment: ex.equipment,
                         muscleLimit: 1
                     )
+                    .opacity(isCompleted ? 0.55 : 1)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
@@ -1265,7 +1283,10 @@ private struct InlinePlaylist: View {
             // 整行点击热区: 没有 contentShape 时, Color.clear 背景区域不响应 tap,
             // 用户只能点到文字 / 缩略图. 加 contentShape 让整个 rect 都可点.
             .contentShape(Rectangle())
-            .foregroundStyle(isCurrent ? MasoColor.accent : MasoColor.text)
+            .foregroundStyle(
+                isCurrent ? MasoColor.accent
+                : (isCompleted ? MasoColor.textDim : MasoColor.text)
+            )
         }
         .buttonStyle(.plain)
         .padding(.horizontal, MasoMetrics.rowPaddingH)

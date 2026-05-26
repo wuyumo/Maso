@@ -341,7 +341,7 @@ final class AIWorkoutService {
         - 1–3 days/wk → full-body (chest + back + legs + small accessory)
         - 4–5 days/wk → 1–2 major muscle groups per session + accessory
         - 6+ days/wk → Push / Pull / Legs split rotation
-        - 4–7 exercises per session
+        - 3–4 exercises per session (keep it tight — "today's workout" is one session, not a marathon)
         - Sets 3–4, reps 6–12 for strength; reps 12–15 for accessory
         - Pick weights conservative if no history; scale to recent volume if any
         - Use real, common exercise names (e.g. "Barbell Squat", "Bench Press", "Pull-up", "Bent-Over Row", "Standing Overhead Press", "Dumbbell Bicep Curl", "Romanian Deadlift", "Lat Pulldown", "Plank")
@@ -402,10 +402,13 @@ final class AIWorkoutService {
                 rest: 0
             ))
         }
+        // 保底: 即使 prompt 失效, 客户端也强制截到 4. 跟 RecommendedPrograms 的
+        // kMaxStepsPerRecommendedPlan 同一节奏 — "今日训练" 不应该是 marathon.
+        let capped = Array(steps.prefix(4))
         return Plan(
             id: "plan-ai-\(Int(now.timeIntervalSince1970))",
             name: r.name.isEmpty ? "AI Workout" : r.name,
-            steps: steps,
+            steps: capped,
             createdAt: now,
             updatedAt: now
         )
