@@ -780,15 +780,31 @@ private struct ExerciseInfo: View {
                         .foregroundStyle(MasoColor.accent.opacity(0.85))
                         .shadow(color: .black.opacity(0.5), radius: 4)
                 }
-                // 行 1: set 计数 + 倒计时 (如有) — 这一行是"上下文", 不可调整
+                // pills 一行: sets/reps + weight + 倒计时 (countdown 段). 末尾 pencil 入口走完整 sheet.
+                // 之前尝试过给 reps / weight 加 ± 微按钮做"实时微调", 用户反馈占空间多, 删除回归单行.
                 HStack(spacing: 8) {
-                    Pill(text: "\(setNumber)/\(totalSets)")
+                    Pill(text: "\(setNumber)/\(totalSets)" + (reps.map { " × \($0)" } ?? ""))
+                    if let w = weight, w > 0 {
+                        // weight pill 可点 → 杠铃配重计算器
+                        Button(action: { plateCalcOpen = true }) {
+                            Pill(text: "\(Int(w)) kg")
+                        }
+                        .buttonStyle(.plain)
+                        Button(action: { plateCalcOpen = true }) {
+                            Image(systemName: "scalemass")
+                                .font(.system(size: 13, weight: .semibold))
+                                .foregroundStyle(MasoColor.textDim)
+                                .frame(width: 24, height: 24)
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel(NSLocalizedString("Plate calculator", comment: ""))
+                    }
                     if isCountdown, let remaining {
                         Pill(text: formatRemaining(remaining))
                     }
                     Spacer(minLength: 0)
-                    // 完整编辑入口 — iOS 默认 pencil. 仍保留, 让用户能改 sets / duration 等
-                    // ± 按钮不覆盖的字段.
+                    // 编辑按钮 — pencil 入口, 弹 EditCurrentStepSheet (改 sets/reps/weight/duration
+                    // + 替换动作). 取消了 ± 微按钮后, 想改重量/次数走这里.
                     Button(action: {
                         Haptics.tap()
                         editOpen = true
@@ -800,41 +816,6 @@ private struct ExerciseInfo: View {
                     }
                     .buttonStyle(.plain)
                     .accessibilityLabel(NSLocalizedString("Edit exercise parameters", comment: ""))
-                }
-                // 行 2: reps + weight 实时调整 — ± 微按钮直接改 current step 的目标.
-                // 用户中途想"这组上 2.5 kg / 减 2 reps"无需开 sheet, 一次点击搞定.
-                // 改的是"剩余还没做的组"的目标值: 已记录的 SetRecord 不动 — 自动达成"三组数据
-                // 分别调整"(set1 用旧 weight, set2/3 用新 weight, 实际记录保留各自值).
-                HStack(spacing: 10) {
-                    if let r = reps {
-                        AdjustablePill(
-                            text: "× \(r)",
-                            onMinus: { adjustReps(by: -1) },
-                            onPlus:  { adjustReps(by: 1) },
-                            a11yLabelMinus: "Reduce reps",
-                            a11yLabelPlus:  "Add reps"
-                        )
-                    }
-                    if let w = weight, w > 0 {
-                        AdjustablePill(
-                            text: "\(formatKg(w)) kg",
-                            onMinus: { adjustWeight(by: -2.5) },
-                            onPlus:  { adjustWeight(by: 2.5) },
-                            onLabelTap: { plateCalcOpen = true },  // tap 中间数字仍开计算器
-                            a11yLabelMinus: "Reduce weight",
-                            a11yLabelPlus:  "Add weight"
-                        )
-                        // 配重计算器入口
-                        Button(action: { plateCalcOpen = true }) {
-                            Image(systemName: "scalemass")
-                                .font(.system(size: 13, weight: .semibold))
-                                .foregroundStyle(MasoColor.textDim)
-                                .frame(width: 24, height: 24)
-                        }
-                        .buttonStyle(.plain)
-                        .accessibilityLabel(NSLocalizedString("Plate calculator", comment: ""))
-                    }
-                    Spacer(minLength: 0)
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -870,99 +851,6 @@ private struct ExerciseInfo: View {
         }
     }
 
-    /// ± reps 微调 — 改当前 step 的 reps 目标 (后续未做组生效, 已记录的 SetRecord 不变).
-    /// 边界: 1-50.
-    private func adjustReps(by delta: Int) {
-        guard let cur = reps else { return }
-        let newReps = max(1, min(50, cur + delta))
-        guard newReps != cur else { return }
-        store.updateCurrentStep(
-            sets: totalSets,
-            reps: newReps,
-            weight: weight,
-            duration: duration,
-            exById: data.exById,
-            defaultRest: data.settings.defaultRestSeconds,
-            defaultBetweenExerciseRest: data.settings.defaultBetweenExerciseRestSeconds
-        )
-        Haptics.tap()
-    }
-
-    /// ± weight 微调 — 2.5 kg 步长 (杠铃片最小常见 1.25 kg + 对称两片 = 2.5 kg 实际增量).
-    /// 边界: 0-500 kg.
-    private func adjustWeight(by delta: Double) {
-        guard let cur = weight else { return }
-        let newW = max(0, min(500, cur + delta))
-        guard abs(newW - cur) > 0.01 else { return }
-        store.updateCurrentStep(
-            sets: totalSets,
-            reps: reps,
-            weight: newW,
-            duration: duration,
-            exById: data.exById,
-            defaultRest: data.settings.defaultRestSeconds,
-            defaultBetweenExerciseRest: data.settings.defaultBetweenExerciseRestSeconds
-        )
-        Haptics.tap()
-    }
-
-    /// 整数化 weight 显示: 整数不显示 .0, 半数显示 .5 (2.5 kg 步长正好覆盖).
-    private func formatKg(_ w: Double) -> String {
-        let r = w.rounded()
-        if abs(w - r) < 0.05 { return "\(Int(r))" }
-        return String(format: "%.1f", w)
-    }
-}
-
-/// "± Pill" — Pill 文本两侧各一个 -/+ 圆形微按钮. 中间数字 tap 可选: 不传 onLabelTap → 不可点;
-/// 传了 → 数字区域也响应点击 (e.g. weight pill 中间点 → 弹配重计算器).
-private struct AdjustablePill: View {
-    let text: String
-    let onMinus: () -> Void
-    let onPlus: () -> Void
-    var onLabelTap: (() -> Void)? = nil
-    var a11yLabelMinus: String = "Decrease"
-    var a11yLabelPlus: String = "Increase"
-
-    var body: some View {
-        HStack(spacing: 4) {
-            stepButton(symbol: "minus", action: onMinus, a11y: a11yLabelMinus)
-            Group {
-                if let tap = onLabelTap {
-                    Button(action: tap) {
-                        Text(text)
-                            .font(.system(size: 13, weight: .bold).monospacedDigit())
-                            .foregroundStyle(MasoColor.text)
-                            .padding(.horizontal, 8)
-                    }
-                    .buttonStyle(.plain)
-                } else {
-                    Text(text)
-                        .font(.system(size: 13, weight: .bold).monospacedDigit())
-                        .foregroundStyle(MasoColor.text)
-                        .padding(.horizontal, 8)
-                }
-            }
-            stepButton(symbol: "plus", action: onPlus, a11y: a11yLabelPlus)
-        }
-        .padding(.horizontal, 4)
-        .padding(.vertical, 3)
-        .background(.black.opacity(0.45))
-        .clipShape(Capsule())
-    }
-
-    private func stepButton(symbol: String, action: @escaping () -> Void, a11y: String) -> some View {
-        Button(action: action) {
-            Image(systemName: symbol)
-                .font(.system(size: 10, weight: .heavy))
-                .foregroundStyle(MasoColor.text)
-                .frame(width: 22, height: 22)
-                .background(Color.white.opacity(0.12))
-                .clipShape(Circle())
-        }
-        .buttonStyle(.plain)
-        .accessibilityLabel(NSLocalizedString(a11y, comment: "± microbutton"))
-    }
 }
 
 /// 休息区 — 上方倒计时圆环 + 下方下一段提示
