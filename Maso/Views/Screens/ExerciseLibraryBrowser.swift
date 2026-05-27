@@ -229,14 +229,16 @@ struct ExerciseLibraryBrowser: View {
             .navigationTitle("Exercise library")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
+                // 左上 Done (cancellationAction = leading), 右上 "+" — iOS Mail / Photos "选择 + 关闭"
+                // 模式: 主操作 (添加) 在 trailing, 关闭在 leading.
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Done") { dismiss() }
+                }
+                ToolbarItem(placement: .topBarTrailing) {
                     Button(action: { addChoiceOpen = true }) {
                         Image(systemName: "plus")
                     }
                     .accessibilityLabel(NSLocalizedString("Add exercise", comment: ""))
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Done") { dismiss() }
                 }
             }
             .tint(MasoColor.text)
