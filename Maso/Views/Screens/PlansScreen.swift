@@ -533,8 +533,25 @@ struct PlanDetailSheet: View {
                         Image(systemName: "ellipsis")
                     }
                 }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Done") { dismiss() }
+                // 主操作: ▶ Start —— 直接开始训练. 取代之前的 "Done" (iOS sheet 自带下拉关闭,
+                // 显式 Done 在这就冗余). accent 实心胶囊跟正文大 CTA 视觉一致, 即使用户错过了
+                // body 里的大按钮, toolbar 这里 0.5s 内也能命中.
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(action: handleStart) {
+                        HStack(spacing: 4) {
+                            Image(systemName: "play.fill")
+                                .font(.system(size: 11, weight: .heavy))
+                            Text("Start")
+                                .font(.system(size: 13, weight: .heavy))
+                        }
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 6)
+                        .background(MasoColor.accent)
+                        .foregroundStyle(.black)
+                        .clipShape(Capsule())
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(NSLocalizedString("Start workout", comment: ""))
                 }
             }
             // Share sheet — UIActivityViewController 桥. shareURL 设了就弹, 取消/分享完置 nil.
@@ -714,7 +731,42 @@ struct PlanDetailSheet: View {
                     .fixedSize()
                 Spacer(minLength: 0)
             }
+
+            // 主 CTA — 全宽 accent 实心胶囊. iOS 原生模式: detail sheet 的主操作放 body 显眼位置
+            // (Apple Music album / Apple Fitness workout detail 同套路: 大 Play / Start). 视觉重量
+            // 比 toolbar Start 高一档, 用户扫一眼就知道"这页是干嘛的, 怎么开始".
+            startWorkoutCTA
         }
+    }
+
+    /// 全宽 "Start workout" 大胶囊 CTA — body 主操作. 跟 toolbar 右上的小 Start 是同一个 action,
+    /// 一冗余一隐性: 用户错过 toolbar 也不会错过这个; 已经知道流程的高频用户直接走 toolbar 一步到位.
+    private var startWorkoutCTA: some View {
+        Button(action: handleStart) {
+            HStack(spacing: 8) {
+                Image(systemName: "play.fill")
+                    .font(.system(size: 14, weight: .heavy))
+                Text("Start workout")
+                    .font(.system(size: 15, weight: .heavy))
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 14)
+            .background(MasoColor.accent)
+            .foregroundStyle(.black)
+            .clipShape(Capsule())
+            .shadow(color: MasoColor.accent.opacity(0.35), radius: 8, y: 2)
+        }
+        .buttonStyle(.plain)
+        .padding(.top, 4)  // 跟 muscle map 之间留 18pt (VStack spacing 14 + 4) — 视觉分组
+    }
+
+    /// 开始训练 — toolbar Start 和 body CTA 都走这. dismiss → 下一 runloop 调 onStart,
+    /// 避免 sheet 还在动画时 push 新 sheet 出问题 (PlanPlayer 是 RootView 上的另一个 sheet).
+    private func handleStart() {
+        Haptics.tap()
+        let plan = draft  // 抓快照 — dismiss 后 self 已经销毁, 不能再读 self.draft
+        dismiss()
+        DispatchQueue.main.async { onStart(plan) }
     }
 
     /// 右滑删除 step 的二次确认 — 跟 PlansScreen 同模式, 存待删 stepId, alert 弹.
