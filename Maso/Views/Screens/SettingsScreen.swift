@@ -9,7 +9,7 @@ struct SettingsScreen: View {
     /// 跟着 LanguageManager 走 — 切换时强制本页 re-render 显示新语言
     @State private var languageManager = LanguageManager.shared
     /// Exercise library 浏览 sheet
-    @State private var showExerciseLibrary: Bool = false
+    // (showExerciseLibrary 删了 — 入口已挪到 Plans tab 底部.)
 
     var body: some View {
         @Bindable var data = data
@@ -111,24 +111,9 @@ struct SettingsScreen: View {
                     .buttonStyle(.plain)
                 }
 
-                Section_(title: "Data") {
-                    // Plans 入口删除 — Plans tab 已经是底部 tab bar 的一级入口, 这里重复.
-                    // Exercise library: 弹 sheet 浏览全部动作
-                    Button(action: { showExerciseLibrary = true }) {
-                        Row(label: "Exercise library") {
-                            HStack(spacing: 6) {
-                                Text("\(data.exercises.count)").foregroundStyle(MasoColor.textDim)
-                                if !data.exercises.isEmpty {
-                                    Image(systemName: "chevron.right")
-                                        .font(.system(size: 11, weight: .semibold))
-                                        .foregroundStyle(MasoColor.textFaint)
-                                }
-                            }
-                        }
-                    }
-                    .buttonStyle(.plain)
-                    .disabled(data.exercises.isEmpty)
-                }
+                // Exercise library 入口已挪到 Plans tab 底部 — 那是用户实际"用"动作的地方,
+                // 跟 plan 编辑/选动作动线更顺. Settings 这里不再展示, 也不再 import 整张
+                // ExerciseLibraryBrowser sheet.
 
                 Text("Plans and workout records stay on your device.")
                     .font(.system(size: 12))
@@ -187,9 +172,7 @@ struct SettingsScreen: View {
         .sheet(isPresented: $showLanguagePicker) {
             LanguagePickerSheet(manager: languageManager)
         }
-        .sheet(isPresented: $showExerciseLibrary) {
-            ExerciseLibraryBrowser()
-        }
+        // (Exercise library sheet 已搬到 PlansScreen 底部入口, 这里不再附加.)
         // (showMusclePicker sheet 已搬到 TrainingSettingsSection 内部)
     }
 

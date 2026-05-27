@@ -21,6 +21,8 @@ struct PlansScreen: View {
     @State private var pendingDeletePlanId: String? = nil
     /// Community sheet — tap 列表底部 "See what others train" 弹出
     @State private var communityPresented: Bool = false
+    /// 底部 Library entry → 弹 ExerciseLibraryBrowser (移自 Settings).
+    @State private var libraryPresented: Bool = false
 
     var body: some View {
         // List 替代 ScrollView+VStack — 一举三得: 原生 .onMove 拖拽排序 + .swipeActions 右滑删除
@@ -80,6 +82,16 @@ struct PlansScreen: View {
                 .listRowSeparator(.hidden)
                 .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 12, trailing: 0))
                 .listRowBackground(Color.clear)
+
+            // 动作库入口 — Plans tab 底部, 跟 CommunityEntryRow 同款 row. 从 Settings 挪过来,
+            // 因为这里跟 plan 编辑动线更顺 (创建 plan 时想"我自己有什么动作?"一眼可达).
+            LibraryEntryRow(
+                exerciseCount: data.userLibrary.count,
+                onTap: { libraryPresented = true }
+            )
+                .listRowSeparator(.hidden)
+                .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 12, trailing: 0))
+                .listRowBackground(Color.clear)
         }
         .listStyle(.plain)
         .scrollContentBackground(.hidden)
@@ -132,6 +144,11 @@ struct PlansScreen: View {
         }
         .sheet(isPresented: $communityPresented) {
             CommunityScreen()
+        }
+        // 动作库 sheet — 从 Settings 挪过来的入口, 这里挂 sheet 绑定. Library 内部"+"
+        // 入口再走 AddExerciseChoiceSheet → 自创 / 采纳 niche.
+        .sheet(isPresented: $libraryPresented) {
+            ExerciseLibraryBrowser()
         }
         // (paywall sheet 跟着 ProBanner 一起搬到 TodayScreen)
     }
@@ -186,6 +203,42 @@ private struct CommunityEntryRow: View {
         }
         .buttonStyle(.plain)
         .accessibilityLabel("See what others train")
+    }
+}
+
+/// "Exercise library" 入口行 — Plans tab 底部, 跟 CommunityEntryRow 同款 row. 显示动作总数,
+/// tap → ExerciseLibraryBrowser sheet. 从 Settings 挪过来的, 因为这里离"我要给 plan 加动作"
+/// 的动线只一步, 不用再绕回 Settings.
+private struct LibraryEntryRow: View {
+    let exerciseCount: Int
+    let onTap: () -> Void
+
+    var body: some View {
+        Button(action: onTap) {
+            HStack(spacing: 12) {
+                Image(systemName: "books.vertical.fill")
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundStyle(MasoColor.accent)
+                    .frame(width: 36, height: 36)
+                Text("Exercise library")
+                    .font(.system(size: 14, weight: .bold))
+                    .foregroundStyle(MasoColor.text)
+                    .lineLimit(1)
+                Spacer()
+                Text("\(exerciseCount)")
+                    .font(.system(size: 13, weight: .semibold).monospacedDigit())
+                    .foregroundStyle(MasoColor.textDim)
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 12, weight: .heavy))
+                    .foregroundStyle(MasoColor.textFaint)
+            }
+            .padding(MasoMetrics.rowPaddingH)
+            .frame(maxWidth: .infinity, minHeight: 56, alignment: .leading)
+            .background(MasoColor.surface)
+            .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel("Exercise library")
     }
 }
 
@@ -1365,12 +1418,13 @@ struct ExercisePickerSheet: View {
         return result
     }
 
-    /// 当前模式下作为 base 的动作集合 — 主库或小众库.
-    /// 主库永远剔掉 isNiche, 小众库只看 isNiche, 两个集合无重叠.
+    /// 当前模式下作为 base 的动作集合 — 主库 (data.userLibrary: 非 niche + adopted niche + custom)
+    /// 或小众库 (data.unadoptedNicheExercises: 仍然在 niche stash 里没采纳的).
+    /// 两个集合永远无重叠 — 用户采纳一个 niche 后, 它从 unadopted 里消失, 在 userLibrary 里出现.
     private var sourceExercises: [Exercise] {
         nicheMode
-            ? data.exercises.filter { $0.isNiche }
-            : data.exercises.filter { !$0.isNiche }
+            ? data.unadoptedNicheExercises
+            : data.userLibrary
     }
 
     private var filtered: [Exercise] {

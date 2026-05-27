@@ -122,6 +122,16 @@ struct UserSettings: Codable, Sendable {
     /// 一周从哪天开始. 默认 .system 跟随 iOS 系统 locale; 用户可在 Settings 显式 override.
     /// 影响: History tab 的日历周排版 / 本周 stats 计算 / 任何 weekOfYear 分组.
     var weekStartDay: WeekStartDay = .system
+
+    /// 用户从 "Rare exercises" 库里"采纳"过的小众动作 ID 集合 —
+    /// 一旦采纳, 该 niche 动作就出现在主 picker (跟普通动作并列), 不再被默认筛掉.
+    /// 用户在 Exercise Library → "+ Add exercise" → "Browse rare exercises" 路径里 tap "Add" 才会进这个集合.
+    /// Array 持久化跟 favoriteExerciseIds 同套路 (Set 跨语言 Codable 不稳).
+    var adoptedNicheExerciseIds: [String] = []
+
+    /// 用户自己创建的动作 — 在 Library 里 "+ Add exercise" → "Create your own" 路径创建的.
+    /// 跟 bundle 动作并列出现在所有 picker. 数据完全自包含 (没 imageFolder, 用 customImageData 渲图).
+    var customExercises: [Exercise] = []
 }
 
 // MARK: - 派生 Calendar (跟着 UserSettings.weekStartDay)

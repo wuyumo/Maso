@@ -10,6 +10,9 @@ struct ExerciseImage: View {
     let category: ExerciseCategory
     /// 来自 Exercise.imageFolder; 为 nil 时直接用渐变占位
     var imageFolder: String? = nil
+    /// 用户自创动作的图片 bytes — 优先于 imageFolder. 自创动作 imageFolder 永远 nil.
+    /// caller (Library Browser / Picker 列表行) 把 Exercise.customImageData 传进来.
+    var customImageData: Data? = nil
     var cornerRadius: CGFloat = 4
     var size: CGFloat = 48
     /// 是否做两帧 cross-fade 动画
@@ -25,10 +28,15 @@ struct ExerciseImage: View {
                         .font(.system(size: size * 0.4, weight: .semibold))
                 )
 
-            // 上层 — 实际图片 (有 imageFolder 时才尝试加载)
-            // CrossFadeFrames: 共享 UIImage cache + 严格 frame 锚定, 解决两帧
-            // intrinsic size 略不同时 scaledToFill 算出不同 scale → 像素抖动的问题.
-            if let folder = imageFolder {
+            // 自创动作图片 — 优先级最高. PhotosPicker 拿到的 JPEG bytes, 直接 UIImage(data:).
+            if let imageData = customImageData, let ui = UIImage(data: imageData) {
+                Image(uiImage: ui)
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+            } else if let folder = imageFolder {
+                // bundle 动作两帧 cross-fade.
+                // CrossFadeFrames: 共享 UIImage cache + 严格 frame 锚定, 解决两帧
+                // intrinsic size 略不同时 scaledToFill 算出不同 scale → 像素抖动的问题.
                 CrossFadeFrames(folder: folder, animated: animated)
                     .overlay(
                         // 强调色调染 — 类似 Spotify album cover 的多色叠加

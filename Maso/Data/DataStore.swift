@@ -34,6 +34,11 @@ final class DataStore {
         for ex in exercises {
             m[ex.id] = ex
         }
+        // 用户自创动作也得能 lookup — plan step 引用 custom-* id 时, PlanRow / WorkoutCard / 训练播放
+        // 都靠 exById 拿 exercise object.
+        for ex in settings.customExercises {
+            m[ex.id] = ex
+        }
         // Legacy alias — 不覆盖已存在的 key.
         for ex in exercises {
             if let folder = ex.imageFolder, m[folder] == nil {
@@ -41,6 +46,56 @@ final class DataStore {
             }
         }
         return m
+    }
+
+    // MARK: - Library 视图 (user-facing union)
+    //
+    // bundle exercises 包含 ~979 个动作, 其中 58 个 niche. 用户视角的"动作库"应该是:
+    //   - bundle 非 niche (主流动作, 默认全可见)
+    //   - bundle niche 中被用户"采纳"过的 (settings.adoptedNicheExerciseIds 里命中的)
+    //   - 用户自创的 (settings.customExercises)
+    //
+    // 所有 picker / library browser 都应该 source from `userLibrary` 而不是裸 `exercises`,
+    // 否则要么暴露所有 niche, 要么看不到 custom 动作.
+
+    /// 用户的"个人库" — 主 picker / Library Browser 用这个 source.
+    var userLibrary: [Exercise] {
+        let adopted = Set(settings.adoptedNicheExerciseIds)
+        let bundle = exercises.filter { !$0.isNiche || adopted.contains($0.id) }
+        return bundle + settings.customExercises
+    }
+
+    /// 小众库里还没采纳的部分 — "Browse rare exercises" 入口用.
+    /// 已采纳的不再出现 (它们已经在 userLibrary 里), 避免重复添加.
+    var unadoptedNicheExercises: [Exercise] {
+        let adopted = Set(settings.adoptedNicheExerciseIds)
+        return exercises.filter { $0.isNiche && !adopted.contains($0.id) }
+    }
+
+    /// 采纳一个小众动作 — 加进 settings.adoptedNicheExerciseIds. 之后主 picker 能看到它.
+    func adoptNicheExercise(_ id: String) {
+        guard !settings.adoptedNicheExerciseIds.contains(id) else { return }
+        settings.adoptedNicheExerciseIds.append(id)
+        save()
+    }
+
+    /// 取消采纳 — 把动作放回 niche stash (主 picker 隐藏, 但 niche browse 还能看到).
+    func unadoptNicheExercise(_ id: String) {
+        settings.adoptedNicheExerciseIds.removeAll { $0 == id }
+        save()
+    }
+
+    /// 加一个用户自创动作. caller 自己负责 build Exercise (含 customImageData / muscleGroups 等).
+    /// id 由 caller 给 (推荐 "custom-{UUID}" 格式), 防止跟 bundle ID 冲突.
+    func addCustomExercise(_ ex: Exercise) {
+        settings.customExercises.append(ex)
+        save()
+    }
+
+    /// 删一个自创动作.
+    func deleteCustomExercise(_ id: String) {
+        settings.customExercises.removeAll { $0.id == id }
+        save()
     }
 
     init(exercises: [Exercise], plans: [Plan], sets: [SetRecord], settings: UserSettings) {

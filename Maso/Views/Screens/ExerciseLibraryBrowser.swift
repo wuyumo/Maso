@@ -11,13 +11,21 @@ struct ExerciseLibraryBrowser: View {
     @State private var muscleFilter: MuscleGroup? = nil
     @State private var equipmentFilter: String? = nil
     @State private var selected: Exercise? = nil
+    /// "+ Add exercise" → 两条路径的选择 sheet (Create your own / Browse rare).
+    @State private var addChoiceOpen: Bool = false
+    /// 路径 1: 自创动作表单 sheet (name + photo + 元数据).
+    @State private var customFormOpen: Bool = false
+    /// 路径 2: 小众库浏览 sheet (从 niche stash 采纳到自己的库).
+    @State private var nicheBrowseOpen: Bool = false
 
     private static let muscleSections: [MuscleGroup] = [
         .chest, .back, .shoulders, .arms, .core, .legs,
     ]
 
     private var filtered: [Exercise] {
-        var arr = data.exercises
+        // Library 浏览也走 userLibrary — niche 默认不暴露, 但用户自创 + 已采纳的 niche 在.
+        // 想看 niche stash 走顶部 toolbar 的 "+ Add" → "Browse rare exercises".
+        var arr = data.userLibrary
         if let m = muscleFilter {
             // 严格筛选 — 只看 primaryMuscles (主练肌), 跟 ExercisePickerSheet 同一行为.
             // 不再因为某个动作 secondary 含 m 就出现 (e.g. deadlift secondary 含 core 也不算 core 动作).
@@ -48,7 +56,7 @@ struct ExerciseLibraryBrowser: View {
     /// 当前 equipment / text filter 下还有动作的 muscle section. menu 里 dim disabled.
     private var availableMuscles: Set<MuscleGroup> {
         var out: Set<MuscleGroup> = []
-        for ex in data.exercises {
+        for ex in data.userLibrary {
             // equipment filter narrow
             if let eq = equipmentFilter {
                 if eq == "other" {
@@ -77,7 +85,7 @@ struct ExerciseLibraryBrowser: View {
     /// 当前 muscle / text filter 下还有动作的 equipment set. menu 里 dim disabled.
     private var availableEquipments: Set<String> {
         var out: Set<String> = []
-        for ex in data.exercises {
+        for ex in data.userLibrary {
             if let m = muscleFilter {
                 // 严格用 primary, 跟 filtered 一致
                 guard ex.primaryMuscles.contains(where: { $0.section == m }) else { continue }
@@ -167,6 +175,7 @@ struct ExerciseLibraryBrowser: View {
                                 ExerciseImage(
                                     category: ex.category,
                                     imageFolder: ex.imageFolder,
+                                    customImageData: ex.customImageData,
                                     cornerRadius: 8,
                                     size: 56,
                                     animated: false
@@ -220,6 +229,12 @@ struct ExerciseLibraryBrowser: View {
             .navigationTitle("Exercise library")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button(action: { addChoiceOpen = true }) {
+                        Image(systemName: "plus")
+                    }
+                    .accessibilityLabel(NSLocalizedString("Add exercise", comment: ""))
+                }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") { dismiss() }
                 }
@@ -227,6 +242,32 @@ struct ExerciseLibraryBrowser: View {
             .tint(MasoColor.text)
             .sheet(item: $selected) { ex in
                 ExerciseDetailSheet(exercise: ex)
+            }
+            // "+" → 选两条路径
+            .sheet(isPresented: $addChoiceOpen) {
+                AddExerciseChoiceSheet(
+                    onCreateCustom: {
+                        addChoiceOpen = false
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.32) {
+                            customFormOpen = true
+                        }
+                    },
+                    onBrowseNiche: {
+                        addChoiceOpen = false
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.32) {
+                            nicheBrowseOpen = true
+                        }
+                    }
+                )
+                .presentationDetents([.medium])
+            }
+            // 路径 1: 自创动作 (name + photo + muscle/equipment).
+            .sheet(isPresented: $customFormOpen) {
+                CustomExerciseFormSheet()
+            }
+            // 路径 2: 浏览 niche stash + 一键采纳.
+            .sheet(isPresented: $nicheBrowseOpen) {
+                NicheLibraryBrowseSheet()
             }
         }
     }

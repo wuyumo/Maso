@@ -155,6 +155,11 @@ struct Exercise: Identifiable, Hashable, Codable, Sendable {
     /// machine / Grip Crusher / Thor's Hammer 等). 默认 false (普通动作).
     var isNiche: Bool = false
 
+    /// 用户自创动作的图片数据 (JPEG / PNG). bundle 动作走 imageFolder; 自创动作走这个.
+    /// JPEG quality 0.7 压缩, 单张 ~50-200KB, 用户加几个自创动作压不爆 settings JSON.
+    /// 渲染: ExerciseImage 优先用 customImageData (UIImage(data:)), 没有再 fallback imageFolder.
+    var customImageData: Data? = nil
+
     // MARK: - Display helpers
 
     /// 本地化展示名 — UI 都用这个, 不直接用 raw `name`.
