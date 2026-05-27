@@ -604,34 +604,48 @@ struct PlanPlayerScreen: View {
         .frame(maxWidth: .infinity)
         .contentShape(Rectangle())
         .gesture(playlistResizeGesture)
-        .onTapGesture {
-            // 单击 = min ↔ default 切档. 跟之前 chevron 按钮的行为一致, 让"我只想快开/关"的
-            // 用户不必精确拖. 拖+点二合一在同一 View 上 SwiftUI 会按"翻译距离 < 阈值"分给 tap.
-            withAnimation(.spring(response: 0.4, dampingFraction: 0.82)) {
-                playlistHeight = playlistExpanded ? Self.playlistMinHeight : Self.playlistDefaultHeight
-            }
-            Haptics.tap()
-        }
         .accessibilityElement(children: .combine)
         .accessibilityLabel("Playlist drawer drag handle")
         .accessibilityHint("Drag up to expand, down to collapse. Double tap to toggle.")
     }
 
-    /// playlist 高度拖拽手势 — 上拖 (translation.height < 0) = 增高, 下拖 = 减高.
-    /// onChanged 不走 withAnimation: 实时跟手, 不要动画延迟; onEnded 不吸附档位, 让用户停在
-    /// 自己拖到的高度 (符合"continuous size" 的心智模型).
+    /// playlist 高度拖拽手势 — tap 和 drag 全部走这一份 DragGesture(minimumDistance: 0).
+    /// 不再用单独的 .onTapGesture, 原因: tap + drag 同时挂在一个 View 上, SwiftUI 在两者之间
+    /// 逐帧仲裁 + tap 触发的 spring 还在跑时 drag 接管, 两套动画事务打架 → 抖动.
+    /// 单 gesture + 自分发 (translation 小 = tap; 大 = drag) 彻底切断仲裁路径.
+    ///
+    /// 拖拽更新走 `Transaction.disablesAnimations = true` 显式拒收任何继承动画 (RestCountdown
+    /// 那条 .animation(value: playlistExpanded) 不会再回头影响 height frame).
     private var playlistResizeGesture: some Gesture {
-        DragGesture(minimumDistance: 1)
+        DragGesture(minimumDistance: 0)
             .onChanged { value in
+                let dy = value.translation.height
+                // 死区: 位移 ≤ 3pt 当作"还在判断 tap", 不动 height. 越过死区后, 锚定 startHeight,
+                // 之后每帧直接 set height. 已经锚定过的 (startHeight != 0) 永远继续跟手, 不再走判断.
+                guard playlistDragStartHeight != 0 || abs(dy) > 3 else { return }
                 if playlistDragStartHeight == 0 {
                     playlistDragStartHeight = playlistHeight
                 }
-                let proposed = playlistDragStartHeight - value.translation.height
-                playlistHeight = max(Self.playlistMinHeight,
-                                     min(playlistMaxHeight, proposed))
+                let proposed = playlistDragStartHeight - dy
+                let clamped = max(Self.playlistMinHeight, min(playlistMaxHeight, proposed))
+                // 显式禁用动画 — 上一个 tap 留下的 spring transaction 不能渗透到这一帧.
+                var t = Transaction()
+                t.disablesAnimations = true
+                withTransaction(t) {
+                    playlistHeight = clamped
+                }
             }
-            .onEnded { _ in
+            .onEnded { value in
+                let dy = value.translation.height
+                let wasDrag = playlistDragStartHeight != 0
                 playlistDragStartHeight = 0
+                // 没真拖动 (translation 没出死区) → 当作 tap 切档 min ↔ default. 这次的 spring
+                // 不会跟 drag 打架 — drag 已经结束, transaction 路径清空.
+                if !wasDrag && abs(dy) <= 3 {
+                    withAnimation(.spring(response: 0.4, dampingFraction: 0.82)) {
+                        playlistHeight = playlistExpanded ? Self.playlistMinHeight : Self.playlistDefaultHeight
+                    }
+                }
                 Haptics.tap()
             }
     }
