@@ -14,7 +14,18 @@ struct PlanPlayerScreen: View {
     @Environment(\.dismiss) private var dismiss
 
     // 训练时默认打开播放列表 — 让用户一眼看到"还剩什么 + 整体进度", 点 ☰ 收起.
-    @State private var playlistExpanded: Bool = true
+    /// Playlist drawer 的内容高度 (不含 bottom safe area). 用户拖把手直接改这个值.
+    /// 区间: [playlistMinHeight, playlistMaxHeight]. 默认 = playlistDefaultHeight (跟之前
+    /// playlistExpanded=true 时的高度对齐).
+    @State private var playlistHeight: CGFloat = PlanPlayerScreen.playlistDefaultHeight
+    /// 拖拽开始时的 baseline — DragGesture.onChanged 只给 translation, 需要锚定起点.
+    @State private var playlistDragStartHeight: CGFloat = 0
+    /// 兼容旧逻辑: playlistExpanded 是从 height 派生的 bool. RestCountdown 圆环大小 / 文案等
+    /// 还用这个 bool 决定显示, 不重写所有调用点.
+    private var playlistExpanded: Bool { playlistHeight > Self.playlistMinHeight + 40 }
+    /// 拖把手高度档位
+    static let playlistMinHeight: CGFloat = 56        // 仅 handle + "PLAYLIST" header, 不见任何 row
+    static let playlistDefaultHeight: CGFloat = 254   // 跟旧 expanded 视觉高度对齐
     @State private var endConfirmOpen: Bool = false
     /// 点 InlinePlaylist 行图片 → 弹该动作详情. sheet from sheet 是 iOS 18+ 支持的.
     @State private var detailExercise: Exercise? = nil
@@ -156,7 +167,6 @@ struct PlanPlayerScreen: View {
                                 seg: seg,
                                 playing: store.session?.playing ?? true,
                                 canGoBack: store.canSkipBack,
-                                playlistExpanded: $playlistExpanded,
                                 onBack: { store.skipBackToPrevExercise() },
                                 onPrimary: { handlePrimary(seg: seg) },
                                 onTogglePlay: { store.togglePlay() },
@@ -499,53 +509,136 @@ struct PlanPlayerScreen: View {
 
     @ViewBuilder
     private var playlistDrawer: some View {
-        InlinePlaylist(
-            plan: store.plan,
-            exById: data.exById,
-            currentStepId: currentStepId,
-            currentSet: currentSetNumber,
-            completedSetsByStep: completedSetsByStep,
-            onJump: { stepId in
-                if let idx = store.segments.firstIndex(where: {
-                    if case .exercise = $0.kind, $0.stepId == stepId { return true }
-                    return false
-                }) {
-                    store.setIndex(idx)
-                }
-            },
-            onTapImage: { ex in detailExercise = ex },
-            onReorder: { source, destination in
-                store.reorderSteps(
-                    from: source,
-                    to: destination,
-                    exById: data.exById,
-                    defaultRest: data.settings.defaultRestSeconds,
-                    defaultBetweenExerciseRest: data.settings.defaultBetweenExerciseRestSeconds
+        // GeometryReader 取屏幕高 → 算 max playlist height (不能让 playlist 高到把训练图挤没了).
+        // 留至少 200pt 给上方 ZStack (训练图 / TimelineBar / rest 圆环), 这样视觉永远"两段都在屏内".
+        GeometryReader { _ in EmptyView() }
+            .frame(width: 0, height: 0)
+        VStack(spacing: 0) {
+            // 顶部拖把手 + "PLAYLIST" header. 整块一起接 DragGesture: 用户拖手柄或 header 都生效.
+            playlistDragHandleBar
+                .background(
+                    Color(red: 10/255, green: 10/255, blue: 10/255)
+                        .opacity(0.95)
                 )
-            },
-            onDelete: { stepId in
-                pendingDeleteStepId = stepId  // 走二次确认 alert
-            },
-            onEdit: { stepId in
-                editingStepId = stepId  // 弹 EditAnyStepSheet
-            }
-        )
-        // 高度 = "Playlist" header (~26pt) + 3 行 row (各 ~76pt 含 padding) ≈ 254pt 主区.
-        // 再额外加 bottomSafeArea (iPhone 14+ home indicator 区 = 34pt) — 让 playlist 内容
-        // 延伸到屏幕最底, home indicator 那 34pt 也展示训练计划行, 不留黑边.
-        // (4 行 → 3 行: 用户希望缩 1 个 row 高度, 给上方训练图 + 圆环更多呼吸空间.)
-        .frame(height: playlistExpanded ? 254 + bottomSafeArea : 0)
+
+            InlinePlaylist(
+                plan: store.plan,
+                exById: data.exById,
+                currentStepId: currentStepId,
+                currentSet: currentSetNumber,
+                completedSetsByStep: completedSetsByStep,
+                onJump: { stepId in
+                    if let idx = store.segments.firstIndex(where: {
+                        if case .exercise = $0.kind, $0.stepId == stepId { return true }
+                        return false
+                    }) {
+                        store.setIndex(idx)
+                    }
+                },
+                onTapImage: { ex in detailExercise = ex },
+                onReorder: { source, destination in
+                    store.reorderSteps(
+                        from: source,
+                        to: destination,
+                        exById: data.exById,
+                        defaultRest: data.settings.defaultRestSeconds,
+                        defaultBetweenExerciseRest: data.settings.defaultBetweenExerciseRestSeconds
+                    )
+                },
+                onDelete: { stepId in
+                    pendingDeleteStepId = stepId  // 走二次确认 alert
+                },
+                onEdit: { stepId in
+                    editingStepId = stepId  // 弹 EditAnyStepSheet
+                },
+                showHeader: false  // 自定义 dragHandleBar 已经做了 header, InlinePlaylist 内部别再渲一次
+            )
+        }
+        // 总高度 = 拖把手区 + 用户拖出来的内容高度 + home indicator safe area.
+        // .clipped() 让 InlinePlaylist 被 frame 裁掉超出部分 — height 越小, List 显示的 row 越少.
+        .frame(height: playlistHeight + bottomSafeArea)
         .clipped()
         .background(
             Color(red: 10/255, green: 10/255, blue: 10/255)
-                .opacity(playlistExpanded ? 0.95 : 0)
+                .opacity(0.95)
                 .ignoresSafeArea(.container, edges: .bottom)
         )
         .ignoresSafeArea(.container, edges: .bottom)
-        // 统一动画曲线: spring response 0.4 dampingFraction 0.82 — 比 easeOut 自然 (带轻微弹性,
-        // 不过冲到僵硬). 整个 Player 里凡是响应 playlistExpanded 的地方都用这条曲线 (RestCountdown
-        // 圆环缩放也是), 视觉时序锁同步.
+        // spring response 0.4 dampingFraction 0.82 — 只给 tap 切档 (drag 实时跟手, .onChanged
+        // 里直接 set 不走动画, 否则手滞后于手指).
         .animation(.spring(response: 0.4, dampingFraction: 0.82), value: playlistExpanded)
+    }
+
+    /// 拖把手栏: 顶部细短胶囊 + "PLAYLIST" kicker. 整块都接 DragGesture, 上下拖即可改 playlist 高度.
+    /// 单击切档: min ↔ default 两态. 跟系统 sheet drag indicator 视觉一致, 但比它高度大一点 (这里
+    /// 是真交互, 系统的那条只是装饰).
+    private var playlistDragHandleBar: some View {
+        VStack(spacing: 0) {
+            // 短胶囊把手 — 比系统 sheet drag indicator (36×5) 略大一点 (44×6), 训练时戴手套 / 出汗
+            // 也能精准抓到.
+            Capsule()
+                .fill(Color.white.opacity(0.45))
+                .frame(width: 44, height: 6)
+                .padding(.top, 10)
+                .padding(.bottom, 6)
+            // "PLAYLIST" header 跟拖把手合并到这同一栏 — 之前 InlinePlaylist 内部还有一份 header,
+            // 用 showHeader: false 关掉避免双份.
+            HStack {
+                Text("Playlist")
+                    .font(.system(size: 10, weight: .bold))
+                    .tracking(2)
+                    .textCase(.uppercase)
+                    .foregroundStyle(MasoColor.textFaint)
+                Spacer()
+                if (store.plan?.steps.count ?? 0) > 1 {
+                    Text("Long press to reorder")
+                        .font(.system(size: 9, weight: .semibold))
+                        .foregroundStyle(MasoColor.textFaint.opacity(0.7))
+                }
+            }
+            .padding(.horizontal, MasoMetrics.cardPadding)
+            .padding(.bottom, 8)
+        }
+        .frame(maxWidth: .infinity)
+        .contentShape(Rectangle())
+        .gesture(playlistResizeGesture)
+        .onTapGesture {
+            // 单击 = min ↔ default 切档. 跟之前 chevron 按钮的行为一致, 让"我只想快开/关"的
+            // 用户不必精确拖. 拖+点二合一在同一 View 上 SwiftUI 会按"翻译距离 < 阈值"分给 tap.
+            withAnimation(.spring(response: 0.4, dampingFraction: 0.82)) {
+                playlistHeight = playlistExpanded ? Self.playlistMinHeight : Self.playlistDefaultHeight
+            }
+            Haptics.tap()
+        }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Playlist drawer drag handle")
+        .accessibilityHint("Drag up to expand, down to collapse. Double tap to toggle.")
+    }
+
+    /// playlist 高度拖拽手势 — 上拖 (translation.height < 0) = 增高, 下拖 = 减高.
+    /// onChanged 不走 withAnimation: 实时跟手, 不要动画延迟; onEnded 不吸附档位, 让用户停在
+    /// 自己拖到的高度 (符合"continuous size" 的心智模型).
+    private var playlistResizeGesture: some Gesture {
+        DragGesture(minimumDistance: 1)
+            .onChanged { value in
+                if playlistDragStartHeight == 0 {
+                    playlistDragStartHeight = playlistHeight
+                }
+                let proposed = playlistDragStartHeight - value.translation.height
+                playlistHeight = max(Self.playlistMinHeight,
+                                     min(playlistMaxHeight, proposed))
+            }
+            .onEnded { _ in
+                playlistDragStartHeight = 0
+                Haptics.tap()
+            }
+    }
+
+    /// playlist 高度上限 — 保证上方训练图至少 200pt. 用 UIScreen 量(GeometryReader 嵌套较深拿不到
+    /// 干净的 parent height, screen height 足够 approximations).
+    private var playlistMaxHeight: CGFloat {
+        let screenH = UIScreen.main.bounds.height
+        return max(Self.playlistDefaultHeight, screenH * 0.55)
     }
 
     private var currentStepId: String? {
@@ -979,7 +1072,6 @@ private struct Controls: View {
     let seg: Segment
     let playing: Bool
     let canGoBack: Bool
-    @Binding var playlistExpanded: Bool
     let onBack: () -> Void
     let onPrimary: () -> Void
     let onTogglePlay: () -> Void
@@ -1000,14 +1092,15 @@ private struct Controls: View {
     /// 高度: 恢复默认 — 之前为了"触控更舒展"拉到 28/40, 视觉太占地方;
     /// 改回 12/24 让图片区还原原来的呼吸空间.
     var body: some View {
+        // 3 个按钮: Cancel · Back · Primary. 之前末尾的 ▾ playlistBtn 删了 —
+        // playlist 现在改成顶部"拖把手"交互, 不需要单独的 toggle 按钮.
         HStack(spacing: 0) {
             cancelBtn
             Spacer()
             backBtn
             Spacer()
             primaryBtn
-            Spacer()
-            playlistBtn
+            Spacer().frame(width: 36)  // 占位让 primaryBtn 仍居中 (HStack 视觉对称)
         }
         .padding(.horizontal, MasoMetrics.cardPadding)
         .padding(.top, 4)     // 顶部留更小间距 — 按钮栏跟上方 info 区贴更紧, 视觉收得稳
@@ -1071,23 +1164,6 @@ private struct Controls: View {
         .disabled(!canGoBack)
         .accessibilityLabel("Previous")
     }
-    private var playlistBtn: some View {
-        Button(action: { playlistExpanded.toggle() }) {
-            // 简洁 chevron — 展开态 down (向下收起箭头), 收起态 up (向上拉起箭头).
-            // 不带 circle 圆圈 (之前 chevron.down.circle 视觉太重), 跟 back 按钮 backward.end.fill
-            // 视觉重量一致.
-            Image(systemName: playlistExpanded ? "chevron.down" : "chevron.up")
-                .font(.system(size: 14, weight: .heavy))
-                .foregroundStyle(MasoColor.textDim)
-                .frame(width: 36, height: 36)
-        }
-        .buttonStyle(.plain)
-        // 三元 ?: 结果是 String, accessibilityLabel 选 String overload 不查表 — 用 NSLocalizedString 显式查
-        .accessibilityLabel(playlistExpanded
-                            ? NSLocalizedString("Hide playlist", comment: "")
-                            : NSLocalizedString("Show playlist", comment: ""))
-    }
-
     @ViewBuilder
     private var primaryIcon: some View {
         switch seg.kind {
@@ -1199,6 +1275,8 @@ private struct InlinePlaylist: View {
     var onDelete: ((String) -> Void)? = nil
     /// 右滑编辑 — 传 stepId. parent 拉 EditStepSheet 改 sets/reps/weight/duration (session-local).
     var onEdit: ((String) -> Void)? = nil
+    /// 是否在内部渲 "PLAYLIST" header 行. false → caller (PlanPlayer 的 dragHandleBar) 自己渲, 避免重复.
+    var showHeader: Bool = true
 
     private var steps: [PlanStep] {
         plan?.steps ?? []
@@ -1206,23 +1284,25 @@ private struct InlinePlaylist: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            Rectangle().fill(MasoColor.borderSoft).frame(height: 0.5)
-            HStack {
-                Text("Playlist")
-                    .font(.system(size: 10, weight: .bold))
-                    .tracking(2)
-                    .textCase(.uppercase)
-                    .foregroundStyle(MasoColor.textFaint)
-                Spacer()
-                // 提示文案 — 让用户知道可拖动排序 (iOS list 长按拖移交互对训练者来说不一定明显)
-                if onReorder != nil && steps.count > 1 {
-                    Text("Long press to reorder")
-                        .font(.system(size: 9, weight: .semibold))
-                        .foregroundStyle(MasoColor.textFaint.opacity(0.7))
+            if showHeader {
+                Rectangle().fill(MasoColor.borderSoft).frame(height: 0.5)
+                HStack {
+                    Text("Playlist")
+                        .font(.system(size: 10, weight: .bold))
+                        .tracking(2)
+                        .textCase(.uppercase)
+                        .foregroundStyle(MasoColor.textFaint)
+                    Spacer()
+                    // 提示文案 — 让用户知道可拖动排序 (iOS list 长按拖移交互对训练者来说不一定明显)
+                    if onReorder != nil && steps.count > 1 {
+                        Text("Long press to reorder")
+                            .font(.system(size: 9, weight: .semibold))
+                            .foregroundStyle(MasoColor.textFaint.opacity(0.7))
+                    }
                 }
+                .padding(.horizontal, MasoMetrics.cardPadding)
+                .padding(.vertical, 8)
             }
-            .padding(.horizontal, MasoMetrics.cardPadding)
-            .padding(.vertical, 8)
             // 用原生 List + .onMove 让长按拖拽排序"自带":
             //   - List 默认 systemGroupedBackground 浅灰底 → scrollContentBackground(.hidden)
             //     + 父 VStack 自己上深色底铺
