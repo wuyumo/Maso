@@ -119,7 +119,8 @@
       "zh-Hans": [
         "不要塌腰 — 收紧肋骨."
       ]
-    }
+    },
+    "niche": true
   },
   {
     "id": "ab_wheel_rollout_standing",
@@ -188,7 +189,8 @@
       "zh-Hans": [
         "先掌握跪姿 — 受伤风险高."
       ]
-    }
+    },
+    "niche": true
   },
   {
     "id": "abduction_cable",
@@ -298,7 +300,8 @@
     "danger_warnings": {
       "en": [],
       "zh-Hans": []
-    }
+    },
+    "niche": true
   },
   {
     "id": "abductor_machine_lean_forward",
@@ -353,7 +356,8 @@
     "danger_warnings": {
       "en": [],
       "zh-Hans": []
-    }
+    },
+    "niche": true
   },
   {
     "id": "abductor_machine_single",
@@ -408,7 +412,8 @@
     "danger_warnings": {
       "en": [],
       "zh-Hans": []
-    }
+    },
+    "niche": true
   },
   {
     "id": "adduction_cable",
@@ -508,7 +513,8 @@
     "danger_warnings": {
       "en": [],
       "zh-Hans": []
-    }
+    },
+    "niche": true
   },
   {
     "id": "adductor_machine_lean_forward",
@@ -558,7 +564,8 @@
     "danger_warnings": {
       "en": [],
       "zh-Hans": []
-    }
+    },
+    "niche": true
   },
   {
     "id": "alternating_dumbbell_curl",
@@ -880,7 +887,8 @@
     "danger_warnings": {
       "en": [],
       "zh-Hans": []
-    }
+    },
+    "niche": true
   },
   {
     "id": "arch_hold",
@@ -1307,7 +1315,8 @@
       "zh-Hans": [
         "强度极高 — 新手循序渐进."
       ]
-    }
+    },
+    "niche": true
   },
   {
     "id": "axle_bar_curl",
@@ -1365,7 +1374,8 @@
     "danger_warnings": {
       "en": [],
       "zh-Hans": []
-    }
+    },
+    "niche": true
   },
   {
     "id": "back_extension",
@@ -1429,7 +1439,8 @@
       "zh-Hans": [
         "顶部不要过度反弓."
       ]
-    }
+    },
+    "niche": true
   },
   {
     "id": "back_extension_45",
@@ -1489,7 +1500,8 @@
     "danger_warnings": {
       "en": [],
       "zh-Hans": []
-    }
+    },
+    "niche": true
   },
   {
     "id": "back_extension_45_degree",
@@ -1600,7 +1612,8 @@
     "danger_warnings": {
       "en": [],
       "zh-Hans": []
-    }
+    },
+    "niche": true
   },
   {
     "id": "back_lever",
@@ -2490,7 +2503,8 @@
     "danger_warnings": {
       "en": [],
       "zh-Hans": []
-    }
+    },
+    "niche": true
   },
   {
     "id": "battle_rope_circles",
@@ -2555,7 +2569,8 @@
     "danger_warnings": {
       "en": [],
       "zh-Hans": []
-    }
+    },
+    "niche": true
   },
   {
     "id": "battle_rope_double_waves",
@@ -2620,7 +2635,8 @@
     "danger_warnings": {
       "en": [],
       "zh-Hans": []
-    }
+    },
+    "niche": true
   },
   {
     "id": "battle_rope_single_arm",
@@ -2681,7 +2697,8 @@
     "danger_warnings": {
       "en": [],
       "zh-Hans": []
-    }
+    },
+    "niche": true
   },
   {
     "id": "battle_rope_slams",
@@ -2746,7 +2763,8 @@
     "danger_warnings": {
       "en": [],
       "zh-Hans": []
-    }
+    },
+    "niche": true
   },
   {
     "id": "bayesian_curl",
@@ -9092,7 +9110,8 @@
       "zh-Hans": [
         "拉伤风险 — 大握力器渐进."
       ]
-    }
+    },
+    "niche": true
   },
   {
     "id": "cat_cow",
@@ -16413,7 +16432,8 @@
     "danger_warnings": {
       "en": [],
       "zh-Hans": []
-    }
+    },
+    "niche": true
   },
   {
     "id": "figure_four_stretch",
@@ -16956,7 +16976,8 @@
     "danger_warnings": {
       "en": [],
       "zh-Hans": []
-    }
+    },
+    "niche": true
   },
   {
     "id": "foam_roll_chest",
@@ -17009,7 +17030,8 @@
     "danger_warnings": {
       "en": [],
       "zh-Hans": []
-    }
+    },
+    "niche": true
   },
   {
     "id": "foam_roll_glutes",
@@ -17057,7 +17079,8 @@
     "danger_warnings": {
       "en": [],
       "zh-Hans": []
-    }
+    },
+    "niche": true
   },
   {
     "id": "foam_roll_hamstrings",
@@ -17105,7 +17128,8 @@
     "danger_warnings": {
       "en": [],
       "zh-Hans": []
-    }
+    },
+    "niche": true
   },
   {
     "id": "foam_roll_it_band",
@@ -17158,7 +17182,8 @@
     "danger_warnings": {
       "en": [],
       "zh-Hans": []
-    }
+    },
+    "niche": true
   },
   {
     "id": "foam_roll_lats",
@@ -17206,7 +17231,8 @@
     "danger_warnings": {
       "en": [],
       "zh-Hans": []
-    }
+    },
+    "niche": true
   },
   {
     "id": "foam_roll_quads",
@@ -17259,7 +17285,8 @@
     "danger_warnings": {
       "en": [],
       "zh-Hans": []
-    }
+    },
+    "niche": true
   },
   {
     "id": "foam_roll_thoracic_extension",
@@ -17316,7 +17343,8 @@
     "danger_warnings": {
       "en": [],
       "zh-Hans": []
-    }
+    },
+    "niche": true
   },
   {
     "id": "foam_roll_upper_back",
@@ -17377,7 +17405,8 @@
       "zh-Hans": [
         "避开下背 — 只滚动胸椎部位."
       ]
-    }
+    },
+    "niche": true
   },
   {
     "id": "french_press_barbell",
@@ -18991,7 +19020,8 @@
       "zh-Hans": [
         "动作较难 — 渐进增加次数."
       ]
-    }
+    },
+    "niche": true
   },
   {
     "id": "glute_kickback_band",
@@ -19156,7 +19186,8 @@
     "danger_warnings": {
       "en": [],
       "zh-Hans": []
-    }
+    },
+    "niche": true
   },
   {
     "id": "glute_stretch_supine",
@@ -19698,7 +19729,8 @@
     "danger_warnings": {
       "en": [],
       "zh-Hans": []
-    }
+    },
+    "niche": true
   },
   {
     "id": "guillotine_press",
@@ -20176,7 +20208,8 @@
     "danger_warnings": {
       "en": [],
       "zh-Hans": []
-    }
+    },
+    "niche": true
   },
   {
     "id": "hamstring_curl_swiss_ball",
@@ -20235,7 +20268,8 @@
     "danger_warnings": {
       "en": [],
       "zh-Hans": []
-    }
+    },
+    "niche": true
   },
   {
     "id": "hamstring_stretch_seated",
@@ -22340,7 +22374,8 @@
       "zh-Hans": [
         "顶部避免过伸 — 防止下背拉伤."
       ]
-    }
+    },
+    "niche": true
   },
   {
     "id": "inchworm",
@@ -25578,7 +25613,8 @@
     "danger_warnings": {
       "en": [],
       "zh-Hans": []
-    }
+    },
+    "niche": true
   },
   {
     "id": "landmine_press",
@@ -25640,7 +25676,8 @@
     "danger_warnings": {
       "en": [],
       "zh-Hans": []
-    }
+    },
+    "niche": true
   },
   {
     "id": "landmine_press_half_kneeling",
@@ -25702,7 +25739,8 @@
     "danger_warnings": {
       "en": [],
       "zh-Hans": []
-    }
+    },
+    "niche": true
   },
   {
     "id": "landmine_press_kneeling",
@@ -25766,7 +25804,8 @@
     "danger_warnings": {
       "en": [],
       "zh-Hans": []
-    }
+    },
+    "niche": true
   },
   {
     "id": "landmine_press_two_handed",
@@ -25824,7 +25863,8 @@
     "danger_warnings": {
       "en": [],
       "zh-Hans": []
-    }
+    },
+    "niche": true
   },
   {
     "id": "landmine_row",
@@ -29338,7 +29378,8 @@
     "danger_warnings": {
       "en": [],
       "zh-Hans": []
-    }
+    },
+    "niche": true
   },
   {
     "id": "leg_raise_hanging",
@@ -32751,7 +32792,8 @@
     "danger_warnings": {
       "en": [],
       "zh-Hans": []
-    }
+    },
+    "niche": true
   },
   {
     "id": "med_ball_granny_throw",
@@ -32881,7 +32923,8 @@
     "danger_warnings": {
       "en": [],
       "zh-Hans": []
-    }
+    },
+    "niche": true
   },
   {
     "id": "med_ball_rotational_throw",
@@ -33011,7 +33054,8 @@
       "zh-Hans": [
         "用无弹力药球, 不要用篮球."
       ]
-    }
+    },
+    "niche": true
   },
   {
     "id": "med_ball_triceps_extension",
@@ -36784,7 +36828,8 @@
     "danger_warnings": {
       "en": [],
       "zh-Hans": []
-    }
+    },
+    "niche": true
   },
   {
     "id": "plyo_lunges",
@@ -42610,7 +42655,8 @@
       "zh-Hans": [
         "顶部不要过度反弓下背."
       ]
-    }
+    },
+    "niche": true
   },
   {
     "id": "reverse_pec_deck",
@@ -42815,7 +42861,8 @@
     "danger_warnings": {
       "en": [],
       "zh-Hans": []
-    }
+    },
+    "niche": true
   },
   {
     "id": "ring_push_up",
@@ -44842,7 +44889,8 @@
     "danger_warnings": {
       "en": [],
       "zh-Hans": []
-    }
+    },
+    "niche": true
   },
   {
     "id": "shoulder_stretch_cross_body",
@@ -47020,7 +47068,8 @@
       "zh-Hans": [
         "髋部铰链, 不要圆背."
       ]
-    }
+    },
+    "niche": true
   },
   {
     "id": "skullcrusher_barbell",
@@ -47540,7 +47589,8 @@
     "danger_warnings": {
       "en": [],
       "zh-Hans": []
-    }
+    },
+    "niche": true
   },
   {
     "id": "sled_push",
@@ -47611,7 +47661,8 @@
       "zh-Hans": [
         "心肺和腿压力大 — 注意配速."
       ]
-    }
+    },
+    "niche": true
   },
   {
     "id": "smith_close_grip_press_lying",
@@ -53279,7 +53330,8 @@
     "danger_warnings": {
       "en": [],
       "zh-Hans": []
-    }
+    },
+    "niche": true
   },
   {
     "id": "swimming_backstroke",
@@ -53956,7 +54008,8 @@
       "zh-Hans": [
         "不要滚下背 — 椎骨支撑不同."
       ]
-    }
+    },
+    "niche": true
   },
   {
     "id": "thoracic_rotation_open_book",
@@ -54070,7 +54123,8 @@
     "danger_warnings": {
       "en": [],
       "zh-Hans": []
-    }
+    },
+    "niche": true
   },
   {
     "id": "thread_the_needle",
@@ -54462,7 +54516,8 @@
     "danger_warnings": {
       "en": [],
       "zh-Hans": []
-    }
+    },
+    "niche": true
   },
   {
     "id": "toe_touch_crunch",
@@ -54638,7 +54693,8 @@
     "danger_warnings": {
       "en": [],
       "zh-Hans": []
-    }
+    },
+    "niche": true
   },
   {
     "id": "trap_3_raise",
@@ -56585,7 +56641,8 @@
     "danger_warnings": {
       "en": [],
       "zh-Hans": []
-    }
+    },
+    "niche": true
   },
   {
     "id": "waiters_curl",
@@ -58064,7 +58121,8 @@
     "danger_warnings": {
       "en": [],
       "zh-Hans": []
-    }
+    },
+    "niche": true
   },
   {
     "id": "wrist_stretch_extension",

@@ -95,6 +95,10 @@ private struct RawExerciseV2: Decodable {
     let video_url: String?
     let calories_estimate: V2Calories?
     let danger_warnings: [String: [String]]?
+    /// "小众动作" 标记 — score_exercise_commonness.py 评分 < 0 的动作在 JSON 里被打了这个 flag.
+    /// 主 ExercisePickerSheet 默认隐藏 niche=true, 单独"Rare exercises"入口才显示. 这样常用 picker
+    /// 干净 (新手不会被 Foam Roll / Captains of Crush 之类的怪东西吓到), 又不丢数据.
+    let niche: Bool?
 }
 
 private struct V2Muscles: Decodable {
@@ -153,7 +157,8 @@ private func toExerciseV2(_ r: RawExerciseV2) -> Exercise {
         dangerWarnings: r.danger_warnings?["en"],
         localizedInstructions: r.instructions,
         localizedName: r.name,
-        localizedDangerWarnings: r.danger_warnings
+        localizedDangerWarnings: r.danger_warnings,
+        isNiche: r.niche ?? false
     )
 }
 

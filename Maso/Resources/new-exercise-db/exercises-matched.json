@@ -126,7 +126,8 @@
       "old_candidate": "Barbell_Rollout_from_Bench",
       "old_name": "Barbell Rollout from Bench",
       "score": 82.4
-    }
+    },
+    "niche": true
   },
   {
     "id": "ab_wheel_rollout_standing",
@@ -200,7 +201,8 @@
       "old_candidate": "Barbell_Rollout_from_Bench",
       "old_name": "Barbell Rollout from Bench",
       "score": 82.4
-    }
+    },
+    "niche": true
   },
   {
     "id": "abduction_cable",
@@ -317,7 +319,8 @@
       "zh-Hans": []
     },
     "_match_score": 88.3,
-    "_match_old_name": "Thigh Abductor"
+    "_match_old_name": "Thigh Abductor",
+    "niche": true
   },
   {
     "id": "abductor_machine_lean_forward",
@@ -374,7 +377,8 @@
       "zh-Hans": []
     },
     "_match_score": 88.3,
-    "_match_old_name": "Thigh Abductor"
+    "_match_old_name": "Thigh Abductor",
+    "niche": true
   },
   {
     "id": "abductor_machine_single",
@@ -431,7 +435,8 @@
       "zh-Hans": []
     },
     "_match_score": 88.3,
-    "_match_old_name": "Thigh Abductor"
+    "_match_old_name": "Thigh Abductor",
+    "niche": true
   },
   {
     "id": "adduction_cable",
@@ -535,7 +540,8 @@
       "zh-Hans": []
     },
     "_match_score": 100,
-    "_match_old_name": "Band Hip Adductions"
+    "_match_old_name": "Band Hip Adductions",
+    "niche": true
   },
   {
     "id": "adductor_machine_lean_forward",
@@ -587,7 +593,8 @@
       "zh-Hans": []
     },
     "_match_score": 100,
-    "_match_old_name": "Band Hip Adductions"
+    "_match_old_name": "Band Hip Adductions",
+    "niche": true
   },
   {
     "id": "alternating_dumbbell_curl",
@@ -924,7 +931,8 @@
       "zh-Hans": []
     },
     "_match_score": 90.7,
-    "_match_old_name": "Elliptical Trainer"
+    "_match_old_name": "Elliptical Trainer",
+    "niche": true
   },
   {
     "id": "arch_hold",
@@ -1362,7 +1370,8 @@
         "强度极高 — 新手循序渐进."
       ]
     },
-    "_match_score": "manual_yes"
+    "_match_score": "manual_yes",
+    "niche": true
   },
   {
     "id": "axle_bar_curl",
@@ -1422,7 +1431,8 @@
       "zh-Hans": []
     },
     "_match_score": 100,
-    "_match_old_name": "EZ-Bar Curl"
+    "_match_old_name": "EZ-Bar Curl",
+    "niche": true
   },
   {
     "id": "back_extension",
@@ -1488,7 +1498,8 @@
       ]
     },
     "_match_score": 93.3,
-    "_match_old_name": "Leg Extensions"
+    "_match_old_name": "Leg Extensions",
+    "niche": true
   },
   {
     "id": "back_extension_45",
@@ -1550,7 +1561,8 @@
       "zh-Hans": []
     },
     "_match_score": 93.3,
-    "_match_old_name": "Leg Extensions"
+    "_match_old_name": "Leg Extensions",
+    "niche": true
   },
   {
     "id": "back_extension_45_degree",
@@ -1671,7 +1683,8 @@
       "old_candidate": "Cable_Incline_Triceps_Extension",
       "old_name": "Cable Incline Triceps Extension",
       "score": 83.3
-    }
+    },
+    "niche": true
   },
   {
     "id": "back_lever",
@@ -2594,7 +2607,8 @@
       "zh-Hans": []
     },
     "_match_score": 85.0,
-    "_match_old_name": "Battling Ropes"
+    "_match_old_name": "Battling Ropes",
+    "niche": true
   },
   {
     "id": "battle_rope_circles",
@@ -2661,7 +2675,8 @@
       "zh-Hans": []
     },
     "_match_score": 85.0,
-    "_match_old_name": "Battling Ropes"
+    "_match_old_name": "Battling Ropes",
+    "niche": true
   },
   {
     "id": "battle_rope_double_waves",
@@ -2728,7 +2743,8 @@
       "zh-Hans": []
     },
     "_match_score": 85.0,
-    "_match_old_name": "Battling Ropes"
+    "_match_old_name": "Battling Ropes",
+    "niche": true
   },
   {
     "id": "battle_rope_single_arm",
@@ -2791,7 +2807,8 @@
       "zh-Hans": []
     },
     "_match_score": 85.0,
-    "_match_old_name": "Battling Ropes"
+    "_match_old_name": "Battling Ropes",
+    "niche": true
   },
   {
     "id": "battle_rope_slams",
@@ -2857,7 +2874,8 @@
       "en": [],
       "zh-Hans": []
     },
-    "_match_score": "manual_yes"
+    "_match_score": "manual_yes",
+    "niche": true
   },
   {
     "id": "bayesian_curl",
@@ -9438,7 +9456,8 @@
       "zh-Hans": [
         "拉伤风险 — 大握力器渐进."
       ]
-    }
+    },
+    "niche": true
   },
   {
     "id": "cat_cow",
@@ -17023,7 +17042,8 @@
       "zh-Hans": []
     },
     "_match_score": 86.8,
-    "_match_old_name": "Close-Grip EZ-Bar Curl with Band"
+    "_match_old_name": "Close-Grip EZ-Bar Curl with Band",
+    "niche": true
   },
   {
     "id": "figure_four_stretch",
@@ -17587,7 +17607,8 @@
       "zh-Hans": []
     },
     "_match_score": 85.0,
-    "_match_old_name": "Calves-SMR"
+    "_match_old_name": "Calves-SMR",
+    "niche": true
   },
   {
     "id": "foam_roll_chest",
@@ -17645,7 +17666,8 @@
       "old_candidate": "Chest_Push_multiple_response",
       "old_name": "Chest Push (multiple response)",
       "score": 71.7
-    }
+    },
+    "niche": true
   },
   {
     "id": "foam_roll_glutes",
@@ -17698,7 +17720,8 @@
       "old_candidate": "Lying_Glute",
       "old_name": "Lying Glute",
       "score": 78.7
-    }
+    },
+    "niche": true
   },
   {
     "id": "foam_roll_hamstrings",
@@ -17748,7 +17771,8 @@
       "zh-Hans": []
     },
     "_match_score": 97.0,
-    "_match_old_name": "Hamstring-SMR"
+    "_match_old_name": "Hamstring-SMR",
+    "niche": true
   },
   {
     "id": "foam_roll_it_band",
@@ -17806,7 +17830,8 @@
       "old_candidate": "Squat_with_Bands",
       "old_name": "Squat with Bands",
       "score": 71.7
-    }
+    },
+    "niche": true
   },
   {
     "id": "foam_roll_lats",
@@ -17854,7 +17879,8 @@
     "danger_warnings": {
       "en": [],
       "zh-Hans": []
-    }
+    },
+    "niche": true
   },
   {
     "id": "foam_roll_quads",
@@ -17907,7 +17933,8 @@
     "danger_warnings": {
       "en": [],
       "zh-Hans": []
-    }
+    },
+    "niche": true
   },
   {
     "id": "foam_roll_thoracic_extension",
@@ -17969,7 +17996,8 @@
       "old_candidate": "Leg_Extensions",
       "old_name": "Leg Extensions",
       "score": 83.3
-    }
+    },
+    "niche": true
   },
   {
     "id": "foam_roll_upper_back",
@@ -18035,7 +18063,8 @@
       "old_candidate": "Upper_Back_Stretch",
       "old_name": "Upper Back Stretch",
       "score": 76.4
-    }
+    },
+    "niche": true
   },
   {
     "id": "french_press_barbell",
@@ -19714,7 +19743,8 @@
       ]
     },
     "_match_score": 100,
-    "_match_old_name": "Floor Glute-Ham Raise"
+    "_match_old_name": "Floor Glute-Ham Raise",
+    "niche": true
   },
   {
     "id": "glute_kickback_band",
@@ -19885,7 +19915,8 @@
       "zh-Hans": []
     },
     "_match_score": 100,
-    "_match_old_name": "Glute Kickback"
+    "_match_old_name": "Glute Kickback",
+    "niche": true
   },
   {
     "id": "glute_stretch_supine",
@@ -20448,7 +20479,8 @@
       "zh-Hans": []
     },
     "_match_score": 100,
-    "_match_old_name": "Decline Close-Grip Bench To Skull Crusher"
+    "_match_old_name": "Decline Close-Grip Bench To Skull Crusher",
+    "niche": true
   },
   {
     "id": "guillotine_press",
@@ -20942,7 +20974,8 @@
       "zh-Hans": []
     },
     "_match_score": 100,
-    "_match_old_name": "Seated Band Hamstring Curl"
+    "_match_old_name": "Seated Band Hamstring Curl",
+    "niche": true
   },
   {
     "id": "hamstring_curl_swiss_ball",
@@ -21003,7 +21036,8 @@
       "zh-Hans": []
     },
     "_match_score": 100,
-    "_match_old_name": "Seated Band Hamstring Curl"
+    "_match_old_name": "Seated Band Hamstring Curl",
+    "niche": true
   },
   {
     "id": "hamstring_stretch_seated",
@@ -23181,7 +23215,8 @@
       ]
     },
     "_match_score": 100,
-    "_match_old_name": "Hyperextensions (Back Extensions)"
+    "_match_old_name": "Hyperextensions (Back Extensions)",
+    "niche": true
   },
   {
     "id": "inchworm",
@@ -26551,7 +26586,8 @@
       "zh-Hans": []
     },
     "_match_score": 85.0,
-    "_match_old_name": "3/4 Sit-Up"
+    "_match_old_name": "3/4 Sit-Up",
+    "niche": true
   },
   {
     "id": "landmine_press",
@@ -26615,7 +26651,8 @@
       "zh-Hans": []
     },
     "_match_score": 98.9,
-    "_match_old_name": "Neck Press"
+    "_match_old_name": "Neck Press",
+    "niche": true
   },
   {
     "id": "landmine_press_half_kneeling",
@@ -26679,7 +26716,8 @@
       "zh-Hans": []
     },
     "_match_score": 93.9,
-    "_match_old_name": "Neck Press"
+    "_match_old_name": "Neck Press",
+    "niche": true
   },
   {
     "id": "landmine_press_kneeling",
@@ -26745,7 +26783,8 @@
       "zh-Hans": []
     },
     "_match_score": 93.9,
-    "_match_old_name": "Neck Press"
+    "_match_old_name": "Neck Press",
+    "niche": true
   },
   {
     "id": "landmine_press_two_handed",
@@ -26805,7 +26844,8 @@
       "zh-Hans": []
     },
     "_match_score": 98.9,
-    "_match_old_name": "Neck Press"
+    "_match_old_name": "Neck Press",
+    "niche": true
   },
   {
     "id": "landmine_row",
@@ -30447,7 +30487,8 @@
       "old_candidate": "Air_Bike",
       "old_name": "Air Bike",
       "score": 80.0
-    }
+    },
+    "niche": true
   },
   {
     "id": "leg_raise_hanging",
@@ -34011,7 +34052,8 @@
       "zh-Hans": []
     },
     "_match_score": 100,
-    "_match_old_name": "Medicine Ball Chest Pass"
+    "_match_old_name": "Medicine Ball Chest Pass",
+    "niche": true
   },
   {
     "id": "med_ball_granny_throw",
@@ -34145,7 +34187,8 @@
       "zh-Hans": []
     },
     "_match_score": 100,
-    "_match_old_name": "Overhead Slam"
+    "_match_old_name": "Overhead Slam",
+    "niche": true
   },
   {
     "id": "med_ball_rotational_throw",
@@ -34279,7 +34322,8 @@
       ]
     },
     "_match_score": 100,
-    "_match_old_name": "One-Arm Medicine Ball Slam"
+    "_match_old_name": "One-Arm Medicine Ball Slam",
+    "niche": true
   },
   {
     "id": "med_ball_triceps_extension",
@@ -38194,7 +38238,8 @@
       "zh-Hans": []
     },
     "_match_score": 100,
-    "_match_old_name": "Plate Pinch"
+    "_match_old_name": "Plate Pinch",
+    "niche": true
   },
   {
     "id": "plyo_lunges",
@@ -44221,7 +44266,8 @@
       ]
     },
     "_match_score": 100,
-    "_match_old_name": "Reverse Hyperextension"
+    "_match_old_name": "Reverse Hyperextension",
+    "niche": true
   },
   {
     "id": "reverse_pec_deck",
@@ -44431,7 +44477,8 @@
     "danger_warnings": {
       "en": [],
       "zh-Hans": []
-    }
+    },
+    "niche": true
   },
   {
     "id": "ring_push_up",
@@ -46518,7 +46565,8 @@
       "zh-Hans": []
     },
     "_match_score": 89.6,
-    "_match_old_name": "Shoulder Raise"
+    "_match_old_name": "Shoulder Raise",
+    "niche": true
   },
   {
     "id": "shoulder_stretch_cross_body",
@@ -48768,7 +48816,8 @@
       "zh-Hans": [
         "髋部铰链, 不要圆背."
       ]
-    }
+    },
+    "niche": true
   },
   {
     "id": "skullcrusher_barbell",
@@ -49308,7 +49357,8 @@
       "zh-Hans": []
     },
     "_match_score": 92.5,
-    "_match_old_name": "Sled Push"
+    "_match_old_name": "Sled Push",
+    "niche": true
   },
   {
     "id": "sled_push",
@@ -49381,7 +49431,8 @@
       ]
     },
     "_match_score": 100,
-    "_match_old_name": "Sled Push"
+    "_match_old_name": "Sled Push",
+    "niche": true
   },
   {
     "id": "smith_close_grip_press_lying",
@@ -55259,7 +55310,8 @@
       "zh-Hans": []
     },
     "_match_score": 100,
-    "_match_old_name": "Svend Press"
+    "_match_old_name": "Svend Press",
+    "niche": true
   },
   {
     "id": "swimming_backstroke",
@@ -55969,7 +56021,8 @@
       "old_candidate": "Leg_Extensions",
       "old_name": "Leg Extensions",
       "score": 83.3
-    }
+    },
+    "niche": true
   },
   {
     "id": "thoracic_rotation_open_book",
@@ -56093,7 +56146,8 @@
       "old_candidate": "Hammer_Curls",
       "old_name": "Hammer Curls",
       "score": 77.0
-    }
+    },
+    "niche": true
   },
   {
     "id": "thread_the_needle",
@@ -56509,7 +56563,8 @@
       "old_candidate": "Posterior_Tibialis_Stretch",
       "old_name": "Posterior Tibialis Stretch",
       "score": 83.6
-    }
+    },
+    "niche": true
   },
   {
     "id": "toe_touch_crunch",
@@ -56697,7 +56752,8 @@
       "old_candidate": "Bottoms-Up_Clean_From_The_Hang_Position",
       "old_name": "Bottoms-Up Clean From The Hang Position",
       "score": 75.0
-    }
+    },
+    "niche": true
   },
   {
     "id": "trap_3_raise",
@@ -58713,7 +58769,8 @@
       "zh-Hans": []
     },
     "_match_score": 90.7,
-    "_match_old_name": "JM Press"
+    "_match_old_name": "JM Press",
+    "niche": true
   },
   {
     "id": "waiters_curl",
@@ -60271,7 +60328,8 @@
       "zh-Hans": []
     },
     "_match_score": 100,
-    "_match_old_name": "Wrist Roller"
+    "_match_old_name": "Wrist Roller",
+    "niche": true
   },
   {
     "id": "wrist_stretch_extension",

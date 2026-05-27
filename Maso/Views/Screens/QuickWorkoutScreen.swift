@@ -38,7 +38,10 @@ struct QuickWorkoutScreen: View {
                         pickedIds: $pickedExerciseIds,
                         aiOrder: $aiOrder,
                         exById: data.exById,
-                        allExercises: data.exercises,
+                        // 主"选动作"入口 — 跟 ExercisePickerSheet 一致, 默认隐藏 niche 动作.
+                        // Smart pick / 列表都不会出现 Foam Roll / Battle Rope / Hip Abduction Machine 等怪东西.
+                        // 想用这些动作的用户在 ExercisePickerSheet 底部走"Browse rare exercises" 入口.
+                        allExercises: data.exercises.filter { !$0.isNiche },
                         onStart: handleStart
                     )
                 }

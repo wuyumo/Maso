@@ -1297,6 +1297,11 @@ struct ExercisePickerSheet: View {
     @State private var scrollProgress: CGFloat = 0
     /// tap 列表行 → 弹动作详情. 详情里点 "Add to workout" 才真正 onPick.
     @State private var detailExercise: Exercise? = nil
+    /// 小众动作模式 — false (默认): 主库, 隐藏所有 isNiche=true 的动作. true: 只看小众库.
+    /// 用户在 picker 底部点 "Browse rare exercises" → 切到 true; 切换后顶部出现"← Back to standard"
+    /// 入口让用户回去. 这样主流 picker 干净 (Foam Roll / Battle Rope / Hip Abduction Machine 等怪东西不挡道),
+    /// 但小众动作仍然能通过一个明确的入口访问到, 不丢数据.
+    @State private var nicheMode: Bool = false
 
     enum PickerMode { case bodyMap, list }
 
@@ -1360,9 +1365,17 @@ struct ExercisePickerSheet: View {
         return result
     }
 
+    /// 当前模式下作为 base 的动作集合 — 主库或小众库.
+    /// 主库永远剔掉 isNiche, 小众库只看 isNiche, 两个集合无重叠.
+    private var sourceExercises: [Exercise] {
+        nicheMode
+            ? data.exercises.filter { $0.isNiche }
+            : data.exercises.filter { !$0.isNiche }
+    }
+
     private var filtered: [Exercise] {
         let arr = applyFilters(
-            data.exercises,
+            sourceExercises,
             muscle: muscleFilter,
             sub: subFilter,
             equipment: equipmentFilter,
@@ -1377,7 +1390,7 @@ struct ExercisePickerSheet: View {
     /// 当前 muscle/sub/text filter (不算 equipment) 下还有动作的 equipment set.
     /// 用 chip "dim disabled" 视觉提示 — 让用户知道选了某 muscle 后哪些 equipment 是空集.
     private var availableEquipments: Set<String> {
-        let arr = applyFilters(data.exercises, muscle: muscleFilter, sub: subFilter, equipment: nil, text: query)
+        let arr = applyFilters(sourceExercises, muscle: muscleFilter, sub: subFilter, equipment: nil, text: query)
         var out: Set<String> = []
         for ex in arr {
             // nil + "other" 都映射到 "other" chip
@@ -1389,7 +1402,7 @@ struct ExercisePickerSheet: View {
     /// 当前 equipment/text filter (不算 muscle) 下还有动作的 muscle section set.
     /// 用 primaryMuscles 跟 filter 实际行为对齐 — 不然 chip 显示"有"但点了 0 结果.
     private var availableMuscles: Set<MuscleGroup> {
-        let arr = applyFilters(data.exercises, muscle: nil, sub: nil, equipment: equipmentFilter, text: query)
+        let arr = applyFilters(sourceExercises, muscle: nil, sub: nil, equipment: equipmentFilter, text: query)
         var out: Set<MuscleGroup> = []
         for ex in arr {
             for sec in Self.muscleSections {
@@ -1405,7 +1418,7 @@ struct ExercisePickerSheet: View {
     /// 给 sub-muscle chip 用 dim 提示. 同步 primary 严格筛选, 跟 filter 行为对齐.
     private var availableSubMuscles: Set<MuscleGroup> {
         guard let section = muscleFilter else { return [] }
-        let arr = applyFilters(data.exercises, muscle: section, sub: nil, equipment: equipmentFilter, text: query)
+        let arr = applyFilters(sourceExercises, muscle: section, sub: nil, equipment: equipmentFilter, text: query)
         var out: Set<MuscleGroup> = []
         for sub in section.sectionSubs {
             let anatomySubs = expandAnatomyMuscles([sub])
@@ -1445,6 +1458,8 @@ struct ExercisePickerSheet: View {
             .background(MasoColor.background.ignoresSafeArea())
             // 不显示 nav title — 用户要求 Edit Workout 系列页面都不要标题
             .navigationBarTitleDisplayMode(.inline)
+            // 小众库标题 — 让用户一眼知道"我在哪个库". 主库时不显示标题 (跟之前一致).
+            .navigationTitle(nicheMode ? NSLocalizedString("Rare exercises", comment: "") : "")
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") { dismiss() }
@@ -1452,6 +1467,57 @@ struct ExercisePickerSheet: View {
             }
             .tint(MasoColor.text)
         }
+    }
+
+    /// 列表末尾的"切换库"入口 — 主库 ↔ 小众库. 模式不同, 文案与图标都不一样, 用户一眼能看出
+    /// 现在按下去会去哪边. tap 后切换 nicheMode + 清掉所有筛选 (两个库的肌群 / 器械分布差很多,
+    /// 沿用旧筛选很容易跳进去就 "No exercises match" 一片空).
+    @ViewBuilder
+    private var nicheToggleFooter: some View {
+        let nicheCount = data.exercises.filter { $0.isNiche }.count
+        Button(action: {
+            withAnimation(.easeInOut(duration: 0.2)) {
+                nicheMode.toggle()
+                muscleFilter = nil
+                subFilter = nil
+                equipmentFilter = nil
+                query = ""
+            }
+            Haptics.tap()
+        }) {
+            HStack(spacing: 12) {
+                Image(systemName: nicheMode ? "arrow.uturn.backward" : "questionmark.diamond")
+                    .font(.system(size: 14, weight: .heavy))
+                    .foregroundStyle(MasoColor.accent)
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(nicheMode
+                         ? NSLocalizedString("Back to standard library", comment: "")
+                         : NSLocalizedString("Browse rare exercises", comment: ""))
+                        .font(.system(size: 14, weight: .bold))
+                        .foregroundStyle(MasoColor.text)
+                    Text(nicheMode
+                         ? NSLocalizedString("Return to the everyday library", comment: "")
+                         : String(format: NSLocalizedString("%d specialized / unusual exercises (foam rollers, battle ropes, machine isolations, etc.)", comment: ""), nicheCount))
+                        .font(.system(size: 11))
+                        .foregroundStyle(MasoColor.textDim)
+                        .lineLimit(2)
+                        .multilineTextAlignment(.leading)
+                }
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 11, weight: .heavy))
+                    .foregroundStyle(MasoColor.textFaint)
+            }
+            .padding(.horizontal, MasoMetrics.cardPadding)
+            .padding(.vertical, 14)
+            .background(MasoColor.surface)
+            .overlay(
+                RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium)
+                    .stroke(MasoColor.borderSoft, lineWidth: 0.5)
+            )
+            .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
+        }
+        .buttonStyle(.plain)
     }
 
     // MARK: - 顶部组件: mode 切换 + search bar
@@ -1728,7 +1794,9 @@ struct ExercisePickerSheet: View {
                 }
             }
             if filtered.isEmpty {
-                Text("No exercises match your search")
+                Text(nicheMode
+                     ? NSLocalizedString("No rare exercises match your search", comment: "")
+                     : NSLocalizedString("No exercises match your search", comment: ""))
                     .font(.system(size: 13))
                     .foregroundStyle(MasoColor.textDim)
                     .padding(.vertical, 32)
@@ -1736,6 +1804,14 @@ struct ExercisePickerSheet: View {
                     .listRowSeparator(.hidden)
                     .listRowBackground(Color.clear)
             }
+
+            // 列表末尾的"切换库"入口 — 主库结尾邀请进小众库, 小众库结尾邀请回主库.
+            // 用 list footer 而不是浮动按钮: 让用户在自然滚到底时遇到这个入口, 没在找的时候不打扰.
+            nicheToggleFooter
+                .listRowSeparator(.hidden)
+                .listRowBackground(Color.clear)
+                .listRowInsets(EdgeInsets(top: 24, leading: MasoMetrics.pagePaddingHorizontal,
+                                          bottom: 24, trailing: MasoMetrics.pagePaddingHorizontal))
         }
         .listStyle(.plain)
         .scrollContentBackground(.hidden)

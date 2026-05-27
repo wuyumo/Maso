@@ -164,7 +164,8 @@ struct TodayScreen: View {
             let targetMuscles = expandAnatomyMuscles([major])
             struct Scored { let ex: Exercise; let score: Int; let isFav: Bool }
             var scored: [Scored] = []
-            for ex in data.exercises where ex.category == .strength {
+            // gap-fill 候选: 跳过 niche — 训练日历空缺时智能补的动作不该是 Foam Roll / Battle Rope.
+            for ex in data.exercises where ex.category == .strength && !ex.isNiche {
                 if seenExerciseIds.contains(ex.id) { continue }
                 let s = gapScore(ex, against: targetMuscles)
                 if s > 0 {

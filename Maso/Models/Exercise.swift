@@ -150,6 +150,11 @@ struct Exercise: Identifiable, Hashable, Codable, Sendable {
     /// 本地化 danger warnings.
     var localizedDangerWarnings: [String: [String]]? = nil
 
+    /// "小众动作" flag — JSON `niche: true` 触发. 主 ExercisePickerSheet 默认隐藏这些;
+    /// 单独的"Rare exercises" 入口才显示它们 (Foam Roll 全家 / Battle Rope / Hip Abduction
+    /// machine / Grip Crusher / Thor's Hammer 等). 默认 false (普通动作).
+    var isNiche: Bool = false
+
     // MARK: - Display helpers
 
     /// 本地化展示名 — UI 都用这个, 不直接用 raw `name`.
