@@ -114,8 +114,10 @@ struct HistoryScreen: View {
             }
         }
         // (撤销 scroll-based 展开/收起 — 现在完全交给用户主动点击 strip / chevron 控制)
-        // iOS 默认导航栏 — 不再 .background(MasoColor.background.ignoresSafeArea()) 覆盖,
-        // 让 NavigationStack 拿到系统 navigation bar material (滚动时自动出 blur 跟 PlansScreen 一致).
+        // 页面底色 #121212 — 跟 Plans / Today 一致, 不再透出 NavigationStack 默认纯黑底.
+        // ignoresSafeArea 让底色延伸到 home indicator 区. NavigationStack 的 large title /
+        // material blur 仍正常叠在这个底色之上 (跟 Plans 同视觉).
+        .background(MasoColor.background.ignoresSafeArea())
         .navigationTitle("History")
         .navigationBarTitleDisplayMode(.large)
         .toolbar {

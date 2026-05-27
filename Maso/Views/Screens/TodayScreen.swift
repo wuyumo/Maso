@@ -87,8 +87,11 @@ struct TodayScreen: View {
             }
             .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
         }
-        // iOS 默认导航栏 — 大标题 "Today" + 右上角 settings gear. 不再 .background 覆盖,
-        // 让 NavigationStack 拿到系统 navigation bar material (滚动出 blur, 跟 Plans / History 一致).
+        // 页面底色 #121212 — 跟 Plans / Library 等系统 tab 一致, 不再透出 NavigationStack 默认
+        // 纯黑底. ignoresSafeArea 让底色延伸到 home indicator 区, scroll 到顶 / 到底都不露黑边.
+        .background(MasoColor.background.ignoresSafeArea())
+        // iOS 默认导航栏 — 大标题 "Today" + 右上角 settings gear. NavigationStack 自带 material
+        // blur 在滚动时叠加在这个底色上, 跟 Plans 视觉同款.
         .navigationTitle("Today")
         .navigationBarTitleDisplayMode(.large)
         .toolbar {
