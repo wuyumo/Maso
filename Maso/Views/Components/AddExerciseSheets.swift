@@ -123,44 +123,16 @@ struct CustomExerciseFormSheet: View {
             ZStack {
                 MasoColor.background.ignoresSafeArea()
                 Form {
-                    // 图片 — 顶部 hero 区. PhotosPicker 拉相册, 选完压成 JPEG 0.7.
+                    // 图片 — 顶部 hero 区. 跟 share card 的 photo placeholder 同款样式:
+                    //   - 没图: 虚线描边 + photo.badge.plus icon (light 字重, textDim) + "Add a photo"
+                    //          整块都是 PhotosPicker tap 目标 — 一步到位, 不需要额外按钮
+                    //   - 有图: 实色描边 (borderSoft) + 右上角小"Change" 胶囊 (灰底,
+                    //          不再用 accent 绿) 给用户重新选的入口
                     Section {
-                        VStack(spacing: 12) {
-                            ZStack {
-                                if let imageData, let ui = UIImage(data: imageData) {
-                                    Image(uiImage: ui)
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fill)
-                                } else {
-                                    LinearGradient(
-                                        colors: [Color.green.opacity(0.3), Color.black],
-                                        startPoint: .topLeading, endPoint: .bottomTrailing
-                                    )
-                                    Image(systemName: "photo.badge.plus")
-                                        .font(.system(size: 36, weight: .heavy))
-                                        .foregroundStyle(.white.opacity(0.6))
-                                }
-                            }
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 160)
-                            .clipShape(RoundedRectangle(cornerRadius: 12))
-
-                            PhotosPicker(selection: $photoItem, matching: .images) {
-                                HStack(spacing: 6) {
-                                    Image(systemName: imageData == nil ? "photo.on.rectangle.angled" : "arrow.triangle.2.circlepath")
-                                    Text(imageData == nil
-                                         ? NSLocalizedString("Pick image", comment: "")
-                                         : NSLocalizedString("Change image", comment: ""))
-                                }
-                                .font(.system(size: 13, weight: .semibold))
-                                .foregroundStyle(MasoColor.accent)
-                                .frame(maxWidth: .infinity)
-                                .padding(.vertical, 8)
-                                .background(MasoColor.accent.opacity(0.14))
-                                .clipShape(Capsule())
-                            }
-                            .buttonStyle(.plain)
+                        PhotosPicker(selection: $photoItem, matching: .images) {
+                            photoArea
                         }
+                        .buttonStyle(.plain)
                         .padding(.vertical, 4)
                     }
                     .listRowBackground(MasoColor.surface)
@@ -245,6 +217,71 @@ struct CustomExerciseFormSheet: View {
         } message: {
             Text(showingError ?? "")
         }
+    }
+
+    /// 图片区 — PhotosPicker 的 label. 两态:
+    ///   - 没图: 跟 UnifiedShareCard.photoContent 同款 — 虚线 dashed border + photo.badge.plus
+    ///     icon (light 字重) + "Add a photo" 文案, surface 0.4 半透底.
+    ///   - 有图: 实色细描边 + 右上角灰底胶囊 "Change" (中性, 不再用 accent 绿).
+    /// 比例锁在 160pt 高度 (用户保留这个 ratio 不变).
+    @ViewBuilder
+    private var photoArea: some View {
+        Group {
+            if let imageData, let ui = UIImage(data: imageData) {
+                ZStack(alignment: .topTrailing) {
+                    Color.clear
+                        .overlay {
+                            Image(uiImage: ui)
+                                .resizable()
+                                .scaledToFill()
+                        }
+                        .clipShape(RoundedRectangle(cornerRadius: 14))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 14)
+                                .stroke(MasoColor.borderSoft, lineWidth: 1)
+                        )
+
+                    // 右上角 "Change" 胶囊 — 黑底半透 + 白字 (跟 accent 绿无关), 不抢戏.
+                    // tap 不需要单独绑 action: 整块 photoArea 已经是 PhotosPicker label,
+                    // tap 任意位置 (含这个胶囊) 都会拉相册.
+                    HStack(spacing: 4) {
+                        Image(systemName: "arrow.triangle.2.circlepath")
+                            .font(.system(size: 10, weight: .heavy))
+                        Text("Change")
+                            .font(.system(size: 11, weight: .bold))
+                    }
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 5)
+                    .background(.black.opacity(0.55))
+                    .clipShape(Capsule())
+                    .padding(10)
+                    .allowsHitTesting(false)  // 让 tap 直接命中外层 PhotosPicker, 不被胶囊吃
+                }
+            } else {
+                // 没图: 虚线 + photo.badge.plus + "Add a photo" — UnifiedShareCard 同款.
+                ZStack {
+                    RoundedRectangle(cornerRadius: 14)
+                        .strokeBorder(
+                            MasoColor.borderSoft,
+                            style: StrokeStyle(lineWidth: 1.5, dash: [6, 4])
+                        )
+                    VStack(spacing: 10) {
+                        Image(systemName: "photo.badge.plus")
+                            .font(.system(size: 38, weight: .light))
+                            .foregroundStyle(MasoColor.textDim)
+                        Text("Add a photo")
+                            .font(.system(size: 14, weight: .semibold))
+                            .foregroundStyle(MasoColor.textDim)
+                    }
+                }
+                .background(MasoColor.surface.opacity(0.4))
+                .clipShape(RoundedRectangle(cornerRadius: 14))
+            }
+        }
+        .frame(maxWidth: .infinity)
+        .frame(height: 160)  // 用户要求保留这个比例
+        .contentShape(Rectangle())
     }
 
     private func save() {
