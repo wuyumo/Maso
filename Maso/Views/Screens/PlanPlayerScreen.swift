@@ -564,9 +564,11 @@ struct PlanPlayerScreen: View {
                 .ignoresSafeArea(.container, edges: .bottom)
         )
         .ignoresSafeArea(.container, edges: .bottom)
-        // spring response 0.4 dampingFraction 0.82 — 只给 tap 切档 (drag 实时跟手, .onChanged
-        // 里直接 set 不走动画, 否则手滞后于手指).
-        .animation(.spring(response: 0.4, dampingFraction: 0.82), value: playlistExpanded)
+        // 注意: drawer 上不再挂 .animation(value: playlistExpanded). 之前那条 spring 会在用户
+        // 拖到 minHeight+40 临界值时把 playlistExpanded bool 翻面 → 触发 spring 重排 → 跟正在
+        // 跟手的 drag.onChanged 抢这一帧 frame, 视觉上就是抖动.
+        // tap-to-toggle 路径用显式 withAnimation 包 height 写入, 仍能 spring 切档; drag 路径
+        // 不进任何动画事务, 严格跟手指.
     }
 
     /// 拖把手栏: 顶部细短胶囊 + "PLAYLIST" kicker. 整块都接 DragGesture, 上下拖即可改 playlist 高度.
@@ -1092,15 +1094,19 @@ private struct Controls: View {
     /// 高度: 恢复默认 — 之前为了"触控更舒展"拉到 28/40, 视觉太占地方;
     /// 改回 12/24 让图片区还原原来的呼吸空间.
     var body: some View {
-        // 3 个按钮: Cancel · Back · Primary. 之前末尾的 ▾ playlistBtn 删了 —
-        // playlist 现在改成顶部"拖把手"交互, 不需要单独的 toggle 按钮.
+        // 3 个按钮: Cancel · Back · Primary. 用 4 个 Spacer 包夹 (bookend) — 让 4 段 flex 缝隙
+        // 平均分配剩余水平空间, cancel 离左边距 == primary 离右边距, 视觉对称.
+        //
+        // 之前末尾用过 fixed 36pt Spacer 占位, 但那样 primary 被推回偏左, cancel 像贴在左边缘.
+        // 改用全 flex Spacer 后, 三个按钮均匀分布在 row 中间, 两侧都有等宽呼吸.
         HStack(spacing: 0) {
+            Spacer()
             cancelBtn
             Spacer()
             backBtn
             Spacer()
             primaryBtn
-            Spacer().frame(width: 36)  // 占位让 primaryBtn 仍居中 (HStack 视觉对称)
+            Spacer()
         }
         .padding(.horizontal, MasoMetrics.cardPadding)
         .padding(.top, 4)     // 顶部留更小间距 — 按钮栏跟上方 info 区贴更紧, 视觉收得稳
