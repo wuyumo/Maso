@@ -13,7 +13,7 @@
     https://developer.apple.com/documentation/bundleresources/privacy_manifest_files/describing_use_of_required_reason_api
 
   我们用了以下 Required Reason API:
-    - User Defaults (UserDefaults): C56D.1 (read/write data this app created)
+    - User Defaults (UserDefaults): CA92.1 (access info accessible only to this app)
     - File timestamp (DataStore JSON 文件): C617.1 (display to user) — DataStore.save 时打 modifyTime
     - System boot time (Date / TimeInterval 计算): 35F9.1 (measure time elapsed for client-side operations)
     - Disk space (没用 — 我们不查磁盘剩余空间)
