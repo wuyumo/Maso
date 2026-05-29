@@ -740,3 +740,6 @@
 
 /* ── Batch G ── */
 "All caught up" = "全部跟上";
+
+/* ── Player metric labels ── */
+"Time" = "时间";

@@ -1323,6 +1323,9 @@ struct ExercisePickerSheet: View {
     @Environment(DataStore.self) private var data
     @Environment(\.dismiss) private var dismiss
     let onPick: (Exercise) -> Void
+    /// J4: true = 点动作行直接确认 (onPick + dismiss), 不先弹详情. 替换动作流程用这个 —
+    /// 用户要的是"选了就换", 不想多一步 detail → Add. false (默认) = 点行先看详情再 Add.
+    var directPick: Bool = false
 
     @State private var query: String = ""
     /// 顶层 section 筛选 (nil = 全部). 6 个: chest/back/shoulders/arms/core/legs.
@@ -1807,7 +1810,8 @@ struct ExercisePickerSheet: View {
     @ViewBuilder
     private func exercisePickerRow(exercise ex: Exercise, isVariant: Bool, group: ExerciseGroup) -> some View {
         let isFav = data.isFavorite(ex.id)
-        Button { detailExercise = ex } label: {
+        // J4: directPick 直接确认; 否则先弹详情.
+        Button { if directPick { onPick(ex); dismiss() } else { detailExercise = ex } } label: {
             HStack(spacing: 14) {
                 if isVariant {
                     // 缩进 — 一道细 accent 竖线给"我属于上面那组"的视觉锚点.

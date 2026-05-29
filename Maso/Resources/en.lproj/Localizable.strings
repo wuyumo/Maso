@@ -741,3 +741,6 @@
 
 /* ── Batch G ── */
 "All caught up" = "All caught up";
+
+/* ── Player metric labels ── */
+"Time" = "Time";

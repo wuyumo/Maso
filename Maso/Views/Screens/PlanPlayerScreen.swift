@@ -282,7 +282,7 @@ struct PlanPlayerScreen: View {
                     defaultBetweenExerciseRest: data.settings.defaultBetweenExerciseRestSeconds
                 )
                 replacingStepId = nil
-            })
+            }, directPick: true)  // J4: 替换 = 选了就换, 不先弹详情
             .presentationDetents([.large])
         }
         // "+ Add exercise" — playlist 末尾点了之后选动作, 走 store.appendStep 加到末尾.
@@ -432,6 +432,17 @@ struct PlanPlayerScreen: View {
         return nil
     }
 
+    /// 下一个动作 segment 的目标 reps / weight — 休息屏 "Up Next" 提前显示, 让用户休息时心里有数.
+    private func nextExerciseTargets() -> (reps: Int?, weight: Double?) {
+        guard let s = store.session else { return (nil, nil) }
+        for i in (s.segmentIndex + 1)..<store.segments.count {
+            if case .exercise(_, _, _, let reps, let weight, _, _) = store.segments[i].kind {
+                return (reps, weight)
+            }
+        }
+        return (nil, nil)
+    }
+
     /// 下一个动作 segment 的 stepId — 给休息屏的"小编辑入口"用,
     /// 让用户能在休息时改下一动作的 sets/reps/weight, 不用等开始那一组才意识到要改.
     private func nextExerciseStepId() -> String? {
@@ -467,8 +478,11 @@ struct PlanPlayerScreen: View {
     private func restNextExerciseHint(seg: Segment) -> some View {
         if let next = nextExerciseSeg() {
             let nextStepId = nextExerciseStepId()
+            let targets = nextExerciseTargets()
             RestNextHint(
                 next: next,
+                nextReps: targets.reps,
+                nextWeight: targets.weight,
                 isCrossExercise: isCrossExerciseRest(currentSegment: seg),
                 // 小编辑入口 — 跟 playlist 的 onEdit 一样用 editingStepId 触发 EditAnyStepSheet,
                 // 复用已有 sheet (line ~224), 不需要新 sheet 通道.
@@ -893,6 +907,22 @@ private struct ExerciseInfo: View {
         return nil
     }
 
+    /// 单个指标块: 大数值 + 60% 透明的字样标签. 文字带阴影, 在动图背景上可读.
+    private func metric(value: String, label: String) -> some View {
+        VStack(alignment: .leading, spacing: 1) {
+            Text(value)
+                .font(.system(size: 17, weight: .bold).monospacedDigit())
+                .foregroundStyle(MasoColor.text)
+            Text(label)
+                .font(.system(size: 9, weight: .heavy))
+                .tracking(0.5)
+                .textCase(.uppercase)
+                .foregroundStyle(MasoColor.text.opacity(0.6))  // 字样 60% 透明
+        }
+        .shadow(color: .black.opacity(0.5), radius: 3)
+        .fixedSize()
+    }
+
     var body: some View {
         HStack(alignment: .center, spacing: 16) {
             BodyHint(
@@ -915,31 +945,24 @@ private struct ExerciseInfo: View {
                         .foregroundStyle(MasoColor.accent.opacity(0.85))
                         .shadow(color: .black.opacity(0.5), radius: 4)
                 }
-                // pills 一行: sets/reps + weight + 倒计时 (countdown 段). 末尾 pencil 入口走完整 sheet.
-                // 之前尝试过给 reps / weight 加 ± 微按钮做"实时微调", 用户反馈占空间多, 删除回归单行.
-                HStack(spacing: 8) {
-                    Pill(text: "\(setNumber)/\(totalSets)" + (reps.map { " × \($0)" } ?? ""))
+                // 指标行: SETS / REPS / WEIGHT (+ countdown TIME), 每个数值下带 60% 透明的字样标签.
+                // weight 块可点 → 杠铃配重计算器. 末尾 pencil → 完整编辑 sheet.
+                HStack(alignment: .firstTextBaseline, spacing: 18) {
+                    metric(value: "\(setNumber)/\(totalSets)", label: NSLocalizedString("Sets", comment: ""))
+                    if let r = reps {
+                        metric(value: "\(r)", label: NSLocalizedString("Reps", comment: ""))
+                    }
                     if let w = weight, w > 0 {
-                        // weight pill 可点 → 杠铃配重计算器
                         Button(action: { plateCalcOpen = true }) {
-                            Pill(text: "\(Int(w)) kg")
+                            metric(value: "\(Int(w)) kg", label: NSLocalizedString("Weight", comment: ""))
                         }
                         .buttonStyle(.plain)
-                        Button(action: { plateCalcOpen = true }) {
-                            Image(systemName: "scalemass")
-                                .font(.system(size: 13, weight: .semibold))
-                                .foregroundStyle(MasoColor.textDim)
-                                .frame(width: 24, height: 24)
-                        }
-                        .buttonStyle(.plain)
-                        .accessibilityLabel(NSLocalizedString("Plate calculator", comment: ""))
+                        .accessibilityHint(NSLocalizedString("Plate calculator", comment: ""))
                     }
                     if isCountdown, let remaining {
-                        Pill(text: formatRemaining(remaining))
+                        metric(value: formatRemaining(remaining), label: NSLocalizedString("Time", comment: ""))
                     }
                     Spacer(minLength: 0)
-                    // 编辑按钮 — pencil 入口, 弹 EditCurrentStepSheet (改 sets/reps/weight/duration
-                    // + 替换动作). 取消了 ± 微按钮后, 想改重量/次数走这里.
                     Button(action: {
                         Haptics.tap()
                         editOpen = true
@@ -948,6 +971,7 @@ private struct ExerciseInfo: View {
                             .font(.system(size: 16, weight: .semibold))
                             .foregroundStyle(MasoColor.text)
                             .frame(width: 28, height: 24)
+                            .shadow(color: .black.opacity(0.5), radius: 3)
                     }
                     .buttonStyle(.plain)
                     .accessibilityLabel(NSLocalizedString("Edit exercise parameters", comment: ""))
@@ -1059,9 +1083,20 @@ private struct RestCountdown: View {
 /// 字号 18pt + 黑色 shadow → 在 next-exercise 动图上读得清楚.
 private struct RestNextHint: View {
     let next: Exercise
+    /// 下一动作的目标 reps / weight — 让用户休息时提前知道下一组上多少.
+    var nextReps: Int? = nil
+    var nextWeight: Double? = nil
     let isCrossExercise: Bool
     /// 小编辑入口 — 让用户在休息时改下一动作的 sets/reps/weight. nil → 不渲染.
     var onEdit: (() -> Void)? = nil
+
+    /// "× 8 · 60 kg" 这种目标摘要; 都没有则 nil.
+    private var targetLine: String? {
+        var parts: [String] = []
+        if let r = nextReps { parts.append("× \(r)") }
+        if let w = nextWeight, w > 0 { parts.append("\(Int(w)) kg") }
+        return parts.isEmpty ? nil : parts.joined(separator: " · ")
+    }
 
     var body: some View {
         VStack(spacing: 4) {
@@ -1090,6 +1125,13 @@ private struct RestNextHint: View {
                     .buttonStyle(.plain)
                     .accessibilityLabel(NSLocalizedString("Edit next exercise", comment: ""))
                 }
+            }
+            // 下一组目标 — × reps · weight kg. 让用户休息时就知道下一组上多少.
+            if let targetLine {
+                Text(targetLine)
+                    .font(.system(size: 13, weight: .semibold).monospacedDigit())
+                    .foregroundStyle(MasoColor.text.opacity(0.85))
+                    .shadow(color: .black.opacity(0.6), radius: 4)
             }
         }
         .padding(.horizontal, MasoMetrics.cardPadding)
