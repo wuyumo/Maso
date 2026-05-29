@@ -28,13 +28,17 @@ struct InlineWorkoutCalendar: View {
     /// 决定从哪边滑入 / 滑出 — 这样不管是 chevron 点击还是横向 swipe, 视觉方向都跟"动作"匹配.
     @State private var lastShiftDirection: Int = 1
 
+    /// P3: 读 scenePhase 让回前台时 view 重算 today — 防跨午夜后 today 环 / 7 天 cutoff 卡在旧日.
+    @Environment(\.scenePhase) private var scenePhase
+
     /// 走 DataStore.settings.weekStartDay 影响过的 calendar — 用户在 Settings 选了
     /// "周一" 还是 "周日" 这里就直接对齐.
     private var calendar: Calendar { data.settings.calendar }
     private var today: Date { calendar.startOfDay(for: Date()) }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
+        let _ = scenePhase  // 触发依赖: scenePhase 变 (后台→前台) → 重渲 → today 重算
+        return VStack(alignment: .leading, spacing: 0) {
             if isCollapsed {
                 collapsedRow
                     // 折叠态退场: 透明淡出 — 不再 .move(edge: .top) 那种"上滑消失",

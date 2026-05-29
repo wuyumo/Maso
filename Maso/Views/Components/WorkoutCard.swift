@@ -157,7 +157,7 @@ struct WorkoutCard: View {
                 .foregroundStyle(MasoColor.textDim)
                 .lineLimit(1)
                 .padding(.horizontal, MasoMetrics.cardPadding)
-                .padding(.top, 12)
+                .padding(.top, 16)  // P3: 统一卡内竖向节奏为 16 (之前这处是一次性 12)
 
             // 底部行: 训练动作 chip list (左, 满宽) + Play 按钮 (右, 垂直居中跟 chip 行).
             // 用户要求: play 按钮挪到训练动作那两行的右边.

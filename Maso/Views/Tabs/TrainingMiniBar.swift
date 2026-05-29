@@ -82,8 +82,8 @@ struct TrainingMiniBar: View {
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .contentShape(Rectangle())
-            .onTapGesture { onTap() }
+            // P3: 去掉这里的 onTapGesture — 外层胶囊整体已有 onTap, 信息区落在它范围内,
+            // 双份 tap 手势冗余且偶尔在标题附近抢手势.
 
             // 主控按钮 — Button 自己 hitTest, 不被外层 onTapGesture 抢走.
             // 32pt 跟 Apple Music mini player 一致.

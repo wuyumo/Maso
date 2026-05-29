@@ -528,8 +528,9 @@ final class DataStore {
         }
         let history: [AIPayload.HistoryEntry] = order.map { key in
             let recs = bucket[key] ?? []
+            // 术语统一 "Free workout" — 跟 History 卡 / Share 卡一致 (之前这里是 "Quick Workout").
             let planName = key.planId == "free"
-                ? "Quick Workout"
+                ? "Free workout"
                 : (plans.first(where: { $0.id == key.planId })?.name ?? "Plan")
             var seen = Set<MuscleGroup>()
             var muscles: [MuscleGroup] = []

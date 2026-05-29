@@ -500,7 +500,8 @@ struct ExerciseDetailSheet: View {
                         customImageData: exercise.customImageData,
                         cornerRadius: 14,
                         size: 220,
-                        animated: true
+                        animated: true,
+                        fitCustomImage: true   // P3: 详情大图不裁竖图
                     )
                     .frame(maxWidth: .infinity)
 

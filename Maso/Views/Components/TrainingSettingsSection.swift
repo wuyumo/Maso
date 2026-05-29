@@ -1,6 +1,6 @@
 import SwiftUI
 
-// MARK: - TrainingSettingsSection — 训练偏好的 6 行内容
+// MARK: - TrainingSettingsSection — 训练偏好的行内容
 //
 // 单一来源 — Settings 页和 PlanRationaleCard 的"快捷设置 sheet"两处都渲染这一份.
 // 改这里就同时改两处. 任何"训练偏好"的新增/删除/重排, 来这一份改即可.
@@ -9,13 +9,17 @@ import SwiftUI
 //   - Settings: 包在 Section_(title: "Training") { ... } 里, 跟其他 Section 视觉一致
 //   - 快捷 sheet: 也用 Section_ 包, 但外层 ScrollView 自己做 padding / nav
 //
-// 行项目跟 Settings → Training 完全平行:
+// 当前行 (按顺序):
 //   1. Days per week
 //   2. Muscles to focus
-//   3. Set rest
-//   4. Exercise rest
-//   5. Quick-start from center tab
-//   6. Show muscle subdivisions
+//   3. Exercises per session
+//   4. Default sets
+//   5. Training goal (+ rep-range 副文案)
+//   6. Set rest
+//   7. Exercise rest
+//   8. Quick-start from center tab
+//   9. Show muscle subdivisions
+//   + 作用域说明脚注
 struct TrainingSettingsSection: View {
     @Environment(DataStore.self) private var data
     /// 选肌群 sheet 内部 own — 两处使用都能"点 → 弹 picker", caller 不需要管
@@ -151,7 +155,7 @@ struct TrainingSettingsSection: View {
             }
             Divider().background(MasoColor.borderSoft)
 
-            // ─── 4. Exercise rest ───
+            // ─── 7. Exercise rest ───
             Row(label: "Exercise rest") {
                 IntStepperContent(
                     value: Binding(
@@ -165,7 +169,7 @@ struct TrainingSettingsSection: View {
             }
             Divider().background(MasoColor.borderSoft)
 
-            // ─── 5. Quick-start from center tab ───
+            // ─── 8. Quick-start from center tab ───
             ToggleRow(
                 title: "Quick-start from center tab",
                 desc: "Tap the highlighted center tab again to jump straight into today's recommended workout",
@@ -176,7 +180,7 @@ struct TrainingSettingsSection: View {
             )
             Divider().background(MasoColor.borderSoft)
 
-            // ─── 6. Show muscle subdivisions ───
+            // ─── 9. Show muscle subdivisions ───
             // 默认开 (跟解剖学一致暴露 sub muscle).
             // 关掉之后 UI 只暴露大肌群入口, 给追求"简洁"的用户用.
             ToggleRow(

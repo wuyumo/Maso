@@ -4,7 +4,7 @@ import SwiftUI
 //
 // 卡片设计: 按 "训练计划 (plan)" 维度展示, 而不是按动作组拆分.
 // 一张卡片 = 一次完整的训练 session (同一 planId + 同一 calendar 日).
-// 没有 planId 的记录 (自由组) 单独成卡, kicker 显示 "Quick Workout".
+// 没有 planId 的记录 (自由训练) 单独成卡, kicker 显示训练日期, 标题 "Free workout".
 //
 // 点卡片 → 打开 session 详情 sheet, 可查看每个动作的组数 + 再次训练.
 struct HistoryScreen: View {

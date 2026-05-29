@@ -17,6 +17,8 @@ struct ExerciseImage: View {
     var size: CGFloat = 48
     /// 是否做两帧 cross-fade 动画
     var animated: Bool = true
+    /// P3: 自创动作大图 (详情 hero) 用 .fit 避免竖图被裁掉头尾; 列表缩略图保持默认 .fill (填满方格).
+    var fitCustomImage: Bool = false
 
     var body: some View {
         ZStack {
@@ -32,7 +34,7 @@ struct ExerciseImage: View {
             if let imageData = customImageData, let ui = UIImage(data: imageData) {
                 Image(uiImage: ui)
                     .resizable()
-                    .aspectRatio(contentMode: .fill)
+                    .aspectRatio(contentMode: fitCustomImage ? .fit : .fill)
             } else if let folder = imageFolder {
                 // bundle 动作两帧 cross-fade.
                 // CrossFadeFrames: 共享 UIImage cache + 严格 frame 锚定, 解决两帧
