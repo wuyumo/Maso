@@ -156,9 +156,11 @@ struct RootView: View {
                     Task { await data.refreshAIWorkoutIfNeeded() }
                     // 回前台 → 取消 rest 通知 (app 自己有 visible 倒计时, 不再需要 push)
                     RestNotificationScheduler.shared.cancel()
-                } else if newPhase == .background {
+                } else if newPhase == .background || newPhase == .inactive {
                     // 进后台 → 如果当前在休息段, 调度倒计时结束通知 (锁屏 / 切其它 app 时收到)
                     scheduleRestNotificationIfNeeded()
+                    // P2-1: save() 现在是 debounced — 进后台/inactive 立即 flush, 防 pending 写丢失.
+                    data.flushSave()
                 }
             }
             // 训练完成 (session.completed flip true) → 实时写 HealthKit

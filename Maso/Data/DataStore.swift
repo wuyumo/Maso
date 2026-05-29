@@ -134,15 +134,37 @@ final class DataStore {
             store.lastAIRefreshAt = snapshot.lastAIRefreshAt
             return store
         }
-        // 第一次启动 → 走 mock, 顺手 save 一次, 下次有持久化文件
+        // 第一次启动 → 走 mock, 立即落盘 (flush, 不 debounce) 保证文件马上存在
         let mock = makeMock()
-        mock.save()
+        mock.flushSave()
         return mock
     }
 
-    /// 持久化当前状态 — debounced 在 mutate 后调用 + scenePhase 切 background 时也调.
+    /// P2-1: debounce 句柄. 之前注释说"debounced"但其实每次 mutate 都同步全量写盘 —
+    /// plan 名每敲一字符 = 一次 MB 级写. 现在真 debounce: 0.8s 内的连续 save 合并成一次.
+    private var saveWorkItem: DispatchWorkItem?
+    private static let saveDebounce: TimeInterval = 0.8
+
+    /// 持久化当前状态 — 真 debounced (0.8s 合并). 关键时刻 (进后台 / 退出) 调 flushSave() 立即落盘.
     /// 不抛错, 失败静默 (写不进文件不影响 app 运行).
     func save() {
+        saveWorkItem?.cancel()
+        let item = DispatchWorkItem { [weak self] in
+            self?.writeSnapshotNow()
+        }
+        saveWorkItem = item
+        DispatchQueue.main.asyncAfter(deadline: .now() + Self.saveDebounce, execute: item)
+    }
+
+    /// 立即把当前状态落盘 (取消 pending debounce). RootView 在 scenePhase → background/inactive 调.
+    func flushSave() {
+        saveWorkItem?.cancel()
+        saveWorkItem = nil
+        writeSnapshotNow()
+    }
+
+    /// 真正构 snapshot + 写盘. 在 main actor 上 (DataStore @MainActor), 读 state 安全.
+    private func writeSnapshotNow() {
         let snapshot = PersistenceController.Snapshot(
             version: PersistenceController.schemaVersion,
             plans: plans,
@@ -163,7 +185,7 @@ final class DataStore {
         self.settings = snapshot.settings
         self.aiTodayPlan = snapshot.aiTodayPlan
         self.lastAIRefreshAt = snapshot.lastAIRefreshAt
-        save()
+        flushSave()  // import 是显式动作, 立即落盘不 debounce
     }
 
     /// 当前状态 → snapshot. Export 时用这个产文件.

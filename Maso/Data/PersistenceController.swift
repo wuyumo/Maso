@@ -97,7 +97,9 @@ struct PersistenceController {
         do {
             let enc = JSONEncoder()
             enc.dateEncodingStrategy = .iso8601
-            enc.outputFormatting = [.prettyPrinted, .sortedKeys]
+            // P2-1: on-disk 用 compact (无 prettyPrinted) — 文件含 base64 照片, pretty 会额外
+            // 膨胀 ~30% + 编码更慢. 机器读的文件不需要人类可读. Export 仍用 pretty (见下).
+            enc.outputFormatting = []
             let data = try enc.encode(snapshot)
             try data.write(to: url, options: [.atomic])
         } catch {
