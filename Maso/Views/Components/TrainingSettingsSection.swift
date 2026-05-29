@@ -59,7 +59,84 @@ struct TrainingSettingsSection: View {
             .buttonStyle(.plain)
             Divider().background(MasoColor.borderSoft)
 
-            // ─── 3. Set rest ───
+            // ─── 3. Exercises per session ───
+            // 推荐 plan 每张多少动作. 1-6 上限 — 模板最多就 6 step. 用户改后重新 regen.
+            Row(label: "Exercises per session") {
+                IntStepperContent(
+                    value: Binding(
+                        get: { data.settings.exercisesPerSession },
+                        set: { newVal in
+                            data.settings.exercisesPerSession = newVal
+                            data.regenerateRecommendedPlans()
+                        }
+                    ),
+                    range: 1...6
+                )
+            }
+            Divider().background(MasoColor.borderSoft)
+
+            // ─── 4. Default sets per exercise ───
+            // 每个动作几组. 1-6 — 单组 (1) 服务 powerlifting test set; 6 组是 high-volume 上限.
+            Row(label: "Default sets") {
+                IntStepperContent(
+                    value: Binding(
+                        get: { data.settings.defaultSetsPerExercise },
+                        set: { newVal in
+                            data.settings.defaultSetsPerExercise = newVal
+                            data.regenerateRecommendedPlans()
+                        }
+                    ),
+                    range: 1...6
+                )
+            }
+            Divider().background(MasoColor.borderSoft)
+
+            // ─── 5. Training goal (reps + rest 范围) ───
+            // strength: 1-5 reps × 长歇 (3-5 min)
+            // hypertrophy (默认): 6-12 reps × ~90s
+            // endurance: 12-20 reps × ~45s
+            // 选了之后, 新加动作 (训练中 + Add exercise) 用对应 reps 默认.
+            // 模板里手调的 reps 不动 (e.g. squat 模板就是 6 reps, 比 hyp 默认 8 更贴具体动作).
+            Row(label: "Training goal") {
+                Menu {
+                    ForEach(TrainingGoal.allCases, id: \.self) { g in
+                        Button(action: {
+                            data.settings.trainingGoal = g
+                            // 同步推荐组间歇 — 但只在用户没显式调过 defaultRestSeconds 时.
+                            // 我们没存"是否显式调过"的 flag, 保守起见: 改 goal 不自动覆盖 rest.
+                        }) {
+                            HStack {
+                                Text(g.displayName)
+                                if g == data.settings.trainingGoal {
+                                    Image(systemName: "checkmark")
+                                }
+                            }
+                        }
+                    }
+                } label: {
+                    HStack(spacing: 6) {
+                        Text(data.settings.trainingGoal.displayName)
+                            .font(.system(size: 13))
+                            .foregroundStyle(MasoColor.textDim)
+                        Image(systemName: "chevron.up.chevron.down")
+                            .font(.system(size: 11, weight: .semibold))
+                            .foregroundStyle(MasoColor.textFaint)
+                    }
+                }
+                .buttonStyle(.plain)
+            }
+            // 副文案 — 解释当前目标的 rep range. 视觉上比 Row 弱一档.
+            HStack(spacing: 0) {
+                Text(data.settings.trainingGoal.subtitle)
+                    .font(.system(size: 11))
+                    .foregroundStyle(MasoColor.textFaint)
+                Spacer()
+            }
+            .padding(.horizontal, MasoMetrics.cardPadding)
+            .padding(.bottom, 8)
+            Divider().background(MasoColor.borderSoft)
+
+            // ─── 6. Set rest ───
             Row(label: "Set rest") {
                 IntStepperContent(
                     value: Binding(

@@ -625,6 +625,79 @@ final class TrainingSessionStore {
     ///   - 删的是其它 step → 当前 (stepId, setN) 在新 segments 里找到新位置
     ///   - 该 step 的 completedSets 一并清掉 (避免孤儿数据)
     ///   - plan 删空 → 训练完成
+    /// 训练中追加一个新动作 — 自由训练 / 中途想加一个的入口. 跟 ExercisePickerSheet 同 onPick
+    /// 语义: 选完一个 exercise, 用合理 defaults 构造 PlanStep, 加到 plan.steps 末尾, 重 expand.
+    /// 当前 segment 跟着 stepId+setN 在新 segments 里 re-find, 用户不会跳段.
+    ///
+    /// reps / sets 默认值走用户 Training Preferences (settings.trainingGoal + defaultSetsPerExercise),
+    /// 而非硬编码 3 sets × 10 reps. 让"中途加一个动作"也尊重用户设的训练目标.
+    func appendStep(
+        exercise: Exercise,
+        settings: UserSettings,
+        exById: [String: Exercise],
+        defaultRest: Int,
+        defaultBetweenExerciseRest: Int
+    ) {
+        guard var s = session, var p = plan else { return }
+
+        // 捕当前位置 — 跟 updateStep / replaceStepExercise 同模式.
+        let curStepId = currentSegment?.stepId
+        var curSetN: Int? = nil
+        if case .exercise(_, let sn, _, _, _, _, _) = currentSegment?.kind {
+            curSetN = sn
+        }
+        let wasRest = currentSegment?.isRest ?? false
+
+        // Defaults 从 Training Preferences 推导:
+        //   - sets = settings.defaultSetsPerExercise
+        //   - reps (力量动作) = goal × mechanic (compound vs isolation)
+        //   - rest = settings.defaultRestSeconds (用户调过) 否则 goal 推荐值
+        let isCompound = exercise.mechanic == .compound
+        let reps: Int? = exercise.category == .strength
+            ? (isCompound
+               ? settings.trainingGoal.defaultRepsForCompound()
+               : settings.trainingGoal.defaultRepsForIsolation())
+            : nil
+        let newStep = PlanStep(
+            id: "step-\(exercise.id)-\(Int(Date().timeIntervalSince1970))",
+            exerciseId: exercise.id,
+            sets: settings.defaultSetsPerExercise,
+            reps: reps,
+            weight: exercise.category == .strength ? 0 : nil,
+            duration: exercise.category != .strength ? 30 : nil,
+            restBetweenSets: settings.defaultRestSeconds,
+            rest: 0
+        )
+        p.steps.append(newStep)
+        self.plan = p
+
+        let newSegments = expandPlan(
+            p,
+            exById: exById,
+            defaultRest: defaultRest,
+            defaultBetweenExerciseRest: defaultBetweenExerciseRest
+        )
+        self.segments = newSegments
+
+        // 映射当前 segmentIndex 回去
+        var newIdx: Int? = nil
+        if let cstpid = curStepId, let csn = curSetN {
+            newIdx = newSegments.firstIndex(where: {
+                if $0.stepId == cstpid,
+                   case .exercise(_, let n, _, _, _, _, _) = $0.kind,
+                   n == csn { return true }
+                return false
+            })
+        } else if let cstpid = curStepId, wasRest {
+            newIdx = newSegments.firstIndex(where: { $0.stepId == cstpid && $0.isRest })
+        }
+        s.segmentIndex = min(max(0, newIdx ?? 0), max(0, newSegments.count - 1))
+        s.lastActiveAt = Date()
+        session = s
+        planParamsDirty = true
+        syncLiveActivity()
+    }
+
     func deleteStep(
         _ stepId: String,
         exById: [String: Exercise],

@@ -51,15 +51,14 @@ private func timed(_ id: String, _ idx: Int, sets: Int, duration: Int, rest: Int
     )
 }
 
-/// 每张推荐 plan 的动作上限. 6 个 × 3 组 ≈ 45-60 min, 对"今日训练"这个心智模型来说太长了 —
-/// 用户反馈 today recommendation 偏多. 4 个 × 3 组 ≈ 12 组 / ~30 min, 更符合"今天来练一下".
-/// 模板里第 5/6 个 step (通常是次要 accessory) 自动 drop 掉, 保留头部的 compound + key accessory.
-private let kMaxStepsPerRecommendedPlan = 4
+/// 每张推荐 plan 的默认动作上限. 用户没在 Settings 里调过 (从模板生成新计划时) 兜底.
+/// 模板里第 N+1 之后的 step (次要 accessory) 自动 drop 掉, 保留头部的 compound + key accessory.
+private let kDefaultMaxStepsPerRecommendedPlan = 4
 
 private func makePlan(id: String, name: String, steps: [PlanStep?],
                       now: Date, daysAgo: Int) -> Plan? {
     let valid = steps.compactMap { $0 }
-    let capped = Array(valid.prefix(kMaxStepsPerRecommendedPlan))
+    let capped = Array(valid.prefix(kDefaultMaxStepsPerRecommendedPlan))
     guard !capped.isEmpty else { return nil }
     return Plan(
         id: id,

@@ -132,6 +132,67 @@ struct UserSettings: Codable, Sendable {
     /// 用户自己创建的动作 — 在 Library 里 "+ Add exercise" → "Create your own" 路径创建的.
     /// 跟 bundle 动作并列出现在所有 picker. 数据完全自包含 (没 imageFolder, 用 customImageData 渲图).
     var customExercises: [Exercise] = []
+
+    /// 推荐 plan 每张张多少个动作. 之前硬编码 4 (kMaxStepsPerRecommendedPlan), 现在交给用户.
+    /// 1-6 区间. 6 是个上限 — 单次训练超过这个会偏长 (>60 min), 不符合"今日训练"的心智.
+    var exercisesPerSession: Int = 4
+
+    /// 每个动作默认几组. RecommendedPrograms / AI / Free workout 创建 step 都用这个.
+    var defaultSetsPerExercise: Int = 3
+
+    /// 训练目标 — 决定默认 reps + 间歇. 三档对应运动科学常见 rep range:
+    ///   - strength: 1-5 reps, 长间歇 (3-5 min). 力量训练 / powerlifting style.
+    ///   - hypertrophy: 6-12 reps, 60-90s. 增肌主流 (NSCA/ACSM 推荐).
+    ///   - endurance: 12-20 reps, 30-60s. 肌耐力 / fat loss.
+    /// 默认 hypertrophy — 覆盖最广 (健身房 80%+ 用户的目标).
+    var trainingGoal: TrainingGoal = .hypertrophy
+}
+
+/// 训练目标 — 影响默认 reps + 组间歇.
+/// 科学参考: NSCA "Essentials of Strength Training" + ACSM guidelines.
+enum TrainingGoal: String, Codable, Sendable, CaseIterable {
+    case strength      // 1-5 reps, 长歇
+    case hypertrophy   // 6-12 reps, 中歇 (默认)
+    case endurance     // 12-20 reps, 短歇
+
+    /// 该目标下, 复合 (compound) 动作的默认 reps. 复合动作偏重负荷, reps 取目标低端.
+    func defaultRepsForCompound() -> Int {
+        switch self {
+        case .strength:    return 5
+        case .hypertrophy: return 8
+        case .endurance:   return 15
+        }
+    }
+    /// 该目标下, 孤立 (isolation) 动作的默认 reps. 孤立动作偏 volume, reps 取目标高端.
+    func defaultRepsForIsolation() -> Int {
+        switch self {
+        case .strength:    return 8
+        case .hypertrophy: return 12
+        case .endurance:   return 18
+        }
+    }
+    /// 该目标推荐的组间歇 (秒). 用户在 settings.defaultRestSeconds 显式 override 时优先.
+    func recommendedRestSeconds() -> Int {
+        switch self {
+        case .strength:    return 180
+        case .hypertrophy: return 90
+        case .endurance:   return 45
+        }
+    }
+    var displayName: String {
+        switch self {
+        case .strength:    return NSLocalizedString("Strength", comment: "")
+        case .hypertrophy: return NSLocalizedString("Hypertrophy", comment: "")
+        case .endurance:   return NSLocalizedString("Endurance", comment: "")
+        }
+    }
+    var subtitle: String {
+        switch self {
+        case .strength:    return NSLocalizedString("1–5 reps, heavy weight, long rest", comment: "")
+        case .hypertrophy: return NSLocalizedString("6–12 reps, moderate weight, ~90s rest", comment: "")
+        case .endurance:   return NSLocalizedString("12–20 reps, lighter weight, short rest", comment: "")
+        }
+    }
 }
 
 // MARK: - 派生 Calendar (跟着 UserSettings.weekStartDay)

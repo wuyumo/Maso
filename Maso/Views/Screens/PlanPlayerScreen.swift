@@ -36,6 +36,8 @@ struct PlanPlayerScreen: View {
     /// 替换动作 — Edit sheet 里点 "Replace exercise" 把目标 stepId 存这, 然后弹 ExercisePickerSheet.
     /// 编辑 sheet 先 dismiss 再 set 这个值 (sheet from sheet 会 race), 用 0.32s 延迟串接.
     @State private var replacingStepId: String? = nil
+    /// "+ Add exercise" footer (在 playlist 末尾) → 弹 ExercisePickerSheet, 选完调 store.appendStep.
+    @State private var addStepPickerOpen: Bool = false
 
     /// sheet(item:) 需要 Identifiable, String 自身不 conform — 包一层.
     private struct StepIdentifier: Identifiable, Hashable {
@@ -280,6 +282,20 @@ struct PlanPlayerScreen: View {
                     defaultBetweenExerciseRest: data.settings.defaultBetweenExerciseRestSeconds
                 )
                 replacingStepId = nil
+            })
+            .presentationDetents([.large])
+        }
+        // "+ Add exercise" — playlist 末尾点了之后选动作, 走 store.appendStep 加到末尾.
+        .sheet(isPresented: $addStepPickerOpen) {
+            ExercisePickerSheet(onPick: { ex in
+                store.appendStep(
+                    exercise: ex,
+                    settings: data.settings,
+                    exById: data.exById,
+                    defaultRest: data.settings.defaultRestSeconds,
+                    defaultBetweenExerciseRest: data.settings.defaultBetweenExerciseRestSeconds
+                )
+                addStepPickerOpen = false
             })
             .presentationDetents([.large])
         }
@@ -551,6 +567,7 @@ struct PlanPlayerScreen: View {
                 onEdit: { stepId in
                     editingStepId = stepId  // 弹 EditAnyStepSheet
                 },
+                onAddStep: { addStepPickerOpen = true },
                 showHeader: false  // 自定义 dragHandleBar 已经做了 header, InlinePlaylist 内部别再渲一次
             )
         }
@@ -1295,6 +1312,9 @@ private struct InlinePlaylist: View {
     var onDelete: ((String) -> Void)? = nil
     /// 右滑编辑 — 传 stepId. parent 拉 EditStepSheet 改 sets/reps/weight/duration (session-local).
     var onEdit: ((String) -> Void)? = nil
+    /// playlist 末尾的 "+ Add exercise" 入口 — parent 接管 ExercisePickerSheet 拉起 + store.appendStep.
+    /// nil → 不显示 footer 行.
+    var onAddStep: (() -> Void)? = nil
     /// 是否在内部渲 "PLAYLIST" header 行. false → caller (PlanPlayer 的 dragHandleBar) 自己渲, 避免重复.
     var showHeader: Bool = true
 
@@ -1360,6 +1380,29 @@ private struct InlinePlaylist: View {
                 .onMove { source, destination in
                     onReorder?(source, destination)
                     Haptics.tap()
+                }
+                // "+ Add exercise" footer — parent 传了 onAddStep 才显示. 训练中临时加一个动作走这里.
+                if let onAddStep {
+                    Button(action: onAddStep) {
+                        HStack(spacing: 10) {
+                            Image(systemName: "plus.circle.fill")
+                                .font(.system(size: 16, weight: .heavy))
+                                .foregroundStyle(MasoColor.accent)
+                            Text("Add exercise")
+                                .font(.system(size: 14, weight: .bold))
+                                .foregroundStyle(MasoColor.text)
+                            Spacer()
+                        }
+                        .padding(.horizontal, MasoMetrics.rowPaddingH)
+                        .padding(.vertical, 12)
+                        .background(MasoColor.surface)
+                        .clipShape(RoundedRectangle(cornerRadius: 14))
+                    }
+                    .buttonStyle(.plain)
+                    .listRowSeparator(.hidden)
+                    .listRowBackground(Color.clear)
+                    .listRowInsets(EdgeInsets(top: 8, leading: MasoMetrics.rowPaddingH,
+                                              bottom: 8, trailing: MasoMetrics.rowPaddingH))
                 }
             }
             .listStyle(.plain)

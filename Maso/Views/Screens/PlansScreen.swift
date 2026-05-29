@@ -586,26 +586,8 @@ struct PlanDetailSheet: View {
                         Image(systemName: "ellipsis")
                     }
                 }
-                // 主操作: ▶ Start —— 直接开始训练. 取代之前的 "Done" (iOS sheet 自带下拉关闭,
-                // 显式 Done 在这就冗余). accent 实心胶囊跟正文大 CTA 视觉一致, 即使用户错过了
-                // body 里的大按钮, toolbar 这里 0.5s 内也能命中.
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: handleStart) {
-                        HStack(spacing: 4) {
-                            Image(systemName: "play.fill")
-                                .font(.system(size: 11, weight: .heavy))
-                            Text("Start")
-                                .font(.system(size: 13, weight: .heavy))
-                        }
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 6)
-                        .background(MasoColor.accent)
-                        .foregroundStyle(.black)
-                        .clipShape(Capsule())
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel(NSLocalizedString("Start workout", comment: ""))
-                }
+                // (顶栏 Start 胶囊删了 — body 的大 CTA 已经够显眼, toolbar 再放一个反而冗余;
+                // iOS sheet 自带下拉关闭, 不需要 Done.)
             }
             // Share sheet — UIActivityViewController 桥. shareURL 设了就弹, 取消/分享完置 nil.
             .sheet(isPresented: Binding(

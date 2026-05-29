@@ -459,13 +459,21 @@ struct ExerciseDetailSheet: View {
                     // 全部走 nil-skip, 只展示存在的字段, 避免空 chip 占位.
                     metadataChipsRow
 
-                    // Muscles
+                    // Muscles — section title + 人体分区图 (target 肌肉高亮) + chip 列表.
+                    // MuscleVisualBlock 前后身分别画, ex.muscleGroups 命中位置上色, 一眼能看出
+                    // "这个动作主要顶哪里".
                     if !exercise.muscleGroups.isEmpty {
-                        VStack(alignment: .leading, spacing: 8) {
+                        VStack(alignment: .leading, spacing: 10) {
                             Text("Target Muscles")
                                 .font(.system(size: 10, weight: .heavy))
                                 .tracking(1.5)
                                 .foregroundStyle(MasoColor.textFaint)
+                            HStack(spacing: 0) {
+                                Spacer(minLength: 0)
+                                MuscleVisualBlock(muscles: exercise.muscleGroups, sideLength: 160)
+                                    .fixedSize()
+                                Spacer(minLength: 0)
+                            }
                             FlowLayout(spacing: 6) {
                                 ForEach(exercise.muscleGroups, id: \.self) { m in
                                     Text(m.displayName)

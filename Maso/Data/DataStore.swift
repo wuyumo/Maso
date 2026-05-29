@@ -504,12 +504,25 @@ final class DataStore {
         plans.removeAll { plan in
             recommendedPrefixes.contains(where: { plan.id.hasPrefix($0) })
         }
-        let newPlans = RecommendedPrograms.plans(
+        let rawPlans = RecommendedPrograms.plans(
             forDays: settings.weeklyTrainingDays,
             now: Date(),
             byId: exById
         )
-        plans.append(contentsOf: newPlans)
+        // Apply Training Preferences: cap exercise count + override sets-per-step.
+        // Reps 不动 — 模板里的 reps 是手工调的 (compound 5-8, accessory 10-15),
+        // 比 goal-based 默认更贴具体动作.
+        let tunedPlans = rawPlans.map { plan -> Plan in
+            var p = plan
+            let cap = max(1, min(6, settings.exercisesPerSession))
+            p.steps = Array(p.steps.prefix(cap)).map { step -> PlanStep in
+                var s = step
+                s.sets = settings.defaultSetsPerExercise
+                return s
+            }
+            return p
+        }
+        plans.append(contentsOf: tunedPlans)
     }
 }
 
