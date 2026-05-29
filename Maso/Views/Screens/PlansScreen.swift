@@ -704,8 +704,17 @@ struct PlanDetailSheet: View {
             // 保留 sets/reps/weight 等强度参数. 用 isPresented bool binding 而不是 item, 因为
             // body 已经很大, item: Binding 让编译器 type-check 超时.
             .sheet(isPresented: replaceSheetPresented) {
-                ExercisePickerSheet(onPick: handleReplacePick)
-                    .presentationDetents([.large])
+                ExercisePickerSheet(
+                    onPick: handleReplacePick,
+                    // 替换: 预选原动作部位 (动作 + 器械留空).
+                    initialMuscle: {
+                        guard let id = stepToReplaceId,
+                              let exId = draft.steps.first(where: { $0.id == id })?.exerciseId,
+                              let ex = data.exById[exId] else { return nil }
+                        return ex.primaryMuscles.first?.section
+                    }()
+                )
+                .presentationDetents([.large])
             }
             // 点 PlanStepRow / Card 图片 → 弹动作详情 (跟其它 5 个列表共用 ExerciseDetailSheet).
             // 整行 tap 仍走 NavigationLink 进 EditStepView (改 sets/reps/weight). 图片是 Button,
@@ -1323,52 +1332,57 @@ struct ExercisePickerSheet: View {
     @Environment(DataStore.self) private var data
     @Environment(\.dismiss) private var dismiss
     let onPick: (Exercise) -> Void
-    /// J4: true = 点动作行直接确认 (onPick + dismiss), 不先弹详情. 替换动作流程用这个 —
-    /// 用户要的是"选了就换", 不想多一步 detail → Add. false (默认) = 点行先看详情再 Add.
+    /// J4: true = 点动作行直接确认 (onPick + dismiss), 不先弹详情. 替换动作流程用这个.
     var directPick: Bool = false
+    /// 替换流程: 用原动作的"部位"预选 Part chip (movement + equipment 留空), 让用户落在
+    /// "换个练同一部位的动作"的状态. nil = 不预选.
+    var initialMuscle: MuscleGroup? = nil
+    /// 多选模式 (自由训练): 点行切换勾选, 底部 Start CTA 把整组动作通过 onPickMultiple 交回.
+    /// 单选 (默认) 保持 tap → 详情 / directPick 路径.
+    var multiSelect: Bool = false
+    var onPickMultiple: (([Exercise]) -> Void)? = nil
+    /// multiSelect 底部 CTA 文案 (例 "Start workout"). nil → "Add".
+    var startTitle: String? = nil
 
     @State private var query: String = ""
     /// 顶层 section 筛选 (nil = 全部). 6 个: chest/back/shoulders/arms/core/legs.
     @State private var muscleFilter: MuscleGroup? = nil
-    /// 二级 sub-muscle 筛选 (只在 muscleFilter 有 subs 时可用). nil = 不细分.
-    /// 切换 muscleFilter 时 reset 成 nil.
-    /// 注: 这个不再"narrow" filter, 改成 sort hint — 选了 Mid Chest 不会把 chest 其他动作藏起来,
-    /// 而是把命中 Mid Chest 的动作排到最前面.
-    @State private var subFilter: MuscleGroup? = nil
-    /// 器械筛选 (nil = 不限). 选了之后 narrow filter, 跟 muscle 是 AND 关系.
-    /// 顺序按 yuhonas 数据频次: barbell (170) → dumbbell (123) → body only (111) → cable (81) →
-    /// machine (67) → kettlebells (53) → bands (20) → 等. "other" + None 都归到 "other".
+    /// 动作模式筛选 (Press/Curl/Row/…, 由动作名派生). nil = 不限. 跟 muscle / equipment AND.
+    @State private var movementFilter: MovementFacet? = nil
+    /// 器械筛选 (nil = 不限). "other" + None 都归到 "other".
     @State private var equipmentFilter: String? = nil
-    /// 顶部视图模式 — 默认 By Muscle (chip 列表), 切到 body map 是图选.
-    @State private var mode: PickerMode = .list
-    /// Body Map 模式下, 列表滚动进度 (0..1). 用来缩小 BodyHint 给列表腾空间.
-    @State private var scrollProgress: CGFloat = 0
+    /// 三列筛选板是否展开. false = 用户点了"直接选动作"收起三列, 全屏看列表.
+    @State private var boardExpanded: Bool = true
+    /// 已选动作 id (multiSelect 用; 单选模式忽略).
+    @State private var selectedIds: Set<String> = []
     /// tap 列表行 → 弹动作详情. 详情里点 "Add to workout" 才真正 onPick.
     @State private var detailExercise: Exercise? = nil
-    /// 小众动作模式 — false (默认): 主库, 隐藏所有 isNiche=true 的动作. true: 只看小众库.
-    /// 用户在 picker 底部点 "Browse rare exercises" → 切到 true; 切换后顶部出现"← Back to standard"
-    /// 入口让用户回去. 这样主流 picker 干净 (Foam Roll / Battle Rope / Hip Abduction Machine 等怪东西不挡道),
-    /// 但小众动作仍然能通过一个明确的入口访问到, 不丢数据.
+    /// 小众动作模式 — false (默认): 主库. true: 只看小众库 (从底部入口进).
     @State private var nicheMode: Bool = false
-    /// 当前展开的"变种组" key (= ExerciseGroup.id). 一次只展开一组, 跟手风琴一致.
-    /// 同一基础名下的变种 (例: Bench Press, Bench Press (Machine), Bench Press (Dumbbell))
-    /// 在折叠态只显 canonical, 用户点 disclosure 才展开看变种.
+    /// 当前展开的"变种组" key (= ExerciseGroup.id). 一次只展开一组.
     @State private var expandedGroupKey: String? = nil
-
-    enum PickerMode { case bodyMap, list }
-
-    private static let bodyHintMaxHeight: CGFloat = 280
-    private static let bodyHintMinHeight: CGFloat = 130
-    /// Body Map 下 BodyHint 的当前 height — 跟 scrollProgress 线性插值.
-    private var dynamicBodyHintHeight: CGFloat {
-        let max = Self.bodyHintMaxHeight
-        let min = Self.bodyHintMinHeight
-        return max - (max - min) * scrollProgress
-    }
+    /// initialMuscle 只灌一次, 避免每次重绘覆盖用户后续操作.
+    @State private var didSeedInitial: Bool = false
 
     private static let muscleSections: [MuscleGroup] = [
         .chest, .back, .shoulders, .arms, .core, .legs,
     ]
+
+    /// 三列筛选选项 — 统一数据结构, partColumn / movementColumn / equipmentColumn 共用渲染.
+    private struct FacetOpt: Identifiable {
+        let id: String
+        let label: String
+        let enabled: Bool
+        let onSelect: () -> Void
+    }
+
+    /// 当前还没选的维度数 (决定列宽 + 板是否还该显示).
+    private var unselectedFacetCount: Int {
+        (muscleFilter == nil ? 1 : 0) + (movementFilter == nil ? 1 : 0) + (equipmentFilter == nil ? 1 : 0)
+    }
+    private var anyFacetSelected: Bool {
+        muscleFilter != nil || movementFilter != nil || equipmentFilter != nil
+    }
 
     // 注: equipment 列表 + display name 提到 Exercise model (Exercise.knownEquipments /
     // Exercise.equipmentDisplayName), 让 Library Browser / Quick workout / Plans picker 共用一份.
@@ -1378,7 +1392,7 @@ struct ExercisePickerSheet: View {
     private func applyFilters(
         _ arr: [Exercise],
         muscle: MuscleGroup?,
-        sub: MuscleGroup?,
+        movement: MovementFacet?,
         equipment: String?,
         text: String?
     ) -> [Exercise] {
@@ -1390,14 +1404,9 @@ struct ExercisePickerSheet: View {
                 ex.primaryMuscles.contains(where: { $0.section == m })
             }
         }
-        if let s = sub {
-            // sub narrow — 选 Mid Chest 只看 primary 含 mid chest 的动作 (含解剖子节点匹配).
-            // 同步用 primaryMuscles 严格匹配, 跟一级 muscle filter 一致.
-            let anatomySubs = expandAnatomyMuscles([s])
-            result = result.filter { ex in
-                ex.primaryMuscles.contains(s) ||
-                ex.primaryMuscles.contains(where: { anatomySubs.contains($0) })
-            }
+        if let mv = movement {
+            // 动作名派生的 movement verb (Press/Curl/…), 跟 muscle / equipment AND.
+            result = result.filter { $0.movementFacet == mv }
         }
         if let eq = equipment {
             result = result.filter { ex in
@@ -1430,7 +1439,7 @@ struct ExercisePickerSheet: View {
         let arr = applyFilters(
             sourceExercises,
             muscle: muscleFilter,
-            sub: subFilter,
+            movement: movementFilter,
             equipment: equipmentFilter,
             text: query
         )
@@ -1457,7 +1466,7 @@ struct ExercisePickerSheet: View {
     /// 当前 muscle/sub/text filter (不算 equipment) 下还有动作的 equipment set.
     /// 用 chip "dim disabled" 视觉提示 — 让用户知道选了某 muscle 后哪些 equipment 是空集.
     private var availableEquipments: Set<String> {
-        let arr = applyFilters(sourceExercises, muscle: muscleFilter, sub: subFilter, equipment: nil, text: query)
+        let arr = applyFilters(sourceExercises, muscle: muscleFilter, movement: movementFilter, equipment: nil, text: query)
         var out: Set<String> = []
         for ex in arr {
             // nil + "other" 都映射到 "other" chip
@@ -1466,10 +1475,10 @@ struct ExercisePickerSheet: View {
         return out
     }
 
-    /// 当前 equipment/text filter (不算 muscle) 下还有动作的 muscle section set.
-    /// 用 primaryMuscles 跟 filter 实际行为对齐 — 不然 chip 显示"有"但点了 0 结果.
+    /// 当前 movement/equipment/text filter (不算 muscle) 下还有动作的 muscle section set.
+    /// 用 primaryMuscles 跟 filter 实际行为对齐 — 不然选项显示"有"但点了 0 结果.
     private var availableMuscles: Set<MuscleGroup> {
-        let arr = applyFilters(sourceExercises, muscle: nil, sub: nil, equipment: equipmentFilter, text: query)
+        let arr = applyFilters(sourceExercises, muscle: nil, movement: movementFilter, equipment: equipmentFilter, text: query)
         var out: Set<MuscleGroup> = []
         for ex in arr {
             for sec in Self.muscleSections {
@@ -1481,58 +1490,73 @@ struct ExercisePickerSheet: View {
         return out
     }
 
-    /// 当前 muscle + equipment + text 下 (不算 subFilter), 哪些 sub-muscle 还有动作.
-    /// 给 sub-muscle chip 用 dim 提示. 同步 primary 严格筛选, 跟 filter 行为对齐.
-    private var availableSubMuscles: Set<MuscleGroup> {
-        guard let section = muscleFilter else { return [] }
-        let arr = applyFilters(sourceExercises, muscle: section, sub: nil, equipment: equipmentFilter, text: query)
-        var out: Set<MuscleGroup> = []
-        for sub in section.sectionSubs {
-            let anatomySubs = expandAnatomyMuscles([sub])
-            if arr.contains(where: { ex in
-                ex.primaryMuscles.contains(sub) ||
-                ex.primaryMuscles.contains(where: { anatomySubs.contains($0) })
-            }) {
-                out.insert(sub)
-            }
-        }
+    /// 当前 muscle/equipment/text filter (不算 movement) 下还有动作的 movement facet set.
+    /// 给 movement 列选项 dim 提示 — 选了部位后哪些动作模式是空集.
+    private var availableMovements: Set<MovementFacet> {
+        let arr = applyFilters(sourceExercises, muscle: muscleFilter, movement: nil, equipment: equipmentFilter, text: query)
+        var out: Set<MovementFacet> = []
+        for ex in arr { if let mv = ex.movementFacet { out.insert(mv) } }
         return out
     }
 
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
-                // 顶部一行: mode 切换 (两个 icon 按钮, 紧凑) + search bar (占余下宽度)
-                HStack(spacing: 10) {
-                    modeToggle
-                    searchField
-                }
-                .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
-                .padding(.top, 12)
-                .padding(.bottom, 8)
-                .animation(.easeOut(duration: 0.2), value: mode)
+                searchField
+                    .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
+                    .padding(.top, 12)
+                    .padding(.bottom, 8)
 
-                // Mode-specific content — 各自管 BodyHint / chips / list
-                if mode == .bodyMap {
-                    bodyMapModeContent
-                } else {
-                    listModeContent
+                // 已选维度 chips — 带 ×, 点击清除并恢复对应列.
+                if anyFacetSelected {
+                    selectedChipsRow
+                        .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
+                        .padding(.bottom, 8)
+                }
+
+                // 三列筛选板 (部位/动作/器械); 收起后用 reopenBar 重开. 三维全选完则两者都不显.
+                if boardExpanded && unselectedFacetCount > 0 {
+                    columnsBoard
+                } else if unselectedFacetCount > 0 {
+                    reopenBar
+                }
+
+                exerciseList()
+
+                if multiSelect {
+                    startBar
                 }
             }
+            .animation(.easeOut(duration: 0.22), value: boardExpanded)
+            .animation(.easeOut(duration: 0.22), value: muscleFilter)
+            .animation(.easeOut(duration: 0.22), value: movementFilter)
+            .animation(.easeOut(duration: 0.22), value: equipmentFilter)
             .sheet(item: $detailExercise) { ex in
                 ExerciseDetailSheet(exercise: ex, onAdd: { onPick(ex) })
             }
             .background(MasoColor.background.ignoresSafeArea())
-            // 不显示 nav title — 用户要求 Edit Workout 系列页面都不要标题
             .navigationBarTitleDisplayMode(.inline)
             // 小众库标题 — 让用户一眼知道"我在哪个库". 主库时不显示标题 (跟之前一致).
             .navigationTitle(nicheMode ? NSLocalizedString("Rare exercises", comment: "") : "")
             .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Done") { dismiss() }
+                if multiSelect {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button("Cancel") { dismiss() }
+                    }
+                } else {
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button("Done") { dismiss() }
+                    }
                 }
             }
             .tint(MasoColor.text)
+            // initialMuscle (替换流程) 只灌一次, 之后用户操作不被覆盖.
+            .onAppear {
+                if !didSeedInitial {
+                    didSeedInitial = true
+                    if let m = initialMuscle { muscleFilter = m }
+                }
+            }
         }
     }
 
@@ -1546,9 +1570,10 @@ struct ExercisePickerSheet: View {
             withAnimation(.easeInOut(duration: 0.2)) {
                 nicheMode.toggle()
                 muscleFilter = nil
-                subFilter = nil
+                movementFilter = nil
                 equipmentFilter = nil
                 query = ""
+                boardExpanded = true
             }
             Haptics.tap()
         }) {
@@ -1587,31 +1612,7 @@ struct ExercisePickerSheet: View {
         .buttonStyle(.plain)
     }
 
-    // MARK: - 顶部组件: mode 切换 + search bar
-
-    @ViewBuilder
-    private var modeToggle: some View {
-        // By Muscle (list) 在左 = 默认选中; Body Map 在右
-        HStack(spacing: 2) {
-            modeButton(.list, icon: "list.bullet")
-            modeButton(.bodyMap, icon: "figure")
-        }
-        .padding(2)
-        .background(MasoColor.surface)
-        .clipShape(Capsule())
-    }
-
-    private func modeButton(_ m: PickerMode, icon: String) -> some View {
-        Button(action: { mode = m }) {
-            Image(systemName: icon)
-                .font(.system(size: 13, weight: .heavy))
-                .foregroundStyle(mode == m ? .black : MasoColor.textDim)
-                .frame(width: 34, height: 28)
-                .background(mode == m ? MasoColor.accent : Color.clear)
-                .clipShape(Capsule())
-        }
-        .buttonStyle(.plain)
-    }
+    // MARK: - 顶部组件: search + 三列筛选板
 
     @ViewBuilder
     private var searchField: some View {
@@ -1635,170 +1636,172 @@ struct ExercisePickerSheet: View {
             )
     }
 
-    // MARK: - Body Map mode 内容 (默认)
-    //
-    // 不展示 search bar — Body Map 是视觉选择, 用户用 search 就切去 list 模式.
-    // BodyHint 大尺寸 (280pt) 给精确点击留位置; 列表滚动时同步缩小到 130pt, 给列表腾空间.
-    /// 选中肌群的协同肌 — 让 Body Map 上选 chest 时 triceps 半亮 ("练胸会带到").
-    /// MuscleSynergy 数据基于实际解剖学 + 复合动作激活模式 (port 自 web 端).
-    private var bodyMapSynergists: [MuscleGroup] {
-        guard let m = muscleFilter else { return [] }
-        return Array(MuscleSynergy.synergists(for: [m]))
-    }
+    // MARK: - 三列筛选板 (部位 / 动作 / 器械)
 
+    /// 已选维度 chips — 每个带 ×. 点击清除该维度并恢复对应列 + 展开板 ("点击清除恢复").
     @ViewBuilder
-    private var bodyMapModeContent: some View {
-        VStack(spacing: 6) {
-            BodyHint(
-                muscles: muscleFilter.map { [$0] } ?? [],
-                synergists: bodyMapSynergists,
-                height: dynamicBodyHintHeight,
-                onMuscleTap: { m in
-                    if let section = m.section {
-                        muscleFilter = section
-                        subFilter = nil
-                    }
-                },
-                coarseOnly: !data.settings.muscleDetailEnabled
-            )
-            .frame(maxWidth: .infinity)
-            // 上下留白让 body map 不贴 search bar / 提示文字, 视觉呼吸更舒展
-            .padding(.top, 18)
-            .padding(.bottom, 10)
-            .animation(.easeOut(duration: 0.15), value: dynamicBodyHintHeight)
-
-            // 提示文字 / 当前选中 (固定高度避免抖动)
-            HStack(spacing: 4) {
+    private var selectedChipsRow: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 8) {
                 if let m = muscleFilter {
-                    Text(m.displayName)
-                        .font(.system(size: 12, weight: .heavy))
-                        .foregroundStyle(MasoColor.accent)
-                    Text("·")
-                        .foregroundStyle(MasoColor.textFaint)
-                    Button(action: {
-                        muscleFilter = nil
-                        subFilter = nil
-                    }) {
-                        Text("Clear")
-                            .font(.system(size: 11, weight: .semibold))
-                            .foregroundStyle(MasoColor.textDim)
-                            .underline()
-                    }
-                    .buttonStyle(.plain)
-                } else {
-                    Text("Tap a muscle on the body to filter")
-                        .font(.system(size: 11))
-                        .foregroundStyle(MasoColor.textDim)
+                    facetChip(value: m.displayName) { muscleFilter = nil; boardExpanded = true }
+                }
+                if let mv = movementFilter {
+                    facetChip(value: mv.displayName) { movementFilter = nil; boardExpanded = true }
+                }
+                if let eq = equipmentFilter {
+                    facetChip(value: Exercise.equipmentDisplayName(for: eq)) { equipmentFilter = nil; boardExpanded = true }
                 }
             }
-            .frame(height: 18)
-            .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
-
-            // 器械筛选 — bodyMap mode 也提供, 让用户选完肌肉再 narrow 器械.
-            // 跟 list mode 一致, 用 FilterMenuButton (Body Map 只暴露 equipment 一个 menu,
-            // muscle 已经通过身体图选了, sub-muscle 在这里也没意义).
-            HStack(spacing: 8) {
-                let availE = availableEquipments
-                FilterMenuButton(
-                    title: NSLocalizedString("Equipment", comment: "filter button placeholder"),
-                    allLabel: NSLocalizedString("Any equipment", comment: ""),
-                    selected: $equipmentFilter,
-                    options: Exercise.knownEquipments.map { eq in
-                        FilterMenuOption(
-                            value: eq,
-                            label: Exercise.equipmentDisplayName(for: eq),
-                            enabled: availE.contains(eq) || equipmentFilter == eq
-                        )
-                    }
-                )
-                Spacer(minLength: 0)
-            }
-            .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
-            .padding(.bottom, 4)
-
-            // 列表 — 滚动 offset 驱动 BodyHint 缩小
-            exerciseList(scrollTrackingEnabled: true)
         }
     }
 
-    // MARK: - By Muscle mode 内容 (filter menus + 列表)
-    //
-    // 之前是 muscle / sub / equipment 三行 chip 横向滚动 (占 ~100pt 纵向).
-    // 改成一行 3 个 FilterMenuButton (~32pt 纵向) — 节省竖向空间, 列表区更大.
-    // 选中 chip 用 accent 描边 + 当前值文字, 用户一眼看到当前 filter 状态.
-    @ViewBuilder
-    private var listModeContent: some View {
-        VStack(spacing: 10) {
-            filterMenusRow
+    private func facetChip(value: String, onClear: @escaping () -> Void) -> some View {
+        Button(action: { withAnimation(.easeOut(duration: 0.22)) { onClear() }; Haptics.tap() }) {
+            HStack(spacing: 6) {
+                Text(value).font(.system(size: 12, weight: .bold))
+                Image(systemName: "xmark").font(.system(size: 9, weight: .heavy)).opacity(0.7)
+            }
+            .foregroundStyle(.black)
+            .padding(.leading, 12).padding(.trailing, 9).padding(.vertical, 6)
+            .background(MasoColor.accent)
+            .clipShape(Capsule())
         }
-        .animation(.easeOut(duration: 0.2), value: muscleFilter)
+        .buttonStyle(.plain)
+    }
+
+    /// 三列筛选板 — 只渲染"还没选"的维度列, 选中后该列收成顶部 chip. 右上角"直接选动作"一键收起整板.
+    @ViewBuilder
+    private var columnsBoard: some View {
+        VStack(spacing: 8) {
+            HStack {
+                Text("Filter")
+                    .font(.system(size: 10, weight: .heavy)).tracking(1.5)
+                    .textCase(.uppercase).foregroundStyle(MasoColor.textFaint)
+                Spacer()
+                Button(action: { withAnimation(.easeOut(duration: 0.22)) { boardExpanded = false }; Haptics.tap() }) {
+                    HStack(spacing: 4) {
+                        Text("Skip to exercises").font(.system(size: 11, weight: .bold))
+                        Image(systemName: "chevron.up").font(.system(size: 9, weight: .heavy))
+                    }
+                    .foregroundStyle(MasoColor.accent)
+                }
+                .buttonStyle(.plain)
+            }
+            HStack(alignment: .top, spacing: 8) {
+                if muscleFilter == nil { facetColumn(title: NSLocalizedString("Part", comment: ""), options: partOptions) }
+                if movementFilter == nil { facetColumn(title: NSLocalizedString("Movement", comment: ""), options: movementOptions) }
+                if equipmentFilter == nil { facetColumn(title: NSLocalizedString("Equipment", comment: ""), options: equipmentOptions) }
+            }
+            .frame(height: 196)
+        }
         .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
         .padding(.bottom, 8)
-
-        exerciseList(scrollTrackingEnabled: false)
     }
 
-    /// 3 个 filter menu 一行 — Muscle / Sub (有 muscle 时才显) / Equipment.
-    /// Sub menu 只在 muscleFilter != nil 且 muscleDetailEnabled 时显示, 因为 sub 是 muscle
-    /// 的下级语义, 没选 major 时 sub 无意义.
+    /// 收起三列后的重开条.
     @ViewBuilder
-    private var filterMenusRow: some View {
-        HStack(spacing: 8) {
-            let availM = availableMuscles
-            FilterMenuButton(
-                title: NSLocalizedString("Muscle", comment: "filter button placeholder"),
-                allLabel: NSLocalizedString("All muscles", comment: ""),
-                selected: Binding(
-                    get: { muscleFilter },
-                    set: { newVal in
-                        muscleFilter = newVal
-                        subFilter = nil  // 换 major → 清 sub
-                    }
-                ),
-                options: Self.muscleSections.map { m in
-                    FilterMenuOption(
-                        value: m,
-                        label: m.displayName,
-                        enabled: availM.contains(m) || muscleFilter == m
-                    )
-                }
-            )
-
-            // Sub-muscle 菜单 — 仅当 detailEnabled + 已选 major + 该 major 有 sub 时显示
-            if data.settings.muscleDetailEnabled,
-               let section = muscleFilter, !section.sectionSubs.isEmpty {
-                let availS = availableSubMuscles
-                FilterMenuButton(
-                    title: NSLocalizedString("Detail", comment: "sub-muscle filter placeholder"),
-                    allLabel: String(format: NSLocalizedString("All %@", comment: ""), section.displayName),
-                    selected: $subFilter,
-                    options: section.sectionSubs.map { sub in
-                        FilterMenuOption(
-                            value: sub,
-                            label: sub.displayName,
-                            enabled: availS.contains(sub) || subFilter == sub
-                        )
-                    }
-                )
-                .transition(.opacity)
+    private var reopenBar: some View {
+        Button(action: { withAnimation(.easeOut(duration: 0.22)) { boardExpanded = true }; Haptics.tap() }) {
+            HStack(spacing: 8) {
+                Image(systemName: "line.3.horizontal.decrease.circle").font(.system(size: 14, weight: .heavy))
+                Text("Filter").font(.system(size: 13, weight: .bold))
+                Spacer()
+                Image(systemName: "chevron.down").font(.system(size: 11, weight: .heavy))
             }
-
-            let availE = availableEquipments
-            FilterMenuButton(
-                title: NSLocalizedString("Equipment", comment: "filter button placeholder"),
-                allLabel: NSLocalizedString("Any equipment", comment: ""),
-                selected: $equipmentFilter,
-                options: Exercise.knownEquipments.map { eq in
-                    FilterMenuOption(
-                        value: eq,
-                        label: Exercise.equipmentDisplayName(for: eq),
-                        enabled: availE.contains(eq) || equipmentFilter == eq
-                    )
-                }
-            )
-
-            Spacer(minLength: 0)
+            .foregroundStyle(MasoColor.textDim)
+            .padding(.horizontal, 14).padding(.vertical, 9)
+            .background(MasoColor.surface)
+            .clipShape(Capsule())
         }
+        .buttonStyle(.plain)
+        .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
+        .padding(.bottom, 8)
+    }
+
+    // 三列各自的选项数据 — 只列出当前还有动作的选项 (availableX), 选完即收起该列.
+    private var partOptions: [FacetOpt] {
+        let avail = availableMuscles
+        return Self.muscleSections.map { m in
+            FacetOpt(id: "p-\(m)", label: m.displayName, enabled: avail.contains(m)) {
+                withAnimation(.easeOut(duration: 0.22)) { muscleFilter = m }
+                Haptics.tap()
+            }
+        }
+    }
+    private var movementOptions: [FacetOpt] {
+        let avail = availableMovements
+        return MovementFacet.ordered.filter { avail.contains($0) }.map { mv in
+            FacetOpt(id: "m-\(mv.rawValue)", label: mv.displayName, enabled: true) {
+                withAnimation(.easeOut(duration: 0.22)) { movementFilter = mv }
+                Haptics.tap()
+            }
+        }
+    }
+    private var equipmentOptions: [FacetOpt] {
+        let avail = availableEquipments
+        return Exercise.knownEquipments.filter { avail.contains($0) }.map { eq in
+            FacetOpt(id: "e-\(eq)", label: Exercise.equipmentDisplayName(for: eq), enabled: true) {
+                withAnimation(.easeOut(duration: 0.22)) { equipmentFilter = eq }
+                Haptics.tap()
+            }
+        }
+    }
+
+    /// 单列 — 标题 + 纵向滚动的选项. tap 选项 → 设置该维度 filter (列随之消失).
+    private func facetColumn(title: String, options: [FacetOpt]) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text(title)
+                .font(.system(size: 9, weight: .heavy)).tracking(1)
+                .textCase(.uppercase).foregroundStyle(MasoColor.textFaint)
+            ScrollView(.vertical, showsIndicators: false) {
+                VStack(spacing: 4) {
+                    ForEach(options) { opt in
+                        Button(action: opt.onSelect) {
+                            Text(opt.label)
+                                .font(.system(size: 12, weight: .semibold))
+                                .foregroundStyle(MasoColor.text)
+                                .lineLimit(1).minimumScaleFactor(0.75)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .padding(.horizontal, 10).padding(.vertical, 8)
+                                .background(MasoColor.surface)
+                                .clipShape(RoundedRectangle(cornerRadius: 8))
+                        }
+                        .buttonStyle(.plain)
+                        .opacity(opt.enabled ? 1 : 0.3)
+                        .disabled(!opt.enabled)
+                    }
+                }
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    /// multiSelect 底部 Start CTA (自由训练用).
+    @ViewBuilder
+    private var startBar: some View {
+        let picked = selectedIds.compactMap { data.exById[$0] }
+        let base = startTitle ?? NSLocalizedString("Start", comment: "")
+        Button(action: {
+            guard !picked.isEmpty else { return }
+            onPickMultiple?(picked)
+            dismiss()
+        }) {
+            HStack(spacing: 8) {
+                Image(systemName: "play.fill").font(.system(size: 14, weight: .heavy))
+                Text(picked.isEmpty ? base : String(format: "%@ (%d)", base, picked.count))
+                    .font(.system(size: 16, weight: .bold))
+            }
+            .foregroundStyle(.black)
+            .frame(maxWidth: .infinity).frame(height: 50)
+            .background(picked.isEmpty ? MasoColor.surfaceHi : MasoColor.accent)
+            .clipShape(RoundedRectangle(cornerRadius: 14))
+            .opacity(picked.isEmpty ? 0.6 : 1)
+        }
+        .buttonStyle(.plain)
+        .disabled(picked.isEmpty)
+        .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
+        .padding(.vertical, 8)
     }
 
     // MARK: - 共用 exercise list
@@ -1810,8 +1813,17 @@ struct ExercisePickerSheet: View {
     @ViewBuilder
     private func exercisePickerRow(exercise ex: Exercise, isVariant: Bool, group: ExerciseGroup) -> some View {
         let isFav = data.isFavorite(ex.id)
-        // J4: directPick 直接确认; 否则先弹详情.
-        Button { if directPick { onPick(ex); dismiss() } else { detailExercise = ex } } label: {
+        // multiSelect: 点行切换勾选. directPick: 直接确认. 否则先弹详情.
+        Button {
+            if multiSelect {
+                if selectedIds.contains(ex.id) { selectedIds.remove(ex.id) } else { selectedIds.insert(ex.id) }
+                Haptics.tap()
+            } else if directPick {
+                onPick(ex); dismiss()
+            } else {
+                detailExercise = ex
+            }
+        } label: {
             HStack(spacing: 14) {
                 if isVariant {
                     // 缩进 — 一道细 accent 竖线给"我属于上面那组"的视觉锚点.
@@ -1863,6 +1875,12 @@ struct ExercisePickerSheet: View {
                         .font(.system(size: 12, weight: .heavy))
                         .foregroundStyle(MasoColor.accent)
                 }
+                // multiSelect 勾选指示 — 实心 = 已选.
+                if multiSelect {
+                    Image(systemName: selectedIds.contains(ex.id) ? "checkmark.circle.fill" : "circle")
+                        .font(.system(size: 20, weight: .semibold))
+                        .foregroundStyle(selectedIds.contains(ex.id) ? MasoColor.accent : MasoColor.textFaint.opacity(0.5))
+                }
                 // Canonical 行末尾的 "+N variants" disclosure 胶囊 — tap 切换展开态.
                 // 用 Button 而不是整行 chevron, 让用户清楚: tap 胶囊 ≠ tap 行 (一个看变种, 一个开 detail).
                 if !isVariant, !group.isSingleton, !forceExpandAll {
@@ -1895,7 +1913,7 @@ struct ExercisePickerSheet: View {
             }
             .padding(.horizontal, MasoMetrics.rowPaddingH)
             .padding(.vertical, isVariant ? 6 : 10)
-            .background(MasoColor.surface)
+            .background(multiSelect && selectedIds.contains(ex.id) ? MasoColor.accent.opacity(0.15) : MasoColor.surface)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         }
         .buttonStyle(.plain)
@@ -1974,7 +1992,7 @@ struct ExercisePickerSheet: View {
     }
 
     @ViewBuilder
-    private func exerciseList(scrollTrackingEnabled: Bool) -> some View {
+    private func exerciseList() -> some View {
         // List + 原生 .swipeActions — 替换自制 SwipeableRow.
         // 自制版跟 ScrollView 的 vertical pan 抢手势 → 上下滑动失效.
         List {
@@ -2026,15 +2044,8 @@ struct ExercisePickerSheet: View {
         .onChange(of: query) { _, _ in expandedGroupKey = nil }
         .onChange(of: equipmentFilter) { _, _ in expandedGroupKey = nil }
         .onChange(of: muscleFilter) { _, _ in expandedGroupKey = nil }
+        .onChange(of: movementFilter) { _, _ in expandedGroupKey = nil }
         .onChange(of: nicheMode) { _, _ in expandedGroupKey = nil }
-        // Body Map mode 启用 scroll tracking → BodyHint 跟着缩小
-        .onScrollGeometryChange(for: CGFloat.self) { geo in
-            geo.contentOffset.y
-        } action: { _, y in
-            guard scrollTrackingEnabled else { return }
-            // 0..120pt 拉动区间内, scrollProgress 从 0 → 1, BodyHint 从 280 → 130
-            scrollProgress = min(1, max(0, y / 120))
-        }
     }
 }
 

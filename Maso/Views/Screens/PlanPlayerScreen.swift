@@ -270,7 +270,14 @@ struct PlanPlayerScreen: View {
                     defaultBetweenExerciseRest: data.settings.defaultBetweenExerciseRestSeconds
                 )
                 replacingStepId = nil
-            }, directPick: true)  // J4: 替换 = 选了就换, 不先弹详情
+            },
+            directPick: true,  // J4: 替换 = 选了就换, 不先弹详情
+            // 替换流程: 预选原动作的部位 (动作 + 器械留空), 落在"换个练同部位的动作".
+            initialMuscle: {
+                guard let exId = store.plan?.steps.first(where: { $0.id == idWrapper.id })?.exerciseId,
+                      let ex = data.exById[exId] else { return nil }
+                return ex.primaryMuscles.first?.section
+            }())
             .presentationDetents([.large])
         }
         // "+ Add exercise" — playlist 末尾点了之后选动作, 走 store.appendStep 加到末尾.

@@ -58,6 +58,59 @@ enum MovementPattern: String, Codable, Hashable, Sendable {
     case rotation                              // Wood chop, med ball throw
 }
 
+/// Name-derived "movement verb" facet for the exercise picker (Press / Curl / Row / …).
+/// NOT persisted — derived from the exercise name on demand. We use the name rather than
+/// `movementPattern` because the latter is biomechanical (push/pull/hinge) and only ~half the
+/// library has it, whereas the user's mental model is the verb in the name ("leg / curl / machine").
+enum MovementFacet: String, CaseIterable, Hashable, Sendable {
+    case press, curl, row, squat, lunge, deadlift, raise, fly
+    case `extension`
+    case pushUp = "push_up"
+    case pullUp = "pull_up"
+    case pulldown, dip, thrust, shrug, crunch, plank, pullover, kickback
+
+    var displayName: String {
+        NSLocalizedString("movement.\(rawValue)", comment: "movement facet")
+    }
+
+    /// Curated display order — most common movements first (counts measured against the live DB).
+    static let ordered: [MovementFacet] = [
+        .press, .curl, .row, .squat, .lunge, .deadlift, .raise, .fly,
+        .extension, .pushUp, .pullUp, .pulldown, .dip, .thrust,
+        .crunch, .plank, .shrug, .pullover, .kickback,
+    ]
+
+    /// Classify an exercise name → facet. Ordered keyword table: more specific / compound-word
+    /// matches come before the bare verbs so "push-up" doesn't fall through to "push", etc.
+    static func classify(_ rawName: String) -> MovementFacet? {
+        let n = rawName.lowercased()
+        let table: [(String, MovementFacet)] = [
+            ("push-up", .pushUp), ("pushup", .pushUp), ("push up", .pushUp),
+            ("pull-up", .pullUp), ("pullup", .pullUp), ("pull up", .pullUp),
+            ("chin-up", .pullUp), ("chinup", .pullUp), ("chin up", .pullUp),
+            ("pulldown", .pulldown), ("pull-down", .pulldown), ("pull down", .pulldown),
+            ("pullover", .pullover),
+            ("deadlift", .deadlift),
+            ("kickback", .kickback),
+            ("shrug", .shrug),
+            ("hip thrust", .thrust), ("thrust", .thrust), ("bridge", .thrust),
+            ("crunch", .crunch), ("sit-up", .crunch), ("situp", .crunch), ("sit up", .crunch),
+            ("plank", .plank),
+            ("flye", .fly), ("fly", .fly),
+            ("extension", .`extension`),
+            ("raise", .raise),
+            ("press", .press),
+            ("curl", .curl),
+            ("row", .row),
+            ("squat", .squat),
+            ("lunge", .lunge),
+            ("dip", .dip),
+        ]
+        for (kw, facet) in table where n.contains(kw) { return facet }
+        return nil
+    }
+}
+
 enum Tempo: String, Codable, Hashable, Sendable {
     case strength       // 1-5 reps, max effort
     case hypertrophy    // 6-12 reps
@@ -188,6 +241,11 @@ struct Exercise: Identifiable, Hashable, Codable, Sendable {
     var equipmentDisplayName: String? {
         guard let raw = equipment else { return nil }
         return Exercise.equipmentDisplayName(for: raw)
+    }
+
+    /// Name-derived movement-verb facet (Press/Curl/Row/…) for the picker filter. nil = no clean verb.
+    var movementFacet: MovementFacet? {
+        MovementFacet.classify(name)
     }
 
     static func equipmentDisplayName(for raw: String) -> String {

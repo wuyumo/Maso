@@ -747,3 +747,30 @@
 /* ── Player playlist rests/sets ── */
 "Rest %@" = "休息 %@";
 "Set %d" = "第 %d 组";
+
+/* ── movement facets (picker) ── */
+"movement.press" = "推";
+"movement.curl" = "弯举";
+"movement.row" = "划船";
+"movement.squat" = "深蹲";
+"movement.lunge" = "弓步";
+"movement.deadlift" = "硬拉";
+"movement.raise" = "侧/平举";
+"movement.fly" = "飞鸟";
+"movement.extension" = "伸展";
+"movement.push_up" = "俯卧撑";
+"movement.pull_up" = "引体";
+"movement.pulldown" = "下拉";
+"movement.dip" = "双杠臂屈伸";
+"movement.thrust" = "臀推";
+"movement.shrug" = "耸肩";
+"movement.crunch" = "卷腹";
+"movement.plank" = "平板支撑";
+"movement.pullover" = "仰卧上拉";
+"movement.kickback" = "后摆";
+
+/* ── picker faceted board ── */
+"Part" = "部位";
+"Movement" = "动作";
+"Skip to exercises" = "直接选动作";
+"Filter" = "筛选";

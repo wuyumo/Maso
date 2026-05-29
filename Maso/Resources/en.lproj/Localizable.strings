@@ -748,3 +748,30 @@
 /* ── Player playlist rests/sets ── */
 "Rest %@" = "Rest %@";
 "Set %d" = "Set %d";
+
+/* ── movement facets (picker) ── */
+"movement.press" = "Press";
+"movement.curl" = "Curl";
+"movement.row" = "Row";
+"movement.squat" = "Squat";
+"movement.lunge" = "Lunge";
+"movement.deadlift" = "Deadlift";
+"movement.raise" = "Raise";
+"movement.fly" = "Fly";
+"movement.extension" = "Extension";
+"movement.push_up" = "Push-up";
+"movement.pull_up" = "Pull-up";
+"movement.pulldown" = "Pulldown";
+"movement.dip" = "Dip";
+"movement.thrust" = "Thrust";
+"movement.shrug" = "Shrug";
+"movement.crunch" = "Crunch";
+"movement.plank" = "Plank";
+"movement.pullover" = "Pullover";
+"movement.kickback" = "Kickback";
+
+/* ── picker faceted board ── */
+"Part" = "Part";
+"Movement" = "Movement";
+"Skip to exercises" = "Skip to exercises";
+"Filter" = "Filter";
