@@ -410,11 +410,9 @@ struct NicheLibraryBrowseSheet: View {
 
     @State private var query: String = ""
     /// 这一 session 里刚 adopt 的 ID — 让 row 短暂显示 "✓ Added" 然后淡出.
-    @State private var justAdopted: Set<String> = []
 
     private var filtered: [Exercise] {
-        // 不要在 view 内 mutate data.adoptedNicheExerciseIds — 让 data.unadoptedNicheExercises
-        // 自己反应. 这里只过滤 justAdopted (淡出动画) + 搜索关键词.
+        // unadoptedNicheExercises 自己排除已采纳的; adopt 后行随集合变化动画移出. 这里只加搜索过滤.
         var arr = data.unadoptedNicheExercises
         let q = query.trimmingCharacters(in: .whitespaces).lowercased()
         if !q.isEmpty {
@@ -480,7 +478,6 @@ struct NicheLibraryBrowseSheet: View {
     }
 
     private func row(for ex: Exercise) -> some View {
-        let adopted = justAdopted.contains(ex.id)
         return HStack(spacing: 14) {
             ExerciseImage(
                 category: ex.category,
@@ -504,20 +501,18 @@ struct NicheLibraryBrowseSheet: View {
             Spacer(minLength: 0)
             Button(action: { adopt(ex) }) {
                 HStack(spacing: 4) {
-                    Image(systemName: adopted ? "checkmark" : "plus")
+                    Image(systemName: "plus")
                         .font(.system(size: 11, weight: .heavy))
-                    Text(adopted ? NSLocalizedString("Added", comment: "")
-                                 : NSLocalizedString("Add", comment: ""))
+                    Text(NSLocalizedString("Add", comment: ""))
                         .font(.system(size: 12, weight: .heavy))
                 }
-                .foregroundStyle(adopted ? MasoColor.textDim : .black)
+                .foregroundStyle(.black)
                 .padding(.horizontal, 12)
                 .padding(.vertical, 6)
-                .background(adopted ? MasoColor.surfaceHi : MasoColor.accent)
+                .background(MasoColor.accent)
                 .clipShape(Capsule())
             }
             .buttonStyle(.plain)
-            .disabled(adopted)
         }
         .padding(.horizontal, MasoMetrics.rowPaddingH)
         .padding(.vertical, 10)
@@ -527,13 +522,10 @@ struct NicheLibraryBrowseSheet: View {
 
     private func adopt(_ ex: Exercise) {
         Haptics.tap()
-        // 闪 "✓ Added" 半秒, 再真正从 unadopted 集合移除 → 自然淡出.
-        justAdopted.insert(ex.id)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            withAnimation(.easeOut(duration: 0.25)) {
-                data.adoptNicheExercise(ex.id)
-            }
-            // adoptedNicheExerciseIds 改了, filtered 自动重算, row 消失. justAdopted 残留无影响.
+        // P3: 立即采纳 (数据一致), 行随 unadopted 集合变化动画移出 —— 不再靠 0.5s 定时器,
+        // 用户秒点 Done 也不会有悬空的 deferred 闭包. 行滑出本身就是"已添加"反馈.
+        withAnimation(.easeOut(duration: 0.25)) {
+            data.adoptNicheExercise(ex.id)
         }
     }
 }

@@ -483,7 +483,8 @@ final class DataStore {
         let payload = buildAIPayload()
         let plan = await AIWorkoutService.shared.generateToday(
             payload: payload,
-            library: exercises
+            library: exercises,
+            maxExercises: settings.exercisesPerSession
         )
         if let plan {
             aiTodayPlan = plan
@@ -497,7 +498,8 @@ final class DataStore {
         let payload = buildAIPayload()
         let plan = await AIWorkoutService.shared.generateToday(
             payload: payload,
-            library: exercises
+            library: exercises,
+            maxExercises: settings.exercisesPerSession
         )
         if let plan {
             aiTodayPlan = plan

@@ -165,7 +165,8 @@ struct InlineWorkoutCalendar: View {
             .onEnded { value in
                 let dx = value.translation.width
                 let dy = value.translation.height
-                guard abs(dx) > 50, abs(dx) > abs(dy) * 1.5 else { return }
+                // P3: 提高水平主导比 (1.5→2.5) — 对角滑动不再误触月份切换, 让竖向滚动优先.
+                guard abs(dx) > 50, abs(dx) > abs(dy) * 2.5 else { return }
                 if dx < 0 {
                     // 向左划 → 下一个月; 已经是当月 / 未来月不允许 (跟 chevron disabled 规则一致)
                     guard !isFutureMonth else { return }

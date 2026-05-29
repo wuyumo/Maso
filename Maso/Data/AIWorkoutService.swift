@@ -59,7 +59,8 @@ final class AIWorkoutService {
     /// 通过 Cloudflare Worker 后端代理调 DeepSeek — API key 在 server 端, client binary 无 key.
     func generateToday(
         payload: AIPayload,
-        library: [Exercise]
+        library: [Exercise],
+        maxExercises: Int = 4
     ) async -> Plan? {
         guard Self.isConfigured else {
             state = .failure("AI proxy not configured (set MasoAIProxyURL + MasoClientToken in Secrets.xcconfig)")
@@ -70,7 +71,7 @@ final class AIWorkoutService {
         do {
             let raw = try await callDeepSeek(payload: payload)
             let parsed = try parseResponse(raw)
-            let plan = buildPlan(from: parsed, library: library)
+            let plan = buildPlan(from: parsed, library: library, maxExercises: maxExercises)
             guard !plan.steps.isEmpty else {
                 state = .failure("AI returned no matching exercises")
                 return nil
@@ -386,7 +387,7 @@ final class AIWorkoutService {
 
     // MARK: - Build Plan
 
-    private func buildPlan(from r: AIResponse, library: [Exercise]) -> Plan {
+    private func buildPlan(from r: AIResponse, library: [Exercise], maxExercises: Int = 4) -> Plan {
         let now = Date()
         var steps: [PlanStep] = []
         for (i, s) in r.steps.enumerated() {
@@ -404,7 +405,8 @@ final class AIWorkoutService {
         }
         // 保底: 即使 prompt 失效, 客户端也强制截到 4. 跟 RecommendedPrograms 的
         // kMaxStepsPerRecommendedPlan 同一节奏 — "今日训练" 不应该是 marathon.
-        let capped = Array(steps.prefix(4))
+        // P3: 尊重用户的 exercisesPerSession (1-6), 不再硬截 4.
+        let capped = Array(steps.prefix(max(1, min(6, maxExercises))))
         return Plan(
             id: "plan-ai-\(Int(now.timeIntervalSince1970))",
             name: r.name.isEmpty ? "AI Workout" : r.name,

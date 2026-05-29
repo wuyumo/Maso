@@ -90,6 +90,7 @@ final class SpeechManager: NSObject {
         // isSpeaking / currentSource 由 delegate 的 didCancel 重置, 但为了 UI 立即响应, 这里也 set.
         isSpeaking = false
         currentSource = nil
+        deactivateSession()  // P3: 立即让用户的音乐恢复音量
     }
 
     /// 拿"最好的"语音 — 优先 Enhanced / Premium 质量声 (Siri voice 系列), fallback default.
@@ -147,6 +148,7 @@ extension SpeechManager: AVSpeechSynthesizerDelegate {
         Task { @MainActor in
             self.isSpeaking = false
             self.currentSource = nil
+            self.deactivateSession()
         }
     }
 
@@ -154,6 +156,16 @@ extension SpeechManager: AVSpeechSynthesizerDelegate {
         Task { @MainActor in
             self.isSpeaking = false
             self.currentSource = nil
+            self.deactivateSession()
         }
+    }
+}
+
+extension SpeechManager {
+    /// P3: 朗读结束后停用 audio session 并通知系统 — 否则 .duckOthers 会让用户的音乐一直保持
+    /// 压低音量, 直到别的东西去激活/停用 session.
+    @MainActor
+    fileprivate func deactivateSession() {
+        try? AVAudioSession.sharedInstance().setActive(false, options: [.notifyOthersOnDeactivation])
     }
 }

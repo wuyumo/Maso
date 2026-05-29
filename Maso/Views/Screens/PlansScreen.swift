@@ -38,6 +38,38 @@ struct PlansScreen: View {
                     .listRowSeparator(.hidden)
                     .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 16, trailing: 0))
                     .listRowBackground(Color.clear)
+            } else {
+                // P3: 空状态 — 全删光 / 异常时, 给一个明确的"建计划"出口, 而不是只剩两行工具入口.
+                VStack(spacing: 12) {
+                    Image(systemName: "list.bullet.rectangle.portrait")
+                        .font(.system(size: 34, weight: .regular))
+                        .foregroundStyle(MasoColor.textFaint)
+                    Text("No plans yet")
+                        .font(.system(size: 16, weight: .bold))
+                        .foregroundStyle(MasoColor.text)
+                    Text("Create your own workout, or restore the recommended set from the menu above.")
+                        .font(.system(size: 12))
+                        .foregroundStyle(MasoColor.textDim)
+                        .multilineTextAlignment(.center)
+                    Button(action: onNewPlan) {
+                        HStack(spacing: 6) {
+                            Image(systemName: "plus")
+                            Text("New workout")
+                        }
+                        .font(.system(size: 14, weight: .heavy))
+                        .padding(.horizontal, 18).padding(.vertical, 10)
+                        .background(MasoColor.accent)
+                        .foregroundStyle(.black)
+                        .clipShape(Capsule())
+                    }
+                    .buttonStyle(.plain)
+                    .padding(.top, 4)
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 40)
+                .listRowSeparator(.hidden)
+                .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 16, trailing: 0))
+                .listRowBackground(Color.clear)
             }
 
             // 计划列表 — .onMove 长按拖拽; .swipeActions 右滑删除 + alert 二次确认
@@ -961,28 +993,7 @@ struct PlanDetailSheet: View {
         ))
     }
 
-    @ViewBuilder
-    private func layoutButton(isGrid: Bool, icon: String) -> some View {
-        // (旧 private helper, 现在不用了 — LayoutToggle 组件接管. 留下避免编译断 — 实际无引用.)
-        let active = useCardLayout == isGrid
-        Button(action: {
-            guard !active else { return }
-            Haptics.tap()
-            withAnimation(.spring(response: 0.35, dampingFraction: 0.85)) {
-                useCardLayout = isGrid
-            }
-        }) {
-            Image(systemName: icon)
-                .font(.system(size: 11, weight: .heavy))
-                .foregroundStyle(active ? MasoColor.text : MasoColor.textFaint)
-                .frame(width: 26, height: 22)
-                .background(
-                    Capsule()
-                        .fill(active ? MasoColor.accent.opacity(0.85) : Color.clear)
-                )
-        }
-        .buttonStyle(.plain)
-    }
+    // (P3: 删了死代码 layoutButton — LayoutToggle 组件早接管了, 这个 helper 无任何引用.)
 
     /// Step 上下移 + 删除 — 给 contextMenu 用. 改完直接 commit() 持久化.
     private func canMoveUp(_ id: String) -> Bool {
@@ -1002,11 +1013,7 @@ struct PlanDetailSheet: View {
         commit()
         Haptics.tap()
     }
-    private func removeStep(_ id: String) {
-        draft.steps.removeAll { $0.id == id }
-        commit()
-        Haptics.tap()
-    }
+    // (P3: 删了死代码 removeStep — 删除都走 pendingDeleteStepId 二次确认路径, 这个无引用.)
 
     private var addExerciseButton: some View {
         Button(action: { showAddPicker = true }) {
@@ -1935,20 +1942,25 @@ struct ExercisePickerSheet: View {
              "lat_pulldown_machine",
              "hip_thrust_machine",
              "back_extension_machine": return "gearshape.fill"
-        case "cable":            return "scissors"
+        case "cable":            return "cable.connector"
         case "body_only":        return "figure.strengthtraining.traditional"
         case "pull_up_bar":      return "figure.gymnastics"
         case "bench_flat",
              "bench_incline",
-             "bench_decline":    return "rectangle.fill"
+             "bench_decline":    return "bed.double.fill"
         case "resistance_band",
-             "band":             return "scribble.variable"
+             "band":             return "alternatingcurrent"
         case "ez_bar",
              "ez_curl_bar":      return "dumbbell.fill"
         case "trx",
              "rings",
              "gymnastic_rings": return "figure.gymnastics"
-        case "plyo_box":         return "square.fill"
+        case "plyo_box":         return "square.stack.3d.up.fill"
+        case "medicine_ball",
+             "exercise_ball":    return "circle.fill"
+        case "foam_roller":      return "cylinder.fill"
+        case "jump_rope":        return "figure.jumprope"
+        case "kettlebell":       return "dumbbell.fill"
         case "treadmill",
              "stationary_bike",
              "rowing_machine",
