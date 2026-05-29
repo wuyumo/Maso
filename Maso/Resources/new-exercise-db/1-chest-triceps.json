@@ -2461,44 +2461,6 @@
     }
   },
   {
-    "id": "dip_bench_chest",
-    "name": { "en": "Bench Dip", "zh-Hans": "凳上反屈伸" },
-    "muscles": {
-      "primary": [{ "major": "arms", "sub": "triceps" }],
-      "secondary": [
-        { "major": "chest", "sub": "lower_chest" },
-        { "major": "shoulders", "sub": "front_delt" }
-      ]
-    },
-    "equipment": ["body_only", "bench_flat"],
-    "category": "calisthenics",
-    "movementPattern": "push_vertical",
-    "mechanic": "compound",
-    "unilateral": false,
-    "tempo": "endurance",
-    "level": "beginner",
-    "force": "push",
-    "imageFolder": null,
-    "instructions": {
-      "en": [
-        "Hands on bench behind back, feet on floor.",
-        "Lower hips until elbows ~90°.",
-        "Press up to lockout."
-      ],
-      "zh-Hans": [
-        "双手撑凳, 脚在地面.",
-        "髋部下放至肘约 90°.",
-        "推至锁定."
-      ]
-    },
-    "video_url": "https://www.youtube.com/watch?v=6kALZikXxLc",
-    "calories_estimate": { "low": 4, "med": 5, "high": 7 },
-    "danger_warnings": {
-      "en": ["Don't go too deep — shoulder strain in extreme range."],
-      "zh-Hans": ["不要下太低 — 极限位置易伤肩."]
-    }
-  },
-  {
     "id": "landmine_press",
     "name": { "en": "Landmine Press", "zh-Hans": "地雷管推举" },
     "muscles": {
@@ -3454,50 +3416,6 @@
     "video_url": "https://www.youtube.com/watch?v=Z57CtFmRMxA",
     "calories_estimate": { "low": 3, "med": 5, "high": 7 },
     "danger_warnings": { "en": [], "zh-Hans": [] }
-  },
-  {
-    "id": "chest_dip_korean",
-    "name": { "en": "Korean Dip", "zh-Hans": "韩式臂屈伸 (反向)" },
-    "muscles": {
-      "primary": [{ "major": "chest", "sub": "lower_chest" }],
-      "secondary": [
-        { "major": "arms", "sub": "triceps" },
-        { "major": "shoulders", "sub": "front_delt" }
-      ]
-    },
-    "equipment": ["dip_bars"],
-    "category": "calisthenics",
-    "movementPattern": "push_vertical",
-    "mechanic": "compound",
-    "unilateral": false,
-    "tempo": "strength",
-    "level": "advanced",
-    "force": "push",
-    "imageFolder": null,
-    "instructions": {
-      "en": [
-        "Position back to bar, palms facing forward.",
-        "Lower body straight down, chest stretches forward.",
-        "Press back up — challenging shoulder position."
-      ],
-      "zh-Hans": [
-        "背对杠, 掌心向前.",
-        "身体直线下降, 胸部前展.",
-        "推起 — 肩部姿势具挑战性."
-      ]
-    },
-    "video_url": "https://www.youtube.com/watch?v=PiwzeRRzPxs",
-    "calories_estimate": { "low": 7, "med": 9, "high": 12 },
-    "danger_warnings": {
-      "en": [
-        "Demands extreme shoulder mobility — work up gradually.",
-        "Stop if shoulders feel pinched."
-      ],
-      "zh-Hans": [
-        "需要极佳肩部活动度 — 逐步进步.",
-        "肩部不适立即停止."
-      ]
-    }
   },
   {
     "id": "dumbbell_press_floor_single_arm",

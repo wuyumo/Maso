@@ -191,26 +191,60 @@ final class DataStore {
             weight: 75,
             proSubscription: nil
         )
-        // 推荐 plan 列表跟 weeklyTrainingDays 对齐 (跟 web 的 recommendProgram 一致)
-        let plans = RecommendedPrograms.plans(forDays: settings.weeklyTrainingDays,
-                                              now: now, byId: byId)
-        let sets = sampleSets(now: now, plans: plans, byId: byId)
-        // 用 sample sets 回填 plan.lastUsedAt — 这样 pickTodayPlan 才能挑出"最久未练"的那张
-        let plansWithLRU = plans.map { plan -> Plan in
-            let last = sets
-                .filter { $0.planId == plan.id }
-                .map { $0.performedAt }
-                .max()
-            var p = plan
-            p.lastUsedAt = last
-            return p
-        }
+        // sample sets 先生成 (planId 是硬编码字符串, 不依赖最终 plan 数组),
+        // 再用共享 helper 生成 settings-aware + LRU-backfilled 的推荐 plan.
+        let prelimPlans = RecommendedPrograms.plans(forDays: settings.weeklyTrainingDays,
+                                                    now: now, byId: byId)
+        let sets = sampleSets(now: now, plans: prelimPlans, byId: byId)
+        let plans = tunedRecommendedPlans(
+            forDays: settings.weeklyTrainingDays,
+            settings: settings,
+            exById: byId,
+            sets: sets,
+            now: now
+        )
         return DataStore(
             exercises: library,
-            plans: plansWithLRU,
+            plans: plans,
             sets: sets,
             settings: settings
         )
+    }
+
+    // MARK: - 推荐 plan 生成 (单一真相 — makeMock / onboarding / regenerate 全走这)
+    //
+    // 之前 makeMock 和 regenerateRecommendedPlans 各有一份生成逻辑, 行为不一致:
+    //   - makeMock cap 死在 4 (kDefaultMaxStepsPerRecommendedPlan), 忽略 exercisesPerSession
+    //   - regenerate 用 exercisesPerSession 但漏了 lastUsedAt 回填 + 漏了 save()
+    // 合一后三处行为完全一致.
+    //
+    // 关键设计:
+    //   - cap = exercisesPerSession (用户设的每次动作数)
+    //   - sets = max(模板组数, defaultSetsPerExercise) —— "默认组数"是地板, 不是覆盖.
+    //     这样默认 3 不会把模板里手调的 4 组复合动作压平 (P1-3); 用户调高到 5 则全体 ≥5.
+    //   - reps 保留模板值 (模板按动作手调, 比 goal 默认更贴具体动作)
+    //   - lastUsedAt 从 sets 历史回填, 保证 pickTodayPlan 的 LRU A→B→C 轮换可用 (P0-2)
+    static func tunedRecommendedPlans(
+        forDays days: Int,
+        settings: UserSettings,
+        exById: [String: Exercise],
+        sets: [SetRecord],
+        now: Date
+    ) -> [Plan] {
+        let raw = RecommendedPrograms.plans(forDays: days, now: now, byId: exById)
+        let cap = max(1, min(6, settings.exercisesPerSession))
+        let floorSets = max(1, settings.defaultSetsPerExercise)
+        return raw.map { plan -> Plan in
+            var p = plan
+            p.steps = Array(p.steps.prefix(cap)).map { step -> PlanStep in
+                var s = step
+                s.sets = max(s.sets, floorSets)  // 地板, 不压平
+                return s
+            }
+            // LRU 回填: 该 plan 在历史里最近一次训练时间 (没练过 → nil → distantPast 排最前)
+            p.lastUsedAt = sets.filter { $0.planId == p.id }.map(\.performedAt).max()
+            return p
+        }
     }
 
     // MARK: - 简单的 plan 操作
@@ -504,25 +538,15 @@ final class DataStore {
         plans.removeAll { plan in
             recommendedPrefixes.contains(where: { plan.id.hasPrefix($0) })
         }
-        let rawPlans = RecommendedPrograms.plans(
+        let tuned = DataStore.tunedRecommendedPlans(
             forDays: settings.weeklyTrainingDays,
-            now: Date(),
-            byId: exById
+            settings: settings,
+            exById: exById,
+            sets: sets,
+            now: Date()
         )
-        // Apply Training Preferences: cap exercise count + override sets-per-step.
-        // Reps 不动 — 模板里的 reps 是手工调的 (compound 5-8, accessory 10-15),
-        // 比 goal-based 默认更贴具体动作.
-        let tunedPlans = rawPlans.map { plan -> Plan in
-            var p = plan
-            let cap = max(1, min(6, settings.exercisesPerSession))
-            p.steps = Array(p.steps.prefix(cap)).map { step -> PlanStep in
-                var s = step
-                s.sets = settings.defaultSetsPerExercise
-                return s
-            }
-            return p
-        }
-        plans.append(contentsOf: tunedPlans)
+        plans.append(contentsOf: tuned)
+        save()  // P0-1: 之前漏了 save → 改设置重启就回退. 现在持久化.
     }
 }
 

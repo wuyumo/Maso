@@ -1354,45 +1354,6 @@
     }
   },
   {
-    "id": "pike_push_up",
-    "name": { "en": "Pike Push-Up", "zh-Hans": "下犬式俯卧撑" },
-    "muscles": {
-      "primary": [{ "major": "shoulders", "sub": "front_delt" }],
-      "secondary": [
-        { "major": "shoulders", "sub": "side_delt" },
-        { "major": "arms", "sub": "triceps" },
-        { "major": "chest", "sub": "upper_chest" }
-      ]
-    },
-    "equipment": ["body_only"],
-    "category": "calisthenics",
-    "movementPattern": "push_vertical",
-    "mechanic": "compound",
-    "unilateral": false,
-    "tempo": "endurance",
-    "level": "intermediate",
-    "force": "push",
-    "imageFolder": null,
-    "instructions": {
-      "en": [
-        "Downward dog position, hips high.",
-        "Lower head to floor between hands.",
-        "Press back up, full elbow extension."
-      ],
-      "zh-Hans": [
-        "下犬式, 髋部高位.",
-        "头部下降至双手之间.",
-        "推起, 手肘完全伸直."
-      ]
-    },
-    "video_url": "https://www.youtube.com/watch?v=EA8g7q9jauM",
-    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
-    "danger_warnings": {
-      "en": [],
-      "zh-Hans": []
-    }
-  },
-  {
     "id": "handstand_push_up",
     "name": { "en": "Handstand Push-Up", "zh-Hans": "倒立俯卧撑" },
     "muscles": {

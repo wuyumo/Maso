@@ -3150,52 +3150,6 @@
     }
   },
   {
-    "id": "good_morning_barbell",
-    "name": { "en": "Good Morning", "zh-Hans": "早安式" },
-    "muscles": {
-      "primary": [{ "major": "legs", "sub": "hamstrings" }],
-      "secondary": [
-        { "major": "legs", "sub": "glutes" },
-        { "major": "back", "sub": "lower_back" }
-      ]
-    },
-    "equipment": ["barbell", "squat_rack"],
-    "category": "strength",
-    "movementPattern": "hinge",
-    "mechanic": "compound",
-    "unilateral": false,
-    "tempo": "hypertrophy",
-    "level": "intermediate",
-    "force": "pull",
-    "imageFolder": null,
-    "instructions": {
-      "en": [
-        "Bar on back, slight knee bend.",
-        "Hinge at hips, lower torso.",
-        "Keep back flat — feel hamstrings.",
-        "Drive hips forward to stand."
-      ],
-      "zh-Hans": [
-        "杠铃放背上, 膝盖微弯.",
-        "髋部铰链, 躯干前倾下放.",
-        "背部挺直 — 感受腘绳.",
-        "髋部前顶起身."
-      ]
-    },
-    "video_url": "https://www.youtube.com/watch?v=YuWLA_yzbb8",
-    "calories_estimate": { "low": 6, "med": 9, "high": 12 },
-    "danger_warnings": {
-      "en": [
-        "Use light weight — bar on back amplifies risk.",
-        "Don't round lower back."
-      ],
-      "zh-Hans": [
-        "用轻重量 — 杠铃在背上风险加大.",
-        "不要圆下背."
-      ]
-    }
-  },
-  {
     "id": "kettlebell_swing",
     "name": { "en": "Kettlebell Swing", "zh-Hans": "壶铃摆荡" },
     "muscles": {
@@ -4089,48 +4043,6 @@
       "zh-Hans": [
         "顶部不要过度反弓."
       ]
-    }
-  },
-  {
-    "id": "back_extension_45",
-    "name": { "en": "Back Extension (45°)", "zh-Hans": "背伸展 (45°)" },
-    "muscles": {
-      "primary": [
-        { "major": "back", "sub": "lower_back" },
-        { "major": "legs", "sub": "glutes" }
-      ],
-      "secondary": [
-        { "major": "legs", "sub": "hamstrings" }
-      ]
-    },
-    "equipment": ["back_extension_machine"],
-    "category": "strength",
-    "movementPattern": "hinge",
-    "mechanic": "isolation",
-    "unilateral": false,
-    "tempo": "hypertrophy",
-    "level": "beginner",
-    "force": "pull",
-    "imageFolder": null,
-    "instructions": {
-      "en": [
-        "Hips on 45° pad, ankles secured.",
-        "Bend forward at hips.",
-        "Raise to body straight line.",
-        "Squeeze glutes at top."
-      ],
-      "zh-Hans": [
-        "髋部在 45° 垫上, 脚踝固定.",
-        "髋部铰链前倾.",
-        "起身回到身体直线.",
-        "顶部收紧臀部."
-      ]
-    },
-    "video_url": "https://www.youtube.com/watch?v=Eh00_rniF8E",
-    "calories_estimate": { "low": 4, "med": 6, "high": 8 },
-    "danger_warnings": {
-      "en": [],
-      "zh-Hans": []
     }
   },
   {
@@ -7966,54 +7878,6 @@
     }
   },
   {
-    "id": "burpee_squat_jump",
-    "name": { "en": "Burpee", "zh-Hans": "波比跳" },
-    "muscles": {
-      "primary": [
-        { "major": "legs", "sub": "quads" },
-        { "major": "legs", "sub": "glutes" }
-      ],
-      "secondary": [
-        { "major": "chest", "sub": "middle_chest" },
-        { "major": "arms", "sub": "triceps" },
-        { "major": "core", "sub": "abs_upper" }
-      ]
-    },
-    "equipment": ["body_only"],
-    "category": "plyometric",
-    "movementPattern": "squat",
-    "mechanic": "compound",
-    "unilateral": false,
-    "tempo": "explosive",
-    "level": "intermediate",
-    "force": "push",
-    "imageFolder": null,
-    "instructions": {
-      "en": [
-        "Start standing, drop to plank.",
-        "Push-up (optional), jump feet in.",
-        "Stand and jump up with arms overhead.",
-        "Land soft, repeat continuously."
-      ],
-      "zh-Hans": [
-        "站姿开始, 下蹲手撑入平板.",
-        "俯卧撑 (可选), 双脚跳回.",
-        "站起跳, 双臂过头.",
-        "轻柔落地, 持续重复."
-      ]
-    },
-    "video_url": "https://www.youtube.com/watch?v=TU8QYVW0gDU",
-    "calories_estimate": { "low": 11, "med": 15, "high": 20 },
-    "danger_warnings": {
-      "en": [
-        "High intensity — pace yourself."
-      ],
-      "zh-Hans": [
-        "高强度 — 注意配速."
-      ]
-    }
-  },
-  {
     "id": "step_up_lateral_bodyweight",
     "name": { "en": "Lateral Step-Up", "zh-Hans": "侧向登阶" },
     "muscles": {
@@ -9575,54 +9439,6 @@
     }
   },
   {
-    "id": "squat_thruster_dumbbell",
-    "name": { "en": "Thruster (Dumbbell)", "zh-Hans": "推举深蹲 (哑铃)" },
-    "muscles": {
-      "primary": [
-        { "major": "legs", "sub": "quads" },
-        { "major": "shoulders", "sub": "front_delt" }
-      ],
-      "secondary": [
-        { "major": "legs", "sub": "glutes" },
-        { "major": "arms", "sub": "triceps" },
-        { "major": "core", "sub": "abs_upper" }
-      ]
-    },
-    "equipment": ["dumbbell"],
-    "category": "strength",
-    "movementPattern": "squat",
-    "mechanic": "compound",
-    "unilateral": false,
-    "tempo": "explosive",
-    "level": "intermediate",
-    "force": "push",
-    "imageFolder": null,
-    "instructions": {
-      "en": [
-        "Dumbbells at shoulders, squat down.",
-        "Drive up explosively from squat.",
-        "Use momentum to press overhead.",
-        "Lower dumbbells back, repeat."
-      ],
-      "zh-Hans": [
-        "哑铃在肩, 下蹲.",
-        "从深蹲爆发起身.",
-        "借势推过头.",
-        "哑铃回到肩部, 重复."
-      ]
-    },
-    "video_url": "https://www.youtube.com/watch?v=ATj2gE1bD-c",
-    "calories_estimate": { "low": 10, "med": 14, "high": 18 },
-    "danger_warnings": {
-      "en": [
-        "Full-body — pace yourself."
-      ],
-      "zh-Hans": [
-        "全身动作 — 注意配速."
-      ]
-    }
-  },
-  {
     "id": "squat_thruster_barbell",
     "name": { "en": "Thruster (Barbell)", "zh-Hans": "推举深蹲 (杠铃)" },
     "muscles": {
@@ -9862,53 +9678,6 @@
     "danger_warnings": {
       "en": [],
       "zh-Hans": []
-    }
-  },
-  {
-    "id": "kettlebell_deadlift",
-    "name": { "en": "Deadlift (Kettlebell)", "zh-Hans": "硬拉 (壶铃)" },
-    "muscles": {
-      "primary": [
-        { "major": "legs", "sub": "hamstrings" },
-        { "major": "legs", "sub": "glutes" }
-      ],
-      "secondary": [
-        { "major": "back", "sub": "lower_back" },
-        { "major": "legs", "sub": "quads" }
-      ]
-    },
-    "equipment": ["kettlebell"],
-    "category": "strength",
-    "movementPattern": "hinge",
-    "mechanic": "compound",
-    "unilateral": false,
-    "tempo": "hypertrophy",
-    "level": "beginner",
-    "force": "pull",
-    "imageFolder": null,
-    "instructions": {
-      "en": [
-        "Kettlebell between feet.",
-        "Hinge at hips, grab handle.",
-        "Drive up, squeeze glutes.",
-        "Hinge back to floor."
-      ],
-      "zh-Hans": [
-        "壶铃在双脚间.",
-        "髋部铰链, 抓握把.",
-        "起身, 收紧臀部.",
-        "髋部回铰链至地."
-      ]
-    },
-    "video_url": "https://www.youtube.com/watch?v=Q-D4HsZGD-w",
-    "calories_estimate": { "low": 6, "med": 9, "high": 12 },
-    "danger_warnings": {
-      "en": [
-        "Don't round back."
-      ],
-      "zh-Hans": [
-        "不要圆背."
-      ]
     }
   },
   {
