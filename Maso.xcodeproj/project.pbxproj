@@ -48,6 +48,7 @@
 		4045DC14ACF646BD6B5E5B20 /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2C7B1AA85268521E018CA24 /* Formatters.swift */; };
 		44876A2FF7F8EF483848DD3F /* _canonical-examples.json in Resources */ = {isa = PBXBuildFile; fileRef = 0685655F9D540D1B4497977C /* _canonical-examples.json */; };
 		4921E4C7CD778A4E81EBEBA8 /* Anatomy.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEE409128074A2BE3999170 /* Anatomy.swift */; };
+		B2C3D4E5F6071829304A5B6C /* ExerciseGrouping.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C3D4E5F6071829304A5B6D /* ExerciseGrouping.swift */; };
 		532DFBDCD4B16B6F58710B61 /* CommunityScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9650F52BD29FC327FE503B9B /* CommunityScreen.swift */; };
 		56D4D47EC11CD4F3E8AA99C6 /* TodayScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A2FC82B09BFE985CB928FDB /* TodayScreen.swift */; };
 		56E3B748AC3176A24A1F72B9 /* FilterMenuButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E392D3BCA567E27D36082C9C /* FilterMenuButton.swift */; };
@@ -260,6 +261,7 @@
 		CDA3B6F67C353E227D0E2E8C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CED9025409401C575B180D72 /* 3-back-biceps-forearms.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "3-back-biceps-forearms.json"; sourceTree = "<group>"; };
 		CEEE409128074A2BE3999170 /* Anatomy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Anatomy.swift; sourceTree = "<group>"; };
+		B2C3D4E5F6071829304A5B6D /* ExerciseGrouping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseGrouping.swift; sourceTree = "<group>"; };
 		CFD21DF2E0041A5BFFACB388 /* MuscleStatusOverviewCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuscleStatusOverviewCard.swift; sourceTree = "<group>"; };
 		D3874EAC939D9AEC79F24DCB /* ExerciseNames.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ExerciseNames.strings; path = fr.lproj/ExerciseNames.strings; sourceTree = "<group>"; };
 		D4C5F3E72ADD7E2C06CE3FED /* exercises-matched.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "exercises-matched.json"; sourceTree = "<group>"; };
@@ -326,6 +328,7 @@
 			children = (
 				A869CB4AC4EF2FD9CFD9D31C /* AIWorkoutService.swift */,
 				CEEE409128074A2BE3999170 /* Anatomy.swift */,
+				B2C3D4E5F6071829304A5B6D /* ExerciseGrouping.swift */,
 				E4CD0A6C911CC31064AFC8D4 /* CommunityPlans.swift */,
 				FEB924488C05EA5A27B8B504 /* DataStore.swift */,
 				041577FA74CB0C00E92E4233 /* ExerciseImageCache.swift */,
@@ -732,6 +735,7 @@
 			files = (
 				76F9805CDA3E261CA146C7A5 /* AIWorkoutService.swift in Sources */,
 				4921E4C7CD778A4E81EBEBA8 /* Anatomy.swift in Sources */,
+				B2C3D4E5F6071829304A5B6C /* ExerciseGrouping.swift in Sources */,
 				2A8850718E62ACE893EEF2D8 /* AnimeBodyView.swift in Sources */,
 				17D9E2729D5EB223EF42F762 /* AppRouter.swift in Sources */,
 				E78F1A3F512D37B2BFA4A286 /* BodyHint.swift in Sources */,

@@ -1337,6 +1337,10 @@ struct ExercisePickerSheet: View {
     /// 入口让用户回去. 这样主流 picker 干净 (Foam Roll / Battle Rope / Hip Abduction Machine 等怪东西不挡道),
     /// 但小众动作仍然能通过一个明确的入口访问到, 不丢数据.
     @State private var nicheMode: Bool = false
+    /// 当前展开的"变种组" key (= ExerciseGroup.id). 一次只展开一组, 跟手风琴一致.
+    /// 同一基础名下的变种 (例: Bench Press, Bench Press (Machine), Bench Press (Dumbbell))
+    /// 在折叠态只显 canonical, 用户点 disclosure 才展开看变种.
+    @State private var expandedGroupKey: String? = nil
 
     enum PickerMode { case bodyMap, list }
 
@@ -1419,6 +1423,20 @@ struct ExercisePickerSheet: View {
         )
         // 收藏置顶 — 在 filter 之后排序, 让收藏的动作在当前 filter 结果里排最前
         return Array(data.sortByFavorites(arr).prefix(200))
+    }
+
+    /// filtered 按"基础名"折叠成 group. Picker 列表迭代这个, 而不是 flat filtered.
+    /// "Bench Press" + "Bench Press (Machine)" + "Bench Press (Dumbbell)" → 1 个 group.
+    /// "Speed Bench Press" 独立成自己的 group (它没括号, base = 自身).
+    private var filteredGroups: [ExerciseGroup] {
+        ExerciseGrouping.group(filtered)
+    }
+
+    /// 是不是处于"主动筛选"状态 (有搜索词 / equipment 选定) — 此时所有 group 强制展开,
+    /// 用户能直接看见命中的具体变种, 不用每个 group 自己点 disclosure.
+    /// 仅 muscle / sub filter 选了不算 (那两个筛肌肉, 不太关心变种).
+    private var forceExpandAll: Bool {
+        !query.trimmingCharacters(in: .whitespaces).isEmpty || equipmentFilter != nil
     }
 
     // MARK: - chip availability — 三维 filter 之间互相 narrow 时, 让用户知道哪些 chip 当前可选
@@ -1772,61 +1790,194 @@ struct ExercisePickerSheet: View {
 
     // MARK: - 共用 exercise list
 
+    /// Picker 单行 — canonical 或 variant 共用. 区别:
+    ///   - canonical: tap 主体打开 detail; 末尾若有变种, 显 "+N" disclosure 胶囊.
+    ///   - variant: 行左侧多一道竖线缩进 + 一个 equipment SF Symbol (machine.fill / dumbbell.fill ...).
+    ///             名字省略 base 前缀, 只显括号内的 "(Machine)" / "(Dumbbell, Decline)".
+    @ViewBuilder
+    private func exercisePickerRow(exercise ex: Exercise, isVariant: Bool, group: ExerciseGroup) -> some View {
+        let isFav = data.isFavorite(ex.id)
+        Button { detailExercise = ex } label: {
+            HStack(spacing: 14) {
+                if isVariant {
+                    // 缩进 — 一道细 accent 竖线给"我属于上面那组"的视觉锚点.
+                    Rectangle()
+                        .fill(MasoColor.accent.opacity(0.4))
+                        .frame(width: 2)
+                        .padding(.leading, 8)
+                }
+                // 变种行的图标 — 用器械 SF Symbol, 不用 56pt 缩略图 (节省空间, 也强化"这是变种"层级).
+                if isVariant {
+                    Image(systemName: variantSymbol(for: ex))
+                        .font(.system(size: 16, weight: .heavy))
+                        .foregroundStyle(MasoColor.textDim)
+                        .frame(width: 36, height: 36)
+                        .background(MasoColor.surfaceHi)
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                } else {
+                    ExerciseImage(
+                        category: ex.category,
+                        imageFolder: ex.imageFolder,
+                        customImageData: ex.customImageData,
+                        cornerRadius: 8,
+                        size: 56,
+                        animated: false
+                    )
+                }
+                VStack(alignment: .leading, spacing: 5) {
+                    Text(rowTitle(for: ex, isVariant: isVariant))
+                        .font(.system(size: isVariant ? 13 : 15, weight: .bold))
+                        .foregroundStyle(MasoColor.text)
+                        .lineLimit(1)
+                    if !isVariant {
+                        ExerciseTagsRow(
+                            muscleGroups: ex.muscleGroups,
+                            equipment: ex.equipment,
+                            muscleLimit: 1
+                        )
+                    } else if let eqName = ex.equipmentDisplayName {
+                        // 变种只显器械名作为子标题, 不展 muscle tags (跟 canonical 同肌群, 冗余).
+                        Text(eqName)
+                            .font(.system(size: 11))
+                            .foregroundStyle(MasoColor.textDim)
+                            .lineLimit(1)
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                if isFav {
+                    Image(systemName: "pin.fill")
+                        .font(.system(size: 12, weight: .heavy))
+                        .foregroundStyle(MasoColor.accent)
+                }
+                // Canonical 行末尾的 "+N variants" disclosure 胶囊 — tap 切换展开态.
+                // 用 Button 而不是整行 chevron, 让用户清楚: tap 胶囊 ≠ tap 行 (一个看变种, 一个开 detail).
+                if !isVariant, !group.isSingleton, !forceExpandAll {
+                    Button(action: {
+                        Haptics.tap()
+                        withAnimation(.easeOut(duration: 0.2)) {
+                            expandedGroupKey = (expandedGroupKey == group.id) ? nil : group.id
+                        }
+                    }) {
+                        HStack(spacing: 4) {
+                            Text("+\(group.variants.count)")
+                                .font(.system(size: 11, weight: .heavy))
+                            Image(systemName: expandedGroupKey == group.id ? "chevron.up" : "chevron.down")
+                                .font(.system(size: 10, weight: .heavy))
+                        }
+                        .foregroundStyle(MasoColor.accent)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(MasoColor.accent.opacity(0.14))
+                        .overlay(Capsule().stroke(MasoColor.accent.opacity(0.35), lineWidth: 0.5))
+                        .clipShape(Capsule())
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(
+                        expandedGroupKey == group.id
+                        ? NSLocalizedString("Hide variants", comment: "")
+                        : String(format: NSLocalizedString("Show %d variants", comment: ""), group.variants.count)
+                    )
+                }
+            }
+            .padding(.horizontal, MasoMetrics.rowPaddingH)
+            .padding(.vertical, isVariant ? 6 : 10)
+            .background(MasoColor.surface)
+            .clipShape(RoundedRectangle(cornerRadius: 14))
+        }
+        .buttonStyle(.plain)
+        .listRowSeparator(.hidden)
+        .listRowBackground(Color.clear)
+        .listRowInsets(EdgeInsets(
+            top: isVariant ? 1 : 3,
+            leading: MasoMetrics.pagePaddingHorizontal + (isVariant ? 16 : 0),  // 变种缩进 16pt
+            bottom: isVariant ? 1 : 3,
+            trailing: MasoMetrics.pagePaddingHorizontal
+        ))
+        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+            Button {
+                data.toggleFavorite(ex.id)
+                Haptics.tap()
+            } label: {
+                Image(systemName: isFav ? "pin.slash.fill" : "pin.fill")
+            }
+            .tint(MasoColor.accent)
+            .accessibilityLabel(NSLocalizedString(isFav ? "Unpin" : "Pin to top", comment: ""))
+        }
+    }
+
+    /// 行标题: canonical 显全名; variant 仅显括号内 (e.g. "Machine") 让对照 canonical 时不重复 base.
+    private func rowTitle(for ex: Exercise, isVariant: Bool) -> String {
+        guard isVariant else { return ex.displayName }
+        let raw = ex.displayName
+        if let openParen = raw.firstIndex(of: "("),
+           let closeParen = raw.lastIndex(of: ")") {
+            let after = raw.index(after: openParen)
+            if after < closeParen {
+                return String(raw[after..<closeParen])
+            }
+        }
+        return raw
+    }
+
+    /// 变种行的小图标 — 优先按 equipment 选 SF Symbol, 没器械 fallback dumbbell.
+    private func variantSymbol(for ex: Exercise) -> String {
+        switch ex.equipment {
+        case "barbell":          return "dumbbell.fill"
+        case "dumbbell":         return "dumbbell.fill"
+        case "kettlebell":       return "dumbbell.fill"
+        case "machine",
+             "smith_machine",
+             "leg_press_machine",
+             "calf_raise_machine",
+             "lat_pulldown_machine",
+             "hip_thrust_machine",
+             "back_extension_machine": return "gearshape.fill"
+        case "cable":            return "scissors"
+        case "body_only":        return "figure.strengthtraining.traditional"
+        case "pull_up_bar":      return "figure.gymnastics"
+        case "bench_flat",
+             "bench_incline",
+             "bench_decline":    return "rectangle.fill"
+        case "resistance_band",
+             "band":             return "scribble.variable"
+        case "ez_bar",
+             "ez_curl_bar":      return "dumbbell.fill"
+        case "trx",
+             "rings",
+             "gymnastic_rings": return "figure.gymnastics"
+        case "plyo_box":         return "square.fill"
+        case "treadmill",
+             "stationary_bike",
+             "rowing_machine",
+             "elliptical":       return "figure.run"
+        default:                 return "dumbbell.fill"
+        }
+    }
+
     @ViewBuilder
     private func exerciseList(scrollTrackingEnabled: Bool) -> some View {
         // List + 原生 .swipeActions — 替换自制 SwipeableRow.
         // 自制版跟 ScrollView 的 vertical pan 抢手势 → 上下滑动失效.
         List {
-            ForEach(filtered) { ex in
-                let isFav = data.isFavorite(ex.id)
-                Button {
-                    detailExercise = ex
-                } label: {
-                    HStack(spacing: 14) {
-                        ExerciseImage(
-                            category: ex.category,
-                            imageFolder: ex.imageFolder,
-                            cornerRadius: 8,
-                            size: 56,
-                            animated: false
+            ForEach(filteredGroups) { group in
+                // Canonical 行 — 折叠态唯一可见的一行. 跟旧 row 视觉一致 + 末尾多一个 "+N variants"
+                // disclosure 胶囊 (仅有变种时). tap 主体 → 弹 detail; tap disclosure → toggle 组.
+                exercisePickerRow(
+                    exercise: group.canonical,
+                    isVariant: false,
+                    group: group
+                )
+
+                // 展开时渲染变种 — 每个变种作为独立 List row, 可独立 swipe pin, 缩进区分层级.
+                if group.variants.isEmpty == false,
+                   forceExpandAll || expandedGroupKey == group.id {
+                    ForEach(group.variants, id: \.id) { variant in
+                        exercisePickerRow(
+                            exercise: variant,
+                            isVariant: true,
+                            group: group
                         )
-                        VStack(alignment: .leading, spacing: 5) {
-                            Text(ex.displayName)
-                                .font(.system(size: 15, weight: .bold))
-                                .foregroundStyle(MasoColor.text)
-                                .lineLimit(1)
-                            ExerciseTagsRow(
-                                muscleGroups: ex.muscleGroups,
-                                equipment: ex.equipment,
-                                muscleLimit: 1
-                            )
-                        }
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        if isFav {
-                            // 置顶标识
-                            Image(systemName: "pin.fill")
-                                .font(.system(size: 12, weight: .heavy))
-                                .foregroundStyle(MasoColor.accent)
-                        }
                     }
-                    .padding(.horizontal, MasoMetrics.rowPaddingH)
-                    .padding(.vertical, 10)
-                    .background(MasoColor.surface)
-                    .clipShape(RoundedRectangle(cornerRadius: 14))
-                }
-                .buttonStyle(.plain)
-                .listRowSeparator(.hidden)
-                .listRowBackground(Color.clear)
-                .listRowInsets(EdgeInsets(top: 3, leading: MasoMetrics.pagePaddingHorizontal, bottom: 3, trailing: MasoMetrics.pagePaddingHorizontal))
-                .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                    Button {
-                        data.toggleFavorite(ex.id)
-                        Haptics.tap()
-                    } label: {
-                        Image(systemName: isFav ? "pin.slash.fill" : "pin.fill")
-                    }
-                    .tint(MasoColor.accent)
-                    .accessibilityLabel(NSLocalizedString(isFav ? "Unpin" : "Pin to top", comment: ""))
                 }
             }
             if filtered.isEmpty {
