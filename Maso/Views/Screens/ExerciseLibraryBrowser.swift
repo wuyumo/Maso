@@ -17,6 +17,12 @@ struct ExerciseLibraryBrowser: View {
     @State private var customFormOpen: Bool = false
     /// 路径 2: 小众库浏览 sheet (从 niche stash 采纳到自己的库).
     @State private var nicheBrowseOpen: Bool = false
+    /// P0-6: 删自创动作的二次确认.
+    @State private var pendingDeleteCustom: Exercise? = nil
+    /// 自创动作被 plan/历史 引用 → 不能删, 弹说明 alert.
+    @State private var deleteBlockedRef: Exercise? = nil
+    /// P1-7: 自创动作是 Pro 功能 (付费墙广告语承诺) — 免费用户走这弹 paywall.
+    @State private var paywallOpen: Bool = false
 
     private static let muscleSections: [MuscleGroup] = [
         .chest, .back, .shoulders, .arms, .core, .legs,
@@ -218,6 +224,31 @@ struct ExerciseLibraryBrowser: View {
                             }
                             .tint(MasoColor.accent)
                             .accessibilityLabel(NSLocalizedString(isFav ? "Unpin" : "Pin to top", comment: ""))
+
+                            // P0-6: 自创动作 → 删除 (引用检查); 已采纳 niche → 移回冷门库.
+                            if ex.id.hasPrefix("custom-") {
+                                Button(role: .destructive) {
+                                    if data.isExerciseReferenced(ex.id) {
+                                        deleteBlockedRef = ex
+                                    } else {
+                                        pendingDeleteCustom = ex
+                                    }
+                                    Haptics.tap()
+                                } label: {
+                                    Image(systemName: "trash.fill")
+                                }
+                                .tint(MasoColor.negative)
+                                .accessibilityLabel(NSLocalizedString("Delete", comment: ""))
+                            } else if data.settings.adoptedNicheExerciseIds.contains(ex.id) {
+                                Button {
+                                    data.unadoptNicheExercise(ex.id)
+                                    Haptics.tap()
+                                } label: {
+                                    Image(systemName: "arrow.uturn.backward")
+                                }
+                                .tint(MasoColor.textDim)
+                                .accessibilityLabel(NSLocalizedString("Remove from library", comment: ""))
+                            }
                         }
                     }
                 }
@@ -248,8 +279,10 @@ struct ExerciseLibraryBrowser: View {
                 AddExerciseChoiceSheet(
                     onCreateCustom: {
                         addChoiceOpen = false
+                        // P1-7: 自创动作是 Pro 功能. 免费用户 → paywall, 不进表单.
+                        let pro = data.settings.isPro
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.32) {
-                            customFormOpen = true
+                            if pro { customFormOpen = true } else { paywallOpen = true }
                         }
                     },
                     onBrowseNiche: {
@@ -265,9 +298,35 @@ struct ExerciseLibraryBrowser: View {
             .sheet(isPresented: $customFormOpen) {
                 CustomExerciseFormSheet()
             }
+            // P1-7: 免费用户点"自己创建"→ paywall
+            .sheet(isPresented: $paywallOpen) {
+                PaywallScreen()
+            }
             // 路径 2: 浏览 niche stash + 一键采纳.
             .sheet(isPresented: $nicheBrowseOpen) {
                 NicheLibraryBrowseSheet()
+            }
+            // P0-6: 删自创动作二次确认
+            .alert(NSLocalizedString("Delete exercise?", comment: ""),
+                   isPresented: Binding(get: { pendingDeleteCustom != nil },
+                                        set: { if !$0 { pendingDeleteCustom = nil } })) {
+                Button(NSLocalizedString("Delete", comment: ""), role: .destructive) {
+                    if let ex = pendingDeleteCustom { data.deleteCustomExercise(ex.id) }
+                    pendingDeleteCustom = nil
+                }
+                Button(NSLocalizedString("Cancel", comment: ""), role: .cancel) { pendingDeleteCustom = nil }
+            } message: {
+                Text(pendingDeleteCustom.map {
+                    String(format: NSLocalizedString("“%@” will be permanently removed.", comment: ""), $0.displayName)
+                } ?? "")
+            }
+            // 自创动作被 plan / 历史引用 → 不能删
+            .alert(NSLocalizedString("Can't delete — in use", comment: ""),
+                   isPresented: Binding(get: { deleteBlockedRef != nil },
+                                        set: { if !$0 { deleteBlockedRef = nil } })) {
+                Button("OK", role: .cancel) { deleteBlockedRef = nil }
+            } message: {
+                Text("This exercise is used by a plan or your workout history. Remove it from those first.")
             }
         }
     }

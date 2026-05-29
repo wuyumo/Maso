@@ -721,3 +721,10 @@
 /* ── Batch C: onboarding gender/units ── */
 "%d kg" = "%d kg";
 "%d yrs" = "%d yrs";
+
+/* ── Batch D: delete/unadopt ── */
+"Can't delete — in use" = "Can't delete — in use";
+"Delete exercise?" = "Delete exercise?";
+"Remove from library" = "Remove from library";
+"This exercise is used by a plan or your workout history. Remove it from those first." = "This exercise is used by a plan or your workout history. Remove it from those first.";
+"“%@” will be permanently removed." = "“%@” will be permanently removed.";

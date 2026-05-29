@@ -98,6 +98,14 @@ final class DataStore {
         save()
     }
 
+    /// 这个 exercise id 是否被任何 plan step 或历史 set 引用 — 删除前查, 避免产生悬空 id
+    /// (悬空后 exById 查不到 → BodyHint / 图回退 placeholder, displayName 失败).
+    func isExerciseReferenced(_ id: String) -> Bool {
+        if plans.contains(where: { $0.steps.contains(where: { $0.exerciseId == id }) }) { return true }
+        if sets.contains(where: { $0.exerciseId == id }) { return true }
+        return false
+    }
+
     init(exercises: [Exercise], plans: [Plan], sets: [SetRecord], settings: UserSettings) {
         self.exercises = exercises
         self.plans = plans

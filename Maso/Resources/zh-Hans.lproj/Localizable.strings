@@ -720,3 +720,10 @@
 /* ── Batch C: onboarding gender/units ── */
 "%d kg" = "%d 公斤";
 "%d yrs" = "%d 岁";
+
+/* ── Batch D: delete/unadopt ── */
+"Can't delete — in use" = "无法删除 — 使用中";
+"Delete exercise?" = "删除动作？";
+"Remove from library" = "移出我的库";
+"This exercise is used by a plan or your workout history. Remove it from those first." = "这个动作正被某个训练计划或历史记录使用。请先从那里移除。";
+"“%@” will be permanently removed." = "“%@” 将被永久删除。";
