@@ -1338,6 +1338,25 @@ private struct HaloRing: View {
 
 // MARK: - InlinePlaylist (简化版)
 
+/// 进度环命中区用的扇形 Shape — 从圆心到对应弧段的饼形, 让每组的 tap 区域足够大.
+/// 各扇形互不重叠 (按 fraction 划分整圆), tap 精确落到对应那一组.
+private struct RingWedge: Shape {
+    let startFraction: Double
+    let endFraction: Double
+    func path(in rect: CGRect) -> Path {
+        var p = Path()
+        let c = CGPoint(x: rect.midX, y: rect.midY)
+        let r = min(rect.width, rect.height) / 2
+        p.move(to: c)
+        p.addArc(center: c, radius: r,
+                 startAngle: .degrees(startFraction * 360 - 90),
+                 endAngle: .degrees(endFraction * 360 - 90),
+                 clockwise: false)
+        p.closeSubpath()
+        return p
+    }
+}
+
 private struct InlinePlaylist: View {
     let plan: Plan?
     let exById: [String: Exercise]
@@ -1407,24 +1426,47 @@ private struct InlinePlaylist: View {
         return nil
     }
 
-    /// 竖向进度条 — 替代旧顶部 TimelineBar 的单个动作那一截, 立起来放行左侧.
-    /// 每段 = 一组: 当前=白, 真做完=accent, 其它=灰. 从上到下. tap 段 → 跳到那一组.
+    /// 进度环 — 替代旧顶部 TimelineBar / 竖条. 一组一段弧, 当前=白 / 做完=accent / 其它=灰,
+    /// 从顶部顺时针. 点某段弧 → 跳到那一组 (跟旧顶部进度条每段同逻辑, 只是变成环形).
+    /// 中心显示总组数 (替代旧 "x/total" 分数). 只在"当前动作"那一行替换缩略图 (caller 控制).
     @ViewBuilder
-    private func verticalSetBar(stepId: String) -> some View {
+    private func progressRing(stepId: String) -> some View {
         let segs = exerciseSegments(forStepId: stepId)
-        VStack(spacing: 2) {
-            ForEach(Array(segs.enumerated()), id: \.element.idx) { _, item in
+        let n = max(segs.count, 1)
+        let gap: Double = n > 1 ? 0.06 : 0   // 段间留 6% 空隙, lineCap .round 让缺口柔和
+        ZStack {
+            // 视觉环 — padding 让 5pt 描边不被 56 frame 裁切
+            ZStack {
+                Circle()
+                    .stroke(MasoColor.textFaint.opacity(0.18), lineWidth: 5)
+                ForEach(Array(segs.enumerated()), id: \.element.idx) { i, item in
+                    Circle()
+                        .trim(from: Double(i) / Double(n) + gap / 2,
+                              to: Double(i + 1) / Double(n) - gap / 2)
+                        .stroke(setBarColor(idx: item.idx, stepId: stepId, setN: item.setN),
+                                style: StrokeStyle(lineWidth: 5, lineCap: .round))
+                        .rotationEffect(.degrees(-90))   // trim 0 起点转到正上方 12 点
+                }
+            }
+            .padding(2.5)
+            // 中心: 总组数
+            Text("\(segs.count)")
+                .font(.system(size: 20, weight: .bold).monospacedDigit())
+                .foregroundStyle(MasoColor.text)
+            // 命中区 — 每组一个扇形 Button (扇形互不重叠 → tap 精确落到对应组).
+            // 在外层 onJump Button 之内, 但子 Button 优先级高于父 (跟缩略图 Button 同模式).
+            ForEach(Array(segs.enumerated()), id: \.element.idx) { i, item in
                 Button(action: { onJumpSegment?(item.idx) }) {
-                    RoundedRectangle(cornerRadius: 1.5)
-                        .fill(setBarColor(idx: item.idx, stepId: stepId, setN: item.setN))
-                        .frame(width: 4)
-                        .frame(maxHeight: .infinity)
+                    Rectangle()
+                        .fill(Color.clear)
+                        .contentShape(RingWedge(startFraction: Double(i) / Double(n),
+                                                endFraction: Double(i + 1) / Double(n)))
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel(String(format: NSLocalizedString("Set %d", comment: ""), item.setN))
             }
         }
-        .frame(width: 4)
+        .frame(width: 56, height: 56)
     }
 
     private func setBarColor(idx: Int, stepId: String, setN: Int) -> Color {
@@ -1534,25 +1576,28 @@ private struct InlinePlaylist: View {
         // 整体调大一档 (跟 iOS HIG 列表 cell 64pt 视觉一致): 图片 40→56, 名字 13→15pt,
         // 当前指示圆 6→7, 行内 spacing + padding 同步放大.
         return VStack(spacing: 0) {
-          HStack(alignment: .center, spacing: 8) {
-            // J5: 竖向进度条 — 行左侧, 每段一组. 在 jump Button 之外, 段 tap 不被整行 tap 吞.
-            verticalSetBar(stepId: step.id)
             Button(action: { onJump(step.id) }) {
             HStack(spacing: 14) {
-                Button(action: { onTapImage?(ex) }) {
-                    ExerciseImage(
-                        category: ex.category,
-                        imageFolder: ex.imageFolder,
-                        customImageData: ex.customImageData,
-                        cornerRadius: 8,
-                        size: 56,
-                        animated: false  // 列表行不动, 节省 CPU + 减少干扰
-                    )
-                    // 已完成 step 缩略图整体淡化 — 暗示"这一项已经过了, 不再是焦点".
-                    .opacity(isCompleted ? 0.45 : 1)
+                // 当前动作行: 缩略图位置换成进度环 (一组一段弧, 点段=跳到那一组);
+                // 其它行保留缩略图. 旧的行左侧竖条已废 — 进度收进环里, 跟缩略图占同一个槽位.
+                if isCurrent {
+                    progressRing(stepId: step.id)
+                } else {
+                    Button(action: { onTapImage?(ex) }) {
+                        ExerciseImage(
+                            category: ex.category,
+                            imageFolder: ex.imageFolder,
+                            customImageData: ex.customImageData,
+                            cornerRadius: 8,
+                            size: 56,
+                            animated: false  // 列表行不动, 节省 CPU + 减少干扰
+                        )
+                        // 已完成 step 缩略图整体淡化 — 暗示"这一项已经过了, 不再是焦点".
+                        .opacity(isCompleted ? 0.45 : 1)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(String(format: NSLocalizedString("Show details for %@", comment: "exercise detail a11y"), ex.displayName))
                 }
-                .buttonStyle(.plain)
-                .accessibilityLabel(String(format: NSLocalizedString("Show details for %@", comment: "exercise detail a11y"), ex.displayName))
                 VStack(alignment: .leading, spacing: 5) {
                     HStack(spacing: 7) {
                         if isCompleted {
@@ -1574,11 +1619,12 @@ private struct InlinePlaylist: View {
                             .strikethrough(isCompleted, color: MasoColor.textDim)
                     }
                     HStack(spacing: 5) {
-                        // 进度: 当前正在做的 step 用 currentSet; 其他用 completedSetsByStep.
-                        // 已完成的 step → "3/3", 还没开始的 → "0/3", 当前 → "2/3".
-                        // 让 playlist 上每一行都能看出整体进展, 不只是当前那行.
-                        Text("\(done)/\(step.sets)")
-                            .font(.system(size: 12).monospacedDigit())
+                        // 当前行的组进度由进度环展示 (环中心已是总组数), 这里不重复;
+                        // 非当前行直接显示总组数 (替代旧 "x/total" 分数样式). reps · weight 照常.
+                        if !isCurrent {
+                            Text(String(format: NSLocalizedString("%d sets", comment: "total sets"), step.sets))
+                                .font(.system(size: 12).monospacedDigit())
+                        }
                         if let r = step.reps { Text("× \(r)").font(.system(size: 12).monospacedDigit()) }
                         if let w = step.weight, w > 0 { Text("· \(Int(w)) kg").font(.system(size: 12).monospacedDigit()) }
                     }
@@ -1608,7 +1654,6 @@ private struct InlinePlaylist: View {
             )
             }
             .buttonStyle(.plain)
-          }
           // J3: 动作间休息 — 显示在两动作之间, 不可拖排序 (它是 step 行尾部元素, 跟着动作走).
           if let restSec = crossRestDuration(afterStepId: step.id) {
               restRow(seconds: restSec)
