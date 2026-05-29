@@ -743,3 +743,7 @@
 
 /* ── Player metric labels ── */
 "Time" = "时间";
+
+/* ── Player playlist rests/sets ── */
+"Rest %@" = "休息 %@";
+"Set %d" = "第 %d 组";

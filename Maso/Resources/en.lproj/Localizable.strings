@@ -744,3 +744,7 @@
 
 /* ── Player metric labels ── */
 "Time" = "Time";
+
+/* ── Player playlist rests/sets ── */
+"Rest %@" = "Rest %@";
+"Set %d" = "Set %d";

@@ -179,28 +179,16 @@ struct PlanPlayerScreen: View {
                         .background(bottomInfoGradient)
                     }
 
-                    // 3) 顶部叠加: TimelineBar (训练进度条).
-                    //    drag handle 已由 sheet 容器的 .presentationDragIndicator(.visible)
-                    //    在 sheet 边缘渲染原生系统小条 — 不再需要在 sheet 内容里自己画.
-                    //    旧版用自定义 DragHandle, rest 段图片 + 0.55 黑 mask 让它视觉太弱看不见, 换系统的就稳.
-                    TimelineBar(
-                        segments: store.segments,
-                        currentIndex: store.session?.segmentIndex ?? 0,
-                        completedSets: store.session?.completedSets ?? [],
-                        onJump: { store.setIndex($0) }
+                    // 3) 顶部进度条已移除 — 进度现在拆成竖条放在 playlist 每个动作左侧 (见 InlinePlaylist
+                    //    verticalSetBar). 顶部只留一层很浅的渐变让 sheet drag indicator 在动图上可见.
+                    LinearGradient(
+                        colors: [.black.opacity(0.45), .clear],
+                        startPoint: .top, endPoint: .bottom
                     )
-                    .padding(.top, 12)  // 给 sheet drag indicator 留位置, 不跟它挤在一起
-                    .background(alignment: .top) {
-                        // 一层渐变背板: 从 sheet 顶向下延伸 ~140pt 后 fade 到 transparent
-                        // 跟 TimelineBar 在 z-轴上 stack (而非位置上 stack), 不占行高
-                        LinearGradient(
-                            colors: [.black.opacity(0.65), .black.opacity(0.25), .clear],
-                            startPoint: .top, endPoint: .bottom
-                        )
-                        .frame(height: 140)
-                        .ignoresSafeArea(edges: .top)
-                        .allowsHitTesting(false)
-                    }
+                    .frame(height: 90)
+                    .frame(maxWidth: .infinity, alignment: .top)
+                    .ignoresSafeArea(edges: .top)
+                    .allowsHitTesting(false)
 
                     // 4) 最顶层: rest 段倒计时圆环 — 必须在底部渐变 + TimelineBar 之上,
                     //    否则圆环被 bottomInfoGradient 的 fade-out 区盖住一半.
@@ -582,7 +570,12 @@ struct PlanPlayerScreen: View {
                     editingStepId = stepId  // 弹 EditAnyStepSheet
                 },
                 onAddStep: { addStepPickerOpen = true },
-                showHeader: false  // 自定义 dragHandleBar 已经做了 header, InlinePlaylist 内部别再渲一次
+                showHeader: false,  // 自定义 dragHandleBar 已经做了 header, InlinePlaylist 内部别再渲一次
+                // J5: 竖向进度条 + 动作间休息行的数据源
+                segments: store.segments,
+                currentIndex: store.session?.segmentIndex ?? 0,
+                completedSets: store.session?.completedSets ?? [],
+                onJumpSegment: { idx in store.setIndex(idx) }
             )
         }
         // 总高度 = 拖把手区 + 用户拖出来的内容高度 + home indicator safe area.
@@ -1368,9 +1361,76 @@ private struct InlinePlaylist: View {
     var onAddStep: (() -> Void)? = nil
     /// 是否在内部渲 "PLAYLIST" header 行. false → caller (PlanPlayer 的 dragHandleBar) 自己渲, 避免重复.
     var showHeader: Bool = true
+    /// J5: 竖向进度条需要的 — 全部 segments + 当前 segment index + 真做完的 set 集合 +
+    /// 按 segment index 跳转. 竖条每段 = 一组, tap = 跳到那一组 (跟旧顶部 TimelineBar 同逻辑).
+    var segments: [Segment] = []
+    var currentIndex: Int = 0
+    var completedSets: Set<TrainingSessionStore.CompletedSet> = []
+    var onJumpSegment: ((Int) -> Void)? = nil
 
     private var steps: [PlanStep] {
         plan?.steps ?? []
+    }
+
+    /// 某 step 的所有 exercise segment (按 set 顺序) + 它们在 segments 里的原始 index.
+    /// 竖向进度条用 — 每个 set 一段.
+    private func exerciseSegments(forStepId stepId: String) -> [(idx: Int, setN: Int)] {
+        var out: [(Int, Int)] = []
+        for (i, seg) in segments.enumerated() {
+            guard seg.stepId == stepId else { continue }
+            if case .exercise(_, let setN, _, _, _, _, _) = seg.kind {
+                out.append((i, setN))
+            }
+        }
+        return out
+    }
+
+    /// 某 step 之后、下一动作之前的"组间(动作间)休息"时长. 没有 → nil (最后一个动作).
+    /// 直接从 segments 扫: 该 step 最后一个 exercise seg 之后、下一个 *不同 step* 的 exercise seg
+    /// 之前的那个 rest seg.
+    private func crossRestDuration(afterStepId stepId: String) -> Int? {
+        // 找该 step 最后一个 exercise seg 的位置
+        var lastIdx: Int? = nil
+        for (i, seg) in segments.enumerated() where seg.stepId == stepId && seg.isExercise {
+            lastIdx = i
+        }
+        guard let last = lastIdx else { return nil }
+        // 从它之后找: 先遇到 rest 记下时长, 遇到 *不同 step* 的 exercise 就返回该时长
+        var restDur: Int? = nil
+        for i in (last + 1)..<segments.count {
+            let seg = segments[i]
+            if case .rest(let d) = seg.kind { restDur = d }
+            else if seg.isExercise {
+                return seg.stepId != stepId ? restDur : nil  // 下一个是别的动作才算"动作间休息"
+            }
+        }
+        return nil
+    }
+
+    /// 竖向进度条 — 替代旧顶部 TimelineBar 的单个动作那一截, 立起来放行左侧.
+    /// 每段 = 一组: 当前=白, 真做完=accent, 其它=灰. 从上到下. tap 段 → 跳到那一组.
+    @ViewBuilder
+    private func verticalSetBar(stepId: String) -> some View {
+        let segs = exerciseSegments(forStepId: stepId)
+        VStack(spacing: 2) {
+            ForEach(Array(segs.enumerated()), id: \.element.idx) { _, item in
+                Button(action: { onJumpSegment?(item.idx) }) {
+                    RoundedRectangle(cornerRadius: 1.5)
+                        .fill(setBarColor(idx: item.idx, stepId: stepId, setN: item.setN))
+                        .frame(width: 4)
+                        .frame(maxHeight: .infinity)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(String(format: NSLocalizedString("Set %d", comment: ""), item.setN))
+            }
+        }
+        .frame(width: 4)
+    }
+
+    private func setBarColor(idx: Int, stepId: String, setN: Int) -> Color {
+        if idx == currentIndex { return MasoColor.text }  // 当前组 = 白
+        if completedSets.contains(.init(stepId: stepId, setN: setN)) { return MasoColor.accent }  // 做完 = 绿
+        return MasoColor.textFaint.opacity(0.35)  // 未做 / 跳过 = 灰
     }
 
     var body: some View {
@@ -1473,7 +1533,11 @@ private struct InlinePlaylist: View {
         // Button 包整行处理 jump, 图片单独 Button 优先级高于外层, tap 图 → 详情而不是 jump.
         // 整体调大一档 (跟 iOS HIG 列表 cell 64pt 视觉一致): 图片 40→56, 名字 13→15pt,
         // 当前指示圆 6→7, 行内 spacing + padding 同步放大.
-        return Button(action: { onJump(step.id) }) {
+        return VStack(spacing: 0) {
+          HStack(alignment: .center, spacing: 8) {
+            // J5: 竖向进度条 — 行左侧, 每段一组. 在 jump Button 之外, 段 tap 不被整行 tap 吞.
+            verticalSetBar(stepId: step.id)
+            Button(action: { onJump(step.id) }) {
             HStack(spacing: 14) {
                 Button(action: { onTapImage?(ex) }) {
                     ExerciseImage(
@@ -1542,9 +1606,30 @@ private struct InlinePlaylist: View {
                 isCurrent ? MasoColor.accent
                 : (isCompleted ? MasoColor.textDim : MasoColor.text)
             )
+            }
+            .buttonStyle(.plain)
+          }
+          // J3: 动作间休息 — 显示在两动作之间, 不可拖排序 (它是 step 行尾部元素, 跟着动作走).
+          if let restSec = crossRestDuration(afterStepId: step.id) {
+              restRow(seconds: restSec)
+          }
         }
-        .buttonStyle(.plain)
         .padding(.horizontal, MasoMetrics.rowPaddingH)
+    }
+
+    /// 动作间休息行 — 细、淡、居中, hourglass + 时长. 纯展示, 不参与排序 / 跳转.
+    @ViewBuilder
+    private func restRow(seconds: Int) -> some View {
+        HStack(spacing: 6) {
+            Image(systemName: "hourglass")
+                .font(.system(size: 9, weight: .heavy))
+            Text(String(format: NSLocalizedString("Rest %@", comment: "rest between exercises"), formatRemaining(seconds)))
+                .font(.system(size: 10, weight: .bold))
+                .tracking(0.5)
+        }
+        .foregroundStyle(MasoColor.textFaint)
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 5)
     }
 
     /// 当前 step 用 currentSet (正在做的那组); 否则用已完成组数 (默认 0).
