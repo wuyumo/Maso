@@ -112,13 +112,9 @@
 "Tell us about your training" = "先聊聊你的训练偏好";
 "Three quick questions — we'll use them to recommend a plan that fits." = "三个小问题, 选完直接确认 — 后续会按你的情况排出推荐计划。";
 "About you" = "你的基础信息";
-"Age" = "年龄";
 "How many days a week do you train?" = "一周通常训练几次?";
 "Which muscles do you want to focus on?" = "想加强哪些肌群?";
 "Confirm & build my plan" = "确认, 生成计划";
-"Male" = "男";
-"Female" = "女";
-"Other" = "其他";
 
 /* ── Muscle group display names ─────────────────────── */
 "Chest" = "胸";
@@ -205,7 +201,6 @@
 "Workout calendar" = "训练日历";
 "Previous month" = "上个月";
 "Next month" = "下个月";
-"Days this month" = "本月训练天数";
 "Current streak" = "连续训练";
 
 /* ── HealthKit + Training freq ── */
@@ -277,7 +272,6 @@
 "Keep current" = "保留当前";
 "OK" = "好的";
 "One-time purchase. No subscription, no recurring charges." = "一次性购买。无订阅、无周期扣费。";
-"Replace" = "替换";
 "Restart Maso to apply" = "重启 Maso 应用更改";
 "Starting this will replace the workout you're in. Continue?" = "开始这个会替换当前进行中的训练,继续吗?";
 "Language" = "语言";
@@ -415,7 +409,6 @@
 "Muscle Status" = "肌肉状态";
 
 /* Settings: Profile + Muscles to focus */
-"" = "";
 
 /* Settings: Profile + Muscles to focus */
 "Profile" = "个人信息";
@@ -430,7 +423,6 @@
 "Pick the muscle groups you want to prioritize. Today's recommendations and AI plans will favor these." = "选择你想优先加强的肌群。今日推荐和 AI 训练计划会优先围绕这些肌群安排。";
 
 /* Share customize sheet — add photo flow */
-"Customize" = "自定义";
 "Share Card" = "分享卡片";
 "Camera" = "相机";
 "Photos" = "相册";
@@ -440,7 +432,6 @@
 "Hide older workouts" = "收起较早的训练";
 "My Muscle Status" = "我的肌肉状态";
 "My Week" = "我的一周";
-"My Workout" = "我的训练";
 "Save" = "保存";
 "Share" = "分享";
 "Show %d older workout(s)" = "显示 %d 条更早的训练";
@@ -683,3 +674,49 @@
 "Explosive tempo" = "爆发节奏";
 "Isometric hold" = "静态保持";
 "Unilateral" = "单边";
+
+/* ── Pre-launch batch C: this-session new strings ── */
+"%d specialized / unusual exercises (foam rollers, battle ropes, machine isolations, etc.)" = "%d 个专项 / 冷门动作 (泡沫轴、战绳、器械孤立等)";
+"12–20 reps, lighter weight, short rest" = "12–20 次 · 较轻重量 · 短歇";
+"1–5 reps, heavy weight, long rest" = "1–5 次 · 大重量 · 长歇";
+"6–12 reps, moderate weight, ~90s rest" = "6–12 次 · 中等重量 · 约 90 秒歇";
+"Add" = "添加";
+"Add a name, an image, and tag it to a muscle. Best for moves we don't have." = "填名字、配图、选肌群。适合库里没有的动作。";
+"Add exercise" = "添加动作";
+"Back to standard library" = "返回标准库";
+"Browse rare exercises" = "浏览冷门动作";
+"Change" = "更换";
+"Couldn't save exercise" = "无法保存动作";
+"Create your own" = "自己创建";
+"Custom exercises live only on this device. You can use them in plans and they'll appear in all your pickers." = "自定义动作只存在本机。可加进训练计划，并出现在所有动作选择列表中。";
+"Days this week" = "本周天数";
+"Default sets" = "默认组数";
+"Discard" = "丢弃";
+"Discard & close" = "丢弃并关闭";
+"Discard changes?" = "丢弃改动？";
+"Edit next exercise" = "编辑下一个动作";
+"Endurance" = "耐力";
+"Exercise name" = "动作名称";
+"Exercises per session" = "每次动作数";
+"Foam rolls, battle ropes, machine isolations and other specialized moves we corralled." = "泡沫轴、战绳、器械孤立等被收纳的专项动作。";
+"Hide variants" = "收起变种";
+"Hypertrophy" = "增肌";
+"New exercise" = "新动作";
+"No rare exercises match" = "没有匹配的冷门动作";
+"No rare exercises match your search" = "没有匹配搜索的冷门动作";
+"Pick how to add an exercise. Either build your own from scratch, or adopt one from our specialized library." = "选择添加方式：自己从头创建，或从专项库中采纳一个。";
+"Primary muscle" = "主要肌群";
+"Rare exercises" = "冷门动作";
+"Required. Shown in plans and history." = "必填。显示在训练计划和记录中。";
+"Return to the everyday library" = "返回常用动作库";
+"Search" = "搜索";
+"Sets this week" = "本周组数";
+"Show %d variants" = "显示 %d 个变种";
+"Time's up" = "时间到";
+"Training goal" = "训练目标";
+"You've adopted everything in the rare library" = "冷门库里的动作都已采纳";
+"Your edits to this workout's exercises won't be saved to the plan. Completed sets are already recorded." = "本次训练对动作的改动不会保存到计划。已完成的组已记录。";
+
+/* ── Batch C: onboarding gender/units ── */
+"%d kg" = "%d 公斤";
+"%d yrs" = "%d 岁";

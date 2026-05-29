@@ -40,7 +40,9 @@ func relativeDay(_ date: Date, now: Date = Date()) -> String {
         return String(format: NSLocalizedString(key, comment: ""), daysAgo)
     }
     let fmt = DateFormatter()
-    fmt.locale = Locale.current  // 跟系统语言走 — 中文环境会显示 "5月8日"
+    // P2-2: 跟 in-app 选的语言走 (LanguageManager), 不是 Locale.current —
+    // 否则用户在 app 内切语言后, History 日历月份跟新语言、session 卡日期却停在旧语言.
+    fmt.locale = LanguageManager.currentLocale
     fmt.setLocalizedDateFormatFromTemplate("MMMd")
     return fmt.string(from: date)
 }

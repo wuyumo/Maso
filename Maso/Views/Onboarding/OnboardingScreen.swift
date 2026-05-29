@@ -42,7 +42,9 @@ struct OnboardingScreen: View {
                                 gender = g
                                 if step == 1 { withAnimation { step = 2 } }
                             } label: {
-                                Text(genderLabel(g))
+                                // P2-14: Text(LocalizedStringKey) — genderLabel 返回 key,
+                                // 否则 Text(String) 走非本地化重载, 中文环境也显英文 "Male".
+                                Text(LocalizedStringKey(genderLabel(g)))
                                     .font(.system(size: 14, weight: .bold))
                                     .padding(.horizontal, 16).padding(.vertical, 8)
                                     .background(gender == g ? MasoColor.accent : MasoColor.surface)
@@ -54,13 +56,16 @@ struct OnboardingScreen: View {
                     HStack {
                         Text("Age")
                         Spacer()
-                        Stepper("\(age) yrs", value: $age, in: 12...90)
+                        // P2-14: 单位走本地化 format key ("%d yrs" / "%d kg") 而非硬编码英文后缀.
+                        Stepper(String(format: NSLocalizedString("%d yrs", comment: "age stepper"), age),
+                                value: $age, in: 12...90)
                     }
                     .font(.system(size: 14))
                     HStack {
                         Text("Weight")
                         Spacer()
-                        Stepper("\(Int(weight)) kg", value: $weight, in: 30...200)
+                        Stepper(String(format: NSLocalizedString("%d kg", comment: "weight stepper"), Int(weight)),
+                                value: $weight, in: 30...200)
                     }
                     .font(.system(size: 14))
                 }

@@ -6,7 +6,6 @@
 "Quick Workout" = "Quick Workout";
 
 /* ── Today screen ──────────────────────────────────── */
-"Today" = "Today";
 "Late Night" = "Late Night";
 "Good Morning" = "Good Morning";
 "Good Afternoon" = "Good Afternoon";
@@ -113,13 +112,9 @@
 "Tell us about your training" = "Tell us about your training";
 "Three quick questions — we'll use them to recommend a plan that fits." = "Three quick questions — we'll use them to recommend a plan that fits.";
 "About you" = "About you";
-"Age" = "Age";
 "How many days a week do you train?" = "How many days a week do you train?";
 "Which muscles do you want to focus on?" = "Which muscles do you want to focus on?";
 "Confirm & build my plan" = "Confirm & build my plan";
-"Male" = "Male";
-"Female" = "Female";
-"Other" = "Other";
 
 /* ── Muscle group display names ─────────────────────── */
 "Chest" = "Chest";
@@ -206,7 +201,6 @@
 "Workout calendar" = "Workout calendar";
 "Previous month" = "Previous month";
 "Next month" = "Next month";
-"Days this month" = "Days this month";
 "Current streak" = "Current streak";
 
 /* ── HealthKit + Training freq ── */
@@ -278,7 +272,6 @@
 "Keep current" = "Keep current";
 "OK" = "OK";
 "One-time purchase. No subscription, no recurring charges." = "One-time purchase. No subscription, no recurring charges.";
-"Replace" = "Replace";
 "Restart Maso to apply" = "Restart Maso to apply";
 "Starting this will replace the workout you're in. Continue?" = "Starting this will replace the workout you're in. Continue?";
 "Language" = "Language";
@@ -416,7 +409,6 @@
 "Muscle Status" = "Muscle Status";
 
 /* Settings: Profile + Muscles to focus */
-"" = "";
 
 /* Settings: Profile + Muscles to focus */
 "Profile" = "Profile";
@@ -431,7 +423,6 @@
 "Pick the muscle groups you want to prioritize. Today's recommendations and AI plans will favor these." = "Pick the muscle groups you want to prioritize. Today's recommendations and AI plans will favor these.";
 
 /* Share customize sheet — add photo flow */
-"Customize" = "Customize";
 "Share Card" = "Share Card";
 "Camera" = "Camera";
 "Photos" = "Photos";
@@ -441,7 +432,6 @@
 "Hide older workouts" = "Hide older workouts";
 "My Muscle Status" = "My Muscle Status";
 "My Week" = "My Week";
-"My Workout" = "My Workout";
 "Save" = "Save";
 "Share" = "Share";
 "Show %d older workout(s)" = "Show %d older workout(s)";
@@ -535,7 +525,6 @@
 /* PlanRationaleCard — Plans tab top */
 "FOR YOU" = "FOR YOU";
 "TRAINING PREFERENCES" = "TRAINING PREFERENCES";
-"Training Preferences" = "Training Preferences";
 "Adjust" = "Adjust";
 "%lld days / week" = "%lld days / week";
 "Focus: %@" = "Focus: %@";
@@ -686,3 +675,49 @@
 "Explosive tempo" = "Explosive tempo";
 "Isometric hold" = "Isometric hold";
 "Unilateral" = "Unilateral";
+
+/* ── Pre-launch batch C: this-session new strings ── */
+"%d specialized / unusual exercises (foam rollers, battle ropes, machine isolations, etc.)" = "%d specialized / unusual exercises (foam rollers, battle ropes, machine isolations, etc.)";
+"12–20 reps, lighter weight, short rest" = "12–20 reps, lighter weight, short rest";
+"1–5 reps, heavy weight, long rest" = "1–5 reps, heavy weight, long rest";
+"6–12 reps, moderate weight, ~90s rest" = "6–12 reps, moderate weight, ~90s rest";
+"Add" = "Add";
+"Add a name, an image, and tag it to a muscle. Best for moves we don't have." = "Add a name, an image, and tag it to a muscle. Best for moves we don't have.";
+"Add exercise" = "Add exercise";
+"Back to standard library" = "Back to standard library";
+"Browse rare exercises" = "Browse rare exercises";
+"Change" = "Change";
+"Couldn't save exercise" = "Couldn't save exercise";
+"Create your own" = "Create your own";
+"Custom exercises live only on this device. You can use them in plans and they'll appear in all your pickers." = "Custom exercises live only on this device. You can use them in plans and they'll appear in all your pickers.";
+"Days this week" = "Days this week";
+"Default sets" = "Default sets";
+"Discard" = "Discard";
+"Discard & close" = "Discard & close";
+"Discard changes?" = "Discard changes?";
+"Edit next exercise" = "Edit next exercise";
+"Endurance" = "Endurance";
+"Exercise name" = "Exercise name";
+"Exercises per session" = "Exercises per session";
+"Foam rolls, battle ropes, machine isolations and other specialized moves we corralled." = "Foam rolls, battle ropes, machine isolations and other specialized moves we corralled.";
+"Hide variants" = "Hide variants";
+"Hypertrophy" = "Hypertrophy";
+"New exercise" = "New exercise";
+"No rare exercises match" = "No rare exercises match";
+"No rare exercises match your search" = "No rare exercises match your search";
+"Pick how to add an exercise. Either build your own from scratch, or adopt one from our specialized library." = "Pick how to add an exercise. Either build your own from scratch, or adopt one from our specialized library.";
+"Primary muscle" = "Primary muscle";
+"Rare exercises" = "Rare exercises";
+"Required. Shown in plans and history." = "Required. Shown in plans and history.";
+"Return to the everyday library" = "Return to the everyday library";
+"Search" = "Search";
+"Sets this week" = "Sets this week";
+"Show %d variants" = "Show %d variants";
+"Time's up" = "Time's up";
+"Training goal" = "Training goal";
+"You've adopted everything in the rare library" = "You've adopted everything in the rare library";
+"Your edits to this workout's exercises won't be saved to the plan. Completed sets are already recorded." = "Your edits to this workout's exercises won't be saved to the plan. Completed sets are already recorded.";
+
+/* ── Batch C: onboarding gender/units ── */
+"%d kg" = "%d kg";
+"%d yrs" = "%d yrs";
