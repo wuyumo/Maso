@@ -108,6 +108,13 @@ struct CustomExerciseFormSheet: View {
     @State private var photoItem: PhotosPickerItem? = nil
     @State private var imageData: Data? = nil
     @State private var showingError: String? = nil
+    /// P1-6: 计量方式 — false = Reps & weight (.strength), true = Timed (秒, 非 strength → player 用 duration).
+    @State private var isTimed: Bool = false
+    /// P2-13: 照片加载/压缩中 — 显 spinner, 防用户以为没反应.
+    @State private var photoLoading: Bool = false
+
+    /// 自创动作名字上限 — 防 500 字垃圾名撑爆 share card / history.
+    private static let maxNameLength = 60
 
     /// "primary muscle" 给用户选的几个大肌群 — 跟 ExercisePickerSheet 顶部分类一致.
     private static let muscleOptions: [MuscleGroup] = [
@@ -142,6 +149,12 @@ struct CustomExerciseFormSheet: View {
                         TextField(NSLocalizedString("Exercise name", comment: ""), text: $name)
                             .foregroundStyle(MasoColor.text)
                             .submitLabel(.done)
+                            // P2-12: 硬截上限, 防超长名.
+                            .onChange(of: name) { _, newVal in
+                                if newVal.count > Self.maxNameLength {
+                                    name = String(newVal.prefix(Self.maxNameLength))
+                                }
+                            }
                     } footer: {
                         Text("Required. Shown in plans and history.")
                             .font(.system(size: 11))
@@ -173,6 +186,22 @@ struct CustomExerciseFormSheet: View {
                     }
                     .listRowBackground(MasoColor.surface)
 
+                    // P1-6: 计量方式 — Reps & weight vs Timed. 决定 player 显 reps×重量 还是秒倒计时.
+                    Section {
+                        Picker(NSLocalizedString("Measure by", comment: ""), selection: $isTimed) {
+                            Text("Reps & weight").tag(false)
+                            Text("Time (seconds)").tag(true)
+                        }
+                        .pickerStyle(.segmented)
+                    } footer: {
+                        Text(isTimed
+                             ? NSLocalizedString("For planks, stretches, carries, cardio intervals.", comment: "")
+                             : NSLocalizedString("For most strength moves.", comment: ""))
+                            .font(.system(size: 11))
+                            .foregroundStyle(MasoColor.textFaint)
+                    }
+                    .listRowBackground(MasoColor.surface)
+
                     Section {
                         Text("Custom exercises live only on this device. You can use them in plans and they'll appear in all your pickers.")
                             .font(.system(size: 12))
@@ -201,12 +230,24 @@ struct CustomExerciseFormSheet: View {
         .presentationBackground(MasoColor.background)
         .onChange(of: photoItem) { _, newItem in
             guard let newItem else { return }
+            photoLoading = true
             Task {
-                if let raw = try? await newItem.loadTransferable(type: Data.self),
-                   let ui = UIImage(data: raw),
-                   // 压缩成 JPEG 0.7 — settings.customExercises 进 maso-data.json, 一张图 ~100KB.
-                   let jpeg = ui.jpegData(compressionQuality: 0.7) {
-                    await MainActor.run { imageData = jpeg }
+                // P2-13: 降采样到 ≤800px 再 JPEG 0.7 — 48MP HEIC 直存会几 MB 撑爆 maso-data.json.
+                // 失败 → 弹错, 不静默无反应.
+                guard let raw = try? await newItem.loadTransferable(type: Data.self),
+                      let ui = UIImage(data: raw) else {
+                    await MainActor.run {
+                        photoLoading = false
+                        showingError = NSLocalizedString("Couldn't load that image. Try another.", comment: "")
+                    }
+                    return
+                }
+                let scaled = Self.downscale(ui, maxDimension: 800)
+                let jpeg = scaled.jpegData(compressionQuality: 0.7)
+                await MainActor.run {
+                    photoLoading = false
+                    if let jpeg { imageData = jpeg }
+                    else { showingError = NSLocalizedString("Couldn't process that image. Try another.", comment: "") }
                 }
             }
         }
@@ -282,18 +323,52 @@ struct CustomExerciseFormSheet: View {
         .frame(maxWidth: .infinity)
         .frame(height: 160)  // 用户要求保留这个比例
         .contentShape(Rectangle())
+        .overlay {
+            if photoLoading {
+                ZStack {
+                    Color.black.opacity(0.35)
+                    ProgressView().tint(.white)
+                }
+                .clipShape(RoundedRectangle(cornerRadius: 14))
+            }
+        }
+    }
+
+    /// P2-13: 等比降采样到 maxDimension. 大图直接 JPEG 会几 MB; 800px 对缩略图 / 详情够清晰.
+    private static func downscale(_ image: UIImage, maxDimension: CGFloat) -> UIImage {
+        let w = image.size.width, h = image.size.height
+        let longSide = max(w, h)
+        guard longSide > maxDimension, longSide > 0 else { return image }
+        let scale = maxDimension / longSide
+        let newSize = CGSize(width: w * scale, height: h * scale)
+        let fmt = UIGraphicsImageRendererFormat.default()
+        fmt.scale = 1  // 不再乘屏幕 scale — 我们已是目标像素尺寸
+        return UIGraphicsImageRenderer(size: newSize, format: fmt).image { _ in
+            image.draw(in: CGRect(origin: .zero, size: newSize))
+        }
     }
 
     private func save() {
         let trimmed = name.trimmingCharacters(in: .whitespaces)
         guard !trimmed.isEmpty else { return }
+        // P2-12: 重名检查 (大小写不敏感) — 防 3 个都叫 "Curl" + 触发幽灵变种.
+        let dup = data.settings.customExercises.contains {
+            $0.displayName.compare(trimmed, options: .caseInsensitive) == .orderedSame
+            || $0.name.compare(trimmed, options: .caseInsensitive) == .orderedSame
+        }
+        if dup {
+            showingError = NSLocalizedString("You already have a custom exercise with this name.", comment: "")
+            return
+        }
 
         // id 用 "custom-{uuid}" 防跟 bundle ID 冲突. exById lookup 透明命中.
         let newId = "custom-\(UUID().uuidString.lowercased().prefix(8))"
+        // P1-6: Timed → 非 strength category (player 走 duration); 否则 .strength (reps×重量).
+        let category: ExerciseCategory = isTimed ? .mobility : .strength
         let ex = Exercise(
             id: newId,
             name: trimmed,
-            category: .strength,
+            category: category,
             tags: [selectedMuscle.displayName],
             primaryMuscles: [selectedMuscle],
             muscleGroups: [selectedMuscle],
@@ -410,6 +485,7 @@ struct NicheLibraryBrowseSheet: View {
             ExerciseImage(
                 category: ex.category,
                 imageFolder: ex.imageFolder,
+                customImageData: ex.customImageData,
                 cornerRadius: 8,
                 size: 48,
                 animated: false

@@ -728,3 +728,13 @@
 "Remove from library" = "Remove from library";
 "This exercise is used by a plan or your workout history. Remove it from those first." = "This exercise is used by a plan or your workout history. Remove it from those first.";
 "“%@” will be permanently removed." = "“%@” will be permanently removed.";
+
+/* ── Batch F: custom measure/photo ── */
+"Couldn't load that image. Try another." = "Couldn't load that image. Try another.";
+"Couldn't process that image. Try another." = "Couldn't process that image. Try another.";
+"For most strength moves." = "For most strength moves.";
+"For planks, stretches, carries, cardio intervals." = "For planks, stretches, carries, cardio intervals.";
+"Measure by" = "Measure by";
+"Reps & weight" = "Reps & weight";
+"Time (seconds)" = "Time (seconds)";
+"You already have a custom exercise with this name." = "You already have a custom exercise with this name.";

@@ -727,3 +727,13 @@
 "Remove from library" = "移出我的库";
 "This exercise is used by a plan or your workout history. Remove it from those first." = "这个动作正被某个训练计划或历史记录使用。请先从那里移除。";
 "“%@” will be permanently removed." = "“%@” 将被永久删除。";
+
+/* ── Batch F: custom measure/photo ── */
+"Couldn't load that image. Try another." = "无法加载该图片，换一张试试。";
+"Couldn't process that image. Try another." = "无法处理该图片，换一张试试。";
+"For most strength moves." = "适合大多数力量动作。";
+"For planks, stretches, carries, cardio intervals." = "适合平板支撑、拉伸、负重行走、有氧间歇。";
+"Measure by" = "计量方式";
+"Reps & weight" = "次数与重量";
+"Time (seconds)" = "时间（秒）";
+"You already have a custom exercise with this name." = "已有同名的自定义动作。";

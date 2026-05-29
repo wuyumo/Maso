@@ -29,22 +29,24 @@ final class DataStore {
     ///
     /// 2026-05 schema 升级后必须双 key, 否则现有 plan 步骤全部 lookup 失败 → inferredMuscles
     /// 空 → BodyHint 没高亮 / Plans 列表里动作图标全 fallback placeholder.
-    var exById: [String: Exercise] {
+    /// P2-11: bundle 部分 (~1000 动作 + imageFolder alias) 只构建一次 —— exercises 是 app 生命周期内
+    /// 不变的静态库, 没必要每次访问 exById 都重建 3 遍. lazy 建好后缓存.
+    // @ObservationIgnored — lazy 在 @Observable 下不允许被 macro 追踪; 这是不可变缓存, 不需要观察.
+    @ObservationIgnored private lazy var _bundleExById: [String: Exercise] = {
         var m: [String: Exercise] = [:]
-        for ex in exercises {
-            m[ex.id] = ex
-        }
-        // 用户自创动作也得能 lookup — plan step 引用 custom-* id 时, PlanRow / WorkoutCard / 训练播放
-        // 都靠 exById 拿 exercise object.
-        for ex in settings.customExercises {
-            m[ex.id] = ex
-        }
+        for ex in exercises { m[ex.id] = ex }
         // Legacy alias — 不覆盖已存在的 key.
-        for ex in exercises {
-            if let folder = ex.imageFolder, m[folder] == nil {
-                m[folder] = ex
-            }
-        }
+        for ex in exercises { if let folder = ex.imageFolder, m[folder] == nil { m[folder] = ex } }
+        return m
+    }()
+
+    var exById: [String: Exercise] {
+        // 0 个自创动作 (绝大多数用户) → 直接返回缓存, O(1) 无拷贝.
+        // 有自创动作 → 在缓存副本上 merge (custom 数量很小, 一次 COW 拷贝可接受).
+        let custom = settings.customExercises
+        if custom.isEmpty { return _bundleExById }
+        var m = _bundleExById
+        for ex in custom { m[ex.id] = ex }
         return m
     }
 

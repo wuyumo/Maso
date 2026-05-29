@@ -69,10 +69,44 @@ enum ExerciseGrouping {
         }
         return orderedKeys.compactMap { key -> ExerciseGroup? in
             guard let items = buckets[key], !items.isEmpty else { return nil }
-            // canonical: name 严格等于 base 的那一项 (没括号, 没 trailing 信息). 没找到就拿第一个.
-            let canonical = items.first(where: { $0.name == key }) ?? items[0]
-            let variants = items.filter { $0.id != canonical.id }
+            // canonical 选取:
+            //   1. name 严格等于 base 的那一项 (没括号 → 真正的"基础动作")
+            //   2. 没有裸基础名 (orphan group, ~10% 的组) → 按器械/机制优先级挑, 不是随机 items[0],
+            //      否则会出现 "Calf Raise (Band)" / "Bicep Curl (Band)" 当默认推荐的怪象 (P1-4).
+            let canonical = items.first(where: { $0.name == key })
+                ?? items.min(by: { a, b in
+                    let ra = canonicalRank(a), rb = canonicalRank(b)
+                    return ra != rb ? ra < rb : a.name < b.name  // 同 rank 按名字定序, 不依赖 JSON 顺序
+                })
+                ?? items[0]
+            // P1-8: 去掉跟 canonical 完全同 displayName 的"幽灵变种" (DB 里 17 对重名动作),
+            // 否则展开会看到两行一模一样的名字 + "+N" 计数虚高.
+            var seenNames = Set([canonical.displayName])
+            let variants = items.filter { v -> Bool in
+                guard v.id != canonical.id else { return false }
+                return seenNames.insert(v.displayName).inserted
+            }
             return ExerciseGroup(baseName: key, canonical: canonical, variants: variants)
         }
+    }
+
+    /// orphan group 选 canonical 用的优先级 (越小越优先). 偏好"自由重量 / 自重 / 复合"作为默认,
+    /// 把 band / machine / 专项器械往后排. 同 rank 再按 name 字母序保证确定性 (不依赖 JSON 顺序).
+    private static func canonicalRank(_ ex: Exercise) -> Int {
+        let eq = ex.equipment ?? ""
+        let base: Int
+        switch eq {
+        case "body_only":            base = 0
+        case "barbell":              base = 1
+        case "dumbbell":             base = 2
+        case "cable":                base = 3
+        case "machine", "smith_machine": base = 4
+        case "kettlebell":           base = 5
+        case "band", "resistance_band": base = 8   // band 往后 — 不该当默认
+        default:                     base = 6
+        }
+        // compound 比 isolation 略优先 (基础动作通常是复合)
+        let mech = ex.mechanic == .compound ? 0 : 1
+        return base * 2 + mech
     }
 }

@@ -497,6 +497,7 @@ struct ExerciseDetailSheet: View {
                     ExerciseImage(
                         category: exercise.category,
                         imageFolder: exercise.imageFolder,
+                        customImageData: exercise.customImageData,
                         cornerRadius: 14,
                         size: 220,
                         animated: true

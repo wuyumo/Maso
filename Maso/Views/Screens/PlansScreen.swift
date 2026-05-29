@@ -1067,6 +1067,7 @@ private struct PlanStepRow: View {
                 ExerciseImage(
                     category: exercise.category,
                     imageFolder: exercise.imageFolder,
+                    customImageData: exercise.customImageData,
                     cornerRadius: 8,
                     size: 56,
                     animated: false
@@ -1118,6 +1119,7 @@ private struct PlanStepCard: View {
                     ExerciseImage(
                         category: exercise.category,
                         imageFolder: exercise.imageFolder,
+                        customImageData: exercise.customImageData,
                         cornerRadius: 8,
                         size: geo.size.width,
                         animated: false
@@ -1175,6 +1177,7 @@ private struct EditStepView: View {
                     ExerciseImage(
                         category: exercise.category,
                         imageFolder: exercise.imageFolder,
+                        customImageData: exercise.customImageData,
                         cornerRadius: 16,
                         size: geo.size.width,
                         animated: true
@@ -2002,6 +2005,12 @@ struct ExercisePickerSheet: View {
         }
         .listStyle(.plain)
         .scrollContentBackground(.hidden)
+        // P2-10: 任何 filter / 搜索 / 库切换变化 → 收起手风琴, 避免残留某组展开态 (尤其 orphan
+        // group 的 id 含 filtered canonical, filter 变了 id 也变, 旧 expandedGroupKey 成孤儿).
+        .onChange(of: query) { _, _ in expandedGroupKey = nil }
+        .onChange(of: equipmentFilter) { _, _ in expandedGroupKey = nil }
+        .onChange(of: muscleFilter) { _, _ in expandedGroupKey = nil }
+        .onChange(of: nicheMode) { _, _ in expandedGroupKey = nil }
         // Body Map mode 启用 scroll tracking → BodyHint 跟着缩小
         .onScrollGeometryChange(for: CGFloat.self) { geo in
             geo.contentOffset.y

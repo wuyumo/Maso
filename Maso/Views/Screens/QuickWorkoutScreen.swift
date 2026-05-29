@@ -764,6 +764,7 @@ private struct QuickExerciseStep: View {
                     ExerciseImage(
                         category: ex.category,
                         imageFolder: ex.imageFolder,
+                        customImageData: ex.customImageData,
                         cornerRadius: 8,
                         size: 56,
                         animated: false

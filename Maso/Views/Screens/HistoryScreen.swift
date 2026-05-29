@@ -1138,6 +1138,7 @@ private struct ExerciseStatRow: View {
                 ExerciseImage(
                     category: stat.exercise.category,
                     imageFolder: stat.exercise.imageFolder,
+                    customImageData: stat.exercise.customImageData,
                     cornerRadius: 8,
                     size: 56,
                     animated: false
@@ -1183,6 +1184,7 @@ private struct ExerciseStatCard: View {
                     ExerciseImage(
                         category: stat.exercise.category,
                         imageFolder: stat.exercise.imageFolder,
+                        customImageData: stat.exercise.customImageData,
                         cornerRadius: 8,
                         size: geo.size.width,
                         animated: false

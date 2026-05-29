@@ -1437,6 +1437,7 @@ private struct InlinePlaylist: View {
                     ExerciseImage(
                         category: ex.category,
                         imageFolder: ex.imageFolder,
+                        customImageData: ex.customImageData,
                         cornerRadius: 8,
                         size: 56,
                         animated: false  // 列表行不动, 节省 CPU + 减少干扰
