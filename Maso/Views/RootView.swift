@@ -476,12 +476,26 @@ struct RootView: View {
         .onTapGesture { dismissCenterTabHint() }
     }
 
-    /// 进后台时如果在休息段, 调度倒计时通知. 前台时由 app 自己提示, 不发通知.
+    /// 进后台时如果在休息段 *或正在跑的有氧倒计时段*, 调度倒计时通知.
+    /// 前台时由 app 自己提示, 不发通知.
+    /// P1-9: 之前只给 rest 发通知, 有氧 countdown 动作在后台到点无任何提示.
     private func scheduleRestNotificationIfNeeded() {
         guard let seg = session.currentSegment,
-              seg.isRest,
               let endsAt = session.session?.endsAt,
               session.session?.playing == true else { return }
+        // 有氧倒计时段 — 发"Time's up"通知, 不走 rest 的 next-set 文案.
+        if seg.isExercise {
+            if case .exercise(_, _, _, _, _, _, let countdown) = seg.kind, countdown {
+                RestNotificationScheduler.shared.schedule(
+                    endsAt: endsAt,
+                    isCrossExercise: false,
+                    nextExerciseName: nil,
+                    exerciseCountdown: true
+                )
+            }
+            return
+        }
+        guard seg.isRest else { return }
         // 当前 rest 段之后下一个 exercise 名 (给通知 body)
         var nextName: String? = nil
         if let sess = session.session {

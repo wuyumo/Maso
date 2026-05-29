@@ -157,6 +157,15 @@ final class TrainingSessionStore {
         )
     }
 
+    /// 标记"用户仍在主动用" — bump lastActiveAt, 避免活跃 session 被 6h idle 误判完成.
+    /// P2-9: 之前只有 advance/setIndex/togglePlay/编辑 算活动; 拖 playlist、进播放页这种
+    /// 也算用户在场. 只在前台被调 (onAppear / 拖拽 onEnded), 不会重置"后台放置"的计时.
+    func noteActivity() {
+        guard var s = session, !s.completed else { return }
+        s.lastActiveAt = Date()
+        session = s
+    }
+
     /// 检查 idle 时长, 超过 6h 自动 mark completed
     /// SessionTickerView 每 0.5s 调一次; app 从后台 resume 时也调
     func checkAutoComplete() {
@@ -176,9 +185,15 @@ final class TrainingSessionStore {
         let safe = min(max(0, i), max(0, segments.count - 1))
         s.segmentIndex = safe
         let seg = segments[safe]
-        s.endsAt = initialEndsAt(for: seg)
-        s.pausedRemaining = nil
-        s.playing = true
+        // P2-8: 保留暂停态 — 之前无条件 playing=true, 暂停的用户点 playlist 跳一下就被静默恢复.
+        // 暂停中跳转: 计时段把满时长存 pausedRemaining (恢复时从该段起算), 不自动跑.
+        if s.playing {
+            s.endsAt = initialEndsAt(for: seg)
+            s.pausedRemaining = nil
+        } else {
+            s.endsAt = nil
+            s.pausedRemaining = initialPausedRemaining(for: seg)
+        }
         s.lastActiveAt = Date()  // 用户交互 — reset idle
         session = s
         syncLiveActivity()
@@ -327,6 +342,19 @@ final class TrainingSessionStore {
         }
     }
 
+    /// 该段满时长 (秒) — 暂停态跳转时用, 存进 pausedRemaining 让恢复时从满时长起算.
+    /// nil = 该段不计时 (力量动作).
+    private func initialPausedRemaining(for seg: Segment?) -> TimeInterval? {
+        guard let seg else { return nil }
+        switch seg.kind {
+        case .rest(let dur):
+            return TimeInterval(dur)
+        case .exercise(_, _, _, _, _, let dur, let countdown):
+            if countdown, let dur, dur > 0 { return TimeInterval(dur) }
+            return nil
+        }
+    }
+
     // MARK: - 训练中编辑当前 step 参数 (组数 / 次数 / 重量 / 时长)
 
     /// 训练中编辑当前动作的参数. 全字段 mandatory — UI 端始终带当前值, 用户保存时写回所有 4 个字段.
@@ -398,6 +426,13 @@ final class TrainingSessionStore {
         }
 
         s.segmentIndex = min(max(0, newIdx ?? 0), max(0, newSegments.count - 1))
+        // P0-4: 如果编辑的就是当前 step (改了 duration / countdown 类别), 重算计时器 —
+        // 否则当前有氧段会沿用旧 endsAt, 显示的 duration 跟实际倒计时不符.
+        if stepId == curStepId {
+            let seg = newSegments[s.segmentIndex]
+            s.endsAt = initialEndsAt(for: seg)
+            s.pausedRemaining = nil
+        }
         s.lastActiveAt = Date()
         session = s
         planParamsDirty = true
@@ -462,6 +497,13 @@ final class TrainingSessionStore {
             newIdx = newSegments.firstIndex(where: { $0.stepId == cstpid && $0.isRest })
         }
         s.segmentIndex = min(max(0, newIdx ?? 0), max(0, newSegments.count - 1))
+        // P0-4: 替换的是当前 step 时, 新动作的 countdown 类别可能跟旧的不同 (力量↔有氧),
+        // 必须重算计时器 — 否则力量→有氧卡 0:00 无法前进, 有氧→力量会被旧 endsAt 自动记一组.
+        if stepId == curStepId {
+            let seg = newSegments[s.segmentIndex]
+            s.endsAt = initialEndsAt(for: seg)
+            s.pausedRemaining = nil
+        }
         s.lastActiveAt = Date()
         session = s
         planParamsDirty = true
@@ -707,6 +749,7 @@ final class TrainingSessionStore {
         guard var s = session, var p = plan else { return }
         // 删之前捕获当前位置, 用于映射
         let curStepId = currentSegment?.stepId
+        let oldSegIdx = s.segmentIndex  // P2-7: 删当前 step 时从这个位置向后找, 不从 0 倒回
         var curSetN: Int? = nil
         if case .exercise(_, let sn, _, _, _, _, _) = currentSegment?.kind {
             curSetN = sn
@@ -741,12 +784,20 @@ final class TrainingSessionStore {
 
         var newIdx: Int? = nil
         if curStepId == stepId {
-            // 删的是当前 step — 跳到新 segments 里第一个未完成的 exercise
-            newIdx = newSegments.firstIndex(where: { seg in
-                guard case .exercise(_, let sn, _, _, _, _, _) = seg.kind else { return false }
-                let key = CompletedSet(stepId: seg.stepId, setN: sn)
-                return !s.completedSets.contains(key)
-            }) ?? 0
+            // P2-7: 删的是当前 step — 从删除位置 *向后* 找第一个未完成 exercise (不从 0 倒回,
+            // 否则会把用户甩回更早跳过的 step). 向后没有了再 fallback 全局找 / 0.
+            let anchor = min(max(0, oldSegIdx), max(0, newSegments.count - 1))
+            func firstUncompleted(from start: Int) -> Int? {
+                guard start < newSegments.count else { return nil }
+                for k in start..<newSegments.count {
+                    guard case .exercise(_, let sn, _, _, _, _, _) = newSegments[k].kind else { continue }
+                    if !s.completedSets.contains(CompletedSet(stepId: newSegments[k].stepId, setN: sn)) {
+                        return k
+                    }
+                }
+                return nil
+            }
+            newIdx = firstUncompleted(from: anchor) ?? firstUncompleted(from: 0) ?? 0
         } else if let stp = curStepId, let sn = curSetN {
             // 删的是其它 step — 当前位置可能 index 变了, 重新找
             newIdx = newSegments.firstIndex(where: {

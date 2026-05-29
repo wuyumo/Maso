@@ -25,7 +25,8 @@ final class RestNotificationScheduler {
     /// 调度 rest 结束通知. 重复调用会先 cancel 再 schedule (覆盖上一次).
     /// 参数: 倒计时结束的绝对时间, 通常是 `session.endsAt`.
     /// 是否切换动作影响通知文案: 切换 → "Time to switch exercise", 否则 → "Time for next set"
-    func schedule(endsAt: Date, isCrossExercise: Bool, nextExerciseName: String?) {
+    func schedule(endsAt: Date, isCrossExercise: Bool, nextExerciseName: String?,
+                  exerciseCountdown: Bool = false) {
         // 取消上一次
         cancel()
 
@@ -44,9 +45,11 @@ final class RestNotificationScheduler {
 
             let center = UNUserNotificationCenter.current()
             let content = UNMutableNotificationContent()
-            content.title = isCrossExercise
-                ? NSLocalizedString("Time to switch exercise", comment: "")
-                : NSLocalizedString("Rest's up — next set", comment: "")
+            content.title = exerciseCountdown
+                ? NSLocalizedString("Time's up", comment: "timed exercise interval ended")
+                : (isCrossExercise
+                   ? NSLocalizedString("Time to switch exercise", comment: "")
+                   : NSLocalizedString("Rest's up — next set", comment: ""))
             if let name = nextExerciseName {
                 content.body = name
             }

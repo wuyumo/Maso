@@ -623,7 +623,7 @@ struct PlanPlayerScreen: View {
         .gesture(playlistResizeGesture)
         .accessibilityElement(children: .combine)
         .accessibilityLabel("Playlist drawer drag handle")
-        .accessibilityHint("Drag up to expand, down to collapse. Double tap to toggle.")
+        .accessibilityHint("Drag up to expand, down to collapse. Tap to toggle.")
     }
 
     /// playlist 高度拖拽手势 — tap 和 drag 全部走这一份 DragGesture(minimumDistance: 0).
@@ -637,9 +637,9 @@ struct PlanPlayerScreen: View {
         DragGesture(minimumDistance: 0)
             .onChanged { value in
                 let dy = value.translation.height
-                // 死区: 位移 ≤ 3pt 当作"还在判断 tap", 不动 height. 越过死区后, 锚定 startHeight,
+                // 死区: 位移 ≤ 10pt 当作"还在判断 tap", 不动 height. 越过死区后, 锚定 startHeight,
                 // 之后每帧直接 set height. 已经锚定过的 (startHeight != 0) 永远继续跟手, 不再走判断.
-                guard playlistDragStartHeight != 0 || abs(dy) > 3 else { return }
+                guard playlistDragStartHeight != 0 || abs(dy) > 10 else { return }
                 if playlistDragStartHeight == 0 {
                     playlistDragStartHeight = playlistHeight
                 }
@@ -656,13 +656,14 @@ struct PlanPlayerScreen: View {
                 let dy = value.translation.height
                 let wasDrag = playlistDragStartHeight != 0
                 playlistDragStartHeight = 0
-                // 没真拖动 (translation 没出死区) → 当作 tap 切档 min ↔ default. 这次的 spring
-                // 不会跟 drag 打架 — drag 已经结束, transaction 路径清空.
-                if !wasDrag && abs(dy) <= 3 {
+                // 没真拖动 (translation 没出 10pt 死区) → 当作 tap 切档 min ↔ default.
+                // P3: 死区从 3 → 10pt, 拇指轻点常带几 pt 位移, 3pt 太小会被误判为拖动.
+                if !wasDrag && abs(dy) <= 10 {
                     withAnimation(.spring(response: 0.4, dampingFraction: 0.82)) {
                         playlistHeight = playlistExpanded ? Self.playlistMinHeight : Self.playlistDefaultHeight
                     }
                 }
+                store.noteActivity()  // P2-9: 拖把手 = 用户在场, 别被 6h idle 误判完成
                 Haptics.tap()
             }
     }
@@ -733,7 +734,15 @@ struct PlanPlayerScreen: View {
     /// 训练时长 (秒) — 从 session.startedAt 到现在
     private var completedDurationSeconds: Int {
         guard let started = store.session?.startedAt else { return 0 }
-        return max(0, Int(Date().timeIntervalSince(started)))
+        // P3: 用"最后一组的时间"而非 live Date() 作为终点 —— 否则 6h idle 自动完成 / 用户
+        // 把完成屏挂着不关, 时长会虚高到几小时. 取本场 (performedAt >= startedAt) 最后一组的
+        // 时间; 没有任何记录 (空完成) 才 fallback 到 now.
+        let lastSetAt = data.sets
+            .filter { $0.performedAt >= started }
+            .map(\.performedAt)
+            .max()
+        let end = lastSetAt ?? Date()
+        return max(0, Int(end.timeIntervalSince(started)))
     }
 
     /// 本次训练涉及的肌群 (从 plan.steps dedupe)
@@ -1539,6 +1548,13 @@ private struct CompletedView: View {
 
     @State private var planSaved: Bool = false
     @State private var changesSaved: Bool = false
+    /// P2-17: 有未保存的 plan 改动时, "关闭"按钮走二次确认, 避免误触丢弃.
+    @State private var confirmDiscard: Bool = false
+
+    /// 是否存在"还没保存的 plan 改动" — 决定关闭按钮是"Skip & close"还是"Discard changes".
+    private var hasUnsavedPlanChanges: Bool {
+        (onSavePlan != nil && !planSaved) || (onSaveChanges != nil && !changesSaved)
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -1643,11 +1659,16 @@ private struct CompletedView: View {
                 // 次 CTA 行 — Skip & close 左, Save as plan / Save changes 右 (并排, 等宽).
                 // 没 onSavePlan / onSaveChanges 时 Skip & close 单独占满全行.
                 HStack(spacing: 10) {
-                    Button(action: onClose) {
+                    Button(action: {
+                        // P2-17: 有未保存改动 → 二次确认再丢弃; 否则直接关.
+                        if hasUnsavedPlanChanges { confirmDiscard = true } else { onClose() }
+                    }) {
                         HStack(spacing: 6) {
                             Image(systemName: "xmark")
                                 .font(.system(size: 11, weight: .heavy))
-                            Text("Skip & close")
+                            Text(hasUnsavedPlanChanges
+                                 ? NSLocalizedString("Discard & close", comment: "")
+                                 : NSLocalizedString("Skip & close", comment: ""))
                                 .font(.system(size: 13, weight: .semibold))
                         }
                         .foregroundStyle(MasoColor.textDim)
@@ -1660,6 +1681,12 @@ private struct CompletedView: View {
                         .clipShape(Capsule())
                     }
                     .buttonStyle(.plain)
+                    .alert(NSLocalizedString("Discard changes?", comment: ""), isPresented: $confirmDiscard) {
+                        Button(NSLocalizedString("Discard", comment: ""), role: .destructive) { onClose() }
+                        Button(NSLocalizedString("Cancel", comment: ""), role: .cancel) {}
+                    } message: {
+                        Text("Your edits to this workout's exercises won't be saved to the plan. Completed sets are already recorded.")
+                    }
 
                     if let save = onSavePlan {
                         Button(action: {
@@ -1851,6 +1878,9 @@ private struct EditCurrentStepSheet: View {
     @State private var reps: Int
     @State private var weight: Double
     @State private var duration: Int
+    /// P2-6: 用户点了 "Replace exercise" → dismiss 自己, 等真正消失 (.onDisappear) 再回调
+    /// onReplace 让 parent 弹 picker. 一次性 flag 防双击.
+    @State private var replaceRequested: Bool = false
     @Environment(\.dismiss) private var dismiss
 
     init(
@@ -1919,13 +1949,12 @@ private struct EditCurrentStepSheet: View {
                     if let onReplace {
                         Section {
                             Button(action: {
+                                // P2-6: 一次性 guard 防双击重复触发; 用 onDisappear 串接 (sheet 真正
+                                // 收完才弹 picker), 不再靠固定延迟猜 dismiss 时机, 慢设备也稳.
+                                guard !replaceRequested else { return }
+                                replaceRequested = true
                                 Haptics.tap()
                                 dismiss()
-                                // 给 sheet dismiss 一点点时间, 再让 caller 弹替换 picker —
-                                // 否则 SwiftUI 会因为"正在 dismiss"而拒绝弹下一张 sheet.
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.32) {
-                                    onReplace()
-                                }
                             }) {
                                 HStack(spacing: 10) {
                                     Image(systemName: "arrow.triangle.2.circlepath")
@@ -1979,6 +2008,10 @@ private struct EditCurrentStepSheet: View {
         }
         // sheet 容器底色 (含 home indicator 区) — iOS 16.4+
         .presentationBackground(MasoColor.background)
+        // P2-6: sheet 真正消失后再触发 replace — 比固定 0.32s 延迟稳, 慢设备 / reduce-motion 都 OK.
+        .onDisappear {
+            if replaceRequested { onReplace?() }
+        }
     }
 
     /// Int 字段 Stepper 行 — 左 label, 右大字号数值 + 原生 Stepper -/+. 跟 Sets 行格式一致.
