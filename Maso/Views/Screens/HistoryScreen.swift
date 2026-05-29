@@ -347,8 +347,16 @@ struct HistoryScreen: View {
     private func currentStreakDays() -> Int {
         let cal = Calendar.current
         let days = workoutDateSet()
+        let today = cal.startOfDay(for: Date())
+        // P2-3: 今天还没练不该让连胜归零. 今天练了 → 从今天数; 今天没练但昨天练了 → 从昨天数
+        // (连胜仍存活); 昨天也没练 → 真的断了 (0).
+        var cursor = today
+        if !days.contains(cursor) {
+            guard let y = cal.date(byAdding: .day, value: -1, to: today) else { return 0 }
+            cursor = cal.startOfDay(for: y)
+            if !days.contains(cursor) { return 0 }
+        }
         var streak = 0
-        var cursor = cal.startOfDay(for: Date())
         while days.contains(cursor) {
             streak += 1
             guard let prev = cal.date(byAdding: .day, value: -1, to: cursor) else { break }
@@ -1082,11 +1090,19 @@ private struct SessionDetailSheet: View {
     private func currentStreakDays() -> Int {
         let cal = Calendar.current
         let days = workoutDateSet()
+        let today = cal.startOfDay(for: Date())
+        // P2-3: 今天没练但昨天练了 → 连胜仍存活 (见上方同名实现注释).
+        var cursor = today
+        if !days.contains(cursor) {
+            guard let y = cal.date(byAdding: .day, value: -1, to: today) else { return 0 }
+            cursor = cal.startOfDay(for: y)
+            if !days.contains(cursor) { return 0 }
+        }
         var streak = 0
-        var cursor = cal.startOfDay(for: Date())
         while days.contains(cursor) {
             streak += 1
-            cursor = cal.date(byAdding: .day, value: -1, to: cursor)!
+            guard let prev = cal.date(byAdding: .day, value: -1, to: cursor) else { break }
+            cursor = cal.startOfDay(for: prev)
         }
         return streak
     }

@@ -68,29 +68,40 @@ struct MuscleStatusOverviewCard: View {
                             legendRow(opacity: nil, label: "Fresh")
                         }
 
-                        // Train the gaps — ghost accent CTA, 没 gap 时 disabled.
-                        Button(action: onStartGapWorkout) {
+                        // P2-16: 有 gap → "Train the gaps" CTA; 没 gap (健康状态) → 正向"全部跟上"
+                        // 标签, 不再是灰掉的禁用按钮 (那看着像坏了).
+                        if gapMuscles.isEmpty {
                             HStack(spacing: 5) {
-                                Image(systemName: "play.fill")
+                                Image(systemName: "checkmark.circle.fill")
                                     .font(.system(size: 10, weight: .heavy))
-                                Text("Train the gaps")
+                                Text("All caught up")
                                     .font(.system(size: 11, weight: .heavy))
                                     .lineLimit(1)
                             }
-                            .foregroundStyle(MasoColor.accent)
-                            .padding(.horizontal, 11)
-                            .padding(.vertical, 5)
-                            .background(MasoColor.accent.opacity(0.16))
-                            .overlay(Capsule().stroke(MasoColor.accent.opacity(0.4), lineWidth: 0.8))
-                            .clipShape(Capsule())
+                            .foregroundStyle(MasoColor.textDim)
                             .fixedSize(horizontal: true, vertical: false)
+                        } else {
+                            Button(action: onStartGapWorkout) {
+                                HStack(spacing: 5) {
+                                    Image(systemName: "play.fill")
+                                        .font(.system(size: 10, weight: .heavy))
+                                    Text("Train the gaps")
+                                        .font(.system(size: 11, weight: .heavy))
+                                        .lineLimit(1)
+                                }
+                                .foregroundStyle(MasoColor.accent)
+                                .padding(.horizontal, 11)
+                                .padding(.vertical, 5)
+                                .background(MasoColor.accent.opacity(0.16))
+                                .overlay(Capsule().stroke(MasoColor.accent.opacity(0.4), lineWidth: 0.8))
+                                .clipShape(Capsule())
+                                .fixedSize(horizontal: true, vertical: false)
+                            }
+                            .buttonStyle(.plain)
                         }
-                        .buttonStyle(.plain)
-                        .disabled(gapMuscles.isEmpty)
-                        .opacity(gapMuscles.isEmpty ? 0.35 : 1)
                     }
+                    // P2-15: 不再 fixedSize 整个右列宽度 — SE / 长中文 legend 会被裁; 让它能压缩.
                     .frame(height: slotSize, alignment: .center)
-                    .fixedSize(horizontal: true, vertical: false)
                 }
                 Spacer(minLength: 0)
             }

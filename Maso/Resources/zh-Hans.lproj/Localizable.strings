@@ -737,3 +737,6 @@
 "Reps & weight" = "次数与重量";
 "Time (seconds)" = "时间（秒）";
 "You already have a custom exercise with this name." = "已有同名的自定义动作。";
+
+/* ── Batch G ── */
+"All caught up" = "全部跟上";

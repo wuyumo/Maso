@@ -102,8 +102,9 @@ struct TrainingSettingsSection: View {
                     ForEach(TrainingGoal.allCases, id: \.self) { g in
                         Button(action: {
                             data.settings.trainingGoal = g
-                            // 同步推荐组间歇 — 但只在用户没显式调过 defaultRestSeconds 时.
-                            // 我们没存"是否显式调过"的 flag, 保守起见: 改 goal 不自动覆盖 rest.
+                            // P2-4: 选目标时同步把组间歇设成该目标的推荐值, 让下面"Set rest"行
+                            // 跟目标副文案 (~90s / 长歇) 一致, 不再各说各话. 用户之后可再手动微调.
+                            data.settings.defaultRestSeconds = g.recommendedRestSeconds()
                         }) {
                             HStack {
                                 Text(g.displayName)
@@ -186,6 +187,14 @@ struct TrainingSettingsSection: View {
                     set: { data.settings.muscleDetailEnabled = $0 }
                 )
             )
+
+            // P2-4 / P2-11: 说明这些偏好的作用域 — 否则用户改了"默认组数"看自建 plan 没变会以为坏了.
+            Text("These apply to recommended plans and exercises you add — your custom plans aren't changed.")
+                .font(.system(size: 11))
+                .foregroundStyle(MasoColor.textFaint)
+                .padding(.horizontal, MasoMetrics.cardPadding)
+                .padding(.top, 10)
+                .frame(maxWidth: .infinity, alignment: .leading)
         }
         .sheet(isPresented: $showMusclePicker) {
             MusclesPickerSheet(
