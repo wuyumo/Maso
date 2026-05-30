@@ -1828,21 +1828,40 @@ struct ExercisePickerSheet: View {
         } label: {
             HStack(spacing: 14) {
                 if isVariant {
-                    // 缩进 — 一道细 accent 竖线给"我属于上面那组"的视觉锚点.
+                    // 缩进 — 一道细竖线给"我属于上面那组"的视觉锚点.
+                    // 器械变种 = MasoColor.textFaint (中性灰); 执行方式变种 = accent (蓝绿), 更显眼.
+                    let isModVar = group.isModifierVariant(ex)
                     Rectangle()
-                        .fill(MasoColor.accent.opacity(0.4))
+                        .fill(isModVar ? MasoColor.accent.opacity(0.6) : MasoColor.textFaint.opacity(0.35))
                         .frame(width: 2)
                         .padding(.leading, 8)
                 }
                 // 点左侧图片/图标 → 查看动作详情 (任何模式都能看; 优先于整行 tap).
                 Button { detailExercise = ex } label: {
                     if isVariant {
-                        Image(systemName: variantSymbol(for: ex))
-                            .font(.system(size: 16, weight: .heavy))
-                            .foregroundStyle(MasoColor.textDim)
-                            .frame(width: 36, height: 36)
-                            .background(MasoColor.surfaceHi)
-                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                        let modifier = group.modifierLabel(for: ex)
+                        if let mod = modifier {
+                            // 执行方式变种 — 显修饰词胶囊 (accent 底色), 区别于器械图标.
+                            // 宽高跟器械图标 frame (36×36) 一致, 视觉对齐.
+                            Text(mod)
+                                .font(.system(size: 9, weight: .heavy))
+                                .lineLimit(2)
+                                .multilineTextAlignment(.center)
+                                .foregroundStyle(MasoColor.accent)
+                                .padding(.horizontal, 4)
+                                .frame(width: 36, height: 36)
+                                .background(MasoColor.accent.opacity(0.14))
+                                .overlay(RoundedRectangle(cornerRadius: 8).stroke(MasoColor.accent.opacity(0.35), lineWidth: 0.5))
+                                .clipShape(RoundedRectangle(cornerRadius: 8))
+                        } else {
+                            // 纯器械变种 — SF Symbol (中性灰背景).
+                            Image(systemName: variantSymbol(for: ex))
+                                .font(.system(size: 16, weight: .heavy))
+                                .foregroundStyle(MasoColor.textDim)
+                                .frame(width: 36, height: 36)
+                                .background(MasoColor.surfaceHi)
+                                .clipShape(RoundedRectangle(cornerRadius: 8))
+                        }
                     } else {
                         ExerciseImage(
                             category: ex.category,
@@ -1857,7 +1876,7 @@ struct ExercisePickerSheet: View {
                 .buttonStyle(.plain)
                 .accessibilityLabel(String(format: NSLocalizedString("Show details for %@", comment: "exercise detail a11y"), ex.displayName))
                 VStack(alignment: .leading, spacing: 5) {
-                    Text(rowTitle(for: ex, isVariant: isVariant))
+                    Text(rowTitle(for: ex, isVariant: isVariant, group: group))
                         .font(.system(size: isVariant ? 13 : 15, weight: .bold))
                         .foregroundStyle(MasoColor.text)
                         .lineLimit(1)
@@ -1867,12 +1886,15 @@ struct ExercisePickerSheet: View {
                             equipment: ex.equipment,
                             muscleLimit: 1
                         )
-                    } else if let eqName = ex.equipmentDisplayName {
-                        // 变种只显器械名作为子标题, 不展 muscle tags (跟 canonical 同肌群, 冗余).
-                        Text(eqName)
-                            .font(.system(size: 11))
-                            .foregroundStyle(MasoColor.textDim)
-                            .lineLimit(1)
+                    } else {
+                        // 变种副文案: 器械变种显器械名; 执行方式变种显器械名 (修饰词已在左侧胶囊);
+                        // 两者都有则器械显在这里, 修饰词在胶囊.
+                        if let eqName = ex.equipmentDisplayName {
+                            Text(eqName)
+                                .font(.system(size: 11))
+                                .foregroundStyle(MasoColor.textDim)
+                                .lineLimit(1)
+                        }
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -1943,10 +1965,26 @@ struct ExercisePickerSheet: View {
         }
     }
 
-    /// 行标题: canonical 显全名; variant 仅显括号内 (e.g. "Machine") 让对照 canonical 时不重复 base.
-    private func rowTitle(for ex: Exercise, isVariant: Bool) -> String {
+    /// 行标题: canonical 显全名; variant 显 "差异" 部分, 不重复 base.
+    ///   - 纯器械变种: 括号内容 (e.g. "Machine" / "Dumbbell, Decline")
+    ///   - 执行方式变种: 修饰词已在左侧胶囊 → 这里只显器械 (如有) 或全名;
+    ///     如果有修饰词但也有器械 → 显括号内器械; 只有修饰词没括号器械 → 显完整名让用户一眼看清
+    private func rowTitle(for ex: Exercise, isVariant: Bool, group: ExerciseGroup) -> String {
         guard isVariant else { return ex.displayName }
         let raw = ex.displayName
+        // 执行方式变种 — 修饰词在胶囊里, 行标题显括号内的器械 (若有括号); 否则显全名.
+        if group.isModifierVariant(ex) {
+            if let openParen = raw.firstIndex(of: "("),
+               let closeParen = raw.lastIndex(of: ")") {
+                let after = raw.index(after: openParen)
+                if after < closeParen {
+                    return String(raw[after..<closeParen])
+                }
+            }
+            // 没括号 (如 "Seated Arnold Press") → 全名, 胶囊已显修饰词
+            return raw
+        }
+        // 纯器械变种 — 只显括号内内容
         if let openParen = raw.firstIndex(of: "("),
            let closeParen = raw.lastIndex(of: ")") {
             let after = raw.index(after: openParen)
