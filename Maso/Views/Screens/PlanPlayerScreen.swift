@@ -584,6 +584,9 @@ struct PlanPlayerScreen: View {
                 onEdit: { stepId in
                     editingStepId = stepId  // 弹 EditAnyStepSheet
                 },
+                onReplace: { stepId in
+                    replacingStepId = stepId  // 弹 ExercisePickerSheet 换一个动作
+                },
                 onAddStep: { addStepPickerOpen = true },
                 showHeader: false,  // 自定义 dragHandleBar 已经做了 header, InlinePlaylist 内部别再渲一次
                 // J5: 竖向进度条 + 动作间休息行的数据源
@@ -595,6 +598,9 @@ struct PlanPlayerScreen: View {
         }
         // 总高度 = 拖把手区 + 用户拖出来的内容高度 + home indicator safe area.
         // .clipped() 让 InlinePlaylist 被 frame 裁掉超出部分 — height 越小, List 显示的 row 越少.
+        // maxWidth: .infinity 钉住宽度 — 防止 play/pause 切换时音频会话状态变动引起
+        // 系统 safe area 微调, 导致 List 宽度抖动 (左右轻微摆动).
+        .frame(maxWidth: .infinity)
         .frame(height: playlistHeight + bottomSafeArea)
         .clipped()
         .background(
@@ -1399,6 +1405,8 @@ private struct InlinePlaylist: View {
     var onDelete: ((String) -> Void)? = nil
     /// 右滑编辑 — 传 stepId. parent 拉 EditStepSheet 改 sets/reps/weight/duration (session-local).
     var onEdit: ((String) -> Void)? = nil
+    /// 左滑替换 — 传 stepId. parent 弹 ExercisePickerSheet 让用户换一个动作.
+    var onReplace: ((String) -> Void)? = nil
     /// playlist 末尾的 "+ Add exercise" 入口 — parent 接管 ExercisePickerSheet 拉起 + store.appendStep.
     /// nil → 不显示 footer 行.
     var onAddStep: (() -> Void)? = nil
@@ -1464,12 +1472,15 @@ private struct InlinePlaylist: View {
                 Circle()
                     .stroke(MasoColor.textFaint.opacity(0.18), lineWidth: 5)
                 ForEach(Array(segs.enumerated()), id: \.element.idx) { i, item in
+                    let color = setBarColor(idx: item.idx, stepId: stepId, setN: item.setN)
                     Circle()
                         .trim(from: Double(i) / Double(n) + gap / 2,
                               to: Double(i + 1) / Double(n) - gap / 2)
-                        .stroke(setBarColor(idx: item.idx, stepId: stepId, setN: item.setN),
-                                style: StrokeStyle(lineWidth: 5, lineCap: .round))
+                        .stroke(color, style: StrokeStyle(lineWidth: 5, lineCap: .round))
                         .rotationEffect(.degrees(-90))   // trim 0 起点转到正上方 12 点
+                        // 颜色必须即刻切换 (白→绿 / 绿→白) — 禁掉任何继承动画,
+                        // 否则切换动作时进度弧会短暂过渡到错误颜色 (闪烁).
+                        .animation(nil, value: color)
                 }
             }
             .padding(2.5)
@@ -1533,9 +1544,12 @@ private struct InlinePlaylist: View {
                             .listRowSeparator(.hidden)
                             .listRowInsets(EdgeInsets())
                             .listRowBackground(Color.clear)
+                            // 左滑 (trailing) 展开三个操作 — 从左到右视觉顺序: 编辑 | 替换 | 删除.
+                            // SwiftUI trailing swipeActions: 第一个定义的按钮 = 最靠近右边缘 (最右),
+                            // 最后定义的 = 最左. 想呈现 Edit(左) Replace(中) Delete(右):
+                            //   代码顺序: Delete → Replace → Edit.
                             .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                                // icon-only → 圆形按钮; tint 走 design.md (negative 红粉 / accent 绿).
-                                // 训练中 Edit = session-local 改这 step 的 sets/reps/weight/duration.
+                                // 最右 — 删除 (破坏性, 红色)
                                 Button(role: .destructive) {
                                     onDelete?(step.id)
                                 } label: {
@@ -1544,6 +1558,18 @@ private struct InlinePlaylist: View {
                                 .tint(MasoColor.negative)
                                 .accessibilityLabel(NSLocalizedString("Delete", comment: ""))
 
+                                // 中间 — 替换动作 (换成另一个动作). caller 没传 onReplace 时整个按钮不出现.
+                                if let onReplace {
+                                    Button {
+                                        onReplace(step.id)
+                                    } label: {
+                                        Image(systemName: "arrow.triangle.2.circlepath")
+                                    }
+                                    .tint(.orange)
+                                    .accessibilityLabel(NSLocalizedString("Replace", comment: ""))
+                                }
+
+                                // 最左 — 编辑 sets/reps/weight/duration
                                 Button {
                                     onEdit?(step.id)
                                 } label: {
