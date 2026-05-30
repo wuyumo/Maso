@@ -8,19 +8,37 @@ import SwiftUI
 //   - UI 实际渲染顺序在 TabBarView 里手动按 today → plans → history 排
 enum RootTab: Hashable { case plans, today, library, history }
 
+/// 统一页面头 — 大号粗体标题 (左, 作为标题而非按钮) + 右侧 icon 按钮, 同一行.
+/// 替代系统导航栏的大标题/inline 标题.
+struct ScreenHeader<Trailing: View>: View {
+    let title: String
+    @ViewBuilder var trailing: () -> Trailing
+    var body: some View {
+        HStack(alignment: .center, spacing: 12) {
+            Text(title)
+                .font(.system(size: 30, weight: .bold))
+                .foregroundStyle(MasoColor.text)
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
+            Spacer(minLength: 8)
+            trailing()
+                .font(.system(size: 19, weight: .semibold))
+                .tint(MasoColor.text)
+        }
+        .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
+        .padding(.top, 4)
+        .padding(.bottom, 8)
+    }
+}
+
 extension View {
-    /// 把"大标题"换成跟右上角 icon 按钮同一行的左对齐标题 (inline nav bar 单行).
-    /// 屏幕自己的 `.toolbar { 右上角按钮 }` 会跟这里的 leading 标题合并到同一条 nav bar.
-    func leadingNavTitle(_ title: String) -> some View {
+    /// 隐藏系统导航栏, 换成固定的大标题自定义头 (标题左 + 按钮右, 同一行).
+    func screenHeader<T: View>(_ title: String, @ViewBuilder trailing: @escaping () -> T) -> some View {
         self
-            .navigationTitle("")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Text(title)
-                        .font(.system(size: 22, weight: .bold))
-                        .foregroundStyle(MasoColor.text)
-                }
+            .toolbar(.hidden, for: .navigationBar)
+            .safeAreaInset(edge: .top, spacing: 0) {
+                ScreenHeader(title: title, trailing: trailing)
+                    .background(MasoColor.background)
             }
     }
 }

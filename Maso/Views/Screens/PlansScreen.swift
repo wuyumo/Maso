@@ -120,19 +120,16 @@ struct PlansScreen: View {
         .contentMargins(.horizontal, MasoMetrics.pagePaddingHorizontal, for: .scrollContent)
         .contentMargins(.bottom, MasoMetrics.pageBottomInset, for: .scrollContent)
         .background(MasoColor.background.ignoresSafeArea())
-        // 标题跟右上角按钮同一行 (inline + 左对齐标题).
-        .leadingNavTitle("Plans")
-        .toolbar {
-            // Restore button — 只在用户把系统推荐 plan 全删光时显示, 一键拉回推荐
-            if hasNoRecommendedPlans {
-                ToolbarItem(placement: .topBarTrailing) {
+        // 大标题作为标题出现在左上角, 跟右上角按钮同一行 (自定义 header).
+        .screenHeader("Plans") {
+            HStack(spacing: 18) {
+                // Restore — 只在用户把系统推荐 plan 全删光时显示, 一键拉回推荐
+                if hasNoRecommendedPlans {
                     Button(action: restoreRecommendedPlans) {
                         Image(systemName: "arrow.counterclockwise")
                     }
                     .accessibilityLabel(NSLocalizedString("Restore recommended", comment: ""))
                 }
-            }
-            ToolbarItem(placement: .topBarTrailing) {
                 Button(action: onNewPlan) {
                     Image(systemName: "plus")
                 }

@@ -92,14 +92,11 @@ struct TodayScreen: View {
         .background(MasoColor.background.ignoresSafeArea())
         // iOS 默认导航栏 — 大标题 "Today" + 右上角 settings gear. NavigationStack 自带 material
         // blur 在滚动时叠加在这个底色上, 跟 Plans 视觉同款.
-        .leadingNavTitle("Today")
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button(action: onOpenSettings) {
-                    Image(systemName: "gearshape")
-                }
-                .accessibilityLabel("Settings")
+        .screenHeader("Today") {
+            Button(action: onOpenSettings) {
+                Image(systemName: "gearshape")
             }
+            .accessibilityLabel("Settings")
         }
         .sheet(item: $detailPlan) { plan in
             PlanDetailSheet(

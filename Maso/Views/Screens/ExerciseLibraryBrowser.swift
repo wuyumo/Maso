@@ -258,17 +258,18 @@ struct ExerciseLibraryBrowser: View {
                 .scrollContentBackground(.hidden)
             }
             .background(MasoColor.background.ignoresSafeArea())
-            .leadingNavTitle(NSLocalizedString("Exercise library", comment: ""))
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
+            .screenHeader(NSLocalizedString("Exercise library", comment: "")) {
+                HStack(spacing: 18) {
                     Button(action: { addChoiceOpen = true }) {
                         Image(systemName: "plus")
                     }
                     .accessibilityLabel(NSLocalizedString("Add exercise", comment: ""))
-                }
-                if !asTab {
-                    ToolbarItem(placement: .confirmationAction) {
-                        Button("Done") { dismiss() }
+                    // 作为 sheet 用时 (非 tab) 才给关闭入口.
+                    if !asTab {
+                        Button(action: { dismiss() }) {
+                            Image(systemName: "xmark")
+                        }
+                        .accessibilityLabel("Done")
                     }
                 }
             }
