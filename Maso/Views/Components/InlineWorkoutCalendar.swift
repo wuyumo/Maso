@@ -23,6 +23,9 @@ struct InlineWorkoutCalendar: View {
 
     @Binding var isCollapsed: Bool
 
+    /// true = 嵌在外层卡片里 (跟 stats 合成一张卡) — 不自带 surface 底色 / 圆角, 只做 overflow 裁剪.
+    var embedded: Bool = false
+
     @State private var monthAnchor: Date = startOfCurrentMonth()
     /// 上一次月份切换方向 (-1 = 退到上个月, +1 = 进到下个月). 给 grid 的 transition
     /// 决定从哪边滑入 / 滑出 — 这样不管是 chevron 点击还是横向 swipe, 视觉方向都跟"动作"匹配.
@@ -59,9 +62,10 @@ struct InlineWorkoutCalendar: View {
         }
         // 慢一点 + 弹一点 — "优雅、缓慢"地展开. spring duration ~0.45s.
         .animation(.spring(response: 0.5, dampingFraction: 0.86), value: isCollapsed)
-        // 卡片样式: surface 底色 + 圆角. clipShape 顺便完成动画期间的 overflow 裁剪 (不再单独 .clipped()).
-        .background(MasoColor.surface)
-        .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
+        // 卡片样式: 独立时 surface 底色 + 圆角; embedded 时透明 + 直角 (圆角交给外层卡),
+        // clipShape 仍负责动画期间的 overflow 裁剪.
+        .background(embedded ? Color.clear : MasoColor.surface)
+        .clipShape(RoundedRectangle(cornerRadius: embedded ? 0 : MasoMetrics.cornerRadiusMedium))
     }
 
     // MARK: - Collapsed: 单行本周 strip

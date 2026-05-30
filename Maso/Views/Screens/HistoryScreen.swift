@@ -43,18 +43,28 @@ struct HistoryScreen: View {
                         .padding(.top, 4)
                 }
 
-                // 顶端 3 metrics 卡 — 跟着 calendar 状态切口径 (本周 / 本月)
-                statsRow
-                    .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
-                    .animation(.spring(response: 0.5, dampingFraction: 0.86), value: calendarCollapsed)
+                // 顶端 3 metrics + 训练日历 — 合成同一张卡, 中间用分割线隔开.
+                VStack(spacing: 0) {
+                    // 3 metrics (跟着 calendar 状态切本周 / 本月口径)
+                    statsRow
+                        .animation(.spring(response: 0.5, dampingFraction: 0.86), value: calendarCollapsed)
 
-                // 训练日历 — 默认 7 天 strip, 点击 strip / chevron 展开整月.
-                // 用 surface + 圆角包成卡片, 跟 stats 卡风格一致.
-                InlineWorkoutCalendar(
-                    sessionDates: workoutDateSet(),
-                    musclesPerDay: musclesPerDayMap(),
-                    isCollapsed: $calendarCollapsed
-                )
+                    // 分割线 — 隔开 metrics 与日历, 左右内缩跟 iOS 列表分割线一致.
+                    Rectangle()
+                        .fill(MasoColor.borderSoft)
+                        .frame(height: 0.5)
+                        .padding(.horizontal, 12)
+
+                    // 训练日历 — 默认 7 天 strip, 点 strip / chevron 展开整月. embedded → 不自带卡片底.
+                    InlineWorkoutCalendar(
+                        sessionDates: workoutDateSet(),
+                        musclesPerDay: musclesPerDayMap(),
+                        isCollapsed: $calendarCollapsed,
+                        embedded: true
+                    )
+                }
+                .background(MasoColor.surface)
+                .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
                 .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
 
                 // 训练记录列表
@@ -245,8 +255,7 @@ struct HistoryScreen: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 12)
-        .background(MasoColor.surface)
-        .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
+        // 卡片底色/圆角交给外层合成卡 (stats + 日历 同一张卡).
     }
 
     private var statDivider: some View {
