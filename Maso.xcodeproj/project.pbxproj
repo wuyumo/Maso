@@ -890,7 +890,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = UR6F66266C;
+				DEVELOPMENT_TEAM = TW8ZVVX529;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
@@ -926,7 +926,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = UR6F66266C;
+				DEVELOPMENT_TEAM = TW8ZVVX529;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = MasoWidgets/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Maso Widgets";
@@ -935,7 +935,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.maso.app.widgets;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yumowu.maso.widgets;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -946,7 +946,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = UR6F66266C;
+				DEVELOPMENT_TEAM = TW8ZVVX529;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = MasoWidgets/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Maso Widgets";
@@ -955,7 +955,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.maso.app.widgets;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yumowu.maso.widgets;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -971,14 +971,14 @@
 				CODE_SIGN_ENTITLEMENTS = Maso/Maso.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = UR6F66266C;
+				DEVELOPMENT_TEAM = TW8ZVVX529;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = Maso/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.maso.app;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yumowu.maso;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -993,14 +993,14 @@
 				CODE_SIGN_ENTITLEMENTS = Maso/Maso.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = UR6F66266C;
+				DEVELOPMENT_TEAM = TW8ZVVX529;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = Maso/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.maso.app;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yumowu.maso;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1042,7 +1042,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = UR6F66266C;
+				DEVELOPMENT_TEAM = TW8ZVVX529;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
