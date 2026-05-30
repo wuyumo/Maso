@@ -8,49 +8,18 @@ import SwiftUI
 //   - UI 实际渲染顺序在 TabBarView 里手动按 today → plans → history 排
 enum RootTab: Hashable { case plans, today, library, history }
 
-/// 统一页面头 — 大号粗体标题 (左, 作为标题而非按钮) + 右侧 icon 按钮, 同一行.
-/// 替代系统导航栏的大标题/inline 标题.
-struct ScreenHeader<Trailing: View>: View {
-    let title: String
-    /// 可选的小写问候/section kicker, 显示在标题上方 (DESIGN.md §4.2 Today 的 greeting).
-    var kicker: String? = nil
-    @ViewBuilder var trailing: () -> Trailing
-    var body: some View {
-        HStack(alignment: kicker == nil ? .center : .top, spacing: 12) {
-            VStack(alignment: .leading, spacing: 2) {
-                if let kicker {
-                    Text(LocalizedStringKey(kicker))
-                        .font(.system(size: 11, weight: .heavy))
-                        .tracking(1.5)
-                        .textCase(.uppercase)
-                        .foregroundStyle(MasoColor.textDim)
-                }
-                // 屏幕标题 — DESIGN.md §2.2: 26pt bold. LocalizedStringKey 让运行期字符串也走本地化.
-                Text(LocalizedStringKey(title))
-                    .font(.system(size: 26, weight: .bold))
-                    .foregroundStyle(MasoColor.text)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.7)
-            }
-            Spacer(minLength: 8)
-            trailing()
-                .font(.system(size: 19, weight: .semibold))
-                .tint(MasoColor.text)
-        }
-        .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
-        .padding(.top, 4)
-        .padding(.bottom, 8)
-    }
-}
-
 extension View {
-    /// 隐藏系统导航栏, 换成固定的大标题自定义头 (标题左 + 按钮右, 同一行; 可选 kicker 在标题上方).
+    /// iOS 默认导航栏 — 系统大标题 (large title, 滚动时收缩成 inline) + 右上角 toolbar 按钮.
+    /// 用户要求所有 tab 的标题/右上角按钮回到 iOS 原生样式, 不再用自定义 safeAreaInset 大标题头.
+    /// kicker (Today 的问候) 在原生导航栏没有对应槽位, 保留参数签名但忽略 — 调用方不用改.
     func screenHeader<T: View>(_ title: String, kicker: String? = nil, @ViewBuilder trailing: @escaping () -> T) -> some View {
         self
-            .toolbar(.hidden, for: .navigationBar)
-            .safeAreaInset(edge: .top, spacing: 0) {
-                ScreenHeader(title: title, kicker: kicker, trailing: trailing)
-                    .background(MasoColor.background)
+            .navigationTitle(LocalizedStringKey(title))
+            .navigationBarTitleDisplayMode(.large)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    trailing()
+                }
             }
     }
 }
