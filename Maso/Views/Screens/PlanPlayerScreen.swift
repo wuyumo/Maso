@@ -23,6 +23,14 @@ struct PlanPlayerScreen: View {
     /// 兼容旧逻辑: playlistExpanded 是从 height 派生的 bool. RestCountdown 圆环大小 / 文案等
     /// 还用这个 bool 决定显示, 不重写所有调用点.
     private var playlistExpanded: Bool { playlistHeight > Self.playlistMinHeight + 40 }
+
+    /// 休息圆环的紧凑度 0..1 — playlistHeight 从 min → default 线性映射. RestCountdown 用它
+    /// 连续 resize 圆环 (替代 playlistExpanded bool), 让圆环大小跟 drawer 同步变, 消除 toggle 抖动.
+    private var restRingCompactT: CGFloat {
+        let lo = Self.playlistMinHeight
+        let hi = Self.playlistDefaultHeight
+        return max(0, min(1, (playlistHeight - lo) / max(1, hi - lo)))
+    }
     /// 拖把手高度档位
     static let playlistMinHeight: CGFloat = 56        // 仅 handle + "PLAYLIST" header, 不见任何 row
     static let playlistDefaultHeight: CGFloat = 254   // 跟旧 expanded 视觉高度对齐
@@ -463,7 +471,7 @@ struct PlanPlayerScreen: View {
                 endsAt: store.session?.endsAt,
                 pausedRemaining: store.session?.pausedRemaining,
                 isCrossExercise: isCrossExerciseRest(currentSegment: seg),
-                playlistExpanded: playlistExpanded
+                compactT: restRingCompactT
             )
         }
     }
@@ -1022,13 +1030,15 @@ private struct RestCountdown: View {
     let endsAt: Date?
     let pausedRemaining: TimeInterval?
     let isCrossExercise: Bool
-    let playlistExpanded: Bool
+    /// 紧凑度 0..1 — 0 = 圆环最大 (playlist 收到最小); 1 = 紧凑 (playlist 撑大). 连续值跟
+    /// playlistHeight 线性, 让圆环大小跟 drawer 高度在"同一个动画事务"里平滑变化 → 不抖.
+    let compactT: CGFloat
 
     private static let ringWidth: CGFloat = 3
 
-    /// 圆环直径 — 展开 playlist 时缩到 140, 默认 220.
-    private var ringSize: CGFloat { playlistExpanded ? 140 : 220 }
-    private var digitsSize: CGFloat { playlistExpanded ? 40 : 64 }
+    /// 圆环直径 — playlist 越大越紧凑 (220 → 140), 连续插值.
+    private var ringSize: CGFloat { 220 - 80 * compactT }
+    private var digitsSize: CGFloat { 64 - 24 * compactT }
 
     private func remainingFloat(at date: Date) -> Double {
         if let p = pausedRemaining { return max(0, p) }
@@ -1045,10 +1055,10 @@ private struct RestCountdown: View {
         TimelineView(.periodic(from: .now, by: 0.1)) { ctx in
             let rem = remainingFloat(at: ctx.date)
             let prog = progress(rem)
+            // 圆环大小不再用单独的 .animation(value: playlistExpanded) — ringSize 是 compactT
+            // (即 playlistHeight) 的连续函数, 自然跟着 drawer 的动画事务走, 不再"自带 spring 跟
+            // drawer 不同步"地抖.
             ringView(remaining: Int(ceil(rem)), progress: prog)
-                // 统一动画曲线: spring response 0.4 dampingFraction 0.82 — 跟 playlist drawer 一致.
-                // 之前是 easeOut 0.25, 跟 drawer 的 easeOut 0.3 节奏不一样, 看起来"两套动作"
-                .animation(.spring(response: 0.4, dampingFraction: 0.82), value: playlistExpanded)
         }
     }
 
@@ -1200,10 +1210,17 @@ private struct Controls: View {
     ///   - 松手/点完成时, halo 圆环 1×→2.6× 同时透明度 0.8→0 扩散开 (HaloRing)
     ///   - 主按钮 quick pulse: 1.0 → 1.12 → 1.0 用 spring 收回 (overshoot 一下)
     /// 全部触发器走 celebrateTrigger int 计数 — 连点连发, 不会被 SwiftUI 合并掉.
+    /// 主按钮是不是"完成本组" (✓). 只有它放庆祝动效 (pulse + halo);
+    /// 播放/暂停 (倒计时段) 和跳过休息不放 — 否则点暂停按钮会弹一下, 看着像抖动.
+    private var isPrimaryComplete: Bool {
+        if case .exercise(_, _, _, _, _, _, let countdown) = seg.kind { return !countdown }
+        return false
+    }
+
     private var primaryBtn: some View {
         Button(action: {
             onPrimary()
-            celebrateTrigger &+= 1
+            if isPrimaryComplete { celebrateTrigger &+= 1 }
         }) {
             ZStack {
                 // halo 圆环 — 在按钮下层向外扩散, 给"完成 / 突破"感
@@ -1579,15 +1596,18 @@ private struct InlinePlaylist: View {
         // 已完成 step: progress 达到 sets 上限, 且不是当前行 (current 的 progress 是"正在做的组数",
         // 临界点 step.sets - 1 → step.sets 那一刻是用户做完最后一组的 transition, 此时 step 仍是 current).
         let isCompleted = !isCurrent && done >= step.sets && step.sets > 0
+        // 进度环显示条件: 当前动作 OR 已经练过几组的动作 (done > 0). 这样切到别的动作后,
+        // 之前练过的那几组在它自己那一行的环上仍标绿、看得见. 完全没碰过的动作才显缩略图.
+        let showsRing = isCurrent || done > 0
         // Button 包整行处理 jump, 图片单独 Button 优先级高于外层, tap 图 → 详情而不是 jump.
         // 整体调大一档 (跟 iOS HIG 列表 cell 64pt 视觉一致): 图片 40→56, 名字 13→15pt,
         // 当前指示圆 6→7, 行内 spacing + padding 同步放大.
         return VStack(spacing: 0) {
             Button(action: { onJump(step.id) }) {
             HStack(spacing: 14) {
-                // 当前动作行: 缩略图位置换成进度环 (一组一段弧, 点段=跳到那一组);
-                // 其它行保留缩略图. 旧的行左侧竖条已废 — 进度收进环里, 跟缩略图占同一个槽位.
-                if isCurrent {
+                // 当前动作 + 练过几组的动作: 缩略图位置换成进度环 (一组一段弧, 点段=跳到那一组);
+                // 完全没碰过的动作才保留缩略图. 进度环让"哪几组练过"在每个动作上都看得见.
+                if showsRing {
                     progressRing(stepId: step.id)
                 } else {
                     Button(action: { onTapImage?(ex) }) {
@@ -1626,9 +1646,9 @@ private struct InlinePlaylist: View {
                             .strikethrough(isCompleted, color: MasoColor.textDim)
                     }
                     HStack(spacing: 5) {
-                        // 当前行的组进度由进度环展示 (环中心已是总组数), 这里不重复;
-                        // 非当前行直接显示总组数 (替代旧 "x/total" 分数样式). reps · weight 照常.
-                        if !isCurrent {
+                        // 显示进度环的行 (当前 / 练过的) 组数由环展示, 这里不重复;
+                        // 只有显缩略图的行 (没碰过的) 才直接显示总组数.
+                        if !showsRing {
                             Text(String(format: NSLocalizedString("%d sets", comment: "total sets"), step.sets))
                                 .font(.system(size: 12).monospacedDigit())
                         }
