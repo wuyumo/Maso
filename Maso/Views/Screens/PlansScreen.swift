@@ -1355,6 +1355,9 @@ struct ExercisePickerSheet: View {
     @State private var boardExpanded: Bool = true
     /// 已选动作 id (multiSelect 用; 单选模式忽略).
     @State private var selectedIds: Set<String> = []
+    /// 搜索框是否展开 — 默认收起 (入口在右上角 toolbar 放大镜), 省竖向空间.
+    @State private var searchActive: Bool = false
+    @FocusState private var searchFocused: Bool
     /// tap 列表行 → 弹动作详情. 详情里点 "Add to workout" 才真正 onPick.
     @State private var detailExercise: Exercise? = nil
     /// 小众动作模式 — false (默认): 主库. true: 只看小众库 (从底部入口进).
@@ -1502,10 +1505,15 @@ struct ExercisePickerSheet: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
-                searchField
-                    .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
-                    .padding(.top, 12)
-                    .padding(.bottom, 8)
+                // 搜索框默认隐藏 — 入口收到右上角 toolbar 放大镜, 点开才占一行竖向空间.
+                if searchActive {
+                    searchField
+                        .focused($searchFocused)
+                        .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
+                        .padding(.top, 12)
+                        .padding(.bottom, 8)
+                        .transition(.move(edge: .top).combined(with: .opacity))
+                }
 
                 // 已选维度 chips — 带 ×, 点击清除并恢复对应列.
                 if anyFacetSelected {
@@ -1523,7 +1531,8 @@ struct ExercisePickerSheet: View {
 
                 exerciseList()
 
-                if multiSelect {
+                // CTA 默认不显示, 选了动作才出现.
+                if multiSelect && !selectedIds.isEmpty {
                     startBar
                 }
             }
@@ -1531,6 +1540,8 @@ struct ExercisePickerSheet: View {
             .animation(.easeOut(duration: 0.22), value: muscleFilter)
             .animation(.easeOut(duration: 0.22), value: movementFilter)
             .animation(.easeOut(duration: 0.22), value: equipmentFilter)
+            .animation(.easeOut(duration: 0.2), value: searchActive)
+            .animation(.easeOut(duration: 0.2), value: selectedIds.isEmpty)
             .sheet(item: $detailExercise) { ex in
                 ExerciseDetailSheet(exercise: ex, onAdd: { onPick(ex) })
             }
@@ -1548,8 +1559,25 @@ struct ExercisePickerSheet: View {
                         Button("Done") { dismiss() }
                     }
                 }
+                // 搜索入口 — 收到右上角, 点开才展开搜索框 (省竖向空间).
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        if searchActive {
+                            searchActive = false; query = ""; searchFocused = false
+                        } else {
+                            searchActive = true
+                        }
+                    } label: {
+                        Image(systemName: searchActive ? "xmark" : "magnifyingglass")
+                    }
+                    .accessibilityLabel(NSLocalizedString(searchActive ? "Close search" : "Search", comment: ""))
+                }
             }
             .tint(MasoColor.text)
+            // 搜索展开后自动聚焦, 直接打字.
+            .onChange(of: searchActive) { _, active in
+                if active { searchFocused = true }
+            }
             // initialMuscle (替换流程) 只灌一次, 之后用户操作不被覆盖.
             .onAppear {
                 if !didSeedInitial {
@@ -1777,7 +1805,7 @@ struct ExercisePickerSheet: View {
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
-    /// multiSelect 底部 Start CTA (自由训练用).
+    /// multiSelect 底部 Start CTA (自由训练用) — 只在选了动作后才渲染 (caller 控制).
     @ViewBuilder
     private var startBar: some View {
         let picked = selectedIds.compactMap { data.exById[$0] }
@@ -1789,19 +1817,18 @@ struct ExercisePickerSheet: View {
         }) {
             HStack(spacing: 8) {
                 Image(systemName: "play.fill").font(.system(size: 14, weight: .heavy))
-                Text(picked.isEmpty ? base : String(format: "%@ (%d)", base, picked.count))
+                Text(String(format: "%@ (%d)", base, picked.count))
                     .font(.system(size: 16, weight: .bold))
             }
             .foregroundStyle(.black)
             .frame(maxWidth: .infinity).frame(height: 50)
-            .background(picked.isEmpty ? MasoColor.surfaceHi : MasoColor.accent)
+            .background(MasoColor.accent)
             .clipShape(RoundedRectangle(cornerRadius: 14))
-            .opacity(picked.isEmpty ? 0.6 : 1)
         }
         .buttonStyle(.plain)
-        .disabled(picked.isEmpty)
         .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
         .padding(.vertical, 8)
+        .transition(.move(edge: .bottom).combined(with: .opacity))
     }
 
     // MARK: - 共用 exercise list
