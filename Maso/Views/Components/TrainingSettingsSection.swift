@@ -109,6 +109,8 @@ struct TrainingSettingsSection: View {
                             // P2-4: 选目标时同步把组间歇设成该目标的推荐值, 让下面"Set rest"行
                             // 跟目标副文案 (~90s / 长歇) 一致, 不再各说各话. 用户之后可再手动微调.
                             data.settings.defaultRestSeconds = g.recommendedRestSeconds()
+                            // 训练目标影响推荐计划的 reps → 重新生成, my plans 立刻跟着变.
+                            data.regenerateRecommendedPlans()
                         }) {
                             HStack {
                                 Text(g.displayName)
@@ -200,7 +202,9 @@ struct TrainingSettingsSection: View {
                 .padding(.top, 10)
                 .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .sheet(isPresented: $showMusclePicker) {
+        // 关掉选肌群 sheet 时重新生成推荐计划 — 聚焦肌群影响 cap 时保留哪些动作.
+        // (放 onDismiss 而不是每次勾选都 regen, 避免多选时反复重算.)
+        .sheet(isPresented: $showMusclePicker, onDismiss: { data.regenerateRecommendedPlans() }) {
             MusclesPickerSheet(
                 selected: Binding(
                     get: { Set(data.settings.wantStrengthen) },

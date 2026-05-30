@@ -266,11 +266,35 @@ final class DataStore {
         let raw = RecommendedPrograms.plans(forDays: days, now: now, byId: exById)
         let cap = max(1, min(6, settings.exercisesPerSession))
         let floorSets = max(1, settings.defaultSetsPerExercise)
+        let goal = settings.trainingGoal
+        // wantStrengthen 折叠到大肌群 section — 给"cap 时优先保留聚焦肌群动作"打分用.
+        let focusSections: Set<MuscleGroup> = Set(settings.wantStrengthen.map { $0.section ?? $0 })
+        func hitsFocus(_ step: PlanStep) -> Bool {
+            guard !focusSections.isEmpty, let ex = exById[step.exerciseId] else { return false }
+            return ex.primaryMuscles.contains { focusSections.contains($0.section ?? $0) }
+        }
         return raw.map { plan -> Plan in
             var p = plan
-            p.steps = Array(p.steps.prefix(cap)).map { step -> PlanStep in
+            // 1. cap 到 exercisesPerSession — 选了聚焦肌群时优先保留命中的动作 (保留原始顺序).
+            let kept: [PlanStep]
+            if focusSections.isEmpty || p.steps.count <= cap {
+                kept = Array(p.steps.prefix(cap))
+            } else {
+                let order = p.steps.indices.sorted { i, j in
+                    let hi = hitsFocus(p.steps[i]), hj = hitsFocus(p.steps[j])
+                    return hi != hj ? (hi && !hj) : i < j   // 命中聚焦肌群的排前, 同档按原顺序
+                }
+                let keepSet = Set(order.prefix(cap))
+                kept = p.steps.indices.filter { keepSet.contains($0) }.map { p.steps[$0] }
+            }
+            // 2. 应用偏好: 组数地板 + reps 跟训练目标 (复合取低端 / 孤立取高端).
+            p.steps = kept.map { step -> PlanStep in
                 var s = step
                 s.sets = max(s.sets, floorSets)  // 地板, 不压平
+                if s.reps != nil {  // 只动力量类 (有 reps) 的; cardio/flex 计时段不碰
+                    let isIso = exById[s.exerciseId]?.mechanic == .isolation
+                    s.reps = isIso ? goal.defaultRepsForIsolation() : goal.defaultRepsForCompound()
+                }
                 return s
             }
             // LRU 回填: 该 plan 在历史里最近一次训练时间 (没练过 → nil → distantPast 排最前)
