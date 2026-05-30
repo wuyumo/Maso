@@ -63,9 +63,10 @@ struct TrainingSettingsSection: View {
             .buttonStyle(.plain)
             Divider().background(MasoColor.borderSoft)
 
-            // ─── 3. Exercises per session ───
-            // 推荐 plan 每张多少动作. 1-6 上限 — 模板最多就 6 step. 用户改后重新 regen.
-            Row(label: "Exercises per session") {
+            // ─── 3. Exercises per plan ───
+            // 推荐 plan 每张多少动作. 1-6 上限 — 模板就 6 step, cap 到这个数. 用户改后重新 regen
+            // → tunedRecommendedPlans 用 prefix(cap) 把每张推荐计划裁到这个动作数.
+            Row(label: "Exercises per plan") {
                 IntStepperContent(
                     value: Binding(
                         get: { data.settings.exercisesPerSession },

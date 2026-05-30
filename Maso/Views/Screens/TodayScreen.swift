@@ -207,10 +207,17 @@ struct TodayScreen: View {
                 Image(systemName: icon)
                     .font(.system(size: 18, weight: .heavy))
                     .foregroundStyle(MasoColor.accent)
-                Text(title)
-                    .font(.system(size: 14, weight: .bold))
-                    .foregroundStyle(MasoColor.text)
-                    .lineLimit(1)
+                // 标题行带向右 chevron — 提示可点进 (跟 PlanRow 的 chevron 同款样式).
+                HStack(spacing: 6) {
+                    Text(title)
+                        .font(.system(size: 14, weight: .bold))
+                        .foregroundStyle(MasoColor.text)
+                        .lineLimit(1)
+                    Spacer(minLength: 0)
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 11, weight: .heavy))
+                        .foregroundStyle(MasoColor.textFaint)
+                }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(MasoMetrics.cardPadding)
