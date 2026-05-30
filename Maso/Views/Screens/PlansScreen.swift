@@ -421,35 +421,14 @@ struct PlanRow: View {
     }
 
     var body: some View {
-        // 紧凑横排布局: 左侧文字 + 右侧肌肉图 (内嵌播放键).
-        //   左: plan name (16pt bold) + 小 chevron  →  meta subtitle
-        //   右: MuscleVisualBlock (72pt) + 播放键浮在右下角
+        // 紧凑横排布局: 左侧肌肉图 (内嵌播放键) + 右侧文字.
+        //   左: MuscleVisualBlock (72pt) + 播放键浮在左下角
+        //   右: plan name (16pt bold) + 小 chevron  →  meta subtitle
         // 高度由肌肉图主导 (~72pt) + 垂直 padding, 比原"竖排三行"版本矮约 50pt.
         HStack(alignment: .center, spacing: 14) {
 
-            // ── 左: 文字区 (tap → detail) ──
-            VStack(alignment: .leading, spacing: 5) {
-                HStack(spacing: 6) {
-                    Text(plan.name)
-                        .font(.system(size: 16, weight: .bold))
-                        .foregroundStyle(MasoColor.text)
-                        .lineLimit(1)
-                    Spacer(minLength: 0)
-                    Image(systemName: "chevron.right")
-                        .font(.system(size: 11, weight: .heavy))
-                        .foregroundStyle(MasoColor.textFaint)
-                }
-                Text("\(pluralizedExercises(plan.steps.count)) · \(pluralizedSets(plan.steps.reduce(0) { $0 + $1.sets }))")
-                    .font(.system(size: 12).monospacedDigit())
-                    .foregroundStyle(MasoColor.textDim)
-                    .lineLimit(1)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .contentShape(Rectangle())
-            .onTapGesture { onTap() }
-
-            // ── 右: 肌肉图 + 播放键 ──
-            // ZStack(.bottomTrailing): 播放键钉在肌肉图右下角
+            // ── 左: 肌肉图 + 播放键 ──
+            // ZStack(.bottomTrailing): 播放键钉在缩略图右下角 (视频缩略图上的播放徽章惯例)
             ZStack(alignment: .bottomTrailing) {
                 MuscleVisualBlock(muscles: muscles, sideLength: 72)
                     .frame(width: 72, height: 72)
@@ -470,8 +449,29 @@ struct PlanRow: View {
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel("Start Workout")
-                .offset(x: 4, y: 4)   // 稍微超出肌肉图边缘, 像浮动徽章
+                .offset(x: 2, y: 4)   // 轻微浮出缩略图右下角
             }
+
+            // ── 右: 文字区 (tap → detail) ──
+            VStack(alignment: .leading, spacing: 5) {
+                HStack(spacing: 6) {
+                    Text(plan.name)
+                        .font(.system(size: 16, weight: .bold))
+                        .foregroundStyle(MasoColor.text)
+                        .lineLimit(1)
+                    Spacer(minLength: 0)
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 11, weight: .heavy))
+                        .foregroundStyle(MasoColor.textFaint)
+                }
+                Text("\(pluralizedExercises(plan.steps.count)) · \(pluralizedSets(plan.steps.reduce(0) { $0 + $1.sets }))")
+                    .font(.system(size: 12).monospacedDigit())
+                    .foregroundStyle(MasoColor.textDim)
+                    .lineLimit(1)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .contentShape(Rectangle())
+            .onTapGesture { onTap() }
         }
         .padding(.horizontal, MasoMetrics.cardPadding - 2)
         .padding(.vertical, 12)
