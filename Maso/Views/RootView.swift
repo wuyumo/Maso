@@ -6,7 +6,24 @@ import SwiftUI
 // 注意 enum case 的"声明顺序"和"UI 显示顺序"现在分开管理:
 //   - case 排列保留 (避免影响其他用 RootTab 的代码)
 //   - UI 实际渲染顺序在 TabBarView 里手动按 today → plans → history 排
-enum RootTab: Hashable { case plans, today, history }
+enum RootTab: Hashable { case plans, today, library, history }
+
+extension View {
+    /// 把"大标题"换成跟右上角 icon 按钮同一行的左对齐标题 (inline nav bar 单行).
+    /// 屏幕自己的 `.toolbar { 右上角按钮 }` 会跟这里的 leading 标题合并到同一条 nav bar.
+    func leadingNavTitle(_ title: String) -> some View {
+        self
+            .navigationTitle("")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Text(title)
+                        .font(.system(size: 22, weight: .bold))
+                        .foregroundStyle(MasoColor.text)
+                }
+            }
+    }
+}
 
 // 顶级路由 — 跟 web 端 App.tsx 1:1
 //   - onboarding 未完成: 整屏 Onboarding
@@ -114,6 +131,15 @@ struct RootView: View {
                     Label("Plans", systemImage: "list.bullet")
                 }
                 .tag(RootTab.plans)
+
+                // Exercise Library — 整页作为一个 tab (自带 NavigationStack, 不再外包一层).
+                ExerciseLibraryBrowser(asTab: true)
+                    .tint(MasoColor.text)
+                    .safeAreaInset(edge: .bottom, spacing: 0) { miniBarContent }
+                    .tabItem {
+                        Label("Library", systemImage: "dumbbell.fill")
+                    }
+                    .tag(RootTab.library)
 
                 NavigationStack {
                     HistoryScreen(

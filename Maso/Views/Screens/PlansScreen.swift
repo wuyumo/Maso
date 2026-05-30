@@ -21,8 +21,6 @@ struct PlansScreen: View {
     @State private var pendingDeletePlanId: String? = nil
     /// Community sheet — tap 列表底部 "See what others train" 弹出
     @State private var communityPresented: Bool = false
-    /// 底部 Library entry → 弹 ExerciseLibraryBrowser (移自 Settings).
-    @State private var libraryPresented: Bool = false
 
     var body: some View {
         // List 替代 ScrollView+VStack — 一举三得: 原生 .onMove 拖拽排序 + .swipeActions 右滑删除
@@ -115,24 +113,15 @@ struct PlansScreen: View {
                 .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 12, trailing: 0))
                 .listRowBackground(Color.clear)
 
-            // 动作库入口 — Plans tab 底部, 跟 CommunityEntryRow 同款 row. 从 Settings 挪过来,
-            // 因为这里跟 plan 编辑动线更顺 (创建 plan 时想"我自己有什么动作?"一眼可达).
-            LibraryEntryRow(
-                exerciseCount: data.userLibrary.count,
-                onTap: { libraryPresented = true }
-            )
-                .listRowSeparator(.hidden)
-                .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 12, trailing: 0))
-                .listRowBackground(Color.clear)
+            // (动作库入口已升级为底部独立 tab — Plans 这里不再重复放一行.)
         }
         .listStyle(.plain)
         .scrollContentBackground(.hidden)
         .contentMargins(.horizontal, MasoMetrics.pagePaddingHorizontal, for: .scrollContent)
         .contentMargins(.bottom, MasoMetrics.pageBottomInset, for: .scrollContent)
         .background(MasoColor.background.ignoresSafeArea())
-        // iOS 默认导航栏: 大标题 (滚动会自动收成 inline) + 系统 tint 的 toolbar 按钮
-        .navigationTitle("Plans")
-        .navigationBarTitleDisplayMode(.large)
+        // 标题跟右上角按钮同一行 (inline + 左对齐标题).
+        .leadingNavTitle("Plans")
         .toolbar {
             // Restore button — 只在用户把系统推荐 plan 全删光时显示, 一键拉回推荐
             if hasNoRecommendedPlans {
@@ -177,11 +166,7 @@ struct PlansScreen: View {
         .sheet(isPresented: $communityPresented) {
             CommunityScreen()
         }
-        // 动作库 sheet — 从 Settings 挪过来的入口, 这里挂 sheet 绑定. Library 内部"+"
-        // 入口再走 AddExerciseChoiceSheet → 自创 / 采纳 niche.
-        .sheet(isPresented: $libraryPresented) {
-            ExerciseLibraryBrowser()
-        }
+        // (动作库已是底部独立 tab — 不再用 sheet.)
         // (paywall sheet 跟着 ProBanner 一起搬到 TodayScreen)
     }
 
@@ -1543,7 +1528,10 @@ struct ExercisePickerSheet: View {
             .animation(.easeOut(duration: 0.2), value: searchActive)
             .animation(.easeOut(duration: 0.2), value: selectedIds.isEmpty)
             .sheet(item: $detailExercise) { ex in
-                ExerciseDetailSheet(exercise: ex, onAdd: { onPick(ex) })
+                // 详情里的 "Add" — multiSelect 加入勾选; 否则走 onPick (加到 plan / 替换).
+                ExerciseDetailSheet(exercise: ex, onAdd: {
+                    if multiSelect { selectedIds.insert(ex.id) } else { onPick(ex) }
+                })
             }
             .background(MasoColor.background.ignoresSafeArea())
             .navigationBarTitleDisplayMode(.inline)
@@ -1859,24 +1847,28 @@ struct ExercisePickerSheet: View {
                         .frame(width: 2)
                         .padding(.leading, 8)
                 }
-                // 变种行的图标 — 用器械 SF Symbol, 不用 56pt 缩略图 (节省空间, 也强化"这是变种"层级).
-                if isVariant {
-                    Image(systemName: variantSymbol(for: ex))
-                        .font(.system(size: 16, weight: .heavy))
-                        .foregroundStyle(MasoColor.textDim)
-                        .frame(width: 36, height: 36)
-                        .background(MasoColor.surfaceHi)
-                        .clipShape(RoundedRectangle(cornerRadius: 8))
-                } else {
-                    ExerciseImage(
-                        category: ex.category,
-                        imageFolder: ex.imageFolder,
-                        customImageData: ex.customImageData,
-                        cornerRadius: 8,
-                        size: 56,
-                        animated: false
-                    )
+                // 点左侧图片/图标 → 查看动作详情 (任何模式都能看; 优先于整行 tap).
+                Button { detailExercise = ex } label: {
+                    if isVariant {
+                        Image(systemName: variantSymbol(for: ex))
+                            .font(.system(size: 16, weight: .heavy))
+                            .foregroundStyle(MasoColor.textDim)
+                            .frame(width: 36, height: 36)
+                            .background(MasoColor.surfaceHi)
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                    } else {
+                        ExerciseImage(
+                            category: ex.category,
+                            imageFolder: ex.imageFolder,
+                            customImageData: ex.customImageData,
+                            cornerRadius: 8,
+                            size: 56,
+                            animated: false
+                        )
+                    }
                 }
+                .buttonStyle(.plain)
+                .accessibilityLabel(String(format: NSLocalizedString("Show details for %@", comment: "exercise detail a11y"), ex.displayName))
                 VStack(alignment: .leading, spacing: 5) {
                     Text(rowTitle(for: ex, isVariant: isVariant))
                         .font(.system(size: isVariant ? 13 : 15, weight: .bold))

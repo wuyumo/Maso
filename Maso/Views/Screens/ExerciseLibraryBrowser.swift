@@ -6,6 +6,8 @@ import SwiftUI
 struct ExerciseLibraryBrowser: View {
     @Environment(DataStore.self) private var data
     @Environment(\.dismiss) private var dismiss
+    /// 作为底部 tab 嵌入时 true — 去掉 "Done"(tab 不需要 dismiss).
+    var asTab: Bool = false
 
     @State private var query: String = ""
     @State private var muscleFilter: MuscleGroup? = nil
@@ -256,18 +258,18 @@ struct ExerciseLibraryBrowser: View {
                 .scrollContentBackground(.hidden)
             }
             .background(MasoColor.background.ignoresSafeArea())
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationTitle("Exercise library")
-            .navigationBarTitleDisplayMode(.inline)
+            .leadingNavTitle(NSLocalizedString("Exercise library", comment: ""))
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
+                ToolbarItem(placement: .topBarTrailing) {
                     Button(action: { addChoiceOpen = true }) {
                         Image(systemName: "plus")
                     }
                     .accessibilityLabel(NSLocalizedString("Add exercise", comment: ""))
                 }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Done") { dismiss() }
+                if !asTab {
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button("Done") { dismiss() }
+                    }
                 }
             }
             .tint(MasoColor.text)

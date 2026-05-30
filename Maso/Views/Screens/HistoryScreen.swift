@@ -118,8 +118,7 @@ struct HistoryScreen: View {
         // ignoresSafeArea 让底色延伸到 home indicator 区. NavigationStack 的 large title /
         // material blur 仍正常叠在这个底色之上 (跟 Plans 同视觉).
         .background(MasoColor.background.ignoresSafeArea())
-        .navigationTitle("History")
-        .navigationBarTitleDisplayMode(.large)
+        .leadingNavTitle("History")
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button(action: onOpenSettings) {
