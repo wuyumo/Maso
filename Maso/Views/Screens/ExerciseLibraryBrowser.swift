@@ -111,7 +111,9 @@ struct ExerciseLibraryBrowser: View {
 
     var body: some View {
         NavigationStack {
-            VStack(spacing: 0) {
+            List {
+                // 搜索 + 筛选作为列表首行 — 随内容一起滚动. List 直接挂在导航下, 上滑时
+                // 大标题收进 headbar (跟 Today/History 一致); 下拉再露出搜索栏 (iOS 经典模式).
                 VStack(spacing: 10) {
                     TextField("Search exercises…", text: $query)
                         .textFieldStyle(.plain)
@@ -166,15 +168,12 @@ struct ExerciseLibraryBrowser: View {
                         Spacer()
                     }
                 }
-                .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
-                .padding(.top, 12)
-                .padding(.bottom, 8)
+                .listRowInsets(EdgeInsets(top: 10, leading: MasoMetrics.pagePaddingHorizontal, bottom: 6, trailing: MasoMetrics.pagePaddingHorizontal))
+                .listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
 
-                // List + 原生 .swipeActions — 替换之前的自制 SwipeableRow.
-                // 自制版本跟 ScrollView 的 vertical pan gesture 有冲突 (左滑 OK 但上下滑死掉).
-                // 原生 swipeActions 在 List 内是 OS 帮你管手势, 不会跟 List 自己的 scroll 抢.
-                List {
-                    ForEach(filtered) { ex in
+                // 原生 .swipeActions — 在 List 内由 OS 管手势, 不跟 scroll 抢 (替代自制 SwipeableRow).
+                ForEach(filtered) { ex in
                         let isFav = data.isFavorite(ex.id)
                         Button {
                             selected = ex
@@ -256,9 +255,8 @@ struct ExerciseLibraryBrowser: View {
                 }
                 .listStyle(.plain)
                 .scrollContentBackground(.hidden)
-            }
-            .background(MasoColor.background.ignoresSafeArea())
-            .screenHeader(NSLocalizedString("Exercise library", comment: "")) {
+                .background(MasoColor.background.ignoresSafeArea())
+                .screenHeader(NSLocalizedString("Exercise library", comment: "")) {
                 HStack(spacing: 18) {
                     Button(action: { addChoiceOpen = true }) {
                         Image(systemName: "plus")
