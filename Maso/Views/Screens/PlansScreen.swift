@@ -421,70 +421,60 @@ struct PlanRow: View {
     }
 
     var body: some View {
-        // 统一布局 (跟 History SessionCard 同款):
-        //   行1: plan name + 右箭头 (tap 进 detail)
-        //   行2: exercises · sets meta
-        //   行3: BodyHint 居中 + 右下角圆形播放按钮 (tap 启动训练)
-        VStack(alignment: .leading, spacing: 6) {
-            HStack(spacing: 8) {
-                Text(plan.name)
-                    // 16pt bold — 跟 History tab SessionCard 一致, 紧凑列表标题.
-                    // Today WorkoutCard 保留 20pt (hero 卡片凸显). 超长走默认 truncationMode .tail.
-                    .font(.system(size: 16, weight: .bold))
-                    .foregroundStyle(MasoColor.text)
+        // 紧凑横排布局: 左侧文字 + 右侧肌肉图 (内嵌播放键).
+        //   左: plan name (16pt bold) + 小 chevron  →  meta subtitle
+        //   右: MuscleVisualBlock (72pt) + 播放键浮在右下角
+        // 高度由肌肉图主导 (~72pt) + 垂直 padding, 比原"竖排三行"版本矮约 50pt.
+        HStack(alignment: .center, spacing: 14) {
+
+            // ── 左: 文字区 (tap → detail) ──
+            VStack(alignment: .leading, spacing: 5) {
+                HStack(spacing: 6) {
+                    Text(plan.name)
+                        .font(.system(size: 16, weight: .bold))
+                        .foregroundStyle(MasoColor.text)
+                        .lineLimit(1)
+                    Spacer(minLength: 0)
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 11, weight: .heavy))
+                        .foregroundStyle(MasoColor.textFaint)
+                }
+                Text("\(pluralizedExercises(plan.steps.count)) · \(pluralizedSets(plan.steps.reduce(0) { $0 + $1.sets }))")
+                    .font(.system(size: 12).monospacedDigit())
+                    .foregroundStyle(MasoColor.textDim)
                     .lineLimit(1)
-                Spacer()
-                Image(systemName: "chevron.right")
-                    .font(.system(size: 12, weight: .heavy))
-                    .foregroundStyle(MasoColor.textFaint)
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
             .contentShape(Rectangle())
             .onTapGesture { onTap() }
 
-            // 字号对齐 History SessionCard 的 subtitle: 12pt monospaced
-            Text("\(pluralizedExercises(plan.steps.count)) · \(pluralizedSets(plan.steps.reduce(0) { $0 + $1.sets }))")
-                .font(.system(size: 12).monospacedDigit())
-                .foregroundStyle(MasoColor.textDim)
-                .lineLimit(1)
-                .contentShape(Rectangle())
-                .onTapGesture { onTap() }
-
-            // anatomy + 播放按钮 — ZStack(.bottomTrailing): muscle map 水平居中,
-            // play button 浮在卡片右下角. 按钮到卡片底 / 右 距离都 = cardPadding (16pt), 视觉对称.
-            // 按钮缩小到 32pt (从 44pt) — 不再"主 CTA 强调", 而是"列表行点起"的辅助操作.
-            // ⚠️ SessionCard 同款布局, 改这里同步改 SessionCard.
+            // ── 右: 肌肉图 + 播放键 ──
+            // ZStack(.bottomTrailing): 播放键钉在肌肉图右下角
             ZStack(alignment: .bottomTrailing) {
-                // 居中层 — muscle map 水平居中
-                HStack {
-                    Spacer()
-                    MuscleVisualBlock(muscles: muscles, sideLength: 100)
-                        .fixedSize()
-                        .contentShape(Rectangle())
-                        .onTapGesture { onTap() }
-                    Spacer()
-                }
+                MuscleVisualBlock(muscles: muscles, sideLength: 72)
+                    .frame(width: 72, height: 72)
+                    .contentShape(Rectangle())
+                    .onTapGesture { onTap() }
 
-                // Play button — ZStack bottomTrailing → 自动贴右下角
                 Button(action: onStart) {
                     ZStack {
                         Circle()
                             .fill(MasoColor.accent.opacity(0.18))
-                            .overlay(
-                                Circle().stroke(MasoColor.accent.opacity(0.4), lineWidth: 0.5)
-                            )
-                            .frame(width: 32, height: 32)
+                            .overlay(Circle().stroke(MasoColor.accent.opacity(0.4), lineWidth: 0.5))
+                            .frame(width: 28, height: 28)
                         Image(systemName: "play.fill")
-                            .font(.system(size: 11, weight: .heavy))
+                            .font(.system(size: 10, weight: .heavy))
                             .foregroundStyle(MasoColor.accent)
                             .offset(x: 0.5)
                     }
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel("Start Workout")
+                .offset(x: 4, y: 4)   // 稍微超出肌肉图边缘, 像浮动徽章
             }
-            .padding(.top, 4)
         }
-        .padding(MasoMetrics.cardPadding - 4)
+        .padding(.horizontal, MasoMetrics.cardPadding - 2)
+        .padding(.vertical, 12)
         .background(MasoColor.surface)
         .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
         // 长按整卡 → 删除菜单. parent (PlansScreen) 接管 confirm — 跟右滑删除走同一 alert.
