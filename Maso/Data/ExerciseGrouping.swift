@@ -100,17 +100,18 @@ enum ExerciseGrouping {
     // MARK: - Movement modifier (执行方式) stripping
 
     /// "执行方式"修饰词 — 改的是怎么做(站/坐/单侧/握法)而不是用什么器械.
-    /// 注意: 故意排除 Incline/Decline/Romanian/Sumo 等——它们是独立的动作变种, 不该被合并.
+    /// 注意: 故意排除以下"独立动作变种", 它们不是执行方式而是不同动作, 不该被合并:
+    ///   - Incline/Decline/Romanian/Sumo (角度/姿态决定的不同动作)
+    ///   - Floor / Behind-the-Neck (限定 ROM / 轨迹的不同动作 — "Floor Press" ≠ 泛化 "Press")
     static let movementModifierTokens: [String] = [
         // 方向/角度
-        "behind the neck", "behind-the-neck",
         "low-to-high", "high-to-low",
         // 单侧
         "single-arm", "one-arm", "single arm", "one arm",
         "single-leg", "one-leg", "single leg", "one leg",
         "one-side", "one side", "unilateral", "alternating",
-        // 体位
-        "seated", "standing", "lying", "prone", "supine", "floor",
+        // 体位 (注意: 不含 floor — Floor Press 是独立动作)
+        "seated", "standing", "lying", "prone", "supine",
         // 握法
         "wide-grip", "close-grip", "neutral-grip", "reverse-grip",
         "wide grip", "close grip", "neutral grip", "reverse grip",

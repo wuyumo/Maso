@@ -1505,9 +1505,13 @@ private struct InlinePlaylist: View {
     }
 
     private func setBarColor(idx: Int, stepId: String, setN: Int) -> Color {
-        if idx == currentIndex { return MasoColor.text }  // 当前组 = 白
-        if completedSets.contains(.init(stepId: stepId, setN: setN)) { return MasoColor.accent }  // 做完 = 绿
-        return MasoColor.textFaint.opacity(0.35)  // 未做 / 跳过 = 灰
+        // 只看"完成"状态: 做完 = 绿, 没做完 = 白. 不再区分"当前组/未来组/跳过组".
+        // 关键: 颜色纯粹由 completedSets 决定 — 切换动作/组时不会改变某一段的颜色
+        // (之前 "当前组=白" 会在切走后变灰, 造成切换时颜色跳变).
+        if completedSets.contains(.init(stepId: stepId, setN: setN)) {
+            return MasoColor.accent  // 做完 = 绿
+        }
+        return MasoColor.text  // 未完成 (含当前/未来/跳过) = 白
     }
 
     var body: some View {
@@ -1610,6 +1614,10 @@ private struct InlinePlaylist: View {
             }
             .listStyle(.plain)
             .scrollContentBackground(.hidden)
+            // 隐藏纵向滚动条 — 关键修复"左右轻微摆动": List 默认在内容变化/重绘 (e.g. 暂停切换)
+            // 时短暂显示滚动条, iOS 会把内容右侧 inset ~3pt 给滚动条腾位 → 行整体左移再弹回,
+            // 视觉就是横向摆动. 隐藏后内容宽度恒定.
+            .scrollIndicators(.hidden)
             // List 默认 environment editMode 是 inactive — onMove 在 inactive 下走"长按拖动"
             // 模式 (iOS 16+), 不需要进入显式 edit mode 才能拖. 用户长按行 ~0.5s 即可开始拖.
         }
