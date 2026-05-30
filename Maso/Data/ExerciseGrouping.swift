@@ -46,11 +46,44 @@ enum ExerciseGrouping {
     /// "Speed Bench Press" → "Speed Bench Press" (无括号 → 整名当 base)
     static func baseName(of exercise: Exercise) -> String {
         let n = exercise.name
+        // 1. 截到第一个 "(" 前 — 括号里的器械/grip 变种归到同 base (现有逻辑).
+        let beforeParen: String
         if let paren = n.firstIndex(of: "(") {
-            // 截到 "(" 前, trim 末尾空白
-            return n[..<paren].trimmingCharacters(in: .whitespaces)
+            beforeParen = String(n[..<paren]).trimmingCharacters(in: .whitespaces)
+        } else {
+            beforeParen = n.trimmingCharacters(in: .whitespaces)
         }
-        return n.trimmingCharacters(in: .whitespaces)
+        // 2. 再删掉名字里的"器械词"(前缀/中缀), 把没用括号写器械的重复项也归并:
+        //    "Dumbbell Bench Press" / "Barbell Bench Press" / "Bench Press" → "Bench Press";
+        //    "Trap Bar Deadlift" → "Deadlift"; "Landmine Front Raise" → "Front Raise";
+        //    "Single-Arm Dumbbell Row" → "Single-Arm Row".
+        //    只删器械, 保留 Incline/Decline/Seated/Single-Arm/Romanian/Sumo 等"动作限定词" —
+        //    所以 Incline Bench Press 不会被并进 Bench Press.
+        return stripEquipmentWords(beforeParen)
+    }
+
+    /// 名字里的器械词 — 整词、大小写不敏感地删掉. 多词词条放前面 (正则 alternation 从左到右).
+    private static let equipmentNameTokens: [String] = [
+        "smith machine", "resistance band", "ez curl bar", "ez-bar", "ez bar",
+        "trap bar", "leverage machine", "body only",
+        "dumbbells", "dumbbell", "barbells", "barbell", "kettlebells", "kettlebell",
+        "cables", "cable", "machine", "smith", "bands", "band", "bodyweight",
+        "landmine", "sled", "weighted", "plate",
+    ]
+
+    private static let equipmentRegex: NSRegularExpression = {
+        let pat = "\\b(?:" + equipmentNameTokens.joined(separator: "|") + ")\\b"
+        return try! NSRegularExpression(pattern: pat, options: [.caseInsensitive])
+    }()
+
+    /// 删器械词 + 收敛空白. 大小写不敏感匹配但保留其余词的原始大小写 (在原串上替换).
+    /// 全被删空 (动作名本身就叫 "Dumbbell" 之类) → 回退原串, 不强行归并出空 base.
+    private static func stripEquipmentWords(_ s: String) -> String {
+        let range = NSRange(s.startIndex..., in: s)
+        var out = equipmentRegex.stringByReplacingMatches(in: s, options: [], range: range, withTemplate: " ")
+        out = out.replacingOccurrences(of: "\\s+", with: " ", options: .regularExpression)
+                 .trimmingCharacters(in: .whitespaces)
+        return out.isEmpty ? s : out
     }
 
     /// 把一组 exercise 折叠成 ExerciseGroup 列表.
