@@ -145,7 +145,8 @@ struct WorkoutCard: View {
             HStack(spacing: 0) {
                 Spacer(minLength: 0)
                 MuscleVisualBlock(muscles: inferredMuscles, sideLength: 140)
-                    .fixedSize()
+                    .frame(width: 140, height: 140)   // 显式 frame (不用 .fixedSize) — List row 的
+                    // nil-width sizing pass 下 .fixedSize 会回报无限 ideal 宽度, 整行连同后面都不渲染.
                 Spacer(minLength: 0)
             }
             .padding(.top, 16)

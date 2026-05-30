@@ -12,14 +12,26 @@ enum RootTab: Hashable { case plans, today, library, history }
 /// 替代系统导航栏的大标题/inline 标题.
 struct ScreenHeader<Trailing: View>: View {
     let title: String
+    /// 可选的小写问候/section kicker, 显示在标题上方 (DESIGN.md §4.2 Today 的 greeting).
+    var kicker: String? = nil
     @ViewBuilder var trailing: () -> Trailing
     var body: some View {
-        HStack(alignment: .center, spacing: 12) {
-            Text(title)
-                .font(.system(size: 30, weight: .bold))
-                .foregroundStyle(MasoColor.text)
-                .lineLimit(1)
-                .minimumScaleFactor(0.7)
+        HStack(alignment: kicker == nil ? .center : .top, spacing: 12) {
+            VStack(alignment: .leading, spacing: 2) {
+                if let kicker {
+                    Text(LocalizedStringKey(kicker))
+                        .font(.system(size: 11, weight: .heavy))
+                        .tracking(1.5)
+                        .textCase(.uppercase)
+                        .foregroundStyle(MasoColor.textDim)
+                }
+                // 屏幕标题 — DESIGN.md §2.2: 26pt bold. LocalizedStringKey 让运行期字符串也走本地化.
+                Text(LocalizedStringKey(title))
+                    .font(.system(size: 26, weight: .bold))
+                    .foregroundStyle(MasoColor.text)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.7)
+            }
             Spacer(minLength: 8)
             trailing()
                 .font(.system(size: 19, weight: .semibold))
@@ -32,12 +44,12 @@ struct ScreenHeader<Trailing: View>: View {
 }
 
 extension View {
-    /// 隐藏系统导航栏, 换成固定的大标题自定义头 (标题左 + 按钮右, 同一行).
-    func screenHeader<T: View>(_ title: String, @ViewBuilder trailing: @escaping () -> T) -> some View {
+    /// 隐藏系统导航栏, 换成固定的大标题自定义头 (标题左 + 按钮右, 同一行; 可选 kicker 在标题上方).
+    func screenHeader<T: View>(_ title: String, kicker: String? = nil, @ViewBuilder trailing: @escaping () -> T) -> some View {
         self
             .toolbar(.hidden, for: .navigationBar)
             .safeAreaInset(edge: .top, spacing: 0) {
-                ScreenHeader(title: title, trailing: trailing)
+                ScreenHeader(title: title, kicker: kicker, trailing: trailing)
                     .background(MasoColor.background)
             }
     }
@@ -126,10 +138,12 @@ struct RootView: View {
                 // 三个 tab 都包 NavigationStack — 走 iOS 默认 navigationTitle + toolbar 样式.
                 // .tint(MasoColor.text) 覆盖系统默认 (Asset AccentColor 是绿) — toolbar 右上角按钮
                 // 走白色, 跟 dark theme 配色一致 (不再绿).
+                // Today — 现在也吸收了原 Plans 页内容 (我的训练 section + 新建入口).
                 NavigationStack {
                     TodayScreen(
                         onStart: startTraining,
                         onFreeWorkout: { quickWorkoutPresented = true },
+                        onNewPlan: handleNewPlan,
                         onOpenSettings: { settingsPresented = true }
                     )
                 }
@@ -139,16 +153,6 @@ struct RootView: View {
                     Label("Today", systemImage: "figure.strengthtraining.traditional")
                 }
                 .tag(RootTab.today)
-
-                NavigationStack {
-                    PlansScreen(onStart: startTraining, onNewPlan: handleNewPlan)
-                }
-                .tint(MasoColor.text)
-                .safeAreaInset(edge: .bottom, spacing: 0) { miniBarContent }
-                .tabItem {
-                    Label("Plans", systemImage: "list.bullet")
-                }
-                .tag(RootTab.plans)
 
                 // Exercise Library — 整页作为一个 tab (自带 NavigationStack, 不再外包一层).
                 ExerciseLibraryBrowser(asTab: true)
@@ -269,8 +273,8 @@ struct RootView: View {
                             data.plans.append(p)
                             data.save()
                             Haptics.tap()
-                            // 落到 Plans tab, 让用户看到新加的 plan
-                            tab = .plans
+                            // 落到 Today, 让用户在"我的训练"section 看到新加的 plan
+                            tab = .today
                         }
                     }
                 )
@@ -285,8 +289,8 @@ struct RootView: View {
             .sheet(item: $newPlanForEdit, onDismiss: {
                 if let planId = lastCreatedPlanId { data.removePlanIfEmpty(planId) }
                 lastCreatedPlanId = nil
-                // 切到 Plans tab 让用户看到新建的 plan (如果保留了的话)
-                if tab == .today { tab = .plans }
+                // 新建的 plan 出现在 Today 的"我的训练"section — 留在 Today 即可.
+                tab = .today
             }) { plan in
                 PlanDetailSheet(
                     initialPlan: plan,

@@ -778,3 +778,11 @@
 "Close search" = "关闭搜索";
 
 "Library" = "动作库";
+
+/* ── Today (merged Plans) ── */
+"Good morning" = "早上好";
+"Good afternoon" = "下午好";
+"Good evening" = "晚上好";
+"Good night" = "凌晨好";
+"My plans" = "我的训练";
+"Create your own workout, or restore the recommended set." = "自己创建训练，或恢复推荐计划。";

@@ -134,9 +134,16 @@ struct LimitedFlowLayout: Layout {
     }
 
     func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
-        let maxWidth = proposal.width ?? .infinity
-        let plan = makePlan(subviews: subviews, maxWidth: maxWidth)
-        return plan.totalSize
+        // 宽度有值且有限 → 正常按可用宽度排 (撑满).
+        if let w = proposal.width, w.isFinite {
+            return makePlan(subviews: subviews, maxWidth: w).totalSize
+        }
+        // 宽度未指定 (nil) 或无限 —— List 的 sizing pass 会给 nil. 绝不能回报 .infinity 宽度,
+        // 否则整个 list row 连同它后面的所有 row 都不渲染. 回报"自然单行宽度" (所有 subview 宽度之和).
+        let sizes = subviews.map { $0.sizeThatFits(.unspecified) }
+        let natural = sizes.reduce(0) { $0 + $1.width } + spacing * CGFloat(max(0, sizes.count - 1))
+        let h = sizes.map(\.height).max() ?? 0
+        return CGSize(width: natural, height: h)
     }
 
     func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {

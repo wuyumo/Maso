@@ -190,7 +190,7 @@ struct PlansScreen: View {
 
 // MARK: - CommunityEntryRow — Plans 列表底部"社区精选" 入口
 
-private struct CommunityEntryRow: View {
+struct CommunityEntryRow: View {
     let onTap: () -> Void
 
     var body: some View {
@@ -269,7 +269,7 @@ private struct LibraryEntryRow: View {
 //   - days >= 5 → 高频
 //   - days 3-4 → 中频 (经典每周 2× / muscle)
 //   - days 1-2 → 维持频率
-private struct PlanRationaleCard: View {
+struct PlanRationaleCard: View {
     @Environment(DataStore.self) private var data
     /// 右上角 pencil 按钮触发的"快捷训练设置"sheet
     @State private var showTrainingSettings = false
@@ -397,7 +397,7 @@ private struct PlanRationaleCard: View {
 
 // MARK: - Plan list row
 
-private struct PlanRow: View {
+struct PlanRow: View {
     let plan: Plan
     let exById: [String: Exercise]
     let onTap: () -> Void

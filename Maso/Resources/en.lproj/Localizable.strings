@@ -779,3 +779,11 @@
 "Close search" = "Close search";
 
 "Library" = "Library";
+
+/* ── Today (merged Plans) ── */
+"Good morning" = "Good morning";
+"Good afternoon" = "Good afternoon";
+"Good evening" = "Good evening";
+"Good night" = "Good night";
+"My plans" = "My plans";
+"Create your own workout, or restore the recommended set." = "Create your own workout, or restore the recommended set.";
