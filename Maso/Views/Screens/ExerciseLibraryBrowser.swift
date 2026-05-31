@@ -13,6 +13,8 @@ struct ExerciseLibraryBrowser: View {
     @State private var muscleFilter: MuscleGroup? = nil
     @State private var equipmentFilter: String? = nil
     @State private var selected: Exercise? = nil
+    /// 当前展开的"变种组" key (= ExerciseGroup.id). 一次只展开一组 — 跟 picker 同一收折语义.
+    @State private var expandedGroupKey: String? = nil
     /// "+ Add exercise" → 两条路径的选择 sheet (Create your own / Browse rare).
     @State private var addChoiceOpen: Bool = false
     /// 路径 1: 自创动作表单 sheet (name + photo + 元数据).
@@ -59,6 +61,67 @@ struct ExerciseLibraryBrowser: View {
         // 收藏置顶 — 在 filter 之后排序, 让收藏的动作在当前 filter 结果里排最前
         arr = data.sortByFavorites(arr)
         return Array(arr.prefix(200))
+    }
+
+    /// 把 filtered 折叠成变种组 — 跟 ExercisePickerSheet 同一份 ExerciseGrouping.group(...).
+    private var filteredGroups: [ExerciseGroup] {
+        ExerciseGrouping.group(filtered)
+    }
+
+    /// 单行 — 共用 GroupedExerciseRow (跟 picker 同款展示), tap → 详情, 右滑 → 置顶 / 删除 / 移回冷门库.
+    @ViewBuilder
+    private func libraryRow(_ ex: Exercise, isVariant: Bool, group: ExerciseGroup) -> some View {
+        GroupedExerciseRow(
+            exercise: ex,
+            isVariant: isVariant,
+            group: group,
+            isExpanded: expandedGroupKey == group.id,
+            showDisclosure: !group.isSingleton,
+            trailing: { EmptyView() },
+            onTap: { selected = ex },
+            onTapImage: { selected = ex },
+            onToggleExpand: {
+                Haptics.tap()
+                withAnimation(.easeOut(duration: 0.2)) {
+                    expandedGroupKey = (expandedGroupKey == group.id) ? nil : group.id
+                }
+            }
+        )
+        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+            Button {
+                data.toggleFavorite(ex.id)
+                Haptics.tap()
+            } label: {
+                Image(systemName: data.isFavorite(ex.id) ? "pin.slash.fill" : "pin.fill")
+            }
+            .tint(MasoColor.accent)
+            .accessibilityLabel(NSLocalizedString(data.isFavorite(ex.id) ? "Unpin" : "Pin to top", comment: ""))
+
+            // P0-6: 自创动作 → 删除 (引用检查); 已采纳 niche → 移回冷门库.
+            if ex.id.hasPrefix("custom-") {
+                Button(role: .destructive) {
+                    if data.isExerciseReferenced(ex.id) {
+                        deleteBlockedRef = ex
+                    } else {
+                        pendingDeleteCustom = ex
+                    }
+                    Haptics.tap()
+                } label: {
+                    Image(systemName: "trash.fill")
+                }
+                .tint(MasoColor.negative)
+                .accessibilityLabel(NSLocalizedString("Delete", comment: ""))
+            } else if data.settings.adoptedNicheExerciseIds.contains(ex.id) {
+                Button {
+                    data.unadoptNicheExercise(ex.id)
+                    Haptics.tap()
+                } label: {
+                    Image(systemName: "arrow.uturn.backward")
+                }
+                .tint(MasoColor.textDim)
+                .accessibilityLabel(NSLocalizedString("Remove from library", comment: ""))
+            }
+        }
     }
 
     /// 当前 equipment / text filter 下还有动作的 muscle section. menu 里 dim disabled.
@@ -172,89 +235,23 @@ struct ExerciseLibraryBrowser: View {
                 .listRowBackground(Color.clear)
                 .listRowSeparator(.hidden)
 
-                // 原生 .swipeActions — 在 List 内由 OS 管手势, 不跟 scroll 抢 (替代自制 SwipeableRow).
-                ForEach(filtered) { ex in
-                        let isFav = data.isFavorite(ex.id)
-                        Button {
-                            selected = ex
-                        } label: {
-                            HStack(spacing: 14) {
-                                ExerciseImage(
-                                    category: ex.category,
-                                    imageFolder: ex.imageFolder,
-                                    customImageData: ex.customImageData,
-                                    cornerRadius: 8,
-                                    size: 56,
-                                    animated: false
-                                )
-                                VStack(alignment: .leading, spacing: 5) {
-                                    Text(ex.displayName)
-                                        .font(.system(size: 15, weight: .bold))
-                                        .foregroundStyle(MasoColor.text)
-                                        .lineLimit(1)
-                                    ExerciseTagsRow(
-                                        muscleGroups: ex.muscleGroups,
-                                        equipment: ex.equipment,
-                                        muscleLimit: 1
-                                    )
-                                }
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                if isFav {
-                                    // 置顶标识 — 跟动作列表右滑 swipeAction 同图标
-                                    Image(systemName: "pin.fill")
-                                        .font(.system(size: 12, weight: .heavy))
-                                        .foregroundStyle(MasoColor.accent)
-                                }
-                            }
-                            .padding(.horizontal, MasoMetrics.rowPaddingH)
-                            .padding(.vertical, 10)
-                            .background(MasoColor.surface)
-                            .clipShape(RoundedRectangle(cornerRadius: 14))
-                        }
-                        .buttonStyle(.plain)
-                        .listRowSeparator(.hidden)
-                        .listRowBackground(Color.clear)
-                        .listRowInsets(EdgeInsets(top: 3, leading: MasoMetrics.pagePaddingHorizontal, bottom: 3, trailing: MasoMetrics.pagePaddingHorizontal))
-                        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                            Button {
-                                data.toggleFavorite(ex.id)
-                                Haptics.tap()
-                            } label: {
-                                // pin.slash.fill (取消置顶) vs pin.fill (置顶) — 状态切换图标
-                                Image(systemName: isFav ? "pin.slash.fill" : "pin.fill")
-                            }
-                            .tint(MasoColor.accent)
-                            .accessibilityLabel(NSLocalizedString(isFav ? "Unpin" : "Pin to top", comment: ""))
-
-                            // P0-6: 自创动作 → 删除 (引用检查); 已采纳 niche → 移回冷门库.
-                            if ex.id.hasPrefix("custom-") {
-                                Button(role: .destructive) {
-                                    if data.isExerciseReferenced(ex.id) {
-                                        deleteBlockedRef = ex
-                                    } else {
-                                        pendingDeleteCustom = ex
-                                    }
-                                    Haptics.tap()
-                                } label: {
-                                    Image(systemName: "trash.fill")
-                                }
-                                .tint(MasoColor.negative)
-                                .accessibilityLabel(NSLocalizedString("Delete", comment: ""))
-                            } else if data.settings.adoptedNicheExerciseIds.contains(ex.id) {
-                                Button {
-                                    data.unadoptNicheExercise(ex.id)
-                                    Haptics.tap()
-                                } label: {
-                                    Image(systemName: "arrow.uturn.backward")
-                                }
-                                .tint(MasoColor.textDim)
-                                .accessibilityLabel(NSLocalizedString("Remove from library", comment: ""))
-                            }
+                // 收折分组 — 跟"训练中选动作 picker"用同一份 ExerciseGrouping 数据 + GroupedExerciseRow
+                // 展示/收折逻辑, 保证两边一致. canonical 行折叠, "+N variants" 胶囊展开同名变种.
+                ForEach(filteredGroups) { group in
+                    libraryRow(group.canonical, isVariant: false, group: group)
+                    if !group.variants.isEmpty, expandedGroupKey == group.id {
+                        ForEach(group.variants, id: \.id) { variant in
+                            libraryRow(variant, isVariant: true, group: group)
                         }
                     }
                 }
+                }
                 .listStyle(.plain)
                 .scrollContentBackground(.hidden)
+                // filter/搜索变化 → 收起手风琴 (跟 picker 一致, 避免残留孤儿展开态).
+                .onChange(of: query) { _, _ in expandedGroupKey = nil }
+                .onChange(of: muscleFilter) { _, _ in expandedGroupKey = nil }
+                .onChange(of: equipmentFilter) { _, _ in expandedGroupKey = nil }
                 .background(MasoColor.background.ignoresSafeArea())
                 .screenHeader(NSLocalizedString("Exercise library", comment: "")) {
                 HStack(spacing: 18) {

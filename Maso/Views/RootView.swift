@@ -67,6 +67,8 @@ struct RootView: View {
         let mode = ProcessInfo.processInfo.environment["MASO_SHOWCASE"] ?? ""
         guard !mode.isEmpty else { return }
         switch mode {
+        case "library":
+            tab = .library
         case "history":
             tab = .history
         case "settings":
