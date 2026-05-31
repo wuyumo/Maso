@@ -656,22 +656,27 @@ struct PlanDetailSheet: View {
                 }
             }
             .sheet(isPresented: $showAddPicker) {
+                // 添加动作 = 多选勾选 (跟 Free Workout 一致), 一次可选多个 → 底部 "Add (N)" 一并加入.
                 ExercisePickerSheet(
-                    onPick: { ex in
-                        let newStep = PlanStep(
-                            id: "step-\(ex.id)-\(Int(Date().timeIntervalSince1970))",
-                            exerciseId: ex.id,
-                            sets: 3,
-                            reps: ex.category == .strength ? 10 : nil,
-                            weight: ex.category == .strength ? 0 : nil,
-                            duration: ex.category != .strength ? 30 : nil,
-                            restBetweenSets: 90,
-                            rest: 0
-                        )
-                        draft.steps.append(newStep)
+                    onPick: { _ in },   // multiSelect 模式不走单选回调
+                    multiSelect: true,
+                    onPickMultiple: { exercises in
+                        for (i, ex) in exercises.enumerated() {
+                            draft.steps.append(PlanStep(
+                                id: "step-\(ex.id)-\(Int(Date().timeIntervalSince1970))-\(i)",
+                                exerciseId: ex.id,
+                                sets: 3,
+                                reps: ex.category == .strength ? 10 : nil,
+                                weight: ex.category == .strength ? 0 : nil,
+                                duration: ex.category != .strength ? 30 : nil,
+                                restBetweenSets: 90,
+                                rest: 0
+                            ))
+                        }
                         commit()
                         showAddPicker = false
-                    }
+                    },
+                    startTitle: NSLocalizedString("Add", comment: "add selected exercises CTA")
                 )
                 .presentationDetents([.large])
             }

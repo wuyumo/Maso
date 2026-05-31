@@ -288,18 +288,26 @@ struct PlanPlayerScreen: View {
             }())
             .presentationDetents([.large])
         }
-        // "+ Add exercise" — playlist 末尾点了之后选动作, 走 store.appendStep 加到末尾.
+        // "+ Add exercise" — playlist 末尾点了之后选动作, 多选勾选 (跟 Free Workout 一致),
+        // 底部 "Add (N)" 一并 appendStep 到末尾.
         .sheet(isPresented: $addStepPickerOpen) {
-            ExercisePickerSheet(onPick: { ex in
-                store.appendStep(
-                    exercise: ex,
-                    settings: data.settings,
-                    exById: data.exById,
-                    defaultRest: data.settings.defaultRestSeconds,
-                    defaultBetweenExerciseRest: data.settings.defaultBetweenExerciseRestSeconds
-                )
-                addStepPickerOpen = false
-            })
+            ExercisePickerSheet(
+                onPick: { _ in },   // multiSelect 模式不走单选回调
+                multiSelect: true,
+                onPickMultiple: { exercises in
+                    for ex in exercises {
+                        store.appendStep(
+                            exercise: ex,
+                            settings: data.settings,
+                            exById: data.exById,
+                            defaultRest: data.settings.defaultRestSeconds,
+                            defaultBetweenExerciseRest: data.settings.defaultBetweenExerciseRestSeconds
+                        )
+                    }
+                    addStepPickerOpen = false
+                },
+                startTitle: NSLocalizedString("Add", comment: "add selected exercises CTA")
+            )
             .presentationDetents([.large])
         }
         // 训练中右滑 playlist 行 → 二次确认 → 调 store.deleteStep (session-local).

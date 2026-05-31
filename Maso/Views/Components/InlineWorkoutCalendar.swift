@@ -23,10 +23,13 @@ struct InlineWorkoutCalendar: View {
 
     @Binding var isCollapsed: Bool
 
+    /// 当前展开显示的月份 (锚到月初). 由 caller (HistoryScreen) 持有 —— 顶部 metrics 严格按这个
+    /// 月份口径算; 收起→重开时 caller 会把它重置回当前月 (重开默认回到本月, 不停在上次翻到的月).
+    @Binding var monthAnchor: Date
+
     /// true = 嵌在外层卡片里 (跟 stats 合成一张卡) — 不自带 surface 底色 / 圆角, 只做 overflow 裁剪.
     var embedded: Bool = false
 
-    @State private var monthAnchor: Date = startOfCurrentMonth()
     /// 上一次月份切换方向 (-1 = 退到上个月, +1 = 进到下个月). 给 grid 的 transition
     /// 决定从哪边滑入 / 滑出 — 这样不管是 chevron 点击还是横向 swipe, 视觉方向都跟"动作"匹配.
     @State private var lastShiftDirection: Int = 1
@@ -391,13 +394,4 @@ struct InlineWorkoutCalendar: View {
             cal.date(byAdding: .day, value: i, to: weekStart).map { cal.startOfDay(for: $0) }
         }
     }
-}
-
-// MARK: - 私有 helper
-
-/// 顶层 helper — 给 @State 默认值用 (不能调 self.func, 也不能用 private extension 的 method).
-private func startOfCurrentMonth() -> Date {
-    let cal = Calendar.current
-    let comps = cal.dateComponents([.year, .month], from: Date())
-    return cal.date(from: comps) ?? Date()
 }

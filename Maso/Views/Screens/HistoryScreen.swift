@@ -24,6 +24,9 @@ struct HistoryScreen: View {
     /// 默认 true (收起单行 strip) — 让用户进 tab 第一眼看到的是训练记录, 而不是日历占满一屏.
     /// 用户点 strip 主动展开; scroll 也会强制 collapse. 收起后不再自动展开 — 完全用户主导.
     @State private var calendarCollapsed: Bool = true
+    /// 日历展开后当前显示的月份 (月初). 顶部 metrics 在展开态严格按这个月份算 —— 翻到上个月,
+    /// metrics 就是上个月的. 收起时重置回当前月 → 重开默认回到本月, 不停在上次翻到的月份.
+    @State private var calendarMonthAnchor: Date = historyCurrentMonthStart()
     /// 顶部 ProBanner tap → 弹 paywall. 从 Today tab 挪过来 — History 用户回顾训练时
     /// 自然产生"想看更多数据/解锁高级功能"的动机, banner 放这比放在 Today 干扰训练流程更顺.
     @State private var paywallPresented: Bool = false
@@ -60,6 +63,7 @@ struct HistoryScreen: View {
                         sessionDates: workoutDateSet(),
                         musclesPerDay: musclesPerDayMap(),
                         isCollapsed: $calendarCollapsed,
+                        monthAnchor: $calendarMonthAnchor,
                         embedded: true
                     )
                 }
@@ -128,6 +132,11 @@ struct HistoryScreen: View {
         // ignoresSafeArea 让底色延伸到 home indicator 区. NavigationStack 的 large title /
         // material blur 仍正常叠在这个底色之上 (跟 Plans 同视觉).
         .background(MasoColor.background.ignoresSafeArea())
+        // B2: 收起→重新展开时把日历重置回当前月 (不停在上次翻到的月份). 在展开瞬间重置 —
+        // expandedView 是全新插入, 直接渲染当前月, 没有 grid 滑动残影.
+        .onChange(of: calendarCollapsed) { _, collapsed in
+            if !collapsed { calendarMonthAnchor = historyCurrentMonthStart() }
+        }
         .screenHeader("History") {
             Button(action: onOpenSettings) {
                 Image(systemName: "gearshape")
@@ -226,12 +235,14 @@ struct HistoryScreen: View {
         )
     }
 
-    /// 本月 stats — Days this month / Streak / Sets this month
+    /// 本月 stats — Days this month / Streak / Sets this month.
+    /// 严格按日历当前显示的月份 (calendarMonthAnchor) 算 — 翻到上个月, Days/Sets 就是上个月的.
+    /// Streak 仍是"从今天往回数"的绝对连续天数 (标签写明 Current), 跟显示月份无关.
     @ViewBuilder
     private var monthlyStatsCard: some View {
         let cal = data.settings.calendar
         let monthDays: Set<Date> = workoutDateSet().filter {
-            cal.isDate($0, equalTo: Date(), toGranularity: .month)
+            cal.isDate($0, equalTo: calendarMonthAnchor, toGranularity: .month)
         }
         statsCard(
             value1: "\(monthDays.count)", label1: "Days this month",
@@ -330,12 +341,12 @@ struct HistoryScreen: View {
         }
     }
 
-    /// 本月组数 — InlineWorkoutCalendar stats 行 (expanded) 用
+    /// 显示月份的组数 — 严格按 calendarMonthAnchor 所在月算 (展开态 metrics 用).
     private func setsThisMonthCount() -> Int {
-        let cal = Calendar.current
-        let comps = cal.dateComponents([.year, .month], from: Date())
-        guard let startOfMonth = cal.date(from: comps) else { return 0 }
-        return data.sets.filter { $0.performedAt >= startOfMonth }.count
+        let cal = data.settings.calendar
+        return data.sets.filter {
+            cal.isDate($0.performedAt, equalTo: calendarMonthAnchor, toGranularity: .month)
+        }.count
     }
 
     /// 本周组数 — collapsed strip 下面的 stats 用. 走 ISO 周 (yearForWeekOfYear)
@@ -1240,4 +1251,13 @@ private struct ExerciseStatCard: View {
         .background(MasoColor.surface)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
+}
+
+// MARK: - 文件级 helper (给 @State 默认值用 — 不能在属性初始化器里调实例方法).
+
+/// 当前月份的月初 — calendarMonthAnchor 的默认值 + 收起重置都用它.
+private func historyCurrentMonthStart() -> Date {
+    let cal = Calendar.current
+    let comps = cal.dateComponents([.year, .month], from: Date())
+    return cal.date(from: comps) ?? Date()
 }
