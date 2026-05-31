@@ -43,14 +43,23 @@ struct CommunityScreen: View {
                     .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
                     .padding(.top, 8)
 
-                    // Plan cards — 整张可点 → 弹详情 preview; 卡内"Add" 按钮 = quick add
+                    // 每日精选 (按日期轮播) + 其余全部. 让用户每次来都先看到一批不同的"达人"计划.
+                    let featured = CommunityPlans.featured(count: 6)
+                    let featuredIds = Set(featured.map(\.id))
+                    let more = CommunityPlans.all.filter { !featuredIds.contains($0.id) }
+
+                    sectionHeader("Featured today")
                     LazyVStack(spacing: 12) {
-                        ForEach(CommunityPlans.all) { plan in
-                            CommunityPlanCard(
-                                plan: plan,
-                                onTapBody: { detailPlan = plan },
-                                onAdd: { handleAdd(plan) }
-                            )
+                        ForEach(featured) { plan in
+                            CommunityPlanCard(plan: plan, onTapBody: { detailPlan = plan }, onAdd: { handleAdd(plan) })
+                        }
+                    }
+                    .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
+
+                    sectionHeader("More programs")
+                    LazyVStack(spacing: 12) {
+                        ForEach(more) { plan in
+                            CommunityPlanCard(plan: plan, onTapBody: { detailPlan = plan }, onAdd: { handleAdd(plan) })
                         }
                     }
                     .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
@@ -95,6 +104,18 @@ struct CommunityScreen: View {
             }
         }
         .tint(MasoColor.text)
+    }
+
+    @ViewBuilder
+    private func sectionHeader(_ title: LocalizedStringKey) -> some View {
+        Text(title)
+            .font(.system(size: 12, weight: .heavy))
+            .tracking(1.2)
+            .textCase(.uppercase)
+            .foregroundStyle(MasoColor.textDim)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
+            .padding(.top, 4)
     }
 
     private func handleAdd(_ plan: CommunityPlan) {
@@ -148,6 +169,11 @@ private struct CommunityPlanCard: View {
                 .foregroundStyle(MasoColor.text)
                 .lineLimit(2)
                 .fixedSize(horizontal: false, vertical: true)
+
+            // 教练署名 — 给"达人计划"的感觉 (虚拟教练人设, 非真实网红).
+            Text(CommunityPlans.coach(for: plan))
+                .font(.system(size: 11, weight: .semibold))
+                .foregroundStyle(MasoColor.textFaint)
 
             // 副标题 (一行说明)
             Text(NSLocalizedString(plan.descKey, comment: ""))

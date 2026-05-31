@@ -83,6 +83,15 @@ enum CommunityPlans {
         calisthenicsFoundations,
         powerliftingPrep,
         pushPull4Day,
+        // 扩充: 经典公开训练法, 配合每日轮播让 Community 每次看到不同精选.
+        fiveThreeOne4Day,
+        phul4Day,
+        arnoldSplit6Day,
+        dumbbellHome3Day,
+        gluteHam3Day,
+        athleticPower3Day,
+        minimalistStrength3Day,
+        hypertrophyPPL3Day,
     ]
 
     // MARK: - 1. Beginner Full Body 3-day
@@ -415,6 +424,342 @@ enum CommunityPlans {
             ),
         ]
     )
+
+    static let fiveThreeOne4Day = CommunityPlan(
+        id: "community-531-4day",
+        nameKey: "5/3/1 Strength",
+        descKey: "Wendler-style 4-day strength block — one main barbell lift per day, progressive overload, light accessory work.",
+        frequencyDaysPerWeek: 4,
+        levelKey: "Advanced",
+        kicker: "STRENGTH",
+        sessions: [
+            CommunitySession(
+                nameKey: "Press Day",
+                steps: [
+                    CommunityStep("overhead_press_barbell", sets: 4, reps: 5, weight: 40, rest: 180),
+                    CommunityStep("bench_press_dumbbell", sets: 3, reps: 8, weight: 22, rest: 90),
+                    CommunityStep("lateral_raise_dumbbell", sets: 3, reps: 15, weight: 8, rest: 60),
+                    CommunityStep("triceps_pushdown_rope", sets: 3, reps: 12, weight: 25, rest: 60),
+                ]
+            ),
+            CommunitySession(
+                nameKey: "Deadlift Day",
+                steps: [
+                    CommunityStep("deadlift", sets: 4, reps: 5, weight: 100, rest: 180),
+                    CommunityStep("rdl_barbell", sets: 3, reps: 8, weight: 70, rest: 120),
+                    CommunityStep("leg_curl_lying", sets: 3, reps: 12, weight: 30, rest: 75),
+                    CommunityStep("back_extension", sets: 3, reps: 12, weight: 0, rest: 60),
+                ]
+            ),
+            CommunitySession(
+                nameKey: "Bench Day",
+                steps: [
+                    CommunityStep("bench_press_barbell", sets: 4, reps: 5, weight: 60, rest: 180),
+                    CommunityStep("incline_bench_press_dumbbell", sets: 3, reps: 8, weight: 22, rest: 90),
+                    CommunityStep("bench_press_close_grip", sets: 3, reps: 8, weight: 50, rest: 90),
+                    CommunityStep("cable_fly_flat", sets: 3, reps: 12, weight: 40, rest: 60),
+                ]
+            ),
+            CommunitySession(
+                nameKey: "Squat Day",
+                steps: [
+                    CommunityStep("squat_barbell", sets: 4, reps: 5, weight: 85, rest: 180),
+                    CommunityStep("leg_press_45", sets: 3, reps: 10, weight: 120, rest: 90),
+                    CommunityStep("leg_extension_machine", sets: 3, reps: 12, weight: 40, rest: 75),
+                    CommunityStep("calf_raise_standing", sets: 4, reps: 15, weight: 50, rest: 60),
+                ]
+            ),
+        ]
+    )
+
+    static let phul4Day = CommunityPlan(
+        id: "community-phul-4day",
+        nameKey: "PHUL — Power Hypertrophy",
+        descKey: "Two power days (heavy, low reps) + two hypertrophy days (moderate, higher reps), split upper/lower.",
+        frequencyDaysPerWeek: 4,
+        levelKey: "Intermediate",
+        kicker: "UPPER / LOWER",
+        sessions: [
+            CommunitySession(
+                nameKey: "Upper Power",
+                steps: [
+                    CommunityStep("bench_press_barbell", sets: 4, reps: 5, weight: 60, rest: 150),
+                    CommunityStep("barbell_row", sets: 4, reps: 5, weight: 55, rest: 120),
+                    CommunityStep("overhead_press_barbell", sets: 3, reps: 6, weight: 40, rest: 120),
+                    CommunityStep("pull_up", sets: 3, reps: 6, weight: 0, rest: 90),
+                    CommunityStep("bicep_curl_barbell", sets: 3, reps: 8, weight: 25, rest: 60),
+                ]
+            ),
+            CommunitySession(
+                nameKey: "Lower Power",
+                steps: [
+                    CommunityStep("squat_barbell", sets: 4, reps: 5, weight: 85, rest: 150),
+                    CommunityStep("deadlift", sets: 3, reps: 5, weight: 100, rest: 180),
+                    CommunityStep("leg_press_45", sets: 3, reps: 10, weight: 120, rest: 90),
+                    CommunityStep("calf_raise_standing", sets: 4, reps: 12, weight: 50, rest: 60),
+                ]
+            ),
+            CommunitySession(
+                nameKey: "Upper Hypertrophy",
+                steps: [
+                    CommunityStep("incline_bench_press_dumbbell", sets: 4, reps: 10, weight: 22, rest: 75),
+                    CommunityStep("cable_row_seated", sets: 4, reps: 10, weight: 50, rest: 75),
+                    CommunityStep("lateral_raise_dumbbell", sets: 4, reps: 15, weight: 8, rest: 60),
+                    CommunityStep("cable_fly_flat", sets: 3, reps: 12, weight: 40, rest: 60),
+                    CommunityStep("hammer_curl", sets: 3, reps: 12, weight: 10, rest: 60),
+                    CommunityStep("triceps_pushdown_rope", sets: 3, reps: 12, weight: 25, rest: 60),
+                ]
+            ),
+            CommunitySession(
+                nameKey: "Lower Hypertrophy",
+                steps: [
+                    CommunityStep("rdl_barbell", sets: 4, reps: 10, weight: 60, rest: 90),
+                    CommunityStep("hip_thrust_barbell", sets: 4, reps: 12, weight: 80, rest: 90),
+                    CommunityStep("leg_extension_machine", sets: 4, reps: 15, weight: 40, rest: 60),
+                    CommunityStep("leg_curl_lying", sets: 4, reps: 15, weight: 30, rest: 60),
+                    CommunityStep("calf_raise_seated", sets: 4, reps: 15, weight: 40, rest: 45),
+                ]
+            ),
+        ]
+    )
+
+    static let arnoldSplit6Day = CommunityPlan(
+        id: "community-arnold-6day",
+        nameKey: "Arnold Split — Volume",
+        descKey: "High-volume bodybuilding split: chest+back, shoulders+arms, legs — each twice a week.",
+        frequencyDaysPerWeek: 6,
+        levelKey: "Advanced",
+        kicker: "BODYBUILDING",
+        sessions: [
+            CommunitySession(
+                nameKey: "Chest + Back",
+                steps: [
+                    CommunityStep("bench_press_barbell", sets: 4, reps: 8, weight: 55, rest: 90),
+                    CommunityStep("incline_bench_press_dumbbell", sets: 4, reps: 10, weight: 22, rest: 75),
+                    CommunityStep("pull_up", sets: 4, reps: 8, weight: 0, rest: 90),
+                    CommunityStep("cable_row_seated", sets: 4, reps: 10, weight: 50, rest: 75),
+                    CommunityStep("cable_fly_flat", sets: 3, reps: 12, weight: 40, rest: 60),
+                    CommunityStep("lat_pulldown", sets: 3, reps: 12, weight: 45, rest: 75),
+                ]
+            ),
+            CommunitySession(
+                nameKey: "Shoulders + Arms",
+                steps: [
+                    CommunityStep("overhead_press_barbell", sets: 4, reps: 8, weight: 40, rest: 90),
+                    CommunityStep("lateral_raise_dumbbell", sets: 4, reps: 15, weight: 8, rest: 45),
+                    CommunityStep("rear_delt_fly_dumbbell", sets: 4, reps: 15, weight: 8, rest: 45),
+                    CommunityStep("bicep_curl_dumbbell", sets: 4, reps: 12, weight: 12, rest: 60),
+                    CommunityStep("triceps_pushdown_rope", sets: 4, reps: 12, weight: 25, rest: 60),
+                    CommunityStep("hammer_curl", sets: 3, reps: 12, weight: 10, rest: 60),
+                ]
+            ),
+            CommunitySession(
+                nameKey: "Legs",
+                steps: [
+                    CommunityStep("squat_barbell", sets: 4, reps: 8, weight: 80, rest: 120),
+                    CommunityStep("rdl_barbell", sets: 4, reps: 10, weight: 60, rest: 90),
+                    CommunityStep("leg_press_45", sets: 4, reps: 12, weight: 120, rest: 90),
+                    CommunityStep("leg_curl_lying", sets: 4, reps: 12, weight: 30, rest: 60),
+                    CommunityStep("calf_raise_standing", sets: 5, reps: 15, weight: 50, rest: 45),
+                ]
+            ),
+        ]
+    )
+
+    static let dumbbellHome3Day = CommunityPlan(
+        id: "community-db-home-3day",
+        nameKey: "Dumbbell-Only (Home)",
+        descKey: "Full-body training with just a pair of dumbbells — perfect for home or a packed gym.",
+        frequencyDaysPerWeek: 3,
+        levelKey: "Beginner",
+        kicker: "HOME / MINIMAL",
+        sessions: [
+            CommunitySession(
+                nameKey: "Full Body A",
+                steps: [
+                    CommunityStep("bench_press_dumbbell", sets: 3, reps: 10, weight: 18, rest: 90),
+                    CommunityStep("lunge_dumbbell_alternating", sets: 3, reps: 10, weight: 14, rest: 75),
+                    CommunityStep("lateral_raise_dumbbell", sets: 3, reps: 15, weight: 7, rest: 45),
+                    CommunityStep("bicep_curl_dumbbell", sets: 3, reps: 12, weight: 10, rest: 60),
+                    CommunityStep(timed: "plank", sets: 3, duration: 40, rest: 45),
+                ]
+            ),
+            CommunitySession(
+                nameKey: "Full Body B",
+                steps: [
+                    CommunityStep("incline_bench_press_dumbbell", sets: 3, reps: 10, weight: 16, rest: 90),
+                    CommunityStep("lunge_dumbbell_alternating", sets: 3, reps: 12, weight: 14, rest: 75),
+                    CommunityStep("arnold_press", sets: 3, reps: 10, weight: 12, rest: 75),
+                    CommunityStep("hammer_curl", sets: 3, reps: 12, weight: 10, rest: 60),
+                    CommunityStep("russian_twist", sets: 3, reps: 20, weight: 0, rest: 45),
+                ]
+            ),
+        ]
+    )
+
+    static let gluteHam3Day = CommunityPlan(
+        id: "community-glute-ham-3day",
+        nameKey: "Glute & Hamstring Focus",
+        descKey: "Posterior-chain emphasis — hip thrusts, RDLs and curls to build glutes and hamstrings.",
+        frequencyDaysPerWeek: 3,
+        levelKey: "Intermediate",
+        kicker: "LOWER BODY",
+        sessions: [
+            CommunitySession(
+                nameKey: "Glute Day",
+                steps: [
+                    CommunityStep("hip_thrust_barbell", sets: 4, reps: 10, weight: 80, rest: 90),
+                    CommunityStep("rdl_barbell", sets: 4, reps: 10, weight: 60, rest: 90),
+                    CommunityStep("lunge_dumbbell_alternating", sets: 3, reps: 12, weight: 14, rest: 75),
+                    CommunityStep("leg_curl_lying", sets: 3, reps: 15, weight: 30, rest: 60),
+                    CommunityStep("back_extension", sets: 3, reps: 15, weight: 0, rest: 45),
+                ]
+            ),
+            CommunitySession(
+                nameKey: "Hamstring Day",
+                steps: [
+                    CommunityStep("rdl_barbell", sets: 4, reps: 8, weight: 70, rest: 120),
+                    CommunityStep("hip_thrust_barbell", sets: 3, reps: 12, weight: 80, rest: 90),
+                    CommunityStep("leg_curl_lying", sets: 4, reps: 12, weight: 30, rest: 60),
+                    CommunityStep("calf_raise_seated", sets: 4, reps: 15, weight: 40, rest: 45),
+                    CommunityStep("russian_twist", sets: 3, reps: 20, weight: 0, rest: 45),
+                ]
+            ),
+        ]
+    )
+
+    static let athleticPower3Day = CommunityPlan(
+        id: "community-athletic-3day",
+        nameKey: "Athletic Power",
+        descKey: "Compound, explosive lifts for whole-body strength and athleticism — 3 efficient sessions.",
+        frequencyDaysPerWeek: 3,
+        levelKey: "Intermediate",
+        kicker: "ATHLETIC",
+        sessions: [
+            CommunitySession(
+                nameKey: "Lower Power",
+                steps: [
+                    CommunityStep("squat_barbell", sets: 5, reps: 5, weight: 80, rest: 150),
+                    CommunityStep("deadlift", sets: 3, reps: 5, weight: 100, rest: 180),
+                    CommunityStep("leg_press_45", sets: 3, reps: 10, weight: 120, rest: 90),
+                    CommunityStep("calf_raise_standing", sets: 3, reps: 12, weight: 50, rest: 60),
+                ]
+            ),
+            CommunitySession(
+                nameKey: "Upper Power",
+                steps: [
+                    CommunityStep("bench_press_barbell", sets: 5, reps: 5, weight: 60, rest: 150),
+                    CommunityStep("pull_up", sets: 4, reps: 6, weight: 0, rest: 120),
+                    CommunityStep("overhead_press_barbell", sets: 3, reps: 6, weight: 40, rest: 120),
+                    CommunityStep("barbell_row", sets: 3, reps: 8, weight: 50, rest: 90),
+                ]
+            ),
+        ]
+    )
+
+    static let minimalistStrength3Day = CommunityPlan(
+        id: "community-minimalist-3day",
+        nameKey: "Minimalist Strength",
+        descKey: "Just the big lifts, 3 days a week. Maximum results, minimum time in the gym.",
+        frequencyDaysPerWeek: 3,
+        levelKey: "Beginner",
+        kicker: "TIME-EFFICIENT",
+        sessions: [
+            CommunitySession(
+                nameKey: "Day A",
+                steps: [
+                    CommunityStep("squat_barbell", sets: 3, reps: 5, weight: 80, rest: 150),
+                    CommunityStep("bench_press_barbell", sets: 3, reps: 5, weight: 55, rest: 150),
+                    CommunityStep("barbell_row", sets: 3, reps: 8, weight: 50, rest: 90),
+                    CommunityStep(timed: "plank", sets: 3, duration: 45, rest: 45),
+                ]
+            ),
+            CommunitySession(
+                nameKey: "Day B",
+                steps: [
+                    CommunityStep("deadlift", sets: 3, reps: 5, weight: 100, rest: 180),
+                    CommunityStep("overhead_press_barbell", sets: 3, reps: 5, weight: 40, rest: 120),
+                    CommunityStep("lat_pulldown", sets: 3, reps: 10, weight: 45, rest: 90),
+                    CommunityStep("crunch_cable", sets: 3, reps: 15, weight: 30, rest: 45),
+                ]
+            ),
+        ]
+    )
+
+    static let hypertrophyPPL3Day = CommunityPlan(
+        id: "community-hyp-ppl-3day",
+        nameKey: "Hypertrophy Push/Pull/Legs",
+        descKey: "A 3-day push/pull/legs you can run once or twice a week — balanced volume for muscle growth.",
+        frequencyDaysPerWeek: 3,
+        levelKey: "Intermediate",
+        kicker: "PUSH / PULL / LEGS",
+        sessions: [
+            CommunitySession(
+                nameKey: "Push",
+                steps: [
+                    CommunityStep("bench_press_barbell", sets: 4, reps: 8, weight: 55, rest: 90),
+                    CommunityStep("overhead_press_dumbbell_seated", sets: 3, reps: 10, weight: 16, rest: 90),
+                    CommunityStep("incline_bench_press_dumbbell", sets: 3, reps: 10, weight: 20, rest: 75),
+                    CommunityStep("lateral_raise_dumbbell", sets: 3, reps: 15, weight: 8, rest: 45),
+                    CommunityStep("triceps_pushdown_rope", sets: 3, reps: 12, weight: 25, rest: 60),
+                ]
+            ),
+            CommunitySession(
+                nameKey: "Pull",
+                steps: [
+                    CommunityStep("deadlift", sets: 3, reps: 6, weight: 100, rest: 150),
+                    CommunityStep("pull_up", sets: 4, reps: 8, weight: 0, rest: 90),
+                    CommunityStep("cable_row_seated", sets: 3, reps: 10, weight: 50, rest: 75),
+                    CommunityStep("face_pull", sets: 3, reps: 15, weight: 15, rest: 45),
+                    CommunityStep("bicep_curl_barbell", sets: 3, reps: 10, weight: 25, rest: 60),
+                ]
+            ),
+            CommunitySession(
+                nameKey: "Legs",
+                steps: [
+                    CommunityStep("squat_barbell", sets: 4, reps: 8, weight: 80, rest: 120),
+                    CommunityStep("rdl_barbell", sets: 3, reps: 10, weight: 60, rest: 90),
+                    CommunityStep("leg_press_45", sets: 3, reps: 12, weight: 120, rest: 90),
+                    CommunityStep("leg_curl_lying", sets: 3, reps: 12, weight: 30, rest: 60),
+                    CommunityStep("calf_raise_standing", sets: 4, reps: 15, weight: 50, rest: 45),
+                ]
+            ),
+        ]
+    )
+
+    // MARK: - 教练署名 (id → "Coach X · 专长"). 给精选计划一点"达人"感; 都是 app 内编辑团队的虚拟教练人设, 不冒充真实网红.
+    static let coaches: [String: String] = [
+        "community-beginner-fb-3day": "Coach Theo · Beginner",
+        "community-5x5-strength": "Coach Leo · Strength",
+        "community-ppl-6day": "Coach Devin · Hypertrophy",
+        "community-upper-lower-4day": "Coach Mara · Bodybuilding",
+        "community-bro-split-5day": "Coach Mara · Bodybuilding",
+        "community-calisthenics-foundations": "Coach Sam · Calisthenics",
+        "community-powerlifting-prep": "Coach Leo · Powerlifting",
+        "community-push-pull-4day": "Coach Devin · Hypertrophy",
+        "community-531-4day": "Coach Leo · Powerlifting",
+        "community-phul-4day": "Coach Devin · Hypertrophy",
+        "community-arnold-6day": "Coach Mara · Bodybuilding",
+        "community-db-home-3day": "Coach Sam · Home Training",
+        "community-glute-ham-3day": "Coach Nina · Lower Body",
+        "community-athletic-3day": "Coach Leo · Athletic",
+        "community-minimalist-3day": "Coach Theo · Strength",
+        "community-hyp-ppl-3day": "Coach Devin · Hypertrophy",
+    ]
+    static func coach(for plan: CommunityPlan) -> String { coaches[plan.id] ?? "Maso Coach" }
+
+    /// 每日精选 — 用日期 seed 稳定打乱 all, 取前 count 个. 同一天不变, 隔天换新 → "每次来都有新达人计划".
+    static func featured(on date: Date = Date(), count: Int = 6) -> [CommunityPlan] {
+        let day = Int(date.timeIntervalSince1970 / 86_400)
+        return all.sorted { seededHash($0.id, day) < seededHash($1.id, day) }.prefix(count).map { $0 }
+    }
+    /// 稳定 FNV-1a hash (String.hashValue 每次启动随机, 不能用来做"当天稳定"的排序).
+    private static func seededHash(_ s: String, _ seed: Int) -> UInt64 {
+        var h: UInt64 = 1_469_598_103_934_665_603 ^ UInt64(bitPattern: Int64(seed &* 2_654_435_761))
+        for b in s.utf8 { h = (h ^ UInt64(b)) &* 1_099_511_628_211 }
+        return h
+    }
+
 }
 
 // MARK: - Materialization — community plan → 真正的 Plan 数组 (加进 data.plans)
