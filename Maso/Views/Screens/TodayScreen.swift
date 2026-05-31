@@ -203,22 +203,22 @@ struct TodayScreen: View {
     /// 并排的小入口卡 (自由训练 / 社区).
     private func entryCard(icon: String, title: LocalizedStringKey, action: @escaping () -> Void) -> some View {
         Button(action: action) {
-            VStack(alignment: .leading, spacing: 10) {
-                // 图标弱化 — 从 accent 绿 + heavy 改成 textDim 灰 + medium, 不抢眼 (这俩是次级入口).
-                Image(systemName: icon)
-                    .font(.system(size: 18, weight: .medium))
-                    .foregroundStyle(MasoColor.textDim)
-                // 标题行带向右 chevron — 提示可点进 (跟 PlanRow 的 chevron 同款样式).
-                HStack(spacing: 6) {
+            HStack(spacing: 10) {
+                // 左: 绿色图标 + 标题 (上下排).
+                VStack(alignment: .leading, spacing: 10) {
+                    Image(systemName: icon)
+                        .font(.system(size: 18, weight: .heavy))
+                        .foregroundStyle(MasoColor.accent)
                     Text(title)
                         .font(.system(size: 14, weight: .bold))
                         .foregroundStyle(MasoColor.text)
                         .lineLimit(1)
-                    Spacer(minLength: 0)
-                    Image(systemName: "chevron.right")
-                        .font(.system(size: 11, weight: .heavy))
-                        .foregroundStyle(MasoColor.textFaint)
                 }
+                Spacer(minLength: 0)
+                // chevron 垂直居中 (HStack 默认 .center 对齐, 不再钉在标题行).
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 11, weight: .heavy))
+                    .foregroundStyle(MasoColor.textFaint)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(MasoMetrics.cardPadding)
