@@ -92,6 +92,15 @@ enum CommunityPlans {
         athleticPower3Day,
         minimalistStrength3Day,
         hypertrophyPPL3Day,
+        // 扩充 (online 常见公开训练法): 覆盖 2~6 天/周 + 各难度, 配合顶部 filter 让用户按维度筛.
+        barbell5x5Linear,
+        noviceBarbellStrength,
+        gzclp4Day,
+        pplReddit6Day,
+        phat5Day,
+        germanVolume,
+        twoDayFullBody,
+        texasMethod,
     ]
 
     // MARK: - 1. Beginner Full Body 3-day
@@ -727,6 +736,331 @@ enum CommunityPlans {
         ]
     )
 
+    // MARK: - 17. Barbell 5×5 — Linear (StrongLifts-style)
+
+    static let barbell5x5Linear = CommunityPlan(
+        id: "community-barbell-5x5-linear",
+        nameKey: "Barbell 5×5 — Linear",
+        descKey: "The classic beginner barbell program (StrongLifts-style): alternate Workout A and B three times a week and add a little weight every session.",
+        frequencyDaysPerWeek: 3,
+        levelKey: "Beginner",
+        kicker: "STRENGTH",
+        sessions: [
+            CommunitySession(
+                nameKey: "Workout A",
+                steps: [
+                    CommunityStep("squat_barbell", sets: 5, reps: 5, weight: 60, rest: 180),
+                    CommunityStep("bench_press_barbell", sets: 5, reps: 5, weight: 45, rest: 180),
+                    CommunityStep("barbell_row", sets: 5, reps: 5, weight: 40, rest: 150),
+                ]
+            ),
+            CommunitySession(
+                nameKey: "Workout B",
+                steps: [
+                    CommunityStep("squat_barbell", sets: 5, reps: 5, weight: 60, rest: 180),
+                    CommunityStep("overhead_press_barbell", sets: 5, reps: 5, weight: 35, rest: 180),
+                    CommunityStep("deadlift", sets: 1, reps: 5, weight: 90, rest: 240),
+                ]
+            ),
+        ]
+    )
+
+    // MARK: - 18. Novice Barbell Strength (Starting Strength-style)
+
+    static let noviceBarbellStrength = CommunityPlan(
+        id: "community-novice-barbell-3day",
+        nameKey: "Novice Barbell Strength",
+        descKey: "A minimalist novice plan (Starting Strength-style): squat every session plus a press and a pull. Three full-body workouts a week, linear progression.",
+        frequencyDaysPerWeek: 3,
+        levelKey: "Beginner",
+        kicker: "STRENGTH",
+        sessions: [
+            CommunitySession(
+                nameKey: "Workout A",
+                steps: [
+                    CommunityStep("squat_barbell", sets: 3, reps: 5, weight: 60, rest: 180),
+                    CommunityStep("bench_press_barbell", sets: 3, reps: 5, weight: 45, rest: 180),
+                    CommunityStep("deadlift", sets: 1, reps: 5, weight: 90, rest: 240),
+                ]
+            ),
+            CommunitySession(
+                nameKey: "Workout B",
+                steps: [
+                    CommunityStep("squat_barbell", sets: 3, reps: 5, weight: 60, rest: 180),
+                    CommunityStep("overhead_press_barbell", sets: 3, reps: 5, weight: 35, rest: 180),
+                    CommunityStep("dumbbell_row", sets: 5, reps: 5, weight: 22, rest: 150),
+                ]
+            ),
+        ]
+    )
+
+    // MARK: - 19. GZCLP — Linear Progression 4-day
+
+    static let gzclp4Day = CommunityPlan(
+        id: "community-gzclp-4day",
+        nameKey: "GZCLP — Linear Progression",
+        descKey: "A structured 4-day linear program (GZCLP): a heavy T1 main lift, a T2 secondary, and high-rep T3 accessory volume each day. A great first step after a novice plan.",
+        frequencyDaysPerWeek: 4,
+        levelKey: "Intermediate",
+        kicker: "STRENGTH",
+        sessions: [
+            CommunitySession(
+                nameKey: "Day 1 · Squat / Bench",
+                steps: [
+                    CommunityStep("squat_barbell", sets: 5, reps: 3, weight: 80, rest: 180),
+                    CommunityStep("bench_press_barbell", sets: 3, reps: 10, weight: 45, rest: 120),
+                    CommunityStep("lat_pulldown", sets: 3, reps: 15, weight: 40, rest: 75),
+                ]
+            ),
+            CommunitySession(
+                nameKey: "Day 2 · OHP / Deadlift",
+                steps: [
+                    CommunityStep("overhead_press_barbell", sets: 5, reps: 3, weight: 40, rest: 180),
+                    CommunityStep("deadlift", sets: 3, reps: 10, weight: 90, rest: 150),
+                    CommunityStep("dumbbell_row", sets: 3, reps: 15, weight: 18, rest: 75),
+                ]
+            ),
+            CommunitySession(
+                nameKey: "Day 3 · Bench / Squat",
+                steps: [
+                    CommunityStep("bench_press_barbell", sets: 5, reps: 3, weight: 60, rest: 180),
+                    CommunityStep("squat_barbell", sets: 3, reps: 10, weight: 60, rest: 120),
+                    CommunityStep("lat_pulldown", sets: 3, reps: 15, weight: 40, rest: 75),
+                ]
+            ),
+            CommunitySession(
+                nameKey: "Day 4 · Deadlift / OHP",
+                steps: [
+                    CommunityStep("deadlift", sets: 5, reps: 3, weight: 110, rest: 180),
+                    CommunityStep("overhead_press_barbell", sets: 3, reps: 10, weight: 35, rest: 120),
+                    CommunityStep("dumbbell_row", sets: 3, reps: 15, weight: 18, rest: 75),
+                ]
+            ),
+        ]
+    )
+
+    // MARK: - 20. Push Pull Legs — 6-day (Reddit-style high frequency)
+
+    static let pplReddit6Day = CommunityPlan(
+        id: "community-ppl-reddit-6day",
+        nameKey: "Push Pull Legs — 6-Day",
+        descKey: "A popular high-frequency push/pull/legs split run six days a week: heavy compound work up top, then hypertrophy volume to finish each session.",
+        frequencyDaysPerWeek: 6,
+        levelKey: "Intermediate",
+        kicker: "PUSH / PULL / LEGS",
+        sessions: [
+            CommunitySession(
+                nameKey: "Push",
+                steps: [
+                    CommunityStep("bench_press_barbell", sets: 5, reps: 5, weight: 60, rest: 150),
+                    CommunityStep("overhead_press_dumbbell_seated", sets: 3, reps: 8, weight: 18, rest: 90),
+                    CommunityStep("incline_bench_press_dumbbell", sets: 3, reps: 10, weight: 20, rest: 75),
+                    CommunityStep("triceps_pushdown_rope", sets: 3, reps: 12, weight: 25, rest: 60),
+                    CommunityStep("overhead_extension_cable_rope", sets: 3, reps: 12, weight: 20, rest: 60),
+                    CommunityStep("lateral_raise_dumbbell", sets: 3, reps: 15, weight: 8, rest: 45),
+                ]
+            ),
+            CommunitySession(
+                nameKey: "Pull",
+                steps: [
+                    CommunityStep("deadlift", sets: 1, reps: 5, weight: 100, rest: 180),
+                    CommunityStep("pull_up", sets: 3, reps: 8, weight: 0, rest: 120),
+                    CommunityStep("dumbbell_row", sets: 3, reps: 8, weight: 24, rest: 90),
+                    CommunityStep("cable_row_seated", sets: 3, reps: 10, weight: 45, rest: 75),
+                    CommunityStep("face_pull", sets: 4, reps: 15, weight: 15, rest: 45),
+                    CommunityStep("bicep_curl_barbell", sets: 3, reps: 10, weight: 25, rest: 60),
+                    CommunityStep("hammer_curl", sets: 3, reps: 12, weight: 10, rest: 60),
+                ]
+            ),
+            CommunitySession(
+                nameKey: "Legs",
+                steps: [
+                    CommunityStep("squat_barbell", sets: 3, reps: 5, weight: 85, rest: 150),
+                    CommunityStep("rdl_barbell", sets: 3, reps: 8, weight: 70, rest: 120),
+                    CommunityStep("leg_press_45", sets: 3, reps: 12, weight: 120, rest: 90),
+                    CommunityStep("leg_curl_lying", sets: 3, reps: 12, weight: 35, rest: 60),
+                    CommunityStep("calf_raise_standing", sets: 5, reps: 12, weight: 60, rest: 45),
+                ]
+            ),
+        ]
+    )
+
+    // MARK: - 21. Power Hypertrophy — PHAT (Layne Norton-style)
+
+    static let phat5Day = CommunityPlan(
+        id: "community-phat-5day",
+        nameKey: "Power Hypertrophy — PHAT",
+        descKey: "A PHAT-style split: two heavy power days plus three high-volume hypertrophy days for both strength and size. Demanding — best for advanced lifters.",
+        frequencyDaysPerWeek: 5,
+        levelKey: "Advanced",
+        kicker: "POWER + HYPERTROPHY",
+        sessions: [
+            CommunitySession(
+                nameKey: "Upper Power",
+                steps: [
+                    CommunityStep("barbell_row", sets: 4, reps: 5, weight: 60, rest: 150),
+                    CommunityStep("pull_up", sets: 3, reps: 6, weight: 0, rest: 120),
+                    CommunityStep("bench_press_barbell", sets: 4, reps: 5, weight: 70, rest: 150),
+                    CommunityStep("overhead_press_dumbbell_seated", sets: 3, reps: 8, weight: 18, rest: 90),
+                    CommunityStep("bicep_curl_barbell", sets: 3, reps: 8, weight: 25, rest: 60),
+                    CommunityStep("triceps_pushdown_rope", sets: 3, reps: 8, weight: 30, rest: 60),
+                ]
+            ),
+            CommunitySession(
+                nameKey: "Lower Power",
+                steps: [
+                    CommunityStep("squat_barbell", sets: 4, reps: 5, weight: 90, rest: 180),
+                    CommunityStep("deadlift", sets: 4, reps: 5, weight: 110, rest: 180),
+                    CommunityStep("leg_press_45", sets: 3, reps: 10, weight: 140, rest: 120),
+                    CommunityStep("leg_curl_lying", sets: 3, reps: 10, weight: 35, rest: 75),
+                    CommunityStep("calf_raise_standing", sets: 4, reps: 12, weight: 60, rest: 45),
+                ]
+            ),
+            CommunitySession(
+                nameKey: "Back & Shoulders Hypertrophy",
+                steps: [
+                    CommunityStep("barbell_row", sets: 4, reps: 10, weight: 50, rest: 90),
+                    CommunityStep("lat_pulldown", sets: 3, reps: 12, weight: 45, rest: 75),
+                    CommunityStep("cable_row_seated", sets: 3, reps: 12, weight: 45, rest: 75),
+                    CommunityStep("overhead_press_dumbbell_seated", sets: 3, reps: 12, weight: 14, rest: 75),
+                    CommunityStep("lateral_raise_dumbbell", sets: 4, reps: 15, weight: 8, rest: 45),
+                    CommunityStep("rear_delt_fly_dumbbell", sets: 3, reps: 15, weight: 7, rest: 45),
+                ]
+            ),
+            CommunitySession(
+                nameKey: "Lower Hypertrophy",
+                steps: [
+                    CommunityStep("squat_barbell", sets: 4, reps: 10, weight: 70, rest: 120),
+                    CommunityStep("rdl_barbell", sets: 3, reps: 12, weight: 60, rest: 90),
+                    CommunityStep("leg_extension_machine", sets: 3, reps: 15, weight: 40, rest: 60),
+                    CommunityStep("leg_curl_lying", sets: 3, reps: 15, weight: 30, rest: 60),
+                    CommunityStep("calf_raise_seated", sets: 4, reps: 15, weight: 40, rest: 45),
+                ]
+            ),
+            CommunitySession(
+                nameKey: "Chest & Arms Hypertrophy",
+                steps: [
+                    CommunityStep("incline_bench_press_dumbbell", sets: 4, reps: 10, weight: 24, rest: 90),
+                    CommunityStep("cable_fly_flat", sets: 3, reps: 12, weight: 15, rest: 60),
+                    CommunityStep("bicep_curl_dumbbell", sets: 4, reps: 12, weight: 12, rest: 60),
+                    CommunityStep("hammer_curl", sets: 3, reps: 12, weight: 10, rest: 60),
+                    CommunityStep("triceps_pushdown_rope", sets: 4, reps: 12, weight: 25, rest: 60),
+                    CommunityStep("overhead_extension_cable_rope", sets: 3, reps: 12, weight: 20, rest: 60),
+                ]
+            ),
+        ]
+    )
+
+    // MARK: - 22. German Volume Training — 10×10
+
+    static let germanVolume = CommunityPlan(
+        id: "community-gvt-10x10",
+        nameKey: "German Volume Training — 10×10",
+        descKey: "The classic 10 sets of 10 hypertrophy method on the main lifts. Brutally simple, brutally effective for size — keep the weight light and the rest short.",
+        frequencyDaysPerWeek: 4,
+        levelKey: "Advanced",
+        kicker: "HYPERTROPHY",
+        sessions: [
+            CommunitySession(
+                nameKey: "Chest & Back",
+                steps: [
+                    CommunityStep("bench_press_barbell", sets: 10, reps: 10, weight: 45, rest: 90),
+                    CommunityStep("dumbbell_row", sets: 10, reps: 10, weight: 20, rest: 90),
+                    CommunityStep("cable_fly_flat", sets: 3, reps: 12, weight: 12, rest: 60),
+                    CommunityStep("lat_pulldown", sets: 3, reps: 12, weight: 40, rest: 60),
+                ]
+            ),
+            CommunitySession(
+                nameKey: "Legs & Abs",
+                steps: [
+                    CommunityStep("squat_barbell", sets: 10, reps: 10, weight: 60, rest: 90),
+                    CommunityStep("leg_curl_lying", sets: 10, reps: 10, weight: 25, rest: 90),
+                    CommunityStep("calf_raise_standing", sets: 3, reps: 15, weight: 50, rest: 45),
+                    CommunityStep("crunch_cable", sets: 3, reps: 15, weight: 20, rest: 45),
+                ]
+            ),
+            CommunitySession(
+                nameKey: "Arms & Shoulders",
+                steps: [
+                    CommunityStep("dip_parallel_bar_triceps", sets: 10, reps: 10, weight: 0, rest: 90),
+                    CommunityStep("bicep_curl_barbell", sets: 10, reps: 10, weight: 20, rest: 90),
+                    CommunityStep("lateral_raise_dumbbell", sets: 3, reps: 15, weight: 7, rest: 45),
+                    CommunityStep("overhead_press_dumbbell_seated", sets: 3, reps: 12, weight: 12, rest: 60),
+                ]
+            ),
+        ]
+    )
+
+    // MARK: - 23. 2-Day Full Body (busy schedule)
+
+    static let twoDayFullBody = CommunityPlan(
+        id: "community-2day-fullbody",
+        nameKey: "2-Day Full Body",
+        descKey: "Only two sessions a week, full-body each time — built for busy schedules without giving up real progress. Hit it hard, recover well.",
+        frequencyDaysPerWeek: 2,
+        levelKey: "Beginner",
+        kicker: "FULL BODY",
+        sessions: [
+            CommunitySession(
+                nameKey: "Workout A",
+                steps: [
+                    CommunityStep("squat_barbell", sets: 3, reps: 5, weight: 60, rest: 150),
+                    CommunityStep("bench_press_barbell", sets: 3, reps: 8, weight: 45, rest: 120),
+                    CommunityStep("dumbbell_row", sets: 3, reps: 8, weight: 20, rest: 90),
+                    CommunityStep("overhead_press_dumbbell_seated", sets: 2, reps: 10, weight: 14, rest: 75),
+                    CommunityStep(timed: "plank", sets: 3, duration: 40, rest: 45),
+                ]
+            ),
+            CommunitySession(
+                nameKey: "Workout B",
+                steps: [
+                    CommunityStep("deadlift", sets: 3, reps: 5, weight: 90, rest: 180),
+                    CommunityStep("incline_bench_press_dumbbell", sets: 3, reps: 10, weight: 18, rest: 90),
+                    CommunityStep("lat_pulldown", sets: 3, reps: 10, weight: 40, rest: 75),
+                    CommunityStep("lunge_dumbbell_alternating", sets: 3, reps: 10, weight: 14, rest: 75),
+                    CommunityStep("bicep_curl_dumbbell", sets: 2, reps: 12, weight: 10, rest: 60),
+                ]
+            ),
+        ]
+    )
+
+    // MARK: - 24. Texas Method (intermediate strength)
+
+    static let texasMethod = CommunityPlan(
+        id: "community-texas-method-3day",
+        nameKey: "Texas Method",
+        descKey: "An intermediate strength template: a high-volume day, a light recovery day, and a heavy intensity day each week to keep adding weight past the novice stage.",
+        frequencyDaysPerWeek: 3,
+        levelKey: "Intermediate",
+        kicker: "STRENGTH",
+        sessions: [
+            CommunitySession(
+                nameKey: "Volume Day",
+                steps: [
+                    CommunityStep("squat_barbell", sets: 5, reps: 5, weight: 80, rest: 180),
+                    CommunityStep("bench_press_barbell", sets: 5, reps: 5, weight: 55, rest: 180),
+                    CommunityStep("deadlift", sets: 1, reps: 5, weight: 100, rest: 240),
+                ]
+            ),
+            CommunitySession(
+                nameKey: "Recovery Day",
+                steps: [
+                    CommunityStep("squat_barbell", sets: 2, reps: 5, weight: 55, rest: 120),
+                    CommunityStep("overhead_press_barbell", sets: 3, reps: 5, weight: 35, rest: 150),
+                    CommunityStep("chin_up", sets: 3, reps: 8, weight: 0, rest: 90),
+                ]
+            ),
+            CommunitySession(
+                nameKey: "Intensity Day",
+                steps: [
+                    CommunityStep("squat_barbell", sets: 1, reps: 5, weight: 95, rest: 240),
+                    CommunityStep("bench_press_barbell", sets: 1, reps: 5, weight: 65, rest: 240),
+                    CommunityStep("dumbbell_row", sets: 4, reps: 8, weight: 24, rest: 90),
+                ]
+            ),
+        ]
+    )
+
     // MARK: - 教练署名 (id → "Coach X · 专长"). 给精选计划一点"达人"感; 都是 app 内编辑团队的虚拟教练人设, 不冒充真实网红.
     static let coaches: [String: String] = [
         "community-beginner-fb-3day": "Coach Theo · Beginner",
@@ -745,6 +1079,14 @@ enum CommunityPlans {
         "community-athletic-3day": "Coach Leo · Athletic",
         "community-minimalist-3day": "Coach Theo · Strength",
         "community-hyp-ppl-3day": "Coach Devin · Hypertrophy",
+        "community-barbell-5x5-linear": "Coach Leo · Strength",
+        "community-novice-barbell-3day": "Coach Leo · Strength",
+        "community-gzclp-4day": "Coach Leo · Strength",
+        "community-ppl-reddit-6day": "Coach Devin · Hypertrophy",
+        "community-phat-5day": "Coach Devin · Hypertrophy",
+        "community-gvt-10x10": "Coach Mara · Bodybuilding",
+        "community-2day-fullbody": "Coach Theo · Beginner",
+        "community-texas-method-3day": "Coach Leo · Strength",
     ]
     static func coach(for plan: CommunityPlan) -> String { coaches[plan.id] ?? "Maso Coach" }
 

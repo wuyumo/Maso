@@ -20,6 +20,43 @@ struct CommunityScreen: View {
     @State private var paywallPresented: Bool = false
     /// tap 卡片打开详情 preview
     @State private var detailPlan: CommunityPlan? = nil
+    /// 顶部筛选: 每周训练天数 (nil = 全部). 跟 levelFilter AND.
+    @State private var daysFilter: Int? = nil
+    /// 顶部筛选: 进阶程度 (nil = 全部). "Beginner" / "Intermediate" / "Advanced".
+    @State private var levelFilter: String? = nil
+
+    /// 难度顺序 — 筛选菜单选项 + 结果排序用.
+    private static let levelOrder = ["Beginner", "Intermediate", "Advanced"]
+
+    /// 是否有任一筛选生效 — 有则隐藏"每日精选 / 更多"分段, 改成单一筛选结果列表.
+    private var isFiltering: Bool { daysFilter != nil || levelFilter != nil }
+
+    /// 当前筛选命中的 plans (按 难度 → 天数 稳定排序, 让结果列表有序).
+    private var filteredPlans: [CommunityPlan] {
+        CommunityPlans.all.filter { plan in
+            (daysFilter == nil || plan.frequencyDaysPerWeek == daysFilter)
+            && (levelFilter == nil || plan.levelKey == levelFilter)
+        }.sorted { a, b in
+            let la = Self.levelOrder.firstIndex(of: a.levelKey) ?? 9
+            let lb = Self.levelOrder.firstIndex(of: b.levelKey) ?? 9
+            return la != lb ? la < lb : a.frequencyDaysPerWeek < b.frequencyDaysPerWeek
+        }
+    }
+
+    /// 所有出现过的"天数"选项 (升序) — 菜单列表用.
+    private var allDayOptions: [Int] {
+        Set(CommunityPlans.all.map(\.frequencyDaysPerWeek)).sorted()
+    }
+    /// 当前 level 约束下还有 plan 的"天数" (菜单里 dim 掉空集).
+    private var availableDays: Set<Int> {
+        Set(CommunityPlans.all.filter { levelFilter == nil || $0.levelKey == levelFilter }
+            .map(\.frequencyDaysPerWeek))
+    }
+    /// 当前天数约束下还有 plan 的"难度".
+    private var availableLevels: Set<String> {
+        Set(CommunityPlans.all.filter { daysFilter == nil || $0.frequencyDaysPerWeek == daysFilter }
+            .map(\.levelKey))
+    }
 
     var body: some View {
         NavigationStack {
@@ -43,26 +80,49 @@ struct CommunityScreen: View {
                     .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
                     .padding(.top, 8)
 
-                    // 每日精选 (按日期轮播) + 其余全部. 让用户每次来都先看到一批不同的"达人"计划.
-                    let featured = CommunityPlans.featured(count: 6)
-                    let featuredIds = Set(featured.map(\.id))
-                    let more = CommunityPlans.all.filter { !featuredIds.contains($0.id) }
+                    // 顶部筛选 — 每周训练天数 + 进阶程度 (FilterMenuButton 下拉, 跟全 app 一致).
+                    filterRow
 
-                    sectionHeader("Featured today")
-                    LazyVStack(spacing: 12) {
-                        ForEach(featured) { plan in
-                            CommunityPlanCard(plan: plan, onTapBody: { detailPlan = plan }, onAdd: { handleAdd(plan) })
+                    if isFiltering {
+                        // 有筛选 → 单一结果列表 (隐藏每日轮播分段).
+                        let results = filteredPlans
+                        sectionHeader(LocalizedStringKey(
+                            results.isEmpty
+                            ? "No plans match"
+                            : "\(results.count) \(results.count == 1 ? "plan" : "plans")"
+                        ))
+                        if results.isEmpty {
+                            emptyFilterState
+                        } else {
+                            LazyVStack(spacing: 12) {
+                                ForEach(results) { plan in
+                                    CommunityPlanCard(plan: plan, onTapBody: { detailPlan = plan }, onAdd: { handleAdd(plan) })
+                                }
+                            }
+                            .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
                         }
-                    }
-                    .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
+                    } else {
+                        // 无筛选 → 每日精选 (按日期轮播) + 其余全部. 让用户每次来都先看到一批不同的"达人"计划.
+                        let featured = CommunityPlans.featured(count: 6)
+                        let featuredIds = Set(featured.map(\.id))
+                        let more = CommunityPlans.all.filter { !featuredIds.contains($0.id) }
 
-                    sectionHeader("More programs")
-                    LazyVStack(spacing: 12) {
-                        ForEach(more) { plan in
-                            CommunityPlanCard(plan: plan, onTapBody: { detailPlan = plan }, onAdd: { handleAdd(plan) })
+                        sectionHeader("Featured today")
+                        LazyVStack(spacing: 12) {
+                            ForEach(featured) { plan in
+                                CommunityPlanCard(plan: plan, onTapBody: { detailPlan = plan }, onAdd: { handleAdd(plan) })
+                            }
                         }
+                        .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
+
+                        sectionHeader("More programs")
+                        LazyVStack(spacing: 12) {
+                            ForEach(more) { plan in
+                                CommunityPlanCard(plan: plan, onTapBody: { detailPlan = plan }, onAdd: { handleAdd(plan) })
+                            }
+                        }
+                        .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
                     }
-                    .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
 
                     Color.clear.frame(height: 24)
                 }
@@ -116,6 +176,70 @@ struct CommunityScreen: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
             .padding(.top, 4)
+    }
+
+    /// 顶部两个筛选下拉 (每周天数 / 进阶程度) + 一个 Clear. 用全 app 共用的 FilterMenuButton.
+    @ViewBuilder
+    private var filterRow: some View {
+        HStack(spacing: 8) {
+            let availD = availableDays
+            FilterMenuButton(
+                title: NSLocalizedString("Days/wk", comment: "community filter — days per week"),
+                allLabel: NSLocalizedString("Any frequency", comment: ""),
+                selected: $daysFilter,
+                options: allDayOptions.map { d in
+                    FilterMenuOption(
+                        value: d,
+                        label: String(format: NSLocalizedString("%lld days", comment: "days-per-week option"), d),
+                        enabled: availD.contains(d) || daysFilter == d
+                    )
+                }
+            )
+
+            let availL = availableLevels
+            FilterMenuButton(
+                title: NSLocalizedString("Level", comment: "community filter — difficulty"),
+                allLabel: NSLocalizedString("Any level", comment: ""),
+                selected: $levelFilter,
+                options: Self.levelOrder.map { lvl in
+                    FilterMenuOption(
+                        value: lvl,
+                        label: NSLocalizedString(lvl, comment: "difficulty level"),
+                        enabled: availL.contains(lvl) || levelFilter == lvl
+                    )
+                }
+            )
+
+            Spacer(minLength: 0)
+
+            if isFiltering {
+                Button(action: {
+                    withAnimation(.easeOut(duration: 0.2)) { daysFilter = nil; levelFilter = nil }
+                }) {
+                    Text(NSLocalizedString("Clear", comment: "clear filters"))
+                        .font(.system(size: 12, weight: .bold))
+                        .foregroundStyle(MasoColor.textDim)
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
+    }
+
+    @ViewBuilder
+    private var emptyFilterState: some View {
+        VStack(spacing: 10) {
+            Image(systemName: "slider.horizontal.3")
+                .font(.system(size: 28, weight: .heavy))
+                .foregroundStyle(MasoColor.textFaint)
+            Text("No plans match these filters yet.")
+                .font(.system(size: 13))
+                .foregroundStyle(MasoColor.textDim)
+                .multilineTextAlignment(.center)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 48)
+        .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
     }
 
     private func handleAdd(_ plan: CommunityPlan) {
