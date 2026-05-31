@@ -1652,9 +1652,6 @@ struct ExercisePickerSheet: View {
                 if let m = muscleFilter {
                     facetChip(value: m.displayName) { muscleFilter = nil; boardExpanded = true }
                 }
-                if let mv = movementFilter {
-                    facetChip(value: mv.displayName) { movementFilter = nil; boardExpanded = true }
-                }
                 if let eq = equipmentFilter {
                     facetChip(value: Exercise.equipmentDisplayName(for: eq)) { equipmentFilter = nil; boardExpanded = true }
                 }
@@ -1696,7 +1693,8 @@ struct ExercisePickerSheet: View {
             }
             HStack(alignment: .top, spacing: 8) {
                 if muscleFilter == nil { facetColumn(title: NSLocalizedString("Part", comment: ""), options: partOptions) }
-                if movementFilter == nil { facetColumn(title: NSLocalizedString("Movement", comment: ""), options: movementOptions) }
+                // Movement 列已移除 (用户要求) — 只保留 部位 / 器械 两列. movementFilter 永不设值,
+                // 相关逻辑成空操作; 想恢复把这列加回即可.
                 if equipmentFilter == nil { facetColumn(title: NSLocalizedString("Equipment", comment: ""), options: equipmentOptions) }
             }
             .frame(height: 196)
