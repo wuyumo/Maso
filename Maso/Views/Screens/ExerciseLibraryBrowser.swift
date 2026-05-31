@@ -77,6 +77,7 @@ struct ExerciseLibraryBrowser: View {
             group: group,
             isExpanded: expandedGroupKey == group.id,
             showDisclosure: !group.isSingleton,
+            showVariantCategoryLabel: false,
             trailing: { EmptyView() },
             onTap: { selected = ex },
             onTapImage: { selected = ex },
@@ -239,8 +240,9 @@ struct ExerciseLibraryBrowser: View {
                 // 展示/收折逻辑, 保证两边一致. canonical 行折叠, "+N variants" 胶囊展开同名变种.
                 ForEach(filteredGroups) { group in
                     libraryRow(group.canonical, isVariant: false, group: group)
+                    // 展开 → 变种拆 "Variation"(动作) / "Equipment"(器械) 两段, 跟 picker / Rare 一致.
                     if !group.variants.isEmpty, expandedGroupKey == group.id {
-                        ForEach(group.variants, id: \.id) { variant in
+                        groupedVariantSections(for: group) { variant in
                             libraryRow(variant, isVariant: true, group: group)
                         }
                     }

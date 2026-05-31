@@ -1822,6 +1822,7 @@ struct ExercisePickerSheet: View {
             group: group,
             isExpanded: expandedGroupKey == group.id,
             showDisclosure: !group.isSingleton && !forceExpandAll,
+            showVariantCategoryLabel: false,
             highlighted: multiSelect && selectedIds.contains(ex.id),
             trailing: {
                 if multiSelect {
@@ -1875,10 +1876,11 @@ struct ExercisePickerSheet: View {
                     group: group
                 )
 
-                // 展开时渲染变种 — 每个变种作为独立 List row, 可独立 swipe pin, 缩进区分层级.
+                // 展开时渲染变种 — 拆 "Variation"(动作) / "Equipment"(器械) 两段, 各自带小节头;
+                // 每个变种作为独立 List row, 可独立 swipe pin, 缩进区分层级.
                 if group.variants.isEmpty == false,
                    forceExpandAll || expandedGroupKey == group.id {
-                    ForEach(group.variants, id: \.id) { variant in
+                    groupedVariantSections(for: group) { variant in
                         exercisePickerRow(
                             exercise: variant,
                             isVariant: true,

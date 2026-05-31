@@ -113,6 +113,9 @@ struct GroupedExerciseRow<Trailing: View>: View {
     let isExpanded: Bool
     /// 是否显示 canonical 末尾的 "+N variants" 胶囊 (= 有变种 且 调用方没强制全展开).
     let showDisclosure: Bool
+    /// 变种行是否显示第二行的分类标签 ("VARIATION" / "EQUIPMENT").
+    /// 当调用方把变种拆成两个带标题的 section 时传 false — 分类已由 section header 表达, 行内再显就冗余.
+    var showVariantCategoryLabel: Bool = true
     /// 行背景高亮 (multiSelect 选中态用).
     var highlighted: Bool = false
     /// 末尾附加视图 (multiSelect 的勾选圈; 库浏览传 EmptyView).
@@ -144,11 +147,13 @@ struct GroupedExerciseRow<Trailing: View>: View {
                             .font(.system(size: 13, weight: .bold))
                             .foregroundStyle(MasoColor.text)
                             .lineLimit(1)
-                        Text(diff.category)
-                            .font(.system(size: 10, weight: .heavy))
-                            .tracking(0.6)
-                            .textCase(.uppercase)
-                            .foregroundStyle(diff.color)
+                        if showVariantCategoryLabel {
+                            Text(diff.category)
+                                .font(.system(size: 10, weight: .heavy))
+                                .tracking(0.6)
+                                .textCase(.uppercase)
+                                .foregroundStyle(diff.color)
+                        }
                     } else {
                         Text(ex.displayName)
                             .font(.system(size: 15, weight: .bold))
@@ -222,14 +227,18 @@ struct GroupedExerciseRow<Trailing: View>: View {
     /// 返回 (主文案=具体差异, 分类标签, 分类色). accent=动作差异, 中性灰=器械差异.
     private func variantDiff(_ ex: Exercise) -> (text: String, category: String, color: Color) {
         if group.isModifierVariant(ex) {
-            // 动作差异 (Seated / Single-Arm / Close-Grip …); 若同时带器械, 附在后面.
-            let mod = group.modifierLabel(for: ex) ?? ex.displayName
-            if let eq = ex.equipmentDisplayName, !eq.isEmpty {
-                return ("\(mod) · \(eq)", NSLocalizedString("Variation", comment: "movement/form variant category"), MasoColor.accent)
+            // 动作差异 (Seated / Single-Leg / Lean-Forward / 括号内动作细节 …).
+            var text = group.variationLabel(for: ex)
+            // 器械跟 canonical 不同 → 附器械名消歧 (主库 "Close-Grip · Dumbbell"); 相同 → 不附 (niche, 冗余).
+            if !ExerciseGrouping.sameEquipment(ex, group.canonical),
+               let eq = ex.equipmentDisplayName, !eq.isEmpty {
+                text += " · \(eq)"
             }
-            return (mod, NSLocalizedString("Variation", comment: "movement/form variant category"), MasoColor.accent)
+            return (text,
+                    NSLocalizedString("Variation", comment: "movement/form variant category"),
+                    MasoColor.accent)
         }
-        // 器械差异 (Dumbbell / Machine / Cable …) — 优先括号内全文, 退器械名.
+        // 器械差异 (Dumbbell / Machine / Swiss Ball …) — 优先括号内全文, 退器械名.
         let raw = ex.displayName
         var diff = ex.equipmentDisplayName ?? ""
         if let o = raw.firstIndex(of: "("), let c = raw.lastIndex(of: ")"), raw.index(after: o) < c {
@@ -237,5 +246,58 @@ struct GroupedExerciseRow<Trailing: View>: View {
         }
         if diff.isEmpty { diff = raw }
         return (diff, NSLocalizedString("Equipment", comment: "equipment variant category"), MasoColor.textDim)
+    }
+}
+
+// MARK: - VariantSectionHeader — 展开变种时 "Variation" / "Equipment" 两段的小节头
+//
+// 收折组展开后, 变种拆成"动作差异"(Variation) 和"器械差异"(Equipment) 两个 section.
+// 这个小节头标明每段类别, 视觉色跟变种分类色一致 (accent=动作 / 中性灰=器械).
+// 缩进对齐变种卡片 (= pagePaddingHorizontal + 16), 让它正好"盖"在它统领的那几行上方.
+struct VariantSectionHeader: View {
+    let title: String
+    var color: Color = MasoColor.textFaint
+
+    var body: some View {
+        Text(title)
+            .font(.system(size: 10, weight: .heavy))
+            .tracking(0.8)
+            .textCase(.uppercase)
+            .foregroundStyle(color)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .listRowSeparator(.hidden)
+            .listRowBackground(Color.clear)
+            .listRowInsets(EdgeInsets(
+                top: 7,
+                leading: MasoMetrics.pagePaddingHorizontal + 16 + MasoMetrics.rowPaddingH,
+                bottom: 2,
+                trailing: MasoMetrics.pagePaddingHorizontal
+            ))
+    }
+}
+
+// 展开收折组时, 把变种拆成 "Variation"(动作) + "Equipment"(器械) 两个带标题的 section.
+// 三处共用 (Exercise Library / 训练中选动作 picker / Rare exercises 浏览), 保证收折展开布局一致.
+// row 闭包由调用方注入 (各自的 tap / trailing / swipeActions 不同), 但 section 结构 + 标题完全统一.
+@ViewBuilder
+func groupedVariantSections<RowView: View>(
+    for group: ExerciseGroup,
+    @ViewBuilder row: @escaping (Exercise) -> RowView
+) -> some View {
+    let movementVars = group.movementVariants
+    let equipmentVars = group.equipmentVariants
+    if !movementVars.isEmpty {
+        VariantSectionHeader(
+            title: NSLocalizedString("Variation", comment: "movement/form variant section"),
+            color: MasoColor.accent
+        )
+        ForEach(movementVars, id: \.id) { row($0) }
+    }
+    if !equipmentVars.isEmpty {
+        VariantSectionHeader(
+            title: NSLocalizedString("Equipment", comment: "equipment variant section"),
+            color: MasoColor.textDim
+        )
+        ForEach(equipmentVars, id: \.id) { row($0) }
     }
 }

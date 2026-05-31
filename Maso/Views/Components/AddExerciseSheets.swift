@@ -409,60 +409,124 @@ struct NicheLibraryBrowseSheet: View {
     @Environment(\.dismiss) private var dismiss
 
     @State private var query: String = ""
-    /// 这一 session 里刚 adopt 的 ID — 让 row 短暂显示 "✓ Added" 然后淡出.
+    /// 顶部"部位"筛选 (nil = 全部). 6 个 section, 跟 Exercise Library 完全一致.
+    @State private var muscleFilter: MuscleGroup? = nil
+    /// 顶部"器械"筛选 (nil = 不限).
+    @State private var equipmentFilter: String? = nil
+    /// 当前展开的"变种组" key (= ExerciseGroup.id). 一次只展开一组 — 跟主库 / picker 同一收折语义.
+    @State private var expandedGroupKey: String? = nil
+    /// tap 行 → 弹动作详情 (纯浏览). adopt 走右侧 "Add" 胶囊.
+    @State private var selected: Exercise? = nil
+
+    private static let muscleSections: [MuscleGroup] = [
+        .chest, .back, .shoulders, .arms, .core, .legs,
+    ]
 
     private var filtered: [Exercise] {
-        // unadoptedNicheExercises 自己排除已采纳的; adopt 后行随集合变化动画移出. 这里只加搜索过滤.
+        // unadoptedNicheExercises 自己排除已采纳的; adopt 后行随集合变化动画移出.
+        // 筛选逻辑跟 Exercise Library 一致: primaryMuscles 严格匹配 + equipment + 文本.
         var arr = data.unadoptedNicheExercises
+        if let m = muscleFilter {
+            arr = arr.filter { ex in
+                ex.primaryMuscles.contains(where: { $0.section == m })
+            }
+        }
+        if let eq = equipmentFilter {
+            arr = arr.filter { ex in
+                if eq == "other" { return ex.equipment == "other" || ex.equipment == nil }
+                return ex.equipment == eq
+            }
+        }
         let q = query.trimmingCharacters(in: .whitespaces).lowercased()
         if !q.isEmpty {
             arr = arr.filter { ex in
                 ex.name.lowercased().contains(q) ||
-                ex.displayName.lowercased().contains(q)
+                ex.displayName.lowercased().contains(q) ||
+                ex.tags.contains(where: { $0.lowercased().contains(q) })
             }
         }
         return arr
     }
 
+    /// filtered 折叠成变种组 — 跟主库 / picker 用同一份 ExerciseGrouping.group(...).
+    private var filteredGroups: [ExerciseGroup] {
+        ExerciseGrouping.group(filtered)
+    }
+
+    /// 当前 equipment / text filter 下还有动作的 muscle section (menu 里 dim disabled).
+    private var availableMuscles: Set<MuscleGroup> {
+        var out: Set<MuscleGroup> = []
+        let q = query.trimmingCharacters(in: .whitespaces).lowercased()
+        for ex in data.unadoptedNicheExercises {
+            if let eq = equipmentFilter {
+                if eq == "other" {
+                    guard ex.equipment == "other" || ex.equipment == nil else { continue }
+                } else {
+                    guard ex.equipment == eq else { continue }
+                }
+            }
+            if !q.isEmpty {
+                guard ex.name.lowercased().contains(q)
+                        || ex.displayName.lowercased().contains(q)
+                        || ex.tags.contains(where: { $0.lowercased().contains(q) }) else { continue }
+            }
+            for sec in Self.muscleSections {
+                if ex.primaryMuscles.contains(where: { $0.section == sec }) { out.insert(sec) }
+            }
+        }
+        return out
+    }
+
+    /// 当前 muscle / text filter 下还有动作的 equipment set (menu 里 dim disabled).
+    private var availableEquipments: Set<String> {
+        var out: Set<String> = []
+        let q = query.trimmingCharacters(in: .whitespaces).lowercased()
+        for ex in data.unadoptedNicheExercises {
+            if let m = muscleFilter {
+                guard ex.primaryMuscles.contains(where: { $0.section == m }) else { continue }
+            }
+            if !q.isEmpty {
+                guard ex.name.lowercased().contains(q)
+                        || ex.displayName.lowercased().contains(q)
+                        || ex.tags.contains(where: { $0.lowercased().contains(q) }) else { continue }
+            }
+            out.insert(ex.equipment ?? "other")
+        }
+        return out
+    }
+
+    private var noFiltersActive: Bool {
+        query.trimmingCharacters(in: .whitespaces).isEmpty && muscleFilter == nil && equipmentFilter == nil
+    }
+
     var body: some View {
         NavigationStack {
-            ZStack {
-                MasoColor.background.ignoresSafeArea()
-                VStack(spacing: 0) {
-                    SearchBar(query: $query)
-                        .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
-                        .padding(.vertical, 8)
+            List {
+                // 搜索 + 两个筛选菜单作为列表首行 — 跟 Exercise Library 完全一致.
+                filterHeaderRow
 
-                    if filtered.isEmpty {
-                        VStack(spacing: 12) {
-                            Image(systemName: query.isEmpty ? "checkmark.circle" : "magnifyingglass")
-                                .font(.system(size: 32, weight: .heavy))
-                                .foregroundStyle(MasoColor.textFaint)
-                            Text(query.isEmpty
-                                 ? NSLocalizedString("You've adopted everything in the rare library", comment: "")
-                                 : NSLocalizedString("No rare exercises match", comment: ""))
-                                .font(.system(size: 13))
-                                .foregroundStyle(MasoColor.textDim)
-                                .multilineTextAlignment(.center)
-                        }
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .padding(40)
-                    } else {
-                        List {
-                            ForEach(filtered, id: \.id) { ex in
-                                row(for: ex)
-                                    .listRowSeparator(.hidden)
-                                    .listRowBackground(Color.clear)
-                                    .listRowInsets(EdgeInsets(
-                                        top: 3, leading: MasoMetrics.pagePaddingHorizontal,
-                                        bottom: 3, trailing: MasoMetrics.pagePaddingHorizontal))
+                if filteredGroups.isEmpty {
+                    emptyState
+                } else {
+                    // 收折分组 — canonical 行折叠, 展开后变种拆 "Variation"(动作) / "Equipment"(器械)
+                    // 两段, 跟主库 / picker 收折逻辑一致.
+                    ForEach(filteredGroups) { group in
+                        nicheRow(group.canonical, isVariant: false, group: group)
+                        if !group.variants.isEmpty, expandedGroupKey == group.id {
+                            groupedVariantSections(for: group) { variant in
+                                nicheRow(variant, isVariant: true, group: group)
                             }
                         }
-                        .listStyle(.plain)
-                        .scrollContentBackground(.hidden)
                     }
                 }
             }
+            .listStyle(.plain)
+            .scrollContentBackground(.hidden)
+            // filter / 搜索变化 → 收起手风琴 (避免残留孤儿展开态).
+            .onChange(of: query) { _, _ in expandedGroupKey = nil }
+            .onChange(of: muscleFilter) { _, _ in expandedGroupKey = nil }
+            .onChange(of: equipmentFilter) { _, _ in expandedGroupKey = nil }
+            .background(MasoColor.background.ignoresSafeArea())
             .navigationTitle("Rare exercises")
             .navigationBarTitleDisplayMode(.inline)
             .toolbarBackground(MasoColor.background, for: .navigationBar)
@@ -473,51 +537,115 @@ struct NicheLibraryBrowseSheet: View {
                 }
             }
             .tint(MasoColor.text)
+            .sheet(item: $selected) { ex in
+                ExerciseDetailSheet(exercise: ex)
+            }
         }
         .presentationBackground(MasoColor.background)
     }
 
-    private func row(for ex: Exercise) -> some View {
-        return HStack(spacing: 14) {
-            ExerciseImage(
-                category: ex.category,
-                imageFolder: ex.imageFolder,
-                customImageData: ex.customImageData,
-                cornerRadius: 8,
-                size: 48,
-                animated: false
-            )
-            VStack(alignment: .leading, spacing: 4) {
-                Text(ex.displayName)
-                    .font(.system(size: 14, weight: .bold))
-                    .foregroundStyle(MasoColor.text)
-                    .lineLimit(1)
-                ExerciseTagsRow(
-                    muscleGroups: ex.muscleGroups,
-                    equipment: ex.equipment,
-                    muscleLimit: 1
+    // MARK: - 顶部 search + 两个 filter 菜单 (跟 ExerciseLibraryBrowser 同款)
+
+    @ViewBuilder
+    private var filterHeaderRow: some View {
+        VStack(spacing: 10) {
+            SearchBar(query: $query)
+
+            HStack(spacing: 8) {
+                let availM = availableMuscles
+                FilterMenuButton(
+                    title: NSLocalizedString("Muscle", comment: "filter button placeholder"),
+                    allLabel: NSLocalizedString("All muscles", comment: ""),
+                    selected: $muscleFilter,
+                    options: Self.muscleSections.map { m in
+                        FilterMenuOption(
+                            value: m,
+                            label: m.displayName,
+                            enabled: availM.contains(m) || muscleFilter == m
+                        )
+                    }
                 )
+
+                let availE = availableEquipments
+                FilterMenuButton(
+                    title: NSLocalizedString("Equipment", comment: "filter button placeholder"),
+                    allLabel: NSLocalizedString("Any equipment", comment: ""),
+                    selected: $equipmentFilter,
+                    options: Exercise.knownEquipments.map { eq in
+                        FilterMenuOption(
+                            value: eq,
+                            label: Exercise.equipmentDisplayName(for: eq),
+                            enabled: availE.contains(eq) || equipmentFilter == eq
+                        )
+                    }
+                )
+
+                Spacer()
             }
-            Spacer(minLength: 0)
-            Button(action: { adopt(ex) }) {
-                HStack(spacing: 4) {
-                    Image(systemName: "plus")
-                        .font(.system(size: 11, weight: .heavy))
-                    Text(NSLocalizedString("Add", comment: ""))
-                        .font(.system(size: 12, weight: .heavy))
-                }
-                .foregroundStyle(.black)
-                .padding(.horizontal, 12)
-                .padding(.vertical, 6)
-                .background(MasoColor.accent)
-                .clipShape(Capsule())
-            }
-            .buttonStyle(.plain)
         }
-        .padding(.horizontal, MasoMetrics.rowPaddingH)
-        .padding(.vertical, 10)
-        .background(MasoColor.surface)
-        .clipShape(RoundedRectangle(cornerRadius: 14))
+        .listRowInsets(EdgeInsets(top: 10, leading: MasoMetrics.pagePaddingHorizontal,
+                                  bottom: 6, trailing: MasoMetrics.pagePaddingHorizontal))
+        .listRowBackground(Color.clear)
+        .listRowSeparator(.hidden)
+    }
+
+    @ViewBuilder
+    private var emptyState: some View {
+        VStack(spacing: 12) {
+            Image(systemName: noFiltersActive ? "checkmark.circle" : "magnifyingglass")
+                .font(.system(size: 32, weight: .heavy))
+                .foregroundStyle(MasoColor.textFaint)
+            Text(noFiltersActive
+                 ? NSLocalizedString("You've adopted everything in the rare library", comment: "")
+                 : NSLocalizedString("No rare exercises match", comment: ""))
+                .font(.system(size: 13))
+                .foregroundStyle(MasoColor.textDim)
+                .multilineTextAlignment(.center)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 48)
+        .listRowSeparator(.hidden)
+        .listRowBackground(Color.clear)
+    }
+
+    // MARK: - 行 — 共用 GroupedExerciseRow, 右侧注入 "Add" 胶囊 (adopt)
+
+    @ViewBuilder
+    private func nicheRow(_ ex: Exercise, isVariant: Bool, group: ExerciseGroup) -> some View {
+        GroupedExerciseRow(
+            exercise: ex,
+            isVariant: isVariant,
+            group: group,
+            isExpanded: expandedGroupKey == group.id,
+            showDisclosure: !group.isSingleton,
+            showVariantCategoryLabel: false,
+            trailing: { addButton(ex) },
+            onTap: { selected = ex },
+            onTapImage: { selected = ex },
+            onToggleExpand: {
+                Haptics.tap()
+                withAnimation(.easeOut(duration: 0.2)) {
+                    expandedGroupKey = (expandedGroupKey == group.id) ? nil : group.id
+                }
+            }
+        )
+    }
+
+    private func addButton(_ ex: Exercise) -> some View {
+        Button(action: { adopt(ex) }) {
+            HStack(spacing: 4) {
+                Image(systemName: "plus")
+                    .font(.system(size: 11, weight: .heavy))
+                Text(NSLocalizedString("Add", comment: ""))
+                    .font(.system(size: 12, weight: .heavy))
+            }
+            .foregroundStyle(.black)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 6)
+            .background(MasoColor.accent)
+            .clipShape(Capsule())
+        }
+        .buttonStyle(.plain)
     }
 
     private func adopt(_ ex: Exercise) {

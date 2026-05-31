@@ -37,10 +37,16 @@ struct ExerciseGroup: Hashable, Identifiable {
     /// 是不是单 exercise 组 (没变种). UI 用这个决定要不要显 disclosure.
     var isSingleton: Bool { variants.isEmpty }
 
-    /// 这个 exercise 是不是"执行方式变种" (Seated / Single-Arm 等), 区别于纯器械变种.
-    /// UI 用这个决定显示修饰词胶囊 (accent-tinted) 还是器械图标 (neutral).
+    /// 这个 exercise 是不是"动作差异变种" (Variation), 区别于"器械差异变种" (Equipment).
+    /// 两条任一成立即算动作差异, 否则算器械差异:
+    ///   1. 名字带执行方式前缀 (Seated / Single-Arm / Close-Grip …) → 动作差异 (沿用主库逻辑).
+    ///   2. 跟 canonical 用同一器械 → 区别只能在执行方式/体位/握法/动作模式 — 尤其括号内的 niche 变种
+    ///      (Standing / Single-Leg / Lean-Forward / Alternating Waves …) → 动作差异.
+    /// 器械不同 (且无执行方式前缀) → 器械差异.
+    /// UI 用这个把展开的变种拆成 "Variation"(动作) / "Equipment"(器械) 两段.
     func isModifierVariant(_ exercise: Exercise) -> Bool {
-        ExerciseGrouping.extractedModifier(of: exercise) != nil
+        if ExerciseGrouping.extractedModifier(of: exercise) != nil { return true }
+        return ExerciseGrouping.sameEquipment(exercise, canonical)
     }
 
     /// 返回这个 exercise 的执行方式修饰标签, e.g. "Seated" / "Single-Arm" / "Close-Grip".
@@ -48,6 +54,21 @@ struct ExerciseGroup: Hashable, Identifiable {
     func modifierLabel(for exercise: Exercise) -> String? {
         ExerciseGrouping.extractedModifier(of: exercise)
     }
+
+    /// 动作差异变种的"区别"短标签 — 优先执行方式前缀 (主库); 否则取括号内容并去掉与器械相关的词 (niche).
+    /// e.g. "Hip Abduction (Machine, Single-Leg)" → "Single-Leg"; "Battle Rope (Double Waves)" → "Double Waves";
+    ///      "Seated Lateral Raise" → "Seated".
+    func variationLabel(for exercise: Exercise) -> String {
+        if let m = ExerciseGrouping.extractedModifier(of: exercise) { return m }
+        if let detail = ExerciseGrouping.parenDetail(of: exercise) { return detail }
+        return exercise.displayName
+    }
+
+    /// 展开时归到 "Variation"(动作) section 的变种 — 执行方式差异 (Seated / Single-Leg / 括号内动作细节 …).
+    var movementVariants: [Exercise] { variants.filter { isModifierVariant($0) } }
+
+    /// 展开时归到 "Equipment"(器械) section 的变种 — 器械差异 (Dumbbell / Machine / Swiss Ball …).
+    var equipmentVariants: [Exercise] { variants.filter { !isModifierVariant($0) } }
 }
 
 enum ExerciseGrouping {
@@ -168,6 +189,36 @@ enum ExerciseGrouping {
             return mod.isEmpty ? nil : mod
         }
         return nil
+    }
+
+    // MARK: - 器械比较 + 括号内容提取 (Variation / Equipment 分段用)
+
+    /// equipment 归一: nil / 空 / "none" 都视作 "other", 大小写不敏感.
+    static func normalizedEquipment(_ equipment: String?) -> String {
+        let s = (equipment ?? "").lowercased().trimmingCharacters(in: .whitespaces)
+        return (s.isEmpty || s == "none") ? "other" : s
+    }
+
+    /// 两个动作是否用同一器械 — 判定变种是"动作差异"还是"器械差异"的核心.
+    static func sameEquipment(_ a: Exercise, _ b: Exercise) -> Bool {
+        normalizedEquipment(a.equipment) == normalizedEquipment(b.equipment)
+    }
+
+    /// 取名字第一个 "(" 到最后一个 ")" 之间的内容 (去首尾空白). 无括号 → nil.
+    static func parenContent(_ name: String) -> String? {
+        guard let o = name.firstIndex(of: "("), let c = name.lastIndex(of: ")"),
+              name.index(after: o) < c else { return nil }
+        return String(name[name.index(after: o)..<c]).trimmingCharacters(in: .whitespaces)
+    }
+
+    /// 括号内容去掉器械词 (Machine / Cable / Smith …) + 清理逗号空白 — 得到"执行方式"短标签.
+    /// "Machine, Single-Leg" → "Single-Leg"; "Double Waves" → "Double Waves" (无器械词原样保留).
+    static func parenDetail(of exercise: Exercise) -> String? {
+        guard let p = parenContent(exercise.name) else { return nil }
+        var s = stripEquipmentWords(p)              // 删器械词 (全删空会回退原串)
+        s = s.replacingOccurrences(of: " +", with: " ", options: .regularExpression)
+        s = s.trimmingCharacters(in: CharacterSet(charactersIn: " ,"))
+        return s.isEmpty ? p : s
     }
 
     /// 器械前缀删除后的基础名 (不删运动修饰词) — 用于判断"某动作是否有无修饰词的同名变种".
