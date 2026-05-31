@@ -204,9 +204,10 @@ struct TodayScreen: View {
     private func entryCard(icon: String, title: LocalizedStringKey, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             VStack(alignment: .leading, spacing: 10) {
+                // 图标弱化 — 从 accent 绿 + heavy 改成 textDim 灰 + medium, 不抢眼 (这俩是次级入口).
                 Image(systemName: icon)
-                    .font(.system(size: 18, weight: .heavy))
-                    .foregroundStyle(MasoColor.accent)
+                    .font(.system(size: 18, weight: .medium))
+                    .foregroundStyle(MasoColor.textDim)
                 // 标题行带向右 chevron — 提示可点进 (跟 PlanRow 的 chevron 同款样式).
                 HStack(spacing: 6) {
                     Text(title)
