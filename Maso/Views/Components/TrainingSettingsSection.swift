@@ -64,7 +64,7 @@ struct TrainingSettingsSection: View {
             Divider().background(MasoColor.borderSoft)
 
             // ─── 3. Exercises per plan ───
-            // 推荐 plan 每张多少动作. 1-6 上限 — 模板就 6 step, cap 到这个数. 用户改后重新 regen
+            // 推荐 plan 每张多少动作. 1-8 上限 — 模板现在 8 step, cap 到这个数. 用户改后重新 regen
             // → tunedRecommendedPlans 用 prefix(cap) 把每张推荐计划裁到这个动作数.
             Row(label: "Exercises per plan") {
                 IntStepperContent(
@@ -75,7 +75,7 @@ struct TrainingSettingsSection: View {
                             data.regenerateRecommendedPlans()
                         }
                     ),
-                    range: 1...6
+                    range: 1...8
                 )
             }
             Divider().background(MasoColor.borderSoft)

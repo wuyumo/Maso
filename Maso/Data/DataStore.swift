@@ -134,6 +134,12 @@ final class DataStore {
             )
             store.aiTodayPlan = snapshot.aiTodayPlan
             store.lastAIRefreshAt = snapshot.lastAIRefreshAt
+            // 一次性迁移 (v1 → v2): 旧 snapshot 的推荐计划是用旧模板生成的 (含已失效的动作
+            // ID → 静默丢步, 且只有 6 个动作). 检到旧版本就重新生成一次推荐计划, 拿到修好的 +
+            // 8 动作模板. 自建计划 (非 plan- 前缀) / 历史 / 设置都不动. 存盘后 version=2, 不再重跑.
+            if snapshot.version < PersistenceController.schemaVersion {
+                store.regenerateRecommendedPlans()
+            }
             return store
         }
         // 第一次启动 → 走 mock, 立即落盘 (flush, 不 debounce) 保证文件马上存在
@@ -264,7 +270,7 @@ final class DataStore {
         now: Date
     ) -> [Plan] {
         let raw = RecommendedPrograms.plans(forDays: days, now: now, byId: exById)
-        let cap = max(1, min(6, settings.exercisesPerSession))
+        let cap = max(1, min(8, settings.exercisesPerSession))  // 模板现在 8 个动作, 上限 8
         let floorSets = max(1, settings.defaultSetsPerExercise)
         let goal = settings.trainingGoal
         // wantStrengthen 折叠到大肌群 section — 给"cap 时优先保留聚焦肌群动作"打分用.
