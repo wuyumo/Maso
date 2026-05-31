@@ -129,33 +129,32 @@ struct GroupedExerciseRow<Trailing: View>: View {
         let isFav = data.isFavorite(ex.id)
         Button(action: onTap) {
             HStack(spacing: 14) {
-                if isVariant {
-                    // 缩进竖线 — 器械变种中性灰; 执行方式变种 accent, 更显眼.
-                    let isModVar = group.isModifierVariant(ex)
-                    Rectangle()
-                        .fill(isModVar ? MasoColor.accent.opacity(0.6) : MasoColor.textFaint.opacity(0.35))
-                        .frame(width: 2)
-                        .padding(.leading, 8)
-                }
-                // 左侧视觉 — 点它查看详情 (任何模式都能看).
+                // 左侧视觉 — 真实动作图 (变种用小尺寸). 缩进靠 listRowInsets, 不再用竖线.
                 Button(action: onTapImage) {
                     leadingVisual(ex)
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel(String(format: NSLocalizedString("Show details for %@", comment: "exercise detail a11y"), ex.displayName))
 
-                VStack(alignment: .leading, spacing: 5) {
-                    Text(Self.rowTitle(for: ex, isVariant: isVariant, group: group))
-                        .font(.system(size: isVariant ? 13 : 15, weight: .bold))
-                        .foregroundStyle(MasoColor.text)
-                        .lineLimit(1)
-                    if !isVariant {
-                        ExerciseTagsRow(muscleGroups: ex.muscleGroups, equipment: ex.equipment, muscleLimit: 1)
-                    } else if let eqName = ex.equipmentDisplayName {
-                        Text(eqName)
-                            .font(.system(size: 11))
-                            .foregroundStyle(MasoColor.textDim)
+                VStack(alignment: .leading, spacing: isVariant ? 3 : 5) {
+                    if isVariant {
+                        // 变种: 主文案 = 具体差异 (器械名 / 执行方式), 下方 = 分类标签 (彩色, 区分两类).
+                        let diff = variantDiff(ex)
+                        Text(diff.text)
+                            .font(.system(size: 13, weight: .bold))
+                            .foregroundStyle(MasoColor.text)
                             .lineLimit(1)
+                        Text(diff.category)
+                            .font(.system(size: 10, weight: .heavy))
+                            .tracking(0.6)
+                            .textCase(.uppercase)
+                            .foregroundStyle(diff.color)
+                    } else {
+                        Text(ex.displayName)
+                            .font(.system(size: 15, weight: .bold))
+                            .foregroundStyle(MasoColor.text)
+                            .lineLimit(1)
+                        ExerciseTagsRow(muscleGroups: ex.muscleGroups, equipment: ex.equipment, muscleLimit: 1)
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -208,75 +207,35 @@ struct GroupedExerciseRow<Trailing: View>: View {
 
     @ViewBuilder
     private func leadingVisual(_ ex: Exercise) -> some View {
-        if isVariant {
-            if let mod = group.modifierLabel(for: ex) {
-                // 执行方式变种 — 修饰词胶囊 (accent 底), 跟器械图标尺寸一致 (36×36).
-                Text(mod)
-                    .font(.system(size: 9, weight: .heavy))
-                    .lineLimit(2)
-                    .multilineTextAlignment(.center)
-                    .foregroundStyle(MasoColor.accent)
-                    .padding(.horizontal, 4)
-                    .frame(width: 36, height: 36)
-                    .background(MasoColor.accent.opacity(0.14))
-                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(MasoColor.accent.opacity(0.35), lineWidth: 0.5))
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
-            } else {
-                // 纯器械变种 — SF Symbol (中性灰底).
-                Image(systemName: Self.variantSymbol(for: ex))
-                    .font(.system(size: 16, weight: .heavy))
-                    .foregroundStyle(MasoColor.textDim)
-                    .frame(width: 36, height: 36)
-                    .background(MasoColor.surfaceHi)
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
+        // canonical + variant 都用真实动作图; 变种用小尺寸 (40) 体现层级 (不再用文字胶囊 / SF 图标).
+        ExerciseImage(
+            category: ex.category,
+            imageFolder: ex.imageFolder,
+            customImageData: ex.customImageData,
+            cornerRadius: 8,
+            size: isVariant ? 40 : 56,
+            animated: false
+        )
+    }
+
+    /// 变种的"差异"描述 — 明确分两类: 器械差异 / 动作差异 (执行方式).
+    /// 返回 (主文案=具体差异, 分类标签, 分类色). accent=动作差异, 中性灰=器械差异.
+    private func variantDiff(_ ex: Exercise) -> (text: String, category: String, color: Color) {
+        if group.isModifierVariant(ex) {
+            // 动作差异 (Seated / Single-Arm / Close-Grip …); 若同时带器械, 附在后面.
+            let mod = group.modifierLabel(for: ex) ?? ex.displayName
+            if let eq = ex.equipmentDisplayName, !eq.isEmpty {
+                return ("\(mod) · \(eq)", NSLocalizedString("Variation", comment: "movement/form variant category"), MasoColor.accent)
             }
-        } else {
-            ExerciseImage(
-                category: ex.category,
-                imageFolder: ex.imageFolder,
-                customImageData: ex.customImageData,
-                cornerRadius: 8,
-                size: 56,
-                animated: false
-            )
+            return (mod, NSLocalizedString("Variation", comment: "movement/form variant category"), MasoColor.accent)
         }
-    }
-
-    /// 行标题: canonical 显全名; variant 显"差异"部分 (括号内 / 全名).
-    static func rowTitle(for ex: Exercise, isVariant: Bool, group: ExerciseGroup) -> String {
-        guard isVariant else { return ex.displayName }
+        // 器械差异 (Dumbbell / Machine / Cable …) — 优先括号内全文, 退器械名.
         let raw = ex.displayName
-        // 执行方式变种: 修饰词已在左侧胶囊 → 标题显括号内器械 (若有), 否则全名.
-        // 纯器械变种: 只显括号内内容.
-        if let openParen = raw.firstIndex(of: "("),
-           let closeParen = raw.lastIndex(of: ")") {
-            let after = raw.index(after: openParen)
-            if after < closeParen { return String(raw[after..<closeParen]) }
+        var diff = ex.equipmentDisplayName ?? ""
+        if let o = raw.firstIndex(of: "("), let c = raw.lastIndex(of: ")"), raw.index(after: o) < c {
+            diff = String(raw[raw.index(after: o)..<c])
         }
-        return raw
-    }
-
-    /// 变种行小图标 — 按 equipment 选 SF Symbol, 无器械 fallback dumbbell.
-    static func variantSymbol(for ex: Exercise) -> String {
-        switch ex.equipment {
-        case "barbell", "dumbbell", "kettlebell", "ez_bar", "ez_curl_bar":
-            return "dumbbell.fill"
-        case "machine", "smith_machine", "leg_press_machine", "calf_raise_machine",
-             "lat_pulldown_machine", "hip_thrust_machine", "back_extension_machine":
-            return "gearshape.fill"
-        case "cable":            return "cable.connector"
-        case "body_only":        return "figure.strengthtraining.traditional"
-        case "pull_up_bar":      return "figure.gymnastics"
-        case "bench_flat", "bench_incline", "bench_decline": return "bed.double.fill"
-        case "resistance_band", "band": return "alternatingcurrent"
-        case "trx", "rings", "gymnastic_rings": return "figure.gymnastics"
-        case "plyo_box":         return "square.stack.3d.up.fill"
-        case "medicine_ball", "exercise_ball": return "circle.fill"
-        case "foam_roller":      return "cylinder.fill"
-        case "jump_rope":        return "figure.jumprope"
-        case "treadmill", "stationary_bike", "rowing_machine", "elliptical":
-            return "figure.run"
-        default:                 return "dumbbell.fill"
-        }
+        if diff.isEmpty { diff = raw }
+        return (diff, NSLocalizedString("Equipment", comment: "equipment variant category"), MasoColor.textDim)
     }
 }
