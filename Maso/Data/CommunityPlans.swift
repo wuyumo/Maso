@@ -98,22 +98,22 @@ enum CommunityPlans {
             CommunitySession(
                 nameKey: "community_session_full_body_a",
                 steps: [
-                    CommunityStep("Barbell_Squat",                              sets: 3, reps: 8,  weight: 40, rest: 120),
-                    CommunityStep("Barbell_Bench_Press_-_Medium_Grip",          sets: 3, reps: 8,  weight: 40, rest: 120),
-                    CommunityStep("Bent_Over_Barbell_Row",                      sets: 3, reps: 8,  weight: 40, rest: 90),
-                    CommunityStep("Standing_Military_Press",                    sets: 3, reps: 10, weight: 30, rest: 90),
-                    CommunityStep("Dumbbell_Bicep_Curl",                        sets: 2, reps: 12, weight: 8,  rest: 60),
+                    CommunityStep("squat_barbell",                              sets: 3, reps: 8,  weight: 40, rest: 120),
+                    CommunityStep("bench_press_barbell",          sets: 3, reps: 8,  weight: 40, rest: 120),
+                    CommunityStep("barbell_row",                      sets: 3, reps: 8,  weight: 40, rest: 90),
+                    CommunityStep("overhead_press_barbell",                    sets: 3, reps: 10, weight: 30, rest: 90),
+                    CommunityStep("bicep_curl_dumbbell",                        sets: 2, reps: 12, weight: 8,  rest: 60),
                     CommunityStep(timed: "Plank",                               sets: 3, duration: 30, rest: 45),
                 ]
             ),
             CommunitySession(
                 nameKey: "community_session_full_body_b",
                 steps: [
-                    CommunityStep("Romanian_Deadlift",                          sets: 3, reps: 8,  weight: 50, rest: 120),
-                    CommunityStep("Dumbbell_Bench_Press",                       sets: 3, reps: 10, weight: 18, rest: 90),
-                    CommunityStep("Wide-Grip_Lat_Pulldown",                     sets: 3, reps: 10, weight: 35, rest: 90),
-                    CommunityStep("Seated_Dumbbell_Press",                      sets: 3, reps: 10, weight: 12, rest: 90),
-                    CommunityStep("Triceps_Pushdown",                           sets: 2, reps: 12, weight: 20, rest: 60),
+                    CommunityStep("rdl_barbell",                          sets: 3, reps: 8,  weight: 50, rest: 120),
+                    CommunityStep("bench_press_dumbbell",                       sets: 3, reps: 10, weight: 18, rest: 90),
+                    CommunityStep("lat_pulldown",                     sets: 3, reps: 10, weight: 35, rest: 90),
+                    CommunityStep("overhead_press_dumbbell_seated",                      sets: 3, reps: 10, weight: 12, rest: 90),
+                    CommunityStep("triceps_pushdown_rope",                           sets: 2, reps: 12, weight: 20, rest: 60),
                     CommunityStep(timed: "Plank",                               sets: 3, duration: 30, rest: 45),
                 ]
             ),
@@ -133,17 +133,17 @@ enum CommunityPlans {
             CommunitySession(
                 nameKey: "community_session_strength_a",
                 steps: [
-                    CommunityStep("Barbell_Squat",                              sets: 5, reps: 5, weight: 80,  rest: 180),
-                    CommunityStep("Barbell_Bench_Press_-_Medium_Grip",          sets: 5, reps: 5, weight: 60,  rest: 180),
-                    CommunityStep("Bent_Over_Barbell_Row",                      sets: 5, reps: 5, weight: 55,  rest: 180),
+                    CommunityStep("squat_barbell",                              sets: 5, reps: 5, weight: 80,  rest: 180),
+                    CommunityStep("bench_press_barbell",          sets: 5, reps: 5, weight: 60,  rest: 180),
+                    CommunityStep("barbell_row",                      sets: 5, reps: 5, weight: 55,  rest: 180),
                 ]
             ),
             CommunitySession(
                 nameKey: "community_session_strength_b",
                 steps: [
-                    CommunityStep("Barbell_Squat",                              sets: 5, reps: 5, weight: 70,  rest: 180),
-                    CommunityStep("Standing_Military_Press",                    sets: 5, reps: 5, weight: 40,  rest: 180),
-                    CommunityStep("Barbell_Deadlift",                           sets: 3, reps: 5, weight: 100, rest: 240),
+                    CommunityStep("squat_barbell",                              sets: 5, reps: 5, weight: 70,  rest: 180),
+                    CommunityStep("overhead_press_barbell",                    sets: 5, reps: 5, weight: 40,  rest: 180),
+                    CommunityStep("deadlift",                           sets: 3, reps: 5, weight: 100, rest: 240),
                 ]
             ),
         ]
@@ -162,33 +162,33 @@ enum CommunityPlans {
             CommunitySession(
                 nameKey: "community_session_push_heavy",
                 steps: [
-                    CommunityStep("Barbell_Bench_Press_-_Medium_Grip",          sets: 4, reps: 6,  weight: 60, rest: 150),
-                    CommunityStep("Incline_Dumbbell_Press",                     sets: 3, reps: 10, weight: 22, rest: 90),
-                    CommunityStep("Standing_Military_Press",                    sets: 3, reps: 8,  weight: 40, rest: 120),
-                    CommunityStep("Side_Lateral_Raise",                         sets: 3, reps: 12, weight: 8,  rest: 60),
-                    CommunityStep("Close-Grip_Barbell_Bench_Press",             sets: 3, reps: 8,  weight: 50, rest: 90),
-                    CommunityStep("Triceps_Pushdown",                           sets: 3, reps: 12, weight: 25, rest: 60),
+                    CommunityStep("bench_press_barbell",          sets: 4, reps: 6,  weight: 60, rest: 150),
+                    CommunityStep("incline_bench_press_dumbbell",                     sets: 3, reps: 10, weight: 22, rest: 90),
+                    CommunityStep("overhead_press_barbell",                    sets: 3, reps: 8,  weight: 40, rest: 120),
+                    CommunityStep("lateral_raise_dumbbell",                         sets: 3, reps: 12, weight: 8,  rest: 60),
+                    CommunityStep("bench_press_close_grip",             sets: 3, reps: 8,  weight: 50, rest: 90),
+                    CommunityStep("triceps_pushdown_rope",                           sets: 3, reps: 12, weight: 25, rest: 60),
                 ]
             ),
             CommunitySession(
                 nameKey: "community_session_pull_heavy",
                 steps: [
-                    CommunityStep("Barbell_Deadlift",                           sets: 4, reps: 5,  weight: 100, rest: 180),
-                    CommunityStep("Pullups",                                    sets: 4, reps: 8,  weight: 0,   rest: 120),
-                    CommunityStep("Bent_Over_Barbell_Row",                      sets: 3, reps: 8,  weight: 50,  rest: 90),
-                    CommunityStep("Face_Pull",                                  sets: 3, reps: 12, weight: 15,  rest: 60),
-                    CommunityStep("Barbell_Curl",                               sets: 3, reps: 10, weight: 25,  rest: 60),
-                    CommunityStep("Cross_Body_Hammer_Curl",                     sets: 3, reps: 10, weight: 10,  rest: 60),
+                    CommunityStep("deadlift",                           sets: 4, reps: 5,  weight: 100, rest: 180),
+                    CommunityStep("pull_up",                                    sets: 4, reps: 8,  weight: 0,   rest: 120),
+                    CommunityStep("barbell_row",                      sets: 3, reps: 8,  weight: 50,  rest: 90),
+                    CommunityStep("face_pull",                                  sets: 3, reps: 12, weight: 15,  rest: 60),
+                    CommunityStep("bicep_curl_barbell",                               sets: 3, reps: 10, weight: 25,  rest: 60),
+                    CommunityStep("cross_body_hammer_curl",                     sets: 3, reps: 10, weight: 10,  rest: 60),
                 ]
             ),
             CommunitySession(
                 nameKey: "community_session_legs_quads",
                 steps: [
-                    CommunityStep("Barbell_Squat",                              sets: 4, reps: 6,  weight: 85,  rest: 150),
-                    CommunityStep("Leg_Press",                                  sets: 3, reps: 10, weight: 120, rest: 90),
-                    CommunityStep("Dumbbell_Lunges",                            sets: 3, reps: 10, weight: 16,  rest: 90),
-                    CommunityStep("Leg_Extensions",                             sets: 3, reps: 12, weight: 40,  rest: 75),
-                    CommunityStep("Standing_Calf_Raises",                       sets: 4, reps: 12, weight: 60,  rest: 60),
+                    CommunityStep("squat_barbell",                              sets: 4, reps: 6,  weight: 85,  rest: 150),
+                    CommunityStep("leg_press_45",                                  sets: 3, reps: 10, weight: 120, rest: 90),
+                    CommunityStep("lunge_dumbbell_alternating",                            sets: 3, reps: 10, weight: 16,  rest: 90),
+                    CommunityStep("leg_extension_machine",                             sets: 3, reps: 12, weight: 40,  rest: 75),
+                    CommunityStep("calf_raise_standing",                       sets: 4, reps: 12, weight: 60,  rest: 60),
                 ]
             ),
         ]
@@ -207,22 +207,22 @@ enum CommunityPlans {
             CommunitySession(
                 nameKey: "community_session_upper",
                 steps: [
-                    CommunityStep("Barbell_Bench_Press_-_Medium_Grip",          sets: 4, reps: 6,  weight: 55, rest: 150),
-                    CommunityStep("Bent_Over_Barbell_Row",                      sets: 4, reps: 8,  weight: 50, rest: 120),
-                    CommunityStep("Seated_Dumbbell_Press",                      sets: 3, reps: 10, weight: 16, rest: 90),
-                    CommunityStep("Wide-Grip_Lat_Pulldown",                     sets: 3, reps: 10, weight: 45, rest: 90),
-                    CommunityStep("Dumbbell_Bicep_Curl",                        sets: 3, reps: 10, weight: 12, rest: 60),
-                    CommunityStep("Triceps_Pushdown",                           sets: 3, reps: 12, weight: 25, rest: 60),
+                    CommunityStep("bench_press_barbell",          sets: 4, reps: 6,  weight: 55, rest: 150),
+                    CommunityStep("barbell_row",                      sets: 4, reps: 8,  weight: 50, rest: 120),
+                    CommunityStep("overhead_press_dumbbell_seated",                      sets: 3, reps: 10, weight: 16, rest: 90),
+                    CommunityStep("lat_pulldown",                     sets: 3, reps: 10, weight: 45, rest: 90),
+                    CommunityStep("bicep_curl_dumbbell",                        sets: 3, reps: 10, weight: 12, rest: 60),
+                    CommunityStep("triceps_pushdown_rope",                           sets: 3, reps: 12, weight: 25, rest: 60),
                 ]
             ),
             CommunitySession(
                 nameKey: "community_session_lower",
                 steps: [
-                    CommunityStep("Barbell_Squat",                              sets: 4, reps: 6,  weight: 80, rest: 150),
-                    CommunityStep("Romanian_Deadlift",                          sets: 3, reps: 8,  weight: 70, rest: 120),
-                    CommunityStep("Leg_Press",                                  sets: 3, reps: 10, weight: 120, rest: 90),
-                    CommunityStep("Lying_Leg_Curls",                            sets: 3, reps: 12, weight: 30, rest: 75),
-                    CommunityStep("Standing_Calf_Raises",                       sets: 4, reps: 15, weight: 50, rest: 60),
+                    CommunityStep("squat_barbell",                              sets: 4, reps: 6,  weight: 80, rest: 150),
+                    CommunityStep("rdl_barbell",                          sets: 3, reps: 8,  weight: 70, rest: 120),
+                    CommunityStep("leg_press_45",                                  sets: 3, reps: 10, weight: 120, rest: 90),
+                    CommunityStep("leg_curl_lying",                            sets: 3, reps: 12, weight: 30, rest: 75),
+                    CommunityStep("calf_raise_standing",                       sets: 4, reps: 15, weight: 50, rest: 60),
                     CommunityStep(timed: "Plank",                               sets: 3, duration: 45, rest: 45),
                 ]
             ),
@@ -242,52 +242,52 @@ enum CommunityPlans {
             CommunitySession(
                 nameKey: "community_session_chest_day",
                 steps: [
-                    CommunityStep("Barbell_Bench_Press_-_Medium_Grip",          sets: 4, reps: 6,  weight: 60, rest: 150),
-                    CommunityStep("Barbell_Incline_Bench_Press_-_Medium_Grip",  sets: 3, reps: 8,  weight: 45, rest: 120),
-                    CommunityStep("Dumbbell_Bench_Press",                       sets: 3, reps: 10, weight: 24, rest: 90),
-                    CommunityStep("Flat_Bench_Cable_Flyes",                     sets: 3, reps: 12, weight: 40, rest: 60),
-                    CommunityStep("Decline_Barbell_Bench_Press",                sets: 3, reps: 10, weight: 50, rest: 90),
+                    CommunityStep("bench_press_barbell",          sets: 4, reps: 6,  weight: 60, rest: 150),
+                    CommunityStep("incline_bench_press_barbell",  sets: 3, reps: 8,  weight: 45, rest: 120),
+                    CommunityStep("bench_press_dumbbell",                       sets: 3, reps: 10, weight: 24, rest: 90),
+                    CommunityStep("cable_fly_flat",                     sets: 3, reps: 12, weight: 40, rest: 60),
+                    CommunityStep("decline_bench_press_barbell",                sets: 3, reps: 10, weight: 50, rest: 90),
                 ]
             ),
             CommunitySession(
                 nameKey: "community_session_back_day",
                 steps: [
-                    CommunityStep("Pullups",                                    sets: 4, reps: 8,  weight: 0,  rest: 120),
-                    CommunityStep("Bent_Over_Barbell_Row",                      sets: 4, reps: 8,  weight: 55, rest: 120),
-                    CommunityStep("Wide-Grip_Lat_Pulldown",                     sets: 3, reps: 10, weight: 45, rest: 90),
-                    CommunityStep("Seated_Cable_Rows",                          sets: 3, reps: 10, weight: 50, rest: 90),
-                    CommunityStep("Barbell_Shrug",                              sets: 3, reps: 12, weight: 40, rest: 60),
+                    CommunityStep("pull_up",                                    sets: 4, reps: 8,  weight: 0,  rest: 120),
+                    CommunityStep("barbell_row",                      sets: 4, reps: 8,  weight: 55, rest: 120),
+                    CommunityStep("lat_pulldown",                     sets: 3, reps: 10, weight: 45, rest: 90),
+                    CommunityStep("cable_row_seated",                          sets: 3, reps: 10, weight: 50, rest: 90),
+                    CommunityStep("shrug_barbell",                              sets: 3, reps: 12, weight: 40, rest: 60),
                 ]
             ),
             CommunitySession(
                 nameKey: "community_session_leg_day",
                 steps: [
-                    CommunityStep("Barbell_Squat",                              sets: 4, reps: 6,  weight: 85, rest: 150),
-                    CommunityStep("Romanian_Deadlift",                          sets: 3, reps: 8,  weight: 70, rest: 120),
-                    CommunityStep("Leg_Press",                                  sets: 3, reps: 10, weight: 120, rest: 90),
-                    CommunityStep("Lying_Leg_Curls",                            sets: 3, reps: 12, weight: 30, rest: 75),
-                    CommunityStep("Standing_Calf_Raises",                       sets: 4, reps: 15, weight: 50, rest: 60),
+                    CommunityStep("squat_barbell",                              sets: 4, reps: 6,  weight: 85, rest: 150),
+                    CommunityStep("rdl_barbell",                          sets: 3, reps: 8,  weight: 70, rest: 120),
+                    CommunityStep("leg_press_45",                                  sets: 3, reps: 10, weight: 120, rest: 90),
+                    CommunityStep("leg_curl_lying",                            sets: 3, reps: 12, weight: 30, rest: 75),
+                    CommunityStep("calf_raise_standing",                       sets: 4, reps: 15, weight: 50, rest: 60),
                 ]
             ),
             CommunitySession(
                 nameKey: "community_session_shoulder_day",
                 steps: [
-                    CommunityStep("Standing_Military_Press",                    sets: 4, reps: 8,  weight: 40, rest: 120),
-                    CommunityStep("Arnold_Dumbbell_Press",                      sets: 3, reps: 10, weight: 14, rest: 90),
-                    CommunityStep("Side_Lateral_Raise",                         sets: 4, reps: 12, weight: 8,  rest: 60),
-                    CommunityStep("Front_Dumbbell_Raise",                       sets: 3, reps: 12, weight: 8,  rest: 60),
-                    CommunityStep("Face_Pull",                                  sets: 3, reps: 12, weight: 15, rest: 60),
+                    CommunityStep("overhead_press_barbell",                    sets: 4, reps: 8,  weight: 40, rest: 120),
+                    CommunityStep("arnold_press",                      sets: 3, reps: 10, weight: 14, rest: 90),
+                    CommunityStep("lateral_raise_dumbbell",                         sets: 4, reps: 12, weight: 8,  rest: 60),
+                    CommunityStep("front_raise_dumbbell",                       sets: 3, reps: 12, weight: 8,  rest: 60),
+                    CommunityStep("face_pull",                                  sets: 3, reps: 12, weight: 15, rest: 60),
                 ]
             ),
             CommunitySession(
                 nameKey: "community_session_arm_day",
                 steps: [
-                    CommunityStep("Barbell_Curl",                               sets: 3, reps: 10, weight: 25, rest: 60),
-                    CommunityStep("Preacher_Curl",                              sets: 3, reps: 10, weight: 20, rest: 75),
-                    CommunityStep("Cross_Body_Hammer_Curl",                     sets: 3, reps: 10, weight: 10, rest: 60),
-                    CommunityStep("Close-Grip_Barbell_Bench_Press",             sets: 3, reps: 8,  weight: 50, rest: 90),
-                    CommunityStep("Triceps_Pushdown",                           sets: 3, reps: 12, weight: 25, rest: 60),
-                    CommunityStep("Seated_Triceps_Press",                       sets: 3, reps: 10, weight: 16, rest: 75),
+                    CommunityStep("bicep_curl_barbell",                               sets: 3, reps: 10, weight: 25, rest: 60),
+                    CommunityStep("preacher_curl",                              sets: 3, reps: 10, weight: 20, rest: 75),
+                    CommunityStep("cross_body_hammer_curl",                     sets: 3, reps: 10, weight: 10, rest: 60),
+                    CommunityStep("bench_press_close_grip",             sets: 3, reps: 8,  weight: 50, rest: 90),
+                    CommunityStep("triceps_pushdown_rope",                           sets: 3, reps: 12, weight: 25, rest: 60),
+                    CommunityStep("overhead_extension_cable_rope",                       sets: 3, reps: 10, weight: 16, rest: 75),
                 ]
             ),
         ]
@@ -306,28 +306,28 @@ enum CommunityPlans {
             CommunitySession(
                 nameKey: "community_session_push_day",
                 steps: [
-                    CommunityStep("Pushups",                                    sets: 4, reps: 10, weight: 0, rest: 60),
-                    CommunityStep("Dips_-_Triceps_Version",                     sets: 3, reps: 8,  weight: 0, rest: 90),
-                    CommunityStep("Pushups_Close_and_Wide_Hand_Positions",      sets: 3, reps: 8,  weight: 0, rest: 60),
+                    CommunityStep("push_up",                                    sets: 4, reps: 10, weight: 0, rest: 60),
+                    CommunityStep("dip_parallel_bar_triceps",                     sets: 3, reps: 8,  weight: 0, rest: 90),
+                    CommunityStep("push_up",      sets: 3, reps: 8,  weight: 0, rest: 60),
                     CommunityStep(timed: "Plank",                               sets: 3, duration: 45, rest: 45),
                 ]
             ),
             CommunitySession(
                 nameKey: "community_session_pull_day",
                 steps: [
-                    CommunityStep("Pullups",                                    sets: 4, reps: 6,  weight: 0, rest: 90),
-                    CommunityStep("Chin-Up",                                    sets: 3, reps: 6,  weight: 0, rest: 90),
-                    CommunityStep("Inverted_Row",                               sets: 3, reps: 10, weight: 0, rest: 75),
-                    CommunityStep("Hanging_Leg_Raise",                          sets: 3, reps: 8,  weight: 0, rest: 60),
+                    CommunityStep("pull_up",                                    sets: 4, reps: 6,  weight: 0, rest: 90),
+                    CommunityStep("pull_up_narrow_grip",                                    sets: 3, reps: 6,  weight: 0, rest: 90),
+                    CommunityStep("inverted_row",                               sets: 3, reps: 10, weight: 0, rest: 75),
+                    CommunityStep("leg_raise_hanging",                          sets: 3, reps: 8,  weight: 0, rest: 60),
                 ]
             ),
             CommunitySession(
                 nameKey: "community_session_legs_core_day",
                 steps: [
-                    CommunityStep("Bodyweight_Squat",                           sets: 4, reps: 20, weight: 0, rest: 60),
-                    CommunityStep("Dumbbell_Lunges",                            sets: 3, reps: 12, weight: 0, rest: 75),
-                    CommunityStep("Standing_Calf_Raises",                       sets: 3, reps: 20, weight: 0, rest: 45),
-                    CommunityStep("Russian_Twist",                              sets: 3, reps: 20, weight: 0, rest: 45),
+                    CommunityStep("squat_bodyweight",                           sets: 4, reps: 20, weight: 0, rest: 60),
+                    CommunityStep("lunge_dumbbell_alternating",                            sets: 3, reps: 12, weight: 0, rest: 75),
+                    CommunityStep("calf_raise_standing",                       sets: 3, reps: 20, weight: 0, rest: 45),
+                    CommunityStep("russian_twist",                              sets: 3, reps: 20, weight: 0, rest: 45),
                     CommunityStep(timed: "Plank",                               sets: 3, duration: 60, rest: 45),
                 ]
             ),
@@ -347,36 +347,36 @@ enum CommunityPlans {
             CommunitySession(
                 nameKey: "community_session_squat_day",
                 steps: [
-                    CommunityStep("Barbell_Squat",                              sets: 5, reps: 3, weight: 100, rest: 240),
-                    CommunityStep("Romanian_Deadlift",                          sets: 3, reps: 6, weight: 80,  rest: 150),
-                    CommunityStep("Leg_Press",                                  sets: 3, reps: 8, weight: 140, rest: 90),
-                    CommunityStep("Standing_Calf_Raises",                       sets: 4, reps: 10, weight: 60, rest: 60),
+                    CommunityStep("squat_barbell",                              sets: 5, reps: 3, weight: 100, rest: 240),
+                    CommunityStep("rdl_barbell",                          sets: 3, reps: 6, weight: 80,  rest: 150),
+                    CommunityStep("leg_press_45",                                  sets: 3, reps: 8, weight: 140, rest: 90),
+                    CommunityStep("calf_raise_standing",                       sets: 4, reps: 10, weight: 60, rest: 60),
                 ]
             ),
             CommunitySession(
                 nameKey: "community_session_bench_day",
                 steps: [
-                    CommunityStep("Barbell_Bench_Press_-_Medium_Grip",          sets: 5, reps: 3, weight: 80,  rest: 240),
-                    CommunityStep("Close-Grip_Barbell_Bench_Press",             sets: 3, reps: 6, weight: 65,  rest: 150),
-                    CommunityStep("Standing_Military_Press",                    sets: 3, reps: 6, weight: 45,  rest: 120),
-                    CommunityStep("Triceps_Pushdown",                           sets: 3, reps: 10, weight: 30, rest: 60),
+                    CommunityStep("bench_press_barbell",          sets: 5, reps: 3, weight: 80,  rest: 240),
+                    CommunityStep("bench_press_close_grip",             sets: 3, reps: 6, weight: 65,  rest: 150),
+                    CommunityStep("overhead_press_barbell",                    sets: 3, reps: 6, weight: 45,  rest: 120),
+                    CommunityStep("triceps_pushdown_rope",                           sets: 3, reps: 10, weight: 30, rest: 60),
                 ]
             ),
             CommunitySession(
                 nameKey: "community_session_deadlift_day",
                 steps: [
-                    CommunityStep("Barbell_Deadlift",                           sets: 5, reps: 3, weight: 120, rest: 240),
-                    CommunityStep("Bent_Over_Barbell_Row",                      sets: 4, reps: 6, weight: 60,  rest: 120),
-                    CommunityStep("Pullups",                                    sets: 4, reps: 6, weight: 0,   rest: 90),
-                    CommunityStep("Barbell_Shrug",                              sets: 3, reps: 10, weight: 50, rest: 60),
+                    CommunityStep("deadlift",                           sets: 5, reps: 3, weight: 120, rest: 240),
+                    CommunityStep("barbell_row",                      sets: 4, reps: 6, weight: 60,  rest: 120),
+                    CommunityStep("pull_up",                                    sets: 4, reps: 6, weight: 0,   rest: 90),
+                    CommunityStep("shrug_barbell",                              sets: 3, reps: 10, weight: 50, rest: 60),
                 ]
             ),
             CommunitySession(
                 nameKey: "community_session_accessory_day",
                 steps: [
-                    CommunityStep("Barbell_Squat",                              sets: 4, reps: 5, weight: 70,  rest: 150),
-                    CommunityStep("Barbell_Bench_Press_-_Medium_Grip",          sets: 4, reps: 5, weight: 55,  rest: 150),
-                    CommunityStep("Barbell_Curl",                               sets: 3, reps: 10, weight: 25, rest: 60),
+                    CommunityStep("squat_barbell",                              sets: 4, reps: 5, weight: 70,  rest: 150),
+                    CommunityStep("bench_press_barbell",          sets: 4, reps: 5, weight: 55,  rest: 150),
+                    CommunityStep("bicep_curl_barbell",                               sets: 3, reps: 10, weight: 25, rest: 60),
                     CommunityStep(timed: "Plank",                               sets: 3, duration: 60, rest: 45),
                 ]
             ),
@@ -396,21 +396,21 @@ enum CommunityPlans {
             CommunitySession(
                 nameKey: "community_session_push_simple",
                 steps: [
-                    CommunityStep("Barbell_Bench_Press_-_Medium_Grip",          sets: 4, reps: 8,  weight: 55, rest: 120),
-                    CommunityStep("Barbell_Squat",                              sets: 4, reps: 8,  weight: 75, rest: 150),
-                    CommunityStep("Standing_Military_Press",                    sets: 3, reps: 10, weight: 35, rest: 90),
-                    CommunityStep("Dumbbell_Lunges",                            sets: 3, reps: 10, weight: 16, rest: 90),
-                    CommunityStep("Triceps_Pushdown",                           sets: 3, reps: 12, weight: 25, rest: 60),
+                    CommunityStep("bench_press_barbell",          sets: 4, reps: 8,  weight: 55, rest: 120),
+                    CommunityStep("squat_barbell",                              sets: 4, reps: 8,  weight: 75, rest: 150),
+                    CommunityStep("overhead_press_barbell",                    sets: 3, reps: 10, weight: 35, rest: 90),
+                    CommunityStep("lunge_dumbbell_alternating",                            sets: 3, reps: 10, weight: 16, rest: 90),
+                    CommunityStep("triceps_pushdown_rope",                           sets: 3, reps: 12, weight: 25, rest: 60),
                 ]
             ),
             CommunitySession(
                 nameKey: "community_session_pull_simple",
                 steps: [
-                    CommunityStep("Barbell_Deadlift",                           sets: 4, reps: 6,  weight: 90, rest: 180),
-                    CommunityStep("Pullups",                                    sets: 4, reps: 8,  weight: 0,  rest: 120),
-                    CommunityStep("Bent_Over_Barbell_Row",                      sets: 3, reps: 10, weight: 50, rest: 90),
-                    CommunityStep("Face_Pull",                                  sets: 3, reps: 12, weight: 15, rest: 60),
-                    CommunityStep("Barbell_Curl",                               sets: 3, reps: 10, weight: 25, rest: 60),
+                    CommunityStep("deadlift",                           sets: 4, reps: 6,  weight: 90, rest: 180),
+                    CommunityStep("pull_up",                                    sets: 4, reps: 8,  weight: 0,  rest: 120),
+                    CommunityStep("barbell_row",                      sets: 3, reps: 10, weight: 50, rest: 90),
+                    CommunityStep("face_pull",                                  sets: 3, reps: 12, weight: 15, rest: 60),
+                    CommunityStep("bicep_curl_barbell",                               sets: 3, reps: 10, weight: 25, rest: 60),
                 ]
             ),
         ]

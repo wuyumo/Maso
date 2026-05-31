@@ -646,35 +646,35 @@ private func sampleSets(now: Date, plans: [Plan], byId: [String: Exercise]) -> [
 
     // 1 天前 — 全身 A (上次刚做的)
     addSession(planId: "plan-fullA", daysAgo: 1, stepIds: [
-        ("Barbell_Incline_Bench_Press_-_Medium_Grip", 3, 45, 8),
-        ("Barbell_Squat",                              3, 80, 8),
-        ("Pullups",                                    3, 0,  8),
-        ("Side_Lateral_Raise",                         3, 8,  12),
-        ("Dumbbell_Bicep_Curl",                        3, 12, 10),
+        ("incline_bench_press_barbell", 3, 45, 8),
+        ("squat_barbell",                              3, 80, 8),
+        ("pull_up",                                    3, 0,  8),
+        ("lateral_raise_dumbbell",                         3, 8,  12),
+        ("bicep_curl_dumbbell",                        3, 12, 10),
     ])
 
     // 3 天前 — 全身 B
     addSession(planId: "plan-fullB", daysAgo: 3, stepIds: [
-        ("Dumbbell_Bench_Press",   3, 24, 10),
-        ("Romanian_Deadlift",      3, 70, 8),
-        ("Bent_Over_Barbell_Row",  3, 50, 10),
-        ("Seated_Dumbbell_Press",  3, 18, 8),
-        ("Triceps_Pushdown",       3, 25, 12),
+        ("bench_press_dumbbell",   3, 24, 10),
+        ("rdl_barbell",      3, 70, 8),
+        ("barbell_row",  3, 50, 10),
+        ("overhead_press_dumbbell_seated",  3, 18, 8),
+        ("triceps_pushdown_rope",       3, 25, 12),
     ])
 
     // 5 天前 — 自由组 (planId = nil)
     addSession(planId: nil, daysAgo: 5, stepIds: [
-        ("Dumbbell_Bicep_Curl",    4, 14, 8),
-        ("Triceps_Pushdown",       4, 28, 10),
+        ("bicep_curl_dumbbell",    4, 14, 8),
+        ("triceps_pushdown_rope",       4, 28, 10),
     ])
 
     // 7 天前 — 全身 C
     addSession(planId: "plan-fullC", daysAgo: 7, stepIds: [
-        ("Decline_Barbell_Bench_Press",  3, 55, 8),
-        ("Barbell_Hip_Thrust",           3, 80, 10),
-        ("Seated_Cable_Rows",            3, 50, 10),
-        ("Face_Pull",                    3, 15, 12),
-        ("Cross_Body_Hammer_Curl",       3, 10, 10),
+        ("decline_bench_press_barbell",  3, 55, 8),
+        ("hip_thrust_barbell",           3, 80, 10),
+        ("cable_row_seated",            3, 50, 10),
+        ("face_pull",                    3, 15, 12),
+        ("cross_body_hammer_curl",       3, 10, 10),
     ])
 
     // 按 performedAt 倒序返回 (最近的在最前面)
