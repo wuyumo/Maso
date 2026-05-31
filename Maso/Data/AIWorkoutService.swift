@@ -420,39 +420,74 @@ final class AIWorkoutService {
         )
     }
 
+    /// 几个 AI 常用但新库没有的叫法 → 映射到新库的等价名 (word-level, 安全).
+    private static let nameSynonyms: [String: String] = [
+        "bent over row": "barbell row",       // 新库无 "Bent-Over Row"
+        "shoulder press": "overhead press",   // 新库用 "Overhead Press"
+        "pec deck": "chest fly machine",
+    ]
+
     /// Fuzzy match 一个 "common name" 到 library 里的 Exercise.
-    /// 三段策略: 完全相等 → 子串包含 → token Jaccard.
+    /// 三段: 完全相等 → token 集合包含 → Jaccard.
+    ///
+    /// ⚠️ 新库动作名是 "Bicep Curl (Dumbbell)" / "Leg Press (45°)" 这种带括号变体, 旧的"子串包含"
+    /// 策略会乱配 (e.g. "Leg Press" → "Calf Raise (Leg Press)"). 改成 token 集合包含, 并优先
+    /// base 名 (括号前) 跟 query 相等的, 这样 "Leg Press" → "Leg Press (45°)".
     private func matchExercise(_ name: String, library: [Exercise]) -> Exercise? {
-        let norm = normalize(name)
-        // Exact
-        if let exact = library.first(where: { normalize($0.name) == norm }) { return exact }
-        // Contains (一方包另一方)
-        if let sub = library.first(where: {
-            let exN = normalize($0.name)
-            return exN.contains(norm) || norm.contains(exN)
-        }) { return sub }
-        // Jaccard
-        let qTok = Set(norm.split(separator: " ").map(String.init))
-        var best: Exercise? = nil
-        var bestScore = 0.0
-        for ex in library {
-            let exTok = Set(normalize(ex.name).split(separator: " ").map(String.init))
-            let inter = qTok.intersection(exTok).count
-            let uni = qTok.union(exTok).count
-            let score = uni == 0 ? 0 : Double(inter) / Double(uni)
-            if score > bestScore { bestScore = score; best = ex }
+        var norm = normalize(name)
+        for (k, v) in Self.nameSynonyms where norm.contains(k) {
+            norm = norm.replacingOccurrences(of: k, with: v)
         }
-        return bestScore > 0.35 ? best : nil
+        let q = tokenSet(norm)
+        // 1. 完全相等 (多个时取名字最短的 = 最 canonical)
+        let exacts = library.filter { normalize($0.name) == norm }
+        if !exacts.isEmpty { return exacts.min { $0.name.count < $1.name.count } }
+        // 2. token 集合包含 (q ⊆ et 或 et ⊆ q). 排序键: base==query 优先 → token 数差小 →
+        //    不带括号优先 → 名字短.
+        var best: Exercise? = nil
+        var bestKey = (2, Int.max, 9, Int.max)
+        for ex in library {
+            let et = tokenSet(normalize(ex.name))
+            guard q.isSubset(of: et) || et.isSubset(of: q) else { continue }
+            let key = (baseName(ex.name) == norm ? 0 : 1,
+                       abs(et.count - q.count),
+                       ex.name.contains("(") ? 1 : 0,
+                       ex.name.count)
+            if key < bestKey { bestKey = key; best = ex }
+        }
+        if let best { return best }
+        // 3. Jaccard ≥ 0.5 (比旧的 0.35 严, 减少乱配)
+        var jBest: Exercise? = nil
+        var jScore = 0.0
+        for ex in library {
+            let et = tokenSet(normalize(ex.name))
+            let inter = q.intersection(et).count
+            let uni = q.union(et).count
+            let score = uni == 0 ? 0 : Double(inter) / Double(uni)
+            if score > jScore { jScore = score; jBest = ex }
+        }
+        return jScore >= 0.5 ? jBest : nil
+    }
+
+    /// 名字里第一个 "(" 之前的部分, normalize 后 — 给"base 名相等"判断用.
+    private func baseName(_ s: String) -> String {
+        normalize(String(s.prefix { $0 != "(" }))
+    }
+    /// normalize → 切 token → 去尾 s (单复数归一: triceps/tricep, rows/row).
+    private func tokenSet(_ norm: String) -> Set<String> {
+        Set(norm.split(separator: " ").map { stem(String($0)) })
+    }
+    private func stem(_ t: String) -> String {
+        (t.count > 3 && t.hasSuffix("s")) ? String(t.dropLast()) : t
     }
 
     private func normalize(_ s: String) -> String {
-        s.lowercased()
-            .replacingOccurrences(of: "_", with: " ")
-            .replacingOccurrences(of: "-", with: " ")
-            .replacingOccurrences(of: ".", with: "")
-            .replacingOccurrences(of: ",", with: "")
-            .replacingOccurrences(of: "  ", with: " ")
-            .trimmingCharacters(in: .whitespaces)
+        var r = s.lowercased()
+        for (a, b) in [("_", " "), ("-", " "), (".", ""), (",", ""), ("(", " "), (")", " "), ("/", " ")] {
+            r = r.replacingOccurrences(of: a, with: b)
+        }
+        r = r.replacingOccurrences(of: "\\s+", with: " ", options: .regularExpression)
+        return r.trimmingCharacters(in: .whitespaces)
     }
 }
 
