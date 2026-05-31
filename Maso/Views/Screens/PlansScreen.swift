@@ -1355,8 +1355,12 @@ struct ExercisePickerSheet: View {
     }
 
     /// 当前还没选的维度数 (决定列宽 + 板是否还该显示).
+    /// 只数实际有列的两维 (部位 / 器械) — Movement 列已移除, movementFilter 永远 nil,
+    /// 若把它算进来, 两维都选满时 count 仍 = 1, 筛选板会卡在"空板"状态收不起来.
+    /// 两维都选 → count 0 → columnsBoard / reopenBar 都不渲染, 整块筛选区收折且无法再展开,
+    /// 直到用户清掉某个 chip (清除时会把 boardExpanded 设回 true, 筛选区随之重现).
     private var unselectedFacetCount: Int {
-        (muscleFilter == nil ? 1 : 0) + (movementFilter == nil ? 1 : 0) + (equipmentFilter == nil ? 1 : 0)
+        (muscleFilter == nil ? 1 : 0) + (equipmentFilter == nil ? 1 : 0)
     }
     private var anyFacetSelected: Bool {
         muscleFilter != nil || movementFilter != nil || equipmentFilter != nil
