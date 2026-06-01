@@ -61,7 +61,13 @@ struct ExerciseGroup: Hashable, Identifiable {
     func variationLabel(for exercise: Exercise) -> String {
         if let m = ExerciseGrouping.extractedModifier(of: exercise) { return m }
         if let detail = ExerciseGrouping.parenDetail(of: exercise) { return detail }
-        return exercise.displayName
+        // 家族归并的变种 (e.g. "Diamond Push-Up" 归到 "Push-Up") — 去掉跟 base 相同的尾巴, 只留区分前缀.
+        let dn = exercise.displayName
+        if dn.count > baseName.count, dn.lowercased().hasSuffix(baseName.lowercased()) {
+            let prefix = String(dn.dropLast(baseName.count)).trimmingCharacters(in: .whitespaces)
+            if !prefix.isEmpty { return prefix }
+        }
+        return dn
     }
 
     /// 展开时归到 "Variation"(动作) section 的变种 — 执行方式差异 (Seated / Single-Leg / 括号内动作细节 …).
@@ -78,6 +84,9 @@ enum ExerciseGrouping {
     /// "Bench Press (Dumbbell, Decline)" → "Bench Press"
     /// "Speed Bench Press" → "Speed Bench Press" (无括号 → 整名当 base)
     static func baseName(of exercise: Exercise) -> String {
+        // 0. 动作家族归并 — 名字以家族基础动作结尾的, 直接归进去 (少数独立技能除外).
+        //    用户要求几乎所有 push-up 花式 (Diamond / Pike / Archer / Clap …) 都归到 Push-Up.
+        if let fam = familyBase(of: exercise) { return fam }
         let n = exercise.name
         // 1. 截到第一个 "(" 前 — 括号里的器械/grip 变种归到同 base (现有逻辑).
         let beforeParen: String
@@ -92,6 +101,25 @@ enum ExerciseGrouping {
         //    "Incline/Decline Bench Press" → "Bench Press"; "Dive Bomber Push-Up" → "Push-Up").
         //    仍保留 Romanian/Sumo 等真正独立的动作 (见 movementModifierTokens 的注释).
         return stripMovementModifiers(noEquip)
+    }
+
+    /// 动作家族归并 — 名字 (去括号) 以家族基础动作结尾 → 归到该基础动作, 少数"其实是另一个动作"的除外.
+    /// 这样不用给 Diamond / Pike / Archer / Clap … 每个加 token (那些 token 会误伤 Archer *Pull-Up* 等),
+    /// 直接按"以 Push-Up 结尾"判定, 干净且不串到 pull-up / row.
+    /// 排除: Handstand (竖向推, 不同动作) / Pseudo Planche (planche 技能) / Soleus (其实是小腿动作, 误名).
+    private static let pushupFamilyExclusions: Set<String> = [
+        "handstand push-up", "handstand pushup", "handstand push up",
+        "pseudo planche push-up", "pseudo planche pushup", "pseudo planche push up",
+        "soleus push-up", "soleus pushup", "soleus push up",
+    ]
+    static func familyBase(of exercise: Exercise) -> String? {
+        let n = exercise.name
+        let before = (n.firstIndex(of: "(").map { String(n[..<$0]) } ?? n)
+            .trimmingCharacters(in: .whitespaces)
+        let lower = before.lowercased()
+        let isPushup = lower.hasSuffix("push-up") || lower.hasSuffix("pushup") || lower.hasSuffix("push up")
+        if isPushup && !pushupFamilyExclusions.contains(lower) { return "Push-Up" }
+        return nil
     }
 
     /// 名字里的器械词 — 整词、大小写不敏感地删掉. 多词词条放前面 (正则 alternation 从左到右,
