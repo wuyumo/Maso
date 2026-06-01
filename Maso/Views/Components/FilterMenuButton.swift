@@ -39,6 +39,8 @@ struct FilterMenuButton<T: Hashable>: View {
     let options: [FilterMenuOption<T>]
     /// 按钮外观. 默认胶囊, Exercises 页传 .systemMenu 走系统默认样式.
     var style: FilterMenuStyle = .capsule
+    /// 可选前导 SF Symbol — capsule 样式下显示在文字左侧, 加强视觉存在感 (Exercises 页用).
+    var icon: String? = nil
 
     var body: some View {
         Menu {
@@ -86,6 +88,10 @@ struct FilterMenuButton<T: Hashable>: View {
     @ViewBuilder
     private var capsuleLabel: some View {
         HStack(spacing: 4) {
+            if let icon {
+                Image(systemName: icon)
+                    .font(.system(size: 11, weight: .bold))
+            }
             Text(currentLabel)
                 .font(.system(size: 12, weight: .heavy))
                 .lineLimit(1)

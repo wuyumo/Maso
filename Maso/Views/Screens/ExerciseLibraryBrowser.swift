@@ -177,12 +177,38 @@ struct ExerciseLibraryBrowser: View {
         return out
     }
 
-    /// 常驻筛选条 — Muscle / Equipment 两个下拉. 钉在原生搜索栏与列表之间 (不随列表滚动),
-    /// 列表上滑也始终可见; 选中后按钮直接显示当前值 (e.g. "Chest" / "Dumbbell").
-    private var filterBar: some View {
+    /// 常驻搜索 + 筛选条 — 搜索框 + Muscle / Equipment 两个下拉同在一行 (用户要求).
+    /// 钉在列表上方 (不随列表滚动). 搜索框占主宽度; 筛选用胶囊 + 前导图标加强存在感,
+    /// 比之前的纯文字菜单样式更显眼. 选中后胶囊变 accent 并显示当前值.
+    private var searchFilterBar: some View {
         let availM = availableMuscles
         let availE = availableEquipments
-        return HStack(spacing: 18) {
+        return HStack(spacing: 8) {
+            // 搜索框 — iOS 搜索框观感 (放大镜 + 圆角 + 清除), flex 占满剩余宽度.
+            HStack(spacing: 6) {
+                Image(systemName: "magnifyingglass")
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundStyle(MasoColor.textFaint)
+                TextField(NSLocalizedString("Search", comment: "search field placeholder"), text: $query)
+                    .textFieldStyle(.plain)
+                    .font(.system(size: 14))
+                    .autocorrectionDisabled()
+                    .textInputAutocapitalization(.never)
+                if !query.isEmpty {
+                    Button(action: { query = "" }) {
+                        Image(systemName: "xmark.circle.fill")
+                            .font(.system(size: 13))
+                            .foregroundStyle(MasoColor.textFaint)
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            .padding(.horizontal, 10)
+            .padding(.vertical, 8)
+            .background(MasoColor.surface)
+            .clipShape(Capsule())
+            .frame(maxWidth: .infinity)
+
             FilterMenuButton(
                 title: NSLocalizedString("Muscle", comment: "filter button placeholder"),
                 allLabel: NSLocalizedString("All muscles", comment: ""),
@@ -194,7 +220,8 @@ struct ExerciseLibraryBrowser: View {
                         enabled: availM.contains(m) || muscleFilter == m
                     )
                 },
-                style: .systemMenu
+                style: .capsule,
+                icon: "figure.arms.open"
             )
             FilterMenuButton(
                 title: NSLocalizedString("Equipment", comment: "filter button placeholder"),
@@ -207,9 +234,9 @@ struct ExerciseLibraryBrowser: View {
                         enabled: availE.contains(eq) || equipmentFilter == eq
                     )
                 },
-                style: .systemMenu
+                style: .capsule,
+                icon: "dumbbell.fill"
             )
-            Spacer()
         }
         .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
         .padding(.vertical, 8)
@@ -224,9 +251,8 @@ struct ExerciseLibraryBrowser: View {
     var body: some View {
         NavStackIf(embedded: embedded) {
             VStack(spacing: 0) {
-                // 常驻筛选条 — Muscle / Equipment 下拉钉在原生搜索栏与列表之间, 列表上滑也不消失.
-                // (搜索框改用系统原生 .searchable, 见下方 modifier — 同样常驻置顶.)
-                filterBar
+                // 搜索 + 筛选同在一行, 钉在列表上方 (不随列表滚动), 列表上滑也始终可见.
+                searchFilterBar
 
                 List {
                 // 收折分组 — 跟"训练中选动作 picker"用同一份 ExerciseGrouping 数据 + GroupedExerciseRow
@@ -249,15 +275,6 @@ struct ExerciseLibraryBrowser: View {
                 .onChange(of: equipmentFilter) { _, _ in expandedGroupKey = nil }
             }
             .background(MasoColor.background.ignoresSafeArea())
-            // 系统原生搜索栏 — 常驻导航栏下方 (displayMode .always → 列表上滑也不收起),
-            // 取代原先随列表一起滚走的自定义搜索框. 筛选已移到上方常驻 filterBar.
-            .searchable(
-                text: $query,
-                placement: .navigationBarDrawer(displayMode: .always),
-                prompt: Text(NSLocalizedString("Search exercises…", comment: ""))
-            )
-            .autocorrectionDisabled()
-            .textInputAutocapitalization(.never)
                 // embedded 时跳过自己的大标题 / +按钮 (Train 统一导航栏接管); 非 embedded 保持原样.
                 .applyIf(!embedded) { v in
                     v.screenHeader(NSLocalizedString("Exercise library", comment: "")) {
