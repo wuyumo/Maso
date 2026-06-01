@@ -206,12 +206,16 @@ struct PlanPlayerScreen: View {
                     //    backgroundLayer 占 (0, ZStack 高 - 64) 区域 (padding.bottom 64),
                     //    圆环 padding.bottom 64 抵消, Spacer 均分让圆环在背景图中点.
                     if seg.isRest {
+                        // 圆环垂直居中在 [sheet 顶部, "Up Next" 文字顶部] 之间 → 上下间距相等.
+                        // "Up Next" hint top ≈ stageHeight - 196 (= bottomReservedHeight 366
+                        // - bottomInnerTopPadding 140 = filler 顶 226, hint 在 120 filler 里居中
+                        // 再上移 ~30). 用这个底部 padding 让圆环中心落在该空间中点.
                         VStack(spacing: 0) {
                             Spacer(minLength: 0)
                             restCountdownRing(seg: seg)
                             Spacer(minLength: 0)
                         }
-                        .padding(.bottom, 64)
+                        .padding(.bottom, 196)
                         .allowsHitTesting(false)  // 透传 tap, 不挡下层 Controls / 进度条
                     }
                 }
@@ -1068,11 +1072,12 @@ private struct RestCountdown: View {
     let compactT: CGFloat
 
     private static let ringWidth: CGFloat = 3
+    private static let baseRing: CGFloat = 220
 
-    /// 圆环直径 — playlist 越大越紧凑 (220 → 140 @ default), 拖过 default 后继续缩到下限 96,
-    /// 避免 drawer 拖很高时圆环跟它重叠. digits 同步, 都有下限保证仍可读.
-    private var ringSize: CGFloat { max(96, 220 - 80 * compactT) }
-    private var digitsSize: CGFloat { max(36, 64 - 24 * compactT) }
+    /// 整组件统一缩放因子 — playlist 越大越小 (1.0 → 0.44). 用一个 scaleEffect 把"圆环 + 描边 +
+    /// REST 文字 + 数字"整体一起缩 (用户要求: 缩小是整体缩, 不是各部件分别算尺寸); frame 同步收窄,
+    /// 让 layout footprint 也跟着小 → drawer 拖高时不重叠.
+    private var restScale: CGFloat { max(0.44, 1 - 0.36 * compactT) }
 
     private func remainingFloat(at date: Date) -> Double {
         if let p = pausedRemaining { return max(0, p) }
@@ -1089,10 +1094,10 @@ private struct RestCountdown: View {
         TimelineView(.periodic(from: .now, by: 0.1)) { ctx in
             let rem = remainingFloat(at: ctx.date)
             let prog = progress(rem)
-            // 圆环大小不再用单独的 .animation(value: playlistExpanded) — ringSize 是 compactT
-            // (即 playlistHeight) 的连续函数, 自然跟着 drawer 的动画事务走, 不再"自带 spring 跟
-            // drawer 不同步"地抖.
+            // 整组件按 baseRing 渲染, 再统一 scaleEffect + frame 缩放 → 圆环/文字一起整体缩.
             ringView(remaining: Int(ceil(rem)), progress: prog)
+                .scaleEffect(restScale, anchor: .center)
+                .frame(width: Self.baseRing * restScale, height: Self.baseRing * restScale)
         }
     }
 
@@ -1100,7 +1105,7 @@ private struct RestCountdown: View {
         ZStack {
             Circle()
                 .stroke(MasoColor.text.opacity(0.12), lineWidth: Self.ringWidth)
-                .frame(width: ringSize, height: ringSize)
+                .frame(width: Self.baseRing, height: Self.baseRing)
             Circle()
                 .trim(from: max(0, 1 - progress), to: 1)
                 .stroke(
@@ -1108,7 +1113,7 @@ private struct RestCountdown: View {
                     style: StrokeStyle(lineWidth: Self.ringWidth, lineCap: .round)
                 )
                 .rotationEffect(.degrees(-90))
-                .frame(width: ringSize, height: ringSize)
+                .frame(width: Self.baseRing, height: Self.baseRing)
             VStack(spacing: 4) {
                 Text(isCrossExercise ? "Switching" : "Rest")
                     .font(.system(size: 11, weight: .bold))
@@ -1116,7 +1121,7 @@ private struct RestCountdown: View {
                     .textCase(.uppercase)
                     .foregroundStyle(MasoColor.accent)
                 Text(formatRemaining(remaining))
-                    .font(.system(size: digitsSize, weight: .bold).monospacedDigit())
+                    .font(.system(size: 64, weight: .bold).monospacedDigit())
                     .foregroundStyle(MasoColor.text)
             }
         }
@@ -1257,12 +1262,13 @@ private struct Controls: View {
             if isPrimaryComplete { celebrateTrigger &+= 1 }
         }) {
             if seg.isRest {
-                // 休息跳过 — 没有圆圈的 accent 纯图标 button (用户要求).
-                // 休息态本来就不放 halo/pulse 庆祝, 直接裸图标, 视觉更轻.
+                // 休息跳过 — 无圆圈的 accent 纯图标. 图标大小跟"上一动作"按钮一致 (size 15),
+                // 但 frame 固定成 42×42 (= exercise primary 圆的 footprint), 这样 exercise↔rest
+                // 切换时主按钮槽位宽高完全不变 → 按钮栏不再左右抖.
                 Image(systemName: "forward.end.fill")
-                    .font(.system(size: 28, weight: .heavy))
+                    .font(.system(size: 15, weight: .semibold))
                     .foregroundStyle(MasoColor.accent)
-                    .frame(width: 56, height: 48)
+                    .frame(width: 42, height: 42)
                     .contentShape(Rectangle())
             } else {
                 ZStack {

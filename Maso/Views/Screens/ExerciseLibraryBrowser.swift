@@ -177,76 +177,17 @@ struct ExerciseLibraryBrowser: View {
         return out
     }
 
-    /// 常驻搜索 + 筛选条 — 搜索框 + Muscle / Equipment 两个下拉同在一行 (用户要求).
-    /// 钉在列表上方 (不随列表滚动). 搜索框占主宽度; 筛选用胶囊 + 前导图标加强存在感,
-    /// 比之前的纯文字菜单样式更显眼. 选中后胶囊变 accent 并显示当前值.
+    /// 常驻搜索 + 筛选条 — 用全 app 共享的 ExerciseSearchFilterBar (跟训练 picker 同一组件,
+    /// 调一处两边都变). 钉在列表上方 (不随列表滚动).
     private var searchFilterBar: some View {
-        let availM = availableMuscles
-        let availE = availableEquipments
-        return HStack(spacing: 8) {
-            // 搜索框 — iOS 搜索框观感 (放大镜 + 圆角 + 清除), flex 占满剩余宽度.
-            // 字号 / 内边距跟右侧 filter 胶囊对齐 → 三个控件等高, 视觉成一组、平衡.
-            HStack(spacing: 6) {
-                Image(systemName: "magnifyingglass")
-                    .font(.system(size: 12, weight: .semibold))
-                    .foregroundStyle(MasoColor.textFaint)
-                TextField(NSLocalizedString("Search", comment: "search field placeholder"), text: $query)
-                    .textFieldStyle(.plain)
-                    .font(.system(size: 13))
-                    .autocorrectionDisabled()
-                    .textInputAutocapitalization(.never)
-                if !query.isEmpty {
-                    Button(action: { query = "" }) {
-                        Image(systemName: "xmark.circle.fill")
-                            .font(.system(size: 12))
-                            .foregroundStyle(MasoColor.textFaint)
-                    }
-                    .buttonStyle(.plain)
-                }
-            }
-            .padding(.horizontal, 12)
-            .padding(.vertical, 6)
-            .background(MasoColor.surface)
-            .clipShape(Capsule())
-            .frame(maxWidth: .infinity)
-
-            FilterMenuButton(
-                title: NSLocalizedString("Muscle", comment: "filter button placeholder"),
-                allLabel: NSLocalizedString("All muscles", comment: ""),
-                selected: $muscleFilter,
-                options: Self.muscleSections.map { m in
-                    FilterMenuOption(
-                        value: m,
-                        label: m.displayName,
-                        enabled: availM.contains(m) || muscleFilter == m
-                    )
-                },
-                style: .capsule,
-                icon: "figure.arms.open"
-            )
-            FilterMenuButton(
-                title: NSLocalizedString("Equipment", comment: "filter button placeholder"),
-                allLabel: NSLocalizedString("Any equipment", comment: ""),
-                selected: $equipmentFilter,
-                options: Exercise.knownEquipments.map { eq in
-                    FilterMenuOption(
-                        value: eq,
-                        label: Exercise.equipmentDisplayName(for: eq),
-                        enabled: availE.contains(eq) || equipmentFilter == eq
-                    )
-                },
-                style: .capsule,
-                icon: "dumbbell.fill"
-            )
-        }
-        .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
-        .padding(.vertical, 8)
-        .background(MasoColor.background)
-        .overlay(alignment: .bottom) {
-            Rectangle()
-                .fill(MasoColor.textFaint.opacity(0.15))
-                .frame(height: 0.5)
-        }
+        ExerciseSearchFilterBar(
+            query: $query,
+            muscleFilter: $muscleFilter,
+            equipmentFilter: $equipmentFilter,
+            muscleSections: Self.muscleSections,
+            availableMuscles: availableMuscles,
+            availableEquipments: availableEquipments
+        )
     }
 
     var body: some View {

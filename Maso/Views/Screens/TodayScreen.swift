@@ -144,6 +144,7 @@ struct TodayScreen: View {
             $0.screenHeader("Today", kicker: greeting) {
                 Button(action: onOpenSettings) {
                     Image(systemName: "gearshape")
+                        .font(.system(size: 16, weight: .regular))
                 }
                 .accessibilityLabel("Settings")
             }
@@ -195,9 +196,13 @@ struct TodayScreen: View {
                 .accessibilityLabel(NSLocalizedString("Restore recommended", comment: ""))
             }
             Button(action: onNewPlan) {
+                // 白色 "+" + 圆圈 (微填充 + 描边) — 比纯图标更强, 是这一区的主操作.
                 Image(systemName: "plus")
-                    .font(.system(size: 17, weight: .semibold))
-                    .foregroundStyle(MasoColor.accent)
+                    .font(.system(size: 14, weight: .bold))
+                    .foregroundStyle(MasoColor.text)
+                    .frame(width: 30, height: 30)
+                    .background(Circle().fill(MasoColor.text.opacity(0.12)))
+                    .overlay(Circle().stroke(MasoColor.text.opacity(0.4), lineWidth: 1))
             }
             .accessibilityLabel("New workout")
         }

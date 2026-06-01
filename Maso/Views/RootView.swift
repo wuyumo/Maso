@@ -134,6 +134,7 @@ struct RootView: View {
                     .screenHeader("Today") {
                         Button(action: { settingsPresented = true }) {
                             Image(systemName: "gearshape")
+                                .font(.system(size: 16, weight: .regular))
                         }
                         .accessibilityLabel("Settings")
                     }
@@ -698,6 +699,7 @@ private struct PlansTabScreen: View {
                     case .plans:
                         Button(action: onOpenSettings) {
                             Image(systemName: "gearshape")
+                                .font(.system(size: 16, weight: .regular))
                         }
                         .accessibilityLabel("Settings")
                     case .library:

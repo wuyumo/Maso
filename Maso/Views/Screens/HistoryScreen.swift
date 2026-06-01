@@ -140,6 +140,7 @@ struct HistoryScreen: View {
         .screenHeader("History") {
             Button(action: onOpenSettings) {
                 Image(systemName: "gearshape")
+                    .font(.system(size: 16, weight: .regular))
             }
             .accessibilityLabel("Settings")
         }

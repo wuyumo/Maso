@@ -314,12 +314,12 @@ struct PlanRationaleCard: View {
                 Spacer()
                 // pencil 按钮 — 弹 TrainingSettingsSheet, 内容跟 Settings → Training 完全一致
                 Button(action: { showTrainingSettings = true }) {
+                    // 白色纯 icon — 无圆圈底、无边框 (用户要求, 比 "+" 弱一档).
                     Image(systemName: "slider.horizontal.3")
-                        .font(.system(size: 13, weight: .semibold))
-                        .foregroundStyle(MasoColor.accent)
+                        .font(.system(size: 15, weight: .semibold))
+                        .foregroundStyle(MasoColor.text)
                         .frame(width: 30, height: 30)
-                        .background(MasoColor.accent.opacity(0.18))
-                        .clipShape(Circle())
+                        .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel(Text("Adjust training preferences"))
@@ -1446,8 +1446,16 @@ struct ExercisePickerSheet: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
-                // 搜索 + 两个筛选下拉菜单 (Muscle / Equipment) 作为列表首行 —— 跟 Exercise Library /
-                // Rare exercises 完全一致. 这里只放列表 + 多选底栏.
+                // 搜索 + Muscle / Equipment 筛选 — 用全 app 共享的 ExerciseSearchFilterBar
+                // (跟 Exercises 子页同一组件, 钉在列表上方, 调一处两边都变).
+                ExerciseSearchFilterBar(
+                    query: $query,
+                    muscleFilter: $muscleFilter,
+                    equipmentFilter: $equipmentFilter,
+                    muscleSections: Self.muscleSections,
+                    availableMuscles: availableMuscles,
+                    availableEquipments: availableEquipments
+                )
                 exerciseList()
 
                 // CTA 默认不显示, 选了动作才出现.
@@ -1621,76 +1629,11 @@ struct ExercisePickerSheet: View {
     }
 
 
-    /// 搜索框 + 两个筛选下拉 (Muscle / Equipment) —— 作为列表首行渲染, 跟 Exercise Library /
-    /// Rare exercises 完全一致 (FilterMenuButton 下拉, 选中即收, 已选状态在按钮上直接体现).
-    @ViewBuilder
-    private var pickerFilterHeader: some View {
-        VStack(spacing: 10) {
-            TextField("Search exercises…", text: $query)
-                .textFieldStyle(.plain)
-                .font(.system(size: 13))
-                .padding(.horizontal, 12).padding(.vertical, 8)
-                .background(MasoColor.surface)
-                .clipShape(Capsule())
-                .overlay(
-                    HStack {
-                        Spacer()
-                        if !query.isEmpty {
-                            Button(action: { query = "" }) {
-                                Image(systemName: "xmark.circle.fill")
-                                    .foregroundStyle(MasoColor.textFaint)
-                            }
-                            .padding(.trailing, 8)
-                        }
-                    }
-                )
-
-            HStack(spacing: 8) {
-                let availM = availableMuscles
-                FilterMenuButton(
-                    title: NSLocalizedString("Muscle", comment: "filter button placeholder"),
-                    allLabel: NSLocalizedString("All muscles", comment: ""),
-                    selected: $muscleFilter,
-                    options: Self.muscleSections.map { m in
-                        FilterMenuOption(
-                            value: m,
-                            label: m.displayName,
-                            enabled: availM.contains(m) || muscleFilter == m
-                        )
-                    }
-                )
-
-                let availE = availableEquipments
-                FilterMenuButton(
-                    title: NSLocalizedString("Equipment", comment: "filter button placeholder"),
-                    allLabel: NSLocalizedString("Any equipment", comment: ""),
-                    selected: $equipmentFilter,
-                    options: Exercise.knownEquipments.map { eq in
-                        FilterMenuOption(
-                            value: eq,
-                            label: Exercise.equipmentDisplayName(for: eq),
-                            enabled: availE.contains(eq) || equipmentFilter == eq
-                        )
-                    }
-                )
-
-                Spacer()
-            }
-        }
-        .listRowInsets(EdgeInsets(top: 10, leading: MasoMetrics.pagePaddingHorizontal,
-                                  bottom: 6, trailing: MasoMetrics.pagePaddingHorizontal))
-        .listRowBackground(Color.clear)
-        .listRowSeparator(.hidden)
-    }
-
     @ViewBuilder
     private func exerciseList() -> some View {
         // List + 原生 .swipeActions — 替换自制 SwipeableRow.
         // 自制版跟 ScrollView 的 vertical pan 抢手势 → 上下滑动失效.
         List {
-            // 搜索 + 两个筛选下拉 (Muscle / Equipment) — 列表首行, 跟 Exercise Library / Rare 一致.
-            pickerFilterHeader
-
             ForEach(filteredGroups) { group in
                 // Canonical 行 — 折叠态唯一可见的一行. 跟旧 row 视觉一致 + 末尾多一个 "+N variants"
                 // disclosure 胶囊 (仅有变种时). tap 主体 → 弹 detail; tap disclosure → toggle 组.
