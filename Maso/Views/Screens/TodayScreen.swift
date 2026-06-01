@@ -9,6 +9,8 @@ struct TodayScreen: View {
     let onNewPlan: () -> Void
     /// 标题行右上角齿轮 → 弹 Settings sheet (RootView 持有 sheet state)
     let onOpenSettings: () -> Void
+    /// 嵌在 Train tab 里时 true — 不渲染自己的大标题/齿轮 (Train 的统一导航栏接管).
+    var embedded: Bool = false
 
     /// 卡片 tap → 弹 plan detail sheet 查看动作 + 每组 sets/reps/weight (WorkoutCard + PlanRow 共用)
     @State private var detailPlan: Plan? = nil
@@ -108,12 +110,15 @@ struct TodayScreen: View {
             .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
         }
         .background(MasoColor.background.ignoresSafeArea())
-        // 自定义页头: greeting kicker + "Today" 26pt + 齿轮 (DESIGN.md §4.2).
-        .screenHeader("Today", kicker: greeting) {
-            Button(action: onOpenSettings) {
-                Image(systemName: "gearshape")
+        // 自定义页头: greeting kicker + "Today" 大标题 + 齿轮. 嵌进 Train tab 时跳过 —
+        // Train 的统一导航栏 (segmented + 齿轮) 接管.
+        .applyIf(!embedded) {
+            $0.screenHeader("Today", kicker: greeting) {
+                Button(action: onOpenSettings) {
+                    Image(systemName: "gearshape")
+                }
+                .accessibilityLabel("Settings")
             }
-            .accessibilityLabel("Settings")
         }
         .sheet(item: $detailPlan) { plan in
             PlanDetailSheet(

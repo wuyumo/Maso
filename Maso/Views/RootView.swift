@@ -12,6 +12,12 @@ enum RootTab: Hashable { case plans, today, library, history }
 enum TrainPage: Hashable { case plans, library }
 
 extension View {
+    /// 条件应用一个 transform — Train tab 内嵌 (embedded) 时各分页跳过自己的 screenHeader,
+    /// 由 Train 的统一导航栏 (segmented + 右上角按钮) 接管.
+    @ViewBuilder func applyIf<T: View>(_ condition: Bool, _ transform: (Self) -> T) -> some View {
+        if condition { transform(self) } else { self }
+    }
+
     /// iOS 默认导航栏 — 系统大标题 (large title, 滚动时收缩成 inline) + 右上角 toolbar 按钮.
     /// 用户要求所有 tab 的标题/右上角按钮回到 iOS 原生样式, 不再用自定义 safeAreaInset 大标题头.
     /// kicker (Today 的问候) 在原生导航栏没有对应槽位, 保留参数签名但忽略 — 调用方不用改.
@@ -612,44 +618,72 @@ struct RootView: View {
     }
 }
 
-// MARK: - TrainScreen — "Train" tab: 顶部 segmented 切 My Plans / Exercise Library 两个分页
+// 条件 NavigationStack — embedded 时直接给 content (由外层 Train NavStack 接管), 否则自带一层.
+struct NavStackIf<Content: View>: View {
+    let embedded: Bool
+    @ViewBuilder let content: () -> Content
+    var body: some View {
+        if embedded { content() } else { NavigationStack { content() } }
+    }
+}
+
+// MARK: - TrainScreen — "Train" tab: 单一导航栏, segmented 当标题切 My Plans / Exercise Library
 //
-// My Plans 分页 = 原 Today 内容 (我的训练 + 今日推荐 + 自由训练 + 社区), 自带 NavigationStack.
-// Exercise Library 分页 = 动作库, 自带 NavigationStack. 两页各自保留大标题 + 右上角按钮,
-// segmented 控件钉在最顶 (状态栏下), 切页不丢各自的滚动/导航状态.
+// 一个 Train NavigationStack 接管整页. 顶部导航栏中央放 segmented (= 标题), 右上角按钮按分页切
+// (My Plans → 齿轮; Library → +). 两个分页 (TodayScreen / ExerciseLibraryBrowser) 都 embedded:
+// 不再自带 NavStack / 大标题, 所以没有"segmented + 大标题"重复. 切页保留各自滚动/sheet 状态.
 private struct TrainScreen: View {
     @Binding var page: TrainPage
     let onStart: (Plan) -> Void
     let onFreeWorkout: () -> Void
     let onNewPlan: () -> Void
     let onOpenSettings: () -> Void
+    /// embedded Library 的 "+" 触发器 — Train 右上角 + 翻 true, Library 监听后开"加动作" sheet.
+    @State private var libraryAddRequested = false
 
     var body: some View {
-        VStack(spacing: 0) {
-            Picker("", selection: $page.animation(.easeOut(duration: 0.18))) {
-                Text("My Plans").tag(TrainPage.plans)
-                Text("Exercise Library").tag(TrainPage.library)
-            }
-            .pickerStyle(.segmented)
-            .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
-            .padding(.top, 6)
-            .padding(.bottom, 6)
-
-            switch page {
-            case .plans:
-                NavigationStack {
+        NavigationStack {
+            Group {
+                switch page {
+                case .plans:
                     TodayScreen(
                         onStart: onStart,
                         onFreeWorkout: onFreeWorkout,
                         onNewPlan: onNewPlan,
-                        onOpenSettings: onOpenSettings
+                        onOpenSettings: onOpenSettings,
+                        embedded: true
                     )
+                case .library:
+                    ExerciseLibraryBrowser(asTab: true, embedded: true, addRequested: $libraryAddRequested)
                 }
-            case .library:
-                ExerciseLibraryBrowser(asTab: true)
             }
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .principal) {
+                    Picker("", selection: $page.animation(.easeOut(duration: 0.18))) {
+                        Text("My Plans").tag(TrainPage.plans)
+                        Text("Library").tag(TrainPage.library)
+                    }
+                    .pickerStyle(.segmented)
+                    .frame(width: 240)
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    switch page {
+                    case .plans:
+                        Button(action: onOpenSettings) {
+                            Image(systemName: "gearshape")
+                        }
+                        .accessibilityLabel("Settings")
+                    case .library:
+                        Button(action: { libraryAddRequested = true }) {
+                            Image(systemName: "plus")
+                        }
+                        .accessibilityLabel(NSLocalizedString("Add exercise", comment: ""))
+                    }
+                }
+            }
+            .tint(MasoColor.text)
         }
-        .background(MasoColor.background.ignoresSafeArea())
     }
 }
 

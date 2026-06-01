@@ -8,6 +8,10 @@ struct ExerciseLibraryBrowser: View {
     @Environment(\.dismiss) private var dismiss
     /// 作为底部 tab 嵌入时 true — 去掉 "Done"(tab 不需要 dismiss).
     var asTab: Bool = false
+    /// 嵌在 Train tab 里时 true — 不自带 NavigationStack / 大标题 / +按钮 (Train 统一导航栏接管).
+    var embedded: Bool = false
+    /// embedded 时由 Train 的右上角 "+" 触发: 翻 true → 打开"加动作"选择 sheet.
+    var addRequested: Binding<Bool>? = nil
 
     @State private var query: String = ""
     @State private var muscleFilter: MuscleGroup? = nil
@@ -174,7 +178,7 @@ struct ExerciseLibraryBrowser: View {
     }
 
     var body: some View {
-        NavigationStack {
+        NavStackIf(embedded: embedded) {
             List {
                 // 搜索 + 筛选作为列表首行 — 随内容一起滚动. List 直接挂在导航下, 上滑时
                 // 大标题收进 headbar (跟 Today/History 一致); 下拉再露出搜索栏 (iOS 经典模式).
@@ -255,21 +259,28 @@ struct ExerciseLibraryBrowser: View {
                 .onChange(of: muscleFilter) { _, _ in expandedGroupKey = nil }
                 .onChange(of: equipmentFilter) { _, _ in expandedGroupKey = nil }
                 .background(MasoColor.background.ignoresSafeArea())
-                .screenHeader(NSLocalizedString("Exercise library", comment: "")) {
-                HStack(spacing: 18) {
-                    Button(action: { addChoiceOpen = true }) {
-                        Image(systemName: "plus")
-                    }
-                    .accessibilityLabel(NSLocalizedString("Add exercise", comment: ""))
-                    // 作为 sheet 用时 (非 tab) 才给关闭入口.
-                    if !asTab {
-                        Button(action: { dismiss() }) {
-                            Image(systemName: "xmark")
+                // embedded 时跳过自己的大标题 / +按钮 (Train 统一导航栏接管); 非 embedded 保持原样.
+                .applyIf(!embedded) { v in
+                    v.screenHeader(NSLocalizedString("Exercise library", comment: "")) {
+                        HStack(spacing: 18) {
+                            Button(action: { addChoiceOpen = true }) {
+                                Image(systemName: "plus")
+                            }
+                            .accessibilityLabel(NSLocalizedString("Add exercise", comment: ""))
+                            // 作为 sheet 用时 (非 tab) 才给关闭入口.
+                            if !asTab {
+                                Button(action: { dismiss() }) {
+                                    Image(systemName: "xmark")
+                                }
+                                .accessibilityLabel("Done")
+                            }
                         }
-                        .accessibilityLabel("Done")
                     }
                 }
-            }
+                // embedded: Train 的右上角 "+" 经 addRequested 触发"加动作"选择 sheet.
+                .onChange(of: addRequested?.wrappedValue ?? false) { _, v in
+                    if v { addChoiceOpen = true; addRequested?.wrappedValue = false }
+                }
             .tint(MasoColor.text)
             .sheet(item: $selected) { ex in
                 ExerciseDetailSheet(exercise: ex)
