@@ -84,7 +84,7 @@ struct ShareCardFooter: View {
                             .font(.system(size: 13, weight: .heavy))
                             .tracking(2)
                             .foregroundStyle(MasoColor.text)
-                        Text("Your personal AI trainer")
+                        Text("My Personal AI Trainer")
                             .font(.system(size: 10))
                             .foregroundStyle(MasoColor.textDim)
                     }

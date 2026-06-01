@@ -74,7 +74,7 @@ struct SplashScreen: View {
                         .offset(y: wordOn ? 0 : 12)
                     // Tagline — iOS HIG Subhead 字号 15pt regular. tracking 0.2 (略松)
                     // 提升"caption" 感. textDim 灰色 — 跟 wordmark 形成主从.
-                    Text("Your personal AI trainer")
+                    Text("My Personal AI Trainer")
                         .font(.system(size: 15, weight: .regular))
                         .tracking(0.2)
                         .foregroundStyle(MasoColor.textDim)

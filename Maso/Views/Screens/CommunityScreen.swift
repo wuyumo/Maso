@@ -410,6 +410,18 @@ private struct CommunityPlanDetailSheet: View {
                                 plan.totalExerciseCount
                             ))
                         }
+                        // 频率 > session 数 → 说明这是"少数几套训练轮着练满一周"的结构 (e.g. StrongLifts:
+                        // 2 套 A/B 一周练 3 次). 否则用户会以为"标 3 天却只有 2 天内容"是 bug.
+                        if plan.sessions.count < plan.frequencyDaysPerWeek {
+                            Text(String(
+                                format: NSLocalizedString("Rotate these %lld workouts to train %lld days a week.", comment: "explains an alternating / repeating split"),
+                                plan.sessions.count, plan.frequencyDaysPerWeek
+                            ))
+                            .font(.system(size: 12))
+                            .foregroundStyle(MasoColor.textFaint)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .padding(.top, 2)
+                        }
                     }
                     .padding(.top, 4)
 
