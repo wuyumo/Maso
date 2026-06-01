@@ -279,6 +279,7 @@
 /* ── free workout + ex detail ── */
 "Free workout" = "自由训练";
 "Pick your own exercises and go" = "自己挑动作直接开练";
+"Browse training plans from the community" = "浏览社区分享的训练计划";
 "Add to workout" = "加入训练";
 "Target Muscles" = "目标肌群";
 "Instructions" = "动作说明";

@@ -19,6 +19,15 @@ struct FilterMenuOption<T: Hashable>: Identifiable {
     var id: T { value }
 }
 
+/// 按钮外观:
+///   - .capsule: 自定义胶囊 (默认 — picker sheet / Community filter 等沿用)
+///   - .systemMenu: iOS 系统默认的菜单选择器样式 (tinted 文字 + chevron.up.chevron.down,
+///     无胶囊底). 给已用系统原生搜索栏的 Exercises 页用, 视觉一致.
+enum FilterMenuStyle {
+    case capsule
+    case systemMenu
+}
+
 struct FilterMenuButton<T: Hashable>: View {
     /// 未选时按钮显示的占位文案 ("Muscle" / "Equipment" / "Sub-muscle")
     let title: String
@@ -28,6 +37,8 @@ struct FilterMenuButton<T: Hashable>: View {
     @Binding var selected: T?
     /// 可选项列表 + 各自的 enabled 状态 + 显示文案
     let options: [FilterMenuOption<T>]
+    /// 按钮外观. 默认胶囊, Exercises 页传 .systemMenu 走系统默认样式.
+    var style: FilterMenuStyle = .capsule
 
     var body: some View {
         Menu {
@@ -62,9 +73,18 @@ struct FilterMenuButton<T: Hashable>: View {
         .menuOrder(.fixed)
     }
 
-    /// 按钮 label — 未选时灰底 + title, 选中时 accent 描边 + 具体值 + ✕ 提示可清除
+    /// 按钮 label — 按 style 切两种外观.
     @ViewBuilder
     private var label: some View {
+        switch style {
+        case .capsule:      capsuleLabel
+        case .systemMenu:   systemMenuLabel
+        }
+    }
+
+    /// 胶囊样式 — 未选时灰底 + title, 选中时 accent 描边 + 具体值.
+    @ViewBuilder
+    private var capsuleLabel: some View {
         HStack(spacing: 4) {
             Text(currentLabel)
                 .font(.system(size: 12, weight: .heavy))
@@ -83,6 +103,22 @@ struct FilterMenuButton<T: Hashable>: View {
             )
         )
         .clipShape(Capsule())
+    }
+
+    /// 系统默认菜单选择器样式 — tinted 文字 + chevron.up.chevron.down (= iOS Picker(.menu) 的指示符),
+    /// 无胶囊底. 未选灰字, 选中 accent. 跟系统原生搜索栏摆一起更一致.
+    @ViewBuilder
+    private var systemMenuLabel: some View {
+        HStack(spacing: 3) {
+            Text(currentLabel)
+                .font(.system(size: 15))
+                .lineLimit(1)
+            Image(systemName: "chevron.up.chevron.down")
+                .font(.system(size: 11, weight: .semibold))
+        }
+        .foregroundStyle(selected == nil ? MasoColor.textDim : MasoColor.accent)
+        .padding(.vertical, 4)
+        .contentShape(Rectangle())
     }
 
     /// 按钮当前显示的文字: 未选 → title; 选中 → 具体值的 label.

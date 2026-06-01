@@ -182,7 +182,7 @@ struct ExerciseLibraryBrowser: View {
     private var filterBar: some View {
         let availM = availableMuscles
         let availE = availableEquipments
-        return HStack(spacing: 8) {
+        return HStack(spacing: 18) {
             FilterMenuButton(
                 title: NSLocalizedString("Muscle", comment: "filter button placeholder"),
                 allLabel: NSLocalizedString("All muscles", comment: ""),
@@ -193,7 +193,8 @@ struct ExerciseLibraryBrowser: View {
                         label: m.displayName,
                         enabled: availM.contains(m) || muscleFilter == m
                     )
-                }
+                },
+                style: .systemMenu
             )
             FilterMenuButton(
                 title: NSLocalizedString("Equipment", comment: "filter button placeholder"),
@@ -205,7 +206,8 @@ struct ExerciseLibraryBrowser: View {
                         label: Exercise.equipmentDisplayName(for: eq),
                         enabled: availE.contains(eq) || equipmentFilter == eq
                     )
-                }
+                },
+                style: .systemMenu
             )
             Spacer()
         }

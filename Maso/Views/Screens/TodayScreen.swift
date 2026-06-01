@@ -82,8 +82,13 @@ struct TodayScreen: View {
                     }
 
                     // ── 自由训练入口 ── 钉在 Today 底部 (从 Plans/My Plans 移过来).
-                    entryCard(icon: "dumbbell.fill", title: "Free workout", action: onFreeWorkout)
-                        .padding(.top, 4)
+                    entryCard(
+                        icon: "dumbbell.fill",
+                        title: "Free workout",
+                        subtitle: "Pick your own exercises and go",
+                        action: onFreeWorkout
+                    )
+                    .padding(.top, 4)
                 }
 
                 // ===== Plans tab 的 My Plans 分页: 我的训练 + 自由训练 + 社区 (mode != .trainToday) =====
@@ -95,13 +100,16 @@ struct TodayScreen: View {
                         plansEmptyState
                     } else {
                         PlanRationaleCard()
+                        // 计划卡用 WorkoutCard — 跟 Today's Workout 同一详细程度 (居中肌肉图 +
+                        // "N exercises · M sets" + 动作 chip + 开始键). kicker 传 "" 不显示
+                        // ("MY PLANS" section 已经给了上下文).
                         ForEach(data.plans) { plan in
-                            PlanRow(
+                            WorkoutCard(
                                 plan: plan,
                                 exById: data.exById,
-                                onTap: { detailPlan = plan },
+                                kicker: "",
                                 onStart: { onStart(plan) },
-                                onDelete: { pendingDeletePlanId = plan.id }
+                                onShowDetail: { detailPlan = plan }
                             )
                             // 长按菜单代替 List 右滑 — 改/删.
                             .contextMenu {
@@ -114,8 +122,13 @@ struct TodayScreen: View {
                     }
 
                     // ── 入口: 社区 (Free workout 已移到 Today tab 底部) ──
-                    entryCard(icon: "person.2.fill", title: "Community", action: { communityPresented = true })
-                        .padding(.top, 4)
+                    entryCard(
+                        icon: "person.2.fill",
+                        title: "Community",
+                        subtitle: "Browse training plans from the community",
+                        action: { communityPresented = true }
+                    )
+                    .padding(.top, 4)
                 }
 
                 Spacer(minLength: MasoMetrics.pageBottomInset)
@@ -219,21 +232,31 @@ struct TodayScreen: View {
     }
 
     /// 并排的小入口卡 (自由训练 / 社区).
-    private func entryCard(icon: String, title: LocalizedStringKey, action: @escaping () -> Void) -> some View {
+    /// Free workout / Community 共用的入口卡 — 一致排版:
+    ///   第一行: 小图标 + 标题 (同一行)
+    ///   第二行: 辅助文案 (说明这个入口是干嘛的)
+    private func entryCard(icon: String, title: LocalizedStringKey, subtitle: LocalizedStringKey, action: @escaping () -> Void) -> some View {
         Button(action: action) {
-            HStack(spacing: 10) {
-                // 左: 绿色图标 + 标题 (上下排).
-                VStack(alignment: .leading, spacing: 10) {
-                    Image(systemName: icon)
-                        .font(.system(size: 18, weight: .heavy))
-                        .foregroundStyle(MasoColor.accent)
-                    Text(title)
-                        .font(.system(size: 14, weight: .bold))
-                        .foregroundStyle(MasoColor.text)
-                        .lineLimit(1)
+            HStack(spacing: 12) {
+                VStack(alignment: .leading, spacing: 3) {
+                    // 第一行: 小图标 + 标题, 同行.
+                    HStack(spacing: 7) {
+                        Image(systemName: icon)
+                            .font(.system(size: 13, weight: .bold))
+                            .foregroundStyle(MasoColor.accent)
+                        Text(title)
+                            .font(.system(size: 15, weight: .bold))
+                            .foregroundStyle(MasoColor.text)
+                            .lineLimit(1)
+                    }
+                    // 第二行: 辅助文案.
+                    Text(subtitle)
+                        .font(.system(size: 12))
+                        .foregroundStyle(MasoColor.textDim)
+                        .lineLimit(2)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
                 Spacer(minLength: 0)
-                // chevron 垂直居中 (HStack 默认 .center 对齐, 不再钉在标题行).
                 Image(systemName: "chevron.right")
                     .font(.system(size: 11, weight: .heavy))
                     .foregroundStyle(MasoColor.textFaint)
