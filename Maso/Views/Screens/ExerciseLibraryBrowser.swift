@@ -185,26 +185,27 @@ struct ExerciseLibraryBrowser: View {
         let availE = availableEquipments
         return HStack(spacing: 8) {
             // 搜索框 — iOS 搜索框观感 (放大镜 + 圆角 + 清除), flex 占满剩余宽度.
+            // 字号 / 内边距跟右侧 filter 胶囊对齐 → 三个控件等高, 视觉成一组、平衡.
             HStack(spacing: 6) {
                 Image(systemName: "magnifyingglass")
-                    .font(.system(size: 13, weight: .semibold))
+                    .font(.system(size: 12, weight: .semibold))
                     .foregroundStyle(MasoColor.textFaint)
                 TextField(NSLocalizedString("Search", comment: "search field placeholder"), text: $query)
                     .textFieldStyle(.plain)
-                    .font(.system(size: 14))
+                    .font(.system(size: 13))
                     .autocorrectionDisabled()
                     .textInputAutocapitalization(.never)
                 if !query.isEmpty {
                     Button(action: { query = "" }) {
                         Image(systemName: "xmark.circle.fill")
-                            .font(.system(size: 13))
+                            .font(.system(size: 12))
                             .foregroundStyle(MasoColor.textFaint)
                     }
                     .buttonStyle(.plain)
                 }
             }
-            .padding(.horizontal, 10)
-            .padding(.vertical, 8)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 6)
             .background(MasoColor.surface)
             .clipShape(Capsule())
             .frame(maxWidth: .infinity)
