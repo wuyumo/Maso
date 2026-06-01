@@ -1063,6 +1063,7 @@ private struct PlanStepRow: View {
                 ExerciseImage(
                     category: exercise.category,
                     imageFolder: exercise.imageFolder,
+                    photoURL: exercise.photoURL,
                     customImageData: exercise.customImageData,
                     cornerRadius: 8,
                     size: 56,
@@ -1115,6 +1116,7 @@ private struct PlanStepCard: View {
                     ExerciseImage(
                         category: exercise.category,
                         imageFolder: exercise.imageFolder,
+                        photoURL: exercise.photoURL,
                         customImageData: exercise.customImageData,
                         cornerRadius: 8,
                         size: geo.size.width,
@@ -1173,6 +1175,7 @@ private struct EditStepView: View {
                     ExerciseImage(
                         category: exercise.category,
                         imageFolder: exercise.imageFolder,
+                        photoURL: exercise.photoURL,
                         customImageData: exercise.customImageData,
                         cornerRadius: 16,
                         size: geo.size.width,

@@ -155,6 +155,12 @@ struct SettingsScreen: View {
                             .font(.system(size: 13).monospacedDigit())
                             .foregroundStyle(MasoColor.textDim)
                     }
+                    // 部分动作缩略图来自 Pexels (Pexels License, 免费可商用) — 鸣谢.
+                    Row(label: "Exercise photos") {
+                        Text("Pexels")
+                            .font(.system(size: 13))
+                            .foregroundStyle(MasoColor.textDim)
+                    }
                 }
 
                 Spacer(minLength: MasoMetrics.pageBottomInset)

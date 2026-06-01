@@ -1,0 +1,557 @@
+{
+ "note": "Exercise thumbnail photos sourced from Pexels (https://www.pexels.com), Pexels License (free commercial use, no attribution required). Credited here as good practice.",
+ "photos": [
+  {
+   "id": "ab_wheel_rollout_kneeling",
+   "name": "Ab Wheel Rollout (Kneeling)",
+   "pexels_photo_id": 8032833,
+   "photographer": "MART  PRODUCTION",
+   "source": "Pexels"
+  },
+  {
+   "id": "ab_wheel_rollout_standing",
+   "name": "Ab Wheel Rollout (Standing)",
+   "pexels_photo_id": 8032833,
+   "photographer": "MART  PRODUCTION",
+   "source": "Pexels"
+  },
+  {
+   "id": "arch_hold",
+   "name": "Arch Hold",
+   "pexels_photo_id": 6926051,
+   "photographer": "Pavel Danilyuk",
+   "source": "Pexels"
+  },
+  {
+   "id": "back_extension_45_degree",
+   "name": "Back Extension (45°)",
+   "pexels_photo_id": 4127505,
+   "photographer": "Gustavo Fring",
+   "source": "Pexels"
+  },
+  {
+   "id": "back_extension_swiss_ball",
+   "name": "Back Extension (Swiss Ball)",
+   "pexels_photo_id": 3757649,
+   "photographer": "Ketut Subiyanto",
+   "source": "Pexels"
+  },
+  {
+   "id": "back_lever",
+   "name": "Back Lever",
+   "pexels_photo_id": 5750626,
+   "photographer": "Tima Miroshnichenko",
+   "source": "Pexels"
+  },
+  {
+   "id": "banded_shoulder_dislocation",
+   "name": "Banded Shoulder Dislocation",
+   "pexels_photo_id": 4506166,
+   "photographer": "www.kaboompics.com",
+   "source": "Pexels"
+  },
+  {
+   "id": "bicycle_kicks",
+   "name": "Bicycle Kicks",
+   "pexels_photo_id": 7721988,
+   "photographer": "Polona Mitar Osolnik",
+   "source": "Pexels"
+  },
+  {
+   "id": "burpee",
+   "name": "Burpee",
+   "pexels_photo_id": 4976936,
+   "photographer": "karim Elmasry",
+   "source": "Pexels"
+  },
+  {
+   "id": "burpee_broad_jump",
+   "name": "Burpee (Broad Jump)",
+   "pexels_photo_id": 15800320,
+   "photographer": "Mustafa Haziroglu",
+   "source": "Pexels"
+  },
+  {
+   "id": "burpee_no_pushup",
+   "name": "Burpee (No Push-Up)",
+   "pexels_photo_id": 4720537,
+   "photographer": "Ketut Subiyanto",
+   "source": "Pexels"
+  },
+  {
+   "id": "captains_of_crush",
+   "name": "Captains of Crush Gripper",
+   "pexels_photo_id": 45058,
+   "photographer": "Dom J",
+   "source": "Pexels"
+  },
+  {
+   "id": "clamshell",
+   "name": "Clamshell",
+   "pexels_photo_id": 36400032,
+   "photographer": "Jonathan Borba",
+   "source": "Pexels"
+  },
+  {
+   "id": "clamshell_banded",
+   "name": "Clamshell (Banded)",
+   "pexels_photo_id": 6339643,
+   "photographer": "Pavel Danilyuk",
+   "source": "Pexels"
+  },
+  {
+   "id": "deep_squat_hold",
+   "name": "Deep Squat Hold",
+   "pexels_photo_id": 6539867,
+   "photographer": "RDNE Stock project",
+   "source": "Pexels"
+  },
+  {
+   "id": "depth_drop_landing",
+   "name": "Depth Drop (Landing)",
+   "pexels_photo_id": 7688862,
+   "photographer": "cottonbro studio",
+   "source": "Pexels"
+  },
+  {
+   "id": "dip_assisted_machine",
+   "name": "Assisted Dip (Machine)",
+   "pexels_photo_id": 6050745,
+   "photographer": "Vegan Liftz",
+   "source": "Pexels"
+  },
+  {
+   "id": "dip_korean",
+   "name": "Korean Dip",
+   "pexels_photo_id": 4803664,
+   "photographer": "Ketut Subiyanto",
+   "source": "Pexels"
+  },
+  {
+   "id": "double_biceps_pose_hold",
+   "name": "Double Biceps Pose Hold",
+   "pexels_photo_id": 6456023,
+   "photographer": "Julia Larson",
+   "source": "Pexels"
+  },
+  {
+   "id": "dragon_flag",
+   "name": "Dragon Flag",
+   "pexels_photo_id": 10086629,
+   "photographer": "Sergey Ochkanov",
+   "source": "Pexels"
+  },
+  {
+   "id": "dumbbell_curl_21s",
+   "name": "21s (Dumbbell Curl)",
+   "pexels_photo_id": 3763115,
+   "photographer": "Andrea Piacquadio",
+   "source": "Pexels"
+  },
+  {
+   "id": "farmer_carry_cardio",
+   "name": "Farmer Carry (Cardio)",
+   "pexels_photo_id": 8455748,
+   "photographer": "Styves Exantus",
+   "source": "Pexels"
+  },
+  {
+   "id": "fire_hydrant",
+   "name": "Fire Hydrant",
+   "pexels_photo_id": 8098283,
+   "photographer": "Robert So",
+   "source": "Pexels"
+  },
+  {
+   "id": "fire_hydrant_banded",
+   "name": "Fire Hydrant (Banded)",
+   "pexels_photo_id": 6339645,
+   "photographer": "Robert So",
+   "source": "Pexels"
+  },
+  {
+   "id": "foam_roll_chest",
+   "name": "Foam Roll Chest",
+   "pexels_photo_id": 4804294,
+   "photographer": "Ketut Subiyanto",
+   "source": "Pexels"
+  },
+  {
+   "id": "foam_roll_glutes",
+   "name": "Foam Roll Glutes",
+   "pexels_photo_id": 4804294,
+   "photographer": "Ketut Subiyanto",
+   "source": "Pexels"
+  },
+  {
+   "id": "foam_roll_it_band",
+   "name": "Foam Roll IT Band",
+   "pexels_photo_id": 20890281,
+   "photographer": "Nadin Sh",
+   "source": "Pexels"
+  },
+  {
+   "id": "foam_roll_lats",
+   "name": "Foam Roll Lats",
+   "pexels_photo_id": 8933832,
+   "photographer": "Anastasia  Shuraeva",
+   "source": "Pexels"
+  },
+  {
+   "id": "foam_roll_quads",
+   "name": "Foam Roll Quads",
+   "pexels_photo_id": 4804294,
+   "photographer": "Ketut Subiyanto",
+   "source": "Pexels"
+  },
+  {
+   "id": "foam_roll_thoracic_extension",
+   "name": "Thoracic Extension (Foam Roller)",
+   "pexels_photo_id": 8933832,
+   "photographer": "Anastasia  Shuraeva",
+   "source": "Pexels"
+  },
+  {
+   "id": "foam_roll_upper_back",
+   "name": "Foam Roll Upper Back",
+   "pexels_photo_id": 8933832,
+   "photographer": "Anastasia  Shuraeva",
+   "source": "Pexels"
+  },
+  {
+   "id": "front_lever_full",
+   "name": "Front Lever",
+   "pexels_photo_id": 13993576,
+   "photographer": "Niko Twisty",
+   "source": "Pexels"
+  },
+  {
+   "id": "front_lever_tuck",
+   "name": "Front Lever (Tuck)",
+   "pexels_photo_id": 13993576,
+   "photographer": "Niko Twisty",
+   "source": "Pexels"
+  },
+  {
+   "id": "gorilla_row",
+   "name": "Gorilla Row",
+   "pexels_photo_id": 3888411,
+   "photographer": "Andrea Piacquadio",
+   "source": "Pexels"
+  },
+  {
+   "id": "happy_baby_pose",
+   "name": "Happy Baby Pose",
+   "pexels_photo_id": 7593027,
+   "photographer": "Miriam Alonso",
+   "source": "Pexels"
+  },
+  {
+   "id": "high_knees_run",
+   "name": "High Knees",
+   "pexels_photo_id": 6339341,
+   "photographer": "Pavel Danilyuk",
+   "source": "Pexels"
+  },
+  {
+   "id": "hip_90_90_switch",
+   "name": "90/90 Hip Switch",
+   "pexels_photo_id": 4164755,
+   "photographer": "Ivan S",
+   "source": "Pexels"
+  },
+  {
+   "id": "hollow_body_hold",
+   "name": "Hollow Body Hold",
+   "pexels_photo_id": 7187891,
+   "photographer": "RDNE Stock project",
+   "source": "Pexels"
+  },
+  {
+   "id": "hollow_hold",
+   "name": "Hollow Hold",
+   "pexels_photo_id": 15516700,
+   "photographer": "Sava Savov",
+   "source": "Pexels"
+  },
+  {
+   "id": "hollow_rock",
+   "name": "Hollow Rock",
+   "pexels_photo_id": 15516700,
+   "photographer": "Sava Savov",
+   "source": "Pexels"
+  },
+  {
+   "id": "jumping_jacks",
+   "name": "Jumping Jacks",
+   "pexels_photo_id": 6339477,
+   "photographer": "Pavel Danilyuk",
+   "source": "Pexels"
+  },
+  {
+   "id": "kroc_row",
+   "name": "Kroc Row",
+   "pexels_photo_id": 7187900,
+   "photographer": "RDNE Stock project",
+   "source": "Pexels"
+  },
+  {
+   "id": "leg_raise_captains_chair_knee",
+   "name": "Captain's Chair Knee Raise",
+   "pexels_photo_id": 4803717,
+   "photographer": "Ketut Subiyanto",
+   "source": "Pexels"
+  },
+  {
+   "id": "lizard_pose",
+   "name": "Lizard Pose",
+   "pexels_photo_id": 16131310,
+   "photographer": "Lê Đức",
+   "source": "Pexels"
+  },
+  {
+   "id": "lunge_forward_barbell",
+   "name": "Forward Lunge (Barbell)",
+   "pexels_photo_id": 30994841,
+   "photographer": "karim Elmasry",
+   "source": "Pexels"
+  },
+  {
+   "id": "machine_chest_fly_unilateral",
+   "name": "Single-Arm Chest Fly (Machine)",
+   "pexels_photo_id": 14616295,
+   "photographer": "Abdulrhman Alkady",
+   "source": "Pexels"
+  },
+  {
+   "id": "meadows_row",
+   "name": "Meadows Row",
+   "pexels_photo_id": 6551423,
+   "photographer": "karim Elmasry",
+   "source": "Pexels"
+  },
+  {
+   "id": "nordic_curl",
+   "name": "Nordic Curl",
+   "pexels_photo_id": 34433962,
+   "photographer": "Jonathan Borba",
+   "source": "Pexels"
+  },
+  {
+   "id": "nordic_curl_assisted",
+   "name": "Nordic Curl (Assisted)",
+   "pexels_photo_id": 14036851,
+   "photographer": "Jonathan Borba",
+   "source": "Pexels"
+  },
+  {
+   "id": "pec_deck",
+   "name": "Pec Deck",
+   "pexels_photo_id": 3838937,
+   "photographer": "Andrea Piacquadio",
+   "source": "Pexels"
+  },
+  {
+   "id": "pigeon_pose",
+   "name": "Pigeon Pose",
+   "pexels_photo_id": 31160033,
+   "photographer": "Elen Rau",
+   "source": "Pexels"
+  },
+  {
+   "id": "puppy_pose",
+   "name": "Puppy Pose",
+   "pexels_photo_id": 17572127,
+   "photographer": "AI25.Studio  Studio",
+   "source": "Pexels"
+  },
+  {
+   "id": "scarecrow",
+   "name": "Scarecrow (Dumbbell)",
+   "pexels_photo_id": 7289370,
+   "photographer": "Alesia  Kozik",
+   "source": "Pexels"
+  },
+  {
+   "id": "shadow_boxing",
+   "name": "Shadow Boxing",
+   "pexels_photo_id": 6295832,
+   "photographer": "Pavel Danilyuk",
+   "source": "Pexels"
+  },
+  {
+   "id": "spin_bike",
+   "name": "Spin Bike",
+   "pexels_photo_id": 8765704,
+   "photographer": "Dmitry Limonov",
+   "source": "Pexels"
+  },
+  {
+   "id": "sprint_intervals_track",
+   "name": "Sprint Intervals (Track)",
+   "pexels_photo_id": 12698200,
+   "photographer": "RUN 4 FFWPU",
+   "source": "Pexels"
+  },
+  {
+   "id": "stair_climbing",
+   "name": "Stair Climbing",
+   "pexels_photo_id": 3888343,
+   "photographer": "Andrea Piacquadio",
+   "source": "Pexels"
+  },
+  {
+   "id": "standing_forward_fold",
+   "name": "Standing Forward Fold",
+   "pexels_photo_id": 6453398,
+   "photographer": "Marta Wave",
+   "source": "Pexels"
+  },
+  {
+   "id": "step_down",
+   "name": "Step-Down",
+   "pexels_photo_id": 6740088,
+   "photographer": "Mikhail Nilov",
+   "source": "Pexels"
+  },
+  {
+   "id": "suitcase_carry",
+   "name": "Suitcase Carry",
+   "pexels_photo_id": 4793210,
+   "photographer": "Anete Lusina",
+   "source": "Pexels"
+  },
+  {
+   "id": "swimming_backstroke",
+   "name": "Swimming (Backstroke)",
+   "pexels_photo_id": 16318479,
+   "photographer": "Sergio Benavides",
+   "source": "Pexels"
+  },
+  {
+   "id": "swimming_breaststroke",
+   "name": "Swimming (Breaststroke)",
+   "pexels_photo_id": 31820088,
+   "photographer": "david hou",
+   "source": "Pexels"
+  },
+  {
+   "id": "swimming_butterfly",
+   "name": "Swimming (Butterfly)",
+   "pexels_photo_id": 13579965,
+   "photographer": "Josué Rodríguez",
+   "source": "Pexels"
+  },
+  {
+   "id": "swimming_freestyle",
+   "name": "Swimming (Freestyle)",
+   "pexels_photo_id": 11211138,
+   "photographer": "Nick Rush",
+   "source": "Pexels"
+  },
+  {
+   "id": "thoracic_rotation_open_book",
+   "name": "Thoracic Rotation (Open Book)",
+   "pexels_photo_id": 6958056,
+   "photographer": "cottonbro studio",
+   "source": "Pexels"
+  },
+  {
+   "id": "thread_the_needle",
+   "name": "Thread the Needle",
+   "pexels_photo_id": 6697192,
+   "photographer": "Tim  Samuel",
+   "source": "Pexels"
+  },
+  {
+   "id": "tibialis_raise",
+   "name": "Tibialis Raise",
+   "pexels_photo_id": 34211870,
+   "photographer": "Malama Mushitu",
+   "source": "Pexels"
+  },
+  {
+   "id": "tibialis_raise_band",
+   "name": "Tibialis Raise (Band)",
+   "pexels_photo_id": 4920440,
+   "photographer": "Gustavo Fring",
+   "source": "Pexels"
+  },
+  {
+   "id": "tibialis_raise_dumbbell",
+   "name": "Tibialis Raise (Dumbbell)",
+   "pexels_photo_id": 34211870,
+   "photographer": "Malama Mushitu",
+   "source": "Pexels"
+  },
+  {
+   "id": "toes_to_bar",
+   "name": "Toes to Bar",
+   "pexels_photo_id": 29859460,
+   "photographer": "Ardit Mbrati",
+   "source": "Pexels"
+  },
+  {
+   "id": "twenty_ones",
+   "name": "21s (Curl)",
+   "pexels_photo_id": 14085138,
+   "photographer": "Krizalid Daza",
+   "source": "Pexels"
+  },
+  {
+   "id": "waiters_curl",
+   "name": "Waiter's Curl",
+   "pexels_photo_id": 3763115,
+   "photographer": "Andrea Piacquadio",
+   "source": "Pexels"
+  },
+  {
+   "id": "wall_sit",
+   "name": "Wall Sit",
+   "pexels_photo_id": 8401958,
+   "photographer": "RDNE Stock project",
+   "source": "Pexels"
+  },
+  {
+   "id": "wall_sit_dumbbell",
+   "name": "Wall Sit (Dumbbell)",
+   "pexels_photo_id": 8401958,
+   "photographer": "RDNE Stock project",
+   "source": "Pexels"
+  },
+  {
+   "id": "wall_sit_single_leg",
+   "name": "Wall Sit (Single-Leg)",
+   "pexels_photo_id": 8401958,
+   "photographer": "RDNE Stock project",
+   "source": "Pexels"
+  },
+  {
+   "id": "wall_slides",
+   "name": "Wall Slides",
+   "pexels_photo_id": 4853053,
+   "photographer": "Ketut Subiyanto",
+   "source": "Pexels"
+  },
+  {
+   "id": "wall_squat_isometric",
+   "name": "Wall Sit (Isometric Hold)",
+   "pexels_photo_id": 8401958,
+   "photographer": "RDNE Stock project",
+   "source": "Pexels"
+  },
+  {
+   "id": "wall_walk",
+   "name": "Wall Walk",
+   "pexels_photo_id": 5368982,
+   "photographer": "cottonbro studio",
+   "source": "Pexels"
+  },
+  {
+   "id": "nordic_curl_assisted",
+   "name": "Nordic Curl (Assisted)",
+   "source": "Pexels",
+   "note": "shares Nordic Curl photo"
+  }
+ ]
+}

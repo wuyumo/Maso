@@ -91,6 +91,7 @@ private struct RawExerciseV2: Decodable {
     let level: String
     let force: String                            // "push" | "pull" | "static"
     let imageFolder: String?                     // = legacy v1 id, or null
+    let photoURL: String?                        // 单图缩略图完整 URL (Pexels 来源动作), 或 null
     let instructions: [String: [String]]?
     let video_url: String?
     let calories_estimate: V2Calories?
@@ -143,6 +144,7 @@ private func toExerciseV2(_ r: RawExerciseV2) -> Exercise {
         primaryMuscles: orderedUnique(primaryMuscles),
         muscleGroups: allMuscles,
         imageFolder: r.imageFolder,
+        photoURL: r.photoURL,
         level: level,
         force: force,
         equipment: primaryEquipment,

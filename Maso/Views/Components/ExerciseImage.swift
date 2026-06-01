@@ -10,6 +10,8 @@ struct ExerciseImage: View {
     let category: ExerciseCategory
     /// 来自 Exercise.imageFolder; 为 nil 时直接用渐变占位
     var imageFolder: String? = nil
+    /// 单图缩略图完整 URL (Pexels 来源动作). imageFolder 为 nil 时回退到这里, 单张静态图.
+    var photoURL: String? = nil
     /// 用户自创动作的图片 bytes — 优先于 imageFolder. 自创动作 imageFolder 永远 nil.
     /// caller (Library Browser / Picker 列表行) 把 Exercise.customImageData 传进来.
     var customImageData: Data? = nil
@@ -44,6 +46,17 @@ struct ExerciseImage: View {
                         // 强调色调染 — 类似 Spotify album cover 的多色叠加
                         gradient.opacity(0.35).blendMode(.multiply)
                     )
+            } else if let photoURL, let url = URL(string: photoURL) {
+                // Pexels 单张静态图 — 加载中/失败回退到底层 category 渐变.
+                // 轻一点的色染 (0.18 vs 0.35), 真实照片重叠太多会脏.
+                AsyncImage(url: url, transaction: Transaction(animation: .easeOut(duration: 0.2))) { phase in
+                    if let image = phase.image {
+                        image
+                            .resizable()
+                            .aspectRatio(contentMode: fitCustomImage ? .fit : .fill)
+                            .overlay(gradient.opacity(0.18).blendMode(.multiply))
+                    }
+                }
             }
         }
         .frame(width: size, height: size)

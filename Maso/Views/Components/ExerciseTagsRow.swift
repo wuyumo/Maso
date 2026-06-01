@@ -218,6 +218,7 @@ struct GroupedExerciseRow<Trailing: View>: View {
         ExerciseImage(
             category: ex.category,
             imageFolder: ex.imageFolder,
+            photoURL: ex.photoURL,
             customImageData: ex.customImageData,
             cornerRadius: 8,
             size: isVariant ? 40 : 56,

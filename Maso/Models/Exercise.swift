@@ -155,6 +155,10 @@ struct Exercise: Identifiable, Hashable, Codable, Sendable {
     /// jsdelivr CDN 的 image folder. 来源新库 fuzzy match (preserve old) 或 nil (新动作无图).
     let imageFolder: String?
 
+    /// 单张静态缩略图的完整 URL — 给 free-exercise-db 没有、改从 Pexels 取图的动作用.
+    /// 优先级: customImageData > imageFolder(双帧) > photoURL(单图) > category 渐变占位.
+    var photoURL: String? = nil
+
     /// 难度
     var level: ExerciseLevel?
 

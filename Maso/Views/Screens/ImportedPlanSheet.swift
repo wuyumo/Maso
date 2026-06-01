@@ -123,6 +123,7 @@ private struct ImportedStepRow: View {
                 ExerciseImage(
                     category: ex.category,
                     imageFolder: ex.imageFolder,
+                    photoURL: ex.photoURL,
                     cornerRadius: 8,
                     size: 44,
                     animated: false
