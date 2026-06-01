@@ -346,6 +346,16 @@ struct ExerciseDetailSheet: View {
     /// SpeechManager 单例 — observable, 当前 source / isSpeaking 切按钮态.
     @State private var speech = SpeechManager.shared
 
+    /// "看示范" 链接 — 优先 curated videoURL (有的动作 schema 自带); 否则回退到 YouTube 搜索
+    /// "<英文动作名> exercise how to". 用搜索而不是写死具体视频 → 不会失效 / 张冠李戴, 且覆盖全部动作.
+    /// 用英文 name (而非本地化 displayName) 搜 — 健身教程英文资源最全, 命中率高.
+    private var watchDemoURL: URL? {
+        if let u = exercise.videoURL { return u }
+        let query = "\(exercise.name) exercise how to"
+        guard let enc = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else { return nil }
+        return URL(string: "https://www.youtube.com/results?search_query=\(enc)")
+    }
+
     /// 是否值得显示"展开"按钮 — 仅当原 instructions 比简化版有"多余信息" 时.
     /// 多余 = 条目更多 / 任意一条被截断 (字符差).
     private var hasMoreDetail: Bool {
@@ -593,9 +603,9 @@ struct ExerciseDetailSheet: View {
                                     .tracking(1.5)
                                     .foregroundStyle(MasoColor.textFaint)
                                 Spacer()
-                                // Watch demo — YouTube / 视频 link (新 schema 字段).
-                                // 只在 video_url 非空时显示. 系统会用默认浏览器 / YouTube app 打开.
-                                if let url = exercise.videoURL {
+                                // Watch demo — 优先 curated video_url; 没有就回退到 YouTube 搜索该动作的教程,
+                                // 所以现在每个动作都有"看示范"入口. 系统会用默认浏览器 / YouTube app 打开.
+                                if let url = watchDemoURL {
                                     Link(destination: url) {
                                         HStack(spacing: 4) {
                                             Image(systemName: "play.rectangle.fill")

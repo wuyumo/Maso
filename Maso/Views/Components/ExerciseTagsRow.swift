@@ -202,10 +202,12 @@ struct GroupedExerciseRow<Trailing: View>: View {
         .buttonStyle(.plain)
         .listRowSeparator(.hidden)
         .listRowBackground(Color.clear)
+        // 标题 (canonical) 上下都收紧 (3→2), 让母动作贴近自己的变种; 变种行 1pt 内聚.
+        // 组与组之间的"呼吸" 由 groupedVariantSections 末尾的 spacer 负责 (展开态才加).
         .listRowInsets(EdgeInsets(
-            top: isVariant ? 1 : 3,
+            top: isVariant ? 1 : 2,
             leading: MasoMetrics.pagePaddingHorizontal + (isVariant ? 16 : 0),  // 变种缩进 16pt
-            bottom: isVariant ? 1 : 3,
+            bottom: isVariant ? 1 : 2,
             trailing: MasoMetrics.pagePaddingHorizontal
         ))
     }
@@ -268,7 +270,7 @@ struct VariantSectionHeader: View {
             .listRowSeparator(.hidden)
             .listRowBackground(Color.clear)
             .listRowInsets(EdgeInsets(
-                top: 7,
+                top: 3,   // 收紧 (7→3) — 小节头贴近上面的母动作 / 上一段变种.
                 leading: MasoMetrics.pagePaddingHorizontal + 16 + MasoMetrics.rowPaddingH,
                 bottom: 2,
                 trailing: MasoMetrics.pagePaddingHorizontal
@@ -300,4 +302,10 @@ func groupedVariantSections<RowView: View>(
         )
         ForEach(equipmentVars, id: \.id) { row($0) }
     }
+    // 组尾留白 — 让本组最后一个变种跟下一个母动作之间有"呼吸", 跟组内紧凑形成对比.
+    Color.clear
+        .frame(height: 5)
+        .listRowInsets(EdgeInsets())
+        .listRowBackground(Color.clear)
+        .listRowSeparator(.hidden)
 }

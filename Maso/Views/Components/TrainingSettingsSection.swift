@@ -170,30 +170,8 @@ struct TrainingSettingsSection: View {
                     suffix: "s"
                 )
             }
-            Divider().background(MasoColor.borderSoft)
-
-            // ─── 8. Quick-start from center tab ───
-            ToggleRow(
-                title: "Quick-start from center tab",
-                desc: "Tap the highlighted center tab again to jump straight into today's recommended workout",
-                isOn: Binding(
-                    get: { data.settings.quickStartOnActiveTab },
-                    set: { data.settings.quickStartOnActiveTab = $0 }
-                )
-            )
-            Divider().background(MasoColor.borderSoft)
-
-            // ─── 9. Show muscle subdivisions ───
-            // 默认开 (跟解剖学一致暴露 sub muscle).
-            // 关掉之后 UI 只暴露大肌群入口, 给追求"简洁"的用户用.
-            ToggleRow(
-                title: "Show muscle subdivisions",
-                desc: "Off: pick the whole muscle (chest, back) — no upper/mid/lower split. On: full anatomical detail.",
-                isOn: Binding(
-                    get: { data.settings.muscleDetailEnabled },
-                    set: { data.settings.muscleDetailEnabled = $0 }
-                )
-            )
+            // (移除: "Quick-start from center tab" — 入口已不在; 该行为仍按 settings 默认值生效.)
+            // (移除: "Show muscle subdivisions" — 不再让用户切换, 始终按默认显示细分肌群.)
 
             // P2-4 / P2-11: 说明这些偏好的作用域 — 否则用户改了"默认组数"看自建 plan 没变会以为坏了.
             Text("These apply to recommended plans and exercises you add — your custom plans aren't changed.")

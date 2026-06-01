@@ -120,25 +120,40 @@ enum ExerciseGrouping {
 
     // MARK: - Movement modifier (执行方式) stripping
 
-    /// "执行方式"修饰词 — 改的是怎么做(站/坐/单侧/握法)而不是用什么器械.
-    /// 注意: 故意排除以下"独立动作变种", 它们不是执行方式而是不同动作, 不该被合并:
-    ///   - Incline/Decline/Romanian/Sumo (角度/姿态决定的不同动作)
-    ///   - Floor / Behind-the-Neck (限定 ROM / 轨迹的不同动作 — "Floor Press" ≠ 泛化 "Press")
+    /// "执行方式"修饰词 — 改的是怎么做(站/坐/单侧/握法/节奏/范围)而不是换了个动作.
+    /// 判定规则 (跟用户对齐): 动作名 = "<修饰词> <某个真实基础动作>" 且修饰词只是"怎么做"
+    ///   → 收折到基础动作 (e.g. "Feet-Elevated Bench Dip" → Bench Dip, "Dead-Stop Barbell Row" → Row).
+    /// 注意: 故意排除以下"独立动作变种" —— 它们是不同动作, 不是执行方式, 不该被合并:
+    ///   - 角度/姿态决定的不同动作: Incline / Decline / Romanian / Sumo
+    ///   - 限定 ROM / 轨迹的不同动作: Floor / Behind-the-Neck / Speed
+    ///   - 独立的下肢花式: Pistol / Sissy / Hack / Zercher / Bulgarian / Cossack / Split / Curtsy …
+    ///   - 独立的自重技巧: Diamond / Pike / Handstand / Archer / Commando / Typewriter …
     static let movementModifierTokens: [String] = [
         // 方向/角度
         "low-to-high", "high-to-low",
-        // 单侧
+        // 单侧 / 双侧
         "single-arm", "one-arm", "single arm", "one arm",
         "single-leg", "one-leg", "single leg", "one leg",
         "one-side", "one side", "unilateral", "alternating",
-        // 体位 (注意: 不含 floor — Floor Press 是独立动作)
+        "two-arm", "two arm", "two-handed", "two handed",
+        // 体位 / 支撑 (注意: 不含 floor — Floor Press 是独立动作)
         "seated", "standing", "lying", "prone", "supine",
+        "kneeling", "half-kneeling", "half kneeling",
+        "chest-supported", "chest supported", "feet-elevated", "feet elevated",
         // 握法
         "wide-grip", "close-grip", "neutral-grip", "reverse-grip",
         "wide grip", "close grip", "neutral grip", "reverse grip",
         "overhand", "underhand", "pronated", "supinated",
-        // 节奏
-        "paused",
+        "hammer-grip", "hammer grip", "crush-grip", "crush grip",
+        "snatch-grip", "snatch grip", "iso-lateral", "iso lateral",
+        // 节奏 / 强度技巧 (同一动作的执行变体)
+        "paused", "tempo", "eccentric", "iso-hold", "iso hold",
+        "21s", "drop-set", "drop set", "drag",
+        // 范围 / 起停
+        "deficit", "dead-stop", "dead stop",
+        // 路径 / 倾身 (常见于侧平举 / 弯举的执行变体)
+        "cross-body", "cross body", "behind-the-back", "behind the back",
+        "behind-the-head", "behind the head", "lean-in", "lean in", "leaning", "egyptian",
     ]
 
     static let movementModifierRegex: NSRegularExpression = {

@@ -122,18 +122,8 @@ struct SettingsScreen: View {
                     // 紧贴上面 section (顶层 VStack spacing 24, 这里抵消 16 → 实际间距 8pt)
                     .padding(.top, -16)
 
-                // 健康提示 + 法律链接 — Apple 1.4.1 要求健身类 app 给出医疗免责;
-                // Terms / Privacy 是 paywall + App Store metadata 强制要求的合规链接.
-                Section_(title: "Health & Safety") {
-                    Text("Maso is for informational and motivational purposes only — not medical advice. Consult a physician before starting any new exercise program, especially if you have a medical condition, are pregnant, or have not exercised recently. Stop immediately and seek help if you feel pain, dizziness, or shortness of breath.")
-                        .font(.system(size: 12))
-                        .foregroundStyle(MasoColor.textDim)
-                        .lineSpacing(2)
-                        .fixedSize(horizontal: false, vertical: true)
-                        .padding(.horizontal, 14)
-                        .padding(.vertical, 14)
-                }
-
+                // 法律 + 健康合规链接. 医疗免责正文 (Apple 1.4.1 必需) 不再首页平铺,
+                // 收进二级页 (HealthSafetyDetail), 入口放 About 里 — 仍可访问 = 合规, 首页更清爽.
                 Section_(title: "About") {
                     Link(destination: PaywallScreen.privacyURL) {
                         Row(label: "Privacy Policy") {
@@ -147,6 +137,15 @@ struct SettingsScreen: View {
                         Row(label: "Terms of Service") {
                             Image(systemName: "arrow.up.right.square")
                                 .font(.system(size: 13, weight: .semibold))
+                                .foregroundStyle(MasoColor.textFaint)
+                        }
+                    }
+                    .buttonStyle(.plain)
+                    // 健康与安全 — push 进二级页看医疗免责正文.
+                    NavigationLink(destination: HealthSafetyDetail()) {
+                        Row(label: "Health & Safety") {
+                            Image(systemName: "chevron.right")
+                                .font(.system(size: 12, weight: .semibold))
                                 .foregroundStyle(MasoColor.textFaint)
                         }
                     }
@@ -536,4 +535,26 @@ private struct ShareSheet: UIViewControllerRepresentable {
         UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
     }
     func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
+}
+
+// MARK: - HealthSafetyDetail — 医疗免责二级页 (Apple 1.4.1 必需正文, 从 Settings 首页收进来)
+private struct HealthSafetyDetail: View {
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 14) {
+                Text("Maso is for informational and motivational purposes only — not medical advice. Consult a physician before starting any new exercise program, especially if you have a medical condition, are pregnant, or have not exercised recently. Stop immediately and seek help if you feel pain, dizziness, or shortness of breath.")
+                    .font(.system(size: 14))
+                    .foregroundStyle(MasoColor.textDim)
+                    .lineSpacing(3)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
+            .padding(.top, 16)
+        }
+        .background(MasoColor.background.ignoresSafeArea())
+        .navigationTitle("Health & Safety")
+        .navigationBarTitleDisplayMode(.inline)
+        .tint(MasoColor.text)
+    }
 }
