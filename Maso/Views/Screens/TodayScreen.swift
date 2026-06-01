@@ -9,8 +9,14 @@ struct TodayScreen: View {
     let onNewPlan: () -> Void
     /// 标题行右上角齿轮 → 弹 Settings sheet (RootView 持有 sheet state)
     let onOpenSettings: () -> Void
-    /// 嵌在 Train tab 里时 true — 不渲染自己的大标题/齿轮 (Train 的统一导航栏接管).
+    /// 嵌在外层 NavigationStack (Train / Plans tab) 里时 true — 不渲染自己的大标题/齿轮.
     var embedded: Bool = false
+    /// 渲染哪部分内容:
+    ///   - .trainToday: 肌肉状态 + 今日推荐 (新的 Train tab)
+    ///   - .myPlans:    我的训练列表 + 自由训练 + 社区 (Plans tab 的 My Plans 分页)
+    ///   - .full:       全部 (兼容老用法)
+    enum Mode { case full, trainToday, myPlans }
+    var mode: Mode = .full
 
     /// 卡片 tap → 弹 plan detail sheet 查看动作 + 每组 sets/reps/weight (WorkoutCard + PlanRow 共用)
     @State private var detailPlan: Plan? = nil
@@ -55,55 +61,61 @@ struct TodayScreen: View {
         // contextMenu (代替 List 的右滑); 排序暂不提供 (原 Plans 页的拖拽随 List 一起去掉了).
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                // ── 训练状态 ── (MuscleStatusOverviewCard 自带 "MUSCLE STATUS" kicker)
-                MuscleStatusOverviewCard(
-                    fatigueMap: fatigueMap,
-                    gapMuscles: gapMuscles,
-                    onStartGapWorkout: startGapWorkout
-                )
-
-                // ── 今日推荐 ── (WorkoutCard 自带 "TODAY'S WORKOUT" kicker)
-                if let plan = suggested {
-                    WorkoutCard(
-                        plan: plan,
-                        exById: data.exById,
-                        kicker: "Today's Workout",
-                        onStart: { onStart(plan) },
-                        onShowDetail: { detailPlan = plan }
+                // ===== Train tab 内容: 肌肉状态 + 今日推荐 (mode != .myPlans) =====
+                if mode != .myPlans {
+                    // ── 训练状态 ── (MuscleStatusOverviewCard 自带 "MUSCLE STATUS" kicker)
+                    MuscleStatusOverviewCard(
+                        fatigueMap: fatigueMap,
+                        gapMuscles: gapMuscles,
+                        onStartGapWorkout: startGapWorkout
                     )
-                }
 
-                // ── 我的训练 ── section header (kicker + restore? + 新建入口) — 原 Plans 页移过来.
-                myPlansHeader.padding(.top, 4)
-
-                if data.plans.isEmpty {
-                    plansEmptyState
-                } else {
-                    PlanRationaleCard()
-                    ForEach(data.plans) { plan in
-                        PlanRow(
+                    // ── 今日推荐 ── (WorkoutCard 自带 "TODAY'S WORKOUT" kicker)
+                    if let plan = suggested {
+                        WorkoutCard(
                             plan: plan,
                             exById: data.exById,
-                            onTap: { detailPlan = plan },
+                            kicker: "Today's Workout",
                             onStart: { onStart(plan) },
-                            onDelete: { pendingDeletePlanId = plan.id }
+                            onShowDetail: { detailPlan = plan }
                         )
-                        // 长按菜单代替 List 右滑 — 改/删.
-                        .contextMenu {
-                            Button { detailPlan = plan } label: { Label("Edit", systemImage: "pencil") }
-                            Button(role: .destructive) { pendingDeletePlanId = plan.id } label: {
-                                Label("Delete", systemImage: "trash")
-                            }
-                        }
                     }
                 }
 
-                // ── 入口: 自由训练 + 社区 (并排两块) ──
-                HStack(spacing: 12) {
-                    entryCard(icon: "dumbbell.fill", title: "Free workout", action: onFreeWorkout)
-                    entryCard(icon: "person.2.fill", title: "Community", action: { communityPresented = true })
+                // ===== Plans tab 的 My Plans 分页: 我的训练 + 自由训练 + 社区 (mode != .trainToday) =====
+                if mode != .trainToday {
+                    // ── 我的训练 ── section header (kicker + restore? + 新建入口) — 原 Plans 页移过来.
+                    myPlansHeader.padding(.top, 4)
+
+                    if data.plans.isEmpty {
+                        plansEmptyState
+                    } else {
+                        PlanRationaleCard()
+                        ForEach(data.plans) { plan in
+                            PlanRow(
+                                plan: plan,
+                                exById: data.exById,
+                                onTap: { detailPlan = plan },
+                                onStart: { onStart(plan) },
+                                onDelete: { pendingDeletePlanId = plan.id }
+                            )
+                            // 长按菜单代替 List 右滑 — 改/删.
+                            .contextMenu {
+                                Button { detailPlan = plan } label: { Label("Edit", systemImage: "pencil") }
+                                Button(role: .destructive) { pendingDeletePlanId = plan.id } label: {
+                                    Label("Delete", systemImage: "trash")
+                                }
+                            }
+                        }
+                    }
+
+                    // ── 入口: 自由训练 + 社区 (并排两块) ──
+                    HStack(spacing: 12) {
+                        entryCard(icon: "dumbbell.fill", title: "Free workout", action: onFreeWorkout)
+                        entryCard(icon: "person.2.fill", title: "Community", action: { communityPresented = true })
+                    }
+                    .padding(.top, 4)
                 }
-                .padding(.top, 4)
 
                 Spacer(minLength: MasoMetrics.pageBottomInset)
             }

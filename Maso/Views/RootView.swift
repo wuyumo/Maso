@@ -79,8 +79,8 @@ struct RootView: View {
         guard !mode.isEmpty else { return }
         switch mode {
         case "library":
-            tab = .today          // Train tab
-            trainPage = .library  // 切到动作库分页
+            tab = .plans          // Plans tab
+            trainPage = .library  // 切到 Exercises 分页
         case "history":
             tab = .history
         case "settings":
@@ -121,9 +121,32 @@ struct RootView: View {
                 // 三个 tab 都包 NavigationStack — 走 iOS 默认 navigationTitle + toolbar 样式.
                 // .tint(MasoColor.text) 覆盖系统默认 (Asset AccentColor 是绿) — toolbar 右上角按钮
                 // 走白色, 跟 dark theme 配色一致 (不再绿).
-                // Train — 把原 Today (我的训练 + 今日推荐 + 自由训练 + 社区) 和 Exercise Library
-                // 合成一个 tab, 顶部 segmented 切两个分页 (My Plans / Exercise Library).
-                TrainScreen(
+                // Train — 今日总览: 肌肉状态 + 今日推荐 (落地页, .today tag).
+                NavigationStack {
+                    TodayScreen(
+                        onStart: startTraining,
+                        onFreeWorkout: { quickWorkoutPresented = true },
+                        onNewPlan: handleNewPlan,
+                        onOpenSettings: { settingsPresented = true },
+                        embedded: true,
+                        mode: .trainToday
+                    )
+                    .screenHeader("Train") {
+                        Button(action: { settingsPresented = true }) {
+                            Image(systemName: "gearshape")
+                        }
+                        .accessibilityLabel("Settings")
+                    }
+                }
+                .tint(MasoColor.text)
+                .safeAreaInset(edge: .bottom, spacing: 0) { miniBarContent }
+                .tabItem {
+                    Label("Train", systemImage: "figure.strengthtraining.traditional")
+                }
+                .tag(RootTab.today)
+
+                // Plans — segmented [My Plans | Exercises]: 我的训练 + 自由训练 + 社区, 以及动作库.
+                PlansTabScreen(
                     page: $trainPage,
                     onStart: startTraining,
                     onFreeWorkout: { quickWorkoutPresented = true },
@@ -133,9 +156,9 @@ struct RootView: View {
                 .tint(MasoColor.text)
                 .safeAreaInset(edge: .bottom, spacing: 0) { miniBarContent }
                 .tabItem {
-                    Label("Train", systemImage: "figure.strengthtraining.traditional")
+                    Label("Plans", systemImage: "list.bullet.clipboard.fill")
                 }
-                .tag(RootTab.today)
+                .tag(RootTab.plans)
 
                 NavigationStack {
                     HistoryScreen(
@@ -194,10 +217,10 @@ struct RootView: View {
             // 跨 sheet tab 切换请求 — Settings 里点 "Plans" 让我们切到 Plans tab
             .onChange(of: router.requestedTab) { _, newTab in
                 if let newTab {
-                    // .library / .plans 现在都是 Train tab 的分页 — 映射到 .today + 对应 trainPage.
+                    // .library / .plans 现在都是 Plans tab 的分页 — 映射到 .plans + 对应 trainPage.
                     switch newTab {
-                    case .library: tab = .today; trainPage = .library
-                    case .plans:   tab = .today; trainPage = .plans
+                    case .library: tab = .plans; trainPage = .library
+                    case .plans:   tab = .plans; trainPage = .plans
                     default:       tab = newTab
                     }
                     settingsPresented = false
@@ -252,8 +275,9 @@ struct RootView: View {
                             data.plans.append(p)
                             data.save()
                             Haptics.tap()
-                            // 落到 Today, 让用户在"我的训练"section 看到新加的 plan
-                            tab = .today
+                            // 落到 Plans/My Plans, 让用户在"我的训练"列表里看到新加的 plan
+                            tab = .plans
+                            trainPage = .plans
                         }
                     }
                 )
@@ -268,8 +292,9 @@ struct RootView: View {
             .sheet(item: $newPlanForEdit, onDismiss: {
                 if let planId = lastCreatedPlanId { data.removePlanIfEmpty(planId) }
                 lastCreatedPlanId = nil
-                // 新建的 plan 出现在 Today 的"我的训练"section — 留在 Today 即可.
-                tab = .today
+                // 新建的 plan 出现在 Plans/My Plans 列表 — 切过去让用户看到.
+                tab = .plans
+                trainPage = .plans
             }) { plan in
                 PlanDetailSheet(
                     initialPlan: plan,
@@ -627,12 +652,12 @@ struct NavStackIf<Content: View>: View {
     }
 }
 
-// MARK: - TrainScreen — "Train" tab: 单一导航栏, segmented 当标题切 My Plans / Exercise Library
+// MARK: - PlansTabScreen — "Plans" tab: 单一导航栏, segmented 当标题切 My Plans / Exercises
 //
-// 一个 Train NavigationStack 接管整页. 顶部导航栏中央放 segmented (= 标题), 右上角按钮按分页切
-// (My Plans → 齿轮; Library → +). 两个分页 (TodayScreen / ExerciseLibraryBrowser) 都 embedded:
-// 不再自带 NavStack / 大标题, 所以没有"segmented + 大标题"重复. 切页保留各自滚动/sheet 状态.
-private struct TrainScreen: View {
+// 一个 NavigationStack 接管整页. 顶部导航栏中央放 segmented (= 标题), 右上角按钮按分页切
+// (My Plans → 齿轮; Exercises → +). 两个分页 (TodayScreen .myPlans / ExerciseLibraryBrowser) 都
+// embedded: 不自带 NavStack / 大标题. 切页保留各自滚动 / sheet 状态.
+private struct PlansTabScreen: View {
     @Binding var page: TrainPage
     let onStart: (Plan) -> Void
     let onFreeWorkout: () -> Void
@@ -651,7 +676,8 @@ private struct TrainScreen: View {
                         onFreeWorkout: onFreeWorkout,
                         onNewPlan: onNewPlan,
                         onOpenSettings: onOpenSettings,
-                        embedded: true
+                        embedded: true,
+                        mode: .myPlans
                     )
                 case .library:
                     ExerciseLibraryBrowser(asTab: true, embedded: true, addRequested: $libraryAddRequested)
@@ -662,7 +688,7 @@ private struct TrainScreen: View {
                 ToolbarItem(placement: .principal) {
                     Picker("", selection: $page.animation(.easeOut(duration: 0.18))) {
                         Text("My Plans").tag(TrainPage.plans)
-                        Text("Library").tag(TrainPage.library)
+                        Text("Exercises").tag(TrainPage.library)
                     }
                     .pickerStyle(.segmented)
                     .frame(width: 240)
