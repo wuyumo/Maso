@@ -156,7 +156,7 @@ struct RootView: View {
                 .tint(MasoColor.text)
                 .safeAreaInset(edge: .bottom, spacing: 0) { miniBarContent }
                 .tabItem {
-                    Label("Plans", systemImage: "list.bullet.clipboard.fill")
+                    Label("Plans", systemImage: "square.stack.3d.up.fill")
                 }
                 .tag(RootTab.plans)
 
