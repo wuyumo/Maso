@@ -17,6 +17,10 @@ struct WorkoutCard: View {
     /// 可选 — 整张卡可点查看 plan 详情 (动作列表 + sets/reps/weight).
     /// 当 caller 传了这个 callback, 卡片整体变成 button. 没传 → 纯展示.
     var onShowDetail: (() -> Void)? = nil
+    /// Play 按钮视觉强度:
+    ///   - true (默认): 实心 accent 圆 + 黑色 play + 阴影 (Today's Workout 主 CTA, 强).
+    ///   - false: accent 半透明底 + accent play + 细描边 (My Plans 计划卡, 弱化).
+    var prominentStart: Bool = true
 
     /// 被 LimitedFlowLayout 截断的 exercise pill 个数 — 用于动态构造 "+N more" 文案.
     /// Layout 在 placeSubviews 里通过 onTruncate callback async 写回, SwiftUI 下一轮 re-render
@@ -182,14 +186,27 @@ struct WorkoutCard: View {
 
                 Button(action: onStart) {
                     ZStack {
-                        Circle()
-                            .fill(MasoColor.accent)
-                            .frame(width: 44, height: 44)
-                            .shadow(color: MasoColor.accent.opacity(0.35), radius: 6, y: 0)
-                        Image(systemName: "play.fill")
-                            .font(.system(size: 16, weight: .heavy))
-                            .foregroundStyle(.black)
-                            .offset(x: 1)
+                        if prominentStart {
+                            // 强: 实心 accent + 黑 play + 阴影 — Today's Workout 主 CTA.
+                            Circle()
+                                .fill(MasoColor.accent)
+                                .frame(width: 44, height: 44)
+                                .shadow(color: MasoColor.accent.opacity(0.35), radius: 6, y: 0)
+                            Image(systemName: "play.fill")
+                                .font(.system(size: 16, weight: .heavy))
+                                .foregroundStyle(.black)
+                                .offset(x: 1)
+                        } else {
+                            // 弱: accent 半透明底 + accent play + 细描边 — My Plans 计划卡.
+                            Circle()
+                                .fill(MasoColor.accent.opacity(0.18))
+                                .overlay(Circle().stroke(MasoColor.accent.opacity(0.4), lineWidth: 0.5))
+                                .frame(width: 44, height: 44)
+                            Image(systemName: "play.fill")
+                                .font(.system(size: 15, weight: .heavy))
+                                .foregroundStyle(MasoColor.accent)
+                                .offset(x: 1)
+                        }
                     }
                 }
                 .buttonStyle(.plain)

@@ -109,7 +109,8 @@ struct TodayScreen: View {
                                 exById: data.exById,
                                 kicker: "",
                                 onStart: { onStart(plan) },
-                                onShowDetail: { detailPlan = plan }
+                                onShowDetail: { detailPlan = plan },
+                                prominentStart: false   // 计划卡的开始键弱化 (半透明绿底)
                             )
                             // 长按菜单代替 List 右滑 — 改/删.
                             .contextMenu {
