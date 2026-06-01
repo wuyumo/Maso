@@ -32,8 +32,13 @@ struct ExerciseTagsRow: View {
     /// 整体字号 / 内边距 — compact 用于 grid card 这种宽度受限场景.
     var compact: Bool = false
 
-    /// 折叠到 12 major + dedupe + 按 groupedRows 顺序 (chest 永远在 back 前)
+    /// 折叠到 12 major + dedupe, **保留输入顺序** (= primary muscles 在前, 因为
+    /// Exercise.muscleGroups = orderedUnique(primary + secondary)).
     /// 落点用 MuscleSelector.majorOf — 全 app 肌群归一唯一入口.
+    ///
+    /// ⚠️ 不再按 groupedRows 固定顺序重排: 那会让 RDL (primary 腘绳/臀, secondary 下背/前臂)
+    /// 因为 back/forearms 在 groupedRows 里排在 legs 前面 → badge 显示 "Back, Forearms",
+    /// 在 Legs 筛选下看起来"标签不是 legs". primary-first 才是动作主目标, 也跟筛选语义一致.
     private var folded: [MuscleGroup] {
         var seen = Set<MuscleGroup>()
         var out: [MuscleGroup] = []
@@ -42,11 +47,7 @@ struct ExerciseTagsRow: View {
             if major == .fullBody { continue }
             if seen.insert(major).inserted { out.append(major) }
         }
-        // 按 groupedRows 顺序稳定输出
-        return MuscleSelector.groupedRows
-            .map(\.major)
-            .filter(seen.contains)
-            + out.filter { !MuscleSelector.majorMuscles.contains($0) }  // 兜底: 不在 picker 暴露层级里的尾部
+        return out
     }
 
     var body: some View {

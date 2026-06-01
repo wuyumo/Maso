@@ -56,13 +56,12 @@ struct CrossFadeFrames: View {
         .task(id: folder) {
             await loadFrames()
         }
-        // 1.5s 周期 + 0.5s 过渡 — 接近真实动作节奏 (蹲起 ~2s, 推拉 ~1-2s).
-        // 历史试错: 1.0s 周期/0.8s 过渡用户嫌闪; 2.5s/0.9s 用户嫌慢; 1.5s/0.5s 是 sweet spot
-        // (稳定 1.0s + 过渡 0.5s, 像动作"完成一半暂停一下再继续"的自然节奏).
+        // 1.1s 周期 + 0.45s 过渡 — 用户要求切换再快一点. (历史: 1.0s/0.8s 嫌闪是因为过渡占比太高;
+        // 这里过渡只 0.45s, 稳定 0.65s 占大头, 节奏更紧凑但不闪. 2.5s 嫌慢, 1.5s 略慢.)
         // guard 检查两帧都 ready, 没都 ready 不开始动画 — 避免"frame 1 是 nil 时 cross-fade 出空白".
-        .onReceive(Timer.publish(every: 1.5, on: .main, in: .common).autoconnect()) { _ in
+        .onReceive(Timer.publish(every: 1.1, on: .main, in: .common).autoconnect()) { _ in
             guard animated, frame0 != nil, frame1 != nil else { return }
-            withAnimation(.easeInOut(duration: 0.5)) {
+            withAnimation(.easeInOut(duration: 0.45)) {
                 showFrame1.toggle()
                 // motionPhase 跟 showFrame1 联动 (computed property), 自动跟随动画
             }

@@ -29,7 +29,9 @@ struct PlanPlayerScreen: View {
     private var restRingCompactT: CGFloat {
         let lo = Self.playlistMinHeight
         let hi = Self.playlistDefaultHeight
-        return max(0, min(1, (playlistHeight - lo) / max(1, hi - lo)))
+        // 上限不再 clamp 到 1: 拖过 default 高度后继续增大 → 圆环继续缩小 (RestCountdown 有下限),
+        // 否则 playlist 拖很高时圆环停在 140 不动, 会跟 drawer 顶部重叠.
+        return max(0, (playlistHeight - lo) / max(1, hi - lo))
     }
     /// 拖把手高度档位
     static let playlistMinHeight: CGFloat = 56        // 仅 handle + "PLAYLIST" header, 不见任何 row
@@ -1067,9 +1069,10 @@ private struct RestCountdown: View {
 
     private static let ringWidth: CGFloat = 3
 
-    /// 圆环直径 — playlist 越大越紧凑 (220 → 140), 连续插值.
-    private var ringSize: CGFloat { 220 - 80 * compactT }
-    private var digitsSize: CGFloat { 64 - 24 * compactT }
+    /// 圆环直径 — playlist 越大越紧凑 (220 → 140 @ default), 拖过 default 后继续缩到下限 96,
+    /// 避免 drawer 拖很高时圆环跟它重叠. digits 同步, 都有下限保证仍可读.
+    private var ringSize: CGFloat { max(96, 220 - 80 * compactT) }
+    private var digitsSize: CGFloat { max(36, 64 - 24 * compactT) }
 
     private func remainingFloat(at date: Date) -> Double {
         if let p = pausedRemaining { return max(0, p) }
@@ -1253,19 +1256,29 @@ private struct Controls: View {
             onPrimary()
             if isPrimaryComplete { celebrateTrigger &+= 1 }
         }) {
-            ZStack {
-                // halo 圆环 — 在按钮下层向外扩散, 给"完成 / 突破"感
-                HaloRing(trigger: celebrateTrigger)
-                // 主按钮圆 48 → 42 (缩小一号, 跟侧三按钮比例更协调)
-                Circle().fill(MasoColor.accent).frame(width: 42, height: 42)
-                    .shadow(color: MasoColor.accent.opacity(0.35), radius: 12, y: 4)
-                primaryIcon
-                    // icon 16 → 14 — 跟缩小后的圆按钮比例一致
-                    .font(.system(size: 14, weight: .heavy))
-                    .foregroundStyle(.black)
+            if seg.isRest {
+                // 休息跳过 — 没有圆圈的 accent 纯图标 button (用户要求).
+                // 休息态本来就不放 halo/pulse 庆祝, 直接裸图标, 视觉更轻.
+                Image(systemName: "forward.end.fill")
+                    .font(.system(size: 28, weight: .heavy))
+                    .foregroundStyle(MasoColor.accent)
+                    .frame(width: 56, height: 48)
+                    .contentShape(Rectangle())
+            } else {
+                ZStack {
+                    // halo 圆环 — 在按钮下层向外扩散, 给"完成 / 突破"感
+                    HaloRing(trigger: celebrateTrigger)
+                    // 主按钮圆 48 → 42 (缩小一号, 跟侧三按钮比例更协调)
+                    Circle().fill(MasoColor.accent).frame(width: 42, height: 42)
+                        .shadow(color: MasoColor.accent.opacity(0.35), radius: 12, y: 4)
+                    primaryIcon
+                        // icon 16 → 14 — 跟缩小后的圆按钮比例一致
+                        .font(.system(size: 14, weight: .heavy))
+                        .foregroundStyle(.black)
+                }
+                // 按钮本身的 pulse — 触发后短暂放大再收回
+                .modifier(PrimaryPulseModifier(trigger: celebrateTrigger))
             }
-            // 按钮本身的 pulse — 触发后短暂放大再收回
-            .modifier(PrimaryPulseModifier(trigger: celebrateTrigger))
         }
         .buttonStyle(PrimaryPressScaleStyle())
         .accessibilityLabel(primaryLabel)
@@ -1530,13 +1543,16 @@ private struct InlinePlaylist: View {
     }
 
     private func setBarColor(idx: Int, stepId: String, setN: Int) -> Color {
-        // 只看"完成"状态: 做完 = 绿, 没做完 = 白. 不再区分"当前组/未来组/跳过组".
-        // 关键: 颜色纯粹由 completedSets 决定 — 切换动作/组时不会改变某一段的颜色
-        // (之前 "当前组=白" 会在切走后变灰, 造成切换时颜色跳变).
+        // 做完 = 实心绿; 进行中的那一组 = 浅绿; 未来 / 跳过 = 白.
+        // 颜色切换走 .animation(nil) 即刻生效, 不会有过渡闪烁.
         if completedSets.contains(.init(stepId: stepId, setN: setN)) {
             return MasoColor.accent  // 做完 = 绿
         }
-        return MasoColor.text  // 未完成 (含当前/未来/跳过) = 白
+        // 进行中 = 当前动作的当前组 (还没 mark 完成) → 浅绿, 区分于未来组的白.
+        if stepId == currentStepId, let cs = currentSet, setN == cs {
+            return MasoColor.accent.opacity(0.45)
+        }
+        return MasoColor.text  // 未来 / 跳过 = 白
     }
 
     var body: some View {
