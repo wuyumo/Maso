@@ -89,13 +89,18 @@ enum ExerciseGrouping {
         // 2. 先删器械词 ("Dumbbell Bench Press" → "Bench Press"; "Landmine Front Raise" → "Front Raise").
         let noEquip = stripEquipmentWords(beforeParen)
         // 3. 再删运动修饰词 ("Seated Lateral Raise" → "Lateral Raise";
-        //    "Single-Arm Row" → "Row"; "Close-Grip Bench Press" → "Bench Press").
-        //    故意保留 Incline/Decline/Romanian/Sumo — 它们是真正独立的动作变种.
+        //    "Incline/Decline Bench Press" → "Bench Press"; "Dive Bomber Push-Up" → "Push-Up").
+        //    仍保留 Romanian/Sumo 等真正独立的动作 (见 movementModifierTokens 的注释).
         return stripMovementModifiers(noEquip)
     }
 
-    /// 名字里的器械词 — 整词、大小写不敏感地删掉. 多词词条放前面 (正则 alternation 从左到右).
+    /// 名字里的器械词 — 整词、大小写不敏感地删掉. 多词词条放前面 (正则 alternation 从左到右,
+    /// 所以 "with bands" 必须排在 "bands" 前面才不会被单独的 "bands" 抢先匹配掉).
     private static let equipmentNameTokens: [String] = [
+        // accommodating resistance / 负重道具 — 当成器械变体收折到基础动作:
+        //   "Bench Press with Bands/Chains" → Bench Press; "Med Ball Push-Up" → Push-Up.
+        "with bands", "with band", "with chains", "with chain",
+        "medicine ball", "med ball", "med-ball",
         "smith machine", "resistance band", "ez curl bar", "ez-bar", "ez bar",
         "trap bar", "leverage machine", "body only",
         "dumbbells", "dumbbell", "barbells", "barbell", "kettlebells", "kettlebell",
@@ -123,12 +128,18 @@ enum ExerciseGrouping {
     /// "执行方式"修饰词 — 改的是怎么做(站/坐/单侧/握法/节奏/范围)而不是换了个动作.
     /// 判定规则 (跟用户对齐): 动作名 = "<修饰词> <某个真实基础动作>" 且修饰词只是"怎么做"
     ///   → 收折到基础动作 (e.g. "Feet-Elevated Bench Dip" → Bench Dip, "Dead-Stop Barbell Row" → Row).
-    /// 注意: 故意排除以下"独立动作变种" —— 它们是不同动作, 不是执行方式, 不该被合并:
-    ///   - 角度/姿态决定的不同动作: Incline / Decline / Romanian / Sumo
-    ///   - 限定 ROM / 轨迹的不同动作: Floor / Behind-the-Neck / Speed
+    /// 用户最新口径 (2026-06): Incline / Decline (角度) 也算同一动作的变体 → 收折
+    ///   ("Incline/Decline Bench Press" → Bench Press; "Incline/Decline Chest Fly" → Chest Fly).
+    /// 仍然排除以下"独立动作" —— 它们是不同动作, 不是同一动作的执行变体, 不该被合并:
+    ///   - 限定 ROM / 轨迹 / 模态的不同动作: Floor / Behind-the-Neck / Speed / Romanian / Sumo
     ///   - 独立的下肢花式: Pistol / Sissy / Hack / Zercher / Bulgarian / Cossack / Split / Curtsy …
     ///   - 独立的自重技巧: Diamond / Pike / Handstand / Archer / Commando / Typewriter …
+    ///     (Dive Bomber / Med Ball 这两类用户要求收进 Push-Up; 其余自重花式暂留, 待用户确认是否一起收.)
     static let movementModifierTokens: [String] = [
+        // 角度 (用户要求收折: Incline/Decline 视作同一动作的角度变体)
+        "incline", "decline",
+        // 动作模式 (执行花式 — 当前只收用户点名的两类自重 push-up)
+        "dive bomber", "dive-bomber",
         // 方向/角度
         "low-to-high", "high-to-low",
         // 单侧 / 双侧
