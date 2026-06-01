@@ -687,7 +687,7 @@ private struct PlansTabScreen: View {
             .toolbar {
                 ToolbarItem(placement: .principal) {
                     Picker("", selection: $page.animation(.easeOut(duration: 0.18))) {
-                        Text("My Plans").tag(TrainPage.plans)
+                        Text("AI Plans").tag(TrainPage.plans)
                         Text("Exercises").tag(TrainPage.library)
                     }
                     .pickerStyle(.segmented)

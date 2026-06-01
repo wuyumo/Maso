@@ -93,13 +93,14 @@ struct TodayScreen: View {
 
                 // ===== Plans tab 的 My Plans 分页: 我的训练 + 自由训练 + 社区 (mode != .trainToday) =====
                 if mode != .trainToday {
-                    // ── 我的训练 ── section header (kicker + restore? + 新建入口) — 原 Plans 页移过来.
-                    myPlansHeader.padding(.top, 4)
-
                     if data.plans.isEmpty {
+                        // 空态没有 Training Preferences 卡, "AI Plans" 标题留在顶部.
+                        myPlansHeader.padding(.top, 4)
                         plansEmptyState
                     } else {
+                        // Training Preferences 卡置顶, "AI Plans" 标题移到它下方 (用户要求).
                         PlanRationaleCard()
+                        myPlansHeader.padding(.top, 8)
                         // 计划卡用 WorkoutCard — 跟 Today's Workout 同一详细程度 (居中肌肉图 +
                         // "N exercises · M sets" + 动作 chip + 开始键). kicker 传 "" 不显示
                         // ("MY PLANS" section 已经给了上下文).
@@ -179,7 +180,7 @@ struct TodayScreen: View {
     /// "MY PLANS" 小标题 + 右侧 (restore 可选) + 新建 "+".
     private var myPlansHeader: some View {
         HStack(spacing: 14) {
-            Text("My plans")
+            Text("AI Plans")
                 .font(.system(size: 12, weight: .heavy))
                 .tracking(1.5)
                 .textCase(.uppercase)
