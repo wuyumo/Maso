@@ -12,7 +12,7 @@ struct TodayScreen: View {
     /// 嵌在外层 NavigationStack (Train / Plans tab) 里时 true — 不渲染自己的大标题/齿轮.
     var embedded: Bool = false
     /// 渲染哪部分内容:
-    ///   - .trainToday: 肌肉状态 + 今日推荐 (新的 Train tab)
+    ///   - .trainToday: 肌肉状态 + 今日推荐 + 自由训练 (Today tab)
     ///   - .myPlans:    我的训练列表 + 自由训练 + 社区 (Plans tab 的 My Plans 分页)
     ///   - .full:       全部 (兼容老用法)
     enum Mode { case full, trainToday, myPlans }
@@ -61,7 +61,7 @@ struct TodayScreen: View {
         // contextMenu (代替 List 的右滑); 排序暂不提供 (原 Plans 页的拖拽随 List 一起去掉了).
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                // ===== Train tab 内容: 肌肉状态 + 今日推荐 (mode != .myPlans) =====
+                // ===== Today tab 内容: 肌肉状态 + 今日推荐 + 自由训练 (mode != .myPlans) =====
                 if mode != .myPlans {
                     // ── 训练状态 ── (MuscleStatusOverviewCard 自带 "MUSCLE STATUS" kicker)
                     MuscleStatusOverviewCard(
@@ -80,6 +80,10 @@ struct TodayScreen: View {
                             onShowDetail: { detailPlan = plan }
                         )
                     }
+
+                    // ── 自由训练入口 ── 钉在 Today 底部 (从 Plans/My Plans 移过来).
+                    entryCard(icon: "dumbbell.fill", title: "Free workout", action: onFreeWorkout)
+                        .padding(.top, 4)
                 }
 
                 // ===== Plans tab 的 My Plans 分页: 我的训练 + 自由训练 + 社区 (mode != .trainToday) =====
@@ -109,12 +113,9 @@ struct TodayScreen: View {
                         }
                     }
 
-                    // ── 入口: 自由训练 + 社区 (并排两块) ──
-                    HStack(spacing: 12) {
-                        entryCard(icon: "dumbbell.fill", title: "Free workout", action: onFreeWorkout)
-                        entryCard(icon: "person.2.fill", title: "Community", action: { communityPresented = true })
-                    }
-                    .padding(.top, 4)
+                    // ── 入口: 社区 (Free workout 已移到 Today tab 底部) ──
+                    entryCard(icon: "person.2.fill", title: "Community", action: { communityPresented = true })
+                        .padding(.top, 4)
                 }
 
                 Spacer(minLength: MasoMetrics.pageBottomInset)
@@ -122,8 +123,8 @@ struct TodayScreen: View {
             .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
         }
         .background(MasoColor.background.ignoresSafeArea())
-        // 自定义页头: greeting kicker + "Today" 大标题 + 齿轮. 嵌进 Train tab 时跳过 —
-        // Train 的统一导航栏 (segmented + 齿轮) 接管.
+        // 自定义页头: greeting kicker + "Today" 大标题 + 齿轮. embedded (Today / Plans tab) 时跳过 —
+        // 由外层 NavigationStack 的 screenHeader / segmented 接管.
         .applyIf(!embedded) {
             $0.screenHeader("Today", kicker: greeting) {
                 Button(action: onOpenSettings) {

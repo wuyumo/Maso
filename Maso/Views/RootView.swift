@@ -121,7 +121,7 @@ struct RootView: View {
                 // 三个 tab 都包 NavigationStack — 走 iOS 默认 navigationTitle + toolbar 样式.
                 // .tint(MasoColor.text) 覆盖系统默认 (Asset AccentColor 是绿) — toolbar 右上角按钮
                 // 走白色, 跟 dark theme 配色一致 (不再绿).
-                // Train — 今日总览: 肌肉状态 + 今日推荐 (落地页, .today tag).
+                // Today — 今日总览: 肌肉状态 + 今日推荐 + 自由训练 (落地页, .today tag).
                 NavigationStack {
                     TodayScreen(
                         onStart: startTraining,
@@ -131,7 +131,7 @@ struct RootView: View {
                         embedded: true,
                         mode: .trainToday
                     )
-                    .screenHeader("Train") {
+                    .screenHeader("Today") {
                         Button(action: { settingsPresented = true }) {
                             Image(systemName: "gearshape")
                         }
@@ -141,7 +141,7 @@ struct RootView: View {
                 .tint(MasoColor.text)
                 .safeAreaInset(edge: .bottom, spacing: 0) { miniBarContent }
                 .tabItem {
-                    Label("Train", systemImage: "figure.strengthtraining.traditional")
+                    Label("Today", systemImage: "figure.strengthtraining.traditional")
                 }
                 .tag(RootTab.today)
 
