@@ -8,6 +8,9 @@ import SwiftUI
 //   - UI 实际渲染顺序在 TabBarView 里手动按 today → plans → history 排
 enum RootTab: Hashable { case plans, today, library, history }
 
+/// "Train" tab 内部的两个分页: 我的训练 (原 Today 内容) / 动作库.
+enum TrainPage: Hashable { case plans, library }
+
 extension View {
     /// iOS 默认导航栏 — 系统大标题 (large title, 滚动时收缩成 inline) + 右上角 toolbar 按钮.
     /// 用户要求所有 tab 的标题/右上角按钮回到 iOS 原生样式, 不再用自定义 safeAreaInset 大标题头.
@@ -33,6 +36,8 @@ struct RootView: View {
     @Environment(\.scenePhase) private var scenePhase
 
     @State private var tab: RootTab = .today
+    /// "Train" tab 当前分页 (My Plans / Exercise Library). 提到 RootView 以便 showcase / 路由能切.
+    @State private var trainPage: TrainPage = .plans
     /// 反馈队列 — 没 inject 进 environment, 因为它只在 Settings + scenePhase 监听里用,
     /// 直接拿 shared 单例最简单, 避免到处 propagate.
     @State private var feedbackStore = FeedbackStore.shared
@@ -68,7 +73,8 @@ struct RootView: View {
         guard !mode.isEmpty else { return }
         switch mode {
         case "library":
-            tab = .library
+            tab = .today          // Train tab
+            trainPage = .library  // 切到动作库分页
         case "history":
             tab = .history
         case "settings":
@@ -109,30 +115,21 @@ struct RootView: View {
                 // 三个 tab 都包 NavigationStack — 走 iOS 默认 navigationTitle + toolbar 样式.
                 // .tint(MasoColor.text) 覆盖系统默认 (Asset AccentColor 是绿) — toolbar 右上角按钮
                 // 走白色, 跟 dark theme 配色一致 (不再绿).
-                // Today — 现在也吸收了原 Plans 页内容 (我的训练 section + 新建入口).
-                NavigationStack {
-                    TodayScreen(
-                        onStart: startTraining,
-                        onFreeWorkout: { quickWorkoutPresented = true },
-                        onNewPlan: handleNewPlan,
-                        onOpenSettings: { settingsPresented = true }
-                    )
-                }
+                // Train — 把原 Today (我的训练 + 今日推荐 + 自由训练 + 社区) 和 Exercise Library
+                // 合成一个 tab, 顶部 segmented 切两个分页 (My Plans / Exercise Library).
+                TrainScreen(
+                    page: $trainPage,
+                    onStart: startTraining,
+                    onFreeWorkout: { quickWorkoutPresented = true },
+                    onNewPlan: handleNewPlan,
+                    onOpenSettings: { settingsPresented = true }
+                )
                 .tint(MasoColor.text)
                 .safeAreaInset(edge: .bottom, spacing: 0) { miniBarContent }
                 .tabItem {
-                    Label("Today", systemImage: "figure.strengthtraining.traditional")
+                    Label("Train", systemImage: "figure.strengthtraining.traditional")
                 }
                 .tag(RootTab.today)
-
-                // Exercise Library — 整页作为一个 tab (自带 NavigationStack, 不再外包一层).
-                ExerciseLibraryBrowser(asTab: true)
-                    .tint(MasoColor.text)
-                    .safeAreaInset(edge: .bottom, spacing: 0) { miniBarContent }
-                    .tabItem {
-                        Label("Library", systemImage: "dumbbell.fill")
-                    }
-                    .tag(RootTab.library)
 
                 NavigationStack {
                     HistoryScreen(
@@ -191,7 +188,12 @@ struct RootView: View {
             // 跨 sheet tab 切换请求 — Settings 里点 "Plans" 让我们切到 Plans tab
             .onChange(of: router.requestedTab) { _, newTab in
                 if let newTab {
-                    tab = newTab
+                    // .library / .plans 现在都是 Train tab 的分页 — 映射到 .today + 对应 trainPage.
+                    switch newTab {
+                    case .library: tab = .today; trainPage = .library
+                    case .plans:   tab = .today; trainPage = .plans
+                    default:       tab = newTab
+                    }
                     settingsPresented = false
                     router.requestedTab = nil
                 }
@@ -607,6 +609,47 @@ struct RootView: View {
         )
         session.start(planId: plan.id, plan: plan, segments: segments)
         playerPresented = true
+    }
+}
+
+// MARK: - TrainScreen — "Train" tab: 顶部 segmented 切 My Plans / Exercise Library 两个分页
+//
+// My Plans 分页 = 原 Today 内容 (我的训练 + 今日推荐 + 自由训练 + 社区), 自带 NavigationStack.
+// Exercise Library 分页 = 动作库, 自带 NavigationStack. 两页各自保留大标题 + 右上角按钮,
+// segmented 控件钉在最顶 (状态栏下), 切页不丢各自的滚动/导航状态.
+private struct TrainScreen: View {
+    @Binding var page: TrainPage
+    let onStart: (Plan) -> Void
+    let onFreeWorkout: () -> Void
+    let onNewPlan: () -> Void
+    let onOpenSettings: () -> Void
+
+    var body: some View {
+        VStack(spacing: 0) {
+            Picker("", selection: $page.animation(.easeOut(duration: 0.18))) {
+                Text("My Plans").tag(TrainPage.plans)
+                Text("Exercise Library").tag(TrainPage.library)
+            }
+            .pickerStyle(.segmented)
+            .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
+            .padding(.top, 6)
+            .padding(.bottom, 6)
+
+            switch page {
+            case .plans:
+                NavigationStack {
+                    TodayScreen(
+                        onStart: onStart,
+                        onFreeWorkout: onFreeWorkout,
+                        onNewPlan: onNewPlan,
+                        onOpenSettings: onOpenSettings
+                    )
+                }
+            case .library:
+                ExerciseLibraryBrowser(asTab: true)
+            }
+        }
+        .background(MasoColor.background.ignoresSafeArea())
     }
 }
 
