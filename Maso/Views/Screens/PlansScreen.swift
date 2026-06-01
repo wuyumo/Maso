@@ -1264,7 +1264,6 @@ private struct EditStepView: View {
                         decimal: true
                     )
                 }
-                Divider().background(MasoColor.borderSoft)
             } else {
                 EditRow(label: "Duration") {
                     NumStepperField(
@@ -1277,12 +1276,9 @@ private struct EditStepView: View {
                         suffix: "s"
                     )
                 }
-                Divider().background(MasoColor.borderSoft)
             }
-
-            EditRow(label: "Set rest") {
-                NumStepperField(intValue: $step.restBetweenSets, range: 15...300, step: 15, suffix: "s")
-            }
+            // "Set rest" 行已移除 — 组间 / 跨动作休息一律跟随 Settings → Training Preferences,
+            // 不再 per-plan 存 (expandPlan 也忽略 step 里的 rest 字段).
         }
         .background(MasoColor.surface)
         .clipShape(RoundedRectangle(cornerRadius: 8))

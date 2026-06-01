@@ -711,11 +711,28 @@ struct PlanPlayerScreen: View {
         return max(Self.playlistDefaultHeight, screenH * 0.55)
     }
 
+    /// rest 段之后第一个 exercise 段 (= "UP NEXT" 那一组). 休息时 playlist 按它渲染 →
+    /// 跟休息结束、那组开始时完全一致, 消除 rest→set 自动切换瞬间的"高亮跳 / 缩略图↔进度环"闪动.
+    private var upcomingExerciseSegment: Segment? {
+        guard let idx = store.session?.segmentIndex else { return nil }
+        let segs = store.segments
+        var i = idx + 1
+        while i < segs.count {
+            if segs[i].isExercise { return segs[i] }
+            i += 1
+        }
+        return nil
+    }
+
     private var currentStepId: String? {
-        store.currentSegment?.stepId
+        // exercise 段用自己的; rest 段指向"即将要做的那组"动作, 让 playlist 训练组 / 休息态完全一致.
+        if store.currentSegment?.isExercise == true { return store.currentSegment?.stepId }
+        return upcomingExerciseSegment?.stepId ?? store.currentSegment?.stepId
     }
     private var currentSetNumber: Int? {
         if case .exercise(_, let setN, _, _, _, _, _) = store.currentSegment?.kind { return setN }
+        // rest 段: 用"即将要做的那组"的组号, 跟 currentStepId 同源 → 休息态 playlist = 下一组的 playlist.
+        if case .exercise(_, let setN, _, _, _, _, _) = upcomingExerciseSegment?.kind { return setN }
         return nil
     }
 

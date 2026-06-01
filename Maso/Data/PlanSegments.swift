@@ -6,10 +6,11 @@ import Foundation
 // 一个 step × N sets 展开为:
 //   exerciseSeg (set 1) → restSeg → exerciseSeg (set 2) → restSeg → … → exerciseSeg (set N)
 //
-// 步与步之间:
-//   - 若 step.rest > 0 → 用 step.rest (per-plan 覆盖)
-//   - 否则用 defaultBetweenExerciseRest (来自 UserSettings, 默认 120s)
-//   - 想取消可在 Settings 里把它设到 0 (Stepper 最小值)
+// 休息时长 (组间 + 跨动作) 一律用 UserSettings 里的 Training Preference, 不再读 plan/step 里存的值.
+//   - 组间 = defaultRest (settings.defaultRestSeconds)
+//   - 跨动作 = defaultBetweenExerciseRest (settings.defaultBetweenExerciseRestSeconds)
+//   - 用户要求: 休息严格跟随训练偏好, 不写进任何 plan; plan 里的 restBetweenSets/rest 字段被忽略.
+//   - 想取消跨动作休息把 Settings 里 Exercise rest 调到 0 即可.
 
 struct Segment: Identifiable, Hashable, Sendable {
     enum Kind: Hashable, Sendable {
@@ -60,20 +61,15 @@ func expandPlan(
             ))
             let isLast = setN == totalSets
             if !isLast {
-                let restSec = step.restBetweenSets > 0 ? step.restBetweenSets : defaultRest
-                out.append(Segment(id: uid(), stepId: step.id, kind: .rest(duration: restSec)))
+                // 组间休息 — 一律用设置里的 Set rest, 忽略 plan 里存的 restBetweenSets.
+                out.append(Segment(id: uid(), stepId: step.id, kind: .rest(duration: defaultRest)))
             }
         }
-        // 步与步之间 — 跨动作过渡 rest
-        // - step.rest > 0: 用 plan 自带的 (per-step 覆盖)
-        // - 否则回退到 user 设置里的 defaultBetweenExerciseRest
-        // - 用户把设置调到 0 即可禁用所有跨动作休息
+        // 步与步之间 — 跨动作过渡 rest. 一律用设置里的 Exercise rest, 忽略 plan 里存的 step.rest.
+        // 用户把设置调到 0 即可禁用所有跨动作休息.
         let notLastStep = stepIdx < plan.steps.count - 1
-        if notLastStep {
-            let crossRest = step.rest > 0 ? step.rest : defaultBetweenExerciseRest
-            if crossRest > 0 {
-                out.append(Segment(id: uid(), stepId: step.id, kind: .rest(duration: crossRest)))
-            }
+        if notLastStep, defaultBetweenExerciseRest > 0 {
+            out.append(Segment(id: uid(), stepId: step.id, kind: .rest(duration: defaultBetweenExerciseRest)))
         }
     }
     return out
