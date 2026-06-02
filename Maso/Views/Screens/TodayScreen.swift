@@ -179,7 +179,8 @@ struct TodayScreen: View {
 
     // MARK: - 我的训练 section 组件
 
-    /// "MY PLANS" 小标题 + 右侧 (restore 可选) + 新建 "+".
+    /// "AI PLANS" 小标题 + 右侧 (restore 可选) + 新建 "+". refresh / add 同款圆圈样式 + 同尺寸,
+    /// 彼此间距拉远; 整行左右留边距 (标题 + 按钮往中间靠, 不贴边).
     private var myPlansHeader: some View {
         HStack(spacing: 14) {
             Text("AI Plans")
@@ -188,25 +189,30 @@ struct TodayScreen: View {
                 .textCase(.uppercase)
                 .foregroundStyle(MasoColor.textDim)
             Spacer()
-            if hasNoRecommendedPlans {
-                Button(action: restoreRecommendedPlans) {
-                    Image(systemName: "arrow.counterclockwise")
-                        .font(.system(size: 15, weight: .semibold))
-                        .foregroundStyle(MasoColor.text)
+            HStack(spacing: 20) {   // 两个按钮之间间距拉远
+                if hasNoRecommendedPlans {
+                    headerCircleButton("arrow.counterclockwise",
+                                       action: restoreRecommendedPlans,
+                                       a11y: "Restore recommended")
                 }
-                .accessibilityLabel(NSLocalizedString("Restore recommended", comment: ""))
+                headerCircleButton("plus", action: onNewPlan, a11y: "New workout")
             }
-            Button(action: onNewPlan) {
-                // 白色 "+" + 圆圈 (微填充 + 细描边, 0.5pt 跟计划卡播放键的描边一样细).
-                Image(systemName: "plus")
-                    .font(.system(size: 14, weight: .bold))
-                    .foregroundStyle(MasoColor.text)
-                    .frame(width: 30, height: 30)
-                    .background(Circle().fill(MasoColor.text.opacity(0.12)))
-                    .overlay(Circle().stroke(MasoColor.text.opacity(0.4), lineWidth: 0.5))
-            }
-            .accessibilityLabel("New workout")
         }
+        .padding(.horizontal, 12)   // 标题 + 按钮整体往中间靠, 左右留边距
+    }
+
+    /// AI Plans 头部圆圈图标按钮 — refresh / add 共用同款 (白图标 14pt + 微填充圆 30×30 + 0.5pt 细描边).
+    private func headerCircleButton(_ icon: String, action: @escaping () -> Void, a11y: String) -> some View {
+        Button(action: action) {
+            Image(systemName: icon)
+                .font(.system(size: 14, weight: .bold))
+                .foregroundStyle(MasoColor.text)
+                .frame(width: 30, height: 30)
+                .background(Circle().fill(MasoColor.text.opacity(0.12)))
+                .overlay(Circle().stroke(MasoColor.text.opacity(0.4), lineWidth: 0.5))
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(NSLocalizedString(a11y, comment: ""))
     }
 
     private var plansEmptyState: some View {
