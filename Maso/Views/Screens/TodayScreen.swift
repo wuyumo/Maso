@@ -86,6 +86,7 @@ struct TodayScreen: View {
                         icon: "dumbbell.fill",
                         title: "Free workout",
                         subtitle: "Pick your own exercises and go",
+                        trailingPlay: true,
                         action: onFreeWorkout
                     )
                     .padding(.top, 4)
@@ -196,13 +197,13 @@ struct TodayScreen: View {
                 .accessibilityLabel(NSLocalizedString("Restore recommended", comment: ""))
             }
             Button(action: onNewPlan) {
-                // 白色 "+" + 圆圈 (微填充 + 描边) — 比纯图标更强, 是这一区的主操作.
+                // 白色 "+" + 圆圈 (微填充 + 细描边, 0.5pt 跟计划卡播放键的描边一样细).
                 Image(systemName: "plus")
                     .font(.system(size: 14, weight: .bold))
                     .foregroundStyle(MasoColor.text)
                     .frame(width: 30, height: 30)
                     .background(Circle().fill(MasoColor.text.opacity(0.12)))
-                    .overlay(Circle().stroke(MasoColor.text.opacity(0.4), lineWidth: 1))
+                    .overlay(Circle().stroke(MasoColor.text.opacity(0.4), lineWidth: 0.5))
             }
             .accessibilityLabel("New workout")
         }
@@ -242,7 +243,7 @@ struct TodayScreen: View {
     /// Free workout / Community 共用的入口卡 — 一致排版:
     ///   第一行: 小图标 + 标题 (同一行)
     ///   第二行: 辅助文案 (说明这个入口是干嘛的)
-    private func entryCard(icon: String, title: LocalizedStringKey, subtitle: LocalizedStringKey, action: @escaping () -> Void) -> some View {
+    private func entryCard(icon: String, title: LocalizedStringKey, subtitle: LocalizedStringKey, trailingPlay: Bool = false, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             HStack(spacing: 12) {
                 VStack(alignment: .leading, spacing: 3) {
@@ -264,9 +265,23 @@ struct TodayScreen: View {
                         .fixedSize(horizontal: false, vertical: true)
                 }
                 Spacer(minLength: 0)
-                Image(systemName: "chevron.right")
-                    .font(.system(size: 11, weight: .heavy))
-                    .foregroundStyle(MasoColor.textFaint)
+                if trailingPlay {
+                    // 自由训练 = 直接开练, 右侧用播放键 (软绿底 + 细描边) 而不是导航 chevron.
+                    ZStack {
+                        Circle()
+                            .fill(MasoColor.accent.opacity(0.18))
+                            .overlay(Circle().stroke(MasoColor.accent.opacity(0.4), lineWidth: 0.5))
+                        Image(systemName: "play.fill")
+                            .font(.system(size: 11, weight: .heavy))
+                            .foregroundStyle(MasoColor.accent)
+                            .offset(x: 0.5)
+                    }
+                    .frame(width: 28, height: 28)
+                } else {
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 11, weight: .heavy))
+                        .foregroundStyle(MasoColor.textFaint)
+                }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(MasoMetrics.cardPadding)
