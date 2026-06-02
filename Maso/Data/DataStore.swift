@@ -22,6 +22,14 @@ final class DataStore {
     var aiTodayPlan: Plan? = nil
     var lastAIRefreshAt: Date? = nil
 
+    /// 训练偏好改动后, 推荐计划是否待刷新. 改设置时只 mark dirty, 不立即 regen —
+    /// 等用户在 Training Preferences 页点 Done / 关 sheet 再统一刷新 (一次, 不每次拖动都重算抖动).
+    /// @ObservationIgnored — 纯内部 bookkeeping, 不该触发视图刷新.
+    @ObservationIgnored var recommendedPlansDirty = false
+    /// true 时全局显示 "Tailoring your AI Plans…" loading 浮层. regen 本身瞬时 (纯数组运算),
+    /// 故意延时 ~0.9s 显示 loading, 让"AI 正在按新偏好重新计算"可被用户感知.
+    var isTailoringPlans = false
+
     /// 包含两套 key:
     ///   1. 新库 ID (`bench_press_barbell` 等) — Exercise.id 真主键
     ///   2. 旧库 imageFolder ID (`Barbell_Bench_Press` 等) — 老用户的 plans / sets / favorites
@@ -303,6 +311,9 @@ final class DataStore {
                 }
                 return s
             }
+            // 防御性补足: 模板正常是 8 step (cap≤8 不会触发), 但万一某 step ID 失效被 compactMap
+            // 丢掉导致不足, 也按 exercises-per-plan 补回, 保证用户设定数严格成立.
+            p.steps = DataStore.padStepsToTarget(p.steps, target: cap, settings: settings, exById: exById)
             // LRU 回填: 该 plan 在历史里最近一次训练时间 (没练过 → nil → distantPast 排最前)
             p.lastUsedAt = sets.filter { $0.planId == p.id }.map(\.performedAt).max()
             return p
@@ -355,6 +366,9 @@ final class DataStore {
                     p.steps = p.steps.indices.filter { keep.contains($0) }.map { p.steps[$0] }
                 }
             }
+            // 反向: 动作数 < 用户设定时补足配件 —— 社区计划自身偏短 (一个 session 只有 5 个动作) 也
+            // 严格兑现 exercises-per-plan, 不让用户设了 7 却只看到 5.
+            p.steps = padStepsToTarget(p.steps, target: cap, settings: settings, exById: exById)
             p.lastUsedAt = sets.filter { $0.planId == p.id }.map(\.performedAt).max()
             return p
         }
@@ -362,6 +376,77 @@ final class DataStore {
         return plans.isEmpty
             ? tunedRecommendedPlans(forDays: days, settings: settings, exById: exById, sets: sets, now: now)
             : plans
+    }
+
+    /// 把一组 step 补足到 `target` 个动作 —— 计划自身的动作数 < 用户设定的 "exercises per plan"
+    /// 时调用, 严格兑现用户偏好 (用户设 7 就给 7, 而不是被社区计划自身的 5 个卡住).
+    ///
+    /// 补动作原则: 只从"这次 session 已经在练的大肌群"里挑配件 (聚焦肌群优先) —— Push 日补的是
+    /// 胸/肩/三头配件, 不会乱加腿, 保持计划的肌群主题一致. 候选优先孤立动作 (配件感更对),
+    /// 不够再放宽到复合; 排除 niche / 计划里已有的; 稳定排序保证结果可复现. 找不到更多就停 (不死循环).
+    static func padStepsToTarget(
+        _ steps: [PlanStep],
+        target: Int,
+        settings: UserSettings,
+        exById: [String: Exercise]
+    ) -> [PlanStep] {
+        guard steps.count < target else { return steps }
+        var result = steps
+        var used = Set(steps.map { $0.exerciseId })
+
+        // 本次已练的大肌群 section (按出现顺序), 聚焦肌群整体提前.
+        var sections: [MuscleGroup] = []
+        for s in steps {
+            guard let ex = exById[s.exerciseId] else { continue }
+            for m in ex.primaryMuscles {
+                let sec = m.section ?? m
+                if sec != .fullBody, !sections.contains(sec) { sections.append(sec) }
+            }
+        }
+        let focus = Set(settings.wantStrengthen.compactMap { $0.section ?? $0 })
+        sections = sections.filter { focus.contains($0) } + sections.filter { !focus.contains($0) }
+        guard !sections.isEmpty else { return result }
+
+        let setsFloor = max(1, settings.defaultSetsPerExercise)
+        let reps = settings.trainingGoal.defaultRepsForIsolation()
+
+        func pool(_ section: MuscleGroup, isolationOnly: Bool) -> [String] {
+            exById.values
+                .filter { ex in
+                    ex.category == .strength && !ex.isNiche &&
+                    (!isolationOnly || ex.mechanic == .isolation) &&
+                    ex.primaryMuscles.contains { ($0.section ?? $0) == section }
+                }
+                .map(\.id)
+                .sorted()
+        }
+
+        // 两轮: 先填孤立配件, 还不够再放宽到复合.
+        for isolationOnly in [true, false] {
+            let pools = sections.map { pool($0, isolationOnly: isolationOnly) }
+            var cursor = 0, emptyStreak = 0
+            while result.count < target && emptyStreak < pools.count {
+                let p = pools[cursor % pools.count]
+                cursor += 1
+                if let pick = p.first(where: { !used.contains($0) }) {
+                    used.insert(pick)
+                    result.append(PlanStep(
+                        id: "step-\(pick)-pad\(result.count)",
+                        exerciseId: pick,
+                        sets: setsFloor,
+                        reps: reps,
+                        weight: nil,
+                        restBetweenSets: settings.defaultRestSeconds,
+                        rest: 0
+                    ))
+                    emptyStreak = 0
+                } else {
+                    emptyStreak += 1
+                }
+            }
+            if result.count >= target { break }
+        }
+        return result
     }
 
     // MARK: - 简单的 plan 操作
@@ -653,6 +738,26 @@ final class DataStore {
     ///
     /// 只覆盖系统生成的 plan (id 前缀 `plan-full/plan-bal/plan-push/plan-pull/plan-legs`),
     /// 用户自定义 plan (`plan-new-...`) 完整保留.
+    /// 标记"训练偏好已改, 推荐计划待刷新" —— 改设置时调它, 不立即 regen.
+    /// 真正的刷新推迟到用户离开 Training Preferences (Done / 关 sheet), 由 commit 统一执行.
+    func markRecommendedPlansDirty() {
+        recommendedPlansDirty = true
+    }
+
+    /// 用户离开 Training Preferences 时调 —— 如有改动, 带 loading 重算推荐计划.
+    /// regen 本身瞬时 (纯数组运算), 故意延时 ~0.9s 显示 "Tailoring your AI Plans…" 浮层,
+    /// 让"AI 正在按新偏好重新计算"可被用户感知; 计算完成的瞬间换上新计划, 浮层同时消失.
+    @MainActor func commitRecommendedPlansIfDirty() {
+        guard recommendedPlansDirty else { return }
+        recommendedPlansDirty = false
+        isTailoringPlans = true
+        Task { @MainActor in
+            try? await Task.sleep(for: .milliseconds(900))
+            regenerateRecommendedPlans()
+            isTailoringPlans = false
+        }
+    }
+
     func regenerateRecommendedPlans() {
         // plan-comrec = "偏好社区计划"开关打开时 materialize 进来的社区推荐计划 (同样按推荐集管理,
         // regen / 关开关时一并清掉). 用户从 Community 主动 "Add" 的是 plan-community-, 不在此列, 不会被清.

@@ -28,15 +28,15 @@ struct TrainingSettingsSection: View {
     var body: some View {
         VStack(spacing: 0) {
             // ─── 1. Days per week ───
-            // 改这个就 auto-regenerate 推荐计划 (1-3 全身 / 4-5 分化 / 6+ PPL).
-            // PlanRationaleCard 直接看 weeklyTrainingDays + plans, 自动跟随刷新.
+            // 改这个只 mark dirty (1-3 全身 / 4-5 分化 / 6+ PPL); 真正 regen 推迟到离开页面 (Done)
+            // 统一带 loading 刷新 —— 不再每动一下就重算, 避免反复抖, 也让刷新成为明确动作.
             Row(label: "Days per week") {
                 IntStepperContent(
                     value: Binding(
                         get: { data.settings.weeklyTrainingDays },
                         set: { newVal in
                             data.settings.weeklyTrainingDays = newVal
-                            data.regenerateRecommendedPlans()
+                            data.markRecommendedPlansDirty()
                         }
                     ),
                     range: 1...7
@@ -64,15 +64,17 @@ struct TrainingSettingsSection: View {
             Divider().background(MasoColor.borderSoft)
 
             // ─── 3. Exercises per plan ───
-            // 推荐 plan 每张多少动作. 1-8 上限 — 模板现在 8 step, cap 到这个数. 用户改后重新 regen
-            // → tunedRecommendedPlans 用 prefix(cap) 把每张推荐计划裁到这个动作数.
+            // 推荐 plan 每张多少动作. 1-8. 离开页面统一 regen → 每张推荐计划严格补/裁到这个动作数:
+            //   - 模板/社区计划动作多 → prefix(cap) 裁到 cap
+            //   - 社区计划某 session 动作少 (如只有 5) → padStepsToTarget 按已练肌群补配件到 cap
+            // 所以用户设 7 就一定是 7, 不会被计划自身的动作数卡住 (修复"设了 7 却显示 5").
             Row(label: "Exercises per plan") {
                 IntStepperContent(
                     value: Binding(
                         get: { data.settings.exercisesPerSession },
                         set: { newVal in
                             data.settings.exercisesPerSession = newVal
-                            data.regenerateRecommendedPlans()
+                            data.markRecommendedPlansDirty()
                         }
                     ),
                     range: 1...8
@@ -88,7 +90,7 @@ struct TrainingSettingsSection: View {
                         get: { data.settings.defaultSetsPerExercise },
                         set: { newVal in
                             data.settings.defaultSetsPerExercise = newVal
-                            data.regenerateRecommendedPlans()
+                            data.markRecommendedPlansDirty()
                         }
                     ),
                     range: 1...6
@@ -111,7 +113,7 @@ struct TrainingSettingsSection: View {
                             // 跟目标副文案 (~90s / 长歇) 一致, 不再各说各话. 用户之后可再手动微调.
                             data.settings.defaultRestSeconds = g.recommendedRestSeconds()
                             // 训练目标影响推荐计划的 reps → 重新生成, my plans 立刻跟着变.
-                            data.regenerateRecommendedPlans()
+                            data.markRecommendedPlansDirty()
                         }) {
                             HStack {
                                 Text(g.displayName)
@@ -182,7 +184,7 @@ struct TrainingSettingsSection: View {
                     get: { data.settings.preferCommunityPlans },
                     set: { newVal in
                         data.settings.preferCommunityPlans = newVal
-                        data.regenerateRecommendedPlans()
+                        data.markRecommendedPlansDirty()
                     }
                 )
             )
@@ -197,9 +199,8 @@ struct TrainingSettingsSection: View {
                 .padding(.top, 10)
                 .frame(maxWidth: .infinity, alignment: .leading)
         }
-        // 关掉选肌群 sheet 时重新生成推荐计划 — 聚焦肌群影响 cap 时保留哪些动作.
-        // (放 onDismiss 而不是每次勾选都 regen, 避免多选时反复重算.)
-        .sheet(isPresented: $showMusclePicker, onDismiss: { data.regenerateRecommendedPlans() }) {
+        // 关掉选肌群 sheet 只 mark dirty, 不立即 regen — 跟其它偏好一样, 等离开页面统一刷新.
+        .sheet(isPresented: $showMusclePicker, onDismiss: { data.markRecommendedPlansDirty() }) {
             MusclesPickerSheet(
                 selected: Binding(
                     get: { Set(data.settings.wantStrengthen) },
@@ -208,6 +209,9 @@ struct TrainingSettingsSection: View {
             )
             .presentationDetents([.medium, .large])
         }
+        // 离开 Training Preferences (点 Done / 下拉关 sheet / 切走) 时, 若改过任何偏好就带 loading
+        // 统一刷新 AI Plans —— 不再每动一下 stepper 就重算 (避免反复抖 + 让刷新成为一次明确动作).
+        .onDisappear { data.commitRecommendedPlansIfDirty() }
     }
 
     /// "Muscles to focus" 行右侧文案 (跟 SettingsScreen 用同一份逻辑):

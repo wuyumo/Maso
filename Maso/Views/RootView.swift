@@ -177,6 +177,9 @@ struct RootView: View {
                 .tag(RootTab.history)
             }
             .tint(MasoColor.accent)
+            // "AI 正在按新偏好重算计划" loading 浮层 — 离开 Training Preferences 且改过设置时显示 ~0.9s.
+            .overlay { tailoringPlansOverlay }
+            .animation(.easeInOut(duration: 0.25), value: data.isTailoringPlans)
             .animation(.easeOut(duration: 0.25), value: hasActiveSession)
             // 1Hz tick — 不管 PlanPlayer sheet 开没开, 只要有 active session 就在 tick.
             // 之前 SessionTickerView 只挂在 PlanPlayerScreen 里, sheet 一收 timer 也跟着停,
@@ -338,6 +341,39 @@ struct RootView: View {
     @ViewBuilder
     private var topRightAction: some View {
         EmptyView()
+    }
+
+    /// "AI 正在按新偏好重算计划" loading 浮层. 用户在 Training Preferences 改了设置并离开页面后,
+    /// commitRecommendedPlansIfDirty 把 isTailoringPlans 翻 true ~0.9s —— 把"刷新 AI Plans"做成
+    /// 一个明确可感知的动作 (而不是改一下 stepper 就在背后悄悄重算), 让用户知道 AI 在重新计算.
+    @ViewBuilder
+    private var tailoringPlansOverlay: some View {
+        if data.isTailoringPlans {
+            ZStack {
+                Color.black.opacity(0.45).ignoresSafeArea()
+                VStack(spacing: 16) {
+                    ProgressView()
+                        .controlSize(.large)
+                        .tint(MasoColor.accent)
+                    Text("Tailoring your AI Plans…")
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundStyle(MasoColor.text)
+                }
+                .padding(.horizontal, 36)
+                .padding(.vertical, 30)
+                .background(
+                    RoundedRectangle(cornerRadius: 22, style: .continuous)
+                        .fill(MasoColor.surfaceHi)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 22, style: .continuous)
+                                .stroke(MasoColor.borderSoft, lineWidth: 0.5)
+                        )
+                        .shadow(color: .black.opacity(0.45), radius: 28, y: 10)
+                )
+            }
+            .transition(.opacity)
+            .zIndex(200)
+        }
     }
 
     /// + 按钮 — 建一个空白 plan, 弹出编辑 sheet.
