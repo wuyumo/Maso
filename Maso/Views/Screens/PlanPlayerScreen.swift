@@ -2214,14 +2214,14 @@ private struct EditCurrentStepSheet: View {
                     if showsRepsWeight {
                         Section {
                             intStepperRow(label: "Reps", value: $reps, range: 1...50)
-                            weightStepperRow(label: "Weight (kg)", value: $weight, range: 0...500, step: 2.5)
+                            weightStepperRow(label: "Weight", value: $weight, range: 0...500, step: 2.5)
                         }
                         .listRowBackground(MasoColor.surface)
                     }
 
                     if showsDuration {
                         Section {
-                            intStepperRow(label: "Duration (sec)", value: $duration, range: 5...600, step: 5)
+                            intStepperRow(label: "Duration", value: $duration, range: 5...600, step: 5, suffix: "s")
                         }
                         .listRowBackground(MasoColor.surface)
                     }
@@ -2296,41 +2296,26 @@ private struct EditCurrentStepSheet: View {
         }
     }
 
-    /// Int 字段 Stepper 行 — 左 label, 右大字号数值 + 原生 Stepper -/+. 跟 Sets 行格式一致.
-    /// TextField input 也可直接打数字 (大幅修改值用), Stepper 用来 ±1 微调.
+    /// Int 字段行 — 左 label, 右统一步进控件 NumStepperField (圆形 −/+ + 可输入数字框),
+    /// 跟训练中"动作详情页" / Settings 同款. 全 app 数字步进控件统一走这一种.
     @ViewBuilder
-    private func intStepperRow(label: LocalizedStringKey, value: Binding<Int>, range: ClosedRange<Int>, step: Int = 1) -> some View {
+    private func intStepperRow(label: LocalizedStringKey, value: Binding<Int>, range: ClosedRange<Int>, step: Int = 1, suffix: String? = nil) -> some View {
         HStack(spacing: 8) {
             Text(label)
                 .foregroundStyle(MasoColor.text)
             Spacer()
-            TextField("", value: value, format: .number)
-                .keyboardType(.numberPad)
-                .multilineTextAlignment(.trailing)
-                .frame(width: 56)
-                .font(.system(.body, design: .monospaced).weight(.semibold))
-                .foregroundStyle(MasoColor.accent)
-            Stepper("", value: value, in: range, step: step)
-                .labelsHidden()
+            NumStepperField(intValue: value, range: range, step: step, suffix: suffix)
         }
     }
 
-    /// Double 字段 Stepper 行 — 同 intStepperRow 但 value 是 Double, 显示带小数点 (e.g. "82.5").
-    /// Weight step 2.5 = 健身房 plate 增量 (1.25kg×2). 整数就显整数, 否则保留 1 位小数.
+    /// Double 字段行 (重量) — 同 intStepperRow, 走 NumStepperField. step 2.5 = plate 增量 (1.25kg×2).
     @ViewBuilder
     private func weightStepperRow(label: LocalizedStringKey, value: Binding<Double>, range: ClosedRange<Double>, step: Double) -> some View {
         HStack(spacing: 8) {
             Text(label)
                 .foregroundStyle(MasoColor.text)
             Spacer()
-            TextField("", value: value, format: .number.precision(.fractionLength(0...1)))
-                .keyboardType(.decimalPad)
-                .multilineTextAlignment(.trailing)
-                .frame(width: 56)
-                .font(.system(.body, design: .monospaced).weight(.semibold))
-                .foregroundStyle(MasoColor.accent)
-            Stepper("", value: value, in: range, step: step)
-                .labelsHidden()
+            NumStepperField(doubleValue: value, range: range, step: step, suffix: "kg", decimal: true)
         }
     }
 }

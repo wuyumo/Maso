@@ -21,7 +21,6 @@ struct MusclesPickerSheet: View {
     /// 初始 sanitize 后的 baseline — 用来比较 draft 跟 baseline 是否一致, 决定 Save 是否启用.
     @State private var baseline: Set<MuscleGroup> = []
 
-    private var detailEnabled: Bool { data.settings.muscleDetailEnabled }
     private var isDirty: Bool { draft != baseline }
 
     var body: some View {
@@ -35,19 +34,12 @@ struct MusclesPickerSheet: View {
                             .foregroundStyle(MasoColor.textDim)
                             .padding(.top, 8)
 
-                        // 主选择区 — 共享组件
+                        // 主选择区 — 只显示 6 个大肌群 section (chest/back/shoulders/arms/core/legs),
+                        // 跟"选动作"页的 Muscle 筛选完全一致, 不再展开 biceps/quads 或解剖学细分.
                         MuscleSelector(
                             selected: $draft,
-                            detailEnabled: detailEnabled
+                            sectionsOnly: true
                         )
-
-                        // 帮助文案: 不强制选满 / 可清空
-                        if !detailEnabled {
-                            Text("Enable \"Show muscle subdivisions\" in Settings to pick details like upper chest or rear delts.")
-                                .font(.system(size: 11))
-                                .foregroundStyle(MasoColor.textFaint)
-                                .padding(.top, 4)
-                        }
 
                         // Clear all — 给 power user 一个一键清空入口, 比"逐个反点"快
                         if !draft.isEmpty {
@@ -90,11 +82,11 @@ struct MusclesPickerSheet: View {
     /// 进入时把 parent 传进来的 selected 洗一遍 (清孤儿 + 按 detailEnabled 折叠),
     /// 写入 draft 跟 baseline. baseline 用于"用户改了没"判断, draft 是用户编辑的目标.
     private func initializeDraft() {
-        let cleaned = MuscleSelector.sanitize(selected, detailEnabled: detailEnabled)
+        // 折叠到 6 大 section (旧数据里 .quads / .upperChest 这种折成 .legs / .chest), 跟 sectionsOnly UI 对齐.
+        let cleaned = Set(selected.compactMap { $0.section })
         draft = cleaned
         baseline = cleaned
-        // 如果 sanitize 改动了数据 (清了孤儿值), 也立即同步回 parent. 不等用户 Save,
-        // 因为这是修脏数据, 用户没改动也应该写回.
+        // 顺手把存储也归一成 section (修脏数据), 不等用户 Save.
         if cleaned != selected {
             selected = cleaned
         }

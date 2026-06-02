@@ -56,16 +56,14 @@ struct OnboardingScreen: View {
                     HStack {
                         Text("Age")
                         Spacer()
-                        // P2-14: 单位走本地化 format key ("%d yrs" / "%d kg") 而非硬编码英文后缀.
-                        Stepper(String(format: NSLocalizedString("%d yrs", comment: "age stepper"), age),
-                                value: $age, in: 12...90)
+                        // 全 app 统一步进控件 — 跟 Settings / 训练中动作详情页同款.
+                        NumStepperField(intValue: $age, range: 12...90, suffix: "yrs")
                     }
                     .font(.system(size: 14))
                     HStack {
                         Text("Weight")
                         Spacer()
-                        Stepper(String(format: NSLocalizedString("%d kg", comment: "weight stepper"), Int(weight)),
-                                value: $weight, in: 30...200)
+                        NumStepperField(doubleValue: $weight, range: 30...200, step: 1, suffix: "kg", decimal: false)
                     }
                     .font(.system(size: 14))
                 }
@@ -95,13 +93,11 @@ struct OnboardingScreen: View {
                 if step >= 3 {
                     Group {
                         SectionLabel("Which muscles do you want to focus on?")
-                        // 用共享 MuscleSelector — 跟 Settings picker / QuickWorkout 创建训练完全
-                        // 同一份 chip 选择 UI (major + sub 两层, 各自独立 toggle).
-                        // Onboarding 默认尊重 detailEnabled (Settings 还没设置过, 取默认 true,
-                        // 但用户初次进 onboarding 主要选 major, sub 没勾不影响).
+                        // 只显示 6 个大肌群 section — 跟 Settings "Muscles to focus" picker /
+                        // "选动作"页 Muscle 筛选完全一致 (不展开细分肌群).
                         MuscleSelector(
                             selected: $strengthen,
-                            detailEnabled: data.settings.muscleDetailEnabled
+                            sectionsOnly: true
                         )
                         Button(action: confirm) {
                             Text("Confirm & build my plan")

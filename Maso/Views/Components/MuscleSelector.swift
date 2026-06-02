@@ -27,6 +27,11 @@ struct MuscleSelector: View {
     /// (跟 Settings.muscleDetailEnabled 联动 — caller 决定传哪个值.)
     var detailEnabled: Bool = true
 
+    /// 只显示 6 个大肌群 section (chest/back/shoulders/arms/core/legs) — 跟"选动作"页的 Muscle
+    /// 筛选完全一致, 不展开 biceps/quads 这种 major, 也不展开解剖学细分. "Muscles to focus" 用.
+    /// 为 true 时优先级最高 (覆盖 detailEnabled).
+    var sectionsOnly: Bool = false
+
     /// 协同肌 — 显示为半透色, 也可点击 (点击会加入 selected).
     /// QuickWorkout 传计算结果; Settings/Onboarding 传 [].
     var synergists: Set<MuscleGroup> = []
@@ -123,8 +128,27 @@ struct MuscleSelector: View {
         return (majors, extraSub)
     }
 
+    /// 6 个大肌群 section — 跟"选动作"页 Muscle 筛选 (ExerciseLibraryBrowser.muscleSections) 同一份.
+    static let focusSections: [MuscleGroup] = [.chest, .back, .shoulders, .arms, .core, .legs]
+
+    /// 把一组 muscle 折叠到它所属的 6 大 section, 按 focusSections 顺序返回.
+    /// Settings "Muscles to focus" 摘要 + Plans 卡片 "Focus: …" 都走这一份 —— 即使存的是
+    /// 旧的 major/sub 值 (e.g. .quads) 也会折叠成 section (.legs) 正确显示.
+    static func focusSummary(_ selected: Set<MuscleGroup>) -> [MuscleGroup] {
+        let folded = Set(selected.compactMap { $0.section })
+        return focusSections.filter { folded.contains($0) }
+    }
+
     var body: some View {
-        if detailEnabled {
+        if sectionsOnly {
+            // 只 6 个大 section chip, 一个 FlowLayout 横向 wrap — 不展开 major / sub.
+            FlowLayout(spacing: 8, alignment: .leading) {
+                ForEach(Self.focusSections, id: \.self) { sec in
+                    majorChip(sec)
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        } else if detailEnabled {
             // 细分开启: 每行 = 1 major + 它的 subs, 行内 wrap, 不同 major 跨行.
             VStack(alignment: .leading, spacing: 14) {
                 ForEach(Self.groupedRows, id: \.major) { row in

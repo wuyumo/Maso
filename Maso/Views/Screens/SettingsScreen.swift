@@ -344,67 +344,10 @@ struct IntStepperContent: View {
     var step: Int = 1
     var suffix: String? = nil
 
-    @FocusState private var focused: Bool
-    @State private var text: String = ""
-
+    // 全 app 统一步进控件 — 圆形 −/+ + 可输入数字框, 跟训练中"动作详情页"同款 (NumStepperField).
     var body: some View {
-        HStack(spacing: 10) {
-            valueField
-            Stepper("", value: $value, in: range, step: step)
-                .labelsHidden()
-        }
-        .toolbar {
-            // numberPad 没自带 Return / Done — 手挂一个键盘 toolbar 的"完成"
-            if focused {
-                ToolbarItemGroup(placement: .keyboard) {
-                    Spacer()
-                    Button("Done") { focused = false }
-                        .foregroundStyle(MasoColor.accent)
-                }
-            }
-        }
-    }
-
-    private var valueField: some View {
-        HStack(spacing: 3) {
-            TextField("", text: $text)
-                .keyboardType(.numberPad)
-                .multilineTextAlignment(.trailing)
-                .font(.system(size: 14, weight: .semibold).monospacedDigit())
-                .foregroundStyle(focused ? MasoColor.accent : MasoColor.text)
-                .focused($focused)
-                .submitLabel(.done)
-                .onSubmit { commit() }
-                .onChange(of: focused) { _, isFocused in
-                    if !isFocused { commit() }
-                }
-                .onAppear { text = "\(value)" }
-                .onChange(of: value) { _, newValue in
-                    // 外部 (e.g. Stepper +/-) 改了 value → 同步显示
-                    if !focused { text = "\(newValue)" }
-                }
-            if let suffix {
-                Text(NSLocalizedString(suffix, comment: ""))
-                    .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(MasoColor.textDim)
-            }
-        }
-        .frame(width: 70, alignment: .trailing)
-        // 整块 (含 suffix) 都是 tap 热区 — 点单位也能拉键盘
-        .contentShape(Rectangle())
-        .onTapGesture { focused = true }
-    }
-
-    private func commit() {
-        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
-        if let parsed = Int(trimmed) {
-            let clamped = min(max(parsed, range.lowerBound), range.upperBound)
-            value = clamped
-            text = "\(clamped)"
-        } else {
-            // 空 / 非法 → 回退
-            text = "\(value)"
-        }
+        NumStepperField(intValue: $value, range: range, step: step,
+                        suffix: suffix.map { NSLocalizedString($0, comment: "") })
     }
 }
 
@@ -414,70 +357,9 @@ private struct DoubleStepperContent: View {
     var step: Double = 1
     var suffix: String? = nil
 
-    @FocusState private var focused: Bool
-    @State private var text: String = ""
-
     var body: some View {
-        HStack(spacing: 10) {
-            valueField
-            Stepper("", value: $value, in: range, step: step)
-                .labelsHidden()
-        }
-        .toolbar {
-            if focused {
-                ToolbarItemGroup(placement: .keyboard) {
-                    Spacer()
-                    Button("Done") { focused = false }
-                        .foregroundStyle(MasoColor.accent)
-                }
-            }
-        }
-    }
-
-    private var valueField: some View {
-        HStack(spacing: 3) {
-            TextField("", text: $text)
-                .keyboardType(.decimalPad)
-                .multilineTextAlignment(.trailing)
-                .font(.system(size: 14, weight: .semibold).monospacedDigit())
-                .foregroundStyle(focused ? MasoColor.accent : MasoColor.text)
-                .focused($focused)
-                .submitLabel(.done)
-                .onSubmit { commit() }
-                .onChange(of: focused) { _, isFocused in
-                    if !isFocused { commit() }
-                }
-                .onAppear { text = format(value) }
-                .onChange(of: value) { _, newValue in
-                    if !focused { text = format(newValue) }
-                }
-            if let suffix {
-                Text(NSLocalizedString(suffix, comment: ""))
-                    .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(MasoColor.textDim)
-            }
-        }
-        .frame(width: 70, alignment: .trailing)
-        .contentShape(Rectangle())
-        .onTapGesture { focused = true }
-    }
-
-    private func commit() {
-        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
-        // 处理欧洲 locale 用 "," 当小数点
-        if let parsed = Double(trimmed.replacingOccurrences(of: ",", with: ".")) {
-            let clamped = min(max(parsed, range.lowerBound), range.upperBound)
-            value = clamped
-            text = format(clamped)
-        } else {
-            text = format(value)
-        }
-    }
-
-    /// 整数显整数, 否则保留 1 位小数 (e.g. 70 → "70"; 70.5 → "70.5")
-    private func format(_ v: Double) -> String {
-        if v.truncatingRemainder(dividingBy: 1) == 0 { return String(Int(v)) }
-        return String(format: "%.1f", v)
+        NumStepperField(doubleValue: $value, range: range, step: step,
+                        suffix: suffix.map { NSLocalizedString($0, comment: "") }, decimal: true)
     }
 }
 

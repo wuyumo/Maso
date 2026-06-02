@@ -276,9 +276,9 @@ struct PlanRationaleCard: View {
 
     var body: some View {
         let s = data.settings
-        // wantStrengthen 可能含 sub-muscle (e.g. upper chest, lower lats);
-        // 用 summary collapse 回 major (chest, back) 让 chip 行不啰嗦.
-        let majors = MuscleSelector.summary(Set(s.wantStrengthen)).majors
+        // wantStrengthen 折叠到 6 大 section (chest/back/shoulders/arms/core/legs) 显示,
+        // 跟 "Muscles to focus" picker 的粒度一致.
+        let majors = MuscleSelector.focusSummary(Set(s.wantStrengthen))
         let muscleNames = majors.prefix(3).map(\.displayName).joined(separator: " / ")
         let muscleSuffix = majors.count > 3 ? " +\(majors.count - 3)" : ""
 

@@ -100,7 +100,7 @@ struct FilterMenuButton<T: Hashable>: View {
         }
         .foregroundStyle(selected == nil ? MasoColor.textDim : MasoColor.accent)
         .padding(.horizontal, 12)
-        .padding(.vertical, 6)
+        .frame(height: 32)   // 固定高 — 跟 ExerciseSearchFilterBar 的搜索框完全等高
         .background(selected == nil ? MasoColor.surface : MasoColor.accent.opacity(0.16))
         .overlay(
             Capsule().stroke(
@@ -174,7 +174,7 @@ struct ExerciseSearchFilterBar: View {
                 }
             }
             .padding(.horizontal, 12)
-            .padding(.vertical, 6)
+            .frame(height: 32)   // 固定高 — 跟右侧 Muscle / Equipment 筛选胶囊完全等高
             .background(MasoColor.surface)
             .clipShape(Capsule())
             .frame(maxWidth: .infinity)

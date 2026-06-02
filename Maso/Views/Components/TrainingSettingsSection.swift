@@ -214,23 +214,14 @@ struct TrainingSettingsSection: View {
         .onDisappear { data.commitRecommendedPlansIfDirty() }
     }
 
-    /// "Muscles to focus" 行右侧文案 (跟 SettingsScreen 用同一份逻辑):
-    ///   - 空 → "None"
-    ///   - 1-2 个 major → "Chest" / "Chest, Back"
-    ///   - 3+ → "Chest, Back +2"
-    ///   - 有 sub 被选 → "Chest +3 details" (major + N 个细分)
+    /// "Muscles to focus" 行右侧文案 — 折叠到 6 大 section (跟 picker 粒度一致):
+    ///   - 空 → "None"  ·  1-2 → "Chest" / "Chest, Back"  ·  3+ → "Chest, Back +2"
     private var musclesSummaryText: String {
-        let set = Set(data.settings.wantStrengthen)
-        guard !set.isEmpty else { return NSLocalizedString("None", comment: "") }
-        let (majors, extraSub) = MuscleSelector.summary(set)
-        let shown = majors.prefix(2).map(\.displayName).joined(separator: ", ")
-        let restMajor = max(0, majors.count - 2)
-        var out = shown
-        if restMajor > 0 { out += " +\(restMajor)" }
-        if extraSub > 0 {
-            out += " (\(extraSub) " + NSLocalizedString("details", comment: "muscle subdivisions") + ")"
-        }
-        return out
+        let sections = MuscleSelector.focusSummary(Set(data.settings.wantStrengthen))
+        guard !sections.isEmpty else { return NSLocalizedString("None", comment: "") }
+        let shown = sections.prefix(2).map(\.displayName).joined(separator: ", ")
+        let rest = sections.count - 2
+        return rest > 0 ? "\(shown) +\(rest)" : shown
     }
 }
 
