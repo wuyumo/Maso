@@ -309,6 +309,61 @@ final class DataStore {
         }
     }
 
+    /// "偏好社区计划" 开关打开时的推荐计划来源 — 不再从模板自动生成, 而是从 Community 里挑一套
+    /// 最符合用户 days/week + 训练目标的成熟计划, materialize 进来 (按 exercises-per-plan 轻微调,
+    /// 但保留社区计划自己设计的 sets/reps/rest — 那是计划的精髓). 兜底回退到模板.
+    static func communityRecommendedPlans(
+        forDays days: Int,
+        settings: UserSettings,
+        exById: [String: Exercise],
+        sets: [SetRecord],
+        now: Date
+    ) -> [Plan] {
+        let all = CommunityPlans.all
+        // 训练目标 → 偏好的 kicker 关键词.
+        let goalHints: [String]
+        switch settings.trainingGoal {
+        case .strength:    goalHints = ["STRENGTH", "POWERLIFTING", "POWERBUILDING"]
+        case .hypertrophy: goalHints = ["HYPERTROPHY", "BODYBUILDING", "PUSH / PULL / LEGS", "UPPER / LOWER", "POWERBUILDING"]
+        case .endurance:   goalHints = ["FULL BODY", "CALISTHENICS", "ATHLETIC"]
+        }
+        func score(_ p: CommunityPlan) -> Int {
+            var s = (p.frequencyDaysPerWeek == days) ? 4 : -abs(p.frequencyDaysPerWeek - days)
+            if goalHints.contains(where: { p.kicker.uppercased().contains($0) }) { s += 2 }
+            return s
+        }
+        guard let chosen = all.max(by: { score($0) < score($1) }) else {
+            return tunedRecommendedPlans(forDays: days, settings: settings, exById: exById, sets: sets, now: now)
+        }
+        let cap = max(1, min(8, settings.exercisesPerSession))
+        let focusSections: Set<MuscleGroup> = Set(settings.wantStrengthen.map { $0.section ?? $0 })
+        func hitsFocus(_ step: PlanStep) -> Bool {
+            guard !focusSections.isEmpty, let ex = exById[step.exerciseId] else { return false }
+            return ex.primaryMuscles.contains { focusSections.contains($0.section ?? $0) }
+        }
+        let plans = chosen.materialize(now: now, byId: exById, idPrefix: "plan-comrec").map { plan -> Plan in
+            var p = plan
+            if p.steps.count > cap {  // 只在超过用户每张动作数时裁 (优先保留聚焦肌群命中动作)
+                if focusSections.isEmpty {
+                    p.steps = Array(p.steps.prefix(cap))
+                } else {
+                    let order = p.steps.indices.sorted { i, j in
+                        let hi = hitsFocus(p.steps[i]), hj = hitsFocus(p.steps[j])
+                        return hi != hj ? (hi && !hj) : i < j
+                    }
+                    let keep = Set(order.prefix(cap))
+                    p.steps = p.steps.indices.filter { keep.contains($0) }.map { p.steps[$0] }
+                }
+            }
+            p.lastUsedAt = sets.filter { $0.planId == p.id }.map(\.performedAt).max()
+            return p
+        }
+        // 极端兜底: 万一所选社区计划的 step 全部 invalid (不该发生, 已校验) → 回退模板.
+        return plans.isEmpty
+            ? tunedRecommendedPlans(forDays: days, settings: settings, exById: exById, sets: sets, now: now)
+            : plans
+    }
+
     // MARK: - 简单的 plan 操作
 
     func updatePlan(_ plan: Plan) {
@@ -599,17 +654,27 @@ final class DataStore {
     /// 只覆盖系统生成的 plan (id 前缀 `plan-full/plan-bal/plan-push/plan-pull/plan-legs`),
     /// 用户自定义 plan (`plan-new-...`) 完整保留.
     func regenerateRecommendedPlans() {
-        let recommendedPrefixes = ["plan-full", "plan-bal", "plan-push", "plan-pull", "plan-legs"]
+        // plan-comrec = "偏好社区计划"开关打开时 materialize 进来的社区推荐计划 (同样按推荐集管理,
+        // regen / 关开关时一并清掉). 用户从 Community 主动 "Add" 的是 plan-community-, 不在此列, 不会被清.
+        let recommendedPrefixes = ["plan-full", "plan-bal", "plan-push", "plan-pull", "plan-legs", "plan-comrec"]
         plans.removeAll { plan in
             recommendedPrefixes.contains(where: { plan.id.hasPrefix($0) })
         }
-        let tuned = DataStore.tunedRecommendedPlans(
-            forDays: settings.weeklyTrainingDays,
-            settings: settings,
-            exById: exById,
-            sets: sets,
-            now: Date()
-        )
+        let tuned = settings.preferCommunityPlans
+            ? DataStore.communityRecommendedPlans(
+                forDays: settings.weeklyTrainingDays,
+                settings: settings,
+                exById: exById,
+                sets: sets,
+                now: Date()
+            )
+            : DataStore.tunedRecommendedPlans(
+                forDays: settings.weeklyTrainingDays,
+                settings: settings,
+                exById: exById,
+                sets: sets,
+                now: Date()
+            )
         plans.append(contentsOf: tuned)
         save()  // P0-1: 之前漏了 save → 改设置重启就回退. 现在持久化.
     }

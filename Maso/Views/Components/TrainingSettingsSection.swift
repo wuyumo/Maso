@@ -170,6 +170,22 @@ struct TrainingSettingsSection: View {
                     suffix: "s"
                 )
             }
+            Divider().background(MasoColor.borderSoft)
+
+            // ─── 8. Prefer community plans ───
+            // 开 → 推荐计划改从 Community 挑成熟方案 materialize, 而不是模板自动生成.
+            // 改了立刻 regen, 让用户马上看到 AI Plans 换成社区计划 (或换回模板).
+            ToggleRow(
+                title: "Prefer community plans",
+                desc: "Build your AI Plans from a proven community program that matches your days per week and goal, instead of auto-generating them.",
+                isOn: Binding(
+                    get: { data.settings.preferCommunityPlans },
+                    set: { newVal in
+                        data.settings.preferCommunityPlans = newVal
+                        data.regenerateRecommendedPlans()
+                    }
+                )
+            )
             // (移除: "Quick-start from center tab" — 入口已不在; 该行为仍按 settings 默认值生效.)
             // (移除: "Show muscle subdivisions" — 不再让用户切换, 始终按默认显示细分肌群.)
 

@@ -99,6 +99,11 @@ struct UserSettings: Codable, Sendable {
     /// 是否启用 AI 训练计划生成. 默认关 (用户需要先填 API key 才能启用).
     var aiWorkoutEnabled: Bool = false
 
+    /// 偏好社区计划. 默认关. 打开后: 推荐计划 (AI Plans) 不再从模板自动生成, 而是从 Community
+    /// 里挑一套符合用户 days/week + 训练目标的成熟计划 materialize 进来 (按 exercises-per-plan 微调).
+    /// 即"少自动生成, 多采用社区已验证的计划". 见 DataStore.regenerateRecommendedPlans.
+    var preferCommunityPlans: Bool = false
+
     /// 肌肉分区颗粒度. true (默认): 暴露 sub-muscle (上胸/下胸/股二头/股内肌...).
     /// false: UI 只暴露 major (chest / back / quads / hamstrings...). 身体图也合并描边显示成大块.
     /// 影响:

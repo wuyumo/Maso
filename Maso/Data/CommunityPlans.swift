@@ -4893,7 +4893,7 @@ extension CommunityPlan {
     /// 每张 Plan 一个独立 id (plan-community-<short uuid>-<idx>), 名字是
     /// "<community plan name> · <session name>".
     /// 调用者: CommunityScreen tap "Add to my plans" → data.plans.append(contentsOf:) → save()
-    func materialize(now: Date = Date(), byId: [String: Exercise]) -> [Plan] {
+    func materialize(now: Date = Date(), byId: [String: Exercise], idPrefix: String = "plan-community") -> [Plan] {
         let shortUUID = UUID().uuidString.prefix(8)
         let planNameBase = NSLocalizedString(nameKey, comment: "")
         return sessions.enumerated().compactMap { (idx, session) -> Plan? in
@@ -4919,7 +4919,7 @@ extension CommunityPlan {
             // 不同 session 用不同 idx 让 createdAt 错开 (排序时按 createdAt 也好看)
             let createdAt = now.addingTimeInterval(Double(idx))
             return Plan(
-                id: "plan-community-\(shortUUID)-\(idx)",
+                id: "\(idPrefix)-\(shortUUID)-\(idx)",
                 name: displayName,
                 steps: validSteps,
                 createdAt: createdAt,
