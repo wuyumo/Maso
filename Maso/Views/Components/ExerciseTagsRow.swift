@@ -170,8 +170,7 @@ struct GroupedExerciseRow<Trailing: View>: View {
                         .font(.system(size: 12, weight: .heavy))
                         .foregroundStyle(MasoColor.accent)
                 }
-                trailing()
-                // canonical 末尾 "+N variants" 胶囊.
+                // canonical 末尾 "+N variants" 胶囊 — 放在 radio 勾选圈左边.
                 if !isVariant, !group.isSingleton, showDisclosure {
                     Button(action: onToggleExpand) {
                         HStack(spacing: 4) {
@@ -194,6 +193,8 @@ struct GroupedExerciseRow<Trailing: View>: View {
                         : String(format: NSLocalizedString("Show %d variants", comment: ""), group.variants.count)
                     )
                 }
+                // radio 勾选圈 (多选模式) — 永远在行最右边, "+N variants" 胶囊在它左边.
+                trailing()
             }
             .padding(.horizontal, MasoMetrics.rowPaddingH)
             .padding(.vertical, isVariant ? 6 : 10)
