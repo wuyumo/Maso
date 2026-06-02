@@ -225,6 +225,10 @@ struct PlanPlayerScreen: View {
                 playlistDrawer
             }
         }
+        // 钉死内容宽度 = 屏宽 — 修"训练态 vs 休息态 playlist 整体宽差 ~2.7pt/边": 训练态全屏动作大图
+        // 的 intrinsic 宽略溢出屏宽, 把外层 VStack 撑宽 → 下方 playlist drawer (maxWidth .infinity) 跟着变宽;
+        // 休息态(图 + 黑 mask)不溢出. cap 到屏宽后两态宽度一致, 切换不再"轻微收窄又放宽".
+        .frame(maxWidth: UIScreen.main.bounds.width)
         // sheet 整体背景用纯黑 — Home Indicator 区延续 .black, 跟 TabBar/MiniBar 一致.
         // (之前用 MasoColor.background = #121212, rest 段 Controls 之下会透出微弱灰, 跟 .black 有色差.)
         .background(Color.black.ignoresSafeArea())
@@ -565,7 +569,6 @@ struct PlanPlayerScreen: View {
             playlistDragHandleBar
                 .background(
                     Color(red: 10/255, green: 10/255, blue: 10/255)
-                        .opacity(0.95)
                 )
 
             InlinePlaylist(
@@ -619,7 +622,6 @@ struct PlanPlayerScreen: View {
         .clipped()
         .background(
             Color(red: 10/255, green: 10/255, blue: 10/255)
-                .opacity(0.95)
                 .ignoresSafeArea(.container, edges: .bottom)
         )
         .ignoresSafeArea(.container, edges: .bottom)
@@ -1549,16 +1551,19 @@ private struct InlinePlaylist: View {
     }
 
     private func setBarColor(idx: Int, stepId: String, setN: Int) -> Color {
-        // 做完 = 实心绿; 进行中的那一组 = 浅绿; 未来 / 跳过 = 白.
+        // 三态用"亮度梯度 + 单一品牌色"区分, 即使只出现其中两态也一眼分得清:
+        //   已完成 = 实心绿 (accent)   —— 达成
+        //   正在进行 = 亮白 (text)      —— 此刻的焦点 (最亮, 不再是跟绿色撞色的浅绿)
+        //   未做     = 暗灰 (0.35)       —— 还没到, 隐退
+        // 之前 "浅绿(进行) vs 实绿(完成)" 同色系难区分 → 现在进行态换成纯白, 跟绿/灰拉开.
         // 颜色切换走 .animation(nil) 即刻生效, 不会有过渡闪烁.
         if completedSets.contains(.init(stepId: stepId, setN: setN)) {
-            return MasoColor.accent  // 做完 = 绿
+            return MasoColor.accent           // 已完成 = 绿
         }
-        // 进行中 = 当前动作的当前组 (还没 mark 完成) → 浅绿, 区分于未来组的白.
         if stepId == currentStepId, let cs = currentSet, setN == cs {
-            return MasoColor.accent.opacity(0.45)
+            return MasoColor.text             // 正在进行 = 亮白
         }
-        return MasoColor.text  // 未来 / 跳过 = 白
+        return MasoColor.textFaint.opacity(0.35)  // 未做 = 暗灰
     }
 
     var body: some View {
@@ -1668,7 +1673,10 @@ private struct InlinePlaylist: View {
             // List 默认 environment editMode 是 inactive — onMove 在 inactive 下走"长按拖动"
             // 模式 (iOS 16+), 不需要进入显式 edit mode 才能拖. 用户长按行 ~0.5s 即可开始拖.
         }
-        .background(Color(red: 10/255, green: 10/255, blue: 10/255).opacity(0.85))
+        // 不透明 — playlist 背景必须跟"身后是什么"无关. 之前 0.85 半透 → 训练态透出动作大图
+        // (偏红), 休息态透出"下一动作图 + 黑 mask" (偏暗), 两态 playlist 底色不一致, 行边缘 AA
+        // 跟着变, 切换时看着像"item 收窄又放宽". 钉成纯不透明深色 → 两态完全一致.
+        .background(Color(red: 10/255, green: 10/255, blue: 10/255))
     }
 
     private func playlistRow(step: PlanStep, ex: Exercise) -> some View {
