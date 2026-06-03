@@ -102,12 +102,21 @@ struct CustomExerciseFormSheet: View {
     @Environment(DataStore.self) private var data
     @Environment(\.dismiss) private var dismiss
 
-    @State private var name: String = ""
+    @State private var name: String
     @State private var selectedMuscle: MuscleGroup = .chest
     @State private var selectedEquipment: String = "body_only"
     @State private var photoItem: PhotosPickerItem? = nil
     @State private var imageData: Data? = nil
     @State private var showingError: String? = nil
+
+    /// 创建成功回调 — caller (选动作 picker) 拿到新动作可以直接勾选 / 加入.
+    private let onCreated: ((Exercise) -> Void)?
+
+    /// 预填名字 — 从"选动作"页搜索空结果点"Add 'xxx'"进来时, 把搜索词带过来直接填好.
+    init(initialName: String = "", onCreated: ((Exercise) -> Void)? = nil) {
+        _name = State(initialValue: String(initialName.prefix(Self.maxNameLength)))
+        self.onCreated = onCreated
+    }
     /// P1-6: 计量方式 — false = Reps & weight (.strength), true = Timed (秒, 非 strength → player 用 duration).
     @State private var isTimed: Bool = false
     /// P2-13: 照片加载/压缩中 — 显 spinner, 防用户以为没反应.
@@ -392,6 +401,7 @@ struct CustomExerciseFormSheet: View {
             customImageData: imageData
         )
         data.addCustomExercise(ex)
+        onCreated?(ex)
         Haptics.tap()
         dismiss()
     }

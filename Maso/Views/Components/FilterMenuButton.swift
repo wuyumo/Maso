@@ -153,32 +153,8 @@ struct ExerciseSearchFilterBar: View {
     let availableEquipments: Set<String>
 
     var body: some View {
+        // 顺序: 左 = 两个筛选入口 (Muscle / Equipment), 右 = 搜索框 (flex 占满剩余宽度).
         HStack(spacing: 8) {
-            // 搜索框 — iOS 搜索框观感 (放大镜 + 圆角 + 清除), flex 占满剩余宽度.
-            HStack(spacing: 6) {
-                Image(systemName: "magnifyingglass")
-                    .font(.system(size: 12, weight: .semibold))
-                    .foregroundStyle(MasoColor.textFaint)
-                TextField(NSLocalizedString("Search", comment: "search field placeholder"), text: $query)
-                    .textFieldStyle(.plain)
-                    .font(.system(size: 13))
-                    .autocorrectionDisabled()
-                    .textInputAutocapitalization(.never)
-                if !query.isEmpty {
-                    Button(action: { query = "" }) {
-                        Image(systemName: "xmark.circle.fill")
-                            .font(.system(size: 12))
-                            .foregroundStyle(MasoColor.textFaint)
-                    }
-                    .buttonStyle(.plain)
-                }
-            }
-            .padding(.horizontal, 12)
-            .frame(height: 32)   // 固定高 — 跟右侧 Muscle / Equipment 筛选胶囊完全等高
-            .background(MasoColor.surface)
-            .clipShape(Capsule())
-            .frame(maxWidth: .infinity)
-
             FilterMenuButton(
                 title: NSLocalizedString("Muscle", comment: "filter button placeholder"),
                 allLabel: NSLocalizedString("All muscles", comment: ""),
@@ -201,6 +177,31 @@ struct ExerciseSearchFilterBar: View {
                 style: .capsule,
                 icon: "dumbbell.fill"
             )
+
+            // 搜索框 — iOS 搜索框观感 (放大镜 + 圆角 + 清除), flex 占满剩余宽度, 放最右.
+            HStack(spacing: 6) {
+                Image(systemName: "magnifyingglass")
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundStyle(MasoColor.textFaint)
+                TextField(NSLocalizedString("Search", comment: "search field placeholder"), text: $query)
+                    .textFieldStyle(.plain)
+                    .font(.system(size: 13))
+                    .autocorrectionDisabled()
+                    .textInputAutocapitalization(.never)
+                if !query.isEmpty {
+                    Button(action: { query = "" }) {
+                        Image(systemName: "xmark.circle.fill")
+                            .font(.system(size: 12))
+                            .foregroundStyle(MasoColor.textFaint)
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            .padding(.horizontal, 12)
+            .frame(height: 32)   // 固定高 — 跟左侧 Muscle / Equipment 筛选胶囊完全等高
+            .background(MasoColor.surface)
+            .clipShape(Capsule())
+            .frame(maxWidth: .infinity)
         }
         .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
         .padding(.vertical, 8)

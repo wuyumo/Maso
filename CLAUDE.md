@@ -1,3 +1,5 @@
+@/Users/yumowu/.claude/projects/-Users-yumowu-Projects/memory/MEMORY.md
+
 # Maso — iOS 健身 App (SwiftUI)
 
 ## 项目

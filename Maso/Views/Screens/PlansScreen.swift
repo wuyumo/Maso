@@ -1334,6 +1334,8 @@ struct ExercisePickerSheet: View {
     @State private var detailExercise: Exercise? = nil
     /// 小众动作模式 — false (默认): 主库. true: 只看小众库 (从底部入口进).
     @State private var nicheMode: Bool = false
+    /// 搜索空结果时点"添加自己的动作" → 弹 CustomExerciseFormSheet (用当前搜索词预填名字).
+    @State private var customFormOpen: Bool = false
     /// 当前展开的"变种组" key (= ExerciseGroup.id). 一次只展开一组.
     @State private var expandedGroupKey: String? = nil
     /// initialMuscle 只灌一次, 避免每次重绘覆盖用户后续操作.
@@ -1410,6 +1412,8 @@ struct ExercisePickerSheet: View {
     /// 是不是处于"主动筛选"状态 (有搜索词 / equipment 选定) — 此时所有 group 强制展开,
     /// 用户能直接看见命中的具体变种, 不用每个 group 自己点 disclosure.
     /// 仅 muscle / sub filter 选了不算 (那两个筛肌肉, 不太关心变种).
+    private var trimmedQuery: String { query.trimmingCharacters(in: .whitespaces) }
+
     private var forceExpandAll: Bool {
         !query.trimmingCharacters(in: .whitespaces).isEmpty || equipmentFilter != nil
     }
@@ -1471,6 +1475,13 @@ struct ExercisePickerSheet: View {
                 ExerciseDetailSheet(exercise: ex, onAdd: {
                     if multiSelect { selectedIds.insert(ex.id) } else { onPick(ex) }
                 })
+            }
+            // 搜索空 → "添加自己的动作" 表单 (预填搜索词). 创建后 multiSelect 自动勾选这个新动作.
+            .sheet(isPresented: $customFormOpen) {
+                CustomExerciseFormSheet(
+                    initialName: trimmedQuery,
+                    onCreated: { ex in if multiSelect { selectedIds.insert(ex.id) } }
+                )
             }
             .background(MasoColor.background.ignoresSafeArea())
             .navigationBarTitleDisplayMode(.inline)
@@ -1657,15 +1668,36 @@ struct ExercisePickerSheet: View {
                 }
             }
             if filtered.isEmpty {
-                Text(nicheMode
-                     ? NSLocalizedString("No rare exercises match your search", comment: "")
-                     : NSLocalizedString("No exercises match your search", comment: ""))
-                    .font(.system(size: 13))
-                    .foregroundStyle(MasoColor.textDim)
-                    .padding(.vertical, 32)
-                    .frame(maxWidth: .infinity)
-                    .listRowSeparator(.hidden)
-                    .listRowBackground(Color.clear)
+                VStack(spacing: 16) {
+                    Text(nicheMode
+                         ? NSLocalizedString("No rare exercises match your search", comment: "")
+                         : NSLocalizedString("No exercises match your search", comment: ""))
+                        .font(.system(size: 13))
+                        .foregroundStyle(MasoColor.textDim)
+                    // 找不到 → 一键创建自己的动作 (带搜索词预填名字). 主库 / 小众库都给这个入口.
+                    Button(action: { customFormOpen = true }) {
+                        HStack(spacing: 8) {
+                            Image(systemName: "plus.circle.fill")
+                                .font(.system(size: 16, weight: .heavy))
+                            Text(trimmedQuery.isEmpty
+                                 ? NSLocalizedString("Add your own exercise", comment: "")
+                                 : String(format: NSLocalizedString("Add “%@” as your own", comment: "create custom exercise from search"), trimmedQuery))
+                                .font(.system(size: 14, weight: .bold))
+                                .lineLimit(1)
+                        }
+                        .foregroundStyle(MasoColor.accent)
+                        .padding(.horizontal, 18)
+                        .padding(.vertical, 12)
+                        .background(MasoColor.accent.opacity(0.14))
+                        .overlay(Capsule().stroke(MasoColor.accent.opacity(0.35), lineWidth: 0.5))
+                        .clipShape(Capsule())
+                    }
+                    .buttonStyle(.plain)
+                }
+                .padding(.vertical, 32)
+                .frame(maxWidth: .infinity)
+                .listRowSeparator(.hidden)
+                .listRowBackground(Color.clear)
             }
 
             // 列表末尾的"切换库"入口 — 主库结尾邀请进小众库, 小众库结尾邀请回主库.
