@@ -108,6 +108,8 @@ struct CustomExerciseFormSheet: View {
     @State private var photoItem: PhotosPickerItem? = nil
     @State private var imageData: Data? = nil
     @State private var showingError: String? = nil
+    /// "网上搜图" sheet 开关.
+    @State private var webPickerOpen: Bool = false
 
     /// 创建成功回调 — caller (选动作 picker) 拿到新动作可以直接勾选 / 加入.
     private let onCreated: ((Exercise) -> Void)?
@@ -145,10 +147,34 @@ struct CustomExerciseFormSheet: View {
                     //   - 有图: 实色描边 (borderSoft) + 右上角小"Change" 胶囊 (灰底,
                     //          不再用 accent 绿) 给用户重新选的入口
                     Section {
-                        PhotosPicker(selection: $photoItem, matching: .images) {
-                            photoArea
+                        // 图片预览 / 占位 (展示用). 两个来源按钮在下面.
+                        photoArea
+                            .padding(.vertical, 4)
+                        // 两个图片来源: 网上搜图 (主, 用动作名自动搜) + 从相册选.
+                        HStack(spacing: 10) {
+                            Button(action: { webPickerOpen = true }) {
+                                Label(NSLocalizedString("Search the web", comment: ""), systemImage: "magnifyingglass")
+                                    .font(.system(size: 13, weight: .bold))
+                                    .frame(maxWidth: .infinity)
+                                    .padding(.vertical, 9)
+                                    .background(MasoColor.accent.opacity(0.16))
+                                    .foregroundStyle(MasoColor.accent)
+                                    .clipShape(Capsule())
+                                    .overlay(Capsule().stroke(MasoColor.accent.opacity(0.35), lineWidth: 0.5))
+                            }
+                            .buttonStyle(.plain)
+                            PhotosPicker(selection: $photoItem, matching: .images) {
+                                Label(NSLocalizedString("From library", comment: ""), systemImage: "photo.on.rectangle")
+                                    .font(.system(size: 13, weight: .bold))
+                                    .frame(maxWidth: .infinity)
+                                    .padding(.vertical, 9)
+                                    .background(MasoColor.surfaceHi)
+                                    .foregroundStyle(MasoColor.text)
+                                    .clipShape(Capsule())
+                                    .overlay(Capsule().stroke(MasoColor.borderSoft, lineWidth: 0.5))
+                            }
+                            .buttonStyle(.plain)
                         }
-                        .buttonStyle(.plain)
                         .padding(.vertical, 4)
                     }
                     .listRowBackground(MasoColor.surface)
@@ -259,6 +285,10 @@ struct CustomExerciseFormSheet: View {
                     else { showingError = NSLocalizedString("Couldn't process that image. Try another.", comment: "") }
                 }
             }
+        }
+        // 网上搜图 — 用当前动作名预填搜索, 选中一张 → 下载降采样后写回 imageData.
+        .sheet(isPresented: $webPickerOpen) {
+            WebImagePickerSheet(initialQuery: name) { data in imageData = data }
         }
         .alert("Couldn't save exercise", isPresented: Binding(
             get: { showingError != nil }, set: { if !$0 { showingError = nil } }
@@ -692,5 +722,181 @@ private struct SearchBar: View {
         .padding(.vertical, 8)
         .background(MasoColor.surface)
         .clipShape(Capsule())
+    }
+}
+
+// MARK: - Web image search — 自创动作"网上搜图"
+//
+// 走 Maso 的 Vercel 代理 (Pexels key 留服务端, app 只拿现成图片 URL, 不碰 key).
+// 换搜索源 (Pexels / Google / Bing) 只改服务端, app 不动.
+
+struct ExerciseImagePhoto: Identifiable, Decodable, Hashable {
+    let id: String
+    let thumb: String   // 列表缩略图
+    let full: String    // 选中后下载的大图
+    let alt: String
+}
+
+enum ExerciseImageSearch {
+    /// Vercel 代理 endpoint. ⚠️ 部署后把这里改成实际 production URL.
+    static let endpoint = "https://maso-api.vercel.app/api/exercise-image"
+
+    static func search(_ query: String) async -> [ExerciseImagePhoto] {
+        let q = query.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !q.isEmpty, var comps = URLComponents(string: endpoint) else { return [] }
+        comps.queryItems = [URLQueryItem(name: "q", value: q)]
+        guard let url = comps.url else { return [] }
+        struct Resp: Decodable { let photos: [ExerciseImagePhoto] }
+        do {
+            var req = URLRequest(url: url)
+            req.timeoutInterval = 12
+            let (data, resp) = try await URLSession.shared.data(for: req)
+            guard (resp as? HTTPURLResponse)?.statusCode == 200 else { return [] }
+            return (try? JSONDecoder().decode(Resp.self, from: data))?.photos ?? []
+        } catch { return [] }
+    }
+
+    /// 下载选中大图 → 降采样 800px → JPEG 0.7 (跟相册路径同款存储, 不撑爆 maso-data.json).
+    static func downloadJPEG(_ urlString: String) async -> Data? {
+        guard let url = URL(string: urlString),
+              let (data, resp) = try? await URLSession.shared.data(from: url),
+              (resp as? HTTPURLResponse)?.statusCode == 200,
+              let ui = UIImage(data: data) else { return nil }
+        return downscale(ui, maxDimension: 800).jpegData(compressionQuality: 0.7)
+    }
+
+    private static func downscale(_ image: UIImage, maxDimension: CGFloat) -> UIImage {
+        let w = image.size.width, h = image.size.height
+        let longSide = max(w, h)
+        guard longSide > maxDimension, longSide > 0 else { return image }
+        let scale = maxDimension / longSide
+        let newSize = CGSize(width: w * scale, height: h * scale)
+        let fmt = UIGraphicsImageRendererFormat.default(); fmt.scale = 1
+        return UIGraphicsImageRenderer(size: newSize, format: fmt).image { _ in
+            image.draw(in: CGRect(origin: .zero, size: newSize))
+        }
+    }
+}
+
+// MARK: - WebImagePickerSheet — 输入名字 → 网上搜训练图 → 选一张
+struct WebImagePickerSheet: View {
+    let onPicked: (Data) -> Void
+    @Environment(\.dismiss) private var dismiss
+
+    @State private var query: String
+    @State private var photos: [ExerciseImagePhoto] = []
+    @State private var loading = false
+    @State private var searched = false
+    @State private var downloadingId: String? = nil
+
+    init(initialQuery: String, onPicked: @escaping (Data) -> Void) {
+        self.onPicked = onPicked
+        _query = State(initialValue: initialQuery.trimmingCharacters(in: .whitespaces))
+    }
+
+    private let cols = [GridItem(.flexible(), spacing: 8),
+                        GridItem(.flexible(), spacing: 8),
+                        GridItem(.flexible(), spacing: 8)]
+
+    var body: some View {
+        NavigationStack {
+            ZStack {
+                MasoColor.background.ignoresSafeArea()
+                VStack(spacing: 0) {
+                    // 搜索条
+                    HStack(spacing: 8) {
+                        HStack(spacing: 6) {
+                            Image(systemName: "magnifyingglass")
+                                .font(.system(size: 13)).foregroundStyle(MasoColor.textFaint)
+                            TextField(NSLocalizedString("Search exercise photos", comment: ""), text: $query)
+                                .textFieldStyle(.plain).font(.system(size: 14))
+                                .submitLabel(.search).onSubmit { runSearch() }
+                                .autocorrectionDisabled()
+                        }
+                        .padding(.horizontal, 12).frame(height: 36)
+                        .background(MasoColor.surface).clipShape(Capsule())
+                        Button(NSLocalizedString("Search", comment: "")) { runSearch() }
+                            .font(.system(size: 14, weight: .bold)).foregroundStyle(MasoColor.accent)
+                            .disabled(query.trimmingCharacters(in: .whitespaces).isEmpty)
+                    }
+                    .padding(.horizontal, 16).padding(.vertical, 10)
+
+                    if loading {
+                        Spacer(); ProgressView().tint(MasoColor.accent); Spacer()
+                    } else if photos.isEmpty {
+                        Spacer()
+                        VStack(spacing: 8) {
+                            Image(systemName: searched ? "photo.on.rectangle.angled" : "magnifyingglass")
+                                .font(.system(size: 34, weight: .light)).foregroundStyle(MasoColor.textFaint)
+                            Text(searched
+                                 ? NSLocalizedString("No photos found. Try a different name.", comment: "")
+                                 : NSLocalizedString("Type a name and search the web.", comment: ""))
+                                .font(.system(size: 13)).foregroundStyle(MasoColor.textDim)
+                                .multilineTextAlignment(.center).padding(.horizontal, 40)
+                        }
+                        Spacer()
+                    } else {
+                        ScrollView {
+                            LazyVGrid(columns: cols, spacing: 8) {
+                                ForEach(photos) { p in thumb(p) }
+                            }
+                            .padding(.horizontal, 16).padding(.top, 4).padding(.bottom, 24)
+                        }
+                        Text(NSLocalizedString("Photos via Pexels. Pick the one that matches your move.", comment: ""))
+                            .font(.system(size: 10)).foregroundStyle(MasoColor.textFaint)
+                            .padding(.bottom, 8)
+                    }
+                }
+            }
+            .navigationTitle(NSLocalizedString("Find a photo", comment: ""))
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbarBackground(MasoColor.background, for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
+            .toolbar { ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } } }
+            .tint(MasoColor.text)
+            .task { if !query.isEmpty && !searched { runSearch() } }
+        }
+        .presentationBackground(MasoColor.background)
+    }
+
+    @ViewBuilder private func thumb(_ p: ExerciseImagePhoto) -> some View {
+        Button {
+            guard downloadingId == nil else { return }
+            downloadingId = p.id
+            Task {
+                let data = await ExerciseImageSearch.downloadJPEG(p.full)
+                await MainActor.run {
+                    downloadingId = nil
+                    if let data { onPicked(data); dismiss() }
+                }
+            }
+        } label: {
+            ZStack {
+                AsyncImage(url: URL(string: p.thumb)) { phase in
+                    if case .success(let img) = phase { img.resizable().scaledToFill() }
+                    else { MasoColor.surface }
+                }
+                .frame(maxWidth: .infinity)
+                .aspectRatio(1, contentMode: .fill)
+                .clipped()
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+                if downloadingId == p.id {
+                    ZStack { Color.black.opacity(0.45); ProgressView().tint(.white) }
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                }
+            }
+        }
+        .buttonStyle(.plain)
+        .disabled(downloadingId != nil)
+    }
+
+    private func runSearch() {
+        let q = query.trimmingCharacters(in: .whitespaces)
+        guard !q.isEmpty else { return }
+        loading = true
+        Task {
+            let res = await ExerciseImageSearch.search(q)
+            await MainActor.run { photos = res; loading = false; searched = true }
+        }
     }
 }
