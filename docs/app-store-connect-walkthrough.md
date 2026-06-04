@@ -10,11 +10,12 @@
 
 ## 前提
 
-- [x] Apple Developer Program 已付费 ($99/yr)
-- [x] Apple ID: `wuyumoawuyumo@outlook.com` (US store, Team ID `UR6F66266C`)
-- [x] Xcode archive 验证通过 (Release build 8.0MB)
-- [x] Privacy Policy + Terms 已部署到 GitHub Pages
-- [ ] (本手册要做的) App Store Connect 配置 + 上传
+- [x] Apple Developer Program 已付费 ($99/yr) — **Eric Ng 付费 team**
+- [x] Apple ID: `wuyumoawuyumo@outlook.com` (US store, **Team ID `TW8ZVVX529`**)
+      ⚠️ 旧免费个人 team `UR6F66266C` 只能装机不能上架,别用它登 ASC
+- [x] Privacy Policy + Terms 已部署到 GitHub Pages (2026-06 验证 HTTP 200)
+- [x] 截图已生成: `build/screenshots/{en-US,zh-Hans}/` 各 8 张
+- [ ] (本手册要做的) Xcode archive (新 bundle `com.yumowu.maso`) + ASC 配置 + 上传
 
 ---
 
@@ -29,7 +30,7 @@
 | Platforms | iOS |
 | Name | `Maso` (或 `Maso: AI Workout Tracker` 拉关键词) |
 | Primary Language | English (U.S.) |
-| Bundle ID | `com.maso.app` (从下拉选, Xcode 已经注册过) |
+| Bundle ID | **`com.yumowu.maso`** (从下拉选; 必须先在 Xcode 用 TW8ZVVX529 archive 过一次, 它才会出现在下拉里) |
 | SKU | `maso-ios-001` (内部 SKU, 随意) |
 | User Access | Full Access |
 
@@ -46,7 +47,7 @@
 ### 2.1 月度订阅
 - Type: **Auto-Renewable Subscription**
 - Reference Name: `Pro Monthly`
-- Product ID: `com.maso.app.pro.monthly`
+- Product ID: `com.yumowu.maso.pro.monthly`
 - Subscription Group: 创建新 group 命名 `Maso Pro` (group ID 系统自动生成)
 - Subscription Duration: **1 Month**
 - Price: **USD 4.99** (Tier 5 or 自定义)
@@ -58,7 +59,7 @@
 ### 2.2 年度订阅
 - Type: **Auto-Renewable Subscription**
 - Reference Name: `Pro Yearly`
-- Product ID: `com.maso.app.pro.yearly`
+- Product ID: `com.yumowu.maso.pro.yearly`
 - Subscription Group: 选已建的 `Maso Pro`
 - **Subscription Level**: 设为比 monthly 高 (e.g. Level 1, monthly 是 Level 2) — Apple 用 level 判断"升级 vs 降级", 让用户从 monthly 切 yearly 走 upgrade flow
 - Subscription Duration: **1 Year**
@@ -71,7 +72,7 @@
 ### 2.3 永久买断
 - Type: **Non-Consumable**
 - Reference Name: `Pro Lifetime`
-- Product ID: `com.maso.app.pro.lifetime`
+- Product ID: `com.yumowu.maso.pro.lifetime`
 - Price: **USD 79.99**
 - Localization:
   - `Maso Pro Lifetime` / `Maso Pro 永久版`
