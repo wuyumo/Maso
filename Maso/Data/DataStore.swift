@@ -150,10 +150,25 @@ final class DataStore {
             }
             return store
         }
-        // 第一次启动 → 走 mock, 立即落盘 (flush, 不 debounce) 保证文件马上存在
-        let mock = makeMock()
-        mock.flushSave()
-        return mock
+        // 第一次启动 (磁盘无存档) → 全新空档: 空 plans/sets + onboardingCompleted=false.
+        // 用户随即走 OnboardingScreen 填真实画像 (性别/年龄/体重/天数/聚焦肌群), 引导结尾
+        // regenerateRecommendedPlans() 才生成推荐计划. 立即落盘 (flush, 不 debounce) 保证文件马上存在.
+        // ⚠️ 绝不能用 makeMock() —— 它带假训练历史 + 假画像 (男/30/75) + onboardingCompleted=true,
+        //    会让真实新用户跳过引导、看到自己没做过的训练. makeMock 仅供 SwiftUI Preview / 演示.
+        let store = freshInstall()
+        store.flushSave()
+        return store
+    }
+
+    /// 全新安装 (无存档) 的起始数据 — 空 plans/sets, onboardingCompleted=false (UserSettings() 默认).
+    /// 没有任何假历史 / 假画像 / 预生成计划; 这些等用户走完引导再由 onboarding 生成.
+    static func freshInstall() -> DataStore {
+        DataStore(
+            exercises: ExerciseLibrary.all,
+            plans: [],
+            sets: [],
+            settings: UserSettings()   // onboardingCompleted=false; gender/age/weight=nil; wantStrengthen=[]
+        )
     }
 
     /// P2-1: debounce 句柄. 之前注释说"debounced"但其实每次 mutate 都同步全量写盘 —
@@ -217,6 +232,8 @@ final class DataStore {
         )
     }
 
+    /// ⚠️ 仅供 SwiftUI Preview / 演示截图 —— 带假训练历史 + 假画像 + onboardingCompleted=true.
+    /// 真实启动走 `freshInstall()` (空档 + 引导). 不要在 bootstrap / 生产路径里用这个.
     static func makeMock() -> DataStore {
         // 全量 yuhonas 库 (873 个动作) — 真实图片 + 完整 metadata
         let library = ExerciseLibrary.all
