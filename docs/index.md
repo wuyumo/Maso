@@ -1,8 +1,8 @@
 ---
-title: Maso
+title: Masso
 ---
 
-# Maso
+# Masso
 
 A fitness tracking app for people who actually train.
 
@@ -11,6 +11,6 @@ A fitness tracking app for people who actually train.
 
 ---
 
-**Maso** is an offline-first iOS workout tracker. No accounts, no ads, no analytics — your training data stays on your device.
+**Masso** is an offline-first iOS workout tracker. No accounts, no ads, no analytics — your training data stays on your device.
 
 iOS App Store: *coming soon*

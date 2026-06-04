@@ -1088,7 +1088,7 @@ enum CommunityPlans {
         "community-2day-fullbody": "Coach Theo · Beginner",
         "community-texas-method-3day": "Coach Leo · Strength",
     ]
-    static func coach(for plan: CommunityPlan) -> String { coaches[plan.id] ?? "Maso Coach" }
+    static func coach(for plan: CommunityPlan) -> String { coaches[plan.id] ?? "Masso Coach" }
 
     /// 每日精选 — 用日期 seed 稳定打乱 all, 取前 count 个. 同一天不变, 隔天换新 → "每次来都有新达人计划".
     static func featured(on date: Date = Date(), count: Int = 6) -> [CommunityPlan] {

@@ -80,7 +80,7 @@ struct ShareCardFooter: View {
                     MasoMarkIcon(color: MasoColor.accent)
                         .frame(width: 32, height: 32)
                     VStack(alignment: .leading, spacing: 1) {
-                        Text(verbatim: "MASO")
+                        Text(verbatim: "MASSO")
                             .font(.system(size: 13, weight: .heavy))
                             .tracking(2)
                             .foregroundStyle(MasoColor.text)

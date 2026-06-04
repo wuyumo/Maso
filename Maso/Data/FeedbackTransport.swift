@@ -67,7 +67,7 @@ enum FeedbackTransport {
         let plural = items.count > 1 ? "s" : ""
 
         return [
-            "_subject": "[Maso] Feedback Digest — \(today.string(from: Date())) (\(items.count) item\(plural))",
+            "_subject": "[Masso] Feedback Digest — \(today.string(from: Date())) (\(items.count) item\(plural))",
             "_template": "box",
             "_captcha": "false",
             "count": "\(items.count)",

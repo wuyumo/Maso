@@ -121,7 +121,7 @@ final class HealthKitService {
             // metadata — Health 详情里能看到, 跟 source app 名分离
             if let sourceTag {
                 let md: [String: Any] = [
-                    HKMetadataKeyWorkoutBrandName: "Maso",
+                    HKMetadataKeyWorkoutBrandName: "Masso",
                     HKMetadataKeyExternalUUID: sourceTag,
                     HKMetadataKeyIndoorWorkout: true,
                 ]

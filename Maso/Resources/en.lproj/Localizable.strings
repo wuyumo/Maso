@@ -83,8 +83,8 @@
 "Plans and workout records stay on your device." = "Plans and workout records stay on your device.";
 
 /* ── Paywall / Pro Banner ──────────────────────────── */
-"Maso Pro" = "Maso Pro";
-"Try Maso Pro" = "Try Maso Pro";
+"Maso Pro" = "Masso Pro";
+"Try Maso Pro" = "Try Masso Pro";
 "Unlimited plans, full history, custom moves, and more." = "Unlimited plans, full history, custom moves, and more.";
 "Unlock everything" = "Unlock everything";
 "Unlimited plans · Full history · Custom moves" = "Unlimited plans · Full history · Custom moves";
@@ -102,7 +102,7 @@
 "Cloud sync" = "Cloud sync";
 "Plans + history follow you across devices." = "Plans + history follow you across devices.";
 "Start 7-day free trial" = "Start 7-day free trial";
-"You're now Maso Pro!" = "You're now Maso Pro!";
+"You're now Maso Pro!" = "You're now Masso Pro!";
 "Enjoy unlimited plans, full history, and everything else. Welcome aboard." = "Enjoy unlimited plans, full history, and everything else. Welcome aboard.";
 "Restore Purchases" = "Restore Purchases";
 "Terms" = "Terms";
@@ -206,7 +206,7 @@
 /* ── HealthKit + Training freq ── */
 "Integrations" = "Integrations";
 "Apple Fitness sync" = "Apple Fitness sync";
-"Maso writes finished workouts to Apple Health. They show up in Apple Fitness Activity rings and the Workouts tab. Heart rate is not collected." = "Maso writes finished workouts to Apple Health. They show up in Apple Fitness Activity rings and the Workouts tab. Heart rate is not collected.";
+"Maso writes finished workouts to Apple Health. They show up in Apple Fitness Activity rings and the Workouts tab. Heart rate is not collected." = "Masso writes finished workouts to Apple Health. They show up in Apple Fitness Activity rings and the Workouts tab. Heart rate is not collected.";
 "Not available on this device" = "Not available on this device";
 "Tap to grant access" = "Tap to grant access";
 "Denied — enable in Settings › Health" = "Denied — enable in Settings › Health";
@@ -223,7 +223,7 @@
 
 /* ── AI Workout ── */
 "AI Workout" = "AI Workout";
-"Each day, Maso bundles your profile + recent training + frequency into a prompt and asks Claude to generate today's plan. Your API key is stored locally on this device." = "Each day, Maso bundles your profile + recent training + frequency into a prompt and asks Claude to generate today's plan. Your API key is stored locally on this device.";
+"Each day, Maso bundles your profile + recent training + frequency into a prompt and asks Claude to generate today's plan. Your API key is stored locally on this device." = "Each day, Masso bundles your profile + recent training + frequency into a prompt and asks Claude to generate today's plan. Your API key is stored locally on this device.";
 "Generate plan with AI" = "Generate plan with AI";
 "Enter your API key above first" = "Enter your API key above first";
 "Each day a new plan is built from your training history" = "Each day a new plan is built from your training history";
@@ -272,7 +272,7 @@
 "Keep current" = "Keep current";
 "OK" = "OK";
 "One-time purchase. No subscription, no recurring charges." = "One-time purchase. No subscription, no recurring charges.";
-"Restart Maso to apply" = "Restart Maso to apply";
+"Restart Maso to apply" = "Restart Masso to apply";
 "Starting this will replace the workout you're in. Continue?" = "Starting this will replace the workout you're in. Continue?";
 "Language" = "Language";
 
@@ -302,10 +302,10 @@
 
 /* ── i18n audit 2026-05-16 — missing UI keys ── */
 /* Brand / badges (rarely translated) */
-"Maso" = "Maso";
+"Maso" = "Masso";
 "AI" = "AI";
 "PRO" = "PRO";
-"MASO PRO" = "MASO PRO";
+"MASO PRO" = "MASSO PRO";
 "FROM %@/MO" = "FROM %@/MO";
 
 /* RootView — replace-workout alert */
@@ -351,7 +351,7 @@
 "Export data" = "Export data";
 "Save plans, workouts, settings as a JSON file" = "Save plans, workouts, settings as a JSON file";
 "Import data" = "Import data";
-"Restore from a Maso backup file" = "Restore from a Maso backup file";
+"Restore from a Maso backup file" = "Restore from a Masso backup file";
 "New iPhone? Your data restores automatically from iCloud Backup. Or export anytime — it's a plain JSON file." = "New iPhone? Your data restores automatically from iCloud Backup. Or export anytime — it's a plain JSON file.";
 "Replace current data?" = "Replace current data?";
 "Replace" = "Replace";
@@ -641,7 +641,7 @@
 
 /* Deep link / plan sharing */
 "IMPORTED PLAN" = "IMPORTED PLAN";
-"This Maso link is damaged or unsupported. Ask your friend to share again." = "This Maso link is damaged or unsupported. Ask your friend to share again.";
+"This Maso link is damaged or unsupported. Ask your friend to share again." = "This Masso link is damaged or unsupported. Ask your friend to share again.";
 
 /* Misc */
 "details" = "details";
@@ -652,7 +652,7 @@
 "Privacy Policy" = "Privacy Policy";
 "Terms of Service" = "Terms of Service";
 "Version" = "Version";
-"Maso is for informational and motivational purposes only — not medical advice. Consult a physician before starting any new exercise program, especially if you have a medical condition, are pregnant, or have not exercised recently. Stop immediately and seek help if you feel pain, dizziness, or shortness of breath." = "Maso is for informational and motivational purposes only — not medical advice. Consult a physician before starting any new exercise program, especially if you have a medical condition, are pregnant, or have not exercised recently. Stop immediately and seek help if you feel pain, dizziness, or shortness of breath.";
+"Maso is for informational and motivational purposes only — not medical advice. Consult a physician before starting any new exercise program, especially if you have a medical condition, are pregnant, or have not exercised recently. Stop immediately and seek help if you feel pain, dizziness, or shortness of breath." = "Masso is for informational and motivational purposes only — not medical advice. Consult a physician before starting any new exercise program, especially if you have a medical condition, are pregnant, or have not exercised recently. Stop immediately and seek help if you feel pain, dizziness, or shortness of breath.";
 
 /* Tab labels — workout records (former "Muscle Status" tab, repurposed) */
 "Workout Records" = "Workout Records";
