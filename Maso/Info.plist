@@ -16,16 +16,6 @@
 	<array>
 		<string>en</string>
 		<string>zh-Hans</string>
-		<string>zh-Hant</string>
-		<string>ja</string>
-		<string>ko</string>
-		<string>es</string>
-		<string>fr</string>
-		<string>de</string>
-		<string>it</string>
-		<string>pt-BR</string>
-		<string>ru</string>
-		<string>ar</string>
 	</array>
 	<key>CFBundleName</key>
 	<string>$(PRODUCT_NAME)</string>
@@ -39,7 +29,7 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>com.maso.app</string>
+			<string>com.yumowu.maso</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>maso</string>

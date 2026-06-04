@@ -1,4 +1,5 @@
 import SwiftUI
+import StoreKit
 
 // 训练状态页 — 显示 7 天活跃肌群 + 训练记录卡片
 //
@@ -9,6 +10,7 @@ import SwiftUI
 // 点卡片 → 打开 session 详情 sheet, 可查看每个动作的组数 + 再次训练.
 struct HistoryScreen: View {
     @Environment(DataStore.self) private var data
+    @Environment(SubscriptionManager.self) private var subs
     /// 点 "再次训练" 时回调到 RootView, 用统一的 startTraining 入口启动
     let onReplay: (Plan) -> Void
     /// 右上角齿轮 → 弹 Settings sheet (RootView 持有 sheet state)
@@ -31,6 +33,14 @@ struct HistoryScreen: View {
     /// 自然产生"想看更多数据/解锁高级功能"的动机, banner 放这比放在 Today 干扰训练流程更顺.
     @State private var paywallPresented: Bool = false
 
+    /// ProBanner kicker 的"起步价/月" — 取 yearly product 月均价 (年价 ÷ 12), locale-aware.
+    /// product 还没 load 出来时返回 nil → banner 只显示 "MASO PRO", 不写死假价格.
+    private var proFromPrice: String? {
+        guard let yearly = subs.product(for: .yearly) else { return nil }
+        let perMonth = yearly.price / 12
+        return perMonth.formatted(yearly.priceFormatStyle)
+    }
+
     var body: some View {
         // 单一 ScrollView, 跟 PlansScreen 同款行为:
         //   - stats + calendar 是 scroll content 的一部分, 跟 session 列表一起滚动
@@ -41,7 +51,7 @@ struct HistoryScreen: View {
                 // Pro 展示位 — Pro 用户隐藏. 从 Today tab 搬过来 (Today 是训练入口, 不放营销卡;
                 // History 是用户主动来"看数据回顾"时, 看到 Pro 升级提示更自然).
                 if !data.settings.isPro {
-                    ProBanner { paywallPresented = true }
+                    ProBanner(fromPrice: proFromPrice) { paywallPresented = true }
                         .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
                         .padding(.top, 4)
                 }

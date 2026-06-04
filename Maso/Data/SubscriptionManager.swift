@@ -17,9 +17,9 @@ import Observation
 //   - 这样 SubscriptionManager 可以单独测试, 不依赖 DataStore.
 //
 // Product ID 跟 SubscriptionTier 映射:
-//   - com.maso.app.pro.monthly  → .monthly
-//   - com.maso.app.pro.yearly   → .yearly
-//   - com.maso.app.pro.lifetime → .lifetime
+//   - com.yumowu.maso.pro.monthly  → .monthly
+//   - com.yumowu.maso.pro.yearly   → .yearly
+//   - com.yumowu.maso.pro.lifetime → .lifetime
 @Observable
 @MainActor
 final class SubscriptionManager {
@@ -42,9 +42,9 @@ final class SubscriptionManager {
 
     // MARK: - Product IDs
 
-    static let monthlyProductID = "com.maso.app.pro.monthly"
-    static let yearlyProductID = "com.maso.app.pro.yearly"
-    static let lifetimeProductID = "com.maso.app.pro.lifetime"
+    static let monthlyProductID = "com.yumowu.maso.pro.monthly"
+    static let yearlyProductID = "com.yumowu.maso.pro.yearly"
+    static let lifetimeProductID = "com.yumowu.maso.pro.lifetime"
 
     static let allProductIDs: [String] = [
         monthlyProductID, yearlyProductID, lifetimeProductID

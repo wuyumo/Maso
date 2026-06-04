@@ -8,12 +8,15 @@ import SwiftUI
 //     · 内嵌 accent 色 Maso 标志, 像 logo 卡
 //     · 顶部 radial 微辉光, 制造 premium 感
 //   - 信息层次清楚:
-//     · kicker "MASO PRO" + "FROM $2.50/MO" 并排小字 (accent 绿, 大字距)
+//     · kicker "MASO PRO" + "FROM <价>/MO" 并排小字 (价格 StoreKit 实时算, accent 绿, 大字距)
 //     · 主标题 "Unlock everything" (白字大字, 17pt bold)
 //     · 副标题 1 行总结主要价值 (淡灰)
 //     · 右侧 chevron 暗示可进
 //   - Pro 用户看不到这张卡 — 由 caller 用 `if !data.settings.isPro { ProBanner... }` 守门
 struct ProBanner: View {
+    /// "起步价"/月 — 由 caller 从 StoreKit yearly product 现算 (年价 ÷ 12, locale-aware).
+    /// nil = product 还没 load → 不显示价格段, 只留 "MASO PRO" kicker (不写死假价格).
+    var fromPrice: String? = nil
     let onTap: () -> Void
 
     var body: some View {
@@ -30,13 +33,16 @@ struct ProBanner: View {
                             .font(.system(size: 10, weight: .heavy))
                             .tracking(1.5)
                             .foregroundStyle(MasoColor.accent)
-                        Circle()
-                            .fill(MasoColor.accent.opacity(0.6))
-                            .frame(width: 3, height: 3)
-                        Text("FROM $2.50/MO")
-                            .font(.system(size: 10, weight: .heavy))
-                            .tracking(1)
-                            .foregroundStyle(MasoColor.accent)
+                        if let fromPrice {
+                            Circle()
+                                .fill(MasoColor.accent.opacity(0.6))
+                                .frame(width: 3, height: 3)
+                            // "FROM $2.50/MO" — 价格走 StoreKit 实时算 (年价÷12), 不写死.
+                            Text(String(format: NSLocalizedString("FROM %@/MO", comment: ""), fromPrice))
+                                .font(.system(size: 10, weight: .heavy))
+                                .tracking(1)
+                                .foregroundStyle(MasoColor.accent)
+                        }
                     }
                     Text("Unlock everything")
                         // 跟 WorkoutCard / PlanRow 对齐, iOS HIG Headline 17pt bold

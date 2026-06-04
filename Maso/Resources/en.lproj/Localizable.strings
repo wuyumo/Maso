@@ -306,7 +306,7 @@
 "AI" = "AI";
 "PRO" = "PRO";
 "MASO PRO" = "MASO PRO";
-"FROM $2.50/MO" = "FROM $2.50/MO";
+"FROM %@/MO" = "FROM %@/MO";
 
 /* RootView — replace-workout alert */
 "Another workout is in progress" = "Another workout is in progress";

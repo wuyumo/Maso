@@ -18,14 +18,14 @@
           "locale" : "zh_Hans"
         }
       ],
-      "productID" : "com.maso.app.pro.lifetime",
+      "productID" : "com.yumowu.maso.pro.lifetime",
       "referenceName" : "Pro Lifetime",
       "type" : "NonConsumable"
     }
   ],
   "settings" : {
     "_applicationInternalID" : "MASO_LOCAL",
-    "_developerTeamID" : "UR6F66266C",
+    "_developerTeamID" : "TW8ZVVX529",
     "_failTransactionsEnabled" : false,
     "_lastSynchronizedDate" : 0,
     "_locale" : "en_US",
@@ -119,7 +119,7 @@
               "locale" : "zh_Hans"
             }
           ],
-          "productID" : "com.maso.app.pro.monthly",
+          "productID" : "com.yumowu.maso.pro.monthly",
           "recurringSubscriptionPeriod" : "P1M",
           "referenceName" : "Pro Monthly",
           "subscriptionGroupID" : "21380839",
@@ -149,7 +149,7 @@
               "locale" : "zh_Hans"
             }
           ],
-          "productID" : "com.maso.app.pro.yearly",
+          "productID" : "com.yumowu.maso.pro.yearly",
           "recurringSubscriptionPeriod" : "P1Y",
           "referenceName" : "Pro Yearly",
           "subscriptionGroupID" : "21380839",

@@ -46,13 +46,13 @@ struct PersistenceController {
     /// ```swift
     /// var currentURL: URL? {
     ///     if shouldUseICloud, let ubiquityURL = FileManager.default.url(
-    ///         forUbiquityContainerIdentifier: "iCloud.com.maso.app"
+    ///         forUbiquityContainerIdentifier: "iCloud.com.yumowu.maso"
     ///     ) { return ubiquityURL.appendingPathComponent("Documents/maso-data.json") }
     ///     return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
     ///         .first?.appendingPathComponent("maso-data.json")
     /// }
     /// ```
-    /// 依赖: 付费 Apple Developer Program + Apple Dev Console 建好 iCloud.com.maso.app container.
+    /// 依赖: 付费 Apple Developer Program + Apple Dev Console 建好 iCloud.com.yumowu.maso container.
     var currentURL: URL? {
         FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
             .first?.appendingPathComponent("maso-data.json")

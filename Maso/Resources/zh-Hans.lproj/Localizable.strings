@@ -308,7 +308,7 @@
 "AI" = "AI";
 "PRO" = "PRO";
 "MASO PRO" = "MASO PRO";
-"FROM $2.50/MO" = "$2.50/月起";
+"FROM %@/MO" = "%@/月起";
 
 /* RootView — 训练替换确认 */
 "Another workout is in progress" = "当前有训练正在进行中";
