@@ -1,192 +1,290 @@
 import SwiftUI
 
-// 我的训练 — plan 列表页 + 编辑入口
+// MARK: - PlansScreen — Tab 2 内容 (新 IA, 2026-06)
 //
-// 行为变化:
-//   - 点行 → 打开 PlanDetailSheet
-//   - sheet 内: 改 plan 名 / 改每个动作的 sets/reps/weight/rest / 删除动作 / 添加动作
-//   - "开始训练" 按钮启动播放
+// 结构 (用户确认的设计):
+//   ┌ SAVED  (默认优先, 有 saved plan 才显示)  ── data.plans, 免费上限 "n/3"
+//   │  · 每张 = WorkoutCard (start / 详情 / 长按删)
+//   │  · "+ New workout" 入口
+//   ┌ DISCOVER
+//   │  · segmented [ AI · Community ]
+//   │  · AI:        按你的偏好现生成的计划 → 每张可 Save / Save&Start
+//   │  · Community: 社区精选 → 每张可 Save
 //
-// 编辑统统是 in-place 实时存:
-//   - 改任一字段, 立刻 data.updatePlan(draft); 不需要"保存"按钮
-//   - 关 sheet 不会丢东西; 跟 iOS 原生 Reminders / Notes 的编辑感觉一致
+// Exercises 库已移到 PlansTabScreen 右上角工具栏 (不在本页正文).
+// 本 view 只渲染滚动正文; 导航栏 / 工具栏由 PlansTabScreen (NavigationStack) 提供.
 struct PlansScreen: View {
     @Environment(DataStore.self) private var data
     let onStart: (Plan) -> Void
-    /// 新建训练 — 由 RootView 注入, 走 paywall gating + 共享的 sheet 容器
+    /// 新建空白计划 — RootView 注入 (走 paywall gating + 共享 sheet 容器).
     let onNewPlan: () -> Void
 
-    @State private var selectedPlan: Plan?
-    /// 右滑删除前的二次确认 — 存待删 plan, alert 弹出. 用户确认才真删.
+    enum DiscoverMode: Hashable { case ai, community }
+    @State private var discover: DiscoverMode = .ai
+    /// 按偏好现生成的 AI 计划 (transient, 不进 data.plans 直到用户 Save).
+    @State private var aiPlans: [Plan] = []
+    @State private var detailPlan: Plan? = nil
     @State private var pendingDeletePlanId: String? = nil
-    /// Community sheet — tap 列表底部 "See what others train" 弹出
-    @State private var communityPresented: Bool = false
+    @State private var paywallPresented = false
+    /// 刚 save 成功的 key — 卡片上把 "Save" 变成 "Saved ✓" 的瞬时反馈.
+    @State private var justSavedKey: String? = nil
+
+    private var isPro: Bool { data.settings.isPro }
 
     var body: some View {
-        // List 替代 ScrollView+VStack — 一举三得: 原生 .onMove 拖拽排序 + .swipeActions 右滑删除
-        // + 清掉 List 默认样式后视觉跟原 VStack 几乎一致.
-        List {
-            // (ProBanner 已挪到 TodayScreen 顶部, Plans tab 不再展示)
-            // 标题 + 右上角按钮: 撤掉自定义 inline 标题行, 走系统 .navigationTitle + .toolbar.
-
-            // Rationale card — 解释当前 plan 列表是按你哪些偏好生成的.
-            // 有 plan 才显示 (空状态下没东西可解释).
-            if !data.plans.isEmpty {
-                PlanRationaleCard()
-                    .listRowSeparator(.hidden)
-                    .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 16, trailing: 0))
-                    .listRowBackground(Color.clear)
-            } else {
-                // P3: 空状态 — 全删光 / 异常时, 给一个明确的"建计划"出口, 而不是只剩两行工具入口.
-                VStack(spacing: 12) {
-                    Image(systemName: "list.bullet.rectangle.portrait")
-                        .font(.system(size: 34, weight: .regular))
-                        .foregroundStyle(MasoColor.textFaint)
-                    Text("No plans yet")
-                        .font(.system(size: 16, weight: .bold))
-                        .foregroundStyle(MasoColor.text)
-                    Text("Create your own workout, or restore the recommended set from the menu above.")
-                        .font(.system(size: 12))
-                        .foregroundStyle(MasoColor.textDim)
-                        .multilineTextAlignment(.center)
-                    Button(action: onNewPlan) {
-                        HStack(spacing: 6) {
-                            Image(systemName: "plus")
-                            Text("New workout")
-                        }
-                        .font(.system(size: 14, weight: .heavy))
-                        .padding(.horizontal, 18).padding(.vertical, 10)
-                        .background(MasoColor.accent)
-                        .foregroundStyle(.black)
-                        .clipShape(Capsule())
-                    }
-                    .buttonStyle(.plain)
-                    .padding(.top, 4)
-                }
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 40)
-                .listRowSeparator(.hidden)
-                .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 16, trailing: 0))
-                .listRowBackground(Color.clear)
+        ScrollView {
+            VStack(alignment: .leading, spacing: 16) {
+                savedSection
+                discoverSection
+                Spacer(minLength: MasoMetrics.pageBottomInset)
             }
-
-            // 计划列表 — .onMove 长按拖拽; .swipeActions 右滑删除 + alert 二次确认
-            ForEach(data.plans) { plan in
-                PlanRow(
-                    plan: plan,
-                    exById: data.exById,
-                    onTap: { selectedPlan = plan },
-                    onStart: { onStart(plan) },
-                    onDelete: { pendingDeletePlanId = plan.id }
-                )
-                .listRowSeparator(.hidden)
-                .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 12, trailing: 0))
-                .listRowBackground(Color.clear)
-                .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                    // iOS 原生 swipe + icon-only → 圆形按钮. Delete 用 MasoColor.negative,
-                    // Edit 用 accent (跟 design.md 一致). VoiceOver 走 accessibilityLabel.
-                    Button(role: .destructive) {
-                        pendingDeletePlanId = plan.id
-                    } label: {
-                        Image(systemName: "trash.fill")
-                    }
-                    .tint(MasoColor.negative)
-                    .accessibilityLabel(NSLocalizedString("Delete", comment: ""))
-
-                    Button {
-                        selectedPlan = plan
-                    } label: {
-                        Image(systemName: "pencil")
-                    }
-                    .tint(MasoColor.accent)
-                    .accessibilityLabel(NSLocalizedString("Edit", comment: ""))
-                }
-            }
-            .onMove { source, destination in
-                data.reorderPlans(from: source, to: destination)
-                Haptics.tap()
-            }
-
-            // 社区精选入口 — 在所有 PlanRow 之后, 跟 PlanRow 同等高度 + surface bg
-            CommunityEntryRow(onTap: { communityPresented = true })
-                .listRowSeparator(.hidden)
-                .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 12, trailing: 0))
-                .listRowBackground(Color.clear)
-
-            // (动作库入口已升级为底部独立 tab — Plans 这里不再重复放一行.)
+            .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
+            .padding(.top, 4)
         }
-        .listStyle(.plain)
-        .scrollContentBackground(.hidden)
-        .contentMargins(.horizontal, MasoMetrics.pagePaddingHorizontal, for: .scrollContent)
-        .contentMargins(.bottom, MasoMetrics.pageBottomInset, for: .scrollContent)
         .background(MasoColor.background.ignoresSafeArea())
-        // 大标题作为标题出现在左上角, 跟右上角按钮同一行 (自定义 header).
-        .screenHeader("Plans") {
-            HStack(spacing: 18) {
-                // Restore — 只在用户把系统推荐 plan 全删光时显示, 一键拉回推荐
-                if hasNoRecommendedPlans {
-                    Button(action: restoreRecommendedPlans) {
-                        Image(systemName: "arrow.counterclockwise")
-                    }
-                    .accessibilityLabel(NSLocalizedString("Restore recommended", comment: ""))
-                }
-                Button(action: onNewPlan) {
-                    Image(systemName: "plus")
-                }
-                .accessibilityLabel("New workout")
-            }
+        .task { if aiPlans.isEmpty { regenerateAI() } }
+        .sheet(item: $detailPlan) { plan in
+            PlanDetailSheet(
+                initialPlan: plan,
+                onStart: { p in detailPlan = nil; DispatchQueue.main.async { onStart(p) } }
+            )
+            .presentationDetents([.medium, .large])
         }
+        .sheet(isPresented: $paywallPresented) { PaywallScreen() }
         .alert("Delete plan?", isPresented: Binding(
             get: { pendingDeletePlanId != nil },
             set: { if !$0 { pendingDeletePlanId = nil } }
         )) {
             Button("Delete", role: .destructive) {
-                if let id = pendingDeletePlanId {
-                    data.deletePlan(id)
-                }
+                if let id = pendingDeletePlanId { data.deletePlan(id) }
                 pendingDeletePlanId = nil
             }
             Button("Cancel", role: .cancel) { pendingDeletePlanId = nil }
         } message: {
             Text("Your training history will be kept.")
         }
-        .sheet(item: $selectedPlan) { plan in
-            PlanDetailSheet(
-                initialPlan: plan,
-                onStart: { p in
-                    selectedPlan = nil
-                    DispatchQueue.main.async { onStart(p) }
+    }
+
+    // MARK: - SAVED
+
+    @ViewBuilder
+    private var savedSection: some View {
+        if data.plans.isEmpty {
+            VStack(spacing: 10) {
+                Image(systemName: "bookmark")
+                    .font(.system(size: 30, weight: .regular))
+                    .foregroundStyle(MasoColor.textFaint)
+                Text("No saved plans yet")
+                    .font(.system(size: 16, weight: .bold))
+                    .foregroundStyle(MasoColor.text)
+                Text("Generate one with AI or browse the community below, then tap Save.")
+                    .font(.system(size: 12))
+                    .foregroundStyle(MasoColor.textDim)
+                    .multilineTextAlignment(.center)
+                newWorkoutButton.padding(.top, 2)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 28)
+        } else {
+            HStack {
+                sectionKicker("Saved")
+                Spacer()
+                if !isPro {
+                    Text("\(data.plans.count)/\(DataStore.freeSavedPlansLimit)")
+                        .font(.system(size: 11, weight: .bold))
+                        .foregroundStyle(data.canSaveMorePlans ? MasoColor.textFaint : MasoColor.accent)
                 }
+            }
+            ForEach(data.plans) { plan in
+                WorkoutCard(
+                    plan: plan,
+                    exById: data.exById,
+                    kicker: "",
+                    onStart: { onStart(plan) },
+                    onShowDetail: { detailPlan = plan },
+                    prominentStart: false
+                )
+                .contextMenu {
+                    Button(role: .destructive) { pendingDeletePlanId = plan.id } label: {
+                        Label(NSLocalizedString("Delete", comment: ""), systemImage: "trash")
+                    }
+                }
+            }
+            newWorkoutButton
+        }
+    }
+
+    private var newWorkoutButton: some View {
+        Button(action: onNewPlan) {
+            HStack(spacing: 8) {
+                Image(systemName: "plus")
+                Text("New workout")
+            }
+            .font(.system(size: 14, weight: .heavy))
+            .foregroundStyle(MasoColor.accent)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 14)
+            .background(MasoColor.accent.opacity(0.12))
+            .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
+            .overlay(
+                RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium)
+                    .stroke(MasoColor.accent.opacity(0.3), style: StrokeStyle(lineWidth: 1, dash: [4, 3]))
             )
-            .presentationDetents([.medium, .large])
         }
-        .sheet(isPresented: $communityPresented) {
-            CommunityScreen()
-        }
-        // (动作库已是底部独立 tab — 不再用 sheet.)
-        // (paywall sheet 跟着 ProBanner 一起搬到 TodayScreen)
+        .buttonStyle(.plain)
     }
 
-    // MARK: - Restore recommended plans
+    // MARK: - DISCOVER
 
-    /// 系统生成的推荐 plan 用这些 id 前缀. RecommendedPrograms 出来的都是这套.
-    private static let recommendedPrefixes = ["plan-full", "plan-bal", "plan-push", "plan-pull", "plan-legs"]
+    @ViewBuilder
+    private var discoverSection: some View {
+        sectionKicker("Discover").padding(.top, 8)
+        Picker("", selection: $discover.animation(.easeOut(duration: 0.18))) {
+            Text("AI").tag(DiscoverMode.ai)
+            Text("Community").tag(DiscoverMode.community)
+        }
+        .pickerStyle(.segmented)
 
-    /// 用户的 plans 里是不是已经没有任何系统推荐的 plan 了 — 用前缀 prefix-match 判断.
-    /// 没有任何推荐 plan → 显示 Restore 按钮; 还有一个就藏起来 (用户没完全清空).
-    private var hasNoRecommendedPlans: Bool {
-        !data.plans.contains { plan in
-            Self.recommendedPrefixes.contains { plan.id.hasPrefix($0) }
+        switch discover {
+        case .ai:
+            if aiPlans.isEmpty {
+                ProgressView()
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 40)
+            } else {
+                ForEach(aiPlans) { plan in
+                    discoverPlanCard(plan, badge: "AI")
+                }
+                Button(action: regenerateAI) {
+                    HStack(spacing: 8) {
+                        Image(systemName: "arrow.triangle.2.circlepath")
+                        Text("Regenerate")
+                    }
+                    .font(.system(size: 13, weight: .bold))
+                    .foregroundStyle(MasoColor.textDim)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 12)
+                }
+                .buttonStyle(.plain)
+            }
+        case .community:
+            ForEach(CommunityPlans.all) { cp in
+                communityCard(cp)
+            }
         }
     }
 
-    /// 拉回系统推荐 — 走 DataStore 已有的 regenerateRecommendedPlans() 入口, 跟 Onboarding /
-    /// Settings 修改 weeklyTrainingDays 时同一份 logic.
-    private func restoreRecommendedPlans() {
-        data.regenerateRecommendedPlans()
+    /// AI 生成的计划卡 — 复用 WorkoutCard 富展示 + 下方 Save 按钮.
+    /// play 按钮 = Save & Start (现生成的计划想直接练, 顺手存).
+    private func discoverPlanCard(_ plan: Plan, badge: String) -> some View {
+        VStack(spacing: 0) {
+            WorkoutCard(
+                plan: plan,
+                exById: data.exById,
+                kicker: badge,
+                onStart: { trySaveThenStart(plan) },
+                onShowDetail: { detailPlan = plan },
+                prominentStart: false
+            )
+            saveBar(key: plan.id) { trySave(plan) }
+        }
+    }
+
+    /// 社区精选卡 — 轻量行 (名字 + 等级 + Save). Save = materialize 后存进 Saved.
+    private func communityCard(_ cp: CommunityPlan) -> some View {
+        let preview = cp.materialize(byId: data.exById).first
+        return VStack(alignment: .leading, spacing: 10) {
+            HStack(alignment: .top, spacing: 12) {
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(LocalizedStringKey(cp.nameKey))
+                        .font(.system(size: 16, weight: .bold))
+                        .foregroundStyle(MasoColor.text)
+                    Text(LocalizedStringKey(cp.levelKey))
+                        .font(.system(size: 11, weight: .semibold))
+                        .foregroundStyle(MasoColor.textDim)
+                    if let preview {
+                        Text("\(preview.steps.count) exercises")
+                            .font(.system(size: 11))
+                            .foregroundStyle(MasoColor.textFaint)
+                    }
+                }
+                Spacer()
+                if let preview {
+                    Button { detailPlan = preview } label: {
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: 13, weight: .bold))
+                            .foregroundStyle(MasoColor.textFaint)
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            saveBar(key: cp.id) { trySaveCommunity(cp) }
+        }
+        .padding(MasoMetrics.cardPadding)
+        .background(MasoColor.surface)
+        .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
+    }
+
+    /// 卡片底部的 Save 行 — save 成功瞬时变 "Saved ✓".
+    private func saveBar(key: String, action: @escaping () -> Void) -> some View {
+        let saved = justSavedKey == key
+        return Button(action: action) {
+            HStack(spacing: 6) {
+                Image(systemName: saved ? "checkmark" : "plus")
+                Text(saved ? "Saved" : "Save")
+            }
+            .font(.system(size: 13, weight: .bold))
+            .foregroundStyle(saved ? MasoColor.textDim : MasoColor.accent)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 10)
+        }
+        .buttonStyle(.plain)
+        .disabled(saved)
+    }
+
+    // MARK: - Actions
+
+    private func regenerateAI() {
+        aiPlans = DataStore.tunedRecommendedPlans(
+            forDays: data.settings.weeklyTrainingDays,
+            settings: data.settings,
+            exById: data.exById,
+            sets: data.sets,
+            now: Date()
+        )
+    }
+
+    private func trySave(_ plan: Plan) {
+        if data.savePlan(plan) { flashSaved(plan.id) } else { paywallPresented = true }
+    }
+
+    private func trySaveThenStart(_ plan: Plan) {
+        if data.savePlan(plan) { onStart(plan) } else { paywallPresented = true }
+    }
+
+    private func trySaveCommunity(_ cp: CommunityPlan) {
+        let materialized = cp.materialize(byId: data.exById)
+        var anyBlocked = false
+        for p in materialized {
+            if !data.savePlan(p) { anyBlocked = true; break }
+        }
+        if anyBlocked { paywallPresented = true } else { flashSaved(cp.id) }
+    }
+
+    private func flashSaved(_ key: String) {
         Haptics.tap()
+        withAnimation { justSavedKey = key }
+    }
+
+    private func sectionKicker(_ text: String) -> some View {
+        Text(LocalizedStringKey(text))
+            .font(.system(size: 12, weight: .bold))
+            .tracking(1.5)
+            .textCase(.uppercase)
+            .foregroundStyle(MasoColor.textDim)
     }
 }
+
 
 // MARK: - CommunityEntryRow — Plans 列表底部"社区精选" 入口
 

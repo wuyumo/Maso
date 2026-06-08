@@ -703,50 +703,57 @@ private struct PlansTabScreen: View {
     /// embedded Library 的 "+" 触发器 — Train 右上角 + 翻 true, Library 监听后开"加动作" sheet.
     @State private var libraryAddRequested = false
 
+    /// Exercises 库 — 从原来的 segmented 分页改成右上角工具栏入口 (sheet). 新 IA (#2).
+    @State private var exercisesPresented = false
+
     var body: some View {
         NavigationStack {
-            Group {
-                switch page {
-                case .plans:
-                    TodayScreen(
-                        onStart: onStart,
-                        onFreeWorkout: onFreeWorkout,
-                        onNewPlan: onNewPlan,
-                        onOpenSettings: onOpenSettings,
-                        embedded: true,
-                        mode: .myPlans
-                    )
-                case .library:
-                    ExerciseLibraryBrowser(asTab: true, embedded: true, addRequested: $libraryAddRequested)
-                }
-            }
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .principal) {
-                    Picker("", selection: $page.animation(.easeOut(duration: 0.18))) {
-                        Text("AI Plans").tag(TrainPage.plans)
-                        Text("Exercises").tag(TrainPage.library)
+            PlansScreen(onStart: onStart, onNewPlan: onNewPlan)
+                .navigationTitle("Plans")
+                .navigationBarTitleDisplayMode(.large)
+                .toolbar {
+                    // 右上角: Exercises 库 + Settings (Exercises 从 segmented 移到这里).
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button { exercisesPresented = true } label: {
+                            Image(systemName: "dumbbell")
+                                .font(.system(size: 16, weight: .regular))
+                        }
+                        .accessibilityLabel("Exercises")
                     }
-                    .pickerStyle(.segmented)
-                    .frame(width: 240)
-                }
-                ToolbarItem(placement: .topBarTrailing) {
-                    switch page {
-                    case .plans:
+                    ToolbarItem(placement: .topBarTrailing) {
                         Button(action: onOpenSettings) {
                             Image(systemName: "gearshape")
                                 .font(.system(size: 16, weight: .regular))
                         }
                         .accessibilityLabel("Settings")
-                    case .library:
-                        Button(action: { libraryAddRequested = true }) {
-                            Image(systemName: "plus")
-                        }
-                        .accessibilityLabel(NSLocalizedString("Add exercise", comment: ""))
                     }
                 }
-            }
-            .tint(MasoColor.text)
+                .tint(MasoColor.text)
+                // 动作库 sheet — Exercises 入口.
+                .sheet(isPresented: $exercisesPresented) {
+                    NavigationStack {
+                        ExerciseLibraryBrowser(asTab: true, embedded: true, addRequested: $libraryAddRequested)
+                            .navigationTitle("Exercises")
+                            .navigationBarTitleDisplayMode(.inline)
+                            .toolbar {
+                                ToolbarItem(placement: .topBarLeading) {
+                                    Button("Close") { exercisesPresented = false }
+                                }
+                                ToolbarItem(placement: .topBarTrailing) {
+                                    Button { libraryAddRequested = true } label: { Image(systemName: "plus") }
+                                        .accessibilityLabel(NSLocalizedString("Add exercise", comment: ""))
+                                }
+                            }
+                            .tint(MasoColor.text)
+                    }
+                }
+                // 兼容旧 showcase / deep-link: trainPage=.library → 打开 Exercises sheet.
+                .onChange(of: page) { _, newPage in
+                    if newPage == .library {
+                        exercisesPresented = true
+                        page = .plans
+                    }
+                }
         }
     }
 }
