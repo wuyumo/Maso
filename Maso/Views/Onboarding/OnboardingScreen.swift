@@ -132,9 +132,9 @@ struct OnboardingScreen: View {
         data.settings.weeklyTrainingDays = daysPerWeek
         data.settings.wantStrengthen = Array(strengthen)
         data.settings.onboardingCompleted = true
-        // P0-3: 用引导收集的 weeklyTrainingDays / 偏好重新生成推荐计划 —
-        // 否则首屏还是 makeMock 的默认 3 天计划, 引导答案白填. (regenerate 内部会 save.)
-        data.regenerateRecommendedPlans()
+        // #IA: My Plans 默认空 — 不再自动塞推荐计划. 用户去 Discover 按偏好浏览 AI/社区计划,
+        // 主动 "+" 加进 Saved. 这里只持久化引导填的 profile + onboardingCompleted.
+        data.flushSave()
         onDone()
     }
 }

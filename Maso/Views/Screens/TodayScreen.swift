@@ -180,14 +180,7 @@ struct TodayScreen: View {
                 .textCase(.uppercase)
                 .foregroundStyle(MasoColor.textDim)
             Spacer()
-            HStack(spacing: 20) {   // 两个按钮之间间距拉远
-                if hasNoRecommendedPlans {
-                    headerCircleButton("arrow.counterclockwise",
-                                       action: restoreRecommendedPlans,
-                                       a11y: "Restore recommended")
-                }
-                headerCircleButton("plus", action: onNewPlan, a11y: "New workout")
-            }
+            headerCircleButton("plus", action: onNewPlan, a11y: "New workout")
         }
         .padding(.horizontal, 12)   // 标题 + 按钮整体往中间靠, 左右留边距
     }
@@ -211,10 +204,10 @@ struct TodayScreen: View {
             Image(systemName: "list.bullet.rectangle.portrait")
                 .font(.system(size: 30, weight: .regular))
                 .foregroundStyle(MasoColor.textFaint)
-            Text("No plans yet")
+            Text("No saved plans yet")
                 .font(.system(size: 15, weight: .bold))
                 .foregroundStyle(MasoColor.text)
-            Text("Create your own workout, or restore the recommended set.")
+            Text("Browse AI & community plans in the Discover tab and tap + to save them here — or create your own.")
                 .font(.system(size: 12))
                 .foregroundStyle(MasoColor.textDim)
                 .multilineTextAlignment(.center)

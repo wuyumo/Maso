@@ -26,6 +26,9 @@ struct PlansScreen: View {
     @State private var detailPlan: Plan? = nil
     @State private var pendingDeletePlanId: String? = nil
     @State private var paywallPresented = false
+    /// Community 筛选 (#filters): 等级 + 每周天数. nil = 全部.
+    @State private var communityLevel: String? = nil
+    @State private var communityDays: Int? = nil
 
     private var isPro: Bool { data.settings.isPro }
 
@@ -40,7 +43,8 @@ struct PlansScreen: View {
             .padding(.top, 4)
         }
         .background(MasoColor.background.ignoresSafeArea())
-        .task { if aiPlans.isEmpty { regenerateAI() } }
+        // 每次进入按当前训练偏好现算 AI 计划 (改了 days/muscles/equipment 后回来即刷新).
+        .onAppear { regenerateAI() }
         .sheet(item: $detailPlan) { plan in
             PlanDetailSheet(
                 initialPlan: plan,
@@ -167,10 +171,73 @@ struct PlansScreen: View {
                 .buttonStyle(.plain)
             }
         case .community:
-            ForEach(CommunityPlans.all) { cp in
-                communityCard(cp)
+            communityFilterRow
+            let plans = filteredCommunityPlans
+            if plans.isEmpty {
+                Text("No community plans match these filters.")
+                    .font(.system(size: 13))
+                    .foregroundStyle(MasoColor.textDim)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 30)
+            } else {
+                ForEach(plans) { cp in communityCard(cp) }
             }
         }
+    }
+
+    // MARK: - Community filters (#filters)
+
+    private var communityLevelOptions: [String] { Array(Set(CommunityPlans.all.map(\.levelKey))).sorted() }
+    private var communityDayOptions: [Int] { Array(Set(CommunityPlans.all.map(\.frequencyDaysPerWeek))).sorted() }
+    private var filteredCommunityPlans: [CommunityPlan] {
+        CommunityPlans.all.filter {
+            (communityLevel == nil || $0.levelKey == communityLevel) &&
+            (communityDays == nil || $0.frequencyDaysPerWeek == communityDays)
+        }
+    }
+
+    private var communityFilterRow: some View {
+        HStack(spacing: 10) {
+            Menu {
+                Button { communityLevel = nil } label: {
+                    Label(NSLocalizedString("All levels", comment: ""), systemImage: communityLevel == nil ? "checkmark" : "")
+                }
+                ForEach(communityLevelOptions, id: \.self) { lv in
+                    Button { communityLevel = lv } label: {
+                        if communityLevel == lv { Label(NSLocalizedString(lv, comment: ""), systemImage: "checkmark") }
+                        else { Text(LocalizedStringKey(lv)) }
+                    }
+                }
+            } label: {
+                filterChip(title: communityLevel.map { LocalizedStringKey($0) } ?? "Level", active: communityLevel != nil)
+            }
+            Menu {
+                Button { communityDays = nil } label: {
+                    Label(NSLocalizedString("Any frequency", comment: ""), systemImage: communityDays == nil ? "checkmark" : "")
+                }
+                ForEach(communityDayOptions, id: \.self) { d in
+                    Button { communityDays = d } label: {
+                        if communityDays == d { Label("\(d) days/week", systemImage: "checkmark") }
+                        else { Text("\(d) days/week") }
+                    }
+                }
+            } label: {
+                filterChip(title: communityDays.map { LocalizedStringKey("\($0) days/wk") } ?? LocalizedStringKey("Days/week"), active: communityDays != nil)
+            }
+            Spacer()
+        }
+    }
+
+    private func filterChip(title: LocalizedStringKey, active: Bool) -> some View {
+        HStack(spacing: 4) {
+            Text(title)
+            Image(systemName: "chevron.down").font(.system(size: 9, weight: .bold))
+        }
+        .font(.system(size: 13, weight: .semibold))
+        .foregroundStyle(active ? .black : MasoColor.text)
+        .padding(.horizontal, 12).padding(.vertical, 7)
+        .background(active ? MasoColor.accent : MasoColor.surface)
+        .clipShape(Capsule())
     }
 
     /// AI 生成的计划卡 — WorkoutCard 富展示. 点卡片/play → 预览; 右上角 "+" → 加进 Saved.

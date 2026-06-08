@@ -37,7 +37,7 @@ struct PersistenceController {
     /// 当前 schema 版本. 改 model 时一起 bump, decode 失败兜底走 mock.
     /// v2: 推荐计划模板修了失效的动作 ID + 扩到 8 个动作 → bootstrap 检到旧版本会一次性
     ///     重新生成推荐计划 (自建计划/历史/设置不动).
-    static let schemaVersion = 2
+    static let schemaVersion = 3
 
     /// 数据文件路径 — Documents 目录, 被 iCloud Backup 默认覆盖
     ///

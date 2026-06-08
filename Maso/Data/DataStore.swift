@@ -142,11 +142,13 @@ final class DataStore {
             )
             store.aiTodayPlan = snapshot.aiTodayPlan
             store.lastAIRefreshAt = snapshot.lastAIRefreshAt
-            // 一次性迁移 (v1 → v2): 旧 snapshot 的推荐计划是用旧模板生成的 (含已失效的动作
-            // ID → 静默丢步, 且只有 6 个动作). 检到旧版本就重新生成一次推荐计划, 拿到修好的 +
-            // 8 动作模板. 自建计划 (非 plan- 前缀) / 历史 / 设置都不动. 存盘后 version=2, 不再重跑.
+            // 一次性迁移 (→ v3, #IA): My Plans 改成"只放用户主动 save 的". 清掉历史自动塞进去的
+            // 推荐计划 (plan-full/bal/push/pull/legs/comrec 前缀). 用户自建 (plan-new) / 已 save
+            // (plan-saved) / 已采纳社区 (plan-community) 全保留; 历史 / 设置不动. 存盘后 version=3 不再跑.
             if snapshot.version < PersistenceController.schemaVersion {
-                store.regenerateRecommendedPlans()
+                let autoPrefixes = ["plan-full", "plan-bal", "plan-push", "plan-pull", "plan-legs", "plan-comrec"]
+                store.plans.removeAll { p in autoPrefixes.contains { p.id.hasPrefix($0) } }
+                store.flushSave()
             }
             return store
         }
@@ -833,14 +835,9 @@ final class DataStore {
     /// regen 本身瞬时 (纯数组运算), 故意延时 ~0.9s 显示 "Tailoring your AI Plans…" 浮层,
     /// 让"AI 正在按新偏好重新计算"可被用户感知; 计算完成的瞬间换上新计划, 浮层同时消失.
     @MainActor func commitRecommendedPlansIfDirty() {
-        guard recommendedPlansDirty else { return }
+        // #IA: My Plans = 用户主动 save 的, 改训练偏好不再往 data.plans 塞推荐计划.
+        // Discover 的 AI 计划每次进入按当前偏好现算 (见 PlansScreen.regenerateAI), 故这里只清标记.
         recommendedPlansDirty = false
-        isTailoringPlans = true
-        Task { @MainActor in
-            try? await Task.sleep(for: .milliseconds(900))
-            regenerateRecommendedPlans()
-            isTailoringPlans = false
-        }
     }
 
     func regenerateRecommendedPlans() {
