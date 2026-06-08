@@ -618,7 +618,9 @@ struct PlanPlayerScreen: View {
         // maxWidth: .infinity 钉住宽度 — 防止 play/pause 切换时音频会话状态变动引起
         // 系统 safe area 微调, 导致 List 宽度抖动 (左右轻微摆动).
         .frame(maxWidth: .infinity)
-        .frame(height: playlistHeight + bottomSafeArea)
+        // 封顶到 playlistMaxHeight (= min(屏高55%, 内容高)) — 默认 254 在短计划下也不会
+        // 高过内容露出纯黑空洞. 拖拽已在 clamp 里限到 maxHeight, 这里兜住初始/tap 档位.
+        .frame(height: min(playlistHeight, playlistMaxHeight) + bottomSafeArea)
         .clipped()
         .background(
             Color(red: 10/255, green: 10/255, blue: 10/255)
@@ -712,11 +714,26 @@ struct PlanPlayerScreen: View {
             }
     }
 
-    /// playlist 高度上限 — 保证上方训练图至少 200pt. 用 UIScreen 量(GeometryReader 嵌套较深拿不到
-    /// 干净的 parent height, screen height 足够 approximations).
+    /// playlist 内容的自然高度 (拖把手 + 所有动作行 + 动作间休息行 + "+ Add" footer).
+    /// 给 drawer 高度封顶用 — drawer 不能高过内容, 否则内容下方露出一块纯黑空洞 (#4 用户报).
+    /// 估算值 (避免深层 GeometryReader): 行高跟实际接近, 默认计划都有动作间休息 → 常见场景准.
+    private var playlistContentHeight: CGFloat {
+        let steps = store.plan?.steps.count ?? 0
+        guard steps > 0 else { return Self.playlistMinHeight }
+        let handleH: CGFloat = 56       // 拖把手 + "PLAYLIST" header (= playlistMinHeight)
+        let exerciseRowH: CGFloat = 84  // 缩略图/进度环 + 名字 + 肌群/器械 tag
+        let restRowH: CGFloat = 28      // "Rest m:ss" 动作间休息行
+        let footerH: CGFloat = 60       // "+ Add exercise"
+        let crossRests = max(0, steps - 1)
+        return handleH + CGFloat(steps) * exerciseRowH + CGFloat(crossRests) * restRowH + footerH
+    }
+
+    /// playlist 高度上限 — 既保证上方训练图至少留 200pt, 又封顶到内容高度
+    /// (drawer 高过内容会在内容下方露纯黑空洞 → #4).
     private var playlistMaxHeight: CGFloat {
         let screenH = UIScreen.main.bounds.height
-        return max(Self.playlistDefaultHeight, screenH * 0.55)
+        let screenMax = max(Self.playlistDefaultHeight, screenH * 0.55)
+        return min(screenMax, playlistContentHeight)
     }
 
     /// rest 段之后第一个 exercise 段 (= "UP NEXT" 那一组). 休息时 playlist 按它渲染 →

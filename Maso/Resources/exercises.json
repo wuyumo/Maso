@@ -6581,7 +6581,7 @@
   "tempo": "hypertrophy",
   "level": "intermediate",
   "force": "push",
-  "imageFolder": "Leverage_Decline_Chest_Press",
+  "imageFolder": "Cable_Crossover",
   "instructions": {
    "en": [
     "Decline bench between high pulleys.",
@@ -6635,7 +6635,7 @@
   "tempo": "hypertrophy",
   "level": "intermediate",
   "force": "push",
-  "imageFolder": "Chest_And_Front_Of_Shoulder_Stretch",
+  "imageFolder": "Cable_Crossover",
   "instructions": {
    "en": [
     "Lie on bench between mid-height pulleys.",
@@ -6742,7 +6742,7 @@
   "tempo": "hypertrophy",
   "level": "intermediate",
   "force": "push",
-  "imageFolder": "Incline_Cable_Chest_Press",
+  "imageFolder": "Incline_Cable_Flye",
   "instructions": {
    "en": [
     "Incline bench between low pulleys.",
@@ -14254,7 +14254,7 @@
   "tempo": "hypertrophy",
   "level": "intermediate",
   "force": "push",
-  "imageFolder": "Leverage_Decline_Chest_Press",
+  "imageFolder": "Dumbbell_Flyes",
   "instructions": {
    "en": [
     "Decline bench, feet locked, arms over lower chest.",
@@ -14309,7 +14309,7 @@
   "tempo": "hypertrophy",
   "level": "intermediate",
   "force": "push",
-  "imageFolder": "Chest_And_Front_Of_Shoulder_Stretch",
+  "imageFolder": "Dumbbell_Flyes",
   "instructions": {
    "en": [
     "Lie on flat bench, arms over chest, slight elbow bend.",
@@ -14368,7 +14368,7 @@
   "tempo": "hypertrophy",
   "level": "intermediate",
   "force": "push",
-  "imageFolder": "Incline_Cable_Chest_Press",
+  "imageFolder": "Incline_Cable_Flye",
   "instructions": {
    "en": [
     "Bench at 30-45° incline, arms over upper chest.",
@@ -16607,7 +16607,7 @@
   "tempo": "hypertrophy",
   "level": "beginner",
   "force": "push",
-  "imageFolder": "Chest_And_Front_Of_Shoulder_Stretch",
+  "imageFolder": "Dumbbell_Flyes",
   "instructions": {
    "en": [
     "Anchor band behind at shoulder height.",
@@ -31865,7 +31865,7 @@
   "tempo": "hypertrophy",
   "level": "beginner",
   "force": "push",
-  "imageFolder": "Chest_And_Front_Of_Shoulder_Stretch",
+  "imageFolder": "Dumbbell_Flyes",
   "instructions": {
    "en": [
     "Sit with back flat against pad, handles wide.",
@@ -31919,7 +31919,7 @@
   "tempo": "hypertrophy",
   "level": "beginner",
   "force": "push",
-  "imageFolder": null,
+  "imageFolder": "Dumbbell_Flyes",
   "instructions": {
    "en": [
     "Sit at pec deck, one arm only.",
@@ -46956,7 +46956,7 @@
   "tempo": "hypertrophy",
   "level": "intermediate",
   "force": "push",
-  "imageFolder": "Chest_And_Front_Of_Shoulder_Stretch",
+  "imageFolder": "Dumbbell_Flyes",
   "instructions": {
    "en": [
     "Set Smith bar low, single dumbbell or single arm grip.",
@@ -54891,7 +54891,7 @@
   "tempo": "endurance",
   "level": "intermediate",
   "force": "push",
-  "imageFolder": "Chest_And_Front_Of_Shoulder_Stretch",
+  "imageFolder": "Dumbbell_Flyes",
   "instructions": {
    "en": [
     "Grip TRX, lean forward, arms forward together.",
