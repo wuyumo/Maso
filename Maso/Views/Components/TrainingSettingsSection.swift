@@ -24,6 +24,8 @@ struct TrainingSettingsSection: View {
     @Environment(DataStore.self) private var data
     /// 选肌群 sheet 内部 own — 两处使用都能"点 → 弹 picker", caller 不需要管
     @State private var showMusclePicker = false
+    /// 选器械 sheet (#1).
+    @State private var showEquipmentPicker = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -51,6 +53,24 @@ struct TrainingSettingsSection: View {
                 Row(label: "Muscles to focus") {
                     HStack(spacing: 6) {
                         Text(musclesSummaryText)
+                            .font(.system(size: 13))
+                            .foregroundStyle(MasoColor.textDim)
+                            .lineLimit(1)
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: 11, weight: .semibold))
+                            .foregroundStyle(MasoColor.textFaint)
+                    }
+                }
+            }
+            .buttonStyle(.plain)
+            Divider().background(MasoColor.borderSoft)
+
+            // ─── 2b. Gym equipment (#1) ───
+            // 用户勾选健身房有的器械 → AI / 推荐计划只出这些器械能做的动作. 空 = 不限制.
+            Button(action: { showEquipmentPicker = true }) {
+                Row(label: "Gym equipment") {
+                    HStack(spacing: 6) {
+                        Text(equipmentSummaryText)
                             .font(.system(size: 13))
                             .foregroundStyle(MasoColor.textDim)
                             .lineLimit(1)
@@ -209,9 +229,28 @@ struct TrainingSettingsSection: View {
             )
             .presentationDetents([.medium, .large])
         }
+        // 选器械 sheet (#1) — 同样关闭只 mark dirty, 离开页面统一 regen.
+        .sheet(isPresented: $showEquipmentPicker, onDismiss: { data.markRecommendedPlansDirty() }) {
+            EquipmentPickerSheet(
+                selected: Binding(
+                    get: { Set(data.settings.availableEquipment) },
+                    set: { data.settings.availableEquipment = Array($0) }
+                )
+            )
+        }
         // 离开 Training Preferences (点 Done / 下拉关 sheet / 切走) 时, 若改过任何偏好就带 loading
         // 统一刷新 AI Plans —— 不再每动一下 stepper 就重算 (避免反复抖 + 让刷新成为一次明确动作).
         .onDisappear { data.commitRecommendedPlansIfDirty() }
+    }
+
+    /// "Gym equipment" 行右侧文案 — 空 = "All equipment"; 否则列大类名 (>2 用 "+N").
+    private var equipmentSummaryText: String {
+        let sel = data.settings.availableEquipment
+        guard !sel.isEmpty else { return NSLocalizedString("All equipment", comment: "") }
+        let names = EquipmentCategory.allCases.filter { sel.contains($0.rawValue) }.map(\.displayName)
+        let shown = names.prefix(2).joined(separator: ", ")
+        let rest = names.count - 2
+        return rest > 0 ? "\(shown) +\(rest)" : shown
     }
 
     /// "Muscles to focus" 行右侧文案 — 折叠到 6 大 section (跟 picker 粒度一致):
@@ -257,5 +296,87 @@ struct TrainingSettingsSheet: View {
             }
             .tint(MasoColor.text)
         }
+    }
+}
+
+// MARK: - EquipmentPickerSheet (#1) — 多选健身房可用器械大类
+//
+// 空选 = 不限制 (全器械). 选了 → AI / 推荐计划只出这些器械 (+ 自重) 能做的动作.
+struct EquipmentPickerSheet: View {
+    @Binding var selected: Set<String>
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        NavigationStack {
+            ZStack {
+                MasoColor.background.ignoresSafeArea()
+                ScrollView {
+                    VStack(spacing: 10) {
+                        Text("Pick the equipment your gym has — AI and recommended plans will only use moves you can actually do. Leave empty for no restriction (bodyweight is always available).")
+                            .font(.system(size: 13))
+                            .foregroundStyle(MasoColor.textDim)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.bottom, 4)
+
+                        ForEach(EquipmentCategory.allCases) { cat in
+                            let on = selected.contains(cat.rawValue)
+                            Button {
+                                if on { selected.remove(cat.rawValue) } else { selected.insert(cat.rawValue) }
+                                Haptics.tap()
+                            } label: {
+                                HStack(spacing: 12) {
+                                    Image(systemName: cat.icon)
+                                        .font(.system(size: 15, weight: .semibold))
+                                        .foregroundStyle(on ? .black : MasoColor.accent)
+                                        .frame(width: 34, height: 34)
+                                        .background(on ? MasoColor.accent : MasoColor.accent.opacity(0.12))
+                                        .clipShape(RoundedRectangle(cornerRadius: 9))
+                                    Text(LocalizedStringKey(cat.displayName))
+                                        .font(.system(size: 15, weight: .semibold))
+                                        .foregroundStyle(MasoColor.text)
+                                    Spacer()
+                                    Image(systemName: on ? "checkmark.circle.fill" : "circle")
+                                        .font(.system(size: 20))
+                                        .foregroundStyle(on ? MasoColor.accent : MasoColor.textFaint)
+                                }
+                                .padding(.vertical, 10)
+                                .padding(.horizontal, 12)
+                                .background(MasoColor.surface)
+                                .clipShape(RoundedRectangle(cornerRadius: 12))
+                            }
+                            .buttonStyle(.plain)
+                        }
+
+                        if !selected.isEmpty {
+                            Button {
+                                selected.removeAll(); Haptics.tap()
+                            } label: {
+                                Text("Clear — use all equipment")
+                                    .font(.system(size: 13, weight: .semibold))
+                                    .foregroundStyle(MasoColor.textDim)
+                                    .frame(maxWidth: .infinity)
+                                    .padding(.vertical, 12)
+                            }
+                            .buttonStyle(.plain)
+                            .padding(.top, 2)
+                        }
+                    }
+                    .padding(MasoMetrics.pagePaddingHorizontal)
+                }
+            }
+            .navigationTitle("Gym equipment")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbarBackground(MasoColor.background, for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Done") { dismiss() }.fontWeight(.bold)
+                }
+            }
+            .tint(MasoColor.text)
+        }
+        .presentationBackground(MasoColor.background)
+        .presentationDetents([.medium, .large])
+        .preferredColorScheme(.dark)
     }
 }

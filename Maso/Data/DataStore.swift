@@ -331,6 +331,8 @@ final class DataStore {
             // 防御性补足: 模板正常是 8 step (cap≤8 不会触发), 但万一某 step ID 失效被 compactMap
             // 丢掉导致不足, 也按 exercises-per-plan 补回, 保证用户设定数严格成立.
             p.steps = DataStore.padStepsToTarget(p.steps, target: cap, settings: settings, exById: exById)
+            // #1 器械约束: 把所选器械做不了的动作换成可用替代 (availableEquipment 空时无操作).
+            p.steps = DataStore.applyEquipmentPreference(p.steps, settings: settings, exById: exById)
             // LRU 回填: 该 plan 在历史里最近一次训练时间 (没练过 → nil → distantPast 排最前)
             p.lastUsedAt = sets.filter { $0.planId == p.id }.map(\.performedAt).max()
             return p
@@ -386,6 +388,8 @@ final class DataStore {
             // 反向: 动作数 < 用户设定时补足配件 —— 社区计划自身偏短 (一个 session 只有 5 个动作) 也
             // 严格兑现 exercises-per-plan, 不让用户设了 7 却只看到 5.
             p.steps = padStepsToTarget(p.steps, target: cap, settings: settings, exById: exById)
+            // #1 器械约束.
+            p.steps = applyEquipmentPreference(p.steps, settings: settings, exById: exById)
             p.lastUsedAt = sets.filter { $0.planId == p.id }.map(\.performedAt).max()
             return p
         }
@@ -464,6 +468,39 @@ final class DataStore {
             if result.count >= target { break }
         }
         return result
+    }
+
+    /// #1 器械约束 — 把"所选器械做不了"的动作换成同主肌群 section + 可用器械的替代动作.
+    /// settings.availableEquipment 空 → 原样返回 (不限制). 找不到替代 → 保留原动作 (不留空).
+    static func applyEquipmentPreference(_ steps: [PlanStep], settings: UserSettings, exById: [String: Exercise]) -> [PlanStep] {
+        let selected = Set(settings.availableEquipment)
+        guard !selected.isEmpty else { return steps }
+        var used = Set(steps.map { $0.exerciseId })
+        return steps.map { step -> PlanStep in
+            guard let ex = exById[step.exerciseId],
+                  !EquipmentCategory.allows(ex, selected: selected) else { return step }
+            let targetSection = ex.primaryMuscles.first.map { $0.section ?? $0 }
+            let alt = exById.values
+                .filter { c in
+                    c.id != ex.id && !used.contains(c.id) && c.category == ex.category && !c.isNiche &&
+                    EquipmentCategory.allows(c, selected: selected) &&
+                    (targetSection == nil || c.primaryMuscles.contains { ($0.section ?? $0) == targetSection })
+                }
+                .sorted { a, b in
+                    let am = (a.mechanic == ex.mechanic) ? 0 : 1
+                    let bm = (b.mechanic == ex.mechanic) ? 0 : 1
+                    return am != bm ? am < bm : a.name < b.name
+                }
+                .first
+            guard let alt else { return step }
+            used.insert(alt.id)
+            // exerciseId 是 let → 重建. 换了动作, weight/逐组覆盖清掉 (不同动作重量不通用).
+            return PlanStep(
+                id: step.id, exerciseId: alt.id, sets: step.sets, reps: step.reps,
+                weight: nil, duration: step.duration,
+                restBetweenSets: step.restBetweenSets, rest: step.rest
+            )
+        }
     }
 
     // MARK: - 简单的 plan 操作

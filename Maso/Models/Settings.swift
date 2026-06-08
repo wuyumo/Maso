@@ -104,6 +104,11 @@ struct UserSettings: Codable, Sendable {
     /// 即"少自动生成, 多采用社区已验证的计划". 见 DataStore.regenerateRecommendedPlans.
     var preferCommunityPlans: Bool = false
 
+    /// #1 健身房可用器械 — 存 EquipmentCategory.rawValue. 空 = 不限制 (默认, 全器械可用).
+    /// 非空 = 只用所选器械 (+ 自重永远可用) 出计划; AI / 本地推荐都按这个约束选动作.
+    /// 用户场景: 进健身房前勾上"我这家健身房有的设备", 之后推荐 / AI 只出这些器械能做的动作.
+    var availableEquipment: [String] = []
+
     /// 肌肉分区颗粒度. true (默认): 暴露 sub-muscle (上胸/下胸/股二头/股内肌...).
     /// false: UI 只暴露 major (chest / back / quads / hamstrings...). 身体图也合并描边显示成大块.
     /// 影响:
@@ -220,4 +225,77 @@ extension UserSettings {
 enum FreeLimit {
     /// 免费用户最多保存几个训练计划
     static let maxPlans: Int = 3
+}
+
+// MARK: - EquipmentCategory (#1)
+//
+// 数据里有 80+ 个细粒度 equipment 值 (dumbbell / bench_flat / leg_press_machine …),
+// 用户面不可能逐个勾. 归并成 ~9 个大类供"健身房可用器械"多选.
+// gate 只看动作的"主器械" (equipmentAll.first / equipment) —— bench / plate / rack 等
+// 附件不卡 (有哑铃的健身房默认有凳), 避免过度限制把能做的动作也筛掉.
+enum EquipmentCategory: String, CaseIterable, Identifiable, Sendable {
+    case dumbbell, barbell, cable, machine, smith, kettlebell, bands, pullupBar, cardio
+
+    var id: String { rawValue }
+
+    var displayName: String {
+        switch self {
+        case .dumbbell:   return "Dumbbells"
+        case .barbell:    return "Barbell & plates"
+        case .cable:      return "Cable machine"
+        case .machine:    return "Resistance machines"
+        case .smith:      return "Smith machine"
+        case .kettlebell: return "Kettlebells"
+        case .bands:      return "Resistance bands"
+        case .pullupBar:  return "Pull-up / dip bar"
+        case .cardio:     return "Cardio machines"
+        }
+    }
+
+    var icon: String {
+        switch self {
+        case .dumbbell:   return "dumbbell.fill"
+        case .barbell:    return "figure.strengthtraining.traditional"
+        case .cable:      return "cablecar"
+        case .machine:    return "gearshape.2.fill"
+        case .smith:      return "square.split.1x2.fill"
+        case .kettlebell: return "figure.core.training"
+        case .bands:      return "alternatingcurrent"
+        case .pullupBar:  return "figure.gymnastics"
+        case .cardio:     return "figure.run"
+        }
+    }
+
+    /// 这个大类涵盖的细粒度 equipment 值.
+    var rawEquipmentValues: Set<String> {
+        switch self {
+        case .dumbbell:   return ["dumbbell", "dumbbells"]
+        case .barbell:    return ["barbell","barbells","ez_bar","ez_curl_bar","trap_bar","axle_bar","safety_squat_bar","weight_plate","squat_rack","rack","power_rack","platform","chains"]
+        case .cable:      return ["cable","cables"]
+        case .machine:    return ["machine","leverage_machine","leg_press_machine","leg_curl_machine","leg_extension_machine","hack_squat_machine","abductor_machine","adductor_machine","calf_raise_machine","back_extension_machine","glute_kickback_machine","hip_thrust_machine","donkey_calf_machine","belt_squat_machine","sissy_squat_machine","tibialis_machine","reverse_hyper_machine","ghd_machine","preacher_bench","hyperextension_bench"]
+        case .smith:      return ["smith_machine","smith"]
+        case .kettlebell: return ["kettlebell","kettlebells"]
+        case .bands:      return ["resistance_band","band","bands"]
+        case .pullupBar:  return ["pull_up_bar","dip_bar","dip_bars","dip_belt","rings","gymnastic_rings","parallel_bars","captains_chair","push_up_handles"]
+        case .cardio:     return ["treadmill","stationary_bike","spin_bike","assault_bike","rowing_machine","ski_erg","elliptical","arc_trainer","stairmaster","jump_rope"]
+        }
+    }
+
+    /// 某细粒度 equipment 值属于哪个大类 (附件/未知 → nil).
+    static func category(for raw: String) -> EquipmentCategory? {
+        let r = raw.lowercased()
+        return allCases.first { $0.rawEquipmentValues.contains(r) }
+    }
+
+    /// 在"可用大类"集合下, 动作能不能做.
+    ///   - selected 空 → 不限制, 全可用.
+    ///   - 自重 / 无器械 → 永远可用.
+    ///   - 主器械大类在 selected 里 → 可用; 主器械归不到任何大类 (附件) → 不卡, 视作可用.
+    static func allows(_ exercise: Exercise, selected: Set<String>) -> Bool {
+        guard !selected.isEmpty else { return true }
+        let primary = (exercise.equipmentAll?.first ?? exercise.equipment ?? "").lowercased()
+        if primary.isEmpty || primary == "body_only" || primary == "bodyweight" || primary == "none" { return true }
+        guard let cat = category(for: primary) else { return true }
+        return selected.contains(cat.rawValue)
+    }
 }
