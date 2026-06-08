@@ -287,6 +287,26 @@ enum ExerciseGrouping {
         return stripEquipmentWords(beforeParen)
     }
 
+    /// 泛运动家族词 (#5) — 单词本身只是个"动作大类", 不是具体动作. 这类词被剥到只剩它自己时,
+    /// 说明区分这些动作的恰恰是器械/体位 (Barbell Row ≠ Cable Row ≠ T-Bar Row), 不能全归一坨.
+    /// 命中后改用"保留器械、只折叠体位/握法修饰"的 key, 让它们按器械分组.
+    /// (Bench Press / Lateral Raise / Leg Press 等是双词具体动作, 不会命中, 行为不变.)
+    private static let genericFamilyWords: Set<String> = [
+        "row", "rows", "curl", "curls", "raise", "raises",
+        "fly", "flye", "flyes", "flies", "press", "extension", "extensions",
+        "pulldown", "pulldowns", "pushdown", "pushdowns", "pressdown", "pressdowns",
+        "crossover", "crossovers", "shrug", "shrugs", "pullover", "pullovers",
+        "kickback", "kickbacks", "pull", "push", "thruster", "thrusters",
+    ]
+
+    /// name 去掉第一个 "(" 之后的部分 (= 去括号的前缀).
+    private static func beforeParen(_ name: String) -> String {
+        if let p = name.firstIndex(of: "(") {
+            return String(name[..<p]).trimmingCharacters(in: .whitespaces)
+        }
+        return name.trimmingCharacters(in: .whitespaces)
+    }
+
     /// 把一组 exercise 折叠成 ExerciseGroup 列表.
     /// 顺序: 跟 input 一致 (拿每组第一次出现的 exercise 决定 group 顺序).
     /// 同 group 内 variants 顺序: input 顺序 (除去 canonical).
@@ -305,6 +325,13 @@ enum ExerciseGrouping {
         //    只有当 fullBase 出现在 equipBasesSet 里 (即有真正的"无修饰词"变种存在), 才采用 fullBase;
         //    否则回退 equipBase.
         func contextualKey(_ ex: Exercise) -> String {
+            // #5: 泛家族词 (Row/Curl/Press/Fly…) — 剥到只剩家族词时, 器械才是身份.
+            //     保留器械、只折叠体位/握法修饰: "Seated Cable Row" → "Cable Row";
+            //     "Single-Arm Dumbbell Row" → "Dumbbell Row"; "Barbell Row" → "Barbell Row".
+            let noMod = ExerciseGrouping.stripMovementModifiers(ExerciseGrouping.beforeParen(ex.name))
+            if ExerciseGrouping.genericFamilyWords.contains(ExerciseGrouping.stripEquipmentWords(noMod).lowercased()) {
+                return noMod
+            }
             let eBase = equipmentOnlyBase(of: ex)
             let fBase = baseName(of: ex)      // strips both equipment + modifiers
             if fBase != eBase && equipBasesSet.contains(fBase) {
