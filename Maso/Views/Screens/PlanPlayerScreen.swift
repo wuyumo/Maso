@@ -255,13 +255,17 @@ struct PlanPlayerScreen: View {
                     initialReps: step.reps,
                     initialWeight: step.weight,
                     initialDuration: step.duration,
-                    onSave: { newSets, newReps, newWeight, newDuration in
+                    initialSetReps: step.setReps,
+                    initialSetWeights: step.setWeights,
+                    onSave: { newSets, newReps, newWeight, newDuration, newSetReps, newSetWeights in
                         store.updateStep(
                             idWrapper.id,
                             sets: newSets,
                             reps: newReps,
                             weight: newWeight,
                             duration: newDuration,
+                            setReps: newSetReps,
+                            setWeights: newSetWeights,
                             exById: data.exById,
                             defaultRest: data.settings.defaultRestSeconds,
                             defaultBetweenExerciseRest: data.settings.defaultBetweenExerciseRestSeconds
@@ -1057,12 +1061,14 @@ private struct ExerciseInfo: View {
                 initialReps: reps,
                 initialWeight: weight,
                 initialDuration: duration,
-                onSave: { newSets, newReps, newWeight, newDuration in
+                onSave: { newSets, newReps, newWeight, newDuration, newSetReps, newSetWeights in
                     store.updateCurrentStep(
                         sets: newSets,
                         reps: newReps,
                         weight: newWeight,
                         duration: newDuration,
+                        setReps: newSetReps,
+                        setWeights: newSetWeights,
                         exById: data.exById,
                         defaultRest: data.settings.defaultRestSeconds,
                         defaultBetweenExerciseRest: data.settings.defaultBetweenExerciseRestSeconds
@@ -2174,7 +2180,10 @@ private struct EditCurrentStepSheet: View {
     let initialReps: Int?
     let initialWeight: Double?
     let initialDuration: Int?
-    let onSave: (Int, Int?, Double?, Int?) -> Void
+    let initialSetReps: [Int?]?
+    let initialSetWeights: [Double?]?
+    /// #3: onSave 多带逐组数组 (setReps / setWeights). 关掉逐组时传 nil.
+    let onSave: (Int, Int?, Double?, Int?, [Int?]?, [Double?]?) -> Void
     /// 可选: "替换动作" — caller 传了才显示 row. tap 后 sheet dismiss → caller 弹 ExercisePickerSheet.
     /// 单独 callback 让 caller 控制选 ex 后的逻辑 (调 store.replaceStepExercise).
     var onReplace: (() -> Void)? = nil
@@ -2185,6 +2194,10 @@ private struct EditCurrentStepSheet: View {
     @State private var reps: Int
     @State private var weight: Double
     @State private var duration: Int
+    /// #3: "每组不同重量/次数" 开关 + 逐组值 (0 = 空, save 时映射 nil). 长度跟 sets 同步.
+    @State private var perSetEnabled: Bool
+    @State private var perSetReps: [Int]
+    @State private var perSetWeights: [Double]
     /// P2-6: 用户点了 "Replace exercise" → dismiss 自己, 等真正消失 (.onDisappear) 再回调
     /// onReplace 让 parent 弹 picker. 一次性 flag 防双击.
     @State private var replaceRequested: Bool = false
@@ -2196,21 +2209,37 @@ private struct EditCurrentStepSheet: View {
         initialReps: Int?,
         initialWeight: Double?,
         initialDuration: Int?,
-        onSave: @escaping (Int, Int?, Double?, Int?) -> Void,
+        initialSetReps: [Int?]? = nil,
+        initialSetWeights: [Double?]? = nil,
+        onSave: @escaping (Int, Int?, Double?, Int?, [Int?]?, [Double?]?) -> Void,
         onReplace: (() -> Void)? = nil
     ) {
         self.exercise = exercise
-        self.initialSets = max(1, initialSets)
+        let nSets = max(1, initialSets)
+        self.initialSets = nSets
         self.initialReps = initialReps
         self.initialWeight = initialWeight
         self.initialDuration = initialDuration
+        self.initialSetReps = initialSetReps
+        self.initialSetWeights = initialSetWeights
         self.onSave = onSave
         self.onReplace = onReplace
-        self._sets = State(initialValue: max(1, initialSets))
+        self._sets = State(initialValue: nSets)
         // 没初始值就给合理默认 — reps 10 / weight 0 / duration 30. 用户自己 -/+ 调.
-        self._reps = State(initialValue: initialReps ?? 10)
-        self._weight = State(initialValue: initialWeight ?? 0)
+        let r0 = initialReps ?? 10
+        let w0 = initialWeight ?? 0
+        self._reps = State(initialValue: r0)
+        self._weight = State(initialValue: w0)
         self._duration = State(initialValue: initialDuration ?? 30)
+        // 逐组: 有任一覆盖数组 → 默认开. 逐组初值: 覆盖项优先, 否则统一值.
+        let hasPerSet = (initialSetReps?.isEmpty == false) || (initialSetWeights?.isEmpty == false)
+        self._perSetEnabled = State(initialValue: hasPerSet)
+        self._perSetReps = State(initialValue: (0..<nSets).map { i in
+            (initialSetReps?.indices.contains(i) == true ? initialSetReps![i] : nil) ?? r0
+        })
+        self._perSetWeights = State(initialValue: (0..<nSets).map { i in
+            (initialSetWeights?.indices.contains(i) == true ? initialSetWeights![i] : nil) ?? w0
+        })
     }
 
     /// 是否显示 Reps + Weight 字段. 力量类总显示; 非力量类只有 step 已存在这俩字段时显示.
@@ -2218,9 +2247,10 @@ private struct EditCurrentStepSheet: View {
         exercise.category == .strength || initialReps != nil || initialWeight != nil
     }
 
-    /// 是否显示 Duration. 非力量类总显示; 力量类只有 step 已存在 duration 时显示.
+    /// 是否显示 Duration. #3: duration 仅给"没有 reps/weight"的动作 (stretch / 计时类),
+    /// 跟 reps/weight 互斥 —— 重训动作不再显示 duration.
     private var showsDuration: Bool {
-        exercise.category != .strength || initialDuration != nil
+        !showsRepsWeight
     }
 
     var body: some View {
@@ -2238,10 +2268,38 @@ private struct EditCurrentStepSheet: View {
 
                     if showsRepsWeight {
                         Section {
-                            intStepperRow(label: "Reps", value: $reps, range: 1...50)
-                            weightStepperRow(label: "Weight", value: $weight, range: 0...500, step: 2.5)
+                            Toggle(isOn: $perSetEnabled.animation(.easeOut(duration: 0.2))) {
+                                Text("Different per set")
+                                    .foregroundStyle(MasoColor.text)
+                            }
+                            .tint(MasoColor.accent)
                         }
                         .listRowBackground(MasoColor.surface)
+
+                        if perSetEnabled {
+                            Section {
+                                ForEach(perSetReps.indices, id: \.self) { i in
+                                    HStack(spacing: 8) {
+                                        Text("Set \(i + 1)")
+                                            .font(.system(size: 13, weight: .bold))
+                                            .foregroundStyle(MasoColor.textDim)
+                                            .frame(width: 44, alignment: .leading)
+                                        Spacer(minLength: 0)
+                                        NumStepperField(intValue: $perSetReps[i], range: 1...50, suffix: "rep", fieldWidth: 52)
+                                        NumStepperField(doubleValue: $perSetWeights[i], range: 0...500, step: 2.5, suffix: "kg", decimal: true, fieldWidth: 58)
+                                    }
+                                }
+                            } header: {
+                                Text("Reps × weight per set")
+                            }
+                            .listRowBackground(MasoColor.surface)
+                        } else {
+                            Section {
+                                intStepperRow(label: "Reps", value: $reps, range: 1...50)
+                                weightStepperRow(label: "Weight", value: $weight, range: 0...500, step: 2.5)
+                            }
+                            .listRowBackground(MasoColor.surface)
+                        }
                     }
 
                     if showsDuration {
@@ -2289,6 +2347,8 @@ private struct EditCurrentStepSheet: View {
                 }
                 // Form 自带 systemGroupedBackground 浅灰底 — 隐掉, 走我们 ZStack 的 MasoColor.background
                 .scrollContentBackground(.hidden)
+                // sets 改变 → 同步逐组数组长度 (补/裁), 防 ForEach 越界 + 让新组继承上一组的值.
+                .onChange(of: sets) { _, n in resizePerSet(to: max(1, n)) }
             }
             .navigationTitle(exercise.displayName)
             .navigationBarTitleDisplayMode(.inline)
@@ -2301,11 +2361,26 @@ private struct EditCurrentStepSheet: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save") {
-                        // 0 = 清空字段 (用户用 - 减到 0 = 不想要这个字段了, save 成 nil)
-                        let r: Int? = reps > 0 ? reps : nil
-                        let w: Double? = weight > 0 ? weight : nil
-                        let d: Int? = duration > 0 ? duration : nil
-                        onSave(sets, r, w, d)
+                        // 0 = 清空字段 (用户用 - 减到 0 = 不想要这个字段了, save 成 nil).
+                        // duration 仅在"非 reps/weight 动作"时存 (showsDuration) — 重训动作强制 nil.
+                        let d: Int? = (showsDuration && duration > 0) ? duration : nil
+                        if perSetEnabled && showsRepsWeight {
+                            let n = max(1, sets)
+                            let setR: [Int?] = (0..<n).map { i in
+                                (i < perSetReps.count && perSetReps[i] > 0) ? perSetReps[i] : nil
+                            }
+                            let setW: [Double?] = (0..<n).map { i in
+                                (i < perSetWeights.count && perSetWeights[i] > 0) ? perSetWeights[i] : nil
+                            }
+                            // 统一值用第一组当 fallback (expandPlan 在数组缺项时回退到它).
+                            let r0 = perSetReps.first.flatMap { $0 > 0 ? $0 : nil }
+                            let w0 = perSetWeights.first.flatMap { $0 > 0 ? $0 : nil }
+                            onSave(n, r0, w0, d, setR, setW)
+                        } else {
+                            let r: Int? = reps > 0 ? reps : nil
+                            let w: Double? = weight > 0 ? weight : nil
+                            onSave(sets, r, w, d, nil, nil)
+                        }
                         Haptics.tap()
                         dismiss()
                     }
@@ -2319,6 +2394,14 @@ private struct EditCurrentStepSheet: View {
         .onDisappear {
             if replaceRequested { onReplace?() }
         }
+    }
+
+    /// 把逐组数组补/裁到 n 组 — 补的项继承末组(或统一)值, 多的截掉. sets 变化时调.
+    private func resizePerSet(to n: Int) {
+        while perSetReps.count < n { perSetReps.append(perSetReps.last ?? reps) }
+        while perSetWeights.count < n { perSetWeights.append(perSetWeights.last ?? weight) }
+        if perSetReps.count > n { perSetReps.removeLast(perSetReps.count - n) }
+        if perSetWeights.count > n { perSetWeights.removeLast(perSetWeights.count - n) }
     }
 
     /// Int 字段行 — 左 label, 右统一步进控件 NumStepperField (圆形 −/+ + 可输入数字框),

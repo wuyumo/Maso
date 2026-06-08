@@ -7,12 +7,31 @@ struct PlanStep: Identifiable, Hashable, Codable, Sendable {
     var sets: Int = 1
     var reps: Int?
     var weight: Double?
+    /// 逐组覆盖 (#3) — 用户在训练中开"每组不同重量"后存. nil 数组 = 全组用统一 reps/weight;
+    /// 数组里某项 nil = 该组回退统一值. 长度通常 == sets (短了/长了都按 index 安全取).
+    var setReps: [Int?]? = nil
+    var setWeights: [Double?]? = nil
     /// 有氧 / 灵活性段的时长 (秒); strength 则为 nil
     var duration: Int?
     /// 组间休息 (秒)
     var restBetweenSets: Int = 90
     /// 步骤之间额外的休息 (秒); 默认 0
     var rest: Int = 0
+
+    /// 第 n 组 (1-based) 的目标 reps — 有逐组覆盖用它, 否则回退统一 reps.
+    func repsForSet(_ n: Int) -> Int? {
+        if let arr = setReps, arr.indices.contains(n - 1), let v = arr[n - 1] { return v }
+        return reps
+    }
+    /// 第 n 组 (1-based) 的目标 weight — 有逐组覆盖用它, 否则回退统一 weight.
+    func weightForSet(_ n: Int) -> Double? {
+        if let arr = setWeights, arr.indices.contains(n - 1), let v = arr[n - 1] { return v }
+        return weight
+    }
+    /// 是否启用了逐组不同 (任一 set 数组非空).
+    var hasPerSetOverrides: Bool {
+        (setReps?.isEmpty == false) || (setWeights?.isEmpty == false)
+    }
 }
 
 // 训练计划 (= web 端 Plan)

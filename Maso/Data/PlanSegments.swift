@@ -53,8 +53,8 @@ func expandPlan(
                     ex,
                     setNumber: setN,
                     totalSets: totalSets,
-                    targetReps: step.reps,
-                    targetWeight: step.weight,
+                    targetReps: step.repsForSet(setN),
+                    targetWeight: step.weightForSet(setN),
                     duration: step.duration,
                     countdown: isCountdown
                 )

@@ -379,6 +379,8 @@ final class TrainingSessionStore {
         reps newReps: Int?,
         weight newWeight: Double?,
         duration newDuration: Int?,
+        setReps newSetReps: [Int?]? = nil,
+        setWeights newSetWeights: [Double?]? = nil,
         exById: [String: Exercise],
         defaultRest: Int,
         defaultBetweenExerciseRest: Int
@@ -399,6 +401,8 @@ final class TrainingSessionStore {
         step.sets = max(1, newSets)
         step.reps = newReps
         step.weight = newWeight
+        step.setReps = newSetReps
+        step.setWeights = newSetWeights
         step.duration = newDuration
         p.steps[stepIdx] = step
         self.plan = p
@@ -515,6 +519,8 @@ final class TrainingSessionStore {
         reps newReps: Int?,
         weight newWeight: Double?,
         duration newDuration: Int?,
+        setReps newSetReps: [Int?]? = nil,
+        setWeights newSetWeights: [Double?]? = nil,
         exById: [String: Exercise],
         defaultRest: Int,
         defaultBetweenExerciseRest: Int
@@ -535,6 +541,8 @@ final class TrainingSessionStore {
         step.sets = max(1, newSets)
         step.reps = newReps
         step.weight = newWeight
+        step.setReps = newSetReps
+        step.setWeights = newSetWeights
         step.duration = newDuration
         p.steps[stepIdx] = step
         self.plan = p
