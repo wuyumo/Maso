@@ -26,8 +26,6 @@ struct PlansScreen: View {
     @State private var detailPlan: Plan? = nil
     @State private var pendingDeletePlanId: String? = nil
     @State private var paywallPresented = false
-    /// 刚 save 成功的 key — 卡片上把 "Save" 变成 "Saved ✓" 的瞬时反馈.
-    @State private var justSavedKey: String? = nil
 
     private var isPro: Bool { data.settings.isPro }
 
@@ -46,7 +44,8 @@ struct PlansScreen: View {
         .sheet(item: $detailPlan) { plan in
             PlanDetailSheet(
                 initialPlan: plan,
-                onStart: { p in detailPlan = nil; DispatchQueue.main.async { onStart(p) } }
+                onStart: { p in detailPlan = nil; DispatchQueue.main.async { onStart(p) } },
+                onAddToSaved: { p in addToSaved(p) }
             )
             .presentationDetents([.medium, .large])
         }
@@ -184,9 +183,6 @@ struct PlansScreen: View {
             onShowDetail: { detailPlan = plan },
             prominentStart: false
         )
-        .overlay(alignment: .topTrailing) {
-            addCornerButton(key: plan.id) { trySave(plan) }
-        }
     }
 
     /// 社区精选卡 — 整张点 → 预览; 右上角 "+" → materialize 后存进 Saved.
@@ -210,7 +206,10 @@ struct PlansScreen: View {
                             .foregroundStyle(MasoColor.textFaint)
                     }
                 }
-                Spacer(minLength: 40)   // 给右上角 "+" 留位
+                Spacer(minLength: 8)
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 13, weight: .bold))
+                    .foregroundStyle(MasoColor.textFaint)
             }
             .padding(MasoMetrics.cardPadding)
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -218,27 +217,6 @@ struct PlansScreen: View {
             .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
         }
         .buttonStyle(.plain)
-        .overlay(alignment: .topTrailing) {
-            addCornerButton(key: cp.id) { trySaveCommunity(cp) }
-        }
-    }
-
-    /// 卡片右上角 "+" 加入 Saved — 成功瞬时变 ✓ (#2 改成 corner 交互, 去掉底部 Save 按钮).
-    private func addCornerButton(key: String, action: @escaping () -> Void) -> some View {
-        let saved = justSavedKey == key
-        return Button(action: action) {
-            Image(systemName: saved ? "checkmark" : "plus")
-                .font(.system(size: 14, weight: .heavy))
-                .foregroundStyle(saved ? MasoColor.textDim : .black)
-                .frame(width: 30, height: 30)
-                .background(saved ? MasoColor.surface : MasoColor.accent)
-                .clipShape(Circle())
-                .shadow(color: .black.opacity(0.25), radius: 4, y: 1)
-        }
-        .buttonStyle(.plain)
-        .disabled(saved)
-        .padding(10)
-        .accessibilityLabel(saved ? NSLocalizedString("Saved", comment: "") : NSLocalizedString("Add to my plans", comment: ""))
     }
 
     // MARK: - Actions
@@ -253,22 +231,11 @@ struct PlansScreen: View {
         )
     }
 
-    private func trySave(_ plan: Plan) {
-        if data.savePlan(plan) { flashSaved(plan.id) } else { paywallPresented = true }
-    }
-
-    private func trySaveCommunity(_ cp: CommunityPlan) {
-        let materialized = cp.materialize(byId: data.exById)
-        var anyBlocked = false
-        for p in materialized {
-            if !data.savePlan(p) { anyBlocked = true; break }
-        }
-        if anyBlocked { paywallPresented = true } else { flashSaved(cp.id) }
-    }
-
-    private func flashSaved(_ key: String) {
-        Haptics.tap()
-        withAnimation { justSavedKey = key }
+    /// Discover 详情页右上角 "+" → 把这张(预览的)计划加进 Saved. 满额 → 弹 paywall. 完后关详情.
+    private func addToSaved(_ plan: Plan) {
+        let ok = data.savePlan(plan)
+        detailPlan = nil
+        if ok { Haptics.tap() } else { paywallPresented = true }
     }
 
     private func sectionKicker(_ text: String) -> some View {
@@ -596,6 +563,8 @@ struct PlanDetailSheet: View {
 
     let initialPlan: Plan
     let onStart: (Plan) -> Void
+    /// Discover 用 — 非 nil 时右上角显示系统默认 "+" 加进 Saved (并隐藏 …/Delete 菜单, 因为这张还没拥有).
+    let onAddToSaved: ((Plan) -> Void)?
 
     @State private var draft: Plan
     @State private var showAddPicker: Bool = false
@@ -619,9 +588,10 @@ struct PlanDetailSheet: View {
     /// 跟 showAddPicker (append) 走两套 sheet, 语义清楚.
     @State private var stepToReplaceId: String? = nil
 
-    init(initialPlan: Plan, onStart: @escaping (Plan) -> Void) {
+    init(initialPlan: Plan, onStart: @escaping (Plan) -> Void, onAddToSaved: ((Plan) -> Void)? = nil) {
         self.initialPlan = initialPlan
         self.onStart = onStart
+        self.onAddToSaved = onAddToSaved
         self._draft = State(initialValue: initialPlan)
     }
 
@@ -667,27 +637,35 @@ struct PlanDetailSheet: View {
             // 不显示 nav title — 用户要求 Edit Workout 系列页面都不要标题
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                // 左侧 "…" overflow menu — 装 destructive 操作 (Delete Plan).
-                // iOS 习惯把删除整个对象的操作放 toolbar menu, 不放主显眼按钮.
-                ToolbarItem(placement: .topBarLeading) {
-                    Menu {
-                        Button {
-                            handleSharePlan()
+                // 拥有的计划 (Today/Saved): 左侧 "…" overflow menu — Share / Delete.
+                if onAddToSaved == nil {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Menu {
+                            Button {
+                                handleSharePlan()
+                            } label: {
+                                Label("Share plan", systemImage: "square.and.arrow.up")
+                            }
+                            Divider()
+                            Button(role: .destructive) {
+                                confirmDelete = true
+                            } label: {
+                                Label("Delete Plan", systemImage: "trash")
+                            }
                         } label: {
-                            Label("Share plan", systemImage: "square.and.arrow.up")
+                            Image(systemName: "ellipsis")
                         }
-                        Divider()
-                        Button(role: .destructive) {
-                            confirmDelete = true
-                        } label: {
-                            Label("Delete Plan", systemImage: "trash")
+                    }
+                } else {
+                    // Discover 预览: 右上角系统默认 "+" → 加进 Saved (#IA).
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button { onAddToSaved?(draft) } label: {
+                            Image(systemName: "plus")
                         }
-                    } label: {
-                        Image(systemName: "ellipsis")
+                        .accessibilityLabel(NSLocalizedString("Add to my plans", comment: ""))
                     }
                 }
-                // (顶栏 Start 胶囊删了 — body 的大 CTA 已经够显眼, toolbar 再放一个反而冗余;
-                // iOS sheet 自带下拉关闭, 不需要 Done.)
+                // (顶栏 Start 胶囊删了 — body 的大 CTA 已经够显眼; iOS sheet 自带下拉关闭, 不需要 Done.)
             }
             // Share sheet — UIActivityViewController 桥. shareURL 设了就弹, 取消/分享完置 nil.
             .sheet(isPresented: Binding(
