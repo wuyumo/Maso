@@ -34,7 +34,7 @@ struct PlansScreen: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                savedSection
+                // Saved 已挪到 Today tab. 本 tab = 纯 Discover (浏览 AI / 社区, "+" 加进 Saved).
                 discoverSection
                 Spacer(minLength: MasoMetrics.pageBottomInset)
             }
@@ -174,31 +174,33 @@ struct PlansScreen: View {
         }
     }
 
-    /// AI 生成的计划卡 — 复用 WorkoutCard 富展示 + 下方 Save 按钮.
-    /// play 按钮 = Save & Start (现生成的计划想直接练, 顺手存).
+    /// AI 生成的计划卡 — WorkoutCard 富展示. 点卡片/play → 预览; 右上角 "+" → 加进 Saved.
     private func discoverPlanCard(_ plan: Plan, badge: String) -> some View {
-        VStack(spacing: 0) {
-            WorkoutCard(
-                plan: plan,
-                exById: data.exById,
-                kicker: badge,
-                onStart: { trySaveThenStart(plan) },
-                onShowDetail: { detailPlan = plan },
-                prominentStart: false
-            )
-            saveBar(key: plan.id) { trySave(plan) }
+        WorkoutCard(
+            plan: plan,
+            exById: data.exById,
+            kicker: badge,
+            onStart: { detailPlan = plan },
+            onShowDetail: { detailPlan = plan },
+            prominentStart: false
+        )
+        .overlay(alignment: .topTrailing) {
+            addCornerButton(key: plan.id) { trySave(plan) }
         }
     }
 
-    /// 社区精选卡 — 轻量行 (名字 + 等级 + Save). Save = materialize 后存进 Saved.
+    /// 社区精选卡 — 整张点 → 预览; 右上角 "+" → materialize 后存进 Saved.
     private func communityCard(_ cp: CommunityPlan) -> some View {
         let preview = cp.materialize(byId: data.exById).first
-        return VStack(alignment: .leading, spacing: 10) {
+        return Button {
+            if let preview { detailPlan = preview }
+        } label: {
             HStack(alignment: .top, spacing: 12) {
                 VStack(alignment: .leading, spacing: 3) {
                     Text(LocalizedStringKey(cp.nameKey))
                         .font(.system(size: 16, weight: .bold))
                         .foregroundStyle(MasoColor.text)
+                        .multilineTextAlignment(.leading)
                     Text(LocalizedStringKey(cp.levelKey))
                         .font(.system(size: 11, weight: .semibold))
                         .foregroundStyle(MasoColor.textDim)
@@ -208,38 +210,35 @@ struct PlansScreen: View {
                             .foregroundStyle(MasoColor.textFaint)
                     }
                 }
-                Spacer()
-                if let preview {
-                    Button { detailPlan = preview } label: {
-                        Image(systemName: "chevron.right")
-                            .font(.system(size: 13, weight: .bold))
-                            .foregroundStyle(MasoColor.textFaint)
-                    }
-                    .buttonStyle(.plain)
-                }
+                Spacer(minLength: 40)   // 给右上角 "+" 留位
             }
-            saveBar(key: cp.id) { trySaveCommunity(cp) }
+            .padding(MasoMetrics.cardPadding)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(MasoColor.surface)
+            .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
         }
-        .padding(MasoMetrics.cardPadding)
-        .background(MasoColor.surface)
-        .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
+        .buttonStyle(.plain)
+        .overlay(alignment: .topTrailing) {
+            addCornerButton(key: cp.id) { trySaveCommunity(cp) }
+        }
     }
 
-    /// 卡片底部的 Save 行 — save 成功瞬时变 "Saved ✓".
-    private func saveBar(key: String, action: @escaping () -> Void) -> some View {
+    /// 卡片右上角 "+" 加入 Saved — 成功瞬时变 ✓ (#2 改成 corner 交互, 去掉底部 Save 按钮).
+    private func addCornerButton(key: String, action: @escaping () -> Void) -> some View {
         let saved = justSavedKey == key
         return Button(action: action) {
-            HStack(spacing: 6) {
-                Image(systemName: saved ? "checkmark" : "plus")
-                Text(saved ? "Saved" : "Save")
-            }
-            .font(.system(size: 13, weight: .bold))
-            .foregroundStyle(saved ? MasoColor.textDim : MasoColor.accent)
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 10)
+            Image(systemName: saved ? "checkmark" : "plus")
+                .font(.system(size: 14, weight: .heavy))
+                .foregroundStyle(saved ? MasoColor.textDim : .black)
+                .frame(width: 30, height: 30)
+                .background(saved ? MasoColor.surface : MasoColor.accent)
+                .clipShape(Circle())
+                .shadow(color: .black.opacity(0.25), radius: 4, y: 1)
         }
         .buttonStyle(.plain)
         .disabled(saved)
+        .padding(10)
+        .accessibilityLabel(saved ? NSLocalizedString("Saved", comment: "") : NSLocalizedString("Add to my plans", comment: ""))
     }
 
     // MARK: - Actions
@@ -256,10 +255,6 @@ struct PlansScreen: View {
 
     private func trySave(_ plan: Plan) {
         if data.savePlan(plan) { flashSaved(plan.id) } else { paywallPresented = true }
-    }
-
-    private func trySaveThenStart(_ plan: Plan) {
-        if data.savePlan(plan) { onStart(plan) } else { paywallPresented = true }
     }
 
     private func trySaveCommunity(_ cp: CommunityPlan) {

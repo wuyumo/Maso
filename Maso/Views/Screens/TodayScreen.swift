@@ -81,15 +81,6 @@ struct TodayScreen: View {
                         )
                     }
 
-                    // ── 自由训练入口 ── 钉在 Today 底部 (从 Plans/My Plans 移过来).
-                    entryCard(
-                        icon: "dumbbell.fill",
-                        title: "Free workout",
-                        subtitle: "Pick your own exercises and go",
-                        trailingPlay: true,
-                        action: onFreeWorkout
-                    )
-                    .padding(.top, 4)
                 }
 
                 // ===== Plans tab 的 My Plans 分页: 我的训练 + 自由训练 + 社区 (mode != .trainToday) =====
@@ -100,7 +91,6 @@ struct TodayScreen: View {
                         plansEmptyState
                     } else {
                         // Training Preferences 卡置顶, "AI Plans" 标题移到它下方 (用户要求).
-                        PlanRationaleCard()
                         myPlansHeader.padding(.top, 8)
                         // 计划卡用 WorkoutCard — 跟 Today's Workout 同一详细程度 (居中肌肉图 +
                         // "N exercises · M sets" + 动作 chip + 开始键). kicker 传 "" 不显示
@@ -124,12 +114,13 @@ struct TodayScreen: View {
                         }
                     }
 
-                    // ── 入口: 社区 (Free workout 已移到 Today tab 底部) ──
+                    // ── 自由训练入口 — 钉在 Today 最底部 (saved plans 之后).
                     entryCard(
-                        icon: "person.2.fill",
-                        title: "Community",
-                        subtitle: "Browse training plans from the community",
-                        action: { communityPresented = true }
+                        icon: "dumbbell.fill",
+                        title: "Free workout",
+                        subtitle: "Pick your own exercises and go",
+                        trailingPlay: true,
+                        action: onFreeWorkout
                     )
                     .padding(.top, 4)
                 }
@@ -183,7 +174,7 @@ struct TodayScreen: View {
     /// 彼此间距拉远; 整行左右留边距 (标题 + 按钮往中间靠, 不贴边).
     private var myPlansHeader: some View {
         HStack(spacing: 14) {
-            Text("AI Plans")
+            Text("My Plans")
                 .font(.system(size: 12, weight: .heavy))
                 .tracking(1.5)
                 .textCase(.uppercase)

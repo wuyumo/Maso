@@ -129,7 +129,7 @@ struct RootView: View {
                         onNewPlan: handleNewPlan,
                         onOpenSettings: { settingsPresented = true },
                         embedded: true,
-                        mode: .trainToday
+                        mode: .full   // #IA: Today = 肌肉状态 + 今日推荐 + My Plans(saved) + Free workout
                     )
                     .screenHeader("Today") {
                         Button(action: { settingsPresented = true }) {
@@ -157,7 +157,7 @@ struct RootView: View {
                 .tint(MasoColor.text)
                 .safeAreaInset(edge: .bottom, spacing: 0) { miniBarContent }
                 .tabItem {
-                    Label("Plans", systemImage: "square.stack.3d.up.fill")
+                    Label("Discover", systemImage: "square.stack.3d.up.fill")
                 }
                 .tag(RootTab.plans)
 
@@ -709,7 +709,7 @@ private struct PlansTabScreen: View {
     var body: some View {
         NavigationStack {
             PlansScreen(onStart: onStart, onNewPlan: onNewPlan)
-                .navigationTitle("Plans")
+                .navigationTitle("Discover")
                 .navigationBarTitleDisplayMode(.large)
                 .toolbar {
                     // 右上角: Exercises 库 + Settings (Exercises 从 segmented 移到这里).
