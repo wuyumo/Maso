@@ -16,6 +16,7 @@ struct ExerciseLibraryBrowser: View {
     @State private var query: String = ""
     @State private var muscleFilter: MuscleGroup? = nil
     @State private var equipmentFilter: String? = nil
+    @State private var movementFilter: MovementFacet? = nil
     @State private var selected: Exercise? = nil
     /// 当前展开的"变种组" key (= ExerciseGroup.id). 一次只展开一组 — 跟 picker 同一收折语义.
     @State private var expandedGroupKey: String? = nil
@@ -52,6 +53,9 @@ struct ExerciseLibraryBrowser: View {
                 if eq == "other" { return ex.equipment == "other" || ex.equipment == nil }
                 return ex.equipment == eq
             }
+        }
+        if let mv = movementFilter {
+            arr = arr.filter { $0.movementFacet == mv }
         }
         let words = exerciseSearchWords(query)
         if !words.isEmpty {
@@ -125,46 +129,47 @@ struct ExerciseLibraryBrowser: View {
         }
     }
 
-    /// 当前 equipment / text filter 下还有动作的 muscle section. menu 里 dim disabled.
+    private func matchesEquipment(_ ex: Exercise, _ eq: String) -> Bool {
+        eq == "other" ? (ex.equipment == "other" || ex.equipment == nil) : ex.equipment == eq
+    }
+
+    /// 当前 (equipment + movement + text) filter 下还有动作的 muscle section. menu 里 dim disabled.
     private var availableMuscles: Set<MuscleGroup> {
         var out: Set<MuscleGroup> = []
+        let words = exerciseSearchWords(query)
         for ex in data.userLibrary {
-            // equipment filter narrow
-            if let eq = equipmentFilter {
-                if eq == "other" {
-                    guard ex.equipment == "other" || ex.equipment == nil else { continue }
-                } else {
-                    guard ex.equipment == eq else { continue }
-                }
-            }
-            // text filter narrow
-            let words = exerciseSearchWords(query)
-            if !words.isEmpty {
-                guard ex.matchesSearch(words) else { continue }
-            }
-            // 跟 filtered 行为一致用 primaryMuscles — 否则 chip "可点", 点了 0 结果.
-            for sec in Self.muscleSections {
-                if ex.primaryMuscles.contains(where: { $0.section == sec }) {
-                    out.insert(sec)
-                }
+            if let eq = equipmentFilter, !matchesEquipment(ex, eq) { continue }
+            if let mv = movementFilter, ex.movementFacet != mv { continue }
+            if !words.isEmpty, !ex.matchesSearch(words) { continue }
+            for sec in Self.muscleSections where ex.primaryMuscles.contains(where: { $0.section == sec }) {
+                out.insert(sec)
             }
         }
         return out
     }
 
-    /// 当前 muscle / text filter 下还有动作的 equipment set. menu 里 dim disabled.
+    /// 当前 (muscle + movement + text) filter 下还有动作的 equipment set. menu 里 dim disabled.
     private var availableEquipments: Set<String> {
         var out: Set<String> = []
+        let words = exerciseSearchWords(query)
         for ex in data.userLibrary {
-            if let m = muscleFilter {
-                // 严格用 primary, 跟 filtered 一致
-                guard ex.primaryMuscles.contains(where: { $0.section == m }) else { continue }
-            }
-            let words = exerciseSearchWords(query)
-            if !words.isEmpty {
-                guard ex.matchesSearch(words) else { continue }
-            }
+            if let m = muscleFilter, !ex.primaryMuscles.contains(where: { $0.section == m }) { continue }
+            if let mv = movementFilter, ex.movementFacet != mv { continue }
+            if !words.isEmpty, !ex.matchesSearch(words) { continue }
             out.insert(ex.equipment ?? "other")
+        }
+        return out
+    }
+
+    /// 当前 (muscle + equipment + text) filter 下还有动作的 movement family. menu 里 dim disabled.
+    private var availableMovements: Set<MovementFacet> {
+        var out: Set<MovementFacet> = []
+        let words = exerciseSearchWords(query)
+        for ex in data.userLibrary {
+            if let m = muscleFilter, !ex.primaryMuscles.contains(where: { $0.section == m }) { continue }
+            if let eq = equipmentFilter, !matchesEquipment(ex, eq) { continue }
+            if !words.isEmpty, !ex.matchesSearch(words) { continue }
+            if let mf = ex.movementFacet { out.insert(mf) }
         }
         return out
     }
@@ -176,9 +181,11 @@ struct ExerciseLibraryBrowser: View {
             query: $query,
             muscleFilter: $muscleFilter,
             equipmentFilter: $equipmentFilter,
+            movementFilter: $movementFilter,
             muscleSections: Self.muscleSections,
             availableMuscles: availableMuscles,
-            availableEquipments: availableEquipments
+            availableEquipments: availableEquipments,
+            availableMovements: availableMovements
         )
     }
 
@@ -207,6 +214,7 @@ struct ExerciseLibraryBrowser: View {
                 .onChange(of: query) { _, _ in expandedGroupKey = nil }
                 .onChange(of: muscleFilter) { _, _ in expandedGroupKey = nil }
                 .onChange(of: equipmentFilter) { _, _ in expandedGroupKey = nil }
+                .onChange(of: movementFilter) { _, _ in expandedGroupKey = nil }
             }
             .background(MasoColor.background.ignoresSafeArea())
                 // embedded 时跳过自己的大标题 / +按钮 (Train 统一导航栏接管); 非 embedded 保持原样.

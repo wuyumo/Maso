@@ -391,6 +391,7 @@
 
 /* Equipment filter chips (ExercisePickerSheet) */
 "Any equipment" = "Any equipment";
+"Any movement" = "Any movement";
 "equipment.barbell" = "Barbell";
 "equipment.dumbbell" = "Dumbbell";
 "equipment.body only" = "Body only";

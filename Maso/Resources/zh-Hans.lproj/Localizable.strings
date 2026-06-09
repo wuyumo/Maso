@@ -393,6 +393,7 @@
 
 /* Equipment filter chips */
 "Any equipment" = "全部器械";
+"Any movement" = "全部动作";
 "equipment.barbell" = "杠铃";
 "equipment.dumbbell" = "哑铃";
 "equipment.body only" = "自重";

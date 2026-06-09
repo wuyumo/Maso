@@ -146,11 +146,15 @@ struct ExerciseSearchFilterBar: View {
     @Binding var query: String
     @Binding var muscleFilter: MuscleGroup?
     @Binding var equipmentFilter: String?
+    /// 动作家族筛选 (Press / Row / Fly / Curl / Dip / …). nil = 全部.
+    @Binding var movementFilter: MovementFacet?
     let muscleSections: [MuscleGroup]
     /// 当前 (equipment + text) 约束下还有动作的 muscle section — 菜单里其余 dim disabled.
     let availableMuscles: Set<MuscleGroup>
     /// 当前 (muscle + text) 约束下还有动作的 equipment — 菜单里其余 dim disabled.
     let availableEquipments: Set<String>
+    /// 当前 (muscle + equipment + text) 约束下还有动作的 movement — 菜单里其余 dim disabled.
+    let availableMovements: Set<MovementFacet>
 
     var body: some View {
         // 顺序: 左 = 两个筛选入口 (Muscle / Equipment), 右 = 搜索框 (flex 占满剩余宽度).
@@ -176,6 +180,18 @@ struct ExerciseSearchFilterBar: View {
                 },
                 style: .capsule,
                 icon: "dumbbell.fill"
+            )
+            // 动作家族 (Press / Row / Fly / Curl / Dip …) — 选 Dip → 所有 dip; Press+Chest → 胸推.
+            FilterMenuButton(
+                title: NSLocalizedString("Movement", comment: "filter button placeholder"),
+                allLabel: NSLocalizedString("Any movement", comment: ""),
+                selected: $movementFilter,
+                options: MovementFacet.ordered.map { mv in
+                    FilterMenuOption(value: mv, label: mv.displayName,
+                                     enabled: availableMovements.contains(mv) || movementFilter == mv)
+                },
+                style: .capsule,
+                icon: "figure.strengthtraining.traditional"
             )
 
             // 搜索框 — iOS 搜索框观感 (放大镜 + 圆角 + 清除), flex 占满剩余宽度, 放最右.

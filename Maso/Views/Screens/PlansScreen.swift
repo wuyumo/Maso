@@ -1504,6 +1504,8 @@ struct ExercisePickerSheet: View {
     @State private var muscleFilter: MuscleGroup? = nil
     /// 器械筛选 (nil = 不限). "other" + None 都归到 "other".
     @State private var equipmentFilter: String? = nil
+    /// 动作家族筛选 (Press / Row / Fly / Curl / Dip …). nil = 全部.
+    @State private var movementFilter: MovementFacet? = nil
     /// 已选动作 id (multiSelect 用; 单选模式忽略).
     @State private var selectedIds: Set<String> = []
     /// tap 列表行 → 弹动作详情. 详情里点 "Add to workout" 才真正 onPick.
@@ -1530,6 +1532,7 @@ struct ExercisePickerSheet: View {
         _ arr: [Exercise],
         muscle: MuscleGroup?,
         equipment: String?,
+        movement: MovementFacet? = nil,
         text: String?
     ) -> [Exercise] {
         var result = arr
@@ -1547,6 +1550,9 @@ struct ExercisePickerSheet: View {
                 }
                 return ex.equipment == eq
             }
+        }
+        if let mv = movement {
+            result = result.filter { $0.movementFacet == mv }
         }
         let words = exerciseSearchWords(text ?? "")
         if !words.isEmpty {
@@ -1570,6 +1576,7 @@ struct ExercisePickerSheet: View {
             sourceExercises,
             muscle: muscleFilter,
             equipment: equipmentFilter,
+            movement: movementFilter,
             text: query
         )
         // 收藏置顶 — 在 filter 之后排序, 让收藏的动作在当前 filter 结果里排最前
@@ -1589,7 +1596,7 @@ struct ExercisePickerSheet: View {
     private var trimmedQuery: String { query.trimmingCharacters(in: .whitespaces) }
 
     private var forceExpandAll: Bool {
-        !query.trimmingCharacters(in: .whitespaces).isEmpty || equipmentFilter != nil
+        !query.trimmingCharacters(in: .whitespaces).isEmpty || equipmentFilter != nil || movementFilter != nil
     }
 
     // MARK: - filter availability — 两维 (部位 / 器械) 互相 narrow 时, 让用户知道哪些选项当前可选
@@ -1597,7 +1604,7 @@ struct ExercisePickerSheet: View {
     /// 当前 muscle/text filter (不算 equipment) 下还有动作的 equipment set.
     /// 用菜单项 "dim disabled" 视觉提示 — 让用户知道选了某 muscle 后哪些 equipment 是空集.
     private var availableEquipments: Set<String> {
-        let arr = applyFilters(sourceExercises, muscle: muscleFilter, equipment: nil, text: query)
+        let arr = applyFilters(sourceExercises, muscle: muscleFilter, equipment: nil, movement: movementFilter, text: query)
         var out: Set<String> = []
         for ex in arr {
             // nil + "other" 都映射到 "other" chip
@@ -1609,7 +1616,7 @@ struct ExercisePickerSheet: View {
     /// 当前 equipment/text filter (不算 muscle) 下还有动作的 muscle section set.
     /// 用 primaryMuscles 跟 filter 实际行为对齐 — 不然选项显示"有"但点了 0 结果.
     private var availableMuscles: Set<MuscleGroup> {
-        let arr = applyFilters(sourceExercises, muscle: nil, equipment: equipmentFilter, text: query)
+        let arr = applyFilters(sourceExercises, muscle: nil, equipment: equipmentFilter, movement: movementFilter, text: query)
         var out: Set<MuscleGroup> = []
         for ex in arr {
             for sec in Self.muscleSections {
@@ -1618,6 +1625,14 @@ struct ExercisePickerSheet: View {
                 }
             }
         }
+        return out
+    }
+
+    /// 当前 (muscle + equipment + text) filter 下还有动作的 movement family set.
+    private var availableMovements: Set<MovementFacet> {
+        let arr = applyFilters(sourceExercises, muscle: muscleFilter, equipment: equipmentFilter, movement: nil, text: query)
+        var out: Set<MovementFacet> = []
+        for ex in arr { if let mf = ex.movementFacet { out.insert(mf) } }
         return out
     }
 
@@ -1630,9 +1645,11 @@ struct ExercisePickerSheet: View {
                     query: $query,
                     muscleFilter: $muscleFilter,
                     equipmentFilter: $equipmentFilter,
+                    movementFilter: $movementFilter,
                     muscleSections: Self.muscleSections,
                     availableMuscles: availableMuscles,
-                    availableEquipments: availableEquipments
+                    availableEquipments: availableEquipments,
+                    availableMovements: availableMovements
                 )
                 exerciseList()
 
@@ -1643,6 +1660,7 @@ struct ExercisePickerSheet: View {
             }
             .animation(.easeOut(duration: 0.22), value: muscleFilter)
             .animation(.easeOut(duration: 0.22), value: equipmentFilter)
+            .animation(.easeOut(duration: 0.22), value: movementFilter)
             .animation(.easeOut(duration: 0.2), value: selectedIds.isEmpty)
             .sheet(item: $detailExercise) { ex in
                 // 详情里的 "Add" — multiSelect 加入勾选; 否则走 onPick (加到 plan / 替换).
@@ -1696,6 +1714,7 @@ struct ExercisePickerSheet: View {
                 nicheMode.toggle()
                 muscleFilter = nil
                 equipmentFilter = nil
+                movementFilter = nil
                 query = ""
             }
             Haptics.tap()
@@ -1891,6 +1910,7 @@ struct ExercisePickerSheet: View {
         .onChange(of: query) { _, _ in expandedGroupKey = nil }
         .onChange(of: equipmentFilter) { _, _ in expandedGroupKey = nil }
         .onChange(of: muscleFilter) { _, _ in expandedGroupKey = nil }
+        .onChange(of: movementFilter) { _, _ in expandedGroupKey = nil }
         .onChange(of: nicheMode) { _, _ in expandedGroupKey = nil }
     }
 }
