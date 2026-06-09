@@ -53,14 +53,10 @@ struct ExerciseLibraryBrowser: View {
                 return ex.equipment == eq
             }
         }
-        let q = query.trimmingCharacters(in: .whitespaces).lowercased()
-        if !q.isEmpty {
-            arr = arr.filter { ex in
-                // 搜英文 + 本地化名 (双向命中)
-                ex.name.lowercased().contains(q) ||
-                ex.displayName.lowercased().contains(q) ||
-                ex.tags.contains(where: { $0.lowercased().contains(q) })
-            }
+        let words = exerciseSearchWords(query)
+        if !words.isEmpty {
+            // 多维分词搜索 — 动作家族 / 部位 / 器械 / 变体 任意组合都能命中.
+            arr = arr.filter { $0.matchesSearch(words) }
         }
         // 收藏置顶 — 在 filter 之后排序, 让收藏的动作在当前 filter 结果里排最前
         arr = data.sortByFavorites(arr)
@@ -142,11 +138,9 @@ struct ExerciseLibraryBrowser: View {
                 }
             }
             // text filter narrow
-            let q = query.trimmingCharacters(in: .whitespaces).lowercased()
-            if !q.isEmpty {
-                guard ex.name.lowercased().contains(q)
-                        || ex.displayName.lowercased().contains(q)
-                        || ex.tags.contains(where: { $0.lowercased().contains(q) }) else { continue }
+            let words = exerciseSearchWords(query)
+            if !words.isEmpty {
+                guard ex.matchesSearch(words) else { continue }
             }
             // 跟 filtered 行为一致用 primaryMuscles — 否则 chip "可点", 点了 0 结果.
             for sec in Self.muscleSections {
@@ -166,11 +160,9 @@ struct ExerciseLibraryBrowser: View {
                 // 严格用 primary, 跟 filtered 一致
                 guard ex.primaryMuscles.contains(where: { $0.section == m }) else { continue }
             }
-            let q = query.trimmingCharacters(in: .whitespaces).lowercased()
-            if !q.isEmpty {
-                guard ex.name.lowercased().contains(q)
-                        || ex.displayName.lowercased().contains(q)
-                        || ex.tags.contains(where: { $0.lowercased().contains(q) }) else { continue }
+            let words = exerciseSearchWords(query)
+            if !words.isEmpty {
+                guard ex.matchesSearch(words) else { continue }
             }
             out.insert(ex.equipment ?? "other")
         }

@@ -478,13 +478,9 @@ struct NicheLibraryBrowseSheet: View {
                 return ex.equipment == eq
             }
         }
-        let q = query.trimmingCharacters(in: .whitespaces).lowercased()
-        if !q.isEmpty {
-            arr = arr.filter { ex in
-                ex.name.lowercased().contains(q) ||
-                ex.displayName.lowercased().contains(q) ||
-                ex.tags.contains(where: { $0.lowercased().contains(q) })
-            }
+        let words = exerciseSearchWords(query)
+        if !words.isEmpty {
+            arr = arr.filter { $0.matchesSearch(words) }
         }
         return arr
     }
@@ -497,7 +493,7 @@ struct NicheLibraryBrowseSheet: View {
     /// 当前 equipment / text filter 下还有动作的 muscle section (menu 里 dim disabled).
     private var availableMuscles: Set<MuscleGroup> {
         var out: Set<MuscleGroup> = []
-        let q = query.trimmingCharacters(in: .whitespaces).lowercased()
+        let words = exerciseSearchWords(query)
         for ex in data.unadoptedNicheExercises {
             if let eq = equipmentFilter {
                 if eq == "other" {
@@ -506,10 +502,8 @@ struct NicheLibraryBrowseSheet: View {
                     guard ex.equipment == eq else { continue }
                 }
             }
-            if !q.isEmpty {
-                guard ex.name.lowercased().contains(q)
-                        || ex.displayName.lowercased().contains(q)
-                        || ex.tags.contains(where: { $0.lowercased().contains(q) }) else { continue }
+            if !words.isEmpty {
+                guard ex.matchesSearch(words) else { continue }
             }
             for sec in Self.muscleSections {
                 if ex.primaryMuscles.contains(where: { $0.section == sec }) { out.insert(sec) }
@@ -521,15 +515,13 @@ struct NicheLibraryBrowseSheet: View {
     /// 当前 muscle / text filter 下还有动作的 equipment set (menu 里 dim disabled).
     private var availableEquipments: Set<String> {
         var out: Set<String> = []
-        let q = query.trimmingCharacters(in: .whitespaces).lowercased()
+        let words = exerciseSearchWords(query)
         for ex in data.unadoptedNicheExercises {
             if let m = muscleFilter {
                 guard ex.primaryMuscles.contains(where: { $0.section == m }) else { continue }
             }
-            if !q.isEmpty {
-                guard ex.name.lowercased().contains(q)
-                        || ex.displayName.lowercased().contains(q)
-                        || ex.tags.contains(where: { $0.lowercased().contains(q) }) else { continue }
+            if !words.isEmpty {
+                guard ex.matchesSearch(words) else { continue }
             }
             out.insert(ex.equipment ?? "other")
         }

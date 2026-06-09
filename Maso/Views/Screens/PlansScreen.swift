@@ -1548,12 +1548,10 @@ struct ExercisePickerSheet: View {
                 return ex.equipment == eq
             }
         }
-        if let t = text?.trimmingCharacters(in: .whitespaces).lowercased(), !t.isEmpty {
-            result = result.filter { ex in
-                ex.name.lowercased().contains(t) ||
-                ex.displayName.lowercased().contains(t) ||
-                ex.tags.contains(where: { $0.lowercased().contains(t) })
-            }
+        let words = exerciseSearchWords(text ?? "")
+        if !words.isEmpty {
+            // 多维分词搜索 — 动作家族 / 部位 / 器械 / 变体 任意组合.
+            result = result.filter { $0.matchesSearch(words) }
         }
         return result
     }

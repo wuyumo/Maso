@@ -328,3 +328,44 @@ struct Exercise: Identifiable, Hashable, Codable, Sendable {
         return dangerWarnings ?? []
     }
 }
+
+// MARK: - 多维搜索 (movement × muscle × equipment × variation)
+
+extension Exercise {
+    /// 这个动作可被搜到的所有"词" token (小写) —— 拢自:
+    ///   名字 / 本地化名 / tags / 主练肌 (sub + 大肌群 section) / 器械 (raw) / 动作家族 (MovementFacet: press/row/fly/curl/dip…).
+    /// 让用户用 {动作, 部位, 器械, 变体} 任意组合的词都能搜到 (e.g. "cable chest press" / "chest fly" / "bicep curl" / "dip").
+    /// 肌肉只取 PRIMARY —— 跟肌群筛选一致, 背为主的动作不会因 secondary 含胸而在 "chest" 搜出来.
+    /// 全用非本地化英文 raw token (仅 displayName 一处本地化) —— 热路径无 NSLocalizedString 批量开销.
+    var searchTokens: Set<String> {
+        var t = Set<String>()
+        func add(_ s: String) {
+            for w in s.lowercased().split(whereSeparator: { !$0.isLetter && !$0.isNumber }) {
+                t.insert(String(w))
+            }
+        }
+        add(name)
+        add(displayName)            // 本地化名 — 支持搜中文动作名
+        tags.forEach(add)
+        for m in primaryMuscles {
+            add(m.rawValue)                              // "midChest" → "midchest" (子串 "chest" 命中)
+            if let sec = m.section { add(sec.rawValue) } // 大肌群: chest / back / shoulders / arms / core / legs
+        }
+        let equips = (equipmentAll?.isEmpty == false) ? equipmentAll! : [equipment].compactMap { $0 }
+        equips.forEach(add)          // "smith_machine" → smith, machine; "cable" → cable
+        if let mf = movementFacet { add(mf.rawValue) }   // press / row / fly / curl / dip / pullover / crunch / pull_up → pull,up
+        return t
+    }
+
+    /// 分词 AND 匹配 — query 拆出的每个词都必须是某个 search token 的子串. 空 query → 全部命中.
+    func matchesSearch(_ words: [String]) -> Bool {
+        if words.isEmpty { return true }
+        let tokens = searchTokens
+        return words.allSatisfy { w in tokens.contains { $0.contains(w) } }
+    }
+}
+
+/// 把搜索串拆成小写词 token (只留字母/数字).
+func exerciseSearchWords(_ query: String) -> [String] {
+    query.lowercased().split(whereSeparator: { !$0.isLetter && !$0.isNumber }).map(String.init)
+}
