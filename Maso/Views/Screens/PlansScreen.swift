@@ -23,6 +23,10 @@ struct PlansScreen: View {
     @State private var discover: DiscoverMode = .ai
     /// 按偏好现生成的 AI 计划 (transient, 不进 data.plans 直到用户 Save).
     @State private var aiPlans: [Plan] = []
+    /// AI routine 生成中 (感知态: 让用户看到"AI 正在跟进你的数据生成").
+    @State private var aiGenerating = false
+    /// 训练偏好自上次生成后是否改过 — true (或还没生成过) → "Generate routines" CTA 可点.
+    @State private var aiDirty = false
     @State private var detailPlan: Plan? = nil
     @State private var pendingDeletePlanId: String? = nil
     @State private var paywallPresented = false
@@ -53,14 +57,14 @@ struct PlansScreen: View {
         }
         .background(MasoColor.background.ignoresSafeArea())
         // 每次进入按当前训练偏好现算 AI 计划 (改了 days/muscles/equipment 后回来即刷新).
-        .onAppear { regenerateAI() }
-        // PlanRationaleCard 改完偏好 (sheet 关) 仍在本页时, 也立即重算 AI 计划.
-        .onChange(of: data.settings.weeklyTrainingDays) { _, _ in regenerateAI() }
-        .onChange(of: data.settings.exercisesPerSession) { _, _ in regenerateAI() }
-        .onChange(of: data.settings.defaultSetsPerExercise) { _, _ in regenerateAI() }
-        .onChange(of: data.settings.trainingGoal) { _, _ in regenerateAI() }
-        .onChange(of: data.settings.wantStrengthen) { _, _ in regenerateAI() }
-        .onChange(of: data.settings.availableEquipment) { _, _ in regenerateAI() }
+        // 不再自动重算 — 改成显式 "Generate routines" CTA 驱动 (见 aiPage).
+        // 改了任一训练偏好 → 标 dirty, CTA 变可点; 用户点了才进生成态 → 展示结果.
+        .onChange(of: data.settings.weeklyTrainingDays) { _, _ in aiDirty = true }
+        .onChange(of: data.settings.exercisesPerSession) { _, _ in aiDirty = true }
+        .onChange(of: data.settings.defaultSetsPerExercise) { _, _ in aiDirty = true }
+        .onChange(of: data.settings.trainingGoal) { _, _ in aiDirty = true }
+        .onChange(of: data.settings.wantStrengthen) { _, _ in aiDirty = true }
+        .onChange(of: data.settings.availableEquipment) { _, _ in aiDirty = true }
         .sheet(item: $detailPlan) { plan in
             PlanDetailSheet(
                 initialPlan: plan,
@@ -164,19 +168,73 @@ struct PlansScreen: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
                 PlanRationaleCard()
-                if aiPlans.isEmpty {
-                    ProgressView()
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 40)
-                } else {
-                    ForEach(aiPlans) { plan in
-                        discoverPlanCard(plan, badge: "AI")
-                    }
-                }
+                generateRoutinesCTA
+                aiRoutineResults
                 Spacer(minLength: MasoMetrics.pageBottomInset)
             }
             .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
             .padding(.top, 4)
+        }
+    }
+
+    /// "Generate routines" 主 CTA — 改了训练偏好 (或还没生成过) 才可点; 点了进生成态.
+    private var generateRoutinesCTA: some View {
+        let enabled = (aiDirty || aiPlans.isEmpty) && !aiGenerating
+        return Button { startGenerateRoutines() } label: {
+            HStack(spacing: 8) {
+                if aiGenerating {
+                    ProgressView().controlSize(.small).tint(.black)
+                } else {
+                    Image(systemName: "sparkles").font(.system(size: 14, weight: .heavy))
+                }
+                Text(aiGenerating ? "Generating routines…" : "Generate routines")
+                    .font(.system(size: 15, weight: .heavy))
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 13)
+            .foregroundStyle((enabled || aiGenerating) ? .black : MasoColor.textDim)
+            .background((enabled || aiGenerating) ? MasoColor.accent : MasoColor.surfaceHi)
+            .clipShape(Capsule())
+        }
+        .buttonStyle(.plain)
+        .disabled(!enabled)
+        .animation(.easeOut(duration: 0.2), value: enabled)
+        .animation(.easeOut(duration: 0.2), value: aiGenerating)
+    }
+
+    /// AI routine 区: 生成中 → 进度提示 (感知 AI 在跟进数据); 空 → 引导; 否则 → 计划卡.
+    @ViewBuilder
+    private var aiRoutineResults: some View {
+        if aiGenerating {
+            VStack(spacing: 10) {
+                ProgressView().controlSize(.large)
+                Text("Building routines from your preferences…")
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundStyle(MasoColor.text)
+                Text("Matching exercises to your days, equipment, and focus.")
+                    .font(.system(size: 11))
+                    .foregroundStyle(MasoColor.textDim)
+                    .multilineTextAlignment(.center)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 40)
+            .transition(.opacity)
+        } else if aiPlans.isEmpty {
+            VStack(spacing: 8) {
+                Image(systemName: "sparkles")
+                    .font(.system(size: 26))
+                    .foregroundStyle(MasoColor.textFaint)
+                Text("Tap Generate routines to build a set tailored to your preferences.")
+                    .font(.system(size: 12))
+                    .foregroundStyle(MasoColor.textDim)
+                    .multilineTextAlignment(.center)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 36)
+        } else {
+            ForEach(aiPlans) { plan in
+                discoverPlanCard(plan, badge: "AI")
+            }
         }
     }
 
@@ -298,14 +356,27 @@ struct PlansScreen: View {
 
     // MARK: - Actions
 
-    private func regenerateAI() {
-        aiPlans = DataStore.tunedRecommendedPlans(
-            forDays: data.settings.weeklyTrainingDays,
-            settings: data.settings,
-            exById: data.exById,
-            sets: data.sets,
-            now: Date()
-        )
+    /// 点 "Generate routines" → 进生成态 (让用户感知 AI 在跟进数据), 短暂延迟后用当前训练偏好
+    /// 算出 routines 展示. tunedRecommendedPlans 本身是本地即时计算 — 延迟纯为可感知的生成过程,
+    /// 结果跟用户偏好 (天数/器械/重点/组数) 真实相关.
+    private func startGenerateRoutines() {
+        guard !aiGenerating else { return }
+        Haptics.tap()
+        withAnimation(.easeOut(duration: 0.2)) { aiGenerating = true }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.4) {
+            let plans = DataStore.tunedRecommendedPlans(
+                forDays: data.settings.weeklyTrainingDays,
+                settings: data.settings,
+                exById: data.exById,
+                sets: data.sets,
+                now: Date()
+            )
+            withAnimation(.easeOut(duration: 0.25)) {
+                aiPlans = plans
+                aiGenerating = false
+                aiDirty = false
+            }
+        }
     }
 
     /// Discover 详情页右上角 "+" → 把这张(预览的)计划加进 Saved. 满额 → 弹 paywall. 完后关详情.

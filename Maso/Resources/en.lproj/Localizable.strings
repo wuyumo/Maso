@@ -575,6 +575,12 @@
 "Add to my plans" = "Add to my routines";
 "Added" = "Added";
 "Added to My Plans" = "Added to My Routines";
+/* AI routine generation CTA + perceived-generation states (Routines tab → AI) */
+"Generate routines" = "Generate routines";
+"Generating routines…" = "Generating routines…";
+"Building routines from your preferences…" = "Building routines from your preferences…";
+"Matching exercises to your days, equipment, and focus." = "Matching exercises to your days, equipment, and focus.";
+"Tap Generate routines to build a set tailored to your preferences." = "Tap Generate routines to build a set tailored to your preferences.";
 "Beginner" = "Beginner";
 "Intermediate" = "Intermediate";
 "Advanced" = "Advanced";

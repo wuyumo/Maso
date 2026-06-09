@@ -576,6 +576,12 @@
 "Add to my plans" = "添加到我的计划";
 "Added" = "已添加";
 "Added to My Plans" = "已添加到我的计划";
+/* AI routine 生成 CTA + 可感知生成态 (Routines tab → AI) */
+"Generate routines" = "生成训练计划";
+"Generating routines…" = "正在生成…";
+"Building routines from your preferences…" = "正在根据你的偏好生成训练计划…";
+"Matching exercises to your days, equipment, and focus." = "按你的训练天数、器械和重点匹配动作。";
+"Tap Generate routines to build a set tailored to your preferences." = "点「生成训练计划」,按你的偏好生成一组方案。";
 "Beginner" = "新手";
 "Intermediate" = "中级";
 "Advanced" = "进阶";
