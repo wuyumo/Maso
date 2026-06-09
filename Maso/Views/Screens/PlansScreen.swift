@@ -953,8 +953,9 @@ struct PlanDetailSheet: View {
                 Text("Start workout")
                     .font(.system(size: 15, weight: .heavy))
             }
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 14)
+            // 不撑满 — 胶囊只包住 图标 + 文字 (用户要求). VStack(.center) 让它居中.
+            .padding(.vertical, 13)
+            .padding(.horizontal, 28)
             .background(MasoColor.accent)
             .foregroundStyle(.black)
             .clipShape(Capsule())
