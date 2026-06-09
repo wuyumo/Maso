@@ -258,7 +258,7 @@ struct PlansScreen: View {
         .clipShape(Capsule())
     }
 
-    /// AI 生成的计划卡 — WorkoutCard 富展示. 点卡片/play → 预览; 右上角 "+" → 加进 Saved.
+    /// AI 生成的计划卡 — WorkoutCard 富展示. 点卡片 → 预览详情; 底部 "★ 添加到我的计划" → 直接存进 My Plans.
     private func discoverPlanCard(_ plan: Plan, badge: String) -> some View {
         WorkoutCard(
             plan: plan,
@@ -266,16 +266,15 @@ struct PlansScreen: View {
             kicker: badge,
             onStart: { detailPlan = plan },
             onShowDetail: { detailPlan = plan },
-            prominentStart: false
+            prominentStart: false,
+            addAction: { addToSaved(plan) }
         )
     }
 
-    /// 社区精选卡 — 整张点 → 预览; 右上角 "+" → materialize 后存进 Saved.
+    /// 社区精选卡 — 点信息区 → 预览详情; 底部 "★ 添加到我的计划" 主按钮 → materialize 后存进 My Plans.
     private func communityCard(_ cp: CommunityPlan) -> some View {
         let preview = cp.materialize(byId: data.exById).first
-        return Button {
-            if let preview { detailPlan = preview }
-        } label: {
+        return VStack(spacing: 0) {
             HStack(alignment: .top, spacing: 12) {
                 VStack(alignment: .leading, spacing: 3) {
                     Text(LocalizedStringKey(cp.nameKey))
@@ -296,12 +295,18 @@ struct PlansScreen: View {
                     .font(.system(size: 13, weight: .bold))
                     .foregroundStyle(MasoColor.textFaint)
             }
-            .padding(MasoMetrics.cardPadding)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(MasoColor.surface)
-            .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
+            .contentShape(Rectangle())
+            .onTapGesture { if let preview { detailPlan = preview } }
+
+            if let preview {
+                AddToPlansButton(action: { addToSaved(preview) })
+                    .padding(.top, 12)
+            }
         }
-        .buttonStyle(.plain)
+        .padding(MasoMetrics.cardPadding)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(MasoColor.surface)
+        .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
     }
 
     // MARK: - Actions
@@ -741,16 +746,9 @@ struct PlanDetailSheet: View {
                             Image(systemName: "ellipsis")
                         }
                     }
-                } else {
-                    // Discover 预览: 右上角系统默认 "+" → 加进 Saved (#IA).
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button { onAddToSaved?(draft) } label: {
-                            Image(systemName: "plus")
-                        }
-                        .accessibilityLabel(NSLocalizedString("Add to my plans", comment: ""))
-                    }
                 }
-                // (顶栏 Start 胶囊删了 — body 的大 CTA 已经够显眼; iOS sheet 自带下拉关闭, 不需要 Done.)
+                // Tab 2 browse 预览: 主操作 = body 的 "★ Add to my plans" 大 CTA, 顶栏不再放 "+" (去重).
+                // 顶栏 Start 胶囊也删了 — body 大 CTA 够显眼; iOS sheet 自带下拉关闭, 不需要 Done.
             }
             // Share sheet — UIActivityViewController 桥. shareURL 设了就弹, 取消/分享完置 nil.
             .sheet(isPresented: Binding(
@@ -944,10 +942,14 @@ struct PlanDetailSheet: View {
                 Spacer(minLength: 0)
             }
 
-            // 主 CTA — 全宽 accent 实心胶囊. iOS 原生模式: detail sheet 的主操作放 body 显眼位置
-            // (Apple Music album / Apple Fitness workout detail 同套路: 大 Play / Start). 视觉重量
-            // 比 toolbar Start 高一档, 用户扫一眼就知道"这页是干嘛的, 怎么开始".
-            startWorkoutCTA
+            // 主 CTA — body 显眼位置, 实心 accent 胶囊 (Apple Music / Apple Fitness detail 同套路).
+            //   - 拥有的计划 (Tab 1): "Start workout"
+            //   - Tab 2 browse 预览 (onAddToSaved != nil): "★ Add to my plans" — browse 主操作是加进我的计划.
+            if let onAddToSaved {
+                addToPlansCTA(onAddToSaved)
+            } else {
+                startWorkoutCTA
+            }
         }
     }
 
@@ -971,6 +973,27 @@ struct PlanDetailSheet: View {
         }
         .buttonStyle(.plain)
         .padding(.top, 4)  // 跟 muscle map 之间留 18pt (VStack spacing 14 + 4) — 视觉分组
+    }
+
+    /// Tab 2 browse 预览的主 CTA — "★ Add to my plans". 跟 startWorkoutCTA 同视觉规格 (实心 accent 胶囊),
+    /// icon/文案/action 不同. action (= onAddToSaved) 内部负责 save + 关 sheet (满额弹 paywall).
+    private func addToPlansCTA(_ action: @escaping (Plan) -> Void) -> some View {
+        Button { action(draft) } label: {
+            HStack(spacing: 8) {
+                Image(systemName: "star.fill")
+                    .font(.system(size: 14, weight: .heavy))
+                Text("Add to my plans")
+                    .font(.system(size: 15, weight: .heavy))
+            }
+            .padding(.vertical, 13)
+            .padding(.horizontal, 28)
+            .background(MasoColor.accent)
+            .foregroundStyle(.black)
+            .clipShape(Capsule())
+            .shadow(color: MasoColor.accent.opacity(0.35), radius: 8, y: 2)
+        }
+        .buttonStyle(.plain)
+        .padding(.top, 4)
     }
 
     /// 开始训练 — toolbar Start 和 body CTA 都走这. dismiss → 下一 runloop 调 onStart,

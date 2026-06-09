@@ -21,6 +21,9 @@ struct WorkoutCard: View {
     ///   - true (默认): 实心 accent 圆 + 黑色 play + 阴影 (Today's Workout 主 CTA, 强).
     ///   - false: accent 半透明底 + accent play + 细描边 (My Plans 计划卡, 弱化).
     var prominentStart: Bool = true
+    /// Tab 2 (Plans browse) 专用 — 设了这个 callback → 卡片底部出现 "★ 添加到我的计划" 主按钮,
+    /// 同时隐藏右下角的 play 圆钮 (browse 语境主操作是"加进我的计划"而非"开始"). Tab 1 不传 → 行为不变.
+    var addAction: (() -> Void)? = nil
 
     /// 被 LimitedFlowLayout 截断的 exercise pill 个数 — 用于动态构造 "+N more" 文案.
     /// Layout 在 placeSubviews 里通过 onTruncate callback async 写回, SwiftUI 下一轮 re-render
@@ -184,37 +187,47 @@ struct WorkoutCard: View {
                     Spacer()
                 }
 
-                Button(action: onStart) {
-                    ZStack {
-                        if prominentStart {
-                            // 强: 实心 accent + 黑 play + 阴影 — Today's Workout 主 CTA.
-                            Circle()
-                                .fill(MasoColor.accent)
-                                .frame(width: 44, height: 44)
-                                .shadow(color: MasoColor.accent.opacity(0.35), radius: 6, y: 0)
-                            Image(systemName: "play.fill")
-                                .font(.system(size: 16, weight: .heavy))
-                                .foregroundStyle(.black)
-                                .offset(x: 1)
-                        } else {
-                            // 弱: accent 半透明底 + accent play + 细描边 — My Plans 计划卡.
-                            Circle()
-                                .fill(MasoColor.accent.opacity(0.18))
-                                .overlay(Circle().stroke(MasoColor.accent.opacity(0.4), lineWidth: 0.5))
-                                .frame(width: 44, height: 44)
-                            Image(systemName: "play.fill")
-                                .font(.system(size: 15, weight: .heavy))
-                                .foregroundStyle(MasoColor.accent)
-                                .offset(x: 1)
+                // Tab 2 browse (addAction 非 nil): play 圆钮隐藏, 主操作改为底部全宽"添加"按钮.
+                if addAction == nil {
+                    Button(action: onStart) {
+                        ZStack {
+                            if prominentStart {
+                                // 强: 实心 accent + 黑 play + 阴影 — Today's Workout 主 CTA.
+                                Circle()
+                                    .fill(MasoColor.accent)
+                                    .frame(width: 44, height: 44)
+                                    .shadow(color: MasoColor.accent.opacity(0.35), radius: 6, y: 0)
+                                Image(systemName: "play.fill")
+                                    .font(.system(size: 16, weight: .heavy))
+                                    .foregroundStyle(.black)
+                                    .offset(x: 1)
+                            } else {
+                                // 弱: accent 半透明底 + accent play + 细描边 — My Plans 计划卡.
+                                Circle()
+                                    .fill(MasoColor.accent.opacity(0.18))
+                                    .overlay(Circle().stroke(MasoColor.accent.opacity(0.4), lineWidth: 0.5))
+                                    .frame(width: 44, height: 44)
+                                Image(systemName: "play.fill")
+                                    .font(.system(size: 15, weight: .heavy))
+                                    .foregroundStyle(MasoColor.accent)
+                                    .offset(x: 1)
+                            }
                         }
                     }
+                    .buttonStyle(.plain)
+                    .fixedSize()
+                    .accessibilityLabel("Start workout")
                 }
-                .buttonStyle(.plain)
-                .fixedSize()
-                .accessibilityLabel("Start workout")
             }
             .padding(.horizontal, MasoMetrics.cardPadding)
             .padding(.top, 16)
+
+            // Tab 2 (Plans browse): 卡片底部全宽 "★ 添加到我的计划" 主按钮.
+            if let addAction {
+                AddToPlansButton(action: addAction)
+                    .padding(.horizontal, MasoMetrics.cardPadding)
+                    .padding(.top, 14)
+            }
         }
         .padding(.bottom, MasoMetrics.cardPadding)
         // 有 detail callback 时整张卡可点 (BodyHint hit-test 没接 onMuscleTap, 不冲突).
@@ -241,5 +254,33 @@ private struct ExercisePill: View {
             .padding(.vertical, 5)
             .background(MasoColor.surfaceHi)
             .clipShape(Capsule())
+    }
+}
+
+/// Tab 2 (Plans browse) 卡片 / 卡片详情的主操作 — "★ 添加到我的计划".
+/// 用 accent tinted 风格 (非实心): 它在卡片列表里重复出现, 实心会太吵; 详情页那个全宽 CTA 才用实心.
+/// 文案走本地化 key "Add to my plans" (en) / "添加到我的计划" (zh-Hans); icon 用五角星 star.fill.
+struct AddToPlansButton: View {
+    var action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: 7) {
+                Image(systemName: "star.fill")
+                    .font(.system(size: 13, weight: .bold))
+                Text("Add to my plans")
+                    .font(.system(size: 14, weight: .bold))
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 11)
+            .foregroundStyle(MasoColor.accent)
+            .background(MasoColor.accent.opacity(0.15))
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+            .overlay(
+                RoundedRectangle(cornerRadius: 12)
+                    .stroke(MasoColor.accent.opacity(0.35), lineWidth: 0.5)
+            )
+        }
+        .buttonStyle(.plain)
     }
 }
