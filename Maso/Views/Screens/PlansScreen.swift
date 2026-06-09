@@ -33,21 +33,17 @@ struct PlansScreen: View {
     private var isPro: Bool { data.settings.isPro }
 
     var body: some View {
-        VStack(spacing: 12) {
-            // AI / Community 分段控件 — 系统默认 segmented, controlSize 调大一档 (高一点),
-            // 收窄到 ~240 + 居中 (不撑满整行).
-            // 系统默认高度 (去掉 controlSize .large — 之前太高), 收窄到 210 + 居左对齐.
-            HStack {
-                Picker("", selection: $discover.animation(.easeOut(duration: 0.18))) {
-                    Text("AI").tag(DiscoverMode.ai)
-                    Text("Community").tag(DiscoverMode.community)
-                }
-                .pickerStyle(.segmented)
-                .frame(width: 210)
-                Spacer()
+        VStack(spacing: 10) {
+            // AI / Community 分段控件 — 系统默认 segmented, 收窄到 210, 居中.
+            // 标题走 inline (跟右上角按钮同一行), segmented 紧贴顶部上移 — 给下方卡片更多竖向空间.
+            Picker("", selection: $discover.animation(.easeOut(duration: 0.18))) {
+                Text("AI").tag(DiscoverMode.ai)
+                Text("Community").tag(DiscoverMode.community)
             }
-            .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
-            .padding(.top, 8)
+            .pickerStyle(.segmented)
+            .frame(width: 210)
+            .frame(maxWidth: .infinity)
+            .padding(.top, 4)
 
             // 左右滑动可在 AI / Community 两页间切换 (paged TabView, 跟 segmented 双向绑定).
             TabView(selection: $discover.animation(.easeOut(duration: 0.22))) {
@@ -271,42 +267,30 @@ struct PlansScreen: View {
         )
     }
 
-    /// 社区精选卡 — 点信息区 → 预览详情; 底部 "★ 添加到我的计划" 主按钮 → materialize 后存进 My Plans.
+    /// 社区精选卡 — 跟 AI 卡同款 WorkoutCard 排版 (肌肉图 + 动作 chip + 计数), 不再是单薄的文字行.
+    /// kicker 用 cp.kicker (FULL BODY / STRENGTH / PUSH·PULL·LEGS …); 点卡片 → 预览; 底部星标按钮 → 存进 My Plans.
     private func communityCard(_ cp: CommunityPlan) -> some View {
-        let preview = cp.materialize(byId: data.exById).first
-        return VStack(spacing: 0) {
-            HStack(alignment: .top, spacing: 12) {
-                VStack(alignment: .leading, spacing: 3) {
-                    Text(LocalizedStringKey(cp.nameKey))
-                        .font(.system(size: 16, weight: .bold))
-                        .foregroundStyle(MasoColor.text)
-                        .multilineTextAlignment(.leading)
-                    Text(LocalizedStringKey(cp.levelKey))
-                        .font(.system(size: 11, weight: .semibold))
-                        .foregroundStyle(MasoColor.textDim)
-                    if let preview {
-                        Text("\(preview.steps.count) exercises")
-                            .font(.system(size: 11))
-                            .foregroundStyle(MasoColor.textFaint)
-                    }
-                }
-                Spacer(minLength: 8)
-                Image(systemName: "chevron.right")
-                    .font(.system(size: 13, weight: .bold))
-                    .foregroundStyle(MasoColor.textFaint)
-            }
-            .contentShape(Rectangle())
-            .onTapGesture { if let preview { detailPlan = preview } }
-
-            if let preview {
-                AddToPlansButton(action: { addToSaved(preview) })
-                    .padding(.top, 12)
+        Group {
+            if let plan = communityDisplayPlan(cp) {
+                WorkoutCard(
+                    plan: plan,
+                    exById: data.exById,
+                    kicker: cp.kicker,
+                    onStart: { detailPlan = plan },
+                    onShowDetail: { detailPlan = plan },
+                    prominentStart: false,
+                    addAction: { addToSaved(plan) }
+                )
             }
         }
-        .padding(MasoMetrics.cardPadding)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(MasoColor.surface)
-        .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
+    }
+
+    /// 社区 plan → 卡片展示用的 Plan. 取第一张 session (跟原有 add/preview 语义一致),
+    /// 但标题改回整套项目名 (而非 materialize 默认的 "项目 · SessionA") — 跟原卡片标题保持一致.
+    private func communityDisplayPlan(_ cp: CommunityPlan) -> Plan? {
+        guard var plan = cp.materialize(byId: data.exById).first else { return nil }
+        plan.name = NSLocalizedString(cp.nameKey, comment: "community plan name")
+        return plan
     }
 
     // MARK: - Actions

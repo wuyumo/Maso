@@ -711,7 +711,8 @@ private struct PlansTabScreen: View {
         NavigationStack {
             PlansScreen(onStart: onStart, onNewPlan: onNewPlan)
                 .navigationTitle("Plans")
-                .navigationBarTitleDisplayMode(.large)
+                // inline — 标题跟右上角 Exercises/Settings 同一行, 省掉 large-title 那一整行竖向空间.
+                .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     // 右上角: Exercises 库 + Settings (Exercises 从 segmented 移到这里).
                     ToolbarItem(placement: .topBarTrailing) {

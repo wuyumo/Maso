@@ -265,21 +265,18 @@ struct AddToPlansButton: View {
 
     var body: some View {
         Button(action: action) {
-            HStack(spacing: 7) {
+            HStack(spacing: 6) {
                 Image(systemName: "star.fill")
-                    .font(.system(size: 13, weight: .bold))
+                    .font(.system(size: 12, weight: .bold))
                 Text("Add to my plans")
-                    .font(.system(size: 14, weight: .bold))
+                    .font(.system(size: 13, weight: .bold))
             }
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 11)
+            // 包裹内容 (不撑满) → 小一号胶囊; 在卡片 VStack(.leading) 里自动靠左.
+            .padding(.vertical, 8)
+            .padding(.horizontal, 14)
             .foregroundStyle(MasoColor.accent)
             .background(MasoColor.accent.opacity(0.15))
-            .clipShape(RoundedRectangle(cornerRadius: 12))
-            .overlay(
-                RoundedRectangle(cornerRadius: 12)
-                    .stroke(MasoColor.accent.opacity(0.35), lineWidth: 0.5)
-            )
+            .clipShape(Capsule())
         }
         .buttonStyle(.plain)
     }
