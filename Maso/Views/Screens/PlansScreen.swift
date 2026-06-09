@@ -279,8 +279,11 @@ struct PlansScreen: View {
         .font(.system(size: 13, weight: .semibold))
         .foregroundStyle(active ? .black : MasoColor.text)
         .padding(.horizontal, 12).padding(.vertical, 7)
-        .background(active ? MasoColor.accent : MasoColor.surface)
-        .clipShape(Capsule())
+        // 用 Capsule().fill 当背景 (而不是 .background(color).clipShape) —— 形状自带胶囊,
+        // 选中切换时不会出现"先方块再裁成胶囊"的闪烁 (clipShape 滞后于背景色变化导致的).
+        .background(Capsule().fill(active ? MasoColor.accent : MasoColor.surface))
+        .contentShape(Capsule())
+        .animation(nil, value: active)
     }
 
     /// AI 生成的计划卡 — WorkoutCard 富展示. 点卡片 → 预览详情; 底部 "★ 添加到我的计划" → 直接存进 My Plans.
