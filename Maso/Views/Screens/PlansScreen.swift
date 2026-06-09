@@ -36,13 +36,17 @@ struct PlansScreen: View {
         VStack(spacing: 12) {
             // AI / Community 分段控件 — 系统默认 segmented, controlSize 调大一档 (高一点),
             // 收窄到 ~240 + 居中 (不撑满整行).
-            Picker("", selection: $discover.animation(.easeOut(duration: 0.18))) {
-                Text("AI").tag(DiscoverMode.ai)
-                Text("Community").tag(DiscoverMode.community)
+            // 系统默认高度 (去掉 controlSize .large — 之前太高), 收窄到 210 + 居左对齐.
+            HStack {
+                Picker("", selection: $discover.animation(.easeOut(duration: 0.18))) {
+                    Text("AI").tag(DiscoverMode.ai)
+                    Text("Community").tag(DiscoverMode.community)
+                }
+                .pickerStyle(.segmented)
+                .frame(width: 210)
+                Spacer()
             }
-            .pickerStyle(.segmented)
-            .controlSize(.large)
-            .frame(maxWidth: 240)
+            .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
             .padding(.top, 8)
 
             // 左右滑动可在 AI / Community 两页间切换 (paged TabView, 跟 segmented 双向绑定).
