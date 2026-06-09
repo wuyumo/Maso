@@ -1668,12 +1668,12 @@ struct ExercisePickerSheet: View {
         return out
     }
 
-    /// 当前 (muscle + equipment + text) filter 下还有动作的 movement family set.
-    private var availableMovements: Set<MovementFacet> {
-        let arr = applyFilters(sourceExercises, muscle: muscleFilter, equipment: equipmentFilter, movement: nil, text: query)
-        var out: Set<MovementFacet> = []
-        for ex in arr { if let mf = ex.movementFacet { out.insert(mf) } }
-        return out
+    /// 给定肌群 section 下当前 (equipment + text) 还有动作的 movement family (有序) — 肌群子菜单用.
+    private func movementsForSection(_ sec: MuscleGroup) -> [MovementFacet] {
+        let arr = applyFilters(sourceExercises, muscle: sec, equipment: equipmentFilter, movement: nil, text: query)
+        var set = Set<MovementFacet>()
+        for ex in arr { if let mf = ex.movementFacet { set.insert(mf) } }
+        return MovementFacet.ordered.filter { set.contains($0) }
     }
 
     var body: some View {
@@ -1684,12 +1684,12 @@ struct ExercisePickerSheet: View {
                 ExerciseSearchFilterBar(
                     query: $query,
                     muscleFilter: $muscleFilter,
-                    equipmentFilter: $equipmentFilter,
                     movementFilter: $movementFilter,
+                    equipmentFilter: $equipmentFilter,
                     muscleSections: Self.muscleSections,
                     availableMuscles: availableMuscles,
-                    availableEquipments: availableEquipments,
-                    availableMovements: availableMovements
+                    movementsFor: movementsForSection,
+                    availableEquipments: availableEquipments
                 )
                 exerciseList()
 

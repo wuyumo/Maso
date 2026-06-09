@@ -161,17 +161,17 @@ struct ExerciseLibraryBrowser: View {
         return out
     }
 
-    /// 当前 (muscle + equipment + text) filter 下还有动作的 movement family. menu 里 dim disabled.
-    private var availableMovements: Set<MovementFacet> {
-        var out: Set<MovementFacet> = []
+    /// 给定肌群 section 下当前 (equipment + text) 还有动作的 movement family (有序) — 肌群子菜单用.
+    private func movementsForSection(_ sec: MuscleGroup) -> [MovementFacet] {
         let words = exerciseSearchWords(query)
+        var set = Set<MovementFacet>()
         for ex in data.userLibrary {
-            if let m = muscleFilter, !ex.primaryMuscles.contains(where: { $0.section == m }) { continue }
+            guard ex.primaryMuscles.contains(where: { $0.section == sec }) else { continue }
             if let eq = equipmentFilter, !matchesEquipment(ex, eq) { continue }
             if !words.isEmpty, !ex.matchesSearch(words) { continue }
-            if let mf = ex.movementFacet { out.insert(mf) }
+            if let mf = ex.movementFacet { set.insert(mf) }
         }
-        return out
+        return MovementFacet.ordered.filter { set.contains($0) }
     }
 
     /// 常驻搜索 + 筛选条 — 用全 app 共享的 ExerciseSearchFilterBar (跟训练 picker 同一组件,
@@ -180,12 +180,12 @@ struct ExerciseLibraryBrowser: View {
         ExerciseSearchFilterBar(
             query: $query,
             muscleFilter: $muscleFilter,
-            equipmentFilter: $equipmentFilter,
             movementFilter: $movementFilter,
+            equipmentFilter: $equipmentFilter,
             muscleSections: Self.muscleSections,
             availableMuscles: availableMuscles,
-            availableEquipments: availableEquipments,
-            availableMovements: availableMovements
+            movementsFor: movementsForSection,
+            availableEquipments: availableEquipments
         )
     }
 

@@ -145,31 +145,21 @@ struct FilterMenuButton<T: Hashable>: View {
 struct ExerciseSearchFilterBar: View {
     @Binding var query: String
     @Binding var muscleFilter: MuscleGroup?
-    @Binding var equipmentFilter: String?
-    /// 动作家族筛选 (Press / Row / Fly / Curl / Dip / …). nil = 全部.
+    /// 动作家族 (Press / Row / Fly / …) —— 作为 muscle 的子类: 选了肌群后可在子菜单里再选 movement.
     @Binding var movementFilter: MovementFacet?
+    @Binding var equipmentFilter: String?
     let muscleSections: [MuscleGroup]
-    /// 当前 (equipment + text) 约束下还有动作的 muscle section — 菜单里其余 dim disabled.
+    /// 当前 (equipment + text) 约束下还有动作的 muscle section.
     let availableMuscles: Set<MuscleGroup>
-    /// 当前 (muscle + text) 约束下还有动作的 equipment — 菜单里其余 dim disabled.
+    /// 给定肌群 section 下当前还有动作的 movement family (按 equipment + text 约束). 用于肌群子菜单.
+    let movementsFor: (MuscleGroup) -> [MovementFacet]
+    /// 当前 (muscle + text) 约束下还有动作的 equipment.
     let availableEquipments: Set<String>
-    /// 当前 (muscle + equipment + text) 约束下还有动作的 movement — 菜单里其余 dim disabled.
-    let availableMovements: Set<MovementFacet>
 
     var body: some View {
         // 顺序: 左 = 两个筛选入口 (Muscle / Equipment), 右 = 搜索框 (flex 占满剩余宽度).
         HStack(spacing: 8) {
-            FilterMenuButton(
-                title: NSLocalizedString("Muscle", comment: "filter button placeholder"),
-                allLabel: NSLocalizedString("All muscles", comment: ""),
-                selected: $muscleFilter,
-                options: muscleSections.map { m in
-                    FilterMenuOption(value: m, label: m.displayName,
-                                     enabled: availableMuscles.contains(m) || muscleFilter == m)
-                },
-                style: .capsule,
-                icon: "figure.arms.open"
-            )
+            muscleMenu       // 二级: 肌群 → (All <肌群> + 该肌群的 movements)
             FilterMenuButton(
                 title: NSLocalizedString("Equipment", comment: "filter button placeholder"),
                 allLabel: NSLocalizedString("Any equipment", comment: ""),
@@ -180,18 +170,6 @@ struct ExerciseSearchFilterBar: View {
                 },
                 style: .capsule,
                 icon: "dumbbell.fill"
-            )
-            // 动作家族 (Press / Row / Fly / Curl / Dip …) — 选 Dip → 所有 dip; Press+Chest → 胸推.
-            FilterMenuButton(
-                title: NSLocalizedString("Movement", comment: "filter button placeholder"),
-                allLabel: NSLocalizedString("Any movement", comment: ""),
-                selected: $movementFilter,
-                options: MovementFacet.ordered.map { mv in
-                    FilterMenuOption(value: mv, label: mv.displayName,
-                                     enabled: availableMovements.contains(mv) || movementFilter == mv)
-                },
-                style: .capsule,
-                icon: "figure.strengthtraining.traditional"
             )
 
             // 搜索框 — iOS 搜索框观感 (放大镜 + 圆角 + 清除), flex 占满剩余宽度, 放最右.
@@ -227,5 +205,74 @@ struct ExerciseSearchFilterBar: View {
                 .fill(MasoColor.textFaint.opacity(0.15))
                 .frame(height: 0.5)
         }
+    }
+
+    // MARK: - Muscle (二级: 肌群 → movement 子菜单)
+
+    /// 肌群筛选 —— 选肌群即筛 (只选部位); 肌群有可细分的 movement 时, 展开子菜单再选 (= 部位 + 动作).
+    private var muscleMenu: some View {
+        Menu {
+            menuRow(NSLocalizedString("All muscles", comment: ""), checked: muscleFilter == nil) {
+                muscleFilter = nil; movementFilter = nil
+            }
+            Divider()
+            ForEach(muscleSections.filter { availableMuscles.contains($0) || $0 == muscleFilter }, id: \.self) { sec in
+                let movs = movementsFor(sec)
+                if movs.isEmpty {
+                    // 该肌群没有可再细分的 movement → 直接选肌群.
+                    menuRow(sec.displayName, checked: muscleFilter == sec && movementFilter == nil) {
+                        muscleFilter = sec; movementFilter = nil
+                    }
+                } else {
+                    Menu {
+                        menuRow(String(format: NSLocalizedString("All %@", comment: "all of a muscle group"), sec.displayName),
+                                checked: muscleFilter == sec && movementFilter == nil) {
+                            muscleFilter = sec; movementFilter = nil
+                        }
+                        Divider()
+                        ForEach(movs, id: \.self) { mv in
+                            menuRow(mv.displayName, checked: muscleFilter == sec && movementFilter == mv) {
+                                muscleFilter = sec; movementFilter = mv
+                            }
+                        }
+                    } label: {
+                        if muscleFilter == sec { Label(sec.displayName, systemImage: "checkmark") }
+                        else { Text(sec.displayName) }
+                    }
+                }
+            }
+        } label: {
+            muscleCapsule
+        }
+        .menuOrder(.fixed)
+    }
+
+    @ViewBuilder
+    private func menuRow(_ text: String, checked: Bool, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            if checked { Label(text, systemImage: "checkmark") } else { Text(text) }
+        }
+    }
+
+    /// 胶囊 label — 未选灰底 "Muscle"; 选了肌群 accent; 选了 movement 显示 "肌群 · movement".
+    private var muscleCapsule: some View {
+        let active = muscleFilter != nil
+        return HStack(spacing: 4) {
+            Image(systemName: "figure.arms.open").font(.system(size: 11, weight: .bold))
+            Text(muscleLabelText).font(.system(size: 12, weight: .heavy)).lineLimit(1)
+            Image(systemName: "chevron.down").font(.system(size: 9, weight: .heavy))
+        }
+        .foregroundStyle(active ? MasoColor.accent : MasoColor.textDim)
+        .padding(.horizontal, 12)
+        .frame(height: 32)
+        .background(active ? MasoColor.accent.opacity(0.16) : MasoColor.surface)
+        .overlay(Capsule().stroke(active ? MasoColor.accent.opacity(0.5) : MasoColor.borderSoft, lineWidth: 0.5))
+        .clipShape(Capsule())
+    }
+
+    private var muscleLabelText: String {
+        guard let m = muscleFilter else { return NSLocalizedString("Muscle", comment: "filter button placeholder") }
+        if let mv = movementFilter { return m.displayName + " · " + mv.displayName }
+        return m.displayName
     }
 }
