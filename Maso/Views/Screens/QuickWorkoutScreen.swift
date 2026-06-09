@@ -515,6 +515,7 @@ private struct QuickExerciseStep: View {
         // 点图片缩略图 → 弹动作详情 (跟 Library / Picker 同款 ExerciseDetailSheet, 纯浏览模式)
         .sheet(item: $detailExercise) { ex in
             ExerciseDetailSheet(exercise: ex)
+            .presentationDragIndicator(.visible)
         }
     }
 

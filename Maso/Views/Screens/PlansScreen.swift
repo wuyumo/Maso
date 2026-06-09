@@ -68,8 +68,12 @@ struct PlansScreen: View {
                 onAddToSaved: { p in addToSaved(p) }
             )
             .presentationDetents([.medium, .large])
+            .presentationDragIndicator(.visible)
         }
-        .sheet(isPresented: $paywallPresented) { PaywallScreen() }
+        .sheet(isPresented: $paywallPresented) {
+            PaywallScreen()
+                .presentationDragIndicator(.visible)
+        }
         .alert("Delete plan?", isPresented: Binding(
             get: { pendingDeletePlanId != nil },
             set: { if !$0 { pendingDeletePlanId = nil } }
@@ -487,6 +491,7 @@ struct PlanRationaleCard: View {
         .sheet(isPresented: $showTrainingSettings) {
             TrainingSettingsSheet()
                 .presentationDetents([.medium, .large])
+                .presentationDragIndicator(.visible)
         }
     }
 
@@ -742,6 +747,7 @@ struct PlanDetailSheet: View {
                 if let url = shareURL {
                     ShareActivityView(activityItems: [url])
                         .presentationDetents([.medium, .large])
+                        .presentationDragIndicator(.visible)
                 }
             }
             .alert("Couldn't create share link", isPresented: $shareFailed) {
@@ -817,6 +823,7 @@ struct PlanDetailSheet: View {
                     startTitle: NSLocalizedString("Add", comment: "add selected exercises CTA")
                 )
                 .presentationDetents([.large])
+                .presentationDragIndicator(.visible)
             }
             // 替换动作 sheet — 跟 add 走同款 ExercisePickerSheet, 但 onPick 只替换 exerciseId,
             // 保留 sets/reps/weight 等强度参数. 用 isPresented bool binding 而不是 item, 因为
@@ -833,12 +840,14 @@ struct PlanDetailSheet: View {
                     }()
                 )
                 .presentationDetents([.large])
+                .presentationDragIndicator(.visible)
             }
             // 点 PlanStepRow / Card 图片 → 弹动作详情 (跟其它 5 个列表共用 ExerciseDetailSheet).
             // 整行 tap 仍走 NavigationLink 进 EditStepView (改 sets/reps/weight). 图片是 Button,
             // hit-test 优先级高于 NavigationLink, 不会同时触发.
             .sheet(item: $detailExercise) { ex in
                 ExerciseDetailSheet(exercise: ex)
+                .presentationDragIndicator(.visible)
             }
             .tint(MasoColor.text)
         }
@@ -1642,6 +1651,7 @@ struct ExercisePickerSheet: View {
                 ExerciseDetailSheet(exercise: ex, onAdd: {
                     if multiSelect { selectedIds.insert(ex.id) } else { onPick(ex) }
                 })
+                .presentationDragIndicator(.visible)
             }
             // 搜索空 → "添加自己的动作" 表单 (预填搜索词). 创建后 multiSelect 自动勾选这个新动作.
             .sheet(isPresented: $customFormOpen) {
@@ -1649,6 +1659,7 @@ struct ExercisePickerSheet: View {
                     initialName: trimmedQuery,
                     onCreated: { ex in if multiSelect { selectedIds.insert(ex.id) } }
                 )
+                .presentationDragIndicator(.visible)
             }
             .background(MasoColor.background.ignoresSafeArea())
             .navigationBarTitleDisplayMode(.inline)

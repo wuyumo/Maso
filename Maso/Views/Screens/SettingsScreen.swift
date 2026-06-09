@@ -173,9 +173,11 @@ struct SettingsScreen: View {
         .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $showPaywall) {
             PaywallScreen()
+            .presentationDragIndicator(.visible)
         }
         .sheet(isPresented: $showLanguagePicker) {
             LanguagePickerSheet(manager: languageManager)
+            .presentationDragIndicator(.visible)
         }
         // (Exercise library sheet 已搬到 PlansScreen 底部入口, 这里不再附加.)
         // (showMusclePicker sheet 已搬到 TrainingSettingsSection 内部)

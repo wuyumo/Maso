@@ -101,6 +101,7 @@ struct ShareImageButton<ShareContent: View, Label: View>: View {
                     shareContent: shareContent,
                     onPersistPhoto: onPersistPhoto
                 )
+                .presentationDragIndicator(.visible)
             }
     }
 }
@@ -201,6 +202,7 @@ struct ShareCustomizeSheet<ShareContent: View>: View {
             .sheet(item: $activePicker) { source in
                 PhotoPicker(image: $userPhoto, source: source)
                     .ignoresSafeArea()
+                .presentationDragIndicator(.visible)
             }
             .onChange(of: userPhoto) { _, newPhoto in
                 // 用户加/换照片 → caller 持久化. 用 isCameraAvailable 防止 init 触发

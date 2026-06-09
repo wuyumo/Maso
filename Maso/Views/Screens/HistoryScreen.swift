@@ -165,9 +165,11 @@ struct HistoryScreen: View {
                 }
             )
             .presentationDetents([.medium, .large])
+            .presentationDragIndicator(.visible)
         }
         .sheet(isPresented: $paywallPresented) {
             PaywallScreen()
+            .presentationDragIndicator(.visible)
         }
         // 删除 session 的二次确认 — 长按 SessionCard → contextMenu Delete 触发.
         // 删除是 destructive (清掉这场训练的所有 SetRecord, 包括 PR), 必须 confirm.
@@ -775,6 +777,7 @@ private struct SessionDetailSheet: View {
             // 点图片弹详情 sheet
             .sheet(item: $detailExercise) { ex in
                 ExerciseDetailSheet(exercise: ex)
+                .presentationDragIndicator(.visible)
             }
             // 加/换/删训练照片 dialog + picker — 跟 ShareCustomizeSheet 同一套 flow
             .confirmationDialog(
@@ -800,6 +803,7 @@ private struct SessionDetailSheet: View {
             .sheet(item: $activePicker) { source in
                 PhotoPicker(image: $pickedPhoto, source: source)
                     .ignoresSafeArea()
+                .presentationDragIndicator(.visible)
             }
             .onChange(of: pickedPhoto) { _, newPhoto in
                 if let img = newPhoto {

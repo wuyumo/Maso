@@ -242,6 +242,7 @@ struct ExerciseLibraryBrowser: View {
             .tint(MasoColor.text)
             .sheet(item: $selected) { ex in
                 ExerciseDetailSheet(exercise: ex)
+                .presentationDragIndicator(.visible)
             }
             // "+" → 选两条路径
             .sheet(isPresented: $addChoiceOpen) {
@@ -262,18 +263,22 @@ struct ExerciseLibraryBrowser: View {
                     }
                 )
                 .presentationDetents([.medium])
+                .presentationDragIndicator(.visible)
             }
             // 路径 1: 自创动作 (name + photo + muscle/equipment).
             .sheet(isPresented: $customFormOpen) {
                 CustomExerciseFormSheet()
+                .presentationDragIndicator(.visible)
             }
             // P1-7: 免费用户点"自己创建"→ paywall
             .sheet(isPresented: $paywallOpen) {
                 PaywallScreen()
+                .presentationDragIndicator(.visible)
             }
             // 路径 2: 浏览 niche stash + 一键采纳.
             .sheet(isPresented: $nicheBrowseOpen) {
                 NicheLibraryBrowseSheet()
+                .presentationDragIndicator(.visible)
             }
             // P0-6: 删自创动作二次确认
             .alert(NSLocalizedString("Delete exercise?", comment: ""),
@@ -684,6 +689,7 @@ struct ExerciseDetailSheet: View {
             .tint(MasoColor.text)
         }
         .presentationDetents([.medium, .large])
+        .presentationDragIndicator(.visible)
         // sheet 关闭时停掉朗读 — 不让用户切走 sheet 后还在念
         .onDisappear {
             if isSpeakingThis { speech.stop() }

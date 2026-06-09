@@ -148,6 +148,7 @@ struct CommunityScreen: View {
             }
             .sheet(isPresented: $paywallPresented) {
                 PaywallScreen()
+                .presentationDragIndicator(.visible)
             }
             .sheet(item: $detailPlan) { plan in
                 CommunityPlanDetailSheet(
@@ -161,6 +162,7 @@ struct CommunityScreen: View {
                     }
                 )
                 .presentationDetents([.large])
+                .presentationDragIndicator(.visible)
             }
         }
         .tint(MasoColor.text)

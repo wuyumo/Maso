@@ -251,9 +251,11 @@ struct RootView: View {
             }
             .sheet(isPresented: $settingsPresented) {
                 NavigationStack { SettingsScreen() }
+                .presentationDragIndicator(.visible)
             }
             .sheet(isPresented: $paywallPresented) {
                 PaywallScreen()
+                .presentationDragIndicator(.visible)
             }
             // 自由训练 — 跳过选肌肉那步, 直接进多选动作 picker (部位/动作/器械三列筛选).
             // 选好若干动作 → Start → 合成 plan 开练.
@@ -264,6 +266,7 @@ struct RootView: View {
                     onPickMultiple: { startFreeWorkout($0) },
                     startTitle: NSLocalizedString("Start workout", comment: "")
                 )
+                .presentationDragIndicator(.visible)
             }
             // maso://import?plan=<base64> — 拦截 deep link, 解码 → 弹 ImportedPlanSheet.
             // 失败 (链接残破 / base64 invalid / JSON 解码错) 弹通用 alert, 不静默吞掉.
@@ -295,6 +298,7 @@ struct RootView: View {
                     }
                 )
                 .presentationDetents([.medium, .large])
+                .presentationDragIndicator(.visible)
             }
             .alert("Invalid routine link", isPresented: $importFailed) {
                 Button("OK", role: .cancel) {}
@@ -317,6 +321,7 @@ struct RootView: View {
                     }
                 )
                 .presentationDetents([.medium, .large])
+                .presentationDragIndicator(.visible)
             }
             // DESIGN 5.3: 替换正在进行的训练 — 二次确认
             .alert(
@@ -755,6 +760,7 @@ private struct PlansTabScreen: View {
                             }
                             .tint(MasoColor.text)
                     }
+                    .presentationDragIndicator(.visible)
                 }
                 // 兼容旧 showcase / deep-link: trainPage=.library → 打开 Exercises sheet.
                 .onChange(of: page) { _, newPage in

@@ -228,6 +228,7 @@ struct TrainingSettingsSection: View {
                 )
             )
             .presentationDetents([.medium, .large])
+            .presentationDragIndicator(.visible)
         }
         // 选器械 sheet (#1) — 同样关闭只 mark dirty, 离开页面统一 regen.
         .sheet(isPresented: $showEquipmentPicker, onDismiss: { data.markRecommendedPlansDirty() }) {
@@ -237,6 +238,7 @@ struct TrainingSettingsSection: View {
                     set: { data.settings.availableEquipment = Array($0) }
                 )
             )
+            .presentationDragIndicator(.visible)
         }
         // 离开 Training Preferences (点 Done / 下拉关 sheet / 切走) 时, 若改过任何偏好就带 loading
         // 统一刷新 AI Plans —— 不再每动一下 stepper 就重算 (避免反复抖 + 让刷新成为一次明确动作).
@@ -377,6 +379,7 @@ struct EquipmentPickerSheet: View {
         }
         .presentationBackground(MasoColor.background)
         .presentationDetents([.medium, .large])
+        .presentationDragIndicator(.visible)
         .preferredColorScheme(.dark)
     }
 }

@@ -239,6 +239,7 @@ struct PlanPlayerScreen: View {
         // 点 playlist 行图片 → 弹动作详情. iOS 18+ 支持 sheet 内嵌 sheet.
         .sheet(item: $detailExercise) { ex in
             ExerciseDetailSheet(exercise: ex)
+            .presentationDragIndicator(.visible)
         }
         // 右滑 Edit → 弹 EditAnyStepSheet (session-local 改 sets/reps/weight/duration).
         // Binding<String?> identity 用 stepId, 通过 plan.steps 找具体 step 实例.
@@ -274,6 +275,7 @@ struct PlanPlayerScreen: View {
                     onReplace: { replacingStepId = idWrapper.id }
                 )
                 .presentationDetents([.medium, .large])
+                .presentationDragIndicator(.visible)
             }
         }
         // 替换动作 picker — 训练中任何 Edit sheet 里点 "Replace exercise" 走这里.
@@ -301,6 +303,7 @@ struct PlanPlayerScreen: View {
                 return ex.primaryMuscles.first?.section
             }())
             .presentationDetents([.large])
+            .presentationDragIndicator(.visible)
         }
         // "+ Add exercise" — playlist 末尾点了之后选动作, 多选勾选 (跟 Free Workout 一致),
         // 底部 "Add (N)" 一并 appendStep 到末尾.
@@ -323,6 +326,7 @@ struct PlanPlayerScreen: View {
                 startTitle: NSLocalizedString("Add", comment: "add selected exercises CTA")
             )
             .presentationDetents([.large])
+            .presentationDragIndicator(.visible)
         }
         // 训练中右滑 playlist 行 → 二次确认 → 调 store.deleteStep (session-local).
         // 跟 PlanDetailSheet 一致的 UX, 只是这里删的是 session-local plan, 不影响 data.plans.
@@ -1052,6 +1056,7 @@ private struct ExerciseInfo: View {
             if let w = weight, w > 0 {
                 PlateCalculatorSheet(targetWeight: w, unit: .kg)
                     .presentationDetents([.medium, .large])
+                    .presentationDragIndicator(.visible)
             }
         }
         .sheet(isPresented: $editOpen) {
@@ -1077,6 +1082,7 @@ private struct ExerciseInfo: View {
                 onReplace: onRequestReplace
             )
             .presentationDetents([.medium, .large])
+            .presentationDragIndicator(.visible)
         }
     }
 

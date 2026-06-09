@@ -289,6 +289,7 @@ struct CustomExerciseFormSheet: View {
         // 网上搜图 — 用当前动作名预填搜索, 选中一张 → 下载降采样后写回 imageData.
         .sheet(isPresented: $webPickerOpen) {
             WebImagePickerSheet(initialQuery: name) { data in imageData = data }
+            .presentationDragIndicator(.visible)
         }
         .alert("Couldn't save exercise", isPresented: Binding(
             get: { showingError != nil }, set: { if !$0 { showingError = nil } }
@@ -579,6 +580,7 @@ struct NicheLibraryBrowseSheet: View {
             .tint(MasoColor.text)
             .sheet(item: $selected) { ex in
                 ExerciseDetailSheet(exercise: ex)
+                .presentationDragIndicator(.visible)
             }
         }
         .presentationBackground(MasoColor.background)

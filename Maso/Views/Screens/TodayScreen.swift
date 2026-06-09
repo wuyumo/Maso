@@ -153,9 +153,11 @@ struct TodayScreen: View {
                 }
             )
             .presentationDetents([.medium, .large])
+            .presentationDragIndicator(.visible)
         }
         .sheet(isPresented: $communityPresented) {
             CommunityScreen()
+            .presentationDragIndicator(.visible)
         }
         .alert("Delete plan?", isPresented: Binding(
             get: { pendingDeletePlanId != nil },
