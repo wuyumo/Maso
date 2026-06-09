@@ -675,7 +675,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "ankle_circles",
@@ -723,7 +724,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "ankle_dorsiflexion_wall",
@@ -771,7 +773,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "anti_rotation_press_cable",
@@ -1014,7 +1017,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "arnold_curl",
@@ -1245,7 +1249,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "assault_bike",
@@ -1629,7 +1634,8 @@
     "通过团身进阶."
    ]
   },
-  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/back_lever.jpg"
+  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/back_lever.jpg",
+  "niche": true
  },
  {
   "id": "back_widow_maker",
@@ -1682,7 +1688,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "band_pull_apart",
@@ -1862,7 +1869,8 @@
     "从宽握开始 — 灵活度增加再握窄."
    ]
   },
-  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/banded_shoulder_dislocation.jpg"
+  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/banded_shoulder_dislocation.jpg",
+  "niche": true
  },
  {
   "id": "barbell_high_pull",
@@ -1931,7 +1939,8 @@
    "zh-Hans": [
     "爆发动作 — 不要慢速大重量."
    ]
-  }
+  },
+  "niche": true
  },
  {
   "id": "barbell_holds",
@@ -2763,7 +2772,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "bear_crawl",
@@ -2893,7 +2903,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "behind_the_back_cable_curl",
@@ -5212,7 +5223,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "bicycle_kicks",
@@ -5395,7 +5407,8 @@
    "zh-Hans": [
     "需搭档扶板或绑带固定. 使用保护."
    ]
-  }
+  },
+  "niche": true
  },
  {
   "id": "bottom_up_press_kettlebell",
@@ -5527,7 +5540,8 @@
    "zh-Hans": [
     "高冲击 — 避免硬地面, 循序渐进."
    ]
-  }
+  },
+  "niche": true
  },
  {
   "id": "box_jump",
@@ -5725,7 +5739,8 @@
     "肩部活动度差不要做.",
     "用轻重量 — 注重持续张力."
    ]
-  }
+  },
+  "niche": true
  },
  {
   "id": "broad_jump",
@@ -5934,7 +5949,8 @@
    "en": [],
    "zh-Hans": []
   },
-  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/burpee_broad_jump.jpg"
+  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/burpee_broad_jump.jpg",
+  "niche": true
  },
  {
   "id": "burpee_no_pushup",
@@ -6001,7 +6017,8 @@
    "en": [],
    "zh-Hans": []
   },
-  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/burpee_no_pushup.jpg"
+  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/burpee_no_pushup.jpg",
+  "niche": true
  },
  {
   "id": "butt_kicks",
@@ -6062,7 +6079,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "butterfly_stretch",
@@ -6115,7 +6133,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "cable_chest_press_single_arm",
@@ -7994,7 +8013,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "calf_raise_jumping",
@@ -8053,7 +8073,8 @@
    "zh-Hans": [
     "轻落地保护跟腱."
    ]
-  }
+  },
+  "niche": true
  },
  {
   "id": "calf_raise_leg_press",
@@ -8819,7 +8840,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "calf_stretch_wall",
@@ -8872,7 +8894,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "california_press",
@@ -9048,7 +9071,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "chest_press_cable_bilateral_seated",
@@ -9454,7 +9478,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "chest_stretch_wall",
@@ -9507,7 +9532,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "chest_supported_dumbbell_press",
@@ -9622,7 +9648,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "childs_pose",
@@ -9684,7 +9711,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "chin_tuck_stretch",
@@ -9732,7 +9760,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "chin_up",
@@ -10109,7 +10138,8 @@
    "zh-Hans": [
     "奥举类 — 建议教练指导."
    ]
-  }
+  },
+  "niche": true
  },
  {
   "id": "close_grip_push_up_deficit",
@@ -10224,7 +10254,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "concentration_curl",
@@ -10582,7 +10613,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "cossack_squat_stretch",
@@ -10643,7 +10675,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "couch_stretch",
@@ -10695,7 +10728,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "crab_walk",
@@ -11327,7 +11361,8 @@
    "zh-Hans": [
     "用很轻重量 — 动作复杂."
    ]
-  }
+  },
+  "niche": true
  },
  {
   "id": "cycling_indoor_sprint",
@@ -11392,7 +11427,8 @@
    "zh-Hans": [
     "高强度时不要在车座上颠."
    ]
-  }
+  },
+  "niche": true
  },
  {
   "id": "cycling_mountain",
@@ -11467,7 +11503,8 @@
     "全套装备: 头盔, 手套, 眼镜.",
     "技术路段要量力而行."
    ]
-  }
+  },
+  "niche": true
  },
  {
   "id": "cycling_outdoor",
@@ -12739,7 +12776,8 @@
    "en": [],
    "zh-Hans": []
   },
-  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/deep_squat_hold.jpg"
+  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/deep_squat_hold.jpg",
+  "niche": true
  },
  {
   "id": "depth_drop_landing",
@@ -12805,7 +12843,8 @@
     "从低箱开始 — 检查落地动作."
    ]
   },
-  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/depth_drop_landing.jpg"
+  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/depth_drop_landing.jpg",
+  "niche": true
  },
  {
   "id": "depth_jump",
@@ -12874,7 +12913,8 @@
     "高级 — 先建立基础力量.",
     "关节有伤勿做."
    ]
-  }
+  },
+  "niche": true
  },
  {
   "id": "dip_assisted_machine",
@@ -13918,7 +13958,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "drag_curl",
@@ -13971,7 +14012,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "dragon_flag",
@@ -14043,7 +14085,8 @@
     "动作变形可能拉伤颈部."
    ]
   },
-  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/dragon_flag.jpg"
+  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/dragon_flag.jpg",
+  "niche": true
  },
  {
   "id": "dumbbell_curl_21s",
@@ -14221,7 +14264,8 @@
    "zh-Hans": [
     "仅用极轻重量 — 大行程对肩压力大."
    ]
-  }
+  },
+  "niche": true
  },
  {
   "id": "dumbbell_fly_decline",
@@ -15144,7 +15188,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "explosive_bench_press",
@@ -15437,7 +15482,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "ez_bar_preacher_reverse_curl",
@@ -15873,7 +15919,8 @@
     "保持挺胸 — 负重时不要耸肩."
    ]
   },
-  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/farmer_carry_cardio.jpg"
+  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/farmer_carry_cardio.jpg",
+  "niche": true
  },
  {
   "id": "farmers_carry",
@@ -16179,7 +16226,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "finger_curl",
@@ -17219,7 +17267,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "frog_pump",
@@ -17331,7 +17380,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "front_lever_full",
@@ -17405,7 +17455,8 @@
     "通过团身、半团身、分腿进阶."
    ]
   },
-  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/front_lever_full.jpg"
+  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/front_lever_full.jpg",
+  "niche": true
  },
  {
   "id": "front_lever_tuck",
@@ -17475,7 +17526,8 @@
     "先练习肩胛骨力量."
    ]
   },
-  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/front_lever_tuck.jpg"
+  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/front_lever_tuck.jpg",
+  "niche": true
  },
  {
   "id": "front_raise_band",
@@ -18949,7 +19001,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "good_morning",
@@ -19438,7 +19491,8 @@
     "对肩压力大 — 从极轻开始.",
     "务必使用安全杠或保护."
    ]
-  }
+  },
+  "niche": true
  },
  {
   "id": "hack_squat_barbell",
@@ -19967,7 +20021,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "hamstring_stretch_standing",
@@ -20024,7 +20079,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "hamstring_stretch_supine",
@@ -20077,7 +20133,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "hamstring_stretch_supine_strap",
@@ -20130,7 +20187,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "handstand_free",
@@ -20395,7 +20453,8 @@
    "en": [],
    "zh-Hans": []
   },
-  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/happy_baby_pose.jpg"
+  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/happy_baby_pose.jpg",
+  "niche": true
  },
  {
   "id": "heel_touch",
@@ -20644,7 +20703,8 @@
    "zh-Hans": [
     "髋部发力 — 不要只用手臂."
    ]
-  }
+  },
+  "niche": true
  },
  {
   "id": "hiking",
@@ -20713,7 +20773,8 @@
    "zh-Hans": [
     "告知他人路线, 带必需品."
    ]
-  }
+  },
+  "niche": true
  },
  {
   "id": "hip_90_90_switch",
@@ -20775,7 +20836,8 @@
    "en": [],
    "zh-Hans": []
   },
-  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/hip_90_90_switch.jpg"
+  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/hip_90_90_switch.jpg",
+  "niche": true
  },
  {
   "id": "hip_cars",
@@ -20836,7 +20898,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "hip_flexor_stretch_kneeling",
@@ -20894,7 +20957,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "hip_thrust_b_stance",
@@ -23078,7 +23142,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "internal_rotation_cable",
@@ -23503,7 +23568,8 @@
     "使用安全杠 — 杠路接近颈部.",
     "从轻开始, 掌握独特轨迹."
    ]
-  }
+  },
+  "niche": true
  },
  {
   "id": "jump_rope_basic",
@@ -23630,7 +23696,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "jump_rope_double_under",
@@ -23696,7 +23763,8 @@
    "zh-Hans": [
     "先掌握单摇 — 容易拉伤小腿."
    ]
-  }
+  },
+  "niche": true
  },
  {
   "id": "jump_rope_high_knees",
@@ -23761,7 +23829,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "jumping_jacks",
@@ -23893,7 +23962,8 @@
    "zh-Hans": [
     "膝盖疼要停 — 高冲击动作."
    ]
-  }
+  },
+  "niche": true
  },
  {
   "id": "kettlebell_bench_press",
@@ -24225,7 +24295,8 @@
     "髋部铰链, 不是膝盖 — 保护下背.",
     "不要用手臂提 — 手臂只引导."
    ]
-  }
+  },
+  "niche": true
  },
  {
   "id": "kettlebell_swing_single_arm",
@@ -24983,7 +25054,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "kroc_row",
@@ -25058,7 +25130,8 @@
     "动作刻意宽松 — 需背部基础."
    ]
   },
-  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/kroc_row.jpg"
+  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/kroc_row.jpg",
+  "niche": true
  },
  {
   "id": "l_sit",
@@ -26231,7 +26304,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "lat_stretch_hanging",
@@ -26288,7 +26362,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "lat_stretch_kneeling",
@@ -26341,7 +26416,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "lateral_bound",
@@ -26473,7 +26549,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "lateral_lunge_dumbbell_curtsy",
@@ -29246,7 +29323,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "leg_swings_lateral",
@@ -29307,7 +29385,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "lizard_pose",
@@ -29369,7 +29448,8 @@
    "en": [],
    "zh-Hans": []
   },
-  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/lizard_pose.jpg"
+  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/lizard_pose.jpg",
+  "niche": true
  },
  {
   "id": "low_incline_bench_press_dumbbell",
@@ -29484,7 +29564,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "lunge_3way",
@@ -30240,7 +30321,8 @@
    "zh-Hans": [
     "只用轻重量 — 冲击大."
    ]
-  }
+  },
+  "niche": true
  },
  {
   "id": "lunge_lateral_barbell",
@@ -32250,7 +32332,8 @@
    "en": [],
    "zh-Hans": []
   },
-  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/meadows_row.jpg"
+  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/meadows_row.jpg",
+  "niche": true
  },
  {
   "id": "med_ball_chest_pass",
@@ -32377,7 +32460,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "med_ball_overhead_slam",
@@ -32504,7 +32588,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "med_ball_slam",
@@ -33016,7 +33101,8 @@
     "需要扎实的引体+臂屈伸基础.",
     "假握避免过渡时拉伤手腕."
    ]
-  }
+  },
+  "niche": true
  },
  {
   "id": "muscle_up_bar",
@@ -33091,7 +33177,8 @@
     "先要能做 12+ 引体, 10+ 双杠.",
     "易拉伤肱二头肌腱 — 谨慎练过渡."
    ]
-  }
+  },
+  "niche": true
  },
  {
   "id": "muscle_up_ring",
@@ -33166,7 +33253,8 @@
     "比单杠更难 — 先练假握.",
     "学习时用脚辅助."
    ]
-  }
+  },
+  "niche": true
  },
  {
   "id": "neck_cars",
@@ -33218,7 +33306,8 @@
    "zh-Hans": [
     "头晕或疼痛要停 — 颈部敏感."
    ]
-  }
+  },
+  "niche": true
  },
  {
   "id": "neck_flexion_stretch",
@@ -33266,7 +33355,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "neck_stretch_rotation",
@@ -33314,7 +33404,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "neck_stretch_side",
@@ -33367,7 +33458,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "nordic_curl",
@@ -34046,7 +34138,8 @@
    "zh-Hans": [
     "握不住可用助力带或勾握."
    ]
-  }
+  },
+  "niche": true
  },
  {
   "id": "overhead_press_band",
@@ -34737,7 +34830,8 @@
     "大力士动作 — 需指导.",
     "架式不好不要推."
    ]
-  }
+  },
+  "niche": true
  },
  {
   "id": "overhead_press_machine",
@@ -34857,7 +34951,8 @@
    "zh-Hans": [
     "使用安全杆 — 重量大锁定快崩."
    ]
-  }
+  },
+  "niche": true
  },
  {
   "id": "overhead_press_smith_machine",
@@ -35330,7 +35425,8 @@
    "en": [],
    "zh-Hans": []
   },
-  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/pigeon_pose.jpg"
+  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/pigeon_pose.jpg",
+  "niche": true
  },
  {
   "id": "pistol_squat",
@@ -35531,7 +35627,8 @@
     "通过团身、半团身、分腿、全俯撑进阶.",
     "必须先做手腕准备."
    ]
-  }
+  },
+  "niche": true
  },
  {
   "id": "planche_tuck",
@@ -35596,7 +35693,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "plank",
@@ -36352,7 +36450,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "preacher_curl",
@@ -37435,7 +37534,8 @@
    "zh-Hans": [
     "先单独练核心和引体耐力."
    ]
-  }
+  },
+  "niche": true
  },
  {
   "id": "pull_up_mixed_grip",
@@ -38069,7 +38169,8 @@
    "en": [],
    "zh-Hans": []
   },
-  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/puppy_pose.jpg"
+  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/puppy_pose.jpg",
+  "niche": true
  },
  {
   "id": "push_press_barbell",
@@ -39242,7 +39343,8 @@
    "zh-Hans": [
     "手腕负荷大 — 先充分热身手腕."
    ]
-  }
+  },
+  "niche": true
  },
  {
   "id": "push_up_resistance_band",
@@ -39773,7 +39875,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "quad_stretch_standing",
@@ -39826,7 +39929,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "rack_pull",
@@ -42712,7 +42816,8 @@
    "zh-Hans": [
     "高速时也要保持动作标准 — 背部始终绷紧."
    ]
-  }
+  },
+  "niche": true
  },
  {
   "id": "rucking",
@@ -42791,7 +42896,8 @@
     "从轻到重, 周周增加.",
     "保持姿态 — 不要被压驼背."
    ]
-  }
+  },
+  "niche": true
  },
  {
   "id": "running_hill",
@@ -42860,7 +42966,8 @@
    "zh-Hans": [
     "不要冲下坡 — 受伤风险高."
    ]
-  }
+  },
+  "niche": true
  },
  {
   "id": "running_interval",
@@ -42929,7 +43036,8 @@
    "zh-Hans": [
     "先建立基础跑量再加入间歇."
    ]
-  }
+  },
+  "niche": true
  },
  {
   "id": "running_long_distance",
@@ -42999,7 +43107,8 @@
    "zh-Hans": [
     "注意过度使用伤 — 膝盖, 髂胫束, 胫骨."
    ]
-  }
+  },
+  "niche": true
  },
  {
   "id": "running_outdoor",
@@ -43140,7 +43249,8 @@
     "充分热身 — 容易拉伤腘绳肌.",
     "肌肉未热不要冲刺, 避免硬地面."
    ]
-  }
+  },
+  "niche": true
  },
  {
   "id": "russian_twist",
@@ -43606,7 +43716,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "scott_curl",
@@ -43727,7 +43838,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "seated_dumbbell_curl",
@@ -43914,7 +44026,8 @@
     "出拳时不要过伸肘关节."
    ]
   },
-  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/shadow_boxing.jpg"
+  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/shadow_boxing.jpg",
+  "niche": true
  },
  {
   "id": "shoulder_cars",
@@ -43975,7 +44088,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "shoulder_dislocation_band",
@@ -44032,7 +44146,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "shoulder_pass_through",
@@ -44151,7 +44266,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "shoulder_stretch_sleeper",
@@ -44208,7 +44324,8 @@
    "zh-Hans": [
     "不要强压 — 肩部脆弱, 锐痛立即停止."
    ]
-  }
+  },
+  "niche": true
  },
  {
   "id": "shrimp_squat",
@@ -44903,7 +45020,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "side_plank_dip",
@@ -45077,7 +45195,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "single_arm_straight_arm_pulldown",
@@ -45364,7 +45483,8 @@
    "zh-Hans": [
     "先掌握双脚落地."
    ]
-  }
+  },
+  "niche": true
  },
  {
   "id": "single_leg_rdl",
@@ -45667,7 +45787,8 @@
    "zh-Hans": [
     "对膝盖压力大 — 膝盖有伤勿做."
    ]
-  }
+  },
+  "niche": true
  },
  {
   "id": "sissy_squat_machine",
@@ -45722,7 +45843,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "sit_up",
@@ -46071,7 +46193,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "skater_jumps_cardio",
@@ -46140,7 +46263,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "skater_squat",
@@ -47112,7 +47236,8 @@
    "zh-Hans": [
     "宽握加大幅度 — 常见脊柱屈错误."
    ]
-  }
+  },
+  "niche": true
  },
  {
   "id": "snatch_pull",
@@ -47183,7 +47308,8 @@
    "zh-Hans": [
     "奥举辅助 — 需要教练指导."
    ]
-  }
+  },
+  "niche": true
  },
  {
   "id": "soleus_pushup",
@@ -47281,7 +47407,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "sphinx_push_up",
@@ -47516,7 +47643,8 @@
     "不要在坐垫上蹦 — 髋部保持稳定."
    ]
   },
-  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/spin_bike.jpg"
+  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/spin_bike.jpg",
+  "niche": true
  },
  {
   "id": "spinal_twist_seated",
@@ -47573,7 +47701,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "spinal_twist_supine",
@@ -47630,7 +47759,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "spine_cars",
@@ -47687,7 +47817,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "split_jerk_lunge",
@@ -47754,7 +47885,8 @@
    "zh-Hans": [
     "奥举动作 — 需要教练保护."
    ]
-  }
+  },
+  "niche": true
  },
  {
   "id": "split_jump",
@@ -47819,7 +47951,8 @@
    "zh-Hans": [
     "膝盖跟脚尖方向, 不要内扣."
    ]
-  }
+  },
+  "niche": true
  },
  {
   "id": "split_squat_barbell",
@@ -48397,7 +48530,8 @@
     "悬停需要控制 — 从轻开始.",
     "使用安全杠或保护."
    ]
-  }
+  },
+  "niche": true
  },
  {
   "id": "sprint_intervals_track",
@@ -48469,7 +48603,8 @@
     "避免水泥地 — 用塑胶跑道或草地."
    ]
   },
-  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/sprint_intervals_track.jpg"
+  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/sprint_intervals_track.jpg",
+  "niche": true
  },
  {
   "id": "squat_anderson",
@@ -48529,7 +48664,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "squat_assisted_trx",
@@ -49400,7 +49536,8 @@
    "zh-Hans": [
     "用中等哑铃 — 控制重要."
    ]
-  }
+  },
+  "niche": true
  },
  {
   "id": "squat_jump_kettlebell",
@@ -49463,7 +49600,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "squat_landmine",
@@ -50324,7 +50462,8 @@
     "用护臂或软垫 — 杠铃压臂淤青.",
     "重量适中, 对核心要求极高."
    ]
-  }
+  },
+  "niche": true
  },
  {
   "id": "squat_zercher_dumbbell",
@@ -50387,7 +50526,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "squeeze_press_dumbbell",
@@ -50642,7 +50782,8 @@
    "en": [],
    "zh-Hans": []
   },
-  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/standing_forward_fold.jpg"
+  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/standing_forward_fold.jpg",
+  "niche": true
  },
  {
   "id": "static_hold_bench_press",
@@ -50767,7 +50908,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "stationary_bike_upright",
@@ -51373,7 +51515,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "step_up_jumping",
@@ -51433,7 +51576,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "step_up_lateral_bodyweight",
@@ -51670,7 +51814,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "straight_arm_pulldown",
@@ -52481,7 +52626,8 @@
     "注意泳道位置 — 看不到墙."
    ]
   },
-  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/swimming_backstroke.jpg"
+  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/swimming_backstroke.jpg",
+  "niche": true
  },
  {
   "id": "swimming_breaststroke",
@@ -52551,7 +52697,8 @@
    "en": [],
    "zh-Hans": []
   },
-  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/swimming_breaststroke.jpg"
+  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/swimming_breaststroke.jpg",
+  "niche": true
  },
  {
   "id": "swimming_butterfly",
@@ -52625,7 +52772,8 @@
     "技术要求高 — 短组练习."
    ]
   },
-  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/swimming_butterfly.jpg"
+  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/swimming_butterfly.jpg",
+  "niche": true
  },
  {
   "id": "swimming_freestyle",
@@ -52913,7 +53061,8 @@
    "zh-Hans": [
     "要全力以赴 — 先充分热身."
    ]
-  }
+  },
+  "niche": true
  },
  {
   "id": "tate_press",
@@ -52966,7 +53115,8 @@
    "zh-Hans": [
     "肘部轨迹特殊 — 从轻开始."
    ]
-  }
+  },
+  "niche": true
  },
  {
   "id": "thoracic_bridge",
@@ -53027,7 +53177,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "thoracic_rotation_open_book",
@@ -53089,7 +53240,8 @@
    "en": [],
    "zh-Hans": []
   },
-  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/thoracic_rotation_open_book.jpg"
+  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/thoracic_rotation_open_book.jpg",
+  "niche": true
  },
  {
   "id": "thors_hammer",
@@ -53201,7 +53353,8 @@
    "en": [],
    "zh-Hans": []
   },
-  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/thread_the_needle.jpg"
+  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/thread_the_needle.jpg",
+  "niche": true
  },
  {
   "id": "thruster_barbell",
@@ -53904,7 +54057,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "treadmill_incline_walk",
@@ -54802,7 +54956,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "triceps_stretch_overhead",
@@ -54859,7 +55014,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "trx_chest_fly",
@@ -55721,7 +55877,8 @@
    "en": [],
    "zh-Hans": []
   },
-  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/waiters_curl.jpg"
+  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/waiters_curl.jpg",
+  "niche": true
  },
  {
   "id": "wall_pec_stretch",
@@ -55778,7 +55935,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "wall_push_up",
@@ -55896,7 +56054,8 @@
    "en": [],
    "zh-Hans": []
   },
-  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/wall_sit.jpg"
+  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/wall_sit.jpg",
+  "niche": false
  },
  {
   "id": "wall_sit_dumbbell",
@@ -55952,7 +56111,8 @@
    "en": [],
    "zh-Hans": []
   },
-  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/wall_sit_dumbbell.jpg"
+  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/wall_sit_dumbbell.jpg",
+  "niche": false
  },
  {
   "id": "wall_sit_single_leg",
@@ -56009,7 +56169,8 @@
    "en": [],
    "zh-Hans": []
   },
-  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/wall_sit_single_leg.jpg"
+  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/wall_sit_single_leg.jpg",
+  "niche": false
  },
  {
   "id": "wall_slides",
@@ -56071,7 +56232,8 @@
    "en": [],
    "zh-Hans": []
   },
-  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/wall_slides.jpg"
+  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/wall_slides.jpg",
+  "niche": true
  },
  {
   "id": "wall_squat_isometric",
@@ -56128,7 +56290,8 @@
    "en": [],
    "zh-Hans": []
   },
-  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/wall_squat_isometric.jpg"
+  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/wall_squat_isometric.jpg",
+  "niche": false
  },
  {
   "id": "wall_walk",
@@ -56326,7 +56489,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "windshield_wiper",
@@ -56509,7 +56673,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "wrist_circles",
@@ -56557,7 +56722,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "wrist_curl",
@@ -57137,7 +57303,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "wrist_stretch_flexion",
@@ -57186,7 +57353,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "wrist_ulnar_deviation",
@@ -57489,6 +57657,7 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  }
 ]
