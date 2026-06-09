@@ -33,14 +33,24 @@ struct PlansScreen: View {
     private var isPro: Bool { data.settings.isPro }
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 16) {
-                // Saved 已挪到 Today tab. 本 tab = 纯 Discover (浏览 AI / 社区, "+" 加进 Saved).
-                discoverSection
-                Spacer(minLength: MasoMetrics.pageBottomInset)
+        VStack(spacing: 12) {
+            // AI / Community 分段控件 — 系统默认 segmented, controlSize 调大一档 (高一点),
+            // 收窄到 ~240 + 居中 (不撑满整行).
+            Picker("", selection: $discover.animation(.easeOut(duration: 0.18))) {
+                Text("AI").tag(DiscoverMode.ai)
+                Text("Community").tag(DiscoverMode.community)
             }
-            .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
-            .padding(.top, 4)
+            .pickerStyle(.segmented)
+            .controlSize(.large)
+            .frame(maxWidth: 240)
+            .padding(.top, 8)
+
+            // 左右滑动可在 AI / Community 两页间切换 (paged TabView, 跟 segmented 双向绑定).
+            TabView(selection: $discover.animation(.easeOut(duration: 0.22))) {
+                aiPage.tag(DiscoverMode.ai)
+                communityPage.tag(DiscoverMode.community)
+            }
+            .tabViewStyle(.page(indexDisplayMode: .never))
         }
         .background(MasoColor.background.ignoresSafeArea())
         // 每次进入按当前训练偏好现算 AI 计划 (改了 days/muscles/equipment 后回来即刷新).
@@ -144,54 +154,48 @@ struct PlansScreen: View {
         .buttonStyle(.plain)
     }
 
-    // MARK: - DISCOVER
+    // MARK: - DISCOVER pages (左右滑动切换)
 
-    @ViewBuilder
-    private var discoverSection: some View {
-        sectionKicker("Discover").padding(.top, 8)
-        Picker("", selection: $discover.animation(.easeOut(duration: 0.18))) {
-            Text("AI").tag(DiscoverMode.ai)
-            Text("Community").tag(DiscoverMode.community)
-        }
-        .pickerStyle(.segmented)
-
-        switch discover {
-        case .ai:
-            // Training Preferences 入口卡 — AI 计划就是按这些偏好现算的, 放这最相关.
-            // 改完偏好 (sheet 关) → 下面 onChange 重算 aiPlans.
-            PlanRationaleCard()
-            if aiPlans.isEmpty {
-                ProgressView()
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 40)
-            } else {
-                ForEach(aiPlans) { plan in
-                    discoverPlanCard(plan, badge: "AI")
-                }
-                Button(action: regenerateAI) {
-                    HStack(spacing: 8) {
-                        Image(systemName: "arrow.triangle.2.circlepath")
-                        Text("Regenerate")
+    /// AI 页 — Training Preferences 卡 + 按偏好现算的 AI 计划卡 (点卡片预览, 详情页 "+" 加进 Saved).
+    private var aiPage: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 16) {
+                PlanRationaleCard()
+                if aiPlans.isEmpty {
+                    ProgressView()
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 40)
+                } else {
+                    ForEach(aiPlans) { plan in
+                        discoverPlanCard(plan, badge: "AI")
                     }
-                    .font(.system(size: 13, weight: .bold))
-                    .foregroundStyle(MasoColor.textDim)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 12)
                 }
-                .buttonStyle(.plain)
+                Spacer(minLength: MasoMetrics.pageBottomInset)
             }
-        case .community:
-            communityFilterRow
-            let plans = filteredCommunityPlans
-            if plans.isEmpty {
-                Text("No community plans match these filters.")
-                    .font(.system(size: 13))
-                    .foregroundStyle(MasoColor.textDim)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 30)
-            } else {
-                ForEach(plans) { cp in communityCard(cp) }
+            .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
+            .padding(.top, 4)
+        }
+    }
+
+    /// Community 页 — Level / Days 筛选 + 社区计划卡.
+    private var communityPage: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 16) {
+                communityFilterRow
+                let plans = filteredCommunityPlans
+                if plans.isEmpty {
+                    Text("No community plans match these filters.")
+                        .font(.system(size: 13))
+                        .foregroundStyle(MasoColor.textDim)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 30)
+                } else {
+                    ForEach(plans) { cp in communityCard(cp) }
+                }
+                Spacer(minLength: MasoMetrics.pageBottomInset)
             }
+            .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
+            .padding(.top, 4)
         }
     }
 

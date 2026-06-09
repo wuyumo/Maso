@@ -9,6 +9,8 @@ struct TodayScreen: View {
     let onNewPlan: () -> Void
     /// 标题行右上角齿轮 → 弹 Settings sheet (RootView 持有 sheet state)
     let onOpenSettings: () -> Void
+    /// My Plans 空态"Generate AI plans"按钮 → 跳到 Discover tab (RootView 切 tab).
+    var onGoToDiscover: () -> Void = {}
     /// 嵌在外层 NavigationStack (Train / Plans tab) 里时 true — 不渲染自己的大标题/齿轮.
     var embedded: Bool = false
     /// 渲染哪部分内容:
@@ -211,10 +213,10 @@ struct TodayScreen: View {
                 .font(.system(size: 12))
                 .foregroundStyle(MasoColor.textDim)
                 .multilineTextAlignment(.center)
-            Button(action: onNewPlan) {
+            Button(action: onGoToDiscover) {
                 HStack(spacing: 6) {
-                    Image(systemName: "plus")
-                    Text("New workout")
+                    Image(systemName: "sparkles")
+                    Text("Generate AI plans")
                 }
                 .font(.system(size: 14, weight: .heavy))
                 .padding(.horizontal, 18).padding(.vertical, 10)

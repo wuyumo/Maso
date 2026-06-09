@@ -128,6 +128,7 @@ struct RootView: View {
                         onFreeWorkout: { quickWorkoutPresented = true },
                         onNewPlan: handleNewPlan,
                         onOpenSettings: { settingsPresented = true },
+                        onGoToDiscover: { tab = .plans },
                         embedded: true,
                         mode: .full   // #IA: Today = 肌肉状态 + 今日推荐 + My Plans(saved) + Free workout
                     )
