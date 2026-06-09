@@ -577,6 +577,11 @@
 "Added to My Plans" = "Added to My Routines";
 /* AI routine generation CTA + perceived-generation states (Routines tab → AI) */
 "Generate routines" = "Generate routines";
+"Open Training Preferences and tap Generate routines to build a set tailored to you." = "Open Training Preferences and tap Generate routines to build a set tailored to you.";
+"Apply" = "Apply";
+"Keep editing" = "Keep editing";
+"Apply changes?" = "Apply changes?";
+"You changed your training preferences. Apply them and regenerate your routines?" = "You changed your training preferences. Apply them and regenerate your routines?";
 "Generating routines…" = "Generating routines…";
 "Building routines from your preferences…" = "Building routines from your preferences…";
 "Matching exercises to your days, equipment, and focus." = "Matching exercises to your days, equipment, and focus.";

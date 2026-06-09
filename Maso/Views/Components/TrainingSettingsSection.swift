@@ -273,31 +273,104 @@ struct TrainingSettingsSection: View {
 //   - Done button 关闭
 //   - 改任何项目立刻 write 回 data.settings, PlanRationaleCard / Plan 列表自动跟随
 struct TrainingSettingsSheet: View {
+    @Environment(DataStore.self) private var data
     @Environment(\.dismiss) private var dismiss
+    /// 点 "Generate routines" → 应用偏好后回调 (PlansScreen 拿来跑生成动画 + 出 routines).
+    var onApply: () -> Void = {}
+
+    /// 进入半页时对训练偏好拍快照 — 用来判断"改没改"(CTA 可点态) + Discard 时回滚.
+    @State private var original: UserSettings? = nil
+    @State private var showDiscardAlert = false
+
+    /// 页内任一训练偏好相对快照有改动 → CTA 激活. (UserSettings 非 Equatable, 逐字段比.)
+    private var changed: Bool {
+        guard let o = original else { return false }
+        let s = data.settings
+        return o.weeklyTrainingDays != s.weeklyTrainingDays
+            || o.exercisesPerSession != s.exercisesPerSession
+            || o.defaultSetsPerExercise != s.defaultSetsPerExercise
+            || o.trainingGoal != s.trainingGoal
+            || o.defaultRestSeconds != s.defaultRestSeconds
+            || o.defaultBetweenExerciseRestSeconds != s.defaultBetweenExerciseRestSeconds
+            || o.preferCommunityPlans != s.preferCommunityPlans
+            || Set(o.wantStrengthen) != Set(s.wantStrengthen)
+            || Set(o.availableEquipment) != Set(s.availableEquipment)
+    }
 
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 20) {
-                    // 不再有 section 标题 — nav title "Training Preferences" 已经够清楚,
-                    // 内部不重复 section header (用户反馈 Adjust 多余).
+                    // 不重复 section header — nav title "Training Preferences" 已够清楚.
                     TrainingSettingsSection()
                 }
                 .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
                 .padding(.top, 16)
+                .padding(.bottom, 8)
             }
             .background(MasoColor.background.ignoresSafeArea())
-            // Nav title 跟 Plans tab 卡片 kicker 对齐 — 用户点 "TRAINING PREFERENCES" 卡进来,
-            // 看到 sheet 标题也是 "Training Preferences", 上下文连贯.
             .navigationTitle("Training Preferences")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Done") { dismiss() }
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Close") { attemptClose() }
                 }
             }
             .tint(MasoColor.text)
+            // CTA 钉在半页最底部 — 初始置灰, 改了内容才激活, 点了才 Apply + 生成.
+            .safeAreaInset(edge: .bottom) {
+                generateButton
+                    .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
+                    .padding(.top, 8)
+                    .padding(.bottom, 10)
+                    .background(MasoColor.background.opacity(0.92))
+            }
         }
+        .onAppear { if original == nil { original = data.settings } }
+        // 有改动时禁用下滑关闭 — 逼用户走 Close → Discard alert, 不会误丢改动.
+        .interactiveDismissDisabled(changed)
+        .alert("Apply changes?", isPresented: $showDiscardAlert) {
+            Button("Apply") { applyAndClose() }
+            Button("Discard", role: .destructive) { discardAndClose() }
+            Button("Keep editing", role: .cancel) {}
+        } message: {
+            Text("You changed your training preferences. Apply them and regenerate your routines?")
+        }
+    }
+
+    private var generateButton: some View {
+        Button { applyAndClose() } label: {
+            HStack(spacing: 8) {
+                Image(systemName: "sparkles").font(.system(size: 14, weight: .heavy))
+                Text("Generate routines").font(.system(size: 15, weight: .heavy))
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 14)
+            .foregroundStyle(changed ? .black : MasoColor.textDim)
+            .background(changed ? MasoColor.accent : MasoColor.surfaceHi)
+            .clipShape(Capsule())
+        }
+        .buttonStyle(.plain)
+        .disabled(!changed)
+        .animation(.easeOut(duration: 0.2), value: changed)
+    }
+
+    private func attemptClose() {
+        if changed { showDiscardAlert = true } else { dismiss() }
+    }
+
+    /// 应用偏好 (已 live 写进 data.settings) → 存盘 → 关页 → 触发生成.
+    private func applyAndClose() {
+        data.save()
+        let apply = onApply
+        dismiss()
+        DispatchQueue.main.async { apply() }
+    }
+
+    /// 丢弃改动 → 回滚到进入时的快照 → 存盘 → 关页 (不生成).
+    private func discardAndClose() {
+        if let o = original { data.settings = o; data.save() }
+        dismiss()
     }
 }
 

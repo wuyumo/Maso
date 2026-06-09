@@ -25,8 +25,6 @@ struct PlansScreen: View {
     @State private var aiPlans: [Plan] = []
     /// AI routine 生成中 (感知态: 让用户看到"AI 正在跟进你的数据生成").
     @State private var aiGenerating = false
-    /// 训练偏好自上次生成后是否改过 — true (或还没生成过) → "Generate routines" CTA 可点.
-    @State private var aiDirty = false
     @State private var detailPlan: Plan? = nil
     @State private var pendingDeletePlanId: String? = nil
     @State private var paywallPresented = false
@@ -56,15 +54,9 @@ struct PlansScreen: View {
             }
         }
         .background(MasoColor.background.ignoresSafeArea())
-        // 每次进入按当前训练偏好现算 AI 计划 (改了 days/muscles/equipment 后回来即刷新).
-        // 不再自动重算 — 改成显式 "Generate routines" CTA 驱动 (见 aiPage).
-        // 改了任一训练偏好 → 标 dirty, CTA 变可点; 用户点了才进生成态 → 展示结果.
-        .onChange(of: data.settings.weeklyTrainingDays) { _, _ in aiDirty = true }
-        .onChange(of: data.settings.exercisesPerSession) { _, _ in aiDirty = true }
-        .onChange(of: data.settings.defaultSetsPerExercise) { _, _ in aiDirty = true }
-        .onChange(of: data.settings.trainingGoal) { _, _ in aiDirty = true }
-        .onChange(of: data.settings.wantStrengthen) { _, _ in aiDirty = true }
-        .onChange(of: data.settings.availableEquipment) { _, _ in aiDirty = true }
+        // AI routines 由 Training Preferences 半页里的 "Generate routines" 触发 (见 onApplyPreferences);
+        // 首次进入 (还没生成过) 自动生成一批, 避免空页.
+        .onAppear { if aiPlans.isEmpty && !aiGenerating { startGenerateRoutines() } }
         .sheet(item: $detailPlan) { plan in
             PlanDetailSheet(
                 initialPlan: plan,
@@ -167,8 +159,8 @@ struct PlansScreen: View {
     private var aiPage: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                PlanRationaleCard()
-                generateRoutinesCTA
+                // CTA 现在在 Training Preferences 半页内部 (改了偏好 → 点 Generate routines → 应用 + 这里跑生成).
+                PlanRationaleCard(onApplyPreferences: { startGenerateRoutines() })
                 aiRoutineResults
                 Spacer(minLength: MasoMetrics.pageBottomInset)
             }
@@ -178,30 +170,6 @@ struct PlansScreen: View {
     }
 
     /// "Generate routines" 主 CTA — 改了训练偏好 (或还没生成过) 才可点; 点了进生成态.
-    private var generateRoutinesCTA: some View {
-        let enabled = (aiDirty || aiPlans.isEmpty) && !aiGenerating
-        return Button { startGenerateRoutines() } label: {
-            HStack(spacing: 8) {
-                if aiGenerating {
-                    ProgressView().controlSize(.small).tint(.black)
-                } else {
-                    Image(systemName: "sparkles").font(.system(size: 14, weight: .heavy))
-                }
-                Text(aiGenerating ? "Generating routines…" : "Generate routines")
-                    .font(.system(size: 15, weight: .heavy))
-            }
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 13)
-            .foregroundStyle((enabled || aiGenerating) ? .black : MasoColor.textDim)
-            .background((enabled || aiGenerating) ? MasoColor.accent : MasoColor.surfaceHi)
-            .clipShape(Capsule())
-        }
-        .buttonStyle(.plain)
-        .disabled(!enabled)
-        .animation(.easeOut(duration: 0.2), value: enabled)
-        .animation(.easeOut(duration: 0.2), value: aiGenerating)
-    }
-
     /// AI routine 区: 生成中 → 进度提示 (感知 AI 在跟进数据); 空 → 引导; 否则 → 计划卡.
     @ViewBuilder
     private var aiRoutineResults: some View {
@@ -224,7 +192,7 @@ struct PlansScreen: View {
                 Image(systemName: "sparkles")
                     .font(.system(size: 26))
                     .foregroundStyle(MasoColor.textFaint)
-                Text("Tap Generate routines to build a set tailored to your preferences.")
+                Text("Open Training Preferences and tap Generate routines to build a set tailored to you.")
                     .font(.system(size: 12))
                     .foregroundStyle(MasoColor.textDim)
                     .multilineTextAlignment(.center)
@@ -374,7 +342,6 @@ struct PlansScreen: View {
             withAnimation(.easeOut(duration: 0.25)) {
                 aiPlans = plans
                 aiGenerating = false
-                aiDirty = false
             }
         }
     }
@@ -481,6 +448,8 @@ struct PlanRationaleCard: View {
     @Environment(DataStore.self) private var data
     /// 右上角 pencil 按钮触发的"快捷训练设置"sheet
     @State private var showTrainingSettings = false
+    /// 用户在半页里点 "Generate routines" 应用偏好后回调 — 调用方 (aiPage) 拿来跑生成动画.
+    var onApplyPreferences: () -> Void = {}
 
     var body: some View {
         let s = data.settings
@@ -560,7 +529,7 @@ struct PlanRationaleCard: View {
         .contentShape(Rectangle())
         .onTapGesture { showTrainingSettings = true }
         .sheet(isPresented: $showTrainingSettings) {
-            TrainingSettingsSheet()
+            TrainingSettingsSheet(onApply: onApplyPreferences)
                 .presentationDetents([.medium, .large])
                 .presentationDragIndicator(.visible)
         }

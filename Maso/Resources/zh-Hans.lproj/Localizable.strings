@@ -578,6 +578,11 @@
 "Added to My Plans" = "已添加到我的计划";
 /* AI routine 生成 CTA + 可感知生成态 (Routines tab → AI) */
 "Generate routines" = "生成训练计划";
+"Open Training Preferences and tap Generate routines to build a set tailored to you." = "打开「训练偏好」点 Generate routines,按你的情况生成一组方案。";
+"Apply" = "应用";
+"Keep editing" = "继续编辑";
+"Apply changes?" = "应用更改?";
+"You changed your training preferences. Apply them and regenerate your routines?" = "你修改了训练偏好。应用这些更改并重新生成训练计划?";
 "Generating routines…" = "正在生成…";
 "Building routines from your preferences…" = "正在根据你的偏好生成训练计划…";
 "Matching exercises to your days, equipment, and focus." = "按你的训练天数、器械和重点匹配动作。";
