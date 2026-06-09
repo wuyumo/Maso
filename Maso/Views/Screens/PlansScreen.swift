@@ -45,6 +45,13 @@ struct PlansScreen: View {
         .background(MasoColor.background.ignoresSafeArea())
         // 每次进入按当前训练偏好现算 AI 计划 (改了 days/muscles/equipment 后回来即刷新).
         .onAppear { regenerateAI() }
+        // PlanRationaleCard 改完偏好 (sheet 关) 仍在本页时, 也立即重算 AI 计划.
+        .onChange(of: data.settings.weeklyTrainingDays) { _, _ in regenerateAI() }
+        .onChange(of: data.settings.exercisesPerSession) { _, _ in regenerateAI() }
+        .onChange(of: data.settings.defaultSetsPerExercise) { _, _ in regenerateAI() }
+        .onChange(of: data.settings.trainingGoal) { _, _ in regenerateAI() }
+        .onChange(of: data.settings.wantStrengthen) { _, _ in regenerateAI() }
+        .onChange(of: data.settings.availableEquipment) { _, _ in regenerateAI() }
         .sheet(item: $detailPlan) { plan in
             PlanDetailSheet(
                 initialPlan: plan,
@@ -150,6 +157,9 @@ struct PlansScreen: View {
 
         switch discover {
         case .ai:
+            // Training Preferences 入口卡 — AI 计划就是按这些偏好现算的, 放这最相关.
+            // 改完偏好 (sheet 关) → 下面 onChange 重算 aiPlans.
+            PlanRationaleCard()
             if aiPlans.isEmpty {
                 ProgressView()
                     .frame(maxWidth: .infinity)
