@@ -296,7 +296,7 @@ struct RootView: View {
                 )
                 .presentationDetents([.medium, .large])
             }
-            .alert("Invalid plan link", isPresented: $importFailed) {
+            .alert("Invalid routine link", isPresented: $importFailed) {
                 Button("OK", role: .cancel) {}
             } message: {
                 Text("This Maso link is damaged or unsupported. Ask your friend to share again.")
@@ -364,7 +364,7 @@ struct RootView: View {
                     ProgressView()
                         .controlSize(.large)
                         .tint(MasoColor.accent)
-                    Text("Tailoring your AI Plans…")
+                    Text("Tailoring your AI routines…")
                         .font(.system(size: 14, weight: .semibold))
                         .foregroundStyle(MasoColor.text)
                 }

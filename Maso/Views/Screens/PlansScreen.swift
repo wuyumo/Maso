@@ -93,7 +93,7 @@ struct PlansScreen: View {
                 Image(systemName: "bookmark")
                     .font(.system(size: 30, weight: .regular))
                     .foregroundStyle(MasoColor.textFaint)
-                Text("No saved plans yet")
+                Text("No saved routines yet")
                     .font(.system(size: 16, weight: .bold))
                     .foregroundStyle(MasoColor.text)
                 Text("Generate one with AI or browse the community below, then tap Save.")
@@ -183,7 +183,7 @@ struct PlansScreen: View {
                 communityFilterRow
                 let plans = filteredCommunityPlans
                 if plans.isEmpty {
-                    Text("No community plans match these filters.")
+                    Text("No community routines match these filters.")
                         .font(.system(size: 13))
                         .foregroundStyle(MasoColor.textDim)
                         .frame(maxWidth: .infinity)

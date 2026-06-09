@@ -212,7 +212,7 @@ struct TrainingSettingsSection: View {
             // (移除: "Show muscle subdivisions" — 不再让用户切换, 始终按默认显示细分肌群.)
 
             // P2-4 / P2-11: 说明这些偏好的作用域 — 否则用户改了"默认组数"看自建 plan 没变会以为坏了.
-            Text("These apply to recommended plans and exercises you add — your custom plans aren't changed.")
+            Text("These apply to recommended routines and exercises you add — your custom routines aren't changed.")
                 .font(.system(size: 11))
                 .foregroundStyle(MasoColor.textFaint)
                 .padding(.horizontal, MasoMetrics.cardPadding)
@@ -312,7 +312,7 @@ struct EquipmentPickerSheet: View {
                 MasoColor.background.ignoresSafeArea()
                 ScrollView {
                     VStack(spacing: 10) {
-                        Text("Pick the equipment your gym has — AI and recommended plans will only use moves you can actually do. Leave empty for no restriction (bodyweight is always available).")
+                        Text("Pick the equipment your gym has — AI and recommended routines will only use moves you can actually do. Leave empty for no restriction (bodyweight is always available).")
                             .font(.system(size: 13))
                             .foregroundStyle(MasoColor.textDim)
                             .frame(maxWidth: .infinity, alignment: .leading)

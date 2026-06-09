@@ -177,7 +177,7 @@ struct TodayScreen: View {
     /// 彼此间距拉远; 整行左右留边距 (标题 + 按钮往中间靠, 不贴边).
     private var myPlansHeader: some View {
         HStack(spacing: 14) {
-            Text("My Plans")
+            Text("My Routines")
                 .font(.system(size: 12, weight: .heavy))
                 .tracking(1.5)
                 .textCase(.uppercase)
@@ -207,17 +207,17 @@ struct TodayScreen: View {
             Image(systemName: "list.bullet.rectangle.portrait")
                 .font(.system(size: 30, weight: .regular))
                 .foregroundStyle(MasoColor.textFaint)
-            Text("No saved plans yet")
+            Text("No saved routines yet")
                 .font(.system(size: 15, weight: .bold))
                 .foregroundStyle(MasoColor.text)
-            Text("Browse AI & community plans in the Discover tab and tap + to save them here — or create your own.")
+            Text("Browse AI & community routines in the Routines tab and tap + to save them here — or create your own.")
                 .font(.system(size: 12))
                 .foregroundStyle(MasoColor.textDim)
                 .multilineTextAlignment(.center)
             Button(action: onGoToDiscover) {
                 HStack(spacing: 6) {
                     Image(systemName: "sparkles")
-                    Text("Generate AI plans")
+                    Text("Generate AI routines")
                 }
                 .font(.system(size: 14, weight: .heavy))
                 .padding(.horizontal, 18).padding(.vertical, 10)

@@ -88,8 +88,8 @@ struct CommunityScreen: View {
                         let results = filteredPlans
                         sectionHeader(LocalizedStringKey(
                             results.isEmpty
-                            ? "No plans match"
-                            : "\(results.count) \(results.count == 1 ? "plan" : "plans")"
+                            ? "No routines match"
+                            : "\(results.count) \(results.count == 1 ? "routine" : "routines")"
                         ))
                         if results.isEmpty {
                             emptyFilterState
@@ -232,7 +232,7 @@ struct CommunityScreen: View {
             Image(systemName: "slider.horizontal.3")
                 .font(.system(size: 28, weight: .heavy))
                 .foregroundStyle(MasoColor.textFaint)
-            Text("No plans match these filters yet.")
+            Text("No routines match these filters yet.")
                 .font(.system(size: 13))
                 .foregroundStyle(MasoColor.textDim)
                 .multilineTextAlignment(.center)
