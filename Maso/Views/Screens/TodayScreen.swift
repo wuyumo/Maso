@@ -206,7 +206,10 @@ struct TodayScreen: View {
 
     private var plansEmptyState: some View {
         // 精简空态: 只一行提示去 Routines tab 拿 routines (按钮去掉了 — 整块可点跳过去).
-        VStack(spacing: 6) {
+        VStack(spacing: 8) {
+            Image(systemName: "bookmark")
+                .font(.system(size: 24, weight: .regular))
+                .foregroundStyle(MasoColor.textFaint)
             Text("No routines yet")
                 .font(.system(size: 14, weight: .bold))
                 .foregroundStyle(MasoColor.textDim)

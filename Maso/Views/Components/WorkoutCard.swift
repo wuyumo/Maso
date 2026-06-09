@@ -270,7 +270,7 @@ private struct ExercisePill: View {
 
 /// Tab 2 (Plans browse) 卡片 / 卡片详情的主操作 — "★ 添加到我的计划".
 /// 用 accent tinted 风格 (非实心): 它在卡片列表里重复出现, 实心会太吵; 详情页那个全宽 CTA 才用实心.
-/// 文案走本地化 key "Add to my plans" (en) / "添加到我的计划" (zh-Hans); icon 用五角星 star.fill.
+/// 文案走本地化 key "Add to my plans" (en) / "添加到我的计划" (zh-Hans); icon 用书签 bookmark(已存填充).
 struct AddToPlansButton: View {
     /// 该计划是否已在"我的计划"里 — true → 按钮变"已添加"态 (灰 ✓, 不可再点).
     var isSaved: Bool = false
@@ -279,7 +279,7 @@ struct AddToPlansButton: View {
     var body: some View {
         Button(action: { if !isSaved { action() } }) {
             HStack(spacing: 6) {
-                Image(systemName: isSaved ? "checkmark" : "star.fill")
+                Image(systemName: isSaved ? "bookmark.fill" : "bookmark")
                     .font(.system(size: 12, weight: .bold))
                 Text(isSaved ? "Added to My Plans" : "Add to my plans")
                     .font(.system(size: 13, weight: .bold))

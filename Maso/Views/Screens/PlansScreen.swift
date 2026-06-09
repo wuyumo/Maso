@@ -1015,7 +1015,7 @@ struct PlanDetailSheet: View {
         let saved = data.isPlanSaved(draft)
         return Button { if !saved { action(draft) } } label: {
             HStack(spacing: 8) {
-                Image(systemName: saved ? "checkmark" : "star.fill")
+                Image(systemName: saved ? "bookmark.fill" : "bookmark")
                     .font(.system(size: 14, weight: .heavy))
                 Text(saved ? "Added to My Plans" : "Add to my plans")
                     .font(.system(size: 15, weight: .heavy))
