@@ -128,7 +128,7 @@ struct CommunityScreen: View {
                 }
             }
             .background(MasoColor.background.ignoresSafeArea())
-            .navigationTitle("Community")
+            .navigationTitle("Classics")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {

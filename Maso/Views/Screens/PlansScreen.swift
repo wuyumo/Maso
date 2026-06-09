@@ -47,7 +47,7 @@ struct PlansScreen: View {
             ToolbarItem(placement: .principal) {
                 Picker("", selection: $discover.animation(.easeOut(duration: 0.18))) {
                     Text("AI").tag(DiscoverMode.ai)
-                    Text("Community").tag(DiscoverMode.community)
+                    Text("Classics").tag(DiscoverMode.community)
                 }
                 .pickerStyle(.segmented)
                 .frame(width: 200)
@@ -96,7 +96,7 @@ struct PlansScreen: View {
                 Text("No saved routines yet")
                     .font(.system(size: 16, weight: .bold))
                     .foregroundStyle(MasoColor.text)
-                Text("Generate one with AI or browse the community below, then tap Save.")
+                Text("Generate one with AI or browse Classics below, then tap Save.")
                     .font(.system(size: 12))
                     .foregroundStyle(MasoColor.textDim)
                     .multilineTextAlignment(.center)
@@ -213,7 +213,7 @@ struct PlansScreen: View {
                 communityFilterRow
                 let plans = filteredCommunityPlans
                 if plans.isEmpty {
-                    Text("No community routines match these filters.")
+                    Text("No Classics match these filters.")
                         .font(.system(size: 13))
                         .foregroundStyle(MasoColor.textDim)
                         .frame(maxWidth: .infinity)

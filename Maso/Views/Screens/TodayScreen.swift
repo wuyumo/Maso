@@ -212,7 +212,7 @@ struct TodayScreen: View {
             Text("No saved routines yet")
                 .font(.system(size: 15, weight: .bold))
                 .foregroundStyle(MasoColor.text)
-            Text("Browse AI & community routines in the Routines tab and tap + to save them here — or create your own.")
+            Text("Browse AI & Classics in the Routines tab and tap + to save them here — or create your own.")
                 .font(.system(size: 12))
                 .foregroundStyle(MasoColor.textDim)
                 .multilineTextAlignment(.center)

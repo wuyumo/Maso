@@ -563,9 +563,10 @@
 "Fresh" = "Fresh";
 
 /* ── Community (社区精选训练计划) ── */
-"Browse community plans" = "Browse community routines";
+"Browse community plans" = "Browse Classics";
+"Classics" = "Classics";
 "See what others train" = "See what others train";
-"Community" = "Community";
+"Community" = "Classics";
 "Curated workout plans. Add any to your library." = "Curated workout routines. Add any to your library.";
 "Want to publish your plan? Coming soon." = "Want to publish your routine? Coming soon.";
 "Want to share your plan? Open it in Plans → tap Share." = "Want to share your routine? Open it in Routines → tap Share.";
