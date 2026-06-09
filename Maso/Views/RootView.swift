@@ -26,7 +26,9 @@ extension View {
             .navigationTitle(LocalizedStringKey(title))
             .navigationBarTitleDisplayMode(.large)
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
+                // ToolbarItemGroup — trailing 闭包可放多个按钮 (各自独立 toolbar item, 系统统一间距),
+                // 跟 Plans tab 右上角两个按钮 (Exercises + Settings) 的组合方式一致.
+                ToolbarItemGroup(placement: .topBarTrailing) {
                     trailing()
                 }
             }
@@ -133,6 +135,12 @@ struct RootView: View {
                         mode: .full   // #IA: Today = 肌肉状态 + 今日推荐 + My Plans(saved) + Free workout
                     )
                     .screenHeader("Today") {
+                        // 右上角两个按钮 — Free workout + Settings, 组合方式跟 Plans tab 一致.
+                        Button(action: { quickWorkoutPresented = true }) {
+                            Image(systemName: "dumbbell.fill")
+                                .font(.system(size: 16, weight: .regular))
+                        }
+                        .accessibilityLabel("Free workout")
                         Button(action: { settingsPresented = true }) {
                             Image(systemName: "gearshape")
                                 .font(.system(size: 16, weight: .regular))

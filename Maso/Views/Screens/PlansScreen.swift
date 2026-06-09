@@ -692,7 +692,8 @@ struct PlanDetailSheet: View {
                 Section {
                     headerCard
                         .listRowSeparator(.hidden)
-                        .listRowInsets(EdgeInsets(top: 12, leading: 0, bottom: 20, trailing: 0))
+                        // top 28 — 标题离顶部留多点空间, 不顶着导航栏 (之前 12 太挤).
+                        .listRowInsets(EdgeInsets(top: 28, leading: 0, bottom: 20, trailing: 0))
                         .listRowBackground(Color.clear)
                 }
                 stepListSection
@@ -961,21 +962,24 @@ struct PlanDetailSheet: View {
     /// Tab 2 browse 预览的主 CTA — "★ Add to my plans". 跟 startWorkoutCTA 同视觉规格 (实心 accent 胶囊),
     /// icon/文案/action 不同. action (= onAddToSaved) 内部负责 save + 关 sheet (满额弹 paywall).
     private func addToPlansCTA(_ action: @escaping (Plan) -> Void) -> some View {
-        Button { action(draft) } label: {
+        // 已添加 → "✓ Added to My Plans" 灰态 + 不可点, 跟卡片外的"已添加"按钮状态保持一致.
+        let saved = data.isPlanSaved(draft)
+        return Button { if !saved { action(draft) } } label: {
             HStack(spacing: 8) {
-                Image(systemName: "star.fill")
+                Image(systemName: saved ? "checkmark" : "star.fill")
                     .font(.system(size: 14, weight: .heavy))
-                Text("Add to my plans")
+                Text(saved ? "Added to My Plans" : "Add to my plans")
                     .font(.system(size: 15, weight: .heavy))
             }
             .padding(.vertical, 13)
             .padding(.horizontal, 28)
-            .background(MasoColor.accent)
-            .foregroundStyle(.black)
+            .background(saved ? MasoColor.surfaceHi : MasoColor.accent)
+            .foregroundStyle(saved ? MasoColor.textDim : .black)
             .clipShape(Capsule())
-            .shadow(color: MasoColor.accent.opacity(0.35), radius: 8, y: 2)
+            .shadow(color: saved ? .clear : MasoColor.accent.opacity(0.35), radius: 8, y: 2)
         }
         .buttonStyle(.plain)
+        .disabled(saved)
         .padding(.top, 4)
     }
 
