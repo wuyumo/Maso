@@ -24,6 +24,9 @@ struct WorkoutCard: View {
     /// Tab 2 (Plans browse) 专用 — 设了这个 callback → 卡片底部出现 "★ 添加到我的计划" 主按钮,
     /// 同时隐藏右下角的 play 圆钮 (browse 语境主操作是"加进我的计划"而非"开始"). Tab 1 不传 → 行为不变.
     var addAction: (() -> Void)? = nil
+    /// Today's Workout 主卡专用 — true → accent 描边 + 绿色辉光, 跟弱化的 My Plans 计划卡拉开视觉层级
+    /// (两者之前样式几乎一样, 容易混淆).
+    var emphasized: Bool = false
 
     /// 被 LimitedFlowLayout 截断的 exercise pill 个数 — 用于动态构造 "+N more" 文案.
     /// Layout 在 placeSubviews 里通过 onTruncate callback async 写回, SwiftUI 下一轮 re-render
@@ -236,6 +239,14 @@ struct WorkoutCard: View {
         .onTapGesture { onShowDetail?() }
         .background(MasoColor.surface)
         .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
+        // emphasized (Today's Workout 主卡): accent 描边 + 绿色辉光, 跟 My Plans 弱化卡区分开.
+        .overlay {
+            if emphasized {
+                RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium)
+                    .stroke(MasoColor.accent.opacity(0.85), lineWidth: 1.5)
+            }
+        }
+        .shadow(color: emphasized ? MasoColor.accent.opacity(0.22) : .clear, radius: 12, y: 4)
     }
 }
 

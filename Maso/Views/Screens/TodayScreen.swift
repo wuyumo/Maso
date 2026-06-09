@@ -79,7 +79,8 @@ struct TodayScreen: View {
                             exById: data.exById,
                             kicker: "Today's Workout",
                             onStart: { onStart(plan) },
-                            onShowDetail: { detailPlan = plan }
+                            onShowDetail: { detailPlan = plan },
+                            emphasized: true   // accent 描边 + 辉光 — 跟下方 My Plans 弱化卡区分
                         )
                     }
 

@@ -33,24 +33,23 @@ struct PlansScreen: View {
     private var isPro: Bool { data.settings.isPro }
 
     var body: some View {
-        VStack(spacing: 10) {
-            // AI / Community 分段控件 — 系统默认 segmented, 收窄到 210, 居中.
-            // 标题走 inline (跟右上角按钮同一行), segmented 紧贴顶部上移 — 给下方卡片更多竖向空间.
-            Picker("", selection: $discover.animation(.easeOut(duration: 0.18))) {
-                Text("AI").tag(DiscoverMode.ai)
-                Text("Community").tag(DiscoverMode.community)
+        // 左右滑动可在 AI / Community 两页间切换 (paged TabView, 跟顶部导航栏 segmented 双向绑定).
+        TabView(selection: $discover.animation(.easeOut(duration: 0.22))) {
+            aiPage.tag(DiscoverMode.ai)
+            communityPage.tag(DiscoverMode.community)
+        }
+        .tabViewStyle(.page(indexDisplayMode: .never))
+        // AI / Community 切页控件移进导航栏 principal — 跟右上角 Exercises/Settings 按钮同一行齐平.
+        // 系统 .segmented 样式, 高度由导航栏统一控制 (自动跟那两个按钮对齐).
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                Picker("", selection: $discover.animation(.easeOut(duration: 0.18))) {
+                    Text("AI").tag(DiscoverMode.ai)
+                    Text("Community").tag(DiscoverMode.community)
+                }
+                .pickerStyle(.segmented)
+                .frame(width: 200)
             }
-            .pickerStyle(.segmented)
-            .frame(width: 210)
-            .frame(maxWidth: .infinity)
-            .padding(.top, 4)
-
-            // 左右滑动可在 AI / Community 两页间切换 (paged TabView, 跟 segmented 双向绑定).
-            TabView(selection: $discover.animation(.easeOut(duration: 0.22))) {
-                aiPage.tag(DiscoverMode.ai)
-                communityPage.tag(DiscoverMode.community)
-            }
-            .tabViewStyle(.page(indexDisplayMode: .never))
         }
         .background(MasoColor.background.ignoresSafeArea())
         // 每次进入按当前训练偏好现算 AI 计划 (改了 days/muscles/equipment 后回来即刷新).
