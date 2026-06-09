@@ -158,7 +158,7 @@ struct RootView: View {
                 .tint(MasoColor.text)
                 .safeAreaInset(edge: .bottom, spacing: 0) { miniBarContent }
                 .tabItem {
-                    Label("Discover", systemImage: "square.stack.3d.up.fill")
+                    Label("Plans", systemImage: "square.stack.3d.up.fill")
                 }
                 .tag(RootTab.plans)
 
@@ -710,7 +710,7 @@ private struct PlansTabScreen: View {
     var body: some View {
         NavigationStack {
             PlansScreen(onStart: onStart, onNewPlan: onNewPlan)
-                .navigationTitle("Discover")
+                .navigationTitle("Plans")
                 .navigationBarTitleDisplayMode(.large)
                 .toolbar {
                     // 右上角: Exercises 库 + Settings (Exercises 从 segmented 移到这里).
