@@ -1570,10 +1570,6 @@
     {
      "major": "back",
      "sub": "lats"
-    },
-    {
-     "major": "chest",
-     "sub": "middle_chest"
     }
    ],
    "secondary": [
@@ -1588,6 +1584,10 @@
     {
      "major": "core",
      "sub": "abs_upper"
+    },
+    {
+     "major": "chest",
+     "sub": "middle_chest"
     }
    ]
   },
@@ -5805,10 +5805,6 @@
     {
      "major": "legs",
      "sub": "quads"
-    },
-    {
-     "major": "chest",
-     "sub": "middle_chest"
     }
    ],
    "secondary": [
@@ -5827,6 +5823,10 @@
     {
      "major": "core",
      "sub": "abs_upper"
+    },
+    {
+     "major": "chest",
+     "sub": "middle_chest"
     }
    ]
   },
@@ -33031,10 +33031,6 @@
      "sub": "lats"
     },
     {
-     "major": "chest",
-     "sub": "middle_chest"
-    },
-    {
      "major": "arms",
      "sub": "triceps"
     }
@@ -33051,6 +33047,10 @@
     {
      "major": "core",
      "sub": "abs_upper"
+    },
+    {
+     "major": "chest",
+     "sub": "middle_chest"
     }
    ]
   },
@@ -33106,10 +33106,6 @@
      "sub": "lats"
     },
     {
-     "major": "chest",
-     "sub": "middle_chest"
-    },
-    {
      "major": "arms",
      "sub": "triceps"
     }
@@ -33126,6 +33122,10 @@
     {
      "major": "core",
      "sub": "abs_upper"
+    },
+    {
+     "major": "chest",
+     "sub": "middle_chest"
     }
    ]
   },
@@ -43988,16 +43988,16 @@
     {
      "major": "shoulders",
      "sub": "front_delt"
-    },
-    {
-     "major": "chest",
-     "sub": "middle_chest"
     }
    ],
    "secondary": [
     {
      "major": "back",
      "sub": "rhomboids"
+    },
+    {
+     "major": "chest",
+     "sub": "middle_chest"
     }
    ]
   },

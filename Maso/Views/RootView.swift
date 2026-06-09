@@ -135,12 +135,6 @@ struct RootView: View {
                         mode: .full   // #IA: Today = 肌肉状态 + 今日推荐 + My Plans(saved) + Free workout
                     )
                     .screenHeader("Today") {
-                        // 右上角两个按钮 — Free workout + Settings, 组合方式跟 Plans tab 一致.
-                        Button(action: { quickWorkoutPresented = true }) {
-                            Image(systemName: "dumbbell.fill")
-                                .font(.system(size: 16, weight: .regular))
-                        }
-                        .accessibilityLabel("Free workout")
                         Button(action: { settingsPresented = true }) {
                             Image(systemName: "gearshape")
                                 .font(.system(size: 16, weight: .regular))
