@@ -132,8 +132,9 @@ struct OnboardingScreen: View {
         data.settings.weeklyTrainingDays = daysPerWeek
         data.settings.wantStrengthen = Array(strengthen)
         data.settings.onboardingCompleted = true
-        // #IA: My Plans 默认空 — 不再自动塞推荐计划. 用户去 Discover 按偏好浏览 AI/社区计划,
-        // 主动 "+" 加进 Saved. 这里只持久化引导填的 profile + onboardingCompleted.
+        // 按 onboarding 偏好自动种几条 AI routine 进 My Routines —— 用户首次进 Today 就有内容,
+        // 不会高概率撞空状态; 之后还能去 Routines tab 浏览 AI/Classics 再加.
+        data.seedStarterRoutines()
         data.flushSave()
         onDone()
     }

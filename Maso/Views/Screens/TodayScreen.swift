@@ -205,33 +205,20 @@ struct TodayScreen: View {
     }
 
     private var plansEmptyState: some View {
-        VStack(spacing: 12) {
-            Image(systemName: "list.bullet.rectangle.portrait")
-                .font(.system(size: 30, weight: .regular))
-                .foregroundStyle(MasoColor.textFaint)
-            Text("No saved routines yet")
-                .font(.system(size: 15, weight: .bold))
-                .foregroundStyle(MasoColor.text)
-            Text("Browse AI & Classics in the Routines tab and tap + to save them here — or create your own.")
-                .font(.system(size: 12))
+        // 精简空态: 只一行提示去 Routines tab 拿 routines (按钮去掉了 — 整块可点跳过去).
+        VStack(spacing: 6) {
+            Text("No routines yet")
+                .font(.system(size: 14, weight: .bold))
                 .foregroundStyle(MasoColor.textDim)
+            Text("Add AI or Classic routines from the Routines tab.")
+                .font(.system(size: 12))
+                .foregroundStyle(MasoColor.textFaint)
                 .multilineTextAlignment(.center)
-            Button(action: onGoToDiscover) {
-                HStack(spacing: 6) {
-                    Image(systemName: "sparkles")
-                    Text("Generate AI routines")
-                }
-                .font(.system(size: 14, weight: .heavy))
-                .padding(.horizontal, 18).padding(.vertical, 10)
-                .background(MasoColor.accent)
-                .foregroundStyle(.black)
-                .clipShape(Capsule())
-            }
-            .buttonStyle(.plain)
-            .padding(.top, 4)
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, 28)
+        .padding(.vertical, 22)
+        .contentShape(Rectangle())
+        .onTapGesture { onGoToDiscover() }
     }
 
     /// 并排的小入口卡 (自由训练 / 社区).

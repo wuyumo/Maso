@@ -31,7 +31,7 @@ struct AddExerciseChoiceSheet: View {
 
                     Button(action: { Haptics.tap(); onCreateCustom() }) {
                         choiceCard(
-                            icon: "plus.rectangle.on.rectangle",
+                            icon: "square.and.pencil",
                             title: "Create your own",
                             subtitle: "Add a name, an image, and tag it to a muscle. Best for moves we don't have."
                         )
@@ -41,7 +41,7 @@ struct AddExerciseChoiceSheet: View {
 
                     Button(action: { Haptics.tap(); onBrowseNiche() }) {
                         choiceCard(
-                            icon: "questionmark.diamond",
+                            icon: "archivebox",
                             title: "Browse rare exercises",
                             subtitle: "Foam rolls, battle ropes, machine isolations and other specialized moves we corralled."
                         )
@@ -67,11 +67,11 @@ struct AddExerciseChoiceSheet: View {
     private func choiceCard(icon: String, title: LocalizedStringKey, subtitle: LocalizedStringKey) -> some View {
         HStack(alignment: .top, spacing: 14) {
             Image(systemName: icon)
-                .font(.system(size: 20, weight: .heavy))
+                .font(.system(size: 15, weight: .semibold))
                 .foregroundStyle(MasoColor.accent)
-                .frame(width: 36, height: 36)
+                .frame(width: 32, height: 32)
                 .background(MasoColor.accent.opacity(0.14))
-                .clipShape(RoundedRectangle(cornerRadius: 10))
+                .clipShape(RoundedRectangle(cornerRadius: 8))
             VStack(alignment: .leading, spacing: 4) {
                 Text(title)
                     .font(.system(size: 15, weight: .bold))
