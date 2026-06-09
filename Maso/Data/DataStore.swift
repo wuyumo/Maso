@@ -598,12 +598,12 @@ final class DataStore {
     }
 
     /// 把一个 plan (AI 生成 / 社区) save 到"我的计划" (Saved).
-    ///   - 已存在 (同 id) → 幂等成功, 不重复加.
+    ///   - 已存在 (同 名字+动作序列) → 幂等成功, 不重复加.
     ///   - 到达免费上限 → 不加, 返回 false (调用方弹 paywall).
     /// save 的是独立副本 (新 id + 时间戳), 之后用户编辑不影响来源.
     @discardableResult
     func savePlan(_ plan: Plan) -> Bool {
-        if plans.contains(where: { $0.id == plan.id }) { return true }
+        if isPlanSaved(plan) { return true }
         guard canSaveMorePlans else { return false }
         let now = Date()
         let copy = Plan(
@@ -618,6 +618,17 @@ final class DataStore {
         plans.append(copy)
         save()
         return true
+    }
+
+    /// 这个(来源)plan 是否已经在"我的计划"里. 存进去的是新 id 的独立副本, 不能用 id 比 —
+    /// 按 名字 + 动作序列 的内容签名匹配. 给 Tab 2 卡片"添加"按钮显示"已添加"态用 (响应式: plans 一变即更新).
+    func isPlanSaved(_ plan: Plan) -> Bool {
+        let sig = Self.planSignature(plan)
+        return plans.contains { Self.planSignature($0) == sig }
+    }
+
+    private static func planSignature(_ plan: Plan) -> String {
+        plan.name + "\u{1}" + plan.steps.map(\.exerciseId).joined(separator: ",")
     }
 
     /// 关 sheet 时调用 — 如果用户开了"新建"但一个动作都没加, 自动清理掉, 不留空 plan

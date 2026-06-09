@@ -224,7 +224,7 @@ struct WorkoutCard: View {
 
             // Tab 2 (Plans browse): 卡片底部全宽 "★ 添加到我的计划" 主按钮.
             if let addAction {
-                AddToPlansButton(action: addAction)
+                AddToPlansButton(isSaved: data.isPlanSaved(plan), action: addAction)
                     .padding(.horizontal, MasoMetrics.cardPadding)
                     .padding(.top, 14)
             }
@@ -261,23 +261,28 @@ private struct ExercisePill: View {
 /// 用 accent tinted 风格 (非实心): 它在卡片列表里重复出现, 实心会太吵; 详情页那个全宽 CTA 才用实心.
 /// 文案走本地化 key "Add to my plans" (en) / "添加到我的计划" (zh-Hans); icon 用五角星 star.fill.
 struct AddToPlansButton: View {
+    /// 该计划是否已在"我的计划"里 — true → 按钮变"已添加"态 (灰 ✓, 不可再点).
+    var isSaved: Bool = false
     var action: () -> Void
 
     var body: some View {
-        Button(action: action) {
+        Button(action: { if !isSaved { action() } }) {
             HStack(spacing: 6) {
-                Image(systemName: "star.fill")
+                Image(systemName: isSaved ? "checkmark" : "star.fill")
                     .font(.system(size: 12, weight: .bold))
-                Text("Add to my plans")
+                Text(isSaved ? "Added to My Plans" : "Add to my plans")
                     .font(.system(size: 13, weight: .bold))
             }
             // 包裹内容 (不撑满) → 小一号胶囊; 在卡片 VStack(.leading) 里自动靠左.
             .padding(.vertical, 8)
             .padding(.horizontal, 14)
-            .foregroundStyle(MasoColor.accent)
-            .background(MasoColor.accent.opacity(0.15))
+            // 未添加: accent 绿 (可操作); 已添加: 灰 (状态, 非操作).
+            .foregroundStyle(isSaved ? MasoColor.textDim : MasoColor.accent)
+            .background((isSaved ? MasoColor.textDim : MasoColor.accent).opacity(0.15))
             .clipShape(Capsule())
         }
         .buttonStyle(.plain)
+        .disabled(isSaved)
+        .animation(.easeOut(duration: 0.2), value: isSaved)
     }
 }
