@@ -46,17 +46,12 @@ struct ExerciseImage: View {
                         // 强调色调染 — 类似 Spotify album cover 的多色叠加
                         gradient.opacity(0.35).blendMode(.multiply)
                     )
-            } else if let photoURL, let url = URL(string: photoURL) {
-                // Pexels 单张静态图 — 加载中/失败回退到底层 category 渐变.
+            } else if let photoURL {
+                // Pexels 单张静态图 — 走共享 ExerciseImageCache (磁盘缓存 + CDN 镜像故障切换),
+                // 不再用 view-local AsyncImage (重复下载 + 无镜像切换 → 列表加载慢的主因之一).
                 // 轻一点的色染 (0.18 vs 0.35), 真实照片重叠太多会脏.
-                AsyncImage(url: url, transaction: Transaction(animation: .easeOut(duration: 0.2))) { phase in
-                    if let image = phase.image {
-                        image
-                            .resizable()
-                            .aspectRatio(contentMode: fitCustomImage ? .fit : .fill)
-                            .overlay(gradient.opacity(0.18).blendMode(.multiply))
-                    }
-                }
+                CachedPhotoImage(urlString: photoURL, fit: fitCustomImage)
+                    .overlay(gradient.opacity(0.18).blendMode(.multiply))
             }
         }
         .frame(width: size, height: size)
@@ -95,3 +90,33 @@ struct ExerciseImage: View {
 // 旧实现的问题: AsyncImage 两帧独立加载, 加载完成时机不同步, 切换那一刻闪烁;
 //             scaledToFill 在两张 intrinsic size 不同时算出不同 scale, 像素位置抖动.
 // 新实现: 共享 ExerciseImageCache 预加载 UIImage, 严格 GeometryReader + .frame 锚定 size.
+
+// MARK: - CachedPhotoImage — photoURL 单图, 走共享 ExerciseImageCache
+
+/// Pexels 单图加载 view — 同步先查内存 cache (无闪烁), miss 再 async 下载 (磁盘缓存 + 镜像切换).
+/// 出现/URL 变化时各触发一次加载; 失败静默 (底层 category 渐变兜底).
+private struct CachedPhotoImage: View {
+    let urlString: String
+    var fit: Bool = false
+
+    @State private var image: UIImage? = nil
+
+    var body: some View {
+        ZStack {
+            if let image {
+                Image(uiImage: image)
+                    .resizable()
+                    .aspectRatio(contentMode: fit ? .fit : .fill)
+                    .transition(.opacity)
+            }
+        }
+        .task(id: urlString) {
+            if let hit = ExerciseImageCache.shared.cachedURL(urlString) {
+                image = hit
+                return
+            }
+            let loaded = await ExerciseImageCache.shared.loadURL(urlString)
+            withAnimation(.easeOut(duration: 0.2)) { image = loaded }
+        }
+    }
+}
