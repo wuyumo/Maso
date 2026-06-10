@@ -58,6 +58,8 @@ struct RootView: View {
     @State private var router = AppRouter.shared
     @State private var playerPresented: Bool = false
     @State private var settingsPresented: Bool = false
+    /// Exercises tab 右上角 "+" → 翻 true, embedded ExerciseLibraryBrowser 监听后开"加动作"选择 sheet.
+    @State private var libraryAddRequested = false
     @State private var quickWorkoutPresented: Bool = false
     // DESIGN 5.3: 当用户尝试开第二个训练时, 用 plan 作为 pending 标记弹替换确认
     @State private var pendingReplacePlan: Plan?
@@ -81,8 +83,7 @@ struct RootView: View {
         guard !mode.isEmpty else { return }
         switch mode {
         case "library":
-            tab = .plans          // Plans tab
-            trainPage = .library  // 切到 Exercises 分页
+            tab = .library        // Exercises 独立 tab (#IA: 第 4 个底部 tab)
         case "history":
             tab = .history
         case "settings":
@@ -163,6 +164,30 @@ struct RootView: View {
                     Label("Plans", systemImage: "square.stack.3d.up.fill")
                 }
                 .tag(RootTab.plans)
+
+                // Exercises — 动作库独立 tab (#IA: Hevy/Strong 同款; 跟 Routines 相邻, "计划"簇).
+                // 内容类型跟 routine 集合不同 (原子动作百科), 不再挤在 Routines 的 segmented 里.
+                NavigationStack {
+                    ExerciseLibraryBrowser(asTab: true, embedded: true, addRequested: $libraryAddRequested)
+                        .screenHeader("Exercises") {
+                            Button { libraryAddRequested = true } label: {
+                                Image(systemName: "plus")
+                                    .font(.system(size: 16, weight: .regular))
+                            }
+                            .accessibilityLabel(NSLocalizedString("Add exercise", comment: ""))
+                            Button(action: { settingsPresented = true }) {
+                                Image(systemName: "gearshape")
+                                    .font(.system(size: 16, weight: .regular))
+                            }
+                            .accessibilityLabel("Settings")
+                        }
+                }
+                .tint(MasoColor.text)
+                .safeAreaInset(edge: .bottom, spacing: 0) { miniBarContent }
+                .tabItem {
+                    Label("Exercises", systemImage: "dumbbell.fill")
+                }
+                .tag(RootTab.library)
 
                 NavigationStack {
                     HistoryScreen(

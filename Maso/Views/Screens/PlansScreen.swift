@@ -19,9 +19,7 @@ struct PlansScreen: View {
     /// 新建空白计划 — RootView 注入 (走 paywall gating + 共享 sheet 容器).
     let onNewPlan: () -> Void
 
-    enum DiscoverMode: Hashable { case ai, community, exercises }
-    /// Exercises 分页里 embedded ExerciseLibraryBrowser 的 "+" 触发器 (导航栏 leading 的 + 翻 true).
-    @State private var libraryAddRequested = false
+    enum DiscoverMode: Hashable { case ai, community }
     @State private var discover: DiscoverMode = .ai
     /// 按偏好现生成的 AI 计划 (transient, 不进 data.plans 直到用户 Save).
     @State private var aiPlans: [Plan] = []
@@ -41,28 +39,18 @@ struct PlansScreen: View {
         TabView(selection: $discover.animation(.easeOut(duration: 0.22))) {
             aiPage.tag(DiscoverMode.ai)
             communityPage.tag(DiscoverMode.community)
-            exercisesPage.tag(DiscoverMode.exercises)
         }
         .tabViewStyle(.page(indexDisplayMode: .never))
-        // AI / Classics / Exercises 切页控件移进导航栏 principal — 居中, 跟右上角齿轮同一行.
+        // AI / Classics 切页控件在导航栏 principal — 居中, 跟右上角齿轮同一行.
+        // (Exercises 已升为独立底部 tab — 内容类型不同, 不跟 routine 集合挤一个 segmented.)
         .toolbar {
             ToolbarItem(placement: .principal) {
                 Picker("", selection: $discover.animation(.easeOut(duration: 0.18))) {
                     Text("AI").tag(DiscoverMode.ai)
                     Text("Classics").tag(DiscoverMode.community)
-                    Text("Exercises").tag(DiscoverMode.exercises)
                 }
                 .pickerStyle(.segmented)
-                .frame(width: 270)
-            }
-            // Exercises 分页: 左上角 "+" 加动作 (放 leading — 避免跟居中 3 段 + 右侧齿轮挤一起).
-            ToolbarItem(placement: .topBarLeading) {
-                if discover == .exercises {
-                    Button { libraryAddRequested = true } label: {
-                        Image(systemName: "plus").font(.system(size: 16, weight: .regular))
-                    }
-                    .accessibilityLabel(NSLocalizedString("Add exercise", comment: ""))
-                }
+                .frame(width: 200)
             }
         }
         .background(MasoColor.background.ignoresSafeArea())
@@ -238,12 +226,6 @@ struct PlansScreen: View {
             .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
             .padding(.top, 4)
         }
-    }
-
-    /// Exercises 分页 — 内嵌动作库 (asTab + embedded: 不自带 NavStack/标题, 由 Routines 导航栏接管).
-    /// 顶部 "+" 加动作走 libraryAddRequested binding.
-    private var exercisesPage: some View {
-        ExerciseLibraryBrowser(asTab: true, embedded: true, addRequested: $libraryAddRequested)
     }
 
     // MARK: - Community filters (#filters)
