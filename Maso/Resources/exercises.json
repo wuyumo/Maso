@@ -1,58 +1,5 @@
 [
  {
-  "id": "ab_crunch_machine",
-  "name": {
-   "en": "Ab Crunch (Machine)",
-   "zh-Hans": "腹肌器械"
-  },
-  "muscles": {
-   "primary": [
-    {
-     "major": "core",
-     "sub": "abs_upper"
-    }
-   ],
-   "secondary": [
-    {
-     "major": "core",
-     "sub": "abs_lower"
-    }
-   ]
-  },
-  "equipment": [
-   "machine"
-  ],
-  "category": "strength",
-  "movementPattern": null,
-  "mechanic": "isolation",
-  "unilateral": false,
-  "tempo": "hypertrophy",
-  "level": "beginner",
-  "force": "pull",
-  "imageFolder": "Ab_Crunch_Machine",
-  "instructions": {
-   "en": [
-    "Sit on machine, adjust pad to shoulders.",
-    "Crunch torso forward against resistance.",
-    "Squeeze abs, return under control."
-   ],
-   "zh-Hans": [
-    "坐器械上, 靠垫调至肩部.",
-    "对抗阻力向前卷腹.",
-    "腹部收紧, 控制返回."
-   ]
-  },
-  "calories_estimate": {
-   "low": 4,
-   "med": 6,
-   "high": 8
-  },
-  "danger_warnings": {
-   "en": [],
-   "zh-Hans": []
-  }
- },
- {
   "id": "ab_wheel_rollout_kneeling",
   "name": {
    "en": "Kneeling Ab Wheel Rollout",
@@ -14091,7 +14038,7 @@
  {
   "id": "dumbbell_curl_21s",
   "name": {
-   "en": "21s (Dumbbell Curl)",
+   "en": "21s Bicep Curl (Dumbbell)",
    "zh-Hans": "21次弯举 (哑铃)"
   },
   "muscles": {
@@ -14144,7 +14091,8 @@
     "用比平时轻的重量 — 疲劳度高."
    ]
   },
-  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/dumbbell_curl_21s.jpg"
+  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/dumbbell_curl_21s.jpg",
+  "niche": true
  },
  {
   "id": "dumbbell_curl_supinating",
@@ -27063,7 +27011,8 @@
   "danger_warnings": {
    "en": [],
    "zh-Hans": []
-  }
+  },
+  "niche": true
  },
  {
   "id": "lateral_raise_dumbbell_drop_set",
@@ -55116,7 +55065,7 @@
  {
   "id": "twenty_ones",
   "name": {
-   "en": "21s (Curl)",
+   "en": "21s Bicep Curl (Barbell)",
    "zh-Hans": "21次弯举"
   },
   "muscles": {
@@ -55173,7 +55122,8 @@
     "二头疲劳大 — 用轻重量."
    ]
   },
-  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/twenty_ones.jpg"
+  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/twenty_ones.jpg",
+  "niche": true
  },
  {
   "id": "upright_row_barbell",

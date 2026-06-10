@@ -142,9 +142,10 @@ struct GroupedExerciseRow<Trailing: View>: View {
 
                 VStack(alignment: .leading, spacing: isVariant ? 3 : 5) {
                     if isVariant {
-                        // 变种: 主文案 = 具体差异 (器械名 / 执行方式), 下方 = 分类标签 (彩色, 区分两类).
+                        // 变种: 主文案 = 完整动作名 ("Incline Push-Up" 而不是裸 "Incline" —
+                        // 裸修饰词当标题在大库里太晦涩, #lib-feedback), 下方 = 分类标签.
                         let diff = variantDiff(ex)
-                        Text(diff.text)
+                        Text(ex.displayName)
                             .font(.system(size: 13, weight: .bold))
                             .foregroundStyle(MasoColor.text)
                             .lineLimit(1)
