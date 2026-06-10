@@ -986,7 +986,8 @@
    "variation": null,
    "base": "Arch Hold",
    "equipment": null
-  }
+  },
+  "niche": true
  },
  {
   "id": "arm_circles",
@@ -1055,7 +1056,7 @@
  {
   "id": "arnold_curl",
   "name": {
-   "en": "Arnold · Curl",
+   "en": "Arnold Curl",
    "zh-Hans": "阿诺德弯举"
   },
   "muscles": {
@@ -1110,8 +1111,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "Arnold",
-   "base": "Curl",
+   "variation": null,
+   "base": "Arnold Curl",
    "equipment": null
   }
  },
@@ -4359,7 +4360,7 @@
  {
   "id": "bicep_curl_45_incline",
   "name": {
-   "en": "45° Incline · Curl",
+   "en": "45° · Incline Curl",
    "zh-Hans": "45度上斜弯举"
   },
   "muscles": {
@@ -4411,8 +4412,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "45° Incline",
-   "base": "Curl",
+   "variation": "45°",
+   "base": "Incline Curl",
    "equipment": null
   }
  },
