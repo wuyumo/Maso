@@ -41,15 +41,8 @@ struct ExerciseGroup: Hashable, Identifiable {
     /// zh 本地化: 组里存在"纯 base 成员"(无 variation 无 equipment) → 用它的 displayName (跟随语言);
     /// 没有纯成员 → 退英文 base.
     var entryTitle: String {
-        // 纯 base 成员 (无 variation 无 equipment) → 它的 displayName 就是"主动作"且跟随语言.
-        if let pure = all.first(where: { $0.nameParts != nil && $0.nameParts?.variation == nil && $0.nameParts?.equipment == nil }) {
-            return pure.displayName
-        }
-        // #首层无括号: 有 nameParts → 一律只显示主动作 base (器械在行内 chip + 展开 EQUIPMENT 节,
-        // variation 在展开 VARIATION 节). 中文环境下退英文 base — 接受 (首层整洁优先).
-        if canonical.nameParts != nil { return baseName }
-        // 自创动作 (无 nameParts) — 保留用户自己起的全名.
-        return canonical.displayName
+        // #flat: 平铺模式 — 行标题就是完整名 ("Variation · 主动作 (Equipment)"), 本地化跟随 displayName.
+        canonical.displayName
     }
 
     /// 这个 exercise 是不是"动作差异变种" (Variation), 区别于"器械差异变种" (Equipment).
@@ -362,42 +355,11 @@ enum ExerciseGrouping {
             return eBase
         }
 
-        var orderedKeys: [String] = []
-        var buckets: [String: [Exercise]] = [:]
-        for ex in exercises {
-            // #nameParts: 预切割的"主动作"字段是分组第一真理 — 同 base 全部收折
-            // ("Row (Cable)" + "Seated Row (Cable)" + "Row (Barbell)" → 一个 "Row" 组).
-            // 无 nameParts (自创动作) 回退老 contextualKey 启发式.
-            let key = ex.nameParts?.base ?? contextualKey(ex)
-            if buckets[key] == nil {
-                orderedKeys.append(key)
-                buckets[key] = []
-            }
-            buckets[key]?.append(ex)
-        }
-        return orderedKeys.compactMap { key -> ExerciseGroup? in
-            guard let items = buckets[key], !items.isEmpty else { return nil }
-            // canonical 选取:
-            //   0. #nameParts 纯 base 成员 (无 variation 无 equipment) — 真正的"基础动作"本体
-            //   1. name 严格等于 base 的那一项 (没括号 → 真正的"基础动作")
-            //   2. 没有裸基础名 (orphan group) → 按器械/机制优先级挑 + 最短名/字母序定序.
-            let canonical = items.first(where: { $0.nameParts != nil && $0.nameParts?.variation == nil && $0.nameParts?.equipment == nil })
-                ?? items.first(where: { $0.name == key })
-                ?? items.min(by: { a, b in
-                    let ra = canonicalRank(a), rb = canonicalRank(b)
-                    if ra != rb { return ra < rb }
-                    if a.name.count != b.name.count { return a.name.count < b.name.count }
-                    return a.name < b.name
-                })
-                ?? items[0]
-            // P1-8: 去掉跟 canonical 完全同 displayName 的"幽灵变种" (DB 里 17 对重名动作),
-            // 否则展开会看到两行一模一样的名字 + "+N" 计数虚高.
-            var seenNames = Set([canonical.displayName])
-            let variants = items.filter { v -> Bool in
-                guard v.id != canonical.id else { return false }
-                return seenNames.insert(v.displayName).inserted
-            }
-            return ExerciseGroup(baseName: key, canonical: canonical, variants: variants)
+        // #flat: 收折取消 — 每个动作一行 (名字自带三段信息 "Variation · 主动作 (Equipment)",
+        // 平铺列表自解释, 不再需要展开). 保留 ExerciseGroup API (singleton, variants 恒空),
+        // 调用方 (library / picker / rare 浏览) 零改动.
+        return exercises.map { ex in
+            ExerciseGroup(baseName: ex.nameParts?.base ?? baseName(of: ex), canonical: ex, variants: [])
         }
     }
 

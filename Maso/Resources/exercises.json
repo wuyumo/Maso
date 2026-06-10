@@ -2,7 +2,7 @@
  {
   "id": "ab_wheel_rollout_kneeling",
   "name": {
-   "en": "Kneeling Ab Wheel Rollout",
+   "en": "Kneeling · Ab Wheel Rollout",
    "zh-Hans": "跪姿腹轮"
   },
   "muscles": {
@@ -78,7 +78,7 @@
  {
   "id": "ab_wheel_rollout_standing",
   "name": {
-   "en": "Standing Ab Wheel Rollout",
+   "en": "Standing · Ab Wheel Rollout",
    "zh-Hans": "站姿腹轮"
   },
   "muscles": {
@@ -275,7 +275,7 @@
  {
   "id": "abductor_machine_lean_forward",
   "name": {
-   "en": "Hip Abduction (Machine, Lean-Forward)",
+   "en": "Lean-Forward · Hip Abduction (Machine)",
    "zh-Hans": "髋外展 (器械, 前倾)"
   },
   "muscles": {
@@ -336,7 +336,7 @@
  {
   "id": "abductor_machine_single",
   "name": {
-   "en": "Single-Leg Hip Abduction (Machine)",
+   "en": "Single-Leg · Hip Abduction (Machine)",
    "zh-Hans": "髋外展 (器械, 单腿)"
   },
   "muscles": {
@@ -508,7 +508,7 @@
  {
   "id": "adductor_machine_lean_forward",
   "name": {
-   "en": "Hip Adduction (Machine, Lean-Forward)",
+   "en": "Lean-Forward · Hip Adduction (Machine)",
    "zh-Hans": "髋内收 (器械, 前倾)"
   },
   "muscles": {
@@ -564,7 +564,7 @@
  {
   "id": "alternating_dumbbell_curl",
   "name": {
-   "en": "Alternating Curl (Dumbbell)",
+   "en": "Alternating · Curl (Dumbbell)",
    "zh-Hans": "交替哑铃弯举"
   },
   "muscles": {
@@ -1055,7 +1055,7 @@
  {
   "id": "arnold_curl",
   "name": {
-   "en": "Arnold Curl",
+   "en": "Arnold · Curl",
    "zh-Hans": "阿诺德弯举"
   },
   "muscles": {
@@ -1175,15 +1175,15 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "Arnold",
-   "base": "Press",
+   "variation": null,
+   "base": "Arnold Press",
    "equipment": null
   }
  },
  {
   "id": "arnold_press_seated",
   "name": {
-   "en": "Seated Arnold Press",
+   "en": "Seated · Arnold Press",
    "zh-Hans": "坐姿阿诺德推举"
   },
   "muscles": {
@@ -1239,8 +1239,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "Seated Arnold",
-   "base": "Press",
+   "variation": "Seated",
+   "base": "Arnold Press",
    "equipment": null
   }
  },
@@ -1512,15 +1512,15 @@
   },
   "niche": true,
   "nameParts": {
-   "variation": "Back",
-   "base": "Extension",
+   "variation": null,
+   "base": "Back Extension",
    "equipment": null
   }
  },
  {
   "id": "back_extension_45_degree",
   "name": {
-   "en": "Back Extension (45°)",
+   "en": "45° · Back Extension",
    "zh-Hans": "45度背伸"
   },
   "muscles": {
@@ -1576,8 +1576,8 @@
   },
   "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/back_extension_45_degree.jpg",
   "nameParts": {
-   "variation": "Back 45°",
-   "base": "Extension",
+   "variation": "45°",
+   "base": "Back Extension",
    "equipment": null
   }
  },
@@ -1636,8 +1636,8 @@
   "niche": true,
   "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/back_extension_swiss_ball.jpg",
   "nameParts": {
-   "variation": "Back",
-   "base": "Extension",
+   "variation": null,
+   "base": "Back Extension",
    "equipment": "Swiss Ball"
   }
  },
@@ -1714,15 +1714,15 @@
   "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/back_lever.jpg",
   "niche": true,
   "nameParts": {
-   "variation": "Back",
-   "base": "Lever",
+   "variation": null,
+   "base": "Back Lever",
    "equipment": null
   }
  },
  {
   "id": "back_widow_maker",
   "name": {
-   "en": "Lat Stretch (Hang)",
+   "en": "Hang · Lat Stretch",
    "zh-Hans": "背阔肌悬垂拉伸"
   },
   "muscles": {
@@ -1845,7 +1845,7 @@
  {
   "id": "banded_lateral_walk",
   "name": {
-   "en": "Banded Lateral Walk",
+   "en": "Banded · Lateral Walk",
    "zh-Hans": "弹力带侧走"
   },
   "muscles": {
@@ -1897,15 +1897,15 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "Banded Lateral",
-   "base": "Walk",
+   "variation": "Banded",
+   "base": "Lateral Walk",
    "equipment": null
   }
  },
  {
   "id": "banded_shoulder_dislocation",
   "name": {
-   "en": "Banded Shoulder Dislocation",
+   "en": "Banded · Shoulder Dislocation",
    "zh-Hans": "弹力带肩部脱开"
   },
   "muscles": {
@@ -2044,8 +2044,8 @@
   },
   "niche": true,
   "nameParts": {
-   "variation": "High",
-   "base": "Pull",
+   "variation": null,
+   "base": "High Pull",
    "equipment": "Barbell"
   }
  },
@@ -2259,7 +2259,7 @@
  {
   "id": "barbell_row_dead_stop",
   "name": {
-   "en": "Dead-Stop Row (Barbell)",
+   "en": "Dead-Stop · Row (Barbell)",
    "zh-Hans": "死停杠铃划船"
   },
   "muscles": {
@@ -2329,7 +2329,7 @@
  {
   "id": "barbell_row_one_arm",
   "name": {
-   "en": "Single-Arm Row (Barbell)",
+   "en": "Single-Arm · Row (Barbell)",
    "zh-Hans": "单臂杠铃划船"
   },
   "muscles": {
@@ -2399,7 +2399,7 @@
  {
   "id": "barbell_row_underhand",
   "name": {
-   "en": "Underhand Row (Barbell)",
+   "en": "Underhand · Row (Barbell)",
    "zh-Hans": "杠铃划船 (反握)"
   },
   "muscles": {
@@ -2474,7 +2474,7 @@
  {
   "id": "battle_rope_alternating",
   "name": {
-   "en": "Battle Rope (Alternating Waves)",
+   "en": "Alternating Waves · Battle Rope",
    "zh-Hans": "战绳 (交替波浪)"
   },
   "muscles": {
@@ -2545,7 +2545,7 @@
  {
   "id": "battle_rope_circles",
   "name": {
-   "en": "Battle Rope (Circles)",
+   "en": "Circles · Battle Rope",
    "zh-Hans": "战绳 (画圈)"
   },
   "muscles": {
@@ -2616,7 +2616,7 @@
  {
   "id": "battle_rope_double_waves",
   "name": {
-   "en": "Battle Rope (Double Waves)",
+   "en": "Double Waves · Battle Rope",
    "zh-Hans": "战绳 (双臂波浪)"
   },
   "muscles": {
@@ -2687,7 +2687,7 @@
  {
   "id": "battle_rope_single_arm",
   "name": {
-   "en": "Single-Arm Waves Battle Rope",
+   "en": "Single-Arm Waves · Battle Rope",
    "zh-Hans": "战绳 (单臂波浪)"
   },
   "muscles": {
@@ -2754,7 +2754,7 @@
  {
   "id": "battle_rope_slams",
   "name": {
-   "en": "Battle Rope (Slams)",
+   "en": "Slams · Battle Rope",
    "zh-Hans": "战绳 (砸绳)"
   },
   "muscles": {
@@ -2954,7 +2954,7 @@
  {
   "id": "behind_the_back_cable_curl",
   "name": {
-   "en": "Behind-the-Back Curl (Cable)",
+   "en": "Behind-the-Back · Curl (Cable)",
    "zh-Hans": "背后绳索弯举"
   },
   "muscles": {
@@ -3012,7 +3012,7 @@
  {
   "id": "behind_the_neck_press",
   "name": {
-   "en": "Behind-the-Neck Press",
+   "en": "Behind-the-Neck · Press",
    "zh-Hans": "颈后推举"
   },
   "muscles": {
@@ -3083,7 +3083,7 @@
  {
   "id": "behind_the_neck_press_smith",
   "name": {
-   "en": "Behind-the-Neck Press (Smith Machine)",
+   "en": "Behind-the-Neck · Press (Smith Machine)",
    "zh-Hans": "颈后推举 (史密斯机)"
   },
   "muscles": {
@@ -3284,7 +3284,7 @@
  {
   "id": "bench_dip_feet_elevated",
   "name": {
-   "en": "Feet-Elevated Bench Dip",
+   "en": "Feet-Elevated · Bench Dip",
    "zh-Hans": "抬腿椅上臂屈伸"
   },
   "muscles": {
@@ -3351,7 +3351,7 @@
  {
   "id": "bench_dip_weighted",
   "name": {
-   "en": "Weighted Bench Dip",
+   "en": "Weighted · Bench Dip",
    "zh-Hans": "椅上臂屈伸 (负重)"
   },
   "muscles": {
@@ -3419,7 +3419,7 @@
  {
   "id": "bench_press_alternating_dumbbell",
   "name": {
-   "en": "Alternating Bench Press (Dumbbell)",
+   "en": "Alternating · Bench Press (Dumbbell)",
    "zh-Hans": "交替卧推 (哑铃)"
   },
   "muscles": {
@@ -3621,7 +3621,7 @@
  {
   "id": "bench_press_close_grip",
   "name": {
-   "en": "Close-Grip Bench Press",
+   "en": "Close-Grip · Bench Press",
    "zh-Hans": "窄距卧推"
   },
   "muscles": {
@@ -3691,7 +3691,7 @@
  {
   "id": "bench_press_close_grip_smith",
   "name": {
-   "en": "Close-Grip Bench Press (Smith Machine)",
+   "en": "Close-Grip · Bench Press (Smith Machine)",
    "zh-Hans": "窄距卧推 (史密斯机)"
   },
   "muscles": {
@@ -3885,7 +3885,7 @@
  {
   "id": "bench_press_neutral_grip_dumbbell",
   "name": {
-   "en": "Neutral-Grip Bench Press (Dumbbell)",
+   "en": "Neutral-Grip · Bench Press (Dumbbell)",
    "zh-Hans": "中立握卧推 (哑铃)"
   },
   "muscles": {
@@ -3948,7 +3948,7 @@
  {
   "id": "bench_press_paused",
   "name": {
-   "en": "Paused Bench Press",
+   "en": "Paused · Bench Press",
    "zh-Hans": "暂停卧推"
   },
   "muscles": {
@@ -4017,7 +4017,7 @@
  {
   "id": "bench_press_single_arm_dumbbell",
   "name": {
-   "en": "Single-Arm Bench Press (Dumbbell)",
+   "en": "Single-Arm · Bench Press (Dumbbell)",
    "zh-Hans": "单臂卧推 (哑铃)"
   },
   "muscles": {
@@ -4151,7 +4151,7 @@
  {
   "id": "bench_press_wide_grip",
   "name": {
-   "en": "Wide-Grip Bench Press",
+   "en": "Wide-Grip · Bench Press",
    "zh-Hans": "宽距卧推"
   },
   "muscles": {
@@ -4359,7 +4359,7 @@
  {
   "id": "bicep_curl_45_incline",
   "name": {
-   "en": "45° Incline Curl",
+   "en": "45° Incline · Curl",
    "zh-Hans": "45度上斜弯举"
   },
   "muscles": {
@@ -4411,8 +4411,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": null,
-   "base": "45° Incline Curl",
+   "variation": "45° Incline",
+   "base": "Curl",
    "equipment": null
   }
  },
@@ -4607,7 +4607,7 @@
  {
   "id": "bicep_curl_close_grip",
   "name": {
-   "en": "Close Grip Bicep Curl",
+   "en": "Close Grip · Bicep Curl",
    "zh-Hans": "二头弯举 (窄握)"
   },
   "muscles": {
@@ -4862,7 +4862,7 @@
  {
   "id": "bicep_curl_high_cable",
   "name": {
-   "en": "High Curl (Cable)",
+   "en": "High · Curl (Cable)",
    "zh-Hans": "高位绳索弯举"
   },
   "muscles": {
@@ -4920,7 +4920,7 @@
  {
   "id": "bicep_curl_iso_hold",
   "name": {
-   "en": "Iso-Hold Curl (90°)",
+   "en": "90° · Iso-Hold Curl",
    "zh-Hans": "90度静力弯举"
   },
   "muscles": {
@@ -5046,7 +5046,7 @@
  {
   "id": "bicep_curl_lying_cable",
   "name": {
-   "en": "Lying Curl (Cable)",
+   "en": "Lying · Curl (Cable)",
    "zh-Hans": "卧姿绳索弯举"
   },
   "muscles": {
@@ -5163,7 +5163,7 @@
  {
   "id": "bicep_curl_machine_seated",
   "name": {
-   "en": "Seated Curl (Machine)",
+   "en": "Seated · Curl (Machine)",
    "zh-Hans": "坐姿弯举 (器械)"
   },
   "muscles": {
@@ -5284,7 +5284,7 @@
  {
   "id": "bicep_curl_single_arm",
   "name": {
-   "en": "Single-Arm Bicep Curl",
+   "en": "Single-Arm · Bicep Curl",
    "zh-Hans": "单臂二头弯举"
   },
   "muscles": {
@@ -5347,7 +5347,7 @@
  {
   "id": "bicep_curl_wide_grip",
   "name": {
-   "en": "Wide Grip Bicep Curl",
+   "en": "Wide Grip · Bicep Curl",
    "zh-Hans": "二头弯举 (宽握)"
   },
   "muscles": {
@@ -5600,7 +5600,7 @@
  {
   "id": "board_press_close_grip",
   "name": {
-   "en": "Close-Grip Board Press",
+   "en": "Close-Grip · Board Press",
    "zh-Hans": "窄距板上卧推"
   },
   "muscles": {
@@ -5884,7 +5884,7 @@
  {
   "id": "box_jump_depth",
   "name": {
-   "en": "Box Jump (Depth)",
+   "en": "Depth · Box Jump",
    "zh-Hans": "跳箱 (深度跳)"
   },
   "muscles": {
@@ -6177,7 +6177,7 @@
  {
   "id": "burpee_broad_jump",
   "name": {
-   "en": "Burpee (Broad Jump)",
+   "en": "Broad Jump · Burpee",
    "zh-Hans": "波比跳 (跳远)"
   },
   "muscles": {
@@ -6250,7 +6250,7 @@
  {
   "id": "burpee_no_pushup",
   "name": {
-   "en": "Burpee (No Push-Up)",
+   "en": "No Push-Up · Burpee",
    "zh-Hans": "波比跳 (无俯卧撑)"
   },
   "muscles": {
@@ -6449,7 +6449,7 @@
  {
   "id": "cable_chest_press_single_arm",
   "name": {
-   "en": "Single-Arm Chest Press (Cable)",
+   "en": "Single-Arm · Chest Press (Cable)",
    "zh-Hans": "单臂绳索推胸"
   },
   "muscles": {
@@ -6515,7 +6515,7 @@
  {
   "id": "cable_chest_press_standing",
   "name": {
-   "en": "Standing Chest Press (Cable)",
+   "en": "Standing · Chest Press (Cable)",
    "zh-Hans": "站姿绳索推胸"
   },
   "muscles": {
@@ -6581,7 +6581,7 @@
  {
   "id": "cable_crossover_high",
   "name": {
-   "en": "High to Low Crossover (Cable)",
+   "en": "High to Low · Crossover (Cable)",
    "zh-Hans": "绳索夹胸 (高位向下)"
   },
   "muscles": {
@@ -6640,7 +6640,7 @@
  {
   "id": "cable_crossover_low",
   "name": {
-   "en": "Low to High Crossover (Cable)",
+   "en": "Low to High · Crossover (Cable)",
    "zh-Hans": "绳索夹胸 (低位向上)"
   },
   "muscles": {
@@ -6699,7 +6699,7 @@
  {
   "id": "cable_crossover_mid",
   "name": {
-   "en": "Mid Crossover (Cable)",
+   "en": "Mid · Crossover (Cable)",
    "zh-Hans": "绳索夹胸 (中位)"
   },
   "muscles": {
@@ -6757,7 +6757,7 @@
  {
   "id": "cable_crossover_single_arm",
   "name": {
-   "en": "Single-Arm Crossover (Cable)",
+   "en": "Single-Arm · Crossover (Cable)",
    "zh-Hans": "单臂绳索夹胸"
   },
   "muscles": {
@@ -6869,7 +6869,7 @@
  {
   "id": "cable_extension_cross_body",
   "name": {
-   "en": "Cross-Body Triceps Extension (Cable)",
+   "en": "Cross-Body · Triceps Extension (Cable)",
    "zh-Hans": "跨体绳索三头伸展"
   },
   "muscles": {
@@ -6922,7 +6922,7 @@
  {
   "id": "cable_fly_decline",
   "name": {
-   "en": "Decline Chest Fly (Cable)",
+   "en": "Decline · Chest Fly (Cable)",
    "zh-Hans": "下斜飞鸟 (绳索)"
   },
   "muscles": {
@@ -7040,7 +7040,7 @@
  {
   "id": "cable_fly_high_to_low_single_arm",
   "name": {
-   "en": "Single-Arm High to Low Crossover (Cable)",
+   "en": "Single-Arm High to Low · Crossover (Cable)",
    "zh-Hans": "单臂绳索夹胸 (高位向下)"
   },
   "muscles": {
@@ -7098,7 +7098,7 @@
  {
   "id": "cable_fly_incline",
   "name": {
-   "en": "Incline Chest Fly (Cable)",
+   "en": "Incline · Chest Fly (Cable)",
    "zh-Hans": "上斜飞鸟 (绳索)"
   },
   "muscles": {
@@ -7158,7 +7158,7 @@
  {
   "id": "cable_fly_low_to_high_single_arm",
   "name": {
-   "en": "Single-Arm Low to High Crossover (Cable)",
+   "en": "Single-Arm Low to High · Crossover (Cable)",
    "zh-Hans": "单臂绳索夹胸 (低位向上)"
   },
   "muscles": {
@@ -7339,7 +7339,7 @@
  {
   "id": "cable_pullover_straight_arm",
   "name": {
-   "en": "Straight Arm Pullover (Cable)",
+   "en": "Straight Arm · Pullover (Cable)",
    "zh-Hans": "绳索直臂下拉"
   },
   "muscles": {
@@ -7401,7 +7401,7 @@
  {
   "id": "cable_row_face_pull_style",
   "name": {
-   "en": "Row (Cable, Face-Level)",
+   "en": "Face-Level · Row (Cable)",
    "zh-Hans": "绳索划船 (脸位)"
   },
   "muscles": {
@@ -7468,7 +7468,7 @@
  {
   "id": "cable_row_high",
   "name": {
-   "en": "High Row (Cable)",
+   "en": "High · Row (Cable)",
    "zh-Hans": "高位绳索划船"
   },
   "muscles": {
@@ -7538,7 +7538,7 @@
  {
   "id": "cable_row_kneeling",
   "name": {
-   "en": "Kneeling Row (Cable)",
+   "en": "Kneeling · Row (Cable)",
    "zh-Hans": "跪姿绳索划船"
   },
   "muscles": {
@@ -7600,7 +7600,7 @@
  {
   "id": "cable_row_low",
   "name": {
-   "en": "Low Row (Cable)",
+   "en": "Low · Row (Cable)",
    "zh-Hans": "低位绳索划船"
   },
   "muscles": {
@@ -7667,7 +7667,7 @@
  {
   "id": "cable_row_mid",
   "name": {
-   "en": "Mid Row (Cable)",
+   "en": "Mid · Row (Cable)",
    "zh-Hans": "中位绳索划船"
   },
   "muscles": {
@@ -7809,7 +7809,7 @@
  {
   "id": "cable_row_seated",
   "name": {
-   "en": "Seated Row (Cable)",
+   "en": "Seated · Row (Cable)",
    "zh-Hans": "坐姿绳索划船"
   },
   "muscles": {
@@ -7884,7 +7884,7 @@
  {
   "id": "cable_row_single_arm",
   "name": {
-   "en": "Single-Arm Row (Cable)",
+   "en": "Single-Arm · Row (Cable)",
    "zh-Hans": "单臂绳索划船"
   },
   "muscles": {
@@ -7954,7 +7954,7 @@
  {
   "id": "cable_row_wide_grip",
   "name": {
-   "en": "Wide-Grip Row (Cable)",
+   "en": "Wide-Grip · Row (Cable)",
    "zh-Hans": "绳索划船 (宽握)"
   },
   "muscles": {
@@ -8149,7 +8149,7 @@
  {
   "id": "calf_press_machine_45",
   "name": {
-   "en": "Calf Press (Hack Squat)",
+   "en": "Hack Squat · Calf Press",
    "zh-Hans": "提踵 (哈克深蹲机)"
   },
   "muscles": {
@@ -8559,7 +8559,7 @@
  {
   "id": "calf_raise_leg_press",
   "name": {
-   "en": "Calf Raise (Leg Press)",
+   "en": "Leg Press · Calf Raise",
    "zh-Hans": "提踵 (腿推机)"
   },
   "muscles": {
@@ -8618,7 +8618,7 @@
  {
   "id": "calf_raise_seated",
   "name": {
-   "en": "Seated Calf Raise",
+   "en": "Seated · Calf Raise",
    "zh-Hans": "提踵 (坐姿)"
   },
   "muscles": {
@@ -8674,7 +8674,7 @@
  {
   "id": "calf_raise_seated_dumbbell",
   "name": {
-   "en": "Seated Calf Raise (Dumbbell)",
+   "en": "Seated · Calf Raise (Dumbbell)",
    "zh-Hans": "提踵 (坐姿, 哑铃)"
   },
   "muscles": {
@@ -8730,7 +8730,7 @@
  {
   "id": "calf_raise_single_leg",
   "name": {
-   "en": "Single-Leg Calf Raise",
+   "en": "Single-Leg · Calf Raise",
    "zh-Hans": "单腿提踵"
   },
   "muscles": {
@@ -8785,7 +8785,7 @@
  {
   "id": "calf_raise_single_leg_dumbbell",
   "name": {
-   "en": "Single-Leg Calf Raise (Dumbbell)",
+   "en": "Single-Leg · Calf Raise (Dumbbell)",
    "zh-Hans": "单腿提踵 (哑铃)"
   },
   "muscles": {
@@ -8840,7 +8840,7 @@
  {
   "id": "calf_raise_smith_seated",
   "name": {
-   "en": "Seated Calf Raise (Smith Machine)",
+   "en": "Seated · Calf Raise (Smith Machine)",
    "zh-Hans": "提踵 (坐姿, 史密斯机)"
   },
   "muscles": {
@@ -8896,7 +8896,7 @@
  {
   "id": "calf_raise_standing",
   "name": {
-   "en": "Standing Calf Raise",
+   "en": "Standing · Calf Raise",
    "zh-Hans": "提踵 (站姿)"
   },
   "muscles": {
@@ -8952,7 +8952,7 @@
  {
   "id": "calf_raise_standing_barbell",
   "name": {
-   "en": "Standing Calf Raise (Barbell)",
+   "en": "Standing · Calf Raise (Barbell)",
    "zh-Hans": "提踵 (站姿, 杠铃)"
   },
   "muscles": {
@@ -9008,7 +9008,7 @@
  {
   "id": "calf_raise_standing_dumbbell",
   "name": {
-   "en": "Standing Calf Raise (Dumbbell)",
+   "en": "Standing · Calf Raise (Dumbbell)",
    "zh-Hans": "提踵 (站姿, 哑铃)"
   },
   "muscles": {
@@ -9063,7 +9063,7 @@
  {
   "id": "calf_raise_standing_machine",
   "name": {
-   "en": "Standing Calf Raise (Machine)",
+   "en": "Standing · Calf Raise (Machine)",
    "zh-Hans": "提踵 (站姿, 器械)"
   },
   "muscles": {
@@ -9118,7 +9118,7 @@
  {
   "id": "calf_raise_standing_single_machine",
   "name": {
-   "en": "Single-Leg Calf Raise (Machine)",
+   "en": "Single-Leg · Calf Raise (Machine)",
    "zh-Hans": "单腿提踵 (器械)"
   },
   "muscles": {
@@ -9173,7 +9173,7 @@
  {
   "id": "calf_raise_standing_smith",
   "name": {
-   "en": "Standing Calf Raise (Smith Machine)",
+   "en": "Standing · Calf Raise (Smith Machine)",
    "zh-Hans": "提踵 (站姿, 史密斯机)"
   },
   "muscles": {
@@ -9228,7 +9228,7 @@
  {
   "id": "calf_stretch_downward_dog",
   "name": {
-   "en": "Calf Stretch (Downward Dog)",
+   "en": "Downward Dog · Calf Stretch",
    "zh-Hans": "小腿拉伸 (下犬式)"
   },
   "muscles": {
@@ -9542,7 +9542,7 @@
  {
   "id": "chest_press_cable_bilateral_seated",
   "name": {
-   "en": "Seated Chest Press (Cable)",
+   "en": "Seated · Chest Press (Cable)",
    "zh-Hans": "坐姿绳索推胸"
   },
   "muscles": {
@@ -9730,7 +9730,7 @@
  {
   "id": "chest_press_unilateral_machine_alternating",
   "name": {
-   "en": "Alternating Chest Press (Machine)",
+   "en": "Alternating · Chest Press (Machine)",
    "zh-Hans": "交替推胸 (器械)"
   },
   "muscles": {
@@ -9797,7 +9797,7 @@
  {
   "id": "chest_stretch_doorway",
   "name": {
-   "en": "Chest Stretch (Doorway)",
+   "en": "Doorway · Chest Stretch",
    "zh-Hans": "胸肌拉伸 (门框)"
   },
   "muscles": {
@@ -9919,7 +9919,7 @@
  {
   "id": "chest_supported_dumbbell_press",
   "name": {
-   "en": "Chest-Supported Press (Dumbbell)",
+   "en": "Chest-Supported · Press (Dumbbell)",
    "zh-Hans": "胸托哑铃推胸"
   },
   "muscles": {
@@ -10305,7 +10305,7 @@
  {
   "id": "chin_up_weighted",
   "name": {
-   "en": "Weighted Chin-Up",
+   "en": "Weighted · Chin-Up",
    "zh-Hans": "反握引体向上 (负重)"
   },
   "muscles": {
@@ -10437,7 +10437,7 @@
  {
   "id": "clamshell_banded",
   "name": {
-   "en": "Banded Clamshell",
+   "en": "Banded · Clamshell",
    "zh-Hans": "蚌式开合 (弹力带)"
   },
   "muscles": {
@@ -10575,7 +10575,7 @@
  {
   "id": "close_grip_push_up_deficit",
   "name": {
-   "en": "Deficit Close-Grip Push-Up",
+   "en": "Deficit Close-Grip · Push-Up",
    "zh-Hans": "幅度窄距俯卧撑"
   },
   "muscles": {
@@ -10701,7 +10701,7 @@
  {
   "id": "concentration_curl",
   "name": {
-   "en": "Concentration Curl",
+   "en": "Concentration · Curl",
    "zh-Hans": "集中弯举"
   },
   "muscles": {
@@ -10760,7 +10760,7 @@
  {
   "id": "concentration_curl_cable",
   "name": {
-   "en": "Concentration Curl (Cable)",
+   "en": "Concentration · Curl (Cable)",
    "zh-Hans": "集中弯举 (绳索)"
   },
   "muscles": {
@@ -11023,7 +11023,7 @@
  {
   "id": "cossack_squat_mobility",
   "name": {
-   "en": "Cossack Squat (Mobility)",
+   "en": "Mobility · Cossack Squat",
    "zh-Hans": "哥萨克蹲 (灵活性)"
   },
   "muscles": {
@@ -11285,7 +11285,7 @@
  {
   "id": "cross_body_hammer_curl",
   "name": {
-   "en": "Cross-Body Hammer Curl",
+   "en": "Cross-Body Hammer · Curl",
    "zh-Hans": "交叉锤式弯举"
   },
   "muscles": {
@@ -11528,7 +11528,7 @@
  {
   "id": "crunch_decline",
   "name": {
-   "en": "Decline Crunch",
+   "en": "Decline · Crunch",
    "zh-Hans": "卷腹 (下斜)"
   },
   "muscles": {
@@ -11702,15 +11702,15 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "Reverse",
-   "base": "Crunch",
+   "variation": null,
+   "base": "Reverse Crunch",
    "equipment": null
   }
  },
  {
   "id": "crunch_weighted",
   "name": {
-   "en": "Weighted Crunch",
+   "en": "Weighted · Crunch",
    "zh-Hans": "负重卷腹"
   },
   "muscles": {
@@ -11903,7 +11903,7 @@
  {
   "id": "cycling_indoor_sprint",
   "name": {
-   "en": "Cycling (Indoor Sprint)",
+   "en": "Indoor Sprint · Cycling",
    "zh-Hans": "骑行 (室内冲刺)"
   },
   "muscles": {
@@ -11974,7 +11974,7 @@
  {
   "id": "cycling_mountain",
   "name": {
-   "en": "Cycling (Mountain)",
+   "en": "Mountain · Cycling",
    "zh-Hans": "骑行 (山地)"
   },
   "muscles": {
@@ -12055,7 +12055,7 @@
  {
   "id": "cycling_outdoor",
   "name": {
-   "en": "Cycling (Outdoor)",
+   "en": "Outdoor · Cycling",
    "zh-Hans": "骑行 (室外)"
   },
   "muscles": {
@@ -12254,7 +12254,7 @@
  {
   "id": "dead_hang_one_arm",
   "name": {
-   "en": "Single-Arm Dead Hang",
+   "en": "Single-Arm · Dead Hang",
    "zh-Hans": "单臂悬垂"
   },
   "muscles": {
@@ -12401,7 +12401,7 @@
  {
   "id": "deadlift_deficit",
   "name": {
-   "en": "Deficit Deadlift",
+   "en": "Deficit · Deadlift",
    "zh-Hans": "赤字硬拉"
   },
   "muscles": {
@@ -12810,7 +12810,7 @@
  {
   "id": "deadlift_sumo",
   "name": {
-   "en": "Sumo Deadlift",
+   "en": "Sumo · Deadlift",
    "zh-Hans": "相扑硬拉"
   },
   "muscles": {
@@ -12889,7 +12889,7 @@
  {
   "id": "deadlift_sumo_dumbbell",
   "name": {
-   "en": "Sumo Deadlift (Dumbbell)",
+   "en": "Sumo · Deadlift (Dumbbell)",
    "zh-Hans": "硬拉 (相扑, 哑铃)"
   },
   "muscles": {
@@ -13031,7 +13031,7 @@
  {
   "id": "decline_bench_press_barbell",
   "name": {
-   "en": "Decline Bench Press",
+   "en": "Decline · Bench Press",
    "zh-Hans": "下斜卧推"
   },
   "muscles": {
@@ -13101,7 +13101,7 @@
  {
   "id": "decline_bench_press_dumbbell",
   "name": {
-   "en": "Decline Bench Press (Dumbbell)",
+   "en": "Decline · Bench Press (Dumbbell)",
    "zh-Hans": "下斜卧推 (哑铃)"
   },
   "muscles": {
@@ -13169,7 +13169,7 @@
  {
   "id": "decline_bench_press_machine",
   "name": {
-   "en": "Decline Chest Press (Machine)",
+   "en": "Decline · Chest Press (Machine)",
    "zh-Hans": "下斜卧推 (器械)"
   },
   "muscles": {
@@ -13231,7 +13231,7 @@
  {
   "id": "decline_bench_press_smith",
   "name": {
-   "en": "Decline Bench Press (Smith Machine)",
+   "en": "Decline · Bench Press (Smith Machine)",
    "zh-Hans": "下斜卧推 (史密斯机)"
   },
   "muscles": {
@@ -13294,7 +13294,7 @@
  {
   "id": "decline_cable_chest_press_standing",
   "name": {
-   "en": "Standing High Chest Press (Cable)",
+   "en": "Standing High · Chest Press (Cable)",
    "zh-Hans": "站姿高位绳索推胸"
   },
   "muscles": {
@@ -13356,7 +13356,7 @@
  {
   "id": "deep_squat_hold",
   "name": {
-   "en": "Deep Squat Hold",
+   "en": "Deep · Squat Hold",
    "zh-Hans": "深蹲保持"
   },
   "muscles": {
@@ -13428,7 +13428,7 @@
  {
   "id": "depth_drop_landing",
   "name": {
-   "en": "Depth Drop (Landing)",
+   "en": "Depth Landing · Drop",
    "zh-Hans": "深度落地"
   },
   "muscles": {
@@ -13492,15 +13492,15 @@
   "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/depth_drop_landing.jpg",
   "niche": true,
   "nameParts": {
-   "variation": "Landing",
-   "base": "Depth Drop",
+   "variation": "Depth Landing",
+   "base": "Drop",
    "equipment": null
   }
  },
  {
   "id": "depth_jump",
   "name": {
-   "en": "Depth Jump",
+   "en": "Depth · Jump",
    "zh-Hans": "深度跳"
   },
   "muscles": {
@@ -13567,15 +13567,15 @@
   },
   "niche": true,
   "nameParts": {
-   "variation": null,
-   "base": "Depth Jump",
+   "variation": "Depth",
+   "base": "Jump",
    "equipment": null
   }
  },
  {
   "id": "dip_assisted_machine",
   "name": {
-   "en": "Assisted Dip (Machine)",
+   "en": "Assisted · Dip (Machine)",
    "zh-Hans": "助力双杠臂屈伸 (器械)"
   },
   "muscles": {
@@ -13775,7 +13775,7 @@
  {
   "id": "dip_chest_weighted",
   "name": {
-   "en": "Weighted Chest Dip",
+   "en": "Weighted · Chest Dip",
    "zh-Hans": "负重双杠臂屈伸 (胸版)"
   },
   "muscles": {
@@ -14113,7 +14113,7 @@
  {
   "id": "dip_parallel_bar_triceps_weighted",
   "name": {
-   "en": "Weighted Triceps Dip (Parallel Bars)",
+   "en": "Weighted · Triceps Dip (Parallel Bars)",
    "zh-Hans": "双杠臂屈伸 (三头版, 负重)"
   },
   "muscles": {
@@ -14513,7 +14513,7 @@
  {
   "id": "donkey_kick_banded",
   "name": {
-   "en": "Banded Donkey Kick",
+   "en": "Banded · Donkey Kick",
    "zh-Hans": "驴踢 (弹力带)"
   },
   "muscles": {
@@ -15037,7 +15037,7 @@
  {
   "id": "dumbbell_fly_decline",
   "name": {
-   "en": "Decline Chest Fly (Dumbbell)",
+   "en": "Decline · Chest Fly (Dumbbell)",
    "zh-Hans": "下斜飞鸟 (哑铃)"
   },
   "muscles": {
@@ -15161,7 +15161,7 @@
  {
   "id": "dumbbell_fly_incline",
   "name": {
-   "en": "Incline Chest Fly (Dumbbell)",
+   "en": "Incline · Chest Fly (Dumbbell)",
    "zh-Hans": "上斜飞鸟 (哑铃)"
   },
   "muscles": {
@@ -15279,7 +15279,7 @@
  {
   "id": "dumbbell_press_floor_single_arm",
   "name": {
-   "en": "Single-Arm Floor Press (Dumbbell)",
+   "en": "Single-Arm · Floor Press (Dumbbell)",
    "zh-Hans": "单臂地板卧推 (哑铃)"
   },
   "muscles": {
@@ -15333,8 +15333,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "Single-Arm Floor",
-   "base": "Press",
+   "variation": "Single-Arm",
+   "base": "Floor Press",
    "equipment": "Dumbbell"
   }
  },
@@ -15618,7 +15618,7 @@
  {
   "id": "dumbbell_row_chest_supported",
   "name": {
-   "en": "Chest Supported Row (Dumbbell)",
+   "en": "Chest Supported · Row (Dumbbell)",
    "zh-Hans": "哑铃划船 (胸支撑)"
   },
   "muscles": {
@@ -15689,7 +15689,7 @@
  {
   "id": "dumbbell_row_seated",
   "name": {
-   "en": "Seated Row (Dumbbell)",
+   "en": "Seated · Row (Dumbbell)",
    "zh-Hans": "坐姿哑铃划船"
   },
   "muscles": {
@@ -15756,7 +15756,7 @@
  {
   "id": "dumbbell_row_single_arm",
   "name": {
-   "en": "Single-Arm Row (Dumbbell)",
+   "en": "Single-Arm · Row (Dumbbell)",
    "zh-Hans": "单臂哑铃划船"
   },
   "muscles": {
@@ -16036,7 +16036,7 @@
  {
   "id": "explosive_bench_press",
   "name": {
-   "en": "Speed Bench Press",
+   "en": "Speed · Bench Press",
    "zh-Hans": "速度卧推"
   },
   "muscles": {
@@ -16355,7 +16355,7 @@
  {
   "id": "ez_bar_preacher_reverse_curl",
   "name": {
-   "en": "Preacher Reverse Curl (EZ-Bar)",
+   "en": "Preacher · Reverse Curl (EZ-Bar)",
    "zh-Hans": "牧师反握弯举 (EZ杆)"
   },
   "muscles": {
@@ -16411,8 +16411,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "Preacher Reverse",
-   "base": "Curl",
+   "variation": "Preacher",
+   "base": "Reverse Curl",
    "equipment": "EZ-Bar"
   }
  },
@@ -16615,7 +16615,7 @@
  {
   "id": "face_pull_rope_high",
   "name": {
-   "en": "High Face Pull (Cable)",
+   "en": "High · Face Pull (Cable)",
    "zh-Hans": "高位面拉 (绳索)"
   },
   "muscles": {
@@ -16680,7 +16680,7 @@
  {
   "id": "face_pull_seated",
   "name": {
-   "en": "Seated Face Pull (Cable)",
+   "en": "Seated · Face Pull (Cable)",
    "zh-Hans": "坐姿面拉 (绳索)"
   },
   "muscles": {
@@ -16746,7 +16746,7 @@
  {
   "id": "farmer_carry_cardio",
   "name": {
-   "en": "Farmer Carry (Cardio)",
+   "en": "Cardio · Farmer Carry",
    "zh-Hans": "农夫行走 (有氧)"
   },
   "muscles": {
@@ -17273,7 +17273,7 @@
  {
   "id": "fire_hydrant_banded",
   "name": {
-   "en": "Banded Fire Hydrant",
+   "en": "Banded · Fire Hydrant",
    "zh-Hans": "消防栓 (弹力带)"
   },
   "muscles": {
@@ -17392,15 +17392,15 @@
    ]
   },
   "nameParts": {
-   "variation": "Floor",
-   "base": "Press",
+   "variation": null,
+   "base": "Floor Press",
    "equipment": null
   }
  },
  {
   "id": "floor_press_close_grip",
   "name": {
-   "en": "Close-Grip Floor Press",
+   "en": "Close-Grip · Floor Press",
    "zh-Hans": "窄距地板卧推"
   },
   "muscles": {
@@ -17458,8 +17458,8 @@
    ]
   },
   "nameParts": {
-   "variation": "Close-Grip Floor",
-   "base": "Press",
+   "variation": "Close-Grip",
+   "base": "Floor Press",
    "equipment": null
   }
  },
@@ -17520,8 +17520,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "Floor",
-   "base": "Press",
+   "variation": null,
+   "base": "Floor Press",
    "equipment": "Dumbbell"
   }
  },
@@ -18102,9 +18102,9 @@
   "niche": true,
   "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/foam_roll_thoracic_extension.jpg",
   "nameParts": {
-   "variation": "Foam Roller",
+   "variation": null,
    "base": "Thoracic Extension",
-   "equipment": null
+   "equipment": "Foam Roller"
   }
  },
  {
@@ -18490,15 +18490,15 @@
   "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/front_lever_full.jpg",
   "niche": true,
   "nameParts": {
-   "variation": "Front",
-   "base": "Lever",
+   "variation": null,
+   "base": "Front Lever",
    "equipment": null
   }
  },
  {
   "id": "front_lever_tuck",
   "name": {
-   "en": "Tuck Front Lever",
+   "en": "Tuck · Front Lever",
    "zh-Hans": "前水平 (团身)"
   },
   "muscles": {
@@ -18566,8 +18566,8 @@
   "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/front_lever_tuck.jpg",
   "niche": true,
   "nameParts": {
-   "variation": "Tuck Front",
-   "base": "Lever",
+   "variation": "Tuck",
+   "base": "Front Lever",
    "equipment": null
   }
  },
@@ -18625,8 +18625,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "Front",
-   "base": "Raise",
+   "variation": null,
+   "base": "Front Raise",
    "equipment": "Band"
   }
  },
@@ -18691,8 +18691,8 @@
    ]
   },
   "nameParts": {
-   "variation": "Front",
-   "base": "Raise",
+   "variation": null,
+   "base": "Front Raise",
    "equipment": "Barbell"
   }
  },
@@ -18751,8 +18751,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "Front",
-   "base": "Raise",
+   "variation": null,
+   "base": "Front Raise",
    "equipment": "Cable"
   }
  },
@@ -18811,8 +18811,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "Front",
-   "base": "Raise",
+   "variation": null,
+   "base": "Front Raise",
    "equipment": "Rope"
   }
  },
@@ -18876,15 +18876,15 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "Front",
-   "base": "Raise",
+   "variation": null,
+   "base": "Front Raise",
    "equipment": "Dumbbell"
   }
  },
  {
   "id": "front_raise_dumbbell_alternating",
   "name": {
-   "en": "Alternating Front Raise (Dumbbell)",
+   "en": "Alternating · Front Raise (Dumbbell)",
    "zh-Hans": "交替前平举 (哑铃)"
   },
   "muscles": {
@@ -18936,8 +18936,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "Alternating Front",
-   "base": "Raise",
+   "variation": "Alternating",
+   "base": "Front Raise",
    "equipment": "Dumbbell"
   }
  },
@@ -19006,7 +19006,7 @@
  {
   "id": "front_raise_dumbbell_incline",
   "name": {
-   "en": "Incline Front Raise (Dumbbell)",
+   "en": "Incline · Front Raise (Dumbbell)",
    "zh-Hans": "上斜前平举 (哑铃)"
   },
   "muscles": {
@@ -19060,8 +19060,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "Incline Front",
-   "base": "Raise",
+   "variation": "Incline",
+   "base": "Front Raise",
    "equipment": "Dumbbell"
   }
  },
@@ -19127,7 +19127,7 @@
  {
   "id": "front_raise_dumbbell_single",
   "name": {
-   "en": "Single-Arm Front Raise (Dumbbell)",
+   "en": "Single-Arm · Front Raise (Dumbbell)",
    "zh-Hans": "单臂前平举 (哑铃)"
   },
   "muscles": {
@@ -19178,8 +19178,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "Single-Arm Front",
-   "base": "Raise",
+   "variation": "Single-Arm",
+   "base": "Front Raise",
    "equipment": "Dumbbell"
   }
  },
@@ -19236,8 +19236,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "Front",
-   "base": "Raise",
+   "variation": null,
+   "base": "Front Raise",
    "equipment": "EZ-Bar"
   }
  },
@@ -19294,8 +19294,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "Front",
-   "base": "Raise",
+   "variation": null,
+   "base": "Front Raise",
    "equipment": "Kettlebell"
   }
  },
@@ -19357,8 +19357,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "Front",
-   "base": "Raise",
+   "variation": null,
+   "base": "Front Raise",
    "equipment": "Landmine"
   }
  },
@@ -19419,8 +19419,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "Front",
-   "base": "Raise",
+   "variation": null,
+   "base": "Front Raise",
    "equipment": "Plate"
   }
  },
@@ -19492,7 +19492,7 @@
  {
   "id": "glute_bridge_banded",
   "name": {
-   "en": "Banded Glute Bridge",
+   "en": "Banded · Glute Bridge",
    "zh-Hans": "臀桥 (弹力带)"
   },
   "muscles": {
@@ -19681,7 +19681,7 @@
  {
   "id": "glute_bridge_elevated",
   "name": {
-   "en": "Elevated Glute Bridge",
+   "en": "Elevated · Glute Bridge",
    "zh-Hans": "臀桥 (抬高)"
   },
   "muscles": {
@@ -19806,7 +19806,7 @@
  {
   "id": "glute_bridge_single_leg",
   "name": {
-   "en": "Single-Leg Glute Bridge",
+   "en": "Single-Leg · Glute Bridge",
    "zh-Hans": "单腿臀桥"
   },
   "muscles": {
@@ -19999,7 +19999,7 @@
  {
   "id": "glute_kickback_cable_single",
   "name": {
-   "en": "Glute Kickback (Cable, Bent-Knee)",
+   "en": "Bent-Knee · Glute Kickback (Cable)",
    "zh-Hans": "臀部后踢 (绳索, 屈膝)"
   },
   "muscles": {
@@ -20120,7 +20120,7 @@
  {
   "id": "glute_stretch_supine",
   "name": {
-   "en": "Supine Glute Stretch",
+   "en": "Supine · Glute Stretch",
    "zh-Hans": "臀肌拉伸 (仰卧)"
   },
   "muscles": {
@@ -20377,7 +20377,7 @@
  {
   "id": "good_morning_seated",
   "name": {
-   "en": "Seated Good Morning",
+   "en": "Seated · Good Morning",
    "zh-Hans": "早安式 (坐姿)"
   },
   "muscles": {
@@ -20775,8 +20775,8 @@
    ]
   },
   "nameParts": {
-   "variation": "Hack",
-   "base": "Squat",
+   "variation": null,
+   "base": "Hack Squat",
    "equipment": "Barbell"
   }
  },
@@ -20848,15 +20848,15 @@
    ]
   },
   "nameParts": {
-   "variation": "Hack",
-   "base": "Squat",
+   "variation": null,
+   "base": "Hack Squat",
    "equipment": "Machine"
   }
  },
  {
   "id": "hammer_curl",
   "name": {
-   "en": "Hammer Curl",
+   "en": "Hammer · Curl",
    "zh-Hans": "锤式弯举"
   },
   "muscles": {
@@ -20919,7 +20919,7 @@
  {
   "id": "hammer_curl_cable",
   "name": {
-   "en": "Hammer Curl (Cable)",
+   "en": "Hammer · Curl (Cable)",
    "zh-Hans": "锤式弯举 (绳索)"
   },
   "muscles": {
@@ -20981,7 +20981,7 @@
  {
   "id": "hammer_curl_rope",
   "name": {
-   "en": "Hammer Curl (Rope)",
+   "en": "Hammer · Curl (Rope)",
    "zh-Hans": "锤式弯举 (绳)"
   },
   "muscles": {
@@ -21151,9 +21151,9 @@
   },
   "niche": true,
   "nameParts": {
-   "variation": "Sliders",
+   "variation": null,
    "base": "Hamstring Curl",
-   "equipment": null
+   "equipment": "Sliders"
   }
  },
  {
@@ -21224,7 +21224,7 @@
  {
   "id": "hamstring_stretch_seated",
   "name": {
-   "en": "Seated Hamstring Stretch",
+   "en": "Seated · Hamstring Stretch",
    "zh-Hans": "腘绳肌拉伸 (坐姿)"
   },
   "muscles": {
@@ -21284,7 +21284,7 @@
  {
   "id": "hamstring_stretch_standing",
   "name": {
-   "en": "Hamstring Stretch (Standing Toe Touch)",
+   "en": "Standing Toe Touch · Hamstring Stretch",
    "zh-Hans": "腘绳肌拉伸 (站姿触脚)"
   },
   "muscles": {
@@ -21347,7 +21347,7 @@
  {
   "id": "hamstring_stretch_supine",
   "name": {
-   "en": "Supine Hamstring Stretch",
+   "en": "Supine · Hamstring Stretch",
    "zh-Hans": "腘绳肌拉伸 (仰卧)"
   },
   "muscles": {
@@ -21406,7 +21406,7 @@
  {
   "id": "hamstring_stretch_supine_strap",
   "name": {
-   "en": "Supine Hamstring Stretch (Strap)",
+   "en": "Supine · Hamstring Stretch (Strap)",
    "zh-Hans": "腘绳肌拉伸 (仰卧, 带子)"
   },
   "muscles": {
@@ -21465,7 +21465,7 @@
  {
   "id": "handstand_free",
   "name": {
-   "en": "Handstand (Free)",
+   "en": "Free · Handstand",
    "zh-Hans": "倒立 (徒手)"
   },
   "muscles": {
@@ -21940,8 +21940,8 @@
   },
   "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/high_knees_run.jpg",
   "nameParts": {
-   "variation": "High",
-   "base": "Knees",
+   "variation": null,
+   "base": "High Knees",
    "equipment": null
   }
  },
@@ -22013,8 +22013,8 @@
   },
   "niche": true,
   "nameParts": {
-   "variation": "High",
-   "base": "Pull",
+   "variation": null,
+   "base": "High Pull",
    "equipment": "Kettlebell"
   }
  },
@@ -22231,7 +22231,7 @@
  {
   "id": "hip_flexor_stretch_kneeling",
   "name": {
-   "en": "Kneeling Hip Flexor Stretch",
+   "en": "Kneeling · Hip Flexor Stretch",
    "zh-Hans": "髂腰肌拉伸 (跪姿)"
   },
   "muscles": {
@@ -22295,7 +22295,7 @@
  {
   "id": "hip_thrust_b_stance",
   "name": {
-   "en": "B-Stance Hip Thrust",
+   "en": "B-Stance · Hip Thrust",
    "zh-Hans": "臀推 (B 位)"
   },
   "muscles": {
@@ -22356,7 +22356,7 @@
  {
   "id": "hip_thrust_banded",
   "name": {
-   "en": "Banded Hip Thrust",
+   "en": "Banded · Hip Thrust",
    "zh-Hans": "臀推 (弹力带)"
   },
   "muscles": {
@@ -22493,7 +22493,7 @@
  {
   "id": "hip_thrust_barbell_paused",
   "name": {
-   "en": "Paused Hip Thrust",
+   "en": "Paused · Hip Thrust",
    "zh-Hans": "暂停臀推"
   },
   "muscles": {
@@ -22555,7 +22555,7 @@
  {
   "id": "hip_thrust_barbell_single_leg",
   "name": {
-   "en": "Single-Leg Hip Thrust (Barbell)",
+   "en": "Single-Leg · Hip Thrust (Barbell)",
    "zh-Hans": "单腿臀推 (杠铃)"
   },
   "muscles": {
@@ -22681,7 +22681,7 @@
  {
   "id": "hip_thrust_floor",
   "name": {
-   "en": "Floor Hip Thrust",
+   "en": "Floor · Hip Thrust",
    "zh-Hans": "臀推 (地板)"
   },
   "muscles": {
@@ -22863,7 +22863,7 @@
  {
   "id": "hip_thrust_pulse",
   "name": {
-   "en": "Pulse Hip Thrust",
+   "en": "Pulse · Hip Thrust",
    "zh-Hans": "脉冲臀推"
   },
   "muscles": {
@@ -22924,7 +22924,7 @@
  {
   "id": "hip_thrust_single_leg",
   "name": {
-   "en": "Single-Leg Hip Thrust",
+   "en": "Single-Leg · Hip Thrust",
    "zh-Hans": "单腿臀推"
   },
   "muscles": {
@@ -23315,7 +23315,7 @@
  {
   "id": "hyperextension_weighted",
   "name": {
-   "en": "Weighted Hyperextension",
+   "en": "Weighted · Hyperextension",
    "zh-Hans": "山羊挺身 (负重)"
   },
   "muscles": {
@@ -23454,7 +23454,7 @@
  {
   "id": "incline_bench_press_barbell",
   "name": {
-   "en": "Incline Bench Press",
+   "en": "Incline · Bench Press",
    "zh-Hans": "上斜卧推"
   },
   "muscles": {
@@ -23524,7 +23524,7 @@
  {
   "id": "incline_bench_press_cable",
   "name": {
-   "en": "Incline Bench Press (Cable)",
+   "en": "Incline · Bench Press (Cable)",
    "zh-Hans": "上斜卧推 (绳索)"
   },
   "muscles": {
@@ -23587,7 +23587,7 @@
  {
   "id": "incline_bench_press_close_grip",
   "name": {
-   "en": "Close-Grip Incline Bench Press",
+   "en": "Close-Grip Incline · Bench Press",
    "zh-Hans": "窄距上斜卧推"
   },
   "muscles": {
@@ -23650,7 +23650,7 @@
  {
   "id": "incline_bench_press_dumbbell",
   "name": {
-   "en": "Incline Bench Press (Dumbbell)",
+   "en": "Incline · Bench Press (Dumbbell)",
    "zh-Hans": "上斜卧推 (哑铃)"
   },
   "muscles": {
@@ -23718,7 +23718,7 @@
  {
   "id": "incline_bench_press_machine",
   "name": {
-   "en": "Incline Chest Press (Machine)",
+   "en": "Incline · Chest Press (Machine)",
    "zh-Hans": "上斜卧推 (器械)"
   },
   "muscles": {
@@ -23780,7 +23780,7 @@
  {
   "id": "incline_bench_press_neutral_grip_dumbbell",
   "name": {
-   "en": "Neutral-Grip Incline Bench Press (Dumbbell)",
+   "en": "Neutral-Grip Incline · Bench Press (Dumbbell)",
    "zh-Hans": "中立握上斜卧推 (哑铃)"
   },
   "muscles": {
@@ -23843,7 +23843,7 @@
  {
   "id": "incline_bench_press_smith",
   "name": {
-   "en": "Incline Bench Press (Smith Machine)",
+   "en": "Incline · Bench Press (Smith Machine)",
    "zh-Hans": "上斜卧推 (史密斯机)"
   },
   "muscles": {
@@ -23906,7 +23906,7 @@
  {
   "id": "incline_cable_chest_press_standing",
   "name": {
-   "en": "Standing Low Chest Press (Cable)",
+   "en": "Standing Low · Chest Press (Cable)",
    "zh-Hans": "站姿低位绳索推胸"
   },
   "muscles": {
@@ -23968,7 +23968,7 @@
  {
   "id": "incline_chest_press_landmine",
   "name": {
-   "en": "Incline Press (Landmine)",
+   "en": "Incline · Press (Landmine)",
    "zh-Hans": "上斜地雷管推举"
   },
   "muscles": {
@@ -24032,7 +24032,7 @@
  {
   "id": "incline_curl",
   "name": {
-   "en": "Incline Curl",
+   "en": "Incline · Curl",
    "zh-Hans": "上斜弯举"
   },
   "muscles": {
@@ -24092,7 +24092,7 @@
  {
   "id": "incline_dumbbell_fly_decline_reverse_motion",
   "name": {
-   "en": "Reverse Grip Incline Fly (Dumbbell)",
+   "en": "Reverse Grip Incline · Fly (Dumbbell)",
    "zh-Hans": "反握上斜飞鸟 (哑铃)"
   },
   "muscles": {
@@ -24144,15 +24144,15 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "Reverse",
-   "base": "Grip Incline Fly",
+   "variation": "Reverse Grip Incline",
+   "base": "Fly",
    "equipment": "Dumbbell"
   }
  },
  {
   "id": "incline_dumbbell_fly_neutral",
   "name": {
-   "en": "Neutral-Grip Incline Chest Fly (Dumbbell)",
+   "en": "Neutral-Grip Incline · Chest Fly (Dumbbell)",
    "zh-Hans": "中立握上斜飞鸟 (哑铃)"
   },
   "muscles": {
@@ -24212,7 +24212,7 @@
  {
   "id": "incline_dumbbell_row",
   "name": {
-   "en": "Incline Row (Dumbbell)",
+   "en": "Incline · Row (Dumbbell)",
    "zh-Hans": "上斜哑铃划船"
   },
   "muscles": {
@@ -24283,7 +24283,7 @@
  {
   "id": "incline_dumbbell_squeeze_press",
   "name": {
-   "en": "Incline Squeeze Press (Dumbbell)",
+   "en": "Incline · Squeeze Press (Dumbbell)",
    "zh-Hans": "上斜夹胸推 (哑铃)"
   },
   "muscles": {
@@ -24346,7 +24346,7 @@
  {
   "id": "incline_inner_curl",
   "name": {
-   "en": "Incline Inner Bicep Curl",
+   "en": "Incline · Inner Bicep Curl",
    "zh-Hans": "上斜内侧二头弯举"
   },
   "muscles": {
@@ -24406,7 +24406,7 @@
  {
   "id": "incline_push_up_resistance_band",
   "name": {
-   "en": "Incline Push-Up (Band)",
+   "en": "Incline · Push-Up (Band)",
    "zh-Hans": "上斜俯卧撑 (弹力带)"
   },
   "muscles": {
@@ -24470,7 +24470,7 @@
  {
   "id": "incline_smith_close_grip",
   "name": {
-   "en": "Close-Grip Incline Bench Press (Smith Machine)",
+   "en": "Close-Grip Incline · Bench Press (Smith Machine)",
    "zh-Hans": "窄距上斜卧推 (史密斯机)"
   },
   "muscles": {
@@ -24533,7 +24533,7 @@
  {
   "id": "incline_walk_outdoor",
   "name": {
-   "en": "Incline Walk (Outdoor)",
+   "en": "Incline Outdoor · Walk",
    "zh-Hans": "爬坡走 (室外)"
   },
   "muscles": {
@@ -24740,7 +24740,7 @@
  {
   "id": "inverted_row_feet_elevated",
   "name": {
-   "en": "Inverted Row (Feet Elevated)",
+   "en": "Feet Elevated · Inverted Row",
    "zh-Hans": "反向划船 (脚抬高)"
   },
   "muscles": {
@@ -24812,7 +24812,7 @@
  {
   "id": "isometric_bicep_curl_hold",
   "name": {
-   "en": "Isometric Bicep Curl Hold",
+   "en": "Isometric · Bicep Curl Hold",
    "zh-Hans": "二头弯举静力保持"
   },
   "muscles": {
@@ -24875,7 +24875,7 @@
  {
   "id": "isometric_chest_squeeze",
   "name": {
-   "en": "Isometric Chest Squeeze",
+   "en": "Isometric · Chest Squeeze",
    "zh-Hans": "等长挤胸"
   },
   "muscles": {
@@ -25128,15 +25128,15 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "Jump",
-   "base": "Rope",
+   "variation": null,
+   "base": "Jump Rope",
    "equipment": null
   }
  },
  {
   "id": "jump_rope_boxer_skip",
   "name": {
-   "en": "Jump Rope (Boxer Skip)",
+   "en": "Boxer Skip · Jump Rope",
    "zh-Hans": "跳绳 (拳击步)"
   },
   "muscles": {
@@ -25195,15 +25195,15 @@
   },
   "niche": true,
   "nameParts": {
-   "variation": "Jump Boxer Skip",
-   "base": "Rope",
+   "variation": "Boxer Skip",
+   "base": "Jump Rope",
    "equipment": null
   }
  },
  {
   "id": "jump_rope_double_under",
   "name": {
-   "en": "Jump Rope (Double Under)",
+   "en": "Double Under · Jump Rope",
    "zh-Hans": "跳绳 (双摇)"
   },
   "muscles": {
@@ -25267,15 +25267,15 @@
   },
   "niche": true,
   "nameParts": {
-   "variation": "Jump Double Under",
-   "base": "Rope",
+   "variation": "Double Under",
+   "base": "Jump Rope",
    "equipment": null
   }
  },
  {
   "id": "jump_rope_high_knees",
   "name": {
-   "en": "Jump Rope (High Knees)",
+   "en": "High Knees · Jump Rope",
    "zh-Hans": "跳绳 (高抬腿)"
   },
   "muscles": {
@@ -25338,8 +25338,8 @@
   },
   "niche": true,
   "nameParts": {
-   "variation": "Jump High Knees",
-   "base": "Rope",
+   "variation": "High Knees",
+   "base": "Jump Rope",
    "equipment": null
   }
  },
@@ -25406,15 +25406,15 @@
   },
   "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/jumping_jacks.jpg",
   "nameParts": {
-   "variation": "Jumping",
-   "base": "Jacks",
+   "variation": null,
+   "base": "Jumping Jacks",
    "equipment": null
   }
  },
  {
   "id": "jumping_lunges",
   "name": {
-   "en": "Jumping Lunges",
+   "en": "Jumping · Lunges",
    "zh-Hans": "跳跃弓步"
   },
   "muscles": {
@@ -25606,8 +25606,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "Floor",
-   "base": "Press",
+   "variation": null,
+   "base": "Floor Press",
    "equipment": "Kettlebell"
   }
  },
@@ -25693,7 +25693,7 @@
  {
   "id": "kettlebell_swing_american",
   "name": {
-   "en": "Swing (Kettlebell, American)",
+   "en": "American · Swing (Kettlebell)",
    "zh-Hans": "壶铃摆荡 (过头)"
   },
   "muscles": {
@@ -25769,7 +25769,7 @@
  {
   "id": "kettlebell_swing_single_arm",
   "name": {
-   "en": "Single-Arm Swing (Kettlebell)",
+   "en": "Single-Arm · Swing (Kettlebell)",
    "zh-Hans": "壶铃摆荡 (单臂)"
   },
   "muscles": {
@@ -25969,7 +25969,7 @@
  {
   "id": "kickback_band_standing",
   "name": {
-   "en": "Standing Glute Kickback (Band)",
+   "en": "Standing · Glute Kickback (Band)",
    "zh-Hans": "臀部后踢 (站姿, 弹力带)"
   },
   "muscles": {
@@ -26082,7 +26082,7 @@
  {
   "id": "kickback_cable_single_arm",
   "name": {
-   "en": "Single-Arm Triceps Kickback (Cable)",
+   "en": "Single-Arm · Triceps Kickback (Cable)",
    "zh-Hans": "三头后摆 (绳索, 单臂)"
   },
   "muscles": {
@@ -26188,7 +26188,7 @@
  {
   "id": "kickback_dumbbell_kneeling",
   "name": {
-   "en": "Kneeling Triceps Kickback (Dumbbell)",
+   "en": "Kneeling · Triceps Kickback (Dumbbell)",
    "zh-Hans": "跪姿三头后摆 (哑铃)"
   },
   "muscles": {
@@ -26242,7 +26242,7 @@
  {
   "id": "kickback_dumbbell_single_arm",
   "name": {
-   "en": "Single-Arm Triceps Kickback (Dumbbell)",
+   "en": "Single-Arm · Triceps Kickback (Dumbbell)",
    "zh-Hans": "三头后摆 (哑铃, 单臂)"
   },
   "muscles": {
@@ -26296,7 +26296,7 @@
  {
   "id": "kickback_single_arm_floor",
   "name": {
-   "en": "Single-Arm Floor Triceps Kickback",
+   "en": "Single-Arm Floor · Triceps Kickback",
    "zh-Hans": "地面三头后摆 (单臂)"
   },
   "muscles": {
@@ -26349,7 +26349,7 @@
  {
   "id": "kneeling_cable_pullover",
   "name": {
-   "en": "Kneeling Pullover (Cable)",
+   "en": "Kneeling · Pullover (Cable)",
    "zh-Hans": "跪姿绳索过头屈伸"
   },
   "muscles": {
@@ -26407,7 +26407,7 @@
  {
   "id": "kneeling_chest_press_cable",
   "name": {
-   "en": "Kneeling Chest Press (Cable)",
+   "en": "Kneeling · Chest Press (Cable)",
    "zh-Hans": "跪姿绳索推胸"
   },
   "muscles": {
@@ -26473,7 +26473,7 @@
  {
   "id": "kneeling_lat_pulldown",
   "name": {
-   "en": "Kneeling Lat Pulldown",
+   "en": "Kneeling · Lat Pulldown",
    "zh-Hans": "跪姿高位下拉"
   },
   "muscles": {
@@ -26890,7 +26890,7 @@
  {
   "id": "landmine_press_kneeling",
   "name": {
-   "en": "Kneeling Press (Landmine)",
+   "en": "Kneeling · Press (Landmine)",
    "zh-Hans": "跪姿地雷管推举"
   },
   "muscles": {
@@ -27095,7 +27095,7 @@
  {
   "id": "landmine_row_single_arm",
   "name": {
-   "en": "Single-Arm Row (Landmine)",
+   "en": "Single-Arm · Row (Landmine)",
    "zh-Hans": "单臂地雷划船"
   },
   "muscles": {
@@ -27299,7 +27299,7 @@
  {
   "id": "lat_pulldown_behind_neck",
   "name": {
-   "en": "Lat Pulldown (Behind the Neck)",
+   "en": "Behind the Neck · Lat Pulldown",
    "zh-Hans": "颈后高位下拉"
   },
   "muscles": {
@@ -27371,7 +27371,7 @@
  {
   "id": "lat_pulldown_close_grip",
   "name": {
-   "en": "Close Grip Lat Pulldown",
+   "en": "Close Grip · Lat Pulldown",
    "zh-Hans": "高位下拉 (窄握)"
   },
   "muscles": {
@@ -27437,7 +27437,7 @@
  {
   "id": "lat_pulldown_neutral_grip",
   "name": {
-   "en": "Neutral Grip Lat Pulldown",
+   "en": "Neutral Grip · Lat Pulldown",
    "zh-Hans": "高位下拉 (中立握)"
   },
   "muscles": {
@@ -27503,7 +27503,7 @@
  {
   "id": "lat_pulldown_reverse_grip",
   "name": {
-   "en": "Reverse Grip Lat Pulldown",
+   "en": "Reverse Grip · Lat Pulldown",
    "zh-Hans": "反握高位下拉"
   },
   "muscles": {
@@ -27569,7 +27569,7 @@
  {
   "id": "lat_pulldown_single_arm",
   "name": {
-   "en": "Single-Arm Lat Pulldown",
+   "en": "Single-Arm · Lat Pulldown",
    "zh-Hans": "单臂高位下拉"
   },
   "muscles": {
@@ -27635,7 +27635,7 @@
  {
   "id": "lat_pulldown_underhand",
   "name": {
-   "en": "Underhand Lat Pulldown",
+   "en": "Underhand · Lat Pulldown",
    "zh-Hans": "高位下拉 (反握)"
   },
   "muscles": {
@@ -27759,7 +27759,7 @@
  {
   "id": "lat_pulldown_wide_grip",
   "name": {
-   "en": "Wide Grip Lat Pulldown",
+   "en": "Wide Grip · Lat Pulldown",
    "zh-Hans": "高位下拉 (宽握)"
   },
   "muscles": {
@@ -27821,7 +27821,7 @@
  {
   "id": "lat_stretch_child_pose",
   "name": {
-   "en": "Lat Stretch (Child Pose)",
+   "en": "Child Pose · Lat Stretch",
    "zh-Hans": "背阔肌拉伸 (婴儿式)"
   },
   "muscles": {
@@ -27881,7 +27881,7 @@
  {
   "id": "lat_stretch_kneeling",
   "name": {
-   "en": "Kneeling Lat Stretch",
+   "en": "Kneeling · Lat Stretch",
    "zh-Hans": "背阔肌拉伸 (跪姿)"
   },
   "muscles": {
@@ -27940,7 +27940,7 @@
  {
   "id": "lateral_bound",
   "name": {
-   "en": "Lateral Bound",
+   "en": "Lateral · Bound",
    "zh-Hans": "侧向跳"
   },
   "muscles": {
@@ -28014,7 +28014,7 @@
  {
   "id": "lateral_jumps",
   "name": {
-   "en": "Lateral Jumps",
+   "en": "Lateral · Jumps",
    "zh-Hans": "侧跳"
   },
   "muscles": {
@@ -28083,7 +28083,7 @@
  {
   "id": "lateral_lunge_dumbbell_curtsy",
   "name": {
-   "en": "Reverse Curtsy Lunge",
+   "en": "Reverse · Curtsy Lunge",
    "zh-Hans": "屈膝礼弓步 (反向)"
   },
   "muscles": {
@@ -28263,8 +28263,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "Lateral",
-   "base": "Raise",
+   "variation": null,
+   "base": "Lateral Raise",
    "equipment": "Band"
   }
  },
@@ -28327,15 +28327,15 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "Lateral",
-   "base": "Raise",
+   "variation": null,
+   "base": "Lateral Raise",
    "equipment": "Cable"
   }
  },
  {
   "id": "lateral_raise_cable_behind_back",
   "name": {
-   "en": "Behind-the-Back Lateral Raise (Cable)",
+   "en": "Behind-the-Back · Lateral Raise (Cable)",
    "zh-Hans": "背后侧平举 (绳索)"
   },
   "muscles": {
@@ -28387,8 +28387,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "Behind-the-Back Lateral",
-   "base": "Raise",
+   "variation": "Behind-the-Back",
+   "base": "Lateral Raise",
    "equipment": "Cable"
   }
  },
@@ -28572,8 +28572,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "Lateral",
-   "base": "Raise",
+   "variation": null,
+   "base": "Lateral Raise",
    "equipment": "Dumbbell"
   }
  },
@@ -28703,7 +28703,7 @@
  {
   "id": "lateral_raise_dumbbell_high",
   "name": {
-   "en": "High Lateral Raise (Dumbbell)",
+   "en": "High · Lateral Raise (Dumbbell)",
    "zh-Hans": "高位侧平举 (哑铃)"
   },
   "muscles": {
@@ -28760,8 +28760,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "High Lateral",
-   "base": "Raise",
+   "variation": "High",
+   "base": "Lateral Raise",
    "equipment": "Dumbbell"
   }
  },
@@ -28827,7 +28827,7 @@
  {
   "id": "lateral_raise_dumbbell_lying_side",
   "name": {
-   "en": "Lying Side Lateral Raise (Dumbbell)",
+   "en": "Lying · Side Lateral Raise (Dumbbell)",
    "zh-Hans": "侧卧侧平举 (哑铃)"
   },
   "muscles": {
@@ -28886,7 +28886,7 @@
  {
   "id": "lateral_raise_dumbbell_paused",
   "name": {
-   "en": "Paused Lateral Raise (Dumbbell)",
+   "en": "Paused · Lateral Raise (Dumbbell)",
    "zh-Hans": "停顿侧平举 (哑铃)"
   },
   "muscles": {
@@ -28937,15 +28937,15 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "Paused Lateral",
-   "base": "Raise",
+   "variation": "Paused",
+   "base": "Lateral Raise",
    "equipment": "Dumbbell"
   }
  },
  {
   "id": "lateral_raise_dumbbell_seated",
   "name": {
-   "en": "Seated Lateral Raise (Dumbbell)",
+   "en": "Seated · Lateral Raise (Dumbbell)",
    "zh-Hans": "坐姿侧平举 (哑铃)"
   },
   "muscles": {
@@ -29001,15 +29001,15 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "Seated Lateral",
-   "base": "Raise",
+   "variation": "Seated",
+   "base": "Lateral Raise",
    "equipment": "Dumbbell"
   }
  },
  {
   "id": "lateral_raise_dumbbell_single_arm",
   "name": {
-   "en": "Single-Arm Lateral Raise (Dumbbell)",
+   "en": "Single-Arm · Lateral Raise (Dumbbell)",
    "zh-Hans": "单臂侧平举 (哑铃)"
   },
   "muscles": {
@@ -29060,8 +29060,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "Single-Arm Lateral",
-   "base": "Raise",
+   "variation": "Single-Arm",
+   "base": "Lateral Raise",
    "equipment": "Dumbbell"
   }
  },
@@ -29118,8 +29118,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "Lateral",
-   "base": "Raise",
+   "variation": null,
+   "base": "Lateral Raise",
    "equipment": "Kettlebell"
   }
  },
@@ -29297,7 +29297,7 @@
  {
   "id": "lateral_raise_lying_incline",
   "name": {
-   "en": "Incline Lateral Raise (Dumbbell)",
+   "en": "Incline · Lateral Raise (Dumbbell)",
    "zh-Hans": "上斜侧平举 (哑铃)"
   },
   "muscles": {
@@ -29350,8 +29350,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "Incline Lateral",
-   "base": "Raise",
+   "variation": "Incline",
+   "base": "Lateral Raise",
    "equipment": "Dumbbell"
   }
  },
@@ -29408,15 +29408,15 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "Lateral",
-   "base": "Raise",
+   "variation": null,
+   "base": "Lateral Raise",
    "equipment": "Machine"
   }
  },
  {
   "id": "lateral_raise_machine_unilateral",
   "name": {
-   "en": "Single-Arm Lateral Raise (Machine)",
+   "en": "Single-Arm · Lateral Raise (Machine)",
    "zh-Hans": "单臂侧平举 (器械)"
   },
   "muscles": {
@@ -29466,8 +29466,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "Single-Arm Lateral",
-   "base": "Raise",
+   "variation": "Single-Arm",
+   "base": "Lateral Raise",
    "equipment": "Machine"
   }
  },
@@ -29590,8 +29590,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "Lateral",
-   "base": "Raise",
+   "variation": null,
+   "base": "Lateral Raise",
    "equipment": "Plate"
   }
  },
@@ -29666,7 +29666,7 @@
  {
   "id": "leg_curl_lying",
   "name": {
-   "en": "Lying Leg Curl",
+   "en": "Lying · Leg Curl",
    "zh-Hans": "腿弯举 (俯卧)"
   },
   "muscles": {
@@ -29727,7 +29727,7 @@
  {
   "id": "leg_curl_seated",
   "name": {
-   "en": "Seated Leg Curl",
+   "en": "Seated · Leg Curl",
    "zh-Hans": "腿弯举 (坐姿)"
   },
   "muscles": {
@@ -29788,7 +29788,7 @@
  {
   "id": "leg_curl_single_leg_lying",
   "name": {
-   "en": "Lying Single-Leg Leg Curl",
+   "en": "Lying Single-Leg · Leg Curl",
    "zh-Hans": "腿弯举 (单腿俯卧)"
   },
   "muscles": {
@@ -29843,7 +29843,7 @@
  {
   "id": "leg_curl_standing",
   "name": {
-   "en": "Standing Leg Curl",
+   "en": "Standing · Leg Curl",
    "zh-Hans": "腿弯举 (站姿)"
   },
   "muscles": {
@@ -30018,7 +30018,7 @@
  {
   "id": "leg_extension_single_leg",
   "name": {
-   "en": "Single-Leg Leg Extension",
+   "en": "Single-Leg · Leg Extension",
    "zh-Hans": "腿屈伸 (单腿)"
   },
   "muscles": {
@@ -30074,7 +30074,7 @@
  {
   "id": "leg_press_45",
   "name": {
-   "en": "Leg Press (45°)",
+   "en": "45° · Leg Press",
    "zh-Hans": "腿推 (45°)"
   },
   "muscles": {
@@ -30149,7 +30149,7 @@
  {
   "id": "leg_press_high_feet",
   "name": {
-   "en": "High Feet Leg Press",
+   "en": "High Feet · Leg Press",
    "zh-Hans": "腿推 (高位脚)"
   },
   "muscles": {
@@ -30213,7 +30213,7 @@
  {
   "id": "leg_press_horizontal",
   "name": {
-   "en": "Leg Press (Horizontal)",
+   "en": "Horizontal · Leg Press",
    "zh-Hans": "腿推 (水平)"
   },
   "muscles": {
@@ -30277,7 +30277,7 @@
  {
   "id": "leg_press_narrow",
   "name": {
-   "en": "Narrow Stance Leg Press",
+   "en": "Narrow Stance · Leg Press",
    "zh-Hans": "腿推 (窄距)"
   },
   "muscles": {
@@ -30341,7 +30341,7 @@
  {
   "id": "leg_press_pulse",
   "name": {
-   "en": "Pulse Leg Press",
+   "en": "Pulse · Leg Press",
    "zh-Hans": "腿推 (脉冲)"
   },
   "muscles": {
@@ -30402,7 +30402,7 @@
  {
   "id": "leg_press_single_leg",
   "name": {
-   "en": "Single-Leg Leg Press",
+   "en": "Single-Leg · Leg Press",
    "zh-Hans": "腿推 (单腿)"
   },
   "muscles": {
@@ -30466,7 +30466,7 @@
  {
   "id": "leg_press_vertical",
   "name": {
-   "en": "Leg Press (Vertical)",
+   "en": "Vertical · Leg Press",
    "zh-Hans": "腿推 (垂直)"
   },
   "muscles": {
@@ -30534,7 +30534,7 @@
  {
   "id": "leg_press_wide",
   "name": {
-   "en": "Wide Stance Leg Press",
+   "en": "Wide Stance · Leg Press",
    "zh-Hans": "腿推 (宽距)"
   },
   "muscles": {
@@ -30915,7 +30915,7 @@
  {
   "id": "leg_raise_lying",
   "name": {
-   "en": "Lying Leg Raise",
+   "en": "Lying · Leg Raise",
    "zh-Hans": "仰卧抬腿"
   },
   "muscles": {
@@ -30978,7 +30978,7 @@
  {
   "id": "leg_raise_lying_bent",
   "name": {
-   "en": "Lying Knee Raise",
+   "en": "Lying · Knee Raise",
    "zh-Hans": "仰卧屈膝抬腿"
   },
   "muscles": {
@@ -31036,7 +31036,7 @@
  {
   "id": "leg_swings_front_back",
   "name": {
-   "en": "Leg Swings (Front/Back)",
+   "en": "Front/Back · Leg Swings",
    "zh-Hans": "腿前后摆"
   },
   "muscles": {
@@ -31103,7 +31103,7 @@
  {
   "id": "leg_swings_lateral",
   "name": {
-   "en": "Lateral Leg Swings",
+   "en": "Lateral · Leg Swings",
    "zh-Hans": "腿侧向摆"
   },
   "muscles": {
@@ -31238,7 +31238,7 @@
  {
   "id": "low_incline_bench_press_dumbbell",
   "name": {
-   "en": "Low Incline Bench Press (Dumbbell)",
+   "en": "Low Incline · Bench Press (Dumbbell)",
    "zh-Hans": "低位上斜卧推 (哑铃)"
   },
   "muscles": {
@@ -31301,7 +31301,7 @@
  {
   "id": "low_lunge_stretch",
   "name": {
-   "en": "Low Lunge Stretch",
+   "en": "Low · Lunge Stretch",
    "zh-Hans": "低弓步拉伸"
   },
   "muscles": {
@@ -31636,7 +31636,7 @@
  {
   "id": "lunge_deficit_dumbbell",
   "name": {
-   "en": "Deficit Lunge (Dumbbell)",
+   "en": "Deficit · Lunge (Dumbbell)",
    "zh-Hans": "赤字弓步 (哑铃)"
   },
   "muscles": {
@@ -31701,7 +31701,7 @@
  {
   "id": "lunge_dumbbell_alternating",
   "name": {
-   "en": "Alternating Lunge (Dumbbell)",
+   "en": "Alternating · Lunge (Dumbbell)",
    "zh-Hans": "交替弓步 (哑铃)"
   },
   "muscles": {
@@ -31961,7 +31961,7 @@
  {
   "id": "lunge_jumping",
   "name": {
-   "en": "Jumping Lunge",
+   "en": "Jumping · Lunge",
    "zh-Hans": "跳跃弓步"
   },
   "muscles": {
@@ -32034,7 +32034,7 @@
  {
   "id": "lunge_jumping_alternating",
   "name": {
-   "en": "Alternating Jumping Lunge",
+   "en": "Alternating Jumping · Lunge",
    "zh-Hans": "交替跳跃弓步"
   },
   "muscles": {
@@ -32107,7 +32107,7 @@
  {
   "id": "lunge_jumping_dumbbell",
   "name": {
-   "en": "Jumping Lunge (Dumbbell)",
+   "en": "Jumping · Lunge (Dumbbell)",
    "zh-Hans": "跳跃弓步 (哑铃)"
   },
   "muscles": {
@@ -32181,7 +32181,7 @@
  {
   "id": "lunge_lateral_barbell",
   "name": {
-   "en": "Lateral Lunge (Barbell)",
+   "en": "Lateral · Lunge (Barbell)",
    "zh-Hans": "侧弓步 (杠铃)"
   },
   "muscles": {
@@ -32245,7 +32245,7 @@
  {
   "id": "lunge_lateral_smith",
   "name": {
-   "en": "Lateral Lunge (Smith Machine)",
+   "en": "Lateral · Lunge (Smith Machine)",
    "zh-Hans": "侧弓步 (史密斯机)"
   },
   "muscles": {
@@ -32309,7 +32309,7 @@
  {
   "id": "lunge_overhead_barbell",
   "name": {
-   "en": "Overhead Lunge (Barbell)",
+   "en": "Overhead · Lunge (Barbell)",
    "zh-Hans": "过头弓步 (杠铃)"
   },
   "muscles": {
@@ -32383,7 +32383,7 @@
  {
   "id": "lunge_overhead_dumbbell",
   "name": {
-   "en": "Overhead Lunge (Dumbbell)",
+   "en": "Overhead · Lunge (Dumbbell)",
    "zh-Hans": "过头弓步 (哑铃)"
   },
   "muscles": {
@@ -32457,7 +32457,7 @@
  {
   "id": "lunge_pulse",
   "name": {
-   "en": "Pulse Lunge",
+   "en": "Pulse · Lunge",
    "zh-Hans": "脉冲弓步"
   },
   "muscles": {
@@ -32577,8 +32577,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "Reverse",
-   "base": "Lunge",
+   "variation": null,
+   "base": "Reverse Lunge",
    "equipment": "Barbell"
   }
  },
@@ -32642,8 +32642,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "Reverse",
-   "base": "Lunge",
+   "variation": null,
+   "base": "Reverse Lunge",
    "equipment": null
   }
  },
@@ -32707,8 +32707,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "Reverse",
-   "base": "Lunge",
+   "variation": null,
+   "base": "Reverse Lunge",
    "equipment": "Dumbbell"
   }
  },
@@ -32771,8 +32771,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "Reverse",
-   "base": "Lunge",
+   "variation": null,
+   "base": "Reverse Lunge",
    "equipment": "Kettlebell"
   }
  },
@@ -32831,8 +32831,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "Reverse",
-   "base": "Lunge",
+   "variation": null,
+   "base": "Reverse Lunge",
    "equipment": "Smith Machine"
   }
  },
@@ -32975,7 +32975,7 @@
  {
   "id": "lunge_static",
   "name": {
-   "en": "Static Lunge",
+   "en": "Static · Lunge",
    "zh-Hans": "静态弓步"
   },
   "muscles": {
@@ -33040,7 +33040,7 @@
  {
   "id": "lunge_walking_barbell",
   "name": {
-   "en": "Walking Lunge (Barbell)",
+   "en": "Walking · Lunge (Barbell)",
    "zh-Hans": "行走弓步 (杠铃)"
   },
   "muscles": {
@@ -33113,7 +33113,7 @@
  {
   "id": "lunge_walking_barbell_overhead",
   "name": {
-   "en": "Overhead Walking Lunge (Barbell)",
+   "en": "Overhead Walking · Lunge (Barbell)",
    "zh-Hans": "行走弓步 (杠铃, 过头)"
   },
   "muscles": {
@@ -33187,7 +33187,7 @@
  {
   "id": "lunge_walking_bodyweight",
   "name": {
-   "en": "Walking Lunge",
+   "en": "Walking · Lunge",
    "zh-Hans": "行走弓步"
   },
   "muscles": {
@@ -33252,7 +33252,7 @@
  {
   "id": "lunge_walking_dumbbell",
   "name": {
-   "en": "Walking Lunge (Dumbbell)",
+   "en": "Walking · Lunge (Dumbbell)",
    "zh-Hans": "行走弓步 (哑铃)"
   },
   "muscles": {
@@ -33325,7 +33325,7 @@
  {
   "id": "lunge_walking_kettlebell",
   "name": {
-   "en": "Walking Lunge (Kettlebell)",
+   "en": "Walking · Lunge (Kettlebell)",
    "zh-Hans": "行走弓步 (壶铃)"
   },
   "muscles": {
@@ -33390,7 +33390,7 @@
  {
   "id": "lunge_walking_kettlebell_overhead",
   "name": {
-   "en": "Overhead Walking Lunge (Kettlebell)",
+   "en": "Overhead Walking · Lunge (Kettlebell)",
    "zh-Hans": "行走弓步 (壶铃, 过头)"
   },
   "muscles": {
@@ -33458,7 +33458,7 @@
  {
   "id": "lunge_walking_overhead",
   "name": {
-   "en": "Overhead Walking Lunge",
+   "en": "Overhead Walking · Lunge",
    "zh-Hans": "行走弓步 (过头)"
   },
   "muscles": {
@@ -33530,7 +33530,7 @@
  {
   "id": "lunge_walking_safety_bar",
   "name": {
-   "en": "Walking Safety Bar Lunge",
+   "en": "Walking Safety Bar · Lunge",
    "zh-Hans": "行走弓步 (安全杠)"
   },
   "muscles": {
@@ -33595,7 +33595,7 @@
  {
   "id": "lunge_walking_smith",
   "name": {
-   "en": "Walking Lunge (Smith Machine)",
+   "en": "Walking · Lunge (Smith Machine)",
    "zh-Hans": "行走弓步 (史密斯机)"
   },
   "muscles": {
@@ -33655,7 +33655,7 @@
  {
   "id": "lying_abduction_dumbbell",
   "name": {
-   "en": "Side-Lying Hip Abduction (Dumbbell)",
+   "en": "Side-Lying · Hip Abduction (Dumbbell)",
    "zh-Hans": "侧卧髋外展 (哑铃)"
   },
   "muscles": {
@@ -33716,7 +33716,7 @@
  {
   "id": "lying_overhead_extension_ez",
   "name": {
-   "en": "Lying Overhead Triceps Extension (EZ-Bar)",
+   "en": "Lying Overhead · Triceps Extension (EZ-Bar)",
    "zh-Hans": "仰卧过顶伸展 (EZ-杠)"
   },
   "muscles": {
@@ -33891,7 +33891,7 @@
  {
   "id": "machine_chest_fly_unilateral",
   "name": {
-   "en": "Single-Arm Chest Fly (Machine)",
+   "en": "Single-Arm · Chest Fly (Machine)",
    "zh-Hans": "单臂飞鸟 (器械)"
   },
   "muscles": {
@@ -34146,7 +34146,7 @@
  {
   "id": "machine_row_single_arm",
   "name": {
-   "en": "Single-Arm Row (Machine)",
+   "en": "Single-Arm · Row (Machine)",
    "zh-Hans": "单臂器械划船"
   },
   "muscles": {
@@ -34423,7 +34423,7 @@
  {
   "id": "med_ball_overhead_slam",
   "name": {
-   "en": "Overhead Slam (Medicine Ball)",
+   "en": "Overhead · Slam (Medicine Ball)",
    "zh-Hans": "药球过顶砸地"
   },
   "muscles": {
@@ -34636,7 +34636,7 @@
  {
   "id": "med_ball_triceps_extension",
   "name": {
-   "en": "Overhead Triceps Extension (Medicine Ball)",
+   "en": "Overhead · Triceps Extension (Medicine Ball)",
    "zh-Hans": "过顶伸展 (药球)"
   },
   "muscles": {
@@ -34896,7 +34896,7 @@
  {
   "id": "mountain_climber_cross",
   "name": {
-   "en": "Cross-Body Mountain Climber",
+   "en": "Cross-Body · Mountain Climber",
    "zh-Hans": "交叉登山者"
   },
   "muscles": {
@@ -34962,7 +34962,7 @@
  {
   "id": "mountain_climbers_cardio",
   "name": {
-   "en": "Mountain Climbers (Cardio)",
+   "en": "Cardio · Mountain Climbers",
    "zh-Hans": "登山者 (有氧)"
   },
   "muscles": {
@@ -35307,7 +35307,7 @@
  {
   "id": "neck_stretch_rotation",
   "name": {
-   "en": "Neck Stretch (Rotation)",
+   "en": "Rotation · Neck Stretch",
    "zh-Hans": "颈部拉伸 (旋转)"
   },
   "muscles": {
@@ -35361,7 +35361,7 @@
  {
   "id": "neck_stretch_side",
   "name": {
-   "en": "Neck Stretch (Side)",
+   "en": "Side · Neck Stretch",
    "zh-Hans": "颈部拉伸 (侧)"
   },
   "muscles": {
@@ -35491,7 +35491,7 @@
  {
   "id": "nordic_curl_assisted",
   "name": {
-   "en": "Assisted Nordic Curl",
+   "en": "Assisted · Nordic Curl",
    "zh-Hans": "北欧挺 (辅助)"
   },
   "muscles": {
@@ -35553,7 +35553,7 @@
  {
   "id": "overhead_extension_band",
   "name": {
-   "en": "Overhead Triceps Extension (Band)",
+   "en": "Overhead · Triceps Extension (Band)",
    "zh-Hans": "过顶伸展 (弹力带)"
   },
   "muscles": {
@@ -35606,7 +35606,7 @@
  {
   "id": "overhead_extension_barbell",
   "name": {
-   "en": "Overhead Triceps Extension (Barbell)",
+   "en": "Overhead · Triceps Extension (Barbell)",
    "zh-Hans": "过顶伸展 (杠铃)"
   },
   "muscles": {
@@ -35663,7 +35663,7 @@
  {
   "id": "overhead_extension_cable_rope",
   "name": {
-   "en": "Overhead Triceps Extension (Cable, Rope)",
+   "en": "Overhead · Triceps Extension (Cable, Rope)",
    "zh-Hans": "过顶伸展 (绳索)"
   },
   "muscles": {
@@ -35716,7 +35716,7 @@
  {
   "id": "overhead_extension_cable_single_arm",
   "name": {
-   "en": "Single-Arm Overhead Triceps Extension (Cable)",
+   "en": "Single-Arm Overhead · Triceps Extension (Cable)",
    "zh-Hans": "过顶伸展 (绳索, 单臂)"
   },
   "muscles": {
@@ -35769,7 +35769,7 @@
  {
   "id": "overhead_extension_cable_v_bar",
   "name": {
-   "en": "Overhead Triceps Extension (Cable, V-Bar)",
+   "en": "Overhead · Triceps Extension (Cable, V-Bar)",
    "zh-Hans": "过顶伸展 (绳索, V-杆)"
   },
   "muscles": {
@@ -35822,7 +35822,7 @@
  {
   "id": "overhead_extension_dumbbell_seated_two_hand",
   "name": {
-   "en": "Seated Overhead Triceps Extension (Dumbbell)",
+   "en": "Seated Overhead · Triceps Extension (Dumbbell)",
    "zh-Hans": "坐姿过顶伸展 (哑铃)"
   },
   "muscles": {
@@ -35876,7 +35876,7 @@
  {
   "id": "overhead_extension_dumbbell_single_arm",
   "name": {
-   "en": "Single-Arm Overhead Triceps Extension (Dumbbell)",
+   "en": "Single-Arm Overhead · Triceps Extension (Dumbbell)",
    "zh-Hans": "过顶伸展 (哑铃, 单臂)"
   },
   "muscles": {
@@ -35929,7 +35929,7 @@
  {
   "id": "overhead_extension_dumbbell_two_hand",
   "name": {
-   "en": "Overhead Triceps Extension (Dumbbell)",
+   "en": "Overhead · Triceps Extension (Dumbbell)",
    "zh-Hans": "过顶伸展 (哑铃)"
   },
   "muscles": {
@@ -35983,7 +35983,7 @@
  {
   "id": "overhead_extension_ez_bar",
   "name": {
-   "en": "Overhead Triceps Extension (EZ-Bar)",
+   "en": "Overhead · Triceps Extension (EZ-Bar)",
    "zh-Hans": "过顶伸展 (EZ-杠)"
   },
   "muscles": {
@@ -36041,7 +36041,7 @@
  {
   "id": "overhead_extension_kettlebell",
   "name": {
-   "en": "Overhead Triceps Extension (Kettlebell)",
+   "en": "Overhead · Triceps Extension (Kettlebell)",
    "zh-Hans": "过顶伸展 (壶铃)"
   },
   "muscles": {
@@ -36219,8 +36219,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "Overhead",
-   "base": "Press",
+   "variation": null,
+   "base": "Overhead Press",
    "equipment": "Band"
   }
  },
@@ -36294,15 +36294,15 @@
    ]
   },
   "nameParts": {
-   "variation": "Overhead",
-   "base": "Press",
+   "variation": null,
+   "base": "Overhead Press",
    "equipment": null
   }
  },
  {
   "id": "overhead_press_barbell_seated",
   "name": {
-   "en": "Seated Overhead Press",
+   "en": "Seated · Overhead Press",
    "zh-Hans": "坐姿推举"
   },
   "muscles": {
@@ -36363,8 +36363,8 @@
    ]
   },
   "nameParts": {
-   "variation": "Seated Overhead",
-   "base": "Press",
+   "variation": "Seated",
+   "base": "Overhead Press",
    "equipment": null
   }
  },
@@ -36427,15 +36427,15 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "Overhead",
-   "base": "Press",
+   "variation": null,
+   "base": "Overhead Press",
    "equipment": "Cable"
   }
  },
  {
   "id": "overhead_press_dumbbell_alternating",
   "name": {
-   "en": "Alternating Overhead Press (Dumbbell)",
+   "en": "Alternating · Overhead Press (Dumbbell)",
    "zh-Hans": "交替推举 (哑铃)"
   },
   "muscles": {
@@ -36494,15 +36494,15 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "Alternating Overhead",
-   "base": "Press",
+   "variation": "Alternating",
+   "base": "Overhead Press",
    "equipment": "Dumbbell"
   }
  },
  {
   "id": "overhead_press_dumbbell_seated",
   "name": {
-   "en": "Seated Overhead Press (Dumbbell)",
+   "en": "Seated · Overhead Press (Dumbbell)",
    "zh-Hans": "坐姿推举 (哑铃)"
   },
   "muscles": {
@@ -36558,15 +36558,15 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "Seated Overhead",
-   "base": "Press",
+   "variation": "Seated",
+   "base": "Overhead Press",
    "equipment": "Dumbbell"
   }
  },
  {
   "id": "overhead_press_dumbbell_single_arm",
   "name": {
-   "en": "Single-Arm Overhead Press (Dumbbell)",
+   "en": "Single-Arm · Overhead Press (Dumbbell)",
    "zh-Hans": "单臂推举 (哑铃)"
   },
   "muscles": {
@@ -36624,8 +36624,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "Single-Arm Overhead",
-   "base": "Press",
+   "variation": "Single-Arm",
+   "base": "Overhead Press",
    "equipment": "Dumbbell"
   }
  },
@@ -36691,8 +36691,8 @@
    ]
   },
   "nameParts": {
-   "variation": "Overhead",
-   "base": "Press",
+   "variation": null,
+   "base": "Overhead Press",
    "equipment": "Dumbbell"
   }
  },
@@ -36761,15 +36761,15 @@
    ]
   },
   "nameParts": {
-   "variation": "Overhead",
-   "base": "Press",
+   "variation": null,
+   "base": "Overhead Press",
    "equipment": "Kettlebell"
   }
  },
  {
   "id": "overhead_press_kettlebell_single_arm",
   "name": {
-   "en": "Single-Arm Overhead Press (Kettlebell)",
+   "en": "Single-Arm · Overhead Press (Kettlebell)",
    "zh-Hans": "单臂推举 (壶铃)"
   },
   "muscles": {
@@ -36831,8 +36831,8 @@
    ]
   },
   "nameParts": {
-   "variation": "Single-Arm Overhead",
-   "base": "Press",
+   "variation": "Single-Arm",
+   "base": "Overhead Press",
    "equipment": "Kettlebell"
   }
  },
@@ -36967,15 +36967,15 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "Overhead",
-   "base": "Press",
+   "variation": null,
+   "base": "Overhead Press",
    "equipment": "Machine"
   }
  },
  {
   "id": "overhead_press_pin",
   "name": {
-   "en": "Overhead Pin Press",
+   "en": "Overhead Pin · Press",
    "zh-Hans": "高位推举 (顶杆)"
   },
   "muscles": {
@@ -37101,15 +37101,15 @@
    ]
   },
   "nameParts": {
-   "variation": "Overhead",
-   "base": "Press",
+   "variation": null,
+   "base": "Overhead Press",
    "equipment": "Smith Machine"
   }
  },
  {
   "id": "overhead_press_smith_seated",
   "name": {
-   "en": "Seated Overhead Press (Smith Machine)",
+   "en": "Seated · Overhead Press (Smith Machine)",
    "zh-Hans": "坐姿推举 (史密斯机)"
   },
   "muscles": {
@@ -37164,8 +37164,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "Seated Overhead",
-   "base": "Press",
+   "variation": "Seated",
+   "base": "Overhead Press",
    "equipment": "Smith Machine"
   }
  },
@@ -37365,7 +37365,7 @@
  {
   "id": "pec_deck_reverse",
   "name": {
-   "en": "Reverse Pec Deck (Chest Variant)",
+   "en": "Chest Variant · Reverse Pec Deck",
    "zh-Hans": "蝴蝶机反向飞鸟 (胸版)"
   },
   "muscles": {
@@ -37415,15 +37415,15 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "Reverse Chest Variant",
-   "base": "Pec Deck",
+   "variation": "Chest Variant",
+   "base": "Reverse Pec Deck",
    "equipment": null
   }
  },
  {
   "id": "pendlay_row",
   "name": {
-   "en": "Pendlay Row",
+   "en": "Pendlay · Row",
    "zh-Hans": "彭德利划船"
   },
   "muscles": {
@@ -37632,7 +37632,7 @@
  {
   "id": "pistol_squat_assisted",
   "name": {
-   "en": "Assisted Pistol Squat",
+   "en": "Assisted · Pistol Squat",
    "zh-Hans": "单腿深蹲 (辅助)"
   },
   "muscles": {
@@ -37774,7 +37774,7 @@
  {
   "id": "planche_tuck",
   "name": {
-   "en": "Tuck Planche",
+   "en": "Tuck · Planche",
    "zh-Hans": "俯撑 (团身)"
   },
   "muscles": {
@@ -37920,7 +37920,7 @@
  {
   "id": "plank_high",
   "name": {
-   "en": "High Plank",
+   "en": "High · Plank",
    "zh-Hans": "高位平板支撑"
   },
   "muscles": {
@@ -38122,7 +38122,7 @@
  {
   "id": "plank_rkc",
   "name": {
-   "en": "Plank (RKC)",
+   "en": "RKC · Plank",
    "zh-Hans": "RKC 平板支撑"
   },
   "muscles": {
@@ -38259,7 +38259,7 @@
  {
   "id": "plank_side",
   "name": {
-   "en": "Plank (Side)",
+   "en": "Side · Plank",
    "zh-Hans": "侧平板"
   },
   "muscles": {
@@ -38466,7 +38466,7 @@
  {
   "id": "plank_weighted",
   "name": {
-   "en": "Weighted Plank",
+   "en": "Weighted · Plank",
    "zh-Hans": "负重平板支撑"
   },
   "muscles": {
@@ -38662,7 +38662,7 @@
  {
   "id": "preacher_curl",
   "name": {
-   "en": "Preacher Curl",
+   "en": "Preacher · Curl",
    "zh-Hans": "牧师凳弯举"
   },
   "muscles": {
@@ -38726,7 +38726,7 @@
  {
   "id": "preacher_curl_cable",
   "name": {
-   "en": "Preacher Curl (Cable)",
+   "en": "Preacher · Curl (Cable)",
    "zh-Hans": "牧师凳弯举 (绳索)"
   },
   "muscles": {
@@ -38786,7 +38786,7 @@
  {
   "id": "preacher_curl_dumbbell",
   "name": {
-   "en": "Preacher Curl (Dumbbell)",
+   "en": "Preacher · Curl (Dumbbell)",
    "zh-Hans": "牧师凳弯举 (哑铃)"
   },
   "muscles": {
@@ -38845,7 +38845,7 @@
  {
   "id": "preacher_curl_machine",
   "name": {
-   "en": "Preacher Curl (Machine)",
+   "en": "Preacher · Curl (Machine)",
    "zh-Hans": "牧师凳弯举 (器械)"
   },
   "muscles": {
@@ -38903,7 +38903,7 @@
  {
   "id": "preacher_hammer_curl",
   "name": {
-   "en": "Preacher Hammer Curl",
+   "en": "Preacher Hammer · Curl",
    "zh-Hans": "牧师锤式弯举"
   },
   "muscles": {
@@ -38967,7 +38967,7 @@
  {
   "id": "prone_t_raise",
   "name": {
-   "en": "Prone T-Raise",
+   "en": "Prone · T-Raise",
    "zh-Hans": "俯卧T字举"
   },
   "muscles": {
@@ -39031,7 +39031,7 @@
  {
   "id": "prone_w_raise",
   "name": {
-   "en": "Prone W-Raise",
+   "en": "Prone · W-Raise",
    "zh-Hans": "俯卧W字举"
   },
   "muscles": {
@@ -39095,7 +39095,7 @@
  {
   "id": "prone_y_raise",
   "name": {
-   "en": "Prone Y-Raise",
+   "en": "Prone · Y-Raise",
    "zh-Hans": "俯卧Y字举"
   },
   "muscles": {
@@ -39436,7 +39436,7 @@
  {
   "id": "pull_up_assisted_band",
   "name": {
-   "en": "Band Assisted Pull-Up",
+   "en": "Band Assisted · Pull-Up",
    "zh-Hans": "引体向上 (弹力带辅助)"
   },
   "muscles": {
@@ -39499,7 +39499,7 @@
  {
   "id": "pull_up_assisted_machine",
   "name": {
-   "en": "Machine Assisted Pull-Up",
+   "en": "Machine Assisted · Pull-Up",
    "zh-Hans": "引体向上 (器械辅助)"
   },
   "muscles": {
@@ -39561,7 +39561,7 @@
  {
   "id": "pull_up_close_grip",
   "name": {
-   "en": "Close Grip Pull-Up",
+   "en": "Close Grip · Pull-Up",
    "zh-Hans": "引体向上 (近握)"
   },
   "muscles": {
@@ -39689,7 +39689,7 @@
  {
   "id": "pull_up_kipping",
   "name": {
-   "en": "Kipping Pull-Up",
+   "en": "Kipping · Pull-Up",
    "zh-Hans": "引体向上 (摆浪)"
   },
   "muscles": {
@@ -39836,7 +39836,7 @@
  {
   "id": "pull_up_mixed_grip",
   "name": {
-   "en": "Mixed Grip Pull-Up",
+   "en": "Mixed Grip · Pull-Up",
    "zh-Hans": "引体向上 (正反握)"
   },
   "muscles": {
@@ -39898,7 +39898,7 @@
  {
   "id": "pull_up_negative",
   "name": {
-   "en": "Negative Pull-Up",
+   "en": "Negative · Pull-Up",
    "zh-Hans": "引体向上 (离心)"
   },
   "muscles": {
@@ -39960,7 +39960,7 @@
  {
   "id": "pull_up_neutral_grip",
   "name": {
-   "en": "Neutral Grip Pull-Up",
+   "en": "Neutral Grip · Pull-Up",
    "zh-Hans": "引体向上 (中立握)"
   },
   "muscles": {
@@ -40026,7 +40026,7 @@
  {
   "id": "pull_up_one_arm",
   "name": {
-   "en": "One-Arm Pull-Up",
+   "en": "One-Arm · Pull-Up",
    "zh-Hans": "单臂引体向上"
   },
   "muscles": {
@@ -40102,7 +40102,7 @@
  {
   "id": "pull_up_towel_grip",
   "name": {
-   "en": "Pull-Up (Towel Grip)",
+   "en": "Towel Grip · Pull-Up",
    "zh-Hans": "引体向上 (毛巾握)"
   },
   "muscles": {
@@ -40239,7 +40239,7 @@
  {
   "id": "pull_up_weighted",
   "name": {
-   "en": "Weighted Pull-Up",
+   "en": "Weighted · Pull-Up",
    "zh-Hans": "引体向上 (负重)"
   },
   "muscles": {
@@ -40317,7 +40317,7 @@
  {
   "id": "pull_up_wide_grip",
   "name": {
-   "en": "Wide Grip Pull-Up",
+   "en": "Wide Grip · Pull-Up",
    "zh-Hans": "引体向上 (宽握)"
   },
   "muscles": {
@@ -40808,7 +40808,7 @@
  {
   "id": "push_up_close_grip",
   "name": {
-   "en": "Close-Grip Push-Up",
+   "en": "Close-Grip · Push-Up",
    "zh-Hans": "窄距俯卧撑"
   },
   "muscles": {
@@ -40871,7 +40871,7 @@
  {
   "id": "push_up_decline",
   "name": {
-   "en": "Decline Push-Up",
+   "en": "Decline · Push-Up",
    "zh-Hans": "下斜俯卧撑"
   },
   "muscles": {
@@ -40939,7 +40939,7 @@
  {
   "id": "push_up_deficit",
   "name": {
-   "en": "Deficit Push-Up",
+   "en": "Deficit · Push-Up",
    "zh-Hans": "深度俯卧撑 (推手撑高)"
   },
   "muscles": {
@@ -41065,7 +41065,7 @@
  {
   "id": "push_up_hand_release",
   "name": {
-   "en": "Push-Up (Hand-Release)",
+   "en": "Hand-Release · Push-Up",
    "zh-Hans": "手离地俯卧撑"
   },
   "muscles": {
@@ -41135,7 +41135,7 @@
  {
   "id": "push_up_handle",
   "name": {
-   "en": "Push-Up (Handles)",
+   "en": "Handles · Push-Up",
    "zh-Hans": "俯卧撑 (推手架)"
   },
   "muscles": {
@@ -41264,7 +41264,7 @@
  {
   "id": "push_up_incline",
   "name": {
-   "en": "Incline Push-Up",
+   "en": "Incline · Push-Up",
    "zh-Hans": "上斜俯卧撑"
   },
   "muscles": {
@@ -41391,7 +41391,7 @@
  {
   "id": "push_up_negative",
   "name": {
-   "en": "Negative Push-Up",
+   "en": "Negative · Push-Up",
    "zh-Hans": "离心俯卧撑"
   },
   "muscles": {
@@ -41453,7 +41453,7 @@
  {
   "id": "push_up_one_arm",
   "name": {
-   "en": "One-Arm Push-Up",
+   "en": "One-Arm · Push-Up",
    "zh-Hans": "单臂俯卧撑"
   },
   "muscles": {
@@ -41853,7 +41853,7 @@
  {
   "id": "push_up_t",
   "name": {
-   "en": "Push-Up (T)",
+   "en": "T · Push-Up",
    "zh-Hans": "T 字俯卧撑"
   },
   "muscles": {
@@ -42047,7 +42047,7 @@
  {
   "id": "push_up_walking",
   "name": {
-   "en": "Walking Push-Up",
+   "en": "Walking · Push-Up",
    "zh-Hans": "行走俯卧撑"
   },
   "muscles": {
@@ -42113,7 +42113,7 @@
  {
   "id": "push_up_weighted",
   "name": {
-   "en": "Weighted Push-Up",
+   "en": "Weighted · Push-Up",
    "zh-Hans": "负重俯卧撑"
   },
   "muscles": {
@@ -42180,7 +42180,7 @@
  {
   "id": "push_up_wide",
   "name": {
-   "en": "Wide Push-Up",
+   "en": "Wide · Push-Up",
    "zh-Hans": "宽距俯卧撑"
   },
   "muscles": {
@@ -42242,7 +42242,7 @@
  {
   "id": "quad_stretch_lying",
   "name": {
-   "en": "Lying Quad Stretch",
+   "en": "Lying · Quad Stretch",
    "zh-Hans": "股四头肌拉伸 (侧卧)"
   },
   "muscles": {
@@ -42301,7 +42301,7 @@
  {
   "id": "quad_stretch_standing",
   "name": {
-   "en": "Standing Quad Stretch",
+   "en": "Standing · Quad Stretch",
    "zh-Hans": "股四头肌拉伸 (站姿)"
   },
   "muscles": {
@@ -42441,7 +42441,7 @@
  {
   "id": "rdl_band",
   "name": {
-   "en": "Romanian Deadlift (Band)",
+   "en": "Romanian · Deadlift (Band)",
    "zh-Hans": "罗马尼亚硬拉 (弹力带)"
   },
   "muscles": {
@@ -42501,7 +42501,7 @@
  {
   "id": "rdl_barbell",
   "name": {
-   "en": "Romanian Deadlift",
+   "en": "Romanian · Deadlift",
    "zh-Hans": "罗马尼亚硬拉"
   },
   "muscles": {
@@ -42576,7 +42576,7 @@
  {
   "id": "rdl_cable",
   "name": {
-   "en": "Romanian Deadlift (Cable)",
+   "en": "Romanian · Deadlift (Cable)",
    "zh-Hans": "罗马尼亚硬拉 (绳索)"
   },
   "muscles": {
@@ -42636,7 +42636,7 @@
  {
   "id": "rdl_dumbbell",
   "name": {
-   "en": "Romanian Deadlift (Dumbbell)",
+   "en": "Romanian · Deadlift (Dumbbell)",
    "zh-Hans": "罗马尼亚硬拉 (哑铃)"
   },
   "muscles": {
@@ -42704,7 +42704,7 @@
  {
   "id": "rdl_dumbbell_b_stance",
   "name": {
-   "en": "Romanian B-Stance Deadlift (Dumbbell)",
+   "en": "Romanian B-Stance · Deadlift (Dumbbell)",
    "zh-Hans": "罗马尼亚硬拉 (哑铃, B 位)"
   },
   "muscles": {
@@ -42764,7 +42764,7 @@
  {
   "id": "rdl_kettlebell",
   "name": {
-   "en": "Romanian Deadlift (Kettlebell)",
+   "en": "Romanian · Deadlift (Kettlebell)",
    "zh-Hans": "罗马尼亚硬拉 (壶铃)"
   },
   "muscles": {
@@ -42828,7 +42828,7 @@
  {
   "id": "rdl_paused",
   "name": {
-   "en": "Paused Romanian Deadlift",
+   "en": "Paused Romanian · Deadlift",
    "zh-Hans": "暂停罗马尼亚硬拉"
   },
   "muscles": {
@@ -42889,7 +42889,7 @@
  {
   "id": "rdl_single_leg_barbell",
   "name": {
-   "en": "Single-Leg Romanian Deadlift (Barbell)",
+   "en": "Single-Leg Romanian · Deadlift (Barbell)",
    "zh-Hans": "单腿罗马尼亚硬拉 (杠铃)"
   },
   "muscles": {
@@ -42961,7 +42961,7 @@
  {
   "id": "rdl_single_leg_dumbbell",
   "name": {
-   "en": "Single-Leg Romanian Deadlift (Dumbbell)",
+   "en": "Single-Leg Romanian · Deadlift (Dumbbell)",
    "zh-Hans": "单腿罗马尼亚硬拉 (哑铃)"
   },
   "muscles": {
@@ -43033,7 +43033,7 @@
  {
   "id": "rdl_single_leg_kettlebell",
   "name": {
-   "en": "Single-Leg Romanian Deadlift (Kettlebell)",
+   "en": "Single-Leg Romanian · Deadlift (Kettlebell)",
    "zh-Hans": "单腿罗马尼亚硬拉 (壶铃)"
   },
   "muscles": {
@@ -43097,7 +43097,7 @@
  {
   "id": "rdl_smith",
   "name": {
-   "en": "Romanian Deadlift (Smith Machine)",
+   "en": "Romanian · Deadlift (Smith Machine)",
    "zh-Hans": "罗马尼亚硬拉 (史密斯机)"
   },
   "muscles": {
@@ -43413,7 +43413,7 @@
  {
   "id": "rear_delt_fly_dumbbell_seated",
   "name": {
-   "en": "Seated Rear Delt Fly (Dumbbell)",
+   "en": "Seated · Rear Delt Fly (Dumbbell)",
    "zh-Hans": "坐姿后束飞鸟 (哑铃)"
   },
   "muscles": {
@@ -43479,7 +43479,7 @@
  {
   "id": "rear_delt_fly_incline_bench",
   "name": {
-   "en": "Incline Rear Delt Fly (Dumbbell)",
+   "en": "Incline · Rear Delt Fly (Dumbbell)",
    "zh-Hans": "俯卧后束飞鸟 (哑铃)"
   },
   "muscles": {
@@ -43665,7 +43665,7 @@
  {
   "id": "rear_delt_fly_single_cable",
   "name": {
-   "en": "Single-Arm Rear Delt Fly (Cable)",
+   "en": "Single-Arm · Rear Delt Fly (Cable)",
    "zh-Hans": "单臂后束飞鸟 (绳索)"
   },
   "muscles": {
@@ -43790,7 +43790,7 @@
  {
   "id": "rear_delt_raise_dumbbell_seated_bent",
   "name": {
-   "en": "Seated Bent-Over Rear Delt Raise (Dumbbell)",
+   "en": "Seated Bent-Over · Rear Delt Raise (Dumbbell)",
    "zh-Hans": "坐姿俯身后束举 (哑铃)"
   },
   "muscles": {
@@ -43919,7 +43919,7 @@
  {
   "id": "rear_delt_row_chest_supported",
   "name": {
-   "en": "Chest-Supported Rear Delt Row (Dumbbell)",
+   "en": "Chest-Supported · Rear Delt Row (Dumbbell)",
    "zh-Hans": "胸支撑后束划船 (哑铃)"
   },
   "muscles": {
@@ -43984,7 +43984,7 @@
  {
   "id": "rear_delt_row_single_arm",
   "name": {
-   "en": "Single-Arm Rear Delt Row (Dumbbell)",
+   "en": "Single-Arm · Rear Delt Row (Dumbbell)",
    "zh-Hans": "单臂后束划船 (哑铃)"
   },
   "muscles": {
@@ -44248,8 +44248,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "Reverse",
-   "base": "Curl",
+   "variation": null,
+   "base": "Reverse Curl",
    "equipment": null
   }
  },
@@ -44310,8 +44310,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "Reverse",
-   "base": "Curl",
+   "variation": null,
+   "base": "Reverse Curl",
    "equipment": "Cable"
   }
  },
@@ -44373,8 +44373,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "Reverse",
-   "base": "Curl",
+   "variation": null,
+   "base": "Reverse Curl",
    "equipment": "Dumbbell"
   }
  },
@@ -44436,8 +44436,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "Reverse",
-   "base": "Curl",
+   "variation": null,
+   "base": "Reverse Curl",
    "equipment": "EZ-Bar"
   }
  },
@@ -44499,15 +44499,15 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "Reverse",
-   "base": "Fly",
+   "variation": null,
+   "base": "Reverse Fly",
    "equipment": "Machine"
   }
  },
  {
   "id": "reverse_grip_bench_press",
   "name": {
-   "en": "Reverse-Grip Bench Press",
+   "en": "Reverse-Grip · Bench Press",
    "zh-Hans": "反握卧推"
   },
   "muscles": {
@@ -44637,8 +44637,8 @@
   },
   "niche": true,
   "nameParts": {
-   "variation": "Reverse",
-   "base": "Hyperextension",
+   "variation": null,
+   "base": "Reverse Hyperextension",
    "equipment": null
   }
  },
@@ -44701,15 +44701,15 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "Reverse",
-   "base": "Pec Deck",
+   "variation": null,
+   "base": "Reverse Pec Deck",
    "equipment": null
   }
  },
  {
   "id": "reverse_wrist_curl",
   "name": {
-   "en": "Reverse Wrist Curl",
+   "en": "Reverse · Wrist Curl",
    "zh-Hans": "反向腕弯举"
   },
   "muscles": {
@@ -44763,7 +44763,7 @@
  {
   "id": "reverse_wrist_curl_barbell",
   "name": {
-   "en": "Reverse Wrist Curl (Barbell)",
+   "en": "Reverse · Wrist Curl (Barbell)",
    "zh-Hans": "反向腕弯举 (杠铃)"
   },
   "muscles": {
@@ -45279,7 +45279,7 @@
  {
   "id": "rowing_machine_sprint",
   "name": {
-   "en": "Rowing (Machine, Sprint)",
+   "en": "Sprint · Rowing (Machine)",
    "zh-Hans": "划船机 (冲刺)"
   },
   "muscles": {
@@ -45444,7 +45444,7 @@
  {
   "id": "running_hill",
   "name": {
-   "en": "Running (Hill)",
+   "en": "Hill · Running",
    "zh-Hans": "跑步 (爬坡)"
   },
   "muscles": {
@@ -45519,7 +45519,7 @@
  {
   "id": "running_interval",
   "name": {
-   "en": "Running (Interval)",
+   "en": "Interval · Running",
    "zh-Hans": "跑步 (间歇)"
   },
   "muscles": {
@@ -45594,7 +45594,7 @@
  {
   "id": "running_long_distance",
   "name": {
-   "en": "Running (Long Distance)",
+   "en": "Long Distance · Running",
    "zh-Hans": "跑步 (长距离)"
   },
   "muscles": {
@@ -45745,7 +45745,7 @@
  {
   "id": "running_sprint",
   "name": {
-   "en": "Running (Sprint)",
+   "en": "Sprint · Running",
    "zh-Hans": "跑步 (冲刺)"
   },
   "muscles": {
@@ -45947,7 +45947,7 @@
  {
   "id": "russian_twist_weighted",
   "name": {
-   "en": "Weighted Russian Twist",
+   "en": "Weighted · Russian Twist",
    "zh-Hans": "俄罗斯转体 (负重)"
   },
   "muscles": {
@@ -46461,7 +46461,7 @@
  {
   "id": "seated_dumbbell_curl",
   "name": {
-   "en": "Seated Curl (Dumbbell)",
+   "en": "Seated · Curl (Dumbbell)",
    "zh-Hans": "坐姿哑铃弯举"
   },
   "muscles": {
@@ -46520,7 +46520,7 @@
  {
   "id": "seated_incline_hammer_curl",
   "name": {
-   "en": "Incline Hammer Curl",
+   "en": "Incline Hammer · Curl",
    "zh-Hans": "上斜锤式弯举"
   },
   "muscles": {
@@ -46853,15 +46853,15 @@
   },
   "niche": true,
   "nameParts": {
-   "variation": "Stick",
+   "variation": null,
    "base": "Shoulder Pass-Through",
-   "equipment": null
+   "equipment": "Stick"
   }
  },
  {
   "id": "shoulder_stretch_cross_body",
   "name": {
-   "en": "Cross-Body Shoulder Stretch",
+   "en": "Cross-Body · Shoulder Stretch",
    "zh-Hans": "肩部拉伸 (跨身)"
   },
   "muscles": {
@@ -47129,7 +47129,7 @@
  {
   "id": "shrug_behind_back_barbell",
   "name": {
-   "en": "Behind-the-Back Shrug (Barbell)",
+   "en": "Behind-the-Back · Shrug (Barbell)",
    "zh-Hans": "背后耸肩 (杠铃)"
   },
   "muscles": {
@@ -47865,7 +47865,7 @@
  {
   "id": "single_arm_landmine_row_meadows",
   "name": {
-   "en": "Row (Landmine, Meadows Variation)",
+   "en": "Meadows Variation · Row (Landmine)",
    "zh-Hans": "地雷划船 (梅多斯变式)"
   },
   "muscles": {
@@ -47933,7 +47933,7 @@
  {
   "id": "single_arm_straight_arm_pulldown",
   "name": {
-   "en": "Single-Arm Straight-Arm Pulldown",
+   "en": "Single-Arm · Straight-Arm Pulldown",
    "zh-Hans": "单臂直臂下拉"
   },
   "muscles": {
@@ -47991,7 +47991,7 @@
  {
   "id": "single_leg_calf_raise_dumbbell_step",
   "name": {
-   "en": "Single-Leg Calf Raise (Step)",
+   "en": "Single-Leg · Calf Raise (Step)",
    "zh-Hans": "单腿提踵 (台阶)"
   },
   "muscles": {
@@ -48047,7 +48047,7 @@
  {
   "id": "single_leg_deadlift",
   "name": {
-   "en": "Single-Leg Deadlift",
+   "en": "Single-Leg · Deadlift",
    "zh-Hans": "单腿硬拉"
   },
   "muscles": {
@@ -48114,7 +48114,7 @@
  {
   "id": "single_leg_glute_bridge_elevated",
   "name": {
-   "en": "Single-Leg Elevated Glute Bridge",
+   "en": "Single-Leg Elevated · Glute Bridge",
    "zh-Hans": "单腿臀桥 (抬高)"
   },
   "muscles": {
@@ -48246,7 +48246,7 @@
  {
   "id": "single_leg_rdl",
   "name": {
-   "en": "Single-Leg Romanian Deadlift",
+   "en": "Single-Leg Romanian · Deadlift",
    "zh-Hans": "单腿罗马尼亚硬拉"
   },
   "muscles": {
@@ -48317,7 +48317,7 @@
  {
   "id": "single_leg_rdl_trx",
   "name": {
-   "en": "Single-Leg Romanian Deadlift (TRX)",
+   "en": "Single-Leg Romanian · Deadlift (TRX)",
    "zh-Hans": "单腿罗马尼亚硬拉 (TRX)"
   },
   "muscles": {
@@ -48381,7 +48381,7 @@
  {
   "id": "single_leg_squat_box",
   "name": {
-   "en": "Single-Leg Squat (Box)",
+   "en": "Single-Leg · Squat (Box)",
    "zh-Hans": "单腿深蹲 (箱)"
   },
   "muscles": {
@@ -48446,7 +48446,7 @@
  {
   "id": "single_leg_squat_dumbbell",
   "name": {
-   "en": "Single-Leg Squat (Dumbbell)",
+   "en": "Single-Leg · Squat (Dumbbell)",
    "zh-Hans": "单腿深蹲 (哑铃)"
   },
   "muscles": {
@@ -48699,7 +48699,7 @@
  {
   "id": "sit_up_decline",
   "name": {
-   "en": "Decline Sit-Up",
+   "en": "Decline · Sit-Up",
    "zh-Hans": "仰卧起坐 (下斜)"
   },
   "muscles": {
@@ -48885,7 +48885,7 @@
  {
   "id": "sit_up_weighted",
   "name": {
-   "en": "Weighted Sit-Up",
+   "en": "Weighted · Sit-Up",
    "zh-Hans": "负重仰卧起坐"
   },
   "muscles": {
@@ -49350,7 +49350,7 @@
  {
   "id": "skullcrusher_decline_ez",
   "name": {
-   "en": "Decline Skullcrusher (EZ-Bar)",
+   "en": "Decline · Skullcrusher (EZ-Bar)",
    "zh-Hans": "下斜颈后臂屈伸 (EZ-杠)"
   },
   "muscles": {
@@ -49521,7 +49521,7 @@
  {
   "id": "skullcrusher_incline_ez",
   "name": {
-   "en": "Incline Skullcrusher (EZ-Bar)",
+   "en": "Incline · Skullcrusher (EZ-Bar)",
    "zh-Hans": "上斜颈后臂屈伸 (EZ-杠)"
   },
   "muscles": {
@@ -49630,7 +49630,7 @@
  {
   "id": "skullcrusher_paused",
   "name": {
-   "en": "Paused Skullcrusher (EZ-Bar)",
+   "en": "Paused · Skullcrusher (EZ-Bar)",
    "zh-Hans": "暂停颈后臂屈伸 (EZ-杠)"
   },
   "muscles": {
@@ -49685,7 +49685,7 @@
  {
   "id": "skullcrusher_tempo",
   "name": {
-   "en": "Tempo Skullcrusher (EZ-Bar)",
+   "en": "Tempo · Skullcrusher (EZ-Bar)",
    "zh-Hans": "节奏颈后臂屈伸 (EZ-杠)"
   },
   "muscles": {
@@ -49740,7 +49740,7 @@
  {
   "id": "sled_pull",
   "name": {
-   "en": "Pull (Sled, Backward)",
+   "en": "Backward · Pull (Sled)",
    "zh-Hans": "雪橇拉 (后退)"
   },
   "muscles": {
@@ -50528,7 +50528,7 @@
  {
   "id": "spinal_twist_seated",
   "name": {
-   "en": "Seated Spinal Twist",
+   "en": "Seated · Spinal Twist",
    "zh-Hans": "脊柱扭转 (坐姿)"
   },
   "muscles": {
@@ -50591,7 +50591,7 @@
  {
   "id": "spinal_twist_supine",
   "name": {
-   "en": "Supine Spinal Twist",
+   "en": "Supine · Spinal Twist",
    "zh-Hans": "脊柱扭转 (仰卧)"
   },
   "muscles": {
@@ -50717,7 +50717,7 @@
  {
   "id": "split_jerk_lunge",
   "name": {
-   "en": "Split Jerk Lunge (Barbell)",
+   "en": "Split · Jerk Lunge (Barbell)",
    "zh-Hans": "分腿挺举弓步 (杠铃)"
   },
   "muscles": {
@@ -50790,7 +50790,7 @@
  {
   "id": "split_jump",
   "name": {
-   "en": "Split Jump",
+   "en": "Split · Jump",
    "zh-Hans": "分腿跳"
   },
   "muscles": {
@@ -50925,15 +50925,15 @@
    ]
   },
   "nameParts": {
-   "variation": "Split",
-   "base": "Squat",
+   "variation": null,
+   "base": "Split Squat",
    "equipment": "Barbell"
   }
  },
  {
   "id": "split_squat_bulgarian_barbell",
   "name": {
-   "en": "Bulgarian Split Squat (Barbell)",
+   "en": "Bulgarian · Split Squat (Barbell)",
    "zh-Hans": "保加利亚分腿蹲 (杠铃)"
   },
   "muscles": {
@@ -51000,15 +51000,15 @@
    ]
   },
   "nameParts": {
-   "variation": "Bulgarian Split",
-   "base": "Squat",
+   "variation": "Bulgarian",
+   "base": "Split Squat",
    "equipment": "Barbell"
   }
  },
  {
   "id": "split_squat_bulgarian_bodyweight",
   "name": {
-   "en": "Bulgarian Split Squat",
+   "en": "Bulgarian · Split Squat",
    "zh-Hans": "保加利亚分腿蹲"
   },
   "muscles": {
@@ -51073,15 +51073,15 @@
    ]
   },
   "nameParts": {
-   "variation": "Bulgarian Split",
-   "base": "Squat",
+   "variation": "Bulgarian",
+   "base": "Split Squat",
    "equipment": null
   }
  },
  {
   "id": "split_squat_bulgarian_dumbbell",
   "name": {
-   "en": "Bulgarian Split Squat (Dumbbell)",
+   "en": "Bulgarian · Split Squat (Dumbbell)",
    "zh-Hans": "保加利亚分腿蹲 (哑铃)"
   },
   "muscles": {
@@ -51145,15 +51145,15 @@
    ]
   },
   "nameParts": {
-   "variation": "Bulgarian Split",
-   "base": "Squat",
+   "variation": "Bulgarian",
+   "base": "Split Squat",
    "equipment": "Dumbbell"
   }
  },
  {
   "id": "split_squat_bulgarian_smith",
   "name": {
-   "en": "Bulgarian Split Squat (Smith Machine)",
+   "en": "Bulgarian · Split Squat (Smith Machine)",
    "zh-Hans": "保加利亚分腿蹲 (史密斯机)"
   },
   "muscles": {
@@ -51210,15 +51210,15 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "Bulgarian Split",
-   "base": "Squat",
+   "variation": "Bulgarian",
+   "base": "Split Squat",
    "equipment": "Smith Machine"
   }
  },
  {
   "id": "split_squat_deficit",
   "name": {
-   "en": "Deficit Split Squat (Dumbbell)",
+   "en": "Deficit · Split Squat (Dumbbell)",
    "zh-Hans": "赤字分腿蹲 (哑铃)"
   },
   "muscles": {
@@ -51275,8 +51275,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "Deficit Split",
-   "base": "Squat",
+   "variation": "Deficit",
+   "base": "Split Squat",
    "equipment": "Dumbbell"
   }
  },
@@ -51343,15 +51343,15 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "Split",
-   "base": "Squat",
+   "variation": null,
+   "base": "Split Squat",
    "equipment": "Dumbbell"
   }
  },
  {
   "id": "split_squat_paused",
   "name": {
-   "en": "Paused Split Squat",
+   "en": "Paused · Split Squat",
    "zh-Hans": "暂停分腿蹲"
   },
   "muscles": {
@@ -51407,8 +51407,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "Paused Split",
-   "base": "Squat",
+   "variation": "Paused",
+   "base": "Split Squat",
    "equipment": null
   }
  },
@@ -51485,7 +51485,7 @@
  {
   "id": "sprint_intervals_track",
   "name": {
-   "en": "Sprint Intervals (Track)",
+   "en": "Sprint Track · Intervals",
    "zh-Hans": "冲刺间歇 (跑道)"
   },
   "muscles": {
@@ -51555,8 +51555,8 @@
   "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/sprint_intervals_track.jpg",
   "niche": true,
   "nameParts": {
-   "variation": "Track",
-   "base": "Sprint Intervals",
+   "variation": "Sprint Track",
+   "base": "Intervals",
    "equipment": null
   }
  },
@@ -51629,7 +51629,7 @@
  {
   "id": "squat_assisted_trx",
   "name": {
-   "en": "TRX Assisted Squat",
+   "en": "TRX Assisted · Squat",
    "zh-Hans": "深蹲 (TRX 辅助)"
   },
   "muscles": {
@@ -52128,15 +52128,15 @@
    ]
   },
   "nameParts": {
-   "variation": "Front",
-   "base": "Squat",
+   "variation": null,
+   "base": "Front Squat",
    "equipment": null
   }
  },
  {
   "id": "squat_goblet",
   "name": {
-   "en": "Goblet Squat",
+   "en": "Goblet · Squat",
    "zh-Hans": "深蹲 (高脚杯)"
   },
   "muscles": {
@@ -52205,7 +52205,7 @@
  {
   "id": "squat_goblet_kettlebell",
   "name": {
-   "en": "Goblet Squat (Kettlebell)",
+   "en": "Goblet · Squat (Kettlebell)",
    "zh-Hans": "深蹲 (高脚杯, 壶铃)"
   },
   "muscles": {
@@ -52273,7 +52273,7 @@
  {
   "id": "squat_isometric_split",
   "name": {
-   "en": "Split Isometric Squat",
+   "en": "Split Isometric · Squat",
    "zh-Hans": "等长分腿蹲"
   },
   "muscles": {
@@ -52338,7 +52338,7 @@
  {
   "id": "squat_jump",
   "name": {
-   "en": "Jump Squat",
+   "en": "Jump · Squat",
    "zh-Hans": "深蹲跳"
   },
   "muscles": {
@@ -52624,7 +52624,7 @@
  {
   "id": "squat_landmine_lateral",
   "name": {
-   "en": "Lateral Lunge (Landmine)",
+   "en": "Lateral · Lunge (Landmine)",
    "zh-Hans": "侧弓步 (地雷)"
   },
   "muscles": {
@@ -52689,7 +52689,7 @@
  {
   "id": "squat_low_bar",
   "name": {
-   "en": "Low-Bar Squat",
+   "en": "Low-Bar · Squat",
    "zh-Hans": "深蹲 (低杠位)"
   },
   "muscles": {
@@ -52769,7 +52769,7 @@
  {
   "id": "squat_overhead_barbell",
   "name": {
-   "en": "Overhead Squat",
+   "en": "Overhead · Squat",
    "zh-Hans": "过头深蹲"
   },
   "muscles": {
@@ -52847,7 +52847,7 @@
  {
   "id": "squat_pause",
   "name": {
-   "en": "Paused Squat",
+   "en": "Paused · Squat",
    "zh-Hans": "暂停深蹲"
   },
   "muscles": {
@@ -52926,7 +52926,7 @@
  {
   "id": "squat_pause_dumbbell",
   "name": {
-   "en": "Paused Goblet Squat",
+   "en": "Paused Goblet · Squat",
    "zh-Hans": "暂停高脚杯深蹲"
   },
   "muscles": {
@@ -52990,7 +52990,7 @@
  {
   "id": "squat_pin",
   "name": {
-   "en": "Pin Squat",
+   "en": "Pin · Squat",
    "zh-Hans": "杆位深蹲"
   },
   "muscles": {
@@ -53059,7 +53059,7 @@
  {
   "id": "squat_pulse",
   "name": {
-   "en": "Pulse Squat",
+   "en": "Pulse · Squat",
    "zh-Hans": "脉冲深蹲"
   },
   "muscles": {
@@ -53119,7 +53119,7 @@
  {
   "id": "squat_safety_bar",
   "name": {
-   "en": "Safety Bar Squat",
+   "en": "Safety Bar · Squat",
    "zh-Hans": "深蹲 (安全杠)"
   },
   "muscles": {
@@ -53325,7 +53325,7 @@
  {
   "id": "squat_zercher",
   "name": {
-   "en": "Zercher Squat",
+   "en": "Zercher · Squat",
    "zh-Hans": "泽奇深蹲"
   },
   "muscles": {
@@ -53405,7 +53405,7 @@
  {
   "id": "squat_zercher_dumbbell",
   "name": {
-   "en": "Zercher Squat (Dumbbell)",
+   "en": "Zercher · Squat (Dumbbell)",
    "zh-Hans": "泽奇深蹲 (哑铃)"
   },
   "muscles": {
@@ -53686,7 +53686,7 @@
  {
   "id": "standing_forward_fold",
   "name": {
-   "en": "Standing Forward Fold",
+   "en": "Standing · Forward Fold",
    "zh-Hans": "站立前屈"
   },
   "muscles": {
@@ -53819,7 +53819,7 @@
  {
   "id": "stationary_bike_recumbent",
   "name": {
-   "en": "Stationary Bike (Recumbent)",
+   "en": "Recumbent · Stationary Bike",
    "zh-Hans": "健身车 (卧式)"
   },
   "muscles": {
@@ -53886,7 +53886,7 @@
  {
   "id": "stationary_bike_upright",
   "name": {
-   "en": "Stationary Bike (Upright)",
+   "en": "Upright · Stationary Bike",
    "zh-Hans": "健身车 (立式)"
   },
   "muscles": {
@@ -54207,7 +54207,7 @@
  {
   "id": "step_up_bulgarian_box",
   "name": {
-   "en": "Bulgarian Box Step-Up",
+   "en": "Bulgarian · Box Step-Up",
    "zh-Hans": "保加利亚登阶"
   },
   "muscles": {
@@ -54411,7 +54411,7 @@
  {
   "id": "step_up_dumbbell_high_box",
   "name": {
-   "en": "Step-Up (Dumbbell, High Box)",
+   "en": "High Box · Step-Up (Dumbbell)",
    "zh-Hans": "登阶 (哑铃, 高箱)"
   },
   "muscles": {
@@ -54477,7 +54477,7 @@
  {
   "id": "step_up_high_knee",
   "name": {
-   "en": "Step-Up (High Knee)",
+   "en": "High Knee · Step-Up",
    "zh-Hans": "登阶 (高抬膝)"
   },
   "muscles": {
@@ -54543,7 +54543,7 @@
  {
   "id": "step_up_jumping",
   "name": {
-   "en": "Jumping Step-Up",
+   "en": "Jumping · Step-Up",
    "zh-Hans": "跳跃登阶"
   },
   "muscles": {
@@ -54609,7 +54609,7 @@
  {
   "id": "step_up_lateral_bodyweight",
   "name": {
-   "en": "Lateral Step-Up",
+   "en": "Lateral · Step-Up",
    "zh-Hans": "侧向登阶"
   },
   "muscles": {
@@ -54674,7 +54674,7 @@
  {
   "id": "step_up_lateral_dumbbell",
   "name": {
-   "en": "Lateral Step-Up (Dumbbell)",
+   "en": "Lateral · Step-Up (Dumbbell)",
    "zh-Hans": "侧向登阶 (哑铃)"
   },
   "muscles": {
@@ -55054,7 +55054,7 @@
  {
   "id": "sumo_squat_barbell",
   "name": {
-   "en": "Sumo Squat (Barbell)",
+   "en": "Sumo · Squat (Barbell)",
    "zh-Hans": "相扑深蹲 (杠铃)"
   },
   "muscles": {
@@ -55123,7 +55123,7 @@
  {
   "id": "sumo_squat_bodyweight",
   "name": {
-   "en": "Sumo Squat",
+   "en": "Sumo · Squat",
    "zh-Hans": "相扑深蹲"
   },
   "muscles": {
@@ -55187,7 +55187,7 @@
  {
   "id": "sumo_squat_dumbbell",
   "name": {
-   "en": "Sumo Squat (Dumbbell)",
+   "en": "Sumo · Squat (Dumbbell)",
    "zh-Hans": "相扑深蹲 (哑铃)"
   },
   "muscles": {
@@ -55255,7 +55255,7 @@
  {
   "id": "sumo_squat_kettlebell",
   "name": {
-   "en": "Sumo Squat (Kettlebell)",
+   "en": "Sumo · Squat (Kettlebell)",
    "zh-Hans": "相扑深蹲 (壶铃)"
   },
   "muscles": {
@@ -55453,7 +55453,7 @@
  {
   "id": "supported_dumbbell_row_machine",
   "name": {
-   "en": "Chest-Supported Row (Machine)",
+   "en": "Chest-Supported · Row (Machine)",
    "zh-Hans": "胸支撑划船 (器械)"
   },
   "muscles": {
@@ -55582,7 +55582,7 @@
  {
   "id": "swimming_backstroke",
   "name": {
-   "en": "Swimming (Backstroke)",
+   "en": "Backstroke · Swimming",
    "zh-Hans": "游泳 (仰泳)"
   },
   "muscles": {
@@ -55662,7 +55662,7 @@
  {
   "id": "swimming_breaststroke",
   "name": {
-   "en": "Swimming (Breaststroke)",
+   "en": "Breaststroke · Swimming",
    "zh-Hans": "游泳 (蛙泳)"
   },
   "muscles": {
@@ -55738,7 +55738,7 @@
  {
   "id": "swimming_butterfly",
   "name": {
-   "en": "Swimming (Butterfly)",
+   "en": "Butterfly · Swimming",
    "zh-Hans": "游泳 (蝶泳)"
   },
   "muscles": {
@@ -55818,7 +55818,7 @@
  {
   "id": "swimming_freestyle",
   "name": {
-   "en": "Swimming (Freestyle)",
+   "en": "Freestyle · Swimming",
    "zh-Hans": "游泳 (自由泳)"
   },
   "muscles": {
@@ -55977,7 +55977,7 @@
  {
   "id": "t_bar_row_chest_supported",
   "name": {
-   "en": "Chest Supported Row (T-Bar)",
+   "en": "Chest Supported · Row (T-Bar)",
    "zh-Hans": "T杠划船 (胸支撑)"
   },
   "muscles": {
@@ -56253,7 +56253,7 @@
  {
   "id": "thoracic_rotation_open_book",
   "name": {
-   "en": "Thoracic Rotation (Open Book)",
+   "en": "Open Book · Thoracic Rotation",
    "zh-Hans": "胸椎旋转 (开书)"
   },
   "muscles": {
@@ -57069,7 +57069,7 @@
  {
   "id": "trap_stretch_seated",
   "name": {
-   "en": "Seated Trap Stretch",
+   "en": "Seated · Trap Stretch",
    "zh-Hans": "斜方肌拉伸 (坐姿)"
   },
   "muscles": {
@@ -57128,7 +57128,7 @@
  {
   "id": "treadmill_incline_walk",
   "name": {
-   "en": "Treadmill (Incline Walk)",
+   "en": "Incline Walk · Treadmill",
    "zh-Hans": "跑步机 (爬坡走)"
   },
   "muscles": {
@@ -57198,7 +57198,7 @@
  {
   "id": "treadmill_run",
   "name": {
-   "en": "Treadmill (Run)",
+   "en": "Run · Treadmill",
    "zh-Hans": "跑步机 (跑)"
   },
   "muscles": {
@@ -57273,7 +57273,7 @@
  {
   "id": "treadmill_walk",
   "name": {
-   "en": "Treadmill (Walk)",
+   "en": "Walk · Treadmill",
    "zh-Hans": "跑步机 (走)"
   },
   "muscles": {
@@ -57343,7 +57343,7 @@
  {
   "id": "triceps_extension_machine_seated",
   "name": {
-   "en": "Seated Triceps Extension (Machine)",
+   "en": "Seated · Triceps Extension (Machine)",
    "zh-Hans": "坐姿三头伸展 (器械)"
   },
   "muscles": {
@@ -57396,7 +57396,7 @@
  {
   "id": "triceps_extension_machine_single_arm",
   "name": {
-   "en": "Single-Arm Triceps Extension (Machine)",
+   "en": "Single-Arm · Triceps Extension (Machine)",
    "zh-Hans": "单臂三头伸展 (器械)"
   },
   "muscles": {
@@ -57664,7 +57664,7 @@
  {
   "id": "triceps_pushdown_reverse_grip",
   "name": {
-   "en": "Reverse-Grip Triceps Pushdown",
+   "en": "Reverse-Grip · Triceps Pushdown",
    "zh-Hans": "反握三头推下"
   },
   "muscles": {
@@ -57722,7 +57722,7 @@
  {
   "id": "triceps_pushdown_reverse_single_arm",
   "name": {
-   "en": "Single-Arm Reverse-Grip Triceps Pushdown",
+   "en": "Single-Arm Reverse-Grip · Triceps Pushdown",
    "zh-Hans": "反握三头推下 (单臂)"
   },
   "muscles": {
@@ -57834,7 +57834,7 @@
  {
   "id": "triceps_pushdown_single_arm",
   "name": {
-   "en": "Single-Arm Triceps Pushdown",
+   "en": "Single-Arm · Triceps Pushdown",
    "zh-Hans": "三头推下 (单臂)"
   },
   "muscles": {
@@ -57995,7 +57995,7 @@
  {
   "id": "triceps_stretch_behind_back",
   "name": {
-   "en": "Triceps Stretch (Behind Back)",
+   "en": "Behind Back · Triceps Stretch",
    "zh-Hans": "三头拉伸 (背后)"
   },
   "muscles": {
@@ -58058,7 +58058,7 @@
  {
   "id": "triceps_stretch_overhead",
   "name": {
-   "en": "Overhead Triceps Stretch",
+   "en": "Overhead · Triceps Stretch",
    "zh-Hans": "三头拉伸 (过顶)"
   },
   "muscles": {
@@ -58381,7 +58381,7 @@
  {
   "id": "tuck_jump",
   "name": {
-   "en": "Tuck Jump",
+   "en": "Tuck · Jump",
    "zh-Hans": "屈膝跳"
   },
   "muscles": {
@@ -59309,7 +59309,7 @@
  {
   "id": "wall_sit_single_leg",
   "name": {
-   "en": "Single-Leg Wall Sit",
+   "en": "Single-Leg · Wall Sit",
    "zh-Hans": "单腿靠墙静蹲"
   },
   "muscles": {
@@ -59515,7 +59515,7 @@
  {
   "id": "wide_grip_inverted_row",
   "name": {
-   "en": "Wide Grip Inverted Row",
+   "en": "Wide Grip · Inverted Row",
    "zh-Hans": "反向划船 (宽握)"
   },
   "muscles": {
@@ -60068,7 +60068,7 @@
  {
   "id": "wrist_curl_behind_back",
   "name": {
-   "en": "Behind-the-Back Wrist Curl",
+   "en": "Behind-the-Back · Wrist Curl",
    "zh-Hans": "背后腕弯举"
   },
   "muscles": {
@@ -60228,7 +60228,7 @@
  {
   "id": "wrist_curl_seated_thigh",
   "name": {
-   "en": "Seated Wrist Curl (Thigh Support)",
+   "en": "Seated Thigh Support · Wrist Curl",
    "zh-Hans": "坐姿腕弯举 (大腿支撑)"
   },
   "muscles": {
@@ -60494,7 +60494,7 @@
  {
   "id": "wrist_stretch_extension",
   "name": {
-   "en": "Wrist Stretch (Extension)",
+   "en": "Extension · Wrist Stretch",
    "zh-Hans": "腕部拉伸 (伸)"
   },
   "muscles": {
@@ -60548,7 +60548,7 @@
  {
   "id": "wrist_stretch_flexion",
   "name": {
-   "en": "Wrist Stretch (Flexion)",
+   "en": "Flexion · Wrist Stretch",
    "zh-Hans": "腕部拉伸 (屈)"
   },
   "muscles": {

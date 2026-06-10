@@ -361,8 +361,9 @@ struct ExerciseDetailSheet: View {
     /// e.g. "High Face Pull (Cable)" → High · vs Face Pull · "锚点更高 … 更偏后束与上背".
     @ViewBuilder
     private var variantSection: some View {
-        if let label = ExerciseGrouping.extractedModifier(of: exercise) {
-            let base = ExerciseGrouping.baseName(of: exercise)
+        // #nameParts 优先 (名字带 " · " 分隔符后老的字符串解析不再可靠); 自创动作回退老启发式.
+        if let label = exercise.nameParts?.variation ?? ExerciseGrouping.extractedModifier(of: exercise) {
+            let base = exercise.nameParts?.base ?? ExerciseGrouping.baseName(of: exercise)
             let comparison = ExerciseGrouping.variantComparison(forLabel: label)
             VStack(alignment: .leading, spacing: 8) {
                 Text("Variant")
