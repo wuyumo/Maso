@@ -82,8 +82,16 @@ struct RootView: View {
         let mode = ProcessInfo.processInfo.environment["MASO_SHOWCASE"] ?? ""
         guard !mode.isEmpty else { return }
         switch mode {
-        case "library":
+        case "library", "exercises":
             tab = .library        // Exercises 独立 tab (#IA: 第 4 个底部 tab)
+        case "routines":
+            tab = .plans          // Routines tab (AI | Classics)
+        case "plan_detail":
+            // 计划详情 sheet — 复用 newPlanForEdit 通道 (今日推荐做内容, 截图够看).
+            tab = .today
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                newPlanForEdit = data.todayRecommendedPlan ?? data.plans.first
+            }
         case "history":
             tab = .history
         case "settings":

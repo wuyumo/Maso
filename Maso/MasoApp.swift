@@ -21,7 +21,11 @@ struct MasoApp: App {
     // bootstrap() 优先从 PersistenceController (Documents/maso-data.json) 加载持久化数据.
     // 没有 → 走 mock 兜底 (seed 推荐 plan + sample sets). 同时把 mock 写一次文件, 下次有持久化.
     // 改自 .makeMock(): 之前每次启动都重置数据, 现在用户的 plans / sets / settings 都保留.
-    @State private var dataStore = DataStore.bootstrap()
+    // MASO_SHOWCASE_SEED=1 (仅截图流水线注入的 env) → 用 makeMock 演示数据 (跳过引导, 带计划+历史).
+    // 生产无此 env, 永远走 bootstrap. 不持久化 mock (不调 save), 不污染真实数据文件.
+    @State private var dataStore = ProcessInfo.processInfo.environment["MASO_SHOWCASE_SEED"] == "1"
+        ? DataStore.makeMock()
+        : DataStore.bootstrap()
     /// StoreKit 2 订阅管理器 — load products / listen transactions / 回写 DataStore entitlement.
     /// 在 .task 里 configure(), 注入 callback 让它把 entitlement 变化同步到 dataStore.settings.
     @State private var subscriptions = SubscriptionManager()
