@@ -68,8 +68,18 @@ struct ExerciseLibraryBrowser: View {
     }
 
     /// 把 filtered 折叠成变种组 — 跟 ExercisePickerSheet 同一份 ExerciseGrouping.group(...).
+    /// 排序: 收藏组置顶 (沿用置顶语义), 其余按"组代表的显示名"字母序 (中文走 locale 排序) —
+    /// 列表上看到什么名字就按什么排, 不按 JSON 内部顺序.
     private var filteredGroups: [ExerciseGroup] {
-        ExerciseGrouping.group(filtered)
+        let groups = ExerciseGrouping.group(filtered)
+        func isFavGroup(_ g: ExerciseGroup) -> Bool {
+            g.all.contains { data.isFavorite($0.id) }
+        }
+        return groups.sorted { a, b in
+            let fa = isFavGroup(a), fb = isFavGroup(b)
+            if fa != fb { return fa }
+            return a.canonical.displayName.localizedStandardCompare(b.canonical.displayName) == .orderedAscending
+        }
     }
 
     /// 单行 — 共用 GroupedExerciseRow (跟 picker 同款展示), tap → 详情, 右滑 → 置顶 / 删除 / 移回冷门库.
