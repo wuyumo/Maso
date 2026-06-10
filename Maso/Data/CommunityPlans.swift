@@ -334,7 +334,7 @@ enum CommunityPlans {
                 nameKey: "community_session_pull_day",
                 steps: [
                     CommunityStep("pull_up",                                    sets: 4, reps: 6,  weight: 0, rest: 90),
-                    CommunityStep("pull_up_narrow_grip",                                    sets: 3, reps: 6,  weight: 0, rest: 90),
+                    CommunityStep("pull_up_close_grip",                                    sets: 3, reps: 6,  weight: 0, rest: 90),
                     CommunityStep("inverted_row",                               sets: 3, reps: 10, weight: 0, rest: 75),
                     CommunityStep("leg_raise_hanging",                          sets: 3, reps: 8,  weight: 0, rest: 60),
                 ]
@@ -1224,7 +1224,7 @@ enum CommunityPlans {
             sessions: [
                 CommunitySession(nameKey: "Circuit A", steps: [
                     CommunityStep("leg_press_45", sets: 3, reps: 12, weight: 90, rest: 90),
-                    CommunityStep("chest_press_machine_hammer_strength", sets: 3, reps: 12, weight: 40, rest: 90),
+                    CommunityStep("bench_press_machine", sets: 3, reps: 12, weight: 40, rest: 90),
                     CommunityStep("lat_pulldown", sets: 3, reps: 12, weight: 45, rest: 90),
                     CommunityStep("leg_extension_machine", sets: 3, reps: 15, weight: 45, rest: 60),
                     CommunityStep("leg_curl_lying", sets: 3, reps: 15, weight: 40, rest: 60),
