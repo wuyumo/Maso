@@ -347,6 +347,69 @@ struct ExerciseDetailSheet: View {
         speech.isSpeaking && speech.currentSource == exercise.id
     }
 
+    /// VARIANT 区 — 名字拆解出 variant 前缀时显示: [标签] vs [基础动作] + 对比说明.
+    /// e.g. "High Face Pull (Cable)" → High · vs Face Pull · "锚点更高 … 更偏后束与上背".
+    @ViewBuilder
+    private var variantSection: some View {
+        if let label = ExerciseGrouping.extractedModifier(of: exercise) {
+            let base = ExerciseGrouping.baseName(of: exercise)
+            let comparison = ExerciseGrouping.variantComparison(forLabel: label)
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Variant")
+                    .font(.system(size: 10, weight: .heavy))
+                    .tracking(1.5)
+                    .textCase(.uppercase)
+                    .foregroundStyle(MasoColor.textFaint)
+                HStack(spacing: 8) {
+                    Text(label)
+                        .font(.system(size: 12, weight: .bold))
+                        .foregroundStyle(MasoColor.accent)
+                        .padding(.horizontal, 10).padding(.vertical, 5)
+                        .background(Capsule().fill(MasoColor.accent.opacity(0.12)))
+                        .overlay(Capsule().stroke(MasoColor.accent.opacity(0.35), lineWidth: 0.5))
+                    Text(String(format: NSLocalizedString("vs %@", comment: "variant compared with base move"), base))
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundStyle(MasoColor.textDim)
+                }
+                if !comparison.isEmpty {
+                    Text(comparison)
+                        .font(.system(size: 13))
+                        .foregroundStyle(MasoColor.text)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .lineSpacing(2)
+                }
+            }
+        }
+    }
+
+    /// EQUIPMENT 区 — equipmentAll (多器械) 或单 equipment, chips 罗列该动作可能用到的器材.
+    @ViewBuilder
+    private var equipmentSection: some View {
+        let raws: [String] = {
+            if let all = exercise.equipmentAll, !all.isEmpty { return all }
+            if let eq = exercise.equipment { return [eq] }
+            return []
+        }()
+        if !raws.isEmpty {
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Equipment")
+                    .font(.system(size: 10, weight: .heavy))
+                    .tracking(1.5)
+                    .textCase(.uppercase)
+                    .foregroundStyle(MasoColor.textFaint)
+                FlowLayout(spacing: 6) {
+                    ForEach(Array(Set(raws)).sorted(), id: \.self) { raw in
+                        Text(Exercise.equipmentDisplayName(for: raw))
+                            .font(.system(size: 11, weight: .bold))
+                            .foregroundStyle(MasoColor.text.opacity(0.85))
+                            .padding(.horizontal, 10).padding(.vertical, 5)
+                            .background(Capsule().fill(MasoColor.surfaceHi))
+                    }
+                }
+            }
+        }
+    }
+
     /// 顶部 metadata chip row — level / mechanic / movement / tempo / unilateral / equipment.
     /// 每条都 nil-skip, 没有的字段不渲染 (老 schema 数据可能缺很多).
     @ViewBuilder
@@ -504,6 +567,13 @@ struct ExerciseDetailSheet: View {
                     // Metadata chips — level / mechanic / movement / tempo / unilateral / equipment
                     // 全部走 nil-skip, 只展示存在的字段, 避免空 chip 占位.
                     metadataChipsRow
+
+                    // #variant 拆解: 名字 = [Variant 前缀] 基础动作 (器械).
+                    // 有 variant 前缀 → 显示 "VARIANT" 区: 标签 + vs 基础动作 + 对比说明 (强化了哪里).
+                    variantSection
+
+                    // EQUIPMENT 区 — 该动作可能用到的全部器材, chips 罗列.
+                    equipmentSection
 
                     // Muscles — section title + 人体分区图 (target 肌肉高亮) + chip 列表.
                     // MuscleVisualBlock 前后身分别画, ex.muscleGroups 命中位置上色, 一眼能看出

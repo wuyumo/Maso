@@ -170,6 +170,9 @@ enum ExerciseGrouping {
         "dive bomber", "dive-bomber",
         // 方向/角度
         "low-to-high", "high-to-low",
+        // 锚点高度 (#variant 拆解): High Face Pull / Low Row / Mid Cable Row 折进基础动作.
+        // 注: "High Pull" (奥举衍生) 会被剥成 "Pull" 独立成组 — 它已在 Rare 库, 无碰撞.
+        "high", "low", "mid",
         // 单侧 / 双侧
         "single-arm", "one-arm", "single arm", "one arm",
         "single-leg", "one-leg", "single leg", "one leg",
@@ -378,6 +381,28 @@ enum ExerciseGrouping {
             }
             return ExerciseGroup(baseName: key, canonical: canonical, variants: variants)
         }
+    }
+
+    // MARK: - VariantInfo — variant 词 → "与原动作对比"说明 (#variant 拆解)
+
+    /// 已收录对比说明的 variant token (小写). 详情页用: 动作名拆解出 variant 前缀后,
+    /// 逐词查表拼出"这个变体相比原动作强化了什么"的说明. 文案走本地化 key "variant.<token>".
+    static let variantInfoTokens: Set<String> = [
+        "high","low","mid","incline","decline","seated","standing","lying","kneeling","prone","supine",
+        "single-arm","single-leg","alternating","wide-grip","close-grip","neutral-grip","reverse-grip",
+        "underhand","overhand","paused","deficit","weighted","assisted","sumo","romanian","bulgarian",
+        "goblet","front","overhead","walking","reverse","lateral","tuck","floor","chest-supported",
+        "bent-over","dead-stop","split","hammer",
+    ]
+
+    /// 把 variant 标签 ("Seated Single-Arm") 拆词查表, 拼接成对比说明. 没命中任何词 → "".
+    static func variantComparison(forLabel label: String) -> String {
+        let tokens = label.lowercased().split(separator: " ").map(String.init)
+        let parts = tokens.compactMap { t -> String? in
+            guard variantInfoTokens.contains(t) else { return nil }
+            return NSLocalizedString("variant.\(t)", comment: "variant vs base comparison")
+        }
+        return parts.joined(separator: " ")
     }
 
     /// orphan group 选 canonical 用的优先级 (越小越优先). 偏好"自由重量 / 自重 / 复合"作为默认,
