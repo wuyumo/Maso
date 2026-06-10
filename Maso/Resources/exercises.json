@@ -13909,7 +13909,8 @@
    "variation": null,
    "base": "Korean Dip",
    "equipment": null
-  }
+  },
+  "niche": true
  },
  {
   "id": "dip_machine",
@@ -14629,7 +14630,8 @@
    "variation": null,
    "base": "Double Biceps Pose Hold",
    "equipment": null
-  }
+  },
+  "niche": true
  },
  {
   "id": "downward_dog",
@@ -23117,74 +23119,6 @@
   }
  },
  {
-  "id": "hollow_hold",
-  "name": {
-   "en": "Hollow Hold",
-   "zh-Hans": "空心支撑"
-  },
-  "muscles": {
-   "primary": [
-    {
-     "major": "core",
-     "sub": "abs_upper"
-    },
-    {
-     "major": "core",
-     "sub": "abs_lower"
-    },
-    {
-     "major": "core",
-     "sub": "transverse"
-    }
-   ],
-   "secondary": [
-    {
-     "major": "legs",
-     "sub": "hip_flexors"
-    }
-   ]
-  },
-  "equipment": [
-   "body_only"
-  ],
-  "category": "calisthenics",
-  "movementPattern": null,
-  "mechanic": "isolation",
-  "unilateral": false,
-  "tempo": "isometric",
-  "level": "intermediate",
-  "force": "static",
-  "imageFolder": null,
-  "instructions": {
-   "en": [
-    "Lie on back, low back pressed to floor.",
-    "Lift legs and shoulders — arms overhead.",
-    "Hold rigid hollow shape for time."
-   ],
-   "zh-Hans": [
-    "仰卧, 下背压地.",
-    "抬起腿和肩 — 双手过头.",
-    "保持空心姿势, 计时."
-   ]
-  },
-  "video_url": "https://www.youtube.com/watch?v=LlDNef_Ztsc",
-  "calories_estimate": {
-   "low": 4,
-   "med": 6,
-   "high": 8
-  },
-  "danger_warnings": {
-   "en": [],
-   "zh-Hans": []
-  },
-  "photoURL": "https://cdn.jsdelivr.net/gh/wuyumo/Maso@main/exercise-photos/hollow_hold.jpg",
-  "nameParts": {
-   "variation": null,
-   "base": "Hollow Hold",
-   "equipment": null
-  }
- },
- {
   "id": "hollow_rock",
   "name": {
    "en": "Hollow Rock",
@@ -23244,7 +23178,8 @@
    "variation": null,
    "base": "Hollow Rock",
    "equipment": null
-  }
+  },
+  "niche": true
  },
  {
   "id": "hyperextension",
@@ -39091,7 +39026,8 @@
    "variation": "Prone",
    "base": "W-Raise",
    "equipment": null
-  }
+  },
+  "niche": true
  },
  {
   "id": "prone_y_raise",
@@ -39153,7 +39089,8 @@
    "variation": "Prone",
    "base": "Y-Raise",
    "equipment": null
-  }
+  },
+  "niche": true
  },
  {
   "id": "prowler_push",
@@ -46196,7 +46133,8 @@
    "variation": null,
    "base": "Scarecrow",
    "equipment": "Dumbbell"
-  }
+  },
+  "niche": true
  },
  {
   "id": "scissor_kicks",
@@ -54071,7 +54009,8 @@
    "variation": null,
    "base": "Step-Down",
    "equipment": null
-  }
+  },
+  "niche": true
  },
  {
   "id": "step_up_barbell",
@@ -57065,7 +57004,8 @@
    "variation": null,
    "base": "Trap-3 Raise",
    "equipment": null
-  }
+  },
+  "niche": true
  },
  {
   "id": "trap_stretch_seated",
@@ -59511,7 +59451,8 @@
    "variation": null,
    "base": "Wall Walk",
    "equipment": null
-  }
+  },
+  "niche": true
  },
  {
   "id": "wide_grip_inverted_row",
@@ -60383,7 +60324,8 @@
    "variation": null,
    "base": "Wrist Pronation/Supination",
    "equipment": null
-  }
+  },
+  "niche": true
  },
  {
   "id": "wrist_radial_deviation",
@@ -60436,7 +60378,8 @@
    "variation": null,
    "base": "Radial Deviation",
    "equipment": null
-  }
+  },
+  "niche": true
  },
  {
   "id": "wrist_roller",
@@ -60652,7 +60595,8 @@
    "variation": null,
    "base": "Ulnar Deviation",
    "equipment": null
-  }
+  },
+  "niche": true
  },
  {
   "id": "yates_row",
