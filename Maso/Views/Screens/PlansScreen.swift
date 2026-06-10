@@ -19,7 +19,9 @@ struct PlansScreen: View {
     /// 新建空白计划 — RootView 注入 (走 paywall gating + 共享 sheet 容器).
     let onNewPlan: () -> Void
 
-    enum DiscoverMode: Hashable { case ai, community }
+    enum DiscoverMode: Hashable { case ai, community, exercises }
+    /// Exercises 分页里 embedded ExerciseLibraryBrowser 的 "+" 触发器 (导航栏 leading 的 + 翻 true).
+    @State private var libraryAddRequested = false
     @State private var discover: DiscoverMode = .ai
     /// 按偏好现生成的 AI 计划 (transient, 不进 data.plans 直到用户 Save).
     @State private var aiPlans: [Plan] = []
@@ -39,18 +41,28 @@ struct PlansScreen: View {
         TabView(selection: $discover.animation(.easeOut(duration: 0.22))) {
             aiPage.tag(DiscoverMode.ai)
             communityPage.tag(DiscoverMode.community)
+            exercisesPage.tag(DiscoverMode.exercises)
         }
         .tabViewStyle(.page(indexDisplayMode: .never))
-        // AI / Community 切页控件移进导航栏 principal — 跟右上角 Exercises/Settings 按钮同一行齐平.
-        // 系统 .segmented 样式, 高度由导航栏统一控制 (自动跟那两个按钮对齐).
+        // AI / Classics / Exercises 切页控件移进导航栏 principal — 居中, 跟右上角齿轮同一行.
         .toolbar {
             ToolbarItem(placement: .principal) {
                 Picker("", selection: $discover.animation(.easeOut(duration: 0.18))) {
                     Text("AI").tag(DiscoverMode.ai)
                     Text("Classics").tag(DiscoverMode.community)
+                    Text("Exercises").tag(DiscoverMode.exercises)
                 }
                 .pickerStyle(.segmented)
-                .frame(width: 200)
+                .frame(width: 270)
+            }
+            // Exercises 分页: 左上角 "+" 加动作 (放 leading — 避免跟居中 3 段 + 右侧齿轮挤一起).
+            ToolbarItem(placement: .topBarLeading) {
+                if discover == .exercises {
+                    Button { libraryAddRequested = true } label: {
+                        Image(systemName: "plus").font(.system(size: 16, weight: .regular))
+                    }
+                    .accessibilityLabel(NSLocalizedString("Add exercise", comment: ""))
+                }
             }
         }
         .background(MasoColor.background.ignoresSafeArea())
@@ -226,6 +238,12 @@ struct PlansScreen: View {
             .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
             .padding(.top, 4)
         }
+    }
+
+    /// Exercises 分页 — 内嵌动作库 (asTab + embedded: 不自带 NavStack/标题, 由 Routines 导航栏接管).
+    /// 顶部 "+" 加动作走 libraryAddRequested binding.
+    private var exercisesPage: some View {
+        ExerciseLibraryBrowser(asTab: true, embedded: true, addRequested: $libraryAddRequested)
     }
 
     // MARK: - Community filters (#filters)
@@ -449,38 +467,31 @@ private struct LibraryEntryRow: View {
 //   - days 1-2 → 维持频率
 struct PlanRationaleCard: View {
     @Environment(DataStore.self) private var data
-    /// 右上角 pencil 按钮触发的"快捷训练设置"sheet
-    @State private var showTrainingSettings = false
-    /// 用户在半页里点 "Generate routines" 应用偏好后回调 — 调用方 (aiPage) 拿来跑生成动画.
+    /// 编辑态 — 卡片原地展开成 TrainingSettingsSection (不再拉 sheet).
+    @State private var expanded = false
+    /// 展开时的偏好快照 — 判断"改没改"(Generate 可点态) + 关闭编辑态时回滚.
+    @State private var original: UserSettings? = nil
+    /// 点 "Generate routines" 应用偏好后回调 — 调用方 (aiPage) 拿来跑生成动画.
     var onApplyPreferences: () -> Void = {}
 
-    var body: some View {
+    /// 任一训练偏好相对快照有改动 → Generate 激活. (UserSettings 非 Equatable, 逐字段比.)
+    private var changed: Bool {
+        guard let o = original else { return false }
         let s = data.settings
-        // wantStrengthen 折叠到 6 大 section (chest/back/shoulders/arms/core/legs) 显示,
-        // 跟 "Muscles to focus" picker 的粒度一致.
-        let majors = MuscleSelector.focusSummary(Set(s.wantStrengthen))
-        let muscleNames = majors.prefix(3).map(\.displayName).joined(separator: " / ")
-        let muscleSuffix = majors.count > 3 ? " +\(majors.count - 3)" : ""
+        return o.weeklyTrainingDays != s.weeklyTrainingDays
+            || o.exercisesPerSession != s.exercisesPerSession
+            || o.defaultSetsPerExercise != s.defaultSetsPerExercise
+            || o.trainingGoal != s.trainingGoal
+            || o.defaultRestSeconds != s.defaultRestSeconds
+            || o.defaultBetweenExerciseRestSeconds != s.defaultBetweenExerciseRestSeconds
+            || o.preferCommunityPlans != s.preferCommunityPlans
+            || Set(o.wantStrengthen) != Set(s.wantStrengthen)
+            || Set(o.availableEquipment) != Set(s.availableEquipment)
+    }
 
-        let daysStr = String(
-            format: NSLocalizedString("%lld days / week", comment: "weekly training frequency"),
-            s.weeklyTrainingDays
-        )
-        let dataParts: [String] = [
-            daysStr,
-            programStyleName(s.programStyle),
-            majors.isEmpty ? "" : String(
-                format: NSLocalizedString("Focus: %@", comment: "muscle focus list"),
-                muscleNames + muscleSuffix
-            )
-        ].filter { !$0.isEmpty }
-        let dataLine = dataParts.joined(separator: " · ")
-        let explanation = rationale(days: s.weeklyTrainingDays, hasFocus: !majors.isEmpty)
-
-        return VStack(alignment: .leading, spacing: 10) {
-            // 顶行: 训练图标 + TRAINING PREFERENCES kicker + 右上角 pencil 入口.
-            // 字号跟 WorkoutCard "FROM YOUR PLAN" 完全对齐 (10pt heavy + tracking 1.5), 三个 kicker
-            // 在三个 tab 上视觉一致.
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            // 顶行: 训练图标 + TRAINING PREFERENCES kicker + 右上角 pencil(收起态)/xmark(编辑态).
             HStack(alignment: .center, spacing: 6) {
                 Image(systemName: "figure.run")
                     .font(.system(size: 10, weight: .heavy))
@@ -492,87 +503,116 @@ struct PlanRationaleCard: View {
                     .lineLimit(1)
                     .minimumScaleFactor(0.85)
                 Spacer()
-                // pencil 按钮 — 弹 TrainingSettingsSheet, 内容跟 Settings → Training 完全一致
-                Button(action: { showTrainingSettings = true }) {
-                    // 白色纯 icon — 无圆圈底、无边框 (用户要求, 比 "+" 弱一档).
-                    Image(systemName: "slider.horizontal.3")
+                Button(action: { expanded ? closeEditing() : openEditing() }) {
+                    Image(systemName: expanded ? "xmark" : "pencil")
                         .font(.system(size: 15, weight: .semibold))
                         .foregroundStyle(MasoColor.text)
                         .frame(width: 30, height: 30)
                         .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
-                .accessibilityLabel(Text("Adjust training preferences"))
+                .accessibilityLabel(Text(expanded ? "Close" : "Adjust training preferences"))
             }
-            Text(dataLine)
-                // DESIGN.md §2.2: 正文 14pt bold — FOR YOU 卡的"数据行"是主要可读信息, 走正文规格
-                .font(.system(size: 14, weight: .bold))
-                .foregroundStyle(MasoColor.text)
-                .fixedSize(horizontal: false, vertical: true)
-            Text(explanation)
-                // 副文案: 比正文小一档 12pt, 弱化用 textDim
-                .font(.system(size: 12))
-                .foregroundStyle(MasoColor.textDim)
-                .fixedSize(horizontal: false, vertical: true)
-                .lineSpacing(2)
+
+            if expanded {
+                // ── 编辑态: sheet 的内容原地展开 + 底部 Generate (改了才可点) ──
+                TrainingSettingsSection()
+                generateInlineButton
+            } else {
+                // ── 收起态: 所有已选参数用小 chip 展示 ──
+                FlowLayout(spacing: 6) {
+                    ForEach(prefChips, id: \.self) { chip in
+                        prefChip(chip)
+                    }
+                }
+            }
         }
         .padding(.horizontal, MasoMetrics.cardPadding)
         .padding(.vertical, MasoMetrics.cardPadding - 2)
         .frame(maxWidth: .infinity, alignment: .leading)
-        // 视觉强化 (无底色 + 无炫光版):
-        //   - 不要 .background — 整卡透到页面背景 (跟 MuscleStatusOverviewCard 同款 hero 处理)
-        //   - 0.5pt borderHero 描边 — 跟 MuscleStatusOverviewCard 同款, 比 borderSoft 强一档
-        //     让卡片边在 large title 渐变区也看得清楚.
-        //   - 不要 shadow — 描边足够
         .overlay(
             RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium)
                 .stroke(MasoColor.borderHero, lineWidth: 0.5)
         )
-        // 整张卡也可点 — pencil 是显式 affordance, 但用户点空白处也算 "想改"
+        // 收起态整卡可点展开; 编辑态不拦截 (里面的行要接收点击).
         .contentShape(Rectangle())
-        .onTapGesture { showTrainingSettings = true }
-        .sheet(isPresented: $showTrainingSettings) {
-            TrainingSettingsSheet(onApply: onApplyPreferences)
-                .presentationDetents([.medium, .large])
-                .presentationDragIndicator(.visible)
-        }
+        .onTapGesture { if !expanded { openEditing() } }
     }
 
-    private func programStyleName(_ style: ProgramStyle) -> String {
-        switch style {
-        case .fullBody:
-            return NSLocalizedString("Full-body", comment: "training program style")
-        case .balanced:
-            return NSLocalizedString("Upper-lower split", comment: "training program style")
-        case .split:
-            return NSLocalizedString("Body-part split", comment: "training program style")
-        }
-    }
+    // MARK: - chips (收起态)
 
-    /// 根据 frequency + 是否有 focus 选副文案. 4 个 bucket.
-    private func rationale(days: Int, hasFocus: Bool) -> String {
-        if !hasFocus {
-            return NSLocalizedString(
-                "Full-body coverage — each muscle group rotates through the week.",
-                comment: "rationale when no focus muscle set"
-            )
+    /// 已选参数 → chip 文案列表: 天数 / 目标 / 动作数 / 组数 / 重点肌群 / 器械.
+    private var prefChips: [String] {
+        let s = data.settings
+        var out: [String] = []
+        out.append(String(format: NSLocalizedString("%lld days / week", comment: ""), s.weeklyTrainingDays))
+        out.append(s.trainingGoal.displayName)
+        out.append(String(format: NSLocalizedString("%d exercises", comment: ""), s.exercisesPerSession))
+        out.append(String(format: NSLocalizedString("%d sets", comment: ""), s.defaultSetsPerExercise))
+        let majors = MuscleSelector.focusSummary(Set(s.wantStrengthen))
+        if !majors.isEmpty {
+            let names = majors.prefix(3).map(\.displayName).joined(separator: " / ")
+            out.append(names + (majors.count > 3 ? " +\(majors.count - 3)" : ""))
         }
-        if days >= 5 {
-            return NSLocalizedString(
-                "High frequency — focus muscles hit 2–3× per week, accessories rotate for recovery.",
-                comment: "rationale: 5+ days/week"
-            )
-        } else if days >= 3 {
-            return NSLocalizedString(
-                "Each focus muscle is trained 2× per week — enough stimulus, full recovery between.",
-                comment: "rationale: 3-4 days/week"
-            )
+        if s.availableEquipment.isEmpty {
+            out.append(NSLocalizedString("Any equipment", comment: ""))
         } else {
-            return NSLocalizedString(
-                "2× per week is enough to maintain steady progress — focus muscles rotate in.",
-                comment: "rationale: 1-2 days/week"
-            )
+            let cats = s.availableEquipment.compactMap { EquipmentCategory(rawValue: $0)?.displayName }
+            let shown = cats.prefix(2).joined(separator: " / ")
+            out.append(shown + (cats.count > 2 ? " +\(cats.count - 2)" : ""))
         }
+        return out
+    }
+
+    private func prefChip(_ text: String) -> some View {
+        Text(text)
+            .font(.system(size: 11, weight: .semibold))
+            .foregroundStyle(MasoColor.text.opacity(0.85))
+            .lineLimit(1)
+            .padding(.horizontal, 10)
+            .padding(.vertical, 5)
+            .background(Capsule().fill(MasoColor.surfaceHi))
+    }
+
+    // MARK: - 编辑态
+
+    private var generateInlineButton: some View {
+        Button { applyAndGenerate() } label: {
+            HStack(spacing: 8) {
+                Image(systemName: "sparkles").font(.system(size: 14, weight: .heavy))
+                Text("Generate routines").font(.system(size: 15, weight: .heavy))
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 13)
+            .foregroundStyle(changed ? .black : MasoColor.textDim)
+            .background(Capsule().fill(changed ? MasoColor.accent : MasoColor.surfaceHi))
+        }
+        .buttonStyle(.plain)
+        .disabled(!changed)
+        .animation(.easeOut(duration: 0.2), value: changed)
+        .padding(.top, 2)
+    }
+
+    private func openEditing() {
+        original = data.settings
+        withAnimation(.easeOut(duration: 0.25)) { expanded = true }
+    }
+
+    /// 关闭编辑态 (没点 Generate): 改动不应用 — 回滚到快照. 没改动就直接收起.
+    private func closeEditing() {
+        if changed, let o = original { data.settings = o; data.save() }
+        original = nil
+        withAnimation(.easeOut(duration: 0.25)) { expanded = false }
+    }
+
+    /// Generate: 应用偏好 (已 live 写入) → 存盘 → 收起 → 触发生成动画.
+    private func applyAndGenerate() {
+        Haptics.tap()
+        data.save()
+        original = nil
+        withAnimation(.easeOut(duration: 0.25)) { expanded = false }
+        let apply = onApplyPreferences
+        DispatchQueue.main.async { apply() }
     }
 }
 

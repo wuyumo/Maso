@@ -708,11 +708,6 @@ private struct PlansTabScreen: View {
     let onFreeWorkout: () -> Void
     let onNewPlan: () -> Void
     let onOpenSettings: () -> Void
-    /// embedded Library 的 "+" 触发器 — Train 右上角 + 翻 true, Library 监听后开"加动作" sheet.
-    @State private var libraryAddRequested = false
-
-    /// Exercises 库 — 从原来的 segmented 分页改成右上角工具栏入口 (sheet). 新 IA (#2).
-    @State private var exercisesPresented = false
 
     var body: some View {
         NavigationStack {
@@ -720,14 +715,7 @@ private struct PlansTabScreen: View {
                 // 标题去掉 — 导航栏中间放 AI/Community segmented (PlansScreen 的 .principal toolbar item).
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
-                    // 右上角: Exercises 库 + Settings (Exercises 从 segmented 移到这里).
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button { exercisesPresented = true } label: {
-                            Image(systemName: "dumbbell")
-                                .font(.system(size: 16, weight: .regular))
-                        }
-                        .accessibilityLabel("Exercises")
-                    }
+                    // 右上角只剩 Settings — Exercises 已移进 PlansScreen 的 AI/Classics/Exercises 分段.
                     ToolbarItem(placement: .topBarTrailing) {
                         Button(action: onOpenSettings) {
                             Image(systemName: "gearshape")
@@ -737,32 +725,6 @@ private struct PlansTabScreen: View {
                     }
                 }
                 .tint(MasoColor.text)
-                // 动作库 sheet — Exercises 入口.
-                .sheet(isPresented: $exercisesPresented) {
-                    NavigationStack {
-                        ExerciseLibraryBrowser(asTab: true, embedded: true, addRequested: $libraryAddRequested)
-                            .navigationTitle("Exercises")
-                            .navigationBarTitleDisplayMode(.inline)
-                            .toolbar {
-                                ToolbarItem(placement: .topBarLeading) {
-                                    Button("Close") { exercisesPresented = false }
-                                }
-                                ToolbarItem(placement: .topBarTrailing) {
-                                    Button { libraryAddRequested = true } label: { Image(systemName: "plus") }
-                                        .accessibilityLabel(NSLocalizedString("Add exercise", comment: ""))
-                                }
-                            }
-                            .tint(MasoColor.text)
-                    }
-                    .presentationDragIndicator(.visible)
-                }
-                // 兼容旧 showcase / deep-link: trainPage=.library → 打开 Exercises sheet.
-                .onChange(of: page) { _, newPage in
-                    if newPage == .library {
-                        exercisesPresented = true
-                        page = .plans
-                    }
-                }
         }
     }
 }

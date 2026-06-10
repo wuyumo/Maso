@@ -205,23 +205,32 @@ struct TodayScreen: View {
     }
 
     private var plansEmptyState: some View {
-        // 精简空态: 只一行提示去 Routines tab 拿 routines (按钮去掉了 — 整块可点跳过去).
-        VStack(spacing: 8) {
+        // 精简空态: 图标 + 提示 + 一个"弱"按钮 (accent tinted, 非实心) — 一键把 AI routines 加进 My Routines.
+        VStack(spacing: 10) {
             Image(systemName: "bookmark")
                 .font(.system(size: 24, weight: .regular))
                 .foregroundStyle(MasoColor.textFaint)
             Text("No routines yet")
                 .font(.system(size: 14, weight: .bold))
                 .foregroundStyle(MasoColor.textDim)
-            Text("Add AI or Classic routines from the Routines tab.")
-                .font(.system(size: 12))
-                .foregroundStyle(MasoColor.textFaint)
-                .multilineTextAlignment(.center)
+            Button {
+                Haptics.tap()
+                withAnimation(.easeOut(duration: 0.25)) { data.seedStarterRoutines() }
+            } label: {
+                HStack(spacing: 6) {
+                    Image(systemName: "sparkles").font(.system(size: 12, weight: .bold))
+                    Text("Add AI routines").font(.system(size: 13, weight: .semibold))
+                }
+                .foregroundStyle(MasoColor.accent)
+                .padding(.horizontal, 14).padding(.vertical, 8)
+                .background(MasoColor.accent.opacity(0.12))
+                .clipShape(Capsule())
+            }
+            .buttonStyle(.plain)
+            .padding(.top, 2)
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 22)
-        .contentShape(Rectangle())
-        .onTapGesture { onGoToDiscover() }
     }
 
     /// 并排的小入口卡 (自由训练 / 社区).
