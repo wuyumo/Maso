@@ -285,30 +285,18 @@ struct VariantSectionHeader: View {
     }
 }
 
-// 展开收折组时, 把变种拆成 "Variation"(动作) + "Equipment"(器械) 两个带标题的 section.
-// 三处共用 (Exercise Library / 训练中选动作 picker / Rare exercises 浏览), 保证收折展开布局一致.
-// row 闭包由调用方注入 (各自的 tap / trailing / swipeActions 不同), 但 section 结构 + 标题完全统一.
+// 展开收折组 — 不再分 Variation / Equipment 两节 (#flat-variants), 全部变种按显示名排序平铺.
+// 名字本身已带三段信息 "主动作 (器械 · 变体)", 节标题成了冗余.
+// 三处共用 (Exercise Library / 训练中选动作 picker / Rare exercises 浏览).
 @ViewBuilder
 func groupedVariantSections<RowView: View>(
     for group: ExerciseGroup,
     @ViewBuilder row: @escaping (Exercise) -> RowView
 ) -> some View {
-    let movementVars = group.movementVariants
-    let equipmentVars = group.equipmentVariants
-    if !movementVars.isEmpty {
-        VariantSectionHeader(
-            title: NSLocalizedString("Variation", comment: "movement/form variant section"),
-            color: MasoColor.accent
-        )
-        ForEach(movementVars, id: \.id) { row($0) }
+    let sorted = group.variants.sorted {
+        $0.displayName.localizedStandardCompare($1.displayName) == .orderedAscending
     }
-    if !equipmentVars.isEmpty {
-        VariantSectionHeader(
-            title: NSLocalizedString("Equipment", comment: "equipment variant section"),
-            color: MasoColor.textDim
-        )
-        ForEach(equipmentVars, id: \.id) { row($0) }
-    }
+    ForEach(sorted, id: \.id) { row($0) }
     // 组尾留白 — 让本组最后一个变种跟下一个母动作之间有"呼吸", 跟组内紧凑形成对比.
     Color.clear
         .frame(height: 5)
