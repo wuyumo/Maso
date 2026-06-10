@@ -100,6 +100,14 @@ private struct RawExerciseV2: Decodable {
     /// 主 ExercisePickerSheet 默认隐藏 niche=true, 单独"Rare exercises"入口才显示. 这样常用 picker
     /// 干净 (新手不会被 Foam Roll / Captains of Crush 之类的怪东西吓到), 又不丢数据.
     let niche: Bool?
+    /// 三段式名字切割 (预生成): variation / base / equipment.
+    let nameParts: RawNameParts?
+}
+
+private struct RawNameParts: Decodable {
+    let variation: String?
+    let base: String
+    let equipment: String?
 }
 
 private struct V2Muscles: Decodable {
@@ -160,7 +168,8 @@ private func toExerciseV2(_ r: RawExerciseV2) -> Exercise {
         localizedInstructions: r.instructions,
         localizedName: r.name,
         localizedDangerWarnings: r.danger_warnings,
-        isNiche: r.niche ?? false
+        isNiche: r.niche ?? false,
+        nameParts: r.nameParts.map { NameParts(variation: $0.variation, base: $0.base, equipment: $0.equipment) }
     )
 }
 

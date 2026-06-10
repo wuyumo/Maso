@@ -111,6 +111,13 @@ enum MovementFacet: String, CaseIterable, Hashable, Sendable {
     }
 }
 
+/// 三段式名字结构 — "High Face Pull (Cable)" → variation "High" / base "Face Pull" / equipment "Cable".
+struct NameParts: Codable, Hashable, Sendable {
+    var variation: String?
+    var base: String
+    var equipment: String?
+}
+
 enum Tempo: String, Codable, Hashable, Sendable {
     case strength       // 1-5 reps, max effort
     case hypertrophy    // 6-12 reps
@@ -211,6 +218,11 @@ struct Exercise: Identifiable, Hashable, Codable, Sendable {
     /// 单独的"Rare exercises" 入口才显示它们 (Foam Roll 全家 / Battle Rope / Hip Abduction
     /// machine / Grip Crusher / Thor's Hammer 等). 默认 false (普通动作).
     var isNiche: Bool = false
+
+    /// 三段式名字切割 (#nameParts): Variation (可空) + 主动作 base (必有) + Equipment (可空).
+    /// 来自 exercises.json 预切割字段; 自创动作为 nil (分组回退老启发式).
+    /// 分组按 base 收折; 展开按 variation 有无分进 Variation / Equipment 两个 section.
+    var nameParts: NameParts? = nil
 
     /// 用户自创动作的图片数据 (JPEG / PNG). bundle 动作走 imageFolder; 自创动作走这个.
     /// JPEG quality 0.7 压缩, 单张 ~50-200KB, 用户加几个自创动作压不爆 settings JSON.

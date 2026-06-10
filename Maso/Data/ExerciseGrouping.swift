@@ -37,14 +37,28 @@ struct ExerciseGroup: Hashable, Identifiable {
     /// 是不是单 exercise 组 (没变种). UI 用这个决定要不要显 disclosure.
     var isSingleton: Bool { variants.isEmpty }
 
+    /// 组入口标题 — 只显示"主动作"名 (#nameParts: "Squat" / "Face Pull"), 不带器械/变体.
+    /// zh 本地化: 组里存在"纯 base 成员"(无 variation 无 equipment) → 用它的 displayName (跟随语言);
+    /// 没有纯成员 → 退英文 base.
+    var entryTitle: String {
+        // 纯 base 成员 (无 variation 无 equipment) → 它的 displayName 就是"主动作"且跟随语言.
+        if let pure = all.first(where: { $0.nameParts != nil && $0.nameParts?.variation == nil && $0.nameParts?.equipment == nil }) {
+            return pure.displayName
+        }
+        // 单成员组没有展开态 — 直接用全名 (本地化), 不丢器械信息也不丢中文.
+        if isSingleton { return canonical.displayName }
+        // 多成员但没有纯 base 本体 → 英文 base 兜底.
+        return baseName
+    }
+
     /// 这个 exercise 是不是"动作差异变种" (Variation), 区别于"器械差异变种" (Equipment).
-    /// 两条任一成立即算动作差异, 否则算器械差异:
-    ///   1. 名字带执行方式前缀 (Seated / Single-Arm / Close-Grip …) → 动作差异 (沿用主库逻辑).
-    ///   2. 跟 canonical 用同一器械 → 区别只能在执行方式/体位/握法/动作模式 — 尤其括号内的 niche 变种
-    ///      (Standing / Single-Leg / Lean-Forward / Alternating Waves …) → 动作差异.
-    /// 器械不同 (且无执行方式前缀) → 器械差异.
-    /// UI 用这个把展开的变种拆成 "Variation"(动作) / "Equipment"(器械) 两段.
+    /// #nameParts 优先: variation 字段非空 → Variation; 否则 (仅 equipment 差异) → Equipment.
+    /// 无 nameParts (自创动作) 回退老启发式:
+    ///   1. 名字带执行方式前缀 → 动作差异; 2. 跟 canonical 同器械 → 动作差异; 否则器械差异.
     func isModifierVariant(_ exercise: Exercise) -> Bool {
+        if let parts = exercise.nameParts {
+            return parts.variation != nil
+        }
         if ExerciseGrouping.extractedModifier(of: exercise) != nil { return true }
         return ExerciseGrouping.sameEquipment(exercise, canonical)
     }
@@ -52,13 +66,14 @@ struct ExerciseGroup: Hashable, Identifiable {
     /// 返回这个 exercise 的执行方式修饰标签, e.g. "Seated" / "Single-Arm" / "Close-Grip".
     /// 纯器械变种返回 nil.
     func modifierLabel(for exercise: Exercise) -> String? {
-        ExerciseGrouping.extractedModifier(of: exercise)
+        if let parts = exercise.nameParts { return parts.variation }
+        return ExerciseGrouping.extractedModifier(of: exercise)
     }
 
-    /// 动作差异变种的"区别"短标签 — 优先执行方式前缀 (主库); 否则取括号内容并去掉与器械相关的词 (niche).
-    /// e.g. "Hip Abduction (Machine, Single-Leg)" → "Single-Leg"; "Battle Rope (Double Waves)" → "Double Waves";
-    ///      "Seated Lateral Raise" → "Seated".
+    /// 动作差异变种的"区别"短标签 — #nameParts.variation 优先; 回退老启发式.
+    /// e.g. "Hip Abduction (Machine, Single-Leg)" → "Single-Leg"; "Seated Lateral Raise" → "Seated".
     func variationLabel(for exercise: Exercise) -> String {
+        if let v = exercise.nameParts?.variation { return v }
         if let m = ExerciseGrouping.extractedModifier(of: exercise) { return m }
         if let detail = ExerciseGrouping.parenDetail(of: exercise) { return detail }
         // 家族归并的变种 (e.g. "Diamond Push-Up" 归到 "Push-Up") — 去掉跟 base 相同的尾巴, 只留区分前缀.
@@ -349,7 +364,10 @@ enum ExerciseGrouping {
         var orderedKeys: [String] = []
         var buckets: [String: [Exercise]] = [:]
         for ex in exercises {
-            let key = contextualKey(ex)
+            // #nameParts: 预切割的"主动作"字段是分组第一真理 — 同 base 全部收折
+            // ("Row (Cable)" + "Seated Row (Cable)" + "Row (Barbell)" → 一个 "Row" 组).
+            // 无 nameParts (自创动作) 回退老 contextualKey 启发式.
+            let key = ex.nameParts?.base ?? contextualKey(ex)
             if buckets[key] == nil {
                 orderedKeys.append(key)
                 buckets[key] = []
@@ -359,14 +377,13 @@ enum ExerciseGrouping {
         return orderedKeys.compactMap { key -> ExerciseGroup? in
             guard let items = buckets[key], !items.isEmpty else { return nil }
             // canonical 选取:
+            //   0. #nameParts 纯 base 成员 (无 variation 无 equipment) — 真正的"基础动作"本体
             //   1. name 严格等于 base 的那一项 (没括号 → 真正的"基础动作")
-            //   2. 没有裸基础名 (orphan group, ~10% 的组) → 按器械/机制优先级挑, 不是随机 items[0],
-            //      否则会出现 "Calf Raise (Band)" / "Bicep Curl (Band)" 当默认推荐的怪象 (P1-4).
-            let canonical = items.first(where: { $0.name == key })
+            //   2. 没有裸基础名 (orphan group) → 按器械/机制优先级挑 + 最短名/字母序定序.
+            let canonical = items.first(where: { $0.nameParts != nil && $0.nameParts?.variation == nil && $0.nameParts?.equipment == nil })
+                ?? items.first(where: { $0.name == key })
                 ?? items.min(by: { a, b in
                     let ra = canonicalRank(a), rb = canonicalRank(b)
-                    // 同 rank: 名字最短优先 ("Row (Cable)" 胜 "High Row (Cable)" — 裸基础名当代表),
-                    // 再按字母序保证确定性.
                     if ra != rb { return ra < rb }
                     if a.name.count != b.name.count { return a.name.count < b.name.count }
                     return a.name < b.name

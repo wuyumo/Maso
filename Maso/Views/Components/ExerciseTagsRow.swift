@@ -157,7 +157,10 @@ struct GroupedExerciseRow<Trailing: View>: View {
                                 .foregroundStyle(diff.color)
                         }
                     } else {
-                        Text(ex.displayName)
+                        // 组入口只显示"主动作"名 (#nameParts: "Squat" / "Face Pull"), 不带器械/变体 —
+                        // 器械和变体在展开后的 Equipment / Variation 两个 section 里看.
+                        // 单成员组 entryTitle == displayName (无信息损失).
+                        Text(group.entryTitle)
                             .font(.system(size: 15, weight: .bold))
                             .foregroundStyle(MasoColor.text)
                             .lineLimit(1)
