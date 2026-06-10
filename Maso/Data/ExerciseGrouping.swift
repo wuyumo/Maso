@@ -45,10 +45,11 @@ struct ExerciseGroup: Hashable, Identifiable {
         if let pure = all.first(where: { $0.nameParts != nil && $0.nameParts?.variation == nil && $0.nameParts?.equipment == nil }) {
             return pure.displayName
         }
-        // 单成员组没有展开态 — 直接用全名 (本地化), 不丢器械信息也不丢中文.
-        if isSingleton { return canonical.displayName }
-        // 多成员但没有纯 base 本体 → 英文 base 兜底.
-        return baseName
+        // #首层无括号: 有 nameParts → 一律只显示主动作 base (器械在行内 chip + 展开 EQUIPMENT 节,
+        // variation 在展开 VARIATION 节). 中文环境下退英文 base — 接受 (首层整洁优先).
+        if canonical.nameParts != nil { return baseName }
+        // 自创动作 (无 nameParts) — 保留用户自己起的全名.
+        return canonical.displayName
     }
 
     /// 这个 exercise 是不是"动作差异变种" (Variation), 区别于"器械差异变种" (Equipment).
