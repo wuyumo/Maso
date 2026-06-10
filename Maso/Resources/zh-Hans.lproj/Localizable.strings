@@ -224,7 +224,7 @@
 
 /* ── AI Workout ── */
 "AI Workout" = "AI 训练计划";
-"Each day, Maso bundles your profile + recent training + frequency into a prompt and asks Claude to generate today's plan. Your API key is stored locally on this device." = "每天 Masso 把你的基础信息、最近训练记录、频率打包发给 Claude,让它生成今日训练计划。API key 仅保存在本机。";
+"Each day, Maso bundles your profile + recent training + frequency into a prompt and asks Claude to generate today's plan. Your API key is stored locally on this device." = "每天 Masso 把你的基础信息、最近训练记录、频率打包发给 AI 服务,让它生成今日训练计划。API key 仅保存在本机。";
 "Generate plan with AI" = "用 AI 生成训练计划";
 "Enter your API key above first" = "先在上方输入 API key";
 "Each day a new plan is built from your training history" = "每天根据你的训练记录生成新计划";

@@ -45,13 +45,13 @@
 	<key>MasoClientToken</key>
 	<string>$(MASO_CLIENT_TOKEN)</string>
 	<key>NSCameraUsageDescription</key>
-	<string>Maso uses the camera so you can add a selfie to your shareable workout summary.</string>
+	<string>Masso uses the camera so you can add a selfie to your shareable workout summary.</string>
 	<key>NSHealthShareUsageDescription</key>
-	<string>Maso reads basic workout history from Health to keep your training timeline consistent across devices.</string>
+	<string>Masso reads basic workout history from Health to keep your training timeline consistent across devices.</string>
 	<key>NSHealthUpdateUsageDescription</key>
-	<string>Maso saves your completed workouts to Apple Fitness so they appear in your Activity rings and Health timeline.</string>
+	<string>Masso saves your completed workouts to Apple Fitness so they appear in your Activity rings and Health timeline.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Maso reads a photo you pick from your library so you can add it to your shareable workout summary.</string>
+	<string>Masso reads a photo you pick from your library so you can add it to your shareable workout summary.</string>
 	<key>NSSupportsLiveActivities</key>
 	<true/>
 	<key>NSSupportsLiveActivitiesFrequentUpdates</key>

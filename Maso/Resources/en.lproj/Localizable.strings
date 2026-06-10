@@ -223,7 +223,7 @@
 
 /* ── AI Workout ── */
 "AI Workout" = "AI Workout";
-"Each day, Maso bundles your profile + recent training + frequency into a prompt and asks Claude to generate today's plan. Your API key is stored locally on this device." = "Each day, Masso bundles your profile + recent training + frequency into a prompt and asks Claude to generate today's workout. Your API key is stored locally on this device.";
+"Each day, Maso bundles your profile + recent training + frequency into a prompt and asks Claude to generate today's plan. Your API key is stored locally on this device." = "Each day, Masso bundles your profile + recent training + frequency into a prompt and asks our AI service to generate today's workout. Your API key is stored locally on this device.";
 "Generate plan with AI" = "Generate workout with AI";
 "Enter your API key above first" = "Enter your API key above first";
 "Each day a new plan is built from your training history" = "Each day a new workout is built from your training history";

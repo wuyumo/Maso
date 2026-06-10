@@ -12,7 +12,7 @@ import Foundation
 //   7. TodayScreen 优先用 aiTodayPlan, fallback 系统推荐
 //
 // 用户需要做的:
-//   1. 去 https://console.anthropic.com 拿 API key
+//   1. 后端实际走 Cloudflare Worker 代理 → api.deepseek.com (deepseek-chat); 见下 request 构造
 //   2. Settings → AI Workout → 粘贴 key + 启用 toggle
 //
 // 安全说明:
