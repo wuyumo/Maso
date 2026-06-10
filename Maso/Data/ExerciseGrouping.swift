@@ -326,11 +326,14 @@ enum ExerciseGrouping {
         //    否则回退 equipBase.
         func contextualKey(_ ex: Exercise) -> String {
             // #5: 泛家族词 (Row/Curl/Press/Fly…) — 剥到只剩家族词时, 器械才是身份.
-            //     保留器械、只折叠体位/握法修饰: "Seated Cable Row" → "Cable Row";
-            //     "Single-Arm Dumbbell Row" → "Dumbbell Row"; "Barbell Row" → "Barbell Row".
+            //     命名规范化后器械在括号里 ("Row (Cable)"), 名字前缀不再携带器械 —
+            //     改用 equipment 数据字段构 key: "Seated Row (Cable)" → key "Cable Row";
+            //     "Row (Barbell)" → key "Barbell Row". 同家族不同器械仍分组, 体位/握法照折.
             let noMod = ExerciseGrouping.stripMovementModifiers(ExerciseGrouping.beforeParen(ex.name))
-            if ExerciseGrouping.genericFamilyWords.contains(ExerciseGrouping.stripEquipmentWords(noMod).lowercased()) {
-                return noMod
+            let family = ExerciseGrouping.stripEquipmentWords(noMod)
+            if ExerciseGrouping.genericFamilyWords.contains(family.lowercased()) {
+                let eq = ExerciseGrouping.normalizedEquipment(ex.equipment)
+                return Exercise.equipmentDisplayName(for: eq) + " " + family
             }
             let eBase = equipmentOnlyBase(of: ex)
             let fBase = baseName(of: ex)      // strips both equipment + modifiers
@@ -359,7 +362,11 @@ enum ExerciseGrouping {
             let canonical = items.first(where: { $0.name == key })
                 ?? items.min(by: { a, b in
                     let ra = canonicalRank(a), rb = canonicalRank(b)
-                    return ra != rb ? ra < rb : a.name < b.name  // 同 rank 按名字定序, 不依赖 JSON 顺序
+                    // 同 rank: 名字最短优先 ("Row (Cable)" 胜 "High Row (Cable)" — 裸基础名当代表),
+                    // 再按字母序保证确定性.
+                    if ra != rb { return ra < rb }
+                    if a.name.count != b.name.count { return a.name.count < b.name.count }
+                    return a.name < b.name
                 })
                 ?? items[0]
             // P1-8: 去掉跟 canonical 完全同 displayName 的"幽灵变种" (DB 里 17 对重名动作),

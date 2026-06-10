@@ -123,3 +123,92 @@ Total 962 · renames 117
 | triceps_pushdown_single_arm | Triceps Pushdown (Single-Arm) | Single-Arm Triceps Pushdown |
 | triceps_stretch_overhead | Triceps Stretch (Overhead) | Overhead Triceps Stretch |
 | wall_sit_single_leg | Wall Sit (Single-Leg) | Single-Leg Wall Sit |
+
+## Round 2 — equipment fully into parens (84 renames)
+
+| id | current | proposed |
+|---|---|---|
+| ab_crunch_machine | Ab Crunch Machine | Ab Crunch (Machine) |
+| alternating_dumbbell_curl | Alternating Dumbbell Curl | Alternating Curl (Dumbbell) |
+| axle_bar_curl | Axle Bar Curl | Curl (Axle Bar) |
+| band_pull_apart | Band Pull-Apart | Pull-Apart (Band) |
+| barbell_high_pull | Barbell High Pull | High Pull (Barbell) |
+| barbell_holds | Barbell Holds | Holds (Barbell) |
+| barbell_pullover | Barbell Pullover | Pullover (Barbell) |
+| barbell_row | Barbell Row | Row (Barbell) |
+| barbell_row_dead_stop | Dead-Stop Barbell Row | Dead-Stop Row (Barbell) |
+| barbell_row_one_arm | Single-Arm Barbell Row | Single-Arm Row (Barbell) |
+| barbell_row_smith | Barbell Row (Smith Machine) | Row (Barbell, Smith Machine) |
+| barbell_row_underhand | Underhand Barbell Row | Underhand Row (Barbell) |
+| behind_the_back_cable_curl | Behind-the-Back Cable Curl | Behind-the-Back Curl (Cable) |
+| bench_press_with_bands | Bench Press with Bands | Bench Press (Band) |
+| bicep_curl_high_cable | High Cable Curl | High Curl (Cable) |
+| bicep_curl_lying_cable | Lying Cable Curl | Lying Curl (Cable) |
+| bicep_curl_offset_dumbbell | Offset Dumbbell Curl | Offset Curl (Dumbbell) |
+| cable_chest_press_single_arm | Single-Arm Cable Chest Press | Single-Arm Chest Press (Cable) |
+| cable_chest_press_standing | Standing Cable Chest Press | Standing Chest Press (Cable) |
+| cable_crossover_high | Cable Crossover (High to Low) | Crossover (Cable, High to Low) |
+| cable_crossover_low | Cable Crossover (Low to High) | Crossover (Cable, Low to High) |
+| cable_crossover_mid | Cable Crossover (Mid) | Crossover (Cable, Mid) |
+| cable_crossover_single_arm | Single-Arm Cable Crossover | Single-Arm Crossover (Cable) |
+| cable_extension_behind_back | Behind-Back Cable Triceps Extension | Behind-Back Triceps Extension (Cable) |
+| cable_extension_cross_body | Cross-Body Cable Triceps Extension | Cross-Body Triceps Extension (Cable) |
+| cable_fly_high_to_low_single_arm | Single-Arm Cable Crossover (High to Low) | Single-Arm Crossover (Cable, High to Low) |
+| cable_fly_low_to_high_single_arm | Single-Arm Cable Crossover (Low to High) | Single-Arm Crossover (Cable, Low to High) |
+| cable_pullover | Cable Pullover | Pullover (Cable) |
+| cable_pullover_straight_arm | Cable Pullover (Straight Arm) | Pullover (Cable, Straight Arm) |
+| cable_row_face_pull_style | Cable Row (Face-Level) | Row (Cable, Face-Level) |
+| cable_row_high | High Cable Row | High Row (Cable) |
+| cable_row_kneeling | Kneeling Cable Row | Kneeling Row (Cable) |
+| cable_row_low | Low Cable Row | Low Row (Cable) |
+| cable_row_mid | Mid Cable Row | Mid Row (Cable) |
+| cable_row_rope | Cable Row (Rope) | Row (Cable, Rope) |
+| cable_row_seated | Seated Cable Row | Seated Row (Cable) |
+| cable_row_single_arm | Single-Arm Cable Row | Single-Arm Row (Cable) |
+| cable_row_wide_grip | Wide-Grip Cable Row | Wide-Grip Row (Cable) |
+| chest_press_cable_bilateral_seated | Seated Cable Chest Press | Seated Chest Press (Cable) |
+| chest_supported_dumbbell_press | Chest-Supported Dumbbell Press | Chest-Supported Press (Dumbbell) |
+| decline_cable_chest_press_standing | Standing High Cable Chest Press | Standing High Chest Press (Cable) |
+| dip_ring | Ring Dip | Dip (Rings) |
+| dip_ring_triceps | Triceps Ring Dip | Triceps Dip (Rings) |
+| dumbbell_pullover | Dumbbell Pullover | Pullover (Dumbbell) |
+| dumbbell_pullover_cross_bench | Cross-Bench Dumbbell Pullover | Cross-Bench Pullover (Dumbbell) |
+| dumbbell_row | Dumbbell Row | Row (Dumbbell) |
+| dumbbell_row_3_point | 3-Point Dumbbell Row | 3-Point Row (Dumbbell) |
+| dumbbell_row_chest_supported | Dumbbell Row (Chest Supported) | Row (Dumbbell, Chest Supported) |
+| dumbbell_row_seated | Seated Dumbbell Row | Seated Row (Dumbbell) |
+| dumbbell_row_single_arm | Single-Arm Dumbbell Row | Single-Arm Row (Dumbbell) |
+| ez_bar_pullover | EZ-Bar Pullover | Pullover (EZ-Bar) |
+| foam_roll_it_band | Foam Roll IT Band | Foam Roll IT (Band) |
+| incline_cable_chest_press_standing | Standing Low Cable Chest Press | Standing Low Chest Press (Cable) |
+| incline_chest_press_landmine | Incline Landmine Press | Incline Press (Landmine) |
+| incline_dumbbell_fly_decline_reverse_motion | Reverse Grip Incline Dumbbell Fly | Reverse Grip Incline Fly (Dumbbell) |
+| incline_dumbbell_row | Incline Dumbbell Row | Incline Row (Dumbbell) |
+| kettlebell_swing | Kettlebell Swing | Swing (Kettlebell) |
+| kettlebell_swing_american | Kettlebell Swing (American) | Swing (Kettlebell, American) |
+| kettlebell_swing_cardio | Kettlebell Swing (Cardio) | Swing (Kettlebell, Cardio) |
+| kettlebell_swing_single_arm | Single-Arm Kettlebell Swing | Single-Arm Swing (Kettlebell) |
+| kneeling_cable_pullover | Kneeling Cable Pullover | Kneeling Pullover (Cable) |
+| kneeling_chest_press_cable | Kneeling Cable Chest Press | Kneeling Chest Press (Cable) |
+| landmine_press | Landmine Press | Press (Landmine) |
+| landmine_press_half_kneeling | Half-Kneeling Landmine Press | Half-Kneeling Press (Landmine) |
+| landmine_press_kneeling | Kneeling Landmine Press | Kneeling Press (Landmine) |
+| landmine_press_two_handed | Two-Handed Landmine Press | Two-Handed Press (Landmine) |
+| landmine_row | Landmine Row | Row (Landmine) |
+| landmine_row_single_arm | Single-Arm Landmine Row | Single-Arm Row (Landmine) |
+| lat_pullover_dumbbell_cross_bench | Dumbbell Pullover (Cross-Bench) | Pullover (Dumbbell, Cross-Bench) |
+| machine_row | Machine Row | Row (Machine) |
+| machine_row_single_arm | Single-Arm Machine Row | Single-Arm Row (Machine) |
+| overhead_press_axle | Axle Press | Press (Axle Bar) |
+| ring_row | Ring Row | Row (Rings) |
+| rolling_dumbbell_extension | Rolling Dumbbell Triceps Extension | Rolling Triceps Extension (Dumbbell) |
+| rowing_machine | Rowing Machine | Rowing (Machine) |
+| rowing_machine_sprint | Rowing Machine (Sprint) | Rowing (Machine, Sprint) |
+| seated_dumbbell_curl | Seated Dumbbell Curl | Seated Curl (Dumbbell) |
+| single_arm_landmine_row_meadows | Landmine Row (Meadows Variation) | Row (Landmine, Meadows Variation) |
+| sled_pull | Sled Pull (Backward) | Pull (Sled, Backward) |
+| sled_push | Sled Push | Push (Sled) |
+| smith_machine_row | Smith Machine Row | Row (Smith Machine) |
+| t_bar_row | T-Bar Row | Row (T-Bar) |
+| t_bar_row_chest_supported | T-Bar Row (Chest Supported) | Row (T-Bar, Chest Supported) |
+| trx_row | TRX Row | Row (TRX) |
