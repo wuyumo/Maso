@@ -38,6 +38,8 @@ If you grant permission, Masso may:
 - **Write** completed workouts to Apple Health so they appear in your Activity rings and Health timeline.
 - **Read** basic workout history from Health to keep your training timeline consistent across devices.
 
+**Apple Watch.** If you use the Masso watch app, it runs a workout session on your watch to show your live heart rate and record calories. Heart rate and workout data collected on the watch are stored only in Apple Health (HealthKit) on your devices — they are never transmitted to us or any third party.
+
 HealthKit data stays on your device under Apple's strict permission model. We never read this data on our servers. You can revoke HealthKit permission at any time in iOS Settings → Privacy → Health.
 
 ### Camera and Photo Library
