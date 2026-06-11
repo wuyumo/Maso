@@ -106,6 +106,9 @@ final class TrainingSessionStore {
             planName: plan?.name ?? NSLocalizedString("Workout", comment: ""),
             initialState: liveActivityState(for: seg, endsAt: endsAt)
         )
+        // Watch 镜像 — 新训练重置 HK 防双计标记, 推开局帧
+        WatchSyncManager.shared.resetForNewWorkout()
+        syncWatch()
     }
 
     /// 把当前 segment + endsAt 翻译成 Live Activity 的 ContentState
@@ -155,6 +158,7 @@ final class TrainingSessionStore {
         LiveActivityManager.shared.update(
             liveActivityState(for: seg, endsAt: s.endsAt)
         )
+        syncWatch()
     }
 
     /// 标记"用户仍在主动用" — bump lastActiveAt, 避免活跃 session 被 6h idle 误判完成.
@@ -178,6 +182,7 @@ final class TrainingSessionStore {
         s.endsAt = nil
         session = s
         LiveActivityManager.shared.end()
+        syncWatch()
     }
 
     func setIndex(_ i: Int) {
@@ -257,6 +262,7 @@ final class TrainingSessionStore {
             session = s
             Haptics.trainingComplete() // DESIGN 7: 训练完成触觉
             LiveActivityManager.shared.end()
+            syncWatch()
             return
         }
         s.segmentIndex = next
@@ -289,6 +295,7 @@ final class TrainingSessionStore {
         plan = nil
         segments = []
         LiveActivityManager.shared.end()
+        syncWatch()   // → idle
     }
 
     /// 提前结束 — 跳到 completed 态保留已完成组. 跟 end() 区别: end 清空 session (=放弃),
@@ -302,6 +309,7 @@ final class TrainingSessionStore {
         session = s
         Haptics.trainingComplete()
         LiveActivityManager.shared.end()
+        syncWatch()
     }
 
     /// "上一段" — 跳过休息直接回到上一个动作
@@ -586,6 +594,7 @@ final class TrainingSessionStore {
             session = s
             Haptics.trainingComplete()
             LiveActivityManager.shared.end()
+            syncWatch()
             return
         }
 
@@ -778,6 +787,7 @@ final class TrainingSessionStore {
             segments = []
             planParamsDirty = true
             LiveActivityManager.shared.end()
+            syncWatch()
             return
         }
 
@@ -825,6 +835,54 @@ final class TrainingSessionStore {
         session = s
         planParamsDirty = true  // 改了 plan — 结束时提示保存
         syncLiveActivity()
+    }
+
+    // MARK: - Watch 镜像 (#apple-watch)
+
+    /// 把当前 session 翻译成手表的一帧状态. session nil → idle; completed → done.
+    private func makeWatchState() -> WatchSyncState {
+        guard let s = session else { return .idle }
+        var st = WatchSyncState()
+        st.planName = plan?.name ?? ""
+        st.totalSets = segments.filter(\.isExercise).count
+        st.doneSets = s.completedSets.count
+        if s.completed {
+            st.mode = .done
+            return st
+        }
+        guard let seg = currentSegment else { return .idle }
+        st.paused = !s.playing
+        st.endsAt = s.playing ? s.endsAt : nil
+        st.pausedRemaining = s.pausedRemaining.map { Int(ceil($0)) }
+        switch seg.kind {
+        case .rest:
+            st.mode = .rest
+            st.nextExercise = nextExerciseName(after: seg)
+        case .exercise(let ex, let setN, let total, let reps, let weight, let dur, let countdown):
+            st.mode = .exercise
+            st.exerciseName = ex.displayName
+            st.setN = setN
+            st.setTotal = total
+            st.manualConfirm = !countdown
+            var parts: [String] = []
+            if let reps {
+                parts.append(String(format: NSLocalizedString("%d reps", comment: "watch detail"), reps))
+            }
+            if let weight, weight > 0 {
+                let num = weight.truncatingRemainder(dividingBy: 1) == 0
+                    ? String(format: "%.0f", weight) : String(format: "%.1f", weight)
+                parts.append("\(num) kg")
+            }
+            if countdown, let dur, dur > 0 {
+                parts.append(String(format: "%d:%02d", dur / 60, dur % 60))
+            }
+            st.detail = parts.joined(separator: " · ")
+        }
+        return st
+    }
+
+    private func syncWatch() {
+        WatchSyncManager.shared.sync(makeWatchState())
     }
 
     /// 找指定 stepId 之后的下一 step 的第一个 exercise segment index. 没有 → nil.

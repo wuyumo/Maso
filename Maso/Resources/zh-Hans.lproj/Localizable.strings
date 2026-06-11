@@ -862,3 +862,6 @@
 "Share this month" = "分享本月";
 "This Week" = "本周";
 "This Month" = "本月";
+
+/* Watch 镜像 detail 行 */
+"%d reps" = "%d 次";

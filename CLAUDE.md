@@ -32,3 +32,21 @@
 - [ ] 内购商品 `com.maso.app.pro.{monthly,yearly,lifetime}` → 在新 App 下重建,代码里 `SubscriptionManager.swift` 的 product ID 改成 `com.yumowu.maso.pro.*`
 - [ ] `Maso/Info.plist` 里 URL scheme 名字残留 `com.maso.app`(纯标识,无功能影响)
 - [ ] 语言收窄到 en + zh-Hans(现有 ~10 种语言缺翻译会 fallback 英文)
+
+## 工程管理 (xcodegen) — 2026-06-11 起
+- **project.yml 是工程的 source of truth**, 已同步到真实配置 (bundle id / team / device family)。
+- **加新 .swift 文件 / 新 target**: 直接建文件 + 改 project.yml → `xcodegen generate`。
+  (旧约束"不要新建 swift 文件"作废 — 那是 yml 漂移期的权宜。)
+- ⚠️ 三个 Info.plist (Maso / MasoWidgets / MasoWatch) **手维护**, yml 故意不写 info: 块;
+  别把 info: 加回去, 会被 generate 重置。
+- Maso.entitlements / MasoWatch.entitlements 由 yml 管理 (generate 会重写, 改 yml 不改文件)。
+
+## Apple Watch (MasoWatch target)
+- watchOS 11+, bundle `com.yumowu.maso.watchkitapp`, 嵌在 Maso.app/Watch/。
+- 架构: 手机 TrainingSessionStore 是 source of truth, 每次 mutation 末尾 syncWatch()
+  (Maso/Data/WatchSyncManager.swift) 推 WatchSyncState (MasoWatch/Shared/, 两 target 共编);
+  手表 (MasoWatch/WatchBridge.swift) 渲染 + 回传 advance/togglePlay。
+- 手表训练时跑 HKWorkoutSession (心率+卡路里+圆环), 保存由手表做;
+  手机端 RootView.catchUpHealthKitSync 见 watchHealthSessionActive 标记就跳过当天写入 (防双计)。
+- 模拟器联调: 用已配对的 pair (`simctl list pairs`), watch app 直接 install
+  `build/.../Maso.app/Watch/MasoWatch.app`; 手机端 showcase player 模式开练即可看镜像。

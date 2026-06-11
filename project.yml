@@ -1,8 +1,9 @@
 name: Maso
 options:
-  bundleIdPrefix: com.maso
+  bundleIdPrefix: com.yumowu
   deploymentTarget:
     iOS: "18.0"
+    watchOS: "11.0"
   developmentLanguage: en
   xcodeVersion: "26.0"
 
@@ -22,10 +23,12 @@ settings:
   base:
     SWIFT_VERSION: "5.10"
     IPHONEOS_DEPLOYMENT_TARGET: "18.0"
-    TARGETED_DEVICE_FAMILY: "1,2"  # iPhone + iPad
+    TARGETED_DEVICE_FAMILY: "1"  # iPhone only (上架决定); watch target 自己覆写成 4
     ENABLE_USER_SCRIPT_SANDBOXING: NO
     SWIFT_STRICT_CONCURRENCY: minimal
-    DEVELOPMENT_TEAM: UR6F66266C  # 自动签名给开发证书 (nomorefish@163.com)
+    # 上架签名: Eric Ng 付费 Developer Program (Apple ID wuyumoawuyumo@outlook.com).
+    # 旧免费 team UR6F66266C 只能装机不能上架, 已迁走 — 不要改回去.
+    DEVELOPMENT_TEAM: TW8ZVVX529
     CODE_SIGN_STYLE: Automatic
 
 # StoreKit 2 local 测试 — Run 时用 Maso.storekit config 替代真 App Store.
@@ -38,14 +41,10 @@ schemes:
     run:
       config: Debug
       storeKitConfiguration: Maso.storekit
-    test:
-      config: Debug
-    profile:
-      config: Release
-    analyze:
-      config: Debug
-    archive:
-      config: Release
+
+# ⚠️ Info.plist 全部手维护 (Maso/Info.plist, MasoWidgets/Info.plist, MasoWatch/Info.plist):
+# 上架前的合规改动 (Masso 文案 / 权限描述 / 加密豁免 / 版本号) 直接改 plist 文件,
+# 这里不写 info: 块 — 否则 xcodegen generate 会把 plist 重新生成, 抹掉手改内容.
 
 targets:
   Maso:
@@ -56,6 +55,8 @@ targets:
       - package: MuscleMap
       # Widget extension — 内嵌进 .ipa, 锁屏 / Dynamic Island Live Activity 走它
       - target: MasoWidgets
+      # watchOS companion — 训练状态镜像到手表 (心率 / 完成组 / 休息倒计时)
+      - target: MasoWatch
     # Secrets.xcconfig 把 DeepSeek API key 等敏感信息注入 build setting,
     # 再通过 Info.plist 暴露给 app. 文件不入 git, 改 key 不会污染 commit.
     configFiles:
@@ -67,73 +68,18 @@ targets:
           - "**/.DS_Store"
           - "Secrets.xcconfig"
           - "Secrets.xcconfig.example"
+      # 手机⇄手表共享的同步协议 (WatchSyncState / WatchAction)
+      - path: MasoWatch/Shared
     entitlements:
       path: Maso/Maso.entitlements
       properties:
         # HealthKit — 让 Maso 把训练数据写到 Apple Fitness / Health
-        # 不写 .access — 免费开发账号 / 自动签名只支持基础 HealthKit, sub-capability
-        # (clinical / verifiable health records) 需要付费 program 单独申请.
         com.apple.developer.healthkit: true
-    info:
-      path: Maso/Info.plist
-      properties:
-        CFBundleDisplayName: Maso
-        UILaunchScreen:
-          UIColorName: launchBackground
-        UIApplicationSceneManifest:
-          UIApplicationSupportsMultipleScenes: false
-        UISupportedInterfaceOrientations:
-          - UIInterfaceOrientationPortrait
-        UIRequiresFullScreen: true
-        UIStatusBarStyle: UIStatusBarStyleLightContent
-        UIUserInterfaceStyle: Dark
-        # HealthKit 使用说明 — 苹果要求强制描述
-        NSHealthShareUsageDescription: Maso reads basic workout history from Health to keep your training timeline consistent across devices.
-        NSHealthUpdateUsageDescription: Maso saves your completed workouts to Apple Fitness so they appear in your Activity rings and Health timeline.
-        # 相机 / 相册 — 让用户在分享时加自己的照片到 share card. 没这两个 key, iOS 会直接 crash.
-        NSCameraUsageDescription: Maso uses the camera so you can add a selfie to your shareable workout summary.
-        NSPhotoLibraryUsageDescription: Maso reads a photo you pick from your library so you can add it to your shareable workout summary.
-        # AI 后端代理 — Cloudflare Worker. 从 Secrets.xcconfig 注入.
-        # MasoAIProxyURL 是 worker base URL (e.g. https://maso-ai.you.workers.dev),
-        # MasoClientToken 是轻量防滥用 token (跟 worker secret MASO_CLIENT_TOKEN 同值).
-        # 两个都空 → AI 功能 disabled. 真正的 DeepSeek API key 在 worker 端 server-side.
-        MasoAIProxyURL: $(MASO_AI_PROXY_URL)
-        MasoClientToken: $(MASO_CLIENT_TOKEN)
-        # Export compliance — Maso 只用 HTTPS (Apple 豁免的标准加密), 没有自研加密算法.
-        # 在 Info.plist 里 bake 这个 key 之后, App Store Connect upload 不再每次问.
-        ITSAppUsesNonExemptEncryption: false
-        # Live Activity 支持 — 让 app 能 start ActivityKit Activity
-        # (锁屏 + Dynamic Island 上的训练状态小窗).
-        NSSupportsLiveActivities: true
-        NSSupportsLiveActivitiesFrequentUpdates: true
-        # URL scheme — maso:// 用于"分享计划"功能.
-        # 用户从 Plans 详情点 Share → 拷出 maso://import?plan=<base64-encoded-Plan>,
-        # 别人在 Safari / Messages 打开 → 系统拉起 Maso → MasoApp.onOpenURL 解码 → 弹 import preview.
-        CFBundleURLTypes:
-          - CFBundleTypeRole: Editor
-            CFBundleURLName: com.maso.app
-            CFBundleURLSchemes:
-              - maso
-        CFBundleLocalizations:
-          - en
-          - zh-Hans
-          - zh-Hant
-          - ja
-          - ko
-          - es
-          - fr
-          - de
-          - it
-          - pt-BR
-          - ru
-          - ar
-        CFBundleDevelopmentRegion: en
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.maso.app
-        DEVELOPMENT_TEAM: UR6F66266C  # 跟项目级一致, 不再清空
-        CODE_SIGN_STYLE: Automatic
+        PRODUCT_BUNDLE_IDENTIFIER: com.yumowu.maso
         GENERATE_INFOPLIST_FILE: NO
+        INFOPLIST_FILE: Maso/Info.plist
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
 
@@ -145,17 +91,32 @@ targets:
       - path: MasoWidgets
       # 跟 main app 共享 ActivityAttributes schema
       - path: Maso/Shared
-    info:
-      path: MasoWidgets/Info.plist
-      properties:
-        CFBundleDisplayName: Maso Widgets
-        NSExtension:
-          NSExtensionPointIdentifier: com.apple.widgetkit-extension
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.maso.app.widgets
-        DEVELOPMENT_TEAM: UR6F66266C
-        CODE_SIGN_STYLE: Automatic
+        PRODUCT_BUNDLE_IDENTIFIER: com.yumowu.maso.widgets
         GENERATE_INFOPLIST_FILE: NO
+        INFOPLIST_FILE: MasoWidgets/Info.plist
         SKIP_INSTALL: YES
-        INFOPLIST_KEY_CFBundleDisplayName: Maso Widgets
+        INFOPLIST_KEY_CFBundleDisplayName: Masso Widgets
+
+  # watchOS companion app — 训练镜像: 当前动作 / 组数 / 休息倒计时 / 完成组按钮;
+  # 训练期间跑 HKWorkoutSession (实时心率 + 卡路里 + 圆环积分).
+  # 手机是 source of truth (TrainingSessionStore), 手表只渲染状态 + 回传动作.
+  MasoWatch:
+    type: application
+    platform: watchOS
+    deploymentTarget: "11.0"
+    sources:
+      - path: MasoWatch
+    entitlements:
+      path: MasoWatch/MasoWatch.entitlements
+      properties:
+        com.apple.developer.healthkit: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.yumowu.maso.watchkitapp
+        GENERATE_INFOPLIST_FILE: NO
+        INFOPLIST_FILE: MasoWatch/Info.plist
+        TARGETED_DEVICE_FAMILY: "4"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor

@@ -580,6 +580,13 @@ struct RootView: View {
             let id = "\(key.planId)-\(Int(key.day.timeIntervalSince1970))"
             if data.settings.healthKitSyncedSessionIds.contains(id) { continue }
             guard let recs = bucket[key], !recs.isEmpty else { continue }
+            // Apple Watch 防双计: 手表本次训练跑了 HKWorkoutSession (带实时心率, 由手表保存),
+            // 手机端不再写当天这份 — 直接标记已同步. 标记消费后复位, 不影响之后的纯手机训练.
+            if WatchSyncManager.shared.watchHealthSessionActive, cal.isDateInToday(key.day) {
+                data.settings.healthKitSyncedSessionIds.insert(id)
+                WatchSyncManager.shared.resetForNewWorkout()
+                continue
+            }
             let start = recs.map { $0.performedAt }.min() ?? key.day
             let end = recs.map { $0.performedAt }.max() ?? key.day
             let safeEnd = end.timeIntervalSince(start) < 60 ? start.addingTimeInterval(60) : end

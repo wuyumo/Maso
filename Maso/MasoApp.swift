@@ -76,6 +76,15 @@ struct MasoApp: App {
                         dataStore.save()
                     }
                 }
+                // Apple Watch 镜像 — 激活 WCSession + 接线手表动作:
+                // ✓/Skip → advance (跟手机主按钮同语义, 含 SetRecord 落库); 暂停 → togglePlay.
+                WatchSyncManager.shared.activate()
+                WatchSyncManager.shared.onAdvance = {
+                    session.advance { rec in dataStore.recordSet(rec) }
+                }
+                WatchSyncManager.shared.onTogglePlay = {
+                    session.togglePlay()
+                }
             }
         }
     }
