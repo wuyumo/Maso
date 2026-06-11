@@ -85,6 +85,8 @@ struct MasoApp: App {
                 WatchSyncManager.shared.onTogglePlay = {
                     session.togglePlay()
                 }
+                // 启动即推一帧 (idle / 恢复的 session) — 防手表停留在上次训练的旧状态.
+                session.pushWatchState()
             }
         }
     }

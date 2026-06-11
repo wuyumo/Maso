@@ -123,8 +123,10 @@ struct ShareCustomizeSheet<ShareContent: View>: View {
     /// 用 sheet(item:) 模式 — source 自身驱动 sheet, 避免 "set source + set bool" 双 state
     /// 同 event cycle 顺序 bug (会导致第一次点 camera 实际打开 library).
     @State private var activePicker: PhotoPickerSource? = nil
+    /// 渲染产物自己驱动 share sheet (派生 binding) — 不再用单独的 bool.
+    /// "set value + set bool" 双 state 在同一 event cycle 的顺序 bug 会让 sheet 内容
+    /// 捕获到 nil → 空白 share sheet (跟下面 activePicker 注释是同一类坑).
     @State private var renderedImage: UIImage? = nil
-    @State private var showShareSheet = false
     @State private var showPhotoOptions = false
     @State private var isCameraAvailable = UIImagePickerController.isSourceTypeAvailable(.camera)
     @Environment(\.dismiss) private var dismiss
@@ -211,9 +213,14 @@ struct ShareCustomizeSheet<ShareContent: View>: View {
                     onPersistPhoto?(img)
                 }
             }
-            .sheet(isPresented: $showShareSheet) {
+            .sheet(isPresented: Binding(
+                get: { renderedImage != nil },
+                set: { if !$0 { renderedImage = nil } }
+            )) {
                 if let img = renderedImage {
                     ActivityViewController(activityItems: [img])
+                        .presentationDetents([.medium, .large])
+                        .presentationDragIndicator(.visible)
                 }
             }
         }
@@ -225,8 +232,13 @@ struct ShareCustomizeSheet<ShareContent: View>: View {
         let snap = sections
         let img = ShareImageRenderer.render { shareContent(userPhoto, nil, .rendering(snap)) }
         guard let img else { return }
-        renderedImage = img
-        showShareSheet = true
+        // PNG 往返规整化 — ImageRenderer 的输出偶发带奇异 colorspace/scale 元数据,
+        // UIActivityViewController 的预览进程会拒渲染 (空白 sheet). 转标准 PNG 再回 UIImage 兜底.
+        if let data = img.pngData(), let normalized = UIImage(data: data) {
+            renderedImage = normalized
+        } else {
+            renderedImage = img
+        }
     }
 }
 

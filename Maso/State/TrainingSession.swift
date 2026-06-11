@@ -885,6 +885,10 @@ final class TrainingSessionStore {
         WatchSyncManager.shared.sync(makeWatchState())
     }
 
+    /// App 启动时推一帧当前状态 — 不然手机被杀后重启, 手表会永远停在上一次训练的旧帧
+    /// (没有 mutation 就没有 sync). MasoApp .task 调.
+    func pushWatchState() { syncWatch() }
+
     /// 找指定 stepId 之后的下一 step 的第一个 exercise segment index. 没有 → nil.
     private func nextStepExerciseIndex(in segs: [Segment], plan: Plan, afterStepId stepId: String) -> Int? {
         guard let curStepIdx = plan.steps.firstIndex(where: { $0.id == stepId }),

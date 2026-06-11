@@ -32,32 +32,7 @@ struct HistoryScreen: View {
     /// 顶部 ProBanner tap → 弹 paywall. 从 Today tab 挪过来 — History 用户回顾训练时
     /// 自然产生"想看更多数据/解锁高级功能"的动机, banner 放这比放在 Today 干扰训练流程更顺.
     @State private var paywallPresented: Bool = false
-    /// 周期分享 (#history-share): 右上角 share → 本周/本月汇总卡渲染图, 设了就弹 share sheet.
-    @State private var periodShareImage: UIImage? = nil
 
-    /// 本周/本月训练汇总 → PeriodSummaryShareCard 渲染图.
-    /// 周界 (weekOfYear) 用 settings.calendar — 跟用户的周起始日偏好 (周日/周一) 一致.
-    private func sharePeriod(_ component: Calendar.Component) {
-        let cal = data.settings.calendar
-        guard let interval = cal.dateInterval(of: component, for: Date()) else { return }
-        let sets = data.sets.filter { $0.performedAt >= interval.start && $0.performedAt < interval.end }
-        let workouts = Set(sets.map { cal.startOfDay(for: $0.performedAt) }).count
-        let volume = sets.reduce(0.0) { $0 + (($1.weight ?? 0) * Double($1.reps ?? 0)) }
-        var seen = Set<MuscleGroup>(); var muscles: [MuscleGroup] = []
-        for s in sets {
-            for m in data.exById[s.exerciseId]?.muscleGroups ?? [] where seen.insert(m).inserted { muscles.append(m) }
-        }
-        let df = DateFormatter(); df.dateFormat = "MMM d"
-        let range = "\(df.string(from: interval.start)) – \(df.string(from: interval.end.addingTimeInterval(-1)))"
-        let title: LocalizedStringKey = component == .month ? "This Month" : "This Week"
-        guard let img = ShareImageRenderer.render(width: 390, {
-            PeriodSummaryShareCard(title: title, rangeText: range,
-                                   workouts: workouts, totalSets: sets.count,
-                                   volumeKg: volume, muscles: muscles)
-        }) else { return }
-        Haptics.tap()
-        periodShareImage = img
-    }
 
     /// ProBanner kicker 的"起步价/月" — 取 yearly product 月均价 (年价 ÷ 12), locale-aware.
     /// product 还没 load 出来时返回 nil → banner 只显示 "MASO PRO", 不写死假价格.
@@ -174,35 +149,15 @@ struct HistoryScreen: View {
             if !collapsed { calendarMonthAnchor = historyCurrentMonthStart() }
         }
         .screenHeader("History") {
-            // 周期分享 — 本周 / 本月训练汇总卡 (#history-share).
-            Menu {
-                Button { sharePeriod(.weekOfYear) } label: {
-                    Label("Share this week", systemImage: "calendar")
-                }
-                Button { sharePeriod(.month) } label: {
-                    Label("Share this month", systemImage: "calendar")
-                }
-            } label: {
-                Image(systemName: "square.and.arrow.up")
-                    .font(.system(size: 16, weight: .regular))
-            }
-            .accessibilityLabel("Share")
+            // 分享训练总览 — 直接进 customize 预览 (跟训练详情 / 日历页同一套分享模式):
+            // 所有有数据的 section 默认全开 (最近一次训练 + 本周肌肉状态 + 本周日历),
+            // 用户在卡内关掉不想要的, 点 Share 才弹系统分享. 没数据的 section 整节不出现.
+            historyShareButton
             Button(action: onOpenSettings) {
                 Image(systemName: "gearshape")
                     .font(.system(size: 16, weight: .regular))
             }
             .accessibilityLabel("Settings")
-        }
-        // 周期分享 share sheet — 渲染图设了就弹.
-        .sheet(isPresented: Binding(
-            get: { periodShareImage != nil },
-            set: { if !$0 { periodShareImage = nil } }
-        )) {
-            if let img = periodShareImage {
-                ShareActivityView(activityItems: [img])
-                    .presentationDetents([.medium, .large])
-                    .presentationDragIndicator(.visible)
-            }
         }
         .sheet(item: $selectedSession) { session in
             SessionDetailSheet(
@@ -445,6 +400,112 @@ struct HistoryScreen: View {
     }
 
     /// 把 SetRecord 按 (planId, 日历日) 聚合成 session 卡; 按时间倒序返回
+    // MARK: - 训练总览分享 (#history-share)
+
+    /// 右上角分享 — UnifiedShareCard, 全 section 默认开 (照片占位 / 最近训练 / 肌肉状态 / 日历).
+    private var historyShareButton: some View {
+        let workoutData = historyWorkoutSection()
+        let muscleData = historyMuscleSection()
+        let calendarData = historyCalendarSection()
+        return ShareImageButton(
+            previewTitle: NSLocalizedString("My Training", comment: ""),
+            defaultSections: ShareSections(todayStatus: true, workout: true, muscleStatus: true, calendar: true),
+            shareContent: { photo, onTapAdd, mode in
+                switch mode {
+                case .editing(let binding):
+                    UnifiedShareCard(
+                        userPhoto: photo,
+                        onTapAddPhoto: onTapAdd,
+                        workoutSection: workoutData,
+                        muscleStatusSection: muscleData,
+                        calendarSection: calendarData,
+                        editToggles: binding
+                    )
+                case .rendering(let visible):
+                    UnifiedShareCard(
+                        userPhoto: photo,
+                        onTapAddPhoto: onTapAdd,
+                        workoutSection: workoutData,
+                        muscleStatusSection: muscleData,
+                        calendarSection: calendarData,
+                        visibleSections: visible
+                    )
+                }
+            },
+            label: {
+                Image(systemName: "square.and.arrow.up")
+                    .font(.system(size: 16, weight: .regular))
+            }
+        )
+        .accessibilityLabel("Share")
+    }
+
+    /// 最近一次训练 — 没有任何记录时返回 nil, 该 section 整节不出现.
+    private func historyWorkoutSection() -> WorkoutSectionData? {
+        guard let s = groupedSessions().first else { return nil }
+        let df = DateFormatter()
+        df.dateStyle = .full
+        df.timeStyle = .none
+        return WorkoutSectionData(
+            dateLabel: df.string(from: s.day),
+            planName: s.planName ?? NSLocalizedString("Free workout", comment: ""),
+            durationLabel: "~\(max(5, s.setCount * 2))m",
+            setCount: s.setCount,
+            exerciseCount: s.exerciseCount,
+            prCount: s.prCount,
+            muscles: s.muscles,
+            exerciseNames: exerciseStats(for: s).prefix(4).map { $0.exercise.displayName }
+        )
+    }
+
+    /// 本周肌肉状态 — 跟 SessionDetailSheet 的同名构造同一套 MuscleStatusCompute.
+    private func historyMuscleSection() -> MuscleStatusSectionData {
+        let fatigueMap = MuscleStatusCompute.muscleFatigueMap(sets: data.sets, exById: data.exById)
+        let cal = Calendar.current
+        let cutoff = cal.startOfDay(for: cal.date(byAdding: .day, value: -6, to: Date())!)
+        let weekSets = data.sets.filter { $0.performedAt >= cutoff }
+        let days = Set(weekSets.map { cal.startOfDay(for: $0.performedAt) }).count
+        var sections = Set<MuscleGroup>()
+        for set in weekSets {
+            guard let ex = data.exById[set.exerciseId] else { continue }
+            for m in ex.muscleGroups {
+                if let sec = m.section { sections.insert(sec) }
+            }
+        }
+        return MuscleStatusSectionData(
+            muscleOpacity: { m in MuscleStatusCompute.opacityFor(muscle: m, fatigueMap: fatigueMap) },
+            coarseOnly: !data.settings.muscleDetailEnabled,
+            workoutsThisWeek: days,
+            totalSetsThisWeek: weekSets.count,
+            muscleSectionsHit: sections.count
+        )
+    }
+
+    /// 本周训练日历 + 连胜.
+    private func historyCalendarSection() -> CalendarSectionData {
+        let cal = Calendar.current
+        var dates: Set<Date> = []
+        for s in data.sets { dates.insert(cal.startOfDay(for: s.performedAt)) }
+        let cutoff = cal.startOfDay(for: cal.date(byAdding: .day, value: -6, to: Date())!)
+        let weekSetCount = data.sets.filter { $0.performedAt >= cutoff }.count
+        // 连胜 — 今天没练但昨天练了仍存活 (跟 stats strip 同语义)
+        var streak = 0
+        var cursor = cal.startOfDay(for: Date())
+        if !dates.contains(cursor) {
+            cursor = cal.startOfDay(for: cal.date(byAdding: .day, value: -1, to: cursor)!)
+        }
+        while dates.contains(cursor) {
+            streak += 1
+            guard let prev = cal.date(byAdding: .day, value: -1, to: cursor) else { break }
+            cursor = cal.startOfDay(for: prev)
+        }
+        return CalendarSectionData(
+            sessionDates: dates,
+            totalSets: weekSetCount,
+            streakDays: streak
+        )
+    }
+
     private func groupedSessions() -> [SessionSummary] {
         let cal = Calendar.current
         struct Key: Hashable { let planId: String; let day: Date }
