@@ -723,7 +723,8 @@ struct PlanDetailSheet: View {
     /// 持久化到 UserDefaults — 跨 sheet 开关 / app 重启都保留, 用户偏好一旦设定不会"忘".
     @AppStorage("planStepCardLayout") private var useCardLayout: Bool = false
     /// Share plan — 点 toolbar 分享按钮 → 拉起 UIActivityViewController 分享 maso:// 链接.
-    @State private var shareURL: URL? = nil
+    /// 分享图 — RoutineShareCard 渲染产物 (含 maso:// 深链 QR). 设了就弹 share sheet.
+    @State private var shareImage: UIImage? = nil
     /// Share encode 失败时弹的简单 alert (理论上不会触发).
     @State private var shareFailed: Bool = false
     /// 右滑"替换动作"流程: stepId set 非 nil 时弹 ExercisePickerSheet 让用户挑新动作,
@@ -804,13 +805,13 @@ struct PlanDetailSheet: View {
                 // Tab 2 browse 预览: 主操作 = body 的 "★ Add to my plans" 大 CTA, 顶栏不再放 "+" (去重).
                 // 顶栏 Start 胶囊也删了 — body 大 CTA 够显眼; iOS sheet 自带下拉关闭, 不需要 Done.
             }
-            // Share sheet — UIActivityViewController 桥. shareURL 设了就弹, 取消/分享完置 nil.
+            // Share sheet — UIActivityViewController 桥. 分享 RoutineShareCard 渲染图 (深链在图内 QR).
             .sheet(isPresented: Binding(
-                get: { shareURL != nil },
-                set: { if !$0 { shareURL = nil } }
+                get: { shareImage != nil },
+                set: { if !$0 { shareImage = nil } }
             )) {
-                if let url = shareURL {
-                    ShareActivityView(activityItems: [url])
+                if let img = shareImage {
+                    ShareActivityView(activityItems: [img])
                         .presentationDetents([.medium, .large])
                         .presentationDragIndicator(.visible)
                 }
@@ -953,15 +954,19 @@ struct PlanDetailSheet: View {
         commit()
     }
 
-    /// Share — 编码 draft 成 maso:// URL → 弹系统 share sheet.
-    /// encode 失败 (理论不会, Plan 一直 Codable) → 弹 alert 兜底, 不静默.
+    /// Share — 渲染 RoutineShareCard 分享图 (计划内容 + 品牌 footer + maso:// 深链 QR).
+    /// 收图的人扫 QR 即导入. encode/渲染失败 → 弹 alert 兜底, 不静默.
     private func handleSharePlan() {
-        guard let url = PlanShareCodec.shareURL(for: draft) else {
+        guard let url = PlanShareCodec.shareURL(for: draft),
+              let img = ShareImageRenderer.render(width: 390, {
+                  RoutineShareCard(plan: draft, exById: data.exById, qrPayload: url.absoluteString)
+              })
+        else {
             shareFailed = true
             return
         }
         Haptics.tap()
-        shareURL = url
+        shareImage = img
     }
 
     // 顶部信息卡 — 简化版.
@@ -1993,7 +1998,7 @@ private extension Array {
 // 用于"分享计划"功能 — 把 maso:// URL 丢给系统 share sheet, 用户选 Messages/AirDrop/Copy/...
 // (跟 SettingsScreen 里的 ShareSheet 是同款桥, 但放这里方便 PlanDetailSheet 直接用,
 //  不想跨文件依赖私有类型.)
-private struct ShareActivityView: UIViewControllerRepresentable {
+struct ShareActivityView: UIViewControllerRepresentable {
     let activityItems: [Any]
     func makeUIViewController(context: Context) -> UIActivityViewController {
         UIActivityViewController(activityItems: activityItems, applicationActivities: nil)

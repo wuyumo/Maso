@@ -26,6 +26,12 @@ struct TodayScreen: View {
     @State private var pendingDeletePlanId: String? = nil
     /// 社区精选 sheet (从原 Plans 页迁来).
     @State private var communityPresented: Bool = false
+    /// 图片导入 routine (#image-import): 选图 → QR/OCR 解析 → ImportedPlanSheet 确认.
+    @State private var importPickerShown = false
+    @State private var importPickedImage: UIImage? = nil
+    @State private var importParsing = false
+    @State private var importedRoutine: Plan? = nil
+    @State private var importFailed = false
 
     private var suggested: Plan? {
         // 默认推用户自己的 plans (pickTodayPlan: LRU 挑最久没练那张) —
@@ -159,6 +165,15 @@ struct TodayScreen: View {
             CommunityScreen()
             .presentationDragIndicator(.visible)
         }
+        // ── 图片导入 routine (#image-import) — 流程收进 ViewModifier, 避免 body 类型检查超时.
+        .modifier(RoutineImportFlow(
+            pickerShown: $importPickerShown,
+            pickedImage: $importPickedImage,
+            parsing: $importParsing,
+            imported: $importedRoutine,
+            failed: $importFailed,
+            data: data
+        ))
         .alert("Delete plan?", isPresented: Binding(
             get: { pendingDeletePlanId != nil },
             set: { if !$0 { pendingDeletePlanId = nil } }
@@ -185,7 +200,19 @@ struct TodayScreen: View {
                 .textCase(.uppercase)
                 .foregroundStyle(MasoColor.textDim)
             Spacer()
-            headerCircleButton("plus", action: onNewPlan, a11y: "New workout")
+            // "+" 菜单: 自建 / 从照片导入 (#image-import — 支持别人的分享卡 QR 或其他 app 截图 OCR).
+            Menu {
+                Button(action: onNewPlan) { Label("New workout", systemImage: "square.and.pencil") }
+                Button { importPickerShown = true } label: { Label("Import from photo", systemImage: "photo") }
+            } label: {
+                Image(systemName: "plus")
+                    .font(.system(size: 14, weight: .bold))
+                    .foregroundStyle(MasoColor.text)
+                    .frame(width: 30, height: 30)
+                    .background(Circle().fill(MasoColor.text.opacity(0.12)))
+                    .overlay(Circle().stroke(MasoColor.text.opacity(0.4), lineWidth: 0.5))
+            }
+            .accessibilityLabel(NSLocalizedString("Add routine", comment: ""))
         }
         .padding(.horizontal, 12)   // 标题 + 按钮整体往中间靠, 左右留边距
     }
@@ -397,5 +424,72 @@ struct TodayScreen: View {
             }
         }
         return total
+    }
+}
+
+// MARK: - RoutineImportFlow — 图片导入 routine 的 sheets/alert/loading (#image-import)
+//
+// 单独收成 ViewModifier: TodayScreen.body 修饰链已经很长, 再内联 4 个 sheet/alert/overlay
+// 会让 SwiftUI 类型检查超时 ("unable to type-check in reasonable time").
+private struct RoutineImportFlow: ViewModifier {
+    @Binding var pickerShown: Bool
+    @Binding var pickedImage: UIImage?
+    @Binding var parsing: Bool
+    @Binding var imported: Plan?
+    @Binding var failed: Bool
+    let data: DataStore
+
+    func body(content: Content) -> some View {
+        content
+            .sheet(isPresented: $pickerShown) {
+                PhotoPicker(image: $pickedImage, source: .photoLibrary)
+                    .presentationDragIndicator(.visible)
+            }
+            .onChange(of: pickedImage) { _, img in
+                guard let img else { return }
+                parsing = true
+                let library = data.userLibrary
+                Task {
+                    let plan = await RoutineImageImporter.plan(from: img, library: library)
+                    await MainActor.run {
+                        parsing = false
+                        pickedImage = nil
+                        if let plan { imported = plan } else { failed = true }
+                    }
+                }
+            }
+            .sheet(item: $imported) { plan in
+                ImportedPlanSheet(plan: plan, onAdd: { p in
+                    imported = nil
+                    DispatchQueue.main.async {
+                        data.plans.append(p)
+                        data.save()
+                        Haptics.tap()
+                    }
+                })
+                .presentationDetents([.medium, .large])
+                .presentationDragIndicator(.visible)
+            }
+            .alert("Couldn't read a routine from that image", isPresented: $failed) {
+                Button("OK", role: .cancel) {}
+            } message: {
+                Text("Try a clearer screenshot — exercise names need to be readable.")
+            }
+            .overlay {
+                if parsing {
+                    ZStack {
+                        Color.black.opacity(0.45).ignoresSafeArea()
+                        VStack(spacing: 10) {
+                            ProgressView().controlSize(.large)
+                            Text("Reading routine…")
+                                .font(.system(size: 13, weight: .semibold))
+                                .foregroundStyle(MasoColor.text)
+                        }
+                        .padding(22)
+                        .background(MasoColor.surfaceHi)
+                        .clipShape(RoundedRectangle(cornerRadius: 14))
+                    }
+                }
+            }
     }
 }

@@ -849,3 +849,16 @@
 "variant.hammer" = "锤式对握 — 更偏肱肌与前臂。";
 
 "My Routines" = "我的计划";
+
+/* ── Routine 分享卡 / 图片导入 / History 周期分享 ── */
+"Import from photo" = "从照片导入";
+"Add routine" = "添加计划";
+"Imported routine" = "导入的训练计划";
+"Couldn't read a routine from that image" = "没能从这张图片识别出训练计划";
+"Try a clearer screenshot — exercise names need to be readable." = "换一张更清晰的截图 — 动作名需要能看清。";
+"Reading routine…" = "正在识别…";
+"Volume" = "训练量";
+"Share this week" = "分享本周";
+"Share this month" = "分享本月";
+"This Week" = "本周";
+"This Month" = "本月";

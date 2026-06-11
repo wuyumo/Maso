@@ -32,6 +32,32 @@ struct HistoryScreen: View {
     /// 顶部 ProBanner tap → 弹 paywall. 从 Today tab 挪过来 — History 用户回顾训练时
     /// 自然产生"想看更多数据/解锁高级功能"的动机, banner 放这比放在 Today 干扰训练流程更顺.
     @State private var paywallPresented: Bool = false
+    /// 周期分享 (#history-share): 右上角 share → 本周/本月汇总卡渲染图, 设了就弹 share sheet.
+    @State private var periodShareImage: UIImage? = nil
+
+    /// 本周/本月训练汇总 → PeriodSummaryShareCard 渲染图.
+    /// 周界 (weekOfYear) 用 settings.calendar — 跟用户的周起始日偏好 (周日/周一) 一致.
+    private func sharePeriod(_ component: Calendar.Component) {
+        let cal = data.settings.calendar
+        guard let interval = cal.dateInterval(of: component, for: Date()) else { return }
+        let sets = data.sets.filter { $0.performedAt >= interval.start && $0.performedAt < interval.end }
+        let workouts = Set(sets.map { cal.startOfDay(for: $0.performedAt) }).count
+        let volume = sets.reduce(0.0) { $0 + (($1.weight ?? 0) * Double($1.reps ?? 0)) }
+        var seen = Set<MuscleGroup>(); var muscles: [MuscleGroup] = []
+        for s in sets {
+            for m in data.exById[s.exerciseId]?.muscleGroups ?? [] where seen.insert(m).inserted { muscles.append(m) }
+        }
+        let df = DateFormatter(); df.dateFormat = "MMM d"
+        let range = "\(df.string(from: interval.start)) – \(df.string(from: interval.end.addingTimeInterval(-1)))"
+        let title: LocalizedStringKey = component == .month ? "This Month" : "This Week"
+        guard let img = ShareImageRenderer.render(width: 390, {
+            PeriodSummaryShareCard(title: title, rangeText: range,
+                                   workouts: workouts, totalSets: sets.count,
+                                   volumeKg: volume, muscles: muscles)
+        }) else { return }
+        Haptics.tap()
+        periodShareImage = img
+    }
 
     /// ProBanner kicker 的"起步价/月" — 取 yearly product 月均价 (年价 ÷ 12), locale-aware.
     /// product 还没 load 出来时返回 nil → banner 只显示 "MASO PRO", 不写死假价格.
@@ -148,11 +174,35 @@ struct HistoryScreen: View {
             if !collapsed { calendarMonthAnchor = historyCurrentMonthStart() }
         }
         .screenHeader("History") {
+            // 周期分享 — 本周 / 本月训练汇总卡 (#history-share).
+            Menu {
+                Button { sharePeriod(.weekOfYear) } label: {
+                    Label("Share this week", systemImage: "calendar")
+                }
+                Button { sharePeriod(.month) } label: {
+                    Label("Share this month", systemImage: "calendar")
+                }
+            } label: {
+                Image(systemName: "square.and.arrow.up")
+                    .font(.system(size: 16, weight: .regular))
+            }
+            .accessibilityLabel("Share")
             Button(action: onOpenSettings) {
                 Image(systemName: "gearshape")
                     .font(.system(size: 16, weight: .regular))
             }
             .accessibilityLabel("Settings")
+        }
+        // 周期分享 share sheet — 渲染图设了就弹.
+        .sheet(isPresented: Binding(
+            get: { periodShareImage != nil },
+            set: { if !$0 { periodShareImage = nil } }
+        )) {
+            if let img = periodShareImage {
+                ShareActivityView(activityItems: [img])
+                    .presentationDetents([.medium, .large])
+                    .presentationDragIndicator(.visible)
+            }
         }
         .sheet(item: $selectedSession) { session in
             SessionDetailSheet(

@@ -848,3 +848,16 @@
 "variant.hammer" = "Neutral hammer grip — biases the brachialis and forearms.";
 
 "My Routines" = "My Routines";
+
+/* ── Routine share card / image import / history period share ── */
+"Import from photo" = "Import from photo";
+"Add routine" = "Add routine";
+"Imported routine" = "Imported routine";
+"Couldn't read a routine from that image" = "Couldn't read a routine from that image";
+"Try a clearer screenshot — exercise names need to be readable." = "Try a clearer screenshot — exercise names need to be readable.";
+"Reading routine…" = "Reading routine…";
+"Volume" = "Volume";
+"Share this week" = "Share this week";
+"Share this month" = "Share this month";
+"This Week" = "This Week";
+"This Month" = "This Month";

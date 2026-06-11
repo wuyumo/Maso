@@ -39,13 +39,26 @@ enum PlanShareCodec {
         // Plan 里就 2 个 Date 字段 (createdAt, updatedAt), 加 lastUsedAt 共 3 个, 多花 ~60B 可接受.
         encoder.dateEncodingStrategy = .iso8601
         guard let data = try? encoder.encode(plan) else { return nil }
+        // zlib 压缩 + "z." 前缀 — JSON 重复字段多, 压缩比 ~4×. 不压缩的 6-step plan URL ≈ 1100+
+        // 字符 → QR version 30 (137 模块), 分享卡上的小 QR 根本扫不出来; 压缩后 ≈ 300 字符 →
+        // version ~13, 64pt QR 可扫. 解码端保留无前缀的旧格式 fallback.
+        if let compressed = try? (data as NSData).compressed(using: .zlib) as Data {
+            return "z." + compressed.base64URLEncodedString()
+        }
         return data.base64URLEncodedString()
     }
 
     /// 解码: base64url → Plan. 给新 id (prefix "plan-shared-") 防跟原作者冲突.
     /// 任何步骤失败返 nil — 调用方应当 alert "invalid link".
     static func decode(_ encoded: String) -> Plan? {
-        guard let data = Data(base64URLEncoded: encoded) else { return nil }
+        let data: Data?
+        if encoded.hasPrefix("z.") {
+            data = Data(base64URLEncoded: String(encoded.dropFirst(2)))
+                .flatMap { try? ($0 as NSData).decompressed(using: .zlib) as Data }
+        } else {
+            data = Data(base64URLEncoded: encoded)   // 旧格式 (未压缩) fallback
+        }
+        guard let data else { return nil }
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
         guard var plan = try? decoder.decode(Plan.self, from: data) else { return nil }
@@ -107,5 +120,155 @@ private extension Data {
         let padLen = (4 - s.count % 4) % 4
         s.append(String(repeating: "=", count: padLen))
         self.init(base64Encoded: s)
+    }
+}
+
+// MARK: - RoutineImageImporter — 从图片导入训练计划 (#image-import)
+//
+// 两条路径, 按序尝试:
+//   1. 图里有 Masso 分享卡的 QR (maso:// 深链) → 直接解码, 无损导入.
+//   2. 否则 OCR (Vision, en+zh) → 逐行解析: 模糊匹配动作名 + 抓取 "3x10"/"4组×12"/"60kg"
+//      → 拼成 Plan. 其他 app 的截图 / 手写计划照片都走这条 (尽力解析, 用户导入后可再编辑).
+
+import Vision
+import UIKit
+
+enum RoutineImageImporter {
+    /// 主入口 — 后台线程跑 Vision; 返回 nil = 两条路径都没读出内容.
+    static func plan(from image: UIImage, library: [Exercise]) async -> Plan? {
+        guard let cg = image.cgImage else { return nil }
+        // 路径 1: QR 深链
+        if let payload = detectQR(cg), let url = URL(string: payload),
+           let plan = PlanShareCodec.decodePlan(from: url) {
+            return plan
+        }
+        // 路径 2: OCR → 解析
+        let lines = recognizeLines(cg)
+        let steps = parseSteps(lines, library: library)
+        guard !steps.isEmpty else { return nil }
+        let now = Date()
+        return Plan(
+            id: "plan-import-\(Int(now.timeIntervalSince1970))-\(UUID().uuidString.prefix(4))",
+            name: NSLocalizedString("Imported routine", comment: "OCR-imported routine name"),
+            steps: steps, createdAt: now, updatedAt: now
+        )
+    }
+
+    private static func detectQR(_ cg: CGImage) -> String? {
+        let request = VNDetectBarcodesRequest()
+        request.symbologies = [.qr]
+        try? VNImageRequestHandler(cgImage: cg).perform([request])
+        if let s = request.results?.compactMap(\.payloadStringValue).first { return s }
+        // CIDetector 兜底 — VNDetectBarcodesRequest 在模拟器和部分机型上静默失败 (返回空),
+        // CIDetector 走 CPU, 哪儿都能跑. 实测模拟器上只有这条路能认出分享卡里的 QR.
+        let detector = CIDetector(ofType: CIDetectorTypeQRCode, context: nil,
+                                  options: [CIDetectorAccuracy: CIDetectorAccuracyHigh])
+        let features = detector?.features(in: CIImage(cgImage: cg)) ?? []
+        return features.compactMap { ($0 as? CIQRCodeFeature)?.messageString }.first
+    }
+
+    private static func recognizeLines(_ cg: CGImage) -> [String] {
+        let request = VNRecognizeTextRequest()
+        request.recognitionLevel = .accurate
+        request.recognitionLanguages = ["zh-Hans", "en-US"]
+        request.usesLanguageCorrection = true
+        try? VNImageRequestHandler(cgImage: cg).perform([request])
+        return (request.results ?? []).compactMap { $0.topCandidates(1).first?.string }
+    }
+
+    /// 逐行解析: 抓 sets×reps / 重量 → 剩余文本模糊匹配动作库. 至少命中 2 个搜索词才算匹配,
+    /// 防止 "Push" 这种单词把无关行全吸进来.
+    private static func parseSteps(_ lines: [String], library: [Exercise]) -> [PlanStep] {
+        let setsReps = try! NSRegularExpression(pattern: #"(\d{1,2})\s*[x×*]\s*(\d{1,3})|(\d{1,2})\s*组\s*[x×*]?\s*(\d{1,3})?"#)
+        // "4 sets x 8" / "3 sets of 12" / "4 sets" — Hevy/Strong 等 app 的常见格式.
+        let setsWords = try! NSRegularExpression(pattern: #"(\d{1,2})\s*sets?\b(?:\s*(?:[x×*·]|of)\s*(\d{1,3}))?"#, options: [.caseInsensitive])
+        let weightRe = try! NSRegularExpression(pattern: #"(\d+(?:\.\d+)?)\s*(?:kg|公斤|lbs?|磅)"#, options: [.caseInsensitive])
+        var steps: [PlanStep] = []
+        var usedIds = Set<String>()
+        /// 上一个成功建 step 的行号 — "Bench Press" 和 "4 sets x 8 · 60 kg" 经常被 OCR
+        /// 拆成相邻两行 (或同行左右两列), 紧跟着的纯数值行回填到上一个 step.
+        var lastStepLine = -10
+        for (i, raw) in lines.enumerated() {
+            let line = raw.trimmingCharacters(in: .whitespaces)
+            guard line.count >= 2 else { continue }
+            let ns = line as NSString
+            var sets: Int? = nil, reps: Int? = nil, weight: Double? = nil
+            func grp(_ m: NSTextCheckingResult, _ idx: Int) -> String? {
+                let r = m.range(at: idx); return r.location == NSNotFound ? nil : ns.substring(with: r)
+            }
+            if let m = setsReps.firstMatch(in: line, range: NSRange(location: 0, length: ns.length)) {
+                sets = (grp(m, 1) ?? grp(m, 3)).flatMap(Int.init)
+                reps = (grp(m, 2) ?? grp(m, 4)).flatMap(Int.init)
+            }
+            if sets == nil, let m = setsWords.firstMatch(in: line, range: NSRange(location: 0, length: ns.length)) {
+                sets = grp(m, 1).flatMap(Int.init)
+                if reps == nil { reps = grp(m, 2).flatMap(Int.init) }
+            }
+            if let m = weightRe.firstMatch(in: line, range: NSRange(location: 0, length: ns.length)),
+               m.range(at: 1).location != NSNotFound {
+                weight = Double(ns.substring(with: m.range(at: 1)))
+            }
+            // 去掉数字/符号后的纯文本 → 搜索词
+            let nameText = line
+                .replacingOccurrences(of: #"\d+(?:\.\d+)?\s*(?:kg|公斤|lbs?|磅)"#, with: " ", options: [.regularExpression, .caseInsensitive])
+                .replacingOccurrences(of: #"\d{1,2}\s*[x×*]\s*\d{1,3}"#, with: " ", options: .regularExpression)
+                .replacingOccurrences(of: #"\d{1,2}\s*组"#, with: " ", options: .regularExpression)
+            // 过滤计量词/纯数字 — "3 sets · 10 reps" 里的 sets/reps/10 不该参与动作名匹配,
+            // 否则覆盖率规则会把正常行误杀 (命中 2/5 < 一半).
+            let stopWords: Set<String> = ["sets", "set", "reps", "rep", "kg", "lb", "lbs",
+                                          "rest", "min", "sec", "组", "次", "x"]
+            let words = exerciseSearchWords(nameText).filter { !stopWords.contains($0) && Int($0) == nil }
+            // 纯数值行 (没有动作名词) — 回填到紧邻的上一个 step (±2 行内), 然后跳过.
+            if words.isEmpty {
+                if i - lastStepLine <= 2, let last = steps.indices.last,
+                   sets != nil || reps != nil || weight != nil {
+                    if let v = sets { steps[last].sets = v }
+                    if let v = reps { steps[last].reps = v }
+                    if let v = weight { steps[last].weight = v }
+                }
+                continue
+            }
+            // 模糊匹配: 命中词数最多者胜. 接受条件 (防误吸):
+            //   a) 命中 ≥2 词 且覆盖该行至少一半的词 — "Full Body · Push / Pull" 这种标题行
+            //      命中 2/7 不算数, "Bench Press" 命中 2/2 才算; 或
+            //   b) 单词行 (常见于中文 "下斜卧推"): 该词 ≥3 字符且整词出现在动作的某个 token 里.
+            // 同分 tie-break: 纯 base 动作 (无 variation/equipment) 优先, 再选 token 更少的 —
+            // "Lateral Raise" 应命中 Lateral Raise 本体, 而不是库里更靠前的 "埃及式侧平举 (绳索)".
+            var best: (ex: Exercise, score: Int, rank: Int, tokenCount: Int)? = nil
+            for ex in library {
+                let tokens = ex.searchTokens
+                let hit = words.filter { w in tokens.contains { $0.contains(w) } }.count
+                guard hit > 0 else { continue }
+                let pure = ex.nameParts != nil && ex.nameParts?.variation == nil && ex.nameParts?.equipment == nil
+                let rank = pure ? 0 : 1
+                let better: Bool
+                if let cur = best {
+                    better = hit > cur.score
+                        || (hit == cur.score && rank < cur.rank)
+                        || (hit == cur.score && rank == cur.rank && tokens.count < cur.tokenCount)
+                } else {
+                    better = true
+                }
+                if better { best = (ex, hit, rank, tokens.count) }
+            }
+            guard let b = best else { continue }
+            let coversLine = b.score >= 2 && b.score * 2 >= words.count
+            let singleExact = words.count == 1 && b.score == 1 && words[0].count >= 3
+            guard coversLine || singleExact else { continue }
+            guard !usedIds.contains(b.ex.id) else { continue }   // 同一动作只取首行
+            usedIds.insert(b.ex.id)
+            lastStepLine = i
+            steps.append(PlanStep(
+                id: "step-import-\(i)-\(UUID().uuidString.prefix(4))",
+                exerciseId: b.ex.id,
+                sets: sets ?? 3,
+                reps: reps,
+                weight: weight,
+                duration: nil,
+                restBetweenSets: 90,
+                rest: 0
+            ))
+        }
+        return steps
     }
 }
