@@ -102,6 +102,14 @@ final class DataStore {
         save()
     }
 
+    /// 从一段名字造 + 存一个自创动作, 返回它 (给"从截图导入"的"存为自创动作"用).
+    @discardableResult
+    func createCustomExercise(named name: String) -> Exercise {
+        let ex = Exercise.custom(displayName: name)
+        addCustomExercise(ex)
+        return ex
+    }
+
     /// 删一个自创动作.
     func deleteCustomExercise(_ id: String) {
         settings.customExercises.removeAll { $0.id == id }

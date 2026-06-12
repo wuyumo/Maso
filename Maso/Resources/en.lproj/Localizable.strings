@@ -865,3 +865,19 @@
 /* Watch 镜像 detail 行 */
 "%d reps" = "%d reps";
 "My Training" = "My Training";
+
+/* ── 截图导入确认页 (#image-import review) ── */
+"Routine name" = "Routine name";
+"We added the moves we recognized. Review the rest — confirm, swap, or save as a custom move." = "We added the moves we recognized. Review the rest — confirm, swap, or save as a custom move.";
+"IMPORT FROM PHOTO" = "IMPORT FROM PHOTO";
+"ADDED" = "ADDED";
+"NEEDS REVIEW" = "NEEDS REVIEW";
+"NOT IN YOUR LIBRARY" = "NOT IN YOUR LIBRARY";
+"Looks like %@" = "Looks like %@";
+"Use %@" = "Use %@";
+"Choose" = "Choose";
+"Save as custom" = "Save as custom";
+"Not in your library" = "Not in your library";
+"Save “%@” as custom" = "Save “%@” as custom";
+"Select at least one" = "Select at least one";
+"Add %lld to routine" = "Add %lld to routine";

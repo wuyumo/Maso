@@ -133,25 +133,41 @@ private extension Data {
 import Vision
 import UIKit
 
+// MARK: 候选数据模型
+
+/// 一条从截图里识别出来的"疑似动作行" + 置信度. 用户在 RoutineReviewSheet 里逐条确认.
+struct ImportCandidate: Identifiable, Equatable {
+    var id: String = UUID().uuidString
+    var rawName: String            // 识别出的动作名原文 (已清掉数字/单位)
+    var sets: Int?
+    var reps: Int?
+    var weight: Double?
+    var exerciseId: String?        // 已对应到库里的动作 (high 预填; uncertain/unmatched 用户确认后回填)
+    var suggestionId: String?      // uncertain 的"猜测" id — 展示 "看起来像 X"
+    var confidence: Confidence
+    var included: Bool             // 是否计入最终 routine (只有 high 默认 true)
+    enum Confidence: Int { case high, uncertain, unmatched }
+}
+
+enum RoutineImportResult {
+    case deepLink(Plan)                  // QR 分享卡 — 无歧义, 整张计划直接导入 (走 ImportedPlanSheet)
+    case recognized([ImportCandidate])   // 第三方截图 OCR — 候选列表待用户确认 (走 RoutineReviewSheet)
+    case empty                           // 没读出任何东西
+}
+
 enum RoutineImageImporter {
-    /// 主入口 — 后台线程跑 Vision; 返回 nil = 两条路径都没读出内容.
-    static func plan(from image: UIImage, library: [Exercise]) async -> Plan? {
-        guard let cg = image.cgImage else { return nil }
-        // 路径 1: QR 深链
+    /// 主入口 — Vision QR + OCR. 返回三态 (见 RoutineImportResult).
+    static func analyze(from image: UIImage, library: [Exercise]) async -> RoutineImportResult {
+        guard let cg = image.cgImage else { return .empty }
+        // 路径 1: QR 深链 — 无歧义
         if let payload = detectQR(cg), let url = URL(string: payload),
            let plan = PlanShareCodec.decodePlan(from: url) {
-            return plan
+            return .deepLink(plan)
         }
-        // 路径 2: OCR → 解析
-        let lines = recognizeLines(cg)
-        let steps = parseSteps(lines, library: library)
-        guard !steps.isEmpty else { return nil }
-        let now = Date()
-        return Plan(
-            id: "plan-import-\(Int(now.timeIntervalSince1970))-\(UUID().uuidString.prefix(4))",
-            name: NSLocalizedString("Imported routine", comment: "OCR-imported routine name"),
-            steps: steps, createdAt: now, updatedAt: now
-        )
+        // 路径 2: OCR → 置信度分级候选
+        let rows = recognizeRows(cg)
+        let candidates = parseCandidates(rows, library: library)
+        return candidates.isEmpty ? .empty : .recognized(candidates)
     }
 
     private static func detectQR(_ cg: CGImage) -> String? {
@@ -167,27 +183,108 @@ enum RoutineImageImporter {
         return features.compactMap { ($0 as? CIQRCodeFeature)?.messageString }.first
     }
 
-    private static func recognizeLines(_ cg: CGImage) -> [String] {
+    /// OCR → 视觉"行". 关键: 第三方 app 的训练截图是两栏布局 (左动作名, 右 "3×10 / 60kg"),
+    /// Vision 会把它们拆成独立 fragment. 按 boundingBox 的 y 把同一视觉行的 fragment 重新拼回去
+    /// (左→右), 这样动作名和它的组数/重量回到同一行, 解析时不再丢 metrics.
+    private static func recognizeRows(_ cg: CGImage) -> [String] {
         let request = VNRecognizeTextRequest()
         request.recognitionLevel = .accurate
         request.recognitionLanguages = ["zh-Hans", "en-US"]
         request.usesLanguageCorrection = true
         try? VNImageRequestHandler(cgImage: cg).perform([request])
-        return (request.results ?? []).compactMap { $0.topCandidates(1).first?.string }
+        struct Frag { let text: String; let minX: CGFloat; let midY: CGFloat }
+        let frags: [Frag] = (request.results ?? []).compactMap { o in
+            guard let s = o.topCandidates(1).first?.string else { return nil }
+            let b = o.boundingBox   // 归一化, 原点左下
+            return Frag(text: s, minX: b.minX, midY: b.midY)
+        }
+        guard !frags.isEmpty else { return [] }
+        // 按 midY 从上到下排; 相邻 fragment y 接近 (一行高量级) → 归到同一行.
+        let sorted = frags.sorted { $0.midY > $1.midY }
+        let yTol: CGFloat = 0.018
+        var rows: [[Frag]] = []
+        var refY: CGFloat = .greatestFiniteMagnitude
+        for f in sorted {
+            if !rows.isEmpty, abs(refY - f.midY) <= yTol {
+                rows[rows.count - 1].append(f)
+            } else {
+                rows.append([f]); refY = f.midY
+            }
+        }
+        // 每行内左→右拼接 (用双空格分隔, 防止"名字"和"3×10"粘连成一个词)
+        return rows.map { $0.sorted { $0.minX < $1.minX }.map(\.text).joined(separator: "  ") }
     }
 
-    /// 逐行解析: 抓 sets×reps / 重量 → 剩余文本模糊匹配动作库. 至少命中 2 个搜索词才算匹配,
-    /// 防止 "Push" 这种单词把无关行全吸进来.
-    private static func parseSteps(_ lines: [String], library: [Exercise]) -> [PlanStep] {
-        let setsReps = try! NSRegularExpression(pattern: #"(\d{1,2})\s*[x×*]\s*(\d{1,3})|(\d{1,2})\s*组\s*[x×*]?\s*(\d{1,3})?"#)
-        // "4 sets x 8" / "3 sets of 12" / "4 sets" — Hevy/Strong 等 app 的常见格式.
+    // MARK: - 置信度分级解析
+    //
+    // 老 bug: 用整套 searchTokens (含肌群/器械分类词) 做子串匹配 + 松散的 coversLine/singleExact
+    // 接受门槛 → "Chest"/"Push Day"/合计行 这类小标题全被误判成动作, 识别过多.
+    //
+    // 新策略:
+    //   1. 只对"动作名 token" (base + 本地化名 + variation + equipment-as-word) 做精确等值匹配,
+    //      不含肌群/section/facet 分类词 → "Chest" 不再命中一堆胸部动作.
+    //   2. 结构词表 (day/total/rest/星期/合计…) 先从名词里剔除.
+    //   3. 三档:
+    //      high      — OCR 行里出现了该动作的完整核心名 (coverEx==1 且 coverLine≥0.5) → 默认勾选加入.
+    //      uncertain — 部分匹配 (coverEx≥0.5) 且有支撑 (有组数重量 或 ≥2 名词) → 醒目展示, 不默认加.
+    //      unmatched — 没好匹配但有组数重量+像样名字 → 提示存为自创动作.
+    //      其余 (小标题/噪音) → 直接丢.
+
+    /// 动作名预索引 (只算名字相关 token, 排除肌群/器械分类词).
+    private struct ExIndex {
+        let id: String
+        let displayName: String
+        let cores: [Set<String>]      // 核心名候选 (英文 base / 本地化名), 覆盖率取最大者
+        let nameTokens: Set<String>   // 全部名字 token (精确等值)
+    }
+
+    private static func buildIndex(_ library: [Exercise]) -> [ExIndex] {
+        library.map { ex in
+            let baseWords = Set(exerciseSearchWords(ex.nameParts?.base ?? ex.name))
+            let dispWords = Set(exerciseSearchWords(ex.displayName))
+            var cores: [Set<String>] = []
+            if !baseWords.isEmpty { cores.append(baseWords) }
+            if !dispWords.isEmpty, dispWords != baseWords { cores.append(dispWords) }
+            var nameTokens = baseWords.union(dispWords)
+            nameTokens.formUnion(exerciseSearchWords(ex.name))
+            if let v = ex.nameParts?.variation { nameTokens.formUnion(exerciseSearchWords(v)) }
+            if let e = ex.nameParts?.equipment { nameTokens.formUnion(exerciseSearchWords(e)) }
+            return ExIndex(id: ex.id, displayName: ex.displayName, cores: cores, nameTokens: nameTokens)
+        }
+    }
+
+    /// 结构词 — 截图里的小标题/合计/星期/日期/休息行等, 绝不是动作名. 命中即剔除.
+    private static let structuralWords: Set<String> = [
+        // ⚠️ 别加 split/squat/press/row/fly/curl/raise/pull/push/walk/hold 这类 — 它们是真动作名词.
+        "day","days","week","weeks","workout","workouts","session","sessions","routine","routines",
+        "plan","program","total","totals","volume","summary","history","exercise","exercises",
+        "warmup","warm","cooldown","cool","superset","supersets","circuit","drop","dropset","notes","note",
+        "tempo","rpe","rir","pr","prs","date","today","yesterday","tomorrow","am","pm","time","duration","est",
+        "completed","complete","finished","done","best","goal","target","prev","previous","last",
+        "mon","tue","tues","wed","weds","thu","thur","thurs","fri","sat","sun",
+        "monday","tuesday","wednesday","thursday","friday","saturday","sunday",
+        "jan","feb","mar","apr","may","jun","jul","aug","sep","sept","oct","nov","dec",
+        // zh
+        "训练","计划","组数","次数","休息","热身","放松","总计","合计","时长","时间","周","天","动作","备注",
+        "完成","今天","昨天","明天","星期","周一","周二","周三","周四","周五","周六","周日","上午","下午","分钟","训练日",
+    ]
+    /// 计量词 — 不参与动作名匹配.
+    private static let metricStop: Set<String> = [
+        "sets","set","reps","rep","kg","lb","lbs","组","次","x","rest","min","mins","sec","secs","s","lbs.","kgs",
+    ]
+
+    private static func parseCandidates(_ lines: [String], library: [Exercise]) -> [ImportCandidate] {
+        let index = buildIndex(library)
+        // caseInsensitive — OCR 常把乘号 × 读成大写 "X"; 不区分大小写才认得 "3 X 10".
+        let setsReps = try! NSRegularExpression(pattern: #"(\d{1,2})\s*[x×*]\s*(\d{1,3})|(\d{1,2})\s*组\s*[x×*]?\s*(\d{1,3})?"#, options: [.caseInsensitive])
         let setsWords = try! NSRegularExpression(pattern: #"(\d{1,2})\s*sets?\b(?:\s*(?:[x×*·]|of)\s*(\d{1,3}))?"#, options: [.caseInsensitive])
         let weightRe = try! NSRegularExpression(pattern: #"(\d+(?:\.\d+)?)\s*(?:kg|公斤|lbs?|磅)"#, options: [.caseInsensitive])
-        var steps: [PlanStep] = []
-        var usedIds = Set<String>()
-        /// 上一个成功建 step 的行号 — "Bench Press" 和 "4 sets x 8 · 60 kg" 经常被 OCR
-        /// 拆成相邻两行 (或同行左右两列), 紧跟着的纯数值行回填到上一个 step.
-        var lastStepLine = -10
+        var out: [ImportCandidate] = []
+        var usedHighIds = Set<String>()
+        var lastCandLine = -10
+        // 行分组后大多 metrics 已跟名字同行; 但有的 app 把 "3×10 / 60kg" 排在动作名 *上面* 一行,
+        // 那个纯数值行回填不到"上一个候选"(还没建) → 暂存, 给下一个建出来的候选用.
+        var pending: (sets: Int?, reps: Int?, weight: Double?)? = nil
         for (i, raw) in lines.enumerated() {
             let line = raw.trimmingCharacters(in: .whitespaces)
             guard line.count >= 2 else { continue }
@@ -208,67 +305,106 @@ enum RoutineImageImporter {
                m.range(at: 1).location != NSNotFound {
                 weight = Double(ns.substring(with: m.range(at: 1)))
             }
-            // 去掉数字/符号后的纯文本 → 搜索词
+            let hasMetrics = sets != nil || reps != nil || weight != nil
+            // 去掉数字/单位后的纯文本 → 搜索词
             let nameText = line
                 .replacingOccurrences(of: #"\d+(?:\.\d+)?\s*(?:kg|公斤|lbs?|磅)"#, with: " ", options: [.regularExpression, .caseInsensitive])
                 .replacingOccurrences(of: #"\d{1,2}\s*[x×*]\s*\d{1,3}"#, with: " ", options: .regularExpression)
                 .replacingOccurrences(of: #"\d{1,2}\s*组"#, with: " ", options: .regularExpression)
-            // 过滤计量词/纯数字 — "3 sets · 10 reps" 里的 sets/reps/10 不该参与动作名匹配,
-            // 否则覆盖率规则会把正常行误杀 (命中 2/5 < 一半).
-            let stopWords: Set<String> = ["sets", "set", "reps", "rep", "kg", "lb", "lbs",
-                                          "rest", "min", "sec", "组", "次", "x"]
-            let words = exerciseSearchWords(nameText).filter { !stopWords.contains($0) && Int($0) == nil }
-            // 纯数值行 (没有动作名词) — 回填到紧邻的上一个 step (±2 行内), 然后跳过.
-            if words.isEmpty {
-                if i - lastStepLine <= 2, let last = steps.indices.last,
-                   sets != nil || reps != nil || weight != nil {
-                    if let v = sets { steps[last].sets = v }
-                    if let v = reps { steps[last].reps = v }
-                    if let v = weight { steps[last].weight = v }
+            let matchWords = exerciseSearchWords(nameText).filter { Int($0) == nil && !metricStop.contains($0) }
+            let contentWords = matchWords.filter { !structuralWords.contains($0) }
+            // 纯数值/纯结构行 (没有动作名词) — 把组数/重量回填到紧邻的上一个候选 (±2 行内), 然后跳过.
+            // (很多 app 把动作名和 "3×8 · 60kg" 拆成相邻两行, 或 per-set 行 "Set 1  60kg".)
+            if contentWords.isEmpty {
+                if hasMetrics {
+                    if i - lastCandLine <= 2, var last = out.last {
+                        if let v = sets { last.sets = v }
+                        if let v = reps { last.reps = v }
+                        if let v = weight { last.weight = v }
+                        out[out.count - 1] = last
+                    } else {
+                        pending = (sets, reps, weight)   // 名字还没来 → 暂存给下一个候选
+                    }
                 }
                 continue
             }
-            // 模糊匹配: 命中词数最多者胜. 接受条件 (防误吸):
-            //   a) 命中 ≥2 词 且覆盖该行至少一半的词 — "Full Body · Push / Pull" 这种标题行
-            //      命中 2/7 不算数, "Bench Press" 命中 2/2 才算; 或
-            //   b) 单词行 (常见于中文 "下斜卧推"): 该词 ≥3 字符且整词出现在动作的某个 token 里.
-            // 同分 tie-break: 纯 base 动作 (无 variation/equipment) 优先, 再选 token 更少的 —
-            // "Lateral Raise" 应命中 Lateral Raise 本体, 而不是库里更靠前的 "埃及式侧平举 (绳索)".
-            var best: (ex: Exercise, score: Int, rank: Int, tokenCount: Int)? = nil
-            for ex in library {
-                let tokens = ex.searchTokens
-                let hit = words.filter { w in tokens.contains { $0.contains(w) } }.count
-                guard hit > 0 else { continue }
-                let pure = ex.nameParts != nil && ex.nameParts?.variation == nil && ex.nameParts?.equipment == nil
-                let rank = pure ? 0 : 1
+            // 名字行自己没读到 metrics, 但前一行 (动作名上方) 攒了一组 → 用它.
+            if !hasMetrics, let p = pending { sets = p.sets; reps = p.reps; weight = p.weight }
+            pending = nil
+            let W = Set(contentWords)
+            // 最佳匹配 — 双向覆盖, 防止 "Cable Fly" 误命中 "反握上斜飞鸟" 这类同根词变种:
+            //   precision = OCR 行覆盖了该动作"核心名"的比例 (行里有没有这个动作的完整名字).
+            //   recall    = 该行的词被该动作名 (核心+器械) 解释的比例 (行里有没有别的没法解释的词).
+            // high 要求 precision==1 且 recall==1 → "完全对应": 行里正好就是这个动作, 没有多余的词.
+            var best: (idx: ExIndex, precision: Double, recall: Double, coreLen: Int)? = nil
+            for idx in index {
+                let hits = W.intersection(idx.nameTokens).count
+                guard hits > 0 else { continue }
+                var precision = 0.0
+                var coreLen = 0
+                for c in idx.cores {
+                    let p = Double(c.intersection(W).count) / Double(c.count)
+                    if p > precision || (p == precision && c.count > coreLen) { precision = p; coreLen = c.count }
+                }
+                let recall = Double(hits) / Double(W.count)
                 let better: Bool
                 if let cur = best {
-                    better = hit > cur.score
-                        || (hit == cur.score && rank < cur.rank)
-                        || (hit == cur.score && rank == cur.rank && tokens.count < cur.tokenCount)
-                } else {
-                    better = true
-                }
-                if better { best = (ex, hit, rank, tokens.count) }
+                    better = precision > cur.precision
+                        || (precision == cur.precision && recall > cur.recall)
+                        || (precision == cur.precision && recall == cur.recall && coreLen > cur.coreLen)
+                        // 全平局 → 选名字 token 最少的 = 最朴素的那个变种 ("Bench Press" 取"卧推",
+                        // 不取"交替卧推(哑铃)"; 用户写了限定词才会命中带 variation/equipment 的).
+                        || (precision == cur.precision && recall == cur.recall && coreLen == cur.coreLen && idx.nameTokens.count < cur.idx.nameTokens.count)
+                } else { better = true }
+                if better { best = (idx, precision, recall, coreLen) }
             }
-            guard let b = best else { continue }
-            let coversLine = b.score >= 2 && b.score * 2 >= words.count
-            let singleExact = words.count == 1 && b.score == 1 && words[0].count >= 3
-            guard coversLine || singleExact else { continue }
-            guard !usedIds.contains(b.ex.id) else { continue }   // 同一动作只取首行
-            usedIds.insert(b.ex.id)
-            lastStepLine = i
-            steps.append(PlanStep(
-                id: "step-import-\(i)-\(UUID().uuidString.prefix(4))",
-                exerciseId: b.ex.id,
-                sets: sets ?? 3,
-                reps: reps,
-                weight: weight,
-                duration: nil,
-                restBetweenSets: 90,
-                rest: 0
-            ))
+            let name = cleanName(line)
+            var cand: ImportCandidate? = nil
+            if let b = best, b.precision >= 0.999, b.recall >= 0.999, !usedHighIds.contains(b.idx.id) {
+                // high — 行里正好就是这个动作 (核心名全在 + 没多余词) → 默认加入, 用库里规范名展示.
+                usedHighIds.insert(b.idx.id)
+                cand = ImportCandidate(rawName: b.idx.displayName, sets: sets, reps: reps, weight: weight,
+                                       exerciseId: b.idx.id, suggestionId: nil, confidence: .high, included: true)
+            } else if let b = best, b.precision >= 0.5, hasMetrics || W.count >= 2 {
+                // uncertain — 部分匹配且有支撑 → 展示原文 + 猜测, 不默认加.
+                cand = ImportCandidate(rawName: name, sets: sets, reps: reps, weight: weight,
+                                       exerciseId: nil, suggestionId: b.idx.id, confidence: .uncertain, included: false)
+            } else if hasMetrics, substantial(contentWords) {
+                // unmatched — 没好匹配但有组数重量+像样名字 → 提示存为自创动作.
+                cand = ImportCandidate(rawName: name, sets: sets, reps: reps, weight: weight,
+                                       exerciseId: nil, suggestionId: nil, confidence: .unmatched, included: false)
+            }
+            if let c = cand, !c.rawName.isEmpty {
+                out.append(c)
+                lastCandLine = i
+            }
         }
-        return steps
+        return out
+    }
+
+    /// 是否含"像样的名字词" — ≥3 个拉丁字符, 或 ≥2 个汉字. 防止把 "Set"/"x2" 这种残渣当自创动作.
+    private static func substantial(_ words: [String]) -> Bool {
+        words.contains { w in
+            if w.count >= 3 { return true }
+            return w.count >= 2 && w.unicodeScalars.contains { $0.properties.isIdeographic }
+        }
+    }
+
+    /// 清掉行里的数字/单位/分隔符, 留下展示用的动作名原文 (保留大小写).
+    private static func cleanName(_ line: String) -> String {
+        var s = line
+        let pats = [
+            #"\d+(?:\.\d+)?\s*(?:kg|公斤|lbs?|磅)"#,
+            #"\d{1,2}\s*sets?\b(?:\s*(?:[x×*·]|of)\s*\d{1,3})?"#,
+            #"\d{1,2}\s*[x×*]\s*\d{1,3}"#,
+            #"\d{1,2}\s*组(?:\s*[x×*]?\s*\d{1,3})?"#,
+            #"\d{1,3}\s*(?:reps?|次)"#,
+        ]
+        for p in pats {
+            s = s.replacingOccurrences(of: p, with: " ", options: [.regularExpression, .caseInsensitive])
+        }
+        s = s.replacingOccurrences(of: #"[·•|,:;]+"#, with: " ", options: .regularExpression)
+        s = s.replacingOccurrences(of: #"\s+"#, with: " ", options: .regularExpression)
+        return s.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }

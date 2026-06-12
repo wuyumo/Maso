@@ -866,3 +866,19 @@
 /* Watch 镜像 detail 行 */
 "%d reps" = "%d 次";
 "My Training" = "我的训练";
+
+/* ── 截图导入确认页 (#image-import review) ── */
+"Routine name" = "训练计划名称";
+"We added the moves we recognized. Review the rest — confirm, swap, or save as a custom move." = "能对上的动作已自动加入。其余的请你确认 —— 采用建议、从库里换一个,或存为自创动作。";
+"IMPORT FROM PHOTO" = "从照片导入";
+"ADDED" = "已加入";
+"NEEDS REVIEW" = "待确认";
+"NOT IN YOUR LIBRARY" = "库里没有";
+"Looks like %@" = "可能是 %@";
+"Use %@" = "用 %@";
+"Choose" = "从库里选";
+"Save as custom" = "存为自创";
+"Not in your library" = "库里没有这个动作";
+"Save “%@” as custom" = "把“%@”存为自创动作";
+"Select at least one" = "至少选一个";
+"Add %lld to routine" = "加入 %lld 个动作";

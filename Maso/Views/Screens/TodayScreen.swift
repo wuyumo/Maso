@@ -31,6 +31,8 @@ struct TodayScreen: View {
     @State private var importPickedImage: UIImage? = nil
     @State private var importParsing = false
     @State private var importedRoutine: Plan? = nil
+    /// OCR 第三方截图 → 置信度分级候选, 驱动 RoutineReviewSheet (QR 深链仍走 importedRoutine).
+    @State private var importReview: RoutineReviewPayload? = nil
     @State private var importFailed = false
 
     private var suggested: Plan? {
@@ -171,6 +173,7 @@ struct TodayScreen: View {
             pickedImage: $importPickedImage,
             parsing: $importParsing,
             imported: $importedRoutine,
+            review: $importReview,
             failed: $importFailed,
             data: data
         ))
@@ -436,6 +439,7 @@ private struct RoutineImportFlow: ViewModifier {
     @Binding var pickedImage: UIImage?
     @Binding var parsing: Bool
     @Binding var imported: Plan?
+    @Binding var review: RoutineReviewPayload?
     @Binding var failed: Bool
     let data: DataStore
 
@@ -450,11 +454,15 @@ private struct RoutineImportFlow: ViewModifier {
                 parsing = true
                 let library = data.userLibrary
                 Task {
-                    let plan = await RoutineImageImporter.plan(from: img, library: library)
+                    let result = await RoutineImageImporter.analyze(from: img, library: library)
                     await MainActor.run {
                         parsing = false
                         pickedImage = nil
-                        if let plan { imported = plan } else { failed = true }
+                        switch result {
+                        case .deepLink(let plan):      imported = plan                       // QR 分享卡 → 完整预览
+                        case .recognized(let cands):   review = RoutineReviewPayload(candidates: cands)  // 截图 → 确认页
+                        case .empty:                   failed = true
+                        }
                     }
                 }
             }
@@ -468,6 +476,17 @@ private struct RoutineImportFlow: ViewModifier {
                     }
                 })
                 .presentationDetents([.medium, .large])
+                .presentationDragIndicator(.visible)
+            }
+            .sheet(item: $review) { payload in
+                RoutineReviewSheet(candidates: payload.candidates, onCommit: { p in
+                    review = nil
+                    DispatchQueue.main.async {
+                        data.plans.append(p)
+                        data.save()
+                        Haptics.tap()
+                    }
+                })
                 .presentationDragIndicator(.visible)
             }
             .alert("Couldn't read a routine from that image", isPresented: $failed) {

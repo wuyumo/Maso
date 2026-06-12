@@ -187,7 +187,7 @@
 		07C814AC57D00E7740B6A51B /* TrainingSettingsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingSettingsSection.swift; sourceTree = "<group>"; };
 		0B9791F0998275E09C5575AD /* LanguageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageManager.swift; sourceTree = "<group>"; };
 		0C2072C444E5B90F0EC1A07C /* NumStepperField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumStepperField.swift; sourceTree = "<group>"; };
-		0F0CC1A2FAA3DE68BF6CC1F0 /* exercises-v1-yuhonas.json.bak */ = {isa = PBXFileReference; path = "exercises-v1-yuhonas.json.bak"; sourceTree = "<group>"; };
+		0F0CC1A2FAA3DE68BF6CC1F0 /* exercises-v1-yuhonas.json.bak */ = {isa = PBXFileReference; lastKnownFileType = text; path = "exercises-v1-yuhonas.json.bak"; sourceTree = "<group>"; };
 		1545AEA651F97CD56E65D4E5 /* MuscleMapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuscleMapping.swift; sourceTree = "<group>"; };
 		15DEC30C6EAE1F3C697B06DB /* PlansScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlansScreen.swift; sourceTree = "<group>"; };
 		18A4AE1F41CAA38374E02E4A /* PlanShareCodec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanShareCodec.swift; sourceTree = "<group>"; };
@@ -216,7 +216,7 @@
 		4E94E7A863D7DD87C5C4EB7D /* TrainingActivityAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingActivityAttributes.swift; sourceTree = "<group>"; };
 		4FAF7A7E839EEE640A8B4CC9 /* SessionShareCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionShareCard.swift; sourceTree = "<group>"; };
 		50A10E5E18C4925F0ACEC2C6 /* ProBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProBanner.swift; sourceTree = "<group>"; };
-		51297D208F41269DA8453899 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		51297D208F41269DA8453899 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		54145EB316E1E581619F6C65 /* BodyHint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BodyHint.swift; sourceTree = "<group>"; };
 		56E05CE78F6F538104992F20 /* UnifiedShareCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnifiedShareCard.swift; sourceTree = "<group>"; };
 		59EC9219101B66F7B497AB18 /* ShareCardFooter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareCardFooter.swift; sourceTree = "<group>"; };
@@ -291,7 +291,7 @@
 		DFBD3B16C9810A2419F041FA /* LimitedFlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LimitedFlowLayout.swift; sourceTree = "<group>"; };
 		E392D3BCA567E27D36082C9C /* FilterMenuButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterMenuButton.swift; sourceTree = "<group>"; };
 		E4CD0A6C911CC31064AFC8D4 /* CommunityPlans.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityPlans.swift; sourceTree = "<group>"; };
-		E6BB99772BABDEBDE4A63981 /* Maso.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Maso.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E6BB99772BABDEBDE4A63981 /* Maso.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Maso.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E971064231D3F55030DBE2F5 /* WorkoutCalendarScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutCalendarScreen.swift; sourceTree = "<group>"; };
 		EA133CA664EEBFD23357FBF5 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		ED5F46664DB595CE345ED1F9 /* MasoWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasoWatchApp.swift; sourceTree = "<group>"; };
@@ -344,7 +344,6 @@
 				8C75A0DE1EC23A7DCDE065D6 /* WatchViews.swift */,
 				CA721C2F4E32B7402AC2CAA6 /* WatchWorkoutManager.swift */,
 				A578A5A0DF210CB2E7E2B4DD /* Localizable.strings */,
-				1ED84F1B15D63A3A192A0D98 /* Shared */,
 			);
 			path = MasoWatch;
 			sourceTree = "<group>";
@@ -1043,12 +1042,16 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Maso/Maso.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = Maso/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Masso;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.sports";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.yumowu.maso;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1079,12 +1082,16 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Maso/Maso.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = Maso/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Masso;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.sports";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.yumowu.maso;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
