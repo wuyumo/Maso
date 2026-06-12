@@ -102,6 +102,12 @@
 "Cloud sync" = "Cloud sync";
 "Plans + history follow you across devices." = "Routines + history follow you across devices.";
 "Start 7-day free trial" = "Start 7-day free trial";
+"Subscribe for %@" = "Subscribe for %@";
+"Buy lifetime — %@" = "Buy lifetime — %@";
+"Loading price…" = "Loading price…";
+"Free for 7 days, then %@ / %@. Cancel anytime in Settings." = "Free for 7 days, then %@ / %@. Cancel anytime in Settings.";
+"month" = "month";
+"year" = "year";
 "You're now Maso Pro!" = "You're now Masso Pro!";
 "Enjoy unlimited plans, full history, and everything else. Welcome aboard." = "Enjoy unlimited routines, full history, and everything else. Welcome aboard.";
 "Restore Purchases" = "Restore Purchases";
@@ -391,6 +397,11 @@
 
 /* Equipment filter chips (ExercisePickerSheet) */
 "Any equipment" = "Any equipment";
+"Gym equipment" = "Gym equipment";
+"All equipment" = "All equipment";
+"Prefer community plans" = "Prefer community plans";
+"Build your AI Plans from a proven community program that matches your days per week and goal, instead of auto-generating them." = "Build your AI Plans from a proven community program that matches your days per week and goal, instead of auto-generating them.";
+"These apply to recommended routines and exercises you add — your custom routines aren't changed." = "These apply to recommended routines and exercises you add — your custom routines aren't changed.";
 "Any movement" = "Any movement";
 "equipment.barbell" = "Barbell";
 "equipment.dumbbell" = "Dumbbell";
@@ -656,6 +667,7 @@
 /* Deep link / plan sharing */
 "IMPORTED PLAN" = "IMPORTED ROUTINE";
 "This Maso link is damaged or unsupported. Ask your friend to share again." = "This Masso link is damaged or unsupported. Ask your friend to share again.";
+"Invalid routine link" = "Invalid routine link";
 
 /* Misc */
 "details" = "details";
@@ -763,6 +775,16 @@
 /* ── Player playlist rests/sets ── */
 "Rest %@" = "Rest %@";
 "Set %d" = "Set %d";
+"Set %lld" = "Set %lld";
+
+/* ── Edit-step sheet: per-set values ── */
+"Different per set" = "Different per set";
+"Reps × weight per set" = "Reps × weight per set";
+
+/* ── Player "last time" hint ── */
+"Last: %@ kg × %d (%@)" = "Last: %@ kg × %d (%@)";
+"Last: × %d (%@)" = "Last: × %d (%@)";
+"Last: %ds (%@)" = "Last: %ds (%@)";
 
 /* ── movement facets (picker) ── */
 "movement.press" = "Press";

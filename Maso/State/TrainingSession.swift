@@ -254,8 +254,11 @@ final class TrainingSessionStore {
             // 写入"已做完"集合 — playlist / TimelineBar 据此标绿
             s.completedSets.insert(CompletedSet(stepId: cur.stepId, setN: setN))
         }
-        let next = s.segmentIndex + 1
-        if next >= segments.count {
+        // QA-B: 播放列表排序是自由的 — 未完成动作可能被拖到播放头之前 (严格 +1 会在
+        // 结束时静默吞掉它), 已完成动作也可能被拖到播放头之后 (严格 +1 会重播 + 重复记录).
+        // → 前向找下一个"未完成 exercise"段 (落在它紧邻的 rest 上, 组前休息不变);
+        //   前方没有 → 回卷到全场最早的未完成段; 哪儿都没有 → 真完成.
+        guard let next = nextLandingIndex(from: s.segmentIndex + 1, completedSets: s.completedSets) else {
             s.completed = true
             s.playing = false
             s.endsAt = nil
@@ -288,6 +291,30 @@ final class TrainingSessionStore {
         if seg.isRest {
             SoundPlayer.shared.playEnterRest()
         }
+    }
+
+    /// advance 的落点解析: 从 start 起前向找第一个未完成 exercise 段; 若它紧邻的前一段
+    /// 是 rest 且 rest 也在 start 之后, 落在 rest 上 (保留"组 → 休息 → 组"节奏).
+    /// 前方没有 → 回卷从头找 (排序把未完成动作拖到播放头之前的场景); 全完成 → nil.
+    /// 正常未排序流程下, 它跟 segmentIndex + 1 给出完全相同的结果.
+    private func nextLandingIndex(from start: Int, completedSets: Set<CompletedSet>) -> Int? {
+        func isUndoneExercise(_ seg: Segment) -> Bool {
+            if case .exercise(_, let n, _, _, _, _, _) = seg.kind {
+                return !completedSets.contains(CompletedSet(stepId: seg.stepId, setN: n))
+            }
+            return false
+        }
+        if start < segments.count,
+           let j = (start..<segments.count).first(where: { isUndoneExercise(segments[$0]) }) {
+            if j - 1 >= start, segments[j - 1].isRest { return j - 1 }
+            return j
+        }
+        // 回卷 — 播放头之前还有没做的组 (被拖到前面的), 跳回去补完
+        if let j = segments.indices.first(where: { isUndoneExercise(segments[$0]) }) {
+            if j - 1 >= 0, segments[j - 1].isRest { return j - 1 }
+            return j
+        }
+        return nil
     }
 
     func end() {

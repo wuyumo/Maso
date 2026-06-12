@@ -103,6 +103,12 @@
 "Cloud sync" = "云同步";
 "Plans + history follow you across devices." = "计划和记录在多设备间同步。";
 "Start 7-day free trial" = "开始 7 天免费试用";
+"Subscribe for %@" = "订阅 %@";
+"Buy lifetime — %@" = "买断终身 — %@";
+"Loading price…" = "价格加载中…";
+"Free for 7 days, then %@ / %@. Cancel anytime in Settings." = "7 天免费试用,之后 %@ / %@。可随时在设置中取消。";
+"month" = "月";
+"year" = "年";
 "You're now Maso Pro!" = "已成为 Masso Pro!";
 "Enjoy unlimited plans, full history, and everything else. Welcome aboard." = "享受无限计划、完整历史以及所有功能。欢迎加入。";
 "Restore Purchases" = "恢复购买";
@@ -393,6 +399,11 @@
 
 /* Equipment filter chips */
 "Any equipment" = "全部器械";
+"Gym equipment" = "健身房器械";
+"All equipment" = "全部器械";
+"Prefer community plans" = "优先用社区计划";
+"Build your AI Plans from a proven community program that matches your days per week and goal, instead of auto-generating them." = "用与你的每周天数和目标匹配的成熟社区方案来构建 AI 计划,而不是自动生成。";
+"These apply to recommended routines and exercises you add — your custom routines aren't changed." = "这些偏好作用于推荐计划和新添加的动作 — 不会改动你自建的计划。";
 "Any movement" = "全部动作";
 "equipment.barbell" = "杠铃";
 "equipment.dumbbell" = "哑铃";
@@ -657,6 +668,7 @@
 /* Deep link / plan sharing */
 "IMPORTED PLAN" = "已导入的计划";
 "This Maso link is damaged or unsupported. Ask your friend to share again." = "此 Masso 链接已损坏或不受支持,请让朋友重新分享。";
+"Invalid routine link" = "无效的训练计划链接";
 
 /* Misc */
 "details" = "详情";
@@ -764,6 +776,16 @@
 /* ── Player playlist rests/sets ── */
 "Rest %@" = "休息 %@";
 "Set %d" = "第 %d 组";
+"Set %lld" = "第 %lld 组";
+
+/* ── Edit-step sheet: per-set values ── */
+"Different per set" = "每组不同";
+"Reps × weight per set" = "每组的次数 × 重量";
+
+/* ── Player "last time" hint ── */
+"Last: %@ kg × %d (%@)" = "上次: %@ kg × %d (%@)";
+"Last: × %d (%@)" = "上次: × %d (%@)";
+"Last: %ds (%@)" = "上次: %ds (%@)";
 
 /* ── movement facets (picker) ── */
 "movement.press" = "推";

@@ -39,6 +39,12 @@ struct WatchSyncState: Codable, Equatable {
     var doneSets: Int = 0
     var totalSets: Int = 0
 
+    /// 手机发出这帧的时刻 — 手表端陈旧判定用 (配对手机关机/失联后, applicationContext
+    /// 会永远停留在最后一帧训练; 手表见到 6h+ 的旧帧自动回落 idle, 跟手机端
+    /// autoCompleteAfter 的 6h 语义对齐). optional: 旧版本帧没有这个字段 → 视为陈旧.
+    /// 注意: 去重比较 (WatchSyncManager.sync) 刻意忽略它, 时间戳不算"状态变化".
+    var sentAt: Date? = nil
+
     static let idle = WatchSyncState()
 
     func encoded() -> Data? { try? JSONEncoder().encode(self) }

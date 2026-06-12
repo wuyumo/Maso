@@ -197,8 +197,11 @@ struct PaywallScreen: View {
             if let p = subs.product(for: selectedPlan), p.subscription?.introductoryOffer != nil {
                 return NSLocalizedString("Start 7-day free trial", comment: "")
             }
-            // 没有 trial → 直接显示价格
-            let price = subs.product(for: selectedPlan)?.displayPrice ?? ""
+            // product 还没 load 出来 (无网/StoreKit 初始化中) → 不拼空价格 "Subscribe for ",
+            // 显示加载态文案 (按钮本身已 disabled).
+            guard let price = subs.product(for: selectedPlan)?.displayPrice else {
+                return NSLocalizedString("Loading price…", comment: "")
+            }
             return String(format: NSLocalizedString("Subscribe for %@", comment: ""), price)
         case .lifetime:
             let price = subs.product(for: .lifetime)?.displayPrice ?? "$79.99"

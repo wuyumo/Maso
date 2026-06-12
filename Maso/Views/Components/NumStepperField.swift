@@ -5,7 +5,7 @@ import SwiftUI
 // 布局: [ − ]  [ 47.5 kg ]  [ + ]
 //   - 左右两个圆形小按钮 (32×32), 长按可连续 +/-
 //   - 中间是可点击的输入框, 调出数字键盘可直接输入
-//   - 输入框宽度固定 (默认 74pt = 刚好容纳 3 位数字 + 3 个单位字母, e.g. "300 yrs"),
+//   - 输入框宽度固定 (默认 86pt = 容纳 4 字符数值 + 单位, e.g. "62.5 kg" 不截断),
 //     全 app 所有同款行统一这一个宽度, 视觉对齐
 //   - 单位后缀 (kg / s / 秒…) 跟数字共享同一个背景, 永远右贴
 //
@@ -34,7 +34,7 @@ struct NumStepperField: View {
         step: Double = 1,
         suffix: String? = nil,
         decimal: Bool = true,
-        fieldWidth: CGFloat = 74
+        fieldWidth: CGFloat = 86
     ) {
         self._doubleValue = doubleValue
         self.range = range
@@ -50,7 +50,7 @@ struct NumStepperField: View {
         range: ClosedRange<Int>,
         step: Int = 1,
         suffix: String? = nil,
-        fieldWidth: CGFloat = 74
+        fieldWidth: CGFloat = 86
     ) {
         self._doubleValue = Binding(
             get: { Double(intValue.wrappedValue) },

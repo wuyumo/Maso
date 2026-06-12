@@ -16,7 +16,8 @@ final class WatchSyncManager: NSObject, @unchecked Sendable {
     @MainActor private(set) var watchHealthSessionActive = false
 
     /// 去重 — tick 引发的同值 sync 不重发 (省电 + 避免 applicationContext 节流).
-    private var lastPayload: Data?
+    /// 比较的是"去掉 sentAt 的语义 payload" — 时间戳每帧都变, 不能参与去重.
+    private var lastSemanticPayload: Data?
     /// 最后一帧状态 — 手表晚连上 (装 app / 变 reachable) 时重推, 不然开局帧会被守卫吞掉.
     private var lastState: WatchSyncState?
 
@@ -32,7 +33,15 @@ final class WatchSyncManager: NSObject, @unchecked Sendable {
 
     func sync(_ state: WatchSyncState) {
         lastState = state
-        push(state)
+        // 语义去重: 比较不带 sentAt 的 payload — 同语义帧不重发 (省电 + 防节流).
+        var semantic = state
+        semantic.sentAt = nil
+        guard let semanticData = semantic.encoded(), semanticData != lastSemanticPayload else { return }
+        lastSemanticPayload = semanticData
+        // 真正发出的帧盖当前时间戳 — 手表端据此做 6h 陈旧判定.
+        var stamped = state
+        stamped.sentAt = Date()
+        push(stamped)
     }
 
     /// 推状态: reachable 时 sendMessage (低延迟) + 永远 updateApplicationContext
@@ -41,8 +50,7 @@ final class WatchSyncManager: NSObject, @unchecked Sendable {
         guard WCSession.isSupported() else { return }
         let s = WCSession.default
         guard s.activationState == .activated, s.isPaired, s.isWatchAppInstalled else { return }
-        guard let data = state.encoded(), data != lastPayload else { return }
-        lastPayload = data
+        guard let data = state.encoded() else { return }
         if s.isReachable {
             s.sendMessage(["s": data], replyHandler: nil, errorHandler: nil)
         }
@@ -52,8 +60,8 @@ final class WatchSyncManager: NSObject, @unchecked Sendable {
     /// 手表连接状态变化 (装了 app / app 进前台 reachable) → 把最后一帧补推过去.
     private func repushOnMain() {
         DispatchQueue.main.async {
-            self.lastPayload = nil   // 强制重发 (绕过去重)
-            if let st = self.lastState { self.push(st) }
+            self.lastSemanticPayload = nil   // 强制重发 (绕过去重)
+            if let st = self.lastState { self.sync(st) }
         }
     }
 }
