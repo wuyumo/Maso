@@ -188,6 +188,7 @@ struct RoutineReviewSheet: View {
     @State private var candidates: [ImportCandidate]
     @State private var routineName: String
     @State private var pickTarget: PickTarget?
+    @State private var committed = false   // 防连点 commit 重复加入
 
     private struct PickTarget: Identifiable { let id: String }
     private static let amber = Color(red: 0.96, green: 0.72, blue: 0.22)
@@ -432,6 +433,8 @@ struct RoutineReviewSheet: View {
     }
 
     private func addCustom(_ c: ImportCandidate) {
+        // 防连点 — 已解析 (含上一次 tap 刚建出的) 就不再造, 否则会在库里留下重名孤儿动作.
+        guard let i = candidates.firstIndex(where: { $0.id == c.id }), candidates[i].exerciseId == nil else { return }
         let ex = data.createCustomExercise(named: c.rawName)
         resolve(c.id, exerciseId: ex.id)
     }
@@ -446,8 +449,10 @@ struct RoutineReviewSheet: View {
     }
 
     private func commit() {
+        guard !committed else { return }
         let picked = candidates.filter { $0.included && $0.exerciseId != nil }
         guard !picked.isEmpty else { return }
+        committed = true
         let now = Date()
         let steps: [PlanStep] = picked.enumerated().map { (i, c) in
             PlanStep(

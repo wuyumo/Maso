@@ -442,6 +442,8 @@ private struct RoutineImportFlow: ViewModifier {
     @Binding var review: RoutineReviewPayload?
     @Binding var failed: Bool
     let data: DataStore
+    /// 自增代数 — 用户连选多张图时, 只认最后一次的解析结果, 丢弃过期的.
+    @State private var generation = 0
 
     func body(content: Content) -> some View {
         content
@@ -451,11 +453,14 @@ private struct RoutineImportFlow: ViewModifier {
             }
             .onChange(of: pickedImage) { _, img in
                 guard let img else { return }
+                generation += 1
+                let myGen = generation
                 parsing = true
                 let library = data.userLibrary
                 Task {
                     let result = await RoutineImageImporter.analyze(from: img, library: library)
                     await MainActor.run {
+                        guard myGen == generation else { return }   // 又选了一张 → 丢弃这次过期结果
                         parsing = false
                         pickedImage = nil
                         switch result {

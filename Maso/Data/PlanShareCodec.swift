@@ -212,7 +212,15 @@ enum RoutineImageImporter {
             }
         }
         // 每行内左→右拼接 (用双空格分隔, 防止"名字"和"3×10"粘连成一个词)
-        return rows.map { $0.sorted { $0.minX < $1.minX }.map(\.text).joined(separator: "  ") }
+        return rows.map { row -> String in
+            let joined = row.sorted { $0.minX < $1.minX }.map(\.text).joined(separator: "  ")
+            // 汉字之间的空格删掉 — Vision 常把 "跪姿腹轮" 拆成跨 box 的 "跪姿 腹轮",
+            // 不删则跟库里无空格的中文名 ({"跪姿腹轮"}) 交集为空 → 完美匹配被误判成"待确认".
+            // 只删"汉字 空格 汉字", 不动"汉字 数字"(组数重量要留着).
+            return joined.replacingOccurrences(
+                of: #"(?<=[\x{4E00}-\x{9FFF}])\s+(?=[\x{4E00}-\x{9FFF}])"#,
+                with: "", options: .regularExpression)
+        }
     }
 
     // MARK: - 置信度分级解析
@@ -268,9 +276,10 @@ enum RoutineImageImporter {
         "训练","计划","组数","次数","休息","热身","放松","总计","合计","时长","时间","周","天","动作","备注",
         "完成","今天","昨天","明天","星期","周一","周二","周三","周四","周五","周六","周日","上午","下午","分钟","训练日",
     ]
-    /// 计量词 — 不参与动作名匹配.
+    /// 计量词 — 不参与动作名匹配. 注意不放单字母 "x"/"s": "NxM" 已被正则提前剥掉,
+    /// 留单字母在这里反而会吃掉 "X-bar"/"farmer's" 里的 x/s.
     private static let metricStop: Set<String> = [
-        "sets","set","reps","rep","kg","lb","lbs","组","次","x","rest","min","mins","sec","secs","s","lbs.","kgs",
+        "sets","set","reps","rep","kg","lb","lbs","kgs","组","次","rest","min","mins","sec","secs",
     ]
 
     private static func parseCandidates(_ lines: [String], library: [Exercise]) -> [ImportCandidate] {
