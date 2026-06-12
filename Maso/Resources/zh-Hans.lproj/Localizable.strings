@@ -884,3 +884,7 @@
 "Add %lld to routine" = "加入 %lld 个动作";
 
 "Uncheck anything you don't want. Dashed rows are our best guess — tap replace to swap." = "不想要的取消勾选即可。虚线框是我们的猜测 — 点替换可换一个动作。";
+
+"Recognized “%@”" = "识别出“%@”";
+"%lld reps" = "%lld 次";
+"3 sets · default" = "默认 3 组";

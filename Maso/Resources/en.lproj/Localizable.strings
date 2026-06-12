@@ -883,3 +883,7 @@
 "Add %lld to routine" = "Add %lld to routine";
 
 "Uncheck anything you don't want. Dashed rows are our best guess — tap replace to swap." = "Uncheck anything you don't want. Dashed rows are our best guess — tap replace to swap.";
+
+"Recognized “%@”" = "Recognized “%@”";
+"%lld reps" = "%lld reps";
+"3 sets · default" = "3 sets · default";

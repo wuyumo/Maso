@@ -268,9 +268,10 @@ struct RoutineReviewSheet: View {
             exImage(c.exerciseId)
 
             VStack(alignment: .leading, spacing: 2) {
-                // 识别原文 — 轻一级, 在主文案上方 (只在非完全匹配时显示)
-                if dashed {
-                    Text(c.ocrText)
+                // 识别原文 — 轻一级, 在主文案上方, 标注来源 ("识别出 “XX”").
+                // unmatched 没有库内对应 → 主文案就是原文, 不重复显示 caption.
+                if dashed && hasEx {
+                    Text(String(format: NSLocalizedString("Recognized “%@”", comment: "ocr caption"), c.ocrText))
                         .font(.system(size: 11))
                         .foregroundStyle(MasoColor.textFaint)
                         .lineLimit(1)
@@ -355,16 +356,22 @@ struct RoutineReviewSheet: View {
         return ex.displayName
     }
 
+    /// 诚实显示: 只展示从图里真正识别出的数字; 一项都没有 → 标注"默认 3 组" (commit 时的兜底值),
+    /// 不冒充识别结果. 有次数没组数时只写 "10 reps", 不编造组数.
     private func metricText(_ c: ImportCandidate) -> String {
         var parts: [String] = []
-        let s = c.sets ?? 3
-        if let r = c.reps { parts.append("\(s) × \(r)") }
-        else { parts.append(String(format: NSLocalizedString("%lld sets", comment: ""), s)) }
+        if let s = c.sets {
+            if let r = c.reps { parts.append("\(s) × \(r)") }
+            else { parts.append(String(format: NSLocalizedString("%lld sets", comment: ""), s)) }
+        } else if let r = c.reps {
+            parts.append(String(format: NSLocalizedString("%lld reps", comment: ""), r))
+        }
         if let w = c.weight, w > 0 {
             let num = w.truncatingRemainder(dividingBy: 1) == 0 ? String(format: "%.0f", w) : String(format: "%.1f", w)
-            parts.append("· \(num) kg")
+            parts.append("\(num) kg")
         }
-        return parts.joined(separator: " ")
+        if parts.isEmpty { return NSLocalizedString("3 sets · default", comment: "no metrics recognized") }
+        return parts.joined(separator: " · ")
     }
 
     // MARK: mutations

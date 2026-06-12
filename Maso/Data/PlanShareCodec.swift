@@ -283,10 +283,23 @@ enum RoutineImageImporter {
 
     private static func parseCandidates(_ lines: [String], library: [Exercise]) -> [ImportCandidate] {
         let index = buildIndex(library)
-        // caseInsensitive — OCR 常把乘号 × 读成大写 "X"; 不区分大小写才认得 "3 X 10".
+        // 各家 app 的 sets/reps/weight 写法全谱 (caseInsensitive — OCR 常把 × 读成大写 "X"):
+        //   "3 × 10"        sets × reps          (Strong 等)
+        //   "2 × 卧推"      组数前缀动作名 → 2 组  (Hevy 计划页)
+        //   "卧推 × 3"      尾缀 → 3 组           (手写/备忘)
+        //   "60 kg × 8"     重量 × 次数           (Strong 逐组行 — × 不是组数!)
+        //   "8 × 60 kg"     次数 × 重量
+        //   "3 sets of 12" / "12 reps" / "4组×12" / "12次"
         let setsReps = try! NSRegularExpression(pattern: #"(\d{1,2})\s*[x×*]\s*(\d{1,3})|(\d{1,2})\s*组\s*[x×*]?\s*(\d{1,3})?"#, options: [.caseInsensitive])
         let setsWords = try! NSRegularExpression(pattern: #"(\d{1,2})\s*sets?\b(?:\s*(?:[x×*·]|of)\s*(\d{1,3}))?"#, options: [.caseInsensitive])
+        let repsWords = try! NSRegularExpression(pattern: #"(\d{1,3})\s*(?:reps?\b|次)"#, options: [.caseInsensitive])
         let weightRe = try! NSRegularExpression(pattern: #"(\d+(?:\.\d+)?)\s*(?:kg|公斤|lbs?|磅)"#, options: [.caseInsensitive])
+        // 重量×次数 (正/反两向) — 必须先于 N×M 判定, 否则 "60 kg × 8" 会被误读成 60 组.
+        let weightXreps = try! NSRegularExpression(pattern: #"(\d+(?:\.\d+)?)\s*(?:kg|公斤|lbs?|磅)\s*[x×*]\s*(\d{1,3})\b"#, options: [.caseInsensitive])
+        let repsXweight = try! NSRegularExpression(pattern: #"(\d{1,3})\s*[x×*]\s*(\d+(?:\.\d+)?)\s*(?:kg|公斤|lbs?|磅)"#, options: [.caseInsensitive])
+        // 组数前缀/尾缀动作名: "2 × <名字>" / "<名字> × 3" — × 一侧是数字另一侧是文字 → 数字是组数.
+        let leadingSets = try! NSRegularExpression(pattern: #"^\s*(\d{1,2})\s*[x×*]\s*(?=[^\d\s])"#, options: [.caseInsensitive])
+        let trailingSets = try! NSRegularExpression(pattern: #"(?<=[^\d\s.])\s*[x×*]\s*(\d{1,2})\s*$"#, options: [.caseInsensitive])
         var out: [ImportCandidate] = []
         var usedIds = Set<String>()
         var lastCandLine = -10
@@ -301,23 +314,51 @@ enum RoutineImageImporter {
             func grp(_ m: NSTextCheckingResult, _ idx: Int) -> String? {
                 let r = m.range(at: idx); return r.location == NSNotFound ? nil : ns.substring(with: r)
             }
-            if let m = setsReps.firstMatch(in: line, range: NSRange(location: 0, length: ns.length)) {
+            let full = NSRange(location: 0, length: ns.length)
+            // ① 重量×次数 (两向) — 优先消化带单位的 ×, 防止被当成组数.
+            if let m = weightXreps.firstMatch(in: line, range: full) {
+                weight = grp(m, 1).flatMap(Double.init)
+                reps = grp(m, 2).flatMap(Int.init)
+            } else if let m = repsXweight.firstMatch(in: line, range: full) {
+                reps = grp(m, 1).flatMap(Int.init)
+                weight = grp(m, 2).flatMap(Double.init)
+            }
+            // ② N×M (纯数字两侧) → sets × reps. ①命中过则跳过 (那个 × 已是重量语义).
+            if reps == nil, weight == nil,
+               let m = setsReps.firstMatch(in: line, range: full) {
                 sets = (grp(m, 1) ?? grp(m, 3)).flatMap(Int.init)
                 reps = (grp(m, 2) ?? grp(m, 4)).flatMap(Int.init)
             }
-            if sets == nil, let m = setsWords.firstMatch(in: line, range: NSRange(location: 0, length: ns.length)) {
+            // ③ "N sets [of M]"
+            if sets == nil, let m = setsWords.firstMatch(in: line, range: full) {
                 sets = grp(m, 1).flatMap(Int.init)
                 if reps == nil { reps = grp(m, 2).flatMap(Int.init) }
             }
-            if let m = weightRe.firstMatch(in: line, range: NSRange(location: 0, length: ns.length)),
+            // ④ "M reps / M次"
+            if reps == nil, let m = repsWords.firstMatch(in: line, range: full) {
+                reps = grp(m, 1).flatMap(Int.init)
+            }
+            // ⑤ 组数前缀/尾缀动作名: "2 × 卧推" / "卧推 × 3" → 组数 (Hevy 计划页格式).
+            if sets == nil, let m = leadingSets.firstMatch(in: line, range: full) {
+                sets = grp(m, 1).flatMap(Int.init)
+            }
+            if sets == nil, weight == nil, let m = trailingSets.firstMatch(in: line, range: full) {
+                sets = grp(m, 1).flatMap(Int.init)
+            }
+            // ⑥ 裸重量 (没参与 ①的 ×)
+            if weight == nil, let m = weightRe.firstMatch(in: line, range: full),
                m.range(at: 1).location != NSNotFound {
                 weight = Double(ns.substring(with: m.range(at: 1)))
             }
             let hasMetrics = sets != nil || reps != nil || weight != nil
             // 去掉数字/单位后的纯文本 → 搜索词
             let nameText = line
+                .replacingOccurrences(of: #"\d+(?:\.\d+)?\s*(?:kg|公斤|lbs?|磅)\s*[x×*]\s*\d{1,3}"#, with: " ", options: [.regularExpression, .caseInsensitive])
                 .replacingOccurrences(of: #"\d+(?:\.\d+)?\s*(?:kg|公斤|lbs?|磅)"#, with: " ", options: [.regularExpression, .caseInsensitive])
-                .replacingOccurrences(of: #"\d{1,2}\s*[x×*]\s*\d{1,3}"#, with: " ", options: .regularExpression)
+                .replacingOccurrences(of: #"\d{1,2}\s*[x×*]\s*\d{1,3}"#, with: " ", options: [.regularExpression, .caseInsensitive])
+                .replacingOccurrences(of: #"\d{1,3}\s*(?:reps?\b|次)"#, with: " ", options: [.regularExpression, .caseInsensitive])
+                .replacingOccurrences(of: #"^\s*\d{1,2}\s*[x×*]\s*"#, with: " ", options: [.regularExpression, .caseInsensitive])
+                .replacingOccurrences(of: #"\s*[x×*]\s*\d{1,2}\s*$"#, with: " ", options: [.regularExpression, .caseInsensitive])
                 .replacingOccurrences(of: #"\d{1,2}\s*组"#, with: " ", options: .regularExpression)
             let matchWords = exerciseSearchWords(nameText).filter { Int($0) == nil && !metricStop.contains($0) }
             let contentWords = matchWords.filter { !structuralWords.contains($0) }
@@ -403,11 +444,14 @@ enum RoutineImageImporter {
     private static func cleanName(_ line: String) -> String {
         var s = line
         let pats = [
+            #"\d+(?:\.\d+)?\s*(?:kg|公斤|lbs?|磅)\s*[x×*]\s*\d{1,3}"#,
             #"\d+(?:\.\d+)?\s*(?:kg|公斤|lbs?|磅)"#,
             #"\d{1,2}\s*sets?\b(?:\s*(?:[x×*·]|of)\s*\d{1,3})?"#,
             #"\d{1,2}\s*[x×*]\s*\d{1,3}"#,
             #"\d{1,2}\s*组(?:\s*[x×*]?\s*\d{1,3})?"#,
-            #"\d{1,3}\s*(?:reps?|次)"#,
+            #"\d{1,3}\s*(?:reps?\b|次)"#,
+            #"^\s*\d{1,2}\s*[x×*]\s*"#,
+            #"\s*[x×*]\s*\d{1,2}\s*$"#,
         ]
         for p in pats {
             s = s.replacingOccurrences(of: p, with: " ", options: [.regularExpression, .caseInsensitive])
