@@ -313,6 +313,8 @@ enum RoutineImageImporter {
         let trailingSets = try! NSRegularExpression(pattern: #"(?<=[^\d\s.])\s*[x×*]\s*(\d{1,2})\s*$"#, options: [.caseInsensitive])
         var out: [ImportCandidate] = []
         var usedIds = Set<String>()
+        /// 已立项候选行的全部名字词 — 回顾行守卫用 (底部摘要卡重复动作名 → 不再立项).
+        var seenTokens = Set<String>()
         var lastCandLine = -10
         // 行分组后大多 metrics 已跟名字同行; 但有的 app 把 "3×10 / 60kg" 排在动作名 *上面* 一行,
         // 那个纯数值行回填不到"上一个候选"(还没建) → 暂存, 给下一个建出来的候选用.
@@ -401,6 +403,14 @@ enum RoutineImageImporter {
             if !hasMetrics, let p = pending { sets = p.sets; reps = p.reps; weight = p.weight }
             pending = nil
             let W = Set(contentWords)
+            // 回顾行守卫: 无 metrics 的行, 词几乎全是前面候选已经出现过的 (≥80% 覆盖) →
+            // 这是截图里弹窗底下露出的"收起卡片"/底部摘要 ("A, B, C, …" 逗号串) 在重复
+            // 已识别的动作名 — 不是新动作. (实测 Strong 的 routine 弹窗截图: 背景摘要卡的
+            // "Wide-grip back shrug…" 撞上 "Lat Pulldown (Wide Grip)" 多出第 6 行.)
+            if sets == nil && reps == nil && weight == nil, !W.isEmpty,
+               Double(W.intersection(seenTokens).count) / Double(W.count) >= 0.8 {
+                continue
+            }
             // 最佳匹配 — 双向覆盖, 防止 "Cable Fly" 误命中 "反握上斜飞鸟" 这类同根词变种:
             //   precision = OCR 行覆盖了该动作"核心名"的比例 (行里有没有这个动作的完整名字).
             //   recall    = 该行的词被该动作名 (核心+器械) 解释的比例 (行里有没有别的没法解释的词).
@@ -447,7 +457,10 @@ enum RoutineImageImporter {
                 cand = ImportCandidate(ocrText: name, sets: sets, reps: reps, weight: weight,
                                        exerciseId: b.idx.id, confidence: .high, included: true)
             } else if let b = best, b.precision >= 0.5, matchStrongEnough(b),
-                      !usedIds.contains(b.idx.id), hasMetrics || W.count >= 2 {
+                      !usedIds.contains(b.idx.id),
+                      // 无 metrics 的行只有"完整核心名都在"才可立 suggested — 部分匹配 + 连组数
+                      // 都没有, 几乎都是背景 UI 残文 (摘要卡/按钮), 不是动作行.
+                      hasMetrics || b.precision >= 0.999 {
                 // suggested — 部分匹配 → 自动采用最佳猜测并默认加入; UI 虚线框 + 识别原文 caption + 替换按钮.
                 usedIds.insert(b.idx.id)
                 cand = ImportCandidate(ocrText: name, sets: sets, reps: reps, weight: weight,
@@ -462,6 +475,7 @@ enum RoutineImageImporter {
             if let c = cand, !c.ocrText.isEmpty {
                 out.append(c)
                 lastCandLine = i
+                seenTokens.formUnion(W)   // 回顾行守卫的语料 — 这行的词以后再整行出现就是摘要
             }
         }
         return out
