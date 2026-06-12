@@ -260,20 +260,25 @@ enum RoutineImageImporter {
         }
     }
 
-    /// 结构词 — 截图里的小标题/合计/星期/日期/休息行等, 绝不是动作名. 命中即剔除.
+    /// 结构词 — 截图里的小标题/合计/星期/日期/休息行/逐组标注等, 绝不是动作名. 命中即剔除.
     private static let structuralWords: Set<String> = [
         // ⚠️ 别加 split/squat/press/row/fly/curl/raise/pull/push/walk/hold 这类 — 它们是真动作名词.
         "day","days","week","weeks","workout","workouts","session","sessions","routine","routines",
         "plan","program","total","totals","volume","summary","history","exercise","exercises",
-        "warmup","warm","cooldown","cool","superset","supersets","circuit","drop","dropset","notes","note",
+        "warmup","warm","warmups","cooldown","cool","superset","supersets","circuit","drop","dropset","dropsets","notes","note",
         "tempo","rpe","rir","pr","prs","date","today","yesterday","tomorrow","am","pm","time","duration","est",
         "completed","complete","finished","done","best","goal","target","prev","previous","last",
+        // 逐组/强度标注行 ("Warm-up set" / "To failure" / "AMRAP" / "Working sets") — 不是动作
+        "failure","fail","amrap","emom","burnout","working","backoff",
+        "kcal","cal","calories","bpm","avg","average",
         "mon","tue","tues","wed","weds","thu","thur","thurs","fri","sat","sun",
         "monday","tuesday","wednesday","thursday","friday","saturday","sunday",
         "jan","feb","mar","apr","may","jun","jul","aug","sep","sept","oct","nov","dec",
         // zh
         "训练","计划","组数","次数","休息","热身","放松","总计","合计","时长","时间","周","天","动作","备注",
         "完成","今天","昨天","明天","星期","周一","周二","周三","周四","周五","周六","周日","上午","下午","分钟","训练日",
+        // zh 逐组/强度/统计标注
+        "力竭","递减","递减组","热身组","正式组","组间","卡路里","千卡","心率","平均","容量","强度","自重",
     ]
     /// 计量词 — 不参与动作名匹配. 注意不放单字母 "x"/"s": "NxM" 已被正则提前剥掉,
     /// 留单字母在这里反而会吃掉 "X-bar"/"farmer's" 里的 x/s.
@@ -283,6 +288,12 @@ enum RoutineImageImporter {
 
     private static func parseCandidates(_ lines: [String], library: [Exercise]) -> [ImportCandidate] {
         let index = buildIndex(library)
+        // token 文档频率 — 一个词出现在多少个动作名里. back/press/row/biceps 这类高频词
+        // 单独命中毫无辨识度 (库里几十个动作都含它), 不足以把一行立成 suggested 候选.
+        var tokenDF: [String: Int] = [:]
+        for idx in index {
+            for t in idx.nameTokens { tokenDF[t, default: 0] += 1 }
+        }
         // 各家 app 的 sets/reps/weight 写法全谱 (caseInsensitive — OCR 常把 × 读成大写 "X"):
         //   "3 × 10"        sets × reps          (Strong 等)
         //   "2 × 卧推"      组数前缀动作名 → 2 组  (Hevy 计划页)
@@ -365,7 +376,10 @@ enum RoutineImageImporter {
             // 纯数值/纯结构行 (没有动作名词) — 把组数/重量回填到紧邻的上一个候选 (±2 行内), 然后跳过.
             // (很多 app 把动作名和 "3×8 · 60kg" 拆成相邻两行, 或 per-set 行 "Set 1  60kg".)
             if contentWords.isEmpty {
-                if hasMetrics {
+                // 汇总/标注行守卫: 行里出现了结构词 ("5 exercises · 14 sets" / "总计 14 组" /
+                // "Warm-up 60kg×8") → 它的数字是统计/热身, 不是上一个动作的组数 — 不回填不暂存.
+                let isStructuralRow = matchWords.contains { structuralWords.contains($0) }
+                if hasMetrics, !isStructuralRow {
                     if i - lastCandLine <= 2, var last = out.last {
                         if let v = sets { last.sets = v }
                         if let v = reps { last.reps = v }
@@ -377,6 +391,12 @@ enum RoutineImageImporter {
                 }
                 continue
             }
+            // 标题/分组头守卫: 行里出现结构词 (Day/Week/Push Day/总计…) 且整行没有任何
+            // 组数/次数/重量 → 这是 routine 标题或分组小标题, 不是动作行. 直接丢 —
+            // 否则 "Day B · Back + Biceps" 里的 back 会撞上 "背伸" 这类动作的 50% 核心名,
+            // 凭空多出一个动作 (用户报: 图里 5 个训练识别出 6 个).
+            let hasStructural = matchWords.contains { structuralWords.contains($0) }
+            if hasStructural, !hasMetrics { continue }
             // 名字行自己没读到 metrics, 但前一行 (动作名上方) 攒了一组 → 用它.
             if !hasMetrics, let p = pending { sets = p.sets; reps = p.reps; weight = p.weight }
             pending = nil
@@ -409,18 +429,33 @@ enum RoutineImageImporter {
             }
             let name = cleanName(line)
             var cand: ImportCandidate? = nil
+            // suggested 的"匹配强度"门槛: 命中 ≥2 个名字词; 单词命中必须是低频特异词
+            // (库内 ≤8 个动作含它, 且 ≥4 拉丁字符或含汉字) — "pushdown"/"划船" 这种算数,
+            // "back"/"biceps"/"up" 这种高频词单独命中不算 — 防 "Warm-up 60kg×8" 的孤词 "up"
+            // 或标题残词撞上某个两词名的 50% 就被造出幽灵动作 (图里 5 个训练识别出 6 个).
+            func matchStrongEnough(_ b: (idx: ExIndex, precision: Double, recall: Double, coreLen: Int)) -> Bool {
+                let matched = W.intersection(b.idx.nameTokens)
+                if matched.count >= 2 { return true }
+                return matched.contains { w in
+                    (tokenDF[w] ?? 0) <= 8 &&
+                    (w.count >= 4 || w.unicodeScalars.contains { $0.properties.isIdeographic })
+                }
+            }
             if let b = best, b.precision >= 0.999, b.recall >= 0.999, !usedIds.contains(b.idx.id) {
                 // high — 行里正好就是这个动作 (核心名全在 + 没多余词) → 默认加入.
                 usedIds.insert(b.idx.id)
                 cand = ImportCandidate(ocrText: name, sets: sets, reps: reps, weight: weight,
                                        exerciseId: b.idx.id, confidence: .high, included: true)
-            } else if let b = best, b.precision >= 0.5, !usedIds.contains(b.idx.id), hasMetrics || W.count >= 2 {
+            } else if let b = best, b.precision >= 0.5, matchStrongEnough(b),
+                      !usedIds.contains(b.idx.id), hasMetrics || W.count >= 2 {
                 // suggested — 部分匹配 → 自动采用最佳猜测并默认加入; UI 虚线框 + 识别原文 caption + 替换按钮.
                 usedIds.insert(b.idx.id)
                 cand = ImportCandidate(ocrText: name, sets: sets, reps: reps, weight: weight,
                                        exerciseId: b.idx.id, confidence: .suggested, included: true)
-            } else if hasMetrics, substantial(contentWords) {
+            } else if sets != nil || reps != nil, substantial(contentWords) {
                 // unmatched — 库里没像样匹配 → 默认不勾, 展示识别原文, 用户可替换成库内动作.
+                // 门槛收紧到"有组数/次数"才立行 — 裸重量行 ("Top 100 kg" 之类逐组标注) 不再
+                // 凭一个杂词就多出一行, 训练个数跟图里对得上.
                 cand = ImportCandidate(ocrText: name, sets: sets, reps: reps, weight: weight,
                                        exerciseId: nil, confidence: .unmatched, included: false)
             }
