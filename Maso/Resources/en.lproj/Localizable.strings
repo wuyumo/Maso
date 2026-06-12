@@ -514,13 +514,21 @@
 "Share workout" = "Share workout";
 
 /* End-of-workout: save changes back to plan */
-"Skip & close" = "Skip & close";
 "Save changes & end" = "Save changes & end";
 "End without saving" = "End without saving";
-"Save changes to plan" = "Save changes to routine";
-"Saved to plan" = "Saved to routine";
 "You changed sets, reps, weight, or order during this workout. Save the changes back to the plan?" = "You changed sets, reps, weight, or order during this workout. Save the changes back to the routine?";
-"You changed some parameters during this workout." = "You changed some parameters during this workout.";
+
+/* End-of-workout: save-changes confirm page (before share card) */
+"Skip" = "Skip";
+"Save changes to this routine?" = "Save changes to this routine?";
+"You adjusted this routine during the workout. Save the adjustments for next time?" = "You adjusted this routine during the workout. Save the adjustments for next time?";
+"Save to routine" = "Save to routine";
+"Don't save" = "Don't save";
+"Removed" = "Removed";
+"Replaced" = "Replaced";
+"Updated" = "Updated";
+"Moved" = "Moved";
+"rest %@" = "rest %@";
 
 /* Accessibility */
 "Show details for %@" = "Show details for %@";
@@ -720,7 +728,6 @@
 "Days this week" = "Days this week";
 "Default sets" = "Default sets";
 "Discard" = "Discard";
-"Discard & close" = "Discard & close";
 "Discard changes?" = "Discard changes?";
 "Edit next exercise" = "Edit next exercise";
 "Endurance" = "Endurance";

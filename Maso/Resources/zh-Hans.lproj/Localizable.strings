@@ -516,13 +516,21 @@
 "Share workout" = "分享训练";
 
 /* 训练结束 — 是否同步到计划 */
-"Skip & close" = "跳过并关闭";
 "Save changes & end" = "保存并结束";
 "End without saving" = "不保存退出";
-"Save changes to plan" = "保存到计划";
-"Saved to plan" = "已保存到计划";
 "You changed sets, reps, weight, or order during this workout. Save the changes back to the plan?" = "本次训练中修改了组数 / 次数 / 重量 / 顺序,是否同步到训练计划?";
-"You changed some parameters during this workout." = "本次训练中修改了一些参数。";
+
+/* 训练结束 — 保存修改确认页 (分享卡之前) */
+"Skip" = "跳过";
+"Save changes to this routine?" = "把修改保存到训练计划？";
+"You adjusted this routine during the workout. Save the adjustments for next time?" = "你在训练中调整过这个计划。要保存调整，下次按新参数练吗？";
+"Save to routine" = "保存到训练计划";
+"Don't save" = "不保存";
+"Removed" = "移除";
+"Replaced" = "已替换";
+"Updated" = "已修改";
+"Moved" = "顺序调整";
+"rest %@" = "休息 %@";
 
 /* 无障碍 */
 "Show details for %@" = "查看 %@ 详情";
@@ -721,7 +729,6 @@
 "Days this week" = "本周天数";
 "Default sets" = "默认组数";
 "Discard" = "丢弃";
-"Discard & close" = "丢弃并关闭";
 "Discard changes?" = "丢弃改动？";
 "Edit next exercise" = "编辑下一个动作";
 "Endurance" = "耐力";

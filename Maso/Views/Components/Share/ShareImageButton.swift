@@ -218,7 +218,16 @@ struct ShareCustomizeSheet<ShareContent: View>: View {
                 set: { if !$0 { renderedImage = nil } }
             )) {
                 if let img = renderedImage {
-                    ActivityViewController(activityItems: [img])
+                    // 分享真的完成 (选了某个 activity) → 收掉系统 sheet 后, 整个 customize 卡
+                    // 也自动关 — 用户分享完回来不该还停在卡片上. 取消分享则留在卡上可重试.
+                    // 0.35s 延迟串接两层 dismiss — sheet-from-sheet 同 tick 双关会 race
+                    // (跟 replacingStepId 的 0.32s 延迟是同一类坑).
+                    ActivityViewController(activityItems: [img]) { completed in
+                        renderedImage = nil
+                        if completed {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) { dismiss() }
+                        }
+                    }
                         .presentationDetents([.medium, .large])
                         .presentationDragIndicator(.visible)
                 }
@@ -243,12 +252,19 @@ struct ShareCustomizeSheet<ShareContent: View>: View {
 }
 
 /// UIActivityViewController wrapper — 弹原生 share sheet, 用户选 AirDrop / Messages / Instagram 等.
+/// onComplete: 系统分享收起时回调, completed = 用户真的执行了某个 activity (分享/存图/拷贝),
+/// false = 直接取消. caller 用它做"分享完成后自动关掉整个分享卡".
 struct ActivityViewController: UIViewControllerRepresentable {
     let activityItems: [Any]
     var applicationActivities: [UIActivity]? = nil
+    var onComplete: ((Bool) -> Void)? = nil
 
     func makeUIViewController(context: Context) -> UIActivityViewController {
-        UIActivityViewController(activityItems: activityItems, applicationActivities: applicationActivities)
+        let vc = UIActivityViewController(activityItems: activityItems, applicationActivities: applicationActivities)
+        vc.completionWithItemsHandler = { _, completed, _, _ in
+            onComplete?(completed)
+        }
+        return vc
     }
     func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }
