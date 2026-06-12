@@ -57,4 +57,7 @@ struct SetRecord: Identifiable, Hashable, Codable, Sendable {
     var duration: Int?
     let performedAt: Date
     var planId: String?
+    /// 落库时的 plan 名快照 — plan 之后被删, 历史卡名不再退化成"自由训练".
+    /// optional + 默认 nil: 旧记录缺这个 key 也能解码 (沿用原 fallback 链).
+    var planName: String? = nil
 }

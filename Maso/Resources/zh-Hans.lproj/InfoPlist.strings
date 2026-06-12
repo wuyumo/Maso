@@ -1,0 +1,5 @@
+/* 权限弹窗 purpose strings — 中文 (审核与中文用户可见) */
+"NSCameraUsageDescription" = "Masso 使用相机拍摄自拍，添加到你的可分享训练总结卡片上。";
+"NSHealthShareUsageDescription" = "Masso 读取「健康」中的基础训练记录，让你的训练时间线在各设备间保持一致。";
+"NSHealthUpdateUsageDescription" = "Masso 将你完成的训练保存到 Apple 健身，显示在你的活动圆环和健康时间线中。";
+"NSPhotoLibraryUsageDescription" = "Masso 读取你从相册中选择的照片，添加到可分享的训练总结卡片上。";

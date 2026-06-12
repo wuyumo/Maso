@@ -324,7 +324,9 @@ struct WorkoutCalendarScreen: View {
 
         let planName: String = {
             if key.planId == "free" { return NSLocalizedString("Free workout", comment: "") }
+            // plan 被删 → 用记录里的落库名快照, 不退化"自由训练"
             return data.plans.first(where: { $0.id == key.planId })?.name
+                ?? recs.compactMap(\.planName).first
                 ?? NSLocalizedString("Free workout", comment: "")
         }()
         var seenMuscles = Set<MuscleGroup>()

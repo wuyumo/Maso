@@ -102,13 +102,8 @@ final class DataStore {
         save()
     }
 
-    /// 从一段名字造 + 存一个自创动作, 返回它 (给"从截图导入"的"存为自创动作"用).
-    @discardableResult
-    func createCustomExercise(named name: String) -> Exercise {
-        let ex = Exercise.custom(displayName: name)
-        addCustomExercise(ex)
-        return ex
-    }
+    // (旧"从截图导入 → 存为自创动作"工厂已删 — 导入改版后未匹配动作只能从库里替换,
+    //  不再有绕过自创动作 Pro gate 的免费入口. 自创动作唯一入口 = 动作库 "+", 有付费墙.)
 
     /// 删一个自创动作.
     func deleteCustomExercise(_ id: String) {
@@ -826,9 +821,12 @@ final class DataStore {
         let history: [AIPayload.HistoryEntry] = order.map { key in
             let recs = bucket[key] ?? []
             // 术语统一 "Free workout" — 跟 History 卡 / Share 卡一致 (之前这里是 "Quick Workout").
+            // plan 被删 → 用记录里的落库名快照, AI 上下文不丢具体计划名.
             let planName = key.planId == "free"
                 ? "Free workout"
-                : (plans.first(where: { $0.id == key.planId })?.name ?? "Plan")
+                : (plans.first(where: { $0.id == key.planId })?.name
+                   ?? recs.compactMap(\.planName).first
+                   ?? "Plan")
             var seen = Set<MuscleGroup>()
             var muscles: [MuscleGroup] = []
             for r in recs {

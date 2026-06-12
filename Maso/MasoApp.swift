@@ -76,6 +76,14 @@ struct MasoApp: App {
                         dataStore.save()
                     }
                 }
+                // 冷启动恢复进行中的训练 — iOS 杀后台 (训练 60-90 分钟很常见) 后, 把
+                // active-session.json 里的 session 接回来; 已完成 / 闲置 6h+ 的静默丢弃.
+                // 必须在 pushWatchState() 之前 — 恢复出的训练帧要推给手表, 而不是 idle 帧.
+                session.restorePersistedSession(
+                    exById: dataStore.exById,
+                    defaultRest: dataStore.settings.defaultRestSeconds,
+                    defaultBetweenExerciseRest: dataStore.settings.defaultBetweenExerciseRestSeconds
+                )
                 // Apple Watch 镜像 — 激活 WCSession + 接线手表动作:
                 // ✓/Skip → advance (跟手机主按钮同语义, 含 SetRecord 落库); 暂停 → togglePlay.
                 WatchSyncManager.shared.activate()

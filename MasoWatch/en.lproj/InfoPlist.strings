@@ -1,0 +1,3 @@
+/* Watch 权限弹窗 purpose strings — 跟 Info.plist 英文原文一致 */
+"NSHealthShareUsageDescription" = "Masso shows your live heart rate during workouts.";
+"NSHealthUpdateUsageDescription" = "Masso saves watch workouts to Apple Health so they count toward your Activity rings.";

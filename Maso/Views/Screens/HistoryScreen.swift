@@ -521,7 +521,9 @@ struct HistoryScreen: View {
             let recs = bucket[key] ?? []
             let planName: String? = {
                 if key.planId == "free" { return nil }
+                // plan 还在 → 用现名 (改名联动); 被删 → 记录里的落库名快照, 不退化"自由训练"
                 return data.plans.first(where: { $0.id == key.planId })?.name
+                    ?? recs.compactMap(\.planName).first
             }()
             let uniqueExercises = Set(recs.map { $0.exerciseId })
             var seenMuscles = Set<MuscleGroup>()
@@ -643,7 +645,9 @@ struct HistoryScreen: View {
             ))
         }
         guard !steps.isEmpty else { return nil }
-        let name = NSLocalizedString("Free workout", comment: "")
+        // 原 plan 被删但记录里有落库名快照 → 重练播放器/Live Activity 沿用真名,
+        // 跟历史卡标题一致 (不然卡上 "Push Day", 点重练却变 "Free workout").
+        let name = session.planName ?? NSLocalizedString("Free workout", comment: "")
         return Plan(
             id: "session-replay-\(session.id)",
             name: name,

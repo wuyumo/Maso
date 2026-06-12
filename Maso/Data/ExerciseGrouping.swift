@@ -436,3 +436,23 @@ enum ExerciseGrouping {
         return base * 2 + mech
     }
 }
+
+// MARK: - 中英混排显示名排序
+
+/// 动作显示名排序 — 解决中英混排"字母序观感"问题:
+/// zh 环境下有中文名的动作排前面 (按拼音), 没翻译的英文名排后面 (按字母),
+/// 两种文字不再按拼音/字母交叉穿插. 纯英文环境所有名字同一桶, 行为不变.
+enum ExerciseNameSort {
+    static func precedes(_ a: String, _ b: String) -> Bool {
+        let ha = containsHan(a), hb = containsHan(b)
+        if ha != hb { return ha }   // 中文名在前
+        return a.localizedStandardCompare(b) == .orderedAscending
+    }
+
+    /// 任意位置含汉字 ⇒ 中文名. 不能只看首字符 — 库里有 33 个数字/拉丁开头的真中文名
+    /// ("T杠划船" "21次弯举" "45度背伸" "TRX划船"…), 按首字符判会被错丢进英文桶垫底.
+    /// isIdeographic 覆盖 CJK 统一表意全集 (基本区 + 扩展 + 兼容区).
+    private static func containsHan(_ s: String) -> Bool {
+        s.unicodeScalars.contains { $0.properties.isIdeographic }
+    }
+}

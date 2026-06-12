@@ -382,26 +382,3 @@ func exerciseSearchWords(_ query: String) -> [String] {
     query.lowercased().split(whereSeparator: { !$0.isLetter && !$0.isNumber }).map(String.init)
 }
 
-// MARK: - 自创动作工厂 (#image-import)
-
-extension Exercise {
-    /// 从一段显示名 (OCR 原文) 造一个自创动作 — 给"从截图导入"里"存为自创动作"用.
-    /// 肌群/器械留空 (用户之后可在动作库里补全), category 默认 strength (有次数+重量).
-    /// id 必须 "custom-" 前缀 (动作库据此识别自创动作做删改).
-    static func custom(displayName: String) -> Exercise {
-        Exercise(
-            id: "custom-\(UUID().uuidString.lowercased().prefix(8))",
-            name: displayName,
-            category: .strength,
-            tags: [],
-            primaryMuscles: [],
-            muscleGroups: [],
-            imageFolder: nil,
-            level: nil,
-            force: nil,
-            equipment: nil,
-            instructions: [],
-            localizedName: ["en": displayName]
-        )
-    }
-}

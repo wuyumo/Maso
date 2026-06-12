@@ -234,7 +234,7 @@ enum RoutineImageImporter {
     //   3. 三档:
     //      high      — OCR 行里出现了该动作的完整核心名 (coverEx==1 且 coverLine≥0.5) → 默认勾选加入.
     //      uncertain — 部分匹配 (coverEx≥0.5) 且有支撑 (有组数重量 或 ≥2 名词) → 醒目展示, 不默认加.
-    //      unmatched — 没好匹配但有组数重量+像样名字 → 提示存为自创动作.
+    //      unmatched — 没好匹配但有组数重量+像样名字 → 提示从库里换一个 (不提供存为自创 — 有 Pro gate).
     //      其余 (小标题/噪音) → 直接丢.
 
     /// 动作名预索引 (只算名字相关 token, 排除肌群/器械分类词).

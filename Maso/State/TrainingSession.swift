@@ -17,12 +17,13 @@ import SwiftUI
 final class TrainingSessionStore {
     /// "做完了一组" 的 key — 用 (stepId, setN) 而非 segmentIndex,
     /// 让 step 参数被编辑后, 已完成状态依然保留 (segment 重新生成 index 会变, stepId+setN 不变).
-    struct CompletedSet: Hashable, Sendable {
+    /// Codable: 跟 Session 一起落盘 (active-session.json), 杀 app 后冷启动恢复.
+    struct CompletedSet: Hashable, Sendable, Codable {
         let stepId: String
         let setN: Int
     }
 
-    struct Session: Hashable {
+    struct Session: Hashable, Codable {
         let planId: String
         var segmentIndex: Int = 0
         var playing: Bool = true
@@ -40,9 +41,17 @@ final class TrainingSessionStore {
         var completedSets: Set<CompletedSet> = []
     }
 
-    private(set) var session: Session?
+    private(set) var session: Session? {
+        // 每次 mutation 落盘 — iOS 杀后台很常见 (训练 60-90 分钟), 进度不能只活在内存里.
+        // mutation 频率 = 用户操作级 (advance / 暂停 / 编辑), 文件 ~KB, 直接同步写无压力.
+        didSet { persistActiveSession() }
+    }
     /// 用户主动结束的标记 — 防止 player view 的 onAppear 又 auto-restart
     var endedExplicitly: Bool = false
+
+    /// App Store 截图模式 (MASO_SHOWCASE_SEED) — 演示数据不落盘, 也不恢复.
+    private let sessionPersistenceDisabled =
+        ProcessInfo.processInfo.environment["MASO_SHOWCASE_SEED"] == "1"
 
     /// 1Hz tick probe — 让 `remainingSeconds` 这类基于 `Date()` 的 computed property
     /// 通过 Observation 建立"我依赖 tickProbe"的图谱. SessionTickerView 每 0.5s 改一次,
@@ -185,6 +194,115 @@ final class TrainingSessionStore {
         syncWatch()
     }
 
+    // MARK: - Session 持久化 (杀 app 恢复)
+
+    /// session 每次变化整体落盘; session 清空 (end / 放弃) 时删文件.
+    private func persistActiveSession() {
+        guard !sessionPersistenceDisabled else { return }
+        if let s = session {
+            SessionPersistence.save(.init(
+                session: s,
+                plan: plan,
+                planParamsDirty: planParamsDirty,
+                anchor: currentAnchor(for: s)
+            ))
+        } else {
+            SessionPersistence.clear()
+        }
+    }
+
+    /// 当前位置的 (stepId, setN) 语义锚 — 恢复时 rest 默认值可能已变, segments 重新展开后
+    /// 段数不同, 裸 segmentIndex 会落错; 锚定到组上跟 mutator 们的 index 映射逻辑一致.
+    private func currentAnchor(for s: Session) -> SessionPersistence.Anchor? {
+        guard !segments.isEmpty else { return nil }
+        let i = min(max(0, s.segmentIndex), segments.count - 1)
+        if case .exercise(_, let n, _, _, _, _, _) = segments[i].kind {
+            return .init(stepId: segments[i].stepId, setN: n, onRestBefore: false)
+        }
+        // rest 段: 锚到它后面第一个 exercise 段 (= 这个 rest 是"谁的组前休息")
+        for j in (i + 1)..<segments.count {
+            if case .exercise(_, let n, _, _, _, _, _) = segments[j].kind {
+                return .init(stepId: segments[j].stepId, setN: n, onRestBefore: true)
+            }
+        }
+        return nil
+    }
+
+    /// 冷启动恢复 — app 被系统杀掉 (训练挂着) 后重启, 把进行中的 session 从磁盘接回来.
+    /// 不复活的情况 (静默清掉): 已 completed (组都在历史里, 冷启动弹昨天的完成页只会迷惑)、
+    /// 闲置超 autoCompleteAfter (跟 6h idle 自动完成同语义)、plan 缺失或展不开.
+    /// 倒计时在 app 死掉期间走完的 → 暂停在 0, 不让 ticker 一进来就替用户自动记组/跳段.
+    func restorePersistedSession(
+        exById: [String: Exercise],
+        defaultRest: Int,
+        defaultBetweenExerciseRest: Int
+    ) {
+        guard !sessionPersistenceDisabled, session == nil else { return }
+        guard let payload = SessionPersistence.load() else { return }
+        let saved = payload.session
+        guard !saved.completed,
+              Date().timeIntervalSince(saved.lastActiveAt) < Self.autoCompleteAfter,
+              let restoredPlan = payload.plan else {
+            SessionPersistence.clear()
+            return
+        }
+        let segs = expandPlan(
+            restoredPlan,
+            exById: exById,
+            defaultRest: defaultRest,
+            defaultBetweenExerciseRest: defaultBetweenExerciseRest
+        )
+        guard !segs.isEmpty else {
+            SessionPersistence.clear()
+            return
+        }
+        endedExplicitly = false
+        plan = restoredPlan
+        segments = segs
+        planParamsDirty = payload.planParamsDirty
+        var s = saved
+        // 位置: 优先用 (stepId, setN) 语义锚重新定位 — rest 默认值在训练中被改过时,
+        // 重新展开的 segments 段数不同, 裸 segmentIndex 会落错位置. 找不到锚才退回裸下标.
+        if let anchor = payload.anchor,
+           let j = segs.firstIndex(where: {
+               if case .exercise(_, let n, _, _, _, _, _) = $0.kind {
+                   return $0.stepId == anchor.stepId && n == anchor.setN
+               }
+               return false
+           }) {
+            if anchor.onRestBefore, j - 1 >= 0, segs[j - 1].isRest {
+                s.segmentIndex = j - 1
+            } else {
+                s.segmentIndex = j
+                if anchor.onRestBefore {
+                    // 保存时停在 rest 上, 但重新展开后这个 rest 没了 (rest 默认被改成 0) —
+                    // 落到组上并按该段重置计时, 不沿用 rest 的 endsAt/暂停残值.
+                    if s.playing {
+                        s.endsAt = initialEndsAt(for: segs[j])
+                        s.pausedRemaining = nil
+                    } else {
+                        s.endsAt = nil
+                        s.pausedRemaining = initialPausedRemaining(for: segs[j])
+                    }
+                }
+            }
+        } else {
+            s.segmentIndex = min(max(0, s.segmentIndex), segs.count - 1)
+        }
+        if let endsAt = s.endsAt, endsAt.timeIntervalSinceNow <= 0 {
+            s.endsAt = nil
+            s.pausedRemaining = 0
+            s.playing = false
+        }
+        session = s
+        // Live Activity 重建 — start 内部先清旧 activity, 不会重复.
+        // 手表帧由 caller 随后的 pushWatchState() 推, 这里不用重复 sync.
+        LiveActivityManager.shared.start(
+            planName: restoredPlan.name,
+            initialState: liveActivityState(for: currentSegment, endsAt: s.endsAt)
+        )
+    }
+
     func setIndex(_ i: Int) {
         guard var s = session else { return }
         let safe = min(max(0, i), max(0, segments.count - 1))
@@ -248,7 +366,16 @@ final class TrainingSessionStore {
                 reps: reps,
                 duration: dur,
                 performedAt: Date(),
-                planId: s.planId
+                planId: s.planId,
+                // 快照 — plan 被删后历史卡名不退化. 但合成的临时 plan (自由训练 qw- /
+                // 重练 session-replay-) 名字带时间戳且语言定格在落库时刻, 不入快照 —
+                // 历史卡对这类继续走 render-time 本地化的 "Free workout" fallback.
+                planName: {
+                    guard let p = plan,
+                          !p.id.hasPrefix("qw-"),
+                          !p.id.hasPrefix("session-replay-") else { return nil }
+                    return p.name
+                }()
             )
             record?(rec)
             // 写入"已做完"集合 — playlist / TimelineBar 据此标绿
@@ -473,8 +600,8 @@ final class TrainingSessionStore {
             s.pausedRemaining = nil
         }
         s.lastActiveAt = Date()
+        planParamsDirty = true   // 必须先于 session 写 — session didSet 落盘会快照这个 flag
         session = s
-        planParamsDirty = true
         syncLiveActivity()
     }
 
@@ -544,8 +671,8 @@ final class TrainingSessionStore {
             s.pausedRemaining = nil
         }
         s.lastActiveAt = Date()
+        planParamsDirty = true   // 必须先于 session 写 — session didSet 落盘会快照这个 flag
         session = s
-        planParamsDirty = true
         syncLiveActivity()
     }
 
@@ -631,8 +758,8 @@ final class TrainingSessionStore {
         s.pausedRemaining = nil
         s.playing = true
         s.lastActiveAt = Date()
+        planParamsDirty = true  // 改了参数 — 结束时提示保存 (先于 session 写: didSet 落盘快照它)
         session = s
-        planParamsDirty = true  // 改了参数 — 结束时提示保存
         syncLiveActivity()
     }
 
@@ -698,8 +825,8 @@ final class TrainingSessionStore {
 
         s.segmentIndex = min(max(0, resolved), max(0, newSegments.count - 1))
         s.lastActiveAt = Date()
+        planParamsDirty = true  // 改了顺序 — 结束时提示保存 (先于 session 写: didSet 落盘快照它)
         session = s
-        planParamsDirty = true  // 改了顺序 — 结束时提示保存
         syncLiveActivity()
     }
 
@@ -779,8 +906,8 @@ final class TrainingSessionStore {
         }
         s.segmentIndex = min(max(0, newIdx ?? 0), max(0, newSegments.count - 1))
         s.lastActiveAt = Date()
+        planParamsDirty = true   // 必须先于 session 写 — session didSet 落盘会快照这个 flag
         session = s
-        planParamsDirty = true
         syncLiveActivity()
     }
 
@@ -810,9 +937,9 @@ final class TrainingSessionStore {
             s.completed = true
             s.playing = false
             s.endsAt = nil
+            planParamsDirty = true   // 先于 session 写 — didSet 落盘快照它
             session = s
             segments = []
-            planParamsDirty = true
             LiveActivityManager.shared.end()
             syncWatch()
             return
@@ -859,8 +986,8 @@ final class TrainingSessionStore {
         let seg = newSegments[s.segmentIndex]
         s.endsAt = initialEndsAt(for: seg)
         s.pausedRemaining = nil
+        planParamsDirty = true  // 改了 plan — 结束时提示保存 (先于 session 写: didSet 落盘快照它)
         session = s
-        planParamsDirty = true  // 改了 plan — 结束时提示保存
         syncLiveActivity()
     }
 

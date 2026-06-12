@@ -177,8 +177,9 @@ private struct ImportedStepRow: View {
 //
 // 三段, 随用户确认动态重组:
 //   Added         — high 置信 + 已确认的: 默认勾选 → 计入 routine (展示库里规范名 + 图里识别的组数/重量).
-//   Needs review  — uncertain: 醒目琥珀色卡, 原文 + "看起来像 X" → 用建议 / 换一个 / 存为自创 / 忽略.
-//   Not in library — unmatched: 原文 + 组数重量 → 换一个 / 存为自创 / 忽略.
+//   Needs review  — uncertain: 浅白虚线卡, 原文 + "看起来像 X" → 用建议 / 换一个 / 忽略.
+//   Not in library — unmatched: 原文 + 组数重量 → 必须从库里换一个才可加入 / 忽略.
+//   (不提供"存为自创" — 自创动作唯一入口是动作库 "+", 那里有 Pro gate, 这里不开旁门.)
 // 组数/重量一律用图里识别的 (即使该动作有历史数据也覆盖), 直接写进 PlanStep; 无则默认 3 组.
 struct RoutineReviewSheet: View {
     @Environment(DataStore.self) private var data

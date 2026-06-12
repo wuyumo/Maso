@@ -1,0 +1,3 @@
+/* Watch 权限弹窗 purpose strings — 中文 */
+"NSHealthShareUsageDescription" = "Masso 在训练时显示你的实时心率。";
+"NSHealthUpdateUsageDescription" = "Masso 将手表上的训练保存到 Apple 健康，计入你的活动圆环。";

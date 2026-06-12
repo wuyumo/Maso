@@ -78,7 +78,8 @@ struct ExerciseLibraryBrowser: View {
         return groups.sorted { a, b in
             let fa = isFavGroup(a), fb = isFavGroup(b)
             if fa != fb { return fa }
-            return a.canonical.displayName.localizedStandardCompare(b.canonical.displayName) == .orderedAscending
+            // 中英混排: 中文名在前按拼音, 未翻译英文名在后按字母 — 不再交叉穿插 (观感).
+            return ExerciseNameSort.precedes(a.canonical.displayName, b.canonical.displayName)
         }
     }
 
