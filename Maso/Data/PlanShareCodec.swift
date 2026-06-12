@@ -138,15 +138,14 @@ import UIKit
 /// 一条从截图里识别出来的"疑似动作行" + 置信度. 用户在 RoutineReviewSheet 里逐条确认.
 struct ImportCandidate: Identifiable, Equatable {
     var id: String = UUID().uuidString
-    var rawName: String            // 识别出的动作名原文 (已清掉数字/单位)
+    var ocrText: String            // 识别出的动作名原文 (做 caption; unmatched 时也当主文案)
     var sets: Int?
     var reps: Int?
     var weight: Double?
-    var exerciseId: String?        // 已对应到库里的动作 (high 预填; uncertain/unmatched 用户确认后回填)
-    var suggestionId: String?      // uncertain 的"猜测" id — 展示 "看起来像 X"
+    var exerciseId: String?        // 解析到的库内动作 (high 完全匹配 / suggested 最佳猜测自动填; unmatched=nil)
     var confidence: Confidence
-    var included: Bool             // 是否计入最终 routine (只有 high 默认 true)
-    enum Confidence: Int { case high, uncertain, unmatched }
+    var included: Bool             // 是否计入最终 routine (high/suggested 默认 true)
+    enum Confidence: Int { case high, suggested, unmatched }
 }
 
 enum RoutineImportResult {
@@ -289,7 +288,7 @@ enum RoutineImageImporter {
         let setsWords = try! NSRegularExpression(pattern: #"(\d{1,2})\s*sets?\b(?:\s*(?:[x×*·]|of)\s*(\d{1,3}))?"#, options: [.caseInsensitive])
         let weightRe = try! NSRegularExpression(pattern: #"(\d+(?:\.\d+)?)\s*(?:kg|公斤|lbs?|磅)"#, options: [.caseInsensitive])
         var out: [ImportCandidate] = []
-        var usedHighIds = Set<String>()
+        var usedIds = Set<String>()
         var lastCandLine = -10
         // 行分组后大多 metrics 已跟名字同行; 但有的 app 把 "3×10 / 60kg" 排在动作名 *上面* 一行,
         // 那个纯数值行回填不到"上一个候选"(还没建) → 暂存, 给下一个建出来的候选用.
@@ -369,21 +368,22 @@ enum RoutineImageImporter {
             }
             let name = cleanName(line)
             var cand: ImportCandidate? = nil
-            if let b = best, b.precision >= 0.999, b.recall >= 0.999, !usedHighIds.contains(b.idx.id) {
-                // high — 行里正好就是这个动作 (核心名全在 + 没多余词) → 默认加入, 用库里规范名展示.
-                usedHighIds.insert(b.idx.id)
-                cand = ImportCandidate(rawName: b.idx.displayName, sets: sets, reps: reps, weight: weight,
-                                       exerciseId: b.idx.id, suggestionId: nil, confidence: .high, included: true)
-            } else if let b = best, b.precision >= 0.5, hasMetrics || W.count >= 2 {
-                // uncertain — 部分匹配且有支撑 → 展示原文 + 猜测, 不默认加.
-                cand = ImportCandidate(rawName: name, sets: sets, reps: reps, weight: weight,
-                                       exerciseId: nil, suggestionId: b.idx.id, confidence: .uncertain, included: false)
+            if let b = best, b.precision >= 0.999, b.recall >= 0.999, !usedIds.contains(b.idx.id) {
+                // high — 行里正好就是这个动作 (核心名全在 + 没多余词) → 默认加入.
+                usedIds.insert(b.idx.id)
+                cand = ImportCandidate(ocrText: name, sets: sets, reps: reps, weight: weight,
+                                       exerciseId: b.idx.id, confidence: .high, included: true)
+            } else if let b = best, b.precision >= 0.5, !usedIds.contains(b.idx.id), hasMetrics || W.count >= 2 {
+                // suggested — 部分匹配 → 自动采用最佳猜测并默认加入; UI 虚线框 + 识别原文 caption + 替换按钮.
+                usedIds.insert(b.idx.id)
+                cand = ImportCandidate(ocrText: name, sets: sets, reps: reps, weight: weight,
+                                       exerciseId: b.idx.id, confidence: .suggested, included: true)
             } else if hasMetrics, substantial(contentWords) {
-                // unmatched — 没好匹配但有组数重量+像样名字 → 提示存为自创动作.
-                cand = ImportCandidate(rawName: name, sets: sets, reps: reps, weight: weight,
-                                       exerciseId: nil, suggestionId: nil, confidence: .unmatched, included: false)
+                // unmatched — 库里没像样匹配 → 默认不勾, 展示识别原文, 用户可替换成库内动作.
+                cand = ImportCandidate(ocrText: name, sets: sets, reps: reps, weight: weight,
+                                       exerciseId: nil, confidence: .unmatched, included: false)
             }
-            if let c = cand, !c.rawName.isEmpty {
+            if let c = cand, !c.ocrText.isEmpty {
                 out.append(c)
                 lastCandLine = i
             }

@@ -191,7 +191,7 @@ struct RoutineReviewSheet: View {
     @State private var committed = false   // 防连点 commit 重复加入
 
     private struct PickTarget: Identifiable { let id: String }
-    private static let amber = Color(red: 0.96, green: 0.72, blue: 0.22)
+    private static let suggestBorder = Color.white.opacity(0.22)   // 浅白色虚线框 — 标记"建议/未确认"
 
     init(candidates: [ImportCandidate], onCommit: @escaping (Plan) -> Void) {
         self.onCommit = onCommit
@@ -199,20 +199,14 @@ struct RoutineReviewSheet: View {
         _routineName = State(initialValue: NSLocalizedString("Imported routine", comment: "imported routine default name"))
     }
 
-    // 动态分组 — 一旦某条被确认 (exerciseId 非空) 就归到 Added.
-    private var added: [ImportCandidate] { candidates.filter { $0.exerciseId != nil } }
-    private var review: [ImportCandidate] { candidates.filter { $0.exerciseId == nil && $0.confidence == .uncertain } }
-    private var unmatched: [ImportCandidate] { candidates.filter { $0.exerciseId == nil && $0.confidence == .unmatched } }
     private var includeCount: Int { candidates.filter { $0.included && $0.exerciseId != nil }.count }
 
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: 20) {
-                    header
-                    if !added.isEmpty { section(NSLocalizedString("ADDED", comment: ""), added.count) { ForEach(added) { addedRow($0) } } }
-                    if !review.isEmpty { section(NSLocalizedString("NEEDS REVIEW", comment: ""), review.count) { ForEach(review) { reviewRow($0) } } }
-                    if !unmatched.isEmpty { section(NSLocalizedString("NOT IN YOUR LIBRARY", comment: ""), unmatched.count) { ForEach(unmatched) { unmatchedRow($0) } } }
+                VStack(alignment: .leading, spacing: 10) {
+                    header.padding(.bottom, 8)
+                    ForEach(candidates) { candidateRow($0) }
                     Color.clear.frame(height: 8)
                 }
                 .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
@@ -246,100 +240,78 @@ struct RoutineReviewSheet: View {
                 .font(.system(size: 24, weight: .bold))
                 .foregroundStyle(MasoColor.text)
                 .textInputAutocapitalization(.words)
-            Text("We added the moves we recognized. Review the rest — confirm, swap, or save as a custom move.")
+            Text("Uncheck anything you don't want. Dashed rows are our best guess — tap replace to swap.")
                 .font(.system(size: 13))
                 .foregroundStyle(MasoColor.textDim)
                 .fixedSize(horizontal: false, vertical: true)
         }
     }
 
-    private func section<Content: View>(_ title: String, _ count: Int, @ViewBuilder _ content: () -> Content) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack(spacing: 6) {
-                Text(title).font(.system(size: 10, weight: .heavy)).tracking(1.5).foregroundStyle(MasoColor.textDim)
-                Text("\(count)").font(.system(size: 10, weight: .heavy)).foregroundStyle(MasoColor.textFaint)
-                Spacer()
-            }
-            content()
-        }
-    }
-
-    // MARK: rows
-
-    private func addedRow(_ c: ImportCandidate) -> some View {
-        HStack(spacing: 12) {
-            Button { toggle(c.id) } label: {
-                Image(systemName: c.included ? "checkmark.circle.fill" : "circle")
+    // MARK: 统一候选行
+    //
+    // high / suggested / unmatched 都是同一种 checkbox 行 (用户都能 uncheck), 区别只在样式:
+    //   high      → 实底, 无 caption, 无替换键.
+    //   suggested → 浅白虚线框 + 识别原文 caption (主文案上方, 轻一级) + 替换键; 默认勾选.
+    //   unmatched → 同 suggested 样式, 但还没对应动作 → 默认不勾, 必须替换后才能加入.
+    private func candidateRow(_ c: ImportCandidate) -> some View {
+        let dashed = c.confidence != .high          // 非完全匹配 → 浅白虚线框 + caption + 替换键
+        let hasEx = c.exerciseId != nil
+        return HStack(spacing: 12) {
+            Button { if hasEx { toggle(c.id) } } label: {
+                Image(systemName: (c.included && hasEx) ? "checkmark.circle.fill" : "circle")
                     .font(.system(size: 22))
-                    .foregroundStyle(c.included ? MasoColor.accent : MasoColor.textFaint)
+                    .foregroundStyle((c.included && hasEx) ? MasoColor.accent : MasoColor.textFaint)
             }
             .buttonStyle(.plain)
+            .disabled(!hasEx)
+
             exImage(c.exerciseId)
-            VStack(alignment: .leading, spacing: 3) {
-                Text(exName(c.exerciseId)).font(.system(size: 14, weight: .semibold)).foregroundStyle(MasoColor.text).lineLimit(1)
-                Text(metricText(c)).font(.system(size: 11).monospacedDigit()).foregroundStyle(MasoColor.textDim).lineLimit(1)
+
+            VStack(alignment: .leading, spacing: 2) {
+                // 识别原文 — 轻一级, 在主文案上方 (只在非完全匹配时显示)
+                if dashed {
+                    Text(c.ocrText)
+                        .font(.system(size: 11))
+                        .foregroundStyle(MasoColor.textFaint)
+                        .lineLimit(1)
+                }
+                // 主文案 — 建议替换的库内动作 (无对应时退回识别原文)
+                Text(hasEx ? exName(c.exerciseId) : c.ocrText)
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundStyle(hasEx ? MasoColor.text : MasoColor.textDim)
+                    .lineLimit(1)
+                Text(metricText(c))
+                    .font(.system(size: 11).monospacedDigit())
+                    .foregroundStyle(MasoColor.textDim)
+                    .lineLimit(1)
             }
             Spacer(minLength: 0)
+
+            if dashed {
+                Button { pickTarget = PickTarget(id: c.id) } label: {
+                    Image(systemName: "arrow.triangle.2.circlepath")
+                        .font(.system(size: 15, weight: .semibold))
+                        .foregroundStyle(MasoColor.textSoft)
+                        .frame(width: 34, height: 34)
+                        .background(MasoColor.surfaceHi)
+                        .clipShape(Circle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(NSLocalizedString("Replace exercise", comment: ""))
+            }
         }
         .padding(.horizontal, 10).padding(.vertical, 8)
         .background(MasoColor.surface)
         .clipShape(RoundedRectangle(cornerRadius: 10))
-        .opacity(c.included ? 1 : 0.45)
+        .overlay {
+            if dashed {
+                RoundedRectangle(cornerRadius: 10)
+                    .strokeBorder(Self.suggestBorder, style: StrokeStyle(lineWidth: 1, dash: [4, 3]))
+            }
+        }
+        .opacity((c.included && hasEx) ? 1 : 0.55)
         .contentShape(Rectangle())
-        .onTapGesture { toggle(c.id) }
-    }
-
-    private func reviewRow(_ c: ImportCandidate) -> some View {
-        VStack(alignment: .leading, spacing: 10) {
-            HStack(alignment: .top, spacing: 8) {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(c.rawName).font(.system(size: 14, weight: .semibold)).foregroundStyle(MasoColor.text).lineLimit(2)
-                    if let sug = c.suggestionId {
-                        Text(String(format: NSLocalizedString("Looks like %@", comment: ""), exName(sug)))
-                            .font(.system(size: 12)).foregroundStyle(Self.amber).lineLimit(1)
-                    }
-                    Text(metricText(c)).font(.system(size: 11).monospacedDigit()).foregroundStyle(MasoColor.textFaint)
-                }
-                Spacer(minLength: 0)
-                dismissButton(c.id)
-            }
-            chipRow {
-                if let sug = c.suggestionId {
-                    actionChip(String(format: NSLocalizedString("Use %@", comment: ""), exName(sug)), filled: true) { resolve(c.id, exerciseId: sug) }
-                }
-                actionChip(NSLocalizedString("Choose", comment: ""), systemImage: "magnifyingglass") { pickTarget = PickTarget(id: c.id) }
-                actionChip(NSLocalizedString("Save as custom", comment: ""), systemImage: "plus") { addCustom(c) }
-            }
-        }
-        .padding(12)
-        .background(MasoColor.surface)
-        .clipShape(RoundedRectangle(cornerRadius: 12))
-        .overlay(
-            RoundedRectangle(cornerRadius: 12)
-                .strokeBorder(Self.amber.opacity(0.55), style: StrokeStyle(lineWidth: 1, dash: [5, 4]))
-        )
-    }
-
-    private func unmatchedRow(_ c: ImportCandidate) -> some View {
-        VStack(alignment: .leading, spacing: 10) {
-            HStack(alignment: .top, spacing: 8) {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(c.rawName).font(.system(size: 14, weight: .semibold)).foregroundStyle(MasoColor.text).lineLimit(2)
-                    Text(NSLocalizedString("Not in your library", comment: "")).font(.system(size: 12)).foregroundStyle(MasoColor.textDim)
-                    Text(metricText(c)).font(.system(size: 11).monospacedDigit()).foregroundStyle(MasoColor.textFaint)
-                }
-                Spacer(minLength: 0)
-                dismissButton(c.id)
-            }
-            chipRow {
-                actionChip(String(format: NSLocalizedString("Save “%@” as custom", comment: ""), c.rawName), systemImage: "plus", filled: true) { addCustom(c) }
-                actionChip(NSLocalizedString("Choose", comment: ""), systemImage: "magnifyingglass") { pickTarget = PickTarget(id: c.id) }
-            }
-        }
-        .padding(12)
-        .background(MasoColor.surface)
-        .clipShape(RoundedRectangle(cornerRadius: 12))
-        .overlay(RoundedRectangle(cornerRadius: 12).strokeBorder(MasoColor.borderSoft, lineWidth: 1))
+        .onTapGesture { if hasEx { toggle(c.id) } }
     }
 
     // MARK: bottom CTA
@@ -367,34 +339,6 @@ struct RoutineReviewSheet: View {
     }
 
     // MARK: small helpers
-
-    private func chipRow<Content: View>(@ViewBuilder _ content: () -> Content) -> some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 8) { content() }
-        }
-    }
-
-    private func actionChip(_ title: String, systemImage: String? = nil, filled: Bool = false, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            HStack(spacing: 4) {
-                if let s = systemImage { Image(systemName: s).font(.system(size: 10, weight: .bold)) }
-                Text(title).font(.system(size: 12, weight: .semibold)).lineLimit(1)
-            }
-            .foregroundStyle(filled ? .black : MasoColor.text)
-            .padding(.horizontal, 10).padding(.vertical, 6)
-            .background(filled ? MasoColor.accent : MasoColor.surfaceHi)
-            .clipShape(Capsule())
-        }
-        .buttonStyle(.plain)
-    }
-
-    private func dismissButton(_ id: String) -> some View {
-        Button { remove(id) } label: {
-            Image(systemName: "xmark").font(.system(size: 11, weight: .bold)).foregroundStyle(MasoColor.textFaint)
-                .frame(width: 24, height: 24)
-        }
-        .buttonStyle(.plain)
-    }
 
     @ViewBuilder private func exImage(_ exerciseId: String?) -> some View {
         if let id = exerciseId, let ex = data.exById[id] {
@@ -432,20 +376,9 @@ struct RoutineReviewSheet: View {
         Haptics.tap()
     }
 
-    private func addCustom(_ c: ImportCandidate) {
-        // 防连点 — 已解析 (含上一次 tap 刚建出的) 就不再造, 否则会在库里留下重名孤儿动作.
-        guard let i = candidates.firstIndex(where: { $0.id == c.id }), candidates[i].exerciseId == nil else { return }
-        let ex = data.createCustomExercise(named: c.rawName)
-        resolve(c.id, exerciseId: ex.id)
-    }
-
     private func toggle(_ id: String) {
         guard let i = candidates.firstIndex(where: { $0.id == id }) else { return }
         candidates[i].included.toggle()
-    }
-
-    private func remove(_ id: String) {
-        candidates.removeAll { $0.id == id }
     }
 
     private func commit() {

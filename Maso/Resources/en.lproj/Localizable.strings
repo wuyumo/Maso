@@ -881,3 +881,5 @@
 "Save “%@” as custom" = "Save “%@” as custom";
 "Select at least one" = "Select at least one";
 "Add %lld to routine" = "Add %lld to routine";
+
+"Uncheck anything you don't want. Dashed rows are our best guess — tap replace to swap." = "Uncheck anything you don't want. Dashed rows are our best guess — tap replace to swap.";
