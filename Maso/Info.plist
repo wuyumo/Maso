@@ -46,8 +46,6 @@
 	<string>$(MASO_CLIENT_TOKEN)</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Masso uses the camera so you can add a selfie to your shareable workout summary.</string>
-	<key>NSHealthShareUsageDescription</key>
-	<string>Masso reads basic workout history from Health to keep your training timeline consistent across devices.</string>
 	<key>NSHealthUpdateUsageDescription</key>
 	<string>Masso saves your completed workouts to Apple Fitness so they appear in your Activity rings and Health timeline.</string>
 	<key>NSPhotoLibraryUsageDescription</key>

@@ -1,6 +1,5 @@
 /* 权限弹窗 purpose strings — 跟 Info.plist 里的英文原文一致.
    有这份 en 文件, zh-Hans 那份才会被系统当作变体生效. */
 "NSCameraUsageDescription" = "Masso uses the camera so you can add a selfie to your shareable workout summary.";
-"NSHealthShareUsageDescription" = "Masso reads basic workout history from Health to keep your training timeline consistent across devices.";
 "NSHealthUpdateUsageDescription" = "Masso saves your completed workouts to Apple Fitness so they appear in your Activity rings and Health timeline.";
 "NSPhotoLibraryUsageDescription" = "Masso reads a photo you pick from your library so you can add it to your shareable workout summary.";

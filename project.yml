@@ -80,6 +80,8 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: com.yumowu.maso
         GENERATE_INFOPLIST_FILE: NO
         INFOPLIST_FILE: Maso/Info.plist
+        # iPhone only — 显式锁死, 否则 xcodegen target 级派生 "1,2" 会让 iPad 跑未测试布局.
+        TARGETED_DEVICE_FAMILY: "1"
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
 
@@ -97,6 +99,9 @@ targets:
         GENERATE_INFOPLIST_FILE: NO
         INFOPLIST_FILE: MasoWidgets/Info.plist
         SKIP_INSTALL: YES
+        # iPhone only — xcodegen 在 target 级会自动派生成 "1,2" 覆盖 project base 的 "1",
+        # 必须在 target 显式锁死, 否则 iPad 跑未测试布局 → 上架审核风险.
+        TARGETED_DEVICE_FAMILY: "1"
         INFOPLIST_KEY_CFBundleDisplayName: Masso Widgets
 
   # watchOS companion app — 训练镜像: 当前动作 / 组数 / 休息倒计时 / 完成组按钮;

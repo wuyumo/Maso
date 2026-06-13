@@ -132,6 +132,7 @@
 		E78F1A3F512D37B2BFA4A286 /* BodyHint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54145EB316E1E581619F6C65 /* BodyHint.swift */; };
 		E7BEFB80EC7A46518E7B59B9 /* InlineWorkoutCalendar.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC7BD7F1CA2B51B8BE76943 /* InlineWorkoutCalendar.swift */; };
 		E7F227189AAF7F9E428F5297 /* MuscleGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 652661E7A8B67B3B7F5E7241 /* MuscleGroup.swift */; };
+		F36F4DB192FD35D5CF1E3EE6 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = EFADF03C8B68C694F394F493 /* PrivacyInfo.xcprivacy */; };
 		F539563C25B1A76F848BE0BC /* LiveActivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31363EC52103D24538FBFF39 /* LiveActivityManager.swift */; };
 		F712495D92EF9A778FC3AA30 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CDA3B6F67C353E227D0E2E8C /* Assets.xcassets */; };
 		FA06AA1CBA552166EE24989A /* 2-shoulders.json in Resources */ = {isa = PBXBuildFile; fileRef = BB71A18FE20FD0FE95951416 /* 2-shoulders.json */; };
@@ -303,6 +304,7 @@
 		E971064231D3F55030DBE2F5 /* WorkoutCalendarScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutCalendarScreen.swift; sourceTree = "<group>"; };
 		EA133CA664EEBFD23357FBF5 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		ED5F46664DB595CE345ED1F9 /* MasoWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasoWatchApp.swift; sourceTree = "<group>"; };
+		EFADF03C8B68C694F394F493 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		F23A1B6576340183A91DC77A /* MasoTrainingLiveActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasoTrainingLiveActivity.swift; sourceTree = "<group>"; };
 		F2980C2BED7FBFC98D717FE6 /* 1b-triceps-supplement.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "1b-triceps-supplement.json"; sourceTree = "<group>"; };
 		F2A600A7E0E002CC5B8B3253 /* WorkoutCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutCard.swift; sourceTree = "<group>"; };
@@ -348,6 +350,7 @@
 				C5831930AC3A940150DBB302 /* Info.plist */,
 				A63705CC4062E59B9B7201A9 /* MasoWatch.entitlements */,
 				ED5F46664DB595CE345ED1F9 /* MasoWatchApp.swift */,
+				EFADF03C8B68C694F394F493 /* PrivacyInfo.xcprivacy */,
 				BF854A389D2582A6CF015F7D /* WatchBridge.swift */,
 				8C75A0DE1EC23A7DCDE065D6 /* WatchViews.swift */,
 				CA721C2F4E32B7402AC2CAA6 /* WatchWorkoutManager.swift */,
@@ -736,6 +739,7 @@
 				8CA66B3BC7C970E107B47B00 /* Assets.xcassets in Resources */,
 				40078C2D70FF7B982CB41B4B /* InfoPlist.strings in Resources */,
 				A773D60F819FB3E5A85683DB /* Localizable.strings in Resources */,
+				F36F4DB192FD35D5CF1E3EE6 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1029,7 +1033,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.yumowu.maso.widgets;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
@@ -1063,7 +1067,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.yumowu.maso.widgets;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -1083,7 +1087,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.yumowu.maso;
 				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
@@ -1119,7 +1123,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.yumowu.maso;
 				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};

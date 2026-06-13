@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  MasoWatch Privacy Manifest — watchOS app 是独立 binary (com.yumowu.maso.watchkitapp),
+  嵌在 .ipa 里; iOS app 的清单不覆盖它, App Store 静态扫描会单独查这个 binary 的
+  Required Reason API 调用 (否则 ITMS-91053 拒上传).
+
+  手表只用到一类 Required Reason API:
+    - System boot time: WatchWorkoutManager / WatchBridge 用 Date() / Timer 算
+      休息倒计时 + session 时长 (底层 mach_absolute_time) → 35F9.1.
+  没用 UserDefaults (CA92.1) / 文件时间戳 (C617.1) / 磁盘空间 / 键盘 — 不声明,
+  避免 over-declare.
+
+  HealthKit (心率 + 卡路里) 不属于 Required Reason API 范畴 (走 usage strings +
+  entitlement), 这里不列.
+-->
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>NSPrivacyTracking</key>
+    <false/>
+
+    <key>NSPrivacyTrackingDomains</key>
+    <array/>
+
+    <key>NSPrivacyCollectedDataTypes</key>
+    <array/>
+
+    <key>NSPrivacyAccessedAPITypes</key>
+    <array>
+        <dict>
+            <key>NSPrivacyAccessedAPIType</key>
+            <string>NSPrivacyAccessedAPICategorySystemBootTime</string>
+            <key>NSPrivacyAccessedAPITypeReasons</key>
+            <array>
+                <string>35F9.1</string>
+            </array>
+        </dict>
+    </array>
+</dict>
+</plist>
