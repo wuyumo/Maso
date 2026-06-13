@@ -64,7 +64,7 @@ struct SplashScreen: View {
                     // image 规模一致 (Apple Fitness / Notes / Mail launch icon 大致这个尺寸).
                     .frame(width: 160, height: 160)
                 VStack(spacing: 8) {
-                    Text("Maso")
+                    Text("Masso")
                         // 28pt bold — iOS HIG Title 1 字号. 比 Large Title (34pt) 小一档,
                         // 跟 logo 视觉比例更平衡, 不抢戏. tracking -0.3 收紧字距让 4 字母一体.
                         .font(.system(size: 28, weight: .bold))

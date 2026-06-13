@@ -2667,7 +2667,7 @@ private struct EditCurrentStepSheet: View {
 
                     // 替换动作 — 单独 section. caller 没传 onReplace 就不显示.
                     // tap → dismiss self → caller 弹 ExercisePickerSheet (异步串接, 让 transition 干净).
-                    if let onReplace {
+                    if onReplace != nil {
                         Section {
                             Button(action: {
                                 // P2-6: 一次性 guard 防双击重复触发; 用 onDisappear 串接 (sheet 真正

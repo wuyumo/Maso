@@ -59,8 +59,8 @@ final class WatchWorkoutManager: NSObject, @unchecked Sendable {
         guard let session, let builder else { return }
         session.end()
         Task {
-            try? await builder.endCollection(at: Date())
-            try? await builder.finishWorkout()
+            _ = try? await builder.endCollection(at: Date())
+            _ = try? await builder.finishWorkout()
             self.session = nil
             self.builder = nil
             await MainActor.run {

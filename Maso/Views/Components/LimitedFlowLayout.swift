@@ -85,7 +85,7 @@ struct LimitedFlowLayout: Layout {
         // 当前行装不下 overflow → 砍最后几个主 pill 让位.
         if truncatedCount > 0 {
             // 重新计算 curX (current 行的占用宽)
-            var lastRowMaxY = curY
+            let lastRowMaxY = curY
             // 找当前 lastRowMaxY 行上所有 pill, 算它们的右端
             var lastRowEnd: CGFloat = 0
             for (idx, pos) in placements where abs(pos.y - lastRowMaxY) < 0.5 {

@@ -101,7 +101,7 @@ private struct LockScreenView: View {
                     .tracking(1.5)
                     .foregroundStyle(.secondary)
                 Spacer()
-                Text("MASO")
+                Text("MASSO")
                     .font(.system(size: 10, weight: .heavy))
                     .tracking(1.5)
                     .foregroundStyle(.secondary)

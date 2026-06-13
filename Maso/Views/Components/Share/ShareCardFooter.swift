@@ -67,7 +67,7 @@ struct SharePhotoBanner: View {
 // 内容: 左侧 App icon + 名称, 右侧 QR placeholder (后期换真 App Store 二维码).
 //
 // 视觉规则:
-//   - 左 App icon 32×32 accent + "MASO" wordmark + tagline
+//   - 左 App icon 32×32 accent + "MASSO" wordmark + tagline
 //   - 右 QR placeholder (36×36 灰底 + qrcode SF symbol)
 //   - 整条 footer 上方有 0.5pt 细分割线, 跟主内容区视觉分割
 struct ShareCardFooter: View {
