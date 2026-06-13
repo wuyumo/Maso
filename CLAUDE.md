@@ -28,10 +28,24 @@
 - push 需要先 `gh auth switch -u wuyumo`(否则 403,默认账号无权限)。
 
 ## 上架前还没做的收尾 (换了 Bundle ID 后)
-- [ ] App Store Connect 建**新 App 记录** `com.yumowu.maso`(旧 `com.maso.app` 上填过的隐私问卷 / HealthKit 声明要在新记录重做)
-- [ ] 内购商品 `com.maso.app.pro.{monthly,yearly,lifetime}` → 在新 App 下重建,代码里 `SubscriptionManager.swift` 的 product ID 改成 `com.yumowu.maso.pro.*`
-- [ ] `Maso/Info.plist` 里 URL scheme 名字残留 `com.maso.app`(纯标识,无功能影响)
-- [ ] 语言收窄到 en + zh-Hans(现有 ~10 种语言缺翻译会 fallback 英文)
+代码侧已就绪(2026-06-13 上线审计批量修复,见 commits bb7f95c 等):
+- [x] product IDs 已是 `com.yumowu.maso.pro.{monthly,yearly,lifetime}`;Maso.storekit 对齐
+- [x] URL scheme = `maso` / CFBundleURLName `com.yumowu.maso`(旧 com.maso.app 已清)
+- [x] 语言收窄 en + zh-Hans(只剩两个 lproj);InfoPlist.strings 本地化
+- [x] 隐私清单: iOS + **MasoWatch** 各一份;iOS 删掉未用的 Health-read 声明(watch 保留)
+- [x] ITSAppUsesNonExemptEncryption=false(三 target);TARGETED_DEVICE_FAMILY=1(iPhone-only)
+- [x] 付费墙合规: 试用按 isEligibleForIntroOffer 显示;disclaimer 明示 auto-renews;Restore 按钮在
+- [x] 法务页在线: wuyumo.github.io/Maso/{terms,privacy-policy}.html 均 200
+- [x] icon 无 alpha 1024(iOS+watch);version 1.0/build 1;launch screen 配好
+**仍需在 ASC / 开发者后台手动做**(代码改不了的):
+- [ ] App Store Connect 建新 App 记录 `com.yumowu.maso`(name "Masso")
+- [ ] 开发者后台给 `com.yumowu.maso` + `.watchkitapp` 勾 HealthKit capability
+- [ ] ASC 建内购: Subscription Group「Masso Pro」+ 2 订阅(monthly/yearly, 7天试用) + 1 lifetime 非消耗;各传审核截图,和首版一起提交
+- [ ] ASC 隐私问卷: Track=No 全部;但训练数据发 AI proxy + 反馈发 formsubmit → 声明 Fitness/User Content (App Functionality, Not Linked)
+- [ ] ASC App Review: HealthKit 用途说明(watch 读心率/能量, 写训练)
+- [ ] ASC 元数据: 描述/关键词/支持URL/隐私政策URL/截图/年龄分级/Health&Fitness 类别
+- [ ] Xcode GUI Archive → Validate → Upload(命令行会卡 No Accounts)
+- [ ] (可选润色) 分享卡占位二维码换真 App Store 链接;补译界面残留英文(空状态/STEP)
 
 ## 工程管理 (xcodegen) — 2026-06-11 起
 - **project.yml 是工程的 source of truth**, 已同步到真实配置 (bundle id / team / device family)。
