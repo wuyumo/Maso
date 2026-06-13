@@ -53,9 +53,9 @@ final class SubscriptionManager {
     // MARK: - Private
 
     /// 后台 Transaction.updates 监听 task.
-    /// nonisolated(unsafe) — SubscriptionManager 整个 app lifetime 都活着 (MasoApp @State),
-    /// deinit 实际上跑不到, 这个标记只是让编译器不抓 deinit / 非 isolated 上下文里的访问.
-    private nonisolated(unsafe) var updateListenerTask: Task<Void, Never>?
+    /// @ObservationIgnored — 它不是 UI 状态 (deinit 里 cancel), 不进 Observation 追踪;
+    /// 也避开 @Observable 对 mutable stored property 加 nonisolated 的限制.
+    @ObservationIgnored private var updateListenerTask: Task<Void, Never>?
 
     /// entitlement 变化时回调 (MasoApp 注入, 写 DataStore).
     private var onEntitlementChange: ((ProSubscription?) -> Void)?

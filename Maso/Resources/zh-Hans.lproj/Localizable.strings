@@ -920,3 +920,19 @@
 "Free for 7 days, then %@ / %@, auto-renews until cancelled. Cancel anytime in Settings." = "免费 7 天，之后 %1$@/%2$@，到期自动续订，可随时在「设置」中取消。";
 "Auto-renewing subscription. Cancel anytime in Settings." = "自动续订订阅，可随时在「设置」中取消。";
 "Best value" = "超值之选";
+
+/* 上线润色: 空状态 / 引导 / 器械选择 英文字面量补译 */
+"No routines yet" = "还没有训练计划";
+"Add AI routines" = "添加 AI 训练计划";
+"No saved routines yet" = "还没有保存的训练计划";
+"Generate one with AI or browse Classics below, then tap Save." = "用 AI 生成一个,或浏览下方的 Classics,然后点保存。";
+"No Classics match these filters." = "没有符合筛选条件的 Classics。";
+"No routines match these filters yet." = "没有符合筛选条件的训练计划。";
+"Tailoring your AI routines…" = "正在为你定制 AI 训练计划…";
+"My Personal AI Trainer" = "我的私人 AI 教练";
+"Pick the equipment your gym has — AI and recommended routines will only use moves you can actually do. Leave empty for no restriction (bodyweight is always available)." = "选择你健身房有的器械——AI 和推荐计划只会用你实际能做的动作。留空则不限制(自重动作始终可用)。";
+"Clear — use all equipment" = "清空——使用所有器械";
+"%@ %@ per side" = "每侧 %1$@ %2$@";
+"Achievable: %@ %@  (off by %@)" = "可达成:%1$@ %2$@(相差 %3$@)";
+"%lld picked" = "已选 %lld 个";
+"+%lld more" = "+%lld 个";

@@ -97,8 +97,10 @@ struct ShareCardFooter: View {
                     }
                 }
                 Spacer()
+                // 只在有真实 payload 时画二维码 (RoutineShareCard 传 maso:// 深链).
+                // 其余卡片没 payload → 不画 — 假占位二维码"扫了能下载"是误导, 扫出来是空的.
+                // App Store 链接出来后给这些卡传固定 https://apps.apple.com/app/id... 即可恢复.
                 if let payload = qrPayload, let qr = ShareQR.image(for: payload) {
-                    // 真二维码 — 白底黑码 (扫描兼容性), 38pt 跟占位同尺寸.
                     Image(uiImage: qr)
                         .interpolation(.none)
                         .resizable()
@@ -106,17 +108,6 @@ struct ShareCardFooter: View {
                         .padding(3)
                         .background(Color.white)
                         .clipShape(RoundedRectangle(cornerRadius: 6))
-                } else {
-                    // QR placeholder — 后期接真 App Store 二维码.
-                    // 视觉给用户"扫了能下载"的暗示, 即使现在 placeholder 也保留位置稳定.
-                    ZStack {
-                        RoundedRectangle(cornerRadius: 6)
-                            .fill(MasoColor.surfaceHi)
-                            .frame(width: 38, height: 38)
-                        Image(systemName: "qrcode")
-                            .font(.system(size: 20, weight: .light))
-                            .foregroundStyle(MasoColor.textDim.opacity(0.55))
-                    }
                 }
             }
             .padding(.horizontal, 20)

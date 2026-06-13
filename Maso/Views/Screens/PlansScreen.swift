@@ -261,7 +261,7 @@ struct PlansScreen: View {
                 ForEach(communityDayOptions, id: \.self) { d in
                     Button { communityDays = d } label: {
                         if communityDays == d { Label("\(d) days/week", systemImage: "checkmark") }
-                        else { Text("\(d) days/week") }
+                        else { Text(String(format: NSLocalizedString("%lld days/wk", comment: ""), d)) }
                     }
                 }
             } label: {

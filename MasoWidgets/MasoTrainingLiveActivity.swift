@@ -114,7 +114,9 @@ private struct LockScreenView: View {
                         .font(.system(size: 18, weight: .bold))
                         .lineLimit(1)
                     if context.state.isRest, let next = context.state.nextExerciseName {
-                        Text("Next: \(next)")
+                        // widget 是独立进程, 没主 app 的语言 swizzle → 跟系统语言走
+                        // (锁屏 Live Activity 用系统语言是 iOS 标准行为).
+                        Text(String(format: NSLocalizedString("Next: %@", comment: "live activity next exercise"), next))
                             .font(.system(size: 11))
                             .foregroundStyle(.secondary)
                             .lineLimit(1)

@@ -60,7 +60,7 @@ struct PlateCalculatorSheet: View {
                             .font(.system(size: 48, weight: .black))
                             .foregroundStyle(MasoColor.text)
                         if abs(remainder) > 0.01 {
-                            Text("Achievable: \(formatWeight(achievableTotal)) \(unit.rawValue)  (off by \(formatWeight(abs(remainder))))")
+                            Text(String(format: NSLocalizedString("Achievable: %@ %@  (off by %@)", comment: ""), formatWeight(achievableTotal), unit.rawValue, formatWeight(abs(remainder))))
                                 .font(.system(size: 12))
                                 .foregroundStyle(MasoColor.negative)
                         }
@@ -190,7 +190,7 @@ struct PlateCalculatorSheet: View {
                     .clipShape(RoundedRectangle(cornerRadius: 8))
                 }
             }
-            Text("\(formatWeight(perSideTotal)) \(unit.rawValue) per side")
+            Text(String(format: NSLocalizedString("%@ %@ per side", comment: ""), formatWeight(perSideTotal), unit.rawValue))
                 .font(.system(size: 11))
                 .foregroundStyle(MasoColor.textFaint)
                 .padding(.top, 4)

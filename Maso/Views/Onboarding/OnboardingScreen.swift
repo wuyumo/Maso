@@ -21,7 +21,7 @@ struct OnboardingScreen: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("STEP \(step) / 3")
+                    Text(String(format: NSLocalizedString("STEP %lld / 3", comment: ""), step))
                         .font(.system(size: 10, weight: .bold)).tracking(2)
                         .foregroundStyle(MasoColor.accent)
                     Text("Tell us about your training")

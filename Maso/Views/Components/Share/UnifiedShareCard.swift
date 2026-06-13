@@ -391,7 +391,7 @@ private struct WorkoutSectionView: View {
                                 .clipShape(Capsule())
                         }
                         if let exc = data.exerciseCount, exc > 4 {
-                            Text("+\(exc - 4) more")
+                            Text(String(format: NSLocalizedString("+%lld more", comment: ""), exc - 4))
                                 .font(.system(size: 11, weight: .semibold))
                                 .foregroundStyle(MasoColor.textDim)
                                 .padding(.horizontal, 10)

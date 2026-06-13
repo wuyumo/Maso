@@ -1,0 +1,2 @@
+/* MasoWidgets Live Activity — widget 独立进程, 没主 app 的语言 swizzle, 跟系统语言走 */
+"Next: %@" = "Next: %@";

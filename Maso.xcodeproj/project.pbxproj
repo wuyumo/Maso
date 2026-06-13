@@ -25,7 +25,6 @@
 		1E75AB0DB92635528D580692 /* TrainingSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D7F0F064D3300FEAAE9ABE8 /* TrainingSession.swift */; };
 		20C953FA7A818738E35FD6F2 /* FeedbackStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354F3329C6D8C991F0297879 /* FeedbackStore.swift */; };
 		21EE6684F038A29EB4A5DB01 /* TrainingActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E94E7A863D7DD87C5C4EB7D /* TrainingActivityAttributes.swift */; };
-		2324A448250B66057A9A3101 /* WatchSyncState.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE59B444C526563898C5F1B5 /* WatchSyncState.swift */; };
 		26947FA4559E9CCC47AF90D7 /* _review-queue-decisions.json in Resources */ = {isa = PBXBuildFile; fileRef = A312E7F5CEA8FACE3E0183FA /* _review-queue-decisions.json */; };
 		2911B010C07D8A9CE402F8A1 /* CommunityPlans.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4CD0A6C911CC31064AFC8D4 /* CommunityPlans.swift */; };
 		295AC2CEBA8187E2ECECB643 /* ShareImageRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23B6D56681E2D7861F4E5E2 /* ShareImageRenderer.swift */; };
@@ -33,6 +32,7 @@
 		29FB1C6513BECACF4FED08D5 /* WatchSyncManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39B0ED7125E3D12AB47C8D52 /* WatchSyncManager.swift */; };
 		2A8850718E62ACE893EEF2D8 /* AnimeBodyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7546A6BF24D431EDFC2405E6 /* AnimeBodyView.swift */; };
 		2B7135D783046C4EAEF60FA4 /* SessionPersistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 291EB7D06E7999D43C70577F /* SessionPersistence.swift */; };
+		2CA0BA9D5B19CC61336C6B22 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = AB7C9BA46E401E4602116ADA /* Localizable.strings */; };
 		2D2BA8727CE9F97CB82972D4 /* SpeechManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3901E5D4EB6430B5A6682418 /* SpeechManager.swift */; };
 		2D3A7A870943A8CCBA2F97AD /* _orphan-old-exercises.md in Resources */ = {isa = PBXBuildFile; fileRef = 78E9AE6303C3221E696A4367 /* _orphan-old-exercises.md */; };
 		2E01B7CC1D7C6DEF94C4618B /* MuscleMapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1545AEA651F97CD56E65D4E5 /* MuscleMapping.swift */; };
@@ -60,6 +60,7 @@
 		5F64262B4143CB2032821AC5 /* 4-legs.json in Resources */ = {isa = PBXBuildFile; fileRef = 3B81F5BBF4E68644835BBCE7 /* 4-legs.json */; };
 		6076960B399F6AEE4BE34B89 /* HistoryScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 604E1A67DFCA8AEA8D2EB767 /* HistoryScreen.swift */; };
 		646C03A757E2E933B14C2673 /* MasoWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED5F46664DB595CE345ED1F9 /* MasoWatchApp.swift */; };
+		6617A19E1CBB579C44E72988 /* WatchSyncState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 488DC55B655AADC17C698B17 /* WatchSyncState.swift */; };
 		675F46DE13174897BC8316A7 /* LanguageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9791F0998275E09C5575AD /* LanguageManager.swift */; };
 		688D1CA5D81E668665F0EBC6 /* DataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEB924488C05EA5A27B8B504 /* DataStore.swift */; };
 		692DD540E336629461989253 /* SwipeableRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A36C4336039446730B6DF52 /* SwipeableRow.swift */; };
@@ -69,6 +70,7 @@
 		73731653E1B5D8523F41DFA4 /* ExerciseLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32577D31F28D36498F96BE6B /* ExerciseLibrary.swift */; };
 		73A663C1917B312B7D2AE66C /* LimitedFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFBD3B16C9810A2419F041FA /* LimitedFlowLayout.swift */; };
 		7569DFE706941F606D7A84A0 /* SessionShareCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FAF7A7E839EEE640A8B4CC9 /* SessionShareCard.swift */; };
+		76A76DECC357DFBC845C880C /* WatchSyncState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 488DC55B655AADC17C698B17 /* WatchSyncState.swift */; };
 		76F9805CDA3E261CA146C7A5 /* AIWorkoutService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A869CB4AC4EF2FD9CFD9D31C /* AIWorkoutService.swift */; };
 		78847633826CBE7F80F82523 /* PlanShareCodec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18A4AE1F41CAA38374E02E4A /* PlanShareCodec.swift */; };
 		7F99DAA5C4425C59687E0ED0 /* ShareImageButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFAD46757159C0D547E762E2 /* ShareImageButton.swift */; };
@@ -83,7 +85,6 @@
 		919C25BB4DF2299218BEEE94 /* TimelineBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = F96CC6B018F159D5FA8FE982 /* TimelineBar.swift */; };
 		94726ECFE4CED09904E4FBA1 /* Exercise.swift in Sources */ = {isa = PBXBuildFile; fileRef = D77C73F79BDCE3D7C90EF2C7 /* Exercise.swift */; };
 		94D4CE6164253560EE728358 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA133CA664EEBFD23357FBF5 /* Colors.swift */; };
-		9533FB4F8E60946E0CAA15D5 /* WatchSyncState.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE59B444C526563898C5F1B5 /* WatchSyncState.swift */; };
 		95676F299C926544BE383ED7 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C987F88D32D400102494F9EC /* RootView.swift */; };
 		9589422FFA8A7F9B610997B4 /* UnifiedShareCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56E05CE78F6F538104992F20 /* UnifiedShareCard.swift */; };
 		95E99052293069BEA6956C93 /* WorkoutCompleteShareCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4643C30D54A587474C3ED458 /* WorkoutCompleteShareCard.swift */; };
@@ -216,6 +217,7 @@
 		442FF14A64291FEEEC144E6F /* ExerciseNames.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ExerciseNames.strings; path = "zh-Hans.lproj/ExerciseNames.strings"; sourceTree = "<group>"; };
 		4643C30D54A587474C3ED458 /* WorkoutCompleteShareCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutCompleteShareCard.swift; sourceTree = "<group>"; };
 		46F5A1F003F42B241567962B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		488DC55B655AADC17C698B17 /* WatchSyncState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchSyncState.swift; sourceTree = "<group>"; };
 		4A2FC82B09BFE985CB928FDB /* TodayScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayScreen.swift; sourceTree = "<group>"; };
 		4AA4A06581D27DA14D0FDE78 /* OnboardingScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingScreen.swift; sourceTree = "<group>"; };
 		4C0ABD6ABBC04D5462687B22 /* AddExerciseSheets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddExerciseSheets.swift; sourceTree = "<group>"; };
@@ -249,6 +251,7 @@
 		78E9AE6303C3221E696A4367 /* _orphan-old-exercises.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "_orphan-old-exercises.md"; sourceTree = "<group>"; };
 		7D7F0F064D3300FEAAE9ABE8 /* TrainingSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingSession.swift; sourceTree = "<group>"; };
 		7DD9BAA3FD1E35EC871F4DEC /* SplashScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreen.swift; sourceTree = "<group>"; };
+		806284849E050B355DF8A75D /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		80FD6F69FE62071220B54EDF /* MasoBrandLogo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasoBrandLogo.swift; sourceTree = "<group>"; };
 		81EFCAD8ECDFB89EADB9B3E8 /* TabBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarView.swift; sourceTree = "<group>"; };
 		8483DD8A4BDD8AB4DACB82D4 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -286,7 +289,6 @@
 		CA786C2BA3CB3ED1D9264315 /* _anatomy-research.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "_anatomy-research.md"; sourceTree = "<group>"; };
 		CC12963E5718515334FAF5A8 /* QuickWorkoutScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickWorkoutScreen.swift; sourceTree = "<group>"; };
 		CDA3B6F67C353E227D0E2E8C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		CE59B444C526563898C5F1B5 /* WatchSyncState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchSyncState.swift; sourceTree = "<group>"; };
 		CED9025409401C575B180D72 /* 3-back-biceps-forearms.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "3-back-biceps-forearms.json"; sourceTree = "<group>"; };
 		CEEE409128074A2BE3999170 /* Anatomy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Anatomy.swift; sourceTree = "<group>"; };
 		CFD21DF2E0041A5BFFACB388 /* MuscleStatusOverviewCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuscleStatusOverviewCard.swift; sourceTree = "<group>"; };
@@ -298,6 +300,7 @@
 		DC6C8F3E62397B3CADF62790 /* MuscleStatusComputed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuscleStatusComputed.swift; sourceTree = "<group>"; };
 		DE94CDA9C13C06FBE6DD8572 /* PlanSegments.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanSegments.swift; sourceTree = "<group>"; };
 		DFBD3B16C9810A2419F041FA /* LimitedFlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LimitedFlowLayout.swift; sourceTree = "<group>"; };
+		E097C6FBEC7E44DBC847FEF6 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		E392D3BCA567E27D36082C9C /* FilterMenuButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterMenuButton.swift; sourceTree = "<group>"; };
 		E4CD0A6C911CC31064AFC8D4 /* CommunityPlans.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityPlans.swift; sourceTree = "<group>"; };
 		E6BB99772BABDEBDE4A63981 /* Maso.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Maso.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -356,18 +359,8 @@
 				CA721C2F4E32B7402AC2CAA6 /* WatchWorkoutManager.swift */,
 				85E7D9A5584A6797544E11DF /* InfoPlist.strings */,
 				A578A5A0DF210CB2E7E2B4DD /* Localizable.strings */,
-				1ED84F1B15D63A3A192A0D98 /* Shared */,
 			);
 			path = MasoWatch;
-			sourceTree = "<group>";
-		};
-		1ED84F1B15D63A3A192A0D98 /* Shared */ = {
-			isa = PBXGroup;
-			children = (
-				CE59B444C526563898C5F1B5 /* WatchSyncState.swift */,
-			);
-			name = Shared;
-			path = MasoWatch/Shared;
 			sourceTree = "<group>";
 		};
 		20AC45277040F8992D7D0742 /* Data */ = {
@@ -497,7 +490,7 @@
 				F75C4FAD9C84A32FC08E329D /* Maso */,
 				15C2F02B3E6B83438A133022 /* MasoWatch */,
 				B1AC4483354FC2E37F33ACD0 /* MasoWidgets */,
-				1ED84F1B15D63A3A192A0D98 /* Shared */,
+				FA41374DFD16E2719CDF6607 /* Shared */,
 				240F276C4191EBDCF42E93A8 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -578,6 +571,7 @@
 				8BDFF5A1E76EC5EEC94DEE3E /* Info.plist */,
 				F23A1B6576340183A91DC77A /* MasoTrainingLiveActivity.swift */,
 				71828AB12DF85E9E6B7E3650 /* MasoWidgetsBundle.swift */,
+				AB7C9BA46E401E4602116ADA /* Localizable.strings */,
 			);
 			path = MasoWidgets;
 			sourceTree = "<group>";
@@ -619,6 +613,15 @@
 			path = Maso;
 			sourceTree = "<group>";
 		};
+		FA41374DFD16E2719CDF6607 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				488DC55B655AADC17C698B17 /* WatchSyncState.swift */,
+			);
+			name = Shared;
+			path = MasoWatch/Shared;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -645,6 +648,7 @@
 			buildConfigurationList = C95CDA834D1005B742FF88D7 /* Build configuration list for PBXNativeTarget "MasoWidgets" */;
 			buildPhases = (
 				454916B322668C682D87C113 /* Sources */,
+				431AC0C5152A2922E4C3B064 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -740,6 +744,14 @@
 				40078C2D70FF7B982CB41B4B /* InfoPlist.strings in Resources */,
 				A773D60F819FB3E5A85683DB /* Localizable.strings in Resources */,
 				F36F4DB192FD35D5CF1E3EE6 /* PrivacyInfo.xcprivacy in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		431AC0C5152A2922E4C3B064 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2CA0BA9D5B19CC61336C6B22 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -876,7 +888,7 @@
 				C53D75F8EAA9D73AA902C910 /* TrainingSettingsSection.swift in Sources */,
 				9589422FFA8A7F9B610997B4 /* UnifiedShareCard.swift in Sources */,
 				29FB1C6513BECACF4FED08D5 /* WatchSyncManager.swift in Sources */,
-				2324A448250B66057A9A3101 /* WatchSyncState.swift in Sources */,
+				76A76DECC357DFBC845C880C /* WatchSyncState.swift in Sources */,
 				30768B59B80E718006BC449F /* WeeklyFrequencyShareCard.swift in Sources */,
 				073B17B64DFD1C33740E76AB /* WorkoutCalendarScreen.swift in Sources */,
 				BB29ABF8E0E2590167AEA372 /* WorkoutCard.swift in Sources */,
@@ -890,7 +902,7 @@
 			files = (
 				646C03A757E2E933B14C2673 /* MasoWatchApp.swift in Sources */,
 				58B55D526157588452E3D831 /* WatchBridge.swift in Sources */,
-				9533FB4F8E60946E0CAA15D5 /* WatchSyncState.swift in Sources */,
+				6617A19E1CBB579C44E72988 /* WatchSyncState.swift in Sources */,
 				38D1739297A938C766CE3B89 /* WatchViews.swift in Sources */,
 				CF0DF500D090FE778C2DE542 /* WatchWorkoutManager.swift in Sources */,
 			);
@@ -935,6 +947,15 @@
 			children = (
 				8483DD8A4BDD8AB4DACB82D4 /* en */,
 				1C9BB0841A68AEC18B9A2EA2 /* zh-Hans */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		AB7C9BA46E401E4602116ADA /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				E097C6FBEC7E44DBC847FEF6 /* en */,
+				806284849E050B355DF8A75D /* zh-Hans */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";

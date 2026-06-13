@@ -919,3 +919,19 @@
 "Free for 7 days, then %@ / %@, auto-renews until cancelled. Cancel anytime in Settings." = "Free for 7 days, then %@ / %@, auto-renews until cancelled. Cancel anytime in Settings.";
 "Auto-renewing subscription. Cancel anytime in Settings." = "Auto-renewing subscription. Cancel anytime in Settings.";
 "Best value" = "Best value";
+
+/* 上线润色: 空状态 / 引导 / 器械选择 英文字面量补译 */
+"No routines yet" = "No routines yet";
+"Add AI routines" = "Add AI routines";
+"No saved routines yet" = "No saved routines yet";
+"Generate one with AI or browse Classics below, then tap Save." = "Generate one with AI or browse Classics below, then tap Save.";
+"No Classics match these filters." = "No Classics match these filters.";
+"No routines match these filters yet." = "No routines match these filters yet.";
+"Tailoring your AI routines…" = "Tailoring your AI routines…";
+"My Personal AI Trainer" = "My Personal AI Trainer";
+"Pick the equipment your gym has — AI and recommended routines will only use moves you can actually do. Leave empty for no restriction (bodyweight is always available)." = "Pick the equipment your gym has — AI and recommended routines will only use moves you can actually do. Leave empty for no restriction (bodyweight is always available).";
+"Clear — use all equipment" = "Clear — use all equipment";
+"%@ %@ per side" = "%@ %@ per side";
+"Achievable: %@ %@  (off by %@)" = "Achievable: %@ %@  (off by %@)";
+"%lld picked" = "%lld picked";
+"+%lld more" = "+%lld more";

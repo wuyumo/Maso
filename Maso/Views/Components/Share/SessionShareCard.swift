@@ -73,7 +73,7 @@ struct SessionShareCard: View {
                                 .clipShape(Capsule())
                         }
                         if session.exerciseCount > 4 {
-                            Text("+\(session.exerciseCount - 4) more")
+                            Text(String(format: NSLocalizedString("+%lld more", comment: ""), session.exerciseCount - 4))
                                 .font(.system(size: 11, weight: .semibold))
                                 .foregroundStyle(MasoColor.textDim)
                                 .padding(.horizontal, 10)

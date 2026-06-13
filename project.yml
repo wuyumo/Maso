@@ -112,7 +112,12 @@ targets:
     platform: watchOS
     deploymentTarget: "11.0"
     sources:
+      # Shared 单独引 (跟 Maso target 用同一路径串引它) — 否则 Shared 同时挂在 "MasoWatch"
+      # 组和根组下, xcodegen 报 "member of multiple groups" warning.
       - path: MasoWatch
+        excludes:
+          - Shared
+      - path: MasoWatch/Shared
     entitlements:
       path: MasoWatch/MasoWatch.entitlements
       properties:

@@ -79,7 +79,7 @@ struct QuickWorkoutScreen: View {
 
             Spacer()
             VStack(spacing: 2) {
-                Text("STEP \(step) / 2")
+                Text(String(format: NSLocalizedString("STEP %lld / 2", comment: ""), step))
                     .font(.system(size: 9, weight: .heavy))
                     .tracking(2)
                     .foregroundStyle(MasoColor.accent)
@@ -743,7 +743,7 @@ private struct QuickExerciseStep: View {
             Spacer()
             let pickedInThisMuscle = pickedIds.intersection(Set(topExercises(for: muscle).map { $0.exercise.id })).count
             if pickedInThisMuscle > 0 {
-                Text("\(pickedInThisMuscle) picked")
+                Text(String(format: NSLocalizedString("%lld picked", comment: ""), pickedInThisMuscle))
                     .font(.system(size: 10, weight: .bold))
                     .foregroundStyle(MasoColor.textDim)
             }
