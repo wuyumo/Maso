@@ -889,7 +889,6 @@
 "Volume" = "训练量";
 "Share this week" = "分享本周";
 "Share this month" = "分享本月";
-"This Week" = "本周";
 "This Month" = "本月";
 
 /* Watch 镜像 detail 行 */
@@ -917,3 +916,7 @@
 "Recognized “%@”" = "识别出“%@”";
 "%lld reps" = "%lld 次";
 "3 sets · default" = "默认 3 组";
+"%@ / %@, auto-renews until cancelled. Cancel anytime in Settings." = "%1$@/%2$@，到期自动续订，可随时在「设置」中取消。";
+"Free for 7 days, then %@ / %@, auto-renews until cancelled. Cancel anytime in Settings." = "免费 7 天，之后 %1$@/%2$@，到期自动续订，可随时在「设置」中取消。";
+"Auto-renewing subscription. Cancel anytime in Settings." = "自动续订订阅，可随时在「设置」中取消。";
+"Best value" = "超值之选";

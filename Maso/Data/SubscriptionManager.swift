@@ -114,6 +114,17 @@ final class SubscriptionManager {
         return products.first(where: { $0.id == id })
     }
 
+    /// 该 tier 当前用户是否还有资格领取 introductory offer (7 天试用).
+    /// 关键: introductoryOffer != nil 只说明"产品配了试用", 不代表"此人能领" —— 续订/已用过
+    /// 试用的用户领不到, 给他们看"免费试用"会被立即扣费 (2.3.2/3.1.2 拒审 + 退款投诉).
+    /// 非订阅 (lifetime) / 无试用配置 / 无网 → false.
+    func isEligibleForIntroOffer(_ tier: SubscriptionTier) async -> Bool {
+        guard tier != .lifetime,
+              let sub = product(for: tier)?.subscription,
+              sub.introductoryOffer != nil else { return false }
+        return await sub.isEligibleForIntroOffer
+    }
+
     // MARK: - Purchase
 
     /// 购买入口 — 返回 true 表示成功且已写 entitlement; false 表示用户取消 / pending / 失败.

@@ -24,6 +24,9 @@ struct PaywallScreen: View {
     @State private var processing: Bool = false
     @State private var showConfirm: Bool = false
     @State private var errorAlertShown: Bool = false
+    /// 有资格领 7 天试用的 tier — 异步从 StoreKit 查 (续订/已用过试用的用户领不到).
+    /// 空 = 还没查到 / 都没资格 → 文案回落到 "Subscribe / auto-renews", 不显示试用.
+    @State private var introEligible: Set<SubscriptionTier> = []
 
     // Legal URLs — 部署在 GitHub Pages 上 (repo: wuyumo/Maso, source: docs/ on main branch).
     // Markdown 源文件: docs/privacy-policy.md, docs/terms.md. Jekyll 自动渲染成 .html.
@@ -86,6 +89,12 @@ struct PaywallScreen: View {
             if subs.products.isEmpty {
                 await subs.loadProducts()
             }
+            // 查试用资格 — 只对订阅档. 决定 CTA / 免责声明显不显示"7 天免费".
+            var eligible = Set<SubscriptionTier>()
+            for tier in [SubscriptionTier.monthly, .yearly] where await subs.isEligibleForIntroOffer(tier) {
+                eligible.insert(tier)
+            }
+            introEligible = eligible
         }
     }
 
@@ -193,8 +202,9 @@ struct PaywallScreen: View {
     private var ctaTitle: String {
         switch selectedPlan {
         case .monthly, .yearly:
-            // 如果 StoreKit product 有 introductoryOffer 就显示 trial 文案
-            if let p = subs.product(for: selectedPlan), p.subscription?.introductoryOffer != nil {
+            // 只有"此用户确实有资格"才显示试用文案 — 续订/已用过试用的人领不到,
+            // 给他看 "免费试用" 会被立即扣费 (2.3.2/3.1.2 拒审).
+            if introEligible.contains(selectedPlan) {
                 return NSLocalizedString("Start 7-day free trial", comment: "")
             }
             // product 还没 load 出来 (无网/StoreKit 初始化中) → 不拼空价格 "Subscribe for ",
@@ -235,19 +245,31 @@ struct PaywallScreen: View {
                 .multilineTextAlignment(.center)
         } else {
             // displayPrice 是 locale-aware 的, 比硬编码 $4.99 更准.
-            // 没 load product 时回落到无价格的简版.
+            // 有试用资格 → "免费 7 天后转付费, 自动续订"; 无资格 (续订/用过) → 直接"自动续订".
+            // 两条都带 "auto-renews" 字样 (App Store 订阅必须明示自动续订).
+            let periodLabel = selectedPlan == .monthly ? "month" : "year"
             if let p = subs.product(for: selectedPlan) {
-                let periodLabel = selectedPlan == .monthly ? "month" : "year"
-                Text(String(
-                    format: NSLocalizedString("Free for 7 days, then %@ / %@. Cancel anytime in Settings.", comment: ""),
-                    p.displayPrice,
-                    NSLocalizedString(periodLabel, comment: "")
-                ))
-                .font(.system(size: 11))
-                .foregroundStyle(MasoColor.textFaint)
-                .multilineTextAlignment(.center)
+                if introEligible.contains(selectedPlan) {
+                    Text(String(
+                        format: NSLocalizedString("Free for 7 days, then %@ / %@, auto-renews until cancelled. Cancel anytime in Settings.", comment: ""),
+                        p.displayPrice,
+                        NSLocalizedString(periodLabel, comment: "")
+                    ))
+                    .font(.system(size: 11))
+                    .foregroundStyle(MasoColor.textFaint)
+                    .multilineTextAlignment(.center)
+                } else {
+                    Text(String(
+                        format: NSLocalizedString("%@ / %@, auto-renews until cancelled. Cancel anytime in Settings.", comment: ""),
+                        p.displayPrice,
+                        NSLocalizedString(periodLabel, comment: "")
+                    ))
+                    .font(.system(size: 11))
+                    .foregroundStyle(MasoColor.textFaint)
+                    .multilineTextAlignment(.center)
+                }
             } else {
-                Text("Free for 7 days, then auto-renews. Cancel anytime in Settings.")
+                Text("Auto-renewing subscription. Cancel anytime in Settings.")
                     .font(.system(size: 11))
                     .foregroundStyle(MasoColor.textFaint)
                     .multilineTextAlignment(.center)
@@ -390,7 +412,8 @@ private struct PlanCard: View {
     private var detail: String {
         switch tier {
         case .monthly:  return "Billed monthly"
-        case .yearly:   return "Save 50%"
+        // 不写死 "Save 50%" — 各区定价不一定正好 5 折, 数字声明对不上会被审核挑.
+        case .yearly:   return "Best value"
         case .lifetime: return "Pay once, own it"
         }
     }

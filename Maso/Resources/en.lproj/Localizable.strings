@@ -888,7 +888,6 @@
 "Volume" = "Volume";
 "Share this week" = "Share this week";
 "Share this month" = "Share this month";
-"This Week" = "This Week";
 "This Month" = "This Month";
 
 /* Watch 镜像 detail 行 */
@@ -916,3 +915,7 @@
 "Recognized “%@”" = "Recognized “%@”";
 "%lld reps" = "%lld reps";
 "3 sets · default" = "3 sets · default";
+"%@ / %@, auto-renews until cancelled. Cancel anytime in Settings." = "%@ / %@, auto-renews until cancelled. Cancel anytime in Settings.";
+"Free for 7 days, then %@ / %@, auto-renews until cancelled. Cancel anytime in Settings." = "Free for 7 days, then %@ / %@, auto-renews until cancelled. Cancel anytime in Settings.";
+"Auto-renewing subscription. Cancel anytime in Settings." = "Auto-renewing subscription. Cancel anytime in Settings.";
+"Best value" = "Best value";
