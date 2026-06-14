@@ -27,6 +27,9 @@ struct WorkoutCard: View {
     /// Today's Workout 主卡专用 — true → accent 描边 + 绿色辉光, 跟弱化的 My Plans 计划卡拉开视觉层级
     /// (两者之前样式几乎一样, 容易混淆).
     var emphasized: Bool = false
+    /// 右下角 play 圆钮是否显示. false → 不显示 (点卡片进详情页再 Start).
+    /// Routines tab 的 Saved 计划卡用 false — 那语境主操作是"查看/管理计划", 不是即时开练.
+    var showStart: Bool = true
 
     /// 被 LimitedFlowLayout 截断的 exercise pill 个数 — 用于动态构造 "+N more" 文案.
     /// Layout 在 placeSubviews 里通过 onTruncate callback async 写回, SwiftUI 下一轮 re-render
@@ -191,7 +194,8 @@ struct WorkoutCard: View {
                 }
 
                 // Tab 2 browse (addAction 非 nil): play 圆钮隐藏, 主操作改为底部全宽"添加"按钮.
-                if addAction == nil {
+                // showStart=false (Saved 计划卡): 也隐藏 play 钮, 点卡片进详情页 Start.
+                if addAction == nil && showStart {
                     Button(action: onStart) {
                         ZStack {
                             if prominentStart {

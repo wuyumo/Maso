@@ -35,5 +35,9 @@
 	<string>Masso shows your live heart rate during workouts.</string>
 	<key>NSHealthUpdateUsageDescription</key>
 	<string>Masso saves watch workouts to Apple Health so they count toward your Activity rings.</string>
+	<key>WKBackgroundModes</key>
+	<array>
+		<string>workout-processing</string>
+	</array>
 </dict>
 </plist>

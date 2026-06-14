@@ -40,6 +40,10 @@
 "Sets" = "组数";
 "Exercises count" = "动作";
 "Volume kg" = "容量 kg";
+"%lld days/wk" = "每周 %lld 天";
+"%lld days/week" = "每周 %lld 天";
+"Couldn't create share link" = "无法生成分享链接";
+"“%@” will be removed from this workout. Past records are kept." = "“%@” 会从这个训练里移除,过往记录保留。";
 "Shared workout" = "分享的训练";
 "Reps" = "次数";
 "Weight" = "重量";

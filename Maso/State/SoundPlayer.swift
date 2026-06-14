@@ -16,9 +16,9 @@ final class SoundPlayer {
 
     private let engine = AVAudioEngine()
     private let player = AVAudioPlayerNode()
-    /// 当前 setComplete 音色: "发送成功"风格上行二音 (G5 → D6, perfect fifth).
-    /// 替代旧 chime (C6+G6+C7 钟形和声) — 钟声偏"任务完成", 上行音更像 iMessage send,
-    /// 给用户"这一组发出去了"的语义感.
+    /// 当前 setComplete 音色: "任务完成 / 打钩"感的上行大三和弦琶音 (C6 → E6 → G6, do-mi-sol).
+    /// 三音快速上行后收在最高音 (G6) 并多响一会 = "解决/收束"感; 每音叠一层八度泛音给钟铃微光.
+    /// 比旧的 iMessage 单跳 (G5→D6) 更有"✓ 这组搞定了"的成就/收尾感.
     private var setCompleteBuffer: AVAudioPCMBuffer?
     private var enterRestBuffer: AVAudioPCMBuffer?
     private var restEndedBuffer: AVAudioPCMBuffer?
@@ -47,10 +47,9 @@ final class SoundPlayer {
         let format = AVAudioFormat(standardFormatWithSampleRate: 44100, channels: 2)!
         engine.connect(player, to: engine.mainMixerNode, format: format)
 
-        // set-complete: "发送成功"风格上行二音 (G5 → D6, perfect fifth, ~210ms).
-        // 类似 iMessage send sound — 短上行 pitch sweep, 给"发出去了"的语义感.
-        // 比旧 chime 更"前进感", 庆祝但不浮夸; 跟 rest-ended (E5→A5) 区分明显 (距离更大, 更亮).
-        setCompleteBuffer = generateSendSuccess(format: format)
+        // set-complete: "任务完成 / 打钩"感的上行大三和弦琶音 (C6→E6→G6, ~340ms).
+        // do-mi-sol 快速上行收在 G6 = 明确的"解决/收尾"感; 比旧 iMessage 单跳更有成就感.
+        setCompleteBuffer = generateTaskComplete(format: format)
 
         // enter-rest: 比 set-complete 更柔, 给"该歇一歇"的氛围 — 下行小三度 (E5 → C5),
         // 长 attack 12ms 进音慢, 衰减 8 (中速).
@@ -68,24 +67,18 @@ final class SoundPlayer {
         }
     }
 
-    /// 生成"发送成功"风格上行二音 — 类似 iMessage send sound.
-    /// 设计意图: 给用户"这一组发出去了"的语义感, 而不是钟形"任务完成"感. 短上行音 + 干净.
+    /// 生成"任务完成 / 打钩"感的上行大三和弦琶音 — do-mi-sol (C6→E6→G6).
+    /// 设计意图: 三个音快速错峰上行、最后收在最高音 (G6) 并多 ring 一会 → 明确的"解决/收尾"感,
+    /// 就是"完成任务打个钩"的成就声. 每音叠一层八度泛音 (×2) 给钟铃般的微光.
     ///
-    /// 频率:
-    ///   - 起音 G5 (783.99 Hz) — 中音, 进音温和
-    ///   - 终音 D6 (1174.66 Hz) — 上行 perfect fifth, 跳跃感明显
-    ///   - 二倍泛音 (1.5×) — 提供"明亮"感, 但音量低 (0.15) 不抢主声
-    ///
-    /// 包络:
-    ///   - attack 3ms (清晰但不刺耳)
-    ///   - decay 12 (中速衰减, 200ms 内自然消失)
-    ///
-    /// blend:
-    ///   - 前 50% 时间 G5 主导, 50% 转折点切到 D6
-    ///   - 跟 rest-ended (E5→A5 perfect fourth) 区分明显: 距离更大, 终音更亮
-    private func generateSendSuccess(format: AVAudioFormat) -> AVAudioPCMBuffer? {
+    /// 结构:
+    ///   - 3 个音错峰起音 (0 / 55ms / 110ms), 后音在前音还在响时切入 → 琶音上行感 + 末尾叠成和弦
+    ///   - 末音 G6 衰减更慢 (decay 7 vs 11) → 多 ring 一会, 给"落定"感
+    ///   - 每音: 基频 + 八度泛音 (0.18 音量, 钟铃亮度), 快 attack 4ms (清脆不刺)
+    ///   - 总时长 ~340ms — 比旧单跳 (210ms) 略长但有"完成"分量, 单组重复也不腻
+    private func generateTaskComplete(format: AVAudioFormat) -> AVAudioPCMBuffer? {
         let sampleRate = format.sampleRate
-        let durationSeconds = 0.21
+        let durationSeconds = 0.34
         let frameCount = AVAudioFrameCount(sampleRate * durationSeconds)
         guard let buf = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: frameCount) else { return nil }
         buf.frameLength = frameCount
@@ -93,24 +86,28 @@ final class SoundPlayer {
         let chL = buf.floatChannelData![0]
         let chR = buf.floatChannelData![1]
 
-        let f1 = 783.99    // G5 (起音)
-        let f2 = 1174.66   // D6 (终音, 上行 perfect fifth)
+        // C 大三和弦琶音 (do-mi-sol), 落在 G6 = 明亮稳定的收束.
+        struct Note { let freq: Double; let start: Double; let decay: Double }
+        let notes = [
+            Note(freq: 1046.50, start: 0.000, decay: 11),  // C6 (do)
+            Note(freq: 1318.51, start: 0.055, decay: 11),  // E6 (mi)
+            Note(freq: 1567.98, start: 0.110, decay: 7),   // G6 (sol) — 落定, ring 更长
+        ]
 
         for i in 0..<Int(frameCount) {
             let t = Double(i) / sampleRate
-            // attack 3ms 清晰起音, decay 12 中速衰减
-            let attack = min(1.0, t / 0.003)
-            let decay = exp(-t * 12)
-            let env = attack * decay
-
-            // f1 → f2 快速转折, 50% 处切换 (linear blend, 转折锐利, 听起来像"jump up"而非 sweep)
-            let blend = min(1.0, t / durationSeconds / 0.5)
-            let s1 = sin(2 * .pi * f1 * t) * (1 - blend) * 0.55
-            let s2 = sin(2 * .pi * f2 * t) * blend * 0.55
-            // 二倍泛音 — 给点"明亮"感, 跟着 f2 走 (前半静默, 后半带亮)
-            let s3 = sin(2 * .pi * (f2 * 1.5) * t) * blend * 0.15
-
-            let sample = Float((s1 + s2 + s3) * env * 0.4)
+            var s = 0.0
+            for n in notes {
+                let lt = t - n.start          // 该音的本地时间 (相位从 0 起, 起音干净)
+                guard lt >= 0 else { continue }
+                let attack = min(1.0, lt / 0.004)
+                let decay = exp(-lt * n.decay)
+                let env = attack * decay
+                let fund = sin(2 * .pi * n.freq * lt)
+                let oct  = sin(2 * .pi * n.freq * 2 * lt) * 0.18   // 八度泛音 — 钟铃微光
+                s += (fund + oct) * env * 0.5
+            }
+            let sample = Float(s * 0.42)
             chL[i] = sample
             chR[i] = sample
         }
@@ -183,7 +180,7 @@ final class SoundPlayer {
         return buf
     }
 
-    /// 力量组完成 — "发送成功"风格上行二音 (~210ms, G5→D6 perfect fifth)
+    /// 力量组完成 — "任务完成/打钩"感的上行大三和弦琶音 (~340ms, C6→E6→G6 do-mi-sol)
     func playSetComplete() {
         setupIfNeeded()
         guard let buf = setCompleteBuffer else { return }

@@ -39,6 +39,10 @@
 "Sets" = "Sets";
 "Exercises count" = "Exercises";
 "Volume kg" = "Volume kg";
+"%lld days/wk" = "%lld days/wk";
+"%lld days/week" = "%lld days/week";
+"Couldn't create share link" = "Couldn't create share link";
+"“%@” will be removed from this workout. Past records are kept." = "“%@” will be removed from this workout. Past records are kept.";
 "Shared workout" = "Shared workout";
 "Reps" = "Reps";
 "Weight" = "Weight";
