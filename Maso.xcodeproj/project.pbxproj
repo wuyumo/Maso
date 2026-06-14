@@ -20,6 +20,7 @@
 		174D49704B0D1EEC7974C877 /* _progress.md in Resources */ = {isa = PBXBuildFile; fileRef = 66148E10896DB30778E6C89D /* _progress.md */; };
 		17D9E2729D5EB223EF42F762 /* AppRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 749D14202F2DADE9E946D07D /* AppRouter.swift */; };
 		182CFCDB8E25839EB82276AC /* CrossFadeFrames.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0070D8A3C7E1513A852DFDDA /* CrossFadeFrames.swift */; };
+		19791342BC2C6807AB08C623 /* WorkoutDetailShareCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C92872E5E637979EE00974B /* WorkoutDetailShareCard.swift */; };
 		1A52CF157E55BE3997571C63 /* LanguagePickerSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4161A34A2AE629582280FF70 /* LanguagePickerSheet.swift */; };
 		1BF1C9F054E628089F2B6CDF /* NumStepperField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C2072C444E5B90F0EC1A07C /* NumStepperField.swift */; };
 		1E75AB0DB92635528D580692 /* TrainingSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D7F0F064D3300FEAAE9ABE8 /* TrainingSession.swift */; };
@@ -233,6 +234,7 @@
 		59EC9219101B66F7B497AB18 /* ShareCardFooter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareCardFooter.swift; sourceTree = "<group>"; };
 		5AE16FB98CDFE5B432B63488 /* WeeklyFrequencyShareCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeeklyFrequencyShareCard.swift; sourceTree = "<group>"; };
 		5B068DFBBE373F9C69D094F3 /* RestNotificationScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestNotificationScheduler.swift; sourceTree = "<group>"; };
+		5C92872E5E637979EE00974B /* WorkoutDetailShareCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutDetailShareCard.swift; sourceTree = "<group>"; };
 		5F761A3AFFC27FB54D554AC8 /* LayoutToggle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutToggle.swift; sourceTree = "<group>"; };
 		604E1A67DFCA8AEA8D2EB767 /* HistoryScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryScreen.swift; sourceTree = "<group>"; };
 		61B0293ADD8C41CCBB12FA12 /* PaywallScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaywallScreen.swift; sourceTree = "<group>"; };
@@ -460,6 +462,7 @@
 				56E05CE78F6F538104992F20 /* UnifiedShareCard.swift */,
 				5AE16FB98CDFE5B432B63488 /* WeeklyFrequencyShareCard.swift */,
 				4643C30D54A587474C3ED458 /* WorkoutCompleteShareCard.swift */,
+				5C92872E5E637979EE00974B /* WorkoutDetailShareCard.swift */,
 			);
 			path = Share;
 			sourceTree = "<group>";
@@ -893,6 +896,7 @@
 				073B17B64DFD1C33740E76AB /* WorkoutCalendarScreen.swift in Sources */,
 				BB29ABF8E0E2590167AEA372 /* WorkoutCard.swift in Sources */,
 				95E99052293069BEA6956C93 /* WorkoutCompleteShareCard.swift in Sources */,
+				19791342BC2C6807AB08C623 /* WorkoutDetailShareCard.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
