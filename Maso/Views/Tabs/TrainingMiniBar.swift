@@ -1,13 +1,12 @@
 import SwiftUI
 
-// "训练中" 横向迷你播放条 — Apple Music Now-Playing 风格的浮动胶囊.
+// "训练中" 横向迷你播放条 — Apple Music Now-Playing 风格, 全宽液态玻璃 bar.
 //
 // 视觉:
-//   - 胶囊 (Capsule) 形, 不再是满宽矩形 — 跟系统 TabBar 胶囊视觉一致
-//   - .ultraThinMaterial 半透明背景 (跟 TabBar 同材质)
-//   - 水平两侧留 ~12pt 边距, 不顶到屏边
-//   - 底部跟 TabBar 之间留 6pt gap, 两个胶囊明显分开
-//   - 极淡描边 (white@10% × 0.5pt) — 暗色背景下勾出胶囊轮廓
+//   - 全宽 (跟下方系统 TabBar 同宽, 只留 16pt 小边距) — Apple Music 播放中 bar 风格
+//   - 胶囊 (Capsule) 形, 跟系统 TabBar 胶囊视觉一致
+//   - 系统液态玻璃背景: iOS 26+ `.glassEffect` (真 Liquid Glass), 旧系统回退 `.bar` material
+//   - 底部跟 TabBar 之间留 6pt gap, 两个 bar 明显分开
 //
 // 交互 (跟 Apple Music mini player 对齐):
 //   - 整 bar tap → 拉起 PlanPlayer (现有逻辑)
@@ -97,18 +96,13 @@ struct TrainingMiniBar: View {
             }
             .buttonStyle(.plain)
         }
-        .padding(.horizontal, 14)
-        .padding(.vertical, 8)
-        // 跟系统 TabBar 同款液态玻璃材质 (`.bar` material): iOS 18+ 在 TabView 底栏自动用,
-        // iOS 26+ 就是 Liquid Glass. 我们手动取这个 material, 让 MiniBar 和 TabBar 视觉融为一体.
-        .background(.bar, in: Capsule(style: .continuous))
-        // 极淡描边勾边界 — 跟 TabBar 同款 0.5pt × 8% 白
-        .overlay(
-            Capsule(style: .continuous)
-                .stroke(Color.white.opacity(0.08), lineWidth: 0.5)
-        )
+        .padding(.horizontal, 16)
+        .padding(.vertical, 10)
+        // 系统真·液态玻璃: iOS 26+ 用 `.glassEffect` (Apple 官方 Liquid Glass, 带高光/折射),
+        // iOS 18-25 回退到 `.bar` material + 细描边. (之前用的 `.bar` 在 26 上偏"毛玻璃", 不够玻璃.)
+        .modifier(LiquidGlassBar())
         // 按下态 scale + spring — Apple Music mini player 同款"按一下凹一下"
-        .scaleEffect(pressed ? 0.97 : 1.0)
+        .scaleEffect(pressed ? 0.98 : 1.0)
         .animation(.spring(response: 0.28, dampingFraction: 0.65), value: pressed)
         .contentShape(Capsule(style: .continuous))
         .onTapGesture { onTap() }
@@ -117,9 +111,9 @@ struct TrainingMiniBar: View {
                 .onChanged { _ in if !pressed { pressed = true } }
                 .onEnded { _ in pressed = false }
         )
-        // 跟系统 home bar / TabBar 视觉宽度一致 — 不顶到屏边, 浮在中间. 跟 TabBar 是 centered
-        // floating capsule 的感觉对齐. 40pt 让 iPhone 主流尺寸下 MiniBar 跟 TabBar 看上去同款宽.
-        .padding(.horizontal, 40)
+        // 全宽 — 跟下方系统 TabBar 同款宽度 (Apple Music 播放中 now-playing bar 风格),
+        // 只留跟 TabBar 一致的小边距, 不再是窄胶囊浮在正中.
+        .padding(.horizontal, 16)
         // 跟下方 TabBar 留 6pt gap — 两个 bar 明显分开, 不糊成一团
         .padding(.bottom, 6)
     }
@@ -165,6 +159,26 @@ struct TrainingMiniBar: View {
             Image(systemName: "forward.end.fill")
         case .exercise:
             Image(systemName: "checkmark")
+        }
+    }
+}
+
+// MARK: - LiquidGlassBar — 系统液态玻璃背景 (胶囊形)
+//
+// iOS 26+: Apple 官方 `.glassEffect` (Liquid Glass — 真高光/折射/环境反射, 跟系统 TabBar 同源).
+// iOS 18-25: 回退到 `.bar` material + 0.5pt 细描边 (老系统没有 glassEffect, .bar 是最接近的毛玻璃).
+// 部署目标 iOS 18, 所以必须 availability 包一层.
+private struct LiquidGlassBar: ViewModifier {
+    func body(content: Content) -> some View {
+        if #available(iOS 26.0, *) {
+            content.glassEffect(.regular, in: Capsule(style: .continuous))
+        } else {
+            content
+                .background(.bar, in: Capsule(style: .continuous))
+                .overlay(
+                    Capsule(style: .continuous)
+                        .stroke(Color.white.opacity(0.08), lineWidth: 0.5)
+                )
         }
     }
 }

@@ -11,6 +11,9 @@ struct PlanStep: Identifiable, Hashable, Codable, Sendable {
     /// 数组里某项 nil = 该组回退统一值. 长度通常 == sets (短了/长了都按 index 安全取).
     var setReps: [Int?]? = nil
     var setWeights: [Double?]? = nil
+    /// 逐组时长覆盖 (计时类动作 — 平板支撑等). 用户训练中途改过某组时长后存. 语义同 setReps/setWeights:
+    /// nil 数组 = 全组用统一 duration; 数组里某项 nil = 该组回退 duration. Codable 默认 nil → 旧数据/旧 QR 兼容.
+    var setDurations: [Int?]? = nil
     /// 有氧 / 灵活性段的时长 (秒); strength 则为 nil
     var duration: Int?
     /// 组间休息 (秒)
@@ -28,9 +31,14 @@ struct PlanStep: Identifiable, Hashable, Codable, Sendable {
         if let arr = setWeights, arr.indices.contains(n - 1), let v = arr[n - 1] { return v }
         return weight
     }
+    /// 第 n 组 (1-based) 的目标 duration (秒) — 有逐组覆盖用它, 否则回退统一 duration.
+    func durationForSet(_ n: Int) -> Int? {
+        if let arr = setDurations, arr.indices.contains(n - 1), let v = arr[n - 1] { return v }
+        return duration
+    }
     /// 是否启用了逐组不同 (任一 set 数组非空).
     var hasPerSetOverrides: Bool {
-        (setReps?.isEmpty == false) || (setWeights?.isEmpty == false)
+        (setReps?.isEmpty == false) || (setWeights?.isEmpty == false) || (setDurations?.isEmpty == false)
     }
 }
 

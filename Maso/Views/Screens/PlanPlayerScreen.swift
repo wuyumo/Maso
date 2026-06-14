@@ -166,7 +166,7 @@ struct PlanPlayerScreen: View {
                     exerciseCount: completedExerciseCount,
                     sessionId: completedSessionId,
                     workoutDetail: shareBundle.detail,
-                    importPayload: shareBundle.payload,
+                    importPayload: MasoLinks.appStore,
                     totalVolumeKg: shareBundle.volume,
                     dateLabel: completedDateLabel,
                     onSavePlan: canSaveCurrentPlan ? { saveCurrentPlanToLibrary() } : nil,
@@ -930,20 +930,19 @@ struct PlanPlayerScreen: View {
         return data.sets.filter { $0.planId == session.planId && $0.performedAt >= session.startedAt }
     }
 
-    /// 分享卡详情 bundle — 逐组明细 + maso:// 深链 payload (QR) + 总容量 (kg).
-    /// 卡片所见 == 导入所得: detail 和 importPlan 同源 (WorkoutShareBuilder).
-    private var completedShareBundle: (detail: [WorkoutExerciseDetail], payload: String?, volume: Double) {
+    /// 分享卡详情 bundle — 逐组明细 (动作概要用) + 总容量 (kg).
+    /// QR 现在是 App Store 下载链 (MasoLinks.appStore), 导入走 OCR 读卡上动作名+组数, 不再编 maso:// 深链.
+    private var completedShareBundle: (detail: [WorkoutExerciseDetail], volume: Double) {
         let sets = completedSessionSets
-        guard !sets.isEmpty else { return ([], nil, 0) }
+        guard !sets.isEmpty else { return ([], 0) }
         let built = WorkoutShareBuilder.build(
             sessionSets: sets,
             orderHint: store.plan?.steps ?? [],
             exById: data.exById,
             planName: store.plan?.name ?? ""
         )
-        let payload = PlanShareCodec.shareURL(for: built.importPlan)?.absoluteString
         let volume = sets.reduce(0.0) { $0 + ((($1.weight ?? 0)) * Double($1.reps ?? 0)) }
-        return (built.detail, payload, volume)
+        return (built.detail, volume)
     }
 
     /// 分享卡日期行 — 本场 session 开始日 (e.g. "2026-06-09 周二" zh / "Mon, Jun 9" en).
@@ -2040,6 +2039,7 @@ private enum RoutineDiff {
            a.restBetweenSets != b.restBetweenSets || a.rest != b.rest { return true }
         for n in 1...max(a.sets, 1) {
             if a.repsForSet(n) != b.repsForSet(n) { return true }
+            if a.durationForSet(n) != b.durationForSet(n) { return true }
             let aw = a.weightForSet(n).flatMap { $0 > 0 ? $0 : nil }
             let bw = b.weightForSet(n).flatMap { $0 > 0 ? $0 : nil }
             if aw != bw { return true }
@@ -2052,7 +2052,13 @@ private enum RoutineDiff {
     static func stepSummary(_ step: PlanStep, includeRest: Bool = false) -> String {
         var out: String
         if let d = step.duration, d > 0, step.reps == nil, step.setReps == nil {
-            out = "\(step.sets) × " + durationLabel(d)
+            // 逐组不同时长 (60s/45s/30s) → 列出每组; 全组同时长 → 统一 "3 × 30s".
+            if step.setDurations?.contains(where: { $0 != nil }) == true {
+                let ds = (1...max(step.sets, 1)).map { n in step.durationForSet(n).map { durationLabel($0) } ?? "–" }
+                out = "\(step.sets) × " + ds.joined(separator: "/")
+            } else {
+                out = "\(step.sets) × " + durationLabel(d)
+            }
         } else {
             out = "\(step.sets)"
             if step.setReps?.contains(where: { $0 != nil }) == true {
@@ -2071,7 +2077,10 @@ private enum RoutineDiff {
             }
             // 罕见的 reps + duration 并存 (e.g. 计时辅助的力量段) — duration 也得进概要,
             // 否则"只改了 duration"会被上面的 oldS == newS 降级藏掉.
-            if let d = step.duration, d > 0 {
+            if step.setDurations?.contains(where: { $0 != nil }) == true {
+                let ds = (1...max(step.sets, 1)).map { n in step.durationForSet(n).map { durationLabel($0) } ?? "–" }
+                out += " · " + ds.joined(separator: "/")
+            } else if let d = step.duration, d > 0 {
                 out += " · " + durationLabel(d)
             }
         }

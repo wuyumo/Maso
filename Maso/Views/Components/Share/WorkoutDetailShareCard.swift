@@ -66,7 +66,10 @@ enum WorkoutShareBuilder {
             // 大训练的二维码会密到扫不出 (审查发现). collapsed nil + 统一值 → import 展开同样 N 组.
             let reps: [Int?] = recs.map(\.reps)
             let weights: [Double?] = recs.map(\.weight)
-            let durations = recs.compactMap(\.duration)
+            // 逐组保留 nil (index 对齐), 跟 reps/weights 同套折叠逻辑 —— 计时类动作中途改过某组时长
+            // (60s/45s/30s) 才会留下 setDurations, 全组同时长则折叠回统一 duration. 不 index 对齐
+            // (compactMap) 会让 QR 导入后逐组时长错位.
+            let durations: [Int?] = recs.map(\.duration)
             steps.append(PlanStep(
                 id: "step-\(exId)-\(idx)",
                 exerciseId: exId,
@@ -75,7 +78,8 @@ enum WorkoutShareBuilder {
                 weight: weights.compactMap { $0 }.first,
                 setReps: Self.collapseUniform(reps),
                 setWeights: Self.collapseUniform(weights),
-                duration: durations.first,
+                setDurations: Self.collapseUniform(durations),
+                duration: durations.compactMap { $0 }.first,
                 restBetweenSets: 90,
                 rest: 0
             ))
@@ -168,35 +172,21 @@ struct WorkoutDetailShareCard: View {
 
                 Rectangle().fill(MasoColor.borderSoft).frame(height: 0.5)
 
-                // 逐组实测明细 — 每个动作: 名字 + 4 列网格的每组值
-                VStack(alignment: .leading, spacing: 16) {
+                // 动作清单 — 每个动作一行: 全名 (不截断) + "组数 × 次数 (· 配重)".
+                // OCR 友好格式且全名完整: 收图的人 "从照片导入" 时, OCR 逐行读出动作名 + 组数/次数
+                // 还原本次训练 (QR 现在是 App Store 下载链, 不再承担导入). 跟 RoutineShareCard 统一.
+                VStack(alignment: .leading, spacing: 12) {
                     ForEach(detail) { ex in
-                        VStack(alignment: .leading, spacing: 8) {
+                        HStack(alignment: .firstTextBaseline, spacing: 10) {
                             Text(ex.name)
-                                .font(.system(size: 16, weight: .bold))
+                                .font(.system(size: 15, weight: .semibold))
                                 .foregroundStyle(MasoColor.text)
-                                .lineLimit(1)
-                            ForEach(Array(setRows(ex.sets).enumerated()), id: \.offset) { _, row in
-                                HStack(spacing: 0) {
-                                    ForEach(row, id: \.index) { cell in
-                                        HStack(spacing: 5) {
-                                            Text("\(cell.index)")
-                                                .font(.system(size: 11, weight: .semibold).monospacedDigit())
-                                                .foregroundStyle(MasoColor.textFaint)
-                                            Text(cell.text)
-                                                .font(.system(size: 13).monospacedDigit())
-                                                .foregroundStyle(MasoColor.textDim)
-                                        }
-                                        .frame(maxWidth: .infinity, alignment: .leading)
-                                    }
-                                    // 补齐不足 4 列的空位, 保持左对齐
-                                    if row.count < 4 {
-                                        ForEach(0..<(4 - row.count), id: \.self) { _ in
-                                            Color.clear.frame(maxWidth: .infinity)
-                                        }
-                                    }
-                                }
-                            }
+                                .fixedSize(horizontal: false, vertical: true)
+                            Spacer(minLength: 12)
+                            Text(exSummary(ex.sets))
+                                .font(.system(size: 14).monospacedDigit())
+                                .foregroundStyle(MasoColor.textDim)
+                                .layoutPriority(1)
                         }
                     }
                 }
@@ -212,21 +202,28 @@ struct WorkoutDetailShareCard: View {
         .background(MasoColor.background)
     }
 
-    /// 把一个动作的若干组切成每行最多 4 个的网格, 每格带 1-based 组号 + 显示文案.
-    private struct SetCell { let index: Int; let text: String }
-    private func setRows(_ sets: [WorkoutExerciseDetail.PerformedSet]) -> [[SetCell]] {
-        let cells = sets.enumerated().map { i, s in SetCell(index: i + 1, text: cellText(s)) }
-        return stride(from: 0, to: cells.count, by: 4).map { Array(cells[$0..<min($0 + 4, cells.count)]) }
+    /// 一个动作的本次概要 — OCR 友好: "N × M" (组 × 次), 配重加 "· W kg", 计时类 "N × 30s".
+    /// 用众数 (最常见的 reps/weight) 当代表值 (各组若有出入, 取做得最多的那档), 单行可被 OCR 解析还原.
+    private func exSummary(_ sets: [WorkoutExerciseDetail.PerformedSet]) -> String {
+        let n = sets.count
+        // 计时类 (全部组都无 reps, 有 duration)
+        if sets.allSatisfy({ $0.reps == nil }), let d = mode(sets.compactMap { $0.duration }), d > 0 {
+            let dur = d >= 60 ? "\(d / 60)m\(d % 60 == 0 ? "" : " \(d % 60)s")" : "\(d)s"
+            return "\(n) × \(dur)"
+        }
+        let reps = mode(sets.compactMap { $0.reps }) ?? 0
+        var out = "\(n) × \(reps)"
+        if let w = mode(sets.compactMap { $0.weight }.filter { $0 > 0 }), w > 0 {
+            let wStr = w.truncatingRemainder(dividingBy: 1) == 0 ? String(format: "%.0f", w) : String(format: "%.1f", w)
+            out += " · \(wStr) kg"
+        }
+        return out
     }
 
-    private func cellText(_ s: WorkoutExerciseDetail.PerformedSet) -> String {
-        // 计时类 (无 reps, 有 duration) → "30s"; 力量类 → "Wkg × reps".
-        if s.reps == nil, let d = s.duration, d > 0 {
-            return d >= 60 ? "\(d / 60)m\(d % 60 == 0 ? "" : " \(d % 60)s")" : "\(d)s"
-        }
-        let w = s.weight ?? 0
-        let wStr = w.truncatingRemainder(dividingBy: 1) == 0 ? String(format: "%.0f", w) : String(format: "%.1f", w)
-        let reps = s.reps ?? 0
-        return "\(wStr)kg × \(reps)"
+    /// 众数 (出现次数最多的值); 平局取任一; 空 → nil.
+    private func mode<T: Hashable>(_ xs: [T]) -> T? {
+        var counts: [T: Int] = [:]
+        for x in xs { counts[x, default: 0] += 1 }
+        return counts.max(by: { $0.value < $1.value })?.key
     }
 }

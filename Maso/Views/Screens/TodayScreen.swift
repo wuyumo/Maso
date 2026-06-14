@@ -92,6 +92,16 @@ struct TodayScreen: View {
                         )
                     }
 
+                    // ── 自由训练入口 — Today 的"立即训练"动作. My Routines 列表已迁到 Plans tab,
+                    //    但自由训练是"现在就练", 跟今日推荐同簇, 留在 Today.
+                    entryCard(
+                        icon: "dumbbell.fill",
+                        title: "Free workout",
+                        subtitle: "Pick your own exercises and go",
+                        trailingPlay: true,
+                        action: onFreeWorkout
+                    )
+                    .padding(.top, 4)
                 }
 
                 // ===== Plans tab 的 My Plans 分页: 我的训练 + 自由训练 + 社区 (mode != .trainToday) =====
@@ -124,16 +134,6 @@ struct TodayScreen: View {
                             }
                         }
                     }
-
-                    // ── 自由训练入口 — 钉在 Today 最底部 (saved plans 之后).
-                    entryCard(
-                        icon: "dumbbell.fill",
-                        title: "Free workout",
-                        subtitle: "Pick your own exercises and go",
-                        trailingPlay: true,
-                        action: onFreeWorkout
-                    )
-                    .padding(.top, 4)
                 }
 
                 Spacer(minLength: MasoMetrics.pageBottomInset)
@@ -197,11 +197,8 @@ struct TodayScreen: View {
     /// 彼此间距拉远; 整行左右留边距 (标题 + 按钮往中间靠, 不贴边).
     private var myPlansHeader: some View {
         HStack(spacing: 14) {
-            Text("My Routines")
-                .font(.system(size: 12, weight: .heavy))
-                .tracking(1.5)
-                .textCase(.uppercase)
-                .foregroundStyle(MasoColor.textDim)
+            // "MY ROUTINES" 文字已去 — Plans tab 导航段 (My Routines | AI | Classics) 已标这一节.
+            // 只留右上角 "+" 菜单 (自建 / 从照片导入).
             Spacer()
             // "+" 菜单: 自建 / 从照片导入 (#image-import — 支持别人的分享卡 QR 或其他 app 截图 OCR).
             Menu {

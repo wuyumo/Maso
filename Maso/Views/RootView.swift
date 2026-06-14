@@ -141,7 +141,7 @@ struct RootView: View {
                         onOpenSettings: { settingsPresented = true },
                         onGoToDiscover: { tab = .plans },
                         embedded: true,
-                        mode: .full   // #IA: Today = 肌肉状态 + 今日推荐 + My Plans(saved) + Free workout
+                        mode: .trainToday   // #IA-v2: Today = 肌肉状态 + 今日推荐 + Free workout. My Routines 已迁到 Plans tab.
                     )
                     .screenHeader("Today") {
                         Button(action: { settingsPresented = true }) {

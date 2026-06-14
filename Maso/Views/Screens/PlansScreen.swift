@@ -19,8 +19,9 @@ struct PlansScreen: View {
     /// 新建空白计划 — RootView 注入 (走 paywall gating + 共享 sheet 容器).
     let onNewPlan: () -> Void
 
-    enum DiscoverMode: Hashable { case ai, community }
-    @State private var discover: DiscoverMode = .ai
+    // saved = 用户已存的 routines (从 Today tab 迁来, 默认页); ai / community = 发现更多.
+    enum DiscoverMode: Hashable { case saved, ai, community }
+    @State private var discover: DiscoverMode = .saved
     /// 按偏好现生成的 AI 计划 (transient, 不进 data.plans 直到用户 Save).
     @State private var aiPlans: [Plan] = []
     /// AI routine 生成中 (感知态: 让用户看到"AI 正在跟进你的数据生成").
@@ -32,11 +33,10 @@ struct PlansScreen: View {
     @State private var communityLevel: String? = nil
     @State private var communityDays: Int? = nil
 
-    private var isPro: Bool { data.settings.isPro }
-
     var body: some View {
         // 左右滑动可在 AI / Community 两页间切换 (paged TabView, 跟顶部导航栏 segmented 双向绑定).
         TabView(selection: $discover.animation(.easeOut(duration: 0.22))) {
+            savedPage.tag(DiscoverMode.saved)
             aiPage.tag(DiscoverMode.ai)
             communityPage.tag(DiscoverMode.community)
         }
@@ -46,11 +46,12 @@ struct PlansScreen: View {
         .toolbar {
             ToolbarItem(placement: .principal) {
                 Picker("", selection: $discover.animation(.easeOut(duration: 0.18))) {
+                    Text("Saved").tag(DiscoverMode.saved)
                     Text("AI").tag(DiscoverMode.ai)
                     Text("Classics").tag(DiscoverMode.community)
                 }
                 .pickerStyle(.segmented)
-                .frame(width: 200)
+                .frame(width: 248)
             }
         }
         .background(MasoColor.background.ignoresSafeArea())
@@ -84,73 +85,21 @@ struct PlansScreen: View {
         }
     }
 
-    // MARK: - SAVED
-
-    @ViewBuilder
-    private var savedSection: some View {
-        if data.plans.isEmpty {
-            VStack(spacing: 10) {
-                Image(systemName: "bookmark")
-                    .font(.system(size: 30, weight: .regular))
-                    .foregroundStyle(MasoColor.textFaint)
-                Text("No saved routines yet")
-                    .font(.system(size: 16, weight: .bold))
-                    .foregroundStyle(MasoColor.text)
-                Text("Generate one with AI or browse Classics below, then tap Save.")
-                    .font(.system(size: 12))
-                    .foregroundStyle(MasoColor.textDim)
-                    .multilineTextAlignment(.center)
-                newWorkoutButton.padding(.top, 2)
-            }
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 28)
-        } else {
-            HStack {
-                sectionKicker("Saved")
-                Spacer()
-                if !isPro {
-                    Text("\(data.plans.count)/\(DataStore.freeSavedPlansLimit)")
-                        .font(.system(size: 11, weight: .bold))
-                        .foregroundStyle(data.canSaveMorePlans ? MasoColor.textFaint : MasoColor.accent)
-                }
-            }
-            ForEach(data.plans) { plan in
-                WorkoutCard(
-                    plan: plan,
-                    exById: data.exById,
-                    kicker: "",
-                    onStart: { onStart(plan) },
-                    onShowDetail: { detailPlan = plan },
-                    prominentStart: false
-                )
-                .contextMenu {
-                    Button(role: .destructive) { pendingDeletePlanId = plan.id } label: {
-                        Label(NSLocalizedString("Delete", comment: ""), systemImage: "trash")
-                    }
-                }
-            }
-            newWorkoutButton
-        }
-    }
-
-    private var newWorkoutButton: some View {
-        Button(action: onNewPlan) {
-            HStack(spacing: 8) {
-                Image(systemName: "plus")
-                Text("New workout")
-            }
-            .font(.system(size: 14, weight: .heavy))
-            .foregroundStyle(MasoColor.accent)
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 14)
-            .background(MasoColor.accent.opacity(0.12))
-            .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
-            .overlay(
-                RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium)
-                    .stroke(MasoColor.accent.opacity(0.3), style: StrokeStyle(lineWidth: 1, dash: [4, 3]))
-            )
-        }
-        .buttonStyle(.plain)
+    // MARK: - My Routines page (从 Today tab 迁来 — #IA-v2)
+    //
+    // 复用 TodayScreen 的 .myPlans 渲染: 已存 routines 列表 + 照片导入 (#image-import) + 长按删除 +
+    // 空态 ("Add AI routines"). 自由训练不在这页 — 它是"立即训练", 留在 Today tab.
+    // onGoToDiscover 这里指"同一 tab 切到 AI 分段", 让空态引导能跳过去生成.
+    private var savedPage: some View {
+        TodayScreen(
+            onStart: onStart,
+            onFreeWorkout: {},
+            onNewPlan: onNewPlan,
+            onOpenSettings: {},
+            onGoToDiscover: { withAnimation(.easeOut(duration: 0.2)) { discover = .ai } },
+            embedded: true,
+            mode: .myPlans
+        )
     }
 
     // MARK: - DISCOVER pages (左右滑动切换)
@@ -354,14 +303,6 @@ struct PlansScreen: View {
         let ok = data.savePlan(plan)
         detailPlan = nil
         if ok { Haptics.tap() } else { paywallPresented = true }
-    }
-
-    private func sectionKicker(_ text: String) -> some View {
-        Text(LocalizedStringKey(text))
-            .font(.system(size: 12, weight: .bold))
-            .tracking(1.5)
-            .textCase(.uppercase)
-            .foregroundStyle(MasoColor.textDim)
     }
 }
 
@@ -782,16 +723,19 @@ struct PlanDetailSheet: View {
             // 不显示 nav title — 用户要求 Edit Workout 系列页面都不要标题
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                // 拥有的计划 (Today/Saved): 左侧 "…" overflow menu — Share / Delete.
+                // 拥有的计划 (Today/Saved): 右上角显眼的"分享"按钮 (一键分享 routine 图 + QR),
+                // 左上角 "…" overflow 只留 Delete. (分享是高频正向动作, 不该埋在 overflow 里.)
                 if onAddToSaved == nil {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button {
+                            handleSharePlan()
+                        } label: {
+                            Image(systemName: "square.and.arrow.up")
+                        }
+                        .accessibilityLabel(NSLocalizedString("Share plan", comment: ""))
+                    }
                     ToolbarItem(placement: .topBarLeading) {
                         Menu {
-                            Button {
-                                handleSharePlan()
-                            } label: {
-                                Label("Share plan", systemImage: "square.and.arrow.up")
-                            }
-                            Divider()
                             Button(role: .destructive) {
                                 confirmDelete = true
                             } label: {
@@ -954,14 +898,13 @@ struct PlanDetailSheet: View {
         commit()
     }
 
-    /// Share — 渲染 RoutineShareCard 分享图 (计划内容 + 品牌 footer + maso:// 深链 QR).
-    /// 收图的人扫 QR 即导入. encode/渲染失败 → 弹 alert 兜底, 不静默.
+    /// Share — 渲染 RoutineShareCard 分享图 (计划内容 + 品牌 footer + App Store QR).
+    /// QR 指向 App Store (引导没装 app 的人下载); 收图的人 "从照片导入" 时走 OCR 读卡上动作名+组数还原.
+    /// 渲染失败 → 弹 alert 兜底, 不静默.
     private func handleSharePlan() {
-        guard let url = PlanShareCodec.shareURL(for: draft),
-              let img = ShareImageRenderer.render(width: 390, {
-                  RoutineShareCard(plan: draft, exById: data.exById, qrPayload: url.absoluteString)
-              })
-        else {
+        guard let img = ShareImageRenderer.render(width: 390, {
+            RoutineShareCard(plan: draft, exById: data.exById, qrPayload: MasoLinks.appStore)
+        }) else {
             shareFailed = true
             return
         }

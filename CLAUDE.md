@@ -41,7 +41,7 @@
 - [ ] App Store Connect 建新 App 记录 `com.yumowu.maso`(name "Masso")
 - [ ] 开发者后台给 `com.yumowu.maso` + `.watchkitapp` 勾 HealthKit capability
 - [ ] ASC 建内购: Subscription Group「Masso Pro」+ 2 订阅(monthly/yearly, 7天试用) + 1 lifetime 非消耗;各传审核截图,和首版一起提交
-- [ ] ASC 隐私问卷: Track=No 全部;但训练数据发 AI proxy + 反馈发 formsubmit → 声明 Fitness/User Content (App Functionality, Not Linked)
+- [x] ASC 隐私问卷(2026-06-14 填毕, 草稿未发布): 数据类型 = 健身 + 客户支持, 两者均「App 功能 / 不关联身份 / 不追踪」; 追踪全选否; HealthKit 心率能量留设备不申报; 隐私政策 URL 已填 wuyumo.github.io/Maso/privacy-policy.html。⚠️「发布」按钮 Yumo 决定等最后提审时再点
 - [ ] ASC App Review: HealthKit 用途说明(watch 读心率/能量, 写训练)
 - [ ] ASC 元数据: 描述/关键词/支持URL/隐私政策URL/截图/年龄分级/Health&Fitness 类别
 - [ ] Xcode GUI Archive → Validate → Upload(命令行会卡 No Accounts)
