@@ -752,10 +752,9 @@ private struct PlansTabScreen: View {
     var body: some View {
         NavigationStack {
             PlansScreen(onStart: onStart, onNewPlan: onNewPlan)
-                // 标题去掉 — 导航栏中间放 AI/Community segmented (PlansScreen 的 .principal toolbar item).
-                .navigationBarTitleDisplayMode(.inline)
+                // PlansScreen 自己设大标题 "Routines" (库优先 #IA-A). 右上角: PlansScreen 的 "+ new routine"
+                // 菜单 + 这里的齿轮; AI/Classics 已改成从 "+" push 进去的发现页 (不再是顶部 segmented).
                 .toolbar {
-                    // 右上角只剩 Settings — Exercises 已移进 PlansScreen 的 AI/Classics/Exercises 分段.
                     ToolbarItem(placement: .topBarTrailing) {
                         Button(action: onOpenSettings) {
                             Image(systemName: "gearshape")

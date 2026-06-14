@@ -19,6 +19,9 @@ struct TodayScreen: View {
     ///   - .full:       全部 (兼容老用法)
     enum Mode { case full, trainToday, myPlans }
     var mode: Mode = .full
+    /// Routines tab (#IA-A): "+ new routine" 菜单在导航栏 (PlansScreen). 点 "Import from photo" 翻这个 →
+    /// 这里开图片选择器. 其他用法 (Today tab) 不传, 默认 .constant(false) 不触发.
+    var triggerImport: Binding<Bool> = .constant(false)
 
     /// 卡片 tap → 弹 plan detail sheet 查看动作 + 每组 sets/reps/weight (WorkoutCard + PlanRow 共用)
     @State private var detailPlan: Plan? = nil
@@ -107,15 +110,10 @@ struct TodayScreen: View {
                 // ===== Plans tab 的 My Plans 分页: 我的训练 + 自由训练 + 社区 (mode != .trainToday) =====
                 if mode != .trainToday {
                     if data.plans.isEmpty {
-                        // 空态没有 Training Preferences 卡, "AI Plans" 标题留在顶部.
-                        myPlansHeader.padding(.top, 4)
                         plansEmptyState
                     } else {
-                        // Training Preferences 卡置顶, "AI Plans" 标题移到它下方 (用户要求).
-                        myPlansHeader.padding(.top, 8)
-                        // 计划卡用 WorkoutCard — 跟 Today's Workout 同一详细程度 (居中肌肉图 +
-                        // "N exercises · M sets" + 动作 chip + 开始键). kicker 传 "" 不显示
-                        // ("MY PLANS" section 已经给了上下文).
+                        // "+ new routine" 入口已上移到 Routines tab 导航栏 (PlansScreen 的 toolbar "+") —
+                        // 这里只渲染已存 routine 列表. 计划卡用 WorkoutCard (跟 Today's Workout 同详细程度).
                         ForEach(data.plans) { plan in
                             WorkoutCard(
                                 plan: plan,
@@ -178,6 +176,10 @@ struct TodayScreen: View {
             failed: $importFailed,
             data: data
         ))
+        // Routines tab 导航栏 "+" → "Import from photo" 翻 triggerImport → 这里开图片选择器 (#IA-A).
+        .onChange(of: triggerImport.wrappedValue) { _, on in
+            if on { importPickerShown = true; triggerImport.wrappedValue = false }
+        }
         .alert("Delete plan?", isPresented: Binding(
             get: { pendingDeletePlanId != nil },
             set: { if !$0 { pendingDeletePlanId = nil } }

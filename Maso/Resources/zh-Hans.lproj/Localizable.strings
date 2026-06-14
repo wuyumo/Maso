@@ -603,6 +603,13 @@
 "Add to my plans" = "添加到我的计划";
 "Added" = "已添加";
 "Added to My Plans" = "已添加到我的计划";
+/* Routines tab IA (#IA-A): 库标题 + "+ 新建 routine" 菜单的来源 */
+"Routines" = "训练计划";
+"Generate with AI" = "用 AI 生成";
+"Browse Classics" = "浏览经典计划";
+"Create from scratch" = "从零自建";
+"New routine" = "新建计划";
+
 /* AI routine 生成 CTA + 可感知生成态 (Routines tab → AI) */
 "Generate routines" = "生成训练计划";
 "Open Training Preferences and tap Generate routines to build a set tailored to you." = "打开「训练偏好」点 Generate routines,按你的情况生成一组方案。";

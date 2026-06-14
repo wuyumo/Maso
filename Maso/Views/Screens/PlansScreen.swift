@@ -19,9 +19,12 @@ struct PlansScreen: View {
     /// 新建空白计划 — RootView 注入 (走 paywall gating + 共享 sheet 容器).
     let onNewPlan: () -> Void
 
-    // saved = 用户已存的 routines (从 Today tab 迁来, 默认页); ai / community = 发现更多.
-    enum DiscoverMode: Hashable { case saved, ai, community }
-    @State private var discover: DiscoverMode = .saved
+    // 默认页 = My routines (savedPage, 已存 routines 库). AI / Classics 改成从导航栏 "+" push 进去的
+    // 独立发现页 (#IA-A 库优先): "+" → 选来源 → push 对应发现页 → Save 后 pop 回库, 亲眼看它落进来.
+    enum AddRoute: Hashable { case ai, classics }
+    @State private var addRoute: AddRoute? = nil
+    /// 导航栏 "+" 菜单点 "Import from photo" → 翻这个 → savedPage 里的 TodayScreen 开图片选择器.
+    @State private var triggerImport = false
     /// 按偏好现生成的 AI 计划 (transient, 不进 data.plans 直到用户 Save).
     @State private var aiPlans: [Plan] = []
     /// AI routine 生成中 (感知态: 让用户看到"AI 正在跟进你的数据生成").
@@ -34,34 +37,38 @@ struct PlansScreen: View {
     @State private var communityDays: Int? = nil
 
     var body: some View {
-        // 三段内容 (Saved / AI / Classics) — 一次只渲染选中那段, 用普通条件渲染而非分页 TabView.
-        // 原因: `.tabViewStyle(.page)` 会吞掉系统 tab bar 的底部安全区, 滚动内容会钻到 tab bar
-        // 下面露不出来 (跟其他 tab 不一致). 普通 ScrollView 直接在 NavigationStack 里, 系统自动
-        // 给底部安全区, 内容铺满整屏高度. (代价: 段间不能再左右滑切, 靠顶部 segmented 点切.)
-        Group {
-            switch discover {
-            case .saved:     savedPage
-            case .ai:        aiPage
-            case .community: communityPage
-            }
-        }
-        // AI / Classics 切页控件在导航栏 principal — 居中, 跟右上角齿轮同一行.
-        // (Exercises 已升为独立底部 tab — 内容类型不同, 不跟 routine 集合挤一个 segmented.)
-        .toolbar {
-            ToolbarItem(placement: .principal) {
-                Picker("", selection: $discover.animation(.easeOut(duration: 0.18))) {
-                    Text("Saved").tag(DiscoverMode.saved)
-                    Text("AI").tag(DiscoverMode.ai)
-                    Text("Classics").tag(DiscoverMode.community)
+        // 默认 = My routines 库 (savedPage). 没有 segmented — AI / Classics 是从导航栏 "+" push 进去的
+        // 独立发现页 (#IA-A 库优先). 普通 ScrollView 直接在 NavigationStack 里, 系统自动给底部安全区, 铺满整屏.
+        savedPage
+            .navigationTitle("Routines")
+            .navigationDestination(item: $addRoute) { route in
+                Group {
+                    switch route {
+                    case .ai:       aiPage.navigationTitle("Generate with AI")
+                    case .classics: communityPage.navigationTitle("Classics")
+                    }
                 }
-                .pickerStyle(.segmented)
-                .frame(width: 248)
+                .navigationBarTitleDisplayMode(.inline)
+                .background(MasoColor.background.ignoresSafeArea())
             }
-        }
-        .background(MasoColor.background.ignoresSafeArea())
-        // AI routines 由 Training Preferences 半页里的 "Generate routines" 触发 (见 onApplyPreferences);
-        // 首次进入 (还没生成过) 自动生成一批, 避免空页.
-        .onAppear { if aiPlans.isEmpty && !aiGenerating { startGenerateRoutines() } }
+            // 导航栏 "+ new routine" — 一个入口收 4 种添加方式 (AI 生成 / Classics / 自建 / 照片导入).
+            // AI/Classics 是发现页 (push), 自建/导入是即时动作; 替代了原来的 [Saved|AI|Classics] segmented.
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Menu {
+                        Button { addRoute = .ai } label: { Label("Generate with AI", systemImage: "sparkles") }
+                        Button { addRoute = .classics } label: { Label("Browse Classics", systemImage: "books.vertical") }
+                        Divider()
+                        Button(action: onNewPlan) { Label("Create from scratch", systemImage: "square.and.pencil") }
+                        Button { triggerImport = true } label: { Label("Import from photo", systemImage: "photo") }
+                    } label: {
+                        Image(systemName: "plus")
+                            .font(.system(size: 16, weight: .regular))
+                    }
+                    .accessibilityLabel(Text("New routine"))
+                }
+            }
+            .background(MasoColor.background.ignoresSafeArea())
         .sheet(item: $detailPlan) { plan in
             PlanDetailSheet(
                 initialPlan: plan,
@@ -100,9 +107,10 @@ struct PlansScreen: View {
             onFreeWorkout: {},
             onNewPlan: onNewPlan,
             onOpenSettings: {},
-            onGoToDiscover: { withAnimation(.easeOut(duration: 0.2)) { discover = .ai } },
+            onGoToDiscover: { addRoute = .ai },
             embedded: true,
-            mode: .myPlans
+            mode: .myPlans,
+            triggerImport: $triggerImport
         )
     }
 
@@ -120,6 +128,8 @@ struct PlansScreen: View {
             .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
             .padding(.top, 4)
         }
+        // 首次 push 进 AI 页 (还没生成过) 自动生成一批, 避免空页. 改了偏好后由 "Generate routines" 重跑.
+        .onAppear { if aiPlans.isEmpty && !aiGenerating { startGenerateRoutines() } }
     }
 
     /// "Generate routines" 主 CTA — 改了训练偏好 (或还没生成过) 才可点; 点了进生成态.
@@ -985,16 +995,18 @@ struct PlanDetailSheet: View {
         .padding(.top, 4)  // 跟 muscle map 之间留 18pt (VStack spacing 14 + 4) — 视觉分组
     }
 
-    /// Tab 2 browse 预览的主 CTA — "★ Add to my plans". 跟 startWorkoutCTA 同视觉规格 (实心 accent 胶囊),
-    /// icon/文案/action 不同. action (= onAddToSaved) 内部负责 save + 关 sheet (满额弹 paywall).
+    /// Tab 2 browse 预览的主 CTA — "Save" (存进 My Routines). 跟 startWorkoutCTA 同视觉规格 (实心 accent 胶囊),
+    /// 文案/action 不同. action (= onAddToSaved) 内部负责 save + 关 sheet (满额弹 paywall).
     private func addToPlansCTA(_ action: @escaping (Plan) -> Void) -> some View {
-        // 已添加 → "✓ Added to My Plans" 灰态 + 不可点, 跟卡片外的"已添加"按钮状态保持一致.
+        // 已添加 → "✓ Saved" 灰态 + 不可点, 跟卡片底部的"已存"按钮状态保持一致. 去掉了原书签 icon.
         let saved = data.isPlanSaved(draft)
         return Button { if !saved { action(draft) } } label: {
             HStack(spacing: 8) {
-                Image(systemName: saved ? "bookmark.fill" : "bookmark")
-                    .font(.system(size: 14, weight: .heavy))
-                Text(saved ? "Added to My Plans" : "Add to my plans")
+                if saved {
+                    Image(systemName: "checkmark")
+                        .font(.system(size: 13, weight: .heavy))
+                }
+                Text(saved ? "Saved" : "Save")
                     .font(.system(size: 15, weight: .heavy))
             }
             .padding(.vertical, 13)

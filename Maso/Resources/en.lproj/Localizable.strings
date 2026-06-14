@@ -602,6 +602,13 @@
 "Add to my plans" = "Add to my routines";
 "Added" = "Added";
 "Added to My Plans" = "Added to My Routines";
+/* Routines tab IA (#IA-A): library title + "+ new routine" menu sources */
+"Routines" = "Routines";
+"Generate with AI" = "Generate with AI";
+"Browse Classics" = "Browse Classics";
+"Create from scratch" = "Create from scratch";
+"New routine" = "New routine";
+
 /* AI routine generation CTA + perceived-generation states (Routines tab → AI) */
 "Generate routines" = "Generate routines";
 "Open Training Preferences and tap Generate routines to build a set tailored to you." = "Open Training Preferences and tap Generate routines to build a set tailored to you.";
