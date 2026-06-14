@@ -178,7 +178,7 @@ struct HistoryScreen: View {
         }
         // 删除 session 的二次确认 — 长按 SessionCard → contextMenu Delete 触发.
         // 删除是 destructive (清掉这场训练的所有 SetRecord, 包括 PR), 必须 confirm.
-        .alert("Delete this workout?", isPresented: Binding(
+        .alert("Delete workout?", isPresented: Binding(
             get: { pendingDeleteSession != nil },
             set: { if !$0 { pendingDeleteSession = nil } }
         )) {
@@ -738,7 +738,7 @@ private struct SessionCard: View {
         VStack(alignment: .leading, spacing: 6) {
             // History 独有: 训练日期
             Text(kicker.uppercased())
-                .font(.system(size: 10, weight: .bold))
+                .font(.system(size: 10, weight: .heavy))
                 .tracking(2)
                 .foregroundStyle(MasoColor.textDim)
                 .lineLimit(1)
@@ -927,7 +927,7 @@ private struct SessionDetailSheet: View {
                 }
             }
             // 右滑 / contextMenu 删除单个 exercise 的二次确认
-            .alert("Delete exercise from this workout?", isPresented: Binding(
+            .alert("Delete exercise?", isPresented: Binding(
                 get: { pendingDeleteExerciseId != nil },
                 set: { if !$0 { pendingDeleteExerciseId = nil } }
             )) {
@@ -1063,7 +1063,7 @@ private struct SessionDetailSheet: View {
             // Header — "Exercises" kicker + 右侧 list/grid 切换 (跟 PlanDetailSheet 一致)
             HStack {
                 Text("Exercises")
-                    .font(.system(size: 10, weight: .bold))
+                    .font(.system(size: 10, weight: .heavy))
                     .tracking(2)
                     .textCase(.uppercase)
                     .foregroundStyle(MasoColor.textFaint)
@@ -1139,7 +1139,7 @@ private struct SessionDetailSheet: View {
             BodyHint(muscles: session.muscles, height: 96, region: .full, square: true)
             VStack(alignment: .leading, spacing: 6) {
                 Text(prettyDay(session.day).uppercased())
-                    .font(.system(size: 10, weight: .bold))
+                    .font(.system(size: 10, weight: .heavy))
                     .tracking(2)
                     .foregroundStyle(MasoColor.accent)
                 Text(session.planName ?? NSLocalizedString("Free workout", comment: ""))

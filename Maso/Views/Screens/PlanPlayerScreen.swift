@@ -361,7 +361,7 @@ struct PlanPlayerScreen: View {
         }
         // 训练中右滑 playlist 行 → 二次确认 → 调 store.deleteStep (session-local).
         // 跟 PlanDetailSheet 一致的 UX, 只是这里删的是 session-local plan, 不影响 data.plans.
-        .alert("Delete exercise from this workout?", isPresented: Binding(
+        .alert("Delete exercise?", isPresented: Binding(
             get: { pendingDeleteStepId != nil },
             set: { if !$0 { pendingDeleteStepId = nil } }
         )) {

@@ -486,6 +486,7 @@
 
 /* Delete plan / workout / exercise dialogs */
 "Delete plan?" = "Delete routine?";
+"Delete workout?" = "Delete workout?";
 "Delete this workout?" = "Delete this workout?";
 "Delete workout" = "Delete workout";
 "Delete exercise from plan?" = "Delete exercise from routine?";

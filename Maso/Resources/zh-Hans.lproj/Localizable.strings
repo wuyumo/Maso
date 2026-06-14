@@ -488,6 +488,7 @@
 
 /* 删除计划 / 训练 / 动作 对话框 */
 "Delete plan?" = "删除计划?";
+"Delete workout?" = "删除训练?";
 "Delete this workout?" = "删除这次训练?";
 "Delete workout" = "删除训练";
 "Delete exercise from plan?" = "从计划中删除该动作?";

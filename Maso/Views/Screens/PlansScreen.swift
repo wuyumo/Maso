@@ -42,7 +42,27 @@ struct PlansScreen: View {
         // 默认 = My routines 库 (savedPage). 没有 segmented — AI / Classics 是从导航栏 "+" push 进去的
         // 独立发现页 (#IA-A 库优先). 普通 ScrollView 直接在 NavigationStack 里, 系统自动给底部安全区, 铺满整屏.
         savedPage
-            .navigationTitle("Routines")
+            // 跟 Today / History / Exercises 一致: 用 canonical screenHeader (系统大标题 .large + 滚动收折 +
+            // 统一 toolbar 按钮样式). 右上角: "+" 在左 (添加 — 一个入口收 4 种添加方式), 齿轮在右 (设置).
+            .screenHeader("Routines") {
+                Menu {
+                    Button { addRoute = .ai } label: { Label("Generate with AI", systemImage: "sparkles") }
+                    Button { addRoute = .classics } label: { Label("Browse Classics", systemImage: "books.vertical") }
+                    Divider()
+                    Button(action: onNewPlan) { Label("Create from scratch", systemImage: "square.and.pencil") }
+                    Button { triggerImport = true } label: { Label("Import from photo", systemImage: "photo") }
+                } label: {
+                    Image(systemName: "plus")
+                        .font(.system(size: 16, weight: .regular))
+                }
+                .accessibilityLabel(Text("New routine"))
+
+                Button(action: onOpenSettings) {
+                    Image(systemName: "gearshape")
+                        .font(.system(size: 16, weight: .regular))
+                }
+                .accessibilityLabel(Text("Settings"))
+            }
             .navigationDestination(item: $addRoute) { route in
                 Group {
                     switch route {
@@ -52,30 +72,6 @@ struct PlansScreen: View {
                 }
                 .navigationBarTitleDisplayMode(.inline)
                 .background(MasoColor.background.ignoresSafeArea())
-            }
-            // 右上角两个按钮放同一个 group 控制左右顺序: "+" 在左 (添加), 齿轮在右 (设置).
-            // "+ new routine" 一个入口收 4 种添加方式 (AI 生成 / Classics 是发现页 push; 自建 / 导入是即时动作)
-            // — 替代了原来的 [Saved|AI|Classics] segmented.
-            .toolbar {
-                ToolbarItemGroup(placement: .topBarTrailing) {
-                    Menu {
-                        Button { addRoute = .ai } label: { Label("Generate with AI", systemImage: "sparkles") }
-                        Button { addRoute = .classics } label: { Label("Browse Classics", systemImage: "books.vertical") }
-                        Divider()
-                        Button(action: onNewPlan) { Label("Create from scratch", systemImage: "square.and.pencil") }
-                        Button { triggerImport = true } label: { Label("Import from photo", systemImage: "photo") }
-                    } label: {
-                        Image(systemName: "plus")
-                            .font(.system(size: 16, weight: .regular))
-                    }
-                    .accessibilityLabel(Text("New routine"))
-
-                    Button(action: onOpenSettings) {
-                        Image(systemName: "gearshape")
-                            .font(.system(size: 16, weight: .regular))
-                    }
-                    .accessibilityLabel(Text("Settings"))
-                }
             }
             .background(MasoColor.background.ignoresSafeArea())
         .sheet(item: $detailPlan) { plan in
@@ -786,7 +782,7 @@ struct PlanDetailSheet: View {
             .alert("Couldn't create share link", isPresented: $shareFailed) {
                 Button("OK", role: .cancel) {}
             }
-            .alert("Delete this plan?", isPresented: $confirmDelete) {
+            .alert("Delete plan?", isPresented: $confirmDelete) {
                 Button("Delete", role: .destructive) {
                     // 先关 sheet 再删 — 否则 sheet 关闭时引用的 initialPlan 已经被 data store 删了,
                     // 中间过渡会闪一下黑色 placeholder. 顺序: dismiss → 下一个 runloop tick 删.
@@ -801,7 +797,7 @@ struct PlanDetailSheet: View {
                 Text("Your training history will be kept.")
             }
             // 右滑 / contextMenu 删除 step 的二次确认 alert
-            .alert("Delete exercise from plan?", isPresented: Binding(
+            .alert("Delete exercise?", isPresented: Binding(
                 get: { pendingDeleteStepId != nil },
                 set: { if !$0 { pendingDeleteStepId = nil } }
             )) {
@@ -1046,7 +1042,7 @@ struct PlanDetailSheet: View {
             // Header — "EXERCISES" kicker + 右侧 list/grid 切换.
             HStack {
                 Text("Exercises")
-                    .font(.system(size: 10, weight: .bold))
+                    .font(.system(size: 10, weight: .heavy))
                     .tracking(2)
                     .textCase(.uppercase)
                     .foregroundStyle(MasoColor.textFaint)

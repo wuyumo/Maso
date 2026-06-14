@@ -202,31 +202,36 @@ struct ExerciseLibraryBrowser: View {
 
     var body: some View {
         NavStackIf(embedded: embedded) {
-            VStack(spacing: 0) {
-                // 搜索 + 筛选同在一行, 钉在列表上方 (不随列表滚动), 列表上滑也始终可见.
-                searchFilterBar
-
-                List {
-                // 收折分组 — 跟"训练中选动作 picker"用同一份 ExerciseGrouping 数据 + GroupedExerciseRow
-                // 展示/收折逻辑, 保证两边一致. canonical 行折叠, "+N variants" 胶囊展开同名变种.
-                ForEach(filteredGroups) { group in
-                    libraryRow(group.canonical, isVariant: false, group: group)
-                    // 展开 → 变种拆 "Variation"(动作) / "Equipment"(器械) 两段, 跟 picker / Rare 一致.
-                    if !group.variants.isEmpty, expandedGroupKey == group.id {
-                        groupedVariantSections(for: group) { variant in
-                            libraryRow(variant, isVariant: true, group: group)
+            List {
+                // 搜索 + 筛选条作为 pinned section header — plain List 的 header 会吸顶, 既常驻又不打断 List 的
+                // 滚动追踪, 所以系统大标题能随列表上滑收折进 headbar (跟 Today / History / Routines 一致).
+                Section {
+                    // 收折分组 — 跟"训练中选动作 picker"用同一份 ExerciseGrouping 数据 + GroupedExerciseRow
+                    // 展示/收折逻辑, 保证两边一致. canonical 行折叠, "+N variants" 胶囊展开同名变种.
+                    ForEach(filteredGroups) { group in
+                        libraryRow(group.canonical, isVariant: false, group: group)
+                        // 展开 → 变种拆 "Variation"(动作) / "Equipment"(器械) 两段, 跟 picker / Rare 一致.
+                        if !group.variants.isEmpty, expandedGroupKey == group.id {
+                            groupedVariantSections(for: group) { variant in
+                                libraryRow(variant, isVariant: true, group: group)
+                            }
                         }
                     }
+                } header: {
+                    // 不透明底 (吸顶时列表行不从后面透出) + 去掉 header 默认大小写 / 内边距.
+                    searchFilterBar
+                        .textCase(nil)
+                        .listRowInsets(EdgeInsets())
+                        .background(MasoColor.background)
                 }
-                }
-                .listStyle(.plain)
-                .scrollContentBackground(.hidden)
-                // filter/搜索变化 → 收起手风琴 (跟 picker 一致, 避免残留孤儿展开态).
-                .onChange(of: query) { _, _ in expandedGroupKey = nil }
-                .onChange(of: muscleFilter) { _, _ in expandedGroupKey = nil }
-                .onChange(of: equipmentFilter) { _, _ in expandedGroupKey = nil }
-                .onChange(of: movementFilter) { _, _ in expandedGroupKey = nil }
             }
+            .listStyle(.plain)
+            .scrollContentBackground(.hidden)
+            // filter/搜索变化 → 收起手风琴 (跟 picker 一致, 避免残留孤儿展开态).
+            .onChange(of: query) { _, _ in expandedGroupKey = nil }
+            .onChange(of: muscleFilter) { _, _ in expandedGroupKey = nil }
+            .onChange(of: equipmentFilter) { _, _ in expandedGroupKey = nil }
+            .onChange(of: movementFilter) { _, _ in expandedGroupKey = nil }
             .background(MasoColor.background.ignoresSafeArea())
                 // embedded 时跳过自己的大标题 / +按钮 (Train 统一导航栏接管); 非 embedded 保持原样.
                 .applyIf(!embedded) { v in
