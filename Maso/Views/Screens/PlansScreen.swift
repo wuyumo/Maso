@@ -34,13 +34,17 @@ struct PlansScreen: View {
     @State private var communityDays: Int? = nil
 
     var body: some View {
-        // 左右滑动可在 AI / Community 两页间切换 (paged TabView, 跟顶部导航栏 segmented 双向绑定).
-        TabView(selection: $discover.animation(.easeOut(duration: 0.22))) {
-            savedPage.tag(DiscoverMode.saved)
-            aiPage.tag(DiscoverMode.ai)
-            communityPage.tag(DiscoverMode.community)
+        // 三段内容 (Saved / AI / Classics) — 一次只渲染选中那段, 用普通条件渲染而非分页 TabView.
+        // 原因: `.tabViewStyle(.page)` 会吞掉系统 tab bar 的底部安全区, 滚动内容会钻到 tab bar
+        // 下面露不出来 (跟其他 tab 不一致). 普通 ScrollView 直接在 NavigationStack 里, 系统自动
+        // 给底部安全区, 内容铺满整屏高度. (代价: 段间不能再左右滑切, 靠顶部 segmented 点切.)
+        Group {
+            switch discover {
+            case .saved:     savedPage
+            case .ai:        aiPage
+            case .community: communityPage
+            }
         }
-        .tabViewStyle(.page(indexDisplayMode: .never))
         // AI / Classics 切页控件在导航栏 principal — 居中, 跟右上角齿轮同一行.
         // (Exercises 已升为独立底部 tab — 内容类型不同, 不跟 routine 集合挤一个 segmented.)
         .toolbar {
