@@ -18,6 +18,8 @@ struct PlansScreen: View {
     let onStart: (Plan) -> Void
     /// 新建空白计划 — RootView 注入 (走 paywall gating + 共享 sheet 容器).
     let onNewPlan: () -> Void
+    /// 右上角齿轮 → 弹 Settings sheet (RootView 持有). 跟 "+" 同在 PlansScreen 的一个 ToolbarItemGroup 里.
+    let onOpenSettings: () -> Void
 
     // 默认页 = My routines (savedPage, 已存 routines 库). AI / Classics 改成从导航栏 "+" push 进去的
     // 独立发现页 (#IA-A 库优先): "+" → 选来源 → push 对应发现页 → Save 后 pop 回库, 亲眼看它落进来.
@@ -51,10 +53,11 @@ struct PlansScreen: View {
                 .navigationBarTitleDisplayMode(.inline)
                 .background(MasoColor.background.ignoresSafeArea())
             }
-            // 导航栏 "+ new routine" — 一个入口收 4 种添加方式 (AI 生成 / Classics / 自建 / 照片导入).
-            // AI/Classics 是发现页 (push), 自建/导入是即时动作; 替代了原来的 [Saved|AI|Classics] segmented.
+            // 右上角两个按钮放同一个 group 控制左右顺序: "+" 在左 (添加), 齿轮在右 (设置).
+            // "+ new routine" 一个入口收 4 种添加方式 (AI 生成 / Classics 是发现页 push; 自建 / 导入是即时动作)
+            // — 替代了原来的 [Saved|AI|Classics] segmented.
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
+                ToolbarItemGroup(placement: .topBarTrailing) {
                     Menu {
                         Button { addRoute = .ai } label: { Label("Generate with AI", systemImage: "sparkles") }
                         Button { addRoute = .classics } label: { Label("Browse Classics", systemImage: "books.vertical") }
@@ -66,6 +69,12 @@ struct PlansScreen: View {
                             .font(.system(size: 16, weight: .regular))
                     }
                     .accessibilityLabel(Text("New routine"))
+
+                    Button(action: onOpenSettings) {
+                        Image(systemName: "gearshape")
+                            .font(.system(size: 16, weight: .regular))
+                    }
+                    .accessibilityLabel(Text("Settings"))
                 }
             }
             .background(MasoColor.background.ignoresSafeArea())

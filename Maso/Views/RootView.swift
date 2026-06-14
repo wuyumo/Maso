@@ -751,18 +751,9 @@ private struct PlansTabScreen: View {
 
     var body: some View {
         NavigationStack {
-            PlansScreen(onStart: onStart, onNewPlan: onNewPlan)
-                // PlansScreen 自己设大标题 "Routines" (库优先 #IA-A). 右上角: PlansScreen 的 "+ new routine"
-                // 菜单 + 这里的齿轮; AI/Classics 已改成从 "+" push 进去的发现页 (不再是顶部 segmented).
-                .toolbar {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button(action: onOpenSettings) {
-                            Image(systemName: "gearshape")
-                                .font(.system(size: 16, weight: .regular))
-                        }
-                        .accessibilityLabel("Settings")
-                    }
-                }
+            PlansScreen(onStart: onStart, onNewPlan: onNewPlan, onOpenSettings: onOpenSettings)
+                // PlansScreen 自己设大标题 "Routines" + 右上角工具栏 ("+" 在左, 齿轮在右) — 两个按钮都在
+                // PlansScreen 的一个 ToolbarItemGroup 里 (#IA-A). AI/Classics 从 "+" push 进去 (不再是 segmented).
                 .tint(MasoColor.text)
         }
     }
