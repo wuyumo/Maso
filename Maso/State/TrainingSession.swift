@@ -356,7 +356,10 @@ final class TrainingSessionStore {
         }()
         // 保存力量段的训练记录 + 标记 (stepId, setN) 已完成
         // —— advance() 是"用户点打勾 / 倒计时自然走完", 是真完成. setIndex 不走这里.
-        if let cur = currentSegment, case .exercise(let ex, let setN, _, let reps, let weight, let dur, _) = cur.kind {
+        // 守卫: 已完成的 (stepId, setN) 再打勾不重复记录 (用户 setIndex 跳回已完成组再点✓ 的场景).
+        // 否则 data.sets 多一条幽灵记录 → 历史容量双计 + 分享卡组数对不上 + QR 多一组.
+        if let cur = currentSegment, case .exercise(let ex, let setN, _, let reps, let weight, let dur, _) = cur.kind,
+           !s.completedSets.contains(CompletedSet(stepId: cur.stepId, setN: setN)) {
             let rec = SetRecord(
                 id: UUID().uuidString,
                 exerciseId: ex.id,
