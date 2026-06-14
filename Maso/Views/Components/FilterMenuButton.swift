@@ -155,6 +155,9 @@ struct ExerciseSearchFilterBar: View {
     let movementsFor: (MuscleGroup) -> [MovementFacet]
     /// 当前 (muscle + text) 约束下还有动作的 equipment.
     let availableEquipments: Set<String>
+    /// true → 系统材质底 (.bar, 跟导航栏一致) + 系统菜单样式筛选 (无绿胶囊). Exercises 页钉在收折大标题下用;
+    /// 这样上滑收折后这条跟系统 headbar 同材质, 不再是突兀的纯黑. picker (sheet) 默认 false 维持原胶囊样式.
+    var systemStyle: Bool = false
 
     var body: some View {
         // 顺序: 左 = 两个筛选入口 (Muscle / Equipment), 右 = 搜索框 (flex 占满剩余宽度).
@@ -168,8 +171,8 @@ struct ExerciseSearchFilterBar: View {
                     FilterMenuOption(value: eq, label: Exercise.equipmentDisplayName(for: eq),
                                      enabled: availableEquipments.contains(eq) || equipmentFilter == eq)
                 },
-                style: .capsule,
-                icon: "dumbbell.fill"
+                style: systemStyle ? .systemMenu : .capsule,
+                icon: systemStyle ? nil : "dumbbell.fill"
             )
 
             // 搜索框 — iOS 搜索框观感 (放大镜 + 圆角 + 清除), flex 占满剩余宽度, 放最右.
@@ -199,7 +202,8 @@ struct ExerciseSearchFilterBar: View {
         }
         .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
         .padding(.vertical, 8)
-        .background(MasoColor.background)
+        // systemStyle: 用系统栏材质 (.bar) — 钉在收折大标题下时跟导航栏同材质, 不再纯黑突兀.
+        .background(systemStyle ? AnyShapeStyle(Material.bar) : AnyShapeStyle(MasoColor.background))
         .overlay(alignment: .bottom) {
             Rectangle()
                 .fill(MasoColor.textFaint.opacity(0.15))
@@ -242,7 +246,7 @@ struct ExerciseSearchFilterBar: View {
                 }
             }
         } label: {
-            muscleCapsule
+            if systemStyle { muscleSystemLabel } else { muscleCapsule }
         }
         .menuOrder(.fixed)
     }
@@ -268,6 +272,21 @@ struct ExerciseSearchFilterBar: View {
         .background(active ? MasoColor.accent.opacity(0.16) : MasoColor.surface)
         .overlay(Capsule().stroke(active ? MasoColor.accent.opacity(0.5) : MasoColor.borderSoft, lineWidth: 0.5))
         .clipShape(Capsule())
+    }
+
+    /// 系统菜单样式 label — tinted 文字 + chevron.up.chevron.down (= iOS Picker(.menu) 指示符), 无胶囊底.
+    /// 跟 Equipment 的 .systemMenu 一致, systemStyle 时用.
+    private var muscleSystemLabel: some View {
+        HStack(spacing: 3) {
+            Text(muscleLabelText)
+                .font(.system(size: 15))
+                .lineLimit(1)
+            Image(systemName: "chevron.up.chevron.down")
+                .font(.system(size: 11, weight: .semibold))
+        }
+        .foregroundStyle(muscleFilter != nil ? MasoColor.accent : MasoColor.textDim)
+        .padding(.vertical, 4)
+        .contentShape(Rectangle())
     }
 
     private var muscleLabelText: String {

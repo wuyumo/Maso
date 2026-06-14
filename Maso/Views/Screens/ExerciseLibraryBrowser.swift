@@ -196,7 +196,8 @@ struct ExerciseLibraryBrowser: View {
             muscleSections: Self.muscleSections,
             availableMuscles: availableMuscles,
             movementsFor: movementsForSection,
-            availableEquipments: availableEquipments
+            availableEquipments: availableEquipments,
+            systemStyle: true   // Exercises 页: 系统材质底 (跟收折导航栏一致) + 系统菜单样式筛选
         )
     }
 
@@ -218,11 +219,11 @@ struct ExerciseLibraryBrowser: View {
                         }
                     }
                 } header: {
-                    // 不透明底 (吸顶时列表行不从后面透出) + 去掉 header 默认大小写 / 内边距.
+                    // 去掉 header 默认大小写 / 内边距. 底色由 searchFilterBar 自带 (systemStyle = .bar 材质),
+                    // 不再包一层纯黑 — 这样吸顶时跟系统导航栏同材质, 列表行从材质后面透出做磨砂.
                     searchFilterBar
                         .textCase(nil)
                         .listRowInsets(EdgeInsets())
-                        .background(MasoColor.background)
                 }
             }
             .listStyle(.plain)
