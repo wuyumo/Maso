@@ -63,13 +63,16 @@ struct WorkoutCard: View {
         return out
     }
 
-    /// 今天会练的动作名预览 — 全部 step 都拿到, LimitedFlowLayout 负责"最多 3 行 + 自动 +N".
-    /// 跟 summarizedMuscles 不一样, 这个列具体动作 (e.g. "Bench Press") 而非部位 (e.g. "Chest").
-    /// 用户视角更直接 — "今天要做什么"比"今天练什么部位"更可执行.
-    private var exercisePreview: [String] {
+    /// 动作名预览 + 各自主练部位 — 全部 step 都拿到, LimitedFlowLayout 负责换行.
+    /// chip 里动作名 (e.g. "Bench Press") + 主练部位 (e.g. "Chest") 一起显示, 一眼看清这个 routine 覆盖哪些部位.
+    /// 部位 = 主肌肉归到的大区 (MuscleGroup.section: Chest/Back/Shoulders/Arms/Core/Legs);
+    /// fullBody 等无 section 时退回该肌肉本身名.
+    private var exercisePreview: [(name: String, part: String?)] {
         plan.steps.compactMap { step in
+            guard let ex = exById[step.exerciseId] else { return nil }
             // 用 displayName 而非 raw name — 中文环境下 chip 跟点开后的标题语言一致
-            exById[step.exerciseId]?.displayName
+            let part = ex.primaryMuscles.first.map { ($0.section ?? $0).displayName }
+            return (ex.displayName, part)
         }
     }
 
@@ -182,8 +185,8 @@ struct WorkoutCard: View {
                         maxRows: 999,  // 不截断, 显示所有 exercises
                         onTruncate: { _ in /* never truncates */ }
                     ) {
-                        ForEach(Array(exercisePreview.enumerated()), id: \.offset) { _, name in
-                            ExercisePill(name: name)
+                        ForEach(Array(exercisePreview.enumerated()), id: \.offset) { _, item in
+                            ExercisePill(name: item.name, part: item.part)
                         }
                         // LimitedFlowLayout 要求最后一个 subview 是 overflow pill,
                         // maxRows 999 永远不截断, 这个空 pill 会被 place 到屏外.
@@ -254,21 +257,30 @@ struct WorkoutCard: View {
     }
 }
 
-/// 动作名 chip — 半透底 capsule. 承载具体动作名字 (Bench Press / Squat / ...).
-/// 限 1 行 + truncate, 长名 (e.g. "Decline Barbell Bench Press") 会自动截尾, 不撑爆 FlowLayout.
+/// 动作名 chip — 半透底 capsule. 承载具体动作名字 (Bench Press / Squat / ...) + 主练部位 (Chest / Back / ...).
+/// 部位用 accent 绿 + 小一号字, 跟白色动作名在颜色 + 字号上都有明显差别, 一眼区分"动作 vs 部位".
+/// 各自限 1 行, 长名自动截尾, 不撑爆 FlowLayout.
 private struct ExercisePill: View {
     let name: String
+    var part: String? = nil
     var body: some View {
-        Text(name)
-            // DESIGN.md §2.2: chip 类小标签走 11pt + 紧凑 padding, 跟 PlanRow / SessionCard 的辅助
-            // 元素 (PR badge / sub-info) 同档. 不要放大 — chip 多, 字号一大整行 wrap 直接爆.
-            .font(.system(size: 11, weight: .semibold))
-            .foregroundStyle(MasoColor.text.opacity(0.85))
-            .lineLimit(1)
-            .padding(.horizontal, 10)
-            .padding(.vertical, 5)
-            .background(MasoColor.surfaceHi)
-            .clipShape(Capsule())
+        // DESIGN.md §2.2: chip 类小标签走 11pt + 紧凑 padding. 部位再小 1pt (10pt) 拉开层级.
+        HStack(spacing: 5) {
+            Text(name)
+                .font(.system(size: 11, weight: .semibold))
+                .foregroundStyle(MasoColor.text.opacity(0.9))
+                .lineLimit(1)
+            if let part, !part.isEmpty {
+                Text(part)
+                    .font(.system(size: 10, weight: .semibold))
+                    .foregroundStyle(MasoColor.accent)
+                    .lineLimit(1)
+            }
+        }
+        .padding(.horizontal, 10)
+        .padding(.vertical, 5)
+        .background(MasoColor.surfaceHi)
+        .clipShape(Capsule())
     }
 }
 
