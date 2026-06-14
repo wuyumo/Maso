@@ -257,25 +257,25 @@ struct WorkoutCard: View {
     }
 }
 
-/// 动作名 chip — 半透底 capsule. 承载具体动作名字 (Bench Press / Squat / ...) + 主练部位 (Chest / Back / ...).
-/// 部位用 accent 绿 + 小一号字, 跟白色动作名在颜色 + 字号上都有明显差别, 一眼区分"动作 vs 部位".
+/// 动作名 chip — 半透底 capsule. 主练部位 (Chest / Back / ...) 在前 + 具体动作名字 (Bench Press / ...) 在后.
+/// 部位用 accent 绿 + 小一号字, 作前缀标签; 动作名白色, 跟部位在颜色 + 字号上都有明显差别, 一眼区分"部位 vs 动作".
 /// 各自限 1 行, 长名自动截尾, 不撑爆 FlowLayout.
 private struct ExercisePill: View {
     let name: String
     var part: String? = nil
     var body: some View {
-        // DESIGN.md §2.2: chip 类小标签走 11pt + 紧凑 padding. 部位再小 1pt (10pt) 拉开层级.
+        // DESIGN.md §2.2: chip 类小标签走 11pt + 紧凑 padding. 部位前缀再小 1pt (10pt) 拉开层级.
         HStack(spacing: 5) {
-            Text(name)
-                .font(.system(size: 11, weight: .semibold))
-                .foregroundStyle(MasoColor.text.opacity(0.9))
-                .lineLimit(1)
             if let part, !part.isEmpty {
                 Text(part)
                     .font(.system(size: 10, weight: .semibold))
                     .foregroundStyle(MasoColor.accent)
                     .lineLimit(1)
             }
+            Text(name)
+                .font(.system(size: 11, weight: .semibold))
+                .foregroundStyle(MasoColor.text.opacity(0.9))
+                .lineLimit(1)
         }
         .padding(.horizontal, 10)
         .padding(.vertical, 5)
