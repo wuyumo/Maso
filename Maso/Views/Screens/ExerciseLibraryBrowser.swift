@@ -20,6 +20,8 @@ struct ExerciseLibraryBrowser: View {
     @State private var selected: Exercise? = nil
     /// 当前展开的"变种组" key (= ExerciseGroup.id). 一次只展开一组 — 跟 picker 同一收折语义.
     @State private var expandedGroupKey: String? = nil
+    /// 列表是否已从顶部下滑 — 驱动钉顶搜索/筛选条的背景: 顶部透明, 上滑吸顶后上系统栏材质 (跟导航栏 scrolled 态一致).
+    @State private var listScrolled: Bool = false
     /// "+ Add exercise" → 两条路径的选择 sheet (Create your own / Browse rare).
     @State private var addChoiceOpen: Bool = false
     /// 路径 1: 自创动作表单 sheet (name + photo + 元数据).
@@ -219,15 +221,30 @@ struct ExerciseLibraryBrowser: View {
                         }
                     }
                 } header: {
-                    // 去掉 header 默认大小写 / 内边距. 底色由 searchFilterBar 自带 (systemStyle = .bar 材质),
-                    // 不再包一层纯黑 — 这样吸顶时跟系统导航栏同材质, 列表行从材质后面透出做磨砂.
+                    // 去 header 默认大小写 / 内边距. 背景跟导航栏同步: 顶部 (未滚) 透明 → 跟 large-title 的透明态一致;
+                    // 上滑吸顶 → 上系统栏材质 (.bar) + 底部细线 → 跟导航栏 scrolled 态一致, 消除断层.
                     searchFilterBar
                         .textCase(nil)
                         .listRowInsets(EdgeInsets())
+                        .background(listScrolled ? AnyShapeStyle(Material.bar) : AnyShapeStyle(Color.clear))
+                        .overlay(alignment: .bottom) {
+                            if listScrolled {
+                                Rectangle()
+                                    .fill(MasoColor.textFaint.opacity(0.15))
+                                    .frame(height: 0.5)
+                            }
+                        }
+                        .animation(.easeInOut(duration: 0.18), value: listScrolled)
                 }
             }
             .listStyle(.plain)
             .scrollContentBackground(.hidden)
+            // 列表是否已从顶部下滑 → 切钉顶条背景 (透明 ↔ 系统栏材质), 跟导航栏 transparent↔material 同步.
+            .onScrollGeometryChange(for: Bool.self) { geo in
+                geo.visibleRect.minY > 1
+            } action: { _, scrolled in
+                if scrolled != listScrolled { listScrolled = scrolled }
+            }
             // filter/搜索变化 → 收起手风琴 (跟 picker 一致, 避免残留孤儿展开态).
             .onChange(of: query) { _, _ in expandedGroupKey = nil }
             .onChange(of: muscleFilter) { _, _ in expandedGroupKey = nil }

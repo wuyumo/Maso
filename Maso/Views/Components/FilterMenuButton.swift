@@ -202,12 +202,15 @@ struct ExerciseSearchFilterBar: View {
         }
         .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
         .padding(.vertical, 8)
-        // systemStyle: 用系统栏材质 (.bar) — 钉在收折大标题下时跟导航栏同材质, 不再纯黑突兀.
-        .background(systemStyle ? AnyShapeStyle(Material.bar) : AnyShapeStyle(MasoColor.background))
+        // systemStyle: 背景 + 底分隔线交给 caller — Exercises 页按滚动状态切 (顶部透明 → 上滑吸顶时上系统栏
+        // 材质 + 细线, 跟导航栏 scrolled 态完全一致, 消除断层). 非 systemStyle (picker sheet) 维持原纯色底 + 细线.
+        .background(systemStyle ? AnyShapeStyle(Color.clear) : AnyShapeStyle(MasoColor.background))
         .overlay(alignment: .bottom) {
-            Rectangle()
-                .fill(MasoColor.textFaint.opacity(0.15))
-                .frame(height: 0.5)
+            if !systemStyle {
+                Rectangle()
+                    .fill(MasoColor.textFaint.opacity(0.15))
+                    .frame(height: 0.5)
+            }
         }
     }
 
