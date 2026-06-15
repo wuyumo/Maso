@@ -1,5 +1,12 @@
 import Foundation
 
+/// 上线开关 — 首版以"纯免费 App"提审 (账号身份/付费协议未理顺前). iapEnabled = false →
+/// 隐藏所有内购入口 (付费墙 / 升级 / 恢复购买 / Settings Pro 区) + 解锁所有 Pro 功能,
+/// 审核看不到"能点不能买"的购买流. 等付费协议 Active 后改回 true 再发版把内购加回来.
+enum MasoFlags {
+    static let iapEnabled = false
+}
+
 enum WeightUnit: String, Codable, Sendable { case kg, lb }
 enum DistanceUnit: String, Codable, Sendable { case km, mi }
 enum Gender: String, Codable, Sendable { case male, female, other }
@@ -82,7 +89,9 @@ struct UserSettings: Codable, Sendable {
     /// (MVP 阶段是本地 mock, 生产环境接 StoreKit 2)
     var proSubscription: ProSubscription? = nil
 
-    var isPro: Bool { proSubscription != nil }
+    /// iapEnabled = false (免费版上线) → 视为 Pro, 解锁所有 gate (无内购时不留功能墙).
+    /// proSubscription 仍保持 nil — 不写假数据, 改回 iapEnabled = true 即恢复正常 free/pro 判定.
+    var isPro: Bool { !MasoFlags.iapEnabled || proSubscription != nil }
 
     /// Apple Fitness (HealthKit) 同步开关.
     /// 用户在 Settings 主动打开 → 触发 HealthKit 授权对话框 → 已存训练补写 + 之后每次完成都写.

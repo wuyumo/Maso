@@ -194,7 +194,9 @@ struct SettingsScreen: View {
 
     @ViewBuilder
     private var proSection: some View {
-        if let sub = data.settings.proSubscription {
+        if !MasoFlags.iapEnabled {
+            EmptyView()   // 免费版上线: 整段 Pro 区 (升级 banner / 订阅状态) 都不渲染, 不露内购入口.
+        } else if let sub = data.settings.proSubscription {
             // Pro 用户 — 显示订阅状态卡 (轻量, 不抢戏)
             HStack(spacing: 12) {
                 MasoMarkIcon(color: MasoColor.accent)
