@@ -27,4 +27,12 @@ enum Haptics {
         let g = UIImpactFeedbackGenerator(style: .light)
         g.impactOccurred()
     }
+
+    /// 滚轮吸附到新值 — 选择器"咔哒"触觉 (轻, 专为连续滚动设计, 同系统 Picker).
+    /// 常驻 generator + 每次后 prepare(), 降低连续滚动的延迟.
+    static func selection() {
+        selectionGen.selectionChanged()
+        selectionGen.prepare()
+    }
+    private static let selectionGen = UISelectionFeedbackGenerator()
 }

@@ -494,6 +494,51 @@ final class TrainingSessionStore {
         return false
     }
 
+    /// R2: 当前播放头所在动作是否有"已完成组"可撤销 (回退键据此切换成"撤销"语义).
+    var currentStepHasCompletedSet: Bool {
+        guard let s = session, let cur = currentSegment else { return false }
+        if case .exercise = cur.kind {
+            return s.completedSets.contains { $0.stepId == cur.stepId }
+        }
+        return false
+    }
+
+    /// R2: 撤销当前动作"最近(最高 setN)的一组" — 清 completedSet + 删对应 SetRecord, 播放头落到该组以便重练.
+    /// removeRecord(exerciseId, planId, since): 调用方据此删 DataStore 里本场该动作最近一条记录.
+    /// 每调用一次撤一组; 该动作的组全撤完后, 回退键恢复"上一动作"导航 (currentStepHasCompletedSet 转 false).
+    @discardableResult
+    func undoLastCompletedSet(
+        removeRecord: ((_ exerciseId: String, _ planId: String?, _ since: Date) -> Void)? = nil
+    ) -> Bool {
+        guard var s = session, let cur = currentSegment else { return false }
+        guard case .exercise(let ex, _, _, _, _, _, _) = cur.kind else { return false }
+        let stepId = cur.stepId
+        let mine = s.completedSets.filter { $0.stepId == stepId }
+        guard let top = mine.max(by: { $0.setN < $1.setN }) else { return false }
+        s.completedSets.remove(top)
+        s.completed = false   // 撤销后训练不再算"已完成"
+        // 播放头落到被撤的那组, 方便直接重练
+        if let idx = segments.firstIndex(where: { seg in
+            if case .exercise(_, let n, _, _, _, _, _) = seg.kind { return seg.stepId == stepId && n == top.setN }
+            return false
+        }) {
+            s.segmentIndex = idx
+            let seg = segments[idx]
+            if s.playing {
+                s.endsAt = initialEndsAt(for: seg); s.pausedRemaining = nil
+            } else {
+                s.endsAt = nil; s.pausedRemaining = initialPausedRemaining(for: seg)
+            }
+        }
+        s.lastActiveAt = Date()
+        session = s
+        // 删本场该动作最近一条历史记录 (normal 顺序完成下即被撤那组)
+        removeRecord?(ex.id, s.planId, s.startedAt)
+        Haptics.tap()
+        syncLiveActivity()
+        return true
+    }
+
     private func initialEndsAt(for seg: Segment?) -> Date? {
         guard let seg else { return nil }
         switch seg.kind {

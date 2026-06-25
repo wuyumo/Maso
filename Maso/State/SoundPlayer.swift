@@ -1,27 +1,30 @@
 import AVFoundation
 import Foundation
 
-/// 训练中的 UI 音效播放器 — set complete / training complete 等高光节点用.
+/// 训练中的 UI 音效播放器 — set complete / skip rest 等节点用.
+///
+/// 2026-06-16: 应需求把音色对齐 Apple Watch —— watch 端这些动作用的是
+/// `WKInterfaceDevice.play(.click)`, 一个简短的"咔哒"触觉音, 而不是 iPhone 旧版那种
+/// do-mi-sol 和弦 / 上下行旋律. 这里改成合成一个同样简短轻柔的 click, 完成组 / 跳过休息
+/// 都放这一声, 听感跟手表一致.
 ///
 /// 关键约束: 不打断用户正在听的 Spotify / Music.
 ///   - AVAudioSession category = `.ambient` (UI 类音频, 不抢主播放权)
 ///   - options = `.mixWithOthers` (跟其它 app 的音轨叠加)
-///   - 整体音量做了 -8dB 衰减让它"轻", 不抢戏
 ///
-/// 音色是程序合成 (AVAudioEngine + sine wave 包络), 没有 bundle 音频文件 — 包体积小,
-/// 调试 / 风格调整改参数即可.
+/// 音色是程序合成 (AVAudioEngine), 无 bundle 音频文件 — 包体积小, 调参即可改风格.
 @MainActor
 final class SoundPlayer {
     static let shared = SoundPlayer()
 
     private let engine = AVAudioEngine()
     private let player = AVAudioPlayerNode()
-    /// 当前 setComplete 音色: "任务完成 / 打钩"感的上行大三和弦琶音 (C6 → E6 → G6, do-mi-sol).
-    /// 三音快速上行后收在最高音 (G6) 并多响一会 = "解决/收束"感; 每音叠一层八度泛音给钟铃微光.
-    /// 比旧的 iMessage 单跳 (G5→D6) 更有"✓ 这组搞定了"的成就/收尾感.
-    private var setCompleteBuffer: AVAudioPCMBuffer?
-    private var enterRestBuffer: AVAudioPCMBuffer?
-    private var restEndedBuffer: AVAudioPCMBuffer?
+    /// 短促"咔哒"click — 对齐 Apple Watch `.click` 触觉音的听感 (跳过/结束休息用).
+    private var clickBuffer: AVAudioPCMBuffer?
+    /// "完成动作组"的清单勾选感 chime — 两声上行小钟琴"叮-叮" (set complete 用).
+    private var completeBuffer: AVAudioPCMBuffer?
+    /// 极轻 tick — onboarding 拨盘吸附换值用 (比 click 小声, 连续滚动不刺耳).
+    private var tickBuffer: AVAudioPCMBuffer?
     private var initialized = false
 
     private init() {}
@@ -47,17 +50,9 @@ final class SoundPlayer {
         let format = AVAudioFormat(standardFormatWithSampleRate: 44100, channels: 2)!
         engine.connect(player, to: engine.mainMixerNode, format: format)
 
-        // set-complete: "任务完成 / 打钩"感的上行大三和弦琶音 (C6→E6→G6, ~340ms).
-        // do-mi-sol 快速上行收在 G6 = 明确的"解决/收尾"感; 比旧 iMessage 单跳更有成就感.
-        setCompleteBuffer = generateTaskComplete(format: format)
-
-        // enter-rest: 比 set-complete 更柔, 给"该歇一歇"的氛围 — 下行小三度 (E5 → C5),
-        // 长 attack 12ms 进音慢, 衰减 8 (中速).
-        enterRestBuffer = generateDescend(format: format)
-
-        // rest-ended: 短上行二音 (E5 → A5), 给"该回来练了"的提示感.
-        // 比 enter-rest 更短促 (180ms), attack 更快 (3ms) — 切换 / 导航 性质而非"放下"性质.
-        restEndedBuffer = generateAscend(format: format)
+        clickBuffer = generateClick(format: format)
+        tickBuffer = generateClick(format: format, gain: 0.11)   // 拨盘 tick — 更轻
+        completeBuffer = generateComplete(format: format)
 
         do {
             try engine.start()
@@ -67,16 +62,59 @@ final class SoundPlayer {
         }
     }
 
-    /// 生成"任务完成 / 打钩"感的上行大三和弦琶音 — do-mi-sol (C6→E6→G6).
-    /// 设计意图: 三个音快速错峰上行、最后收在最高音 (G6) 并多 ring 一会 → 明确的"解决/收尾"感,
-    /// 就是"完成任务打个钩"的成就声. 每音叠一层八度泛音 (×2) 给钟铃般的微光.
+    /// 生成一个简短轻柔的"咔哒"click — 听感对齐 Apple Watch `.click`.
     ///
-    /// 结构:
-    ///   - 3 个音错峰起音 (0 / 55ms / 110ms), 后音在前音还在响时切入 → 琶音上行感 + 末尾叠成和弦
-    ///   - 末音 G6 衰减更慢 (decay 7 vs 11) → 多 ring 一会, 给"落定"感
-    ///   - 每音: 基频 + 八度泛音 (0.18 音量, 钟铃亮度), 快 attack 4ms (清脆不刺)
-    ///   - 总时长 ~340ms — 比旧单跳 (210ms) 略长但有"完成"分量, 单组重复也不腻
-    private func generateTaskComplete(format: AVAudioFormat) -> AVAudioPCMBuffer? {
+    /// 设计: 不用乐音 (旧版那种和弦/旋律太"演出"), 改成一个短促打击感的 tick.
+    ///   - 极短 (~38ms), 极快 attack (~0.3ms) → 干脆利落, 不拖泥带水
+    ///   - 一个中频"tock"主体 (~620Hz, 快衰减) + 一个高频亮 transient (~1900Hz, 更快衰减)
+    ///     两层叠出"哒"的木感, 而非单频"哔"
+    ///   - 起手 ~几ms 叠一点确定性噪声 → 给"咔"的颗粒感 (taptic 那种机械 click 感)
+    ///   - 音量压低 → 跟手表那一下一样轻, 不抢戏
+    private func generateClick(format: AVAudioFormat, gain: Double = 0.22) -> AVAudioPCMBuffer? {
+        let sampleRate = format.sampleRate
+        let durationSeconds = 0.038
+        let frameCount = AVAudioFrameCount(sampleRate * durationSeconds)
+        guard let buf = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: frameCount) else { return nil }
+        buf.frameLength = frameCount
+
+        let chL = buf.floatChannelData![0]
+        let chR = buf.floatChannelData![1]
+
+        // 确定性伪随机 (LCG) — 给起手的"咔"颗粒, 不依赖系统 RNG, 每次生成一致.
+        var seed: UInt32 = 0x9E3779B9
+        func noise() -> Double {
+            seed = seed &* 1664525 &+ 1013904223
+            return Double(seed) / Double(UInt32.max) * 2 - 1   // [-1, 1]
+        }
+
+        let fBody = 620.0     // 中频"tock"主体
+        let fTick = 1900.0    // 高频亮 transient
+
+        for i in 0..<Int(frameCount) {
+            let t = Double(i) / sampleRate
+            let attack = min(1.0, t / 0.0003)
+            // 三层包络: 噪声起手最快灭, body 中速, tick 较快
+            let nEnv = exp(-t * 420)
+            let bodyEnv = exp(-t * 95)
+            let tickEnv = exp(-t * 190)
+            let n = noise() * nEnv * 0.30
+            let body = sin(2 * .pi * fBody * t) * bodyEnv * 0.6
+            let tick = sin(2 * .pi * fTick * t) * tickEnv * 0.35
+            let sample = Float((n + body + tick) * attack * gain)
+            chL[i] = sample
+            chR[i] = sample
+        }
+        return buf
+    }
+
+    /// 生成"完成动作组"的清单勾选感 chime — to-do 勾选那种"叮-叮"完成感.
+    ///
+    /// 设计 (参考通用 task-complete 音效: 简单两音 + 明亮上行 + 钟琴质感):
+    ///   - 两声上行: G5 (784Hz) → D6 (1175Hz, 纯五度), 第二声晚 ~45ms 入 ("flam", 给俏皮的连击感)
+    ///   - 每声 = 基频 + 八度泛音 + 十二度泛音 (递减) → 小钟琴 / 钢琴的玻璃亮质感, 不是干 click
+    ///   - 软起手 ~4ms + 指数衰减 (第一声稍快收, 第二声 ring out 更长) → 收尾自然, 有"完成"余韵
+    ///   - 总时长 ~340ms, 比 click 长、更"奖励感", 但仍短到不拖训练节奏; 音量适中 (奖励一下, 不刺耳)
+    private func generateComplete(format: AVAudioFormat) -> AVAudioPCMBuffer? {
         let sampleRate = format.sampleRate
         let durationSeconds = 0.34
         let frameCount = AVAudioFrameCount(sampleRate * durationSeconds)
@@ -86,124 +124,67 @@ final class SoundPlayer {
         let chL = buf.floatChannelData![0]
         let chR = buf.floatChannelData![1]
 
-        // C 大三和弦琶音 (do-mi-sol), 落在 G6 = 明亮稳定的收束.
-        struct Note { let freq: Double; let start: Double; let decay: Double }
-        let notes = [
-            Note(freq: 1046.50, start: 0.000, decay: 11),  // C6 (do)
-            Note(freq: 1318.51, start: 0.055, decay: 11),  // E6 (mi)
-            Note(freq: 1567.98, start: 0.110, decay: 7),   // G6 (sol) — 落定, ring 更长
-        ]
+        let f1 = 783.99    // G5
+        let f2 = 1174.66   // D6 (上行纯五度) — 明亮、积极
+        let off2 = 0.045   // 第二声 flam 延迟
+
+        func voice(_ f: Double, _ t: Double, decay: Double) -> Double {
+            guard t >= 0 else { return 0 }
+            let env = exp(-t * decay) * min(1.0, t / 0.004)   // 4ms 软起手 + 指数衰减
+            let h1 = sin(2 * .pi * f * t)
+            let h2 = sin(2 * .pi * f * 2 * t) * 0.5
+            let h3 = sin(2 * .pi * f * 3 * t) * 0.22
+            return (h1 + h2 + h3) * env
+        }
 
         for i in 0..<Int(frameCount) {
             let t = Double(i) / sampleRate
-            var s = 0.0
-            for n in notes {
-                let lt = t - n.start          // 该音的本地时间 (相位从 0 起, 起音干净)
-                guard lt >= 0 else { continue }
-                let attack = min(1.0, lt / 0.004)
-                let decay = exp(-lt * n.decay)
-                let env = attack * decay
-                let fund = sin(2 * .pi * n.freq * lt)
-                let oct  = sin(2 * .pi * n.freq * 2 * lt) * 0.18   // 八度泛音 — 钟铃微光
-                s += (fund + oct) * env * 0.5
-            }
-            let sample = Float(s * 0.42)
+            let n1 = voice(f1, t, decay: 9.5)          // 第一声稍快收
+            let n2 = voice(f2, t - off2, decay: 6.5)   // 第二声 ring out 长一点
+            let sample = Float((n1 * 0.5 + n2 * 0.62) * 0.3)
             chL[i] = sample
             chR[i] = sample
         }
         return buf
     }
 
-    /// 生成"进入休息"的下行小三度 — 比 set-complete 更柔, 更"放下"感.
-    /// E5 (659Hz) 主音前半, 后半下行到 C5 (523Hz). 长 attack 12ms 平滑入,
-    /// 衰减 8 (中速, 比 chime 更长), 音量 0.28 (~-11dB) — 比 chime 更安静, 不抢戏.
-    private func generateDescend(format: AVAudioFormat) -> AVAudioPCMBuffer? {
-        let sampleRate = format.sampleRate
-        let durationSeconds = 0.30
-        let frameCount = AVAudioFrameCount(sampleRate * durationSeconds)
-        guard let buf = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: frameCount) else { return nil }
-        buf.frameLength = frameCount
-
-        let chL = buf.floatChannelData![0]
-        let chR = buf.floatChannelData![1]
-
-        let f1 = 659.25  // E5
-        let f2 = 523.25  // C5 (下行小三度 — "释放"感)
-
-        for i in 0..<Int(frameCount) {
-            let t = Double(i) / sampleRate
-            // 长 attack (12ms, 不刺耳) + 中速 exp 衰减 (8)
-            let attack = min(1.0, t / 0.012)
-            let decay = exp(-t * 8)
-            let env = attack * decay
-            // f1 前半主导, blend 到 f2 — 用 t/dur 的快线性曲线, 70% 时候转完
-            let blend = min(1.0, t / durationSeconds / 0.7)
-            let s1 = sin(2 * .pi * f1 * t) * (1 - blend) * 0.5
-            let s2 = sin(2 * .pi * f2 * t) * blend * 0.5
-            let sample = Float((s1 + s2) * env * 0.28)
-            chL[i] = sample
-            chR[i] = sample
-        }
-        return buf
-    }
-
-    /// 生成"休息结束"的上行二音 — E5 → A5, 短促, 给"切换 / 该练了"的提示感.
-    /// 比 enterRest 更短 (180ms vs 300ms), attack 更快 (3ms vs 12ms) — 像"导航点击"而非"放下".
-    /// 音量 0.32 (~-10dB) — 介于 chime 跟 enterRest 之间, 适中显眼但不抢戏.
-    private func generateAscend(format: AVAudioFormat) -> AVAudioPCMBuffer? {
-        let sampleRate = format.sampleRate
-        let durationSeconds = 0.18
-        let frameCount = AVAudioFrameCount(sampleRate * durationSeconds)
-        guard let buf = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: frameCount) else { return nil }
-        buf.frameLength = frameCount
-
-        let chL = buf.floatChannelData![0]
-        let chR = buf.floatChannelData![1]
-
-        let f1 = 659.25  // E5
-        let f2 = 880.0   // A5 (上行小四度 — 警觉感)
-
-        for i in 0..<Int(frameCount) {
-            let t = Double(i) / sampleRate
-            // 快 attack (3ms) + 中速衰减 (10)
-            let attack = min(1.0, t / 0.003)
-            let decay = exp(-t * 10)
-            let env = attack * decay
-            // f1 → f2 快速转音, 转点 50%
-            let blend = min(1.0, t / durationSeconds / 0.5)
-            let s1 = sin(2 * .pi * f1 * t) * (1 - blend) * 0.5
-            let s2 = sin(2 * .pi * f2 * t) * blend * 0.5
-            let sample = Float((s1 + s2) * env * 0.32)
-            chL[i] = sample
-            chR[i] = sample
-        }
-        return buf
-    }
-
-    /// 力量组完成 — "任务完成/打钩"感的上行大三和弦琶音 (~340ms, C6→E6→G6 do-mi-sol)
-    func playSetComplete() {
+    private func playComplete() {
         setupIfNeeded()
-        guard let buf = setCompleteBuffer else { return }
+        guard let buf = completeBuffer else { return }
         if !engine.isRunning { try? engine.start() }
         player.scheduleBuffer(buf, at: nil, options: [.interrupts], completionHandler: nil)
         if !player.isPlaying { player.play() }
     }
 
-    /// 进入休息 — 一次轻下行音 (~300ms, E5→C5), 比 setComplete 柔和
-    func playEnterRest() {
+    private func playClick() {
         setupIfNeeded()
-        guard let buf = enterRestBuffer else { return }
+        guard let buf = clickBuffer else { return }
         if !engine.isRunning { try? engine.start() }
         player.scheduleBuffer(buf, at: nil, options: [.interrupts], completionHandler: nil)
         if !player.isPlaying { player.play() }
     }
 
-    /// 休息结束 — 上行二音 (~180ms, E5→A5), 提示"该练了"
-    func playRestEnded() {
+    /// Onboarding 拨盘吸附换值 — 一声极轻 tick (随静音开关静默, 不打断音乐).
+    func playTick() {
         setupIfNeeded()
-        guard let buf = restEndedBuffer else { return }
+        guard let buf = tickBuffer else { return }
         if !engine.isRunning { try? engine.start() }
         player.scheduleBuffer(buf, at: nil, options: [.interrupts], completionHandler: nil)
         if !player.isPlaying { player.play() }
     }
+
+    /// 通用按钮点击 — 清脆 click (比 tick 实, 给"按下/前进"的完成感; onboarding 各步按钮用).
+    func playTap() { playClick() }
+
+    /// 力量组完成 — 清单勾选感的上行"叮-叮" chime (比 click 更有"完成/奖励"感).
+    /// 注: 仅 iPhone 端改成 chime; Apple Watch 完成组仍是 `.click` 触觉 (手表不走这套合成音).
+    func playSetComplete() { playComplete() }
+
+    /// 休息结束 / 跳过休息 — 一声 watch 风格的 click (保持简短, 不跟完成 chime 混淆).
+    func playRestEnded() { playClick() }
+
+    /// 进入休息 — 保持静默 (对齐 Apple Watch: 进休息只给触觉 `.stop`, 无独立提示音;
+    /// 否则"完成组 click → 进休息又一声"会变成两声, 跟手表的单 click 不一致).
+    /// 方法保留是为 call-site 兼容 (TrainingSession.advance 仍调它).
+    func playEnterRest() {}
 }

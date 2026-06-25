@@ -114,7 +114,8 @@ struct UnifiedShareCard: View {
             .padding(.horizontal, 24)
             .frame(maxWidth: .infinity, alignment: .leading)
 
-            ShareCardFooter()
+            // 带上 App Store 二维码 — 跟完成卡 / routine 卡一致, 让 History 分享出去的图也能扫码下载.
+            ShareCardFooter(qrPayload: MasoLinks.appStore)
         }
         .background(MasoColor.background)
     }

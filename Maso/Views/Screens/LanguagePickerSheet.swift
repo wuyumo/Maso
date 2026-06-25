@@ -18,7 +18,7 @@ struct LanguagePickerSheet: View {
                     LanguageRow(
                         flag: "🌐",
                         title: "System Default",
-                        subtitle: "Follow iPhone language (\(LanguageManager.systemLanguage.nativeName))",
+                        subtitle: String(format: NSLocalizedString("Follow iPhone language (%@)", comment: "system language picker row"), LanguageManager.systemLanguage.nativeName),
                         selected: manager.selectedLanguage == nil
                     ) {
                         pick(nil)

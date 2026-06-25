@@ -2,3 +2,5 @@
 "NSCameraUsageDescription" = "Masso 使用相机拍摄自拍，添加到你的可分享训练总结卡片上。";
 "NSHealthUpdateUsageDescription" = "Masso 将你完成的训练保存到 Apple 健身，显示在你的活动圆环和健康时间线中。";
 "NSPhotoLibraryUsageDescription" = "Masso 读取你从相册中选择的照片，添加到可分享的训练总结卡片上。";
+
+"NSHealthShareUsageDescription" = "Masso 读取你 Apple 健康中的近期训练记录，避免重复计入你已在 Apple Watch 上记录的训练。";

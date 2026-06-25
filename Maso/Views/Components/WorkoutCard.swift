@@ -246,14 +246,8 @@ struct WorkoutCard: View {
         .onTapGesture { onShowDetail?() }
         .background(MasoColor.surface)
         .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
-        // emphasized (Today's Workout 主卡): 极细的半透明 accent 绿描边 — 跟上面 Maso Status 卡同样 0.5pt 细,
-        // 仅靠颜色 (绿 vs My Plans 无边) 区分主次, 不加辉光, 保持克制.
-        .overlay {
-            if emphasized {
-                RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium)
-                    .stroke(MasoColor.accent.opacity(0.4), lineWidth: 0.5)
-            }
-        }
+        // emphasized (Today's Workout 主卡): 不再加描边/阴影/辉光 — 仅靠实心绿播放键
+        // (vs My Plans 卡的半透明描边键) 区分主次, 保持干净.
     }
 }
 

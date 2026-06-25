@@ -56,14 +56,15 @@ struct SettingsScreen: View {
                     }
                     Divider().background(MasoColor.borderSoft)
                     Row(label: "Body weight") {
+                        // 按用户单位 (kg/lb) 展示+编辑, 存储 canonical kg.
                         DoubleStepperContent(
                             value: Binding(
                                 get: { data.settings.weight ?? 70 },
                                 set: { data.settings.weight = $0 }
-                            ),
-                            range: 30...200,
-                            step: 0.5,
-                            suffix: "kg"
+                            ).inUnit(data.settings.weightUnit),
+                            range: data.settings.weightUnit.fromKg(30)...data.settings.weightUnit.fromKg(200),
+                            step: data.settings.weightUnit.bodyWeightStep,
+                            suffix: data.settings.weightUnit.label
                         )
                     }
                 }
@@ -93,6 +94,34 @@ struct SettingsScreen: View {
                             (.monday, "Mon"),
                         ])
                     }
+                }
+
+                // Apple 健康 — 在 UI 里明确标识 HealthKit 功能 (Apple 2.5.1: 用了 HealthKit 必须可见地告知用户).
+                // 开关打开 → 弹系统授权; 之后完成的训练写入 Apple 健康. 默认关 (用户主动开启).
+                Section_(title: "Apple Health") {
+                    ToggleRow(
+                        title: "Save workouts to Apple Health",
+                        desc: "Masso saves your completed workouts to Apple Health, so they appear in your Activity rings and the Health app. On Apple Watch, Masso reads heart rate and active energy during a workout.",
+                        isOn: Binding(
+                            get: { data.settings.healthKitSyncEnabled },
+                            set: { on in
+                                data.settings.healthKitSyncEnabled = on
+                                // 开启时拉起系统 HealthKit 授权对话框; 关闭则只停写新数据 (已写入的不动).
+                                if on {
+                                    Task { try? await HealthKitService.shared.requestAuthorization() }
+                                }
+                            }
+                        )
+                    )
+                }
+
+                // 动作参数全局同步 (R3) — 默认开, 用户可关.
+                Section_(title: "Exercise data") {
+                    ToggleRow(
+                        title: "Sync params across routines",
+                        desc: "When on, changing an exercise's sets, reps, weight, or rest in one routine (or during a workout) updates it everywhere that exercise appears. When off, each routine keeps its own params, and a new routine starts an exercise from your most recent values.",
+                        isOn: $data.settings.globalExerciseParamSyncEnabled
+                    )
                 }
 
                 // 语言

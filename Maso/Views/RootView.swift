@@ -120,8 +120,22 @@ struct RootView: View {
 
     var body: some View {
         if !data.settings.onboardingCompleted {
-            OnboardingScreen { /* onDone */ }
+            // onDone = "AI 生成中"过渡跑完后回调 —— 此时才置 onboardingCompleted 切到主界面.
+            // (confirm() 不再当场置位, 否则过渡 overlay 来不及显示, 见 OnboardingScreen.confirm.)
+            OnboardingScreen {
+                data.settings.onboardingCompleted = true
+                data.flushSave()
+            }
                 .transition(.opacity)
+                // 引导期也接收 maso:// 邀请链接 — 解码后暂存 importedPlan, 引导完成进主界面时
+                // else 分支的 .sheet(item:$importedPlan) 会因其非空自动弹出. 不再静默丢弃朋友的分享链接.
+                .onOpenURL { url in
+                    if let plan = PlanShareCodec.decodePlan(from: url) {
+                        importedPlan = plan
+                    } else if url.scheme == PlanShareCodec.urlScheme {
+                        importFailed = true
+                    }
+                }
         } else {
             // iOS 默认 TabView — 3 个 tab 用系统标准 bar
             // MiniBar 通过 .safeAreaInset(edge:.bottom) 应用到每个 tab 的内容上
@@ -294,6 +308,11 @@ struct RootView: View {
                     startTitle: NSLocalizedString("Start workout", comment: "")
                 )
                 .presentationDragIndicator(.visible)
+            }
+            // 全局重量单位同步 — 显示 helper weightLabel(_:) 读 WeightUnitProvider.current.
+            // initial:true 保证首帧 (任何重量显示前) 就设好; 之后切 kg/lb 即时生效.
+            .onChange(of: data.settings.weightUnit, initial: true) { _, u in
+                WeightUnitProvider.current = u
             }
             // maso://import?plan=<base64> — 拦截 deep link, 解码 → 弹 ImportedPlanSheet.
             // 失败 (链接残破 / base64 invalid / JSON 解码错) 弹通用 alert, 不静默吞掉.

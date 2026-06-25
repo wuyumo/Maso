@@ -28,7 +28,7 @@
 
 /* ── Plan detail ───────────────────────────────────── */
 "Edit Workout" = "编辑训练";
-"Workout" = "训练计划";
+"Workout" = "训练";
 "Workout name" = "训练名称";
 "Add Exercise" = "添加动作";
 "No exercises yet — tap “Add Exercise” to start" = "还没有动作 — 点下方「添加动作」开始";
@@ -66,7 +66,7 @@
 "Up Next" = "下一段";
 "Next Exercise" = "下一动作";
 "Almost done" = "即将完成";
-"Playlist" = "训练计划";
+"Playlist" = "动作列表";
 "Workout Complete" = "训练完成";
 "Done" = "完成";
 
@@ -129,6 +129,21 @@
 "How many days a week do you train?" = "一周通常训练几次?";
 "Which muscles do you want to focus on?" = "想加强哪些肌群?";
 "Confirm & build my plan" = "确认, 生成计划";
+"Build My Routine" = "生成我的计划";
+"Uploading your data" = "正在上传你的数据";
+"Analyzing your stats" = "AI 正在分析你的数据";
+"Building your plan" = "正在生成适合你的计划";
+"All set!" = "搞定!";
+"What's your gender?" = "你的性别?";
+"We use this to set sensible starting weights." = "用来给你设定合理的起始重量。";
+"How old are you?" = "你的年龄?";
+"Helps us tune your training volume." = "帮我们调整你的训练量。";
+"What's your weight?" = "你的体重?";
+"We seed your starting loads from this — change any later." = "据此设定起始负重, 之后都能改。";
+"We'll size your weekly plan to fit." = "据此安排你每周的训练量。";
+"Pick any — or none for a balanced routine." = "可多选, 全不选则均衡训练。";
+"Next" = "下一步";
+"STEP %lld / 5" = "第 %lld 步 / 共 5 步";
 
 /* ── Muscle group display names ─────────────────────── */
 "Chest" = "胸";
@@ -609,6 +624,10 @@
 "Generate with AI" = "用 AI 生成";
 "Browse Classics" = "浏览经典计划";
 "Create from scratch" = "从零自建";
+"Create my own" = "自己创建";
+"AI Routines" = "AI 训练计划";
+"Generate a plan from your preferences" = "根据你的偏好生成";
+"Proven programs to start from" = "成熟的现成计划";
 "New routine" = "新建计划";
 
 /* AI routine 生成 CTA + 可感知生成态 (Routines tab → AI) */
@@ -951,3 +970,77 @@
 "Achievable: %@ %@  (off by %@)" = "可达成:%1$@ %2$@(相差 %3$@)";
 "%lld picked" = "已选 %lld 个";
 "+%lld more" = "+%lld 个";
+
+/* 训练完成自动分享 — 自由训练存为计划的二次确认 */
+"Save as plan?" = "存为训练计划？";
+"Don't Save" = "不保存";
+"Keep this workout as a reusable routine." = "把这次训练存成可重复使用的计划。";
+
+/* Apple Health (HealthKit) — 设置区 */
+"Apple Health" = "Apple 健康";
+"Save workouts to Apple Health" = "将训练保存到 Apple 健康";
+"Masso saves your completed workouts to Apple Health, so they appear in your Activity rings and the Health app. On Apple Watch, Masso reads heart rate and active energy during a workout." = "Masso 会把你完成的训练保存到 Apple 健康,出现在你的活动圆环和「健康」App 中。在 Apple Watch 上,Masso 会在训练过程中读取心率和活动能量。";
+
+/* Exercise data — 全局参数同步 (R3) */
+"Exercise data" = "动作数据";
+"Sync params across routines" = "跨计划同步动作参数";
+
+/* Onboarding — AI 生成中过渡 */
+"Creating your AI plan" = "正在生成你的 AI 训练计划";
+"Your plan is ready" = "训练计划已就绪";
+"Personalized from your answers" = "根据你的回答为你定制";
+"Reading your profile" = "读取你的身体数据";
+"Picking exercises for your goals" = "按你的目标挑选动作";
+"Balancing your weekly plan" = "安排好每周训练";
+"When on, changing an exercise's sets, reps, weight, or rest in one routine (or during a workout) updates it everywhere that exercise appears. When off, each routine keeps its own params, and a new routine starts an exercise from your most recent values." = "开启后,在任意计划(或训练中)改某个动作的组数/次数/重量/休息,会同步到所有含该动作的地方。关闭后各计划各自独立,新计划里的动作从你最近一次的数值开始。";
+
+/* Onboarding step 3 focus-muscles hint */
+"Optional — leave all off for a balanced routine." = "可不选 — 全部留空则均衡训练。";
+
+/* ── UX audit 2026-06: 补齐之前露英文的键 ── */
+"Level" = "难度";
+"Days/week" = "每周天数";
+"All levels" = "全部难度";
+"Any frequency" = "全部频率";
+"Continue (%lld)" = "继续 (%lld)";
+"Start (%lld)" = "开始 (%lld)";
+"Exercise photos" = "动作配图";
+"From library" = "从相册选";
+"Search the web" = "网络搜图";
+"Find a photo" = "找张图";
+"Photos via Pexels. Pick the one that matches your move." = "图片来自 Pexels,挑一张贴合动作的。";
+"Type a name and search the web." = "输入名称在网上搜图。";
+"No photos found. Try a different name." = "没找到图片,换个名字试试。";
+"Search exercise photos" = "搜索动作配图";
+"Playlist drawer drag handle" = "动作列表抽屉拖动手柄";
+"Drag up to expand, down to collapse. Tap to toggle." = "上拖展开,下拖收起,点按切换。";
+"Collapse calendar" = "收起日历";
+
+/* Player — R2 撤销提示 + R3 全局同步编辑底注 */
+"Set removed" = "已撤销一组";
+"Changes update this exercise across all your routines." = "改动会更新所有用到该动作的计划。";
+"Undo last set" = "撤销最近一组";
+
+/* 推荐/种子计划名 (Today 卡 + Classics) */
+"Full Body A · Push / Quads / Pull (Upper)" = "全身 A · 推 / 股四头 / 拉(上)";
+"Full Body B · Push / Hamstrings / Pull (Lower)" = "全身 B · 推 / 腘绳 / 拉(下)";
+"Full Body C · Push / Glutes / Pull (Mid)" = "全身 C · 推 / 臀 / 拉(中)";
+"Day A · Chest + Triceps" = "A 日 · 胸 + 三头";
+"Day B · Back + Biceps" = "B 日 · 背 + 二头";
+"Day C · Legs + Glutes" = "C 日 · 腿 + 臀";
+"Day D · Shoulders + Traps" = "D 日 · 肩 + 斜方";
+"Day E · Arms + Core" = "E 日 · 手臂 + 核心";
+"Push A · Heavy" = "推 A · 大重量";
+"Pull A · Heavy" = "拉 A · 大重量";
+"Legs A · Quads" = "腿 A · 股四头";
+"Push B · Volume" = "推 B · 容量";
+"Pull B · Volume" = "拉 B · 容量";
+"Legs B · Hamstrings / Glutes" = "腿 B · 腘绳 / 臀";
+
+/* Today 肌肉状态卡 — 零历史空态 */
+"Finish a workout to see which muscles need recovery." = "练一次,这里就会显示哪些肌群需要恢复。";
+
+/* 播放器"上次"提示 (单位走 weightLabel) */
+"Last: %@ × %d (%@)" = "上次: %@ × %d (%@)";
+
+"Follow iPhone language (%@)" = "跟随 iPhone 语言 (%@)";

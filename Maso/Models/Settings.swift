@@ -8,6 +8,29 @@ enum MasoFlags {
 }
 
 enum WeightUnit: String, Codable, Sendable { case kg, lb }
+
+extension WeightUnit {
+    /// 显示用单位标签.
+    var label: String { self == .kg ? "kg" : "lb" }
+    static let lbPerKg: Double = 2.2046226218
+    /// canonical kg → 当前单位数值 (显示 / 编辑用). 全 app 重量 canonical 存 kg.
+    func fromKg(_ kg: Double) -> Double { self == .kg ? kg : kg * Self.lbPerKg }
+    /// 当前单位数值 → canonical kg (存储用).
+    func toKg(_ v: Double) -> Double { self == .kg ? v : v / Self.lbPerKg }
+    /// 训练负重步进增量 (kg 2.5 / lb 5).
+    var weightStep: Double { self == .kg ? 2.5 : 5 }
+    /// 体重步进增量 (kg 1 / lb 2).
+    var bodyWeightStep: Double { self == .kg ? 1 : 2 }
+    /// 训练负重上限 (canonical 500kg ≈ 1100lb).
+    var weightMax: Double { self == .kg ? 500 : 1100 }
+}
+
+/// 全局当前重量单位 — 显示 helper (weightLabel) 读它, 免在几十个子视图里穿线传 unit.
+/// RootView 在 settings.weightUnit 变化时 (含首帧) 更新; 仅 UI 线程读写.
+enum WeightUnitProvider {
+    /// 只在主线程读写 (RootView 更新 / 显示 helper 读), 用 nonisolated(unsafe) 让自由函数 helper 也能读.
+    nonisolated(unsafe) static var current: WeightUnit = .kg
+}
 enum DistanceUnit: String, Codable, Sendable { case km, mi }
 enum Gender: String, Codable, Sendable { case male, female, other }
 enum ProgramStyle: String, Codable, Sendable { case fullBody = "full-body", balanced, split }
@@ -126,6 +149,13 @@ struct UserSettings: Codable, Sendable {
     ///   - 身体图 tap → 始终落到 major (无论开关, sub 折叠到 major 都是 Step 1 的语义)
     /// 新手 / 不在意分区的用户关掉可以减少认知负担; 专业用户开着拿精确度.
     var muscleDetailEnabled: Bool = true
+
+    /// 全局动作参数同步 (R3). 默认 ON.
+    /// true: 在任意 routine / 训练中改了某动作的参数 (组数/次数/重量/休息/逐组覆盖),
+    ///       会传播到所有含该动作的 routine — "一处改, 全局更新".
+    /// false: 各 routine 的同一动作参数互相独立; 新 routine 里加该动作时默认从
+    ///        该动作最近一次记录 (lastSet) 回填数值.
+    var globalExerciseParamSyncEnabled: Bool = true
 
     /// 收藏的动作 ID 集合 — 所有"选择动作"列表会把收藏动作排在最前.
     /// (e.g. Library / ExercisePickerSheet / QuickWorkout Step 2 都用.)

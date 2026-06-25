@@ -31,10 +31,13 @@ final class WatchBridge: NSObject, @unchecked Sendable {
         }
     }
 
-    func send(_ action: WatchAction) {
+    /// 返回是否真发出去了 — iPhone 未激活/不可达时返回 false, 调用方据此给"失败"触觉而非假"成功".
+    @discardableResult
+    func send(_ action: WatchAction) -> Bool {
         let s = WCSession.default
-        guard s.activationState == .activated, s.isReachable else { return }
+        guard s.activationState == .activated, s.isReachable else { return false }
         s.sendMessage(["a": action.rawValue], replyHandler: nil, errorHandler: nil)
+        return true
     }
 
     @MainActor private func expireIfStale() {

@@ -1,5 +1,16 @@
 import SwiftUI
 
+extension Binding where Value == Double {
+    /// canonical-kg 的 binding → 当前单位 (kg/lb) 的 binding: get 把 kg 换成单位值, set 把单位值换回 kg.
+    /// 让重量步进器按用户设置的单位展示/编辑, 存储仍是 kg.
+    func inUnit(_ unit: WeightUnit) -> Binding<Double> {
+        Binding<Double>(
+            get: { unit.fromKg(wrappedValue) },
+            set: { wrappedValue = unit.toKg($0) }
+        )
+    }
+}
+
 // 统一的数字步进 + 输入控件
 //
 // 布局: [ − ]  [ 47.5 kg ]  [ + ]

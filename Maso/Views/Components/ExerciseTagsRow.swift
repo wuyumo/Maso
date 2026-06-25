@@ -297,9 +297,11 @@ func groupedVariantSections<RowView: View>(
         $0.displayName.localizedStandardCompare($1.displayName) == .orderedAscending
     }
     ForEach(sorted, id: \.id) { row($0) }
-    // 组尾留白 — 让本组最后一个变种跟下一个母动作之间有"呼吸", 跟组内紧凑形成对比.
+    // 组尾必须留一个"终结行" — onToggleExpand 用了 withAnimation, List 动画插入"条件式裸 ForEach"
+    // 会崩 (经典 SwiftUI List batch-update 越界); 这个稳定的尾行撑住动画 diff. ⚠️ 别删它.
+    // 高度压到 1pt (原来 5pt 显得"最后一个变种 ↔ 下一个母动作"间距太大) → 视觉上跟普通行距基本一致.
     Color.clear
-        .frame(height: 5)
+        .frame(height: 1)
         .listRowInsets(EdgeInsets())
         .listRowBackground(Color.clear)
         .listRowSeparator(.hidden)

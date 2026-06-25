@@ -59,7 +59,9 @@ private func makePlan(id: String, name: String, steps: [PlanStep?],
     guard !valid.isEmpty else { return nil }
     return Plan(
         id: id,
-        name: name,
+        // 推荐/种子计划名本地化 — 否则中文用户的 Today 主卡标题是英文 (e.g. "Day C · Legs + Glutes").
+        // key = 英文原名; en 走 fallback (= key), zh 在 Localizable.strings 提供译名.
+        name: NSLocalizedString(name, comment: "recommended plan name"),
         steps: valid,
         createdAt: now.addingTimeInterval(-Double(daysAgo) * 86400),
         updatedAt: now.addingTimeInterval(-Double(daysAgo) * 86400)

@@ -511,12 +511,107 @@ final class DataStore {
     // MARK: - 简单的 plan 操作
 
     func updatePlan(_ plan: Plan) {
+        let old = plans.first(where: { $0.id == plan.id })
         if let idx = plans.firstIndex(where: { $0.id == plan.id }) {
             plans[idx] = plan
         } else {
             plans.append(plan)
         }
+        // R3 全局同步: 把本次"改了参数的既有 step"传播到所有 routine 的同 exerciseId step.
+        // 仅在既有 step (id 不变) + 同动作 (exerciseId 不变) + 参数确有变化时触发;
+        // 新增 step / 换动作不在此传播 (新增走 makeSeededStep 的"采用全局"逻辑, 换动作只是 swap).
+        if settings.globalExerciseParamSyncEnabled, let old {
+            for step in plan.steps {
+                guard let oldStep = old.steps.first(where: { $0.id == step.id }),
+                      oldStep.exerciseId == step.exerciseId,
+                      !Self.sameParams(oldStep, step) else { continue }
+                syncExerciseParams(from: step)
+            }
+        }
         save()  // 持久化变更
+    }
+
+    // MARK: - R3 全局动作参数同步
+
+    /// 把 src 的训练参数 (组数/次数/重量/时长/休息 + 逐组覆盖) 写到所有 plan (+ aiTodayPlan)
+    /// 里同 exerciseId 的 step. 仅在 globalExerciseParamSyncEnabled 开启时生效.
+    /// 不改 id / exerciseId; 源 step 被自己覆盖是幂等 no-op.
+    func syncExerciseParams(from src: PlanStep) {
+        guard settings.globalExerciseParamSyncEnabled else { return }
+        func apply(_ s: inout PlanStep) {
+            s.sets = src.sets
+            s.reps = src.reps
+            s.weight = src.weight
+            s.duration = src.duration
+            s.restBetweenSets = src.restBetweenSets
+            s.rest = src.rest
+            s.setReps = src.setReps
+            s.setWeights = src.setWeights
+            s.setDurations = src.setDurations
+        }
+        var changed = false
+        let now = Date()
+        for pi in plans.indices {
+            var planChanged = false
+            for si in plans[pi].steps.indices where plans[pi].steps[si].exerciseId == src.exerciseId {
+                if !Self.sameParams(plans[pi].steps[si], src) {
+                    apply(&plans[pi].steps[si]); planChanged = true
+                }
+            }
+            if planChanged { plans[pi].updatedAt = now; changed = true }
+        }
+        if var ai = aiTodayPlan {
+            var aiChanged = false
+            for si in ai.steps.indices where ai.steps[si].exerciseId == src.exerciseId {
+                if !Self.sameParams(ai.steps[si], src) { apply(&ai.steps[si]); aiChanged = true }
+            }
+            if aiChanged { aiTodayPlan = ai; changed = true }
+        }
+        if changed { save() }
+    }
+
+    /// 两个 step 的训练参数是否完全一致 (不看 id / exerciseId) — 给同步去抖 + updatePlan diff 用.
+    static func sameParams(_ a: PlanStep, _ b: PlanStep) -> Bool {
+        a.sets == b.sets && a.reps == b.reps && a.weight == b.weight && a.duration == b.duration
+            && a.restBetweenSets == b.restBetweenSets && a.rest == b.rest
+            && a.setReps == b.setReps && a.setWeights == b.setWeights && a.setDurations == b.setDurations
+    }
+
+    /// 新建一个 PlanStep, 训练参数按"全局同步开/关"取默认 (R3):
+    ///   - 同步开 + 已有别的 routine 含该动作 → 采用那份参数 (保持全局一致).
+    ///   - 否则 → 从该动作"最近一次记录" (lastSet) 回填 reps/weight/duration; 组数/休息用偏好默认.
+    func makeSeededStep(for ex: Exercise, stepId: String) -> PlanStep {
+        let isStrength = ex.category == .strength
+        if settings.globalExerciseParamSyncEnabled,
+           let existing = plans.lazy.flatMap({ $0.steps }).first(where: { $0.exerciseId == ex.id }) {
+            return PlanStep(
+                id: stepId, exerciseId: ex.id,
+                sets: existing.sets, reps: existing.reps, weight: existing.weight,
+                setReps: existing.setReps, setWeights: existing.setWeights, setDurations: existing.setDurations,
+                duration: existing.duration,
+                restBetweenSets: existing.restBetweenSets, rest: existing.rest
+            )
+        }
+        let last = lastSet(forExerciseId: ex.id)
+        return PlanStep(
+            id: stepId, exerciseId: ex.id,
+            sets: settings.defaultSetsPerExercise,
+            reps: isStrength ? (last?.reps ?? 10) : nil,
+            weight: isStrength ? (last?.weight ?? 0) : nil,
+            duration: isStrength ? nil : (last?.duration ?? 30),
+            restBetweenSets: settings.defaultRestSeconds,
+            rest: 0
+        )
+    }
+
+    /// R2 撤销: 删掉本场 session 里某动作"最近一条"记录 (sets 倒序存, firstIndex 即最新).
+    func removeLastSet(exerciseId: String, planId: String?, since: Date) {
+        if let idx = sets.firstIndex(where: {
+            $0.exerciseId == exerciseId && $0.planId == planId && $0.performedAt >= since
+        }) {
+            sets.remove(at: idx)
+            save()
+        }
     }
 
     /// 记录新的一组 — 同时:

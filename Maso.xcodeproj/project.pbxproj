@@ -120,6 +120,7 @@
 		C5AF019E72EFE3F7EB910534 /* FeedbackSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56BF1DAA41EE256A9EDA30F /* FeedbackSheet.swift */; };
 		C5CE4E5E20D80EBC46E0A117 /* ExerciseImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 041577FA74CB0C00E92E4233 /* ExerciseImageCache.swift */; };
 		C5CF734E8DD3CCD6D7F11C95 /* ExerciseImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 402229E63028077115335B66 /* ExerciseImage.swift */; };
+		CCFB22BB1AD7B2B70BB5F32F /* WatchBrandMark.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6ACD1743B8BA8EFB05DFD53 /* WatchBrandMark.swift */; };
 		CD19F224EAD90C25B4F94A7B /* _missing-image-new.md in Resources */ = {isa = PBXBuildFile; fileRef = B60786EDA8A1B901D6361BF3 /* _missing-image-new.md */; };
 		CE995F4FE19088CC54F0C21C /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C228082523E5BD38F52B6B76 /* PersistenceController.swift */; };
 		CF0DF500D090FE778C2DE542 /* WatchWorkoutManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA721C2F4E32B7402AC2CAA6 /* WatchWorkoutManager.swift */; };
@@ -305,6 +306,7 @@
 		E097C6FBEC7E44DBC847FEF6 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		E392D3BCA567E27D36082C9C /* FilterMenuButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterMenuButton.swift; sourceTree = "<group>"; };
 		E4CD0A6C911CC31064AFC8D4 /* CommunityPlans.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityPlans.swift; sourceTree = "<group>"; };
+		E6ACD1743B8BA8EFB05DFD53 /* WatchBrandMark.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchBrandMark.swift; sourceTree = "<group>"; };
 		E6BB99772BABDEBDE4A63981 /* Maso.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Maso.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E971064231D3F55030DBE2F5 /* WorkoutCalendarScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutCalendarScreen.swift; sourceTree = "<group>"; };
 		EA133CA664EEBFD23357FBF5 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
@@ -356,6 +358,7 @@
 				A63705CC4062E59B9B7201A9 /* MasoWatch.entitlements */,
 				ED5F46664DB595CE345ED1F9 /* MasoWatchApp.swift */,
 				EFADF03C8B68C694F394F493 /* PrivacyInfo.xcprivacy */,
+				E6ACD1743B8BA8EFB05DFD53 /* WatchBrandMark.swift */,
 				BF854A389D2582A6CF015F7D /* WatchBridge.swift */,
 				8C75A0DE1EC23A7DCDE065D6 /* WatchViews.swift */,
 				CA721C2F4E32B7402AC2CAA6 /* WatchWorkoutManager.swift */,
@@ -905,6 +908,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				646C03A757E2E933B14C2673 /* MasoWatchApp.swift in Sources */,
+				CCFB22BB1AD7B2B70BB5F32F /* WatchBrandMark.swift in Sources */,
 				58B55D526157588452E3D831 /* WatchBridge.swift in Sources */,
 				6617A19E1CBB579C44E72988 /* WatchSyncState.swift in Sources */,
 				38D1739297A938C766CE3B89 /* WatchViews.swift in Sources */,

@@ -32,6 +32,12 @@ struct MuscleSelector: View {
     /// 为 true 时优先级最高 (覆盖 detailEnabled).
     var sectionsOnly: Bool = false
 
+    /// sectionsOnly 时 chip 的横向对齐. Onboarding 传 .center; 其余默认 .leading 不变.
+    var chipAlignment: FlowAlignment = .leading
+
+    /// sectionsOnly 时把 chip 放大 (Onboarding focus 步用; 其余默认正常尺寸).
+    var largeChips: Bool = false
+
     /// 协同肌 — 显示为半透色, 也可点击 (点击会加入 selected).
     /// QuickWorkout 传计算结果; Settings/Onboarding 传 [].
     var synergists: Set<MuscleGroup> = []
@@ -142,12 +148,12 @@ struct MuscleSelector: View {
     var body: some View {
         if sectionsOnly {
             // 只 6 个大 section chip, 一个 FlowLayout 横向 wrap — 不展开 major / sub.
-            FlowLayout(spacing: 8, alignment: .leading) {
+            FlowLayout(spacing: largeChips ? 12 : 8, alignment: chipAlignment) {
                 ForEach(Self.focusSections, id: \.self) { sec in
                     majorChip(sec)
                 }
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
+            .frame(maxWidth: .infinity, alignment: chipAlignment == .center ? .center : .leading)
         } else if detailEnabled {
             // 细分开启: 每行 = 1 major + 它的 subs, 行内 wrap, 不同 major 跨行.
             VStack(alignment: .leading, spacing: 14) {
@@ -207,8 +213,9 @@ struct MuscleSelector: View {
         let st = state(for: m)
         return Button { toggle(m) } label: {
             Text(m.displayName)
-                .font(.system(size: 14, weight: .heavy))
-                .padding(.horizontal, 14).padding(.vertical, 8)
+                .font(.system(size: largeChips ? 20 : 14, weight: .heavy))
+                .padding(.horizontal, largeChips ? 22 : 14)
+                .padding(.vertical, largeChips ? 14 : 8)
                 .background(majorBg(st))
                 .foregroundStyle(majorFg(st))
                 .overlay(majorBorder(st))

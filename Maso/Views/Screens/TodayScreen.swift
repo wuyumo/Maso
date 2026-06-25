@@ -9,8 +9,10 @@ struct TodayScreen: View {
     let onNewPlan: () -> Void
     /// 标题行右上角齿轮 → 弹 Settings sheet (RootView 持有 sheet state)
     let onOpenSettings: () -> Void
-    /// My Plans 空态"Generate AI plans"按钮 → 跳到 Discover tab (RootView 切 tab).
+    /// My Plans 空态"Generate AI plans"按钮 / Routines 底部 "AI Routines" 入口 → push AI 发现页.
     var onGoToDiscover: () -> Void = {}
+    /// Routines 底部 "Classics" 入口 → push Classics 发现页 (PlansScreen 接 addRoute = .classics).
+    var onBrowseClassics: () -> Void = {}
     /// 嵌在外层 NavigationStack (Train / Plans tab) 里时 true — 不渲染自己的大标题/齿轮.
     var embedded: Bool = false
     /// 渲染哪部分内容:
@@ -133,6 +135,22 @@ struct TodayScreen: View {
                             }
                         }
                     }
+                }
+
+                // Routines tab: 把 AI / Classics 入口放出来, 排在 My routines 列表下面 (不再藏在 "+" 菜单).
+                if mode == .myPlans {
+                    entryCard(
+                        icon: "sparkles",
+                        title: "AI Routines",
+                        subtitle: "Generate a plan from your preferences",
+                        action: onGoToDiscover
+                    )
+                    entryCard(
+                        icon: "books.vertical.fill",
+                        title: "Classics",
+                        subtitle: "Proven programs to start from",
+                        action: onBrowseClassics
+                    )
                 }
 
                 Spacer(minLength: MasoMetrics.pageBottomInset)
@@ -338,6 +356,9 @@ struct TodayScreen: View {
     ]
 
     private var gapMuscles: [MuscleGroup] {
+        // 全新用户 (零历史) 不显示 "Train the gaps" — 否则所有肌群都算 gap → 一键塞 12 个动作的马拉松,
+        // 跟上方策划好的 Today's Workout 抢焦, 也吓退新用户. 等有了首次训练再让 gap 逻辑生效.
+        guard !data.sets.isEmpty else { return [] }
         let map = lastMap
         let now = Date()
         let cutoff: TimeInterval = 3 * 86400

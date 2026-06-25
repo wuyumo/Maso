@@ -58,46 +58,51 @@ struct MuscleStatusOverviewCard: View {
                     // legend group → button 之间走 14pt — 之前 8pt 太挤, 用户反馈 button 跟最后一行
                     // legend 贴在一起没有视觉呼吸. 14pt 让 button 明显是"另一组"操作元素.
                     VStack(alignment: .leading, spacing: 14) {
-                        VStack(alignment: .leading, spacing: 4) {
-                            // 4 档 fatigue, 跟 MuscleStatusCompute.opacityFor 阈值对齐.
-                            // 改了文案 — 之前 "Almost fresh / Ready to train" 偏被动, 现在
-                            // 强调"需要休息 / 还在恢复 / 基本恢复 / 已恢复" 的状态主题.
-                            legendRow(opacity: 1.0, label: "Heavy fatigue")
-                            legendRow(opacity: 0.6, label: "Recovering")
-                            legendRow(opacity: 0.3, label: "Mostly recovered")
-                            legendRow(opacity: nil, label: "Fresh")
-                        }
-
-                        // P2-16: 有 gap → "Train the gaps" CTA; 没 gap (健康状态) → 正向"全部跟上"
-                        // 标签, 不再是灰掉的禁用按钮 (那看着像坏了).
-                        if gapMuscles.isEmpty {
-                            HStack(spacing: 5) {
-                                Image(systemName: "checkmark.circle.fill")
-                                    .font(.system(size: 10, weight: .heavy))
-                                Text("All caught up")
-                                    .font(.system(size: 11, weight: .heavy))
-                                    .lineLimit(1)
-                            }
-                            .foregroundStyle(MasoColor.textDim)
-                            .fixedSize(horizontal: true, vertical: false)
+                        if fatigueMap.isEmpty {
+                            // 零历史首日: 不显示空图例 + 误导性"已全部跟上"(其实从没练过), 改给一句引导.
+                            Text("Finish a workout to see which muscles need recovery.")
+                                .font(.system(size: 12))
+                                .foregroundStyle(MasoColor.textDim)
+                                .fixedSize(horizontal: false, vertical: true)
+                                .frame(maxWidth: 150, alignment: .leading)
                         } else {
-                            Button(action: onStartGapWorkout) {
+                            VStack(alignment: .leading, spacing: 4) {
+                                // 4 档 fatigue, 跟 MuscleStatusCompute.opacityFor 阈值对齐.
+                                legendRow(opacity: 1.0, label: "Heavy fatigue")
+                                legendRow(opacity: 0.6, label: "Recovering")
+                                legendRow(opacity: 0.3, label: "Mostly recovered")
+                                legendRow(opacity: nil, label: "Fresh")
+                            }
+                            // 有 gap → "Train the gaps" CTA; 没 gap (健康状态) → 正向"全部跟上"标签.
+                            if gapMuscles.isEmpty {
                                 HStack(spacing: 5) {
-                                    Image(systemName: "play.fill")
+                                    Image(systemName: "checkmark.circle.fill")
                                         .font(.system(size: 10, weight: .heavy))
-                                    Text("Train the gaps")
+                                    Text("All caught up")
                                         .font(.system(size: 11, weight: .heavy))
                                         .lineLimit(1)
                                 }
-                                .foregroundStyle(MasoColor.accent)
-                                .padding(.horizontal, 11)
-                                .padding(.vertical, 5)
-                                .background(MasoColor.accent.opacity(0.16))
-                                .overlay(Capsule().stroke(MasoColor.accent.opacity(0.4), lineWidth: 0.8))
-                                .clipShape(Capsule())
+                                .foregroundStyle(MasoColor.textDim)
                                 .fixedSize(horizontal: true, vertical: false)
+                            } else {
+                                Button(action: onStartGapWorkout) {
+                                    HStack(spacing: 5) {
+                                        Image(systemName: "play.fill")
+                                            .font(.system(size: 10, weight: .heavy))
+                                        Text("Train the gaps")
+                                            .font(.system(size: 11, weight: .heavy))
+                                            .lineLimit(1)
+                                    }
+                                    .foregroundStyle(MasoColor.accent)
+                                    .padding(.horizontal, 11)
+                                    .padding(.vertical, 5)
+                                    .background(MasoColor.accent.opacity(0.16))
+                                    .overlay(Capsule().stroke(MasoColor.accent.opacity(0.4), lineWidth: 0.8))
+                                    .clipShape(Capsule())
+                                    .fixedSize(horizontal: true, vertical: false)
+                                }
+                                .buttonStyle(.plain)
                             }
-                            .buttonStyle(.plain)
                         }
                     }
                     // P2-15: 不再 fixedSize 整个右列宽度 — SE / 长中文 legend 会被裁; 让它能压缩.

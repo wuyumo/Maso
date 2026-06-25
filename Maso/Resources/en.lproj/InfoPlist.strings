@@ -3,3 +3,5 @@
 "NSCameraUsageDescription" = "Masso uses the camera so you can add a selfie to your shareable workout summary.";
 "NSHealthUpdateUsageDescription" = "Masso saves your completed workouts to Apple Fitness so they appear in your Activity rings and Health timeline.";
 "NSPhotoLibraryUsageDescription" = "Masso reads a photo you pick from your library so you can add it to your shareable workout summary.";
+
+"NSHealthShareUsageDescription" = "Masso reads your recent workouts from Apple Health to avoid double-counting sessions you already recorded on Apple Watch.";

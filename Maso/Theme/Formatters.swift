@@ -28,6 +28,17 @@ func formatWeight(_ w: Double) -> String {
     return String(format: "%.1f", w)
 }
 
+/// canonical kg → "<数值> <单位>" (按用户单位设置换算 + 带标签). 全 app 显示训练重量统一走它,
+/// 避免硬编码 "kg" 让 lb 设置失效.
+func weightLabel(_ kg: Double, _ unit: WeightUnit) -> String {
+    "\(formatWeight(unit.fromKg(kg))) \(unit.label)"
+}
+
+/// 同上, 用全局当前单位 (WeightUnitProvider.current) — 显示点不必自己拿 settings.
+func weightLabel(_ kg: Double) -> String {
+    weightLabel(kg, WeightUnitProvider.current)
+}
+
 /// 相对日期: "Today" / "Yesterday" / "N days ago" / "May 8" — localized
 func relativeDay(_ date: Date, now: Date = Date()) -> String {
     let cal = Calendar.current

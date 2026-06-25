@@ -1,5 +1,65 @@
 import SwiftUI
 
+// 每个可见动作行上报 (所属大区, 在列表坐标系的 minY) — 右侧索引据此高亮"当前滚到顶部的区".
+// 用全行上报 (而非只第一行): 第一行滚出屏幕后会被 List 虚拟化掉、不再上报, 用第一行会误判.
+struct RowAnchor: Equatable { let section: MuscleGroup; let minY: CGFloat }
+private struct SectionMinYKey: PreferenceKey {
+    static var defaultValue: [RowAnchor] { [] }
+    static func reduce(value: inout [RowAnchor], nextValue: () -> [RowAnchor]) {
+        value.append(contentsOf: nextValue())
+    }
+}
+
+/// 单面板、缩放到某肌肉大区 bbox 的精细局部图 (右侧分区索引的图标).
+/// 背部用 POSTERIOR, 其余用 ANTERIOR; 取该区肌群 polygon 的包围盒 + 留白 (带出周边肌群),
+/// 整体不再画前后两个小人, 而是聚焦那块区域的精细分块.
+private struct MuscleRegionIcon: View {
+    let region: MuscleGroup
+    /// 该区肌群的填色 (主体).
+    var focusColor: Color
+    /// 周边肌群的填色 (衬托, 通常更弱).
+    var surroundColor: Color
+    var size: CGFloat = 24
+
+    private var polys: [AnatomyPolygon] { region == .back ? POSTERIOR : ANTERIOR }
+    private var focus: Set<MuscleGroup> { expandAnatomyMuscles([region]) }
+
+    /// 该区肌群 polygon 的包围盒, pad 后取正方形 (anatomy 坐标). 没命中 → 全身兜底.
+    private var box: (x: CGFloat, y: CGFloat, side: CGFloat) {
+        var minX = CGFloat.greatestFiniteMagnitude, minY = minX
+        var maxX = -CGFloat.greatestFiniteMagnitude, maxY = maxX
+        for poly in polys where focus.contains(poly.muscle) {
+            for p in poly.points {
+                minX = min(minX, p.x); maxX = max(maxX, p.x)
+                minY = min(minY, p.y); maxY = max(maxY, p.y)
+            }
+        }
+        guard minX <= maxX else { return (0, 0, 100) }
+        let cx = (minX + maxX) / 2, cy = (minY + maxY) / 2
+        let side = max(maxX - minX, maxY - minY) * 1.55   // ×1.55 → 带出周边肌群
+        return (cx - side / 2, cy - side / 2, side)
+    }
+
+    var body: some View {
+        Canvas { ctx, sz in
+            let b = box
+            guard b.side > 0 else { return }
+            let s = sz.width / b.side
+            func pt(_ p: CGPoint) -> CGPoint { CGPoint(x: (p.x - b.x) * s, y: (p.y - b.y) * s) }
+            for poly in polys where poly.points.count >= 3 {
+                var path = Path()
+                path.move(to: pt(poly.points[0]))
+                for q in poly.points.dropFirst() { path.addLine(to: pt(q)) }
+                path.closeSubpath()
+                let fill: Color = (poly.muscle != .fullBody && focus.contains(poly.muscle)) ? focusColor : surroundColor
+                ctx.fill(path, with: .color(fill))
+            }
+        }
+        .frame(width: size, height: size)
+        .clipShape(RoundedRectangle(cornerRadius: 7, style: .continuous))
+    }
+}
+
 // 浏览全部 873 个动作的 sheet — Settings → Data → Exercise library 入口.
 // 跟 ExercisePicker 类似 UI (search + chip + list), 但 tap 一项不是"加进 plan",
 // 而是展开/弹出动作详情 (instructions / muscles / category) — 纯浏览模式.
@@ -20,8 +80,6 @@ struct ExerciseLibraryBrowser: View {
     @State private var selected: Exercise? = nil
     /// 当前展开的"变种组" key (= ExerciseGroup.id). 一次只展开一组 — 跟 picker 同一收折语义.
     @State private var expandedGroupKey: String? = nil
-    /// 列表是否已从顶部下滑 — 驱动钉顶搜索/筛选条的背景: 顶部透明, 上滑吸顶后上系统栏材质 (跟导航栏 scrolled 态一致).
-    @State private var listScrolled: Bool = false
     /// "+ Add exercise" → 两条路径的选择 sheet (Create your own / Browse rare).
     @State private var addChoiceOpen: Bool = false
     /// 路径 1: 自创动作表单 sheet (name + photo + 元数据).
@@ -34,6 +92,12 @@ struct ExerciseLibraryBrowser: View {
     @State private var deleteBlockedRef: Exercise? = nil
     /// P1-7: 自创动作是 Pro 功能 (付费墙广告语承诺) — 免费用户走这弹 paywall.
     @State private var paywallOpen: Bool = false
+    /// 右侧跳转索引当前高亮的分区 (拖拽 scrubber 或滚动跟随). nil → 默认高亮第一个区.
+    @State private var activeSection: MuscleGroup? = nil
+    /// 正在拖右侧 scrubber — 期间屏蔽"滚动跟随高亮", 否则 scrubber 设的区与跟随算出的区互斗 → 来回抖.
+    @State private var isScrubbing: Bool = false
+    /// 仅拖动时才弹出文案 pill (松手即收, 平时只剩小绿点) — 仿通讯录右侧索引.
+    @State private var showScrubLabel: Bool = false
 
     private static let muscleSections: [MuscleGroup] = [
         .chest, .back, .shoulders, .arms, .core, .legs,
@@ -82,6 +146,28 @@ struct ExerciseLibraryBrowser: View {
             if fa != fb { return fa }
             // 中英混排: 中文名在前按拼音, 未翻译英文名在后按字母 — 不再交叉穿插 (观感).
             return ExerciseNameSort.precedes(a.canonical.displayName, b.canonical.displayName)
+        }
+    }
+
+    /// 该变种组归属的肌肉大区 (按 canonical 的首个主练肌 .section). 用于竖向分区.
+    private func sectionOf(_ g: ExerciseGroup) -> MuscleGroup {
+        let muscles = g.canonical.primaryMuscles.isEmpty ? g.canonical.muscleGroups : g.canonical.primaryMuscles
+        for m in muscles {
+            if let sec = m.section, Self.muscleSections.contains(sec) {
+                return sec
+            }
+        }
+        return Self.muscleSections.first ?? .chest   // 兜底 (实际每个动作都落在 6 区之一)
+    }
+
+    /// filteredGroups 按肌肉大区分桶, 只保留有内容的区; 顺序 = muscleSections (胸→腿),
+    /// 区内顺序沿用 filteredGroups (置顶优先 + 名字序). 喂给竖向 Section + 底部跳转条.
+    private var sectionedGroups: [(MuscleGroup, [ExerciseGroup])] {
+        var buckets: [MuscleGroup: [ExerciseGroup]] = [:]
+        for g in filteredGroups { buckets[sectionOf(g), default: []].append(g) }
+        return Self.muscleSections.compactMap { sec in
+            guard let gs = buckets[sec], !gs.isEmpty else { return nil }
+            return (sec, gs)
         }
     }
 
@@ -187,6 +273,33 @@ struct ExerciseLibraryBrowser: View {
         return MovementFacet.ordered.filter { set.contains($0) }
     }
 
+    /// 零搜索结果空状态 — 提示 + "添加动作/浏览冷门库"入口 (取代之前的空白死路).
+    @ViewBuilder
+    private var emptyResultsRow: some View {
+        VStack(spacing: 12) {
+            Image(systemName: "magnifyingglass")
+                .font(.system(size: 30))
+                .foregroundStyle(MasoColor.textFaint)
+            Text("No exercises match your search")
+                .font(.system(size: 14, weight: .semibold))
+                .foregroundStyle(MasoColor.textDim)
+            Button(action: { addChoiceOpen = true }) {
+                Text("Add exercise")
+                    .font(.system(size: 13, weight: .bold))
+                    .foregroundStyle(.black)
+                    .padding(.horizontal, 16).padding(.vertical, 8)
+                    .background(MasoColor.accent)
+                    .clipShape(Capsule())
+            }
+            .buttonStyle(.plain)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 56)
+        .listRowInsets(EdgeInsets())
+        .listRowBackground(Color.clear)
+        .listRowSeparator(.hidden)
+    }
+
     /// 常驻搜索 + 筛选条 — 用全 app 共享的 ExerciseSearchFilterBar (跟训练 picker 同一组件,
     /// 调一处两边都变). 钉在列表上方 (不随列表滚动).
     private var searchFilterBar: some View {
@@ -203,54 +316,175 @@ struct ExerciseLibraryBrowser: View {
         )
     }
 
-    var body: some View {
-        NavStackIf(embedded: embedded) {
-            List {
-                // 搜索 + 筛选条作为 pinned section header — plain List 的 header 会吸顶, 既常驻又不打断 List 的
-                // 滚动追踪, 所以系统大标题能随列表上滑收折进 headbar (跟 Today / History / Routines 一致).
-                Section {
-                    // 收折分组 — 跟"训练中选动作 picker"用同一份 ExerciseGrouping 数据 + GroupedExerciseRow
-                    // 展示/收折逻辑, 保证两边一致. canonical 行折叠, "+N variants" 胶囊展开同名变种.
-                    ForEach(filteredGroups) { group in
-                        libraryRow(group.canonical, isVariant: false, group: group)
-                        // 展开 → 变种拆 "Variation"(动作) / "Equipment"(器械) 两段, 跟 picker / Rare 一致.
-                        if !group.variants.isEmpty, expandedGroupKey == group.id {
-                            groupedVariantSections(for: group) { variant in
-                                libraryRow(variant, isVariant: true, group: group)
+    // MARK: - 右侧肌肉分区跳转索引 (Section Navigation — 肌肉图 scrubber)
+
+    /// 右侧竖排"肌肉部位"索引: 每区一个迷你人体图 (该区肌肉高亮).
+    ///   - 默认 (未选中): 仅 dim 显示该区肌肉图, 无文字 / 无底.
+    ///   - 选中 / 手指滑到: 该区亮 accent, 左侧浮出文字, "图+文字"用 chip 底包裹 (整条无卡底).
+    ///   - 拖拽 scrubber: 手指 Y → 对应行高亮 + 滚到该区第一行; 其余保持默认未选中.
+    private func jumpNav(proxy: ScrollViewProxy) -> some View {
+        let secs = sectionedGroups
+        let rowH: CGFloat = 32
+        return VStack(alignment: .trailing, spacing: 0) {
+            ForEach(secs, id: \.0) { entry in
+                let sec = entry.0
+                let isActive = (activeSection ?? secs.first?.0) == sec
+                let expanded = showScrubLabel && isActive   // 仅拖动 + 当前区 → 弹出文案 pill
+                Group {
+                    if expanded {
+                        // 拖动 HUD: 亮绿 capsule + 深色 [名称 + 肌肉图] (深色配亮绿 ~11:1 AAA).
+                        HStack(spacing: 5) {
+                            Text(sec.displayName)
+                                .font(.system(size: 12, weight: .bold))
+                                .foregroundStyle(MasoColor.background)
+                                .lineLimit(1).fixedSize()
+                            MuscleRegionIcon(region: sec,
+                                             focusColor: MasoColor.background,
+                                             surroundColor: MasoColor.background.opacity(0.35),
+                                             size: 22)
+                        }
+                        .padding(.horizontal, 8).padding(.vertical, 4)
+                        .background { Capsule().fill(MasoColor.accent) }
+                    } else if isActive {
+                        // 平时选中态: 小号绿色肌肉图 — 瞥见是哪个肌群, 但仍小 (比拖动 pill 里的小).
+                        MuscleRegionIcon(region: sec,
+                                         focusColor: MasoColor.accent,
+                                         surroundColor: MasoColor.accent.opacity(0.3),
+                                         size: 18)
+                    } else {
+                        // 其余区: 统一小灰点.
+                        Circle()
+                            .fill(MasoColor.textDim.opacity(0.35))
+                            .frame(width: 5, height: 5)
+                    }
+                }
+                .frame(width: 30, height: rowH, alignment: .trailing)   // 固定 30pt 宽拖拽热区, 内容右对齐
+                .contentShape(Rectangle())
+            }
+        }
+        .padding(.trailing, 8)
+        .gesture(
+            DragGesture(minimumDistance: 0, coordinateSpace: .local)
+                .onChanged { value in
+                    isScrubbing = true   // 屏蔽滚动跟随, 否则与下面 scrollTo 触发的跟随互斗 → 抖
+                    showScrubLabel = true // 拖动时弹出文案 pill
+                    let idx = max(0, min(secs.count - 1, Int(value.location.y / rowH)))
+                    let target = secs[idx].0
+                    if target != activeSection {
+                        withAnimation(.easeOut(duration: 0.15)) { activeSection = target }
+                        Haptics.selection()
+                        if let firstId = secs[idx].1.first?.id {
+                            proxy.scrollTo(firstId, anchor: .top)   // 即时滚 (不动画), 跟手不打架
+                        }
+                    }
+                }
+                .onEnded { _ in
+                    withAnimation(.easeOut(duration: 0.18)) { showScrubLabel = false }  // 松手即收回小绿点
+                    // 松手后留一小窗口让滚动 settle, 期间仍屏蔽跟随, 防回弹抖动; 之后恢复滚动跟随.
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) { isScrubbing = false }
+                }
+        )
+    }
+
+    /// 动作列表 List 本体 — headerFilter=true 时把筛选条放进 plain List 的 pinned section header
+    /// (iOS 18-25: 系统自动给吸顶毛玻璃); =false 时 header 留空 (iOS 26: 筛选条改由外层 .safeAreaBar 提供).
+    @ViewBuilder
+    private func exerciseList(headerFilter: Bool) -> some View {
+        List {
+                // iOS 18-25: 筛选条放进 plain List 吸顶 header (系统给毛玻璃). iOS 26 走 safeAreaBar.
+                if headerFilter {
+                    Section { EmptyView() } header: {
+                        searchFilterBar
+                            .textCase(nil)
+                            .listRowInsets(EdgeInsets())
+                    }
+                }
+                if filteredGroups.isEmpty {
+                    // 零结果不再空白死路 — 给提示 + 入口 (跟 picker 的空状态一致).
+                    Section { emptyResultsRow }
+                } else {
+                    // 按肌肉大区分组 (决定顺序), 但不显示分区标题 — 吸顶时底色跟导航栏对不齐, 索性去掉.
+                    // 跳转条 scrollTo 锚到每区第一行 (group.id), 不依赖 section 表头.
+                    ForEach(sectionedGroups, id: \.0) { entry in
+                        let sec = entry.0
+                        Section {
+                            // 收折分组 — 跟"训练中选动作 picker"用同一份 ExerciseGrouping + GroupedExerciseRow.
+                            ForEach(entry.1) { group in
+                                libraryRow(group.canonical, isVariant: false, group: group)
+                                    .background {
+                                        // 每个可见行上报 (区, minY) → 右侧索引高亮当前滚到顶部的区.
+                                        GeometryReader { geo in
+                                            Color.clear.preference(
+                                                key: SectionMinYKey.self,
+                                                value: [RowAnchor(section: sec,
+                                                                  minY: geo.frame(in: .named("exerciseList")).minY)])
+                                        }
+                                    }
+                                // 展开 → 变种拆 "Variation"(动作)/"Equipment"(器械) 两段, 跟 picker/Rare 一致.
+                                if !group.variants.isEmpty, expandedGroupKey == group.id {
+                                    groupedVariantSections(for: group) { variant in
+                                        libraryRow(variant, isVariant: true, group: group)
+                                    }
+                                }
                             }
                         }
                     }
-                } header: {
-                    // 去 header 默认大小写 / 内边距. 背景跟导航栏同步: 顶部 (未滚) 透明 → 跟 large-title 的透明态一致;
-                    // 上滑吸顶 → 上系统栏材质 (.bar) + 底部细线 → 跟导航栏 scrolled 态一致, 消除断层.
-                    searchFilterBar
-                        .textCase(nil)
-                        .listRowInsets(EdgeInsets())
-                        .background(listScrolled ? AnyShapeStyle(Material.bar) : AnyShapeStyle(Color.clear))
-                        .overlay(alignment: .bottom) {
-                            if listScrolled {
-                                Rectangle()
-                                    .fill(MasoColor.textFaint.opacity(0.15))
-                                    .frame(height: 0.5)
-                            }
-                        }
-                        .animation(.easeInOut(duration: 0.18), value: listScrolled)
                 }
             }
             .listStyle(.plain)
+            // 最小行高降到 1 — 否则 groupedVariantSections 的 1pt"终结行"(撑住动画 diff 防崩) 会被默认最小行高
+            // (~44pt) 撑大, 让"最后一个变种 ↔ 下一个母动作"间距过宽. 普通动作行有图片, 内容高远大于 1, 不受影响.
+            .environment(\.defaultMinListRowHeight, 1)
             .scrollContentBackground(.hidden)
-            // 列表是否已从顶部下滑 → 切钉顶条背景 (透明 ↔ 系统栏材质), 跟导航栏 transparent↔material 同步.
-            .onScrollGeometryChange(for: Bool.self) { geo in
-                geo.visibleRect.minY > 1
-            } action: { _, scrolled in
-                if scrolled != listScrolled { listScrolled = scrolled }
+            .background(MasoColor.background.ignoresSafeArea())
+            .coordinateSpace(name: "exerciseList")
+            // 当前区 = 顶部那一行所属的区: 顶部参考线 ~70 (含筛选条高度), 取 minY <= 70 里 minY 最大的行
+            // (= 顶部刚越过参考线的那行); 若都在参考线下方 (列表最顶) 则取最靠上的行.
+            .onPreferenceChange(SectionMinYKey.self) { vals in
+                guard !isScrubbing, !vals.isEmpty else { return }   // 拖 scrubber 时不让跟随插手 → 不抖
+                let above = vals.filter { $0.minY <= 70 }
+                let pick = (above.max(by: { $0.minY < $1.minY })
+                    ?? vals.min(by: { $0.minY < $1.minY }))?.section
+                if let pick, pick != activeSection {
+                    withAnimation(.easeOut(duration: 0.15)) { activeSection = pick }
+                }
             }
             // filter/搜索变化 → 收起手风琴 (跟 picker 一致, 避免残留孤儿展开态).
             .onChange(of: query) { _, _ in expandedGroupKey = nil }
             .onChange(of: muscleFilter) { _, _ in expandedGroupKey = nil }
             .onChange(of: equipmentFilter) { _, _ in expandedGroupKey = nil }
             .onChange(of: movementFilter) { _, _ in expandedGroupKey = nil }
-            .background(MasoColor.background.ignoresSafeArea())
+    }
+
+    var body: some View {
+        NavStackIf(embedded: embedded) {
+            // 头栏 + 吸顶筛选条共用「同一片」深色毛玻璃 — 关键: iOS 26 改了 plain List 的吸顶 header,
+            // 不再自动带半透明材质, 而手动拼任何 SwiftUI 材质 (.bar / 不透明色) 都对不齐导航栏的 Liquid Glass.
+            // 官方解法 (Apple 论坛 / iOS 26): 吸顶条放进 `.safeAreaBar(edge:.top)` — 它的内容自动获得跟导航栏
+            // 同一套系统材质; 配 `.scrollEdgeEffectStyle(.hard, for:.top)` 让吸顶区跟导航栏连成一整片毛玻璃.
+            //   - iOS 26+: 筛选条走 safeAreaBar (header 不放), 跟导航栏天然同材质.
+            //   - iOS 18-25: plain List 的 section header 系统会自动给吸顶毛玻璃, 仍走 header 方案.
+            ScrollViewReader { proxy in
+              Group {
+                if #available(iOS 26.0, *) {
+                    exerciseList(headerFilter: false)
+                        // 筛选 + 搜索条常显 (不再随上划隐藏); 放进 safeAreaBar 跟导航栏共享同一片系统毛玻璃.
+                        .safeAreaBar(edge: .top, spacing: 0) {
+                            searchFilterBar
+                        }
+                        // inline 标题: 带搜索/筛选条的页面原生就是 inline (e.g. 设置/邮件), 跟筛选条同一片玻璃.
+                        .navigationBarTitleDisplayMode(.inline)
+                } else {
+                    exerciseList(headerFilter: true)
+                }
+              }
+              // 右侧竖排肌肉分区索引 — 浮在列表右缘垂直居中, ≥2 区才显示.
+              .overlay(alignment: .trailing) {
+                  if sectionedGroups.count >= 2 {
+                      jumpNav(proxy: proxy)
+                  }
+              }
+            }
                 // embedded 时跳过自己的大标题 / +按钮 (Train 统一导航栏接管); 非 embedded 保持原样.
                 .applyIf(!embedded) { v in
                     v.screenHeader(NSLocalizedString("Exercise library", comment: "")) {

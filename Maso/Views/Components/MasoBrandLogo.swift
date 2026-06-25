@@ -1,20 +1,17 @@
 import SwiftUI
 
-// Maso 品牌 logo — 5 根斜柱叠层版 (5th iteration, 2026-05-16).
+// Maso 品牌 logo — 5 根斜柱叠层版.
 // 直接从 `Maso Green.svg` / `Maso Black.svg` / `Maso white.svg` 解析的 path, viewBox 320×320.
 //
-// 这一版的视觉重点是"前后景错位 + 双向内阴影 3D":
-//   - 5 个 path 各自有不同 opacity, 营造前后层次
-//   - 主柱 (Bar1/2/3) 额外加 2 层内阴影:
-//       上左侧 10% 黑 → 暗面
-//       下右侧 10% 白 → 亮面
-//     仿照 SVG 里的 feOffset + feGaussianBlur + feComposite inner shadow filter
+// 2026-06-16: 跟最新一版 SVG 对齐 —— 新 SVG 是**纯平**的 (只有 5 个 path 各带 opacity,
+// 没有 feOffset/feGaussianBlur 内阴影滤镜), 所以这里去掉了之前那套双向内阴影 3D 效果,
+// 改成纯色平铺填充, 跟 SVG 出图 1:1.
 //
-//   path 3 (BrandBar1) — 最显眼的主柱, opacity 1.0 + 双内阴影
-//   path 4 (BrandBar2) — 主柱右后侧, opacity 0.85 + 双内阴影
-//   path 5 (BrandBar3) — 最右小柱, opacity 0.7 + 双内阴影
-//   path 1 (BrandEcho1) — 右上斜柱 echo, opacity 0.4 (无内阴影, 纯平)
-//   path 2 (BrandEcho2) — 中竖圆角柱 echo, opacity 0.5 (无内阴影, 纯平)
+//   path 1 (BrandEcho1) — 右上斜柱 echo, opacity 0.4
+//   path 2 (BrandEcho2) — 中竖圆角柱 echo, opacity 0.4
+//   path 3 (BrandBar1)  — 最显眼的主柱, opacity 1.0
+//   path 4 (BrandBar2)  — 主柱右后侧, opacity 0.85
+//   path 5 (BrandBar3)  — 最右小柱, opacity 0.7
 //
 // 跟 `MasoMarkIcon.swift` 共享同一套 Shape — 两个组件视觉表面一致,
 // 只在调用点的 frame 上区分 hero 大小. 不再分维护两份 path 数据.
@@ -27,53 +24,19 @@ struct MasoBrandLogo: View {
     /// 顺序: [Echo1(右上斜柱), Echo2(中竖柱), Bar1(主柱), Bar2(中柱), Bar3(右小柱)]
     var opacities: [Double] = MasoBrandLogo.defaultOpacities
 
-    /// 2026-05-24 v7 — 跟新一版 `Maso Green.svg` / `Maso Black.svg` / `Maso white.svg` 对齐.
-    /// 整体形态变了 (更高瘦的"柱阵", 头部上提, 底部对齐), path 全部重画过. opacity 维持 v6 节奏.
+    /// 跟 `Maso Green.svg` / `Maso Black.svg` / `Maso white.svg` 的 path opacity 一致.
     static let defaultOpacities: [Double] = [0.4, 0.4, 1.0, 0.85, 0.7]
 
     var body: some View {
         ZStack {
-            // 跟 SVG path order 一致, ZStack first = 底层. Echo 平的, Bar 带内阴影 3D.
+            // 跟 SVG path order 一致, ZStack first = 底层. 全部纯平填充 (新 SVG 无内阴影滤镜).
             BrandEcho1().fill(color.opacity(opacities[0]))
             BrandEcho2().fill(color.opacity(opacities[1]))
-            innerShadowedBar(BrandBar1(), opacity: opacities[2])
-            innerShadowedBar(BrandBar2(), opacity: opacities[3])
-            innerShadowedBar(BrandBar3(), opacity: opacities[4])
+            BrandBar1().fill(color.opacity(opacities[2]))
+            BrandBar2().fill(color.opacity(opacities[3]))
+            BrandBar3().fill(color.opacity(opacities[4]))
         }
         .aspectRatio(1, contentMode: .fit)
-    }
-
-    /// 主柱带 SVG 同款双向内阴影 (top-left 暗 + bottom-right 亮 → 3D 突起感).
-    ///
-    /// 实现细节:
-    ///   - 用 GeometryReader 拿到当前渲染尺寸, 跟 SVG viewBox 320 算 scale —
-    ///     这样 2pt 偏移 / 1pt blur 在大尺寸是明显的, 小尺寸 (e.g. TabBar 22pt) 自动缩到几乎不可见,
-    ///     视觉上保持一致 "纸感", 不会在小图上变成肉眼可见的描边.
-    ///   - 内阴影的标准 SwiftUI 套路: `Shape.stroke(...).blur(...).offset(...).mask(Shape.fill(.black))`
-    ///     stroke 创建边缘, blur 软化, offset 推方向, mask 把它裁回形状内部.
-    ///   - 整体再套 .opacity(...) 对齐 SVG 里 <g opacity="..."> 的语义.
-    @ViewBuilder
-    private func innerShadowedBar<S: Shape>(_ shape: S, opacity: Double) -> some View {
-        GeometryReader { geo in
-            let scale = min(geo.size.width, geo.size.height) / BrandSVGScale.viewBox
-            ZStack {
-                // 1) 实色填充 — accent / black / white 视 caller 而定
-                shape.fill(color)
-                // 2) 暗面: top-left 10% 黑内阴影
-                shape
-                    .stroke(Color.black.opacity(0.5), lineWidth: 4 * scale)
-                    .blur(radius: 1 * scale)
-                    .offset(x: -2 * scale, y: -2 * scale)
-                    .mask(shape.fill(Color.black))
-                // 3) 亮面: bottom-right 10% 白内阴影
-                shape
-                    .stroke(Color.white.opacity(0.5), lineWidth: 4 * scale)
-                    .blur(radius: 1 * scale)
-                    .offset(x: 2 * scale, y: 2 * scale)
-                    .mask(shape.fill(Color.black))
-            }
-            .opacity(opacity)
-        }
     }
 }
 

@@ -1,124 +1,281 @@
 import SwiftUI
 
-// Onboarding — 单页渐进展开式 (跟 web 端 Onboarding 流程一致)
-//   1. 基础信息 (性别 / 年龄 / 体重)
-//   2. 每周训练次数
-//   3. 想加强的肌群
+// Onboarding — 一问一屏的精细向导 (替代旧的"单页渐进展开").
+//   1 性别  2 年龄  3 体重  4 每周训练次数  5 想加强的肌群
+//
+// 交互规则:
+//   · 选项型 (性别 / 每周次数): 单选, 点一下即自动跳下一步 (带 0.18s 让选中态可感知).
+//   · 拨盘型 (年龄 / 体重): 上下滚动的 wheel, 选体重时默认落在该性别平均值, 调完点"下一步"确定.
+//   · 多选型 (肌群): 不能自动跳, 用"确认, 生成计划"收尾 (顺带进 AI 生成过渡).
+//   · 第 2 步起, 左下角恒有"返回"回到上一步重选 (即便上一步是自动跳进来的).
 struct OnboardingScreen: View {
     @Environment(DataStore.self) private var data
     let onDone: () -> Void
 
-    @State private var step: Int = 1
-    @State private var gender: Gender = .male
+    private enum Step: Int, CaseIterable {
+        case gender = 1, age, weight, days, focus
+        static let total = Step.allCases.count
+    }
+
+    @State private var step: Step = .gender
+    /// 切屏滑动方向 — 前进=新屏从右进, 返回=从左进.
+    @State private var goingForward = true
+
+    @State private var gender: Gender? = nil
     @State private var age: Int = 25
-    @State private var weight: Double = 70
-    @State private var daysPerWeek: Int = 3
-    // 默认勾上 chest + back — picker 暴露的 major, 之前 .lats 是 sub 但 picker 不显示,
-    // 用户改不掉它, 是脏数据. 改成 chest+back 都是 major chip 可见可点的"礼貌默认".
-    @State private var strengthen: Set<MuscleGroup> = [.chest, .back]
+    /// 体重: 选完性别按平均值 re-seed, 除非用户已手动拨过 (weightTouched).
+    @State private var weight: Double = 75
+    @State private var weightTouched = false
+    @State private var daysPerWeek: Int = 3               // 拨盘默认 3 天/周 (拨盘必有位置, 同年龄/体重)
+    @State private var strengthen: Set<MuscleGroup> = []  // 不预选 — 留空 = 均衡
+    /// 确认后进入"AI 生成中"过渡 (感知型 — seedStarterRoutines 是瞬时本地生成).
+    @State private var generating = false
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 24) {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(String(format: NSLocalizedString("STEP %lld / 3", comment: ""), step))
-                        .font(.system(size: 10, weight: .bold)).tracking(2)
-                        .foregroundStyle(MasoColor.accent)
-                    Text("Tell us about your training")
-                        .font(.system(size: 24, weight: .bold))
-                        .foregroundStyle(MasoColor.text)
-                    Text("Three quick questions — we'll use them to recommend a plan that fits.")
-                        .font(.system(size: 13))
-                        .foregroundStyle(MasoColor.textDim)
-                }
-                .padding(.top, MasoMetrics.pagePaddingTop)
+        ZStack {
+            MasoColor.background.ignoresSafeArea()
+            VStack(spacing: 0) {
+                progressHeader
+                    .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
+                    .padding(.top, MasoMetrics.pagePaddingTop)
 
-                // Step 1: 基础信息
-                Group {
-                    SectionLabel("About you")
-                    HStack(spacing: 16) {
-                        ForEach([Gender.male, .female, .other], id: \.self) { g in
-                            Button {
-                                gender = g
-                                if step == 1 { withAnimation { step = 2 } }
-                            } label: {
-                                // P2-14: Text(LocalizedStringKey) — genderLabel 返回 key,
-                                // 否则 Text(String) 走非本地化重载, 中文环境也显英文 "Male".
-                                Text(LocalizedStringKey(genderLabel(g)))
-                                    .font(.system(size: 14, weight: .bold))
-                                    .padding(.horizontal, 16).padding(.vertical, 8)
-                                    .background(gender == g ? MasoColor.accent : MasoColor.surface)
-                                    .foregroundStyle(gender == g ? .black : MasoColor.text)
-                                    .clipShape(Capsule())
-                            }.buttonStyle(.plain)
-                        }
-                    }
-                    HStack {
-                        Text("Age")
-                        Spacer()
-                        // 全 app 统一步进控件 — 跟 Settings / 训练中动作详情页同款.
-                        NumStepperField(intValue: $age, range: 12...90, suffix: "yrs")
-                    }
-                    .font(.system(size: 14))
-                    HStack {
-                        Text("Weight")
-                        Spacer()
-                        NumStepperField(doubleValue: $weight, range: 30...200, step: 1, suffix: "kg", decimal: false)
-                    }
-                    .font(.system(size: 14))
-                }
+                // 问题贴顶 + 选项沉底: stepContent 填满 header 与 bottomBar 之间,
+                // 内部 = 标题(靠上) → Spacer → 选项(靠下), 拇指更易触及.
+                stepContent
+                    .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
+                    .id(step)
+                    .transition(slideTransition)
 
-                if step >= 2 {
-                    Group {
-                        SectionLabel("How many days a week do you train?")
-                        HStack(spacing: 8) {
-                            ForEach(1...6, id: \.self) { n in
-                                Button {
-                                    daysPerWeek = n
-                                    if step == 2 { withAnimation { step = 3 } }
-                                } label: {
-                                    Text("\(n)")
-                                        .font(.system(size: 16, weight: .bold))
-                                        .frame(width: 44, height: 44)
-                                        .background(daysPerWeek == n ? MasoColor.accent : MasoColor.surface)
-                                        .foregroundStyle(daysPerWeek == n ? .black : MasoColor.text)
-                                        .clipShape(Circle())
-                                }.buttonStyle(.plain)
-                            }
-                        }
-                    }
-                    .transition(.move(edge: .bottom).combined(with: .opacity))
-                }
-
-                if step >= 3 {
-                    Group {
-                        SectionLabel("Which muscles do you want to focus on?")
-                        // 只显示 6 个大肌群 section — 跟 Settings "Muscles to focus" picker /
-                        // "选动作"页 Muscle 筛选完全一致 (不展开细分肌群).
-                        MuscleSelector(
-                            selected: $strengthen,
-                            sectionsOnly: true
-                        )
-                        Button(action: confirm) {
-                            Text("Confirm & build my plan")
-                                .font(.system(size: 14, weight: .bold))
-                                .frame(maxWidth: .infinity)
-                                .padding(.vertical, 14)
-                                .background(MasoColor.accent)
-                                .foregroundStyle(.black)
-                                .clipShape(Capsule())
-                        }
-                        .buttonStyle(.plain)
-                        .padding(.top, 8)
-                    }
-                    .transition(.move(edge: .bottom).combined(with: .opacity))
-                }
-
-                Spacer(minLength: MasoMetrics.pageBottomInset)
+                bottomBar
+                    .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
+                    .padding(.bottom, 10)
             }
-            .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
         }
-        .background(MasoColor.background.ignoresSafeArea())
+        // 确认后盖上"AI 生成中"过渡 — 自身全屏不透明, 结束自动 onDone() 落地 Today.
+        .overlay {
+            if generating {
+                AIGeneratingView(onComplete: onDone)
+                    .transition(.opacity)
+            }
+        }
+    }
+
+    // MARK: - 顶部进度
+
+    private var progressHeader: some View {
+        VStack(alignment: .center, spacing: 10) {
+            // 5 段进度条 — 直观传达"被拆成 5 个细步".
+            HStack(spacing: 6) {
+                ForEach(Step.allCases, id: \.self) { s in
+                    Capsule()
+                        .fill(s.rawValue <= step.rawValue ? MasoColor.accent : MasoColor.surface)
+                        .frame(height: 5)
+                }
+            }
+            .animation(.easeInOut(duration: 0.25), value: step)
+            Text(String(format: NSLocalizedString("STEP %lld / 5", comment: ""), step.rawValue))
+                .font(.system(size: 12, weight: .bold)).tracking(2)
+                .foregroundStyle(MasoColor.accent)
+        }
+    }
+
+    // MARK: - 分步内容
+
+    @ViewBuilder private var stepContent: some View {
+        switch step {
+        case .gender: genderStep
+        case .age:    ageStep
+        case .weight: weightStep
+        case .days:   daysStep
+        case .focus:  focusStep
+        }
+    }
+
+    private var slideTransition: AnyTransition {
+        .asymmetric(
+            insertion: .move(edge: goingForward ? .trailing : .leading).combined(with: .opacity),
+            removal:   .move(edge: goingForward ? .leading : .trailing).combined(with: .opacity)
+        )
+    }
+
+    @ViewBuilder
+    private func stepTitle(_ title: String, _ subtitle: String) -> some View {
+        VStack(spacing: 8) {
+            Text(LocalizedStringKey(title))
+                .font(.system(size: 30, weight: .bold))
+                .foregroundStyle(MasoColor.text)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+            Text(LocalizedStringKey(subtitle))
+                .font(.system(size: 16))
+                .foregroundStyle(MasoColor.textDim)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .frame(maxWidth: .infinity)   // 标题 / 副标题 居中
+    }
+
+    /// 每步统一骨架: 问题贴顶居中, 选项沉到底部 (拇指易触), 中间 Spacer 撑开.
+    @ViewBuilder
+    private func stepBody<Input: View>(_ title: String, _ subtitle: String,
+                                       @ViewBuilder _ input: () -> Input) -> some View {
+        VStack(spacing: 0) {
+            Color.clear.frame(height: 16)   // 标题离进度条一点距离 — 整体靠上
+            stepTitle(title, subtitle)
+            Spacer(minLength: 24)           // 把选项推到下方
+            input()
+                .frame(maxWidth: .infinity) // 选项区横向居中
+            Color.clear.frame(height: 8)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+
+    // 1) 性别 — 选项型, 单选自动跳.
+    private var genderStep: some View {
+        stepBody("What's your gender?", "We use this to set sensible starting weights.") {
+            VStack(spacing: 14) {
+                ForEach([Gender.male, .female, .other], id: \.self) { g in
+                    Button { selectGender(g) } label: {
+                        // genderLabel 返回 key — Text(LSK) 才走本地化. 文字居中, ✓ 叠右侧.
+                        Text(LocalizedStringKey(genderLabel(g)))
+                            .font(.system(size: 21, weight: .bold))
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 24)
+                            .background(gender == g ? MasoColor.accent : MasoColor.surface)
+                            .foregroundStyle(gender == g ? .black : MasoColor.text)
+                            .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+                            .overlay(alignment: .trailing) {
+                                if gender == g {
+                                    Image(systemName: "checkmark.circle.fill")
+                                        .font(.system(size: 24, weight: .bold))
+                                        .foregroundStyle(.black)
+                                        .padding(.trailing, 20)
+                                }
+                            }
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+        }
+    }
+
+    // 2) 年龄 — 拨盘.
+    private var ageStep: some View {
+        stepBody("How old are you?", "Helps us tune your training volume.") {
+            wheel(selection: Binding(get: { age }, set: { age = $0 }),
+                  range: 12...90) { "\($0)" }
+        }
+    }
+
+    // 3) 体重 — 拨盘, 默认落在该性别平均值.
+    private var weightStep: some View {
+        stepBody("What's your weight?", "We seed your starting loads from this — change any later.") {
+            wheel(selection: Binding(get: { Int(weight) },
+                                     set: { weight = Double($0); weightTouched = true }),
+                  range: 30...200) { "\($0) kg" }
+        }
+    }
+
+    // 4) 每周次数 — 拨盘 (同年龄/体重: 转到目标值后点"下一步").
+    private var daysStep: some View {
+        stepBody("How many days a week do you train?", "We'll size your weekly plan to fit.") {
+            wheel(selection: $daysPerWeek, range: 1...6) { "\($0)" }
+        }
+    }
+
+    // 5) 重点肌群 — 多选, 需确认. chip 放大 + 落在屏幕中下段 (上 2 : 下 1 的 Spacer 比例),
+    //    并跟底部按钮留 ≥40 间隔.
+    private var focusStep: some View {
+        VStack(spacing: 0) {
+            Color.clear.frame(height: 16)
+            stepTitle("Which muscles do you want to focus on?", "Pick any — or none for a balanced routine.")
+            Spacer(minLength: 24)
+            Spacer(minLength: 24)
+            // 只 6 个大 section — 跟 Settings / 选动作页 Muscle 筛选一致. 居中 + 放大.
+            MuscleSelector(selected: $strengthen, sectionsOnly: true, chipAlignment: .center, largeChips: true)
+            Spacer(minLength: 40)   // 跟下方"Build My Routine"按钮的间隔
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+
+    /// 拨盘 — 自定义滚轮 (年龄 / 体重共用).
+    /// 不用原生 `.wheel`: 它行高固定, 字号一大数字就重叠, 选中框也加不高。自己做才能
+    /// 同时满足"数字大 + 行距松 + 选中框高 + 字距宽"。
+    private func wheel(selection: Binding<Int>, range: ClosedRange<Int>,
+                       label: @escaping (Int) -> String) -> some View {
+        WheelPicker(selection: selection, values: Array(range), label: label)
+    }
+
+    // MARK: - 底部导航 (返回 / 下一步·确认)
+
+    private var bottomBar: some View {
+        HStack(spacing: 12) {
+            // 第 2 步起 左下角 返回.
+            if step != .gender {
+                Button(action: { SoundPlayer.shared.playTick(); goBack() }) {
+                    HStack(spacing: 5) {
+                        Image(systemName: "chevron.left").font(.system(size: 15, weight: .bold))
+                        Text("Back").font(.system(size: 17, weight: .semibold))
+                    }
+                    .padding(.horizontal, 20).padding(.vertical, 16)
+                    .foregroundStyle(MasoColor.text)
+                    .background(MasoColor.surface)
+                    .clipShape(Capsule())
+                }
+                .buttonStyle(.plain)
+            }
+            // 主按钮填满剩余宽度 (更宽好按) + 单行不折行. 选项型 (性别) 自动跳, 无主按钮.
+            if let primary = primaryAction {
+                Button(action: { SoundPlayer.shared.playTap(); primary.action() }) {
+                    Text(LocalizedStringKey(primary.title))
+                        .font(.system(size: 17, weight: .bold))
+                        .lineLimit(1)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 16)
+                        .background(MasoColor.accent)
+                        .foregroundStyle(.black)
+                        .clipShape(Capsule())
+                }
+                .buttonStyle(.plain)
+            }
+        }
+    }
+
+    private var primaryAction: (title: String, action: () -> Void)? {
+        switch step {
+        case .gender: return nil                            // 性别仍是选项型, 单选自动跳
+        case .age:    return ("Next", { advance(to: .weight) })
+        case .weight: return ("Next", { advance(to: .days) })
+        case .days:   return ("Next", { advance(to: .focus) })   // 改拨盘后需"下一步"
+        case .focus:  return ("Build My Routine", confirm)
+        }
+    }
+
+    // MARK: - 导航 / 选择
+
+    private func advance(to s: Step) {
+        goingForward = true
+        withAnimation(.spring(response: 0.42, dampingFraction: 0.85)) { step = s }
+    }
+
+    private func goBack() {
+        guard let prev = Step(rawValue: step.rawValue - 1) else { return }
+        goingForward = false
+        withAnimation(.spring(response: 0.42, dampingFraction: 0.85)) { step = prev }
+    }
+
+    private func selectGender(_ g: Gender) {
+        gender = g
+        if !weightTouched { weight = avgWeight(g) }   // 体重拨盘默认 = 该性别平均值
+        Haptics.tap()
+        SoundPlayer.shared.playTap()
+        // 0.18s 让选中态 (绿底 + ✓) 被看见再滑走, 不显得突兀.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.18) { advance(to: .age) }
+    }
+
+    /// 各性别的起始平均体重 (kg) — 仅作体重拨盘默认值, 用户可调.
+    private func avgWeight(_ g: Gender) -> Double {
+        switch g { case .male: return 75; case .female: return 60; case .other: return 68 }
     }
 
     private func genderLabel(_ g: Gender) -> String {
@@ -131,28 +288,206 @@ struct OnboardingScreen: View {
         data.settings.weight = weight
         data.settings.weeklyTrainingDays = daysPerWeek
         data.settings.wantStrengthen = Array(strengthen)
-        data.settings.onboardingCompleted = true
-        // 按 onboarding 偏好自动种几条 AI routine 进 My Routines —— 用户首次进 Today 就有内容,
-        // 不会高概率撞空状态; 之后还能去 Routines tab 浏览 AI/Classics 再加.
+        // 按 onboarding 偏好自动种几条 AI routine 进 My Routines —— 首次进 Today 就有内容.
         data.seedStarterRoutines()
         data.flushSave()
-        onDone()
+        // ⚠️ 不在这里置 onboardingCompleted —— RootView 用它做门控, 一置就立刻切走 OnboardingScreen,
+        //    "AI 生成中"过渡(generating overlay 挂在 OnboardingScreen 上)就来不及显示.
+        //    改由过渡结束时的 onDone() 去置 (见 RootView). 这里只点亮过渡.
+        withAnimation(.easeInOut(duration: 0.35)) { generating = true }
     }
 }
 
-// MARK: - SectionLabel + flow layout
+// MARK: - 自定义滚轮 (拨盘)
 
-private struct SectionLabel: View {
-    let text: String
-    init(_ t: String) { self.text = t }
+/// 自定义滚轮选择器 — 替代原生 `.wheel` (后者行高固定, 放大字号会重叠, 选中框也加不高)。
+/// 用 ScrollView + `.scrollTargetBehavior(.viewAligned)` + `.scrollPosition(anchor:.center)`
+/// 实现居中吸附; 行高 / 字号 / 选中框 / 字距全可控。居中那行放大加亮, 其余缩小淡出。
+private struct WheelPicker: View {
+    @Binding var selection: Int
+    let values: [Int]
+    let label: (Int) -> String
+
+    /// 当前吸附到中心的值; 滚动时实时更新. 初始 nil, 出现后再设为 selection 才会真正居中
+    /// (scrollPosition 已知毛病: 初值在首次 layout 时不生效, 必须出现后变化一次).
+    @State private var centerID: Int?
+    /// 居中定位完成前不外抛 selection — 否则初始那次程序化定位会误把 weightTouched 置真.
+    @State private var ready = false
+
+    private let rowHeight: CGFloat = 64    // 行高调高 → 选中框更高 + 行距更松
+    private let visibleRows: CGFloat = 5
+
+    private var height: CGFloat { rowHeight * visibleRows }
+
     var body: some View {
-        // 包 LocalizedStringKey — Text(stringVar) 默认 String overload 不查表, 显式 LSK 才走 i18n.
-        Text(LocalizedStringKey(text))
-            .font(.system(size: 13, weight: .bold))
-            .foregroundStyle(MasoColor.textDim)
-            .padding(.top, 8)
+        ScrollView(.vertical) {
+            LazyVStack(spacing: 0) {
+                ForEach(values, id: \.self) { v in
+                    let isCenter = centerID == v
+                    Text(label(v))
+                        .font(.system(size: isCenter ? 40 : 30, weight: isCenter ? .bold : .regular))
+                        .tracking(3)                                   // 字距放宽
+                        .foregroundStyle(isCenter ? MasoColor.text : MasoColor.textDim.opacity(0.4))
+                        .frame(maxWidth: .infinity)
+                        .frame(height: rowHeight)
+                        .contentShape(Rectangle())
+                        .onTapGesture {                                // 点某行 → 吸附到中心
+                            withAnimation(.easeInOut(duration: 0.2)) { centerID = v }
+                        }
+                }
+            }
+            .scrollTargetLayout()
+        }
+        .scrollIndicators(.hidden)
+        .scrollTargetBehavior(.viewAligned)
+        .scrollPosition(id: $centerID, anchor: .center)
+        // 上下留白 = 让首尾值也能滚到正中.
+        .contentMargins(.vertical, (height - rowHeight) / 2, for: .scrollContent)
+        .frame(height: height)
+        // 固定在正中的选中框 (在内容之后, 滚动数字从其上方掠过).
+        .background(alignment: .center) {
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                .fill(MasoColor.surface)
+                .frame(height: rowHeight)
+        }
+        .onAppear {
+            // 出现后再设 (nil → selection), scrollPosition 才会把它滚到正中.
+            DispatchQueue.main.async {
+                centerID = selection
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { ready = true }
+            }
+        }
+        .onChange(of: centerID) { _, new in
+            guard ready, let n = new else { return }   // 初始定位期不外抛
+            selection = n
+            Haptics.selection()               // 轻"咔哒"触觉 (同系统 Picker)
+            SoundPlayer.shared.playTick()     // 极轻 tick 声 (随静音开关静默)
+        }
     }
 }
+
+// MARK: - AI 生成中过渡
+
+/// Onboarding 确认后的"AI 正在生成训练计划"过渡.
+/// 设计: 不一次性把步骤列完, 而是**逐步揭示** —— 每步先转圈 (进行中), 完成打 ✓ 累积成清单,
+/// 让用户感知 AI 在分阶段工作; 末步落定后中央大 ✓ 弹跳庆祝, 再落地主界面.
+/// 每步带极轻 tick, 庆祝用 chime + success 触觉. 总时长 ~4s (够感知, 不拖沓).
+private struct AIGeneratingView: View {
+    let onComplete: () -> Void
+
+    /// 步骤文案 (本地化 key). 前 3 条是"工作"步 (转圈→✓), 第 4 条是成功态 (直接 ✓ + 庆祝).
+    private let steps = [
+        "Uploading your data",
+        "Analyzing your stats",
+        "Building your plan",
+        "Your plan is ready",
+    ]
+    /// 前 3 个工作步各自的"进行中"秒数.
+    private let workDurations: [Double] = [0.8, 1.0, 1.0]
+
+    @State private var current = 0     // 已上场到第几步 (0-based)
+    @State private var done = -1       // 已打勾到第几步索引
+    @State private var celebrate = false
+    @State private var pulse = false
+
+    var body: some View {
+        ZStack {
+            MasoColor.background.ignoresSafeArea()
+            VStack(spacing: 40) {
+                centerBadge
+                Text(celebrate ? "All set!" : "Creating your AI plan")
+                    .font(.system(size: 22, weight: .bold))
+                    .foregroundStyle(MasoColor.text)
+                    .contentTransition(.opacity)
+                checklist
+            }
+            .padding(.horizontal, 40)
+        }
+        .onAppear(perform: run)
+    }
+
+    // 中央品牌徽标 — 进行中光晕呼吸; 庆祝时品牌标淡出, 大 ✓ 弹跳登场 + 光环放大变亮.
+    private var centerBadge: some View {
+        ZStack {
+            Circle()
+                .fill(MasoColor.accent.opacity(celebrate ? 0.20 : 0.10))
+                .frame(width: 132, height: 132)
+                .scaleEffect(celebrate ? 1.22 : (pulse ? 1.1 : 0.92))
+            MasoBrandLogo()
+                .frame(width: 60, height: 60)
+                .scaleEffect(pulse ? 1.03 : 0.97)
+                .opacity(celebrate ? 0 : 1)
+            Image(systemName: "checkmark")
+                .font(.system(size: 54, weight: .bold))
+                .foregroundStyle(MasoColor.accent)
+                .scaleEffect(celebrate ? 1 : 0.3)
+                .opacity(celebrate ? 1 : 0)
+        }
+        .frame(height: 132)
+    }
+
+    // 渐进式步骤清单 — 已完成 ✓ 累积, 当前步转圈, 未上场的步不显示.
+    private var checklist: some View {
+        VStack(alignment: .leading, spacing: 18) {
+            ForEach(steps.indices, id: \.self) { i in
+                if i <= current {
+                    HStack(spacing: 14) {
+                        ZStack {
+                            if i <= done {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .font(.system(size: 24))
+                                    .foregroundStyle(MasoColor.accent)
+                                    .transition(.scale.combined(with: .opacity))
+                            } else {
+                                ProgressView()
+                                    .controlSize(.small)
+                                    .tint(MasoColor.accent)
+                            }
+                        }
+                        .frame(width: 26, height: 26)
+                        Text(LocalizedStringKey(steps[i]))
+                            .font(.system(size: 17, weight: i <= done ? .semibold : .medium))
+                            .foregroundStyle(i <= done ? MasoColor.text : MasoColor.textDim)
+                        Spacer(minLength: 0)
+                    }
+                    .transition(.asymmetric(
+                        insertion: .move(edge: .bottom).combined(with: .opacity),
+                        removal: .opacity))
+                }
+            }
+        }
+        .frame(width: 260, alignment: .leading)
+        .animation(.spring(response: 0.4, dampingFraction: 0.85), value: current)
+        .animation(.spring(response: 0.35, dampingFraction: 0.7), value: done)
+    }
+
+    private func run() {
+        withAnimation(.easeInOut(duration: 0.9).repeatForever(autoreverses: true)) { pulse = true }
+        SoundPlayer.shared.playTick()   // 第一步上场
+        var t = 0.0
+        // 前 3 个工作步: 各自结束时打勾 + 揭示下一步 (含成功步).
+        for i in 0..<workDurations.count {
+            t += workDurations[i]
+            DispatchQueue.main.asyncAfter(deadline: .now() + t) {
+                done = i
+                SoundPlayer.shared.playTick()
+                Haptics.selection()
+                current = i + 1   // i=2 → 揭示成功步 (index 3)
+            }
+        }
+        // 成功步短暂转圈后落定 ✓ + 庆祝.
+        DispatchQueue.main.asyncAfter(deadline: .now() + t + 0.4) {
+            done = steps.count - 1
+            Haptics.restEnded()                  // success 触觉
+            SoundPlayer.shared.playSetComplete() // 庆祝 chime (复用完成组的上行"叮-叮")
+            withAnimation(.spring(response: 0.55, dampingFraction: 0.55)) { celebrate = true }
+        }
+        // 落地主界面.
+        DispatchQueue.main.asyncAfter(deadline: .now() + t + 0.4 + 0.8) { onComplete() }
+    }
+}
+
+// MARK: - Flow layout (全 app 复用: MuscleSelector / 动作库 / 分享卡 等)
 
 // 极简 flow layout — chips 自动换行 (SwiftUI 在 iOS 16+ 有 Layout 协议, 这里用一个最小实现)
 /// Tag-cloud 风格 wrap layout — chips 横向排满一行就换行.

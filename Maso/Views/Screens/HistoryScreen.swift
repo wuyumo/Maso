@@ -1285,7 +1285,7 @@ private struct ExerciseStatRow: View {
             return "\(pluralizedSets(stat.setCount)) · \(d)s"
         }
         if let w = stat.bestWeight, let r = stat.bestReps {
-            if w > 0 { return "\(pluralizedSets(stat.setCount)) · \(formatWeight(w)) kg × \(r)" }
+            if w > 0 { return "\(pluralizedSets(stat.setCount)) · \(weightLabel(w)) × \(r)" }
             return "\(pluralizedSets(stat.setCount)) × \(r)"
         }
         return pluralizedSets(stat.setCount)

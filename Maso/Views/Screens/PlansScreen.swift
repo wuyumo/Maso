@@ -46,10 +46,8 @@ struct PlansScreen: View {
             // 统一 toolbar 按钮样式). 右上角: "+" 在左 (添加 — 一个入口收 4 种添加方式), 齿轮在右 (设置).
             .screenHeader("Routines") {
                 Menu {
-                    Button { addRoute = .ai } label: { Label("Generate with AI", systemImage: "sparkles") }
-                    Button { addRoute = .classics } label: { Label("Browse Classics", systemImage: "books.vertical") }
-                    Divider()
-                    Button(action: onNewPlan) { Label("Create from scratch", systemImage: "square.and.pencil") }
+                    // AI / Classics 已作为入口卡放到列表下方 (放出来), 这里只留两种"创建"方式.
+                    Button(action: onNewPlan) { Label("Create my own", systemImage: "square.and.pencil") }
                     Button { triggerImport = true } label: { Label("Import from photo", systemImage: "photo") }
                 } label: {
                     Image(systemName: "plus")
@@ -113,6 +111,7 @@ struct PlansScreen: View {
             onNewPlan: onNewPlan,
             onOpenSettings: {},
             onGoToDiscover: { addRoute = .ai },
+            onBrowseClassics: { addRoute = .classics },
             embedded: true,
             mode: .myPlans,
             triggerImport: $triggerImport
@@ -526,12 +525,11 @@ struct PlanRationaleCard: View {
             }
             .frame(maxWidth: .infinity)
             .padding(.vertical, 13)
-            .foregroundStyle(changed ? .black : MasoColor.textDim)
-            .background(Capsule().fill(changed ? MasoColor.accent : MasoColor.surfaceHi))
+            .foregroundStyle(.black)
+            .background(Capsule().fill(MasoColor.accent))
         }
         .buttonStyle(.plain)
-        .disabled(!changed)
-        .animation(.easeOut(duration: 0.2), value: changed)
+        // 始终可点 — 重新生成很便宜也是预期操作; 之前 disabled(!changed) 让灰按钮看着像坏了.
         .padding(.top, 2)
     }
 
@@ -835,15 +833,11 @@ struct PlanDetailSheet: View {
                     multiSelect: true,
                     onPickMultiple: { exercises in
                         for (i, ex) in exercises.enumerated() {
-                            draft.steps.append(PlanStep(
-                                id: "step-\(ex.id)-\(Int(Date().timeIntervalSince1970))-\(i)",
-                                exerciseId: ex.id,
-                                sets: 3,
-                                reps: ex.category == .strength ? 10 : nil,
-                                weight: ex.category == .strength ? 0 : nil,
-                                duration: ex.category != .strength ? 30 : nil,
-                                restBetweenSets: 90,
-                                rest: 0
+                            // R3: 参数按"全局同步开/关"取默认 — 开则采用已有 routine 里该动作的参数,
+                            // 否则从该动作最近一次记录回填 (取代过去硬编码的 3 组 / 10 次 / 90s).
+                            draft.steps.append(data.makeSeededStep(
+                                for: ex,
+                                stepId: "step-\(ex.id)-\(Int(Date().timeIntervalSince1970))-\(i)"
                             ))
                         }
                         commit()
@@ -1243,7 +1237,7 @@ private func planStepDetailLine(_ step: PlanStep) -> String {
     }
     let reps = step.reps.map { "\($0)" } ?? "?"
     if let w = step.weight, w > 0 {
-        return "\(pluralizedSets(step.sets)) · \(formatWeight(w)) kg × \(reps)"
+        return "\(pluralizedSets(step.sets)) · \(weightLabel(w)) × \(reps)"
     }
     return "\(pluralizedSets(step.sets)) × \(reps)"
 }
@@ -1466,14 +1460,15 @@ private struct EditStepView: View {
                 }
                 Divider().background(MasoColor.borderSoft)
                 EditRow(label: "Weight") {
+                    // 按用户单位 (kg/lb) 展示+编辑, 存储 canonical kg.
                     NumStepperField(
                         doubleValue: Binding(
                             get: { step.weight ?? 0 },
                             set: { step.weight = max(0, $0) }
-                        ),
-                        range: 0...300,
-                        step: 2.5,
-                        suffix: "kg",
+                        ).inUnit(WeightUnitProvider.current),
+                        range: 0...WeightUnitProvider.current.weightMax,
+                        step: WeightUnitProvider.current.weightStep,
+                        suffix: WeightUnitProvider.current.label,
                         decimal: true
                     )
                 }

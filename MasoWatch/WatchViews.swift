@@ -47,9 +47,8 @@ struct WatchRootView: View {
 struct WatchIdleView: View {
     var body: some View {
         VStack(spacing: 8) {
-            Image(systemName: "dumbbell.fill")
-                .font(.system(size: 30, weight: .bold))
-                .foregroundStyle(WatchTheme.accent)
+            WatchBrandMark(color: WatchTheme.accent)
+                .frame(width: 34, height: 34)
             Text(verbatim: "MASSO")
                 .font(.system(size: 14, weight: .heavy))
                 .tracking(2)
@@ -94,8 +93,8 @@ struct WatchExerciseView: View {
             if state.manualConfirm {
                 // 力量组 — 大打勾按钮 (同手机主按钮语义: 完成这组)
                 Button {
-                    bridge.send(.advance)
-                    WKInterfaceDevice.current().play(.click)
+                    // 发送成功才给"完成"触觉; iPhone 不可达 → 失败触觉, 不假装成功 (避免"按了没反应"的误判).
+                    WKInterfaceDevice.current().play(bridge.send(.advance) ? .click : .failure)
                 } label: {
                     Image(systemName: "checkmark")
                         .font(.system(size: 22, weight: .heavy))
@@ -109,7 +108,7 @@ struct WatchExerciseView: View {
                 // 计时段 — 倒计时 + 暂停/继续
                 WatchCountdown(state: state)
                 Button {
-                    bridge.send(.togglePlay)
+                    if !bridge.send(.togglePlay) { WKInterfaceDevice.current().play(.failure) }
                 } label: {
                     Text(state.paused ? "Resume" : "Pause")
                         .font(.system(size: 13, weight: .semibold))
@@ -154,8 +153,7 @@ struct WatchRestView: View {
             Spacer(minLength: 2)
 
             Button {
-                bridge.send(.advance)
-                WKInterfaceDevice.current().play(.click)
+                WKInterfaceDevice.current().play(bridge.send(.advance) ? .click : .failure)
             } label: {
                 Text("Skip")
                     .font(.system(size: 14, weight: .semibold))

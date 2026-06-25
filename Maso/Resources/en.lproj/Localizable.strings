@@ -128,6 +128,21 @@
 "How many days a week do you train?" = "How many days a week do you train?";
 "Which muscles do you want to focus on?" = "Which muscles do you want to focus on?";
 "Confirm & build my plan" = "Confirm & build my routine";
+"Build My Routine" = "Build My Routine";
+"Uploading your data" = "Uploading your data";
+"Analyzing your stats" = "Analyzing your stats";
+"Building your plan" = "Building your plan";
+"All set!" = "All set!";
+"What's your gender?" = "What's your gender?";
+"We use this to set sensible starting weights." = "We use this to set sensible starting weights.";
+"How old are you?" = "How old are you?";
+"Helps us tune your training volume." = "Helps us tune your training volume.";
+"What's your weight?" = "What's your weight?";
+"We seed your starting loads from this — change any later." = "We seed your starting loads from this — change any later.";
+"We'll size your weekly plan to fit." = "We'll size your weekly plan to fit.";
+"Pick any — or none for a balanced routine." = "Pick any — or none for a balanced routine.";
+"Next" = "Next";
+"STEP %lld / 5" = "STEP %lld / 5";
 
 /* ── Muscle group display names ─────────────────────── */
 "Chest" = "Chest";
@@ -608,6 +623,10 @@
 "Generate with AI" = "Generate with AI";
 "Browse Classics" = "Browse Classics";
 "Create from scratch" = "Create from scratch";
+"Create my own" = "Create my own";
+"AI Routines" = "AI Routines";
+"Generate a plan from your preferences" = "Generate a plan from your preferences";
+"Proven programs to start from" = "Proven programs to start from";
 "New routine" = "New routine";
 
 /* AI routine generation CTA + perceived-generation states (Routines tab → AI) */
@@ -950,3 +969,77 @@
 "Achievable: %@ %@  (off by %@)" = "Achievable: %@ %@  (off by %@)";
 "%lld picked" = "%lld picked";
 "+%lld more" = "+%lld more";
+
+/* 训练完成自动分享 — 自由训练存为计划的二次确认 */
+"Save as plan?" = "Save as routine?";
+"Don't Save" = "Don't Save";
+"Keep this workout as a reusable routine." = "Keep this workout as a reusable routine.";
+
+/* Apple Health (HealthKit) — Settings section */
+"Apple Health" = "Apple Health";
+"Save workouts to Apple Health" = "Save workouts to Apple Health";
+"Masso saves your completed workouts to Apple Health, so they appear in your Activity rings and the Health app. On Apple Watch, Masso reads heart rate and active energy during a workout." = "Masso saves your completed workouts to Apple Health, so they appear in your Activity rings and the Health app. On Apple Watch, Masso reads heart rate and active energy during a workout.";
+
+/* Exercise data — global param sync (R3) */
+"Exercise data" = "Exercise data";
+"Sync params across routines" = "Sync exercise settings across routines";
+
+/* Onboarding — AI plan generating transition */
+"Creating your AI plan" = "Creating your AI routine";
+"Your plan is ready" = "Your routine is ready";
+"Personalized from your answers" = "Personalized from your answers";
+"Reading your profile" = "Reading your profile";
+"Picking exercises for your goals" = "Picking exercises for your goals";
+"Balancing your weekly plan" = "Balancing your weekly routine";
+"When on, changing an exercise's sets, reps, weight, or rest in one routine (or during a workout) updates it everywhere that exercise appears. When off, each routine keeps its own params, and a new routine starts an exercise from your most recent values." = "When on, changing an exercise's sets, reps, weight, or rest in one routine (or during a workout) updates it everywhere that exercise appears. When off, each routine keeps its own params, and a new routine starts an exercise from your most recent values.";
+
+/* Onboarding step 3 focus-muscles hint */
+"Optional — leave all off for a balanced routine." = "Optional — leave all off for a balanced routine.";
+
+/* ── UX audit 2026-06: missing keys (were showing English in zh) ── */
+"Level" = "Level";
+"Days/week" = "Days/week";
+"All levels" = "All levels";
+"Any frequency" = "Any frequency";
+"Continue (%lld)" = "Continue (%lld)";
+"Start (%lld)" = "Start (%lld)";
+"Exercise photos" = "Exercise photos";
+"From library" = "From library";
+"Search the web" = "Search the web";
+"Find a photo" = "Find a photo";
+"Photos via Pexels. Pick the one that matches your move." = "Photos via Pexels. Pick the one that matches your move.";
+"Type a name and search the web." = "Type a name and search the web.";
+"No photos found. Try a different name." = "No photos found. Try a different name.";
+"Search exercise photos" = "Search exercise photos";
+"Playlist drawer drag handle" = "Playlist drawer drag handle";
+"Drag up to expand, down to collapse. Tap to toggle." = "Drag up to expand, down to collapse. Tap to toggle.";
+"Collapse calendar" = "Collapse calendar";
+
+/* Player — R2 undo toast + R3 global-sync edit footer */
+"Set removed" = "Set removed";
+"Changes update this exercise across all your routines." = "Changes update this exercise across all your routines.";
+"Undo last set" = "Undo last set";
+
+/* Recommended / seeded plan names (Today card + Classics) */
+"Full Body A · Push / Quads / Pull (Upper)" = "Full Body A · Push / Quads / Pull (Upper)";
+"Full Body B · Push / Hamstrings / Pull (Lower)" = "Full Body B · Push / Hamstrings / Pull (Lower)";
+"Full Body C · Push / Glutes / Pull (Mid)" = "Full Body C · Push / Glutes / Pull (Mid)";
+"Day A · Chest + Triceps" = "Day A · Chest + Triceps";
+"Day B · Back + Biceps" = "Day B · Back + Biceps";
+"Day C · Legs + Glutes" = "Day C · Legs + Glutes";
+"Day D · Shoulders + Traps" = "Day D · Shoulders + Traps";
+"Day E · Arms + Core" = "Day E · Arms + Core";
+"Push A · Heavy" = "Push A · Heavy";
+"Pull A · Heavy" = "Pull A · Heavy";
+"Legs A · Quads" = "Legs A · Quads";
+"Push B · Volume" = "Push B · Volume";
+"Pull B · Volume" = "Pull B · Volume";
+"Legs B · Hamstrings / Glutes" = "Legs B · Hamstrings / Glutes";
+
+/* Today muscle-status card — zero-history empty state */
+"Finish a workout to see which muscles need recovery." = "Finish a workout to see which muscles need recovery.";
+
+/* Player last-set hint (unit now via weightLabel) */
+"Last: %@ × %d (%@)" = "Last: %@ × %d (%@)";
+
+"Follow iPhone language (%@)" = "Follow iPhone language (%@)";

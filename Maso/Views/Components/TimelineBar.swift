@@ -66,7 +66,9 @@ struct TimelineBar: View {
                                     .frame(width: unitWidth, height: Self.barHeight)
                             }
                             .buttonStyle(.plain)
-                            .accessibilityLabel("exercise-set")
+                            // 装饰性进度段 — 旧 a11y 标签是占位 token "exercise-set" (VoiceOver 念出来无意义);
+                            // "跳到某组"在播放列表已有可达入口, 这里对 VoiceOver 隐藏.
+                            .accessibilityHidden(true)
                         }
                     }
                     .clipShape(Capsule())  // 只让组的"外两端"变圆, 中间 set 与 set 直接拼接

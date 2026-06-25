@@ -155,10 +155,11 @@ struct ShareCustomizeSheet<ShareContent: View>: View {
                     // tap callback 设 showPhotoOptions = true → confirmationDialog 弹
                     // Camera / Photos / Remove 选项. binding 让卡内 inline toggle 双向同步 sections.
                     shareContent(userPhoto, { showPhotoOptions = true }, .editing($sections))
-                        .frame(width: 360)
-                        .clipShape(RoundedRectangle(cornerRadius: 14))
-                        .shadow(color: .black.opacity(0.25), radius: 12, y: 4)
-                        .padding(.horizontal, 24)
+                        // 卡片撑满 sheet 宽度 — 卡片底色与 sheet 底色同为 #121212, 满宽后左右无留白、
+                        // 无投影暗边, 预览跟 sheet 融为一体 (也更贴近导出图的 390 宽). 去掉之前的
+                        // .frame(width:360)+圆角裁剪+投影+横向 padding (那套"浮空卡片"留出的左右 sheet
+                        // 底色 + 投影暗边正是看着像"异色 margin"的来源).
+                        .frame(maxWidth: .infinity)
                         .padding(.bottom, 32)
                 }
                 .padding(.top, 16)
