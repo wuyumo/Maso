@@ -56,6 +56,17 @@ SettingsScreen.proSection 在 iapEnabled=false 时返回 EmptyView。**以后开
          已补「读」用途说明 + en/zh InfoPlist.strings (catchUpHealthKitSync 避免重复计入的诚实文案);
       ③ Distribute 报 "No Accounts" → Yumo 在 Xcode Settings>Accounts 登录 Eric Ng 后通过。
 
+## 🚀 1.3(9) 已提交审核 (2026-06-26)
+本 session 又攒一批(Exercises 右侧索引重做成通讯录式小绿点+拖动文案 pill / 缩放单面板肌肉图 / scrubber 抖动修复 /
+滚动跟随高亮 / 播放器休息环白色+回退到上一训练组 / Routines 露出 AI+Classics)。三 Info.plist → **1.3 / build 9**。
+verify-app PASS(exercises.json 938, 编译, 4 showcase 页 distinct)→ 代码 commit+push(87fee30)→ Xcode GUI Archive 1.3(9)
+→ Distribute → **已上传** (build 处理「完成」)。
+**提交流程 (ASC web)**: 进去发现 **1.2(8) 还卡在「正在等待审核」**(从未过审)。因 1.3 完全覆盖 1.2, 故 **撤回 1.2 审核**
+(版本页 banner「将此版本从审核中移除」→ 变「被开发者拒绝」可编辑)→ 同一版本记录**改版本号 1.2→1.3**(真实键盘输入,
+form_input 会被 React 回滚)→ 构建版本删 build8、加 build9(选择器按版本号过滤, 改 1.3 后才列出 9)→ What's New/截图/关键词/
+描述/自动发布全部沿用 → 保存 → 添加以供审核 → 提交以供审核。**状态 = 「1.3 正在等待审核」**(≤48h, 自动发布, 邮件通知)。
+⚠️ ASC SPA 客户端跳转后常空白, 需 **cmd+R 硬刷新**才渲染。下次发版继续往上 (1.4 或 build 10+); 1.1/1.2/1.3 都已用过。
+
 ## 🚀 1.2(8) 合并重提 (2026-06-25)
 1.1(7) 在审期间又攒了一批(引导重做/居中/滚轮+声音震动/按钮音效/AI 生成过渡/动作库肌肉分区+跳转条)。
 本想合并成 1.1 新 build, 但 **Xcode 上传 1.1(8) 被 Apple 拒**: `CFBundleShortVersionString 必须高于已提交的 1.1` +
