@@ -69,7 +69,7 @@ final class AIWorkoutService {
         state = .generating
 
         do {
-            let raw = try await callDeepSeek(payload: payload)
+            let raw = try await callDeepSeek(payload: payload, library: library)
             let parsed = try parseResponse(raw)
             let plan = buildPlan(from: parsed, library: library, maxExercises: maxExercises)
             guard !plan.steps.isEmpty else {
@@ -269,7 +269,7 @@ final class AIWorkoutService {
     //   - 支持 response_format=json_object 强制 JSON 输出
     //
     // 想换其它 OpenAI-compatible (Moonshot / 通义 / 智谱) → 只改 endpoint + model.
-    private func callDeepSeek(payload: AIPayload) async throws -> String {
+    private func callDeepSeek(payload: AIPayload, library: [Exercise]) async throws -> String {
         // 走 Cloudflare Worker 代理 — 跟 callDeepSeekForPicker 同模式.
         let url = URL(string: "\(Self.proxyURL)/v1/chat/completions")!
         var req = URLRequest(url: url)
@@ -278,7 +278,7 @@ final class AIWorkoutService {
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
         req.setValue(Self.clientToken, forHTTPHeaderField: "X-Maso-Client-Token")
 
-        let prompt = buildPrompt(payload: payload)
+        let prompt = buildPrompt(payload: payload, library: library)
         let body: [String: Any] = [
             "model": "deepseek-chat",
             "max_tokens": 2048,
@@ -312,7 +312,30 @@ final class AIWorkoutService {
 
     // MARK: - Prompt
 
-    private func buildPrompt(payload: AIPayload) -> String {
+    /// 给 generateToday 的候选动作池 — 非 niche, 每大区取若干 canonical (短名优先, 去重 base 名).
+    /// LLM 只能从这堆真实库内动作名里选, 保证 buildPlan 能精确匹配 (修掉自由命名→匹配落空的老问题).
+    private func candidateNames(from library: [Exercise]) -> [String] {
+        let sections: [MuscleGroup] = [.chest, .back, .shoulders, .arms, .core, .legs]
+        var out: [String] = []
+        for sec in sections {
+            let inSec = library
+                .filter { !$0.isNiche && $0.primaryMuscles.contains { ($0.section ?? $0) == sec } }
+                .sorted { $0.name.count < $1.name.count }   // 短名 = 更 canonical/常见
+            var seenBase = Set<String>()
+            var picked = 0
+            for ex in inSec {
+                let base = baseName(ex.name)
+                if seenBase.insert(base).inserted {
+                    out.append(ex.name)
+                    picked += 1
+                    if picked >= 8 { break }
+                }
+            }
+        }
+        return out
+    }
+
+    private func buildPrompt(payload: AIPayload, library: [Exercise]) -> String {
         let p = payload
         let recent = p.recentHistory.isEmpty
             ? "(none yet — this is the user's first week)"
@@ -321,6 +344,7 @@ final class AIWorkoutService {
         let strengthen = p.wantStrengthen.isEmpty
             ? "(no specific focus)"
             : p.wantStrengthen.joined(separator: ", ")
+        let catalog = candidateNames(from: library).map { "- \($0)" }.joined(separator: "\n")
 
         return """
         You are a fitness coach AI. Generate exactly ONE workout plan for the user to do today.
@@ -345,7 +369,9 @@ final class AIWorkoutService {
         - 3–4 exercises per session (keep it tight — "today's workout" is one session, not a marathon)
         - Sets 3–4, reps 6–12 for strength; reps 12–15 for accessory
         - Pick weights conservative if no history; scale to recent volume if any
-        - Use real, common exercise names (e.g. "Barbell Squat", "Bench Press", "Pull-up", "Bent-Over Row", "Standing Overhead Press", "Dumbbell Bicep Curl", "Romanian Deadlift", "Lat Pulldown", "Plank")
+
+        AVAILABLE EXERCISES — every "exercise_name" MUST be copied EXACTLY (verbatim, character-for-character) from this list. Do NOT invent names or use synonyms:
+        \(catalog)
 
         OUTPUT
         Strict JSON only, no prose, no markdown. Schema:

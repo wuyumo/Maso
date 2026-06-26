@@ -30,6 +30,8 @@ struct OnboardingScreen: View {
     @State private var strengthen: Set<MuscleGroup> = []  // 不预选 — 留空 = 均衡
     /// 确认后进入"AI 生成中"过渡 (感知型 — seedStarterRoutines 是瞬时本地生成).
     @State private var generating = false
+    /// 真 AI 首份计划生成完成 (成功或回落) → 过渡页"Building"步据此落定, 把动画绑到真实调用延迟.
+    @State private var aiReady = false
 
     var body: some View {
         ZStack {
@@ -54,7 +56,7 @@ struct OnboardingScreen: View {
         // 确认后盖上"AI 生成中"过渡 — 自身全屏不透明, 结束自动 onDone() 落地 Today.
         .overlay {
             if generating {
-                AIGeneratingView(onComplete: onDone)
+                AIGeneratingView(isReady: aiReady, onComplete: onDone)
                     .transition(.opacity)
             }
         }
@@ -288,13 +290,17 @@ struct OnboardingScreen: View {
         data.settings.weight = weight
         data.settings.weeklyTrainingDays = daysPerWeek
         data.settings.wantStrengthen = Array(strengthen)
-        // 按 onboarding 偏好自动种几条 AI routine 进 My Routines —— 首次进 Today 就有内容.
-        data.seedStarterRoutines()
-        data.flushSave()
+        data.flushSave()   // 先持久化偏好 (即使 AI 调用挂掉, 偏好也已落盘)
         // ⚠️ 不在这里置 onboardingCompleted —— RootView 用它做门控, 一置就立刻切走 OnboardingScreen,
         //    "AI 生成中"过渡(generating overlay 挂在 OnboardingScreen 上)就来不及显示.
         //    改由过渡结束时的 onDone() 去置 (见 RootView). 这里只点亮过渡.
         withAnimation(.easeInOut(duration: 0.35)) { generating = true }
+        // Path B: 真 AI 生成首份计划 (generateFirstPlanViaAI 内部先种本地起步保证非空, 再尝试真 LLM
+        // 作为今日推荐, 失败回落). 完成后 aiReady=true → 过渡页"Building"步落定.
+        Task {
+            await data.generateFirstPlanViaAI()
+            withAnimation { aiReady = true }
+        }
     }
 }
 
@@ -373,22 +379,24 @@ private struct WheelPicker: View {
 /// 让用户感知 AI 在分阶段工作; 末步落定后中央大 ✓ 弹跳庆祝, 再落地主界面.
 /// 每步带极轻 tick, 庆祝用 chime + success 触觉. 总时长 ~4s (够感知, 不拖沓).
 private struct AIGeneratingView: View {
+    /// 真 AI 首份计划是否已生成完 (成功或回落) — "Building"步据此落定, 把动画绑到真实 LLM 延迟.
+    let isReady: Bool
     let onComplete: () -> Void
 
-    /// 步骤文案 (本地化 key). 前 3 条是"工作"步 (转圈→✓), 第 4 条是成功态 (直接 ✓ + 庆祝).
+    /// 步骤文案 (本地化 key). 前 2 条是"准备请求"步 (固定计时), 第 3 条"Building"等真 AI, 第 4 条成功 + 庆祝.
     private let steps = [
         "Uploading your data",
         "Analyzing your stats",
         "Building your plan",
         "Your plan is ready",
     ]
-    /// 前 3 个工作步各自的"进行中"秒数.
-    private let workDurations: [Double] = [0.8, 1.0, 1.0]
 
     @State private var current = 0     // 已上场到第几步 (0-based)
     @State private var done = -1       // 已打勾到第几步索引
     @State private var celebrate = false
     @State private var pulse = false
+    @State private var buildingMinElapsed = false   // "Building"步至少停留过最短时长
+    @State private var finished = false             // 防止落定逻辑重复触发
 
     var body: some View {
         ZStack {
@@ -404,6 +412,8 @@ private struct AIGeneratingView: View {
             .padding(.horizontal, 40)
         }
         .onAppear(perform: run)
+        // 真 AI 调用完成 → 尝试落定 (若 Building 最短时长也满足).
+        .onChange(of: isReady) { _, _ in finishIfReady() }
     }
 
     // 中央品牌徽标 — 进行中光晕呼吸; 庆祝时品牌标淡出, 大 ✓ 弹跳登场 + 光环放大变亮.
@@ -464,26 +474,38 @@ private struct AIGeneratingView: View {
     private func run() {
         withAnimation(.easeInOut(duration: 0.9).repeatForever(autoreverses: true)) { pulse = true }
         SoundPlayer.shared.playTick()   // 第一步上场
-        var t = 0.0
-        // 前 3 个工作步: 各自结束时打勾 + 揭示下一步 (含成功步).
-        for i in 0..<workDurations.count {
-            t += workDurations[i]
-            DispatchQueue.main.asyncAfter(deadline: .now() + t) {
-                done = i
-                SoundPlayer.shared.playTick()
-                Haptics.selection()
-                current = i + 1   // i=2 → 揭示成功步 (index 3)
+        // 步 0 "Uploading" 0.8s → 打勾 + 揭示步 1.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+            done = 0; SoundPlayer.shared.playTick(); Haptics.selection(); current = 1
+            // 步 1 "Analyzing" 1.0s → 打勾 + 揭示步 2 "Building" (开始等真 AI).
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                done = 1; SoundPlayer.shared.playTick(); Haptics.selection(); current = 2
+                // "Building" 至少停留 0.8s, 然后看真 AI 是否已就绪.
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+                    buildingMinElapsed = true
+                    finishIfReady()
+                }
+                // 安全兜底: 真 AI 9s 还没回 (网络极慢) → 强制落定 (本地起步计划已种好, 不会卡死).
+                DispatchQueue.main.asyncAfter(deadline: .now() + 9.0) {
+                    buildingMinElapsed = true
+                    finishIfReady(force: true)
+                }
             }
         }
-        // 成功步短暂转圈后落定 ✓ + 庆祝.
-        DispatchQueue.main.asyncAfter(deadline: .now() + t + 0.4) {
+    }
+
+    /// "Building"最短时长满足 + 真 AI 就绪 (或兜底强制) → 打勾 Building、揭示成功步、庆祝、落地.
+    private func finishIfReady(force: Bool = false) {
+        guard !finished, current >= 2, buildingMinElapsed, (isReady || force) else { return }
+        finished = true
+        done = 2; SoundPlayer.shared.playTick(); Haptics.selection(); current = 3   // Building ✓ + 揭示成功步
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
             done = steps.count - 1
-            Haptics.restEnded()                  // success 触觉
-            SoundPlayer.shared.playSetComplete() // 庆祝 chime (复用完成组的上行"叮-叮")
+            Haptics.restEnded()
+            SoundPlayer.shared.playSetComplete()
             withAnimation(.spring(response: 0.55, dampingFraction: 0.55)) { celebrate = true }
         }
-        // 落地主界面.
-        DispatchQueue.main.asyncAfter(deadline: .now() + t + 0.4 + 0.8) { onComplete() }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4 + 0.8) { onComplete() }
     }
 }
 

@@ -29,8 +29,10 @@ struct PlansScreen: View {
     @State private var triggerImport = false
     /// 按偏好现生成的 AI 计划 (transient, 不进 data.plans 直到用户 Save).
     @State private var aiPlans: [Plan] = []
-    /// AI routine 生成中 (感知态: 让用户看到"AI 正在跟进你的数据生成").
+    /// AI routine 生成中 (绑真实 LLM 调用延迟).
     @State private var aiGenerating = false
+    /// 真 LLM 够不到时的回落提示 (nil = 正常/真 AI 成功).
+    @State private var aiFallbackNote: String? = nil
     @State private var detailPlan: Plan? = nil
     @State private var pendingDeletePlanId: String? = nil
     @State private var paywallPresented = false
@@ -173,8 +175,23 @@ struct PlansScreen: View {
             .frame(maxWidth: .infinity)
             .padding(.vertical, 36)
         } else {
+            // 真 LLM 够不到时的提示条 (回落到本地模板).
+            if let note = aiFallbackNote {
+                HStack(spacing: 8) {
+                    Image(systemName: "wifi.exclamationmark").font(.system(size: 12, weight: .bold))
+                    Text(note).font(.system(size: 12, weight: .medium)).fixedSize(horizontal: false, vertical: true)
+                    Spacer(minLength: 0)
+                    Button { startGenerateRoutines() } label: {
+                        Text("Retry").font(.system(size: 12, weight: .bold))
+                    }
+                }
+                .foregroundStyle(MasoColor.textDim)
+                .padding(.horizontal, 12).padding(.vertical, 10)
+                .background(MasoColor.surface)
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+            }
             ForEach(aiPlans) { plan in
-                discoverPlanCard(plan, badge: "AI")
+                discoverPlanCard(plan)
             }
         }
     }
@@ -260,11 +277,13 @@ struct PlansScreen: View {
     }
 
     /// AI 生成的计划卡 — WorkoutCard 富展示. 点卡片 → 预览详情; 底部 "★ 添加到我的计划" → 直接存进 My Plans.
-    private func discoverPlanCard(_ plan: Plan, badge: String) -> some View {
+    /// kicker="" → 不显示来源 kicker; 由 WorkoutCard 自己的 PlanSourceBadge 表达来源
+    /// (真 AI 计划 source=.ai → ✨AI; 本地 tuned source=nil → 无 badge, 诚实).
+    private func discoverPlanCard(_ plan: Plan) -> some View {
         WorkoutCard(
             plan: plan,
             exById: data.exById,
-            kicker: badge,
+            kicker: "",
             onStart: { detailPlan = plan },
             onShowDetail: { detailPlan = plan },
             prominentStart: false,
@@ -300,24 +319,22 @@ struct PlansScreen: View {
 
     // MARK: - Actions
 
-    /// 点 "Generate routines" → 进生成态 (让用户感知 AI 在跟进数据), 短暂延迟后用当前训练偏好
-    /// 算出 routines 展示. tunedRecommendedPlans 本身是本地即时计算 — 延迟纯为可感知的生成过程,
-    /// 结果跟用户偏好 (天数/器械/重点/组数) 真实相关.
+    /// 点 "Generate routines" → 走真 LLM (Path B): 顶部一条真 AI 计划 (✨AI) + 本地 tuned 若干作为
+    /// 更多选择. spinner 绑真实调用延迟 (不再固定计时器). 失败/离线 → 纯本地 + 顶部提示条.
     private func startGenerateRoutines() {
         guard !aiGenerating else { return }
         Haptics.tap()
+        aiFallbackNote = nil
         withAnimation(.easeOut(duration: 0.2)) { aiGenerating = true }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.4) {
-            let plans = DataStore.tunedRecommendedPlans(
-                forDays: data.settings.weeklyTrainingDays,
-                settings: data.settings,
-                exById: data.exById,
-                sets: data.sets,
-                now: Date()
-            )
+        Task { @MainActor in
+            let (plans, usedFallback) = await data.generateAIRoutines()
             withAnimation(.easeOut(duration: 0.25)) {
                 aiPlans = plans
                 aiGenerating = false
+                aiFallbackNote = usedFallback
+                    ? NSLocalizedString("Couldn't reach the AI coach — showing templates instead.",
+                                        comment: "AI tab fallback when LLM unreachable")
+                    : nil
             }
         }
     }

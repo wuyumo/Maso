@@ -85,6 +85,25 @@ struct TodayScreen: View {
                         onStartGapWorkout: startGapWorkout
                     )
 
+                    // AI 生成失败 → 提示条 (已回落到本地推荐, 一键重试真 AI).
+                    if data.aiTodayFailed {
+                        HStack(spacing: 8) {
+                            Image(systemName: "wifi.exclamationmark").font(.system(size: 12, weight: .bold))
+                            Text("AI plan unavailable — showing your recommended plan.")
+                                .font(.system(size: 12, weight: .medium))
+                                .fixedSize(horizontal: false, vertical: true)
+                            Spacer(minLength: 0)
+                            Button {
+                                Haptics.tap()
+                                Task { await data.forceRefreshAIWorkout() }
+                            } label: { Text("Retry").font(.system(size: 12, weight: .bold)) }
+                        }
+                        .foregroundStyle(MasoColor.textDim)
+                        .padding(.horizontal, 12).padding(.vertical, 10)
+                        .background(MasoColor.surface)
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                    }
+
                     // ── 今日推荐 ── (WorkoutCard 自带 "TODAY'S WORKOUT" kicker)
                     if let plan = suggested {
                         WorkoutCard(

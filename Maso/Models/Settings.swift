@@ -128,8 +128,9 @@ struct UserSettings: Codable, Sendable {
     /// 用户是否已经看过"点中间 Tab 开始训练"的首次提示 — 看过后不再展示.
     var hasSeenCenterTabHint: Bool = false
 
-    /// 是否启用 AI 训练计划生成. 默认关 (用户需要先填 API key 才能启用).
-    var aiWorkoutEnabled: Bool = false
+    /// 是否启用 AI 训练计划生成. 默认开 (Path B: 代理 server-side 已配, 真 AI 默认跑, 失败自动回落本地).
+    /// 现已不再作为 gate (各调用点只看 AIWorkoutService.isConfigured); 保留作未来用户开关位.
+    var aiWorkoutEnabled: Bool = true
 
     /// 偏好社区计划. 默认关. 打开后: 推荐计划 (AI Plans) 不再从模板自动生成, 而是从 Community
     /// 里挑一套符合用户 days/week + 训练目标的成熟计划 materialize 进来 (按 exercises-per-plan 微调).

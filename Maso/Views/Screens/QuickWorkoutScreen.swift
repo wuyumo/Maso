@@ -650,10 +650,9 @@ private struct QuickExerciseStep: View {
         return order.filter { majors.contains($0) }
     }
 
-    /// Pro + AI 配好 → 走 AI 路径; 否则走本地启发式
+    /// Pro + AI 配好 → 走 AI 路径; 否则走本地启发式. (isPro 是未来变现 gate, 免费版恒 true.)
     private var useAIPath: Bool {
         data.settings.isPro
-            && data.settings.aiWorkoutEnabled
             && AIWorkoutService.isConfigured
     }
 

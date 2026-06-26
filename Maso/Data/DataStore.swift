@@ -21,6 +21,8 @@ final class DataStore {
     /// `lastAIRefreshAt` 是当天日期, 同一天不重复 refresh.
     var aiTodayPlan: Plan? = nil
     var lastAIRefreshAt: Date? = nil
+    /// 最近一次今日 AI 生成是否失败 (网络/服务) — TodayScreen 据此露出"够不到 AI,已用推荐·重试"提示.
+    var aiTodayFailed: Bool = false
 
     /// 训练偏好改动后, 推荐计划是否待刷新. 改设置时只 mark dirty, 不立即 regen —
     /// 等用户在 Training Preferences 页点 Done / 关 sheet 再统一刷新 (一次, 不每次拖动都重算抖动).
@@ -863,7 +865,7 @@ final class DataStore {
     /// - 跳过条件: 同一日历日已经成功 refresh 过 / settings 关
     /// - 网络失败 → state 写入失败但不抛, TodayScreen 继续 fallback 到系统推荐
     func refreshAIWorkoutIfNeeded() async {
-        guard settings.aiWorkoutEnabled else { return }
+        // gate 只看代理是否配好 (Path B: 不再要求 aiWorkoutEnabled — 代理 server-side 配好就跑, 失败回落).
         guard AIWorkoutService.isConfigured else { return }
         if let last = lastAIRefreshAt, Calendar.current.isDateInToday(last), aiTodayPlan != nil {
             return  // 今天已经成功生成过, skip
@@ -877,10 +879,13 @@ final class DataStore {
         if let plan {
             aiTodayPlan = plan
             lastAIRefreshAt = Date()
+            aiTodayFailed = false
+        } else {
+            aiTodayFailed = true   // 网络/服务失败 → Today 露提示 + fallback 推荐
         }
     }
 
-    /// 强制重新生成 (用户主动点 "Refresh" 时调). 跳过同日 cache 检查.
+    /// 强制重新生成 (用户主动点 "Refresh"/"Retry" 时调). 跳过同日 cache 检查.
     func forceRefreshAIWorkout() async {
         guard AIWorkoutService.isConfigured else { return }
         let payload = buildAIPayload()
@@ -892,7 +897,42 @@ final class DataStore {
         if let plan {
             aiTodayPlan = plan
             lastAIRefreshAt = Date()
+            aiTodayFailed = false
+        } else {
+            aiTodayFailed = true
         }
+    }
+
+    /// 引导确认后生成首份计划 (Path B 真 AI): 先种本地起步 routine 保证库非空, 再尝试真 AI 作为
+    /// 今日推荐 (✨AI). 失败 → 静默回落到本地推荐 (aiTodayPlan 不设, Today 自己 fallback).
+    func generateFirstPlanViaAI() async {
+        seedStarterRoutines()                       // 2 条本地起步 (内部 guard plans.isEmpty)
+        guard AIWorkoutService.isConfigured else { return }
+        let payload = buildAIPayload()
+        if let plan = await AIWorkoutService.shared.generateToday(
+            payload: payload, library: exercises, maxExercises: settings.exercisesPerSession) {
+            aiTodayPlan = plan
+            lastAIRefreshAt = Date()
+            aiTodayFailed = false
+        } else {
+            aiTodayFailed = true
+        }
+        flushSave()
+    }
+
+    /// AI Routines tab "生成": 真 AI 一条 (✨AI, 排最前) + 本地 tuned 若干作为更多选择.
+    /// 返回 (plans, 是否回落到纯本地). 失败/未配置 → 纯本地 + usedFallback=true.
+    func generateAIRoutines() async -> (plans: [Plan], usedFallback: Bool) {
+        let local = DataStore.tunedRecommendedPlans(
+            forDays: settings.weeklyTrainingDays, settings: settings,
+            exById: exById, sets: sets, now: Date())
+        guard AIWorkoutService.isConfigured else { return (local, true) }
+        let payload = buildAIPayload()
+        if let aiPlan = await AIWorkoutService.shared.generateToday(
+            payload: payload, library: exercises, maxExercises: settings.exercisesPerSession) {
+            return ([aiPlan] + local, false)
+        }
+        return (local, true)
     }
 
     /// 构 AI 输入 payload — 把 user profile + 最近 14 天历史打包.
