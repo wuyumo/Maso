@@ -1,5 +1,30 @@
 import SwiftUI
 
+/// routine 来源标签 — AI(✨) / Classics(🎗rosette). custom → 不渲染.
+/// PlanRow(Routines tab) 与 WorkoutCard(Today) 共用, 视觉一致.
+struct PlanSourceBadge: View {
+    let source: PlanSource
+    var body: some View {
+        switch source {
+        case .ai:       badge(icon: "sparkles", text: "AI")
+        case .classics: badge(icon: "rosette", text: "Classics")
+        case .custom:   EmptyView()
+        }
+    }
+    @ViewBuilder private func badge(icon: String, text: LocalizedStringKey) -> some View {
+        HStack(spacing: 3) {
+            Image(systemName: icon).font(.system(size: 8, weight: .heavy))
+            Text(text).font(.system(size: 10, weight: .heavy)).tracking(0.4)
+        }
+        .foregroundStyle(MasoColor.accent)
+        .padding(.horizontal, 6).padding(.vertical, 2)
+        .background(MasoColor.accent.opacity(0.18))
+        .overlay(Capsule().stroke(MasoColor.accent.opacity(0.45), lineWidth: 0.5))
+        .clipShape(Capsule())
+        .fixedSize()
+    }
+}
+
 // 今日训练卡片 — Home 页核心元素
 // 跟 web 端 WorkoutCard.tsx 对应: 显示 plan 名 + 推断肌群 BodyHint + 步骤摘要 + 大开始按钮
 struct WorkoutCard: View {
@@ -80,7 +105,7 @@ struct WorkoutCard: View {
         /// 系统推荐用 "plan-full*/plan-bal*/plan-push*..." 命名, 用户自建用 "plan-new-...".
     /// 这样不需要 caller 显式传 flag, 卡片自己根据 id 表达"AI" 来源.
     private var isAIGenerated: Bool {
-        plan.id.hasPrefix("plan-ai-")
+        plan.resolvedSource == .ai
     }
 
     /// 该 plan 是不是用户自己 plans 数组里挑的 (今日推荐走 pickTodayPlan 命中用户某条 plan).
@@ -126,22 +151,9 @@ struct WorkoutCard: View {
                 .padding(.bottom, 4)
             }
 
-            // 标题行: [AI badge] + plan name + 右侧 chevron
+            // 标题行: [来源 badge: AI / Classics] + plan name + 右侧 chevron
             HStack(alignment: .center, spacing: 8) {
-                if isAIGenerated {
-                    Text("AI")
-                        .font(.system(size: 10, weight: .heavy))
-                        .tracking(0.6)
-                        .foregroundStyle(MasoColor.accent)
-                        .padding(.horizontal, 6)
-                        .padding(.vertical, 2)
-                        .background(MasoColor.accent.opacity(0.18))
-                        .overlay(
-                            Capsule().stroke(MasoColor.accent.opacity(0.45), lineWidth: 0.5)
-                        )
-                        .clipShape(Capsule())
-                        .fixedSize()
-                }
+                PlanSourceBadge(source: plan.resolvedSource)
                 Text(plan.name)
                     .font(.system(size: 16, weight: .bold))
                     .foregroundStyle(MasoColor.text)

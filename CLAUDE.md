@@ -56,6 +56,15 @@ SettingsScreen.proSection 在 iapEnabled=false 时返回 EmptyView。**以后开
          已补「读」用途说明 + en/zh InfoPlist.strings (catchUpHealthKitSync 避免重复计入的诚实文案);
       ③ Distribute 报 "No Accounts" → Yumo 在 Xcode Settings>Accounts 登录 Eric Ng 后通过。
 
+## 🆕 routine 来源标签 AI / Classics (2026-06-26, 待下一版)
+- **Plan 加 `source: PlanSource?`**(enum custom/ai/classics, optional 兼容旧数据)+ `resolvedSource` 计算属性
+  (有显式 source 用之, 否则按 id 前缀 plan-ai-/plan-community- 兜底). 写入点: AIWorkoutService=.ai、
+  CommunityPlans.materialize=.classics、DataStore.savePlan 复制时 `source: plan.resolvedSource`(重 id 后不丢).
+- **共享 badge** `PlanSourceBadge`(在 WorkoutCard.swift): accent 绿小药丸, AI=✨/Classics=🎗rosette, custom 不渲染.
+  用在 WorkoutCard(Today, isAIGenerated 改 resolvedSource==.ai) + PlanRow(Routines tab 标题前). en "Classics"/zh "经典" 已有.
+- **Classics 入口卡图标** books.vertical.fill → **rosette**(TodayScreen). 名称仍保留 "Classics"(内容=5x5/PPL/531 等经典模板,
+  Community 会误导成 UGC). 模拟器实测: Routines 卡显示 ✨AI / 🎗Classics 两种 badge.
+
 ## 🚀 1.3(9) 已提交审核 (2026-06-26)
 本 session 又攒一批(Exercises 右侧索引重做成通讯录式小绿点+拖动文案 pill / 缩放单面板肌肉图 / scrubber 抖动修复 /
 滚动跟随高亮 / 播放器休息环白色+回退到上一训练组 / Routines 露出 AI+Classics)。三 Info.plist → **1.3 / build 9**。

@@ -85,11 +85,28 @@ struct HistoryScreen: View {
                 // 训练记录列表
                 let allSessions = groupedSessions()
                 if allSessions.isEmpty {
-                    Text("No workouts yet")
-                        .font(.system(size: 13))
-                        .foregroundStyle(MasoColor.textDim)
-                        .padding(.vertical, 56)
-                        .frame(maxWidth: .infinity, alignment: .center)
+                    // 空态: 进度图标 + 鼓励文案 — 让它不那么空, 推用户去开始第一次训练.
+                    VStack(spacing: 14) {
+                        ZStack {
+                            Circle().fill(MasoColor.accent.opacity(0.12)).frame(width: 76, height: 76)
+                            Image(systemName: "chart.line.uptrend.xyaxis")
+                                .font(.system(size: 32, weight: .semibold))
+                                .foregroundStyle(MasoColor.accent)
+                        }
+                        VStack(spacing: 6) {
+                            Text("No workouts yet")
+                                .font(.system(size: 18, weight: .bold))
+                                .foregroundStyle(MasoColor.text)
+                            Text("Finished workouts show up here. Start your first one and watch your progress grow.")
+                                .font(.system(size: 13))
+                                .foregroundStyle(MasoColor.textDim)
+                                .multilineTextAlignment(.center)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                        .frame(maxWidth: 300)
+                    }
+                    .padding(.vertical, 52)
+                    .frame(maxWidth: .infinity, alignment: .center)
                 } else {
                     let cutoff = Calendar.current.startOfDay(for: Calendar.current.date(byAdding: .day, value: -7, to: Date())!)
                     let recent = allSessions.filter { $0.day >= cutoff }

@@ -21,10 +21,10 @@ struct PlansScreen: View {
     /// 右上角齿轮 → 弹 Settings sheet (RootView 持有). 跟 "+" 同在 PlansScreen 的一个 ToolbarItemGroup 里.
     let onOpenSettings: () -> Void
 
-    // 默认页 = My routines (savedPage, 已存 routines 库). AI / Classics 改成从导航栏 "+" push 进去的
-    // 独立发现页 (#IA-A 库优先): "+" → 选来源 → push 对应发现页 → Save 后 pop 回库, 亲眼看它落进来.
-    enum AddRoute: Hashable { case ai, classics }
-    @State private var addRoute: AddRoute? = nil
+    // Routines 顶部分段: Saved(已存) / AI Routines(按偏好生成) / Classics(经典模板). 默认 Saved.
+    // 空态/入口的"去 AI 生成 / 去 Classics 找"统一改成切 tab (不再 push 发现页).
+    enum RoutinesTab: Hashable { case saved, ai, classics }
+    @State private var tab: RoutinesTab = .saved
     /// 导航栏 "+" 菜单点 "Import from photo" → 翻这个 → savedPage 里的 TodayScreen 开图片选择器.
     @State private var triggerImport = false
     /// 按偏好现生成的 AI 计划 (transient, 不进 data.plans 直到用户 Save).
@@ -39,39 +39,45 @@ struct PlansScreen: View {
     @State private var communityDays: Int? = nil
 
     var body: some View {
-        // 默认 = My routines 库 (savedPage). 没有 segmented — AI / Classics 是从导航栏 "+" push 进去的
-        // 独立发现页 (#IA-A 库优先). 普通 ScrollView 直接在 NavigationStack 里, 系统自动给底部安全区, 铺满整屏.
-        savedPage
-            // 跟 Today / History / Exercises 一致: 用 canonical screenHeader (系统大标题 .large + 滚动收折 +
-            // 统一 toolbar 按钮样式). 右上角: "+" 在左 (添加 — 一个入口收 4 种添加方式), 齿轮在右 (设置).
-            .screenHeader("Routines") {
-                Menu {
-                    // AI / Classics 已作为入口卡放到列表下方 (放出来), 这里只留两种"创建"方式.
-                    Button(action: onNewPlan) { Label("Create my own", systemImage: "square.and.pencil") }
-                    Button { triggerImport = true } label: { Label("Import from photo", systemImage: "photo") }
-                } label: {
-                    Image(systemName: "plus")
-                        .font(.system(size: 16, weight: .regular))
-                }
-                .accessibilityLabel(Text("New routine"))
+        VStack(spacing: 0) {
+            // 顶部分段切 Saved / AI Routines / Classics — 内联切换, 大标题随下方内容滚动折叠.
+            Picker("Routines", selection: $tab) {
+                Text("Saved").tag(RoutinesTab.saved)
+                Text("AI Routines").tag(RoutinesTab.ai)
+                Text("Classics").tag(RoutinesTab.classics)
+            }
+            .pickerStyle(.segmented)
+            .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
+            .padding(.top, 2)
+            .padding(.bottom, 8)
 
-                Button(action: onOpenSettings) {
-                    Image(systemName: "gearshape")
-                        .font(.system(size: 16, weight: .regular))
+            Group {
+                switch tab {
+                case .saved:    savedPage
+                case .ai:       aiPage
+                case .classics: communityPage
                 }
-                .accessibilityLabel(Text("Settings"))
             }
-            .navigationDestination(item: $addRoute) { route in
-                Group {
-                    switch route {
-                    case .ai:       aiPage.navigationTitle("Generate with AI")
-                    case .classics: communityPage.navigationTitle("Classics")
-                    }
-                }
-                .navigationBarTitleDisplayMode(.inline)
-                .background(MasoColor.background.ignoresSafeArea())
+        }
+        // 跟 Today / History / Exercises 一致: canonical screenHeader (系统大标题 .large + 滚动收折).
+        // 右上角: "+" (创建/导入), 齿轮 (设置).
+        .screenHeader("Routines") {
+            Menu {
+                Button(action: onNewPlan) { Label("Create my own", systemImage: "square.and.pencil") }
+                Button { triggerImport = true } label: { Label("Import from photo", systemImage: "photo") }
+            } label: {
+                Image(systemName: "plus")
+                    .font(.system(size: 16, weight: .regular))
             }
-            .background(MasoColor.background.ignoresSafeArea())
+            .accessibilityLabel(Text("New routine"))
+
+            Button(action: onOpenSettings) {
+                Image(systemName: "gearshape")
+                    .font(.system(size: 16, weight: .regular))
+            }
+            .accessibilityLabel(Text("Settings"))
+        }
+        .background(MasoColor.background.ignoresSafeArea())
         .sheet(item: $detailPlan) { plan in
             PlanDetailSheet(
                 initialPlan: plan,
@@ -110,8 +116,8 @@ struct PlansScreen: View {
             onFreeWorkout: {},
             onNewPlan: onNewPlan,
             onOpenSettings: {},
-            onGoToDiscover: { addRoute = .ai },
-            onBrowseClassics: { addRoute = .classics },
+            onGoToDiscover: { withAnimation(.easeInOut(duration: 0.2)) { tab = .ai } },
+            onBrowseClassics: { withAnimation(.easeInOut(duration: 0.2)) { tab = .classics } },
             embedded: true,
             mode: .myPlans,
             triggerImport: $triggerImport
@@ -599,6 +605,7 @@ struct PlanRow: View {
                 // ── 右: 文字区 (tap → detail) ──
                 VStack(alignment: .leading, spacing: 5) {
                     HStack(spacing: 6) {
+                        PlanSourceBadge(source: plan.resolvedSource)   // AI / Classics 来源标签
                         Text(plan.name)
                             .font(.system(size: 16, weight: .bold))
                             .foregroundStyle(MasoColor.text)

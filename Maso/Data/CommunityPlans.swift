@@ -4923,7 +4923,8 @@ extension CommunityPlan {
                 name: displayName,
                 steps: validSteps,
                 createdAt: createdAt,
-                updatedAt: createdAt
+                updatedAt: createdAt,
+                source: .classics    // → routine 列表挂 Classics 标签
             )
         }
     }
