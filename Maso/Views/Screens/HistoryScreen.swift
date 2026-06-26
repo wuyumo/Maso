@@ -47,6 +47,8 @@ struct HistoryScreen: View {
         //   - stats + calendar 是 scroll content 的一部分, 跟 session 列表一起滚动
         //   - 用户向上滑 → 标题从 large 收成 inline, headbar 出系统 material blur
         //   - ScrollView 到顶后向下拖 (overscroll) → calendar 从 strip 展开成月
+        // GeometryReader 拿视口高 → VStack minHeight 撑满 → 空态可在日历↔tab bar 之间垂直居中.
+        GeometryReader { geo in
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
                 // Pro 展示位 — Pro 用户隐藏. 从 Today tab 搬过来 (Today 是训练入口, 不放营销卡;
@@ -85,6 +87,8 @@ struct HistoryScreen: View {
                 // 训练记录列表
                 let allSessions = groupedSessions()
                 if allSessions.isEmpty {
+                    // 上方 Spacer 跟下方 pageBottomInset Spacer 等 min → 空态在日历↔tab bar 间居中.
+                    Spacer(minLength: MasoMetrics.pageBottomInset)
                     // 空态: 进度图标 + 鼓励文案 — 让它不那么空, 推用户去开始第一次训练.
                     VStack(spacing: 14) {
                         ZStack {
@@ -105,7 +109,6 @@ struct HistoryScreen: View {
                         }
                         .frame(maxWidth: 300)
                     }
-                    .padding(.vertical, 52)
                     .frame(maxWidth: .infinity, alignment: .center)
                 } else {
                     let cutoff = Calendar.current.startOfDay(for: Calendar.current.date(byAdding: .day, value: -7, to: Date())!)
@@ -154,6 +157,7 @@ struct HistoryScreen: View {
 
                 Spacer(minLength: MasoMetrics.pageBottomInset)
             }
+            .frame(minHeight: geo.size.height)   // 撑满视口 → 空态前后两个 Spacer 能把它居中
         }
         // (撤销 scroll-based 展开/收起 — 现在完全交给用户主动点击 strip / chevron 控制)
         // 页面底色 #121212 — 跟 Plans / Today 一致, 不再透出 NavigationStack 默认纯黑底.
@@ -209,6 +213,7 @@ struct HistoryScreen: View {
         } message: {
             Text("All sets and PRs from this workout will be removed. Your plans stay.")
         }
+        }   // GeometryReader
     }
 
     /// 单个 SessionCard + tap handler — 给 recent / older 两个 list 共享.
