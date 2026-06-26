@@ -644,6 +644,18 @@ final class DataStore {
         return true
     }
 
+    /// 重排召回提醒 — 训练完 / app 进后台时调. 以最近一次训练为基, 开关关时只清除.
+    /// sets 是 newest-first (recordSet insert at 0), 所以 sets.first = 最近一次.
+    func rescheduleWorkoutReminders() {
+        let last = sets.first?.performedAt
+        let body = NSLocalizedString("You're recovered — a quick session keeps your momentum going.",
+                                     comment: "comeback reminder body")
+        let enabled = settings.workoutRemindersEnabled
+        Task { @MainActor in
+            WorkoutReminderScheduler.shared.reschedule(enabled: enabled, lastWorkout: last, body: body)
+        }
+    }
+
     /// 今日推荐 plan — wantStrengthen 覆盖度 + LRU (跟 web 端 pickTodayPlan 一致)
     var todayRecommendedPlan: Plan? {
         pickTodayPlan(plans: plans, settings: settings, exById: exById)

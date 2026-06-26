@@ -247,6 +247,17 @@
 "Next month" = "Next month";
 "Current streak" = "Current streak";
 "Week streak" = "Week streak";
+"Reminders" = "Reminders";
+"Workout reminders" = "Workout reminders";
+"When you've taken a few days off, Masso sends a gentle reminder once your muscles have had time to recover. Off by default, and the reminder never leaves your device." = "When you've taken a few days off, Masso sends a gentle reminder once your muscles have had time to recover. Off by default, and the reminder never leaves your device.";
+"Recovered and ready" = "Recovered and ready";
+"Your muscles miss you" = "Your muscles miss you";
+"Let's get back to it" = "Let's get back to it";
+"You're recovered — a quick session keeps your momentum going." = "You're recovered — a quick session keeps your momentum going.";
+"Progress" = "Progress";
+"Weekly volume" = "Weekly volume";
+"Total %@ lifted per week" = "Total %@ lifted per week";
+"Estimated 1RM" = "Estimated 1RM";
 
 /* ── HealthKit + Training freq ── */
 "Integrations" = "Integrations";

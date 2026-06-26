@@ -115,6 +115,31 @@ struct SettingsScreen: View {
                     )
                 }
 
+                // 召回提醒 — 默认关 (opt-in, 符合"不打扰"品牌). 开 → 请求通知权限; 被拒则弹回关.
+                // 全本地通知, 停训后在恢复窗口轻推一次. 见 WorkoutReminderScheduler.
+                Section_(title: "Reminders") {
+                    ToggleRow(
+                        title: "Workout reminders",
+                        desc: "When you've taken a few days off, Masso sends a gentle reminder once your muscles have had time to recover. Off by default, and the reminder never leaves your device.",
+                        isOn: Binding(
+                            get: { data.settings.workoutRemindersEnabled },
+                            set: { on in
+                                if on {
+                                    data.settings.workoutRemindersEnabled = true   // 乐观置 → toggle 立刻亮
+                                    Task { @MainActor in
+                                        let granted = await WorkoutReminderScheduler.shared.requestAuthorization()
+                                        data.settings.workoutRemindersEnabled = granted  // 被拒 → 弹回 off
+                                        if granted { data.rescheduleWorkoutReminders() }
+                                    }
+                                } else {
+                                    data.settings.workoutRemindersEnabled = false
+                                    WorkoutReminderScheduler.shared.cancelAll()
+                                }
+                            }
+                        )
+                    )
+                }
+
                 // 动作参数全局同步 (R3) — 默认开, 用户可关.
                 Section_(title: "Exercise data") {
                     ToggleRow(

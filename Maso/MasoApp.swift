@@ -60,6 +60,8 @@ struct MasoApp: App {
             .onChange(of: scenePhase) { _, newPhase in
                 if newPhase == .background || newPhase == .inactive {
                     dataStore.save()
+                    // 进后台时以"最近一次训练"为基重排召回提醒 (开关关时只清除).
+                    dataStore.rescheduleWorkoutReminders()
                 }
                 // 回前台 → 刷一次 entitlements (用户可能在 Settings.app 改了订阅状态)
                 if newPhase == .active {

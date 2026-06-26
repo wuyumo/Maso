@@ -248,6 +248,17 @@
 "Next month" = "下个月";
 "Current streak" = "连续训练";
 "Week streak" = "周连胜";
+"Reminders" = "提醒";
+"Workout reminders" = "训练提醒";
+"When you've taken a few days off, Masso sends a gentle reminder once your muscles have had time to recover. Off by default, and the reminder never leaves your device." = "歇了几天后,等肌肉恢复得差不多,Masso 会温和地提醒你一次。默认关闭,提醒只在本机,不上传。";
+"Recovered and ready" = "恢复好了,可以练了";
+"Your muscles miss you" = "肌肉想你了";
+"Let's get back to it" = "回来继续练吧";
+"You're recovered — a quick session keeps your momentum going." = "你已经恢复了 —— 练一小会儿就能保持状态。";
+"Progress" = "进度";
+"Weekly volume" = "每周训练容量";
+"Total %@ lifted per week" = "每周累计举起重量(%@)";
+"Estimated 1RM" = "估算 1RM";
 
 /* ── HealthKit + Training freq ── */
 "Integrations" = "应用集成";

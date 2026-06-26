@@ -84,6 +84,19 @@ struct HistoryScreen: View {
                 .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
                 .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
 
+                // 进度图表 — 周容量 + 头号动作 1RM 趋势. 数据足够 (各 ≥2 点) 才出现.
+                let charts = ProgressChartsView(data: data)
+                if !charts.isEmpty {
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text("Progress")
+                            .font(.system(size: 12, weight: .bold)).tracking(0.6).textCase(.uppercase)
+                            .foregroundStyle(MasoColor.textDim)
+                            .padding(.horizontal, 4)
+                        charts
+                    }
+                    .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
+                }
+
                 // 训练记录列表
                 let allSessions = groupedSessions()
                 if allSessions.isEmpty {

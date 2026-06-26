@@ -131,6 +131,9 @@ struct UserSettings: Codable, Sendable {
     /// 是否已经请求过 App Store 评分 — 只在用户练到一定次数后请求一次 (iOS 自身也会限频, 每年至多 3 次).
     var hasRequestedReview: Bool = false
 
+    /// 召回提醒开关 — 默认关 (opt-in, 符合"不打扰"品牌). 打开后在恢复窗口轻推"该练了".
+    var workoutRemindersEnabled: Bool = false
+
     /// 是否启用 AI 训练计划生成. 默认开 (Path B: 代理 server-side 已配, 真 AI 默认跑, 失败自动回落本地).
     /// 现已不再作为 gate (各调用点只看 AIWorkoutService.isConfigured); 保留作未来用户开关位.
     var aiWorkoutEnabled: Bool = true
