@@ -56,6 +56,22 @@ SettingsScreen.proSection 在 iapEnabled=false 时返回 EmptyView。**以后开
          已补「读」用途说明 + en/zh InfoPlist.strings (catchUpHealthKitSync 避免重复计入的诚实文案);
       ③ Distribute 报 "No Accounts" → Yumo 在 Xcode Settings>Accounts 登录 Eric Ng 后通过。
 
+## 🤖 Path B: AI 接真 LLM (2026-06-26, 待下一版 / 待真机验证)
+**背景**: pm-skills 全局审查头号 P0 —— app 叫 "AI Workout Planner" 但用户碰到的每个 AI 面都是本地模板+假进度,
+真 LLM 被 `settings.aiWorkoutEnabled=false` 关死且无任何 view 写它。Yumo 选 Path B = 把真 AI 接通。
+- **去 gate**: refreshAIWorkoutIfNeeded / QuickWorkout useAIPath 不再要求 aiWorkoutEnabled, 只看 `AIWorkoutService.isConfigured`
+  (代理 server-side 已配, isConfigured=true). Settings.aiWorkoutEnabled 默认改 true (保留作未来开关位).
+- **引导**: confirm() → `DataStore.generateFirstPlanViaAI()` (先 seedStarterRoutines 保非空, 再真 `generateToday` 作今日推荐).
+  `AIGeneratingView` 加 `isReady` 参数: "Building"步等真 AI 完成 (min dwell 0.8s + 9s 安全兜底) 才落定 → 动画绑真实延迟.
+- **AI tab**: `startGenerateRoutines` → `DataStore.generateAIRoutines()` (真 generateToday + 本地 tuned 作备选).
+  spinner 绑真实调用; 失败 → "Couldn't reach the AI coach — showing templates" + Retry. ✨AI badge 只给真 LLM 计划.
+- **Today**: `DataStore.aiTodayFailed` → 失败时 inline chip "AI unavailable — using recommended · Retry".
+- **关键修复 (潜伏 bug)**: generateToday 旧 prompt 让 LLM **自由命名**动作, fuzzy 匹配 938 库经常落空→空计划→回落.
+  改: `buildPrompt(payload:library:)` 用 `candidateNames(from:)` (非 niche, 每大区取 8 个 canonical 短名) 塞进 prompt,
+  要求 exercise_name **逐字从目录选** → matchExercise 精确命中. AIResponse schema 已验证 (curl: LLM 返回正确 {name,steps:[{exercise_name,sets,reps,weight_kg,duration_seconds}]}).
+- **代理**: Cloudflare Worker → DeepSeek (deepseek-chat). curl 实测 healthy (返回合法计划). Secrets.xcconfig 配好 (proxy URL + token), Info.plist 注入 MasoAIProxyURL/MasoClientToken.
+- ⚠️ **模拟器网络到外部代理抖动** (有时 200 有时 -1 断), 没法在 sim 稳定验证端到端 AI —— **真机验证**: 全新装→走引导/AI tab 看是否生成真 AI 计划 (✨AI, 无回落条).
+
 ## 🆕 routine 来源标签 AI / Classics (2026-06-26, 待下一版)
 - **Plan 加 `source: PlanSource?`**(enum custom/ai/classics, optional 兼容旧数据)+ `resolvedSource` 计算属性
   (有显式 source 用之, 否则按 id 前缀 plan-ai-/plan-community- 兜底). 写入点: AIWorkoutService=.ai、

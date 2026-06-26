@@ -238,11 +238,12 @@ struct RootView: View {
             // 反馈队列 daily digest — app 启动 + 每次回前台都尝试一次. 24h 内最多 send 一次,
             // 由 FeedbackStore 内部判断. 没 pending 时 trySendDigest 是 no-op.
             .task {
+                // 先落 showcase 屏 (截图流水线) — 不能被下面的网络 await 阻塞.
+                // (Path B 后 refreshAIWorkoutIfNeeded 会发真 LLM 网络调用, 不能再排在 showcase 前.)
+                applyShowcaseModeIfNeeded()
                 await feedbackStore.trySendDigest()
                 // App 启动时也尝试 refresh AI 训练计划 — 同一天已经生成则 no-op
                 await data.refreshAIWorkoutIfNeeded()
-                // App Store 截图模式 — 读 MASO_SHOWCASE env var, 自动落到指定屏幕
-                applyShowcaseModeIfNeeded()
             }
             .onChange(of: scenePhase) { _, newPhase in
                 if newPhase == .active {
