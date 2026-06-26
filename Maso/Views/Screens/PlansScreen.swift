@@ -61,23 +61,27 @@ struct PlansScreen: View {
                 }
             }
         }
-        // 跟 Today / History / Exercises 一致: canonical screenHeader (系统大标题 .large + 滚动收折).
-        // 右上角: "+" (创建/导入), 齿轮 (设置).
-        .screenHeader("Routines") {
-            Menu {
-                Button(action: onNewPlan) { Label("Create my own", systemImage: "square.and.pencil") }
-                Button { triggerImport = true } label: { Label("Import from photo", systemImage: "photo") }
-            } label: {
-                Image(systemName: "plus")
-                    .font(.system(size: 16, weight: .regular))
-            }
-            .accessibilityLabel(Text("New routine"))
+        // 标题 inline — "Routines" 进导航栏跟右上角 "+"/齿轮同一行 (不走 screenHeader 的 .large 大标题,
+        // 分段控件随之整体上移). 手动 navigationTitle + .inline + toolbar.
+        .navigationTitle("Routines")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItemGroup(placement: .topBarTrailing) {
+                Menu {
+                    Button(action: onNewPlan) { Label("Create my own", systemImage: "square.and.pencil") }
+                    Button { triggerImport = true } label: { Label("Import from photo", systemImage: "photo") }
+                } label: {
+                    Image(systemName: "plus")
+                        .font(.system(size: 16, weight: .regular))
+                }
+                .accessibilityLabel(Text("New routine"))
 
-            Button(action: onOpenSettings) {
-                Image(systemName: "gearshape")
-                    .font(.system(size: 16, weight: .regular))
+                Button(action: onOpenSettings) {
+                    Image(systemName: "gearshape")
+                        .font(.system(size: 16, weight: .regular))
+                }
+                .accessibilityLabel(Text("Settings"))
             }
-            .accessibilityLabel(Text("Settings"))
         }
         .background(MasoColor.background.ignoresSafeArea())
         .sheet(item: $detailPlan) { plan in
