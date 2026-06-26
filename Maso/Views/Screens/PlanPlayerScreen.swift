@@ -1,4 +1,5 @@
 import SwiftUI
+import StoreKit
 
 // 训练播放器 — 跟 web 端 PlanPlayer.tsx 1:1
 // 结构 (从上到下):
@@ -2421,11 +2422,20 @@ private struct CompletedView: View {
     let onClose: () -> Void
 
     @State private var planSaved: Bool = false
+    /// App Store 评分请求 — iOS 原生 (系统决定真正何时/是否弹). 在训练完成的正向时刻请求一次.
+    @Environment(\.requestReview) private var requestReview
     /// 训练结束自动拉起分享页 — onAppear 只触发一次.
     @State private var didAutoOpenShare = false
     @State private var showShare = false
     /// 自由训练: 分享页关掉后再问一次是否把这次即兴训练存为可复用计划.
     @State private var showSavePrompt = false
+
+    /// 训练真正结束 (分享页关 / 自由训练存盘后) → 关播放器, 并在这个正向时刻请求一次 App Store 评分.
+    /// data.shouldOfferReview() 内部限频 (练满 3 次 + 全生命周期一次), 多路径调用也只会弹一次.
+    private func closeAndMaybeReview() {
+        if data.shouldOfferReview() { requestReview() }
+        onClose()
+    }
 
     var body: some View {
         // 训练结束 → 不再有"完成"入口页 (旧的 ✓ + Share workout 按钮那一屏已去掉),
@@ -2443,7 +2453,7 @@ private struct CompletedView: View {
                 if onSavePlan != nil && !planSaved {
                     showSavePrompt = true
                 } else {
-                    onClose()
+                    closeAndMaybeReview()
                 }
             }) {
                 ShareCustomizeSheet(
@@ -2481,7 +2491,7 @@ private struct CompletedView: View {
                 Button(NSLocalizedString("Save as plan", comment: "")) {
                     onSavePlan?()
                     planSaved = true
-                    onClose()
+                    closeAndMaybeReview()
                 }
                 Button(NSLocalizedString("Don't Save", comment: ""), role: .cancel) { onClose() }
             } message: {

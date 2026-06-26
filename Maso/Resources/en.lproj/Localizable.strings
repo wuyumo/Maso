@@ -147,6 +147,18 @@
 "Pick any — or none for a balanced routine." = "Pick any — or none for a balanced routine.";
 "Next" = "Next";
 "STEP %lld / 5" = "STEP %lld / 5";
+"STEP %1$lld / %2$lld" = "STEP %1$lld / %2$lld";
+"What can you train with?" = "What can you train with?";
+"Pick what you have — leave all off if you train at a full gym." = "Pick what you have — leave all off if you train at a full gym.";
+"Dumbbells" = "Dumbbells";
+"Barbell & plates" = "Barbell & plates";
+"Cable machine" = "Cable machine";
+"Resistance machines" = "Resistance machines";
+"Smith machine" = "Smith machine";
+"Kettlebells" = "Kettlebells";
+"Resistance bands" = "Resistance bands";
+"Pull-up / dip bar" = "Pull-up / dip bar";
+"Cardio machines" = "Cardio machines";
 
 /* ── Muscle group display names ─────────────────────── */
 "Chest" = "Chest";
@@ -234,6 +246,7 @@
 "Previous month" = "Previous month";
 "Next month" = "Next month";
 "Current streak" = "Current streak";
+"Week streak" = "Week streak";
 
 /* ── HealthKit + Training freq ── */
 "Integrations" = "Integrations";

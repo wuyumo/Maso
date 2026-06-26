@@ -13,7 +13,7 @@ struct OnboardingScreen: View {
     let onDone: () -> Void
 
     private enum Step: Int, CaseIterable {
-        case gender = 1, age, weight, days, focus
+        case gender = 1, age, weight, days, focus, equipment
         static let total = Step.allCases.count
     }
 
@@ -28,6 +28,8 @@ struct OnboardingScreen: View {
     @State private var weightTouched = false
     @State private var daysPerWeek: Int = 3               // 拨盘默认 3 天/周 (拨盘必有位置, 同年龄/体重)
     @State private var strengthen: Set<MuscleGroup> = []  // 不预选 — 留空 = 均衡
+    /// 可用器材 — 多选. 留空 = 不限制 (= 健身房全器械, 跟 settings.availableEquipment 的"空=不限"语义一致).
+    @State private var equipment: Set<EquipmentCategory> = []
     /// 确认后进入"AI 生成中"过渡 (感知型 — seedStarterRoutines 是瞬时本地生成).
     @State private var generating = false
     /// 真 AI 首份计划生成完成 (成功或回落) → 过渡页"Building"步据此落定, 把动画绑到真实调用延迟.
@@ -75,7 +77,7 @@ struct OnboardingScreen: View {
                 }
             }
             .animation(.easeInOut(duration: 0.25), value: step)
-            Text(String(format: NSLocalizedString("STEP %lld / 5", comment: ""), step.rawValue))
+            Text(String(format: NSLocalizedString("STEP %1$lld / %2$lld", comment: "onboarding step counter"), step.rawValue, Step.total))
                 .font(.system(size: 12, weight: .bold)).tracking(2)
                 .foregroundStyle(MasoColor.accent)
         }
@@ -90,6 +92,7 @@ struct OnboardingScreen: View {
         case .weight: weightStep
         case .days:   daysStep
         case .focus:  focusStep
+        case .equipment: equipmentStep
         }
     }
 
@@ -195,7 +198,42 @@ struct OnboardingScreen: View {
             Spacer(minLength: 24)
             // 只 6 个大 section — 跟 Settings / 选动作页 Muscle 筛选一致. 居中 + 放大.
             MuscleSelector(selected: $strengthen, sectionsOnly: true, chipAlignment: .center, largeChips: true)
-            Spacer(minLength: 40)   // 跟下方"Build My Routine"按钮的间隔
+            Spacer(minLength: 40)   // 跟下方"Next"按钮的间隔
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+
+    // 6) 可用器材 — 多选. 留空 = 健身房全器械; 选了 = 推荐计划只用这些 (做不了的动作自动换可用替代).
+    //    让 day-1 首份计划就贴合用户实际器材, 不再给哑铃用户塞杠铃动作.
+    private var equipmentStep: some View {
+        VStack(spacing: 0) {
+            Color.clear.frame(height: 16)
+            stepTitle("What can you train with?", "Pick what you have — leave all off if you train at a full gym.")
+            Spacer(minLength: 24)
+            LazyVGrid(columns: [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10)], spacing: 10) {
+                ForEach(EquipmentCategory.allCases) { cat in
+                    let on = equipment.contains(cat)
+                    Button {
+                        Haptics.tap(); SoundPlayer.shared.playTick()
+                        if on { equipment.remove(cat) } else { equipment.insert(cat) }
+                    } label: {
+                        HStack(spacing: 8) {
+                            Image(systemName: cat.icon).font(.system(size: 15, weight: .semibold))
+                            Text(cat.displayName)   // displayName 已走 NSLocalizedString
+                                .font(.system(size: 14, weight: .semibold))
+                                .lineLimit(1).minimumScaleFactor(0.75)
+                            Spacer(minLength: 0)
+                        }
+                        .padding(.horizontal, 13).padding(.vertical, 13)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(on ? MasoColor.accent : MasoColor.surface)
+                        .foregroundStyle(on ? .black : MasoColor.text)
+                        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            Spacer(minLength: 28)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
@@ -249,7 +287,8 @@ struct OnboardingScreen: View {
         case .age:    return ("Next", { advance(to: .weight) })
         case .weight: return ("Next", { advance(to: .days) })
         case .days:   return ("Next", { advance(to: .focus) })   // 改拨盘后需"下一步"
-        case .focus:  return ("Build My Routine", confirm)
+        case .focus:  return ("Next", { advance(to: .equipment) })
+        case .equipment: return ("Build My Routine", confirm)
         }
     }
 
@@ -290,6 +329,7 @@ struct OnboardingScreen: View {
         data.settings.weight = weight
         data.settings.weeklyTrainingDays = daysPerWeek
         data.settings.wantStrengthen = Array(strengthen)
+        data.settings.availableEquipment = equipment.map { $0.rawValue }   // 器材约束 → 首份计划只用可用器材
         data.flushSave()   // 先持久化偏好 (即使 AI 调用挂掉, 偏好也已落盘)
         // ⚠️ 不在这里置 onboardingCompleted —— RootView 用它做门控, 一置就立刻切走 OnboardingScreen,
         //    "AI 生成中"过渡(generating overlay 挂在 OnboardingScreen 上)就来不及显示.

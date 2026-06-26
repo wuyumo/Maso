@@ -128,6 +128,9 @@ struct UserSettings: Codable, Sendable {
     /// 用户是否已经看过"点中间 Tab 开始训练"的首次提示 — 看过后不再展示.
     var hasSeenCenterTabHint: Bool = false
 
+    /// 是否已经请求过 App Store 评分 — 只在用户练到一定次数后请求一次 (iOS 自身也会限频, 每年至多 3 次).
+    var hasRequestedReview: Bool = false
+
     /// 是否启用 AI 训练计划生成. 默认开 (Path B: 代理 server-side 已配, 真 AI 默认跑, 失败自动回落本地).
     /// 现已不再作为 gate (各调用点只看 AIWorkoutService.isConfigured); 保留作未来用户开关位.
     var aiWorkoutEnabled: Bool = true
@@ -280,15 +283,15 @@ enum EquipmentCategory: String, CaseIterable, Identifiable, Sendable {
 
     var displayName: String {
         switch self {
-        case .dumbbell:   return "Dumbbells"
-        case .barbell:    return "Barbell & plates"
-        case .cable:      return "Cable machine"
-        case .machine:    return "Resistance machines"
-        case .smith:      return "Smith machine"
-        case .kettlebell: return "Kettlebells"
-        case .bands:      return "Resistance bands"
-        case .pullupBar:  return "Pull-up / dip bar"
-        case .cardio:     return "Cardio machines"
+        case .dumbbell:   return NSLocalizedString("Dumbbells", comment: "equipment")
+        case .barbell:    return NSLocalizedString("Barbell & plates", comment: "equipment")
+        case .cable:      return NSLocalizedString("Cable machine", comment: "equipment")
+        case .machine:    return NSLocalizedString("Resistance machines", comment: "equipment")
+        case .smith:      return NSLocalizedString("Smith machine", comment: "equipment")
+        case .kettlebell: return NSLocalizedString("Kettlebells", comment: "equipment")
+        case .bands:      return NSLocalizedString("Resistance bands", comment: "equipment")
+        case .pullupBar:  return NSLocalizedString("Pull-up / dip bar", comment: "equipment")
+        case .cardio:     return NSLocalizedString("Cardio machines", comment: "equipment")
         }
     }
 

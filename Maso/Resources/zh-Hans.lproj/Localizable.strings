@@ -148,6 +148,18 @@
 "Pick any — or none for a balanced routine." = "可多选, 全不选则均衡训练。";
 "Next" = "下一步";
 "STEP %lld / 5" = "第 %lld 步 / 共 5 步";
+"STEP %1$lld / %2$lld" = "第 %1$lld 步 / 共 %2$lld 步";
+"What can you train with?" = "你有哪些器材?";
+"Pick what you have — leave all off if you train at a full gym." = "选你有的 —— 全不选就是健身房全器械。";
+"Dumbbells" = "哑铃";
+"Barbell & plates" = "杠铃和杠片";
+"Cable machine" = "龙门 / 绳索";
+"Resistance machines" = "固定器械";
+"Smith machine" = "史密斯机";
+"Kettlebells" = "壶铃";
+"Resistance bands" = "弹力带";
+"Pull-up / dip bar" = "单杠 / 双杠";
+"Cardio machines" = "有氧器械";
 
 /* ── Muscle group display names ─────────────────────── */
 "Chest" = "胸";
@@ -235,6 +247,7 @@
 "Previous month" = "上个月";
 "Next month" = "下个月";
 "Current streak" = "连续训练";
+"Week streak" = "周连胜";
 
 /* ── HealthKit + Training freq ── */
 "Integrations" = "应用集成";

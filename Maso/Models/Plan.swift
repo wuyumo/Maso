@@ -61,6 +61,8 @@ struct Plan: Identifiable, Hashable, Codable, Sendable {
     var lastUsedAt: Date?
     /// 来源 (AI / Classics / 自建). optional + nil: 旧数据缺这个 key 也能解码 (跟 SetRecord.planName 同套路).
     var source: PlanSource? = nil
+    /// AI 生成时 LLM 给出的一句话理由 (为什么这么排) — 露在卡片上, 让用户一眼看出"这是真 AI". 仅 .ai 计划有.
+    var rationale: String? = nil
 
     /// 解析后的来源: 有显式 source 用它; 否则按 id 前缀兜底 (旧数据 / savePlan 重 id 前的); 都不命中 → custom.
     var resolvedSource: PlanSource {

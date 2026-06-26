@@ -246,9 +246,9 @@ struct HistoryScreen: View {
     // MARK: - 顶部 3 metrics 卡 (跟 calendar 状态切换本周 / 本月)
 
     /// 顶部 stats row — 跟着 calendar 是 strip 还是月展示不同口径:
-    ///   - 7 天 strip (collapsed): "Days this week / Current streak / Sets this week"
-    ///   - 月 grid (expanded):   "Days this month / Current streak / Sets this month"
-    /// Streak 跟两种状态都用一样 (是绝对的"连续天数"概念, 跟周/月无关).
+    ///   - 7 天 strip (collapsed): "Days this week / Week streak / Sets this week"
+    ///   - 月 grid (expanded):   "Days this month / Week streak / Sets this month"
+    /// Week streak 跟两种状态都一样 (连续达标周数 — 每周训练天数 ≥ 周目标, 跟显示的周/月无关).
     @ViewBuilder
     private var statsRow: some View {
         if calendarCollapsed {
@@ -270,7 +270,7 @@ struct HistoryScreen: View {
         let daysThisWeek = workoutDateSet().intersection(weekDays).count
         statsCard(
             value1: "\(daysThisWeek)", label1: "Days this week",
-            value2: "\(currentStreakDays())", label2: "Current streak",
+            value2: "\(currentWeekStreak())", label2: "Week streak",
             value3: "\(setsThisWeekCount())", label3: "Sets this week"
         )
     }
@@ -286,7 +286,7 @@ struct HistoryScreen: View {
         }
         statsCard(
             value1: "\(monthDays.count)", label1: "Days this month",
-            value2: "\(currentStreakDays())", label2: "Current streak",
+            value2: "\(currentWeekStreak())", label2: "Week streak",
             value3: "\(setsThisMonthCount())", label3: "Sets this month"
         )
     }
@@ -400,23 +400,34 @@ struct HistoryScreen: View {
     }
 
     /// 当前连续训练天数 (从今天往回数, 直到遇到没训练的日子)
-    private func currentStreakDays() -> Int {
-        let cal = Calendar.current
+    /// 连续达标周数 — 每周训练天数 ≥ 周目标 (settings.weeklyTrainingDays) 才算"达标".
+    /// 旧版按"连续天"算: lifter 一周练 3-5 天而非每天, 连天数恒为 0-1, 这指标基本没意义.
+    /// 改成周维度后真正奖励"每周坚持到量"的习惯, 跟用户自己设的训练频率挂钩.
+    /// 本周还在进行中: 已达标 → 计入并往回数; 未达标 → 不算断 (不归零), 从上周开始数.
+    private func currentWeekStreak() -> Int {
+        let cal = data.settings.calendar
+        let goal = max(1, data.settings.weeklyTrainingDays)
         let days = workoutDateSet()
-        let today = cal.startOfDay(for: Date())
-        // P2-3: 今天还没练不该让连胜归零. 今天练了 → 从今天数; 今天没练但昨天练了 → 从昨天数
-        // (连胜仍存活); 昨天也没练 → 真的断了 (0).
-        var cursor = today
-        if !days.contains(cursor) {
-            guard let y = cal.date(byAdding: .day, value: -1, to: today) else { return 0 }
-            cursor = cal.startOfDay(for: y)
-            if !days.contains(cursor) { return 0 }
+        // 某周 (含 date) 内的训练天数.
+        func trainedDays(inWeekContaining date: Date) -> Int {
+            let comps = cal.dateComponents([.yearForWeekOfYear, .weekOfYear], from: date)
+            guard let weekStart = cal.date(from: comps) else { return 0 }
+            let weekDays: Set<Date> = Set((0..<7).compactMap {
+                cal.date(byAdding: .day, value: $0, to: weekStart).map { cal.startOfDay(for: $0) }
+            })
+            return days.intersection(weekDays).count
+        }
+        var cursor = Date()  // 本周
+        // 本周未达标 → 还在进行中, 不归零, 从上周开始往回数.
+        if trainedDays(inWeekContaining: cursor) < goal {
+            guard let lastWeek = cal.date(byAdding: .weekOfYear, value: -1, to: cursor) else { return 0 }
+            cursor = lastWeek
         }
         var streak = 0
-        while days.contains(cursor) {
+        while trainedDays(inWeekContaining: cursor) >= goal {
             streak += 1
-            guard let prev = cal.date(byAdding: .day, value: -1, to: cursor) else { break }
-            cursor = cal.startOfDay(for: prev)
+            guard let prev = cal.date(byAdding: .weekOfYear, value: -1, to: cursor) else { break }
+            cursor = prev
         }
         return streak
     }
@@ -1216,7 +1227,7 @@ private struct SessionDetailSheet: View {
         CalendarSectionData(
             sessionDates: workoutDateSet(),
             totalSets: totalSetsThisWeek(),
-            streakDays: currentStreakDays()
+            streakDays: currentWeekStreak()
         )
     }
 
@@ -1255,22 +1266,30 @@ private struct SessionDetailSheet: View {
         return sections.count
     }
 
-    private func currentStreakDays() -> Int {
-        let cal = Calendar.current
+    /// 连续达标周数 — 跟主 HistoryScreen 的 currentWeekStreak 同口径 (每周训练天数 ≥ 周目标),
+    /// 让分享卡的 🔥Streak 数字跟 History tab 的 "Week streak" 保持一致.
+    private func currentWeekStreak() -> Int {
+        let cal = data.settings.calendar
+        let goal = max(1, data.settings.weeklyTrainingDays)
         let days = workoutDateSet()
-        let today = cal.startOfDay(for: Date())
-        // P2-3: 今天没练但昨天练了 → 连胜仍存活 (见上方同名实现注释).
-        var cursor = today
-        if !days.contains(cursor) {
-            guard let y = cal.date(byAdding: .day, value: -1, to: today) else { return 0 }
-            cursor = cal.startOfDay(for: y)
-            if !days.contains(cursor) { return 0 }
+        func trainedDays(inWeekContaining date: Date) -> Int {
+            let comps = cal.dateComponents([.yearForWeekOfYear, .weekOfYear], from: date)
+            guard let weekStart = cal.date(from: comps) else { return 0 }
+            let weekDays: Set<Date> = Set((0..<7).compactMap {
+                cal.date(byAdding: .day, value: $0, to: weekStart).map { cal.startOfDay(for: $0) }
+            })
+            return days.intersection(weekDays).count
+        }
+        var cursor = Date()
+        if trainedDays(inWeekContaining: cursor) < goal {
+            guard let lastWeek = cal.date(byAdding: .weekOfYear, value: -1, to: cursor) else { return 0 }
+            cursor = lastWeek
         }
         var streak = 0
-        while days.contains(cursor) {
+        while trainedDays(inWeekContaining: cursor) >= goal {
             streak += 1
-            guard let prev = cal.date(byAdding: .day, value: -1, to: cursor) else { break }
-            cursor = cal.startOfDay(for: prev)
+            guard let prev = cal.date(byAdding: .weekOfYear, value: -1, to: cursor) else { break }
+            cursor = prev
         }
         return streak
     }
