@@ -87,6 +87,42 @@ final class AIWorkoutService {
         }
     }
 
+    /// 生成一组 (count 套) AI routine — "AI Routines" 标签用. 一次 LLM 调用返回多套,
+    /// 各带自己的 rationale, 组成均衡周分化 (A/B/C). 全部 source:.ai —— 让标签页每张都是真 AI,
+    /// 不再混"本地凑数"计划 (修掉"只有第一张有理由、后面是已存的本地计划"的困惑).
+    func generateRoutines(
+        payload: AIPayload,
+        library: [Exercise],
+        count: Int,
+        maxExercises: Int = 4
+    ) async -> [Plan]? {
+        guard Self.isConfigured else {
+            state = .failure("AI proxy not configured")
+            return nil
+        }
+        state = .generating
+        do {
+            let raw = try await callDeepSeekRoutines(payload: payload, library: library, count: count)
+            let routines = try parseRoutinesResponse(raw)
+            let plans = routines.enumerated().compactMap { (i, r) -> Plan? in
+                let plan = buildPlan(from: r, library: library, maxExercises: maxExercises, index: i)
+                return plan.steps.isEmpty ? nil : plan
+            }
+            guard !plans.isEmpty else {
+                state = .failure("AI returned no matching exercises")
+                return nil
+            }
+            state = .success(Date())
+            return plans
+        } catch let error as AIError {
+            state = .failure(error.userMessage)
+            return nil
+        } catch {
+            state = .failure(error.localizedDescription)
+            return nil
+        }
+    }
+
     // MARK: - Free Workout exercise picker (AI-driven)
 
     /// 给 "自由训练" 自动挑动作 + 排序. 上下文比 generateToday 多一项 `targetMuscles`,
@@ -310,6 +346,43 @@ final class AIWorkoutService {
         return content
     }
 
+    /// 多套 routine 调用 — 跟 callDeepSeek 同代理/格式, 只是换 multi-routine prompt + 更大 token 预算.
+    private func callDeepSeekRoutines(payload: AIPayload, library: [Exercise], count: Int) async throws -> String {
+        let url = URL(string: "\(Self.proxyURL)/v1/chat/completions")!
+        var req = URLRequest(url: url)
+        req.httpMethod = "POST"
+        req.timeoutInterval = 60
+        req.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        req.setValue(Self.clientToken, forHTTPHeaderField: "X-Maso-Client-Token")
+
+        let prompt = buildRoutinesPrompt(payload: payload, library: library, count: count)
+        let body: [String: Any] = [
+            "model": "deepseek-chat",
+            "max_tokens": 4096,                 // N 套 routine 需要更多 token
+            "temperature": 0.8,                 // 略高 → 几套之间更有差异
+            "messages": [
+                ["role": "system", "content": "You are a fitness coach AI. Output strict JSON only, no prose, no markdown fences."],
+                ["role": "user", "content": prompt]
+            ],
+            "response_format": ["type": "json_object"],
+        ]
+        req.httpBody = try JSONSerialization.data(withJSONObject: body)
+
+        let (data, resp) = try await URLSession.shared.data(for: req)
+        guard let http = resp as? HTTPURLResponse else { throw AIError.network("Bad response type") }
+        guard (200...299).contains(http.statusCode) else {
+            let msg = String(data: data, encoding: .utf8) ?? "HTTP \(http.statusCode)"
+            throw AIError.api("DeepSeek \(http.statusCode): \(msg.prefix(200))")
+        }
+        guard let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let choices = json["choices"] as? [[String: Any]],
+              let message = choices.first?["message"] as? [String: Any],
+              let content = message["content"] as? String else {
+            throw AIError.api("Could not extract content from DeepSeek response")
+        }
+        return content
+    }
+
     // MARK: - Prompt
 
     /// 给 generateToday 的候选动作池 — 非 niche, 每大区取若干 canonical (短名优先, 去重 base 名).
@@ -391,6 +464,59 @@ final class AIWorkoutService {
         """
     }
 
+    /// 多套 routine 的 prompt — 让 LLM 一次产出 count 套组成均衡周分化的 routine, 每套各带 rationale.
+    private func buildRoutinesPrompt(payload: AIPayload, library: [Exercise], count: Int) -> String {
+        let p = payload
+        let recent = p.recentHistory.isEmpty
+            ? "(none yet — this is the user's first week)"
+            : p.recentHistory.map { "  • \($0.dateLabel): \($0.planName) (\($0.muscleSummary)) — \($0.setCount) sets" }
+                .joined(separator: "\n")
+        let strengthen = p.wantStrengthen.isEmpty
+            ? "(no specific focus)"
+            : p.wantStrengthen.joined(separator: ", ")
+        let catalog = candidateNames(from: library).map { "- \($0)" }.joined(separator: "\n")
+
+        return """
+        You are a fitness coach AI. Generate exactly \(count) DISTINCT workout routines that together form one balanced weekly training split for this user.
+
+        USER PROFILE
+        - Gender: \(p.gender ?? "unspecified")
+        - Age: \(p.age.map(String.init) ?? "unknown")
+        - Body weight: \(p.weightKg.map { "\(Int($0)) kg" } ?? "unknown")
+        - Training days per week: \(p.daysPerWeek)
+        - Wants to strengthen: \(strengthen)
+
+        RECENT WORKOUTS (last 14 days)
+        \(recent)
+
+        GUIDELINES
+        - The \(count) routines MUST be genuinely different from one another (different primary muscles / movement patterns) — never \(count) near-copies. Together they should cover the whole body across the week with sensible recovery (e.g. Push / Pull / Legs, or Upper / Lower, or full-body A/B/C).
+        - Name each routine for what it trains, e.g. "Push · Chest & Shoulders", "Pull · Back & Biceps", "Legs · Quads & Glutes".
+        - 3–5 exercises per routine; compound movements before isolation; vary equipment.
+        - Sets 3–4, reps 6–12 for strength; reps 12–15 for accessory.
+        - Pick weights conservative if no history; scale to recent volume if any.
+        - Respect the "wants to strengthen" focus where it fits.
+
+        AVAILABLE EXERCISES — every "exercise_name" MUST be copied EXACTLY (verbatim, character-for-character) from this list. Do NOT invent names or use synonyms:
+        \(catalog)
+
+        OUTPUT
+        Strict JSON only, no prose, no markdown. Schema:
+        {
+          "routines": [
+            {
+              "name": "<routine name, ≤ 40 chars>",
+              "rationale": "<one sentence: what this routine targets / why>",
+              "steps": [
+                { "exercise_name": "<from list>", "sets": <int 1-5>, "reps": <int 1-20 or null>, "weight_kg": <number or null>, "duration_seconds": <int or null> }
+              ]
+            }
+          ]
+        }
+        Return exactly \(count) routines in the "routines" array.
+        """
+    }
+
     // MARK: - Response parsing
 
     private func parseResponse(_ raw: String) throws -> AIResponse {
@@ -411,9 +537,27 @@ final class AIWorkoutService {
         }
     }
 
+    /// 解析多套 routine 响应 — 先试 {"routines":[...]}, 再退一步试裸数组 [...] (LLM 偶尔不裹外层).
+    private func parseRoutinesResponse(_ raw: String) throws -> [AIResponse] {
+        var s = raw.trimmingCharacters(in: .whitespacesAndNewlines)
+        if s.hasPrefix("```") {
+            s = s.replacingOccurrences(of: "```json", with: "")
+                 .replacingOccurrences(of: "```", with: "")
+                 .trimmingCharacters(in: .whitespacesAndNewlines)
+        }
+        guard let data = s.data(using: .utf8) else { throw AIError.parse("Could not encode response") }
+        if let wrapped = try? JSONDecoder().decode(AIRoutinesResponse.self, from: data) {
+            return wrapped.routines
+        }
+        if let bare = try? JSONDecoder().decode([AIResponse].self, from: data) {
+            return bare
+        }
+        throw AIError.parse("Bad JSON: expected {\"routines\":[...]}")
+    }
+
     // MARK: - Build Plan
 
-    private func buildPlan(from r: AIResponse, library: [Exercise], maxExercises: Int = 4) -> Plan {
+    private func buildPlan(from r: AIResponse, library: [Exercise], maxExercises: Int = 4, index: Int = 0) -> Plan {
         let now = Date()
         var steps: [PlanStep] = []
         for (i, s) in r.steps.enumerated() {
@@ -434,7 +578,7 @@ final class AIWorkoutService {
         // P3: 尊重用户的 exercisesPerSession (1-6), 不再硬截 4.
         let capped = Array(steps.prefix(max(1, min(6, maxExercises))))
         return Plan(
-            id: "plan-ai-\(Int(now.timeIntervalSince1970))",
+            id: "plan-ai-\(Int(now.timeIntervalSince1970))-\(index)",   // index → 同秒生成的多套 routine id 不撞
             name: r.name.isEmpty ? "AI Workout" : r.name,
             steps: capped,
             createdAt: now,
@@ -546,6 +690,11 @@ private struct AIResponse: Codable {
     let name: String
     let rationale: String?
     let steps: [AIStep]
+}
+
+/// 多套 routine 响应外层 — {"routines": [AIResponse, ...]}.
+private struct AIRoutinesResponse: Codable {
+    let routines: [AIResponse]
 }
 
 private struct AIStep: Codable {

@@ -956,12 +956,16 @@ final class DataStore {
             forDays: settings.weeklyTrainingDays, settings: settings,
             exById: exById, sets: sets, now: Date())
         guard AIWorkoutService.isConfigured else { return (local, true) }
+        // 一次 LLM 调用产出多套真 AI routine (各带 rationale, 组成周分化) — 标签页每张都是真 AI,
+        // 不再 [aiPlan] + local 混本地凑数计划. 套数 = 每周天数, 夹到 2...4 (token 预算 + 不过载).
+        let count = max(2, min(4, settings.weeklyTrainingDays))
         let payload = buildAIPayload()
-        if let aiPlan = await AIWorkoutService.shared.generateToday(
-            payload: payload, library: exercises, maxExercises: settings.exercisesPerSession) {
-            return ([aiPlan] + local, false)
+        if let aiPlans = await AIWorkoutService.shared.generateRoutines(
+            payload: payload, library: exercises, count: count,
+            maxExercises: settings.exercisesPerSession), !aiPlans.isEmpty {
+            return (aiPlans, false)
         }
-        return (local, true)
+        return (local, true)   // 真 AI 失败 → 回落本地模板 (此时确实没有 rationale, 顶部有提示条)
     }
 
     /// 构 AI 输入 payload — 把 user profile + 最近 14 天历史打包.
