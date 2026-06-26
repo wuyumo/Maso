@@ -98,6 +98,26 @@ struct ExerciseLibraryBrowser: View {
     @State private var isScrubbing: Bool = false
     /// 仅拖动时才弹出文案 pill (松手即收, 平时只剩小绿点) — 仿通讯录右侧索引.
     @State private var showScrubLabel: Bool = false
+    /// 右侧索引条静止时隐藏 — 滚动时浮现, 停下 ~1.3s 淡出. 仿系统滚动条.
+    @State private var railVisible: Bool = false
+    /// 每次"活动"(滚动/拖拽)自增, 待执行的隐藏闭包对比它判断期间有无新活动.
+    @State private var railActivityID: Int = 0
+
+    /// 有滚动/拖拽活动 → 浮现索引条 + 取消待执行的隐藏.
+    private func revealRail() {
+        railActivityID &+= 1
+        if !railVisible { withAnimation(.easeOut(duration: 0.2)) { railVisible = true } }
+    }
+    /// 滚动停下 → 排一个延时隐藏; 期间若有新活动 (railActivityID 变了) 或正在拖, 则不隐藏.
+    private func scheduleRailHide() {
+        railActivityID &+= 1
+        let id = railActivityID
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.3) {
+            if railActivityID == id, !isScrubbing {
+                withAnimation(.easeOut(duration: 0.45)) { railVisible = false }
+            }
+        }
+    }
 
     private static let muscleSections: [MuscleGroup] = [
         .chest, .back, .shoulders, .arms, .core, .legs,
@@ -368,6 +388,7 @@ struct ExerciseLibraryBrowser: View {
                 .onChanged { value in
                     isScrubbing = true   // 屏蔽滚动跟随, 否则与下面 scrollTo 触发的跟随互斗 → 抖
                     showScrubLabel = true // 拖动时弹出文案 pill
+                    revealRail()          // 拖拽期间保持索引条可见 + 刷新隐藏计时
                     let idx = max(0, min(secs.count - 1, Int(value.location.y / rowH)))
                     let target = secs[idx].0
                     if target != activeSection {
@@ -449,6 +470,10 @@ struct ExerciseLibraryBrowser: View {
                     withAnimation(.easeOut(duration: 0.15)) { activeSection = pick }
                 }
             }
+            // 右侧索引条静止隐藏: 滚动中浮现, 滚动停下 (.idle) 排延时隐藏.
+            .onScrollPhaseChange { _, phase in
+                if phase == .idle { scheduleRailHide() } else { revealRail() }
+            }
             // filter/搜索变化 → 收起手风琴 (跟 picker 一致, 避免残留孤儿展开态).
             .onChange(of: query) { _, _ in expandedGroupKey = nil }
             .onChange(of: muscleFilter) { _, _ in expandedGroupKey = nil }
@@ -478,10 +503,12 @@ struct ExerciseLibraryBrowser: View {
                     exerciseList(headerFilter: true)
                 }
               }
-              // 右侧竖排肌肉分区索引 — 浮在列表右缘垂直居中, ≥2 区才显示.
+              // 右侧竖排肌肉分区索引 — 浮在列表右缘垂直居中, ≥2 区才显示. 静止时隐藏 (railVisible).
               .overlay(alignment: .trailing) {
                   if sectionedGroups.count >= 2 {
                       jumpNav(proxy: proxy)
+                          .opacity(railVisible ? 1 : 0)
+                          .allowsHitTesting(railVisible)   // 隐藏时不抢右缘触摸
                   }
               }
             }
