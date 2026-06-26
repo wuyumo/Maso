@@ -70,7 +70,11 @@ SettingsScreen.proSection 在 iapEnabled=false 时返回 EmptyView。**以后开
   改: `buildPrompt(payload:library:)` 用 `candidateNames(from:)` (非 niche, 每大区取 8 个 canonical 短名) 塞进 prompt,
   要求 exercise_name **逐字从目录选** → matchExercise 精确命中. AIResponse schema 已验证 (curl: LLM 返回正确 {name,steps:[{exercise_name,sets,reps,weight_kg,duration_seconds}]}).
 - **代理**: Cloudflare Worker → DeepSeek (deepseek-chat). curl 实测 healthy (返回合法计划). Secrets.xcconfig 配好 (proxy URL + token), Info.plist 注入 MasoAIProxyURL/MasoClientToken.
-- ⚠️ **模拟器网络到外部代理抖动** (有时 200 有时 -1 断), 没法在 sim 稳定验证端到端 AI —— **真机验证**: 全新装→走引导/AI tab 看是否生成真 AI 计划 (✨AI, 无回落条).
+- 🐛 **根因找到了 (xcconfig `//` 注释坑)**: `Secrets.xcconfig` 里 `MASO_AI_PROXY_URL = https://...` 的 **`//` 在 xcconfig 是注释符**,
+  构建时 URL 被截成 `https:` → Info.plist 的 MasoAIProxyURL = `https:` → 所有 AI 请求 URL 畸形 → status=-1 失败 → 一直"够不到 AI 教练".
+  (curl 用 awk 读完整值所以正常; 之前 sim 看到的"200"是 storekitd 的 IAP 请求不是 AI.) **修复**: URL 改 `https:/$()/...`
+  ($() 空变量打断 // 注释). 模拟器实测: AI tab 生成真 LLM 计划 "Full Body Strength: Chest, Back" (Bench Press/Pull-Up/Squat/Plank,
+  库内匹配成功, ✨AI, 无回落). **Secrets.xcconfig 不进 git (含密钥), 修复仅本地, archive 用本地值** —— 换机/重 clone 要重建 Secrets 时记得用 `$()`.
 
 ## 🆕 routine 来源标签 AI / Classics (2026-06-26, 待下一版)
 - **Plan 加 `source: PlanSource?`**(enum custom/ai/classics, optional 兼容旧数据)+ `resolvedSource` 计算属性
