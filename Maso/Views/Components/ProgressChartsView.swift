@@ -8,6 +8,8 @@ import Charts
 struct ProgressChartsView: View {
     /// 显式传入 (非 @Environment) — 这样调用方能在视图树外安全调 isEmpty 判断是否整块显隐.
     let data: DataStore
+    /// 非 Pro 用户点锁住的 1RM 趋势图 → 调用方拉起付费墙.
+    var onUnlock: () -> Void = {}
 
     private struct VolPoint: Identifiable { let id = UUID(); let week: Date; let volume: Double }
     private struct RMPoint: Identifiable { let id = UUID(); let date: Date; let oneRM: Double }
@@ -69,37 +71,63 @@ struct ProgressChartsView: View {
     @ViewBuilder
     private func oneRMCard(name: String, series: [RMPoint]) -> some View {
         let unit = data.settings.weightUnit
+        let isPro = data.settings.isPro
         VStack(alignment: .leading, spacing: 10) {
             cardHeader(icon: "chart.line.uptrend.xyaxis",
                        title: NSLocalizedString("Estimated 1RM", comment: ""),
                        subtitle: name)
-            Chart(series) { p in
-                LineMark(
-                    x: .value("Date", p.date, unit: .day),
-                    y: .value("1RM", unit.fromKg(p.oneRM))
-                )
-                .foregroundStyle(MasoColor.accent)
-                .interpolationMethod(.catmullRom)
-                PointMark(
-                    x: .value("Date", p.date, unit: .day),
-                    y: .value("1RM", unit.fromKg(p.oneRM))
-                )
-                .foregroundStyle(MasoColor.accent)
-                .symbolSize(28)
+            // Pro 专属 (折中: 周容量免费, 逐动作力量趋势属"高级分析"锁 Pro). 非 Pro → 模糊预览 + 锁,
+            // 点一下拉付费墙. 真实曲线仍然渲染在底下做"看得见的钩子", 解锁后立刻清晰.
+            ZStack {
+                oneRMChart(series: series, unit: unit)
+                    .blur(radius: isPro ? 0 : 7)
+                    .allowsHitTesting(isPro)
+                if !isPro {
+                    Button(action: onUnlock) {
+                        VStack(spacing: 6) {
+                            Image(systemName: "lock.fill").font(.system(size: 15, weight: .bold))
+                            Text(NSLocalizedString("Unlock strength trends with Pro", comment: ""))
+                                .font(.system(size: 12, weight: .semibold))
+                                .multilineTextAlignment(.center)
+                        }
+                        .foregroundStyle(MasoColor.text)
+                        .padding(.horizontal, 16).padding(.vertical, 12)
+                        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12))
+                    }
+                    .buttonStyle(.plain)
+                }
             }
             .frame(height: 132)
-            .chartYAxis { AxisMarks(position: .leading) { _ in
-                AxisGridLine().foregroundStyle(MasoColor.borderSoft)
-                AxisValueLabel().font(.system(size: 9)).foregroundStyle(MasoColor.textFaint)
-            } }
-            .chartXAxis { AxisMarks { _ in
-                AxisValueLabel(format: .dateTime.month(.abbreviated).day())
-                    .font(.system(size: 9)).foregroundStyle(MasoColor.textFaint)
-            } }
         }
         .padding(14)
         .background(MasoColor.surface)
         .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
+    }
+
+    /// 1RM 折线本体 — 抽出来好让 oneRMCard 在非 Pro 时叠模糊 + 锁层.
+    private func oneRMChart(series: [RMPoint], unit: WeightUnit) -> some View {
+        Chart(series) { p in
+            LineMark(
+                x: .value("Date", p.date, unit: .day),
+                y: .value("1RM", unit.fromKg(p.oneRM))
+            )
+            .foregroundStyle(MasoColor.accent)
+            .interpolationMethod(.catmullRom)
+            PointMark(
+                x: .value("Date", p.date, unit: .day),
+                y: .value("1RM", unit.fromKg(p.oneRM))
+            )
+            .foregroundStyle(MasoColor.accent)
+            .symbolSize(28)
+        }
+        .chartYAxis { AxisMarks(position: .leading) { _ in
+            AxisGridLine().foregroundStyle(MasoColor.borderSoft)
+            AxisValueLabel().font(.system(size: 9)).foregroundStyle(MasoColor.textFaint)
+        } }
+        .chartXAxis { AxisMarks { _ in
+            AxisValueLabel(format: .dateTime.month(.abbreviated).day())
+                .font(.system(size: 9)).foregroundStyle(MasoColor.textFaint)
+        } }
     }
 
     private func cardHeader(icon: String, title: String, subtitle: String) -> some View {

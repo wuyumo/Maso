@@ -85,7 +85,7 @@ struct HistoryScreen: View {
                 .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
 
                 // 进度图表 — 周容量 + 头号动作 1RM 趋势. 数据足够 (各 ≥2 点) 才出现.
-                let charts = ProgressChartsView(data: data)
+                let charts = ProgressChartsView(data: data, onUnlock: { paywallPresented = true })
                 if !charts.isEmpty {
                     VStack(alignment: .leading, spacing: 10) {
                         Text("Progress")

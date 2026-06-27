@@ -103,9 +103,9 @@
 "Unlimited workout plans" = "Unlimited workout routines";
 "No more 3-plan cap — build a plan for every split." = "No more 3-routine cap — build a routine for every split.";
 "Full history" = "Full history";
-"Permanent record + PR tracking + volume trends." = "Permanent record + PR tracking + volume trends.";
+"Permanent record + PR tracking + volume trends." = "Permanent record and PR tracking, across all time.";
 "Advanced analytics" = "Advanced analytics";
-"Muscle balance, weekly volume, weak spots." = "Muscle balance, weekly volume, weak spots.";
+"Muscle balance, weekly volume, weak spots." = "Per-exercise 1RM strength trends, plus muscle balance.";
 "Custom exercises" = "Custom exercises";
 "Add your own moves with notes and photos." = "Add your own moves with notes and photos.";
 "Apple Health sync" = "Apple Health sync";
@@ -254,10 +254,15 @@
 "Your muscles miss you" = "Your muscles miss you";
 "Let's get back to it" = "Let's get back to it";
 "You're recovered — a quick session keeps your momentum going." = "You're recovered — a quick session keeps your momentum going.";
+"Want a nudge when you're recovered?" = "Want a nudge when you're recovered?";
+"Turn on reminders" = "Turn on reminders";
+"Not now" = "Not now";
+"Masso can remind you to train once your muscles have recovered — all on your device. You can change this anytime in Settings." = "Masso can remind you to train once your muscles have recovered — all on your device. You can change this anytime in Settings.";
 "Progress" = "Progress";
 "Weekly volume" = "Weekly volume";
 "Total %@ lifted per week" = "Total %@ lifted per week";
 "Estimated 1RM" = "Estimated 1RM";
+"Unlock strength trends with Pro" = "Unlock strength trends with Pro";
 
 /* ── HealthKit + Training freq ── */
 "Integrations" = "Integrations";

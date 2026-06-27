@@ -2429,10 +2429,18 @@ private struct CompletedView: View {
     @State private var showShare = false
     /// 自由训练: 分享页关掉后再问一次是否把这次即兴训练存为可复用计划.
     @State private var showSavePrompt = false
+    /// 练满 2 次时软问一次"要不要开召回提醒" (正向时刻, 全生命周期一次).
+    @State private var showReminderOffer = false
 
-    /// 训练真正结束 (分享页关 / 自由训练存盘后) → 关播放器, 并在这个正向时刻请求一次 App Store 评分.
-    /// data.shouldOfferReview() 内部限频 (练满 3 次 + 全生命周期一次), 多路径调用也只会弹一次.
+    /// 训练真正结束 (分享页关 / 自由训练存盘后) → 关播放器. 在这个正向时刻按里程碑做两件事之一:
+    ///   - 练满 2 次且没开提醒 → 软问"要不要开召回提醒" (关播放器交给 alert 按钮).
+    ///   - 否则练满 3 次 → 请求一次 App Store 评分.
+    /// 两个里程碑错开 (2 / 3 次) + 各自全生命周期一次, 不会同一场训练撞车.
     private func closeAndMaybeReview() {
+        if data.shouldOfferReminderPrompt() {
+            showReminderOffer = true
+            return
+        }
         if data.shouldOfferReview() { requestReview() }
         onClose()
     }
@@ -2496,6 +2504,21 @@ private struct CompletedView: View {
                 Button(NSLocalizedString("Don't Save", comment: ""), role: .cancel) { onClose() }
             } message: {
                 Text(NSLocalizedString("Keep this workout as a reusable routine.", comment: ""))
+            }
+            // 召回提醒软提示 — 练满 2 次的正向时刻问一次. 同意 → 申请权限 + 开开关 + 排程; 被拒静默关.
+            // 全本地通知, 跟"不打扰"品牌一致 (默认仍是关, 这里只是给个台阶主动开).
+            .alert(NSLocalizedString("Want a nudge when you're recovered?", comment: ""), isPresented: $showReminderOffer) {
+                Button(NSLocalizedString("Turn on reminders", comment: "")) {
+                    Task { @MainActor in
+                        let granted = await WorkoutReminderScheduler.shared.requestAuthorization()
+                        data.settings.workoutRemindersEnabled = granted
+                        if granted { data.rescheduleWorkoutReminders() }
+                        onClose()
+                    }
+                }
+                Button(NSLocalizedString("Not now", comment: ""), role: .cancel) { onClose() }
+            } message: {
+                Text(NSLocalizedString("Masso can remind you to train once your muscles have recovered — all on your device. You can change this anytime in Settings.", comment: ""))
             }
     }
 

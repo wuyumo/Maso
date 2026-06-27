@@ -104,9 +104,9 @@
 "Unlimited workout plans" = "无限训练计划";
 "No more 3-plan cap — build a plan for every split." = "不再限制 3 张计划 — 想分几张就建几张。";
 "Full history" = "完整训练历史";
-"Permanent record + PR tracking + volume trends." = "永久保留 + PR 追踪 + 训练量趋势。";
+"Permanent record + PR tracking + volume trends." = "永久保留 + PR 追踪,全时段。";
 "Advanced analytics" = "进阶数据分析";
-"Muscle balance, weekly volume, weak spots." = "肌群平衡、周训练量、薄弱环节。";
+"Muscle balance, weekly volume, weak spots." = "逐动作 1RM 力量趋势,以及肌群平衡。";
 "Custom exercises" = "自定义动作";
 "Add your own moves with notes and photos." = "添加自己的动作, 带备注和照片。";
 "Apple Health sync" = "Apple Health 同步";
@@ -255,10 +255,15 @@
 "Your muscles miss you" = "肌肉想你了";
 "Let's get back to it" = "回来继续练吧";
 "You're recovered — a quick session keeps your momentum going." = "你已经恢复了 —— 练一小会儿就能保持状态。";
+"Want a nudge when you're recovered?" = "恢复好了提醒你一下?";
+"Turn on reminders" = "开启提醒";
+"Not now" = "暂不";
+"Masso can remind you to train once your muscles have recovered — all on your device. You can change this anytime in Settings." = "等肌肉恢复得差不多,Masso 可以提醒你回来练 —— 全部在本机完成,随时可在设置里关闭。";
 "Progress" = "进度";
 "Weekly volume" = "每周训练容量";
 "Total %@ lifted per week" = "每周累计举起重量(%@)";
 "Estimated 1RM" = "估算 1RM";
+"Unlock strength trends with Pro" = "升级 Pro 解锁力量趋势";
 
 /* ── HealthKit + Training freq ── */
 "Integrations" = "应用集成";

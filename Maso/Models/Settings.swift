@@ -134,6 +134,9 @@ struct UserSettings: Codable, Sendable {
     /// 召回提醒开关 — 默认关 (opt-in, 符合"不打扰"品牌). 打开后在恢复窗口轻推"该练了".
     var workoutRemindersEnabled: Bool = false
 
+    /// 是否已经在训练完成的正向时刻软问过一次"要不要开召回提醒" — 全生命周期只问一次, 不纠缠.
+    var hasOfferedReminderPrompt: Bool = false
+
     /// 是否启用 AI 训练计划生成. 默认开 (Path B: 代理 server-side 已配, 真 AI 默认跑, 失败自动回落本地).
     /// 现已不再作为 gate (各调用点只看 AIWorkoutService.isConfigured); 保留作未来用户开关位.
     var aiWorkoutEnabled: Bool = true

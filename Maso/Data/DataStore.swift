@@ -644,6 +644,17 @@ final class DataStore {
         return true
     }
 
+    /// 是否该在此刻软问一次"要不要开召回提醒" — 练满 2 次、还没开提醒、且从没问过.
+    /// 命中即"消费"(置 flag + 存), 全生命周期只软问一次. 跟评分请求 (≥3 次) 错开里程碑, 不撞车.
+    func shouldOfferReminderPrompt() -> Bool {
+        guard !settings.hasOfferedReminderPrompt else { return false }
+        guard !settings.workoutRemindersEnabled else { return false }
+        guard completedWorkoutCount >= 2 else { return false }
+        settings.hasOfferedReminderPrompt = true
+        save()
+        return true
+    }
+
     /// 重排召回提醒 — 训练完 / app 进后台时调. 以最近一次训练为基, 开关关时只清除.
     /// sets 是 newest-first (recordSet insert at 0), 所以 sets.first = 最近一次.
     func rescheduleWorkoutReminders() {
