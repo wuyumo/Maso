@@ -841,7 +841,7 @@ private struct SessionCard: View {
                         HStack(spacing: 6) {
                             Image(systemName: "arrow.clockwise")
                                 .font(.system(size: 11, weight: .bold))
-                            Text("Redo")
+                            Text("Repeat")
                                 .font(.system(size: 13, weight: .bold))
                         }
                         .padding(.vertical, 8)
