@@ -715,14 +715,8 @@ struct PlanPlayerScreen: View {
                 currentStepId: currentStepId,
                 currentSet: currentSetNumber,
                 completedSetsByStep: completedSetsByStep,
-                onJump: { stepId in
-                    if let idx = store.segments.firstIndex(where: {
-                        if case .exercise = $0.kind, $0.stepId == stepId { return true }
-                        return false
-                    }) {
-                        store.setIndex(idx)
-                    }
-                },
+                // 跳到该动作下一组未完成的 set (跳过 rest, 不重置休息计时).
+                onJump: { stepId in store.jumpToStep(stepId: stepId) },
                 onTapImage: { ex in detailExercise = ex },
                 onReorder: { source, destination in
                     store.reorderSteps(
@@ -1880,10 +1874,9 @@ private struct InlinePlaylist: View {
                             .listRowSeparator(.hidden)
                             .listRowInsets(EdgeInsets())
                             .listRowBackground(Color.clear)
-                            // 左滑 (trailing) 展开三个操作 — 从左到右视觉顺序: 编辑 | 替换 | 删除.
-                            // SwiftUI trailing swipeActions: 第一个定义的按钮 = 最靠近右边缘 (最右),
-                            // 最后定义的 = 最左. 想呈现 Edit(左) Replace(中) Delete(右):
-                            //   代码顺序: Delete → Replace → Edit.
+                            // 左滑 (trailing) 展开两个操作: Edit(左) Delete(右).
+                            // (Replace 已从左滑移除 — 改到 Edit sheet 顶部入口, 见 EditCurrentStepSheet.)
+                            // SwiftUI trailing swipeActions: 第一个定义 = 最右, 最后定义 = 最左.
                             .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                                 // 最右 — 删除 (破坏性, 红色)
                                 Button(role: .destructive) {
@@ -1894,18 +1887,7 @@ private struct InlinePlaylist: View {
                                 .tint(MasoColor.negative)
                                 .accessibilityLabel(NSLocalizedString("Delete", comment: ""))
 
-                                // 中间 — 替换动作 (换成另一个动作). caller 没传 onReplace 时整个按钮不出现.
-                                if let onReplace {
-                                    Button {
-                                        onReplace(step.id)
-                                    } label: {
-                                        Image(systemName: "arrow.triangle.2.circlepath")
-                                    }
-                                    .tint(.orange)
-                                    .accessibilityLabel(NSLocalizedString("Replace", comment: ""))
-                                }
-
-                                // 最左 — 编辑 sets/reps/weight/duration
+                                // 最左 — 编辑 sets/reps/weight/duration (含 Replace exercise 入口)
                                 Button {
                                     onEdit?(step.id)
                                 } label: {
@@ -2831,6 +2813,33 @@ private struct EditCurrentStepSheet: View {
                 // ignoresSafeArea 让 home indicator 区也是 MasoColor.background, 不露 sheet 默认浅灰底.
                 MasoColor.background.ignoresSafeArea()
                 Form {
+                    // 替换动作 — 放在最顶部 (左滑已不再有 Replace, 这是唯一入口).
+                    // tap → dismiss self → caller 弹 ExercisePickerSheet (异步串接, 让 transition 干净).
+                    if onReplace != nil {
+                        Section {
+                            Button(action: {
+                                // 一次性 guard 防双击; onDisappear 串接 (sheet 真收完才弹 picker).
+                                guard !replaceRequested else { return }
+                                replaceRequested = true
+                                Haptics.tap()
+                                dismiss()
+                            }) {
+                                HStack(spacing: 10) {
+                                    Image(systemName: "arrow.triangle.2.circlepath")
+                                        .font(.system(size: 14, weight: .heavy))
+                                        .foregroundStyle(MasoColor.accent)
+                                    Text("Replace exercise")
+                                        .foregroundStyle(MasoColor.text)
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.system(size: 12, weight: .semibold))
+                                        .foregroundStyle(MasoColor.textFaint)
+                                }
+                            }
+                        }
+                        .listRowBackground(MasoColor.surface)
+                    }
+
                     // Sets — 始终显示. 用 Stepper 风格 — label + 大字号 value, 自带 -/+
                     Section {
                         intStepperRow(label: "Sets", value: $sets, range: 1...30)
@@ -2876,34 +2885,6 @@ private struct EditCurrentStepSheet: View {
                     if showsDuration {
                         Section {
                             intStepperRow(label: "Duration", value: $duration, range: 5...600, step: 5, suffix: "s")
-                        }
-                        .listRowBackground(MasoColor.surface)
-                    }
-
-                    // 替换动作 — 单独 section. caller 没传 onReplace 就不显示.
-                    // tap → dismiss self → caller 弹 ExercisePickerSheet (异步串接, 让 transition 干净).
-                    if onReplace != nil {
-                        Section {
-                            Button(action: {
-                                // P2-6: 一次性 guard 防双击重复触发; 用 onDisappear 串接 (sheet 真正
-                                // 收完才弹 picker), 不再靠固定延迟猜 dismiss 时机, 慢设备也稳.
-                                guard !replaceRequested else { return }
-                                replaceRequested = true
-                                Haptics.tap()
-                                dismiss()
-                            }) {
-                                HStack(spacing: 10) {
-                                    Image(systemName: "arrow.triangle.2.circlepath")
-                                        .font(.system(size: 14, weight: .heavy))
-                                        .foregroundStyle(MasoColor.accent)
-                                    Text("Replace exercise")
-                                        .foregroundStyle(MasoColor.text)
-                                    Spacer()
-                                    Image(systemName: "chevron.right")
-                                        .font(.system(size: 12, weight: .semibold))
-                                        .foregroundStyle(MasoColor.textFaint)
-                                }
-                            }
                         }
                         .listRowBackground(MasoColor.surface)
                     }

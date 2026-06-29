@@ -322,6 +322,22 @@ final class TrainingSessionStore {
         syncLiveActivity()
     }
 
+    /// 点 playlist 动作行 → 跳到该动作"下一组未完成"的 exercise 段 (跳过其前的 rest 段).
+    /// 全做完 → 落第一组. 因为只 land 在 exercise 段, setIndex 不会启动休息倒计时 →
+    /// 切去别的动作再切回来不会重新休息, 直接落到未做的下一组. (修: 切换训练重置休息.)
+    func jumpToStep(stepId: String) {
+        let done = session?.completedSets ?? []
+        let exSegs: [(idx: Int, setN: Int)] = segments.enumerated().compactMap { i, seg in
+            if case .exercise(_, let setN, _, _, _, _, _) = seg.kind, seg.stepId == stepId {
+                return (i, setN)
+            }
+            return nil
+        }
+        guard !exSegs.isEmpty else { return }
+        let target = exSegs.first { !done.contains(CompletedSet(stepId: stepId, setN: $0.setN)) } ?? exSegs[0]
+        setIndex(target.idx)
+    }
+
     func togglePlay() {
         guard var s = session else { return }
         if s.playing {
