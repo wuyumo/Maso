@@ -366,11 +366,20 @@ struct ExerciseLibraryBrowser: View {
                         .padding(.horizontal, 8).padding(.vertical, 4)
                         .background { Capsule().fill(MasoColor.accent) }
                     } else if isActive {
-                        // 平时选中态: 小号绿色肌肉图 — 瞥见是哪个肌群, 但仍小 (比拖动 pill 里的小).
-                        MuscleRegionIcon(region: sec,
-                                         focusColor: MasoColor.accent,
-                                         surroundColor: MasoColor.accent.opacity(0.3),
-                                         size: 18)
+                        // 平时选中态: [区域名 + 小号绿肌肉图] — 不只看图, 也标出所在肌群名.
+                        // 深色 chip 底保证压在列表上可读; 跟拖动态的亮绿 capsule 区分.
+                        HStack(spacing: 5) {
+                            Text(sec.displayName)
+                                .font(.system(size: 12, weight: .bold))
+                                .foregroundStyle(MasoColor.accent)
+                                .lineLimit(1).fixedSize()
+                            MuscleRegionIcon(region: sec,
+                                             focusColor: MasoColor.accent,
+                                             surroundColor: MasoColor.accent.opacity(0.3),
+                                             size: 18)
+                        }
+                        .padding(.horizontal, 8).padding(.vertical, 4)
+                        .background { Capsule().fill(MasoColor.background.opacity(0.6)) }
                     } else {
                         // 其余区: 统一小灰点.
                         Circle()
