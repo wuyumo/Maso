@@ -17,15 +17,15 @@ struct ProgressChartsView: View {
     /// 整块是否没足够数据 — 调用方用来决定是否整块隐藏.
     /// 周容量 / 1RM / 肌群均衡 / 周对比 任一有数据即显示.
     var isEmpty: Bool {
-        weeklyVolume().filter { $0.volume > 0 }.count < 2
-            && topLiftSeries().series.count < 2
+        weeklyVolume().filter { $0.volume > 0 }.count < 1
+            && topLiftSeries().series.count < 1
             && !weeklySetsPerSection().contains { $0.sets > 0 }
             && weekDeltas() == nil
     }
 
     var body: some View {
         let weekly = weeklyVolume()
-        let hasVolume = weekly.filter { $0.volume > 0 }.count >= 2
+        let hasVolume = weekly.filter { $0.volume > 0 }.count >= 1
         let lift = topLiftSeries()
         let deltas = weekDeltas()
         let balance = weeklySetsPerSection()
@@ -36,7 +36,7 @@ struct ProgressChartsView: View {
             if hasVolume {
                 volumeCard(weekly)
             }
-            if lift.series.count >= 2, let name = lift.name {
+            if lift.series.count >= 1, let name = lift.name {
                 oneRMCard(name: name, series: lift.series)
             }
             // 本周肌群均衡 — 最短的柱 = 老跳过的部位.
@@ -219,7 +219,7 @@ struct ProgressChartsView: View {
             setsByWeek[wk, default: 0] += 1
             if let w = s.weight, let r = s.reps, w > 0, r > 0 { volByWeek[wk, default: 0] += w * Double(r) }
         }
-        guard setsByWeek.keys.count >= 2 else { return nil }
+        guard setsByWeek.keys.count >= 1 else { return nil }
         let now = Date()
         guard let thisWk = cal.date(from: cal.dateComponents([.yearForWeekOfYear, .weekOfYear], from: now)),
               let lastWk = cal.date(byAdding: .weekOfYear, value: -1, to: thisWk) else { return nil }
@@ -356,7 +356,7 @@ struct TrainingActivityHeatmap: View {
     private struct DayCell: Identifiable { let id = UUID(); let date: Date; let count: Int; let future: Bool }
 
     /// 窗口内有训练的天数 < 2 → 调用方隐藏.
-    var isEmpty: Bool { dailyCounts().values.filter { $0 > 0 }.count < 2 }
+    var isEmpty: Bool { dailyCounts().values.filter { $0 > 0 }.count < 1 }
 
     var body: some View {
         let cols = columns()
