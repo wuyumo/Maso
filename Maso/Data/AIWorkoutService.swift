@@ -69,7 +69,7 @@ final class AIWorkoutService {
         state = .generating
 
         do {
-            let raw = try await callDeepSeek(payload: payload, library: library)
+            let raw = try await callDeepSeek(payload: payload, library: library, maxExercises: maxExercises)
             let parsed = try parseResponse(raw)
             let plan = buildPlan(from: parsed, library: library, maxExercises: maxExercises)
             guard !plan.steps.isEmpty else {
@@ -102,7 +102,7 @@ final class AIWorkoutService {
         }
         state = .generating
         do {
-            let raw = try await callDeepSeekRoutines(payload: payload, library: library, count: count)
+            let raw = try await callDeepSeekRoutines(payload: payload, library: library, count: count, perRoutine: maxExercises)
             let routines = try parseRoutinesResponse(raw)
             let plans = routines.enumerated().compactMap { (i, r) -> Plan? in
                 let plan = buildPlan(from: r, library: library, maxExercises: maxExercises, index: i)
@@ -305,7 +305,7 @@ final class AIWorkoutService {
     //   - 支持 response_format=json_object 强制 JSON 输出
     //
     // 想换其它 OpenAI-compatible (Moonshot / 通义 / 智谱) → 只改 endpoint + model.
-    private func callDeepSeek(payload: AIPayload, library: [Exercise]) async throws -> String {
+    private func callDeepSeek(payload: AIPayload, library: [Exercise], maxExercises: Int = 4) async throws -> String {
         // 走 Cloudflare Worker 代理 — 跟 callDeepSeekForPicker 同模式.
         let url = URL(string: "\(Self.proxyURL)/v1/chat/completions")!
         var req = URLRequest(url: url)
@@ -314,7 +314,7 @@ final class AIWorkoutService {
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
         req.setValue(Self.clientToken, forHTTPHeaderField: "X-Maso-Client-Token")
 
-        let prompt = buildPrompt(payload: payload, library: library)
+        let prompt = buildPrompt(payload: payload, library: library, maxExercises: maxExercises)
         let body: [String: Any] = [
             "model": "deepseek-chat",
             "max_tokens": 2048,
@@ -347,7 +347,7 @@ final class AIWorkoutService {
     }
 
     /// 多套 routine 调用 — 跟 callDeepSeek 同代理/格式, 只是换 multi-routine prompt + 更大 token 预算.
-    private func callDeepSeekRoutines(payload: AIPayload, library: [Exercise], count: Int) async throws -> String {
+    private func callDeepSeekRoutines(payload: AIPayload, library: [Exercise], count: Int, perRoutine: Int) async throws -> String {
         let url = URL(string: "\(Self.proxyURL)/v1/chat/completions")!
         var req = URLRequest(url: url)
         req.httpMethod = "POST"
@@ -355,7 +355,7 @@ final class AIWorkoutService {
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
         req.setValue(Self.clientToken, forHTTPHeaderField: "X-Maso-Client-Token")
 
-        let prompt = buildRoutinesPrompt(payload: payload, library: library, count: count)
+        let prompt = buildRoutinesPrompt(payload: payload, library: library, count: count, perRoutine: perRoutine)
         let body: [String: Any] = [
             "model": "deepseek-chat",
             "max_tokens": 4096,                 // N 套 routine 需要更多 token
@@ -408,7 +408,7 @@ final class AIWorkoutService {
         return out
     }
 
-    private func buildPrompt(payload: AIPayload, library: [Exercise]) -> String {
+    private func buildPrompt(payload: AIPayload, library: [Exercise], maxExercises: Int = 4) -> String {
         let p = payload
         let recent = p.recentHistory.isEmpty
             ? "(none yet — this is the user's first week)"
@@ -439,7 +439,7 @@ final class AIWorkoutService {
         - 1–3 days/wk → full-body (chest + back + legs + small accessory)
         - 4–5 days/wk → 1–2 major muscle groups per session + accessory
         - 6+ days/wk → Push / Pull / Legs split rotation
-        - 3–4 exercises per session (keep it tight — "today's workout" is one session, not a marathon)
+        - EXACTLY \(maxExercises) exercises in this session — no more, no fewer.
         - Sets 3–4, reps 6–12 for strength; reps 12–15 for accessory
         - Pick weights conservative if no history; scale to recent volume if any
 
@@ -465,7 +465,7 @@ final class AIWorkoutService {
     }
 
     /// 多套 routine 的 prompt — 让 LLM 一次产出 count 套组成均衡周分化的 routine, 每套各带 rationale.
-    private func buildRoutinesPrompt(payload: AIPayload, library: [Exercise], count: Int) -> String {
+    private func buildRoutinesPrompt(payload: AIPayload, library: [Exercise], count: Int, perRoutine: Int) -> String {
         let p = payload
         let recent = p.recentHistory.isEmpty
             ? "(none yet — this is the user's first week)"
@@ -492,7 +492,7 @@ final class AIWorkoutService {
         GUIDELINES
         - The \(count) routines MUST be genuinely different from one another (different primary muscles / movement patterns) — never \(count) near-copies. Together they should cover the whole body across the week with sensible recovery (e.g. Push / Pull / Legs, or Upper / Lower, or full-body A/B/C).
         - Name each routine for what it trains, e.g. "Push · Chest & Shoulders", "Pull · Back & Biceps", "Legs · Quads & Glutes".
-        - 3–5 exercises per routine; compound movements before isolation; vary equipment.
+        - EXACTLY \(perRoutine) exercises in EVERY routine — no more, no fewer. Compound movements before isolation; vary equipment.
         - Sets 3–4, reps 6–12 for strength; reps 12–15 for accessory.
         - Pick weights conservative if no history; scale to recent volume if any.
         - Respect the "wants to strengthen" focus where it fits.
@@ -513,7 +513,7 @@ final class AIWorkoutService {
             }
           ]
         }
-        Return exactly \(count) routines in the "routines" array.
+        Return exactly \(count) routines in the "routines" array, and each routine's "steps" array MUST contain exactly \(perRoutine) items.
         """
     }
 
@@ -576,7 +576,7 @@ final class AIWorkoutService {
         // 保底: 即使 prompt 失效, 客户端也强制截到 4. 跟 RecommendedPrograms 的
         // kMaxStepsPerRecommendedPlan 同一节奏 — "今日训练" 不应该是 marathon.
         // P3: 尊重用户的 exercisesPerSession (1-6), 不再硬截 4.
-        let capped = Array(steps.prefix(max(1, min(6, maxExercises))))
+        let capped = Array(steps.prefix(max(1, min(8, maxExercises))))   // 8 = exercisesPerSession 上限, 别把 7/8 砍到 6
         return Plan(
             id: "plan-ai-\(Int(now.timeIntervalSince1970))-\(index)",   // index → 同秒生成的多套 routine id 不撞
             name: r.name.isEmpty ? "AI Workout" : r.name,
