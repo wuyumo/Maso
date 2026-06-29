@@ -237,12 +237,12 @@ struct PlanPlayerScreen: View {
                     LinearGradient(
                         stops: [
                             .init(color: .black, location: 0),
-                            .init(color: .black, location: topSafeArea / (topSafeArea + 56)),  // 纯黑到岛底
-                            .init(color: .clear, location: 1.0)                                  // 再渐隐到图
+                            .init(color: .black, location: 0.55),   // 上半多一点纯黑 (盖状态栏)
+                            .init(color: .clear, location: 1.0)      // 下半渐隐到图
                         ],
                         startPoint: .top, endPoint: .bottom
                     )
-                    .frame(height: topSafeArea + 56)
+                    .frame(height: (topSafeArea + 56) / 2)   // scrim 高度减半
                     .frame(maxWidth: .infinity, alignment: .top)
                     .ignoresSafeArea(edges: .top)
                     .allowsHitTesting(false)
