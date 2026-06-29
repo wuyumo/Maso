@@ -185,15 +185,16 @@ struct WorkoutCard: View {
                     .padding(.top, 6)
             }
 
-            if compactLayout {
-                // 紧凑版 — 计数行 (标题正下方) + [小肌肉图 左 | 动作 chips 右] 同一行.
-                Text("\(pluralizedExercises(plan.steps.count)) · \(pluralizedSets(plan.steps.reduce(0) { $0 + $1.sets }))")
-                    .font(.system(size: 12).monospacedDigit())
-                    .foregroundStyle(MasoColor.textDim)
-                    .lineLimit(1)
-                    .padding(.horizontal, MasoMetrics.cardPadding)
-                    .padding(.top, 8)
+            // Subtitle — exercises · sets, 紧挨标题 (所有 routine 卡统一: 标题 + 计数 在一起).
+            Text("\(pluralizedExercises(plan.steps.count)) · \(pluralizedSets(plan.steps.reduce(0) { $0 + $1.sets }))")
+                .font(.system(size: 12).monospacedDigit())
+                .foregroundStyle(MasoColor.textDim)
+                .lineLimit(1)
+                .padding(.horizontal, MasoMetrics.cardPadding)
+                .padding(.top, 6)
 
+            if compactLayout {
+                // 紧凑版 — [小肌肉图 左 | 动作 chips 右] 同一行 (计数已上移到标题下共享区).
                 HStack(alignment: .center, spacing: 12) {
                     MuscleVisualBlock(muscles: inferredMuscles, sideLength: 92)
                         .frame(width: 92, height: 92)
@@ -225,15 +226,6 @@ struct WorkoutCard: View {
                 Spacer(minLength: 0)
             }
             .padding(.top, 16)
-
-            // Subtitle — exercises · sets, 现在在 Muscle Map 下面 (用户要求).
-            // 视觉路径: 看肌肉图认部位 → 数字看量 (动作数/组数) → 看 chip 看具体动作.
-            Text("\(pluralizedExercises(plan.steps.count)) · \(pluralizedSets(plan.steps.reduce(0) { $0 + $1.sets }))")
-                .font(.system(size: 12).monospacedDigit())
-                .foregroundStyle(MasoColor.textDim)
-                .lineLimit(1)
-                .padding(.horizontal, MasoMetrics.cardPadding)
-                .padding(.top, 16)  // P3: 统一卡内竖向节奏为 16 (之前这处是一次性 12)
 
             // 底部行: 训练动作 chip list (左, 满宽) + Play 按钮 (右, 垂直居中跟 chip 行).
             // 用户要求: play 按钮挪到训练动作那两行的右边.
