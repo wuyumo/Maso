@@ -32,11 +32,12 @@ struct PlanPlayerScreen: View {
             .safeAreaInsets.top ?? 47
     }
 
-    /// 顶部黑色 scrim 的不透明度 — 随下拉进度平滑淡出 (smoothstep 缓动), 而不是全程纯黑、
-    /// 到阈值才突然消失. 160pt 内从 1 → 0; 松手未关时 dragDownOffset 弹回 0, opacity 随之回 1.
-    private var topScrimOpacity: Double {
+    /// 内容后面那层全屏黑背板的不透明度 — 随下拉进度平滑淡出 (smoothstep 缓动): 内容整体下滑、
+    /// 顶部露出缝隙, 缝隙里的背板逐步变透明 → 后面的 app (标签页) 渐渐透出 (Apple Music 式收起).
+    /// 180pt 内从 1 → 0; 松手未关时 dragDownOffset 弹回 0, opacity 随之回 1 (重新盖住 app).
+    private var backdropOpacity: Double {
         guard dragDownOffset > 0 else { return 1 }
-        let p = min(1, Double(dragDownOffset) / 160)
+        let p = min(1, Double(dragDownOffset) / 180)
         let eased = p * p * (3 - 2 * p)   // smoothstep: 平滑 S 曲线
         return 1 - eased
     }
@@ -141,7 +142,17 @@ struct PlanPlayerScreen: View {
     static let bottomReservedHeight: CGFloat = 140 + 120 + 22 + 84
 
     var body: some View {
-        VStack(spacing: 0) {
+        ZStack {
+            // 下拉收起时露出的"sheet 之外"黑背板 — 不随内容下滑, 随下拉进度平滑淡出,
+            // 让后面的 app (标签页) 从顶部缝隙逐步透出. 需配合 RootView 的 .presentationBackground(.clear).
+            if isActiveTraining {
+                Color.black
+                    .opacity(backdropOpacity)
+                    .ignoresSafeArea()
+                    .allowsHitTesting(false)
+            }
+
+            VStack(spacing: 0) {
             if store.session == nil || (store.session != nil && store.segments.isEmpty) {
                 // Empty state — segments 为空时不能让用户看到全黑空屏 (bug fallback).
                 // 给一个明确的"没有训练数据"提示 + Close 按钮逃出.
@@ -271,7 +282,6 @@ struct PlanPlayerScreen: View {
                     .frame(maxWidth: .infinity, alignment: .top)
                     .ignoresSafeArea(edges: .top)
                     .allowsHitTesting(false)
-                    .opacity(topScrimOpacity)   // 下拉时随进度平滑淡出, 露出后面的动图
 
                     // 4) 最顶层: rest 段倒计时圆环 — 必须在底部渐变 + TimelineBar 之上,
                     //    否则圆环被 bottomInfoGradient 的 fade-out 区盖住一半.
@@ -483,6 +493,7 @@ struct PlanPlayerScreen: View {
             if !isCompleted { planSaveDecisionMade = false }
         }
         // SessionTickerView 移到了 RootView 顶层 — sheet 关掉后 MiniBar 还得 tick.
+        }   // ZStack (背板 + 内容)
     }
 
     /// 背景层 — exercise 段铺当前图, rest 段纯黑

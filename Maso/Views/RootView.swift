@@ -286,6 +286,9 @@ struct RootView: View {
             // 关闭走 PlanPlayerScreen 自带的顶部 Drag Handle 下拉手势 (训练中) / 完成页按钮.
             .fullScreenCover(isPresented: $playerPresented) {
                 PlanPlayerScreen()
+                    // 透明 cover 背景 → 下拉收起时, PlanPlayerScreen 内的淡出黑背板变透明后,
+                    // 后面的标签页界面能透出来 (Apple Music 式收起). 平时背板不透明, 视觉等同全屏.
+                    .presentationBackground(.clear)
             }
             .sheet(isPresented: $settingsPresented) {
                 NavigationStack { SettingsScreen() }
