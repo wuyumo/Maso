@@ -332,9 +332,9 @@ struct PlanPlayerScreen: View {
         // 不再有顶部黑块) + playlistDrawer anchor 到 home indicator. 顶部 Drag Handle 自己按
         // topSafeArea 落在岛下方, 不受影响.
         .ignoresSafeArea(.container, edges: [.top, .bottom])
-        // 下拉脱离顶部时给 sheet 顶部上圆角 (Apple Music 式). 静止 (radius=0) 时完全不 clip —
-        // 否则 clipShape 会按 safe-area 边界裁掉底部 home indicator 区, 让 playlist 在那露黑块.
-        .modifier(DragCornerClip(radius: dragCornerRadius))
+        // 下拉脱离顶部时给 sheet 顶部上圆角 (Apple Music 式). 始终应用同一形状 (无结构切换) →
+        // 不跳变、手势不被取消; 形状底边延伸出屏 → 永不裁底部 home indicator.
+        .clipShape(TopRoundedSheetShape(radius: dragCornerRadius))
         // Apple Music 式: 整屏跟手下移 (拖顶部 handle). 完成/空态不参与 (各有自己的关闭按钮).
         .offset(y: isActiveTraining ? dragDownOffset : 0)
         // 顶部 Drag Handle — 落在 Dynamic Island 下方, 居中. 拖它下拉 → 关 (最小化回 mini-bar).
@@ -1110,18 +1110,22 @@ struct PlanPlayerScreen: View {
 // MARK: - 背景图 (full-bleed) + 底部信息区
 
 /// 当前动作的图片 — 铺满整个 sheet 背后, scaleAspectFill
-/// 只在下拉 (radius>0) 时给顶部上圆角; 静止时完全不 clip.
-/// 关键: clipShape 会按 safe-area 边界裁切, 静止时若 clip 会把底部 home indicator 区一起裁掉
-/// → playlist 在 home indicator 下露黑块. 静止不 clip 即可让 playlist 背景延续到屏幕最底.
-private struct DragCornerClip: ViewModifier {
-    let radius: CGFloat
-    @ViewBuilder
-    func body(content: Content) -> some View {
-        if radius > 0 {
-            content.clipShape(UnevenRoundedRectangle(topLeadingRadius: radius, topTrailingRadius: radius))
-        } else {
-            content
-        }
+/// sheet 顶部圆角裁剪形状 — **始终应用** (无 if/else 结构切换, 故下拉时不跳变、手势不被取消).
+/// 关键: 底边向下延伸 400pt, 这样无论 clipShape 按 safe-area 还是全屏计算, 底部 home indicator
+/// 区永远落在 path 内 → 永不被裁 (playlist 一路延续到屏幕最底, 下拉中也不露黑).
+/// radius=0 (静止) = 直角全出血; radius>0 (下拉) = 顶部上圆角. animatableData 让圆角平滑过渡.
+private struct TopRoundedSheetShape: Shape {
+    var radius: CGFloat
+    var animatableData: CGFloat {
+        get { radius }
+        set { radius = newValue }
+    }
+    func path(in rect: CGRect) -> Path {
+        let extended = CGRect(x: rect.minX, y: rect.minY, width: rect.width, height: rect.height + 400)
+        return UnevenRoundedRectangle(
+            topLeadingRadius: radius, bottomLeadingRadius: 0,
+            bottomTrailingRadius: 0, topTrailingRadius: radius
+        ).path(in: extended)
     }
 }
 
