@@ -332,6 +332,9 @@ struct PlanPlayerScreen: View {
         // 不再有顶部黑块) + playlistDrawer anchor 到 home indicator. 顶部 Drag Handle 自己按
         // topSafeArea 落在岛下方, 不受影响.
         .ignoresSafeArea(.container, edges: [.top, .bottom])
+        // 先把整屏内容 (图 + 上/下渐变 + controls) 压成单层再裁剪 — 否则回弹时 clip 每帧重栅格化,
+        // 会把 controls 那层 .background 渐变丢一帧 → 闪现图底原色. compositingGroup 把渐变烘进同层.
+        .compositingGroup()
         // 下拉脱离顶部时给 sheet 顶部上圆角 (Apple Music 式). 始终应用同一形状 (无结构切换) →
         // 不跳变、手势不被取消; 形状底边延伸出屏 → 永不裁底部 home indicator.
         .clipShape(TopRoundedSheetShape(radius: dragCornerRadius))
