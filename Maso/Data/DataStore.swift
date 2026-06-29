@@ -335,8 +335,11 @@ final class DataStore {
                 }
                 return s
             }
+            // 3. 科学化兜底: 复合优先 + 同 section ≤2 + slot-1 复合 + push≥pull (先于 pad, 这样若丢了同 section
+            //    第 3 个, 下面 pad 会按用户 exercises-per-plan 用别的 section 补回, 不让总数掉档).
+            p.steps = DataStore.enforceScience(p.steps, exById: exById)
             // 防御性补足: 模板正常是 8 step (cap≤8 不会触发), 但万一某 step ID 失效被 compactMap
-            // 丢掉导致不足, 也按 exercises-per-plan 补回, 保证用户设定数严格成立.
+            // 丢掉导致不足 (或被 enforceScience 丢了同 section 多余项), 也按 exercises-per-plan 补回.
             p.steps = DataStore.padStepsToTarget(p.steps, target: cap, settings: settings, exById: exById)
             // #1 器械约束: 把所选器械做不了的动作换成可用替代 (availableEquipment 空时无操作).
             p.steps = DataStore.applyEquipmentPreference(p.steps, settings: settings, exById: exById)
@@ -392,6 +395,8 @@ final class DataStore {
                     p.steps = p.steps.indices.filter { keep.contains($0) }.map { p.steps[$0] }
                 }
             }
+            // 科学化兜底 (先于 pad): 复合优先 + 同 section ≤2 + slot-1 复合 + push≥pull.
+            p.steps = enforceScience(p.steps, exById: exById)
             // 反向: 动作数 < 用户设定时补足配件 —— 社区计划自身偏短 (一个 session 只有 5 个动作) 也
             // 严格兑现 exercises-per-plan, 不让用户设了 7 却只看到 5.
             p.steps = padStepsToTarget(p.steps, target: cap, settings: settings, exById: exById)
@@ -510,6 +515,82 @@ final class DataStore {
         }
     }
 
+    // MARK: - enforceScience — 出计划后的科学化硬规则兜底 (AI 输出 + 模板/社区都过这一关)
+    //
+    // 为什么放代码侧而不是只靠 prompt: AI path 和本地模板各自独立, prompt 的 prose 规则 LLM 可能不遵守,
+    // 模板更是写死的. 这里用 100%-populated 字段 (mechanic / force / primaryMuscles.section) 做"无论如何成立"
+    // 的最低保障 —— 这是"一个 routine 里两三个胸动作"投诉的权威修复.
+    //
+    // ⚠️ 只用 100% 字段: mechanic (compound/isolation)、force (push/pull/static)、primaryMuscles.first.section.
+    //    不碰 movementPattern (只 48% 有值) —— 膝/髋主导、水平/垂直只能在 prompt prose 里表达, 不在代码 quota.
+    //    force == .static (等长/支撑) 既非 push 也非 pull, 从 push/pull 比里排除.
+    //
+    // 步骤: (a) 复合优先稳定排序 → (b) 同 section ≤2 上限 (丢第 3+ 个) → (c) slot-1 复合保证 →
+    //       (d) push≥pull 偏好 (pull 不足时不主动丢 pull).
+    // 在 1-3 个动作的小 routine 上必须优雅 no-op, 且永不把 routine 砍到 0 个 step.
+    static func enforceScience(_ steps: [PlanStep], exById: [String: Exercise]) -> [PlanStep] {
+        guard steps.count > 1 else { return steps }   // 0/1 个 step: 无可排无可丢, 直接返回
+
+        func sectionKey(_ s: PlanStep) -> MuscleGroup? {
+            guard let ex = exById[s.exerciseId], let first = ex.primaryMuscles.first else { return nil }
+            return first.section ?? first
+        }
+        func isCompound(_ s: PlanStep) -> Bool { exById[s.exerciseId]?.mechanic == .compound }
+        func force(_ s: PlanStep) -> ExerciseForce? { exById[s.exerciseId]?.force }
+
+        // (a) 复合优先, tier 内稳定 (保留模板/AI 的原意顺序) —— enumerated 带原 index 作 tie-breaker.
+        var ordered = steps.enumerated().sorted { a, b in
+            let ta = isCompound(a.element) ? 0 : 1
+            let tb = isCompound(b.element) ? 0 : 1
+            return ta != tb ? ta < tb : a.offset < b.offset
+        }.map { $0.element }
+
+        // (b) 同主肌群 section ≤2 上限 —— 走一遍, 第 3+ 个同 section 的丢掉 (section 为 nil 的不计入/不丢).
+        //     已按复合优先排过, 故被保留的 2 个里复合的排在前.
+        var sectionCount: [MuscleGroup: Int] = [:]
+        var capped: [PlanStep] = []
+        for s in ordered {
+            if let sec = sectionKey(s) {
+                let c = sectionCount[sec, default: 0]
+                if c >= 2 { continue }   // 丢第 3+ 个同 section
+                sectionCount[sec] = c + 1
+            }
+            capped.append(s)
+        }
+        // 永不砍到空: 万一全被判同 section (不该发生), 至少留排序后的第一个.
+        if capped.isEmpty { capped = ordered.isEmpty ? steps : [ordered[0]] }
+        ordered = capped
+
+        // (c) slot-1 复合保证: 排序后理论上复合已在前, 但若 step 0 仍是孤立而后面有复合, 把第一个复合换到 slot 0.
+        if !ordered.isEmpty, !isCompound(ordered[0]),
+           let firstCompound = ordered.firstIndex(where: { isCompound($0) }) {
+            let c = ordered.remove(at: firstCompound)
+            ordered.insert(c, at: 0)
+        }
+
+        // (d) push≥pull 偏好: 仅统计 force 非 static 的动作. push 多于 pull 太多时, 把多出来的 push 往后挪,
+        //     让 pull 相对靠前 (不丢动作, 不改 cap, 只在违例时做温和重排; slot-0 复合不动).
+        let pushN = ordered.filter { force($0) == .push }.count
+        let pullN = ordered.filter { force($0) == .pull }.count
+        if pushN > pullN, pullN > 0 {
+            // 稳定地把 push (非 slot-0) 排到 pull 之后, 其余动作 (static/无 force) 保持相对位置.
+            let head = ordered.first
+            let rest = Array(ordered.dropFirst())
+            let pulls = rest.filter { force($0) == .pull }
+            let pushes = rest.filter { force($0) == .push }
+            let others = rest.filter { force($0) != .pull && force($0) != .push }
+            // pull 先于 push, others 收尾 — 在不丢动作的前提下偏向 pull 靠前.
+            var reordered: [PlanStep] = []
+            if let head { reordered.append(head) }
+            reordered.append(contentsOf: pulls)
+            reordered.append(contentsOf: others)
+            reordered.append(contentsOf: pushes)
+            ordered = reordered
+        }
+
+        return ordered
+    }
+
     // MARK: - 简单的 plan 操作
 
     func updatePlan(_ plan: Plan) {
@@ -572,6 +653,40 @@ final class DataStore {
         if changed { save() }
     }
 
+    /// Request #3 — 把"训练偏好"里改过的 per-step 默认值 (组间歇 / 动作间歇 / 默认组数) 非破坏式
+    /// 地应用到所有既有 routine (+ aiTodayPlan). 不重建选择 / 不动 reps / weight / 逐组覆盖,
+    /// 只更新用户确实改了的那几个字段 —— 复用全局同步那套"walk plans 改字段"的管道.
+    /// 由 TrainingSettingsSheet 在用户主动确认"应用到我所有计划"时调 (opt-in, 不静默覆盖).
+    ///   - setRest:      改 step.restBetweenSets (组间歇), nil = 不动
+    ///   - betweenRest:  改 step.rest (动作间歇), nil = 不动
+    ///   - setsFloor:    把组数抬到该地板 (max, 不压平用户调高的组数), nil = 不动
+    func applyDefaultParamsToAllRoutines(setRest: Int?, betweenRest: Int?, setsFloor: Int?) {
+        guard setRest != nil || betweenRest != nil || setsFloor != nil else { return }
+        func apply(_ s: inout PlanStep) -> Bool {
+            var touched = false
+            if let r = setRest, s.restBetweenSets != r { s.restBetweenSets = r; touched = true }
+            if let r = betweenRest, s.rest != r { s.rest = r; touched = true }
+            // 组数是地板 (跟模板调谐 + makeSeededStep 一致语义): 只抬不压, 不覆盖用户特意调高的组数.
+            if let f = setsFloor, s.sets < f { s.sets = f; touched = true }
+            return touched
+        }
+        var changed = false
+        let now = Date()
+        for pi in plans.indices {
+            var planChanged = false
+            for si in plans[pi].steps.indices {
+                if apply(&plans[pi].steps[si]) { planChanged = true }
+            }
+            if planChanged { plans[pi].updatedAt = now; changed = true }
+        }
+        if var ai = aiTodayPlan {
+            var aiChanged = false
+            for si in ai.steps.indices { if apply(&ai.steps[si]) { aiChanged = true } }
+            if aiChanged { aiTodayPlan = ai; changed = true }
+        }
+        if changed { save() }
+    }
+
     /// 两个 step 的训练参数是否完全一致 (不看 id / exerciseId) — 给同步去抖 + updatePlan diff 用.
     static func sameParams(_ a: PlanStep, _ b: PlanStep) -> Bool {
         a.sets == b.sets && a.reps == b.reps && a.weight == b.weight && a.duration == b.duration
@@ -595,10 +710,15 @@ final class DataStore {
             )
         }
         let last = lastSet(forExerciseId: ex.id)
+        // reps 默认跟训练目标走 (复合取低端 / 孤立取高端) —— 没历史时不再硬填 10, 让临时加的动作也遵从目标.
+        // 有历史则优先沿用上次实际 reps (用户真练过的比目标默认更贴个人).
+        let goalReps = ex.mechanic == .isolation
+            ? settings.trainingGoal.defaultRepsForIsolation()
+            : settings.trainingGoal.defaultRepsForCompound()
         return PlanStep(
             id: stepId, exerciseId: ex.id,
             sets: settings.defaultSetsPerExercise,
-            reps: isStrength ? (last?.reps ?? 10) : nil,
+            reps: isStrength ? (last?.reps ?? goalReps) : nil,
             weight: isStrength ? (last?.weight ?? 0) : nil,
             duration: isStrength ? nil : (last?.duration ?? 30),
             restBetweenSets: settings.defaultRestSeconds,
@@ -917,12 +1037,19 @@ final class DataStore {
             maxExercises: settings.exercisesPerSession
         )
         if let plan {
-            aiTodayPlan = plan
+            aiTodayPlan = applyScience(to: plan)   // 科学化兜底: 复合优先 + 同 section ≤2 + slot-1 + push≥pull
             lastAIRefreshAt = Date()
             aiTodayFailed = false
         } else {
             aiTodayFailed = true   // 网络/服务失败 → Today 露提示 + fallback 推荐
         }
+    }
+
+    /// 把 enforceScience 套到单个 Plan 的 steps 上 (AI 路径用 —— AI plan 不走 pad, 仅重排/去多余同 section).
+    private func applyScience(to plan: Plan) -> Plan {
+        var p = plan
+        p.steps = DataStore.enforceScience(p.steps, exById: exById)
+        return p
     }
 
     /// 强制重新生成 (用户主动点 "Refresh"/"Retry" 时调). 跳过同日 cache 检查.
@@ -935,7 +1062,7 @@ final class DataStore {
             maxExercises: settings.exercisesPerSession
         )
         if let plan {
-            aiTodayPlan = plan
+            aiTodayPlan = applyScience(to: plan)
             lastAIRefreshAt = Date()
             aiTodayFailed = false
         } else {
@@ -951,7 +1078,7 @@ final class DataStore {
         let payload = buildAIPayload()
         if let plan = await AIWorkoutService.shared.generateToday(
             payload: payload, library: exercises, maxExercises: settings.exercisesPerSession) {
-            aiTodayPlan = plan
+            aiTodayPlan = applyScience(to: plan)
             lastAIRefreshAt = Date()
             aiTodayFailed = false
         } else {
@@ -974,7 +1101,8 @@ final class DataStore {
         if let aiPlans = await AIWorkoutService.shared.generateRoutines(
             payload: payload, library: exercises, count: count,
             maxExercises: settings.exercisesPerSession), !aiPlans.isEmpty {
-            return (aiPlans, false)
+            // 科学化兜底: 每套真 AI routine 也过 enforceScience (复合优先 + 同 section ≤2 + slot-1 + push≥pull).
+            return (aiPlans.map { applyScience(to: $0) }, false)
         }
         return (local, true)   // 真 AI 失败 → 回落本地模板 (此时确实没有 rationale, 顶部有提示条)
     }
@@ -1025,6 +1153,14 @@ final class DataStore {
         }
         .sorted { $0.dateLabel > $1.dateLabel }  // 最近的在前
 
+        // 目标驱动的 rep/sets/rest band — rep 中心值仍走既有 TrainingGoal 表 (复合 5/8/15, 孤立 8/12/18),
+        // 在中心值上下做一个小区间给 LLM 留发挥空间 (compound -2..+2, isolation -2..+3, 下限夹到 1).
+        let kind = settings.trainingGoalKind
+        let loading = kind.loading
+        let repC = loading.defaultRepsForCompound()
+        let repI = loading.defaultRepsForIsolation()
+        let setsBase = max(1, settings.defaultSetsPerExercise)
+
         return AIPayload(
             gender: settings.gender?.rawValue,
             age: settings.age,
@@ -1032,7 +1168,18 @@ final class DataStore {
             daysPerWeek: settings.weeklyTrainingDays,
             wantStrengthen: settings.wantStrengthen.map { $0.displayName },
             recentHistory: history,
-            todayDateLabel: df.string(from: Date())
+            todayDateLabel: df.string(from: Date()),
+            goalLabel: kind.displayName,
+            goalRepCompound: max(1, repC - 2),
+            goalRepCompoundHi: repC + 2,
+            goalRepIso: max(1, repI - 2),
+            goalRepIsoHi: repI + 3,
+            goalSetsLo: max(1, setsBase - 1),
+            goalSetsHi: setsBase + 1,
+            goalRest: kind.recommendedRestSeconds(),
+            equipment: EquipmentCategory.allCases
+                .filter { settings.availableEquipment.contains($0.rawValue) }
+                .map { $0.displayName }
         )
     }
 

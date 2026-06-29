@@ -17,9 +17,6 @@ struct HistoryScreen: View {
     let onOpenSettings: () -> Void
 
     @State private var selectedSession: SessionSummary?
-    /// 7 天前的训练记录默认收折, 用户点 "Show older" 才展开.
-    /// 7 天最近的训练对用户更相关 (回顾、规划), 更早的 long tail 不需要默认展开.
-    @State private var showOlderSessions: Bool = false
     /// 长按 → contextMenu Delete → 二次确认 alert. 存待删 session (planId + day) 区分.
     @State private var pendingDeleteSession: SessionSummary? = nil
     /// 训练日历的展开 / 收起态.
@@ -33,6 +30,10 @@ struct HistoryScreen: View {
     /// 自然产生"想看更多数据/解锁高级功能"的动机, banner 放这比放在 Today 干扰训练流程更顺.
     @State private var paywallPresented: Bool = false
 
+    /// 日历下方的两个分页. 默认 Stats (数据图表), 另一页 Workouts (按周分组的过往训练).
+    enum HistoryTab { case stats, workouts }
+    @State private var historyTab: HistoryTab = .stats
+
 
     /// ProBanner kicker 的"起步价/月" — 取 yearly product 月均价 (年价 ÷ 12), locale-aware.
     /// product 还没 load 出来时返回 nil → banner 只显示 "MASO PRO", 不写死假价格.
@@ -40,6 +41,36 @@ struct HistoryScreen: View {
         guard let yearly = subs.product(for: .yearly) else { return nil }
         let perMonth = yearly.price / 12
         return perMonth.formatted(yearly.priceFormatStyle)
+    }
+
+    /// 过往训练按"周"分组 (settings.calendar 的周): 组内按日期降序, 组按周降序 (最近的周在上).
+    private func weekGroupedSessions(_ sessions: [SessionSummary]) -> [(weekStart: Date, sessions: [SessionSummary])] {
+        let cal = data.settings.calendar
+        let grouped = Dictionary(grouping: sessions) { s in
+            cal.dateInterval(of: .weekOfYear, for: s.day)?.start ?? cal.startOfDay(for: s.day)
+        }
+        return grouped
+            .map { (weekStart: $0.key, sessions: $0.value.sorted { $0.day > $1.day }) }
+            .sorted { $0.weekStart > $1.weekStart }
+    }
+
+    /// 周分组 section 标题: 本周 / 上周 / "Jun 9 – 15" 区间 (locale-aware).
+    private func weekLabel(_ weekStart: Date) -> String {
+        let cal = data.settings.calendar
+        if let thisWeek = cal.dateInterval(of: .weekOfYear, for: Date())?.start {
+            if cal.isDate(weekStart, inSameDayAs: thisWeek) {
+                return NSLocalizedString("This week", comment: "history week group")
+            }
+            if let lastWeek = cal.date(byAdding: .weekOfYear, value: -1, to: thisWeek),
+               cal.isDate(weekStart, inSameDayAs: lastWeek) {
+                return NSLocalizedString("Last week", comment: "history week group")
+            }
+        }
+        let end = cal.date(byAdding: .day, value: 6, to: weekStart) ?? weekStart
+        let startStr = weekStart.formatted(.dateTime.month(.abbreviated).day())
+        let sameMonth = cal.isDate(weekStart, equalTo: end, toGranularity: .month)
+        let endStr = sameMonth ? end.formatted(.dateTime.day()) : end.formatted(.dateTime.month(.abbreviated).day())
+        return "\(startStr) – \(endStr)"
     }
 
     var body: some View {
@@ -84,34 +115,10 @@ struct HistoryScreen: View {
                 .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
                 .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
 
-                // 进度图表 — 周容量 + 头号动作 1RM 趋势. 数据足够 (各 ≥2 点) 才出现.
-                let charts = ProgressChartsView(data: data, onUnlock: { paywallPresented = true })
-                if !charts.isEmpty {
-                    VStack(alignment: .leading, spacing: 10) {
-                        Text("Progress")
-                            .font(.system(size: 12, weight: .bold)).tracking(0.6).textCase(.uppercase)
-                            .foregroundStyle(MasoColor.textDim)
-                            .padding(.horizontal, 4)
-                        charts
-                    }
-                    .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
-                }
-
-                // 训练活跃度热力图 — 多周训练节奏一眼可见 (按组数着色). 数据足够才出现.
-                let activity = TrainingActivityHeatmap(data: data)
-                if !activity.isEmpty {
-                    VStack(alignment: .leading, spacing: 10) {
-                        Text("Activity")
-                            .font(.system(size: 12, weight: .bold)).tracking(0.6).textCase(.uppercase)
-                            .foregroundStyle(MasoColor.textDim)
-                            .padding(.horizontal, 4)
-                        activity
-                    }
-                    .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
-                }
-
-                // 训练记录列表
                 let allSessions = groupedSessions()
+                let charts = ProgressChartsView(data: data, onUnlock: { paywallPresented = true })
+                let activity = TrainingActivityHeatmap(data: data)
+
                 if allSessions.isEmpty {
                     // 上方 Spacer 跟下方 pageBottomInset Spacer 等 min → 空态在日历↔tab bar 间居中.
                     Spacer(minLength: MasoMetrics.pageBottomInset)
@@ -137,46 +144,61 @@ struct HistoryScreen: View {
                     }
                     .frame(maxWidth: .infinity, alignment: .center)
                 } else {
-                    let cutoff = Calendar.current.startOfDay(for: Calendar.current.date(byAdding: .day, value: -7, to: Date())!)
-                    let recent = allSessions.filter { $0.day >= cutoff }
-                    let older = allSessions.filter { $0.day < cutoff }
-
-                    VStack(spacing: 12) {
-                        ForEach(recent) { session in
-                            sessionCardRow(session)
-                        }
+                    // 日历下方两个分页: Stats (数据图表) / Workouts (按周分组的过往训练). 默认 Stats.
+                    Picker("", selection: $historyTab) {
+                        Text("Stats").tag(HistoryTab.stats)
+                        Text("Workouts").tag(HistoryTab.workouts)
                     }
+                    .pickerStyle(.segmented)
                     .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
 
-                    if !older.isEmpty {
-                        Button(action: {
-                            withAnimation(.easeOut(duration: 0.2)) { showOlderSessions.toggle() }
-                        }) {
-                            HStack(spacing: 8) {
-                                Image(systemName: showOlderSessions ? "chevron.up" : "chevron.down")
-                                    .font(.system(size: 11, weight: .heavy))
-                                Text(showOlderSessions
-                                     ? NSLocalizedString("Hide older workouts", comment: "")
-                                     : String(format: NSLocalizedString("Show %d older workout(s)", comment: ""), older.count))
-                                    .font(.system(size: 13, weight: .semibold))
+                    if historyTab == .stats {
+                        // 进度图表 (周容量 + 1RM) + 活跃度热力图 — 各自数据足够才出现.
+                        if !charts.isEmpty {
+                            VStack(alignment: .leading, spacing: 10) {
+                                Text("Progress")
+                                    .font(.system(size: 12, weight: .bold)).tracking(0.6).textCase(.uppercase)
+                                    .foregroundStyle(MasoColor.textDim)
+                                    .padding(.horizontal, 4)
+                                charts
                             }
-                            .foregroundStyle(MasoColor.textDim)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 12)
-                            .background(MasoColor.surface.opacity(0.5))
-                            .clipShape(Capsule())
+                            .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
                         }
-                        .buttonStyle(.plain)
-                        .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
-
-                        if showOlderSessions {
-                            VStack(spacing: 12) {
-                                ForEach(older) { session in
-                                    sessionCardRow(session)
+                        if !activity.isEmpty {
+                            VStack(alignment: .leading, spacing: 10) {
+                                Text("Activity")
+                                    .font(.system(size: 12, weight: .bold)).tracking(0.6).textCase(.uppercase)
+                                    .foregroundStyle(MasoColor.textDim)
+                                    .padding(.horizontal, 4)
+                                activity
+                            }
+                            .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
+                        }
+                        // 只练过一两次、图表还没够数据时, 给个提示不留白.
+                        if charts.isEmpty && activity.isEmpty {
+                            Text("Keep training — your stats and trends show up here.")
+                                .font(.system(size: 13))
+                                .foregroundStyle(MasoColor.textDim)
+                                .multilineTextAlignment(.center)
+                                .frame(maxWidth: .infinity)
+                                .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
+                                .padding(.top, 24)
+                        }
+                    } else {
+                        // Workouts 分页: 过往训练按周分组, 每周一个 section 标题 (本周/上周/日期区间).
+                        ForEach(weekGroupedSessions(allSessions), id: \.weekStart) { group in
+                            VStack(alignment: .leading, spacing: 10) {
+                                Text(weekLabel(group.weekStart))
+                                    .font(.system(size: 12, weight: .bold)).tracking(0.6).textCase(.uppercase)
+                                    .foregroundStyle(MasoColor.textDim)
+                                    .padding(.horizontal, 4)
+                                VStack(spacing: 12) {
+                                    ForEach(group.sessions) { session in
+                                        sessionCardRow(session)
+                                    }
                                 }
                             }
                             .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
-                            .transition(.opacity.combined(with: .move(edge: .top)))
                         }
                     }
                 }

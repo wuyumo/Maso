@@ -1,19 +1,19 @@
 import SwiftUI
 
 // Onboarding — 一问一屏的精细向导 (替代旧的"单页渐进展开").
-//   1 性别  2 年龄  3 体重  4 每周训练次数  5 想加强的肌群
+//   1 性别  2 训练目标  3 年龄  4 体重  5 每周训练次数  6 想加强的肌群  7 可用器材
 //
 // 交互规则:
-//   · 选项型 (性别 / 每周次数): 单选, 点一下即自动跳下一步 (带 0.18s 让选中态可感知).
+//   · 选项型 (性别 / 训练目标): 单选, 点一下即自动跳下一步 (带 0.18s 让选中态可感知).
 //   · 拨盘型 (年龄 / 体重): 上下滚动的 wheel, 选体重时默认落在该性别平均值, 调完点"下一步"确定.
-//   · 多选型 (肌群): 不能自动跳, 用"确认, 生成计划"收尾 (顺带进 AI 生成过渡).
+//   · 多选型 (肌群 / 器材): 不能自动跳, 用"下一步 / 生成计划"收尾.
 //   · 第 2 步起, 左下角恒有"返回"回到上一步重选 (即便上一步是自动跳进来的).
 struct OnboardingScreen: View {
     @Environment(DataStore.self) private var data
     let onDone: () -> Void
 
     private enum Step: Int, CaseIterable {
-        case gender = 1, age, weight, days, focus, equipment
+        case gender = 1, goal, age, weight, days, focus, equipment
         static let total = Step.allCases.count
     }
 
@@ -22,6 +22,8 @@ struct OnboardingScreen: View {
     @State private var goingForward = true
 
     @State private var gender: Gender? = nil
+    /// 训练目标 (5 档) — 默认增肌 (覆盖最广), 选完自动跳下一步.
+    @State private var goal: TrainingGoalKind = .buildMuscle
     @State private var age: Int = 25
     /// 体重: 选完性别按平均值 re-seed, 除非用户已手动拨过 (weightTouched).
     @State private var weight: Double = 75
@@ -88,6 +90,7 @@ struct OnboardingScreen: View {
     @ViewBuilder private var stepContent: some View {
         switch step {
         case .gender: genderStep
+        case .goal:   goalStep
         case .age:    ageStep
         case .weight: weightStep
         case .days:   daysStep
@@ -164,7 +167,49 @@ struct OnboardingScreen: View {
         }
     }
 
-    // 2) 年龄 — 拨盘.
+    // 2) 训练目标 — 选项型, 单选自动跳. 每行 icon + 标题 + 副标题 (比性别多一行说明,
+    //    因为目标直接决定 reps/组间歇/动作选择, 用户得看清差别).
+    private var goalStep: some View {
+        stepBody("What's your main goal?", "We'll tune reps, rest, and exercise picks to match.") {
+            VStack(spacing: 12) {
+                ForEach(TrainingGoalKind.allCases, id: \.self) { g in
+                    let on = goal == g
+                    Button { selectGoal(g) } label: {
+                        HStack(spacing: 14) {
+                            Image(systemName: g.icon)
+                                .font(.system(size: 20, weight: .semibold))
+                                .frame(width: 28)
+                            VStack(alignment: .leading, spacing: 3) {
+                                Text(g.displayName)   // displayName 已走 NSLocalizedString
+                                    .font(.system(size: 18, weight: .bold))
+                                Text(g.subtitle)
+                                    .font(.system(size: 12))
+                                    .foregroundStyle(on ? .black.opacity(0.7) : MasoColor.textDim)
+                                    .lineLimit(2)
+                                    .multilineTextAlignment(.leading)
+                                    .fixedSize(horizontal: false, vertical: true)
+                            }
+                            Spacer(minLength: 8)
+                            if on {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .font(.system(size: 22, weight: .bold))
+                                    .foregroundStyle(.black)
+                            }
+                        }
+                        .padding(.horizontal, 18)
+                        .padding(.vertical, 16)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(on ? MasoColor.accent : MasoColor.surface)
+                        .foregroundStyle(on ? .black : MasoColor.text)
+                        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+        }
+    }
+
+    // 3) 年龄 — 拨盘.
     private var ageStep: some View {
         stepBody("How old are you?", "Helps us tune your training volume.") {
             wheel(selection: Binding(get: { age }, set: { age = $0 }),
@@ -284,6 +329,7 @@ struct OnboardingScreen: View {
     private var primaryAction: (title: String, action: () -> Void)? {
         switch step {
         case .gender: return nil                            // 性别仍是选项型, 单选自动跳
+        case .goal:   return nil                            // 目标也是选项型, 单选自动跳
         case .age:    return ("Next", { advance(to: .weight) })
         case .weight: return ("Next", { advance(to: .days) })
         case .days:   return ("Next", { advance(to: .focus) })   // 改拨盘后需"下一步"
@@ -311,6 +357,14 @@ struct OnboardingScreen: View {
         Haptics.tap()
         SoundPlayer.shared.playTap()
         // 0.18s 让选中态 (绿底 + ✓) 被看见再滑走, 不显得突兀.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.18) { advance(to: .goal) }
+    }
+
+    private func selectGoal(_ g: TrainingGoalKind) {
+        goal = g
+        Haptics.tap()
+        SoundPlayer.shared.playTap()
+        // 同性别: 0.18s 让选中态可感知再滑走.
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.18) { advance(to: .age) }
     }
 
@@ -325,6 +379,9 @@ struct OnboardingScreen: View {
 
     private func confirm() {
         data.settings.gender = gender
+        // ⚠️ 先写 trainingGoalKind —— didSet 会级联设 trainingGoal + defaultRestSeconds.
+        //    填补了旧引导从不设目标 (struct 默认 hypertrophy) 的缺口.
+        data.settings.trainingGoalKind = goal
         data.settings.age = age
         data.settings.weight = weight
         data.settings.weeklyTrainingDays = daysPerWeek

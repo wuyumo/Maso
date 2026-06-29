@@ -227,9 +227,9 @@ struct WorkoutCard: View {
             }
             .padding(.top, 16)
 
-            // 底部行: 训练动作 chip list (左, 满宽) + Play 按钮 (右, 垂直居中跟 chip 行).
-            // 用户要求: play 按钮挪到训练动作那两行的右边.
-            HStack(alignment: .center, spacing: 12) {
+            // 底部行: 训练动作 chip list (左, 满宽) + Play 按钮 (右下角).
+            // .bottom 对齐 → play 钉到行底, 右边距 = 下边距 = cardPadding (相等), 落在卡片右下角.
+            HStack(alignment: .bottom, spacing: 12) {
                 if !plan.steps.isEmpty {
                     LimitedFlowLayout(
                         spacing: 6,

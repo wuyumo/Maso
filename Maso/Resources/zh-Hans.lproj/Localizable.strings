@@ -151,6 +151,27 @@
 "STEP %1$lld / %2$lld" = "第 %1$lld 步 / 共 %2$lld 步";
 "What can you train with?" = "你有哪些器材?";
 "Pick what you have — leave all off if you train at a full gym." = "选你有的 —— 全不选就是健身房全器械。";
+/* 引导 — 训练目标步 */
+"What's your main goal?" = "你的主要目标是?";
+"We'll tune reps, rest, and exercise picks to match." = "我们会据此调整次数、间歇和动作选择。";
+
+/* 训练目标 (5 档用户面目标) */
+"Build muscle" = "增肌";
+"Get stronger" = "增力";
+"Lose fat / get lean" = "减脂塑形";
+"Stay fit & healthy" = "保持健康";
+"Build endurance" = "练耐力";
+"Add size — moderate reps, higher volume." = "练块头 —— 中等次数、较高容量。";
+"Lift heavier — low reps, heavy compounds, long rest." = "举更重 —— 低次数、大重量复合动作、长间歇。";
+"Keep muscle while leaning out — compound-heavy, tighter rest." = "减脂保肌 —— 以复合动作为主、间歇更短。";
+"Balanced full-body work, short and sustainable." = "均衡的全身训练,短而可持续。";
+"High reps, short rest, circuit-style stamina." = "高次数、短间歇、循环式的肌耐力。";
+
+/* Request #3 — 把默认间歇/组数套到既有计划 */
+"Update your saved routines?" = "更新你已存的计划?";
+"You changed your default rest or sets. Apply these to the exercises in all your saved routines too?" = "你改了默认间歇或组数。要不要也把它们套到所有已存计划里的动作上?";
+"Update them" = "一起更新";
+"Keep as is" = "保持不变";
 "Dumbbells" = "哑铃";
 "Barbell & plates" = "杠铃和杠片";
 "Cable machine" = "龙门 / 绳索";
@@ -1095,3 +1116,9 @@
 "Less" = "少";
 "More" = "多";
 "Activity" = "活跃度";
+
+/* History — Stats/Workouts 分页 + 按周分组 section 标题 */
+"Stats" = "数据";
+"This week" = "本周";
+"Last week" = "上周";
+"Keep training — your stats and trends show up here." = "继续训练，你的数据和趋势会显示在这里。";

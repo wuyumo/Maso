@@ -126,18 +126,17 @@ struct TrainingSettingsSection: View {
             // 模板里手调的 reps 不动 (e.g. squat 模板就是 6 reps, 比 hyp 默认 8 更贴具体动作).
             Row(label: "Training goal") {
                 Menu {
-                    ForEach(TrainingGoal.allCases, id: \.self) { g in
+                    ForEach(TrainingGoalKind.allCases, id: \.self) { g in
                         Button(action: {
-                            data.settings.trainingGoal = g
-                            // P2-4: 选目标时同步把组间歇设成该目标的推荐值, 让下面"Set rest"行
-                            // 跟目标副文案 (~90s / 长歇) 一致, 不再各说各话. 用户之后可再手动微调.
-                            data.settings.defaultRestSeconds = g.recommendedRestSeconds()
-                            // 训练目标影响推荐计划的 reps → 重新生成, my plans 立刻跟着变.
+                            // 写 trainingGoalKind —— didSet 级联设 trainingGoal + defaultRestSeconds
+                            // (沿用旧"选目标也设组间歇"行为, 只是上移到 5 档这一层).
+                            data.settings.trainingGoalKind = g
+                            // 训练目标影响推荐计划的动作选择 + reps → 重新生成, my plans 立刻跟着变.
                             data.markRecommendedPlansDirty()
                         }) {
                             HStack {
                                 Text(g.displayName)
-                                if g == data.settings.trainingGoal {
+                                if g == data.settings.trainingGoalKind {
                                     Image(systemName: "checkmark")
                                 }
                             }
@@ -145,7 +144,7 @@ struct TrainingSettingsSection: View {
                     }
                 } label: {
                     HStack(spacing: 6) {
-                        Text(data.settings.trainingGoal.displayName)
+                        Text(data.settings.trainingGoalKind.displayName)
                             .font(.system(size: 13))
                             .foregroundStyle(MasoColor.textDim)
                         Image(systemName: "chevron.up.chevron.down")
@@ -155,9 +154,9 @@ struct TrainingSettingsSection: View {
                 }
                 .buttonStyle(.plain)
             }
-            // 副文案 — 解释当前目标的 rep range. 视觉上比 Row 弱一档.
+            // 副文案 — 解释当前目标. 视觉上比 Row 弱一档.
             HStack(spacing: 0) {
-                Text(data.settings.trainingGoal.subtitle)
+                Text(data.settings.trainingGoalKind.subtitle)
                     .font(.system(size: 11))
                     .foregroundStyle(MasoColor.textFaint)
                 Spacer()
@@ -281,6 +280,8 @@ struct TrainingSettingsSheet: View {
     /// 进入半页时对训练偏好拍快照 — 用来判断"改没改"(CTA 可点态) + Discard 时回滚.
     @State private var original: UserSettings? = nil
     @State private var showDiscardAlert = false
+    /// Request #3 — 改了组间歇/动作间歇/默认组数时, 关页前问一次"要不要也更新我已存的计划".
+    @State private var showApplyParamsAlert = false
 
     /// 页内任一训练偏好相对快照有改动 → CTA 激活. (UserSettings 非 Equatable, 逐字段比.)
     private var changed: Bool {
@@ -289,12 +290,23 @@ struct TrainingSettingsSheet: View {
         return o.weeklyTrainingDays != s.weeklyTrainingDays
             || o.exercisesPerSession != s.exercisesPerSession
             || o.defaultSetsPerExercise != s.defaultSetsPerExercise
+            || o.trainingGoalKind != s.trainingGoalKind
             || o.trainingGoal != s.trainingGoal
             || o.defaultRestSeconds != s.defaultRestSeconds
             || o.defaultBetweenExerciseRestSeconds != s.defaultBetweenExerciseRestSeconds
             || o.preferCommunityPlans != s.preferCommunityPlans
             || Set(o.wantStrengthen) != Set(s.wantStrengthen)
             || Set(o.availableEquipment) != Set(s.availableEquipment)
+    }
+
+    /// Request #3 — 哪些 per-step 参数变了 (rest / between-rest / sets), 可"应用到既有 routine"
+    /// (非破坏式传播, 不重建选择). 跟 changed (regenerate 类) 分开判断.
+    private var perStepParamsChanged: Bool {
+        guard let o = original else { return false }
+        let s = data.settings
+        return o.defaultRestSeconds != s.defaultRestSeconds
+            || o.defaultBetweenExerciseRestSeconds != s.defaultBetweenExerciseRestSeconds
+            || o.defaultSetsPerExercise != s.defaultSetsPerExercise
     }
 
     var body: some View {
@@ -336,6 +348,13 @@ struct TrainingSettingsSheet: View {
         } message: {
             Text("You changed your training preferences. Apply them and regenerate your routines?")
         }
+        // Request #3 — 改了 rest / 默认组数时, opt-in 地把新值套到既有计划 (不静默覆盖, 不重建选择).
+        .alert("Update your saved routines?", isPresented: $showApplyParamsAlert) {
+            Button("Update them") { applyParamsThenClose(updateExisting: true) }
+            Button("Keep as is") { applyParamsThenClose(updateExisting: false) }
+        } message: {
+            Text("You changed your default rest or sets. Apply these to the exercises in all your saved routines too?")
+        }
     }
 
     private var generateButton: some View {
@@ -360,8 +379,31 @@ struct TrainingSettingsSheet: View {
     }
 
     /// 应用偏好 (已 live 写进 data.settings) → 存盘 → 关页 → 触发生成.
+    /// Request #3: 若改了 per-step 参数 (rest / sets), 先弹"要不要也套到既有计划", 由用户选完再走完整流程.
     private func applyAndClose() {
         data.save()
+        if perStepParamsChanged {
+            showApplyParamsAlert = true   // 走 alert → applyParamsThenClose
+        } else {
+            finishApply()
+        }
+    }
+
+    /// Request #3 alert 的两个分支 —— 选"更新"则把改过的 rest/sets 非破坏式套到既有计划, 然后照常关页生成.
+    private func applyParamsThenClose(updateExisting: Bool) {
+        if updateExisting, let o = original {
+            let s = data.settings
+            data.applyDefaultParamsToAllRoutines(
+                setRest: o.defaultRestSeconds != s.defaultRestSeconds ? s.defaultRestSeconds : nil,
+                betweenRest: o.defaultBetweenExerciseRestSeconds != s.defaultBetweenExerciseRestSeconds ? s.defaultBetweenExerciseRestSeconds : nil,
+                setsFloor: o.defaultSetsPerExercise != s.defaultSetsPerExercise ? s.defaultSetsPerExercise : nil
+            )
+        }
+        finishApply()
+    }
+
+    /// 收尾: 关页 + 触发 (regenerate 类偏好的) 重新生成.
+    private func finishApply() {
         let apply = onApply
         dismiss()
         DispatchQueue.main.async { apply() }

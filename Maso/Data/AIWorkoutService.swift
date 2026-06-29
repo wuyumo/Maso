@@ -419,6 +419,7 @@ final class AIWorkoutService {
             : p.wantStrengthen.joined(separator: ", ")
         let catalog = candidateNames(from: library).map { "- \($0)" }.joined(separator: "\n")
 
+        // ⚠️ GUIDELINES 跟 buildRoutinesPrompt (多 routine) 的科学规则刻意成对镜像 (改一处记得改另一处).
         return """
         You are a fitness coach AI. Generate exactly ONE workout plan for the user to do today.
 
@@ -428,6 +429,8 @@ final class AIWorkoutService {
         - Body weight: \(p.weightKg.map { "\(Int($0)) kg" } ?? "unknown")
         - Training days per week: \(p.daysPerWeek)
         - Wants to strengthen: \(strengthen)
+        - Primary goal: \(p.goalLabel)
+        - Available equipment: \(p.equipmentLine)
 
         RECENT WORKOUTS (last 14 days)
         \(recent)
@@ -435,13 +438,14 @@ final class AIWorkoutService {
         TODAY IS: \(p.todayDateLabel)
 
         GUIDELINES
-        - Balance muscle groups across the week — avoid hitting the same primary muscle as yesterday
-        - 1–3 days/wk → full-body (chest + back + legs + small accessory)
-        - 4–5 days/wk → 1–2 major muscle groups per session + accessory
-        - 6+ days/wk → Push / Pull / Legs split rotation
+        - Balance muscle groups across the week with >=48h recovery — avoid hitting the same primary muscle as yesterday. At 1-3 days/wk make this a full-body session; at 4-5 days/wk an upper/lower or push/pull split; at 6+ days/wk a Push/Pull/Legs rotation.
+        - The session MUST start with a COMPOUND (multi-joint) movement for its primary muscle. NEVER put an isolation exercise in slot 1. Order compound-first, then isolation; within compounds put the heaviest/most technical lift first (squat/deadlift/bench/row/press before machines or single-joint work).
+        - Do NOT place an isolation exercise for a small muscle before a compound that uses it as a helper (no curls before rows/pulldowns; no triceps extensions before presses; no lateral raises before overhead press).
+        - MUSCLE BALANCE: no more than 2 exercises whose PRIMARY muscle is the same in this session (never 3 chest moves in one day). If two exercises share a primary muscle, they must differ in angle, equipment, or movement plane. Isolation exercises must be at most 40% of the session. Prefer including a pull for every push.
+        - This user's goal is \(p.goalLabel). Write COMPOUND lifts at \(p.goalRepCompound)-\(p.goalRepCompoundHi) reps and ISOLATION lifts at \(p.goalRepIso)-\(p.goalRepIsoHi) reps. Use \(p.goalSetsLo)-\(p.goalSetsHi) sets per exercise. Stop ~1-3 reps short of failure (do not write 'to failure').
+        - Set "duration_seconds" only for timed holds/cardio; otherwise null. Rest between sets is \(p.goalRest)s (handled by the app).
+        - Pick ONLY exercises the user can perform with: \(p.equipmentLine). Pick weights conservatively if no history; scale to recent volume if any.
         - EXACTLY \(maxExercises) exercises in this session — no more, no fewer.
-        - Sets 3–4, reps 6–12 for strength; reps 12–15 for accessory
-        - Pick weights conservative if no history; scale to recent volume if any
 
         AVAILABLE EXERCISES — every "exercise_name" MUST be copied EXACTLY (verbatim, character-for-character) from this list. Do NOT invent names or use synonyms:
         \(catalog)
@@ -476,6 +480,8 @@ final class AIWorkoutService {
             : p.wantStrengthen.joined(separator: ", ")
         let catalog = candidateNames(from: library).map { "- \($0)" }.joined(separator: "\n")
 
+        // ⚠️ GUIDELINES 跟 buildPrompt (单 Today plan) 的科学规则刻意成对镜像 (改一处记得改另一处)
+        //    — 编译期无法强约束两者一致, 故并排放, 靠 enforceScience() 在代码侧兜底真正落实硬规则.
         return """
         You are a fitness coach AI. Generate exactly \(count) DISTINCT workout routines that together form one balanced weekly training split for this user.
 
@@ -485,17 +491,23 @@ final class AIWorkoutService {
         - Body weight: \(p.weightKg.map { "\(Int($0)) kg" } ?? "unknown")
         - Training days per week: \(p.daysPerWeek)
         - Wants to strengthen: \(strengthen)
+        - Primary goal: \(p.goalLabel)
+        - Available equipment: \(p.equipmentLine)
 
         RECENT WORKOUTS (last 14 days)
         \(recent)
 
         GUIDELINES
-        - The \(count) routines MUST be genuinely different from one another (different primary muscles / movement patterns) — never \(count) near-copies. Together they should cover the whole body across the week with sensible recovery (e.g. Push / Pull / Legs, or Upper / Lower, or full-body A/B/C).
-        - Name each routine for what it trains, e.g. "Push · Chest & Shoulders", "Pull · Back & Biceps", "Legs · Quads & Glutes".
-        - EXACTLY \(perRoutine) exercises in EVERY routine — no more, no fewer. Compound movements before isolation; vary equipment.
-        - Sets 3–4, reps 6–12 for strength; reps 12–15 for accessory.
-        - Pick weights conservative if no history; scale to recent volume if any.
-        - Respect the "wants to strengthen" focus where it fits.
+        - The \(count) routines MUST together form a balanced weekly split with >=48h before the same muscle is trained hard again. Use Push/Pull/Legs only at 5-6 days, Upper/Lower at 4 days, and full-body A/B/C at <=3 days. Never output \(count) near-copies.
+        - Every routine MUST start with a COMPOUND (multi-joint) movement for its primary muscle. NEVER put an isolation exercise in slot 1. Order each routine compound-first, then isolation; within compounds put the heaviest/most technical lift first (squat/deadlift/bench/row/press before machines or single-joint work).
+        - Do NOT place an isolation exercise for a small muscle before a compound that uses it as a helper (no curls before rows/pulldowns; no triceps extensions before presses; no lateral raises before overhead press).
+        - MUSCLE BALANCE: no more than 2 exercises whose PRIMARY muscle is the same in one routine (never 3 chest moves in one day). If two exercises share a primary muscle, they must differ in angle, equipment, or movement plane — no two near-identical presses. Isolation exercises must be at most 40% of each routine.
+        - PUSH/PULL BALANCE across the week: total pulling exercises MUST be >= pushing exercises (never let pushes exceed pulls by more than ~20%). Each week must include both a knee-dominant (squat/leg press) and a hip-dominant (hinge/RDL/deadlift) movement.
+        - This user's goal is \(p.goalLabel). Write COMPOUND lifts at \(p.goalRepCompound)-\(p.goalRepCompoundHi) reps and ISOLATION lifts at \(p.goalRepIso)-\(p.goalRepIsoHi) reps. Use \(p.goalSetsLo)-\(p.goalSetsHi) sets per exercise. Stop ~1-3 reps short of failure (do not write 'to failure').
+        - Set "duration_seconds" only for timed holds/cardio; otherwise null. Rest between sets is \(p.goalRest)s (handled by the app).
+        - Pick ONLY exercises the user can perform with: \(p.equipmentLine). Pick weights conservatively if no history; scale to recent volume if any.
+        - Respect the "wants to strengthen" focus by giving those muscles an extra exercise / earlier slot where it fits, without breaking the rules above.
+        - EXACTLY \(perRoutine) exercises in EVERY routine — no more, no fewer.
 
         AVAILABLE EXERCISES — every "exercise_name" MUST be copied EXACTLY (verbatim, character-for-character) from this list. Do NOT invent names or use synonyms:
         \(catalog)
@@ -675,6 +687,30 @@ struct AIPayload {
     let wantStrengthen: [String]  // muscle display names
     let recentHistory: [HistoryEntry]
     let todayDateLabel: String
+
+    // --- 目标驱动的科学化字段 (DataStore.buildAIPayload 从 settings.trainingGoalKind 派生) ---
+    /// 用户面目标显示名, e.g. "Build muscle" — 注进 prompt 的 GOAL 行 + rep 指引.
+    let goalLabel: String
+    /// 复合动作 rep band 下/上限 (从 loading 档 rep 表 ± 小区间).
+    let goalRepCompound: Int
+    let goalRepCompoundHi: Int
+    /// 孤立动作 rep band 下/上限.
+    let goalRepIso: Int
+    let goalRepIsoHi: Int
+    /// 每动作组数 band (defaultSetsPerExercise 上下浮动).
+    let goalSetsLo: Int
+    let goalSetsHi: Int
+    /// 该目标推荐组间歇 (秒).
+    let goalRest: Int
+    /// 可用器械 (EquipmentCategory display names). 空 = 不限制.
+    let equipment: [String]
+
+    /// prompt 里"可用器械"那行的成文 — 空时给"no restriction — assume a full gym".
+    var equipmentLine: String {
+        equipment.isEmpty
+            ? "no restriction — assume a full gym"
+            : equipment.joined(separator: ", ")
+    }
 
     struct HistoryEntry {
         let dateLabel: String

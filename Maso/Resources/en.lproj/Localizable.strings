@@ -150,6 +150,27 @@
 "STEP %1$lld / %2$lld" = "STEP %1$lld / %2$lld";
 "What can you train with?" = "What can you train with?";
 "Pick what you have — leave all off if you train at a full gym." = "Pick what you have — leave all off if you train at a full gym.";
+/* Onboarding — training goal step */
+"What's your main goal?" = "What's your main goal?";
+"We'll tune reps, rest, and exercise picks to match." = "We'll tune reps, rest, and exercise picks to match.";
+
+/* Training goal (5 user-facing goals) */
+"Build muscle" = "Build muscle";
+"Get stronger" = "Get stronger";
+"Lose fat / get lean" = "Lose fat / get lean";
+"Stay fit & healthy" = "Stay fit & healthy";
+"Build endurance" = "Build endurance";
+"Add size — moderate reps, higher volume." = "Add size — moderate reps, higher volume.";
+"Lift heavier — low reps, heavy compounds, long rest." = "Lift heavier — low reps, heavy compounds, long rest.";
+"Keep muscle while leaning out — compound-heavy, tighter rest." = "Keep muscle while leaning out — compound-heavy, tighter rest.";
+"Balanced full-body work, short and sustainable." = "Balanced full-body work, short and sustainable.";
+"High reps, short rest, circuit-style stamina." = "High reps, short rest, circuit-style stamina.";
+
+/* Request #3 — apply default rest/sets to existing routines */
+"Update your saved routines?" = "Update your saved routines?";
+"You changed your default rest or sets. Apply these to the exercises in all your saved routines too?" = "You changed your default rest or sets. Apply these to the exercises in all your saved routines too?";
+"Update them" = "Update them";
+"Keep as is" = "Keep as is";
 "Dumbbells" = "Dumbbells";
 "Barbell & plates" = "Barbell & plates";
 "Cable machine" = "Cable machine";
@@ -1094,3 +1115,9 @@
 "Less" = "Less";
 "More" = "More";
 "Activity" = "Activity";
+
+/* History — Stats/Workouts segmented tabs + week-group section titles */
+"Stats" = "Stats";
+"This week" = "This week";
+"Last week" = "Last week";
+"Keep training — your stats and trends show up here." = "Keep training — your stats and trends show up here.";

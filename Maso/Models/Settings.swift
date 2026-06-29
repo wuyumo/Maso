@@ -199,12 +199,96 @@ struct UserSettings: Codable, Sendable {
     /// 每个动作默认几组. RecommendedPrograms / AI / Free workout 创建 step 都用这个.
     var defaultSetsPerExercise: Int = 3
 
-    /// 训练目标 — 决定默认 reps + 间歇. 三档对应运动科学常见 rep range:
+    /// 训练目标 (内部 loading 档) — 决定默认 reps + 间歇. 三档对应运动科学常见 rep range:
     ///   - strength: 1-5 reps, 长间歇 (3-5 min). 力量训练 / powerlifting style.
     ///   - hypertrophy: 6-12 reps, 60-90s. 增肌主流 (NSCA/ACSM 推荐).
     ///   - endurance: 12-20 reps, 30-60s. 肌耐力 / fat loss.
     /// 默认 hypertrophy — 覆盖最广 (健身房 80%+ 用户的目标).
+    /// ⚠️ 现在它是 trainingGoalKind 的派生值 (见下) — UI 不再直接写它, 改写 trainingGoalKind,
+    /// 由 didSet 级联设这个 + defaultRestSeconds. 所有既有"读 settings.trainingGoal"保持不变.
     var trainingGoal: TrainingGoal = .hypertrophy
+
+    /// 用户面训练目标 (5 档, 比 trainingGoal 更贴用户心智) — 增肌 / 增力 / 减脂 / 健康 / 耐力.
+    /// 改它时级联: trainingGoal = kind.loading (映射到 3 档 loading), defaultRestSeconds = 该目标推荐组间歇.
+    /// (跟旧 TrainingGoal 菜单"选目标也设组间歇"的行为一致, 只是上移到 5 档这一层.)
+    var trainingGoalKind: TrainingGoalKind = .buildMuscle {
+        didSet {
+            trainingGoal = trainingGoalKind.loading
+            defaultRestSeconds = trainingGoalKind.recommendedRestSeconds()
+        }
+    }
+}
+
+/// 用户面训练目标 (5 档) — 比内部 TrainingGoal (strength/hypertrophy/endurance) 更贴用户心智.
+/// 是 TrainingGoal 之上的"薄壳": 每档派生 (loading 档 + 推荐组间歇 + 组数地板), rep 表仍走 TrainingGoal.
+/// 科学参考: NSCA / ACSM + 增肌容量 (10-20 hard sets/muscle/wk) 文献.
+enum TrainingGoalKind: String, Codable, Sendable, CaseIterable {
+    case buildMuscle      // 增肌 → hypertrophy loading
+    case getStronger      // 增力 → strength loading
+    case loseFat          // 减脂 → hypertrophy loading + 更紧组间歇
+    case generalFitness   // 健康 → hypertrophy reps, 组数地板更低
+    case endurance        // 耐力 → endurance loading
+
+    var displayName: String {
+        switch self {
+        case .buildMuscle:    return NSLocalizedString("Build muscle", comment: "training goal")
+        case .getStronger:    return NSLocalizedString("Get stronger", comment: "training goal")
+        case .loseFat:        return NSLocalizedString("Lose fat / get lean", comment: "training goal")
+        case .generalFitness: return NSLocalizedString("Stay fit & healthy", comment: "training goal")
+        case .endurance:      return NSLocalizedString("Build endurance", comment: "training goal")
+        }
+    }
+
+    var subtitle: String {
+        switch self {
+        case .buildMuscle:    return NSLocalizedString("Add size — moderate reps, higher volume.", comment: "training goal subtitle")
+        case .getStronger:    return NSLocalizedString("Lift heavier — low reps, heavy compounds, long rest.", comment: "training goal subtitle")
+        case .loseFat:        return NSLocalizedString("Keep muscle while leaning out — compound-heavy, tighter rest.", comment: "training goal subtitle")
+        case .generalFitness: return NSLocalizedString("Balanced full-body work, short and sustainable.", comment: "training goal subtitle")
+        case .endurance:      return NSLocalizedString("High reps, short rest, circuit-style stamina.", comment: "training goal subtitle")
+        }
+    }
+
+    /// SF Symbol — 用在引导步选项 + Settings 菜单 (icon 跟语义对齐).
+    var icon: String {
+        switch self {
+        case .buildMuscle:    return "figure.strengthtraining.traditional"
+        case .getStronger:    return "dumbbell.fill"
+        case .loseFat:        return "flame.fill"
+        case .generalFitness: return "heart.fill"
+        case .endurance:      return "figure.run"
+        }
+    }
+
+    /// 映射到内部 loading 档 (rep 表来源). 增肌 / 减脂 / 健康都走 hypertrophy reps.
+    var loading: TrainingGoal {
+        switch self {
+        case .buildMuscle, .loseFat, .generalFitness: return .hypertrophy
+        case .getStronger: return .strength
+        case .endurance:   return .endurance
+        }
+    }
+
+    /// 该目标推荐组间歇 (秒). 改目标时级联设 defaultRestSeconds.
+    ///   增肌 90 / 增力 180 / 减脂 60 (更密提热量消耗) / 健康 75 / 耐力 45.
+    func recommendedRestSeconds() -> Int {
+        switch self {
+        case .buildMuscle:    return 90
+        case .getStronger:    return 180
+        case .loseFat:        return 60
+        case .generalFitness: return 75
+        case .endurance:      return 45
+        }
+    }
+
+    /// 该目标的每动作组数地板 (Casual lifter): 增力 3 (低 reps 多组) / 健康 2 (短 session) / 其余 3.
+    func recommendedSetsFloor() -> Int {
+        switch self {
+        case .getStronger:    return 3
+        case .generalFitness: return 2
+        default:              return 3
+        }
+    }
 }
 
 /// 训练目标 — 影响默认 reps + 组间歇.
