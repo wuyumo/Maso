@@ -821,13 +821,10 @@ private struct SessionCard: View {
                 .foregroundStyle(MasoColor.textDim)
                 .lineLimit(1)
 
-            // Muscle Map + replay 按钮 — ZStack(.bottomTrailing): muscle map 水平居中,
-            // replay button 贴右下角. 按钮到卡片底 / 右 距离都 = cardPadding (16pt), 视觉对称.
-            // ⚠️ PlanRow 同款布局, 改这里同步改 PlanRow.
+            // Muscle Map (左对齐) + Redo 按钮 (右下角) — ZStack(.bottomTrailing).
             ZStack(alignment: .bottomTrailing) {
-                // 居中层 — muscle map 水平居中
+                // muscle map 靠左 (尾部 Spacer 把它推到左缘).
                 HStack {
-                    Spacer()
                     MuscleVisualBlock(
                         muscles: session.muscles,
                         sideLength: 80,
