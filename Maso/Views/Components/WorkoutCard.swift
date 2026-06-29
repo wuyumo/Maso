@@ -271,10 +271,9 @@ struct WorkoutCard: View {
                                     .foregroundStyle(.black)
                                     .offset(x: 1)
                             } else {
-                                // 弱: accent 半透明底 + accent play + 细描边 — My Plans 计划卡.
+                                // 弱: accent 半透明底 + accent play — 无描边环 (跟 Save 钮统一).
                                 Circle()
                                     .fill(MasoColor.accent.opacity(0.18))
-                                    .overlay(Circle().stroke(MasoColor.accent.opacity(0.4), lineWidth: 0.5))
                                     .frame(width: 44, height: 44)
                                 Image(systemName: "play.fill")
                                     .font(.system(size: 15, weight: .heavy))
@@ -292,9 +291,10 @@ struct WorkoutCard: View {
             .padding(.top, 16)
             }  // else (非紧凑版)
 
-            // Tab 2 (Plans browse): 卡片底部全宽 "★ 添加到我的计划" 主按钮.
+            // Tab 2 (Plans browse): 卡片底部 "Save" 主按钮 — 靠右下角 (跟其它卡的操作按钮位一致).
             if let addAction {
                 AddToPlansButton(isSaved: data.isPlanSaved(plan), action: addAction)
+                    .frame(maxWidth: .infinity, alignment: .trailing)
                     .padding(.horizontal, MasoMetrics.cardPadding)
                     .padding(.top, 14)
             }

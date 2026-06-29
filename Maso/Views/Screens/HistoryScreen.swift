@@ -830,27 +830,28 @@ private struct SessionCard: View {
                     Spacer()
                     MuscleVisualBlock(
                         muscles: session.muscles,
-                        sideLength: 100,
+                        sideLength: 80,
                         photo: photo
                     )
                     .fixedSize()
                     Spacer()
                 }
 
-                // Replay button — bottomTrailing 自动贴右下角, 32pt 跟 PlanRow 同款
+                // Redo button — 文字按钮 (跟 AI Routines 的 Save 同款: accent 半透明胶囊, 无描边环),
+                // bottomTrailing 贴右下角.
                 if let onReplay {
                     Button(action: onReplay) {
-                        ZStack {
-                            Circle()
-                                .fill(MasoColor.accent.opacity(0.18))
-                                .overlay(
-                                    Circle().stroke(MasoColor.accent.opacity(0.4), lineWidth: 0.5)
-                                )
-                                .frame(width: 32, height: 32)
+                        HStack(spacing: 6) {
                             Image(systemName: "arrow.clockwise")
-                                .font(.system(size: 12, weight: .heavy))
-                                .foregroundStyle(MasoColor.accent)
+                                .font(.system(size: 11, weight: .bold))
+                            Text("Redo")
+                                .font(.system(size: 13, weight: .bold))
                         }
+                        .padding(.vertical, 8)
+                        .padding(.horizontal, 14)
+                        .foregroundStyle(MasoColor.accent)
+                        .background(MasoColor.accent.opacity(0.15))
+                        .clipShape(Capsule())
                     }
                     .buttonStyle(.plain)
                     .accessibilityLabel("Repeat Workout")
