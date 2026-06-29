@@ -279,15 +279,15 @@ struct PlanPlayerScreen: View {
                     LinearGradient(
                         stops: [
                             .init(color: .black, location: 0),
-                            // 纯黑只盖状态栏一线 (≈ topSafeArea*0.45)
-                            .init(color: .black, location: (topSafeArea * 0.45) / (topSafeArea * 0.45 + 110)),
-                            // 加重: 中段压到 ~80% 黑再收 clear → 图顶更沉地融入黑; 高度缩到 110pt.
-                            .init(color: .black.opacity(0.8), location: 0.6),
+                            // 整条状态栏区 (到 topSafeArea) 做成完全实色黑 → 图绝不在此露头, 看不到顶边
+                            .init(color: .black, location: topSafeArea / (topSafeArea + 110)),
+                            // 之后缓和地往下淡: 过半程仍 ~50% 黑, 平滑收 clear, 过渡不露边
+                            .init(color: .black.opacity(0.5), location: 0.7),
                             .init(color: .clear, location: 1.0)
                         ],
                         startPoint: .top, endPoint: .bottom
                     )
-                    .frame(height: topSafeArea * 0.45 + 110)   // 加重 + 缩窄 (160→110)
+                    .frame(height: topSafeArea + 110)   // 实色黑盖满状态栏 + 110pt 缓和淡出
                     .frame(maxWidth: .infinity, alignment: .top)
                     .ignoresSafeArea(edges: .top)
                     .allowsHitTesting(false)
