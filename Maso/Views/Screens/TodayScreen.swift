@@ -94,18 +94,13 @@ struct TodayScreen: View {
             VStack(alignment: .leading, spacing: 16) {
                 // ===== Today tab 内容: 肌肉状态 + 今日推荐 + 自由训练 (mode != .myPlans) =====
                 if mode != .myPlans {
-                    // 大标题下的一句贴心提示 (距上次训练多久) — 四级文案, 精简一句.
-                    Text(todayTipLine)
-                        .font(.system(size: 13))
-                        .foregroundStyle(MasoColor.textDim)
-                        .lineLimit(1)
-                        .padding(.top, -8)   // 拉近跟"Today"大标题的距离, 读作副标题
-
-                    // ── 训练状态 ── (MuscleStatusOverviewCard 自带 "MUSCLE STATUS" kicker)
+                    // ── 训练状态 ── (MuscleStatusOverviewCard 自带 "MUSCLE STATUS" kicker;
+                    //    距上次训练的贴心提示挪进卡片 kicker 行右侧).
                     MuscleStatusOverviewCard(
                         fatigueMap: fatigueMap,
                         gapMuscles: gapMuscles,
-                        onStartGapWorkout: startGapWorkout
+                        onStartGapWorkout: startGapWorkout,
+                        tipLine: todayTipLine
                     )
 
                     // AI 生成失败 → 提示条 (已回落到本地推荐, 一键重试真 AI).

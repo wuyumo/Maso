@@ -18,6 +18,9 @@ struct MuscleStatusOverviewCard: View {
     let gapMuscles: [MuscleGroup]
     /// "Train the gaps" 按钮 — caller 构造 plan 并启动训练
     let onStartGapWorkout: () -> Void
+    /// Today 标题区移来的一句贴心提示 (距上次训练多久) — 显示在 "MUSCLE STATUS" kicker 行右侧,
+    /// 短就靠右、放不下自动向下折行. nil = 不显示.
+    var tipLine: String? = nil
 
     /// Muscle map 正方形 slot 边长 — 跟 MuscleVisualBlock 昨天版本对齐 (正方形, 不放大).
     private let slotSize: CGFloat = 130
@@ -28,15 +31,25 @@ struct MuscleStatusOverviewCard: View {
             // + 跟 FOR YOU 卡同款 icon + 文字 visual family.
             // kicker 跟 Settings section header / "Today's Workout" 同款 textDim 灰,
             // 不再 accent 绿. accent 留给真正的 CTA / 高亮状态, 不给 section 标签用.
-            HStack(alignment: .center, spacing: 6) {
-                Image(systemName: "waveform.path.ecg")
-                    .font(.system(size: 10, weight: .heavy))
-                    .foregroundStyle(MasoColor.textDim)
-                Text("MUSCLE STATUS")
-                    .font(.system(size: 10, weight: .heavy))
-                    .tracking(1.5)
-                    .foregroundStyle(MasoColor.textDim)
-                Spacer()
+            HStack(alignment: .firstTextBaseline, spacing: 8) {
+                HStack(alignment: .center, spacing: 6) {
+                    Image(systemName: "waveform.path.ecg")
+                        .font(.system(size: 10, weight: .heavy))
+                        .foregroundStyle(MasoColor.textDim)
+                    Text("MUSCLE STATUS")
+                        .font(.system(size: 10, weight: .heavy))
+                        .tracking(1.5)
+                        .foregroundStyle(MasoColor.textDim)
+                }
+                Spacer(minLength: 12)
+                // Today 标题区移来的贴心提示 — 靠右; 一行放不下自动向下折行 (右对齐).
+                if let tipLine, !tipLine.isEmpty {
+                    Text(tipLine)
+                        .font(.system(size: 12))
+                        .foregroundStyle(MasoColor.textDim)
+                        .multilineTextAlignment(.trailing)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             }
 
             // 居中内容区: 左 Spacer + (map + 间距 + legend/CTA) + 右 Spacer.
