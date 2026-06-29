@@ -231,13 +231,13 @@ struct PlanPlayerScreen: View {
                         .background(bottomInfoGradient)
                     }
 
-                    // 3) 顶部进度条已移除 — 进度现在拆成竖条放在 playlist 每个动作左侧 (见 InlinePlaylist
-                    //    verticalSetBar). 顶部只留一层很浅的渐变让 sheet drag indicator 在动图上可见.
+                    // 3) 顶部黑色渐变 scrim — 盖住灵动岛/状态栏区 (顶端近纯黑), 往下 ~40pt 渐隐到动图.
+                    //    作用: 让动图在岛下方"浮现"而不是被岛压住内容 + 给白色 Drag Handle 一个深底.
                     LinearGradient(
-                        colors: [.black.opacity(0.45), .clear],
+                        colors: [.black, .black.opacity(0.5), .clear],
                         startPoint: .top, endPoint: .bottom
                     )
-                    .frame(height: 90)
+                    .frame(height: topSafeArea + 40)
                     .frame(maxWidth: .infinity, alignment: .top)
                     .ignoresSafeArea(edges: .top)
                     .allowsHitTesting(false)
