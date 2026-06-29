@@ -33,8 +33,10 @@ struct PlanPlayerScreen: View {
     }
 
     /// Apple Music 式下拉关闭手势 — 复用在 handle + 整个动作图区域: 下拉整屏跟手, 过阈值松手 → 关.
+    /// ⚠️ 必须用 .global 坐标系: body 被 .offset(dragDownOffset) 跟手下移, 若手势用默认 .local,
+    ///    view 一移局部坐标系也移、translation 被自身位移抵消 → 每帧在 0↔offset 间振荡 → 整屏闪动.
     private var dismissDragGesture: some Gesture {
-        DragGesture(minimumDistance: 8)
+        DragGesture(minimumDistance: 8, coordinateSpace: .global)
             .onChanged { v in dragDownOffset = max(0, v.translation.height) }
             .onEnded { v in
                 if v.translation.height > 110 {
