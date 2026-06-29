@@ -42,6 +42,13 @@ struct PlanPlayerScreen: View {
         return 1 - eased
     }
 
+    /// 下拉时 sheet 顶部圆角 — 0 (贴顶, 平时方角保持 full-bleed) → 40 (脱离顶部, Apple Music 式圆角).
+    /// 前 60pt 内 ramp 到位然后保持; 松手未关时随 dragDownOffset 弹回 0.
+    private var dragCornerRadius: CGFloat {
+        guard isActiveTraining, dragDownOffset > 0 else { return 0 }
+        return 40 * min(1, dragDownOffset / 60)
+    }
+
     /// Apple Music 式下拉关闭手势 — 复用在 handle + 整个动作图区域: 下拉整屏跟手, 过阈值松手 → 关.
     /// ⚠️ 必须用 .global 坐标系: body 被 .offset(dragDownOffset) 跟手下移, 若手势用默认 .local,
     ///    view 一移局部坐标系也移、translation 被自身位移抵消 → 每帧在 0↔offset 间振荡 → 整屏闪动.
@@ -323,6 +330,8 @@ struct PlanPlayerScreen: View {
         // 不再有顶部黑块) + playlistDrawer anchor 到 home indicator. 顶部 Drag Handle 自己按
         // topSafeArea 落在岛下方, 不受影响.
         .ignoresSafeArea(.container, edges: [.top, .bottom])
+        // 下拉脱离顶部时给 sheet 顶部上圆角 (Apple Music 式); 贴顶时 radius=0 保持方角 full-bleed.
+        .clipShape(UnevenRoundedRectangle(topLeadingRadius: dragCornerRadius, topTrailingRadius: dragCornerRadius))
         // Apple Music 式: 整屏跟手下移 (拖顶部 handle). 完成/空态不参与 (各有自己的关闭按钮).
         .offset(y: isActiveTraining ? dragDownOffset : 0)
         // 顶部 Drag Handle — 落在 Dynamic Island 下方, 居中. 拖它下拉 → 关 (最小化回 mini-bar).
