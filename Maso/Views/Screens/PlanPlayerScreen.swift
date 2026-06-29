@@ -274,10 +274,10 @@ struct PlanPlayerScreen: View {
         // sheet 整体背景用纯黑 — Home Indicator 区延续 .black, 跟 TabBar/MiniBar 一致.
         // (之前用 MasoColor.background = #121212, rest 段 Controls 之下会透出微弱灰, 跟 .black 有色差.)
         .background(Color.black.ignoresSafeArea())
-        // 整 sheet content 也 ignore bottom safe area — 让 playlistDrawer 真 anchor 到 hardware
-        // bottom edge, content 延伸到 home indicator 区. stage / controls 区自己有 Color.black
-        // .ignoresSafeArea bg 处理 home indicator, 不受影响.
-        .ignoresSafeArea(.container, edges: .bottom)
+        // 顶 + 底都 ignore safe area — Apple Music 式全屏: 动作图填到屏幕最顶 (灵动岛下也是图,
+        // 不再有顶部黑块) + playlistDrawer anchor 到 home indicator. 顶部 Drag Handle 自己按
+        // topSafeArea 落在岛下方, 不受影响.
+        .ignoresSafeArea(.container, edges: [.top, .bottom])
         // Apple Music 式: 整屏跟手下移 (拖顶部 handle). 完成/空态不参与 (各有自己的关闭按钮).
         .offset(y: isActiveTraining ? dragDownOffset : 0)
         // 顶部 Drag Handle — 落在 Dynamic Island 下方, 居中. 拖它下拉 → 关 (最小化回 mini-bar).
