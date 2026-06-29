@@ -1083,3 +1083,14 @@
 "Last: %@ × %d (%@)" = "Last: %@ × %d (%@)";
 
 "Follow iPhone language (%@)" = "Follow iPhone language (%@)";
+
+/* History — data-viz charts (week delta / heatmap / muscle balance) */
+"This week vs last" = "This week vs last";
+"so far" = "so far";
+"NEW" = "NEW";
+"Muscle balance" = "Muscle balance";
+"Training activity" = "Training activity";
+"Last 16 weeks" = "Last 16 weeks";
+"Less" = "Less";
+"More" = "More";
+"Activity" = "Activity";

@@ -97,6 +97,19 @@ struct HistoryScreen: View {
                     .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
                 }
 
+                // 训练活跃度热力图 — 多周训练节奏一眼可见 (按组数着色). 数据足够才出现.
+                let activity = TrainingActivityHeatmap(data: data)
+                if !activity.isEmpty {
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text("Activity")
+                            .font(.system(size: 12, weight: .bold)).tracking(0.6).textCase(.uppercase)
+                            .foregroundStyle(MasoColor.textDim)
+                            .padding(.horizontal, 4)
+                        activity
+                    }
+                    .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
+                }
+
                 // 训练记录列表
                 let allSessions = groupedSessions()
                 if allSessions.isEmpty {

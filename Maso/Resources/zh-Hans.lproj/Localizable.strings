@@ -1084,3 +1084,14 @@
 "Last: %@ × %d (%@)" = "上次: %@ × %d (%@)";
 
 "Follow iPhone language (%@)" = "跟随 iPhone 语言 (%@)";
+
+/* History — 数据可视化图表 (周对比 / 热力图 / 肌群均衡) */
+"This week vs last" = "本周 vs 上周";
+"so far" = "目前";
+"NEW" = "新";
+"Muscle balance" = "肌群均衡";
+"Training activity" = "训练活跃度";
+"Last 16 weeks" = "最近 16 周";
+"Less" = "少";
+"More" = "多";
+"Activity" = "活跃度";
