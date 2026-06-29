@@ -231,13 +231,18 @@ struct PlanPlayerScreen: View {
                         .background(bottomInfoGradient)
                     }
 
-                    // 3) 顶部黑色渐变 scrim — 盖住灵动岛/状态栏区 (顶端近纯黑), 往下 ~40pt 渐隐到动图.
-                    //    作用: 让动图在岛下方"浮现"而不是被岛压住内容 + 给白色 Drag Handle 一个深底.
+                    // 3) 顶部 scrim: 屏幕最顶 → 灵动岛底部 (≈ topSafeArea) 用**纯黑**铺满 (状态栏/岛坐在黑上),
+                    //    之后再往下 56pt 做黑→透明的渐变过渡接到动图 (类似底部那条渐变). 图仍 full-bleed,
+                    //    只是上半被黑 scrim 盖住 → 视觉上图从岛下方开始.
                     LinearGradient(
-                        colors: [.black, .black.opacity(0.5), .clear],
+                        stops: [
+                            .init(color: .black, location: 0),
+                            .init(color: .black, location: topSafeArea / (topSafeArea + 56)),  // 纯黑到岛底
+                            .init(color: .clear, location: 1.0)                                  // 再渐隐到图
+                        ],
                         startPoint: .top, endPoint: .bottom
                     )
-                    .frame(height: topSafeArea + 40)
+                    .frame(height: topSafeArea + 56)
                     .frame(maxWidth: .infinity, alignment: .top)
                     .ignoresSafeArea(edges: .top)
                     .allowsHitTesting(false)
