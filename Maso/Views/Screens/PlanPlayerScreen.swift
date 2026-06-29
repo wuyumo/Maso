@@ -32,6 +32,15 @@ struct PlanPlayerScreen: View {
             .safeAreaInsets.top ?? 47
     }
 
+    /// 顶部黑色 scrim 的不透明度 — 随下拉进度平滑淡出 (smoothstep 缓动), 而不是全程纯黑、
+    /// 到阈值才突然消失. 160pt 内从 1 → 0; 松手未关时 dragDownOffset 弹回 0, opacity 随之回 1.
+    private var topScrimOpacity: Double {
+        guard dragDownOffset > 0 else { return 1 }
+        let p = min(1, Double(dragDownOffset) / 160)
+        let eased = p * p * (3 - 2 * p)   // smoothstep: 平滑 S 曲线
+        return 1 - eased
+    }
+
     /// Apple Music 式下拉关闭手势 — 复用在 handle + 整个动作图区域: 下拉整屏跟手, 过阈值松手 → 关.
     /// ⚠️ 必须用 .global 坐标系: body 被 .offset(dragDownOffset) 跟手下移, 若手势用默认 .local,
     ///    view 一移局部坐标系也移、translation 被自身位移抵消 → 每帧在 0↔offset 间振荡 → 整屏闪动.
@@ -262,6 +271,7 @@ struct PlanPlayerScreen: View {
                     .frame(maxWidth: .infinity, alignment: .top)
                     .ignoresSafeArea(edges: .top)
                     .allowsHitTesting(false)
+                    .opacity(topScrimOpacity)   // 下拉时随进度平滑淡出, 露出后面的动图
 
                     // 4) 最顶层: rest 段倒计时圆环 — 必须在底部渐变 + TimelineBar 之上,
                     //    否则圆环被 bottomInfoGradient 的 fade-out 区盖住一半.
