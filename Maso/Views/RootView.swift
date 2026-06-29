@@ -282,14 +282,10 @@ struct RootView: View {
                     router.requestedTab = nil
                 }
             }
-            .sheet(isPresented: $playerPresented) {
+            // 训练界面 = Apple Music 式全屏 (fullScreenCover 填满整页, 无顶部缝隙/无系统 grabber).
+            // 关闭走 PlanPlayerScreen 自带的顶部 Drag Handle 下拉手势 (训练中) / 完成页按钮.
+            .fullScreenCover(isPresented: $playerPresented) {
                 PlanPlayerScreen()
-                    .interactiveDismissDisabled(false)
-                    .presentationDetents([.large])
-                    // 系统原生 drag indicator — 在 sheet 容器顶部边缘渲染中性灰小条,
-                    // 不受 sheet 内容 z-layer / 颜色干扰. 之前自定义 DragHandle 在 rest 段
-                    // 因为 0.55 黑 mask + 30% 白 fill 视觉太弱看不见, 改用系统的就稳了.
-                    .presentationDragIndicator(.visible)
             }
             .sheet(isPresented: $settingsPresented) {
                 NavigationStack { SettingsScreen() }

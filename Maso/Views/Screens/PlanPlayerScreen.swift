@@ -14,6 +14,24 @@ struct PlanPlayerScreen: View {
     @Environment(DataStore.self) private var data
     @Environment(\.dismiss) private var dismiss
 
+    /// Apple Music 式下拉关闭 — 训练中拖动顶部 handle, 整屏跟手下移; 过阈值松手 → 关 (最小化回 mini-bar,
+    /// session 继续跑). fullScreenCover 没有系统 grabber, 这是自定义的关闭手势.
+    @State private var dragDownOffset: CGFloat = 0
+
+    /// 是否处于"训练中"段 (非空 / 未完成 / 有当前 segment) — 只有这态才显示下拉 handle + 允许下拉关闭.
+    private var isActiveTraining: Bool {
+        guard let s = store.session, !store.segments.isEmpty else { return false }
+        return s.completed != true && store.currentSegment != nil
+    }
+
+    /// 顶部安全区高度 (Dynamic Island / 刘海) — handle 据此落在岛下方. 跟 bottomSafeArea 同款读法.
+    private var topSafeArea: CGFloat {
+        UIApplication.shared.connectedScenes
+            .compactMap { $0 as? UIWindowScene }.first?
+            .windows.first { $0.isKeyWindow }?
+            .safeAreaInsets.top ?? 47
+    }
+
     // 训练时默认打开播放列表 — 让用户一眼看到"还剩什么 + 整体进度", 点 ☰ 收起.
     /// Playlist drawer 的内容高度 (不含 bottom safe area). 用户拖把手直接改这个值.
     /// 区间: [playlistMinHeight, playlistMaxHeight]. 默认 = playlistDefaultHeight (跟之前
@@ -260,6 +278,35 @@ struct PlanPlayerScreen: View {
         // bottom edge, content 延伸到 home indicator 区. stage / controls 区自己有 Color.black
         // .ignoresSafeArea bg 处理 home indicator, 不受影响.
         .ignoresSafeArea(.container, edges: .bottom)
+        // Apple Music 式: 整屏跟手下移 (拖顶部 handle). 完成/空态不参与 (各有自己的关闭按钮).
+        .offset(y: isActiveTraining ? dragDownOffset : 0)
+        // 顶部 Drag Handle — 落在 Dynamic Island 下方, 居中. 拖它下拉 → 关 (最小化回 mini-bar).
+        .overlay(alignment: .top) {
+            if isActiveTraining {
+                Capsule()
+                    .fill(Color.white.opacity(0.55))
+                    .frame(width: 40, height: 5)
+                    .padding(.vertical, 12)
+                    .padding(.horizontal, 44)
+                    .contentShape(Rectangle())
+                    .padding(.top, topSafeArea + 6)
+                    .offset(y: dragDownOffset)          // handle 跟着整屏一起下移
+                    .gesture(
+                        DragGesture(minimumDistance: 4)
+                            .onChanged { v in dragDownOffset = max(0, v.translation.height) }
+                            .onEnded { v in
+                                if v.translation.height > 110 {
+                                    dismiss()
+                                } else {
+                                    withAnimation(.spring(response: 0.3, dampingFraction: 0.86)) {
+                                        dragDownOffset = 0
+                                    }
+                                }
+                            }
+                    )
+                    .ignoresSafeArea(edges: .top)
+            }
+        }
         // 点 playlist 行图片 → 弹动作详情. iOS 18+ 支持 sheet 内嵌 sheet.
         .sheet(item: $detailExercise) { ex in
             ExerciseDetailSheet(exercise: ex)
