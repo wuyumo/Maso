@@ -32,6 +32,19 @@ struct PlanPlayerScreen: View {
             .safeAreaInsets.top ?? 47
     }
 
+    /// Apple Music 式下拉关闭手势 — 复用在 handle + 整个动作图区域: 下拉整屏跟手, 过阈值松手 → 关.
+    private var dismissDragGesture: some Gesture {
+        DragGesture(minimumDistance: 8)
+            .onChanged { v in dragDownOffset = max(0, v.translation.height) }
+            .onEnded { v in
+                if v.translation.height > 110 {
+                    dismiss()
+                } else {
+                    withAnimation(.spring(response: 0.3, dampingFraction: 0.86)) { dragDownOffset = 0 }
+                }
+            }
+    }
+
     // 训练时默认打开播放列表 — 让用户一眼看到"还剩什么 + 整体进度", 点 ☰ 收起.
     /// Playlist drawer 的内容高度 (不含 bottom safe area). 用户拖把手直接改这个值.
     /// 区间: [playlistMinHeight, playlistMaxHeight]. 默认 = playlistDefaultHeight (跟之前
@@ -206,6 +219,9 @@ struct PlanPlayerScreen: View {
                     //    info + controls 区位置不变 (它们各自钉底, 不受这个 padding 影响).
                     backgroundLayer
                         .padding(.bottom, 64)
+                        // 整个动作图区域都能下拉收起 sheet (跟 handle 同一手势).
+                        .contentShape(Rectangle())
+                        .gesture(dismissDragGesture)
 
                     // 2) 底部叠加: info + controls — exercise / rest 共用同一框架.
                     //    中间填充 .frame(height: FIXED) — exercise BodyHint + rest hint 占据
@@ -292,24 +308,12 @@ struct PlanPlayerScreen: View {
                 Capsule()
                     .fill(Color.white.opacity(0.55))
                     .frame(width: 40, height: 5)
-                    .padding(.vertical, 12)
+                    .padding(.vertical, 10)
                     .padding(.horizontal, 44)
                     .contentShape(Rectangle())
-                    .padding(.top, topSafeArea + 6)
+                    .padding(.top, topSafeArea - 6)     // 往上挪, 更靠近 Dynamic Island
                     .offset(y: dragDownOffset)          // handle 跟着整屏一起下移
-                    .gesture(
-                        DragGesture(minimumDistance: 4)
-                            .onChanged { v in dragDownOffset = max(0, v.translation.height) }
-                            .onEnded { v in
-                                if v.translation.height > 110 {
-                                    dismiss()
-                                } else {
-                                    withAnimation(.spring(response: 0.3, dampingFraction: 0.86)) {
-                                        dragDownOffset = 0
-                                    }
-                                }
-                            }
-                    )
+                    .gesture(dismissDragGesture)
                     .ignoresSafeArea(edges: .top)
             }
         }
