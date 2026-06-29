@@ -221,9 +221,6 @@ struct PlanPlayerScreen: View {
                     //    info + controls 区位置不变 (它们各自钉底, 不受这个 padding 影响).
                     backgroundLayer
                         .padding(.bottom, 64)
-                        // 整个动作图区域都能下拉收起 sheet (跟 handle 同一手势).
-                        .contentShape(Rectangle())
-                        .gesture(dismissDragGesture)
 
                     // 2) 底部叠加: info + controls — exercise / rest 共用同一框架.
                     //    中间填充 .frame(height: FIXED) — exercise BodyHint + rest hint 占据
@@ -287,6 +284,10 @@ struct PlanPlayerScreen: View {
                 }
                 .frame(maxHeight: .infinity)
                 .clipped()
+                // 整个 stage 区 (动作图 + 肌肉图/文字 info + controls) 都能下拉收起.
+                // simultaneousGesture: tap (无位移) 仍走按钮; 拖动 (>8pt) 才触发收起.
+                // 只挂在 ZStack, 不含下面 playlistDrawer (它有自己的拖拽手势).
+                .simultaneousGesture(dismissDragGesture)
 
                 playlistDrawer
             }
@@ -313,7 +314,7 @@ struct PlanPlayerScreen: View {
                     .padding(.vertical, 10)
                     .padding(.horizontal, 44)
                     .contentShape(Rectangle())
-                    .padding(.top, topSafeArea - 6)     // 往上挪, 更靠近 Dynamic Island
+                    .padding(.top, topSafeArea - 14)    // 再往上挪, 紧贴 Dynamic Island 下沿
                     .offset(y: dragDownOffset)          // handle 跟着整屏一起下移
                     .gesture(dismissDragGesture)
                     .ignoresSafeArea(edges: .top)
