@@ -57,6 +57,22 @@ struct TodayScreen: View {
         }
     }
 
+    /// 大标题下的一句贴心提示 — 按"距上次训练多久"给极简一句, 提醒今天该不该练.
+    /// sets 是 newest-first (recordSet insert at 0), 所以 first = 最近一次.
+    private var todayTipLine: String {
+        let cal = Calendar.current
+        guard let last = data.sets.first?.performedAt else {
+            return NSLocalizedString("Let's start your first workout.", comment: "today tip — never trained")
+        }
+        let days = cal.dateComponents([.day], from: cal.startOfDay(for: last), to: cal.startOfDay(for: Date())).day ?? 0
+        switch days {
+        case ..<0, 0: return NSLocalizedString("You've trained today — rest up.", comment: "today tip — trained today")
+        case 1:       return NSLocalizedString("Last trained yesterday.", comment: "today tip — yesterday")
+        case 2...6:   return String(format: NSLocalizedString("%lld days since your last session.", comment: "today tip — N days"), days)
+        default:      return String(format: NSLocalizedString("%lld days off — let's get back to it.", comment: "today tip — long gap"), days)
+        }
+    }
+
     // MARK: - 我的训练 section (从 Plans 页迁来)
     private static let recommendedPrefixes = ["plan-full", "plan-bal", "plan-push", "plan-pull", "plan-legs"]
     /// 用户 plans 里已经没有任何系统推荐 plan → 显示 Restore 按钮.
@@ -78,6 +94,13 @@ struct TodayScreen: View {
             VStack(alignment: .leading, spacing: 16) {
                 // ===== Today tab 内容: 肌肉状态 + 今日推荐 + 自由训练 (mode != .myPlans) =====
                 if mode != .myPlans {
+                    // 大标题下的一句贴心提示 (距上次训练多久) — 四级文案, 精简一句.
+                    Text(todayTipLine)
+                        .font(.system(size: 13))
+                        .foregroundStyle(MasoColor.textDim)
+                        .lineLimit(1)
+                        .padding(.top, -8)   // 拉近跟"Today"大标题的距离, 读作副标题
+
                     // ── 训练状态 ── (MuscleStatusOverviewCard 自带 "MUSCLE STATUS" kicker)
                     MuscleStatusOverviewCard(
                         fatigueMap: fatigueMap,

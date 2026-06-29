@@ -248,6 +248,11 @@
 "Current streak" = "Current streak";
 "Week streak" = "Week streak";
 "Redo" = "Redo";
+"Let's start your first workout." = "Let's start your first workout.";
+"You've trained today — rest up." = "You've trained today — rest up.";
+"Last trained yesterday." = "Last trained yesterday.";
+"%lld days since your last session." = "%lld days since your last session.";
+"%lld days off — let's get back to it." = "%lld days off — let's get back to it.";
 "Reminders" = "Reminders";
 "Workout reminders" = "Workout reminders";
 "When you've taken a few days off, Masso sends a gentle reminder once your muscles have had time to recover. Off by default, and the reminder never leaves your device." = "When you've taken a few days off, Masso sends a gentle reminder once your muscles have had time to recover. Off by default, and the reminder never leaves your device.";
