@@ -237,12 +237,13 @@ struct PlanPlayerScreen: View {
                     LinearGradient(
                         stops: [
                             .init(color: .black, location: 0),
-                            .init(color: .black, location: 0.55),   // 上半多一点纯黑 (盖状态栏)
-                            .init(color: .clear, location: 1.0)      // 下半渐隐到图
+                            // 纯黑区只盖状态栏一线 (≈ topSafeArea*0.45, 比之前更小)
+                            .init(color: .black, location: (topSafeArea * 0.45) / (topSafeArea * 0.45 + 84)),
+                            .init(color: .clear, location: 1.0)      // 之后用 84pt 长渐变柔和融入动图
                         ],
                         startPoint: .top, endPoint: .bottom
                     )
-                    .frame(height: (topSafeArea + 56) / 2)   // scrim 高度减半
+                    .frame(height: topSafeArea * 0.45 + 84)   // 纯黑更小 + 渐变更高
                     .frame(maxWidth: .infinity, alignment: .top)
                     .ignoresSafeArea(edges: .top)
                     .allowsHitTesting(false)
