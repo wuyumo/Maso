@@ -437,27 +437,10 @@ private struct LibraryEntryRow: View {
 //   - days 1-2 → 维持频率
 struct PlanRationaleCard: View {
     @Environment(DataStore.self) private var data
-    /// 编辑态 — 卡片原地展开成 TrainingSettingsSection (不再拉 sheet).
-    @State private var expanded = false
-    /// 展开时的偏好快照 — 判断"改没改"(Generate 可点态) + 关闭编辑态时回滚.
-    @State private var original: UserSettings? = nil
+    /// 点编辑 → 拉起 Training Preferences 层 (sheet). 层里改完点 Generate → 重生成.
+    @State private var showEditor = false
     /// 点 "Generate routines" 应用偏好后回调 — 调用方 (aiPage) 拿来跑生成动画.
     var onApplyPreferences: () -> Void = {}
-
-    /// 任一训练偏好相对快照有改动 → Generate 激活. (UserSettings 非 Equatable, 逐字段比.)
-    private var changed: Bool {
-        guard let o = original else { return false }
-        let s = data.settings
-        return o.weeklyTrainingDays != s.weeklyTrainingDays
-            || o.exercisesPerSession != s.exercisesPerSession
-            || o.defaultSetsPerExercise != s.defaultSetsPerExercise
-            || o.trainingGoal != s.trainingGoal
-            || o.defaultRestSeconds != s.defaultRestSeconds
-            || o.defaultBetweenExerciseRestSeconds != s.defaultBetweenExerciseRestSeconds
-            || o.preferCommunityPlans != s.preferCommunityPlans
-            || Set(o.wantStrengthen) != Set(s.wantStrengthen)
-            || Set(o.availableEquipment) != Set(s.availableEquipment)
-    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -473,27 +456,21 @@ struct PlanRationaleCard: View {
                     .lineLimit(1)
                     .minimumScaleFactor(0.85)
                 Spacer()
-                Button(action: { expanded ? closeEditing() : openEditing() }) {
-                    Image(systemName: expanded ? "xmark" : "pencil")
+                Button(action: { showEditor = true }) {
+                    Image(systemName: "pencil")
                         .font(.system(size: 15, weight: .semibold))
                         .foregroundStyle(MasoColor.text)
                         .frame(width: 30, height: 30)
                         .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
-                .accessibilityLabel(Text(expanded ? "Close" : "Adjust training preferences"))
+                .accessibilityLabel(Text("Adjust training preferences"))
             }
 
-            if expanded {
-                // ── 编辑态: sheet 的内容原地展开 + 底部 Generate (改了才可点) ──
-                TrainingSettingsSection()
-                generateInlineButton
-            } else {
-                // ── 收起态: 所有已选参数用小 chip 展示 ──
-                FlowLayout(spacing: 6) {
-                    ForEach(prefChips, id: \.self) { chip in
-                        prefChip(chip)
-                    }
+            // 已选参数用小 chip 展示; 点卡/铅笔 → 拉起编辑层.
+            FlowLayout(spacing: 6) {
+                ForEach(prefChips, id: \.self) { chip in
+                    prefChip(chip)
                 }
             }
         }
@@ -504,9 +481,11 @@ struct PlanRationaleCard: View {
             RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium)
                 .stroke(MasoColor.borderHero, lineWidth: 0.5)
         )
-        // 收起态整卡可点展开; 编辑态不拦截 (里面的行要接收点击).
         .contentShape(Rectangle())
-        .onTapGesture { if !expanded { openEditing() } }
+        .onTapGesture { showEditor = true }
+        .sheet(isPresented: $showEditor) {
+            TrainingPreferencesSheet(onConfirm: onApplyPreferences)
+        }
     }
 
     // MARK: - chips (收起态)
@@ -544,44 +523,70 @@ struct PlanRationaleCard: View {
             .background(Capsule().fill(MasoColor.surfaceHi))
     }
 
-    // MARK: - 编辑态
+}
 
-    private var generateInlineButton: some View {
-        Button { applyAndGenerate() } label: {
-            HStack(spacing: 8) {
-                Image(systemName: "sparkles").font(.system(size: 14, weight: .heavy))
-                Text("Generate routines").font(.system(size: 15, weight: .heavy))
+// MARK: - Training Preferences 编辑层 (sheet)
+//
+// 点 TRAINING PREFERENCES 卡 → 拉起这层 (large detent). 内容 = Settings 同款 TrainingSettingsSection
+// (live 写 data.settings). Cancel → 回滚到进入时快照; Generate routines → 存盘 + 关层 + 触发重生成 (loading).
+private struct TrainingPreferencesSheet: View {
+    @Environment(DataStore.self) private var data
+    @Environment(\.dismiss) private var dismiss
+    /// 关层 + 重生成的回调 (= aiPage 的 startGenerateRoutines).
+    var onConfirm: () -> Void
+    /// 进入时的偏好快照 — Cancel 时回滚 (TrainingSettingsSection 是 live 编辑).
+    @State private var original: UserSettings? = nil
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                TrainingSettingsSection()
+                    .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
+                    .padding(.top, 8)
+                    .padding(.bottom, 24)
             }
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 13)
-            .foregroundStyle(.black)
-            .background(Capsule().fill(MasoColor.accent))
+            .background(MasoColor.background)
+            .navigationTitle("Training Preferences")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button(NSLocalizedString("Cancel", comment: "")) { cancel() }
+                }
+            }
+            .safeAreaInset(edge: .bottom) {
+                Button(action: confirm) {
+                    HStack(spacing: 8) {
+                        Image(systemName: "sparkles").font(.system(size: 14, weight: .heavy))
+                        Text("Generate routines").font(.system(size: 15, weight: .heavy))
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 14)
+                    .foregroundStyle(.black)
+                    .background(Capsule().fill(MasoColor.accent))
+                }
+                .buttonStyle(.plain)
+                .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
+                .padding(.top, 8)
+                .padding(.bottom, 8)
+                .background(MasoColor.background)
+            }
         }
-        .buttonStyle(.plain)
-        // 始终可点 — 重新生成很便宜也是预期操作; 之前 disabled(!changed) 让灰按钮看着像坏了.
-        .padding(.top, 2)
+        .presentationDetents([.large])
+        .presentationDragIndicator(.visible)
+        .onAppear { if original == nil { original = data.settings } }
     }
 
-    private func openEditing() {
-        original = data.settings
-        withAnimation(.easeOut(duration: 0.25)) { expanded = true }
+    private func cancel() {
+        if let o = original { data.settings = o; data.save() }   // 回滚未确认的改动
+        dismiss()
     }
 
-    /// 关闭编辑态 (没点 Generate): 改动不应用 — 回滚到快照. 没改动就直接收起.
-    private func closeEditing() {
-        if changed, let o = original { data.settings = o; data.save() }
-        original = nil
-        withAnimation(.easeOut(duration: 0.25)) { expanded = false }
-    }
-
-    /// Generate: 应用偏好 (已 live 写入) → 存盘 → 收起 → 触发生成动画.
-    private func applyAndGenerate() {
+    private func confirm() {
         Haptics.tap()
         data.save()
         original = nil
-        withAnimation(.easeOut(duration: 0.25)) { expanded = false }
-        let apply = onApplyPreferences
-        DispatchQueue.main.async { apply() }
+        dismiss()
+        onConfirm()   // → startGenerateRoutines: loading → 新 routine
     }
 }
 
