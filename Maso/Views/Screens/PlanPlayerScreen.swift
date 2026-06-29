@@ -279,13 +279,17 @@ struct PlanPlayerScreen: View {
                     LinearGradient(
                         stops: [
                             .init(color: .black, location: 0),
-                            // 纯黑区只盖状态栏一线 (≈ topSafeArea*0.45, 比之前更小)
-                            .init(color: .black, location: (topSafeArea * 0.45) / (topSafeArea * 0.45 + 84)),
-                            .init(color: .clear, location: 1.0)      // 之后用 84pt 长渐变柔和融入动图
+                            // 纯黑只盖状态栏一线 (≈ topSafeArea*0.45)
+                            .init(color: .black, location: (topSafeArea * 0.45) / (topSafeArea * 0.45 + 210)),
+                            // 多段 ease-out 压暗 — 渐变拉到 210pt, 把图顶亮的器械内容也罩进去,
+                            // 一路平滑融入黑, 看不到图片上部的边缘.
+                            .init(color: .black.opacity(0.7), location: 0.42),
+                            .init(color: .black.opacity(0.28), location: 0.72),
+                            .init(color: .clear, location: 1.0)
                         ],
                         startPoint: .top, endPoint: .bottom
                     )
-                    .frame(height: topSafeArea * 0.45 + 84)   // 纯黑更小 + 渐变更高
+                    .frame(height: topSafeArea * 0.45 + 210)   // 渐变更长 → 图顶无锋利界线
                     .frame(maxWidth: .infinity, alignment: .top)
                     .ignoresSafeArea(edges: .top)
                     .allowsHitTesting(false)
