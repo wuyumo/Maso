@@ -110,7 +110,6 @@ struct MuscleStatusOverviewCard: View {
                                     .padding(.horizontal, 11)
                                     .padding(.vertical, 5)
                                     .background(MasoColor.accent.opacity(0.16))
-                                    .overlay(Capsule().stroke(MasoColor.accent.opacity(0.4), lineWidth: 0.8))
                                     .clipShape(Capsule())
                                     .fixedSize(horizontal: true, vertical: false)
                                 }

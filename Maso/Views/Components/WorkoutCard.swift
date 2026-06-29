@@ -341,10 +341,9 @@ struct AddToPlansButton: View {
     var body: some View {
         Button(action: { if !isSaved { action() } }) {
             HStack(spacing: 6) {
-                if isSaved {
-                    Image(systemName: "checkmark")
-                        .font(.system(size: 11, weight: .bold))
-                }
+                // 图标 + 文案 (跟 History 的 Repeat 钮同款形式): 未存=加号, 已存=对勾.
+                Image(systemName: isSaved ? "checkmark" : "plus")
+                    .font(.system(size: 11, weight: .bold))
                 Text(isSaved ? "Saved" : "Save")
                     .font(.system(size: 13, weight: .bold))
             }
