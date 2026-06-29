@@ -143,7 +143,8 @@ struct TodayScreen: View {
                                 onStart: { onStart(plan) },
                                 onShowDetail: { detailPlan = plan },
                                 prominentStart: false,  // 计划卡的开始键弱化 (半透明绿底)
-                                showStart: false        // Routines/Saved: 不显示 play 钮, 点卡片进详情 Start
+                                showStart: false,       // Routines/Saved: 不显示 play 钮, 点卡片进详情 Start
+                                compactLayout: true     // 列表卡用紧凑横排 (标题/计数/[图|chips])
                             )
                             // 长按菜单代替 List 右滑 — 改/删.
                             .contextMenu {

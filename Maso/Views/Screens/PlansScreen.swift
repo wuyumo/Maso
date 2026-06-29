@@ -291,7 +291,8 @@ struct PlansScreen: View {
             onStart: { detailPlan = plan },
             onShowDetail: { detailPlan = plan },
             prominentStart: false,
-            addAction: { addToSaved(plan) }
+            addAction: { addToSaved(plan) },
+            compactLayout: true
         )
     }
 
@@ -307,7 +308,8 @@ struct PlansScreen: View {
                     onStart: { detailPlan = plan },
                     onShowDetail: { detailPlan = plan },
                     prominentStart: false,
-                    addAction: { addToSaved(plan) }
+                    addAction: { addToSaved(plan) },
+                    compactLayout: true
                 )
             }
         }

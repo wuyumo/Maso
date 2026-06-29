@@ -55,6 +55,9 @@ struct WorkoutCard: View {
     /// 右下角 play 圆钮是否显示. false → 不显示 (点卡片进详情页再 Start).
     /// Routines tab 的 Saved 计划卡用 false — 那语境主操作是"查看/管理计划", 不是即时开练.
     var showStart: Bool = true
+    /// 紧凑排版 (Routines / My Plans 列表卡用): 标题 → 计数 → [小肌肉图 左 | 动作 chips 右] 横排,
+    /// 比默认的"大居中肌肉图 + 计数 + chips 竖排"更密、更易扫. Today 英雄卡保持 false (大图突出).
+    var compactLayout: Bool = false
 
     /// 被 LimitedFlowLayout 截断的 exercise pill 个数 — 用于动态构造 "+N more" 文案.
     /// Layout 在 placeSubviews 里通过 onTruncate callback async 写回, SwiftUI 下一轮 re-render
@@ -182,6 +185,37 @@ struct WorkoutCard: View {
                     .padding(.top, 6)
             }
 
+            if compactLayout {
+                // 紧凑版 — 计数行 (标题正下方) + [小肌肉图 左 | 动作 chips 右] 同一行.
+                Text("\(pluralizedExercises(plan.steps.count)) · \(pluralizedSets(plan.steps.reduce(0) { $0 + $1.sets }))")
+                    .font(.system(size: 12).monospacedDigit())
+                    .foregroundStyle(MasoColor.textDim)
+                    .lineLimit(1)
+                    .padding(.horizontal, MasoMetrics.cardPadding)
+                    .padding(.top, 8)
+
+                HStack(alignment: .center, spacing: 12) {
+                    MuscleVisualBlock(muscles: inferredMuscles, sideLength: 92)
+                        .frame(width: 92, height: 92)
+                    if !plan.steps.isEmpty {
+                        LimitedFlowLayout(
+                            spacing: 6,
+                            maxRows: 999,
+                            onTruncate: { _ in /* never truncates */ }
+                        ) {
+                            ForEach(Array(exercisePreview.enumerated()), id: \.offset) { _, item in
+                                ExercisePill(name: item.name, part: item.part)
+                            }
+                            ExercisePill(name: "")   // LimitedFlowLayout 约定的末位 overflow pill
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    } else {
+                        Spacer(minLength: 0)
+                    }
+                }
+                .padding(.horizontal, MasoMetrics.cardPadding)
+                .padding(.top, 12)
+            } else {
             // Body Map — 居中摆放.
             HStack(spacing: 0) {
                 Spacer(minLength: 0)
@@ -256,6 +290,7 @@ struct WorkoutCard: View {
             }
             .padding(.horizontal, MasoMetrics.cardPadding)
             .padding(.top, 16)
+            }  // else (非紧凑版)
 
             // Tab 2 (Plans browse): 卡片底部全宽 "★ 添加到我的计划" 主按钮.
             if let addAction {
