@@ -280,16 +280,14 @@ struct PlanPlayerScreen: View {
                         stops: [
                             .init(color: .black, location: 0),
                             // 纯黑只盖状态栏一线 (≈ topSafeArea*0.45)
-                            .init(color: .black, location: (topSafeArea * 0.45) / (topSafeArea * 0.45 + 210)),
-                            // 多段 ease-out 压暗 — 渐变拉到 210pt, 把图顶亮的器械内容也罩进去,
-                            // 一路平滑融入黑, 看不到图片上部的边缘.
-                            .init(color: .black.opacity(0.7), location: 0.42),
-                            .init(color: .black.opacity(0.28), location: 0.72),
+                            .init(color: .black, location: (topSafeArea * 0.45) / (topSafeArea * 0.45 + 160)),
+                            // 中段压暗后直接收到 clear — 不留长尾, 弥散别太多, 但仍盖住图顶不露边.
+                            .init(color: .black.opacity(0.5), location: 0.5),
                             .init(color: .clear, location: 1.0)
                         ],
                         startPoint: .top, endPoint: .bottom
                     )
-                    .frame(height: topSafeArea * 0.45 + 210)   // 渐变更长 → 图顶无锋利界线
+                    .frame(height: topSafeArea * 0.45 + 160)   // 渐变收窄 (210→160), 弥散别太多
                     .frame(maxWidth: .infinity, alignment: .top)
                     .ignoresSafeArea(edges: .top)
                     .allowsHitTesting(false)
@@ -334,8 +332,9 @@ struct PlanPlayerScreen: View {
         // 不再有顶部黑块) + playlistDrawer anchor 到 home indicator. 顶部 Drag Handle 自己按
         // topSafeArea 落在岛下方, 不受影响.
         .ignoresSafeArea(.container, edges: [.top, .bottom])
-        // 下拉脱离顶部时给 sheet 顶部上圆角 (Apple Music 式); 贴顶时 radius=0 保持方角 full-bleed.
-        .clipShape(UnevenRoundedRectangle(topLeadingRadius: dragCornerRadius, topTrailingRadius: dragCornerRadius))
+        // 下拉脱离顶部时给 sheet 顶部上圆角 (Apple Music 式). 静止 (radius=0) 时完全不 clip —
+        // 否则 clipShape 会按 safe-area 边界裁掉底部 home indicator 区, 让 playlist 在那露黑块.
+        .modifier(DragCornerClip(radius: dragCornerRadius))
         // Apple Music 式: 整屏跟手下移 (拖顶部 handle). 完成/空态不参与 (各有自己的关闭按钮).
         .offset(y: isActiveTraining ? dragDownOffset : 0)
         // 顶部 Drag Handle — 落在 Dynamic Island 下方, 居中. 拖它下拉 → 关 (最小化回 mini-bar).
@@ -347,7 +346,7 @@ struct PlanPlayerScreen: View {
                     .padding(.vertical, 10)
                     .padding(.horizontal, 44)
                     .contentShape(Rectangle())
-                    .padding(.top, topSafeArea - 14)    // 再往上挪, 紧贴 Dynamic Island 下沿
+                    .padding(.top, topSafeArea - 4)     // 比之前下移一点, 别太贴岛
                     .offset(y: dragDownOffset)          // handle 跟着整屏一起下移
                     .gesture(dismissDragGesture)
                     .ignoresSafeArea(edges: .top)
@@ -1111,6 +1110,21 @@ struct PlanPlayerScreen: View {
 // MARK: - 背景图 (full-bleed) + 底部信息区
 
 /// 当前动作的图片 — 铺满整个 sheet 背后, scaleAspectFill
+/// 只在下拉 (radius>0) 时给顶部上圆角; 静止时完全不 clip.
+/// 关键: clipShape 会按 safe-area 边界裁切, 静止时若 clip 会把底部 home indicator 区一起裁掉
+/// → playlist 在 home indicator 下露黑块. 静止不 clip 即可让 playlist 背景延续到屏幕最底.
+private struct DragCornerClip: ViewModifier {
+    let radius: CGFloat
+    @ViewBuilder
+    func body(content: Content) -> some View {
+        if radius > 0 {
+            content.clipShape(UnevenRoundedRectangle(topLeadingRadius: radius, topTrailingRadius: radius))
+        } else {
+            content
+        }
+    }
+}
+
 private struct FullBleedExerciseImage: View {
     let exercise: Exercise
     /// 是否双帧 cross-fade 动画. 默认 true (跟训练中页面一致).
