@@ -280,14 +280,14 @@ struct PlanPlayerScreen: View {
                         stops: [
                             .init(color: .black, location: 0),
                             // 纯黑只盖状态栏一线 (≈ topSafeArea*0.45)
-                            .init(color: .black, location: (topSafeArea * 0.45) / (topSafeArea * 0.45 + 160)),
-                            // 中段压暗后直接收到 clear — 不留长尾, 弥散别太多, 但仍盖住图顶不露边.
-                            .init(color: .black.opacity(0.5), location: 0.5),
+                            .init(color: .black, location: (topSafeArea * 0.45) / (topSafeArea * 0.45 + 110)),
+                            // 加重: 中段压到 ~80% 黑再收 clear → 图顶更沉地融入黑; 高度缩到 110pt.
+                            .init(color: .black.opacity(0.8), location: 0.6),
                             .init(color: .clear, location: 1.0)
                         ],
                         startPoint: .top, endPoint: .bottom
                     )
-                    .frame(height: topSafeArea * 0.45 + 160)   // 渐变收窄 (210→160), 弥散别太多
+                    .frame(height: topSafeArea * 0.45 + 110)   // 加重 + 缩窄 (160→110)
                     .frame(maxWidth: .infinity, alignment: .top)
                     .ignoresSafeArea(edges: .top)
                     .allowsHitTesting(false)
@@ -653,18 +653,20 @@ struct PlanPlayerScreen: View {
     ///   - 底部 60pt 实色 Color.black + ignoresSafeArea(.bottom) 延伸到 home indicator,
     ///     home indicator 区跟 controls 底色无缝连接
     private var bottomInfoGradient: some View {
-        ZStack(alignment: .bottom) {
+        // 终点黑统一成 playlist 的 #0A0A0A — 图片底部淡入的黑 = 下方 playlist 的黑, 无色差缝.
+        let base = Color(red: 10/255, green: 10/255, blue: 10/255)
+        return ZStack(alignment: .bottom) {
             LinearGradient(
                 stops: [
                     .init(color: .clear, location: 0.0),
-                    .init(color: .black.opacity(0.35), location: 0.16),
-                    .init(color: .black.opacity(0.78), location: 0.38),
-                    .init(color: .black.opacity(0.96), location: 0.62),
-                    .init(color: .black, location: 0.85),
+                    .init(color: base.opacity(0.35), location: 0.16),
+                    .init(color: base.opacity(0.78), location: 0.38),
+                    .init(color: base.opacity(0.96), location: 0.62),
+                    .init(color: base, location: 0.85),
                 ],
                 startPoint: .top, endPoint: .bottom
             )
-            Color.black
+            base
                 .frame(height: 60)
                 .ignoresSafeArea(edges: .bottom)
         }
