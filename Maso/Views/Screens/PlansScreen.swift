@@ -39,6 +39,10 @@ struct PlansScreen: View {
     /// Community 筛选 (#filters): 等级 + 每周天数. nil = 全部.
     @State private var communityLevel: String? = nil
     @State private var communityDays: Int? = nil
+    /// Pro feature ①: AI 标签内"对话式优化"输入框文本 (用户用自然语言描述要怎么改 → 注 focusNote 重生成).
+    @State private var refineInput: String = ""
+    /// 上一条对话指令的人类可读回显 (露在结果上方, 让用户看到"基于你的: …"). nil = 还没用过对话.
+    @State private var lastRefineNote: String? = nil
 
     var body: some View {
         VStack(spacing: 0) {
@@ -124,6 +128,7 @@ struct PlansScreen: View {
             onOpenSettings: {},
             onGoToDiscover: { withAnimation(.easeInOut(duration: 0.2)) { tab = .ai } },
             onBrowseClassics: { withAnimation(.easeInOut(duration: 0.2)) { tab = .classics } },
+            onOptimize: handleOptimize,
             embedded: true,
             mode: .myPlans,
             triggerImport: $triggerImport
@@ -132,12 +137,14 @@ struct PlansScreen: View {
 
     // MARK: - DISCOVER pages (左右滑动切换)
 
-    /// AI 页 — Training Preferences 卡 + 按偏好现算的 AI 计划卡 (点卡片预览, 详情页 "+" 加进 Saved).
+    /// AI 页 — Training Preferences 卡 + 对话式优化输入 (Pro feature ①) + 按偏好现算的 AI 计划卡.
     private var aiPage: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                // CTA 现在在 Training Preferences 半页内部 (改了偏好 → 点 Generate routines → 应用 + 这里跑生成).
+                // 训练偏好 (天数/目标/动作数/器械/重点) 现在以纯文字小字展示 (不再 chip), 点铅笔进编辑层.
                 PlanRationaleCard(onApplyPreferences: { startGenerateRoutines() })
+                // Pro feature ①: 对话式优化输入框 — 用户用自然语言描述要怎么改 → 注 focusNote 重生成.
+                refineComposer
                 aiRoutineResults
                 Spacer(minLength: MasoMetrics.pageBottomInset)
             }
@@ -146,6 +153,79 @@ struct PlansScreen: View {
         }
         // 首次 push 进 AI 页 (还没生成过) 自动生成一批, 避免空页. 改了偏好后由 "Generate routines" 重跑.
         .onAppear { if aiPlans.isEmpty && !aiGenerating { startGenerateRoutines() } }
+    }
+
+    // MARK: - 对话式优化 (Pro feature ①)
+    //
+    // 主对话入口 = 这个输入框, 不再做 per-routine chat sheet. 用户写"加难一点"/"换成推拉腿"/"避开过顶动作",
+    // 把这句话作为 focusNote 注进 generateAIRoutines(focusNote:) 重生成整批 AI routine (走 enforceScience 兜底).
+    // Pro-gated: 非 Pro 点发送 → 弹 paywall. 文本含 URL → LLM 看不了视频, 温和提示 (TODO(backend) 抓字幕).
+    @ViewBuilder
+    private var refineComposer: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(spacing: 6) {
+                Image(systemName: "bubble.left.and.text.bubble.right.fill")
+                    .font(.system(size: 10, weight: .heavy))
+                Text("TUNE WITH AI")
+                    .font(.system(size: 10, weight: .heavy)).tracking(1.5)
+            }
+            .foregroundStyle(MasoColor.accent)
+
+            HStack(spacing: 10) {
+                TextField(NSLocalizedString("Describe a change… e.g. make it harder", comment: "AI refine input placeholder"),
+                          text: $refineInput, axis: .vertical)
+                    .font(.system(size: 14))
+                    .foregroundStyle(MasoColor.text)
+                    .lineLimit(1...4)
+                    .padding(.horizontal, 14).padding(.vertical, 10)
+                    .background(MasoColor.surface)
+                    .overlay(RoundedRectangle(cornerRadius: 16).stroke(MasoColor.borderSoft, lineWidth: 0.5))
+                    .clipShape(RoundedRectangle(cornerRadius: 16))
+                    .submitLabel(.send)
+                    .onSubmit { sendRefine() }
+
+                Button(action: sendRefine) {
+                    Image(systemName: "arrow.up")
+                        .font(.system(size: 15, weight: .heavy))
+                        .foregroundStyle(.black)
+                        .frame(width: 36, height: 36)
+                        .background(Circle().fill(canRefine ? MasoColor.accent : MasoColor.surfaceHi))
+                }
+                .buttonStyle(.plain)
+                .disabled(!canRefine)
+                .accessibilityLabel(NSLocalizedString("Send", comment: "AI refine send"))
+            }
+
+            // 视频链接温和提示 — 文本 LLM 看不了视频.
+            // TODO(backend): fetch video transcript in the Worker and feed it here
+            if containsURL(refineInput) {
+                Text("I can't watch the video yet — paste the key moves or the plan from it and I'll work it in.")
+                    .font(.system(size: 11))
+                    .foregroundStyle(MasoColor.textDim)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+    }
+
+    private var canRefine: Bool {
+        !aiGenerating && !refineInput.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+
+    /// 发送对话指令 — Pro gate → 把这句话作为 focusNote 重生成. 非 Pro → paywall.
+    private func sendRefine() {
+        let text = refineInput.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !text.isEmpty, !aiGenerating else { return }
+        guard data.settings.isPro else { paywallPresented = true; return }
+        refineInput = ""
+        lastRefineNote = text
+        startGenerateRoutines(focusNote: text)
+    }
+
+    private func containsURL(_ text: String) -> Bool {
+        guard !text.isEmpty,
+              let detector = try? NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue) else { return false }
+        let range = NSRange(text.startIndex..., in: text)
+        return detector.firstMatch(in: text, options: [], range: range) != nil
     }
 
     /// "Generate routines" 主 CTA — 改了训练偏好 (或还没生成过) 才可点; 点了进生成态.
@@ -192,6 +272,20 @@ struct PlansScreen: View {
                 .foregroundStyle(MasoColor.textDim)
                 .padding(.horizontal, 12).padding(.vertical, 10)
                 .background(MasoColor.surface)
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+            }
+            // 对话式优化的回显 — "Tuned for: …" (露出本批是基于哪句指令重排的).
+            if let refine = lastRefineNote {
+                HStack(spacing: 6) {
+                    Image(systemName: "wand.and.stars").font(.system(size: 11, weight: .bold))
+                    Text(String(format: NSLocalizedString("Tuned for: %@", comment: "AI refine echo"), refine))
+                        .font(.system(size: 12, weight: .medium))
+                        .fixedSize(horizontal: false, vertical: true)
+                    Spacer(minLength: 0)
+                }
+                .foregroundStyle(MasoColor.accent)
+                .padding(.horizontal, 12).padding(.vertical, 8)
+                .background(MasoColor.accent.opacity(0.10))
                 .clipShape(RoundedRectangle(cornerRadius: 10))
             }
             ForEach(aiPlans) { plan in
@@ -325,15 +419,16 @@ struct PlansScreen: View {
 
     // MARK: - Actions
 
-    /// 点 "Generate routines" → 走真 LLM (Path B): 顶部一条真 AI 计划 (✨AI) + 本地 tuned 若干作为
-    /// 更多选择. spinner 绑真实调用延迟 (不再固定计时器). 失败/离线 → 纯本地 + 顶部提示条.
-    private func startGenerateRoutines() {
+    /// 点 "Generate routines" / 发对话指令 → 走真 LLM (Path B): 一批真 AI 计划 (✨AI). spinner 绑真实
+    /// 调用延迟. 失败/离线 → 纯本地 + 顶部提示条.
+    /// - parameter focusNote: 对话式优化 / optimize 卡传进来的本次侧重 (英文指令), 注进 prompt PRIORITY 行. nil = 普通生成.
+    private func startGenerateRoutines(focusNote: String? = nil) {
         guard !aiGenerating else { return }
         Haptics.tap()
         aiFallbackNote = nil
         withAnimation(.easeOut(duration: 0.2)) { aiGenerating = true }
         Task { @MainActor in
-            let (plans, usedFallback) = await data.generateAIRoutines()
+            let (plans, usedFallback) = await data.generateAIRoutines(focusNote: focusNote)
             withAnimation(.easeOut(duration: 0.25)) {
                 aiPlans = plans
                 aiGenerating = false
@@ -343,6 +438,15 @@ struct PlansScreen: View {
                     : nil
             }
         }
+    }
+
+    /// Pro feature ②: Saved 顶部优化建议卡点 "Optimize with AI" — Pro gate → 切到 AI 标签 + 把诊断的
+    /// focusNote 注进重生成. 非 Pro → paywall. (focusNote 是英文指令, 回显走 suggestion.title 让用户看懂.)
+    private func handleOptimize(_ suggestion: DataStore.RoutineSuggestion) {
+        guard data.settings.isPro else { paywallPresented = true; return }
+        withAnimation(.easeInOut(duration: 0.2)) { tab = .ai }
+        lastRefineNote = suggestion.title
+        startGenerateRoutines(focusNote: suggestion.focusNote)
     }
 
     /// Discover 详情页右上角 "+" → 把这张(预览的)计划加进 Saved. 满额 → 弹 paywall. 完后关详情.
@@ -467,12 +571,12 @@ struct PlanRationaleCard: View {
                 .accessibilityLabel(Text("Adjust training preferences"))
             }
 
-            // 已选参数用小 chip 展示; 点卡/铅笔 → 拉起编辑层.
-            FlowLayout(spacing: 6) {
-                ForEach(prefChips, id: \.self) { chip in
-                    prefChip(chip)
-                }
-            }
+            // 已选参数以纯文字小字展示 (灰色, 不再用 chip) — e.g. "3 days / week · Build muscle · 4 exercises · Dumbbells · Focus: Chest, Back".
+            // 点卡/铅笔 → 拉起编辑层.
+            Text(prefSummary)
+                .font(.system(size: 12))
+                .foregroundStyle(MasoColor.textDim)
+                .fixedSize(horizontal: false, vertical: true)
         }
         .padding(.horizontal, MasoMetrics.cardPadding)
         .padding(.vertical, MasoMetrics.cardPadding - 2)
@@ -488,41 +592,32 @@ struct PlanRationaleCard: View {
         }
     }
 
-    // MARK: - chips (收起态)
+    // MARK: - 偏好摘要 (纯文字小字, 不再用 chip)
 
-    /// 已选参数 → chip 文案列表: 天数 / 目标 / 动作数 / 组数 / 重点肌群 / 器械.
-    private var prefChips: [String] {
+    /// 已选参数拼成一行小字 (天数 · 目标 · 动作数 · 组数 · 器械 · 重点肌群), 用 " · " 分隔.
+    /// e.g. "3 days / week · Build muscle · 4 exercises · 3 sets · Dumbbells, Barbell · Focus: Chest, Back".
+    private var prefSummary: String {
         let s = data.settings
-        var out: [String] = []
-        out.append(String(format: NSLocalizedString("%lld days / week", comment: ""), s.weeklyTrainingDays))
-        out.append(s.trainingGoal.displayName)
-        out.append(String(format: NSLocalizedString("%d exercises", comment: ""), s.exercisesPerSession))
-        out.append(String(format: NSLocalizedString("%d sets", comment: ""), s.defaultSetsPerExercise))
-        let majors = MuscleSelector.focusSummary(Set(s.wantStrengthen))
-        if !majors.isEmpty {
-            let names = majors.prefix(3).map(\.displayName).joined(separator: " / ")
-            out.append(names + (majors.count > 3 ? " +\(majors.count - 3)" : ""))
-        }
+        var parts: [String] = []
+        parts.append(String(format: NSLocalizedString("%lld days / week", comment: ""), s.weeklyTrainingDays))
+        parts.append(s.trainingGoalKind.displayName)
+        parts.append(String(format: NSLocalizedString("%d exercises", comment: ""), s.exercisesPerSession))
+        parts.append(String(format: NSLocalizedString("%d sets", comment: ""), s.defaultSetsPerExercise))
         if s.availableEquipment.isEmpty {
-            out.append(NSLocalizedString("Any equipment", comment: ""))
+            parts.append(NSLocalizedString("Any equipment", comment: ""))
         } else {
             let cats = s.availableEquipment.compactMap { EquipmentCategory(rawValue: $0)?.displayName }
-            let shown = cats.prefix(2).joined(separator: " / ")
-            out.append(shown + (cats.count > 2 ? " +\(cats.count - 2)" : ""))
+            let shown = cats.prefix(2).joined(separator: ", ")
+            parts.append(shown + (cats.count > 2 ? " +\(cats.count - 2)" : ""))
         }
-        return out
+        let majors = MuscleSelector.focusSummary(Set(s.wantStrengthen))
+        if !majors.isEmpty {
+            let names = majors.prefix(3).map(\.displayName).joined(separator: ", ")
+            parts.append(String(format: NSLocalizedString("Focus: %@", comment: "training prefs focus muscles"),
+                                names + (majors.count > 3 ? " +\(majors.count - 3)" : "")))
+        }
+        return parts.joined(separator: " · ")
     }
-
-    private func prefChip(_ text: String) -> some View {
-        Text(text)
-            .font(.system(size: 11, weight: .semibold))
-            .foregroundStyle(MasoColor.text.opacity(0.85))
-            .lineLimit(1)
-            .padding(.horizontal, 10)
-            .padding(.vertical, 5)
-            .background(Capsule().fill(MasoColor.surfaceHi))
-    }
-
 }
 
 // MARK: - Training Preferences 编辑层 (sheet)

@@ -127,6 +127,7 @@
 		CE995F4FE19088CC54F0C21C /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C228082523E5BD38F52B6B76 /* PersistenceController.swift */; };
 		CF0DF500D090FE778C2DE542 /* WatchWorkoutManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA721C2F4E32B7402AC2CAA6 /* WatchWorkoutManager.swift */; };
 		CFACBB04C2B2F7715D76D273 /* MuscleSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = C85CFB727541762C8447F7E4 /* MuscleSelector.swift */; };
+		D123FE5C1C40DBA244A94227 /* RoutineOptimizeCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A86DF0600F128A94067E0D44 /* RoutineOptimizeCard.swift */; };
 		D1F18A807794D0FC0FD24137 /* ExerciseGrouping.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34F46E6B89F953552C31D180 /* ExerciseGrouping.swift */; };
 		D2A5A66A03EA5AFD75D478EB /* PhotoPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19E60279DA5B5FE740DC4A8D /* PhotoPicker.swift */; };
 		D3C467BCD7239BC40C99C25E /* PaywallScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61B0293ADD8C41CCBB12FA12 /* PaywallScreen.swift */; };
@@ -271,6 +272,7 @@
 		A312E7F5CEA8FACE3E0183FA /* _review-queue-decisions.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "_review-queue-decisions.json"; sourceTree = "<group>"; };
 		A63705CC4062E59B9B7201A9 /* MasoWatch.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MasoWatch.entitlements; sourceTree = "<group>"; };
 		A869CB4AC4EF2FD9CFD9D31C /* AIWorkoutService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIWorkoutService.swift; sourceTree = "<group>"; };
+		A86DF0600F128A94067E0D44 /* RoutineOptimizeCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoutineOptimizeCard.swift; sourceTree = "<group>"; };
 		AC00B9B59687C5502999A3DA /* FeedbackTransport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackTransport.swift; sourceTree = "<group>"; };
 		ADC7BD7F1CA2B51B8BE76943 /* InlineWorkoutCalendar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InlineWorkoutCalendar.swift; sourceTree = "<group>"; };
 		AFFACBCE14220218C3F49853 /* exercises-new.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "exercises-new.json"; sourceTree = "<group>"; };
@@ -553,6 +555,7 @@
 				0C2072C444E5B90F0EC1A07C /* NumStepperField.swift */,
 				50A10E5E18C4925F0ACEC2C6 /* ProBanner.swift */,
 				5D75DF0CAF48118741B96273 /* ProgressChartsView.swift */,
+				A86DF0600F128A94067E0D44 /* RoutineOptimizeCard.swift */,
 				1A36C4336039446730B6DF52 /* SwipeableRow.swift */,
 				F96CC6B018F159D5FA8FE982 /* TimelineBar.swift */,
 				07C814AC57D00E7740B6A51B /* TrainingSettingsSection.swift */,
@@ -880,6 +883,7 @@
 				9CCA9C0B50357A55CB879DBF /* RecommendedPrograms.swift in Sources */,
 				70639D2DC8C6A85D484742AC /* RestNotificationScheduler.swift in Sources */,
 				95676F299C926544BE383ED7 /* RootView.swift in Sources */,
+				D123FE5C1C40DBA244A94227 /* RoutineOptimizeCard.swift in Sources */,
 				2B7135D783046C4EAEF60FA4 /* SessionPersistence.swift in Sources */,
 				7569DFE706941F606D7A84A0 /* SessionShareCard.swift in Sources */,
 				9F8AE1A6DE0870B670608C42 /* Settings.swift in Sources */,

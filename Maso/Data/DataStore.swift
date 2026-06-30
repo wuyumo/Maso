@@ -1089,7 +1089,9 @@ final class DataStore {
 
     /// AI Routines tab "生成": 真 AI 一条 (✨AI, 排最前) + 本地 tuned 若干作为更多选择.
     /// 返回 (plans, 是否回落到纯本地). 失败/未配置 → 纯本地 + usedFallback=true.
-    func generateAIRoutines() async -> (plans: [Plan], usedFallback: Bool) {
+    /// - parameter focusNote: optimize 建议卡传进来的本次侧重 (e.g. "bias the split toward legs"),
+    ///   非 nil 时注进 prompt 的 PRIORITY 行, 让这批 routine 偏向修复诊断出的问题. 默认 nil = 普通生成.
+    func generateAIRoutines(focusNote: String? = nil) async -> (plans: [Plan], usedFallback: Bool) {
         let local = DataStore.tunedRecommendedPlans(
             forDays: settings.weeklyTrainingDays, settings: settings,
             exById: exById, sets: sets, now: Date())
@@ -1097,7 +1099,8 @@ final class DataStore {
         // 一次 LLM 调用产出多套真 AI routine (各带 rationale, 组成周分化) — 标签页每张都是真 AI,
         // 不再 [aiPlan] + local 混本地凑数计划. 套数 = 每周天数, 夹到 2...4 (token 预算 + 不过载).
         let count = max(2, min(4, settings.weeklyTrainingDays))
-        let payload = buildAIPayload()
+        var payload = buildAIPayload()
+        payload.focusNote = focusNote
         if let aiPlans = await AIWorkoutService.shared.generateRoutines(
             payload: payload, library: exercises, count: count,
             maxExercises: settings.exercisesPerSession), !aiPlans.isEmpty {
@@ -1105,6 +1108,115 @@ final class DataStore {
             return (aiPlans.map { applyScience(to: $0) }, false)
         }
         return (local, true)   // 真 AI 失败 → 回落本地模板 (此时确实没有 rationale, 顶部有提示条)
+    }
+
+    // MARK: - 数据驱动优化建议 (Pro feature ②)
+    //
+    // 用户练了一段后, Saved routines 页顶部浮一张"优化建议"卡. routineSuggestion() 从最近 ~3 周的
+    // sets 里诊断出 SINGLE 最该处理的问题 (优先级: 落后肌群 > 主项停滞 > 出勤下滑), 给一句可执行的
+    // focusNote —— 用户点"用 AI 优化"时把 focusNote 注进 generateAIRoutines 重生成一批偏向修复的 routine.
+    // 数据不足 (<~2 周) → nil, 不乱给建议.
+
+    /// 单条优化建议 — title/detail 露在卡上, focusNote 注进 AI prompt 的 PRIORITY 行.
+    struct RoutineSuggestion: Identifiable, Hashable {
+        let id: String        // 诊断类型 key (lagging/stall/adherence) — 同问题不重复弹
+        let title: String     // e.g. "Legs are undertrained"
+        let detail: String    // 一句话说明诊断依据
+        let focusNote: String // 注进 AI 的英文指令, e.g. "bias the split toward legs"
+    }
+
+    /// 诊断当前训练数据, 返回最该处理的一条建议; 数据不足或一切正常 → nil.
+    /// 只读 sets, 不改任何状态.
+    func routineSuggestion() -> RoutineSuggestion? {
+        let cal = Calendar.current
+        let now = Date()
+        let win3w = now.addingTimeInterval(-21 * 86400)
+        let recent = sets.filter { $0.performedAt >= win3w }
+        // 数据不足 (<2 周覆盖 或 太少组) → 不建议. 用"最早一条记录距今"估覆盖周数.
+        guard let earliest = sets.map(\.performedAt).min(),
+              now.timeIntervalSince(earliest) >= 14 * 86400,
+              recent.count >= 6 else { return nil }
+
+        // ── 优先级 1: 落后肌群 — 按 6 大区统计最近 3 周的"工作组"数, 某练过的区远低于最高区 (≤40%) → 建议偏向它.
+        var sectionSets: [MuscleGroup: Int] = [:]
+        for rec in recent {
+            guard let ex = exById[rec.exerciseId],
+                  let sec = ex.primaryMuscles.first?.section else { continue }
+            sectionSets[sec, default: 0] += 1
+        }
+        let majors: [MuscleGroup] = [.chest, .back, .shoulders, .arms, .core, .legs]
+        if let topCount = sectionSets.values.max(), topCount >= 6 {
+            // 找"练过但远低于最高"的区 (≤40% of max); 多个时取组数最少的那个 = 最落后.
+            let lagging = majors
+                .filter { (sectionSets[$0] ?? 0) > 0 && Double(sectionSets[$0] ?? 0) <= 0.4 * Double(topCount) }
+                .min { (sectionSets[$0] ?? 0) < (sectionSets[$1] ?? 0) }
+            // 也抓"完全没练过的大区" (deadliest gap), 优先级比"偏低"更高.
+            let missing = majors.first { (sectionSets[$0] ?? 0) == 0 }
+            if let sec = missing ?? lagging {
+                let name = sec.displayName
+                let lowered = name.lowercased()
+                return RoutineSuggestion(
+                    id: "lagging-\(sec.rawValue)",
+                    title: String(format: NSLocalizedString("%@ are undertrained", comment: "optimize card title — lagging muscle"), name),
+                    detail: String(format: NSLocalizedString("You've done far fewer %@ sets than your top muscle group over the last 3 weeks.", comment: "optimize card detail — lagging muscle"), lowered),
+                    focusNote: "the user has been under-training their \(lowered.isEmpty ? name : lowered); bias the weekly split toward \(lowered) with extra volume and earlier slots"
+                )
+            }
+        }
+
+        // ── 优先级 2: 主项停滞 — 最常练的负重动作, 逐次 session 的 e1RM 在最近 ~4 次平/降 → 建议变化主项/调容量.
+        if let stall = stalledLiftSuggestion(in: recent) { return stall }
+
+        // ── 优先级 3: 出勤下滑 — 最近 3 周每周不同训练日 < 目标-1 → 建议更短可持续的分化.
+        let weeks = max(1, Int(ceil(now.timeIntervalSince(max(earliest, win3w)) / (7 * 86400))))
+        let distinctDays = Set(recent.map { cal.startOfDay(for: $0.performedAt) }).count
+        let perWeek = Double(distinctDays) / Double(weeks)
+        if perWeek < Double(settings.weeklyTrainingDays) - 1 {
+            return RoutineSuggestion(
+                id: "adherence",
+                title: NSLocalizedString("Fewer sessions lately", comment: "optimize card title — low adherence"),
+                detail: String(format: NSLocalizedString("You're averaging about %d sessions a week, below your %d-day goal.", comment: "optimize card detail — low adherence"), Int(perWeek.rounded()), settings.weeklyTrainingDays),
+                focusNote: "the user has been training fewer days than planned; offer a shorter, more sustainable split that fits about \(Int(perWeek.rounded()) + 1) focused sessions a week"
+            )
+        }
+
+        return nil
+    }
+
+    /// 主项停滞诊断 — 取最近 3 周内组数最多的负重动作, 按 session (day) 聚合每天的最佳 e1RM,
+    /// 若 ≥3 个 session 且最近 ~4 次 e1RM 没有进步 (最后一次 <= 这串里最高的 99%) → 判定停滞.
+    private func stalledLiftSuggestion(in recent: [SetRecord]) -> RoutineSuggestion? {
+        // 只看有 weight+reps 的负重动作.
+        let weighted = recent.filter { ($0.weight ?? 0) > 0 && ($0.reps ?? 0) > 0 }
+        guard !weighted.isEmpty else { return nil }
+        var byEx: [String: [SetRecord]] = [:]
+        for r in weighted { byEx[r.exerciseId, default: []].append(r) }
+        guard let (exId, recs) = byEx.max(by: { $0.value.count < $1.value.count }),
+              recs.count >= 6 else { return nil }
+
+        // 按训练日聚合, 取当天最佳 e1RM (Epley).
+        let cal = Calendar.current
+        var byDay: [Date: Double] = [:]
+        for r in recs {
+            guard let w = r.weight, let reps = r.reps else { continue }
+            let e1rm = w * (1 + Double(reps) / 30.0)
+            let day = cal.startOfDay(for: r.performedAt)
+            byDay[day] = max(byDay[day] ?? 0, e1rm)
+        }
+        let series = byDay.sorted { $0.key < $1.key }.map(\.value)
+        guard series.count >= 3 else { return nil }
+        let window = Array(series.suffix(4))
+        guard let peak = window.max(), let last = window.last, peak > 0 else { return nil }
+        // 最近一次没超过窗口峰值 (留 1% 容差) → 视为平/降.
+        guard last <= peak * 0.99 else { return nil }
+
+        let name = exById[exId]?.displayName ?? NSLocalizedString("Your main lift", comment: "optimize card — generic lift name")
+        return RoutineSuggestion(
+            id: "stall-\(exId)",
+            title: String(format: NSLocalizedString("%@ has stalled", comment: "optimize card title — stalled lift"), name),
+            detail: String(format: NSLocalizedString("Your estimated 1RM on %@ hasn't moved over your last few sessions.", comment: "optimize card detail — stalled lift"), name),
+            focusNote: "the user's \(name) has plateaued; vary the main lift (different angle/variation) and adjust volume or intensity to break the stall"
+        )
     }
 
     /// 构 AI 输入 payload — 把 user profile + 最近 14 天历史打包.

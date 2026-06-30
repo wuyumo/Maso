@@ -1121,3 +1121,21 @@
 "This week" = "This week";
 "Last week" = "Last week";
 "Keep training — your stats and trends show up here." = "Keep training — your stats and trends show up here.";
+
+/* Pro feature ① — AI Routines tab conversational refine + prefs summary */
+"Describe a change… e.g. make it harder" = "Describe a change… e.g. make it harder";
+"I can't watch the video yet — paste the key moves or the plan from it and I'll work it in." = "I can't watch the video yet — paste the key moves or the plan from it and I'll work it in.";
+"Tuned for: %@" = "Tuned for: %@";
+"Focus: %@" = "Focus: %@";
+"Send" = "Send";
+
+/* Pro feature ② — data-driven optimization suggestion card */
+"OPTIMIZE" = "OPTIMIZE";
+"Optimize with AI" = "Optimize with AI";
+"%@ are undertrained" = "%@ are undertrained";
+"You've done far fewer %@ sets than your top muscle group over the last 3 weeks." = "You've done far fewer %@ sets than your top muscle group over the last 3 weeks.";
+"%@ has stalled" = "%@ has stalled";
+"Your estimated 1RM on %@ hasn't moved over your last few sessions." = "Your estimated 1RM on %@ hasn't moved over your last few sessions.";
+"Your main lift" = "Your main lift";
+"Fewer sessions lately" = "Fewer sessions lately";
+"You're averaging about %d sessions a week, below your %d-day goal." = "You're averaging about %d sessions a week, below your %d-day goal.";

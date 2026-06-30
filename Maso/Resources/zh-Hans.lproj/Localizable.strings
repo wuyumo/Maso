@@ -1122,3 +1122,21 @@
 "This week" = "本周";
 "Last week" = "上周";
 "Keep training — your stats and trends show up here." = "继续训练，你的数据和趋势会显示在这里。";
+
+/* Pro 功能① — AI Routines 标签内对话式优化 + 偏好摘要 */
+"Describe a change… e.g. make it harder" = "说说想怎么改…比如「加难一点」";
+"I can't watch the video yet — paste the key moves or the plan from it and I'll work it in." = "我还看不了视频——把里面的关键动作或计划贴给我,我帮你融进去。";
+"Tuned for: %@" = "已按「%@」调整";
+"Focus: %@" = "重点:%@";
+"Send" = "发送";
+
+/* Pro 功能② — 数据驱动优化建议卡 */
+"OPTIMIZE" = "优化建议";
+"Optimize with AI" = "用 AI 优化";
+"%@ are undertrained" = "%@练得偏少";
+"You've done far fewer %@ sets than your top muscle group over the last 3 weeks." = "最近 3 周,你练%@的组数远少于练得最多的部位。";
+"%@ has stalled" = "%@停滞了";
+"Your estimated 1RM on %@ hasn't moved over your last few sessions." = "最近几次训练,你%@的估算 1RM 没有进步。";
+"Your main lift" = "你的主项";
+"Fewer sessions lately" = "最近练得少了";
+"You're averaging about %d sessions a week, below your %d-day goal." = "你最近平均每周约 %d 次,低于设定的每周 %d 天目标。";

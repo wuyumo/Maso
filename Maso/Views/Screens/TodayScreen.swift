@@ -13,6 +13,9 @@ struct TodayScreen: View {
     var onGoToDiscover: () -> Void = {}
     /// Routines 底部 "Classics" 入口 → push Classics 发现页 (PlansScreen 接 addRoute = .classics).
     var onBrowseClassics: () -> Void = {}
+    /// Pro feature ②: Saved 顶部优化建议卡点 "Optimize with AI" → 把诊断 focusNote 上抛给 PlansScreen,
+    /// 由它切到 AI 标签 + 带 focusNote 重生成 routine (Pro gating 也在 PlansScreen 那侧). 其他用法不传.
+    var onOptimize: (DataStore.RoutineSuggestion) -> Void = { _ in }
     /// 嵌在外层 NavigationStack (Train / Plans tab) 里时 true — 不渲染自己的大标题/齿轮.
     var embedded: Bool = false
     /// 渲染哪部分内容:
@@ -148,6 +151,10 @@ struct TodayScreen: View {
 
                 // ===== Plans tab 的 My Plans 分页: 我的训练 + 自由训练 + 社区 (mode != .trainToday) =====
                 if mode != .trainToday {
+                    // Pro feature ②: 数据驱动优化建议卡 — 练够数据 + 诊断出问题 + 有 routine 可优化时浮在最顶.
+                    if !data.plans.isEmpty, let suggestion = data.routineSuggestion() {
+                        RoutineOptimizeCard(suggestion: suggestion, onOptimize: onOptimize)
+                    }
                     if data.plans.isEmpty {
                         plansEmptyState
                     } else {

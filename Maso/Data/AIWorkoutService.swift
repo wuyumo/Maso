@@ -444,7 +444,7 @@ final class AIWorkoutService {
         - MUSCLE BALANCE: no more than 2 exercises whose PRIMARY muscle is the same in this session (never 3 chest moves in one day). If two exercises share a primary muscle, they must differ in angle, equipment, or movement plane. Isolation exercises must be at most 40% of the session. Prefer including a pull for every push.
         - This user's goal is \(p.goalLabel). Write COMPOUND lifts at \(p.goalRepCompound)-\(p.goalRepCompoundHi) reps and ISOLATION lifts at \(p.goalRepIso)-\(p.goalRepIsoHi) reps. Use \(p.goalSetsLo)-\(p.goalSetsHi) sets per exercise. Stop ~1-3 reps short of failure (do not write 'to failure').
         - Set "duration_seconds" only for timed holds/cardio; otherwise null. Rest between sets is \(p.goalRest)s (handled by the app).
-        - Pick ONLY exercises the user can perform with: \(p.equipmentLine). Pick weights conservatively if no history; scale to recent volume if any.
+        - Pick ONLY exercises the user can perform with: \(p.equipmentLine). Pick weights conservatively if no history; scale to recent volume if any.\(p.focusNote.map { "\n        - PRIORITY TODAY: \($0). Bias this session to address it directly without breaking the rules above." } ?? "")
         - EXACTLY \(maxExercises) exercises in this session — no more, no fewer.
 
         AVAILABLE EXERCISES — every "exercise_name" MUST be copied EXACTLY (verbatim, character-for-character) from this list. Do NOT invent names or use synonyms:
@@ -506,7 +506,7 @@ final class AIWorkoutService {
         - This user's goal is \(p.goalLabel). Write COMPOUND lifts at \(p.goalRepCompound)-\(p.goalRepCompoundHi) reps and ISOLATION lifts at \(p.goalRepIso)-\(p.goalRepIsoHi) reps. Use \(p.goalSetsLo)-\(p.goalSetsHi) sets per exercise. Stop ~1-3 reps short of failure (do not write 'to failure').
         - Set "duration_seconds" only for timed holds/cardio; otherwise null. Rest between sets is \(p.goalRest)s (handled by the app).
         - Pick ONLY exercises the user can perform with: \(p.equipmentLine). Pick weights conservatively if no history; scale to recent volume if any.
-        - Respect the "wants to strengthen" focus by giving those muscles an extra exercise / earlier slot where it fits, without breaking the rules above.
+        - Respect the "wants to strengthen" focus by giving those muscles an extra exercise / earlier slot where it fits, without breaking the rules above.\(p.focusNote.map { "\n        - PRIORITY THIS TIME: \($0). Skew this week's split to address it directly (more volume / earlier slots / an extra movement) without breaking the rules above." } ?? "")
         - EXACTLY \(perRoutine) exercises in EVERY routine — no more, no fewer.
 
         AVAILABLE EXERCISES — every "exercise_name" MUST be copied EXACTLY (verbatim, character-for-character) from this list. Do NOT invent names or use synonyms:
@@ -704,6 +704,10 @@ struct AIPayload {
     let goalRest: Int
     /// 可用器械 (EquipmentCategory display names). 空 = 不限制.
     let equipment: [String]
+
+    /// 本次生成的优先侧重 (optimize 建议卡注入) — e.g. "bias the split toward legs".
+    /// 非空时往 GUIDELINES 末尾追加一条强优先级行, 让这次 routine 偏向修复诊断出的问题. 默认 nil = 不加.
+    var focusNote: String? = nil
 
     /// prompt 里"可用器械"那行的成文 — 空时给"no restriction — assume a full gym".
     var equipmentLine: String {
