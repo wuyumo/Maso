@@ -22,8 +22,10 @@ struct OnboardingScreen: View {
     @State private var goingForward = true
 
     @State private var gender: Gender? = nil
-    /// 训练目标 (5 档) — 默认增肌 (覆盖最广), 选完自动跳下一步.
-    @State private var goal: TrainingGoalKind = .buildMuscle
+    /// 训练目标 (5 档) — 选项型(自动跳, 无 Next), 故**不预选**: 预选会让用户以为已完成、
+    /// 不知道还要点一下卡片才前进. 选完才有值; confirm 用 ?? .buildMuscle 兜底
+    /// (实际到不了 confirm 时仍 nil —— 目标步无 Next, 必须先点一个目标才能离开).
+    @State private var goal: TrainingGoalKind? = nil
     @State private var age: Int = 25
     /// 体重: 选完性别按平均值 re-seed, 除非用户已手动拨过 (weightTouched).
     @State private var weight: Double = 75
@@ -381,7 +383,7 @@ struct OnboardingScreen: View {
         data.settings.gender = gender
         // ⚠️ 先写 trainingGoalKind —— didSet 会级联设 trainingGoal + defaultRestSeconds.
         //    填补了旧引导从不设目标 (struct 默认 hypertrophy) 的缺口.
-        data.settings.trainingGoalKind = goal
+        data.settings.trainingGoalKind = goal ?? .buildMuscle
         data.settings.age = age
         data.settings.weight = weight
         data.settings.weeklyTrainingDays = daysPerWeek
