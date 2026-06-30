@@ -582,8 +582,7 @@ struct PlanRationaleCard<Composer: View>: View {
             .contentShape(Rectangle())
             .onTapGesture { showEditor = true }
 
-            // 分隔线 + Tune-with-AI 对话框 — 就在这张 Training Preferences 卡内 (主对话入口).
-            Divider().overlay(MasoColor.borderSoft)
+            // Tune-with-AI 对话框 — 就在这张 Training Preferences 卡内 (主对话入口, 无分隔线).
             composer()
         }
         .padding(.horizontal, MasoMetrics.cardPadding)
