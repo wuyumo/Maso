@@ -60,13 +60,16 @@ final class AIWorkoutService {
     func generateToday(
         payload: AIPayload,
         library: [Exercise],
-        maxExercises: Int = 4
+        maxExercises: Int = 4,
+        surface: String = "today_refresh"
     ) async -> Plan? {
         guard Self.isConfigured else {
             state = .failure("AI proxy not configured (set MasoAIProxyURL + MasoClientToken in Secrets.xcconfig)")
+            Analytics.shared.track("ai_routine_generate_fail", ["surface": .string(surface), "reason": .string("not_configured")])
             return nil
         }
         state = .generating
+        Analytics.shared.track("ai_routine_generate_start", ["surface": .string(surface), "mode": .string("today")])
 
         do {
             let raw = try await callDeepSeek(payload: payload, library: library, maxExercises: maxExercises)
@@ -74,15 +77,21 @@ final class AIWorkoutService {
             let plan = buildPlan(from: parsed, library: library, maxExercises: maxExercises)
             guard !plan.steps.isEmpty else {
                 state = .failure("AI returned no matching exercises")
+                Analytics.shared.track("ai_routine_generate_fail", ["surface": .string(surface), "reason": .string("empty_match")])
                 return nil
             }
             state = .success(Date())
+            Analytics.shared.track("ai_routine_generate_success", [
+                "surface": .string(surface), "step_count": .int(plan.steps.count), "source": .string("ai"),
+            ])
             return plan
         } catch let error as AIError {
             state = .failure(error.userMessage)
+            Analytics.shared.track("ai_routine_generate_fail", ["surface": .string(surface), "reason": .string(error.analyticsReason)])
             return nil
         } catch {
             state = .failure(error.localizedDescription)
+            Analytics.shared.track("ai_routine_generate_fail", ["surface": .string(surface), "reason": .string("network")])
             return nil
         }
     }
@@ -94,13 +103,16 @@ final class AIWorkoutService {
         payload: AIPayload,
         library: [Exercise],
         count: Int,
-        maxExercises: Int = 4
+        maxExercises: Int = 4,
+        surface: String = "ai_segment"
     ) async -> [Plan]? {
         guard Self.isConfigured else {
             state = .failure("AI proxy not configured")
+            Analytics.shared.track("ai_routine_generate_fail", ["surface": .string(surface), "reason": .string("not_configured")])
             return nil
         }
         state = .generating
+        Analytics.shared.track("ai_routine_generate_start", ["surface": .string(surface), "mode": .string("routines")])
         do {
             let raw = try await callDeepSeekRoutines(payload: payload, library: library, count: count, perRoutine: maxExercises)
             let routines = try parseRoutinesResponse(raw)
@@ -110,15 +122,22 @@ final class AIWorkoutService {
             }
             guard !plans.isEmpty else {
                 state = .failure("AI returned no matching exercises")
+                Analytics.shared.track("ai_routine_generate_fail", ["surface": .string(surface), "reason": .string("empty_match")])
                 return nil
             }
             state = .success(Date())
+            let totalSteps = plans.reduce(0) { $0 + $1.steps.count }
+            Analytics.shared.track("ai_routine_generate_success", [
+                "surface": .string(surface), "step_count": .int(totalSteps), "source": .string("ai"),
+            ])
             return plans
         } catch let error as AIError {
             state = .failure(error.userMessage)
+            Analytics.shared.track("ai_routine_generate_fail", ["surface": .string(surface), "reason": .string(error.analyticsReason)])
             return nil
         } catch {
             state = .failure(error.localizedDescription)
+            Analytics.shared.track("ai_routine_generate_fail", ["surface": .string(surface), "reason": .string("network")])
             return nil
         }
     }
@@ -786,6 +805,15 @@ private enum AIError: Error {
     var userMessage: String {
         switch self {
         case .network(let m), .api(let m), .parse(let m): return m
+        }
+    }
+
+    /// 分析事件 reason (无 PII 枚举) — 映射到 ai_routine_generate_fail 的 reason 字段.
+    var analyticsReason: String {
+        switch self {
+        case .network: return "network"
+        case .api: return "api"
+        case .parse: return "parse"
         }
     }
 }

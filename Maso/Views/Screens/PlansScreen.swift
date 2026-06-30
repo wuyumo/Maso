@@ -208,13 +208,19 @@ struct PlansScreen: View {
     private func sendRefine() {
         let text = refineInput.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !text.isEmpty, !aiGenerating else { return }
+        // tune_with_ai_send — 用户点发送 (无论 Pro). 无 PII: 只报文本长度 / 是否含 URL / 是否 Pro, 不带文本.
+        Analytics.shared.track("tune_with_ai_send", [
+            "text_len": .int(text.count),
+            "contained_url": .bool(containsURL(text)),
+            "is_pro": .bool(data.settings.isPro),
+        ])
         guard data.settings.isPro else { paywallPresented = true; return }
         refineInput = ""
         lastRefineNote = text
         // 这句话既驱动本次立即重生成 (focusNote), 也长期记进教练记忆 (Coaching Memory) —
         // 之后每次生成都会带上, AI 持续个性化. 非 Pro 已在上面挡掉, 不会写进记忆.
         data.appendCoachNote(text)
-        startGenerateRoutines(focusNote: text)
+        startGenerateRoutines(focusNote: text, surface: "tune")
     }
 
     private func containsURL(_ text: String) -> Bool {
@@ -418,13 +424,13 @@ struct PlansScreen: View {
     /// 点 "Generate routines" / 发对话指令 → 走真 LLM (Path B): 一批真 AI 计划 (✨AI). spinner 绑真实
     /// 调用延迟. 失败/离线 → 纯本地 + 顶部提示条.
     /// - parameter focusNote: 对话式优化 / optimize 卡传进来的本次侧重 (英文指令), 注进 prompt PRIORITY 行. nil = 普通生成.
-    private func startGenerateRoutines(focusNote: String? = nil) {
+    private func startGenerateRoutines(focusNote: String? = nil, surface: String = "ai_segment") {
         guard !aiGenerating else { return }
         Haptics.tap()
         aiFallbackNote = nil
         withAnimation(.easeOut(duration: 0.2)) { aiGenerating = true }
         Task { @MainActor in
-            let (plans, usedFallback) = await data.generateAIRoutines(focusNote: focusNote)
+            let (plans, usedFallback) = await data.generateAIRoutines(focusNote: focusNote, surface: surface)
             withAnimation(.easeOut(duration: 0.25)) {
                 aiPlans = plans
                 aiGenerating = false
@@ -442,7 +448,7 @@ struct PlansScreen: View {
         guard data.settings.isPro else { paywallPresented = true; return }
         withAnimation(.easeInOut(duration: 0.2)) { tab = .ai }
         lastRefineNote = suggestion.title
-        startGenerateRoutines(focusNote: suggestion.focusNote)
+        startGenerateRoutines(focusNote: suggestion.focusNote, surface: "optimize")
     }
 
     /// Discover 详情页右上角 "+" → 把这张(预览的)计划加进 Saved. 满额 → 弹 paywall. 完后关详情.
@@ -1057,6 +1063,7 @@ struct PlanDetailSheet: View {
             return
         }
         Haptics.tap()
+        Analytics.shared.track("routine_share")   // 无 PII: 不带计划名/动作
         shareImage = img
     }
 

@@ -20,6 +20,10 @@ struct PaywallScreen: View {
     @Environment(SubscriptionManager.self) private var subs
     @Environment(\.dismiss) private var dismiss
 
+    /// paywall_shown 的 source — 由 presenter 传入 (new_plan_cap/save_cap/tune/optimize/charts/...).
+    /// 默认 "unknown" — 现有 .sheet 调用点不传不报错 (Phase 0 不改各 presenter 签名).
+    var source: String = "unknown"
+
     @State private var selectedPlan: SubscriptionTier = .yearly
     @State private var processing: Bool = false
     @State private var showConfirm: Bool = false
@@ -86,6 +90,8 @@ struct PaywallScreen: View {
         // 进 paywall 时如果还没 load products, 触发一次 load. SubscriptionManager.configure
         // 已经在 app 启动时跑过, 这里是兜底 — 万一第一次 load 失败, paywall 弹出再试一次.
         .task {
+            // paywall_shown — 单次曝光 (source 由 presenter 传入, 默认 unknown).
+            Analytics.shared.track("paywall_shown", ["source": .string(source)])
             if subs.products.isEmpty {
                 await subs.loadProducts()
             }
@@ -281,10 +287,17 @@ struct PaywallScreen: View {
 
     private func handlePurchase() {
         guard let product = subs.product(for: selectedPlan) else { return }
+        let plan = selectedPlan.rawValue
+        let introEligibleNow = introEligible.contains(selectedPlan)
+        // paywall_purchase_attempt — 点购买之前 (无 PII: 档位枚举 + 试用资格).
+        Analytics.shared.track("paywall_purchase_attempt", [
+            "plan": .string(plan), "intro_eligible": .bool(introEligibleNow),
+        ])
         processing = true
         Task {
             let ok = await subs.purchase(product)
             processing = false
+            Analytics.shared.track("paywall_purchase_result", ["plan": .string(plan), "success": .bool(ok)])
             if ok {
                 Haptics.trainingComplete()
                 showConfirm = true
@@ -299,7 +312,9 @@ struct PaywallScreen: View {
             await subs.restore()
             processing = false
             // restore 成功且现在是 Pro → 弹同款庆祝 alert
-            if subs.currentSubscription != nil {
+            let restored = subs.currentSubscription != nil
+            Analytics.shared.track("paywall_restore_result", ["restored": .bool(restored)])
+            if restored {
                 showConfirm = true
             }
         }

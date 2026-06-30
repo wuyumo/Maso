@@ -95,6 +95,13 @@ struct SettingsScreen: View {
                         ])
                     }
                 }
+                // settings_toggle — 单位类设置改动 (无 PII: key + value 枚举).
+                .onChange(of: data.settings.weightUnit) { _, v in
+                    Analytics.shared.track("settings_toggle", ["key": .string("weight_unit"), "value": .string(v.rawValue)])
+                }
+                .onChange(of: data.settings.weekStartDay) { _, v in
+                    Analytics.shared.track("settings_toggle", ["key": .string("week_start"), "value": .string(v.rawValue)])
+                }
 
                 // Apple 健康 — 在 UI 里明确标识 HealthKit 功能 (Apple 2.5.1: 用了 HealthKit 必须可见地告知用户).
                 // 开关打开 → 弹系统授权; 之后完成的训练写入 Apple 健康. 默认关 (用户主动开启).
@@ -108,7 +115,20 @@ struct SettingsScreen: View {
                                 data.settings.healthKitSyncEnabled = on
                                 // 开启时拉起系统 HealthKit 授权对话框; 关闭则只停写新数据 (已写入的不动).
                                 if on {
-                                    Task { try? await HealthKitService.shared.requestAuthorization() }
+                                    Task {
+                                        // settings_toggle (health) — 带授权结果. requestAuthorization throws → 视为未授权.
+                                        var granted = false
+                                        do { try await HealthKitService.shared.requestAuthorization(); granted = true }
+                                        catch { granted = false }
+                                        Analytics.shared.track("settings_toggle", [
+                                            "key": .string("health"), "value": .string("on"),
+                                            "permission_granted": .bool(granted),
+                                        ])
+                                    }
+                                } else {
+                                    Analytics.shared.track("settings_toggle", [
+                                        "key": .string("health"), "value": .string("off"),
+                                    ])
                                 }
                             }
                         )
@@ -130,10 +150,20 @@ struct SettingsScreen: View {
                                         let granted = await WorkoutReminderScheduler.shared.requestAuthorization()
                                         data.settings.workoutRemindersEnabled = granted  // 被拒 → 弹回 off
                                         if granted { data.rescheduleWorkoutReminders() }
+                                        // settings_toggle (reminders) + reminder_opt_in — accepted = 最终授权结果.
+                                        Analytics.shared.track("settings_toggle", [
+                                            "key": .string("reminders"), "value": .string(granted ? "on" : "off"),
+                                            "permission_granted": .bool(granted),
+                                        ])
+                                        Analytics.shared.track("reminder_opt_in", ["accepted": .bool(granted)])
                                     }
                                 } else {
                                     data.settings.workoutRemindersEnabled = false
                                     WorkoutReminderScheduler.shared.cancelAll()
+                                    Analytics.shared.track("settings_toggle", [
+                                        "key": .string("reminders"), "value": .string("off"),
+                                    ])
+                                    Analytics.shared.track("reminder_opt_in", ["accepted": .bool(false)])
                                 }
                             }
                         )
@@ -147,6 +177,11 @@ struct SettingsScreen: View {
                         desc: "When on, changing an exercise's sets, reps, weight, or rest in one routine (or during a workout) updates it everywhere that exercise appears. When off, each routine keeps its own params, and a new routine starts an exercise from your most recent values.",
                         isOn: $data.settings.globalExerciseParamSyncEnabled
                     )
+                }
+                .onChange(of: data.settings.globalExerciseParamSyncEnabled) { _, on in
+                    Analytics.shared.track("settings_toggle", [
+                        "key": .string("exercise_sync"), "value": .string(on ? "on" : "off"),
+                    ])
                 }
 
                 // 语言
@@ -226,6 +261,22 @@ struct SettingsScreen: View {
                         desc: "Force-unlocks all Pro features for testing. Debug builds only — this toggle never ships to the App Store.",
                         isOn: $data.settings.debugProUnlock
                     )
+                    Divider().background(MasoColor.borderSoft)
+                    // 本地分析事件查看器 — 看 track() 真的在触发 (Phase 0 NoOpSink, 事件只在本机).
+                    NavigationLink(destination: AnalyticsInspectorScreen()) {
+                        HStack {
+                            Text("Analytics events")
+                                .font(.system(size: 15))
+                                .foregroundStyle(MasoColor.text)
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.system(size: 13, weight: .semibold))
+                                .foregroundStyle(MasoColor.textDim)
+                        }
+                        .padding(.vertical, 6)
+                        .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
                 }
                 #endif
 

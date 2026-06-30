@@ -15,6 +15,18 @@ struct OnboardingScreen: View {
     private enum Step: Int, CaseIterable {
         case gender = 1, goal, age, weight, days, focus, equipment
         static let total = Step.allCases.count
+        /// 步骤短名 — 分析事件 to_step_name 用 (无 PII, 纯枚举名).
+        var name: String {
+            switch self {
+            case .gender: return "gender"
+            case .goal: return "goal"
+            case .age: return "age"
+            case .weight: return "weight"
+            case .days: return "days"
+            case .focus: return "focus"
+            case .equipment: return "equipment"
+            }
+        }
     }
 
     @State private var step: Step = .gender
@@ -38,6 +50,8 @@ struct OnboardingScreen: View {
     @State private var generating = false
     /// 真 AI 首份计划生成完成 (成功或回落) → 过渡页"Building"步据此落定, 把动画绑到真实调用延迟.
     @State private var aiReady = false
+    /// onboarding_start 只报一次 (root body 首次出现于 gender 步时).
+    @State private var didTrackStart = false
 
     var body: some View {
         ZStack {
@@ -64,6 +78,13 @@ struct OnboardingScreen: View {
             if generating {
                 AIGeneratingView(isReady: aiReady, onComplete: onDone)
                     .transition(.opacity)
+            }
+        }
+        // onboarding_start — 引导首屏 (gender 步) 出现时一次性上报.
+        .onAppear {
+            if !didTrackStart, step == .gender {
+                didTrackStart = true
+                Analytics.shared.track("onboarding_start")
             }
         }
     }
@@ -343,12 +364,22 @@ struct OnboardingScreen: View {
     // MARK: - 导航 / 选择
 
     private func advance(to s: Step) {
+        Analytics.shared.track("onboarding_step_advance", [
+            "to_step": .int(s.rawValue),
+            "to_step_name": .string(s.name),
+            "direction": .string("forward"),
+        ])
         goingForward = true
         withAnimation(.spring(response: 0.42, dampingFraction: 0.85)) { step = s }
     }
 
     private func goBack() {
         guard let prev = Step(rawValue: step.rawValue - 1) else { return }
+        Analytics.shared.track("onboarding_step_advance", [
+            "to_step": .int(prev.rawValue),
+            "to_step_name": .string(prev.name),
+            "direction": .string("back"),
+        ])
         goingForward = false
         withAnimation(.spring(response: 0.42, dampingFraction: 0.85)) { step = prev }
     }
@@ -379,6 +410,32 @@ struct OnboardingScreen: View {
         switch g { case .male: return "Male"; case .female: return "Female"; case .other: return "Other" }
     }
 
+    /// 年龄分桶 — 事件里只报区间, 不报原值 (无 PII).
+    private static func ageBand(_ age: Int) -> String {
+        switch age {
+        case ..<18: return "<18"
+        case 18...24: return "18-24"
+        case 25...34: return "25-34"
+        case 35...44: return "35-44"
+        case 45...54: return "45-54"
+        case 55...64: return "55-64"
+        default: return "65+"
+        }
+    }
+
+    /// 体重 (kg) 分桶 — 事件里只报区间, 不报原值 (无 PII).
+    private static func weightBand(_ kg: Double) -> String {
+        switch kg {
+        case ..<50: return "<50"
+        case 50..<60: return "50-59"
+        case 60..<70: return "60-69"
+        case 70..<80: return "70-79"
+        case 80..<90: return "80-89"
+        case 90..<100: return "90-99"
+        default: return "100+"
+        }
+    }
+
     private func confirm() {
         data.settings.gender = gender
         // ⚠️ 先写 trainingGoalKind —— didSet 会级联设 trainingGoal + defaultRestSeconds.
@@ -390,6 +447,16 @@ struct OnboardingScreen: View {
         data.settings.wantStrengthen = Array(strengthen)
         data.settings.availableEquipment = equipment.map { $0.rawValue }   // 器材约束 → 首份计划只用可用器材
         data.flushSave()   // 先持久化偏好 (即使 AI 调用挂掉, 偏好也已落盘)
+        // onboarding_complete — 画像锁定时上报. ⚠️ 无 PII: 年龄/体重**分桶** (非原值), 其余只报计数/枚举.
+        Analytics.shared.track("onboarding_complete", [
+            "gender": .string(gender?.rawValue ?? "unspecified"),
+            "goal_kind": .string((goal ?? .buildMuscle).rawValue),
+            "age_band": .string(Self.ageBand(age)),
+            "weight_band": .string(Self.weightBand(weight)),
+            "weekly_days": .int(daysPerWeek),
+            "focus_count": .int(strengthen.count),
+            "equipment_count": .int(equipment.count),
+        ])
         // ⚠️ 不在这里置 onboardingCompleted —— RootView 用它做门控, 一置就立刻切走 OnboardingScreen,
         //    "AI 生成中"过渡(generating overlay 挂在 OnboardingScreen 上)就来不及显示.
         //    改由过渡结束时的 onDone() 去置 (见 RootView). 这里只点亮过渡.

@@ -530,6 +530,7 @@ private struct RoutineImportFlow: ViewModifier {
             }
             .onChange(of: pickedImage) { _, img in
                 guard let img else { return }
+                Analytics.shared.track("image_import_start")   // 选了一张图开始解析 — 无 PII
                 generation += 1
                 let myGen = generation
                 parsing = true
@@ -540,10 +541,17 @@ private struct RoutineImportFlow: ViewModifier {
                         guard myGen == generation else { return }   // 又选了一张 → 丢弃这次过期结果
                         parsing = false
                         pickedImage = nil
+                        // image_import_result — 解析结果类型 (qr / ocr / empty), 无 PII.
                         switch result {
-                        case .deepLink(let plan):      imported = plan                       // QR 分享卡 → 完整预览
-                        case .recognized(let cands):   review = RoutineReviewPayload(candidates: cands)  // 截图 → 确认页
-                        case .empty:                   failed = true
+                        case .deepLink(let plan):
+                            Analytics.shared.track("image_import_result", ["result": .string("qr")])
+                            imported = plan                       // QR 分享卡 → 完整预览
+                        case .recognized(let cands):
+                            Analytics.shared.track("image_import_result", ["result": .string("ocr")])
+                            review = RoutineReviewPayload(candidates: cands)  // 截图 → 确认页
+                        case .empty:
+                            Analytics.shared.track("image_import_result", ["result": .string("empty")])
+                            failed = true
                         }
                     }
                 }
@@ -551,6 +559,10 @@ private struct RoutineImportFlow: ViewModifier {
             .sheet(item: $imported) { plan in
                 ImportedPlanSheet(plan: plan, onAdd: { p in
                     imported = nil
+                    // image_import_commit — 真加进库 (QR 路径). 无 PII: 只报识别数 + 结果类型.
+                    Analytics.shared.track("image_import_commit", [
+                        "recognized_count": .int(p.steps.count), "result": .string("qr"),
+                    ])
                     DispatchQueue.main.async {
                         data.plans.append(p)
                         data.save()
@@ -563,6 +575,10 @@ private struct RoutineImportFlow: ViewModifier {
             .sheet(item: $review) { payload in
                 RoutineReviewSheet(candidates: payload.candidates, onCommit: { p in
                     review = nil
+                    // image_import_commit — 真加进库 (OCR 路径). 无 PII: 只报识别数 + 结果类型.
+                    Analytics.shared.track("image_import_commit", [
+                        "recognized_count": .int(p.steps.count), "result": .string("ocr"),
+                    ])
                     DispatchQueue.main.async {
                         data.plans.append(p)
                         data.save()

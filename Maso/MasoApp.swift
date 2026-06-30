@@ -62,15 +62,44 @@ struct MasoApp: App {
                     dataStore.save()
                     // 进后台时以"最近一次训练"为基重排召回提醒 (开关关时只清除).
                     dataStore.rescheduleWorkoutReminders()
+                    // 分析: app_background + flush 缓冲. 这是 scenePhase 的**唯一**根级站点 —
+                    // RootView 也有个 scenePhase handler 但只做 feedback/HK/AI, 不报生命周期事件 (防双发).
+                    Analytics.shared.handleBackground()
                 }
                 // 回前台 → 刷一次 entitlements (用户可能在 Settings.app 改了订阅状态)
                 if newPhase == .active {
                     Task { await subscriptions.refreshEntitlements() }
+                    Analytics.shared.handleForeground()
                 }
             }
             // configure SubscriptionManager — 注入 callback 让 StoreKit entitlement 变化时
             // 自动写到 dataStore.settings.proSubscription. .task 保证只跑一次.
             .task {
+                // 产品分析 boot — Phase 0: NoOpSink (事件只缓冲本地, 不离开设备).
+                // 注入门控/信封上下文 (读 settings 的 anon_id + opt-out); 先确保 anon_id 已铸.
+                dataStore.mintAnonymousIdIfNeeded()
+                Analytics.shared.configure(
+                    sink: NoOpSink(),
+                    context: { [weak dataStore] in
+                        Analytics.Context(
+                            anonymousId: dataStore?.settings.anonymousId ?? "",
+                            optOut: dataStore?.settings.analyticsOptOut ?? false
+                        )
+                    }
+                )
+                // app_launch — is_fresh_install / onboarding_completed / days_since_install (无 PII).
+                let isFresh = dataStore.sets.isEmpty && dataStore.plans.isEmpty
+                    && !dataStore.settings.onboardingCompleted
+                let daysSinceInstall: Int = {
+                    guard let earliest = dataStore.sets.map(\.performedAt).min() else { return 0 }
+                    return max(0, Int(Date().timeIntervalSince(earliest) / 86400))
+                }()
+                Analytics.shared.track("app_launch", [
+                    "is_fresh_install": .bool(isFresh),
+                    "onboarding_completed": .bool(dataStore.settings.onboardingCompleted),
+                    "days_since_install": .int(daysSinceInstall),
+                ])
+
                 subscriptions.configure { newSub in
                     // 只在变化时写 + save, 避免每次 currentEntitlements 触发都 mark dirty.
                     if dataStore.settings.proSubscription != newSub {

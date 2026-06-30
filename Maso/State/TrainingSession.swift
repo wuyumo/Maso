@@ -93,11 +93,19 @@ final class TrainingSessionStore {
     /// 训练超过 N 小时无交互 → 自动判定完成 (避免用户关机后还挂着上一天的训练)
     static let autoCompleteAfter: TimeInterval = 6 * 60 * 60  // 6h
 
-    func start(planId: String, plan: Plan?, segments: [Segment]) {
+    func start(planId: String, plan: Plan?, segments: [Segment], source: String = "unknown") {
         endedExplicitly = false
         self.plan = plan
         self.segments = segments
         self.planParamsDirty = false  // 新一次训练 — 重置改动标志
+        // workout_start — 唯一的开练入口 (所有 UI start 路径汇到这). restorePersistedSession 是冷启
+        // 恢复, 不走这里, 故不会双发. planId 哈希后报 (无 PII), step_count = exercise 段数.
+        let stepCount = segments.filter { if case .exercise = $0.kind { return true }; return false }.count
+        Analytics.shared.track("workout_start", [
+            "source": .string(source),
+            "step_count": .int(stepCount),
+            "planId_hash": .string(DataStore.hashedPlanId(planId)),
+        ])
         let seg = segments.first
         let endsAt = initialEndsAt(for: seg)
         session = Session(
@@ -190,6 +198,7 @@ final class TrainingSessionStore {
         s.playing = false
         s.endsAt = nil
         session = s
+        trackFinish(s, finishType: "auto_idle")   // 6h 闲置自动完成 — 分析里单独标, 应从"完成率"剔除
         LiveActivityManager.shared.end()
         syncWatch()
     }
@@ -374,8 +383,16 @@ final class TrainingSessionStore {
         // —— advance() 是"用户点打勾 / 倒计时自然走完", 是真完成. setIndex 不走这里.
         // 守卫: 已完成的 (stepId, setN) 再打勾不重复记录 (用户 setIndex 跳回已完成组再点✓ 的场景).
         // 否则 data.sets 多一条幽灵记录 → 历史容量双计 + 分享卡组数对不上 + QR 多一组.
-        if let cur = currentSegment, case .exercise(let ex, let setN, _, let reps, let weight, let dur, _) = cur.kind,
+        if let cur = currentSegment, case .exercise(let ex, let setN, _, let reps, let weight, let dur, let countdown) = cur.kind,
            !s.completedSets.contains(CompletedSet(stepId: cur.stepId, setN: setN)) {
+            // workout_complete_set — 真完成一组 (打勾 / 倒计时走完). 无 PII: 不带动作名/重量.
+            //   kind: strength/cardio 派生自 category; trigger: countdown 段 = countdown, 否则 manual.
+            let setKind = (ex.category == .cardio) ? "cardio" : "strength"
+            Analytics.shared.track("workout_complete_set", [
+                "set_index": .int(setN),
+                "kind": .string(setKind),
+                "trigger": .string(countdown ? "countdown" : "manual"),
+            ])
             let rec = SetRecord(
                 id: UUID().uuidString,
                 exerciseId: ex.id,
@@ -409,6 +426,7 @@ final class TrainingSessionStore {
             s.playing = false
             s.endsAt = nil
             session = s
+            trackFinish(s, finishType: "natural")   // 自然走完最后一段
             Haptics.trainingComplete() // DESIGN 7: 训练完成触觉
             LiveActivityManager.shared.end()
             syncWatch()
@@ -480,9 +498,24 @@ final class TrainingSessionStore {
         s.endsAt = nil
         s.lastActiveAt = Date()
         session = s
+        trackFinish(s, finishType: "early")   // 用户主动 End 提前收工
         Haptics.trainingComplete()
         LiveActivityManager.shared.end()
         syncWatch()
+    }
+
+    /// workout_finish 上报 — 三处 (natural / early / auto_idle) 共用. 无 PII: 只报计数 + 时长 + 类型.
+    /// total_sets = 计划里 exercise 段总数; done_sets = 真完成组数 (completedSets); duration 秒.
+    private func trackFinish(_ s: Session, finishType: String) {
+        let totalSets = segments.filter { if case .exercise = $0.kind { return true }; return false }.count
+        let doneSets = s.completedSets.count
+        let durationSec = max(0, Int(Date().timeIntervalSince(s.startedAt)))
+        Analytics.shared.track("workout_finish", [
+            "finish_type": .string(finishType),
+            "total_sets": .int(totalSets),
+            "done_sets": .int(doneSets),
+            "duration_sec": .int(durationSec),
+        ])
     }
 
     /// "上一段" — 跳过休息直接回到上一个动作

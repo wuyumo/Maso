@@ -5,6 +5,9 @@ import Foundation
 /// 审核看不到"能点不能买"的购买流. 等付费协议 Active 后改回 true 再发版把内购加回来.
 enum MasoFlags {
     static let iapEnabled = true
+    /// 产品分析编译期总开关. true → 事件按门控 (用户 opt-out / showcase) 缓冲到本地;
+    /// Phase 0 默认 NoOpSink, 不离开设备. false → track() 全静默 (彻底关).
+    static let analyticsEnabled = true
 }
 
 enum WeightUnit: String, Codable, Sendable { case kg, lb }
@@ -234,6 +237,15 @@ struct UserSettings: Codable, Sendable {
             defaultRestSeconds = trainingGoalKind.recommendedRestSeconds()
         }
     }
+
+    /// 匿名安装 ID — 产品分析的 anon_id. 每安装一个 UUID, 删除重装即重置 (非设备级, 不用 IDFV/IDFA).
+    /// 跟其它 UserSettings 字段一起进 maso-data.json 快照 (含 iCloud Backup). DataStore bootstrap /
+    /// freshInstall 时若为空就铸一个. Codable 有默认值 → 老数据安全解码.
+    var anonymousId: String = UUID().uuidString
+
+    /// 用户是否选择退出匿名使用统计 — 默认 false (opt-IN). Phase 0 仅作门控逻辑用 (Analytics 读它),
+    /// 还没有 Settings UI 行 (Phase 1 才加"分享匿名使用数据"开关). Codable 默认值 → 老数据安全解码.
+    var analyticsOptOut: Bool = false
 }
 
 /// 用户面训练目标 (5 档) — 比内部 TrainingGoal (strength/hypertrophy/endurance) 更贴用户心智.

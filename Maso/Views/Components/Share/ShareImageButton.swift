@@ -86,6 +86,9 @@ struct ShareImageButton<ShareContent: View, Label: View>: View {
     /// 用户在 sheet 改照片时回调, 把照片持久化到 DataStore.
     /// 传 nil image = 用户点 Remove → caller 应清掉持久化的照片.
     var onPersistPhoto: ((UIImage?) -> Void)? = nil
+    /// 分享卡来源 (workout_complete/history/calendar) — 用于 workout_share 事件. 默认 unknown,
+    /// 现有 caller 不传不报错 (Phase 0 不改各调用点签名).
+    var shareSurface: String = "unknown"
     @ViewBuilder let label: () -> Label
 
     @State private var showCustomize = false
@@ -98,6 +101,7 @@ struct ShareImageButton<ShareContent: View, Label: View>: View {
                     previewTitle: previewTitle,
                     defaultSections: defaultSections,
                     initialPhoto: initialPhoto,
+                    shareSurface: shareSurface,
                     shareContent: shareContent,
                     onPersistPhoto: onPersistPhoto
                 )
@@ -115,6 +119,7 @@ struct ShareCustomizeSheet<ShareContent: View>: View {
     let previewTitle: String
     let defaultSections: ShareSections
     let initialPhoto: UIImage?
+    let shareSurface: String
     @ViewBuilder let shareContent: (UIImage?, (() -> Void)?, ShareCardMode) -> ShareContent
     var onPersistPhoto: ((UIImage?) -> Void)? = nil
 
@@ -135,12 +140,14 @@ struct ShareCustomizeSheet<ShareContent: View>: View {
         previewTitle: String,
         defaultSections: ShareSections,
         initialPhoto: UIImage?,
+        shareSurface: String = "unknown",
         @ViewBuilder shareContent: @escaping (UIImage?, (() -> Void)?, ShareCardMode) -> ShareContent,
         onPersistPhoto: ((UIImage?) -> Void)? = nil
     ) {
         self.previewTitle = previewTitle
         self.defaultSections = defaultSections
         self.initialPhoto = initialPhoto
+        self.shareSurface = shareSurface
         self.shareContent = shareContent
         self.onPersistPhoto = onPersistPhoto
         _sections = State(initialValue: defaultSections)
@@ -226,6 +233,8 @@ struct ShareCustomizeSheet<ShareContent: View>: View {
                     ActivityViewController(activityItems: [img]) { completed in
                         renderedImage = nil
                         if completed {
+                            // workout_share — 用户真的完成了分享 (选了某 activity). 无 PII: 只报 surface.
+                            Analytics.shared.track("workout_share", ["surface": .string(shareSurface)])
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) { dismiss() }
                         }
                     }

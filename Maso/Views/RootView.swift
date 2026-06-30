@@ -44,6 +44,15 @@ struct RootView: View {
     @Environment(\.scenePhase) private var scenePhase
 
     @State private var tab: RootTab = .today
+    /// RootTab → 分析事件 tab 名 (无 PII, 纯枚举名).
+    private static func tabName(_ t: RootTab) -> String {
+        switch t {
+        case .plans: return "plans"
+        case .today: return "today"
+        case .library: return "library"
+        case .history: return "history"
+        }
+    }
     /// "Train" tab 当前分页 (My Plans / Exercise Library). 提到 RootView 以便 showcase / 路由能切.
     @State private var trainPage: TrainPage = .plans
     /// 反馈队列 — 没 inject 进 environment, 因为它只在 Settings + scenePhase 监听里用,
@@ -124,6 +133,8 @@ struct RootView: View {
             // (confirm() 不再当场置位, 否则过渡 overlay 来不及显示, 见 OnboardingScreen.confirm.)
             OnboardingScreen {
                 data.settings.onboardingCompleted = true
+                // reached_home — 引导过渡跑完、首次进主界面 (含 AI 首份计划是否失败).
+                Analytics.shared.track("reached_home", ["ai_today_failed": .bool(data.aiTodayFailed)])
                 data.flushSave()
             }
                 .transition(.opacity)
@@ -227,6 +238,10 @@ struct RootView: View {
                 .tag(RootTab.history)
             }
             .tint(MasoColor.accent)
+            // tab_switch — 用户切底 Tab (含程序化切换都流经这, 见 router.requestedTab / showcase).
+            .onChange(of: tab) { _, newTab in
+                Analytics.shared.track("tab_switch", ["tab": .string(Self.tabName(newTab))])
+            }
             // "AI 正在按新偏好重算计划" loading 浮层 — 离开 Training Preferences 且改过设置时显示 ~0.9s.
             .overlay { tailoringPlansOverlay }
             .animation(.easeInOut(duration: 0.25), value: data.isTailoringPlans)
@@ -742,8 +757,20 @@ struct RootView: View {
             defaultRest: data.settings.defaultRestSeconds,
             defaultBetweenExerciseRest: data.settings.defaultBetweenExerciseRestSeconds
         )
-        session.start(planId: plan.id, plan: plan, segments: segments)
+        session.start(planId: plan.id, plan: plan, segments: segments, source: Self.workoutSource(for: plan))
         playerPresented = true
+    }
+
+    /// 训练来源分类 (无 PII) — 按 plan id 前缀 + resolvedSource 推断, 供 workout_start 的 source.
+    private static func workoutSource(for plan: Plan) -> String {
+        if plan.id.hasPrefix("qw-") { return "free" }
+        if plan.id.hasPrefix("session-replay-") { return "replay" }
+        if plan.id.hasPrefix("plan-gap-") { return "gap" }
+        switch plan.resolvedSource {
+        case .ai: return "ai"
+        case .classics: return "classic"
+        case .custom: return "recommended"
+        }
     }
 }
 

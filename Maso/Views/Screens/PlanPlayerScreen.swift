@@ -1258,7 +1258,10 @@ private struct ExerciseInfo: View {
                         metric(value: "\(r)", label: NSLocalizedString("Reps", comment: ""))
                     }
                     if let w = weight, w > 0 {
-                        Button(action: { plateCalcOpen = true }) {
+                        Button(action: {
+                            Analytics.shared.track("plate_calculator_open")   // 无 PII
+                            plateCalcOpen = true
+                        }) {
                             metric(value: "\(weightLabel(w))", label: NSLocalizedString("Weight", comment: ""))
                         }
                         .buttonStyle(.plain)

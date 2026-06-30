@@ -1,6 +1,7 @@
 import Foundation
 import Observation
 import UIKit
+import CryptoKit
 
 // 应用级数据仓库 — MVP 阶段用 in-memory mock; 后续可接 SwiftData / CoreData
 //
@@ -88,6 +89,7 @@ final class DataStore {
     func adoptNicheExercise(_ id: String) {
         guard !settings.adoptedNicheExerciseIds.contains(id) else { return }
         settings.adoptedNicheExerciseIds.append(id)
+        Analytics.shared.track("niche_exercise_adopt")   // 无 PII: 不带动作 ID/名
         save()
     }
 
@@ -101,6 +103,7 @@ final class DataStore {
     /// id 由 caller 给 (推荐 "custom-{UUID}" 格式), 防止跟 bundle ID 冲突.
     func addCustomExercise(_ ex: Exercise) {
         settings.customExercises.append(ex)
+        Analytics.shared.track("custom_exercise_add")   // 无 PII: 不带名字/图
         save()
     }
 
@@ -131,6 +134,10 @@ final class DataStore {
         } else {
             settings.coachMemory += "\n" + bullet
         }
+        // 无 PII: 只报去重后的笔记总条数 (按行数), 不带笔记文本.
+        let noteCount = settings.coachMemory
+            .split(separator: "\n", omittingEmptySubsequences: true).count
+        Analytics.shared.track("coach_note_append", ["note_count": .int(noteCount)])
         save()
     }
 
@@ -168,6 +175,8 @@ final class DataStore {
             )
             store.aiTodayPlan = snapshot.aiTodayPlan
             store.lastAIRefreshAt = snapshot.lastAIRefreshAt
+            // 匿名分析 ID — 老快照 (UserSettings.anonymousId 字段加之前存的) 解码会落空串, 这里补铸一个.
+            store.mintAnonymousIdIfNeeded()
             // 一次性迁移 (→ v3, #IA): My Plans 改成"只放用户主动 save 的". 清掉历史自动塞进去的
             // 推荐计划 (plan-full/bal/push/pull/legs/comrec 前缀). 用户自建 (plan-new) / 已 save
             // (plan-saved) / 已采纳社区 (plan-community) 全保留; 历史 / 设置不动. 存盘后 version=3 不再跑.
@@ -184,9 +193,21 @@ final class DataStore {
         // ⚠️ 绝不能用 makeMock() —— 它带假训练历史 + 假画像 (男/30/75) + onboardingCompleted=true,
         //    会让真实新用户跳过引导、看到自己没做过的训练. makeMock 仅供 SwiftUI Preview / 演示.
         let store = freshInstall()
+        store.mintAnonymousIdIfNeeded()
         store.flushSave()
         return store
     }
+
+    /// 匿名分析 ID 为空时铸一个并标记需保存 (不在此立即 flush — caller 的 flushSave/save 会带上).
+    /// UserSettings() 默认 anonymousId 已是 UUID, 但老快照解码出空串 / 或被清过时这里兜底.
+    func mintAnonymousIdIfNeeded() {
+        if settings.anonymousId.isEmpty {
+            settings.anonymousId = UUID().uuidString
+        }
+    }
+
+    /// Analytics 服务读的匿名 ID 访问器 (信封 anon_id).
+    var anonymousId: String { settings.anonymousId }
 
     /// 全新安装 (无存档) 的起始数据 — 空 plans/sets, onboardingCompleted=false (UserSettings() 默认).
     /// 没有任何假历史 / 假画像 / 预生成计划; 这些等用户走完引导再由 onboarding 生成.
@@ -761,7 +782,14 @@ final class DataStore {
     ///   1. 把 plan.lastUsedAt 推进到这次的时间 (用于 pickTodayPlan 的 LRU 排序)
     ///   2. 更新 plan.updatedAt
     func recordSet(_ record: SetRecord) {
+        // workout_day_first: 当这条 set 让"有训练记录的日历日"集合首次新增这一天时, 报一次
+        // (drives 留存"returned" 信号). 用插入前后的 distinct-day count 判断, 无 PII.
+        let beforeDays = completedWorkoutCount
         sets.insert(record, at: 0)
+        let afterDays = completedWorkoutCount
+        if afterDays > beforeDays {
+            Analytics.shared.track("workout_day_first", ["distinct_day_count": .int(afterDays)])
+        }
         if let pid = record.planId, let idx = plans.firstIndex(where: { $0.id == pid }) {
             plans[idx].lastUsedAt = record.performedAt
             plans[idx].updatedAt = record.performedAt
@@ -781,6 +809,7 @@ final class DataStore {
         guard !settings.hasRequestedReview else { return false }
         guard completedWorkoutCount >= 3 else { return false }
         settings.hasRequestedReview = true
+        Analytics.shared.track("review_prompt_offered")
         save()
         return true
     }
@@ -792,6 +821,7 @@ final class DataStore {
         guard !settings.workoutRemindersEnabled else { return false }
         guard completedWorkoutCount >= 2 else { return false }
         settings.hasOfferedReminderPrompt = true
+        Analytics.shared.track("reminder_prompt_offered")
         save()
         return true
     }
@@ -865,6 +895,7 @@ final class DataStore {
             updatedAt: now
         )
         plans.append(plan)
+        Analytics.shared.track("routine_create_blank")
         save()  // 持久化变更
         return plan
     }
@@ -905,7 +936,14 @@ final class DataStore {
     @discardableResult
     func savePlan(_ plan: Plan) -> Bool {
         if isPlanSaved(plan) { return true }
-        guard canSaveMorePlans else { return false }
+        guard canSaveMorePlans else {
+            // 撞免费上限 → 不保存 (调用方弹 paywall). 报一次 at-cap 的 save 尝试. 无 PII (来源枚举).
+            Analytics.shared.track("routine_save", [
+                "source": .string(plan.resolvedSource.rawValue),
+                "at_free_cap": .bool(true),
+            ])
+            return false
+        }
         let now = Date()
         let copy = Plan(
             id: "plan-saved-\(Int(now.timeIntervalSince1970))-\(UUID().uuidString.prefix(6))",
@@ -919,6 +957,10 @@ final class DataStore {
             rationale: plan.rationale      // 保留 AI 理由 → 存下来后卡上仍显示
         )
         plans.append(copy)
+        Analytics.shared.track("routine_save", [
+            "source": .string(copy.resolvedSource.rawValue),
+            "at_free_cap": .bool(false),
+        ])
         save()
         return true
     }
@@ -932,6 +974,13 @@ final class DataStore {
 
     private static func planSignature(_ plan: Plan) -> String {
         plan.name + "\u{1}" + plan.steps.map(\.exerciseId).joined(separator: ",")
+    }
+
+    /// planId → SHA256 前 8 位十六进制 — 给分析事件用. 稳定 (同 install 同 plan 同值) 但不可逆回标题,
+    /// 故无 PII. 用 CryptoKit, 不引入依赖.
+    static func hashedPlanId(_ planId: String) -> String {
+        let digest = SHA256.hash(data: Data(planId.utf8))
+        return digest.prefix(4).map { String(format: "%02x", $0) }.joined()  // 4 字节 = 8 hex 字符
     }
 
     /// 关 sheet 时调用 — 如果用户开了"新建"但一个动作都没加, 自动清理掉, 不留空 plan
@@ -948,6 +997,12 @@ final class DataStore {
     /// 当前正在训练的 session 不会因 plan 删除而失效 — store.plan 是 session-local 副本.
     func deletePlan(_ planId: String) {
         guard let idx = plans.firstIndex(where: { $0.id == planId }) else { return }
+        let plan = plans[idx]
+        let ageDays = max(0, Int(Date().timeIntervalSince(plan.createdAt) / 86400))
+        Analytics.shared.track("routine_delete", [
+            "source": .string(plan.resolvedSource.rawValue),
+            "age_days": .int(ageDays),
+        ])
         plans.remove(at: idx)
         save()
     }
@@ -1098,7 +1153,8 @@ final class DataStore {
         guard AIWorkoutService.isConfigured else { return }
         let payload = buildAIPayload()
         if let plan = await AIWorkoutService.shared.generateToday(
-            payload: payload, library: exercises, maxExercises: settings.exercisesPerSession) {
+            payload: payload, library: exercises, maxExercises: settings.exercisesPerSession,
+            surface: "onboarding") {
             aiTodayPlan = applyScience(to: plan)
             lastAIRefreshAt = Date()
             aiTodayFailed = false
@@ -1112,7 +1168,7 @@ final class DataStore {
     /// 返回 (plans, 是否回落到纯本地). 失败/未配置 → 纯本地 + usedFallback=true.
     /// - parameter focusNote: optimize 建议卡传进来的本次侧重 (e.g. "bias the split toward legs"),
     ///   非 nil 时注进 prompt 的 PRIORITY 行, 让这批 routine 偏向修复诊断出的问题. 默认 nil = 普通生成.
-    func generateAIRoutines(focusNote: String? = nil) async -> (plans: [Plan], usedFallback: Bool) {
+    func generateAIRoutines(focusNote: String? = nil, surface: String = "ai_segment") async -> (plans: [Plan], usedFallback: Bool) {
         let local = DataStore.tunedRecommendedPlans(
             forDays: settings.weeklyTrainingDays, settings: settings,
             exById: exById, sets: sets, now: Date())
@@ -1124,7 +1180,7 @@ final class DataStore {
         payload.focusNote = focusNote
         if let aiPlans = await AIWorkoutService.shared.generateRoutines(
             payload: payload, library: exercises, count: count,
-            maxExercises: settings.exercisesPerSession), !aiPlans.isEmpty {
+            maxExercises: settings.exercisesPerSession, surface: surface), !aiPlans.isEmpty {
             // 科学化兜底: 每套真 AI routine 也过 enforceScience (复合优先 + 同 section ≤2 + slot-1 + push≥pull).
             return (aiPlans.map { applyScience(to: $0) }, false)
         }
