@@ -118,9 +118,20 @@ struct UserSettings: Codable, Sendable {
     /// (MVP 阶段是本地 mock, 生产环境接 StoreKit 2)
     var proSubscription: ProSubscription? = nil
 
+    /// ⚠️ 调试专用解锁 Pro — 仅 Debug 包里 Settings 的 "Debug" 开关能置位, 且 isPro 也仅在
+    /// #if DEBUG 下读它. Release/上架包既无 UI 可写、isPro 又不读 → 永远 false, 零影响
+    /// (字段本身保留只为 Codable 跨 Debug/Release 兼容). 测 Pro 功能用, 上线 archive 自动剔除逻辑.
+    var debugProUnlock: Bool = false
+
     /// iapEnabled = false (免费版上线) → 视为 Pro, 解锁所有 gate (无内购时不留功能墙).
     /// proSubscription 仍保持 nil — 不写假数据, 改回 iapEnabled = true 即恢复正常 free/pro 判定.
-    var isPro: Bool { !MasoFlags.iapEnabled || proSubscription != nil }
+    var isPro: Bool {
+        if !MasoFlags.iapEnabled || proSubscription != nil { return true }
+        #if DEBUG
+        if debugProUnlock { return true }   // 调试开关 — Release 包不编译这段
+        #endif
+        return false
+    }
 
     /// Apple Fitness (HealthKit) 同步开关.
     /// 用户在 Settings 主动打开 → 触发 HealthKit 授权对话框 → 已存训练补写 + 之后每次完成都写.

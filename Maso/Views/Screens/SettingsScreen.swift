@@ -217,6 +217,18 @@ struct SettingsScreen: View {
                     }
                 }
 
+                #if DEBUG
+                // ⚠️ 调试专用 — 整段被 #if DEBUG 包裹, Xcode archive 出的 Release/上架包**不编译**,
+                // 无需上线前手动删. install_iphone.sh 装的是 Debug 包, 故真机上能看到并使用.
+                Section_(title: "Debug") {
+                    ToggleRow(
+                        title: "Unlock Pro (debug)",
+                        desc: "Force-unlocks all Pro features for testing. Debug builds only — this toggle never ships to the App Store.",
+                        isOn: $data.settings.debugProUnlock
+                    )
+                }
+                #endif
+
                 Spacer(minLength: MasoMetrics.pageBottomInset)
             }
             .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
