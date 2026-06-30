@@ -113,6 +113,27 @@ final class DataStore {
         save()
     }
 
+    /// 教练记忆 (Coaching Memory) — append 一条用户用自然语言写下的偏好 / 限制.
+    /// AI 对话框发送时调 (那句话同时驱动本次重生成). 以 bullet ("- xxx") 累积成一份长期备忘,
+    /// 每次生成 routine 都注进 prompt. 去掉首尾空白后为空则忽略; 跟末行完全重复 (连续) 则不重复追加.
+    func appendCoachNote(_ note: String) {
+        let trimmed = note.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return }
+        let bullet = "- \(trimmed)"
+        // 避免跟最后一条完全相同的连续重复 (用户连发两次同一句).
+        let lastLine = settings.coachMemory
+            .split(separator: "\n", omittingEmptySubsequences: false)
+            .last
+            .map { $0.trimmingCharacters(in: .whitespaces) }
+        guard lastLine != bullet else { return }
+        if settings.coachMemory.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            settings.coachMemory = bullet
+        } else {
+            settings.coachMemory += "\n" + bullet
+        }
+        save()
+    }
+
     /// 这个 exercise id 是否被任何 plan step 或历史 set 引用 — 删除前查, 避免产生悬空 id
     /// (悬空后 exById 查不到 → BodyHint / 图回退 placeholder, displayName 失败).
     func isExerciseReferenced(_ id: String) -> Bool {
@@ -1291,7 +1312,12 @@ final class DataStore {
             goalRest: kind.recommendedRestSeconds(),
             equipment: EquipmentCategory.allCases
                 .filter { settings.availableEquipment.contains($0.rawValue) }
-                .map { $0.displayName }
+                .map { $0.displayName },
+            // 教练记忆 — 空白时传 nil (prompt 不注入这块). prompt 侧再做长度截断.
+            coachMemory: {
+                let trimmed = settings.coachMemory.trimmingCharacters(in: .whitespacesAndNewlines)
+                return trimmed.isEmpty ? nil : trimmed
+            }()
         )
     }
 

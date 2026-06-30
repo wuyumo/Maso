@@ -103,6 +103,12 @@ struct UserSettings: Codable, Sendable {
     var age: Int?
     var weight: Double?
 
+    /// 教练记忆 (Coaching Memory) — 用户用自然语言写下的长期训练偏好 / 限制
+    /// (e.g. "肩膀有伤,别过顶" / "偏好哑铃" / "想练线条"). 纯自由文本, 每次生成 routine
+    /// 时注进 prompt 让 AI 持续个性化. 来源两处: ① AI 对话框发送时自动 append; ② 训练偏好
+    /// sheet 里可直接读 / 改 / 清的多行编辑器. Codable 默认空串 → 老数据安全解码.
+    var coachMemory: String = ""
+
     /// 在「今日」页时, 再次点击高亮的中间 Tab 是否直接启动推荐训练
     /// true (默认): 二次点击 = 启动今日推荐训练 (快捷)
     /// false:       二次点击 = 无操作

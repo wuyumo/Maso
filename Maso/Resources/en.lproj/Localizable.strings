@@ -1124,6 +1124,11 @@
 
 /* Pro feature ① — AI Routines tab conversational refine + prefs summary */
 "Describe a change… e.g. make it harder" = "Describe a change… e.g. make it harder";
+"Tell the AI a preference or change in plain words — e.g. 'bad shoulder, no overhead'. It remembers." = "Tell the AI a preference or change in plain words — e.g. 'bad shoulder, no overhead'. It remembers.";
+
+/* Coaching memory — persistent free-text training preferences the AI reads every generation */
+"Coaching memory" = "Coaching memory";
+"Notes the AI uses every time it builds your routines — edit or clear anytime." = "Notes the AI uses every time it builds your routines — edit or clear anytime.";
 "I can't watch the video yet — paste the key moves or the plan from it and I'll work it in." = "I can't watch the video yet — paste the key moves or the plan from it and I'll work it in.";
 "Tuned for: %@" = "Tuned for: %@";
 "Focus: %@" = "Focus: %@";

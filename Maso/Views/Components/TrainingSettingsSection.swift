@@ -216,7 +216,17 @@ struct TrainingSettingsSection: View {
                 .foregroundStyle(MasoColor.textFaint)
                 .padding(.horizontal, MasoMetrics.cardPadding)
                 .padding(.top, 10)
+                .padding(.bottom, 4)
                 .frame(maxWidth: .infinity, alignment: .leading)
+
+            Divider().background(MasoColor.borderSoft)
+
+            // ─── Coaching memory ───
+            // 用户可读 / 可改 / 可清的"记忆文件" — AI 每次生成 routine 都读它 (DataStore.buildAIPayload
+            // → AIPayload.coachMemory → prompt). 来源: AI 对话框发送时自动 append, 这里直接编辑也行.
+            // live 写 settings.coachMemory (跟本 section 其它偏好同套路); 改它不 mark dirty / 不重生成,
+            // 只喂下一次生成. 落盘走 section .onDisappear / app 进后台 flushSave (跟其它 live 偏好一致).
+            coachMemorySection
         }
         // 关掉选肌群 sheet 只 mark dirty, 不立即 regen — 跟其它偏好一样, 等离开页面统一刷新.
         .sheet(isPresented: $showMusclePicker, onDismiss: { data.markRecommendedPlansDirty() }) {
@@ -242,6 +252,62 @@ struct TrainingSettingsSection: View {
         // 离开 Training Preferences (点 Done / 下拉关 sheet / 切走) 时, 若改过任何偏好就带 loading
         // 统一刷新 AI Plans —— 不再每动一下 stepper 就重算 (避免反复抖 + 让刷新成为一次明确动作).
         .onDisappear { data.commitRecommendedPlansIfDirty() }
+    }
+
+    // MARK: - Coaching memory
+
+    /// 教练记忆 — accent label + 多行 TextEditor (live 绑 settings.coachMemory) + 帮助文案 + Clear.
+    /// 视觉跟本 section 一致: surface 行底上叠一块 surfaceHi 的可编辑框, accent kicker.
+    @ViewBuilder
+    private var coachMemorySection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(spacing: 6) {
+                Image(systemName: "brain.head.profile")
+                    .font(.system(size: 10, weight: .heavy))
+                Text("Coaching memory")
+                    .font(.system(size: 12, weight: .bold))
+                    .tracking(0.5)
+                Spacer()
+                // 清空 — 仅有内容时出现.
+                if !data.settings.coachMemory.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                    Button {
+                        data.settings.coachMemory = ""
+                        data.save()
+                        Haptics.tap()
+                    } label: {
+                        Text("Clear")
+                            .font(.system(size: 12, weight: .semibold))
+                            .foregroundStyle(MasoColor.textDim)
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            .foregroundStyle(MasoColor.accent)
+
+            // 多行编辑器 — live 写 settings.coachMemory. 叠在 surfaceHi 上跟周围 surface 行区分开.
+            TextEditor(text: Binding(
+                get: { data.settings.coachMemory },
+                set: { data.settings.coachMemory = $0 }
+            ))
+            .font(.system(size: 14))
+            .foregroundStyle(MasoColor.text)
+            .scrollContentBackground(.hidden)
+            .frame(minHeight: 96)
+            .padding(.horizontal, 10)
+            .padding(.vertical, 6)
+            .background(MasoColor.surfaceHi)
+            .overlay(RoundedRectangle(cornerRadius: 12).stroke(MasoColor.borderSoft, lineWidth: 0.5))
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+
+            Text("Notes the AI uses every time it builds your routines — edit or clear anytime.")
+                .font(.system(size: 11))
+                .foregroundStyle(MasoColor.textFaint)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .padding(.horizontal, MasoMetrics.cardPadding)
+        .padding(.top, 14)
+        .padding(.bottom, 4)
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     /// "Gym equipment" 行右侧文案 — 空 = "All equipment"; 否则列大类名 (>2 用 "+N").

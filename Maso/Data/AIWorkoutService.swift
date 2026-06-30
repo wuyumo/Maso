@@ -430,7 +430,7 @@ final class AIWorkoutService {
         - Training days per week: \(p.daysPerWeek)
         - Wants to strengthen: \(strengthen)
         - Primary goal: \(p.goalLabel)
-        - Available equipment: \(p.equipmentLine)
+        - Available equipment: \(p.equipmentLine)\(p.coachMemoryBlock)
 
         RECENT WORKOUTS (last 14 days)
         \(recent)
@@ -492,7 +492,7 @@ final class AIWorkoutService {
         - Training days per week: \(p.daysPerWeek)
         - Wants to strengthen: \(strengthen)
         - Primary goal: \(p.goalLabel)
-        - Available equipment: \(p.equipmentLine)
+        - Available equipment: \(p.equipmentLine)\(p.coachMemoryBlock)
 
         RECENT WORKOUTS (last 14 days)
         \(recent)
@@ -709,11 +709,23 @@ struct AIPayload {
     /// 非空时往 GUIDELINES 末尾追加一条强优先级行, 让这次 routine 偏向修复诊断出的问题. 默认 nil = 不加.
     var focusNote: String? = nil
 
+    /// 教练记忆 (Coaching Memory) — 用户长期沉淀的自然语言偏好 / 限制 (DataStore 从 settings.coachMemory 注入).
+    /// 非空时往 USER PROFILE / GUIDELINES 区注一块, 让 AI 每次生成都遵守. 默认 nil = 不加.
+    var coachMemory: String? = nil
+
     /// prompt 里"可用器械"那行的成文 — 空时给"no restriction — assume a full gym".
     var equipmentLine: String {
         equipment.isEmpty
             ? "no restriction — assume a full gym"
             : equipment.joined(separator: ", ")
+    }
+
+    /// 注进 prompt 的教练记忆块 — 非空时返回完整段落 (含换行前缀), 空时返回 "".
+    /// 截到最后 ~1200 字符 (留近期最新的偏好), 避免长记忆把 prompt 撑爆.
+    var coachMemoryBlock: String {
+        guard let raw = coachMemory?.trimmingCharacters(in: .whitespacesAndNewlines), !raw.isEmpty else { return "" }
+        let capped = raw.count > 1200 ? String(raw.suffix(1200)) : raw
+        return "\n\nCOACH NOTES — the user's standing preferences/constraints, ALWAYS respect these unless they conflict with safety:\n\(capped)"
     }
 
     struct HistoryEntry {

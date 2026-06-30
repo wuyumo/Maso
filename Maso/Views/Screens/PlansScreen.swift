@@ -164,16 +164,8 @@ struct PlansScreen: View {
     @ViewBuilder
     private var refineComposer: some View {
         VStack(alignment: .leading, spacing: 8) {
-            HStack(spacing: 6) {
-                Image(systemName: "bubble.left.and.text.bubble.right.fill")
-                    .font(.system(size: 10, weight: .heavy))
-                Text("TUNE WITH AI")
-                    .font(.system(size: 10, weight: .heavy)).tracking(1.5)
-            }
-            .foregroundStyle(MasoColor.accent)
-
             HStack(spacing: 10) {
-                TextField(NSLocalizedString("Describe a change… e.g. make it harder", comment: "AI refine input placeholder"),
+                TextField(NSLocalizedString("Tell the AI a preference or change in plain words — e.g. 'bad shoulder, no overhead'. It remembers.", comment: "AI refine + coach memory input placeholder"),
                           text: $refineInput, axis: .vertical)
                     .font(.system(size: 14))
                     .foregroundStyle(MasoColor.text)
@@ -219,6 +211,9 @@ struct PlansScreen: View {
         guard data.settings.isPro else { paywallPresented = true; return }
         refineInput = ""
         lastRefineNote = text
+        // 这句话既驱动本次立即重生成 (focusNote), 也长期记进教练记忆 (Coaching Memory) —
+        // 之后每次生成都会带上, AI 持续个性化. 非 Pro 已在上面挡掉, 不会写进记忆.
+        data.appendCoachNote(text)
         startGenerateRoutines(focusNote: text)
     }
 
@@ -554,7 +549,8 @@ struct PlanRationaleCard<Composer: View>: View {
             // 可点区域 (kicker + 偏好小字) → 拉起编辑层. 单独包一层 onTapGesture,
             // 避免触到下方对话框输入框 (输入框/发送钮自己吃掉点击).
             VStack(alignment: .leading, spacing: 12) {
-                // 顶行: 训练图标 + TRAINING PREFERENCES kicker + 右上角 pencil.
+                // 顶行: 训练图标 + TRAINING PREFERENCES kicker + 右上角 disclosure 箭头
+                // (跟 routine 卡 WorkoutCard 右上角的 chevron 一致).
                 HStack(alignment: .center, spacing: 6) {
                     Image(systemName: "figure.run")
                         .font(.system(size: 10, weight: .heavy))
@@ -567,9 +563,9 @@ struct PlanRationaleCard<Composer: View>: View {
                         .minimumScaleFactor(0.85)
                     Spacer()
                     Button(action: { showEditor = true }) {
-                        Image(systemName: "pencil")
-                            .font(.system(size: 15, weight: .semibold))
-                            .foregroundStyle(MasoColor.text)
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: 12, weight: .heavy))
+                            .foregroundStyle(MasoColor.textFaint)
                             .frame(width: 30, height: 30)
                             .contentShape(Rectangle())
                     }
