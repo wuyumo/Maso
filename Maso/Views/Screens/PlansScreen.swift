@@ -141,10 +141,11 @@ struct PlansScreen: View {
     private var aiPage: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                // 训练偏好 (天数/目标/动作数/器械/重点) 现在以纯文字小字展示 (不再 chip), 点铅笔进编辑层.
-                PlanRationaleCard(onApplyPreferences: { startGenerateRoutines() })
-                // Pro feature ①: 对话式优化输入框 — 用户用自然语言描述要怎么改 → 注 focusNote 重生成.
-                refineComposer
+                // 训练偏好 (纯文字小字, 点铅笔进编辑层) + Tune-with-AI 对话框 — 同一张卡内.
+                // Pro feature ①: 对话框收进 Training Preferences 卡里 (refineComposer 作为 slot 传入).
+                PlanRationaleCard(onApplyPreferences: { startGenerateRoutines() }) {
+                    refineComposer
+                }
                 aiRoutineResults
                 Spacer(minLength: MasoMetrics.pageBottomInset)
             }
@@ -539,44 +540,55 @@ private struct LibraryEntryRow: View {
 //   - days >= 5 → 高频
 //   - days 3-4 → 中频 (经典每周 2× / muscle)
 //   - days 1-2 → 维持频率
-struct PlanRationaleCard: View {
+struct PlanRationaleCard<Composer: View>: View {
     @Environment(DataStore.self) private var data
     /// 点编辑 → 拉起 Training Preferences 层 (sheet). 层里改完点 Generate → 重生成.
     @State private var showEditor = false
     /// 点 "Generate routines" 应用偏好后回调 — 调用方 (aiPage) 拿来跑生成动画.
     var onApplyPreferences: () -> Void = {}
+    /// Tune-with-AI 对话框 — 由调用方传入, 渲染在偏好小字下方 (主对话入口就在这张卡里).
+    @ViewBuilder var composer: () -> Composer
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            // 顶行: 训练图标 + TRAINING PREFERENCES kicker + 右上角 pencil(收起态)/xmark(编辑态).
-            HStack(alignment: .center, spacing: 6) {
-                Image(systemName: "figure.run")
-                    .font(.system(size: 10, weight: .heavy))
-                    .foregroundStyle(MasoColor.accent)
-                Text("TRAINING PREFERENCES")
-                    .font(.system(size: 10, weight: .heavy))
-                    .tracking(1.5)
-                    .foregroundStyle(MasoColor.accent)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.85)
-                Spacer()
-                Button(action: { showEditor = true }) {
-                    Image(systemName: "pencil")
-                        .font(.system(size: 15, weight: .semibold))
-                        .foregroundStyle(MasoColor.text)
-                        .frame(width: 30, height: 30)
-                        .contentShape(Rectangle())
+            // 可点区域 (kicker + 偏好小字) → 拉起编辑层. 单独包一层 onTapGesture,
+            // 避免触到下方对话框输入框 (输入框/发送钮自己吃掉点击).
+            VStack(alignment: .leading, spacing: 12) {
+                // 顶行: 训练图标 + TRAINING PREFERENCES kicker + 右上角 pencil.
+                HStack(alignment: .center, spacing: 6) {
+                    Image(systemName: "figure.run")
+                        .font(.system(size: 10, weight: .heavy))
+                        .foregroundStyle(MasoColor.accent)
+                    Text("TRAINING PREFERENCES")
+                        .font(.system(size: 10, weight: .heavy))
+                        .tracking(1.5)
+                        .foregroundStyle(MasoColor.accent)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.85)
+                    Spacer()
+                    Button(action: { showEditor = true }) {
+                        Image(systemName: "pencil")
+                            .font(.system(size: 15, weight: .semibold))
+                            .foregroundStyle(MasoColor.text)
+                            .frame(width: 30, height: 30)
+                            .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(Text("Adjust training preferences"))
                 }
-                .buttonStyle(.plain)
-                .accessibilityLabel(Text("Adjust training preferences"))
-            }
 
-            // 已选参数以纯文字小字展示 (灰色, 不再用 chip) — e.g. "3 days / week · Build muscle · 4 exercises · Dumbbells · Focus: Chest, Back".
-            // 点卡/铅笔 → 拉起编辑层.
-            Text(prefSummary)
-                .font(.system(size: 12))
-                .foregroundStyle(MasoColor.textDim)
-                .fixedSize(horizontal: false, vertical: true)
+                // 已选参数以纯文字小字展示 (灰色, 不再用 chip). 点卡/铅笔 → 拉起编辑层.
+                Text(prefSummary)
+                    .font(.system(size: 12))
+                    .foregroundStyle(MasoColor.textDim)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .contentShape(Rectangle())
+            .onTapGesture { showEditor = true }
+
+            // 分隔线 + Tune-with-AI 对话框 — 就在这张 Training Preferences 卡内 (主对话入口).
+            Divider().overlay(MasoColor.borderSoft)
+            composer()
         }
         .padding(.horizontal, MasoMetrics.cardPadding)
         .padding(.vertical, MasoMetrics.cardPadding - 2)
@@ -585,8 +597,6 @@ struct PlanRationaleCard: View {
             RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium)
                 .stroke(MasoColor.borderHero, lineWidth: 0.5)
         )
-        .contentShape(Rectangle())
-        .onTapGesture { showEditor = true }
         .sheet(isPresented: $showEditor) {
             TrainingPreferencesSheet(onConfirm: onApplyPreferences)
         }
