@@ -1121,6 +1121,9 @@
 "Insights" = "数据";
 "Trends" = "趋势";
 
+/* Progress — Insights 卡片可拖拽重排; 列表顶部一行提示 */
+"Long-press a card to reorder" = "长按卡片可拖动重排";
+
 /* Progress — 新增 Pro 洞察卡 (InsightsChartsView) */
 "Unlock deep insights with Pro" = "升级 Pro 解锁深度洞察";
 "Strength by lift" = "各动作力量";

@@ -1120,6 +1120,9 @@
 "Insights" = "Insights";
 "Trends" = "Trends";
 
+/* Progress — Insights cards are drag-reorderable; one-line hint at top of the list */
+"Long-press a card to reorder" = "Long-press a card to reorder";
+
 /* Progress — new Pro insight cards (InsightsChartsView) */
 "Unlock deep insights with Pro" = "Unlock deep insights with Pro";
 "Strength by lift" = "Strength by lift";

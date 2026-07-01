@@ -246,6 +246,13 @@ struct UserSettings: Codable, Sendable {
     /// 用户是否选择退出匿名使用统计 — 默认 false (opt-IN). Phase 0 仅作门控逻辑用 (Analytics 读它),
     /// 还没有 Settings UI 行 (Phase 1 才加"分享匿名使用数据"开关). Codable 默认值 → 老数据安全解码.
     var analyticsOptOut: Bool = false
+
+    /// Progress → Insights 段用户自定义的卡片排序 — 存 InsightCard.rawValue 序列.
+    /// 默认 [] = 用 canonical 顺序 (免费卡在前, Pro 卡沉底). 用户长按拖动重排后落库.
+    /// 渲染顺序解析 (见 UserSettings.resolvedInsightOrder): 持久化里还存在的 case 按存的顺序,
+    /// 加上任何不在里面的 case (未来新增卡) 按 canonical 顺序补到后面 → 向前兼容, 新卡自动出现.
+    /// Codable 默认值 → 老数据安全解码.
+    var insightCardOrder: [String] = []
 }
 
 /// 用户面训练目标 (5 档) — 比内部 TrainingGoal (strength/hypertrophy/endurance) 更贴用户心智.

@@ -116,7 +116,6 @@
 		B695690D9B19F6DD4C248428 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 65A12AE0FF2F890344E8D991 /* Localizable.strings */; };
 		B6A155A1009B7AD3E0B8F93A /* ImportedPlanSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 855B98EF31FFEB5E9C21DA4C /* ImportedPlanSheet.swift */; };
 		B6A3B8B511C76752980A5157 /* TrainingActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E94E7A863D7DD87C5C4EB7D /* TrainingActivityAttributes.swift */; };
-		B969534A564AA4D2E2FBF271 /* ProgressChartsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D75DF0CAF48118741B96273 /* ProgressChartsView.swift */; };
 		B9A9B0E1423D577E7729F574 /* ExerciseNames.strings in Resources */ = {isa = PBXBuildFile; fileRef = 442FF14A64291FEEEC144E6F /* ExerciseNames.strings */; };
 		BB29ABF8E0E2590167AEA372 /* WorkoutCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2A600A7E0E002CC5B8B3253 /* WorkoutCard.swift */; };
 		BDF71F8A0D436A235F33A486 /* AnalyticsSink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F6414BD5454144D171D2D3 /* AnalyticsSink.swift */; };
@@ -138,6 +137,7 @@
 		D3C467BCD7239BC40C99C25E /* PaywallScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61B0293ADD8C41CCBB12FA12 /* PaywallScreen.swift */; };
 		D7DE905316F3FFBC4156F3CE /* exercises.json in Resources */ = {isa = PBXBuildFile; fileRef = DA0ACB9DAE29B94B2DAB494F /* exercises.json */; };
 		DAA6215D14E413F8E24063CA /* _anatomy-research.md in Resources */ = {isa = PBXBuildFile; fileRef = CA786C2BA3CB3ED1D9264315 /* _anatomy-research.md */; };
+		DC4569EC8E9B9B0EE49F5595 /* InsightCards.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BC543B079D9DDA682611412 /* InsightCards.swift */; };
 		E40B7C038FA77F3BD95F0E5D /* MasoMarkIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1D591C5E30FA068C933520 /* MasoMarkIcon.swift */; };
 		E713BB3AD37D051B6B9D716A /* PlanSegments.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE94CDA9C13C06FBE6DD8572 /* PlanSegments.swift */; };
 		E78F1A3F512D37B2BFA4A286 /* BodyHint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54145EB316E1E581619F6C65 /* BodyHint.swift */; };
@@ -203,6 +203,7 @@
 		07C814AC57D00E7740B6A51B /* TrainingSettingsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingSettingsSection.swift; sourceTree = "<group>"; };
 		085676B9F3AA69450E839FC5 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		0B9791F0998275E09C5575AD /* LanguageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageManager.swift; sourceTree = "<group>"; };
+		0BC543B079D9DDA682611412 /* InsightCards.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsightCards.swift; sourceTree = "<group>"; };
 		0C2072C444E5B90F0EC1A07C /* NumStepperField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumStepperField.swift; sourceTree = "<group>"; };
 		0F0CC1A2FAA3DE68BF6CC1F0 /* exercises-v1-yuhonas.json.bak */ = {isa = PBXFileReference; path = "exercises-v1-yuhonas.json.bak"; sourceTree = "<group>"; };
 		1545AEA651F97CD56E65D4E5 /* MuscleMapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuscleMapping.swift; sourceTree = "<group>"; };
@@ -248,7 +249,6 @@
 		5AE16FB98CDFE5B432B63488 /* WeeklyFrequencyShareCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeeklyFrequencyShareCard.swift; sourceTree = "<group>"; };
 		5B068DFBBE373F9C69D094F3 /* RestNotificationScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestNotificationScheduler.swift; sourceTree = "<group>"; };
 		5C92872E5E637979EE00974B /* WorkoutDetailShareCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutDetailShareCard.swift; sourceTree = "<group>"; };
-		5D75DF0CAF48118741B96273 /* ProgressChartsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressChartsView.swift; sourceTree = "<group>"; };
 		5F761A3AFFC27FB54D554AC8 /* LayoutToggle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutToggle.swift; sourceTree = "<group>"; };
 		604E1A67DFCA8AEA8D2EB767 /* HistoryScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryScreen.swift; sourceTree = "<group>"; };
 		61B0293ADD8C41CCBB12FA12 /* PaywallScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaywallScreen.swift; sourceTree = "<group>"; };
@@ -555,6 +555,7 @@
 				4DACD2EC09799CF0ACC9176F /* ExerciseTagsRow.swift */,
 				E392D3BCA567E27D36082C9C /* FilterMenuButton.swift */,
 				ADC7BD7F1CA2B51B8BE76943 /* InlineWorkoutCalendar.swift */,
+				0BC543B079D9DDA682611412 /* InsightCards.swift */,
 				EF44FB435946D62FFB510C3B /* InsightsChartsView.swift */,
 				5F761A3AFFC27FB54D554AC8 /* LayoutToggle.swift */,
 				DFBD3B16C9810A2419F041FA /* LimitedFlowLayout.swift */,
@@ -567,7 +568,6 @@
 				3BFB5D5CE95E571387E9D1C0 /* MuscleVisualBlock.swift */,
 				0C2072C444E5B90F0EC1A07C /* NumStepperField.swift */,
 				50A10E5E18C4925F0ACEC2C6 /* ProBanner.swift */,
-				5D75DF0CAF48118741B96273 /* ProgressChartsView.swift */,
 				A86DF0600F128A94067E0D44 /* RoutineOptimizeCard.swift */,
 				1A36C4336039446730B6DF52 /* SwipeableRow.swift */,
 				F96CC6B018F159D5FA8FE982 /* TimelineBar.swift */,
@@ -875,6 +875,7 @@
 				6076960B399F6AEE4BE34B89 /* HistoryScreen.swift in Sources */,
 				B6A155A1009B7AD3E0B8F93A /* ImportedPlanSheet.swift in Sources */,
 				E7BEFB80EC7A46518E7B59B9 /* InlineWorkoutCalendar.swift in Sources */,
+				DC4569EC8E9B9B0EE49F5595 /* InsightCards.swift in Sources */,
 				1693D53DEA42CCA1AB8E4409 /* InsightsChartsView.swift in Sources */,
 				675F46DE13174897BC8316A7 /* LanguageManager.swift in Sources */,
 				1A52CF157E55BE3997571C63 /* LanguagePickerSheet.swift in Sources */,
@@ -906,7 +907,6 @@
 				ACB7B9B537CDB3B86452670C /* PlansScreen.swift in Sources */,
 				04BF37E058F0FB0D5085E382 /* PlateCalculatorSheet.swift in Sources */,
 				3DD8048F21FA7BB1FDEFBCEF /* ProBanner.swift in Sources */,
-				B969534A564AA4D2E2FBF271 /* ProgressChartsView.swift in Sources */,
 				31BF55F4883B0DBAD9BAD245 /* QuickWorkoutScreen.swift in Sources */,
 				9CCA9C0B50357A55CB879DBF /* RecommendedPrograms.swift in Sources */,
 				70639D2DC8C6A85D484742AC /* RestNotificationScheduler.swift in Sources */,

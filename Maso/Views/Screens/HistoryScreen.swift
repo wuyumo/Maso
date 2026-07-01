@@ -92,9 +92,9 @@ struct HistoryScreen: View {
                 }
 
                 let allSessions = groupedSessions()
-                let charts = ProgressChartsView(data: data, onUnlock: { paywallPresented = true })
+                // Insights 段现在是单一 InsightsChartsView — 11 张卡拍平成一个有序、可拖拽重排、
+                // 可持久化的列表 (免费卡在前, Pro 卡沉底). 各卡自带数据守卫, 空卡跳过.
                 let insights = InsightsChartsView(data: data, onUnlock: { paywallPresented = true })
-                let activity = TrainingActivityHeatmap(data: data)
 
                 if allSessions.isEmpty {
                     // 顶端 3 metrics + 训练日历 — 合成同一张卡, 中间用分割线隔开.
@@ -136,35 +136,14 @@ struct HistoryScreen: View {
                     .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
 
                     if historyTab == .insights {
-                        // Insights 分段: 全部训练数据分析. delta/周容量/1RM/肌群均衡 (免费+Pro 混合)
-                        // + 活跃度热力图 + 新增 Pro 深度指标 (逐动作 1RM / MEV·MAV / 逐肌群容量 / 频率 / PR 时间线 …).
-                        if !charts.isEmpty {
-                            VStack(alignment: .leading, spacing: 10) {
-                                Text("Trends")
-                                    .font(.system(size: 12, weight: .bold)).tracking(0.6).textCase(.uppercase)
-                                    .foregroundStyle(MasoColor.textDim)
-                                    .padding(.horizontal, 4)
-                                charts
-                            }
-                            .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
-                        }
-                        // 新增 Pro 深度指标 — 只要有任意数据就渲染 (免费用户看到模糊+锁的升级钩子).
+                        // Insights 分段: 全部训练数据一张有序、可拖拽重排的卡片列表 (delta/周容量/1RM/
+                        // 肌群均衡/热力图/逐动作 1RM/MEV·MAV/逐肌群容量/频率/PR 时间线/一致性).
+                        // 免费卡在前, Pro 卡沉底; 用户长按拎起可重排, 落定持久化. 各卡自带数据守卫.
                         if !insights.isEmpty {
                             insights
                                 .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
-                        }
-                        if !activity.isEmpty {
-                            VStack(alignment: .leading, spacing: 10) {
-                                Text("Activity")
-                                    .font(.system(size: 12, weight: .bold)).tracking(0.6).textCase(.uppercase)
-                                    .foregroundStyle(MasoColor.textDim)
-                                    .padding(.horizontal, 4)
-                                activity
-                            }
-                            .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
-                        }
-                        // 只练过一两次、图表还没够数据时, 给个提示不留白.
-                        if charts.isEmpty && insights.isEmpty && activity.isEmpty {
+                        } else {
+                            // 只练过一两次、还没够数据时, 给个提示不留白.
                             Text("Keep training — your stats and trends show up here.")
                                 .font(.system(size: 13))
                                 .foregroundStyle(MasoColor.textDim)
