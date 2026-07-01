@@ -103,8 +103,7 @@ struct ProgressChartsView: View {
                                 .multilineTextAlignment(.center)
                         }
                         .foregroundStyle(MasoColor.text)
-                        .padding(.horizontal, 16).padding(.vertical, 12)
-                        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12))
+                        .padding(.horizontal, 16).padding(.vertical, 12)   // 隐形点击区; 背景去掉, 直接落在模糊图表上
                     }
                     .buttonStyle(.plain)
                 }
