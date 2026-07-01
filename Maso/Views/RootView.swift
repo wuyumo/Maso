@@ -233,10 +233,10 @@ struct RootView: View {
                 .tabItem {
                     // Tab 标签重命名 → "Progress" (进度): 这个 tab 现在既装分析(Insights)又装
                     // 记录(History), "History" 只描述了一半. 复用已有的 "Progress"="进度" key.
-                    // icon = chart.bar.fill (实心, 跟 Today/Plans/Exercises 的 .fill 图标一致;
-                    // 之前的 chart.line.uptrend.xyaxis 是细线+坐标轴, tab 尺寸下显杂乱).
+                    // icon = chart.bar (空心柱, 留白多 → 视觉体量最轻, 跟 dumbbell 的通透感一致;
+                    // chart.bar.fill 四根实心高柱填满整格显重, chart.line.uptrend.xyaxis 又太细碎).
                     // 只改 LABEL — RootTab.history / case "history" 路由 / 类型名保持不动 (analytics tag 也走 RootTab, 无需改).
-                    Label("Progress", systemImage: "chart.bar.fill")
+                    Label("Progress", systemImage: "chart.bar")
                 }
                 .tag(RootTab.history)
             }
