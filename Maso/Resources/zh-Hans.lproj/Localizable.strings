@@ -1117,6 +1117,33 @@
 "More" = "多";
 "Activity" = "活跃度";
 
+/* Progress tab — Insights/History 分段 + Trends section 标题 */
+"Insights" = "数据";
+"Trends" = "趋势";
+
+/* Progress — 新增 Pro 洞察卡 (InsightsChartsView) */
+"Unlock deep insights with Pro" = "升级 Pro 解锁深度洞察";
+"Strength by lift" = "各动作力量";
+"Estimated 1RM over time" = "估算 1RM 随时间变化";
+"Lift" = "动作";
+"Sets vs targets" = "组数 vs 目标";
+"Weekly hard sets per muscle" = "每周各肌群硬组数";
+"MEV" = "MEV";
+"MAV" = "MAV";
+"Volume by muscle" = "各肌群容量";
+"Weekly %@ per muscle" = "每周各肌群 %@";
+"Training frequency" = "训练频率";
+"Days per week per muscle" = "各肌群每周训练天数";
+"PR timeline" = "PR 时间线";
+"Your personal records" = "你的个人记录";
+"Consistency & load" = "坚持度与负荷";
+"All-time" = "累计";
+"Adherence" = "达标率";
+"Total lifted" = "累计负荷";
+
+/* Muscle Status (Today) — 免费版 Pro 引导 */
+"Unlock per-muscle recovery with Pro" = "升级 Pro 解锁逐肌群恢复";
+
 /* History — Stats/Workouts 分页 + 按周分组 section 标题 */
 "Stats" = "数据";
 "This week" = "本周";

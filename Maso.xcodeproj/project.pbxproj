@@ -16,6 +16,7 @@
 		0C9DFCCE90F73336451E893C /* HealthKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9CFBD927255937085E3C209 /* HealthKitService.swift */; };
 		1047791541144FB813063EC2 /* SoundPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B91FB80311BBA14D7AAC8FBF /* SoundPlayer.swift */; };
 		1605075E6DF23E750E90BD9A /* MasoBrandLogo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80FD6F69FE62071220B54EDF /* MasoBrandLogo.swift */; };
+		1693D53DEA42CCA1AB8E4409 /* InsightsChartsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF44FB435946D62FFB510C3B /* InsightsChartsView.swift */; };
 		16A44867546198C2D36C1451 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = AEA50F58EB721CCD8002CC2C /* InfoPlist.strings */; };
 		174D49704B0D1EEC7974C877 /* _progress.md in Resources */ = {isa = PBXBuildFile; fileRef = 66148E10896DB30778E6C89D /* _progress.md */; };
 		17D9E2729D5EB223EF42F762 /* AppRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 749D14202F2DADE9E946D07D /* AppRouter.swift */; };
@@ -325,6 +326,7 @@
 		E971064231D3F55030DBE2F5 /* WorkoutCalendarScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutCalendarScreen.swift; sourceTree = "<group>"; };
 		EA133CA664EEBFD23357FBF5 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		ED5F46664DB595CE345ED1F9 /* MasoWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasoWatchApp.swift; sourceTree = "<group>"; };
+		EF44FB435946D62FFB510C3B /* InsightsChartsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsightsChartsView.swift; sourceTree = "<group>"; };
 		EFADF03C8B68C694F394F493 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		F23A1B6576340183A91DC77A /* MasoTrainingLiveActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasoTrainingLiveActivity.swift; sourceTree = "<group>"; };
 		F2980C2BED7FBFC98D717FE6 /* 1b-triceps-supplement.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "1b-triceps-supplement.json"; sourceTree = "<group>"; };
@@ -553,6 +555,7 @@
 				4DACD2EC09799CF0ACC9176F /* ExerciseTagsRow.swift */,
 				E392D3BCA567E27D36082C9C /* FilterMenuButton.swift */,
 				ADC7BD7F1CA2B51B8BE76943 /* InlineWorkoutCalendar.swift */,
+				EF44FB435946D62FFB510C3B /* InsightsChartsView.swift */,
 				5F761A3AFFC27FB54D554AC8 /* LayoutToggle.swift */,
 				DFBD3B16C9810A2419F041FA /* LimitedFlowLayout.swift */,
 				0248671AE93BF975A90389AD /* LottieView.swift */,
@@ -872,6 +875,7 @@
 				6076960B399F6AEE4BE34B89 /* HistoryScreen.swift in Sources */,
 				B6A155A1009B7AD3E0B8F93A /* ImportedPlanSheet.swift in Sources */,
 				E7BEFB80EC7A46518E7B59B9 /* InlineWorkoutCalendar.swift in Sources */,
+				1693D53DEA42CCA1AB8E4409 /* InsightsChartsView.swift in Sources */,
 				675F46DE13174897BC8316A7 /* LanguageManager.swift in Sources */,
 				1A52CF157E55BE3997571C63 /* LanguagePickerSheet.swift in Sources */,
 				88B007435E601164A2241EDE /* LayoutToggle.swift in Sources */,

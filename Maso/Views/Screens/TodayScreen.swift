@@ -42,6 +42,8 @@ struct TodayScreen: View {
     /// OCR 第三方截图 → 置信度分级候选, 驱动 RoutineReviewSheet (QR 深链仍走 importedRoutine).
     @State private var importReview: RoutineReviewPayload? = nil
     @State private var importFailed = false
+    /// Muscle Status 卡"解锁逐肌群恢复" → 付费墙 (非 Pro). 跟 HistoryScreen 的 paywall 同款.
+    @State private var paywallPresented = false
 
     private var suggested: Plan? {
         // 默认推用户自己的 plans (pickTodayPlan: LRU 挑最久没练那张) —
@@ -103,7 +105,8 @@ struct TodayScreen: View {
                         fatigueMap: fatigueMap,
                         gapMuscles: gapMuscles,
                         onStartGapWorkout: startGapWorkout,
-                        tipLine: todayTipLine
+                        tipLine: todayTipLine,
+                        onUnlock: { paywallPresented = true }
                     )
 
                     // AI 生成失败 → 提示条 (已回落到本地推荐, 一键重试真 AI).
@@ -213,6 +216,10 @@ struct TodayScreen: View {
         }
         .sheet(isPresented: $communityPresented) {
             CommunityScreen()
+            .presentationDragIndicator(.visible)
+        }
+        .sheet(isPresented: $paywallPresented) {
+            PaywallScreen()
             .presentationDragIndicator(.visible)
         }
         // ── 图片导入 routine (#image-import) — 流程收进 ViewModifier, 避免 body 类型检查超时.

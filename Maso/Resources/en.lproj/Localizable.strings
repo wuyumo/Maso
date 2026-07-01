@@ -1116,6 +1116,33 @@
 "More" = "More";
 "Activity" = "Activity";
 
+/* Progress tab — Insights/History segments + Trends section header */
+"Insights" = "Insights";
+"Trends" = "Trends";
+
+/* Progress — new Pro insight cards (InsightsChartsView) */
+"Unlock deep insights with Pro" = "Unlock deep insights with Pro";
+"Strength by lift" = "Strength by lift";
+"Estimated 1RM over time" = "Estimated 1RM over time";
+"Lift" = "Lift";
+"Sets vs targets" = "Sets vs targets";
+"Weekly hard sets per muscle" = "Weekly hard sets per muscle";
+"MEV" = "MEV";
+"MAV" = "MAV";
+"Volume by muscle" = "Volume by muscle";
+"Weekly %@ per muscle" = "Weekly %@ per muscle";
+"Training frequency" = "Training frequency";
+"Days per week per muscle" = "Days per week per muscle";
+"PR timeline" = "PR timeline";
+"Your personal records" = "Your personal records";
+"Consistency & load" = "Consistency & load";
+"All-time" = "All-time";
+"Adherence" = "Adherence";
+"Total lifted" = "Total lifted";
+
+/* Muscle Status (Today) — free-tier Pro nudge */
+"Unlock per-muscle recovery with Pro" = "Unlock per-muscle recovery with Pro";
+
 /* History — Stats/Workouts segmented tabs + week-group section titles */
 "Stats" = "Stats";
 "This week" = "This week";

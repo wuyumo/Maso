@@ -30,9 +30,10 @@ struct HistoryScreen: View {
     /// 自然产生"想看更多数据/解锁高级功能"的动机, banner 放这比放在 Today 干扰训练流程更顺.
     @State private var paywallPresented: Bool = false
 
-    /// 日历下方的两个分页. 默认 Stats (数据图表), 另一页 Workouts (按周分组的过往训练).
-    enum HistoryTab { case stats, workouts }
-    @State private var historyTab: HistoryTab = .stats
+    /// 顶部两个分段. 默认 Insights (数据分析), 另一页 History (日历 + 3 metrics + 按周分组的过往训练).
+    /// (tab 本身已叫 "Progress"; 段内 Insights=分析 / History=记录, 语义不重叠.)
+    enum HistoryTab { case insights, records }
+    @State private var historyTab: HistoryTab = .insights
 
 
     /// ProBanner kicker 的"起步价/月" — 取 yearly product 月均价 (年价 ÷ 12), locale-aware.
@@ -83,43 +84,23 @@ struct HistoryScreen: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
                 // Pro 展示位 — Pro 用户隐藏. 从 Today tab 搬过来 (Today 是训练入口, 不放营销卡;
-                // History 是用户主动来"看数据回顾"时, 看到 Pro 升级提示更自然).
+                // Progress 是用户主动来"看数据回顾"时, 看到 Pro 升级提示更自然).
                 if !data.settings.isPro {
                     ProBanner(fromPrice: proFromPrice) { paywallPresented = true }
                         .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
                         .padding(.top, 4)
                 }
 
-                // 顶端 3 metrics + 训练日历 — 合成同一张卡, 中间用分割线隔开.
-                VStack(spacing: 0) {
-                    // 3 metrics (跟着 calendar 状态切本周 / 本月口径)
-                    statsRow
-                        .animation(.spring(response: 0.5, dampingFraction: 0.86), value: calendarCollapsed)
-
-                    // 分割线 — 隔开 metrics 与日历, 左右内缩跟 iOS 列表分割线一致.
-                    Rectangle()
-                        .fill(MasoColor.borderSoft)
-                        .frame(height: 0.5)
-                        .padding(.horizontal, 12)
-
-                    // 训练日历 — 默认 7 天 strip, 点 strip / chevron 展开整月. embedded → 不自带卡片底.
-                    InlineWorkoutCalendar(
-                        sessionDates: workoutDateSet(),
-                        musclesPerDay: musclesPerDayMap(),
-                        isCollapsed: $calendarCollapsed,
-                        monthAnchor: $calendarMonthAnchor,
-                        embedded: true
-                    )
-                }
-                .background(MasoColor.surface)
-                .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
-                .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
-
                 let allSessions = groupedSessions()
                 let charts = ProgressChartsView(data: data, onUnlock: { paywallPresented = true })
+                let insights = InsightsChartsView(data: data, onUnlock: { paywallPresented = true })
                 let activity = TrainingActivityHeatmap(data: data)
 
                 if allSessions.isEmpty {
+                    // 顶端 3 metrics + 训练日历 — 合成同一张卡, 中间用分割线隔开.
+                    // (空态时仍保留这张卡 + 日历, 让用户看到"这里以后放什么" + 能翻日历.)
+                    statsCalendarCard
+
                     // 上方 Spacer 跟下方 pageBottomInset Spacer 等 min → 空态在日历↔tab bar 间居中.
                     Spacer(minLength: MasoMetrics.pageBottomInset)
                     // 空态: 进度图标 + 鼓励文案 — 让它不那么空, 推用户去开始第一次训练.
@@ -144,25 +125,33 @@ struct HistoryScreen: View {
                     }
                     .frame(maxWidth: .infinity, alignment: .center)
                 } else {
-                    // 日历下方两个分页: Stats (数据图表) / Workouts (按周分组的过往训练). 默认 Stats.
+                    // 分段 Picker 移到最顶 (ProBanner 之下) — 让"分析 vs 记录"的划分是进 tab 第一眼看到的.
+                    //   Insights (数据分析: delta/图表/热力图/Pro 深度指标)
+                    //   History  (记录: 3 metrics + 训练日历 + 按周分组的过往训练)
                     Picker("", selection: $historyTab) {
-                        Text("Stats").tag(HistoryTab.stats)
-                        Text("Workouts").tag(HistoryTab.workouts)
+                        Text("Insights").tag(HistoryTab.insights)
+                        Text("History").tag(HistoryTab.records)
                     }
                     .pickerStyle(.segmented)
                     .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
 
-                    if historyTab == .stats {
-                        // 进度图表 (周容量 + 1RM) + 活跃度热力图 — 各自数据足够才出现.
+                    if historyTab == .insights {
+                        // Insights 分段: 全部训练数据分析. delta/周容量/1RM/肌群均衡 (免费+Pro 混合)
+                        // + 活跃度热力图 + 新增 Pro 深度指标 (逐动作 1RM / MEV·MAV / 逐肌群容量 / 频率 / PR 时间线 …).
                         if !charts.isEmpty {
                             VStack(alignment: .leading, spacing: 10) {
-                                Text("Progress")
+                                Text("Trends")
                                     .font(.system(size: 12, weight: .bold)).tracking(0.6).textCase(.uppercase)
                                     .foregroundStyle(MasoColor.textDim)
                                     .padding(.horizontal, 4)
                                 charts
                             }
                             .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
+                        }
+                        // 新增 Pro 深度指标 — 只要有任意数据就渲染 (免费用户看到模糊+锁的升级钩子).
+                        if !insights.isEmpty {
+                            insights
+                                .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
                         }
                         if !activity.isEmpty {
                             VStack(alignment: .leading, spacing: 10) {
@@ -175,7 +164,7 @@ struct HistoryScreen: View {
                             .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
                         }
                         // 只练过一两次、图表还没够数据时, 给个提示不留白.
-                        if charts.isEmpty && activity.isEmpty {
+                        if charts.isEmpty && insights.isEmpty && activity.isEmpty {
                             Text("Keep training — your stats and trends show up here.")
                                 .font(.system(size: 13))
                                 .foregroundStyle(MasoColor.textDim)
@@ -185,7 +174,12 @@ struct HistoryScreen: View {
                                 .padding(.top, 24)
                         }
                     } else {
-                        // Workouts 分页: 过往训练按周分组, 每周一个 section 标题 (本周/上周/日期区间).
+                        // History 分段: 3 metrics + 训练日历 (记录语境) + 过往训练按周分组.
+                        // 3 metrics + 日历回答"我做了什么 / 什么时候", 属记录而非进度, 放这更贴切;
+                        // 也让日历的 collapse/expand + month-anchor 逻辑自成一段在记录里.
+                        statsCalendarCard
+
+                        // 过往训练按周分组, 每周一个 section 标题 (本周/上周/日期区间).
                         ForEach(weekGroupedSessions(allSessions), id: \.weekStart) { group in
                             VStack(alignment: .leading, spacing: 10) {
                                 Text(weekLabel(group.weekStart))
@@ -217,7 +211,7 @@ struct HistoryScreen: View {
         .onChange(of: calendarCollapsed) { _, collapsed in
             if !collapsed { calendarMonthAnchor = historyCurrentMonthStart() }
         }
-        .screenHeader("History") {
+        .screenHeader("Progress") {
             // 分享训练总览 — 直接进 customize 预览 (跟训练详情 / 日历页同一套分享模式):
             // 所有有数据的 section 默认全开 (最近一次训练 + 本周肌肉状态 + 本周日历),
             // 用户在卡内关掉不想要的, 点 Share 才弹系统分享. 没数据的 section 整节不出现.
@@ -289,6 +283,36 @@ struct HistoryScreen: View {
                 }
             }
         }
+    }
+
+    // MARK: - 3 metrics + 训练日历 合成卡 (History 分段 + 空态共用)
+
+    /// 3 metrics + 训练日历 — 合成同一张卡, 中间用分割线隔开.
+    /// 抽成属性给 History 分段 + 空态两处共用 (calendarCollapsed/calendarMonthAnchor state 自成一段).
+    private var statsCalendarCard: some View {
+        VStack(spacing: 0) {
+            // 3 metrics (跟着 calendar 状态切本周 / 本月口径)
+            statsRow
+                .animation(.spring(response: 0.5, dampingFraction: 0.86), value: calendarCollapsed)
+
+            // 分割线 — 隔开 metrics 与日历, 左右内缩跟 iOS 列表分割线一致.
+            Rectangle()
+                .fill(MasoColor.borderSoft)
+                .frame(height: 0.5)
+                .padding(.horizontal, 12)
+
+            // 训练日历 — 默认 7 天 strip, 点 strip / chevron 展开整月. embedded → 不自带卡片底.
+            InlineWorkoutCalendar(
+                sessionDates: workoutDateSet(),
+                musclesPerDay: musclesPerDayMap(),
+                isCollapsed: $calendarCollapsed,
+                monthAnchor: $calendarMonthAnchor,
+                embedded: true
+            )
+        }
+        .background(MasoColor.surface)
+        .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
+        .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
     }
 
     // MARK: - 顶部 3 metrics 卡 (跟 calendar 状态切换本周 / 本月)

@@ -21,12 +21,18 @@ struct MuscleStatusOverviewCard: View {
     /// Today 标题区移来的一句贴心提示 (距上次训练多久) — 显示在 "MUSCLE STATUS" kicker 行右侧,
     /// 短就靠右、放不下自动向下折行. nil = 不显示.
     var tipLine: String? = nil
+    /// 非 Pro 点"解锁逐肌群恢复" → caller 拉付费墙 (跟 HistoryScreen 的 onUnlock 同款).
+    var onUnlock: () -> Void = {}
 
     /// Muscle map 正方形 slot 边长 — 跟 MuscleVisualBlock 昨天版本对齐 (正方形, 不放大).
     private let slotSize: CGFloat = 130
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        // tease-free / precision-Pro: 免费用户看到 body-map 热图 (漂亮 + 卖产品) 但强制 coarseOnly
+        // (粗颗粒), 逐肌群精度 + 4 档图例 + train-the-gaps 定向留给 Pro. 直接建模 Fitbod/WHOOP 的
+        // "恢复即高级" 模式, 又保持品牌友好 (视觉钩子免费, 只锁可执行的精度).
+        let isPro = data.settings.isPro
+        return VStack(alignment: .leading, spacing: 10) {
             // 顶部 kicker — 跟 WorkoutCard "FROM YOUR PLAN" 完全同款字号 (10pt heavy + tracking 1.5)
             // + 跟 FOR YOU 卡同款 icon + 文字 visual family.
             // kicker 跟 Settings section header / "Today's Workout" 同款 textDim 灰,
@@ -59,11 +65,13 @@ struct MuscleStatusOverviewCard: View {
                 HStack(alignment: .center, spacing: 16) {
                     // LEFT: 复用共享 MuscleVisualBlock — 正方形 slot, opacityFor 启用衰减热图.
                     // ⚠️ 跟其它卡片 (WorkoutCard / SessionCard / PlanRow) 共用一份代码, 改这里同步影响所有.
+                    // 免费 → 强制 coarseOnly (粗颗粒热图), 无论用户 muscleDetailEnabled 设置;
+                    // Pro → 走用户设置 (精细逐肌群).
                     MuscleVisualBlock(
                         muscles: [],
                         sideLength: slotSize,
                         opacityFor: { m in MuscleStatusCompute.opacityFor(muscle: m, fatigueMap: fatigueMap) },
-                        coarseOnly: !data.settings.muscleDetailEnabled
+                        coarseOnly: isPro ? !data.settings.muscleDetailEnabled : true
                     )
                     .frame(width: slotSize, height: slotSize)
 
@@ -78,7 +86,8 @@ struct MuscleStatusOverviewCard: View {
                                 .foregroundStyle(MasoColor.textDim)
                                 .fixedSize(horizontal: false, vertical: true)
                                 .frame(maxWidth: 150, alignment: .leading)
-                        } else {
+                        } else if isPro {
+                            // Pro: 4 档精度图例 + train-the-gaps 定向 CTA (完整可执行价值).
                             VStack(alignment: .leading, spacing: 4) {
                                 // 4 档 fatigue, 跟 MuscleStatusCompute.opacityFor 阈值对齐.
                                 legendRow(opacity: 1.0, label: "Heavy fatigue")
@@ -115,6 +124,34 @@ struct MuscleStatusOverviewCard: View {
                                 }
                                 .buttonStyle(.plain)
                             }
+                        } else {
+                            // 免费: 图例模糊 (看得见有 4 档精度但读不清) + 解锁按钮. 视觉钩子留着,
+                            // 逐肌群精度是要解锁的东西.
+                            VStack(alignment: .leading, spacing: 4) {
+                                legendRow(opacity: 1.0, label: "Heavy fatigue")
+                                legendRow(opacity: 0.6, label: "Recovering")
+                                legendRow(opacity: 0.3, label: "Mostly recovered")
+                                legendRow(opacity: nil, label: "Fresh")
+                            }
+                            .blur(radius: 4.5)
+                            .allowsHitTesting(false)
+                            Button(action: onUnlock) {
+                                HStack(spacing: 5) {
+                                    Image(systemName: "lock.fill")
+                                        .font(.system(size: 10, weight: .heavy))
+                                    Text("Unlock per-muscle recovery with Pro")
+                                        .font(.system(size: 11, weight: .heavy))
+                                        .multilineTextAlignment(.leading)
+                                        .fixedSize(horizontal: false, vertical: true)
+                                }
+                                .foregroundStyle(MasoColor.accent)
+                                .padding(.horizontal, 11)
+                                .padding(.vertical, 6)
+                                .background(MasoColor.accent.opacity(0.16))
+                                .clipShape(RoundedRectangle(cornerRadius: 10))
+                            }
+                            .buttonStyle(.plain)
+                            .frame(maxWidth: 150, alignment: .leading)
                         }
                     }
                     // P2-15: 不再 fixedSize 整个右列宽度 — SE / 长中文 legend 会被裁; 让它能压缩.

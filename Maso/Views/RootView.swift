@@ -231,9 +231,11 @@ struct RootView: View {
                 .tint(MasoColor.text)
                 .safeAreaInset(edge: .bottom, spacing: 0) { miniBarContent }
                 .tabItem {
-                    // "History" 比 "Workout Records" 短一半 — Tab 3 不再溢出. 中文走 zh-Hans
-                    // Localizable.strings 里 "History" = "训练记录", 不影响中文显示.
-                    Label("History", systemImage: "clock.fill")
+                    // Tab 标签重命名 → "Progress" (进度): 这个 tab 现在既装分析(Insights)又装
+                    // 记录(History), "History" 只描述了一半. 复用已有的 "Progress"="进度" key.
+                    // icon clock.fill → chart.line.uptrend.xyaxis (时钟像"历史/时间", 对分析 tab 不对).
+                    // 只改 LABEL — RootTab.history / case "history" 路由 / 类型名保持不动 (analytics tag 也走 RootTab, 无需改).
+                    Label("Progress", systemImage: "chart.line.uptrend.xyaxis")
                 }
                 .tag(RootTab.history)
             }
