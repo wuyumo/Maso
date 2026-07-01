@@ -253,6 +253,19 @@ struct UserSettings: Codable, Sendable {
     /// 加上任何不在里面的 case (未来新增卡) 按 canonical 顺序补到后面 → 向前兼容, 新卡自动出现.
     /// Codable 默认值 → 老数据安全解码.
     var insightCardOrder: [String] = []
+
+    // MARK: - AI Insight Summary 缓存 (§5)
+    //
+    // LLM 调用付费 + 慢 → 绝不每次开屏都调. 缓存最近一次生成的小结, 开屏先渲缓存;
+    // 只在 (data-hash 变了 && (≥3 新 session 或 ≥7 天)) 或用户显式 Refresh 时才后台重生成.
+    // 三字段都 optional + 默认 nil → 老数据安全解码.
+
+    /// 编码后的 AISummary (JSON 串). nil = 从没生成过.
+    var aiSummaryCacheJSON: String? = nil
+    /// 生成缓存时 payload 材料字段的粗粒度 hash — 变了才有资格重生成 (§5 coarse hash).
+    var aiSummaryDataHash: String? = nil
+    /// 缓存生成时间 — 卡上 "as of <date>" + 7 天 cadence 判断.
+    var aiSummaryGeneratedAt: Date? = nil
 }
 
 /// 用户面训练目标 (5 档) — 比内部 TrainingGoal (strength/hypertrophy/endurance) 更贴用户心智.

@@ -1260,6 +1260,348 @@ final class DataStore {
         return nil
     }
 
+    // MARK: - AI Insight Summary (§2 / §3 / §5)
+
+    /// AI 教练小结所需的可否生成阈值 — 复用 routineSuggestion() 同一守卫 (≥2 周 + ≥6 组).
+    /// 达不到 → 卡显示 "Insufficient data" 态, 不调 LLM.
+    var summaryMinDataMet: Bool { routineSuggestion() != nil }
+
+    /// 组装发给 Worker 的确定性 payload (§2) — 全部数字来自既有 helper, 无 PII.
+    /// 这里内联复刻 InsightsChartsView 的各私有 helper 计算 (它们 private 在 View 里),
+    /// 只读 sets / exById / settings, 结果与卡片显示一致.
+    func buildSummaryPayload() -> AISummaryPayload {
+        let cal = settings.calendar
+        let now = Date()
+        let majors: [MuscleGroup] = [.chest, .back, .shoulders, .arms, .core, .legs]
+
+        // ── profile (从 buildAIPayload 的 profile 子集, 去身份) ──
+        let kind = settings.trainingGoalKind
+        let goalEnum: String = {
+            switch kind.loading {
+            case .strength: return "strength"
+            case .hypertrophy: return "hypertrophy"
+            case .endurance: return "endurance"
+            }
+        }()
+        let equipmentEnum = settings.availableEquipment.isEmpty ? "full_gym" : "limited"
+        let ageBand: String = {
+            guard let a = settings.age else { return "unknown" }
+            switch a {
+            case ..<18: return "under-18"
+            case 18...24: return "18-24"
+            case 25...34: return "25-34"
+            case 35...44: return "35-44"
+            case 45...54: return "45-54"
+            default: return "55+"
+            }
+        }()
+        let profile = AISummaryPayload.Profile(
+            goal: goalEnum,
+            daysPerWeekGoal: settings.weeklyTrainingDays,
+            equipment: equipmentEnum,
+            ageBand: ageBand
+        )
+
+        // ── signal (weeksOfHistory / sessions14d / thin) ──
+        let earliest = sets.map(\.performedAt).min()
+        let weeksOfHistory = earliest.map { max(1, Int(ceil(now.timeIntervalSince($0) / (7 * 86400)))) } ?? 0
+        let win14 = now.addingTimeInterval(-14 * 86400)
+        let sessions14d = Set(sets.filter { $0.performedAt >= win14 }.map { cal.startOfDay(for: $0.performedAt) }).count
+        let thin = sessions14d < 3
+
+        // ── trend (weekly volume, WoW %, adherence) ──
+        let volume8wk = summaryWeeklyVolumeKg()
+        let wowPct = summaryWeekVolumeDeltaPct()
+        let trendEnum = summaryVolumeTrend(volume8wk)
+        let adherence = summaryConsistencyScore()
+        let trend = AISummaryPayload.Trend(
+            volumeWoWPct: wowPct,
+            volume8wkKg: volume8wk,
+            trend: trendEnum,
+            adherencePct: adherence
+        )
+
+        // ── topLift (name + e1RM now vs ~4wk ago) ──
+        let topLift = summaryTopLift()
+
+        // ── muscles (7d sets per section + MEV/MAV band + freq) ──
+        let cutoff7 = cal.startOfDay(for: cal.date(byAdding: .day, value: -6, to: now) ?? now)
+        var sets7d: [MuscleGroup: Int] = [:]
+        for s in sets where s.performedAt >= cutoff7 {
+            guard let ex = exById[s.exerciseId], let sec = ex.primaryMuscles.first?.section else { continue }
+            sets7d[sec, default: 0] += 1
+        }
+        let freq = summaryFrequencyPerSection()
+        let counts = majors.map { sets7d[$0] ?? 0 }
+        let maxC = counts.max() ?? 0
+        let minC = counts.min() ?? 0
+        let muscles: [AISummaryPayload.Muscle] = majors.map { sec in
+            let n = sets7d[sec] ?? 0
+            let band = n < DataStore.summaryMEV ? "underMEV" : (n > DataStore.summaryMAV ? "overMAV" : "inBand")
+            return AISummaryPayload.Muscle(section: sec.rawValue, sets7d: n, band: band, daysPerWeek: freq[sec] ?? 0)
+        }
+        // lagging = 练过但最少的区 (跟 weeklySetsPerSection isLagging 同判据).
+        let laggingSec = majors.first { sec in
+            let n = sets7d[sec] ?? 0
+            return maxC > 0 && n == minC && minC < maxC
+        }
+
+        // ── recentPRs (≤3, daysAgo) ──
+        let prs = summaryRecentPRs(now: now)
+
+        // ── diagnosis (routineSuggestion 预烘) ──
+        let diag = routineSuggestion().map {
+            AISummaryPayload.Diagnosis(title: $0.title, detail: $0.detail, focusNote: $0.focusNote)
+        }
+
+        return AISummaryPayload(
+            profile: profile,
+            signal: AISummaryPayload.Signal(weeksOfHistory: weeksOfHistory, sessions14d: sessions14d, thin: thin),
+            trend: trend,
+            topLift: topLift,
+            muscles: muscles,
+            lagging: laggingSec?.rawValue,
+            recentPRs: prs,
+            diagnosis: diag
+        )
+    }
+
+    // MEV/MAV 科学落点 — 跟 InsightsChartsView 保持一致 (RP/Israetel).
+    private static let summaryMEV = 10
+    private static let summaryMAV = 20
+
+    /// 近 8 周容量 (Σ weight×reps, kg 取整), 连续补 0 — 复刻 weeklyVolume().
+    private func summaryWeeklyVolumeKg() -> [Int] {
+        let cal = settings.calendar
+        var byWeek: [Date: Double] = [:]
+        for s in sets {
+            guard let w = s.weight, let r = s.reps, w > 0, r > 0 else { continue }
+            let comps = cal.dateComponents([.yearForWeekOfYear, .weekOfYear], from: s.performedAt)
+            guard let wk = cal.date(from: comps) else { continue }
+            byWeek[wk, default: 0] += w * Double(r)
+        }
+        let now = Date()
+        let thisWeek = cal.date(from: cal.dateComponents([.yearForWeekOfYear, .weekOfYear], from: now)) ?? now
+        var out: [Int] = []
+        for back in stride(from: 7, through: 0, by: -1) {
+            guard let wk = cal.date(byAdding: .weekOfYear, value: -back, to: thisWeek) else { continue }
+            out.append(Int((byWeek[wk] ?? 0).rounded()))
+        }
+        return out
+    }
+
+    /// 本周 vs 上周容量 % — 复刻 weekDeltas().volume; 无对比 → nil.
+    private func summaryWeekVolumeDeltaPct() -> Int? {
+        let cal = settings.calendar
+        var volByWeek: [Date: Double] = [:]
+        for s in sets {
+            guard let w = s.weight, let r = s.reps, w > 0, r > 0 else { continue }
+            let comps = cal.dateComponents([.yearForWeekOfYear, .weekOfYear], from: s.performedAt)
+            guard let wk = cal.date(from: comps) else { continue }
+            volByWeek[wk, default: 0] += w * Double(r)
+        }
+        let now = Date()
+        guard let thisWk = cal.date(from: cal.dateComponents([.yearForWeekOfYear, .weekOfYear], from: now)),
+              let lastWk = cal.date(byAdding: .weekOfYear, value: -1, to: thisWk) else { return nil }
+        let cur = volByWeek[thisWk] ?? 0
+        let prev = volByWeek[lastWk] ?? 0
+        guard prev > 0 else { return nil }
+        return Int(((cur - prev) / prev * 100).rounded())
+    }
+
+    /// 容量趋势枚举 — 最近 3 周均值 vs 前 3 周均值.
+    private func summaryVolumeTrend(_ weekly: [Int]) -> String {
+        guard weekly.count >= 4 else { return "flat" }
+        let recent = weekly.suffix(3)
+        let prior = weekly.prefix(max(1, weekly.count - 3)).suffix(3)
+        let rAvg = Double(recent.reduce(0, +)) / Double(recent.count)
+        let pAvg = Double(prior.reduce(0, +)) / Double(max(1, prior.count))
+        guard pAvg > 0 else { return rAvg > 0 ? "ramping" : "flat" }
+        let ratio = rAvg / pAvg
+        if ratio >= 1.1 { return "ramping" }
+        if ratio <= 0.9 { return "dropping" }
+        return "flat"
+    }
+
+    /// 头号动作 + e1RM 现在 vs ~4 周前 — 复刻 topLiftSeries() 取端点.
+    private func summaryTopLift() -> AISummaryPayload.TopLift? {
+        var countByEx: [String: Int] = [:]
+        for s in sets where (s.weight ?? 0) > 0 && (s.reps ?? 0) > 0 {
+            countByEx[s.exerciseId, default: 0] += 1
+        }
+        guard let topId = countByEx.max(by: { $0.value < $1.value })?.key else { return nil }
+        let name = exById[topId]?.name ?? sets.first { $0.exerciseId == topId }?.exerciseName ?? topId
+        let cal = Calendar.current
+        var bestByDay: [Date: Double] = [:]
+        for s in sets where s.exerciseId == topId {
+            guard let w = s.weight, let r = s.reps, w > 0, r > 0 else { continue }
+            let e1rm = w * (1 + Double(r) / 30)
+            let day = cal.startOfDay(for: s.performedAt)
+            bestByDay[day] = max(bestByDay[day] ?? 0, e1rm)
+        }
+        let series = bestByDay.sorted { $0.key < $1.key }
+        guard let last = series.last else { return nil }
+        let nowE = last.value
+        // ~4 周前的最近一天最佳 e1RM (没有则退回序列首点).
+        let fourWkAgo = Date().addingTimeInterval(-28 * 86400)
+        let past = series.last(where: { $0.key <= fourWkAgo })?.value ?? series.first?.value ?? nowE
+        let nowKg = Int(nowE.rounded())
+        let pastKg = Int(past.rounded())
+        let trend = nowKg > pastKg ? "up" : (nowKg < pastKg ? "down" : "flat")
+        return AISummaryPayload.TopLift(name: name, e1rmNowKg: nowKg, e1rm4wkKg: pastKg, trend: trend)
+    }
+
+    /// 各大区最近 4 周平均每周命中天数 — 复刻 trainingFrequencyRows().
+    private func summaryFrequencyPerSection() -> [MuscleGroup: Double] {
+        let cal = settings.calendar
+        let cutoff = cal.startOfDay(for: cal.date(byAdding: .day, value: -27, to: Date()) ?? Date())
+        var daysBySection: [MuscleGroup: Set<Date>] = [:]
+        for s in sets where s.performedAt >= cutoff {
+            guard let ex = exById[s.exerciseId] else { continue }
+            let day = cal.startOfDay(for: s.performedAt)
+            var seen = Set<MuscleGroup>()
+            for m in ex.muscleGroups {
+                guard let sec = m.section, seen.insert(sec).inserted else { continue }
+                daysBySection[sec, default: []].insert(day)
+            }
+        }
+        var out: [MuscleGroup: Double] = [:]
+        for sec in [MuscleGroup.chest, .back, .shoulders, .arms, .core, .legs] {
+            let d = Double(daysBySection[sec]?.count ?? 0)
+            out[sec] = (d / 4.0 * 10).rounded() / 10
+        }
+        return out
+    }
+
+    /// 一致性分 (近 8 周达标周占比) — 复刻 consistencyScore().
+    private func summaryConsistencyScore() -> Int {
+        let cal = settings.calendar
+        let goal = max(1, settings.weeklyTrainingDays)
+        var days: Set<Date> = []
+        for s in sets { days.insert(cal.startOfDay(for: s.performedAt)) }
+        guard let thisWeek = cal.date(from: cal.dateComponents([.yearForWeekOfYear, .weekOfYear], from: Date())) else { return 0 }
+        func trainedDays(inWeekStarting weekStart: Date) -> Int {
+            let weekDays: Set<Date> = Set((0..<7).compactMap {
+                cal.date(byAdding: .day, value: $0, to: weekStart).map { cal.startOfDay(for: $0) }
+            })
+            return days.intersection(weekDays).count
+        }
+        var hit = 0, considered = 0
+        for back in 0..<8 {
+            guard let wkStart = cal.date(byAdding: .weekOfYear, value: -back, to: thisWeek) else { continue }
+            let td = trainedDays(inWeekStarting: wkStart)
+            if td > 0 || back == 0 { considered += 1 }
+            if td >= goal { hit += 1 }
+        }
+        guard considered > 0 else { return 0 }
+        return Int((Double(hit) / Double(considered) * 100).rounded())
+    }
+
+    /// 最近 ≤3 条 PR + daysAgo — 复刻 prTimeline() 取 top 3.
+    private func summaryRecentPRs(now: Date) -> [AISummaryPayload.PR] {
+        let cal = Calendar.current
+        return sets
+            .filter { isPR($0) }
+            .compactMap { rec -> (Date, String)? in
+                guard let w = rec.weight, w > 0, let r = rec.reps, r > 0 else { return nil }
+                let name = exById[rec.exerciseId]?.displayName ?? rec.exerciseName
+                return (rec.performedAt, name)
+            }
+            .sorted { $0.0 > $1.0 }
+            .prefix(3)
+            .map { (date, name) in
+                let days = max(0, cal.dateComponents([.day], from: cal.startOfDay(for: date), to: cal.startOfDay(for: now)).day ?? 0)
+                return AISummaryPayload.PR(exercise: name, daysAgo: days)
+            }
+    }
+
+    /// payload 材料字段的粗粒度 hash (§5) — 变了才有资格重生成. 刻意粗 (band/趋势枚举/e1RM 取整/
+    /// adherence 分桶), 让"多一个热身组"这种抖动不触发重生成.
+    func summaryDataHash() -> String {
+        let p = buildSummaryPayload()
+        var parts: [String] = []
+        parts.append("g:\(p.profile.goal)")
+        parts.append("wow:\((p.trend.volumeWoWPct ?? 0) / 5)")   // 5% 桶
+        parts.append("vt:\(p.trend.trend)")
+        parts.append("adh:\(p.trend.adherencePct / 10)")          // 10% 桶
+        if let t = p.topLift { parts.append("tl:\(t.name):\(t.e1rmNowKg / 2):\(t.trend)") } // 2kg 桶
+        for m in p.muscles { parts.append("m:\(m.section):\(m.band)") }
+        parts.append("lag:\(p.lagging ?? "-")")
+        parts.append("diag:\(p.diagnosis?.focusNote ?? "-")")
+        return String(parts.joined(separator: "|").hashValue)
+    }
+
+    /// 生成 AI 小结 — 调 service, 写缓存; 失败 (AISummaryError) 回落用 routineSuggestion() 拼的本地小结.
+    /// 达不到 min-data 阈值 → 不调 LLM, 返回 nil (卡显示 insufficient 态).
+    /// - returns: 生成/回落的 AISummary; 阈值不足时 nil.
+    @discardableResult
+    func generateSummary() async -> AISummary? {
+        guard summaryMinDataMet else { return nil }
+        let payload = buildSummaryPayload()
+        let hash = summaryDataHash()
+        do {
+            let summary = try await AIWorkoutService.shared.summarizeTraining(payload: payload)
+            writeSummaryCache(summary, hash: hash)
+            return summary
+        } catch {
+            // 任何 AISummaryError → 确定性本地回落 (never 空卡; apply 路径仍可用).
+            let fallback = localSummaryFallback()
+            writeSummaryCache(fallback, hash: hash)
+            return fallback
+        }
+    }
+
+    /// 确定性本地小结 — tldr = 诊断 detail, 一条 regenerate_routines 建议 (focusNote 来自诊断).
+    /// 无诊断时给个中性观察. 跟 generateAIRoutines 的 tunedRecommendedPlans 回落同哲学.
+    func localSummaryFallback() -> AISummary {
+        if let s = routineSuggestion() {
+            return AISummary(
+                tldr: s.detail,
+                recommendations: [
+                    AIRecommendation(
+                        id: "local-\(s.id)",
+                        title: s.title,
+                        detail: s.detail,
+                        action: .regenerateRoutines(focusNote: s.focusNote)
+                    )
+                ]
+            )
+        }
+        return AISummary(
+            tldr: NSLocalizedString("Keep logging your sessions — your coach summary sharpens with more data.", comment: "AI summary neutral fallback tldr"),
+            recommendations: []
+        )
+    }
+
+    /// 缓存已解析的 AISummary + 材料 hash + 时间戳到 settings, 落库.
+    private func writeSummaryCache(_ summary: AISummary, hash: String) {
+        if let data = try? JSONEncoder().encode(summary), let json = String(data: data, encoding: .utf8) {
+            settings.aiSummaryCacheJSON = json
+        }
+        settings.aiSummaryDataHash = hash
+        settings.aiSummaryGeneratedAt = Date()
+        save()
+    }
+
+    /// 读缓存里的 AISummary (nil = 没有/解码失败).
+    var cachedSummary: AISummary? {
+        guard let json = settings.aiSummaryCacheJSON, let data = json.data(using: .utf8) else { return nil }
+        return try? JSONDecoder().decode(AISummary.self, from: data)
+    }
+
+    /// 是否该在开屏时后台重生成 (§5): data-hash 变了 且 (≥3 新 session 或 ≥7 天). 无缓存但阈值达到 → true.
+    func shouldRegenerateSummary() -> Bool {
+        guard summaryMinDataMet else { return false }
+        guard let lastHash = settings.aiSummaryDataHash, let lastAt = settings.aiSummaryGeneratedAt else {
+            return true   // 冷启动: 有数据没缓存 → 生成一次
+        }
+        guard summaryDataHash() != lastHash else { return false }   // 材料没变 → 不动
+        let daysElapsed = Date().timeIntervalSince(lastAt) / 86400
+        if daysElapsed >= 7 { return true }
+        let newSessions = Set(sets.filter { $0.performedAt > lastAt }.map { Calendar.current.startOfDay(for: $0.performedAt) }).count
+        return newSessions >= 3
+    }
+
     /// 主项停滞诊断 — 取最近 3 周内组数最多的负重动作, 按 session (day) 聚合每天的最佳 e1RM,
     /// 若 ≥3 个 session 且最近 ~4 次 e1RM 没有进步 (最后一次 <= 这串里最高的 99%) → 判定停滞.
     private func stalledLiftSuggestion(in recent: [SetRecord]) -> RoutineSuggestion? {

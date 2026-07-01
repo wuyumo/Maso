@@ -1174,3 +1174,18 @@
 "Your main lift" = "Your main lift";
 "Fewer sessions lately" = "Fewer sessions lately";
 "You're averaging about %d sessions a week, below your %d-day goal." = "You're averaging about %d sessions a week, below your %d-day goal.";
+
+/* ── AI Insight Summary card (Progress → Insights top card) ── */
+"AI Coach Summary" = "AI Coach Summary";
+"Keep logging — your AI summary unlocks after about 2 weeks of training." = "Keep logging — your AI summary unlocks after about 2 weeks of training.";
+"Unlock your AI coach summary with Pro" = "Unlock your AI coach summary with Pro";
+"AI summary unavailable — Retry" = "AI summary unavailable — Retry";
+"As of %@ · based on the last 14 days" = "As of %@ · based on the last 14 days";
+"Apply to routine" = "Apply to routine";
+"Add to notes" = "Add to notes";
+"Saved to your coaching notes" = "Saved to your coaching notes";
+"Keep logging your sessions — your coach summary sharpens with more data." = "Keep logging your sessions — your coach summary sharpens with more data.";
+"Rebalance your weekly volume" = "Rebalance your weekly volume";
+"Personalized set-by-set guidance from your data." = "Personalized set-by-set guidance from your data.";
+"Break your main-lift plateau" = "Break your main-lift plateau";
+"Concrete progression tailored to your recent sessions." = "Concrete progression tailored to your recent sessions.";

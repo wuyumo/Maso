@@ -14,4 +14,9 @@ final class AppRouter {
 
     /// 待切到的 tab. nil = 没请求.
     var requestedTab: RootTab? = nil
+
+    /// AI 小结卡"Apply to routine"发起的待处理侧重 — 跨 tab 把用户带到 AI Routines 页 + 用这个
+    /// focusNote 触发重生成 (复用 startGenerateRoutines). 用法: caller 同时置 requestedTab = .plans
+    /// + pendingSummaryFocus = focusNote; PlansScreen .onChange 消费后置 nil. nil = 没请求.
+    var pendingSummaryFocus: String? = nil
 }

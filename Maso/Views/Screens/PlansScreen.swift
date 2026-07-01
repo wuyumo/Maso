@@ -43,6 +43,8 @@ struct PlansScreen: View {
     @State private var refineInput: String = ""
     /// 上一条对话指令的人类可读回显 (露在结果上方, 让用户看到"基于你的: …"). nil = 还没用过对话.
     @State private var lastRefineNote: String? = nil
+    /// 跨 tab 导航 — 消费 AI 小结卡 Apply 发来的 pendingSummaryFocus (切 AI 页 + focusNote 重生成).
+    @State private var router = AppRouter.shared
 
     var body: some View {
         VStack(spacing: 0) {
@@ -112,6 +114,16 @@ struct PlansScreen: View {
             Button("Cancel", role: .cancel) { pendingDeletePlanId = nil }
         } message: {
             Text("Your training history will be kept.")
+        }
+        // AI 小结卡 Apply → regenerate_routines: RootView 已切到 Plans tab; 这里再切到 AI 页 +
+        // 用 focusNote 触发重生成 (复用 optimize 机制, 候选 routine 供 review 后 Save, 不自动写).
+        .onChange(of: router.pendingSummaryFocus) { _, note in
+            guard let note else { return }
+            router.pendingSummaryFocus = nil
+            withAnimation(.easeInOut(duration: 0.2)) { tab = .ai }
+            let trimmed = note.trimmingCharacters(in: .whitespacesAndNewlines)
+            lastRefineNote = trimmed.isEmpty ? nil : trimmed
+            startGenerateRoutines(focusNote: trimmed.isEmpty ? nil : trimmed, surface: "summary")
         }
     }
 

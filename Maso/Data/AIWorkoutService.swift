@@ -315,6 +315,166 @@ final class AIWorkoutService {
         }
     }
 
+    // MARK: - AI Insight Summary (§3)
+
+    /// 生成 Progress→Insights 顶部的"AI 教练小结". 复用跟 generateToday/generateRoutines
+    /// 完全相同的 Worker 管道 (proxyURL + X-Maso-Client-Token + deepseek-chat + json_object + isConfigured 门).
+    /// 低温 (0.3 — 这是解读不是创作), max_tokens 1024. 所有数字都来自 payload, prompt 严令不许编数字.
+    /// - throws: AISummaryError.notConfigured / .network / .api / .parse — caller (DataStore) 捕获后回落本地小结.
+    func summarizeTraining(payload: AISummaryPayload) async throws -> AISummary {
+        guard Self.isConfigured else {
+            state = .failure("AI proxy not configured")
+            Analytics.shared.track("ai_summary_generate_fail", ["reason": .string("not_configured")])
+            throw AISummaryError.notConfigured
+        }
+        state = .generating
+        Analytics.shared.track("ai_summary_generate_start", [:])
+        do {
+            let raw = try await callDeepSeekSummary(payload: payload)
+            let summary = try parseSummaryResponse(raw)
+            state = .success(Date())
+            Analytics.shared.track("ai_summary_generate_success", ["rec_count": .int(summary.recommendations.count)])
+            return summary
+        } catch let error as AISummaryError {
+            state = .failure(error.userMessage)
+            Analytics.shared.track("ai_summary_generate_fail", ["reason": .string(error.analyticsReason)])
+            throw error
+        } catch {
+            state = .failure(error.localizedDescription)
+            Analytics.shared.track("ai_summary_generate_fail", ["reason": .string("network")])
+            throw AISummaryError.network(error.localizedDescription)
+        }
+    }
+
+    private func callDeepSeekSummary(payload: AISummaryPayload) async throws -> String {
+        let url = URL(string: "\(Self.proxyURL)/v1/chat/completions")!
+        var req = URLRequest(url: url)
+        req.httpMethod = "POST"
+        req.timeoutInterval = 45
+        req.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        req.setValue(Self.clientToken, forHTTPHeaderField: "X-Maso-Client-Token")
+
+        let (system, user) = buildSummaryPrompt(payload: payload)
+        let body: [String: Any] = [
+            "model": "deepseek-chat",
+            "max_tokens": 1024,
+            "temperature": 0.3,   // 解读任务 — 低温, 忠于数据不发散
+            "messages": [
+                ["role": "system", "content": system],
+                ["role": "user", "content": user],
+            ],
+            "response_format": ["type": "json_object"],
+        ]
+        req.httpBody = try JSONSerialization.data(withJSONObject: body)
+
+        do {
+            let (data, resp) = try await URLSession.shared.data(for: req)
+            guard let http = resp as? HTTPURLResponse else { throw AISummaryError.network("Bad response type") }
+            guard (200...299).contains(http.statusCode) else {
+                let msg = String(data: data, encoding: .utf8) ?? "HTTP \(http.statusCode)"
+                throw AISummaryError.api("DeepSeek \(http.statusCode): \(msg.prefix(200))")
+            }
+            guard let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
+                  let choices = json["choices"] as? [[String: Any]],
+                  let message = choices.first?["message"] as? [String: Any],
+                  let content = message["content"] as? String else {
+                throw AISummaryError.api("Could not extract content from DeepSeek response")
+            }
+            return content
+        } catch let e as AISummaryError {
+            throw e
+        } catch {
+            throw AISummaryError.network(error.localizedDescription)
+        }
+    }
+
+    /// 构造 summary 的 (system, user) prompt. GROUNDING 是全部游戏 (§3):
+    /// 严令不许 state 输入里没有的数字、不许命名 topLift/recentPRs 之外的动作、信号薄时明确 hedge.
+    private func buildSummaryPrompt(payload: AISummaryPayload) -> (system: String, user: String) {
+        let system = """
+        You are a strength-training coach. You will be given a JSON summary of ONE athlete's recent training, with all numbers pre-computed.
+        RULES — follow every one:
+        (1) NEVER state a number that is not present in the input JSON. Do not invent, estimate, or round numbers the input doesn't contain.
+        (2) NEVER name an exercise that is not in `topLift.name` or `recentPRs[].exercise`.
+        (3) Interpret ONLY what the data shows. If `signal.thin` is true, explicitly hedge (e.g. "only a few sessions logged — treat this as a rough read"). Do not manufacture confidence.
+        (4) Do NOT give medical advice or diagnose injuries.
+        (5) Output 2–4 recommendations, most important first — prefer the one implied by `diagnosis`.
+        (6) Each recommendation MUST pick an `action` from the allowed enum below. Use "regenerate_routines" (with a short focusNote) for anything that means changing the training split/volume; "add_coach_note" (with a note) to persist a standing preference; "none" for pure observations.
+        (7) Keep `tldr` to at most 2 sentences, second-person, and tie every claim to a real number from the input. Each recommendation `detail` is one short line.
+        Respond ONLY as JSON, no prose, no markdown fences.
+        """
+
+        let payloadJSON: String = {
+            let enc = JSONEncoder()
+            enc.outputFormatting = [.sortedKeys]
+            if let d = try? enc.encode(payload), let s = String(data: d, encoding: .utf8) { return s }
+            return "{}"
+        }()
+
+        let priority = payload.diagnosis.map {
+            "The single most important fix is likely: \($0.title) — \($0.detail)."
+        } ?? "No single dominant problem was diagnosed; give a balanced read."
+
+        let user = """
+        ATHLETE TRAINING SUMMARY (JSON — every number is authoritative, do not recompute):
+        \(payloadJSON)
+
+        \(priority)
+
+        ALLOWED action.type values: "regenerate_routines" | "add_coach_note" | "none".
+        For "regenerate_routines" include a short English "focusNote" the coach can act on (e.g. "bias the split toward legs").
+        For "add_coach_note" include a short "note" (a standing preference to remember).
+
+        OUTPUT — strict JSON only, this exact schema:
+        {
+          "tldr": "<= 2 sentences, second-person, only cite numbers from the input",
+          "recommendations": [
+            {
+              "id": "<short slug>",
+              "title": "<imperative, short>",
+              "detail": "<one line — the grounded why>",
+              "action": {
+                "type": "regenerate_routines | add_coach_note | none",
+                "focusNote": "<string or null>",
+                "note": "<string or null>"
+              }
+            }
+          ]
+        }
+        Return 2–4 recommendations, most important first.
+        """
+        return (system, user)
+    }
+
+    /// 解析 summary 响应 — 镜像 parseResponse: 剥 ```json fence → JSONDecoder.
+    private func parseSummaryResponse(_ raw: String) throws -> AISummary {
+        var s = raw.trimmingCharacters(in: .whitespacesAndNewlines)
+        if s.hasPrefix("```") {
+            s = s.replacingOccurrences(of: "```json", with: "")
+                 .replacingOccurrences(of: "```", with: "")
+                 .trimmingCharacters(in: .whitespacesAndNewlines)
+        }
+        guard let data = s.data(using: .utf8) else { throw AISummaryError.parse("Could not encode response") }
+        do {
+            let resp = try JSONDecoder().decode(AISummaryResponse.self, from: data)
+            let recs: [AIRecommendation] = resp.recommendations.enumerated().map { (i, r) in
+                AIRecommendation(
+                    id: r.id?.isEmpty == false ? r.id! : "rec-\(i)",
+                    title: r.title.trimmingCharacters(in: .whitespacesAndNewlines),
+                    detail: r.detail.trimmingCharacters(in: .whitespacesAndNewlines),
+                    action: r.action ?? .none
+                )
+            }
+            .filter { !$0.title.isEmpty }
+            guard !recs.isEmpty else { throw AISummaryError.parse("No recommendations") }
+            return AISummary(tldr: resp.tldr.trimmingCharacters(in: .whitespacesAndNewlines), recommendations: recs)
+        } catch let e as AISummaryError {
+            throw e
+        } catch {
+            throw AISummaryError.parse("Bad JSON: \(error.localizedDescription)")
+        }
+    }
+
     // MARK: - DeepSeek API call (OpenAI-compatible)
     //
     // 切换原因: Anthropic 国内访问不稳定 + 付款不便. DeepSeek 性价比最高的国内 LLM:
@@ -784,6 +944,19 @@ private struct AIStep: Codable {
     }
 }
 
+/// AI 教练小结的解析壳 — 对应 §3 output schema. action 复用 AISummaryAction 的
+/// 自定义 Decodable (未知 type 降级 .none / add_sets 折叠成 regenerate_routines).
+private struct AISummaryResponse: Codable {
+    let tldr: String
+    let recommendations: [Rec]
+    struct Rec: Codable {
+        let id: String?
+        let title: String
+        let detail: String
+        let action: AISummaryAction?
+    }
+}
+
 /// Free-workout picker 的 AI 响应 — 只要 ordered ID 列表 (动作信息已在客户端 library 里).
 private struct PickerResponse: Codable {
     let rationale: String?
@@ -811,6 +984,31 @@ private enum AIError: Error {
     /// 分析事件 reason (无 PII 枚举) — 映射到 ai_routine_generate_fail 的 reason 字段.
     var analyticsReason: String {
         switch self {
+        case .network: return "network"
+        case .api: return "api"
+        case .parse: return "parse"
+        }
+    }
+}
+
+/// summarizeTraining 的错误 — 非 private, 让 DataStore.generateSummary() 能捕获后回落本地小结.
+/// (AIError 是 private 只服务 routine 生成; summary 单独一套, 语义一致.)
+enum AISummaryError: Error {
+    case notConfigured
+    case network(String)
+    case api(String)
+    case parse(String)
+
+    var userMessage: String {
+        switch self {
+        case .notConfigured: return "AI proxy not configured"
+        case .network(let m), .api(let m), .parse(let m): return m
+        }
+    }
+
+    var analyticsReason: String {
+        switch self {
+        case .notConfigured: return "not_configured"
         case .network: return "network"
         case .api: return "api"
         case .parse: return "parse"

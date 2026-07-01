@@ -10,11 +10,13 @@
 		00A4D9E8097FD64B9A060964 /* MuscleVisualBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BFB5D5CE95E571387E9D1C0 /* MuscleVisualBlock.swift */; };
 		01CB4AC5DDE5ABD17EBFFEE9 /* LottieView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0248671AE93BF975A90389AD /* LottieView.swift */; };
 		04BF37E058F0FB0D5085E382 /* PlateCalculatorSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D7C1393538F9AEC41B4A7F /* PlateCalculatorSheet.swift */; };
+		060B4BAABA688BD0007AD51C /* AISummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = A015C1CBD0ADEA27FDC680FC /* AISummary.swift */; };
 		065D18A391A35FE37DAE4455 /* MusclesPickerSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9B75264B14BF7AA46A5CC5A /* MusclesPickerSheet.swift */; };
 		073B17B64DFD1C33740E76AB /* WorkoutCalendarScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E971064231D3F55030DBE2F5 /* WorkoutCalendarScreen.swift */; };
 		09AE7E2E86BAA6503292E0E4 /* exercises-matched.json in Resources */ = {isa = PBXBuildFile; fileRef = D4C5F3E72ADD7E2C06CE3FED /* exercises-matched.json */; };
 		0C9DFCCE90F73336451E893C /* HealthKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9CFBD927255937085E3C209 /* HealthKitService.swift */; };
 		1047791541144FB813063EC2 /* SoundPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B91FB80311BBA14D7AAC8FBF /* SoundPlayer.swift */; };
+		148E3CFD76C6112B00ABA196 /* AISummaryCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88890E68F3513CC6BC233F84 /* AISummaryCard.swift */; };
 		1605075E6DF23E750E90BD9A /* MasoBrandLogo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80FD6F69FE62071220B54EDF /* MasoBrandLogo.swift */; };
 		1693D53DEA42CCA1AB8E4409 /* InsightsChartsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF44FB435946D62FFB510C3B /* InsightsChartsView.swift */; };
 		16A44867546198C2D36C1451 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = AEA50F58EB721CCD8002CC2C /* InfoPlist.strings */; };
@@ -272,12 +274,14 @@
 		81EFCAD8ECDFB89EADB9B3E8 /* TabBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarView.swift; sourceTree = "<group>"; };
 		8483DD8A4BDD8AB4DACB82D4 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		855B98EF31FFEB5E9C21DA4C /* ImportedPlanSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportedPlanSheet.swift; sourceTree = "<group>"; };
+		88890E68F3513CC6BC233F84 /* AISummaryCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AISummaryCard.swift; sourceTree = "<group>"; };
 		88FD8C8AE888DB6357031DB6 /* MasoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasoApp.swift; sourceTree = "<group>"; };
 		8B2A99CE9D2DD17926946D6B /* PlanPlayerScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanPlayerScreen.swift; sourceTree = "<group>"; };
 		8BDFF5A1E76EC5EEC94DEE3E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8C75A0DE1EC23A7DCDE065D6 /* WatchViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchViews.swift; sourceTree = "<group>"; };
 		91F6414BD5454144D171D2D3 /* AnalyticsSink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsSink.swift; sourceTree = "<group>"; };
 		9650F52BD29FC327FE503B9B /* CommunityScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityScreen.swift; sourceTree = "<group>"; };
+		A015C1CBD0ADEA27FDC680FC /* AISummary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AISummary.swift; sourceTree = "<group>"; };
 		A312E7F5CEA8FACE3E0183FA /* _review-queue-decisions.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "_review-queue-decisions.json"; sourceTree = "<group>"; };
 		A63705CC4062E59B9B7201A9 /* MasoWatch.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MasoWatch.entitlements; sourceTree = "<group>"; };
 		A869CB4AC4EF2FD9CFD9D31C /* AIWorkoutService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIWorkoutService.swift; sourceTree = "<group>"; };
@@ -492,6 +496,7 @@
 		552A088840F793B0F8ADDCC3 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				A015C1CBD0ADEA27FDC680FC /* AISummary.swift */,
 				D77C73F79BDCE3D7C90EF2C7 /* Exercise.swift */,
 				652661E7A8B67B3B7F5E7241 /* MuscleGroup.swift */,
 				1545AEA651F97CD56E65D4E5 /* MuscleMapping.swift */,
@@ -548,6 +553,7 @@
 			isa = PBXGroup;
 			children = (
 				4C0ABD6ABBC04D5462687B22 /* AddExerciseSheets.swift */,
+				88890E68F3513CC6BC233F84 /* AISummaryCard.swift */,
 				7546A6BF24D431EDFC2405E6 /* AnimeBodyView.swift */,
 				54145EB316E1E581619F6C65 /* BodyHint.swift */,
 				0070D8A3C7E1513A852DFDDA /* CrossFadeFrames.swift */,
@@ -843,6 +849,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				060B4BAABA688BD0007AD51C /* AISummary.swift in Sources */,
+				148E3CFD76C6112B00ABA196 /* AISummaryCard.swift in Sources */,
 				76F9805CDA3E261CA146C7A5 /* AIWorkoutService.swift in Sources */,
 				572CC3292D5F414A89B53C1C /* AddExerciseSheets.swift in Sources */,
 				2EE919ED70D16641A51C3E19 /* Analytics.swift in Sources */,

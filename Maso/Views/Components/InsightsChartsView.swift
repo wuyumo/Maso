@@ -19,6 +19,8 @@ struct InsightsChartsView: View {
     let data: DataStore
     /// 非 Pro 点锁 → 调用方拉付费墙.
     var onUnlock: () -> Void = {}
+    /// AI 小结卡"Apply"一条建议 → 调用方 (HistoryScreen) 接管 Pro gate + 路由/写 note + toast.
+    var onApplySummary: (AISummaryAction) -> Void = { _ in }
 
     // MEV/MAV 每周每肌群"硬组"科学落点 (RP / Israetel 派系常用锚): 低于 MEV = 刺激不够,
     // MEV~MAV 之间 = 有效带 (green), 超过 MAV 逼近 MRV = 可能过量. 静态阈值, 无需新数据.
@@ -54,6 +56,9 @@ struct InsightsChartsView: View {
     var body: some View {
         let cards = visibleCards
         VStack(alignment: .leading, spacing: 16) {
+            // AI 教练小结 — 固定钉在最顶, 非 reorderable (不进 InsightCard/resolvedInsightOrder,
+            // 不碰下方拖拽重排数学). 见 docs/ai-insight-summary-design.md §1.
+            AISummaryCard(data: data, onUnlock: onUnlock, onApply: onApplySummary)
             // 一行低调提示 (仅在有 ≥2 张卡时出现, 单卡没得排). 长按拎起 → 拖动重排.
             if cards.count >= 2 {
                 Text(NSLocalizedString("Long-press a card to reorder", comment: "insights reorder hint"))

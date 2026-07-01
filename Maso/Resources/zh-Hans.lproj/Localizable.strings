@@ -1175,3 +1175,18 @@
 "Your main lift" = "你的主项";
 "Fewer sessions lately" = "最近练得少了";
 "You're averaging about %d sessions a week, below your %d-day goal." = "你最近平均每周约 %d 次,低于设定的每周 %d 天目标。";
+
+/* ── AI Insight Summary card (Progress → Insights top card) ── */
+"AI Coach Summary" = "AI 教练小结";
+"Keep logging — your AI summary unlocks after about 2 weeks of training." = "继续记录——训练约满 2 周后解锁你的 AI 小结。";
+"Unlock your AI coach summary with Pro" = "升级 Pro 解锁 AI 教练小结";
+"AI summary unavailable — Retry" = "AI 小结暂不可用——重试";
+"As of %@ · based on the last 14 days" = "截至 %@ · 基于最近 14 天";
+"Apply to routine" = "应用到计划";
+"Add to notes" = "加入偏好";
+"Saved to your coaching notes" = "已存入教练偏好";
+"Keep logging your sessions — your coach summary sharpens with more data." = "继续记录训练——数据越多,教练小结越准。";
+"Rebalance your weekly volume" = "重新平衡每周训练量";
+"Personalized set-by-set guidance from your data." = "基于你的数据,逐组个性化建议。";
+"Break your main-lift plateau" = "突破主项停滞";
+"Concrete progression tailored to your recent sessions." = "为你最近的训练量身定制的进阶方案。";

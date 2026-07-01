@@ -35,6 +35,11 @@ struct HistoryScreen: View {
     enum HistoryTab { case insights, records }
     @State private var historyTab: HistoryTab = .insights
 
+    /// AI 小结 Apply "Add to notes" 成功后的确认 toast — 一句话, 自动消失.
+    @State private var applyToast: String? = nil
+    /// 跨 tab 导航到 AI Routines (Apply → regenerate_routines).
+    @State private var router = AppRouter.shared
+
 
     /// ProBanner kicker 的"起步价/月" — 取 yearly product 月均价 (年价 ÷ 12), locale-aware.
     /// product 还没 load 出来时返回 nil → banner 只显示 "MASO PRO", 不写死假价格.
@@ -94,7 +99,11 @@ struct HistoryScreen: View {
                 let allSessions = groupedSessions()
                 // Insights 段现在是单一 InsightsChartsView — 11 张卡拍平成一个有序、可拖拽重排、
                 // 可持久化的列表 (免费卡在前, Pro 卡沉底). 各卡自带数据守卫, 空卡跳过.
-                let insights = InsightsChartsView(data: data, onUnlock: { paywallPresented = true })
+                let insights = InsightsChartsView(
+                    data: data,
+                    onUnlock: { paywallPresented = true },
+                    onApplySummary: { action in handleApplySummary(action) }
+                )
 
                 if allSessions.isEmpty {
                     // 顶端 3 metrics + 训练日历 — 合成同一张卡, 中间用分割线隔开.
@@ -218,6 +227,18 @@ struct HistoryScreen: View {
             PaywallScreen()
             .presentationDragIndicator(.visible)
         }
+        // AI 小结 "Add to notes" 的确认 toast — 底部浮一句, ~2.2s 自动消失.
+        .overlay(alignment: .bottom) {
+            if let applyToast {
+                Text(applyToast)
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundStyle(MasoColor.text)
+                    .padding(.horizontal, 16).padding(.vertical, 10)
+                    .background(Capsule().fill(MasoColor.surfaceHi))
+                    .padding(.bottom, MasoMetrics.pageBottomInset)
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+            }
+        }
         // 删除 session 的二次确认 — 长按 SessionCard → contextMenu Delete 触发.
         // 删除是 destructive (清掉这场训练的所有 SetRecord, 包括 PR), 必须 confirm.
         .alert("Delete workout?", isPresented: Binding(
@@ -235,6 +256,32 @@ struct HistoryScreen: View {
             Text("All sets and PRs from this workout will be removed. Your plans stay.")
         }
         }   // GeometryReader
+    }
+
+    /// AI 小结 Apply (§4) — 每条都 Pro-gate (镜像 handleOptimize/sendRefine).
+    ///   · regenerate_routines → 跨 tab 带到 AI Routines + 用 focusNote 触发重生成 (复用 optimize 机制,
+    ///     候选 routine 供 review 后用户 Save; 不自动写任何 routine).
+    ///   · add_coach_note      → DataStore.appendCoachNote + 确认 toast (可在教练记忆编辑器里撤).
+    ///   · none                → 无按钮, 不会走到这.
+    private func handleApplySummary(_ action: AISummaryAction) {
+        guard data.settings.isPro else { paywallPresented = true; return }
+        switch action {
+        case .regenerateRoutines(let focusNote):
+            // 走跟 handleOptimize 相同的 optimize 路径: AppRouter → Plans 的 AI Routines 页 + focusNote 重生成.
+            let note = focusNote.trimmingCharacters(in: .whitespacesAndNewlines)
+            router.pendingSummaryFocus = note.isEmpty ? "" : note
+            router.requestedTab = .plans
+        case .addCoachNote(let note):
+            data.appendCoachNote(note)
+            withAnimation(.easeOut(duration: 0.2)) {
+                applyToast = NSLocalizedString("Saved to your coaching notes", comment: "AI summary add-note toast")
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.2) {
+                withAnimation(.easeIn(duration: 0.25)) { applyToast = nil }
+            }
+        case .none:
+            break
+        }
     }
 
     /// 单个 SessionCard + tap handler — 给 recent / older 两个 list 共享.
