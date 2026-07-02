@@ -298,15 +298,15 @@ struct PlanPlayerScreen: View {
                     //    backgroundLayer 占 (0, ZStack 高 - 64) 区域 (padding.bottom 64),
                     //    圆环 padding.bottom 64 抵消, Spacer 均分让圆环在背景图中点.
                     if seg.isRest {
-                        // 圆环垂直居中在 [sheet 顶部, "Up Next" 文字顶部] 之间 → 上下间距相等.
-                        // "Up Next" hint top ≈ stageHeight - 196 (= bottomReservedHeight 366
-                        // - bottomInnerTopPadding 140 = filler 顶 226, hint 在 120 filler 里居中
-                        // 再上移 ~30). 用这个底部 padding 让圆环中心落在该空间中点.
+                        // 圆环垂直居中在 [drag handle 底部, "Up Next" 文字顶部] 之间 → 到 handle 与到 Up Next 间距相等.
+                        // 之前上界取 y=0 (sheet 顶), 但 drag handle 落在 topSafeArea 处 → 圆环偏上; 现把上界抬到 handle 底部.
+                        // handle 底 ≈ topSafeArea + 21 (padding.top topSafeArea-4 + vertical 10 + 高 5 + 10). Up Next 顶 ≈ stageHeight - 196.
                         VStack(spacing: 0) {
                             Spacer(minLength: 0)
                             restCountdownRing(seg: seg)
                             Spacer(minLength: 0)
                         }
+                        .padding(.top, topSafeArea + 21)
                         .padding(.bottom, 196)
                         .allowsHitTesting(false)  // 透传 tap, 不挡下层 Controls / 进度条
                     }
@@ -661,10 +661,12 @@ struct PlanPlayerScreen: View {
         return ZStack(alignment: .bottom) {
             LinearGradient(
                 stops: [
+                    // 起黑点后移 + 上半更淡 → 少盖训练图 (尤其图下方过渡区), 露出更多动作图;
+                    // 到 info/controls 区 (≈0.46+) 才转暗, 文字/肌肉图仍够可读.
                     .init(color: .clear, location: 0.0),
-                    .init(color: base.opacity(0.35), location: 0.16),
-                    .init(color: base.opacity(0.78), location: 0.38),
-                    .init(color: base.opacity(0.96), location: 0.62),
+                    .init(color: base.opacity(0.22), location: 0.26),
+                    .init(color: base.opacity(0.72), location: 0.46),
+                    .init(color: base.opacity(0.95), location: 0.66),
                     .init(color: base, location: 0.85),
                 ],
                 startPoint: .top, endPoint: .bottom

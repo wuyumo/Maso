@@ -974,6 +974,11 @@ struct PlanDetailSheet: View {
                         onDelete: {
                             draft.steps.remove(at: idx)
                             commit()
+                        },
+                        // Replace 入口挪进编辑页顶部 (跟播放列表 Edit sheet 一致): 点后弹回列表并弹替换 picker.
+                        onReplace: {
+                            stepEditPath = NavigationPath()   // 先 pop 回列表
+                            stepToReplaceId = stepId           // 再弹 ExercisePickerSheet
                         }
                     )
                     .onChange(of: draft.steps[safe: idx]) { _, _ in commit() }
@@ -1237,8 +1242,9 @@ struct PlanDetailSheet: View {
                             .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 8, trailing: 0))
                             .listRowBackground(Color.clear)
                             .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                                // icon-only → 圆形按钮; tint 走 design.md (negative 红粉 / accent 绿).
-                                // 顺序 (从右往左, 因为是 trailing edge): Delete → Edit → Replace
+                                // 跟播放列表 (InlinePlaylist) 左滑一致: 只 Delete + Edit 两个 icon-only 钮.
+                                // Replace 收进 Edit 页顶部 (EditStepView.onReplace), 不再单列左滑钮.
+                                // 顺序 (从右往左, trailing edge): Delete → Edit.
                                 Button(role: .destructive) {
                                     pendingDeleteStepId = stp.id
                                 } label: {
@@ -1255,16 +1261,6 @@ struct PlanDetailSheet: View {
                                 }
                                 .tint(MasoColor.accent)
                                 .accessibilityLabel(NSLocalizedString("Edit", comment: ""))
-
-                                // 替换动作 — 弹 ExercisePickerSheet, 选完只替换 exerciseId,
-                                // sets/reps/weight 等用户调过的参数全部保留 (替换是"动作换, 强度不变").
-                                Button {
-                                    stepToReplaceId = stp.id
-                                } label: {
-                                    Image(systemName: "arrow.triangle.2.circlepath")
-                                }
-                                .tint(MasoColor.accent)
-                                .accessibilityLabel(NSLocalizedString("Replace exercise", comment: ""))
                             }
                     }
                 }
@@ -1519,6 +1515,8 @@ private struct EditStepView: View {
     let exercise: Exercise
     @Binding var step: PlanStep
     let onDelete: () -> Void
+    /// 替换动作 — 跟播放列表 Edit sheet 一致, Replace 入口放编辑页顶部 (参数之上). nil = 不显示.
+    var onReplace: (() -> Void)? = nil
 
     @Environment(\.dismiss) private var dismiss
     @State private var confirmDelete = false
@@ -1554,6 +1552,25 @@ private struct EditStepView: View {
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
+
+                // 替换动作入口 — 跟播放列表的 Edit sheet 一致, 放编辑页顶部 (参数之上).
+                // 点后由 parent 弹回列表并弹 ExercisePickerSheet; 只换 exerciseId, 参数(组/次/重量)保留.
+                if let onReplace {
+                    Button(action: onReplace) {
+                        HStack(spacing: 6) {
+                            Image(systemName: "arrow.triangle.2.circlepath")
+                                .font(.system(size: 13, weight: .bold))
+                            Text("Replace exercise")
+                                .font(.system(size: 14, weight: .bold))
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 13)
+                        .background(MasoColor.accent.opacity(0.16))
+                        .foregroundStyle(MasoColor.accent)
+                        .clipShape(Capsule())
+                    }
+                    .buttonStyle(.plain)
+                }
 
                 // 参数编辑 section
                 paramSection
