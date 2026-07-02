@@ -46,7 +46,9 @@ struct PlansScreen: View {
     /// 跨 tab 导航 — 消费 AI 小结卡 Apply 发来的 pendingSummaryFocus (切 AI 页 + focusNote 重生成).
     @State private var router = AppRouter.shared
 
-    var body: some View {
+    // 顶部头栏: 分段控件 + (仅 Classics 时) 筛选条 — 放进 .safeAreaBar 跟导航栏共享同一片系统毛玻璃.
+    // 不加不透明 MasoColor.background 底 → 让系统材质透出 (跟 Exercises 页 systemStyle 的 clear 底一致).
+    private var topBar: some View {
         VStack(spacing: 0) {
             // 顶部分段切 Saved / AI Routines / Classics — 内联切换, 大标题随下方内容滚动折叠.
             Picker("Routines", selection: $tab) {
@@ -59,11 +61,39 @@ struct PlansScreen: View {
             .padding(.top, 2)
             .padding(.bottom, 8)
 
-            Group {
-                switch tab {
-                case .saved:    savedPage
-                case .ai:       aiPage
-                case .classics: communityPage
+            // Classics 页: 筛选条钉在分段正下方 (不随社区列表滚动 → 修了原来 filter 滚走消失的 bug).
+            if tab == .classics {
+                classicsFilterBar
+            }
+        }
+    }
+
+    /// 三个分段的滚动正文 — safeAreaBar (topBar) 浮在它上面, 正文从下方穿过.
+    @ViewBuilder
+    private var pages: some View {
+        switch tab {
+        case .saved:    savedPage
+        case .ai:       aiPage
+        case .classics: communityPage
+        }
+    }
+
+    var body: some View {
+        // 头栏 (分段 + Classics 筛选条) 跟导航栏共享「同一片」系统毛玻璃 — 关键: iOS 26 手动拼任何
+        // SwiftUI 材质 (.bar / 不透明色) 都对不齐导航栏的 Liquid Glass. 官方解法 (跟 Exercises 页一致):
+        // 放进 .safeAreaBar(edge:.top), 内容自动获得跟导航栏同材质, 正文滚动从它下面穿过.
+        //   - iOS 26+: 分段 + Classics 筛选条走 safeAreaBar, 跟导航栏天然同材质 (毛玻璃/内容穿过).
+        //   - iOS 18-25: 回退到原来的固定 VStack 头 (分段在上、正文在下).
+        Group {
+            if #available(iOS 26.0, *) {
+                pages
+                    .safeAreaBar(edge: .top, spacing: 0) {
+                        topBar
+                    }
+            } else {
+                VStack(spacing: 0) {
+                    topBar
+                    pages
                 }
             }
         }
@@ -308,11 +338,10 @@ struct PlansScreen: View {
         }
     }
 
-    /// Community 页 — Level / Days 筛选 + 社区计划卡.
+    /// Community 页 — 社区计划卡 (Level / Days 筛选条已上移到 topBar, 钉在分段下方不随本列表滚动).
     private var communityPage: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                communityFilterRow
                 let plans = filteredCommunityPlans
                 if plans.isEmpty {
                     Text("No Classics match these filters.")
@@ -341,51 +370,34 @@ struct PlansScreen: View {
         }
     }
 
-    private var communityFilterRow: some View {
-        HStack(spacing: 10) {
-            Menu {
-                Button { communityLevel = nil } label: {
-                    Label(NSLocalizedString("All levels", comment: ""), systemImage: communityLevel == nil ? "checkmark" : "")
-                }
-                ForEach(communityLevelOptions, id: \.self) { lv in
-                    Button { communityLevel = lv } label: {
-                        if communityLevel == lv { Label(NSLocalizedString(lv, comment: ""), systemImage: "checkmark") }
-                        else { Text(LocalizedStringKey(lv)) }
-                    }
-                }
-            } label: {
-                filterChip(title: communityLevel.map { LocalizedStringKey($0) } ?? "Level", active: communityLevel != nil)
-            }
-            Menu {
-                Button { communityDays = nil } label: {
-                    Label(NSLocalizedString("Any frequency", comment: ""), systemImage: communityDays == nil ? "checkmark" : "")
-                }
-                ForEach(communityDayOptions, id: \.self) { d in
-                    Button { communityDays = d } label: {
-                        if communityDays == d { Label("\(d) days/week", systemImage: "checkmark") }
-                        else { Text(String(format: NSLocalizedString("%lld days/wk", comment: ""), d)) }
-                    }
-                }
-            } label: {
-                filterChip(title: communityDays.map { LocalizedStringKey("\($0) days/wk") } ?? LocalizedStringKey("Days/week"), active: communityDays != nil)
-            }
-            Spacer()
+    /// Classics 筛选条 — Level / Days-week 两个 FilterMenuButton (.systemMenu 样式), 跟 Exercises 页
+    /// 的 Muscle / Equipment 筛选完全同款 (tinted 文字 + chevron.up.chevron.down, 无绿胶囊). 钉在 topBar
+    /// (分段下方) 里, 不随社区列表滚动. clear 底 + pagePaddingHorizontal + 纵向 8 → 让 safeAreaBar 的
+    /// 系统材质透出 (跟 ExerciseSearchFilterBar systemStyle 一致).
+    private var classicsFilterBar: some View {
+        HStack(spacing: 8) {
+            FilterMenuButton(
+                title: NSLocalizedString("Level", comment: "Classics filter placeholder"),
+                allLabel: NSLocalizedString("All levels", comment: ""),
+                selected: $communityLevel,
+                options: communityLevelOptions.map { lv in
+                    FilterMenuOption(value: lv, label: NSLocalizedString(lv, comment: "community plan level"))
+                },
+                style: .systemMenu
+            )
+            FilterMenuButton(
+                title: NSLocalizedString("Days/week", comment: "Classics filter placeholder"),
+                allLabel: NSLocalizedString("Any frequency", comment: ""),
+                selected: $communityDays,
+                options: communityDayOptions.map { d in
+                    FilterMenuOption(value: d, label: String(format: NSLocalizedString("%lld days/wk", comment: ""), d))
+                },
+                style: .systemMenu
+            )
+            Spacer(minLength: 0)
         }
-    }
-
-    private func filterChip(title: LocalizedStringKey, active: Bool) -> some View {
-        HStack(spacing: 4) {
-            Text(title)
-            Image(systemName: "chevron.down").font(.system(size: 9, weight: .bold))
-        }
-        .font(.system(size: 13, weight: .semibold))
-        .foregroundStyle(active ? .black : MasoColor.text)
-        .padding(.horizontal, 12).padding(.vertical, 7)
-        // 用 Capsule().fill 当背景 (而不是 .background(color).clipShape) —— 形状自带胶囊,
-        // 选中切换时不会出现"先方块再裁成胶囊"的闪烁 (clipShape 滞后于背景色变化导致的).
-        .background(Capsule().fill(active ? MasoColor.accent : MasoColor.surface))
-        .contentShape(Capsule())
-        .animation(nil, value: active)
+        .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
+        .padding(.vertical, 8)
     }
 
     /// AI 生成的计划卡 — WorkoutCard 富展示. 点卡片 → 预览详情; 底部 "★ 添加到我的计划" → 直接存进 My Plans.
