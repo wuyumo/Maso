@@ -416,6 +416,11 @@ struct PlanPlayerScreen: View {
                     defaultBetweenExerciseRest: data.settings.defaultBetweenExerciseRestSeconds
                 )
                 replacingStepId = nil
+                // 换完动作 → 回到训练参数页 (Edit sheet, 此时已显示新动作的图与名), 让用户接着调参.
+                // 等 picker sheet 真正收完再开, 避免 sheet-from-sheet 转场打架.
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    editingStepId = idWrapper.id
+                }
             },
             directPick: true,  // J4: 替换 = 选了就换, 不先弹详情
             // 替换流程: 预选原动作的部位 (动作 + 器械留空), 落在"换个练同部位的动作".
@@ -772,36 +777,31 @@ struct PlanPlayerScreen: View {
         // 不进任何动画事务, 严格跟手指.
     }
 
-    /// 拖把手栏: 顶部细短胶囊 + "PLAYLIST" kicker. 整块都接 DragGesture, 上下拖即可改 playlist 高度.
-    /// 单击切档: min ↔ default 两态. 跟系统 sheet drag indicator 视觉一致, 但比它高度大一点 (这里
-    /// 是真交互, 系统的那条只是装饰).
+    /// 拖把手栏: "PLAYLIST" kicker + 居中三条杠把手 + 重排提示, 合并成**同一行**.
+    /// 整块都接 DragGesture, 上下拖即可改 playlist 高度; 单击切档 min ↔ default.
     private var playlistDragHandleBar: some View {
-        VStack(spacing: 0) {
-            // 短胶囊把手 — 比系统 sheet drag indicator (36×5) 略大一点 (44×6), 训练时戴手套 / 出汗
-            // 也能精准抓到.
-            Capsule()
-                .fill(Color.white.opacity(0.45))
-                .frame(width: 44, height: 6)
-                .padding(.top, 10)
-                .padding(.bottom, 6)
-            // "PLAYLIST" header 跟拖把手合并到这同一栏 — 之前 InlinePlaylist 内部还有一份 header,
-            // 用 showHeader: false 关掉避免双份.
-            HStack {
-                Text("Playlist")
-                    .font(.system(size: 10, weight: .bold))
-                    .tracking(2)
-                    .textCase(.uppercase)
-                    .foregroundStyle(MasoColor.textFaint)
-                Spacer()
-                if (store.plan?.steps.count ?? 0) > 1 {
-                    Text("Long press to reorder")
-                        .font(.system(size: 9, weight: .semibold))
-                        .foregroundStyle(MasoColor.textFaint.opacity(0.7))
-                }
+        HStack {
+            Text("Playlist")
+                .font(.system(size: 10, weight: .bold))
+                .tracking(2)
+                .textCase(.uppercase)
+                .foregroundStyle(MasoColor.textFaint)
+            Spacer()
+            if (store.plan?.steps.count ?? 0) > 1 {
+                Text("Long press to reorder")
+                    .font(.system(size: 9, weight: .semibold))
+                    .foregroundStyle(MasoColor.textFaint.opacity(0.7))
             }
-            .padding(.horizontal, MasoMetrics.cardPadding)
-            .padding(.bottom, 8)
         }
+        .padding(.horizontal, MasoMetrics.cardPadding)
+        // 三条杠把手 — 居中叠在这一行正中 (跟 PLAYLIST 横向对齐), 替代原来的独立胶囊行.
+        .overlay {
+            Image(systemName: "line.3.horizontal")
+                .font(.system(size: 16, weight: .semibold))
+                .foregroundStyle(Color.white.opacity(0.45))
+        }
+        .padding(.top, 10)
+        .padding(.bottom, 8)
         .frame(maxWidth: .infinity)
         .contentShape(Rectangle())
         .gesture(playlistResizeGesture)
@@ -2819,7 +2819,9 @@ private struct EditCurrentStepSheet: View {
                 MasoColor.background.ignoresSafeArea()
                 Form {
                     // 替换动作 — 放在最顶部 (左滑已不再有 Replace, 这是唯一入口).
-                    // tap → dismiss self → caller 弹 ExercisePickerSheet (异步串接, 让 transition 干净).
+                    // 模块展示**当前动作的图片 + 名称** (让用户明确在换哪个), 下方一行 accent "Replace exercise".
+                    // tap → dismiss self → caller 弹 ExercisePickerSheet (异步串接, 让 transition 干净);
+                    // 选完 caller 会重开本参数页 (此时已是新动作), 接着调参.
                     if onReplace != nil {
                         Section {
                             Button(action: {
@@ -2829,12 +2831,28 @@ private struct EditCurrentStepSheet: View {
                                 Haptics.tap()
                                 dismiss()
                             }) {
-                                HStack(spacing: 10) {
-                                    Image(systemName: "arrow.triangle.2.circlepath")
-                                        .font(.system(size: 14, weight: .heavy))
+                                HStack(spacing: 12) {
+                                    ExerciseImage(
+                                        category: exercise.category,
+                                        imageFolder: exercise.imageFolder,
+                                        photoURL: exercise.photoURL,
+                                        customImageData: exercise.customImageData,
+                                        cornerRadius: 10,
+                                        size: 48
+                                    )
+                                    VStack(alignment: .leading, spacing: 3) {
+                                        Text(exercise.displayName)
+                                            .font(.system(size: 15, weight: .semibold))
+                                            .foregroundStyle(MasoColor.text)
+                                            .lineLimit(2)
+                                        HStack(spacing: 5) {
+                                            Image(systemName: "arrow.triangle.2.circlepath")
+                                                .font(.system(size: 11, weight: .heavy))
+                                            Text("Replace exercise")
+                                                .font(.system(size: 12, weight: .semibold))
+                                        }
                                         .foregroundStyle(MasoColor.accent)
-                                    Text("Replace exercise")
-                                        .foregroundStyle(MasoColor.text)
+                                    }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.system(size: 12, weight: .semibold))
