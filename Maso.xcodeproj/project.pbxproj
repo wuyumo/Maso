@@ -15,7 +15,6 @@
 		073B17B64DFD1C33740E76AB /* WorkoutCalendarScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E971064231D3F55030DBE2F5 /* WorkoutCalendarScreen.swift */; };
 		09AE7E2E86BAA6503292E0E4 /* exercises-matched.json in Resources */ = {isa = PBXBuildFile; fileRef = D4C5F3E72ADD7E2C06CE3FED /* exercises-matched.json */; };
 		0C9DFCCE90F73336451E893C /* HealthKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9CFBD927255937085E3C209 /* HealthKitService.swift */; };
-		0FA4F26F3626BD4D15D833F5 /* CoachingPreferencesSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4521D639C2E1B7939E48CEB /* CoachingPreferencesSheet.swift */; };
 		1047791541144FB813063EC2 /* SoundPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B91FB80311BBA14D7AAC8FBF /* SoundPlayer.swift */; };
 		148E3CFD76C6112B00ABA196 /* AISummaryCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88890E68F3513CC6BC233F84 /* AISummaryCard.swift */; };
 		1605075E6DF23E750E90BD9A /* MasoBrandLogo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80FD6F69FE62071220B54EDF /* MasoBrandLogo.swift */; };
@@ -305,7 +304,6 @@
 		BFAD46757159C0D547E762E2 /* ShareImageButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareImageButton.swift; sourceTree = "<group>"; };
 		C228082523E5BD38F52B6B76 /* PersistenceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceController.swift; sourceTree = "<group>"; };
 		C23B6D56681E2D7861F4E5E2 /* ShareImageRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareImageRenderer.swift; sourceTree = "<group>"; };
-		C4521D639C2E1B7939E48CEB /* CoachingPreferencesSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoachingPreferencesSheet.swift; sourceTree = "<group>"; };
 		C4FC2485A0C7673172E17624 /* _match-report.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "_match-report.md"; sourceTree = "<group>"; };
 		C5831930AC3A940150DBB302 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		C85CFB727541762C8447F7E4 /* MuscleSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuscleSelector.swift; sourceTree = "<group>"; };
@@ -560,7 +558,6 @@
 				88890E68F3513CC6BC233F84 /* AISummaryCard.swift */,
 				7546A6BF24D431EDFC2405E6 /* AnimeBodyView.swift */,
 				54145EB316E1E581619F6C65 /* BodyHint.swift */,
-				C4521D639C2E1B7939E48CEB /* CoachingPreferencesSheet.swift */,
 				0070D8A3C7E1513A852DFDDA /* CrossFadeFrames.swift */,
 				402229E63028077115335B66 /* ExerciseImage.swift */,
 				4DACD2EC09799CF0ACC9176F /* ExerciseTagsRow.swift */,
@@ -868,7 +865,6 @@
 				17D9E2729D5EB223EF42F762 /* AppRouter.swift in Sources */,
 				E78F1A3F512D37B2BFA4A286 /* BodyHint.swift in Sources */,
 				F05D16F0A53CAF7281490F9F /* CardChrome.swift in Sources */,
-				0FA4F26F3626BD4D15D833F5 /* CoachingPreferencesSheet.swift in Sources */,
 				94D4CE6164253560EE728358 /* Colors.swift in Sources */,
 				2911B010C07D8A9CE402F8A1 /* CommunityPlans.swift in Sources */,
 				532DFBDCD4B16B6F58710B61 /* CommunityScreen.swift in Sources */,

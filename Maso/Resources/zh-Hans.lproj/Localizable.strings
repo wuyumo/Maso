@@ -1158,8 +1158,8 @@
 "Tell the AI a preference or change in plain words — e.g. 'bad shoulder, no overhead'. It remembers." = "用大白话告诉 AI 你的偏好或想怎么改 — 如「肩膀有伤,别过顶」。它会记住。";
 
 /* 教练记忆 — 长期自由文本偏好,AI 每次生成都读 */
-"Coaching memory" = "教练记忆";
-"Notes the AI uses every time it builds your routines — edit or clear anytime." = "AI 每次生成训练计划都会参考的备注 — 随时编辑或清空。";
+"Tell your AI coach" = "告诉 AI 教练";
+"Write anything you want your routines to consider, in plain words — injuries, likes and dislikes, schedule, goals. The AI reads it every time it builds your plan." = "用大白话写下任何想让训练参考的内容——伤病、喜好、时间安排、目标都行。AI 每次生成计划都会读。";
 "I can't watch the video yet — paste the key moves or the plan from it and I'll work it in." = "我还看不了视频——把里面的关键动作或计划贴给我,我帮你融进去。";
 "Tuned for: %@" = "已按「%@」调整";
 "Focus: %@" = "重点:%@";
@@ -1193,16 +1193,3 @@
 
 /* Training Preferences card + Coaching sheet (Tune with AI redesign) */
 "Tune with AI" = "用 AI 调整";
-"Coaching" = "教练";
-"What your AI coach knows" = "AI 教练了解的信息";
-"Your plans are built from your training profile below, plus the notes you add here. Edit or remove anything anytime." = "你的计划基于下方的训练画像,加上你在这里添加的备注生成。随时可编辑或删除。";
-"Training profile" = "训练画像";
-"Coaching notes" = "教练备注";
-"Clear all coaching notes?" = "清空全部教练备注?";
-"No notes yet. Tell your coach a preference below — e.g. 'bad shoulder, no overhead'." = "还没有备注。在下方告诉教练你的偏好 —— 例如「肩膀有伤,别做过顶动作」。";
-"Notes changed — Regenerate" = "备注已改 —— 重新生成";
-"Remove note: %@" = "删除备注:%@";
-"Go lighter this week" = "这周轻一点";
-"More variety" = "多点花样";
-"Dumbbells only" = "只用哑铃";
-"Shorter sessions" = "缩短每次时长";

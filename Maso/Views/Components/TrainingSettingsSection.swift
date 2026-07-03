@@ -254,9 +254,11 @@ struct TrainingSettingsSection: View {
         .onDisappear { data.commitRecommendedPlansIfDirty() }
     }
 
-    // MARK: - Coaching memory
+    // MARK: - Tell your AI coach (教练记忆)
 
     /// 教练记忆 — accent label + 多行 TextEditor (live 绑 settings.coachMemory) + 帮助文案 + Clear.
+    /// 标题从 "Coaching memory" 改成 "Tell your AI coach" — 让用户一眼明白: 这里用自然语言
+    /// 写任何想让训练参考的内容 (伤病/喜好/时间/目标), 生成计划时 AI 都会带上.
     /// 视觉跟本 section 一致: surface 行底上叠一块 surfaceHi 的可编辑框, accent kicker.
     @ViewBuilder
     private var coachMemorySection: some View {
@@ -264,7 +266,7 @@ struct TrainingSettingsSection: View {
             HStack(spacing: 6) {
                 Image(systemName: "brain.head.profile")
                     .font(.system(size: 10, weight: .heavy))
-                Text("Coaching memory")
+                Text("Tell your AI coach")
                     .font(.system(size: 12, weight: .bold))
                     .tracking(0.5)
                 Spacer()
@@ -299,7 +301,7 @@ struct TrainingSettingsSection: View {
             .overlay(RoundedRectangle(cornerRadius: 12).stroke(MasoColor.borderSoft, lineWidth: 0.5))
             .clipShape(RoundedRectangle(cornerRadius: 12))
 
-            Text("Notes the AI uses every time it builds your routines — edit or clear anytime.")
+            Text("Write anything you want your routines to consider, in plain words — injuries, likes and dislikes, schedule, goals. The AI reads it every time it builds your plan.")
                 .font(.system(size: 11))
                 .foregroundStyle(MasoColor.textFaint)
                 .fixedSize(horizontal: false, vertical: true)

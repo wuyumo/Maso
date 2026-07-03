@@ -1157,8 +1157,8 @@
 "Tell the AI a preference or change in plain words — e.g. 'bad shoulder, no overhead'. It remembers." = "Tell the AI a preference or change in plain words — e.g. 'bad shoulder, no overhead'. It remembers.";
 
 /* Coaching memory — persistent free-text training preferences the AI reads every generation */
-"Coaching memory" = "Coaching memory";
-"Notes the AI uses every time it builds your routines — edit or clear anytime." = "Notes the AI uses every time it builds your routines — edit or clear anytime.";
+"Tell your AI coach" = "Tell your AI coach";
+"Write anything you want your routines to consider, in plain words — injuries, likes and dislikes, schedule, goals. The AI reads it every time it builds your plan." = "Write anything you want your routines to consider, in plain words — injuries, likes and dislikes, schedule, goals. The AI reads it every time it builds your plan.";
 "I can't watch the video yet — paste the key moves or the plan from it and I'll work it in." = "I can't watch the video yet — paste the key moves or the plan from it and I'll work it in.";
 "Tuned for: %@" = "Tuned for: %@";
 "Focus: %@" = "Focus: %@";
@@ -1192,16 +1192,3 @@
 
 /* Training Preferences card + Coaching sheet (Tune with AI redesign) */
 "Tune with AI" = "Tune with AI";
-"Coaching" = "Coaching";
-"What your AI coach knows" = "What your AI coach knows";
-"Your plans are built from your training profile below, plus the notes you add here. Edit or remove anything anytime." = "Your plans are built from your training profile below, plus the notes you add here. Edit or remove anything anytime.";
-"Training profile" = "Training profile";
-"Coaching notes" = "Coaching notes";
-"Clear all coaching notes?" = "Clear all coaching notes?";
-"No notes yet. Tell your coach a preference below — e.g. 'bad shoulder, no overhead'." = "No notes yet. Tell your coach a preference below — e.g. 'bad shoulder, no overhead'.";
-"Notes changed — Regenerate" = "Notes changed — Regenerate";
-"Remove note: %@" = "Remove note: %@";
-"Go lighter this week" = "Go lighter this week";
-"More variety" = "More variety";
-"Dumbbells only" = "Dumbbells only";
-"Shorter sessions" = "Shorter sessions";

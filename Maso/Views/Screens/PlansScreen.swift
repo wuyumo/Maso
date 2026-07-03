@@ -41,8 +41,6 @@ struct PlansScreen: View {
     @State private var communityDays: Int? = nil
     /// 上一条对话指令的人类可读回显 (露在结果上方, 让用户看到"基于你的: …"). nil = 还没用过对话.
     @State private var lastRefineNote: String? = nil
-    /// Tune-with-AI: 从 Training Preferences 卡底部 pill 拉起的 Coaching sheet (教练记忆 chip + tune 输入).
-    @State private var showCoaching = false
     /// 跨 tab 导航 — 消费 AI 小结卡 Apply 发来的 pendingSummaryFocus (切 AI 页 + focusNote 重生成).
     @State private var router = AppRouter.shared
 
@@ -183,12 +181,10 @@ struct PlansScreen: View {
     private var aiPage: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                // 训练偏好卡 (复刻 AI Coach Summary 样式) — 表头/chevron → 结构化偏好编辑层,
-                // 底部 "Tune with AI" pill → Coaching sheet (教练记忆 chip + tune 输入).
-                PlanRationaleCard(
-                    onApplyPreferences: { startGenerateRoutines() },
-                    onTune: { showCoaching = true }
-                )
+                // 训练偏好卡 (复刻 AI Coach Summary 样式) — 表头/chevron → 结构化偏好编辑层.
+                // 自然语言偏好入口 = 编辑层底部的 "Tell your AI coach" 编辑器 (TrainingSettingsSection),
+                // 不再有单独的 "Tune with AI" pill / Coaching sheet.
+                PlanRationaleCard(onApplyPreferences: { startGenerateRoutines() })
                 aiRoutineResults
                 Spacer(minLength: MasoMetrics.pageBottomInset)
             }
@@ -197,44 +193,6 @@ struct PlansScreen: View {
         }
         // 首次 push 进 AI 页 (还没生成过) 自动生成一批, 避免空页. 改了偏好后由 "Generate routines" 重跑.
         .onAppear { if aiPlans.isEmpty && !aiGenerating { startGenerateRoutines() } }
-        // Coaching sheet — pill 拉起. Pro gate + 重生成逻辑留在 PlansScreen (通过闭包传入),
-        // 删除对非 Pro 也免费. 结构化偏好子层由 sheet 自己拉起 (复用 TrainingPreferencesSheet).
-        .sheet(isPresented: $showCoaching) {
-            CoachingPreferencesSheet(
-                isPro: data.settings.isPro,
-                onSend: { text in sendTune(text) },
-                onDelete: { index in data.removeCoachNote(at: index) },
-                onClearAll: { data.clearCoachNotes() },
-                onRegenerate: { startGenerateRoutines(focusNote: nil, surface: "coaching_edit") },
-                onEditProfileConfirmed: { startGenerateRoutines() }
-            )
-        }
-    }
-
-    // MARK: - 对话式优化 (Pro feature ①)
-    //
-    // 主对话入口 = Coaching sheet (从 Training Preferences 卡底部 "Tune with AI" pill 拉起).
-    // Pro gate + append coach note + focusNote 重生成的逻辑留在这里 (sendTune), 由 sheet 通过 onSend 回调进来 —
-    // 尽量少把状态搬出 PlansScreen. 用户写"加难一点"/"换成推拉腿"/"避开过顶动作", 把这句话作为 focusNote
-    // 注进 generateAIRoutines(focusNote:) 重生成整批 AI routine (走 enforceScience 兜底).
-
-    /// 发送一条 tune (typed 或 suggested-add chip) — Pro gate → append 教练记忆 + 把这句话作为 focusNote
-    /// 立即重生成. 非 Pro → paywall (什么都不写). 保留原 sendRefine 的完整双行为 (append + regenerate).
-    private func sendTune(_ raw: String) {
-        let text = raw.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !text.isEmpty, !aiGenerating else { return }
-        // tune_with_ai_send — 用户点发送 (无论 Pro). 无 PII: 只报文本长度 / 是否含 URL / 是否 Pro, 不带文本.
-        Analytics.shared.track("tune_with_ai_send", [
-            "text_len": .int(text.count),
-            "contained_url": .bool(text.containsURL),
-            "is_pro": .bool(data.settings.isPro),
-        ])
-        guard data.settings.isPro else { paywallPresented = true; return }
-        lastRefineNote = text
-        // 这句话既驱动本次立即重生成 (focusNote), 也长期记进教练记忆 (Coaching Memory) —
-        // 之后每次生成都会带上, AI 持续个性化. 非 Pro 已在上面挡掉, 不会写进记忆.
-        data.appendCoachNote(text)
-        startGenerateRoutines(focusNote: text, surface: "tune")
     }
 
     /// "Generate routines" 主 CTA — 改了训练偏好 (或还没生成过) 才可点; 点了进生成态.
@@ -535,15 +493,13 @@ private struct LibraryEntryRow: View {
 //   - 表头: 12pt bold accent 图标 + 14pt bold text 标题 + Spacer + 13pt semibold textDim 尾图标
 //     (AISummaryCard 表头是 sparkles + 标题 + arrow.clockwise; 这里图标换成 slider.horizontal.3,
 //      sparkles 留给 AI 生成的小结卡, 让两张卡读起来是"兄弟"不是"双胞胎"; 尾图标换成用户要的 chevron.right).
-// 不再泛型: 内联对话框移出这张卡, 改为底部一个 "Tune with AI" pill 打开 Coaching sheet.
+// 自然语言偏好入口收进编辑层底部的 "Tell your AI coach" 编辑器 — 卡上不再有单独的 tune 入口.
 struct PlanRationaleCard: View {
     @Environment(DataStore.self) private var data
     /// 点编辑 → 拉起 Training Preferences 层 (sheet). 层里改完点 Generate → 重生成.
     @State private var showEditor = false
     /// 点 "Generate routines" 应用偏好后回调 — 调用方 (aiPage) 拿来跑生成动画.
     var onApplyPreferences: () -> Void = {}
-    /// 点底部 "Tune with AI" pill → 拉起 Coaching sheet (由调用方持有 showCoaching state).
-    var onTune: () -> Void = {}
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -573,26 +529,6 @@ struct PlanRationaleCard: View {
                 .foregroundStyle(MasoColor.textDim)
                 .fixedSize(horizontal: false, vertical: true)
 
-            // "Tune with AI" pill — 底行**右下角** (跟 AI/Classics 卡的 Save 按钮同位同款:
-            // accent.opacity(0.15) 填充胶囊, 无描边, 见 AddToPlansButton). 点 → 打开 Coaching sheet.
-            HStack {
-                Spacer()
-                Button(action: onTune) {
-                    HStack(spacing: 6) {
-                        Image(systemName: "sparkles")
-                            .font(.system(size: 11, weight: .bold))
-                        Text("Tune with AI")
-                            .font(.system(size: 13, weight: .bold))
-                    }
-                    .foregroundStyle(MasoColor.accent)
-                    .padding(.vertical, 8)
-                    .padding(.horizontal, 14)
-                    .background(MasoColor.accent.opacity(0.15))
-                    .clipShape(Capsule())
-                }
-                .buttonStyle(.plain)
-            }
-            .padding(.top, 2)
         }
         .cardChrome()
         .sheet(isPresented: $showEditor) {
@@ -632,7 +568,7 @@ struct PlanRationaleCard: View {
 //
 // 点 Training Preferences 卡 → 拉起这层 (large detent). 内容 = Settings 同款 TrainingSettingsSection
 // (live 写 data.settings). Cancel → 回滚到进入时快照; Generate routines → 存盘 + 关层 + 触发重生成 (loading).
-// internal (非 private): CoachingPreferencesSheet 的 "Training profile" 行也复用这一层作结构化编辑门.
+// internal (非 private) — 历史上给 Coaching sheet 复用过, 现仅本文件用, 保持 internal 无害.
 struct TrainingPreferencesSheet: View {
     @Environment(DataStore.self) private var data
     @Environment(\.dismiss) private var dismiss
