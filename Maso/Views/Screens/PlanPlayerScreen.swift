@@ -798,8 +798,8 @@ struct PlanPlayerScreen: View {
         // 且语义准: 点阵 = 经典"可拖拽"记号 (三条杠像菜单, 横向三点像"更多").
         .overlay {
             Image(systemName: "circle.grid.3x2.fill")
-                .font(.system(size: 9, weight: .semibold))
-                .foregroundStyle(Color.white.opacity(0.32))
+                .font(.system(size: 12, weight: .semibold))
+                .foregroundStyle(Color.white.opacity(0.55))
         }
         .padding(.top, 10)
         .padding(.bottom, 8)
