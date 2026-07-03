@@ -573,21 +573,25 @@ struct PlanRationaleCard: View {
                 .foregroundStyle(MasoColor.textDim)
                 .fixedSize(horizontal: false, vertical: true)
 
-            // "Tune with AI" pill — 底行, 左对齐, 收窄贴内容 (不 maxWidth infinity). accent.opacity(0.14)
-            // 胶囊 + accent.opacity(0.35) 描边 (跟 AddExerciseSheets 选中 chip 同套路). 点 → 打开 Coaching sheet.
-            Button(action: onTune) {
-                HStack(spacing: 6) {
-                    Image(systemName: "sparkles")
-                        .font(.system(size: 12, weight: .bold))
-                    Text("Tune with AI")
-                        .font(.system(size: 13, weight: .semibold))
+            // "Tune with AI" pill — 底行**右下角** (跟 AI/Classics 卡的 Save 按钮同位同款:
+            // accent.opacity(0.15) 填充胶囊, 无描边, 见 AddToPlansButton). 点 → 打开 Coaching sheet.
+            HStack {
+                Spacer()
+                Button(action: onTune) {
+                    HStack(spacing: 6) {
+                        Image(systemName: "sparkles")
+                            .font(.system(size: 11, weight: .bold))
+                        Text("Tune with AI")
+                            .font(.system(size: 13, weight: .bold))
+                    }
+                    .foregroundStyle(MasoColor.accent)
+                    .padding(.vertical, 8)
+                    .padding(.horizontal, 14)
+                    .background(MasoColor.accent.opacity(0.15))
+                    .clipShape(Capsule())
                 }
-                .foregroundStyle(MasoColor.accent)
-                .padding(.horizontal, 12).padding(.vertical, 8)
-                .background(Capsule().fill(MasoColor.accent.opacity(0.14)))
-                .overlay(Capsule().stroke(MasoColor.accent.opacity(0.35), lineWidth: 0.5))
+                .buttonStyle(.plain)
             }
-            .buttonStyle(.plain)
             .padding(.top, 2)
         }
         .cardChrome()

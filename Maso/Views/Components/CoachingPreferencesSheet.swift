@@ -10,10 +10,10 @@ import SwiftUI
 //   (c) 教练记忆 = 可删 chip (ChatGPT-memory gold standard): 每条 coachNote 一个 chip, ✕ 删该条;
 //       "Clear all" (仅非空, 带确认 alert); 空态一句 faint 引导. chip 用 FlowLayout (复用 OnboardingScreen 里那个).
 //   (d) 钉底输入 (safeAreaInset .bottom): port 原 refineComposer (多行 TextField + 圆形 arrow.up 发送 +
-//       URL 提示) + 上方一排 "Add:" suggestion chip (点 = 发送那句话).
+//       URL 提示) + 上方一排 suggestion chip (点 = 填入输入框聚焦, 不自动发 — 防误触写偏好/烧 token).
 //
 // 交互 (设计 §4):
-//   - 发送 tune (typed / suggestion): Pro gate (onSend 里做) → append note + 立即重生成.
+//   - 发送 tune: Pro gate → append note + 立即重生成, 然后收起 sheet (生成进度在 AI 页, 收起才看得见).
 //   - 删除 chip: onDelete (仅 save, 不自动重生成); 删过后底部露 "Notes changed — Regenerate" pill → onRegenerate.
 //   - 删除对非 Pro 也免费; 发送/重生成 Pro-gated (由 parent 的闭包决定弹 paywall).
 struct CoachingPreferencesSheet: View {
@@ -49,15 +49,19 @@ struct CoachingPreferencesSheet: View {
     /// 记忆自打开后被删过 → 值得让用户一键把改动应用到 routine.
     private var notesChanged: Bool { notes.count != notesCountOnOpen }
 
-    /// suggested-add chip 候选 — 结构化 pickers 里没有的长尾常见项. 点 = 发送那句话.
+    /// suggested chip 候选 — 偏好式示例 (不预设伤病). 点 = **填入输入框** (可编辑, 再主动发送),
+    /// 不自动发 — 误触一下就写永久偏好 + 触发付费重生成的代价太大.
     private var suggestions: [String] {
         [
-            NSLocalizedString("bad knee", comment: "coaching suggestion"),
-            NSLocalizedString("hate burpees", comment: "coaching suggestion"),
-            NSLocalizedString("home gym only", comment: "coaching suggestion"),
-            NSLocalizedString("train mornings", comment: "coaching suggestion"),
+            NSLocalizedString("Go lighter this week", comment: "coaching suggestion"),
+            NSLocalizedString("More variety", comment: "coaching suggestion"),
+            NSLocalizedString("Dumbbells only", comment: "coaching suggestion"),
+            NSLocalizedString("Shorter sessions", comment: "coaching suggestion"),
         ]
     }
+
+    /// 输入框焦点 — 点建议 chip 填入后自动聚焦, 让用户直接改/发.
+    @FocusState private var inputFocused: Bool
 
     var body: some View {
         NavigationStack {
@@ -202,8 +206,7 @@ struct CoachingPreferencesSheet: View {
                     }
                     .foregroundStyle(MasoColor.accent)
                     .padding(.horizontal, 12).padding(.vertical, 8)
-                    .background(Capsule().fill(MasoColor.accent.opacity(0.14)))
-                    .overlay(Capsule().stroke(MasoColor.accent.opacity(0.35), lineWidth: 0.5))
+                    .background(Capsule().fill(MasoColor.accent.opacity(0.15)))
                 }
                 .buttonStyle(.plain)
                 .padding(.top, 2)
@@ -242,17 +245,21 @@ struct CoachingPreferencesSheet: View {
 
     private var composer: some View {
         VStack(alignment: .leading, spacing: 8) {
-            // suggested-add chip — 点 = 发送那句话 (append + 重生成). accent entry-pill 样式.
+            // suggested chip — 点 = **填入输入框并聚焦** (不自动发送): 用户可改可删, 发送是主动动作.
+            // accent 软填充胶囊, 无描边 (跟 Save 按钮同款).
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
                     ForEach(suggestions, id: \.self) { s in
-                        Button { send(s) } label: {
-                            Text(String(format: NSLocalizedString("Add: %@", comment: "coaching suggestion chip"), s))
+                        Button {
+                            refineInput = s
+                            inputFocused = true
+                            Haptics.tap()
+                        } label: {
+                            Text(s)
                                 .font(.system(size: 13, weight: .semibold))
                                 .foregroundStyle(MasoColor.accent)
                                 .padding(.horizontal, 12).padding(.vertical, 8)
-                                .background(Capsule().fill(MasoColor.accent.opacity(0.14)))
-                                .overlay(Capsule().stroke(MasoColor.accent.opacity(0.35), lineWidth: 0.5))
+                                .background(Capsule().fill(MasoColor.accent.opacity(0.15)))
                         }
                         .buttonStyle(.plain)
                     }
@@ -276,6 +283,7 @@ struct CoachingPreferencesSheet: View {
                     .font(.system(size: 14))
                     .foregroundStyle(MasoColor.text)
                     .lineLimit(1...4)
+                    .focused($inputFocused)
                     .padding(.horizontal, 14).padding(.vertical, 10)
                     .background(MasoColor.surface)
                     .overlay(RoundedRectangle(cornerRadius: 16).stroke(MasoColor.borderSoft, lineWidth: 0.5))
@@ -301,15 +309,15 @@ struct CoachingPreferencesSheet: View {
         .background(.bar)
     }
 
-    /// 发送 — 非 Pro 先弹本 sheet 内的 paywall (什么都不写); Pro 走 parent 的 onSend (append + 重生成).
+    /// 发送 — 非 Pro 先弹本 sheet 内的 paywall (什么都不写); Pro 走 parent 的 onSend (append + 重生成),
+    /// 然后**收起本 sheet** — 重生成发生在 AI 页, 收起让用户正好看到生成进度 (留在 sheet 里结果不可见).
     private func send(_ raw: String) {
         let text = raw.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !text.isEmpty else { return }
         guard isPro else { paywallPresented = true; return }
         refineInput = ""
         onSend(text)
-        // 发送后本次生成已带上, 打开时的基线也随之更新, 避免误报 "Notes changed".
-        notesCountOnOpen = notes.count + 1
+        dismiss()
     }
 
     // MARK: - 偏好摘要 (跟 PlanRationaleCard.prefSummary 同逻辑)

@@ -371,11 +371,10 @@ struct TodayScreen: View {
                 }
                 Spacer(minLength: 0)
                 if trailingPlay {
-                    // 自由训练 = 直接开练, 右侧用播放键 (软绿底 + 细描边) 而不是导航 chevron.
+                    // 自由训练 = 直接开练, 右侧用播放键 (软绿底, 无描边) 而不是导航 chevron.
                     ZStack {
                         Circle()
                             .fill(MasoColor.accent.opacity(0.18))
-                            .overlay(Circle().stroke(MasoColor.accent.opacity(0.4), lineWidth: 0.5))
                         Image(systemName: "play.fill")
                             .font(.system(size: 11, weight: .heavy))
                             .foregroundStyle(MasoColor.accent)

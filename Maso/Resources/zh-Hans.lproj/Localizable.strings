@@ -1201,9 +1201,8 @@
 "Clear all coaching notes?" = "清空全部教练备注?";
 "No notes yet. Tell your coach a preference below — e.g. 'bad shoulder, no overhead'." = "还没有备注。在下方告诉教练你的偏好 —— 例如「肩膀有伤,别做过顶动作」。";
 "Notes changed — Regenerate" = "备注已改 —— 重新生成";
-"Add: %@" = "添加:%@";
 "Remove note: %@" = "删除备注:%@";
-"bad knee" = "膝盖有伤";
-"hate burpees" = "讨厌波比跳";
-"home gym only" = "只在家练";
-"train mornings" = "早上训练";
+"Go lighter this week" = "这周轻一点";
+"More variety" = "多点花样";
+"Dumbbells only" = "只用哑铃";
+"Shorter sessions" = "缩短每次时长";
