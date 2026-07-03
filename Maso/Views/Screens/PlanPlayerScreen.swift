@@ -794,11 +794,12 @@ struct PlanPlayerScreen: View {
             }
         }
         .padding(.horizontal, MasoMetrics.cardPadding)
-        // 三条杠把手 — 居中叠在这一行正中 (跟 PLAYLIST 横向对齐), 替代原来的独立胶囊行.
+        // 六点抓握把手 (⠿ 3×2 圆点) — 居中叠在这一行正中 (跟 PLAYLIST 横向对齐). 比三条杠更 subtle
+        // 且语义准: 点阵 = 经典"可拖拽"记号 (三条杠像菜单, 横向三点像"更多").
         .overlay {
-            Image(systemName: "line.3.horizontal")
-                .font(.system(size: 16, weight: .semibold))
-                .foregroundStyle(Color.white.opacity(0.45))
+            Image(systemName: "circle.grid.3x2.fill")
+                .font(.system(size: 9, weight: .semibold))
+                .foregroundStyle(Color.white.opacity(0.32))
         }
         .padding(.top, 10)
         .padding(.bottom, 8)
