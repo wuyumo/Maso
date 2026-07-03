@@ -280,14 +280,14 @@ struct PlanPlayerScreen: View {
                         stops: [
                             .init(color: .black, location: 0),
                             // 整条状态栏区 (到 topSafeArea) 做成完全实色黑 → 图绝不在此露头, 看不到顶边
-                            .init(color: .black, location: topSafeArea / (topSafeArea + 110)),
+                            .init(color: .black, location: topSafeArea / (topSafeArea + 74)),
                             // 之后缓和地往下淡: 过半程仍 ~50% 黑, 平滑收 clear, 过渡不露边
                             .init(color: .black.opacity(0.5), location: 0.7),
                             .init(color: .clear, location: 1.0)
                         ],
                         startPoint: .top, endPoint: .bottom
                     )
-                    .frame(height: topSafeArea + 110)   // 实色黑盖满状态栏 + 110pt 缓和淡出
+                    .frame(height: topSafeArea + 74)   // 实色黑盖满状态栏 + 74pt 缓和淡出 (原 110, 收 1/3 少漫图)
                     .frame(maxWidth: .infinity, alignment: .top)
                     .ignoresSafeArea(edges: .top)
                     .allowsHitTesting(false)
@@ -669,10 +669,12 @@ struct PlanPlayerScreen: View {
                     // 起黑点后移 + 上半更淡 → 少盖训练图 (尤其图下方过渡区), 露出更多动作图;
                     // 到 info/controls 区 (≈0.46+) 才转暗, 文字/肌肉图仍够可读.
                     .init(color: .clear, location: 0.0),
-                    .init(color: base.opacity(0.22), location: 0.26),
-                    .init(color: base.opacity(0.72), location: 0.46),
-                    .init(color: base.opacity(0.95), location: 0.66),
-                    .init(color: base, location: 0.85),
+                    // 再收 ~1/3: 0.28 前完全透明, 遮图带更短; info/controls 区照旧够暗.
+                    .init(color: .clear, location: 0.28),
+                    .init(color: base.opacity(0.22), location: 0.46),
+                    .init(color: base.opacity(0.72), location: 0.62),
+                    .init(color: base.opacity(0.95), location: 0.78),
+                    .init(color: base, location: 0.9),
                 ],
                 startPoint: .top, endPoint: .bottom
             )
