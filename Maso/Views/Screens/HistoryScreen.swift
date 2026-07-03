@@ -246,24 +246,28 @@ struct HistoryScreen: View {
         .onChange(of: calendarCollapsed) { _, collapsed in
             if !collapsed { calendarMonthAnchor = historyCurrentMonthStart() }
         }
-        .screenHeader("Progress") {
-            // 分享菜单 — 不再跟当前分段绑定, 两个入口让用户自己挑 (两段都能分享任一张卡):
-            //   Share Insights → InsightShareCard (参数逐项可勾选)
-            //   Share History  → UnifiedShareCard 训练总览 (原流程不变)
-            // 没有任何训练记录 → 两样都没东西可分享, 入口整个不出现.
-            if !groupedSessions().isEmpty {
-                shareMenu
-            }
-            Button(action: onOpenSettings) {
-                Image(systemName: "gearshape")
-                    .font(.system(size: 16, weight: .regular))
-            }
-            .accessibilityLabel("Settings")
-        }
-        // 标题 inline — 覆盖 screenHeader 默认的 .large (跟 PlansScreen "Routines" 同款).
-        // large 大标题区会被 safeAreaBar 的毛玻璃盖住, 初始态 "Progress" 看着发糊;
-        // inline 后标题进导航栏跟分享/齿轮同一行, 分段 Picker 钉在正下方, 正文从下面穿过.
+        // 标题 inline — 不走 screenHeader: 它内层硬编码 .large, SwiftUI 导航偏好取"更贴内容"的值,
+        // 外层追加 .inline 覆盖不掉 → 大标题仍在、被 safeAreaBar 毛玻璃盖糊 (标题压在遮罩底下).
+        // 照 PlansScreen "Routines" 手写 inline: 标题进导航栏 (遮罩之上) 跟分享/齿轮同一行,
+        // 分段 Picker 钉在正下方, 正文从下面穿过.
+        .navigationTitle("Progress")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItemGroup(placement: .topBarTrailing) {
+                // 分享菜单 — 两个入口让用户自己挑 (两段都能分享任一张卡):
+                //   Share Insights → InsightShareCard (参数逐项可勾选)
+                //   Share History  → UnifiedShareCard 训练总览 (原流程不变)
+                // 没有任何训练记录 → 两样都没东西可分享, 入口整个不出现.
+                if !groupedSessions().isEmpty {
+                    shareMenu
+                }
+                Button(action: onOpenSettings) {
+                    Image(systemName: "gearshape")
+                        .font(.system(size: 16, weight: .regular))
+                }
+                .accessibilityLabel("Settings")
+            }
+        }
         .sheet(item: $selectedSession) { session in
             SessionDetailSheet(
                 session: session,

@@ -794,12 +794,22 @@ struct PlanPlayerScreen: View {
             }
         }
         .padding(.horizontal, MasoMetrics.cardPadding)
-        // 六点抓握把手 (⠿ 3×2 圆点) — 居中叠在这一行正中 (跟 PLAYLIST 横向对齐). 比三条杠更 subtle
-        // 且语义准: 点阵 = 经典"可拖拽"记号 (三条杠像菜单, 横向三点像"更多").
+        // 六点抓握把手 (⠿ 3×2 圆点, 自绘) — 居中叠在这一行正中 (跟 PLAYLIST 横向对齐).
+        // 点阵 = 经典"可拖拽"记号 (三条杠像菜单, 横向三点像"更多").
+        // ⚠️ 自绘而非 SF Symbol: "circle.grid.3x2.fill" 并不存在 (只有 2x2/3x3),
+        //    Image(systemName:) 遇到无效名会静默渲染成空白 → 之前把手完全看不见.
         .overlay {
-            Image(systemName: "circle.grid.3x2.fill")
-                .font(.system(size: 12, weight: .semibold))
-                .foregroundStyle(Color.white.opacity(0.55))
+            VStack(spacing: 3.5) {
+                ForEach(0..<2, id: \.self) { _ in
+                    HStack(spacing: 3.5) {
+                        ForEach(0..<3, id: \.self) { _ in
+                            Circle()
+                                .fill(Color.white.opacity(0.55))
+                                .frame(width: 4, height: 4)
+                        }
+                    }
+                }
+            }
         }
         .padding(.top, 10)
         .padding(.bottom, 8)
