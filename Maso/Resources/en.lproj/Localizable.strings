@@ -1201,5 +1201,10 @@
 "%@ e1RM" = "%@ e1RM";
 "Consistency" = "Consistency";
 
+/* Progress header share menu (v2: 两段共用一个 Menu) + Insights 分享参数勾选 */
+"Share Insights" = "Share Insights";
+"Share History" = "Share History";
+"AI coach quote" = "AI coach quote";
+
 /* Training Preferences card + Coaching sheet (Tune with AI redesign) */
 "Tune with AI" = "Tune with AI";

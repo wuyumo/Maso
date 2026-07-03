@@ -1202,5 +1202,10 @@
 "%@ e1RM" = "%@ 估算 1RM";
 "Consistency" = "坚持度";
 
+/* Progress header share menu (v2: 两段共用一个 Menu) + Insights 分享参数勾选 */
+"Share Insights" = "分享数据";
+"Share History" = "分享训练记录";
+"AI coach quote" = "AI 教练点评";
+
 /* Training Preferences card + Coaching sheet (Tune with AI redesign) */
 "Tune with AI" = "用 AI 调整";

@@ -245,6 +245,9 @@ struct AISummaryCard: View {
                     tldr: summary?.tldr ?? data.cachedSummary?.tldr,
                     generatedAt: data.settings.aiSummaryGeneratedAt,
                     stats: data.summaryKeyStats(),
+                    // 这个入口只在有已生成小结时出现 (= Pro), 但仍显式传 isPro —
+                    // 渲染层兜底: 非 Pro 永远分享不出 quote/e1RM/坚持度 (#insights-share-pro).
+                    isPro: data.settings.isPro,
                     userPhoto: photo,
                     onTapAddPhoto: onTapAdd
                 )

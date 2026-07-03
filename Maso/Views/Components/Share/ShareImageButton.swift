@@ -120,6 +120,9 @@ struct ShareCustomizeSheet<ShareContent: View>: View {
     let defaultSections: ShareSections
     let initialPhoto: UIImage?
     let shareSurface: String
+    /// caller 侧的额外"不能分享"条件 — e.g. Insights 卡的参数一个都没勾
+    /// (那套 toggle state 在 caller 手里, sections.anyEnabled 管不到它).
+    let shareDisabled: Bool
     @ViewBuilder let shareContent: (UIImage?, (() -> Void)?, ShareCardMode) -> ShareContent
     var onPersistPhoto: ((UIImage?) -> Void)? = nil
 
@@ -141,6 +144,7 @@ struct ShareCustomizeSheet<ShareContent: View>: View {
         defaultSections: ShareSections,
         initialPhoto: UIImage?,
         shareSurface: String = "unknown",
+        shareDisabled: Bool = false,
         @ViewBuilder shareContent: @escaping (UIImage?, (() -> Void)?, ShareCardMode) -> ShareContent,
         onPersistPhoto: ((UIImage?) -> Void)? = nil
     ) {
@@ -148,6 +152,7 @@ struct ShareCustomizeSheet<ShareContent: View>: View {
         self.defaultSections = defaultSections
         self.initialPhoto = initialPhoto
         self.shareSurface = shareSurface
+        self.shareDisabled = shareDisabled
         self.shareContent = shareContent
         self.onPersistPhoto = onPersistPhoto
         _sections = State(initialValue: defaultSections)
@@ -183,7 +188,7 @@ struct ShareCustomizeSheet<ShareContent: View>: View {
                     Button("Share") { renderAndShare() }
                         .fontWeight(.bold)
                         .tint(MasoColor.text)
-                        .disabled(!sections.anyEnabled)
+                        .disabled(!sections.anyEnabled || shareDisabled)
                 }
             }
             // 系统 confirmationDialog — iOS 原生 bottom action sheet 风格, 跟 Mail / Photos

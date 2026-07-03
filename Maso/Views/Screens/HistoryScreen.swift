@@ -35,6 +35,13 @@ struct HistoryScreen: View {
     enum HistoryTab { case insights, records }
     @State private var historyTab: HistoryTab = .insights
 
+    /// 头部分享菜单 → 两个 customize sheet 的呈现开关. Menu item 里不能内嵌 ShareImageButton
+    /// (menu 收起时挂在 item 上的 .sheet 呈现不可靠), 所以 sheet 提到 screen 层, menu 只翻 bool.
+    @State private var insightsSharePresented = false
+    @State private var historySharePresented = false
+    /// Insights 分享卡的参数勾选 — 每次打开分享流程重置成默认 (全部可用项勾上), 见 openInsightsShare().
+    @State private var insightShareOptions = InsightShareOptions()
+
     /// AI 小结 Apply "Add to notes" 成功后的确认 toast — 一句话, 自动消失.
     @State private var applyToast: String? = nil
     /// 跨 tab 导航到 AI Routines (Apply → regenerate_routines).
@@ -79,12 +86,29 @@ struct HistoryScreen: View {
         return "\(startStr) – \(endStr)"
     }
 
-    var body: some View {
-        // 单一 ScrollView, 跟 PlansScreen 同款行为:
-        //   - stats + calendar 是 scroll content 的一部分, 跟 session 列表一起滚动
-        //   - 用户向上滑 → 标题从 large 收成 inline, headbar 出系统 material blur
-        //   - ScrollView 到顶后向下拖 (overscroll) → calendar 从 strip 展开成月
-        // GeometryReader 拿视口高 → VStack minHeight 撑满 → 空态可在日历↔tab bar 之间垂直居中.
+    // 顶部头栏: Insights / History 分段 — 放进 .safeAreaBar 跟导航栏共享同一片系统毛玻璃
+    // (跟 PlansScreen.topBar 同款). 空态 (没有任何训练记录) 两段内容相同, 分段没意义 → 整条不渲染.
+    @ViewBuilder
+    private var topBar: some View {
+        if !groupedSessions().isEmpty {
+            // 分段切 Insights (数据分析) / History (记录) — 钉在导航标题下方, 不随正文滚走.
+            Picker("", selection: $historyTab) {
+                Text("Insights").tag(HistoryTab.insights)
+                Text("History").tag(HistoryTab.records)
+            }
+            .pickerStyle(.segmented)
+            .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
+            .padding(.top, 2)
+            .padding(.bottom, 8)
+        }
+    }
+
+    /// 滚动正文 — safeAreaBar (topBar) 浮在它上面, 正文从下方穿过 (iOS 18-25 则排在 topBar 之下).
+    /// 单一 ScrollView, 跟 PlansScreen 同款行为:
+    ///   - ProBanner + stats + calendar 是 scroll content 的一部分, 跟 session 列表一起滚动
+    ///   - 用户向上滑 → 标题从 large 收成 inline, headbar 出系统 material blur
+    /// GeometryReader 拿视口高 → VStack minHeight 撑满 → 空态可在日历↔tab bar 之间垂直居中.
+    private var pages: some View {
         GeometryReader { geo in
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
@@ -134,16 +158,9 @@ struct HistoryScreen: View {
                     }
                     .frame(maxWidth: .infinity, alignment: .center)
                 } else {
-                    // 分段 Picker 移到最顶 (ProBanner 之下) — 让"分析 vs 记录"的划分是进 tab 第一眼看到的.
+                    // 分段 Picker 已上移到 topBar (safeAreaBar, 钉在导航标题下方) — 正文只按当前段渲染.
                     //   Insights (数据分析: delta/图表/热力图/Pro 深度指标)
                     //   History  (记录: 3 metrics + 训练日历 + 按周分组的过往训练)
-                    Picker("", selection: $historyTab) {
-                        Text("Insights").tag(HistoryTab.insights)
-                        Text("History").tag(HistoryTab.records)
-                    }
-                    .pickerStyle(.segmented)
-                    .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
-
                     if historyTab == .insights {
                         // Insights 分段: 全部训练数据一张有序、可拖拽重排的卡片列表 (delta/周容量/1RM/
                         // 肌群均衡/热力图/逐动作 1RM/MEV·MAV/逐肌群容量/频率/PR 时间线/一致性).
@@ -153,7 +170,7 @@ struct HistoryScreen: View {
                                 .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
 
                             // 峰值时刻 CTA — 用户刚看完自己的全部数据, 顺手一键分享
-                            // (跟 header 的 insightsShareButton 同一张 InsightShareCard / 同一 surface).
+                            // (跟 header 分享菜单的 Share Insights 同一个流程 / 同一 "insights" surface).
                             HStack {
                                 Spacer()
                                 insightsSharePill
@@ -198,6 +215,27 @@ struct HistoryScreen: View {
             }
             .frame(minHeight: geo.size.height)   // 撑满视口 → 空态前后两个 Spacer 能把它居中
         }
+        }   // GeometryReader
+    }
+
+    var body: some View {
+        // 头栏 (分段) 跟导航栏共享「同一片」系统毛玻璃 — 跟 PlansScreen 同款 (iOS 26 手动拼任何
+        // SwiftUI 材质都对不齐导航栏的 Liquid Glass, 官方解法 = .safeAreaBar):
+        //   - iOS 26+: 分段进 .safeAreaBar(edge:.top), 跟导航栏天然同材质, 正文滚动从它下面穿过.
+        //   - iOS 18-25: 回退固定 VStack 头 (分段在上、正文在下).
+        Group {
+            if #available(iOS 26.0, *) {
+                pages
+                    .safeAreaBar(edge: .top, spacing: 0) {
+                        topBar
+                    }
+            } else {
+                VStack(spacing: 0) {
+                    topBar
+                    pages
+                }
+            }
+        }
         // (撤销 scroll-based 展开/收起 — 现在完全交给用户主动点击 strip / chevron 控制)
         // 页面底色 #121212 — 跟 Plans / Today 一致, 不再透出 NavigationStack 默认纯黑底.
         // ignoresSafeArea 让底色延伸到 home indicator 区. NavigationStack 的 large title /
@@ -209,15 +247,12 @@ struct HistoryScreen: View {
             if !collapsed { calendarMonthAnchor = historyCurrentMonthStart() }
         }
         .screenHeader("Progress") {
-            // 分段感知的分享入口 — 分享的永远是"当前段看到的东西":
-            //   Insights 段 → InsightShareCard (AI 小结 TL;DR + 4 个头条数字)
-            //   History 段  → UnifiedShareCard 训练总览 (最近一次训练 + 本周肌肉状态 + 本周日历)
-            // 没有任何训练记录 → 两段都没东西可分享, 入口整个不出现.
+            // 分享菜单 — 不再跟当前分段绑定, 两个入口让用户自己挑 (两段都能分享任一张卡):
+            //   Share Insights → InsightShareCard (参数逐项可勾选)
+            //   Share History  → UnifiedShareCard 训练总览 (原流程不变)
+            // 没有任何训练记录 → 两样都没东西可分享, 入口整个不出现.
             if !groupedSessions().isEmpty {
-                switch historyTab {
-                case .insights: insightsShareButton
-                case .records: historyShareButton
-                }
+                shareMenu
             }
             Button(action: onOpenSettings) {
                 Image(systemName: "gearshape")
@@ -241,6 +276,14 @@ struct HistoryScreen: View {
         .sheet(isPresented: $paywallPresented) {
             PaywallScreen()
             .presentationDragIndicator(.visible)
+        }
+        // 分享 customize sheet ×2 — 由 shareMenu / insightsSharePill 驱动 (不走 ShareImageButton,
+        // 它自带的 Button+sheet 放不进 Menu item; 这里直接 present 同一个 ShareCustomizeSheet).
+        .sheet(isPresented: $insightsSharePresented) {
+            insightsCustomizeSheet
+        }
+        .sheet(isPresented: $historySharePresented) {
+            historyCustomizeSheet
         }
         // AI 小结 "Add to notes" 的确认 toast — 底部浮一句, ~2.2s 自动消失.
         .overlay(alignment: .bottom) {
@@ -270,7 +313,6 @@ struct HistoryScreen: View {
         } message: {
             Text("All sets and PRs from this workout will be removed. Your plans stay.")
         }
-        }   // GeometryReader
     }
 
     /// AI 小结 Apply (§4) — 每条都 Pro-gate (镜像 handleOptimize/sendRefine).
@@ -546,16 +588,41 @@ struct HistoryScreen: View {
     }
 
     /// 把 SetRecord 按 (planId, 日历日) 聚合成 session 卡; 按时间倒序返回
-    // MARK: - 训练总览分享 (#history-share)
+    // MARK: - 分享 (#history-share #insights-share)
 
-    /// 右上角分享 — UnifiedShareCard, 全 section 默认开 (照片占位 / 最近训练 / 肌肉状态 / 日历).
-    private var historyShareButton: some View {
+    /// 头部分享入口 — Menu 两项 (Insights / History), 两段都可用, 用户自己挑要分享哪套内容.
+    private var shareMenu: some View {
+        Menu {
+            Button(action: openInsightsShare) {
+                Label("Share Insights", systemImage: "chart.line.uptrend.xyaxis")
+            }
+            Button { historySharePresented = true } label: {
+                Label("Share History", systemImage: "calendar")
+            }
+        } label: {
+            Image(systemName: "square.and.arrow.up")
+                .font(.system(size: 16, weight: .regular))
+        }
+        .accessibilityLabel("Share")
+    }
+
+    /// 打开 Insights 分享 — 参数勾选先重置回默认 (全部可用项勾上), 再弹 customize sheet.
+    private func openInsightsShare() {
+        insightShareOptions = InsightShareOptions()
+        insightsSharePresented = true
+    }
+
+    /// "Share History" → UnifiedShareCard 训练总览 (原 header 分享按钮的流程原样搬来, 内容不变).
+    /// 全 section 默认开 (照片占位 / 最近训练 / 肌肉状态 / 日历).
+    private var historyCustomizeSheet: some View {
         let workoutData = historyWorkoutSection()
         let muscleData = historyMuscleSection()
         let calendarData = historyCalendarSection()
-        return ShareImageButton(
+        return ShareCustomizeSheet(
             previewTitle: NSLocalizedString("My Training", comment: ""),
             defaultSections: ShareSections(todayStatus: true, workout: true, muscleStatus: true, calendar: true),
+            initialPhoto: nil,
+            shareSurface: "history",
             shareContent: { photo, onTapAdd, mode in
                 switch mode {
                 case .editing(let binding):
@@ -577,57 +644,65 @@ struct HistoryScreen: View {
                         visibleSections: visible
                     )
                 }
-            },
-            shareSurface: "history",
-            label: {
-                Image(systemName: "square.and.arrow.up")
-                    .font(.system(size: 16, weight: .regular))
             }
         )
-        .accessibilityLabel("Share")
+        .presentationDragIndicator(.visible)
     }
 
-    // MARK: - Insights 分享 (#insights-share)
-
-    /// 共用的 Insights 分享入口构造 — header 图标 + 底部 pill 两个入口共享同一张
-    /// InsightShareCard / 同一 "insights" surface, 只有 label 不同.
-    /// 卡内容: AI 教练小结 TL;DR (只读缓存, 绝不触发 LLM; 没缓存 → 纯数字卡) + 4 个头条数字.
-    /// 分享免费不 Pro-gate — 这是有机增长入口 (图内数字不含 Pro 才可见的图表).
-    private func insightsShareEntry<L: View>(@ViewBuilder label: @escaping () -> L) -> some View {
+    /// "Share Insights" → InsightShareCard, 参数逐项可勾选 (卡实时增减, 一项不勾 Share 置灰).
+    /// 卡内容: AI 教练小结 TL;DR (只读缓存, 绝不触发 LLM; 没缓存 → 纯数字卡) + 头条数字
+    /// (DataStore.summaryKeyStats(), 跟 AI 小结 payload 同源同口径).
+    /// Pro 规则 (#insights-share-pro): 非 Pro 不能分享 app 内看不到的数据 (quote/e1RM/坚持度
+    /// 在 app 内是 Pro 锁) — ① tldr 对非 Pro 直接不递进卡; ② 卡内 toggle 行按 isPro 隐藏;
+    /// ③ 渲染层 InsightShareOptions.resolved() 硬拦. 免费 tile (周容量环比/本周容量) 照常可分享.
+    private var insightsCustomizeSheet: some View {
         let stats = data.summaryKeyStats()
-        let tldr = data.cachedSummary?.tldr
+        let isPro = data.settings.isPro
+        let tldr = isPro ? data.cachedSummary?.tldr : nil
         let generatedAt = data.settings.aiSummaryGeneratedAt
-        return ShareImageButton(
+        return ShareCustomizeSheet(
             previewTitle: NSLocalizedString("My Insights", comment: ""),
             defaultSections: ShareSections(),
-            shareContent: { photo, onTapAdd, _ in
-                // 无 section toggle — 照片是这张卡唯一的 customize 项, 两种 mode 渲染同一张卡.
-                InsightShareCard(
-                    tldr: tldr,
-                    generatedAt: generatedAt,
-                    stats: stats,
-                    userPhoto: photo,
-                    onTapAddPhoto: onTapAdd
-                )
-            },
+            initialPhoto: nil,
             shareSurface: "insights",
-            label: label
+            // 参数一个都没勾 (resolved 后) → Share 置灰. 照片不算参数.
+            shareDisabled: !insightShareOptions.resolved(isPro: isPro, hasQuote: tldr != nil, stats: stats).anyEnabled,
+            shareContent: { photo, onTapAdd, mode in
+                switch mode {
+                case .editing:
+                    // 编辑模式: 传 editOptions binding → 卡底部出逐参数 toggle 行, 即点即看.
+                    InsightShareCard(
+                        tldr: tldr,
+                        generatedAt: generatedAt,
+                        stats: stats,
+                        isPro: isPro,
+                        userPhoto: photo,
+                        onTapAddPhoto: onTapAdd,
+                        options: insightShareOptions,
+                        editOptions: $insightShareOptions
+                    )
+                case .rendering:
+                    // 渲染最终图: 按当前勾选 snapshot 渲染, 不画 toggle.
+                    InsightShareCard(
+                        tldr: tldr,
+                        generatedAt: generatedAt,
+                        stats: stats,
+                        isPro: isPro,
+                        userPhoto: photo,
+                        onTapAddPhoto: onTapAdd,
+                        options: insightShareOptions
+                    )
+                }
+            }
         )
-    }
-
-    /// header 的 Insights 段分享按钮 (跟 historyShareButton 同槽位, 按 historyTab 二选一).
-    private var insightsShareButton: some View {
-        insightsShareEntry {
-            Image(systemName: "square.and.arrow.up")
-                .font(.system(size: 16, weight: .regular))
-        }
-        .accessibilityLabel("Share")
+        .presentationDragIndicator(.visible)
     }
 
     /// Insights 段底部的 "Share my progress" pill — accent 半透明胶囊无描边
     /// (跟 SessionCard 的 Repeat / AI Routines 的 Save 同款 idiom).
+    /// 跟 header 菜单的 Share Insights 走同一个新流程 (含参数勾选).
     private var insightsSharePill: some View {
-        insightsShareEntry {
+        Button(action: openInsightsShare) {
             HStack(spacing: 6) {
                 Image(systemName: "square.and.arrow.up")
                     .font(.system(size: 12, weight: .bold))
@@ -640,6 +715,7 @@ struct HistoryScreen: View {
             .background(MasoColor.accent.opacity(0.15))
             .clipShape(Capsule())
         }
+        .buttonStyle(.plain)
         .accessibilityLabel("Share my progress")
     }
 
