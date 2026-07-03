@@ -799,13 +799,13 @@ struct PlanPlayerScreen: View {
         // ⚠️ 自绘而非 SF Symbol: "circle.grid.3x2.fill" 并不存在 (只有 2x2/3x3),
         //    Image(systemName:) 遇到无效名会静默渲染成空白 → 之前把手完全看不见.
         .overlay {
-            VStack(spacing: 3.5) {
+            VStack(spacing: 2.5) {
                 ForEach(0..<2, id: \.self) { _ in
-                    HStack(spacing: 3.5) {
+                    HStack(spacing: 2.5) {
                         ForEach(0..<3, id: \.self) { _ in
                             Circle()
                                 .fill(Color.white.opacity(0.55))
-                                .frame(width: 4, height: 4)
+                                .frame(width: 3, height: 3)
                         }
                     }
                 }
