@@ -297,13 +297,5 @@ struct AISummaryCard: View {
     }
 }
 
-// 卡片外壳 — 跟 InsightsChartsView 其它卡一致 (padding 14 + surface + corner medium).
-private extension View {
-    func cardChrome() -> some View {
-        self
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(14)
-            .background(MasoColor.surface)
-            .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
-    }
-}
+// 卡片外壳 cardChrome() 已抽到 Maso/Theme/CardChrome.swift (internal),
+// 跟 Training Preferences 卡共用同一片壳.

@@ -1190,3 +1190,20 @@
 "Personalized set-by-set guidance from your data." = "基于你的数据,逐组个性化建议。";
 "Break your main-lift plateau" = "突破主项停滞";
 "Concrete progression tailored to your recent sessions." = "为你最近的训练量身定制的进阶方案。";
+
+/* Training Preferences card + Coaching sheet (Tune with AI redesign) */
+"Tune with AI" = "用 AI 调整";
+"Coaching" = "教练";
+"What your AI coach knows" = "AI 教练了解的信息";
+"Your plans are built from your training profile below, plus the notes you add here. Edit or remove anything anytime." = "你的计划基于下方的训练画像,加上你在这里添加的备注生成。随时可编辑或删除。";
+"Training profile" = "训练画像";
+"Coaching notes" = "教练备注";
+"Clear all coaching notes?" = "清空全部教练备注?";
+"No notes yet. Tell your coach a preference below — e.g. 'bad shoulder, no overhead'." = "还没有备注。在下方告诉教练你的偏好 —— 例如「肩膀有伤,别做过顶动作」。";
+"Notes changed — Regenerate" = "备注已改 —— 重新生成";
+"Add: %@" = "添加:%@";
+"Remove note: %@" = "删除备注:%@";
+"bad knee" = "膝盖有伤";
+"hate burpees" = "讨厌波比跳";
+"home gym only" = "只在家练";
+"train mornings" = "早上训练";

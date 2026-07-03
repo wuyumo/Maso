@@ -39,10 +39,10 @@ struct PlansScreen: View {
     /// Community 筛选 (#filters): 等级 + 每周天数. nil = 全部.
     @State private var communityLevel: String? = nil
     @State private var communityDays: Int? = nil
-    /// Pro feature ①: AI 标签内"对话式优化"输入框文本 (用户用自然语言描述要怎么改 → 注 focusNote 重生成).
-    @State private var refineInput: String = ""
     /// 上一条对话指令的人类可读回显 (露在结果上方, 让用户看到"基于你的: …"). nil = 还没用过对话.
     @State private var lastRefineNote: String? = nil
+    /// Tune-with-AI: 从 Training Preferences 卡底部 pill 拉起的 Coaching sheet (教练记忆 chip + tune 输入).
+    @State private var showCoaching = false
     /// 跨 tab 导航 — 消费 AI 小结卡 Apply 发来的 pendingSummaryFocus (切 AI 页 + focusNote 重生成).
     @State private var router = AppRouter.shared
 
@@ -183,11 +183,12 @@ struct PlansScreen: View {
     private var aiPage: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                // 训练偏好 (纯文字小字, 点铅笔进编辑层) + Tune-with-AI 对话框 — 同一张卡内.
-                // Pro feature ①: 对话框收进 Training Preferences 卡里 (refineComposer 作为 slot 传入).
-                PlanRationaleCard(onApplyPreferences: { startGenerateRoutines() }) {
-                    refineComposer
-                }
+                // 训练偏好卡 (复刻 AI Coach Summary 样式) — 表头/chevron → 结构化偏好编辑层,
+                // 底部 "Tune with AI" pill → Coaching sheet (教练记忆 chip + tune 输入).
+                PlanRationaleCard(
+                    onApplyPreferences: { startGenerateRoutines() },
+                    onTune: { showCoaching = true }
+                )
                 aiRoutineResults
                 Spacer(minLength: MasoMetrics.pageBottomInset)
             }
@@ -196,80 +197,44 @@ struct PlansScreen: View {
         }
         // 首次 push 进 AI 页 (还没生成过) 自动生成一批, 避免空页. 改了偏好后由 "Generate routines" 重跑.
         .onAppear { if aiPlans.isEmpty && !aiGenerating { startGenerateRoutines() } }
+        // Coaching sheet — pill 拉起. Pro gate + 重生成逻辑留在 PlansScreen (通过闭包传入),
+        // 删除对非 Pro 也免费. 结构化偏好子层由 sheet 自己拉起 (复用 TrainingPreferencesSheet).
+        .sheet(isPresented: $showCoaching) {
+            CoachingPreferencesSheet(
+                isPro: data.settings.isPro,
+                onSend: { text in sendTune(text) },
+                onDelete: { index in data.removeCoachNote(at: index) },
+                onClearAll: { data.clearCoachNotes() },
+                onRegenerate: { startGenerateRoutines(focusNote: nil, surface: "coaching_edit") },
+                onEditProfileConfirmed: { startGenerateRoutines() }
+            )
+        }
     }
 
     // MARK: - 对话式优化 (Pro feature ①)
     //
-    // 主对话入口 = 这个输入框, 不再做 per-routine chat sheet. 用户写"加难一点"/"换成推拉腿"/"避开过顶动作",
-    // 把这句话作为 focusNote 注进 generateAIRoutines(focusNote:) 重生成整批 AI routine (走 enforceScience 兜底).
-    // Pro-gated: 非 Pro 点发送 → 弹 paywall. 文本含 URL → LLM 看不了视频, 温和提示 (TODO(backend) 抓字幕).
-    @ViewBuilder
-    private var refineComposer: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack(spacing: 10) {
-                TextField(NSLocalizedString("Tell the AI a preference or change in plain words — e.g. 'bad shoulder, no overhead'. It remembers.", comment: "AI refine + coach memory input placeholder"),
-                          text: $refineInput, axis: .vertical)
-                    .font(.system(size: 14))
-                    .foregroundStyle(MasoColor.text)
-                    .lineLimit(1...4)
-                    .padding(.horizontal, 14).padding(.vertical, 10)
-                    .background(MasoColor.surface)
-                    .overlay(RoundedRectangle(cornerRadius: 16).stroke(MasoColor.borderSoft, lineWidth: 0.5))
-                    .clipShape(RoundedRectangle(cornerRadius: 16))
-                    .submitLabel(.send)
-                    .onSubmit { sendRefine() }
+    // 主对话入口 = Coaching sheet (从 Training Preferences 卡底部 "Tune with AI" pill 拉起).
+    // Pro gate + append coach note + focusNote 重生成的逻辑留在这里 (sendTune), 由 sheet 通过 onSend 回调进来 —
+    // 尽量少把状态搬出 PlansScreen. 用户写"加难一点"/"换成推拉腿"/"避开过顶动作", 把这句话作为 focusNote
+    // 注进 generateAIRoutines(focusNote:) 重生成整批 AI routine (走 enforceScience 兜底).
 
-                Button(action: sendRefine) {
-                    Image(systemName: "arrow.up")
-                        .font(.system(size: 15, weight: .heavy))
-                        .foregroundStyle(.black)
-                        .frame(width: 36, height: 36)
-                        .background(Circle().fill(canRefine ? MasoColor.accent : MasoColor.surfaceHi))
-                }
-                .buttonStyle(.plain)
-                .disabled(!canRefine)
-                .accessibilityLabel(NSLocalizedString("Send", comment: "AI refine send"))
-            }
-
-            // 视频链接温和提示 — 文本 LLM 看不了视频.
-            // TODO(backend): fetch video transcript in the Worker and feed it here
-            if containsURL(refineInput) {
-                Text("I can't watch the video yet — paste the key moves or the plan from it and I'll work it in.")
-                    .font(.system(size: 11))
-                    .foregroundStyle(MasoColor.textDim)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-        }
-    }
-
-    private var canRefine: Bool {
-        !aiGenerating && !refineInput.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-    }
-
-    /// 发送对话指令 — Pro gate → 把这句话作为 focusNote 重生成. 非 Pro → paywall.
-    private func sendRefine() {
-        let text = refineInput.trimmingCharacters(in: .whitespacesAndNewlines)
+    /// 发送一条 tune (typed 或 suggested-add chip) — Pro gate → append 教练记忆 + 把这句话作为 focusNote
+    /// 立即重生成. 非 Pro → paywall (什么都不写). 保留原 sendRefine 的完整双行为 (append + regenerate).
+    private func sendTune(_ raw: String) {
+        let text = raw.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !text.isEmpty, !aiGenerating else { return }
         // tune_with_ai_send — 用户点发送 (无论 Pro). 无 PII: 只报文本长度 / 是否含 URL / 是否 Pro, 不带文本.
         Analytics.shared.track("tune_with_ai_send", [
             "text_len": .int(text.count),
-            "contained_url": .bool(containsURL(text)),
+            "contained_url": .bool(text.containsURL),
             "is_pro": .bool(data.settings.isPro),
         ])
         guard data.settings.isPro else { paywallPresented = true; return }
-        refineInput = ""
         lastRefineNote = text
         // 这句话既驱动本次立即重生成 (focusNote), 也长期记进教练记忆 (Coaching Memory) —
         // 之后每次生成都会带上, AI 持续个性化. 非 Pro 已在上面挡掉, 不会写进记忆.
         data.appendCoachNote(text)
         startGenerateRoutines(focusNote: text, surface: "tune")
-    }
-
-    private func containsURL(_ text: String) -> Bool {
-        guard !text.isEmpty,
-              let detector = try? NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue) else { return false }
-        let range = NSRange(text.startIndex..., in: text)
-        return detector.firstMatch(in: text, options: [], range: range) != nil
     }
 
     /// "Generate routines" 主 CTA — 改了训练偏好 (或还没生成过) 才可点; 点了进生成态.
@@ -565,63 +530,67 @@ private struct LibraryEntryRow: View {
 //   - days >= 5 → 高频
 //   - days 3-4 → 中频 (经典每周 2× / muscle)
 //   - days 1-2 → 维持频率
-struct PlanRationaleCard<Composer: View>: View {
+// 完全复刻 AI Coach Summary 卡 (AISummaryCard) 的壳/表头/配色/字号:
+//   - 壳: cardChrome() (padding 14 + surface 填充 + corner 16) — 跟 AISummaryCard 逐像素同一片.
+//   - 表头: 12pt bold accent 图标 + 14pt bold text 标题 + Spacer + 13pt semibold textDim 尾图标
+//     (AISummaryCard 表头是 sparkles + 标题 + arrow.clockwise; 这里图标换成 slider.horizontal.3,
+//      sparkles 留给 AI 生成的小结卡, 让两张卡读起来是"兄弟"不是"双胞胎"; 尾图标换成用户要的 chevron.right).
+// 不再泛型: 内联对话框移出这张卡, 改为底部一个 "Tune with AI" pill 打开 Coaching sheet.
+struct PlanRationaleCard: View {
     @Environment(DataStore.self) private var data
     /// 点编辑 → 拉起 Training Preferences 层 (sheet). 层里改完点 Generate → 重生成.
     @State private var showEditor = false
     /// 点 "Generate routines" 应用偏好后回调 — 调用方 (aiPage) 拿来跑生成动画.
     var onApplyPreferences: () -> Void = {}
-    /// Tune-with-AI 对话框 — 由调用方传入, 渲染在偏好小字下方 (主对话入口就在这张卡里).
-    @ViewBuilder var composer: () -> Composer
+    /// 点底部 "Tune with AI" pill → 拉起 Coaching sheet (由调用方持有 showCoaching state).
+    var onTune: () -> Void = {}
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            // 可点区域 (kicker + 偏好小字) → 拉起编辑层. 单独包一层 onTapGesture,
-            // 避免触到下方对话框输入框 (输入框/发送钮自己吃掉点击).
-            VStack(alignment: .leading, spacing: 12) {
-                // 顶行: 训练图标 + TRAINING PREFERENCES kicker + 右上角 disclosure 箭头
-                // (跟 routine 卡 WorkoutCard 右上角的 chevron 一致).
-                HStack(alignment: .center, spacing: 6) {
-                    Image(systemName: "figure.run")
-                        .font(.system(size: 10, weight: .heavy))
-                        .foregroundStyle(MasoColor.accent)
-                    Text("TRAINING PREFERENCES")
-                        .font(.system(size: 10, weight: .heavy))
-                        .tracking(1.5)
-                        .foregroundStyle(MasoColor.accent)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.85)
-                    Spacer()
-                    Button(action: { showEditor = true }) {
-                        Image(systemName: "chevron.right")
-                            .font(.system(size: 12, weight: .heavy))
-                            .foregroundStyle(MasoColor.textFaint)
-                            .frame(width: 30, height: 30)
-                            .contentShape(Rectangle())
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel(Text("Adjust training preferences"))
-                }
-
-                // 已选参数以纯文字小字展示 (灰色, 不再用 chip). 点卡/铅笔 → 拉起编辑层.
-                Text(prefSummary)
-                    .font(.system(size: 12))
+        VStack(alignment: .leading, spacing: 10) {
+            // 表头 — 复刻 AISummaryCard.header: spacing 8, 12pt bold accent 图标 + 14pt bold text 标题
+            // + Spacer + 13pt semibold textDim chevron. 整行 onTapGesture → 结构化偏好编辑层.
+            HStack(spacing: 8) {
+                Image(systemName: "slider.horizontal.3")
+                    .font(.system(size: 12, weight: .bold))
+                    .foregroundStyle(MasoColor.accent)
+                Text("Training Preferences")
+                    .font(.system(size: 14, weight: .bold))
+                    .foregroundStyle(MasoColor.text)
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 13, weight: .semibold))
                     .foregroundStyle(MasoColor.textDim)
-                    .fixedSize(horizontal: false, vertical: true)
             }
             .contentShape(Rectangle())
             .onTapGesture { showEditor = true }
+            .accessibilityElement(children: .combine)
+            .accessibilityLabel(Text("Adjust training preferences"))
+            .accessibilityAddTraits(.isButton)
 
-            // Tune-with-AI 对话框 — 就在这张 Training Preferences 卡内 (主对话入口, 无分隔线).
-            composer()
+            // 已选参数以纯文字小字展示 (灰色) — 一行 skimmable 概览, 直接在表头下方.
+            Text(prefSummary)
+                .font(.system(size: 12))
+                .foregroundStyle(MasoColor.textDim)
+                .fixedSize(horizontal: false, vertical: true)
+
+            // "Tune with AI" pill — 底行, 左对齐, 收窄贴内容 (不 maxWidth infinity). accent.opacity(0.14)
+            // 胶囊 + accent.opacity(0.35) 描边 (跟 AddExerciseSheets 选中 chip 同套路). 点 → 打开 Coaching sheet.
+            Button(action: onTune) {
+                HStack(spacing: 6) {
+                    Image(systemName: "sparkles")
+                        .font(.system(size: 12, weight: .bold))
+                    Text("Tune with AI")
+                        .font(.system(size: 13, weight: .semibold))
+                }
+                .foregroundStyle(MasoColor.accent)
+                .padding(.horizontal, 12).padding(.vertical, 8)
+                .background(Capsule().fill(MasoColor.accent.opacity(0.14)))
+                .overlay(Capsule().stroke(MasoColor.accent.opacity(0.35), lineWidth: 0.5))
+            }
+            .buttonStyle(.plain)
+            .padding(.top, 2)
         }
-        .padding(.horizontal, MasoMetrics.cardPadding)
-        .padding(.vertical, MasoMetrics.cardPadding - 2)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .overlay(
-            RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium)
-                .stroke(MasoColor.borderHero, lineWidth: 0.5)
-        )
+        .cardChrome()
         .sheet(isPresented: $showEditor) {
             TrainingPreferencesSheet(onConfirm: onApplyPreferences)
         }
@@ -657,9 +626,10 @@ struct PlanRationaleCard<Composer: View>: View {
 
 // MARK: - Training Preferences 编辑层 (sheet)
 //
-// 点 TRAINING PREFERENCES 卡 → 拉起这层 (large detent). 内容 = Settings 同款 TrainingSettingsSection
+// 点 Training Preferences 卡 → 拉起这层 (large detent). 内容 = Settings 同款 TrainingSettingsSection
 // (live 写 data.settings). Cancel → 回滚到进入时快照; Generate routines → 存盘 + 关层 + 触发重生成 (loading).
-private struct TrainingPreferencesSheet: View {
+// internal (非 private): CoachingPreferencesSheet 的 "Training profile" 行也复用这一层作结构化编辑门.
+struct TrainingPreferencesSheet: View {
     @Environment(DataStore.self) private var data
     @Environment(\.dismiss) private var dismiss
     /// 关层 + 重生成的回调 (= aiPage 的 startGenerateRoutines).

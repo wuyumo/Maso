@@ -141,6 +141,35 @@ final class DataStore {
         save()
     }
 
+    /// 教练记忆的显示条目 — 把 coachMemory 这份 "- bullet" 文本按行解析成可展示 chip 数组:
+    /// 按 \n 切行, 去首尾空白, 去掉前缀 "- ", 丢空行. (chip 展示 + 单条删除都用它.)
+    var coachNotes: [String] {
+        settings.coachMemory
+            .split(separator: "\n", omittingEmptySubsequences: true)
+            .map { $0.trimmingCharacters(in: .whitespaces) }
+            .map { $0.hasPrefix("- ") ? String($0.dropFirst(2)) : $0 }
+            .filter { !$0.isEmpty }
+    }
+
+    /// 删除某条教练记忆 (按 coachNotes 的显示下标) — 剩下的重新加 "- " 前缀拼回 coachMemory + 存盘.
+    /// 只做删除, 不触发重生成 (删除是修剪, 常批量做, 每次删都重生成既跳又费 token — 由 UI 的
+    /// "Notes changed — Regenerate" pill 让用户一键统一应用).
+    func removeCoachNote(at index: Int) {
+        var notes = coachNotes
+        guard notes.indices.contains(index) else { return }
+        notes.remove(at: index)
+        settings.coachMemory = notes.map { "- \($0)" }.joined(separator: "\n")
+        // 无 PII: 只报删除后的剩余条数, 不带笔记文本.
+        Analytics.shared.track("coach_note_delete", ["note_count": .int(notes.count)])
+        save()
+    }
+
+    /// 清空全部教练记忆 (跟 coachMemorySection 的 Clear 同语义) + 存盘.
+    func clearCoachNotes() {
+        settings.coachMemory = ""
+        save()
+    }
+
     /// 这个 exercise id 是否被任何 plan step 或历史 set 引用 — 删除前查, 避免产生悬空 id
     /// (悬空后 exById 查不到 → BodyHint / 图回退 placeholder, displayName 失败).
     func isExerciseReferenced(_ id: String) -> Bool {

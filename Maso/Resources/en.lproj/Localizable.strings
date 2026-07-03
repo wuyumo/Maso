@@ -1189,3 +1189,20 @@
 "Personalized set-by-set guidance from your data." = "Personalized set-by-set guidance from your data.";
 "Break your main-lift plateau" = "Break your main-lift plateau";
 "Concrete progression tailored to your recent sessions." = "Concrete progression tailored to your recent sessions.";
+
+/* Training Preferences card + Coaching sheet (Tune with AI redesign) */
+"Tune with AI" = "Tune with AI";
+"Coaching" = "Coaching";
+"What your AI coach knows" = "What your AI coach knows";
+"Your plans are built from your training profile below, plus the notes you add here. Edit or remove anything anytime." = "Your plans are built from your training profile below, plus the notes you add here. Edit or remove anything anytime.";
+"Training profile" = "Training profile";
+"Coaching notes" = "Coaching notes";
+"Clear all coaching notes?" = "Clear all coaching notes?";
+"No notes yet. Tell your coach a preference below — e.g. 'bad shoulder, no overhead'." = "No notes yet. Tell your coach a preference below — e.g. 'bad shoulder, no overhead'.";
+"Notes changed — Regenerate" = "Notes changed — Regenerate";
+"Add: %@" = "Add: %@";
+"Remove note: %@" = "Remove note: %@";
+"bad knee" = "bad knee";
+"hate burpees" = "hate burpees";
+"home gym only" = "home gym only";
+"train mornings" = "train mornings";
