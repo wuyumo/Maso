@@ -1191,5 +1191,16 @@
 "Break your main-lift plateau" = "突破主项停滞";
 "Concrete progression tailored to your recent sessions." = "为你最近的训练量身定制的进阶方案。";
 
+/* ── Share-out P0: InsightShareCard + entries (Progress header / Insights pill / AI summary glyph) ── */
+"My Insights" = "我的洞察";
+"My AI Summary" = "我的 AI 小结";
+"Training Insights" = "训练洞察";
+"My Progress" = "我的进展";
+"Share my progress" = "分享我的进展";
+"vs last week" = "对比上周";
+"Volume this week" = "本周容量";
+"%@ e1RM" = "%@ 估算 1RM";
+"Consistency" = "坚持度";
+
 /* Training Preferences card + Coaching sheet (Tune with AI redesign) */
 "Tune with AI" = "用 AI 调整";

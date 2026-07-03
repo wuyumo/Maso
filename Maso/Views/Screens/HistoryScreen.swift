@@ -151,6 +151,15 @@ struct HistoryScreen: View {
                         if !insights.isEmpty {
                             insights
                                 .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
+
+                            // 峰值时刻 CTA — 用户刚看完自己的全部数据, 顺手一键分享
+                            // (跟 header 的 insightsShareButton 同一张 InsightShareCard / 同一 surface).
+                            HStack {
+                                Spacer()
+                                insightsSharePill
+                                Spacer()
+                            }
+                            .padding(.top, 8)
                         } else {
                             // 只练过一两次、还没够数据时, 给个提示不留白.
                             Text("Keep training — your stats and trends show up here.")
@@ -200,10 +209,16 @@ struct HistoryScreen: View {
             if !collapsed { calendarMonthAnchor = historyCurrentMonthStart() }
         }
         .screenHeader("Progress") {
-            // 分享训练总览 — 直接进 customize 预览 (跟训练详情 / 日历页同一套分享模式):
-            // 所有有数据的 section 默认全开 (最近一次训练 + 本周肌肉状态 + 本周日历),
-            // 用户在卡内关掉不想要的, 点 Share 才弹系统分享. 没数据的 section 整节不出现.
-            historyShareButton
+            // 分段感知的分享入口 — 分享的永远是"当前段看到的东西":
+            //   Insights 段 → InsightShareCard (AI 小结 TL;DR + 4 个头条数字)
+            //   History 段  → UnifiedShareCard 训练总览 (最近一次训练 + 本周肌肉状态 + 本周日历)
+            // 没有任何训练记录 → 两段都没东西可分享, 入口整个不出现.
+            if !groupedSessions().isEmpty {
+                switch historyTab {
+                case .insights: insightsShareButton
+                case .records: historyShareButton
+                }
+            }
             Button(action: onOpenSettings) {
                 Image(systemName: "gearshape")
                     .font(.system(size: 16, weight: .regular))
@@ -563,12 +578,69 @@ struct HistoryScreen: View {
                     )
                 }
             },
+            shareSurface: "history",
             label: {
                 Image(systemName: "square.and.arrow.up")
                     .font(.system(size: 16, weight: .regular))
             }
         )
         .accessibilityLabel("Share")
+    }
+
+    // MARK: - Insights 分享 (#insights-share)
+
+    /// 共用的 Insights 分享入口构造 — header 图标 + 底部 pill 两个入口共享同一张
+    /// InsightShareCard / 同一 "insights" surface, 只有 label 不同.
+    /// 卡内容: AI 教练小结 TL;DR (只读缓存, 绝不触发 LLM; 没缓存 → 纯数字卡) + 4 个头条数字.
+    /// 分享免费不 Pro-gate — 这是有机增长入口 (图内数字不含 Pro 才可见的图表).
+    private func insightsShareEntry<L: View>(@ViewBuilder label: @escaping () -> L) -> some View {
+        let stats = data.summaryKeyStats()
+        let tldr = data.cachedSummary?.tldr
+        let generatedAt = data.settings.aiSummaryGeneratedAt
+        return ShareImageButton(
+            previewTitle: NSLocalizedString("My Insights", comment: ""),
+            defaultSections: ShareSections(),
+            shareContent: { photo, onTapAdd, _ in
+                // 无 section toggle — 照片是这张卡唯一的 customize 项, 两种 mode 渲染同一张卡.
+                InsightShareCard(
+                    tldr: tldr,
+                    generatedAt: generatedAt,
+                    stats: stats,
+                    userPhoto: photo,
+                    onTapAddPhoto: onTapAdd
+                )
+            },
+            shareSurface: "insights",
+            label: label
+        )
+    }
+
+    /// header 的 Insights 段分享按钮 (跟 historyShareButton 同槽位, 按 historyTab 二选一).
+    private var insightsShareButton: some View {
+        insightsShareEntry {
+            Image(systemName: "square.and.arrow.up")
+                .font(.system(size: 16, weight: .regular))
+        }
+        .accessibilityLabel("Share")
+    }
+
+    /// Insights 段底部的 "Share my progress" pill — accent 半透明胶囊无描边
+    /// (跟 SessionCard 的 Repeat / AI Routines 的 Save 同款 idiom).
+    private var insightsSharePill: some View {
+        insightsShareEntry {
+            HStack(spacing: 6) {
+                Image(systemName: "square.and.arrow.up")
+                    .font(.system(size: 12, weight: .bold))
+                Text("Share my progress")
+                    .font(.system(size: 13, weight: .bold))
+            }
+            .foregroundStyle(MasoColor.accent)
+            .padding(.vertical, 10)
+            .padding(.horizontal, 18)
+            .background(MasoColor.accent.opacity(0.15))
+            .clipShape(Capsule())
+        }
+        .accessibilityLabel("Share my progress")
     }
 
     /// 最近一次训练 — 没有任何记录时返回 nil, 该 section 整节不出现.

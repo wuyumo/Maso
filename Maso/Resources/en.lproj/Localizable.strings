@@ -1190,5 +1190,16 @@
 "Break your main-lift plateau" = "Break your main-lift plateau";
 "Concrete progression tailored to your recent sessions." = "Concrete progression tailored to your recent sessions.";
 
+/* ── Share-out P0: InsightShareCard + entries (Progress header / Insights pill / AI summary glyph) ── */
+"My Insights" = "My Insights";
+"My AI Summary" = "My AI Summary";
+"Training Insights" = "Training Insights";
+"My Progress" = "My Progress";
+"Share my progress" = "Share my progress";
+"vs last week" = "vs last week";
+"Volume this week" = "Volume this week";
+"%@ e1RM" = "%@ e1RM";
+"Consistency" = "Consistency";
+
 /* Training Preferences card + Coaching sheet (Tune with AI redesign) */
 "Tune with AI" = "Tune with AI";

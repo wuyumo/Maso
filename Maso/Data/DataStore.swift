@@ -10,6 +10,22 @@ import CryptoKit
 //   - plans: 用户的训练计划
 //   - sets: 历史训练记录 (SetRecord)
 //   - settings: 用户偏好 (单例)
+
+/// 分享卡 (InsightShareCard) 的 4 个头条数字 — DataStore.summaryKeyStats() 产出.
+/// 全部由 DataStore 的 summary* helper 确定性算出, 卡片从不自己算数.
+struct SummaryKeyStats {
+    /// 本周 vs 上周容量变化 % (上周无数据 → nil, 该 tile 不显示)
+    var volumeWoWPct: Int?
+    /// 本周容量 kg (Σ weight×reps, 取整)
+    var weeklyVolumeKg: Int
+    /// 头号动作名 (weighted set 最多的动作). 无负重记录 → nil, 该 tile 不显示.
+    var topLiftName: String?
+    /// 头号动作当前估算 1RM (kg, Epley).
+    var topLiftE1rmKg: Int?
+    /// 坚持度 (近 8 周达标周占比 %)
+    var adherencePct: Int
+}
+
 @MainActor
 @Observable
 final class DataStore {
@@ -1616,6 +1632,19 @@ final class DataStore {
     var cachedSummary: AISummary? {
         guard let json = settings.aiSummaryCacheJSON, let data = json.data(using: .utf8) else { return nil }
         return try? JSONDecoder().decode(AISummary.self, from: data)
+    }
+
+    /// 分享卡 (InsightShareCard) 的 4 个头条数字 — 全部复用 summary* 私有 helper,
+    /// 跟 buildSummaryPayload() 同源同口径 (卡片从不自己算数, 规则见 AISummary.swift 头注).
+    func summaryKeyStats() -> SummaryKeyStats {
+        let top = summaryTopLift()
+        return SummaryKeyStats(
+            volumeWoWPct: summaryWeekVolumeDeltaPct(),
+            weeklyVolumeKg: summaryWeeklyVolumeKg().last ?? 0,
+            topLiftName: top?.name,
+            topLiftE1rmKg: top?.e1rmNowKg,
+            adherencePct: summaryConsistencyScore()
+        )
     }
 
     /// 是否该在开屏时后台重生成 (§5): data-hash 变了 且 (≥3 新 session 或 ≥7 天). 无缓存但阈值达到 → true.

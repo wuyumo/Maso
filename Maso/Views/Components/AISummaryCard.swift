@@ -216,6 +216,12 @@ struct AISummaryCard: View {
             }
             Spacer()
             if showRefresh {
+                // 分享小结 — 只在 cached/generated 态出现 (summary 非 nil):
+                // insufficient / locked teaser / 无缓存的 loading/error 都拿不到 showRefresh
+                // 或 summary, 不给用户广播占位内容的机会.
+                if summary != nil {
+                    shareButton
+                }
                 Button(action: regenerate) {
                     Image(systemName: "arrow.clockwise")
                         .font(.system(size: 13, weight: .semibold))
@@ -226,6 +232,31 @@ struct AISummaryCard: View {
                 .accessibilityLabel(Text(NSLocalizedString("Refresh", comment: "AI summary refresh")))
             }
         }
+    }
+
+    /// 分享入口 — InsightShareCard (TL;DR hero + 4 个头条数字). 只读缓存/已生成结果,
+    /// 绝不为分享触发 LLM. 分享本身免费 (有机增长), 数字由 DataStore.summaryKeyStats() 统一供给.
+    private var shareButton: some View {
+        ShareImageButton(
+            previewTitle: NSLocalizedString("My AI Summary", comment: ""),
+            defaultSections: ShareSections(),
+            shareContent: { photo, onTapAdd, _ in
+                InsightShareCard(
+                    tldr: summary?.tldr ?? data.cachedSummary?.tldr,
+                    generatedAt: data.settings.aiSummaryGeneratedAt,
+                    stats: data.summaryKeyStats(),
+                    userPhoto: photo,
+                    onTapAddPhoto: onTapAdd
+                )
+            },
+            shareSurface: "ai_summary",
+            label: {
+                Image(systemName: "square.and.arrow.up")
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundStyle(MasoColor.textDim)
+            }
+        )
+        .accessibilityLabel(Text(NSLocalizedString("Share", comment: "")))
     }
 
     private func footer(generatedAt: Date?) -> some View {

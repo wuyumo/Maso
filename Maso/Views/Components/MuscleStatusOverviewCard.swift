@@ -56,6 +56,11 @@ struct MuscleStatusOverviewCard: View {
                         .multilineTextAlignment(.trailing)
                         .fixedSize(horizontal: false, vertical: true)
                 }
+                // 分享肌肉状态 — 渲染现成的 MuscleStatusShareCard. 零历史 (fatigueMap 空) 时
+                // 没东西可分享, 入口不出现.
+                if !fatigueMap.isEmpty {
+                    shareButton
+                }
             }
 
             // 居中内容区: 左 Spacer + (map + 间距 + legend/CTA) + 右 Spacer.
@@ -167,6 +172,50 @@ struct MuscleStatusOverviewCard: View {
         // 无边框 + 背景色 — 跟第二个 tab 的 WorkoutCard 一致 (surface 填充 + 圆角, 不描边).
         .background(MasoColor.surface)
         .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
+    }
+
+    /// 分享入口 — 复用现成的 MuscleStatusShareCard (卡早就存在, 之前只是没有入口).
+    /// 分享图遵循当前 tier 的显示精度: 免费 = 强制粗颗粒热图 (跟卡上看到的一致,
+    /// 不把 Pro 的逐肌群精度泄进免费用户的分享图); Pro = 走用户 muscleDetailEnabled 设置.
+    /// 本周统计跟 HistoryScreen.historyMuscleSection 同口径.
+    private var shareButton: some View {
+        let isPro = data.settings.isPro
+        let coarse = isPro ? !data.settings.muscleDetailEnabled : true
+        let fatigue = fatigueMap
+        let cal = Calendar.current
+        let cutoff = cal.startOfDay(for: cal.date(byAdding: .day, value: -6, to: Date())!)
+        let weekSets = data.sets.filter { $0.performedAt >= cutoff }
+        let days = Set(weekSets.map { cal.startOfDay(for: $0.performedAt) }).count
+        var sections = Set<MuscleGroup>()
+        for set in weekSets {
+            guard let ex = data.exById[set.exerciseId] else { continue }
+            for m in ex.muscleGroups {
+                if let sec = m.section { sections.insert(sec) }
+            }
+        }
+        let sectionsHit = sections.count
+        return ShareImageButton(
+            previewTitle: NSLocalizedString("Muscle Status", comment: ""),
+            defaultSections: ShareSections(),
+            shareContent: { photo, onTapAdd, _ in
+                MuscleStatusShareCard(
+                    muscleOpacity: { m in MuscleStatusCompute.opacityFor(muscle: m, fatigueMap: fatigue) },
+                    workoutsThisWeek: days,
+                    totalSetsThisWeek: weekSets.count,
+                    muscleSectionsHit: sectionsHit,
+                    coarseOnly: coarse,
+                    userPhoto: photo,
+                    onTapAddPhoto: onTapAdd
+                )
+            },
+            shareSurface: "muscle_status",
+            label: {
+                Image(systemName: "square.and.arrow.up")
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundStyle(MasoColor.textDim)
+            }
+        )
+        .accessibilityLabel("Share")
     }
 
     /// 单个 legend 行 — 跟 HistoryScreen 的 legendDot 视觉一致.
