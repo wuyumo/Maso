@@ -669,12 +669,13 @@ struct PlanPlayerScreen: View {
                     // 起黑点后移 + 上半更淡 → 少盖训练图 (尤其图下方过渡区), 露出更多动作图;
                     // 到 info/controls 区 (≈0.46+) 才转暗, 文字/肌肉图仍够可读.
                     .init(color: .clear, location: 0.0),
-                    // 再收 ~1/3: 0.28 前完全透明, 遮图带更短; info/controls 区照旧够暗.
-                    .init(color: .clear, location: 0.28),
-                    .init(color: base.opacity(0.22), location: 0.46),
-                    .init(color: base.opacity(0.72), location: 0.62),
-                    .init(color: base.opacity(0.95), location: 0.78),
-                    .init(color: base, location: 0.9),
+                    // 0.18 前完全透明 (上一版 0.28 起黑太晚, info 文字/肌肉图对比不够);
+                    // 中段加深到 0.8 — 字和肌肉图底下够黑, 图上部仍露得多.
+                    .init(color: .clear, location: 0.18),
+                    .init(color: base.opacity(0.3), location: 0.38),
+                    .init(color: base.opacity(0.8), location: 0.56),
+                    .init(color: base.opacity(0.96), location: 0.72),
+                    .init(color: base, location: 0.87),
                 ],
                 startPoint: .top, endPoint: .bottom
             )
