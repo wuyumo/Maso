@@ -246,13 +246,8 @@ struct PlanPlayerScreen: View {
                     // 1) 背景: 当前动作图 (rest 段 = 黑底).
                     //    底部 64pt 留给 controls 区 — 让图片不跟按钮粘住, 视觉呼吸感更好.
                     //    info + controls 区位置不变 (它们各自钉底, 不受这个 padding 影响).
-                    // 高度钉死在"playlist 最小档"时的 stage 高 (屏高 - min drawer - 64 呼吸位),
-                    // 顶部锚定, 不随 drawer 拉高/收起变化 — drawer 展开时只是盖住图的下半部,
-                    // 图本身不再重新 aspectFill → 收放 playlist 不会突然缩放.
                     backgroundLayer
-                        .frame(height: UIScreen.main.bounds.height
-                                       - Self.playlistMinHeight - bottomSafeArea - 64,
-                               alignment: .top)
+                        .padding(.bottom, 64)
 
                     // 2) 底部叠加: info + controls — exercise / rest 共用同一框架.
                     //    中间填充 .frame(height: FIXED) — exercise BodyHint + rest hint 占据
