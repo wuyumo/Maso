@@ -1201,6 +1201,8 @@
 "Volume this week" = "本周容量";
 "%@ e1RM" = "%@ 估算 1RM";
 "Consistency" = "坚持度";
+/* v3 真内容块: 图表 kicker 右侧的时间窗注解 */
+"Last 8 weeks" = "近 8 周";
 
 /* Progress header share menu (v2: 两段共用一个 Menu) + Insights 分享参数勾选 */
 "Share Insights" = "分享数据";

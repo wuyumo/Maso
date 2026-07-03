@@ -260,6 +260,10 @@ struct HistoryScreen: View {
             }
             .accessibilityLabel("Settings")
         }
+        // 标题 inline — 覆盖 screenHeader 默认的 .large (跟 PlansScreen "Routines" 同款).
+        // large 大标题区会被 safeAreaBar 的毛玻璃盖住, 初始态 "Progress" 看着发糊;
+        // inline 后标题进导航栏跟分享/齿轮同一行, 分段 Picker 钉在正下方, 正文从下面穿过.
+        .navigationBarTitleDisplayMode(.inline)
         .sheet(item: $selectedSession) { session in
             SessionDetailSheet(
                 session: session,
@@ -651,22 +655,33 @@ struct HistoryScreen: View {
 
     /// "Share Insights" → InsightShareCard, 参数逐项可勾选 (卡实时增减, 一项不勾 Share 置灰).
     /// 卡内容: AI 教练小结 TL;DR (只读缓存, 绝不触发 LLM; 没缓存 → 纯数字卡) + 头条数字
-    /// (DataStore.summaryKeyStats(), 跟 AI 小结 payload 同源同口径).
+    /// (DataStore.summaryKeyStats()) + 真图表序列 (summaryWeeklyVolumeSeries / summaryTopLiftSeries),
+    /// 全部跟 AI 小结 payload 同源同口径 — 勾选项揭示/隐藏的是真实内容块, 见卡头注 (v3).
     /// Pro 规则 (#insights-share-pro): 非 Pro 不能分享 app 内看不到的数据 (quote/e1RM/坚持度
     /// 在 app 内是 Pro 锁) — ① tldr 对非 Pro 直接不递进卡; ② 卡内 toggle 行按 isPro 隐藏;
-    /// ③ 渲染层 InsightShareOptions.resolved() 硬拦. 免费 tile (周容量环比/本周容量) 照常可分享.
+    /// ③ 渲染层 InsightShareOptions.resolved() 硬拦. 免费块 (环比 tile/周容量柱状图) 照常可分享.
     private var insightsCustomizeSheet: some View {
         let stats = data.summaryKeyStats()
         let isPro = data.settings.isPro
         let tldr = isPro ? data.cachedSummary?.tldr : nil
         let generatedAt = data.settings.aiSummaryGeneratedAt
+        // 图表序列在 sheet 层算一次, editing/rendering 两个构造共用 (数据不因模式漂移).
+        let volumeSeries = data.summaryWeeklyVolumeSeries()
+        let topLift = data.summaryTopLiftSeries()
+        let unit = data.settings.weightUnit
         return ShareCustomizeSheet(
             previewTitle: NSLocalizedString("My Insights", comment: ""),
             defaultSections: ShareSections(),
             initialPhoto: nil,
             shareSurface: "insights",
             // 参数一个都没勾 (resolved 后) → Share 置灰. 照片不算参数.
-            shareDisabled: !insightShareOptions.resolved(isPro: isPro, hasQuote: tldr != nil, stats: stats).anyEnabled,
+            shareDisabled: !insightShareOptions.resolved(
+                isPro: isPro,
+                hasQuote: tldr != nil,
+                stats: stats,
+                hasVolumeChart: volumeSeries.contains { $0.kg > 0 },
+                hasTopLiftChart: !topLift.series.isEmpty
+            ).anyEnabled,
             shareContent: { photo, onTapAdd, mode in
                 switch mode {
                 case .editing:
@@ -678,6 +693,9 @@ struct HistoryScreen: View {
                         isPro: isPro,
                         userPhoto: photo,
                         onTapAddPhoto: onTapAdd,
+                        volumeSeries: volumeSeries,
+                        topLiftSeries: topLift.series,
+                        unit: unit,
                         options: insightShareOptions,
                         editOptions: $insightShareOptions
                     )
@@ -690,6 +708,9 @@ struct HistoryScreen: View {
                         isPro: isPro,
                         userPhoto: photo,
                         onTapAddPhoto: onTapAdd,
+                        volumeSeries: volumeSeries,
+                        topLiftSeries: topLift.series,
+                        unit: unit,
                         options: insightShareOptions
                     )
                 }

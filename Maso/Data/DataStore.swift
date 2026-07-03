@@ -1415,8 +1415,9 @@ final class DataStore {
     private static let summaryMEV = 10
     private static let summaryMAV = 20
 
-    /// 近 8 周容量 (Σ weight×reps, kg 取整), 连续补 0 — 复刻 weeklyVolume().
-    private func summaryWeeklyVolumeKg() -> [Int] {
+    /// 近 8 周容量序列 (周起始日 + kg) — 分享卡 (InsightShareCard) 的迷你柱状图直读.
+    /// 跟 summaryWeeklyVolumeKg() 同源同口径 (它就是本序列取整): Σ weight×reps, 缺的周补 0 → 柱形连续.
+    func summaryWeeklyVolumeSeries() -> [(week: Date, kg: Double)] {
         let cal = settings.calendar
         var byWeek: [Date: Double] = [:]
         for s in sets {
@@ -1427,12 +1428,17 @@ final class DataStore {
         }
         let now = Date()
         let thisWeek = cal.date(from: cal.dateComponents([.yearForWeekOfYear, .weekOfYear], from: now)) ?? now
-        var out: [Int] = []
+        var out: [(week: Date, kg: Double)] = []
         for back in stride(from: 7, through: 0, by: -1) {
             guard let wk = cal.date(byAdding: .weekOfYear, value: -back, to: thisWeek) else { continue }
-            out.append(Int((byWeek[wk] ?? 0).rounded()))
+            out.append((week: wk, kg: byWeek[wk] ?? 0))
         }
         return out
+    }
+
+    /// 近 8 周容量 (Σ weight×reps, kg 取整), 连续补 0 — 复刻 weeklyVolume().
+    private func summaryWeeklyVolumeKg() -> [Int] {
+        summaryWeeklyVolumeSeries().map { Int($0.kg.rounded()) }
     }
 
     /// 本周 vs 上周容量 % — 复刻 weekDeltas().volume; 无对比 → nil.
@@ -1468,13 +1474,14 @@ final class DataStore {
         return "flat"
     }
 
-    /// 头号动作 + e1RM 现在 vs ~4 周前 — 复刻 topLiftSeries() 取端点.
-    private func summaryTopLift() -> AISummaryPayload.TopLift? {
+    /// 头号动作 (weighted set 最多) + 按天最佳估算 1RM 序列 (Epley, kg) — 分享卡的迷你折线图直读.
+    /// summaryTopLift() 取本序列端点, 保证分享图跟 AI 小结 payload 同源同口径.
+    func summaryTopLiftSeries() -> (name: String?, series: [(date: Date, e1rmKg: Double)]) {
         var countByEx: [String: Int] = [:]
         for s in sets where (s.weight ?? 0) > 0 && (s.reps ?? 0) > 0 {
             countByEx[s.exerciseId, default: 0] += 1
         }
-        guard let topId = countByEx.max(by: { $0.value < $1.value })?.key else { return nil }
+        guard let topId = countByEx.max(by: { $0.value < $1.value })?.key else { return (nil, []) }
         let name = exById[topId]?.name ?? sets.first { $0.exerciseId == topId }?.exerciseName ?? topId
         let cal = Calendar.current
         var bestByDay: [Date: Double] = [:]
@@ -1484,12 +1491,18 @@ final class DataStore {
             let day = cal.startOfDay(for: s.performedAt)
             bestByDay[day] = max(bestByDay[day] ?? 0, e1rm)
         }
-        let series = bestByDay.sorted { $0.key < $1.key }
-        guard let last = series.last else { return nil }
-        let nowE = last.value
+        let series = bestByDay.sorted { $0.key < $1.key }.map { (date: $0.key, e1rmKg: $0.value) }
+        return (name, series)
+    }
+
+    /// 头号动作 + e1RM 现在 vs ~4 周前 — 取 summaryTopLiftSeries() 端点.
+    private func summaryTopLift() -> AISummaryPayload.TopLift? {
+        let lift = summaryTopLiftSeries()
+        guard let name = lift.name, let last = lift.series.last else { return nil }
+        let nowE = last.e1rmKg
         // ~4 周前的最近一天最佳 e1RM (没有则退回序列首点).
         let fourWkAgo = Date().addingTimeInterval(-28 * 86400)
-        let past = series.last(where: { $0.key <= fourWkAgo })?.value ?? series.first?.value ?? nowE
+        let past = lift.series.last(where: { $0.date <= fourWkAgo })?.e1rmKg ?? lift.series.first?.e1rmKg ?? nowE
         let nowKg = Int(nowE.rounded())
         let pastKg = Int(past.rounded())
         let trend = nowKg > pastKg ? "up" : (nowKg < pastKg ? "down" : "flat")

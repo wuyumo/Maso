@@ -234,8 +234,9 @@ struct AISummaryCard: View {
         }
     }
 
-    /// 分享入口 — InsightShareCard (TL;DR hero + 4 个头条数字). 只读缓存/已生成结果,
-    /// 绝不为分享触发 LLM. 分享本身免费 (有机增长), 数字由 DataStore.summaryKeyStats() 统一供给.
+    /// 分享入口 — InsightShareCard (TL;DR hero + 真内容块: 环比 tile / 周容量柱状图 / e1RM 折线 /
+    /// 坚持度). 只读缓存/已生成结果, 绝不为分享触发 LLM. 分享本身免费 (有机增长),
+    /// 数字/图表序列由 DataStore.summaryKeyStats() + summary*Series() 统一供给.
     private var shareButton: some View {
         ShareImageButton(
             previewTitle: NSLocalizedString("My AI Summary", comment: ""),
@@ -249,7 +250,10 @@ struct AISummaryCard: View {
                     // 渲染层兜底: 非 Pro 永远分享不出 quote/e1RM/坚持度 (#insights-share-pro).
                     isPro: data.settings.isPro,
                     userPhoto: photo,
-                    onTapAddPhoto: onTapAdd
+                    onTapAddPhoto: onTapAdd,
+                    volumeSeries: data.summaryWeeklyVolumeSeries(),
+                    topLiftSeries: data.summaryTopLiftSeries().series,
+                    unit: data.settings.weightUnit
                 )
             },
             shareSurface: "ai_summary",

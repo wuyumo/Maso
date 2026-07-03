@@ -1200,6 +1200,8 @@
 "Volume this week" = "Volume this week";
 "%@ e1RM" = "%@ e1RM";
 "Consistency" = "Consistency";
+/* v3 真内容块: 图表 kicker 右侧的时间窗注解 */
+"Last 8 weeks" = "Last 8 weeks";
 
 /* Progress header share menu (v2: 两段共用一个 Menu) + Insights 分享参数勾选 */
 "Share Insights" = "Share Insights";
