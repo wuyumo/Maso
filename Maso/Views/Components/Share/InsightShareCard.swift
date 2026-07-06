@@ -261,7 +261,8 @@ struct InsightShareCard: View {
                             y: .value("Volume", unit.fromKg(p.kg))
                         )
                         .foregroundStyle(MasoColor.accent.gradient)
-                        .cornerRadius(3)
+                        // 上下四角全圆, 跟 Insights 页的周容量图一致.
+                        .clipShape(RoundedRectangle(cornerRadius: 3))
                     }
                 }
                 .frame(height: 110)

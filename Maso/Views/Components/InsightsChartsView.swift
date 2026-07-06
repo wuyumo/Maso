@@ -267,7 +267,8 @@ struct InsightsChartsView: View {
                         y: .value("Volume", unit.fromKg(p.volume))
                     )
                     .foregroundStyle(MasoColor.accent.gradient)
-                    .cornerRadius(3)
+                    // clipShape 上下四角全圆 (.cornerRadius 只圆离基线远的一端, 柱底仍是直角).
+                    .clipShape(RoundedRectangle(cornerRadius: 3))
                 }
                 .frame(height: 132)
                 .chartYAxis { AxisMarks(position: .leading) { _ in
