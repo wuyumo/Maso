@@ -807,7 +807,7 @@ struct PlanPlayerScreen: View {
                     HStack(spacing: 2.5) {
                         ForEach(0..<3, id: \.self) { _ in
                             Circle()
-                                .fill(Color.white.opacity(0.55))
+                                .fill(Color.white.opacity(0.32))
                                 .frame(width: 3, height: 3)
                         }
                     }
