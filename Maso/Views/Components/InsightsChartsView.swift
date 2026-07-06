@@ -36,6 +36,10 @@ struct InsightsChartsView: View {
 
     /// 逐动作 1RM 卡的动作选择 — 默认头号动作 (weighted set 最多). nil = 用默认.
     @State private var pickedExerciseId: String? = nil
+    /// perLift 卡的展示模式 — trend: 单动作按天 e1RM 折线; distribution: 近 4 周全部负重组重量直方图.
+    /// 同一张卡的两个视角 (Yumo 拍板: 切换不另开卡), 不持久化 — 回来默认趋势.
+    private enum PerLiftMode { case trend, distribution }
+    @State private var perLiftMode: PerLiftMode = .trend
     /// 拖拽重排时被拎起的卡 — 只用来算 move 的 target index (放在 @State 让 drop 时读得到).
     @State private var draggingCard: InsightCard? = nil
 
@@ -179,6 +183,15 @@ struct InsightsChartsView: View {
     }
 
     private func cardHeader(icon: String, title: String, subtitle: String) -> some View {
+        cardHeader(icon: icon, title: title, subtitle: subtitle) { EmptyView() }
+    }
+
+    /// cardHeader 的 trailing 变体 — 标题行右侧放一个小控件 (目前只有 perLiftCard 的动作菜单用).
+    /// 其它卡继续走上面的无 trailing 版本, 视觉不受影响.
+    private func cardHeader<Trailing: View>(
+        icon: String, title: String, subtitle: String,
+        @ViewBuilder trailing: () -> Trailing
+    ) -> some View {
         HStack(spacing: 8) {
             Image(systemName: icon)
                 .font(.system(size: 12, weight: .bold))
@@ -192,7 +205,10 @@ struct InsightsChartsView: View {
                     .foregroundStyle(MasoColor.textDim)
                     .lineLimit(1)
             }
+            // 标题优先保全 — trailing 里的长动作名先截断, 不挤压标题.
+            .layoutPriority(1)
             Spacer()
+            trailing()
         }
     }
 
@@ -487,7 +503,7 @@ struct InsightsChartsView: View {
 
     // MARK: - Pro 领衔①: 逐动作 e1RM
 
-    /// 逐动作 e1RM — 头部一个动作 picker (weighted set 数排序), 选中动作按天最佳 e1RM 折线.
+    /// 逐动作 e1RM / 组重量分布 — 标题行右侧小号动作菜单 (仅趋势模式), header 下方 趋势|分布 双 chip 切换.
     @ViewBuilder
     private var perLiftCard: some View {
         let unit = data.settings.weightUnit
@@ -500,22 +516,34 @@ struct InsightsChartsView: View {
             VStack(alignment: .leading, spacing: 10) {
                 cardHeader(icon: "chart.line.uptrend.xyaxis",
                            title: NSLocalizedString("Strength by lift", comment: "per-lift e1RM title"),
-                           subtitle: NSLocalizedString("Estimated 1RM over time", comment: ""))
-                // 动作 picker — Pro 可交互切换; 非 Pro 也显示 (被下面模糊层盖住).
-                if lifts.count > 1 {
-                    Picker(NSLocalizedString("Lift", comment: "exercise picker label"),
-                           selection: Binding(get: { selectedId ?? "" }, set: { pickedExerciseId = $0 })) {
-                        ForEach(lifts) { lift in Text(lift.name).tag(lift.id) }
+                           subtitle: perLiftMode == .trend
+                               ? NSLocalizedString("Estimated 1RM over time", comment: "")
+                               : NSLocalizedString("Set weights · last 4 weeks", comment: "per-lift distribution subtitle")) {
+                    // 动作菜单 — 原卡身 Picker 移上来的小号版 (FilterMenuButton .systemMenu 同款指示符).
+                    // 只在趋势模式显示 (分布是全动作聚合, 无单动作可选); Pro 可交互, 非 Pro 禁用 (跟原 picker 一致).
+                    if perLiftMode == .trend {
+                        liftPickerMenu(lifts: lifts, selectedId: selectedId, name: name)
+                            .disabled(!isPro)
                     }
-                    .pickerStyle(.menu)
-                    .tint(MasoColor.accent)
-                    .disabled(!isPro)
-                    .font(.system(size: 12, weight: .semibold))
                 }
+                // 趋势 | 分布 双 chip 切换 — 自绘小胶囊 (非全宽系统分段控件), 匹配 app 的 chip 风格.
+                HStack(spacing: 6) {
+                    modeChip(NSLocalizedString("Trend", comment: "per-lift mode toggle"),
+                             active: perLiftMode == .trend) { perLiftMode = .trend }
+                    modeChip(NSLocalizedString("Distribution", comment: "per-lift mode toggle"),
+                             active: perLiftMode == .distribution) { perLiftMode = .distribution }
+                }
+                .disabled(!isPro)
                 ZStack {
-                    e1rmChart(series: series, unit: unit)
-                        .blur(radius: isPro ? 0 : 7)
-                        .allowsHitTesting(isPro)
+                    // 两种模式都渲染在同一个 blur+lock 壳里 — Pro 门对两个视角一视同仁.
+                    Group {
+                        switch perLiftMode {
+                        case .trend:        e1rmChart(series: series, unit: unit)
+                        case .distribution: weightDistributionChart(unit: unit)
+                        }
+                    }
+                    .blur(radius: isPro ? 0 : 7)
+                    .allowsHitTesting(isPro)
                     if !isPro {
                         Button(action: onUnlock) {
                             VStack(spacing: 6) {
@@ -531,14 +559,85 @@ struct InsightsChartsView: View {
                     }
                 }
                 .frame(height: 132)
-                Text(name)
-                    .font(.system(size: 11))
-                    .foregroundStyle(MasoColor.textDim)
-                    .lineLimit(1)
             }
             .padding(14)
             .background(MasoColor.surface)
             .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
+        }
+    }
+
+    /// 标题行右侧的小号动作菜单 — 文字 12 semibold + chevron.up.chevron.down 9 (FilterMenuButton
+    /// .systemMenu 同款指示符). 选了非默认动作 (非头号 lift) 时 accent, 默认态 textDim. 菜单列全部动作, 当前打勾.
+    private func liftPickerMenu(lifts: [Lift], selectedId: String?, name: String) -> some View {
+        Menu {
+            ForEach(lifts) { lift in
+                Button(action: { pickedExerciseId = lift.id }) {
+                    HStack {
+                        Text(lift.name)
+                        if lift.id == selectedId {
+                            Spacer()
+                            Image(systemName: "checkmark")
+                        }
+                    }
+                }
+            }
+        } label: {
+            HStack(spacing: 3) {
+                Text(name)
+                    .font(.system(size: 12, weight: .semibold))
+                    .lineLimit(1)
+                Image(systemName: "chevron.up.chevron.down")
+                    .font(.system(size: 9, weight: .semibold))
+            }
+            .foregroundStyle(selectedId != lifts.first?.id ? MasoColor.accent : MasoColor.textDim)
+            .contentShape(Rectangle())
+        }
+        .menuOrder(.fixed)
+    }
+
+    /// 趋势|分布 切换用的小胶囊 chip — active = accent 淡底 + accent 字, inactive = 无底 textDim.
+    private func modeChip(_ label: String, active: Bool, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Text(label)
+                .font(.system(size: 12, weight: .semibold))
+                .foregroundStyle(active ? MasoColor.accent : MasoColor.textDim)
+                .padding(.horizontal, 10).padding(.vertical, 5)
+                .background(active ? MasoColor.accent.opacity(0.15) : Color.clear)
+                .clipShape(Capsule())
+        }
+        .buttonStyle(.plain)
+    }
+
+    /// 近 4 周组重量直方图 — x=重量桶 (显示单位), y=组数. 窗口内无负重组 → 一行 faint 提示 (卡和切换保留).
+    @ViewBuilder
+    private func weightDistributionChart(unit: WeightUnit) -> some View {
+        let hist = weightHistogram()
+        if hist.buckets.isEmpty {
+            Text(NSLocalizedString("No weighted sets in the last 4 weeks", comment: "distribution empty"))
+                .font(.system(size: 12))
+                .foregroundStyle(MasoColor.textFaint)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+        } else {
+            // 连续数值 x 轴上 BarMark 的 .ratio 宽度不生效 (柱宽退化成 0 → 看不见) —
+            // 改用 xStart/xEnd 按桶宽等比铺开, 两侧各让 15% 桶宽作柱间距.
+            let inset = hist.width * 0.15
+            Chart(hist.buckets) { b in
+                BarMark(
+                    xStart: .value("Weight", b.lower + inset),
+                    xEnd: .value("Weight", b.lower + hist.width - inset),
+                    y: .value("Sets", b.count)
+                )
+                .foregroundStyle(MasoColor.accent.gradient)
+                // clipShape 上下四角全圆 (house style, 同周容量柱).
+                .clipShape(RoundedRectangle(cornerRadius: 3))
+            }
+            .chartYAxis { AxisMarks(position: .leading) { _ in
+                AxisGridLine().foregroundStyle(MasoColor.borderSoft)
+                AxisValueLabel().font(.system(size: 9)).foregroundStyle(MasoColor.textFaint)
+            } }
+            .chartXAxis { AxisMarks { _ in
+                AxisValueLabel().font(.system(size: 9)).foregroundStyle(MasoColor.textFaint)
+            } }
         }
     }
 
@@ -872,6 +971,38 @@ struct InsightsChartsView: View {
                     ?? id
                 return Lift(id: id, name: name, count: c)
             }
+    }
+
+    private struct WeightBucket: Identifiable { let id = UUID(); let lower: Double; let count: Int }
+
+    /// 近 4 周全部负重组的重量直方图 (显示单位, unit-aware). 桶宽从常见配重增量里挑:
+    /// 取能把 min..max 跨度切成 ≤9 桶的最小增量 → 桶数 ~6-10 (跨度窄时更少, 不硬凑).
+    /// 空桶也补 0 → 柱形等距连续. 无数据 → ([], 0).
+    private func weightHistogram() -> (buckets: [WeightBucket], width: Double) {
+        let unit = data.settings.weightUnit
+        let cal = data.settings.calendar
+        let cutoff = cal.startOfDay(for: cal.date(byAdding: .day, value: -27, to: Date()) ?? Date())
+        var weights: [Double] = []
+        for s in data.sets where s.performedAt >= cutoff {
+            guard let w = s.weight, let r = s.reps, w > 0, r > 0 else { continue }
+            weights.append(unit.fromKg(w))
+        }
+        guard let lo = weights.min(), let hi = weights.max() else { return ([], 0) }
+        let span = max(hi - lo, 0.001)
+        // 常见杠铃/哑铃增量 (kg 或 lb 语境下都自然); 兜底 100 防极端跨度.
+        let steps: [Double] = [1, 2.5, 5, 10, 20, 25, 50, 100]
+        let width = steps.first { span / $0 <= 9 } ?? 100
+        let base = (lo / width).rounded(.down) * width
+        let bucketCount = Int(((hi - base) / width).rounded(.down)) + 1
+        var counts = [Int](repeating: 0, count: bucketCount)
+        for w in weights {
+            let idx = min(Int(((w - base) / width).rounded(.down)), bucketCount - 1)
+            counts[idx] += 1
+        }
+        let buckets = (0..<bucketCount).map { i in
+            WeightBucket(lower: base + Double(i) * width, count: counts[i])
+        }
+        return (buckets, width)
     }
 
     /// 某动作按天最佳估算 1RM (Epley) 序列.

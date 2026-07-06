@@ -1129,6 +1129,12 @@
 "Strength by lift" = "各动作力量";
 "Estimated 1RM over time" = "估算 1RM 随时间变化";
 "Lift" = "动作";
+
+/* Strength by lift 卡 — 趋势|分布 切换 + 组重量直方图 (perLiftCard) */
+"Trend" = "趋势";
+"Distribution" = "分布";
+"Set weights · last 4 weeks" = "组重量 · 近 4 周";
+"No weighted sets in the last 4 weeks" = "近 4 周没有负重组";
 "Sets vs targets" = "组数 vs 目标";
 "Weekly hard sets per muscle" = "每周各肌群硬组数";
 "MEV" = "MEV";

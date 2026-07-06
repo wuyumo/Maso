@@ -1128,6 +1128,12 @@
 "Strength by lift" = "Strength by lift";
 "Estimated 1RM over time" = "Estimated 1RM over time";
 "Lift" = "Lift";
+
+/* Strength by lift card — Trend | Distribution mode toggle + weight histogram (perLiftCard) */
+"Trend" = "Trend";
+"Distribution" = "Distribution";
+"Set weights · last 4 weeks" = "Set weights · last 4 weeks";
+"No weighted sets in the last 4 weeks" = "No weighted sets in the last 4 weeks";
 "Sets vs targets" = "Sets vs targets";
 "Weekly hard sets per muscle" = "Weekly hard sets per muscle";
 "MEV" = "MEV";
