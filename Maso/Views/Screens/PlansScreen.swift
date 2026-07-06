@@ -1,15 +1,13 @@
 import SwiftUI
 
-// MARK: - PlansScreen — Tab 2 内容 (新 IA, 2026-06)
+// MARK: - PlansScreen — Tab 2 内容 (单页 IA, 2026-07)
 //
-// 结构 (用户确认的设计):
-//   ┌ SAVED  (默认优先, 有 saved plan 才显示)  ── data.plans, 免费上限 "n/3"
-//   │  · 每张 = WorkoutCard (start / 详情 / 长按删)
-//   │  · "+ New workout" 入口
-//   ┌ DISCOVER
-//   │  · segmented [ AI · Community ]
-//   │  · AI:        按你的偏好现生成的计划 → 每张可 Save / Save&Start
-//   │  · Community: 社区精选 → 每张可 Save
+// 结构 (owner 拍板的单页设计 — 顶部 Saved/AI/Classics 分段控件已整个去掉):
+//   ┌ MY ROUTINES — 已存 routines 自动排最前 (TodayScreen .myPlans 嵌入: 列表/删除/照片导入/优化卡);
+//   │               没有已存时只给一行浅提示, 不做大空态 (同页下方就是生成入口).
+//   ┌ FOR YOU     — Training Preferences 卡 + AI 生成的候选 routine (Save 进上面列表);
+//   │               首次进页自动生成一批 (行为跟原 AI 分段一致).
+//   └ Classics 入口卡 — rosette + 一句副标题, tap → ClassicsSheet (经典模板列表 + Level/Days 筛选).
 //
 // Exercises 库已移到 PlansTabScreen 右上角工具栏 (不在本页正文).
 // 本 view 只渲染滚动正文; 导航栏 / 工具栏由 PlansTabScreen (NavigationStack) 提供.
@@ -21,11 +19,7 @@ struct PlansScreen: View {
     /// 右上角齿轮 → 弹 Settings sheet (RootView 持有). 跟 "+" 同在 PlansScreen 的一个 ToolbarItemGroup 里.
     let onOpenSettings: () -> Void
 
-    // Routines 顶部分段: Saved(已存) / AI Routines(按偏好生成) / Classics(经典模板). 默认 Saved.
-    // 空态/入口的"去 AI 生成 / 去 Classics 找"统一改成切 tab (不再 push 发现页).
-    enum RoutinesTab: Hashable { case saved, ai, classics }
-    @State private var tab: RoutinesTab = .saved
-    /// 导航栏 "+" 菜单点 "Import from photo" → 翻这个 → savedPage 里的 TodayScreen 开图片选择器.
+    /// 导航栏 "+" 菜单点 "Import from photo" → 翻这个 → 嵌入的 TodayScreen 开图片选择器.
     @State private var triggerImport = false
     /// 按偏好现生成的 AI 计划 (transient, 不进 data.plans 直到用户 Save).
     @State private var aiPlans: [Plan] = []
@@ -34,67 +28,50 @@ struct PlansScreen: View {
     /// 真 LLM 够不到时的回落提示 (nil = 正常/真 AI 成功).
     @State private var aiFallbackNote: String? = nil
     @State private var detailPlan: Plan? = nil
-    @State private var pendingDeletePlanId: String? = nil
     @State private var paywallPresented = false
-    /// Community 筛选 (#filters): 等级 + 每周天数. nil = 全部.
-    @State private var communityLevel: String? = nil
-    @State private var communityDays: Int? = nil
+    /// Classics 入口卡 → 经典模板 sheet (列表 + 筛选 + 详情/付费墙自包含在 ClassicsSheet 里).
+    @State private var classicsPresented = false
     /// 上一条对话指令的人类可读回显 (露在结果上方, 让用户看到"基于你的: …"). nil = 还没用过对话.
     @State private var lastRefineNote: String? = nil
-    /// 跨 tab 导航 — 消费 AI 小结卡 Apply 发来的 pendingSummaryFocus (切 AI 页 + focusNote 重生成).
+    /// 消费 AI 小结卡 Apply 发来的 pendingSummaryFocus (单页 IA: 直接 focusNote 重生成, 不再切分段).
     @State private var router = AppRouter.shared
 
-    // 顶部头栏: 分段控件 + (仅 Classics 时) 筛选条 — 放进 .safeAreaBar 跟导航栏共享同一片系统毛玻璃.
-    // 不加不透明 MasoColor.background 底 → 让系统材质透出 (跟 Exercises 页 systemStyle 的 clear 底一致).
-    private var topBar: some View {
-        VStack(spacing: 0) {
-            // 顶部分段切 Saved / AI Routines / Classics — 内联切换, 大标题随下方内容滚动折叠.
-            Picker("Routines", selection: $tab) {
-                Text("Saved").tag(RoutinesTab.saved)
-                Text("AI Routines").tag(RoutinesTab.ai)
-                Text("Classics").tag(RoutinesTab.classics)
-            }
-            .pickerStyle(.segmented)
-            .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
-            .padding(.top, 2)
-            .padding(.bottom, 8)
-
-            // Classics 页: 筛选条钉在分段正下方 (不随社区列表滚动 → 修了原来 filter 滚走消失的 bug).
-            if tab == .classics {
-                classicsFilterBar
-            }
-        }
-    }
-
-    /// 三个分段的滚动正文 — safeAreaBar (topBar) 浮在它上面, 正文从下方穿过.
-    @ViewBuilder
-    private var pages: some View {
-        switch tab {
-        case .saved:    savedPage
-        case .ai:       aiPage
-        case .classics: communityPage
-        }
-    }
-
     var body: some View {
-        // 头栏 (分段 + Classics 筛选条) 跟导航栏共享「同一片」系统毛玻璃 — 关键: iOS 26 手动拼任何
-        // SwiftUI 材质 (.bar / 不透明色) 都对不齐导航栏的 Liquid Glass. 官方解法 (跟 Exercises 页一致):
-        // 放进 .safeAreaBar(edge:.top), 内容自动获得跟导航栏同材质, 正文滚动从它下面穿过.
-        //   - iOS 26+: 分段 + Classics 筛选条走 safeAreaBar, 跟导航栏天然同材质 (毛玻璃/内容穿过).
-        //   - iOS 18-25: 回退到原来的固定 VStack 头 (分段在上、正文在下).
-        Group {
-            if #available(iOS 26.0, *) {
-                pages
-                    .safeAreaBar(edge: .top, spacing: 0) {
-                        topBar
-                    }
-            } else {
-                VStack(spacing: 0) {
-                    topBar
-                    pages
-                }
+        // 单页滚动正文: My Routines → FOR YOU (AI) → Classics 入口. 无分段控件, 素导航栏.
+        ScrollView {
+            VStack(alignment: .leading, spacing: 16) {
+                // ── ① MY ROUTINES — 已存列表自动排最前 (TodayScreen .myPlans 嵌入:
+                //    优化建议卡 + routine 卡 + 长按删 + 照片导入; 空则一行浅提示).
+                sectionKicker(icon: "bookmark.fill", title: "My Routines")
+                TodayScreen(
+                    onStart: onStart,
+                    onFreeWorkout: {},
+                    onNewPlan: onNewPlan,
+                    onOpenSettings: {},
+                    onOptimize: handleOptimize,
+                    embedded: true,
+                    mode: .myPlans,
+                    embeddedInScroll: true,
+                    triggerImport: $triggerImport
+                )
+
+                // ── ② FOR YOU — AI 生成区 (偏好卡 + 候选 routines). 跟上一节拉开一档.
+                sectionKicker(icon: "sparkles", title: "FOR YOU")
+                    .padding(.top, 16)
+                PlanRationaleCard(onApplyPreferences: { startGenerateRoutines() })
+                aiRoutineResults
+
+                // ── ③ Classics 入口 — 经典模板收进 sheet, 页面上只留一张入口卡.
+                classicsEntryCard
+                    .padding(.top, 16)
+
+                Spacer(minLength: MasoMetrics.pageBottomInset)
             }
+            .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
+            .padding(.top, 4)
         }
+        // 首次进 Routines 页 (还没生成过) 自动生成一批, 避免 FOR YOU 空区 — 行为跟原 AI 分段一致.
+        .onAppear { if aiPlans.isEmpty && !aiGenerating { startGenerateRoutines() } }
         // 标题 inline — "Routines" 进导航栏跟右上角 "+"/齿轮同一行 (不走 screenHeader 的 .large 大标题,
         // 分段控件随之整体上移). 手动 navigationTitle + .inline + toolbar.
         .navigationTitle("Routines")
@@ -131,68 +108,75 @@ struct PlansScreen: View {
             PaywallScreen()
                 .presentationDragIndicator(.visible)
         }
-        .alert("Delete plan?", isPresented: Binding(
-            get: { pendingDeletePlanId != nil },
-            set: { if !$0 { pendingDeletePlanId = nil } }
-        )) {
-            Button("Delete", role: .destructive) {
-                if let id = pendingDeletePlanId { data.deletePlan(id) }
-                pendingDeletePlanId = nil
-            }
-            Button("Cancel", role: .cancel) { pendingDeletePlanId = nil }
-        } message: {
-            Text("Your training history will be kept.")
+        // Classics 入口卡 → 经典模板 sheet. 列表/筛选/详情/付费墙自包含 (sheet 之上叠 sheet 没问题;
+        // 挂回本页会撞"一次只能 present 一个 sheet").
+        .sheet(isPresented: $classicsPresented) {
+            ClassicsSheet(onStart: onStart)
         }
-        // AI 小结卡 Apply → regenerate_routines: RootView 已切到 Plans tab; 这里再切到 AI 页 +
-        // 用 focusNote 触发重生成 (复用 optimize 机制, 候选 routine 供 review 后 Save, 不自动写).
+        // AI 小结卡 Apply → regenerate_routines: RootView 已切到 Plans tab; 单页 IA 下不再切分段 —
+        // 直接用 focusNote 触发重生成 (用户落到本页就能看到 FOR YOU 区的生成态).
         .onChange(of: router.pendingSummaryFocus) { _, note in
             guard let note else { return }
             router.pendingSummaryFocus = nil
-            withAnimation(.easeInOut(duration: 0.2)) { tab = .ai }
             let trimmed = note.trimmingCharacters(in: .whitespacesAndNewlines)
             lastRefineNote = trimmed.isEmpty ? nil : trimmed
             startGenerateRoutines(focusNote: trimmed.isEmpty ? nil : trimmed, surface: "summary")
         }
     }
 
-    // MARK: - My Routines page (从 Today tab 迁来 — #IA-v2)
-    //
-    // 复用 TodayScreen 的 .myPlans 渲染: 已存 routines 列表 + 照片导入 (#image-import) + 长按删除 +
-    // 空态 ("Add AI routines"). 自由训练不在这页 — 它是"立即训练", 留在 Today tab.
-    // onGoToDiscover 这里指"同一 tab 切到 AI 分段", 让空态引导能跳过去生成.
-    private var savedPage: some View {
-        TodayScreen(
-            onStart: onStart,
-            onFreeWorkout: {},
-            onNewPlan: onNewPlan,
-            onOpenSettings: {},
-            onGoToDiscover: { withAnimation(.easeInOut(duration: 0.2)) { tab = .ai } },
-            onBrowseClassics: { withAnimation(.easeInOut(duration: 0.2)) { tab = .classics } },
-            onOptimize: handleOptimize,
-            embedded: true,
-            mode: .myPlans,
-            triggerImport: $triggerImport
-        )
+    // MARK: - 单页 section 组件
+
+    /// Section kicker — 跟 MuscleStatusOverviewCard "MUSCLE STATUS" 同款 (10pt heavy + tracking 1.5
+    /// + textDim; accent 留给真正的 CTA, 不给 section 标签). textCase(.uppercase) 让 en 全大写,
+    /// zh 不受影响 ("我的计划" / "为你设计").
+    private func sectionKicker(icon: String, title: LocalizedStringKey) -> some View {
+        HStack(spacing: 6) {
+            Image(systemName: icon)
+                .font(.system(size: 10, weight: .heavy))
+            Text(title)
+                .font(.system(size: 10, weight: .heavy))
+                .tracking(1.5)
+                .textCase(.uppercase)
+        }
+        .foregroundStyle(MasoColor.textDim)
     }
 
-    // MARK: - DISCOVER pages (左右滑动切换)
-
-    /// AI 页 — Training Preferences 卡 + 对话式优化输入 (Pro feature ①) + 按偏好现算的 AI 计划卡.
-    private var aiPage: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 16) {
-                // 训练偏好卡 (复刻 AI Coach Summary 样式) — 表头/chevron → 结构化偏好编辑层.
-                // 自然语言偏好入口 = 编辑层底部的 "Tell your AI coach" 编辑器 (TrainingSettingsSection),
-                // 不再有单独的 "Tune with AI" pill / Coaching sheet.
-                PlanRationaleCard(onApplyPreferences: { startGenerateRoutines() })
-                aiRoutineResults
-                Spacer(minLength: MasoMetrics.pageBottomInset)
+    /// Classics 入口卡 — rosette + 标题 + 一句副标题, tap → ClassicsSheet.
+    /// 视觉跟 TodayScreen.entryCard (Free workout 入口) 同款: 图标+标题行 / 副标题 / 右侧 chevron.
+    private var classicsEntryCard: some View {
+        Button {
+            Haptics.tap()
+            classicsPresented = true
+        } label: {
+            HStack(spacing: 12) {
+                VStack(alignment: .leading, spacing: 3) {
+                    HStack(spacing: 7) {
+                        Image(systemName: "rosette")
+                            .font(.system(size: 13, weight: .bold))
+                            .foregroundStyle(MasoColor.accent)
+                        Text("Classics")
+                            .font(.system(size: 15, weight: .bold))
+                            .foregroundStyle(MasoColor.text)
+                            .lineLimit(1)
+                    }
+                    Text("Proven programs — 5x5, PPL, 5/3/1")
+                        .font(.system(size: 12))
+                        .foregroundStyle(MasoColor.textDim)
+                        .lineLimit(2)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                Spacer(minLength: 0)
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 11, weight: .heavy))
+                    .foregroundStyle(MasoColor.textFaint)
             }
-            .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
-            .padding(.top, 4)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(MasoMetrics.cardPadding)
+            .background(MasoColor.surface)
+            .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
         }
-        // 首次 push 进 AI 页 (还没生成过) 自动生成一批, 避免空页. 改了偏好后由 "Generate routines" 重跑.
-        .onAppear { if aiPlans.isEmpty && !aiGenerating { startGenerateRoutines() } }
+        .buttonStyle(.plain)
+        .accessibilityLabel("Classics")
     }
 
     /// "Generate routines" 主 CTA — 改了训练偏好 (或还没生成过) 才可点; 点了进生成态.
@@ -261,28 +245,135 @@ struct PlansScreen: View {
         }
     }
 
-    /// Community 页 — 社区计划卡 (Level / Days 筛选条已上移到 topBar, 钉在分段下方不随本列表滚动).
-    private var communityPage: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 16) {
-                let plans = filteredCommunityPlans
-                if plans.isEmpty {
-                    Text("No Classics match these filters.")
-                        .font(.system(size: 13))
-                        .foregroundStyle(MasoColor.textDim)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 30)
-                } else {
-                    ForEach(plans) { cp in communityCard(cp) }
-                }
-                Spacer(minLength: MasoMetrics.pageBottomInset)
+    /// AI 生成的计划卡 — WorkoutCard 富展示. 点卡片 → 预览详情; 底部 "★ 添加到我的计划" → 直接存进 My Plans.
+    /// kicker="" → 不显示来源 kicker; 由 WorkoutCard 自己的 PlanSourceBadge 表达来源
+    /// (真 AI 计划 source=.ai → ✨AI; 本地 tuned source=nil → 无 badge, 诚实).
+    private func discoverPlanCard(_ plan: Plan) -> some View {
+        WorkoutCard(
+            plan: plan,
+            exById: data.exById,
+            kicker: "",
+            onStart: { detailPlan = plan },
+            onShowDetail: { detailPlan = plan },
+            prominentStart: false,
+            addAction: { addToSaved(plan) },
+            compactLayout: true
+        )
+    }
+
+    // MARK: - Actions
+
+    /// 点 "Generate routines" / 发对话指令 → 走真 LLM (Path B): 一批真 AI 计划 (✨AI). spinner 绑真实
+    /// 调用延迟. 失败/离线 → 纯本地 + 顶部提示条.
+    /// - parameter focusNote: 对话式优化 / optimize 卡传进来的本次侧重 (英文指令), 注进 prompt PRIORITY 行. nil = 普通生成.
+    private func startGenerateRoutines(focusNote: String? = nil, surface: String = "ai_segment") {
+        guard !aiGenerating else { return }
+        Haptics.tap()
+        aiFallbackNote = nil
+        withAnimation(.easeOut(duration: 0.2)) { aiGenerating = true }
+        Task { @MainActor in
+            let (plans, usedFallback) = await data.generateAIRoutines(focusNote: focusNote, surface: surface)
+            withAnimation(.easeOut(duration: 0.25)) {
+                aiPlans = plans
+                aiGenerating = false
+                aiFallbackNote = usedFallback
+                    ? NSLocalizedString("Couldn't reach the AI coach — showing templates instead.",
+                                        comment: "AI tab fallback when LLM unreachable")
+                    : nil
             }
-            .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
-            .padding(.top, 4)
         }
     }
 
-    // MARK: - Community filters (#filters)
+    /// Pro feature ②: My Routines 顶部优化建议卡点 "Optimize with AI" — Pro gate → 把诊断的
+    /// focusNote 注进重生成. 非 Pro → paywall. 单页 IA 下 FOR YOU 区就在同页下方, 不再切分段.
+    /// (focusNote 是英文指令, 回显走 suggestion.title 让用户看懂.)
+    private func handleOptimize(_ suggestion: DataStore.RoutineSuggestion) {
+        guard data.settings.isPro else { paywallPresented = true; return }
+        lastRefineNote = suggestion.title
+        startGenerateRoutines(focusNote: suggestion.focusNote, surface: "optimize")
+    }
+
+    /// Discover 详情页右上角 "+" → 把这张(预览的)计划加进 Saved. 满额 → 弹 paywall. 完后关详情.
+    private func addToSaved(_ plan: Plan) {
+        let ok = data.savePlan(plan)
+        detailPlan = nil
+        if ok { Haptics.tap() } else { paywallPresented = true }
+    }
+}
+
+// MARK: - ClassicsSheet — 经典模板列表 (原 communityPage 分段整体迁来, #single-page-IA)
+//
+// Routines 单页的 Classics 入口卡 → 这个 sheet. 自包含: Level/Days 筛选条固定钉在顶部 (sheet 语境
+// 走简单固定, 不用 safeAreaBar), 计划卡 / 详情预览 / 满额 paywall 都挂在 sheet 内部 (sheet 之上
+// 再叠 sheet 是允许的; 若挂回底下的 PlansScreen 会撞"一次只能 present 一个 sheet").
+private struct ClassicsSheet: View {
+    @Environment(DataStore.self) private var data
+    @Environment(\.dismiss) private var dismiss
+    /// 详情页 Start → 先关本 sheet 再启动训练 (player 是 RootView 的 fullScreenCover).
+    let onStart: (Plan) -> Void
+
+    /// Classics 筛选 (#filters): 等级 + 每周天数. nil = 全部.
+    @State private var communityLevel: String? = nil
+    @State private var communityDays: Int? = nil
+    @State private var detailPlan: Plan? = nil
+    /// Save 满额 (免费上限) → paywall — 跟 PlansScreen.addToSaved 同规则, 付费/上限逻辑不变.
+    @State private var paywallPresented = false
+
+    var body: some View {
+        NavigationStack {
+            VStack(spacing: 0) {
+                // 筛选条固定钉在导航栏下方, 不随列表滚动.
+                classicsFilterBar
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 16) {
+                        let plans = filteredCommunityPlans
+                        if plans.isEmpty {
+                            Text("No Classics match these filters.")
+                                .font(.system(size: 13))
+                                .foregroundStyle(MasoColor.textDim)
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 30)
+                        } else {
+                            ForEach(plans) { cp in communityCard(cp) }
+                        }
+                        Spacer(minLength: MasoMetrics.pageBottomInset)
+                    }
+                    .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
+                    .padding(.top, 4)
+                }
+            }
+            .background(MasoColor.background.ignoresSafeArea())
+            .navigationTitle("Classics")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Done") { dismiss() }
+                }
+            }
+            .tint(MasoColor.text)
+        }
+        .presentationDragIndicator(.visible)
+        // 详情预览 — sheet 之上叠 sheet (挂在本 sheet 的内容树上, 不回落到 PlansScreen).
+        .sheet(item: $detailPlan) { plan in
+            PlanDetailSheet(
+                initialPlan: plan,
+                onStart: { p in
+                    detailPlan = nil
+                    dismiss()   // player 是 RootView 的 fullScreenCover — 先把 Classics 层收掉
+                    DispatchQueue.main.async { onStart(p) }
+                },
+                onAddToSaved: { p in addToSaved(p) }
+            )
+            .presentationDetents([.medium, .large])
+            .presentationDragIndicator(.visible)
+        }
+        .sheet(isPresented: $paywallPresented) {
+            PaywallScreen()
+                .presentationDragIndicator(.visible)
+        }
+    }
+
+    // MARK: - Classics filters (#filters)
 
     private var communityLevelOptions: [String] { Array(Set(CommunityPlans.all.map(\.levelKey))).sorted() }
     private var communityDayOptions: [Int] { Array(Set(CommunityPlans.all.map(\.frequencyDaysPerWeek))).sorted() }
@@ -294,9 +385,7 @@ struct PlansScreen: View {
     }
 
     /// Classics 筛选条 — Level / Days-week 两个 FilterMenuButton (.systemMenu 样式), 跟 Exercises 页
-    /// 的 Muscle / Equipment 筛选完全同款 (tinted 文字 + chevron.up.chevron.down, 无绿胶囊). 钉在 topBar
-    /// (分段下方) 里, 不随社区列表滚动. clear 底 + pagePaddingHorizontal + 纵向 8 → 让 safeAreaBar 的
-    /// 系统材质透出 (跟 ExerciseSearchFilterBar systemStyle 一致).
+    /// 的 Muscle / Equipment 筛选完全同款 (tinted 文字 + chevron.up.chevron.down, 无绿胶囊).
     private var classicsFilterBar: some View {
         HStack(spacing: 8) {
             FilterMenuButton(
@@ -321,22 +410,6 @@ struct PlansScreen: View {
         }
         .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
         .padding(.vertical, 8)
-    }
-
-    /// AI 生成的计划卡 — WorkoutCard 富展示. 点卡片 → 预览详情; 底部 "★ 添加到我的计划" → 直接存进 My Plans.
-    /// kicker="" → 不显示来源 kicker; 由 WorkoutCard 自己的 PlanSourceBadge 表达来源
-    /// (真 AI 计划 source=.ai → ✨AI; 本地 tuned source=nil → 无 badge, 诚实).
-    private func discoverPlanCard(_ plan: Plan) -> some View {
-        WorkoutCard(
-            plan: plan,
-            exById: data.exById,
-            kicker: "",
-            onStart: { detailPlan = plan },
-            onShowDetail: { detailPlan = plan },
-            prominentStart: false,
-            addAction: { addToSaved(plan) },
-            compactLayout: true
-        )
     }
 
     /// 社区精选卡 — 跟 AI 卡同款 WorkoutCard 排版 (肌肉图 + 动作 chip + 计数), 不再是单薄的文字行.
@@ -366,39 +439,7 @@ struct PlansScreen: View {
         return plan
     }
 
-    // MARK: - Actions
-
-    /// 点 "Generate routines" / 发对话指令 → 走真 LLM (Path B): 一批真 AI 计划 (✨AI). spinner 绑真实
-    /// 调用延迟. 失败/离线 → 纯本地 + 顶部提示条.
-    /// - parameter focusNote: 对话式优化 / optimize 卡传进来的本次侧重 (英文指令), 注进 prompt PRIORITY 行. nil = 普通生成.
-    private func startGenerateRoutines(focusNote: String? = nil, surface: String = "ai_segment") {
-        guard !aiGenerating else { return }
-        Haptics.tap()
-        aiFallbackNote = nil
-        withAnimation(.easeOut(duration: 0.2)) { aiGenerating = true }
-        Task { @MainActor in
-            let (plans, usedFallback) = await data.generateAIRoutines(focusNote: focusNote, surface: surface)
-            withAnimation(.easeOut(duration: 0.25)) {
-                aiPlans = plans
-                aiGenerating = false
-                aiFallbackNote = usedFallback
-                    ? NSLocalizedString("Couldn't reach the AI coach — showing templates instead.",
-                                        comment: "AI tab fallback when LLM unreachable")
-                    : nil
-            }
-        }
-    }
-
-    /// Pro feature ②: Saved 顶部优化建议卡点 "Optimize with AI" — Pro gate → 切到 AI 标签 + 把诊断的
-    /// focusNote 注进重生成. 非 Pro → paywall. (focusNote 是英文指令, 回显走 suggestion.title 让用户看懂.)
-    private func handleOptimize(_ suggestion: DataStore.RoutineSuggestion) {
-        guard data.settings.isPro else { paywallPresented = true; return }
-        withAnimation(.easeInOut(duration: 0.2)) { tab = .ai }
-        lastRefineNote = suggestion.title
-        startGenerateRoutines(focusNote: suggestion.focusNote, surface: "optimize")
-    }
-
-    /// Discover 详情页右上角 "+" → 把这张(预览的)计划加进 Saved. 满额 → 弹 paywall. 完后关详情.
+    /// 详情页 / 卡片星标 → 存进 My Routines. 满额 → 弹 paywall (免费上限逻辑在 data.savePlan, 未动).
     private func addToSaved(_ plan: Plan) {
         let ok = data.savePlan(plan)
         detailPlan = nil

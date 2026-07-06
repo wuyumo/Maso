@@ -691,6 +691,10 @@
 "Proven programs to start from" = "成熟的现成计划";
 "New routine" = "新建计划";
 
+/* Routines 单页 IA (#single-page-IA): 我的计划 → 为你设计 → Classics 入口 */
+"Routines you save will appear here" = "保存的计划会出现在这里";
+"Proven programs — 5x5, PPL, 5/3/1" = "成熟经典计划 — 5x5、PPL、5/3/1";
+
 /* AI routine 生成 CTA + 可感知生成态 (Routines tab → AI) */
 "Generate routines" = "生成训练计划";
 "Open Training Preferences and tap Generate routines to build a set tailored to you." = "打开「训练偏好」点 Generate routines,按你的情况生成一组方案。";

@@ -690,6 +690,10 @@
 "Proven programs to start from" = "Proven programs to start from";
 "New routine" = "New routine";
 
+/* Routines single-page IA (#single-page-IA): My Routines → FOR YOU → Classics entry */
+"Routines you save will appear here" = "Routines you save will appear here";
+"Proven programs — 5x5, PPL, 5/3/1" = "Proven programs — 5x5, PPL, 5/3/1";
+
 /* AI routine generation CTA + perceived-generation states (Routines tab → AI) */
 "Generate routines" = "Generate routines";
 "Open Training Preferences and tap Generate routines to build a set tailored to you." = "Open Training Preferences and tap Generate routines to build a set tailored to you.";

@@ -9,12 +9,8 @@ struct TodayScreen: View {
     let onNewPlan: () -> Void
     /// 标题行右上角齿轮 → 弹 Settings sheet (RootView 持有 sheet state)
     let onOpenSettings: () -> Void
-    /// My Plans 空态"Generate AI plans"按钮 / Routines 底部 "AI Routines" 入口 → push AI 发现页.
-    var onGoToDiscover: () -> Void = {}
-    /// Routines 底部 "Classics" 入口 → push Classics 发现页 (PlansScreen 接 addRoute = .classics).
-    var onBrowseClassics: () -> Void = {}
-    /// Pro feature ②: Saved 顶部优化建议卡点 "Optimize with AI" → 把诊断 focusNote 上抛给 PlansScreen,
-    /// 由它切到 AI 标签 + 带 focusNote 重生成 routine (Pro gating 也在 PlansScreen 那侧). 其他用法不传.
+    /// Pro feature ②: My Routines 顶部优化建议卡点 "Optimize with AI" → 把诊断 focusNote 上抛给
+    /// PlansScreen, 由它带 focusNote 重生成 routine (Pro gating 也在 PlansScreen 那侧). 其他用法不传.
     var onOptimize: (DataStore.RoutineSuggestion) -> Void = { _ in }
     /// 嵌在外层 NavigationStack (Train / Plans tab) 里时 true — 不渲染自己的大标题/齿轮.
     var embedded: Bool = false
@@ -24,6 +20,10 @@ struct TodayScreen: View {
     ///   - .full:       全部 (兼容老用法)
     enum Mode { case full, trainToday, myPlans }
     var mode: Mode = .full
+    /// Routines 单页 (#single-page-IA): true = 不自带 ScrollView / 背景 / 页边距 —
+    /// 外层 PlansScreen 的滚动页接管 (本 view 只出内容 VStack, sheets/alerts 照常挂在上面).
+    /// Today tab (RootView) 不传, 默认 false 走自己的 ScrollView.
+    var embeddedInScroll: Bool = false
     /// Routines tab (#IA-A): "+ new routine" 菜单在导航栏 (PlansScreen). 点 "Import from photo" 翻这个 →
     /// 这里开图片选择器. 其他用法 (Today tab) 不传, 默认 .constant(false) 不触发.
     var triggerImport: Binding<Bool> = .constant(false)
@@ -92,10 +92,12 @@ struct TodayScreen: View {
     }
 
     var body: some View {
-        // ScrollView + LazyVStack — 复杂 hero 卡 (WorkoutCard 里有自定义 Layout) 在 List row 的
+        // ScrollView + VStack — 复杂 hero 卡 (WorkoutCard 里有自定义 Layout) 在 List row 的
         // nil-width sizing pass 下会塌. ScrollView 给的是确定宽度, 渲染稳. 计划行的删/改改走长按
         // contextMenu (代替 List 的右滑); 排序暂不提供 (原 Plans 页的拖拽随 List 一起去掉了).
-        ScrollView {
+        // embeddedInScroll (Routines 单页嵌入) 时不自带 ScrollView/背景 — 外层滚动页接管,
+        // sheets / alerts / import flow 仍挂本 view (修饰链原样生效).
+        ScrollIf(scroll: !embeddedInScroll) {
             VStack(alignment: .leading, spacing: 16) {
                 // ===== Today tab 内容: 肌肉状态 + 今日推荐 + 自由训练 (mode != .myPlans) =====
                 if mode != .myPlans {
@@ -159,7 +161,12 @@ struct TodayScreen: View {
                         RoutineOptimizeCard(suggestion: suggestion, onOptimize: onOptimize)
                     }
                     if data.plans.isEmpty {
-                        plansEmptyState
+                        // 无已存 routine: 一行浅提示, 不做大空态 — Routines 单页下方紧跟着
+                        // FOR YOU 生成区 + Classics 入口, 引导按钮反而多余 (#single-page-IA).
+                        Text("Routines you save will appear here")
+                            .font(.system(size: 12))
+                            .foregroundStyle(MasoColor.textFaint)
+                            .padding(.vertical, 6)
                     } else {
                         // "+ new routine" 入口已上移到 Routines tab 导航栏 (PlansScreen 的 toolbar "+") —
                         // 这里只渲染已存 routine 列表. 计划卡用 WorkoutCard (跟 Today's Workout 同详细程度).
@@ -185,13 +192,17 @@ struct TodayScreen: View {
                     }
                 }
 
-                // AI / Classics 入口已上移成 Routines 顶部分段 tab — 此处不再放入口卡.
+                // AI / Classics 入口不在这里 — Routines 单页 (PlansScreen) 本身就有
+                // FOR YOU 生成区 + Classics 入口卡, 这里再放 = 重复堆入口 (#single-page-IA).
 
-                Spacer(minLength: MasoMetrics.pageBottomInset)
+                // 底部留白 — Routines 单页嵌入时由外层滚动页统一给, 这里不重复.
+                if !embeddedInScroll {
+                    Spacer(minLength: MasoMetrics.pageBottomInset)
+                }
             }
-            .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
+            // 页边距 — 嵌入模式下外层已给 pagePaddingHorizontal, 置 0 防双重缩进.
+            .padding(.horizontal, embeddedInScroll ? 0 : MasoMetrics.pagePaddingHorizontal)
         }
-        .background(MasoColor.background.ignoresSafeArea())
         // 自定义页头: greeting kicker + "Today" 大标题 + 齿轮. embedded (Today / Plans tab) 时跳过 —
         // 由外层 NavigationStack 的 screenHeader / segmented 接管.
         .applyIf(!embedded) {
@@ -288,60 +299,6 @@ struct TodayScreen: View {
         }
         .buttonStyle(.plain)
         .accessibilityLabel(NSLocalizedString(a11y, comment: ""))
-    }
-
-    private var plansEmptyState: some View {
-        // Saved 空态: 图标 + 鼓励文案 + 两个引导按钮 — 跳到 AI Routines / Classics 分段 (onGoToDiscover/onBrowseClassics 切 tab).
-        VStack(spacing: 14) {
-            Image(systemName: "bookmark")
-                .font(.system(size: 30, weight: .regular))
-                .foregroundStyle(MasoColor.textFaint)
-            VStack(spacing: 4) {
-                Text("No saved routines yet")
-                    .font(.system(size: 16, weight: .bold))
-                    .foregroundStyle(MasoColor.text)
-                Text("Generate one with AI, or start from a proven Classic.")
-                    .font(.system(size: 13))
-                    .foregroundStyle(MasoColor.textDim)
-                    .multilineTextAlignment(.center)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-            VStack(spacing: 8) {
-                // 主按钮: 去 AI 生成 (实心 accent).
-                Button {
-                    Haptics.tap(); onGoToDiscover()
-                } label: {
-                    HStack(spacing: 6) {
-                        Image(systemName: "sparkles").font(.system(size: 13, weight: .bold))
-                        Text("Generate with AI").font(.system(size: 14, weight: .semibold))
-                    }
-                    .foregroundStyle(MasoColor.background)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 11)
-                    .background(MasoColor.accent)
-                    .clipShape(Capsule())
-                }
-                .buttonStyle(.plain)
-                // 次按钮: 去 Classics 找 (描边).
-                Button {
-                    Haptics.tap(); onBrowseClassics()
-                } label: {
-                    HStack(spacing: 6) {
-                        Image(systemName: "rosette").font(.system(size: 13, weight: .bold))
-                        Text("Browse Classics").font(.system(size: 14, weight: .semibold))
-                    }
-                    .foregroundStyle(MasoColor.accent)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 11)
-                    .overlay(Capsule().stroke(MasoColor.accent.opacity(0.5), lineWidth: 1))
-                }
-                .buttonStyle(.plain)
-            }
-            .frame(maxWidth: 280)
-            .padding(.top, 4)
-        }
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, 40)
     }
 
     /// 并排的小入口卡 (自由训练 / 社区).
@@ -510,6 +467,23 @@ struct TodayScreen: View {
             }
         }
         return total
+    }
+}
+
+// MARK: - ScrollIf — 条件 ScrollView (跟 RootView.NavStackIf 同套路)
+//
+// TodayScreen 两种宿主: 自己当页面 (Today tab) 时自带 ScrollView + 页面背景;
+// 嵌进 Routines 单页 (PlansScreen 的滚动正文) 时退化成纯内容, 由外层滚动页接管.
+private struct ScrollIf<Content: View>: View {
+    let scroll: Bool
+    @ViewBuilder let content: () -> Content
+    var body: some View {
+        if scroll {
+            ScrollView { content() }
+                .background(MasoColor.background.ignoresSafeArea())
+        } else {
+            content()
+        }
     }
 }
 

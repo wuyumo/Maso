@@ -1,10 +1,13 @@
 import SwiftUI
 
-// "肌肉恢复" hero 卡 — TodayScreen 顶部用.
+// "肌肉恢复" hero 区 — TodayScreen 顶部用.
 //
+// 2026-07-06 v4 (去卡片化):
+//   - 卡片壳整个拿掉 (无 surface 底 / 无圆角 / 无描边) — 内容直接坐在页面背景上, 读作开放 section
+//   - 内容随之摊开: kicker→map 间距 10→18, map↔legend 间距 16→20, map 130→145 (不再吃 cardPadding,
+//     左右各多出 ~20pt, 让图呼吸); 横向对齐交给 TodayScreen 的页边距 (跟其它 section 内容同一条线)
 // 2026-05-23 v3:
 //   - 顶部加 RECOVERY kicker (跟 Plans tab 的 "FOR YOU" 同款 visual style — accent color + tracking)
-//   - 卡片样式跟 PlanRationaleCard 完全对齐: 1pt accent stroke 40% + accent shadow (无底色)
 //   - 居中布局: 左 muscle map + 右 legend / CTA
 //
 // Callers 注入 lastMap (muscle → 最近一次训练时间) + gap workout handler.
@@ -24,15 +27,17 @@ struct MuscleStatusOverviewCard: View {
     /// 非 Pro 点"解锁逐肌群恢复" → caller 拉付费墙 (跟 HistoryScreen 的 onUnlock 同款).
     var onUnlock: () -> Void = {}
 
-    /// Muscle map 正方形 slot 边长 — 跟 MuscleVisualBlock 昨天版本对齐 (正方形, 不放大).
-    private let slotSize: CGFloat = 130
+    /// Muscle map 正方形 slot 边长 — 去卡片化后不再吃 cardPadding, 放大到 145 让图呼吸
+    /// (145 + 20 间距 + 右列 ≤150 = ~315pt, SE 375 − 页边距 32 也放得下).
+    private let slotSize: CGFloat = 145
 
     var body: some View {
         // tease-free / precision-Pro: 免费用户看到 body-map 热图 (漂亮 + 卖产品) 但强制 coarseOnly
         // (粗颗粒), 逐肌群精度 + 4 档图例 + train-the-gaps 定向留给 Pro. 直接建模 Fitbod/WHOOP 的
         // "恢复即高级" 模式, 又保持品牌友好 (视觉钩子免费, 只锁可执行的精度).
         let isPro = data.settings.isPro
-        return VStack(alignment: .leading, spacing: 10) {
+        // spacing 18 (原卡片版 10) — 无卡片壳后 header→map 拉开一档, 内容摊开呼吸.
+        return VStack(alignment: .leading, spacing: 18) {
             // 顶部 kicker — 跟 WorkoutCard "FROM YOUR PLAN" 完全同款字号 (10pt heavy + tracking 1.5)
             // + 跟 FOR YOU 卡同款 icon + 文字 visual family.
             // kicker 跟 Settings section header / "Today's Workout" 同款 textDim 灰,
@@ -65,9 +70,10 @@ struct MuscleStatusOverviewCard: View {
 
             // 居中内容区: 左 Spacer + (map + 间距 + legend/CTA) + 右 Spacer.
             // 内层 HStack 用 fixedSize, 让整组按自然宽度居中, 不再撑满.
+            // map↔legend 间距 20 (原 16) — 跟去卡片化一起摊开.
             HStack(alignment: .center, spacing: 0) {
                 Spacer(minLength: 0)
-                HStack(alignment: .center, spacing: 16) {
+                HStack(alignment: .center, spacing: 20) {
                     // LEFT: 复用共享 MuscleVisualBlock — 正方形 slot, opacityFor 启用衰减热图.
                     // ⚠️ 跟其它卡片 (WorkoutCard / SessionCard / PlanRow) 共用一份代码, 改这里同步影响所有.
                     // 免费 → 强制 coarseOnly (粗颗粒热图), 无论用户 muscleDetailEnabled 设置;
@@ -165,13 +171,10 @@ struct MuscleStatusOverviewCard: View {
                 Spacer(minLength: 0)
             }
         }
-        // 卡片内边距 — 跟 PlanRationaleCard ("FOR YOU" 卡) 完全对齐.
-        .padding(.horizontal, MasoMetrics.cardPadding)
-        .padding(.vertical, MasoMetrics.cardPadding - 2)
+        // 去卡片化 (v4): 无 surface 底 / 无圆角 / 无内边距 — 内容直接坐在页面背景上,
+        // 横向对齐 = TodayScreen 的 pagePaddingHorizontal (跟其它 section 内容同一条线).
         .frame(maxWidth: .infinity, alignment: .leading)
-        // 无边框 + 背景色 — 跟第二个 tab 的 WorkoutCard 一致 (surface 填充 + 圆角, 不描边).
-        .background(MasoColor.surface)
-        .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
+        .padding(.vertical, 6)
     }
 
     /// 分享入口 — 复用现成的 MuscleStatusShareCard (卡早就存在, 之前只是没有入口).

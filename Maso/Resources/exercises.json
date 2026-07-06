@@ -595,7 +595,7 @@
   "tempo": "hypertrophy",
   "level": "beginner",
   "force": "pull",
-  "imageFolder": "Barbell_Curl",
+  "imageFolder": "Dumbbell_Alternate_Bicep_Curl",
   "instructions": {
    "en": [
     "Stand, dumbbells at sides, palms forward.",
@@ -649,7 +649,7 @@
   "tempo": "explosive",
   "level": "beginner",
   "force": "push",
-  "imageFolder": "Ankle_On_The_Knee",
+  "imageFolder": null,
   "instructions": {
    "en": [
     "Stand tall, legs straight.",
@@ -1351,7 +1351,7 @@
   "tempo": "explosive",
   "level": "intermediate",
   "force": "push",
-  "imageFolder": "Air_Bike",
+  "imageFolder": "Bicycling_Stationary",
   "instructions": {
    "en": [
     "Grip handles, push and pull aggressively.",
@@ -1482,7 +1482,7 @@
   "tempo": "hypertrophy",
   "level": "beginner",
   "force": "pull",
-  "imageFolder": "Leg_Extensions",
+  "imageFolder": "Hyperextensions_Back_Extensions",
   "instructions": {
    "en": [
     "Hips on pad, ankles secured.",
@@ -1750,7 +1750,7 @@
   "tempo": "isometric",
   "level": "beginner",
   "force": "static",
-  "imageFolder": "Cat_Stretch",
+  "imageFolder": "One_Handed_Hang",
   "instructions": {
    "en": [
     "Hang passively from bar, body relaxed.",
@@ -2017,7 +2017,7 @@
   "tempo": "explosive",
   "level": "advanced",
   "force": "pull",
-  "imageFolder": "Barbell_Shrug",
+  "imageFolder": "Upright_Barbell_Row",
   "instructions": {
    "en": [
     "Start with bar at thighs, slight bend.",
@@ -2081,7 +2081,7 @@
   "tempo": "isometric",
   "level": "intermediate",
   "force": "static",
-  "imageFolder": "Barbell_Curl",
+  "imageFolder": null,
   "instructions": {
    "en": [
     "Set bar at hip height in rack, heavy load.",
@@ -2295,7 +2295,7 @@
   "tempo": "strength",
   "level": "advanced",
   "force": "pull",
-  "imageFolder": "Lying_Cambered_Barbell_Row",
+  "imageFolder": "Bent_Over_Barbell_Row",
   "instructions": {
    "en": [
     "Bar on floor, hinge over, full grip.",
@@ -2853,7 +2853,7 @@
   "tempo": "hypertrophy",
   "level": "intermediate",
   "force": "pull",
-  "imageFolder": "Lying_Cable_Curl",
+  "imageFolder": "Standing_One-Arm_Cable_Curl",
   "instructions": {
    "en": [
     "Low pulley behind you, single handle.",
@@ -2982,7 +2982,7 @@
   "tempo": "hypertrophy",
   "level": "intermediate",
   "force": "pull",
-  "imageFolder": "Standing_Palms-Up_Barbell_Behind_The_Back_Wrist_Curl",
+  "imageFolder": "Standing_One-Arm_Cable_Curl",
   "instructions": {
    "en": [
     "Stand sideways to low pulley, cable behind body.",
@@ -3384,7 +3384,7 @@
   "tempo": "hypertrophy",
   "level": "intermediate",
   "force": "push",
-  "imageFolder": "Bench_Dips",
+  "imageFolder": "Weighted_Bench_Dip",
   "instructions": {
    "en": [
     "Bench dip setup, weight plate on lap.",
@@ -3981,7 +3981,7 @@
   "tempo": "strength",
   "level": "advanced",
   "force": "push",
-  "imageFolder": "Neck_Press",
+  "imageFolder": "Barbell_Bench_Press_-_Medium_Grip",
   "instructions": {
    "en": [
     "Standard bench setup, grip just past shoulders.",
@@ -4412,8 +4412,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "45°",
-   "base": "Incline Curl",
+   "variation": "Incline 45°",
+   "base": "Curl",
    "equipment": null
   }
  },
@@ -4635,7 +4635,7 @@
   "tempo": "hypertrophy",
   "level": "intermediate",
   "force": "pull",
-  "imageFolder": "Dumbbell_Alternate_Bicep_Curl",
+  "imageFolder": "Barbell_Curl",
   "instructions": {
    "en": [
     "Barbell, narrow grip, palms up.",
@@ -4832,7 +4832,7 @@
   "tempo": "hypertrophy",
   "level": "beginner",
   "force": "pull",
-  "imageFolder": "Dumbbell_Alternate_Bicep_Curl",
+  "imageFolder": "EZ-Bar_Curl",
   "instructions": {
    "en": [
     "Stand, EZ-bar at thighs, narrow grip.",
@@ -4976,8 +4976,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "90°",
-   "base": "Iso-Hold Curl",
+   "variation": "Iso-Hold 90°",
+   "base": "Curl",
    "equipment": null
   }
  },
@@ -5191,7 +5191,7 @@
   "tempo": "hypertrophy",
   "level": "beginner",
   "force": "pull",
-  "imageFolder": "Seated_Band_Hamstring_Curl",
+  "imageFolder": "Machine_Bicep_Curl",
   "instructions": {
    "en": [
     "Sit at curl machine, arms on pad.",
@@ -5277,8 +5277,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": null,
-   "base": "Offset Curl",
+   "variation": "Offset",
+   "base": "Curl",
    "equipment": "Dumbbell"
   }
  },
@@ -5375,7 +5375,7 @@
   "tempo": "hypertrophy",
   "level": "intermediate",
   "force": "pull",
-  "imageFolder": "Dumbbell_Alternate_Bicep_Curl",
+  "imageFolder": "Barbell_Curl",
   "instructions": {
    "en": [
     "Barbell, grip wider than shoulders.",
@@ -5733,8 +5733,8 @@
    ]
   },
   "nameParts": {
-   "variation": null,
-   "base": "Bottoms-Up Press",
+   "variation": "Bottoms-Up",
+   "base": "Overhead Press",
    "equipment": "Kettlebell"
   }
  },
@@ -6862,8 +6862,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": null,
-   "base": "Behind-Back Triceps Extension",
+   "variation": "Behind-Back",
+   "base": "Triceps Extension",
    "equipment": "Cable"
   }
  },
@@ -7371,7 +7371,7 @@
   "tempo": "hypertrophy",
   "level": "intermediate",
   "force": "pull",
-  "imageFolder": "Seated_One-arm_Cable_Pulley_Rows",
+  "imageFolder": "Straight-Arm_Pulldown",
   "instructions": {
    "en": [
     "Stand facing cable, high pulley, straight bar attachment.",
@@ -7570,7 +7570,7 @@
   "tempo": "hypertrophy",
   "level": "beginner",
   "force": "pull",
-  "imageFolder": "Kneeling_Cable_Crunch_With_Alternating_Oblique_Twists",
+  "imageFolder": "Kneeling_High_Pulley_Row",
   "instructions": {
    "en": [
     "Kneel facing cable, grip V-handle or straight bar.",
@@ -7636,7 +7636,7 @@
   "tempo": "hypertrophy",
   "level": "beginner",
   "force": "pull",
-  "imageFolder": "Low_Cable_Crossover",
+  "imageFolder": "Seated_Cable_Rows",
   "instructions": {
    "en": [
     "Low pulley, sit close, grip V-handle.",
@@ -7924,7 +7924,7 @@
   "tempo": "hypertrophy",
   "level": "beginner",
   "force": "pull",
-  "imageFolder": "Single-Arm_Cable_Crossover",
+  "imageFolder": "Seated_One-arm_Cable_Pulley_Rows",
   "instructions": {
    "en": [
     "Single handle, kneel or stand sideways.",
@@ -8142,8 +8142,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": null,
-   "base": "Woodchopper Reverse",
+   "variation": "Reverse",
+   "base": "Woodchopper",
    "equipment": "Cable"
   }
  },
@@ -8582,7 +8582,7 @@
   "tempo": "hypertrophy",
   "level": "beginner",
   "force": "push",
-  "imageFolder": "Barbell_Seated_Calf_Raise",
+  "imageFolder": "Calf_Press_On_The_Leg_Press_Machine",
   "instructions": {
    "en": [
     "On leg press, toes at edge of platform.",
@@ -8753,7 +8753,7 @@
   "tempo": "hypertrophy",
   "level": "beginner",
   "force": "push",
-  "imageFolder": "Barbell_Seated_Calf_Raise",
+  "imageFolder": "Standing_Calf_Raises",
   "instructions": {
    "en": [
     "Stand on one foot, hold support.",
@@ -8808,7 +8808,7 @@
   "tempo": "hypertrophy",
   "level": "beginner",
   "force": "push",
-  "imageFolder": "Barbell_Seated_Calf_Raise",
+  "imageFolder": "Standing_Dumbbell_Calf_Raise",
   "instructions": {
    "en": [
     "Dumbbell in same-side hand.",
@@ -9031,7 +9031,7 @@
   "tempo": "hypertrophy",
   "level": "beginner",
   "force": "push",
-  "imageFolder": "Barbell_Seated_Calf_Raise",
+  "imageFolder": "Standing_Dumbbell_Calf_Raise",
   "instructions": {
    "en": [
     "Dumbbells at sides, stand tall.",
@@ -9086,7 +9086,7 @@
   "tempo": "hypertrophy",
   "level": "beginner",
   "force": "push",
-  "imageFolder": "Barbell_Seated_Calf_Raise",
+  "imageFolder": "Standing_Calf_Raises",
   "instructions": {
    "en": [
     "Shoulders under pads, toes on platform.",
@@ -9141,7 +9141,7 @@
   "tempo": "hypertrophy",
   "level": "intermediate",
   "force": "push",
-  "imageFolder": "Barbell_Seated_Calf_Raise",
+  "imageFolder": "Standing_Calf_Raises",
   "instructions": {
    "en": [
     "Standing calf machine, one foot on plate.",
@@ -9196,7 +9196,7 @@
   "tempo": "hypertrophy",
   "level": "beginner",
   "force": "push",
-  "imageFolder": "Barbell_Seated_Calf_Raise",
+  "imageFolder": "Smith_Machine_Calf_Raise",
   "instructions": {
    "en": [
     "Bar on back, toes on plate or block.",
@@ -9661,8 +9661,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": null,
-   "base": "Iso-Lateral Chest Press",
+   "variation": "Iso-Lateral",
+   "base": "Chest Press",
    "equipment": "Machine"
   }
  },
@@ -10136,7 +10136,7 @@
   "tempo": "isometric",
   "level": "beginner",
   "force": "static",
-  "imageFolder": "Chin-Up",
+  "imageFolder": "Chin_To_Chest_Stretch",
   "instructions": {
    "en": [
     "Sit or stand, head over shoulders.",
@@ -10851,7 +10851,7 @@
   "tempo": "hypertrophy",
   "level": "intermediate",
   "force": "push",
-  "imageFolder": "Elevated_Back_Lunge",
+  "imageFolder": null,
   "instructions": {
    "en": [
     "Wide stance, drop heel of straight leg.",
@@ -10919,7 +10919,7 @@
   "tempo": "hypertrophy",
   "level": "intermediate",
   "force": "push",
-  "imageFolder": "Hack_Squat",
+  "imageFolder": null,
   "instructions": {
    "en": [
     "Very wide stance, toes slightly out.",
@@ -10991,7 +10991,7 @@
   "tempo": "hypertrophy",
   "level": "intermediate",
   "force": "push",
-  "imageFolder": "Hack_Squat",
+  "imageFolder": null,
   "instructions": {
    "en": [
     "Hold dumbbell at chest, very wide stance.",
@@ -11059,7 +11059,7 @@
   "tempo": "endurance",
   "level": "beginner",
   "force": "static",
-  "imageFolder": "Hack_Squat",
+  "imageFolder": null,
   "instructions": {
    "en": [
     "Wide stance, sit to one side fully.",
@@ -11126,7 +11126,7 @@
   "tempo": "isometric",
   "level": "intermediate",
   "force": "static",
-  "imageFolder": "Quad_Stretch",
+  "imageFolder": null,
   "instructions": {
    "en": [
     "Stand wide stance, shift weight to one leg.",
@@ -11255,7 +11255,7 @@
   "tempo": "endurance",
   "level": "beginner",
   "force": "push",
-  "imageFolder": "Monster_Walk",
+  "imageFolder": null,
   "instructions": {
    "en": [
     "Sit with hands behind, knees bent.",
@@ -11438,7 +11438,7 @@
   "tempo": "endurance",
   "level": "beginner",
   "force": "pull",
-  "imageFolder": "Cable_Crunch",
+  "imageFolder": "Air_Bike",
   "instructions": {
    "en": [
     "Lie on back, hands at temples, legs raised.",
@@ -11497,7 +11497,7 @@
   "tempo": "hypertrophy",
   "level": "intermediate",
   "force": "pull",
-  "imageFolder": "Ab_Crunch_Machine",
+  "imageFolder": "Cable_Crunch",
   "instructions": {
    "en": [
     "Kneel facing cable, rope at top.",
@@ -11560,7 +11560,7 @@
   "tempo": "hypertrophy",
   "level": "intermediate",
   "force": "pull",
-  "imageFolder": "Ab_Crunch_Machine",
+  "imageFolder": "Decline_Crunch",
   "instructions": {
    "en": [
     "Lie on decline bench, ankles hooked.",
@@ -11738,7 +11738,7 @@
   "tempo": "hypertrophy",
   "level": "intermediate",
   "force": "pull",
-  "imageFolder": "Ab_Crunch_Machine",
+  "imageFolder": "Weighted_Crunches",
   "instructions": {
    "en": [
     "Lie on back, knees bent, plate on chest.",
@@ -11939,7 +11939,7 @@
   "tempo": "explosive",
   "level": "intermediate",
   "force": "push",
-  "imageFolder": "Bicycling",
+  "imageFolder": "Bicycling_Stationary",
   "instructions": {
    "en": [
     "Heavy resistance, all-out 20-60 s.",
@@ -12850,7 +12850,7 @@
   "tempo": "strength",
   "level": "advanced",
   "force": "pull",
-  "imageFolder": "Axle_Deadlift",
+  "imageFolder": "Sumo_Deadlift",
   "instructions": {
    "en": [
     "Wide stance, hands inside knees.",
@@ -12921,7 +12921,7 @@
   "tempo": "hypertrophy",
   "level": "beginner",
   "force": "pull",
-  "imageFolder": "Axle_Deadlift",
+  "imageFolder": "Sumo_Deadlift",
   "instructions": {
    "en": [
     "Wide stance, dumbbell vertical between legs.",
@@ -13738,7 +13738,7 @@
   "tempo": "hypertrophy",
   "level": "intermediate",
   "force": "push",
-  "imageFolder": "Chest_Push_from_3_point_stance",
+  "imageFolder": "Dips_-_Chest_Version",
   "instructions": {
    "en": [
     "On parallel bars, lean torso forward.",
@@ -13808,7 +13808,7 @@
   "tempo": "strength",
   "level": "advanced",
   "force": "push",
-  "imageFolder": "Weighted_Crunches",
+  "imageFolder": "Dips_-_Chest_Version",
   "instructions": {
    "en": [
     "Plate or dumbbell on dip belt.",
@@ -13946,7 +13946,7 @@
   "tempo": "hypertrophy",
   "level": "beginner",
   "force": "push",
-  "imageFolder": "Chest_Push_from_3_point_stance",
+  "imageFolder": "Dip_Machine",
   "instructions": {
    "en": [
     "Sit, grip handles wider than shoulders.",
@@ -14008,7 +14008,7 @@
   "tempo": "hypertrophy",
   "level": "intermediate",
   "force": "push",
-  "imageFolder": "Bench_Dips",
+  "imageFolder": "Parallel_Bar_Dip",
   "instructions": {
    "en": [
     "Support on bars, arms locked.",
@@ -14077,7 +14077,7 @@
   "tempo": "endurance",
   "level": "intermediate",
   "force": "push",
-  "imageFolder": "Triceps_Pushdown",
+  "imageFolder": "Dips_-_Triceps_Version",
   "instructions": {
    "en": [
     "Grip parallel bars, body upright — no forward lean.",
@@ -14147,7 +14147,7 @@
   "tempo": "hypertrophy",
   "level": "advanced",
   "force": "push",
-  "imageFolder": "Triceps_Pushdown",
+  "imageFolder": "Dips_-_Triceps_Version",
   "instructions": {
    "en": [
     "Attach weight via belt, grip parallel bars upright.",
@@ -14482,7 +14482,7 @@
   "tempo": "endurance",
   "level": "beginner",
   "force": "push",
-  "imageFolder": "Donkey_Calf_Raises",
+  "imageFolder": "Glute_Kickback",
   "instructions": {
    "en": [
     "On all fours, hands under shoulders.",
@@ -14542,7 +14542,7 @@
   "tempo": "hypertrophy",
   "level": "beginner",
   "force": "push",
-  "imageFolder": "Donkey_Calf_Raises",
+  "imageFolder": "Glute_Kickback",
   "instructions": {
    "en": [
     "Band around foot, anchored low.",
@@ -14964,8 +14964,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": null,
-   "base": "Supinating Curl",
+   "variation": "Supinating",
+   "base": "Curl",
    "equipment": "Dumbbell"
   }
  },
@@ -15470,8 +15470,8 @@
    ]
   },
   "nameParts": {
-   "variation": null,
-   "base": "Cross-Bench Pullover",
+   "variation": "Cross-Bench",
+   "base": "Pullover",
    "equipment": "Dumbbell"
   }
  },
@@ -15613,8 +15613,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": null,
-   "base": "3-Point Row",
+   "variation": "3-Point",
+   "base": "Row",
    "equipment": "Dumbbell"
   }
  },
@@ -15661,7 +15661,7 @@
   "tempo": "hypertrophy",
   "level": "beginner",
   "force": "pull",
-  "imageFolder": "Bent_Over_Two-Dumbbell_Row",
+  "imageFolder": "Dumbbell_Incline_Row",
   "instructions": {
    "en": [
     "Lie chest-down on incline bench, dumbbells hang.",
@@ -15728,7 +15728,7 @@
   "tempo": "hypertrophy",
   "level": "beginner",
   "force": "pull",
-  "imageFolder": "Seated_Dumbbell_Press",
+  "imageFolder": "Bent_Over_Two-Dumbbell_Row",
   "instructions": {
    "en": [
     "Sit on bench, hinge forward, dumbbells hang.",
@@ -15886,8 +15886,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": null,
-   "base": "Egyptian Lateral Raise",
+   "variation": "Egyptian",
+   "base": "Lateral Raise",
    "equipment": "Cable"
   }
  },
@@ -16454,7 +16454,7 @@
   "tempo": "hypertrophy",
   "level": "intermediate",
   "force": "pull",
-  "imageFolder": "EZ-Bar_Curl",
+  "imageFolder": "Bent-Arm_Barbell_Pullover",
   "instructions": {
    "en": [
     "Lie on bench, EZ-bar narrow grip over chest.",
@@ -17130,7 +17130,7 @@
   "tempo": "isometric",
   "level": "beginner",
   "force": "static",
-  "imageFolder": "Quad_Stretch",
+  "imageFolder": "Seated_Glute",
   "instructions": {
    "en": [
     "Lie on back, cross one ankle over opposite knee.",
@@ -18266,7 +18266,7 @@
   "tempo": "isometric",
   "level": "intermediate",
   "force": "static",
-  "imageFolder": "Frog_Hops",
+  "imageFolder": null,
   "instructions": {
    "en": [
     "On all fours, knees wide, feet flexed.",
@@ -18389,7 +18389,7 @@
   "tempo": "isometric",
   "level": "intermediate",
   "force": "static",
-  "imageFolder": "Hamstring_Stretch",
+  "imageFolder": null,
   "instructions": {
    "en": [
     "Quadruped, knees wide, ankles outside knees.",
@@ -19001,8 +19001,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": null,
-   "base": "Hammer-Grip Front Raise",
+   "variation": "Hammer-Grip",
+   "base": "Front Raise",
    "equipment": "Dumbbell"
   }
  },
@@ -19122,8 +19122,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": null,
-   "base": "Pronated Front Raise",
+   "variation": "Pronated",
+   "base": "Front Raise",
    "equipment": "Dumbbell"
   }
  },
@@ -21193,7 +21193,7 @@
   "tempo": "hypertrophy",
   "level": "intermediate",
   "force": "pull",
-  "imageFolder": "Seated_Band_Hamstring_Curl",
+  "imageFolder": "Ball_Leg_Curl",
   "instructions": {
    "en": [
     "Lie on back, heels on Swiss ball.",
@@ -21848,7 +21848,7 @@
   "tempo": "hypertrophy",
   "level": "intermediate",
   "force": "pull",
-  "imageFolder": "Bent_Over_Two-Dumbbell_Row",
+  "imageFolder": "Dumbbell_Incline_Row",
   "instructions": {
    "en": [
     "Chest on steep incline bench (60°), underhand grip.",
@@ -22265,7 +22265,7 @@
   "tempo": "isometric",
   "level": "beginner",
   "force": "static",
-  "imageFolder": "Intermediate_Hip_Flexor_and_Quad_Stretch",
+  "imageFolder": null,
   "instructions": {
    "en": [
     "Kneel with one knee, other foot forward.",
@@ -23937,7 +23937,7 @@
   "tempo": "hypertrophy",
   "level": "intermediate",
   "force": "push",
-  "imageFolder": "Neck_Press",
+  "imageFolder": "Landmine_Linear_Jammer",
   "instructions": {
    "en": [
     "Bench at low incline, behind landmine setup.",
@@ -24028,7 +24028,7 @@
  {
   "id": "incline_dumbbell_fly_decline_reverse_motion",
   "name": {
-   "en": "Fly (Dumbbell · Reverse Grip Incline)",
+   "en": "Chest Fly (Dumbbell · Reverse Grip Incline)",
    "zh-Hans": "反握上斜飞鸟 (哑铃)"
   },
   "muscles": {
@@ -24081,7 +24081,7 @@
   },
   "nameParts": {
    "variation": "Reverse Grip Incline",
-   "base": "Fly",
+   "base": "Chest Fly",
    "equipment": "Dumbbell"
   }
  },
@@ -24251,7 +24251,7 @@
   "tempo": "hypertrophy",
   "level": "intermediate",
   "force": "push",
-  "imageFolder": "Leg_Press",
+  "imageFolder": "Hammer_Grip_Incline_DB_Bench_Press",
   "instructions": {
    "en": [
     "Incline bench, dumbbells pressed together at chest.",
@@ -24508,7 +24508,7 @@
   "tempo": "endurance",
   "level": "beginner",
   "force": "push",
-  "imageFolder": "Incline_Push-Up",
+  "imageFolder": "Trail_Running_Walking",
   "instructions": {
    "en": [
     "Find sustained hill or stairs.",
@@ -24803,8 +24803,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "Isometric",
-   "base": "Bicep Curl Hold",
+   "variation": "Isometric Hold",
+   "base": "Bicep Curl",
    "equipment": null
   }
  },
@@ -26312,7 +26312,7 @@
   "tempo": "hypertrophy",
   "level": "intermediate",
   "force": "pull",
-  "imageFolder": "Lying_Cable_Curl",
+  "imageFolder": "Rope_Straight-Arm_Pulldown",
   "instructions": {
    "en": [
     "Kneel facing cable column, rope or bar overhead.",
@@ -26658,7 +26658,7 @@
   "tempo": "isometric",
   "level": "advanced",
   "force": "static",
-  "imageFolder": "3_4_Sit-Up",
+  "imageFolder": null,
   "instructions": {
    "en": [
     "Support on parallel bars or floor.",
@@ -26726,7 +26726,7 @@
   "tempo": "hypertrophy",
   "level": "intermediate",
   "force": "push",
-  "imageFolder": "Neck_Press",
+  "imageFolder": "Single-Arm_Linear_Jammer",
   "instructions": {
    "en": [
     "Hold end of barbell at shoulder, anchor on floor.",
@@ -26794,7 +26794,7 @@
   "tempo": "hypertrophy",
   "level": "intermediate",
   "force": "push",
-  "imageFolder": "Neck_Press",
+  "imageFolder": "Single-Arm_Linear_Jammer",
   "instructions": {
    "en": [
     "Down knee opposite pressing arm.",
@@ -26818,8 +26818,8 @@
   },
   "niche": true,
   "nameParts": {
-   "variation": null,
-   "base": "Half-Kneeling Press",
+   "variation": "Half-Kneeling",
+   "base": "Press",
    "equipment": "Landmine"
   }
  },
@@ -26862,7 +26862,7 @@
   "tempo": "hypertrophy",
   "level": "beginner",
   "force": "push",
-  "imageFolder": "Neck_Press",
+  "imageFolder": "Single-Arm_Linear_Jammer",
   "instructions": {
    "en": [
     "Half-kneel facing landmine.",
@@ -26928,7 +26928,7 @@
   "tempo": "hypertrophy",
   "level": "intermediate",
   "force": "push",
-  "imageFolder": "Neck_Press",
+  "imageFolder": "Landmine_Linear_Jammer",
   "instructions": {
    "en": [
     "Both hands cup end of barbell at chest.",
@@ -26952,8 +26952,8 @@
   },
   "niche": true,
   "nameParts": {
-   "variation": null,
-   "base": "Two-Handed Press",
+   "variation": "Two-Handed",
+   "base": "Press",
    "equipment": "Landmine"
   }
  },
@@ -27000,7 +27000,7 @@
   "tempo": "hypertrophy",
   "level": "intermediate",
   "force": "pull",
-  "imageFolder": "Landmine_180s",
+  "imageFolder": "Bent_Over_Two-Arm_Long_Bar_Row",
   "instructions": {
    "en": [
     "Straddle bar in landmine, V-handle on bar.",
@@ -27071,7 +27071,7 @@
   "tempo": "hypertrophy",
   "level": "intermediate",
   "force": "pull",
-  "imageFolder": "Single-Arm_Linear_Jammer",
+  "imageFolder": "One-Arm_Long_Bar_Row",
   "instructions": {
    "en": [
     "Stand beside landmine, hinge forward.",
@@ -27270,7 +27270,7 @@
   "tempo": "hypertrophy",
   "level": "advanced",
   "force": "pull",
-  "imageFolder": "Close-Grip_Front_Lat_Pulldown",
+  "imageFolder": "Wide-Grip_Pulldown_Behind_The_Neck",
   "instructions": {
    "en": [
     "Wide overhand grip, lean slightly forward.",
@@ -27664,7 +27664,7 @@
   "tempo": "hypertrophy",
   "level": "beginner",
   "force": "pull",
-  "imageFolder": "Close-Grip_Front_Lat_Pulldown",
+  "imageFolder": "V-Bar_Pulldown",
   "instructions": {
    "en": [
     "Attach V-bar, neutral grip.",
@@ -28383,8 +28383,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": null,
-   "base": "Low-to-High Lateral Raise",
+   "variation": "Low-to-High",
+   "base": "Lateral Raise",
    "equipment": "Cable"
   }
  },
@@ -28443,8 +28443,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": null,
-   "base": "Two-Arm Lateral Raise",
+   "variation": "Two-Arm",
+   "base": "Lateral Raise",
    "equipment": "Cable"
   }
  },
@@ -28631,8 +28631,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": null,
-   "base": "Drop-Set Lateral Raise",
+   "variation": "Drop-Set",
+   "base": "Lateral Raise",
    "equipment": "Dumbbell"
   }
  },
@@ -28755,8 +28755,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": null,
-   "base": "Iso-Hold Lateral Raise",
+   "variation": "Iso-Hold",
+   "base": "Lateral Raise",
    "equipment": "Dumbbell"
   }
  },
@@ -28815,7 +28815,7 @@
   },
   "nameParts": {
    "variation": "Lying",
-   "base": "Side Lateral Raise",
+   "base": "Lateral Raise",
    "equipment": "Dumbbell"
   }
  },
@@ -29115,8 +29115,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": null,
-   "base": "Lean-In Lateral Raise",
+   "variation": "Lean-In",
+   "base": "Lateral Raise",
    "equipment": "Dumbbell"
   }
  },
@@ -29463,8 +29463,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": null,
-   "base": "1.5 Rep Lateral Raise",
+   "variation": "1.5 Rep",
+   "base": "Lateral Raise",
    "equipment": "Dumbbell"
   }
  },
@@ -30045,7 +30045,7 @@
   "tempo": "hypertrophy",
   "level": "beginner",
   "force": "push",
-  "imageFolder": "Calf_Press_On_The_Leg_Press_Machine",
+  "imageFolder": "Leg_Press",
   "instructions": {
    "en": [
     "Feet shoulder-width on platform.",
@@ -30116,7 +30116,7 @@
   "tempo": "hypertrophy",
   "level": "intermediate",
   "force": "push",
-  "imageFolder": "Calf_Press_On_The_Leg_Press_Machine",
+  "imageFolder": "Leg_Press",
   "instructions": {
    "en": [
     "Place feet high on platform.",
@@ -30180,7 +30180,7 @@
   "tempo": "hypertrophy",
   "level": "beginner",
   "force": "push",
-  "imageFolder": "Calf_Press_On_The_Leg_Press_Machine",
+  "imageFolder": "Leg_Press",
   "instructions": {
    "en": [
     "Sit, feet on platform shoulder-width.",
@@ -30244,7 +30244,7 @@
   "tempo": "hypertrophy",
   "level": "intermediate",
   "force": "push",
-  "imageFolder": "Calf_Press_On_The_Leg_Press_Machine",
+  "imageFolder": "Narrow_Stance_Leg_Press",
   "instructions": {
    "en": [
     "Feet close together, low on platform.",
@@ -30304,7 +30304,7 @@
   "tempo": "endurance",
   "level": "intermediate",
   "force": "push",
-  "imageFolder": "Calf_Press_On_The_Leg_Press_Machine",
+  "imageFolder": "Leg_Press",
   "instructions": {
    "en": [
     "Set up on leg press, knees bent.",
@@ -30433,7 +30433,7 @@
   "tempo": "hypertrophy",
   "level": "intermediate",
   "force": "push",
-  "imageFolder": "Calf_Press_On_The_Leg_Press_Machine",
+  "imageFolder": "Leg_Press",
   "instructions": {
    "en": [
     "Lie on back, feet straight up on platform.",
@@ -30501,7 +30501,7 @@
   "tempo": "hypertrophy",
   "level": "intermediate",
   "force": "push",
-  "imageFolder": "Calf_Press_On_The_Leg_Press_Machine",
+  "imageFolder": "Leg_Press",
   "instructions": {
    "en": [
     "Feet wide, toes 45° out on platform.",
@@ -31074,7 +31074,7 @@
   "tempo": "endurance",
   "level": "beginner",
   "force": "static",
-  "imageFolder": "One-Arm_Kettlebell_Swings",
+  "imageFolder": null,
   "instructions": {
    "en": [
     "Face wall, both hands on it for balance.",
@@ -31268,7 +31268,7 @@
   "tempo": "isometric",
   "level": "beginner",
   "force": "static",
-  "imageFolder": "Quad_Stretch",
+  "imageFolder": null,
   "instructions": {
    "en": [
     "Lunge position, back knee on floor.",
@@ -31668,7 +31668,7 @@
   "tempo": "hypertrophy",
   "level": "beginner",
   "force": "push",
-  "imageFolder": "Alternating_Hang_Clean",
+  "imageFolder": "Dumbbell_Lunges",
   "instructions": {
    "en": [
     "Dumbbells at sides, stand tall.",
@@ -31798,7 +31798,7 @@
   "tempo": "endurance",
   "level": "beginner",
   "force": "push",
-  "imageFolder": "Dumbbell_Rear_Lunge",
+  "imageFolder": "Bodyweight_Walking_Lunge",
   "instructions": {
    "en": [
     "Stand tall, hands on hips.",
@@ -32148,7 +32148,7 @@
   "tempo": "hypertrophy",
   "level": "intermediate",
   "force": "push",
-  "imageFolder": "Lateral_Bound",
+  "imageFolder": null,
   "instructions": {
    "en": [
     "Bar on back, wide stance.",
@@ -32212,7 +32212,7 @@
   "tempo": "hypertrophy",
   "level": "intermediate",
   "force": "push",
-  "imageFolder": "Lateral_Bound",
+  "imageFolder": null,
   "instructions": {
    "en": [
     "Bar on back in Smith machine.",
@@ -32280,7 +32280,7 @@
   "tempo": "hypertrophy",
   "level": "advanced",
   "force": "push",
-  "imageFolder": "Overhead_Lat",
+  "imageFolder": "Barbell_Lunge",
   "instructions": {
    "en": [
     "Bar overhead with snatch grip.",
@@ -32354,7 +32354,7 @@
   "tempo": "hypertrophy",
   "level": "advanced",
   "force": "push",
-  "imageFolder": "Overhead_Lat",
+  "imageFolder": "Dumbbell_Lunges",
   "instructions": {
    "en": [
     "Dumbbells locked overhead.",
@@ -32424,7 +32424,7 @@
   "tempo": "endurance",
   "level": "beginner",
   "force": "push",
-  "imageFolder": "Crossover_Reverse_Lunge",
+  "imageFolder": "Bodyweight_Walking_Lunge",
   "instructions": {
    "en": [
     "Stay in lunge position, hands on hips.",
@@ -32806,7 +32806,7 @@
   "tempo": "endurance",
   "level": "beginner",
   "force": "push",
-  "imageFolder": "Side_Leg_Raises",
+  "imageFolder": null,
   "instructions": {
    "en": [
     "Stand wide, hands at chest.",
@@ -32942,7 +32942,7 @@
   "tempo": "endurance",
   "level": "beginner",
   "force": "push",
-  "imageFolder": "Crossover_Reverse_Lunge",
+  "imageFolder": "Bodyweight_Walking_Lunge",
   "instructions": {
    "en": [
     "Step into lunge stance, hands on hips.",
@@ -34962,7 +34962,7 @@
   },
   "nameParts": {
    "variation": "Cardio",
-   "base": "Mountain Climbers",
+   "base": "Mountain Climber",
    "equipment": null
   }
  },
@@ -35211,7 +35211,7 @@
   "tempo": "isometric",
   "level": "beginner",
   "force": "static",
-  "imageFolder": "Cat_Stretch",
+  "imageFolder": "Chin_To_Chest_Stretch",
   "instructions": {
    "en": [
     "Sit tall, shoulders down.",
@@ -36065,7 +36065,7 @@
   "tempo": "strength",
   "level": "advanced",
   "force": "push",
-  "imageFolder": "Leg_Press",
+  "imageFolder": "Standing_Military_Press",
   "instructions": {
    "en": [
     "Thick axle bar at shoulders.",
@@ -36270,7 +36270,7 @@
   "tempo": "strength",
   "level": "intermediate",
   "force": "push",
-  "imageFolder": "JM_Press",
+  "imageFolder": "Seated_Barbell_Military_Press",
   "instructions": {
    "en": [
     "Upright bench inside rack, bar at shoulder height.",
@@ -36470,7 +36470,7 @@
   "tempo": "hypertrophy",
   "level": "beginner",
   "force": "push",
-  "imageFolder": "Seated_Overhead_Stretch",
+  "imageFolder": "Seated_Dumbbell_Press",
   "instructions": {
    "en": [
     "Sit on upright bench, back supported.",
@@ -36537,7 +36537,7 @@
   "tempo": "hypertrophy",
   "level": "intermediate",
   "force": "push",
-  "imageFolder": "JM_Press",
+  "imageFolder": "Standing_Palm-In_One-Arm_Dumbbell_Press",
   "instructions": {
    "en": [
     "Stand tall, dumbbell at one shoulder.",
@@ -36740,7 +36740,7 @@
   "tempo": "hypertrophy",
   "level": "intermediate",
   "force": "push",
-  "imageFolder": "JM_Press",
+  "imageFolder": "One-Arm_Kettlebell_Military_Press_To_The_Side",
   "instructions": {
    "en": [
     "Kettlebell racked at one shoulder.",
@@ -36810,7 +36810,7 @@
   "tempo": "strength",
   "level": "advanced",
   "force": "push",
-  "imageFolder": "Alternating_Kettlebell_Press",
+  "imageFolder": null,
   "instructions": {
    "en": [
     "Clean log to shoulders, neutral grip.",
@@ -37672,7 +37672,7 @@
   "tempo": "isometric",
   "level": "advanced",
   "force": "static",
-  "imageFolder": "Plank",
+  "imageFolder": null,
   "instructions": {
    "en": [
     "Lean far forward, body horizontal off floor.",
@@ -37749,7 +37749,7 @@
   "tempo": "isometric",
   "level": "intermediate",
   "force": "static",
-  "imageFolder": "Plank",
+  "imageFolder": null,
   "instructions": {
    "en": [
     "Hands on floor, lean forward heavily.",
@@ -42266,7 +42266,7 @@
   "tempo": "isometric",
   "level": "beginner",
   "force": "static",
-  "imageFolder": "All_Fours_Quad_Stretch",
+  "imageFolder": "Standing_Elevated_Quad_Stretch",
   "instructions": {
    "en": [
     "Stand on one leg, grab other ankle behind.",
@@ -44045,8 +44045,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": null,
-   "base": "Rear Foot Elevated Split Squat",
+   "variation": "Rear Foot Elevated",
+   "base": "Split Squat",
    "equipment": "Smith Machine"
   }
  },
@@ -44437,8 +44437,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": null,
-   "base": "Reverse Fly",
+   "variation": "Reverse Pec Deck",
+   "base": "Rear Delt Fly",
    "equipment": "Machine"
   }
  },
@@ -44922,7 +44922,7 @@
   "tempo": "hypertrophy",
   "level": "intermediate",
   "force": "pull",
-  "imageFolder": "Dumbbell_Incline_Row",
+  "imageFolder": "Suspended_Row",
   "instructions": {
    "en": [
     "Hang from rings, body angled to floor.",
@@ -45000,8 +45000,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": null,
-   "base": "Rolling Triceps Extension",
+   "variation": "Rolling",
+   "base": "Triceps Extension",
    "equipment": "Dumbbell"
   }
  },
@@ -45039,7 +45039,7 @@
   "tempo": "endurance",
   "level": "intermediate",
   "force": "push",
-  "imageFolder": "Kneeling_Squat",
+  "imageFolder": null,
   "instructions": {
    "en": [
     "Sit and roll backward.",
@@ -45103,7 +45103,7 @@
   "tempo": "hypertrophy",
   "level": "beginner",
   "force": "pull",
-  "imageFolder": "Rope_Crunch",
+  "imageFolder": "Cable_Hammer_Curls_-_Rope_Attachment",
   "instructions": {
    "en": [
     "Low pulley, rope attachment, neutral grip.",
@@ -45126,8 +45126,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": null,
-   "base": "Rope Curl",
+   "variation": "Rope",
+   "base": "Curl",
    "equipment": "Cable"
   }
  },
@@ -45181,7 +45181,7 @@
   "tempo": "endurance",
   "level": "beginner",
   "force": "pull",
-  "imageFolder": "Lying_Machine_Squat",
+  "imageFolder": "Rowing_Stationary",
   "instructions": {
    "en": [
     "Sit, feet strapped, grab handle.",
@@ -45344,7 +45344,7 @@
   "tempo": "endurance",
   "level": "intermediate",
   "force": "push",
-  "imageFolder": "Rocking_Standing_Calf_Raise",
+  "imageFolder": "Trail_Running_Walking",
   "instructions": {
    "en": [
     "Loaded pack 10-30% bodyweight.",
@@ -46296,7 +46296,7 @@
   "tempo": "hypertrophy",
   "level": "intermediate",
   "force": "pull",
-  "imageFolder": "Cable_Wrist_Curl",
+  "imageFolder": "Preacher_Curl",
   "instructions": {
    "en": [
     "Sit at vertical-side preacher bench.",
@@ -46368,7 +46368,7 @@
   "tempo": "hypertrophy",
   "level": "intermediate",
   "force": "pull",
-  "imageFolder": "Bent_Over_Barbell_Row",
+  "imageFolder": "Lying_Cambered_Barbell_Row",
   "instructions": {
    "en": [
     "Lie face-down on raised bench, barbell below.",
@@ -46961,7 +46961,7 @@
   "tempo": "strength",
   "level": "advanced",
   "force": "push",
-  "imageFolder": "Freehand_Jump_Squat",
+  "imageFolder": null,
   "instructions": {
    "en": [
     "Stand on one leg, other foot grabbed behind.",
@@ -47650,7 +47650,7 @@
   "tempo": "isometric",
   "level": "beginner",
   "force": "static",
-  "imageFolder": "Side_Neck_Stretch",
+  "imageFolder": null,
   "instructions": {
    "en": [
     "Stand wide, shift weight to one bent leg.",
@@ -47840,7 +47840,7 @@
   "tempo": "hypertrophy",
   "level": "intermediate",
   "force": "pull",
-  "imageFolder": "Landmine_180s",
+  "imageFolder": "Bent_Over_One-Arm_Long_Bar_Row",
   "instructions": {
    "en": [
     "Stand perpendicular to landmine bar.",
@@ -47953,7 +47953,7 @@
   "tempo": "hypertrophy",
   "level": "beginner",
   "force": "push",
-  "imageFolder": "Barbell_Seated_Calf_Raise",
+  "imageFolder": "Standing_Dumbbell_Calf_Raise",
   "instructions": {
    "en": [
     "Stand on step, one foot only.",
@@ -48021,7 +48021,7 @@
   "tempo": "hypertrophy",
   "level": "beginner",
   "force": "pull",
-  "imageFolder": "Car_Deadlift",
+  "imageFolder": "Romanian_Deadlift",
   "instructions": {
    "en": [
     "Stand on one leg, hinge forward.",
@@ -48998,7 +48998,7 @@
   "tempo": "explosive",
   "level": "beginner",
   "force": "push",
-  "imageFolder": "Star_Jump",
+  "imageFolder": "Single-Leg_Lateral_Hop",
   "instructions": {
    "en": [
     "Bound side to side, land on outside foot.",
@@ -49061,7 +49061,7 @@
   "tempo": "hypertrophy",
   "level": "intermediate",
   "force": "push",
-  "imageFolder": "Box_Squat",
+  "imageFolder": null,
   "instructions": {
    "en": [
     "Stand on one leg, other knee bent behind.",
@@ -49281,8 +49281,8 @@
    ]
   },
   "nameParts": {
-   "variation": null,
-   "base": "Behind-The-Head Skullcrusher",
+   "variation": "Behind-the-Head",
+   "base": "Skullcrusher",
    "equipment": "EZ-Bar"
   }
  },
@@ -49561,8 +49561,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": null,
-   "base": "1.5-Rep Skullcrusher",
+   "variation": "1.5-Rep",
+   "base": "Skullcrusher",
    "equipment": "EZ-Bar"
   }
  },
@@ -49915,7 +49915,7 @@
   "tempo": "hypertrophy",
   "level": "beginner",
   "force": "pull",
-  "imageFolder": "Smith_Machine_Behind_the_Back_Shrug",
+  "imageFolder": "Smith_Machine_Bent_Over_Row",
   "instructions": {
    "en": [
     "Stand under Smith bar, hinge forward.",
@@ -50124,7 +50124,7 @@
   "tempo": "endurance",
   "level": "beginner",
   "force": "push",
-  "imageFolder": "Pushups",
+  "imageFolder": "Seated_Calf_Raise",
   "instructions": {
    "en": [
     "Sit in chair, feet flat.",
@@ -50498,7 +50498,7 @@
   "tempo": "isometric",
   "level": "beginner",
   "force": "static",
-  "imageFolder": "Russian_Twist",
+  "imageFolder": "Dancers_Stretch",
   "instructions": {
    "en": [
     "Sit, one leg straight, other bent across.",
@@ -50561,7 +50561,7 @@
   "tempo": "isometric",
   "level": "beginner",
   "force": "static",
-  "imageFolder": "Russian_Twist",
+  "imageFolder": null,
   "instructions": {
    "en": [
     "Lie on back, arms out wide.",
@@ -51386,7 +51386,7 @@
   "tempo": "strength",
   "level": "advanced",
   "force": "push",
-  "imageFolder": "JM_Press",
+  "imageFolder": "Barbell_Bench_Press_-_Medium_Grip",
   "instructions": {
    "en": [
     "Standard bench setup, grip just past shoulders.",
@@ -51534,7 +51534,7 @@
   "tempo": "strength",
   "level": "advanced",
   "force": "push",
-  "imageFolder": "Front_Squat_Clean_Grip",
+  "imageFolder": "Barbell_Full_Squat",
   "instructions": {
    "en": [
     "Bar on safeties at parallel depth.",
@@ -51753,7 +51753,7 @@
   "tempo": "endurance",
   "level": "beginner",
   "force": "push",
-  "imageFolder": "Barbell_Full_Squat",
+  "imageFolder": "Bodyweight_Squat",
   "instructions": {
    "en": [
     "Feet shoulder-width, arms forward for balance.",
@@ -51828,7 +51828,7 @@
   "tempo": "strength",
   "level": "intermediate",
   "force": "push",
-  "imageFolder": "Barbell_Full_Squat",
+  "imageFolder": "Box_Squat",
   "instructions": {
    "en": [
     "Box behind you at parallel height.",
@@ -51962,7 +51962,7 @@
   "tempo": "hypertrophy",
   "level": "intermediate",
   "force": "push",
-  "imageFolder": "Box_Squat",
+  "imageFolder": "Crossover_Reverse_Lunge",
   "instructions": {
    "en": [
     "Bar on back, stand tall.",
@@ -51988,7 +51988,7 @@
   },
   "nameParts": {
    "variation": null,
-   "base": "Curtsy Squat",
+   "base": "Curtsy Lunge",
    "equipment": "Barbell"
   }
  },
@@ -52035,7 +52035,7 @@
   "tempo": "strength",
   "level": "advanced",
   "force": "push",
-  "imageFolder": "Barbell_Full_Squat",
+  "imageFolder": "Front_Squat_Clean_Grip",
   "instructions": {
    "en": [
     "Bar across front delts, elbows high.",
@@ -52110,7 +52110,7 @@
   "tempo": "hypertrophy",
   "level": "beginner",
   "force": "push",
-  "imageFolder": "Barbell_Full_Squat",
+  "imageFolder": "Goblet_Squat",
   "instructions": {
    "en": [
     "Hold dumbbell vertical at chest.",
@@ -52595,7 +52595,7 @@
   "tempo": "hypertrophy",
   "level": "intermediate",
   "force": "push",
-  "imageFolder": "Lateral_Bound",
+  "imageFolder": null,
   "instructions": {
    "en": [
     "Hold landmine sleeve at chest.",
@@ -52747,7 +52747,7 @@
   "tempo": "strength",
   "level": "advanced",
   "force": "push",
-  "imageFolder": "Barbell_Full_Squat",
+  "imageFolder": "Overhead_Squat",
   "instructions": {
    "en": [
     "Snatch grip, bar locked overhead.",
@@ -53304,7 +53304,7 @@
   "tempo": "strength",
   "level": "advanced",
   "force": "push",
-  "imageFolder": "Barbell_Full_Squat",
+  "imageFolder": "Zercher_Squats",
   "instructions": {
    "en": [
     "Bar in crook of elbows, hands clasped.",
@@ -53445,7 +53445,7 @@
   "tempo": "hypertrophy",
   "level": "intermediate",
   "force": "push",
-  "imageFolder": "Leg_Press",
+  "imageFolder": "Dumbbell_Bench_Press_with_Neutral_Grip",
   "instructions": {
    "en": [
     "Lie on bench, press dumbbells together throughout set.",
@@ -53721,7 +53721,7 @@
   "tempo": "isometric",
   "level": "advanced",
   "force": "static",
-  "imageFolder": "Neck_Press",
+  "imageFolder": "Barbell_Bench_Press_-_Medium_Grip",
   "instructions": {
    "en": [
     "Unrack bar at lockout, hold straight-arm position.",
@@ -53793,7 +53793,7 @@
   "tempo": "endurance",
   "level": "beginner",
   "force": "push",
-  "imageFolder": "Air_Bike",
+  "imageFolder": "Recumbent_Bike",
   "instructions": {
    "en": [
     "Sit back fully, back supported.",
@@ -53860,7 +53860,7 @@
   "tempo": "endurance",
   "level": "beginner",
   "force": "push",
-  "imageFolder": "Air_Bike",
+  "imageFolder": "Bicycling_Stationary",
   "instructions": {
    "en": [
     "Adjust seat: slight knee bend at bottom.",
@@ -54204,8 +54204,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": "Bulgarian",
-   "base": "Box Step-Up",
+   "variation": "Bulgarian Box",
+   "base": "Step-Up",
    "equipment": null
   }
  },
@@ -54581,7 +54581,7 @@
   "tempo": "endurance",
   "level": "beginner",
   "force": "push",
-  "imageFolder": "Lateral_Bound",
+  "imageFolder": null,
   "instructions": {
    "en": [
     "Stand sideways to box.",
@@ -54775,7 +54775,7 @@
   "tempo": "isometric",
   "level": "intermediate",
   "force": "static",
-  "imageFolder": "All_Fours_Quad_Stretch",
+  "imageFolder": null,
   "instructions": {
    "en": [
     "Sit on floor, legs out wide.",
@@ -55094,7 +55094,7 @@
   "tempo": "endurance",
   "level": "beginner",
   "force": "push",
-  "imageFolder": "Freehand_Jump_Squat",
+  "imageFolder": "Plie_Dumbbell_Squat",
   "instructions": {
    "en": [
     "Wide stance, toes 45° out.",
@@ -55162,7 +55162,7 @@
   "tempo": "hypertrophy",
   "level": "beginner",
   "force": "push",
-  "imageFolder": "Box_Squat",
+  "imageFolder": "Plie_Dumbbell_Squat",
   "instructions": {
    "en": [
     "Wide stance, toes 45° out.",
@@ -57489,8 +57489,8 @@
    "zh-Hans": []
   },
   "nameParts": {
-   "variation": null,
-   "base": "Drag Triceps Pushdown",
+   "variation": "Drag",
+   "base": "Triceps Pushdown",
    "equipment": "Cable"
   }
  },
@@ -59027,7 +59027,7 @@
   "tempo": "isometric",
   "level": "beginner",
   "force": "static",
-  "imageFolder": "Side_Neck_Stretch",
+  "imageFolder": "Chest_And_Front_Of_Shoulder_Stretch",
   "instructions": {
    "en": [
     "Stand facing wall, forearm against wall.",
@@ -60245,7 +60245,7 @@
   "tempo": "hypertrophy",
   "level": "beginner",
   "force": "pull",
-  "imageFolder": "Cable_Incline_Triceps_Extension",
+  "imageFolder": "Seated_Dumbbell_Palms-Down_Wrist_Curl",
   "instructions": {
    "en": [
     "Low pulley, grip bar overhand.",
@@ -60460,7 +60460,7 @@
   "tempo": "isometric",
   "level": "beginner",
   "force": "static",
-  "imageFolder": "Cat_Stretch",
+  "imageFolder": "Kneeling_Forearm_Stretch",
   "instructions": {
    "en": [
     "Extend arm forward, palm up.",
@@ -60514,7 +60514,7 @@
   "tempo": "isometric",
   "level": "beginner",
   "force": "static",
-  "imageFolder": "Cat_Stretch",
+  "imageFolder": "Kneeling_Forearm_Stretch",
   "instructions": {
    "en": [
     "Extend arm forward, palm down.",
