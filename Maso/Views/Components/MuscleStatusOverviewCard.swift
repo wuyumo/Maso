@@ -38,35 +38,7 @@ struct MuscleStatusOverviewCard: View {
         let isPro = data.settings.isPro
         // spacing 18 (原卡片版 10) — 无卡片壳后 header→map 拉开一档, 内容摊开呼吸.
         return VStack(alignment: .leading, spacing: 18) {
-            // 顶部 kicker — 跟 WorkoutCard "FROM YOUR PLAN" 完全同款字号 (10pt heavy + tracking 1.5)
-            // + 跟 FOR YOU 卡同款 icon + 文字 visual family.
-            // kicker 跟 Settings section header / "Today's Workout" 同款 textDim 灰,
-            // 不再 accent 绿. accent 留给真正的 CTA / 高亮状态, 不给 section 标签用.
-            HStack(alignment: .firstTextBaseline, spacing: 8) {
-                HStack(alignment: .center, spacing: 6) {
-                    Image(systemName: "waveform.path.ecg")
-                        .font(.system(size: 10, weight: .heavy))
-                        .foregroundStyle(MasoColor.textDim)
-                    Text("MUSCLE STATUS")
-                        .font(.system(size: 10, weight: .heavy))
-                        .tracking(1.5)
-                        .foregroundStyle(MasoColor.textDim)
-                }
-                Spacer(minLength: 12)
-                // Today 标题区移来的贴心提示 — 靠右; 一行放不下自动向下折行 (右对齐).
-                if let tipLine, !tipLine.isEmpty {
-                    Text(tipLine)
-                        .font(.system(size: 12))
-                        .foregroundStyle(MasoColor.textDim)
-                        .multilineTextAlignment(.trailing)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-                // 分享肌肉状态 — 渲染现成的 MuscleStatusShareCard. 零历史 (fatigueMap 空) 时
-                // 没东西可分享, 入口不出现.
-                if !fatigueMap.isEmpty {
-                    shareButton
-                }
-            }
+            // (原 "MUSCLE STATUS" kicker 整行删除 — 贴心提示 + 分享按钮移进右侧图例列顶部.)
 
             // 居中内容区: 左 Spacer + (map + 间距 + legend/CTA) + 右 Spacer.
             // 内层 HStack 用 fixedSize, 让整组按自然宽度居中, 不再撑满.
@@ -90,6 +62,22 @@ struct MuscleStatusOverviewCard: View {
                     // legend group → button 之间走 14pt — 之前 8pt 太挤, 用户反馈 button 跟最后一行
                     // legend 贴在一起没有视觉呼吸. 14pt 让 button 明显是"另一组"操作元素.
                     VStack(alignment: .leading, spacing: 14) {
+                        // 贴心提示 + 分享 — 原 kicker 行的右侧内容, 移到图例列顶部:
+                        // 文字可折行 (跟图例同宽), 分享 glyph 靠其右; 零历史时分享入口照旧不出现.
+                        if (tipLine?.isEmpty == false) || !fatigueMap.isEmpty {
+                            HStack(alignment: .top, spacing: 8) {
+                                if let tipLine, !tipLine.isEmpty {
+                                    Text(tipLine)
+                                        .font(.system(size: 12))
+                                        .foregroundStyle(MasoColor.textDim)
+                                        .fixedSize(horizontal: false, vertical: true)
+                                        .frame(maxWidth: 150, alignment: .leading)
+                                }
+                                if !fatigueMap.isEmpty {
+                                    shareButton
+                                }
+                            }
+                        }
                         if fatigueMap.isEmpty {
                             // 零历史首日: 不显示空图例 + 误导性"已全部跟上"(其实从没练过), 改给一句引导.
                             Text("Finish a workout to see which muscles need recovery.")
