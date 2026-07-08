@@ -4,7 +4,7 @@ import Foundation
 /// 隐藏所有内购入口 (付费墙 / 升级 / 恢复购买 / Settings Pro 区) + 解锁所有 Pro 功能,
 /// 审核看不到"能点不能买"的购买流. 等付费协议 Active 后改回 true 再发版把内购加回来.
 enum MasoFlags {
-    static let iapEnabled = true
+    static let iapEnabled = false
     /// 产品分析编译期总开关. true → 事件按门控 (用户 opt-out / showcase) 缓冲到本地;
     /// Phase 0 默认 NoOpSink, 不离开设备. false → track() 全静默 (彻底关).
     static let analyticsEnabled = true
