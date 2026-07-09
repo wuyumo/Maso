@@ -66,6 +66,10 @@ struct WorkoutCard: View {
     /// coachGenerate. nil (默认) = 不挂手势, 其它调用方零改动. 轻点不受影响 — 长按手势不成立时
     /// 事件照常落到整卡 onTapGesture (详情照常打开).
     var onExercisePillLongPress: ((String) -> Void)? = nil
+    /// 等高轮播 (#today-carousel) 专用 — Today 轮播量测所有卡自然高取 max 后回写这里:
+    /// 非 nil 时卡片拉伸到该高度, 且底部行 (chips + play) 前垫 Spacer 把播放键钉到右下角.
+    /// nil (默认) = 自然高度, 其它调用方零改动.
+    var fixedHeight: CGFloat? = nil
 
     /// 被 LimitedFlowLayout 截断的 exercise pill 个数 — 用于动态构造 "+N more" 文案.
     /// Layout 在 placeSubviews 里通过 onTruncate callback async 写回, SwiftUI 下一轮 re-render
@@ -235,6 +239,12 @@ struct WorkoutCard: View {
             }
             .padding(.top, 16)
 
+            // 等高模式: 卡被外部拉到统一高度时, 多出来的空间垫在这里 —
+            // 底部行连同 play 键沉到卡底 (播放键仍钉右下). 自然高度时 Spacer 为 0, 无感.
+            if fixedHeight != nil {
+                Spacer(minLength: 0)
+            }
+
             // 底部行: 训练动作 chip list (左, 满宽) + Play 按钮 (右下角).
             // .bottom 对齐 → play 钉到行底, 右边距 = 下边距 = cardPadding (相等), 落在卡片右下角.
             HStack(alignment: .bottom, spacing: 12) {
@@ -300,6 +310,8 @@ struct WorkoutCard: View {
             }
         }
         .padding(.bottom, MasoMetrics.cardPadding)
+        // 等高轮播: 统一高度在 background 之前生效 — surface 底随卡一起拉伸. nil 时是 no-op.
+        .frame(height: fixedHeight)
         // 有 detail callback 时整张卡可点 (BodyHint hit-test 没接 onMuscleTap, 不冲突).
         // 用 contentShape + onTapGesture 而不是 Button — 避免 SwiftUI 给整卡套上 button style 改色.
         .contentShape(Rectangle())

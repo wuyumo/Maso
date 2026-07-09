@@ -50,6 +50,12 @@ struct TodayScreen: View {
     @State private var allSheetPresented = false
     /// "All" sheet 内的照片导入触发 — SavedRoutinesAllSheet 要求的 binding, Today 侧暂无外部触发方.
     @State private var allSheetTriggerImport = false
+    /// 轮播卡等高 (#today-carousel): PreferenceKey 量测每张卡自然高取 max 回写.
+    /// 非 nil 后所有卡 (含尾部"自由训练"空卡) 统一到该高度; plans 变化时重置重量.
+    @State private var carouselCardHeight: CGFloat? = nil
+    /// showcase 截图验证专用 — env 让轮播初始停在尾部 (看尾卡). 真实用户永远 false.
+    private static let showcaseCarouselEnd =
+        ProcessInfo.processInfo.environment["MASO_SHOWCASE_CAROUSEL"] == "end"
 
     private var suggested: Plan? {
         // 逻辑在 DataStore.suggestedTodayPlan (跟 RootView 中键 quickStart 共用, 必须同一优先级):
@@ -214,13 +220,7 @@ struct TodayScreen: View {
         // 由外层 NavigationStack 的 screenHeader / segmented 接管.
         .applyIf(!embedded) {
             $0.screenHeader("Today", kicker: greeting) {
-                // 自由训练入口 — 从正文入口卡移到右上角 (owner 拍板); embedded 时同款按钮
-                // 由 RootView 的 screenHeader 提供, 两处回调同一个 onFreeWorkout.
-                Button(action: onFreeWorkout) {
-                    Image(systemName: "dumbbell.fill")
-                        .font(.system(size: 16, weight: .regular))
-                }
-                .accessibilityLabel("Free workout")
+                // 自由训练入口 = 轮播尾部空卡 (owner 拍板回退导航栏 dumbbell), 这里只留齿轮.
                 Button(action: onOpenSettings) {
                     Image(systemName: "gearshape")
                         .font(.system(size: 16, weight: .regular))
@@ -333,30 +333,40 @@ struct TodayScreen: View {
     // MARK: - 今日训练轮播 (#today-carousel)
 
     /// 横滑卡片轮播: viewAligned 分页吸附 + 右缘 peek (~18pt) 暗示可滑; 不加 page dots (极简取向).
-    /// 用横向 ScrollView 而非 TabView(.page) — 卡高随动作数变化, ScrollView 让行高取最高卡的
-    /// 自然高度即可 (TabView 要定高). 标记只给前两张: 首卡 TODAY'S WORKOUT / 次卡 UP NEXT,
-    /// 第三张起 kicker 留空 (顺序本身已表达).
+    /// 卡片等高: 每张卡 GeometryReader 上报自然高, PreferenceKey reduce 取 max → 回写
+    /// WorkoutCard.fixedHeight (卡内在底部行前垫 Spacer, 播放键仍钉右下). 标记只给前两张:
+    /// 首卡 TODAY'S WORKOUT / 次卡 UP NEXT, 第三张起 kicker 留空 (顺序本身已表达).
+    /// 尾卡 = "自由训练"空卡 (虚线描边, 无 surface 填充), tap → onFreeWorkout.
     private var workoutCarousel: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            // 区块标题行 — "TODAY'S WORKOUT" kicker 在首卡内部 (随卡滑动), 这行只挂尾部 "All"
-            // 入口: Coach 撤掉 SAVED 货架后, 完整管理面 (删/编辑/照片导入/优化卡) 的家在这一步.
-            HStack {
+        VStack(alignment: .leading, spacing: 10) {   // 标题行与卡片间距 ≥10pt (owner 指定)
+            // 区块标题行 — 左 "ROUTINES" kicker (跟 app 其它 section kicker 同款 10pt heavy
+            // tracking) + 右 "All ›" 入口: Coach 撤掉 SAVED 货架后, 完整管理面
+            // (删/编辑/照片导入/优化卡) 的家在这一步. 热区 ≥32pt 高.
+            HStack(alignment: .center) {
+                Text("Routines")
+                    .font(.system(size: 10, weight: .heavy))
+                    .tracking(1.5)
+                    .textCase(.uppercase)
+                    .foregroundStyle(MasoColor.textDim)
                 Spacer()
                 Button {
                     Haptics.tap()
                     allSheetPresented = true
                 } label: {
-                    HStack(spacing: 4) {
+                    HStack(spacing: 3) {
                         Text("All")
-                            .font(.system(size: 12, weight: .bold))
+                            .font(.system(size: 13, weight: .semibold))
                         Image(systemName: "chevron.right")
-                            .font(.system(size: 9, weight: .heavy))
+                            .font(.system(size: 10, weight: .semibold))
                     }
                     .foregroundStyle(MasoColor.textDim)
+                    .frame(minHeight: 32)          // 点击热区 ≥32pt
+                    .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel(Text("All"))
             }
+            .frame(height: 32)   // 行高定住 32 — 文字垂直居中, 不让热区把行撑得忽高忽低
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(alignment: .top, spacing: 12) {
                     ForEach(Array(carouselPlans.enumerated()), id: \.element.id) { i, plan in
@@ -368,23 +378,70 @@ struct TodayScreen: View {
                             onStart: { onStart(plan) },
                             onShowDetail: { detailPlan = plan },
                             prominentStart: i == 0,   // 今日卡主 CTA 强; up-next 卡播放键弱化
-                            emphasized: i == 0        // accent 描边 + 辉光只给今日卡
+                            emphasized: i == 0,       // accent 描边 + 辉光只给今日卡
+                            fixedHeight: carouselCardHeight   // 等高: 量测出 max 后统一回写
                         )
+                        // 上报本卡渲染高度 — fixedHeight 生效后上报值恒 = max, 不震荡.
+                        // ⚠️ 宽度守卫: 首帧容器宽未定时卡会以极窄宽度过一次 layout (chips 全竖排
+                        // → 虚高几百 pt), 只增不减会把这个假高度焊死. 只认正常卡宽 (≥200pt) 的上报.
+                        .background(GeometryReader { g in
+                            Color.clear.preference(key: CarouselCardHeightKey.self,
+                                                   value: g.size.width >= 200 ? g.size.height : 0)
+                        })
                         // 卡宽 = 容器宽 − 14 (容器 = 滚动区减去 contentMargins 后的正文宽):
                         // 吸附时右缘露出下一张 页边距16 + 14 − 卡间距12 = 18pt 的 peek.
-                        // 只有一张时不留 peek, 卡占满正文宽 (跟旧版单卡等宽).
-                        .containerRelativeFrame(.horizontal) { length, _ in
-                            carouselPlans.count > 1 ? length - 14 : length
-                        }
+                        // 尾部恒有自由训练空卡 → 总卡数 ≥2, 恒留 peek.
+                        .containerRelativeFrame(.horizontal) { length, _ in length - 14 }
                     }
+                    // 尾卡: 自由训练 (空卡片样式) — 高度与其它卡对齐.
+                    freeWorkoutCard
+                        .containerRelativeFrame(.horizontal) { length, _ in length - 14 }
                 }
                 .scrollTargetLayout()
             }
             .scrollTargetBehavior(.viewAligned)
+            // showcase 专用 (SIMCTL_CHILD_MASO_SHOWCASE_CAROUSEL=end): 初始滚到轮播尾部 —
+            // 夜间验证/截图能看到尾部自由训练空卡 + 等高效果. 真实用户 env 不存在, 恒 .leading.
+            .defaultScrollAnchor(Self.showcaseCarouselEnd ? .trailing : .leading)
             // 横滑内容顶到屏幕两缘 (负 margin 抵掉页 padding), 首卡仍对齐正文 — 跟 Coach 货架同套路.
             .padding(.horizontal, -MasoMetrics.pagePaddingHorizontal)
             .contentMargins(.horizontal, MasoMetrics.pagePaddingHorizontal, for: .scrollContent)
+            .onPreferenceChange(CarouselCardHeightKey.self) { h in
+                // 只增不减: 首轮量到自然高 max; 之后所有卡被拉到该高, 上报值稳定.
+                if h > (carouselCardHeight ?? 0) { carouselCardHeight = h }
+            }
         }
+        .padding(.top, 4)   // 外层 VStack spacing 16 + 4 = 与上方肌肉状态区间距 20pt (owner 指定 ≥20)
+        // plans 集合变了 (增删/AI 重生成) → 高度重新量 (否则只增不减会卡在旧 max).
+        .onChange(of: carouselPlans.map(\.id)) { _, _ in carouselCardHeight = nil }
+    }
+
+    /// 尾卡 "自由训练" — 空卡片样式: 虚线描边 / 无 surface 填充 / 居中 plus + 标签,
+    /// 高度对齐其它卡 (等高量测值; 首帧未量到时给近似兜底). tap → onFreeWorkout
+    /// (QuickWorkout flow 完成页本就支持存为 routine, 不用新做).
+    private var freeWorkoutCard: some View {
+        Button {
+            Haptics.tap()
+            onFreeWorkout()
+        } label: {
+            VStack(spacing: 10) {
+                Image(systemName: "plus")
+                    .font(.system(size: 26, weight: .semibold))
+                Text("Free workout")
+                    .font(.system(size: 14, weight: .semibold))
+            }
+            .foregroundStyle(MasoColor.textDim)
+            .frame(maxWidth: .infinity)
+            .frame(height: carouselCardHeight ?? 220)
+            .overlay(
+                RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium)
+                    .strokeBorder(MasoColor.textDim.opacity(0.45),
+                                  style: StrokeStyle(lineWidth: 1.5, dash: [6, 5]))
+            )
+            .contentShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(Text("Free workout"))
     }
 
     // MARK: - 肌肉状态 + 训练日历计算 helpers
@@ -502,6 +559,16 @@ struct TodayScreen: View {
             }
         }
         return total
+    }
+}
+
+// MARK: - CarouselCardHeightKey — 今日轮播等高量测 (#today-carousel)
+//
+// 每张 WorkoutCard 上报自然渲染高, reduce 取 max → TodayScreen 回写 fixedHeight 统一所有卡.
+private struct CarouselCardHeightKey: PreferenceKey {
+    static var defaultValue: CGFloat = 0
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value = max(value, nextValue())
     }
 }
 

@@ -99,6 +99,13 @@ struct CoachScreen: View {
                         .font(.system(size: 16, weight: .regular))
                 }
                 .accessibilityLabel(NSLocalizedString("Exercise library", comment: ""))
+                // 训练偏好独立入口 (owner 指定: dumbbell 与 gear 之间) — 跟 [+] 菜单里那项同目的地;
+                // 空态的偏好卡 (PlanRationaleCard) 保留, 三处都开 TrainingPreferencesSheet.
+                Button { prefsPresented = true } label: {
+                    Image(systemName: "slider.horizontal.3")
+                        .font(.system(size: 16, weight: .regular))
+                }
+                .accessibilityLabel(NSLocalizedString("Training Preferences", comment: ""))
                 Button(action: onOpenSettings) {
                     Image(systemName: "gearshape")
                         .font(.system(size: 16, weight: .regular))
@@ -301,14 +308,18 @@ struct CoachScreen: View {
                 }
                 .foregroundStyle(MasoColor.textDim)
             }
+            // 15pt + 舒展行距 + 加大 padding, 气泡 minHeight 对齐 iOS 默认控件高 (~36pt),
+            // 圆角 18 — 跟系统消息类 app 的气泡体量一致 (owner 指定做大).
             Text(msg.text)
-                .font(.system(size: 14, weight: .medium))
+                .font(.system(size: 15, weight: .medium))
+                .lineSpacing(3)
                 .foregroundStyle(MasoColor.accent)
                 .fixedSize(horizontal: false, vertical: true)
-                .padding(.horizontal, 12)
-                .padding(.vertical, 9)
+                .padding(.horizontal, 14)
+                .padding(.vertical, 11)
+                .frame(minHeight: 36)
                 .background(MasoColor.accent.opacity(0.12))
-                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .clipShape(RoundedRectangle(cornerRadius: 18))
         }
         .frame(maxWidth: .infinity, alignment: .trailing)
         .padding(.leading, 48)   // 气泡不顶满左缘, 保住"对话"的左右体感
@@ -319,8 +330,10 @@ struct CoachScreen: View {
     /// 但长按定向反馈只挂最新一轮卡 — onlyModify 针对的是 currentRoutines, 旧版动作可能已不在场.
     private func assistantMessage(_ msg: CoachMessage) -> some View {
         VStack(alignment: .leading, spacing: 12) {
+            // 正文跟用户气泡同 15pt + 舒展行距 (owner 指定做大).
             Text(msg.text)
-                .font(.system(size: 14))
+                .font(.system(size: 15))
+                .lineSpacing(3)
                 .foregroundStyle(MasoColor.text)
                 .fixedSize(horizontal: false, vertical: true)
             if let plans = msg.plans {
@@ -497,31 +510,31 @@ struct CoachScreen: View {
                     Label("New conversation", systemImage: "square.and.pencil")
                 }
             } label: {
-                Image(systemName: "plus")
-                    .font(.system(size: 16, weight: .semibold))
-                    .foregroundStyle(MasoColor.text)
-                    .frame(width: 34, height: 34)
-                    .background(Circle().fill(MasoColor.surfaceHi))
+                // iOS Messages 风格: 系统 SF symbol 默认渲染的 plus.circle.fill (灰 ~30pt),
+                // 不再自绘圆底 — .fill 变体的 plus 是镂空透出背景, 天然就是系统观感.
+                Image(systemName: "plus.circle.fill")
+                    .font(.system(size: 30))
+                    .foregroundStyle(MasoColor.textDim)
             }
             .accessibilityLabel(Text("New conversation"))
 
             TextField(NSLocalizedString("Tell me how you want to train…", comment: "coach composer placeholder"),
                       text: $composerText, axis: .vertical)
                 .lineLimit(1...4)
-                .font(.system(size: 14))
+                .font(.system(size: 15))
                 .foregroundStyle(MasoColor.text)
                 .focused($composerFocused)
                 .padding(.horizontal, 14)
                 .padding(.vertical, 8)
+                .frame(minHeight: 36)   // 输入框高度对齐 30pt 按钮 (iOS 默认控件体量)
                 .background(MasoColor.surface)
-                .clipShape(RoundedRectangle(cornerRadius: 17))
+                .clipShape(RoundedRectangle(cornerRadius: 18))
 
             Button(action: sendFromComposer) {
-                Image(systemName: "arrow.up")
-                    .font(.system(size: 14, weight: .heavy))
-                    .foregroundStyle(canSend ? .black : MasoColor.textFaint)
-                    .frame(width: 34, height: 34)
-                    .background(Circle().fill(canSend ? MasoColor.accent : MasoColor.surfaceHi))
+                // 发送 = arrow.up.circle.fill (accent ~30pt), 禁用态灰 — 同样系统默认渲染.
+                Image(systemName: "arrow.up.circle.fill")
+                    .font(.system(size: 30))
+                    .foregroundStyle(canSend ? MasoColor.accent : MasoColor.textFaint)
             }
             .buttonStyle(.plain)
             .disabled(!canSend)

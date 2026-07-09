@@ -167,16 +167,10 @@ struct RootView: View {
                         onNewPlan: handleNewPlan,
                         onOpenSettings: { settingsPresented = true },
                         embedded: true,
-                        mode: .trainToday   // Today = 肌肉状态 + 今日训练轮播 (#today-carousel); Free workout 在右上角.
+                        mode: .trainToday   // Today = 肌肉状态 + 今日训练轮播 (#today-carousel); 自由训练 = 轮播尾部空卡.
                     )
                     .screenHeader("Today") {
-                        // 自由训练入口 — 原正文入口卡移到右上角 (owner 拍板), icon 沿用入口卡的
-                        // dumbbell.fill, 回调同一个 quickWorkoutPresented 管线.
-                        Button(action: { quickWorkoutPresented = true }) {
-                            Image(systemName: "dumbbell.fill")
-                                .font(.system(size: 16, weight: .regular))
-                        }
-                        .accessibilityLabel("Free workout")
+                        // 自由训练入口 = 轮播尾部空卡 (owner 拍板回退导航栏 dumbbell), 这里只留齿轮.
                         Button(action: { settingsPresented = true }) {
                             Image(systemName: "gearshape")
                                 .font(.system(size: 16, weight: .regular))
