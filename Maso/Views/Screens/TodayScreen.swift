@@ -3,7 +3,8 @@ import SwiftUI
 struct TodayScreen: View {
     @Environment(DataStore.self) private var data
     let onStart: (Plan) -> Void
-    /// 拉起"自由训练" flow — Today 卡片下方按钮触发, 走 QuickWorkout sheet 选肌肉 / 动作 / 开练
+    /// 拉起"自由训练" flow — Today 导航栏右上角 dumbbell 按钮触发 (RootView 的 toolbar;
+    /// 非 embedded 时本 view 自己的 screenHeader 也挂同款), 走 QuickWorkout sheet 选动作开练.
     let onFreeWorkout: () -> Void
     /// 新建训练计划 — 原 Plans 页右上角 "+", 现移到 Today 的"我的训练"section. RootView 持有 sheet.
     let onNewPlan: () -> Void
@@ -15,8 +16,8 @@ struct TodayScreen: View {
     /// 嵌在外层 NavigationStack (Train / Plans tab) 里时 true — 不渲染自己的大标题/齿轮.
     var embedded: Bool = false
     /// 渲染哪部分内容:
-    ///   - .trainToday: 肌肉状态 + 今日推荐 + 自由训练 (Today tab)
-    ///   - .myPlans:    我的训练列表 + 自由训练 + 社区 (Plans tab 的 My Plans 分页)
+    ///   - .trainToday: 肌肉状态 + 今日训练轮播 (Today tab; 自由训练在导航栏右上角)
+    ///   - .myPlans:    我的训练列表 (SavedRoutinesAllSheet 复用这块做完整管理面)
     ///   - .full:       全部 (兼容老用法)
     enum Mode { case full, trainToday, myPlans }
     var mode: Mode = .full
@@ -44,11 +45,33 @@ struct TodayScreen: View {
     @State private var importFailed = false
     /// Muscle Status 卡"解锁逐肌群恢复" → 付费墙 (非 Pro). 跟 HistoryScreen 的 paywall 同款.
     @State private var paywallPresented = false
+    /// 轮播标题行尾部 "All" → 完整管理 sheet (SavedRoutinesAllSheet: 删/编辑/照片导入/优化卡).
+    /// Coach 撤掉 SAVED 货架后, 这里是管理面在 Today 侧的一步可达入口.
+    @State private var allSheetPresented = false
+    /// "All" sheet 内的照片导入触发 — SavedRoutinesAllSheet 要求的 binding, Today 侧暂无外部触发方.
+    @State private var allSheetTriggerImport = false
 
     private var suggested: Plan? {
         // 逻辑在 DataStore.suggestedTodayPlan (跟 RootView 中键 quickStart 共用, 必须同一优先级):
         // 用户自己的 plans 优先 (LRU); 但全部还是引导种子模板且真 AI 已生成时优先 AI (✨AI).
         data.suggestedTodayPlan
+    }
+
+    /// 轮播卡序 (#today-carousel): 今日那张在最前, 其余按 lastUsedAt 升序 (= "接下来"的轮换顺序).
+    /// 今日 = suggestedTodayPlan (LRU 挑最久没练的) — 不另造轮换器: 练完第一张, 它的 lastUsedAt
+    /// 变最新 → 下次 LRU 自动轮到第二张, 天然满足 owner 的 ①②③.
+    /// suggested 是 aiTodayPlan (新用户首日 AI 优先, 不在 data.plans 里) 时它作额外的第一张卡.
+    private var carouselPlans: [Plan] {
+        guard let today = suggested else { return [] }
+        let rest = data.plans
+            .filter { $0.id != today.id }
+            .sorted { a, b in
+                let l = a.lastUsedAt ?? .distantPast
+                let r = b.lastUsedAt ?? .distantPast
+                if l != r { return l < r }
+                return a.createdAt < b.createdAt   // 兜底末键跟 pickTodayPlan 一致
+            }
+        return [today] + rest
     }
 
     /// 时段问候 — DESIGN.md §4.2: 0-5 凌晨 / 5-12 早上 / 12-18 下午 / 18-24 晚上.
@@ -129,28 +152,13 @@ struct TodayScreen: View {
                         .clipShape(RoundedRectangle(cornerRadius: 10))
                     }
 
-                    // ── 今日推荐 ── (WorkoutCard 自带 "TODAY'S WORKOUT" kicker)
-                    if let plan = suggested {
-                        WorkoutCard(
-                            plan: plan,
-                            exById: data.exById,
-                            kicker: "Today's Workout",
-                            onStart: { onStart(plan) },
-                            onShowDetail: { detailPlan = plan },
-                            emphasized: true   // accent 描边 + 辉光 — 跟下方 My Plans 弱化卡区分
-                        )
+                    // ── 今日训练轮播 ── (#today-carousel): 全部已存 routine 横滑成卡组,
+                    // 首卡 = 今日 (卡内自带 "TODAY'S WORKOUT" kicker), 右缘 peek 暗示可滑.
+                    // 零 saved 且无 aiTodayPlan → carouselPlans 空, 跟旧版 suggested==nil 一样不渲染
+                    // (空态/首日行为不回归). 自由训练入口已移到导航栏右上角 (onFreeWorkout).
+                    if !carouselPlans.isEmpty {
+                        workoutCarousel
                     }
-
-                    // ── 自由训练入口 — Today 的"立即训练"动作. My Routines 列表已迁到 Plans tab,
-                    //    但自由训练是"现在就练", 跟今日推荐同簇, 留在 Today.
-                    entryCard(
-                        icon: "dumbbell.fill",
-                        title: "Free workout",
-                        subtitle: "Pick your own exercises and go",
-                        trailingPlay: true,
-                        action: onFreeWorkout
-                    )
-                    .padding(.top, 4)
                 }
 
                 // ===== Plans tab 的 My Plans 分页: 我的训练 + 自由训练 + 社区 (mode != .trainToday) =====
@@ -206,6 +214,13 @@ struct TodayScreen: View {
         // 由外层 NavigationStack 的 screenHeader / segmented 接管.
         .applyIf(!embedded) {
             $0.screenHeader("Today", kicker: greeting) {
+                // 自由训练入口 — 从正文入口卡移到右上角 (owner 拍板); embedded 时同款按钮
+                // 由 RootView 的 screenHeader 提供, 两处回调同一个 onFreeWorkout.
+                Button(action: onFreeWorkout) {
+                    Image(systemName: "dumbbell.fill")
+                        .font(.system(size: 16, weight: .regular))
+                }
+                .accessibilityLabel("Free workout")
                 Button(action: onOpenSettings) {
                     Image(systemName: "gearshape")
                         .font(.system(size: 16, weight: .regular))
@@ -227,6 +242,21 @@ struct TodayScreen: View {
         .sheet(isPresented: $communityPresented) {
             CommunityScreen()
             .presentationDragIndicator(.visible)
+        }
+        // 轮播标题行 "All" → 完整管理 sheet (定义在 CoachScreen.swift, Coach 的照片导入路径也用它).
+        // 优化卡 Apply: Pro gate 在本侧过闸后, 经 AppRouter 深链到 Coach 对话流发 focusNote
+        // (surface "optimize", 跟 Coach 侧 All sheet 的语义一致 — CoachScreen 消费 pendingOptimizeFocus).
+        .sheet(isPresented: $allSheetPresented) {
+            SavedRoutinesAllSheet(
+                triggerImport: $allSheetTriggerImport,
+                onStart: onStart,
+                onNewPlan: onNewPlan,
+                onOptimize: { sug in
+                    guard data.settings.isPro else { paywallPresented = true; return }
+                    AppRouter.shared.pendingOptimizeFocus = sug.focusNote
+                    AppRouter.shared.requestedTab = .coach
+                }
+            )
         }
         .sheet(isPresented: $paywallPresented) {
             PaywallScreen()
@@ -300,55 +330,61 @@ struct TodayScreen: View {
         .accessibilityLabel(NSLocalizedString(a11y, comment: ""))
     }
 
-    /// 并排的小入口卡 (自由训练 / 社区).
-    /// Free workout / Community 共用的入口卡 — 一致排版:
-    ///   第一行: 小图标 + 标题 (同一行)
-    ///   第二行: 辅助文案 (说明这个入口是干嘛的)
-    private func entryCard(icon: String, title: LocalizedStringKey, subtitle: LocalizedStringKey, trailingPlay: Bool = false, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            HStack(spacing: 12) {
-                VStack(alignment: .leading, spacing: 3) {
-                    // 第一行: 小图标 + 标题, 同行.
-                    HStack(spacing: 7) {
-                        Image(systemName: icon)
-                            .font(.system(size: 13, weight: .bold))
-                            .foregroundStyle(MasoColor.accent)
-                        Text(title)
-                            .font(.system(size: 15, weight: .bold))
-                            .foregroundStyle(MasoColor.text)
-                            .lineLimit(1)
+    // MARK: - 今日训练轮播 (#today-carousel)
+
+    /// 横滑卡片轮播: viewAligned 分页吸附 + 右缘 peek (~18pt) 暗示可滑; 不加 page dots (极简取向).
+    /// 用横向 ScrollView 而非 TabView(.page) — 卡高随动作数变化, ScrollView 让行高取最高卡的
+    /// 自然高度即可 (TabView 要定高). 标记只给前两张: 首卡 TODAY'S WORKOUT / 次卡 UP NEXT,
+    /// 第三张起 kicker 留空 (顺序本身已表达).
+    private var workoutCarousel: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            // 区块标题行 — "TODAY'S WORKOUT" kicker 在首卡内部 (随卡滑动), 这行只挂尾部 "All"
+            // 入口: Coach 撤掉 SAVED 货架后, 完整管理面 (删/编辑/照片导入/优化卡) 的家在这一步.
+            HStack {
+                Spacer()
+                Button {
+                    Haptics.tap()
+                    allSheetPresented = true
+                } label: {
+                    HStack(spacing: 4) {
+                        Text("All")
+                            .font(.system(size: 12, weight: .bold))
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: 9, weight: .heavy))
                     }
-                    // 第二行: 辅助文案.
-                    Text(subtitle)
-                        .font(.system(size: 12))
-                        .foregroundStyle(MasoColor.textDim)
-                        .lineLimit(2)
-                        .fixedSize(horizontal: false, vertical: true)
+                    .foregroundStyle(MasoColor.textDim)
                 }
-                Spacer(minLength: 0)
-                if trailingPlay {
-                    // 自由训练 = 直接开练, 右侧用播放键 (软绿底, 无描边) 而不是导航 chevron.
-                    ZStack {
-                        Circle()
-                            .fill(MasoColor.accent.opacity(0.18))
-                        Image(systemName: "play.fill")
-                            .font(.system(size: 11, weight: .heavy))
-                            .foregroundStyle(MasoColor.accent)
-                            .offset(x: 0.5)
-                    }
-                    .frame(width: 28, height: 28)
-                } else {
-                    Image(systemName: "chevron.right")
-                        .font(.system(size: 11, weight: .heavy))
-                        .foregroundStyle(MasoColor.textFaint)
-                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(Text("All"))
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(MasoMetrics.cardPadding)
-            .background(MasoColor.surface)
-            .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(alignment: .top, spacing: 12) {
+                    ForEach(Array(carouselPlans.enumerated()), id: \.element.id) { i, plan in
+                        WorkoutCard(
+                            plan: plan,
+                            exById: data.exById,
+                            // 首卡 = 今日标记; 次卡 = "接下来"; 之后留空 ("" 强制不显示).
+                            kicker: i == 0 ? "Today's Workout" : (i == 1 ? "Up next" : ""),
+                            onStart: { onStart(plan) },
+                            onShowDetail: { detailPlan = plan },
+                            prominentStart: i == 0,   // 今日卡主 CTA 强; up-next 卡播放键弱化
+                            emphasized: i == 0        // accent 描边 + 辉光只给今日卡
+                        )
+                        // 卡宽 = 容器宽 − 14 (容器 = 滚动区减去 contentMargins 后的正文宽):
+                        // 吸附时右缘露出下一张 页边距16 + 14 − 卡间距12 = 18pt 的 peek.
+                        // 只有一张时不留 peek, 卡占满正文宽 (跟旧版单卡等宽).
+                        .containerRelativeFrame(.horizontal) { length, _ in
+                            carouselPlans.count > 1 ? length - 14 : length
+                        }
+                    }
+                }
+                .scrollTargetLayout()
+            }
+            .scrollTargetBehavior(.viewAligned)
+            // 横滑内容顶到屏幕两缘 (负 margin 抵掉页 padding), 首卡仍对齐正文 — 跟 Coach 货架同套路.
+            .padding(.horizontal, -MasoMetrics.pagePaddingHorizontal)
+            .contentMargins(.horizontal, MasoMetrics.pagePaddingHorizontal, for: .scrollContent)
         }
-        .buttonStyle(.plain)
     }
 
     // MARK: - 肌肉状态 + 训练日历计算 helpers

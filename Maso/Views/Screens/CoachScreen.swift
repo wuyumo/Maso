@@ -1,15 +1,18 @@
 import SwiftUI
 
-// MARK: - CoachScreen — Coach tab 三段式 (docs/coach-tab-design.md §1, 批次 2)
+// MARK: - CoachScreen — Coach tab 两段式 (docs/coach-tab-design.md §1; SAVED 货架已撤)
 //
-// 结构 (方案 B 骨架):
-//   ┌ SAVED 货架 — 常驻钉顶 (owner "很显眼" 硬要求, 结构兑现不靠动效): data.plans 横滑迷你卡
-//   │             + 尾部 "All" 卡 → sheet 承载完整管理 (= TodayScreen .myPlans 整块, 一件不丢).
-//   ├ 对话流   — CoachSession.messages 渲染: 用户气泡 (accent 12% 底, 禁实心绿 — IA 评审裁定) /
+// 结构:
+//   ┌ 对话流   — CoachSession.messages 渲染: 用户气泡 (accent 12% 底, 禁实心绿 — IA 评审裁定) /
 //   │             assistant 短评 + DAY 1..N 卡组; 生成中 = 诚实渐进清单 (无假打字机/假流式).
 //   └ Composer — [+] 工具菜单 / 输入框 / 发送; chips 行只放"点了即发"的建议.
 //               训练中 (TrainingSessionStore 有活跃 session) 整体收起成一行提示,
 //               避免 TabBar+MiniBar+Composer+键盘四层叠 (设计文档 风险③).
+//
+// SAVED 货架 (owner 拍板迁移): 已存 routines 现住 Today tab 的横滑轮播 (TodayScreen
+// #today-carousel), 保存反馈 = 生成卡 bookmark 变实心. 完整管理面 SavedRoutinesAllSheet
+// 仍定义在本文件 (Today 的 "All" 入口与本页 [+] "Import from photo" 两处共用),
+// 本页保留 sheet host 只为照片导入路径 (openPhotoImport).
 //
 // 本 view 只渲染内容, 导航容器 (NavigationStack) 由 RootView 提供 (批次 3 接线);
 // 参数化注入跟 PlansScreen 同构: onStart / onNewPlan / onOpenSettings.
@@ -29,9 +32,10 @@ struct CoachScreen: View {
     @Binding var libraryRequested: Bool
 
     // ── sheet / 弹层 ──
-    /// "All" 卡 → 完整管理 sheet (TodayScreen .myPlans: 删/编辑/照片导入/优化卡整块复用).
+    /// 完整管理 sheet (TodayScreen .myPlans: 删/编辑/照片导入/优化卡整块复用) —
+    /// 货架撤走后本页唯一入口是 [+] 菜单 "Import from photo" (先开 sheet 再翻 triggerImport).
     @State private var allSheetPresented = false
-    /// "All" sheet 里的照片导入触发 — [+] 菜单 "Import from photo" 也走它 (先开 sheet 再翻 true).
+    /// "All" sheet 里的照片导入触发 (先开 sheet 再翻 true).
     @State private var allSheetTriggerImport = false
     /// 导航栏 dumbbell → 动作库 sheet (组件本就支持 sheet 形态, asTab:false 自带 Done).
     @State private var libraryPresented = false
@@ -45,8 +49,6 @@ struct CoachScreen: View {
     @State private var confirmNewConversation = false
     /// 生成卡 tap → 详情 (browse 态: Save toggle + Start).
     @State private var detailPlan: Plan? = nil
-    /// SAVED 货架迷你卡 tap → 详情 (owned 态: 可编辑/分享/删, 跟 My Routines 列表行为一致).
-    @State private var savedDetailPlan: Plan? = nil
 
     // ── composer ──
     @State private var composerText = ""
@@ -58,8 +60,6 @@ struct CoachScreen: View {
     @State private var lastFeedback: String? = nil
     @State private var lastOnlyModify: String? = nil
 
-    /// 保存反馈 — SAVED 计数弹跳 (飞入动效留 V2, 工程评审判定 matchedGeometry 不可行).
-    @State private var savedCountPulse = false
     /// 空态主动建议 — routineSuggestion() 每次算要扫全部 sets, 进页缓存一次, 不在 body 里反复算.
     @State private var suggestion: DataStore.RoutineSuggestion? = nil
     /// 深链路由 — Progress AI 小结 Apply 经 AppRouter 送 pendingSummaryFocus 过来 (设计文档 §4).
@@ -85,7 +85,6 @@ struct CoachScreen: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            savedShelf
             conversation
             bottomBar
         }
@@ -124,13 +123,14 @@ struct CoachScreen: View {
                  sourceKicker: NSLocalizedString("FROM WEEKLY SUMMARY", comment: "coach chat deep-link kicker"),
                  surface: "summary")
         }
-        // 保存反馈: 计数 +1 弹跳. 只在变多时弹 (unsave 变少不庆祝).
-        .onChange(of: data.plans.count) { old, new in
-            guard new > old else { return }
-            withAnimation(.spring(response: 0.3, dampingFraction: 0.45)) { savedCountPulse = true }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                withAnimation(.easeOut(duration: 0.2)) { savedCountPulse = false }
-            }
+        // Today 侧 All sheet 的优化卡 Apply 深链 — 同 summary 管道 (Pro gate 已在 Today 侧过闸),
+        // kicker / surface 用 optimize 语义, 跟本页 All sheet 的 onOptimize 一致.
+        .onChange(of: router.pendingOptimizeFocus, initial: true) { _, note in
+            guard let note else { return }
+            router.pendingOptimizeFocus = nil
+            send(feedback: note,
+                 sourceKicker: NSLocalizedString("FROM OPTIMIZE", comment: "coach chat deep-link kicker"),
+                 surface: "optimize")
         }
         // 清空输入框 = 取消长按发起的定向反馈.
         .onChange(of: composerText) { _, text in
@@ -145,15 +145,6 @@ struct CoachScreen: View {
                 onStart: { p in detailPlan = nil; DispatchQueue.main.async { onStart(p) } },
                 onAddToSaved: { p in toggleSave(p) },
                 savedOverride: data.isCoachPlanSaved(plan)
-            )
-            .presentationDetents([.medium, .large])
-            .presentationDragIndicator(.visible)
-        }
-        .sheet(item: $savedDetailPlan) { plan in
-            // 货架迷你卡详情 — owned 态 (onAddToSaved nil): 可改名/换动作/分享/删, 跟 My Routines 一致.
-            PlanDetailSheet(
-                initialPlan: plan,
-                onStart: { p in savedDetailPlan = nil; DispatchQueue.main.async { onStart(p) } }
             )
             .presentationDetents([.medium, .large])
             .presentationDragIndicator(.visible)
@@ -202,119 +193,7 @@ struct CoachScreen: View {
         }
     }
 
-    // MARK: - ① SAVED 货架 (常驻钉顶, 不随对话滚动消失)
-
-    private var savedShelf: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            // kicker — 跟 PlansScreen.sectionKicker 同款 (10pt heavy + tracking 1.5 + textDim).
-            HStack(spacing: 6) {
-                Image(systemName: "bookmark.fill")
-                    .font(.system(size: 10, weight: .heavy))
-                Text(String(format: NSLocalizedString("SAVED · %lld", comment: "coach saved shelf kicker"), data.plans.count))
-                    .font(.system(size: 10, weight: .heavy))
-                    .tracking(1.5)
-                    .textCase(.uppercase)
-                    // 保存反馈: 计数弹跳一下 (锚在左侧, 往右长不挤兄弟).
-                    .scaleEffect(savedCountPulse ? 1.25 : 1, anchor: .leading)
-            }
-            .foregroundStyle(MasoColor.textDim)
-
-            if data.plans.isEmpty {
-                Text("Saved routines will appear here.")
-                    .font(.system(size: 12))
-                    .foregroundStyle(MasoColor.textFaint)
-                    .padding(.vertical, 8)
-            } else {
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 8) {
-                        ForEach(data.plans) { plan in
-                            savedMiniCard(plan)
-                        }
-                        allCard
-                    }
-                    // ⚠️ 必须钉住理想高度: 横向 ScrollView 在纵轴会把整个可用高度提案给内容,
-                    // allCard 的 maxHeight:.infinity 会照单全收 → 货架被撑成半屏高 (批次 3 截图实锤).
-                    // fixedSize 后 HStack 以迷你卡的理想高度定高, allCard 再在其中填满.
-                    .fixedSize(horizontal: false, vertical: true)
-                }
-                // 横滑内容顶到屏幕两缘 (负 margin 抵掉页 padding), 首卡仍对齐正文.
-                .padding(.horizontal, -MasoMetrics.pagePaddingHorizontal)
-                .contentMargins(.horizontal, MasoMetrics.pagePaddingHorizontal, for: .scrollContent)
-            }
-        }
-        .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
-        .padding(.top, 8)
-        .padding(.bottom, 10)
-    }
-
-    /// 迷你卡 — 名称 + "N 动作 · 约 M 分钟" + ▶ (即时开练). tap 卡身 → owned 详情.
-    private func savedMiniCard(_ plan: Plan) -> some View {
-        HStack(spacing: 10) {
-            VStack(alignment: .leading, spacing: 3) {
-                Text(plan.name)
-                    .font(.system(size: 13, weight: .bold))
-                    .foregroundStyle(MasoColor.text)
-                    .lineLimit(1)
-                Text("\(pluralizedExercises(plan.steps.count)) · \(estimatedMinutesLabel(plan))")
-                    .font(.system(size: 11).monospacedDigit())
-                    .foregroundStyle(MasoColor.textDim)
-                    .lineLimit(1)
-            }
-            Button {
-                Haptics.tap()
-                onStart(plan)
-            } label: {
-                ZStack {
-                    Circle()
-                        .fill(MasoColor.accent.opacity(0.18))
-                        .frame(width: 26, height: 26)
-                    Image(systemName: "play.fill")
-                        .font(.system(size: 9, weight: .heavy))
-                        .foregroundStyle(MasoColor.accent)
-                        .offset(x: 0.5)
-                }
-            }
-            .buttonStyle(.plain)
-            .accessibilityLabel("Start Workout")
-        }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 9)
-        .frame(maxWidth: 220)
-        .background(MasoColor.surface)
-        .clipShape(RoundedRectangle(cornerRadius: 12))
-        .contentShape(Rectangle())
-        .onTapGesture { savedDetailPlan = plan }
-    }
-
-    /// 尾部 "All" 卡 → 完整管理 sheet.
-    private var allCard: some View {
-        Button {
-            Haptics.tap()
-            allSheetPresented = true
-        } label: {
-            HStack(spacing: 5) {
-                Text("All")
-                    .font(.system(size: 13, weight: .bold))
-                Image(systemName: "chevron.right")
-                    .font(.system(size: 10, weight: .heavy))
-            }
-            .foregroundStyle(MasoColor.textDim)
-            .padding(.horizontal, 14)
-            .frame(maxHeight: .infinity)
-            .background(MasoColor.surface)
-            .clipShape(RoundedRectangle(cornerRadius: 12))
-        }
-        .buttonStyle(.plain)
-        .accessibilityLabel(Text("All"))
-    }
-
-    /// 时长估算 — 跟 SessionShareCard 同一口径: 每组约 2 分钟 (含组间休息), 下限 5.
-    private func estimatedMinutesLabel(_ plan: Plan) -> String {
-        let mins = max(5, plan.steps.reduce(0) { $0 + $1.sets } * 2)
-        return String(format: NSLocalizedString("~%lld min", comment: "saved shelf duration estimate"), mins)
-    }
-
-    // MARK: - ② 对话流
+    // MARK: - ① 对话流
 
     private var conversation: some View {
         ScrollViewReader { proxy in
@@ -525,7 +404,7 @@ struct CoachScreen: View {
         .clipShape(RoundedRectangle(cornerRadius: 10))
     }
 
-    // MARK: - ③ Composer
+    // MARK: - ② Composer
 
     @ViewBuilder
     private var bottomBar: some View {
@@ -712,12 +591,13 @@ struct CoachScreen: View {
     }
 }
 
-// MARK: - SavedRoutinesAllSheet — "All" 卡 → 完整管理 sheet
+// MARK: - SavedRoutinesAllSheet — 已存 routines 完整管理 sheet (Today "All" 入口 + Coach 照片导入共用)
 //
 // = 现 TodayScreen(mode:.myPlans) 整块复用 (删/编辑/照片导入/优化卡, 一件不丢 — 设计文档 §1).
 // 子 sheet (PlanDetail / import picker / paywall) 都在 TodayScreen 内部, 挂本 sheet 内容树,
 // 不会撞 "一次只能 present 一个 sheet" (同 ClassicsSheet 的叠层规则).
-private struct SavedRoutinesAllSheet: View {
+// internal (非 private): Today 轮播标题行的 "All" 入口也 present 它 — 货架撤走后管理面的家.
+struct SavedRoutinesAllSheet: View {
     @Environment(DataStore.self) private var data
     @Environment(\.dismiss) private var dismiss
     /// 照片导入触发 — CoachScreen 持有 (composer [+] 菜单先开本 sheet 再翻 true).

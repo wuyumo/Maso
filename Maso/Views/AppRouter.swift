@@ -19,4 +19,9 @@ final class AppRouter {
     /// focusNote 触发重生成 (复用 startGenerateRoutines). 用法: caller 同时置 requestedTab = .plans
     /// + pendingSummaryFocus = focusNote; PlansScreen .onChange 消费后置 nil. nil = 没请求.
     var pendingSummaryFocus: String? = nil
+
+    /// Today 侧 All sheet 优化卡 Apply 发起的待处理 focusNote — 同 pendingSummaryFocus 管道,
+    /// 但 CoachScreen 消费时用 "FROM OPTIMIZE" kicker + surface "optimize" (语义跟 Coach 侧
+    /// All sheet 的 onOptimize 一致). Pro gate 由发起方 (TodayScreen) 过闸后才置值.
+    var pendingOptimizeFocus: String? = nil
 }

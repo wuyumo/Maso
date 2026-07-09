@@ -233,6 +233,8 @@
 
 /* ── Added: extended muscle taxonomy + Today's Workout ── */
 "Today's Workout" = "今日训练";
+/* Today carousel — 2nd card kicker (#today-carousel) */
+"Up next" = "接下来";
 "Upper Lats" = "上背阔";
 "Lower Lats" = "下背阔";
 "Rhomboids" = "菱形肌";

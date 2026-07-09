@@ -232,6 +232,8 @@
 
 /* ── Added: extended muscle taxonomy + Today's Workout ── */
 "Today's Workout" = "Today's Workout";
+/* Today carousel — 2nd card kicker (#today-carousel; rendered uppercase) */
+"Up next" = "Up next";
 "Upper Lats" = "Upper Lats";
 "Lower Lats" = "Lower Lats";
 "Rhomboids" = "Rhomboids";

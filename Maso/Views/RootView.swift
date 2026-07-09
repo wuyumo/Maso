@@ -159,7 +159,7 @@ struct RootView: View {
                 // 三个 tab 都包 NavigationStack — 走 iOS 默认 navigationTitle + toolbar 样式.
                 // .tint(MasoColor.text) 覆盖系统默认 (Asset AccentColor 是绿) — toolbar 右上角按钮
                 // 走白色, 跟 dark theme 配色一致 (不再绿).
-                // Today — 今日总览: 肌肉状态 + 今日推荐 + 自由训练 (落地页, .today tag).
+                // Today — 今日总览: 肌肉状态 + 今日训练轮播 (落地页, .today tag; 自由训练在导航栏右上角).
                 NavigationStack {
                     TodayScreen(
                         onStart: startTraining,
@@ -167,9 +167,16 @@ struct RootView: View {
                         onNewPlan: handleNewPlan,
                         onOpenSettings: { settingsPresented = true },
                         embedded: true,
-                        mode: .trainToday   // #IA-v2: Today = 肌肉状态 + 今日推荐 + Free workout. My Routines 已迁到 Plans tab.
+                        mode: .trainToday   // Today = 肌肉状态 + 今日训练轮播 (#today-carousel); Free workout 在右上角.
                     )
                     .screenHeader("Today") {
+                        // 自由训练入口 — 原正文入口卡移到右上角 (owner 拍板), icon 沿用入口卡的
+                        // dumbbell.fill, 回调同一个 quickWorkoutPresented 管线.
+                        Button(action: { quickWorkoutPresented = true }) {
+                            Image(systemName: "dumbbell.fill")
+                                .font(.system(size: 16, weight: .regular))
+                        }
+                        .accessibilityLabel("Free workout")
                         Button(action: { settingsPresented = true }) {
                             Image(systemName: "gearshape")
                                 .font(.system(size: 16, weight: .regular))
