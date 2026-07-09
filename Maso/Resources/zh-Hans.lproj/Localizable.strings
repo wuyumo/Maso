@@ -1249,3 +1249,25 @@
 "%lld training days" = "%lld 个训练日";
 "Includes %lld training days — Save adds all of them" = "含 %lld 个训练日 — 保存会全部加入";
 "Volume %@" = "容量 %@";
+
+/* ── Coach tab 批次 2: CoachScreen 三段式 UI (docs/coach-tab-design.md §1) ── */
+"Coach" = "教练";
+"SAVED · %lld" = "已保存 · %lld";
+"Saved routines will appear here." = "保存的计划会出现在这里。";
+"~%lld min" = "约 %lld 分钟";
+"DAY %lld" = "第 %lld 天";
+"Hey! Tell me how you want to train — I'll build your weekly routines." = "你好!想怎么练直接说,我来帮你排好每周计划。";
+"COACH SUGGESTION" = "教练建议";
+"Usually takes 30–60 seconds" = "通常需要 30–60 秒";
+"Tell me how you want to train…" = "想怎么练,直接说…";
+"New conversation" = "新对话";
+"Start a new conversation?" = "开始新对话?";
+"This clears the current chat. Saved routines are kept." = "会清空当前对话;已保存的计划不受影响。";
+"Swap %@: " = "换掉%@:";
+"Training in progress — keep tuning after your session." = "训练中 — 结束后继续调整。";
+"Plan my training week" = "出一套本周方案";
+"Dumbbells only" = "只用哑铃";
+"Under 30 minutes" = "控制在 30 分钟内";
+"Make it shorter" = "再短一点";
+"Use different equipment" = "换一批器械";
+"Train %@ more" = "多练%@";

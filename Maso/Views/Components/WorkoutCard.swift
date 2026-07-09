@@ -61,6 +61,11 @@ struct WorkoutCard: View {
     /// 书签态覆盖 — Coach 生成卡传 data.isCoachPlanSaved(plan) (savedIdMap 反查, 副本改名后不失灵).
     /// nil → 现状 data.isPlanSaved(plan) (签名匹配), 其它调用方不受影响.
     var savedOverride: Bool? = nil
+    /// Coach 对话流专用 (coach-tab-design.md §1) — 长按动作 pill → 引用式定向反馈:
+    /// 回调收动作显示名, CoachScreen 预填 composer "换掉 {动作名}" 并在发送时作 onlyModify 传给
+    /// coachGenerate. nil (默认) = 不挂手势, 其它调用方零改动. 轻点不受影响 — 长按手势不成立时
+    /// 事件照常落到整卡 onTapGesture (详情照常打开).
+    var onExercisePillLongPress: ((String) -> Void)? = nil
 
     /// 被 LimitedFlowLayout 截断的 exercise pill 个数 — 用于动态构造 "+N more" 文案.
     /// Layout 在 placeSubviews 里通过 onTruncate callback async 写回, SwiftUI 下一轮 re-render
@@ -208,7 +213,7 @@ struct WorkoutCard: View {
                             onTruncate: { _ in /* never truncates */ }
                         ) {
                             ForEach(Array(exercisePreview.enumerated()), id: \.offset) { _, item in
-                                ExercisePill(name: item.name, part: item.part)
+                                exercisePill(item)
                             }
                             ExercisePill(name: "")   // LimitedFlowLayout 约定的末位 overflow pill
                         }
@@ -240,7 +245,7 @@ struct WorkoutCard: View {
                         onTruncate: { _ in /* never truncates */ }
                     ) {
                         ForEach(Array(exercisePreview.enumerated()), id: \.offset) { _, item in
-                            ExercisePill(name: item.name, part: item.part)
+                            exercisePill(item)
                         }
                         // LimitedFlowLayout 要求最后一个 subview 是 overflow pill,
                         // maxRows 999 永远不截断, 这个空 pill 会被 place 到屏外.
@@ -303,6 +308,21 @@ struct WorkoutCard: View {
         .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
         // emphasized (Today's Workout 主卡): 不再加描边/阴影/辉光 — 仅靠实心绿播放键
         // (vs My Plans 卡的半透明描边键) 区分主次, 保持干净.
+    }
+
+    /// 动作 pill + 可选长按手势 — 只有 Coach 卡 (onExercisePillLongPress 非 nil) 才挂手势,
+    /// 避免给全 app 每个 pill 白加 gesture recognizer.
+    @ViewBuilder
+    private func exercisePill(_ item: (name: String, part: String?)) -> some View {
+        if let onExercisePillLongPress {
+            ExercisePill(name: item.name, part: item.part)
+                .onLongPressGesture {
+                    Haptics.tap()
+                    onExercisePillLongPress(item.name)
+                }
+        } else {
+            ExercisePill(name: item.name, part: item.part)
+        }
     }
 }
 

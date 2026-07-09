@@ -312,7 +312,8 @@ struct PlansScreen: View {
 // Routines 单页的 Classics 入口卡 → 这个 sheet. 自包含: Level/Days 筛选条固定钉在顶部 (sheet 语境
 // 走简单固定, 不用 safeAreaBar), 计划卡 / 详情预览 / 满额 paywall 都挂在 sheet 内部 (sheet 之上
 // 再叠 sheet 是允许的; 若挂回底下的 PlansScreen 会撞"一次只能 present 一个 sheet").
-private struct ClassicsSheet: View {
+// internal (非 private) — CoachScreen 的 [+] 工具菜单 "Browse Classics" 也拉起它 (coach-tab-design.md §1).
+struct ClassicsSheet: View {
     @Environment(DataStore.self) private var data
     @Environment(\.dismiss) private var dismiss
     /// 详情页 Start → 先关本 sheet 再启动训练 (player 是 RootView 的 fullScreenCover).

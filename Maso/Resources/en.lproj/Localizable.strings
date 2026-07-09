@@ -1248,3 +1248,25 @@
 "%lld training days" = "%lld training days";
 "Includes %lld training days — Save adds all of them" = "Includes %lld training days — Save adds all of them";
 "Volume %@" = "Volume %@";
+
+/* ── Coach tab 批次 2: CoachScreen 三段式 UI (docs/coach-tab-design.md §1) ── */
+"Coach" = "Coach";
+"SAVED · %lld" = "SAVED · %lld";
+"Saved routines will appear here." = "Saved routines will appear here.";
+"~%lld min" = "~%lld min";
+"DAY %lld" = "DAY %lld";
+"Hey! Tell me how you want to train — I'll build your weekly routines." = "Hey! Tell me how you want to train — I'll build your weekly routines.";
+"COACH SUGGESTION" = "COACH SUGGESTION";
+"Usually takes 30–60 seconds" = "Usually takes 30–60 seconds";
+"Tell me how you want to train…" = "Tell me how you want to train…";
+"New conversation" = "New conversation";
+"Start a new conversation?" = "Start a new conversation?";
+"This clears the current chat. Saved routines are kept." = "This clears the current chat. Saved routines are kept.";
+"Swap %@: " = "Swap %@: ";
+"Training in progress — keep tuning after your session." = "Training in progress — keep tuning after your session.";
+"Plan my training week" = "Plan my training week";
+"Dumbbells only" = "Dumbbells only";
+"Under 30 minutes" = "Under 30 minutes";
+"Make it shorter" = "Make it shorter";
+"Use different equipment" = "Use different equipment";
+"Train %@ more" = "Train %@ more";
