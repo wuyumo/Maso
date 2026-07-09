@@ -13,6 +13,40 @@ extension View {
         if condition { transform(self) } else { self }
     }
 
+    /// 单行大标题头 (owner 拍板, 2026-07): 标题 34pt bold (= 系统 large title 尺寸) 放左上角,
+    /// 跟右侧按钮**同一行**. 三个 tab (Today / Coach / Progress) 统一走这个; sheet (动作库) 仍用 screenHeader.
+    /// ⚠️ 不能用 toolbar topBarLeading 塞大字 — iOS 26 玻璃工具栏判定放不下, 整项折叠成 "•••" 溢出钮
+    /// (实测翻车). 改成隐藏系统导航栏 + safeAreaBar 自绘同一行 (标题 + Spacer + 按钮).
+    @ViewBuilder
+    func bigInlineHeader<T: View>(_ title: String, @ViewBuilder trailing: @escaping () -> T) -> some View {
+        if #available(iOS 26.0, *) {
+            // safeAreaBar: 内容从底下穿过时自动接管 bar 材质 (跟系统导航栏同款滚动表现).
+            self.toolbar(.hidden, for: .navigationBar)
+                .safeAreaBar(edge: .top, spacing: 0) { bigInlineHeaderRow(title, trailing: trailing) }
+        } else {
+            self.toolbar(.hidden, for: .navigationBar)
+                .safeAreaInset(edge: .top, spacing: 0) {
+                    bigInlineHeaderRow(title, trailing: trailing)
+                        .background(.bar)
+                }
+        }
+    }
+
+    private func bigInlineHeaderRow<T: View>(_ title: String, @ViewBuilder trailing: @escaping () -> T) -> some View {
+        HStack(alignment: .center, spacing: 18) {
+            Text(LocalizedStringKey(title))
+                .font(.system(size: 34, weight: .bold))
+                .foregroundStyle(MasoColor.text)
+                .lineLimit(1)
+                .accessibilityAddTraits(.isHeader)
+            Spacer(minLength: 0)
+            trailing()
+        }
+        .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
+        .padding(.top, 2)
+        .padding(.bottom, 8)
+    }
+
     /// iOS 默认导航栏 — 系统大标题 (large title, 滚动时收缩成 inline) + 右上角 toolbar 按钮.
     /// 用户要求所有 tab 的标题/右上角按钮回到 iOS 原生样式, 不再用自定义 safeAreaInset 大标题头.
     /// kicker (Today 的问候) 在原生导航栏没有对应槽位, 保留参数签名但忽略 — 调用方不用改.
@@ -172,7 +206,7 @@ struct RootView: View {
                         embedded: true,
                         mode: .trainToday   // Today = 肌肉状态 + 今日训练轮播 (#today-carousel); 自由训练 = 轮播尾部空卡.
                     )
-                    .screenHeader("Today") {
+                    .bigInlineHeader("Today") {
                         // 自由训练入口 = 轮播尾部空卡 (owner 拍板回退导航栏 dumbbell), 这里只留齿轮.
                         Button(action: { settingsPresented = true }) {
                             Image(systemName: "gearshape")
