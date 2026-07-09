@@ -1241,3 +1241,9 @@
 "Finish & end" = "完成并结束";
 "Discard workout" = "放弃本次训练";
 "Finish & end keeps this as a completed workout with your stats. Discard closes it without a summary." = "完成并结束会把这次保存为一场完成的训练并生成统计;放弃则直接关闭,不生成总结。";
+
+/* P0#3: Classics 保存整套训练日 + P1#21: 单位体系 */
+"Added %lld workout days" = "已添加 %lld 个训练日";
+"%lld training days" = "%lld 个训练日";
+"Includes %lld training days — Save adds all of them" = "含 %lld 个训练日 — 保存会全部加入";
+"Volume %@" = "容量 %@";

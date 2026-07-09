@@ -39,6 +39,13 @@ func weightLabel(_ kg: Double) -> String {
     weightLabel(kg, WeightUnitProvider.current)
 }
 
+/// session 真实训练时长 (分钟) — 首末 SetRecord.performedAt 差, 下限 5 分钟兜底
+/// (单组 session 首末同一时刻, "0m" 无意义). 跟完成屏 (PlanPlayerScreen.completedDurationSeconds)
+/// 同一路"取真实时间戳"; History 卡片 / 详情 / 分享卡统一走它, 不再用"组数×2 分钟"的编造值 (P1#17).
+func sessionDurationMinutes(first: Date, last: Date) -> Int {
+    max(5, Int((last.timeIntervalSince(first) / 60).rounded()))
+}
+
 /// 相对日期: "Today" / "Yesterday" / "N days ago" / "May 8" — localized
 func relativeDay(_ date: Date, now: Date = Date()) -> String {
     let cal = Calendar.current

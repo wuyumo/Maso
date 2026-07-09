@@ -1240,3 +1240,9 @@
 "Finish & end" = "Finish & end";
 "Discard workout" = "Discard workout";
 "Finish & end keeps this as a completed workout with your stats. Discard closes it without a summary." = "Finish & end keeps this as a completed workout with your stats. Discard closes it without a summary.";
+
+/* P0#3: Classics 保存整套训练日 + P1#21: 单位体系 */
+"Added %lld workout days" = "Added %lld workout days";
+"%lld training days" = "%lld training days";
+"Includes %lld training days — Save adds all of them" = "Includes %lld training days — Save adds all of them";
+"Volume %@" = "Volume %@";

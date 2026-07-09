@@ -39,9 +39,13 @@ struct OnboardingScreen: View {
     /// (实际到不了 confirm 时仍 nil —— 目标步无 Next, 必须先点一个目标才能离开).
     @State private var goal: TrainingGoalKind? = nil
     @State private var age: Int = 25
-    /// 体重: 选完性别按平均值 re-seed, 除非用户已手动拨过 (weightTouched).
+    /// 体重: 选完性别按平均值 re-seed, 除非用户已手动拨过 (weightTouched). 存储恒 canonical kg.
     @State private var weight: Double = 75
     @State private var weightTouched = false
+    /// 体重步的 kg/lb 分段 — 默认跟系统度量制 (美区 lb), 不逼 lb 用户做磅→公斤心算 (P1#21).
+    /// confirm 时写进 settings.weightUnit, 全 app 单位从第一天就跟引导一致.
+    @State private var weightUnit: WeightUnit =
+        Locale.current.measurementSystem == .metric ? .kg : .lb
     @State private var daysPerWeek: Int = 3               // 拨盘默认 3 天/周 (拨盘必有位置, 同年龄/体重)
     @State private var strengthen: Set<MuscleGroup> = []  // 不预选 — 留空 = 均衡
     /// 可用器材 — 多选. 留空 = 不限制 (= 健身房全器械, 跟 settings.availableEquipment 的"空=不限"语义一致).
@@ -240,12 +244,37 @@ struct OnboardingScreen: View {
         }
     }
 
-    // 3) 体重 — 拨盘, 默认落在该性别平均值.
+    // 3) 体重 — 拨盘, 默认落在该性别平均值. kg/lb 分段切换, 存储仍 canonical kg.
     private var weightStep: some View {
         stepBody("What's your weight?", "We seed your starting loads from this — change any later.") {
-            wheel(selection: Binding(get: { Int(weight) },
-                                     set: { weight = Double($0); weightTouched = true }),
-                  range: 30...200) { "\($0) kg" }
+            VStack(spacing: 18) {
+                // kg / lb 分段 — 两个胶囊 (跟性别选项同套视觉语言, 选中 = accent 底黑字).
+                HStack(spacing: 8) {
+                    ForEach([WeightUnit.kg, .lb], id: \.self) { u in
+                        Button {
+                            guard u != weightUnit else { return }
+                            Haptics.tap(); SoundPlayer.shared.playTick()
+                            weightUnit = u
+                        } label: {
+                            Text(u.label)
+                                .font(.system(size: 15, weight: .heavy))
+                                .padding(.horizontal, 24).padding(.vertical, 9)
+                                .background(weightUnit == u ? MasoColor.accent : MasoColor.surface)
+                                .foregroundStyle(weightUnit == u ? .black : MasoColor.textDim)
+                                .clipShape(Capsule())
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+                // 拨盘按当前单位显示/取值; 存储换算回 kg. lb 范围 ≈ 30...200 kg 的等值区间.
+                wheel(selection: Binding(
+                    get: { Int(weightUnit.fromKg(weight).rounded()) },
+                    set: { weight = weightUnit.toKg(Double($0)); weightTouched = true }),
+                      range: weightUnit == .kg ? 30...200 : 66...440) { "\($0) \(weightUnit.label)" }
+                // 换单位重建滚轮 — WheelPicker 的 centerID 是内部 state, 不重建不会滚到换算后的新值;
+                // 重建也让它的 ready 门重置, 初始程序化定位不会误置 weightTouched.
+                .id(weightUnit)
+            }
         }
     }
 
@@ -443,6 +472,7 @@ struct OnboardingScreen: View {
         data.settings.trainingGoalKind = goal ?? .buildMuscle
         data.settings.age = age
         data.settings.weight = weight
+        data.settings.weightUnit = weightUnit   // 体重步选的单位 = 全 app 单位 (RootView 同步 WeightUnitProvider)
         data.settings.weeklyTrainingDays = daysPerWeek
         data.settings.wantStrengthen = Array(strengthen)
         data.settings.availableEquipment = equipment.map { $0.rawValue }   // 器材约束 → 首份计划只用可用器材

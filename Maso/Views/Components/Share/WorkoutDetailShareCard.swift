@@ -127,8 +127,9 @@ struct WorkoutDetailShareCard: View {
     var onTapAddPhoto: (() -> Void)? = nil
 
     private var volumeLabel: String {
+        // 跟随全局单位换算 (P1#21) — lb 用户分享出去的 Volume 数值/标签跟 app 内一致, 不再恒 kg.
         if totalVolumeKg <= 0 { return "0" }
-        let v = totalVolumeKg
+        let v = WeightUnitProvider.current.fromKg(totalVolumeKg)
         return v.truncatingRemainder(dividingBy: 1) == 0 ? String(format: "%.0f", v) : String(format: "%.1f", v)
     }
 
@@ -165,7 +166,7 @@ struct WorkoutDetailShareCard: View {
                 // 三项汇总数据
                 HStack(spacing: 24) {
                     ShareStat(value: "\(setCount)", label: NSLocalizedString("Sets", comment: ""))
-                    ShareStat(value: volumeLabel, label: NSLocalizedString("Volume kg", comment: "total lifted volume"))
+                    ShareStat(value: volumeLabel, label: String(format: NSLocalizedString("Volume %@", comment: "total lifted volume — %@ = kg/lb"), WeightUnitProvider.current.label))
                     ShareStat(value: durationLabel, label: NSLocalizedString("Duration", comment: ""))
                     Spacer(minLength: 0)
                 }

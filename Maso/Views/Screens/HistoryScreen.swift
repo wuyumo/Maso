@@ -753,7 +753,8 @@ struct HistoryScreen: View {
         return WorkoutSectionData(
             dateLabel: df.string(from: s.day),
             planName: s.planName ?? NSLocalizedString("Free workout", comment: ""),
-            durationLabel: "~\(max(5, s.setCount * 2))m",
+            // 真实时长 (首末组时间差), 不再是"组数×2"的编造估算 (P1#17) — 所以去掉 "~".
+            durationLabel: "\(s.durationMinutes)m",
             setCount: s.setCount,
             exerciseCount: s.exerciseCount,
             prCount: s.prCount,
@@ -850,6 +851,7 @@ struct HistoryScreen: View {
                 setCount: recs.count,
                 muscles: muscles,
                 categories: categories,
+                firstPerformedAt: recs.map { $0.performedAt }.min() ?? key.day,
                 lastPerformedAt: recs.map { $0.performedAt }.max() ?? key.day,
                 prCount: prCount
             )
@@ -992,10 +994,16 @@ struct SessionSummary: Identifiable, Hashable {
     let setCount: Int
     let muscles: [MuscleGroup]
     let categories: Set<ExerciseCategory>
+    /// 这场第一组的落库时间 — 跟 lastPerformedAt 一起算真实时长.
+    let firstPerformedAt: Date
     let lastPerformedAt: Date
     /// 这一场训练里 PR 的组数 (Epley 1RM 估算超过历史最高). 0 = 没 PR.
     /// 渲染时 > 0 → SessionCard 右上角小🏆+ count, 不弹通知不庆祝 (理念 4 "沉默的进步反馈")
     var prCount: Int = 0
+
+    /// 真实训练时长 (分钟) — 首末组 performedAt 差 (共享 sessionDurationMinutes, 下限 5 分钟).
+    /// 卡片副标题 / 详情 StatPill / 分享卡统一用它, 不再用"组数×2"编造 (P1#17).
+    var durationMinutes: Int { sessionDurationMinutes(first: firstPerformedAt, last: lastPerformedAt) }
 }
 
 struct SessionExerciseStat: Identifiable, Hashable {
@@ -1027,7 +1035,8 @@ private struct SessionCard: View {
         session.planName ?? NSLocalizedString("Free workout", comment: "")
     }
     private var subtitleLine: String {
-        "\(pluralizedExercises(session.exerciseCount)) · \(pluralizedSets(session.setCount))"
+        // 时长是真实首末组时间差 (P1#17) — "我这次练了多久"在列表就能看到.
+        "\(pluralizedExercises(session.exerciseCount)) · \(pluralizedSets(session.setCount)) · \(session.durationMinutes)m"
     }
 
     var body: some View {
@@ -1451,6 +1460,8 @@ private struct SessionDetailSheet: View {
                 HStack(spacing: 6) {
                     StatPill(text: pluralizedExercises(session.exerciseCount))
                     StatPill(text: pluralizedSets(session.setCount))
+                    // 真实训练时长 (首末组时间差) — 详情页也能回答"练了多久" (P1#17).
+                    StatPill(text: "\(session.durationMinutes)m")
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -1470,7 +1481,8 @@ private struct SessionDetailSheet: View {
         return WorkoutSectionData(
             dateLabel: df.string(from: session.day),
             planName: session.planName ?? NSLocalizedString("Free workout", comment: ""),
-            durationLabel: "~\(max(5, session.setCount * 2))m",
+            // 真实时长 (首末组时间差), 不再是"组数×2"的编造估算 (P1#17) — 所以去掉 "~".
+            durationLabel: "\(session.durationMinutes)m",
             setCount: session.setCount,
             exerciseCount: session.exerciseCount,
             prCount: session.prCount,

@@ -316,8 +316,14 @@ private struct ClassicsSheet: View {
     @State private var communityLevel: String? = nil
     @State private var communityDays: Int? = nil
     @State private var detailPlan: Plan? = nil
+    /// detailPlan 是哪套 Classics 项目的预览 — 详情页 Save 要按"整套"存 (所有训练日), 不能只存
+    /// 预览的那一张, 所以得记住来源 CommunityPlan. 跟 detailPlan 同时设置.
+    @State private var detailCP: CommunityPlan? = nil
     /// Save 满额 (免费上限) → paywall — 跟 PlansScreen.addToSaved 同规则, 付费/上限逻辑不变.
     @State private var paywallPresented = false
+    /// 保存成功 toast ("已添加 N 个训练日") — 多日项目存的是 N 张 Plan, 必须明确告知, 否则用户
+    /// 以为只存了一张. ~2.2s 自动消失 (跟 HistoryScreen.applyToast 同款).
+    @State private var addedToast: String? = nil
 
     var body: some View {
         NavigationStack {
@@ -351,6 +357,18 @@ private struct ClassicsSheet: View {
                 }
             }
             .tint(MasoColor.text)
+            // 保存成功 toast — 底部浮一句 "已添加 N 个训练日", 自动消失.
+            .overlay(alignment: .bottom) {
+                if let addedToast {
+                    Text(addedToast)
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundStyle(MasoColor.text)
+                        .padding(.horizontal, 16).padding(.vertical, 10)
+                        .background(Capsule().fill(MasoColor.surfaceHi))
+                        .padding(.bottom, MasoMetrics.pageBottomInset)
+                        .transition(.move(edge: .bottom).combined(with: .opacity))
+                }
+            }
         }
         .presentationDragIndicator(.visible)
         // 详情预览 — sheet 之上叠 sheet (挂在本 sheet 的内容树上, 不回落到 PlansScreen).
@@ -362,7 +380,11 @@ private struct ClassicsSheet: View {
                     dismiss()   // player 是 RootView 的 fullScreenCover — 先把 Classics 层收掉
                     DispatchQueue.main.async { onStart(p) }
                 },
-                onAddToSaved: { p in addToSaved(p) }
+                // Save 存整套 (所有训练日), 不是预览的这一张 — 见 addClassics (P0#3).
+                onAddToSaved: { _ in
+                    if let cp = detailCP { addClassics(cp) }
+                },
+                classicsDayCount: detailCP.map(\.sessions.count)
             )
             .presentationDetents([.medium, .large])
             .presentationDragIndicator(.visible)
@@ -420,30 +442,53 @@ private struct ClassicsSheet: View {
                 WorkoutCard(
                     plan: plan,
                     exById: data.exById,
-                    kicker: cp.kicker,
-                    onStart: { detailPlan = plan },
-                    onShowDetail: { detailPlan = plan },
+                    kicker: classicsKicker(cp),
+                    onStart: { detailCP = cp; detailPlan = plan },
+                    onShowDetail: { detailCP = cp; detailPlan = plan },
                     prominentStart: false,
-                    addAction: { addToSaved(plan) },
+                    addAction: { addClassics(cp) },
                     compactLayout: true
                 )
             }
         }
     }
 
-    /// 社区 plan → 卡片展示用的 Plan. 取第一张 session (跟原有 add/preview 语义一致),
-    /// 但标题改回整套项目名 (而非 materialize 默认的 "项目 · SessionA") — 跟原卡片标题保持一致.
+    /// 卡片 kicker — 多日项目追加 "· N 个训练日": 卡片上的动作/组数只是第一天的量, 不标注天数
+    /// 会跟 "PPL 6-day" 这类标题自相矛盾 (P0#3 附带问题). 单日项目保持原 kicker.
+    private func classicsKicker(_ cp: CommunityPlan) -> String {
+        guard cp.sessions.count > 1 else { return cp.kicker }
+        return cp.kicker + " · " + String(format: NSLocalizedString("%lld training days", comment: "classics card day count"), cp.sessions.count)
+    }
+
+    /// 社区 plan → 卡片展示用的 Plan. 只取第一张 session 作**预览** (卡片/详情展示用),
+    /// 标题改回整套项目名. ⚠️ 仅供展示 — 真正保存必须走 addClassics (整套 materialize).
     private func communityDisplayPlan(_ cp: CommunityPlan) -> Plan? {
         guard var plan = cp.materialize(byId: data.exById).first else { return nil }
         plan.name = NSLocalizedString(cp.nameKey, comment: "community plan name")
         return plan
     }
 
-    /// 详情页 / 卡片星标 → 存进 My Routines. 满额 → 弹 paywall (免费上限逻辑在 data.savePlan, 未动).
-    private func addToSaved(_ plan: Plan) {
-        let ok = data.savePlan(plan)
+    /// 详情页 Save / 卡片星标 → 把整套项目的**所有训练日**逐张存进 My Routines (P0#3).
+    /// materialize 返回每 session 一张 Plan (命名 "项目名 · Session名"); 之前只存第一张却顶着
+    /// 整套名字 — 存 "PPL 6-day" 实际只拿到 Push 日. 语义对齐旧 CommunityScreen.handleAdd.
+    private func addClassics(_ cp: CommunityPlan) {
         detailPlan = nil
-        if ok { Haptics.tap() } else { paywallPresented = true }
+        // 免费上限按"整套"预检 — 一套 PPL = 6 张 Plan, 放不下就整套弹 paywall, 不存一半.
+        if !data.settings.isPro && data.plans.count + cp.sessions.count > FreeLimit.maxPlans {
+            paywallPresented = true
+            return
+        }
+        let newPlans = cp.materialize(byId: data.exById)
+        guard !newPlans.isEmpty else { return }
+        data.plans.append(contentsOf: newPlans)
+        data.save()
+        Haptics.tap()
+        withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+            addedToast = String(format: NSLocalizedString("Added %lld workout days", comment: "classics saved toast"), newPlans.count)
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.2) {
+            withAnimation(.easeIn(duration: 0.25)) { addedToast = nil }
+        }
     }
 }
 
@@ -782,6 +827,9 @@ struct PlanDetailSheet: View {
     let onStart: (Plan) -> Void
     /// Discover 用 — 非 nil 时右上角显示系统默认 "+" 加进 Saved (并隐藏 …/Delete 菜单, 因为这张还没拥有).
     let onAddToSaved: ((Plan) -> Void)?
+    /// Classics 预览专用 — 整套项目的训练日数. > 1 时在 Save CTA 下标注 "含 N 个训练日":
+    /// 预览显示的只是第一天, 不标注会让用户以为整套就这几个动作 (P0#3). 其他调用方不传 (nil 不显示).
+    let classicsDayCount: Int?
 
     @State private var draft: Plan
     @State private var showAddPicker: Bool = false
@@ -806,10 +854,12 @@ struct PlanDetailSheet: View {
     /// 跟 showAddPicker (append) 走两套 sheet, 语义清楚.
     @State private var stepToReplaceId: String? = nil
 
-    init(initialPlan: Plan, onStart: @escaping (Plan) -> Void, onAddToSaved: ((Plan) -> Void)? = nil) {
+    init(initialPlan: Plan, onStart: @escaping (Plan) -> Void, onAddToSaved: ((Plan) -> Void)? = nil,
+         classicsDayCount: Int? = nil) {
         self.initialPlan = initialPlan
         self.onStart = onStart
         self.onAddToSaved = onAddToSaved
+        self.classicsDayCount = classicsDayCount
         self._draft = State(initialValue: initialPlan)
     }
 
@@ -1087,7 +1137,16 @@ struct PlanDetailSheet: View {
             //   - 拥有的计划 (Tab 1): "Start workout"
             //   - Tab 2 browse 预览 (onAddToSaved != nil): "★ Add to my plans" — browse 主操作是加进我的计划.
             if let onAddToSaved {
-                addToPlansCTA(onAddToSaved)
+                VStack(spacing: 8) {
+                    addToPlansCTA(onAddToSaved)
+                    // Classics 多日项目: 明示 Save 存的是整套 (预览只展示第一天) — 见 classicsDayCount.
+                    if let n = classicsDayCount, n > 1 {
+                        Text(String(format: NSLocalizedString("Includes %lld training days — Save adds all of them", comment: "classics detail day note"), n))
+                            .font(.system(size: 12))
+                            .foregroundStyle(MasoColor.textDim)
+                            .multilineTextAlignment(.center)
+                    }
+                }
             } else {
                 startWorkoutCTA
             }

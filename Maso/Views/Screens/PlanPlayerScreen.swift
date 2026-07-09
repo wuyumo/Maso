@@ -1421,7 +1421,8 @@ private struct ExerciseInfo: View {
         .padding(.horizontal, MasoMetrics.cardPadding)
         .sheet(isPresented: $plateCalcOpen) {
             if let w = weight, w > 0 {
-                PlateCalculatorSheet(targetWeight: w, unit: .kg)
+                // 跟全局单位走 (P1#21) — lb 用户点 "121 lb" 弹出的是 lb 杆/lb 片, 不再硬编码 kg.
+                PlateCalculatorSheet(targetWeight: w, unit: WeightUnitProvider.current)
                     .presentationDetents([.medium, .large])
                     .presentationDragIndicator(.visible)
             }

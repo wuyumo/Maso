@@ -9,30 +9,47 @@ import SwiftUI
 /// 每个片标记重量 (e.g. "20"),颜色 IPF/IWF 国际标准:
 ///   红 25kg / 蓝 20kg / 黄 15kg / 绿 10kg / 白 5kg / 灰 2.5kg / 黑 1.25kg
 ///
-/// 杆重支持 (国际标准):
+/// 杆重支持 (unit == .kg, 国际标准):
 ///   - 20kg (标准奥林匹克杆,大部分健身房) — 默认
 ///   - 15kg (女子奥林匹克杆)
 ///   - 10kg (技术杆 / 练习杆 / 短杆)
 ///   - 7kg (EZ 曲杆)
+/// unit == .lb (美式健身房): 45lb 奥杆 (默认) / 35lb 女杆 / 15lb 技术杆,
+/// 片库 45/35/25/10/5/2.5 lb — lb 用户看到的是自己健身房里真实存在的片 (P1#21).
 struct PlateCalculatorSheet: View {
     @Environment(\.dismiss) private var dismiss
 
-    /// 用户输入的目标总重 (kg)
+    /// 用户输入的目标总重 — canonical kg (全 app 重量都按 kg 落库, caller 直接透传).
     let targetWeight: Double
 
-    @State private var barWeight: Double = 20.0
+    /// 杆重 (当前 unit 的数值, 非 canonical) — 杆/片都是"实物", 按显示单位取整数才对得上现实.
+    @State private var barWeight: Double
 
-    /// 单位 — 跟全局 settings 一致显示, 但内部计算永远用 kg (国际健身房标准)
+    /// 单位 — 决定杆重选项 + 片库 + 全部数字的显示. 内部计算也在该单位下做
+    /// (lb 片库按 kg 算会得出 20.41kg 这种不存在的片).
     let unit: WeightUnit
+
+    init(targetWeight: Double, unit: WeightUnit) {
+        self.targetWeight = targetWeight
+        self.unit = unit
+        // 默认杆 = 该单位的标准奥杆.
+        self._barWeight = State(initialValue: unit == .kg ? 20.0 : 45.0)
+    }
+
+    /// 目标总重换算到显示单位 — 后续全部计算/显示都用它.
+    private var target: Double { unit.fromKg(targetWeight) }
+
+    /// 该单位下可选的杆重.
+    private var barOptions: [Double] { unit == .kg ? [20, 15, 10, 7] : [45, 35, 15] }
 
     /// 每侧片重量 + 数量 (从大到小排)
     private var perSidePlates: [(weight: Double, count: Int)] {
-        Self.calculatePlates(targetKg: targetWeight, barKg: barWeight)
+        Self.calculatePlates(target: target, bar: barWeight, unit: unit)
     }
 
     /// 每侧总重 (= (target - bar) / 2)
     private var perSideTotal: Double {
-        max(0, (targetWeight - barWeight) / 2)
+        max(0, (target - barWeight) / 2)
     }
 
     /// 实际能凑出的总重 (跟 target 比看差多少)
@@ -40,9 +57,9 @@ struct PlateCalculatorSheet: View {
         barWeight + 2 * perSidePlates.reduce(0) { $0 + Double($1.count) * $1.weight }
     }
 
-    /// target - achievable, 通常是 0 (能凑齐), 偶尔 < 2.5 (剩个零头)
+    /// target - achievable, 通常是 0 (能凑齐), 偶尔剩个零头 (最小片以下)
     private var remainder: Double {
-        targetWeight - achievableTotal
+        target - achievableTotal
     }
 
     var body: some View {
@@ -56,7 +73,7 @@ struct PlateCalculatorSheet: View {
                             .tracking(2)
                             .textCase(.uppercase)
                             .foregroundStyle(MasoColor.textDim)
-                        Text("\(formatWeight(targetWeight)) \(unit.rawValue)")
+                        Text("\(formatWeight(target)) \(unit.rawValue)")
                             .font(.system(size: 48, weight: .black))
                             .foregroundStyle(MasoColor.text)
                         if abs(remainder) > 0.01 {
@@ -143,7 +160,7 @@ struct PlateCalculatorSheet: View {
 
         return ZStack {
             ForEach(Array(flat.enumerated()), id: \.offset) { idx, w in
-                let info = Self.plateInfo(forWeight: w)
+                let info = Self.plateInfo(forWeight: w, unit: unit)
                 let plateW = info.thickness
                 let plateH = info.height
                 let xPos = sleeveOuterX + CGFloat(side) * (offset + plateW / 2)
@@ -173,7 +190,7 @@ struct PlateCalculatorSheet: View {
                 ForEach(perSidePlates, id: \.weight) { item in
                     HStack {
                         Circle()
-                            .fill(Self.plateInfo(forWeight: item.weight).color)
+                            .fill(Self.plateInfo(forWeight: item.weight, unit: unit).color)
                             .frame(width: 14, height: 14)
                             .overlay(Circle().stroke(.white.opacity(0.3), lineWidth: 0.5))
                         Text("\(formatWeight(item.weight)) \(unit.rawValue)")
@@ -207,7 +224,7 @@ struct PlateCalculatorSheet: View {
                 .textCase(.uppercase)
                 .foregroundStyle(MasoColor.textDim)
             HStack(spacing: 8) {
-                ForEach([20.0, 15.0, 10.0, 7.0], id: \.self) { bw in
+                ForEach(barOptions, id: \.self) { bw in
                     Button(action: { barWeight = bw }) {
                         Text("\(formatWeight(bw)) \(unit.rawValue)")
                             .font(.system(size: 13, weight: .heavy).monospacedDigit())
@@ -225,14 +242,19 @@ struct PlateCalculatorSheet: View {
 
     // MARK: - Plate calculation (greedy)
 
-    /// 贪心算法: 从最大的片 (25kg) 开始往下凑, 每个片 step 0.5kg
-    /// 健身房标配片 (kg): 25 / 20 / 15 / 10 / 5 / 2.5 / 1.25 / 0.5
-    static func calculatePlates(targetKg: Double, barKg: Double) -> [(weight: Double, count: Int)] {
-        let perSide = max(0, (targetKg - barKg) / 2)
-        let standardPlates: [Double] = [25, 20, 15, 10, 5, 2.5, 1.25, 0.5]
+    /// 该单位的健身房标配片库 (从大到小):
+    ///   kg: 25 / 20 / 15 / 10 / 5 / 2.5 / 1.25 / 0.5 (IPF/IWF)
+    ///   lb: 45 / 35 / 25 / 10 / 5 / 2.5 (美式健身房标配)
+    static func standardPlates(for unit: WeightUnit) -> [Double] {
+        unit == .kg ? [25, 20, 15, 10, 5, 2.5, 1.25, 0.5] : [45, 35, 25, 10, 5, 2.5]
+    }
+
+    /// 贪心算法: 从最大的片开始往下凑. target/bar 都是当前 unit 的数值.
+    static func calculatePlates(target: Double, bar: Double, unit: WeightUnit) -> [(weight: Double, count: Int)] {
+        let perSide = max(0, (target - bar) / 2)
         var remaining = perSide
         var result: [(weight: Double, count: Int)] = []
-        for plate in standardPlates {
+        for plate in standardPlates(for: unit) {
             // 每个 weight 通常最多 4 片 (杆套袖装不下太多)
             let count = min(4, Int(remaining / plate))
             if count > 0 {
@@ -251,17 +273,32 @@ struct PlateCalculatorSheet: View {
         let height: CGFloat
     }
 
-    static func plateInfo(forWeight kg: Double) -> PlateInfo {
-        // IPF/IWF 国际颜色标准
-        switch kg {
-        case 25:    return PlateInfo(color: Color(red: 0.85, green: 0.20, blue: 0.20), thickness: 18, height: 116)
-        case 20:    return PlateInfo(color: Color(red: 0.20, green: 0.40, blue: 0.85), thickness: 16, height: 112)
-        case 15:    return PlateInfo(color: Color(red: 0.95, green: 0.80, blue: 0.20), thickness: 14, height: 108)
-        case 10:    return PlateInfo(color: Color(red: 0.20, green: 0.65, blue: 0.30), thickness: 12, height: 100)
-        case 5:     return PlateInfo(color: Color(red: 0.92, green: 0.92, blue: 0.92), thickness: 10, height: 84)
-        case 2.5:   return PlateInfo(color: Color(red: 0.55, green: 0.55, blue: 0.55), thickness: 8,  height: 68)
-        case 1.25:  return PlateInfo(color: Color(red: 0.25, green: 0.25, blue: 0.25), thickness: 6,  height: 56)
-        default:    return PlateInfo(color: Color(red: 0.45, green: 0.45, blue: 0.45), thickness: 5,  height: 48)
+    static func plateInfo(forWeight w: Double, unit: WeightUnit) -> PlateInfo {
+        switch unit {
+        case .kg:
+            // IPF/IWF 国际颜色标准
+            switch w {
+            case 25:    return PlateInfo(color: Color(red: 0.85, green: 0.20, blue: 0.20), thickness: 18, height: 116)
+            case 20:    return PlateInfo(color: Color(red: 0.20, green: 0.40, blue: 0.85), thickness: 16, height: 112)
+            case 15:    return PlateInfo(color: Color(red: 0.95, green: 0.80, blue: 0.20), thickness: 14, height: 108)
+            case 10:    return PlateInfo(color: Color(red: 0.20, green: 0.65, blue: 0.30), thickness: 12, height: 100)
+            case 5:     return PlateInfo(color: Color(red: 0.92, green: 0.92, blue: 0.92), thickness: 10, height: 84)
+            case 2.5:   return PlateInfo(color: Color(red: 0.55, green: 0.55, blue: 0.55), thickness: 8,  height: 68)
+            case 1.25:  return PlateInfo(color: Color(red: 0.25, green: 0.25, blue: 0.25), thickness: 6,  height: 56)
+            default:    return PlateInfo(color: Color(red: 0.45, green: 0.45, blue: 0.45), thickness: 5,  height: 48)
+            }
+        case .lb:
+            // 按 kg 等值片沿用同一套颜色 (45lb≈20kg 蓝 / 35lb≈15kg 黄 / 25lb≈10kg 绿 …),
+            // 让两种单位下"越大越显眼"的视觉序一致.
+            switch w {
+            case 45:    return PlateInfo(color: Color(red: 0.20, green: 0.40, blue: 0.85), thickness: 16, height: 112)
+            case 35:    return PlateInfo(color: Color(red: 0.95, green: 0.80, blue: 0.20), thickness: 14, height: 108)
+            case 25:    return PlateInfo(color: Color(red: 0.20, green: 0.65, blue: 0.30), thickness: 12, height: 100)
+            case 10:    return PlateInfo(color: Color(red: 0.92, green: 0.92, blue: 0.92), thickness: 10, height: 84)
+            case 5:     return PlateInfo(color: Color(red: 0.55, green: 0.55, blue: 0.55), thickness: 8,  height: 68)
+            case 2.5:   return PlateInfo(color: Color(red: 0.25, green: 0.25, blue: 0.25), thickness: 6,  height: 56)
+            default:    return PlateInfo(color: Color(red: 0.45, green: 0.45, blue: 0.45), thickness: 5,  height: 48)
+            }
         }
     }
 

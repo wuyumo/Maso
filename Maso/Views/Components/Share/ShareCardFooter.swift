@@ -177,7 +177,8 @@ struct RoutineShareCard: View {
     }
 
     private var volumeLabel: String {
-        let v = totalVolumeKg
+        // 跟随全局单位换算 (P1#21) — lb 用户分享出去的 Volume 数值/标签跟 app 内一致, 不再恒 kg.
+        let v = WeightUnitProvider.current.fromKg(totalVolumeKg)
         return v.truncatingRemainder(dividingBy: 1) == 0 ? String(format: "%.0f", v) : String(format: "%.1f", v)
     }
 
@@ -217,7 +218,7 @@ struct RoutineShareCard: View {
                     ShareStat(value: "\(plan.steps.count)", label: NSLocalizedString("Exercises count", comment: "exercise count stat label"))
                     ShareStat(value: "\(totalSets)", label: NSLocalizedString("Sets", comment: ""))
                     if totalVolumeKg > 0 {
-                        ShareStat(value: volumeLabel, label: NSLocalizedString("Volume kg", comment: "total target volume"))
+                        ShareStat(value: volumeLabel, label: String(format: NSLocalizedString("Volume %@", comment: "total target volume — %@ = kg/lb"), WeightUnitProvider.current.label))
                     }
                     Spacer(minLength: 0)
                 }
