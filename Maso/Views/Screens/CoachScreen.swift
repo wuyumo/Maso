@@ -89,25 +89,29 @@ struct CoachScreen: View {
             bottomBar
         }
         .background(MasoColor.background.ignoresSafeArea())
-        // 单行大标题 (owner 拍板): "Coach" 34pt 左上角, 跟右侧三键同一行 — 三 tab 统一.
-        .bigInlineHeader("Coach") {
-            // dumbbell — Exercises 不再是 tab, 从这里一步直达动作库 (设计文档 §0).
-            Button { libraryPresented = true } label: {
-                Image(systemName: "dumbbell")
-                    .font(.system(size: 16, weight: .regular))
+        .navigationTitle("Coach")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItemGroup(placement: .topBarTrailing) {
+                // dumbbell — Exercises 不再是 tab, 从这里一步直达动作库 (设计文档 §0).
+                Button { libraryPresented = true } label: {
+                    Image(systemName: "dumbbell")
+                        .font(.system(size: 16, weight: .regular))
+                }
+                .accessibilityLabel(NSLocalizedString("Exercise library", comment: ""))
+                // 训练偏好独立入口 (owner 指定: dumbbell 与 gear 之间) — 跟 [+] 菜单里那项同目的地;
+                // 空态的偏好卡 (PlanRationaleCard) 保留, 三处都开 TrainingPreferencesSheet.
+                Button { prefsPresented = true } label: {
+                    Image(systemName: "slider.horizontal.3")
+                        .font(.system(size: 16, weight: .regular))
+                }
+                .accessibilityLabel(NSLocalizedString("Training Preferences", comment: ""))
+                Button(action: onOpenSettings) {
+                    Image(systemName: "gearshape")
+                        .font(.system(size: 16, weight: .regular))
+                }
+                .accessibilityLabel("Settings")
             }
-            .accessibilityLabel(NSLocalizedString("Exercise library", comment: ""))
-            // 训练偏好唯一常驻入口 (owner 拍板: [+] 菜单里那项已移除); 空态偏好卡保留.
-            Button { prefsPresented = true } label: {
-                Image(systemName: "slider.horizontal.3")
-                    .font(.system(size: 16, weight: .regular))
-            }
-            .accessibilityLabel(NSLocalizedString("Training Preferences", comment: ""))
-            Button(action: onOpenSettings) {
-                Image(systemName: "gearshape")
-                    .font(.system(size: 16, weight: .regular))
-            }
-            .accessibilityLabel("Settings")
         }
         .onAppear { suggestion = data.routineSuggestion() }
         // showcase "exercises" 路由 — RootView 翻 true, 这里拉起动作库 sheet 后复位.
