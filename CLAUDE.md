@@ -2,6 +2,16 @@
 
 # Maso — iOS 健身 App (SwiftUI)
 
+## 🚀 1.6(12) 免费版已上传 ASC (2026-07-08) ← 最新
+把本轮攒的一批 UI/功能改进(AI Insight Summary、分享族 P0、Progress tab 重构、Strength-by-lift Trend/Distribution 切换、动作库 34 变体+139 图片走查、Muscle Status 去卡片化、播放器 handle/渐变等)打成 **1.6 (build 12)**,**继续走免费版**(Paid Apps 协议仍未就绪)→ `MasoFlags.iapEnabled=false`(全 Pro 解锁、无付费墙/升级 banner/Settings 付费区)。三 Info.plist → 1.6/12(1.5/11 是那次开墙的付费包)。
+- CLI `xcodebuild -scheme Maso -configuration Release -destination "generic/platform=iOS" archive` **成功**(用 keychain 缓存的 dist cert,没报 No Accounts);archive 落 `~/Library/Developer/Xcode/Archives/2026-07-08/Maso-1.6-12.xcarchive`。
+- Organizer Distribute → App Store Connect → **已上传**(Uploaded to Apple, build 12, 20:29)。
+- ⚠️ **上传踩坑(每次发版都可能复现,按顺序排雷)**:
+  ① **Xcode 账号被登出** → Settings>Accounts 空,Distribute 报 "No Accounts" → 需 Yumo 重新登录 `wuyumoawuyumo@outlook.com`(密码+2FA,Claude 不能代输)。登录后账号显示为 "Yumo Wu (Individual)" = 就是 TW8ZVVX529 付费 team(个人付费,非免费 Personal Team)。
+  ② **Apple 更新了 Program License Agreement** → Distribute 报 "Unable to process request - PLA Update available" + 连带 "No iOS Distribution signing certificate matching TW8ZVVX529" → 必须先去 **developer.apple.com/account** 接受新协议(法律协议,Yumo 手动),接受后那两条证书错误一并消失。
+  ③ 听写工具 **"Typeless"** 的后台浮层会盖住 Distribute 按钮(computer-use 点击被拦)→ `pkill -i typeless` 清掉,完事再 `open -a Typeless`。
+- **待办**: build 处理完(邮件通知,几分钟~几十分钟)→ ASC 网页建版本 1.6 / 填 What's New(en+zh)/ 挂 build 12 / 自动发布 → 提交审核。**提审那一下等 Yumo 说「提交」交互式做,不自动提审**(见 [[feedback_maso_nightly_ship]])。
+
 ## 项目
 - SwiftUI, **iOS 18** target, 单仓 (`Maso` app target + `MasoWidgets` 小组件 target)
 - GitHub: `github.com/wuyumo/Maso.git`
