@@ -39,14 +39,13 @@ struct ExerciseGroup: Hashable, Identifiable {
 
     /// 组入口标题 — 只显示"主动作"名 (#nameParts: "Squat" / "Face Pull"), 不带器械/变体.
     /// zh 本地化: 组里存在"纯 base 成员"(无 variation 无 equipment) → 用它的 displayName (跟随语言);
-    /// 没有纯成员 → 退英文 base.
+    /// 没有纯成员 → 用 canonical.displayName (仍跟随语言). 不再回退英文 baseName —
+    /// zh UI 搜索时组内常无纯成员, 回退会让组标题突然变英文 (搜"上斜"出一排 "Bench Press").
     var entryTitle: String {
         // #refold: 组入口显示"无括号主动作"名.
-        // 纯 base 成员存在 → 用它的 displayName (跟随语言); 否则英文 base; 自创动作保留原名.
         if let pure = all.first(where: { $0.nameParts != nil && $0.nameParts?.variation == nil && $0.nameParts?.equipment == nil }) {
             return pure.displayName
         }
-        if canonical.nameParts != nil { return baseName }
         return canonical.displayName
     }
 

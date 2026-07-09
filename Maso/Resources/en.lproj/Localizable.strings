@@ -1220,3 +1220,7 @@
 
 /* Training Preferences card + Coaching sheet (Tune with AI redesign) */
 "Tune with AI" = "Tune with AI";
+
+/* Exercise detail — Your history section (个人记录: 最近最佳组 + e1RM) */
+"Your history" = "Your history";
+"Best e1RM %@" = "Best e1RM %@";

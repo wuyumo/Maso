@@ -229,6 +229,10 @@ struct Exercise: Identifiable, Hashable, Codable, Sendable {
     /// 渲染: ExerciseImage 优先用 customImageData (UIImage(data:)), 没有再 fallback imageFolder.
     var customImageData: Data? = nil
 
+    /// 搜索别名 — 高频口语叫法 ("肩推"/"倒蹬"/"rdl" 等), 只进 searchTokens, 不参与展示.
+    /// optional + nil: 旧持久化数据 / 未补别名的条目缺 key 也能 decode.
+    var aliases: [String]? = nil
+
     // MARK: - Display helpers
 
     /// 本地化展示名 — UI 都用这个, 不直接用 raw `name`.
@@ -352,9 +356,14 @@ extension Exercise {
     var searchTokens: Set<String> {
         var t = Set<String>()
         func add(_ s: String) {
+            var words: [String] = []
             for w in s.lowercased().split(whereSeparator: { !$0.isLetter && !$0.isNumber }) {
-                t.insert(String(w))
+                words.append(String(w))
             }
+            words.forEach { t.insert($0) }
+            // 去分隔符连写 token — "pull-up" 额外产出 "pullup", 让 "pullup"/"chinup"/"pushup"
+            // 这类英文连写查询也能命中 (facet rawValue "pull_up" 同理产出 "pullup").
+            if words.count > 1 { t.insert(words.joined()) }
         }
         add(name)
         add(displayName)            // 本地化名 — 支持搜中文动作名
@@ -365,15 +374,42 @@ extension Exercise {
         }
         let equips = (equipmentAll?.isEmpty == false) ? equipmentAll! : [equipment].compactMap { $0 }
         equips.forEach(add)          // "smith_machine" → smith, machine; "cable" → cable
+        // 本地化器械名 — zh 名的器械在括号里且经常被翻译省略 ("卧推" 无"杠铃"),
+        // 补 "杠铃"/"哑铃"/"绳索" 等词让 "杠铃卧推" 这类 {器械+动作} 复合查询能命中.
+        equips.forEach { add(Exercise.equipmentDisplayName(for: $0)) }
         if let mf = movementFacet { add(mf.rawValue) }   // press / row / fly / curl / dip / pullover / crunch / pull_up → pull,up
+        aliases?.forEach(add)        // 高频口语别名 ("肩推"/"倒蹬"/"rdl" …)
         return t
     }
 
     /// 分词 AND 匹配 — query 拆出的每个词都必须是某个 search token 的子串. 空 query → 全部命中.
+    /// CJK 复合词 ("哑铃卧推""坐姿划船" 这类无空格连写) 单 token 子串必落空 → 走贪心切分覆盖分支.
     func matchesSearch(_ words: [String]) -> Bool {
         if words.isEmpty { return true }
         let tokens = searchTokens
-        return words.allSatisfy { w in tokens.contains { $0.contains(w) } }
+        return words.allSatisfy { w in
+            if tokens.contains(where: { $0.contains(w) }) { return true }
+            // 仅 CJK 词启用贪心覆盖 — 拉丁词 ("rdl") 会被切成单字母, 几乎匹配一切.
+            if w.count >= 2, w.unicodeScalars.contains(where: { $0.properties.isIdeographic }) {
+                return Exercise.greedyCovered(w, tokens: tokens)
+            }
+            return false
+        }
+    }
+
+    /// 贪心切分完全覆盖: 从左往右取"仍是某 token 子串"的最长前缀为一段, 整个词能被
+    /// 若干段无缝覆盖即命中. "哑铃卧推" → ["哑铃","卧推"] 两段各命中一个 token → true.
+    private static func greedyCovered(_ word: String, tokens: Set<String>) -> Bool {
+        var rest = Substring(word)
+        while !rest.isEmpty {
+            var seg = rest
+            while !seg.isEmpty, !tokens.contains(where: { $0.contains(seg) }) {
+                seg = seg.dropLast()
+            }
+            guard !seg.isEmpty else { return false }
+            rest = rest.dropFirst(seg.count)
+        }
+        return true
     }
 }
 

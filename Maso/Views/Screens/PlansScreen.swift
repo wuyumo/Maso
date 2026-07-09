@@ -1742,8 +1742,9 @@ struct ExercisePickerSheet: View {
             movement: movementFilter,
             text: query
         )
-        // 收藏置顶 — 在 filter 之后排序, 让收藏的动作在当前 filter 结果里排最前
-        return Array(data.sortByFavorites(arr).prefix(200))
+        // 收藏置顶 — 在 filter 之后排序, 让收藏的动作在当前 filter 结果里排最前.
+        // 不截断 (曾经 prefix(200)): List 是 lazy 的; 截断会把字母序靠后的动作和自创动作静默切掉.
+        return data.sortByFavorites(arr)
     }
 
     /// filtered 按"基础名"折叠成 group. Picker 列表迭代这个, 而不是 flat filtered.

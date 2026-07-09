@@ -102,6 +102,8 @@ private struct RawExerciseV2: Decodable {
     let niche: Bool?
     /// 三段式名字切割 (预生成): variation / base / equipment.
     let nameParts: RawNameParts?
+    /// 搜索别名 (高频口语叫法, 手工维护) — 缺 key 的条目正常 decode.
+    let aliases: [String]?
 }
 
 private struct RawNameParts: Decodable {
@@ -169,7 +171,8 @@ private func toExerciseV2(_ r: RawExerciseV2) -> Exercise {
         localizedName: r.name,
         localizedDangerWarnings: r.danger_warnings,
         isNiche: r.niche ?? false,
-        nameParts: r.nameParts.map { NameParts(variation: $0.variation, base: $0.base, equipment: $0.equipment) }
+        nameParts: r.nameParts.map { NameParts(variation: $0.variation, base: $0.base, equipment: $0.equipment) },
+        aliases: r.aliases
     )
 }
 

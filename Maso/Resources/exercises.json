@@ -30009,6 +30009,7 @@
  },
  {
   "id": "leg_press_45",
+  "aliases": ["腿举", "倒蹬", "倒蹬机"],
   "name": {
    "en": "Leg Press (45°)",
    "zh-Hans": "腿推 (45°)"
@@ -30148,6 +30149,7 @@
  },
  {
   "id": "leg_press_horizontal",
+  "aliases": ["腿举", "倒蹬"],
   "name": {
    "en": "Leg Press (Horizontal)",
    "zh-Hans": "腿推 (水平)"
@@ -30655,6 +30657,7 @@
  },
  {
   "id": "leg_raise_hanging",
+  "aliases": ["悬垂举腿"],
   "name": {
    "en": "Hanging Leg Raise",
    "zh-Hans": "悬挂举腿"
@@ -30722,6 +30725,7 @@
  },
  {
   "id": "leg_raise_hanging_knee",
+  "aliases": ["悬垂举腿", "悬垂屈膝举腿"],
   "name": {
    "en": "Hanging Knee Raise",
    "zh-Hans": "悬挂屈膝举腿"
@@ -31701,6 +31705,7 @@
  },
  {
   "id": "lunge_forward_barbell",
+  "aliases": ["箭步蹲", "弓步蹲"],
   "name": {
    "en": "Forward Lunge (Barbell)",
    "zh-Hans": "前弓步 (杠铃)"
@@ -31766,6 +31771,7 @@
  },
  {
   "id": "lunge_forward_bodyweight",
+  "aliases": ["箭步蹲", "弓步蹲"],
   "name": {
    "en": "Forward Lunge",
    "zh-Hans": "前弓步"
@@ -31831,6 +31837,7 @@
  },
  {
   "id": "lunge_forward_dumbbell",
+  "aliases": ["箭步蹲", "弓步蹲"],
   "name": {
    "en": "Forward Lunge (Dumbbell)",
    "zh-Hans": "前弓步 (哑铃)"
@@ -36162,6 +36169,7 @@
  },
  {
   "id": "overhead_press_barbell",
+  "aliases": ["肩推", "实力举", "军事推举", "ohp", "military press"],
   "name": {
    "en": "Overhead Press",
    "zh-Hans": "推举"
@@ -36437,6 +36445,7 @@
  },
  {
   "id": "overhead_press_dumbbell_seated",
+  "aliases": ["肩推"],
   "name": {
    "en": "Overhead Press (Dumbbell · Seated)",
    "zh-Hans": "坐姿推举 (哑铃)"
@@ -36567,6 +36576,7 @@
  },
  {
   "id": "overhead_press_dumbbell_standing",
+  "aliases": ["肩推"],
   "name": {
    "en": "Overhead Press (Dumbbell)",
    "zh-Hans": "推举 (哑铃)"
@@ -36847,6 +36857,7 @@
  },
  {
   "id": "overhead_press_machine",
+  "aliases": ["肩推"],
   "name": {
    "en": "Overhead Press (Machine)",
    "zh-Hans": "推举 (器械)"
@@ -36978,6 +36989,7 @@
  },
  {
   "id": "overhead_press_smith_machine",
+  "aliases": ["肩推"],
   "name": {
    "en": "Overhead Press (Smith Machine)",
    "zh-Hans": "推举 (史密斯机)"
@@ -42438,6 +42450,7 @@
  },
  {
   "id": "rdl_barbell",
+  "aliases": ["rdl"],
   "name": {
    "en": "Deadlift (Romanian)",
    "zh-Hans": "罗马尼亚硬拉"
@@ -42573,6 +42586,7 @@
  },
  {
   "id": "rdl_dumbbell",
+  "aliases": ["rdl"],
   "name": {
    "en": "Deadlift (Dumbbell · Romanian)",
    "zh-Hans": "罗马尼亚硬拉 (哑铃)"
@@ -57720,6 +57734,7 @@
  },
  {
   "id": "triceps_pushdown_rope",
+  "aliases": ["三头下压", "下压", "绳索下压"],
   "name": {
    "en": "Triceps Pushdown (Rope)",
    "zh-Hans": "三头推下 (绳索)"
@@ -57827,6 +57842,7 @@
  },
  {
   "id": "triceps_pushdown_straight_bar",
+  "aliases": ["三头下压", "下压", "绳索下压"],
   "name": {
    "en": "Triceps Pushdown",
    "zh-Hans": "三头推下"

@@ -1,4 +1,5 @@
 import SwiftUI
+import Charts
 
 // 每个可见动作行上报 (所属大区, 在列表坐标系的 minY) — 右侧索引据此高亮"当前滚到顶部的区".
 // 用全行上报 (而非只第一行): 第一行滚出屏幕后会被 List 虚拟化掉、不再上报, 用第一行会误判.
@@ -148,9 +149,10 @@ struct ExerciseLibraryBrowser: View {
             // 多维分词搜索 — 动作家族 / 部位 / 器械 / 变体 任意组合都能命中.
             arr = arr.filter { $0.matchesSearch(words) }
         }
-        // 收藏置顶 — 在 filter 之后排序, 让收藏的动作在当前 filter 结果里排最前
-        arr = data.sortByFavorites(arr)
-        return Array(arr.prefix(200))
+        // 收藏置顶 — 在 filter 之后排序, 让收藏的动作在当前 filter 结果里排最前.
+        // 不截断 (曾经 prefix(200)): List 是 lazy 的, 700+ 行无性能问题; 截断会把字母序
+        // 靠后的 pull-up / overhead press 全家和 append 在库末尾的自创动作静默切掉.
+        return data.sortByFavorites(arr)
     }
 
     /// 把 filtered 折叠成变种组 — 跟 ExercisePickerSheet 同一份 ExerciseGrouping.group(...).
@@ -191,6 +193,16 @@ struct ExerciseLibraryBrowser: View {
         }
     }
 
+    /// 搜索进行中 — 命中组默认展开 (结果里的成员全是命中项, 折在 +N 里等于藏结果).
+    private var searchActive: Bool {
+        !query.trimmingCharacters(in: .whitespaces).isEmpty
+    }
+
+    /// 组是否处于展开态: 手动展开 (expandedGroupKey), 或搜索中的多成员命中组 (自动展开).
+    private func isGroupExpanded(_ group: ExerciseGroup) -> Bool {
+        expandedGroupKey == group.id || (searchActive && !group.variants.isEmpty)
+    }
+
     /// 单行 — 共用 GroupedExerciseRow (跟 picker 同款展示), tap → 详情, 右滑 → 置顶 / 删除 / 移回冷门库.
     @ViewBuilder
     private func libraryRow(_ ex: Exercise, isVariant: Bool, group: ExerciseGroup) -> some View {
@@ -198,7 +210,7 @@ struct ExerciseLibraryBrowser: View {
             exercise: ex,
             isVariant: isVariant,
             group: group,
-            isExpanded: expandedGroupKey == group.id,
+            isExpanded: isGroupExpanded(group),
             showDisclosure: !group.isSingleton,
             showVariantCategoryLabel: false,
             trailing: { EmptyView() },
@@ -451,7 +463,8 @@ struct ExerciseLibraryBrowser: View {
                                         }
                                     }
                                 // 展开 → 变种拆 "Variation"(动作)/"Equipment"(器械) 两段, 跟 picker/Rare 一致.
-                                if !group.variants.isEmpty, expandedGroupKey == group.id {
+                                // 搜索中命中组自动展开 (isGroupExpanded) — 命中的变体不再藏在 +N 里.
+                                if !group.variants.isEmpty, isGroupExpanded(group) {
                                     groupedVariantSections(for: group) { variant in
                                         libraryRow(variant, isVariant: true, group: group)
                                     }
@@ -484,7 +497,11 @@ struct ExerciseLibraryBrowser: View {
                 if phase == .idle { scheduleRailHide() } else { revealRail() }
             }
             // filter/搜索变化 → 收起手风琴 (跟 picker 一致, 避免残留孤儿展开态).
-            .onChange(of: query) { _, _ in expandedGroupKey = nil }
+            // 搜索豁免: 手动展开的组仍在当前结果里 (命中组) 则保留 — 边敲边看展开的变体不被打断.
+            .onChange(of: query) { _, _ in
+                if let key = expandedGroupKey, filteredGroups.contains(where: { $0.id == key }) { return }
+                expandedGroupKey = nil
+            }
             .onChange(of: muscleFilter) { _, _ in expandedGroupKey = nil }
             .onChange(of: equipmentFilter) { _, _ in expandedGroupKey = nil }
             .onChange(of: movementFilter) { _, _ in expandedGroupKey = nil }
@@ -794,6 +811,106 @@ struct ExerciseDetailSheet: View {
         return out
     }
 
+    // MARK: - Your history (该动作的个人训练记录 — "我上次推了多重")
+
+    /// 一天一条: 当日最佳组 (有负重 → e1RM 最大那组; 纯自重/次数 → reps 最多那组). 时间升序.
+    private struct DayBest: Identifiable {
+        let day: Date
+        let weight: Double?   // nil = 无负重记录 (只显示 reps)
+        let reps: Int
+        let e1rm: Double?     // 仅负重组有
+        var id: Date { day }
+    }
+
+    /// 该动作在 data.sets 的按天最佳记录. Epley e1RM = w*(1+r/30), 跟 Insights 同口径.
+    private var historyDayBests: [DayBest] {
+        let cal = Calendar.current
+        var weighted: [Date: (w: Double, r: Int, e: Double)] = [:]
+        var repsOnly: [Date: Int] = [:]
+        for s in data.sets where s.exerciseId == exercise.id {
+            let day = cal.startOfDay(for: s.performedAt)
+            if let w = s.weight, let r = s.reps, w > 0, r > 0 {
+                let e = w * (1 + Double(r) / 30)
+                if e > (weighted[day]?.e ?? 0) { weighted[day] = (w, r, e) }
+            } else if let r = s.reps, r > 0 {
+                repsOnly[day] = max(repsOnly[day] ?? 0, r)
+            }
+        }
+        var out: [DayBest] = weighted.map { DayBest(day: $0.key, weight: $0.value.w, reps: $0.value.r, e1rm: $0.value.e) }
+        // 该天没有负重组才用纯次数兜底 (混合时负重组更有信息量)
+        out += repsOnly.filter { weighted[$0.key] == nil }.map { DayBest(day: $0.key, weight: nil, reps: $0.value, e1rm: nil) }
+        return out.sorted { $0.day < $1.day }
+    }
+
+    /// "Your history" 小节 — 有记录才渲染: 历史最佳 e1RM + 迷你 sparkline + 最近 3 次训练的当日最佳组.
+    /// 库入口 / picker 入口 / History 详情入口共用本 sheet, 一处生效三处可见.
+    @ViewBuilder
+    private var historySection: some View {
+        let bests = historyDayBests
+        if !bests.isEmpty {
+            let rmSeries = bests.filter { $0.e1rm != nil }
+            VStack(alignment: .leading, spacing: 10) {
+                HStack {
+                    Text("Your history")
+                        .font(.system(size: 10, weight: .heavy))
+                        .tracking(1.5)
+                        .textCase(.uppercase)
+                        .foregroundStyle(MasoColor.textFaint)
+                    Spacer()
+                    // 历史最佳 (max e1RM) — 单位走 weightLabel 管线, 跟随 kg/lb 设置.
+                    if let top = rmSeries.compactMap(\.e1rm).max() {
+                        Text(String(format: NSLocalizedString("Best e1RM %@", comment: "exercise detail history"),
+                                    weightLabel(top)))
+                            .font(.system(size: 11, weight: .bold).monospacedDigit())
+                            .foregroundStyle(MasoColor.accent)
+                    }
+                }
+                // 迷你 e1RM 趋势 (≥2 个负重日才画 — 单点画不成线)
+                if rmSeries.count >= 2 {
+                    Chart(rmSeries) { p in
+                        LineMark(
+                            x: .value("Date", p.day),
+                            y: .value("e1RM", p.e1rm ?? 0)
+                        )
+                        .foregroundStyle(MasoColor.accent)
+                        .lineStyle(StrokeStyle(lineWidth: 1.5, lineCap: .round))
+                        .interpolationMethod(.monotone)
+                    }
+                    .chartXAxis(.hidden)
+                    .chartYAxis(.hidden)
+                    // y 轴不从 0 起 — sparkline 只看趋势, 留一点上下呼吸空间
+                    .chartYScale(domain: sparklineDomain(rmSeries.compactMap(\.e1rm)))
+                    .frame(height: 40)
+                }
+                // 最近 3 次训练: 日期 · 当日最佳组
+                ForEach(bests.suffix(3).reversed()) { b in
+                    HStack {
+                        Text(relativeDay(b.day))
+                            .font(.system(size: 13))
+                            .foregroundStyle(MasoColor.textDim)
+                        Spacer()
+                        Text(b.weight.map { "\(weightLabel($0)) × \(b.reps)" }
+                             ?? String(format: NSLocalizedString("%d reps", comment: ""), b.reps))
+                            .font(.system(size: 13, weight: .semibold).monospacedDigit())
+                            .foregroundStyle(MasoColor.text)
+                    }
+                }
+            }
+            .padding(12)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(MasoColor.surfaceHi.opacity(0.5))
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+        }
+    }
+
+    /// sparkline y 域: [min, max] 各留 10% padding; 全部同值时给 ±1 防零高度域.
+    private func sparklineDomain(_ values: [Double]) -> ClosedRange<Double> {
+        guard let lo = values.min(), let hi = values.max() else { return 0...1 }
+        if lo == hi { return (lo - 1)...(hi + 1) }
+        let pad = (hi - lo) * 0.1
+        return (lo - pad)...(hi + pad)
+    }
+
     /// 语音播报按钮 — speaking 时显 stop, idle 时显 play. tap toggle.
     /// 朗读内容跟着 showFullInstructions 走 — 展开了就读全文, 没展开就读简化版.
     @ViewBuilder
@@ -942,6 +1059,10 @@ struct ExerciseDetailSheet: View {
                         )
                         .clipShape(RoundedRectangle(cornerRadius: 12))
                     }
+
+                    // Your history — 该动作的个人记录 (最近 3 次最佳组 + 历史最佳 e1RM + 趋势).
+                    // 放在要领区上方: 组间想确认"上次推了多重"比看文字要领更高频.
+                    historySection
 
                     // Instructions — 默认显示简化版 (LLM 提取的 2-3 个关键要点 / fallback 截断).
                     // 用户想看完整原文 → 点 "Show full instructions" 展开.
