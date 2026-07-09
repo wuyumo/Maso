@@ -66,6 +66,8 @@ struct PersistenceController {
         var settings: UserSettings
         var aiTodayPlan: Plan?
         var lastAIRefreshAt: Date?
+        /// 用户手调 aiTodayPlan 的时间 (P0#1-④) — optional + 默认 nil: 旧文件缺 key 也能解码.
+        var aiTodayPlanEditedAt: Date? = nil
         var updatedAt: Date
     }
 

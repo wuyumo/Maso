@@ -612,7 +612,7 @@ final class AIWorkoutService {
         - Available equipment: \(p.equipmentLine)\(p.coachMemoryBlock)
 
         RECENT WORKOUTS (last 14 days)
-        \(recent)
+        \(recent)\(p.bestSetsBlock)
 
         TODAY IS: \(p.todayDateLabel)
 
@@ -623,7 +623,7 @@ final class AIWorkoutService {
         - MUSCLE BALANCE: no more than 2 exercises whose PRIMARY muscle is the same in this session (never 3 chest moves in one day). If two exercises share a primary muscle, they must differ in angle, equipment, or movement plane. Isolation exercises must be at most 40% of the session. Prefer including a pull for every push.
         - This user's goal is \(p.goalLabel). Write COMPOUND lifts at \(p.goalRepCompound)-\(p.goalRepCompoundHi) reps and ISOLATION lifts at \(p.goalRepIso)-\(p.goalRepIsoHi) reps. Use \(p.goalSetsLo)-\(p.goalSetsHi) sets per exercise. Stop ~1-3 reps short of failure (do not write 'to failure').
         - Set "duration_seconds" only for timed holds/cardio; otherwise null. Rest between sets is \(p.goalRest)s (handled by the app).
-        - Pick ONLY exercises the user can perform with: \(p.equipmentLine). Pick weights conservatively if no history; scale to recent volume if any.\(p.focusNote.map { "\n        - PRIORITY TODAY: \($0). Bias this session to address it directly without breaking the rules above." } ?? "")
+        - Pick ONLY exercises the user can perform with: \(p.equipmentLine). Pick weights conservatively if no history; scale to recent volume if any.\(p.bestSetsGuideline)\(p.focusNote.map { "\n        - PRIORITY TODAY: \($0). Bias this session to address it directly without breaking the rules above." } ?? "")
         - EXACTLY \(maxExercises) exercises in this session — no more, no fewer.
 
         AVAILABLE EXERCISES — every "exercise_name" MUST be copied EXACTLY (verbatim, character-for-character) from this list. Do NOT invent names or use synonyms:
@@ -674,7 +674,7 @@ final class AIWorkoutService {
         - Available equipment: \(p.equipmentLine)\(p.coachMemoryBlock)
 
         RECENT WORKOUTS (last 14 days)
-        \(recent)
+        \(recent)\(p.bestSetsBlock)
 
         GUIDELINES
         - The \(count) routines MUST together form a balanced weekly split with >=48h before the same muscle is trained hard again. Use Push/Pull/Legs only at 5-6 days, Upper/Lower at 4 days, and full-body A/B/C at <=3 days. Never output \(count) near-copies.
@@ -684,7 +684,7 @@ final class AIWorkoutService {
         - PUSH/PULL BALANCE across the week: total pulling exercises MUST be >= pushing exercises (never let pushes exceed pulls by more than ~20%). Each week must include both a knee-dominant (squat/leg press) and a hip-dominant (hinge/RDL/deadlift) movement.
         - This user's goal is \(p.goalLabel). Write COMPOUND lifts at \(p.goalRepCompound)-\(p.goalRepCompoundHi) reps and ISOLATION lifts at \(p.goalRepIso)-\(p.goalRepIsoHi) reps. Use \(p.goalSetsLo)-\(p.goalSetsHi) sets per exercise. Stop ~1-3 reps short of failure (do not write 'to failure').
         - Set "duration_seconds" only for timed holds/cardio; otherwise null. Rest between sets is \(p.goalRest)s (handled by the app).
-        - Pick ONLY exercises the user can perform with: \(p.equipmentLine). Pick weights conservatively if no history; scale to recent volume if any.
+        - Pick ONLY exercises the user can perform with: \(p.equipmentLine). Pick weights conservatively if no history; scale to recent volume if any.\(p.bestSetsGuideline)
         - Respect the "wants to strengthen" focus by giving those muscles an extra exercise / earlier slot where it fits, without breaking the rules above.\(p.focusNote.map { "\n        - PRIORITY THIS TIME: \($0). Skew this week's split to address it directly (more volume / earlier slots / an extra movement) without breaking the rules above." } ?? "")
         - EXACTLY \(perRoutine) exercises in EVERY routine — no more, no fewer.
 
@@ -865,6 +865,10 @@ struct AIPayload {
     let daysPerWeek: Int
     let wantStrengthen: [String]  // muscle display names
     let recentHistory: [HistoryEntry]
+    /// 近 14 天每个练过动作的最佳组 ("Bench Press: 80kg×8", canonical 英文名) — DataStore.buildAIPayload
+    /// 按 e1RM 挑选注入, 上限 ~20 条. 非空时 prompt 注 RECENT BEST SETS 块 + 负重进阶硬约束
+    /// (P0#1-②: 否则 LLM 对 weight_kg 只能盲猜, 练 5 年的人看到卧推 55kg 一眼判死).
+    let recentBestSets: [String]
     let todayDateLabel: String
 
     // --- 目标驱动的科学化字段 (DataStore.buildAIPayload 从 settings.trainingGoalKind 派生) ---
@@ -897,6 +901,20 @@ struct AIPayload {
         equipment.isEmpty
             ? "no restriction — assume a full gym"
             : equipment.joined(separator: ", ")
+    }
+
+    /// 注进 prompt 的"最佳组"块 — 非空时跟在 RECENT WORKOUTS 后面 (含换行前缀), 空时 "".
+    var bestSetsBlock: String {
+        guard !recentBestSets.isEmpty else { return "" }
+        return "\n\nRECENT BEST SETS (the user's actual best working set per exercise, last 14 days)\n"
+            + recentBestSets.map { "  • \($0)" }.joined(separator: "\n")
+    }
+
+    /// 负重进阶硬约束 — 只在有历史最佳组时注入 GUIDELINES (跟 bestSetsBlock 成对出现).
+    /// 0~+2.5kg 微进阶 + 偏差 ≤10%: 让 weight_kg 从盲猜变成基于真实负重的 progression.
+    var bestSetsGuideline: String {
+        guard !recentBestSets.isEmpty else { return "" }
+        return "\n        - WEIGHT PROGRESSION: for every exercise listed in RECENT BEST SETS, \"weight_kg\" MUST be based on that recorded set — keep the same weight or add a small progression of 0 to +2.5 kg, and NEVER deviate more than 10% from the recorded weight. Guess weights ONLY for exercises with no recorded set."
     }
 
     /// 注进 prompt 的教练记忆块 — 非空时返回完整段落 (含换行前缀), 空时返回 "".

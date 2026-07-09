@@ -38,6 +38,10 @@ final class DataStore {
     /// `lastAIRefreshAt` 是当天日期, 同一天不重复 refresh.
     var aiTodayPlan: Plan? = nil
     var lastAIRefreshAt: Date? = nil
+    /// 用户最近一次手调 aiTodayPlan 的时间 (P0#1-④) — 置位当天 refreshAIWorkoutIfNeeded 跳过自动
+    /// 重生成, 不冲掉用户调过的重量 (每天静默重生成会把手调值重置回 LLM 猜值). 持久化进 snapshot,
+    /// 否则重启 app 后 refresh 照样冲掉. 手动 Retry (forceRefreshAIWorkout) 不受此限.
+    var aiTodayPlanEditedAt: Date? = nil
     /// 最近一次今日 AI 生成是否失败 (网络/服务) — TodayScreen 据此露出"够不到 AI,已用推荐·重试"提示.
     var aiTodayFailed: Bool = false
 
@@ -220,6 +224,7 @@ final class DataStore {
             )
             store.aiTodayPlan = snapshot.aiTodayPlan
             store.lastAIRefreshAt = snapshot.lastAIRefreshAt
+            store.aiTodayPlanEditedAt = snapshot.aiTodayPlanEditedAt
             // 匿名分析 ID — 老快照 (UserSettings.anonymousId 字段加之前存的) 解码会落空串, 这里补铸一个.
             store.mintAnonymousIdIfNeeded()
             // 一次性迁移 (→ v3, #IA): My Plans 改成"只放用户主动 save 的". 清掉历史自动塞进去的
@@ -297,6 +302,7 @@ final class DataStore {
             settings: settings,
             aiTodayPlan: aiTodayPlan,
             lastAIRefreshAt: lastAIRefreshAt,
+            aiTodayPlanEditedAt: aiTodayPlanEditedAt,
             updatedAt: Date()
         )
         PersistenceController.shared.save(snapshot)
@@ -310,6 +316,7 @@ final class DataStore {
         self.settings = snapshot.settings
         self.aiTodayPlan = snapshot.aiTodayPlan
         self.lastAIRefreshAt = snapshot.lastAIRefreshAt
+        self.aiTodayPlanEditedAt = snapshot.aiTodayPlanEditedAt
         flushSave()  // import 是显式动作, 立即落盘不 debounce
     }
 
@@ -322,6 +329,7 @@ final class DataStore {
             settings: settings,
             aiTodayPlan: aiTodayPlan,
             lastAIRefreshAt: lastAIRefreshAt,
+            aiTodayPlanEditedAt: aiTodayPlanEditedAt,
             updatedAt: Date()
         )
     }
@@ -391,6 +399,13 @@ final class DataStore {
         let raw = RecommendedPrograms.plans(forDays: days, now: now, byId: exById)
         let cap = max(1, min(8, settings.exercisesPerSession))  // 模板现在 8 个动作, 上限 8
         let floorSets = max(1, settings.defaultSetsPerExercise)
+        // P0#1-⑤: 模板重量按 75kg 参考体重手写 (RecommendedPrograms: 深蹲 80kg 等), 60kg 女新手
+        // day-1 不该见 80kg 杠铃深蹲. 物化时按用户体重折算: factor = clamp(体重/75, 0.5...1.3),
+        // 折算后取 2.5kg 步进. 只动物化层, 模板定义本身不改; 没填体重 → factor 1 不折算.
+        let weightFactor: Double = {
+            guard let w = settings.weight, w > 0 else { return 1 }
+            return min(1.3, max(0.5, w / 75.0))
+        }()
         let goal = settings.trainingGoal
         // wantStrengthen 折叠到大肌群 section — 给"cap 时优先保留聚焦肌群动作"打分用.
         let focusSections: Set<MuscleGroup> = Set(settings.wantStrengthen.map { $0.section ?? $0 })
@@ -419,6 +434,10 @@ final class DataStore {
                 if s.reps != nil {  // 只动力量类 (有 reps) 的; cardio/flex 计时段不碰
                     let isIso = exById[s.exerciseId]?.mechanic == .isolation
                     s.reps = isIso ? goal.defaultRepsForIsolation() : goal.defaultRepsForCompound()
+                }
+                // 体重折算 (P0#1-⑤). weight==0 = 自重动作 (引体等), 保持 0 不折算.
+                if weightFactor != 1, let w = s.weight, w > 0 {
+                    s.weight = max(2.5, (w * weightFactor / 2.5).rounded() * 2.5)
                 }
                 return s
             }
@@ -687,6 +706,13 @@ final class DataStore {
         } else {
             plans.append(plan)
         }
+        // P0#1-④: 编辑的是今日 AI 计划 (PlanDetailSheet 从 Today 卡打开 / 播放器保存都带 plan-ai- id) →
+        // 镜像写回 aiTodayPlan (Today 卡立即反映修改, 它跟 plans 是解耦副本) + 置"用户编辑过"时间戳,
+        // 当天的 refreshAIWorkoutIfNeeded 跳过自动重生成, 不冲掉手调的重量.
+        if let ai = aiTodayPlan, ai.id == plan.id {
+            aiTodayPlan = plan
+            aiTodayPlanEditedAt = Date()
+        }
         // R3 全局同步: 把本次"改了参数的既有 step"传播到所有 routine 的同 exerciseId step.
         // 仅在既有 step (id 不变) + 同动作 (exerciseId 不变) + 参数确有变化时触发;
         // 新增 step / 换动作不在此传播 (新增走 makeSeededStep 的"采用全局"逻辑, 换动作只是 swap).
@@ -735,7 +761,13 @@ final class DataStore {
             for si in ai.steps.indices where ai.steps[si].exerciseId == src.exerciseId {
                 if !Self.sameParams(ai.steps[si], src) { apply(&ai.steps[si]); aiChanged = true }
             }
-            if aiChanged { aiTodayPlan = ai; changed = true }
+            if aiChanged {
+                aiTodayPlan = ai
+                changed = true
+                // P0#1-④: 全局同步把用户改过的参数传播进了 aiTodayPlan (训练中调重最常见的路径) —
+                // 同样算"用户手调过", 当天不要被自动重生成冲掉.
+                aiTodayPlanEditedAt = Date()
+            }
         }
         if changed { save() }
     }
@@ -886,6 +918,19 @@ final class DataStore {
     /// 今日推荐 plan — wantStrengthen 覆盖度 + LRU (跟 web 端 pickTodayPlan 一致)
     var todayRecommendedPlan: Plan? {
         pickTodayPlan(plans: plans, settings: settings, exById: exById)
+    }
+
+    /// Today 主卡实际展示的"今日训练" — TodayScreen 卡片与 RootView 中键 quickStart 共用
+    /// (两处必须同一优先级, 否则点中间 tab 启动的训练 ≠ 卡片上显示的那张).
+    /// 默认用户自己的 plans 优先 (pickTodayPlan LRU) — 那些是用户见过/调过的, 更可信任.
+    /// 例外 (P0#1-①): plans 里全部是引导种下的 autoGenerated 模板 (seedStarterRoutines 产物,
+    /// 用户同样没见过) 且真 AI 计划已生成 → 优先展示 AI (✨AI badge), 否则新用户的 AI 分支永不可达,
+    /// "AI Workout Planner" 的首日承诺落空. 用户一旦 save/自建过任何一条 (非 autoGenerated),
+    /// 回到"用户自己的 plans 优先".
+    var suggestedTodayPlan: Plan? {
+        let onlySeeded = !plans.isEmpty && plans.allSatisfy(\.autoGenerated)
+        if onlySeeded, let ai = aiTodayPlan, !ai.steps.isEmpty { return ai }
+        return todayRecommendedPlan ?? aiTodayPlan
     }
 
     /// 给定 exerciseId, 找最近一次的 set 记录. 用来在 PlanPlayer / PlanDetailSheet 显示
@@ -1151,6 +1196,11 @@ final class DataStore {
         if let last = lastAIRefreshAt, Calendar.current.isDateInToday(last), aiTodayPlan != nil {
             return  // 今天已经成功生成过, skip
         }
+        // P0#1-④: 用户今天手调过 AI 计划 (updatePlan / 全局同步置位) → 跳过自动重生成,
+        // 不冲掉手调的重量. 用户主动点 Retry/Refresh 走 forceRefreshAIWorkout, 不受此限.
+        if let edited = aiTodayPlanEditedAt, Calendar.current.isDateInToday(edited), aiTodayPlan != nil {
+            return
+        }
         let payload = buildAIPayload()
         let plan = await AIWorkoutService.shared.generateToday(
             payload: payload,
@@ -1159,6 +1209,7 @@ final class DataStore {
         )
         if let plan {
             aiTodayPlan = applyScience(to: plan)   // 科学化兜底: 复合优先 + 同 section ≤2 + slot-1 + push≥pull
+            aiTodayPlanEditedAt = nil              // 新生成的还没被手调过 — 清脏标
             lastAIRefreshAt = Date()
             aiTodayFailed = false
         } else {
@@ -1167,9 +1218,20 @@ final class DataStore {
     }
 
     /// 把 enforceScience 套到单个 Plan 的 steps 上 (AI 路径用 —— AI plan 不走 pad, 仅重排/去多余同 section).
+    /// 顺带做客户端负重兜底 (P0#1-③): LLM 的 weight_kg 是猜值 — 有真实训练记录的动作用 lastSet.weight
+    /// 覆盖, 猜值只对无历史动作生效. 做在"AI 结果落 plan"这一层, AIWorkoutService 保持无 DataStore 依赖
+    /// (它是 singleton service, 反向引用会成循环依赖).
     private func applyScience(to plan: Plan) -> Plan {
         var p = plan
         p.steps = DataStore.enforceScience(p.steps, exById: exById)
+        p.steps = p.steps.map { step in
+            var s = step
+            // 只覆盖力量类 (有 reps); w>0 排除自重记录 (引体等), 别把 LLM 给的负重清成 0.
+            if s.reps != nil, let w = lastSet(forExerciseId: s.exerciseId)?.weight, w > 0 {
+                s.weight = w
+            }
+            return s
+        }
         return p
     }
 
@@ -1184,6 +1246,7 @@ final class DataStore {
         )
         if let plan {
             aiTodayPlan = applyScience(to: plan)
+            aiTodayPlanEditedAt = nil   // 用户主动重生成 = 放弃之前的手调 — 清脏标
             lastAIRefreshAt = Date()
             aiTodayFailed = false
         } else {
@@ -1201,6 +1264,7 @@ final class DataStore {
             payload: payload, library: exercises, maxExercises: settings.exercisesPerSession,
             surface: "onboarding") {
             aiTodayPlan = applyScience(to: plan)
+            aiTodayPlanEditedAt = nil
             lastAIRefreshAt = Date()
             aiTodayFailed = false
         } else {
@@ -1755,6 +1819,27 @@ final class DataStore {
         }
         .sorted { $0.dateLabel > $1.dateLabel }  // 最近的在前
 
+        // P0#1-②: 近 14 天每个练过的动作附"最佳组" ("Bench Press: 80kg×8") — 之前 recentHistory 只有
+        // 肌群+组数, 不含任何 weight/reps, LLM 只能盲猜负重. e1RM (Epley) 最高的那组 = 最佳组;
+        // 上限 20 条防 prompt 爆, 超了按 e1RM 高的优先留 (大项负重信息量最大).
+        var bestByExercise: [String: SetRecord] = [:]
+        func e1rm(_ rec: SetRecord) -> Double {
+            guard let w = rec.weight, w > 0, let r = rec.reps, r > 0 else { return 0 }
+            return w * (1 + Double(r) / 30.0)
+        }
+        for rec in sets where rec.performedAt >= cutoff && e1rm(rec) > 0 {
+            if let cur = bestByExercise[rec.exerciseId], e1rm(cur) >= e1rm(rec) { continue }
+            bestByExercise[rec.exerciseId] = rec
+        }
+        let bestSets: [String] = bestByExercise.values
+            .sorted { e1rm($0) > e1rm($1) }
+            .prefix(20)
+            .map { rec in
+                // 名字优先库内 canonical 英文名 — 跟 prompt 的 AVAILABLE EXERCISES 目录同一词汇表.
+                let name = exById[rec.exerciseId]?.name ?? rec.exerciseName
+                return "\(name): \(String(format: "%g", rec.weight ?? 0))kg×\(rec.reps ?? 0)"
+            }
+
         // 目标驱动的 rep/sets/rest band — rep 中心值仍走既有 TrainingGoal 表 (复合 5/8/15, 孤立 8/12/18),
         // 在中心值上下做一个小区间给 LLM 留发挥空间 (compound -2..+2, isolation -2..+3, 下限夹到 1).
         let kind = settings.trainingGoalKind
@@ -1770,6 +1855,7 @@ final class DataStore {
             daysPerWeek: settings.weeklyTrainingDays,
             wantStrengthen: settings.wantStrengthen.map { $0.displayName },
             recentHistory: history,
+            recentBestSets: bestSets,
             todayDateLabel: df.string(from: Date()),
             goalLabel: kind.displayName,
             goalRepCompound: max(1, repC - 2),

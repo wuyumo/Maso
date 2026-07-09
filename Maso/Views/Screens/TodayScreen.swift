@@ -46,10 +46,9 @@ struct TodayScreen: View {
     @State private var paywallPresented = false
 
     private var suggested: Plan? {
-        // 默认推用户自己的 plans (pickTodayPlan: LRU 挑最久没练那张) —
-        // 这些 plan 是用户在 Plans tab 见过、可能调过的, 心智模型上是"我的训练计划",
-        // 比 AI 当场生成的陌生 plan 更可信任. AI 路径只在用户 plans 为空时兜底.
-        data.todayRecommendedPlan ?? data.aiTodayPlan
+        // 逻辑在 DataStore.suggestedTodayPlan (跟 RootView 中键 quickStart 共用, 必须同一优先级):
+        // 用户自己的 plans 优先 (LRU); 但全部还是引导种子模板且真 AI 已生成时优先 AI (✨AI).
+        data.suggestedTodayPlan
     }
 
     /// 时段问候 — DESIGN.md §4.2: 0-5 凌晨 / 5-12 早上 / 12-18 下午 / 18-24 晚上.

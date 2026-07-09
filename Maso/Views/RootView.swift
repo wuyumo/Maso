@@ -537,9 +537,9 @@ struct RootView: View {
         // 3) 已在 Today + 没训练 → quickStart 开了就直接开练今日推荐 (muscle memory: 选中 tab 再点 = 开始)
         let quickStart = data.settings.quickStartOnActiveTab
         guard quickStart else { return }
-        // P1-1: 跟 TodayScreen.suggested 用同一优先级 (recommended ?? ai) —
+        // P1-1: 跟 TodayScreen.suggested 用同一来源 (DataStore.suggestedTodayPlan) —
         // 否则点中间 tab 启动的训练 ≠ 卡片上显示的那张, 状态错位.
-        let plan = data.todayRecommendedPlan ?? data.aiTodayPlan
+        let plan = data.suggestedTodayPlan
         guard let plan, !plan.steps.isEmpty else { return }
         startTraining(plan)
     }
