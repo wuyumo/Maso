@@ -23,6 +23,8 @@
 "Finished workouts show up here. Start your first one and watch your progress grow." = "Finished workouts show up here. Start your first one and watch your progress grow.";
 "Retry" = "Retry";
 "Couldn't reach the AI coach — showing templates instead." = "Couldn't reach the AI coach — showing templates instead.";
+"Updated your plan." = "Updated your plan.";
+"Couldn't reach the AI coach — your plan is unchanged." = "Couldn't reach the AI coach — your plan is unchanged.";
 "AI plan unavailable — showing your recommended plan." = "AI plan unavailable — showing your recommended plan.";
 "Today" = "Today";
 "Yesterday" = "Yesterday";

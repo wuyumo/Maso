@@ -89,6 +89,7 @@
 		88B007435E601164A2241EDE /* LayoutToggle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F761A3AFFC27FB54D554AC8 /* LayoutToggle.swift */; };
 		8CA66B3BC7C970E107B47B00 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B7EB0429B08168404618F1BA /* Assets.xcassets */; };
 		8D0F586EFC644CFDF69F18F8 /* exercises-new.json in Resources */ = {isa = PBXBuildFile; fileRef = AFFACBCE14220218C3F49853 /* exercises-new.json */; };
+		917F8994567C132FC3EFF55B /* CoachSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE73631309F4040E80314ED8 /* CoachSession.swift */; };
 		919C25BB4DF2299218BEEE94 /* TimelineBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = F96CC6B018F159D5FA8FE982 /* TimelineBar.swift */; };
 		94726ECFE4CED09904E4FBA1 /* Exercise.swift in Sources */ = {isa = PBXBuildFile; fileRef = D77C73F79BDCE3D7C90EF2C7 /* Exercise.swift */; };
 		94D4CE6164253560EE728358 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA133CA664EEBFD23357FBF5 /* Colors.swift */; };
@@ -348,6 +349,7 @@
 		F9B75264B14BF7AA46A5CC5A /* MusclesPickerSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusclesPickerSheet.swift; sourceTree = "<group>"; };
 		FC61BDA12796DCF77FEDA908 /* MuscleStatusShareCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuscleStatusShareCard.swift; sourceTree = "<group>"; };
 		FC99B70FE754501BBE53A4D8 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		FE73631309F4040E80314ED8 /* CoachSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoachSession.swift; sourceTree = "<group>"; };
 		FEB924488C05EA5A27B8B504 /* DataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStore.swift; sourceTree = "<group>"; };
 		FEDA5CD52A27EE48B089AD46 /* SettingsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsScreen.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -397,6 +399,7 @@
 			children = (
 				A869CB4AC4EF2FD9CFD9D31C /* AIWorkoutService.swift */,
 				CEEE409128074A2BE3999170 /* Anatomy.swift */,
+				FE73631309F4040E80314ED8 /* CoachSession.swift */,
 				E4CD0A6C911CC31064AFC8D4 /* CommunityPlans.swift */,
 				FEB924488C05EA5A27B8B504 /* DataStore.swift */,
 				34F46E6B89F953552C31D180 /* ExerciseGrouping.swift */,
@@ -868,6 +871,7 @@
 				17D9E2729D5EB223EF42F762 /* AppRouter.swift in Sources */,
 				E78F1A3F512D37B2BFA4A286 /* BodyHint.swift in Sources */,
 				F05D16F0A53CAF7281490F9F /* CardChrome.swift in Sources */,
+				917F8994567C132FC3EFF55B /* CoachSession.swift in Sources */,
 				94D4CE6164253560EE728358 /* Colors.swift in Sources */,
 				2911B010C07D8A9CE402F8A1 /* CommunityPlans.swift in Sources */,
 				532DFBDCD4B16B6F58710B61 /* CommunityScreen.swift in Sources */,

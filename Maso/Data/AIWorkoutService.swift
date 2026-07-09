@@ -142,6 +142,100 @@ final class AIWorkoutService {
         }
     }
 
+    // MARK: - Coach 修订轮 (one-shot revision — coach-tab-design.md §3)
+
+    /// 修订轮注入 buildRoutinesPrompt 骨架的三块上下文. ⚠️ USER PROFILE / RECENT BEST SETS /
+    /// 负重进阶硬约束随骨架**原样保留** (评审红线: 不许拿它们腾 token) — 复用同一个 prompt builder
+    /// 而不是另写一份, 就是为了让这些块结构上不可能被落下.
+    private struct RevisionSpec {
+        /// CURRENT ROUTINES 紧凑结构块 (每天: 名称 + 动作/组次/重量).
+        let currentBlock: String
+        /// 用户这轮的修改意见 (原话).
+        let feedback: String
+        /// 定向修订目标 ("Day 2" / 动作名) — 非空时追加 ONLY MODIFY 指令.
+        let onlyModify: String?
+    }
+
+    /// Coach 对话的修订轮 — 在现有 buildRoutinesPrompt 骨架上追加 CURRENT ROUTINES + USER FEEDBACK
+    /// (+ ONLY MODIFY). 响应 schema 跟 generateRoutines 完全一致 (routines 数组).
+    /// ⚠️ 返回的天数/顺序**不保证** == current (LLM 会漂) — caller (DataStore.coachGenerate)
+    /// 必须过 reconcileRevisedRoutines 对齐回填, 这里不兜.
+    func reviseRoutines(
+        payload: AIPayload,
+        library: [Exercise],
+        current: [Plan],
+        feedback: String,
+        onlyModify: String? = nil,
+        maxExercises: Int = 4,
+        surface: String = "coach_chat"
+    ) async -> [Plan]? {
+        guard Self.isConfigured else {
+            state = .failure("AI proxy not configured")
+            Analytics.shared.track("ai_routine_generate_fail", ["surface": .string(surface), "reason": .string("not_configured")])
+            return nil
+        }
+        guard !current.isEmpty else { return nil }   // 无基线不叫修订 — caller 走首轮管线
+        state = .generating
+        // 沿用 ai_routine_generate_* 事件族, mode 区分修订轮. 无 PII: feedback 原文不进 analytics.
+        Analytics.shared.track("ai_routine_generate_start", ["surface": .string(surface), "mode": .string("revision")])
+        do {
+            let spec = RevisionSpec(
+                currentBlock: currentRoutinesBlock(current, library: library),
+                feedback: feedback,
+                onlyModify: onlyModify
+            )
+            let raw = try await callDeepSeekRoutines(
+                payload: payload, library: library,
+                count: current.count, perRoutine: maxExercises, revision: spec)
+            let routines = try parseRoutinesResponse(raw)
+            let plans = routines.enumerated().compactMap { (i, r) -> Plan? in
+                let plan = buildPlan(from: r, library: library, maxExercises: maxExercises, index: i)
+                return plan.steps.isEmpty ? nil : plan
+            }
+            guard !plans.isEmpty else {
+                state = .failure("AI returned no matching exercises")
+                Analytics.shared.track("ai_routine_generate_fail", ["surface": .string(surface), "reason": .string("empty_match")])
+                return nil
+            }
+            state = .success(Date())
+            let totalSteps = plans.reduce(0) { $0 + $1.steps.count }
+            Analytics.shared.track("ai_routine_generate_success", [
+                "surface": .string(surface), "step_count": .int(totalSteps), "source": .string("ai"),
+            ])
+            return plans
+        } catch let error as AIError {
+            state = .failure(error.userMessage)
+            Analytics.shared.track("ai_routine_generate_fail", ["surface": .string(surface), "reason": .string(error.analyticsReason)])
+            return nil
+        } catch {
+            state = .failure(error.localizedDescription)
+            Analytics.shared.track("ai_routine_generate_fail", ["surface": .string(surface), "reason": .string("network")])
+            return nil
+        }
+    }
+
+    /// CURRENT ROUTINES 紧凑结构块 — 每天一行: "DAY n — 名称: 动作 sets×reps @kg; …".
+    /// 只放结构必需字段 (token 预算); 动作用库内 canonical 英文名 (跟 AVAILABLE EXERCISES 同一
+    /// 词汇表, LLM 保留未改动作时能被 buildPlan 精确匹配回来); id 不进 prompt.
+    private func currentRoutinesBlock(_ current: [Plan], library: [Exercise]) -> String {
+        // 双 key lookup (id + 旧 imageFolder alias) — 跟 DataStore.exById 同思路, 老 plan 步骤也能解析.
+        var byId: [String: Exercise] = [:]
+        for ex in library {
+            byId[ex.id] = ex
+            if let folder = ex.imageFolder, byId[folder] == nil { byId[folder] = ex }
+        }
+        return current.enumerated().map { (i, plan) in
+            let steps = plan.steps.map { s -> String in
+                let name = byId[s.exerciseId]?.name ?? s.exerciseId
+                var line = "\(name) \(s.sets)x\(s.reps.map(String.init) ?? "-")"
+                if let w = s.weight, w > 0 { line += " @\(String(format: "%g", w))kg" }
+                if let d = s.duration { line += " \(d)s" }
+                return line
+            }.joined(separator: "; ")
+            return "DAY \(i + 1) — \(plan.name): \(steps)"
+        }.joined(separator: "\n")
+    }
+
     // MARK: - Free Workout exercise picker (AI-driven)
 
     /// 给 "自由训练" 自动挑动作 + 排序. 上下文比 generateToday 多一项 `targetMuscles`,
@@ -526,7 +620,8 @@ final class AIWorkoutService {
     }
 
     /// 多套 routine 调用 — 跟 callDeepSeek 同代理/格式, 只是换 multi-routine prompt + 更大 token 预算.
-    private func callDeepSeekRoutines(payload: AIPayload, library: [Exercise], count: Int, perRoutine: Int) async throws -> String {
+    /// revision 非 nil = Coach 修订轮 (同一 prompt 骨架追加修订块, 见 buildRoutinesPrompt).
+    private func callDeepSeekRoutines(payload: AIPayload, library: [Exercise], count: Int, perRoutine: Int, revision: RevisionSpec? = nil) async throws -> String {
         let url = URL(string: "\(Self.proxyURL)/v1/chat/completions")!
         var req = URLRequest(url: url)
         req.httpMethod = "POST"
@@ -534,7 +629,7 @@ final class AIWorkoutService {
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
         req.setValue(Self.clientToken, forHTTPHeaderField: "X-Maso-Client-Token")
 
-        let prompt = buildRoutinesPrompt(payload: payload, library: library, count: count, perRoutine: perRoutine)
+        let prompt = buildRoutinesPrompt(payload: payload, library: library, count: count, perRoutine: perRoutine, revision: revision)
         let body: [String: Any] = [
             "model": "deepseek-chat",
             "max_tokens": 4096,                 // N 套 routine 需要更多 token
@@ -648,7 +743,10 @@ final class AIWorkoutService {
     }
 
     /// 多套 routine 的 prompt — 让 LLM 一次产出 count 套组成均衡周分化的 routine, 每套各带 rationale.
-    private func buildRoutinesPrompt(payload: AIPayload, library: [Exercise], count: Int, perRoutine: Int) -> String {
+    /// revision 非 nil = Coach 修订轮: 同一骨架上插 CURRENT ROUTINES + USER FEEDBACK 块与修订规则
+    /// (⚠️ 修订轮不另写 prompt — USER PROFILE / RECENT BEST SETS / 负重进阶硬约束必须原样保留,
+    ///  评审红线; 共用 builder 让这些块结构上不可能被落下).
+    private func buildRoutinesPrompt(payload: AIPayload, library: [Exercise], count: Int, perRoutine: Int, revision: RevisionSpec? = nil) -> String {
         let p = payload
         let recent = p.recentHistory.isEmpty
             ? "(none yet — this is the user's first week)"
@@ -658,6 +756,25 @@ final class AIWorkoutService {
             ? "(no specific focus)"
             : p.wantStrengthen.joined(separator: ", ")
         let catalog = candidateNames(from: library).map { "- \($0)" }.joined(separator: "\n")
+
+        // 修订块 — 插在 RECENT WORKOUTS 之后 (上下文区), 规则行追加在 GUIDELINES 开头 (优先级最高).
+        let revisionContext: String = revision.map { r in
+            """
+            \n
+            CURRENT ROUTINES (the user's existing weekly plan — you are REVISING these, NOT starting over)
+            \(r.currentBlock)
+
+            USER FEEDBACK (the revision request)
+            "\(r.feedback)"
+            """
+        } ?? ""
+        let revisionRules: String = revision.map { r in
+            var rules = "\n        - REVISION MODE: apply USER FEEDBACK to CURRENT ROUTINES. Return ALL \(count) days. Any day or exercise the feedback does not mention must stay IDENTICAL to CURRENT ROUTINES (same exercises, sets, reps, weights). Keep each day's \"name\" unchanged unless the feedback asks to rename it."
+            if let only = r.onlyModify, !only.isEmpty {
+                rules += "\n        - ONLY MODIFY \(only); return ALL days, keep unmentioned days IDENTICAL."
+            }
+            return rules
+        } ?? ""
 
         // ⚠️ GUIDELINES 跟 buildPrompt (单 Today plan) 的科学规则刻意成对镜像 (改一处记得改另一处)
         //    — 编译期无法强约束两者一致, 故并排放, 靠 enforceScience() 在代码侧兜底真正落实硬规则.
@@ -674,9 +791,9 @@ final class AIWorkoutService {
         - Available equipment: \(p.equipmentLine)\(p.coachMemoryBlock)
 
         RECENT WORKOUTS (last 14 days)
-        \(recent)\(p.bestSetsBlock)
+        \(recent)\(p.bestSetsBlock)\(revisionContext)
 
-        GUIDELINES
+        GUIDELINES\(revisionRules)
         - The \(count) routines MUST together form a balanced weekly split with >=48h before the same muscle is trained hard again. Use Push/Pull/Legs only at 5-6 days, Upper/Lower at 4 days, and full-body A/B/C at <=3 days. Never output \(count) near-copies.
         - Every routine MUST start with a COMPOUND (multi-joint) movement for its primary muscle. NEVER put an isolation exercise in slot 1. Order each routine compound-first, then isolation; within compounds put the heaviest/most technical lift first (squat/deadlift/bench/row/press before machines or single-joint work).
         - Do NOT place an isolation exercise for a small muscle before a compound that uses it as a helper (no curls before rows/pulldowns; no triceps extensions before presses; no lateral raises before overhead press).

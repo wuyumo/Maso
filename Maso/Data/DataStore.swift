@@ -45,6 +45,13 @@ final class DataStore {
     /// 最近一次今日 AI 生成是否失败 (网络/服务) — TodayScreen 据此露出"够不到 AI,已用推荐·重试"提示.
     var aiTodayFailed: Bool = false
 
+    /// Coach tab 对话状态 (V1 in-memory, 不持久化 — 头注/修订环见 CoachSession.swift).
+    let coachSession = CoachSession()
+    /// Coach 生成任务 — 收归 DataStore 持有: 切 tab / 视图销毁不取消, 结果落回 coachSession
+    /// (工程评审钦点, 修"60s 生成被切走即丢"). @ObservationIgnored — 任务句柄不驱动 UI,
+    /// UI 看的是 coachSession.isGenerating.
+    @ObservationIgnored var coachGenerateTask: Task<Void, Never>? = nil
+
     /// 训练偏好改动后, 推荐计划是否待刷新. 改设置时只 mark dirty, 不立即 regen —
     /// 等用户在 Training Preferences 页点 Done / 关 sheet 再统一刷新 (一次, 不每次拖动都重算抖动).
     /// @ObservationIgnored — 纯内部 bookkeeping, 不该触发视图刷新.
@@ -1036,14 +1043,22 @@ final class DataStore {
     /// save 的是独立副本 (新 id + 时间戳), 之后用户编辑不影响来源.
     @discardableResult
     func savePlan(_ plan: Plan) -> Bool {
-        if isPlanSaved(plan) { return true }
+        savePlanReturningCopy(plan) != nil
+    }
+
+    /// savePlan 本体 — 返回已存副本 (Coach 的 savedIdMap 需要拿到副本 id 记映射, 见 saveCoachPlan).
+    ///   - 已存在 → 返回命中的既有副本 (幂等);
+    ///   - 撞免费上限 → nil (调用方弹 paywall).
+    func savePlanReturningCopy(_ plan: Plan) -> Plan? {
+        let sig = Self.planSignature(plan)
+        if let existing = plans.first(where: { Self.planSignature($0) == sig }) { return existing }
         guard canSaveMorePlans else {
             // 撞免费上限 → 不保存 (调用方弹 paywall). 报一次 at-cap 的 save 尝试. 无 PII (来源枚举).
             Analytics.shared.track("routine_save", [
                 "source": .string(plan.resolvedSource.rawValue),
                 "at_free_cap": .bool(true),
             ])
-            return false
+            return nil
         }
         let now = Date()
         let copy = Plan(
@@ -1063,11 +1078,34 @@ final class DataStore {
             "at_free_cap": .bool(false),
         ])
         save()
-        return true
+        return copy
+    }
+
+    /// 书签开关的"取消保存" (Coach 设计文档 §2) — savePlan 的逆操作: 传入的是"来源卡"的 plan
+    /// (生成卡 / browse 预览), 不是已存副本本身. 定位顺序: savedIdMap 反查 (副本改名后签名会
+    /// 漂移, id 不会) → 签名匹配兜底. 命中即删 + 存盘 + analytics; 没命中静默 no-op.
+    func unsavePlan(matching plan: Plan) {
+        var idx: Int? = nil
+        if let savedId = coachSession.savedIdMap[plan.id] {
+            idx = plans.firstIndex(where: { $0.id == savedId })
+        }
+        if idx == nil {
+            let sig = Self.planSignature(plan)
+            idx = plans.firstIndex(where: { Self.planSignature($0) == sig })
+        }
+        guard let idx else { return }
+        let removed = plans.remove(at: idx)
+        // 清掉指向该副本的映射 (可能是别的生成卡 id 指过来的, 按 value 过滤).
+        coachSession.savedIdMap = coachSession.savedIdMap.filter { $0.value != removed.id }
+        Analytics.shared.track("routine_unsave", [
+            "source": .string(removed.resolvedSource.rawValue),
+        ])
+        save()
     }
 
     /// 这个(来源)plan 是否已经在"我的计划"里. 存进去的是新 id 的独立副本, 不能用 id 比 —
     /// 按 名字 + 动作序列 的内容签名匹配. 给 Tab 2 卡片"添加"按钮显示"已添加"态用 (响应式: plans 一变即更新).
+    /// ⚠️ Coach 生成卡优先用 isCoachPlanSaved (savedIdMap 反查, 副本改名后不失灵), 这个只作签名兜底.
     func isPlanSaved(_ plan: Plan) -> Bool {
         let sig = Self.planSignature(plan)
         return plans.contains { Self.planSignature($0) == sig }

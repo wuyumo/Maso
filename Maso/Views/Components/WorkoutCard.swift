@@ -58,6 +58,9 @@ struct WorkoutCard: View {
     /// 紧凑排版 (Routines / My Plans 列表卡用): 标题 → 计数 → [小肌肉图 左 | 动作 chips 右] 横排,
     /// 比默认的"大居中肌肉图 + 计数 + chips 竖排"更密、更易扫. Today 英雄卡保持 false (大图突出).
     var compactLayout: Bool = false
+    /// 书签态覆盖 — Coach 生成卡传 data.isCoachPlanSaved(plan) (savedIdMap 反查, 副本改名后不失灵).
+    /// nil → 现状 data.isPlanSaved(plan) (签名匹配), 其它调用方不受影响.
+    var savedOverride: Bool? = nil
 
     /// 被 LimitedFlowLayout 截断的 exercise pill 个数 — 用于动态构造 "+N more" 文案.
     /// Layout 在 placeSubviews 里通过 onTruncate callback async 写回, SwiftUI 下一轮 re-render
@@ -285,7 +288,7 @@ struct WorkoutCard: View {
 
             // Tab 2 (Plans browse): 卡片底部 "Save" 主按钮 — 靠右下角 (跟其它卡的操作按钮位一致).
             if let addAction {
-                AddToPlansButton(isSaved: data.isPlanSaved(plan), action: addAction)
+                AddToPlansButton(isSaved: savedOverride ?? data.isPlanSaved(plan), action: addAction)
                     .frame(maxWidth: .infinity, alignment: .trailing)
                     .padding(.horizontal, MasoMetrics.cardPadding)
                     .padding(.top, 14)
@@ -330,19 +333,20 @@ private struct ExercisePill: View {
     }
 }
 
-/// Tab 2 (AI / Classics browse) 卡片底部主操作 — "Save" (存进 My Routines).
+/// Tab 2 / Coach 卡片底部主操作 — Save ↔ Saved 书签开关 (coach-tab-design.md §2).
 /// 用 accent tinted 风格 (非实心): 它在卡片列表里重复出现, 实心会太吵; 详情页那个全宽 CTA 才用实心.
-/// 文案 "Save" → 已存态 "✓ Saved" (灰, 不可再点). 未存态无 icon, 已存态用 checkmark — 去掉了原书签 icon.
+/// icon: bookmark (未存) ↔ bookmark.fill (已存). **两态都可点** — action 恒触发, toggle 语义由
+/// 调用方决定 (Coach: 已存再点 = unsave; Classics 这类"存整套"的调用方自己 guard). 视觉沿用现状:
+/// 未存 accent (可操作) / 已存灰 (已收藏态).
 struct AddToPlansButton: View {
-    /// 该计划是否已在"我的计划"里 — true → 按钮变"已添加"态 (灰 ✓, 不可再点).
+    /// 该计划是否已在"我的计划"里 — true → bookmark.fill 已存态 (仍可点, 再点由调用方 unsave).
     var isSaved: Bool = false
     var action: () -> Void
 
     var body: some View {
-        Button(action: { if !isSaved { action() } }) {
+        Button(action: action) {
             HStack(spacing: 6) {
-                // 图标 + 文案 (跟 History 的 Repeat 钮同款形式): 未存=加号, 已存=对勾.
-                Image(systemName: isSaved ? "checkmark" : "plus")
+                Image(systemName: isSaved ? "bookmark.fill" : "bookmark")
                     .font(.system(size: 11, weight: .bold))
                 Text(isSaved ? "Saved" : "Save")
                     .font(.system(size: 13, weight: .bold))
@@ -350,13 +354,12 @@ struct AddToPlansButton: View {
             // 包裹内容 (不撑满) → 小一号胶囊; 在卡片 VStack(.leading) 里自动靠左.
             .padding(.vertical, 8)
             .padding(.horizontal, 14)
-            // 未添加: accent 绿 (可操作); 已添加: 灰 (状态, 非操作).
+            // 未存: accent 绿 (可操作); 已存: 灰 (状态感, 但依然可点切回).
             .foregroundStyle(isSaved ? MasoColor.textDim : MasoColor.accent)
             .background((isSaved ? MasoColor.textDim : MasoColor.accent).opacity(0.15))
             .clipShape(Capsule())
         }
         .buttonStyle(.plain)
-        .disabled(isSaved)
         .animation(.easeOut(duration: 0.2), value: isSaved)
     }
 }

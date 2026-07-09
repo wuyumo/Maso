@@ -99,7 +99,10 @@ struct PlansScreen: View {
             PlanDetailSheet(
                 initialPlan: plan,
                 onStart: { p in detailPlan = nil; DispatchQueue.main.async { onStart(p) } },
-                onAddToSaved: { p in addToSaved(p) }
+                // 书签开关: 已存再点 = unsave (sheet 不关, 按钮回到 Save); 未存 = 保存 + 关 sheet.
+                onAddToSaved: { p in
+                    if data.isPlanSaved(p) { data.unsavePlan(matching: p) } else { addToSaved(p) }
+                }
             )
             .presentationDetents([.medium, .large])
             .presentationDragIndicator(.visible)
@@ -256,7 +259,10 @@ struct PlansScreen: View {
             onStart: { detailPlan = plan },
             onShowDetail: { detailPlan = plan },
             prominentStart: false,
-            addAction: { addToSaved(plan) },
+            // 书签开关 (§2): 已存再点 = unsave, 未存 = 保存 (满额弹 paywall, addToSaved 内部处理).
+            addAction: {
+                if data.isPlanSaved(plan) { data.unsavePlan(matching: plan) } else { addToSaved(plan) }
+            },
             compactLayout: true
         )
     }
@@ -578,7 +584,8 @@ private struct LibraryEntryRow: View {
 //   - 壳: cardChrome() (padding 14 + surface 填充 + corner 16) — 跟 AISummaryCard 逐像素同一片.
 //   - 表头: 12pt bold accent 图标 + 14pt bold text 标题 + Spacer + 13pt semibold textDim 尾图标
 //     (AISummaryCard 表头是 sparkles + 标题 + arrow.clockwise; 这里图标换成 slider.horizontal.3,
-//      sparkles 留给 AI 生成的小结卡, 让两张卡读起来是"兄弟"不是"双胞胎"; 尾图标换成用户要的 chevron.right).
+//      sparkles 留给 AI 生成的小结卡, 让两张卡读起来是"兄弟"不是"双胞胎"; 尾图标 = pencil —
+//      owner 指定的"编辑"语义: 这张卡点开是去改偏好, 不是导航跳转, chevron 会误读成"进下一页").
 // 自然语言偏好入口收进编辑层底部的 "Tell your AI coach" 编辑器 — 卡上不再有单独的 tune 入口.
 struct PlanRationaleCard: View {
     @Environment(DataStore.self) private var data
@@ -599,7 +606,7 @@ struct PlanRationaleCard: View {
                     .font(.system(size: 14, weight: .bold))
                     .foregroundStyle(MasoColor.text)
                 Spacer()
-                Image(systemName: "chevron.right")
+                Image(systemName: "pencil")
                     .font(.system(size: 13, weight: .semibold))
                     .foregroundStyle(MasoColor.textDim)
             }
@@ -830,6 +837,9 @@ struct PlanDetailSheet: View {
     /// Classics 预览专用 — 整套项目的训练日数. > 1 时在 Save CTA 下标注 "含 N 个训练日":
     /// 预览显示的只是第一天, 不标注会让用户以为整套就这几个动作 (P0#3). 其他调用方不传 (nil 不显示).
     let classicsDayCount: Int?
+    /// 书签态覆盖 (Coach 生成卡详情用 — savedIdMap 反查, 副本改名后不失灵).
+    /// nil → 现状 data.isPlanSaved(draft) (签名匹配), 其它调用方不受影响.
+    let savedOverride: Bool?
 
     @State private var draft: Plan
     @State private var showAddPicker: Bool = false
@@ -855,11 +865,12 @@ struct PlanDetailSheet: View {
     @State private var stepToReplaceId: String? = nil
 
     init(initialPlan: Plan, onStart: @escaping (Plan) -> Void, onAddToSaved: ((Plan) -> Void)? = nil,
-         classicsDayCount: Int? = nil) {
+         classicsDayCount: Int? = nil, savedOverride: Bool? = nil) {
         self.initialPlan = initialPlan
         self.onStart = onStart
         self.onAddToSaved = onAddToSaved
         self.classicsDayCount = classicsDayCount
+        self.savedOverride = savedOverride
         self._draft = State(initialValue: initialPlan)
     }
 
@@ -1175,17 +1186,15 @@ struct PlanDetailSheet: View {
         .padding(.top, 4)  // 跟 muscle map 之间留 18pt (VStack spacing 14 + 4) — 视觉分组
     }
 
-    /// Tab 2 browse 预览的主 CTA — "Save" (存进 My Routines). 跟 startWorkoutCTA 同视觉规格 (实心 accent 胶囊),
-    /// 文案/action 不同. action (= onAddToSaved) 内部负责 save + 关 sheet (满额弹 paywall).
+    /// Tab 2 browse / Coach 预览的主 CTA — Save ↔ Saved 书签开关 (跟 AddToPlansButton 同一套
+    /// bookmark 语言, coach-tab-design.md §2). 跟 startWorkoutCTA 同视觉规格 (实心 accent 胶囊).
+    /// **两态都可点** — action 恒触发, toggle 语义由调用方决定 (已存再点 = unsave, 按钮随 plans 响应式翻回 Save).
     private func addToPlansCTA(_ action: @escaping (Plan) -> Void) -> some View {
-        // 已添加 → "✓ Saved" 灰态 + 不可点, 跟卡片底部的"已存"按钮状态保持一致. 去掉了原书签 icon.
-        let saved = data.isPlanSaved(draft)
-        return Button { if !saved { action(draft) } } label: {
+        let saved = savedOverride ?? data.isPlanSaved(draft)
+        return Button { action(draft) } label: {
             HStack(spacing: 8) {
-                if saved {
-                    Image(systemName: "checkmark")
-                        .font(.system(size: 13, weight: .heavy))
-                }
+                Image(systemName: saved ? "bookmark.fill" : "bookmark")
+                    .font(.system(size: 13, weight: .heavy))
                 Text(saved ? "Saved" : "Save")
                     .font(.system(size: 15, weight: .heavy))
             }
@@ -1197,7 +1206,7 @@ struct PlanDetailSheet: View {
             .shadow(color: saved ? .clear : MasoColor.accent.opacity(0.35), radius: 8, y: 2)
         }
         .buttonStyle(.plain)
-        .disabled(saved)
+        .animation(.easeOut(duration: 0.2), value: saved)
         .padding(.top, 4)
     }
 

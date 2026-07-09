@@ -24,6 +24,8 @@
 "Finished workouts show up here. Start your first one and watch your progress grow." = "完成的训练会显示在这里。开始第一次训练，见证你的进步。";
 "Retry" = "重试";
 "Couldn't reach the AI coach — showing templates instead." = "够不到 AI 教练——先显示模板。";
+"Updated your plan." = "已按你的反馈更新计划。";
+"Couldn't reach the AI coach — your plan is unchanged." = "够不到 AI 教练——计划保持原样。";
 "AI plan unavailable — showing your recommended plan." = "AI 计划暂不可用——已显示推荐计划。";
 "Yesterday" = "昨天";
 "Repeat Workout" = "再次训练";
