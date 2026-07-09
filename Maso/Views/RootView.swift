@@ -237,8 +237,9 @@ struct RootView: View {
                 }
                 .tint(MasoColor.text)
                 .tabItem {
-                    // sparkles = 全 app 的 AI 语言 (✨AI badge / AI 生成按钮同源).
-                    Label("Coach", systemImage: "sparkles")
+                    // 对话气泡 = "跟教练聊" 的直接语义 (owner 反馈 sparkles 不对味 —
+                    // ✨ 留给 AI badge / 生成按钮, tab 表达的是"对话"这个动作本身).
+                    Label("Coach", systemImage: "bubble.left.and.bubble.right")
                 }
                 .tag(RootTab.coach)
 
