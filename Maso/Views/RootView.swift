@@ -155,6 +155,9 @@ struct RootView: View {
             // (而不是整个 TabView), 这样系统 TabBar 始终留在底部, MiniBar 紧贴 TabBar 上方,
             // 两者并排显示. 之前在 TabView 上加 safeAreaInset 会出现 MiniBar 跟 TabBar
             // 视觉粘在一起像一个大方块的情况.
+            // ⚠️ inset 必须挂在 NavigationStack **里面** (screen 视图上): 挂外面时 NavigationStack
+            // 不把缩小的 safe area 传给内部固定钉底的内容 — 三个旧 tab 全是 ScrollView 看不出来,
+            // Coach 的 composer 是第一个钉底实体控件, 训练中 MiniBar 直接盖住它 (owner 实机报障)。
             TabView(selection: $tab) {
                 // 三个 tab 都包 NavigationStack — 走 iOS 默认 navigationTitle + toolbar 样式.
                 // .tint(MasoColor.text) 覆盖系统默认 (Asset AccentColor 是绿) — toolbar 右上角按钮
@@ -177,9 +180,9 @@ struct RootView: View {
                         }
                         .accessibilityLabel("Settings")
                     }
+                    .safeAreaInset(edge: .bottom, spacing: 0) { miniBarContent }
                 }
                 .tint(MasoColor.text)
-                .safeAreaInset(edge: .bottom, spacing: 0) { miniBarContent }
                 .tabItem {
                     Label("Today", systemImage: "figure.strengthtraining.traditional")
                 }
@@ -196,9 +199,9 @@ struct RootView: View {
                         onOpenSettings: { settingsPresented = true },
                         libraryRequested: $coachLibraryRequested
                     )
+                    .safeAreaInset(edge: .bottom, spacing: 0) { miniBarContent }
                 }
                 .tint(MasoColor.text)
-                .safeAreaInset(edge: .bottom, spacing: 0) { miniBarContent }
                 .tabItem {
                     // sparkles = 全 app 的 AI 语言 (✨AI badge / AI 生成按钮同源).
                     Label("Coach", systemImage: "sparkles")
@@ -210,9 +213,9 @@ struct RootView: View {
                         onReplay: startTraining,
                         onOpenSettings: { settingsPresented = true }
                     )
+                    .safeAreaInset(edge: .bottom, spacing: 0) { miniBarContent }
                 }
                 .tint(MasoColor.text)
-                .safeAreaInset(edge: .bottom, spacing: 0) { miniBarContent }
                 .tabItem {
                     // Tab 标签重命名 → "Progress" (进度): 这个 tab 现在既装分析(Insights)又装
                     // 记录(History), "History" 只描述了一半. 复用已有的 "Progress"="进度" key.
