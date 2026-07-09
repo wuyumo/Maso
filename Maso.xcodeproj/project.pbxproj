@@ -114,7 +114,6 @@
 		ACB7B9B537CDB3B86452670C /* PlansScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15DEC30C6EAE1F3C697B06DB /* PlansScreen.swift */; };
 		AD135E90B89CB6E7D688A073 /* 3-back-biceps-forearms.json in Resources */ = {isa = PBXBuildFile; fileRef = CED9025409401C575B180D72 /* 3-back-biceps-forearms.json */; };
 		AE0067A57692F92627426C21 /* exercises-v1-yuhonas.json.bak in Resources */ = {isa = PBXBuildFile; fileRef = 0F0CC1A2FAA3DE68BF6CC1F0 /* exercises-v1-yuhonas.json.bak */; };
-		B0C205CAE1EB28ACE11F596E /* TabBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81EFCAD8ECDFB89EADB9B3E8 /* TabBarView.swift */; };
 		B29DFD334141BC5684FD57A6 /* Haptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = F72504052FBF96C8AFDFAA91 /* Haptics.swift */; };
 		B695690D9B19F6DD4C248428 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 65A12AE0FF2F890344E8D991 /* Localizable.strings */; };
 		B6A155A1009B7AD3E0B8F93A /* ImportedPlanSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 855B98EF31FFEB5E9C21DA4C /* ImportedPlanSheet.swift */; };
@@ -276,7 +275,6 @@
 		7DD9BAA3FD1E35EC871F4DEC /* SplashScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreen.swift; sourceTree = "<group>"; };
 		806284849E050B355DF8A75D /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		80FD6F69FE62071220B54EDF /* MasoBrandLogo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasoBrandLogo.swift; sourceTree = "<group>"; };
-		81EFCAD8ECDFB89EADB9B3E8 /* TabBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarView.swift; sourceTree = "<group>"; };
 		8483DD8A4BDD8AB4DACB82D4 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		855B98EF31FFEB5E9C21DA4C /* ImportedPlanSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportedPlanSheet.swift; sourceTree = "<group>"; };
 		88890E68F3513CC6BC233F84 /* AISummaryCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AISummaryCard.swift; sourceTree = "<group>"; };
@@ -372,7 +370,6 @@
 		0FAFB116E9872C55E3036EB1 /* Tabs */ = {
 			isa = PBXGroup;
 			children = (
-				81EFCAD8ECDFB89EADB9B3E8 /* TabBarView.swift */,
 				62E064A64B1EC7A66DB6C306 /* TrainingMiniBar.swift */,
 			);
 			path = Tabs;
@@ -948,7 +945,6 @@
 				FF90D3253FAF4F45542D0ED5 /* SplashScreen.swift in Sources */,
 				A9CEFA227C6E9AEFB349111A /* SubscriptionManager.swift in Sources */,
 				692DD540E336629461989253 /* SwipeableRow.swift in Sources */,
-				B0C205CAE1EB28ACE11F596E /* TabBarView.swift in Sources */,
 				919C25BB4DF2299218BEEE94 /* TimelineBar.swift in Sources */,
 				56D4D47EC11CD4F3E8AA99C6 /* TodayScreen.swift in Sources */,
 				21EE6684F038A29EB4A5DB01 /* TrainingActivityAttributes.swift in Sources */,

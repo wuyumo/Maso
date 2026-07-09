@@ -1271,3 +1271,11 @@
 "Make it shorter" = "再短一点";
 "Use different equipment" = "换一批器械";
 "Train %@ more" = "多练%@";
+
+/* ── Coach tab 批次 3: 全局接线 (深链来源 kicker, docs/coach-tab-design.md §4) ── */
+"FROM WEEKLY SUMMARY" = "来自每周小结";
+"FROM OPTIMIZE" = "来自优化建议";
+
+/* 批次 3 本地化收尾: ExercisePickerSheet 自创动作入口 (漏译修补) */
+"Add your own exercise" = "添加自创动作";
+"Add “%@” as your own" = "把“%@”添加为自创动作";

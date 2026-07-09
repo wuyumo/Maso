@@ -324,18 +324,18 @@ struct HistoryScreen: View {
     }
 
     /// AI 小结 Apply (§4) — 每条都 Pro-gate (镜像 handleOptimize/sendRefine).
-    ///   · regenerate_routines → 跨 tab 带到 AI Routines + 用 focusNote 触发重生成 (复用 optimize 机制,
-    ///     候选 routine 供 review 后用户 Save; 不自动写任何 routine).
+    ///   · regenerate_routines → 深链改道 Coach tab (coach-tab-design.md §4): CoachScreen 消费
+    ///     pendingSummaryFocus → 带 "FROM WEEKLY SUMMARY" kicker 的用户气泡 + 到达即自动发送
+    ///     (候选 routine 供 review 后用户 Save; 不自动写任何 routine).
     ///   · add_coach_note      → DataStore.appendCoachNote + 确认 toast (可在教练记忆编辑器里撤).
     ///   · none                → 无按钮, 不会走到这.
     private func handleApplySummary(_ action: AISummaryAction) {
         guard data.settings.isPro else { paywallPresented = true; return }
         switch action {
         case .regenerateRoutines(let focusNote):
-            // 走跟 handleOptimize 相同的 optimize 路径: AppRouter → Plans 的 AI Routines 页 + focusNote 重生成.
             let note = focusNote.trimmingCharacters(in: .whitespacesAndNewlines)
             router.pendingSummaryFocus = note.isEmpty ? "" : note
-            router.requestedTab = .plans
+            router.requestedTab = .coach
         case .addCoachNote(let note):
             data.appendCoachNote(note)
             withAnimation(.easeOut(duration: 0.2)) {

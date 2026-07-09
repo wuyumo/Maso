@@ -1270,3 +1270,11 @@
 "Make it shorter" = "Make it shorter";
 "Use different equipment" = "Use different equipment";
 "Train %@ more" = "Train %@ more";
+
+/* ── Coach tab 批次 3: 全局接线 (深链来源 kicker, docs/coach-tab-design.md §4) ── */
+"FROM WEEKLY SUMMARY" = "FROM WEEKLY SUMMARY";
+"FROM OPTIMIZE" = "FROM OPTIMIZE";
+
+/* 批次 3 本地化收尾: ExercisePickerSheet 自创动作入口 (漏译修补) */
+"Add your own exercise" = "Add your own exercise";
+"Add “%@” as your own" = "Add “%@” as your own";

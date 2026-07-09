@@ -1,19 +1,14 @@
 import HealthKit
 import SwiftUI
 
-// Tab 顺序 (左 → 中 → 右) = today / plans / history.
-// 之前是 plans / today / history (today 在中间 big circle), 用户决定让 plans 上位中间 hub.
-// 注意 enum case 的"声明顺序"和"UI 显示顺序"现在分开管理:
-//   - case 排列保留 (避免影响其他用 RootTab 的代码)
-//   - UI 实际渲染顺序在 TabBarView 里手动按 today → plans → history 排
-enum RootTab: Hashable { case plans, today, library, history }
-
-/// "Train" tab 内部的两个分页: 我的训练 (原 Today 内容) / 动作库.
-enum TrainPage: Hashable { case plans, library }
+// Tab 顺序 = today / coach / history (4→3, docs/coach-tab-design.md §0):
+//   Today = 今天练什么 + 开练; Coach = 对话式生成与管理 routines (原 Plans tab 整体退役 + Exercises
+//   tab 并入 Coach 导航栏 dumbbell); history tag 名保留 (analytics / showcase 路由按它写死), label 显示 "Progress".
+enum RootTab: Hashable { case today, coach, history }
 
 extension View {
-    /// 条件应用一个 transform — Train tab 内嵌 (embedded) 时各分页跳过自己的 screenHeader,
-    /// 由 Train 的统一导航栏 (segmented + 右上角按钮) 接管.
+    /// 条件应用一个 transform — 内嵌 (embedded) 场景各分页跳过自己的 screenHeader,
+    /// 由外层容器 (RootView 的 NavigationStack / 承载它的 sheet) 接管导航栏.
     @ViewBuilder func applyIf<T: View>(_ condition: Bool, _ transform: (Self) -> T) -> some View {
         if condition { transform(self) } else { self }
     }
@@ -35,34 +30,26 @@ extension View {
     }
 }
 
-// 顶级路由 — 跟 web 端 App.tsx 1:1
+// 顶级路由
 //   - onboarding 未完成: 整屏 Onboarding
-//   - 已完成: TabBar + 3 个屏 (Plans / Today / History), 加 PlanPlayer sheet
+//   - 已完成: 系统 TabView + 3 个屏 (Today / Coach / Progress), 加 PlanPlayer fullScreenCover
 struct RootView: View {
     @Environment(DataStore.self) private var data
     @Environment(TrainingSessionStore.self) private var session
     @Environment(\.scenePhase) private var scenePhase
 
     @State private var tab: RootTab = .today
-    /// RootTab → 分析事件 tab 名 (无 PII, 纯枚举名).
+    /// RootTab → 分析事件 tab 名 (无 PII, 纯枚举名). tab_switch 的 coach 映射在这 (设计文档 §4).
     private static func tabName(_ t: RootTab) -> String {
         switch t {
-        case .plans: return "plans"
         case .today: return "today"
-        case .library: return "library"
+        case .coach: return "coach"
         case .history: return "history"
         }
     }
-    /// "Train" tab 当前分页 (My Plans / Exercise Library). 提到 RootView 以便 showcase / 路由能切.
-    @State private var trainPage: TrainPage = .plans
     /// 反馈队列 — 没 inject 进 environment, 因为它只在 Settings + scenePhase 监听里用,
     /// 直接拿 shared 单例最简单, 避免到处 propagate.
     @State private var feedbackStore = FeedbackStore.shared
-    /// 首次提示气泡的 pulse 动画状态
-    @State private var hintPulse: Bool = false
-    /// "Tap to start" 提示是否已看过 — 走 UserDefaults 真持久化, app 卸载重装才会重置.
-    /// (DataStore 是 in-memory mock, 用 data.settings.hasSeenCenterTabHint 每次启动重置成 false → hint 重复出现)
-    @AppStorage("maso.hasSeenCenterTabHint") private var hasSeenCenterTabHint: Bool = false
     /// 跨 sheet 切 tab 路由
     @State private var router = AppRouter.shared
     @State private var playerPresented: Bool = false
@@ -77,8 +64,9 @@ struct RootView: View {
             && session.session?.completed != true
     }
     @State private var settingsPresented: Bool = false
-    /// Exercises tab 右上角 "+" → 翻 true, embedded ExerciseLibraryBrowser 监听后开"加动作"选择 sheet.
-    @State private var libraryAddRequested = false
+    /// showcase "exercises"/"library" 路由 → 翻 true, CoachScreen 监听后拉起动作库 sheet
+    /// (Exercises 不再是 tab — 库入口在 Coach 导航栏 dumbbell, 路由名保持不变让夜间 driver 不断).
+    @State private var coachLibraryRequested = false
     @State private var quickWorkoutPresented: Bool = false
     // DESIGN 5.3: 当用户尝试开第二个训练时, 用 plan 作为 pending 标记弹替换确认
     @State private var pendingReplacePlan: Plan?
@@ -102,9 +90,13 @@ struct RootView: View {
         guard !mode.isEmpty else { return }
         switch mode {
         case "library", "exercises":
-            tab = .library        // Exercises 独立 tab (#IA: 第 4 个底部 tab)
+            // 路由名保持不变 (夜间 verify-app driver 的 ROUTES 依赖) — Exercises 已并入 Coach:
+            // 落 Coach tab + 拉起动作库 sheet. 延迟到 CoachScreen 挂载后再翻, onChange 才收得到;
+            // sheet 全屏盖住 Coach → 截图跟 "routines"/today 保持 distinct.
+            tab = .coach
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) { coachLibraryRequested = true }
         case "routines":
-            tab = .plans          // Routines tab (AI | Classics)
+            tab = .coach          // 原 Routines tab 能力已整体迁入 Coach
         case "plan_detail":
             // 计划详情 sheet — 复用 newPlanForEdit 通道 (今日推荐做内容, 截图够看).
             tab = .today
@@ -192,44 +184,25 @@ struct RootView: View {
                 }
                 .tag(RootTab.today)
 
-                // Plans — segmented [My Plans | Exercises]: 我的训练 + 自由训练 + 社区, 以及动作库.
-                PlansTabScreen(
-                    page: $trainPage,
-                    onStart: startTraining,
-                    onFreeWorkout: { quickWorkoutPresented = true },
-                    onNewPlan: handleNewPlan,
-                    onOpenSettings: { settingsPresented = true }
-                )
-                .tint(MasoColor.text)
-                .safeAreaInset(edge: .bottom, spacing: 0) { miniBarContent }
-                .tabItem {
-                    Label("Plans", systemImage: "square.stack.3d.up.fill")
-                }
-                .tag(RootTab.plans)
-
-                // Exercises — 动作库独立 tab (#IA: Hevy/Strong 同款; 跟 Routines 相邻, "计划"簇).
-                // 内容类型跟 routine 集合不同 (原子动作百科), 不再挤在 Routines 的 segmented 里.
+                // Coach — 对话式生成与管理 routines (docs/coach-tab-design.md §1 三段式).
+                // 原 Plans tab 能力全部迁入 (SAVED 货架 + All sheet); Exercises 从导航栏 dumbbell 一步拉起.
+                // 注入跟原 Plans tab 同构: onStart → player fullScreenCover 管线 / onNewPlan → handleNewPlan
+                // (paywall gating + 共享 sheet 容器) / onOpenSettings → settings sheet.
                 NavigationStack {
-                    ExerciseLibraryBrowser(asTab: true, embedded: true, addRequested: $libraryAddRequested)
-                        .screenHeader("Exercises") {
-                            Button { libraryAddRequested = true } label: {
-                                Image(systemName: "plus")
-                                    .font(.system(size: 16, weight: .regular))
-                            }
-                            .accessibilityLabel(NSLocalizedString("Add exercise", comment: ""))
-                            Button(action: { settingsPresented = true }) {
-                                Image(systemName: "gearshape")
-                                    .font(.system(size: 16, weight: .regular))
-                            }
-                            .accessibilityLabel("Settings")
-                        }
+                    CoachScreen(
+                        onStart: startTraining,
+                        onNewPlan: handleNewPlan,
+                        onOpenSettings: { settingsPresented = true },
+                        libraryRequested: $coachLibraryRequested
+                    )
                 }
                 .tint(MasoColor.text)
                 .safeAreaInset(edge: .bottom, spacing: 0) { miniBarContent }
                 .tabItem {
-                    Label("Exercises", systemImage: "dumbbell.fill")
+                    // sparkles = 全 app 的 AI 语言 (✨AI badge / AI 生成按钮同源).
+                    Label("Coach", systemImage: "sparkles")
                 }
-                .tag(RootTab.library)
+                .tag(RootTab.coach)
 
                 NavigationStack {
                     HistoryScreen(
@@ -296,15 +269,11 @@ struct RootView: View {
                     Task { await catchUpHealthKitSync() }
                 }
             }
-            // 跨 sheet tab 切换请求 — Settings 里点 "Plans" 让我们切到 Plans tab
+            // 跨 sheet tab 切换请求 — e.g. Progress AI 小结 Apply → 切到 Coach (深链消息由 CoachScreen 消费).
+            // 3-tab 后不再需要旧的 .library → .plans+trainPage 映射, 直取即可.
             .onChange(of: router.requestedTab) { _, newTab in
                 if let newTab {
-                    // .library / .plans 现在都是 Plans tab 的分页 — 映射到 .plans + 对应 trainPage.
-                    switch newTab {
-                    case .library: tab = .plans; trainPage = .library
-                    case .plans:   tab = .plans; trainPage = .plans
-                    default:       tab = newTab
-                    }
+                    tab = newTab
                     settingsPresented = false
                     router.requestedTab = nil
                 }
@@ -371,9 +340,8 @@ struct RootView: View {
                             data.plans.append(p)
                             data.save()
                             Haptics.tap()
-                            // 落到 Plans/My Plans, 让用户在"我的训练"列表里看到新加的 plan
-                            tab = .plans
-                            trainPage = .plans
+                            // 落到 Coach — SAVED 货架常驻钉顶, 新加的 plan 一眼可见.
+                            tab = .coach
                         }
                     }
                 )
@@ -389,9 +357,8 @@ struct RootView: View {
             .sheet(item: $newPlanForEdit, onDismiss: {
                 if let planId = lastCreatedPlanId { data.removePlanIfEmpty(planId) }
                 lastCreatedPlanId = nil
-                // 新建的 plan 出现在 Plans/My Plans 列表 — 切过去让用户看到.
-                tab = .plans
-                trainPage = .plans
+                // 新建的 plan 出现在 Coach 的 SAVED 货架 — 切过去让用户看到.
+                tab = .coach
             }) { plan in
                 PlanDetailSheet(
                     initialPlan: plan,
@@ -427,14 +394,6 @@ struct RootView: View {
                 Text("Starting this will replace the workout you're in. Continue?")
             }
         }
-    }
-
-    /// Tab 切换决定右上角浮动按钮:
-    ///   - 所有 tab 都不再用 RootView 右上角浮动按钮 — Today 的 settings 入口
-    ///     挪到 TodayScreen 标题行里, 跟 GOOD AFTERNOON 同一 section 视觉对齐.
-    @ViewBuilder
-    private var topRightAction: some View {
-        EmptyView()
     }
 
     /// "AI 正在按新偏好重算计划" loading 浮层. 用户在 Training Preferences 改了设置并离开页面后,
@@ -539,28 +498,6 @@ struct RootView: View {
         return p != n
     }
 
-    private func handleCenterPrimary() {
-        // 大圆按钮 (左侧) = Today tab.
-        // 1) 不在 Today tab → 切到 Today (跟其他 side tab tap 行为一致).
-        if tab != .today {
-            tab = .today
-            return
-        }
-        // 2) 已在 Today + 训练中 → 拉起正在进行的 PlanPlayer
-        if hasActiveSession {
-            playerPresented = true
-            return
-        }
-        // 3) 已在 Today + 没训练 → quickStart 开了就直接开练今日推荐 (muscle memory: 选中 tab 再点 = 开始)
-        let quickStart = data.settings.quickStartOnActiveTab
-        guard quickStart else { return }
-        // P1-1: 跟 TodayScreen.suggested 用同一来源 (DataStore.suggestedTodayPlan) —
-        // 否则点中间 tab 启动的训练 ≠ 卡片上显示的那张, 状态错位.
-        let plan = data.suggestedTodayPlan
-        guard let plan, !plan.steps.isEmpty else { return }
-        startTraining(plan)
-    }
-
     /// 统一启动训练入口 — DESIGN 5.3:
     /// 如果已有别的进行中 session, 先弹确认; 用户确认后才替换
     /// 自由训练 — 把多选 picker 选出的动作合成一个 autoGenerated plan 开练.
@@ -661,57 +598,6 @@ struct RootView: View {
         }
     }
 
-    // MARK: - 首次提示
-
-    /// 是否应该展示首次"中间 tab"提示.
-    /// 现在中间 tab 是 plans (不再是 today), 原文案"Tap to start today's workout"语义不再对,
-    /// 暂时关掉. Today tab 上 WorkoutCard 自带 play button 已经是显眼的开始训练入口.
-    private var shouldShowCenterTabHint: Bool {
-        false
-    }
-
-    /// 把 hint 标成已读 — 第一次 tap 任意位置后调.
-    /// 走 UserDefaults, app 卸载重装才会重置.
-    private func dismissCenterTabHint() {
-        withAnimation(.easeOut(duration: 0.25)) {
-            hasSeenCenterTabHint = true
-        }
-    }
-
-    @ViewBuilder
-    private var centerTabHint: some View {
-        VStack(spacing: 0) {
-            Spacer()
-            // 气泡 — accent 绿实色底 + 黑字, 跟 brand CTA 一致. 视觉权重高, 一眼吸引注意.
-            // (之前改成深灰底太低调, 用户更喜欢绿色版本.)
-            Text("Tap to start today's workout")
-                .font(.system(size: 13, weight: .heavy))
-                .foregroundStyle(.black)
-                .multilineTextAlignment(.center)
-                .padding(.horizontal, 18)
-                .padding(.vertical, 12)
-                .background(MasoColor.accent)
-                .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
-                .shadow(color: MasoColor.accent.opacity(0.55), radius: 18, y: 4)
-                .overlay(alignment: .bottom) {
-                    Triangle()
-                        .fill(MasoColor.accent)
-                        .frame(width: 14, height: 8)
-                        .offset(y: 7)
-                }
-                .scaleEffect(hintPulse ? 1.04 : 1.0)
-                .padding(.bottom, MasoMetrics.bottomNavHeight + 18)
-                .onAppear {
-                    withAnimation(.easeInOut(duration: 1.2).repeatForever(autoreverses: true)) {
-                        hintPulse = true
-                    }
-                }
-        }
-        .frame(maxWidth: .infinity)
-        .contentShape(Rectangle())
-        .onTapGesture { dismissCenterTabHint() }
-    }
-
     /// 进后台时如果在休息段 *或正在跑的有氧倒计时段*, 调度倒计时通知.
     /// 前台时由 app 自己提示, 不发通知.
     /// P1-9: 之前只给 rest 发通知, 有氧 countdown 动作在后台到点无任何提示.
@@ -802,37 +688,4 @@ struct NavStackIf<Content: View>: View {
     }
 }
 
-// MARK: - PlansTabScreen — "Plans" tab: 单一导航栏, segmented 当标题切 My Plans / Exercises
-//
-// 一个 NavigationStack 接管整页. 顶部导航栏中央放 segmented (= 标题), 右上角按钮按分页切
-// (My Plans → 齿轮; Exercises → +). 两个分页 (TodayScreen .myPlans / ExerciseLibraryBrowser) 都
-// embedded: 不自带 NavStack / 大标题. 切页保留各自滚动 / sheet 状态.
-private struct PlansTabScreen: View {
-    @Binding var page: TrainPage
-    let onStart: (Plan) -> Void
-    let onFreeWorkout: () -> Void
-    let onNewPlan: () -> Void
-    let onOpenSettings: () -> Void
-
-    var body: some View {
-        NavigationStack {
-            PlansScreen(onStart: onStart, onNewPlan: onNewPlan, onOpenSettings: onOpenSettings)
-                // PlansScreen 自己设大标题 "Routines" + 右上角工具栏 ("+" 在左, 齿轮在右) — 两个按钮都在
-                // PlansScreen 的一个 ToolbarItemGroup 里 (#IA-A). AI/Classics 从 "+" push 进去 (不再是 segmented).
-                .tint(MasoColor.text)
-        }
-    }
-}
-
-/// 等腰三角形 — 用于 centerTabHint 气泡底部指向下方的小箭头.
-private struct Triangle: Shape {
-    func path(in rect: CGRect) -> Path {
-        var p = Path()
-        p.move(to: CGPoint(x: rect.midX, y: rect.maxY))
-        p.addLine(to: CGPoint(x: rect.minX, y: rect.minY))
-        p.addLine(to: CGPoint(x: rect.maxX, y: rect.minY))
-        p.closeSubpath()
-        return p
-    }
-}
 

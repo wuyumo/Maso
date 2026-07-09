@@ -11,7 +11,7 @@ import SwiftUI
 // 架构:
 //   - SwiftUI + Observation (iOS 17+)
 //   - SplashScreen → RootView, 中间用 .transition(.opacity) 平滑过渡
-//   - 单根 RootView 持有 TabBarView, 切换 3 个主屏 (Plans / Today / History)
+//   - 单根 RootView 持有系统 TabView, 切换 3 个主屏 (Today / Coach / Progress)
 //   - TrainingSessionStore 是全局 ObservableObject, 训练状态独立于路由
 //   - 数据层暂时用 in-memory mock (DataStore), 后续可接 SwiftData
 @main

@@ -24,6 +24,9 @@ struct CoachScreen: View {
     let onNewPlan: () -> Void
     /// 导航栏齿轮 → Settings sheet (RootView 持有).
     let onOpenSettings: () -> Void
+    /// showcase "exercises" 路由的动作库触发 — RootView 翻 true, 这里拉起 library sheet 后复位
+    /// (跟 TodayScreen.triggerImport 同套路: 挂载后才收得到, RootView 侧延迟翻).
+    @Binding var libraryRequested: Bool
 
     // ── sheet / 弹层 ──
     /// "All" 卡 → 完整管理 sheet (TodayScreen .myPlans: 删/编辑/照片导入/优化卡整块复用).
@@ -59,6 +62,8 @@ struct CoachScreen: View {
     @State private var savedCountPulse = false
     /// 空态主动建议 — routineSuggestion() 每次算要扫全部 sets, 进页缓存一次, 不在 body 里反复算.
     @State private var suggestion: DataStore.RoutineSuggestion? = nil
+    /// 深链路由 — Progress AI 小结 Apply 经 AppRouter 送 pendingSummaryFocus 过来 (设计文档 §4).
+    @State private var router = AppRouter.shared
 
     /// 对话流自动滚到底的锚点 id.
     private static let bottomAnchor = "coach-bottom"
@@ -103,6 +108,22 @@ struct CoachScreen: View {
             }
         }
         .onAppear { suggestion = data.routineSuggestion() }
+        // showcase "exercises" 路由 — RootView 翻 true, 这里拉起动作库 sheet 后复位.
+        .onChange(of: libraryRequested) { _, requested in
+            guard requested else { return }
+            libraryRequested = false
+            libraryPresented = true
+        }
+        // Progress AI 小结 Apply 深链 (设计文档 §4 深链改道): 带来源 kicker 的用户气泡 + 到达即自动发送.
+        // initial:true — 首次深链时 CoachScreen 可能在置值之后才挂载, 普通 onChange 收不到那次翻转.
+        .onChange(of: router.pendingSummaryFocus, initial: true) { _, note in
+            guard let note else { return }
+            router.pendingSummaryFocus = nil
+            let trimmed = note.trimmingCharacters(in: .whitespacesAndNewlines)
+            send(feedback: trimmed.isEmpty ? nil : trimmed,
+                 sourceKicker: NSLocalizedString("FROM WEEKLY SUMMARY", comment: "coach chat deep-link kicker"),
+                 surface: "summary")
+        }
         // 保存反馈: 计数 +1 弹跳. 只在变多时弹 (unsave 变少不庆祝).
         .onChange(of: data.plans.count) { old, new in
             guard new > old else { return }
@@ -143,10 +164,13 @@ struct CoachScreen: View {
                 onStart: onStart,
                 onNewPlan: onNewPlan,
                 // 优化卡 → 化身 coach 对话轮: 关 sheet 后把诊断的 focusNote 当反馈发送 (带来源 kicker).
-                // V1 不加 Pro gate — 设计文档 §4: 生成次数 gate 留位不实现 (保存上限 gate 照旧在 saveCoachPlan).
+                // Pro gate 原样保留 (原 PlansScreen.handleOptimize 同规则 — Pro feature ②, 卡对所有人
+                // 可见 teaser, 动作才 gate); 过闸后走深链同管道 (surface:"optimize").
                 onOptimize: { sug in
+                    guard data.settings.isPro else { paywallPresented = true; return }
                     send(feedback: sug.focusNote,
-                         sourceKicker: NSLocalizedString("COACH SUGGESTION", comment: "coach chat deep-link kicker"))
+                         sourceKicker: NSLocalizedString("FROM OPTIMIZE", comment: "coach chat deep-link kicker"),
+                         surface: "optimize")
                 }
             )
         }
@@ -208,6 +232,10 @@ struct CoachScreen: View {
                         }
                         allCard
                     }
+                    // ⚠️ 必须钉住理想高度: 横向 ScrollView 在纵轴会把整个可用高度提案给内容,
+                    // allCard 的 maxHeight:.infinity 会照单全收 → 货架被撑成半屏高 (批次 3 截图实锤).
+                    // fixedSize 后 HStack 以迷你卡的理想高度定高, allCard 再在其中填满.
+                    .fixedSize(horizontal: false, vertical: true)
                 }
                 // 横滑内容顶到屏幕两缘 (负 margin 抵掉页 padding), 首卡仍对齐正文.
                 .padding(.horizontal, -MasoMetrics.pagePaddingHorizontal)
@@ -639,8 +667,10 @@ struct CoachScreen: View {
     }
 
     /// 发送一轮 — 统一入口 (composer / chips / Apply / Retry / 深链都走这).
+    /// surface: 生成事件的来源面 — 常规聊天 "coach_chat"; 深链透传 "summary"/"optimize" (设计文档 §4).
     /// ⚠️ 聊天文本属 PII: analytics 只报长度和是否定向, 不报内容 (生成事件本身在 DataStore 层埋).
-    private func send(feedback: String?, onlyModify: String? = nil, sourceKicker: String? = nil) {
+    private func send(feedback: String?, onlyModify: String? = nil, sourceKicker: String? = nil,
+                      surface: String = "coach_chat") {
         guard !session.isGenerating else { return }
         Haptics.tap()
         lastFeedback = feedback
@@ -648,10 +678,10 @@ struct CoachScreen: View {
         Analytics.shared.track("coach_chat_send", [
             "length": .int(feedback?.count ?? 0),
             "targeted": .bool(onlyModify != nil),
-            "surface": .string("coach_chat"),
+            "surface": .string(surface),
         ])
         data.startCoachGenerate(feedback: feedback, onlyModify: onlyModify,
-                                sourceKicker: sourceKicker, surface: "coach_chat")
+                                sourceKicker: sourceKicker, surface: surface)
     }
 
     /// 长按动作 pill → 引用式定向反馈: 预填 composer + 聚焦, 发送时该动作名作 onlyModify.
