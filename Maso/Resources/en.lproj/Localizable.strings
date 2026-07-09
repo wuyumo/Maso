@@ -1056,7 +1056,7 @@
 "Reading your profile" = "Reading your profile";
 "Picking exercises for your goals" = "Picking exercises for your goals";
 "Balancing your weekly plan" = "Balancing your weekly routine";
-"When on, changing an exercise's sets, reps, weight, or rest in one routine (or during a workout) updates it everywhere that exercise appears. When off, each routine keeps its own params, and a new routine starts an exercise from your most recent values." = "When on, changing an exercise's sets, reps, weight, or rest in one routine (or during a workout) updates it everywhere that exercise appears. When off, each routine keeps its own params, and a new routine starts an exercise from your most recent values.";
+"Off by default: each routine keeps its own sets, reps, weight, and rest, so heavy and light days stay independent. Turn on to apply a change to an exercise everywhere it appears." = "Off by default: each routine keeps its own sets, reps, weight, and rest, so heavy and light days stay independent. Turn on to apply a change to an exercise everywhere it appears.";
 
 /* Onboarding step 3 focus-muscles hint */
 "Optional — leave all off for a balanced routine." = "Optional — leave all off for a balanced routine.";
@@ -1224,3 +1224,19 @@
 /* Exercise detail — Your history section (个人记录: 最近最佳组 + e1RM) */
 "Your history" = "Your history";
 "Best e1RM %@" = "Best e1RM %@";
+
+/* ── UX audit 2026-07 batch 3: 训练播放器数据完整性 ── */
+/* P0#5-①: 休息屏修正刚落库的一组 */
+"Just now: %@" = "Just now: %@";
+"Adjust last set" = "Adjust last set";
+"Fix what you actually did — this only rewrites the set you just logged, not your plan." = "Fix what you actually did — this only rewrites the set you just logged, not your plan.";
+/* P0#5-②: ✓ 后撤销 toast */
+"Set logged" = "Set logged";
+"Undo" = "Undo";
+/* P1#12: 训练时保持屏幕常亮 */
+"Keep screen awake during workouts" = "Keep screen awake during workouts";
+"While a workout is running, the screen won't auto-lock — your timer and next set stay visible at the rack." = "While a workout is running, the screen won't auto-lock — your timer and next set stay visible at the rack.";
+/* P1#13: 提前收工走完成流 */
+"Finish & end" = "Finish & end";
+"Discard workout" = "Discard workout";
+"Finish & end keeps this as a completed workout with your stats. Discard closes it without a summary." = "Finish & end keeps this as a completed workout with your stats. Discard closes it without a summary.";

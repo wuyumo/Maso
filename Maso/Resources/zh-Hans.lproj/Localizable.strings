@@ -1057,7 +1057,7 @@
 "Reading your profile" = "读取你的身体数据";
 "Picking exercises for your goals" = "按你的目标挑选动作";
 "Balancing your weekly plan" = "安排好每周训练";
-"When on, changing an exercise's sets, reps, weight, or rest in one routine (or during a workout) updates it everywhere that exercise appears. When off, each routine keeps its own params, and a new routine starts an exercise from your most recent values." = "开启后,在任意计划(或训练中)改某个动作的组数/次数/重量/休息,会同步到所有含该动作的地方。关闭后各计划各自独立,新计划里的动作从你最近一次的数值开始。";
+"Off by default: each routine keeps its own sets, reps, weight, and rest, so heavy and light days stay independent. Turn on to apply a change to an exercise everywhere it appears." = "默认关闭:各计划中同一动作的组数/次数/重量/休息互相独立,重量日/轻量日互不影响。开启后,改动会同步到所有含该动作的计划。";
 
 /* Onboarding step 3 focus-muscles hint */
 "Optional — leave all off for a balanced routine." = "可不选 — 全部留空则均衡训练。";
@@ -1225,3 +1225,19 @@
 /* 动作详情 — 你的记录小节 (最近最佳组 + e1RM) */
 "Your history" = "你的记录";
 "Best e1RM %@" = "最佳 e1RM %@";
+
+/* ── UX audit 2026-07 batch 3: 训练播放器数据完整性 ── */
+/* P0#5-①: 休息屏修正刚落库的一组 */
+"Just now: %@" = "刚才: %@";
+"Adjust last set" = "调整刚才那组";
+"Fix what you actually did — this only rewrites the set you just logged, not your plan." = "按实际完成的改 — 只改写刚记录的那一组,不影响训练计划。";
+/* P0#5-②: ✓ 后撤销 toast */
+"Set logged" = "已记录";
+"Undo" = "撤销";
+/* P1#12: 训练时保持屏幕常亮 */
+"Keep screen awake during workouts" = "训练时保持屏幕常亮";
+"While a workout is running, the screen won't auto-lock — your timer and next set stay visible at the rack." = "训练进行中屏幕不自动锁定 — 在器械旁抬眼就能看到计时和下一组。";
+/* P1#13: 提前收工走完成流 */
+"Finish & end" = "完成并结束";
+"Discard workout" = "放弃本次训练";
+"Finish & end keeps this as a completed workout with your stats. Discard closes it without a summary." = "完成并结束会把这次保存为一场完成的训练并生成统计;放弃则直接关闭,不生成总结。";

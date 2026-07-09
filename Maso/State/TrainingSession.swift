@@ -552,16 +552,28 @@ final class TrainingSessionStore {
         return false
     }
 
-    /// R2: 撤销当前动作"最近(最高 setN)的一组" — 清 completedSet + 删对应 SetRecord, 播放头落到该组以便重练.
+    /// R2: 撤销"最近打勾的那组" — 清 completedSet + 删对应 SetRecord, 播放头落到该组以便重练.
     /// removeRecord(exerciseId, planId, since): 调用方据此删 DataStore 里本场该动作最近一条记录.
-    /// 每调用一次撤一组; 该动作的组全撤完后, 回退键恢复"上一动作"导航 (currentStepHasCompletedSet 转 false).
+    /// 每调用一次撤一组.
+    /// P0#5: ✓ 之后播放头通常已落在 rest 段 (或最后一组时 completed 态), 撤销 toast 在那时触发 —
+    /// 所以目标不能只认"当前 exercise 段": 从当前位置(含)向前回溯, 找最近一个"有已完成组"的
+    /// exercise 段, 正常流程下就是刚打勾的那组所属动作.
     @discardableResult
     func undoLastCompletedSet(
         removeRecord: ((_ exerciseId: String, _ planId: String?, _ since: Date) -> Void)? = nil
     ) -> Bool {
-        guard var s = session, let cur = currentSegment else { return false }
-        guard case .exercise(let ex, _, _, _, _, _, _) = cur.kind else { return false }
-        let stepId = cur.stepId
+        guard var s = session, !segments.isEmpty else { return false }
+        var probe = min(max(0, s.segmentIndex), segments.count - 1)
+        var found: (stepId: String, ex: Exercise)? = nil
+        while probe >= 0 {
+            if case .exercise(let ex, _, _, _, _, _, _) = segments[probe].kind,
+               s.completedSets.contains(where: { $0.stepId == segments[probe].stepId }) {
+                found = (segments[probe].stepId, ex)
+                break
+            }
+            probe -= 1
+        }
+        guard let (stepId, ex) = found else { return false }
         let mine = s.completedSets.filter { $0.stepId == stepId }
         guard let top = mine.max(by: { $0.setN < $1.setN }) else { return false }
         s.completedSets.remove(top)

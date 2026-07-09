@@ -193,6 +193,19 @@ struct TrainingSettingsSection: View {
             }
             Divider().background(MasoColor.borderSoft)
 
+            // ─── 7b. 训练时保持屏幕常亮 (P1#12) ───
+            // 力量组不倒计时, 系统 30s 自动锁屏会让每组结束时屏幕已黑. 真正的 idle timer
+            // 开/关在 RootView (播放器在前 + session 活跃才生效), 这里只是用户偏好开关.
+            ToggleRow(
+                title: "Keep screen awake during workouts",
+                desc: "While a workout is running, the screen won't auto-lock — your timer and next set stay visible at the rack.",
+                isOn: Binding(
+                    get: { data.settings.keepScreenAwakeDuringWorkout },
+                    set: { data.settings.keepScreenAwakeDuringWorkout = $0 }
+                )
+            )
+            Divider().background(MasoColor.borderSoft)
+
             // ─── 8. Prefer community plans ───
             // 开 → 推荐计划改从 Community 挑成熟方案 materialize, 而不是模板自动生成.
             // 改了立刻 regen, 让用户马上看到 AI Plans 换成社区计划 (或换回模板).

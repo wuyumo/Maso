@@ -66,6 +66,16 @@ struct RootView: View {
     /// 跨 sheet 切 tab 路由
     @State private var router = AppRouter.shared
     @State private var playerPresented: Bool = false
+    /// P1#12: 是否应当阻止自动锁屏 — 播放器全屏在前 + session 活跃 (未完成) + app 在前台
+    /// + 用户偏好开着. 收进一个 computed 让 onChange 观察单一 Bool, 四个依赖任一变化都会
+    /// 重新求值 (playerPresented @State / scenePhase env / session·settings 都是 observable).
+    private var shouldKeepScreenAwake: Bool {
+        playerPresented
+            && scenePhase == .active
+            && data.settings.keepScreenAwakeDuringWorkout
+            && session.session != nil
+            && session.session?.completed != true
+    }
     @State private var settingsPresented: Bool = false
     /// Exercises tab 右上角 "+" → 翻 true, embedded ExerciseLibraryBrowser 监听后开"加动作"选择 sheet.
     @State private var libraryAddRequested = false
@@ -298,6 +308,13 @@ struct RootView: View {
                     settingsPresented = false
                     router.requestedTab = nil
                 }
+            }
+            // P1#12: 训练时保持屏幕常亮 — 力量组不倒计时, 系统 30s 自动锁屏会让每组结束时屏幕已黑.
+            // 条件全部收在 shouldKeepScreenAwake (播放器在前 + session 活跃 + app 在前台 + 开关开);
+            // 任一条件破 (收回 mini-bar / 完成 / 退后台 / 关开关) 立即复位, 不留常亮泄漏耗电.
+            // initial:true — 冷启恢复 session 直接进播放器的场景, 首帧就要置位.
+            .onChange(of: shouldKeepScreenAwake, initial: true) { _, keepAwake in
+                UIApplication.shared.isIdleTimerDisabled = keepAwake
             }
             // 训练界面 = Apple Music 式全屏 (fullScreenCover 填满整页, 无顶部缝隙/无系统 grabber).
             // 关闭走 PlanPlayerScreen 自带的顶部 Drag Handle 下拉手势 (训练中) / 完成页按钮.

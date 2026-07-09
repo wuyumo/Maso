@@ -845,6 +845,17 @@ final class DataStore {
         )
     }
 
+    /// P0#5 修正: ✓ 落库时 SetRecord 直接取计划值, 力竭没做满的组记的是虚高的计划数 —
+    /// 休息屏"刚才: 8 × 55 kg · 调整"入口用这个窄方法把刚落库那条改回真实值 (按 id 定位, 持久化).
+    /// 只动 reps/weight/duration 三个可变字段, 不动 performedAt/planId (不是"重记一组").
+    func updateSetRecord(id: String, reps: Int?, weight: Double?, duration: Int?) {
+        guard let idx = sets.firstIndex(where: { $0.id == id }) else { return }
+        sets[idx].reps = reps
+        sets[idx].weight = weight
+        sets[idx].duration = duration
+        save()
+    }
+
     /// R2 撤销: 删掉本场 session 里某动作"最近一条"记录 (sets 倒序存, firstIndex 即最新).
     func removeLastSet(exerciseId: String, planId: String?, since: Date) {
         if let idx = sets.firstIndex(where: {

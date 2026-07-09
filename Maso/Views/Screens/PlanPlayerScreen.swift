@@ -102,6 +102,12 @@ struct PlanPlayerScreen: View {
     @State private var replacingStepId: String? = nil
     /// "+ Add exercise" footer (在 playlist 末尾) → 弹 ExercisePickerSheet, 选完调 store.appendStep.
     @State private var addStepPickerOpen: Bool = false
+    /// P0#5-①: 休息屏"刚才: 8 × 55 kg · 调整"入口 — 存正在修正的那条 SetRecord, 弹 AdjustLastSetSheet.
+    @State private var adjustingRecord: SetRecord? = nil
+    /// P0#5-②: ✓ 后 3 秒"已记录 · 撤销"轻 toast. gen 计数作废旧的延迟隐藏 (连点两组时
+    /// 第一组的 3s 定时器不能把第二组的 toast 提前关掉).
+    @State private var undoToastVisible: Bool = false
+    @State private var undoToastGen: Int = 0
 
     /// sheet(item:) 需要 Identifiable, String 自身不 conform — 包一层.
     private struct StepIdentifier: Identifiable, Hashable {
@@ -355,9 +361,28 @@ struct PlanPlayerScreen: View {
                     .ignoresSafeArea(edges: .top)
             }
         }
+        // P0#5-②: "已记录 · 撤销" toast — 浮在 handle 下方. 完成最后一组时 completed 态也照常
+        // 浮着 (最后一组误触 ✓ 直接弹完成页, 撤销是唯一的回头路, undo 会把 completed 翻回 false).
+        .overlay(alignment: .top) {
+            if undoToastVisible {
+                undoToastView
+                    .padding(.top, topSafeArea + 44)
+                    .offset(y: isActiveTraining ? dragDownOffset : 0)
+                    .transition(.move(edge: .top).combined(with: .opacity))
+            }
+        }
         // 点 playlist 行图片 → 弹动作详情. iOS 18+ 支持 sheet 内嵌 sheet.
         .sheet(item: $detailExercise) { ex in
             ExerciseDetailSheet(exercise: ex)
+            .presentationDragIndicator(.visible)
+        }
+        // P0#5-①: 修正刚落库那组 — 小 sheet 双 stepper 调 reps/weight (无重量动作调 reps/时长),
+        // 写回 DataStore 里那条 SetRecord. 不动 plan/segments, 只改"已经练完的事实".
+        .sheet(item: $adjustingRecord) { rec in
+            AdjustLastSetSheet(record: rec) { newReps, newWeight, newDuration in
+                data.updateSetRecord(id: rec.id, reps: newReps, weight: newWeight, duration: newDuration)
+            }
+            .presentationDetents([.medium])
             .presentationDragIndicator(.visible)
         }
         // 右滑 Edit → 弹 EditAnyStepSheet (session-local 改 sets/reps/weight/duration).
@@ -477,9 +502,21 @@ struct PlanPlayerScreen: View {
             Text("This only removes it from the current workout. Save changes at the end to update the plan.")
         }
         .alert("End this workout?", isPresented: $endConfirmOpen) {
-            // 用户在训练中改了参数 (sets/reps/weight/duration/顺序) → 多给一个"保存并结束"选项,
-            // 让修改持久化到 plan. 不脏 / 自由训练 → 老 2-button 流程.
-            if canSaveChangesToPlan {
+            // P1#13: 打过勾的场次, 提前收工默认走"完成流" — finishEarly() 把 session 标 completed,
+            // 本 view 原地切到正常完成页 (真实统计/PR/分享; dirty 时完成流自带"保存修改?"确认页,
+            // 覆盖了旧 Save 分支). "放弃"降级为破坏性次按钮. 埋点: finishEarly 内部 trackFinish("early").
+            // 零完成组 (误开训练想全身而退) → 维持原分支.
+            if store.session?.completedSets.isEmpty == false {
+                Button("Finish & end") {
+                    store.finishEarly()   // 不 dismiss — completed=true 让本 view 切完成流
+                }
+                Button("Discard workout", role: .destructive) {
+                    store.endedExplicitly = true
+                    store.end()
+                    dismiss()
+                }
+            } else if canSaveChangesToPlan {
+                // 零完成组但改过参数 — 完成流走不到 (没有可展示的成果), 保留"保存并结束"通道.
                 Button("Save changes & end") {
                     saveChangesToCurrentPlan()
                     store.endedExplicitly = true
@@ -500,8 +537,10 @@ struct PlanPlayerScreen: View {
             }
             Button("Keep going", role: .cancel) {}
         } message: {
-            // 提示文案 — dirty 状态下说明改动是 session-local 默认不保存
-            if canSaveChangesToPlan {
+            // 提示文案 — 三分支各说各的后果
+            if store.session?.completedSets.isEmpty == false {
+                Text("Finish & end keeps this as a completed workout with your stats. Discard closes it without a summary.")
+            } else if canSaveChangesToPlan {
                 Text("You changed sets, reps, weight, or order during this workout. Save the changes back to the plan?")
             } else {
                 Text("Sets you've completed will be kept.")
@@ -648,7 +687,10 @@ struct PlanPlayerScreen: View {
                 isCrossExercise: isCrossExerciseRest(currentSegment: seg),
                 // 小编辑入口 — 跟 playlist 的 onEdit 一样用 editingStepId 触发 EditAnyStepSheet,
                 // 复用已有 sheet (line ~224), 不需要新 sheet 通道.
-                onEdit: nextStepId.map { id in { editingStepId = id } }
+                onEdit: nextStepId.map { id in { editingStepId = id } },
+                // P0#5-①: "刚才: 8 × 55 kg · 调整" — ✓ 落库取的是计划值, 力竭没做满在这改回真实值.
+                justNow: justLoggedRecord.flatMap { justLoggedSummary($0) },
+                onAdjust: justLoggedRecord.map { rec in { adjustingRecord = rec } }
             )
         }
     }
@@ -689,8 +731,81 @@ struct PlanPlayerScreen: View {
         switch seg.kind {
         case .exercise(_, _, _, _, _, _, true):
             store.togglePlay()
+        case .exercise(_, _, _, _, _, _, false):
+            // ✓ 记组 — 附带 3 秒撤销 toast (P0#5-②: 误触的回头路, 接现成的
+            // undoLastCompletedSet + removeLastSet, 之前两端逻辑都在只缺 UI 触发点).
+            store.advance { rec in data.recordSet(rec) }
+            showUndoToast()
         default:
             store.advance { rec in data.recordSet(rec) }
+        }
+    }
+
+    // MARK: - P0#5: ✓ 后的撤销 toast + "刚才"修正入口
+
+    /// 本场刚落库的那条 SetRecord — data.sets 是 newest-first, 第一条 performedAt 在本场
+    /// 范围内的就是最新记录. 5 分钟窗口: 休息屏正常只停几十秒, 跳段乱逛后残留的旧记录不当"刚才".
+    private var justLoggedRecord: SetRecord? {
+        guard let s = store.session,
+              let rec = data.sets.first(where: { $0.performedAt >= s.startedAt }),
+              Date().timeIntervalSince(rec.performedAt) < 300 else { return nil }
+        return rec
+    }
+
+    /// "刚才: 8 × 55 kg" 摘要 — 有重量: reps × weight; 只有 reps: × 8; 计时段: 45s.
+    /// 全空 (不应发生) → nil, 调用方不渲染.
+    private func justLoggedSummary(_ rec: SetRecord) -> String? {
+        var parts: [String] = []
+        if let r = rec.reps, let w = rec.weight, w > 0 {
+            parts.append("\(r) × \(weightLabel(w))")
+        } else if let r = rec.reps {
+            parts.append("× \(r)")
+        }
+        if let d = rec.duration { parts.append("\(d)s") }
+        guard !parts.isEmpty else { return nil }
+        return String(format: NSLocalizedString("Just now: %@", comment: "rest screen just-logged set"),
+                      parts.joined(separator: " · "))
+    }
+
+    /// "已记录 · 撤销" 3 秒轻 toast — 黑底胶囊, 浮在 handle 下方.
+    private var undoToastView: some View {
+        HStack(spacing: 14) {
+            Text("Set logged")
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundStyle(MasoColor.text)
+            Button(action: { performUndo() }) {
+                Text("Undo")
+                    .font(.system(size: 13, weight: .bold))
+                    .foregroundStyle(MasoColor.accent)
+                    // 44pt 热区 — toast 只活 3 秒, 点不中等于没有这个功能.
+                    .frame(minWidth: 44, minHeight: 32)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+        }
+        .padding(.leading, 16)
+        .padding(.trailing, 6)
+        .padding(.vertical, 4)
+        .background(Capsule().fill(Color.black.opacity(0.8)))
+        .overlay(Capsule().stroke(Color.white.opacity(0.12), lineWidth: 0.5))
+    }
+
+    private func showUndoToast() {
+        undoToastGen += 1
+        let gen = undoToastGen
+        withAnimation(.easeOut(duration: 0.2)) { undoToastVisible = true }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+            guard gen == undoToastGen else { return }   // 已被新 toast / 手动撤销接管
+            withAnimation(.easeIn(duration: 0.25)) { undoToastVisible = false }
+        }
+    }
+
+    /// 撤销刚记的那组 — store 清 completedSet + 播放头回到该组; DataStore 删本场该动作最近一条记录.
+    private func performUndo() {
+        undoToastGen += 1   // 作废 pending 的自动隐藏
+        withAnimation(.easeIn(duration: 0.15)) { undoToastVisible = false }
+        store.undoLastCompletedSet { exId, planId, since in
+            data.removeLastSet(exerciseId: exId, planId: planId, since: since)
         }
     }
 
@@ -1312,12 +1427,22 @@ private struct ExerciseInfo: View {
             }
         }
         .sheet(isPresented: $editOpen) {
+            // P1#10: 这个入口之前漏传 initialSetReps/initialSetWeights (对比播放列表右滑入口) →
+            // perSetEnabled=false → Save 时 onSave(..., nil, nil) 把逐组配置静默压平 (金字塔组
+            // 60/70/80 被抹), 全局同步再把破坏传播到所有 routine. 改成与播放列表入口同构造:
+            // 从 store.plan 取当前 step, 逐组数组一并带上. (segment 传入的 reps/weight 是逐组
+            // 解析值, 只作 step 意外缺失时的兜底.)
+            let step = store.currentSegment.flatMap { seg in
+                store.plan?.steps.first(where: { $0.id == seg.stepId })
+            }
             EditCurrentStepSheet(
                 exercise: exercise,
-                initialSets: totalSets,
-                initialReps: reps,
-                initialWeight: weight,
-                initialDuration: duration,
+                initialSets: step?.sets ?? totalSets,
+                initialReps: step?.reps ?? reps,
+                initialWeight: step?.weight ?? weight,
+                initialDuration: step?.duration ?? duration,
+                initialSetReps: step?.setReps,
+                initialSetWeights: step?.setWeights,
                 onSave: { newSets, newReps, newWeight, newDuration, newSetReps, newSetWeights in
                     let editedStepId = store.currentSegment?.stepId
                     store.updateCurrentStep(
@@ -1428,6 +1553,9 @@ private struct RestNextHint: View {
     let isCrossExercise: Bool
     /// 小编辑入口 — 让用户在休息时改下一动作的 sets/reps/weight. nil → 不渲染.
     var onEdit: (() -> Void)? = nil
+    /// P0#5-①: "刚才: 8 × 55 kg" 摘要 + 点击修正回调. 任一为 nil → 不渲染这行.
+    var justNow: String? = nil
+    var onAdjust: (() -> Void)? = nil
 
     /// "× 8 · 60 kg" 这种目标摘要; 都没有则 nil.
     private var targetLine: String? {
@@ -1472,6 +1600,21 @@ private struct RestNextHint: View {
                     .foregroundStyle(MasoColor.text.opacity(0.85))
                     .shadow(color: .black.opacity(0.6), radius: 4)
             }
+            // P0#5-①: "刚才: 8 × 55 kg · 调整" — ✓ 落库的是计划值, 力竭没做满 8 次记的还是 8;
+            // 这行是修正真实值的直达入口 (点开 AdjustLastSetSheet 写回刚落库那条 SetRecord).
+            if let justNow, let onAdjust {
+                Button(action: { Haptics.tap(); onAdjust() }) {
+                    Text("\(justNow) · \(NSLocalizedString("Adjust", comment: ""))")
+                        .font(.system(size: 12, weight: .semibold).monospacedDigit())
+                        .foregroundStyle(MasoColor.accent.opacity(0.9))
+                        .shadow(color: .black.opacity(0.6), radius: 4)
+                        // 视觉不变, 热区外扩到 ≥32pt — 休息屏是大汗手指场景.
+                        .frame(minHeight: 32)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(NSLocalizedString("Adjust last set", comment: ""))
+            }
         }
         .padding(.horizontal, MasoMetrics.cardPadding)
     }
@@ -1503,6 +1646,11 @@ private struct Controls: View {
     /// 主按钮"庆祝动效"触发器 — 每次点 +1, 让 halo overlay 重新跑动画.
     /// 比 Bool toggle 好: 连点几次也能每次都触发, 不会被合并掉.
     @State private var celebrateTrigger: Int = 0
+
+    /// P0#5-③: ✓ 落组后 ~300ms 冷却 — ✓ 点完主按钮原位立刻变"跳过休息",
+    /// 手抖双击的第二下会顺手把休息也跳了 (= 记组 + 跳休息). 冷却期内主按钮吞事件
+    /// (不改外观, 只挡 300ms 内的第二下; 只有 ✓ 触发冷却, 播放/暂停/跳过不受影响).
+    @State private var primaryCooldownUntil: Date = .distantPast
 
     /// 统一布局: 动作段与休息段共用同一套 4 按钮等距排布
     /// X 取消 / ◀ 上一段 / ● 主操作 (48×48 accent, 比侧 36×36 略大) / ☰ 播放列表
@@ -1548,6 +1696,9 @@ private struct Controls: View {
 
     private var primaryBtn: some View {
         Button(action: {
+            // P0#5-③: 冷却期内吞掉第二下 (✓ 后原位变"跳过休息", 双击 = 记组+跳休息).
+            guard Date() >= primaryCooldownUntil else { return }
+            if isPrimaryComplete { primaryCooldownUntil = Date().addingTimeInterval(0.3) }
             onPrimary()
             if isPrimaryComplete { celebrateTrigger &+= 1 }
         }) {
@@ -3023,5 +3174,109 @@ private struct EditCurrentStepSheet: View {
     private func weightField(_ value: Binding<Double>, fieldWidth: CGFloat = 86) -> some View {
         let u = WeightUnitProvider.current
         NumStepperField(doubleValue: value.inUnit(u), range: 0...u.weightMax, step: u.weightStep, suffix: u.label, decimal: true, fieldWidth: fieldWidth)
+    }
+}
+
+// MARK: - 修正刚落库的一组 (P0#5-①)
+
+/// 休息屏"刚才: 8 × 55 kg · 调整"点开的小 sheet — 双 stepper 调 reps/weight (无重量动作调
+/// reps/时长), 保存写回刚落库的那条 SetRecord (DataStore.updateSetRecord, 按 id 定位).
+/// 跟 EditCurrentStepSheet 的区别: 这里改的是"已经练完的事实", 不动 plan / segments /
+/// 后续组的目标值 — 力竭没做满 8 次, 记录改回 6, 下一组目标仍是 8.
+private struct AdjustLastSetSheet: View {
+    let record: SetRecord
+    /// onSave(reps, weight, duration) — caller 写回 DataStore.
+    let onSave: (Int?, Double?, Int?) -> Void
+    @Environment(\.dismiss) private var dismiss
+
+    // 0 = 清空字段 (save 时映射回 nil), 跟 EditCurrentStepSheet 同约定.
+    @State private var reps: Int
+    @State private var weight: Double
+    @State private var duration: Int
+
+    init(record: SetRecord, onSave: @escaping (Int?, Double?, Int?) -> Void) {
+        self.record = record
+        self.onSave = onSave
+        self._reps = State(initialValue: record.reps ?? 0)
+        self._weight = State(initialValue: record.weight ?? 0)
+        self._duration = State(initialValue: record.duration ?? 0)
+    }
+
+    /// 字段按记录本来有什么显示什么 — 力量组有 reps(+weight), 计时段只有 duration.
+    /// "无重量动作只调 reps/时长": weight 字段只在记录带 weight (含 0 自重, 可补配重) 时出现.
+    private var showsReps: Bool { record.reps != nil }
+    private var showsWeight: Bool { record.weight != nil }
+    private var showsDuration: Bool { record.duration != nil }
+
+    var body: some View {
+        NavigationStack {
+            ZStack {
+                MasoColor.background.ignoresSafeArea()
+                Form {
+                    Section {
+                        if showsReps {
+                            HStack(spacing: 8) {
+                                Text("Reps").foregroundStyle(MasoColor.text)
+                                Spacer()
+                                NumStepperField(intValue: $reps, range: 0...50)
+                            }
+                        }
+                        if showsWeight {
+                            HStack(spacing: 8) {
+                                Text("Weight").foregroundStyle(MasoColor.text)
+                                Spacer()
+                                weightField($weight)
+                            }
+                        }
+                        if showsDuration {
+                            HStack(spacing: 8) {
+                                Text("Duration").foregroundStyle(MasoColor.text)
+                                Spacer()
+                                NumStepperField(intValue: $duration, range: 0...600, step: 5, suffix: "s")
+                            }
+                        }
+                    }
+                    .listRowBackground(MasoColor.surface)
+
+                    Section {
+                        Text("Fix what you actually did — this only rewrites the set you just logged, not your plan.")
+                            .font(.system(size: 12))
+                            .foregroundStyle(MasoColor.textDim)
+                    }
+                    .listRowBackground(MasoColor.surface)
+                }
+                .scrollContentBackground(.hidden)
+            }
+            .navigationTitle("Adjust last set")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbarBackground(MasoColor.background, for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") { dismiss() }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Save") {
+                        // 没显示的字段原样带回 (不误清); 显示的字段 0 → nil (清空语义),
+                        // 例外: weight 保持 0 也是合法值 (自重组), 不映射 nil — 跟落库语义一致.
+                        let r: Int? = showsReps ? (reps > 0 ? reps : nil) : record.reps
+                        let w: Double? = showsWeight ? weight : record.weight
+                        let d: Int? = showsDuration ? (duration > 0 ? duration : nil) : record.duration
+                        onSave(r, w, d)
+                        Haptics.tap()
+                        dismiss()
+                    }
+                    .fontWeight(.bold)
+                }
+            }
+        }
+        .presentationBackground(MasoColor.background)
+    }
+
+    /// canonical-kg 重量步进器 — 跟 EditCurrentStepSheet.weightField 同款 (按用户单位换算).
+    @ViewBuilder
+    private func weightField(_ value: Binding<Double>) -> some View {
+        let u = WeightUnitProvider.current
+        NumStepperField(doubleValue: value.inUnit(u), range: 0...u.weightMax, step: u.weightStep, suffix: u.label, decimal: true)
     }
 }

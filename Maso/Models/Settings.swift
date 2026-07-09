@@ -180,12 +180,19 @@ struct UserSettings: Codable, Sendable {
     /// 新手 / 不在意分区的用户关掉可以减少认知负担; 专业用户开着拿精确度.
     var muscleDetailEnabled: Bool = true
 
-    /// 全局动作参数同步 (R3). 默认 ON.
+    /// 全局动作参数同步 (R3). 默认 OFF (opt-in) — 默认开会把"重量日/轻量日"这类
+    /// 逐计划周期化配置静默压平 (UX 审查 P0#4), 想要"一处改全局更新"的用户自己打开.
     /// true: 在任意 routine / 训练中改了某动作的参数 (组数/次数/重量/休息/逐组覆盖),
     ///       会传播到所有含该动作的 routine — "一处改, 全局更新".
     /// false: 各 routine 的同一动作参数互相独立; 新 routine 里加该动作时默认从
     ///        该动作最近一次记录 (lastSet) 回填数值.
-    var globalExerciseParamSyncEnabled: Bool = true
+    var globalExerciseParamSyncEnabled: Bool = false
+
+    /// 训练时保持屏幕常亮 (P1#12). 默认开 — 力量组是 manual-confirm 不倒计时, 做组 40-60s
+    /// 而系统默认 30s 自动锁屏, 每组结束屏幕大概率已黑, 一场训练要解锁十几次.
+    /// 生效条件在 RootView: 播放器全屏在前 + session 活跃 + app 在前台; 任一破即复位
+    /// (退后台也复位, 防 isIdleTimerDisabled 泄漏耗电).
+    var keepScreenAwakeDuringWorkout: Bool = true
 
     /// 收藏的动作 ID 集合 — 所有"选择动作"列表会把收藏动作排在最前.
     /// (e.g. Library / ExercisePickerSheet / QuickWorkout Step 2 都用.)

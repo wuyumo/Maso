@@ -170,11 +170,12 @@ struct SettingsScreen: View {
                     )
                 }
 
-                // 动作参数全局同步 (R3) — 默认开, 用户可关.
+                // 动作参数全局同步 (R3) — 默认关 (opt-in, P0#4): 默认开会静默压平
+                // "重量日/轻量日"这类逐计划周期化配置. 文案按 opt-in 语义写 (先说默认态).
                 Section_(title: "Exercise data") {
                     ToggleRow(
                         title: "Sync params across routines",
-                        desc: "When on, changing an exercise's sets, reps, weight, or rest in one routine (or during a workout) updates it everywhere that exercise appears. When off, each routine keeps its own params, and a new routine starts an exercise from your most recent values.",
+                        desc: "Off by default: each routine keeps its own sets, reps, weight, and rest, so heavy and light days stay independent. Turn on to apply a change to an exercise everywhere it appears.",
                         isOn: $data.settings.globalExerciseParamSyncEnabled
                     )
                 }
