@@ -88,6 +88,12 @@ extension MuscleGroup {
         NSLocalizedString(rawDisplayKey, comment: "Muscle name")
     }
 
+    /// 非本地化英文名 — AI prompt (英文语境) 的动作目录肌肉标注用; UI 一律走 displayName.
+    /// .back 的 i18n key 是 "Back muscle" (避开导航 "Back" 撞 key), prompt 里用自然的 "Back".
+    var englishName: String {
+        self == .back ? "Back" : rawDisplayKey
+    }
+
     /// The English source string used as the i18n key for this muscle.
     /// (Looked up at runtime against the active locale's Localizable.strings.)
     private var rawDisplayKey: String {

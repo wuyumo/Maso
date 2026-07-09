@@ -154,6 +154,9 @@ final class AIWorkoutService {
         let feedback: String
         /// 定向修订目标 ("Day 2" / 动作名) — 非空时追加 ONLY MODIFY 指令.
         let onlyModify: String?
+        /// current routines 里出现的全部动作名 — 目录 mustInclude, 保证"不变的天"能逐字复述
+        /// (否则 LLM 被"逐字从目录选"逼着给未改动的天换名, ONLY MODIFY 语义崩坏).
+        let currentNames: [String]
     }
 
     /// Coach 对话的修订轮 — 在现有 buildRoutinesPrompt 骨架上追加 CURRENT ROUTINES + USER FEEDBACK
@@ -182,7 +185,8 @@ final class AIWorkoutService {
             let spec = RevisionSpec(
                 currentBlock: currentRoutinesBlock(current, library: library),
                 feedback: feedback,
-                onlyModify: onlyModify
+                onlyModify: onlyModify,
+                currentNames: currentExerciseNames(current, library: library)
             )
             let raw = try await callDeepSeekRoutines(
                 payload: payload, library: library,
@@ -657,13 +661,20 @@ final class AIWorkoutService {
         return content
     }
 
-    // MARK: - Prompt
+    // MARK: - Prompt: 动作目录 (基础扩容 + 定向检索)
+    //
+    // 老问题: 目录 = 每大区 8 个"最短名" canonical (≤48 行, 无肌肉标注) → ① Incline/细分变体
+    // 全不在目录, "练上胸"这类细粒度要求 LLM 想服从也无从下手; ② 修订轮 CURRENT ROUTINES 里的
+    // 动作不在目录, "其它天保持不变"被迫改名, ONLY MODIFY 语义崩坏. 修法 (三层):
+    //   1. 基础目录扩容到每大区 ~15 (仍按 base 名去变体重复), 每行带主练肌英文标注;
+    //   2. feedback/onlyModify/focusNote 关键词定向检索 — 命中肌群/器械 → 该目标的全部非 niche
+    //      动作并入 (追加上限 ~40, 宁多勿缺; 不命中 = 目录退回基础版, 行为不劣化);
+    //   3. 修订轮 mustInclude = current routines 全部动作名 — 保证"不变的天"能逐字复述.
 
-    /// 给 generateToday 的候选动作池 — 非 niche, 每大区取若干 canonical (短名优先, 去重 base 名).
-    /// LLM 只能从这堆真实库内动作名里选, 保证 buildPlan 能精确匹配 (修掉自由命名→匹配落空的老问题).
-    private func candidateNames(from library: [Exercise]) -> [String] {
+    /// 基础候选池 — 非 niche, 每大区 15 个 canonical (短名优先, 去重 base 名).
+    private func baseCandidates(from library: [Exercise]) -> [Exercise] {
         let sections: [MuscleGroup] = [.chest, .back, .shoulders, .arms, .core, .legs]
-        var out: [String] = []
+        var out: [Exercise] = []
         for sec in sections {
             let inSec = library
                 .filter { !$0.isNiche && $0.primaryMuscles.contains { ($0.section ?? $0) == sec } }
@@ -673,10 +684,167 @@ final class AIWorkoutService {
             for ex in inSec {
                 let base = baseName(ex.name)
                 if seenBase.insert(base).inserted {
-                    out.append(ex.name)
+                    out.append(ex)
                     picked += 1
-                    if picked >= 8 { break }
+                    if picked >= 15 { break }
                 }
+            }
+        }
+        return out
+    }
+
+    /// 一行目录: "- Bench Press (Incline) — Upper Chest, Triceps". 标注 = 主练肌英文名
+    /// (englishName 非本地化 — prompt 是英文语境, zh 设备也不能混中文标注).
+    private func catalogLine(_ ex: Exercise) -> String {
+        let muscles = ex.primaryMuscles.prefix(3).map(\.englishName).filter { !$0.isEmpty }
+        return muscles.isEmpty ? "- \(ex.name)" : "- \(ex.name) — \(muscles.joined(separator: ", "))"
+    }
+
+    /// 中英关键词 → 目标肌群 (定向检索). 顺序 = 特异性优先 ("上胸"排"胸"前面 — 两者都会命中,
+    /// 但更细的目标先入目录). 泛词 (back/腿) 命中大区全量也可接受 — 宁多勿缺, cap 兜底.
+    private static let muscleKeywords: [(keys: [String], targets: [MuscleGroup])] = [
+        // 胸
+        (["上胸", "incline", "upper chest"], [.upperChest]),
+        (["下胸", "decline", "lower chest"], [.lowerChest]),
+        (["中胸", "mid chest", "middle chest"], [.midChest]),
+        (["胸", "chest", "pec", "卧推", "bench press", "飞鸟"], [.chest]),
+        // 肩 (细分在先)
+        (["后束", "rear delt", "reverse fly", "face pull", "反向飞鸟"], [.rearDelts]),
+        (["前束", "front delt", "front raise", "前平举"], [.frontDelts]),
+        (["中束", "侧束", "side delt", "lateral raise", "侧平举"], [.sideDelts]),
+        (["肩袖", "rotator cuff"], [.rotatorCuff]),
+        (["肩", "shoulder", "delt", "推举", "overhead press"], [.shoulders]),
+        // 背
+        (["上背", "背阔", "lats", "pulldown", "引体", "pull-up", "pullup", "高位下拉"],
+         [.lats, .upperLats, .lowerLats, .rhomboids]),
+        (["斜方", "trap", "耸肩", "shrug"], [.upperTraps, .midTraps, .lowerTraps]),
+        (["下背", "lower back", "竖脊", "腰部"], [.lowerBack]),
+        (["背", "back", "row", "划船"], [.back]),
+        // 臂
+        (["二头", "bicep", "curl", "弯举"], [.biceps, .brachialis, .brachioradialis]),
+        (["三头", "tricep", "臂屈伸", "pushdown", "skullcrusher"], [.triceps]),
+        (["小臂", "前臂", "forearm", "握力", "grip", "腕弯举"], [.forearms, .forearmFlexors, .forearmExtensors]),
+        (["手臂", "arms"], [.arms]),
+        // 核心
+        (["腹斜", "oblique", "侧腹"], [.obliques]),
+        (["腹", "abs", "卷腹", "crunch", "核心", "core"], [.abs, .upperAbs, .lowerAbs, .obliques]),
+        // 腿 (细分在先)
+        (["腘绳", "腿后", "hamstring", "leg curl"], [.hamstrings]),
+        (["股四", "腿前", "quad", "深蹲", "squat"], [.quads]),
+        (["臀", "glute", "hip thrust"], [.glutes, .gluteusMaximus, .gluteusMedius]),
+        (["小腿", "calf", "calves", "提踵"], [.calves]),
+        (["内收", "adductor", "大腿内侧"], [.adductors]),
+        (["腿", "leg"], [.legs]),
+    ]
+
+    /// 中英关键词 → 器械 raw token (Exercise.equipment/equipmentAll 的词汇表).
+    /// "machine" 放最后 — smith_machine 等含它, 子串匹配语义上也算命中 ("器械"泛指).
+    private static let equipmentKeywords: [(keys: [String], targets: [String])] = [
+        (["哑铃", "dumbbell"], ["dumbbell"]),
+        (["杠铃", "barbell"], ["barbell", "ez_bar"]),
+        (["绳索", "龙门", "拉索", "cable"], ["cable"]),
+        (["史密斯", "smith"], ["smith_machine"]),
+        (["壶铃", "kettlebell"], ["kettlebell"]),
+        (["弹力带", "resistance band", "band"], ["band", "resistance_band"]),
+        (["自重", "徒手", "bodyweight", "body weight", "no equipment"], ["body_only"]),
+        (["器械", "machine"], ["machine"]),
+    ]
+
+    /// ex 的主练肌是否命中 target — target 是大区 (chest/legs/...) 时按 section 归并;
+    /// 细分 (upperChest/rearDelts/...) 时精确匹配 (数据源 exercises.json 带细分 sub, 能配上).
+    private func matches(_ ex: Exercise, muscle target: MuscleGroup) -> Bool {
+        ex.primaryMuscles.contains { $0 == target || $0.section == target }
+    }
+
+    /// ex 的器械是否命中 target (子串匹配 — "machine" 命中 leg_press_machine 等).
+    private func matches(_ ex: Exercise, equipment target: String) -> Bool {
+        let eqs = (ex.equipmentAll?.isEmpty == false) ? ex.equipmentAll! : [ex.equipment].compactMap { $0 }
+        return eqs.contains { $0 == target || $0.contains(target) }
+    }
+
+    /// feedback / onlyModify / focusNote 的定向检索 — 关键词命中肌群/器械 → 该目标的全部
+    /// 非 niche 动作 (追加上限 cap). 不命中 → 空数组 (目录退回基础版, 行为不劣化).
+    private func targetedCandidates(query: String, library: [Exercise], cap: Int = 40) -> [Exercise] {
+        let q = query.lowercased()
+        guard !q.isEmpty else { return [] }
+        var muscleTargets: [MuscleGroup] = []
+        for entry in Self.muscleKeywords where entry.keys.contains(where: { q.contains($0) }) {
+            for m in entry.targets where !muscleTargets.contains(m) { muscleTargets.append(m) }
+        }
+        var equipTargets: [String] = []
+        for entry in Self.equipmentKeywords where entry.keys.contains(where: { q.contains($0) }) {
+            for e in entry.targets where !equipTargets.contains(e) { equipTargets.append(e) }
+        }
+        guard !muscleTargets.isEmpty || !equipTargets.isEmpty else { return [] }
+
+        let pool = library.filter { !$0.isNiche }
+        var out: [Exercise] = []
+        var seen = Set<String>()
+        func add(_ ex: Exercise) {
+            guard out.count < cap, seen.insert(ex.name).inserted else { return }
+            out.append(ex)
+        }
+        // ① 肌群 × 器械 同时命中最相关 ("哑铃练上胸" → 哑铃上胸动作最先入).
+        if !muscleTargets.isEmpty && !equipTargets.isEmpty {
+            for m in muscleTargets {
+                for ex in pool where matches(ex, muscle: m)
+                    && equipTargets.contains(where: { matches(ex, equipment: $0) }) {
+                    add(ex)
+                }
+            }
+        }
+        // ② 肌群命中 (按特异性顺序 — 细分目标的动作先占 cap).
+        for m in muscleTargets {
+            for ex in pool where matches(ex, muscle: m) { add(ex) }
+        }
+        // ③ 只命中器械 (无肌群词, e.g. "只用哑铃") — 该器械动作全量入 (cap 内).
+        if muscleTargets.isEmpty {
+            for t in equipTargets {
+                for ex in pool where matches(ex, equipment: t) { add(ex) }
+            }
+        }
+        return out
+    }
+
+    /// 组装 AVAILABLE EXERCISES 目录 (带肌肉标注) = 基础目录 ∪ 定向检索 ∪ mustInclude.
+    /// mustInclude = 修订轮 current routines 的动作名 — 必须逐字在目录里, "保持不变的天"才能复述.
+    private func catalogBlock(library: [Exercise], query: String?, mustInclude: [String] = []) -> String {
+        var seen = Set<String>()
+        var lines: [String] = []
+        func add(_ ex: Exercise) {
+            guard seen.insert(ex.name).inserted else { return }
+            lines.append(catalogLine(ex))
+        }
+        baseCandidates(from: library).forEach(add)
+        if let query, !query.isEmpty {
+            targetedCandidates(query: query, library: library).forEach(add)
+        }
+        for name in mustInclude where !seen.contains(name) {
+            if let ex = library.first(where: { $0.name == name }) {
+                add(ex)
+            } else {
+                // 库里找不到 (自创已删/旧 id 兜底名) → 裸名入目录, 至少能被逐字复述回来.
+                seen.insert(name)
+                lines.append("- \(name)")
+            }
+        }
+        return lines.joined(separator: "\n")
+    }
+
+    /// current routines 里出现的全部动作名 (canonical, 去重保序) — 修订轮目录 mustInclude 用.
+    /// 双 key lookup 跟 currentRoutinesBlock 一致, 保证两块 prompt 用同一词汇表.
+    private func currentExerciseNames(_ current: [Plan], library: [Exercise]) -> [String] {
+        var byId: [String: Exercise] = [:]
+        for ex in library {
+            byId[ex.id] = ex
+            if let folder = ex.imageFolder, byId[folder] == nil { byId[folder] = ex }
+        }
+        var seen = Set<String>()
+        var out: [String] = []
+        for plan in current {
+            for s in plan.steps {
+                let name = byId[s.exerciseId]?.name ?? s.exerciseId
+                if seen.insert(name).inserted { out.append(name) }
             }
         }
         return out
@@ -691,7 +859,8 @@ final class AIWorkoutService {
         let strengthen = p.wantStrengthen.isEmpty
             ? "(no specific focus)"
             : p.wantStrengthen.joined(separator: ", ")
-        let catalog = candidateNames(from: library).map { "- \($0)" }.joined(separator: "\n")
+        // focusNote 走定向检索 — "focus upper chest" 这类侧重能把 Incline 系动作带进目录.
+        let catalog = catalogBlock(library: library, query: p.focusNote)
 
         // ⚠️ GUIDELINES 跟 buildRoutinesPrompt (多 routine) 的科学规则刻意成对镜像 (改一处记得改另一处).
         return """
@@ -721,7 +890,7 @@ final class AIWorkoutService {
         - Pick ONLY exercises the user can perform with: \(p.equipmentLine). Pick weights conservatively if no history; scale to recent volume if any.\(p.bestSetsGuideline)\(p.focusNote.map { "\n        - PRIORITY TODAY: \($0). Bias this session to address it directly without breaking the rules above." } ?? "")
         - EXACTLY \(maxExercises) exercises in this session — no more, no fewer.
 
-        AVAILABLE EXERCISES — every "exercise_name" MUST be copied EXACTLY (verbatim, character-for-character) from this list. Do NOT invent names or use synonyms:
+        AVAILABLE EXERCISES — each line is "- <exercise name> — <its target muscles>". Every "exercise_name" MUST be copied EXACTLY (verbatim, character-for-character) from this list — copy ONLY the name part, NEVER include the "—" or the muscle annotation. Do NOT invent names or use synonyms. When the user asks for a specific muscle (e.g. upper chest, rear delts), you MUST pick exercises whose listed target muscles match it:
         \(catalog)
 
         OUTPUT
@@ -755,7 +924,13 @@ final class AIWorkoutService {
         let strengthen = p.wantStrengthen.isEmpty
             ? "(no specific focus)"
             : p.wantStrengthen.joined(separator: ", ")
-        let catalog = candidateNames(from: library).map { "- \($0)" }.joined(separator: "\n")
+        // 定向检索 query = focusNote (首轮侧重) + 修订轮 feedback/onlyModify — 命中"上胸/后束/哑铃"
+        // 这类细粒度词时把对应动作全量带进目录; 修订轮再并入 current 动作名 (mustInclude).
+        let retrievalQuery = [p.focusNote, revision?.feedback, revision?.onlyModify]
+            .compactMap { $0 }
+            .joined(separator: " ")
+        let catalog = catalogBlock(library: library, query: retrievalQuery,
+                                   mustInclude: revision?.currentNames ?? [])
 
         // 修订块 — 插在 RECENT WORKOUTS 之后 (上下文区), 规则行追加在 GUIDELINES 开头 (优先级最高).
         let revisionContext: String = revision.map { r in
@@ -805,7 +980,7 @@ final class AIWorkoutService {
         - Respect the "wants to strengthen" focus by giving those muscles an extra exercise / earlier slot where it fits, without breaking the rules above.\(p.focusNote.map { "\n        - PRIORITY THIS TIME: \($0). Skew this week's split to address it directly (more volume / earlier slots / an extra movement) without breaking the rules above." } ?? "")
         - EXACTLY \(perRoutine) exercises in EVERY routine — no more, no fewer.
 
-        AVAILABLE EXERCISES — every "exercise_name" MUST be copied EXACTLY (verbatim, character-for-character) from this list. Do NOT invent names or use synonyms:
+        AVAILABLE EXERCISES — each line is "- <exercise name> — <its target muscles>". Every "exercise_name" MUST be copied EXACTLY (verbatim, character-for-character) from this list — copy ONLY the name part, NEVER include the "—" or the muscle annotation. Do NOT invent names or use synonyms. When the user asks for a specific muscle (e.g. upper chest, rear delts), you MUST pick exercises whose listed target muscles match it:
         \(catalog)
 
         OUTPUT
