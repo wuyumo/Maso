@@ -541,13 +541,16 @@ struct ExerciseLibraryBrowser: View {
                 // embedded 时跳过自己的大标题 / +按钮 (Train 统一导航栏接管); 非 embedded 保持原样.
                 .applyIf(!embedded) { v in
                     v.screenHeader(NSLocalizedString("Exercise library", comment: "")) {
-                        HStack(spacing: 18) {
-                            Button(action: { addChoiceOpen = true }) {
-                                Image(systemName: "plus")
-                            }
-                            .accessibilityLabel(NSLocalizedString("Add exercise", comment: ""))
-                            // 作为 sheet 用时 (非 tab) 才给关闭入口.
-                            if !asTab {
+                        Button(action: { addChoiceOpen = true }) {
+                            Image(systemName: "plus")
+                        }
+                        .accessibilityLabel(NSLocalizedString("Add exercise", comment: ""))
+                    }
+                    // sheet 用法 (非 tab) 的关闭按钮按 iOS sheet 惯例放左上角 —
+                    // 之前跟 "+" 挤在同一侧, 关闭/添加两个语义相反的操作贴在一起易误触 (owner 反馈).
+                    .toolbar {
+                        if !asTab {
+                            ToolbarItem(placement: .topBarLeading) {
                                 Button(action: { dismiss() }) {
                                     Image(systemName: "xmark")
                                 }
