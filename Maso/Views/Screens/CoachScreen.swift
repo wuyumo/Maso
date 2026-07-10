@@ -86,6 +86,9 @@ struct CoachScreen: View {
     var body: some View {
         VStack(spacing: 0) {
             conversation
+                // 输入态点对话区任意处收键盘 (owner 指定). simultaneousGesture — 不抢卡片/chip
+                // 自己的 tap (点卡 = 收键盘 + 照常开详情), 也不挡 ScrollView 拖拽.
+                .simultaneousGesture(TapGesture().onEnded { composerFocused = false })
             bottomBar
         }
         .background(MasoColor.background.ignoresSafeArea())
