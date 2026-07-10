@@ -204,7 +204,10 @@ extension DataStore {
                 $0.element.name.caseInsensitiveCompare(prev.name) == .orderedSame
             }) {
                 out.append(remaining.remove(at: byName).element)
-            } else if let byOrder = remaining.firstIndex(where: { $0.offset == i }) {
+            } else if revised.count == previous.count,
+                      let byOrder = remaining.firstIndex(where: { $0.offset == i }) {
+                // 序号对齐只在"响应天数 = 上一版天数"时可信 — 定向修订现在只返回改动的天
+                // (部分响应), 此时按序号硬套会把改名后的 Day2 错塞进 Day1 槽位.
                 out.append(remaining.remove(at: byOrder).element)
             } else {
                 out.append(prev)

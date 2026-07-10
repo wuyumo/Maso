@@ -629,7 +629,9 @@ final class AIWorkoutService {
         let url = URL(string: "\(Self.proxyURL)/v1/chat/completions")!
         var req = URLRequest(url: url)
         req.httpMethod = "POST"
-        req.timeoutInterval = 60
+        // 120s — 全周 routine 的 JSON 输出 (max_tokens 4096) 生成常到 40-60s, 旧值 60 贴线,
+        // 网络稍抖 (尤其大陆直连 Cloudflare) 就超时 → "Couldn't reach the AI coach" (owner 实机撞到).
+        req.timeoutInterval = 120
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
         req.setValue(Self.clientToken, forHTTPHeaderField: "X-Maso-Client-Token")
 
@@ -946,7 +948,10 @@ final class AIWorkoutService {
         let revisionRules: String = revision.map { r in
             var rules = "\n        - REVISION MODE: apply USER FEEDBACK to CURRENT ROUTINES. Return ALL \(count) days. Any day or exercise the feedback does not mention must stay IDENTICAL to CURRENT ROUTINES (same exercises, sets, reps, weights). Keep each day's \"name\" unchanged unless the feedback asks to rename it."
             if let only = r.onlyModify, !only.isEmpty {
-                rules += "\n        - ONLY MODIFY \(only); return ALL days, keep unmentioned days IDENTICAL."
+                // 只返回改动的天 (不再复述全周) — 修订输出砍 3-4 倍 = 延迟砍 3-4 倍
+                // (owner 实机撞 60s 超时的主因是全周 JSON 输出太长); 未返回的天由
+                // reconcileRevisedRoutines 用上一版回填. name 必须原样保留 — 对齐靠名称匹配.
+                rules += "\n        - ONLY MODIFY \(only). Return ONLY the routine(s) you actually changed — do NOT repeat unchanged days (the app keeps them as-is). Keep each returned routine's \"name\" EXACTLY as it appears in CURRENT ROUTINES."
             }
             return rules
         } ?? ""
