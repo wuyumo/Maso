@@ -379,7 +379,7 @@ struct TodayScreen: View {
                             onShowDetail: { detailPlan = plan },
                             prominentStart: i == 0,   // 今日卡主 CTA 强; up-next 卡播放键弱化
                             emphasized: i == 0,       // accent 描边 + 辉光只给今日卡
-                            fixedHeight: carouselCardHeight   // 等高: 量测出 max 后统一回写
+                            fixedHeight: carouselCardHeight   // 等高: 隐藏测量层量出 max 后统一回写
                         )
                         // 长按菜单 — 跟 "All" sheet 里的列表卡同款 (改/删); 今日 AI 卡 (aiTodayPlan)
                         // 的删除由 DataStore.deletePlan 特判处理 (清卡 + 当天不自动重生成).
@@ -389,13 +389,10 @@ struct TodayScreen: View {
                                 Label("Delete", systemImage: "trash")
                             }
                         }
-                        // 上报本卡渲染高度 — fixedHeight 生效后上报值恒 = max, 不震荡.
-                        // ⚠️ 宽度守卫: 首帧容器宽未定时卡会以极窄宽度过一次 layout (chips 全竖排
-                        // → 虚高几百 pt), 只增不减会把这个假高度焊死. 只认正常卡宽 (≥200pt) 的上报.
-                        .background(GeometryReader { g in
-                            Color.clear.preference(key: CarouselCardHeightKey.self,
-                                                   value: g.size.width >= 200 ? g.size.height : 0)
-                        })
+                        // 等高量测 v3 (#carousel-measure): 可见卡不再自报高度 — 改由下面的隐藏测量层
+                        // 持续量"自然高", 这里只消费 fixedHeight. (v2 的 可见卡自报+棘轮+560上限+onAppear重置
+                        // 会互相打架: 重置窗口内量测被上限拒收 → 卡死 nil → 卡片各自自然高 + 尾卡隐身,
+                        // 就是 owner 实机看到的两个 bug.)
                         // 卡宽 = 容器宽 − 14 (容器 = 滚动区减去 contentMargins 后的正文宽):
                         // 吸附时右缘露出下一张 页边距16 + 14 − 卡间距12 = 18pt 的 peek.
                         // 尾部恒有自由训练空卡 → 总卡数 ≥2, 恒留 peek.
@@ -414,18 +411,38 @@ struct TodayScreen: View {
             // 横滑内容顶到屏幕两缘 (负 margin 抵掉页 padding), 首卡仍对齐正文 — 跟 Coach 货架同套路.
             .padding(.horizontal, -MasoMetrics.pagePaddingHorizontal)
             .contentMargins(.horizontal, MasoMetrics.pagePaddingHorizontal, for: .scrollContent)
+            // ── 隐藏测量层: 每张卡渲染一份"永远自然高" (fixedHeight: nil) 的隐形副本, 宽度与可见卡
+            // 一致 (页宽 − 边距×2 − 14), 持续上报自然高, reduce 取 max → 直接赋值 (无棘轮/无重置/无上限).
+            // plans 变化 → 副本跟着变 → 新 max 自动流入; 副本永不吃 fixedHeight, 量测不会被自身污染.
+            // 成本 = 多渲染 3-6 张不上屏的卡, 可接受.
+            .background {
+                GeometryReader { geo in
+                    HStack(alignment: .top, spacing: 0) {
+                        ForEach(carouselPlans) { plan in
+                            WorkoutCard(plan: plan, exById: data.exById, kicker: "Today's Workout",
+                                        onStart: {}, prominentStart: true, emphasized: true)
+                                .frame(width: max(geo.size.width - 14, 100))
+                                // 抗压缩: 外层 10×10 小 frame 的提案不许把副本竖向压扁 —
+                                // 量到的必须是自然高.
+                                .fixedSize(horizontal: false, vertical: true)
+                                .background(GeometryReader { g in
+                                    Color.clear.preference(key: CarouselCardHeightKey.self, value: g.size.height)
+                                })
+                        }
+                    }
+                    .frame(width: 10, height: 10, alignment: .topLeading)  // 压进小 frame, 不参与外层布局
+                    .clipped()
+                    .hidden()
+                    .allowsHitTesting(false)
+                    .accessibilityHidden(true)
+                }
+            }
             .onPreferenceChange(CarouselCardHeightKey.self) { h in
-                // 只增不减: 首轮量到自然高 max; 之后所有卡被拉到该高, 上报值稳定.
-                // 560 上限 = 卡自然高的合理天花板 — 任何异常 layout 瞬间报出的巨值都不许进
-                // ratchet (进了就焊死, 自由训练尾卡会跟着巨大化, owner 实机见过不一致).
-                if h > (carouselCardHeight ?? 0), h <= 560 { carouselCardHeight = h }
+                // 直接赋值 (非棘轮) — 来源只有隐藏层的自然高, max reduce 后就是"最高那张"的高度.
+                if h > 0, carouselCardHeight != h { carouselCardHeight = h }
             }
         }
         .padding(.top, 4)   // 外层 VStack spacing 16 + 4 = 与上方肌肉状态区间距 20pt (owner 指定 ≥20)
-        // plans 集合变了 (增删/AI 重生成) → 高度重新量 (否则只增不减会卡在旧 max).
-        .onChange(of: carouselPlans.map(\.id)) { _, _ in carouselCardHeight = nil }
-        // 每次进页也重量一次 — 陈旧量测值 (旧布局/旧字号下测的) 不跨次复用.
-        .onAppear { carouselCardHeight = nil }
     }
 
     /// 尾卡 "自由训练" — 空卡片样式: 虚线描边 / 无 surface 填充 / 居中 plus + 标签,
