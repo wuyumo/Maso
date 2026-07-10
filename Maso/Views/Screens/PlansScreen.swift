@@ -330,7 +330,8 @@ struct TrainingPreferencesSheet: View {
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 14)
                     .foregroundStyle(.black)
-                    .background(Capsule().fill(MasoColor.accent))
+                    // 主 CTA 统一系统玻璃 (owner 映射表①): iOS 26 accent 高浓度玻璃 + 黑字, 旧系统保留实心.
+                    .glassCapsuleButtonBackground(tint: MasoColor.accent.opacity(0.85), fallback: MasoColor.accent)
                 }
                 .buttonStyle(.plain)
                 .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
@@ -426,17 +427,18 @@ struct PlanRow: View {
             .padding(.vertical, 12)
 
             // ── 播放键 — 钉在卡片右下角, 距右边缘 & 底边等距 (各 12pt) ──
+            // 自绘圆底图标钮 → 玻璃圆 (映射表④): 弱播放键跟 WorkoutCard.startButtonLabel 弱态同配方
+            // (accent 低浓度玻璃 + accent icon); 旧系统保留原半透圆 + 描边.
             Button(action: onStart) {
-                ZStack {
-                    Circle()
-                        .fill(MasoColor.accent.opacity(0.18))
-                        .overlay(Circle().stroke(MasoColor.accent.opacity(0.4), lineWidth: 0.5))
-                        .frame(width: 28, height: 28)
-                    Image(systemName: "play.fill")
-                        .font(.system(size: 10, weight: .heavy))
-                        .foregroundStyle(MasoColor.accent)
-                        .offset(x: 0.5)
-                }
+                Image(systemName: "play.fill")
+                    .font(.system(size: 10, weight: .heavy))
+                    .foregroundStyle(MasoColor.accent)
+                    .offset(x: 0.5)
+                    .frame(width: 28, height: 28)
+                    .glassCircleButtonBackground(tint: MasoColor.accent.opacity(0.25),
+                                                 fallback: MasoColor.accent.opacity(0.18))
+                    .overlay(Circle().stroke(systemGlassAvailable ? .clear : MasoColor.accent.opacity(0.4),
+                                             lineWidth: 0.5))
             }
             .buttonStyle(.plain)
             .accessibilityLabel("Start Workout")
@@ -810,10 +812,10 @@ struct PlanDetailSheet: View {
             // 不撑满 — 胶囊只包住 图标 + 文字 (用户要求). VStack(.center) 让它居中.
             .padding(.vertical, 13)
             .padding(.horizontal, 28)
-            .background(MasoColor.accent)
             .foregroundStyle(.black)
-            .clipShape(Capsule())
-            .shadow(color: MasoColor.accent.opacity(0.35), radius: 8, y: 2)
+            // 主 CTA 系统玻璃 (映射表①); 阴影只留给旧系统实心版, 玻璃自带层次不再叠影.
+            .glassCapsuleButtonBackground(tint: MasoColor.accent.opacity(0.85), fallback: MasoColor.accent)
+            .shadow(color: systemGlassAvailable ? .clear : MasoColor.accent.opacity(0.35), radius: 8, y: 2)
         }
         .buttonStyle(.plain)
         .padding(.top, 4)  // 跟 muscle map 之间留 18pt (VStack spacing 14 + 4) — 视觉分组
@@ -834,10 +836,12 @@ struct PlanDetailSheet: View {
             }
             .padding(.vertical, 13)
             .padding(.horizontal, 28)
-            .background(saved ? MasoColor.surfaceHi : MasoColor.accent)
             .foregroundStyle(saved ? MasoColor.textDim : .black)
-            .clipShape(Capsule())
-            .shadow(color: saved ? .clear : MasoColor.accent.opacity(0.35), radius: 8, y: 2)
+            // 主 CTA 系统玻璃 (映射表①): 未存 = accent 高浓度玻璃 + 黑字; 已存 = 素玻璃 + 灰字
+            // (跟 AddToPlansButton 已存态同配方). 旧系统保留原实心/surfaceHi.
+            .glassCapsuleButtonBackground(tint: saved ? nil : MasoColor.accent.opacity(0.85),
+                                          fallback: saved ? MasoColor.surfaceHi : MasoColor.accent)
+            .shadow(color: (saved || systemGlassAvailable) ? .clear : MasoColor.accent.opacity(0.35), radius: 8, y: 2)
         }
         .buttonStyle(.plain)
         .animation(.easeOut(duration: 0.2), value: saved)

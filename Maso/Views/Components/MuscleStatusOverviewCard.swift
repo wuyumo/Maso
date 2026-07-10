@@ -117,8 +117,9 @@ struct MuscleStatusOverviewCard: View {
                                     .foregroundStyle(MasoColor.accent)
                                     .padding(.horizontal, 11)
                                     .padding(.vertical, 5)
-                                    .background(MasoColor.accent.opacity(0.16))
-                                    .clipShape(Capsule())
+                                    // 次级胶囊钮 → accent 低浓度玻璃 (映射表②), 旧系统保留半透明底.
+                                    .glassCapsuleButtonBackground(tint: MasoColor.accent.opacity(0.25),
+                                                                  fallback: MasoColor.accent.opacity(0.16))
                                     .fixedSize(horizontal: true, vertical: false)
                                 }
                                 .buttonStyle(.plain)
@@ -146,8 +147,10 @@ struct MuscleStatusOverviewCard: View {
                                 .foregroundStyle(MasoColor.accent)
                                 .padding(.horizontal, 11)
                                 .padding(.vertical, 6)
-                                .background(MasoColor.accent.opacity(0.16))
-                                .clipShape(RoundedRectangle(cornerRadius: 10))
+                                // 次级钮玻璃 (映射表②); 形状保持圆角矩形 — 多行文案撑不成胶囊.
+                                .glassButtonBackground(tint: MasoColor.accent.opacity(0.25),
+                                                       fallback: MasoColor.accent.opacity(0.16),
+                                                       in: RoundedRectangle(cornerRadius: 10))
                             }
                             .buttonStyle(.plain)
                             .frame(maxWidth: 150, alignment: .leading)

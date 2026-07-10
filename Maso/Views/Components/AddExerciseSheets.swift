@@ -153,25 +153,34 @@ struct CustomExerciseFormSheet: View {
                         // 两个图片来源: 网上搜图 (主, 用动作名自动搜) + 从相册选.
                         HStack(spacing: 10) {
                             Button(action: { webPickerOpen = true }) {
+                                // 次级胶囊钮 → accent 低浓度玻璃 (映射表②); 描边只留旧系统.
                                 Label(NSLocalizedString("Search the web", comment: ""), systemImage: "magnifyingglass")
                                     .font(.system(size: 13, weight: .bold))
                                     .frame(maxWidth: .infinity)
                                     .padding(.vertical, 9)
-                                    .background(MasoColor.accent.opacity(0.16))
                                     .foregroundStyle(MasoColor.accent)
-                                    .clipShape(Capsule())
-                                    .overlay(Capsule().stroke(MasoColor.accent.opacity(0.35), lineWidth: 0.5))
+                                    .glassCapsuleButtonBackground(tint: MasoColor.accent.opacity(0.25),
+                                                                  fallback: MasoColor.accent.opacity(0.16))
+                                    .overlay {
+                                        if !systemGlassAvailable {
+                                            Capsule().stroke(MasoColor.accent.opacity(0.35), lineWidth: 0.5)
+                                        }
+                                    }
                             }
                             .buttonStyle(.plain)
                             PhotosPicker(selection: $photoItem, matching: .images) {
+                                // 工具胶囊 → 素玻璃 (映射表③), 字色不变; 描边只留旧系统.
                                 Label(NSLocalizedString("From library", comment: ""), systemImage: "photo.on.rectangle")
                                     .font(.system(size: 13, weight: .bold))
                                     .frame(maxWidth: .infinity)
                                     .padding(.vertical, 9)
-                                    .background(MasoColor.surfaceHi)
                                     .foregroundStyle(MasoColor.text)
-                                    .clipShape(Capsule())
-                                    .overlay(Capsule().stroke(MasoColor.borderSoft, lineWidth: 0.5))
+                                    .glassCapsuleButtonBackground(fallback: MasoColor.surfaceHi)
+                                    .overlay {
+                                        if !systemGlassAvailable {
+                                            Capsule().stroke(MasoColor.borderSoft, lineWidth: 0.5)
+                                        }
+                                    }
                             }
                             .buttonStyle(.plain)
                         }
@@ -673,11 +682,12 @@ struct NicheLibraryBrowseSheet: View {
                 Text(NSLocalizedString("Add", comment: ""))
                     .font(.system(size: 12, weight: .heavy))
             }
-            .foregroundStyle(.black)
+            // 行内重复小实心钮 → 次级玻璃 (映射表②同类归置): iOS 26 低浓度玻璃 + accent 字,
+            // 旧系统保留实心 accent + 黑字.
+            .foregroundStyle(systemGlassAvailable ? MasoColor.accent : .black)
             .padding(.horizontal, 12)
             .padding(.vertical, 6)
-            .background(MasoColor.accent)
-            .clipShape(Capsule())
+            .glassCapsuleButtonBackground(tint: MasoColor.accent.opacity(0.25), fallback: MasoColor.accent)
         }
         .buttonStyle(.plain)
     }

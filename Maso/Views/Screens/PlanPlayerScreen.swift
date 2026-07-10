@@ -2542,9 +2542,11 @@ private struct SaveChangesConfirmView: View {
                         .font(.system(size: 15, weight: .heavy))
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 14)
-                        .background(MasoColor.accent)
                         .foregroundStyle(.black)
-                        .clipShape(Capsule())
+                        // 主 CTA 系统玻璃 (映射表①), 旧系统保留实心 accent.
+                        // (播放器"三键+休息环"点名不动; 这是训练结束后的保存确认页, 不在豁免内.)
+                        .glassCapsuleButtonBackground(tint: MasoColor.accent.opacity(0.85),
+                                                      fallback: MasoColor.accent)
                 }
                 .buttonStyle(.plain)
                 Button(action: onSkip) {
@@ -2553,11 +2555,13 @@ private struct SaveChangesConfirmView: View {
                         .foregroundStyle(MasoColor.textDim)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 10)
-                        .background(MasoColor.surface)
-                        .overlay(
-                            Capsule().stroke(MasoColor.borderSoft, lineWidth: 0.8)
-                        )
-                        .clipShape(Capsule())
+                        // 次级"不保存" → 素玻璃 (映射表③), 灰字不变; 描边只留旧系统.
+                        .glassCapsuleButtonBackground(fallback: MasoColor.surface)
+                        .overlay {
+                            if !systemGlassAvailable {
+                                Capsule().stroke(MasoColor.borderSoft, lineWidth: 0.8)
+                            }
+                        }
                 }
                 .buttonStyle(.plain)
             }

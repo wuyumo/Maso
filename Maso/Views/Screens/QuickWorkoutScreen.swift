@@ -337,9 +337,11 @@ private struct QuickMuscleStep: View {
                 .font(.system(size: 14, weight: .heavy))
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 14)
-                .background(selected.isEmpty ? MasoColor.surfaceHi : MasoColor.accent)
                 .foregroundStyle(selected.isEmpty ? MasoColor.textDim : .black)
-                .clipShape(Capsule())
+                // 主 CTA 系统玻璃 (映射表①): 可点 = accent 高浓度玻璃 + 黑字, 禁用 = 素玻璃 + 灰字;
+                // 旧系统保留原 surfaceHi / 实心 accent.
+                .glassCapsuleButtonBackground(tint: selected.isEmpty ? nil : MasoColor.accent.opacity(0.85),
+                                              fallback: selected.isEmpty ? MasoColor.surfaceHi : MasoColor.accent)
             }
             .buttonStyle(.plain)
             .disabled(selected.isEmpty)
@@ -591,11 +593,14 @@ private struct QuickExerciseStep: View {
             .foregroundStyle(MasoColor.accent)
             .padding(.horizontal, 16)
             .frame(height: Self.ctaHeight)
-            .background(MasoColor.accent.opacity(0.12))
-            .overlay(
-                Capsule().stroke(MasoColor.accent.opacity(0.4), lineWidth: 0.8)
-            )
-            .clipShape(Capsule())
+            // 次级胶囊钮 → accent 低浓度玻璃 (映射表②); 描边只留给旧系统的半透明底样式.
+            .glassCapsuleButtonBackground(tint: MasoColor.accent.opacity(0.25),
+                                          fallback: MasoColor.accent.opacity(0.12))
+            .overlay {
+                if !systemGlassAvailable {
+                    Capsule().stroke(MasoColor.accent.opacity(0.4), lineWidth: 0.8)
+                }
+            }
         }
         .buttonStyle(.plain)
         .disabled(aiLoading)
@@ -626,9 +631,10 @@ private struct QuickExerciseStep: View {
             .font(.system(size: 14, weight: .heavy))
             .frame(maxWidth: .infinity)
             .frame(height: Self.ctaHeight)
-            .background(pickedIds.isEmpty ? MasoColor.surfaceHi : MasoColor.accent)
             .foregroundStyle(pickedIds.isEmpty ? MasoColor.textDim : .black)
-            .clipShape(Capsule())
+            // 主 CTA 系统玻璃 (映射表①): 可点 = accent 高浓度玻璃, 禁用 = 素玻璃; 旧系统保留原样.
+            .glassCapsuleButtonBackground(tint: pickedIds.isEmpty ? nil : MasoColor.accent.opacity(0.85),
+                                          fallback: pickedIds.isEmpty ? MasoColor.surfaceHi : MasoColor.accent)
         }
         .buttonStyle(.plain)
         .disabled(pickedIds.isEmpty)

@@ -395,8 +395,8 @@ struct OnboardingScreen: View {
                     }
                     .padding(.horizontal, 20).padding(.vertical, 16)
                     .foregroundStyle(MasoColor.text)
-                    .background(MasoColor.surface)
-                    .clipShape(Capsule())
+                    // 工具钮 → 素玻璃胶囊 (映射表③), 字色不变; 旧系统保留 surface 底.
+                    .glassCapsuleButtonBackground(fallback: MasoColor.surface)
                 }
                 .buttonStyle(.plain)
             }
@@ -408,9 +408,9 @@ struct OnboardingScreen: View {
                         .lineLimit(1)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 16)
-                        .background(MasoColor.accent)
                         .foregroundStyle(.black)
-                        .clipShape(Capsule())
+                        // 主 CTA 系统玻璃 (映射表①), 旧系统保留实心 accent; 选项行/拨盘不动.
+                        .glassCapsuleButtonBackground(tint: MasoColor.accent.opacity(0.85), fallback: MasoColor.accent)
                 }
                 .buttonStyle(.plain)
             }

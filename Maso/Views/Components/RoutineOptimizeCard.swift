@@ -43,8 +43,10 @@ struct RoutineOptimizeCard: View {
                 }
                 .padding(.vertical, 11)
                 .padding(.horizontal, 22)
-                .foregroundStyle(.black)
-                .background(Capsule().fill(MasoColor.accent))
+                // 次级胶囊钮 (owner 映射表②点名): iOS 26 = accent 低浓度玻璃 + accent 字;
+                // 旧系统保留改动前的实心 accent + 黑字.
+                .foregroundStyle(systemGlassAvailable ? MasoColor.accent : .black)
+                .glassCapsuleButtonBackground(tint: MasoColor.accent.opacity(0.25), fallback: MasoColor.accent)
             }
             .buttonStyle(.plain)
             .padding(.top, 2)

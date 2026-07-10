@@ -101,14 +101,17 @@ struct FilterMenuButton<T: Hashable>: View {
         .foregroundStyle(selected == nil ? MasoColor.textDim : MasoColor.accent)
         .padding(.horizontal, 12)
         .frame(height: 32)   // 固定高 — 跟 ExerciseSearchFilterBar 的搜索框完全等高
-        .background(selected == nil ? MasoColor.surface : MasoColor.accent.opacity(0.16))
-        .overlay(
-            Capsule().stroke(
-                selected == nil ? MasoColor.borderSoft : MasoColor.accent.opacity(0.5),
-                lineWidth: 0.5
-            )
-        )
-        .clipShape(Capsule())
+        // 小工具胶囊 → 素玻璃 (映射表③), 字色不变 (选中态仍靠 accent 字示意);
+        // 旧系统保留原 surface/accent 半透明底 + 描边.
+        .glassCapsuleButtonBackground(fallback: selected == nil ? MasoColor.surface : MasoColor.accent.opacity(0.16))
+        .overlay {
+            if !systemGlassAvailable {
+                Capsule().stroke(
+                    selected == nil ? MasoColor.borderSoft : MasoColor.accent.opacity(0.5),
+                    lineWidth: 0.5
+                )
+            }
+        }
     }
 
     /// 系统默认菜单选择器样式 — tinted 文字 + chevron.up.chevron.down (= iOS Picker(.menu) 的指示符),
@@ -272,9 +275,13 @@ struct ExerciseSearchFilterBar: View {
         .foregroundStyle(active ? MasoColor.accent : MasoColor.textDim)
         .padding(.horizontal, 12)
         .frame(height: 32)
-        .background(active ? MasoColor.accent.opacity(0.16) : MasoColor.surface)
-        .overlay(Capsule().stroke(active ? MasoColor.accent.opacity(0.5) : MasoColor.borderSoft, lineWidth: 0.5))
-        .clipShape(Capsule())
+        // 小工具胶囊 → 素玻璃 (映射表③), 跟 FilterMenuButton.capsuleLabel 同配方.
+        .glassCapsuleButtonBackground(fallback: active ? MasoColor.accent.opacity(0.16) : MasoColor.surface)
+        .overlay {
+            if !systemGlassAvailable {
+                Capsule().stroke(active ? MasoColor.accent.opacity(0.5) : MasoColor.borderSoft, lineWidth: 0.5)
+            }
+        }
     }
 
     /// 系统菜单样式 label — tinted 文字 + chevron.up.chevron.down (= iOS Picker(.menu) 指示符), 无胶囊底.

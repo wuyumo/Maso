@@ -420,8 +420,10 @@ struct AddToPlansButton: View {
             .padding(.horizontal, 14)
             // 未存: accent 绿 (可操作); 已存: 灰 (状态感, 但依然可点切回).
             .foregroundStyle(isSaved ? MasoColor.textDim : MasoColor.accent)
-            .background((isSaved ? MasoColor.textDim : MasoColor.accent).opacity(0.15))
-            .clipShape(Capsule())
+            // 次级胶囊钮 (映射表②): 未存 = accent 低浓度玻璃 + accent 字; 已存 = 素玻璃 + 灰字.
+            // 旧系统保留原半透明底.
+            .glassCapsuleButtonBackground(tint: isSaved ? nil : MasoColor.accent.opacity(0.25),
+                                          fallback: (isSaved ? MasoColor.textDim : MasoColor.accent).opacity(0.15))
         }
         .buttonStyle(.plain)
         .animation(.easeOut(duration: 0.2), value: isSaved)

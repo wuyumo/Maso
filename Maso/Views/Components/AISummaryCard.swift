@@ -323,11 +323,13 @@ struct AISummaryCard: View {
             Haptics.tap()
             onApply(action)
         } label: {
+            // 卡内 Apply 小实心钮 → 次级玻璃 (映射表②同类归置): iOS 26 低浓度玻璃 + accent 字,
+            // 旧系统保留实心 accent + 黑字.
             Text(label)
                 .font(.system(size: 11, weight: .heavy))
-                .foregroundStyle(.black)
+                .foregroundStyle(systemGlassAvailable ? MasoColor.accent : .black)
                 .padding(.vertical, 6).padding(.horizontal, 10)
-                .background(Capsule().fill(MasoColor.accent))
+                .glassCapsuleButtonBackground(tint: MasoColor.accent.opacity(0.25), fallback: MasoColor.accent)
         }
         .buttonStyle(.plain)
         .disabled(!enabled)

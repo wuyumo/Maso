@@ -318,12 +318,13 @@ struct ExerciseLibraryBrowser: View {
                 .font(.system(size: 14, weight: .semibold))
                 .foregroundStyle(MasoColor.textDim)
             Button(action: { addChoiceOpen = true }) {
+                // 空态小实心钮 → 次级玻璃 (映射表②同类归置): iOS 26 低浓度玻璃 + accent 字,
+                // 旧系统保留实心 accent + 黑字.
                 Text("Add exercise")
                     .font(.system(size: 13, weight: .bold))
-                    .foregroundStyle(.black)
+                    .foregroundStyle(systemGlassAvailable ? MasoColor.accent : .black)
                     .padding(.horizontal, 16).padding(.vertical, 8)
-                    .background(MasoColor.accent)
-                    .clipShape(Capsule())
+                    .glassCapsuleButtonBackground(tint: MasoColor.accent.opacity(0.25), fallback: MasoColor.accent)
             }
             .buttonStyle(.plain)
         }
@@ -929,13 +930,17 @@ struct ExerciseDetailSheet: View {
                      : NSLocalizedString("Listen", comment: ""))
                     .font(.system(size: 11, weight: .semibold))
             }
-            .foregroundStyle(isSpeakingThis ? MasoColor.text : MasoColor.accent)
+            // 玻璃态: 朗读中 = accent 高浓度玻璃 + 黑字 (全 app 激活态统一配方), 空闲 = 低浓度 + accent 字;
+            // 旧系统保留原实心/半透明底 + 白字.
+            .foregroundStyle(isSpeakingThis ? (systemGlassAvailable ? .black : MasoColor.text) : MasoColor.accent)
             .padding(.horizontal, 10).padding(.vertical, 5)
-            .background(isSpeakingThis ? MasoColor.accent : MasoColor.accent.opacity(0.16))
-            .overlay(
-                Capsule().stroke(MasoColor.accent.opacity(isSpeakingThis ? 0 : 0.4), lineWidth: 0.6)
-            )
-            .clipShape(Capsule())
+            .glassCapsuleButtonBackground(tint: MasoColor.accent.opacity(isSpeakingThis ? 0.85 : 0.25),
+                                          fallback: isSpeakingThis ? MasoColor.accent : MasoColor.accent.opacity(0.16))
+            .overlay {
+                if !systemGlassAvailable {
+                    Capsule().stroke(MasoColor.accent.opacity(isSpeakingThis ? 0 : 0.4), lineWidth: 0.6)
+                }
+            }
         }
         .buttonStyle(.plain)
         .accessibilityLabel(isSpeakingThis
@@ -1091,11 +1096,14 @@ struct ExerciseDetailSheet: View {
                                         }
                                         .foregroundStyle(MasoColor.accent)
                                         .padding(.horizontal, 10).padding(.vertical, 5)
-                                        .background(MasoColor.accent.opacity(0.16))
-                                        .overlay(
-                                            Capsule().stroke(MasoColor.accent.opacity(0.4), lineWidth: 0.6)
-                                        )
-                                        .clipShape(Capsule())
+                                        // 次级胶囊钮 → accent 低浓度玻璃 (映射表②); 描边只留旧系统.
+                                        .glassCapsuleButtonBackground(tint: MasoColor.accent.opacity(0.25),
+                                                                      fallback: MasoColor.accent.opacity(0.16))
+                                        .overlay {
+                                            if !systemGlassAvailable {
+                                                Capsule().stroke(MasoColor.accent.opacity(0.4), lineWidth: 0.6)
+                                            }
+                                        }
                                     }
                                 }
                                 // 语音播报按钮 — iOS AVSpeechSynthesizer 朗读 instructions
@@ -1157,9 +1165,10 @@ struct ExerciseDetailSheet: View {
                             }
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 14)
-                            .background(MasoColor.accent)
                             .foregroundStyle(.black)
-                            .clipShape(Capsule())
+                            // 主 CTA 系统玻璃 (映射表①), 旧系统保留实心 accent.
+                            .glassCapsuleButtonBackground(tint: MasoColor.accent.opacity(0.85),
+                                                          fallback: MasoColor.accent)
                         }
                         .buttonStyle(.plain)
                         .padding(.top, 8)

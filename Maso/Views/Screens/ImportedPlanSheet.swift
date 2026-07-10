@@ -72,8 +72,8 @@ struct ImportedPlanSheet: View {
                         .foregroundStyle(.black)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 14)
-                        .background(MasoColor.accent)
-                        .clipShape(Capsule())
+                        // 主 CTA 系统玻璃 (映射表①), 旧系统保留实心 accent.
+                        .glassCapsuleButtonBackground(tint: MasoColor.accent.opacity(0.85), fallback: MasoColor.accent)
                     }
                     .buttonStyle(.plain)
                     .padding(.top, 8)
@@ -295,8 +295,8 @@ struct RoutineReviewSheet: View {
                         .font(.system(size: 15, weight: .semibold))
                         .foregroundStyle(MasoColor.textSoft)
                         .frame(width: 34, height: 34)
-                        .background(MasoColor.surfaceHi)
-                        .clipShape(Circle())
+                        // 自绘圆底图标钮 → 素玻璃圆 (映射表④), 旧系统保留 surfaceHi 圆.
+                        .glassCircleButtonBackground(fallback: MasoColor.surfaceHi)
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel(NSLocalizedString("Replace exercise", comment: ""))
@@ -325,11 +325,13 @@ struct RoutineReviewSheet: View {
                      ? NSLocalizedString("Select at least one", comment: "")
                      : String(format: NSLocalizedString("Add %lld to routine", comment: ""), includeCount))
                     .font(.system(size: 15, weight: .heavy))
-                    .foregroundStyle(.black)
+                    // 玻璃态禁用 = 素玻璃 + 灰字 (跟 Coach 发送键禁用态同配方); 旧系统保留原 textFaint 底黑字.
+                    .foregroundStyle((includeCount == 0 && systemGlassAvailable) ? MasoColor.textDim : .black)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 14)
-                    .background(includeCount == 0 ? MasoColor.textFaint : MasoColor.accent)
-                    .clipShape(Capsule())
+                    // 主 CTA 系统玻璃 (映射表①): 可提交 = accent 高浓度玻璃, 禁用 = 素玻璃.
+                    .glassCapsuleButtonBackground(tint: includeCount == 0 ? nil : MasoColor.accent.opacity(0.85),
+                                                  fallback: includeCount == 0 ? MasoColor.textFaint : MasoColor.accent)
             }
             .buttonStyle(.plain)
             .disabled(includeCount == 0)

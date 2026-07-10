@@ -76,9 +76,10 @@ struct FeedbackSheet: View {
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 14)
-                    .background(canSubmit ? MasoColor.accent : MasoColor.surfaceHi)
                     .foregroundStyle(canSubmit ? .black : MasoColor.textDim)
-                    .clipShape(Capsule())
+                    // 主 CTA 系统玻璃 (映射表①): 可提交 = accent 高浓度玻璃, 禁用 = 素玻璃; 旧系统保留原样.
+                    .glassCapsuleButtonBackground(tint: canSubmit ? MasoColor.accent.opacity(0.85) : nil,
+                                                  fallback: canSubmit ? MasoColor.accent : MasoColor.surfaceHi)
                 }
                 .buttonStyle(.plain)
                 .disabled(!canSubmit)

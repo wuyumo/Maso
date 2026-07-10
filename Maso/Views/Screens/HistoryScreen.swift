@@ -738,8 +738,9 @@ struct HistoryScreen: View {
             .foregroundStyle(MasoColor.accent)
             .padding(.vertical, 10)
             .padding(.horizontal, 18)
-            .background(MasoColor.accent.opacity(0.15))
-            .clipShape(Capsule())
+            // 次级胶囊钮 → accent 低浓度玻璃 (映射表②, 跟 Repeat 同款 idiom), 旧系统保留半透明底.
+            .glassCapsuleButtonBackground(tint: MasoColor.accent.opacity(0.25),
+                                          fallback: MasoColor.accent.opacity(0.15))
         }
         .buttonStyle(.plain)
         .accessibilityLabel("Share my progress")
@@ -1115,8 +1116,9 @@ private struct SessionCard: View {
                         .padding(.vertical, 8)
                         .padding(.horizontal, 14)
                         .foregroundStyle(MasoColor.accent)
-                        .background(MasoColor.accent.opacity(0.15))
-                        .clipShape(Capsule())
+                        // 次级胶囊钮 → accent 低浓度玻璃 (映射表②), 旧系统保留半透明底.
+                        .glassCapsuleButtonBackground(tint: MasoColor.accent.opacity(0.25),
+                                                      fallback: MasoColor.accent.opacity(0.15))
                     }
                     .buttonStyle(.plain)
                     .accessibilityLabel("Repeat Workout")
@@ -1186,9 +1188,10 @@ private struct SessionDetailSheet: View {
                             }
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 14)
-                            .background(MasoColor.accent)
                             .foregroundStyle(.black)
-                            .clipShape(Capsule())
+                            // 主 CTA 系统玻璃 (映射表①), 旧系统保留实心 accent.
+                            .glassCapsuleButtonBackground(tint: MasoColor.accent.opacity(0.85),
+                                                          fallback: MasoColor.accent)
                         }
                         .buttonStyle(.plain)
                         .listRowSeparator(.hidden)

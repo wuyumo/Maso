@@ -336,11 +336,12 @@ private struct CommunityPlanCard: View {
                         Text("Add to my plans")
                             .font(.system(size: 13, weight: .semibold))
                     }
-                    .foregroundStyle(MasoColor.background)
+                    // 卡内重复出现的小实心钮 → 次级玻璃 (同 Optimize with AI 的降级处置, 映射表②):
+                    // iOS 26 = accent 低浓度玻璃 + accent 字; 旧系统保留实心 accent + 深字.
+                    .foregroundStyle(systemGlassAvailable ? MasoColor.accent : MasoColor.background)
                     .padding(.horizontal, 14)
                     .padding(.vertical, 8)
-                    .background(MasoColor.accent)
-                    .clipShape(Capsule())
+                    .glassCapsuleButtonBackground(tint: MasoColor.accent.opacity(0.25), fallback: MasoColor.accent)
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel("Add to my plans")
@@ -444,8 +445,8 @@ private struct CommunityPlanDetailSheet: View {
                         .foregroundStyle(.black)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 14)
-                        .background(MasoColor.accent)
-                        .clipShape(Capsule())
+                        // 主 CTA 系统玻璃 (映射表①), 旧系统保留实心 accent.
+                        .glassCapsuleButtonBackground(tint: MasoColor.accent.opacity(0.85), fallback: MasoColor.accent)
                     }
                     .buttonStyle(.plain)
                     .padding(.top, 8)

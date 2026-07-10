@@ -291,8 +291,9 @@ struct CoachScreen: View {
                     .foregroundStyle(MasoColor.accent)
                     .padding(.horizontal, 14)
                     .padding(.vertical, 8)
-                    .background(MasoColor.accent.opacity(0.15))
-                    .clipShape(Capsule())
+                    // 空态建议 Apply chip → 次级玻璃胶囊 (映射表②), 旧系统保留半透明底.
+                    .glassCapsuleButtonBackground(tint: MasoColor.accent.opacity(0.25),
+                                                  fallback: MasoColor.accent.opacity(0.15))
                 }
                 .buttonStyle(.plain)
             }
@@ -433,7 +434,12 @@ struct CoachScreen: View {
             Button {
                 send(feedback: lastFeedback, onlyModify: lastOnlyModify)
             } label: {
+                // 失败条 Retry → 次级玻璃胶囊 (映射表②, 跟 TodayScreen 失败条同款); 旧系统保留裸文字.
                 Text("Retry").font(.system(size: 12, weight: .bold))
+                    .foregroundStyle(systemGlassAvailable ? MasoColor.accent : MasoColor.textDim)
+                    .padding(.horizontal, systemGlassAvailable ? 12 : 0)
+                    .padding(.vertical, systemGlassAvailable ? 6 : 0)
+                    .glassCapsuleButtonBackground(tint: MasoColor.accent.opacity(0.25))
             }
         }
         .foregroundStyle(MasoColor.textDim)
@@ -502,7 +508,13 @@ struct CoachScreen: View {
                         .foregroundStyle(MasoColor.textDim)
                         .padding(.horizontal, 10)
                         .padding(.vertical, 6)
-                        .overlay(Capsule().strokeBorder(MasoColor.textDim.opacity(0.5), lineWidth: 1))
+                        // 小工具胶囊 → 素玻璃 (映射表③), 字色不变; 旧系统保留原描边样式.
+                        .glassCapsuleButtonBackground()
+                        .overlay {
+                            if !systemGlassAvailable {
+                                Capsule().strokeBorder(MasoColor.textDim.opacity(0.5), lineWidth: 1)
+                            }
+                        }
                     }
                     .buttonStyle(.plain)
                     .accessibilityLabel(Text("Next blank"))

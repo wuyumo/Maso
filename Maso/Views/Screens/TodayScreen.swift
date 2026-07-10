@@ -153,7 +153,14 @@ struct TodayScreen: View {
                             Button {
                                 Haptics.tap()
                                 Task { await data.forceRefreshAIWorkout() }
-                            } label: { Text("Retry").font(.system(size: 12, weight: .bold)) }
+                            } label: {
+                                // 失败条 Retry → 次级玻璃胶囊 (映射表②); 旧系统保留原裸文字 (无底无内边距).
+                                Text("Retry").font(.system(size: 12, weight: .bold))
+                                    .foregroundStyle(systemGlassAvailable ? MasoColor.accent : MasoColor.textDim)
+                                    .padding(.horizontal, systemGlassAvailable ? 12 : 0)
+                                    .padding(.vertical, systemGlassAvailable ? 6 : 0)
+                                    .glassCapsuleButtonBackground(tint: MasoColor.accent.opacity(0.25))
+                            }
                         }
                         .foregroundStyle(MasoColor.textDim)
                         .padding(.horizontal, 12).padding(.vertical, 10)
