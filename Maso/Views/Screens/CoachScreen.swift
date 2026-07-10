@@ -85,6 +85,10 @@ struct CoachScreen: View {
     /// 对话流自动滚到底的锚点 id.
     private static let bottomAnchor = "coach-bottom"
 
+    /// composer 按钮玻璃的半透白 tint (owner 指定) — 素玻璃在深底上发黑不显眼,
+    /// 掺一层很透的白让它在黑底上读作浅灰. [+|#] 药丸 / 发送禁用态 / 「下一空」胶囊 三处同值.
+    private static let composerGlassTint = Color.white.opacity(0.12)
+
     /// 渐进清单文案 — 复用 AIGeneratingView 那套 key (en+zh 都已有), 跟 CoachSession.generationStep 对应.
     private static let generationStepKeys = [
         "Uploading your data",
@@ -554,8 +558,8 @@ struct CoachScreen: View {
                         .foregroundStyle(MasoColor.textDim)
                         .padding(.horizontal, 10)
                         .padding(.vertical, 6)
-                        // 小工具胶囊 → 素玻璃 (映射表③), 字色不变; 旧系统保留原描边样式.
-                        .glassCapsuleButtonBackground()
+                        // 小工具胶囊 → 半透白玻璃 (跟 [+|#] 药丸同 tint), 字色不变; 旧系统保留原描边样式.
+                        .glassCapsuleButtonBackground(tint: Self.composerGlassTint)
                         .overlay {
                             if !systemGlassAvailable {
                                 Capsule().strokeBorder(MasoColor.textDim.opacity(0.5), lineWidth: 1)
@@ -638,7 +642,7 @@ struct CoachScreen: View {
         return Group {
             if #available(iOS 26.0, *) {
                 // .interactive 跟发送键同配方 — 两枚按键玻璃观感一致 (owner 反馈过不一致).
-                content.glassEffect(.regular.interactive(), in: Capsule())
+                content.glassEffect(.regular.tint(Self.composerGlassTint).interactive(), in: Capsule())
             } else {
                 content.background(MasoColor.surfaceHi).clipShape(Capsule())
             }
@@ -655,10 +659,10 @@ struct CoachScreen: View {
                         .font(.system(size: 18, weight: .semibold))
                         .foregroundStyle(canSend ? .black : MasoColor.textDim)
                         .frame(width: 44, height: 44)
-                        // 禁用态 = 无 tint 素玻璃, 跟左边 [+|#] 药丸完全同配方 (owner 反馈两键
-                        // 背景不一致 — 之前禁用态掺了 8% 绿); 点亮才上 accent 标记主操作.
+                        // 禁用态 = 半透白玻璃, 跟左边 [+|#] 药丸完全同配方 (owner 反馈素玻璃
+                        // 在深底上发黑不显眼); 点亮才上 accent 标记主操作.
                         .glassEffect(canSend ? .regular.tint(MasoColor.accent.opacity(0.85)).interactive()
-                                             : .regular.interactive(),
+                                             : .regular.tint(Self.composerGlassTint).interactive(),
                                      in: Circle())
                 }
                 .buttonStyle(.plain)
