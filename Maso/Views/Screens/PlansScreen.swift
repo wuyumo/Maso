@@ -551,7 +551,8 @@ struct PlanDetailSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 // 拥有的计划 (Today/Saved): 右上角显眼的"分享"按钮 (一键分享 routine 图 + QR),
-                // 左上角 "…" overflow 只留 Delete. (分享是高频正向动作, 不该埋在 overflow 里.)
+                // 左上角直接摆删除按钮 (owner 拍板: 原 "…" overflow 里只有一个 Delete, 多一跳没意义;
+                // 破坏性动作有 confirmDelete 二次确认兜底).
                 if onAddToSaved == nil {
                     ToolbarItem(placement: .topBarTrailing) {
                         Button {
@@ -562,15 +563,12 @@ struct PlanDetailSheet: View {
                         .accessibilityLabel(NSLocalizedString("Share plan", comment: ""))
                     }
                     ToolbarItem(placement: .topBarLeading) {
-                        Menu {
-                            Button(role: .destructive) {
-                                confirmDelete = true
-                            } label: {
-                                Label("Delete Plan", systemImage: "trash")
-                            }
+                        Button(role: .destructive) {
+                            confirmDelete = true
                         } label: {
-                            Image(systemName: "ellipsis")
+                            Image(systemName: "trash")
                         }
+                        .accessibilityLabel(NSLocalizedString("Delete Plan", comment: ""))
                     }
                 }
                 // Tab 2 browse 预览: 主操作 = body 的 "★ Add to my plans" 大 CTA, 顶栏不再放 "+" (去重).
@@ -828,7 +826,8 @@ struct PlanDetailSheet: View {
             HStack(spacing: 8) {
                 Image(systemName: saved ? "bookmark.fill" : "bookmark")
                     .font(.system(size: 13, weight: .heavy))
-                Text(saved ? "Saved" : "Save")
+                // 去向点名 (owner 反馈裸 "Save" 不知道存到哪) — 跟 AddToPlansButton 同文案.
+                Text(saved ? "Saved to routines" : "Save to routines")
                     .font(.system(size: 15, weight: .heavy))
             }
             .padding(.vertical, 13)

@@ -380,7 +380,9 @@ struct AddToPlansButton: View {
             HStack(spacing: 6) {
                 Image(systemName: isSaved ? "bookmark.fill" : "bookmark")
                     .font(.system(size: 11, weight: .bold))
-                Text(isSaved ? "Saved" : "Save")
+                // "Save to routines" 而非裸 "Save" — 用户不知道 save 去哪 (owner 反馈);
+                // 已存态对称写 "Saved to routines", 去向两态都点明.
+                Text(isSaved ? "Saved to routines" : "Save to routines")
                     .font(.system(size: 13, weight: .bold))
             }
             // 包裹内容 (不撑满) → 小一号胶囊; 在卡片 VStack(.leading) 里自动靠左.

@@ -381,6 +381,14 @@ struct TodayScreen: View {
                             emphasized: i == 0,       // accent 描边 + 辉光只给今日卡
                             fixedHeight: carouselCardHeight   // 等高: 量测出 max 后统一回写
                         )
+                        // 长按菜单 — 跟 "All" sheet 里的列表卡同款 (改/删); 今日 AI 卡 (aiTodayPlan)
+                        // 的删除由 DataStore.deletePlan 特判处理 (清卡 + 当天不自动重生成).
+                        .contextMenu {
+                            Button { detailPlan = plan } label: { Label("Edit", systemImage: "pencil") }
+                            Button(role: .destructive) { pendingDeletePlanId = plan.id } label: {
+                                Label("Delete", systemImage: "trash")
+                            }
+                        }
                         // 上报本卡渲染高度 — fixedHeight 生效后上报值恒 = max, 不震荡.
                         // ⚠️ 宽度守卫: 首帧容器宽未定时卡会以极窄宽度过一次 layout (chips 全竖排
                         // → 虚高几百 pt), 只增不减会把这个假高度焊死. 只认正常卡宽 (≥200pt) 的上报.
@@ -408,12 +416,16 @@ struct TodayScreen: View {
             .contentMargins(.horizontal, MasoMetrics.pagePaddingHorizontal, for: .scrollContent)
             .onPreferenceChange(CarouselCardHeightKey.self) { h in
                 // 只增不减: 首轮量到自然高 max; 之后所有卡被拉到该高, 上报值稳定.
-                if h > (carouselCardHeight ?? 0) { carouselCardHeight = h }
+                // 560 上限 = 卡自然高的合理天花板 — 任何异常 layout 瞬间报出的巨值都不许进
+                // ratchet (进了就焊死, 自由训练尾卡会跟着巨大化, owner 实机见过不一致).
+                if h > (carouselCardHeight ?? 0), h <= 560 { carouselCardHeight = h }
             }
         }
         .padding(.top, 4)   // 外层 VStack spacing 16 + 4 = 与上方肌肉状态区间距 20pt (owner 指定 ≥20)
         // plans 集合变了 (增删/AI 重生成) → 高度重新量 (否则只增不减会卡在旧 max).
         .onChange(of: carouselPlans.map(\.id)) { _, _ in carouselCardHeight = nil }
+        // 每次进页也重量一次 — 陈旧量测值 (旧布局/旧字号下测的) 不跨次复用.
+        .onAppear { carouselCardHeight = nil }
     }
 
     /// 尾卡 "自由训练" — 空卡片样式: 虚线描边 / 无 surface 填充 / 居中 plus + 标签,

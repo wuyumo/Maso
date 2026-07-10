@@ -1135,6 +1135,16 @@ final class DataStore {
     /// 不动 aiTodayPlan (它是 AI 生成的独立副本, 跟 plans 数组解耦).
     /// 当前正在训练的 session 不会因 plan 删除而失效 — store.plan 是 session-local 副本.
     func deletePlan(_ planId: String) {
+        // 今日 AI 卡 (aiTodayPlan) 不在 plans 里 — 之前这里 guard 直接 return, 从详情/长按删它
+        // 全部空转 = "Today's Workout 删不掉" bug. 删除 = 清掉它 + 置 editedAt 当"今天动过"标记
+        // (refreshAIWorkoutIfNeeded 当天不再自动重生成, 否则回个前台又长回来; 主动 Retry 不受限).
+        if planId == aiTodayPlan?.id {
+            aiTodayPlan = nil
+            aiTodayPlanEditedAt = Date()
+            Analytics.shared.track("routine_delete", ["source": .string("ai_today"), "age_days": .int(0)])
+            save()
+            return
+        }
         guard let idx = plans.firstIndex(where: { $0.id == planId }) else { return }
         let plan = plans[idx]
         let ageDays = max(0, Int(Date().timeIntervalSince(plan.createdAt) / 86400))
@@ -1246,8 +1256,10 @@ final class DataStore {
             return  // 今天已经成功生成过, skip
         }
         // P0#1-④: 用户今天手调过 AI 计划 (updatePlan / 全局同步置位) → 跳过自动重生成,
-        // 不冲掉手调的重量. 用户主动点 Retry/Refresh 走 forceRefreshAIWorkout, 不受此限.
-        if let edited = aiTodayPlanEditedAt, Calendar.current.isDateInToday(edited), aiTodayPlan != nil {
+        // 不冲掉手调的重量. 删除今日 AI 卡也走这个标记 (aiTodayPlan=nil + editedAt=now) —
+        // 不检查 aiTodayPlan != nil, 否则删掉的卡回个前台又自动长回来.
+        // 用户主动点 Retry/Refresh 走 forceRefreshAIWorkout, 不受此限.
+        if let edited = aiTodayPlanEditedAt, Calendar.current.isDateInToday(edited) {
             return
         }
         let payload = buildAIPayload()

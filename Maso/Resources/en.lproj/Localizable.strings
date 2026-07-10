@@ -543,6 +543,8 @@
 /* Free workout: save to plan library after finishing */
 "Save as plan" = "Save as routine";
 "Saved" = "Saved";
+"Saved to routines" = "Saved to routines";
+"Save to routines" = "Save to routines";
 
 /* ── i18n audit 2026-05-17 — additional missing UI keys ── */
 "App Language" = "App Language";

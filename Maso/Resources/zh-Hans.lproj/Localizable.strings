@@ -545,6 +545,8 @@
 /* Free workout: save to plan library after finishing */
 "Save as plan" = "保存为训练计划";
 "Saved" = "已保存";
+"Saved to routines" = "已存入训练计划";
+"Save to routines" = "存入训练计划";
 
 /* ── i18n audit 2026-05-17 — 补齐缺失的 UI keys ── */
 "App Language" = "应用语言";
