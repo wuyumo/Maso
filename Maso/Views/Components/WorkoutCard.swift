@@ -317,7 +317,7 @@ struct WorkoutCard: View {
         // 用 contentShape + onTapGesture 而不是 Button — 避免 SwiftUI 给整卡套上 button style 改色.
         .contentShape(Rectangle())
         .onTapGesture { onShowDetail?() }
-        .background(MasoColor.surface)
+        .glassCardBackground()
         .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
         // emphasized (Today's Workout 主卡): 不再加描边/阴影/辉光 — 仅靠实心绿播放键
         // (vs My Plans 卡的半透明描边键) 区分主次, 保持干净.

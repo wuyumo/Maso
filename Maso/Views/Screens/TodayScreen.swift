@@ -593,8 +593,9 @@ private struct ScrollIf<Content: View>: View {
     @ViewBuilder let content: () -> Content
     var body: some View {
         if scroll {
+            // 试验性: 共享背景 = #121212 + 底部液态光斑 (embedded-in-scroll 路径不带背景, 不受影响).
             ScrollView { content() }
-                .background(MasoColor.background.ignoresSafeArea())
+                .background(AppBackground())
         } else {
             content()
         }

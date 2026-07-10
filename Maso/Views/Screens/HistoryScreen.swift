@@ -240,7 +240,8 @@ struct HistoryScreen: View {
         // 页面底色 #121212 — 跟 Plans / Today 一致, 不再透出 NavigationStack 默认纯黑底.
         // ignoresSafeArea 让底色延伸到 home indicator 区. NavigationStack 的 large title /
         // material blur 仍正常叠在这个底色之上 (跟 Plans 同视觉).
-        .background(MasoColor.background.ignoresSafeArea())
+        // 试验性: 换成共享背景 (#121212 + 底部液态光斑).
+        .background(AppBackground())
         // B2: 收起→重新展开时把日历重置回当前月 (不停在上次翻到的月份). 在展开瞬间重置 —
         // expandedView 是全新插入, 直接渲染当前月, 没有 grid 滑动残影.
         .onChange(of: calendarCollapsed) { _, collapsed in
@@ -401,7 +402,7 @@ struct HistoryScreen: View {
                 embedded: true
             )
         }
-        .background(MasoColor.surface)
+        .glassCardBackground()
         .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
         .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
     }
@@ -1125,7 +1126,7 @@ private struct SessionCard: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(MasoMetrics.cardPadding - 4)
-        .background(MasoColor.surface)
+        .glassCardBackground()
         .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
     }
 }

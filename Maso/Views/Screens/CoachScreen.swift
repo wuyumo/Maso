@@ -96,7 +96,8 @@ struct CoachScreen: View {
                 .simultaneousGesture(TapGesture().onEnded { composerFocused = false })
             bottomBar
         }
-        .background(MasoColor.background.ignoresSafeArea())
+        // 试验性: 共享背景 = #121212 + 底部液态光斑.
+        .background(AppBackground())
         .navigationTitle("Coach")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -544,7 +545,7 @@ struct CoachScreen: View {
         .padding(.horizontal, 14)
         .padding(.top, 12)
         .padding(.bottom, 10)
-        .background(MasoColor.surface)
+        .glassCardBackground()
         .clipShape(RoundedRectangle(cornerRadius: 22))
         // 0.5pt 细描边 (owner 指定) — 很 subtle 的一圈, 只比 surface 亮一点, 勾出输入框轮廓.
         .overlay(

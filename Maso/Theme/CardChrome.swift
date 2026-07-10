@@ -9,7 +9,20 @@ extension View {
         self
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(14)
-            .background(MasoColor.surface)
+            .glassCardBackground()
             .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
+    }
+
+    /// 磨砂玻璃卡底 (试验性, 回退点 tag pre-liquid-glass) —
+    /// .ultraThinMaterial + 一点点 MasoColor.accent tint. 只换"底",
+    /// 圆角/描边/布局仍由调用处照旧负责 (跟原 .background(MasoColor.surface) 等位替换).
+    /// ⚠️ 材质跟随系统 colorScheme — app 根已挂 .preferredColorScheme(.dark) (MasoApp.swift).
+    func glassCardBackground() -> some View {
+        self.background {
+            ZStack {
+                Rectangle().fill(.ultraThinMaterial)
+                MasoColor.accent.opacity(0.03)
+            }
+        }
     }
 }

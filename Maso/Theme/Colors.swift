@@ -70,3 +70,88 @@ enum MasoMetrics {
     /// Plans 列表行 (用 square 模式, 锁定 slot)
     static let bodyHintListRow: CGFloat = 56
 }
+
+// MARK: - 底部液态光斑 (试验性视觉, 回退点 tag pre-liquid-glass)
+//
+// Canvas 双滤镜 metaball: blur 先融合各圆的 alpha 场, alphaThreshold 再把模糊场切回实体
+// → 光斑靠近时像液体一样黏连融合. metaball 结果整体再叠一层大 blur + 极低透明度
+// → "朦胧的光" 而非实体液滴边缘.
+struct LiquidGlowBackground: View {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    var body: some View {
+        if reduceMotion {
+            glow(at: 0)   // Reduce Motion → 静止帧, 不驱动 Timeline
+        } else {
+            TimelineView(.animation(minimumInterval: 1.0 / 20.0)) { timeline in
+                glow(at: timeline.date.timeIntervalSinceReferenceDate)
+            }
+        }
+    }
+
+    private func glow(at t: TimeInterval) -> some View {
+        Canvas { context, size in
+            // 滤镜作用顺序 = 注册的逆序: drawLayer 内容先被 blur 融合, 再被 threshold 凝固.
+            context.addFilter(.alphaThreshold(min: 0.5, color: MasoColor.accent))
+            context.addFilter(.blur(radius: 30))
+            context.drawLayer { layer in
+                for blob in Self.blobs {
+                    let p = blob.position(at: t, in: size)
+                    layer.fill(
+                        Path(ellipseIn: CGRect(x: p.x - blob.radius, y: p.y - blob.radius,
+                                               width: blob.radius * 2, height: blob.radius * 2)),
+                        with: .color(.white))
+                }
+            }
+        }
+        .blur(radius: 28)          // metaball 整体再糊一层 → 朦胧光, 去掉液滴硬边
+        .opacity(0.08)             // 克制: 第一眼几乎注意不到, 盯住才看到
+        .mask(                     // 上缘渐隐到透明 → 与上方内容无缝衔接
+            LinearGradient(stops: [.init(color: .clear, location: 0.0),
+                                   .init(color: .black, location: 0.45)],
+                           startPoint: .top, endPoint: .bottom))
+        .allowsHitTesting(false)
+    }
+
+    // 4 个圆, 各自不同相位/周期 (25-45s) 的 sin/cos 轨迹极慢漂移;
+    // 横向活动全宽, 纵向压在组件下半部. 位置/振幅均为 0-1 归一化.
+    private struct Blob {
+        let radius: CGFloat
+        let cx, cy: CGFloat
+        let ax, ay: CGFloat
+        let px, py: Double
+        let phase: Double
+        func position(at t: TimeInterval, in size: CGSize) -> CGPoint {
+            CGPoint(
+                x: (cx + ax * CGFloat(sin(t * 2 * .pi / px + phase))) * size.width,
+                y: (cy + ay * CGFloat(cos(t * 2 * .pi / py + phase * 1.7))) * size.height)
+        }
+    }
+
+    private static let blobs: [Blob] = [
+        Blob(radius: 110, cx: 0.22, cy: 0.78, ax: 0.20, ay: 0.10, px: 41, py: 33, phase: 0.0),
+        Blob(radius:  85, cx: 0.62, cy: 0.66, ax: 0.26, ay: 0.12, px: 29, py: 44, phase: 1.9),
+        Blob(radius:  70, cx: 0.85, cy: 0.86, ax: 0.18, ay: 0.09, px: 36, py: 26, phase: 3.7),
+        Blob(radius:  60, cx: 0.42, cy: 0.92, ax: 0.30, ay: 0.07, px: 25, py: 39, phase: 5.1),
+    ]
+}
+
+// MARK: - 共享页面背景 — #121212 + 底部 ~40% 高度的液态光斑
+//
+// 三个 tab 屏 (Today 非 embedded / Coach / Progress) 的 .background 共用这一片,
+// 替代原先各自的 MasoColor.background.ignoresSafeArea().
+struct AppBackground: View {
+    var body: some View {
+        ZStack {
+            MasoColor.background
+            GeometryReader { geo in
+                VStack(spacing: 0) {
+                    Spacer(minLength: 0)
+                    LiquidGlowBackground()
+                        .frame(height: geo.size.height * 0.4)
+                }
+            }
+        }
+        .ignoresSafeArea()
+    }
+}
