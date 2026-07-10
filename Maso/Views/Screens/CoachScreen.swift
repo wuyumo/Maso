@@ -59,11 +59,23 @@ struct CoachScreen: View {
     /// 选中态下直接打字即替换. 绑在 TextField 的 selection: 上, 用户手动移光标也会写回来.
     @State private var composerSelection: TextSelection? = nil
     /// 长按动作 pill 的引用式定向反馈 — 发送时作 onlyModify 传给 coachGenerate.
-    /// 用户清空输入框即取消定向 (onChange 里复位); 改写但没清空则仍视为针对该动作 (V1 从简).
+    /// 用户清空输入框即取消定向 (onChange 里复位); 覆写掉预填前缀也复位 (QA修复④, 见 onlyModifyPrefix).
     @State private var pendingOnlyModify: String? = nil
-    /// 最近一次发送的 (feedback, onlyModify) — fallback 提示条的 Retry 用原参数重发.
+    /// QA修复④: 长按预填的前缀原文 (「Swap X: 」) — composerText 一旦不再以它开头 = 用户已
+    /// 覆写成全局请求, 立即复位 pendingOnlyModify, 不许把请求缩窄到旧动作.
+    @State private var onlyModifyPrefix: String? = nil
+    /// QA修复⑤: 模板半填空是否在场 — 只有点模板回填后才把「」/[ ] 当占位符;
+    /// 用户手打括号不许静默禁用发送键 / 冒出「下一空」胶囊. 文本清空或发送后复位.
+    @State private var templateActive = false
+    /// 最近一次发送的参数 — fallback 提示条的 Retry 用原参数重发.
+    /// displayText/kicker 也要记 (QA修复⑧配套): 深链的 feedback 是英文 prompt 指令, 重发时气泡仍显示本地化短语.
     @State private var lastFeedback: String? = nil
     @State private var lastOnlyModify: String? = nil
+    @State private var lastDisplayText: String? = nil
+    @State private var lastSourceKicker: String? = nil
+    /// QA修复②: 生成中到达的深链/建议 Apply 请求缓冲 — router.pending* 已被 onChange 清空,
+    /// 直接丢弃 = 永久丢失; 存这里, isGenerating 翻 false 时按序消费重发.
+    @State private var queuedSends: [QueuedSend] = []
 
     /// 空态主动建议 — routineSuggestion() 每次算要扫全部 sets, 进页缓存一次, 不在 body 里反复算.
     @State private var suggestion: DataStore.RoutineSuggestion? = nil
@@ -142,24 +154,43 @@ struct CoachScreen: View {
             guard let note else { return }
             router.pendingSummaryFocus = nil
             let trimmed = note.trimmingCharacters(in: .whitespacesAndNewlines)
-            send(feedback: trimmed.isEmpty ? nil : trimmed,
-                 sourceKicker: NSLocalizedString("FROM WEEKLY SUMMARY", comment: "coach chat deep-link kicker"),
-                 surface: "summary")
+            // QA修复②⑧: 生成中先进缓冲不丢; 气泡显示本地化按钮短语 (复用小结卡 Apply 的 key),
+            // 英文 focusNote 只进 prompt.
+            sendOrQueue(feedback: trimmed.isEmpty ? nil : trimmed,
+                        displayText: NSLocalizedString("Apply to routine", comment: "AI summary apply — regenerate"),
+                        sourceKicker: NSLocalizedString("FROM WEEKLY SUMMARY", comment: "coach chat deep-link kicker"),
+                        surface: "summary")
         }
         // Today 侧 All sheet 的优化卡 Apply 深链 — 同 summary 管道 (Pro gate 已在 Today 侧过闸),
         // kicker / surface 用 optimize 语义, 跟本页 All sheet 的 onOptimize 一致.
         .onChange(of: router.pendingOptimizeFocus, initial: true) { _, note in
             guard let note else { return }
             router.pendingOptimizeFocus = nil
-            send(feedback: note,
-                 sourceKicker: NSLocalizedString("FROM OPTIMIZE", comment: "coach chat deep-link kicker"),
-                 surface: "optimize")
+            // QA修复②⑧: 深链只带英文 focusNote (拿不到卡 title) — 气泡显示优化卡 CTA 的本地化短语.
+            sendOrQueue(feedback: note,
+                        displayText: NSLocalizedString("Optimize with AI", comment: "optimize card CTA"),
+                        sourceKicker: NSLocalizedString("FROM OPTIMIZE", comment: "coach chat deep-link kicker"),
+                        surface: "optimize")
         }
-        // 清空输入框 = 取消长按发起的定向反馈 + 复位模板选区 (一切复位).
+        // QA修复②: 本轮生成结束 → 消费缓冲里被挡下的深链/建议请求 (一次一条, 余下的等下轮结束再发).
+        .onChange(of: session.isGenerating) { _, generating in
+            guard !generating, !queuedSends.isEmpty else { return }
+            let next = queuedSends.removeFirst()
+            send(feedback: next.feedback, displayText: next.displayText, onlyModify: next.onlyModify,
+                 sourceKicker: next.sourceKicker, surface: next.surface)
+        }
+        // 清空输入框 = 取消长按发起的定向反馈 + 复位模板选区/占位符守卫 (一切复位).
         .onChange(of: composerText) { _, text in
             if text.isEmpty {
                 pendingOnlyModify = nil
+                onlyModifyPrefix = nil
+                templateActive = false   // QA修复⑤: 模板离场, 手打括号不再被当占位符
                 composerSelection = nil
+            } else if let prefix = onlyModifyPrefix, !text.hasPrefix(prefix) {
+                // QA修复④: 预填前缀被覆写 (如全选后重打) = 意图已是全局请求, 立即取消定向 —
+                // 不许再带 onlyModify 把 LLM 请求缩窄到旧动作.
+                pendingOnlyModify = nil
+                onlyModifyPrefix = nil
             }
         }
         // ── sheet 层 (子 sheet 各挂各自 presenter 的内容树, 一次只会开一个) ──
@@ -175,7 +206,11 @@ struct CoachScreen: View {
             .presentationDetents([.medium, .large])
             .presentationDragIndicator(.visible)
         }
-        .sheet(isPresented: $allSheetPresented) {
+        .sheet(isPresented: $allSheetPresented, onDismiss: {
+            // QA修复⑨: sheet 关闭即复位照片导入触发 — 若 TodayScreen 的 onChange 注册晚于 0.5s
+            // 翻转, 值会滞留 true, 之后再置 true 不产生 change 事件 → 入口永久失效.
+            allSheetTriggerImport = false
+        }) {
             SavedRoutinesAllSheet(
                 triggerImport: $allSheetTriggerImport,
                 onStart: onStart,
@@ -185,9 +220,11 @@ struct CoachScreen: View {
                 // 可见 teaser, 动作才 gate); 过闸后走深链同管道 (surface:"optimize").
                 onOptimize: { sug in
                     guard data.settings.isPro else { paywallPresented = true; return }
-                    send(feedback: sug.focusNote,
-                         sourceKicker: NSLocalizedString("FROM OPTIMIZE", comment: "coach chat deep-link kicker"),
-                         surface: "optimize")
+                    // QA修复②⑧: 生成中先进缓冲; 气泡显示本地化的建议标题, 英文 focusNote 只进 prompt.
+                    sendOrQueue(feedback: sug.focusNote,
+                                displayText: sug.title,
+                                sourceKicker: NSLocalizedString("FROM OPTIMIZE", comment: "coach chat deep-link kicker"),
+                                surface: "optimize")
                 }
             )
         }
@@ -211,10 +248,17 @@ struct CoachScreen: View {
         }
         .confirmationDialog("Start a new conversation?", isPresented: $confirmNewConversation, titleVisibility: .visible) {
             Button(NSLocalizedString("New conversation", comment: ""), role: .destructive) {
+                // QA修复②配套: 缓冲的深链请求属于旧对话, 先清 — 否则 reset 把 isGenerating 翻 false
+                // 会触发消费, 旧请求打进空对话.
+                queuedSends.removeAll()
                 data.resetCoachConversation()
                 lastFeedback = nil
                 lastOnlyModify = nil
+                lastDisplayText = nil
+                lastSourceKicker = nil
                 pendingOnlyModify = nil
+                onlyModifyPrefix = nil
+                templateActive = false
                 composerText = ""
             }
             Button("Cancel", role: .cancel) {}
@@ -277,9 +321,11 @@ struct CoachScreen: View {
                     .foregroundStyle(MasoColor.textDim)
                     .fixedSize(horizontal: false, vertical: true)
                 Button {
-                    // Apply → 发对应 focusNote (英文指令原样进 prompt; 气泡带来源 kicker 说明它是建议的应用).
-                    send(feedback: sug.focusNote,
-                         sourceKicker: NSLocalizedString("COACH SUGGESTION", comment: "coach chat deep-link kicker"))
+                    // Apply → focusNote 英文指令只进 prompt (QA修复⑧: 气泡显示本地化的建议标题,
+                    // 不再把整段英文 prompt 工程文本亮给中文界面); 生成中先进缓冲 (QA修复②).
+                    sendOrQueue(feedback: sug.focusNote,
+                                displayText: sug.title,
+                                sourceKicker: NSLocalizedString("COACH SUGGESTION", comment: "coach chat deep-link kicker"))
                 } label: {
                     HStack(spacing: 6) {
                         Image(systemName: "sparkles").font(.system(size: 11, weight: .bold))
@@ -429,7 +475,10 @@ struct CoachScreen: View {
             Text(note).font(.system(size: 12, weight: .medium)).fixedSize(horizontal: false, vertical: true)
             Spacer(minLength: 0)
             Button {
-                send(feedback: lastFeedback, onlyModify: lastOnlyModify)
+                // Retry 原参数重发 — displayText/kicker 一并带上 (QA修复⑧配套: 深链失败重试时
+                // 气泡仍显示本地化短语, 不落回英文 focusNote 原文).
+                send(feedback: lastFeedback, displayText: lastDisplayText,
+                     onlyModify: lastOnlyModify, sourceKicker: lastSourceKicker)
             } label: {
                 // 失败条 Retry → 次级玻璃胶囊 (映射表②, 跟 TodayScreen 失败条同款); 旧系统保留裸文字.
                 Text("Retry").font(.system(size: 12, weight: .bold))
@@ -629,15 +678,20 @@ struct CoachScreen: View {
     // MARK: - "#" 模板半填空 (占位符选中/导航)
 
     /// composerText 里还有没填的模板占位符 (「…」或 […]) — 驱动"下一空"胶囊显隐 + canSend guard.
+    /// QA修复⑤: 只在模板在场 (templateActive) 时启用 — 用户手打「」/[ ] 不许被当成未填占位符
+    /// (否则发送键静默禁用 + 冒出「下一空」胶囊).
     private var hasPlaceholders: Bool {
-        !CoachTemplates.placeholderRanges(in: composerText).isEmpty
+        templateActive && !CoachTemplates.placeholderRanges(in: composerText).isEmpty
     }
 
     /// 点模板行 → 回填 composer + 聚焦 + 选中第一个占位符 (选中态下直接打字即替换).
     /// 聚焦/选区要等模板 sheet 收场后再设 — sheet 在场时 focus 会被吃掉, 选区也随之作废.
     private func applyTemplate(_ template: String) {
+        composerSelection = nil   // QA修复⑥: 换文本前先清旧选区 — 旧选区可能指向新文本的越界索引 (iOS 18 crash 前科)
         composerText = template
+        templateActive = true     // QA修复⑤: 模板上场, 占位符守卫/「下一空」胶囊此后才启用
         pendingOnlyModify = nil   // 模板是全新一句话, 取消长按定向残留
+        onlyModifyPrefix = nil
         composerFocused = true
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             composerFocused = true
@@ -682,32 +736,56 @@ struct CoachScreen: View {
         guard canSend, !text.isEmpty else { return }
         let only = pendingOnlyModify
         composerText = ""
+        // 每轮发送完成即复位定向/模板态 (QA修复④⑤) — composerText="" 的 onChange 也会兜底, 显式写清语义.
         pendingOnlyModify = nil
+        onlyModifyPrefix = nil
+        templateActive = false
         send(feedback: text, onlyModify: only)
     }
 
     /// 发送一轮 — 统一入口 (composer / chips / Apply / Retry / 深链都走这).
+    /// displayText: QA修复⑧ — 气泡显示的本地化短语 (nil = 直接显示 feedback); 英文 focusNote 只进 prompt.
     /// surface: 生成事件的来源面 — 常规聊天 "coach_chat"; 深链透传 "summary"/"optimize" (设计文档 §4).
     /// ⚠️ 聊天文本属 PII: analytics 只报长度和是否定向, 不报内容 (生成事件本身在 DataStore 层埋).
-    private func send(feedback: String?, onlyModify: String? = nil, sourceKicker: String? = nil,
-                      surface: String = "coach_chat") {
+    private func send(feedback: String?, displayText: String? = nil, onlyModify: String? = nil,
+                      sourceKicker: String? = nil, surface: String = "coach_chat") {
         guard !session.isGenerating else { return }
         Haptics.tap()
         lastFeedback = feedback
+        lastDisplayText = displayText
         lastOnlyModify = onlyModify
+        lastSourceKicker = sourceKicker
         Analytics.shared.track("coach_chat_send", [
             "length": .int(feedback?.count ?? 0),
             "targeted": .bool(onlyModify != nil),
             "surface": .string(surface),
         ])
-        data.startCoachGenerate(feedback: feedback, onlyModify: onlyModify,
+        data.startCoachGenerate(feedback: feedback, displayText: displayText, onlyModify: onlyModify,
                                 sourceKicker: sourceKicker, surface: surface)
+    }
+
+    /// QA修复②: 深链/建议 Apply 的发送入口 — 生成中不再静默丢弃 (router.pending* 已被清空,
+    /// send 的 guard 一挡请求就永久丢失), 先进缓冲队列, 本轮结束 (isGenerating 翻 false) 时按序重发.
+    private func sendOrQueue(feedback: String?, displayText: String? = nil, onlyModify: String? = nil,
+                             sourceKicker: String? = nil, surface: String = "coach_chat") {
+        if session.isGenerating {
+            queuedSends.append(QueuedSend(feedback: feedback, displayText: displayText,
+                                          onlyModify: onlyModify, sourceKicker: sourceKicker,
+                                          surface: surface))
+        } else {
+            send(feedback: feedback, displayText: displayText, onlyModify: onlyModify,
+                 sourceKicker: sourceKicker, surface: surface)
+        }
     }
 
     /// 长按动作 pill → 引用式定向反馈: 预填 composer + 聚焦, 发送时该动作名作 onlyModify.
     private func beginTargetedSwap(_ exerciseName: String) {
-        composerText = String(format: NSLocalizedString("Swap %@: ", comment: "coach targeted feedback prefill"), exerciseName)
+        let prefix = String(format: NSLocalizedString("Swap %@: ", comment: "coach targeted feedback prefill"), exerciseName)
+        composerSelection = nil   // QA修复⑥: 换文本前先清旧选区 (同 applyTemplate, 防越界选区)
+        composerText = prefix
         pendingOnlyModify = exerciseName
+        onlyModifyPrefix = prefix // QA修复④: 记住前缀 — 用户覆写掉它即取消定向 (见 composerText onChange)
+        templateActive = false    // 预填不是模板, 不启用占位符守卫
         composerFocused = true
     }
 
@@ -725,11 +803,23 @@ struct CoachScreen: View {
     /// [+] "Import from photo" → 打开 "All" sheet 并触发照片导入 (导入 UI 整块住在 TodayScreen .myPlans).
     /// triggerImport 延迟翻 true: TodayScreen 用 onChange 监听 (无 initial), sheet 内容上场后再翻才收得到.
     private func openPhotoImport() {
+        // QA修复⑨: 先清可能滞留的 true (上次 sheet 关得太快等场景) — 保证 0.5s 后的翻转
+        // 必产生 change 事件, TodayScreen 的 onChange 才收得到.
+        allSheetTriggerImport = false
         allSheetPresented = true
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             allSheetTriggerImport = true
         }
     }
+}
+
+/// QA修复②: 被"生成中"挡下的发送请求 (深链/建议 Apply) — 缓冲字段跟 send() 参数一一对应.
+private struct QueuedSend {
+    let feedback: String?
+    let displayText: String?
+    let onlyModify: String?
+    let sourceKicker: String?
+    let surface: String
 }
 
 // MARK: - "#" 模板目录 + 面板 (owner 拍板的完整设计)

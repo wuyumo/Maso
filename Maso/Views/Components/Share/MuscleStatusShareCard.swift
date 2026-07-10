@@ -51,11 +51,11 @@ struct MuscleStatusShareCard: View {
                 )
                 .padding(.top, 4)
 
-                // 关键数据
+                // 关键数据 — 标签走本地化 (跟 ShareCardFooter 的 stat 标签同一套键)
                 HStack(spacing: 18) {
-                    ShareStat(value: "\(workoutsThisWeek)", label: "Workouts")
-                    ShareStat(value: "\(totalSetsThisWeek)", label: "Total Sets")
-                    ShareStat(value: "\(muscleSectionsHit)", label: "Groups Hit")
+                    ShareStat(value: "\(workoutsThisWeek)", label: NSLocalizedString("Workouts", comment: ""))
+                    ShareStat(value: "\(totalSetsThisWeek)", label: NSLocalizedString("Total Sets", comment: "share stat — weekly total sets"))
+                    ShareStat(value: "\(muscleSectionsHit)", label: NSLocalizedString("Groups Hit", comment: "share stat — muscle sections hit"))
                 }
                 .padding(.top, 4)
 

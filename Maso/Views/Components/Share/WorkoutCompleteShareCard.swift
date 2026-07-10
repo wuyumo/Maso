@@ -56,10 +56,10 @@ struct WorkoutCompleteShareCard: View {
 
                 // 关键数据 — 横排 stat
                 HStack(spacing: 18) {
-                    ShareStat(value: durationLabel, label: "Duration")
-                    ShareStat(value: "\(setCount)", label: "Sets")
+                    ShareStat(value: durationLabel, label: NSLocalizedString("Duration", comment: ""))
+                    ShareStat(value: "\(setCount)", label: NSLocalizedString("Sets", comment: ""))
                     if prCount > 0 {
-                        ShareStat(value: "🏆\(prCount)", label: "PR")
+                        ShareStat(value: "🏆\(prCount)", label: NSLocalizedString("PR", comment: "share stat — personal record"))
                     }
                 }
                 .padding(.top, 4)

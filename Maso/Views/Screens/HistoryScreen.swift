@@ -795,21 +795,13 @@ struct HistoryScreen: View {
         for s in data.sets { dates.insert(cal.startOfDay(for: s.performedAt)) }
         let cutoff = cal.startOfDay(for: cal.date(byAdding: .day, value: -6, to: Date())!)
         let weekSetCount = data.sets.filter { $0.performedAt >= cutoff }.count
-        // 连胜 — 今天没练但昨天练了仍存活 (跟 stats strip 同语义)
-        var streak = 0
-        var cursor = cal.startOfDay(for: Date())
-        if !dates.contains(cursor) {
-            cursor = cal.startOfDay(for: cal.date(byAdding: .day, value: -1, to: cursor)!)
-        }
-        while dates.contains(cursor) {
-            streak += 1
-            guard let prev = cal.date(byAdding: .day, value: -1, to: cursor) else { break }
-            cursor = cal.startOfDay(for: prev)
-        }
+        // 连胜 — 周口径 (连续达标周数, currentWeekStreak): 跟 tab 内 stats strip 和
+        // session 详情分享同一套语义 — 同一张卡的 🔥Streak 不再随入口变含义.
+        // (旧实现按"连续天"数, 跟 stats strip 早已改掉的口径不一致.)
         return CalendarSectionData(
             sessionDates: dates,
             totalSets: weekSetCount,
-            streakDays: streak
+            streakDays: currentWeekStreak()
         )
     }
 

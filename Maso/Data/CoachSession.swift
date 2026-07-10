@@ -59,6 +59,13 @@ final class CoachSession {
     /// 生成卡 plan.id → 已存副本 planId. 保存时记录; bookmark 态用它反查 —
     /// savePlan 存的是重 id 副本, 纯签名匹配在副本改名后会失灵 (工程评审要求 id 映射优先, 签名只作兜底).
     var savedIdMap: [String: String] = [:]
+    /// QA修复①: 上一轮结果是否来自本地模板回落. 回落轮的 currentRoutines 不是 AI 认可的基线 —
+    /// 下一轮 (含 Retry) 若按修订轮走, LLM 会被锚死在模板上原样复读却报"已更新".
+    /// 约束: 回落轮置 true, 真 AI 成功轮置 false; 修订轮判定必须同时看它 (见 coachGenerate).
+    var lastRoundUsedFallback = false
+    /// QA修复③: 在途生成轮的身份 token — startCoachGenerate 每轮发新值, 任务收尾用它比对,
+    /// 被取消的旧任务不许清掉新任务的句柄. 约束: 只在 startCoachGenerate / reset 里写.
+    var generationToken: UUID? = nil
 
     /// "新对话" — 清对话流/版本栈/回落提示, 不动 data.plans (已保存的 routine 是持久产物).
     /// savedIdMap 一并清: key 是旧对话里的生成卡 id, 新对话不会再引用.
@@ -71,6 +78,8 @@ final class CoachSession {
         fallbackNote = nil
         generationStep = 0
         isGenerating = false
+        lastRoundUsedFallback = false
+        generationToken = nil
     }
 }
 
@@ -80,17 +89,32 @@ extension DataStore {
     /// Coach 对话一轮生成的非 async 入口 — 任务由 DataStore 持有: 切 tab / 视图销毁不取消,
     /// 结果落回 coachSession (工程评审钦点). UI 一律调这个, 不要自己包 Task {}.
     /// - parameter feedback: 用户这轮说的话 (首轮 = 初始诉求, 修订轮 = 修改意见). nil/空 = 无言生成 (如深链自动触发).
+    /// - parameter displayText: QA修复⑧ — 用户气泡显示的本地化短语; nil = 直接显示 feedback.
+    ///   深链/建议 Apply 的 feedback 是英文 prompt 工程指令, 只进 prompt 不上屏.
     /// - parameter onlyModify: 定向修订目标 ("Day 2" / 动作名) — 长按动作行的引用式反馈传入.
     /// - parameter sourceKicker: 深链来源标签 (e.g. "FROM WEEKLY SUMMARY"), 渲染在用户气泡顶部.
     func startCoachGenerate(feedback: String? = nil,
+                            displayText: String? = nil,
                             onlyModify: String? = nil,
                             sourceKicker: String? = nil,
                             surface: String = "coach_chat") {
         guard !coachSession.isGenerating else { return }
+        // QA修复③: isGenerating 必须在进 Task 前同步置位 — 之前在 Task 体内才置 true,
+        // 同一 runloop 双调用都能过上面的 guard, 两个生成任务并发互踩.
+        coachSession.isGenerating = true
+        let token = UUID()
+        coachSession.generationToken = token
         coachGenerateTask = Task { [weak self] in
-            await self?.coachGenerate(feedback: feedback, onlyModify: onlyModify,
-                                      sourceKicker: sourceKicker, surface: surface)
-            await MainActor.run { [weak self] in self?.coachGenerateTask = nil }
+            await self?.coachGenerate(feedback: feedback, displayText: displayText,
+                                      onlyModify: onlyModify,
+                                      sourceKicker: sourceKicker, surface: surface,
+                                      preflighted: true)
+            await MainActor.run { [weak self] in
+                // QA修复③: 身份比对 — 只有 token 仍是本轮的才清句柄;
+                // 被取消的旧任务跑完 completion 时不许清掉新任务的句柄.
+                guard let self, self.coachSession.generationToken == token else { return }
+                self.coachGenerateTask = nil
+            }
         }
     }
 
@@ -109,15 +133,23 @@ extension DataStore {
     ///     失败 → 保留上一版原样 + fallbackNote (比换一批本地模板更不吓人).
     /// 每轮结束: push versionStack + append assistant 消息 (text = LLM rationale 或一句本地小结) + 清生成态.
     func coachGenerate(feedback: String?,
+                       displayText: String? = nil,
                        onlyModify: String? = nil,
                        sourceKicker: String? = nil,
-                       surface: String = "coach_chat") async {
+                       surface: String = "coach_chat",
+                       preflighted: Bool = false) async {
         let session = coachSession
-        guard !session.isGenerating else { return }
+        // QA修复③: startCoachGenerate 已同步置 isGenerating 再进 Task (preflighted=true),
+        // 此时守卫要放行自己; 罕见的直调路径 (preflighted=false) 保持原守卫语义.
+        guard preflighted || !session.isGenerating else { return }
         let trimmed = feedback?.trimmingCharacters(in: .whitespacesAndNewlines)
         let note = (trimmed?.isEmpty == false) ? trimmed : nil
-        if let note {
-            session.messages.append(CoachMessage(role: .user, text: note, sourceKicker: sourceKicker))
+        // QA修复⑧: 气泡显示 displayText (本地化短语) 而不是英文 prompt 指令;
+        // note (focusNote) 只进下面的生成管线. displayText 为空时退回显示 note 原文 (普通聊天).
+        let shownTrimmed = displayText?.trimmingCharacters(in: .whitespacesAndNewlines)
+        let shown = (shownTrimmed?.isEmpty == false) ? shownTrimmed : note
+        if let shown {
+            session.messages.append(CoachMessage(role: .user, text: shown, sourceKicker: sourceKicker))
         }
         session.isGenerating = true
         session.fallbackNote = nil
@@ -134,7 +166,9 @@ extension DataStore {
         }
         defer { progress.cancel() }
 
-        let isRevision = !session.currentRoutines.isEmpty
+        // QA修复①: 回落轮的结果只是本地模板顶包, 不是 AI 认可的基线 — 上一轮回落时下一轮
+        // (含 Retry 原参重发) 必须重走首轮生成管线, 否则修订轮会把 LLM 锚死在模板上原样复读.
+        let isRevision = !session.currentRoutines.isEmpty && !session.lastRoundUsedFallback
         if !isRevision {
             let (plans, usedFallback) = await generateAIRoutines(focusNote: note, surface: surface)
             guard !Task.isCancelled else { return }   // "新对话"取消后不要往清空的流里落旧结果
@@ -151,18 +185,31 @@ extension DataStore {
                 // 按 名称 → 序号 对齐, 对不上的天用上一版原数据回填; 修订结果同样过 applyScience 兜底.
                 let reconciled = DataStore.reconcileRevisedRoutines(revised, previous: previous)
                     .map { applyScienceToCoachPlan($0) }
-                finishCoachRound(plans: reconciled, usedFallback: false, isRevision: true)
+                if reconciled == previous {
+                    // QA修复⑦: LLM 违规返回 (全对不上号) 被 reconcile 全量回填 → 结果与上一版全等,
+                    // 计划一字未动 — 不许报 "Updated your plan." 假成功, 走诚实的"计划未变动"收尾.
+                    finishUnchangedRevision()
+                } else {
+                    finishCoachRound(plans: reconciled, usedFallback: false, isRevision: true)
+                }
             } else {
-                // 修订失败 → 不回落本地模板 (会冲掉用户已改好的版本, 比失败更吓人), 保留上一版原样:
-                // 不 push versionStack (没有新版本), assistant 消息诚实说明 "没改动", 不假装更新过.
-                let unchanged = NSLocalizedString("Couldn't reach the AI coach — your plan is unchanged.",
-                                                  comment: "coach chat — revision round failed, previous plan kept")
-                session.messages.append(CoachMessage(role: .assistant, text: unchanged))
-                session.fallbackNote = unchanged
-                session.generationStep = 0
-                session.isGenerating = false
+                // 修订失败 → 不回落本地模板 (会冲掉用户已改好的版本, 比失败更吓人), 保留上一版原样.
+                finishUnchangedRevision()
             }
         }
+    }
+
+    /// 修订轮"没有实际变化"的收尾 (QA修复⑦) — 修订失败 与 reconcile 后跟上一版全等 共用:
+    /// 保留上一版原样, 不 push versionStack (没有新版本), assistant 消息诚实说明"没改动".
+    /// 约束: 不新增 Localizable key — 复用既有 fallbackNote 文案 (语义 = 计划保持原样).
+    private func finishUnchangedRevision() {
+        let session = coachSession
+        let unchanged = NSLocalizedString("Couldn't reach the AI coach — your plan is unchanged.",
+                                          comment: "coach chat — revision round failed, previous plan kept")
+        session.messages.append(CoachMessage(role: .assistant, text: unchanged))
+        session.fallbackNote = unchanged
+        session.generationStep = 0
+        session.isGenerating = false
     }
 
     /// 一轮收尾 (成功 / 首轮模板回落) — push 版本栈 / 写 currentRoutines / 追加 assistant 消息 / 清生成态.
@@ -182,6 +229,8 @@ extension DataStore {
             text = NSLocalizedString("Your plan is ready", comment: "coach chat — assistant fallback summary")
         }
         session.messages.append(CoachMessage(role: .assistant, text: text, plans: plans))
+        // QA修复①: 记录本轮是否回落 — 回落轮之后的下一轮重走首轮生成管线 (见 coachGenerate 的 isRevision).
+        session.lastRoundUsedFallback = usedFallback
         session.fallbackNote = usedFallback
             ? NSLocalizedString("Couldn't reach the AI coach — showing templates instead.",
                                 comment: "coach chat fallback when LLM unreachable")

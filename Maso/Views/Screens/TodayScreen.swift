@@ -170,10 +170,12 @@ struct TodayScreen: View {
 
                     // ── 今日训练轮播 ── (#today-carousel): 全部已存 routine 横滑成卡组,
                     // 首卡 = 今日 (卡内自带 "TODAY'S WORKOUT" kicker), 右缘 peek 暗示可滑.
-                    // 零 saved 且无 aiTodayPlan → carouselPlans 空, 跟旧版 suggested==nil 一样不渲染
-                    // (空态/首日行为不回归). 自由训练入口已移到导航栏右上角 (onFreeWorkout).
+                    // 零 saved 且无 aiTodayPlan → carouselPlans 空, 整个轮播 (含"新建"尾卡) 不渲染 —
+                    // Today 会变死端 (导航栏只剩齿轮, 无任何训练入口). 兜底: 同位置单独渲染新建虚线卡.
                     if !carouselPlans.isEmpty {
                         workoutCarousel
+                    } else {
+                        emptyNewRoutineCard
                     }
                 }
 
@@ -469,30 +471,50 @@ struct TodayScreen: View {
             Haptics.tap()
             onFreeWorkout()
         } label: {
-            VStack(spacing: 10) {
-                Image(systemName: "plus")
-                    .font(.system(size: 22, weight: .semibold))   // 26→22, owner: 加号小一点点
-                // 文案三改: Free workout → Start from scratch → "New routine/新建训练"
-                // (这区叫 ROUTINES, 尾卡语义 = 新建一条 — 现挑动作开练, 完成后可存为 routine).
-                Text("New routine")
-                    .font(.system(size: 14, weight: .semibold))
-            }
-            .foregroundStyle(MasoColor.textDim)
-            .frame(maxWidth: .infinity)
             // 高度严格 = 量测出的卡高; 没量到时 (首帧) 整卡隐形 — 不再用 220 兜底值渲染一张
             // 比邻卡矮的空卡 (owner 实机看到的"高度不够"就是这个状态).
-            .frame(height: carouselCardHeight ?? 320)
-            .overlay(
-                RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium)
-                    // 0.5pt — 跟 composer 等其它卡的描边同粗细 (owner: 虚线别比别的卡粗).
-                    .strokeBorder(MasoColor.textDim.opacity(0.45),
-                                  style: StrokeStyle(lineWidth: 0.5, dash: [6, 5]))
-            )
-            .contentShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
+            newRoutineCardLabel(height: carouselCardHeight ?? 320)
         }
         .buttonStyle(.plain)
         .opacity(carouselCardHeight == nil ? 0 : 1)
         .accessibilityLabel(Text("New routine"))
+    }
+
+    /// carouselPlans 空 (plans 全删 + aiTodayPlan nil) 时的兜底训练入口 — 轮播整个不渲染会让
+    /// Today 变死端 (导航栏只剩齿轮). 同位置满宽渲染一张"新建"虚线卡, 点击行为同轮播尾卡.
+    /// 注意不能套尾卡的"未量到隐形"opacity — 空态下没有量测层, carouselCardHeight 恒 nil (走 320 兜底).
+    private var emptyNewRoutineCard: some View {
+        Button {
+            Haptics.tap()
+            onFreeWorkout()
+        } label: {
+            newRoutineCardLabel(height: carouselCardHeight ?? 320)
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(Text("New routine"))
+    }
+
+    /// 虚线"新建"卡的共享外观 — 轮播尾卡 (freeWorkoutCard) 与空态兜底卡 (emptyNewRoutineCard)
+    /// 共用一份, 改样式只动这里, 两边不漂移.
+    private func newRoutineCardLabel(height: CGFloat) -> some View {
+        VStack(spacing: 10) {
+            Image(systemName: "plus")
+                .font(.system(size: 22, weight: .semibold))   // 26→22, owner: 加号小一点点
+            // 文案三改: Free workout → Start from scratch → "New routine/新建训练"
+            // (这区叫 ROUTINES, 尾卡语义 = 新建一条 — 现挑动作开练, 完成后可存为 routine).
+            Text("New routine")
+                .font(.system(size: 14, weight: .semibold))
+        }
+        .foregroundStyle(MasoColor.textDim)
+        .frame(maxWidth: .infinity)
+        .frame(height: height)
+        .overlay(
+            RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium)
+                // 0.5pt — 跟 composer 等其它卡的描边同粗细 (owner: 虚线别比别的卡粗).
+                .strokeBorder(MasoColor.textDim.opacity(0.45),
+                              style: StrokeStyle(lineWidth: 0.5, dash: [6, 5]))
+        )
+        .contentShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
     }
 
     // MARK: - 肌肉状态 + 训练日历计算 helpers

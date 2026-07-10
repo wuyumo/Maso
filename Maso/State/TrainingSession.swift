@@ -687,7 +687,8 @@ final class TrainingSessionStore {
         )
         self.segments = newSegments
 
-        // 映射当前 segmentIndex
+        // 映射当前 segmentIndex — 找不到原位置 (e.g. sets 被改小于当前组号) 时不能兜底 0
+        // (播放头会跳回整场 segment 0), 跟 updateCurrentStep 同款: fallback 到下一 step 的 exercise.
         var newIdx: Int? = nil
         if let cstpid = curStepId, let csn = curSetN {
             newIdx = newSegments.firstIndex(where: {
@@ -695,9 +696,10 @@ final class TrainingSessionStore {
                    case .exercise(_, let n, _, _, _, _, _) = $0.kind,
                    n == csn { return true }
                 return false
-            })
+            }) ?? nextStepExerciseIndex(in: newSegments, plan: p, afterStepId: cstpid)
         } else if let cstpid = curStepId, wasRest {
             newIdx = newSegments.firstIndex(where: { $0.stepId == cstpid && $0.isRest })
+                ?? nextStepExerciseIndex(in: newSegments, plan: p, afterStepId: cstpid)
         }
 
         s.segmentIndex = min(max(0, newIdx ?? 0), max(0, newSegments.count - 1))

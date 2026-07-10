@@ -468,7 +468,12 @@ struct OnboardingScreen: View {
         Haptics.tap()
         SoundPlayer.shared.playTap()
         // 同性别: 0.18s 让选中态可感知再滑走.
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.18) { advance(to: .age) }
+        // guard step == .goal — 0.18s 窗口内用户可能已点 Back 回到 gender (goBack 不取消这个闭包),
+        // 无条件 advance 会把 Back 吞掉直落 age 步; 只有仍停在 goal 步时才前进.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.18) {
+            guard step == .goal else { return }
+            advance(to: .age)
+        }
     }
 
     /// 各性别的起始平均体重 (kg) — 仅作体重拨盘默认值, 用户可调.

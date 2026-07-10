@@ -48,13 +48,13 @@ struct SessionShareCard: View {
                         .lineLimit(2)
                 }
 
-                // 关键数据
+                // 关键数据 — 标签走本地化 (跟 ShareCardFooter 的 stat 标签同一套键)
                 HStack(spacing: 18) {
-                    ShareStat(value: estimatedDurationLabel, label: "Duration")
-                    ShareStat(value: "\(session.setCount)", label: "Sets")
-                    ShareStat(value: "\(session.exerciseCount)", label: "Exercises")
+                    ShareStat(value: estimatedDurationLabel, label: NSLocalizedString("Duration", comment: ""))
+                    ShareStat(value: "\(session.setCount)", label: NSLocalizedString("Sets", comment: ""))
+                    ShareStat(value: "\(session.exerciseCount)", label: NSLocalizedString("Exercises count", comment: "exercise count stat label"))
                     if session.prCount > 0 {
-                        ShareStat(value: "🏆\(session.prCount)", label: "PR")
+                        ShareStat(value: "🏆\(session.prCount)", label: NSLocalizedString("PR", comment: "share stat — personal record"))
                     }
                 }
                 .padding(.top, 2)

@@ -363,17 +363,17 @@ private struct WorkoutSectionView: View {
             }
 
             if isContentVisible {
-                // 关键数据
+                // 关键数据 — 标签走本地化 (跟 ShareCardFooter 的 stat 标签同一套键)
                 HStack(spacing: 18) {
                     if let dur = data.durationLabel {
-                        ShareStat(value: dur, label: "Duration")
+                        ShareStat(value: dur, label: NSLocalizedString("Duration", comment: ""))
                     }
-                    ShareStat(value: "\(data.setCount)", label: "Sets")
+                    ShareStat(value: "\(data.setCount)", label: NSLocalizedString("Sets", comment: ""))
                     if let exc = data.exerciseCount {
-                        ShareStat(value: "\(exc)", label: "Exercises")
+                        ShareStat(value: "\(exc)", label: NSLocalizedString("Exercises count", comment: "exercise count stat label"))
                     }
                     if data.prCount > 0 {
-                        ShareStat(value: "🏆\(data.prCount)", label: "PR")
+                        ShareStat(value: "🏆\(data.prCount)", label: NSLocalizedString("PR", comment: "share stat — personal record"))
                     }
                 }
                 .padding(.top, 2)
@@ -460,11 +460,11 @@ private struct MuscleStatusSectionView: View {
                 }
                 .padding(.top, 2)
 
-                // 关键数据
+                // 关键数据 — 标签走本地化 (跟 ShareCardFooter 的 stat 标签同一套键)
                 HStack(spacing: 18) {
-                    ShareStat(value: "\(data.workoutsThisWeek)", label: "Workouts")
-                    ShareStat(value: "\(data.totalSetsThisWeek)", label: "Total Sets")
-                    ShareStat(value: "\(data.muscleSectionsHit)", label: "Groups Hit")
+                    ShareStat(value: "\(data.workoutsThisWeek)", label: NSLocalizedString("Workouts", comment: ""))
+                    ShareStat(value: "\(data.totalSetsThisWeek)", label: NSLocalizedString("Total Sets", comment: "share stat — weekly total sets"))
+                    ShareStat(value: "\(data.muscleSectionsHit)", label: NSLocalizedString("Groups Hit", comment: "share stat — muscle sections hit"))
                 }
                 .padding(.top, 2)
             }
@@ -535,10 +535,11 @@ private struct CalendarSectionView: View {
                 HStack {
                     Spacer()
                     HStack(spacing: 18) {
-                        ShareStat(value: "\(workoutCount)/7", label: "Days")
-                        ShareStat(value: "\(data.totalSets)", label: "Total Sets")
+                        ShareStat(value: "\(workoutCount)/7", label: NSLocalizedString("Days", comment: "share stat — trained days out of 7"))
+                        ShareStat(value: "\(data.totalSets)", label: NSLocalizedString("Total Sets", comment: "share stat — weekly total sets"))
                         if data.streakDays > 0 {
-                            ShareStat(value: "🔥\(data.streakDays)", label: "Streak")
+                            // 周口径 — 数值 = 连续达标周数 (跟 History tab 的 Week streak 一致)
+                            ShareStat(value: "🔥\(data.streakDays)", label: NSLocalizedString("Streak", comment: "share stat — week streak"))
                         }
                     }
                     Spacer()

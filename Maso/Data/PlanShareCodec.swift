@@ -286,6 +286,14 @@ enum RoutineImageImporter {
         "sets","set","reps","rep","kg","lb","lbs","kgs","组","次","rest","min","mins","sec","secs",
     ]
 
+    /// OCR 识别到的重量统一成 kg — PlanStep.weight 全 app 规范单位是 kg (显示时再按用户单位换算).
+    /// lb/lbs/磅 → ×0.45359237 转 kg, 四舍五入到 0.5 (跟杠片粒度一致, 避免 61.23 这类碎数);
+    /// kg/公斤 (或没捕获到单位) 原样返回.
+    private static func weightInKg(_ value: Double, unit: String?) -> Double {
+        guard let u = unit?.lowercased(), u.hasPrefix("lb") || u.contains("磅") else { return value }
+        return (value * 0.45359237 * 2).rounded() / 2
+    }
+
     private static func parseCandidates(_ lines: [String], library: [Exercise]) -> [ImportCandidate] {
         let index = buildIndex(library)
         // token 文档频率 — 一个词出现在多少个动作名里. back/press/row/biceps 这类高频词
@@ -304,10 +312,11 @@ enum RoutineImageImporter {
         let setsReps = try! NSRegularExpression(pattern: #"(\d{1,2})\s*[x×*]\s*(\d{1,3})|(\d{1,2})\s*组\s*[x×*]?\s*(\d{1,3})?"#, options: [.caseInsensitive])
         let setsWords = try! NSRegularExpression(pattern: #"(\d{1,2})\s*sets?\b(?:\s*(?:[x×*·]|of)\s*(\d{1,3}))?"#, options: [.caseInsensitive])
         let repsWords = try! NSRegularExpression(pattern: #"(\d{1,3})\s*(?:reps?\b|次)"#, options: [.caseInsensitive])
-        let weightRe = try! NSRegularExpression(pattern: #"(\d+(?:\.\d+)?)\s*(?:kg|公斤|lbs?|磅)"#, options: [.caseInsensitive])
+        // 单位改成捕获组 — lb/磅 命中时要换算成 kg 落库 (PlanStep.weight 全 app 规范单位是 kg).
+        let weightRe = try! NSRegularExpression(pattern: #"(\d+(?:\.\d+)?)\s*(kg|公斤|lbs?|磅)"#, options: [.caseInsensitive])
         // 重量×次数 (正/反两向) — 必须先于 N×M 判定, 否则 "60 kg × 8" 会被误读成 60 组.
-        let weightXreps = try! NSRegularExpression(pattern: #"(\d+(?:\.\d+)?)\s*(?:kg|公斤|lbs?|磅)\s*[x×*]\s*(\d{1,3})\b"#, options: [.caseInsensitive])
-        let repsXweight = try! NSRegularExpression(pattern: #"(\d{1,3})\s*[x×*]\s*(\d+(?:\.\d+)?)\s*(?:kg|公斤|lbs?|磅)"#, options: [.caseInsensitive])
+        let weightXreps = try! NSRegularExpression(pattern: #"(\d+(?:\.\d+)?)\s*(kg|公斤|lbs?|磅)\s*[x×*]\s*(\d{1,3})\b"#, options: [.caseInsensitive])
+        let repsXweight = try! NSRegularExpression(pattern: #"(\d{1,3})\s*[x×*]\s*(\d+(?:\.\d+)?)\s*(kg|公斤|lbs?|磅)"#, options: [.caseInsensitive])
         // 组数前缀/尾缀动作名: "2 × <名字>" / "<名字> × 3" — × 一侧是数字另一侧是文字 → 数字是组数.
         let leadingSets = try! NSRegularExpression(pattern: #"^\s*(\d{1,2})\s*[x×*]\s*(?=[^\d\s])"#, options: [.caseInsensitive])
         let trailingSets = try! NSRegularExpression(pattern: #"(?<=[^\d\s.])\s*[x×*]\s*(\d{1,2})\s*$"#, options: [.caseInsensitive])
@@ -329,12 +338,13 @@ enum RoutineImageImporter {
             }
             let full = NSRange(location: 0, length: ns.length)
             // ① 重量×次数 (两向) — 优先消化带单位的 ×, 防止被当成组数.
+            //   单位组一并捕获: "135 lbs × 8" → 61 kg (不再把磅数原样当 kg 落库).
             if let m = weightXreps.firstMatch(in: line, range: full) {
-                weight = grp(m, 1).flatMap(Double.init)
-                reps = grp(m, 2).flatMap(Int.init)
+                weight = grp(m, 1).flatMap(Double.init).map { weightInKg($0, unit: grp(m, 2)) }
+                reps = grp(m, 3).flatMap(Int.init)
             } else if let m = repsXweight.firstMatch(in: line, range: full) {
                 reps = grp(m, 1).flatMap(Int.init)
-                weight = grp(m, 2).flatMap(Double.init)
+                weight = grp(m, 2).flatMap(Double.init).map { weightInKg($0, unit: grp(m, 3)) }
             }
             // ② N×M (纯数字两侧) → sets × reps. ①命中过则跳过 (那个 × 已是重量语义).
             if reps == nil, weight == nil,
@@ -358,10 +368,10 @@ enum RoutineImageImporter {
             if sets == nil, weight == nil, let m = trailingSets.firstMatch(in: line, range: full) {
                 sets = grp(m, 1).flatMap(Int.init)
             }
-            // ⑥ 裸重量 (没参与 ①的 ×)
+            // ⑥ 裸重量 (没参与 ①的 ×) — 同样按单位组换算 kg
             if weight == nil, let m = weightRe.firstMatch(in: line, range: full),
                m.range(at: 1).location != NSNotFound {
-                weight = Double(ns.substring(with: m.range(at: 1)))
+                weight = Double(ns.substring(with: m.range(at: 1))).map { weightInKg($0, unit: grp(m, 2)) }
             }
             let hasMetrics = sets != nil || reps != nil || weight != nil
             // 去掉数字/单位后的纯文本 → 搜索词

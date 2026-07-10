@@ -85,12 +85,14 @@ struct CommunityScreen: View {
 
                     if isFiltering {
                         // 有筛选 → 单一结果列表 (隐藏每日轮播分段).
+                        // 计数走 NSLocalizedString (字符串插值包 LocalizedStringKey 不查表, 中文会漏英文).
                         let results = filteredPlans
-                        sectionHeader(LocalizedStringKey(
-                            results.isEmpty
-                            ? "No routines match"
-                            : "\(results.count) \(results.count == 1 ? "routine" : "routines")"
-                        ))
+                        sectionHeader(results.isEmpty
+                            ? Text("No routines match")
+                            : Text(verbatim: String(
+                                format: NSLocalizedString(results.count == 1 ? "%lld routine" : "%lld routines",
+                                                          comment: "filtered routine count header"),
+                                results.count)))
                         if results.isEmpty {
                             emptyFilterState
                         } else {
@@ -107,7 +109,7 @@ struct CommunityScreen: View {
                         let featuredIds = Set(featured.map(\.id))
                         let more = CommunityPlans.all.filter { !featuredIds.contains($0.id) }
 
-                        sectionHeader("Featured today")
+                        sectionHeader(Text("Featured today"))
                         LazyVStack(spacing: 12) {
                             ForEach(featured) { plan in
                                 CommunityPlanCard(plan: plan, onTapBody: { detailPlan = plan }, onAdd: { handleAdd(plan) })
@@ -115,7 +117,7 @@ struct CommunityScreen: View {
                         }
                         .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
 
-                        sectionHeader("More programs")
+                        sectionHeader(Text("More programs"))
                         LazyVStack(spacing: 12) {
                             ForEach(more) { plan in
                                 CommunityPlanCard(plan: plan, onTapBody: { detailPlan = plan }, onAdd: { handleAdd(plan) })
@@ -167,9 +169,10 @@ struct CommunityScreen: View {
         .tint(MasoColor.text)
     }
 
+    // 接收 Text — 字面量 caller 传 Text("key") 走本地化表, 动态计数 caller 传 Text(verbatim:) 已格式化串.
     @ViewBuilder
-    private func sectionHeader(_ title: LocalizedStringKey) -> some View {
-        Text(title)
+    private func sectionHeader(_ title: Text) -> some View {
+        title
             .font(.system(size: 12, weight: .heavy))
             .tracking(1.2)
             .textCase(.uppercase)
@@ -553,9 +556,11 @@ private struct StepRow: View {
         } else if let dur = step.duration {
             parts.append("\(step.sets)×\(dur)s")
         } else {
-            parts.append("\(step.sets) sets")
+            // 本地化组数 (共享 helper, 中文 "N 组")
+            parts.append(pluralizedSets(step.sets))
         }
-        parts.append("· \(step.restBetweenSets)s rest")
+        // 休息秒数本地化 — "90s rest" / "休息 90 秒"
+        parts.append("· " + String(format: NSLocalizedString("%llds rest", comment: "rest seconds suffix"), step.restBetweenSets))
         return parts.joined(separator: " ")
     }
 }

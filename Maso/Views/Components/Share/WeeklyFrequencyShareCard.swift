@@ -66,12 +66,12 @@ struct WeeklyFrequencyShareCard: View {
                 }
                 .padding(.top, 4)
 
-                // 关键数据
+                // 关键数据 — 标签走本地化 (跟 UnifiedShareCard 同一套键)
                 HStack(spacing: 18) {
-                    ShareStat(value: "\(workoutCount)/7", label: "Days")
-                    ShareStat(value: "\(totalSets)", label: "Total Sets")
+                    ShareStat(value: "\(workoutCount)/7", label: NSLocalizedString("Days", comment: "share stat — trained days out of 7"))
+                    ShareStat(value: "\(totalSets)", label: NSLocalizedString("Total Sets", comment: "share stat — weekly total sets"))
                     if streakDays > 0 {
-                        ShareStat(value: "🔥\(streakDays)", label: "Streak")
+                        ShareStat(value: "🔥\(streakDays)", label: NSLocalizedString("Streak", comment: "share stat — week streak"))
                     }
                 }
                 .padding(.top, 4)

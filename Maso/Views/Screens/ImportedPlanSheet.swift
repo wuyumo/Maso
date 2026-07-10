@@ -49,7 +49,7 @@ struct ImportedPlanSheet: View {
                                 format: NSLocalizedString("%lld exercises", comment: ""),
                                 stepCount
                             ))
-                            ImportChip(text: "\(totalSets) sets")
+                            ImportChip(text: pluralizedSets(totalSets))
                         }
                     }
                     .padding(.top, 4)
@@ -166,9 +166,11 @@ private struct ImportedStepRow: View {
         } else if let dur = step.duration {
             parts.append("\(step.sets)×\(dur)s")
         } else {
-            parts.append("\(step.sets) sets")
+            // 本地化组数 (共享 helper, 中文 "N 组")
+            parts.append(pluralizedSets(step.sets))
         }
-        parts.append("· \(step.restBetweenSets)s rest")
+        // 休息秒数本地化 — "90s rest" / "休息 90 秒"
+        parts.append("· " + String(format: NSLocalizedString("%llds rest", comment: "rest seconds suffix"), step.restBetweenSets))
         return parts.joined(separator: " ")
     }
 }
@@ -370,8 +372,8 @@ struct RoutineReviewSheet: View {
             parts.append(String(format: NSLocalizedString("%lld reps", comment: ""), r))
         }
         if let w = c.weight, w > 0 {
-            let num = w.truncatingRemainder(dividingBy: 1) == 0 ? String(format: "%.0f", w) : String(format: "%.1f", w)
-            parts.append("\(num) kg")
+            // 识别值按 kg 落库 (OCR 里的 lb/磅 已在 PlanShareCodec 换算), 显示走用户单位
+            parts.append(weightLabel(w))
         }
         if parts.isEmpty { return NSLocalizedString("3 sets · default", comment: "no metrics recognized") }
         return parts.joined(separator: " · ")

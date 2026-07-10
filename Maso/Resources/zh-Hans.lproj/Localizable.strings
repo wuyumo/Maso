@@ -46,6 +46,12 @@
 "Sets" = "组数";
 "Exercises count" = "动作";
 "Volume kg" = "容量 kg";
+/* 分享卡 stat 标签 (ShareStat) — 全家族统一走这组键 */
+"Total Sets" = "总组数";
+"Groups Hit" = "覆盖肌群";
+"Days" = "天数";
+"Streak" = "周连胜";
+"PR" = "PR";
 "%lld days/wk" = "每周 %lld 天";
 "%lld days/week" = "每周 %lld 天";
 "Couldn't create share link" = "无法生成分享链接";
@@ -648,7 +654,7 @@
 "Training Preferences" = "训练偏好";
 "Adjust" = "调整";
 "%lld days / week" = "每周 %lld 次";
-"Focus: %@" = "重点 %@";
+/* ("Focus: %@" 定义在下方教练偏好摘要段 (重点:%@) — 重复 key 已删, 保留后者与线上显示一致) */
 "Full-body" = "全身分化";
 "Upper-lower split" = "上下肢分化";
 "Body-part split" = "部位分化";
@@ -722,8 +728,22 @@
 "Beginner" = "新手";
 "Intermediate" = "中级";
 "Advanced" = "进阶";
-"%lld days/wk" = "每周 %lld 次";
+/* ("%lld days/wk" 定义在文件靠前处 (每周 %lld 天) — 这里原有的「每周 %lld 次」是重复 key 且语义错
+   (Classics 频率 chip = 每周练几天), 已删) */
 "%lld exercises" = "%lld 个动作";
+/* Classics 列表/筛选 — CommunityScreen */
+"Featured today" = "今日精选";
+"More programs" = "更多计划";
+"No routines match" = "没有符合条件的计划";
+"%lld routine" = "%lld 个计划";
+"%lld routines" = "%lld 个计划";
+"Days/wk" = "每周天数";
+"%lld days" = "%lld 天";
+"Any level" = "全部难度";
+"Rotate these %lld workouts to train %lld days a week." = "这 %lld 套训练轮换进行,每周练 %lld 天。";
+/* 导入/Classics 动作行 meta */
+"%lld sets" = "%lld 组";
+"%llds rest" = "休息 %lld 秒";
 "community_plan_beginner_fb_3day_name" = "新手全身 3 练/周";
 "community_plan_beginner_fb_3day_desc" = "两个交替练日,学会主要动作并打好基础";
 "community_plan_5x5_strength_name" = "5x5 力量";

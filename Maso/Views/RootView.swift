@@ -280,6 +280,12 @@ struct RootView: View {
                 if completed && data.settings.healthKitSyncEnabled {
                     Task { await catchUpHealthKitSync() }
                 }
+                // 在 MiniBar 上完成最后一组: completed=true → hasActiveSession=false → bar 消失,
+                // 完成页/保存确认/分享全被跳过. 这里补拉起播放器让完成流照常走.
+                // guard !playerPresented — 播放器已打开时完成流由它自己接管, 不重复触发 cover.
+                if completed && !playerPresented {
+                    playerPresented = true
+                }
             }
             // 跨 sheet tab 切换请求 — e.g. Progress AI 小结 Apply → 切到 Coach (深链消息由 CoachScreen 消费).
             // 3-tab 后不再需要旧的 .library → .plans+trainPage 映射, 直取即可.
@@ -551,6 +557,12 @@ struct RootView: View {
 
     private func startTraining(_ plan: Plan) {
         let cur = session.session
+        // 同 plan 且未完成 → 只恢复播放器, 不能走 startTrainingNow (TrainingSession.start()
+        // 会重建 session, 静默清掉本场已完成的组). "再点开始" 的语义 = 回到进行中的训练.
+        if let cur, cur.planId == plan.id, !cur.completed {
+            playerPresented = true
+            return
+        }
         let hasOtherActive = cur != nil
             && cur?.planId != plan.id
             && !(cur?.completed ?? false)
@@ -682,7 +694,9 @@ struct RootView: View {
     private static func workoutSource(for plan: Plan) -> String {
         if plan.id.hasPrefix("qw-") { return "free" }
         if plan.id.hasPrefix("session-replay-") { return "replay" }
-        if plan.id.hasPrefix("plan-gap-") { return "gap" }
+        // TodayScreen.startGapWorkout 生成的 id 前缀是 "plan-catchup-" (非 "plan-gap-"),
+        // 判错前缀会让 catch-up 训练的 analytics source 永远报不出 gap.
+        if plan.id.hasPrefix("plan-catchup-") { return "gap" }
         switch plan.resolvedSource {
         case .ai: return "ai"
         case .classics: return "classic"

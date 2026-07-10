@@ -45,6 +45,12 @@
 "Sets" = "Sets";
 "Exercises count" = "Exercises";
 "Volume kg" = "Volume kg";
+/* 分享卡 stat 标签 (ShareStat) — 全家族统一走这组键 */
+"Total Sets" = "Total Sets";
+"Groups Hit" = "Groups Hit";
+"Days" = "Days";
+"Streak" = "Streak";
+"PR" = "PR";
 "%lld days/wk" = "%lld days/wk";
 "%lld days/week" = "%lld days/week";
 "Couldn't create share link" = "Couldn't create share link";
@@ -645,7 +651,7 @@
 "TRAINING PREFERENCES" = "TRAINING PREFERENCES";
 "Adjust" = "Adjust";
 "%lld days / week" = "%lld days / week";
-"Focus: %@" = "Focus: %@";
+/* ("Focus: %@" 定义在下方教练偏好摘要段 — 重复 key 已删) */
 "Full-body" = "Full-body";
 "Upper-lower split" = "Upper-lower split";
 "Body-part split" = "Body-part split";
@@ -721,8 +727,21 @@
 "Beginner" = "Beginner";
 "Intermediate" = "Intermediate";
 "Advanced" = "Advanced";
-"%lld days/wk" = "%lld days/wk";
+/* ("%lld days/wk" 定义在文件靠前处 — 别在这重复加, 重复 key 会互相覆盖) */
 "%lld exercises" = "%lld exercises";
+/* Classics 列表/筛选 — CommunityScreen */
+"Featured today" = "Featured today";
+"More programs" = "More programs";
+"No routines match" = "No routines match";
+"%lld routine" = "%lld routine";
+"%lld routines" = "%lld routines";
+"Days/wk" = "Days/wk";
+"%lld days" = "%lld days";
+"Any level" = "Any level";
+"Rotate these %lld workouts to train %lld days a week." = "Rotate these %lld workouts to train %lld days a week.";
+/* 导入/Classics 动作行 meta */
+"%lld sets" = "%lld sets";
+"%llds rest" = "%llds rest";
 "community_plan_beginner_fb_3day_name" = "Beginner Full Body 3-Day";
 "community_plan_beginner_fb_3day_desc" = "Two alternating sessions to learn the main lifts and build a base.";
 "community_plan_5x5_strength_name" = "5x5 Strength";

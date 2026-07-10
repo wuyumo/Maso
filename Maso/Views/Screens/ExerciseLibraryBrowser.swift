@@ -427,6 +427,8 @@ struct ExerciseLibraryBrowser: View {
                     withAnimation(.easeOut(duration: 0.18)) { showScrubLabel = false }  // 松手即收回小绿点
                     // 松手后留一小窗口让滚动 settle, 期间仍屏蔽跟随, 防回弹抖动; 之后恢复滚动跟随.
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) { isScrubbing = false }
+                    // 拖到当前区不触发滚动 → 没有 .idle 相位来排隐藏, rail 会永挂; 松手统一排一次自隐.
+                    scheduleRailHide()
                 }
         )
     }
@@ -501,13 +503,16 @@ struct ExerciseLibraryBrowser: View {
             }
             // filter/搜索变化 → 收起手风琴 (跟 picker 一致, 避免残留孤儿展开态).
             // 搜索豁免: 手动展开的组仍在当前结果里 (命中组) 则保留 — 边敲边看展开的变体不被打断.
+            // activeSection 一并归零: 旧高亮区可能已被过滤掉 (secs 里没有它) → 索引条全灰;
+            // 置 nil 回退到第一个区, 滚动跟随随后会再对准.
             .onChange(of: query) { _, _ in
+                activeSection = nil
                 if let key = expandedGroupKey, filteredGroups.contains(where: { $0.id == key }) { return }
                 expandedGroupKey = nil
             }
-            .onChange(of: muscleFilter) { _, _ in expandedGroupKey = nil }
-            .onChange(of: equipmentFilter) { _, _ in expandedGroupKey = nil }
-            .onChange(of: movementFilter) { _, _ in expandedGroupKey = nil }
+            .onChange(of: muscleFilter) { _, _ in expandedGroupKey = nil; activeSection = nil }
+            .onChange(of: equipmentFilter) { _, _ in expandedGroupKey = nil; activeSection = nil }
+            .onChange(of: movementFilter) { _, _ in expandedGroupKey = nil; activeSection = nil }
     }
 
     var body: some View {

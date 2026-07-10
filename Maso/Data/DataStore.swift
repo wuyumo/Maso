@@ -44,6 +44,11 @@ final class DataStore {
     var aiTodayPlanEditedAt: Date? = nil
     /// 最近一次今日 AI 生成是否失败 (网络/服务) — TodayScreen 据此露出"够不到 AI,已用推荐·重试"提示.
     var aiTodayFailed: Bool = false
+    /// 引导首次 AI 生成 (generateFirstPlanViaAI) 的 in-flight 标记 — 弱网下过渡页 9s 兜底先落地,
+    /// 首次调用 (timeout 45s) 仍在飞时 RootView 的 refreshAIWorkoutIfNeeded (启动 task / 回前台)
+    /// 会并发双跑, 后者的普通结果覆盖带 focusNote 的首次结果. 起飞置位 / 落地复位 (defer 保证),
+    /// refreshAIWorkoutIfNeeded 见置位即 return. 纯内部 bookkeeping, 不驱动 UI.
+    @ObservationIgnored private var firstPlanGenerationInFlight = false
 
     /// Coach tab 对话状态 (V1 in-memory, 不持久化 — 头注/修订环见 CoachSession.swift).
     let coachSession = CoachSession()
@@ -708,15 +713,19 @@ final class DataStore {
 
     func updatePlan(_ plan: Plan) {
         let old = plans.first(where: { $0.id == plan.id })
+        let isAIToday = aiTodayPlan?.id == plan.id
         if let idx = plans.firstIndex(where: { $0.id == plan.id }) {
             plans[idx] = plan
-        } else {
+        } else if !isAIToday {
+            // 约束: aiTodayPlan 本就不在 plans 数组 (解耦副本) — 编辑它时绝不能 append 进 plans,
+            // 否则 My Routines 冒出副本 + 删除要删两次 (deletePlan 特判命中 aiTodayPlan 只清它就 return,
+            // append 进去的那份要再删一次才消失). 只有真正的新 plan (两边都没有) 才走 append.
             plans.append(plan)
         }
         // P0#1-④: 编辑的是今日 AI 计划 (PlanDetailSheet 从 Today 卡打开 / 播放器保存都带 plan-ai- id) →
         // 镜像写回 aiTodayPlan (Today 卡立即反映修改, 它跟 plans 是解耦副本) + 置"用户编辑过"时间戳,
         // 当天的 refreshAIWorkoutIfNeeded 跳过自动重生成, 不冲掉手调的重量.
-        if let ai = aiTodayPlan, ai.id == plan.id {
+        if isAIToday {
             aiTodayPlan = plan
             aiTodayPlanEditedAt = Date()
         }
@@ -1252,6 +1261,9 @@ final class DataStore {
     func refreshAIWorkoutIfNeeded() async {
         // gate 只看代理是否配好 (Path B: 不再要求 aiWorkoutEnabled — 代理 server-side 配好就跑, 失败回落).
         guard AIWorkoutService.isConfigured else { return }
+        // 引导首次生成还在飞 (弱网下过渡页 9s 兜底先落地) → 让路, 别并发双跑冲掉带 focusNote 的首次结果.
+        // lastAIRefreshAt 挡不住这个 case — 它只在成功后才置位.
+        if firstPlanGenerationInFlight { return }
         if let last = lastAIRefreshAt, Calendar.current.isDateInToday(last), aiTodayPlan != nil {
             return  // 今天已经成功生成过, skip
         }
@@ -1323,6 +1335,10 @@ final class DataStore {
     func generateFirstPlanViaAI(userPrompt: String? = nil) async {
         seedStarterRoutines()                       // 2 条本地起步 (内部 guard plans.isEmpty)
         guard AIWorkoutService.isConfigured else { return }
+        // in-flight 标记: 起飞置位, defer 保证任何路径 (成功/失败/提前 return 之外的 throw 演化) 都复位 —
+        // 期间 refreshAIWorkoutIfNeeded 直接让路, 防止弱网下双跑覆盖带 focusNote 的首次结果.
+        firstPlanGenerationInFlight = true
+        defer { firstPlanGenerationInFlight = false }
         var payload = buildAIPayload()
         payload.focusNote = userPrompt
         if let plan = await AIWorkoutService.shared.generateToday(

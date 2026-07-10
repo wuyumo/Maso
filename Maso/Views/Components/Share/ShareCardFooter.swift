@@ -255,8 +255,10 @@ struct RoutineShareCard: View {
         .background(MasoColor.background)
     }
 
-    /// 动作的组数概要 — OCR 友好: "N × M" (组 × 次), 配重加 "· W kg", 计时类 "N × 30s".
+    /// 动作的组数概要 — OCR 友好: "N × M" (组 × 次), 配重加 "· W kg/lb", 计时类 "N × 30s".
     /// 用 base sets/reps/weight (逐组覆盖在分享/OCR 场景读不出, base 最具代表性).
+    /// 配重走 weightLabel (kg → 用户单位) — 跟上方 Volume 同一单位, 不再同卡双单位;
+    /// OCR 导入侧 (PlanShareCodec) 认得 kg/lb 且会把 lb 换算回 kg, 单位互通.
     private func stepSummary(_ s: PlanStep) -> String {
         if s.reps == nil, let d = s.duration, d > 0 {
             let dur = d >= 60 ? "\(d / 60)m\(d % 60 == 0 ? "" : " \(d % 60)s")" : "\(d)s"
@@ -264,8 +266,7 @@ struct RoutineShareCard: View {
         }
         var out = "\(s.sets) × \(s.reps ?? 0)"
         if let w = s.weight, w > 0 {
-            let wStr = w.truncatingRemainder(dividingBy: 1) == 0 ? String(format: "%.0f", w) : String(format: "%.1f", w)
-            out += " · \(wStr) kg"
+            out += " · \(weightLabel(w))"
         }
         return out
     }
