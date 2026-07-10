@@ -97,8 +97,8 @@ struct RootView: View {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) { coachLibraryRequested = true }
         case "routines":
             tab = .coach          // 原 Routines tab 能力已整体迁入 Coach
-        case "coach_templates", "coach_prefs":
-            // 顶栏走查用: 只负责落 Coach tab, sheet 由 CoachScreen 自己读 env 拉起
+        case "coach_templates", "coach_prefs", "coach_chat":
+            // 顶栏走查用: 只负责落 Coach tab, sheet/种子对话由 CoachScreen 自己读 env 拉起
             // (templatesPresented/prefsPresented 是 CoachScreen 私有 state, 不走 binding 减少管线).
             tab = .coach
         case "classics":

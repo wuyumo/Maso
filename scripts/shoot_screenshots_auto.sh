@@ -3,11 +3,15 @@
 # 用法: ./scripts/shoot_screenshots_auto.sh <sim-udid> <lang> <locale>
 #   en: ./scripts/shoot_screenshots_auto.sh <udid> en-US en_US
 #   zh: ./scripts/shoot_screenshots_auto.sh <udid> zh-Hans zh_CN
+# 6.9" 素材 (1320×2868) 要用 iPhone Pro Max 级模拟器跑.
 set -eu
 SIM="$1"; LANG_TAG="$2"; LOCALE="${3:-en_US}"
 APP="build/DerivedData/Build/Products/Debug-iphonesimulator/Maso.app"
 OUT="build/screenshots/$LANG_TAG"; mkdir -p "$OUT"
 xcrun simctl bootstatus "$SIM" -b >/dev/null
+# 状态栏钉死 marketing 标准样 (9:41 / 满电 / 满格) — 不然每张时间都不一样.
+xcrun simctl status_bar "$SIM" override --time "9:41" --batteryState charged --batteryLevel 100 \
+  --cellularMode active --cellularBars 4 --wifiBars 3 >/dev/null 2>&1 || true
 # 卸载重装 — 清掉 app 容器里的语言/数据残留, 语言由启动参数决定
 xcrun simctl uninstall "$SIM" com.yumowu.maso 2>/dev/null || true
 xcrun simctl install "$SIM" "$APP"
@@ -20,12 +24,13 @@ shoot() { # $1 showcase-mode  $2 filename  $3 settle-seconds
   xcrun simctl io "$SIM" screenshot "$OUT/$2.png" >/dev/null
   echo "  ✓ $2"
 }
-shoot ""             01-today         7
-shoot "routines"     02-routines      9
-shoot "exercises"    03-exercises     8
-shoot "plan_detail"  04-plan-detail   8
-shoot "player"       05-training      9
-shoot "rest"         06-rest          10
-shoot "history"      07-history       7
-shoot "free_workout" 08-quick-workout 8
+# 2.0 IA: Coach 聊天是主打 (coach_chat 种子对话), Routines/Exercises tab 已并入 Coach.
+shoot "coach_chat"      01-coach-chat    9
+shoot ""                02-today         8
+shoot "player"          03-training      9
+shoot "rest"            04-rest          10
+shoot "coach_templates" 05-templates     9
+shoot "plan_detail"     06-plan-detail   8
+shoot "history"         07-progress      8
+shoot "exercises"       08-library       9
 echo "DONE → $OUT"

@@ -143,6 +143,22 @@ struct CoachScreen: View {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) { templatesPresented = true }
             case "coach_prefs":
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) { prefsPresented = true }
+            case "coach_chat":
+                // App Store 截图专用: 种一段"诉求 → 卡组"对话展示核心玩法 — 卡组直接用种子 plans,
+                // 不打真 LLM (截图流水线要确定性); 生产恒空 env, 不可达.
+                if session.messages.isEmpty {
+                    let ask = NSLocalizedString("Build my week — full body, about 45 minutes a day",
+                                                comment: "showcase coach chat — seeded user ask (screenshots only)")
+                    session.messages.append(CoachMessage(role: .user, text: ask))
+                    // 只种 1 张卡: 内容不溢出 → 对话流不滚动, 用户气泡+回复+卡组全入镜 (主图叙事完整).
+                    let plans = Array(data.plans.prefix(1))
+                    session.messages.append(CoachMessage(
+                        role: .assistant,
+                        text: NSLocalizedString("Your plan is ready", comment: "coach chat — assistant fallback summary"),
+                        plans: plans))
+                    session.currentRoutines = plans
+                    session.versionStack = [plans]
+                }
             default: break
             }
         }
