@@ -475,41 +475,10 @@ struct CoachScreen: View {
                 .focused($composerFocused)
                 .frame(minHeight: 44, alignment: .topLeading)
 
-            // 底部按钮行 — [+][#] 左下角 (spacing 10), 发送右下角 (都在框内).
+            // 底部按钮行 — [+|#] 玻璃药丸钉左下角, 发送 (glassProminent 圆) 钉右下角
+            // (owner 拍板: iOS 26 系统 Liquid Glass 样式 + 默认控件尺寸 44pt, 旧 30pt 太小).
             HStack(spacing: 10) {
-                // [+] 菜单 — 只放工具, 一行一语义 (IA 评审裁定).
-                Menu {
-                    // (Training Preferences 已移出 — 导航栏 slider.horizontal.3 是唯一常驻入口, owner 拍板.)
-                    Button { classicsPresented = true } label: {
-                        Label("Browse Classics", systemImage: "rosette")
-                    }
-                    Button { openPhotoImport() } label: {
-                        Label("Import from photo", systemImage: "photo")
-                    }
-                    Divider()
-                    Button { confirmNewConversation = true } label: {
-                        Label("New conversation", systemImage: "square.and.pencil")
-                    }
-                } label: {
-                    // iOS 系统观感: plus.circle.fill 镂空透底, 不自绘圆底.
-                    Image(systemName: "plus.circle.fill")
-                        .font(.system(size: 30))
-                        .foregroundStyle(MasoColor.textDim)
-                }
-                .accessibilityLabel(Text("New conversation"))
-
-                // "#" 模板键 — outline 轻盈样式, 跟 30pt 的 plus.circle.fill 同形同大.
-                Button { templatesPresented = true } label: {
-                    ZStack {
-                        Circle().strokeBorder(MasoColor.textDim.opacity(0.5), lineWidth: 1)
-                        Image(systemName: "number")
-                            .font(.system(size: 15, weight: .semibold))
-                            .foregroundStyle(MasoColor.textDim)
-                    }
-                    .frame(width: 30, height: 30)
-                }
-                .buttonStyle(.plain)
-                .accessibilityLabel(Text("Prompt templates"))
+                toolsPill
 
                 // "下一空" 胶囊 — 只在还有占位符没填时出现; tap 选中光标之后的下一个占位符
                 // (到结尾绕回第一个). 填完 (regex 无命中) 自动消失.
@@ -531,15 +500,7 @@ struct CoachScreen: View {
 
                 Spacer(minLength: 0)
 
-                Button(action: sendFromComposer) {
-                    // 发送 = arrow.up.circle.fill (accent), 禁用态灰 — 系统默认渲染.
-                    Image(systemName: "arrow.up.circle.fill")
-                        .font(.system(size: 30))
-                        .foregroundStyle(canSend ? MasoColor.accent : MasoColor.textFaint)
-                }
-                .buttonStyle(.plain)
-                .disabled(!canSend)
-                .accessibilityLabel(Text("Send"))
+                sendButton
             }
         }
         .padding(.horizontal, 14)
@@ -563,6 +524,82 @@ struct CoachScreen: View {
         !composerText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
             && !session.isGenerating
             && !hasPlaceholders
+    }
+
+    /// [+|#] 玻璃药丸 (owner 拍板): 两键合成一枚系统 Liquid Glass 胶囊, 44pt 默认控件高;
+    /// iOS 26 走 .glassEffect (跟导航栏胶囊同一套材质), 之前系统回退 surfaceHi 胶囊.
+    private var toolsPill: some View {
+        let content = HStack(spacing: 0) {
+            // [+] 菜单 — 只放工具, 一行一语义 (IA 评审裁定;
+            // Training Preferences 已移出, 导航栏 slider.horizontal.3 是唯一常驻入口).
+            Menu {
+                Button { classicsPresented = true } label: {
+                    Label("Browse Classics", systemImage: "rosette")
+                }
+                Button { openPhotoImport() } label: {
+                    Label("Import from photo", systemImage: "photo")
+                }
+                Divider()
+                Button { confirmNewConversation = true } label: {
+                    Label("New conversation", systemImage: "square.and.pencil")
+                }
+            } label: {
+                Image(systemName: "plus")
+                    .font(.system(size: 18, weight: .medium))
+                    .foregroundStyle(MasoColor.text)
+                    .frame(width: 46, height: 44)
+                    .contentShape(Rectangle())
+            }
+            .accessibilityLabel(Text("New conversation"))
+
+            // 细分隔 — 两键同丸但语义可分.
+            Rectangle()
+                .fill(MasoColor.text.opacity(0.15))
+                .frame(width: 0.5, height: 20)
+
+            Button { templatesPresented = true } label: {
+                Image(systemName: "number")
+                    .font(.system(size: 17, weight: .medium))
+                    .foregroundStyle(MasoColor.text)
+                    .frame(width: 46, height: 44)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(Text("Prompt templates"))
+        }
+        return Group {
+            if #available(iOS 26.0, *) {
+                content.glassEffect(.regular, in: Capsule())
+            } else {
+                content.background(MasoColor.surfaceHi).clipShape(Capsule())
+            }
+        }
+    }
+
+    /// 发送键 — iOS 26 系统 glassProminent (液态玻璃高亮, accent tint, 禁用态系统自动降灰);
+    /// 之前系统回退 44pt 的 arrow.up.circle.fill.
+    private var sendButton: some View {
+        Group {
+            if #available(iOS 26.0, *) {
+                Button(action: sendFromComposer) {
+                    Image(systemName: "arrow.up")
+                        .font(.system(size: 17, weight: .semibold))
+                        .frame(width: 22, height: 22)
+                }
+                .buttonStyle(.glassProminent)
+                .buttonBorderShape(.circle)
+                .tint(MasoColor.accent)
+            } else {
+                Button(action: sendFromComposer) {
+                    Image(systemName: "arrow.up.circle.fill")
+                        .font(.system(size: 44))
+                        .foregroundStyle(canSend ? MasoColor.accent : MasoColor.textFaint)
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .disabled(!canSend)
+        .accessibilityLabel(Text("Send"))
     }
 
     // MARK: - "#" 模板半填空 (占位符选中/导航)
