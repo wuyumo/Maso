@@ -545,6 +545,11 @@ struct CoachScreen: View {
         .padding(.bottom, 10)
         .background(MasoColor.surface)
         .clipShape(RoundedRectangle(cornerRadius: 22))
+        // 0.5pt 细描边 (owner 指定) — 很 subtle 的一圈, 只比 surface 亮一点, 勾出输入框轮廓.
+        .overlay(
+            RoundedRectangle(cornerRadius: 22)
+                .strokeBorder(MasoColor.text.opacity(0.10), lineWidth: 0.5)
+        )
         // 点文本区外的容器空白也能聚焦 — 整个大框都是输入的可点热区.
         .contentShape(RoundedRectangle(cornerRadius: 22))
         .onTapGesture { composerFocused = true }
