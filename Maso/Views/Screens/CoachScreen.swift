@@ -493,51 +493,61 @@ struct CoachScreen: View {
     }
 
     private var composerRow: some View {
-        HStack(alignment: .bottom, spacing: 10) {
-            // [+] 菜单 — 只放工具, 一行一语义 (IA 评审裁定).
-            Menu {
-                // (Training Preferences 已移出 — 导航栏 slider.horizontal.3 是唯一常驻入口, owner 拍板.)
-                Button { classicsPresented = true } label: {
-                    Label("Browse Classics", systemImage: "rosette")
-                }
-                Button { openPhotoImport() } label: {
-                    Label("Import from photo", systemImage: "photo")
-                }
-                Divider()
-                Button { confirmNewConversation = true } label: {
-                    Label("New conversation", systemImage: "square.and.pencil")
-                }
-            } label: {
-                // iOS Messages 风格: 系统 SF symbol 默认渲染的 plus.circle.fill (灰 ~30pt),
-                // 不再自绘圆底 — .fill 变体的 plus 是镂空透出背景, 天然就是系统观感.
-                Image(systemName: "plus.circle.fill")
-                    .font(.system(size: 30))
-                    .foregroundStyle(MasoColor.textDim)
-            }
-            .accessibilityLabel(Text("New conversation"))
-
+        // 大输入框容器 (owner 拍板, ChatGPT 式): 文本区在上占满宽, [+] 与发送钉在容器内左右下角 —
+        // 不再是"小胶囊输入框 + 两侧按钮"的一行式.
+        VStack(alignment: .leading, spacing: 6) {
             TextField(NSLocalizedString("Tell me how you want to train…", comment: "coach composer placeholder"),
                       text: $composerText, axis: .vertical)
-                .lineLimit(1...4)
-                .font(.system(size: 15))
+                .lineLimit(2...6)
+                .font(.system(size: 16))
                 .foregroundStyle(MasoColor.text)
                 .focused($composerFocused)
-                .padding(.horizontal, 14)
-                .padding(.vertical, 8)
-                .frame(minHeight: 36)   // 输入框高度对齐 30pt 按钮 (iOS 默认控件体量)
-                .background(MasoColor.surface)
-                .clipShape(RoundedRectangle(cornerRadius: 18))
+                .frame(minHeight: 44, alignment: .topLeading)
 
-            Button(action: sendFromComposer) {
-                // 发送 = arrow.up.circle.fill (accent ~30pt), 禁用态灰 — 同样系统默认渲染.
-                Image(systemName: "arrow.up.circle.fill")
-                    .font(.system(size: 30))
-                    .foregroundStyle(canSend ? MasoColor.accent : MasoColor.textFaint)
+            // 底部按钮行 — [+] 左下角, 发送右下角 (都在框内).
+            HStack {
+                // [+] 菜单 — 只放工具, 一行一语义 (IA 评审裁定).
+                Menu {
+                    // (Training Preferences 已移出 — 导航栏 slider.horizontal.3 是唯一常驻入口, owner 拍板.)
+                    Button { classicsPresented = true } label: {
+                        Label("Browse Classics", systemImage: "rosette")
+                    }
+                    Button { openPhotoImport() } label: {
+                        Label("Import from photo", systemImage: "photo")
+                    }
+                    Divider()
+                    Button { confirmNewConversation = true } label: {
+                        Label("New conversation", systemImage: "square.and.pencil")
+                    }
+                } label: {
+                    // iOS 系统观感: plus.circle.fill 镂空透底, 不自绘圆底.
+                    Image(systemName: "plus.circle.fill")
+                        .font(.system(size: 30))
+                        .foregroundStyle(MasoColor.textDim)
+                }
+                .accessibilityLabel(Text("New conversation"))
+
+                Spacer(minLength: 0)
+
+                Button(action: sendFromComposer) {
+                    // 发送 = arrow.up.circle.fill (accent), 禁用态灰 — 系统默认渲染.
+                    Image(systemName: "arrow.up.circle.fill")
+                        .font(.system(size: 30))
+                        .foregroundStyle(canSend ? MasoColor.accent : MasoColor.textFaint)
+                }
+                .buttonStyle(.plain)
+                .disabled(!canSend)
+                .accessibilityLabel(Text("Send"))
             }
-            .buttonStyle(.plain)
-            .disabled(!canSend)
-            .accessibilityLabel(Text("Send"))
         }
+        .padding(.horizontal, 14)
+        .padding(.top, 12)
+        .padding(.bottom, 10)
+        .background(MasoColor.surface)
+        .clipShape(RoundedRectangle(cornerRadius: 22))
+        // 点文本区外的容器空白也能聚焦 — 整个大框都是输入的可点热区.
+        .contentShape(RoundedRectangle(cornerRadius: 22))
+        .onTapGesture { composerFocused = true }
         .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
     }
 
