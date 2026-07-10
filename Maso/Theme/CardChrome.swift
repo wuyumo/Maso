@@ -13,18 +13,23 @@ extension View {
             .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
     }
 
-    /// 磨砂玻璃卡底 (试验性, 回退点 tag pre-liquid-glass) —
-    /// .ultraThinMaterial + 一点点 MasoColor.accent tint. 只换"底",
-    /// 圆角/描边/布局仍由调用处照旧负责 (跟原 .background(MasoColor.surface) 等位替换).
+    /// 液态玻璃卡底 (试验性, 回退点 tag pre-liquid-glass; owner 拍板: 全部卡片用 iOS 原生
+    /// Liquid Glass, 跟按钮/导航胶囊同一套系统材质 — 带边缘折光, 不是普通磨砂).
+    /// 只换"底", 布局/描边由调用处照旧; cornerRadius 需与调用处 clipShape 一致 (玻璃按形状折光).
     /// ⚠️ 材质跟随系统 colorScheme — app 根已挂 .preferredColorScheme(.dark) (MasoApp.swift).
-    func glassCardBackground() -> some View {
-        self.background {
-            ZStack {
-                Rectangle().fill(.ultraThinMaterial)
-                // 压暗层 — 纯 ultraThinMaterial 在深色系里偏浅 (owner 反馈), 叠一层黑把明度
-                // 拉回接近原 surface, 但保留材质的透底模糊 (底下光斑仍隐约透进来).
-                Color.black.opacity(0.30)
-                MasoColor.accent.opacity(0.03)
+    @ViewBuilder
+    func glassCardBackground(cornerRadius: CGFloat = MasoMetrics.cornerRadiusMedium) -> some View {
+        if #available(iOS 26.0, *) {
+            self.glassEffect(.regular.tint(MasoColor.accent.opacity(0.04)),
+                             in: RoundedRectangle(cornerRadius: cornerRadius))
+        } else {
+            // iOS <26 回退: ultraThinMaterial + 压暗 + accent tint (v2 的磨砂方案).
+            self.background {
+                ZStack {
+                    Rectangle().fill(.ultraThinMaterial)
+                    Color.black.opacity(0.30)
+                    MasoColor.accent.opacity(0.03)
+                }
             }
         }
     }

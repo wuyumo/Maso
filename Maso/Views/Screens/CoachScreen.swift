@@ -506,7 +506,7 @@ struct CoachScreen: View {
         .padding(.horizontal, 14)
         .padding(.top, 12)
         .padding(.bottom, 10)
-        .glassCardBackground()
+        .glassCardBackground(cornerRadius: 22)
         .clipShape(RoundedRectangle(cornerRadius: 22))
         // 0.5pt 细描边 (owner 指定) — 很 subtle 的一圈, 只比 surface 亮一点, 勾出输入框轮廓.
         .overlay(
