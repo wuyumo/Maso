@@ -545,6 +545,9 @@
 /* Free workout: save to plan library after finishing */
 "Save as plan" = "保存为训练计划";
 "Saved" = "已保存";
+"Anything else for your AI coach?" = "还有什么想告诉 AI 教练?";
+"Injuries, preferences, time limits — in your own words. The AI combines this with everything above. Optional." = "伤病、喜好、时长要求——用你自己的话说。AI 会结合前面所有回答来生成计划。可留空。";
+"e.g. Old shoulder injury — avoid overhead pressing. I like dumbbells, 45 minutes max." = "例如:肩有旧伤,避免过头推举;喜欢哑铃,单次不超过 45 分钟。";
 "Display" = "显示";
 "Muscle charts on exercise tags" = "动作标签用肌肉图示";
 "On routine cards, show a mini muscle chart instead of the muscle name in front of each exercise." = "计划卡上每个动作前的部位文字, 改为迷你肌肉部位图。";

@@ -543,6 +543,9 @@
 /* Free workout: save to plan library after finishing */
 "Save as plan" = "Save as routine";
 "Saved" = "Saved";
+"Anything else for your AI coach?" = "Anything else for your AI coach?";
+"Injuries, preferences, time limits — in your own words. The AI combines this with everything above. Optional." = "Injuries, preferences, time limits — in your own words. The AI combines this with everything above. Optional.";
+"e.g. Old shoulder injury — avoid overhead pressing. I like dumbbells, 45 minutes max." = "e.g. Old shoulder injury — avoid overhead pressing. I like dumbbells, 45 minutes max.";
 "Display" = "Display";
 "Muscle charts on exercise tags" = "Muscle charts on exercise tags";
 "On routine cards, show a mini muscle chart instead of the muscle name in front of each exercise." = "On routine cards, show a mini muscle chart instead of the muscle name in front of each exercise.";

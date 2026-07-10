@@ -13,7 +13,7 @@ struct OnboardingScreen: View {
     let onDone: () -> Void
 
     private enum Step: Int, CaseIterable {
-        case gender = 1, goal, age, weight, days, focus, equipment
+        case gender = 1, goal, age, weight, days, focus, equipment, note
         static let total = Step.allCases.count
         /// 步骤短名 — 分析事件 to_step_name 用 (无 PII, 纯枚举名).
         var name: String {
@@ -25,6 +25,7 @@ struct OnboardingScreen: View {
             case .days: return "days"
             case .focus: return "focus"
             case .equipment: return "equipment"
+            case .note: return "note"
             }
         }
     }
@@ -50,6 +51,10 @@ struct OnboardingScreen: View {
     @State private var strengthen: Set<MuscleGroup> = []  // 不预选 — 留空 = 均衡
     /// 可用器材 — 多选. 留空 = 不限制 (= 健身房全器械, 跟 settings.availableEquipment 的"空=不限"语义一致).
     @State private var equipment: Set<EquipmentCategory> = []
+    /// 收尾一步的自由输入 (伤病/喜好/时长, 可留空跳过) — confirm 时写进 coachMemory (长期生效)
+    /// 并作 focusNote 喂给首份 AI 生成 (PRIORITY 行 + 定向检索, 立即生效).
+    @State private var coachNote: String = ""
+    @FocusState private var coachNoteFocused: Bool
     /// 确认后进入"AI 生成中"过渡 (感知型 — seedStarterRoutines 是瞬时本地生成).
     @State private var generating = false
     /// 真 AI 首份计划生成完成 (成功或回落) → 过渡页"Building"步据此落定, 把动画绑到真实调用延迟.
@@ -123,7 +128,41 @@ struct OnboardingScreen: View {
         case .days:   daysStep
         case .focus:  focusStep
         case .equipment: equipmentStep
+        case .note:   noteStep
         }
+    }
+
+    // 8) 自由输入 (收尾) — 用户用自己的话补要求 (伤病/喜好/时长), AI 综合画像 + 动作库 + 这段话
+    //    生成首份 routine. 可留空跳过 (按钮恒可点); 文字会存进教练记忆, 以后每次生成都生效.
+    private var noteStep: some View {
+        stepBody("Anything else for your AI coach?",
+                 "Injuries, preferences, time limits — in your own words. The AI combines this with everything above. Optional.") {
+            ZStack(alignment: .topLeading) {
+                TextEditor(text: $coachNote)
+                    .focused($coachNoteFocused)
+                    .font(.system(size: 16))
+                    .foregroundStyle(MasoColor.text)
+                    .scrollContentBackground(.hidden)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 10)
+                    .frame(minHeight: 150, maxHeight: 200)
+                    .background(MasoColor.surface)
+                    .clipShape(RoundedRectangle(cornerRadius: 14))
+                if coachNote.isEmpty {
+                    // placeholder — TextEditor 原生没有, 手叠一层; 不拦点击.
+                    Text("e.g. Old shoulder injury — avoid overhead pressing. I like dumbbells, 45 minutes max.")
+                        .font(.system(size: 15))
+                        .foregroundStyle(MasoColor.textFaint)
+                        .padding(.horizontal, 17)
+                        .padding(.vertical, 18)
+                        .allowsHitTesting(false)
+                }
+            }
+            .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
+        }
+        // 点输入框外收键盘 — 主按钮在键盘上方仍可直接点.
+        .contentShape(Rectangle())
+        .onTapGesture { coachNoteFocused = false }
     }
 
     private var slideTransition: AnyTransition {
@@ -386,7 +425,9 @@ struct OnboardingScreen: View {
         case .weight: return ("Next", { advance(to: .days) })
         case .days:   return ("Next", { advance(to: .focus) })   // 改拨盘后需"下一步"
         case .focus:  return ("Next", { advance(to: .equipment) })
-        case .equipment: return ("Build My Routine", confirm)
+        case .equipment: return ("Next", { advance(to: .note) })
+        // 收尾自由输入 — 可留空 (Optional 写在副标题里), 按钮恒可点; 有字没字都从这里生成.
+        case .note: return ("Build My Routine", { coachNoteFocused = false; confirm() })
         }
     }
 
@@ -476,6 +517,9 @@ struct OnboardingScreen: View {
         data.settings.weeklyTrainingDays = daysPerWeek
         data.settings.wantStrengthen = Array(strengthen)
         data.settings.availableEquipment = equipment.map { $0.rawValue }   // 器材约束 → 首份计划只用可用器材
+        // 收尾自由输入 → 教练记忆 (COACH NOTES 块, 以后每次 AI 生成都带上; Settings "Tell your AI coach" 可改).
+        let note = coachNote.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !note.isEmpty { data.appendCoachNote(note) }
         data.flushSave()   // 先持久化偏好 (即使 AI 调用挂掉, 偏好也已落盘)
         // onboarding_complete — 画像锁定时上报. ⚠️ 无 PII: 年龄/体重**分桶** (非原值), 其余只报计数/枚举.
         Analytics.shared.track("onboarding_complete", [
@@ -486,6 +530,7 @@ struct OnboardingScreen: View {
             "weekly_days": .int(daysPerWeek),
             "focus_count": .int(strengthen.count),
             "equipment_count": .int(equipment.count),
+            "note_length": .int(note.count),   // 只报长度 — 自由文本内容属 PII, 不上报
         ])
         // ⚠️ 不在这里置 onboardingCompleted —— RootView 用它做门控, 一置就立刻切走 OnboardingScreen,
         //    "AI 生成中"过渡(generating overlay 挂在 OnboardingScreen 上)就来不及显示.
@@ -494,7 +539,8 @@ struct OnboardingScreen: View {
         // Path B: 真 AI 生成首份计划 (generateFirstPlanViaAI 内部先种本地起步保证非空, 再尝试真 LLM
         // 作为今日推荐, 失败回落). 完成后 aiReady=true → 过渡页"Building"步落定.
         Task {
-            await data.generateFirstPlanViaAI()
+            // 自由输入作 focusNote — PRIORITY 行 + 定向检索, 首份计划立即体现 (coachMemory 管长期).
+            await data.generateFirstPlanViaAI(userPrompt: note.isEmpty ? nil : note)
             withAnimation { aiReady = true }
         }
     }

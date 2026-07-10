@@ -1317,10 +1317,14 @@ final class DataStore {
 
     /// 引导确认后生成首份计划 (Path B 真 AI): 先种本地起步 routine 保证库非空, 再尝试真 AI 作为
     /// 今日推荐 (✨AI). 失败 → 静默回落到本地推荐 (aiTodayPlan 不设, Today 自己 fallback).
-    func generateFirstPlanViaAI() async {
+    /// - parameter userPrompt: 引导收尾一步的自由输入 (伤病/喜好/时长要求) — 作 focusNote 进
+    ///   PRIORITY 行 + 定向检索 ("练上胸"这类词把对应动作带进目录). 同一段文字由 OnboardingScreen
+    ///   confirm() 写进 coachMemory (COACH NOTES 块) — 双通道: 首份计划立即吃到 + 以后每次生成长期生效.
+    func generateFirstPlanViaAI(userPrompt: String? = nil) async {
         seedStarterRoutines()                       // 2 条本地起步 (内部 guard plans.isEmpty)
         guard AIWorkoutService.isConfigured else { return }
-        let payload = buildAIPayload()
+        var payload = buildAIPayload()
+        payload.focusNote = userPrompt
         if let plan = await AIWorkoutService.shared.generateToday(
             payload: payload, library: exercises, maxExercises: settings.exercisesPerSession,
             surface: "onboarding") {
