@@ -53,6 +53,11 @@ struct CoachScreen: View {
     // ── composer ──
     @State private var composerText = ""
     @FocusState private var composerFocused: Bool
+    /// "#" 模板面板 (取代旧 chips 行 — owner 拍板: 建议入口收进模板系统).
+    @State private var templatesPresented = false
+    /// 半填空选区 (iOS 18 TextSelection) — 点模板/点"下一空"时程序化选中占位符整体,
+    /// 选中态下直接打字即替换. 绑在 TextField 的 selection: 上, 用户手动移光标也会写回来.
+    @State private var composerSelection: TextSelection? = nil
     /// 长按动作 pill 的引用式定向反馈 — 发送时作 onlyModify 传给 coachGenerate.
     /// 用户清空输入框即取消定向 (onChange 里复位); 改写但没清空则仍视为针对该动作 (V1 从简).
     @State private var pendingOnlyModify: String? = nil
@@ -142,9 +147,12 @@ struct CoachScreen: View {
                  sourceKicker: NSLocalizedString("FROM OPTIMIZE", comment: "coach chat deep-link kicker"),
                  surface: "optimize")
         }
-        // 清空输入框 = 取消长按发起的定向反馈.
+        // 清空输入框 = 取消长按发起的定向反馈 + 复位模板选区 (一切复位).
         .onChange(of: composerText) { _, text in
-            if text.isEmpty { pendingOnlyModify = nil }
+            if text.isEmpty {
+                pendingOnlyModify = nil
+                composerSelection = nil
+            }
         }
         // ── sheet 层 (子 sheet 各挂各自 presenter 的内容树, 一次只会开一个) ──
         .sheet(item: $detailPlan) { plan in
@@ -180,6 +188,10 @@ struct CoachScreen: View {
         }
         .sheet(isPresented: $classicsPresented) {
             ClassicsSheet(onStart: onStart)
+        }
+        .sheet(isPresented: $templatesPresented) {
+            // "#" 模板面板 — 点行回填 composer 并选中第一个占位符 (半填空交互).
+            CoachTemplatesSheet(onPick: { applyTemplate($0) })
         }
         .sheet(isPresented: $prefsPresented) {
             // 改完偏好点 "Generate routines" → 无言生成一轮 (feedback nil 不追加用户气泡).
@@ -442,73 +454,28 @@ struct CoachScreen: View {
             .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
             .padding(.vertical, 8)
         } else {
-            VStack(spacing: 8) {
-                if !session.isGenerating {
-                    chipsRow
-                }
-                composerRow
-            }
-            .padding(.top, 8)
-            .padding(.bottom, 8)
+            // chips 行已拆除 (被 "#" 模板面板取代 — owner 拍板), composer 独占底栏.
+            composerRow
+                .padding(.top, 8)
+                .padding(.bottom, 8)
         }
-    }
-
-    /// chips 行 — 只放"点了即发"的建议 (IA 评审: 工具进 [+], 建议进 chips); 生成中隐藏.
-    private var chipsRow: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 8) {
-                ForEach(suggestionChips, id: \.self) { chip in
-                    Button {
-                        send(feedback: chip)
-                    } label: {
-                        Text(chip)
-                            .font(.system(size: 12, weight: .semibold))
-                            .foregroundStyle(MasoColor.text.opacity(0.9))
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 7)
-                            .background(MasoColor.surfaceHi)
-                            .clipShape(Capsule())
-                    }
-                    .buttonStyle(.plain)
-                }
-            }
-        }
-        .contentMargins(.horizontal, MasoMetrics.pagePaddingHorizontal, for: .scrollContent)
-    }
-
-    /// 按偏好/近况生成 3-4 个即发建议. 文案本地化, 点击原文发送 (LLM 中英都看得懂).
-    private var suggestionChips: [String] {
-        var out: [String] = []
-        if session.currentRoutines.isEmpty {
-            out.append(NSLocalizedString("Plan my training week", comment: "coach chip"))
-            out.append(NSLocalizedString("Dumbbells only", comment: "coach chip"))
-            out.append(NSLocalizedString("Under 30 minutes", comment: "coach chip"))
-        } else {
-            // 修订轮语境 — 换成"针对现有方案改"的建议.
-            out.append(NSLocalizedString("Make it shorter", comment: "coach chip"))
-            out.append(NSLocalizedString("Use different equipment", comment: "coach chip"))
-        }
-        if let m = data.settings.wantStrengthen.first {
-            out.append(String(format: NSLocalizedString("Train %@ more", comment: "coach chip — focus muscle"),
-                              MuscleSelector.majorOf(m).displayName))
-        }
-        return out
     }
 
     private var composerRow: some View {
         // 大输入框容器 (owner 拍板, ChatGPT 式): 文本区在上占满宽, [+] 与发送钉在容器内左右下角 —
         // 不再是"小胶囊输入框 + 两侧按钮"的一行式.
         VStack(alignment: .leading, spacing: 6) {
+            // selection: 绑定 (iOS 18 TextSelection) — 模板半填空要程序化选中占位符整体.
             TextField(NSLocalizedString("Tell me how you want to train…", comment: "coach composer placeholder"),
-                      text: $composerText, axis: .vertical)
+                      text: $composerText, selection: $composerSelection, axis: .vertical)
                 .lineLimit(2...6)
                 .font(.system(size: 16))
                 .foregroundStyle(MasoColor.text)
                 .focused($composerFocused)
                 .frame(minHeight: 44, alignment: .topLeading)
 
-            // 底部按钮行 — [+] 左下角, 发送右下角 (都在框内).
-            HStack {
+            // 底部按钮行 — [+][#] 左下角 (spacing 10), 发送右下角 (都在框内).
+            HStack(spacing: 10) {
                 // [+] 菜单 — 只放工具, 一行一语义 (IA 评审裁定).
                 Menu {
                     // (Training Preferences 已移出 — 导航栏 slider.horizontal.3 是唯一常驻入口, owner 拍板.)
@@ -529,6 +496,37 @@ struct CoachScreen: View {
                         .foregroundStyle(MasoColor.textDim)
                 }
                 .accessibilityLabel(Text("New conversation"))
+
+                // "#" 模板键 — outline 轻盈样式, 跟 30pt 的 plus.circle.fill 同形同大.
+                Button { templatesPresented = true } label: {
+                    ZStack {
+                        Circle().strokeBorder(MasoColor.textDim.opacity(0.5), lineWidth: 1)
+                        Image(systemName: "number")
+                            .font(.system(size: 15, weight: .semibold))
+                            .foregroundStyle(MasoColor.textDim)
+                    }
+                    .frame(width: 30, height: 30)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(Text("Prompt templates"))
+
+                // "下一空" 胶囊 — 只在还有占位符没填时出现; tap 选中光标之后的下一个占位符
+                // (到结尾绕回第一个). 填完 (regex 无命中) 自动消失.
+                if hasPlaceholders {
+                    Button(action: selectNextPlaceholder) {
+                        HStack(spacing: 4) {
+                            Text(NSLocalizedString("Next blank", comment: "coach template next placeholder"))
+                            Text("⇥")
+                        }
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundStyle(MasoColor.textDim)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 6)
+                        .overlay(Capsule().strokeBorder(MasoColor.textDim.opacity(0.5), lineWidth: 1))
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(Text("Next blank"))
+                }
 
                 Spacer(minLength: 0)
 
@@ -560,14 +558,66 @@ struct CoachScreen: View {
     }
 
     private var canSend: Bool {
-        !composerText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && !session.isGenerating
+        // guard rail: 占位符没填完不给发 — 防止把「部位」这种模板原文送进 LLM.
+        !composerText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+            && !session.isGenerating
+            && !hasPlaceholders
+    }
+
+    // MARK: - "#" 模板半填空 (占位符选中/导航)
+
+    /// composerText 里还有没填的模板占位符 (「…」或 […]) — 驱动"下一空"胶囊显隐 + canSend guard.
+    private var hasPlaceholders: Bool {
+        !CoachTemplates.placeholderRanges(in: composerText).isEmpty
+    }
+
+    /// 点模板行 → 回填 composer + 聚焦 + 选中第一个占位符 (选中态下直接打字即替换).
+    /// 聚焦/选区要等模板 sheet 收场后再设 — sheet 在场时 focus 会被吃掉, 选区也随之作废.
+    private func applyTemplate(_ template: String) {
+        composerText = template
+        pendingOnlyModify = nil   // 模板是全新一句话, 取消长按定向残留
+        composerFocused = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            composerFocused = true
+            // 下一 runloop 再选中 — TextField 得先吃到新文本, 立刻设选区会被旧内容覆盖.
+            DispatchQueue.main.async { selectPlaceholder(after: nil) }
+        }
+    }
+
+    /// "下一空"胶囊 — 选中当前光标之后的下一个占位符 (到结尾绕回第一个).
+    private func selectNextPlaceholder() {
+        composerFocused = true
+        selectPlaceholder(after: currentCursorIndex)
+    }
+
+    /// 选中 cursor 之后 (nil = 从头) 的第一个占位符整体; 无命中则绕回第一个.
+    private func selectPlaceholder(after cursor: String.Index?) {
+        let ranges = CoachTemplates.placeholderRanges(in: composerText)
+        guard !ranges.isEmpty else { return }
+        let target: Range<String.Index>
+        if let cursor, let next = ranges.first(where: { $0.lowerBound >= cursor }) {
+            target = next
+        } else {
+            target = ranges[0]
+        }
+        composerSelection = TextSelection(range: target)
+    }
+
+    /// 当前光标位置 — 取现有选区/插入点的末端; 拿不到就当从头找.
+    private var currentCursorIndex: String.Index? {
+        guard let sel = composerSelection else { return nil }
+        switch sel.indices {
+        case .selection(let r): return r.upperBound
+        case .multiSelection(let rs): return rs.ranges.last?.upperBound
+        @unknown default: return nil
+        }
     }
 
     // MARK: - Actions
 
     private func sendFromComposer() {
         let text = composerText.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !text.isEmpty, !session.isGenerating else { return }
+        guard canSend, !text.isEmpty else { return }
         let only = pendingOnlyModify
         composerText = ""
         pendingOnlyModify = nil
@@ -617,6 +667,114 @@ struct CoachScreen: View {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             allSheetTriggerImport = true
         }
+    }
+}
+
+// MARK: - "#" 模板目录 + 面板 (owner 拍板的完整设计)
+//
+// 目录 = 4 组 × 3 条, 逐字锁定 (勿改措辞); key 用 en 原句, zh 译文占位符用「」/ en 用 [ ].
+// 半填空: 占位符 regex 两种括号都认 — 中文模板「…」+ 英文模板 […] 同一套逻辑.
+fileprivate enum CoachTemplates {
+    /// 占位符 regex: 「[^「」]*」 与 \[[^\[\]]*\] — NSRegularExpression (避开 Swift Regex 的并发标注).
+    static let placeholderPattern = "「[^「」]*」|\\[[^\\[\\]]*\\]"
+
+    /// 分组: (kicker 本地化 key, 模板本地化 keys). 顺序 = FOCUS / SWAP / TIME & STRUCTURE / INTENSITY.
+    static let groups: [(kicker: String, keys: [String])] = [
+        ("FOCUS", [
+            "Train [muscle] more and [muscle] less",
+            "Put extra focus on my [upper chest / rear delts]",
+            "Add more volume for my [weak spot]",
+        ]),
+        ("SWAP", [
+            "Swap out [exercise] because [reason]",
+            "My [body part] hurts — avoid [movement type]",
+            "Use more [dumbbells / cables] and less [barbell / machines]",
+        ]),
+        ("TIME & STRUCTURE", [
+            "Keep each session under [45] minutes",
+            "Make it [4] days a week, split by [push/pull/legs]",
+            "Only change Day [1] — keep the rest as is",
+        ]),
+        ("INTENSITY", [
+            "I'm [worn out / not recovering] — dial the intensity down",
+            "Make it [4] sets of [6-8] reps per exercise",
+            "I'm in a [cutting / bulking] phase — tune for that",
+        ]),
+    ]
+
+    /// 文本里所有占位符的 range (出现顺序) — 面板染色 + composer 选区导航共用.
+    static func placeholderRanges(in text: String) -> [Range<String.Index>] {
+        guard let re = try? NSRegularExpression(pattern: placeholderPattern) else { return [] }
+        let full = NSRange(text.startIndex..., in: text)
+        return re.matches(in: text, range: full).compactMap { Range($0.range, in: text) }
+    }
+}
+
+/// 模板面板 sheet — 4 组 kicker + 模板行; 占位符染 accent 绿, tap 行 → onPick(本地化模板串) → dismiss.
+private struct CoachTemplatesSheet: View {
+    @Environment(\.dismiss) private var dismiss
+    let onPick: (String) -> Void
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 22) {
+                    ForEach(CoachTemplates.groups, id: \.kicker) { group in
+                        VStack(alignment: .leading, spacing: 8) {
+                            // kicker — 跟 app 其它 section kicker 同款 10pt heavy tracking.
+                            Text(NSLocalizedString(group.kicker, comment: "coach template group kicker"))
+                                .font(.system(size: 10, weight: .heavy))
+                                .tracking(1.5)
+                                .textCase(.uppercase)
+                                .foregroundStyle(MasoColor.textDim)
+                            ForEach(group.keys, id: \.self) { key in
+                                templateRow(NSLocalizedString(key, comment: "coach prompt template"))
+                            }
+                        }
+                    }
+                }
+                .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
+                .padding(.top, 12)
+                .padding(.bottom, 24)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .background(MasoColor.background.ignoresSafeArea())
+            .navigationTitle(NSLocalizedString("Prompt templates", comment: "coach templates sheet title"))
+            .navigationBarTitleDisplayMode(.inline)
+        }
+        .presentationDetents([.medium, .large])
+        .presentationDragIndicator(.visible)
+    }
+
+    /// 模板行 — 占位符 accent 绿, 其余 text 色; surface 圆角 12 底.
+    private func templateRow(_ template: String) -> some View {
+        Button {
+            onPick(template)
+            dismiss()
+        } label: {
+            Text(Self.styled(template))
+                .font(.system(size: 14, weight: .medium))
+                .foregroundStyle(MasoColor.text)
+                .multilineTextAlignment(.leading)
+                .fixedSize(horizontal: false, vertical: true)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 14)
+                .padding(.vertical, 12)
+                .background(MasoColor.surface)
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+        }
+        .buttonStyle(.plain)
+    }
+
+    /// AttributedString 按占位符 regex 分段染色 — 占位符 (连括号) 整段 accent 绿.
+    private static func styled(_ template: String) -> AttributedString {
+        var attr = AttributedString(template)
+        for r in CoachTemplates.placeholderRanges(in: template) {
+            if let ar = Range(r, in: attr) {
+                attr[ar].foregroundColor = MasoColor.accent
+            }
+        }
+        return attr
     }
 }
 

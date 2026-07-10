@@ -1274,16 +1274,30 @@
 "This clears the current chat. Saved routines are kept." = "This clears the current chat. Saved routines are kept.";
 "Swap %@: " = "Swap %@: ";
 "Training in progress — keep tuning after your session." = "Training in progress — keep tuning after your session.";
-"Plan my training week" = "Plan my training week";
-"Dumbbells only" = "Dumbbells only";
-"Under 30 minutes" = "Under 30 minutes";
-"Make it shorter" = "Make it shorter";
-"Use different equipment" = "Use different equipment";
-"Train %@ more" = "Train %@ more";
 
 /* ── Coach tab 批次 3: 全局接线 (深链来源 kicker, docs/coach-tab-design.md §4) ── */
 "FROM WEEKLY SUMMARY" = "FROM WEEKLY SUMMARY";
 "FROM OPTIMIZE" = "FROM OPTIMIZE";
+
+/* ── Coach composer "#" 模板系统 (半填空; 占位符 en 用 [ ]) ── */
+"Prompt templates" = "Prompt templates";
+"Next blank" = "Next blank";
+"FOCUS" = "FOCUS";
+"SWAP" = "SWAP";
+"TIME & STRUCTURE" = "TIME & STRUCTURE";
+"INTENSITY" = "INTENSITY";
+"Train [muscle] more and [muscle] less" = "Train [muscle] more and [muscle] less";
+"Put extra focus on my [upper chest / rear delts]" = "Put extra focus on my [upper chest / rear delts]";
+"Add more volume for my [weak spot]" = "Add more volume for my [weak spot]";
+"Swap out [exercise] because [reason]" = "Swap out [exercise] because [reason]";
+"My [body part] hurts — avoid [movement type]" = "My [body part] hurts — avoid [movement type]";
+"Use more [dumbbells / cables] and less [barbell / machines]" = "Use more [dumbbells / cables] and less [barbell / machines]";
+"Keep each session under [45] minutes" = "Keep each session under [45] minutes";
+"Make it [4] days a week, split by [push/pull/legs]" = "Make it [4] days a week, split by [push/pull/legs]";
+"Only change Day [1] — keep the rest as is" = "Only change Day [1] — keep the rest as is";
+"I'm [worn out / not recovering] — dial the intensity down" = "I'm [worn out / not recovering] — dial the intensity down";
+"Make it [4] sets of [6-8] reps per exercise" = "Make it [4] sets of [6-8] reps per exercise";
+"I'm in a [cutting / bulking] phase — tune for that" = "I'm in a [cutting / bulking] phase — tune for that";
 
 /* 批次 3 本地化收尾: ExercisePickerSheet 自创动作入口 (漏译修补) */
 "Add your own exercise" = "Add your own exercise";

@@ -1275,16 +1275,30 @@
 "This clears the current chat. Saved routines are kept." = "会清空当前对话;已保存的计划不受影响。";
 "Swap %@: " = "换掉%@:";
 "Training in progress — keep tuning after your session." = "训练中 — 结束后继续调整。";
-"Plan my training week" = "出一套本周方案";
-"Dumbbells only" = "只用哑铃";
-"Under 30 minutes" = "控制在 30 分钟内";
-"Make it shorter" = "再短一点";
-"Use different equipment" = "换一批器械";
-"Train %@ more" = "多练%@";
 
 /* ── Coach tab 批次 3: 全局接线 (深链来源 kicker, docs/coach-tab-design.md §4) ── */
 "FROM WEEKLY SUMMARY" = "来自每周小结";
 "FROM OPTIMIZE" = "来自优化建议";
+
+/* ── Coach composer "#" 模板系统 (半填空; 占位符 zh 用「」) ── */
+"Prompt templates" = "输入模板";
+"Next blank" = "下一空";
+"FOCUS" = "部位侧重";
+"SWAP" = "换动作";
+"TIME & STRUCTURE" = "时间结构";
+"INTENSITY" = "强度容量";
+"Train [muscle] more and [muscle] less" = "多练一点「部位」，少练一点「部位」";
+"Put extra focus on my [upper chest / rear delts]" = "我想重点强化「上胸 / 肩后束」";
+"Add more volume for my [weak spot]" = "帮我补上「弱项部位」的训练量";
+"Swap out [exercise] because [reason]" = "把「动作名」换掉，因为「原因」";
+"My [body part] hurts — avoid [movement type]" = "我「部位」不舒服，避免「某类动作」";
+"Use more [dumbbells / cables] and less [barbell / machines]" = "多用「哑铃 / 绳索」，少用「杠铃 / 固定器械」";
+"Keep each session under [45] minutes" = "每次训练控制在「45」分钟以内";
+"Make it [4] days a week, split by [push/pull/legs]" = "改成一周「4」练，按「推拉腿」来分";
+"Only change Day [1] — keep the rest as is" = "只改 Day「1」，其它天保持不变";
+"I'm [worn out / not recovering] — dial the intensity down" = "最近「太累 / 恢复不过来」，强度降一档";
+"Make it [4] sets of [6-8] reps per exercise" = "每个动作「4」组、每组「6-8」次";
+"I'm in a [cutting / bulking] phase — tune for that" = "我在「减脂 / 增肌」期，帮我按这个调";
 
 /* 批次 3 本地化收尾: ExercisePickerSheet 自创动作入口 (漏译修补) */
 "Add your own exercise" = "添加自创动作";
