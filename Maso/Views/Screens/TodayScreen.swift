@@ -455,10 +455,10 @@ struct TodayScreen: View {
         } label: {
             VStack(spacing: 10) {
                 Image(systemName: "plus")
-                    .font(.system(size: 26, weight: .semibold))
-                // 文案从 "Free workout" 改 "Start from scratch" (owner: 这区现在是 routines,
-                // 语义 = 从零开始一个新 routine; 长句 "start a new routine from scratch" 精简成这个).
-                Text("Start from scratch")
+                    .font(.system(size: 22, weight: .semibold))   // 26→22, owner: 加号小一点点
+                // 文案三改: Free workout → Start from scratch → "New routine/新建训练"
+                // (这区叫 ROUTINES, 尾卡语义 = 新建一条 — 现挑动作开练, 完成后可存为 routine).
+                Text("New routine")
                     .font(.system(size: 14, weight: .semibold))
             }
             .foregroundStyle(MasoColor.textDim)
@@ -468,14 +468,15 @@ struct TodayScreen: View {
             .frame(height: carouselCardHeight ?? 320)
             .overlay(
                 RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium)
+                    // 0.5pt — 跟 composer 等其它卡的描边同粗细 (owner: 虚线别比别的卡粗).
                     .strokeBorder(MasoColor.textDim.opacity(0.45),
-                                  style: StrokeStyle(lineWidth: 1.5, dash: [6, 5]))
+                                  style: StrokeStyle(lineWidth: 0.5, dash: [6, 5]))
             )
             .contentShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
         }
         .buttonStyle(.plain)
         .opacity(carouselCardHeight == nil ? 0 : 1)
-        .accessibilityLabel(Text("Start from scratch"))
+        .accessibilityLabel(Text("New routine"))
     }
 
     // MARK: - 肌肉状态 + 训练日历计算 helpers
