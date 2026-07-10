@@ -315,7 +315,9 @@ struct TrainingPreferencesSheet: View {
             .navigationTitle("Training Preferences")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
+                // 顶栏规范: 编辑型 sheet 左上 Cancel 用 .cancellationAction (语义化占位, 视觉仍左上);
+                // 主操作 = 底部 "Generate routines" 大 CTA, 顶栏不重复摆.
+                ToolbarItem(placement: .cancellationAction) {
                     Button(NSLocalizedString("Cancel", comment: "")) { cancel() }
                 }
             }

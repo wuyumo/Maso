@@ -242,6 +242,12 @@ struct TodayScreen: View {
             .presentationDetents([.medium, .large])
             .presentationDragIndicator(.visible)
         }
+        // showcase "classics" 截图路由 (仅截图流水线注入 env; 生产恒空 no-op).
+        .onAppear {
+            if ProcessInfo.processInfo.environment["MASO_SHOWCASE"] == "classics" {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) { communityPresented = true }
+            }
+        }
         .sheet(isPresented: $communityPresented) {
             CommunityScreen()
             .presentationDragIndicator(.visible)

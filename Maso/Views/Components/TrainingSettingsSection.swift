@@ -568,7 +568,8 @@ struct EquipmentPickerSheet: View {
             .toolbarBackground(.visible, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Done") { dismiss() }.fontWeight(.bold)
+                    // 顶栏规范: Done 统一系统默认样式 (不再手动加粗), 跟全 app 其它 Done 一致.
+                    Button("Done") { dismiss() }
                 }
             }
             .tint(MasoColor.text)

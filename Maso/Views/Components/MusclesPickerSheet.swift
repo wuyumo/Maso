@@ -69,7 +69,9 @@ struct MusclesPickerSheet: View {
                     Button("Cancel") { dismiss() }
                 }
                 ToolbarItem(placement: .confirmationAction) {
+                    // 顶栏规范: 主操作文字加粗 — 跟其余编辑型 sheet 的 Save 同款.
                     Button("Save", action: save)
+                        .fontWeight(.bold)
                         .disabled(!isDirty)
                 }
             }

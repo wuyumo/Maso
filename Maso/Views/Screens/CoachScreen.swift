@@ -122,7 +122,17 @@ struct CoachScreen: View {
                 .accessibilityLabel("Settings")
             }
         }
-        .onAppear { suggestion = data.routineSuggestion() }
+        .onAppear {
+            suggestion = data.routineSuggestion()
+            // showcase 截图路由 (仅截图流水线注入 env; 生产恒空 no-op) — 拉起对应 sheet.
+            switch ProcessInfo.processInfo.environment["MASO_SHOWCASE"] ?? "" {
+            case "coach_templates":
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) { templatesPresented = true }
+            case "coach_prefs":
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) { prefsPresented = true }
+            default: break
+            }
+        }
         // showcase "exercises" 路由 — RootView 翻 true, 这里拉起动作库 sheet 后复位.
         .onChange(of: libraryRequested) { _, requested in
             guard requested else { return }
@@ -784,6 +794,13 @@ private struct CoachTemplatesSheet: View {
             .background(MasoColor.background.ignoresSafeArea())
             .navigationTitle(NSLocalizedString("Prompt templates", comment: "coach templates sheet title"))
             .navigationBarTitleDisplayMode(.inline)
+            // 顶栏规范: 纯浏览/挑选型 sheet — 右上 Done, 左上不放按钮 (拖拽关闭照常).
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Done") { dismiss() }
+                }
+            }
+            .tint(MasoColor.text)
         }
         .presentationDetents([.medium, .large])
         .presentationDragIndicator(.visible)

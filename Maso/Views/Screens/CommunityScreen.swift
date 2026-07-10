@@ -131,14 +131,13 @@ struct CommunityScreen: View {
             .navigationTitle("Classics")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: { dismiss() }) {
-                        Text("Done")
-                            .font(.system(size: 16, weight: .semibold))
-                            .foregroundStyle(MasoColor.text)
-                    }
+                // 顶栏规范: 浏览型 sheet 统一系统默认 Done (.confirmationAction) —
+                // 去掉自定义字重/颜色, 跟 ClassicsSheet / PlateCalculator 等同一种写法.
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Done") { dismiss() }
                 }
             }
+            .tint(MasoColor.text)
             .overlay(alignment: .top) {
                 if addedToastVisible {
                     AddedToast()
