@@ -569,7 +569,8 @@ struct CoachScreen: View {
         }
         return Group {
             if #available(iOS 26.0, *) {
-                content.glassEffect(.regular, in: Capsule())
+                // .interactive 跟发送键同配方 — 两枚按键玻璃观感一致 (owner 反馈过不一致).
+                content.glassEffect(.regular.interactive(), in: Capsule())
             } else {
                 content.background(MasoColor.surfaceHi).clipShape(Capsule())
             }
@@ -586,7 +587,10 @@ struct CoachScreen: View {
                         .font(.system(size: 18, weight: .semibold))
                         .foregroundStyle(canSend ? .black : MasoColor.textDim)
                         .frame(width: 44, height: 44)
-                        .glassEffect(.regular.tint(MasoColor.accent.opacity(canSend ? 0.85 : 0.08)).interactive(),
+                        // 禁用态 = 无 tint 素玻璃, 跟左边 [+|#] 药丸完全同配方 (owner 反馈两键
+                        // 背景不一致 — 之前禁用态掺了 8% 绿); 点亮才上 accent 标记主操作.
+                        .glassEffect(canSend ? .regular.tint(MasoColor.accent.opacity(0.85)).interactive()
+                                             : .regular.interactive(),
                                      in: Circle())
                 }
                 .buttonStyle(.plain)
