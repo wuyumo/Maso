@@ -254,14 +254,16 @@ struct HistoryScreen: View {
         .navigationTitle("Progress")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            ToolbarItemGroup(placement: .topBarTrailing) {
-                // 分享菜单 — 两个入口让用户自己挑 (两段都能分享任一张卡):
-                //   Share Insights → InsightShareCard (参数逐项可勾选)
-                //   Share History  → UnifiedShareCard 训练总览 (原流程不变)
-                // 没有任何训练记录 → 两样都没东西可分享, 入口整个不出现.
+            // 分享菜单挪左上角 (owner 指定, 跟 Coach 的左上入口对称); 右上只留齿轮.
+            //   Share Insights → InsightShareCard (参数逐项可勾选)
+            //   Share History  → UnifiedShareCard 训练总览 (原流程不变)
+            // 没有任何训练记录 → 两样都没东西可分享, 入口整个不出现.
+            ToolbarItem(placement: .topBarLeading) {
                 if !groupedSessions().isEmpty {
                     shareMenu
                 }
+            }
+            ToolbarItem(placement: .topBarTrailing) {
                 Button(action: onOpenSettings) {
                     Image(systemName: "gearshape")
                         .font(.system(size: 16, weight: .regular))

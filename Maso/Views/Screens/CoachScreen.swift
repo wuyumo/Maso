@@ -117,9 +117,15 @@ struct CoachScreen: View {
         .navigationTitle("Coach")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            // 布局 (owner 指定): 动作库靠左上角, "Coach" 标题居中, 右上只剩设置.
-            // 训练偏好的顶栏独立入口撤掉 — 仍可从空态偏好卡 (PlanRationaleCard) 进 TrainingPreferencesSheet.
-            ToolbarItem(placement: .topBarLeading) {
+            // 布局 (owner 指定): 左上角 = 训练偏好 + 动作库 两个入口 (iOS 默认工具栏按钮样式),
+            // "Coach" 标题居中, 右上只剩设置.
+            ToolbarItemGroup(placement: .topBarLeading) {
+                // slider — 训练偏好 (跟空态偏好卡同目的地 TrainingPreferencesSheet).
+                Button { prefsPresented = true } label: {
+                    Image(systemName: "slider.horizontal.3")
+                        .font(.system(size: 16, weight: .regular))
+                }
+                .accessibilityLabel(NSLocalizedString("Training Preferences", comment: ""))
                 // dumbbell — Exercises 不再是 tab, 从这里一步直达动作库 (设计文档 §0).
                 Button { libraryPresented = true } label: {
                     Image(systemName: "dumbbell")
