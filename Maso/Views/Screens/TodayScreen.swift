@@ -129,15 +129,18 @@ struct TodayScreen: View {
             VStack(alignment: .leading, spacing: 16) {
                 // ===== Today tab 内容: 肌肉状态 + 今日推荐 + 自由训练 (mode != .myPlans) =====
                 if mode != .myPlans {
-                    // ── 训练状态 ── (MuscleStatusOverviewCard 自带 "MUSCLE STATUS" kicker;
-                    //    距上次训练的贴心提示挪进卡片 kicker 行右侧).
-                    MuscleStatusOverviewCard(
-                        fatigueMap: fatigueMap,
-                        gapMuscles: gapMuscles,
-                        onStartGapWorkout: startGapWorkout,
-                        tipLine: todayTipLine,
-                        onUnlock: { paywallPresented = true }
-                    )
+                    // ── 训练状态 ── (MuscleStatusOverviewCard 自带图例/提示/Train the gaps).
+                    // 零训练数据时整块隐藏 (owner 拍板): 空态的灰肌肉图+引导句反而奇怪,
+                    // 练过第一次 (sets 非空) 这块才出现. ROUTINES 轮播顶上来作首屏内容.
+                    if !data.sets.isEmpty {
+                        MuscleStatusOverviewCard(
+                            fatigueMap: fatigueMap,
+                            gapMuscles: gapMuscles,
+                            onStartGapWorkout: startGapWorkout,
+                            tipLine: todayTipLine,
+                            onUnlock: { paywallPresented = true }
+                        )
+                    }
 
                     // AI 生成失败 → 提示条 (已回落到本地推荐, 一键重试真 AI).
                     if data.aiTodayFailed {
