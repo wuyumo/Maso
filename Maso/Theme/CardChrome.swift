@@ -21,6 +21,9 @@ extension View {
         self.background {
             ZStack {
                 Rectangle().fill(.ultraThinMaterial)
+                // 压暗层 — 纯 ultraThinMaterial 在深色系里偏浅 (owner 反馈), 叠一层黑把明度
+                // 拉回接近原 surface, 但保留材质的透底模糊 (底下光斑仍隐约透进来).
+                Color.black.opacity(0.30)
                 MasoColor.accent.opacity(0.03)
             }
         }

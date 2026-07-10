@@ -71,11 +71,12 @@ enum MasoMetrics {
     static let bodyHintListRow: CGFloat = 56
 }
 
-// MARK: - 底部液态光斑 (试验性视觉, 回退点 tag pre-liquid-glass)
+// MARK: - 全屏液态光斑 (试验性视觉, 回退点 tag pre-liquid-glass)
 //
-// Canvas 双滤镜 metaball: blur 先融合各圆的 alpha 场, alphaThreshold 再把模糊场切回实体
-// → 光斑靠近时像液体一样黏连融合. metaball 结果整体再叠一层大 blur + 极低透明度
-// → "朦胧的光" 而非实体液滴边缘.
+// v2 (owner 调整): ① 不再只压屏底 — 铺满整个 UI 分层的最底层 (整屏背景动效);
+// ② 不再单色 — 绿→白之间取多档色调, 各光斑颜色不同, 大半径 blur 让交叠处的颜色
+// 互相溶合出中间调 (动态融合), .screen 混合让交叠读作"光的相加"而非色块.
+// (v1 的 alphaThreshold 单色 metaball 撤掉 — 多色融合与单色凝固互斥, 朦胧光场不需要硬边.)
 struct LiquidGlowBackground: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
@@ -91,32 +92,29 @@ struct LiquidGlowBackground: View {
 
     private func glow(at t: TimeInterval) -> some View {
         Canvas { context, size in
-            // 滤镜作用顺序 = 注册的逆序: drawLayer 内容先被 blur 融合, 再被 threshold 凝固.
-            context.addFilter(.alphaThreshold(min: 0.5, color: MasoColor.accent))
-            context.addFilter(.blur(radius: 30))
+            // 大半径 blur — 各色光斑边缘互溶, 交界处混出绿白中间调 (colors mixing).
+            context.addFilter(.blur(radius: 55))
             context.drawLayer { layer in
                 for blob in Self.blobs {
                     let p = blob.position(at: t, in: size)
                     layer.fill(
                         Path(ellipseIn: CGRect(x: p.x - blob.radius, y: p.y - blob.radius,
                                                width: blob.radius * 2, height: blob.radius * 2)),
-                        with: .color(.white))
+                        with: .color(blob.color))
                 }
             }
         }
-        .blur(radius: 28)          // metaball 整体再糊一层 → 朦胧光, 去掉液滴硬边
-        .opacity(0.08)             // 克制: 第一眼几乎注意不到, 盯住才看到
-        .mask(                     // 上缘渐隐到透明 → 与上方内容无缝衔接
-            LinearGradient(stops: [.init(color: .clear, location: 0.0),
-                                   .init(color: .black, location: 0.45)],
-                           startPoint: .top, endPoint: .bottom))
+        .blur(radius: 22)          // 整体再糊一层 → 朦胧光场
+        .blendMode(.screen)        // 发光式叠加: 深底上只加亮不压暗, 交叠 = 光的相加
+        .opacity(0.10)             // 克制: 第一眼几乎注意不到, 盯住才看到
         .allowsHitTesting(false)
     }
 
-    // 4 个圆, 各自不同相位/周期 (25-45s) 的 sin/cos 轨迹极慢漂移;
-    // 横向活动全宽, 纵向压在组件下半部. 位置/振幅均为 0-1 归一化.
+    // 5 个圆铺满全屏, 各自不同相位/周期 (25-45s) 的 sin/cos 轨迹极慢漂移;
+    // 颜色在 accent 绿 → 近白 之间取档. 位置/振幅均为 0-1 归一化.
     private struct Blob {
         let radius: CGFloat
+        let color: Color
         let cx, cy: CGFloat
         let ax, ay: CGFloat
         let px, py: Double
@@ -128,15 +126,21 @@ struct LiquidGlowBackground: View {
         }
     }
 
+    // 绿→白色档: 品牌绿 / 薄荷 / 浅青绿 / 近白 (带一丝绿) — 融合处自然出现中间调.
+    private static let mint      = Color(red: 0.45, green: 0.93, blue: 0.70)
+    private static let paleGreen = Color(red: 0.72, green: 0.98, blue: 0.85)
+    private static let nearWhite = Color(red: 0.90, green: 1.00, blue: 0.95)
+
     private static let blobs: [Blob] = [
-        Blob(radius: 110, cx: 0.22, cy: 0.78, ax: 0.20, ay: 0.10, px: 41, py: 33, phase: 0.0),
-        Blob(radius:  85, cx: 0.62, cy: 0.66, ax: 0.26, ay: 0.12, px: 29, py: 44, phase: 1.9),
-        Blob(radius:  70, cx: 0.85, cy: 0.86, ax: 0.18, ay: 0.09, px: 36, py: 26, phase: 3.7),
-        Blob(radius:  60, cx: 0.42, cy: 0.92, ax: 0.30, ay: 0.07, px: 25, py: 39, phase: 5.1),
+        Blob(radius: 170, color: MasoColor.accent, cx: 0.20, cy: 0.80, ax: 0.22, ay: 0.12, px: 41, py: 33, phase: 0.0),
+        Blob(radius: 130, color: mint,             cx: 0.75, cy: 0.62, ax: 0.24, ay: 0.16, px: 29, py: 44, phase: 1.9),
+        Blob(radius: 150, color: paleGreen,        cx: 0.35, cy: 0.30, ax: 0.26, ay: 0.14, px: 36, py: 26, phase: 3.7),
+        Blob(radius: 100, color: nearWhite,        cx: 0.82, cy: 0.14, ax: 0.18, ay: 0.12, px: 25, py: 39, phase: 5.1),
+        Blob(radius: 120, color: mint,             cx: 0.55, cy: 0.90, ax: 0.30, ay: 0.08, px: 45, py: 31, phase: 2.6),
     ]
 }
 
-// MARK: - 共享页面背景 — #121212 + 底部 ~40% 高度的液态光斑
+// MARK: - 共享页面背景 — #121212 + 全屏液态光斑 (UI 分层最底)
 //
 // 三个 tab 屏 (Today 非 embedded / Coach / Progress) 的 .background 共用这一片,
 // 替代原先各自的 MasoColor.background.ignoresSafeArea().
@@ -144,13 +148,7 @@ struct AppBackground: View {
     var body: some View {
         ZStack {
             MasoColor.background
-            GeometryReader { geo in
-                VStack(spacing: 0) {
-                    Spacer(minLength: 0)
-                    LiquidGlowBackground()
-                        .frame(height: geo.size.height * 0.4)
-                }
-            }
+            LiquidGlowBackground()
         }
         .ignoresSafeArea()
     }

@@ -576,19 +576,20 @@ struct CoachScreen: View {
         }
     }
 
-    /// 发送键 — iOS 26 系统 glassProminent (液态玻璃高亮, accent tint, 禁用态系统自动降灰);
-    /// 之前系统回退 44pt 的 arrow.up.circle.fill.
+    /// 发送键 — iOS 26 液态玻璃圆 (accent tint), 44pt 跟 [+|#] 药丸同高 (owner 拍板);
+    /// 可发送 = 高浓度绿玻璃 + 黑箭头, 禁用 = 近透明玻璃 + 灰箭头. 之前系统回退 44pt circle.fill.
     private var sendButton: some View {
         Group {
             if #available(iOS 26.0, *) {
                 Button(action: sendFromComposer) {
                     Image(systemName: "arrow.up")
-                        .font(.system(size: 17, weight: .semibold))
-                        .frame(width: 22, height: 22)
+                        .font(.system(size: 18, weight: .semibold))
+                        .foregroundStyle(canSend ? .black : MasoColor.textDim)
+                        .frame(width: 44, height: 44)
+                        .glassEffect(.regular.tint(MasoColor.accent.opacity(canSend ? 0.85 : 0.08)).interactive(),
+                                     in: Circle())
                 }
-                .buttonStyle(.glassProminent)
-                .buttonBorderShape(.circle)
-                .tint(MasoColor.accent)
+                .buttonStyle(.plain)
             } else {
                 Button(action: sendFromComposer) {
                     Image(systemName: "arrow.up.circle.fill")

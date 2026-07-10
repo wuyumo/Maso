@@ -439,12 +439,16 @@ struct TodayScreen: View {
             VStack(spacing: 10) {
                 Image(systemName: "plus")
                     .font(.system(size: 26, weight: .semibold))
-                Text("Free workout")
+                // 文案从 "Free workout" 改 "Start from scratch" (owner: 这区现在是 routines,
+                // 语义 = 从零开始一个新 routine; 长句 "start a new routine from scratch" 精简成这个).
+                Text("Start from scratch")
                     .font(.system(size: 14, weight: .semibold))
             }
             .foregroundStyle(MasoColor.textDim)
             .frame(maxWidth: .infinity)
-            .frame(height: carouselCardHeight ?? 220)
+            // 高度严格 = 量测出的卡高; 没量到时 (首帧) 整卡隐形 — 不再用 220 兜底值渲染一张
+            // 比邻卡矮的空卡 (owner 实机看到的"高度不够"就是这个状态).
+            .frame(height: carouselCardHeight ?? 320)
             .overlay(
                 RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium)
                     .strokeBorder(MasoColor.textDim.opacity(0.45),
@@ -453,7 +457,8 @@ struct TodayScreen: View {
             .contentShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
         }
         .buttonStyle(.plain)
-        .accessibilityLabel(Text("Free workout"))
+        .opacity(carouselCardHeight == nil ? 0 : 1)
+        .accessibilityLabel(Text("Start from scratch"))
     }
 
     // MARK: - 肌肉状态 + 训练日历计算 helpers

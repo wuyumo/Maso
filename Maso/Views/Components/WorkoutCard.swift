@@ -270,28 +270,7 @@ struct WorkoutCard: View {
                 // showStart=false (Saved 计划卡): 也隐藏 play 钮, 点卡片进详情页 Start.
                 if addAction == nil && showStart {
                     Button(action: onStart) {
-                        ZStack {
-                            if prominentStart {
-                                // 强: 实心 accent + 黑 play + 阴影 — Today's Workout 主 CTA.
-                                Circle()
-                                    .fill(MasoColor.accent)
-                                    .frame(width: 44, height: 44)
-                                    .shadow(color: MasoColor.accent.opacity(0.35), radius: 6, y: 0)
-                                Image(systemName: "play.fill")
-                                    .font(.system(size: 16, weight: .heavy))
-                                    .foregroundStyle(.black)
-                                    .offset(x: 1)
-                            } else {
-                                // 弱: accent 半透明底 + accent play — 无描边环 (跟 Save 钮统一).
-                                Circle()
-                                    .fill(MasoColor.accent.opacity(0.18))
-                                    .frame(width: 44, height: 44)
-                                Image(systemName: "play.fill")
-                                    .font(.system(size: 15, weight: .heavy))
-                                    .foregroundStyle(MasoColor.accent)
-                                    .offset(x: 1)
-                            }
-                        }
+                        startButtonLabel
                     }
                     .buttonStyle(.plain)
                     .fixedSize()
@@ -321,6 +300,43 @@ struct WorkoutCard: View {
         .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
         // emphasized (Today's Workout 主卡): 不再加描边/阴影/辉光 — 仅靠实心绿播放键
         // (vs My Plans 卡的半透明描边键) 区分主次, 保持干净.
+    }
+
+    /// 播放键 — iOS 26 液态玻璃 (owner 拍板: 跟 composer 按钮一套系统材质, tint 带色):
+    /// 强 (Today 主卡) = accent 高浓度玻璃 + 黑 play; 弱 (列表卡) = accent 低浓度玻璃 + accent play.
+    /// iOS <26 回退原实心/半透明圆.
+    @ViewBuilder private var startButtonLabel: some View {
+        if #available(iOS 26.0, *) {
+            Image(systemName: "play.fill")
+                .font(.system(size: prominentStart ? 16 : 15, weight: .heavy))
+                .foregroundStyle(prominentStart ? .black : MasoColor.accent)
+                .offset(x: 1)
+                .frame(width: 44, height: 44)
+                .glassEffect(.regular.tint(MasoColor.accent.opacity(prominentStart ? 0.85 : 0.25)).interactive(),
+                             in: Circle())
+                .shadow(color: prominentStart ? MasoColor.accent.opacity(0.30) : .clear, radius: 6, y: 0)
+        } else {
+            ZStack {
+                if prominentStart {
+                    Circle()
+                        .fill(MasoColor.accent)
+                        .frame(width: 44, height: 44)
+                        .shadow(color: MasoColor.accent.opacity(0.35), radius: 6, y: 0)
+                    Image(systemName: "play.fill")
+                        .font(.system(size: 16, weight: .heavy))
+                        .foregroundStyle(.black)
+                        .offset(x: 1)
+                } else {
+                    Circle()
+                        .fill(MasoColor.accent.opacity(0.18))
+                        .frame(width: 44, height: 44)
+                    Image(systemName: "play.fill")
+                        .font(.system(size: 15, weight: .heavy))
+                        .foregroundStyle(MasoColor.accent)
+                        .offset(x: 1)
+                }
+            }
+        }
     }
 
     /// 动作 pill + 可选长按手势 — 只有 Coach 卡 (onExercisePillLongPress 非 nil) 才挂手势,
