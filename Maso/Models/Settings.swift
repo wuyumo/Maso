@@ -180,6 +180,10 @@ struct UserSettings: Codable, Sendable {
     /// 新手 / 不在意分区的用户关掉可以减少认知负担; 专业用户开着拿精确度.
     var muscleDetailEnabled: Bool = true
 
+    /// Routines 卡动作 chip 的部位前缀显示方式 (owner 的可切换展示偏好):
+    /// false = 部位文字 (e.g. "Chest", 现状默认); true = 迷你肌肉部位图 (MuscleRegionIcon).
+    var exerciseChipMuscleIcon: Bool = false
+
     /// 全局动作参数同步 (R3). 默认 OFF (opt-in) — 默认开会把"重量日/轻量日"这类
     /// 逐计划周期化配置静默压平 (UX 审查 P0#4), 想要"一处改全局更新"的用户自己打开.
     /// true: 在任意 routine / 训练中改了某动作的参数 (组数/次数/重量/休息/逐组覆盖),

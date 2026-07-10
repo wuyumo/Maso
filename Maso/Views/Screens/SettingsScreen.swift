@@ -103,6 +103,23 @@ struct SettingsScreen: View {
                     Analytics.shared.track("settings_toggle", ["key": .string("week_start"), "value": .string(v.rawValue)])
                 }
 
+                // 展示偏好 — Routines 卡动作标签的部位前缀: 文字 (默认) vs 迷你肌肉图 (owner 的可切换偏好).
+                Section_(title: "Display") {
+                    ToggleRow(
+                        title: "Muscle charts on exercise tags",
+                        desc: "On routine cards, show a mini muscle chart instead of the muscle name in front of each exercise.",
+                        isOn: Binding(
+                            get: { data.settings.exerciseChipMuscleIcon },
+                            set: { on in
+                                data.settings.exerciseChipMuscleIcon = on
+                                Analytics.shared.track("settings_toggle", [
+                                    "key": .string("chip_muscle_icon"), "value": .string(on ? "on" : "off"),
+                                ])
+                            }
+                        )
+                    )
+                }
+
                 // Apple 健康 — 在 UI 里明确标识 HealthKit 功能 (Apple 2.5.1: 用了 HealthKit 必须可见地告知用户).
                 // 开关打开 → 弹系统授权; 之后完成的训练写入 Apple 健康. 默认关 (用户主动开启).
                 Section_(title: "Apple Health") {

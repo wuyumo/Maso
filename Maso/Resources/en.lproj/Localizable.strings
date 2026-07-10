@@ -543,6 +543,9 @@
 /* Free workout: save to plan library after finishing */
 "Save as plan" = "Save as routine";
 "Saved" = "Saved";
+"Display" = "Display";
+"Muscle charts on exercise tags" = "Muscle charts on exercise tags";
+"On routine cards, show a mini muscle chart instead of the muscle name in front of each exercise." = "On routine cards, show a mini muscle chart instead of the muscle name in front of each exercise.";
 "Saved to routines" = "Saved to routines";
 "Save to routines" = "Save to routines";
 

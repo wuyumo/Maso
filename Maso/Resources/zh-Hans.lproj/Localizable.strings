@@ -545,6 +545,9 @@
 /* Free workout: save to plan library after finishing */
 "Save as plan" = "保存为训练计划";
 "Saved" = "已保存";
+"Display" = "显示";
+"Muscle charts on exercise tags" = "动作标签用肌肉图示";
+"On routine cards, show a mini muscle chart instead of the muscle name in front of each exercise." = "计划卡上每个动作前的部位文字, 改为迷你肌肉部位图。";
 "Saved to routines" = "已存入训练计划";
 "Save to routines" = "存入训练计划";
 

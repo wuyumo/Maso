@@ -107,12 +107,13 @@ struct WorkoutCard: View {
     /// chip 里动作名 (e.g. "Bench Press") + 主练部位 (e.g. "Chest") 一起显示, 一眼看清这个 routine 覆盖哪些部位.
     /// 部位 = 主肌肉归到的大区 (MuscleGroup.section: Chest/Back/Shoulders/Arms/Core/Legs);
     /// fullBody 等无 section 时退回该肌肉本身名.
-    private var exercisePreview: [(name: String, part: String?)] {
+    private var exercisePreview: [(name: String, part: String?, section: MuscleGroup?)] {
         plan.steps.compactMap { step in
             guard let ex = exById[step.exerciseId] else { return nil }
-            // 用 displayName 而非 raw name — 中文环境下 chip 跟点开后的标题语言一致
-            let part = ex.primaryMuscles.first.map { ($0.section ?? $0).displayName }
-            return (ex.displayName, part)
+            // 用 displayName 而非 raw name — 中文环境下 chip 跟点开后的标题语言一致.
+            // section 枚举一并带出 — chip 的"肌肉图示"模式 (exerciseChipMuscleIcon) 要用它画小图.
+            let sec = ex.primaryMuscles.first.map { $0.section ?? $0 }
+            return (ex.displayName, sec?.displayName, sec)
         }
     }
 
@@ -325,15 +326,16 @@ struct WorkoutCard: View {
     /// 动作 pill + 可选长按手势 — 只有 Coach 卡 (onExercisePillLongPress 非 nil) 才挂手势,
     /// 避免给全 app 每个 pill 白加 gesture recognizer.
     @ViewBuilder
-    private func exercisePill(_ item: (name: String, part: String?)) -> some View {
+    private func exercisePill(_ item: (name: String, part: String?, section: MuscleGroup?)) -> some View {
+        let useIcon = data.settings.exerciseChipMuscleIcon
         if let onExercisePillLongPress {
-            ExercisePill(name: item.name, part: item.part)
+            ExercisePill(name: item.name, part: item.part, section: item.section, muscleIcon: useIcon)
                 .onLongPressGesture {
                     Haptics.tap()
                     onExercisePillLongPress(item.name)
                 }
         } else {
-            ExercisePill(name: item.name, part: item.part)
+            ExercisePill(name: item.name, part: item.part, section: item.section, muscleIcon: useIcon)
         }
     }
 }
@@ -344,10 +346,22 @@ struct WorkoutCard: View {
 private struct ExercisePill: View {
     let name: String
     var part: String? = nil
+    /// 部位大区枚举 — "肌肉图示"模式画 MuscleRegionIcon 用 (nil = 无部位, 两种模式都不显示前缀).
+    var section: MuscleGroup? = nil
+    /// true → 部位前缀用迷你肌肉图代替文字 (settings.exerciseChipMuscleIcon, owner 的可切换偏好).
+    var muscleIcon: Bool = false
     var body: some View {
         // DESIGN.md §2.2: chip 类小标签走 11pt + 紧凑 padding. 部位前缀再小 1pt (10pt) 拉开层级.
         HStack(spacing: 5) {
-            if let part, !part.isEmpty {
+            if muscleIcon, let section {
+                // 迷你肌肉部位图 — 跟 Exercises 索引 rail 同一份 MuscleRegionIcon (聚焦该区的
+                // 精细分块); accent 主体 + 弱化衬托, 16pt 与 10pt 文字前缀占位相近, 不撑高 chip.
+                MuscleRegionIcon(region: section,
+                                 focusColor: MasoColor.accent,
+                                 surroundColor: MasoColor.accent.opacity(0.28),
+                                 size: 16)
+                    .accessibilityLabel(Text(section.displayName))
+            } else if let part, !part.isEmpty {
                 Text(part)
                     .font(.system(size: 10, weight: .semibold))
                     .foregroundStyle(MasoColor.accent)

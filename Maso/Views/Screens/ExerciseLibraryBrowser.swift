@@ -14,7 +14,9 @@ private struct SectionMinYKey: PreferenceKey {
 /// 单面板、缩放到某肌肉大区 bbox 的精细局部图 (右侧分区索引的图标).
 /// 背部用 POSTERIOR, 其余用 ANTERIOR; 取该区肌群 polygon 的包围盒 + 留白 (带出周边肌群),
 /// 整体不再画前后两个小人, 而是聚焦那块区域的精细分块.
-private struct MuscleRegionIcon: View {
+// (internal, 非 private — WorkoutCard 的动作 chip "肌肉图示"模式复用它当部位前缀小图,
+//  settings.exerciseChipMuscleIcon 开关控制. 改这里两处同步影响.)
+struct MuscleRegionIcon: View {
     let region: MuscleGroup
     /// 该区肌群的填色 (主体).
     var focusColor: Color
