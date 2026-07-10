@@ -20,15 +20,15 @@ extension View {
     @ViewBuilder
     func glassCardBackground(cornerRadius: CGFloat = MasoMetrics.cornerRadiusMedium) -> some View {
         if #available(iOS 26.0, *) {
-            self.glassEffect(.regular.tint(MasoColor.accent.opacity(0.04)),
-                             in: RoundedRectangle(cornerRadius: cornerRadius))
+            // 纯净玻璃, 无色 tint (owner 反馈卡片发绿 — 之前掺的 accent 4% 已去掉;
+            // 卡内仍会隐约透进底层光斑的绿, 那是背景动效透过玻璃的正常表现).
+            self.glassEffect(.regular, in: RoundedRectangle(cornerRadius: cornerRadius))
         } else {
-            // iOS <26 回退: ultraThinMaterial + 压暗 + accent tint (v2 的磨砂方案).
+            // iOS <26 回退: ultraThinMaterial + 压暗 (无色 tint).
             self.background {
                 ZStack {
                     Rectangle().fill(.ultraThinMaterial)
                     Color.black.opacity(0.30)
-                    MasoColor.accent.opacity(0.03)
                 }
             }
         }
