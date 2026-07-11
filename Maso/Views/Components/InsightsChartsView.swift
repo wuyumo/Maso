@@ -56,7 +56,13 @@ struct InsightsChartsView: View {
     /// 当前悬停的目标下标 — 变化时邻卡动画挤位; 松手落库.
     @State private var dropIndex: Int? = nil
     /// 各卡实测 frame (window/global 坐标) — 长按落点找卡 + 挤位/目标下标都按真实卡高算.
-    @State private var cardFrames: [InsightCard: CGRect] = [:]
+    /// ⚠️ 用 class 盒子而非 @State 字典: 滚动中 global frame 每帧都变, 若写 @State 会每帧
+    /// 重渲染整个视图, 跟隐式动画互相打架 (下拉钮持续跳动, owner 实机反馈). 写盒子零渲染,
+    /// 拖拽逻辑按需读即可.
+    @State private var frameStore = CardFrameStore()
+    private final class CardFrameStore {
+        var frames: [InsightCard: CGRect] = [:]
+    }
     /// 卡间距 = 外层 VStack spacing.
     private let cardSpacing: CGFloat = 16
     // MARK: - 整块空判断
@@ -89,7 +95,8 @@ struct InsightsChartsView: View {
             ForEach(Array(cards.enumerated()), id: \.element) { index, id in
                 card(id)
                     // 上报整卡 window 坐标 frame — 长按落点找卡 + 按真实卡高算挤位/目标位.
-                    .onGeometryChange(for: CGRect.self) { $0.frame(in: .global) } action: { cardFrames[id] = $0 }
+                    // 写引用盒子, 不触发重渲染 (见 CardFrameStore 注释).
+                    .onGeometryChange(for: CGRect.self) { $0.frame(in: .global) } action: { frameStore.frames[id] = $0 }
                     .offset(y: displacement(for: id, at: index, in: cards))
                     .scaleEffect(draggingCard == id ? 1.02 : 1)
                     .shadow(color: draggingCard == id ? .black.opacity(0.35) : .clear, radius: 12, y: 6)
@@ -118,7 +125,7 @@ struct InsightsChartsView: View {
         guard let dragging = draggingCard, let from = cards.firstIndex(of: dragging) else { return 0 }
         if id == dragging { return dragTranslation }
         guard let to = dropIndex, to != from else { return 0 }
-        let slot = (cardFrames[dragging]?.height ?? 300) + cardSpacing
+        let slot = (frameStore.frames[dragging]?.height ?? 300) + cardSpacing
         if from < to, index > from, index <= to { return -slot }   // 下移: 途经卡上挤
         if to < from, index >= to, index < from { return slot }    // 上移: 途经卡下挤
         return 0
@@ -130,12 +137,12 @@ struct InsightsChartsView: View {
         var acc: CGFloat = 0
         if translation > 0 {
             while idx + 1 < cards.count {
-                let next = (cardFrames[cards[idx + 1]]?.height ?? 300) + cardSpacing
+                let next = (frameStore.frames[cards[idx + 1]]?.height ?? 300) + cardSpacing
                 if translation > acc + next / 2 { acc += next; idx += 1 } else { break }
             }
         } else {
             while idx > 0 {
-                let prev = (cardFrames[cards[idx - 1]]?.height ?? 300) + cardSpacing
+                let prev = (frameStore.frames[cards[idx - 1]]?.height ?? 300) + cardSpacing
                 if -translation > acc + prev / 2 { acc += prev; idx -= 1 } else { break }
             }
         }
@@ -145,7 +152,7 @@ struct InsightsChartsView: View {
     /// 长按识别成功 (静止 0.35s): 按落点 (window 坐标) 找到那张卡, 拎起.
     private func handleReorderBegan(at point: CGPoint) {
         guard draggingCard == nil else { return }
-        guard let hit = cardFrames.first(where: { $0.value.contains(point) })?.key,
+        guard let hit = frameStore.frames.first(where: { $0.value.contains(point) })?.key,
               visibleCards.contains(hit) else { return }   // 落点不在洞察卡上 (小结卡/列表区) → 不拎
         draggingCard = hit
         dragTranslation = 0
