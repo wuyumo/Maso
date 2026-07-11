@@ -40,6 +40,18 @@ struct InsightsChartsView: View {
     /// 同一张卡的两个视角 (Yumo 拍板: 切换不另开卡), 不持久化 — 回来默认趋势.
     private enum PerLiftMode { case trend, distribution }
     @State private var perLiftMode: PerLiftMode = .trend
+
+    // MARK: 长按拖拽重排 (owner 二轮定稿: 卡片本体跟手 + 邻卡实时挤位, 不再用系统 draggable 的"副本+加号")
+    /// 正在被拎起的卡. nil = 未在拖.
+    @State private var draggingCard: InsightCard? = nil
+    /// 手指纵向位移 — 直接作被拖卡的 offset (本体跟手, 无动画).
+    @State private var dragTranslation: CGFloat = 0
+    /// 当前悬停的目标下标 — 变化时邻卡动画挤位; 松手落库.
+    @State private var dropIndex: Int? = nil
+    /// 各卡实测高度 — 挤位距离与目标下标都按真实高度算 (图表卡高矮不一).
+    @State private var cardHeights: [InsightCard: CGFloat] = [:]
+    /// 卡间距 = 外层 VStack spacing.
+    private let cardSpacing: CGFloat = 16
     // MARK: - 整块空判断
 
     /// 整块是否没足够数据 — 任一 InsightCard 有数据即非空. 调用方 (HistoryScreen) 用它决定 Insights 段显隐.
@@ -67,38 +79,100 @@ struct InsightsChartsView: View {
                     .foregroundStyle(MasoColor.textFaint)
                     .padding(.horizontal, 4)
             }
-            ForEach(cards) { id in
+            ForEach(Array(cards.enumerated()), id: \.element) { index, id in
                 card(id)
-                    // 整卡 (含玻璃底的透明区) 都是拖拽热区 — glassCardBackground 不参与 hit-test,
-                    // 没有这行只有实字/图表像素能拎, 长按经常落空 (owner 实机反馈拖不动的根因之一).
+                    // 整卡 (含玻璃底的透明区) 都是长按热区 — 玻璃底不参与 hit-test,
+                    // 没有这行只有实字/图表像素能拎 (owner 实机反馈拖不动的根因之一).
                     .contentShape(Rectangle())
-                    .contentShape(.dragPreview, RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
-                    // iOS 18 原生 draggable/dropDestination — 在 ScrollView 里长按才拎起 (不劫持垂直滚动).
-                    // ⚠️ 不给自定义 preview 闭包: 重型 Charts 视图当拖拽预览会让 lift 静默失败
-                    // (SwiftUI 已知坑), 用系统默认快照最稳.
-                    .draggable(id.rawValue)
-                    .dropDestination(for: String.self) { items, _ in
-                        guard let raw = items.first,
-                              let dropped = InsightCard(rawValue: raw) else { return false }
-                        moveCard(dropped, before: id)
-                        return true
-                    } isTargeted: { _ in }
+                    .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { cardHeights[id] = $0 }
+                    .offset(y: displacement(for: id, at: index, in: cards))
+                    .scaleEffect(draggingCard == id ? 1.02 : 1)
+                    .shadow(color: draggingCard == id ? .black.opacity(0.35) : .clear, radius: 12, y: 6)
+                    .zIndex(draggingCard == id ? 10 : 0)
+                    .gesture(reorderGesture(for: id, in: cards))
             }
+            // 挤位动画只绑 dropIndex — 被拖卡的 offset 跟手实时更新, 不能被这条动画拖慢.
+            .animation(.spring(response: 0.3, dampingFraction: 0.8), value: dropIndex)
             .animation(.spring(response: 0.35, dampingFraction: 0.82), value: data.settings.insightCardOrder)
         }
     }
 
-    /// 把 dropped 卡移到 target 卡之前 (拖到某卡上方插到它前面). 落定即持久化.
-    private func moveCard(_ dropped: InsightCard, before target: InsightCard) {
-        guard dropped != target else { return }
-        // 以当前"完整解析顺序"为基准做 move (非仅 visible, 保持隐藏卡相对位置稳定).
+    // MARK: - 长按拖拽重排 (卡片本体跟手 + 邻卡实时挤位; 松手才落库)
+
+    /// 各卡在拖拽中的纵向位移: 被拖卡 = 手指位移 (本体跟手); 处于"起点→目标"区间的卡 =
+    /// 让出一个槽位 (±被拖卡高+间距, 即"挤开"); 其余 0.
+    private func displacement(for id: InsightCard, at index: Int, in cards: [InsightCard]) -> CGFloat {
+        guard let dragging = draggingCard, let from = cards.firstIndex(of: dragging) else { return 0 }
+        if id == dragging { return dragTranslation }
+        guard let to = dropIndex, to != from else { return 0 }
+        let slot = (cardHeights[dragging] ?? 300) + cardSpacing
+        if from < to, index > from, index <= to { return -slot }   // 下移: 途经卡上挤
+        if to < from, index >= to, index < from { return slot }    // 上移: 途经卡下挤
+        return 0
+    }
+
+    /// 按真实卡高逐张累加, 算手指当前悬停的目标下标 (过邻卡一半即换位 — 图表卡高矮不一, 不能用固定行高).
+    private func targetIndex(from: Int, translation: CGFloat, in cards: [InsightCard]) -> Int {
+        var idx = from
+        var acc: CGFloat = 0
+        if translation > 0 {
+            while idx + 1 < cards.count {
+                let next = (cardHeights[cards[idx + 1]] ?? 300) + cardSpacing
+                if translation > acc + next / 2 { acc += next; idx += 1 } else { break }
+            }
+        } else {
+            while idx > 0 {
+                let prev = (cardHeights[cards[idx - 1]] ?? 300) + cardSpacing
+                if -translation > acc + prev / 2 { acc += prev; idx -= 1 } else { break }
+            }
+        }
+        return idx
+    }
+
+    /// 长按 0.3s → 拖拽接管 (ScrollView 不再抢滚动); 没按满就移动 = 正常滚动, 互不干扰.
+    private func reorderGesture(for id: InsightCard, in cards: [InsightCard]) -> some Gesture {
+        LongPressGesture(minimumDuration: 0.3)
+            .sequenced(before: DragGesture(minimumDistance: 0))
+            .onChanged { value in
+                switch value {
+                case .first(true):
+                    if draggingCard == nil {
+                        draggingCard = id
+                        dragTranslation = 0
+                        dropIndex = cards.firstIndex(of: id)
+                        Haptics.tap()   // 拎起反馈
+                    }
+                case .second(true, let drag):
+                    if draggingCard == nil { draggingCard = id; Haptics.tap() }
+                    dragTranslation = drag?.translation.height ?? 0
+                    if let from = cards.firstIndex(of: id) {
+                        let t = targetIndex(from: from, translation: dragTranslation, in: cards)
+                        if t != dropIndex { dropIndex = t; Haptics.selection() }   // 每次挤位一记轻触
+                    }
+                default: break
+                }
+            }
+            .onEnded { _ in endDrag(in: cards) }
+    }
+
+    /// 松手: 目标下标落库 (以完整解析顺序 splice, 保持隐藏卡相对位置), 状态清零弹回.
+    private func endDrag(in cards: [InsightCard]) {
+        defer {
+            withAnimation(.spring(response: 0.35, dampingFraction: 0.82)) {
+                draggingCard = nil
+                dragTranslation = 0
+                dropIndex = nil
+            }
+        }
+        guard let dragging = draggingCard,
+              let from = cards.firstIndex(of: dragging),
+              let to = dropIndex, to != from else { return }
         var full = data.settings.resolvedInsightOrder
-        guard let from = full.firstIndex(of: dropped),
-              let to = full.firstIndex(of: target) else { return }
-        full.remove(at: from)
-        // 移除后 target 可能位移, 重新定位插到它前面.
-        let insertAt = full.firstIndex(of: target) ?? to
-        full.insert(dropped, at: insertAt)
+        full.removeAll { $0 == dragging }
+        let anchor = cards[to]
+        var insertAt = full.firstIndex(of: anchor) ?? full.count
+        if to > from { insertAt += 1 }   // 下移 = 落到锚点卡之后
+        full.insert(dragging, at: min(insertAt, full.count))
         data.settings.insightCardOrder = full.map(\.rawValue)
         data.save()   // 落库 (debounced; scenePhase→background 也有 flushSave 兜底)
         Haptics.tap()

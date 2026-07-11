@@ -5,6 +5,8 @@ struct SettingsScreen: View {
     @Environment(\.dismiss) private var dismiss
     @State private var showPaywall: Bool = false
     @State private var showLanguagePicker: Bool = false
+    /// 训练偏好独立编辑 sheet (owner 拍板: Settings 不再内嵌 6 行, 只留入口).
+    @State private var showTrainingPrefs: Bool = false
     // showMusclePicker / musclesSummaryText 已搬到 TrainingSettingsSection 内部
     /// 跟着 LanguageManager 走 — 切换时强制本页 re-render 显示新语言
     @State private var languageManager = LanguageManager.shared
@@ -69,10 +71,19 @@ struct SettingsScreen: View {
                     }
                 }
 
-                // 训练 — 跟 Profile (个人信息) 一起放上面, 都属于"用户偏好".
-                // 6 行内容抽到 TrainingSettingsSection (共享给 PlanRationaleCard 的快捷 sheet).
-                Section_(title: "Training Preferences") {
-                    TrainingSettingsSection()
+                // 训练 — 入口行拉起独立 TrainingPreferencesSheet (跟 Coach 左上角同一张 sheet,
+                // 双链路: 右上 Save 只保存 / 底部保存并生成). 不再内嵌 6 行编辑.
+                Section_(title: "Training") {
+                    Button(action: { showTrainingPrefs = true }) {
+                        Row(label: "Training Preferences") {
+                            Image(systemName: "chevron.right")
+                                .font(.system(size: 11, weight: .semibold))
+                                .foregroundStyle(MasoColor.textFaint)
+                        }
+                        // 整行可点 — Row 中段空白默认不参与 hit-test (实测点中间没反应).
+                        .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
                 }
 
                 // 单位
@@ -313,6 +324,10 @@ struct SettingsScreen: View {
         .sheet(isPresented: $showLanguagePicker) {
             LanguagePickerSheet(manager: languageManager)
             .presentationDragIndicator(.visible)
+        }
+        .sheet(isPresented: $showTrainingPrefs) {
+            // 保存并生成 → 走 Coach 会话生成管线 (结果落 Coach tab 对话流, 跟 Coach 入口一致).
+            TrainingPreferencesSheet(onConfirm: { data.startCoachGenerate(surface: "settings_prefs") })
         }
         // (Exercise library sheet 已搬到 PlansScreen 底部入口, 这里不再附加.)
         // (showMusclePicker sheet 已搬到 TrainingSettingsSection 内部)
