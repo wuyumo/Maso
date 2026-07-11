@@ -302,16 +302,27 @@ struct WorkoutCard: View {
         .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
     }
 
-    /// 播放键 — iOS 默认样式 (owner 拍板): 素玻璃圆 + accent play, 无 tint 无阴影,
-    /// 跟导航栏圆钮/分享圆钮同配方; 强弱两档不再用颜色区分 (prominentStart 只余字号微差).
-    /// iOS <26 回退 accent 半透明圆.
-    private var startButtonLabel: some View {
-        Image(systemName: "play.fill")
-            .font(.system(size: prominentStart ? 16 : 15, weight: .heavy))
-            .foregroundStyle(MasoColor.accent)
-            .offset(x: 1)
-            .frame(width: 44, height: 44)
-            .glassCircleButtonBackground(fallback: MasoColor.accent.opacity(0.18))
+    /// 播放键 (owner 三轮定稿):
+    ///   强 (今日训练主卡) = 整圆绿色 + 深色三角 — 高浓度 accent 玻璃 + 黑 play, 主 CTA 加重;
+    ///   弱 (其余列表卡)   = 素玻璃圆 + accent play, 跟导航栏/分享圆钮同配方.
+    /// iOS <26 回退实心绿圆 / accent 半透明圆.
+    @ViewBuilder private var startButtonLabel: some View {
+        if prominentStart {
+            Image(systemName: "play.fill")
+                .font(.system(size: 16, weight: .heavy))
+                .foregroundStyle(.black)
+                .offset(x: 1)
+                .frame(width: 44, height: 44)
+                .glassCircleButtonBackground(tint: MasoColor.accent.opacity(0.85),
+                                             fallback: MasoColor.accent)
+        } else {
+            Image(systemName: "play.fill")
+                .font(.system(size: 15, weight: .heavy))
+                .foregroundStyle(MasoColor.accent)
+                .offset(x: 1)
+                .frame(width: 44, height: 44)
+                .glassCircleButtonBackground(fallback: MasoColor.accent.opacity(0.18))
+        }
     }
 
     /// 动作 pill + 可选长按手势 — 只有 Coach 卡 (onExercisePillLongPress 非 nil) 才挂手势,
