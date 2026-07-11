@@ -316,12 +316,14 @@ struct WorkoutCard: View {
                 .glassCircleButtonBackground(tint: MasoColor.accent.opacity(0.85),
                                              fallback: MasoColor.accent)
         } else {
+            // 弱播放键 (owner 定稿): 半透明绿圆 + accent 三角.
             Image(systemName: "play.fill")
                 .font(.system(size: 15, weight: .heavy))
                 .foregroundStyle(MasoColor.accent)
                 .offset(x: 1)
                 .frame(width: 44, height: 44)
-                .glassCircleButtonBackground(fallback: MasoColor.accent.opacity(0.18))
+                .glassCircleButtonBackground(tint: MasoColor.accent.opacity(0.25),
+                                             fallback: MasoColor.accent.opacity(0.18))
         }
     }
 
