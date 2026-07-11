@@ -293,12 +293,15 @@ struct PlanRationaleCard: View {
 // MARK: - Training Preferences 编辑层 (sheet)
 //
 // 点 Training Preferences 卡 → 拉起这层 (large detent). 内容 = Settings 同款 TrainingSettingsSection
-// (live 写 data.settings). Cancel → 回滚到进入时快照; Generate routines → 存盘 + 关层 + 触发重生成 (loading).
+// (live 写 data.settings). 偏好是"生成物料"但也可独立维护, 所以给两条出口 (owner 指定):
+//   · 右上 Save (粗体, 编辑型 sheet 规范) → 只存盘关层, 不触发生成 — 单纯改偏好.
+//   · 底部 ✨ Save & generate routines 大 CTA → 存盘 + 关层 + 触发重生成 — 改完直接要新计划.
+// Cancel → 回滚到进入时快照.
 // internal (非 private) — 历史上给 Coaching sheet 复用过, 现仅本文件用, 保持 internal 无害.
 struct TrainingPreferencesSheet: View {
     @Environment(DataStore.self) private var data
     @Environment(\.dismiss) private var dismiss
-    /// 关层 + 重生成的回调 (= aiPage 的 startGenerateRoutines).
+    /// 关层 + 重生成的回调 (= aiPage 的 startGenerateRoutines / Coach 的 send).
     var onConfirm: () -> Void
     /// 进入时的偏好快照 — Cancel 时回滚 (TrainingSettingsSection 是 live 编辑).
     @State private var original: UserSettings? = nil
@@ -315,17 +318,20 @@ struct TrainingPreferencesSheet: View {
             .navigationTitle("Training Preferences")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                // 顶栏规范: 编辑型 sheet 左上 Cancel 用 .cancellationAction (语义化占位, 视觉仍左上);
-                // 主操作 = 底部 "Generate routines" 大 CTA, 顶栏不重复摆.
+                // 顶栏规范: 编辑型 sheet = 左上 Cancel + 右上粗体主操作.
+                // 右上 Save = 只保存不生成; "生成"是升格路径, 放底部大 CTA 不进顶栏.
                 ToolbarItem(placement: .cancellationAction) {
                     Button(NSLocalizedString("Cancel", comment: "")) { cancel() }
                 }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(NSLocalizedString("Save", comment: "")) { saveOnly() }
+                }
             }
             .safeAreaInset(edge: .bottom) {
-                Button(action: confirm) {
+                Button(action: saveAndGenerate) {
                     HStack(spacing: 8) {
                         Image(systemName: "sparkles").font(.system(size: 14, weight: .heavy))
-                        Text("Generate routines").font(.system(size: 15, weight: .heavy))
+                        Text("Save & generate routines").font(.system(size: 15, weight: .heavy))
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 14)
@@ -350,12 +356,21 @@ struct TrainingPreferencesSheet: View {
         dismiss()
     }
 
-    private func confirm() {
+    /// 链路①: 只保存 — 偏好独立维护, 下次生成 (AI 今日推荐 / Coach 首轮) 自然生效.
+    private func saveOnly() {
         Haptics.tap()
         data.save()
         original = nil
         dismiss()
-        onConfirm()   // → startGenerateRoutines: loading → 新 routine
+    }
+
+    /// 链路②: 保存并立即触发生成.
+    private func saveAndGenerate() {
+        Haptics.tap()
+        data.save()
+        original = nil
+        dismiss()
+        onConfirm()   // → startGenerateRoutines / Coach send: loading → 新 routine
     }
 }
 
