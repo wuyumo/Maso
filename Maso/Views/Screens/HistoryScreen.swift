@@ -29,6 +29,8 @@ struct HistoryScreen: View {
     /// 顶部 ProBanner tap → 弹 paywall. 从 Today tab 挪过来 — History 用户回顾训练时
     /// 自然产生"想看更多数据/解锁高级功能"的动机, banner 放这比放在 Today 干扰训练流程更顺.
     @State private var paywallPresented: Bool = false
+    /// 洞察卡正在拖拽重排 — 期间锁本页滚动 (拖拽位移和页面滚动叠加会让卡"漂走").
+    @State private var isReorderingInsights: Bool = false
 
     /// 顶部两个分段. 默认 Insights (数据分析), 另一页 History (日历 + 3 metrics + 按周分组的过往训练).
     /// (tab 本身已叫 "Progress"; 段内 Insights=分析 / History=记录, 语义不重叠.)
@@ -126,7 +128,9 @@ struct HistoryScreen: View {
                 let insights = InsightsChartsView(
                     data: data,
                     onUnlock: { paywallPresented = true },
-                    onApplySummary: { action in handleApplySummary(action) }
+                    onApplySummary: { action in handleApplySummary(action) },
+                    // 洞察卡拎起期间锁本页滚动 — 拖拽位移和页面滚动不许叠加 (卡会"漂走").
+                    onReorderingChanged: { reordering in isReorderingInsights = reordering }
                 )
 
                 if allSessions.isEmpty {
@@ -236,6 +240,8 @@ struct HistoryScreen: View {
                 }
             }
         }
+        // 洞察卡拎起期间锁滚 — 拖拽位移与页面滚动叠加会让卡"漂走" (owner 实机反馈).
+        .scrollDisabled(isReorderingInsights)
         // (撤销 scroll-based 展开/收起 — 现在完全交给用户主动点击 strip / chevron 控制)
         // 页面底色 #121212 — 跟 Plans / Today 一致, 不再透出 NavigationStack 默认纯黑底.
         // ignoresSafeArea 让底色延伸到 home indicator 区. NavigationStack 的 large title /

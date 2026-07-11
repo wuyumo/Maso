@@ -42,14 +42,21 @@ struct InsightsChartsView: View {
     @State private var perLiftMode: PerLiftMode = .trend
 
     // MARK: 长按拖拽重排 (owner 二轮定稿: 卡片本体跟手 + 邻卡实时挤位, 不再用系统 draggable 的"副本+加号")
+    //
+    // 手势方案 (四轮定稿, UIKit): 一枚 UILongPressGestureRecognizer 挂在承载页面的 UIScrollView 上
+    // (UITableView 系统重排同款). SwiftUI 侧的 LongPress / 零距 Drag 挂卡上都会拦截滚动 —
+    // 实测从卡上起手整页滑不动 (owner 报的"锁死"); UIKit 长按识别器与滚动 pan 原生共存:
+    // 静止 0.35s 才拎起, 先动 (>10pt) 则识别失败、滚动照常. 拎起后同一识别器持续回报位移直到抬手.
+    /// 拎起/放下回调 — HistoryScreen 用它锁/解锁 ScrollView 滚动 (拖拽中不许双重位移).
+    var onReorderingChanged: (Bool) -> Void = { _ in }
     /// 正在被拎起的卡. nil = 未在拖.
     @State private var draggingCard: InsightCard? = nil
     /// 手指纵向位移 — 直接作被拖卡的 offset (本体跟手, 无动画).
     @State private var dragTranslation: CGFloat = 0
     /// 当前悬停的目标下标 — 变化时邻卡动画挤位; 松手落库.
     @State private var dropIndex: Int? = nil
-    /// 各卡实测高度 — 挤位距离与目标下标都按真实高度算 (图表卡高矮不一).
-    @State private var cardHeights: [InsightCard: CGFloat] = [:]
+    /// 各卡实测 frame (window/global 坐标) — 长按落点找卡 + 挤位/目标下标都按真实卡高算.
+    @State private var cardFrames: [InsightCard: CGRect] = [:]
     /// 卡间距 = 外层 VStack spacing.
     private let cardSpacing: CGFloat = 16
     // MARK: - 整块空判断
@@ -81,20 +88,26 @@ struct InsightsChartsView: View {
             }
             ForEach(Array(cards.enumerated()), id: \.element) { index, id in
                 card(id)
-                    // 整卡 (含玻璃底的透明区) 都是长按热区 — 玻璃底不参与 hit-test,
-                    // 没有这行只有实字/图表像素能拎 (owner 实机反馈拖不动的根因之一).
-                    .contentShape(Rectangle())
-                    .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { cardHeights[id] = $0 }
+                    // 上报整卡 window 坐标 frame — 长按落点找卡 + 按真实卡高算挤位/目标位.
+                    .onGeometryChange(for: CGRect.self) { $0.frame(in: .global) } action: { cardFrames[id] = $0 }
                     .offset(y: displacement(for: id, at: index, in: cards))
                     .scaleEffect(draggingCard == id ? 1.02 : 1)
                     .shadow(color: draggingCard == id ? .black.opacity(0.35) : .clear, radius: 12, y: 6)
                     .zIndex(draggingCard == id ? 10 : 0)
-                    .gesture(reorderGesture(for: id, in: cards))
             }
             // 挤位动画只绑 dropIndex — 被拖卡的 offset 跟手实时更新, 不能被这条动画拖慢.
             .animation(.spring(response: 0.3, dampingFraction: 0.8), value: dropIndex)
             .animation(.spring(response: 0.35, dampingFraction: 0.82), value: data.settings.insightCardOrder)
         }
+        // 零尺寸挂载点 — 只为把 UIKit 长按识别器装到外层 UIScrollView 上, 不参与布局/命中.
+        .background(
+            InsightReorderRecognizer(
+                onBegan: { point in handleReorderBegan(at: point) },
+                onChanged: { translation in handleReorderChanged(translation) },
+                onEnded: { handleReorderEnded() }
+            )
+            .frame(width: 0, height: 0)
+        )
     }
 
     // MARK: - 长按拖拽重排 (卡片本体跟手 + 邻卡实时挤位; 松手才落库)
@@ -105,7 +118,7 @@ struct InsightsChartsView: View {
         guard let dragging = draggingCard, let from = cards.firstIndex(of: dragging) else { return 0 }
         if id == dragging { return dragTranslation }
         guard let to = dropIndex, to != from else { return 0 }
-        let slot = (cardHeights[dragging] ?? 300) + cardSpacing
+        let slot = (cardFrames[dragging]?.height ?? 300) + cardSpacing
         if from < to, index > from, index <= to { return -slot }   // 下移: 途经卡上挤
         if to < from, index >= to, index < from { return slot }    // 上移: 途经卡下挤
         return 0
@@ -117,45 +130,48 @@ struct InsightsChartsView: View {
         var acc: CGFloat = 0
         if translation > 0 {
             while idx + 1 < cards.count {
-                let next = (cardHeights[cards[idx + 1]] ?? 300) + cardSpacing
+                let next = (cardFrames[cards[idx + 1]]?.height ?? 300) + cardSpacing
                 if translation > acc + next / 2 { acc += next; idx += 1 } else { break }
             }
         } else {
             while idx > 0 {
-                let prev = (cardHeights[cards[idx - 1]] ?? 300) + cardSpacing
+                let prev = (cardFrames[cards[idx - 1]]?.height ?? 300) + cardSpacing
                 if -translation > acc + prev / 2 { acc += prev; idx -= 1 } else { break }
             }
         }
         return idx
     }
 
-    /// 长按 0.3s → 拖拽接管 (ScrollView 不再抢滚动); 没按满就移动 = 正常滚动, 互不干扰.
-    private func reorderGesture(for id: InsightCard, in cards: [InsightCard]) -> some Gesture {
-        LongPressGesture(minimumDuration: 0.3)
-            .sequenced(before: DragGesture(minimumDistance: 0))
-            .onChanged { value in
-                switch value {
-                case .first(true):
-                    if draggingCard == nil {
-                        draggingCard = id
-                        dragTranslation = 0
-                        dropIndex = cards.firstIndex(of: id)
-                        Haptics.tap()   // 拎起反馈
-                    }
-                case .second(true, let drag):
-                    if draggingCard == nil { draggingCard = id; Haptics.tap() }
-                    dragTranslation = drag?.translation.height ?? 0
-                    if let from = cards.firstIndex(of: id) {
-                        let t = targetIndex(from: from, translation: dragTranslation, in: cards)
-                        if t != dropIndex { dropIndex = t; Haptics.selection() }   // 每次挤位一记轻触
-                    }
-                default: break
-                }
-            }
-            .onEnded { _ in endDrag(in: cards) }
+    /// 长按识别成功 (静止 0.35s): 按落点 (window 坐标) 找到那张卡, 拎起.
+    private func handleReorderBegan(at point: CGPoint) {
+        guard draggingCard == nil else { return }
+        guard let hit = cardFrames.first(where: { $0.value.contains(point) })?.key,
+              visibleCards.contains(hit) else { return }   // 落点不在洞察卡上 (小结卡/列表区) → 不拎
+        draggingCard = hit
+        dragTranslation = 0
+        dropIndex = visibleCards.firstIndex(of: hit)
+        onReorderingChanged(true)   // 父 ScrollView 锁滚 — 拖拽期间不许双重位移
+        Haptics.tap()               // 拎起反馈
     }
 
-    /// 松手: 目标下标落库 (以完整解析顺序 splice, 保持隐藏卡相对位置), 状态清零弹回.
+    /// 识别器持续回报的纵向位移: 本体跟手 + 实时挤位.
+    private func handleReorderChanged(_ translation: CGFloat) {
+        guard let dragging = draggingCard else { return }
+        let cards = visibleCards
+        dragTranslation = translation
+        if let from = cards.firstIndex(of: dragging) {
+            let t = targetIndex(from: from, translation: translation, in: cards)
+            if t != dropIndex { dropIndex = t; Haptics.selection() }   // 每次挤位一记轻触
+        }
+    }
+
+    /// 抬手 (或识别器取消/失败): 收尾. UIKit 识别器的 ended/cancelled/failed 必达, 不会留锁死态.
+    private func handleReorderEnded() {
+        guard draggingCard != nil else { return }
+        endDrag(in: visibleCards)
+    }
+
+    /// 松手: 目标下标落库 (以完整解析顺序 splice, 保持隐藏卡相对位置), 状态清零弹回 + 解锁滚动.
     private func endDrag(in cards: [InsightCard]) {
         defer {
             withAnimation(.spring(response: 0.35, dampingFraction: 0.82)) {
@@ -163,6 +179,7 @@ struct InsightsChartsView: View {
                 dragTranslation = 0
                 dropIndex = nil
             }
+            onReorderingChanged(false)   // 解锁父 ScrollView 滚动
         }
         guard let dragging = draggingCard,
               let from = cards.firstIndex(of: dragging),
@@ -1213,5 +1230,105 @@ struct InsightsChartsView: View {
             return String(format: "%.1fk %@", v / 1000, unit.label)
         }
         return String(format: "%.0f %@", v, unit.label)
+    }
+}
+
+// MARK: - UIKit 长按识别层 (洞察卡重排专用)
+
+/// 把一枚 UILongPressGestureRecognizer 装到承载页面的 UIScrollView 上 — UITableView 系统重排同款方案.
+/// SwiftUI 的 LongPress / 零距 Drag 挂在卡上都会拦截整页滚动 (从卡上起手滑不动); UIKit 长按识别器
+/// 与滚动 pan 原生共存: 先动 = 识别失败滚动照常, 静止 0.35s = 拎起并持续回报位移直到抬手,
+/// ended/cancelled/failed 必达 — 不存在"拖完滚动锁死"的坏状态.
+/// 自身零尺寸零命中, 只借 didMoveToWindow 时机向上找 UIScrollView 挂识别器 (卸载时摘除).
+private struct InsightReorderRecognizer: UIViewRepresentable {
+    var onBegan: (CGPoint) -> Void        // 长按成功, 参数 = 落点 (window 坐标, 与 SwiftUI .global 同系)
+    var onChanged: (CGFloat) -> Void      // 相对拎起点的纵向位移
+    var onEnded: () -> Void               // 抬手 / 取消 / 失败
+
+    func makeUIView(context: Context) -> AttachHostView {
+        let v = AttachHostView()
+        v.isUserInteractionEnabled = false   // 自身不参与命中 — 识别器挂在 scrollView 上, 不在这里
+        v.coordinator = context.coordinator
+        return v
+    }
+
+    func updateUIView(_ uiView: AttachHostView, context: Context) {
+        context.coordinator.onBegan = onBegan
+        context.coordinator.onChanged = onChanged
+        context.coordinator.onEnded = onEnded
+    }
+
+    static func dismantleUIView(_ uiView: AttachHostView, coordinator: Coordinator) {
+        coordinator.detach()
+    }
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(onBegan: onBegan, onChanged: onChanged, onEnded: onEnded)
+    }
+
+    final class Coordinator: NSObject {
+        var onBegan: (CGPoint) -> Void
+        var onChanged: (CGFloat) -> Void
+        var onEnded: () -> Void
+        private var recognizer: UILongPressGestureRecognizer?
+        private weak var scrollView: UIScrollView?
+        private var startY: CGFloat = 0
+
+        init(onBegan: @escaping (CGPoint) -> Void,
+             onChanged: @escaping (CGFloat) -> Void,
+             onEnded: @escaping () -> Void) {
+            self.onBegan = onBegan
+            self.onChanged = onChanged
+            self.onEnded = onEnded
+        }
+
+        /// 从挂载点向上找最近的 UIScrollView, 把识别器装上去 (幂等).
+        func attachIfNeeded(from view: UIView) {
+            guard recognizer == nil else { return }
+            var cursor: UIView? = view.superview
+            while let v = cursor, !(v is UIScrollView) { cursor = v.superview }
+            guard let scroll = cursor as? UIScrollView else { return }
+            let rec = UILongPressGestureRecognizer(target: self, action: #selector(handle(_:)))
+            rec.minimumPressDuration = 0.35
+            // allowableMovement 默认 10pt: 按住期间动超过它 = 识别失败 → 滚动照常.
+            scroll.addGestureRecognizer(rec)
+            recognizer = rec
+            scrollView = scroll
+        }
+
+        func detach() {
+            if let rec = recognizer, let scroll = scrollView { scroll.removeGestureRecognizer(rec) }
+            recognizer = nil
+            scrollView = nil
+        }
+
+        @objc private func handle(_ rec: UILongPressGestureRecognizer) {
+            let point = rec.location(in: nil)   // window 坐标 = SwiftUI .global 同系
+            switch rec.state {
+            case .began:
+                startY = point.y
+                onBegan(point)
+            case .changed:
+                onChanged(point.y - startY)
+            case .ended, .cancelled, .failed:
+                onEnded()
+            default:
+                break
+            }
+        }
+    }
+
+    /// 挂载探针 — 进窗口时向上找 UIScrollView 装识别器.
+    final class AttachHostView: UIView {
+        weak var coordinator: Coordinator?
+        override func didMoveToWindow() {
+            super.didMoveToWindow()
+            guard window != nil else { return }
+            // 下一 runloop 再找 — SwiftUI 刚挂载时祖先链可能还没接到 scrollView 上.
+            DispatchQueue.main.async { [weak self] in
+                guard let self else { return }
+                self.coordinator?.attachIfNeeded(from: self)
+            }
+        }
     }
 }
