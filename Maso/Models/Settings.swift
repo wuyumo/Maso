@@ -151,10 +151,13 @@ struct UserSettings: Codable, Sendable {
     /// 是否已经请求过 App Store 评分 — 只在用户练到一定次数后请求一次 (iOS 自身也会限频, 每年至多 3 次).
     var hasRequestedReview: Bool = false
 
-    /// 召回提醒开关 — 默认关 (opt-in, 符合"不打扰"品牌). 打开后在恢复窗口轻推"该练了".
-    var workoutRemindersEnabled: Bool = false
+    /// 召回提醒开关 — 默认开 (opt-out). 语义仍是"停训后的恢复窗口轻推一次", 全本地不打扰;
+    /// 通知权限不在冷启动要, 而是在首个训练完成的正向时刻软问一次 (见 shouldOfferReminderPrompt +
+    /// PlanPlayerScreen 软提示) —— 提醒本来在第一次训练前也无意义. 用户可随时在 Settings 关掉.
+    var workoutRemindersEnabled: Bool = true
 
-    /// 是否已经在训练完成的正向时刻软问过一次"要不要开召回提醒" — 全生命周期只问一次, 不纠缠.
+    /// 是否已经在训练完成的正向时刻请求过一次通知权限 (默认开后这是首个权限入口) — 全生命周期只问一次, 不纠缠.
+    /// 用户若先在 Settings 里手动开/关过, 那条路径也会置此位, 避免事后重复弹.
     var hasOfferedReminderPrompt: Bool = false
 
     /// 是否启用 AI 训练计划生成. 默认开 (Path B: 代理 server-side 已配, 真 AI 默认跑, 失败自动回落本地).

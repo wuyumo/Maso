@@ -163,17 +163,19 @@ struct SettingsScreen: View {
                     )
                 }
 
-                // 召回提醒 — 默认关 (opt-in, 符合"不打扰"品牌). 开 → 请求通知权限; 被拒则弹回关.
+                // 召回提醒 — 默认开 (opt-out). 开 → 请求通知权限; 被拒则弹回关.
                 // 全本地通知, 停训后在恢复窗口轻推一次. 见 WorkoutReminderScheduler.
                 Section_(title: "Reminders") {
                     ToggleRow(
                         title: "Workout reminders",
-                        desc: "When you've taken a few days off, Masso sends a gentle reminder once your muscles have had time to recover. Off by default, and the reminder never leaves your device.",
+                        desc: "On by default: when you've taken a few days off, Masso sends one gentle reminder once your muscles have recovered. It only ever lives on your device, and you can turn it off anytime.",
                         isOn: Binding(
                             get: { data.settings.workoutRemindersEnabled },
                             set: { on in
                                 if on {
                                     data.settings.workoutRemindersEnabled = true   // 乐观置 → toggle 立刻亮
+                                    // 用户在设置里主动处理过权限 → 消费掉训练完成时的那次软问, 不重复弹.
+                                    data.settings.hasOfferedReminderPrompt = true
                                     Task { @MainActor in
                                         let granted = await WorkoutReminderScheduler.shared.requestAuthorization()
                                         data.settings.workoutRemindersEnabled = granted  // 被拒 → 弹回 off

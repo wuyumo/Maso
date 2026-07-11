@@ -918,11 +918,12 @@ final class DataStore {
         return true
     }
 
-    /// 是否该在此刻软问一次"要不要开召回提醒" — 练满 2 次、还没开提醒、且从没问过.
-    /// 命中即"消费"(置 flag + 存), 全生命周期只软问一次. 跟评分请求 (≥3 次) 错开里程碑, 不撞车.
+    /// 是否该在此刻请求一次通知权限 (召回提醒默认开, 这是首个权限入口) — 练满 2 次、还没问过、
+    /// 且用户没在 Settings 里明确关掉. 命中即"消费"(置 flag + 存), 全生命周期只软问一次;
+    /// 跟评分请求 (≥3 次) 错开里程碑, 不撞车. 被拒 → 开关弹回关, 不再纠缠.
     func shouldOfferReminderPrompt() -> Bool {
         guard !settings.hasOfferedReminderPrompt else { return false }
-        guard !settings.workoutRemindersEnabled else { return false }
+        guard settings.workoutRemindersEnabled else { return false }   // 用户已在设置里主动关掉 → 不打扰
         guard completedWorkoutCount >= 2 else { return false }
         settings.hasOfferedReminderPrompt = true
         Analytics.shared.track("reminder_prompt_offered")

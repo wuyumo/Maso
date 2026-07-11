@@ -2722,8 +2722,8 @@ private struct CompletedView: View {
             } message: {
                 Text(NSLocalizedString("Keep this workout as a reusable routine.", comment: ""))
             }
-            // 召回提醒软提示 — 练满 2 次的正向时刻问一次. 同意 → 申请权限 + 开开关 + 排程; 被拒静默关.
-            // 全本地通知, 跟"不打扰"品牌一致 (默认仍是关, 这里只是给个台阶主动开).
+            // 召回提醒软提示 — 召回提醒默认开; 练满 2 次的正向时刻请求一次系统通知权限 (软提示先行, 提升授权率).
+            // 同意 → 申请权限 (拒则弹回关) + 排程; "Not now" → 明确婉拒 → 关掉开关. 全本地通知, 跟"不打扰"品牌一致.
             .alert(NSLocalizedString("Want a nudge when you're recovered?", comment: ""), isPresented: $showReminderOffer) {
                 Button(NSLocalizedString("Turn on reminders", comment: "")) {
                     Task { @MainActor in
@@ -2733,7 +2733,11 @@ private struct CompletedView: View {
                         onClose()
                     }
                 }
-                Button(NSLocalizedString("Not now", comment: ""), role: .cancel) { onClose() }
+                Button(NSLocalizedString("Not now", comment: ""), role: .cancel) {
+                    data.settings.workoutRemindersEnabled = false   // 默认开 → 用户在此明确婉拒即关掉
+                    data.rescheduleWorkoutReminders()               // 清掉可能已排的待发提醒
+                    onClose()
+                }
             } message: {
                 Text(NSLocalizedString("Masso can remind you to train once your muscles have recovered — all on your device. You can change this anytime in Settings.", comment: ""))
             }
