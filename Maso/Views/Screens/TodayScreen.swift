@@ -357,13 +357,13 @@ struct TodayScreen: View {
     /// 尾卡 = "自由训练"空卡 (虚线描边, 无 surface 填充), tap → onFreeWorkout.
     private var workoutCarousel: some View {
         VStack(alignment: .leading, spacing: 10) {   // 标题行与卡片间距 ≥10pt (owner 指定)
-            // 区块标题行 — 左 "ROUTINES" kicker (跟 app 其它 section kicker 同款 10pt heavy
-            // tracking) + 右 "All ›" 入口: Coach 撤掉 SAVED 货架后, 完整管理面
+            // 区块标题行 — 左 "ROUTINES" 标题 (13pt, owner 反馈 10pt kicker 太小) +
+            // 右 "All ›" 入口: Coach 撤掉 SAVED 货架后, 完整管理面
             // (删/编辑/照片导入/优化卡) 的家在这一步. 热区 ≥32pt 高.
             HStack(alignment: .center) {
                 Text("Routines")
-                    .font(.system(size: 10, weight: .heavy))
-                    .tracking(1.5)
+                    .font(.system(size: 13, weight: .heavy))
+                    .tracking(1.2)
                     .textCase(.uppercase)
                     .foregroundStyle(MasoColor.textDim)
                 Spacer()

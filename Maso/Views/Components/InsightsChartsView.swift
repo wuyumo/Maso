@@ -40,9 +40,6 @@ struct InsightsChartsView: View {
     /// 同一张卡的两个视角 (Yumo 拍板: 切换不另开卡), 不持久化 — 回来默认趋势.
     private enum PerLiftMode { case trend, distribution }
     @State private var perLiftMode: PerLiftMode = .trend
-    /// 拖拽重排时被拎起的卡 — 只用来算 move 的 target index (放在 @State 让 drop 时读得到).
-    @State private var draggingCard: InsightCard? = nil
-
     // MARK: - 整块空判断
 
     /// 整块是否没足够数据 — 任一 InsightCard 有数据即非空. 调用方 (HistoryScreen) 用它决定 Insights 段显隐.
@@ -72,15 +69,14 @@ struct InsightsChartsView: View {
             }
             ForEach(cards) { id in
                 card(id)
+                    // 整卡 (含玻璃底的透明区) 都是拖拽热区 — glassCardBackground 不参与 hit-test,
+                    // 没有这行只有实字/图表像素能拎, 长按经常落空 (owner 实机反馈拖不动的根因之一).
+                    .contentShape(Rectangle())
+                    .contentShape(.dragPreview, RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
                     // iOS 18 原生 draggable/dropDestination — 在 ScrollView 里长按才拎起 (不劫持垂直滚动).
-                    // payload 携带 rawValue; drop 时按目标卡 index 做 move 数学.
-                    .draggable(id.rawValue) {
-                        // 拖拽预览 — 缩小的卡快照, 拎起瞬间置 draggingCard.
-                        card(id)
-                            .frame(width: 280)
-                            .opacity(0.9)
-                            .onAppear { draggingCard = id }
-                    }
+                    // ⚠️ 不给自定义 preview 闭包: 重型 Charts 视图当拖拽预览会让 lift 静默失败
+                    // (SwiftUI 已知坑), 用系统默认快照最稳.
+                    .draggable(id.rawValue)
                     .dropDestination(for: String.self) { items, _ in
                         guard let raw = items.first,
                               let dropped = InsightCard(rawValue: raw) else { return false }
@@ -105,7 +101,6 @@ struct InsightsChartsView: View {
         full.insert(dropped, at: insertAt)
         data.settings.insightCardOrder = full.map(\.rawValue)
         data.save()   // 落库 (debounced; scenePhase→background 也有 flushSave 兜底)
-        draggingCard = nil
         Haptics.tap()
     }
 
