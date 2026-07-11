@@ -94,6 +94,9 @@ struct InsightsChartsView: View {
             }
             ForEach(Array(cards.enumerated()), id: \.element) { index, id in
                 card(id)
+                    // 把整卡内部布局冻成一个刚性几何组 — 否则挤位 spring / 拎起 scaleEffect 期间,
+                    // 卡内图表的图例、色块会各自重新求解布局而抖动 (offset/scale 只该整卡平移缩放, 不该扰动内部).
+                    .geometryGroup()
                     // 上报整卡 window 坐标 frame — 长按落点找卡 + 按真实卡高算挤位/目标位.
                     // 写引用盒子, 不触发重渲染 (见 CardFrameStore 注释).
                     .onGeometryChange(for: CGRect.self) { $0.frame(in: .global) } action: { frameStore.frames[id] = $0 }

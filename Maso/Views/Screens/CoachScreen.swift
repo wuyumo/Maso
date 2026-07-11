@@ -601,9 +601,8 @@ struct CoachScreen: View {
         .padding(.horizontal, 14)
         .padding(.top, 12)
         .padding(.bottom, 10)
-        .glassCardBackground(cornerRadius: 22)
-        .clipShape(RoundedRectangle(cornerRadius: 22))
-        // 0.5pt 细描边 (owner 指定) — 很 subtle 的一圈, 只比 surface 亮一点, 勾出输入框轮廓.
+        // 输入框背景留透明 (owner 指定): 去掉玻璃填充, 不再遮住共享底纹 (AppBackground);
+        // 只留一圈 0.5pt 细描边勾出输入框轮廓, 让它像浮在背景上.
         .overlay(
             RoundedRectangle(cornerRadius: 22)
                 .strokeBorder(MasoColor.text.opacity(0.10), lineWidth: 0.5)
