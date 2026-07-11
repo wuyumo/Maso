@@ -743,12 +743,13 @@ struct PlanDetailSheet: View {
         commit()
     }
 
-    /// Share — 渲染 RoutineShareCard 分享图 (计划内容 + 品牌 footer + App Store QR).
-    /// QR 指向 App Store (引导没装 app 的人下载); 收图的人 "从照片导入" 时走 OCR 读卡上动作名+组数还原.
-    /// 渲染失败 → 弹 alert 兜底, 不静默.
+    /// Share — 渲染 RoutineShareCard 分享图 (计划内容 + 品牌 footer + 二合一 QR).
+    /// QR = App Store 链接 + 数据锚点: 相机扫照常进商店 (宣传), Masso "从照片导入" 读锚点
+    /// 无损还原 (名称+逐组 1:1); 数据过大回落纯商店链 (导入走 OCR). 渲染失败 → alert 兜底.
     private func handleSharePlan() {
         guard let img = ShareImageRenderer.render(width: 390, {
-            RoutineShareCard(plan: draft, exById: data.exById, qrPayload: MasoLinks.appStore)
+            RoutineShareCard(plan: draft, exById: data.exById,
+                             qrPayload: PlanShareCodec.appStoreDataLink(for: [draft]) ?? MasoLinks.appStore)
         }) else {
             shareFailed = true
             return

@@ -40,6 +40,8 @@ struct TodayScreen: View {
     @State private var importPickedImage: UIImage? = nil
     @State private var importParsing = false
     @State private var importedRoutine: Plan? = nil
+    /// 批量分享卡 QR (≥2 个计划) → 多计划导入确认页 (#routines-batch-share).
+    @State private var importedRoutines: ImportedPlansPayload? = nil
     /// OCR 第三方截图 → 置信度分级候选, 驱动 RoutineReviewSheet (QR 深链仍走 importedRoutine).
     @State private var importReview: RoutineReviewPayload? = nil
     @State private var importFailed = false
@@ -308,6 +310,7 @@ struct TodayScreen: View {
             pickedImage: $importPickedImage,
             parsing: $importParsing,
             imported: $importedRoutine,
+            importedMany: $importedRoutines,
             review: $importReview,
             failed: $importFailed,
             data: data
@@ -694,6 +697,7 @@ private struct RoutineImportFlow: ViewModifier {
     @Binding var pickedImage: UIImage?
     @Binding var parsing: Bool
     @Binding var imported: Plan?
+    @Binding var importedMany: ImportedPlansPayload?
     @Binding var review: RoutineReviewPayload?
     @Binding var failed: Bool
     let data: DataStore
@@ -721,9 +725,14 @@ private struct RoutineImportFlow: ViewModifier {
                         pickedImage = nil
                         // image_import_result — 解析结果类型 (qr / ocr / empty), 无 PII.
                         switch result {
-                        case .deepLink(let plan):
+                        case .deepLink(let plans):
                             Analytics.shared.track("image_import_result", ["result": .string("qr")])
-                            imported = plan                       // QR 分享卡 → 完整预览
+                            // QR 分享卡: 单计划 → 完整预览; 批量卡 (≥2) → 多计划确认页.
+                            if plans.count == 1 {
+                                imported = plans[0]
+                            } else {
+                                importedMany = ImportedPlansPayload(plans: plans)
+                            }
                         case .recognized(let cands):
                             Analytics.shared.track("image_import_result", ["result": .string("ocr")])
                             review = RoutineReviewPayload(candidates: cands)  // 截图 → 确认页
@@ -748,6 +757,20 @@ private struct RoutineImportFlow: ViewModifier {
                     }
                 })
                 .presentationDetents([.medium, .large])
+                .presentationDragIndicator(.visible)
+            }
+            .sheet(item: $importedMany) { payload in
+                ImportedPlansSheet(plans: payload.plans, onAdd: { chosen in
+                    importedMany = nil
+                    Analytics.shared.track("image_import_commit", [
+                        "recognized_count": .int(chosen.count), "result": .string("qr_batch"),
+                    ])
+                    DispatchQueue.main.async {
+                        data.plans.append(contentsOf: chosen)
+                        data.save()
+                        Haptics.tap()
+                    }
+                })
                 .presentationDragIndicator(.visible)
             }
             .sheet(item: $review) { payload in

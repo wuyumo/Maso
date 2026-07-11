@@ -132,8 +132,11 @@ struct RoutinesShareSheet: View {
         let plans = selectedPlans
         guard !plans.isEmpty else { return }
         Haptics.tap()
+        // 二合一 QR: App Store 链接 + 数据锚点 — 相机扫进商店 (宣传), Masso 照片导入无损还原 1:1.
+        // 数据过大 (QR 印卡上扫不出) → 回落纯 App Store 链, 导入走 OCR 尽力解析.
+        let qr = PlanShareCodec.appStoreDataLink(for: plans) ?? MasoLinks.appStore
         let img = ShareImageRenderer.render {
-            MultiRoutinesShareCard(plans: plans, exById: data.exById)
+            MultiRoutinesShareCard(plans: plans, exById: data.exById, qrPayload: qr)
         }
         guard let img else { return }
         // PNG 往返规整化 — 跟 ShareImageButton 同因 (ImageRenderer 偶发奇异元数据).
@@ -150,6 +153,8 @@ struct RoutinesShareSheet: View {
 struct MultiRoutinesShareCard: View {
     let plans: [Plan]
     let exById: [String: Exercise]
+    /// footer QR 载荷 — 二合一链接 (App Store + 数据锚点), 回落纯 App Store 链.
+    var qrPayload: String = MasoLinks.appStore
 
     var body: some View {
         VStack(spacing: 0) {
@@ -183,8 +188,9 @@ struct MultiRoutinesShareCard: View {
             .padding(.bottom, 20)
             .frame(maxWidth: .infinity, alignment: .leading)
 
-            // 宣传 footer — logo + MASSO 名称 + slogan + App Store 二维码 (owner 指定四件套).
-            ShareCardFooter(qrPayload: MasoLinks.appStore, qrSize: 64)
+            // 宣传 footer — logo + MASSO 名称 + slogan + 二维码 (owner 指定四件套).
+            // QR 是二合一链接, 带数据锚点时更密 → 用 104pt (跟 RoutineShareCard 数据 QR 同档) 保证可扫.
+            ShareCardFooter(qrPayload: qrPayload, qrSize: 104)
         }
         .background(MasoColor.background)
     }

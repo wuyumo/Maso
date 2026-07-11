@@ -426,3 +426,106 @@ struct RoutineReviewPayload: Identifiable {
     let id = UUID().uuidString
     let candidates: [ImportCandidate]
 }
+
+// MARK: - 批量导入 (#routines-batch-share) — 批量分享卡 QR 里 ≥2 个计划时的确认页
+
+/// sheet(item:) 载荷 — [Plan] 自身不 Identifiable, 包一层.
+struct ImportedPlansPayload: Identifiable {
+    let id = UUID()
+    let plans: [Plan]
+}
+
+/// 多计划导入确认 — 逐个勾选 (默认全选) + 「添加 (n)」. 名称/逐组数据已在解码侧 1:1 保留,
+/// 这里只做"要哪几个"的取舍, 不提供编辑 (导入后随时可改).
+struct ImportedPlansSheet: View {
+    @Environment(DataStore.self) private var data
+    @Environment(\.dismiss) private var dismiss
+    let plans: [Plan]
+    let onAdd: ([Plan]) -> Void
+    @State private var selected: Set<String> = []
+    @State private var seeded = false
+
+    private var chosen: [Plan] { plans.filter { selected.contains($0.id) } }
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(spacing: 10) {
+                    ForEach(plans) { plan in
+                        row(plan)
+                    }
+                }
+                .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
+                .padding(.top, 10)
+                .padding(.bottom, 16)
+            }
+            .background(MasoColor.background.ignoresSafeArea())
+            .navigationTitle(NSLocalizedString("Import routines", comment: "batch import sheet title"))
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(NSLocalizedString("Cancel", comment: "")) { dismiss() }
+                }
+            }
+            .safeAreaInset(edge: .bottom) {
+                Button {
+                    guard !chosen.isEmpty else { return }
+                    onAdd(chosen)
+                    dismiss()
+                } label: {
+                    HStack(spacing: 8) {
+                        Image(systemName: "plus").font(.system(size: 14, weight: .heavy))
+                        Text(String(format: NSLocalizedString("Add (%lld)", comment: "batch import CTA with count"),
+                                    chosen.count))
+                            .font(.system(size: 15, weight: .heavy))
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 14)
+                    .foregroundStyle(chosen.isEmpty ? MasoColor.textDim : .black)
+                    .glassCapsuleButtonBackground(
+                        tint: chosen.isEmpty ? nil : MasoColor.accent.opacity(0.85),
+                        fallback: chosen.isEmpty ? MasoColor.surfaceHi : MasoColor.accent)
+                }
+                .buttonStyle(.plain)
+                .disabled(chosen.isEmpty)
+                .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
+                .padding(.top, 8)
+                .padding(.bottom, 8)
+                .background(MasoColor.background)
+            }
+            .tint(MasoColor.text)
+        }
+        .onAppear {
+            if !seeded { seeded = true; selected = Set(plans.map(\.id)) }   // 默认全选
+        }
+    }
+
+    private func row(_ plan: Plan) -> some View {
+        let on = selected.contains(plan.id)
+        return Button {
+            Haptics.tap()
+            if on { selected.remove(plan.id) } else { selected.insert(plan.id) }
+        } label: {
+            HStack(spacing: 12) {
+                Image(systemName: on ? "checkmark.circle.fill" : "circle")
+                    .font(.system(size: 22))
+                    .foregroundStyle(on ? MasoColor.accent : MasoColor.textFaint)
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(plan.name.isEmpty ? NSLocalizedString("Shared workout", comment: "") : plan.name)
+                        .font(.system(size: 15, weight: .semibold))
+                        .foregroundStyle(MasoColor.text)
+                        .lineLimit(1)
+                    Text("\(String(format: NSLocalizedString("%d exercises", comment: ""), plan.steps.count)) · \(String(format: NSLocalizedString("%d sets", comment: ""), plan.steps.reduce(0) { $0 + $1.sets }))")
+                        .font(.system(size: 12))
+                        .foregroundStyle(MasoColor.textDim)
+                }
+                Spacer(minLength: 0)
+            }
+            .padding(12)
+            .background(MasoColor.surface)
+            .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+    }
+}
