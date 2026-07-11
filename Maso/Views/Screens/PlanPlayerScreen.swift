@@ -104,10 +104,7 @@ struct PlanPlayerScreen: View {
     @State private var addStepPickerOpen: Bool = false
     /// P0#5-①: 休息屏"刚才: 8 × 55 kg · 调整"入口 — 存正在修正的那条 SetRecord, 弹 AdjustLastSetSheet.
     @State private var adjustingRecord: SetRecord? = nil
-    /// P0#5-②: ✓ 后 3 秒"已记录 · 撤销"轻 toast. gen 计数作废旧的延迟隐藏 (连点两组时
-    /// 第一组的 3s 定时器不能把第二组的 toast 提前关掉).
-    @State private var undoToastVisible: Bool = false
-    @State private var undoToastGen: Int = 0
+    // ("已记录 · 撤销" toast 已整体移除 — owner 反馈气泡干扰; 误记补救走休息屏"刚才 · Adjust".)
 
     /// sheet(item:) 需要 Identifiable, String 自身不 conform — 包一层.
     private struct StepIdentifier: Identifiable, Hashable {
@@ -359,16 +356,6 @@ struct PlanPlayerScreen: View {
                     .offset(y: dragDownOffset)          // handle 跟着整屏一起下移
                     .gesture(dismissDragGesture)
                     .ignoresSafeArea(edges: .top)
-            }
-        }
-        // P0#5-②: "已记录 · 撤销" toast — 浮在 handle 下方. 完成最后一组时 completed 态也照常
-        // 浮着 (最后一组误触 ✓ 直接弹完成页, 撤销是唯一的回头路, undo 会把 completed 翻回 false).
-        .overlay(alignment: .top) {
-            if undoToastVisible {
-                undoToastView
-                    .padding(.top, topSafeArea + 44)
-                    .offset(y: isActiveTraining ? dragDownOffset : 0)
-                    .transition(.move(edge: .top).combined(with: .opacity))
             }
         }
         // 点 playlist 行图片 → 弹动作详情. iOS 18+ 支持 sheet 内嵌 sheet.
@@ -732,10 +719,8 @@ struct PlanPlayerScreen: View {
         case .exercise(_, _, _, _, _, _, true):
             store.togglePlay()
         case .exercise(_, _, _, _, _, _, false):
-            // ✓ 记组 — 附带 3 秒撤销 toast (P0#5-②: 误触的回头路, 接现成的
-            // undoLastCompletedSet + removeLastSet, 之前两端逻辑都在只缺 UI 触发点).
+            // ✓ 记组. (撤销 toast 已移除 — owner 反馈气泡干扰; 误记走休息屏"刚才 · Adjust" 修正.)
             store.advance { rec in data.recordSet(rec) }
-            showUndoToast()
         default:
             store.advance { rec in data.recordSet(rec) }
         }
@@ -765,48 +750,6 @@ struct PlanPlayerScreen: View {
         guard !parts.isEmpty else { return nil }
         return String(format: NSLocalizedString("Just now: %@", comment: "rest screen just-logged set"),
                       parts.joined(separator: " · "))
-    }
-
-    /// "已记录 · 撤销" 3 秒轻 toast — 黑底胶囊, 浮在 handle 下方.
-    private var undoToastView: some View {
-        HStack(spacing: 14) {
-            Text("Set logged")
-                .font(.system(size: 13, weight: .semibold))
-                .foregroundStyle(MasoColor.text)
-            Button(action: { performUndo() }) {
-                Text("Undo")
-                    .font(.system(size: 13, weight: .bold))
-                    .foregroundStyle(MasoColor.accent)
-                    // 44pt 热区 — toast 只活 3 秒, 点不中等于没有这个功能.
-                    .frame(minWidth: 44, minHeight: 32)
-                    .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
-        }
-        .padding(.leading, 16)
-        .padding(.trailing, 6)
-        .padding(.vertical, 4)
-        .background(Capsule().fill(Color.black.opacity(0.8)))
-        .overlay(Capsule().stroke(Color.white.opacity(0.12), lineWidth: 0.5))
-    }
-
-    private func showUndoToast() {
-        undoToastGen += 1
-        let gen = undoToastGen
-        withAnimation(.easeOut(duration: 0.2)) { undoToastVisible = true }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-            guard gen == undoToastGen else { return }   // 已被新 toast / 手动撤销接管
-            withAnimation(.easeIn(duration: 0.25)) { undoToastVisible = false }
-        }
-    }
-
-    /// 撤销刚记的那组 — store 清 completedSet + 播放头回到该组; DataStore 删本场该动作最近一条记录.
-    private func performUndo() {
-        undoToastGen += 1   // 作废 pending 的自动隐藏
-        withAnimation(.easeIn(duration: 0.15)) { undoToastVisible = false }
-        store.undoLastCompletedSet { exId, planId, since in
-            data.removeLastSet(exerciseId: exId, planId: planId, since: since)
-        }
     }
 
     /// 当前 keyWindow 的 bottom safe area inset (home indicator 区高度).
