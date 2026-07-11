@@ -75,7 +75,7 @@ struct WorkoutCompleteShareCard: View {
             .padding(.horizontal, 24)
             .frame(maxWidth: .infinity)
 
-            ShareCardFooter()
+            ShareCardFooter(qrPayload: MasoLinks.appStore)
         }
         .background(MasoColor.background)
     }

@@ -100,7 +100,7 @@ struct SessionShareCard: View {
             .padding(.horizontal, 24)
             .frame(maxWidth: .infinity, alignment: .leading)
 
-            ShareCardFooter()
+            ShareCardFooter(qrPayload: MasoLinks.appStore)
         }
         .background(MasoColor.background)
     }

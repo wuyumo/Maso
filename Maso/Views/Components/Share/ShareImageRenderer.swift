@@ -21,6 +21,9 @@ enum ShareImageRenderer {
         )
         renderer.scale = 3.0
         renderer.proposedSize = ProposedViewSize(width: width, height: nil)
+        // 不透明输出 — 自适应高度常是小数, 位图末行会留一条透明缝, 微信等白底里
+        // 显示成"卡片底部一条白线" (owner 实机反馈). 不透明后缝隙渲染为深色, 不可见.
+        renderer.isOpaque = true
         return renderer.uiImage
     }
 }

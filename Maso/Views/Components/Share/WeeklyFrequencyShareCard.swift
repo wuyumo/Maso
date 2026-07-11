@@ -81,7 +81,7 @@ struct WeeklyFrequencyShareCard: View {
             .padding(.horizontal, 20)
             .frame(maxWidth: .infinity)
 
-            ShareCardFooter()
+            ShareCardFooter(qrPayload: MasoLinks.appStore)
         }
         .background(MasoColor.background)
     }
