@@ -296,9 +296,9 @@ struct WorkoutCard: View {
         // 用 contentShape + onTapGesture 而不是 Button — 避免 SwiftUI 给整卡套上 button style 改色.
         .contentShape(Rectangle())
         .onTapGesture { onShowDetail?() }
-        // 卡壳 = 纯 surface 圆角 (owner 拍板: 跟"训练偏好"卡同一副 iOS 默认卡面;
-        // 液态玻璃壳透底层光斑, 观感偏"特效", routine 卡回归朴素分组卡).
-        .background(MasoColor.surface)
+        // 卡壳 = 系统玻璃 (owner 二轮定稿: 跟 Progress 洞察卡逐像素同配方 glassCardBackground;
+        // 上一轮试过纯 surface, owner 反馈"实色"太闷 — 要的是进度卡那种透气玻璃).
+        .glassCardBackground()
         .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
     }
 
