@@ -185,6 +185,28 @@ struct TodayScreen: View {
                     if !data.plans.isEmpty, let suggestion = data.routineSuggestion() {
                         RoutineOptimizeCard(suggestion: suggestion, onOptimize: onOptimize)
                     }
+                    // 今日训练若是当日 AI 生成 (不在已存 plans 里) 也要在"全部"露面 —
+                    // owner 反馈 bug: Today 主卡在全部列表里找不到. 带 TODAY'S WORKOUT kicker 置顶.
+                    if let today = data.suggestedTodayPlan,
+                       !data.plans.contains(where: { $0.id == today.id }) {
+                        WorkoutCard(
+                            plan: today,
+                            exById: data.exById,
+                            kicker: "TODAY'S WORKOUT",
+                            onStart: { onStart(today) },
+                            onShowDetail: { detailPlan = today },
+                            prominentStart: false,
+                            showStart: false,
+                            compactLayout: true
+                        )
+                        .contextMenu {
+                            Button { detailPlan = today } label: { Label("Edit", systemImage: "pencil") }
+                            // deletePlan 对 aiTodayPlan 有特判 (清空 + 抑制当天重生成).
+                            Button(role: .destructive) { pendingDeletePlanId = today.id } label: {
+                                Label("Delete", systemImage: "trash")
+                            }
+                        }
+                    }
                     if data.plans.isEmpty {
                         // 无已存 routine: 一行浅提示, 不做大空态 — Routines 单页下方紧跟着
                         // FOR YOU 生成区 + Classics 入口, 引导按钮反而多余 (#single-page-IA).

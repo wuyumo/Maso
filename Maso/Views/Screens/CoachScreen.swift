@@ -979,6 +979,8 @@ struct SavedRoutinesAllSheet: View {
     let onNewPlan: () -> Void
     /// 优化卡 → 回 coach 对话流发 focusNote (调用方负责 send; 本 sheet 只管先关自己).
     let onOptimize: (DataStore.RoutineSuggestion) -> Void
+    /// 批量分享 sheet (#routines-batch-share).
+    @State private var sharePresented = false
 
     var body: some View {
         NavigationStack {
@@ -1006,7 +1008,7 @@ struct SavedRoutinesAllSheet: View {
             .navigationTitle("My Routines")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
+                ToolbarItemGroup(placement: .topBarLeading) {
                     // "+" 菜单跟 PlansScreen 同款两项 — 新建走 RootView (先关 sheet), 导入就地触发.
                     Menu {
                         Button { dismiss(); DispatchQueue.main.async { onNewPlan() } } label: {
@@ -1020,12 +1022,21 @@ struct SavedRoutinesAllSheet: View {
                             .font(.system(size: 16, weight: .regular))
                     }
                     .accessibilityLabel(Text("New routine"))
+                    // 批量分享 — 勾选若干计划合成一张分享图 (#routines-batch-share).
+                    Button { sharePresented = true } label: {
+                        Image(systemName: "square.and.arrow.up")
+                            .font(.system(size: 15, weight: .regular))
+                    }
+                    .accessibilityLabel(Text("Share routines"))
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") { dismiss() }
                 }
             }
             .tint(MasoColor.text)
+            .sheet(isPresented: $sharePresented) {
+                RoutinesShareSheet()
+            }
         }
         .presentationDragIndicator(.visible)
     }

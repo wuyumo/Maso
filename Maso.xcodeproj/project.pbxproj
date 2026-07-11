@@ -96,6 +96,7 @@
 		95676F299C926544BE383ED7 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C987F88D32D400102494F9EC /* RootView.swift */; };
 		9589422FFA8A7F9B610997B4 /* UnifiedShareCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56E05CE78F6F538104992F20 /* UnifiedShareCard.swift */; };
 		95E99052293069BEA6956C93 /* WorkoutCompleteShareCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4643C30D54A587474C3ED458 /* WorkoutCompleteShareCard.swift */; };
+		9695F854DFC02EC369558A96 /* RoutinesShareSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEE1FE1143673D15E8356C81 /* RoutinesShareSheet.swift */; };
 		972195D3BEE4D2BC034B5299 /* ExerciseLibraryBrowser.swift in Sources */ = {isa = PBXBuildFile; fileRef = B83F25C9BAC855E570E52876 /* ExerciseLibraryBrowser.swift */; };
 		97A61A2BDCBA7FEDB45DBABD /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 31990508FD012FF9FC4CE295 /* Lottie */; };
 		97DC9B886CF3C5DF2369E746 /* 1b-triceps-supplement.json in Resources */ = {isa = PBXBuildFile; fileRef = F2980C2BED7FBFC98D717FE6 /* 1b-triceps-supplement.json */; };
@@ -352,6 +353,7 @@
 		FE73631309F4040E80314ED8 /* CoachSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoachSession.swift; sourceTree = "<group>"; };
 		FEB924488C05EA5A27B8B504 /* DataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStore.swift; sourceTree = "<group>"; };
 		FEDA5CD52A27EE48B089AD46 /* SettingsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsScreen.swift; sourceTree = "<group>"; };
+		FEE1FE1143673D15E8356C81 /* RoutinesShareSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoutinesShareSheet.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -489,6 +491,7 @@
 				750AFFA68B8A24177AF77A3E /* InsightShareCard.swift */,
 				FC61BDA12796DCF77FEDA908 /* MuscleStatusShareCard.swift */,
 				19E60279DA5B5FE740DC4A8D /* PhotoPicker.swift */,
+				FEE1FE1143673D15E8356C81 /* RoutinesShareSheet.swift */,
 				4FAF7A7E839EEE640A8B4CC9 /* SessionShareCard.swift */,
 				59EC9219101B66F7B497AB18 /* ShareCardFooter.swift */,
 				BFAD46757159C0D547E762E2 /* ShareImageButton.swift */,
@@ -933,6 +936,7 @@
 				70639D2DC8C6A85D484742AC /* RestNotificationScheduler.swift in Sources */,
 				95676F299C926544BE383ED7 /* RootView.swift in Sources */,
 				D123FE5C1C40DBA244A94227 /* RoutineOptimizeCard.swift in Sources */,
+				9695F854DFC02EC369558A96 /* RoutinesShareSheet.swift in Sources */,
 				2B7135D783046C4EAEF60FA4 /* SessionPersistence.swift in Sources */,
 				7569DFE706941F606D7A84A0 /* SessionShareCard.swift in Sources */,
 				9F8AE1A6DE0870B670608C42 /* Settings.swift in Sources */,

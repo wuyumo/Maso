@@ -1326,3 +1326,5 @@
 "Add “%@” as your own" = "把“%@”添加为自创动作";
 "Build my week — full body, about 45 minutes a day" = "帮我排一周训练——全身练,每天 45 分钟左右";
 "Save & generate routines" = "保存并生成计划";
+"Share routines" = "分享训练计划";
+"Share (%lld)" = "分享 (%lld)";
