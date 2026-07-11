@@ -442,16 +442,15 @@ struct PlanRow: View {
             .padding(.vertical, 12)
 
             // ── 播放键 — 钉在卡片右下角, 距右边缘 & 底边等距 (各 12pt) ──
-            // 自绘圆底图标钮 → 玻璃圆 (映射表④): 弱播放键跟 WorkoutCard.startButtonLabel 弱态同配方
-            // (accent 低浓度玻璃 + accent icon); 旧系统保留原半透圆 + 描边.
+            // 素玻璃圆 + accent play (owner 拍板 iOS 默认样式, 跟 WorkoutCard.startButtonLabel 同配方);
+            // 旧系统保留原半透圆 + 描边.
             Button(action: onStart) {
                 Image(systemName: "play.fill")
                     .font(.system(size: 10, weight: .heavy))
                     .foregroundStyle(MasoColor.accent)
                     .offset(x: 0.5)
                     .frame(width: 28, height: 28)
-                    .glassCircleButtonBackground(tint: MasoColor.accent.opacity(0.25),
-                                                 fallback: MasoColor.accent.opacity(0.18))
+                    .glassCircleButtonBackground(fallback: MasoColor.accent.opacity(0.18))
                     .overlay(Circle().stroke(systemGlassAvailable ? .clear : MasoColor.accent.opacity(0.4),
                                              lineWidth: 0.5))
             }
