@@ -62,21 +62,14 @@ struct MuscleStatusOverviewCard: View {
                     // legend group → button 之间走 14pt — 之前 8pt 太挤, 用户反馈 button 跟最后一行
                     // legend 贴在一起没有视觉呼吸. 14pt 让 button 明显是"另一组"操作元素.
                     VStack(alignment: .leading, spacing: 14) {
-                        // 贴心提示 + 分享 — 原 kicker 行的右侧内容, 移到图例列顶部:
-                        // 文字可折行 (跟图例同宽), 分享 glyph 靠其右; 零历史时分享入口照旧不出现.
-                        if (tipLine?.isEmpty == false) || !fatigueMap.isEmpty {
-                            HStack(alignment: .top, spacing: 8) {
-                                if let tipLine, !tipLine.isEmpty {
-                                    Text(tipLine)
-                                        .font(.system(size: 12))
-                                        .foregroundStyle(MasoColor.textDim)
-                                        .fixedSize(horizontal: false, vertical: true)
-                                        .frame(maxWidth: 150, alignment: .leading)
-                                }
-                                if !fatigueMap.isEmpty {
-                                    shareButton
-                                }
-                            }
+                        // 贴心提示 — 原 kicker 行的文字, 在图例列顶部可折行.
+                        // 分享入口移到底部动作行 (补练按钮右侧圆钮, owner 指定), 不再挂在这里.
+                        if let tipLine, !tipLine.isEmpty {
+                            Text(tipLine)
+                                .font(.system(size: 12))
+                                .foregroundStyle(MasoColor.textDim)
+                                .fixedSize(horizontal: false, vertical: true)
+                                .frame(maxWidth: 150, alignment: .leading)
                         }
                         if fatigueMap.isEmpty {
                             // 零历史首日: 不显示空图例 + 误导性"已全部跟上"(其实从没练过), 改给一句引导.
@@ -95,34 +88,40 @@ struct MuscleStatusOverviewCard: View {
                                 legendRow(opacity: nil, label: "Fresh")
                             }
                             // 有 gap → "Train the gaps" CTA; 没 gap (健康状态) → 正向"全部跟上"标签.
-                            if gapMuscles.isEmpty {
-                                HStack(spacing: 5) {
-                                    Image(systemName: "checkmark.circle.fill")
-                                        .font(.system(size: 10, weight: .heavy))
-                                    Text("All caught up")
-                                        .font(.system(size: 11, weight: .heavy))
-                                        .lineLimit(1)
-                                }
-                                .foregroundStyle(MasoColor.textDim)
-                                .fixedSize(horizontal: true, vertical: false)
-                            } else {
-                                Button(action: onStartGapWorkout) {
+                            // 分享圆钮恒挂在该行右侧 (owner 指定位置).
+                            HStack(spacing: 8) {
+                                if gapMuscles.isEmpty {
                                     HStack(spacing: 5) {
-                                        Image(systemName: "play.fill")
+                                        Image(systemName: "checkmark.circle.fill")
                                             .font(.system(size: 10, weight: .heavy))
-                                        Text("Train the gaps")
+                                        Text("All caught up")
                                             .font(.system(size: 11, weight: .heavy))
                                             .lineLimit(1)
                                     }
-                                    .foregroundStyle(MasoColor.accent)
-                                    .padding(.horizontal, 11)
-                                    .padding(.vertical, 5)
-                                    // 次级胶囊钮 → accent 低浓度玻璃 (映射表②), 旧系统保留半透明底.
-                                    .glassCapsuleButtonBackground(tint: MasoColor.accent.opacity(0.25),
-                                                                  fallback: MasoColor.accent.opacity(0.16))
+                                    .foregroundStyle(MasoColor.textDim)
                                     .fixedSize(horizontal: true, vertical: false)
+                                } else {
+                                    Button(action: onStartGapWorkout) {
+                                        HStack(spacing: 5) {
+                                            Image(systemName: "play.fill")
+                                                .font(.system(size: 10, weight: .heavy))
+                                            Text("Train the gaps")
+                                                .font(.system(size: 11, weight: .heavy))
+                                                .lineLimit(1)
+                                        }
+                                        .foregroundStyle(MasoColor.accent)
+                                        .padding(.horizontal, 11)
+                                        .padding(.vertical, 5)
+                                        // 次级胶囊钮 → accent 低浓度玻璃 (映射表②), 旧系统保留半透明底.
+                                        .glassCapsuleButtonBackground(tint: MasoColor.accent.opacity(0.25),
+                                                                      fallback: MasoColor.accent.opacity(0.16))
+                                        .fixedSize(horizontal: true, vertical: false)
+                                    }
+                                    .buttonStyle(.plain)
                                 }
-                                .buttonStyle(.plain)
+                                if !fatigueMap.isEmpty {
+                                    shareButton
+                                }
                             }
                         } else {
                             // 免费: 图例模糊 (看得见有 4 档精度但读不清) + 解锁按钮. 视觉钩子留着,
@@ -135,25 +134,31 @@ struct MuscleStatusOverviewCard: View {
                             }
                             .blur(radius: 4.5)
                             .allowsHitTesting(false)
-                            Button(action: onUnlock) {
-                                HStack(spacing: 5) {
-                                    Image(systemName: "lock.fill")
-                                        .font(.system(size: 10, weight: .heavy))
-                                    Text("Unlock per-muscle recovery with Pro")
-                                        .font(.system(size: 11, weight: .heavy))
-                                        .multilineTextAlignment(.leading)
-                                        .fixedSize(horizontal: false, vertical: true)
+                            // 解锁钮 + 分享圆钮同行 — 免费档分享导出的本就是粗颗粒热图, 入口保留.
+                            HStack(spacing: 8) {
+                                Button(action: onUnlock) {
+                                    HStack(spacing: 5) {
+                                        Image(systemName: "lock.fill")
+                                            .font(.system(size: 10, weight: .heavy))
+                                        Text("Unlock per-muscle recovery with Pro")
+                                            .font(.system(size: 11, weight: .heavy))
+                                            .multilineTextAlignment(.leading)
+                                            .fixedSize(horizontal: false, vertical: true)
+                                    }
+                                    .foregroundStyle(MasoColor.accent)
+                                    .padding(.horizontal, 11)
+                                    .padding(.vertical, 6)
+                                    // 次级钮玻璃 (映射表②); 形状保持圆角矩形 — 多行文案撑不成胶囊.
+                                    .glassButtonBackground(tint: MasoColor.accent.opacity(0.25),
+                                                           fallback: MasoColor.accent.opacity(0.16),
+                                                           in: RoundedRectangle(cornerRadius: 10))
                                 }
-                                .foregroundStyle(MasoColor.accent)
-                                .padding(.horizontal, 11)
-                                .padding(.vertical, 6)
-                                // 次级钮玻璃 (映射表②); 形状保持圆角矩形 — 多行文案撑不成胶囊.
-                                .glassButtonBackground(tint: MasoColor.accent.opacity(0.25),
-                                                       fallback: MasoColor.accent.opacity(0.16),
-                                                       in: RoundedRectangle(cornerRadius: 10))
+                                .buttonStyle(.plain)
+                                .frame(maxWidth: 150, alignment: .leading)
+                                if !fatigueMap.isEmpty {
+                                    shareButton
+                                }
                             }
-                            .buttonStyle(.plain)
-                            .frame(maxWidth: 150, alignment: .leading)
                         }
                     }
                     // P2-15: 不再 fixedSize 整个右列宽度 — SE / 长中文 legend 会被裁; 让它能压缩.
@@ -204,9 +209,12 @@ struct MuscleStatusOverviewCard: View {
             },
             shareSurface: "muscle_status",
             label: {
+                // 圆形素玻璃小钮 (owner 指定形态) — 高度跟旁边的补练胶囊 (~26pt) 对齐.
                 Image(systemName: "square.and.arrow.up")
-                    .font(.system(size: 13, weight: .semibold))
+                    .font(.system(size: 12, weight: .semibold))
                     .foregroundStyle(MasoColor.textDim)
+                    .frame(width: 27, height: 27)
+                    .glassCircleButtonBackground()
             }
         )
         .accessibilityLabel("Share")

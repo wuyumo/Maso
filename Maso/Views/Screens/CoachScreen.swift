@@ -126,9 +126,10 @@ struct CoachScreen: View {
                         .font(.system(size: 16, weight: .regular))
                 }
                 .accessibilityLabel(NSLocalizedString("Training Preferences", comment: ""))
-                // list.bullet — 动作库入口 (动作库本体就是一张大列表; dumbbell/books 都读不准, owner 定列表).
+                // list.bullet.rectangle.portrait — 动作库入口 (块状列表, owner 定;
+                // dumbbell/books/裸 list.bullet 各轮都读不准, 块框+列表行最像"动作清单页").
                 Button { libraryPresented = true } label: {
-                    Image(systemName: "list.bullet")
+                    Image(systemName: "list.bullet.rectangle.portrait")
                         .font(.system(size: 16, weight: .regular))
                 }
                 .accessibilityLabel(NSLocalizedString("Exercise library", comment: ""))
