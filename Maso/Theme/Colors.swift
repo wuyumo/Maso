@@ -106,7 +106,7 @@ struct LiquidGlowBackground: View {
         }
         .blur(radius: 22)          // 整体再糊一层 → 朦胧光场
         .blendMode(.screen)        // 发光式叠加: 深底上只加亮不压暗, 交叠 = 光的相加
-        .opacity(0.13)             // 光斑亮一点 → 对比度更高 (owner: 拉开跟底色的差)
+        .opacity(0.10)             // 光斑亮一点 → 对比度更高 (owner: 拉开跟底色的差)
         .allowsHitTesting(false)
     }
 
