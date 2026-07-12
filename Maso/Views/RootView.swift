@@ -235,6 +235,10 @@ struct RootView: View {
                 .tag(RootTab.history)
             }
             .tint(MasoColor.accent)
+            // 共享底纹铺到整个 TabView 底下 (含 tab bar / composer 下方那条系统安全区) — 各 tab 屏自己的
+            // AppBackground 只到内容边缘, tab bar 后面那片会落到系统纯黑 (owner 报"暗色地板挡住绿光斑").
+            // 这里补一层, 让液态光斑一路透到屏幕最底, 底部不再是死黑的一层.
+            .background(AppBackground())
             // tab_switch — 用户切底 Tab (含程序化切换都流经这, 见 router.requestedTab / showcase).
             .onChange(of: tab) { _, newTab in
                 Analytics.shared.track("tab_switch", ["tab": .string(Self.tabName(newTab))])
