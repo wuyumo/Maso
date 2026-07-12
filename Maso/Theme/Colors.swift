@@ -106,7 +106,7 @@ struct LiquidGlowBackground: View {
         }
         .blur(radius: 22)          // 整体再糊一层 → 朦胧光场
         .blendMode(.screen)        // 发光式叠加: 深底上只加亮不压暗, 交叠 = 光的相加
-        .opacity(0.12)             // 光斑亮一点 → 对比度更高 (owner: 拉开跟底色的差)
+        .opacity(0.17)             // 光斑亮一点 → 对比度更高 (owner: 拉开跟底色的差)
         .allowsHitTesting(false)
     }
 
@@ -153,7 +153,7 @@ struct AppBackground: View {
             MasoColor.background
             // 底色整体提亮一点点 (owner: #121212 稍显死黑) — 一层极淡的白, 只抬灰阶不改色相;
             // 只作用在页面背景, 不动 MasoColor.background 本体 (卡片/surface 仍用原值).
-            Color.white.opacity(0.13)
+            Color.white.opacity(0.06)
             LiquidGlowBackground()
         }
         .ignoresSafeArea()
