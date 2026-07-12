@@ -175,7 +175,10 @@ struct BodyHint: View {
         // 圆角 — anatomy 单位 2.5 缩放到像素
         let cornerRadius = 2.5 * s
 
-        let idleGray = Color(red: 0.165, green: 0.165, blue: 0.165)
+        // 静息(非绿)肌肉: 半透明白, 不是固定不透明灰 (owner). 底纹现在是会变化的 pastel 灰阶,
+        // 固定 #2A 灰在某些背景灰度上会糊掉; 半透明白始终比"局部背景"亮固定一档 (screen 式加亮),
+        // 任何灰阶上剪影都看得清 — 尤其是这些暗的非绿部分. 绿色高亮仍是最亮的焦点.
+        let idleGray = Color.white.opacity(0.22)
         let synergistColor = color.opacity(0.35)
         let isCombinedMode = (opacityFor != nil) && !muscles.isEmpty
         for poly in polys {
