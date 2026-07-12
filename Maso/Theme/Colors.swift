@@ -150,7 +150,7 @@ struct AppBackground: View {
             MasoColor.background
             // 底色整体提亮一点点 (owner: #121212 稍显死黑) — 一层极淡的白, 只抬灰阶不改色相;
             // 只作用在页面背景, 不动 MasoColor.background 本体 (卡片/surface 仍用原值).
-            Color.white.opacity(0.09)
+            Color.white.opacity(0.12)
             LiquidGlowBackground()
         }
         .ignoresSafeArea()
