@@ -111,7 +111,7 @@ struct LiquidGlowBackground: View {
     }
 
     // 5 个圆铺满全屏, 各自不同相位/周期 (25-45s) 的 sin/cos 轨迹极慢漂移;
-    // 颜色 = ElevenLabs pastel 五色 (薄荷/天蓝/薰衣草/桃/玫瑰). 位置/振幅均为 0-1 归一化.
+    // 颜色 = 从 Accent 衍生的五色 (黄绿/品牌绿/青绿/青 + 互补玫瑰). 位置/振幅均为 0-1 归一化.
     private struct Blob {
         let radius: CGFloat
         let color: Color
@@ -126,20 +126,21 @@ struct LiquidGlowBackground: View {
         }
     }
 
-    // ElevenLabs / Nuze 风格: 柔和低饱和的多色 pastel (薄荷/桃/薰衣草/天蓝/玫瑰),
-    // 融合处混出高级的中间调 (参考 Nuze globals.css --color-gradient-*). 不再是单一品牌绿.
-    private static let elMint     = Color(red: 0.655, green: 0.898, blue: 0.827)  // #a7e5d3
-    private static let elPeach    = Color(red: 0.957, green: 0.773, blue: 0.659)  // #f4c5a8
-    private static let elLavender = Color(red: 0.784, green: 0.722, blue: 0.878)  // #c8b8e0
-    private static let elSky      = Color(red: 0.659, green: 0.784, blue: 0.910)  // #a8c8e8
-    private static let elRose     = Color(red: 0.910, green: 0.722, blue: 0.769)  // #e8b8c4
+    // 光斑配色 = 从品牌 Accent #1ED760 (HSB 141°, ≈ Spotify 绿) 衍生的色相和谐 (owner 指定基于 accent 衍生):
+    // 一条 analogous 类似色冷主轴 绿→青绿→青 (141°±) 紧扣品牌 + 一颗 complementary 互补色 (~330°) 玫瑰做暖点缀.
+    // 全部提亮、饱和降到柔和光场档; 融合处混出高级中间调, 但整体是"品牌绿的一家人", 不再是随意的 pastel.
+    private static let glowLime  = Color(red: 0.466, green: 0.920, blue: 0.386)  // #77EB62 类似色 -30° (偏黄绿)
+    private static let glowGreen = Color(red: 0.360, green: 0.900, blue: 0.549)  // #5CE68C 品牌绿 141° 柔化
+    private static let glowTeal  = Color(red: 0.450, green: 0.900, blue: 0.833)  // #73E6D4 类似色 +30° (青绿)
+    private static let glowCyan  = Color(red: 0.506, green: 0.844, blue: 0.920)  // #81D7EB 类似色 +50° (青)
+    private static let glowRose  = Color(red: 0.920, green: 0.552, blue: 0.736)  // #EB8CBC 互补色 ~330° (玫瑰暖点缀)
 
     private static let blobs: [Blob] = [
-        Blob(radius: 170, color: elLavender, cx: 0.20, cy: 0.80, ax: 0.22, ay: 0.12, px: 41, py: 33, phase: 0.0),
-        Blob(radius: 130, color: elSky,      cx: 0.75, cy: 0.62, ax: 0.24, ay: 0.16, px: 29, py: 44, phase: 1.9),
-        Blob(radius: 150, color: elMint,     cx: 0.35, cy: 0.30, ax: 0.26, ay: 0.14, px: 36, py: 26, phase: 3.7),
-        Blob(radius: 100, color: elPeach,    cx: 0.82, cy: 0.14, ax: 0.18, ay: 0.12, px: 25, py: 39, phase: 5.1),
-        Blob(radius: 120, color: elRose,     cx: 0.55, cy: 0.90, ax: 0.30, ay: 0.08, px: 45, py: 31, phase: 2.6),
+        Blob(radius: 170, color: glowGreen, cx: 0.20, cy: 0.80, ax: 0.22, ay: 0.12, px: 41, py: 33, phase: 0.0),
+        Blob(radius: 130, color: glowTeal,  cx: 0.75, cy: 0.62, ax: 0.24, ay: 0.16, px: 29, py: 44, phase: 1.9),
+        Blob(radius: 150, color: glowLime,  cx: 0.35, cy: 0.30, ax: 0.26, ay: 0.14, px: 36, py: 26, phase: 3.7),
+        Blob(radius: 100, color: glowCyan,  cx: 0.82, cy: 0.14, ax: 0.18, ay: 0.12, px: 25, py: 39, phase: 5.1),
+        Blob(radius: 120, color: glowRose,  cx: 0.55, cy: 0.90, ax: 0.30, ay: 0.08, px: 45, py: 31, phase: 2.6),
     ]
 }
 
