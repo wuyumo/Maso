@@ -111,7 +111,7 @@ struct LiquidGlowBackground: View {
     }
 
     // 5 个圆铺满全屏, 各自不同相位/周期 (25-45s) 的 sin/cos 轨迹极慢漂移;
-    // 颜色在 accent 绿 → 近白 之间取档. 位置/振幅均为 0-1 归一化.
+    // 颜色 = ElevenLabs pastel 五色 (薄荷/天蓝/薰衣草/桃/玫瑰). 位置/振幅均为 0-1 归一化.
     private struct Blob {
         let radius: CGFloat
         let color: Color
@@ -126,17 +126,20 @@ struct LiquidGlowBackground: View {
         }
     }
 
-    // 绿→白色档: 品牌绿 / 薄荷 / 浅青绿 / 近白 (带一丝绿) — 融合处自然出现中间调.
-    private static let mint      = Color(red: 0.45, green: 0.93, blue: 0.70)
-    private static let paleGreen = Color(red: 0.72, green: 0.98, blue: 0.85)
-    private static let nearWhite = Color(red: 0.90, green: 1.00, blue: 0.95)
+    // ElevenLabs / Nuze 风格: 柔和低饱和的多色 pastel (薄荷/桃/薰衣草/天蓝/玫瑰),
+    // 融合处混出高级的中间调 (参考 Nuze globals.css --color-gradient-*). 不再是单一品牌绿.
+    private static let elMint     = Color(red: 0.655, green: 0.898, blue: 0.827)  // #a7e5d3
+    private static let elPeach    = Color(red: 0.957, green: 0.773, blue: 0.659)  // #f4c5a8
+    private static let elLavender = Color(red: 0.784, green: 0.722, blue: 0.878)  // #c8b8e0
+    private static let elSky      = Color(red: 0.659, green: 0.784, blue: 0.910)  // #a8c8e8
+    private static let elRose     = Color(red: 0.910, green: 0.722, blue: 0.769)  // #e8b8c4
 
     private static let blobs: [Blob] = [
-        Blob(radius: 170, color: MasoColor.accent, cx: 0.20, cy: 0.80, ax: 0.22, ay: 0.12, px: 41, py: 33, phase: 0.0),
-        Blob(radius: 130, color: mint,             cx: 0.75, cy: 0.62, ax: 0.24, ay: 0.16, px: 29, py: 44, phase: 1.9),
-        Blob(radius: 150, color: paleGreen,        cx: 0.35, cy: 0.30, ax: 0.26, ay: 0.14, px: 36, py: 26, phase: 3.7),
-        Blob(radius: 100, color: nearWhite,        cx: 0.82, cy: 0.14, ax: 0.18, ay: 0.12, px: 25, py: 39, phase: 5.1),
-        Blob(radius: 120, color: mint,             cx: 0.55, cy: 0.90, ax: 0.30, ay: 0.08, px: 45, py: 31, phase: 2.6),
+        Blob(radius: 170, color: elLavender, cx: 0.20, cy: 0.80, ax: 0.22, ay: 0.12, px: 41, py: 33, phase: 0.0),
+        Blob(radius: 130, color: elSky,      cx: 0.75, cy: 0.62, ax: 0.24, ay: 0.16, px: 29, py: 44, phase: 1.9),
+        Blob(radius: 150, color: elMint,     cx: 0.35, cy: 0.30, ax: 0.26, ay: 0.14, px: 36, py: 26, phase: 3.7),
+        Blob(radius: 100, color: elPeach,    cx: 0.82, cy: 0.14, ax: 0.18, ay: 0.12, px: 25, py: 39, phase: 5.1),
+        Blob(radius: 120, color: elRose,     cx: 0.55, cy: 0.90, ax: 0.30, ay: 0.08, px: 45, py: 31, phase: 2.6),
     ]
 }
 
