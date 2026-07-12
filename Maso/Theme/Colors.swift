@@ -144,17 +144,14 @@ struct LiquidGlowBackground: View {
     ]
 }
 
-// MARK: - 共享页面背景 — #121212 + 全屏液态光斑 (UI 分层最底)
+// MARK: - 共享页面背景 — 纯 #121212 (UI 分层最底)
 //
-// 三个 tab 屏 (Today 非 embedded / Coach / Progress) 的 .background 共用这一片,
-// 替代原先各自的 MasoColor.background.ignoresSafeArea().
+// 三个 tab 屏 (Today 非 embedded / Coach / Progress) 的 .background 共用这一片.
+// owner 拍板: 去掉全部液态光斑, 页面背景就是纯 MasoColor.background.
+// (LiquidGlowBackground 结构体保留作回退点 tag pre-liquid-glass, 当前不渲染.)
 struct AppBackground: View {
     var body: some View {
-        ZStack {
-            MasoColor.background
-            // 底色回到纯 #121212 (owner 要更黑) — 不再叠提亮白, 页面背景 = MasoColor.background 本体.
-            LiquidGlowBackground()
-        }
-        .ignoresSafeArea()
+        MasoColor.background
+            .ignoresSafeArea()
     }
 }
