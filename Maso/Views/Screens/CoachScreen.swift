@@ -601,12 +601,7 @@ struct CoachScreen: View {
         .padding(.horizontal, 14)
         .padding(.top, 12)
         .padding(.bottom, 10)
-        // 输入框背景留透明 (owner 指定): 去掉玻璃填充, 不再遮住共享底纹 (AppBackground);
-        // 只留一圈 0.5pt 细描边勾出输入框轮廓, 让它像浮在背景上.
-        .overlay(
-            RoundedRectangle(cornerRadius: 22)
-                .strokeBorder(MasoColor.text.opacity(0.10), lineWidth: 0.5)
-        )
+        // 输入框整个底透明 (owner 指定): 玻璃填充 + 细描边都去掉, 文本/按钮直接浮在共享底纹上, 无面板无边框.
         // 点文本区外的容器空白也能聚焦 — 整个大框都是输入的可点热区.
         .contentShape(RoundedRectangle(cornerRadius: 22))
         .onTapGesture { composerFocused = true }
