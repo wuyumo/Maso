@@ -119,17 +119,10 @@ struct CoachScreen: View {
         .toolbar {
             // 布局 (owner 指定): 左上角 = 训练偏好 + 动作库 两个入口 (iOS 默认工具栏按钮样式),
             // "Coach" 标题居中, 右上只剩设置.
-            ToolbarItemGroup(placement: .topBarLeading) {
-                // slider — 训练偏好 (跟空态偏好卡同目的地 TrainingPreferencesSheet).
-                Button { prefsPresented = true } label: {
-                    Image(systemName: "slider.horizontal.3")
-                        .font(.system(size: 16, weight: .regular))
-                }
-                .accessibilityLabel(NSLocalizedString("Training Preferences", comment: ""))
-                // list.bullet.rectangle.portrait — 动作库入口 (块状列表, owner 定;
-                // dumbbell/books/裸 list.bullet 各轮都读不准, 块框+列表行最像"动作清单页").
+            ToolbarItem(placement: .topBarLeading) {
+                // 左上只剩动作库入口, icon 换回哑铃 (owner). 训练偏好已移进 composer 的 [+|#|偏好] 三连胶囊.
                 Button { libraryPresented = true } label: {
-                    Image(systemName: "list.bullet.rectangle.portrait")
+                    Image(systemName: "dumbbell")
                         .font(.system(size: 16, weight: .regular))
                 }
                 .accessibilityLabel(NSLocalizedString("Exercise library", comment: ""))
@@ -621,12 +614,11 @@ struct CoachScreen: View {
             && !hasPlaceholders
     }
 
-    /// [+|#] 玻璃药丸 (owner 拍板): 两键合成一枚系统 Liquid Glass 胶囊, 44pt 默认控件高;
+    /// [+|#|偏好] 玻璃药丸 (owner 拍板): 三键合成一枚系统 Liquid Glass 胶囊, 44pt 默认控件高;
     /// iOS 26 走 .glassEffect (跟导航栏胶囊同一套材质), 之前系统回退 surfaceHi 胶囊.
     private var toolsPill: some View {
         let content = HStack(spacing: 0) {
-            // [+] 菜单 — 只放工具, 一行一语义 (IA 评审裁定;
-            // Training Preferences 已移出, 导航栏 slider.horizontal.3 是唯一常驻入口).
+            // [+] 菜单 — 只放工具, 一行一语义 (IA 评审裁定).
             Menu {
                 Button { classicsPresented = true } label: {
                     Label("Browse Classics", systemImage: "rosette")
@@ -661,6 +653,22 @@ struct CoachScreen: View {
             }
             .buttonStyle(.plain)
             .accessibilityLabel(Text("Prompt templates"))
+
+            // 细分隔
+            Rectangle()
+                .fill(MasoColor.text.opacity(0.15))
+                .frame(width: 0.5, height: 20)
+
+            // [偏好] 训练偏好 — 从左上工具栏移进来 (owner), 跟 [+|#] 合成三连胶囊.
+            Button { prefsPresented = true } label: {
+                Image(systemName: "slider.horizontal.3")
+                    .font(.system(size: 17, weight: .medium))
+                    .foregroundStyle(MasoColor.text)
+                    .frame(width: 46, height: 44)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(Text("Training Preferences"))
         }
         return Group {
             if #available(iOS 26.0, *) {
