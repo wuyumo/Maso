@@ -32,10 +32,10 @@ struct HistoryScreen: View {
     /// 洞察卡正在拖拽重排 — 期间锁本页滚动 (拖拽位移和页面滚动叠加会让卡"漂走").
     @State private var isReorderingInsights: Bool = false
 
-    /// 顶部两个分段. 默认 Insights (数据分析), 另一页 History (日历 + 3 metrics + 按周分组的过往训练).
-    /// (tab 本身已叫 "Progress"; 段内 Insights=分析 / History=记录, 语义不重叠.)
+    /// 顶部两个分段. 默认 History (训练记录 — 进 tab 第一眼看到的), 切过去才是 Insights (数据分析: 日历 + 3 metrics + 图表).
+    /// (tab 本身已叫 "Progress"; 段内 History=记录 / Insights=分析, 语义不重叠.)
     enum HistoryTab { case insights, records }
-    @State private var historyTab: HistoryTab = .insights
+    @State private var historyTab: HistoryTab = .records
 
     /// 头部分享菜单 → 两个 customize sheet 的呈现开关. Menu item 里不能内嵌 ShareImageButton
     /// (menu 收起时挂在 item 上的 .sheet 呈现不可靠), 所以 sheet 提到 screen 层, menu 只翻 bool.
@@ -95,8 +95,8 @@ struct HistoryScreen: View {
         if !groupedSessions().isEmpty {
             // 分段切 Insights (数据分析) / History (记录) — 钉在导航标题下方, 不随正文滚走.
             Picker("", selection: $historyTab) {
-                Text("Insights").tag(HistoryTab.insights)
                 Text("History").tag(HistoryTab.records)
+                Text("Insights").tag(HistoryTab.insights)
             }
             .pickerStyle(.segmented)
             .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)

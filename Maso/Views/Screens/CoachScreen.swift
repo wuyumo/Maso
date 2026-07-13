@@ -327,7 +327,8 @@ struct CoachScreen: View {
         }
     }
 
-    /// 空态三层 (设计文档 §1): AI 问候/主动建议 → Context 偏好卡 (已带铅笔) → chips (在 composer 上方常驻).
+    /// 空态 (原三层去掉中间的 Context 偏好卡): AI 问候/主动建议 + chips (在 composer 上方常驻).
+    /// 训练偏好入口收敛到 composer 的 [+|#|偏好] 胶囊, 卡顶不再重复.
     @ViewBuilder
     private var emptyState: some View {
         if let sug = suggestion {
@@ -370,9 +371,8 @@ struct CoachScreen: View {
                 .foregroundStyle(MasoColor.text)
                 .fixedSize(horizontal: false, vertical: true)
         }
-        // Context 偏好卡 — kicker + prefSummary 一行灰字 + 铅笔尾 icon → TrainingPreferencesSheet.
-        // 卡内自带 sheet; 确认 → 无言重生成.
-        PlanRationaleCard(onApplyPreferences: { send(feedback: nil) })
+        // (Context 偏好卡已移除 — owner: composer 的 [+|#|偏好] 三连胶囊已有训练偏好入口,
+        //  卡顶再放一张显冗余. 空态只留 AI 问候/主动建议一层.)
     }
 
     @ViewBuilder
