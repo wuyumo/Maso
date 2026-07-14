@@ -185,18 +185,7 @@ struct WorkoutCard: View {
             // 没 kicker 时, title 自己撑顶部留白
             .padding(.top, resolvedKicker == nil ? MasoMetrics.cardPadding + 2 : 0)
 
-            // AI 理由 — LLM 给的"为什么这么排今天这套". 模板写不出这句自定义文案 →
-            // 用户一眼看出"这是真 AI, 不是本地模板". 仅 .ai 计划有 rationale.
-            if let rationale = plan.rationale, !rationale.isEmpty {
-                Text(rationale)
-                    .font(.system(size: 12).italic())
-                    .foregroundStyle(MasoColor.textDim)
-                    .lineLimit(2)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.horizontal, MasoMetrics.cardPadding)
-                    .padding(.top, MasoMetrics.cardHeaderGap)   // 标题 ↔ AI 理由
-            }
+            // (AI 理由 rationale 已从卡上移除 — owner: 卡上只留标题+计数, 理由仅在详情页标题下显示.)
 
             // Subtitle — exercises · sets, 紧挨标题 (所有 routine 卡统一: 标题 + 计数 在一起).
             Text("\(pluralizedExercises(plan.steps.count)) · \(pluralizedSets(plan.steps.reduce(0) { $0 + $1.sets }))")

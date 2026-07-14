@@ -785,6 +785,16 @@ struct PlanDetailSheet: View {
                     .stroke(MasoColor.borderSoft, lineWidth: 0.5)
             )
 
+            // AI 理由 — LLM 给的"为什么这么排这套". 仅 .ai 计划有. 从 routine 卡上移到这里:
+            // 只在详情页标题(名字框)下方显示, 卡上保持干净 (owner).
+            if let rationale = draft.rationale, !rationale.isEmpty {
+                Text(rationale)
+                    .font(.system(size: 13).italic())
+                    .foregroundStyle(MasoColor.textDim)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+
             // Muscle map — Edit Workout 顶部居中 (跟 PlanRow / SessionCard 列表行的左对齐不同).
             // 这里没有右侧 play/replay 按钮压在同一行, 单纯展示 plan 命中的肌群; 居中视觉更
             // 端正, 不会"左重右空"。fixedSize 阻止 MuscleVisualBlock 撑全宽 (它默认 maxWidth: .infinity).
