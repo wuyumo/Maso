@@ -415,7 +415,7 @@ struct PlanRow: View {
                     .onTapGesture { onTap() }
 
                 // ── 右: 文字区 (tap → detail) ──
-                VStack(alignment: .leading, spacing: 5) {
+                VStack(alignment: .leading, spacing: MasoMetrics.cardHeaderGap) {   // 标题↔副文案 统一节奏
                     HStack(spacing: 6) {
                         PlanSourceBadge(source: plan.resolvedSource)   // AI / Classics 来源标签
                         Text(plan.name)

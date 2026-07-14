@@ -1053,7 +1053,7 @@ private struct SessionCard: View {
         //
         // 照片之前是 48×48 缩略图挂在 title 左侧, 现在挪到底部跟 BodyHint 并列 —
         // 让 muscle map + 训练照同时映入眼帘, 加强"训练日记"感.
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: MasoMetrics.cardHeaderGap) {   // kicker↔标题↔副文案 统一节奏
             // History 独有: 训练日期
             Text(kicker.uppercased())
                 .font(.system(size: 10, weight: .heavy))

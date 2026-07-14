@@ -55,6 +55,9 @@ enum MasoMetrics {
     /// 列表行 padding
     static let rowPaddingH: CGFloat = 12
     static let rowPaddingV: CGFloat = 8
+    /// 卡片头部竖向节奏 — kicker(小标签) ↔ 标题 ↔ 副文案(计数/日期) 统一 8pt.
+    /// 所有 routine / session 卡片头都用它, 保证跨 tab 节奏一致 (别散落 4/5/6 各写各的).
+    static let cardHeaderGap: CGFloat = 8
 
     // TabBar — pill 高度. 缩了一圈, 78 → 62 (上下各减 8)
     static let bottomNavHeight: CGFloat = 62

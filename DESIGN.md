@@ -76,6 +76,7 @@
 | `cardPadding` | **20** | 卡片 / 弹层内 padding |
 | `rowPaddingH` | **12** | 列表行水平 padding |
 | `rowPaddingV` | **8** | 列表行垂直 padding |
+| `cardHeaderGap` | **8** | 卡片头竖向节奏: kicker↔标题↔副文案 统一 8pt(WorkoutCard / PlanRow / History 会话卡都用它) |
 | `bottomNavHeight` | **78** | TabBar 高度 |
 | `pillWidthActive` | **248** | 训练态中间 pill 宽度 |
 

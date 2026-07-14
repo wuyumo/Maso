@@ -164,7 +164,7 @@ struct WorkoutCard: View {
                 }
                 .padding(.horizontal, MasoMetrics.cardPadding)
                 .padding(.top, MasoMetrics.cardPadding + 2)   // 顶部多留白, kicker 不顶着卡边 (owner: 别太挤)
-                .padding(.bottom, 4)
+                .padding(.bottom, MasoMetrics.cardHeaderGap)  // kicker ↔ 标题 统一节奏
             }
 
             // 标题行: [来源 badge: AI / Classics] + plan name + 右侧 chevron
@@ -195,7 +195,7 @@ struct WorkoutCard: View {
                     .fixedSize(horizontal: false, vertical: true)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal, MasoMetrics.cardPadding)
-                    .padding(.top, 6)
+                    .padding(.top, MasoMetrics.cardHeaderGap)   // 标题 ↔ AI 理由
             }
 
             // Subtitle — exercises · sets, 紧挨标题 (所有 routine 卡统一: 标题 + 计数 在一起).
@@ -204,7 +204,7 @@ struct WorkoutCard: View {
                 .foregroundStyle(MasoColor.textDim)
                 .lineLimit(1)
                 .padding(.horizontal, MasoMetrics.cardPadding)
-                .padding(.top, 6)
+                .padding(.top, MasoMetrics.cardHeaderGap)   // 标题 ↔ 计数副文案
 
             if compactLayout {
                 // 紧凑版 — [小肌肉图 左 | 动作 chips 右] 同一行 (计数已上移到标题下共享区).
