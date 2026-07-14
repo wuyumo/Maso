@@ -676,7 +676,9 @@
 "Mon" = "Mon";
 /* History monthly stats — pair with existing weekly labels */
 "Days this month" = "Days this month";
+"Day this month" = "Day this month";
 "Sets this month" = "Sets this month";
+"Set this month" = "Set this month";
 /* Plans tab card kicker (re-used in Settings section title) */
 "Training Preferences" = "Training Preferences";
 /* Muscle status legend (volume-based fatigue model) */
@@ -857,6 +859,7 @@
 "Create your own" = "Create your own";
 "Custom exercises live only on this device. You can use them in plans and they'll appear in all your pickers." = "Custom exercises live only on this device. You can use them in routines and they'll appear in all your pickers.";
 "Days this week" = "Days this week";
+"Day this week" = "Day this week";
 "Default sets" = "Default sets";
 "Discard" = "Discard";
 "Discard changes?" = "Discard changes?";
@@ -877,6 +880,7 @@
 "Return to the everyday library" = "Return to the everyday library";
 "Search" = "Search";
 "Sets this week" = "Sets this week";
+"Set this week" = "Set this week";
 "Show %d variants" = "Show %d variants";
 "Time's up" = "Time's up";
 "Training goal" = "Training goal";

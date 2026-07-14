@@ -62,7 +62,7 @@ struct ExerciseImage: View {
         let colors: [Color] = {
             switch category {
             case .strength, .hypertrophyFocus, .calisthenics:
-                return [Color.green.opacity(0.6), Color.green.opacity(0.95)]
+                return [MasoColor.accent.opacity(0.55), MasoColor.accent.opacity(0.9)]   // 品牌绿, 非系统绿 (统一 accent)
             case .cardio, .plyometric:
                 return [Color.pink.opacity(0.6), Color.pink.opacity(0.95)]
             case .flexibility, .stretching, .mobility:

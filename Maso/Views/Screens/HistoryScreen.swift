@@ -440,10 +440,11 @@ struct HistoryScreen: View {
             cal.date(byAdding: .day, value: $0, to: weekStart).map { cal.startOfDay(for: $0) }
         })
         let daysThisWeek = workoutDateSet().intersection(weekDays).count
+        let setsThisWeek = setsThisWeekCount()
         statsCard(
-            value1: "\(daysThisWeek)", label1: "Days this week",
+            value1: "\(daysThisWeek)", label1: daysThisWeek == 1 ? "Day this week" : "Days this week",
             value2: "\(currentWeekStreak())", label2: "Week streak",
-            value3: "\(setsThisWeekCount())", label3: "Sets this week"
+            value3: "\(setsThisWeek)", label3: setsThisWeek == 1 ? "Set this week" : "Sets this week"
         )
     }
 
@@ -456,10 +457,12 @@ struct HistoryScreen: View {
         let monthDays: Set<Date> = workoutDateSet().filter {
             cal.isDate($0, equalTo: calendarMonthAnchor, toGranularity: .month)
         }
+        let monthDayCount = monthDays.count
+        let setsThisMonth = setsThisMonthCount()
         statsCard(
-            value1: "\(monthDays.count)", label1: "Days this month",
+            value1: "\(monthDayCount)", label1: monthDayCount == 1 ? "Day this month" : "Days this month",
             value2: "\(currentWeekStreak())", label2: "Week streak",
-            value3: "\(setsThisMonthCount())", label3: "Sets this month"
+            value3: "\(setsThisMonth)", label3: setsThisMonth == 1 ? "Set this month" : "Sets this month"
         )
     }
 
@@ -1058,13 +1061,13 @@ private struct SessionCard: View {
                 .foregroundStyle(MasoColor.textDim)
                 .lineLimit(1)
 
-            HStack(spacing: 8) {
+            HStack(alignment: .top, spacing: 8) {
                 Text(title)
                     .font(.system(size: 16, weight: .bold))
                     .foregroundStyle(MasoColor.text)
-                    .lineLimit(1)
-                    // 删 minimumScaleFactor → 超长走默认 truncationMode .tail (...),
-                    // 不再先缩小字号到 75% 才省略.
+                    .lineLimit(2)                       // 长自动命名保留区分尾巴 (…Pull (Upper)), 不中途截断
+                    .multilineTextAlignment(.leading)
+                    .fixedSize(horizontal: false, vertical: true)
                 // PR 标记 — 沉默的进步反馈 (理念 4): 不弹通知不庆祝, 一个小🏆 + 数字一眼可见
                 if session.prCount > 0 {
                     HStack(spacing: 3) {

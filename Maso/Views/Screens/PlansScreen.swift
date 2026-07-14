@@ -416,12 +416,14 @@ struct PlanRow: View {
 
                 // ── 右: 文字区 (tap → detail) ──
                 VStack(alignment: .leading, spacing: 5) {
-                    HStack(spacing: 6) {
+                    HStack(alignment: .top, spacing: 6) {
                         PlanSourceBadge(source: plan.resolvedSource)   // AI / Classics 来源标签
                         Text(plan.name)
                             .font(.system(size: 16, weight: .bold))
                             .foregroundStyle(MasoColor.text)
-                            .lineLimit(1)
+                            .lineLimit(2)                       // 长自动命名保留区分尾巴, 不中途截断
+                            .multilineTextAlignment(.leading)
+                            .fixedSize(horizontal: false, vertical: true)
                         Spacer(minLength: 0)
                         Image(systemName: "chevron.right")
                             .font(.system(size: 11, weight: .heavy))
@@ -831,7 +833,8 @@ struct PlanDetailSheet: View {
             .foregroundStyle(.black)
             // 主 CTA 系统玻璃 (映射表①); 阴影只留给旧系统实心版, 玻璃自带层次不再叠影.
             .glassCapsuleButtonBackground(tint: MasoColor.accent.opacity(0.85), fallback: MasoColor.accent)
-            .shadow(color: systemGlassAvailable ? .clear : MasoColor.accent.opacity(0.35), radius: 8, y: 2)
+            // 旧系统实心版: 中性阴影做深度, 不用彩色光晕 (去绿色 halo tell)
+            .shadow(color: systemGlassAvailable ? .clear : .black.opacity(0.3), radius: 6, y: 2)
         }
         .buttonStyle(.plain)
         .padding(.top, 4)  // 跟 muscle map 之间留 18pt (VStack spacing 14 + 4) — 视觉分组
@@ -857,7 +860,8 @@ struct PlanDetailSheet: View {
             // (跟 AddToPlansButton 已存态同配方). 旧系统保留原实心/surfaceHi.
             .glassCapsuleButtonBackground(tint: saved ? nil : MasoColor.accent.opacity(0.85),
                                           fallback: saved ? MasoColor.surfaceHi : MasoColor.accent)
-            .shadow(color: (saved || systemGlassAvailable) ? .clear : MasoColor.accent.opacity(0.35), radius: 8, y: 2)
+            // 旧系统实心版: 中性阴影, 不用绿色光晕
+            .shadow(color: (saved || systemGlassAvailable) ? .clear : .black.opacity(0.3), radius: 6, y: 2)
         }
         .buttonStyle(.plain)
         .animation(.easeOut(duration: 0.2), value: saved)

@@ -173,7 +173,9 @@ struct WorkoutCard: View {
                 Text(plan.name)
                     .font(.system(size: 16, weight: .bold))
                     .foregroundStyle(MasoColor.text)
-                    .lineLimit(1)
+                    .lineLimit(2)                       // 长自动命名 (…Pull (Mid)) 保留区分尾巴, 不再中途截断
+                    .multilineTextAlignment(.leading)
+                    .fixedSize(horizontal: false, vertical: true)
                 Spacer()
                 if onShowDetail != nil {
                     Image(systemName: "chevron.right")

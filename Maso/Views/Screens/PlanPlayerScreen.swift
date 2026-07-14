@@ -1223,7 +1223,7 @@ private struct FullBleedExerciseImage: View {
         let colors: [Color] = {
             switch exercise.category {
             case .strength, .hypertrophyFocus, .calisthenics:
-                return [Color.green.opacity(0.4), Color.black]
+                return [MasoColor.accent.opacity(0.4), Color.black]   // 品牌绿, 非系统绿
             case .cardio, .plyometric:
                 return [Color.pink.opacity(0.4), Color.black]
             case .flexibility, .stretching, .mobility:
@@ -1654,7 +1654,8 @@ private struct Controls: View {
                     HaloRing(trigger: celebrateTrigger)
                 }
                 Circle().fill(MasoColor.accent).frame(width: 42, height: 42)
-                    .shadow(color: MasoColor.accent.opacity(0.35), radius: 12, y: 4)
+                    // 深底上用紧的中性阴影做深度, 不用彩色光晕 (去绿色 halo tell)
+                    .shadow(color: .black.opacity(0.35), radius: 5, y: 3)
                 primaryIcon
                     .font(.system(size: 14, weight: .heavy))
                     .foregroundStyle(.black)

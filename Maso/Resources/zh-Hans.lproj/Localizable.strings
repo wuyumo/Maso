@@ -679,7 +679,9 @@
 "Mon" = "周一";
 /* History 月度 stats */
 "Days this month" = "本月天数";
+"Day this month" = "本月天数";
 "Sets this month" = "本月组数";
+"Set this month" = "本月组数";
 /* 肌肉状态 legend (累计 volume 衰减模型) */
 "Heavy fatigue" = "高度疲劳";
 "Mostly recovered" = "大部分恢复";
@@ -859,6 +861,7 @@
 "Create your own" = "自己创建";
 "Custom exercises live only on this device. You can use them in plans and they'll appear in all your pickers." = "自定义动作只存在本机。可加进训练计划，并出现在所有动作选择列表中。";
 "Days this week" = "本周天数";
+"Day this week" = "本周天数";
 "Default sets" = "默认组数";
 "Discard" = "丢弃";
 "Discard changes?" = "丢弃改动？";
@@ -879,6 +882,7 @@
 "Return to the everyday library" = "返回常用动作库";
 "Search" = "搜索";
 "Sets this week" = "本周组数";
+"Set this week" = "本周组数";
 "Show %d variants" = "显示 %d 个变种";
 "Time's up" = "时间到";
 "Training goal" = "训练目标";

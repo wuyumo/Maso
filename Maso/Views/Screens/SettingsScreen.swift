@@ -530,6 +530,8 @@ private struct Choice<Value: Hashable>: View {
                     // 单位 label 在阿拉伯文 / 俄文等环境下能查到对应翻译
                     Text(LocalizedStringKey(label))
                         .font(.system(size: 12, weight: .bold))
+                        .lineLimit(1)
+                        .fixedSize(horizontal: true, vertical: false)   // 段内 label 恒单行 (防 "Mon" 被挤成两行)
                         .padding(.horizontal, 12)
                         .padding(.vertical, 6)
                         .background(value == val ? MasoColor.accent : Color.clear)
