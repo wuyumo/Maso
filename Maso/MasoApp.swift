@@ -55,6 +55,11 @@ struct MasoApp: App {
             .tint(MasoColor.text)
             // 跟 effectiveLanguage 绑定的 id —— 语言变了 → ZStack 整体重建 → 所有 Text 重读
             .id(languageManager.effectiveLanguage.rawValue)
+            // 关键: SwiftUI Text(LocalizedStringKey) 不走被 swizzle 的 Bundle.localizedString,
+            // 而是按 environment.locale 选 .lproj. 之前只 swizzle → NSLocalizedString 实时切、
+            // 但 SwiftUI Text 要重启才变. 这里把 locale 也绑到所选语言 → Text 当场重解析,
+            // 切换语言无需重启 app.
+            .environment(\.locale, Locale(identifier: languageManager.effectiveLanguage.rawValue))
             // App 进后台 → 强制持久化一次, 防止用户改了 settings 没 save 就被系统挂起.
             // (Settings 里 toggle 不直接调 dataStore.save(), 走默认 SwiftUI @Bindable mutate.)
             .onChange(of: scenePhase) { _, newPhase in
