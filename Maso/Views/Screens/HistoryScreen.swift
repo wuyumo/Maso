@@ -1061,13 +1061,11 @@ private struct SessionCard: View {
                 .foregroundStyle(MasoColor.textDim)
                 .lineLimit(1)
 
-            HStack(alignment: .top, spacing: 8) {
+            HStack(spacing: 8) {
                 Text(title)
                     .font(.system(size: 16, weight: .bold))
                     .foregroundStyle(MasoColor.text)
-                    .lineLimit(2)                       // 长自动命名保留区分尾巴 (…Pull (Upper)), 不中途截断
-                    .multilineTextAlignment(.leading)
-                    .fixedSize(horizontal: false, vertical: true)
+                    .lineLimit(1)                       // owner: 超长用 … 截断不折行
                 // PR 标记 — 沉默的进步反馈 (理念 4): 不弹通知不庆祝, 一个小🏆 + 数字一眼可见
                 if session.prCount > 0 {
                     HStack(spacing: 3) {

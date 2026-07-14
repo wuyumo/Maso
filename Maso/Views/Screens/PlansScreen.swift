@@ -416,14 +416,12 @@ struct PlanRow: View {
 
                 // ── 右: 文字区 (tap → detail) ──
                 VStack(alignment: .leading, spacing: 5) {
-                    HStack(alignment: .top, spacing: 6) {
+                    HStack(spacing: 6) {
                         PlanSourceBadge(source: plan.resolvedSource)   // AI / Classics 来源标签
                         Text(plan.name)
                             .font(.system(size: 16, weight: .bold))
                             .foregroundStyle(MasoColor.text)
-                            .lineLimit(2)                       // 长自动命名保留区分尾巴, 不中途截断
-                            .multilineTextAlignment(.leading)
-                            .fixedSize(horizontal: false, vertical: true)
+                            .lineLimit(1)                       // owner: 超长用 … 截断不折行
                         Spacer(minLength: 0)
                         Image(systemName: "chevron.right")
                             .font(.system(size: 11, weight: .heavy))

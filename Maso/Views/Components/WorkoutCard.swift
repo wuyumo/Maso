@@ -163,7 +163,7 @@ struct WorkoutCard: View {
                     Spacer()
                 }
                 .padding(.horizontal, MasoMetrics.cardPadding)
-                .padding(.top, MasoMetrics.cardPadding - 2)
+                .padding(.top, MasoMetrics.cardPadding + 2)   // 顶部多留白, kicker 不顶着卡边 (owner: 别太挤)
                 .padding(.bottom, 4)
             }
 
@@ -173,9 +173,7 @@ struct WorkoutCard: View {
                 Text(plan.name)
                     .font(.system(size: 16, weight: .bold))
                     .foregroundStyle(MasoColor.text)
-                    .lineLimit(2)                       // 长自动命名 (…Pull (Mid)) 保留区分尾巴, 不再中途截断
-                    .multilineTextAlignment(.leading)
-                    .fixedSize(horizontal: false, vertical: true)
+                    .lineLimit(1)                       // owner: 大卡标题保持单行, 超长用 … 截断不折行
                 Spacer()
                 if onShowDetail != nil {
                     Image(systemName: "chevron.right")
@@ -185,7 +183,7 @@ struct WorkoutCard: View {
             }
             .padding(.horizontal, MasoMetrics.cardPadding)
             // 没 kicker 时, title 自己撑顶部留白
-            .padding(.top, resolvedKicker == nil ? MasoMetrics.cardPadding - 2 : 0)
+            .padding(.top, resolvedKicker == nil ? MasoMetrics.cardPadding + 2 : 0)
 
             // AI 理由 — LLM 给的"为什么这么排今天这套". 模板写不出这句自定义文案 →
             // 用户一眼看出"这是真 AI, 不是本地模板". 仅 .ai 计划有 rationale.
@@ -240,7 +238,7 @@ struct WorkoutCard: View {
                     // nil-width sizing pass 下 .fixedSize 会回报无限 ideal 宽度, 整行连同后面都不渲染.
                 Spacer(minLength: 0)
             }
-            .padding(.top, 16)
+            .padding(.top, 20)   // 标题区与肌肉图之间多留白 (owner: 别太挤)
 
             // 等高模式: 卡被外部拉到统一高度时, 多出来的空间垫在这里 —
             // 底部行连同 play 键沉到卡底 (播放键仍钉右下). 自然高度时 Spacer 为 0, 无感.
