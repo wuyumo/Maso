@@ -15,8 +15,14 @@ extension View {
         self
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(14)
-            .glassCardBackground()
+            .flatCardBackground()
             .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
+    }
+
+    /// 扁平卡底 — 纯 surface 填充, 无玻璃折光/无描边 (owner: routine 等内容卡去边框, 只留底色).
+    /// Coach composer 仍走 glassCardBackground (保留玻璃 + 描边), 不受此影响.
+    func flatCardBackground(cornerRadius: CGFloat = MasoMetrics.cornerRadiusMedium) -> some View {
+        self.background(MasoColor.surface, in: RoundedRectangle(cornerRadius: cornerRadius))
     }
 
     /// 液态玻璃卡底 (试验性, 回退点 tag pre-liquid-glass; owner 拍板: 全部卡片用 iOS 原生

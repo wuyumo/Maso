@@ -274,7 +274,7 @@ struct InsightsChartsView: View {
             .frame(height: height)
         }
         .padding(14)
-        .glassCardBackground()
+        .flatCardBackground()
         .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
     }
 
@@ -326,7 +326,7 @@ struct InsightsChartsView: View {
                 }
             }
             .padding(14)
-            .glassCardBackground()
+            .flatCardBackground()
             .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
         }
     }
@@ -393,7 +393,7 @@ struct InsightsChartsView: View {
                 } }
             }
             .padding(14)
-            .glassCardBackground()
+            .flatCardBackground()
             .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
         }
     }
@@ -432,7 +432,7 @@ struct InsightsChartsView: View {
                 .frame(height: 132)
             }
             .padding(14)
-            .glassCardBackground()
+            .flatCardBackground()
             .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
         }
     }
@@ -501,7 +501,7 @@ struct InsightsChartsView: View {
                 .frame(height: CGFloat(rows.count) * 22 + 6)
             }
             .padding(14)
-            .glassCardBackground()
+            .flatCardBackground()
             .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
         }
     }
@@ -542,7 +542,7 @@ struct InsightsChartsView: View {
             heatmapLegend
         }
         .padding(14)
-        .glassCardBackground()
+        .flatCardBackground()
         .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
     }
 
@@ -657,7 +657,7 @@ struct InsightsChartsView: View {
                 .frame(height: 132)
             }
             .padding(14)
-            .glassCardBackground()
+            .flatCardBackground()
             .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
         }
     }

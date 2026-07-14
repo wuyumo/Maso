@@ -410,7 +410,7 @@ struct HistoryScreen: View {
                 embedded: true
             )
         }
-        .glassCardBackground()
+        .flatCardBackground()
         .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
         .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
     }
@@ -1129,7 +1129,7 @@ private struct SessionCard: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(MasoMetrics.cardPadding - 4)
-        .glassCardBackground()
+        .flatCardBackground()
         .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
     }
 }
