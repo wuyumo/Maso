@@ -101,9 +101,6 @@ struct RootView: View {
             // 顶栏走查用: 只负责落 Coach tab, sheet/种子对话由 CoachScreen 自己读 env 拉起
             // (templatesPresented/prefsPresented 是 CoachScreen 私有 state, 不走 binding 减少管线).
             tab = .coach
-        case "classics":
-            // Today 的 Classics (CommunityScreen) — sheet 由 TodayScreen 读 env 拉起.
-            tab = .today
         case "plan_detail":
             // 计划详情 sheet — 复用 newPlanForEdit 通道 (今日推荐做内容, 截图够看).
             tab = .today

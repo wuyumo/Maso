@@ -27,6 +27,14 @@ enum SupportedLanguage: String, CaseIterable, Identifiable {
 
     var id: String { rawValue }
 
+    /// 实际打包了 .lproj 翻译的语言 — 语言选择器只列这些 (避免"选了没反应"的死选项).
+    /// Bundle.main.localizations 返回 ["en", "zh-Hans", "Base"...], 跟 rawValue 精确匹配;
+    /// 未来补新翻译 (加 lproj) 自动回列.
+    static let shipped: [SupportedLanguage] = {
+        let bundled = Set(Bundle.main.localizations)
+        return allCases.filter { bundled.contains($0.rawValue) }
+    }()
+
     /// 用户在自己的语言里看到的语言名 (永远用 native name, 跟 iOS Settings.app 一致)
     var nativeName: String {
         switch self {
@@ -136,9 +144,12 @@ final class LanguageManager {
     nonisolated private static let storageKey = "maso.selectedLanguage"
 
     private init() {
-        // 从 UserDefaults 读上次选择
+        // 从 UserDefaults 读上次选择. 曾经选择器列过未打包的语言 (ja/ko 等) — 老用户可能
+        // 持久化了一个没有 .lproj 的选择, 现在选择器已按 shipped 过滤, 把 off-list 残留
+        // 归位成 nil (跟随系统), 免得 ✓ 无处可落 + AppleLanguages 被写成缺翻译的语言.
         if let raw = UserDefaults.standard.string(forKey: Self.storageKey),
-           let lang = SupportedLanguage(rawValue: raw) {
+           let lang = SupportedLanguage(rawValue: raw),
+           SupportedLanguage.shipped.contains(lang) {
             self.selectedLanguage = lang
         }
         // 不管用户有没有显式选 (selectedLanguage 可能为 nil), 都 apply 一次 ——

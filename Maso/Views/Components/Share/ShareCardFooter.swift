@@ -271,3 +271,21 @@ struct RoutineShareCard: View {
         return out
     }
 }
+
+/// 共用的 stat 单元 — 大数字 + 下方小 label
+/// (原定义在 WorkoutCompleteShareCard.swift; 该卡退役删除时挪来这里 — 5 张活卡都在用.)
+struct ShareStat: View {
+    let value: String
+    let label: String
+    var body: some View {
+        VStack(spacing: 2) {
+            Text(value)
+                .font(.system(size: 18, weight: .heavy).monospacedDigit())
+                .foregroundStyle(MasoColor.text)
+            Text(label.uppercased())
+                .font(.system(size: 9, weight: .bold))
+                .tracking(1.2)
+                .foregroundStyle(MasoColor.textDim)
+        }
+    }
+}

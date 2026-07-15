@@ -25,8 +25,10 @@ struct LanguagePickerSheet: View {
                     }
                     Divider().background(MasoColor.borderSoft)
 
-                    // 全部支持语言
-                    ForEach(SupportedLanguage.allCases) { lang in
+                    // 只列真正打包了 .lproj 的语言 — 曾经全量列 12 种, 但只带 en+zh-Hans 两套翻译,
+                    // 选日/韩等 10 个选项界面纹丝不动 (静默回落英文), 观感是 bug. 按 Bundle 实际
+                    // localization 过滤: 未来补翻译 (新增 lproj) 自动回列, 不用改这里.
+                    ForEach(SupportedLanguage.shipped) { lang in
                         LanguageRow(
                             flag: lang.flag,
                             title: lang.nativeName,

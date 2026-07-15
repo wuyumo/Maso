@@ -8,9 +8,8 @@ options:
   xcodeVersion: "26.0"
 
 packages:
-  Lottie:
-    url: https://github.com/airbnb/lottie-spm
-    exactVersion: "4.5.2"
+  # (Lottie 已摘除 — 唯一使用者 LottieView.swift 是从未接线的死代码, 连同 lottie-pulse.json
+  #  一起删了; 白赚二进制体积. 以后真要用再加回.)
   # 2026-05 anatomy 重做 — MuscleMap SwiftUI SDK 提供 36 个肌群 (含 14 个 sub-muscle)
   # 解剖学正确的 bezier polygon. 替换原 react-body-highlighter 数据 (后者只有 17 个 major).
   # 接入方式: BodyHint.swift 包裹 MuscleMap.BodyView, MuscleMapping.swift 做 enum 映射.
@@ -51,7 +50,6 @@ targets:
     type: application
     platform: iOS
     dependencies:
-      - package: Lottie
       - package: MuscleMap
       # Widget extension — 内嵌进 .ipa, 锁屏 / Dynamic Island Live Activity 走它
       - target: MasoWidgets

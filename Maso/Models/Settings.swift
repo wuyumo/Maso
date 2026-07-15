@@ -112,11 +112,6 @@ struct UserSettings: Codable, Sendable {
     /// sheet 里可直接读 / 改 / 清的多行编辑器. Codable 默认空串 → 老数据安全解码.
     var coachMemory: String = ""
 
-    /// 在「今日」页时, 再次点击高亮的中间 Tab 是否直接启动推荐训练
-    /// true (默认): 二次点击 = 启动今日推荐训练 (快捷)
-    /// false:       二次点击 = 无操作
-    var quickStartOnActiveTab: Bool = true
-
     /// Pro 订阅状态 — nil = free 用户
     /// (MVP 阶段是本地 mock, 生产环境接 StoreKit 2)
     var proSubscription: ProSubscription? = nil
@@ -144,9 +139,6 @@ struct UserSettings: Codable, Sendable {
     /// 已经成功写到 HealthKit 的 session id 集合 (sessionId = "planId|day" 格式或自由组).
     /// 避免同一次训练重复 push.
     var healthKitSyncedSessionIds: Set<String> = []
-
-    /// 用户是否已经看过"点中间 Tab 开始训练"的首次提示 — 看过后不再展示.
-    var hasSeenCenterTabHint: Bool = false
 
     /// 是否已经请求过 App Store 评分 — 只在用户练到一定次数后请求一次 (iOS 自身也会限频, 每年至多 3 次).
     var hasRequestedReview: Bool = false

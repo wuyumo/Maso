@@ -220,7 +220,7 @@ struct TrainingSettingsSection: View {
                     }
                 )
             )
-            // (移除: "Quick-start from center tab" — 入口已不在; 该行为仍按 settings 默认值生效.)
+            // (移除: "Quick-start from center tab" — 中央 tab 双形态已随 BottomNav 退役, 设置字段一并删除.)
             // (移除: "Show muscle subdivisions" — 不再让用户切换, 始终按默认显示细分肌群.)
 
             // P2-4 / P2-11: 说明这些偏好的作用域 — 否则用户改了"默认组数"看自建 plan 没变会以为坏了.

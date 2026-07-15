@@ -33,8 +33,6 @@ struct TodayScreen: View {
     @State private var detailPlan: Plan? = nil
     /// 删 plan 的二次确认 (从原 Plans 页迁来).
     @State private var pendingDeletePlanId: String? = nil
-    /// 社区精选 sheet (从原 Plans 页迁来).
-    @State private var communityPresented: Bool = false
     /// 图片导入 routine (#image-import): 选图 → QR/OCR 解析 → ImportedPlanSheet 确认.
     @State private var importPickerShown = false
     @State private var importPickedImage: UIImage? = nil
@@ -275,16 +273,8 @@ struct TodayScreen: View {
             .presentationDetents([.medium, .large])
             .presentationDragIndicator(.visible)
         }
-        // showcase "classics" 截图路由 (仅截图流水线注入 env; 生产恒空 no-op).
-        .onAppear {
-            if ProcessInfo.processInfo.environment["MASO_SHOWCASE"] == "classics" {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) { communityPresented = true }
-            }
-        }
-        .sheet(isPresented: $communityPresented) {
-            CommunityScreen()
-            .presentationDragIndicator(.visible)
-        }
+        // (showcase "classics" 路由 + CommunityScreen sheet 已删 — CommunityScreen 生产不可达,
+        //  Classics 现役实现是 ClassicsSheet (PlansScreen.swift), 走 Today 入口卡 addRoute 打开.)
         // 轮播标题行 "All" → 完整管理 sheet (定义在 CoachScreen.swift, Coach 的照片导入路径也用它).
         // 优化卡 Apply: Pro gate 在本侧过闸后, 经 AppRouter 深链到 Coach 对话流发 focusNote
         // (surface "optimize", 跟 Coach 侧 All sheet 的语义一致 — CoachScreen 消费 pendingOptimizeFocus).
