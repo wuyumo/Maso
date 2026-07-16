@@ -42,9 +42,8 @@
 | `surfaceHi` | #262626 | 卡片内的二级控件 (stepper 等) |
 | `borderSoft` | white@8% | 分隔线 |
 | `negative` | #F3727F | "结束训练" 等危险操作 |
-| `restBlue` | **#549EED** | 恢复热图的"疲劳/休息"蓝 — 唯一的"停"色, 只出现在恢复热图 |
 
-**恢复热图语义 (2026-07 owner 拍板反转)**: 绿=可以练 (fresh 0.85 / almost 0.45), 蓝=疲劳别练 (recovering 0.5 / fatigued 0.9)。全 app 绿恒等于"练"(今天要练/练过/可以练), 蓝是唯一例外色。映射真值 = `MasoColor.recoveryHeatStyle` / `fatigueGhostStyle`。
+**恢复热图语义 (2026-07 二轮拍板, 反转试过后撤回)**: **绿=练过点亮 (越累越亮 1.0/0.6/0.3), 灰=没点亮=该去练**。心智模型="点亮"——练完 routine 对应肌肉点成绿色(成果感), 随恢复熄灭; 用户的目标是把灰的点亮。映射真值 = `MasoColor.recoveryHeatStyle`。
 
 **强调色只用一种**。不要彩虹。
 

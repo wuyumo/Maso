@@ -233,8 +233,8 @@ private struct QuickMuscleStep: View {
             // 暴露的 major chip (chest / back / biceps / quads etc.), 让 tap = "选这一整块",
             // 跟 chip 操作语义一致.
             //
-            // 当 showMuscleStatus = true 时切换到疲劳幽灵热图: 只给疲劳/恢复中的肌肉上蓝色警示
-            // (fresh 不点亮, 保住"绿=已选中"的对比度), 用户看着蓝色避开没恢复的肌群.
+            // 当 showMuscleStatus = true 时切换到恢复热图: 疲劳的肌肉绿色点亮 (越累越亮),
+            // fresh 保持灰 — 用户看着亮绿避开没恢复的肌群; 选中+疲劳 = 白色警示.
             // 此时点 tap 仍走 onMuscleTap (能直接点击未恢复肌肉填进去), 行为不变.
             HStack {
                 Spacer()
@@ -247,7 +247,7 @@ private struct QuickMuscleStep: View {
                         synergists: synergistsArr,
                         height: MasoMetrics.bodyHintLarge,
                         region: detectBodyRegion(Array(selected) + synergistsArr),
-                        heatStyleFor: { m in MasoColor.fatigueGhostStyle(muscle: m, fatigueMap: fatigueMap) },
+                        heatStyleFor: { m in MasoColor.recoveryHeatStyle(muscle: m, fatigueMap: fatigueMap) },
                         warnFor: { m in MuscleStatusCompute.tierFor(muscle: m, fatigueMap: fatigueMap) == .fatigued },
                         onMuscleTap: { m in
                             let key = MuscleSelector.majorOf(m)

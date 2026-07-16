@@ -92,9 +92,9 @@ enum MuscleStatusCompute {
         return result
     }
 
-    /// 恢复四档 — 阈值跟旧 opacity 映射一致, 但输出语义档位而非透明度.
-    /// 颜色/透明度由视图层决定 (MasoColor.recoveryHeatStyle / fatigueGhostStyle):
-    /// owner 拍板语义反转 — 绿=可以练, 蓝=疲劳别练.
+    /// 恢复四档 — 阈值跟 opacity 映射一致, 输出语义档位而非透明度.
+    /// 颜色/透明度由视图层决定 (MasoColor.recoveryHeatStyle):
+    /// 绿=练过点亮 (越累越亮), 灰=没点亮=该去练 (owner 二轮拍板, 反转试过后撤回).
     enum RecoveryTier {
         case fresh              // < 0.12 (或无记录) — 可以练
         case mostlyRecovered    // 0.12 ..< 0.35     — 快恢复了

@@ -81,11 +81,11 @@ struct MuscleStatusOverviewCard: View {
                         } else if isPro {
                             // Pro: 4 档精度图例 + train-the-gaps 定向 CTA (完整可执行价值).
                             VStack(alignment: .leading, spacing: 4) {
-                                // 4 档恢复, 跟 MasoColor.recoveryHeatStyle 配色逐一对齐 (绿=可练/蓝=疲劳).
-                                legendRow(swatch: MasoColor.accent.opacity(0.85), label: "Ready to train")
-                                legendRow(swatch: MasoColor.accent.opacity(0.45), label: "Almost ready")
-                                legendRow(swatch: MasoColor.restBlue.opacity(0.50), label: "Recovering")
-                                legendRow(swatch: MasoColor.restBlue.opacity(0.90), label: "Fatigued")
+                                // 4 档恢复, 跟 MasoColor.recoveryHeatStyle 配色逐一对齐 (绿=练过点亮/灰=没点亮).
+                                legendRow(swatch: MasoColor.accent.opacity(1.00), label: "Heavy fatigue")
+                                legendRow(swatch: MasoColor.accent.opacity(0.60), label: "Recovering")
+                                legendRow(swatch: MasoColor.accent.opacity(0.30), label: "Mostly recovered")
+                                legendRow(swatch: Color(red: 0.165, green: 0.165, blue: 0.165), label: "Fresh")
                             }
                             // 有 gap → "Train the gaps" CTA; 没 gap (健康状态) → 正向"全部跟上"标签.
                             // (分享圆钮已移到整个区域右上角 overlay, 不在这一行.)
@@ -122,10 +122,10 @@ struct MuscleStatusOverviewCard: View {
                             // 免费: 图例模糊 (看得见有 4 档精度但读不清) + 解锁按钮. 视觉钩子留着,
                             // 逐肌群精度是要解锁的东西.
                             VStack(alignment: .leading, spacing: 4) {
-                                legendRow(swatch: MasoColor.accent.opacity(0.85), label: "Ready to train")
-                                legendRow(swatch: MasoColor.accent.opacity(0.45), label: "Almost ready")
-                                legendRow(swatch: MasoColor.restBlue.opacity(0.50), label: "Recovering")
-                                legendRow(swatch: MasoColor.restBlue.opacity(0.90), label: "Fatigued")
+                                legendRow(swatch: MasoColor.accent.opacity(1.00), label: "Heavy fatigue")
+                                legendRow(swatch: MasoColor.accent.opacity(0.60), label: "Recovering")
+                                legendRow(swatch: MasoColor.accent.opacity(0.30), label: "Mostly recovered")
+                                legendRow(swatch: Color(red: 0.165, green: 0.165, blue: 0.165), label: "Fresh")
                             }
                             .blur(radius: 4.5)
                             .allowsHitTesting(false)

@@ -27,31 +27,17 @@ enum MasoColor {
     // 警告色 — 取消等危险操作
     static let negative = Color(red: 243.0 / 255, green: 114.0 / 255, blue: 127.0 / 255)    // 柔和的红粉
 
-    // 恢复热图 "疲劳/休息" 蓝 — owner 拍板: 肌肉图语义反转, 绿=可以练 / 蓝=疲劳别练.
-    // (绿在全 app 恒等于"练": 今天要练/练过/可以练; 蓝是唯一的"停"色, 只出现在恢复热图.)
-    static let restBlue = Color(red: 84.0 / 255, green: 158.0 / 255, blue: 237.0 / 255)     // #549EED
-
     // MARK: - 恢复热图配色 (跟 MuscleStatusCompute.tierFor 四档对齐)
     //
-    // 完整热图 (Today hero / Progress 状态卡 / 分享卡): 全身都上色 —
-    //   可以练=亮绿 → 快好了=暗绿 → 恢复中=暗蓝 → 疲劳=亮蓝. 眼睛自动被蓝色(别练)吸引,
-    //   绿色主导 = "其余随便练", 跟 Train the gaps 语义一致.
+    // 语义 (owner 二轮拍板, 试过"绿=可练/蓝=疲劳"反转后撤回): **绿=练过点亮 (越累越亮), 灰=没点亮**.
+    // 心智模型 = "点亮": 练完一个 routine, 对应肌肉就被点成绿色 (成果感), 随恢复慢慢熄灭;
+    // 暗/灰 = 还没点亮 = 该去练它. 跟 routine 卡的"绿=这张卡练到的肌肉"是同一个"点亮"动作.
     static func recoveryHeatStyle(muscle m: MuscleGroup, fatigueMap: [MuscleGroup: Double]) -> (Color, Double)? {
         switch MuscleStatusCompute.tierFor(muscle: m, fatigueMap: fatigueMap) {
-        case .fresh:            return (accent, 0.85)
-        case .mostlyRecovered:  return (accent, 0.45)
-        case .recovering:       return (restBlue, 0.50)
-        case .fatigued:         return (restBlue, 0.90)
-        }
-    }
-
-    /// 幽灵热图 (QuickWorkout 肌群选择器): 只给"疲劳警示"上蓝色, fresh 不点亮 —
-    /// 保住"绿=已选中"的选择对比度 (全身绿的完整热图会淹没选中态).
-    static func fatigueGhostStyle(muscle m: MuscleGroup, fatigueMap: [MuscleGroup: Double]) -> (Color, Double)? {
-        switch MuscleStatusCompute.tierFor(muscle: m, fatigueMap: fatigueMap) {
-        case .fresh, .mostlyRecovered: return nil          // 不点亮 → idleGray
-        case .recovering:              return (restBlue, 0.45)
-        case .fatigued:                return (restBlue, 0.85)
+        case .fresh:            return nil              // 没点亮 → idleGray (Ready to train)
+        case .mostlyRecovered:  return (accent, 0.30)
+        case .recovering:       return (accent, 0.60)
+        case .fatigued:         return (accent, 1.00)
         }
     }
 
