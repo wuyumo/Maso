@@ -111,6 +111,7 @@
 		B695690D9B19F6DD4C248428 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 65A12AE0FF2F890344E8D991 /* Localizable.strings */; };
 		B6A155A1009B7AD3E0B8F93A /* ImportedPlanSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 855B98EF31FFEB5E9C21DA4C /* ImportedPlanSheet.swift */; };
 		B6A3B8B511C76752980A5157 /* TrainingActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E94E7A863D7DD87C5C4EB7D /* TrainingActivityAttributes.swift */; };
+		B8F8DBDF4DD29F8C13166C3B /* ProgressionEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFE96A6B037BBD62E71584D6 /* ProgressionEngine.swift */; };
 		B9A9B0E1423D577E7729F574 /* ExerciseNames.strings in Resources */ = {isa = PBXBuildFile; fileRef = 442FF14A64291FEEEC144E6F /* ExerciseNames.strings */; };
 		BB29ABF8E0E2590167AEA372 /* WorkoutCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2A600A7E0E002CC5B8B3253 /* WorkoutCard.swift */; };
 		BDF71F8A0D436A235F33A486 /* AnalyticsSink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F6414BD5454144D171D2D3 /* AnalyticsSink.swift */; };
@@ -313,6 +314,7 @@
 		DC6C8F3E62397B3CADF62790 /* MuscleStatusComputed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuscleStatusComputed.swift; sourceTree = "<group>"; };
 		DE94CDA9C13C06FBE6DD8572 /* PlanSegments.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanSegments.swift; sourceTree = "<group>"; };
 		DFBD3B16C9810A2419F041FA /* LimitedFlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LimitedFlowLayout.swift; sourceTree = "<group>"; };
+		DFE96A6B037BBD62E71584D6 /* ProgressionEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressionEngine.swift; sourceTree = "<group>"; };
 		E097C6FBEC7E44DBC847FEF6 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		E392D3BCA567E27D36082C9C /* FilterMenuButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterMenuButton.swift; sourceTree = "<group>"; };
 		E4CD0A6C911CC31064AFC8D4 /* CommunityPlans.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityPlans.swift; sourceTree = "<group>"; };
@@ -399,6 +401,7 @@
 				C228082523E5BD38F52B6B76 /* PersistenceController.swift */,
 				DE94CDA9C13C06FBE6DD8572 /* PlanSegments.swift */,
 				18A4AE1F41CAA38374E02E4A /* PlanShareCodec.swift */,
+				DFE96A6B037BBD62E71584D6 /* ProgressionEngine.swift */,
 				D9D16DE103E8C679BEDCC59E /* RecommendedPrograms.swift */,
 				B87F8559328FE38597A76010 /* SubscriptionManager.swift */,
 				39B0ED7125E3D12AB47C8D52 /* WatchSyncManager.swift */,
@@ -902,6 +905,7 @@
 				ACB7B9B537CDB3B86452670C /* PlansScreen.swift in Sources */,
 				04BF37E058F0FB0D5085E382 /* PlateCalculatorSheet.swift in Sources */,
 				3DD8048F21FA7BB1FDEFBCEF /* ProBanner.swift in Sources */,
+				B8F8DBDF4DD29F8C13166C3B /* ProgressionEngine.swift in Sources */,
 				31BF55F4883B0DBAD9BAD245 /* QuickWorkoutScreen.swift in Sources */,
 				9CCA9C0B50357A55CB879DBF /* RecommendedPrograms.swift in Sources */,
 				70639D2DC8C6A85D484742AC /* RestNotificationScheduler.swift in Sources */,

@@ -22,8 +22,8 @@ struct MuscleVisualBlock: View {
     var sideLength: CGFloat = 110
     /// 用户该 session 的照片 (SessionCard 用; WorkoutCard 暂时不传).
     var photo: UIImage? = nil
-    /// 衰减热图模式 — MuscleStatusOverviewCard 用. 传了之后 BodyHint 走 opacityFor 路径 (忽略 muscles 参数).
-    var opacityFor: ((MuscleGroup) -> Double?)? = nil
+    /// 恢复热图模式 — MuscleStatusOverviewCard 用. 传了之后 BodyHint 走 heatStyleFor 路径 (忽略 muscles 参数).
+    var heatStyleFor: ((MuscleGroup) -> (Color, Double)?)? = nil
     /// 粗颗粒模式 — Settings.muscleDetailEnabled 取反时传 true.
     var coarseOnly: Bool = false
 
@@ -39,7 +39,7 @@ struct MuscleVisualBlock: View {
                 muscles: muscles,
                 height: bodyHintHeight,
                 region: .full,
-                opacityFor: opacityFor,
+                heatStyleFor: heatStyleFor,
                 coarseOnly: coarseOnly,
                 panelSpacing: 0
             )

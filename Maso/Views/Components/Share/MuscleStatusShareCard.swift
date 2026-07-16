@@ -8,8 +8,8 @@ import SwiftUI
 //   - 关键数据: 本周训练次数 / 总组数 / 涉及部位
 //   - Footer
 struct MuscleStatusShareCard: View {
-    /// 同 HistoryScreen 的 muscle → lastTrained date 映射, 给 BodyHint 算衰减 opacity
-    let muscleOpacity: (MuscleGroup) -> Double?
+    /// muscle → (颜色, 透明度) 恢复热图映射 (绿=可以练 / 蓝=疲劳)
+    let muscleStyle: (MuscleGroup) -> (Color, Double)?
     let workoutsThisWeek: Int
     let totalSetsThisWeek: Int
     let muscleSectionsHit: Int  // 涉及多少个大肌群 section (chest/back/...)
@@ -46,7 +46,7 @@ struct MuscleStatusShareCard: View {
                 BodyHint(
                     muscles: [],
                     height: 200,
-                    opacityFor: muscleOpacity,
+                    heatStyleFor: muscleStyle,
                     coarseOnly: coarseOnly
                 )
                 .padding(.top, 4)

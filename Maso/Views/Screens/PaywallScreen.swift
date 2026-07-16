@@ -140,6 +140,8 @@ struct PaywallScreen: View {
                        desc: "No more 3-plan cap — build a plan for every split.")
             FeatureRow(icon: "clock.arrow.circlepath", title: "Full history",
                        desc: "Permanent record + PR tracking + volume trends.")
+            FeatureRow(icon: "arrow.up.right.circle.fill", title: "Smart progression",
+                       desc: "Earn the next 2.5 kg — weight suggestions from your logged sets.")
             FeatureRow(icon: "chart.bar.xaxis", title: "Advanced analytics",
                        desc: "Muscle balance, weekly volume, weak spots.")
             FeatureRow(icon: "plus.app.fill", title: "Custom exercises",

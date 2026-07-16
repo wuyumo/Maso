@@ -15,7 +15,7 @@ import SwiftUI
 //   - 默认 (square=false): 每个 panel 宽度按 region viewBox 的自然 aspect 计算 (~0.5 wide × tall)
 //   - square=true: 每个 panel 锁定为 height × height (列表 / player thumbnail 用)
 //   - region: full / upper / lower 控制 viewBox 裁剪
-//   - opacityFor: per-muscle opacity 回调 (history 衰减热图模式)
+//   - heatStyleFor: per-muscle (颜色,透明度) 回调 (恢复热图模式: 绿=可练/蓝=疲劳)
 //   - panelSpacing: 前后 panel 间距 (默认 6, MuscleVisualBlock 通常传 0)
 //   - onMuscleTap: 用户点击身体某块肌肉时触发 — ray-cast point-in-polygon hit test
 struct BodyHint: View {
@@ -27,8 +27,12 @@ struct BodyHint: View {
     var region: BodyRegion = .full
     /// true = 每个 panel 锁成 height × height 的正方形 slot (列表 / player 用)
     var square: Bool = false
-    /// 可选 per-muscle opacity 回调 (history 衰减模式). 传了之后 muscles / synergists 被忽略.
-    var opacityFor: ((MuscleGroup) -> Double?)? = nil
+    /// 可选 per-muscle (颜色, 透明度) 回调 — 恢复热图模式 (绿=可以练 / 蓝=疲劳, owner 拍板反转).
+    /// 返回 nil → 该肌肉走 idleGray 剪影. 传了之后 muscles / synergists 被忽略 (除非 combined 模式).
+    /// (v1 是单色 opacityFor — 语义反转需要双色, 升级成 style 回调.)
+    var heatStyleFor: ((MuscleGroup) -> (Color, Double)?)? = nil
+    /// combined 模式下的"选中且疲劳"白色警示 — QuickWorkout 选择器用 (选中=绿, 疲劳警示=白).
+    var warnFor: ((MuscleGroup) -> Bool)? = nil
     /// 可选 tap 回调 — 用户点身体某块肌肉时触发.
     var onMuscleTap: ((MuscleGroup) -> Void)? = nil
     /// "粗颗粒模式" — true 时不画 sub muscle 之间的细分描边, 让同一 major 的 polygon 视觉合并成一整块.
@@ -180,26 +184,31 @@ struct BodyHint: View {
         // 任何灰阶上剪影都看得清 — 尤其是这些暗的非绿部分. 绿色高亮仍是最亮的焦点.
         let idleGray = Color.white.opacity(0.22)
         let synergistColor = color.opacity(0.35)
-        let isCombinedMode = (opacityFor != nil) && !muscles.isEmpty
+        let isCombinedMode = (heatStyleFor != nil) && !muscles.isEmpty
         for poly in polys {
             guard poly.points.count >= 3 else { continue }
             let fillColor: Color
             if poly.muscle == .fullBody {
                 fillColor = idleGray
-            } else if isCombinedMode, let opacityFor {
+            } else if isCombinedMode, let heatStyleFor {
                 let isSelected = expanded.contains(poly.muscle)
                 let isSyn = !isSelected && synergistsExpanded.contains(poly.muscle)
-                let op = opacityFor(poly.muscle) ?? 0
                 if isSelected {
-                    fillColor = op >= 0.95 ? Color.white : color
+                    // 选中 = 目标绿; "选中但疲劳"用白色警示 (warnFor 由调用方按 tier 判定).
+                    fillColor = (warnFor?(poly.muscle) == true) ? Color.white : color
                 } else if isSyn {
                     fillColor = synergistColor
+                } else if let (c, o) = heatStyleFor(poly.muscle) {
+                    fillColor = c.opacity(o)
                 } else {
-                    fillColor = op > 0 ? color.opacity(op) : idleGray
+                    fillColor = idleGray
                 }
-            } else if let opacityFor {
-                let op = opacityFor(poly.muscle) ?? 0
-                fillColor = op > 0 ? color.opacity(op) : idleGray
+            } else if let heatStyleFor {
+                if let (c, o) = heatStyleFor(poly.muscle) {
+                    fillColor = c.opacity(o)
+                } else {
+                    fillColor = idleGray
+                }
             } else {
                 let isHit = expanded.contains(poly.muscle)
                 let isSyn = !isHit && synergistsExpanded.contains(poly.muscle)

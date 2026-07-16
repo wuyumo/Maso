@@ -271,35 +271,47 @@ private func splitPlans(now: Date, byId: [String: Exercise]) -> [Plan] {
 // MARK: - pickTodayPlan — 选今日推荐
 //
 // 设计原则 (改自 web 的 lib/todayPlan.ts):
-//   主键: **LRU** — 最久没练那张优先 (lastUsedAt 早的优先) → 形成 A→B→C→A→B→C 循环
-//   次键: wantStrengthen 覆盖度 (越多越靠前) → LRU 相同时优先用户想加强的
+//   主键: **恢复档位** — 目标肌群还在疲劳的 plan 沉底 (兑现首屏恢复模型: 推荐真的"按恢复来")
+//   次键: **LRU** — 最久没练那张优先 (lastUsedAt 早的优先) → 形成 A→B→C→A→B→C 循环
+//   再次: wantStrengthen 覆盖度 (越多越靠前) → 同档同 LRU 时优先用户想加强的
 //   末键: createdAt 早的优先 (兜底)
 //
-// 跟 web 的差别: web 是"覆盖度优先"(同一张永远占据顶部), iOS 改成"LRU 优先"(强制轮转).
-// 用户的"今天 A → 几天后 B → 再几天后 C"诉求, LRU 主导才能真正实现.
+// 恢复档位刻意用粗档 (0/1/2) 而不是连续分: 连续分会让推荐天天跳来跳去不可预测;
+// 粗档只在"这张卡的主肌群明显没恢复"时才把它往后推, 全员恢复时完全退化成原 LRU 轮转.
+//   avgFatigue < 0.25 → 档 0 (随便练)  /  0.25..<0.5 → 档 1 (有点疲劳)  /  ≥0.5 → 档 2 (别练这组)
+//
+// 跟 web 的差别: web 是"覆盖度优先"(同一张永远占据顶部), iOS 改成"恢复+LRU 优先"(强制轮转).
 
-func pickTodayPlan(plans: [Plan], settings: UserSettings, exById: [String: Exercise]) -> Plan? {
+func pickTodayPlan(plans: [Plan], settings: UserSettings, exById: [String: Exercise],
+                   fatigueMap: [MuscleGroup: Double] = [:]) -> Plan? {
     guard !plans.isEmpty else { return nil }
     let strengthen = Set(settings.wantStrengthen)
 
-    // 给每张 plan 算 wantStrengthen 覆盖分
-    let scored: [(plan: Plan, coverage: Int, recency: Date, created: Date)] = plans.map { plan in
+    // 给每张 plan 算 wantStrengthen 覆盖分 + 主肌群平均疲劳档
+    let scored: [(plan: Plan, fatigueTier: Int, coverage: Int, recency: Date, created: Date)] = plans.map { plan in
         var coverage = 0
-        if !strengthen.isEmpty {
-            var seen: Set<MuscleGroup> = []
-            for s in plan.steps {
-                guard let ex = exById[s.exerciseId] else { continue }
-                // Plan-level去重: 同一肌群在一张卡里只算一次
-                for mg in expandAnatomyMuscles(ex.muscleGroups) where !seen.contains(mg) {
-                    seen.insert(mg)
-                    if strengthen.contains(mg) { coverage += 1 }
-                }
+        var primaryMuscles: Set<MuscleGroup> = []
+        var seen: Set<MuscleGroup> = []
+        for s in plan.steps {
+            guard let ex = exById[s.exerciseId] else { continue }
+            primaryMuscles.formUnion(expandAnatomyMuscles(ex.primaryMuscles))
+            // Plan-level去重: 同一肌群在一张卡里只算一次
+            for mg in expandAnatomyMuscles(ex.muscleGroups) where !seen.contains(mg) {
+                seen.insert(mg)
+                if strengthen.contains(mg) { coverage += 1 }
             }
         }
-        return (plan, coverage, plan.lastUsedAt ?? .distantPast, plan.createdAt)
+        // 主肌群平均疲劳 → 粗档. 只看 primary (synergist 疲劳不该拦住一张卡).
+        var tier = 0
+        if !fatigueMap.isEmpty, !primaryMuscles.isEmpty {
+            let avg = primaryMuscles.reduce(0.0) { $0 + (fatigueMap[$1] ?? 0) } / Double(primaryMuscles.count)
+            tier = avg >= 0.5 ? 2 : (avg >= 0.25 ? 1 : 0)
+        }
+        return (plan, tier, coverage, plan.lastUsedAt ?? .distantPast, plan.createdAt)
     }
-    // 排序: LRU 主键 (早的优先), 同 LRU 用覆盖度 (高的优先), 都同用 createdAt
+    // 排序: 恢复档 (低=更恢复 优先) → LRU (早的优先) → 覆盖度 (高的优先) → createdAt
     let sorted = scored.sorted { a, b in
+        if a.fatigueTier != b.fatigueTier { return a.fatigueTier < b.fatigueTier }
         if a.recency != b.recency { return a.recency < b.recency }
         if a.coverage != b.coverage { return a.coverage > b.coverage }
         return a.created < b.created

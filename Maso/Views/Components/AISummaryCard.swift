@@ -26,6 +26,10 @@ struct AISummaryCard: View {
     /// 本 session 刚生成过 → 显 "Updated" 标一次.
     @State private var justUpdated = false
     @State private var didAppear = false
+    /// "已是最新" 2 秒提示 — Refresh 被 dataHash 门拦下时给的反馈 (没花钱, 没打网络).
+    @State private var upToDate = false
+    /// 手动刷新 30s 冷却 — 防双击/手抖连发 (dataHash 门是主闸, 这是兜底).
+    @State private var lastManualRefreshAt: Date? = nil
 
     private var isPro: Bool { data.settings.isPro }
 
@@ -60,6 +64,20 @@ struct AISummaryCard: View {
 
     private func regenerate() {
         guard isPro, !isGenerating else { return }
+        // 滥用闸 (owner 拍板): Refresh 不再裸连 DeepSeek —
+        //   ① dataHash 门: 训练数据没变 (没记新组) → 不打网络, 显示"已是最新" 2 秒.
+        //      数据只在记组后变化, 这一道就杀死了连点刷屏 (刷一万次也只有第一次花钱).
+        //   ② 30s 冷却: 数据刚变时也不许连发 (双击/手抖), 生成中本就 disabled, 这是兜底.
+        if summary != nil, !data.shouldRegenerateSummary() {
+            Haptics.tap()
+            withAnimation(.easeOut(duration: 0.2)) { upToDate = true }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                withAnimation(.easeOut(duration: 0.25)) { upToDate = false }
+            }
+            return
+        }
+        if let last = lastManualRefreshAt, Date().timeIntervalSince(last) < 30 { return }
+        lastManualRefreshAt = Date()
         Haptics.tap()
         errorNote = nil
         withAnimation(.easeOut(duration: 0.2)) { isGenerating = true }
@@ -213,6 +231,13 @@ struct AISummaryCard: View {
                     .foregroundStyle(.black)
                     .padding(.horizontal, 6).padding(.vertical, 2)
                     .background(Capsule().fill(MasoColor.accent))
+            } else if upToDate {
+                // dataHash 门拦下 Refresh 时的反馈 — 灰色, 不庆祝 (什么都没发生).
+                Text(NSLocalizedString("Already up to date", comment: "AI summary refresh skipped tag"))
+                    .font(.system(size: 9, weight: .heavy)).tracking(0.5)
+                    .foregroundStyle(MasoColor.textDim)
+                    .padding(.horizontal, 6).padding(.vertical, 2)
+                    .background(Capsule().fill(MasoColor.surfaceHi))
             }
             Spacer()
             if showRefresh {

@@ -20,7 +20,7 @@ import Foundation
 //   let fatigueMap = MuscleStatusCompute.muscleFatigueMap(sets: data.sets, exById: data.exById)
 //   BodyHint(
 //       muscles: [],
-//       opacityFor: { m in MuscleStatusCompute.opacityFor(muscle: m, fatigueMap: fatigueMap) }
+//       heatStyleFor: { m in MasoColor.recoveryHeatStyle(muscle: m, fatigueMap: fatigueMap) }
 //   )
 //
 // 阈值 (跟 MuscleStatusOverviewCard legend 对齐):
@@ -92,12 +92,21 @@ enum MuscleStatusCompute {
         return result
     }
 
-    /// fatigue (0..1) → opacity. 4 档跟 legend 对齐.
-    static func opacityFor(muscle m: MuscleGroup, fatigueMap: [MuscleGroup: Double]) -> Double? {
-        guard let fatigue = fatigueMap[m], fatigue >= 0.12 else { return nil }
-        if fatigue >= 0.65 { return 1.0 }    // Fatigued
-        if fatigue >= 0.35 { return 0.6 }    // Recovering
-        return 0.3                            // Mostly recovered
+    /// 恢复四档 — 阈值跟旧 opacity 映射一致, 但输出语义档位而非透明度.
+    /// 颜色/透明度由视图层决定 (MasoColor.recoveryHeatStyle / fatigueGhostStyle):
+    /// owner 拍板语义反转 — 绿=可以练, 蓝=疲劳别练.
+    enum RecoveryTier {
+        case fresh              // < 0.12 (或无记录) — 可以练
+        case mostlyRecovered    // 0.12 ..< 0.35     — 快恢复了
+        case recovering         // 0.35 ..< 0.65     — 恢复中
+        case fatigued           // ≥ 0.65            — 疲劳
+    }
+
+    static func tierFor(muscle m: MuscleGroup, fatigueMap: [MuscleGroup: Double]) -> RecoveryTier {
+        guard let fatigue = fatigueMap[m], fatigue >= 0.12 else { return .fresh }
+        if fatigue >= 0.65 { return .fatigued }
+        if fatigue >= 0.35 { return .recovering }
+        return .mostlyRecovered
     }
 
     // MARK: - 时间维度 (给 "Train the gaps" 等"老久没练"判断用)

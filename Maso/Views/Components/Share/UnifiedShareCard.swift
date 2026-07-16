@@ -202,8 +202,8 @@ struct WorkoutSectionData {
 
 /// 肌肉状态 (本周 muscle activity) — HistoryScreen 顶部肌肉卡入口默认开.
 struct MuscleStatusSectionData {
-    /// muscle → opacity 衰减映射 (跟 HistoryScreen 的 opacityFor 同义). 没数据 → 该肌群默认灰.
-    var muscleOpacity: (MuscleGroup) -> Double?
+    /// muscle → (颜色, 透明度) 恢复热图映射 (绿=可以练 / 蓝=疲劳). 返回 nil → 该肌群默认灰.
+    var muscleStyle: (MuscleGroup) -> (Color, Double)?
     /// 是否仅显示大肌群 (无细分) — 跟 Settings.muscleDetailEnabled 取反.
     var coarseOnly: Bool
     var workoutsThisWeek: Int
@@ -453,7 +453,7 @@ private struct MuscleStatusSectionView: View {
                     BodyHint(
                         muscles: [],
                         height: 180,
-                        opacityFor: data.muscleOpacity,
+                        heatStyleFor: data.muscleStyle,
                         coarseOnly: data.coarseOnly
                     )
                     Spacer()

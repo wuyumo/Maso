@@ -46,14 +46,14 @@ struct MuscleStatusOverviewCard: View {
             HStack(alignment: .center, spacing: 0) {
                 Spacer(minLength: 0)
                 HStack(alignment: .center, spacing: 20) {
-                    // LEFT: 复用共享 MuscleVisualBlock — 正方形 slot, opacityFor 启用衰减热图.
+                    // LEFT: 复用共享 MuscleVisualBlock — 正方形 slot, heatStyleFor 启用恢复热图 (绿=可练/蓝=疲劳).
                     // ⚠️ 跟其它卡片 (WorkoutCard / SessionCard / PlanRow) 共用一份代码, 改这里同步影响所有.
                     // 免费 → 强制 coarseOnly (粗颗粒热图), 无论用户 muscleDetailEnabled 设置;
                     // Pro → 走用户设置 (精细逐肌群).
                     MuscleVisualBlock(
                         muscles: [],
                         sideLength: slotSize,
-                        opacityFor: { m in MuscleStatusCompute.opacityFor(muscle: m, fatigueMap: fatigueMap) },
+                        heatStyleFor: { m in MasoColor.recoveryHeatStyle(muscle: m, fatigueMap: fatigueMap) },
                         coarseOnly: isPro ? !data.settings.muscleDetailEnabled : true
                     )
                     .frame(width: slotSize, height: slotSize)
@@ -81,11 +81,11 @@ struct MuscleStatusOverviewCard: View {
                         } else if isPro {
                             // Pro: 4 档精度图例 + train-the-gaps 定向 CTA (完整可执行价值).
                             VStack(alignment: .leading, spacing: 4) {
-                                // 4 档 fatigue, 跟 MuscleStatusCompute.opacityFor 阈值对齐.
-                                legendRow(opacity: 1.0, label: "Heavy fatigue")
-                                legendRow(opacity: 0.6, label: "Recovering")
-                                legendRow(opacity: 0.3, label: "Mostly recovered")
-                                legendRow(opacity: nil, label: "Fresh")
+                                // 4 档恢复, 跟 MasoColor.recoveryHeatStyle 配色逐一对齐 (绿=可练/蓝=疲劳).
+                                legendRow(swatch: MasoColor.accent.opacity(0.85), label: "Ready to train")
+                                legendRow(swatch: MasoColor.accent.opacity(0.45), label: "Almost ready")
+                                legendRow(swatch: MasoColor.restBlue.opacity(0.50), label: "Recovering")
+                                legendRow(swatch: MasoColor.restBlue.opacity(0.90), label: "Fatigued")
                             }
                             // 有 gap → "Train the gaps" CTA; 没 gap (健康状态) → 正向"全部跟上"标签.
                             // (分享圆钮已移到整个区域右上角 overlay, 不在这一行.)
@@ -122,10 +122,10 @@ struct MuscleStatusOverviewCard: View {
                             // 免费: 图例模糊 (看得见有 4 档精度但读不清) + 解锁按钮. 视觉钩子留着,
                             // 逐肌群精度是要解锁的东西.
                             VStack(alignment: .leading, spacing: 4) {
-                                legendRow(opacity: 1.0, label: "Heavy fatigue")
-                                legendRow(opacity: 0.6, label: "Recovering")
-                                legendRow(opacity: 0.3, label: "Mostly recovered")
-                                legendRow(opacity: nil, label: "Fresh")
+                                legendRow(swatch: MasoColor.accent.opacity(0.85), label: "Ready to train")
+                                legendRow(swatch: MasoColor.accent.opacity(0.45), label: "Almost ready")
+                                legendRow(swatch: MasoColor.restBlue.opacity(0.50), label: "Recovering")
+                                legendRow(swatch: MasoColor.restBlue.opacity(0.90), label: "Fatigued")
                             }
                             .blur(radius: 4.5)
                             .allowsHitTesting(false)
@@ -193,7 +193,7 @@ struct MuscleStatusOverviewCard: View {
             defaultSections: ShareSections(),
             shareContent: { photo, onTapAdd, _ in
                 MuscleStatusShareCard(
-                    muscleOpacity: { m in MuscleStatusCompute.opacityFor(muscle: m, fatigueMap: fatigue) },
+                    muscleStyle: { m in MasoColor.recoveryHeatStyle(muscle: m, fatigueMap: fatigue) },
                     workoutsThisWeek: days,
                     totalSetsThisWeek: weekSets.count,
                     muscleSectionsHit: sectionsHit,
@@ -216,12 +216,10 @@ struct MuscleStatusOverviewCard: View {
     }
 
     /// 单个 legend 行 — 跟 HistoryScreen 的 legendDot 视觉一致.
-    private func legendRow(opacity: Double?, label: String) -> some View {
+    private func legendRow(swatch: Color, label: String) -> some View {
         HStack(spacing: 6) {
             RoundedRectangle(cornerRadius: 2)
-                .fill(opacity == nil
-                      ? Color(red: 0.165, green: 0.165, blue: 0.165)
-                      : MasoColor.accent.opacity(opacity!))
+                .fill(swatch)
                 .frame(width: 9, height: 9)
             Text(LocalizedStringKey(label))
                 .font(.system(size: 10))

@@ -441,9 +441,12 @@ struct HistoryScreen: View {
         })
         let daysThisWeek = workoutDateSet().intersection(weekDays).count
         let setsThisWeek = setsThisWeekCount()
+        // 中列原是 "Week streak" (连胜) — 踩 DESIGN.md「不做连胜绑架」红线且口径传达不了
+        // (本周练了 2 天却显示 0 = 反激励). 换成累计训练次数: 只增不减的沉默进步反馈.
+        let total = groupedSessions().count
         statsCard(
             value1: "\(daysThisWeek)", label1: daysThisWeek == 1 ? "Day this week" : "Days this week",
-            value2: "\(currentWeekStreak())", label2: "Week streak",
+            value2: "\(total)", label2: total == 1 ? "Workout total" : "Workouts total",
             value3: "\(setsThisWeek)", label3: setsThisWeek == 1 ? "Set this week" : "Sets this week"
         )
     }
@@ -459,9 +462,10 @@ struct HistoryScreen: View {
         }
         let monthDayCount = monthDays.count
         let setsThisMonth = setsThisMonthCount()
+        let total = groupedSessions().count
         statsCard(
             value1: "\(monthDayCount)", label1: monthDayCount == 1 ? "Day this month" : "Days this month",
-            value2: "\(currentWeekStreak())", label2: "Week streak",
+            value2: "\(total)", label2: total == 1 ? "Workout total" : "Workouts total",
             value3: "\(setsThisMonth)", label3: setsThisMonth == 1 ? "Set this month" : "Sets this month"
         )
     }
@@ -791,7 +795,7 @@ struct HistoryScreen: View {
             }
         }
         return MuscleStatusSectionData(
-            muscleOpacity: { m in MuscleStatusCompute.opacityFor(muscle: m, fatigueMap: fatigueMap) },
+            muscleStyle: { m in MasoColor.recoveryHeatStyle(muscle: m, fatigueMap: fatigueMap) },
             coarseOnly: !data.settings.muscleDetailEnabled,
             workoutsThisWeek: days,
             totalSetsThisWeek: weekSets.count,
@@ -1500,7 +1504,7 @@ private struct SessionDetailSheet: View {
     fileprivate func sessionMuscleStatusSection() -> MuscleStatusSectionData {
         let fatigueMap = muscleFatigueMap()
         return MuscleStatusSectionData(
-            muscleOpacity: { m in shareOpacityFor(muscle: m, fatigueMap: fatigueMap) },
+            muscleStyle: { m in shareStyleFor(muscle: m, fatigueMap: fatigueMap) },
             coarseOnly: !data.settings.muscleDetailEnabled,
             workoutsThisWeek: workoutsThisWeekCount(),
             totalSetsThisWeek: totalSetsThisWeek(),
@@ -1522,8 +1526,8 @@ private struct SessionDetailSheet: View {
         MuscleStatusCompute.muscleFatigueMap(sets: data.sets, exById: data.exById)
     }
 
-    private func shareOpacityFor(muscle m: MuscleGroup, fatigueMap: [MuscleGroup: Double]) -> Double? {
-        MuscleStatusCompute.opacityFor(muscle: m, fatigueMap: fatigueMap)
+    private func shareStyleFor(muscle m: MuscleGroup, fatigueMap: [MuscleGroup: Double]) -> (Color, Double)? {
+        MasoColor.recoveryHeatStyle(muscle: m, fatigueMap: fatigueMap)
     }
 
     private func workoutsThisWeekCount() -> Int {

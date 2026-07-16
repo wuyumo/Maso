@@ -263,11 +263,12 @@ struct WorkoutCalendarScreen: View {
     @ViewBuilder
     private var statsRow: some View {
         let monthDates = sessionDates.filter { calendar.isDate($0, equalTo: monthAnchor, toGranularity: .month) }
-        let streak = currentStreak()
+        // 右列原是 "Current streak" (连续天数) — 连胜是明令不做的游戏化 (DESIGN.md 反模式),
+        // 断一天归零 = 反激励. 换成累计训练天数: 只增不减.
         HStack(spacing: 24) {
             statColumn(value: "\(monthDates.count)", label: "Days this month")
             Rectangle().fill(MasoColor.borderSoft).frame(width: 0.5, height: 32)
-            statColumn(value: "\(streak)", label: "Current streak")
+            statColumn(value: "\(sessionDates.count)", label: "Days trained")
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 16)
@@ -288,18 +289,6 @@ struct WorkoutCalendarScreen: View {
                 .textCase(.uppercase)
                 .foregroundStyle(MasoColor.textDim)
         }
-    }
-
-    /// 当前连续训练天数 — 从今天往回数, 直到中断
-    private func currentStreak() -> Int {
-        var n = 0
-        var cursor = today
-        while sessionDates.contains(cursor) {
-            n += 1
-            guard let prev = calendar.date(byAdding: .day, value: -1, to: cursor) else { break }
-            cursor = calendar.startOfDay(for: prev)
-        }
-        return n
     }
 
     // MARK: - Share section data (UnifiedShareCard)
@@ -373,7 +362,7 @@ struct WorkoutCalendarScreen: View {
             }
         }
         return MuscleStatusSectionData(
-            muscleOpacity: { m in shareOpacityFor(muscle: m, lastMap: lastMap) },
+            muscleStyle: { m in shareOpacityFor(muscle: m, lastMap: lastMap).map { (MasoColor.accent, $0) } },
             coarseOnly: !data.settings.muscleDetailEnabled,
             workoutsThisWeek: workoutsThisWeek,
             totalSetsThisWeek: totalSets,

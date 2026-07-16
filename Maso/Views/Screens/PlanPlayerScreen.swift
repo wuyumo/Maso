@@ -1268,6 +1268,32 @@ private struct ExerciseInfo: View {
     /// 训练中编辑参数 — 点右侧 slider icon 弹起
     @State private var editOpen: Bool = false
 
+    /// 渐进建议 — ProgressionEngine 按最近训练日算 "下次该做多重".
+    /// 只在建议跟当前重量差 ≥0.5kg 时给 (相同就闭嘴).
+    private var progressionSuggestion: ProgressionEngine.Suggestion? {
+        guard let w = weight, w > 0 else { return nil }
+        guard let sug = ProgressionEngine.suggestion(
+            exerciseId: exercise.id, targetReps: reps, sets: data.sets, exercise: exercise
+        ) else { return nil }
+        guard abs(sug.weightKg - w) >= 0.5 else { return nil }
+        return sug
+    }
+
+    /// 应用渐进建议 — 走跟手动编辑同一条 updateCurrentStep 路 (含全局参数同步/手表推帧).
+    private func applySuggestion(_ sug: ProgressionEngine.Suggestion) {
+        Haptics.tap()
+        Analytics.shared.track("progression_apply")   // 无 PII
+        store.updateCurrentStep(
+            sets: totalSets,
+            reps: reps,
+            weight: sug.weightKg,
+            duration: duration,
+            exById: data.exById,
+            defaultRest: data.settings.defaultRestSeconds,
+            defaultBetweenExerciseRest: data.settings.defaultBetweenExerciseRestSeconds
+        )
+    }
+
     /// "上次同动作" — 兑现 plan 理念 2 "历史即计划".
     /// nil = 第一次做这个动作 (没历史)
     private var lastSetSummary: String? {
@@ -1323,6 +1349,29 @@ private struct ExerciseInfo: View {
                         .font(.system(size: 11, weight: .semibold).monospacedDigit())
                         .foregroundStyle(MasoColor.accent.opacity(0.85))
                         .shadow(color: .black.opacity(0.5), radius: 4)
+                }
+                // 渐进建议 chip — 上次全部打满 → "Try 57.5 kg (+2.5)"; 连续两场掉次 → "Drop to 50 kg".
+                // 只在第 1 组且建议 ≠ 当前重量时出现 (沉默的进步反馈: 挣到了才说话). 点一下直接应用.
+                if setNumber == 1, !isCountdown, let sug = progressionSuggestion {
+                    Button { applySuggestion(sug) } label: {
+                        HStack(spacing: 4) {
+                            Image(systemName: sug.deltaKg >= 0 ? "arrow.up.right" : "arrow.down.right")
+                                .font(.system(size: 9, weight: .heavy))
+                            Text(sug.deltaKg >= 0
+                                 ? String(format: NSLocalizedString("Try %@ (+%@)", comment: "progression suggestion chip"),
+                                          weightLabel(sug.weightKg), weightLabel(sug.deltaKg))
+                                 : String(format: NSLocalizedString("Drop to %@", comment: "progression deload chip"),
+                                          weightLabel(sug.weightKg)))
+                                .font(.system(size: 11, weight: .heavy).monospacedDigit())
+                        }
+                        .foregroundStyle(MasoColor.accent)
+                        .padding(.horizontal, 9)
+                        .padding(.vertical, 4)
+                        .glassCapsuleButtonBackground(tint: MasoColor.accent.opacity(0.25),
+                                                      fallback: MasoColor.accent.opacity(0.16))
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(Text("Apply suggested weight"))
                 }
                 // 指标行: SETS / REPS / WEIGHT (+ countdown TIME), 每个数值下带 60% 透明的字样标签.
                 // weight 块可点 → 杠铃配重计算器. 末尾 pencil → 完整编辑 sheet.
@@ -2769,15 +2818,15 @@ private struct CompletedView: View {
         return map
     }
 
-    /// 衰减映射 — 跟 HistoryScreen.opacityFor 同义.
-    private var muscleOpacityClosure: (MuscleGroup) -> Double? {
+    /// 最近练过 recency 热图 — 绿=这场/最近练到 (跟恢复热图的绿=可练不冲突: 全 app 绿恒等于"练").
+    private var muscleStyleClosure: (MuscleGroup) -> (Color, Double)? {
         let lastMap = muscleLastTrainedMap()
         return { m in
             guard let last = lastMap[m] else { return nil }
             let days = Date().timeIntervalSince(last) / 86400
-            if days < 1 { return 1.0 }
-            if days < 2 { return 0.6 }
-            if days < 3 { return 0.3 }
+            if days < 1 { return (MasoColor.accent, 1.0) }
+            if days < 2 { return (MasoColor.accent, 0.6) }
+            if days < 3 { return (MasoColor.accent, 0.3) }
             return nil
         }
     }

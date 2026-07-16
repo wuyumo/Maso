@@ -1334,3 +1334,24 @@
 "Share (%lld)" = "分享 (%lld)";
 "Import routines" = "导入训练计划";
 "Add (%lld)" = "添加 (%lld)";
+
+/* 恢复热图图例 (绿=可练/蓝=疲劳, 2026-07 语义反转) */
+"Ready to train" = "可以练";
+"Almost ready" = "快恢复了";
+"Fatigued" = "疲劳";
+
+/* Progress 顶部统计 — 累计训练 (替代 Week streak) */
+"Workouts total" = "累计训练";
+"Workout total" = "累计训练";
+"Days trained" = "累计天数";
+
+/* 渐进建议 chip (播放器) */
+"Try %@ (+%@)" = "试试 %@ (+%@)";
+"Drop to %@" = "降到 %@";
+
+/* AI summary refresh 已是最新 */
+"Already up to date" = "已是最新";
+
+/* Paywall 渐进卖点 */
+"Smart progression" = "智能渐进";
+"Earn the next 2.5 kg — weight suggestions from your logged sets." = "挣到下一个 2.5 kg——根据你的训练记录自动建议下次重量。";

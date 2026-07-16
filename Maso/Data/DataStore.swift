@@ -943,9 +943,11 @@ final class DataStore {
         }
     }
 
-    /// 今日推荐 plan — wantStrengthen 覆盖度 + LRU (跟 web 端 pickTodayPlan 一致)
+    /// 今日推荐 plan — 恢复档位 + LRU + wantStrengthen 覆盖度.
+    /// 把首屏肌肉恢复模型真正接进推荐: 主肌群还在疲劳的 plan 沉底, 全员恢复时退化成 LRU 轮转.
     var todayRecommendedPlan: Plan? {
-        pickTodayPlan(plans: plans, settings: settings, exById: exById)
+        pickTodayPlan(plans: plans, settings: settings, exById: exById,
+                      fatigueMap: MuscleStatusCompute.muscleFatigueMap(sets: sets, exById: exById))
     }
 
     /// Today 主卡实际展示的"今日训练" — TodayScreen 卡片与 RootView 中键 quickStart 共用
