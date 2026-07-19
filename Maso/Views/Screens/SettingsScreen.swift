@@ -293,6 +293,16 @@ struct SettingsScreen: View {
                         isOn: $data.settings.debugProUnlock
                     )
                     Divider().background(MasoColor.borderSoft)
+                    ToggleRow(
+                        title: "Force US storefront (debug)",
+                        desc: "Pretend the App Store region is the US so the paywall + activation flow show on a non-US Apple ID. Turn OFF 'Unlock Pro' above to actually see the paywall. Debug builds only.",
+                        isOn: Binding(
+                            get: { data.settings.debugForceUSStorefront },
+                            set: { data.settings.debugForceUSStorefront = $0; data.save()
+                                   Task { await data.refreshStorefrontCountry() } }
+                        )
+                    )
+                    Divider().background(MasoColor.borderSoft)
                     // 本地分析事件查看器 — 看 track() 真的在触发 (Phase 0 NoOpSink, 事件只在本机).
                     NavigationLink(destination: AnalyticsInspectorScreen()) {
                         HStack {

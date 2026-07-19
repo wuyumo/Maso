@@ -11,6 +11,16 @@ extension DataStore {
         // showcase / 截图模式: 不解析 storefront → appStoreCountry 保持 nil → isPro 恒 true,
         // App Store 截图 / verify-app 里展示完整 (已解锁) 界面, 不弹付费门.
         guard ProcessInfo.processInfo.environment["MASO_SHOWCASE_SEED"] != "1" else { return }
+        #if DEBUG
+        // 调试开关: 强制美区, 让非美区 Apple ID 也能真机预览付费墙 + 激活流程.
+        if settings.debugForceUSStorefront {
+            if settings.appStoreCountry != MasoFlags.usStorefrontCode {
+                settings.appStoreCountry = MasoFlags.usStorefrontCode
+                save()
+            }
+            return
+        }
+        #endif
         guard let code = await PolarEntitlement.currentStorefrontCountry() else { return }
         if settings.appStoreCountry != code {
             settings.appStoreCountry = code

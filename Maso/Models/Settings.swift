@@ -142,6 +142,11 @@ struct UserSettings: Codable, Sendable {
     /// (字段本身保留只为 Codable 跨 Debug/Release 兼容). 测 Pro 功能用, 上线 archive 自动剔除逻辑.
     var debugProUnlock: Bool = false
 
+    /// ⚠️ 调试专用 — 强制把 storefront 当美区 (appStoreCountry="USA"), 让非美区 Apple ID 也能
+    /// 在真机上预览/测美区付费墙 + 激活流程. 仅 refreshStorefrontCountry 在 #if DEBUG 下读它.
+    /// Release/上架包既无 UI 可写又不读 → 零影响. (测付费墙时把 debugProUnlock 关掉才看得到墙.)
+    var debugForceUSStorefront: Bool = false
+
     /// Pro 判定.
     /// externalPaywallEnabled=true (当前): 仅美区 storefront 走 Polar 付费判定, 其他区/未知恒 Pro (免费全解锁).
     /// externalPaywallEnabled=false: 回落旧 StoreKit 判定 (iapEnabled / proSubscription).
