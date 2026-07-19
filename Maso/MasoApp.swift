@@ -71,9 +71,10 @@ struct MasoApp: App {
                     // RootView 也有个 scenePhase handler 但只做 feedback/HK/AI, 不报生命周期事件 (防双发).
                     Analytics.shared.handleBackground()
                 }
-                // 回前台 → 刷一次 entitlements (用户可能在 Settings.app 改了订阅状态)
+                // 回前台 → 刷一次 entitlements (用户可能在 Settings.app 改了订阅状态 / 在 Polar 网页买了)
                 if newPhase == .active {
                     Task { await subscriptions.refreshEntitlements() }
+                    Task { await dataStore.refreshPolarEntitlement() }
                     Analytics.shared.handleForeground()
                 }
             }
@@ -111,6 +112,12 @@ struct MasoApp: App {
                         dataStore.settings.proSubscription = newSub
                         dataStore.save()
                     }
+                }
+                // 外部付费 (Polar): 先解析 storefront (决定这台机器是否走付费判定),
+                // 再重校验已存的 license key (跨启动保持 Pro / 到期降级). 见 DataStore+Polar.
+                Task {
+                    await dataStore.refreshStorefrontCountry()
+                    await dataStore.refreshPolarEntitlement()
                 }
                 // 冷启动恢复进行中的训练 — iOS 杀后台 (训练 60-90 分钟很常见) 后, 把
                 // active-session.json 里的 session 接回来; 已完成 / 闲置 6h+ 的静默丢弃.

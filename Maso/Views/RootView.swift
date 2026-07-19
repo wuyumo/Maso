@@ -80,6 +80,31 @@ struct RootView: View {
     @State private var importedPlan: Plan? = nil
     /// 解析 deep link 出错 (base64 invalid / JSON invalid / 链接残破) → 弹通用错误 alert
     @State private var importFailed: Bool = false
+    /// Polar 激活结果提示 (maso://activate?key= 深链回跳后弹).
+    @State private var activateMessage: String? = nil
+    @State private var activateShown: Bool = false
+
+    /// maso://activate?key=<license> 深链 — Polar 结账成功回跳自动激活.
+    /// 返回 true = 已消费掉 (是 activate 链接), 调用方就别再当 plan import 处理.
+    private func handleActivateURL(_ url: URL) -> Bool {
+        guard url.scheme == PlanShareCodec.urlScheme, url.host == "activate" else { return false }
+        let key = URLComponents(url: url, resolvingAgainstBaseURL: false)?
+            .queryItems?.first(where: { $0.name == "key" })?.value ?? ""
+        guard !key.isEmpty else { return true }
+        Task {
+            do {
+                let ok = try await data.activatePolar(key: key)
+                activateMessage = ok
+                    ? NSLocalizedString("You're Pro now — thanks for supporting Masso.", comment: "Pro activation success")
+                    : NSLocalizedString("That code isn't active yet. Check the email from your purchase, or try again in a moment.", comment: "Pro activation not active")
+                if ok { Haptics.trainingComplete() }
+            } catch {
+                activateMessage = NSLocalizedString("Couldn't verify your code — check your connection and try again.", comment: "Pro activation network error")
+            }
+            activateShown = true
+        }
+        return true
+    }
 
     /// Marketing screenshot mode — set MASO_SHOWCASE env var on simulator launch to land on a specific screen.
     /// Values: today (default) / history / settings / player / free_workout / rest
@@ -147,6 +172,7 @@ struct RootView: View {
                 // 引导期也接收 maso:// 邀请链接 — 解码后暂存 importedPlan, 引导完成进主界面时
                 // else 分支的 .sheet(item:$importedPlan) 会因其非空自动弹出. 不再静默丢弃朋友的分享链接.
                 .onOpenURL { url in
+                    if handleActivateURL(url) { return }
                     if let plan = PlanShareCodec.decodePlan(from: url) {
                         importedPlan = plan
                     } else if url.scheme == PlanShareCodec.urlScheme {
@@ -339,6 +365,7 @@ struct RootView: View {
             // maso://import?plan=<base64> — 拦截 deep link, 解码 → 弹 ImportedPlanSheet.
             // 失败 (链接残破 / base64 invalid / JSON 解码错) 弹通用 alert, 不静默吞掉.
             .onOpenURL { url in
+                if handleActivateURL(url) { return }
                 if let plan = PlanShareCodec.decodePlan(from: url) {
                     importedPlan = plan
                 } else if url.scheme == PlanShareCodec.urlScheme {
@@ -371,6 +398,12 @@ struct RootView: View {
                 Button("OK", role: .cancel) {}
             } message: {
                 Text("This Maso link is damaged or unsupported. Ask your friend to share again.")
+            }
+            // Polar 激活结果 (maso://activate 深链回跳后).
+            .alert("Masso Pro", isPresented: $activateShown) {
+                Button("OK", role: .cancel) { activateMessage = nil }
+            } message: {
+                Text(activateMessage ?? "")
             }
             // + 按钮创建的新 plan — 关 sheet 时如果空了自动清理
             .sheet(item: $newPlanForEdit, onDismiss: {

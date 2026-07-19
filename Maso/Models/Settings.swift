@@ -1,10 +1,19 @@
 import Foundation
 
-/// 上线开关 — 首版以"纯免费 App"提审 (账号身份/付费协议未理顺前). iapEnabled = false →
-/// 隐藏所有内购入口 (付费墙 / 升级 / 恢复购买 / Settings Pro 区) + 解锁所有 Pro 功能,
-/// 审核看不到"能点不能买"的购买流. 等付费协议 Active 后改回 true 再发版把内购加回来.
+/// 上线开关.
 enum MasoFlags {
+    /// 旧 Apple IAP 开关 — 账号身份签不了美国 Paid Apps 协议, 一直是 false (StoreKit 购买路径停用).
     static let iapEnabled = false
+
+    /// 外部付费墙 (Polar 网页结账 + license key) 总开关. true →
+    ///   · 仅**美区** storefront 显示购买 (Epic v. Apple 判决后美区 app 内可放外链付费, 0 抽成);
+    ///   · 其他区 (含 storefront 未解析) isPro 恒 true, 维持免费全解锁, 不显示任何购买;
+    ///   · 解锁凭 Polar license key (无账号可携带凭证), 走 Worker /pro/validate 校验.
+    /// 见 [[project_maso_paywall_live]] / worker.js /pro/validate.
+    static let externalPaywallEnabled = true
+
+    /// 美区 storefront 的 ISO 3166-1 alpha-3 码 (StoreKit Storefront.countryCode).
+    static let usStorefrontCode = "USA"
     /// 产品分析编译期总开关. true → 事件按门控 (用户 opt-out / showcase) 缓冲到本地;
     /// Phase 0 默认 NoOpSink, 不离开设备. false → track() 全静默 (彻底关).
     static let analyticsEnabled = true
@@ -112,23 +121,50 @@ struct UserSettings: Codable, Sendable {
     /// sheet 里可直接读 / 改 / 清的多行编辑器. Codable 默认空串 → 老数据安全解码.
     var coachMemory: String = ""
 
-    /// Pro 订阅状态 — nil = free 用户
-    /// (MVP 阶段是本地 mock, 生产环境接 StoreKit 2)
+    /// Pro 订阅状态 (旧 StoreKit 路径) — nil = free 用户. externalPaywallEnabled=true 时 isPro 不读它.
     var proSubscription: ProSubscription? = nil
+
+    // MARK: - 外部付费 (Polar) 状态 — 都是可携带凭证/缓存, 持久化以支持离线 + 换设备恢复.
+    /// 用户输入/深链带回的 Polar license key (激活凭证). nil = 从没激活过.
+    var polarLicenseKey: String? = nil
+    /// 最近一次 Worker 校验结果 (active). isPro 在美区读它.
+    var polarProActive: Bool = false
+    /// 订阅到期时间 (Polar 返回). 过期硬闸: 到点即使没重校验也判 not pro.
+    var polarExpiresAt: Date? = nil
+    /// 最近一次成功校验时间 — 离线宽限判断用 (网络挂了保留上次状态).
+    var polarValidatedAt: Date? = nil
+    /// 当前 App Store storefront 国家码 (StoreKit alpha-3, US="USA"). nil = 未解析.
+    /// 只有 == "USA" 才进付费判定; 其他区/未知 → 免费全解锁.
+    var appStoreCountry: String? = nil
 
     /// ⚠️ 调试专用解锁 Pro — 仅 Debug 包里 Settings 的 "Debug" 开关能置位, 且 isPro 也仅在
     /// #if DEBUG 下读它. Release/上架包既无 UI 可写、isPro 又不读 → 永远 false, 零影响
     /// (字段本身保留只为 Codable 跨 Debug/Release 兼容). 测 Pro 功能用, 上线 archive 自动剔除逻辑.
     var debugProUnlock: Bool = false
 
-    /// iapEnabled = false (免费版上线) → 视为 Pro, 解锁所有 gate (无内购时不留功能墙).
-    /// proSubscription 仍保持 nil — 不写假数据, 改回 iapEnabled = true 即恢复正常 free/pro 判定.
+    /// Pro 判定.
+    /// externalPaywallEnabled=true (当前): 仅美区 storefront 走 Polar 付费判定, 其他区/未知恒 Pro (免费全解锁).
+    /// externalPaywallEnabled=false: 回落旧 StoreKit 判定 (iapEnabled / proSubscription).
     var isPro: Bool {
-        if !MasoFlags.iapEnabled || proSubscription != nil { return true }
         #if DEBUG
         if debugProUnlock { return true }   // 调试开关 — Release 包不编译这段
         #endif
+        if MasoFlags.externalPaywallEnabled {
+            // 非美区 / storefront 未解析 → 维持免费全解锁 (那些区根本不显示购买, 不做功能墙).
+            guard appStoreCountry == MasoFlags.usStorefrontCode else { return true }
+            // 过期硬闸 — 到期即使还没重校验也判 not pro.
+            if let exp = polarExpiresAt, exp < Date() { return false }
+            return polarProActive
+        }
+        if !MasoFlags.iapEnabled || proSubscription != nil { return true }
         return false
+    }
+
+    /// 是否给这个用户展示 Pro 升级入口 (Settings 升级行 / 付费墙). 仅美区非 Pro 才显示.
+    var showProUpsell: Bool {
+        MasoFlags.externalPaywallEnabled
+            && appStoreCountry == MasoFlags.usStorefrontCode
+            && !isPro
     }
 
     /// Apple Fitness (HealthKit) 同步开关.

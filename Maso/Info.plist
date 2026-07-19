@@ -44,6 +44,10 @@
 	<string>$(MASO_AI_PROXY_URL)</string>
 	<key>MasoClientToken</key>
 	<string>$(MASO_CLIENT_TOKEN)</string>
+	<key>MasoCheckoutMonthlyURL</key>
+	<string></string>
+	<key>MasoCheckoutYearlyURL</key>
+	<string></string>
 	<key>NSCameraUsageDescription</key>
 	<string>Masso uses the camera so you can add a selfie to your shareable workout summary.</string>
 	<key>NSHealthShareUsageDescription</key>

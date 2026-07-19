@@ -1355,3 +1355,17 @@
 /* Paywall 渐进卖点 */
 "Smart progression" = "智能渐进";
 "Earn the next 2.5 kg — weight suggestions from your logged sets." = "挣到下一个 2.5 kg——根据你的训练记录自动建议下次重量。";
+
+/* 外部付费墙 (Polar) — 2026-07 */
+"Secure checkout on the web via Polar. %@ / %@, renews until cancelled — manage or cancel anytime on the Polar page." = "通过 Polar 在网页安全结账。%@ / %@,自动续订至取消——可随时在 Polar 页面管理或取消。";
+"Enter code" = "输入激活码";
+"Enter your activation code" = "输入你的激活码";
+"After buying on the web, your code was emailed to you (and shown on the confirmation page). Paste it here to unlock Pro on this device." = "在网页购买后,激活码已发到你邮箱(结账成功页也会显示)。粘贴到这里即可在本设备解锁 Pro。";
+"Activate" = "激活";
+"That code isn't active yet. Double-check it, or try again in a moment." = "这个激活码还没生效。请核对后重试,或稍等片刻再试。";
+"Couldn't verify — check your connection and try again." = "无法校验——请检查网络后重试。";
+"You're Pro now — thanks for supporting Masso." = "你已是 Pro——感谢支持 Masso。";
+"That code isn't active yet. Check the email from your purchase, or try again in a moment." = "激活码还没生效。请查收购买邮件,或稍后再试。";
+"Couldn't verify your code — check your connection and try again." = "无法校验激活码——请检查网络后重试。";
+"ACTIVE" = "已激活";
+"Thanks for supporting Masso. Manage or cancel on the Polar page." = "感谢支持 Masso。可在 Polar 页面管理或取消。";

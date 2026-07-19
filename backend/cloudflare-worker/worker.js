@@ -1,111 +1,231 @@
-// Maso DeepSeek API Proxy — Cloudflare Worker
+// Maso Cloudflare Worker — 多路由
 //
-// 把 DeepSeek API key 从 iOS app binary 移到这里 — 客户端再也不嵌 key, App Store 审核员
-// 反编译扫不到. 同时这个 proxy 给你加一层抗滥用控制 (rate limit / origin check).
+// 两条职责:
+//   1. POST /v1/chat/completions  → DeepSeek AI 代理 (把 API key 从 app binary 里挪出来)
+//   2. POST /pro/validate         → Polar license key 校验 (把 Polar org token 藏在这里)
+//   3. GET  /pro/return           → Polar 结账成功后的回跳页: 查出 license key → 深链回 app
 //
 // 部署:
-//   1. 装 wrangler:           npm i -g wrangler
-//   2. 登录:                  wrangler login
-//   3. 设 secret:             wrangler secret put DEEPSEEK_API_KEY
-//   4. 部署:                  wrangler deploy
+//   wrangler secret put DEEPSEEK_API_KEY
+//   wrangler secret put MASO_CLIENT_TOKEN
+//   wrangler secret put POLAR_TOKEN       ← Polar Organization Access Token
+//   wrangler secret put POLAR_ORG_ID      ← Polar organization UUID
+//   wrangler deploy
 //
-// iOS 端调用:
-//   POST https://maso-ai.<your-subdomain>.workers.dev/v1/chat/completions
-//   Headers:
-//     Content-Type: application/json
-//     X-Maso-Client-Token: <baked-in build token>  (轻量防滥用, 不是真 auth)
-//   Body: 跟 DeepSeek API 一样的 JSON (model, messages, temperature, ...)
-//
-// 实现说明:
-//   - DeepSeek API 兼容 OpenAI Chat Completions 格式, 直接 passthrough.
-//   - 不存 prompt / response (request 生命周期外没数据). 隐私政策已声明.
-//   - rate limit 用 Cloudflare 自带的 (50 req/min/IP) — 简单粗暴够用.
-//     真上线想严格点可以加 Durable Objects token bucket.
-//   - 只允许 POST /v1/chat/completions — 其他 path 直接 404, 防扫描.
+// Pro 变现说明 (2026-07): 账号身份签不了美国 Paid Apps 协议 → 不走 Apple IAP, 改走
+//   Polar 网页结账 (merchant of record, 代收税). 仅美区显示购买 (Epic v. Apple 判决后
+//   美区 app 内可放外链付费, 0 抽成). Polar 发 license key 当无账号的可携带凭证,
+//   app 拿 key 走这个 Worker 校验 (org token 不进 binary).
 
-const ALLOWED_PATH = "/v1/chat/completions";
+const AI_PATH = "/v1/chat/completions";
 const UPSTREAM = "https://api.deepseek.com/v1/chat/completions";
-
-// iOS app 里 baked 的客户端 token. 不是真 auth — 任何人解 binary 都能拿到 — 但能挡住
-// "随手测试 endpoint" 的 abuse. 真严格需要 StoreKit receipt verification.
-// 必须跟 iOS app 端 Maso/Data/AIWorkoutService.swift 的 clientToken 保持一致.
 const CLIENT_TOKEN_HEADER = "X-Maso-Client-Token";
+
+const POLAR_VALIDATE = "https://api.polar.sh/v1/license-keys/validate";
+const POLAR_CHECKOUT = "https://api.polar.sh/v1/checkouts/";
+const POLAR_LICENSE_KEYS = "https://api.polar.sh/v1/license-keys";
+// 结账成功后深链回 app 的 scheme (Info.plist CFBundleURLSchemes 里已有 maso).
+const APP_ACTIVATE_SCHEME = "maso://activate";
+
+const CORS = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, X-Maso-Client-Token",
+  "Access-Control-Max-Age": "86400",
+};
 
 export default {
   async fetch(request, env, ctx) {
-    // 仅 POST + 正确 path
     if (request.method === "OPTIONS") {
-      // CORS preflight (虽然 native app 不走 CORS, 留着方便 web debug)
-      return new Response(null, {
-        status: 204,
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Methods": "POST, OPTIONS",
-          "Access-Control-Allow-Headers": "Content-Type, X-Maso-Client-Token",
-          "Access-Control-Max-Age": "86400",
-        },
-      });
+      return new Response(null, { status: 204, headers: CORS });
     }
 
     const url = new URL(request.url);
-    if (request.method !== "POST" || url.pathname !== ALLOWED_PATH) {
-      return new Response("Not Found", { status: 404 });
+    const path = url.pathname;
+
+    if (request.method === "POST" && path === AI_PATH) {
+      return handleAI(request, env);
     }
-
-    // 校验 client token — 简单防滥用
-    const clientToken = request.headers.get(CLIENT_TOKEN_HEADER);
-    if (!clientToken || clientToken !== env.MASO_CLIENT_TOKEN) {
-      return new Response("Unauthorized", { status: 401 });
+    if (request.method === "POST" && path === "/pro/validate") {
+      return handleProValidate(request, env);
     }
-
-    // 读 body
-    let body;
-    try {
-      body = await request.json();
-    } catch (e) {
-      return new Response("Invalid JSON", { status: 400 });
+    if (request.method === "GET" && path === "/pro/return") {
+      return handleProReturn(url, env);
     }
-
-    // 限制 body 大小 (防止有人 abuse 发巨型 prompt 烧我们 quota)
-    const bodyStr = JSON.stringify(body);
-    if (bodyStr.length > 50_000) {
-      return new Response("Request too large", { status: 413 });
-    }
-
-    // 强制限制 model — 只允许 DeepSeek 系列, 不让客户端调 deepseek-r1 之类贵 model.
-    // (你想开放更多 model 改这里就行)
-    const allowedModels = ["deepseek-chat", "deepseek-coder"];
-    if (!body.model || !allowedModels.includes(body.model)) {
-      body.model = "deepseek-chat";  // 强制兜底
-    }
-
-    // 强制 max_tokens 上限 (再防滥用)
-    if (typeof body.max_tokens === "number") {
-      body.max_tokens = Math.min(body.max_tokens, 4000);
-    } else {
-      body.max_tokens = 2000;
-    }
-
-    // 转发给 DeepSeek
-    const upstreamRes = await fetch(UPSTREAM, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${env.DEEPSEEK_API_KEY}`,
-      },
-      body: JSON.stringify(body),
-    });
-
-    // 把 response 透传回 iOS — 包含 status, headers, body
-    // (DeepSeek 返回 OpenAI 兼容 JSON, iOS 端不用改解析逻辑)
-    const responseBody = await upstreamRes.text();
-    return new Response(responseBody, {
-      status: upstreamRes.status,
-      headers: {
-        "Content-Type": upstreamRes.headers.get("Content-Type") || "application/json",
-        // CORS (debug 用)
-        "Access-Control-Allow-Origin": "*",
-      },
-    });
+    return new Response("Not Found", { status: 404 });
   },
 };
+
+// ─────────────────────────────────────────────────────────────
+// 1) AI 代理 (原逻辑, passthrough DeepSeek)
+// ─────────────────────────────────────────────────────────────
+async function handleAI(request, env) {
+  const clientToken = request.headers.get(CLIENT_TOKEN_HEADER);
+  if (!clientToken || clientToken !== env.MASO_CLIENT_TOKEN) {
+    return new Response("Unauthorized", { status: 401 });
+  }
+
+  let body;
+  try {
+    body = await request.json();
+  } catch (e) {
+    return new Response("Invalid JSON", { status: 400 });
+  }
+
+  const bodyStr = JSON.stringify(body);
+  if (bodyStr.length > 50_000) {
+    return new Response("Request too large", { status: 413 });
+  }
+
+  const allowedModels = ["deepseek-chat", "deepseek-coder"];
+  if (!body.model || !allowedModels.includes(body.model)) {
+    body.model = "deepseek-chat";
+  }
+  if (typeof body.max_tokens === "number") {
+    body.max_tokens = Math.min(body.max_tokens, 4000);
+  } else {
+    body.max_tokens = 2000;
+  }
+
+  const upstreamRes = await fetch(UPSTREAM, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${env.DEEPSEEK_API_KEY}`,
+    },
+    body: JSON.stringify(body),
+  });
+
+  const responseBody = await upstreamRes.text();
+  return new Response(responseBody, {
+    status: upstreamRes.status,
+    headers: {
+      "Content-Type": upstreamRes.headers.get("Content-Type") || "application/json",
+      "Access-Control-Allow-Origin": "*",
+    },
+  });
+}
+
+// ─────────────────────────────────────────────────────────────
+// 2) Polar license key 校验
+//    收 {key} → 调 Polar validate → 归一化成 {active, status, expiresAt}.
+//    active 判定: status=="granted" 且 (expires_at 为空 或 未过期).
+//    org token / org id 只在 Worker 里, 不进 app binary.
+// ─────────────────────────────────────────────────────────────
+async function handleProValidate(request, env) {
+  const clientToken = request.headers.get(CLIENT_TOKEN_HEADER);
+  if (!clientToken || clientToken !== env.MASO_CLIENT_TOKEN) {
+    return json({ active: false, error: "unauthorized" }, 401);
+  }
+  if (!env.POLAR_TOKEN || !env.POLAR_ORG_ID) {
+    return json({ active: false, error: "server_not_configured" }, 500);
+  }
+
+  let body;
+  try {
+    body = await request.json();
+  } catch (e) {
+    return json({ active: false, error: "bad_request" }, 400);
+  }
+  const key = (body.key || "").trim();
+  if (!key) return json({ active: false, error: "missing_key" }, 400);
+
+  const res = await fetch(POLAR_VALIDATE, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${env.POLAR_TOKEN}`,
+    },
+    body: JSON.stringify({ key, organization_id: env.POLAR_ORG_ID }),
+  });
+
+  // Polar 对无效 key 返回 4xx — 视作 not active, 不当服务器错误.
+  if (!res.ok) {
+    return json({ active: false, status: "invalid" });
+  }
+
+  const lk = await res.json().catch(() => ({}));
+  const status = lk.status || "unknown";
+  const expiresAt = lk.expires_at || null;
+  const notExpired = !expiresAt || Date.parse(expiresAt) > Date.now();
+  const active = status === "granted" && notExpired;
+
+  return json({ active, status, expiresAt });
+}
+
+// ─────────────────────────────────────────────────────────────
+// 3) Polar 结账成功回跳
+//    Polar checkout 的 success_url 设成:
+//      https://<worker>/pro/return?checkout_id={CHECKOUT_ID}
+//    这里: checkout → customer_id → 该 customer 的 license key → 302 深链回 app.
+//    任一步失败 → 渲染手动兜底页 (提示去邮箱拿激活码手动输入).
+// ─────────────────────────────────────────────────────────────
+async function handleProReturn(url, env) {
+  const checkoutId = url.searchParams.get("checkout_id");
+  if (!checkoutId || !env.POLAR_TOKEN || !env.POLAR_ORG_ID) {
+    return manualFallbackPage();
+  }
+
+  try {
+    const auth = { Authorization: `Bearer ${env.POLAR_TOKEN}` };
+
+    // checkout → customer_id
+    const coRes = await fetch(POLAR_CHECKOUT + encodeURIComponent(checkoutId), { headers: auth });
+    if (!coRes.ok) return manualFallbackPage();
+    const co = await coRes.json();
+    const customerId = co.customer_id || co.customer?.id;
+    if (!customerId) return manualFallbackPage();
+
+    // 该 customer 在本 org 下的 license key
+    const lkUrl = `${POLAR_LICENSE_KEYS}?organization_id=${encodeURIComponent(env.POLAR_ORG_ID)}&customer_id=${encodeURIComponent(customerId)}`;
+    const lkRes = await fetch(lkUrl, { headers: auth });
+    if (!lkRes.ok) return manualFallbackPage();
+    const lkList = await lkRes.json();
+    const items = lkList.items || [];
+    const granted = items.find((k) => k.status === "granted") || items[0];
+    const key = granted?.key;
+    if (!key) return manualFallbackPage();
+
+    // 深链回 app, 自动带 key.
+    const deepLink = `${APP_ACTIVATE_SCHEME}?key=${encodeURIComponent(key)}`;
+    return successPage(deepLink);
+  } catch (e) {
+    return manualFallbackPage();
+  }
+}
+
+function successPage(deepLink) {
+  const html = `<!doctype html><html><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Masso Pro</title>
+<style>body{font-family:-apple-system,system-ui,sans-serif;background:#121212;color:#fff;
+display:flex;min-height:100vh;align-items:center;justify-content:center;margin:0;text-align:center}
+.box{padding:32px;max-width:360px}h1{font-size:22px}.btn{display:inline-block;margin-top:20px;
+background:#1ED760;color:#000;font-weight:700;padding:14px 28px;border-radius:999px;text-decoration:none}
+p{color:#b3b3b3;font-size:14px;line-height:1.5}</style>
+<script>setTimeout(function(){location.href=${JSON.stringify(deepLink)}},600);</script></head>
+<body><div class="box"><h1>You're Pro 🎉</h1>
+<p>Thanks for supporting Masso. Tap below to unlock Pro in the app.</p>
+<a class="btn" href="${deepLink}">Open Masso</a></div></body></html>`;
+  return new Response(html, { headers: { "Content-Type": "text/html; charset=utf-8" } });
+}
+
+function manualFallbackPage() {
+  const html = `<!doctype html><html><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Masso Pro</title>
+<style>body{font-family:-apple-system,system-ui,sans-serif;background:#121212;color:#fff;
+display:flex;min-height:100vh;align-items:center;justify-content:center;margin:0;text-align:center}
+.box{padding:32px;max-width:360px}h1{font-size:22px}p{color:#b3b3b3;font-size:14px;line-height:1.5}</style>
+</head><body><div class="box"><h1>Thank you 🎉</h1>
+<p>Your Masso Pro activation code was sent to your email. Open Masso, go to the Pro screen, tap "Enter code," and paste it in.</p>
+</div></body></html>`;
+  return new Response(html, { headers: { "Content-Type": "text/html; charset=utf-8" } });
+}
+
+function json(obj, status = 200) {
+  return new Response(JSON.stringify(obj), {
+    status,
+    headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+  });
+}

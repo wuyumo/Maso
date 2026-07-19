@@ -1,0 +1,10 @@
+{
+  "product": "maso",
+  "title": "Maso",
+  "type": "ios",
+  "publish": true,
+  "behanceId": "250861073",
+  "capture": { "note": "build/screenshots/{en-US,zh-Hans}; 重出: ./scripts/shoot_screenshots_auto.sh <ProMax-udid> en-US en_US" },
+  "board": { "template": "maso.html", "headline": "My Personal AI Trainer.", "tags": "fitness app, workout, AI, iOS, apple watch, ui design, ux design, product design, mobile app, health", "boards": ["00-cover","01-hero","02-muscle","03-player"] },
+  "qr": null
+}

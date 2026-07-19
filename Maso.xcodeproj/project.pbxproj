@@ -135,12 +135,14 @@
 		D7DE905316F3FFBC4156F3CE /* exercises.json in Resources */ = {isa = PBXBuildFile; fileRef = DA0ACB9DAE29B94B2DAB494F /* exercises.json */; };
 		DAA6215D14E413F8E24063CA /* _anatomy-research.md in Resources */ = {isa = PBXBuildFile; fileRef = CA786C2BA3CB3ED1D9264315 /* _anatomy-research.md */; };
 		DC4569EC8E9B9B0EE49F5595 /* InsightCards.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BC543B079D9DDA682611412 /* InsightCards.swift */; };
+		E302ACBC8234BC5EBB65995A /* PolarEntitlement.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10DA0B851503BB17662C3ED /* PolarEntitlement.swift */; };
 		E3B3E0E89E5925038AE32669 /* CoachScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899FD6CB734CAE919EBB292D /* CoachScreen.swift */; };
 		E40B7C038FA77F3BD95F0E5D /* MasoMarkIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1D591C5E30FA068C933520 /* MasoMarkIcon.swift */; };
 		E713BB3AD37D051B6B9D716A /* PlanSegments.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE94CDA9C13C06FBE6DD8572 /* PlanSegments.swift */; };
 		E78F1A3F512D37B2BFA4A286 /* BodyHint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54145EB316E1E581619F6C65 /* BodyHint.swift */; };
 		E7BEFB80EC7A46518E7B59B9 /* InlineWorkoutCalendar.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC7BD7F1CA2B51B8BE76943 /* InlineWorkoutCalendar.swift */; };
 		E7F227189AAF7F9E428F5297 /* MuscleGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 652661E7A8B67B3B7F5E7241 /* MuscleGroup.swift */; };
+		EE810D256495822EB0546D0B /* DataStore+Polar.swift in Sources */ = {isa = PBXBuildFile; fileRef = F73505558D75D33F84D45CCE /* DataStore+Polar.swift */; };
 		F05D16F0A53CAF7281490F9F /* CardChrome.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB9DEC8FE0A1B5B1E9ADC8EE /* CardChrome.swift */; };
 		F36F4DB192FD35D5CF1E3EE6 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = EFADF03C8B68C694F394F493 /* PrivacyInfo.xcprivacy */; };
 		F539563C25B1A76F848BE0BC /* LiveActivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31363EC52103D24538FBFF39 /* LiveActivityManager.swift */; };
@@ -274,6 +276,7 @@
 		8C75A0DE1EC23A7DCDE065D6 /* WatchViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchViews.swift; sourceTree = "<group>"; };
 		91F6414BD5454144D171D2D3 /* AnalyticsSink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsSink.swift; sourceTree = "<group>"; };
 		A015C1CBD0ADEA27FDC680FC /* AISummary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AISummary.swift; sourceTree = "<group>"; };
+		A10DA0B851503BB17662C3ED /* PolarEntitlement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolarEntitlement.swift; sourceTree = "<group>"; };
 		A312E7F5CEA8FACE3E0183FA /* _review-queue-decisions.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "_review-queue-decisions.json"; sourceTree = "<group>"; };
 		A63705CC4062E59B9B7201A9 /* MasoWatch.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MasoWatch.entitlements; sourceTree = "<group>"; };
 		A869CB4AC4EF2FD9CFD9D31C /* AIWorkoutService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIWorkoutService.swift; sourceTree = "<group>"; };
@@ -332,6 +335,7 @@
 		F5E0B96BFDCCD185AB24895A /* 1-chest-triceps.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "1-chest-triceps.json"; sourceTree = "<group>"; };
 		F64DFBAF4A91D0EE022A4F5E /* Maso.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Maso.entitlements; sourceTree = "<group>"; };
 		F72504052FBF96C8AFDFAA91 /* Haptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Haptics.swift; sourceTree = "<group>"; };
+		F73505558D75D33F84D45CCE /* DataStore+Polar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DataStore+Polar.swift"; sourceTree = "<group>"; };
 		F8D7C1393538F9AEC41B4A7F /* PlateCalculatorSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlateCalculatorSheet.swift; sourceTree = "<group>"; };
 		F96CC6B018F159D5FA8FE982 /* TimelineBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineBar.swift; sourceTree = "<group>"; };
 		F9B75264B14BF7AA46A5CC5A /* MusclesPickerSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusclesPickerSheet.swift; sourceTree = "<group>"; };
@@ -389,6 +393,7 @@
 				FE73631309F4040E80314ED8 /* CoachSession.swift */,
 				E4CD0A6C911CC31064AFC8D4 /* CommunityPlans.swift */,
 				FEB924488C05EA5A27B8B504 /* DataStore.swift */,
+				F73505558D75D33F84D45CCE /* DataStore+Polar.swift */,
 				34F46E6B89F953552C31D180 /* ExerciseGrouping.swift */,
 				041577FA74CB0C00E92E4233 /* ExerciseImageCache.swift */,
 				32577D31F28D36498F96BE6B /* ExerciseLibrary.swift */,
@@ -401,6 +406,7 @@
 				C228082523E5BD38F52B6B76 /* PersistenceController.swift */,
 				DE94CDA9C13C06FBE6DD8572 /* PlanSegments.swift */,
 				18A4AE1F41CAA38374E02E4A /* PlanShareCodec.swift */,
+				A10DA0B851503BB17662C3ED /* PolarEntitlement.swift */,
 				DFE96A6B037BBD62E71584D6 /* ProgressionEngine.swift */,
 				D9D16DE103E8C679BEDCC59E /* RecommendedPrograms.swift */,
 				B87F8559328FE38597A76010 /* SubscriptionManager.swift */,
@@ -855,6 +861,7 @@
 				94D4CE6164253560EE728358 /* Colors.swift in Sources */,
 				2911B010C07D8A9CE402F8A1 /* CommunityPlans.swift in Sources */,
 				182CFCDB8E25839EB82276AC /* CrossFadeFrames.swift in Sources */,
+				EE810D256495822EB0546D0B /* DataStore+Polar.swift in Sources */,
 				688D1CA5D81E668665F0EBC6 /* DataStore.swift in Sources */,
 				94726ECFE4CED09904E4FBA1 /* Exercise.swift in Sources */,
 				D1F18A807794D0FC0FD24137 /* ExerciseGrouping.swift in Sources */,
@@ -904,6 +911,7 @@
 				78847633826CBE7F80F82523 /* PlanShareCodec.swift in Sources */,
 				ACB7B9B537CDB3B86452670C /* PlansScreen.swift in Sources */,
 				04BF37E058F0FB0D5085E382 /* PlateCalculatorSheet.swift in Sources */,
+				E302ACBC8234BC5EBB65995A /* PolarEntitlement.swift in Sources */,
 				3DD8048F21FA7BB1FDEFBCEF /* ProBanner.swift in Sources */,
 				B8F8DBDF4DD29F8C13166C3B /* ProgressionEngine.swift in Sources */,
 				31BF55F4883B0DBAD9BAD245 /* QuickWorkoutScreen.swift in Sources */,

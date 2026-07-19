@@ -346,8 +346,16 @@ struct SettingsScreen: View {
 
     @ViewBuilder
     private var proSection: some View {
-        if !MasoFlags.iapEnabled {
-            EmptyView()   // 免费版上线: 整段 Pro 区 (升级 banner / 订阅状态) 都不渲染, 不露内购入口.
+        if MasoFlags.externalPaywallEnabled
+            && !data.settings.showProUpsell
+            && !(data.settings.polarProActive && data.settings.appStoreCountry == MasoFlags.usStorefrontCode) {
+            EmptyView()   // 非美区 (免费全解锁) → 不显示任何 Pro/购买 区.
+        } else if MasoFlags.externalPaywallEnabled
+            && data.settings.polarProActive
+            && data.settings.appStoreCountry == MasoFlags.usStorefrontCode {
+            polarActiveCard   // 美区已付费.
+        } else if !MasoFlags.externalPaywallEnabled && !MasoFlags.iapEnabled {
+            EmptyView()   // 旧 StoreKit 免费版路径.
         } else if let sub = data.settings.proSubscription {
             // Pro 用户 — 显示订阅状态卡 (轻量, 不抢戏)
             HStack(spacing: 12) {
@@ -415,6 +423,38 @@ struct SettingsScreen: View {
             }
             .buttonStyle(.plain)
         }
+    }
+
+    /// 美区已付费 (Polar) 的 Pro 状态卡 — 无 tier (外部付费不存档位), 提示网页管理.
+    private var polarActiveCard: some View {
+        HStack(spacing: 12) {
+            MasoMarkIcon(color: MasoColor.accent)
+                .frame(width: 40, height: 40)
+            VStack(alignment: .leading, spacing: 2) {
+                HStack(spacing: 6) {
+                    Text("Maso Pro")
+                        .font(.system(size: 14, weight: .bold))
+                        .foregroundStyle(MasoColor.text)
+                    Text("ACTIVE")
+                        .font(.system(size: 9, weight: .heavy)).tracking(1)
+                        .foregroundStyle(.black)
+                        .padding(.horizontal, 6).padding(.vertical, 2)
+                        .background(MasoColor.accent)
+                        .clipShape(Capsule())
+                }
+                Text("Thanks for supporting Masso. Manage or cancel on the Polar page.")
+                    .font(.system(size: 11))
+                    .foregroundStyle(MasoColor.textDim)
+            }
+            Spacer()
+        }
+        .padding(MasoMetrics.cardPadding)
+        .background(MasoColor.surface)
+        .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
+        .overlay(
+            RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium)
+                .stroke(MasoColor.accent.opacity(0.35), lineWidth: 0.5)
+        )
     }
 }
 
