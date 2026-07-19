@@ -45,9 +45,9 @@
 	<key>MasoClientToken</key>
 	<string>$(MASO_CLIENT_TOKEN)</string>
 	<key>MasoCheckoutMonthlyURL</key>
-	<string></string>
+	<string>https://buy.polar.sh/polar_cl_wteq3WWs2AcEjSB7x6LAdTEPu0rg6eSjrfv9348SRLy</string>
 	<key>MasoCheckoutYearlyURL</key>
-	<string></string>
+	<string>https://buy.polar.sh/polar_cl_AYm061jMl76goVgu1K07bZBLwvdv3P1Mtvpxq0gKokU</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Masso uses the camera so you can add a selfie to your shareable workout summary.</string>
 	<key>NSHealthShareUsageDescription</key>
