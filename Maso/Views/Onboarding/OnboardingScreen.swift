@@ -566,6 +566,10 @@ private struct WheelPicker: View {
     @State private var centerID: Int?
     /// 居中定位完成前不外抛 selection — 否则初始那次程序化定位会误把 weightTouched 置真.
     @State private var ready = false
+    /// 触觉/音效节流时间戳 — 大力甩动时 centerID 以帧率连续变, 每帧都发 Haptics + scheduleBuffer
+    /// 会把主线程/触觉引擎打满一小会儿, 甩完立即点下方「Next」会被丢 (体重量程最大甩得最远, 最明显).
+    /// 限到 ~55ms 发一次: 慢速逐格滚动仍每格响, 快甩不再机枪连发. selection 写回保持即时 (帧率级无碍).
+    @State private var lastTickAt: Date = .distantPast
 
     private let rowHeight: CGFloat = 64    // 行高调高 → 选中框更高 + 行距更松
     private let visibleRows: CGFloat = 5
@@ -612,7 +616,11 @@ private struct WheelPicker: View {
         }
         .onChange(of: centerID) { _, new in
             guard ready, let n = new else { return }   // 初始定位期不外抛
-            selection = n
+            selection = n                              // 写回即时 (帧率级, 不是瓶颈)
+            // 触觉 + 音效节流 (~55ms/次): 防大力甩动把主线程打满 → 甩完点 Next 被丢.
+            let now = Date()
+            guard now.timeIntervalSince(lastTickAt) >= 0.055 else { return }
+            lastTickAt = now
             Haptics.selection()               // 轻"咔哒"触觉 (同系统 Picker)
             SoundPlayer.shared.playTick()     // 极轻 tick 声 (随静音开关静默)
         }
