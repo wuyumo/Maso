@@ -1,16 +1,22 @@
-# Cloudflare Worker 配置 — Maso AI proxy
+# Cloudflare Worker 配置 — Maso AI proxy + Polar 付费校验
 #
 # 部署前要做的:
-#   1. wrangler login
-#   2. wrangler secret put DEEPSEEK_API_KEY     ← 输入你的 DeepSeek API key
-#   3. wrangler secret put MASO_CLIENT_TOKEN    ← 任意长随机字符串, 跟 iOS app baked token 一致
-#   4. wrangler deploy
+#   1. wrangler login                            ← Cloudflare OAuth (会开浏览器)
+#   2. wrangler secret put DEEPSEEK_API_KEY      ← DeepSeek API key (已设过, 换机才需重设)
+#   3. wrangler secret put MASO_CLIENT_TOKEN     ← 跟 iOS app baked token 一致 (已设过)
+#   4. wrangler secret put POLAR_TOKEN           ← Polar Organization Access Token (License Keys 权限)
+#   5. wrangler deploy                           ← POLAR_ORG_ID 走下面 [vars], 无需 secret
 #
-# 部署后 endpoint: https://maso-ai.<your-account-subdomain>.workers.dev/v1/chat/completions
+# 部署后 endpoint: https://maso-ai.<your-account-subdomain>.workers.dev
+#   AI:  POST /v1/chat/completions   |   付费: POST /pro/validate  ·  GET /pro/return
 
 name = "maso-ai"
 main = "worker.js"
 compatibility_date = "2025-01-01"
+
+# 非敏感常量 (org UUID 不是密钥, 可进 git). Masso org (slug masso).
+[vars]
+POLAR_ORG_ID = "2d965d03-f2f8-4de6-9ea0-307f818ea9d3"
 
 # 如果你想绑自定义域 (e.g. api.maso.app/v1/chat/completions):
 # routes = [
