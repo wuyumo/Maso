@@ -1369,3 +1369,10 @@
 "Thanks for supporting Masso. Manage or cancel on the Polar page." = "Thanks for supporting Masso. Manage or cancel on the Polar page.";
 
 "Scan to get this routine" = "Scan to get this routine";
+
+/* Coach 空态偏好卡 + 调整入口 */
+"%lld days a week" = "%lld days a week";
+"YOUR TRAINING" = "YOUR TRAINING";
+"Adjust preferences" = "Adjust preferences";
+"View routines" = "View routines";
+"Adjust your routine" = "Adjust your routine";

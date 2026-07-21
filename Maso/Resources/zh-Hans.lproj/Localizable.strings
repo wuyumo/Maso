@@ -1371,3 +1371,10 @@
 "Thanks for supporting Masso. Manage or cancel on the Polar page." = "感谢支持 Masso。可在 Polar 页面管理或取消。";
 
 "Scan to get this routine" = "扫码获取这套训练计划";
+
+/* Coach 空态偏好卡 + 调整入口 */
+"%lld days a week" = "每周 %lld 天";
+"YOUR TRAINING" = "训练偏好";
+"Adjust preferences" = "调整偏好";
+"View routines" = "查看计划";
+"Adjust your routine" = "调整你的计划";

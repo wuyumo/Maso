@@ -331,6 +331,64 @@ struct CoachScreen: View {
     /// 训练偏好入口收敛到 composer 的 [+|#|偏好] 胶囊, 卡顶不再重复.
     @ViewBuilder
     private var emptyState: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            preferenceCard
+            greetingOrSuggestion
+        }
+    }
+
+    /// 空态偏好缩略卡 — 展示当前训练偏好 (目标 / 每周天数 / 重点肌群) + 两个入口:
+    /// [调整偏好] → 结构化 TrainingPreferencesSheet (全局, 改完重算全部);
+    /// [查看 routines] → SavedRoutinesAllSheet (基于这份偏好已生成/已存的计划).
+    private var preferenceCard: some View {
+        let s = data.settings
+        let focus = s.wantStrengthen.prefix(4).map(\.displayName)
+        return VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 6) {
+                Image(systemName: "slider.horizontal.3")
+                    .font(.system(size: 11, weight: .bold))
+                    .foregroundStyle(MasoColor.accent)
+                Text("YOUR TRAINING")
+                    .font(.system(size: 10, weight: .heavy)).tracking(1.5)
+                    .foregroundStyle(MasoColor.textDim)
+            }
+            VStack(alignment: .leading, spacing: 4) {
+                Text(s.trainingGoalKind.displayName)
+                    .font(.system(size: 17, weight: .bold))
+                    .foregroundStyle(MasoColor.text)
+                Text(String(format: NSLocalizedString("%lld days a week", comment: "coach pref card cadence"), s.weeklyTrainingDays)
+                     + (focus.isEmpty ? "" : "  ·  " + String(format: NSLocalizedString("Focus: %@", comment: "coach pref card focus muscles"), focus.joined(separator: " · "))))
+                    .font(.system(size: 13))
+                    .foregroundStyle(MasoColor.textDim)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            Rectangle().fill(MasoColor.borderSoft).frame(height: 0.5)
+            HStack(spacing: 10) {
+                prefCardButton(icon: "slider.horizontal.3", title: "Adjust preferences") { prefsPresented = true }
+                prefCardButton(icon: "square.stack.3d.up.fill", title: "View routines") { allSheetPresented = true }
+            }
+        }
+        .padding(14)
+        .background(MasoColor.surface)
+        .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
+    }
+
+    private func prefCardButton(icon: String, title: String, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            HStack(spacing: 6) {
+                Image(systemName: icon).font(.system(size: 12, weight: .semibold))
+                Text(LocalizedStringKey(title)).font(.system(size: 13, weight: .semibold)).lineLimit(1)
+            }
+            .foregroundStyle(MasoColor.text)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 9)
+            .glassCapsuleButtonBackground(tint: Self.composerGlassTint, fallback: MasoColor.surfaceHi)
+        }
+        .buttonStyle(.plain)
+    }
+
+    @ViewBuilder
+    private var greetingOrSuggestion: some View {
         if let sug = suggestion {
             // 优化建议卡化身主动建议气泡 — 有近况数据时 coach 先开口, 不等用户想话题.
             VStack(alignment: .leading, spacing: 8) {
@@ -442,6 +500,22 @@ struct CoachScreen: View {
                         onExercisePillLongPress: (isLatest && !hasActiveTraining)
                             ? { name in beginTargetedSwap(name) } : nil
                     )
+                }
+                // 「调整」入口 — 显式按钮, 开的就是 composer # 那个 Prompt templates 面板 (同一个 #),
+                // 图标也用 # (number), 让用户认出「调整 = #」. 长按动作 pill 是同系统的快捷方式.
+                // 只挂最新一轮卡 (# 改的是 currentRoutines) 且非训练中.
+                if isLatest && !hasActiveTraining {
+                    Button { templatesPresented = true } label: {
+                        HStack(spacing: 6) {
+                            Image(systemName: "number").font(.system(size: 12, weight: .bold))
+                            Text("Adjust").font(.system(size: 13, weight: .semibold))
+                        }
+                        .foregroundStyle(MasoColor.text)
+                        .padding(.horizontal, 14).padding(.vertical, 8)
+                        .glassCapsuleButtonBackground(tint: Self.composerGlassTint, fallback: MasoColor.surfaceHi)
+                    }
+                    .buttonStyle(.plain)
+                    .padding(.top, 2)
                 }
             }
         }
@@ -652,7 +726,7 @@ struct CoachScreen: View {
                     .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
-            .accessibilityLabel(Text("Prompt templates"))
+            .accessibilityLabel(Text("Adjust your routine"))
 
             // 细分隔
             Rectangle()
@@ -926,7 +1000,7 @@ private struct CoachTemplatesSheet: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
             .background(MasoColor.background.ignoresSafeArea())
-            .navigationTitle(NSLocalizedString("Prompt templates", comment: "coach templates sheet title"))
+            .navigationTitle(NSLocalizedString("Adjust your routine", comment: "coach templates sheet title"))
             .navigationBarTitleDisplayMode(.inline)
             // 顶栏规范: 纯浏览/挑选型 sheet — 右上 Done, 左上不放按钮 (拖拽关闭照常).
             .toolbar {
