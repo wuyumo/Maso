@@ -882,6 +882,25 @@ final class DataStore {
         }
     }
 
+    /// 删本场该动作最近 count 条 SetRecord — 训练中删掉一个已做过组的动作时用,
+    /// 否则记录成孤儿, 健身历史按原始记录数多算 (见 TrainingSessionStore.deleteStep).
+    /// sets 是 newest-first (insert at 0), 从头扫即"最近的先删".
+    func removeRecords(exerciseId: String, planId: String?, since: Date, count: Int) {
+        guard count > 0 else { return }
+        var removed = 0
+        var idx = 0
+        while removed < count, idx < sets.count {
+            let r = sets[idx]
+            if r.exerciseId == exerciseId && r.planId == planId && r.performedAt >= since {
+                sets.remove(at: idx)
+                removed += 1
+            } else {
+                idx += 1
+            }
+        }
+        if removed > 0 { save() }
+    }
+
     /// 记录新的一组 — 同时:
     ///   1. 把 plan.lastUsedAt 推进到这次的时间 (用于 pickTodayPlan 的 LRU 排序)
     ///   2. 更新 plan.updatedAt

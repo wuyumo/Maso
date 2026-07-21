@@ -479,7 +479,10 @@ struct PlanPlayerScreen: View {
                         id,
                         exById: data.exById,
                         defaultRest: data.settings.defaultRestSeconds,
-                        defaultBetweenExerciseRest: data.settings.defaultBetweenExerciseRestSeconds
+                        defaultBetweenExerciseRest: data.settings.defaultBetweenExerciseRestSeconds,
+                        removeRecords: { exId, planId, since, count in
+                            data.removeRecords(exerciseId: exId, planId: planId, since: since, count: count)
+                        }
                     )
                 }
                 pendingDeleteStepId = nil

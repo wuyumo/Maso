@@ -1022,11 +1022,15 @@ final class TrainingSessionStore {
         syncLiveActivity()
     }
 
+    /// removeRecords(exerciseId, planId, since, count): 删本场该动作最近 count 条 SetRecord.
+    /// 训练中删掉一个已做过组的动作时调用 — 否则那几条记录成孤儿, 历史卡按原始记录数多算
+    /// (播放列表已删到 N 组, 历史却仍显示 N+被删动作组数). 传了才删, 跟 undoLastCompletedSet 同套.
     func deleteStep(
         _ stepId: String,
         exById: [String: Exercise],
         defaultRest: Int,
-        defaultBetweenExerciseRest: Int
+        defaultBetweenExerciseRest: Int,
+        removeRecords: ((_ exerciseId: String, _ planId: String?, _ since: Date, _ count: Int) -> Void)? = nil
     ) {
         guard var s = session, var p = plan else { return }
         // 删之前捕获当前位置, 用于映射
@@ -1035,6 +1039,14 @@ final class TrainingSessionStore {
         var curSetN: Int? = nil
         if case .exercise(_, let sn, _, _, _, _, _) = currentSegment?.kind {
             curSetN = sn
+        }
+
+        // 删记录前先算: 被删 step 的动作 + 本场它已打勾的组数 → 连带清掉那几条 SetRecord.
+        // 顺序要紧: 在 removeAll / filter 之前读, 之后 p.steps 与 completedSets 已不含该 step.
+        let deletedExId = p.steps.first(where: { $0.id == stepId })?.exerciseId
+        let deletedLoggedCount = s.completedSets.filter { $0.stepId == stepId }.count
+        if let exId = deletedExId, deletedLoggedCount > 0 {
+            removeRecords?(exId, s.planId, s.startedAt, deletedLoggedCount)
         }
 
         // 移除 step + 清掉该 step 的 completedSets (孤儿数据)
