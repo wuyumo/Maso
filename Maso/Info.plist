@@ -22,7 +22,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>2.0.3</string>
+	<string>2.0.4</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -37,17 +37,17 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>21</string>
+	<string>22</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>MasoAIProxyURL</key>
 	<string>$(MASO_AI_PROXY_URL)</string>
-	<key>MasoClientToken</key>
-	<string>$(MASO_CLIENT_TOKEN)</string>
 	<key>MasoCheckoutMonthlyURL</key>
 	<string>https://buy.polar.sh/polar_cl_wteq3WWs2AcEjSB7x6LAdTEPu0rg6eSjrfv9348SRLy</string>
 	<key>MasoCheckoutYearlyURL</key>
 	<string>https://buy.polar.sh/polar_cl_AYm061jMl76goVgu1K07bZBLwvdv3P1Mtvpxq0gKokU</string>
+	<key>MasoClientToken</key>
+	<string>$(MASO_CLIENT_TOKEN)</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Masso uses the camera so you can add a selfie to your shareable workout summary.</string>
 	<key>NSHealthShareUsageDescription</key>
