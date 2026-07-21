@@ -108,13 +108,20 @@ struct ShareCardFooter: View {
                 // 其余卡片没 payload → 不画 — 假占位二维码"扫了能下载"是误导, 扫出来是空的.
                 // App Store 链接出来后给这些卡传固定 https://apps.apple.com/app/id... 即可恢复.
                 if let payload = qrPayload, let qr = ShareQR.image(for: payload) {
-                    Image(uiImage: qr)
-                        .interpolation(.none)
-                        .resizable()
-                        .frame(width: qrSize, height: qrSize)
-                        .padding(3)
-                        .background(Color.white)
-                        .clipShape(RoundedRectangle(cornerRadius: 6))
+                    // QR + 下方一行"扫码获取这套训练"说明 (只在 routine 卡有 payload 时出现).
+                    VStack(spacing: 5) {
+                        Image(uiImage: qr)
+                            .interpolation(.none)
+                            .resizable()
+                            .frame(width: qrSize, height: qrSize)
+                            .padding(3)
+                            .background(Color.white)
+                            .clipShape(RoundedRectangle(cornerRadius: 6))
+                        Text("Scan to get this routine")
+                            .font(.system(size: 9, weight: .semibold))
+                            .foregroundStyle(MasoColor.textDim)
+                            .fixedSize()
+                    }
                 }
             }
             .padding(.horizontal, 20)
