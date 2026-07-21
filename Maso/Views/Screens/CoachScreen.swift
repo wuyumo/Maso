@@ -859,6 +859,12 @@ struct CoachScreen: View {
     private func send(feedback: String?, displayText: String? = nil, onlyModify: String? = nil,
                       sourceKicker: String? = nil, surface: String = "coach_chat") {
         guard !session.isGenerating else { return }
+        // 免费美区每日 AI 额度用尽 → 弹付费墙 (Pro/非美区 canUseAICoach 恒 true, 不触发).
+        guard data.canUseAICoach else {
+            Haptics.tap()
+            paywallPresented = true
+            return
+        }
         Haptics.tap()
         lastFeedback = feedback
         lastDisplayText = displayText

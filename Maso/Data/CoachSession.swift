@@ -99,6 +99,11 @@ extension DataStore {
                             sourceKicker: String? = nil,
                             surface: String = "coach_chat") {
         guard !coachSession.isGenerating else { return }
+        // 免费美区每日 AI 额度用尽 → 直接 no-op. UI 层 (CoachScreen.send) 会先拦并弹付费墙;
+        // 这里是兜底, 挡住 SettingsScreen「Generate routines」等其它入口不烧额度、不假装生成.
+        // Pro / 非美区 canUseAICoach 恒 true, 不受影响; onboarding / Today 自动刷新走别的方法不经此.
+        guard canUseAICoach else { return }
+        consumeAICoach()
         // QA修复③: isGenerating 必须在进 Task 前同步置位 — 之前在 Task 体内才置 true,
         // 同一 runloop 双调用都能过上面的 guard, 两个生成任务并发互踩.
         coachSession.isGenerating = true

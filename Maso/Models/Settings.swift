@@ -137,6 +137,12 @@ struct UserSettings: Codable, Sendable {
     /// 只有 == "USA" 才进付费判定; 其他区/未知 → 免费全解锁.
     var appStoreCountry: String? = nil
 
+    // MARK: - AI 教练每日软额度 (仅免费美区计数; Pro / 非美区不消费)
+    /// 上次计数所属的自然日 (startOfDay). 跨天自动归零 (见 DataStore.consumeAICoach).
+    var aiCoachDay: Date = .distantPast
+    /// 当天已用的 AI 教练生成次数. 达 FreeLimit.freeDailyAICoach → send 弹付费墙.
+    var aiCoachCountToday: Int = 0
+
     /// ⚠️ 调试专用解锁 Pro — 仅 Debug 包里 Settings 的 "Debug" 开关能置位, 且 isPro 也仅在
     /// #if DEBUG 下读它. Release/上架包既无 UI 可写、isPro 又不读 → 永远 false, 零影响
     /// (字段本身保留只为 Codable 跨 Debug/Release 兼容). 测 Pro 功能用, 上线 archive 自动剔除逻辑.
@@ -454,6 +460,9 @@ extension UserSettings {
 enum FreeLimit {
     /// 免费用户最多保存几个训练计划
     static let maxPlans: Int = 3
+    /// 免费美区用户每天最多几次 AI 教练生成 (Coach chat 生成/修订; onboarding 首计划 +
+    /// Today 每日自动刷新不计). 用完当天 → Coach send 弹付费墙, Pro=无限. 调这个数即调门槛.
+    static let freeDailyAICoach: Int = 5
 }
 
 // MARK: - EquipmentCategory (#1)

@@ -101,6 +101,11 @@ struct RootView: View {
             } catch {
                 activateMessage = NSLocalizedString("Couldn't verify your code — check your connection and try again.", comment: "Pro activation network error")
             }
+            // 深链结账回跳时 paywall sheet 通常还开着 (用户点 Continue 去 Safari 付款,
+            // sheet 没关). iOS 不会在已有 sheet 之上弹 alert → 成功提示会被吞. 先关 sheet,
+            // 等 dismiss 动画落定 (~0.4s) 再弹, 否则刚付完钱的人看不到任何确认.
+            if paywallPresented { paywallPresented = false }
+            try? await Task.sleep(nanoseconds: 400_000_000)
             activateShown = true
         }
         return true

@@ -56,7 +56,7 @@ struct PaywallScreen: View {
         .alert("You're now Maso Pro!", isPresented: $showConfirm) {
             Button("Done") { dismiss() }
         } message: {
-            Text("Enjoy unlimited plans, full history, and everything else. Welcome aboard.")
+            Text("Enjoy unlimited plans, unlimited AI, and deep analytics. Welcome aboard.")
         }
         .sheet(isPresented: $codeSheetShown) {
             ActivationCodeSheet(onActivated: {
@@ -98,20 +98,21 @@ struct PaywallScreen: View {
         .frame(maxWidth: .infinity)
     }
 
+    // 卖点与真实 gate 一一对应 (不画饼): ①3-plan cap ②AI 每日额度 ③深度力量分析卡 (逐动作
+    // 1RM/e1RM/MEV·MAV) + 周报 AI 小结 ④逐肌恢复精度 (muscleDetailEnabled) ⑤自建动作. 原
+    // "Full history"(历史本就免费) / "Smart progression"(无 gate) / "Apple Health"(免费) 已移除.
     private var featureList: some View {
         VStack(alignment: .leading, spacing: 14) {
             FeatureRow(icon: "infinity", title: "Unlimited workout plans",
                        desc: "No more 3-plan cap — build a plan for every split.")
-            FeatureRow(icon: "clock.arrow.circlepath", title: "Full history",
-                       desc: "Permanent record + PR tracking + volume trends.")
-            FeatureRow(icon: "arrow.up.right.circle.fill", title: "Smart progression",
-                       desc: "Earn the next 2.5 kg — weight suggestions from your logged sets.")
-            FeatureRow(icon: "chart.bar.xaxis", title: "Advanced analytics",
-                       desc: "Muscle balance, weekly volume, weak spots.")
+            FeatureRow(icon: "sparkles", title: "Unlimited AI coach",
+                       desc: "Generate and refine plans in chat with no daily limit.")
+            FeatureRow(icon: "chart.bar.xaxis", title: "Deep analytics",
+                       desc: "Per-lift 1RM trends, weak spots, and weekly AI summaries.")
+            FeatureRow(icon: "figure.run.circle", title: "Fine-grained recovery",
+                       desc: "Per-muscle recovery status, not just broad zones.")
             FeatureRow(icon: "plus.app.fill", title: "Custom exercises",
                        desc: "Add your own moves with notes and photos.")
-            FeatureRow(icon: "heart.text.square", title: "Apple Health",
-                       desc: "Completed workouts saved to Apple Health automatically.")
         }
         .padding(.horizontal, 4)
     }
