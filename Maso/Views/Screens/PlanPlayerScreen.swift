@@ -939,19 +939,21 @@ struct PlanPlayerScreen: View {
         let steps = store.plan?.steps.count ?? 0
         guard steps > 0 else { return Self.playlistMinHeight }
         let handleH: CGFloat = 56       // 拖把手 + "PLAYLIST" header (= playlistMinHeight)
-        let exerciseRowH: CGFloat = 84  // 缩略图/进度环 + 名字 + 肌群/器械 tag
-        let restRowH: CGFloat = 28      // "Rest m:ss" 动作间休息行
-        let footerH: CGFloat = 60       // "+ Add exercise"
+        let exerciseRowH: CGFloat = 78  // 缩略图/进度环 56 + 上下 padding 10×2 + 微余量 (实测 ~76-78)
+        let restRowH = InlinePlaylist.restRowHeight  // 动作间休息行 — 两态同高 34 (防跳动)
+        let footerH: CGFloat = 52       // "+ Add exercise" (内容 ~36 + listRowInsets 8×2)
         let crossRests = max(0, steps - 1)
         return handleH + CGFloat(steps) * exerciseRowH + CGFloat(crossRests) * restRowH + footerH
     }
 
     /// playlist 高度上限 — 既保证上方训练图至少留 200pt, 又封顶到内容高度
     /// (drawer 高过内容会在内容下方露纯黑空洞 → #4).
+    /// ⚠️ drawer 总高 = 这个值 + bottomSafeArea (见 playlistDrawer 的 frame), 所以按内容封顶时
+    /// 必须先扣掉 bottomSafeArea — 之前没扣, 拖满后内容下方恒露 ~34pt 黑带 (用户报"黑色区域截断").
     private var playlistMaxHeight: CGFloat {
         let screenH = UIScreen.main.bounds.height
         let screenMax = max(Self.playlistDefaultHeight, screenH * 0.55)
-        return min(screenMax, playlistContentHeight)
+        return min(screenMax, max(Self.playlistMinHeight, playlistContentHeight - bottomSafeArea))
     }
 
     /// rest 段之后第一个 exercise 段 (= "UP NEXT" 那一组). 休息时 playlist 按它渲染 →
@@ -2211,33 +2213,32 @@ private struct InlinePlaylist: View {
         .padding(.horizontal, MasoMetrics.rowPaddingH)
     }
 
-    /// 动作间休息行.
+    /// 动作间休息行 — active/passive **固定同一总高 34pt**: ✓ 跨动作时 isActive 翻面, 两态
+    /// 高度不同会让下方所有行下移再弹回 (列表上下跳, 用户报). 统一高度后切换只变样式不变布局.
+    static let restRowHeight: CGFloat = 34
     ///   - 非活动 (isActive=false): 细、淡、居中, hourglass + 总时长. 纯展示.
-    ///   - 活动中 (正在这条休息上, isActive=true): 高亮 (accent 底 + accent 文字) + 倒计时进度条,
-    ///     进度条随休息推进从左往右填满, 满了即开始下一动作.
+    ///   - 活动中 (正在这条休息上, isActive=true): 高亮 (半透明白底) + 倒计时文字.
     @ViewBuilder
     private func restRow(seconds: Int, isActive: Bool) -> some View {
         if isActive, let endsAt = restEndsAt {
             TimelineView(.periodic(from: .now, by: 0.25)) { ctx in
                 let remaining = max(0, endsAt.timeIntervalSince(ctx.date))
                 // R1: 播放列表里休息位的进度条已去除 — 仅保留高亮底 + 倒计时文字 (其余样式与之前一致).
-                VStack(spacing: 5) {
-                    HStack(spacing: 6) {
-                        Image(systemName: "hourglass")
-                            .font(.system(size: 9, weight: .heavy))
-                        Text(String(format: NSLocalizedString("Rest %@", comment: "rest between exercises"),
-                                    formatRemaining(Int(ceil(remaining)))))
-                            .font(.system(size: 11, weight: .heavy).monospacedDigit())
-                            .tracking(0.5)
-                    }
-                    .foregroundStyle(MasoColor.text)   // 休息中文字改白
+                HStack(spacing: 6) {
+                    Image(systemName: "hourglass")
+                        .font(.system(size: 9, weight: .heavy))
+                    Text(String(format: NSLocalizedString("Rest %@", comment: "rest between exercises"),
+                                formatRemaining(Int(ceil(remaining)))))
+                        .font(.system(size: 11, weight: .heavy).monospacedDigit())
+                        .tracking(0.5)
                 }
+                .foregroundStyle(MasoColor.text)   // 休息中文字改白
                 .frame(maxWidth: .infinity)
                 .padding(.horizontal, 14)
-                .padding(.vertical, 8)
+                .frame(height: Self.restRowHeight - 4)
                 .background(MasoColor.text.opacity(0.14))   // 高亮底改半透明白
                 .clipShape(RoundedRectangle(cornerRadius: 10))
-                .padding(.vertical, 2)
+                .frame(height: Self.restRowHeight)
             }
         } else {
             HStack(spacing: 6) {
@@ -2249,7 +2250,7 @@ private struct InlinePlaylist: View {
             }
             .foregroundStyle(MasoColor.textFaint)
             .frame(maxWidth: .infinity)
-            .padding(.vertical, 5)
+            .frame(height: Self.restRowHeight)
         }
     }
 
@@ -3176,7 +3177,7 @@ private struct EditCurrentStepSheet: View {
 
     /// canonical-kg 重量步进器 — 按 WeightUnitProvider.current 换算单位+标签 (kg 步进 2.5 / lb 步进 5).
     @ViewBuilder
-    private func weightField(_ value: Binding<Double>, fieldWidth: CGFloat = 86) -> some View {
+    private func weightField(_ value: Binding<Double>, fieldWidth: CGFloat = 70) -> some View {
         let u = WeightUnitProvider.current
         NumStepperField(doubleValue: value.inUnit(u), range: 0...u.weightMax, step: u.weightStep, suffix: u.label, decimal: true, fieldWidth: fieldWidth)
     }

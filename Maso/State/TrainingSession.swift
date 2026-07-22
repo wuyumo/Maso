@@ -518,26 +518,51 @@ final class TrainingSessionStore {
         ])
     }
 
-    /// "上一段" — 跳过休息直接回到上一个动作
+    /// "上一动作" — backward.end.fill 的 playlist 语义 (回退一个**训练动作**, 不是上一组).
+    ///   - 休息段: 回到休息前刚做完的那组的播放态 (休息不算一步, 回去可直接重练).
+    ///   - 训练段: 跳到上一个 **不同动作** — 落点复用 jumpToStep (= 点 playlist 行同逻辑:
+    ///     该动作下一组未完成的 set, 全做完落第一组).
+    /// 之前的实现只回退"上一段"(常是同动作的上一组), 大图/标题不变 → 用户感知"没回退动作".
     func skipBackToPrevExercise() {
-        guard let s = session else { return }
-        let cur = s.segmentIndex
+        guard let s = session, !segments.isEmpty else { return }
+        let cur = min(max(0, s.segmentIndex), segments.count - 1)
+        if segments[cur].isRest {
+            // 休息中 → 回到刚做完的那组 (最近一个 exercise 段)
+            var i = cur - 1
+            while i >= 0 {
+                if !segments[i].isRest { setIndex(i); return }
+                i -= 1
+            }
+            return
+        }
+        // 训练组 → 向前找第一个"不同 stepId"的 exercise 段 = 上一个动作
+        let curStep = segments[cur].stepId
         var i = cur - 1
         while i >= 0 {
-            if !segments[i].isRest {
-                setIndex(i)
+            if !segments[i].isRest, segments[i].stepId != curStep {
+                jumpToStep(stepId: segments[i].stepId)
                 return
             }
             i -= 1
         }
-        // 没有更早的 exercise — 留在原地
+        // 已是第一个动作 — 留在原地
     }
 
     var canSkipBack: Bool {
-        guard let s = session else { return false }
-        var i = s.segmentIndex - 1
+        guard let s = session, !segments.isEmpty else { return false }
+        let cur = min(max(0, s.segmentIndex), segments.count - 1)
+        if segments[cur].isRest {
+            var i = cur - 1
+            while i >= 0 {
+                if !segments[i].isRest { return true }
+                i -= 1
+            }
+            return false
+        }
+        let curStep = segments[cur].stepId
+        var i = cur - 1
         while i >= 0 {
-            if !segments[i].isRest { return true }
+            if !segments[i].isRest, segments[i].stepId != curStep { return true }
             i -= 1
         }
         return false

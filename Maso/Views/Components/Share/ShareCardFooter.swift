@@ -90,42 +90,58 @@ struct ShareCardFooter: View {
                 .fill(MasoColor.borderSoft)
                 .frame(height: 0.5)
             HStack(spacing: 12) {
-                HStack(spacing: 10) {
-                    MasoMarkIcon(color: MasoColor.accent)
-                        .frame(width: 32, height: 32)
-                    VStack(alignment: .leading, spacing: 1) {
-                        Text(verbatim: "MASSO")
-                            .font(.system(size: 13, weight: .heavy))
-                            .tracking(2)
-                            .foregroundStyle(MasoColor.text)
-                        Text("My Personal AI Trainer")
-                            .font(.system(size: 10))
-                            .foregroundStyle(MasoColor.textDim)
-                    }
-                }
-                Spacer()
                 // 只在有真实 payload 时画二维码 (RoutineShareCard 传 maso:// 深链).
                 // 其余卡片没 payload → 不画 — 假占位二维码"扫了能下载"是误导, 扫出来是空的.
                 // App Store 链接出来后给这些卡传固定 https://apps.apple.com/app/id... 即可恢复.
                 if let payload = qrPayload, let qr = ShareQR.image(for: payload) {
-                    // QR + 下方一行"扫码获取这套训练"说明 (只在 routine 卡有 payload 时出现).
-                    VStack(spacing: 5) {
-                        Image(uiImage: qr)
-                            .interpolation(.none)
-                            .resizable()
-                            .frame(width: qrSize, height: qrSize)
-                            .padding(3)
-                            .background(Color.white)
-                            .clipShape(RoundedRectangle(cornerRadius: 6))
-                        Text("Scan to get this routine")
-                            .font(.system(size: 9, weight: .semibold))
-                            .foregroundStyle(MasoColor.textDim)
-                            .fixedSize()
+                    // 左列: 顶部"扫码获取"文案 + 浅色右箭头 (指向右侧 QR); 品牌块沉到列底,
+                    // 与上方文案自然拉开距离. 列高钉到 QR 高度让两端对齐.
+                    VStack(alignment: .leading, spacing: 0) {
+                        HStack(spacing: 5) {
+                            Text("Scan to get this routine")
+                                .font(.system(size: 11, weight: .semibold))
+                                .foregroundStyle(MasoColor.textDim)
+                                .fixedSize()
+                            Image(systemName: "chevron.right")
+                                .font(.system(size: 9, weight: .bold))
+                                .foregroundStyle(MasoColor.textFaint)   // 箭头比文字浅一档
+                        }
+                        Spacer(minLength: 12)
+                        brandBlock
                     }
+                    .frame(height: qrSize + 6)   // = QR 边长 + 白边 padding, 两列同高
+                    Spacer()
+                    Image(uiImage: qr)
+                        .interpolation(.none)
+                        .resizable()
+                        .frame(width: qrSize, height: qrSize)
+                        .padding(3)
+                        .background(Color.white)
+                        .clipShape(RoundedRectangle(cornerRadius: 6))
+                } else {
+                    brandBlock
+                    Spacer()
                 }
             }
             .padding(.horizontal, 20)
             .padding(.vertical, 14)
+        }
+    }
+
+    /// App icon + "MASSO" + slogan — footer 两种布局共用.
+    private var brandBlock: some View {
+        HStack(spacing: 10) {
+            MasoMarkIcon(color: MasoColor.accent)
+                .frame(width: 32, height: 32)
+            VStack(alignment: .leading, spacing: 1) {
+                Text(verbatim: "MASSO")
+                    .font(.system(size: 13, weight: .heavy))
+                    .tracking(2)
+                    .foregroundStyle(MasoColor.text)
+                Text("My Personal AI Trainer")
+                    .font(.system(size: 10))
+                    .foregroundStyle(MasoColor.textDim)
+            }
         }
     }
 }

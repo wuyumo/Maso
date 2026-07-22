@@ -13,12 +13,12 @@ extension Binding where Value == Double {
 
 // 统一的数字步进 + 输入控件
 //
-// 布局: [ − ]  [ 47.5 kg ]  [ + ]
-//   - 左右两个圆形小按钮 (32×32), 长按可连续 +/-
+// 布局: [ − | 47.5 kg | + ] — 一体化圆角矩形, 按钮和输入区共用同一块底, 无缝相接
+//   - 左右 − / + 段 36×36 点击热区
 //   - 中间是可点击的输入框, 调出数字键盘可直接输入
-//   - 输入框宽度固定 (默认 86pt = 容纳 4 字符数值 + 单位, e.g. "62.5 kg" 不截断),
+//   - 输入框宽度固定 (默认 70pt = 容纳 3 位数字 + 2 字母单位, e.g. "100 kg"/"62.5 kg"),
 //     全 app 所有同款行统一这一个宽度, 视觉对齐
-//   - 单位后缀 (kg / s / 秒…) 跟数字共享同一个背景, 永远右贴
+//   - 单位后缀 (kg / s / 秒…) 永远右贴数字
 //
 // 用法:
 //   NumStepperField(intValue: $settings.defaultRestSeconds, range: 15...300, step: 15, suffix: "s")
@@ -45,7 +45,7 @@ struct NumStepperField: View {
         step: Double = 1,
         suffix: String? = nil,
         decimal: Bool = true,
-        fieldWidth: CGFloat = 86
+        fieldWidth: CGFloat = 70
     ) {
         self._doubleValue = doubleValue
         self.range = range
@@ -61,7 +61,7 @@ struct NumStepperField: View {
         range: ClosedRange<Int>,
         step: Int = 1,
         suffix: String? = nil,
-        fieldWidth: CGFloat = 86
+        fieldWidth: CGFloat = 70
     ) {
         self._doubleValue = Binding(
             get: { Double(intValue.wrappedValue) },
@@ -78,10 +78,12 @@ struct NumStepperField: View {
     private var canIncrement: Bool { doubleValue + step <= range.upperBound + 0.0001 }
 
     var body: some View {
-        HStack(spacing: 10) {
+        // 一体化胶囊: [ − | 47.5 kg | + ] 共用同一块 surfaceHi 圆角矩形底 —
+        // 按钮不再是独立圆钮, 数字区不再有自己的背景, 三段无缝相接.
+        HStack(spacing: 0) {
             // − 按钮
             Button(action: decrement) {
-                circleIcon("minus", enabled: canDecrement)
+                stepIcon("minus", enabled: canDecrement)
             }
             .buttonStyle(.plain)
             .disabled(!canDecrement)
@@ -91,11 +93,13 @@ struct NumStepperField: View {
 
             // + 按钮
             Button(action: increment) {
-                circleIcon("plus", enabled: canIncrement)
+                stepIcon("plus", enabled: canIncrement)
             }
             .buttonStyle(.plain)
             .disabled(!canIncrement)
         }
+        .background(MasoColor.surfaceHi)
+        .clipShape(RoundedRectangle(cornerRadius: 10))
         // 全局键盘 toolbar — 给 decimalPad/numberPad 加 "完成"
         .toolbar {
             if focused {
@@ -108,13 +112,13 @@ struct NumStepperField: View {
         }
     }
 
-    private func circleIcon(_ name: String, enabled: Bool) -> some View {
+    /// +/- 按钮段 — 无独立底 (整体共底), 36pt 高给足点击热区.
+    private func stepIcon(_ name: String, enabled: Bool) -> some View {
         Image(systemName: name)
             .font(.system(size: 13, weight: .bold))
             .foregroundStyle(enabled ? MasoColor.text : MasoColor.textFaint)
-            .frame(width: 32, height: 32)
-            .background(MasoColor.surfaceHi.opacity(enabled ? 1 : 0.4))
-            .clipShape(Circle())
+            .frame(width: 36, height: 36)
+            .contentShape(Rectangle())
     }
 
     private var inputField: some View {
@@ -144,10 +148,7 @@ struct NumStepperField: View {
             }
         }
         .padding(.vertical, 7)
-        .padding(.horizontal, 12)
         .frame(width: fieldWidth, alignment: .center)
-        .background(MasoColor.surfaceHi)
-        .clipShape(RoundedRectangle(cornerRadius: 10))
         .contentShape(Rectangle())
         .onTapGesture { focused = true }
     }
