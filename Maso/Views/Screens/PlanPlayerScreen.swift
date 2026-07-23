@@ -75,15 +75,9 @@ struct PlanPlayerScreen: View {
     /// 还用这个 bool 决定显示, 不重写所有调用点.
     private var playlistExpanded: Bool { playlistHeight > Self.playlistMinHeight + 40 }
 
-    /// 休息圆环的紧凑度 0..1 — playlistHeight 从 min → default 线性映射. RestCountdown 用它
-    /// 连续 resize 圆环 (替代 playlistExpanded bool), 让圆环大小跟 drawer 同步变, 消除 toggle 抖动.
-    private var restRingCompactT: CGFloat {
-        let lo = Self.playlistMinHeight
-        let hi = Self.playlistDefaultHeight
-        // 上限不再 clamp 到 1: 拖过 default 高度后继续增大 → 圆环继续缩小 (RestCountdown 有下限),
-        // 否则 playlist 拖很高时圆环停在 140 不动, 会跟 drawer 顶部重叠.
-        return max(0, (playlistHeight - lo) / max(1, hi - lo))
-    }
+    // (旧 restRingCompactT 已删除 — 倒计时尺寸改由 GeometryReader 实测净空直接驱动,
+    //  不再从 playlistHeight 间接换算, 少一层耦合也少一个抖动来源.)
+
     /// 拖把手高度档位
     static let playlistMinHeight: CGFloat = 56        // 仅 handle + "PLAYLIST" header, 不见任何 row
     static let playlistDefaultHeight: CGFloat = 254   // 跟旧 expanded 视觉高度对齐
@@ -150,6 +144,16 @@ struct PlanPlayerScreen: View {
     /// 底部预留 — info+controls inner content 总高. 圆环下边界对齐这个 y.
     /// 公式: bottomInnerTopPadding + middleFillerHeight + 22 (spacing) + 84 (Controls 高度).
     static let bottomReservedHeight: CGFloat = 140 + 120 + 22 + 84
+
+    // MARK: - 休息倒计时的两条刚性边界 (它必须完整落在这两者之间, 永不重叠)
+
+    /// 拖把手底边距 sheet 顶的距离 = padding.top(topSafeArea-4) + vertical 10 + 高 5 + 10.
+    static let handleClearance: CGFloat = 21
+
+    /// 底部信息区**内容**顶边距屏底的距离 = middleFillerHeight + spacing 22 + Controls 84.
+    /// 故意**不含** bottomInnerTopPadding(140) — 那段是压在动作图上的渐变过渡区, 没有文字,
+    /// 倒计时可以进入; 真正不能碰的是 UP NEXT/动作名 所在的 filler 盒顶边.
+    static let bottomContentTop: CGFloat = middleFillerHeight + 22 + 84
 
     var body: some View {
         ZStack {
@@ -301,18 +305,19 @@ struct PlanPlayerScreen: View {
                     //    backgroundLayer 占 (0, ZStack 高 - 64) 区域 (padding.bottom 64),
                     //    圆环 padding.bottom 64 抵消, Spacer 均分让圆环在背景图中点.
                     if seg.isRest {
-                        // 圆环垂直居中在 [drag handle 底部, "Up Next" 文字顶部] 之间 → 到 handle 与到 Up Next 间距相等.
-                        // handle 底 ≈ topSafeArea + 21 (padding.top topSafeArea-4 + vertical 10 + 高 5 + 10). Up Next 顶 ≈ stageHeight - 196.
-                        // ⚠️ 用 GeometryReader 绝对定位, 不用"刚性 padding + Spacer"— GeometryReader 没有
-                        // 固有高度, 只吃 ZStack 提案尺寸: playlist 拖满后 stage 只剩 ~370pt, 刚性
-                        // padding(topSafeArea+21 / 196) + 圆环 minScale footprint 会把 ZStack 撑破 →
-                        // 训练→休息切换整个 VStack 溢出, drawer 被顶下 ~12pt 再弹回 (拖高后点✓抖动).
-                        // 绝对定位下空间不足圆环只是向区间中点挤, 布局永不溢出.
+                        // 倒计时组件放在 [拖把手底, 底部信息区内容顶] 这段净空的正中, 且**尺寸由这段
+                        // 净空实测驱动** (不再由 playlist 高度间接换算) —— 组件内部按 budget 三档降级
+                        // (环+REST+数字 → 环+数字 → 只数字), footprint 恒 ≤ 净空, 数学上不可能与
+                        // 把手 / UP NEXT / Controls 重叠, 也不可能撑破 ZStack 引起跳动.
+                        // GeometryReader 无固有高度只吃提案尺寸 → 再挤也只是组件变小, 布局不溢出.
                         GeometryReader { geo in
-                            let top = topSafeArea + 21
-                            let bottom = max(top, geo.size.height - 196)
-                            restCountdownRing(seg: seg)
-                                .position(x: geo.size.width / 2, y: (top + bottom) / 2)
+                            let top = topSafeArea + Self.handleClearance
+                            let bottom = max(top, geo.size.height - Self.bottomContentTop)
+                            restCountdownRing(
+                                seg: seg,
+                                available: CGSize(width: geo.size.width, height: bottom - top)
+                            )
+                            .position(x: geo.size.width / 2, y: (top + bottom) / 2)
                         }
                         .allowsHitTesting(false)  // 透传 tap, 不挡下层 Controls / 进度条
                     }
@@ -655,14 +660,14 @@ struct PlanPlayerScreen: View {
     /// 休息倒计时圆环 — 单独出来, 嵌在 上下 Spacer 之间, 真居中.
     /// 不再带"下一动作"信息 (那个移到 restNextExerciseHint 跟 Controls 一起钉底)
     @ViewBuilder
-    private func restCountdownRing(seg: Segment) -> some View {
+    private func restCountdownRing(seg: Segment, available: CGSize) -> some View {
         if case .rest(let dur) = seg.kind {
             RestCountdown(
                 durationTotal: dur,
                 endsAt: store.session?.endsAt,
                 pausedRemaining: store.session?.pausedRemaining,
                 isCrossExercise: isCrossExerciseRest(currentSegment: seg),
-                compactT: restRingCompactT
+                available: available
             )
         }
     }
@@ -949,10 +954,12 @@ struct PlanPlayerScreen: View {
         return handleH + CGFloat(steps) * exerciseRowH + CGFloat(crossRests) * restRowH + footerH
     }
 
-    /// rest 态 stage 区的最小硬性高度 — 圆环层 = padding.top (topSafeArea+21) + padding.bottom (196)
-    /// + 圆环最小 footprint (baseRing × minScale ≈ 97). 训练态大图可压缩没有这种硬需求.
+    /// rest 态 stage 区的最小硬性高度 = 上界(把手) + 下界(底部信息区) + 倒计时最小预算 + 上下安全间隙.
+    /// 倒计时已能三档降级到"只剩数字", 最小预算只需 40pt (旧版按整个圆环 97pt 预留, 白占 ~57pt),
+    /// 所以 playlist 现在能拖得更高. 训练态大图可压缩, 无此硬需求.
     private var restStageMinHeight: CGFloat {
-        topSafeArea + 21 + 196 + RestCountdown.baseRing * RestCountdown.minScale
+        topSafeArea + Self.handleClearance + Self.bottomContentTop
+            + RestCountdown.minBudget + RestCountdown.safeGap * 2
     }
 
     /// playlist 高度上限 — 三重封顶:
@@ -1493,20 +1500,49 @@ private struct RestCountdown: View {
     let endsAt: Date?
     let pausedRemaining: TimeInterval?
     let isCrossExercise: Bool
-    /// 紧凑度 0..1 — 0 = 圆环最大 (playlist 收到最小); 1 = 紧凑 (playlist 撑大). 连续值跟
-    /// playlistHeight 线性, 让圆环大小跟 drawer 高度在"同一个动画事务"里平滑变化 → 不抖.
-    let compactT: CGFloat
+    /// 调用方 (GeometryReader) 实测的可用净空 = [拖把手底, 底部信息区内容顶] 之间.
+    /// 组件尺寸完全由它推导 → footprint 恒 ≤ 它, 数学上不可能与上下元素重叠.
+    let available: CGSize
 
     private static let ringWidth: CGFloat = 3
-    /// baseRing / minScale 非 private — PlanPlayerScreen.restStageMinHeight 用它们算
-    /// rest 态最小 footprint (drawer 拖拽上限要给它留足, 否则切休息态整屏溢出跳动).
+    /// 圆环最大直径 (空间充裕时的观感尺寸).
     static let baseRing: CGFloat = 220
-    static let minScale: CGFloat = 0.44
+    /// 组件与上下刚性元素之间强制留的净距 (每侧).
+    static let safeGap: CGFloat = 10
+    /// 尺寸预算下限 — playlistMaxHeight 保证净空不低于此 (再小数字就不可读了).
+    static let minBudget: CGFloat = 40
 
-    /// 整组件统一缩放因子 — playlist 越大越小 (1.0 → minScale). 用一个 scaleEffect 把"圆环 + 描边 +
-    /// REST 文字 + 数字"整体一起缩 (用户要求: 缩小是整体缩, 不是各部件分别算尺寸); frame 同步收窄,
-    /// 让 layout footprint 也跟着小 → drawer 拖高时不重叠.
-    private var restScale: CGFloat { max(Self.minScale, 1 - 0.36 * compactT) }
+    /// 三档降级阈值 (作用于 budget):
+    ///   ≥ full  : 环 + REST 字样 + 数字 (完整)
+    ///   ≥ ring  : 环 + 数字 — **隐掉 REST 字样**, 让它能压得更小
+    ///   <  ring : 去掉环, **只剩数字** — footprint 只有文字本身, 最不占地方
+    private static let fullThreshold: CGFloat = 132
+    private static let ringThreshold: CGFloat = 92
+
+    /// 本帧的尺寸预算 = 可用高度扣掉上下安全间隙, 再夹到宽度和最大环径.
+    /// 组件所有部件 (环径 / 字号) 都从它等比推导, 因此 footprint 永远装得进 available.
+    private var budget: CGFloat {
+        min(Self.baseRing,
+            max(0, available.height - Self.safeGap * 2),
+            max(0, available.width - 32))
+    }
+
+    private enum Tier { case full, ring, bare }
+    private var tier: Tier {
+        if budget >= Self.fullThreshold { return .full }
+        if budget >= Self.ringThreshold { return .ring }
+        return .bare
+    }
+
+    /// 数字字号 — 按 budget 等比推导. 三档系数都保证文字盒 (≈ 字号 × 1.2) 装得进 budget:
+    /// full 0.29×1.2=0.35 / ring 0.34×1.2=0.41 / bare 0.66×1.2=0.79, 均 < 1.
+    private var numberFont: CGFloat {
+        switch tier {
+        case .full: return budget * 0.29   // 220 → 64pt, 与原视觉一致
+        case .ring: return budget * 0.34   // 环内无 REST 字样, 数字可占更多
+        case .bare: return budget * 0.66   // 无环, 数字放大占满预算
+        }
+    }
 
     private func remainingFloat(at date: Date) -> Double {
         if let p = pausedRemaining { return max(0, p) }
@@ -1522,37 +1558,48 @@ private struct RestCountdown: View {
     var body: some View {
         TimelineView(.periodic(from: .now, by: 0.1)) { ctx in
             let rem = remainingFloat(at: ctx.date)
-            let prog = progress(rem)
-            // 整组件按 baseRing 渲染, 再统一 scaleEffect + frame 缩放 → 圆环/文字一起整体缩.
-            ringView(remaining: Int(ceil(rem)), progress: prog)
-                .scaleEffect(restScale, anchor: .center)
-                .frame(width: Self.baseRing * restScale, height: Self.baseRing * restScale)
+            content(remaining: Int(ceil(rem)), progress: progress(rem))
         }
     }
 
-    private func ringView(remaining: Int, progress: CGFloat) -> some View {
-        ZStack {
-            Circle()
-                .stroke(MasoColor.text.opacity(0.12), lineWidth: Self.ringWidth)
-                .frame(width: Self.baseRing, height: Self.baseRing)
-            Circle()
-                .trim(from: max(0, 1 - progress), to: 1)
-                .stroke(
-                    MasoColor.text,   // 休息倒计时圆环改白色 (不再用 accent 绿)
-                    style: StrokeStyle(lineWidth: Self.ringWidth, lineCap: .round)
-                )
-                .rotationEffect(.degrees(-90))
-                .frame(width: Self.baseRing, height: Self.baseRing)
-            VStack(spacing: 4) {
-                Text(isCrossExercise ? "Switching" : "Rest")
-                    .font(.system(size: 11, weight: .bold))
-                    .tracking(2)
-                    .textCase(.uppercase)
-                    .foregroundStyle(MasoColor.text.opacity(0.6))
-                Text(formatRemaining(remaining))
-                    .font(.system(size: 64, weight: .bold).monospacedDigit())
-                    .foregroundStyle(MasoColor.text)
+    /// 按 tier 渲染 — 三档共用同一个数字, 只是外层包不包环 / 显不显 REST.
+    @ViewBuilder
+    private func content(remaining: Int, progress: CGFloat) -> some View {
+        let number = Text(formatRemaining(remaining))
+            .font(.system(size: numberFont, weight: .bold).monospacedDigit())
+            .foregroundStyle(MasoColor.text)
+            // 空间被压到极限时也不换行/不省略, 宁可等比小一号
+            .lineLimit(1)
+            .minimumScaleFactor(0.6)
+
+        switch tier {
+        case .bare:
+            // 只剩数字 — footprint 就是文字本身, 比环小得多, 绝不挡别的元素.
+            number
+        case .ring, .full:
+            ZStack {
+                Circle()
+                    .stroke(MasoColor.text.opacity(0.12), lineWidth: Self.ringWidth)
+                Circle()
+                    .trim(from: max(0, 1 - progress), to: 1)
+                    .stroke(
+                        MasoColor.text,   // 休息倒计时圆环白色 (不用 accent 绿)
+                        style: StrokeStyle(lineWidth: Self.ringWidth, lineCap: .round)
+                    )
+                    .rotationEffect(.degrees(-90))
+                VStack(spacing: 4) {
+                    // 空间不够时先牺牲 REST 字样 (信息量最低), 换取环+数字能继续压小.
+                    if tier == .full {
+                        Text(isCrossExercise ? "Switching" : "Rest")
+                            .font(.system(size: 11, weight: .bold))
+                            .tracking(2)
+                            .textCase(.uppercase)
+                            .foregroundStyle(MasoColor.text.opacity(0.6))
+                    }
+                    number
+                }
             }
+            .frame(width: budget, height: budget)
         }
     }
 }
