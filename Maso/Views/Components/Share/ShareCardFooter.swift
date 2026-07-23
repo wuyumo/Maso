@@ -97,15 +97,18 @@ struct ShareCardFooter: View {
                     // 左列: 顶部"扫码获取"文案 + 浅色右箭头 (指向右侧 QR); 品牌块沉到列底,
                     // 与上方文案自然拉开距离. 列高钉到 QR 高度让两端对齐.
                     VStack(alignment: .leading, spacing: 0) {
-                        HStack(spacing: 5) {
+                        // 这行是分享传播的 CTA (告诉看图的人 QR 能干嘛) — 比品牌块低一档但要看得清:
+                        // 12pt bold + 正文白, 仍轻于 13pt heavy 的 MASSO 字标, 不喧宾夺主.
+                        HStack(spacing: 6) {
                             Text("Scan to get this routine")
-                                .font(.system(size: 11, weight: .semibold))
-                                .foregroundStyle(MasoColor.textDim)
+                                .font(.system(size: 12, weight: .bold))
+                                .foregroundStyle(MasoColor.text)
                                 .fixedSize()
-                            Image(systemName: "chevron.right")
-                                .font(.system(size: 9, weight: .bold))
-                                .foregroundStyle(MasoColor.textFaint)   // 箭头比文字浅一档
+                            Image(systemName: "arrow.right")
+                                .font(.system(size: 11, weight: .bold))
+                                .foregroundStyle(MasoColor.textDim)   // 箭头仍比文字浅一档
                         }
+                        .padding(.top, 10)   // 不死贴 QR 顶边, 往下挪一点更透气
                         Spacer(minLength: 12)
                         brandBlock
                     }
