@@ -302,15 +302,18 @@ struct PlanPlayerScreen: View {
                     //    圆环 padding.bottom 64 抵消, Spacer 均分让圆环在背景图中点.
                     if seg.isRest {
                         // 圆环垂直居中在 [drag handle 底部, "Up Next" 文字顶部] 之间 → 到 handle 与到 Up Next 间距相等.
-                        // 之前上界取 y=0 (sheet 顶), 但 drag handle 落在 topSafeArea 处 → 圆环偏上; 现把上界抬到 handle 底部.
                         // handle 底 ≈ topSafeArea + 21 (padding.top topSafeArea-4 + vertical 10 + 高 5 + 10). Up Next 顶 ≈ stageHeight - 196.
-                        VStack(spacing: 0) {
-                            Spacer(minLength: 0)
+                        // ⚠️ 用 GeometryReader 绝对定位, 不用"刚性 padding + Spacer"— GeometryReader 没有
+                        // 固有高度, 只吃 ZStack 提案尺寸: playlist 拖满后 stage 只剩 ~370pt, 刚性
+                        // padding(topSafeArea+21 / 196) + 圆环 minScale footprint 会把 ZStack 撑破 →
+                        // 训练→休息切换整个 VStack 溢出, drawer 被顶下 ~12pt 再弹回 (拖高后点✓抖动).
+                        // 绝对定位下空间不足圆环只是向区间中点挤, 布局永不溢出.
+                        GeometryReader { geo in
+                            let top = topSafeArea + 21
+                            let bottom = max(top, geo.size.height - 196)
                             restCountdownRing(seg: seg)
-                            Spacer(minLength: 0)
+                                .position(x: geo.size.width / 2, y: (top + bottom) / 2)
                         }
-                        .padding(.top, topSafeArea + 21)
-                        .padding(.bottom, 196)
                         .allowsHitTesting(false)  // 透传 tap, 不挡下层 Controls / 进度条
                     }
                 }
@@ -946,13 +949,23 @@ struct PlanPlayerScreen: View {
         return handleH + CGFloat(steps) * exerciseRowH + CGFloat(crossRests) * restRowH + footerH
     }
 
-    /// playlist 高度上限 — 既保证上方训练图至少留 200pt, 又封顶到内容高度
-    /// (drawer 高过内容会在内容下方露纯黑空洞 → #4).
-    /// ⚠️ drawer 总高 = 这个值 + bottomSafeArea (见 playlistDrawer 的 frame), 所以按内容封顶时
-    /// 必须先扣掉 bottomSafeArea — 之前没扣, 拖满后内容下方恒露 ~34pt 黑带 (用户报"黑色区域截断").
+    /// rest 态 stage 区的最小硬性高度 — 圆环层 = padding.top (topSafeArea+21) + padding.bottom (196)
+    /// + 圆环最小 footprint (baseRing × minScale ≈ 97). 训练态大图可压缩没有这种硬需求.
+    private var restStageMinHeight: CGFloat {
+        topSafeArea + 21 + 196 + RestCountdown.baseRing * RestCountdown.minScale
+    }
+
+    /// playlist 高度上限 — 三重封顶:
+    ///   ① 屏高 55% (给上方训练图留视觉空间)
+    ///   ② **rest 态硬需求**: 拖拽上限必须让 stage 区永远装得下休息圆环层 (它的上下 padding + 最小
+    ///      圆环是刚性的). 否则拖满后 ✓ 切休息态 → 圆环层撑破 VStack → 整个 drawer 被顶下 ~17pt,
+    ///      休息结束又弹回 (用户报"拖高后点下一个抖动"). 训练/休息两态用同一个上限 → drawer 高度恒定.
+    ///   ③ 内容高度 (drawer 高过内容会在内容下方露纯黑空洞 → #4).
+    /// ⚠️ drawer 总高 = 这个值 + bottomSafeArea (见 playlistDrawer 的 frame), 故 ②③ 都先扣掉它.
     private var playlistMaxHeight: CGFloat {
         let screenH = UIScreen.main.bounds.height
-        let screenMax = max(Self.playlistDefaultHeight, screenH * 0.55)
+        let screenMax = max(Self.playlistDefaultHeight,
+                            min(screenH * 0.55, screenH - restStageMinHeight - bottomSafeArea))
         return min(screenMax, max(Self.playlistMinHeight, playlistContentHeight - bottomSafeArea))
     }
 
@@ -1485,12 +1498,15 @@ private struct RestCountdown: View {
     let compactT: CGFloat
 
     private static let ringWidth: CGFloat = 3
-    private static let baseRing: CGFloat = 220
+    /// baseRing / minScale 非 private — PlanPlayerScreen.restStageMinHeight 用它们算
+    /// rest 态最小 footprint (drawer 拖拽上限要给它留足, 否则切休息态整屏溢出跳动).
+    static let baseRing: CGFloat = 220
+    static let minScale: CGFloat = 0.44
 
-    /// 整组件统一缩放因子 — playlist 越大越小 (1.0 → 0.44). 用一个 scaleEffect 把"圆环 + 描边 +
+    /// 整组件统一缩放因子 — playlist 越大越小 (1.0 → minScale). 用一个 scaleEffect 把"圆环 + 描边 +
     /// REST 文字 + 数字"整体一起缩 (用户要求: 缩小是整体缩, 不是各部件分别算尺寸); frame 同步收窄,
     /// 让 layout footprint 也跟着小 → drawer 拖高时不重叠.
-    private var restScale: CGFloat { max(0.44, 1 - 0.36 * compactT) }
+    private var restScale: CGFloat { max(Self.minScale, 1 - 0.36 * compactT) }
 
     private func remainingFloat(at date: Date) -> Double {
         if let p = pausedRemaining { return max(0, p) }
