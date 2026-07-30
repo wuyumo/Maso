@@ -1127,5 +1127,9 @@ struct SavedRoutinesAllSheet: View {
             }
         }
         .presentationDragIndicator(.visible)
+        // 空状态下用户报"页面中间有背景色差异": 本 sheet 之前漏挂 presentationBackground,
+        // 走系统默认 sheet 材质 (半透明) → 内容区之外的地方透出背后 tab 的内容, 出现色带.
+        // (全 app 其余 8 个 sheet 都挂了这一行, 就这个漏了.) 钉成不透明 #121212 边到边.
+        .presentationBackground(MasoColor.background)
     }
 }

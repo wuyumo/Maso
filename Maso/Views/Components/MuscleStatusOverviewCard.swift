@@ -32,6 +32,12 @@ struct MuscleStatusOverviewCard: View {
     /// 够装 legend / "All caught up"+分享钮那一行 (~135pt). 间距同步 20→16 把宽度让给图.
     private let slotSize: CGFloat = 172
 
+    /// 右列文字块 (贴心提示 / 首日引导语) 的最大宽度 — owner: 文字区再收窄一档 (150 → 132),
+    /// 连带把整组的自然宽度压下来, 外层 Spacer 才有余量把内容真正居中 (原先整组贴左).
+    /// ⚠️ 底部动作行**不能**挂 .frame(maxWidth: .infinity) — 那会让右列变贪吃撑满全宽,
+    /// 两侧居中 Spacer 被压成 0, 图就贴到左边缘去了 (owner 报的"整体太靠左"就是这个).
+    private let rightColTextWidth: CGFloat = 132
+
     var body: some View {
         // tease-free / precision-Pro: 免费用户看到 body-map 热图 (漂亮 + 卖产品) 但强制 coarseOnly
         // (粗颗粒), 逐肌群精度 + 4 档图例 + train-the-gaps 定向留给 Pro. 直接建模 Fitbod/WHOOP 的
@@ -70,7 +76,7 @@ struct MuscleStatusOverviewCard: View {
                                 .font(.system(size: 12))
                                 .foregroundStyle(MasoColor.textDim)
                                 .fixedSize(horizontal: false, vertical: true)
-                                .frame(maxWidth: 150, alignment: .leading)
+                                .frame(maxWidth: rightColTextWidth, alignment: .leading)
                         }
                         if fatigueMap.isEmpty {
                             // 零历史首日: 不显示空图例 + 误导性"已全部跟上"(其实从没练过), 改给一句引导.
@@ -78,7 +84,7 @@ struct MuscleStatusOverviewCard: View {
                                 .font(.system(size: 12))
                                 .foregroundStyle(MasoColor.textDim)
                                 .fixedSize(horizontal: false, vertical: true)
-                                .frame(maxWidth: 150, alignment: .leading)
+                                .frame(maxWidth: rightColTextWidth, alignment: .leading)
                         } else if isPro {
                             // Pro: 4 档精度图例 + train-the-gaps 定向 CTA (完整可执行价值).
                             VStack(alignment: .leading, spacing: 4) {
@@ -121,10 +127,8 @@ struct MuscleStatusOverviewCard: View {
                                     }
                                     .buttonStyle(.plain)
                                 }
-                                Spacer(minLength: 4)
                                 shareButton
                             }
-                            .frame(maxWidth: .infinity, alignment: .leading)
                         } else {
                             // 免费: 图例模糊 (看得见有 4 档精度但读不清) + 解锁按钮. 视觉钩子留着,
                             // 逐肌群精度是要解锁的东西.
@@ -159,7 +163,7 @@ struct MuscleStatusOverviewCard: View {
                                 .buttonStyle(.plain)
                                 shareButton
                             }
-                            .frame(maxWidth: .infinity, alignment: .leading)
+
                         }
                     }
                     // P2-15: 不再 fixedSize 整个右列宽度 — SE / 长中文 legend 会被裁; 让它能压缩.

@@ -105,10 +105,6 @@ async function handleAI(request, env) {
   const maxTokens = typeof body.max_tokens === "number"
     ? Math.min(Math.max(body.max_tokens, 1), 4000)
     : 2000;
-  // Anthropic temperature 上限 1.0 (OpenAI/DeepSeek 到 2.0) → 夹住, 否则 400.
-  const temperature = typeof body.temperature === "number"
-    ? Math.min(Math.max(body.temperature, 0), 1)
-    : undefined;
 
   const upstreamPayload = {
     model: CLAUDE_MODEL,          // 忽略客户端传的 model — 后端由 Worker 单方面决定
@@ -116,7 +112,9 @@ async function handleAI(request, env) {
     messages: convo,
   };
   if (systemParts.length) upstreamPayload.system = systemParts.join("\n\n");
-  if (temperature !== undefined) upstreamPayload.temperature = temperature;
+  // ⚠️ **不转发 temperature**. Claude 5 系列已弃用该参数 — 实测带上直接 400
+  // ("`temperature` is deprecated for this model"). iOS 仍会发 0.6/0.3, 这里静默丢掉:
+  // 生成的发散度改由 prompt 本身控制 (原意图: 0.6 出计划要点创造性 / 0.3 解读要忠于数据).
 
   const upstreamRes = await fetch(UPSTREAM, {
     method: "POST",
