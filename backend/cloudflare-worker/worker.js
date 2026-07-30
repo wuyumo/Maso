@@ -1,12 +1,12 @@
 // Maso Cloudflare Worker — 多路由
 //
 // 两条职责:
-//   1. POST /v1/chat/completions  → DeepSeek AI 代理 (把 API key 从 app binary 里挪出来)
+//   1. POST /v1/chat/completions  → Claude AI 代理 (对外仍是 OpenAI 形状) (把 API key 从 app binary 里挪出来)
 //   2. POST /pro/validate         → Polar license key 校验 (把 Polar org token 藏在这里)
 //   3. GET  /pro/return           → Polar 结账成功后的回跳页: 查出 license key → 深链回 app
 //
 // 部署:
-//   wrangler secret put DEEPSEEK_API_KEY
+//   wrangler secret put ANTHROPIC_API_KEY   ← Claude API key (AI 后端已从 DeepSeek 切到 Claude)
 //   wrangler secret put MASO_CLIENT_TOKEN
 //   wrangler secret put POLAR_TOKEN       ← Polar Organization Access Token
 //   wrangler secret put POLAR_ORG_ID      ← Polar organization UUID
@@ -18,7 +18,14 @@
 //   app 拿 key 走这个 Worker 校验 (org token 不进 binary).
 
 const AI_PATH = "/v1/chat/completions";
-const UPSTREAM = "https://api.deepseek.com/v1/chat/completions";
+// AI 后端 = Anthropic Claude (2026-07 从 DeepSeek 切换).
+// ⚠️ 路由和出入参形状**故意保持 OpenAI/DeepSeek 风格不变** — iOS 端 (AIWorkoutService) 发
+// {model, messages, max_tokens, temperature, response_format} 收 {choices[0].message.content},
+// 翻译全在这个 Worker 里做. 好处: 已上架的 app 版本 (2.0.4 及更早) 不用更新就直接吃到 Claude.
+const UPSTREAM = "https://api.anthropic.com/v1/messages";
+const ANTHROPIC_VERSION = "2023-06-01";
+// 健身教练场景 = 结构化 JSON 生成 + 需要靠谱的动作学常识 → Sonnet 5 (质量/成本平衡点).
+const CLAUDE_MODEL = "claude-sonnet-5";
 const CLIENT_TOKEN_HEADER = "X-Maso-Client-Token";
 
 const POLAR_VALIDATE = "https://api.polar.sh/v1/license-keys/validate";
@@ -57,7 +64,7 @@ export default {
 };
 
 // ─────────────────────────────────────────────────────────────
-// 1) AI 代理 (原逻辑, passthrough DeepSeek)
+// 1) AI 代理 — 收 OpenAI 形状, 转 Anthropic Claude, 再转回 OpenAI 形状
 // ─────────────────────────────────────────────────────────────
 async function handleAI(request, env) {
   const clientToken = request.headers.get(CLIENT_TOKEN_HEADER);
@@ -77,33 +84,102 @@ async function handleAI(request, env) {
     return new Response("Request too large", { status: 413 });
   }
 
-  const allowedModels = ["deepseek-chat", "deepseek-coder"];
-  if (!body.model || !allowedModels.includes(body.model)) {
-    body.model = "deepseek-chat";
+  // ── OpenAI 形状 → Anthropic Messages API ──
+  // 三处不兼容, 逐个搬平:
+  //   ① system 在 Anthropic 是**顶层参数**, 不是 messages 里的一条 → 抽出来合并
+  //   ② messages 只允许 user/assistant 交替; content 必须是字符串或 block 数组
+  //   ③ 没有 response_format:json_object → 靠 system 指令 + 回包剥 markdown 围栏兜底
+  const msgs = Array.isArray(body.messages) ? body.messages : [];
+  const systemParts = msgs.filter(m => m?.role === "system").map(m => String(m.content ?? ""));
+  const convo = msgs
+    .filter(m => m?.role === "user" || m?.role === "assistant")
+    .map(m => ({ role: m.role, content: String(m.content ?? "") }));
+  if (convo.length === 0) {
+    return json({ error: { message: "no user message" } }, 400);
   }
-  if (typeof body.max_tokens === "number") {
-    body.max_tokens = Math.min(body.max_tokens, 4000);
-  } else {
-    body.max_tokens = 2000;
+  // iOS 请求带 response_format:json_object 时, 把"只输出 JSON"再钉一遍 (Anthropic 无此参数).
+  if (body.response_format?.type === "json_object") {
+    systemParts.push("Respond with a single raw JSON object only. No prose, no explanations, no markdown code fences.");
   }
+
+  const maxTokens = typeof body.max_tokens === "number"
+    ? Math.min(Math.max(body.max_tokens, 1), 4000)
+    : 2000;
+  // Anthropic temperature 上限 1.0 (OpenAI/DeepSeek 到 2.0) → 夹住, 否则 400.
+  const temperature = typeof body.temperature === "number"
+    ? Math.min(Math.max(body.temperature, 0), 1)
+    : undefined;
+
+  const upstreamPayload = {
+    model: CLAUDE_MODEL,          // 忽略客户端传的 model — 后端由 Worker 单方面决定
+    max_tokens: maxTokens,        // Anthropic 必填
+    messages: convo,
+  };
+  if (systemParts.length) upstreamPayload.system = systemParts.join("\n\n");
+  if (temperature !== undefined) upstreamPayload.temperature = temperature;
 
   const upstreamRes = await fetch(UPSTREAM, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${env.DEEPSEEK_API_KEY}`,
+      "x-api-key": env.ANTHROPIC_API_KEY,
+      "anthropic-version": ANTHROPIC_VERSION,
     },
-    body: JSON.stringify(body),
+    body: JSON.stringify(upstreamPayload),
   });
 
-  const responseBody = await upstreamRes.text();
-  return new Response(responseBody, {
-    status: upstreamRes.status,
-    headers: {
-      "Content-Type": upstreamRes.headers.get("Content-Type") || "application/json",
-      "Access-Control-Allow-Origin": "*",
+  const raw = await upstreamRes.text();
+  if (!upstreamRes.ok) {
+    // 上游报错原样透传 (状态码 + body), 方便 app 侧 fallback + 排查.
+    return new Response(raw, {
+      status: upstreamRes.status,
+      headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+    });
+  }
+
+  // ── Anthropic 回包 → OpenAI 形状 (iOS 只读 choices[0].message.content) ──
+  let parsed;
+  try {
+    parsed = JSON.parse(raw);
+  } catch (e) {
+    return json({ error: { message: "upstream returned non-JSON" } }, 502);
+  }
+  const text = (parsed.content || [])
+    .filter(b => b?.type === "text")
+    .map(b => b.text || "")
+    .join("");
+
+  return json({
+    id: parsed.id,
+    object: "chat.completion",
+    model: parsed.model,
+    choices: [{
+      index: 0,
+      message: { role: "assistant", content: cleanJSONText(text) },
+      finish_reason: parsed.stop_reason === "max_tokens" ? "length" : "stop",
+    }],
+    usage: {
+      prompt_tokens: parsed.usage?.input_tokens ?? 0,
+      completion_tokens: parsed.usage?.output_tokens ?? 0,
+      total_tokens: (parsed.usage?.input_tokens ?? 0) + (parsed.usage?.output_tokens ?? 0),
     },
   });
+}
+
+/// 剥掉 markdown 围栏 / 前后闲聊, 只留 JSON 主体 — iOS 侧直接 JSONSerialization 解析,
+/// 一旦 Claude 包了 ```json 就会解析失败. 没找到 JSON 边界就原样返回 (交给 app 的 fallback).
+function cleanJSONText(s) {
+  let t = (s || "").trim();
+  if (t.startsWith("```")) {
+    t = t.replace(/^```[a-zA-Z]*\s*/, "").replace(/```\s*$/, "").trim();
+  }
+  if (t.startsWith("{") || t.startsWith("[")) return t;
+  // 兜底: 抓第一个 { 到最后一个 } (对象优先, 再试数组).
+  const o = t.indexOf("{"), oe = t.lastIndexOf("}");
+  if (o !== -1 && oe > o) return t.slice(o, oe + 1);
+  const a = t.indexOf("["), ae = t.lastIndexOf("]");
+  if (a !== -1 && ae > a) return t.slice(a, ae + 1);
+  return t;
 }
 
 // ─────────────────────────────────────────────────────────────

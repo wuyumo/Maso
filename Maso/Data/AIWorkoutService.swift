@@ -56,7 +56,7 @@ final class AIWorkoutService {
     // MARK: - Public
 
     /// 生成今日 AI 训练计划.
-    /// 通过 Cloudflare Worker 后端代理调 DeepSeek — API key 在 server 端, client binary 无 key.
+    /// 通过 Cloudflare Worker 后端代理调 AI (后端已是 Anthropic Claude; Worker 做 OpenAI↔Anthropic 形状翻译, 故这里仍发 OpenAI 形状). API key 在 server 端, client binary 无 key.
     func generateToday(
         payload: AIPayload,
         library: [Exercise],
@@ -329,7 +329,7 @@ final class AIWorkoutService {
               let choices = json["choices"] as? [[String: Any]],
               let message = choices.first?["message"] as? [String: Any],
               let content = message["content"] as? String else {
-            throw AIError.api("Could not extract content from DeepSeek response")
+            throw AIError.api("Could not extract content from AI response")
         }
         return content
     }
@@ -476,7 +476,7 @@ final class AIWorkoutService {
                   let choices = json["choices"] as? [[String: Any]],
                   let message = choices.first?["message"] as? [String: Any],
                   let content = message["content"] as? String else {
-                throw AISummaryError.api("Could not extract content from DeepSeek response")
+                throw AISummaryError.api("Could not extract content from AI response")
             }
             return content
         } catch let e as AISummaryError {
@@ -618,7 +618,7 @@ final class AIWorkoutService {
               let choices = json["choices"] as? [[String: Any]],
               let message = choices.first?["message"] as? [String: Any],
               let content = message["content"] as? String else {
-            throw AIError.api("Could not extract content from DeepSeek response")
+            throw AIError.api("Could not extract content from AI response")
         }
         return content
     }
@@ -658,7 +658,7 @@ final class AIWorkoutService {
               let choices = json["choices"] as? [[String: Any]],
               let message = choices.first?["message"] as? [String: Any],
               let content = message["content"] as? String else {
-            throw AIError.api("Could not extract content from DeepSeek response")
+            throw AIError.api("Could not extract content from AI response")
         }
         return content
     }

@@ -27,9 +27,10 @@ struct MuscleStatusOverviewCard: View {
     /// 非 Pro 点"解锁逐肌群恢复" → caller 拉付费墙 (跟 HistoryScreen 的 onUnlock 同款).
     var onUnlock: () -> Void = {}
 
-    /// Muscle map 正方形 slot 边长 — 去卡片化后不再吃 cardPadding, 放大到 145 让图呼吸
-    /// (145 + 20 间距 + 右列 ≤150 = ~315pt, SE 375 − 页边距 32 也放得下).
-    private let slotSize: CGFloat = 145
+    /// Muscle map 正方形 slot 边长 — owner 要求再放大一档 (145 → 172).
+    /// 预算 (SE 375 最窄): 375 − 页边距 32 = 343; 172 + 16 间距 = 188 → 右列还剩 155pt,
+    /// 够装 legend / "All caught up"+分享钮那一行 (~135pt). 间距同步 20→16 把宽度让给图.
+    private let slotSize: CGFloat = 172
 
     var body: some View {
         // tease-free / precision-Pro: 免费用户看到 body-map 热图 (漂亮 + 卖产品) 但强制 coarseOnly
@@ -45,7 +46,7 @@ struct MuscleStatusOverviewCard: View {
             // map↔legend 间距 20 (原 16) — 跟去卡片化一起摊开.
             HStack(alignment: .center, spacing: 0) {
                 Spacer(minLength: 0)
-                HStack(alignment: .center, spacing: 20) {
+                HStack(alignment: .center, spacing: 16) {
                     // LEFT: 复用共享 MuscleVisualBlock — 正方形 slot, heatStyleFor 启用恢复热图 (绿=可练/蓝=疲劳).
                     // ⚠️ 跟其它卡片 (WorkoutCard / SessionCard / PlanRow) 共用一份代码, 改这里同步影响所有.
                     // 免费 → 强制 coarseOnly (粗颗粒热图), 无论用户 muscleDetailEnabled 设置;
@@ -87,37 +88,43 @@ struct MuscleStatusOverviewCard: View {
                                 legendRow(swatch: MasoColor.accent.opacity(0.30), label: "Mostly recovered")
                                 legendRow(swatch: Color(red: 0.165, green: 0.165, blue: 0.165), label: "Fresh")
                             }
+                            // 底部动作行 (owner 定稿): [主操作] ——— [分享圆钮], 分享钮钉右端,
+                            // 跟 "All caught up" / "Train the gaps" 同一行 (不再是区域右上角 overlay).
                             // 有 gap → "Train the gaps" CTA; 没 gap (健康状态) → 正向"全部跟上"标签.
-                            // (分享圆钮已移到整个区域右上角 overlay, 不在这一行.)
-                            if gapMuscles.isEmpty {
-                                HStack(spacing: 5) {
-                                    Image(systemName: "checkmark.circle.fill")
-                                        .font(.system(size: 10, weight: .heavy))
-                                    Text("All caught up")
-                                        .font(.system(size: 11, weight: .heavy))
-                                        .lineLimit(1)
-                                }
-                                .foregroundStyle(MasoColor.textDim)
-                                .fixedSize(horizontal: true, vertical: false)
-                            } else {
-                                Button(action: onStartGapWorkout) {
+                            HStack(spacing: 8) {
+                                if gapMuscles.isEmpty {
                                     HStack(spacing: 5) {
-                                        Image(systemName: "play.fill")
+                                        Image(systemName: "checkmark.circle.fill")
                                             .font(.system(size: 10, weight: .heavy))
-                                        Text("Train the gaps")
+                                        Text("All caught up")
                                             .font(.system(size: 11, weight: .heavy))
                                             .lineLimit(1)
                                     }
-                                    .foregroundStyle(MasoColor.accent)
-                                    .padding(.horizontal, 11)
-                                    .padding(.vertical, 5)
-                                    // 次级胶囊钮 → accent 低浓度玻璃 (映射表②), 旧系统保留半透明底.
-                                    .glassCapsuleButtonBackground(tint: MasoColor.accent.opacity(0.25),
-                                                                  fallback: MasoColor.accent.opacity(0.16))
+                                    .foregroundStyle(MasoColor.textDim)
                                     .fixedSize(horizontal: true, vertical: false)
+                                } else {
+                                    Button(action: onStartGapWorkout) {
+                                        HStack(spacing: 5) {
+                                            Image(systemName: "play.fill")
+                                                .font(.system(size: 10, weight: .heavy))
+                                            Text("Train the gaps")
+                                                .font(.system(size: 11, weight: .heavy))
+                                                .lineLimit(1)
+                                        }
+                                        .foregroundStyle(MasoColor.accent)
+                                        .padding(.horizontal, 11)
+                                        .padding(.vertical, 5)
+                                        // 次级胶囊钮 → accent 低浓度玻璃 (映射表②), 旧系统保留半透明底.
+                                        .glassCapsuleButtonBackground(tint: MasoColor.accent.opacity(0.25),
+                                                                      fallback: MasoColor.accent.opacity(0.16))
+                                        .fixedSize(horizontal: true, vertical: false)
+                                    }
+                                    .buttonStyle(.plain)
                                 }
-                                .buttonStyle(.plain)
+                                Spacer(minLength: 4)
+                                shareButton
                             }
+                            .frame(maxWidth: .infinity, alignment: .leading)
                         } else {
                             // 免费: 图例模糊 (看得见有 4 档精度但读不清) + 解锁按钮. 视觉钩子留着,
                             // 逐肌群精度是要解锁的东西.
@@ -129,25 +136,30 @@ struct MuscleStatusOverviewCard: View {
                             }
                             .blur(radius: 4.5)
                             .allowsHitTesting(false)
-                            Button(action: onUnlock) {
-                                HStack(spacing: 5) {
-                                    Image(systemName: "lock.fill")
-                                        .font(.system(size: 10, weight: .heavy))
-                                    Text("Unlock per-muscle recovery with Pro")
-                                        .font(.system(size: 11, weight: .heavy))
-                                        .multilineTextAlignment(.leading)
-                                        .fixedSize(horizontal: false, vertical: true)
+                            // 底部动作行 — 跟 Pro 档同结构: [主操作] ——— [分享圆钮].
+                            // 分享对免费档也开放 (图是粗颗粒版, 跟卡上所见一致).
+                            HStack(alignment: .bottom, spacing: 8) {
+                                Button(action: onUnlock) {
+                                    HStack(spacing: 5) {
+                                        Image(systemName: "lock.fill")
+                                            .font(.system(size: 10, weight: .heavy))
+                                        Text("Unlock per-muscle recovery with Pro")
+                                            .font(.system(size: 11, weight: .heavy))
+                                            .multilineTextAlignment(.leading)
+                                            .fixedSize(horizontal: false, vertical: true)
+                                    }
+                                    .foregroundStyle(MasoColor.accent)
+                                    .padding(.horizontal, 11)
+                                    .padding(.vertical, 6)
+                                    // 次级钮玻璃 (映射表②); 形状保持圆角矩形 — 多行文案撑不成胶囊.
+                                    .glassButtonBackground(tint: MasoColor.accent.opacity(0.25),
+                                                           fallback: MasoColor.accent.opacity(0.16),
+                                                           in: RoundedRectangle(cornerRadius: 10))
                                 }
-                                .foregroundStyle(MasoColor.accent)
-                                .padding(.horizontal, 11)
-                                .padding(.vertical, 6)
-                                // 次级钮玻璃 (映射表②); 形状保持圆角矩形 — 多行文案撑不成胶囊.
-                                .glassButtonBackground(tint: MasoColor.accent.opacity(0.25),
-                                                       fallback: MasoColor.accent.opacity(0.16),
-                                                       in: RoundedRectangle(cornerRadius: 10))
+                                .buttonStyle(.plain)
+                                shareButton
                             }
-                            .buttonStyle(.plain)
-                            .frame(maxWidth: 150, alignment: .leading)
+                            .frame(maxWidth: .infinity, alignment: .leading)
                         }
                     }
                     // P2-15: 不再 fixedSize 整个右列宽度 — SE / 长中文 legend 会被裁; 让它能压缩.
@@ -159,12 +171,8 @@ struct MuscleStatusOverviewCard: View {
         // 去卡片化 (v4): 无 surface 底 / 无圆角 / 无内边距 — 内容直接坐在页面背景上,
         // 横向对齐 = TodayScreen 的 pagePaddingHorizontal (跟其它 section 内容同一条线).
         .frame(maxWidth: .infinity, alignment: .leading)
-        // 分享圆钮钉整个区域右上角 (owner 指定; 三轮定稿: 提示行→补练行→区域右上角).
-        .overlay(alignment: .topTrailing) {
-            if !fatigueMap.isEmpty {
-                shareButton
-            }
-        }
+        // (分享圆钮四轮定稿: 提示行 → 补练行 → 区域右上角 → **右列底部动作行**, 跟
+        //  "All caught up"/"Train the gaps" 同一行右端. 右上角 overlay 已移除, 勿重复挂.)
         .padding(.vertical, 6)
     }
 
