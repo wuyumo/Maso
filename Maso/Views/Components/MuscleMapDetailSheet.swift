@@ -43,8 +43,8 @@ struct MuscleMapDetailSheet: View {
                     showLeader: isPro && !fatigueMap.isEmpty,
                     blurLegend: !isPro
                 )
-                // owner: 图别做这么大, 留点呼吸感. 上限 240 → medium detent 装得下.
-                .frame(maxHeight: 240)
+                // 弹性高度: medium 档约 240 (留白够), 上拖到 large 时长到 380 (owner: 全屏时图要大一点).
+                .frame(minHeight: 190, maxHeight: 380)
 
                 // ⚠️ key 不能直接用 "Back" —— 那个 key 已被导航的"返回"占用 (见 MuscleGroup.swift
                 //    同款注释), 中文会显示成"返回". 用独立的 Body front / Body back.
@@ -71,15 +71,16 @@ struct MuscleMapDetailSheet: View {
             .frame(maxHeight: .infinity, alignment: .center)
             .navigationTitle("Muscle Status")
             .navigationBarTitleDisplayMode(.inline)
+            // 跟 HistoryScreen 的 session 详情 sheet / SettingsScreen 同一套工具栏写法.
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) { shareButton }
-                ToolbarItem(placement: .topBarTrailing) {
+                ToolbarItem(placement: .confirmationAction) {
+                    // .tint(MasoColor.text) = 白色 Done, 跟 SettingsScreen 一致
+                    // (app 的 AccentColor 资源是品牌绿, 不覆盖会是绿的).
                     Button("Done") { dismiss() }
+                        .tint(MasoColor.text)
                 }
             }
-            // 导航栏两颗按钮走系统默认色 —— app 的 AccentColor 资源是品牌绿, 不覆盖的话
-            // Done / Share 会是绿的 (owner: 这两颗不要绿色, 用 iOS 默认).
-            .tint(.blue)
         }
         // 标准 sheet 尺寸, 不是整页 (owner). 需要看细节可以上拖到 large.
         .presentationDetents([.medium, .large])
@@ -87,8 +88,8 @@ struct MuscleMapDetailSheet: View {
         .presentationBackground(MasoColor.background)
     }
 
-    /// 底部主 CTA — 系统 .borderedProminent. 这颗保留品牌绿 (主操作, owner 只要求
-    /// Done / Share / 前后切换不用主题色).
+    /// 底部主 CTA — 规格照抄 PlansScreen.startWorkoutCTA ("Start workout" 那颗大胶囊),
+    /// 全 app 主操作按钮共用这一套: 包住内容的胶囊 + accent 玻璃底 + 黑字.
     @ViewBuilder
     private var primaryCTA: some View {
         if gapMuscles.isEmpty {
@@ -96,17 +97,27 @@ struct MuscleMapDetailSheet: View {
                 .font(.subheadline.weight(.semibold))
                 .foregroundStyle(.secondary)
         } else {
-            Button("Train the gaps", systemImage: "play.fill") {
+            Button {
                 dismiss(); onStartGapWorkout()
+            } label: {
+                HStack(spacing: 8) {
+                    Image(systemName: "play.fill")
+                        .font(.system(size: 14, weight: .heavy))
+                    Text("Train the gaps")
+                        .font(.system(size: 15, weight: .heavy))
+                }
+                .padding(.vertical, 13)
+                .padding(.horizontal, 28)
+                .foregroundStyle(.black)
+                .glassCapsuleButtonBackground(tint: MasoColor.accent.opacity(0.85), fallback: MasoColor.accent)
+                .shadow(color: systemGlassAvailable ? .clear : .black.opacity(0.3), radius: 6, y: 2)
             }
-            .buttonStyle(.borderedProminent)
-            .controlSize(.large)
-            .tint(MasoColor.accent)
+            .buttonStyle(.plain)
         }
     }
 
     /// 分享 — 复用 MuscleStatusShareCard, 口径跟 MuscleStatusOverviewCard.shareButton 一致.
-    /// label 用裸 SF Symbol, 交给系统导航栏按钮样式 (不再套自定义玻璃圆钮).
+    /// label 规格照抄 HistoryScreen session 详情 sheet 的分享按钮.
     private var shareButton: some View {
         let isPro = data.settings.isPro
         let coarse = isPro ? !data.settings.muscleDetailEnabled : true
@@ -138,7 +149,12 @@ struct MuscleMapDetailSheet: View {
                 )
             },
             shareSurface: "muscle_status_detail",
-            label: { Image(systemName: "square.and.arrow.up") }
+            // 规格跟 HistoryScreen session 详情 sheet 的分享按钮一致.
+            label: {
+                Image(systemName: "square.and.arrow.up")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundStyle(MasoColor.textDim)
+            }
         )
         .accessibilityLabel("Share")
     }
