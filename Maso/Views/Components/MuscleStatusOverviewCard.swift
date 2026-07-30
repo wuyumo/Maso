@@ -38,6 +38,9 @@ struct MuscleStatusOverviewCard: View {
     /// 两侧居中 Spacer 被压成 0, 图就贴到左边缘去了 (owner 报的"整体太靠左"就是这个).
     private let rightColTextWidth: CGFloat = 132
 
+    /// 点肌肉图 → 放大的单面板详情 (正/背面切换 + 引线到四档色块).
+    @State private var detailShown = false
+
     var body: some View {
         // tease-free / precision-Pro: 免费用户看到 body-map 热图 (漂亮 + 卖产品) 但强制 coarseOnly
         // (粗颗粒), 逐肌群精度 + 4 档图例 + train-the-gaps 定向留给 Pro. 直接建模 Fitbod/WHOOP 的
@@ -64,6 +67,16 @@ struct MuscleStatusOverviewCard: View {
                         coarseOnly: isPro ? !data.settings.muscleDetailEnabled : true
                     )
                     .frame(width: slotSize, height: slotSize)
+                    // ⚠️ BodyHint 内部恒挂着 onTapGesture (即使 onMuscleTap 为 nil 也会吃掉点击),
+                    // 所以整图入口用 overlay 盖在上面抢先接手, 别直接给 MuscleVisualBlock 加 onTapGesture.
+                    .overlay {
+                        Rectangle()
+                            .fill(.clear)
+                            .contentShape(Rectangle())
+                            .onTapGesture { detailShown = true }
+                    }
+                    .accessibilityAddTraits(.isButton)
+                    .accessibilityHint("Muscle Status")
 
                     // RIGHT: legend 4 行 + Train the gaps 按钮.
                     // legend group → button 之间走 14pt — 之前 8pt 太挤, 用户反馈 button 跟最后一行
@@ -178,6 +191,14 @@ struct MuscleStatusOverviewCard: View {
         // (分享圆钮四轮定稿: 提示行 → 补练行 → 区域右上角 → **右列底部动作行**, 跟
         //  "All caught up"/"Train the gaps" 同一行右端. 右上角 overlay 已移除, 勿重复挂.)
         .padding(.vertical, 6)
+        .sheet(isPresented: $detailShown) {
+            MuscleMapDetailSheet(
+                fatigueMap: fatigueMap,
+                gapMuscles: gapMuscles,
+                onStartGapWorkout: onStartGapWorkout,
+                onUnlock: onUnlock
+            )
+        }
     }
 
     /// 分享入口 — 复用现成的 MuscleStatusShareCard (卡早就存在, 之前只是没有入口).

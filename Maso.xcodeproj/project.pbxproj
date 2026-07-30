@@ -140,6 +140,7 @@
 		E40B7C038FA77F3BD95F0E5D /* MasoMarkIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1D591C5E30FA068C933520 /* MasoMarkIcon.swift */; };
 		E713BB3AD37D051B6B9D716A /* PlanSegments.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE94CDA9C13C06FBE6DD8572 /* PlanSegments.swift */; };
 		E78F1A3F512D37B2BFA4A286 /* BodyHint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54145EB316E1E581619F6C65 /* BodyHint.swift */; };
+		E7A9E735799D7170EB422AEF /* MuscleMapDetailSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = C481B7C19FDD514ADC5572C8 /* MuscleMapDetailSheet.swift */; };
 		E7BEFB80EC7A46518E7B59B9 /* InlineWorkoutCalendar.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC7BD7F1CA2B51B8BE76943 /* InlineWorkoutCalendar.swift */; };
 		E7F227189AAF7F9E428F5297 /* MuscleGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 652661E7A8B67B3B7F5E7241 /* MuscleGroup.swift */; };
 		EE810D256495822EB0546D0B /* DataStore+Polar.swift in Sources */ = {isa = PBXBuildFile; fileRef = F73505558D75D33F84D45CCE /* DataStore+Polar.swift */; };
@@ -298,6 +299,7 @@
 		BFAD46757159C0D547E762E2 /* ShareImageButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareImageButton.swift; sourceTree = "<group>"; };
 		C228082523E5BD38F52B6B76 /* PersistenceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceController.swift; sourceTree = "<group>"; };
 		C23B6D56681E2D7861F4E5E2 /* ShareImageRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareImageRenderer.swift; sourceTree = "<group>"; };
+		C481B7C19FDD514ADC5572C8 /* MuscleMapDetailSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuscleMapDetailSheet.swift; sourceTree = "<group>"; };
 		C4FC2485A0C7673172E17624 /* _match-report.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "_match-report.md"; sourceTree = "<group>"; };
 		C5831930AC3A940150DBB302 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		C85CFB727541762C8447F7E4 /* MuscleSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuscleSelector.swift; sourceTree = "<group>"; };
@@ -566,6 +568,7 @@
 				DFBD3B16C9810A2419F041FA /* LimitedFlowLayout.swift */,
 				80FD6F69FE62071220B54EDF /* MasoBrandLogo.swift */,
 				BC1D591C5E30FA068C933520 /* MasoMarkIcon.swift */,
+				C481B7C19FDD514ADC5572C8 /* MuscleMapDetailSheet.swift */,
 				C85CFB727541762C8447F7E4 /* MuscleSelector.swift */,
 				F9B75264B14BF7AA46A5CC5A /* MusclesPickerSheet.swift */,
 				CFD21DF2E0041A5BFFACB388 /* MuscleStatusOverviewCard.swift */,
@@ -892,6 +895,7 @@
 				1605075E6DF23E750E90BD9A /* MasoBrandLogo.swift in Sources */,
 				E40B7C038FA77F3BD95F0E5D /* MasoMarkIcon.swift in Sources */,
 				E7F227189AAF7F9E428F5297 /* MuscleGroup.swift in Sources */,
+				E7A9E735799D7170EB422AEF /* MuscleMapDetailSheet.swift in Sources */,
 				2E01B7CC1D7C6DEF94C4618B /* MuscleMapping.swift in Sources */,
 				CFACBB04C2B2F7715D76D273 /* MuscleSelector.swift in Sources */,
 				846A46991988FFB645618E51 /* MuscleStatusComputed.swift in Sources */,

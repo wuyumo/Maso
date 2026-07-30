@@ -237,7 +237,7 @@ struct BodyHint: View {
 
 /// 给闭合多边形做圆角处理 — 每个顶点用 quadCurve 替换直角.
 /// radius 单位 = 跟传入 pts 同一坐标系.
-private func roundedPolygonPath(_ pts: [CGPoint], radius: CGFloat) -> Path {
+func roundedPolygonPath(_ pts: [CGPoint], radius: CGFloat) -> Path {
     let n = pts.count
     var path = Path()
     guard n >= 3 else {

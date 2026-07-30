@@ -476,7 +476,7 @@ struct HistoryScreen: View {
         value2: String, label2: String,
         value3: String, label3: String
     ) -> some View {
-        HStack(spacing: 14) {
+        HStack(alignment: .top, spacing: 8) {
             statColumn(value: value1, label: label1)
             statDivider
             statColumn(value: value2, label: label2)
@@ -484,25 +484,34 @@ struct HistoryScreen: View {
             statColumn(value: value3, label: label3)
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, 12)
+        // owner: 卡片上下左右留白都加宽一档, 让整卡视觉更大更透气 (12 → 20 竖 / 新增 8 横).
+        .padding(.vertical, 20)
+        .padding(.horizontal, 8)
         // 卡片底色/圆角交给外层合成卡 (stats + 日历 同一张卡).
     }
 
     private var statDivider: some View {
-        Rectangle().fill(MasoColor.borderSoft).frame(width: 0.5, height: 28)
+        Rectangle().fill(MasoColor.borderSoft).frame(width: 0.5, height: 40)
     }
 
     private func statColumn(value: String, label: String) -> some View {
-        VStack(spacing: 3) {
+        VStack(spacing: 5) {
             Text(value)
-                .font(.system(size: 20, weight: .heavy).monospacedDigit())
+                .font(.system(size: 32, weight: .heavy).monospacedDigit())
+                .minimumScaleFactor(0.7)
+                .lineLimit(1)
                 .foregroundStyle(MasoColor.accent)
             Text(LocalizedStringKey(label))
                 .font(.system(size: 9, weight: .bold))
-                .tracking(0.6)
+                .tracking(0.5)
                 .textCase(.uppercase)
                 .foregroundStyle(MasoColor.textDim)
-                .lineLimit(1)
+                // 数字放大到 32pt 后列宽变紧 —— label 必须能折两行, 否则
+                // "DAYS THIS MONTH" 被截成 "DAYS THIS MO…".
+                .lineLimit(2)
+                .multilineTextAlignment(.center)
+                .minimumScaleFactor(0.85)
+                .fixedSize(horizontal: false, vertical: true)
         }
         .frame(maxWidth: .infinity)
     }
