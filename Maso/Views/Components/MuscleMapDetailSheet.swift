@@ -2,14 +2,15 @@ import SwiftUI
 
 // 肌肉恢复详情 — 点 Today 顶部肌肉图打开.
 //
-// 跟 MuscleStatusOverviewCard (那张小图) 的区别:
-//   - 单面板放大 (正面 / 背面切换), 不再前后并排挤在正方形 slot 里
-//   - 每档图例引**一条**虚线折线到该档里最有代表性的那块肌肉 → 不用对照色块猜.
-//     (owner: 每块肌肉都引线太满, 图例只要一根线; 直线太呆板, 用折线虚线.)
-//   - 顶部 [分享] ——— [完成], 底部单独一条 Train the gaps 主 CTA
+// 用系统默认控件搭 (owner 拍板): NavigationStack + 系统导航栏按钮 + .segmented Picker +
+// .borderedProminent 按钮. 除了人体图本身 (自绘 Canvas) 不做自定义样式.
 //
-// 分档精度 (引线 + 四档图例) 跟卡片同一个 gate: 免费 = coarseOnly 大图 + 锁住的图例,
-// Pro = 精细逐肌群 + 引线. 免费用户点进来仍拿到"更大的图 + 前后切换 + CTA", 不是空页.
+// 跟 MuscleStatusOverviewCard (那张小图) 的区别:
+//   - 单面板 (正面 / 背面切换), 不再前后并排挤在正方形 slot 里
+//   - 只有 "Heavy fatigue" 一档引一条虚线折线指到该档最累的那块肌肉 (owner: 其余三档不画线)
+//
+// 分档精度跟卡片同一个 gate: 免费 = coarseOnly + 图例模糊 + 解锁入口 (不画引线),
+// Pro = 精细逐肌群 + 引线.
 struct MuscleMapDetailSheet: View {
     @Environment(DataStore.self) private var data
     @Environment(\.dismiss) private var dismiss
@@ -21,7 +22,7 @@ struct MuscleMapDetailSheet: View {
 
     @State private var showBack = false
 
-    /// 引线的候选肌肉 (自上而下) — 故意不是 polygon 里的全部 muscle:
+    /// 引线代表点的候选池 (自上而下) — 故意不是 polygon 里的全部 muscle:
     /// 颈 / 内收 / 胫前 / 比目鱼 / 臀中 这些块太小, 当代表点读不出东西.
     private static let frontCandidates: [MuscleGroup] = [
         .frontDelts, .chest, .biceps, .abs, .obliques, .forearms, .quads
@@ -32,140 +33,80 @@ struct MuscleMapDetailSheet: View {
 
     var body: some View {
         let isPro = data.settings.isPro
-        // 留白优先: 不用 ScrollView + 固定高度堆叠 (owner 报"界面太满"), 改成
-        // 撐满 large detent, 靠 Spacer 把 map / 切换 / CTA 三块拉开.
-        VStack(spacing: 0) {
-            topBar
+        NavigationStack {
+            VStack(spacing: 18) {
+                AnnotatedBodyMap(
+                    polys: showBack ? POSTERIOR : ANTERIOR,
+                    candidates: showBack ? Self.backCandidates : Self.frontCandidates,
+                    fatigueMap: fatigueMap,
+                    coarseOnly: isPro ? !data.settings.muscleDetailEnabled : true,
+                    showLeader: isPro && !fatigueMap.isEmpty,
+                    blurLegend: !isPro
+                )
+                // owner: 图别做这么大, 留点呼吸感. 上限 240 → medium detent 装得下.
+                .frame(maxHeight: 240)
 
-            Spacer(minLength: 16)
-
-            AnnotatedBodyMap(
-                polys: showBack ? POSTERIOR : ANTERIOR,
-                candidates: showBack ? Self.backCandidates : Self.frontCandidates,
-                fatigueMap: fatigueMap,
-                coarseOnly: isPro ? !data.settings.muscleDetailEnabled : true,
-                showLeaders: isPro && !fatigueMap.isEmpty,
-                blurLegend: !isPro
-            )
-            .frame(maxHeight: .infinity)
-
-            Spacer(minLength: 28)
-
-            sideToggle
-
-            Spacer(minLength: 28)
-
-            if !isPro {
-                // 图例被模糊, 这里给解锁入口 (跟卡上那颗 "Unlock per-muscle recovery" 同款).
-                Button(action: { dismiss(); onUnlock() }) {
-                    HStack(spacing: 6) {
-                        Image(systemName: "lock.fill")
-                            .font(.system(size: 11, weight: .heavy))
-                        Text("Unlock per-muscle recovery with Pro")
-                            .font(.system(size: 12, weight: .heavy))
-                    }
-                    .foregroundStyle(MasoColor.accent)
-                    .padding(.horizontal, 14)
-                    .padding(.vertical, 9)
-                    .glassCapsuleButtonBackground(tint: MasoColor.accent.opacity(0.25),
-                                                  fallback: MasoColor.accent.opacity(0.16))
+                // ⚠️ key 不能直接用 "Back" —— 那个 key 已被导航的"返回"占用 (见 MuscleGroup.swift
+                //    同款注释), 中文会显示成"返回". 用独立的 Body front / Body back.
+                Picker("", selection: $showBack) {
+                    Text("Body front").tag(false)
+                    Text("Body back").tag(true)
                 }
-                .buttonStyle(.plain)
-                .padding(.bottom, 20)
-            }
+                .pickerStyle(.segmented)
+                .labelsHidden()
+                .frame(maxWidth: 240)
 
-            primaryCTA
+                if !isPro {
+                    // 图例被模糊, 这里给解锁入口 (跟卡上那颗 "Unlock per-muscle recovery" 同款).
+                    Button("Unlock per-muscle recovery with Pro", systemImage: "lock.fill") {
+                        dismiss(); onUnlock()
+                    }
+                    .buttonStyle(.bordered)
+                }
+
+                primaryCTA
+            }
+            .padding(.horizontal, 20)
+            .padding(.vertical, 14)
+            .frame(maxHeight: .infinity, alignment: .center)
+            .navigationTitle("Muscle Status")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) { shareButton }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Done") { dismiss() }
+                }
+            }
+            // 导航栏两颗按钮走系统默认色 —— app 的 AccentColor 资源是品牌绿, 不覆盖的话
+            // Done / Share 会是绿的 (owner: 这两颗不要绿色, 用 iOS 默认).
+            .tint(.blue)
         }
-        .padding(.horizontal, 22)
-        .padding(.top, 12)
-        .padding(.bottom, 30)
-        .background(MasoColor.background)
-        // large — 留白是 owner 明确要的, 内容摊在整屏上比塞在 0.66 里舒服.
-        .presentationDetents([.large])
-        .presentationDragIndicator(.visible)
+        // 标准 sheet 尺寸, 不是整页 (owner). 需要看细节可以上拖到 large.
+        .presentationDetents([.medium, .large])
         // ⚠️ 别漏 — 不挂这个的 sheet 会用系统半透明材质, 底下 TabBar 玻璃会透上来变成一条色带.
         .presentationBackground(MasoColor.background)
     }
 
-    /// 顶栏: [分享] ——— 标题 ——— [完成] (owner 指定分享在左上, 完成在右上).
-    private var topBar: some View {
-        ZStack {
-            Text("Muscle Status")
-                .font(.system(size: 17, weight: .bold))
-                .foregroundStyle(MasoColor.text)
-            HStack {
-                shareButton
-                Spacer()
-                Button(action: { dismiss() }) {
-                    Text("Done")
-                        .font(.system(size: 15, weight: .bold))
-                        .foregroundStyle(MasoColor.accent)
-                }
-                .buttonStyle(.plain)
-            }
-        }
-        .frame(height: 34)
-    }
-
-    /// 正面 / 背面切换 — 两段胶囊, 选中段填 accent 低浓度.
-    private var sideToggle: some View {
-        HStack(spacing: 0) {
-            segment(title: "Front view", selected: !showBack) { showBack = false }
-            segment(title: "Back view", selected: showBack) { showBack = true }
-        }
-        .padding(3)
-        .background(MasoColor.surface, in: Capsule())
-    }
-
-    private func segment(title: String, selected: Bool, action: @escaping () -> Void) -> some View {
-        Button(action: { withAnimation(.easeInOut(duration: 0.18)) { action() } }) {
-            Text(LocalizedStringKey(title))
-                .font(.system(size: 13, weight: .heavy))
-                .foregroundStyle(selected ? MasoColor.accent : MasoColor.textDim)
-                .padding(.horizontal, 24)
-                .padding(.vertical, 9)
-                .background {
-                    if selected {
-                        Capsule().fill(MasoColor.accent.opacity(0.16))
-                    }
-                }
-        }
-        .buttonStyle(.plain)
-    }
-
-    /// 底部主 CTA — 满宽 Train the gaps (owner 指定放最下面).
-    /// 没 gap (健康状态) → 正向"全部跟上"标签, 不给一颗点不动的按钮.
+    /// 底部主 CTA — 系统 .borderedProminent. 这颗保留品牌绿 (主操作, owner 只要求
+    /// Done / Share / 前后切换不用主题色).
     @ViewBuilder
     private var primaryCTA: some View {
         if gapMuscles.isEmpty {
-            HStack(spacing: 6) {
-                Image(systemName: "checkmark.circle.fill")
-                    .font(.system(size: 13, weight: .heavy))
-                Text("All caught up")
-                    .font(.system(size: 14, weight: .heavy))
-            }
-            .foregroundStyle(MasoColor.textDim)
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 14)
+            Label("All caught up", systemImage: "checkmark.circle.fill")
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(.secondary)
         } else {
-            Button(action: { dismiss(); onStartGapWorkout() }) {
-                HStack(spacing: 7) {
-                    Image(systemName: "play.fill")
-                        .font(.system(size: 13, weight: .heavy))
-                    Text("Train the gaps")
-                        .font(.system(size: 15, weight: .heavy))
-                }
-                .foregroundStyle(MasoColor.accent)
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 15)
-                .glassCapsuleButtonBackground(tint: MasoColor.accent.opacity(0.25),
-                                              fallback: MasoColor.accent.opacity(0.16))
+            Button("Train the gaps", systemImage: "play.fill") {
+                dismiss(); onStartGapWorkout()
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.borderedProminent)
+            .controlSize(.large)
+            .tint(MasoColor.accent)
         }
     }
 
     /// 分享 — 复用 MuscleStatusShareCard, 口径跟 MuscleStatusOverviewCard.shareButton 一致.
+    /// label 用裸 SF Symbol, 交给系统导航栏按钮样式 (不再套自定义玻璃圆钮).
     private var shareButton: some View {
         let isPro = data.settings.isPro
         let coarse = isPro ? !data.settings.muscleDetailEnabled : true
@@ -197,34 +138,31 @@ struct MuscleMapDetailSheet: View {
                 )
             },
             shareSurface: "muscle_status_detail",
-            label: {
-                Image(systemName: "square.and.arrow.up")
-                    .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(MasoColor.textDim)
-                    .frame(width: 32, height: 32)
-                    .glassCircleButtonBackground()
-            }
+            label: { Image(systemName: "square.and.arrow.up") }
         )
         .accessibilityLabel("Share")
     }
 }
 
-// MARK: - 单面板 + 每档一根引线
+// MARK: - 单面板 + Heavy fatigue 引线
 
-/// 单面板人体图 (正面**或**背面) + 每档图例一根虚线折线指到该档的代表肌肉.
+/// 单面板人体图 (正面**或**背面) + 四档图例.
+/// 只有最累那档 (Heavy fatigue) 引一条虚线折线到该档最累的肌肉 —— 其余三档只做色块图例
+/// (owner: 四根线太满, 只留最需要提醒的那根).
 ///
 /// 为什么不复用 BodyHint: BodyHint 恒画前后两个 panel, 且引线需要跟 polygon 共享同一套
 /// 坐标变换 (才能把线钉在肌肉上). 这里自己画一个 panel, 变换公式跟 BodyHint.drawAnatomy 同源.
 private struct AnnotatedBodyMap: View {
     let polys: [AnatomyPolygon]
-    /// 引线代表点的候选池 (自上而下), 每档从里面挑一块.
+    /// 引线代表点的候选池 (自上而下).
     let candidates: [MuscleGroup]
     let fatigueMap: [MuscleGroup: Double]
     let coarseOnly: Bool
-    let showLeaders: Bool
+    let showLeader: Bool
     let blurLegend: Bool
 
     /// 四档色块 (自上而下 = 累 → 没练), 跟 MasoColor.recoveryHeatStyle 逐一对齐.
+    /// 第 0 档 (.fatigued) 是唯一画引线的那档.
     private static let tiers: [(swatch: Color, label: String, tier: MuscleStatusCompute.RecoveryTier)] = [
         (MasoColor.accent.opacity(1.00), "Heavy fatigue", .fatigued),
         (MasoColor.accent.opacity(0.60), "Recovering", .recovering),
@@ -232,61 +170,55 @@ private struct AnnotatedBodyMap: View {
         (Color(red: 0.165, green: 0.165, blue: 0.165), "Fresh", .fresh),
     ]
 
-    private let chipW: CGFloat = 138
-    private let gutter: CGFloat = 18
+    private let chipW: CGFloat = 132
+    private let gutter: CGFloat = 16
     /// 折线两端的水平短脚 — 有这段"出脚"才像标注引线, 不是一根斜杠.
-    private let stub: CGFloat = 15
+    private let stub: CGFloat = 13
 
     var body: some View {
         GeometryReader { geo in
             let H = geo.size.height
             let bodyW = min(H * (AnatomyView.width / AnatomyView.height) * 1.05,
-                            max(80, geo.size.width - chipW - gutter))
+                            max(70, geo.size.width - chipW - gutter))
             let bodyX = max(0, (geo.size.width - chipW - gutter - bodyW) / 2)
             let chipX = geo.size.width - chipW
             let chipYs = (0..<Self.tiers.count).map { i in H * (0.14 + 0.24 * CGFloat(i)) }
-            // 每档挑一个代表肌肉 (owner: 图例只要一根线). 该档在本面板没有肌肉 → 不画线 + 色块压暗.
-            let reps = Self.tiers.map { representative(for: $0.tier) }
 
             ZStack(alignment: .topLeading) {
                 Canvas { ctx, _ in
                     let t = transform(bodyX: bodyX, bodyW: bodyW, H: H)
                     drawBody(ctx: ctx, t: t)
-                    guard showLeaders else { return }
-                    for (i, rep) in reps.enumerated() {
-                        guard let m = rep, let a = anchorPoint(for: m, t: t) else { continue }
-                        let end = CGPoint(x: chipX - 7, y: chipYs[i])
-                        let color = Self.tiers[i].swatch
-                        // 折线: 肌肉侧短横脚 → 斜段 → 图例侧短横脚.
-                        var p = Path()
-                        p.move(to: a)
-                        p.addLine(to: CGPoint(x: a.x + stub, y: a.y))
-                        p.addLine(to: CGPoint(x: end.x - stub, y: end.y))
-                        p.addLine(to: end)
-                        ctx.stroke(p, with: .color(color.opacity(0.7)),
-                                   style: StrokeStyle(lineWidth: 1, lineCap: .round,
-                                                      lineJoin: .round, dash: [2.5, 3.5]))
-                        ctx.fill(Path(ellipseIn: CGRect(x: a.x - 2.5, y: a.y - 2.5,
-                                                        width: 5, height: 5)),
-                                 with: .color(color.opacity(0.95)))
-                    }
+                    guard showLeader,
+                          let m = representative(for: .fatigued),
+                          let a = anchorPoint(for: m, t: t) else { return }
+                    let end = CGPoint(x: chipX - 6, y: chipYs[0])
+                    let color = Self.tiers[0].swatch
+                    // 折线: 肌肉侧短横脚 → 斜段 → 图例侧短横脚.
+                    var p = Path()
+                    p.move(to: a)
+                    p.addLine(to: CGPoint(x: a.x + stub, y: a.y))
+                    p.addLine(to: CGPoint(x: end.x - stub, y: end.y))
+                    p.addLine(to: end)
+                    ctx.stroke(p, with: .color(color.opacity(0.7)),
+                               style: StrokeStyle(lineWidth: 1, lineCap: .round,
+                                                  lineJoin: .round, dash: [2.5, 3.5]))
+                    ctx.fill(Path(ellipseIn: CGRect(x: a.x - 2.5, y: a.y - 2.5, width: 5, height: 5)),
+                             with: .color(color.opacity(0.95)))
                 }
 
-                // 四档色块 — 引线的终点. 用 .position 钉在跟 Canvas 同一坐标系的点上.
+                // 四档色块 — 用 .position 钉在跟 Canvas 同一坐标系的点上 (引线终点要对得上).
                 ForEach(Array(Self.tiers.enumerated()), id: \.offset) { i, t in
-                    let present = reps[i] != nil || !showLeaders
                     HStack(spacing: 8) {
                         RoundedRectangle(cornerRadius: 3)
                             .fill(t.swatch)
-                            .frame(width: 12, height: 12)
+                            .frame(width: 11, height: 11)
                         Text(LocalizedStringKey(t.label))
-                            .font(.system(size: 11, weight: .semibold))
+                            .font(.caption2)
                             .foregroundStyle(MasoColor.text)
                             .lineLimit(2)
                             .fixedSize(horizontal: false, vertical: true)
                         Spacer(minLength: 0)
                     }
-                    .opacity(present ? 1 : 0.35)
                     .frame(width: chipW, alignment: .leading)
                     .position(x: chipX + chipW / 2, y: chipYs[i])
                 }
@@ -296,8 +228,7 @@ private struct AnnotatedBodyMap: View {
         }
     }
 
-    /// 该档的代表肌肉 = 候选池里落在这一档、且 fatigue 最高的那块
-    /// (.fresh 档 fatigue 都 ~0 → 自然退化成候选池里最靠前的一块, 顺序即显眼度).
+    /// 该档的代表肌肉 = 候选池里落在这一档、且 fatigue 最高的那块.
     private func representative(for tier: MuscleStatusCompute.RecoveryTier) -> MuscleGroup? {
         var best: MuscleGroup? = nil
         var bestFatigue = -1.0
