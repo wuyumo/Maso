@@ -1381,3 +1381,6 @@
 
 "Body front" = "正面";
 "Body back" = "背面";
+
+"Notes for your AI coach" = "给 AI 教练的备注";
+"Saved here for good — your AI coach reads it every time it builds a routine. Write anything in plain words: past injuries, medical conditions, moves to avoid, equipment quirks, schedule, goals." = "这段会一直保存在这里 —— AI 教练每次生成训练计划时都会读一遍。用大白话写任何需要它考虑的情况：旧伤、基础病、不能做的动作、器械限制、时间安排、目标。";

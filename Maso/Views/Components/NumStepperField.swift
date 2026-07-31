@@ -16,7 +16,8 @@ extension Binding where Value == Double {
 // 布局: [ − | 47.5 kg | + ] — 一体化圆角矩形, 按钮和输入区共用同一块底, 无缝相接
 //   - 左右 − / + 段 36×36 点击热区
 //   - 中间是可点击的输入框, 调出数字键盘可直接输入
-//   - 输入框宽度固定 (默认 70pt = 容纳 3 位数字 + 2 字母单位, e.g. "100 kg"/"62.5 kg"),
+//   - 输入框宽度固定 (默认 58pt): 数字区按 **4 位** 排 (owner) —— 15pt monospacedDigit 一位 ~9pt,
+//     "62.5" ≈ 31pt / "1000" ≈ 36pt, 加 13pt 单位 ~18pt + spacing 2 → 56pt, 取 58 留一点余量.
 //     全 app 所有同款行统一这一个宽度, 视觉对齐
 //   - 单位后缀 (kg / s / 秒…) 永远右贴数字
 //
@@ -45,7 +46,7 @@ struct NumStepperField: View {
         step: Double = 1,
         suffix: String? = nil,
         decimal: Bool = true,
-        fieldWidth: CGFloat = 70
+        fieldWidth: CGFloat = 58
     ) {
         self._doubleValue = doubleValue
         self.range = range
@@ -61,7 +62,7 @@ struct NumStepperField: View {
         range: ClosedRange<Int>,
         step: Int = 1,
         suffix: String? = nil,
-        fieldWidth: CGFloat = 70
+        fieldWidth: CGFloat = 58
     ) {
         self._doubleValue = Binding(
             get: { Double(intValue.wrappedValue) },

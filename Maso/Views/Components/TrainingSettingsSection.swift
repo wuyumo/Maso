@@ -277,11 +277,12 @@ struct TrainingSettingsSection: View {
     private var coachMemorySection: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(spacing: 6) {
-                Image(systemName: "brain.head.profile")
-                    .font(.system(size: 10, weight: .heavy))
-                Text("Tell your AI coach")
-                    .font(.system(size: 12, weight: .bold))
-                    .tracking(0.5)
+                // 标题规格跟本页其它行标题 (SettingsScreen.Row 的 label) 一致: 14pt bold 正文色.
+                // 之前是 accent + 图标 + tracking 的 kicker 样式, 跟同页格格不入 (owner).
+                Text("Notes for your AI coach")
+                    .font(.system(size: 14, weight: .bold))
+                    .foregroundStyle(MasoColor.text)
+                    .lineLimit(1)
                 Spacer()
                 // 清空 — 仅有内容时出现.
                 if !data.settings.coachMemory.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
@@ -297,7 +298,6 @@ struct TrainingSettingsSection: View {
                     .buttonStyle(.plain)
                 }
             }
-            .foregroundStyle(MasoColor.accent)
 
             // 多行编辑器 — live 写 settings.coachMemory. 叠在 surfaceHi 上跟周围 surface 行区分开.
             TextEditor(text: Binding(
@@ -314,7 +314,9 @@ struct TrainingSettingsSection: View {
             .overlay(RoundedRectangle(cornerRadius: 12).stroke(MasoColor.borderSoft, lineWidth: 0.5))
             .clipShape(RoundedRectangle(cornerRadius: 12))
 
-            Text("Write anything you want your routines to consider, in plain words — injuries, likes and dislikes, schedule, goals. The AI reads it every time it builds your plan.")
+            // 文案要点 (owner): 说清这段是**常驻**的, 每次生成都读; 并给出具体能写什么
+            // (旧伤 / 基础病 这类用户想不到可以写的东西).
+            Text("Saved here for good — your AI coach reads it every time it builds a routine. Write anything in plain words: past injuries, medical conditions, moves to avoid, equipment quirks, schedule, goals.")
                 .font(.system(size: 11))
                 .foregroundStyle(MasoColor.textFaint)
                 .fixedSize(horizontal: false, vertical: true)
