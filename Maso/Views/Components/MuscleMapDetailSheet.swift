@@ -45,6 +45,8 @@ struct MuscleMapDetailSheet: View {
                 )
                 // 弹性高度: medium 档约 240 (留白够), 上拖到 large 时长到 380 (owner: 全屏时图要大一点).
                 .frame(minHeight: 190, maxHeight: 380)
+                // 换面板 = 重建, 清掉上一面板选中的肌肉 (它在这一面板没有 polygon, 引线会消失).
+                .id(showBack)
 
                 // ⚠️ key 不能直接用 "Back" —— 那个 key 已被导航的"返回"占用 (见 MuscleGroup.swift
                 //    同款注释), 中文会显示成"返回". 用独立的 Body front / Body back.
@@ -177,6 +179,11 @@ private struct AnnotatedBodyMap: View {
     let showLeader: Bool
     let blurLegend: Bool
 
+    /// 用户点中的肌肉 — 连线的起点. nil = 还没点过, 用默认 (最累那块).
+    /// ⚠️ 前后切换要清空, 否则会留着上一面板没有的肌肉 → 引线消失.
+    /// 由调用方给本 view 挂 `.id(showBack)` 重建来清 (见 MuscleMapDetailSheet).
+    @State private var selected: MuscleGroup? = nil
+
     /// 四档色块 (自上而下 = 累 → 没练), 跟 MasoColor.recoveryHeatStyle 逐一对齐.
     /// 第 0 档 (.fatigued) 是唯一画引线的那档.
     private static let tiers: [(swatch: Color, label: String, tier: MuscleStatusCompute.RecoveryTier)] = [
@@ -200,15 +207,19 @@ private struct AnnotatedBodyMap: View {
             let chipX = geo.size.width - chipW
             let chipYs = (0..<Self.tiers.count).map { i in H * (0.14 + 0.24 * CGFloat(i)) }
 
+            // 连线的那块肌肉: 用户点过就是点的那块, 没点过默认最累的那块.
+            let linked = selected ?? representative(for: .fatigued)
+
             ZStack(alignment: .topLeading) {
                 Canvas { ctx, _ in
                     let t = transform(bodyX: bodyX, bodyW: bodyW, H: H)
                     drawBody(ctx: ctx, t: t)
                     guard showLeader,
-                          let m = representative(for: .fatigued),
-                          let a = anchorPoint(for: m, t: t) else { return }
-                    let end = CGPoint(x: chipX - 6, y: chipYs[0])
-                    let color = Self.tiers[0].swatch
+                          let m = linked,
+                          let a = anchorPoint(for: m, t: t),
+                          let i = tierIndex(of: m) else { return }
+                    let end = CGPoint(x: chipX - 6, y: chipYs[i])
+                    let color = Self.tiers[i].swatch
                     // 折线: 肌肉侧短横脚 → 斜段 → 图例侧短横脚.
                     var p = Path()
                     p.move(to: a)
@@ -220,6 +231,16 @@ private struct AnnotatedBodyMap: View {
                                                   lineJoin: .round, dash: [2.5, 3.5]))
                     ctx.fill(Path(ellipseIn: CGRect(x: a.x - 2.5, y: a.y - 2.5, width: 5, height: 5)),
                              with: .color(color.opacity(0.95)))
+                }
+                // 点身体任意一块肌肉 → 连线换到那块 (owner: 点哪里就在哪里连线, 全图始终只有一根).
+                // 图例那层挂了 allowsHitTesting(false), 点击能穿过去, 所以这个手势收得到整块区域.
+                .contentShape(Rectangle())
+                .onTapGesture(coordinateSpace: .local) { loc in
+                    guard showLeader else { return }
+                    let t = transform(bodyX: bodyX, bodyW: bodyW, H: H)
+                    if let m = muscleAt(loc, t: t) {
+                        withAnimation(.easeInOut(duration: 0.18)) { selected = m }
+                    }
                 }
 
                 // 四档色块 — 用 .position 钉在跟 Canvas 同一坐标系的点上 (引线终点要对得上).
@@ -242,6 +263,22 @@ private struct AnnotatedBodyMap: View {
                 .allowsHitTesting(false)
             }
         }
+    }
+
+    /// 这块肌肉落在四档里的第几档 (= 引线该连到哪一行图例).
+    private func tierIndex(of m: MuscleGroup) -> Int? {
+        let tier = MuscleStatusCompute.tierFor(muscle: m, fatigueMap: fatigueMap)
+        return Self.tiers.firstIndex { $0.tier == tier }
+    }
+
+    /// 点击命中: 屏幕点 → anatomy 坐标 → 反向遍历 polygon (后画的在上层优先命中), 跳过装饰头.
+    private func muscleAt(_ p: CGPoint, t: T) -> MuscleGroup? {
+        let a = CGPoint(x: (p.x - t.dx) / t.s, y: (p.y - t.dy) / t.s)
+        for poly in polys.reversed()
+        where poly.muscle != .fullBody && poly.points.count >= 3 {
+            if pointInside(a, poly.points) { return poly.muscle }
+        }
+        return nil
     }
 
     /// 该档的代表肌肉 = 候选池里落在这一档、且 fatigue 最高的那块.
