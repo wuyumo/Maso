@@ -45,6 +45,8 @@ struct CoachScreen: View {
     @State private var prefsPresented = false
     /// 保存撞免费上限 → paywall (saveCoachPlan 返回 false).
     @State private var paywallPresented = false
+    /// 「Replace all」待确认的那一轮 routines — 非 nil 即弹二次确认 (会删掉已存的).
+    @State private var replaceCandidate: [Plan]? = nil
     /// "新对话" 二次确认 — 误触会清掉整段对话, 必须确认.
     @State private var confirmNewConversation = false
     /// 生成卡 tap → 详情 (browse 态: Save toggle + Start).
@@ -265,6 +267,23 @@ struct CoachScreen: View {
         .sheet(isPresented: $paywallPresented) {
             PaywallScreen()
                 .presentationDragIndicator(.visible)
+        }
+        // 「Replace all」二次确认 — 会删掉用户已存的 routines, 不可撤销, 所以说清删几张换几张.
+        .alert("Replace your routines?", isPresented: Binding(
+            get: { replaceCandidate != nil },
+            set: { if !$0 { replaceCandidate = nil } }
+        )) {
+            Button(NSLocalizedString("Cancel", comment: ""), role: .cancel) { replaceCandidate = nil }
+            Button(NSLocalizedString("Replace", comment: ""), role: .destructive) {
+                if let plans = replaceCandidate {
+                    data.replaceSavedPlans(withCoach: plans)
+                    Haptics.tap()
+                }
+                replaceCandidate = nil
+            }
+        } message: {
+            Text(String(format: NSLocalizedString("Your %lld saved routines will be deleted and replaced with these %lld.", comment: "replace-all confirm"),
+                        data.plans.count, replaceCandidate?.count ?? 0))
         }
         .confirmationDialog("Start a new conversation?", isPresented: $confirmNewConversation, titleVisibility: .visible) {
             Button(NSLocalizedString("New conversation", comment: ""), role: .destructive) {
@@ -505,16 +524,33 @@ struct CoachScreen: View {
                 // 图标也用 # (number), 让用户认出「调整 = #」. 长按动作 pill 是同系统的快捷方式.
                 // 只挂最新一轮卡 (# 改的是 currentRoutines) 且非训练中.
                 if isLatest && !hasActiveTraining {
-                    Button { templatesPresented = true } label: {
-                        HStack(spacing: 6) {
-                            Image(systemName: "number").font(.system(size: 12, weight: .bold))
-                            Text("Adjust").font(.system(size: 13, weight: .semibold))
+                    HStack(spacing: 8) {
+                        Button { templatesPresented = true } label: {
+                            HStack(spacing: 6) {
+                                Image(systemName: "number").font(.system(size: 12, weight: .bold))
+                                Text("Adjust").font(.system(size: 13, weight: .semibold))
+                            }
+                            .foregroundStyle(MasoColor.text)
+                            .padding(.horizontal, 14).padding(.vertical, 8)
+                            .glassCapsuleButtonBackground(tint: Self.composerGlassTint, fallback: MasoColor.surfaceHi)
                         }
-                        .foregroundStyle(MasoColor.text)
-                        .padding(.horizontal, 14).padding(.vertical, 8)
-                        .glassCapsuleButtonBackground(tint: Self.composerGlassTint, fallback: MasoColor.surfaceHi)
+                        .buttonStyle(.plain)
+
+                        // 一键替换 — 把这一轮全部换进 Today 的 routines, 清掉之前的 (owner).
+                        // 逐张书签太碎: 用户认可这一轮时想要的是"整周换掉", 不是勾四次再手动删旧的.
+                        Button { requestReplaceAll(plans) } label: {
+                            HStack(spacing: 6) {
+                                Image(systemName: "arrow.triangle.2.circlepath")
+                                    .font(.system(size: 12, weight: .bold))
+                                Text("Replace all").font(.system(size: 13, weight: .semibold))
+                            }
+                            .foregroundStyle(MasoColor.accent)
+                            .padding(.horizontal, 14).padding(.vertical, 8)
+                            .glassCapsuleButtonBackground(tint: MasoColor.accent.opacity(0.25),
+                                                          fallback: MasoColor.accent.opacity(0.16))
+                        }
+                        .buttonStyle(.plain)
                     }
-                    .buttonStyle(.plain)
                     .padding(.top, 2)
                 }
             }
@@ -902,6 +938,21 @@ struct CoachScreen: View {
         onlyModifyPrefix = prefix // QA修复④: 记住前缀 — 用户覆写掉它即取消定向 (见 composerText onChange)
         templateActive = false    // 预填不是模板, 不启用占位符守卫
         composerFocused = true
+    }
+
+    /// 「Replace all」入口 — 免费上限先拦 (清空后也只吃得下 3 张, 4 天的批次必须 Pro),
+    /// 已有 routine 则弹二次确认 (会删掉用户存着的东西, 不可撤销); 一张都没有就直接换.
+    private func requestReplaceAll(_ plans: [Plan]) {
+        guard data.settings.isPro || plans.count <= DataStore.freeSavedPlansLimit else {
+            paywallPresented = true
+            return
+        }
+        if data.plans.isEmpty {
+            data.replaceSavedPlans(withCoach: plans)
+            Haptics.tap()
+        } else {
+            replaceCandidate = plans
+        }
     }
 
     /// 书签 toggle — 已存 → unsave; 未存 → saveCoachPlan (false = 撞免费上限 → paywall).

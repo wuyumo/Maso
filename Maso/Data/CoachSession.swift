@@ -282,6 +282,27 @@ extension DataStore {
         return true
     }
 
+    /// 一键替换 — 清空 Today 现有的已存 routines, 换成这一轮 coach 生成的全部 (owner).
+    /// 逐张走 saveCoachPlan, 所以 savedIdMap / analytics / 免费上限口径跟单张保存完全一致.
+    /// ⚠️ **调用方负责免费上限判断** (newPlans 多于 freeSavedPlansLimit 时先弹 paywall) ——
+    ///    这里不静默截断: 清空后 plans=0, 免费档最多只吃得下 3 张, 第 4 张会被 savePlan 丢掉.
+    /// 返回实际存入张数, 调用方可校验 (正常 == newPlans.count).
+    @discardableResult
+    func replaceSavedPlans(withCoach newPlans: [Plan]) -> Int {
+        guard !newPlans.isEmpty else { return 0 }
+        let removedCount = plans.count
+        plans.removeAll()
+        // 映射整体作废 —— 旧副本已经不存在, 留着会让 isCoachPlanSaved 对旧卡误报已存.
+        coachSession.savedIdMap.removeAll()
+        for p in newPlans { _ = saveCoachPlan(p) }
+        Analytics.shared.track("routines_replace_all", [
+            "removed": .int(removedCount),
+            "added": .int(plans.count),
+        ])
+        save()
+        return plans.count
+    }
+
     /// 生成卡是否已存 — savedIdMap 反查优先 (副本改名后签名会漂移, id 不会), 签名匹配兜底
     /// (老对话恢复 / map 里没记录过的卡). 映射指向的副本已被删 → 视为未存 (陈旧映射无害, 不在读路径清理).
     func isCoachPlanSaved(_ plan: Plan) -> Bool {

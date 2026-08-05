@@ -16,9 +16,10 @@ extension Binding where Value == Double {
 // 布局: [ − | 47.5 kg | + ] — 一体化圆角矩形, 按钮和输入区共用同一块底, 无缝相接
 //   - 左右 − / + 段 36×36 点击热区
 //   - 中间是可点击的输入框, 调出数字键盘可直接输入
-//   - 输入框宽度固定 (默认 58pt): 数字区按 **4 位** 排 (owner) —— 15pt monospacedDigit 一位 ~9pt,
-//     "62.5" ≈ 31pt / "1000" ≈ 36pt, 加 13pt 单位 ~18pt + spacing 2 → 56pt, 取 58 留一点余量.
-//     全 app 所有同款行统一这一个宽度, 视觉对齐
+//   - 输入框宽度: **整数版 58pt**(组/次/秒), 数字区按 4 位排 (owner) —— 15pt monospacedDigit
+//     一位 ~9pt, "1000" ≈ 36pt + 13pt 单位 ~18pt + spacing 2 → 56pt, 取 58 留一点余量;
+//     **小数版 (重量) 70pt** —— 重量按 kg 存, 切 lb 会换算出小数 ("137.8 lb" ~57pt,
+//     lb 上限 1100 时 "1012.5 lb" 更长), 58 会被裁. 同类行各自统一宽度, 视觉对齐
 //   - 单位后缀 (kg / s / 秒…) 永远右贴数字
 //
 // 用法:
@@ -46,7 +47,10 @@ struct NumStepperField: View {
         step: Double = 1,
         suffix: String? = nil,
         decimal: Bool = true,
-        fieldWidth: CGFloat = 58
+        // ⚠️ 小数版**不能**跟 Int 版一样收到 58: 重量按 kg 存, 切 lb 后换算出小数 —
+        //    62.5 kg → "137.8 lb" 已经 ~57pt, lb 上限 1100 时 "1012.5 lb" 直接溢出被裁.
+        //    整数版 (组/次/秒) 才走 58 的 4 位宽.
+        fieldWidth: CGFloat = 70
     ) {
         self._doubleValue = doubleValue
         self.range = range
