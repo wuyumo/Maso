@@ -1,6 +1,6 @@
 // Maso AI / Pro 后端 — **唯一逻辑源**, 两个入口共用:
 //   - Cloudflare Worker : cloudflare-worker/worker.js  (wrangler deploy)
-//   - Vercel Edge       : api/index.js                 (vercel deploy, 项目根目录设为 backend/)
+//   - Vercel Edge       : api/index.js  → https://maso-two.vercel.app  (项目 maso, Root Directory = backend)
 //
 // ⚠️ 为什么要两处部署: `*.workers.dev` 在中国大陆被 DNS 污染 (114 DNS 返回假 IP 64.13.192.76,
 //    8.8.8.8 返回真 Cloudflare IP 104.21.x) → 大陆用户手机上 AI 100% 连不上.
