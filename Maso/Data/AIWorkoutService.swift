@@ -50,8 +50,47 @@ final class AIWorkoutService {
         Bundle.main.object(forInfoDictionaryKey: "MasoClientToken") as? String ?? ""
     }
 
+    /// 备用 endpoint — 主 endpoint 连不上时自动切过去. 空 = 没有备用.
+    ///
+    /// ⚠️ 为什么必须有: `*.workers.dev` 在**中国大陆被 DNS 污染** (实测 114 DNS 返回假 IP
+    ///    64.13.192.76, 8.8.8.8 返回真 Cloudflare IP 104.21.x) → 大陆用户手机上主 endpoint
+    ///    100% 连不上, 每次都是 "Couldn't reach the AI coach". 备用放在没被墙的域名上
+    ///    (Vercel / 自有域名), 后端逻辑是同一份代码 (backend/shared/handler.mjs).
+    private static var fallbackProxyURL: String {
+        Bundle.main.object(forInfoDictionaryKey: "MasoAIProxyFallbackURL") as? String ?? ""
+    }
+
     /// 当前 AI 是否可用 — UI 用来 disable/enable Pro AI toggle.
     static var isConfigured: Bool { !proxyURL.isEmpty && !clientToken.isEmpty }
+
+    // MARK: - 带故障切换的 POST
+
+    /// 统一的 chat/completions 请求 — 主 endpoint 失败 (网络层错误) 自动重试备用 endpoint.
+    ///
+    /// 只对**连不上**做切换 (URLError: 超时/DNS/无法连接/网络断). HTTP 4xx/5xx 不切 ——
+    /// 那说明连上了但服务端拒了, 换个域名跑同一份代码结果一样, 白等一轮超时.
+    /// 4 处调用点 (generateToday / summary / picker / routines) 共用这一条路径.
+    private static func postChat(body: [String: Any], timeout: TimeInterval) async throws -> (Data, URLResponse) {
+        func makeRequest(_ base: String) throws -> URLRequest {
+            var req = URLRequest(url: URL(string: "\(base)/v1/chat/completions")!)
+            req.httpMethod = "POST"
+            req.timeoutInterval = timeout
+            req.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            req.setValue(clientToken, forHTTPHeaderField: "X-Maso-Client-Token")
+            req.httpBody = try JSONSerialization.data(withJSONObject: body)
+            return req
+        }
+        do {
+            return try await URLSession.shared.data(for: try makeRequest(proxyURL))
+        } catch let error as URLError {
+            let fallback = fallbackProxyURL
+            guard !fallback.isEmpty, fallback != proxyURL else { throw error }
+            #if DEBUG
+            print("[AI] 主 endpoint 失败 (\(error.code.rawValue)), 切备用: \(fallback)")
+            #endif
+            return try await URLSession.shared.data(for: try makeRequest(fallback))
+        }
+    }
 
     // MARK: - Public
 
@@ -293,12 +332,6 @@ final class AIWorkoutService {
     ) async throws -> String {
         // 走 Cloudflare Worker 代理 — worker 加 DeepSeek API key 转发给 api.deepseek.com.
         // Body / response format 跟 DeepSeek 原生 API 完全一样 (worker 透传).
-        let url = URL(string: "\(Self.proxyURL)/v1/chat/completions")!
-        var req = URLRequest(url: url)
-        req.httpMethod = "POST"
-        req.timeoutInterval = 45
-        req.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        req.setValue(Self.clientToken, forHTTPHeaderField: "X-Maso-Client-Token")
 
         let prompt = buildPickerPrompt(
             payload: payload,
@@ -315,9 +348,7 @@ final class AIWorkoutService {
             ],
             "response_format": ["type": "json_object"],
         ]
-        req.httpBody = try JSONSerialization.data(withJSONObject: body)
-
-        let (data, resp) = try await URLSession.shared.data(for: req)
+        let (data, resp) = try await Self.postChat(body: body, timeout: 45)
         guard let http = resp as? HTTPURLResponse else {
             throw AIError.network("Bad response type")
         }
@@ -445,12 +476,6 @@ final class AIWorkoutService {
     }
 
     private func callDeepSeekSummary(payload: AISummaryPayload) async throws -> String {
-        let url = URL(string: "\(Self.proxyURL)/v1/chat/completions")!
-        var req = URLRequest(url: url)
-        req.httpMethod = "POST"
-        req.timeoutInterval = 45
-        req.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        req.setValue(Self.clientToken, forHTTPHeaderField: "X-Maso-Client-Token")
 
         let (system, user) = buildSummaryPrompt(payload: payload)
         let body: [String: Any] = [
@@ -463,10 +488,8 @@ final class AIWorkoutService {
             ],
             "response_format": ["type": "json_object"],
         ]
-        req.httpBody = try JSONSerialization.data(withJSONObject: body)
-
         do {
-            let (data, resp) = try await URLSession.shared.data(for: req)
+            let (data, resp) = try await Self.postChat(body: body, timeout: 45)
             guard let http = resp as? HTTPURLResponse else { throw AISummaryError.network("Bad response type") }
             guard (200...299).contains(http.statusCode) else {
                 let msg = String(data: data, encoding: .utf8) ?? "HTTP \(http.statusCode)"
@@ -584,12 +607,6 @@ final class AIWorkoutService {
     // 想换其它 OpenAI-compatible (Moonshot / 通义 / 智谱) → 只改 endpoint + model.
     private func callDeepSeek(payload: AIPayload, library: [Exercise], maxExercises: Int = 4) async throws -> String {
         // 走 Cloudflare Worker 代理 — 跟 callDeepSeekForPicker 同模式.
-        let url = URL(string: "\(Self.proxyURL)/v1/chat/completions")!
-        var req = URLRequest(url: url)
-        req.httpMethod = "POST"
-        req.timeoutInterval = 45
-        req.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        req.setValue(Self.clientToken, forHTTPHeaderField: "X-Maso-Client-Token")
 
         let prompt = buildPrompt(payload: payload, library: library, maxExercises: maxExercises)
         let body: [String: Any] = [
@@ -602,9 +619,7 @@ final class AIWorkoutService {
             ],
             "response_format": ["type": "json_object"],
         ]
-        req.httpBody = try JSONSerialization.data(withJSONObject: body)
-
-        let (data, resp) = try await URLSession.shared.data(for: req)
+        let (data, resp) = try await Self.postChat(body: body, timeout: 45)
         guard let http = resp as? HTTPURLResponse else {
             throw AIError.network("Bad response type")
         }
@@ -626,14 +641,6 @@ final class AIWorkoutService {
     /// 多套 routine 调用 — 跟 callDeepSeek 同代理/格式, 只是换 multi-routine prompt + 更大 token 预算.
     /// revision 非 nil = Coach 修订轮 (同一 prompt 骨架追加修订块, 见 buildRoutinesPrompt).
     private func callDeepSeekRoutines(payload: AIPayload, library: [Exercise], count: Int, perRoutine: Int, revision: RevisionSpec? = nil) async throws -> String {
-        let url = URL(string: "\(Self.proxyURL)/v1/chat/completions")!
-        var req = URLRequest(url: url)
-        req.httpMethod = "POST"
-        // 120s — 全周 routine 的 JSON 输出 (max_tokens 4096) 生成常到 40-60s, 旧值 60 贴线,
-        // 网络稍抖 (尤其大陆直连 Cloudflare) 就超时 → "Couldn't reach the AI coach" (owner 实机撞到).
-        req.timeoutInterval = 120
-        req.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        req.setValue(Self.clientToken, forHTTPHeaderField: "X-Maso-Client-Token")
 
         let prompt = buildRoutinesPrompt(payload: payload, library: library, count: count, perRoutine: perRoutine, revision: revision)
         let body: [String: Any] = [
@@ -646,9 +653,7 @@ final class AIWorkoutService {
             ],
             "response_format": ["type": "json_object"],
         ]
-        req.httpBody = try JSONSerialization.data(withJSONObject: body)
-
-        let (data, resp) = try await URLSession.shared.data(for: req)
+        let (data, resp) = try await Self.postChat(body: body, timeout: 120)  // 全周 routine JSON (max_tokens 4096) 常跑 40-60s, 60 贴线
         guard let http = resp as? HTTPURLResponse else { throw AIError.network("Bad response type") }
         guard (200...299).contains(http.statusCode) else {
             let msg = String(data: data, encoding: .utf8) ?? "HTTP \(http.statusCode)"

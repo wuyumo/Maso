@@ -1388,3 +1388,6 @@
 "Replace all" = "全部替换";
 "Replace your routines?" = "替换你的训练计划？";
 "Your %lld saved routines will be deleted and replaced with these %lld." = "已存的 %lld 个计划会被删除，换成这 %lld 个。";
+
+"Masso Pro" = "Masso Pro";
+"Unlimited routines, unlimited AI coach, deep analytics." = "无限训练计划、无限 AI 教练、深度数据分析。";

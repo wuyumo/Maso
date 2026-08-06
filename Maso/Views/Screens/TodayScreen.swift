@@ -129,6 +129,38 @@ struct TodayScreen: View {
             VStack(alignment: .leading, spacing: 16) {
                 // ===== Today tab 内容: 肌肉状态 + 今日推荐 + 自由训练 (mode != .myPlans) =====
                 if mode != .myPlans {
+                    // ── Pro 升级 banner ── (owner: 付费入口放第一个 tab 的首屏).
+                    // 只有真能买的人看得到: showProUpsell = 外链墙开 && 美区 storefront && 未订阅
+                    // (非美区恒免费全解锁, 给他们看升级条是骚扰 + 无法完成购买).
+                    // 容器规格照抄同屏的 aiTodayFailed 提示条 (surface 底 + 10 圆角 + 12/10 内边距),
+                    // 只把语气从"错误灰"换成 accent —— 它是推荐不是报错.
+                    if data.settings.showProUpsell {
+                        Button { paywallPresented = true } label: {
+                            HStack(spacing: 10) {
+                                Image(systemName: "bolt.fill")
+                                    .font(.system(size: 13, weight: .bold))
+                                    .foregroundStyle(MasoColor.accent)
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text("Masso Pro")
+                                        .font(.system(size: 13, weight: .heavy))
+                                        .foregroundStyle(MasoColor.text)
+                                    Text("Unlimited routines, unlimited AI coach, deep analytics.")
+                                        .font(.system(size: 11))
+                                        .foregroundStyle(MasoColor.textDim)
+                                        .fixedSize(horizontal: false, vertical: true)
+                                }
+                                Spacer(minLength: 0)
+                                Image(systemName: "chevron.right")
+                                    .font(.system(size: 11, weight: .semibold))
+                                    .foregroundStyle(MasoColor.textFaint)
+                            }
+                            .padding(.horizontal, 12).padding(.vertical, 10)
+                            .background(MasoColor.surface)
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                        }
+                        .buttonStyle(.plain)
+                    }
+
                     // ── 训练状态 ── (MuscleStatusOverviewCard 自带图例/提示/Train the gaps).
                     // 零训练数据时整块隐藏 (owner 拍板): 空态的灰肌肉图+引导句反而奇怪,
                     // 练过第一次 (sets 非空) 这块才出现. ROUTINES 轮播顶上来作首屏内容.
