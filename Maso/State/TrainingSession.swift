@@ -39,6 +39,15 @@ final class TrainingSessionStore {
         /// 用户主动点"打勾"完成的组集合 — 只有 advance() (而非 setIndex 跳过) 才会写入.
         /// playlist + TimelineBar 用这个判断"哪些段真的做完了, 该标绿". 跳过的段保持灰.
         var completedSets: Set<CompletedSet> = []
+
+        /// **实际训练顺序** — 每个动作第一次完成组时按序追加它的 stepId.
+        /// completedSets 是 Set (无序), 推不出"先练了哪个", 所以单独记一条.
+        /// 结束时用它把 plan.steps 重排成用户这次真实的顺序 (见 applyTrainedOrderToPlan).
+        ///
+        /// ⚠️ 必须是 Optional: Session 会整体落盘 (杀 app 恢复), Swift 合成的 Codable 对
+        ///    **缺失的 key 会直接抛错**, 非 Optional 即使有默认值也救不了 —— 老版本存的
+        ///    session 里没这个字段, 用户带着进行中的训练升级 app 就会解不出来, 训练直接丢.
+        var completionOrder: [String]? = nil
     }
 
     private(set) var session: Session? {
@@ -416,6 +425,12 @@ final class TrainingSessionStore {
             record?(rec)
             // 写入"已做完"集合 — playlist / TimelineBar 据此标绿
             s.completedSets.insert(CompletedSet(stepId: cur.stepId, setN: setN))
+            // 记实际训练顺序 — 只在这个动作**第一次**完成组时追加 (后续组不重复记).
+            var order = s.completionOrder ?? []
+            if !order.contains(cur.stepId) {
+                order.append(cur.stepId)
+                s.completionOrder = order
+            }
         }
         // QA-B: 播放列表排序是自由的 — 未完成动作可能被拖到播放头之前 (严格 +1 会在
         // 结束时静默吞掉它), 已完成动作也可能被拖到播放头之后 (严格 +1 会重播 + 重复记录).
@@ -425,6 +440,7 @@ final class TrainingSessionStore {
             s.completed = true
             s.playing = false
             s.endsAt = nil
+            applyTrainedOrderToPlan(s)   // 按这次真实训练顺序重排 (必须在 session=s 之前)
             session = s
             trackFinish(s, finishType: "natural")   // 自然走完最后一段
             Haptics.trainingComplete() // DESIGN 7: 训练完成触觉
@@ -489,6 +505,41 @@ final class TrainingSessionStore {
         syncWatch()   // → idle
     }
 
+    /// 把 plan.steps 重排成**这次实际的训练顺序** (owner: 错序练完后, 新 routine 按这次的顺序展示,
+    /// 用户点保存就按这个顺序存).
+    ///
+    /// 规则: 真练过的动作按 completionOrder 排在前 (谁先做完排谁), 一组没做的保持它们之间的
+    /// 原有相对顺序、落到后面 —— 这就是"这次的顺序": 没练的自然沉底.
+    /// 顺序没变 → 什么都不做 (不置 dirty, 不让用户看一张"全无修改"的确认页).
+    ///
+    /// ⚠️ 只改 self.plan (session-local 副本), **不动 data.plans** —— 是否落盘由用户在
+    ///    SaveChangesConfirmView 上决定. 下游 RoutineDiff 会用 LIS 把真正被移动的那几个标 Moved.
+    /// ⚠️ planParamsDirty 必须先于 session 赋值 —— session 的 didSet 落盘会快照这个 flag.
+    private func applyTrainedOrderToPlan(_ s: Session) {
+        guard var p = plan, p.steps.count > 1 else { return }
+        let order = s.completionOrder ?? []
+        guard !order.isEmpty else { return }          // 一组没完成 (纯跳过) → 谈不上"训练顺序"
+        let rank = Dictionary(order.enumerated().map { ($0.element, $0.offset) },
+                              uniquingKeysWith: { first, _ in first })
+        // enumerated 的 offset 作 tie-break: 未练过的动作彼此保持原相对顺序 (稳定排序).
+        let reordered = p.steps.enumerated().sorted { a, b in
+            let ra = rank[a.element.id], rb = rank[b.element.id]
+            switch (ra, rb) {
+            case let (x?, y?):   return x != y ? x < y : a.offset < b.offset
+            case (_?, nil):      return true      // 练过的排前面
+            case (nil, _?):      return false
+            case (nil, nil):     return a.offset < b.offset
+            }
+        }.map(\.element)
+
+        guard reordered.map(\.id) != p.steps.map(\.id) else { return }   // 顺序没变
+        p.steps = reordered
+        planParamsDirty = true   // 先于 session 写 (didSet 落盘会快照它)
+        plan = p
+        // 不重建 segments: 这个方法只在**完成时**调用, segments 已不再驱动播放
+        // (currentSegment / nextLandingIndex 都不会再被用到), 重建反而要多传 exById 等一堆参数.
+    }
+
     /// 提前结束 — 跳到 completed 态保留已完成组. 跟 end() 区别: end 清空 session (=放弃),
     /// finishEarly 把它标记完成 (=用户主动提前圆满收工, CompletedView 会显示).
     func finishEarly() {
@@ -497,6 +548,7 @@ final class TrainingSessionStore {
         s.playing = false
         s.endsAt = nil
         s.lastActiveAt = Date()
+        applyTrainedOrderToPlan(s)   // 按这次真实训练顺序重排 (必须在 session=s 之前)
         session = s
         trackFinish(s, finishType: "early")   // 用户主动 End 提前收工
         Haptics.trainingComplete()
