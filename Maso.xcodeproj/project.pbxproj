@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		00A4D9E8097FD64B9A060964 /* MuscleVisualBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BFB5D5CE95E571387E9D1C0 /* MuscleVisualBlock.swift */; };
+		03C2500A006B78BFE4AC3C53 /* LocalRoutineRules.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF1DD281FAAFC1DE9AD5801E /* LocalRoutineRules.swift */; };
 		04BF37E058F0FB0D5085E382 /* PlateCalculatorSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D7C1393538F9AEC41B4A7F /* PlateCalculatorSheet.swift */; };
 		060B4BAABA688BD0007AD51C /* AISummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = A015C1CBD0ADEA27FDC680FC /* AISummary.swift */; };
 		065D18A391A35FE37DAE4455 /* MusclesPickerSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9B75264B14BF7AA46A5CC5A /* MusclesPickerSheet.swift */; };
@@ -285,6 +286,7 @@
 		AB9DEC8FE0A1B5B1E9ADC8EE /* CardChrome.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardChrome.swift; sourceTree = "<group>"; };
 		AC00B9B59687C5502999A3DA /* FeedbackTransport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackTransport.swift; sourceTree = "<group>"; };
 		ADC7BD7F1CA2B51B8BE76943 /* InlineWorkoutCalendar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InlineWorkoutCalendar.swift; sourceTree = "<group>"; };
+		AF1DD281FAAFC1DE9AD5801E /* LocalRoutineRules.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalRoutineRules.swift; sourceTree = "<group>"; };
 		AFFACBCE14220218C3F49853 /* exercises-new.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "exercises-new.json"; sourceTree = "<group>"; };
 		B56BF1DAA41EE256A9EDA30F /* FeedbackSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackSheet.swift; sourceTree = "<group>"; };
 		B60786EDA8A1B901D6361BF3 /* _missing-image-new.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "_missing-image-new.md"; sourceTree = "<group>"; };
@@ -403,6 +405,7 @@
 				AC00B9B59687C5502999A3DA /* FeedbackTransport.swift */,
 				C9CFBD927255937085E3C209 /* HealthKitService.swift */,
 				0B9791F0998275E09C5575AD /* LanguageManager.swift */,
+				AF1DD281FAAFC1DE9AD5801E /* LocalRoutineRules.swift */,
 				DC6C8F3E62397B3CADF62790 /* MuscleStatusComputed.swift */,
 				4E46EC3F68E92686D08B88D5 /* MuscleSynergy.swift */,
 				C228082523E5BD38F52B6B76 /* PersistenceController.swift */,
@@ -891,6 +894,7 @@
 				88B007435E601164A2241EDE /* LayoutToggle.swift in Sources */,
 				73A663C1917B312B7D2AE66C /* LimitedFlowLayout.swift in Sources */,
 				F539563C25B1A76F848BE0BC /* LiveActivityManager.swift in Sources */,
+				03C2500A006B78BFE4AC3C53 /* LocalRoutineRules.swift in Sources */,
 				6D60477E08F4B84BC1C8DF8E /* MasoApp.swift in Sources */,
 				1605075E6DF23E750E90BD9A /* MasoBrandLogo.swift in Sources */,
 				E40B7C038FA77F3BD95F0E5D /* MasoMarkIcon.swift in Sources */,

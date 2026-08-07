@@ -1405,9 +1405,17 @@ final class DataStore {
     /// - parameter focusNote: optimize 建议卡传进来的本次侧重 (e.g. "bias the split toward legs"),
     ///   非 nil 时注进 prompt 的 PRIORITY 行, 让这批 routine 偏向修复诊断出的问题. 默认 nil = 普通生成.
     func generateAIRoutines(focusNote: String? = nil, surface: String = "ai_segment") async -> (plans: [Plan], usedFallback: Bool) {
-        let local = DataStore.tunedRecommendedPlans(
-            forDays: settings.weeklyTrainingDays, settings: settings,
-            exById: exById, sets: sets, now: Date())
+        // 本地兜底 —— 模板池 → 裁剪 → 器械替换 → 重量折算 → enforceScience.
+        // ⚠️ 再叠一层 LocalRoutineRules: 把用户这次打的字 (focusNote) 解析成意图 (多练哪块 /
+        //    避开哪块 / 只用什么器械 / 多长时间) 应用上去. 大陆有相当一部分用户长期够不到 AI
+        //    (workers.dev 和 vercel.app 都可能被 DNS 污染), 兜底不能对用户的要求装聋.
+        //    解析不到任何关键词 → Intent 为空 → apply 原样返回, 行为跟以前完全一致.
+        let localIntent = LocalRoutineRules.parse(focusNote)
+        let local = LocalRoutineRules.apply(
+            to: DataStore.tunedRecommendedPlans(
+                forDays: settings.weeklyTrainingDays, settings: settings,
+                exById: exById, sets: sets, now: Date()),
+            intent: localIntent, settings: settings, exById: exById)
         guard AIWorkoutService.isConfigured else { return (local, true) }
         // 一次 LLM 调用产出多套真 AI routine (各带 rationale, 组成周分化) — 标签页每张都是真 AI,
         // 不再 [aiPlan] + local 混本地凑数计划. 套数 = 每周天数, 夹到 2...4 (token 预算 + 不过载).
