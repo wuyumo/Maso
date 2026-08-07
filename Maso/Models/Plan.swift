@@ -48,6 +48,10 @@ enum PlanSource: String, Codable, Hashable, Sendable {
     case custom    // 用户自建 / 系统推荐种子 — 不挂标签
     case ai        // AI 生成
     case classics  // 从 Classics(经典模板)采纳
+    /// **本地规则生成** — AI 够不到时由内置模板 + LocalRoutineRules 拼出来的.
+    /// 单独一档而不是并进 .custom: 用户在 Coach 里明明是让 AI 生成, 结果拿到的不是 AI 的东西,
+    /// 必须让他看得出来 —— 否则跟他自己手建的 routine 长得一模一样, 等于默默糊弄.
+    case builtIn
 }
 
 struct Plan: Identifiable, Hashable, Codable, Sendable {

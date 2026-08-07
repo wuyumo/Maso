@@ -80,16 +80,115 @@ final class AIWorkoutService {
             req.httpBody = try JSONSerialization.data(withJSONObject: body)
             return req
         }
-        do {
-            return try await URLSession.shared.data(for: try makeRequest(proxyURL))
-        } catch let error as URLError {
-            let fallback = fallbackProxyURL
-            guard !fallback.isEmpty, fallback != proxyURL else { throw error }
-            #if DEBUG
-            print("[AI] 主 endpoint 失败 (\(error.code.rawValue)), 切备用: \(fallback)")
-            #endif
-            return try await URLSession.shared.data(for: try makeRequest(fallback))
+        // 顺序: 上次成功过的那条排第一. 主/备只有一条能通的网络下 (大陆 DNS 污染是常态),
+        // 不记这个的话**每次**生成都要先白等一轮主 endpoint 失败, 用户体感就是"AI 很慢".
+        var order = [proxyURL, fallbackProxyURL].filter { !$0.isEmpty }
+        if let good = lastGoodBase, let i = order.firstIndex(of: good), i != 0 {
+            order.swapAt(0, i)
         }
+        guard let first = order.first else { throw URLError(.badURL) }
+
+        do {
+            let r = try await URLSession.shared.data(for: try makeRequest(first))
+            lastGoodBase = first
+            return r
+        } catch let error as URLError {
+            guard order.count > 1 else { throw error }
+            let alt = order[1]
+            #if DEBUG
+            print("[AI] endpoint 失败 (\(error.code.rawValue)), 切: \(alt)")
+            #endif
+            let r = try await URLSession.shared.data(for: try makeRequest(alt))
+            lastGoodBase = alt
+            return r
+        }
+    }
+
+    /// 上次真正拿到响应的 endpoint. 只是个**排序提示**, 不是配置 —— 值失效了也只是多失败一轮.
+    private static var lastGoodBase: String? {
+        get { UserDefaults.standard.string(forKey: "maso.ai.lastGoodBase") }
+        set { UserDefaults.standard.set(newValue, forKey: "maso.ai.lastGoodBase") }
+    }
+
+    // MARK: - 连接自检
+
+    /// 单个 endpoint 的探测结果.
+    struct Diagnostic: Identifiable, Sendable {
+        let id = UUID()
+        /// 本地化 key ("Primary route" / "Backup route") — UI 侧过 LocalizedStringKey
+        let role: String
+        /// 只给 host, 不给完整 URL (URL 里不带密钥, 但没必要在设置页刷全串)
+        let host: String
+        let ok: Bool
+        /// 人话结论: "OK · 820ms" / "Blocked or unreachable (-1004)" / "HTTP 401"
+        let detail: String
+    }
+
+    /// 从**用户这台设备**实测两个 endpoint 能不能通, 逐条报真实错误码.
+    ///
+    /// 为什么要有: "Couldn't reach the AI coach" 对用户和我都是黑箱 —— 是 DNS 被污染?
+    /// token 不对? 上游挂了? 还是他自己没网? 猜三种可能不如让设备自己讲一句。
+    /// 发的是**真请求** (max_tokens=1), 所以 401/500 这类"连上了但被拒"也能区分出来,
+    /// 只探 TCP 通不通会把 401 误报成"正常".
+    static func diagnose() async -> [Diagnostic] {
+        let targets = [("Primary route", proxyURL), ("Backup route", fallbackProxyURL)]
+        var out: [Diagnostic] = []
+        for (role, base) in targets where !base.isEmpty {
+            out.append(await probe(role: role, base: base))
+        }
+        if out.isEmpty {
+            out.append(Diagnostic(role: "Primary route", host: "—", ok: false,
+                                  detail: NSLocalizedString("Not configured", comment: "AI diagnostic — no endpoint in build")))
+        }
+        return out
+    }
+
+    private static func probe(role: String, base: String) async -> Diagnostic {
+        let host = URL(string: base)?.host ?? base
+        guard let url = URL(string: "\(base)/v1/chat/completions") else {
+            return Diagnostic(role: role, host: host, ok: false, detail: "Bad URL")
+        }
+        var req = URLRequest(url: url)
+        req.httpMethod = "POST"
+        req.timeoutInterval = 15
+        req.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        req.setValue(clientToken, forHTTPHeaderField: "X-Maso-Client-Token")
+        req.httpBody = try? JSONSerialization.data(withJSONObject: [
+            "messages": [["role": "user", "content": "ping"]],
+            "max_tokens": 1,
+        ])
+        let t0 = Date()
+        do {
+            let (_, resp) = try await URLSession.shared.data(for: req)
+            let ms = Int(Date().timeIntervalSince(t0) * 1000)
+            let code = (resp as? HTTPURLResponse)?.statusCode ?? 0
+            if (200..<300).contains(code) {
+                return Diagnostic(role: role, host: host, ok: true, detail: "OK · \(ms)ms")
+            }
+            // 连上了但被拒 —— 网络没问题, 是服务端/凭证的事, 换域名也没用.
+            return Diagnostic(role: role, host: host, ok: false, detail: "HTTP \(code) · \(ms)ms")
+        } catch let e as URLError {
+            return Diagnostic(role: role, host: host, ok: false, detail: "\(reason(e)) (\(e.code.rawValue))")
+        } catch {
+            return Diagnostic(role: role, host: host, ok: false, detail: "Failed")
+        }
+    }
+
+    /// URLError → 用户看得懂的一句话. 只翻译真正会碰到的那几个, 其余给通用句 + 码.
+    private static func reason(_ e: URLError) -> String {
+        let key: String
+        switch e.code {
+        case .notConnectedToInternet:                 key = "No internet"
+        case .timedOut:                               key = "Timed out"
+        // DNS 污染在 iOS 上典型就落这三个 —— 大陆用 *.workers.dev 时的常客.
+        case .cannotFindHost, .dnsLookupFailed:       key = "DNS blocked"
+        case .cannotConnectToHost, .networkConnectionLost:
+                                                      key = "Connection blocked"
+        case .secureConnectionFailed, .serverCertificateUntrusted:
+                                                      key = "TLS blocked"
+        default:                                      key = "Unreachable"
+        }
+        return NSLocalizedString(key, comment: "AI connection diagnostic failure reason")
     }
 
     // MARK: - Public

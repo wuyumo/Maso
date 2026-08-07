@@ -8,18 +8,22 @@ struct PlanSourceBadge: View {
         switch source {
         case .ai:       badge(icon: "sparkles", text: "AI")
         case .classics: badge(icon: "rosette", text: "Classics")
+        // 本地兜底 — 中性灰, 明确区别于 accent 绿的 AI/Classics (那两个是"给你的好东西",
+        // 这个是"AI 没连上时的替代品", 用同色会误导).
+        case .builtIn:  badge(icon: "wifi.slash", text: "Built-in", tint: MasoColor.textDim)
         case .custom:   EmptyView()
         }
     }
-    @ViewBuilder private func badge(icon: String, text: LocalizedStringKey) -> some View {
+    @ViewBuilder private func badge(icon: String, text: LocalizedStringKey,
+                                    tint: Color = MasoColor.accent) -> some View {
         HStack(spacing: 3) {
             Image(systemName: icon).font(.system(size: 8, weight: .heavy))
             Text(text).font(.system(size: 10, weight: .heavy)).tracking(0.4)
         }
-        .foregroundStyle(MasoColor.accent)
+        .foregroundStyle(tint)
         .padding(.horizontal, 6).padding(.vertical, 2)
-        .background(MasoColor.accent.opacity(0.18))
-        .overlay(Capsule().stroke(MasoColor.accent.opacity(0.45), lineWidth: 0.5))
+        .background(tint.opacity(0.18))
+        .overlay(Capsule().stroke(tint.opacity(0.45), lineWidth: 0.5))
         .clipShape(Capsule())
         .fixedSize()
     }

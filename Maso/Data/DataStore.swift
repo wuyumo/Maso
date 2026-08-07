@@ -401,6 +401,13 @@ final class DataStore {
     //     这样默认 3 不会把模板里手调的 4 组复合动作压平 (P1-3); 用户调高到 5 则全体 ≥5.
     //   - reps 保留模板值 (模板按动作手调, 比 goal 默认更贴具体动作)
     //   - lastUsedAt 从 sets 历史回填, 保证 pickTodayPlan 的 LRU A→B→C 轮换可用 (P0-2)
+    /// 给本地兜底产出打上 .builtIn 来源标 —— 卡片上会显示灰色「Built-in」徽标.
+    /// 用户在 Coach 里要的是 AI, 拿到的是本地规则拼的; 不标就跟他自己手建的 routine 一模一样,
+    /// 等于默默糊弄. 标了他才知道"这版是离线兜底, 联上网可以让 AI 重做".
+    static func markBuiltIn(_ plans: [Plan]) -> [Plan] {
+        plans.map { var p = $0; p.source = .builtIn; return p }
+    }
+
     static func tunedRecommendedPlans(
         forDays days: Int,
         settings: UserSettings,
@@ -1411,11 +1418,11 @@ final class DataStore {
         //    (workers.dev 和 vercel.app 都可能被 DNS 污染), 兜底不能对用户的要求装聋.
         //    解析不到任何关键词 → Intent 为空 → apply 原样返回, 行为跟以前完全一致.
         let localIntent = LocalRoutineRules.parse(focusNote)
-        let local = LocalRoutineRules.apply(
+        let local = DataStore.markBuiltIn(LocalRoutineRules.apply(
             to: DataStore.tunedRecommendedPlans(
                 forDays: settings.weeklyTrainingDays, settings: settings,
                 exById: exById, sets: sets, now: Date()),
-            intent: localIntent, settings: settings, exById: exById)
+            intent: localIntent, settings: settings, exById: exById))
         guard AIWorkoutService.isConfigured else { return (local, true) }
         // 一次 LLM 调用产出多套真 AI routine (各带 rationale, 组成周分化) — 标签页每张都是真 AI,
         // 不再 [aiPlan] + local 混本地凑数计划. 套数 = 每周天数, 夹到 2...4 (token 预算 + 不过载).

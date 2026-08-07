@@ -1389,3 +1389,20 @@
 
 "Masso Pro" = "Masso Pro";
 "Unlimited routines, unlimited AI coach, deep analytics." = "Unlimited routines, unlimited AI coach, deep analytics.";
+
+"Built-in" = "Built-in";
+
+/* AI connection diagnostics (Settings) */
+"AI coach" = "AI coach";
+"Test connection" = "Test connection";
+"Primary route" = "Primary";
+"Backup route" = "Backup";
+"Not configured" = "Not configured";
+"No internet" = "No internet";
+"Timed out" = "Timed out";
+"DNS blocked" = "DNS blocked";
+"Connection blocked" = "Connection blocked";
+"TLS blocked" = "TLS blocked";
+"Unreachable" = "Unreachable";
+"The AI coach is reachable from this device." = "The AI coach is reachable from this device.";
+"The AI coach can't be reached on this network. Try mobile data instead of Wi-Fi (or the other way round); if you use a VPN or proxy, switch it on or off and test again." = "The AI coach can't be reached on this network. Try mobile data instead of Wi-Fi (or the other way round); if you use a VPN or proxy, switch it on or off and test again.";

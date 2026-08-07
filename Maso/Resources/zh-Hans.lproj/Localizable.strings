@@ -1391,3 +1391,20 @@
 
 "Masso Pro" = "Masso Pro";
 "Unlimited routines, unlimited AI coach, deep analytics." = "无限训练计划、无限 AI 教练、深度数据分析。";
+
+"Built-in" = "本地生成";
+
+/* AI 连接自检 (设置) */
+"AI coach" = "AI 教练";
+"Test connection" = "测试连接";
+"Primary route" = "主线路";
+"Backup route" = "备用线路";
+"Not configured" = "未配置";
+"No internet" = "没有网络";
+"Timed out" = "连接超时";
+"DNS blocked" = "DNS 被拦截";
+"Connection blocked" = "连接被拦截";
+"TLS blocked" = "TLS 被拦截";
+"Unreachable" = "无法连接";
+"The AI coach is reachable from this device." = "这台设备可以连上 AI 教练。";
+"The AI coach can't be reached on this network. Try mobile data instead of Wi-Fi (or the other way round); if you use a VPN or proxy, switch it on or off and test again." = "当前网络连不上 AI 教练。可以试试把 Wi-Fi 换成移动数据（或反过来）；如果在用 VPN / 代理，开关一次再测。";

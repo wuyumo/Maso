@@ -739,6 +739,7 @@ struct RootView: View {
         switch plan.resolvedSource {
         case .ai: return "ai"
         case .classics: return "classic"
+        case .builtIn: return "builtin"   // 本地规则兜底 (AI 够不到时) — analytics 要分得开
         case .custom: return "recommended"
         }
     }

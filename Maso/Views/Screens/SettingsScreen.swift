@@ -7,6 +7,8 @@ struct SettingsScreen: View {
     @State private var showLanguagePicker: Bool = false
     /// 训练偏好独立编辑 sheet (owner 拍板: Settings 不再内嵌 6 行, 只留入口).
     @State private var showTrainingPrefs: Bool = false
+    @State private var aiDiagnostics: [AIWorkoutService.Diagnostic] = []
+    @State private var aiTesting: Bool = false
     // showMusclePicker / musclesSummaryText 已搬到 TrainingSettingsSection 内部
     /// 跟着 LanguageManager 走 — 切换时强制本页 re-render 显示新语言
     @State private var languageManager = LanguageManager.shared
@@ -231,6 +233,11 @@ struct SettingsScreen: View {
                     .buttonStyle(.plain)
                 }
 
+                // AI 连接自检 — "Couldn't reach the AI coach" 对用户是黑箱, 给他一个能自己按的按钮.
+                Section_(title: "AI coach") {
+                    aiDiagnosticsRow
+                }
+
                 // Exercise library 入口已挪到 Plans tab 底部 — 那是用户实际"用"动作的地方,
                 // 跟 plan 编辑/选动作动线更顺. Settings 这里不再展示, 也不再 import 整张
                 // ExerciseLibraryBrowser sheet.
@@ -346,6 +353,78 @@ struct SettingsScreen: View {
     }
 
     /// App 版本号 — "1.0 (1)" 格式. 从 Bundle 读 CFBundleShortVersionString + CFBundleVersion.
+    // 主/备两个 endpoint 各发一次真请求, 把 "Couldn't reach the AI coach" 换成具体错误码.
+    // 结论行故意分主/备两条: 只有"两条都红"才是用户网络的问题, "主红备绿"= AI 其实能用.
+    @ViewBuilder
+    private var aiDiagnosticsRow: some View {
+        Button(action: runAIDiagnostics) {
+            Row(label: "Test connection") {
+                if aiTesting {
+                    ProgressView().controlSize(.small)
+                } else {
+                    Image(systemName: "arrow.clockwise")
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundStyle(MasoColor.textFaint)
+                }
+            }
+        }
+        .buttonStyle(.plain)
+        .disabled(aiTesting)
+
+        if !aiDiagnostics.isEmpty {
+            Divider().background(MasoColor.borderSoft)
+            VStack(alignment: .leading, spacing: 8) {
+                ForEach(aiDiagnostics) { d in
+                    HStack(spacing: 8) {
+                        Image(systemName: d.ok ? "checkmark.circle.fill" : "xmark.circle.fill")
+                            .font(.system(size: 13))
+                            .foregroundStyle(d.ok ? MasoColor.accent : MasoColor.textDim)
+                        Text(LocalizedStringKey(d.role))
+                            .font(.system(size: 13, weight: .bold))
+                        Spacer()
+                        Text(d.detail)
+                            .font(.system(size: 12).monospacedDigit())
+                            .foregroundStyle(MasoColor.textDim)
+                    }
+                    Text(d.host)
+                        .font(.system(size: 11))
+                        .foregroundStyle(MasoColor.textFaint)
+                        .lineLimit(1)
+                        .truncationMode(.middle)
+                        .padding(.leading, 21)
+                }
+                Text(LocalizedStringKey(aiDiagnosticsVerdict))
+                    .font(.system(size: 12))
+                    .foregroundStyle(MasoColor.textFaint)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.top, 2)
+            }
+            .padding(.horizontal, MasoMetrics.cardPadding)
+            .padding(.vertical, 14)
+        }
+    }
+
+    private var aiDiagnosticsVerdict: String {
+        if aiDiagnostics.contains(where: \.ok) {
+            return "The AI coach is reachable from this device."
+        }
+        return "The AI coach can't be reached on this network. Try mobile data instead of Wi-Fi (or the other way round); if you use a VPN or proxy, switch it on or off and test again."
+    }
+
+    private func runAIDiagnostics() {
+        aiTesting = true
+        Task {
+            let result = await AIWorkoutService.diagnose()
+            await MainActor.run {
+                aiDiagnostics = result
+                aiTesting = false
+            }
+            Analytics.shared.track("ai_diagnostics_run", [
+                "reachable": .string(result.contains(where: \.ok) ? "yes" : "no"),
+            ])
+        }
+    }
+
     private var appVersionLabel: String {
         let short = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "—"
         let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "—"
