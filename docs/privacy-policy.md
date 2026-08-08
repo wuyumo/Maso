@@ -1,6 +1,6 @@
 # Masso — Privacy Policy / 隐私政策
 
-**Last updated / 最后更新:** 2026-05-17
+**Last updated / 最后更新:** 2026-08-08
 
 ---
 
@@ -10,7 +10,7 @@
 
 Masso is a fitness tracking app that runs almost entirely **on your device**. We do not run user accounts, we do not collect personal data, and we do not sell or share any information about you with third parties for marketing or analytics.
 
-The only network call Masso makes is when you explicitly use the AI workout suggestion feature, which sends your training preferences to our backend proxy and then to DeepSeek's language model API.
+When you use the AI coach, Masso sends your training profile and recent workout history to our backend proxy, which forwards it to Anthropic's Claude API. This also happens automatically when the app refreshes your recommended workout for the day. Masso additionally contacts our servers to validate a Masso Pro licence key, to send feedback you submit from within the app, and to fetch exercise images from a public CDN.
 
 ### Data We Do NOT Collect
 
@@ -53,15 +53,22 @@ The chosen photo is embedded into your shareable summary card and **stays on you
 
 ### AI Workout Suggestions (Optional, Network)
 
-If you have Masso Pro and enable AI workout suggestions, Masso may send the following to our backend proxy, which then forwards to DeepSeek's language model API:
+The AI coach is available to all users. When it runs — either because you asked it to, or because the app is refreshing your recommended workout on launch — Masso sends the following to our backend proxy, which forwards it to Anthropic's Claude API:
 
 - Your training profile (age, gender, body weight, target muscles, weekly training days)
 - The last 14 days of your training history (exercise names, sets, reps, weights, dates)
+- Your best recent sets, and any notes you have written for the coach (for example an injury you asked it to work around)
 - A list of candidate exercises to choose from
 
-The proxy is hosted by us solely to keep API credentials secure; it does not store or log your data beyond the lifetime of the request. DeepSeek processes the prompt to generate a suggested workout plan and may retain it under their own privacy policy. See: https://www.deepseek.com/privacy
+The proxy is hosted by us solely to keep API credentials secure; it does not store or log your data beyond the lifetime of the request. Anthropic processes the prompt to generate a suggested workout plan under its own privacy policy. See: https://www.anthropic.com/legal/privacy
 
-You can disable AI workout suggestions at any time in **Settings → Pro → AI suggestions**. With AI disabled, no data ever leaves your device.
+There is currently no in-app switch to turn the AI coach off. If you do not want this data sent, turn off network access for Masso in iOS Settings; the app keeps working and falls back to generating plans on-device.
+
+### Other network calls
+
+- **Masso Pro licence validation** — if you activate Pro, your licence key is sent to our proxy to be checked.
+- **In-app feedback** — if you send feedback from inside the app, your message is delivered to our email, together with the app version, iOS version, and device language.
+- **Exercise images** — exercise photos are fetched on demand from a public CDN (jsDelivr) and cached on your device.
 
 ### Sharing
 
@@ -101,7 +108,7 @@ Questions or concerns?
 
 Masso 是一款健身追踪 App,几乎所有功能都在 **你的设备本地** 运行。我们不设用户账户,不收集个人数据,也不将你的任何信息出售或共享给第三方做营销或分析。
 
-Masso 唯一的网络调用发生在你显式使用 AI 训练推荐功能时 — 此时会把你的训练偏好发送到我们的后端代理,再转发给 DeepSeek 语言模型 API。
+使用 AI 教练时,Masso 会把你的训练档案和近期训练记录发送到我们的后端代理,再转发给 Anthropic 的 Claude API。App 启动时自动刷新当日推荐训练也会触发同一条链路。此外还有三类网络请求:校验 Masso Pro 授权码、发送你在 app 内提交的反馈、以及从公共 CDN 拉取动作图片。
 
 ### 我们 **不** 收集的数据
 
@@ -142,15 +149,21 @@ HealthKit 数据受 Apple 严格的权限模型保护,留在设备本地。我�
 
 ### AI 训练推荐(可选,需要网络)
 
-如果你订阅了 Masso Pro 并启用 AI 训练推荐,Masso 会将以下内容发送到我们的后端代理,再转发给 DeepSeek 语言模型 API:
+AI 教练对所有用户开放。当它运行时 — 无论是你主动触发,还是 app 启动时刷新当日推荐 — Masso 会将以下内容发送到我们的后端代理,再转发给 Anthropic 的 Claude API:
 
 - 你的训练资料(年龄、性别、体重、目标肌群、每周训练天数)
 - 最近 14 天的训练历史(动作名、组数、次数、重量、日期)
 - 候选动作清单
 
-后端代理仅用于保护 API 凭证安全 — 我们不会在请求生命周期之外存储或记录你的数据。DeepSeek 处理 prompt 生成推荐,可能根据其隐私政策保留请求数据。参见:https://www.deepseek.com/privacy
+后端代理仅用于保护 API 凭证安全 — 我们不会在请求生命周期之外存储或记录你的数据。Anthropic 处理 prompt 生成推荐,适用其自身的隐私政策。参见:https://www.anthropic.com/legal/privacy
 
-你可以随时在 **设置 → Pro → AI 推荐** 中关闭 AI 功能。关闭后,任何数据都不会离开你的设备。
+目前 app 内没有关闭 AI 教练的开关。如果你不希望这些数据被发送,可以在 iOS 设置里关掉 Masso 的网络权限 — app 仍可正常使用,会回退到完全在本地生成计划。
+
+### 其他网络请求
+
+- **Masso Pro 授权校验** — 激活 Pro 时,授权码会发到我们的代理做校验。
+- **App 内反馈** — 你从 app 内发送反馈时,内容会连同 app 版本、iOS 版本、设备语言一起发到我们的邮箱。
+- **动作图片** — 动作照片按需从公共 CDN(jsDelivr)拉取并缓存在本机。
 
 ### 分享
 
