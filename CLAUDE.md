@@ -12,6 +12,18 @@
   ③ 听写工具 **"Typeless"** 的后台浮层会盖住 Distribute 按钮(computer-use 点击被拦)→ `pkill -i typeless` 清掉,完事再 `open -a Typeless`。
 - **待办**: build 处理完(邮件通知,几分钟~几十分钟)→ ASC 网页建版本 1.6 / 填 What's New(en+zh)/ 挂 build 12 / 自动发布 → 提交审核。⚠️ **2026-08-05 起提审不用等指令** —— Yumo 拍板「改动够大就自己提交审核」。Claude 自行判断攒够一批用户可感知的改动就走完整条链到「提交以供审核」,做完告知结果即可(见 [[feedback_maso_nightly_ship]])。
 
+## 🌏 AI endpoint (2026-08-08 起) — 大陆可用性
+- **主**: `https://ai.replai.sh` · **备**: `https://maso-ai.wuyumo.workers.dev`
+- 根因: 被 DNS 投毒的是 **`*.workers.dev` / `*.vercel.app` 这两个泛域名本身**, 不是我们的域名。
+  实测(`dig -b <本机内网IP>` 绕开本机 ClashX 隧道, 拿 `www.cloudflare.com` 当基准):
+  workers.dev/vercel.app 在 114/223.5.5.5/119.29.29.29 上全部返回 Facebook / Twitter 段的假 IP,
+  **国内没有一个干净的公共 DNS 可切**; 而 `ai.replai.sh` 三家都返回真 Vercel IP(216.150.x)。
+- 做法: `replai.sh` 是 Vercel 账号里已有的闲置域名(DNS 也托管在 Vercel), 加子域名 `ai.replai.sh`
+  指到现有的 `maso` 项目(即 maso-two.vercel.app 那套代码)。**后端零改动, 不用买域名。**
+- ⚠️ `Maso/Secrets.xcconfig` 不进 git。换机重建时两个 URL 都要写成 `https:/$()/host`
+  (`//` 在 xcconfig 是注释符, 直接写会被截成 `https:`, 这个坑 1.x 时期踩过一次)。
+- 自检入口: app 内 **设置 → AI coach → Test connection**, 主/备各发一次真请求并报具体错误码。
+
 ## 项目
 - SwiftUI, **iOS 18** target, 单仓 (`Maso` app target + `MasoWidgets` 小组件 target)
 - GitHub: `github.com/wuyumo/Maso.git`
