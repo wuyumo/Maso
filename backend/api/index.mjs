@@ -16,8 +16,10 @@
 // (跟 Cloudflare 那边 wrangler secret 的值完全一样.)
 import { handleRequest } from "../shared/handler.mjs";
 
+// ⚠️ 文件必须是 .mjs: backend/ 下没有 package.json, Node runtime 默认按 CommonJS 解析
+//    `import` 会直接 FUNCTION_INVOCATION_FAILED (2026-08-10 踩过, 1.9s 就 500)。
+//    runtime 不写 —— Node 是默认值, 写 "nodejs" 反而多一处会漂的字面量。
 export const config = {
-  runtime: "nodejs",
   maxDuration: 300,   // 秒. Pro 计划上限远高于此; 客户端自己的超时是 120s, 这里给足余量.
 };
 
