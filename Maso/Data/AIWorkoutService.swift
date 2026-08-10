@@ -744,7 +744,7 @@ final class AIWorkoutService {
         let prompt = buildRoutinesPrompt(payload: payload, library: library, count: count, perRoutine: perRoutine, revision: revision)
         let body: [String: Any] = [
             "model": "deepseek-chat",
-            "max_tokens": 4096,                 // N 套 routine 需要更多 token
+            "max_tokens": 8192,                 // N 套 routine 需要更多 token —— 4096 实测会把整周 JSON 截断
             "temperature": 0.8,                 // 略高 → 几套之间更有差异
             "messages": [
                 ["role": "system", "content": "You are a fitness coach AI. Output strict JSON only, no prose, no markdown fences."],
@@ -1137,6 +1137,11 @@ final class AIWorkoutService {
                  .replacingOccurrences(of: "```", with: "")
                  .trimmingCharacters(in: .whitespacesAndNewlines)
         }
+        // 模型偶尔在 JSON 前后加一句话 (哪怕 prompt 说了 no prose) —— 掐头去尾只留最外层对象/数组.
+        if let lo = s.firstIndex(where: { $0 == "{" || $0 == "[" }),
+           let hi = s.lastIndex(where: { $0 == "}" || $0 == "]" }), lo < hi {
+            s = String(s[lo...hi])
+        }
         guard let data = s.data(using: .utf8) else { throw AIError.parse("Could not encode response") }
         if let wrapped = try? JSONDecoder().decode(AIRoutinesResponse.self, from: data) {
             return wrapped.routines
@@ -1144,7 +1149,12 @@ final class AIWorkoutService {
         if let bare = try? JSONDecoder().decode([AIResponse].self, from: data) {
             return bare
         }
-        throw AIError.parse("Bad JSON: expected {\"routines\":[...]}")
+        // 带上**真实的**解码错误 —— 光说 "Bad JSON" 定位不了是哪个字段哪种类型不对,
+        // 今天就是靠把真实原因显示出来才两步定位到 Vercel 504 的.
+        var why = ""
+        do { _ = try JSONDecoder().decode(AIRoutinesResponse.self, from: data) }
+        catch { why = " — \(error)" }
+        throw AIError.parse("Bad JSON: expected {\"routines\":[...]}\(why.prefix(240))")
     }
 
     // MARK: - Build Plan
@@ -1360,6 +1370,36 @@ private struct AIStep: Codable {
         case reps
         case weightKg = "weight_kg"
         case durationSeconds = "duration_seconds"
+    }
+
+    // ⚠️ 宽容解码 (2026-08-10): prompt 写的是 `<int 1-20 or null>`, 但后端从 DeepSeek 换成
+    //    Claude 之后, 模型经常回 `"reps": "8-12"` / `"sets": "3"` 这种字符串(健身语境里区间是常态)。
+    //    严格 Int 解码一个字段挂掉 → 整批 routine 报废 → 用户看到"够不到 AI 教练"。
+    //    模型行为不可能靠 prompt 100% 钉死, 所以在**解析这一侧**兜: 数字/字符串/区间都吃,
+    //    区间取下界(保守, 宁可少练也不让新手上头)。
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        exerciseName = try c.decode(String.self, forKey: .exerciseName)
+        sets = Self.int(c, .sets) ?? 3          // 缺失/无法解析 → 3 组, 是这个 app 的默认
+        reps = Self.int(c, .reps)
+        weightKg = Self.double(c, .weightKg)
+        durationSeconds = Self.int(c, .durationSeconds)
+    }
+
+    /// "12" / 12 / 12.0 / "8-12" / "8–12" / "8 to 12" / "AMRAP" → Int?
+    private static func int(_ c: KeyedDecodingContainer<CodingKeys>, _ k: CodingKeys) -> Int? {
+        if let i = try? c.decodeIfPresent(Int.self, forKey: k) { return i }
+        if let d = try? c.decodeIfPresent(Double.self, forKey: k) { return Int(d.rounded()) }
+        guard let s = try? c.decodeIfPresent(String.self, forKey: k) else { return nil }
+        let first = s.split(whereSeparator: { !$0.isNumber && $0 != "." }).first.map(String.init)
+        return first.flatMap { Double($0) }.map { Int($0.rounded()) }
+    }
+
+    private static func double(_ c: KeyedDecodingContainer<CodingKeys>, _ k: CodingKeys) -> Double? {
+        if let d = try? c.decodeIfPresent(Double.self, forKey: k) { return d }
+        guard let s = try? c.decodeIfPresent(String.self, forKey: k) else { return nil }
+        let first = s.split(whereSeparator: { !$0.isNumber && $0 != "." }).first.map(String.init)
+        return first.flatMap { Double($0) }
     }
 }
 

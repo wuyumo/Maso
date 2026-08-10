@@ -110,8 +110,12 @@ async function handleAI(request, env) {
     systemParts.push("Respond with a single raw JSON object only. No prose, no explanations, no markdown code fences.");
   }
 
+  // ⚠️ 上限 4000 是 DeepSeek 时代留下的, 换 Claude 后成了**头号线上 bug** (2026-08-10 定位):
+  //    生成整周 routine 的 JSON 常常 >4000 token → 被截断成半截 JSON → 客户端
+  //    "Unexpected end of file" → 一律显示成 "Couldn't reach the AI coach"。
+  //    Claude Sonnet 的上限远高于此, 放到 16000; 客户端要多少给多少, 只挡异常大值。
   const maxTokens = typeof body.max_tokens === "number"
-    ? Math.min(Math.max(body.max_tokens, 1), 4000)
+    ? Math.min(Math.max(body.max_tokens, 1), 16000)
     : 2000;
 
   const upstreamPayload = {
