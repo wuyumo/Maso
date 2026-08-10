@@ -217,6 +217,18 @@ extension DataStore {
         session.isGenerating = false
     }
 
+    /// 回落时给用户看的一句话 —— 带上**为什么**, 而不是一律说"连不上".
+    /// service 的 .failure 里已经是 AIError.userMessage (network/api/parse 的具体描述,
+    /// 或 "AI returned no matching exercises"), 直接拼在通用句后面, 不新增本地化 key。
+    private static func fallbackNote(from state: AIWorkoutService.State) -> String {
+        let generic = NSLocalizedString("Couldn't reach the AI coach — showing templates instead.",
+                                        comment: "coach chat fallback when LLM unreachable")
+        guard case .failure(let detail) = state else { return generic }
+        let d = detail.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !d.isEmpty else { return generic }
+        return "\(generic) (\(d))"
+    }
+
     /// 一轮收尾 (成功 / 首轮模板回落) — push 版本栈 / 写 currentRoutines / 追加 assistant 消息 / 清生成态.
     /// text: 首轮优先 LLM 给的 rationale (让用户看出"真 AI"); 修订轮固定用本地小结 —
     /// 修订后 Day 1 可能是回填的旧天, 它的 rationale 描述的不是这次修改, 用了反而误导.
@@ -236,10 +248,11 @@ extension DataStore {
         session.messages.append(CoachMessage(role: .assistant, text: text, plans: plans))
         // QA修复①: 记录本轮是否回落 — 回落轮之后的下一轮重走首轮生成管线 (见 coachGenerate 的 isRevision).
         session.lastRoundUsedFallback = usedFallback
-        session.fallbackNote = usedFallback
-            ? NSLocalizedString("Couldn't reach the AI coach — showing templates instead.",
-                                comment: "coach chat fallback when LLM unreachable")
-            : nil
+        // ⚠️ 回落**不等于**连不上. 这一句以前不管什么原因都写"Couldn't reach the AI coach",
+        //    结果是: 网络明明通 (设置里的自检绿的), 用户在这儿还是读到"够不到 AI", 我也没法定位.
+        //    真实原因 service 早就算出来了 (AIError.userMessage → state.failure), 这里带出来:
+        //    网络失败 / 上游报错 / JSON 解析失败 / LLM 给的动作名一个都没匹配上库.
+        session.fallbackNote = usedFallback ? Self.fallbackNote(from: AIWorkoutService.shared.state) : nil
         session.generationStep = 0
         session.isGenerating = false
     }
