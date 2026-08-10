@@ -142,6 +142,17 @@ final class DataStore {
     // (旧"从截图导入 → 存为自创动作"工厂已删 — 导入改版后未匹配动作只能从库里替换,
     //  不再有绕过自创动作 Pro gate 的免费入口. 自创动作唯一入口 = 动作库 "+", 有付费墙.)
 
+    /// 改一个已保存的自创动作 (名字 / 主肌群 / 器械 / 图片 / 计量方式).
+    /// **id 必须跟原来一致** —— plan / 历史 / lastSet 全按 id 引用, 换 id 等于把它从所有
+    /// 已有计划和记录里抹掉。caller (CustomExerciseFormSheet 编辑模式) 保证这点。
+    /// 找不到 id 就当无事发生, 不静默 append 出一条重复的。
+    func updateCustomExercise(_ ex: Exercise) {
+        guard let i = settings.customExercises.firstIndex(where: { $0.id == ex.id }) else { return }
+        settings.customExercises[i] = ex
+        Analytics.shared.track("custom_exercise_edit")   // 无 PII
+        save()
+    }
+
     /// 删一个自创动作.
     func deleteCustomExercise(_ id: String) {
         settings.customExercises.removeAll { $0.id == id }

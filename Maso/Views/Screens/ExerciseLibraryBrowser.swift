@@ -91,6 +91,8 @@ struct ExerciseLibraryBrowser: View {
     @State private var nicheBrowseOpen: Bool = false
     /// P0-6: 删自创动作的二次确认.
     @State private var pendingDeleteCustom: Exercise? = nil
+    /// 正在编辑的自创动作 — 非 nil 时弹 CustomExerciseFormSheet 的编辑模式.
+    @State private var editingCustom: Exercise? = nil
     /// 自创动作被 plan/历史 引用 → 不能删, 弹说明 alert.
     @State private var deleteBlockedRef: Exercise? = nil
     /// P1-7: 自创动作是 Pro 功能 (付费墙广告语承诺) — 免费用户走这弹 paywall.
@@ -235,8 +237,19 @@ struct ExerciseLibraryBrowser: View {
             .tint(MasoColor.accent)
             .accessibilityLabel(NSLocalizedString(data.isFavorite(ex.id) ? "Unpin" : "Pin to top", comment: ""))
 
-            // P0-6: 自创动作 → 删除 (引用检查); 已采纳 niche → 移回冷门库.
+            // P0-6: 自创动作 → 编辑 + 删除 (引用检查); 已采纳 niche → 移回冷门库.
             if ex.id.hasPrefix("custom-") {
+                // 自创动作存完之前**改不了** —— 名字打错只能删了重建, 而一旦被 plan/历史引用
+                // 连删都不让 (下面的 isExerciseReferenced), 等于永久将错就错。补上编辑入口。
+                Button {
+                    editingCustom = ex
+                    Haptics.tap()
+                } label: {
+                    Image(systemName: "pencil")
+                }
+                .tint(MasoColor.textDim)
+                .accessibilityLabel(NSLocalizedString("Edit", comment: ""))
+
                 Button(role: .destructive) {
                     if data.isExerciseReferenced(ex.id) {
                         deleteBlockedRef = ex
@@ -600,6 +613,11 @@ struct ExerciseLibraryBrowser: View {
             // 路径 1: 自创动作 (name + photo + muscle/equipment).
             .sheet(isPresented: $customFormOpen) {
                 CustomExerciseFormSheet()
+                .presentationDragIndicator(.visible)
+            }
+            // 编辑已保存的自创动作 — 同一个表单, 预填 + save 走 updateCustomExercise (id 不变).
+            .sheet(item: $editingCustom) { ex in
+                CustomExerciseFormSheet(editing: ex)
                 .presentationDragIndicator(.visible)
             }
             // P1-7: 免费用户点"自己创建"→ paywall

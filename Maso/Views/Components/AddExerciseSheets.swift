@@ -110,14 +110,37 @@ struct CustomExerciseFormSheet: View {
     @State private var showingError: String? = nil
     /// "网上搜图" sheet 开关.
     @State private var webPickerOpen: Bool = false
+    /// 加图片的来源选择 (拍照 / 相册 / 移除) —— 跟 ShareImageButton 同一套.
+    @State private var showPhotoOptions: Bool = false
+    /// ⚠️ 用 sheet(item:) 让 source 自己驱动, 不要 "set source + set bool" 两个 state:
+    ///    同 event cycle 的顺序 bug 会让第一次点"拍照"实际打开相册 (ShareImageButton 里也踩过).
+    @State private var activePicker: PhotoPickerSource? = nil
+    @State private var pickedImage: UIImage? = nil
+    private let isCameraAvailable = UIImagePickerController.isSourceTypeAvailable(.camera)
 
     /// 创建成功回调 — caller (选动作 picker) 拿到新动作可以直接勾选 / 加入.
     private let onCreated: ((Exercise) -> Void)?
+
+    /// 非 nil = **编辑**已有的自创动作 (而不是新建). 决定标题 / 重名检查是否排除自己 / save 走 update.
+    private let editingId: String?
 
     /// 预填名字 — 从"选动作"页搜索空结果点"Add 'xxx'"进来时, 把搜索词带过来直接填好.
     init(initialName: String = "", onCreated: ((Exercise) -> Void)? = nil) {
         _name = State(initialValue: String(initialName.prefix(Self.maxNameLength)))
         self.onCreated = onCreated
+        self.editingId = nil
+    }
+
+    /// 编辑已保存的自创动作 —— 之前存完就再也改不了 (只能删了重建, 而被 plan/历史引用时连删都不让),
+    /// 打错一个字就永久将错就错。同一个表单复用, 只是预填 + save 走 update。
+    init(editing ex: Exercise, onCreated: ((Exercise) -> Void)? = nil) {
+        _name = State(initialValue: String(ex.displayName.prefix(Self.maxNameLength)))
+        _selectedMuscle = State(initialValue: ex.primaryMuscles.first ?? .chest)
+        _selectedEquipment = State(initialValue: ex.equipment ?? "body_only")
+        _imageData = State(initialValue: ex.customImageData)
+        _isTimed = State(initialValue: ex.category != .strength)
+        self.onCreated = onCreated
+        self.editingId = ex.id
     }
     /// P1-6: 计量方式 — false = Reps & weight (.strength), true = Timed (秒, 非 strength → player 用 duration).
     @State private var isTimed: Bool = false
@@ -168,9 +191,12 @@ struct CustomExerciseFormSheet: View {
                                     }
                             }
                             .buttonStyle(.plain)
-                            PhotosPicker(selection: $photoItem, matching: .images) {
+                            // 之前这里是纯 PhotosPicker(只能相册) —— 用户点"加图片"期待能直接拍。
+                            // 改成跟分享卡加照片同一套 (ShareImageButton): confirmationDialog
+                            // 弹 拍照 / 相册 / 移除, 系统原生 bottom sheet 风格。
+                            Button(action: { showPhotoOptions = true }) {
                                 // 工具胶囊 → 素玻璃 (映射表③), 字色不变; 描边只留旧系统.
-                                Label(NSLocalizedString("From library", comment: ""), systemImage: "photo.on.rectangle")
+                                Label(NSLocalizedString("Add photo", comment: ""), systemImage: "camera")
                                     .font(.system(size: 13, weight: .bold))
                                     .frame(maxWidth: .infinity)
                                     .padding(.vertical, 9)
@@ -255,7 +281,9 @@ struct CustomExerciseFormSheet: View {
                 }
                 .scrollContentBackground(.hidden)
             }
-            .navigationTitle("New exercise")
+            .navigationTitle(editingId == nil
+                             ? NSLocalizedString("New exercise", comment: "")
+                             : NSLocalizedString("Edit exercise", comment: ""))
             .navigationBarTitleDisplayMode(.inline)
             .toolbarBackground(MasoColor.background, for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
@@ -294,6 +322,32 @@ struct CustomExerciseFormSheet: View {
                     else { showingError = NSLocalizedString("Couldn't process that image. Try another.", comment: "") }
                 }
             }
+        }
+        // 加图片来源 — 系统原生 bottom action sheet, 跟分享卡加照片一致.
+        .confirmationDialog(NSLocalizedString("Add photo", comment: ""),
+                            isPresented: $showPhotoOptions, titleVisibility: .visible) {
+            if isCameraAvailable {
+                Button(NSLocalizedString("Take Photo", comment: "")) { activePicker = .camera }
+            }
+            Button(NSLocalizedString("Choose from Library", comment: "")) { activePicker = .photoLibrary }
+            if imageData != nil {
+                Button(NSLocalizedString("Remove Photo", comment: ""), role: .destructive) { imageData = nil }
+            }
+            Button("Cancel", role: .cancel) {}
+        }
+        .sheet(item: $activePicker) { source in
+            PhotoPicker(image: $pickedImage, source: source)
+                .ignoresSafeArea()
+        }
+        // 拍照/相册拿到 UIImage → 走跟 PhotosPicker 完全一样的降采样+压缩 (别存原图, 会撑爆 maso-data.json).
+        .onChange(of: pickedImage) { _, img in
+            guard let img else { return }
+            photoLoading = true
+            let scaled = Self.downscale(img, maxDimension: 800)
+            if let jpeg = scaled.jpegData(compressionQuality: 0.7) { imageData = jpeg }
+            else { showingError = NSLocalizedString("Couldn't process that image. Try another.", comment: "") }
+            photoLoading = false
+            pickedImage = nil   // 复位, 下次选同一张也能触发
         }
         // 网上搜图 — 用当前动作名预填搜索, 选中一张 → 下载降采样后写回 imageData.
         .sheet(isPresented: $webPickerOpen) {
@@ -401,9 +455,11 @@ struct CustomExerciseFormSheet: View {
         let trimmed = name.trimmingCharacters(in: .whitespaces)
         guard !trimmed.isEmpty else { return }
         // P2-12: 重名检查 (大小写不敏感) — 防 3 个都叫 "Curl" + 触发幽灵变种.
+        // 编辑模式要排除自己, 否则"只改图不改名"会被自己的名字挡住.
         let dup = data.settings.customExercises.contains {
-            $0.displayName.compare(trimmed, options: .caseInsensitive) == .orderedSame
-            || $0.name.compare(trimmed, options: .caseInsensitive) == .orderedSame
+            $0.id != editingId
+            && ($0.displayName.compare(trimmed, options: .caseInsensitive) == .orderedSame
+                || $0.name.compare(trimmed, options: .caseInsensitive) == .orderedSame)
         }
         if dup {
             showingError = NSLocalizedString("You already have a custom exercise with this name.", comment: "")
@@ -411,7 +467,9 @@ struct CustomExerciseFormSheet: View {
         }
 
         // id 用 "custom-{uuid}" 防跟 bundle ID 冲突. exById lookup 透明命中.
-        let newId = "custom-\(UUID().uuidString.lowercased().prefix(8))"
+        // ⚠️ 编辑模式**必须沿用原 id** —— plan / 历史 / lastSet 全都按 id 引用, 换 id 等于把
+        //    这个动作从所有已存在的计划和记录里抹掉。
+        let newId = editingId ?? "custom-\(UUID().uuidString.lowercased().prefix(8))"
         // P1-6: Timed → 非 strength category (player 走 duration); 否则 .strength (reps×重量).
         let category: ExerciseCategory = isTimed ? .mobility : .strength
         let ex = Exercise(
@@ -440,7 +498,7 @@ struct CustomExerciseFormSheet: View {
             isNiche: false,
             customImageData: imageData
         )
-        data.addCustomExercise(ex)
+        if editingId == nil { data.addCustomExercise(ex) } else { data.updateCustomExercise(ex) }
         onCreated?(ex)
         Haptics.tap()
         dismiss()

@@ -1408,3 +1408,5 @@
 "Unreachable" = "无法连接";
 "The AI coach is reachable from this device." = "这台设备可以连上 AI 教练。";
 "The AI coach can't be reached on this network. Try mobile data instead of Wi-Fi (or the other way round); if you use a VPN or proxy, switch it on or off and test again." = "当前网络连不上 AI 教练。可以试试把 Wi-Fi 换成移动数据（或反过来）；如果在用 VPN / 代理，开关一次再测。";
+
+"Edit exercise" = "编辑动作";
