@@ -1,6 +1,6 @@
 # Masso — Privacy Policy / 隐私政策
 
-**Last updated / 最后更新:** 2026-08-08
+**Last updated / 最后更新:** 2026-08-15
 
 ---
 
@@ -8,14 +8,15 @@
 
 ### Summary
 
-Masso is a fitness tracking app that runs almost entirely **on your device**. We do not run user accounts, we do not collect personal data, and we do not sell or share any information about you with third parties for marketing or analytics.
+Masso is a fitness tracking app that runs almost entirely **on your device**. We do not run user accounts, and we never sell or share information about you with anyone for marketing or advertising. We do collect a small amount of anonymous usage data to understand which parts of the app work — you can turn it off in Settings, and it is described in full below.
 
 When you use the AI coach, Masso sends your training profile and recent workout history to our backend proxy, which forwards it to Anthropic's Claude API. This also happens automatically when the app refreshes your recommended workout for the day. Masso additionally contacts our servers to validate a Masso Pro licence key, to send feedback you submit from within the app, and to fetch exercise images from a public CDN.
 
 ### Data We Do NOT Collect
 
 - We do not require sign-up. No email, password, name, or account.
-- We do not run analytics SDKs (no Firebase, no Mixpanel, no third-party tracking).
+- We do not run advertising SDKs, and we are not in any ad network. No Firebase, no Facebook SDK, no cross-app tracking, no IDFA.
+- We do not collect anything you type or log: your workouts, weights, reps, routine names, custom exercises, and coach notes never leave your device as analytics.
 - We do not show ads or share data with advertising networks.
 - We do not access your contacts, location, microphone, or other personal data.
 
@@ -41,6 +42,21 @@ If you grant permission, Masso may:
 **Apple Watch.** If you use the Masso watch app, it runs a workout session on your watch to show your live heart rate and record calories. Heart rate and workout data collected on the watch are stored only in Apple Health (HealthKit) on your devices — they are never transmitted to us or any third party.
 
 HealthKit data stays on your device under Apple's strict permission model. We never read this data on our servers. You can revoke HealthKit permission at any time in iOS Settings → Privacy → Health.
+
+### Anonymous usage analytics (optional, on by default — you can turn it off)
+
+To see which parts of the app people actually use, Masso sends a small number of anonymous **counters** to TelemetryDeck (a privacy-focused analytics provider based in Germany, GDPR-compliant, no advertising business).
+
+What is sent:
+
+- The name of an event, e.g. `onboarding_completed`, `ai_routine_generate_success`, `data_export`
+- A few non-identifying attributes attached to that event — always plain numbers or short fixed labels, e.g. `count: 4`, `surface: "coach"`, `reason: "network"`
+- Your app version, iOS version, and language
+- A random ID generated on first launch. It is not your Apple ID, email, phone, or advertising ID. It is reset if you delete and reinstall the app, and it cannot be traced back to you.
+
+What is **never** sent: your workouts, sets, reps, weights, personal records, routine or exercise names, anything you typed to the coach, your profile numbers, or your Health data. The event system is built so that only numbers and fixed labels can be attached — free text cannot be sent even by mistake.
+
+**Turning it off:** Settings → Your data → "Share anonymous usage data". With it off, nothing is sent at all.
 
 ### Camera and Photo Library
 
@@ -106,14 +122,15 @@ Questions or concerns?
 
 ### 摘要
 
-Masso 是一款健身追踪 App,几乎所有功能都在 **你的设备本地** 运行。我们不设用户账户,不收集个人数据,也不将你的任何信息出售或共享给第三方做营销或分析。
+Masso 是一款健身追踪 App,几乎所有功能都在 **你的设备本地** 运行。我们不设用户账户,也绝不会把你的任何信息出售或共享给任何人做营销或广告。我们会收集少量**匿名使用统计**以了解 App 的哪些部分真的有人用 —— 你可以在设置里关掉,详细说明见下文。
 
 使用 AI 教练时,Masso 会把你的训练档案和近期训练记录发送到我们的后端代理,再转发给 Anthropic 的 Claude API。App 启动时自动刷新当日推荐训练也会触发同一条链路。此外还有三类网络请求:校验 Masso Pro 授权码、发送你在 app 内提交的反馈、以及从公共 CDN 拉取动作图片。
 
 ### 我们 **不** 收集的数据
 
 - 不需要注册。无邮箱、密码、姓名、账户。
-- 不接入分析 SDK(不用 Firebase / Mixpanel / 第三方追踪)。
+- 不接入广告 SDK,不在任何广告网络里。没有 Firebase、没有 Facebook SDK、没有跨 App 追踪、不读 IDFA。
+- 你输入和记录的一切 —— 训练、重量、次数、计划名、自创动作、教练备注 —— 都不会作为统计数据离开你的设备。
 - 不显示广告,不共享数据给广告网络。
 - 不访问你的通讯录、位置、麦克风或其他个人数据。
 
@@ -137,6 +154,21 @@ Masso 是一款健身追踪 App,几乎所有功能都在 **你的设备本地** 
 - **读取** 基础训练历史,让你的训练时间线在设备间保持一致。
 
 HealthKit 数据受 Apple 严格的权限模型保护,留在设备本地。我们不会在服务器上读取这类数据。你可以随时在 iOS 设置 → 隐私 → 健康 里撤销权限。
+
+### 匿名使用统计(可选,默认开启,可随时关闭)
+
+为了解 App 的哪些部分真的有人用,Masso 会向 TelemetryDeck(德国的注重隐私的统计服务商,符合 GDPR,不做广告业务)发送少量**匿名计数**。
+
+发送的内容:
+
+- 事件名称,例如 `onboarding_completed`、`ai_routine_generate_success`、`data_export`
+- 附在该事件上的少量非身份属性,永远是纯数字或短的固定标签,例如 `count: 4`、`surface: "coach"`、`reason: "network"`
+- App 版本、iOS 版本、语言
+- 首次启动时随机生成的一个 ID。它不是你的 Apple ID、邮箱、手机号或广告标识符;删除重装即重置,无法回溯到你本人。
+
+**绝不**发送的内容:你的训练记录、组次、重量、个人记录、计划名与动作名、你对教练说过的任何文字、你的身体数据、以及健康数据。事件系统在类型层面就只允许附加数字和固定标签 —— 自由文本想发也发不出去。
+
+**关闭方法**:设置 → 你的数据 → 「共享匿名使用数据」。关闭后一条都不会发送。
 
 ### 相机和相册
 

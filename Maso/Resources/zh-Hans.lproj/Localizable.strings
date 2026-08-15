@@ -1422,3 +1422,5 @@
 "Export my data" = "导出我的数据";
 "A JSON backup of everything plus a CSV of every set you've logged — open it in Numbers, Excel, or any other app. Your data is yours; you can take it and go." = "一份完整的 JSON 备份，加一份逐组明细 CSV —— 用 Numbers、Excel 或任何软件都能打开。数据是你的，你随时可以带走。";
 "Export failed" = "导出失败";
+"Share anonymous usage data" = "共享匿名使用数据";
+"Sends anonymous counts like \"a routine was generated\" or \"onboarding finished\" so I can see which parts of the app work. Never your workouts, weights, notes, or anything you typed. No account, no ads, no third-party ad networks. Turn it off and nothing is sent at all." = "只发送「生成了一份计划」「引导完成了」这类匿名计数，好让我知道哪些功能真的有人用。绝不发送你的训练记录、重量、备注，或你输入的任何文字。无账号、无广告、不接任何广告网络。关掉之后一条都不会发。";

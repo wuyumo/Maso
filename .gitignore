@@ -22,3 +22,6 @@ Maso/Secrets.xcconfig
 
 # Cloudflare Worker 本地 build cache — wrangler dev / wrangler deploy 产物.
 backend/cloudflare-worker/.wrangler/
+
+# ASC API 私钥 / Reddit 凭证 —— 绝不进 git
+.keys/

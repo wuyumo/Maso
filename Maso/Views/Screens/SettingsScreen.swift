@@ -257,6 +257,20 @@ struct SettingsScreen: View {
                         .fixedSize(horizontal: false, vertical: true)
                         .padding(.horizontal, MasoMetrics.cardPadding)
                         .padding(.bottom, 12)
+
+                    Divider().background(MasoColor.borderSoft)
+
+                    // ⚠️ 用了分析就**必须**在界面里能看见、能关 —— 1.0(5) 那次被 Apple 按
+                    //    Guideline 2.5.1 拒过一模一样的问题 (用了 HealthKit 但 UI 里没有任何体现).
+                    //    取反绑定: 存的是 optOut, 展示的是"参与", 开=发, 关=一条都不发.
+                    ToggleRow(
+                        title: "Share anonymous usage data",
+                        desc: "Sends anonymous counts like \"a routine was generated\" or \"onboarding finished\" so I can see which parts of the app work. Never your workouts, weights, notes, or anything you typed. No account, no ads, no third-party ad networks. Turn it off and nothing is sent at all.",
+                        isOn: Binding(
+                            get: { !data.settings.analyticsOptOut },
+                            set: { data.settings.analyticsOptOut = !$0 }
+                        )
+                    )
                 }
 
                 // Exercise library 入口已挪到 Plans tab 底部 — 那是用户实际"用"动作的地方,

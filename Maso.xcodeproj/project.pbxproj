@@ -134,6 +134,7 @@
 		D2A5A66A03EA5AFD75D478EB /* PhotoPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19E60279DA5B5FE740DC4A8D /* PhotoPicker.swift */; };
 		D3C467BCD7239BC40C99C25E /* PaywallScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61B0293ADD8C41CCBB12FA12 /* PaywallScreen.swift */; };
 		D6B477627894CA6C065148E0 /* InsightShareCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 750AFFA68B8A24177AF77A3E /* InsightShareCard.swift */; };
+		D70719C40EEB5E5DA9D6266C /* TelemetryDeckSink.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5D4A73DD197E926877A038B /* TelemetryDeckSink.swift */; };
 		D7DE905316F3FFBC4156F3CE /* exercises.json in Resources */ = {isa = PBXBuildFile; fileRef = DA0ACB9DAE29B94B2DAB494F /* exercises.json */; };
 		DAA6215D14E413F8E24063CA /* _anatomy-research.md in Resources */ = {isa = PBXBuildFile; fileRef = CA786C2BA3CB3ED1D9264315 /* _anatomy-research.md */; };
 		DC4569EC8E9B9B0EE49F5595 /* InsightCards.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BC543B079D9DDA682611412 /* InsightCards.swift */; };
@@ -338,6 +339,7 @@
 		F2980C2BED7FBFC98D717FE6 /* 1b-triceps-supplement.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "1b-triceps-supplement.json"; sourceTree = "<group>"; };
 		F2A600A7E0E002CC5B8B3253 /* WorkoutCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutCard.swift; sourceTree = "<group>"; };
 		F2C7B1AA85268521E018CA24 /* Formatters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Formatters.swift; sourceTree = "<group>"; };
+		F5D4A73DD197E926877A038B /* TelemetryDeckSink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TelemetryDeckSink.swift; sourceTree = "<group>"; };
 		F5E0B96BFDCCD185AB24895A /* 1-chest-triceps.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "1-chest-triceps.json"; sourceTree = "<group>"; };
 		F64DFBAF4A91D0EE022A4F5E /* Maso.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Maso.entitlements; sourceTree = "<group>"; };
 		F72504052FBF96C8AFDFAA91 /* Haptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Haptics.swift; sourceTree = "<group>"; };
@@ -660,6 +662,7 @@
 				4F719EC148B5D7C878DB3DB5 /* Analytics.swift */,
 				069859EC6FA8AF63CBF8821C /* AnalyticsEvent.swift */,
 				91F6414BD5454144D171D2D3 /* AnalyticsSink.swift */,
+				F5D4A73DD197E926877A038B /* TelemetryDeckSink.swift */,
 			);
 			path = Analytics;
 			sourceTree = "<group>";
@@ -943,6 +946,7 @@
 				FF90D3253FAF4F45542D0ED5 /* SplashScreen.swift in Sources */,
 				A9CEFA227C6E9AEFB349111A /* SubscriptionManager.swift in Sources */,
 				692DD540E336629461989253 /* SwipeableRow.swift in Sources */,
+				D70719C40EEB5E5DA9D6266C /* TelemetryDeckSink.swift in Sources */,
 				919C25BB4DF2299218BEEE94 /* TimelineBar.swift in Sources */,
 				56D4D47EC11CD4F3E8AA99C6 /* TodayScreen.swift in Sources */,
 				21EE6684F038A29EB4A5DB01 /* TrainingActivityAttributes.swift in Sources */,

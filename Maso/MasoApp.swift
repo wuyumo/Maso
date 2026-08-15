@@ -81,11 +81,14 @@ struct MasoApp: App {
             // configure SubscriptionManager — 注入 callback 让 StoreKit entitlement 变化时
             // 自动写到 dataStore.settings.proSubscription. .task 保证只跑一次.
             .task {
-                // 产品分析 boot — Phase 0: NoOpSink (事件只缓冲本地, 不离开设备).
-                // 注入门控/信封上下文 (读 settings 的 anon_id + opt-out); 先确保 anon_id 已铸.
+                // 产品分析 boot — Phase 1 (2026-08-15): TelemetryDeck.
+                // 之前是 NoOpSink, 事件生成完直接丢 → 我们对自己 app 里发生的一切一无所知,
+                // 所有产品判断只能靠竞品的公开评论。装上才知道漏斗和留存长什么样。
+                // Debug 构建自动进 Test Mode (见 TelemetryDeckSink.isTestMode), 不污染真实数据。
+                // ⚠️ 用户仍可在设置里 opt-out —— context 里的 optOut 是硬门, 关了一条都不发。
                 dataStore.mintAnonymousIdIfNeeded()
                 Analytics.shared.configure(
-                    sink: NoOpSink(),
+                    sink: TelemetryDeckSink(appID: "C35260B1-60E3-4BB7-80B0-5B3E2D9D9445"),
                     context: { [weak dataStore] in
                         Analytics.Context(
                             anonymousId: dataStore?.settings.anonymousId ?? "",
