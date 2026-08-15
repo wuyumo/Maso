@@ -125,6 +125,39 @@ enum LocalRoutineRules {
         return nil
     }
 
+    // MARK: - Intent → 可展示的契约
+
+    /// 把解析出的意图翻成"生成依据"chip. 生成那一刻本地化并存进 Plan.constraints,
+    /// 用户在计划页上就能核对: 我说的每一条, app 到底认没认。
+    static func constraints(from intent: Intent) -> [PlanConstraint] {
+        var out: [PlanConstraint] = []
+        if intent.bodyweightOnly {
+            out.append(.init(kind: .equipment, value: "bodyweight",
+                             label: NSLocalizedString("Bodyweight only", comment: "plan constraint")))
+        } else {
+            for e in intent.equipment.sorted() {
+                let name = NSLocalizedString(e.capitalized, comment: "equipment name")
+                out.append(.init(kind: .equipment, value: e,
+                                 label: String(format: NSLocalizedString("%@ only", comment: "plan constraint — equipment"), name)))
+            }
+        }
+        if let cap = intent.maxExercises {
+            // 反算回分钟 (parseDurationToExerciseCount 的逆) —— 给用户看分钟, 不是"动作数"这种内部量.
+            let minutes = cap * 10 + 5
+            out.append(.init(kind: .duration, value: "\(minutes)",
+                             label: String(format: NSLocalizedString("Under %d min", comment: "plan constraint — duration"), minutes)))
+        }
+        for m in intent.avoidSections.sorted(by: { $0.rawValue < $1.rawValue }) {
+            out.append(.init(kind: .avoid, value: m.rawValue,
+                             label: String(format: NSLocalizedString("No %@", comment: "plan constraint — avoided muscle"), m.displayName)))
+        }
+        for m in intent.focusSections.sorted(by: { $0.rawValue < $1.rawValue }) {
+            out.append(.init(kind: .focus, value: m.rawValue,
+                             label: String(format: NSLocalizedString("More %@", comment: "plan constraint — focused muscle"), m.displayName)))
+        }
+        return out
+    }
+
     // MARK: - 叠加到已生成的计划上
 
     /// 把 Intent 应用到本地模板产出上. 复用 DataStore 现成的器械替换 + 科学化,

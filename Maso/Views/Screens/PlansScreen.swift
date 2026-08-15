@@ -603,6 +603,31 @@ struct PlanDetailSheet: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
 
+            // 生成依据 —— 用户提的约束, **已经被强制执行过**的那些.
+            // 为什么露出来: 竞品调研里最一致的一句抱怨是"我填了器械/伤病, 它生成的还是用我没有的机器"。
+            // 光在后台过滤用户是看不见的; 把依据钉在计划上, 他能自己核对 app 说到没做到.
+            if let cs = draft.constraints, !cs.isEmpty {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("Built from")
+                        .font(.system(size: 10, weight: .bold)).tracking(0.6)
+                        .textCase(.uppercase)
+                        .foregroundStyle(MasoColor.textFaint)
+                    FlowLayout(spacing: 6) {
+                        ForEach(cs) { c in
+                            HStack(spacing: 4) {
+                                Image(systemName: c.icon).font(.system(size: 9, weight: .semibold))
+                                Text(c.label).font(.system(size: 11, weight: .semibold))
+                            }
+                            .foregroundStyle(MasoColor.accent)
+                            .padding(.horizontal, 9)
+                            .padding(.vertical, 5)
+                            .background(MasoColor.accent.opacity(0.14), in: Capsule())
+                        }
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }
+
             // Muscle map — Edit Workout 顶部居中 (跟 PlanRow / SessionCard 列表行的左对齐不同).
             // 这里没有右侧 play/replay 按钮压在同一行, 单纯展示 plan 命中的肌群; 居中视觉更
             // 端正, 不会"左重右空"。fixedSize 阻止 MuscleVisualBlock 撑全宽 (它默认 maxWidth: .infinity).

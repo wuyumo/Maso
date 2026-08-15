@@ -54,6 +54,33 @@ enum PlanSource: String, Codable, Hashable, Sendable {
     case builtIn
 }
 
+/// 一条"生成依据" —— 用户提过、并且**已经被强制执行**的约束.
+/// label 在生成那一刻就本地化好并存下来: 计划是历史记录, 事后换语言不该改写当时的凭据.
+struct PlanConstraint: Codable, Hashable, Identifiable, Sendable {
+    enum Kind: String, Codable, Sendable {
+        case equipment     // 只用哑铃 / 徒手
+        case duration      // 45 分钟以内
+        case avoid         // 不练腿 (含伤病规避)
+        case focus         // 多练胸
+    }
+    let kind: Kind
+    /// 机器可读值 (equipment=EquipmentCategory.rawValue / duration=分钟数 / avoid|focus=MuscleGroup.rawValue)
+    let value: String
+    /// 展示用短语, e.g. "Dumbbells only" / "45 min cap" / "No legs"
+    let label: String
+
+    var id: String { "\(kind.rawValue):\(value)" }
+
+    var icon: String {
+        switch kind {
+        case .equipment: return "dumbbell"
+        case .duration:  return "clock"
+        case .avoid:     return "hand.raised"
+        case .focus:     return "target"
+        }
+    }
+}
+
 struct Plan: Identifiable, Hashable, Codable, Sendable {
     let id: String
     var name: String
@@ -67,6 +94,17 @@ struct Plan: Identifiable, Hashable, Codable, Sendable {
     var source: PlanSource? = nil
     /// AI 生成时 LLM 给出的一句话理由 (为什么这么排) — 露在卡片上, 让用户一眼看出"这是真 AI". 仅 .ai 计划有.
     var rationale: String? = nil
+
+    /// 生成这份计划时用户提的约束 (只有哑铃 / 45 分钟 / 不练腿 …) —— **契约**, 不是装饰.
+    ///
+    /// 为什么要存进 Plan: 竞品调研里 6 个不同开发商的用户在骂同一件事 —— "我明明填了器械/伤病,
+    /// 它生成的还是用我没有的机器"。空白不在"能不能表达", 在"表达完到底算不算数"。
+    /// 所以这里做两件事: ① 生成后**硬过滤**一遍 (见 LocalRoutineRules.apply);
+    /// ② 把当时依据的约束钉在计划上给用户看见 —— 他能自己核对 app 有没有说到做到.
+    ///
+    /// ⚠️ 必须 Optional: Plan 会整体落盘, Swift 合成的 Codable 对**缺失的 key 直接抛错**,
+    ///    老用户的存档里没有这个字段 (跟 Session.completionOrder / Plan.source 同一个坑).
+    var constraints: [PlanConstraint]? = nil
 
     /// 解析后的来源: 有显式 source 用它; 否则按 id 前缀兜底 (旧数据 / savePlan 重 id 前的); 都不命中 → custom.
     var resolvedSource: PlanSource {

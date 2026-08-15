@@ -1410,3 +1410,15 @@
 "The AI coach can't be reached on this network. Try mobile data instead of Wi-Fi (or the other way round); if you use a VPN or proxy, switch it on or off and test again." = "当前网络连不上 AI 教练。可以试试把 Wi-Fi 换成移动数据（或反过来）；如果在用 VPN / 代理，开关一次再测。";
 
 "Edit exercise" = "编辑动作";
+
+/* 生成依据（约束契约） + 数据导出 */
+"Built from" = "生成依据";
+"Bodyweight only" = "只用自重";
+"%@ only" = "只用%@";
+"Under %d min" = "%d 分钟以内";
+"No %@" = "不练%@";
+"More %@" = "多练%@";
+"Your data" = "你的数据";
+"Export my data" = "导出我的数据";
+"A JSON backup of everything plus a CSV of every set you've logged — open it in Numbers, Excel, or any other app. Your data is yours; you can take it and go." = "一份完整的 JSON 备份，加一份逐组明细 CSV —— 用 Numbers、Excel 或任何软件都能打开。数据是你的，你随时可以带走。";
+"Export failed" = "导出失败";

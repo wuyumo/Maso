@@ -13,6 +13,7 @@
 		060B4BAABA688BD0007AD51C /* AISummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = A015C1CBD0ADEA27FDC680FC /* AISummary.swift */; };
 		065D18A391A35FE37DAE4455 /* MusclesPickerSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9B75264B14BF7AA46A5CC5A /* MusclesPickerSheet.swift */; };
 		073B17B64DFD1C33740E76AB /* WorkoutCalendarScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E971064231D3F55030DBE2F5 /* WorkoutCalendarScreen.swift */; };
+		08D011050D65842629FC04CE /* DataExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF68DB58FFB73CDB3A9FD980 /* DataExport.swift */; };
 		09AE7E2E86BAA6503292E0E4 /* exercises-matched.json in Resources */ = {isa = PBXBuildFile; fileRef = D4C5F3E72ADD7E2C06CE3FED /* exercises-matched.json */; };
 		0C9DFCCE90F73336451E893C /* HealthKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9CFBD927255937085E3C209 /* HealthKitService.swift */; };
 		1047791541144FB813063EC2 /* SoundPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B91FB80311BBA14D7AAC8FBF /* SoundPlayer.swift */; };
@@ -297,6 +298,7 @@
 		BB254159F807BC6F943ED96C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		BB71A18FE20FD0FE95951416 /* 2-shoulders.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "2-shoulders.json"; sourceTree = "<group>"; };
 		BC1D591C5E30FA068C933520 /* MasoMarkIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasoMarkIcon.swift; sourceTree = "<group>"; };
+		BF68DB58FFB73CDB3A9FD980 /* DataExport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataExport.swift; sourceTree = "<group>"; };
 		BF854A389D2582A6CF015F7D /* WatchBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchBridge.swift; sourceTree = "<group>"; };
 		BFAD46757159C0D547E762E2 /* ShareImageButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareImageButton.swift; sourceTree = "<group>"; };
 		C228082523E5BD38F52B6B76 /* PersistenceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceController.swift; sourceTree = "<group>"; };
@@ -396,6 +398,7 @@
 				CEEE409128074A2BE3999170 /* Anatomy.swift */,
 				FE73631309F4040E80314ED8 /* CoachSession.swift */,
 				E4CD0A6C911CC31064AFC8D4 /* CommunityPlans.swift */,
+				BF68DB58FFB73CDB3A9FD980 /* DataExport.swift */,
 				FEB924488C05EA5A27B8B504 /* DataStore.swift */,
 				F73505558D75D33F84D45CCE /* DataStore+Polar.swift */,
 				34F46E6B89F953552C31D180 /* ExerciseGrouping.swift */,
@@ -867,6 +870,7 @@
 				94D4CE6164253560EE728358 /* Colors.swift in Sources */,
 				2911B010C07D8A9CE402F8A1 /* CommunityPlans.swift in Sources */,
 				182CFCDB8E25839EB82276AC /* CrossFadeFrames.swift in Sources */,
+				08D011050D65842629FC04CE /* DataExport.swift in Sources */,
 				EE810D256495822EB0546D0B /* DataStore+Polar.swift in Sources */,
 				688D1CA5D81E668665F0EBC6 /* DataStore.swift in Sources */,
 				94726ECFE4CED09904E4FBA1 /* Exercise.swift in Sources */,

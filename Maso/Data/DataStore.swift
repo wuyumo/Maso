@@ -1058,9 +1058,14 @@ final class DataStore {
     }
 
     /// 免费用户最多能 save 的 plan 数. Pro 无限.
-    static let freeSavedPlansLimit = 3
+    ///
+    /// 3 → 5 (2026-08-15, 竞品调研): 品类里最受爱戴的 Hevy 免费给 4 个 routine, 被上百条 5★ 点名
+    /// 夸 "generous"; Strong 的 3 个上限吃到 2★ "should be borderline illegal"。我们卡在 3 =
+    /// 比最受欢迎的那个还少一个, 而放宽的边际成本是零 (routine 存本地, 不耗服务端)。
+    /// 真正的付费理由是 AI 教练/深度图表/自创动作, 不是"能存几张"。
+    static let freeSavedPlansLimit = 5
 
-    /// 还能不能再 save plan — 免费上限 3, Pro 无限.
+    /// 还能不能再 save plan — 免费上限见 freeSavedPlansLimit, Pro 无限.
     var canSaveMorePlans: Bool {
         settings.isPro || plans.count < Self.freeSavedPlansLimit
     }
@@ -1444,9 +1449,24 @@ final class DataStore {
             payload: payload, library: exercises, count: count,
             maxExercises: settings.exercisesPerSession, surface: surface), !aiPlans.isEmpty {
             // 科学化兜底: 每套真 AI routine 也过 enforceScience (复合优先 + 同 section ≤2 + slot-1 + push≥pull).
-            return (aiPlans.map { applyScience(to: $0) }, false)
+            var out = aiPlans.map { applyScience(to: $0) }
+            // ⚠️ **约束硬过滤 —— 这一步以前只作用于本地兜底, 是"我说了它不听"的根源.**
+            //    prompt 里写了"只用哑铃"不等于模型会照做 (竞品调研: 6 个不同 app 的用户在骂同一件事).
+            //    所以拿到 LLM 结果后再过一遍同一套规则: 器械不符的替换掉、明说不练的剔掉、
+            //    超时长的裁掉. 模型听话 → 这一步什么都不改; 模型不听话 → 用户依然拿到他要的东西.
+            out = LocalRoutineRules.apply(to: out, intent: localIntent, settings: settings, exById: exById)
+            out = attachConstraints(out, intent: localIntent)
+            return (out, false)
         }
-        return (local, true)   // 真 AI 失败 → 回落本地模板 (此时确实没有 rationale, 顶部有提示条)
+        return (attachConstraints(local, intent: localIntent), true)   // 真 AI 失败 → 回落本地模板
+    }
+
+    /// 把这一轮的约束钉在每份计划上 —— 用户在计划页上能核对 app 有没有说到做到.
+    /// 空约束不写 nil 之外的东西 (老计划/无约束计划照旧不显示凭据条).
+    private func attachConstraints(_ plans: [Plan], intent: LocalRoutineRules.Intent) -> [Plan] {
+        let cs = LocalRoutineRules.constraints(from: intent)
+        guard !cs.isEmpty else { return plans }
+        return plans.map { var p = $0; p.constraints = cs; return p }
     }
 
     // MARK: - 数据驱动优化建议 (Pro feature ②)

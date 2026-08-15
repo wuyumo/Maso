@@ -1408,3 +1408,15 @@
 "The AI coach can't be reached on this network. Try mobile data instead of Wi-Fi (or the other way round); if you use a VPN or proxy, switch it on or off and test again." = "The AI coach can't be reached on this network. Try mobile data instead of Wi-Fi (or the other way round); if you use a VPN or proxy, switch it on or off and test again.";
 
 "Edit exercise" = "Edit exercise";
+
+/* Plan constraints (built-from contract) + data export */
+"Built from" = "Built from";
+"Bodyweight only" = "Bodyweight only";
+"%@ only" = "%@ only";
+"Under %d min" = "Under %d min";
+"No %@" = "No %@";
+"More %@" = "More %@";
+"Your data" = "Your data";
+"Export my data" = "Export my data";
+"A JSON backup of everything plus a CSV of every set you've logged — open it in Numbers, Excel, or any other app. Your data is yours; you can take it and go." = "A JSON backup of everything plus a CSV of every set you've logged — open it in Numbers, Excel, or any other app. Your data is yours; you can take it and go.";
+"Export failed" = "Export failed";

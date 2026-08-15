@@ -9,6 +9,9 @@ struct SettingsScreen: View {
     @State private var showTrainingPrefs: Bool = false
     @State private var aiDiagnostics: [AIWorkoutService.Diagnostic] = []
     @State private var aiTesting: Bool = false
+    /// 导出产物 — 非 nil 时拉起系统分享面板 (Files / AirDrop / 邮件…)
+    @State private var exportItems: [Any]? = nil
+    @State private var exportError: String? = nil
     // showMusclePicker / musclesSummaryText 已搬到 TrainingSettingsSection 内部
     /// 跟着 LanguageManager 走 — 切换时强制本页 re-render 显示新语言
     @State private var languageManager = LanguageManager.shared
@@ -238,6 +241,24 @@ struct SettingsScreen: View {
                     aiDiagnosticsRow
                 }
 
+                // 数据导出 —— 竞品第二大痛点是"历史数据把人锁死", 而没有一家因可导出被夸过.
+                Section_(title: "Your data") {
+                    Button(action: runExport) {
+                        Row(label: "Export my data") {
+                            Image(systemName: "square.and.arrow.up")
+                                .font(.system(size: 13, weight: .semibold))
+                                .foregroundStyle(MasoColor.textFaint)
+                        }
+                    }
+                    .buttonStyle(.plain)
+                    Text("A JSON backup of everything plus a CSV of every set you've logged — open it in Numbers, Excel, or any other app. Your data is yours; you can take it and go.")
+                        .font(.system(size: 12))
+                        .foregroundStyle(MasoColor.textFaint)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .padding(.horizontal, MasoMetrics.cardPadding)
+                        .padding(.bottom, 12)
+                }
+
                 // Exercise library 入口已挪到 Plans tab 底部 — 那是用户实际"用"动作的地方,
                 // 跟 plan 编辑/选动作动线更顺. Settings 这里不再展示, 也不再 import 整张
                 // ExerciseLibraryBrowser sheet.
@@ -348,6 +369,17 @@ struct SettingsScreen: View {
             // 保存并生成 → 走 Coach 会话生成管线 (结果落 Coach tab 对话流, 跟 Coach 入口一致).
             TrainingPreferencesSheet(onConfirm: { data.startCoachGenerate(surface: "settings_prefs") })
         }
+        // 导出 —— items 非 nil 就拉起系统面板; 关掉时清空, 下次导出重新生成带新时间戳的文件.
+        .sheet(isPresented: Binding(get: { exportItems != nil },
+                                    set: { if !$0 { exportItems = nil } })) {
+            if let items = exportItems { ShareSheet(activityItems: items) }
+        }
+        .alert("Export failed", isPresented: Binding(get: { exportError != nil },
+                                                     set: { if !$0 { exportError = nil } })) {
+            Button("OK", role: .cancel) { exportError = nil }
+        } message: {
+            Text(exportError ?? "")
+        }
         // (Exercise library sheet 已搬到 PlansScreen 底部入口, 这里不再附加.)
         // (showMusclePicker sheet 已搬到 TrainingSettingsSection 内部)
     }
@@ -409,6 +441,19 @@ struct SettingsScreen: View {
             return "The AI coach is reachable from this device."
         }
         return "The AI coach can't be reached on this network. Try mobile data instead of Wi-Fi (or the other way round); if you use a VPN or proxy, switch it on or off and test again."
+    }
+
+    /// 生成 JSON + CSV 并拉起系统分享面板. 失败必须**说出来** —— 备份功能静默失败最伤信任.
+    private func runExport() {
+        do {
+            let b = try DataExport.makeBundle(from: data)
+            exportItems = [b.jsonURL, b.csvURL]
+            Analytics.shared.track("data_export", [
+                "sets": .int(data.sets.count), "plans": .int(data.plans.count),
+            ])
+        } catch {
+            exportError = error.localizedDescription
+        }
     }
 
     private func runAIDiagnostics() {
