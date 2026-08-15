@@ -233,6 +233,10 @@ struct Exercise: Identifiable, Hashable, Codable, Sendable {
     /// optional + nil: 旧持久化数据 / 未补别名的条目缺 key 也能 decode.
     var aliases: [String]? = nil
 
+    /// 收整时被并进本条的旧动作 id (2026-08-15 动作库 938 → 728).
+    /// 老用户的 routine / 历史里仍写着这些 id, ExerciseLibrary.byId 靠它 resolve 到存活者.
+    var mergedFrom: [String]? = nil
+
     // MARK: - Display helpers
 
     /// 本地化展示名 — UI 都用这个, 不直接用 raw `name`.

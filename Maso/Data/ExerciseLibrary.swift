@@ -29,6 +29,15 @@ enum ExerciseLibrary {
         for ex in all {
             m[ex.id] = ex
         }
+        // 被合并掉的旧动作 id → 存活者 (2026-08-15 动作库收整: 938 → 728).
+        // 同一张图被 N 个"只差器械"的动作共用是历史包袱; 收整后 Bench Press 一条吃掉绳索/哑铃/
+        // 史密斯/壶铃版, 但**用户已存的 routine / 历史记录里还写着旧 id**, 必须能 resolve,
+        // 否则动作凭空消失。放在 imageFolder alias 之前: 旧动作 id 比 imageFolder 更精确.
+        for ex in all {
+            for old in ex.mergedFrom ?? [] where m[old] == nil {
+                m[old] = ex
+            }
+        }
         // Add legacy imageFolder aliases (不覆盖已存在的真 id)
         for ex in all {
             if let folder = ex.imageFolder, m[folder] == nil {
@@ -104,6 +113,9 @@ private struct RawExerciseV2: Decodable {
     let nameParts: RawNameParts?
     /// 搜索别名 (高频口语叫法, 手工维护) — 缺 key 的条目正常 decode.
     let aliases: [String]?
+    /// 收整时被并进本条的旧动作 id —— 老用户的 routine / 历史里仍写着它们, byId 靠这个 resolve.
+    /// ⚠️ Optional: 绝大多数条目没有这个 key, 缺 key 必须能正常 decode.
+    let mergedFrom: [String]?
 }
 
 private struct RawNameParts: Decodable {
@@ -172,7 +184,8 @@ private func toExerciseV2(_ r: RawExerciseV2) -> Exercise {
         localizedDangerWarnings: r.danger_warnings,
         isNiche: r.niche ?? false,
         nameParts: r.nameParts.map { NameParts(variation: $0.variation, base: $0.base, equipment: $0.equipment) },
-        aliases: r.aliases
+        aliases: r.aliases,
+        mergedFrom: r.mergedFrom
     )
 }
 
