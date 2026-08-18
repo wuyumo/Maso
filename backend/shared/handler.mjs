@@ -31,6 +31,12 @@ const AI_PATH = "/v1/chat/completions";
 // {model, messages, max_tokens, temperature, response_format} 收 {choices[0].message.content},
 // 翻译全在这个 Worker 里做. 好处: 已上架的 app 版本 (2.0.4 及更早) 不用更新就直接吃到 Claude.
 const UPSTREAM = "https://api.anthropic.com/v1/messages";
+/// 图片上限 —— 双重防线取代"整个 body 不超 50KB"那条 (它对图片天然不成立).
+/// 4 张 / 单张 base64 ≤2MB: 够一次多角度拍摄, 又远低于 Vercel function 的 4.5MB body 上限
+/// (Cloudflare Worker 更宽松, 但两边是 failover 对, 必须按更严的那边 clamp).
+const MAX_IMAGES = 4;
+const MAX_IMAGE_B64 = 2_000_000;
+
 const ANTHROPIC_VERSION = "2023-06-01";
 // 健身教练场景 = 结构化 JSON 生成 + 需要靠谱的动作学常识 → Sonnet 5 (质量/成本平衡点).
 const CLAUDE_MODEL = "claude-sonnet-5";
@@ -87,9 +93,28 @@ async function handleAI(request, env) {
     return new Response("Invalid JSON", { status: 400 });
   }
 
-  const bodyStr = JSON.stringify(body);
-  if (bodyStr.length > 50_000) {
+  // 体积守卫 —— 只量**文本**部分. 图片 block 的 base64 单张就 20-270KB, 拿整个 body 去比
+  // 会让每个带图请求都在到达模型前 413 (一张 200KB JPEG 的 base64 ≈ 273,066 字符, 超旧守卫 5.5 倍).
+  // 但守卫本身不能删 —— 它是目前唯一的 DoS 防护, 所以图片改用张数 + 单张字节双重上限.
+  const textLen = JSON.stringify(
+    (Array.isArray(body.messages) ? body.messages : []).map(m =>
+      Array.isArray(m?.content)
+        ? m.content.filter(p => p?.type !== "image").map(p => p?.text ?? "")
+        : m?.content)
+  ).length;
+  if (textLen > 50_000) {
     return new Response("Request too large", { status: 413 });
+  }
+  const images = (Array.isArray(body.messages) ? body.messages : [])
+    .flatMap(m => (Array.isArray(m?.content) ? m.content : []))
+    .filter(p => p?.type === "image");
+  if (images.length > MAX_IMAGES) {
+    return new Response(`Too many images (max ${MAX_IMAGES})`, { status: 413 });
+  }
+  for (const img of images) {
+    if ((img?.source?.data?.length ?? 0) > MAX_IMAGE_B64) {
+      return new Response("Image too large", { status: 413 });
+    }
   }
 
   // ── OpenAI 形状 → Anthropic Messages API ──
@@ -101,7 +126,9 @@ async function handleAI(request, env) {
   const systemParts = msgs.filter(m => m?.role === "system").map(m => String(m.content ?? ""));
   const convo = msgs
     .filter(m => m?.role === "user" || m?.role === "assistant")
-    .map(m => ({ role: m.role, content: String(m.content ?? "") }));
+    // content 允许是 block 数组 (Anthropic 原生形状, 图片走这条); 其余一律压成字符串.
+    // ⚠️ 向后兼容: 已发布的 2.0.x 客户端全部发字符串, 走 else 分支, 行为一字不变.
+    .map(m => ({ role: m.role, content: Array.isArray(m.content) ? m.content : String(m.content ?? "") }));
   if (convo.length === 0) {
     return json({ error: { message: "no user message" } }, 400);
   }
