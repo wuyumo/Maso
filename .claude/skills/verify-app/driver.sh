@@ -105,8 +105,20 @@ if [ -d "$APP" ]; then
     label="${r:-today}"
     head "route '$label' → launch (seeded) + screenshot"
     xcrun simctl terminate "$SIM" "$BUNDLE_ID" >/dev/null 2>&1 || true
-    PID=$(SIMCTL_CHILD_MASO_SHOWCASE_SEED=1 SIMCTL_CHILD_MASO_SHOWCASE="$r" \
-      xcrun simctl launch "$SIM" "$BUNDLE_ID" 2>/dev/null | grep -oE '[0-9]+$')
+    # launch 偶发瞬时失败 (2026-09-08 实测: 同一次跑里 today/exercises 成功而
+    # plan_detail/player 拿到空 pid, 但截图证明 app 其实起来了). 之前 stderr 被丢掉,
+    # 失败时看不到任何原因 —— 现在保留错误文本, 并给一次重试.
+    launch_out=$(SIMCTL_CHILD_MASO_SHOWCASE_SEED=1 SIMCTL_CHILD_MASO_SHOWCASE="$r" \
+      xcrun simctl launch "$SIM" "$BUNDLE_ID" 2>&1)
+    PID=$(echo "$launch_out" | grep -oE '[0-9]+$')
+    if [ -z "$PID" ]; then
+      echo "    ⚠ launch 首次未返回 pid: $(echo "$launch_out" | head -1)"
+      sleep 3
+      launch_out=$(SIMCTL_CHILD_MASO_SHOWCASE_SEED=1 SIMCTL_CHILD_MASO_SHOWCASE="$r" \
+        xcrun simctl launch "$SIM" "$BUNDLE_ID" 2>&1)
+      PID=$(echo "$launch_out" | grep -oE '[0-9]+$')
+      [ -z "$PID" ] && echo "    ⚠ 重试仍失败: $(echo "$launch_out" | head -1)"
+    fi
     chk "[ -n \"$PID\" ]" "app launched (pid $PID)"
     sleep 6
     out="$OUT/$label.png"

@@ -36,6 +36,17 @@ notify() { /usr/bin/osascript -e "display notification \"$2\" with title \"$1\" 
 : > "$LOG"
 note "=== Maso nightly $STAMP — v$VER ($BUILD) ==="
 
+# 只在源码真的变过时才继续 —— 没变的夜晚静默退出, 不启模拟器、不弹通知 (2026-09-08).
+# 签名 = HEAD + 源码目录的工作区状态; 未提交的改动也算"变了"(正是最该验的时候),
+# build/ 等产物不算 (已在 .gitignore, 本来也不进 status).
+# 失败的夜晚故意不记签名 —— 代码没改也要每晚重试, 直到绿为止.
+SIGFILE="$OUTDIR/.last-verified"
+SIG="$(git rev-parse HEAD 2>/dev/null)|$(git status --porcelain -- Maso MasoWatch MasoWidgets project.yml 2>/dev/null | shasum | cut -d' ' -f1)"
+if [ "$SIG" = "$(cat "$SIGFILE" 2>/dev/null)" ]; then
+  note "源码自上次绿灯以来没有变化 — 跳过 (不启模拟器)。"
+  exit 0
+fi
+
 # 先把固定模拟器 boot 起来, 让 driver.sh 直接挑这台 (避免设备名漂移).
 xcrun simctl bootstatus "$SIM" -b >/dev/null 2>&1 || xcrun simctl boot "$SIM" >>"$LOG" 2>&1
 xcrun simctl bootstatus "$SIM" -b >>"$LOG" 2>&1
@@ -61,7 +72,7 @@ else
 fi
 
 # 3) 工作区改动概况 (待发版的本地改动)
-DIRTY="$(git status --porcelain 2>/dev/null | grep -vc '^?? build/' || echo '?')"
+DIRTY="$(git status --porcelain 2>/dev/null | wc -l | tr -d ' ')"
 
 # 4) 报告
 {
@@ -86,6 +97,8 @@ if [ "$VERIFY_OK" = "1" ]; then
 else
   notify "Maso 夜间构建 ❌" "v$VER($BUILD) 验证失败, 看 build/nightly/$DAY.log。别发版。"
 fi
+
+[ "$VERIFY_OK" = "1" ] && echo "$SIG" > "$SIGFILE"
 
 note "=== done (verify_ok=$VERIFY_OK) ==="
 [ "$VERIFY_OK" = "1" ]
