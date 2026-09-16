@@ -991,7 +991,7 @@ final class AIWorkoutService {
         - The session MUST start with a COMPOUND (multi-joint) movement for its primary muscle. NEVER put an isolation exercise in slot 1. Order compound-first, then isolation; within compounds put the heaviest/most technical lift first (squat/deadlift/bench/row/press before machines or single-joint work).
         - Do NOT place an isolation exercise for a small muscle before a compound that uses it as a helper (no curls before rows/pulldowns; no triceps extensions before presses; no lateral raises before overhead press).
         - MUSCLE BALANCE: no more than 2 exercises whose PRIMARY muscle is the same in this session (never 3 chest moves in one day). If two exercises share a primary muscle, they must differ in angle, equipment, or movement plane. Isolation exercises must be at most 40% of the session. Prefer including a pull for every push.
-        - This user's goal is \(p.goalLabel). Write COMPOUND lifts at \(p.goalRepCompound)-\(p.goalRepCompoundHi) reps and ISOLATION lifts at \(p.goalRepIso)-\(p.goalRepIsoHi) reps. Use \(p.goalSetsLo)-\(p.goalSetsHi) sets per exercise. Stop ~1-3 reps short of failure (do not write 'to failure').
+        - This user's goal is \(p.goalLabel). Write COMPOUND lifts at \(p.goalRepCompound)-\(p.goalRepCompoundHi) reps and ISOLATION lifts at \(p.goalRepIso)-\(p.goalRepIsoHi) reps. Use \(p.goalSetsLo)-\(p.goalSetsHi) sets per exercise. Stop ~1-3 reps short of failure (do not write 'to failure').\(p.acsmGuideline)
         - Set "duration_seconds" only for timed holds/cardio; otherwise null. Rest between sets is \(p.goalRest)s (handled by the app).
         - Pick ONLY exercises the user can perform with: \(p.equipmentLine). Pick weights conservatively if no history; scale to recent volume if any.\(p.bestSetsGuideline)\(p.focusNote.map { "\n        - PRIORITY TODAY: \($0). Bias this session to address it directly without breaking the rules above." } ?? "")
         - EXACTLY \(maxExercises) exercises in this session — no more, no fewer.
@@ -1083,7 +1083,7 @@ final class AIWorkoutService {
         - Do NOT place an isolation exercise for a small muscle before a compound that uses it as a helper (no curls before rows/pulldowns; no triceps extensions before presses; no lateral raises before overhead press).
         - MUSCLE BALANCE: no more than 2 exercises whose PRIMARY muscle is the same in one routine (never 3 chest moves in one day). If two exercises share a primary muscle, they must differ in angle, equipment, or movement plane — no two near-identical presses. Isolation exercises must be at most 40% of each routine.
         - PUSH/PULL BALANCE across the week: total pulling exercises MUST be >= pushing exercises (never let pushes exceed pulls by more than ~20%). Each week must include both a knee-dominant (squat/leg press) and a hip-dominant (hinge/RDL/deadlift) movement.
-        - This user's goal is \(p.goalLabel). Write COMPOUND lifts at \(p.goalRepCompound)-\(p.goalRepCompoundHi) reps and ISOLATION lifts at \(p.goalRepIso)-\(p.goalRepIsoHi) reps. Use \(p.goalSetsLo)-\(p.goalSetsHi) sets per exercise. Stop ~1-3 reps short of failure (do not write 'to failure').
+        - This user's goal is \(p.goalLabel). Write COMPOUND lifts at \(p.goalRepCompound)-\(p.goalRepCompoundHi) reps and ISOLATION lifts at \(p.goalRepIso)-\(p.goalRepIsoHi) reps. Use \(p.goalSetsLo)-\(p.goalSetsHi) sets per exercise. Stop ~1-3 reps short of failure (do not write 'to failure').\(p.acsmGuideline)\(p.acsmWeeklyGuideline)
         - Set "duration_seconds" only for timed holds/cardio; otherwise null. Rest between sets is \(p.goalRest)s (handled by the app).
         - Pick ONLY exercises the user can perform with: \(p.equipmentLine). Pick weights conservatively if no history; scale to recent volume if any.\(p.bestSetsGuideline)
         - Respect the "wants to strengthen" focus by giving those muscles an extra exercise / earlier slot where it fits, without breaking the rules above.\(p.focusNote.map { "\n        - PRIORITY THIS TIME (OVERRIDES the profile): \($0). This is what the user just asked for in their own words — when it conflicts with the profile's equipment / focus-muscle defaults above, THIS wins (e.g. 'dumbbells only' beats the profile equipment list; 'upper body' beats a profile legs focus). Skew the split, equipment picks and volume to address it directly. Only the safety/balance rules and the exercise catalog stay non-negotiable." } ?? "")
@@ -1296,6 +1296,10 @@ struct AIPayload {
     let goalSetsHi: Int
     /// 该目标推荐组间歇 (秒).
     let goalRest: Int
+    /// 训练目标档 — 驱动下面 ACSM 2026 的目标特异性规则.
+    /// ⚠️ 存枚举而非 rawValue: 下面的 switch 刻意不写 default, 将来加档 (比如 ACSM 摘要里有但
+    ///    Maso 还没有的"爆发力") 会是编译错误, 逼人去决定那一档该给什么处方 —— 而不是静默漏掉.
+    let goalKind: TrainingGoalKind
     /// 可用器械 (EquipmentCategory display names). 空 = 不限制.
     let equipment: [String]
 
@@ -1323,6 +1327,60 @@ struct AIPayload {
 
     /// 负重进阶硬约束 — 只在有历史最佳组时注入 GUIDELINES (跟 bestSetsBlock 成对出现).
     /// 0~+2.5kg 微进阶 + 偏差 ≤10%: 让 weight_kg 从盲猜变成基于真实负重的 progression.
+    // --- ACSM 2026 抗阻训练立场声明 ---------------------------------------------------
+    // Currier BS, ... Phillips SM. "Resistance Training Prescription for Muscle Function,
+    // Hypertrophy, and Physical Performance in Healthy Adults: An Overview of Reviews."
+    // Med Sci Sports Exerc. 2026 Apr;58(4):851-872. PMID 41843416.
+    // 137 篇系统综述 / >30,000 人, 取代 2009 的 "Progression models in resistance training"
+    // (Maso 原本那套 rep/组数正是照 2009 写的).
+    //
+    // ⚠️ 只写摘要里真有的处方。坊间转述给它加了"RIR 取代 %1RM"和"1-3 组 × 4-6 个动作模式
+    //    (push/pull/squat/hinge/carry)" —— 原文都没有，别照抄进来。
+    //
+    // 摘要原话 (供后人核对, 别凭记忆改):
+    //   力量: "enhanced by lifting heavier loads (>=80% one-repetition maximum), through a
+    //         complete range of motion, for 2-3 sets, at the beginning of training sessions,
+    //         and >=2 sessions/wk"
+    //   增肌: "enhanced by higher volumes (>=10 sets/wk) and eccentric overload"
+    //   爆发: "moderate loads (30%-70% 1RM), low-to-moderate volume (<=24 repetitions*sets),
+    //         Olympic-style weightlifting, and power RT (fast concentric phase)"
+    //         ← Maso 没有"爆发力"目标档, 这条未实现 (要做得先加 TrainingGoalKind case).
+    //   不重要: "Training to momentary muscle fatigue, equipment type, exercise complexity,
+    //           set structure, time under tension, blood flow restriction, and periodization
+    //           did not consistently impact training outcomes."
+    //           → 现有的 "stop 1-3 reps short of failure" 与之相符, 保留.
+
+    /// 单次课内适用的 ACSM 规则 —— 两个 prompt 共用一份.
+    /// (原先两个 prompt 的科学规则靠人肉镜像, 注释写着"改一处记得改另一处"; 这块改成共用计算属性,
+    ///  结构上不可能只改一边.)
+    var acsmGuideline: String {
+        var out = "\n        - RANGE OF MOTION: every rep through a COMPLETE range of motion."
+        switch goalKind {
+        case .getStronger:
+            // ⚠️ 强度刻意用 rep 目标表达, 不写绝对 %1RM —— 否则跟上面 WEIGHT PROGRESSION 那条
+            //    "必须基于 RECENT BEST SETS, 偏离不超过 10%" 的硬约束直接打架。
+            //    力量档 compound rep 中心值 5 (band 3-7) 本来就落在 >=80% 1RM 区间, 不必另说。
+            out += "\n        - STRENGTH LOADING: the compound rep target above already implies heavy loading (>=80% 1RM). Pick a weight the user can just complete for that many reps with 1-2 left in reserve. Put the heaviest strength lift FIRST while the user is fresh — strength gains are larger when the main lift leads the session."
+        case .buildMuscle, .loseFat, .generalFitness:
+            out += "\n        - ECCENTRIC EMPHASIS: on the main hypertrophy work, lower the weight under control (~2-3s down). Eccentric overload is one of the few variables that measurably increased hypertrophy."
+        case .endurance:
+            break   // 摘要没给耐力专属处方 —— 不编
+        }
+        return out
+    }
+
+    /// 只给周计划 prompt 用 —— 周容量/频率是"一周"尺度的, 单日 plan 的 prompt 管不了.
+    var acsmWeeklyGuideline: String {
+        var out = "\n        - FREQUENCY: every major muscle group must be trained at least TWICE across the week, not once."
+        switch goalKind {
+        case .buildMuscle, .loseFat:
+            out += "\n        - WEEKLY VOLUME: each muscle group the user wants to grow should accumulate AT LEAST 10 hard sets summed across ALL the routines you output (count a set toward the muscle it lists as PRIMARY). This weekly total is what drives hypertrophy — it matters more than how any single session looks."
+        case .getStronger, .generalFitness, .endurance:
+            break   // 周容量硬指标是增肌专属 (摘要: ">=10 sets/wk" 只挂在 hypertrophy 下)
+        }
+        return out
+    }
+
     var bestSetsGuideline: String {
         guard !recentBestSets.isEmpty else { return "" }
         return "\n        - WEIGHT PROGRESSION: for every exercise listed in RECENT BEST SETS, \"weight_kg\" MUST be based on that recorded set — keep the same weight or add a small progression of 0 to +2.5 kg, and NEVER deviate more than 10% from the recorded weight. Guess weights ONLY for exercises with no recorded set."

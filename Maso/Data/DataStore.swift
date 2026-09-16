@@ -2038,6 +2038,7 @@ final class DataStore {
             goalSetsLo: max(1, setsBase - 1),
             goalSetsHi: setsBase + 1,
             goalRest: kind.recommendedRestSeconds(),
+            goalKind: kind,
             equipment: EquipmentCategory.allCases
                 .filter { settings.availableEquipment.contains($0.rawValue) }
                 .map { $0.displayName },
