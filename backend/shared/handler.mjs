@@ -38,8 +38,9 @@ const MAX_IMAGES = 4;
 const MAX_IMAGE_B64 = 2_000_000;
 
 const ANTHROPIC_VERSION = "2023-06-01";
-// 健身教练场景 = 结构化 JSON 生成 + 需要靠谱的动作学常识 → Sonnet 5 (质量/成本平衡点).
-const CLAUDE_MODEL = "claude-sonnet-5";
+// Low-cost default; retain Sonnet for upstream failures or unusable JSON.
+const CLAUDE_MODEL = "claude-haiku-5-5";
+const CLAUDE_FALLBACK_MODEL = "claude-sonnet-5";
 const CLIENT_TOKEN_HEADER = "X-Maso-Client-Token";
 
 const POLAR_VALIDATE = "https://api.polar.sh/v1/license-keys/validate";
@@ -146,45 +147,61 @@ async function handleAI(request, env) {
     : 2000;
 
   const upstreamPayload = {
-    model: CLAUDE_MODEL,          // 忽略客户端传的 model — 后端由 Worker 单方面决定
+    model: env.CLAUDE_MODEL || CLAUDE_MODEL, // Server controls model selection.
     max_tokens: maxTokens,        // Anthropic 必填
     messages: convo,
+    thinking: { type: "disabled" },
   };
   if (systemParts.length) upstreamPayload.system = systemParts.join("\n\n");
   // ⚠️ **不转发 temperature**. Claude 5 系列已弃用该参数 — 实测带上直接 400
   // ("`temperature` is deprecated for this model"). iOS 仍会发 0.6/0.3, 这里静默丢掉:
   // 生成的发散度改由 prompt 本身控制 (原意图: 0.6 出计划要点创造性 / 0.3 解读要忠于数据).
 
-  const upstreamRes = await fetch(UPSTREAM, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-api-key": env.ANTHROPIC_API_KEY,
-      "anthropic-version": ANTHROPIC_VERSION,
-    },
-    body: JSON.stringify(upstreamPayload),
-  });
-
-  const raw = await upstreamRes.text();
-  if (!upstreamRes.ok) {
-    // 上游报错原样透传 (状态码 + body), 方便 app 侧 fallback + 排查.
-    return new Response(raw, {
-      status: upstreamRes.status,
-      headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
-    });
-  }
-
-  // ── Anthropic 回包 → OpenAI 形状 (iOS 只读 choices[0].message.content) ──
   let parsed;
-  try {
-    parsed = JSON.parse(raw);
-  } catch (e) {
-    return json({ error: { message: "upstream returned non-JSON" } }, 502);
+  let text;
+  const models = [...new Set([
+    upstreamPayload.model,
+    env.CLAUDE_FALLBACK_MODEL || CLAUDE_FALLBACK_MODEL,
+  ])];
+  // Stay within the iOS client's 120s deadline, including the fallback.
+  const deadline = Date.now() + 100_000;
+  for (let i = 0; i < models.length; i++) {
+    try {
+      const remaining = deadline - Date.now();
+      if (remaining < 1000) throw new Error("AI request timed out");
+      const upstreamRes = await fetch(UPSTREAM, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": env.ANTHROPIC_API_KEY,
+          "anthropic-version": ANTHROPIC_VERSION,
+        },
+        body: JSON.stringify({ ...upstreamPayload, model: models[i] }),
+        signal: AbortSignal.timeout(Math.min(remaining, i === 0 && models.length > 1 ? 60_000 : remaining)),
+      });
+      const raw = await upstreamRes.text();
+      if (!upstreamRes.ok) {
+        if (i < models.length - 1 && (upstreamRes.status === 404 || upstreamRes.status === 429 || upstreamRes.status >= 500)) continue;
+        return new Response(raw, {
+          status: upstreamRes.status,
+          headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+        });
+      }
+      parsed = JSON.parse(raw);
+      text = cleanJSONText((parsed.content || [])
+        .filter(b => b?.type === "text").map(b => b.text || "").join(""));
+      if (!text || parsed.stop_reason === "max_tokens") throw new Error("AI response was empty or truncated");
+      if (body.response_format?.type === "json_object") {
+        const value = JSON.parse(text);
+        if (!value || typeof value !== "object") throw new Error("AI response was not a JSON object");
+      }
+      break;
+    } catch (e) {
+      if (i === models.length - 1) return json({ error: { message: "AI returned an unusable response" } }, 502);
+      // Metadata only: prompts and athlete data must never enter logs.
+      console.warn("[maso:ai] falling back", { model: models[i] });
+    }
   }
-  const text = (parsed.content || [])
-    .filter(b => b?.type === "text")
-    .map(b => b.text || "")
-    .join("");
 
   return json({
     id: parsed.id,
