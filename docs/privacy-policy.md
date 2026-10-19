@@ -1,228 +1,121 @@
 # Masso — Privacy Policy / 隐私政策
 
-**Last updated / 最后更新:** 2026-08-15
+Last updated: 19 October 2026
 
----
+Contact: wuyumoawuyumo@gmail.com
 
 ## English
 
-### Summary
+### Your records
 
-Masso is a fitness tracking app that runs almost entirely **on your device**. We do not run user accounts, and we never sell or share information about you with anyone for marketing or advertising. We do collect a small amount of anonymous usage data to understand which parts of the app work — you can turn it off in Settings, and it is described in full below.
+Masso stores your workout plans, sets, progress, meal records, selected photos, sleep summaries and preferences on your device. No Masso account is required. iOS backups may include these records under your Apple settings. Deleting the app removes its local data; an Apple backup may retain a separate copy.
 
-When you use the AI coach, Masso sends your training profile and recent workout history to our backend proxy, which forwards it to Anthropic's Claude API. This also happens automatically when the app refreshes your recommended workout for the day. Masso additionally contacts our servers to validate a Masso Pro licence key, to send feedback you submit from within the app, and to fetch exercise images from a public CDN.
+We do not sell personal data, use advertising SDKs or track you across other companies’ apps. Local storage does not mean every feature works offline: AI, purchases, feedback, and uncached exercise media require a network connection.
 
-### Data We Do NOT Collect
+### AI features and your choice
 
-- We do not require sign-up. No email, password, name, or account.
-- We do not run advertising SDKs, and we are not in any ad network. No Firebase, no Facebook SDK, no cross-app tracking, no IDFA.
-- We do not collect anything you type or log: your workouts, weights, reps, routine names, custom exercises, and coach notes never leave your device as analytics.
-- We do not show ads or share data with advertising networks.
-- We do not access your contacts, location, microphone, or other personal data.
+In version 3.0 and later, Masso asks for permission before sending personal content for AI processing. You may decline and keep using basic workout logging, history and local calculations. You can withdraw permission in Settings → AI data sharing. Automatic workout recommendations send no AI request before this permission is granted. Earlier versions may request recommendations automatically; update to use the new control.
 
-### Data Stored Locally on Your Device
+Depending on the feature you use, AI requests may contain:
 
-The following data is stored **only on your iPhone or iPad**, using iOS's local storage. It never leaves your device unless you explicitly choose to share it:
+- Your entered training profile, goals, available equipment, preferences and notes
+- Recent strength-training records and the messages you send to AI Coach
+- A photo you select for meal, physique or workout-plan analysis, or your meal description
 
-- Workout plans you create (exercises, sets, reps, weights, rest durations)
-- Workout history (which exercises you did, when, how heavy, how many reps)
-- Personal records (PRs) computed from your history
-- Your profile data entered during onboarding (gender, age, body weight, training days per week, target muscles)
-- App preferences (units, language, default rest time, muscle detail toggle)
+Our backend forwards these requests to **Alibaba Cloud Bailian (Qwen)**. The current service uses its Beijing endpoint, so processing may occur in mainland China. Cloudflare and Vercel host our request-routing infrastructure. Our application handler does not keep AI request bodies as a chat database; chat history and meal-analysis results are retained locally. Infrastructure and AI providers may retain operational or security records according to their terms. Do not submit information you do not want these providers to process.
 
-This data is included in **iCloud Backup** of your device when you back up your iPhone via Apple, following Apple's standard backup mechanism. We do not have access to your iCloud Backup.
+AI data-sharing permission does not grant permission to publish your photos. Share-card photos stay local unless you explicitly share the card. AI may be inaccurate: meal nutrients are estimates, and muscle recovery is a training estimate rather than a medical measurement.
 
-### HealthKit Integration
+Provider information: [Bailian data privacy notice](https://help.aliyun.com/zh/model-studio/privacy-notice), [Alibaba Cloud privacy policy](https://help.aliyun.com/zh/document_detail/2705225.html), [Cloudflare privacy policy](https://www.cloudflare.com/privacypolicy/), [Vercel privacy policy](https://vercel.com/legal/privacy-policy). Bailian states that API data is not used for model training, but model/application call data is stored under its service agreement; this is not a zero-retention service.
 
-If you grant permission, Masso may:
+### Apple Health and Apple Watch
 
-- **Write** completed workouts to Apple Health so they appear in your Activity rings and Health timeline.
-- **Read** basic workout history from Health to keep your training timeline consistent across devices.
+Health permissions are separate and optional. Masso can read authorized sleep stages and workout summaries, and write completed workouts. The Watch companion can record workouts, heart rate and energy in Apple Health. Imported Apple Health sleep, heart-rate and workout records are processed on your devices; they are not included in requests to our AI provider or our analytics service. Turn permissions off in Apple Health or iOS Settings. Removing an imported Masso record does not delete the original Health record.
 
-**Apple Watch.** If you use the Masso watch app, it runs a workout session on your watch to show your live heart rate and record calories. Heart rate and workout data collected on the watch are stored only in Apple Health (HealthKit) on your devices — they are never transmitted to us or any third party.
+### Camera, photos and speech
 
-HealthKit data stays on your device under Apple's strict permission model. We never read this data on our servers. You can revoke HealthKit permission at any time in iOS Settings → Privacy → Health.
+Camera and photo-library access are requested when you choose to add an image. An image submitted to an AI feature follows the AI section above; an image added only to a share card stays on your device. iOS keyboard dictation is controlled by Apple and your system settings. Masso does not continuously record your microphone.
 
-### Anonymous usage analytics (optional, on by default — you can turn it off)
+### Purchases
 
-To see which parts of the app people actually use, Masso sends a small number of anonymous **counters** to TelemetryDeck (a privacy-focused analytics provider based in Germany, GDPR-compliant, no advertising business).
+New subscriptions in version 3.0 use Apple In-App Purchase. Apple processes payment and provides signed entitlement information to restore and validate access. We do not receive your card or bank details. Earlier Polar subscribers can restore their existing licence; the licence key is sent through our backend to Polar for validation. Polar handles information provided during its checkout under [its privacy policy](https://polar.sh/legal/privacy).
 
-What is sent:
+### Optional usage analytics
 
-- The name of an event, e.g. `onboarding_completed`, `ai_routine_generate_success`, `data_export`
-- A few non-identifying attributes attached to that event — always plain numbers or short fixed labels, e.g. `count: 4`, `surface: "coach"`, `reason: "network"`
-- Your app version, iOS version, and language
-- A random ID generated on first launch. It is not your Apple ID, email, phone, or advertising ID. It is reset if you delete and reinstall the app, and it cannot be traced back to you.
+Unless you turn off “Share anonymous usage data” in Settings, Masso sends event counts, short predefined event attributes, app/OS version, language and a random installation identifier to **TelemetryDeck**. The provider further hashes identifiers. These records help us understand feature use and reliability; they are not advertising data. We do not attach your workout values, meal descriptions, AI messages, photos, sleep records or heart rate to these events. Turning analytics off stops new event transmission. See [TelemetryDeck privacy information](https://telemetrydeck.com/privacy/).
 
-What is **never** sent: your workouts, sets, reps, weights, personal records, routine or exercise names, anything you typed to the coach, your profile numbers, or your Health data. The event system is built so that only numbers and fixed labels can be attached — free text cannot be sent even by mistake.
+### Bug reports
 
-**Turning it off:** Settings → Your data → "Share anonymous usage data". With it off, nothing is sent at all.
+When you submit a bug report, we receive its text, app version, OS version and language. Reports are queued in Cloudflare storage and grouped into a weekly email to our support inbox using FormSubmit. Queued copies are removed after successful delivery; the delivered email remains for support follow-up. Avoid including sensitive details in reports. You may contact support to request deletion where we can identify your report.
 
-### Camera and Photo Library
+### Exercise media and generation requests
 
-When you create a shareable workout summary card, Masso may ask permission to:
+Exercise covers and approved videos may be fetched from a CDN, including Cloudflare R2, and cached locally. Hosting providers receive the network information needed to deliver them. If a future demo-generation service is enabled, its separate confirmation must show the material shared, cost and shared-library use before a job is created. Selecting a workout plan does not itself authorize a paid generation job.
 
-- **Take a photo** with your camera (optional — only when you tap the "Add Photo" entry)
-- **Read a photo** you select from your library (optional — same entry)
+### Sharing, widgets and notifications
 
-The chosen photo is embedded into your shareable summary card and **stays on your device**. We do not upload it anywhere. The card image is created locally and only leaves your device when you share it through iOS's system share sheet (e.g. Messages, Mail, Instagram).
+Share images are rendered locally and handed to the destination you select in the iOS share sheet. That service then applies its own policy. Widgets use a local shared App Group snapshot. Workout, meal and sleep reminders are scheduled locally after notification permission; you can switch each kind off in Settings.
 
-### AI Workout Suggestions (Optional, Network)
+### Retention and requests
 
-The AI coach is available to all users. When it runs — either because you asked it to, or because the app is refreshing your recommended workout on launch — Masso sends the following to our backend proxy, which forwards it to Anthropic's Claude API:
+Local records remain until you edit/delete them or remove the app. AI messages are not retained as a chat database by our application backend, but provider processing/retention is governed by the policies linked above. Feedback and analytics have the separate handling described above. Apple and Polar retain purchase information under their policies and applicable requirements. To request access, correction or deletion of information held by us, email support. We may need enough information to locate a report; do not send passwords or payment details.
 
-- Your training profile (age, gender, body weight, target muscles, weekly training days)
-- The last 14 days of your training history (exercise names, sets, reps, weights, dates)
-- Your best recent sets, and any notes you have written for the coach (for example an injury you asked it to work around)
-- A list of candidate exercises to choose from
-
-The proxy is hosted by us solely to keep API credentials secure; it does not store or log your data beyond the lifetime of the request. Anthropic processes the prompt to generate a suggested workout plan under its own privacy policy. See: https://www.anthropic.com/legal/privacy
-
-There is currently no in-app switch to turn the AI coach off. If you do not want this data sent, turn off network access for Masso in iOS Settings; the app keeps working and falls back to generating plans on-device.
-
-### Other network calls
-
-- **Masso Pro licence validation** — if you activate Pro, your licence key is sent to our proxy to be checked.
-- **In-app feedback** — if you send feedback from inside the app, your message is delivered to our email, together with the app version, iOS version, and device language.
-- **Exercise images** — exercise photos are fetched on demand from a public CDN (jsDelivr) and cached on your device.
-
-### Sharing
-
-When you tap **Share** on a workout card or muscle status card, Masso renders an image and hands it to iOS's system share sheet. From that point, the destination app (Messages, AirDrop, Instagram, etc.) decides what to do with the image, governed by that app's own privacy policy.
-
-### Live Activities and Dynamic Island
-
-Masso uses iOS Live Activities to display your active workout on the Lock Screen and Dynamic Island. This information is rendered on your device by iOS and never sent to our servers.
-
-### Children
-
-Masso is not directed at children under 13. We do not knowingly collect any data from anyone, including children.
-
-### Data Retention
-
-Because data is stored on your device, you control retention. Delete a workout, plan, or session inside Masso and it is removed immediately. Uninstall Masso and **all local data is permanently deleted** (except whatever you may have backed up to iCloud through Apple's backup mechanism).
-
-### Your Rights (GDPR / CCPA)
-
-Because we do not collect personal data on our servers, there is nothing to access, port, correct, or delete on our side beyond the AI proxy request lifetime. If you used AI suggestions and want to verify nothing is retained, contact us at the address below.
-
-### Changes to This Policy
-
-If we make material changes to this policy, we will update the "Last updated" date and post a notice in the app's next update.
-
-### Contact
-
-Questions or concerns?
-
-**Email:** wuyumoawuyumo@gmail.com
-
----
+Masso is not designed for children under 13. We update this page when practices change. Fitness, nutrition and sleep information is general guidance, not medical advice.
 
 ## 简体中文
 
-### 摘要
+### 你的记录
 
-Masso 是一款健身追踪 App,几乎所有功能都在 **你的设备本地** 运行。我们不设用户账户,也绝不会把你的任何信息出售或共享给任何人做营销或广告。我们会收集少量**匿名使用统计**以了解 App 的哪些部分真的有人用 —— 你可以在设置里关掉,详细说明见下文。
+Masso 将训练计划、组数、进步、餐食、所选照片、睡眠汇总与偏好保存在设备上，无需注册 Masso 账户。iOS 可能按你的 Apple 设置备份这些记录。删除 App 会删除其本地数据，但 Apple 备份可能保留独立副本。
 
-使用 AI 教练时,Masso 会把你的训练档案和近期训练记录发送到我们的后端代理,再转发给 Anthropic 的 Claude API。App 启动时自动刷新当日推荐训练也会触发同一条链路。此外还有三类网络请求:校验 Masso Pro 授权码、发送你在 app 内提交的反馈、以及从公共 CDN 拉取动作图片。
+我们不出售个人资料，不接入广告 SDK，也不进行跨 App 广告追踪。AI、购买、反馈及尚未缓存的动作素材需要联网，不能将本地存储理解为所有功能均可离线使用。
 
-### 我们 **不** 收集的数据
+### AI 功能及你的选择
 
-- 不需要注册。无邮箱、密码、姓名、账户。
-- 不接入广告 SDK,不在任何广告网络里。没有 Firebase、没有 Facebook SDK、没有跨 App 追踪、不读 IDFA。
-- 你输入和记录的一切 —— 训练、重量、次数、计划名、自创动作、教练备注 —— 都不会作为统计数据离开你的设备。
-- 不显示广告,不共享数据给广告网络。
-- 不访问你的通讯录、位置、麦克风或其他个人数据。
+从 3.0 版起，Masso 在向 AI 发送个人内容前会征求许可。拒绝后仍可使用基础训练记录、历史与本地计算。你可以在「设置 → AI 数据共享」中撤回许可。许可前，自动训练推荐不会发送 AI 请求。旧版本可能自动请求推荐，更新后可使用此控制。
 
-### 仅存储在你设备本地的数据
+根据你使用的功能，请求可能包含：
 
-以下数据 **只存储在你的 iPhone / iPad 本地**(通过 iOS 本地存储)。除非你显式选择分享,数据不会离开你的设备:
+- 你填写的训练资料、目标、器械、偏好和备注
+- 近期力量训练记录，以及发送给 AI Coach 的聊天内容
+- 你主动选择用于餐食、体型或训练计划分析的照片，或餐食文字描述
 
-- 你创建的训练计划(动作、组数、次数、重量、休息时长)
-- 训练历史记录(做了哪些动作、时间、重量、次数)
-- 基于历史自动计算的个人最佳记录(PR)
-- 引导流程中填写的个人资料(性别、年龄、体重、每周训练天数、目标肌群)
-- App 偏好设置(单位、语言、默认休息时间、肌肉细分开关)
+我们的后端将请求转发给**阿里云百炼（通义千问）**。当前使用北京端点，数据可能在中国大陆处理。Cloudflare 和 Vercel 提供请求转发基础设施。我们的应用处理程序不将 AI 请求正文保存为服务器聊天数据库；聊天记录和餐食分析结果保存在本地。基础设施及 AI 服务商可能按其条款保留运行或安全记录。请勿提交你不希望这些服务商处理的信息。
 
-当你通过 Apple 的标准机制备份 iPhone 时,这些数据会包含在 **iCloud 备份** 中。我们无法访问你的 iCloud 备份。
+同意 AI 数据共享不等于同意公开照片。仅用于分享卡片的照片保留在本地，直到你主动分享。AI 可能出错：餐食营养为估算值，肌肉恢复也是训练参考，并非医学测量。
 
-### HealthKit 集成
+服务商政策：[百炼数据隐私说明](https://help.aliyun.com/zh/model-studio/privacy-notice)、[阿里云隐私政策](https://help.aliyun.com/zh/document_detail/2705225.html)、[Cloudflare](https://www.cloudflare.com/privacypolicy/)、[Vercel](https://vercel.com/legal/privacy-policy)。百炼说明 API 数据不用于模型训练，但会按服务协议保存模型与应用调用数据，并非零留存服务。
 
-如果你授权,Masso 可能:
+### Apple 健康与 Apple Watch
 
-- **写入** 完成的训练到 Apple 健康,让训练数据出现在你的活动圆环和健康时间线里。
-- **读取** 基础训练历史,让你的训练时间线在设备间保持一致。
+健康权限独立且可选。Masso 可读取获准的睡眠阶段、训练汇总，并写入已完成训练。手表可将训练、心率和能量记录到 Apple 健康。导入的 Apple 健康睡眠、心率及训练记录在设备上处理，不发送给 AI 服务商或统计服务。你可在 Apple 健康或 iOS 设置撤销权限。删除 Masso 内的导入记录不会删除健康中的原记录。
 
-HealthKit 数据受 Apple 严格的权限模型保护,留在设备本地。我们不会在服务器上读取这类数据。你可以随时在 iOS 设置 → 隐私 → 健康 里撤销权限。
+### 相机、照片与语音
 
-### 匿名使用统计(可选,默认开启,可随时关闭)
+只有你选择添加图片时才请求相关权限。用于 AI 分析的图片遵循上文；仅用于分享卡片的图片保留在本地。iOS 键盘听写由 Apple 和系统设置管理，Masso 不持续录音。
 
-为了解 App 的哪些部分真的有人用,Masso 会向 TelemetryDeck(德国的注重隐私的统计服务商,符合 GDPR,不做广告业务)发送少量**匿名计数**。
+### 购买
 
-发送的内容:
+3.0 版的新订阅通过 Apple 内购完成。Apple 处理付款并提供签名权益信息，用于恢复和验证权限；我们不会收到银行卡或银行账户资料。原 Polar 订阅用户可恢复原授权，授权码通过后端发送给 Polar 验证。Polar 按[其隐私政策](https://polar.sh/legal/privacy)处理结账资料。
 
-- 事件名称,例如 `onboarding_completed`、`ai_routine_generate_success`、`data_export`
-- 附在该事件上的少量非身份属性,永远是纯数字或短的固定标签,例如 `count: 4`、`surface: "coach"`、`reason: "network"`
-- App 版本、iOS 版本、语言
-- 首次启动时随机生成的一个 ID。它不是你的 Apple ID、邮箱、手机号或广告标识符;删除重装即重置,无法回溯到你本人。
+### 可关闭的使用统计
 
-**绝不**发送的内容:你的训练记录、组次、重量、个人记录、计划名与动作名、你对教练说过的任何文字、你的身体数据、以及健康数据。事件系统在类型层面就只允许附加数字和固定标签 —— 自由文本想发也发不出去。
+除非你在设置关闭「共享匿名使用数据」，Masso 会向 TelemetryDeck 发送事件次数、预定义的简短属性、App／系统版本、语言及随机安装标识。服务商会进一步哈希标识，用于了解功能使用及可靠性，不用于广告。事件不附带训练数值、餐食描述、聊天、照片、睡眠或心率。关闭后停止新统计发送。[TelemetryDeck 隐私信息](https://telemetrydeck.com/privacy/)。
 
-**关闭方法**:设置 → 你的数据 → 「共享匿名使用数据」。关闭后一条都不会发送。
+### 问题反馈
 
-### 相机和相册
+主动提交反馈时，我们收到反馈文字、App／系统版本及语言。内容暂存于 Cloudflare，通过 FormSubmit 汇总成每周邮件发送到支持邮箱；成功发送后删除队列副本，邮件保留用于支持跟进。请勿在反馈中填写敏感资料。如能定位你的反馈，可联系支持申请删除。
 
-当你为训练总结卡添加照片时,Masso 会请求权限:
+### 动作素材与生成请求
 
-- **使用相机** 拍照(可选 — 仅当你点击"添加照片"入口)
-- **读取相册中的一张照片**(可选 — 同上入口)
+动作封面和已审核视频可能从 CDN（含 Cloudflare R2）下载并缓存。服务商会收到完成网络传输所需的信息。未来若开启动作生成服务，创建任务前须另外说明共享素材、价格及共享素材库用途；选择训练计划本身不代表同意付费生成。
 
-选中的照片嵌入到分享卡片里,**留在你的设备本地**。我们不会上传到任何地方。卡片图在本地生成,只有当你通过 iOS 系统分享面板分享(给 Messages / 邮件 / Instagram 等)时才离开设备。
+### 分享、小组件及通知
 
-### AI 训练推荐(可选,需要网络)
+分享图片在本地生成，仅交给你在系统分享面板中选择的应用，之后由目标服务的政策管理。小组件读取本地 App Group 快照。训练、用餐、睡眠提醒在获得通知权限后本地安排，可分别关闭。
 
-AI 教练对所有用户开放。当它运行时 — 无论是你主动触发,还是 app 启动时刷新当日推荐 — Masso 会将以下内容发送到我们的后端代理,再转发给 Anthropic 的 Claude API:
+### 保存期限与你的权利
 
-- 你的训练资料(年龄、性别、体重、目标肌群、每周训练天数)
-- 最近 14 天的训练历史(动作名、组数、次数、重量、日期)
-- 候选动作清单
+本地记录保留至你修改、删除或卸载。我们的应用后端不将 AI 消息保存为聊天数据库，但服务商处理和保留数据的方式依其政策。反馈、统计按上述独立方式处理。Apple、Polar 按其政策及适用要求保存交易资料。需要访问、更正或删除由我们持有的信息，请联系支持；我们可能需要足够信息定位反馈，请勿发送密码或付款资料。
 
-后端代理仅用于保护 API 凭证安全 — 我们不会在请求生命周期之外存储或记录你的数据。Anthropic 处理 prompt 生成推荐,适用其自身的隐私政策。参见:https://www.anthropic.com/legal/privacy
-
-目前 app 内没有关闭 AI 教练的开关。如果你不希望这些数据被发送,可以在 iOS 设置里关掉 Masso 的网络权限 — app 仍可正常使用,会回退到完全在本地生成计划。
-
-### 其他网络请求
-
-- **Masso Pro 授权校验** — 激活 Pro 时,授权码会发到我们的代理做校验。
-- **App 内反馈** — 你从 app 内发送反馈时,内容会连同 app 版本、iOS 版本、设备语言一起发到我们的邮箱。
-- **动作图片** — 动作照片按需从公共 CDN(jsDelivr)拉取并缓存在本机。
-
-### 分享
-
-当你点击训练卡或肌肉状态卡上的 **分享** 时,Masso 在本地渲染图片然后递交给 iOS 系统分享面板。从那一刻起,目标 App(信息 / AirDrop / Instagram 等)如何处理图片,由该 App 自身的隐私政策决定。
-
-### Live Activity 和灵动岛
-
-Masso 使用 iOS Live Activity 在锁屏和灵动岛上显示进行中的训练。这些信息由 iOS 在设备上渲染,不会发送到我们的服务器。
-
-### 儿童
-
-Masso 不面向 13 岁以下儿童。我们不会有意识地收集任何人(包括儿童)的数据。
-
-### 数据保留
-
-由于数据存在你的设备本地,保留期由你控制。在 Masso 内删除某次训练 / 计划 / 历史 → 即时删除。卸载 Masso → **所有本地数据永久删除**(除非你通过 Apple 备份机制把它备份到了 iCloud)。
-
-### 你的权利(GDPR / CCPA)
-
-由于我们不在服务器上收集个人数据,除了 AI 代理请求的生命周期内,我们这边没有可以访问 / 导出 / 修正 / 删除的内容。如果你使用过 AI 推荐功能且想验证没有数据被保留,请通过下方邮箱联系我们。
-
-### 政策变更
-
-如有重大变更,我们会更新"最后更新"日期,并在下一次 App 更新中公告。
-
-### 联系方式
-
-有疑问或顾虑?
-
-**邮箱:** wuyumoawuyumo@gmail.com
+Masso 不面向 13 岁以下儿童。数据处理方式变化时会更新本页。健身、饮食及睡眠信息仅供一般参考，不构成医疗建议。
