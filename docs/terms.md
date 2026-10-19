@@ -1,6 +1,6 @@
 # Masso — Terms of Service / 服务条款
 
-**Last updated / 最后更新:** 2026-05-22
+**Last updated / 最后更新:** 2026-10-19
 
 ---
 
@@ -12,7 +12,7 @@ By downloading, installing, or using the Masso iOS app ("Masso", "the App"), you
 
 ### 2. What Masso Is
 
-Masso is a fitness tracking application for personal use. It lets you record workouts, plan training sessions, track personal records, and optionally use AI-generated workout suggestions if you subscribe to Masso Pro.
+Masso is a fitness tracking application for personal use. It lets you record workouts, plan training sessions, track personal records, and optionally use AI-generated workout suggestions. Free usage limits and Pro options are shown in the App.
 
 **Masso is not medical advice.** It is for informational and motivational purposes only. The App does not diagnose, treat, or prevent any disease or condition. Consult a qualified physician before beginning any new exercise program, especially if you have a medical condition, are pregnant, or have not exercised recently.
 
@@ -31,9 +31,9 @@ You agree to:
 
 Masso Pro is available as:
 
-- **Monthly subscription** — auto-renewing every month, includes a 7-day free trial for new subscribers
-- **Yearly subscription** — auto-renewing every year, includes a 7-day free trial for new subscribers
-- **Lifetime purchase** — one-time payment, no renewal
+- **Monthly subscription** — auto-renewing every month
+- **Yearly subscription** — auto-renewing every year
+Prices and billing periods are shown by Apple before purchase. No free trial or lifetime offer is currently advertised. Existing previously purchased entitlements are preserved.
 
 #### 4.2 Free Trial
 
@@ -53,11 +53,11 @@ Cancellation takes effect at the end of the current billing period. You retain P
 
 #### 4.5 Refunds
 
-All purchases are handled by Apple. Refund requests must be made through Apple, not Masso. Apple's refund policy applies: [https://support.apple.com/en-us/HT204084](https://support.apple.com/en-us/HT204084)
+New in-app subscriptions are processed by Apple. Refund requests for Apple purchases must be made through Apple. Apple's refund policy applies: [https://support.apple.com/en-us/HT204084](https://support.apple.com/en-us/HT204084)
 
-We do not issue refunds directly because we never receive your payment — Apple does.
+Apple handles payment collection and refunds for Apple purchases; it pays developer proceeds separately. Existing purchases made through Polar remain subject to their original checkout and refund terms.
 
-#### 4.6 Lifetime Purchase
+#### 4.6 Earlier Lifetime Purchases (No New Offer)
 
 The Lifetime plan is a one-time purchase that unlocks Masso Pro features for the lifetime of the App as it exists on the iOS App Store. If we discontinue the App or substantially change its core functionality, you will retain access for as long as the App remains functional on your device. "Lifetime" does not guarantee a specific time period or future feature additions.
 
@@ -87,7 +87,7 @@ We may suspend or terminate your access to Masso Pro features if you violate the
 
 ### 9. Privacy
 
-Your use of the App is also governed by our [Privacy Policy](./privacy-policy.html). Masso stores almost all data on your device and does not collect personal data on our servers.
+Your use of the App is also governed by our [Privacy Policy](./privacy-policy.html). Optional AI processing, usage analytics, feedback and purchases involve the providers described in the Privacy Policy.
 
 ### 10. Changes to These Terms
 
@@ -111,7 +111,7 @@ These Terms are governed by the laws of the United States, without regard to its
 
 ### 2. Masso 是什么
 
-Masso 是供个人使用的健身追踪应用,可以记录训练、规划训练计划、追踪个人最佳记录;订阅 Masso Pro 后还可以使用 AI 训练推荐。
+Masso 是供个人使用的健身追踪应用，可以记录训练、规划训练计划、追踪个人最佳记录，并可选用 AI 训练推荐。免费额度和 Pro 选项会在 App 内显示。
 
 **Masso 不是医疗建议。** App 仅供参考和激励,不诊断、治疗或预防任何疾病或健康状况。开始任何新的训练计划之前,尤其在你有医疗状况、怀孕或长期未运动的情况下,请先咨询合格的医生。
 
@@ -130,9 +130,9 @@ Masso 是供个人使用的健身追踪应用,可以记录训练、规划训练�
 
 Masso Pro 提供以下方案:
 
-- **月度订阅** — 每月自动续费,新订阅用户享 7 天免费试用
-- **年度订阅** — 每年自动续费,新订阅用户享 7 天免费试用
-- **永久买断** — 一次性付款,不续费
+- **月度订阅** — 每月自动续费
+- **年度订阅** — 每年自动续费
+价格和计费周期会在 Apple 购买确认前显示。目前不提供免费试用或永久版新购，已购买权益保留。
 
 #### 4.2 免费试用
 
@@ -152,11 +152,11 @@ Masso Pro 提供以下方案:
 
 #### 4.5 退款
 
-所有付款由 Apple 处理。退款请求需通过 Apple 提交,不通过 Masso。适用 Apple 的退款政策:[https://support.apple.com/zh-cn/HT204084](https://support.apple.com/zh-cn/HT204084)
+新版本的 App 内订阅由 Apple 处理，Apple 购买的退款请求需通过 Apple 提交。适用 Apple 的退款政策：[https://support.apple.com/zh-cn/HT204084](https://support.apple.com/zh-cn/HT204084)
 
-我们无法直接退款,因为款项始终由 Apple 收取。
+Apple 负责其购买渠道的收款与退款，并另行向开发者结算收益。此前通过 Polar 购买的用户继续适用原购买渠道的结算和退款条款。
 
-#### 4.6 永久买断
+#### 4.6 既有永久购买（不提供新购）
 
 永久版是一次性购买,在 Masso 在 iOS App Store 存续期间解锁 Pro 功能。若我们停止运营 App 或对核心功能进行重大变更,你仍保留在已安装设备上使用功能的权利。"永久"不保证特定使用期限,也不保证未来功能新增。
 
@@ -186,7 +186,7 @@ Masso 应用(包括所有代码、设计、插图、动作库、原创内容)归
 
 ### 9. 隐私
 
-你对 App 的使用同样受我们的[隐私政策](./privacy-policy.html)约束。Masso 几乎所有数据都存储在你的设备本地,我们的服务器不收集个人数据。
+你对 App 的使用同样受我们的[隐私政策](./privacy-policy.html)约束。可选 AI 处理、使用统计、反馈和购买会涉及隐私政策列明的服务商。
 
 ### 10. 条款变更
 
