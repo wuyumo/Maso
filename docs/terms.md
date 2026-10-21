@@ -1,6 +1,6 @@
 # Masso — Terms of Service / 服务条款
 
-**Last updated / 最后更新:** 2026-10-19
+**Last updated / 最后更新:** 2026-10-21
 
 ---
 
@@ -33,7 +33,7 @@ Masso Pro is available as:
 
 - **Monthly subscription** — auto-renewing every month
 - **Yearly subscription** — auto-renewing every year
-Prices and billing periods are shown by Apple before purchase. No free trial or lifetime offer is currently advertised. Existing previously purchased entitlements are preserved.
+Prices and billing periods are shown by Apple before purchase. Where offered, eligible subscribers may receive a 7-day free introductory trial; Apple determines eligibility within the subscription group. No new lifetime plan is offered. Existing previously purchased entitlements are preserved.
 
 #### 4.2 Free Trial
 
@@ -132,7 +132,7 @@ Masso Pro 提供以下方案:
 
 - **月度订阅** — 每月自动续费
 - **年度订阅** — 每年自动续费
-价格和计费周期会在 Apple 购买确认前显示。目前不提供免费试用或永久版新购，已购买权益保留。
+价格和计费周期会在 Apple 购买确认前显示。提供试用时，符合条件的用户可享 7 天免费介绍性试用，订阅组内的资格由 Apple 判断。不提供永久版新购，已购买权益保留。
 
 #### 4.2 免费试用
 
