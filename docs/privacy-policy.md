@@ -1,6 +1,6 @@
 # Masso — Privacy Policy / 隐私政策
 
-Last updated: 19 October 2026
+Last updated: 4 November 2026
 
 Contact: wuyumoawuyumo@gmail.com
 
@@ -22,11 +22,11 @@ Depending on the feature you use, AI requests may contain:
 - Recent strength-training records and the messages you send to AI Coach
 - A photo you select for meal, physique or workout-plan analysis, or your meal description
 
-Our backend forwards these requests to **Alibaba Cloud Bailian (Qwen)**. The current service uses its Beijing endpoint, so processing may occur in mainland China. Cloudflare and Vercel host our request-routing infrastructure. Our application handler does not keep AI request bodies as a chat database; chat history and meal-analysis results are retained locally. Infrastructure and AI providers may retain operational or security records according to their terms. Do not submit information you do not want these providers to process.
+Our backend forwards these requests to **Anthropic (Claude) or Alibaba Cloud Bailian (Qwen)**, depending on the configured service and fallback route. Bailian uses its Beijing endpoint, so processing may occur in mainland China; Anthropic processing is governed by its policy linked below. Information visible in the screenshots you select is included in image analysis. Cloudflare and Vercel host our request-routing infrastructure. Our application handler does not keep AI request bodies as a chat database; chat history and meal-analysis results are retained locally. Infrastructure and AI providers may retain operational or security records according to their terms. Do not submit information you do not want these providers to process.
 
 AI data-sharing permission does not grant permission to publish your photos. Share-card photos stay local unless you explicitly share the card. AI may be inaccurate: meal nutrients are estimates, and muscle recovery is a training estimate rather than a medical measurement.
 
-Provider information: [Bailian data privacy notice](https://help.aliyun.com/zh/model-studio/privacy-notice), [Alibaba Cloud privacy policy](https://help.aliyun.com/zh/document_detail/2705225.html), [Cloudflare privacy policy](https://www.cloudflare.com/privacypolicy/), [Vercel privacy policy](https://vercel.com/legal/privacy-policy). Bailian states that API data is not used for model training, but model/application call data is stored under its service agreement; this is not a zero-retention service.
+Provider information: [Anthropic privacy policy](https://www.anthropic.com/legal/privacy), [Bailian data privacy notice](https://help.aliyun.com/zh/model-studio/privacy-notice), [Alibaba Cloud privacy policy](https://help.aliyun.com/zh/document_detail/2705225.html), [Cloudflare privacy policy](https://www.cloudflare.com/privacypolicy/), [Vercel privacy policy](https://vercel.com/legal/privacy-policy). Bailian states that API data is not used for model training, but model/application call data is stored under its service agreement; this is not a zero-retention service.
 
 ### Apple Health and Apple Watch
 
@@ -80,11 +80,11 @@ Masso 将训练计划、组数、进步、餐食、所选照片、睡眠汇总�
 - 近期力量训练记录，以及发送给 AI Coach 的聊天内容
 - 你主动选择用于餐食、体型或训练计划分析的照片，或餐食文字描述
 
-我们的后端将请求转发给**阿里云百炼（通义千问）**。当前使用北京端点，数据可能在中国大陆处理。Cloudflare 和 Vercel 提供请求转发基础设施。我们的应用处理程序不将 AI 请求正文保存为服务器聊天数据库；聊天记录和餐食分析结果保存在本地。基础设施及 AI 服务商可能按其条款保留运行或安全记录。请勿提交你不希望这些服务商处理的信息。
+我们的后端根据配置和备用路由，将请求转发给 **Anthropic（Claude）或阿里云百炼（通义千问）**。百炼使用北京端点，数据可能在中国大陆处理；Anthropic 的处理方式见下方政策。你主动选择的截图中可见的信息也会包含在图片分析中。Cloudflare 和 Vercel 提供请求转发基础设施。我们的应用处理程序不将 AI 请求正文保存为服务器聊天数据库；聊天记录和餐食分析结果保存在本地。基础设施及 AI 服务商可能按其条款保留运行或安全记录。请勿提交你不希望这些服务商处理的信息。
 
 同意 AI 数据共享不等于同意公开照片。仅用于分享卡片的照片保留在本地，直到你主动分享。AI 可能出错：餐食营养为估算值，肌肉恢复也是训练参考，并非医学测量。
 
-服务商政策：[百炼数据隐私说明](https://help.aliyun.com/zh/model-studio/privacy-notice)、[阿里云隐私政策](https://help.aliyun.com/zh/document_detail/2705225.html)、[Cloudflare](https://www.cloudflare.com/privacypolicy/)、[Vercel](https://vercel.com/legal/privacy-policy)。百炼说明 API 数据不用于模型训练，但会按服务协议保存模型与应用调用数据，并非零留存服务。
+服务商政策：[Anthropic 隐私政策](https://www.anthropic.com/legal/privacy)、[百炼数据隐私说明](https://help.aliyun.com/zh/model-studio/privacy-notice)、[阿里云隐私政策](https://help.aliyun.com/zh/document_detail/2705225.html)、[Cloudflare](https://www.cloudflare.com/privacypolicy/)、[Vercel](https://vercel.com/legal/privacy-policy)。百炼说明 API 数据不用于模型训练，但会按服务协议保存模型与应用调用数据，并非零留存服务。
 
 ### Apple 健康与 Apple Watch
 
