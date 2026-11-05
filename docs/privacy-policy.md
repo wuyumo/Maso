@@ -1,6 +1,6 @@
 # Masso — Privacy Policy / 隐私政策
 
-Last updated: 4 November 2026
+Last updated: 5 November 2026
 
 Contact: wuyumoawuyumo@gmail.com
 
@@ -42,7 +42,7 @@ New subscriptions in version 3.0 use Apple In-App Purchase. Apple processes paym
 
 ### Optional usage analytics
 
-Unless you turn off “Share anonymous usage data” in Settings, Masso sends event counts, short predefined event attributes, app/OS version, language and a random installation identifier to **TelemetryDeck**. The provider further hashes identifiers. These records help us understand feature use and reliability; they are not advertising data. We do not attach your workout values, meal descriptions, AI messages, photos, sleep records or heart rate to these events. Turning analytics off stops new event transmission. See [TelemetryDeck privacy information](https://telemetrydeck.com/privacy/).
+Unless you turn off “Share anonymous usage data” in Settings, Masso sends event counts, short predefined event attributes, app/OS version, language and a random installation identifier to **TelemetryDeck**. The provider further hashes identifiers. These records help us understand feature use and reliability; they are not advertising data. Training usage events can include the number of planned and completed sets and elapsed workout time, together with a hashed plan identifier. We do not attach exercise weights or repetitions, meal descriptions, AI messages, photos, imported Apple Health records or heart rate to these events. Turning analytics off stops new event transmission. See [TelemetryDeck privacy information](https://telemetrydeck.com/privacy/).
 
 ### Bug reports
 
@@ -100,7 +100,7 @@ Masso 将训练计划、组数、进步、餐食、所选照片、睡眠汇总�
 
 ### 可关闭的使用统计
 
-除非你在设置关闭「共享匿名使用数据」，Masso 会向 TelemetryDeck 发送事件次数、预定义的简短属性、App／系统版本、语言及随机安装标识。服务商会进一步哈希标识，用于了解功能使用及可靠性，不用于广告。事件不附带训练数值、餐食描述、聊天、照片、睡眠或心率。关闭后停止新统计发送。[TelemetryDeck 隐私信息](https://telemetrydeck.com/privacy/)。
+除非你在设置关闭「共享匿名使用数据」，Masso 会向 TelemetryDeck 发送事件次数、预定义的简短属性、App／系统版本、语言及随机安装标识。服务商会进一步哈希标识，用于了解功能使用及可靠性，不用于广告。训练使用事件可能包含计划与完成组数、训练经过时长及哈希化计划标识；不附带动作重量或次数、餐食描述、聊天、照片、导入的 Apple 健康记录或心率。关闭后停止新统计发送。[TelemetryDeck 隐私信息](https://telemetrydeck.com/privacy/)。
 
 ### 问题反馈
 
