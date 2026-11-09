@@ -1,15 +1,31 @@
-# GitHub Pages / Jekyll 配置 — Maso 文档站点
-# 启用: Repo Settings → Pages → Source = "Deploy from a branch" → Branch: main, Folder: /docs
+# GitHub Pages — project site source is this /docs folder.
+# Published at https://wuyumo.github.io/Maso/ (not the host root).
+# Repo Settings → Pages → Deploy from a branch → main → /docs.
+# This repository cannot publish https://wuyumo.github.io/robots.txt.
+# A project-path robots.txt and sitemap are generated from /docs instead.
 
-# 用最干净的内置主题 (无依赖, 渲染快)
 theme: jekyll-theme-cayman
 
-# 站点元信息
-title: Maso
-description: Your personal AI trainer
+title: Masso — AI Workout Planner
+description: Plan workouts with AI Coach, log every set, and review training, recovery, meals, and sleep. Free iPhone app by Yumo Wu.
+url: "https://wuyumo.github.io"
+baseurl: "/Maso"
+lang: en
 
-# 内部文档不公开 — exclude 之后, GitHub Pages 不会渲染这些为可访问页面.
-# privacy-policy.md 不在列表里, 它是 public 的.
+app_store_url: "https://apps.apple.com/us/app/masso-ai-workout-planner/id6776689750"
+support_email: "wuyumoawuyumo@gmail.com"
+social_image: /ph/thumbnail.png
+listing_checked: "9 November 2026"
+
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: default
+
+# Engineering notes stay in the repo. They are not product pages.
+# The layout marks anything outside the public list as noindex.
+# privacy-policy.md, terms.md, support.md, and index.html stay public.
 exclude:
   - app-store-metadata.md
   - app-store-connect-walkthrough.md

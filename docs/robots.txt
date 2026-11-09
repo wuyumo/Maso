@@ -1,0 +1,42 @@
+# Masso project-site robots file.
+# Live URL after GitHub Pages deploys this folder:
+# https://wuyumo.github.io/Maso/robots.txt
+#
+# Crawlers that follow the Robots Exclusion Protocol request robots.txt
+# only from the host root: https://wuyumo.github.io/robots.txt
+# A GitHub Pages project site cannot publish that host-root file.
+# Checked 9 November 2026: the host-root URL 404s, and there is no
+# user/organization Pages site in this repository to attach one to.
+# The Disallow paths below are host-root paths so this file still says
+# the right thing if it is later copied to https://wuyumo.github.io/robots.txt.
+# Public pages also carry meta robots. Engineering notes are noindex.
+
+User-agent: *
+Allow: /Maso/
+Allow: /Maso/support.html
+Allow: /Maso/privacy-policy.html
+Allow: /Maso/terms.html
+Allow: /Maso/assets/
+Allow: /Maso/ph/
+
+# Basename prefixes, so both the HTML page and a raw .md copy are covered.
+Disallow: /Maso/analytics-design
+Disallow: /Maso/ai-insight-summary-design
+Disallow: /Maso/product-review-2026-07
+Disallow: /Maso/share-out-architecture
+Disallow: /Maso/training-pref-redesign
+Disallow: /Maso/ux-audit-2026-07
+Disallow: /Maso/UX_AUDIT_2026-06
+Disallow: /Maso/body-photo-spike-2026-08
+Disallow: /Maso/coach-multimodal-input
+Disallow: /Maso/coach-tab-design
+Disallow: /Maso/exercise-db-overhaul-plan
+Disallow: /Maso/exercise-dup-candidates
+Disallow: /Maso/exercise-nameparts-audit
+Disallow: /Maso/exercise-naming-audit
+Disallow: /Maso/exercise_commonness
+Disallow: /Maso/history-redesign
+Disallow: /Maso/new_exercises_missing_images
+Disallow: /Maso/orphaned_old_exercises
+
+Sitemap: https://wuyumo.github.io/Maso/sitemap.xml

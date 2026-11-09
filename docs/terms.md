@@ -1,3 +1,9 @@
+---
+layout: default
+title: Terms of Service — Masso — AI Workout Planner
+description: Terms of service for the Masso iOS app, including subscriptions, acceptable use, and the medical disclaimer.
+---
+
 # Masso — Terms of Service / 服务条款
 
 **Last updated / 最后更新:** 2026-10-21

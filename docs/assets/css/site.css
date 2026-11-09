@@ -1,0 +1,346 @@
+:root {
+  color-scheme: dark;
+  --bg: #121212;
+  --text: #f3f3f3;
+  --muted: #d2d2d2;
+  --line: #2e2e2e;
+  --accent: #1ed760;
+  --accent-ink: #102116;
+  --card: #1a1a1a;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: auto;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+}
+
+:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 3px;
+}
+
+.skip {
+  position: absolute;
+  left: 16px;
+  top: -48px;
+  z-index: 5;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-weight: 700;
+  padding: 10px 14px;
+  border-radius: 8px;
+}
+
+.skip:focus {
+  top: 12px;
+}
+
+.site-header,
+.site-footer {
+  padding-left: max(16px, env(safe-area-inset-left));
+  padding-right: max(16px, env(safe-area-inset-right));
+}
+
+.site-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 20px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  color: var(--text);
+  font-weight: 700;
+  font-size: 1.15rem;
+  text-decoration: none;
+  letter-spacing: -0.02em;
+}
+
+.brand img {
+  display: block;
+  width: 40px;
+  height: 40px;
+  border-radius: 9px;
+}
+
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  margin-left: auto;
+}
+
+.nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 8px 10px;
+  color: var(--text);
+  text-underline-offset: 3px;
+}
+
+.nav a[aria-current="page"] {
+  font-weight: 700;
+  text-decoration-thickness: 3px;
+}
+
+.cta,
+.nav a.cta {
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-weight: 700;
+  text-decoration: none;
+  border-radius: 999px;
+  padding: 10px 16px;
+  justify-content: center;
+}
+
+.cta:hover,
+.nav a.cta:hover {
+  background: #49e484;
+}
+
+main {
+  width: min(880px, 100%);
+  max-width: 100%;
+  margin: 0 auto;
+  contain: inline-size;
+  padding: 32px max(16px, env(safe-area-inset-right)) 72px max(16px, env(safe-area-inset-left));
+}
+
+main h1 {
+  margin: 0 0 12px;
+  font-size: clamp(1.85rem, 5vw, 2.7rem);
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+}
+
+main h2 {
+  margin: 2.2rem 0 0.6rem;
+  font-size: clamp(1.35rem, 3vw, 1.7rem);
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+}
+
+main h3 {
+  margin: 1.4rem 0 0.35rem;
+  font-size: 1.12rem;
+  line-height: 1.35;
+}
+
+main p,
+main li,
+.site-footer p {
+  overflow-wrap: break-word;
+}
+
+main p,
+main li {
+  color: var(--text);
+}
+
+.lede,
+.muted {
+  color: var(--muted);
+}
+
+main a {
+  color: #b8ffd4;
+  text-underline-offset: 3px;
+}
+
+main a.cta {
+  color: var(--accent-ink);
+}
+
+.page-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  margin: 18px 0 8px;
+  padding: 0;
+  list-style: none;
+}
+
+.page-nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+.hero .cta {
+  display: inline-flex;
+  margin-top: 8px;
+}
+
+.checked {
+  margin-top: 14px;
+  color: var(--muted);
+  font-size: 0.98rem;
+}
+
+.notice {
+  margin: 28px 0;
+  padding: 16px 18px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--accent);
+  border-radius: 12px;
+}
+
+.notice h2 {
+  margin: 0 0 8px;
+  font-size: 1.2rem;
+}
+
+.notice p:last-child {
+  margin-bottom: 0;
+}
+
+.features,
+.plain-list {
+  padding-left: 1.15rem;
+}
+
+.features li + li,
+.plain-list li + li {
+  margin-top: 0.7rem;
+}
+
+.shots {
+  display: grid;
+  gap: 22px;
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.shots,
+.shots li,
+.shots figure {
+  max-width: 100%;
+  min-width: 0;
+}
+
+.shots figure {
+  margin: 0;
+}
+
+.shot-scroll {
+  overflow-x: auto;
+  width: 100%;
+  max-width: 100%;
+  contain: inline-size;
+  /* Phone graphic sits on the right of these posters. Start there on a narrow screen. */
+  direction: rtl;
+  background: #000;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+}
+
+.shot-scroll img {
+  display: block;
+  width: 100%;
+  min-width: 760px;
+  height: auto;
+  direction: ltr;
+}
+
+.shots figcaption {
+  margin-top: 8px;
+  color: var(--muted);
+}
+
+.site-footer {
+  border-top: 1px solid var(--line);
+  padding-top: 22px;
+  padding-bottom: max(28px, env(safe-area-inset-bottom));
+  color: var(--muted);
+}
+
+.site-footer a {
+  color: #b8ffd4;
+}
+
+.site-footer p {
+  margin: 0 auto 8px;
+  width: min(880px, calc(100% - 0px));
+}
+
+main table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+}
+
+main th,
+main td {
+  border: 1px solid var(--line);
+  padding: 8px 10px;
+  vertical-align: top;
+  text-align: left;
+}
+
+main pre,
+main code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+main pre {
+  overflow-x: auto;
+  max-width: 100%;
+  padding: 12px;
+  background: var(--card);
+  border-radius: 8px;
+}
+
+main img {
+  max-width: 100%;
+  height: auto;
+}
+
+main blockquote {
+  margin: 1rem 0;
+  padding-left: 14px;
+  border-left: 3px solid var(--line);
+  color: var(--muted);
+}
+
+@media (max-width: 720px) {
+  .nav {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .nav a.cta {
+    flex: 1 1 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}

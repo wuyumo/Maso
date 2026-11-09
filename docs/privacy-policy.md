@@ -1,3 +1,9 @@
+---
+layout: default
+title: Privacy Policy — Masso — AI Workout Planner
+description: Privacy policy for Masso — AI Workout Planner, including on-device records, AI, Apple Health, purchases, and optional usage analytics.
+---
+
 # Masso — Privacy Policy / 隐私政策
 
 Last updated: 5 November 2026
