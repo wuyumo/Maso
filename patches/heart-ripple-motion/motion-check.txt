@@ -1,0 +1,44 @@
+Heart ripple motion check — numeric only, not a device recording.
+Constants match HeartRippleMotion.sample in the patch.
+ease=1.6 peakAt=0.22 envelopePower=1.35 peakOpacity=0.46
+lineWidth=2.4*(1-0.38*spread) blur=0.15+0.9*spread unveil=0.20s smoothstep
+Old ring: radius=max*phase, opacity=0.55*(1-phase), lineWidth=2, no blur.
+
+     t  oldRadius oldOpacity   spread newOpacity   line   blur
+  0.00      0.000      0.550    0.000      0.000   2.40   0.15
+  0.05      0.050      0.522    0.079      0.111   2.33   0.22
+  0.10      0.100      0.495    0.155      0.260   2.26   0.29
+  0.15      0.150      0.468    0.229      0.386   2.19   0.36
+  0.20      0.200      0.440    0.300      0.454   2.13   0.42
+  0.25      0.250      0.413    0.369      0.459   2.06   0.48
+  0.30      0.300      0.385    0.435      0.452   2.00   0.54
+  0.35      0.350      0.358    0.498      0.439   1.95   0.60
+  0.40      0.400      0.330    0.558      0.420   1.89   0.65
+  0.45      0.450      0.303    0.616      0.396   1.84   0.70
+  0.50      0.500      0.275    0.670      0.367   1.79   0.75
+  0.55      0.550      0.247    0.721      0.333   1.74   0.80
+  0.60      0.600      0.220    0.769      0.296   1.70   0.84
+  0.65      0.650      0.193    0.814      0.256   1.66   0.88
+  0.70      0.700      0.165    0.854      0.214   1.62   0.92
+  0.75      0.750      0.138    0.891      0.172   1.59   0.95
+  0.80      0.800      0.110    0.924      0.130   1.56   0.98
+  0.85      0.850      0.083    0.952      0.090   1.53   1.01
+  0.90      0.900      0.055    0.975      0.052   1.51   1.03
+  0.95      0.950      0.028    0.992      0.021   1.50   1.04
+  1.00      1.000      0.000    1.000      0.000   1.49   1.05
+
+mean opacity old=0.275 new=0.265
+seam (value jump old opacity is 0.55; new opacity is ~0):
+  t=0.000 oldOpacity=0.55000 newOpacity=0.00000 spread=0.0000
+  t=0.001 oldOpacity=0.54945 newOpacity=0.00058 spread=0.0016
+  t=0.010 oldOpacity=0.54450 newOpacity=0.01302 spread=0.0160
+  t=0.050 oldOpacity=0.52250 newOpacity=0.11126 spread=0.0788
+  t=0.220 oldOpacity=0.42900 newOpacity=0.46000 spread=0.3280
+  t=0.500 oldOpacity=0.27500 newOpacity=0.36656 spread=0.6701
+  t=0.800 oldOpacity=0.11000 newOpacity=0.12991 spread=0.9239
+  t=0.950 oldOpacity=0.02750 newOpacity=0.02069 spread=0.9917
+  t=0.999 oldOpacity=0.00055 newOpacity=0.00011 spread=1.0000
+  t=1.000 oldOpacity=0.00000 newOpacity=0.00000 spread=1.0000
+spread monotonic=True opacityPeaks=1 spreadEnd=1.0000
+unveil at peak phase: u0=0.0000 u0.5=0.2300 u1=0.4600
+These numbers describe the drawing curve. They are not pass/fail targets.

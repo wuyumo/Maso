@@ -1,0 +1,106 @@
+--- a/Maso/Views/Screens/PlanPlayerScreen.swift
++++ b/Maso/Views/Screens/PlanPlayerScreen.swift
+@@ -4027,6 +4027,75 @@
+     }
+ }
+ 
++/// 心率卡片上的单圈波纹，只改画法。
++/// 节拍时钟仍是 `时间 * bpm / 60 - 0.25`，与心形缩放对齐。
++/// 不改 BPM、提醒阈值、`WorkoutHeartLiquid` 的颜色和最大半径。
++/// 半径缓出；透明度是两端为 0 的单峰，所以循环相接时不跳，也不会叠出多圈。
++/// 曲线系数是这一版的手感选择，不是约定指标。
++private enum HeartRippleMotion {
++    /// 波纹层刚出现时淡入的时长。只掩盖出现那一帧的跳变，不改变心跳周期。
++    static let unveilDuration: TimeInterval = 0.20
++
++    struct Sample {
++        var spread: CGFloat
++        var opacity: Double
++        var lineWidth: CGFloat
++        var blur: CGFloat
++    }
++
++    static func beatPhase(at date: Date, bpm: Int) -> Double {
++        let cycle = date.timeIntervalSinceReferenceDate * Double(bpm) / 60 - 0.25
++        return cycle - floor(cycle)
++    }
++
++    static func sample(phase: Double, unveil: Double) -> Sample {
++        let t = min(1, max(0, phase))
++        let eased = 1 - pow(1 - t, 1.6)
++        let peakAt = 0.22
++        let warped = t <= peakAt
++            ? 0.5 * (t / peakAt)
++            : 0.5 + 0.5 * ((t - peakAt) / (1 - peakAt))
++        let envelope = pow(max(0, sin(.pi * warped)), 1.35)
++        let u = min(1, max(0, unveil))
++        let fade = u * u * (3 - 2 * u)
++        return Sample(
++            spread: CGFloat(eased),
++            opacity: 0.46 * envelope * fade,
++            lineWidth: CGFloat(2.4 * (1 - 0.38 * eased)),
++            blur: CGFloat(0.15 + 0.9 * eased)
++        )
++    }
++}
++
++private struct HeartRippleRing<Ink: ShapeStyle>: View {
++    var origin: CGRect
++    var maxRadius: CGFloat
++    var bpm: Int
++    var color: Ink
++    @State private var unveiledAt = Date()
++
++    var body: some View {
++        TimelineView(.animation(minimumInterval: 1.0 / 30.0)) { context in
++            let motion = HeartRippleMotion.sample(
++                phase: HeartRippleMotion.beatPhase(at: context.date, bpm: bpm),
++                unveil: context.date.timeIntervalSince(unveiledAt) / HeartRippleMotion.unveilDuration
++            )
++            let diameter = max(CGFloat(0), maxRadius * motion.spread * 2)
++            Circle()
++                .stroke(color, lineWidth: motion.lineWidth)
++                .frame(width: diameter, height: diameter)
++                .blur(radius: motion.blur)
++                .opacity(motion.opacity)
++                .position(x: origin.midX, y: origin.midY)
++                .transaction { $0.disablesAnimations = true }
++        }
++        .transaction { $0.disablesAnimations = true }
++        .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
++        .accessibilityHidden(true)
++        .allowsHitTesting(false)
++    }
++}
++
+ struct WorkoutHeartRateButton: View {
+     @Environment(TrainingSessionStore.self) private var store
+     @Environment(DataStore.self) private var data
+@@ -4106,18 +4175,15 @@
+                     if expanded, scenePhase == .active, !settingsPresented, !reduceMotion,
+                        let anchor, let bpm, let progress {
+                         let origin = geometry[anchor]
+-                        TimelineView(.animation(minimumInterval: 1.0 / 30.0)) { context in
+-                            let cycle = context.date.timeIntervalSinceReferenceDate * Double(bpm) / 60 - 0.25
+-                            let phase = cycle - floor(cycle)
+-                            let extent = max(origin.midX, geometry.size.width - origin.midX)
+-                            let radius = extent * (0.25 + 0.75 * progress) * phase
+-                            Circle()
+-                                .stroke(WorkoutHeartLiquid.color(progress: progress).opacity(0.55 * (1 - phase)), lineWidth: 2)
+-                                .frame(width: radius * 2, height: radius * 2)
+-                                .position(x: origin.midX, y: origin.midY)
+-                        }
+-                        .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+-                        .accessibilityHidden(true)
++                        let extent = max(origin.midX, geometry.size.width - origin.midX)
++                        // 最大半径仍是 extent * (0.25 + 0.75 * progress)。显式转换只消掉 CGFloat/Double，不改映射。
++                        let maxRadius = extent * CGFloat(0.25 + 0.75 * Double(progress))
++                        HeartRippleRing(
++                            origin: origin,
++                            maxRadius: maxRadius,
++                            bpm: bpm,
++                            color: WorkoutHeartLiquid.color(progress: progress)
++                        )
+                     }
+                 }.allowsHitTesting(false)
+             }

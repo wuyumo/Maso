@@ -1,0 +1,10 @@
+# Content hashes for the heart-ripple writeback.
+# These are SHA-256 of file bytes, not git commit ids.
+# snapshot = Mac working tree captured 2026-11-09, before this patch.
+# patched  = that same file after heart-ripple-motion.patch.
+# unchanged = do not write these files.
+
+9d869071a4177ef26a250adccb84ca6b6b3d8baa8b2c3349c7ea218d1605dd86  snapshot  Maso/Views/Screens/PlanPlayerScreen.swift
+ac99fdfe7aaeaef28c5d90b3c227403a529e12dfdd0cfc76441b5fcaed3f85f0  patched   Maso/Views/Screens/PlanPlayerScreen.swift
+f633da0eefe20e87a47f524fa2bce7972813e09745ca4558824edc7146719d41  unchanged Maso/Views/RootView.swift
+5bab8c0d5ab8f684c381a725fd11af401e8a97e045c2210bcf5eca93ea1de471  unchanged MasoUITests/ExerciseLibraryBrowserUITests.swift
