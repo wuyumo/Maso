@@ -16,6 +16,7 @@
 		08D011050D65842629FC04CE /* DataExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF68DB58FFB73CDB3A9FD980 /* DataExport.swift */; };
 		09AE7E2E86BAA6503292E0E4 /* exercises-matched.json in Resources */ = {isa = PBXBuildFile; fileRef = D4C5F3E72ADD7E2C06CE3FED /* exercises-matched.json */; };
 		0C9DFCCE90F73336451E893C /* HealthKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9CFBD927255937085E3C209 /* HealthKitService.swift */; };
+		B7D24F3E0A526D91AE4F6083 /* LiveHeartRateCardVisibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6C13E2D9F415C809D3E5F72 /* LiveHeartRateCardVisibility.swift */; };
 		1047791541144FB813063EC2 /* SoundPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B91FB80311BBA14D7AAC8FBF /* SoundPlayer.swift */; };
 		148E3CFD76C6112B00ABA196 /* AISummaryCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88890E68F3513CC6BC233F84 /* AISummaryCard.swift */; };
 		1605075E6DF23E750E90BD9A /* MasoBrandLogo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80FD6F69FE62071220B54EDF /* MasoBrandLogo.swift */; };
@@ -48,6 +49,7 @@
 		31BF55F4883B0DBAD9BAD245 /* QuickWorkoutScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC12963E5718515334FAF5A8 /* QuickWorkoutScreen.swift */; };
 		37D0EB70BF12A1DC0AA2ACD7 /* MuscleSynergy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E46EC3F68E92686D08B88D5 /* MuscleSynergy.swift */; };
 		38D1739297A938C766CE3B89 /* WatchViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C75A0DE1EC23A7DCDE065D6 /* WatchViews.swift */; };
+		F5B02D1C8E304B7F9C2D4E61 /* WatchTrainingLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A91C0B7D2F4A6E8B1C3D50 /* WatchTrainingLayout.swift */; };
 		39757B65C5BD9D0B02EC5409 /* 5-core-stretching.json in Resources */ = {isa = PBXBuildFile; fileRef = 42B82AED23B3DDCA887C1263 /* 5-core-stretching.json */; };
 		3DD250B994DE2ECE262AAF96 /* MuscleStatusOverviewCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFD21DF2E0041A5BFFACB388 /* MuscleStatusOverviewCard.swift */; };
 		3DD8048F21FA7BB1FDEFBCEF /* ProBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50A10E5E18C4925F0ACEC2C6 /* ProBanner.swift */; };
@@ -267,6 +269,7 @@
 		77A945F8200B0EA1A6D6261B /* MasoWidgets.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = MasoWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		78E9AE6303C3221E696A4367 /* _orphan-old-exercises.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "_orphan-old-exercises.md"; sourceTree = "<group>"; };
 		7D7F0F064D3300FEAAE9ABE8 /* TrainingSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingSession.swift; sourceTree = "<group>"; };
+		A6C13E2D9F415C809D3E5F72 /* LiveHeartRateCardVisibility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveHeartRateCardVisibility.swift; sourceTree = "<group>"; };
 		7DD9BAA3FD1E35EC871F4DEC /* SplashScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreen.swift; sourceTree = "<group>"; };
 		806284849E050B355DF8A75D /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		80FD6F69FE62071220B54EDF /* MasoBrandLogo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasoBrandLogo.swift; sourceTree = "<group>"; };
@@ -278,6 +281,7 @@
 		8B2A99CE9D2DD17926946D6B /* PlanPlayerScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanPlayerScreen.swift; sourceTree = "<group>"; };
 		8BDFF5A1E76EC5EEC94DEE3E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8C75A0DE1EC23A7DCDE065D6 /* WatchViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchViews.swift; sourceTree = "<group>"; };
+		E4A91C0B7D2F4A6E8B1C3D50 /* WatchTrainingLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchTrainingLayout.swift; sourceTree = "<group>"; };
 		91F6414BD5454144D171D2D3 /* AnalyticsSink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsSink.swift; sourceTree = "<group>"; };
 		A015C1CBD0ADEA27FDC680FC /* AISummary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AISummary.swift; sourceTree = "<group>"; };
 		A10DA0B851503BB17662C3ED /* PolarEntitlement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolarEntitlement.swift; sourceTree = "<group>"; };
@@ -385,6 +389,7 @@
 				EFADF03C8B68C694F394F493 /* PrivacyInfo.xcprivacy */,
 				E6ACD1743B8BA8EFB05DFD53 /* WatchBrandMark.swift */,
 				BF854A389D2582A6CF015F7D /* WatchBridge.swift */,
+				E4A91C0B7D2F4A6E8B1C3D50 /* WatchTrainingLayout.swift */,
 				8C75A0DE1EC23A7DCDE065D6 /* WatchViews.swift */,
 				CA721C2F4E32B7402AC2CAA6 /* WatchWorkoutManager.swift */,
 				85E7D9A5584A6797544E11DF /* InfoPlist.strings */,
@@ -481,6 +486,7 @@
 				291EB7D06E7999D43C70577F /* SessionPersistence.swift */,
 				B91FB80311BBA14D7AAC8FBF /* SoundPlayer.swift */,
 				3901E5D4EB6430B5A6682418 /* SpeechManager.swift */,
+				A6C13E2D9F415C809D3E5F72 /* LiveHeartRateCardVisibility.swift */,
 				7D7F0F064D3300FEAAE9ABE8 /* TrainingSession.swift */,
 				35C81E839F1BA51AF2F89F2D /* WorkoutReminderScheduler.swift */,
 			);
@@ -951,6 +957,7 @@
 				56D4D47EC11CD4F3E8AA99C6 /* TodayScreen.swift in Sources */,
 				21EE6684F038A29EB4A5DB01 /* TrainingActivityAttributes.swift in Sources */,
 				2F004DE222001D4A20537ECF /* TrainingMiniBar.swift in Sources */,
+				B7D24F3E0A526D91AE4F6083 /* LiveHeartRateCardVisibility.swift in Sources */,
 				1E75AB0DB92635528D580692 /* TrainingSession.swift in Sources */,
 				C53D75F8EAA9D73AA902C910 /* TrainingSettingsSection.swift in Sources */,
 				9589422FFA8A7F9B610997B4 /* UnifiedShareCard.swift in Sources */,
@@ -971,6 +978,7 @@
 				CCFB22BB1AD7B2B70BB5F32F /* WatchBrandMark.swift in Sources */,
 				58B55D526157588452E3D831 /* WatchBridge.swift in Sources */,
 				6617A19E1CBB579C44E72988 /* WatchSyncState.swift in Sources */,
+				F5B02D1C8E304B7F9C2D4E61 /* WatchTrainingLayout.swift in Sources */,
 				38D1739297A938C766CE3B89 /* WatchViews.swift in Sources */,
 				CF0DF500D090FE778C2DE542 /* WatchWorkoutManager.swift in Sources */,
 			);
