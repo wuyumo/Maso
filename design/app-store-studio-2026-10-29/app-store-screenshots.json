@@ -1095,18 +1095,18 @@
           "ar": "05 / الأجهزة"
         },
         "headline": {
-          "en": "One app,\nfor these screens",
-          "zh": "每一块屏幕，\n都在一个 App 里",
-          "zh-Hant": "每一塊螢幕，\n都在一個 App 裡",
-          "ja": "この4画面も\n同じ App",
-          "ko": "이 화면들도,\n같은 App",
-          "es": "Estas pantallas,\nuna sola app",
-          "fr": "Ces écrans,\nune seule app",
-          "de": "Diese Bildschirme,\neine App",
-          "it": "Questi schermi,\nuna sola app",
-          "pt-BR": "Estas telas,\num só app",
-          "ru": "Эти экраны,\nодно приложение",
-          "ar": "هذه الشاشات،\nتطبيق واحد"
+          "en": "Multiple devices,\ntrain your way",
+          "zh": "多设备，\n随你练",
+          "zh-Hant": "多裝置，\n想練就練",
+          "ja": "複数デバイス、\n好きなように",
+          "ko": "여러 기기,\n내 방식대로",
+          "es": "Varios dispositivos,\na tu manera",
+          "fr": "Plusieurs appareils,\nà votre façon",
+          "de": "Mehrere Geräte,\nwie du willst",
+          "it": "Più dispositivi,\ncome vuoi",
+          "pt-BR": "Vários dispositivos,\ndo seu jeito",
+          "ru": "Много устройств\nкак вам удобно",
+          "ar": "أجهزة متعددة،\nكما تشاء"
         },
         "screenshot": "/screenshots/localized/iphone/{locale}/today.png",
         "inverted": true,
@@ -1123,18 +1123,18 @@
           {
             "id": "description",
             "text": {
-              "en": "Now on iPhone, iPad, iPhone Duo\nand Apple Watch.",
-              "zh": "iPhone、iPad、iPhone Duo、\nApple Watch 都支持，随时开练。",
-              "zh-Hant": "iPhone、iPad、iPhone Duo、\nApple Watch 都已支援，隨時開練。",
-              "ja": "iPhone・iPad・iPhone Duo・\nApple Watch にも対応しています。",
-              "ko": "iPhone, iPad, iPhone Duo,\nApple Watch에서 쓸 수 있습니다.",
+              "en": "Supports iPhone, iPad,\niPhone Duo, and Apple Watch.",
+              "zh": "支持 iPhone、iPad、\niPhone Duo 和 Apple Watch",
+              "zh-Hant": "支援 iPhone、iPad、\niPhone Duo 和 Apple Watch",
+              "ja": "iPhone、iPad、iPhone Duo、\nApple Watch に対応",
+              "ko": "iPhone, iPad, iPhone Duo,\nApple Watch 지원",
               "es": "En iPhone, iPad, iPhone Duo\ny Apple Watch.",
               "fr": "Sur iPhone, iPad, iPhone Duo\net Apple Watch.",
               "de": "Für iPhone, iPad, iPhone Duo\nund Apple Watch.",
               "it": "Su iPhone, iPad, iPhone Duo\ne Apple Watch.",
               "pt-BR": "No iPhone, iPad, iPhone Duo\ne no Apple Watch.",
               "ru": "На iPhone, iPad, iPhone Duo\nи Apple Watch.",
-              "ar": "على iPhone وiPad وiPhone Duo\nوApple Watch."
+              "ar": "يدعم iPhone وiPad\nوiPhone Duo وApple Watch."
             },
             "transform": {
               "x": 96,

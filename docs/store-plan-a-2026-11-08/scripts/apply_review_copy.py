@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Fill draft marketing copy and the slightly opened devices fan.
 
-Approved zh / zh-Hant / en / ja headlines stay, except:
-  * en devices no longer says "every Apple screen"
-  * ja devices names the four screens in the picture, including Duo
+Approved zh / zh-Hant / en / ja headlines stay, except the devices page,
+whose headline now says multiple devices (zh is exactly 多设备，随你练).
+The devices subtitle names iPhone, iPad, iPhone Duo and Apple Watch.
   * en training subtitle gets an explicit line break, same words
 
 ko, es, fr, de, it, pt-BR, ru, ar are drafts for review, not upload approval.
@@ -166,26 +166,32 @@ def main() -> None:
         "ar": "05 / الأجهزة",
     })
     put(slides["devices"]["headline"], {
-        "en": "One app,\nfor these screens",
-        "ja": "この4画面も\n同じ App",
-        "ko": "이 화면들도,\n같은 App",
-        "es": "Estas pantallas,\nuna sola app",
-        "fr": "Ces écrans,\nune seule app",
-        "de": "Diese Bildschirme,\neine App",
-        "it": "Questi schermi,\nuna sola app",
-        "pt-BR": "Estas telas,\num só app",
-        "ru": "Эти экраны,\nодно приложение",
-        "ar": "هذه الشاشات،\nتطبيق واحد",
+        "en": "Multiple devices,\ntrain your way",
+        "zh": "多设备，\n随你练",
+        "zh-Hant": "多裝置，\n想練就練",
+        "ja": "複数デバイス、\n好きなように",
+        "ko": "여러 기기,\n내 방식대로",
+        "es": "Varios dispositivos,\na tu manera",
+        "fr": "Plusieurs appareils,\nà votre façon",
+        "de": "Mehrere Geräte,\nwie du willst",
+        "it": "Più dispositivi,\ncome vuoi",
+        "pt-BR": "Vários dispositivos,\ndo seu jeito",
+        "ru": "Много устройств\nкак вам удобно",
+        "ar": "أجهزة متعددة،\nكما تشاء",
     })
     put(slides["devices"]["textElements"][0]["text"], {
-        "ko": "iPhone, iPad, iPhone Duo,\nApple Watch에서 쓸 수 있습니다.",
+        "en": "Supports iPhone, iPad,\niPhone Duo, and Apple Watch.",
+        "zh": "支持 iPhone、iPad、\niPhone Duo 和 Apple Watch",
+        "zh-Hant": "支援 iPhone、iPad、\niPhone Duo 和 Apple Watch",
+        "ja": "iPhone、iPad、iPhone Duo、\nApple Watch に対応",
+        "ko": "iPhone, iPad, iPhone Duo,\nApple Watch 지원",
         "es": "En iPhone, iPad, iPhone Duo\ny Apple Watch.",
         "fr": "Sur iPhone, iPad, iPhone Duo\net Apple Watch.",
         "de": "Für iPhone, iPad, iPhone Duo\nund Apple Watch.",
         "it": "Su iPhone, iPad, iPhone Duo\ne Apple Watch.",
         "pt-BR": "No iPhone, iPad, iPhone Duo\ne no Apple Watch.",
         "ru": "На iPhone, iPad, iPhone Duo\nи Apple Watch.",
-        "ar": "على iPhone وiPad وiPhone Duo\nوApple Watch.",
+        "ar": "يدعم iPhone وiPad\nوiPhone Duo وApple Watch.",
     })
     slides["devices"]["lineup"]["slots"] = [
         {"id": "watch", "x": 115, "y": 2244, "width": 270, "height": 424.29, "rotation": -14, "zIndex": 4},

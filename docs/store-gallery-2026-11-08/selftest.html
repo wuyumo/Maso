@@ -93,6 +93,39 @@ async function run() {
   ok('plana src stays old batch', ($('.poster img').getAttribute('src') || '').includes('/store-plan-a-2026-11-08/exported/ios/'), $('.poster img').getAttribute('src'));
   ok('hash carries batch', w.location.hash.includes('#plana/'), w.location.hash);
   ok('no overflow', d.documentElement.scrollWidth <= 1281, d.documentElement.scrollWidth + '');
+  ok('continue is not approval', (d.body.textContent || '').includes('继续审阅不等于上架批准'));
+
+  /* ---- slide 05 retitle is its own batch, so an old 可以 cannot attach ---- */
+  $('[data-batch="review"]').click();
+  await sleep(400);
+  $('[data-device="iphone"]').click();
+  await sleep(300);
+  $('[data-locale="en"]').click();
+  await sleep(300);
+  $$('.poster')[4].click();
+  await sleep(400);
+  const oldSha = ($('#reviewSha').textContent || '').replace('SHA-256 ', '').trim();
+  $('#reviewStatus [data-status="ok"]').click();
+  await sleep(100);
+  $('[data-batch="devices-05"]').click();
+  await sleep(500);
+  ok('devices-05 posters = 1', $$('.poster').length === 1, $$('.poster').length + '');
+  ok('devices-05 locales = 12', $$('#localePills button').length === 12, $$('#localePills button').length + '');
+  ok('devices-05 src', ($('.poster img').getAttribute('src') || '').includes('/devices-05-20261109/ios/iphone/1320x2868/en/05-devices.png'), $('.poster img').getAttribute('src'));
+  $$('.poster')[0].click();
+  await sleep(400);
+  const newSha = ($('#reviewSha').textContent || '').replace('SHA-256 ', '').trim();
+  ok('devices-05 en title', ($('#lbTitle').textContent || '').includes('Multiple devices'), $('#lbTitle').textContent);
+  ok('devices-05 sha differs', /^[a-f0-9]{64}$/.test(newSha) && newSha !== oldSha, newSha.slice(0, 12) + ' vs ' + oldSha.slice(0, 12));
+  ok('old pass not inherited', $('#reviewStatus [data-status="ok"]').getAttribute('aria-pressed') !== 'true');
+  ok('strip has no inherited pass', ($$('.poster .review-mark')[0] || {}).textContent !== '可以', ($$('.poster .review-mark')[0] || {}).textContent);
+  $('[data-locale="zh"]').click();
+  await sleep(300);
+  ok('devices-05 zh title', ($('#lbTitle').textContent || '').includes('多设备'), $('#lbTitle').textContent);
+  $('[data-device="ipad"]').click();
+  await sleep(400);
+  ok('devices-05 ipad = 1', $$('.poster').length === 1, $$('.poster').length + '');
+  ok('devices-05 ipad src', ($('.poster img').getAttribute('src') || '').includes('/devices-05-20261109/ios/ipad/2064x2752/zh/05-devices.png'), $('.poster img').getAttribute('src'));
 
   const failed = log.filter(l => l.startsWith('FAIL')).length;
   document.getElementById('out').textContent = log.join('\n') + '\n\n' + (failed ? 'FAILED ' + failed : 'ALL PASS') + ' (' + log.length + ' checks)';

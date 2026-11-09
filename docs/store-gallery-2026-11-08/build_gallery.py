@@ -191,14 +191,20 @@ def main():
     # The Plan A deck has no iPad counterpart for 03 (it is a phone + watch page),
     # so the 13" iPad posters are the same slides minus that one.
     plan_a_ipad = [slide for slide in plan_a if slide["id"] != "training"]
+    devices_only = [slide for slide in plan_a if slide["id"] == "devices"]
     all_devices = [d["id"] for d in DEVICES]
     all_locales = [code for code, _ in LOCALES]
     batches = [
         {"id": "review", "label": "11-09 审阅稿（未上传）", "dir": "../store-review-2026-11-09/exported/ios/",
-         "note": "12 语草稿，供审阅，不是上传批准。Duo 机身是本仓库 Night Sky 框的中性黑适配，不是单独的官方黑色色款文件。缺内屏的页在图内标 NO CAPTURE，画廊缺文件则显示「缺图」。旧 Plan A 的 04/05 仍在下一档，未被覆盖。",
+         "note": "12 语草稿，供审阅，不是上传批准。Duo 机身是本仓库 Night Sky 框的中性黑适配，不是单独的官方黑色色款文件。缺内屏的页在图内标 NO CAPTURE，画廊缺文件则显示「缺图」。旧 Plan A 的 04/05 仍在下一档，未被覆盖。这一档的 05 仍是改标题之前的图。",
          "slides": plan_a, "perDevice": {"ipad": plan_a_ipad}, "watchSlides": [],
          "devices": ["iphone", "ipad"],
          "locales": all_locales, "v": "20261109t161"},
+        {"id": "devices-05", "label": "05 多设备文案", "dir": "../store-review-2026-11-09/devices-05-20261109/ios/",
+         "note": "只换第 5 页主标题，iPhone 与 iPad 各 12 语。简中为「多设备，随你练」。上一档同一张图上的「可以」不会继承。继续看这一批也不等于上架批准。手表内屏还没拍到的语言仍显示 NO CAPTURE。",
+         "slides": devices_only, "perDevice": {"ipad": devices_only}, "watchSlides": [],
+         "devices": ["iphone", "ipad"],
+         "locales": all_locales, "v": "20261109t05"},
         {"id": "plana", "label": "11-08 Plan A 预览", "dir": "../store-plan-a-2026-11-08/exported/ios/",
          "note": "改版前的 Plan A 导出。本快照只带了 en/zh 的 04 与 05，其余页在画廊里显示缺图，避免把审阅稿说成已覆盖旧批次。",
          "slides": plan_a, "perDevice": {"ipad": plan_a_ipad}, "watchSlides": [],
@@ -479,7 +485,7 @@ TEMPLATE = r"""<!doctype html>
         <span class="doc-title">App Store 截图</span>
       </div>
       <h1>把肌肉恢复、训练与 <em>AI 教练</em> 装进一套海报</h1>
-      <p class="lede">当前要看的是 <b>11-09 审阅稿</b>：12 种语言，iPhone 5 页、iPad 4 页，尚未上传。下一档保留 11-08 Plan A 里已经导出的页，缺文件显示「缺图」，不拿英文内屏冒充。大图旁的意见按批次、设备、语言、文件和图片 SHA 记在这台浏览器里；图片一换，旧的「可以」不会沿用。这是审阅记录，不是上架批准。</p>
+      <p class="lede">当前要看的是 <b>11-09 审阅稿</b>：12 种语言，iPhone 5 页、iPad 4 页，尚未上传。05 的新主标题在「05 多设备文案」这一批，不覆盖旧图。下一档保留 11-08 Plan A 里已经导出的页，缺文件显示「缺图」，不拿英文内屏冒充。大图旁的意见按批次、设备、语言、文件和图片 SHA 记在这台浏览器里；图片一换，旧的「可以」不会沿用。这是审阅记录，不是上架批准。继续审阅不等于上架批准。</p>
       <div class="stats">
         <div class="stat"><b>108</b><span>审阅稿 PNG</span></div>
         <div class="stat"><b>12</b><span>语言</span></div>

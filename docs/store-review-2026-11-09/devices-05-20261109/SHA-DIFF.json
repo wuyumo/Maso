@@ -1,0 +1,272 @@
+{
+  "batch": "devices-05-20261109",
+  "status": "slide 05 copy revision for review; not store approval",
+  "baseline": "docs/store-review-2026-11-09/exported/ios is the previous delivery and was not overwritten",
+  "note": "Each poster previousSHA is the prior 05-devices.png in the review export. The new file lives beside it. Old per-image 可以 is keyed by the review batch and the previous SHA, so it does not attach to this batch.",
+  "files": [
+    {
+      "path": "design/app-store-studio-2026-10-29/app-store-screenshots.json",
+      "role": "source",
+      "previousPath": "design/app-store-studio-2026-10-29/app-store-screenshots.json",
+      "previousSHA": "ec4e87170fc36221f2454b9b48e13755593494d59be1f0d673dfa465730630d1",
+      "newSHA": "bc56e75dec62cb5b08e981be60373326374ab1f5ce2a26bff4ac86e7eeb97e0b",
+      "bytes": 50768
+    },
+    {
+      "path": "design/app-store-studio-2026-10-29/src/components/editor/headline-highlight.tsx",
+      "role": "source",
+      "previousPath": "design/app-store-studio-2026-10-29/src/components/editor/headline-highlight.tsx",
+      "previousSHA": "9d6b91875a8e3d0d6edc9f5f3dbd2a54b97086fc3186c187a0e40123b16e7a75",
+      "newSHA": "7dca4df44e9459e709c90b09dab8b9c581ff52fd2dc33ac397550f197e4e1950",
+      "bytes": 2961
+    },
+    {
+      "path": "docs/store-plan-a-2026-11-08/scripts/apply_review_copy.py",
+      "role": "source",
+      "previousPath": "docs/store-plan-a-2026-11-08/scripts/apply_review_copy.py",
+      "previousSHA": "76c88332bf9cfcb5e40270822e354aaf68a0886cdb52ea07c07184efcf72e7a6",
+      "newSHA": "8c5ead03b0e17af73f8740a3131ba5b654d834413f0d504fe396d7310dfc1e39",
+      "bytes": 22895
+    },
+    {
+      "path": "docs/store-plan-a-2026-11-08/scripts/export_review_posters.py",
+      "role": "source",
+      "previousPath": "docs/store-plan-a-2026-11-08/scripts/export_review_posters.py",
+      "previousSHA": "c031d6d5f54184f521d6ac3210e759ce2c61a9fd9821a162a9a47ea1e0a5792c",
+      "newSHA": "be18b0fa6bf15c9127ce80e5ac9fb06c4f1aa7de99c4c2c091245c42ea96f1b0",
+      "bytes": 7834
+    },
+    {
+      "path": "docs/store-gallery-2026-11-08/build_gallery.py",
+      "role": "gallery",
+      "previousPath": "docs/store-gallery-2026-11-08/build_gallery.py",
+      "previousSHA": "781067ba7d1d2e458c3a09be7d5a4a177154dd0cd6da22037fcfc6e206909204",
+      "newSHA": "c43d0e73d5a5a4d395bb3fcb5970ec1db1193042c45af8c5d119a0de2195ded2",
+      "bytes": 50527
+    },
+    {
+      "path": "docs/store-gallery-2026-11-08/selftest.html",
+      "role": "gallery",
+      "previousPath": "docs/store-gallery-2026-11-08/selftest.html",
+      "previousSHA": "39c34857056abd306e92460db45b8e9d25b295d9b92efae1a06ed4845450dc50",
+      "newSHA": "c1baff0e38f2a583e1077312c54f44a656e71c3a54d2ac72d17c9613f2eec74b",
+      "bytes": 8835
+    },
+    {
+      "path": "docs/store-gallery-2026-11-08/index.html",
+      "role": "gallery",
+      "previousPath": "docs/store-gallery-2026-11-08/index.html",
+      "previousSHA": "0837ef3f7e991ac8b8121389aaa5aaded743df743cdb210100c7e332dcfc2de0",
+      "newSHA": "bc6b7a147c8a8b81e5fffa4b06ad8e57e136763fbe5df12bef758abf80a9cd23",
+      "bytes": 106638
+    },
+    {
+      "path": "docs/store-review-2026-11-09/devices-05-20261109/ios/ipad/2064x2752/ar/05-devices.png",
+      "role": "poster",
+      "previousPath": "docs/store-review-2026-11-09/exported/ios/ipad/2064x2752/ar/05-devices.png",
+      "previousSHA": "79c9eb76a0c6bfb2a1c48417a0a8bc9a0995b2e080c9a81e19861c7807e94b0b",
+      "newSHA": "3359e042c1a01f5c94a28314f463e71b59baf8c6c77b6607919d52329e170c21",
+      "bytes": 532921
+    },
+    {
+      "path": "docs/store-review-2026-11-09/devices-05-20261109/ios/ipad/2064x2752/de/05-devices.png",
+      "role": "poster",
+      "previousPath": "docs/store-review-2026-11-09/exported/ios/ipad/2064x2752/de/05-devices.png",
+      "previousSHA": "c13ca587718ce8662d09d7f8ee09194dff644b9f5c71e578591211772f491851",
+      "newSHA": "9a8d9fd48535889a14208f7feee99c16e641b2cb920cc726ec8f431fd489bd2a",
+      "bytes": 554121
+    },
+    {
+      "path": "docs/store-review-2026-11-09/devices-05-20261109/ios/ipad/2064x2752/en/05-devices.png",
+      "role": "poster",
+      "previousPath": "docs/store-review-2026-11-09/exported/ios/ipad/2064x2752/en/05-devices.png",
+      "previousSHA": "26ed111c04283b3f69c36e3199ae2fe12bfacc8428a5ffae14618eefa1798e09",
+      "newSHA": "5e079c27303e36fcbe6c96a36c3f1869a130427e840a62ddc1bdd35244da9255",
+      "bytes": 543072
+    },
+    {
+      "path": "docs/store-review-2026-11-09/devices-05-20261109/ios/ipad/2064x2752/es/05-devices.png",
+      "role": "poster",
+      "previousPath": "docs/store-review-2026-11-09/exported/ios/ipad/2064x2752/es/05-devices.png",
+      "previousSHA": "ac243cd61c96d7a9d81fd9f8a5544bc5a29935cc2a4408513e4341da0ef36c13",
+      "newSHA": "1602db0e7964279cca3a278f1c6edcf6739a2e22ccc2c6f49025c1a0d13f1f83",
+      "bytes": 563237
+    },
+    {
+      "path": "docs/store-review-2026-11-09/devices-05-20261109/ios/ipad/2064x2752/fr/05-devices.png",
+      "role": "poster",
+      "previousPath": "docs/store-review-2026-11-09/exported/ios/ipad/2064x2752/fr/05-devices.png",
+      "previousSHA": "2bc90b4d1a4fcb5333c8fd12b75ed7ad0b5b56c7d3f56926dcbb9daf50405517",
+      "newSHA": "2fec7acac84222ce22cf1784780d6211ef3c6f2bb7c3acb3bca4269797edbe8d",
+      "bytes": 568369
+    },
+    {
+      "path": "docs/store-review-2026-11-09/devices-05-20261109/ios/ipad/2064x2752/it/05-devices.png",
+      "role": "poster",
+      "previousPath": "docs/store-review-2026-11-09/exported/ios/ipad/2064x2752/it/05-devices.png",
+      "previousSHA": "c169c475088dbdaf596c304e63656ea5c602f30e99b97d4d710b788b21cf7f07",
+      "newSHA": "8e27bb612e6128d91393ace67f4ec80a429a0ee739bbdacdf17af8ae2a85d071",
+      "bytes": 553469
+    },
+    {
+      "path": "docs/store-review-2026-11-09/devices-05-20261109/ios/ipad/2064x2752/ja/05-devices.png",
+      "role": "poster",
+      "previousPath": "docs/store-review-2026-11-09/exported/ios/ipad/2064x2752/ja/05-devices.png",
+      "previousSHA": "91f5a911c31b7dc264a8548c498321ca3599804972fa32f1524661b50a7f0584",
+      "newSHA": "5b938817dbb44ebc03ee389774028d7cf3f2a8e7b3cbce253bcf176c2292517b",
+      "bytes": 558767
+    },
+    {
+      "path": "docs/store-review-2026-11-09/devices-05-20261109/ios/ipad/2064x2752/ko/05-devices.png",
+      "role": "poster",
+      "previousPath": "docs/store-review-2026-11-09/exported/ios/ipad/2064x2752/ko/05-devices.png",
+      "previousSHA": "104fc7de6160823ac8d701ed11503fc2aa6dc8bafb428565effa08b66c47eef7",
+      "newSHA": "dcdd55c2e44ff3214a53c28e7ea6848eb42e52c57259285190bd2413a30a97b4",
+      "bytes": 503132
+    },
+    {
+      "path": "docs/store-review-2026-11-09/devices-05-20261109/ios/ipad/2064x2752/pt-BR/05-devices.png",
+      "role": "poster",
+      "previousPath": "docs/store-review-2026-11-09/exported/ios/ipad/2064x2752/pt-BR/05-devices.png",
+      "previousSHA": "a759057d002782f1d9a0fd0339a10b40dffd6be5921667c3595356f6a12a8815",
+      "newSHA": "d5c07a31b62ba2a852f80144cbe4ae99076060140bfaac0352ed6434693588ac",
+      "bytes": 566506
+    },
+    {
+      "path": "docs/store-review-2026-11-09/devices-05-20261109/ios/ipad/2064x2752/ru/05-devices.png",
+      "role": "poster",
+      "previousPath": "docs/store-review-2026-11-09/exported/ios/ipad/2064x2752/ru/05-devices.png",
+      "previousSHA": "15ed9f9f5166bdaee6c2e8d0b926dd4be51fa22138e70facfe7923d639666d34",
+      "newSHA": "dcb7ce925714229a2a33340a7cbb69a1de9028634c20904cf78f0ed641f1eb5d",
+      "bytes": 561588
+    },
+    {
+      "path": "docs/store-review-2026-11-09/devices-05-20261109/ios/ipad/2064x2752/zh/05-devices.png",
+      "role": "poster",
+      "previousPath": "docs/store-review-2026-11-09/exported/ios/ipad/2064x2752/zh/05-devices.png",
+      "previousSHA": "c2b440fefd833048603761a7d57dde9b1dc51b5081d5276fcf276772aa16b70e",
+      "newSHA": "24ac082c18602efdae97fe0b95878dc88072d347cef83791212e5aebcba6bf08",
+      "bytes": 524005
+    },
+    {
+      "path": "docs/store-review-2026-11-09/devices-05-20261109/ios/ipad/2064x2752/zh-Hant/05-devices.png",
+      "role": "poster",
+      "previousPath": "docs/store-review-2026-11-09/exported/ios/ipad/2064x2752/zh-Hant/05-devices.png",
+      "previousSHA": "7f358cd3242622e58d94d1e658363b713110b5e29dadd5ee15efab4536743ee3",
+      "newSHA": "b95c57075fe7b67773eba4be05ea78fd19d0fa7deffa0f807705169fc5876496",
+      "bytes": 536849
+    },
+    {
+      "path": "docs/store-review-2026-11-09/devices-05-20261109/ios/iphone/1320x2868/ar/05-devices.png",
+      "role": "poster",
+      "previousPath": "docs/store-review-2026-11-09/exported/ios/iphone/1320x2868/ar/05-devices.png",
+      "previousSHA": "a5024ddc308e943b0128526ac0fb62dc066168d0c8a1edac46a7ffbcb56086d8",
+      "newSHA": "56bdf0beb32866b0b527c0d00c6ba9f6802385836da5a8896a750cbeaeac216f",
+      "bytes": 533287
+    },
+    {
+      "path": "docs/store-review-2026-11-09/devices-05-20261109/ios/iphone/1320x2868/de/05-devices.png",
+      "role": "poster",
+      "previousPath": "docs/store-review-2026-11-09/exported/ios/iphone/1320x2868/de/05-devices.png",
+      "previousSHA": "8658c3b84fa25cf43ef82e2829ed23d2657a912638377ebe044effe08007bb4a",
+      "newSHA": "ea6f60b42d205f86d4ed7f94ef7c6a06c568870a756f54793341632981e645f1",
+      "bytes": 548128
+    },
+    {
+      "path": "docs/store-review-2026-11-09/devices-05-20261109/ios/iphone/1320x2868/en/05-devices.png",
+      "role": "poster",
+      "previousPath": "docs/store-review-2026-11-09/exported/ios/iphone/1320x2868/en/05-devices.png",
+      "previousSHA": "4e8224674cafbddd5bdd9e921a1fb4ddb4e5e5172e32a783d9ad601664d6f2a5",
+      "newSHA": "20caa94bb2a56aa1f554c905130d11422e671df645888f6ed9eb65581c2a828d",
+      "bytes": 542009
+    },
+    {
+      "path": "docs/store-review-2026-11-09/devices-05-20261109/ios/iphone/1320x2868/es/05-devices.png",
+      "role": "poster",
+      "previousPath": "docs/store-review-2026-11-09/exported/ios/iphone/1320x2868/es/05-devices.png",
+      "previousSHA": "94fa7c050ff42df4192d947ac22b12ee754be01e3f1b66652f6bb3805f095daa",
+      "newSHA": "2c871b57b396c5ce047653081615aa651cf689e7fb96a666a5211f7e739d38e9",
+      "bytes": 558954
+    },
+    {
+      "path": "docs/store-review-2026-11-09/devices-05-20261109/ios/iphone/1320x2868/fr/05-devices.png",
+      "role": "poster",
+      "previousPath": "docs/store-review-2026-11-09/exported/ios/iphone/1320x2868/fr/05-devices.png",
+      "previousSHA": "87ba1ddceefa2de4b27bb9a5eb8b25d57bc02d29f5db664f6017f8e382a5587f",
+      "newSHA": "8c5d75d3f22d40d540cda6d8d86e78ad4a1c4d8b1c38cd27eca356b448d32fef",
+      "bytes": 570079
+    },
+    {
+      "path": "docs/store-review-2026-11-09/devices-05-20261109/ios/iphone/1320x2868/it/05-devices.png",
+      "role": "poster",
+      "previousPath": "docs/store-review-2026-11-09/exported/ios/iphone/1320x2868/it/05-devices.png",
+      "previousSHA": "26dcbcf3c21ca25c31b1553f2340c79c69dc383a9d0a7e0fce1d76533946fa06",
+      "newSHA": "2f9cd22f0c5e88b77abc38d859a851c92e549e74b511731e5c5ff9ca1a393f26",
+      "bytes": 553621
+    },
+    {
+      "path": "docs/store-review-2026-11-09/devices-05-20261109/ios/iphone/1320x2868/ja/05-devices.png",
+      "role": "poster",
+      "previousPath": "docs/store-review-2026-11-09/exported/ios/iphone/1320x2868/ja/05-devices.png",
+      "previousSHA": "d865348a39bacf2b1d8d5edd07686d22d142e543e7b49e6491b8821170649674",
+      "newSHA": "e7737a59e10905cd17421f918264886fa76f82db1b55206ec9582a8cdb858380",
+      "bytes": 551781
+    },
+    {
+      "path": "docs/store-review-2026-11-09/devices-05-20261109/ios/iphone/1320x2868/ko/05-devices.png",
+      "role": "poster",
+      "previousPath": "docs/store-review-2026-11-09/exported/ios/iphone/1320x2868/ko/05-devices.png",
+      "previousSHA": "6d85ad70e99b33243d977d9dcf94446c09cc02e55f94a3a0b217c26b572e5607",
+      "newSHA": "858081b1232230a052f9d80159a0fef81472028e4b7a0399f49879477b1491a8",
+      "bytes": 508139
+    },
+    {
+      "path": "docs/store-review-2026-11-09/devices-05-20261109/ios/iphone/1320x2868/pt-BR/05-devices.png",
+      "role": "poster",
+      "previousPath": "docs/store-review-2026-11-09/exported/ios/iphone/1320x2868/pt-BR/05-devices.png",
+      "previousSHA": "07c34ca89eabef35ff132b34a290fe6165569956415cc53d7236365a1e1ed658",
+      "newSHA": "a123a8819f4e2c00516f703da21d7710f5c08a5fabb87c9d2f3924567338ffde",
+      "bytes": 564755
+    },
+    {
+      "path": "docs/store-review-2026-11-09/devices-05-20261109/ios/iphone/1320x2868/ru/05-devices.png",
+      "role": "poster",
+      "previousPath": "docs/store-review-2026-11-09/exported/ios/iphone/1320x2868/ru/05-devices.png",
+      "previousSHA": "e02b3a46a2ff0ac3431b54b9bbb7872de2eabfb36786bc8946c932f0b62fd57c",
+      "newSHA": "d4e6e46bffa9fe4157059a367b9da035cf43aa1151128db919ab74882ae07611",
+      "bytes": 559217
+    },
+    {
+      "path": "docs/store-review-2026-11-09/devices-05-20261109/ios/iphone/1320x2868/zh/05-devices.png",
+      "role": "poster",
+      "previousPath": "docs/store-review-2026-11-09/exported/ios/iphone/1320x2868/zh/05-devices.png",
+      "previousSHA": "feba5bf8feb22c094195ffe14d247433304773f1c1730a6a0e5cf25d190cac56",
+      "newSHA": "1d788b13b05c0d4659e3a2152f23938cd27a3ccc9e423b844065dfca1e13edee",
+      "bytes": 524558
+    },
+    {
+      "path": "docs/store-review-2026-11-09/devices-05-20261109/ios/iphone/1320x2868/zh-Hant/05-devices.png",
+      "role": "poster",
+      "previousPath": "docs/store-review-2026-11-09/exported/ios/iphone/1320x2868/zh-Hant/05-devices.png",
+      "previousSHA": "f1249e25e0a77b16f1f2557995a035ac388859e1039352c7b1e2b38438aa2a95",
+      "newSHA": "215d917bd4ca1fac555abcdf6b97210ab0a1d20a1ea50c334ef520661024d96e",
+      "bytes": 530649
+    },
+    {
+      "path": "docs/store-review-2026-11-09/devices-05-20261109/export-validation.json",
+      "role": "validation",
+      "previousPath": null,
+      "previousSHA": null,
+      "newSHA": "29127f56e067a125e476d1b990b6c3cb7e8032c2bd87069633261fe6af0618ba",
+      "bytes": 5566
+    },
+    {
+      "path": "docs/store-review-2026-11-09/devices-05-20261109/APPLY.txt",
+      "role": "note",
+      "previousPath": null,
+      "previousSHA": null,
+      "newSHA": "ba0fa3cae26b6f5f1b42db53266c8afc9bf90955baff6be8fb387d076eb6d181",
+      "bytes": 1318
+    }
+  ]
+}

@@ -16,7 +16,9 @@ from pathlib import Path
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[3]
-OUT = ROOT / "docs/store-review-2026-11-09/exported/ios"
+# EXPORT_DIR writes a side batch. The default path stays the previous review
+# export so a partial rerun cannot replace that baseline by accident.
+OUT = Path(os.environ["EXPORT_DIR"]).resolve() if os.environ.get("EXPORT_DIR") else ROOT / "docs/store-review-2026-11-09/exported/ios"
 CHROME = "google-chrome"
 BASE = "http://127.0.0.1:3456"
 LOCALES = ["zh", "zh-Hant", "en", "ja", "ko", "es", "fr", "de", "it", "pt-BR", "ru", "ar"]
@@ -177,7 +179,7 @@ def main() -> None:
             by_file[row["file"]] = row
         rows = sorted(by_file.values(), key=lambda row: row["file"])
     manifest = {
-        "batch": "store-review-2026-11-09",
+        "batch": os.environ.get("EXPORT_BATCH", "store-review-2026-11-09"),
         "status": "draft review, not upload-approved",
         "duoFrame": "neutral-black adaptation of the in-repo Night Sky bezel; not an official black SKU file",
         "counts": {

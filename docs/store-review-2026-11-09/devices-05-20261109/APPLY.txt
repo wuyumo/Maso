@@ -1,0 +1,15 @@
+05 主标题修订。只换这一页，不是上架批准。
+
+简中主标题是选定的「多设备，随你练」。繁中用当地说法「多裝置，想練就練」，不是逐字转换。副文案只点名 iPhone、iPad、iPhone Duo 和 Apple Watch，没有跨设备同步，也没有「任何设备都支持」。
+
+这一批是独立批次 devices-05（v=20261109t05），24 张：iPhone 与 iPad，各 12 语。
+旧审阅稿 docs/store-review-2026-11-09/exported/ios 里的 05 原图没有覆盖。那些图上的「可以」绑在旧批次和旧 SHA 上，不会继承到新图。继续审阅不等于上架批准。用户选定的是标题方向，不是整套素材的上架批准。
+
+ko、es、fr、de、it、pt-BR、ru、ar 的手表位仍是 NO CAPTURE（缺 watch/rest-160），没有用英文内屏填上。zh、zh-Hant、en、ja 四台设备内屏都在。
+
+安全回写（Mac 恢复后再做）：
+- 不要删、不要整包替换上一交付的 exported/ios。那是 baseline。
+- 把本目录 devices-05-20261109/ 加到 docs/store-review-2026-11-09/ 旁边。
+- 用 SHA-DIFF.json 里的 source 与 gallery 文件按路径覆盖对应源文件。
+- 每个文件先对 previousSHA，再写入 newSHA 的内容。对不上就停。
+- 不 merge，不上传 App Store，不把这批标成可上架。
