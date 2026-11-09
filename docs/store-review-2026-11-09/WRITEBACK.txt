@@ -1,51 +1,71 @@
-# Write-back to the Mac snapshot
+Write-back onto the Mac working tree. Do not git checkout this branch.
+Mac main stays where it is. Copy only the paths listed in masso-review-manifest.json.
 
-Do not checkout this branch onto the Mac main. Mac main was c3bba5dd; this branch is based on origin/main 02106ee, which is ahead of that commit. Copy only the paths below.
+Do not stop anything on port 3000 or 8840.
+Do not delete docs/store-plan-a-2026-11-08/exported.
+Do not delete docs/store-gallery-2026-11-08/review-notes.json if it already exists.
+Do not replace a live file whose SHA-256 is not the snapshot SHA in the manifest.
+New paths (snapshotSha256 null) are copies into place; they are not on the Mac yet.
+The 92 localized PNGs in the supplement packs are already on the Mac. They are not in these archives.
 
-Before replacing any file, confirm its SHA-256 still matches the snapshot
-`~/Downloads/Masso-Screenshot-Takeover-20261109T154900+0800/` sums
-(also `_meta/SHA256SUMS.txt` in that snapshot). If a live file differs, do not overwrite it.
+Before copying, from the repo root:
 
-Pack SHA-256 this branch was restored from:
-- 01-code-config-docs.tgz 57261b1906762c90968dee6df3a79249262b7ce097fc4b3f475a9d5fbdb1f2da
-- 02-frames-fonts-chat.tgz f64f110d602e8e7cae1f0838e132bea9331e0ffbe277e41f283609eed5ef6a01
-- 03-ref-04-05-assets.tgz cb22625d559797f55ce9af2eec1600213de0de14b1b23b7a39ec330c2c2bd047
+  python3 - << 'PY'
+  import hashlib, json, pathlib, shutil, sys
+  root = pathlib.Path('.').resolve()
+  manifest = json.loads(pathlib.Path('/ABSOLUTE/PATH/masso-review-manifest.json').read_text())
+  # Point unpack at the directory where the tarballs were extracted, preserving paths.
+  unpack = pathlib.Path('/ABSOLUTE/PATH/unpacked')
+  for item in manifest['files']:
+      rel = item['path']
+      if item.get('packed') is False:
+          continue
+      src = unpack / rel
+      dest = root / rel
+      if not src.is_file():
+          sys.exit(f'missing in unpack: {rel}')
+      new = hashlib.sha256(src.read_bytes()).hexdigest()
+      if new != item['newSha256']:
+          sys.exit(f'unpack hash mismatch: {rel}')
+      if dest.exists():
+          live = hashlib.sha256(dest.read_bytes()).hexdigest()
+          if item['snapshotSha256'] and live != item['snapshotSha256']:
+              sys.exit(f'live file moved, not copying: {rel} live {live}')
+          if live == new:
+              continue
+      elif item['snapshotSha256']:
+          sys.exit(f'expected live file missing: {rel}')
+      dest.parent.mkdir(parents=True, exist_ok=True)
+      shutil.copy2(src, dest)
+      print('copied', rel)
+  PY
 
-Original Duo bezel (Night Sky, before the black adaptation):
-design/app-store-studio-2026-10-29/public/duo-frame.png
-11eb961aad1a0766ace80f0433e4008fd5d67c19222df8e73ce90de47311dda4
+Critical live checks, which the script enforces:
+  design/app-store-studio-2026-10-29/app-store-screenshots.json
+    b0e1b56890fad213fa33c0b5aabb2c1cff1aabebbd47e16053fa3b4b512bfd39
+  design/app-store-studio-2026-10-29/public/duo-frame.png
+    11eb961aad1a0766ace80f0433e4008fd5d67c19222df8e73ce90de47311dda4
 
-## Changed paths
+Gallery, isolated from the live one on 8840:
 
-- design/app-store-studio-2026-10-29/ (studio source, copy JSON, duo-frame.png, duo-frame-black.json)
-- docs/store-plan-a-2026-11-08/scripts/ (recolor, copy applicator, export, deck script)
-- docs/store-gallery-2026-11-08/ (gallery; old Plan A batch left in place)
-- docs/store-review-2026-11-09/ (new export only; does not replace exported/)
+  cd docs && python3 -m http.server 8851 --bind 127.0.0.1
+  open http://127.0.0.1:8851/store-gallery-2026-11-08/
 
-## Not changed
+Opinions are stored in this browser under masso-gallery-review-v1.
+The key is batch + device + locale + file + image SHA-256.
+A new export does not keep an old "这张可以".
+The label on the page says this is a review note, not store approval.
+Download "下载意见" and save the file as
+  docs/store-gallery-2026-11-08/review-notes.json
+if you want the same notes to load on the next open. Do not delete a notes file that is already there.
 
-- docs/store-plan-a-2026-11-08/exported/  (previous 04/05 en/zh kept)
-- Masso app, watch, widgets, IAP, exercise library, privacy, site
+Studio re-render, isolated from the editor on 3000:
 
-## Run
+  cd design/app-store-studio-2026-10-29
+  npm install --legacy-peer-deps
+  npm run build
+  npm run start -- --hostname 127.0.0.1 --port 3456
 
-```sh
-cd design/app-store-studio-2026-10-29
-npm install --legacy-peer-deps
-npm run build
-npm run start -- --hostname 127.0.0.1 --port 3456
-```
-
-Export, from the repo root, against that server:
-
-```sh
-python3 docs/store-plan-a-2026-11-08/scripts/export_review_posters.py
-python3 docs/store-gallery-2026-11-08/build_gallery.py
-cd docs && python3 -m http.server 8840 --bind 127.0.0.1
-```
-
-Gallery: http://127.0.0.1:8840/store-gallery-2026-11-08/
-
-This VM cannot see the Mac editor on :3000 or the Mac gallery on :8840.
-Translations are drafts. approvedLocales is still zh, zh-Hant, en, ja.
-Do not upload to App Store Connect from this batch.
+The 24 captures that are still absent are listed in MISSING-CAPTURES.txt.
+How to take them on this Mac, without pairing the watch to a different phone, is in CAPTURE-PENDING.txt.
+This archive does not contain those 24 files. Nothing here was captured on Linux.

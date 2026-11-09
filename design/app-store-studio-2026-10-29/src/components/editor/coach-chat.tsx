@@ -299,7 +299,7 @@ function GridPlanCard({
       </div>
 
       {/* addAction pinned to the card's bottom edge, like the App's card footer. */}
-      <div style={{ marginTop: "auto", paddingTop: 14 * k }}>
+      <div style={{ marginTop: "auto", paddingTop: 14 * k, minWidth: 0, maxWidth: "100%" }}>
         <SaveCapsule label={SAVE_LABEL[locale] || SAVE_LABEL.en} k={k} />
       </div>
     </div>
@@ -325,6 +325,11 @@ function SaveCapsule({ label, k }: { label: string; k: number }) {
         borderRadius: 999,
         padding: `${10 * k}px ${12 * k}px`,
         lineHeight: 1.1,
+        boxSizing: "border-box",
+        minWidth: 0,
+        maxWidth: "100%",
+        overflow: "hidden",
+        textAlign: "center",
         boxShadow: "inset 0 1px 0 rgba(255, 255, 255, 0.10)",
       }}
     >
@@ -341,7 +346,7 @@ function SaveCapsule({ label, k }: { label: string; k: number }) {
       >
         <path d="M12 5v14M5 12h14" />
       </svg>
-      <span style={{ whiteSpace: "nowrap" }}>{label}</span>
+      <span style={{ minWidth: 0, textAlign: "center" }}>{label}</span>
     </span>
   );
 }
@@ -398,6 +403,21 @@ export function CoachChat({
 }) {
   const k = cW / REF_W;
   const rtl = locale === "ar" || locale === "he" || locale === "fa";
+  const rootRef = React.useRef<HTMLDivElement>(null);
+  const innerRef = React.useRef<HTMLDivElement>(null);
+  React.useLayoutEffect(() => {
+    const root = rootRef.current;
+    const inner = innerRef.current;
+    if (!root || !inner || !chat.height) return;
+    const available = root.clientHeight;
+    inner.style.transform = "none";
+    inner.style.width = "100%";
+    const needed = inner.scrollHeight;
+    const next = needed > available + 1 ? Math.max(0.72, available / needed) : 1;
+    inner.style.transform = next < 1 ? `scale(${next})` : "none";
+    inner.style.transformOrigin = rtl ? "top right" : "top left";
+    inner.dataset.chatFit = next.toFixed(3);
+  }, [locale, cW, rtl, chat]);
   const accent = theme.accent;
 
   const body = 52 * k;
@@ -446,6 +466,7 @@ export function CoachChat({
 
   return (
     <div
+      ref={rootRef}
       data-chat-root="1"
       dir={rtl ? "rtl" : "ltr"}
       style={{
@@ -454,13 +475,19 @@ export function CoachChat({
         top: chat.y * k,
         width: chat.width * k,
         height: chat.height ? chat.height * k : undefined,
+        overflow: "hidden",
+        pointerEvents: "none",
+      }}
+    >
+    <div
+      ref={innerRef}
+      style={{
         display: "flex",
         flexDirection: "column",
-        // The thread fills the space under the headline block and is laid out
-        // top-down with explicit gaps: leftover height must never be shared out
-        // between blocks, or the coach reply drifts away from its plan cards.
+        width: "100%",
+        // Leftover height stays below the thread. Do not spread it between blocks.
         justifyContent: "flex-start",
-        pointerEvents: "none",
+        transformOrigin: rtl ? "top right" : "top left",
       }}
     >
       {chat.bubbles.map((bubble, index) => {
@@ -796,6 +823,7 @@ export function CoachChat({
           ))}
         </div>
       )}
+    </div>
     </div>
   );
 }

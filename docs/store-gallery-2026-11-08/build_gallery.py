@@ -4,6 +4,7 @@
 Reads slide copy from the approved Studio state so captions cannot drift from
 the shipped posters, and points at the existing exported PNGs in place.
 """
+import hashlib
 import json
 import pathlib
 
@@ -168,6 +169,23 @@ def build_slides(state_path, slide_files):
     return slides
 
 
+def attach_shas(batch):
+    """Bind each poster to the bytes on disk. A new export gets a new SHA."""
+    base = (pathlib.Path(__file__).parent / batch["dir"]).resolve()
+    by_device = {device["id"]: device for device in DEVICES}
+    per = batch.get("perDevice") or {}
+    shas = {}
+    for dev_id in batch["devices"]:
+        dev = by_device[dev_id]
+        slides = per.get(dev_id) or batch["slides"]
+        for loc in batch["locales"]:
+            for slide in slides:
+                path = base / dev["dir"] / loc / slide["file"]
+                key = f"{dev_id}/{loc}/{slide['file']}"
+                shas[key] = hashlib.sha256(path.read_bytes()).hexdigest() if path.is_file() else None
+    batch["shas"] = shas
+
+
 def main():
     plan_a = build_slides(PROJECT, PLAN_A_SLIDE_FILES)
     # The Plan A deck has no iPad counterpart for 03 (it is a phone + watch page),
@@ -180,7 +198,7 @@ def main():
          "note": "12 语草稿，供审阅，不是上传批准。Duo 机身是本仓库 Night Sky 框的中性黑适配，不是单独的官方黑色色款文件。缺内屏的页在图内标 NO CAPTURE，画廊缺文件则显示「缺图」。旧 Plan A 的 04/05 仍在下一档，未被覆盖。",
          "slides": plan_a, "perDevice": {"ipad": plan_a_ipad}, "watchSlides": [],
          "devices": ["iphone", "ipad"],
-         "locales": all_locales, "v": "20261109t155"},
+         "locales": all_locales, "v": "20261109t161"},
         {"id": "plana", "label": "11-08 Plan A 预览", "dir": "../store-plan-a-2026-11-08/exported/ios/",
          "note": "改版前的 Plan A 导出。本快照只带了 en/zh 的 04 与 05，其余页在画廊里显示缺图，避免把审阅稿说成已覆盖旧批次。",
          "slides": plan_a, "perDevice": {"ipad": plan_a_ipad}, "watchSlides": [],
@@ -197,6 +215,8 @@ def main():
              "note": "当前 App Store Connect 上的线上版本",
              "slides": legacy, "watchSlides": WATCH_SLIDES, "devices": all_devices, "locales": all_locales},
         ])
+    for batch in batches:
+        attach_shas(batch)
     data = {"locales": LOCALES, "devices": DEVICES, "batches": batches}
     payload = json.dumps(data, ensure_ascii=False, indent=1)
 
@@ -386,6 +406,16 @@ TEMPLATE = r"""<!doctype html>
   .kv{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:11.5px;margin:0}
   .kv dt{color:var(--faint);letter-spacing:.04em}
   .kv dd{margin:0;font-family:var(--mono);font-size:11px;color:var(--muted);word-break:break-all}
+  .review{display:flex;flex-direction:column;gap:8px}
+  .review-kicker{font-size:12px;font-weight:650;color:var(--fg)}
+  .review-sha{font-family:var(--mono);font-size:10px;line-height:1.45;color:var(--faint);word-break:break-all}
+  .review-status{display:flex;gap:6px;flex-wrap:wrap}
+  .review-status button{padding:6px 10px;border-radius:999px;border:1px solid var(--line-strong);background:transparent;color:var(--muted);font-size:12px}
+  .review-status button[aria-pressed="true"]{color:#08110c;background:var(--accent);border-color:var(--accent)}
+  .review-status button:disabled{opacity:.35}
+  #reviewNote{width:100%;resize:vertical;min-height:72px;border-radius:10px;border:1px solid var(--line-strong);background:#070708;color:var(--fg);padding:8px 10px;font:13px/1.45 inherit}
+  .review-old{font-size:11px;line-height:1.45;color:var(--faint)}
+  .review-mark{position:absolute;left:8px;top:8px;z-index:2;padding:2px 7px;border-radius:999px;background:#08110c;color:var(--accent);font-size:10px;letter-spacing:.04em}
   .lb-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto;padding-top:8px}
   .btn{
     padding:8px 13px;border-radius:9px;border:1px solid var(--line-strong);
@@ -449,12 +479,11 @@ TEMPLATE = r"""<!doctype html>
         <span class="doc-title">App Store 截图</span>
       </div>
       <h1>把肌肉恢复、训练与 <em>AI 教练</em> 装进一套海报</h1>
-      <p class="lede">三批并列对比：<b>11-08 Plan A 预览</b>按新卖点重排、重写文案并改为一页一屏（目前只有 zh / zh-Hant / en / ja 四种语言的 iPhone 成品）；<b>11-08 调整版</b>放大了主副文案并整体下移演示机位；<b>11-06 已上传</b>是当前 App Store Connect 上的线上版本。本页只读，直接读取 PNG 原件。</p>
+      <p class="lede">当前要看的是 <b>11-09 审阅稿</b>：12 种语言，iPhone 5 页、iPad 4 页，尚未上传。下一档保留 11-08 Plan A 里已经导出的页，缺文件显示「缺图」，不拿英文内屏冒充。大图旁的意见按批次、设备、语言、文件和图片 SHA 记在这台浏览器里；图片一换，旧的「可以」不会沿用。这是审阅记录，不是上架批准。</p>
       <div class="stats">
-        <div class="stat"><b>3</b><span>批次</span></div>
-        <div class="stat"><b>312</b><span>成品 PNG</span></div>
+        <div class="stat"><b>108</b><span>审阅稿 PNG</span></div>
         <div class="stat"><b>12</b><span>语言</span></div>
-        <div class="stat"><b>5</b><span>设备</span></div>
+        <div class="stat"><b>2</b><span>审阅设备</span></div>
       </div>
     </div>
   </div>
@@ -550,6 +579,22 @@ TEMPLATE = r"""<!doctype html>
         <dt>文件</dt><dd id="lbFile"></dd>
         <dt>尺寸</dt><dd id="lbSize"></dd>
       </dl>
+      <div class="review" id="reviewBox">
+        <p class="review-kicker">审阅记录 · 不是上架批准</p>
+        <p class="review-sha" id="reviewSha"></p>
+        <div class="review-status" id="reviewStatus">
+          <button type="button" data-status="unread">未审</button>
+          <button type="button" data-status="note">有意见</button>
+          <button type="button" data-status="ok">这张可以</button>
+        </div>
+        <textarea id="reviewNote" rows="4" placeholder="只针对这一张图。换图后 SHA 变了，旧的「可以」不会带过来。"></textarea>
+        <p class="review-old" id="reviewOld" hidden></p>
+        <div class="lb-actions">
+          <button class="btn" id="reviewExport" type="button">下载意见</button>
+          <button class="btn ghost" id="reviewImport" type="button">导入意见</button>
+          <input id="reviewFile" type="file" accept="application/json" hidden>
+        </div>
+      </div>
       <div class="lb-actions">
         <button class="btn" id="lbCopy">复制文案</button>
         <button class="btn ghost" id="lbNextLocale">切换语言 →</button>
@@ -709,11 +754,14 @@ TEMPLATE = r"""<!doctype html>
         const cap = document.createElement('span');
         cap.className = 'cap';
         cap.textContent = copyFor(s, state.locale).head;
-        card.append(img, idx, cap);
+        const mark = document.createElement('span');
+        mark.className = 'review-mark';
+        mark.hidden = true;
+        card.append(img, idx, cap, mark);
         card.addEventListener('click', () => openLightbox(i));
         strip.appendChild(card);
       });
-      requestAnimationFrame(updateStripNav);
+      requestAnimationFrame(() => { updateStripNav(); paintReviewMarks(); });
     } else {
       matrix.innerHTML = '';
       batchLocales().forEach(([code, name]) => {
@@ -798,6 +846,7 @@ TEMPLATE = r"""<!doctype html>
     document.getElementById('lbPrev').disabled = state.index <= 0;
     document.getElementById('lbNext').disabled = state.index >= slides.length - 1;
     writeHash();
+    paintReview();
   }
   const step = d => {
     const slides = slidesFor(state.device);
@@ -831,6 +880,8 @@ TEMPLATE = r"""<!doctype html>
   /* ---------- keyboard ---------- */
   document.addEventListener('keydown', e => {
     if (!state.lightbox) return;
+    const tag = e.target && e.target.tagName;
+    if (tag === 'TEXTAREA' || tag === 'INPUT') return;
     if (e.key === 'Escape') { closeLightbox(); return; }
     if (e.key === 'ArrowRight') step(1);
     if (e.key === 'ArrowLeft') step(-1);
@@ -878,9 +929,153 @@ TEMPLATE = r"""<!doctype html>
     if (state.lightbox) renderLightbox();
   }
 
+  /* ---------- review notes, bound to image bytes ---------- */
+  const REVIEW_STORE = 'masso-gallery-review-v1';
+  const reviewStore = { version: 1, notes: {} };
+  function loadReviewStore() {
+    try {
+      const raw = JSON.parse(localStorage.getItem(REVIEW_STORE) || '');
+      if (raw && raw.notes && typeof raw.notes === 'object') reviewStore.notes = raw.notes;
+    } catch {}
+  }
+  function persistReview() {
+    try { localStorage.setItem(REVIEW_STORE, JSON.stringify(reviewStore)); } catch {}
+  }
+  function shaFor(device, locale, file) {
+    const sha = (batchOf().shas || {})[device + '/' + locale + '/' + file];
+    return sha || null;
+  }
+  function reviewKey(device, locale, file, sha) {
+    return [state.batch, device, locale, file, sha].join('|');
+  }
+  function entryFor(device, locale, file, sha) {
+    if (!sha) return null;
+    return reviewStore.notes[reviewKey(device, locale, file, sha)] || null;
+  }
+  function writeEntry(device, locale, file, sha, status, text) {
+    if (!sha) return;
+    const key = reviewKey(device, locale, file, sha);
+    const clean = (text || '').trim();
+    if ((!status || status === 'unread') && !clean) delete reviewStore.notes[key];
+    else reviewStore.notes[key] = { status: status || 'note', text: clean, updatedAt: new Date().toISOString() };
+    persistReview();
+  }
+  function reviewMarkText(entry) {
+    if (!entry) return '';
+    if (entry.status === 'ok') return '可以';
+    if (entry.status === 'note' || entry.text) return '有意见';
+    return '';
+  }
+  function paintReviewMarks() {
+    const slides = slidesFor(state.device);
+    document.querySelectorAll('#strip .poster').forEach(card => {
+      const slide = slides[Number(card.dataset.index)];
+      const mark = card.querySelector('.review-mark');
+      if (!slide || !mark) return;
+      const text = reviewMarkText(entryFor(state.device, state.locale, slide.file, shaFor(state.device, state.locale, slide.file)));
+      mark.hidden = !text;
+      mark.textContent = text;
+    });
+  }
+  function paintReview() {
+    const slides = slidesFor(state.device);
+    const s = slides[state.index];
+    const shaEl = document.getElementById('reviewSha');
+    const noteEl = document.getElementById('reviewNote');
+    const oldEl = document.getElementById('reviewOld');
+    if (!s || !shaEl || !noteEl) return;
+    const sha = shaFor(state.device, state.locale, s.file);
+    const entry = entryFor(state.device, state.locale, s.file, sha);
+    const status = entry && entry.status ? entry.status : 'unread';
+    shaEl.textContent = sha
+      ? ('SHA-256 ' + sha)
+      : '这张图还没有导出文件，不能标成可以。';
+    document.querySelectorAll('#reviewStatus button').forEach(button => {
+      button.disabled = !sha;
+      button.setAttribute('aria-pressed', String(button.dataset.status === status));
+    });
+    if (document.activeElement !== noteEl) noteEl.value = entry && entry.text ? entry.text : '';
+    noteEl.disabled = !sha;
+    const prefix = [state.batch, state.device, state.locale, s.file, ''].join('|');
+    const current = sha ? reviewKey(state.device, state.locale, s.file, sha) : '';
+    const older = Object.entries(reviewStore.notes).filter(([key]) => key.startsWith(prefix) && key !== current);
+    if (older.length) {
+      oldEl.hidden = false;
+      const bits = older.map(([, value]) => value.text || value.status).filter(Boolean);
+      oldEl.textContent = '同路径有 ' + older.length + ' 条旧记录，SHA 已不同，旧的「可以」不会用在这张上。'
+        + (bits.length ? ' 旧意见：' + bits.join(' / ') : '');
+    } else {
+      oldEl.hidden = true;
+      oldEl.textContent = '';
+    }
+  }
+  document.querySelectorAll('#reviewStatus button').forEach(button => {
+    button.addEventListener('click', () => {
+      const slides = slidesFor(state.device);
+      const s = slides[state.index];
+      if (!s) return;
+      const sha = shaFor(state.device, state.locale, s.file);
+      writeEntry(state.device, state.locale, s.file, sha, button.dataset.status, document.getElementById('reviewNote').value);
+      paintReview();
+      paintReviewMarks();
+    });
+  });
+  document.getElementById('reviewNote').addEventListener('input', () => {
+    const slides = slidesFor(state.device);
+    const s = slides[state.index];
+    if (!s) return;
+    const sha = shaFor(state.device, state.locale, s.file);
+    const current = entryFor(state.device, state.locale, s.file, sha);
+    const text = document.getElementById('reviewNote').value;
+    const status = current && current.status && current.status !== 'unread'
+      ? current.status
+      : (text.trim() ? 'note' : 'unread');
+    writeEntry(state.device, state.locale, s.file, sha, status, text);
+    paintReview();
+    paintReviewMarks();
+  });
+  document.getElementById('reviewExport').addEventListener('click', () => {
+    const blob = new Blob([JSON.stringify({ version: 1, notes: reviewStore.notes }, null, 2)], { type: 'application/json' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'review-notes.json';
+    link.click();
+    URL.revokeObjectURL(link.href);
+  });
+  document.getElementById('reviewImport').addEventListener('click', () => document.getElementById('reviewFile').click());
+  document.getElementById('reviewFile').addEventListener('change', async event => {
+    const file = event.target.files && event.target.files[0];
+    event.target.value = '';
+    if (!file) return;
+    const data = JSON.parse(await file.text());
+    const notes = data && data.notes;
+    if (!notes || typeof notes !== 'object') return;
+    Object.entries(notes).forEach(([key, value]) => {
+      if (value && typeof value === 'object') reviewStore.notes[key] = value;
+    });
+    persistReview();
+    paintReview();
+    paintReviewMarks();
+  });
+
+  loadReviewStore();
   readHash(location.hash);
   render();
   window.addEventListener('hashchange', () => { if (!writingHash) readHash(); });
+  fetch('review-notes.json', { cache: 'no-store' }).then(response => response.ok ? response.json() : null).then(data => {
+    if (!data || !data.notes || typeof data.notes !== 'object') return;
+    let changed = false;
+    Object.entries(data.notes).forEach(([key, value]) => {
+      if (!reviewStore.notes[key] && value && typeof value === 'object') {
+        reviewStore.notes[key] = value;
+        changed = true;
+      }
+    });
+    if (!changed) return;
+    persistReview();
+    render();
+    if (state.lightbox) renderLightbox();
+  }).catch(() => {});
 })();
 </script>
 </body>

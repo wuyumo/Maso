@@ -28,7 +28,7 @@ const familyFallback: Record<string, Partial<Record<'ipad' | 'duo', string>>> = 
 const WATCH_SCENES = new Set(['exercise', 'exercise-160', 'exercise-185', 'rest', 'rest-160', 'watch-exercise', 'watch-rest']);
 export const LOCALIZED_LOCALES = ['zh','zh-Hant','en','ja','ko','es','fr','de','it','pt-BR','ru','ar'];
 /** Asset cache-buster for the localized capture set. */
-const ASSET_VERSION = 'plan-a-20261109b';
+const ASSET_VERSION = 'plan-a-20261109c';
 // Screen shown on each device of the "every supported device" page. Each family
 // gets the screen that reads best at its print size: the home screen on phone and
 // tablet, the wider insights layout on the Duo, and the rest state on the watch

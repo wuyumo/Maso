@@ -178,6 +178,16 @@
   .kv{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:11.5px;margin:0}
   .kv dt{color:var(--faint);letter-spacing:.04em}
   .kv dd{margin:0;font-family:var(--mono);font-size:11px;color:var(--muted);word-break:break-all}
+  .review{display:flex;flex-direction:column;gap:8px}
+  .review-kicker{font-size:12px;font-weight:650;color:var(--fg)}
+  .review-sha{font-family:var(--mono);font-size:10px;line-height:1.45;color:var(--faint);word-break:break-all}
+  .review-status{display:flex;gap:6px;flex-wrap:wrap}
+  .review-status button{padding:6px 10px;border-radius:999px;border:1px solid var(--line-strong);background:transparent;color:var(--muted);font-size:12px}
+  .review-status button[aria-pressed="true"]{color:#08110c;background:var(--accent);border-color:var(--accent)}
+  .review-status button:disabled{opacity:.35}
+  #reviewNote{width:100%;resize:vertical;min-height:72px;border-radius:10px;border:1px solid var(--line-strong);background:#070708;color:var(--fg);padding:8px 10px;font:13px/1.45 inherit}
+  .review-old{font-size:11px;line-height:1.45;color:var(--faint)}
+  .review-mark{position:absolute;left:8px;top:8px;z-index:2;padding:2px 7px;border-radius:999px;background:#08110c;color:var(--accent);font-size:10px;letter-spacing:.04em}
   .lb-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto;padding-top:8px}
   .btn{
     padding:8px 13px;border-radius:9px;border:1px solid var(--line-strong);
@@ -241,12 +251,11 @@
         <span class="doc-title">App Store 截图</span>
       </div>
       <h1>把肌肉恢复、训练与 <em>AI 教练</em> 装进一套海报</h1>
-      <p class="lede">三批并列对比：<b>11-08 Plan A 预览</b>按新卖点重排、重写文案并改为一页一屏（目前只有 zh / zh-Hant / en / ja 四种语言的 iPhone 成品）；<b>11-08 调整版</b>放大了主副文案并整体下移演示机位；<b>11-06 已上传</b>是当前 App Store Connect 上的线上版本。本页只读，直接读取 PNG 原件。</p>
+      <p class="lede">当前要看的是 <b>11-09 审阅稿</b>：12 种语言，iPhone 5 页、iPad 4 页，尚未上传。下一档保留 11-08 Plan A 里已经导出的页，缺文件显示「缺图」，不拿英文内屏冒充。大图旁的意见按批次、设备、语言、文件和图片 SHA 记在这台浏览器里；图片一换，旧的「可以」不会沿用。这是审阅记录，不是上架批准。</p>
       <div class="stats">
-        <div class="stat"><b>3</b><span>批次</span></div>
-        <div class="stat"><b>312</b><span>成品 PNG</span></div>
+        <div class="stat"><b>108</b><span>审阅稿 PNG</span></div>
         <div class="stat"><b>12</b><span>语言</span></div>
-        <div class="stat"><b>5</b><span>设备</span></div>
+        <div class="stat"><b>2</b><span>审阅设备</span></div>
       </div>
     </div>
   </div>
@@ -342,6 +351,22 @@
         <dt>文件</dt><dd id="lbFile"></dd>
         <dt>尺寸</dt><dd id="lbSize"></dd>
       </dl>
+      <div class="review" id="reviewBox">
+        <p class="review-kicker">审阅记录 · 不是上架批准</p>
+        <p class="review-sha" id="reviewSha"></p>
+        <div class="review-status" id="reviewStatus">
+          <button type="button" data-status="unread">未审</button>
+          <button type="button" data-status="note">有意见</button>
+          <button type="button" data-status="ok">这张可以</button>
+        </div>
+        <textarea id="reviewNote" rows="4" placeholder="只针对这一张图。换图后 SHA 变了，旧的「可以」不会带过来。"></textarea>
+        <p class="review-old" id="reviewOld" hidden></p>
+        <div class="lb-actions">
+          <button class="btn" id="reviewExport" type="button">下载意见</button>
+          <button class="btn ghost" id="reviewImport" type="button">导入意见</button>
+          <input id="reviewFile" type="file" accept="application/json" hidden>
+        </div>
+      </div>
       <div class="lb-actions">
         <button class="btn" id="lbCopy">复制文案</button>
         <button class="btn ghost" id="lbNextLocale">切换语言 →</button>
@@ -907,7 +932,117 @@
     "ru",
     "ar"
    ],
-   "v": "20261109t155"
+   "v": "20261109t161",
+   "shas": {
+    "iphone/en/01-plan.png": "ec97705103c0a74000c0e131e44c1b35567261c14bd0f06bfd5d38e1556f6be8",
+    "iphone/en/02-recovery.png": "741da7a046c7725bf97e73201e50a679e83aaafce098a7a5f623df4ab93f7863",
+    "iphone/en/03-training.png": "ef68ef87dc933b01ee239e8991c674208bf8fb03563972b0909176c333723309",
+    "iphone/en/04-diet.png": "10a4502cb2b81af4f09e9865393dd344171ef9d0fcdf096c74e1c2671bc7c4f0",
+    "iphone/en/05-devices.png": "4e8224674cafbddd5bdd9e921a1fb4ddb4e5e5172e32a783d9ad601664d6f2a5",
+    "iphone/zh/01-plan.png": "c1b9ed6f0c606dbc59d6511b2ce8e89b06c9ad9262c704e572aa25a530ef11f3",
+    "iphone/zh/02-recovery.png": "643b1298cbeaa6e7f6aba0b4232004a505a49438eb92eb08dfaaa84faec2496f",
+    "iphone/zh/03-training.png": "756e6999e8a8097e7109ec3ec8d59672f5eda695e1ed96a493ab5de570ff54af",
+    "iphone/zh/04-diet.png": "ed406a6d15b61fae39779efb53f9d55a1c4d0686391369d1f767318e14030fb1",
+    "iphone/zh/05-devices.png": "feba5bf8feb22c094195ffe14d247433304773f1c1730a6a0e5cf25d190cac56",
+    "iphone/zh-Hant/01-plan.png": "bc70943e1e44b69a816534a9921d5ef95da85ca06b2fd344094e4e11df7e55d2",
+    "iphone/zh-Hant/02-recovery.png": "5b578af43f953a1fc04ceb437c2507de50ed57e96b1058ffb71c4a4058b1350b",
+    "iphone/zh-Hant/03-training.png": "4cbd3784a924e7a847060b2a40d06e314910f2dbb0d4a7e10d29865b0e8607c3",
+    "iphone/zh-Hant/04-diet.png": "bfd1bff7c1598b6777d5947ff8c20dcc5e8146306ac14d65e2803d4c1876684b",
+    "iphone/zh-Hant/05-devices.png": "f1249e25e0a77b16f1f2557995a035ac388859e1039352c7b1e2b38438aa2a95",
+    "iphone/ja/01-plan.png": "9d9cd600f435048857486d9c98cc901c4abda91a854567190fce9b2b46b1c865",
+    "iphone/ja/02-recovery.png": "763c3b3dcec286aec3a79d72d819a8ae1e9cbcba0835d285501b2ad891fda951",
+    "iphone/ja/03-training.png": "bd6972049ec9cc44ec715260e1d90760b6da0aaade19cc3181cd3e0046ef8d7c",
+    "iphone/ja/04-diet.png": "15d275565013c7e3bdd70a8b851e56da25c6529556d7925cd92a1b2be99add26",
+    "iphone/ja/05-devices.png": "d865348a39bacf2b1d8d5edd07686d22d142e543e7b49e6491b8821170649674",
+    "iphone/ko/01-plan.png": "ec12d5428e05a41353db6574189cf5572b7d7089e73eed91ab786d6103d584d0",
+    "iphone/ko/02-recovery.png": "f39b598d72cef3a54323f6b89523a4d01ab6c72007f2eb97759d13f4c6223554",
+    "iphone/ko/03-training.png": "e2efbbb214772cb5283f22fe8195b5c2225dc99323aea9c60c6c1eff73d66521",
+    "iphone/ko/04-diet.png": "521da188858e5f73109aa3530c7551bde3e3d6fdd9b6661b7f976b210fdf31bf",
+    "iphone/ko/05-devices.png": "6d85ad70e99b33243d977d9dcf94446c09cc02e55f94a3a0b217c26b572e5607",
+    "iphone/es/01-plan.png": "55f376de99402fce711b5fd81e82e7f0d1bae045d6f61b1963c5047495dfcb17",
+    "iphone/es/02-recovery.png": "a7c728d247e47d968ed9db72d1232cf6b9466004d0e46c8a13a52179e6c18299",
+    "iphone/es/03-training.png": "62744cb5028438ab2a3a0713c53326f97420c3ee4448ef6e8517c27c8d41918a",
+    "iphone/es/04-diet.png": "9dfaa9aeeec3c6c9171cfd48106acb2926e114c826a520c769c0dfba9e63d00f",
+    "iphone/es/05-devices.png": "94fa7c050ff42df4192d947ac22b12ee754be01e3f1b66652f6bb3805f095daa",
+    "iphone/fr/01-plan.png": "9f097a8e8a1127046d871447a54d143f3d79f367f8267eea8333eb8398f796ef",
+    "iphone/fr/02-recovery.png": "61587bfeb5558355d977145eca6802ac611bb123e8ccf72aaa15d49a089b162c",
+    "iphone/fr/03-training.png": "ee7ba4ab131f69271f24517541193b4dbb4845899c410cd988aa38275cecc93f",
+    "iphone/fr/04-diet.png": "6ce0bacccbc080acd92b587ab781110c8cd84aeb72ef0577b064e61a2787eba4",
+    "iphone/fr/05-devices.png": "87ba1ddceefa2de4b27bb9a5eb8b25d57bc02d29f5db664f6017f8e382a5587f",
+    "iphone/de/01-plan.png": "69b8c6e93b2fdcbfa9e81edf92f1df9e0aa2d00abbc99d3a8b6b703945d0418e",
+    "iphone/de/02-recovery.png": "158049e7ce046455eae421ac010c283192fe3c772d56096c7313a5e9bacac8b6",
+    "iphone/de/03-training.png": "4291f5accccd9f2b6a68592f239c49eff5b6f0528d26c01ac34a7d5ce3e70158",
+    "iphone/de/04-diet.png": "5f6243ec97d8f1ebcd5bcea9fba6909846add661f8d8dfdeb01fae85380be687",
+    "iphone/de/05-devices.png": "8658c3b84fa25cf43ef82e2829ed23d2657a912638377ebe044effe08007bb4a",
+    "iphone/it/01-plan.png": "ca6d2f86570e60a8ad8d458f91fd9c1258cf5ed57d41ac9871323f592aedb631",
+    "iphone/it/02-recovery.png": "e7cff5b403d03d6fef725be15ab7d3d738797f22d3128ceb5a657bd08b5b1c7b",
+    "iphone/it/03-training.png": "e650e702f84734dee888470fa56eccbe557c57f7e0d18a6cdbed2dd1b0cb3a73",
+    "iphone/it/04-diet.png": "5790b7cd7a561eefca240f713194146b70b9bb8b63672981e76cfd16613fb7b4",
+    "iphone/it/05-devices.png": "26dcbcf3c21ca25c31b1553f2340c79c69dc383a9d0a7e0fce1d76533946fa06",
+    "iphone/pt-BR/01-plan.png": "9b35cfed3b37d69e8695a86247626c7965480b488a9af8432e458c6d380ac64b",
+    "iphone/pt-BR/02-recovery.png": "94f917552b010a7d73fb9158e0aa9df13978ce55987e3f42ec96999bdcffa783",
+    "iphone/pt-BR/03-training.png": "499d9163b924d89f3da6cbcc3bd4449c8f9e5ca757b1f68beb10d6e0d1f48db1",
+    "iphone/pt-BR/04-diet.png": "981729b6086056e8d999c6bb3201caa14c79cc6ed935184c84602cb3f20040cc",
+    "iphone/pt-BR/05-devices.png": "07c34ca89eabef35ff132b34a290fe6165569956415cc53d7236365a1e1ed658",
+    "iphone/ru/01-plan.png": "58edfe405c96fbc0cae57cf7861d9b2409771d32e3c536b36c4efa6bfa0bc2eb",
+    "iphone/ru/02-recovery.png": "fa99b268e3bb23aead1f10ceb5531d294afda25efa936d6115ab9228a4914069",
+    "iphone/ru/03-training.png": "af2983f247051adea3d157f2e8a75e62ce990ddbfd65445649fc21d535b9062b",
+    "iphone/ru/04-diet.png": "174cd4d2c46100ca20bc2df5ad3eb1df4fa22c6728700333bd203f505f1fbad6",
+    "iphone/ru/05-devices.png": "e02b3a46a2ff0ac3431b54b9bbb7872de2eabfb36786bc8946c932f0b62fd57c",
+    "iphone/ar/01-plan.png": "160c75886f75b02b63437beb181b9642ee1d3a92a5cb4123bf1d293cd321b20a",
+    "iphone/ar/02-recovery.png": "b20e8baf7124397a63d3cf1c353f90dcdde12f4787feaae2577f71b03f03dc6c",
+    "iphone/ar/03-training.png": "83100f4d6ff967069bd221a0de13cfe1526e3e35a0a9642345cf2f9731f17056",
+    "iphone/ar/04-diet.png": "4005503a76a0d37cdd133a07eebd36427654354fc0330bcb4df0215c13e99c17",
+    "iphone/ar/05-devices.png": "a5024ddc308e943b0128526ac0fb62dc066168d0c8a1edac46a7ffbcb56086d8",
+    "ipad/en/01-plan.png": "6435063d1553dac496c1392f6e72f3fa01381b5d519f7d0350bae9842c04b0e2",
+    "ipad/en/02-recovery.png": "62b2482968e9fa5a663bdf7424bd51f3b99ea703c2b77a5e4bf2f0e555cc8e9e",
+    "ipad/en/04-diet.png": "2c20a97c90511e28c416d7dc708338f7529e3a315b5b8e6647f48ebfc3f3f6d5",
+    "ipad/en/05-devices.png": "26ed111c04283b3f69c36e3199ae2fe12bfacc8428a5ffae14618eefa1798e09",
+    "ipad/zh/01-plan.png": "f68108dab0c80b01847a12be9caf6fe70f858ad741f2967af340676accb9ef13",
+    "ipad/zh/02-recovery.png": "88b3b8a8b5d42702b30328302b9c15ee4c6445e3fb9b49b70148395cf248bc3f",
+    "ipad/zh/04-diet.png": "74c9590eb9f2c352304f83bcd4f833ec2b7b066dd52126d33c41739a1b5032cd",
+    "ipad/zh/05-devices.png": "c2b440fefd833048603761a7d57dde9b1dc51b5081d5276fcf276772aa16b70e",
+    "ipad/zh-Hant/01-plan.png": "4f53207bd12c42009d1f0d3a8b147eb464c66fb26d188b220ba51888cf1a59d9",
+    "ipad/zh-Hant/02-recovery.png": "6a06db197adcec88758199bdcdfcd478bbc4ab454870c469ba961494fec7aa63",
+    "ipad/zh-Hant/04-diet.png": "8e62c95198ea1af6c4354bd0d3d1323ff951ec7c3bd27cd40a2884ed3cd43056",
+    "ipad/zh-Hant/05-devices.png": "7f358cd3242622e58d94d1e658363b713110b5e29dadd5ee15efab4536743ee3",
+    "ipad/ja/01-plan.png": "5d33d3b57df1259c17bfa69076c4a43eacb96889d66a3b03acd946503bb7f12a",
+    "ipad/ja/02-recovery.png": "0da407d6b88cab857631b8c71f5bcf7eb01e6d474174c5c04d4ccad7af07b36b",
+    "ipad/ja/04-diet.png": "5d99e4e8aa431e60200181ea002ddd1e9ef5ccdca08f5e8047823ddd7d1a68a5",
+    "ipad/ja/05-devices.png": "91f5a911c31b7dc264a8548c498321ca3599804972fa32f1524661b50a7f0584",
+    "ipad/ko/01-plan.png": "15e1052034d986ca13c4a8a8b90864fe11a2aa5d053f32231b9f68943288c450",
+    "ipad/ko/02-recovery.png": "6055f5848fc66ddee72766681a6dfe5d73a462ec25b048c1cfa3d35b0edc066b",
+    "ipad/ko/04-diet.png": "02057091a3a68464e91d58bd49d21459d6715256d060c0453fd711b49b9bd962",
+    "ipad/ko/05-devices.png": "104fc7de6160823ac8d701ed11503fc2aa6dc8bafb428565effa08b66c47eef7",
+    "ipad/es/01-plan.png": "125090f54457d0c6eec317fcf075efd48455478ca02f04fb9d13d66a32751a6b",
+    "ipad/es/02-recovery.png": "884aa1c9cb372f98a3afec0d7ed1b599a988eb20d1913c28166d11b4981c3d17",
+    "ipad/es/04-diet.png": "c92ce64555027f5106dde7914286e8f7955bf679d6eee98925e87f75588e0c3f",
+    "ipad/es/05-devices.png": "ac243cd61c96d7a9d81fd9f8a5544bc5a29935cc2a4408513e4341da0ef36c13",
+    "ipad/fr/01-plan.png": "10288e3a2d9c22e2e4cab35e6157cc9346b3a15165df75597f2f2feefb42b2eb",
+    "ipad/fr/02-recovery.png": "cd703cfcd2f7ca45ffc6a6b3ba2fc11ec418c9df016c97558c5cee39c2f572d6",
+    "ipad/fr/04-diet.png": "c18de01bb948bd8689c370fd927cd43e92c75ec330f9250ebf3586088f210293",
+    "ipad/fr/05-devices.png": "2bc90b4d1a4fcb5333c8fd12b75ed7ad0b5b56c7d3f56926dcbb9daf50405517",
+    "ipad/de/01-plan.png": "7227d14b956ec9478be03874fcaa52f7dfb31e6419c34945d2f819d35896a0fa",
+    "ipad/de/02-recovery.png": "41221c20f07da2a619cfb380ced3834e9949acbe4da7814f29c16b5e4caf5a28",
+    "ipad/de/04-diet.png": "babe7d9b19016279ad58025f5f8c18f36a4f61391f254cfd6c66b3796a83f3a8",
+    "ipad/de/05-devices.png": "c13ca587718ce8662d09d7f8ee09194dff644b9f5c71e578591211772f491851",
+    "ipad/it/01-plan.png": "5e04ffe51ea07e3ff5886b25d473777f9468bbc0968205e7301cde12b4a7cf34",
+    "ipad/it/02-recovery.png": "2762c92b4af1f17c3933ff450bbe14806341a7ef4c99786889ab1fef8b93f36c",
+    "ipad/it/04-diet.png": "746f228068fca176925287998e338dea82a05531794b97cc8a171a8bb99214ef",
+    "ipad/it/05-devices.png": "c169c475088dbdaf596c304e63656ea5c602f30e99b97d4d710b788b21cf7f07",
+    "ipad/pt-BR/01-plan.png": "08bff5e42ffe5bfa0fca6a40505c4301612d6ce544889afbd6abd7bc2b4b22f4",
+    "ipad/pt-BR/02-recovery.png": "95de69c48b0c72f81020d9fa3f963636e8080a029c7babff501b48c94ef3f683",
+    "ipad/pt-BR/04-diet.png": "c624a1ef5655b8fdf169dda742a857b337eeead897ffc21f2f219b35c355f6b3",
+    "ipad/pt-BR/05-devices.png": "a759057d002782f1d9a0fd0339a10b40dffd6be5921667c3595356f6a12a8815",
+    "ipad/ru/01-plan.png": "5e82ddf6924e5ba19e740f680286ad029a0efc03a89f60aa49ca0222998fb58c",
+    "ipad/ru/02-recovery.png": "513d6f4c93b605912a6e507d0688360e3955ed8164ada0ce98efb7ba1fa44bf7",
+    "ipad/ru/04-diet.png": "56cee92ff5ae0378f04494bd1cbcdf289408309ec34581f173f1c3452b9e2c20",
+    "ipad/ru/05-devices.png": "15ed9f9f5166bdaee6c2e8d0b926dd4be51fa22138e70facfe7923d639666d34",
+    "ipad/ar/01-plan.png": "7b82f4f0d67db9183c260d287a975f2560212084c2960c5b47672b9f5eff239c",
+    "ipad/ar/02-recovery.png": "2adc6ef6de376fe83d93a0e272baa34464d0721e5ee8698bc98060ac2aaaa8ad",
+    "ipad/ar/04-diet.png": "20e15949a4619dfd6a445fd1c6ae5edb86cc5b30e68f2d94bd4f41fe62fbb91f",
+    "ipad/ar/05-devices.png": "79c9eb76a0c6bfb2a1c48417a0a8bc9a0995b2e080c9a81e19861c7807e94b0b"
+   }
   },
   {
    "id": "plana",
@@ -1354,7 +1489,45 @@
     "en",
     "ja"
    ],
-   "v": "20261109c"
+   "v": "20261109c",
+   "shas": {
+    "iphone/zh/01-plan.png": null,
+    "iphone/zh/02-recovery.png": null,
+    "iphone/zh/03-training.png": null,
+    "iphone/zh/04-diet.png": "8612cb3e4c065ac68e9962ac6dc3d96c7a5fa568f28b9f9452c6059aa30ed873",
+    "iphone/zh/05-devices.png": "5e44815e5f51895c829071d12291f0f2388a1af3ffb30f4ca1a3cbcfd24c343d",
+    "iphone/zh-Hant/01-plan.png": null,
+    "iphone/zh-Hant/02-recovery.png": null,
+    "iphone/zh-Hant/03-training.png": null,
+    "iphone/zh-Hant/04-diet.png": null,
+    "iphone/zh-Hant/05-devices.png": null,
+    "iphone/en/01-plan.png": null,
+    "iphone/en/02-recovery.png": null,
+    "iphone/en/03-training.png": null,
+    "iphone/en/04-diet.png": "8c4bb7348be3fb2833b21815f78ac7dd5fd3cb4b55b3062bb73ed8cc54996620",
+    "iphone/en/05-devices.png": "8c514b75158f2fb65f8db16355edcd76ffbbcbf5d030f5939db96b704b0068d5",
+    "iphone/ja/01-plan.png": null,
+    "iphone/ja/02-recovery.png": null,
+    "iphone/ja/03-training.png": null,
+    "iphone/ja/04-diet.png": null,
+    "iphone/ja/05-devices.png": null,
+    "ipad/zh/01-plan.png": null,
+    "ipad/zh/02-recovery.png": null,
+    "ipad/zh/04-diet.png": "ce6ab6d2d03a46ceef058bea2658a58b79cb82744e64469d02349e0e60a1748e",
+    "ipad/zh/05-devices.png": "97d753ee71fb2e8fda50d8648faef5d4ce7521d55581e427411451706cea1873",
+    "ipad/zh-Hant/01-plan.png": null,
+    "ipad/zh-Hant/02-recovery.png": null,
+    "ipad/zh-Hant/04-diet.png": null,
+    "ipad/zh-Hant/05-devices.png": null,
+    "ipad/en/01-plan.png": null,
+    "ipad/en/02-recovery.png": null,
+    "ipad/en/04-diet.png": "1ee92b682a241f4357c333c43733499efb11b3a51b8e1b24c93f91ebbda79adc",
+    "ipad/en/05-devices.png": "c138d02c91639e040489de47b6d0eb5e7c008efc607aecda779eb7df3bdc13c5",
+    "ipad/ja/01-plan.png": null,
+    "ipad/ja/02-recovery.png": null,
+    "ipad/ja/04-diet.png": null,
+    "ipad/ja/05-devices.png": null
+   }
   }
  ]
 }</script>
@@ -1508,11 +1681,14 @@
         const cap = document.createElement('span');
         cap.className = 'cap';
         cap.textContent = copyFor(s, state.locale).head;
-        card.append(img, idx, cap);
+        const mark = document.createElement('span');
+        mark.className = 'review-mark';
+        mark.hidden = true;
+        card.append(img, idx, cap, mark);
         card.addEventListener('click', () => openLightbox(i));
         strip.appendChild(card);
       });
-      requestAnimationFrame(updateStripNav);
+      requestAnimationFrame(() => { updateStripNav(); paintReviewMarks(); });
     } else {
       matrix.innerHTML = '';
       batchLocales().forEach(([code, name]) => {
@@ -1597,6 +1773,7 @@
     document.getElementById('lbPrev').disabled = state.index <= 0;
     document.getElementById('lbNext').disabled = state.index >= slides.length - 1;
     writeHash();
+    paintReview();
   }
   const step = d => {
     const slides = slidesFor(state.device);
@@ -1630,6 +1807,8 @@
   /* ---------- keyboard ---------- */
   document.addEventListener('keydown', e => {
     if (!state.lightbox) return;
+    const tag = e.target && e.target.tagName;
+    if (tag === 'TEXTAREA' || tag === 'INPUT') return;
     if (e.key === 'Escape') { closeLightbox(); return; }
     if (e.key === 'ArrowRight') step(1);
     if (e.key === 'ArrowLeft') step(-1);
@@ -1677,9 +1856,153 @@
     if (state.lightbox) renderLightbox();
   }
 
+  /* ---------- review notes, bound to image bytes ---------- */
+  const REVIEW_STORE = 'masso-gallery-review-v1';
+  const reviewStore = { version: 1, notes: {} };
+  function loadReviewStore() {
+    try {
+      const raw = JSON.parse(localStorage.getItem(REVIEW_STORE) || '');
+      if (raw && raw.notes && typeof raw.notes === 'object') reviewStore.notes = raw.notes;
+    } catch {}
+  }
+  function persistReview() {
+    try { localStorage.setItem(REVIEW_STORE, JSON.stringify(reviewStore)); } catch {}
+  }
+  function shaFor(device, locale, file) {
+    const sha = (batchOf().shas || {})[device + '/' + locale + '/' + file];
+    return sha || null;
+  }
+  function reviewKey(device, locale, file, sha) {
+    return [state.batch, device, locale, file, sha].join('|');
+  }
+  function entryFor(device, locale, file, sha) {
+    if (!sha) return null;
+    return reviewStore.notes[reviewKey(device, locale, file, sha)] || null;
+  }
+  function writeEntry(device, locale, file, sha, status, text) {
+    if (!sha) return;
+    const key = reviewKey(device, locale, file, sha);
+    const clean = (text || '').trim();
+    if ((!status || status === 'unread') && !clean) delete reviewStore.notes[key];
+    else reviewStore.notes[key] = { status: status || 'note', text: clean, updatedAt: new Date().toISOString() };
+    persistReview();
+  }
+  function reviewMarkText(entry) {
+    if (!entry) return '';
+    if (entry.status === 'ok') return '可以';
+    if (entry.status === 'note' || entry.text) return '有意见';
+    return '';
+  }
+  function paintReviewMarks() {
+    const slides = slidesFor(state.device);
+    document.querySelectorAll('#strip .poster').forEach(card => {
+      const slide = slides[Number(card.dataset.index)];
+      const mark = card.querySelector('.review-mark');
+      if (!slide || !mark) return;
+      const text = reviewMarkText(entryFor(state.device, state.locale, slide.file, shaFor(state.device, state.locale, slide.file)));
+      mark.hidden = !text;
+      mark.textContent = text;
+    });
+  }
+  function paintReview() {
+    const slides = slidesFor(state.device);
+    const s = slides[state.index];
+    const shaEl = document.getElementById('reviewSha');
+    const noteEl = document.getElementById('reviewNote');
+    const oldEl = document.getElementById('reviewOld');
+    if (!s || !shaEl || !noteEl) return;
+    const sha = shaFor(state.device, state.locale, s.file);
+    const entry = entryFor(state.device, state.locale, s.file, sha);
+    const status = entry && entry.status ? entry.status : 'unread';
+    shaEl.textContent = sha
+      ? ('SHA-256 ' + sha)
+      : '这张图还没有导出文件，不能标成可以。';
+    document.querySelectorAll('#reviewStatus button').forEach(button => {
+      button.disabled = !sha;
+      button.setAttribute('aria-pressed', String(button.dataset.status === status));
+    });
+    if (document.activeElement !== noteEl) noteEl.value = entry && entry.text ? entry.text : '';
+    noteEl.disabled = !sha;
+    const prefix = [state.batch, state.device, state.locale, s.file, ''].join('|');
+    const current = sha ? reviewKey(state.device, state.locale, s.file, sha) : '';
+    const older = Object.entries(reviewStore.notes).filter(([key]) => key.startsWith(prefix) && key !== current);
+    if (older.length) {
+      oldEl.hidden = false;
+      const bits = older.map(([, value]) => value.text || value.status).filter(Boolean);
+      oldEl.textContent = '同路径有 ' + older.length + ' 条旧记录，SHA 已不同，旧的「可以」不会用在这张上。'
+        + (bits.length ? ' 旧意见：' + bits.join(' / ') : '');
+    } else {
+      oldEl.hidden = true;
+      oldEl.textContent = '';
+    }
+  }
+  document.querySelectorAll('#reviewStatus button').forEach(button => {
+    button.addEventListener('click', () => {
+      const slides = slidesFor(state.device);
+      const s = slides[state.index];
+      if (!s) return;
+      const sha = shaFor(state.device, state.locale, s.file);
+      writeEntry(state.device, state.locale, s.file, sha, button.dataset.status, document.getElementById('reviewNote').value);
+      paintReview();
+      paintReviewMarks();
+    });
+  });
+  document.getElementById('reviewNote').addEventListener('input', () => {
+    const slides = slidesFor(state.device);
+    const s = slides[state.index];
+    if (!s) return;
+    const sha = shaFor(state.device, state.locale, s.file);
+    const current = entryFor(state.device, state.locale, s.file, sha);
+    const text = document.getElementById('reviewNote').value;
+    const status = current && current.status && current.status !== 'unread'
+      ? current.status
+      : (text.trim() ? 'note' : 'unread');
+    writeEntry(state.device, state.locale, s.file, sha, status, text);
+    paintReview();
+    paintReviewMarks();
+  });
+  document.getElementById('reviewExport').addEventListener('click', () => {
+    const blob = new Blob([JSON.stringify({ version: 1, notes: reviewStore.notes }, null, 2)], { type: 'application/json' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'review-notes.json';
+    link.click();
+    URL.revokeObjectURL(link.href);
+  });
+  document.getElementById('reviewImport').addEventListener('click', () => document.getElementById('reviewFile').click());
+  document.getElementById('reviewFile').addEventListener('change', async event => {
+    const file = event.target.files && event.target.files[0];
+    event.target.value = '';
+    if (!file) return;
+    const data = JSON.parse(await file.text());
+    const notes = data && data.notes;
+    if (!notes || typeof notes !== 'object') return;
+    Object.entries(notes).forEach(([key, value]) => {
+      if (value && typeof value === 'object') reviewStore.notes[key] = value;
+    });
+    persistReview();
+    paintReview();
+    paintReviewMarks();
+  });
+
+  loadReviewStore();
   readHash(location.hash);
   render();
   window.addEventListener('hashchange', () => { if (!writingHash) readHash(); });
+  fetch('review-notes.json', { cache: 'no-store' }).then(response => response.ok ? response.json() : null).then(data => {
+    if (!data || !data.notes || typeof data.notes !== 'object') return;
+    let changed = false;
+    Object.entries(data.notes).forEach(([key, value]) => {
+      if (!reviewStore.notes[key] && value && typeof value === 'object') {
+        reviewStore.notes[key] = value;
+        changed = true;
+      }
+    });
+    if (!changed) return;
+    persistReview();
+    render();
+    if (state.lightbox) renderLightbox();
+  }).catch(() => {});
 })();
 </script>
 </body>

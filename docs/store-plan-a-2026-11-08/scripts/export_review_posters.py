@@ -99,18 +99,43 @@ def one(job):
     }
 
 
+PUB = ROOT / "design/app-store-studio-2026-10-29/public/screenshots/localized"
+
+
+def have(family: str, locale: str, name: str) -> bool:
+    return (PUB / family / locale / name).is_file()
+
+
 def inner_status(device: str, slide: str, locale: str) -> str:
-    # What this snapshot can honestly show. Page 01 is drawn copy, not a native capture.
+    # Page 01 is drawn chat, not a native capture. A partial page is not done.
     if slide == "plan":
         return "marketing-chat"
-    have = {
-        ("iphone", "diet", "en"), ("iphone", "diet", "zh"),
-        ("ipad", "diet", "en"), ("ipad", "diet", "zh"),
-        ("iphone", "devices", "en"), ("iphone", "devices", "zh"),
-        ("ipad", "devices", "en"), ("ipad", "devices", "zh"),
-    }
-    if (device, slide, locale) in have:
-        return "native-captures-present"
+    if slide == "recovery":
+        # iPhone uses iphone/muscle-selected. iPad asks for ipad/muscle-selected,
+        # which is not part of the Mac capture set and is not filled from the phone.
+        family = "iphone" if device == "iphone" else "ipad"
+        return "native-captures-present" if have(family, locale, "muscle-selected.png") else "capture-missing"
+    if slide == "training":
+        phone = have("iphone", locale, "player-heart-warning.png")
+        watch = have("watch", locale, "exercise-185.png")
+        if phone and watch:
+            return "native-captures-present"
+        return "capture-partial" if phone or watch else "capture-missing"
+    if slide == "diet":
+        family = "ipad" if device == "ipad" else "iphone"
+        if have(family, locale, "diet.png") and have(family, locale, "sleep.png"):
+            return "native-captures-present"
+        return "capture-missing"
+    if slide == "devices":
+        slots = [
+            have("iphone", locale, "today.png"),
+            have("ipad", locale, "insights.png"),
+            have("duo", locale, "diet.png"),
+            have("watch", locale, "rest-160.png"),
+        ]
+        if all(slots):
+            return "native-captures-present"
+        return "capture-partial" if any(slots) else "capture-missing"
     return "capture-missing"
 
 
@@ -127,11 +152,14 @@ def badge_pixels(im: Image.Image) -> int:
 
 
 def main() -> None:
+    only_slides = set(os.environ.get("EXPORT_SLIDES", "").split()) - {""}
+    only_locales = set(os.environ.get("EXPORT_LOCALES", "").split()) - {""}
     jobs = [
         (device, w, h, slide, locale)
         for device, w, h, slides in JOBS
         for locale in LOCALES
         for slide in slides
+        if (not only_slides or slide in only_slides) and (not only_locales or locale in only_locales)
     ]
     rows = []
     with ThreadPoolExecutor(max_workers=3) as pool:
@@ -141,6 +169,13 @@ def main() -> None:
             rows.append(row)
             print(row["file"], row["width"], row["height"], row["mode"], row["inner"], "corner", row["cornerBright"], flush=True)
     rows.sort(key=lambda row: row["file"])
+    path = OUT.parent / "export-validation.json"
+    if (only_slides or only_locales) and path.exists():
+        previous = json.loads(path.read_text())
+        by_file = {row["file"]: row for row in previous.get("files", [])}
+        for row in rows:
+            by_file[row["file"]] = row
+        rows = sorted(by_file.values(), key=lambda row: row["file"])
     manifest = {
         "batch": "store-review-2026-11-09",
         "status": "draft review, not upload-approved",
@@ -149,6 +184,7 @@ def main() -> None:
             "files": len(rows),
             "marketingChat": sum(r["inner"] == "marketing-chat" for r in rows),
             "nativeCapturesPresent": sum(r["inner"] == "native-captures-present" for r in rows),
+            "capturePartial": sum(r["inner"] == "capture-partial" for r in rows),
             "captureMissing": sum(r["inner"] == "capture-missing" for r in rows),
         },
         "files": rows,

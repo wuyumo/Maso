@@ -25,6 +25,10 @@ FAMILY = os.environ.get("CAPTURE_FAMILY", "iphone")
 PUBLIC = Path("design/app-store-studio-2026-10-29/public/screenshots/localized")
 APP = "build/DerivedData/Build/Products/Debug-iphonesimulator/Maso.app"
 LANGS = [lang for lang in os.environ.get("CAPTURE_LANGS", "zh-Hans zh-Hant en ja").split() if lang]
+SCENES = [scene for scene in os.environ.get("CAPTURE_SCENES", "player-heart-warning insights-progress").split() if scene]
+UNKNOWN = sorted(set(SCENES) - {"player-heart-warning", "insights-progress"})
+if UNKNOWN:
+    raise SystemExit(f"unknown CAPTURE_SCENES: {UNKNOWN}")
 EXPECTED = (1206, 2622)
 
 
@@ -112,34 +116,36 @@ try:
     )
     for lang in LANGS:
         web = "zh" if lang == "zh-Hans" else lang
-        # Merged training page: live player with the above-limit heart card (185 vs a
-        # 155 personal reminder limit) so the warning state is genuine UI, not a staged tint.
-        capture(
-            lang,
-            "player-heart-warning",
-            {
-                "SIMCTL_CHILD_MASO_EXERCISE_UI_TEST_SCENE": "stable-player",
-                "SIMCTL_CHILD_MASO_WORKOUT_HEART_FIXTURE": "1",
-                "SIMCTL_CHILD_MASO_MARKETING_EXERCISE_ID": "bench_press_machine",
-                "SIMCTL_CHILD_MASO_TEST_HEART_BPM": "185",
-                "SIMCTL_CHILD_MASO_TEST_HEART_LIMIT": "155",
-                "SIMCTL_CHILD_MASO_WORKOUT_HEART_CARD": "1",
-            },
-            PUBLIC / "iphone" / web / "player-heart-warning.png",
-            wait_ready=False,
-            settle=6.0,
-        )
+        # Marketing fixture, not a sensor or model result: player with the heart card
+        # at 185 bpm against the 155 personal reminder limit, bench press machine.
+        if "player-heart-warning" in SCENES:
+            capture(
+                lang,
+                "player-heart-warning",
+                {
+                    "SIMCTL_CHILD_MASO_EXERCISE_UI_TEST_SCENE": "stable-player",
+                    "SIMCTL_CHILD_MASO_WORKOUT_HEART_FIXTURE": "1",
+                    "SIMCTL_CHILD_MASO_MARKETING_EXERCISE_ID": "bench_press_machine",
+                    "SIMCTL_CHILD_MASO_TEST_HEART_BPM": "185",
+                    "SIMCTL_CHILD_MASO_TEST_HEART_LIMIT": "155",
+                    "SIMCTL_CHILD_MASO_WORKOUT_HEART_CARD": "1",
+                },
+                PUBLIC / "iphone" / web / "player-heart-warning.png",
+                wait_ready=False,
+                settle=6.0,
+            )
         # Progress page: a full synthetic week so every muscle group has recorded sets.
-        capture(
-            lang,
-            "insights-progress",
-            {
-                "SIMCTL_CHILD_MASO_SHOWCASE": "insights",
-                "SIMCTL_CHILD_MASO_MARKETING_PROGRESS": "1",
-                "SIMCTL_CHILD_MASO_MARKETING_INSIGHTS_RANGE": "fourWeeks",
-            },
-            PUBLIC / "iphone" / web / "insights-progress.png",
-        )
+        if "insights-progress" in SCENES:
+            capture(
+                lang,
+                "insights-progress",
+                {
+                    "SIMCTL_CHILD_MASO_SHOWCASE": "insights",
+                    "SIMCTL_CHILD_MASO_MARKETING_PROGRESS": "1",
+                    "SIMCTL_CHILD_MASO_MARKETING_INSIGHTS_RANGE": "fourWeeks",
+                },
+                PUBLIC / "iphone" / web / "insights-progress.png",
+            )
 finally:
     try:
         call("terminate", SIM, "com.yumowu.maso")

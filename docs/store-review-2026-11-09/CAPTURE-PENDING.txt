@@ -1,0 +1,44 @@
+24 captures still absent on the Mac. This VM cannot run them.
+Do not pair or unpair simulators. Do not point Watch 3915EE74 at iPhone 17 Pro CD4768.
+Build and capture from the Mac working tree that already produced the zh / zh-Hant / en / ja shots.
+Do not build the app from this branch: its Swift sources do not contain the heart or watch fixture env vars.
+
+Xcode 27.1 (27A9275) at /Applications/Xcode.app/Contents/Developer.
+Phone: iPhone 17 Pro CD4768FB-469C-48BE-AB5E-2697DC81C483 (iOS 26.1, Shutdown).
+Watch: Watch Series 11 46mm 3915EE74-D7CB-460F-BB9D-28E841D3A080 (watchOS 26.5, Shutdown), already paired to another iPhone 17 Pro Max.
+
+The patched scripts refuse to start unless scripts/low_memory_build.py is in this working tree,
+and refuse if that file's code invokes simctl pair or unpair.
+That runner is not in the cloud snapshot. Use the current Mac copy. Do not fetch an older git copy.
+
+From the repo root, after the three patched files are copied in place:
+
+  python3 scripts/low_memory_build.py build
+  python3 scripts/low_memory_build.py run -- env \
+    CAPTURE_LANGS='ko es fr de it pt-BR ru ar' \
+    CAPTURE_SCENES=player-heart-warning \
+    bash docs/store-plan-a-2026-11-08/capture.sh
+  python3 scripts/low_memory_build.py run -- env \
+    CAPTURE_LANGS='ko es fr de it pt-BR ru ar' \
+    bash docs/store-plan-a-2026-11-08/capture-watch-rest.sh
+
+Leave CAPTURE_LANGS unset and the scripts still capture only zh-Hans zh-Hant en ja, which overwrites those PNGs. Do not include those four ids here.
+
+Outputs, under design/app-store-studio-2026-10-29/public/screenshots/localized/:
+  iphone/{ko,es,fr,de,it,pt-BR,ru,ar}/player-heart-warning.png
+  watch/{ko,es,fr,de,it,pt-BR,ru,ar}/exercise-185.png
+  watch/{ko,es,fr,de,it,pt-BR,ru,ar}/rest-160.png
+
+capture.sh also boots the watch and writes exercise-185. capture-watch-rest.sh writes rest-160.
+CAPTURE_SCENES=player-heart-warning skips insights-progress.png. The default of capture_plan_a.py still writes both scenes.
+capture-scenes-device.sh does not take these three scenes.
+
+Phone shots must be 1206×2622 and not blank (the script checks). Watch shots have no size check; look at them.
+Pixels are a DEBUG marketing fixture, not a sensor and not an AI result:
+  phone: stable-player, heart card expanded, 185 bpm over personal limit 155, bench_press_machine
+  watch exercise: same exercise, set 1/3, 8 reps, 60 kg, 185 bpm
+  watch rest: 160 bpm
+Spot-check each new language. If the UI falls back to English, do not treat the file as that locale.
+This checkout only has en and zh-Hans .lproj files. The Mac tree already has the other phone locales.
+
+Nothing here uploads, purchases, or uses the network.

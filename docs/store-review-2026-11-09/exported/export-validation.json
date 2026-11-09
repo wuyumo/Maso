@@ -5,8 +5,9 @@
   "counts": {
     "files": 108,
     "marketingChat": 24,
-    "nativeCapturesPresent": 8,
-    "captureMissing": 76
+    "nativeCapturesPresent": 48,
+    "capturePartial": 16,
+    "captureMissing": 20
   },
   "files": [
     {
@@ -33,7 +34,7 @@
       "height": 2752,
       "mode": "RGB",
       "cornerBright": 0,
-      "inner": "capture-missing",
+      "inner": "native-captures-present",
       "uploadReady": false
     },
     {
@@ -42,7 +43,7 @@
       "height": 2752,
       "mode": "RGB",
       "cornerBright": 0,
-      "inner": "capture-missing",
+      "inner": "capture-partial",
       "uploadReady": false
     },
     {
@@ -69,7 +70,7 @@
       "height": 2752,
       "mode": "RGB",
       "cornerBright": 0,
-      "inner": "capture-missing",
+      "inner": "native-captures-present",
       "uploadReady": false
     },
     {
@@ -78,7 +79,7 @@
       "height": 2752,
       "mode": "RGB",
       "cornerBright": 0,
-      "inner": "capture-missing",
+      "inner": "capture-partial",
       "uploadReady": false
     },
     {
@@ -141,7 +142,7 @@
       "height": 2752,
       "mode": "RGB",
       "cornerBright": 0,
-      "inner": "capture-missing",
+      "inner": "native-captures-present",
       "uploadReady": false
     },
     {
@@ -150,7 +151,7 @@
       "height": 2752,
       "mode": "RGB",
       "cornerBright": 0,
-      "inner": "capture-missing",
+      "inner": "capture-partial",
       "uploadReady": false
     },
     {
@@ -177,7 +178,7 @@
       "height": 2752,
       "mode": "RGB",
       "cornerBright": 0,
-      "inner": "capture-missing",
+      "inner": "native-captures-present",
       "uploadReady": false
     },
     {
@@ -186,7 +187,7 @@
       "height": 2752,
       "mode": "RGB",
       "cornerBright": 0,
-      "inner": "capture-missing",
+      "inner": "capture-partial",
       "uploadReady": false
     },
     {
@@ -213,7 +214,7 @@
       "height": 2752,
       "mode": "RGB",
       "cornerBright": 0,
-      "inner": "capture-missing",
+      "inner": "native-captures-present",
       "uploadReady": false
     },
     {
@@ -222,7 +223,7 @@
       "height": 2752,
       "mode": "RGB",
       "cornerBright": 0,
-      "inner": "capture-missing",
+      "inner": "capture-partial",
       "uploadReady": false
     },
     {
@@ -249,7 +250,7 @@
       "height": 2752,
       "mode": "RGB",
       "cornerBright": 0,
-      "inner": "capture-missing",
+      "inner": "native-captures-present",
       "uploadReady": false
     },
     {
@@ -258,7 +259,7 @@
       "height": 2752,
       "mode": "RGB",
       "cornerBright": 0,
-      "inner": "capture-missing",
+      "inner": "native-captures-present",
       "uploadReady": false
     },
     {
@@ -285,7 +286,7 @@
       "height": 2752,
       "mode": "RGB",
       "cornerBright": 0,
-      "inner": "capture-missing",
+      "inner": "native-captures-present",
       "uploadReady": false
     },
     {
@@ -294,7 +295,7 @@
       "height": 2752,
       "mode": "RGB",
       "cornerBright": 0,
-      "inner": "capture-missing",
+      "inner": "capture-partial",
       "uploadReady": false
     },
     {
@@ -321,7 +322,7 @@
       "height": 2752,
       "mode": "RGB",
       "cornerBright": 0,
-      "inner": "capture-missing",
+      "inner": "native-captures-present",
       "uploadReady": false
     },
     {
@@ -330,7 +331,7 @@
       "height": 2752,
       "mode": "RGB",
       "cornerBright": 0,
-      "inner": "capture-missing",
+      "inner": "capture-partial",
       "uploadReady": false
     },
     {
@@ -357,7 +358,7 @@
       "height": 2752,
       "mode": "RGB",
       "cornerBright": 0,
-      "inner": "capture-missing",
+      "inner": "native-captures-present",
       "uploadReady": false
     },
     {
@@ -366,7 +367,7 @@
       "height": 2752,
       "mode": "RGB",
       "cornerBright": 0,
-      "inner": "capture-missing",
+      "inner": "capture-partial",
       "uploadReady": false
     },
     {
@@ -393,7 +394,7 @@
       "height": 2752,
       "mode": "RGB",
       "cornerBright": 0,
-      "inner": "capture-missing",
+      "inner": "native-captures-present",
       "uploadReady": false
     },
     {
@@ -402,7 +403,7 @@
       "height": 2752,
       "mode": "RGB",
       "cornerBright": 0,
-      "inner": "capture-missing",
+      "inner": "native-captures-present",
       "uploadReady": false
     },
     {
@@ -456,7 +457,7 @@
       "height": 2868,
       "mode": "RGB",
       "cornerBright": 0,
-      "inner": "capture-missing",
+      "inner": "native-captures-present",
       "uploadReady": false
     },
     {
@@ -474,7 +475,7 @@
       "height": 2868,
       "mode": "RGB",
       "cornerBright": 0,
-      "inner": "capture-missing",
+      "inner": "native-captures-present",
       "uploadReady": false
     },
     {
@@ -483,7 +484,7 @@
       "height": 2868,
       "mode": "RGB",
       "cornerBright": 0,
-      "inner": "capture-missing",
+      "inner": "capture-partial",
       "uploadReady": false
     },
     {
@@ -501,7 +502,7 @@
       "height": 2868,
       "mode": "RGB",
       "cornerBright": 0,
-      "inner": "capture-missing",
+      "inner": "native-captures-present",
       "uploadReady": false
     },
     {
@@ -519,7 +520,7 @@
       "height": 2868,
       "mode": "RGB",
       "cornerBright": 0,
-      "inner": "capture-missing",
+      "inner": "native-captures-present",
       "uploadReady": false
     },
     {
@@ -528,7 +529,7 @@
       "height": 2868,
       "mode": "RGB",
       "cornerBright": 0,
-      "inner": "capture-missing",
+      "inner": "capture-partial",
       "uploadReady": false
     },
     {
@@ -546,7 +547,7 @@
       "height": 2868,
       "mode": "RGB",
       "cornerBright": 0,
-      "inner": "capture-missing",
+      "inner": "native-captures-present",
       "uploadReady": false
     },
     {
@@ -555,7 +556,7 @@
       "height": 2868,
       "mode": "RGB",
       "cornerBright": 0,
-      "inner": "capture-missing",
+      "inner": "native-captures-present",
       "uploadReady": false
     },
     {
@@ -591,7 +592,7 @@
       "height": 2868,
       "mode": "RGB",
       "cornerBright": 0,
-      "inner": "capture-missing",
+      "inner": "native-captures-present",
       "uploadReady": false
     },
     {
@@ -609,7 +610,7 @@
       "height": 2868,
       "mode": "RGB",
       "cornerBright": 0,
-      "inner": "capture-missing",
+      "inner": "native-captures-present",
       "uploadReady": false
     },
     {
@@ -618,7 +619,7 @@
       "height": 2868,
       "mode": "RGB",
       "cornerBright": 0,
-      "inner": "capture-missing",
+      "inner": "capture-partial",
       "uploadReady": false
     },
     {
@@ -636,7 +637,7 @@
       "height": 2868,
       "mode": "RGB",
       "cornerBright": 0,
-      "inner": "capture-missing",
+      "inner": "native-captures-present",
       "uploadReady": false
     },
     {
@@ -654,7 +655,7 @@
       "height": 2868,
       "mode": "RGB",
       "cornerBright": 0,
-      "inner": "capture-missing",
+      "inner": "native-captures-present",
       "uploadReady": false
     },
     {
@@ -663,7 +664,7 @@
       "height": 2868,
       "mode": "RGB",
       "cornerBright": 0,
-      "inner": "capture-missing",
+      "inner": "capture-partial",
       "uploadReady": false
     },
     {
@@ -681,7 +682,7 @@
       "height": 2868,
       "mode": "RGB",
       "cornerBright": 0,
-      "inner": "capture-missing",
+      "inner": "native-captures-present",
       "uploadReady": false
     },
     {
@@ -699,7 +700,7 @@
       "height": 2868,
       "mode": "RGB",
       "cornerBright": 0,
-      "inner": "capture-missing",
+      "inner": "native-captures-present",
       "uploadReady": false
     },
     {
@@ -708,7 +709,7 @@
       "height": 2868,
       "mode": "RGB",
       "cornerBright": 0,
-      "inner": "capture-missing",
+      "inner": "capture-partial",
       "uploadReady": false
     },
     {
@@ -726,7 +727,7 @@
       "height": 2868,
       "mode": "RGB",
       "cornerBright": 0,
-      "inner": "capture-missing",
+      "inner": "native-captures-present",
       "uploadReady": false
     },
     {
@@ -735,7 +736,7 @@
       "height": 2868,
       "mode": "RGB",
       "cornerBright": 0,
-      "inner": "capture-missing",
+      "inner": "native-captures-present",
       "uploadReady": false
     },
     {
@@ -744,7 +745,7 @@
       "height": 2868,
       "mode": "RGB",
       "cornerBright": 0,
-      "inner": "capture-missing",
+      "inner": "native-captures-present",
       "uploadReady": false
     },
     {
@@ -753,7 +754,7 @@
       "height": 2868,
       "mode": "RGB",
       "cornerBright": 0,
-      "inner": "capture-missing",
+      "inner": "native-captures-present",
       "uploadReady": false
     },
     {
@@ -771,7 +772,7 @@
       "height": 2868,
       "mode": "RGB",
       "cornerBright": 0,
-      "inner": "capture-missing",
+      "inner": "native-captures-present",
       "uploadReady": false
     },
     {
@@ -789,7 +790,7 @@
       "height": 2868,
       "mode": "RGB",
       "cornerBright": 0,
-      "inner": "capture-missing",
+      "inner": "native-captures-present",
       "uploadReady": false
     },
     {
@@ -798,7 +799,7 @@
       "height": 2868,
       "mode": "RGB",
       "cornerBright": 0,
-      "inner": "capture-missing",
+      "inner": "capture-partial",
       "uploadReady": false
     },
     {
@@ -816,7 +817,7 @@
       "height": 2868,
       "mode": "RGB",
       "cornerBright": 0,
-      "inner": "capture-missing",
+      "inner": "native-captures-present",
       "uploadReady": false
     },
     {
@@ -834,7 +835,7 @@
       "height": 2868,
       "mode": "RGB",
       "cornerBright": 0,
-      "inner": "capture-missing",
+      "inner": "native-captures-present",
       "uploadReady": false
     },
     {
@@ -843,7 +844,7 @@
       "height": 2868,
       "mode": "RGB",
       "cornerBright": 0,
-      "inner": "capture-missing",
+      "inner": "capture-partial",
       "uploadReady": false
     },
     {
@@ -861,7 +862,7 @@
       "height": 2868,
       "mode": "RGB",
       "cornerBright": 0,
-      "inner": "capture-missing",
+      "inner": "native-captures-present",
       "uploadReady": false
     },
     {
@@ -879,7 +880,7 @@
       "height": 2868,
       "mode": "RGB",
       "cornerBright": 0,
-      "inner": "capture-missing",
+      "inner": "native-captures-present",
       "uploadReady": false
     },
     {
@@ -888,7 +889,7 @@
       "height": 2868,
       "mode": "RGB",
       "cornerBright": 0,
-      "inner": "capture-missing",
+      "inner": "capture-partial",
       "uploadReady": false
     },
     {
@@ -906,7 +907,7 @@
       "height": 2868,
       "mode": "RGB",
       "cornerBright": 0,
-      "inner": "capture-missing",
+      "inner": "native-captures-present",
       "uploadReady": false
     },
     {
@@ -915,7 +916,7 @@
       "height": 2868,
       "mode": "RGB",
       "cornerBright": 0,
-      "inner": "capture-missing",
+      "inner": "native-captures-present",
       "uploadReady": false
     },
     {
@@ -924,7 +925,7 @@
       "height": 2868,
       "mode": "RGB",
       "cornerBright": 0,
-      "inner": "capture-missing",
+      "inner": "native-captures-present",
       "uploadReady": false
     },
     {
@@ -933,7 +934,7 @@
       "height": 2868,
       "mode": "RGB",
       "cornerBright": 0,
-      "inner": "capture-missing",
+      "inner": "native-captures-present",
       "uploadReady": false
     },
     {
@@ -951,7 +952,7 @@
       "height": 2868,
       "mode": "RGB",
       "cornerBright": 0,
-      "inner": "capture-missing",
+      "inner": "native-captures-present",
       "uploadReady": false
     },
     {
@@ -960,7 +961,7 @@
       "height": 2868,
       "mode": "RGB",
       "cornerBright": 0,
-      "inner": "capture-missing",
+      "inner": "native-captures-present",
       "uploadReady": false
     },
     {
