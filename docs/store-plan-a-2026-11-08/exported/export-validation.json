@@ -1,0 +1,412 @@
+{
+ "batch": "store-plan-a-2026-11-08",
+ "scope": "iPhone 6.9in (5 pages) + iPad 13in (4 pages) previews — 4 approved locales; the other 8 locales and the Duo/Watch exports are pending",
+ "studioProject": "design/app-store-studio-2026-10-29/app-store-screenshots.json",
+ "exportedAt": "2026-11-09T15:28+08:00",
+ "locales": [
+  "zh",
+  "zh-Hant",
+  "en",
+  "ja"
+ ],
+ "slides": [
+  {
+   "id": "plan",
+   "file": "01-plan",
+   "scene": "AI Coach chat: front+back body photos -> body report -> the three generated days as App WorkoutCards (muscle map + exercise pills + per-card save capsule) -> batch save pill",
+   "headline": "一张照片，就有一周计划"
+  },
+  {
+   "id": "recovery",
+   "file": "02-recovery",
+   "scene": "iphone/muscle-selected",
+   "headline": "肌肉恢复，一眼看清"
+  },
+  {
+   "id": "training",
+   "file": "03-training",
+   "scene": "iphone/player-heart-warning-185 + watch/exercise-185",
+   "headline": "心率过高，立刻提醒"
+  },
+  {
+   "id": "diet",
+   "file": "04-diet",
+   "scene": "iphone/diet in front, lower-left (660 wide @ 90,1330, -4deg, z3) over iphone/sleep behind, upper-right (620 wide @ 565,835, +4deg, z2); bodies overlap 229pt = 34.5% of the sleep body, and the sleep frame is raised so its header row and the 7h 34m hero numeral sit entirely above the front frame's top edge (y 1307) - the seam falls on the decorative bar chart only, never on copy. Union bbox x[42.3,1273.9] y[813.4,2746.2] on 1320x2868 (margins L42.3 R46.1 T813.4 B121.8), so both phones are fully on canvas; iPad uses the same front/back pair at 0.505/0.475 canvas widths, Duo raises the pair (0.440/0.270 of height) because its 2853-tall frame pushes the numeral lower",
+   "headline": "饮食与睡眠，一起照顾"
+  },
+  {
+   "id": "devices",
+   "file": "05-devices",
+   "scene": "card fan, heads rotating progressively right as they march bottom-left -> top-right: watch/rest (270 wide, front, -20deg, z4) -> iphone/today (380, -6deg, z3) -> duo/diet (580, +5deg, z2) -> ipad/insights (800, back, +13deg, z1); rotation is strictly monotonic -20 -> -6 -> +5 -> +13 and widths grow monotonically, so the size gradient and the rotation gradient run the same direction; union bbox x[50.6,1279.2] y[803.4,2701.7] on 1320x2868 (margins L50.6 R40.8 T58.4 B166.3); iPad and Duo use photographic Apple bezel overlays (ipad-frame.png 1600x2089 / duo-frame.png 1600x2233)",
+   "headline": "每一块屏幕，都在一个 App 里"
+  }
+ ],
+ "verified": 36,
+ "expected": 36,
+ "format": "RGB PNG; no alpha; 1320x2868 (iPhone) / 2064x2752 (iPad); no brand lockup, no bottom-right device chip or its shadow; caption top y=150",
+ "failures": [],
+ "files": [
+  {
+   "file": "iphone/1320x2868/zh/01-plan.png",
+   "locale": "zh",
+   "slide": "01-plan",
+   "sha256": "a695ceb6dd6d30b29c63a9b31c8b610c8f9be02cf88a55b6dd59024f4d2bc91c",
+   "bytes": 586484,
+   "width": 1320,
+   "height": 2868,
+   "mode": "RGB"
+  },
+  {
+   "file": "iphone/1320x2868/zh/02-recovery.png",
+   "locale": "zh",
+   "slide": "02-recovery",
+   "sha256": "cec5aafb0e3cde0804f922f6dad6540117a7b5115bc258e8b386a8e1bd9921d7",
+   "bytes": 742126,
+   "width": 1320,
+   "height": 2868,
+   "mode": "RGB"
+  },
+  {
+   "file": "iphone/1320x2868/zh/03-training.png",
+   "locale": "zh",
+   "slide": "03-training",
+   "sha256": "d7af065f347576b2aafc9603ca6920b209471105fcc4fef7be55c6c3e0f32bbc",
+   "bytes": 1118400,
+   "width": 1320,
+   "height": 2868,
+   "mode": "RGB"
+  },
+  {
+   "file": "iphone/1320x2868/zh/04-diet.png",
+   "locale": "zh",
+   "slide": "04-diet",
+   "sha256": "8612cb3e4c065ac68e9962ac6dc3d96c7a5fa568f28b9f9452c6059aa30ed873",
+   "bytes": 602734,
+   "width": 1320,
+   "height": 2868,
+   "mode": "RGB"
+  },
+  {
+   "file": "iphone/1320x2868/zh/05-devices.png",
+   "locale": "zh",
+   "slide": "05-devices",
+   "sha256": "5e44815e5f51895c829071d12291f0f2388a1af3ffb30f4ca1a3cbcfd24c343d",
+   "bytes": 580394,
+   "width": 1320,
+   "height": 2868,
+   "mode": "RGB"
+  },
+  {
+   "file": "iphone/1320x2868/zh-Hant/01-plan.png",
+   "locale": "zh-Hant",
+   "slide": "01-plan",
+   "sha256": "a4a1ad11f7e1d94eb8d5e995930c0996f5a5d754c1aff8baafc91b2508b95aa0",
+   "bytes": 591947,
+   "width": 1320,
+   "height": 2868,
+   "mode": "RGB"
+  },
+  {
+   "file": "iphone/1320x2868/zh-Hant/02-recovery.png",
+   "locale": "zh-Hant",
+   "slide": "02-recovery",
+   "sha256": "e82b32dac23b695bc8436240d1d77aaa8ff55d71d81b224abf5bd359831498c5",
+   "bytes": 743622,
+   "width": 1320,
+   "height": 2868,
+   "mode": "RGB"
+  },
+  {
+   "file": "iphone/1320x2868/zh-Hant/03-training.png",
+   "locale": "zh-Hant",
+   "slide": "03-training",
+   "sha256": "136eec83c7487938ef4326f26630ad01326dede1dc31f0702ece3d7b5108b1b7",
+   "bytes": 1119953,
+   "width": 1320,
+   "height": 2868,
+   "mode": "RGB"
+  },
+  {
+   "file": "iphone/1320x2868/zh-Hant/04-diet.png",
+   "locale": "zh-Hant",
+   "slide": "04-diet",
+   "sha256": "90c9d35344ac693dcc67123609bbb0f4dd503b92836ff86eeb49626a603c282a",
+   "bytes": 606164,
+   "width": 1320,
+   "height": 2868,
+   "mode": "RGB"
+  },
+  {
+   "file": "iphone/1320x2868/zh-Hant/05-devices.png",
+   "locale": "zh-Hant",
+   "slide": "05-devices",
+   "sha256": "bf3e29cbd2bb5c1d936655c59cad3da1c37fec594f697b5312df97c0fb88d3b2",
+   "bytes": 594289,
+   "width": 1320,
+   "height": 2868,
+   "mode": "RGB"
+  },
+  {
+   "file": "iphone/1320x2868/en/01-plan.png",
+   "locale": "en",
+   "slide": "01-plan",
+   "sha256": "6b1e8d43a33b2028fa072f89dda22b30f278d7a2f2c2648f1720ebf90e6e5d5a",
+   "bytes": 595053,
+   "width": 1320,
+   "height": 2868,
+   "mode": "RGB"
+  },
+  {
+   "file": "iphone/1320x2868/en/02-recovery.png",
+   "locale": "en",
+   "slide": "02-recovery",
+   "sha256": "3f834c37428247bd1fd9dac1d99864dd591115fca36e9c22d4f18c328e741ac9",
+   "bytes": 748499,
+   "width": 1320,
+   "height": 2868,
+   "mode": "RGB"
+  },
+  {
+   "file": "iphone/1320x2868/en/03-training.png",
+   "locale": "en",
+   "slide": "03-training",
+   "sha256": "88f5c4765642f4e0642107218dab00a9c4f9c3b5d155e35ec771b22b175310bd",
+   "bytes": 1092932,
+   "width": 1320,
+   "height": 2868,
+   "mode": "RGB"
+  },
+  {
+   "file": "iphone/1320x2868/en/04-diet.png",
+   "locale": "en",
+   "slide": "04-diet",
+   "sha256": "8c4bb7348be3fb2833b21815f78ac7dd5fd3cb4b55b3062bb73ed8cc54996620",
+   "bytes": 601416,
+   "width": 1320,
+   "height": 2868,
+   "mode": "RGB"
+  },
+  {
+   "file": "iphone/1320x2868/en/05-devices.png",
+   "locale": "en",
+   "slide": "05-devices",
+   "sha256": "8c514b75158f2fb65f8db16355edcd76ffbbcbf5d030f5939db96b704b0068d5",
+   "bytes": 586123,
+   "width": 1320,
+   "height": 2868,
+   "mode": "RGB"
+  },
+  {
+   "file": "iphone/1320x2868/ja/01-plan.png",
+   "locale": "ja",
+   "slide": "01-plan",
+   "sha256": "0277afdf9ab9e5e07c7f8fd662d470c5b52682e8125660dbabbcaa962e6db065",
+   "bytes": 594726,
+   "width": 1320,
+   "height": 2868,
+   "mode": "RGB"
+  },
+  {
+   "file": "iphone/1320x2868/ja/02-recovery.png",
+   "locale": "ja",
+   "slide": "02-recovery",
+   "sha256": "147617b268219c16ea06c0290697a401567f211758dd0955732393d5852280c7",
+   "bytes": 762029,
+   "width": 1320,
+   "height": 2868,
+   "mode": "RGB"
+  },
+  {
+   "file": "iphone/1320x2868/ja/03-training.png",
+   "locale": "ja",
+   "slide": "03-training",
+   "sha256": "2c6e2e7e5b2212a8db94e24638edf98e7fc2b295768a89104ccbe7cecee19657",
+   "bytes": 1094670,
+   "width": 1320,
+   "height": 2868,
+   "mode": "RGB"
+  },
+  {
+   "file": "iphone/1320x2868/ja/04-diet.png",
+   "locale": "ja",
+   "slide": "04-diet",
+   "sha256": "14b6c4eb93173554938d27714e51c187857d34c3194e6983e66c192dcb1b1822",
+   "bytes": 616497,
+   "width": 1320,
+   "height": 2868,
+   "mode": "RGB"
+  },
+  {
+   "file": "iphone/1320x2868/ja/05-devices.png",
+   "locale": "ja",
+   "slide": "05-devices",
+   "sha256": "cbbbed6c1db53a8a7e79929032ec755ec30c4e159ed41ed85a94db9d679f69c6",
+   "bytes": 599074,
+   "width": 1320,
+   "height": 2868,
+   "mode": "RGB"
+  }
+ ],
+ "ipadFiles": [
+  {
+   "file": "ipad/2064x2752/zh/01-plan.png",
+   "locale": "zh",
+   "slide": "01-plan",
+   "sha256": "bb3340e95fbf379de1b00a63f3fae8a0164ec8f4deaead7c092dba571b43f5ff",
+   "bytes": 233214,
+   "width": 2064,
+   "height": 2752,
+   "mode": "RGB"
+  },
+  {
+   "file": "ipad/2064x2752/zh/02-recovery.png",
+   "locale": "zh",
+   "slide": "02-recovery",
+   "sha256": "5075d5a987580cd39282b381f36365b3c1ed8e6c8d21710dee2798ee062f631b",
+   "bytes": 525983,
+   "width": 2064,
+   "height": 2752,
+   "mode": "RGB"
+  },
+  {
+   "file": "ipad/2064x2752/zh/04-diet.png",
+   "locale": "zh",
+   "slide": "04-diet",
+   "sha256": "ce6ab6d2d03a46ceef058bea2658a58b79cb82744e64469d02349e0e60a1748e",
+   "bytes": 999435,
+   "width": 2064,
+   "height": 2752,
+   "mode": "RGB"
+  },
+  {
+   "file": "ipad/2064x2752/zh/05-devices.png",
+   "locale": "zh",
+   "slide": "05-devices",
+   "sha256": "97d753ee71fb2e8fda50d8648faef5d4ce7521d55581e427411451706cea1873",
+   "bytes": 607450,
+   "width": 2064,
+   "height": 2752,
+   "mode": "RGB"
+  },
+  {
+   "file": "ipad/2064x2752/zh-Hant/01-plan.png",
+   "locale": "zh-Hant",
+   "slide": "01-plan",
+   "sha256": "b1da9bc45da9839dc5637e37c313122961968ecdfed0c3575c437e7506b3b313",
+   "bytes": 234753,
+   "width": 2064,
+   "height": 2752,
+   "mode": "RGB"
+  },
+  {
+   "file": "ipad/2064x2752/zh-Hant/02-recovery.png",
+   "locale": "zh-Hant",
+   "slide": "02-recovery",
+   "sha256": "0c0efcbaf0790af2f26518c511aaf81f0695a901aab09350c8560e3f78ae43a4",
+   "bytes": 530720,
+   "width": 2064,
+   "height": 2752,
+   "mode": "RGB"
+  },
+  {
+   "file": "ipad/2064x2752/zh-Hant/04-diet.png",
+   "locale": "zh-Hant",
+   "slide": "04-diet",
+   "sha256": "6f54a27435643b7ac6e64901cc1dfbf0158b8c4ac9388850fe507dae9a5263ac",
+   "bytes": 419576,
+   "width": 2064,
+   "height": 2752,
+   "mode": "RGB"
+  },
+  {
+   "file": "ipad/2064x2752/zh-Hant/05-devices.png",
+   "locale": "zh-Hant",
+   "slide": "05-devices",
+   "sha256": "d5b2e1ff2459800ba739e44a437a241f016a7f70a030693d1ea83da7b40b3608",
+   "bytes": 624787,
+   "width": 2064,
+   "height": 2752,
+   "mode": "RGB"
+  },
+  {
+   "file": "ipad/2064x2752/en/01-plan.png",
+   "locale": "en",
+   "slide": "01-plan",
+   "sha256": "192c86d3e654505623d76e964bf84a3bccb8159323ca2e94eec125d52c3a05d4",
+   "bytes": 255295,
+   "width": 2064,
+   "height": 2752,
+   "mode": "RGB"
+  },
+  {
+   "file": "ipad/2064x2752/en/02-recovery.png",
+   "locale": "en",
+   "slide": "02-recovery",
+   "sha256": "c93b2c8f4b88c0168d13d545703ffe181b8d79160d0b00fab34ffba274762e81",
+   "bytes": 526031,
+   "width": 2064,
+   "height": 2752,
+   "mode": "RGB"
+  },
+  {
+   "file": "ipad/2064x2752/en/04-diet.png",
+   "locale": "en",
+   "slide": "04-diet",
+   "sha256": "1ee92b682a241f4357c333c43733499efb11b3a51b8e1b24c93f91ebbda79adc",
+   "bytes": 995284,
+   "width": 2064,
+   "height": 2752,
+   "mode": "RGB"
+  },
+  {
+   "file": "ipad/2064x2752/en/05-devices.png",
+   "locale": "en",
+   "slide": "05-devices",
+   "sha256": "c138d02c91639e040489de47b6d0eb5e7c008efc607aecda779eb7df3bdc13c5",
+   "bytes": 617763,
+   "width": 2064,
+   "height": 2752,
+   "mode": "RGB"
+  },
+  {
+   "file": "ipad/2064x2752/ja/01-plan.png",
+   "locale": "ja",
+   "slide": "01-plan",
+   "sha256": "ee1257b4d90989ea9bb9666862988c1fb784849ef0ba639c6545ce08d8d2c829",
+   "bytes": 252526,
+   "width": 2064,
+   "height": 2752,
+   "mode": "RGB"
+  },
+  {
+   "file": "ipad/2064x2752/ja/02-recovery.png",
+   "locale": "ja",
+   "slide": "02-recovery",
+   "sha256": "4ba1750c03ab61ed01562e2735cedd9832d3a7865ae8a35a8dd452deb0d8b23a",
+   "bytes": 542182,
+   "width": 2064,
+   "height": 2752,
+   "mode": "RGB"
+  },
+  {
+   "file": "ipad/2064x2752/ja/04-diet.png",
+   "locale": "ja",
+   "slide": "04-diet",
+   "sha256": "a29a327c31d0339db4bcbf996d7643e61f2c8541651383049577cf0a999f49c4",
+   "bytes": 1001240,
+   "width": 2064,
+   "height": 2752,
+   "mode": "RGB"
+  },
+  {
+   "file": "ipad/2064x2752/ja/05-devices.png",
+   "locale": "ja",
+   "slide": "05-devices",
+   "sha256": "140b4a24f34f11dd7df8b61f617734edaa82664385eaaac5a146f1342fc130e7",
+   "bytes": 627895,
+   "width": 2064,
+   "height": 2752,
+   "mode": "RGB"
+  }
+ ]
+}

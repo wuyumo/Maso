@@ -1,0 +1,51 @@
+# Write-back to the Mac snapshot
+
+Do not checkout this branch onto the Mac main. Mac main was c3bba5dd; this branch is based on origin/main 02106ee, which is ahead of that commit. Copy only the paths below.
+
+Before replacing any file, confirm its SHA-256 still matches the snapshot
+`~/Downloads/Masso-Screenshot-Takeover-20261109T154900+0800/` sums
+(also `_meta/SHA256SUMS.txt` in that snapshot). If a live file differs, do not overwrite it.
+
+Pack SHA-256 this branch was restored from:
+- 01-code-config-docs.tgz 57261b1906762c90968dee6df3a79249262b7ce097fc4b3f475a9d5fbdb1f2da
+- 02-frames-fonts-chat.tgz f64f110d602e8e7cae1f0838e132bea9331e0ffbe277e41f283609eed5ef6a01
+- 03-ref-04-05-assets.tgz cb22625d559797f55ce9af2eec1600213de0de14b1b23b7a39ec330c2c2bd047
+
+Original Duo bezel (Night Sky, before the black adaptation):
+design/app-store-studio-2026-10-29/public/duo-frame.png
+11eb961aad1a0766ace80f0433e4008fd5d67c19222df8e73ce90de47311dda4
+
+## Changed paths
+
+- design/app-store-studio-2026-10-29/ (studio source, copy JSON, duo-frame.png, duo-frame-black.json)
+- docs/store-plan-a-2026-11-08/scripts/ (recolor, copy applicator, export, deck script)
+- docs/store-gallery-2026-11-08/ (gallery; old Plan A batch left in place)
+- docs/store-review-2026-11-09/ (new export only; does not replace exported/)
+
+## Not changed
+
+- docs/store-plan-a-2026-11-08/exported/  (previous 04/05 en/zh kept)
+- Masso app, watch, widgets, IAP, exercise library, privacy, site
+
+## Run
+
+```sh
+cd design/app-store-studio-2026-10-29
+npm install --legacy-peer-deps
+npm run build
+npm run start -- --hostname 127.0.0.1 --port 3456
+```
+
+Export, from the repo root, against that server:
+
+```sh
+python3 docs/store-plan-a-2026-11-08/scripts/export_review_posters.py
+python3 docs/store-gallery-2026-11-08/build_gallery.py
+cd docs && python3 -m http.server 8840 --bind 127.0.0.1
+```
+
+Gallery: http://127.0.0.1:8840/store-gallery-2026-11-08/
+
+This VM cannot see the Mac editor on :3000 or the Mac gallery on :8840.
+Translations are drafts. approvedLocales is still zh, zh-Hant, en, ja.
+Do not upload to App Store Connect from this batch.

@@ -1,0 +1,36 @@
+{
+  "status": "approved-by-user",
+  "locale": "zh",
+  "pages": [
+    {
+      "id": "body",
+      "headline": "了解身体，掌握肌肉恢复",
+      "description": "查看各肌群恢复状态，一键补练的部位。"
+    },
+    {
+      "id": "photo",
+      "headline": "专属你的 AI 教练",
+      "description": "根据身体状况分析训练重点。结合偏好，制定专属周计划。"
+    },
+    {
+      "id": "training",
+      "headline": "专注动作，完成每一组",
+      "description": "记录组数与重量。查看实时心率，超过个人设定上限时提醒休息。"
+    },
+    {
+      "id": "library",
+      "headline": "每一次训练，都看得见进步",
+      "description": "追踪重量与次数的变化。浏览常用动作，自由切换变种。"
+    },
+    {
+      "id": "diet",
+      "headline": "饮食与睡眠，一起照顾",
+      "description": "记录每餐的热量与营养。查看睡眠时长与恢复情况。"
+    },
+    {
+      "id": "watch",
+      "headline": "抬腕，就能完成这一组",
+      "description": "在手表上记录训练和心率。休息时查看倒计时，准备下一组。"
+    }
+  ]
+}

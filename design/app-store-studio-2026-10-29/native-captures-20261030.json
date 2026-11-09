@@ -1,0 +1,120 @@
+[
+  {
+    "web": "design/app-store-studio-2026-10-29/public/screenshots/apple/iphone/coach-photo-native.png",
+    "source": "docs/store-device-adaptation-2026-10-29/captures/iphone27/coach-photo-report-20261030.png",
+    "sha256": "766fac13c4493bcc714964afdaa8cd9f551c8509c0ab8f9ccde34e9edb587660",
+    "device": "iPhone 18 Pro",
+    "runtime": "iOS 27.0",
+    "fixture": "Synthetic demo data; rendered by the real App in Simulator"
+  },
+  {
+    "web": "design/app-store-studio-2026-10-29/public/screenshots/apple/iphone/insights-native.png",
+    "source": "docs/store-device-adaptation-2026-10-29/captures/iphone27/insights-real-20261030.png",
+    "sha256": "f412be0bb602096653c26cd79f71e174cc46acbff6f320c714df0a1d0198947d",
+    "device": "iPhone 18 Pro",
+    "runtime": "iOS 27.0",
+    "fixture": "Synthetic demo data; rendered by the real App in Simulator"
+  },
+  {
+    "web": "design/app-store-studio-2026-10-29/public/screenshots/apple/iphone/diet-history-native.png",
+    "source": "docs/store-device-adaptation-2026-10-29/captures/iphone27/diet-scroll-native-20261030.png",
+    "sha256": "89adc1f118295d89307eb57a83b5389a71df95f7c5c38b8b6d639cb34749078a",
+    "device": "iPhone 18 Pro",
+    "runtime": "iOS 27.0",
+    "fixture": "Synthetic demo data; rendered by the real App in Simulator"
+  },
+  {
+    "web": "design/app-store-studio-2026-10-29/public/screenshots/apple/iphone/training-native.png",
+    "source": "docs/store-device-adaptation-2026-10-29/captures/iphone27/player-heart-candidate-2.png",
+    "sha256": "42389c13b5c5dae66085aed9ba28be9b88df8ade0f0820123c17e76439657ae3",
+    "device": "iPhone 18 Pro",
+    "runtime": "iOS 27.0",
+    "fixture": "Synthetic demo data; rendered by the real App in Simulator"
+  },
+  {
+    "web": "design/app-store-studio-2026-10-29/public/screenshots/apple/ipad/coach_photo.png",
+    "source": "docs/store-device-adaptation-2026-10-29/captures/ipad27/coach-photo-native-20261030.png",
+    "sha256": "e19de708ed48cde52bee6bc329962ac56aa01838db61ab3288540fc14bc91b54",
+    "device": "iPad Pro 13-inch (M5)",
+    "runtime": "iOS 27.0",
+    "fixture": "Synthetic demo data; rendered by the real App in Simulator"
+  },
+  {
+    "web": "design/app-store-studio-2026-10-29/public/screenshots/apple/ipad/insights.png",
+    "source": "docs/store-device-adaptation-2026-10-29/captures/ipad27/insights-native-20261030.png",
+    "sha256": "45a96721b454ace2986c8ebcf45049be67b781f4c6e129e9bc4275c91003cc2c",
+    "device": "iPad Pro 13-inch (M5)",
+    "runtime": "iOS 27.0",
+    "fixture": "Synthetic demo data; rendered by the real App in Simulator"
+  },
+  {
+    "web": "design/app-store-studio-2026-10-29/public/screenshots/apple/iphone/coach-photo-after-yes-native.png",
+    "source": "docs/store-device-adaptation-2026-10-29/captures/iphone27/coach-photo-after-yes-20261030.png",
+    "sha256": "620f31a23ef33846d3f67d62e1cda2aa11d65f98dcd69ef4565c1b182b2e141a",
+    "device": "iPhone 18 Pro",
+    "runtime": "iOS 27.0",
+    "fixture": "Synthetic photo and report; actual Yes tap and AI-generated plan cards from Simulator UI test"
+  },
+  {
+    "web": "design/app-store-studio-2026-10-29/public/screenshots/apple/ipad/coach_photo_after_yes.png",
+    "source": "docs/store-device-adaptation-2026-10-29/captures/ipad27/coach-photo-after-yes-20261030.png",
+    "sha256": "44de63ddcef0a7303eccb9ee3c1b4587dfcbaae3f7be6a3196d924e1930cfb05",
+    "device": "iPad Pro 13-inch (M5)",
+    "runtime": "iOS 27.0",
+    "fixture": "Synthetic photo and report; actual Yes tap and AI-generated plan cards from Simulator UI test"
+  },
+  {
+    "web": "design/app-store-studio-2026-10-29/public/screenshots/apple/iphone/coach-navigation-report.png",
+    "source": "docs/store-device-adaptation-2026-10-29/captures/coach-navigation-20261030/iphone-report.png",
+    "sha256": "ebe5c40bb2ca67d5ca39b722fd2a2e02d0c961feafa87a9778f300ea90a07e86",
+    "device": "iPhone 18 Pro",
+    "runtime": "iOS 27.0",
+    "fixture": "Synthetic conversation data; actual RootView navigation to production CoachScreen. Native back button; no test-host sheet."
+  },
+  {
+    "web": "design/app-store-studio-2026-10-29/public/screenshots/apple/iphone/coach-navigation-plans.png",
+    "source": "docs/store-device-adaptation-2026-10-29/captures/coach-navigation-20261030/iphone-plans.png",
+    "sha256": "f6ec29b51ab5bd410be50324e197cb64e7078f743bd641f6d72023fc89dd81c4",
+    "device": "iPhone 18 Pro",
+    "runtime": "iOS 27.0",
+    "fixture": "Synthetic conversation data; actual RootView navigation to production CoachScreen. Native back button; no test-host sheet."
+  },
+  {
+    "web": "design/app-store-studio-2026-10-29/public/screenshots/apple/ipad/coach-navigation-report.png",
+    "source": "docs/store-device-adaptation-2026-10-29/captures/coach-navigation-20261030/ipad-report.png",
+    "sha256": "3a1228fd53c4274a17309292feb657ced450199c0ea73aed7cd6911f9d5c1be0",
+    "device": "iPad Pro 13-inch (M5)",
+    "runtime": "iOS 27.0",
+    "fixture": "Synthetic conversation data; actual RootView navigation to production CoachScreen. Native back button; no test-host sheet."
+  },
+  {
+    "web": "design/app-store-studio-2026-10-29/public/screenshots/apple/ipad/coach-navigation-plans.png",
+    "source": "docs/store-device-adaptation-2026-10-29/captures/coach-navigation-20261030/ipad-plans.png",
+    "sha256": "b53dc45c27d26890d582bce708a404be05cecf1ec43ce2bc86f43c18a940051e",
+    "device": "iPad Pro 13-inch (M5)",
+    "runtime": "iOS 27.0",
+    "fixture": "Synthetic conversation data; actual RootView navigation to production CoachScreen. Native back button; no test-host sheet."
+  },
+  {
+    "web": "design/app-store-studio-2026-10-29/public/screenshots/apple/iphone/muscle-status-enabled.png",
+    "source": "build/DerivedData/Logs/Test/Test-MasoExerciseUI-2026.10.30_12-36-26-+0800.xcresult/Data/data.0~v9udsRSlMaLf0Yn8G4LmFQqH6Z4J_6p5BHxH6ldfzdWIgp2rEMXr5lDIVpIni582QcSoRmF_PgA_hQQmub_qBA==",
+    "sha256": "36a090efeb7b34f74424d0e8759a40e92f0d306f7c8ff7711c537ecc358e07ee",
+    "device": "iPhone 18 Pro",
+    "runtime": "iOS 27.0",
+    "fixture": "Debug synthetic workout history; actual Home navigation, button verified by starting workout"
+  },
+  {
+    "web": "design/app-store-studio-2026-10-29/public/screenshots/apple/iphone/watch-exercise-heart.png",
+    "source": "docs/store-device-adaptation-2026-10-29/captures/watch-heart-20261030/watch-exercise.png",
+    "sha256": "37df1f873e75a8e1a87db6bea18fa5f3d01dba898de5e6e97a633f49ceabb44b",
+    "device": "Apple Watch Series 11 46mm Simulator",
+    "fixture": "DEBUG preview with synthetic heart-rate sample 128; native rendering, not a live sensor reading"
+  },
+  {
+    "web": "design/app-store-studio-2026-10-29/public/screenshots/apple/iphone/watch-rest-heart.png",
+    "source": "docs/store-device-adaptation-2026-10-29/captures/watch-heart-20261030/watch-rest.png",
+    "sha256": "775b14ac076c790f7696296a9057eb0efd18ef59ab9adcd92a5a312778220732",
+    "device": "Apple Watch Series 11 46mm Simulator",
+    "fixture": "DEBUG preview with synthetic heart-rate sample 128; native rendering, not a live sensor reading"
+  }
+]

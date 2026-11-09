@@ -1,0 +1,855 @@
+{
+  "schema": "masso.native-duo-captures",
+  "nativeInnerDisplay": true,
+  "width": 2007,
+  "height": 2853,
+  "sceneReadyProtocol": {
+    "standardScenes": 2,
+    "training-heart-card": "native-fixture-v1; no destination-ready signal; dimensions/SHA/nonblank and representative visual review"
+  },
+  "count": 120,
+  "capturedAt": "2026-11-06T12:32:31.456995+00:00",
+  "simulator": "52FA8324-79C2-4FF2-A101-FA91C96C46CB",
+  "files": [
+    {
+      "locale": "ar",
+      "scene": "diet",
+      "sha256": "e2bc805bc21b751c66c5768cba0f74d1a191e6b5500d4698bcc2c707ee4f3252",
+      "destination": "diet",
+      "file": "docs/store-all-refresh-2026-11-06/duo/ar/diet.png"
+    },
+    {
+      "locale": "ar",
+      "scene": "exercises",
+      "sha256": "373d7c0d403846d937699fd3856e7322836fb585eeecdb29579c1c330a130f9c",
+      "destination": "exercises",
+      "file": "docs/store-all-refresh-2026-11-06/duo/ar/exercises.png"
+    },
+    {
+      "locale": "ar",
+      "scene": "insights",
+      "sha256": "15af244f05916ccc29656b05009843cbe7ded9db319ff369b51345676c7db247",
+      "destination": "insights",
+      "file": "docs/store-all-refresh-2026-11-06/duo/ar/insights.png"
+    },
+    {
+      "locale": "ar",
+      "scene": "muscle-selected",
+      "sha256": "e3ca737565e05973210b5179de8e8cf10b15f9f7606bebf9e7b26ceed64c862c",
+      "destination": "muscle_status",
+      "file": "docs/store-all-refresh-2026-11-06/duo/ar/muscle-selected.png"
+    },
+    {
+      "locale": "ar",
+      "scene": "muscle-status",
+      "sha256": "41cc884966f13881b397ba9a58f6435647a904239478533e12e020b6d10b7f6f",
+      "destination": "muscle_status",
+      "file": "docs/store-all-refresh-2026-11-06/duo/ar/muscle-status.png"
+    },
+    {
+      "locale": "ar",
+      "scene": "plans",
+      "sha256": "97f76bd006300f161efb18fd93937636e880ee9b5c8010ef57ec998aefbfcab7",
+      "destination": "coach_chat",
+      "file": "docs/store-all-refresh-2026-11-06/duo/ar/plans.png"
+    },
+    {
+      "locale": "ar",
+      "scene": "report",
+      "sha256": "e0c0a12ba8bbf6980921f6edbf579146abc9f4c667e7aaba92c4bcc4882ead09",
+      "destination": "coach_chat",
+      "file": "docs/store-all-refresh-2026-11-06/duo/ar/report.png"
+    },
+    {
+      "locale": "ar",
+      "scene": "sleep",
+      "sha256": "7e3f8cc6a89c704553d642c8f4a1852744d058fe5ca224ccf2dd8abed2212b80",
+      "destination": "sleep",
+      "file": "docs/store-all-refresh-2026-11-06/duo/ar/sleep.png"
+    },
+    {
+      "locale": "ar",
+      "scene": "today",
+      "sha256": "54353aa9940b0cc850da7481e23a5635034d6c0ed1e4dc1dfccb8113d9a743b9",
+      "destination": "today",
+      "file": "docs/store-all-refresh-2026-11-06/duo/ar/today.png"
+    },
+    {
+      "locale": "ar",
+      "scene": "training-heart-card",
+      "sha256": "6352810c6fc81ab25965d034afb10b2d53d668ff4d45a21c405673f1b4f4ac7e",
+      "destination": "training-heart-card",
+      "file": "docs/store-all-refresh-2026-11-06/duo/ar/training-heart-card.png"
+    },
+    {
+      "locale": "de",
+      "scene": "diet",
+      "sha256": "b61ec1f6f195cc8c89d5c0ba88794ab631d87b5a88ab4b3b7a98ed3faeb25305",
+      "destination": "diet",
+      "file": "docs/store-all-refresh-2026-11-06/duo/de/diet.png"
+    },
+    {
+      "locale": "de",
+      "scene": "exercises",
+      "sha256": "634ca3e98330e9d4b070f7933bd8de820dfbaf68f976d5165970bc5e9be1cd4a",
+      "destination": "exercises",
+      "file": "docs/store-all-refresh-2026-11-06/duo/de/exercises.png"
+    },
+    {
+      "locale": "de",
+      "scene": "insights",
+      "sha256": "9a15a1eb2a60d6f6195f4eb0808cb508c0a475037c6e2d64f689def56233f860",
+      "destination": "insights",
+      "file": "docs/store-all-refresh-2026-11-06/duo/de/insights.png"
+    },
+    {
+      "locale": "de",
+      "scene": "muscle-selected",
+      "sha256": "4c7464087e9b18dcb46d0b1f88103a757f08a03dee5ee1c3adbe41ab79ca2775",
+      "destination": "muscle_status",
+      "file": "docs/store-all-refresh-2026-11-06/duo/de/muscle-selected.png"
+    },
+    {
+      "locale": "de",
+      "scene": "muscle-status",
+      "sha256": "772df40eaa7fdf6e9923c1caecf5a61673a98e5aa82ea899e33642309d9efd04",
+      "destination": "muscle_status",
+      "file": "docs/store-all-refresh-2026-11-06/duo/de/muscle-status.png"
+    },
+    {
+      "locale": "de",
+      "scene": "plans",
+      "sha256": "5b0abedc5c231a754e06a5d3e45a969b80c3ed8311a14908e4bcabfbb947e245",
+      "destination": "coach_chat",
+      "file": "docs/store-all-refresh-2026-11-06/duo/de/plans.png"
+    },
+    {
+      "locale": "de",
+      "scene": "report",
+      "sha256": "4b8eb1cd761acd4e8e9c1b08ac476dca4ac2ce27c629c28d360485d1c32bbe0b",
+      "destination": "coach_chat",
+      "file": "docs/store-all-refresh-2026-11-06/duo/de/report.png"
+    },
+    {
+      "locale": "de",
+      "scene": "sleep",
+      "sha256": "5abcee1c55e51ef0e6cebf2d1a62eded2e53ceab93337bbfe60d393a80728469",
+      "destination": "sleep",
+      "file": "docs/store-all-refresh-2026-11-06/duo/de/sleep.png"
+    },
+    {
+      "locale": "de",
+      "scene": "today",
+      "sha256": "4cb4ac71181a5bc0ea8465a7f481223607d7db7242255d2e19adfea6142a71c3",
+      "destination": "today",
+      "file": "docs/store-all-refresh-2026-11-06/duo/de/today.png"
+    },
+    {
+      "locale": "de",
+      "scene": "training-heart-card",
+      "sha256": "bf40ebcfe067176198906a972f42d5d490cf4021364447ee48e5d16b8ba38a87",
+      "destination": "training-heart-card",
+      "file": "docs/store-all-refresh-2026-11-06/duo/de/training-heart-card.png"
+    },
+    {
+      "locale": "en",
+      "scene": "diet",
+      "sha256": "c9b03b3655b1daa26e9aafd2727c1e590cf25ae1d1e5b0ee807104f1501260e4",
+      "destination": "diet",
+      "file": "docs/store-all-refresh-2026-11-06/duo/en/diet.png"
+    },
+    {
+      "locale": "en",
+      "scene": "exercises",
+      "sha256": "ab6e7b8963d97c2d9dcda4f5af7c01ca55387b848eda28ca958039c813893018",
+      "destination": "exercises",
+      "file": "docs/store-all-refresh-2026-11-06/duo/en/exercises.png"
+    },
+    {
+      "locale": "en",
+      "scene": "insights",
+      "sha256": "9aec1a69ccb2befb45642da5aaec5450a8b57ae679bdb5a81fddf68dd9742e65",
+      "destination": "insights",
+      "file": "docs/store-all-refresh-2026-11-06/duo/en/insights.png"
+    },
+    {
+      "locale": "en",
+      "scene": "muscle-selected",
+      "sha256": "bf7360db7ec197996f113d02adc261a8deabb30091cefe6bda407503d04164a4",
+      "destination": "muscle_status",
+      "file": "docs/store-all-refresh-2026-11-06/duo/en/muscle-selected.png"
+    },
+    {
+      "locale": "en",
+      "scene": "muscle-status",
+      "sha256": "4c78be05cdf4a7d54e5d4eab14e11aeea3f66f47b5a8a391a3e84243c9332278",
+      "destination": "muscle_status",
+      "file": "docs/store-all-refresh-2026-11-06/duo/en/muscle-status.png"
+    },
+    {
+      "locale": "en",
+      "scene": "plans",
+      "sha256": "b7200be9840adf106c6d28ccfa335f49b595d39f9f3a56965ac604c96a2791c4",
+      "destination": "coach_chat",
+      "file": "docs/store-all-refresh-2026-11-06/duo/en/plans.png"
+    },
+    {
+      "locale": "en",
+      "scene": "report",
+      "sha256": "9a7667d7e92049425a820db7c288b02e7027f7b44408f2e3178ca58cfd0ed80f",
+      "destination": "coach_chat",
+      "file": "docs/store-all-refresh-2026-11-06/duo/en/report.png"
+    },
+    {
+      "locale": "en",
+      "scene": "sleep",
+      "sha256": "fa81719ea0fb515f7d251051e884b658a1b281f9ac5358127e0edb59cdd9a9fe",
+      "destination": "sleep",
+      "file": "docs/store-all-refresh-2026-11-06/duo/en/sleep.png"
+    },
+    {
+      "locale": "en",
+      "scene": "today",
+      "sha256": "ed6110549d701e6e059dd71954afb1c2c417afcdbb05f9e83932d220e9477a74",
+      "destination": "today",
+      "file": "docs/store-all-refresh-2026-11-06/duo/en/today.png"
+    },
+    {
+      "locale": "en",
+      "scene": "training-heart-card",
+      "sha256": "e51fb32b5dcd603832c23d50026f42fd1e8d465e6f2b44beb31eb038f1bf0719",
+      "destination": "training-heart-card",
+      "file": "docs/store-all-refresh-2026-11-06/duo/en/training-heart-card.png"
+    },
+    {
+      "locale": "es",
+      "scene": "diet",
+      "sha256": "12093fab7bca42bb37f09daf0d14897ca20db508b3542b8ffe203159fc43edb3",
+      "destination": "diet",
+      "file": "docs/store-all-refresh-2026-11-06/duo/es/diet.png"
+    },
+    {
+      "locale": "es",
+      "scene": "exercises",
+      "sha256": "72fa9fcded5c250c94858fd2caa9e6bb48e3e0fadfbf70933f4e74896a3591a7",
+      "destination": "exercises",
+      "file": "docs/store-all-refresh-2026-11-06/duo/es/exercises.png"
+    },
+    {
+      "locale": "es",
+      "scene": "insights",
+      "sha256": "3d512fac989ca24284e6a547272ebad55493fd985201d97382a8f0476ba8b910",
+      "destination": "insights",
+      "file": "docs/store-all-refresh-2026-11-06/duo/es/insights.png"
+    },
+    {
+      "locale": "es",
+      "scene": "muscle-selected",
+      "sha256": "ebfcac70db6da3cec36d195f3e3484cd45e1b2b5e2256b81b97d9b700f6043c7",
+      "destination": "muscle_status",
+      "file": "docs/store-all-refresh-2026-11-06/duo/es/muscle-selected.png"
+    },
+    {
+      "locale": "es",
+      "scene": "muscle-status",
+      "sha256": "1408784c6b6fcf23149b03258355ff1b8014facea3e1c31b53039ca79f354eda",
+      "destination": "muscle_status",
+      "file": "docs/store-all-refresh-2026-11-06/duo/es/muscle-status.png"
+    },
+    {
+      "locale": "es",
+      "scene": "plans",
+      "sha256": "961ab292deb8152830c228f518121f0df0db5b49508f04473a9d89c8500383c4",
+      "destination": "coach_chat",
+      "file": "docs/store-all-refresh-2026-11-06/duo/es/plans.png"
+    },
+    {
+      "locale": "es",
+      "scene": "report",
+      "sha256": "5b78b511026bab1635b41fc95eeb7414a7d28cc46720ff39a882c2001e0010d6",
+      "destination": "coach_chat",
+      "file": "docs/store-all-refresh-2026-11-06/duo/es/report.png"
+    },
+    {
+      "locale": "es",
+      "scene": "sleep",
+      "sha256": "adc951dd2dc308ae4b1b23ba0440d16f18aecedca539a342d93b2ab603712f55",
+      "destination": "sleep",
+      "file": "docs/store-all-refresh-2026-11-06/duo/es/sleep.png"
+    },
+    {
+      "locale": "es",
+      "scene": "today",
+      "sha256": "e5d61e33a056a0d2a9756578cb38c1f2e3a4beba1ec99d597e9c1f7b40490a5a",
+      "destination": "today",
+      "file": "docs/store-all-refresh-2026-11-06/duo/es/today.png"
+    },
+    {
+      "locale": "es",
+      "scene": "training-heart-card",
+      "sha256": "fa48c10e4694f09dbe5f11359303bfa3cc5f450bc5806f44f0706a3c126e07da",
+      "destination": "training-heart-card",
+      "file": "docs/store-all-refresh-2026-11-06/duo/es/training-heart-card.png"
+    },
+    {
+      "locale": "fr",
+      "scene": "diet",
+      "sha256": "128b00ffb2ab23ab988b5a15fe842a1128fce61e655337c4989ab09c76a7ff14",
+      "destination": "diet",
+      "file": "docs/store-all-refresh-2026-11-06/duo/fr/diet.png"
+    },
+    {
+      "locale": "fr",
+      "scene": "exercises",
+      "sha256": "5abc8e6475244f582507e63593f9a82f63eee84cc224d8189723a8c240b0990c",
+      "destination": "exercises",
+      "file": "docs/store-all-refresh-2026-11-06/duo/fr/exercises.png"
+    },
+    {
+      "locale": "fr",
+      "scene": "insights",
+      "sha256": "6ae76f6f03f44be99c0182b9a2d4588a139618618c7b909d2e9b30772019900b",
+      "destination": "insights",
+      "file": "docs/store-all-refresh-2026-11-06/duo/fr/insights.png"
+    },
+    {
+      "locale": "fr",
+      "scene": "muscle-selected",
+      "sha256": "405173a40c644cae50c2524549bcf6e4cb71dcaeb14c6890edee335adff2b541",
+      "destination": "muscle_status",
+      "file": "docs/store-all-refresh-2026-11-06/duo/fr/muscle-selected.png"
+    },
+    {
+      "locale": "fr",
+      "scene": "muscle-status",
+      "sha256": "b1ee86fac6e8c2c5ea7fc4d95661b1dd334f120072ff14eb58ca0daba8c60264",
+      "destination": "muscle_status",
+      "file": "docs/store-all-refresh-2026-11-06/duo/fr/muscle-status.png"
+    },
+    {
+      "locale": "fr",
+      "scene": "plans",
+      "sha256": "9c67738e5f7367107e49e1510ec58199977707f0efad053d651fb64b3b50d044",
+      "destination": "coach_chat",
+      "file": "docs/store-all-refresh-2026-11-06/duo/fr/plans.png"
+    },
+    {
+      "locale": "fr",
+      "scene": "report",
+      "sha256": "d9d1a6b3f0eb2168f27f81934702d3d7020f741ab3964aad7ba52e7bbc45517e",
+      "destination": "coach_chat",
+      "file": "docs/store-all-refresh-2026-11-06/duo/fr/report.png"
+    },
+    {
+      "locale": "fr",
+      "scene": "sleep",
+      "sha256": "4e8a8e8cea7445b2a342e59cde69b56b375c92006224450616f77d423fa37edd",
+      "destination": "sleep",
+      "file": "docs/store-all-refresh-2026-11-06/duo/fr/sleep.png"
+    },
+    {
+      "locale": "fr",
+      "scene": "today",
+      "sha256": "22aa557afad5ac3ea71f59dd0e8e30350f59d0b389986b8f18c171640c879199",
+      "destination": "today",
+      "file": "docs/store-all-refresh-2026-11-06/duo/fr/today.png"
+    },
+    {
+      "locale": "fr",
+      "scene": "training-heart-card",
+      "sha256": "61ee248a17041b8829636ddd2b3eafbfd2902f6a9b41775443e73dd41794c75e",
+      "destination": "training-heart-card",
+      "file": "docs/store-all-refresh-2026-11-06/duo/fr/training-heart-card.png"
+    },
+    {
+      "locale": "it",
+      "scene": "diet",
+      "sha256": "b06cd5343923e9b4534745208fe3d7c1ed5bc3c5d3dbcb5385152a0c16e5719d",
+      "destination": "diet",
+      "file": "docs/store-all-refresh-2026-11-06/duo/it/diet.png"
+    },
+    {
+      "locale": "it",
+      "scene": "exercises",
+      "sha256": "821b2c77b7a5e213ac0120864a537f10643dd19061b6018c681c5de52e6efa4b",
+      "destination": "exercises",
+      "file": "docs/store-all-refresh-2026-11-06/duo/it/exercises.png"
+    },
+    {
+      "locale": "it",
+      "scene": "insights",
+      "sha256": "3d5e65da4bbfd356045b57e3ec342c0db1e8fef7a3a4404fa4db23f43ea995a9",
+      "destination": "insights",
+      "file": "docs/store-all-refresh-2026-11-06/duo/it/insights.png"
+    },
+    {
+      "locale": "it",
+      "scene": "muscle-selected",
+      "sha256": "9628405880633de12142c388fc454d5df3319a6fe57e99efa529ad2675568e2b",
+      "destination": "muscle_status",
+      "file": "docs/store-all-refresh-2026-11-06/duo/it/muscle-selected.png"
+    },
+    {
+      "locale": "it",
+      "scene": "muscle-status",
+      "sha256": "c2e809beb68809e2d315e52f8c35aef36259482b312c9193e8ec4beb4b256d1d",
+      "destination": "muscle_status",
+      "file": "docs/store-all-refresh-2026-11-06/duo/it/muscle-status.png"
+    },
+    {
+      "locale": "it",
+      "scene": "plans",
+      "sha256": "ae27b2f01861edc5526d2ccc2fd17c3578091b67798986960b82fced3b5655e3",
+      "destination": "coach_chat",
+      "file": "docs/store-all-refresh-2026-11-06/duo/it/plans.png"
+    },
+    {
+      "locale": "it",
+      "scene": "report",
+      "sha256": "3467bc0b8d78409ecaa59ab9b2683de77cac7896a786eba6d27a647e75768012",
+      "destination": "coach_chat",
+      "file": "docs/store-all-refresh-2026-11-06/duo/it/report.png"
+    },
+    {
+      "locale": "it",
+      "scene": "sleep",
+      "sha256": "f0bac0999e22dcc0da3c8afd375bb6faf3ec2eca2d4f23ea0299cbf647da1034",
+      "destination": "sleep",
+      "file": "docs/store-all-refresh-2026-11-06/duo/it/sleep.png"
+    },
+    {
+      "locale": "it",
+      "scene": "today",
+      "sha256": "626f52dd8c2a3eb7b3cf5167ac87d392af367d0b6ea35cbdd2c6d4c3baf559a7",
+      "destination": "today",
+      "file": "docs/store-all-refresh-2026-11-06/duo/it/today.png"
+    },
+    {
+      "locale": "it",
+      "scene": "training-heart-card",
+      "sha256": "4adcf0f4ea389a9225b27747fdcb0b781ec118e1e3051a542a08237ea8d94f51",
+      "destination": "training-heart-card",
+      "file": "docs/store-all-refresh-2026-11-06/duo/it/training-heart-card.png"
+    },
+    {
+      "locale": "ja",
+      "scene": "diet",
+      "sha256": "a205d8964d38f9220c842eb8d9adebadd8dd54c54b2b890f40a83a4e7d1fcb14",
+      "destination": "diet",
+      "file": "docs/store-all-refresh-2026-11-06/duo/ja/diet.png"
+    },
+    {
+      "locale": "ja",
+      "scene": "exercises",
+      "sha256": "bf6470f5e88c928850a5425003e38e1598017a3997ffe135af33e66a9f48eb69",
+      "destination": "exercises",
+      "file": "docs/store-all-refresh-2026-11-06/duo/ja/exercises.png"
+    },
+    {
+      "locale": "ja",
+      "scene": "insights",
+      "sha256": "b254add9e9ac1b88f5a20bc8ac016891b2e4d76adfdc2c727343b8b12742997a",
+      "destination": "insights",
+      "file": "docs/store-all-refresh-2026-11-06/duo/ja/insights.png"
+    },
+    {
+      "locale": "ja",
+      "scene": "muscle-selected",
+      "sha256": "a9e799ed6327236c671499e9918b00ccd7c7c262f9effea33c71f97311b8f7f5",
+      "destination": "muscle_status",
+      "file": "docs/store-all-refresh-2026-11-06/duo/ja/muscle-selected.png"
+    },
+    {
+      "locale": "ja",
+      "scene": "muscle-status",
+      "sha256": "7c3d21e8b2392586354303e71283fa63448fa6ca3a8fe9fae5e85d7acbf1e82f",
+      "destination": "muscle_status",
+      "file": "docs/store-all-refresh-2026-11-06/duo/ja/muscle-status.png"
+    },
+    {
+      "locale": "ja",
+      "scene": "plans",
+      "sha256": "74e2987e9752d84af552635f89e4ae729f8eff870ec7bab550757727705e1649",
+      "destination": "coach_chat",
+      "file": "docs/store-all-refresh-2026-11-06/duo/ja/plans.png"
+    },
+    {
+      "locale": "ja",
+      "scene": "report",
+      "sha256": "7fc5da41157185c6fb2a23ece5537a2f8a4b9d612c12ee765b5d6c06267c7f53",
+      "destination": "coach_chat",
+      "file": "docs/store-all-refresh-2026-11-06/duo/ja/report.png"
+    },
+    {
+      "locale": "ja",
+      "scene": "sleep",
+      "sha256": "d031fe13fa49775e5623c9a958457f7cfba20f6d28b45dd81c7f3d1295891976",
+      "destination": "sleep",
+      "file": "docs/store-all-refresh-2026-11-06/duo/ja/sleep.png"
+    },
+    {
+      "locale": "ja",
+      "scene": "today",
+      "sha256": "e7c48c13ad877464f7efa9a7f3ada02fe7d3da7911876d5bfbfab02b1011af8c",
+      "destination": "today",
+      "file": "docs/store-all-refresh-2026-11-06/duo/ja/today.png"
+    },
+    {
+      "locale": "ja",
+      "scene": "training-heart-card",
+      "sha256": "98af46c5c8ebb4193b26f214a002a8f1f03d502372e8b96c9ae7a07a105a5939",
+      "destination": "training-heart-card",
+      "file": "docs/store-all-refresh-2026-11-06/duo/ja/training-heart-card.png"
+    },
+    {
+      "locale": "ko",
+      "scene": "diet",
+      "sha256": "f2ce79be210f870a865fdd0371fbab500357207453a371a34ba8063e8fa298a2",
+      "destination": "diet",
+      "file": "docs/store-all-refresh-2026-11-06/duo/ko/diet.png"
+    },
+    {
+      "locale": "ko",
+      "scene": "exercises",
+      "sha256": "ed12f4bf0de32efe5e99267ff644b5aa681cbab5ed283f839ac5034864948975",
+      "destination": "exercises",
+      "file": "docs/store-all-refresh-2026-11-06/duo/ko/exercises.png"
+    },
+    {
+      "locale": "ko",
+      "scene": "insights",
+      "sha256": "ae4877ed2fd2c53277184d423c6ad6fb3e9e2a9381cab10a43c10c43fc63287c",
+      "destination": "insights",
+      "file": "docs/store-all-refresh-2026-11-06/duo/ko/insights.png"
+    },
+    {
+      "locale": "ko",
+      "scene": "muscle-selected",
+      "sha256": "29f5a548155dfe3942bb1f762b441f2e5503e012decf81bcaa5c4767197dd62b",
+      "destination": "muscle_status",
+      "file": "docs/store-all-refresh-2026-11-06/duo/ko/muscle-selected.png"
+    },
+    {
+      "locale": "ko",
+      "scene": "muscle-status",
+      "sha256": "04e27d7bb6a7006b1aa1ad8f9d9cf1ddb00932becc6f7f696aebf599500f4a14",
+      "destination": "muscle_status",
+      "file": "docs/store-all-refresh-2026-11-06/duo/ko/muscle-status.png"
+    },
+    {
+      "locale": "ko",
+      "scene": "plans",
+      "sha256": "8e6ad2fc5195100918f7003f3eecae0fd72d1b9ab5ed0d4d0fd5b8cf68a2db7d",
+      "destination": "coach_chat",
+      "file": "docs/store-all-refresh-2026-11-06/duo/ko/plans.png"
+    },
+    {
+      "locale": "ko",
+      "scene": "report",
+      "sha256": "f02d61b532a0036b05ee937fe2f08e64d770e4c07e87fa7556d20a7943639bdc",
+      "destination": "coach_chat",
+      "file": "docs/store-all-refresh-2026-11-06/duo/ko/report.png"
+    },
+    {
+      "locale": "ko",
+      "scene": "sleep",
+      "sha256": "0d56ebeccf45fee20cab4b7de5983fff9bd83a4d9dd8a1b3225b4507ad745749",
+      "destination": "sleep",
+      "file": "docs/store-all-refresh-2026-11-06/duo/ko/sleep.png"
+    },
+    {
+      "locale": "ko",
+      "scene": "today",
+      "sha256": "a26c9c17f92795cb7cbd67bd470a191818390726123ddbf9c6163a751a8ae81a",
+      "destination": "today",
+      "file": "docs/store-all-refresh-2026-11-06/duo/ko/today.png"
+    },
+    {
+      "locale": "ko",
+      "scene": "training-heart-card",
+      "sha256": "93fb1e4744fecb0a9cfcb96c46a63c8a717f26eda8d38934254ad4a7a35ab2e1",
+      "destination": "training-heart-card",
+      "file": "docs/store-all-refresh-2026-11-06/duo/ko/training-heart-card.png"
+    },
+    {
+      "locale": "pt-BR",
+      "scene": "diet",
+      "sha256": "1746315b729824824299b349b05ba06544f4eba0578d89944b3314d33348f02c",
+      "destination": "diet",
+      "file": "docs/store-all-refresh-2026-11-06/duo/pt-BR/diet.png"
+    },
+    {
+      "locale": "pt-BR",
+      "scene": "exercises",
+      "sha256": "985bcd710e05765458576678abd05a6e4d7ad7c6472e1bdfcf856ec06b9c6b75",
+      "destination": "exercises",
+      "file": "docs/store-all-refresh-2026-11-06/duo/pt-BR/exercises.png"
+    },
+    {
+      "locale": "pt-BR",
+      "scene": "insights",
+      "sha256": "d1142bc8e4a3357c55f7757b154af528ce26f929878d1e661ac4e6bf4a6bc098",
+      "destination": "insights",
+      "file": "docs/store-all-refresh-2026-11-06/duo/pt-BR/insights.png"
+    },
+    {
+      "locale": "pt-BR",
+      "scene": "muscle-selected",
+      "sha256": "21cdffff5c27099bf923824dc8084c00375fe85c566731fac62896f5d84f9b08",
+      "destination": "muscle_status",
+      "file": "docs/store-all-refresh-2026-11-06/duo/pt-BR/muscle-selected.png"
+    },
+    {
+      "locale": "pt-BR",
+      "scene": "muscle-status",
+      "sha256": "0973bd383ebe79c0c489b5c46c29511ce1a66d05dc7ddaebaed6d1950925facc",
+      "destination": "muscle_status",
+      "file": "docs/store-all-refresh-2026-11-06/duo/pt-BR/muscle-status.png"
+    },
+    {
+      "locale": "pt-BR",
+      "scene": "plans",
+      "sha256": "e1369210ce395318455de5114ced48e22d0f7444ae475f8c93dbed5411bd85de",
+      "destination": "coach_chat",
+      "file": "docs/store-all-refresh-2026-11-06/duo/pt-BR/plans.png"
+    },
+    {
+      "locale": "pt-BR",
+      "scene": "report",
+      "sha256": "be9430e195ca1574de0fa904b7b2b7e4f6daf4839130f75ba0f76769a964251e",
+      "destination": "coach_chat",
+      "file": "docs/store-all-refresh-2026-11-06/duo/pt-BR/report.png"
+    },
+    {
+      "locale": "pt-BR",
+      "scene": "sleep",
+      "sha256": "6eea341f13ba63499c2466ad4ffd005f1816dbf631e458c35f4adeac24f76186",
+      "destination": "sleep",
+      "file": "docs/store-all-refresh-2026-11-06/duo/pt-BR/sleep.png"
+    },
+    {
+      "locale": "pt-BR",
+      "scene": "today",
+      "sha256": "b5ad1fc8beccf549531eca5b34a71e66f74be7b1ed775060dafc190b0d451069",
+      "destination": "today",
+      "file": "docs/store-all-refresh-2026-11-06/duo/pt-BR/today.png"
+    },
+    {
+      "locale": "pt-BR",
+      "scene": "training-heart-card",
+      "sha256": "61be9a392e15ad7e49cf89ddc22cbc78281241db6cf1801392d408e510c51b73",
+      "destination": "training-heart-card",
+      "file": "docs/store-all-refresh-2026-11-06/duo/pt-BR/training-heart-card.png"
+    },
+    {
+      "locale": "ru",
+      "scene": "diet",
+      "sha256": "73fd089ccb00a2da56105767d7b454e3c21b72b3d5e3ec819a20f7bc46f1140c",
+      "destination": "diet",
+      "file": "docs/store-all-refresh-2026-11-06/duo/ru/diet.png"
+    },
+    {
+      "locale": "ru",
+      "scene": "exercises",
+      "sha256": "e8e5ebc011622acd97dfa687b8747aba9e907aaa80b00d77b96e6b590ae4a054",
+      "destination": "exercises",
+      "file": "docs/store-all-refresh-2026-11-06/duo/ru/exercises.png"
+    },
+    {
+      "locale": "ru",
+      "scene": "insights",
+      "sha256": "383201b7052ba712c23a28b9d11d96ab88ad075297e0f25ca756d33f5d259147",
+      "destination": "insights",
+      "file": "docs/store-all-refresh-2026-11-06/duo/ru/insights.png"
+    },
+    {
+      "locale": "ru",
+      "scene": "muscle-selected",
+      "sha256": "70a0d4637c1533fda341a00ee4760e3ae1bb7514851e292c5acad39dce227a23",
+      "destination": "muscle_status",
+      "file": "docs/store-all-refresh-2026-11-06/duo/ru/muscle-selected.png"
+    },
+    {
+      "locale": "ru",
+      "scene": "muscle-status",
+      "sha256": "d64d349933e30e93b1bb00667e3943d4b994f4a82cb4404f5340b83711ecf68f",
+      "destination": "muscle_status",
+      "file": "docs/store-all-refresh-2026-11-06/duo/ru/muscle-status.png"
+    },
+    {
+      "locale": "ru",
+      "scene": "plans",
+      "sha256": "e40c58f3982a1ba5b802442df3f896b68beaa16f0dcb2ae9c302dd2c49d44448",
+      "destination": "coach_chat",
+      "file": "docs/store-all-refresh-2026-11-06/duo/ru/plans.png"
+    },
+    {
+      "locale": "ru",
+      "scene": "report",
+      "sha256": "82d6661b193fa3c8e6e55c34ab46936b7f2daec4a82e41ac5780122eacf3ab91",
+      "destination": "coach_chat",
+      "file": "docs/store-all-refresh-2026-11-06/duo/ru/report.png"
+    },
+    {
+      "locale": "ru",
+      "scene": "sleep",
+      "sha256": "d4fc1eb2be0f6d84cb792869db6b5301d6a6ca3f42a712a36ac43ee3026c9bfe",
+      "destination": "sleep",
+      "file": "docs/store-all-refresh-2026-11-06/duo/ru/sleep.png"
+    },
+    {
+      "locale": "ru",
+      "scene": "today",
+      "sha256": "9f30b63b974de5c0a5fb3265f290bbcbc56c060c251a5bbf9ffdae7d93f4074f",
+      "destination": "today",
+      "file": "docs/store-all-refresh-2026-11-06/duo/ru/today.png"
+    },
+    {
+      "locale": "ru",
+      "scene": "training-heart-card",
+      "sha256": "e11f84a6bec97d6e7648eea7c3b1298c1bfcd486b4c090d80f8422ec89a232f1",
+      "destination": "training-heart-card",
+      "file": "docs/store-all-refresh-2026-11-06/duo/ru/training-heart-card.png"
+    },
+    {
+      "locale": "zh",
+      "scene": "diet",
+      "sha256": "13a9db7b95a99378a0edd35356b84781720530a8064aac28556e1ba12d2aab03",
+      "destination": "diet",
+      "file": "docs/store-all-refresh-2026-11-06/duo/zh/diet.png"
+    },
+    {
+      "locale": "zh",
+      "scene": "exercises",
+      "sha256": "38a690c68f156a95aaab951f3843b8644bbe559ffc0874aec886c29c5202dffb",
+      "destination": "exercises",
+      "file": "docs/store-all-refresh-2026-11-06/duo/zh/exercises.png"
+    },
+    {
+      "locale": "zh",
+      "scene": "insights",
+      "sha256": "07c7b28828ddb6754917791e8defcaa5f9b0ab483efa2a84bb31b90e1af3d91d",
+      "destination": "insights",
+      "file": "docs/store-all-refresh-2026-11-06/duo/zh/insights.png"
+    },
+    {
+      "locale": "zh",
+      "scene": "muscle-selected",
+      "sha256": "b22890f986cdba95cb3acf9e8e08aa8f8941b5cdd2e7583ae6eb23f3cf65ad04",
+      "destination": "muscle_status",
+      "file": "docs/store-all-refresh-2026-11-06/duo/zh/muscle-selected.png"
+    },
+    {
+      "locale": "zh",
+      "scene": "muscle-status",
+      "sha256": "61079ae72f515c203246b7a401202bfaaca6b7ff6311c66b04e17a46b15817cb",
+      "destination": "muscle_status",
+      "file": "docs/store-all-refresh-2026-11-06/duo/zh/muscle-status.png"
+    },
+    {
+      "locale": "zh",
+      "scene": "plans",
+      "sha256": "33c65de56a9b67d7f4201168b0b03f845b90b9d0ce0fa1c81119d11d623ba20a",
+      "destination": "coach_chat",
+      "file": "docs/store-all-refresh-2026-11-06/duo/zh/plans.png"
+    },
+    {
+      "locale": "zh",
+      "scene": "report",
+      "sha256": "c4b341088b2e777c0440052a77a564f6568d300a8b355411ea7593237c486e7a",
+      "destination": "coach_chat",
+      "file": "docs/store-all-refresh-2026-11-06/duo/zh/report.png"
+    },
+    {
+      "locale": "zh",
+      "scene": "sleep",
+      "sha256": "2663045d309c8e73fe0f3f181012459b8487f231a3a5e1b689ac05f7e8c9b3f8",
+      "destination": "sleep",
+      "file": "docs/store-all-refresh-2026-11-06/duo/zh/sleep.png"
+    },
+    {
+      "locale": "zh",
+      "scene": "today",
+      "sha256": "ecc78a0d2a3c7c78d36df7ab4a67825d168854e03c4a5ac47f9f571ef9760bef",
+      "destination": "today",
+      "file": "docs/store-all-refresh-2026-11-06/duo/zh/today.png"
+    },
+    {
+      "locale": "zh",
+      "scene": "training-heart-card",
+      "sha256": "b1ba55a9d6da9d5924c1af5622ca32ad26f2d4457c3c64b719ca0f15bd4667f2",
+      "destination": "training-heart-card",
+      "file": "docs/store-all-refresh-2026-11-06/duo/zh/training-heart-card.png"
+    },
+    {
+      "locale": "zh-Hant",
+      "scene": "diet",
+      "sha256": "b44022199c94f1ae21fe4b4929901e099401aea7680890fdaf407a95992abb29",
+      "destination": "diet",
+      "file": "docs/store-all-refresh-2026-11-06/duo/zh-Hant/diet.png"
+    },
+    {
+      "locale": "zh-Hant",
+      "scene": "exercises",
+      "sha256": "220c6344f8e7398fc3977fa182ae2258cca368bb3b1864e89251557b6f148cee",
+      "destination": "exercises",
+      "file": "docs/store-all-refresh-2026-11-06/duo/zh-Hant/exercises.png"
+    },
+    {
+      "locale": "zh-Hant",
+      "scene": "insights",
+      "sha256": "754f49d31f21e62d30e5df2e542b921189499117cc3f5d9b54648e4b7767f31c",
+      "destination": "insights",
+      "file": "docs/store-all-refresh-2026-11-06/duo/zh-Hant/insights.png"
+    },
+    {
+      "locale": "zh-Hant",
+      "scene": "muscle-selected",
+      "sha256": "493f99b530c85459518dbe5b91f638888a39b5094432529a4f4103314a819678",
+      "destination": "muscle_status",
+      "file": "docs/store-all-refresh-2026-11-06/duo/zh-Hant/muscle-selected.png"
+    },
+    {
+      "locale": "zh-Hant",
+      "scene": "muscle-status",
+      "sha256": "c9a793a5b9f0814704954da235aaa01aeead55b43fc56bb5548e692dc4e7cc9f",
+      "destination": "muscle_status",
+      "file": "docs/store-all-refresh-2026-11-06/duo/zh-Hant/muscle-status.png"
+    },
+    {
+      "locale": "zh-Hant",
+      "scene": "plans",
+      "sha256": "1873c7e2a737db32f3e0e691178f053344c51d659c3f0ef40e35a36d806a19d1",
+      "destination": "coach_chat",
+      "file": "docs/store-all-refresh-2026-11-06/duo/zh-Hant/plans.png"
+    },
+    {
+      "locale": "zh-Hant",
+      "scene": "report",
+      "sha256": "13f5bc2d4103f3da16059f5cdf1c2f35a5163d958e44b98c8ac9abd410c65110",
+      "destination": "coach_chat",
+      "file": "docs/store-all-refresh-2026-11-06/duo/zh-Hant/report.png"
+    },
+    {
+      "locale": "zh-Hant",
+      "scene": "sleep",
+      "sha256": "7d6a001e16bf496700912d3a8689d57b3e4f26f69a9a9b396be39f5e9c2c6926",
+      "destination": "sleep",
+      "file": "docs/store-all-refresh-2026-11-06/duo/zh-Hant/sleep.png"
+    },
+    {
+      "locale": "zh-Hant",
+      "scene": "today",
+      "sha256": "815ad18a2656b3fa04a72bf5885675123a2b58377d50137746154d09da5ae102",
+      "destination": "today",
+      "file": "docs/store-all-refresh-2026-11-06/duo/zh-Hant/today.png"
+    },
+    {
+      "locale": "zh-Hant",
+      "scene": "training-heart-card",
+      "sha256": "b5d5cc85baa53e9f28bf72afabea4494af8b114ca7c4a7f85592f5d0c23f9ccf",
+      "destination": "training-heart-card",
+      "file": "docs/store-all-refresh-2026-11-06/duo/zh-Hant/training-heart-card.png"
+    }
+  ]
+}

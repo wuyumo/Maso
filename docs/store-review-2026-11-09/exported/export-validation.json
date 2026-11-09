@@ -1,0 +1,985 @@
+{
+  "batch": "store-review-2026-11-09",
+  "status": "draft review, not upload-approved",
+  "duoFrame": "neutral-black adaptation of the in-repo Night Sky bezel; not an official black SKU file",
+  "counts": {
+    "files": 108,
+    "marketingChat": 24,
+    "nativeCapturesPresent": 8,
+    "captureMissing": 76
+  },
+  "files": [
+    {
+      "file": "ipad/2064x2752/ar/01-plan.png",
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "marketing-chat",
+      "uploadReady": false
+    },
+    {
+      "file": "ipad/2064x2752/ar/02-recovery.png",
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "ipad/2064x2752/ar/04-diet.png",
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "ipad/2064x2752/ar/05-devices.png",
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "ipad/2064x2752/de/01-plan.png",
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "marketing-chat",
+      "uploadReady": false
+    },
+    {
+      "file": "ipad/2064x2752/de/02-recovery.png",
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "ipad/2064x2752/de/04-diet.png",
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "ipad/2064x2752/de/05-devices.png",
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "ipad/2064x2752/en/01-plan.png",
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "marketing-chat",
+      "uploadReady": false
+    },
+    {
+      "file": "ipad/2064x2752/en/02-recovery.png",
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "ipad/2064x2752/en/04-diet.png",
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "native-captures-present",
+      "uploadReady": false
+    },
+    {
+      "file": "ipad/2064x2752/en/05-devices.png",
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "native-captures-present",
+      "uploadReady": false
+    },
+    {
+      "file": "ipad/2064x2752/es/01-plan.png",
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "marketing-chat",
+      "uploadReady": false
+    },
+    {
+      "file": "ipad/2064x2752/es/02-recovery.png",
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "ipad/2064x2752/es/04-diet.png",
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "ipad/2064x2752/es/05-devices.png",
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "ipad/2064x2752/fr/01-plan.png",
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "marketing-chat",
+      "uploadReady": false
+    },
+    {
+      "file": "ipad/2064x2752/fr/02-recovery.png",
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "ipad/2064x2752/fr/04-diet.png",
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "ipad/2064x2752/fr/05-devices.png",
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "ipad/2064x2752/it/01-plan.png",
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "marketing-chat",
+      "uploadReady": false
+    },
+    {
+      "file": "ipad/2064x2752/it/02-recovery.png",
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "ipad/2064x2752/it/04-diet.png",
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "ipad/2064x2752/it/05-devices.png",
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "ipad/2064x2752/ja/01-plan.png",
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "marketing-chat",
+      "uploadReady": false
+    },
+    {
+      "file": "ipad/2064x2752/ja/02-recovery.png",
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "ipad/2064x2752/ja/04-diet.png",
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "ipad/2064x2752/ja/05-devices.png",
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "ipad/2064x2752/ko/01-plan.png",
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "marketing-chat",
+      "uploadReady": false
+    },
+    {
+      "file": "ipad/2064x2752/ko/02-recovery.png",
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "ipad/2064x2752/ko/04-diet.png",
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "ipad/2064x2752/ko/05-devices.png",
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "ipad/2064x2752/pt-BR/01-plan.png",
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "marketing-chat",
+      "uploadReady": false
+    },
+    {
+      "file": "ipad/2064x2752/pt-BR/02-recovery.png",
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "ipad/2064x2752/pt-BR/04-diet.png",
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "ipad/2064x2752/pt-BR/05-devices.png",
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "ipad/2064x2752/ru/01-plan.png",
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "marketing-chat",
+      "uploadReady": false
+    },
+    {
+      "file": "ipad/2064x2752/ru/02-recovery.png",
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "ipad/2064x2752/ru/04-diet.png",
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "ipad/2064x2752/ru/05-devices.png",
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "ipad/2064x2752/zh-Hant/01-plan.png",
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "marketing-chat",
+      "uploadReady": false
+    },
+    {
+      "file": "ipad/2064x2752/zh-Hant/02-recovery.png",
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "ipad/2064x2752/zh-Hant/04-diet.png",
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "ipad/2064x2752/zh-Hant/05-devices.png",
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "ipad/2064x2752/zh/01-plan.png",
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "marketing-chat",
+      "uploadReady": false
+    },
+    {
+      "file": "ipad/2064x2752/zh/02-recovery.png",
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "ipad/2064x2752/zh/04-diet.png",
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "native-captures-present",
+      "uploadReady": false
+    },
+    {
+      "file": "ipad/2064x2752/zh/05-devices.png",
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "native-captures-present",
+      "uploadReady": false
+    },
+    {
+      "file": "iphone/1320x2868/ar/01-plan.png",
+      "width": 1320,
+      "height": 2868,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "marketing-chat",
+      "uploadReady": false
+    },
+    {
+      "file": "iphone/1320x2868/ar/02-recovery.png",
+      "width": 1320,
+      "height": 2868,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "iphone/1320x2868/ar/03-training.png",
+      "width": 1320,
+      "height": 2868,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "iphone/1320x2868/ar/04-diet.png",
+      "width": 1320,
+      "height": 2868,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "iphone/1320x2868/ar/05-devices.png",
+      "width": 1320,
+      "height": 2868,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "iphone/1320x2868/de/01-plan.png",
+      "width": 1320,
+      "height": 2868,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "marketing-chat",
+      "uploadReady": false
+    },
+    {
+      "file": "iphone/1320x2868/de/02-recovery.png",
+      "width": 1320,
+      "height": 2868,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "iphone/1320x2868/de/03-training.png",
+      "width": 1320,
+      "height": 2868,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "iphone/1320x2868/de/04-diet.png",
+      "width": 1320,
+      "height": 2868,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "iphone/1320x2868/de/05-devices.png",
+      "width": 1320,
+      "height": 2868,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "iphone/1320x2868/en/01-plan.png",
+      "width": 1320,
+      "height": 2868,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "marketing-chat",
+      "uploadReady": false
+    },
+    {
+      "file": "iphone/1320x2868/en/02-recovery.png",
+      "width": 1320,
+      "height": 2868,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "iphone/1320x2868/en/03-training.png",
+      "width": 1320,
+      "height": 2868,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "iphone/1320x2868/en/04-diet.png",
+      "width": 1320,
+      "height": 2868,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "native-captures-present",
+      "uploadReady": false
+    },
+    {
+      "file": "iphone/1320x2868/en/05-devices.png",
+      "width": 1320,
+      "height": 2868,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "native-captures-present",
+      "uploadReady": false
+    },
+    {
+      "file": "iphone/1320x2868/es/01-plan.png",
+      "width": 1320,
+      "height": 2868,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "marketing-chat",
+      "uploadReady": false
+    },
+    {
+      "file": "iphone/1320x2868/es/02-recovery.png",
+      "width": 1320,
+      "height": 2868,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "iphone/1320x2868/es/03-training.png",
+      "width": 1320,
+      "height": 2868,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "iphone/1320x2868/es/04-diet.png",
+      "width": 1320,
+      "height": 2868,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "iphone/1320x2868/es/05-devices.png",
+      "width": 1320,
+      "height": 2868,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "iphone/1320x2868/fr/01-plan.png",
+      "width": 1320,
+      "height": 2868,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "marketing-chat",
+      "uploadReady": false
+    },
+    {
+      "file": "iphone/1320x2868/fr/02-recovery.png",
+      "width": 1320,
+      "height": 2868,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "iphone/1320x2868/fr/03-training.png",
+      "width": 1320,
+      "height": 2868,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "iphone/1320x2868/fr/04-diet.png",
+      "width": 1320,
+      "height": 2868,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "iphone/1320x2868/fr/05-devices.png",
+      "width": 1320,
+      "height": 2868,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "iphone/1320x2868/it/01-plan.png",
+      "width": 1320,
+      "height": 2868,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "marketing-chat",
+      "uploadReady": false
+    },
+    {
+      "file": "iphone/1320x2868/it/02-recovery.png",
+      "width": 1320,
+      "height": 2868,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "iphone/1320x2868/it/03-training.png",
+      "width": 1320,
+      "height": 2868,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "iphone/1320x2868/it/04-diet.png",
+      "width": 1320,
+      "height": 2868,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "iphone/1320x2868/it/05-devices.png",
+      "width": 1320,
+      "height": 2868,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "iphone/1320x2868/ja/01-plan.png",
+      "width": 1320,
+      "height": 2868,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "marketing-chat",
+      "uploadReady": false
+    },
+    {
+      "file": "iphone/1320x2868/ja/02-recovery.png",
+      "width": 1320,
+      "height": 2868,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "iphone/1320x2868/ja/03-training.png",
+      "width": 1320,
+      "height": 2868,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "iphone/1320x2868/ja/04-diet.png",
+      "width": 1320,
+      "height": 2868,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "iphone/1320x2868/ja/05-devices.png",
+      "width": 1320,
+      "height": 2868,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "iphone/1320x2868/ko/01-plan.png",
+      "width": 1320,
+      "height": 2868,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "marketing-chat",
+      "uploadReady": false
+    },
+    {
+      "file": "iphone/1320x2868/ko/02-recovery.png",
+      "width": 1320,
+      "height": 2868,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "iphone/1320x2868/ko/03-training.png",
+      "width": 1320,
+      "height": 2868,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "iphone/1320x2868/ko/04-diet.png",
+      "width": 1320,
+      "height": 2868,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "iphone/1320x2868/ko/05-devices.png",
+      "width": 1320,
+      "height": 2868,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "iphone/1320x2868/pt-BR/01-plan.png",
+      "width": 1320,
+      "height": 2868,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "marketing-chat",
+      "uploadReady": false
+    },
+    {
+      "file": "iphone/1320x2868/pt-BR/02-recovery.png",
+      "width": 1320,
+      "height": 2868,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "iphone/1320x2868/pt-BR/03-training.png",
+      "width": 1320,
+      "height": 2868,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "iphone/1320x2868/pt-BR/04-diet.png",
+      "width": 1320,
+      "height": 2868,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "iphone/1320x2868/pt-BR/05-devices.png",
+      "width": 1320,
+      "height": 2868,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "iphone/1320x2868/ru/01-plan.png",
+      "width": 1320,
+      "height": 2868,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "marketing-chat",
+      "uploadReady": false
+    },
+    {
+      "file": "iphone/1320x2868/ru/02-recovery.png",
+      "width": 1320,
+      "height": 2868,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "iphone/1320x2868/ru/03-training.png",
+      "width": 1320,
+      "height": 2868,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "iphone/1320x2868/ru/04-diet.png",
+      "width": 1320,
+      "height": 2868,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "iphone/1320x2868/ru/05-devices.png",
+      "width": 1320,
+      "height": 2868,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "iphone/1320x2868/zh-Hant/01-plan.png",
+      "width": 1320,
+      "height": 2868,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "marketing-chat",
+      "uploadReady": false
+    },
+    {
+      "file": "iphone/1320x2868/zh-Hant/02-recovery.png",
+      "width": 1320,
+      "height": 2868,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "iphone/1320x2868/zh-Hant/03-training.png",
+      "width": 1320,
+      "height": 2868,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "iphone/1320x2868/zh-Hant/04-diet.png",
+      "width": 1320,
+      "height": 2868,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "iphone/1320x2868/zh-Hant/05-devices.png",
+      "width": 1320,
+      "height": 2868,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "iphone/1320x2868/zh/01-plan.png",
+      "width": 1320,
+      "height": 2868,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "marketing-chat",
+      "uploadReady": false
+    },
+    {
+      "file": "iphone/1320x2868/zh/02-recovery.png",
+      "width": 1320,
+      "height": 2868,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "iphone/1320x2868/zh/03-training.png",
+      "width": 1320,
+      "height": 2868,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "capture-missing",
+      "uploadReady": false
+    },
+    {
+      "file": "iphone/1320x2868/zh/04-diet.png",
+      "width": 1320,
+      "height": 2868,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "native-captures-present",
+      "uploadReady": false
+    },
+    {
+      "file": "iphone/1320x2868/zh/05-devices.png",
+      "width": 1320,
+      "height": 2868,
+      "mode": "RGB",
+      "cornerBright": 0,
+      "inner": "native-captures-present",
+      "uploadReady": false
+    }
+  ]
+}

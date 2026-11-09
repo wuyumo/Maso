@@ -1,0 +1,92 @@
+{
+  "today": {
+    "source": "/Users/yumowu/Projects/yumo-site/works/masso/assets/today.png",
+    "sha256": "3952c778e4515deaab0ec20918074d146df16d1bdfda9cf46deab5a2c11db970"
+  },
+  "recovery": {
+    "source": "/Users/yumowu/Projects/yumo-site/works/masso/assets/recovery.png",
+    "sha256": "334df9e831fa2fea94725d542f61d98cade41662cda14b0b482831901a8e8ce3"
+  },
+  "muscle-status": {
+    "source": "/Users/yumowu/Projects/yumo-site/works/masso/assets/muscle-status.png",
+    "sha256": "cd18989dc3050c1cd9c31956ef0e8ec42df926f7cbbc4f45dda68ffb7016bf57"
+  },
+  "coach_chat": {
+    "source": "/Users/yumowu/Projects/yumo-site/works/masso/assets/coach_chat.png",
+    "sha256": "2e6eea14d15852f2c04b332b7324ee067faa6f996f6b350f13a39f322b48be60"
+  },
+  "coach_templates": {
+    "source": "/Users/yumowu/Projects/yumo-site/works/masso/assets/coach_templates.png",
+    "sha256": "0d59684fcc6d9193f1276917b86a93bb5b9df2aa734f1e3a25e56b23b7af8fbd"
+  },
+  "coach_prefs": {
+    "source": "/Users/yumowu/Projects/yumo-site/works/masso/assets/coach_prefs.png",
+    "sha256": "b9569abf0afeec219f7bf71d23428124ae584f6c5e7b0dbf3b28dc6e75a2e74f"
+  },
+  "library": {
+    "source": "/Users/yumowu/Projects/yumo-site/works/masso/assets/library.png",
+    "sha256": "978919846814dfbb3557ac1b0a75f1d0e0b9c29ac7d25031b04706007a72a7df"
+  },
+  "plan_detail": {
+    "source": "/Users/yumowu/Projects/yumo-site/works/masso/assets/plan_detail.png",
+    "sha256": "80255f63d600ad03caf8f79a2c1221acc3c35c385ba26c8036c9a11d5ee02570"
+  },
+  "training": {
+    "source": "/Users/yumowu/Projects/yumo-site/works/masso/assets/training.png",
+    "sha256": "a18c7624b508c01ff93d1370827ce4fb796b0c113ec927c1161a2d636177c520"
+  },
+  "training-rest": {
+    "source": "/Users/yumowu/Projects/yumo-site/works/masso/assets/training-rest.png",
+    "sha256": "d2d15b3999278d698b3df393add439b3089cdbc2244674f6723343788a5f0a19"
+  },
+  "diet": {
+    "source": "/Users/yumowu/Projects/Maso-iOS/docs/diet-calories-2026-10-25/en-calories-saved.png",
+    "sha256": "4187fc6191bc93ea3ee72f4376a470caefc489e92114cd86fb13e744908b1425"
+  },
+  "sleep": {
+    "source": "/Users/yumowu/Projects/Maso-iOS/docs/wellness-history-headers-2026-10-28/screenshots/record-history-en-5-top.png",
+    "sha256": "793ddfb148a8d2c5f57a19d804ac37def8d27c43702f9ed62415cf12d2b646b3"
+  },
+  "insights": {
+    "source": "/Users/yumowu/Projects/Maso-iOS/docs/workout-insights-range-2026-10-29/native/6C9862DC-1DAE-4472-820E-FF759A7FC442.png",
+    "sha256": "497aed19019ef6aab3abc8d947a034d130a3f946faad743b8e80802637a592f6"
+  },
+  "watch-exercise": {
+    "source": "/Users/yumowu/Projects/Maso-iOS/docs/watch-small-first-2026-10-29/en-exercise-large.png",
+    "sha256": "db2bf106d4b2656d736ac6a45b55c91af8b2fdb80eb5b76b964170b21b303213"
+  },
+  "watch-rest": {
+    "source": "/Users/yumowu/Projects/Maso-iOS/docs/watch-small-first-2026-10-29/en-rest-large.png",
+    "sha256": "70964ed7803098c30d56679a164f9202fbda0cb0864ff4984c7d567e62c22868"
+  },
+  "phone-bezel": {
+    "source": "https://devimages-cdn.apple.com/design/resources/download/Bezel-iPhone-18.dmg",
+    "file": "iPhone 18 Pro - Black - Portrait.png",
+    "sha256": "cb7b20a551c4fd63e794e1dd08ab0096816a12e72d38503f36a242550f07264c",
+    "screen": [
+      72,
+      69,
+      1206,
+      2622
+    ],
+    "size": [
+      1350,
+      2760
+    ]
+  },
+  "watch-bezel": {
+    "source": "https://devimages-cdn.apple.com/design/resources/download/Bezel-Apple-Watch-Series-11-2025.dmg",
+    "file": "Apple Watch S11 - 46mm - Titanium Slate + Sport Band Black.png",
+    "sha256": "541045d6b4c5f2c87b7f4f16041f64eba5b12498b9bb6fc9a3179a6c42d4bcf0",
+    "screen": [
+      72,
+      192,
+      416,
+      496
+    ],
+    "size": [
+      560,
+      880
+    ]
+  }
+}

@@ -1,0 +1,111 @@
+<!doctype html><meta charset="utf-8">
+<pre id="out">pending</pre>
+<iframe id="f" src="index.html" style="width:1280px;height:900px;border:0"></iframe>
+<script>
+const log = [];
+const ok = (name, cond, extra = '') => log.push((cond ? 'PASS ' : 'FAIL ') + name + (extra ? ' :: ' + extra : ''));
+const f = document.getElementById('f');
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+async function run() {
+  const d = f.contentDocument, w = f.contentWindow;
+  await sleep(600);
+  const $ = s => d.querySelector(s);
+  const $$ = s => [...d.querySelectorAll(s)];
+
+  /* ---- default batch: 11-08 Plan A preview (4 locales, iPhone 5 pages + iPad 4) ---- */
+  ok('posters rendered', $$('.poster').length === 5, $$('.poster').length + ' cards');
+  ok('first poster is plan-a', ($('.poster img').getAttribute('src') || '').includes('/store-plan-a-2026-11-08/exported/ios/iphone/1320x2868/en/01-plan.png'), $('.poster img').getAttribute('src'));
+  ok('device pressed', $('[data-device="iphone"]').getAttribute('aria-pressed') === 'true');
+  ok('plan-a device tabs = 2', $$('#deviceSeg button').length === 2, $$('#deviceSeg button').length + '');
+  ok('plan-a locale pills = 4', $$('#localePills button').length === 4, $$('#localePills button').length + '');
+
+  /* ---- the 13" iPad posters are the same deck minus the phone+watch page ---- */
+  $('[data-device="ipad"]').click();
+  await sleep(600);
+  ok('ipad posters = 4', $$('.poster').length === 4, $$('.poster').length + ' cards');
+  ok('ipad first src', ($('.poster img').getAttribute('src') || '').includes('/exported/ios/ipad/2064x2752/en/01-plan.png'), $('.poster img').getAttribute('src'));
+  ok('ipad last is 05-devices', ($$('.poster img').pop().getAttribute('src') || '').includes('/en/05-devices.png'), $$('.poster img').pop().getAttribute('src'));
+  $('[data-device="iphone"]').click();
+  await sleep(600);
+
+  $$('.poster')[2].click();
+  await sleep(400);
+  ok('lightbox open', $('#lb').hasAttribute('open'));
+  ok('lightbox index', $('#lbEyebrow').textContent.trim() === '03 / 05', $('#lbEyebrow').textContent);
+  ok('lightbox src = training', $('#lbImg').getAttribute('src').includes('/en/03-training.png'), $('#lbImg').getAttribute('src'));
+  ok('lightbox headline', $('#lbTitle').textContent.includes('Past your limit'), JSON.stringify($('#lbTitle').textContent));
+
+  d.dispatchEvent(new w.KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+  await sleep(250);
+  ok('arrow right -> 04', $('#lbEyebrow').textContent.trim() === '04 / 05', $('#lbEyebrow').textContent);
+  ok('arrow right src = diet', $('#lbImg').getAttribute('src').includes('/en/04-diet.png'), $('#lbImg').getAttribute('src'));
+
+  $('#lbNextLocale').click();
+  await sleep(400);
+  ok('next locale -> ja', $('#lbImg').getAttribute('src').includes('/ja/04-diet.png'), $('#lbImg').getAttribute('src'));
+  ok('pill synced ja', $('[data-locale="ja"]').getAttribute('aria-pressed') === 'true');
+
+  d.dispatchEvent(new w.KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+  await sleep(250);
+  ok('escape closes', !$('#lb').hasAttribute('open'));
+
+  $('[data-view="matrix"]').click();
+  await sleep(800);
+  ok('matrix rows = 4', $$('.mrow').length === 4, $$('.mrow').length + '');
+  ok('matrix thumbs = 20', $$('.mrow .thumbs img').length === 20, $$('.mrow .thumbs img').length + '');
+  ok('matrix visible', !$('#matrixView').hidden && $('#singleView').hidden);
+
+  $$('.mrow .thumbs img')[0].click();
+  await sleep(600);
+  ok('matrix click opens', $('#lb').hasAttribute('open'));
+  ok('matrix locale applied zh', $('#lbImg').getAttribute('src').includes('/zh/01-plan.png'), $('#lbImg').getAttribute('src'));
+  d.dispatchEvent(new w.KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+  await sleep(250);
+
+  /* ---- legacy batch keeps every device and locale ---- */
+  $('[data-view="single"]').click();
+  await sleep(400);
+  $('[data-batch="new"]').click();
+  await sleep(700);
+  ok('legacy batch posters', $$('.poster').length === 6, $$('.poster').length + '');
+  ok('legacy batch first src', ($('.poster img').getAttribute('src') || '').includes('/store-refresh-2026-11-08/exported/ios/iphone/1320x2868/zh/01-two-devices.png'), $('.poster img').getAttribute('src'));
+  ok('legacy device tabs = 5', $$('#deviceSeg button').length === 5, $$('#deviceSeg button').length + '');
+  ok('legacy locale pills = 12', $$('#localePills button').length === 12, $$('#localePills button').length + '');
+
+  $('[data-device="watch"]').click();
+  await sleep(500);
+  ok('watch -> 2 posters', $$('.poster').length === 2, $$('.poster').length + '');
+  ok('watch spec', $('#deviceSpec').textContent.includes('416'), $('#deviceSpec').textContent);
+
+  $('[data-view="matrix"]').click();
+  await sleep(900);
+  ok('legacy matrix rows = 12', $$('.mrow').length === 12, $$('.mrow').length + '');
+
+  /* ---- hash routing survives a batch switch ---- */
+  ok('hash carries batch', w.location.hash.includes('#new/'), w.location.hash);
+  ok('no overflow', d.documentElement.scrollWidth <= 1281, d.documentElement.scrollWidth + '');
+
+  const failed = log.filter(l => l.startsWith('FAIL')).length;
+  document.getElementById('out').textContent = log.join('\n') + '\n\n' + (failed ? 'FAILED ' + failed : 'ALL PASS') + ' (' + log.length + ' checks)';
+}
+
+const crash = e => { document.getElementById('out').textContent = log.join('\n') + '\nCRASH ' + (e && (e.stack || e.message || e)); };
+window.addEventListener('error', ev => crash(ev.error || ev.message));
+
+// The iframe may hydrate before or after this script runs, and its first paint
+// can lag while the posters decode — poll instead of relying on a single event.
+let started = false;
+async function bootstrap() {
+  if (started) return;
+  started = true;
+  for (let i = 0; i < 120; i++) {
+    try { if (f.contentDocument && f.contentDocument.querySelector('.poster')) break; } catch {}
+    await sleep(150);
+  }
+  started = true;
+  try { await run(); } catch (e) { crash(e); }
+}
+f.addEventListener('load', bootstrap);
+bootstrap();
+</script>

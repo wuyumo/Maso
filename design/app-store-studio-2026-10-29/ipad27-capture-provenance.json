@@ -1,0 +1,58 @@
+[
+  {
+    "web": "public/screenshots/apple/ipad/today.png",
+    "source": "docs/store-device-adaptation-2026-10-29/captures/ipad27/today.png",
+    "sha256": "da31ad5bba8b7915d03a22851ee2dea934bbd33d0c3a2bd233316b7c7f1d3525",
+    "runtime": "iOS 27.0",
+    "device": "iPad Pro 13-inch M5"
+  },
+  {
+    "web": "public/screenshots/apple/ipad/coach_chat.png",
+    "source": "docs/store-device-adaptation-2026-10-29/captures/ipad27/coach_chat.png",
+    "sha256": "d56476a6d40552a8e425ccd35f924e9134c6596c100b8f281ba3195f73381210",
+    "runtime": "iOS 27.0",
+    "device": "iPad Pro 13-inch M5"
+  },
+  {
+    "web": "public/screenshots/apple/ipad/sleep.png",
+    "source": "docs/store-device-adaptation-2026-10-29/captures/ipad27/sleep.png",
+    "sha256": "9c7f39d85ebbc7de39ba39e872d2c58559650c5fec19671e1b2c35d2774d94d1",
+    "runtime": "iOS 27.0",
+    "device": "iPad Pro 13-inch M5"
+  },
+  {
+    "web": "public/screenshots/apple/ipad/insights.png",
+    "source": "docs/store-device-adaptation-2026-10-29/captures/ipad27/insights.png",
+    "sha256": "a32b3c7511083d8b0bb9a3488ad7448ca9da4fa09b1d3b7e8263663665b655f8",
+    "runtime": "iOS 27.0",
+    "device": "iPad Pro 13-inch M5"
+  },
+  {
+    "web": "public/screenshots/apple/ipad/exercises.png",
+    "source": "docs/store-device-adaptation-2026-10-29/captures/ipad27/exercises.png",
+    "sha256": "fc532edae4788e6a34c3bf8bf187b9a46b99c64746eb090d98540eba91a155ca",
+    "runtime": "iOS 27.0",
+    "device": "iPad Pro 13-inch M5"
+  },
+  {
+    "web": "public/screenshots/apple/ipad/muscle_status.png",
+    "source": "docs/store-device-adaptation-2026-10-29/captures/ipad27/muscle_status.png",
+    "sha256": "3a2cae55fa1219df4fe5bbc590dfeb50b6f8207ef5d06ffe5b0aac7a77745b21",
+    "runtime": "iOS 27.0",
+    "device": "iPad Pro 13-inch M5"
+  },
+  {
+    "web": "public/screenshots/apple/ipad/diet.png",
+    "source": "docs/store-device-adaptation-2026-10-29/captures/ipad27/diet.png",
+    "sha256": "0456624b83a9b15b9f715175230a6b45484a72e0a6bca1ef127ef43817c844f2",
+    "runtime": "iOS 27.0",
+    "device": "iPad Pro 13-inch M5"
+  },
+  {
+    "web": "public/screenshots/apple/ipad/player.png",
+    "source": "docs/store-device-adaptation-2026-10-29/captures/ipad27/barbell-row-player.png",
+    "sha256": "ecc12d7c43650cad41768178daeb131878dc89c426b6cd695f9f32d78f3702d7",
+    "runtime": "iOS 27.0",
+    "device": "iPad Pro 13-inch M5"
+  }
+]

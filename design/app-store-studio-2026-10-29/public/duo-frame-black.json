@@ -1,0 +1,8 @@
+{
+  "source": "public/duo-frame.png",
+  "sourceName": "iPhone Duo - Night Sky - Inner Open Portrait (already cropped in this repo)",
+  "sourceSha256": "11eb961aad1a0766ace80f0433e4008fd5d67c19222df8e73ce90de47311dda4",
+  "outputSha256": "5844c2c20d2830e08a0d088da37d0b0a6988b20a6e80a3be7257d35974c66e49",
+  "method": "neutral luminance curve on bezel pixels only; alpha copied; no screen pixels",
+  "claim": "Not an official Apple black Duo bezel file. Black adaptation of the Night Sky asset in this snapshot."
+}

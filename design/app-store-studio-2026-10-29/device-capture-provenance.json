@@ -1,0 +1,71 @@
+{
+  "date": "2026-10-29",
+  "captures": [
+    {
+      "file": "public/screenshots/apple/ipad/today.png",
+      "sha256": "a18467c037e1cd75c94bf7e43b922cc252d9c0e10ee0b37e20ab8b87f55e226f",
+      "device": "iPad Pro 13-inch (M5)",
+      "runtime": "iOS 26.5",
+      "source": "native simulator; demo data",
+      "note": "Native showcase navigation"
+    },
+    {
+      "file": "public/screenshots/apple/ipad/coach_chat.png",
+      "sha256": "f7e8c47c8b8d142113bf4b7e53cc634e0652e3ee1c8d1fd99448d1386ec8cbb5",
+      "device": "iPad Pro 13-inch (M5)",
+      "runtime": "iOS 26.5",
+      "source": "native simulator; demo data",
+      "note": "Native showcase navigation"
+    },
+    {
+      "file": "public/screenshots/apple/ipad/sleep.png",
+      "sha256": "4169361c8861c8d7261ea50cd96e0511bc579899037e40ca97e927bde2df634c",
+      "device": "iPad Pro 13-inch (M5)",
+      "runtime": "iOS 26.5",
+      "source": "native simulator; demo data",
+      "note": "Native showcase navigation"
+    },
+    {
+      "file": "public/screenshots/apple/ipad/insights.png",
+      "sha256": "5bce13f1f21f4690136a06e34ece020fa62598ed16232f073c00e0a760ad43ec",
+      "device": "iPad Pro 13-inch (M5)",
+      "runtime": "iOS 26.5",
+      "source": "native simulator; demo data",
+      "note": "Native showcase navigation"
+    },
+    {
+      "file": "public/screenshots/apple/ipad/exercises.png",
+      "sha256": "a098cbf81c618035fdc1fbaa7f50fbf387b6f71afa0c2f1042a41dc040f56443",
+      "device": "iPad Pro 13-inch (M5)",
+      "runtime": "iOS 26.5",
+      "source": "native simulator; demo data",
+      "note": "Native showcase navigation"
+    },
+    {
+      "file": "public/screenshots/apple/ipad/muscle_status.png",
+      "sha256": "b6e5bab31f1117b23c459df000e1cf6aee62924c1b1d8e48cda5957821b7fdf2",
+      "device": "iPad Pro 13-inch (M5)",
+      "runtime": "iOS 26.5",
+      "source": "native simulator; demo data",
+      "note": "Native showcase navigation"
+    },
+    {
+      "file": "public/screenshots/apple/ipad/diet.png",
+      "sha256": "9fb06e966f24ea70e0e3e8e31cea4647db79fc32dba32986eb6d514cd1cd213f",
+      "device": "iPad Pro 13-inch (M5)",
+      "runtime": "iOS 26.5",
+      "source": "native simulator; demo data",
+      "note": "Native showcase navigation"
+    },
+    {
+      "file": "public/screenshots/apple/ipad/player.png",
+      "sha256": "37390b475c242ddc5f3ab117000d96acd93f74fc4050e1477980a37b539c8804",
+      "device": "iPad Pro 13-inch (M5)",
+      "runtime": "iOS 26.5",
+      "source": "native simulator; demo data",
+      "note": "Rest layout capture from native UI test; interaction verification tracked separately"
+    }
+  ],
+  "duo": "Blocked: installed device definition incompatible with installed iOS26.5 runtime; no fabricated captures",
+  "watch": "Existing native416x496 watchOS captures; do not claim Series12 hardware verification"
+}

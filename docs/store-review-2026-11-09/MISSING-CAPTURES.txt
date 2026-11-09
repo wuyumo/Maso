@@ -1,0 +1,35 @@
+# Captures not in the 2026-11-09 snapshot
+
+These paths are required for a store-ready poster. They were not in the
+transferred packs. Pages that need them were still rendered, with an explicit
+NO CAPTURE plate. English or Chinese screens were not substituted.
+
+Present and used:
+- public/screenshots/localized/iphone/{en,zh}/{diet,sleep,today,insights}.png
+- public/screenshots/localized/ipad/{en,zh}/{diet,sleep,today,insights}.png
+- public/screenshots/localized/duo/{en,zh}/{diet,sleep,today,insights}.png
+- public/screenshots/localized/watch/{en,zh}/rest-160.png
+
+Missing for every locale, including en and zh (pages 02 and 03):
+- public/screenshots/localized/iphone/{locale}/muscle-selected.png
+- public/screenshots/localized/iphone/{locale}/player-heart-warning.png
+- public/screenshots/localized/watch/{locale}/exercise-185.png
+
+Missing for zh-Hant, ja, ko, es, fr, de, it, pt-BR, ru, ar:
+- public/screenshots/localized/iphone/{locale}/diet.png
+- public/screenshots/localized/iphone/{locale}/sleep.png
+- public/screenshots/localized/iphone/{locale}/today.png
+- public/screenshots/localized/ipad/{locale}/diet.png
+- public/screenshots/localized/ipad/{locale}/sleep.png
+- public/screenshots/localized/ipad/{locale}/insights.png
+- public/screenshots/localized/duo/{locale}/diet.png
+- public/screenshots/localized/watch/{locale}/rest-160.png
+
+Page 01 does not use those PNGs. Its chat is drawn from app-store-screenshots.json.
+
+Also absent from this snapshot, so the gallery cannot show them:
+- docs/store-all-refresh-2026-11-06/
+- docs/store-refresh-2026-11-08/
+- the other 28 of the previous 36 Plan A exports (only en/zh 04 and 05 were packed)
+
+Heart-rate figures were not invented. The 185/155 and rest 160 readings stay inside the missing watch and player captures.

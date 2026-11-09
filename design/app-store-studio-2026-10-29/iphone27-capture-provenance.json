@@ -1,0 +1,79 @@
+[
+  {
+    "web": "public/screenshots/apple/iphone/today.png",
+    "source": "docs/store-device-adaptation-2026-10-29/captures/iphone27/today-final.png",
+    "sha256": "4d8a67343f7624a0007aa92604136d1c4d08cbe31301e4463ad11b06e4642a66",
+    "runtime": "iOS 27.0",
+    "device": "iPhone 18 Pro"
+  },
+  {
+    "web": "public/screenshots/apple/iphone/coach_chat.png",
+    "source": "docs/store-device-adaptation-2026-10-29/captures/iphone27/coach_chat.png",
+    "sha256": "0016eb41244bf678ce95bb5d904908818dd22d4fb869516cefc833b9b5f42741",
+    "runtime": "iOS 27.0",
+    "device": "iPhone 18 Pro"
+  },
+  {
+    "web": "public/screenshots/apple/iphone/coach_prefs.png",
+    "source": "docs/store-device-adaptation-2026-10-29/captures/iphone27/coach_prefs.png",
+    "sha256": "de1a77b6da9da8e5d598a05d14cbd2a40238661922ccaf1a22c2a3d9b42111b7",
+    "runtime": "iOS 27.0",
+    "device": "iPhone 18 Pro"
+  },
+  {
+    "web": "public/screenshots/apple/iphone/recovery.png",
+    "source": "docs/store-device-adaptation-2026-10-29/captures/iphone27/today-final.png",
+    "sha256": "4d8a67343f7624a0007aa92604136d1c4d08cbe31301e4463ad11b06e4642a66",
+    "runtime": "iOS 27.0",
+    "device": "iPhone 18 Pro"
+  },
+  {
+    "web": "public/screenshots/apple/iphone/muscle-status.png",
+    "source": "docs/store-device-adaptation-2026-10-29/captures/iphone27/muscle_status.png",
+    "sha256": "87ca806aa576d4d20238696641471b9bd55f050d0a57b72dded7d36010ba9b0f",
+    "runtime": "iOS 27.0",
+    "device": "iPhone 18 Pro"
+  },
+  {
+    "web": "public/screenshots/apple/iphone/training.png",
+    "source": "docs/store-device-adaptation-2026-10-29/captures/iphone27/barbell-row-player.png",
+    "sha256": "577eedbfebe35f68bed2d08f7f61561c751f3b539729d3d49d959cc64c87cf0e",
+    "runtime": "iOS 27.0",
+    "device": "iPhone 18 Pro"
+  },
+  {
+    "web": "public/screenshots/apple/iphone/library.png",
+    "source": "docs/store-device-adaptation-2026-10-29/captures/iphone27/exercises.png",
+    "sha256": "e93d3afb7cf46772e69227e4c95ac1714b9a44d16dc1fd14ecae1275533430df",
+    "runtime": "iOS 27.0",
+    "device": "iPhone 18 Pro"
+  },
+  {
+    "web": "public/screenshots/apple/iphone/plan_detail.png",
+    "source": "docs/store-device-adaptation-2026-10-29/captures/iphone27/plan_detail.png",
+    "sha256": "1a0ddbc361f920917c2934b929a970e4d9d867fd553a39cb1a5bf6da677be7f3",
+    "runtime": "iOS 27.0",
+    "device": "iPhone 18 Pro"
+  },
+  {
+    "web": "public/screenshots/apple/iphone/insights.png",
+    "source": "docs/store-device-adaptation-2026-10-29/captures/iphone27/insights.png",
+    "sha256": "32f3ab41a2ee9a4fc1e114466d5fc54388519e61d07ecef2318ca5c309360469",
+    "runtime": "iOS 27.0",
+    "device": "iPhone 18 Pro"
+  },
+  {
+    "web": "public/screenshots/apple/iphone/diet.png",
+    "source": "docs/store-device-adaptation-2026-10-29/captures/iphone27/diet.png",
+    "sha256": "aa299baa041a6b2a7880fc44ea9eb605680203a07bf51d720b213516bdd11b2e",
+    "runtime": "iOS 27.0",
+    "device": "iPhone 18 Pro"
+  },
+  {
+    "web": "public/screenshots/apple/iphone/sleep.png",
+    "source": "docs/store-device-adaptation-2026-10-29/captures/iphone27/sleep.png",
+    "sha256": "9f651e0583d2c6bff2728b6f09b1425e4ca4d500e10777697c7f3d56fddcd01f",
+    "runtime": "iOS 27.0",
+    "device": "iPhone 18 Pro"
+  }
+]
