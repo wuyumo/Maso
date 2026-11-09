@@ -100,6 +100,12 @@ struct CoachScreen: View {
 
     private var session: CoachSession { data.coachSession }
 
+    /// 详情 sheet 打开的是已存计划时, 「所有」只覆盖这一份, 不扩到其它计划.
+    private var focusedSavedPlanId: String? {
+        guard let id = detailPlan?.id, data.plans.contains(where: { $0.id == id }) else { return nil }
+        return id
+    }
+
     /// 是否有进行中的训练 — 判据跟 RootView.hasActiveSession 一致 (MiniBar 在场 = composer 收起).
     private var hasActiveTraining: Bool {
         guard let s = training.session else { return false }
@@ -492,6 +498,39 @@ struct CoachScreen: View {
         .padding(.leading, 48)   // 气泡不顶满左缘, 保住"对话"的左右体感
     }
 
+    /// 器械替换预览的确认 / 取消, 以及写入成功后的撤销.
+    /// 按钮只在对应提案仍挂在 session 上时出现 — 取消、失败或再次确认后不会重复提交.
+    @ViewBuilder
+    private func equipmentSwapActions(_ msg: CoachMessage) -> some View {
+        if let pid = msg.equipmentSwapProposalId, session.pendingEquipmentSwap?.id == pid {
+            HStack(spacing: 8) {
+                Button(role: .cancel) {
+                    data.cancelEquipmentSwap(proposalId: pid)
+                } label: {
+                    Text("Cancel")
+                }
+                .buttonStyle(.bordered)
+                Button {
+                    data.confirmEquipmentSwap(proposalId: pid)
+                    Haptics.tap()
+                } label: {
+                    Text("Apply")
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(MasoColor.accent)
+            }
+        }
+        if let uid = msg.equipmentSwapUndoId, session.equipmentSwapUndo?.id == uid {
+            Button {
+                data.undoEquipmentSwap(id: uid)
+                Haptics.tap()
+            } label: {
+                Text("Undo")
+            }
+            .buttonStyle(.bordered)
+        }
+    }
+
     /// assistant 消息 — 教练短评正文 + DAY 1..N 卡组.
     /// 旧轮消息的卡组保持可交互 (Save / 详情) = V1 版本捞回达标 (设计文档 §1);
     /// 但长按定向反馈只挂最新一轮卡 — onlyModify 针对的是 currentRoutines, 旧版动作可能已不在场.
@@ -503,6 +542,7 @@ struct CoachScreen: View {
                 .lineSpacing(3)
                 .foregroundStyle(MasoColor.text)
                 .fixedSize(horizontal: false, vertical: true)
+            equipmentSwapActions(msg)
             if let plans = msg.plans {
                 let isLatest = msg.id == session.messages.last(where: { $0.plans != nil })?.id
                 ForEach(Array(plans.enumerated()), id: \.element.id) { i, plan in
@@ -895,6 +935,17 @@ struct CoachScreen: View {
     private func send(feedback: String?, displayText: String? = nil, onlyModify: String? = nil,
                       sourceKicker: String? = nil, surface: String = "coach_chat") {
         guard !session.isGenerating else { return }
+        // 结构化器械替换走本地工具: 不调用 LLM, 不扣 AI 额度. 认不出来才落到下面的生成.
+        if let feedback,
+           data.handleEquipmentSwapUtterance(
+            feedback, onlyModify: onlyModify, focusedPlanId: focusedSavedPlanId) {
+            Haptics.tap()
+            lastFeedback = feedback
+            lastDisplayText = displayText
+            lastOnlyModify = onlyModify
+            lastSourceKicker = sourceKicker
+            return
+        }
         // 免费美区每日 AI 额度用尽 → 弹付费墙 (Pro/非美区 canUseAICoach 恒 true, 不触发).
         guard data.canUseAICoach else {
             Haptics.tap()

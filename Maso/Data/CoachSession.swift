@@ -24,14 +24,21 @@ struct CoachMessage: Identifiable, Hashable {
     var plans: [Plan]? = nil
     /// 深链来源标签 (e.g. "FROM WEEKLY SUMMARY") — 用户气泡顶部的 kicker; nil = 普通消息.
     var sourceKicker: String? = nil
+    /// 器械替换预览 — 非 nil 且仍是 session.pendingEquipmentSwap 时, 气泡下显示确认/取消.
+    var equipmentSwapProposalId: String? = nil
+    /// 替换已写入后的撤销句柄. 非 nil 且仍是 session.equipmentSwapUndo 时显示撤销.
+    var equipmentSwapUndoId: String? = nil
     let createdAt: Date
 
-    init(role: Role, text: String, plans: [Plan]? = nil, sourceKicker: String? = nil) {
+    init(role: Role, text: String, plans: [Plan]? = nil, sourceKicker: String? = nil,
+         equipmentSwapProposalId: String? = nil, equipmentSwapUndoId: String? = nil) {
         self.id = UUID().uuidString
         self.role = role
         self.text = text
         self.plans = plans
         self.sourceKicker = sourceKicker
+        self.equipmentSwapProposalId = equipmentSwapProposalId
+        self.equipmentSwapUndoId = equipmentSwapUndoId
         self.createdAt = Date()
     }
 }
@@ -66,6 +73,10 @@ final class CoachSession {
     /// QA修复③: 在途生成轮的身份 token — startCoachGenerate 每轮发新值, 任务收尾用它比对,
     /// 被取消的旧任务不许清掉新任务的句柄. 约束: 只在 startCoachGenerate / reset 里写.
     var generationToken: UUID? = nil
+    /// 待确认的器械替换. 确认前不写 plans. 新对话清空 (还没写入的预览作废).
+    var pendingEquipmentSwap: CoachEquipmentSwap.Proposal?
+    /// 最近一次成功写入的撤销快照. 只保留一层; 再确认一次新的替换会换掉它.
+    var equipmentSwapUndo: CoachEquipmentSwap.UndoRecord?
 
     /// "新对话" — 清对话流/版本栈/回落提示, 不动 data.plans (已保存的 routine 是持久产物).
     /// savedIdMap 一并清: key 是旧对话里的生成卡 id, 新对话不会再引用.
@@ -80,6 +91,8 @@ final class CoachSession {
         isGenerating = false
         lastRoundUsedFallback = false
         generationToken = nil
+        pendingEquipmentSwap = nil
+        equipmentSwapUndo = nil
     }
 }
 
@@ -339,5 +352,194 @@ extension DataStore {
             return s
         }
         return p
+    }
+}
+
+// MARK: - 器械替换工具 (本地, 不经 LLM, 不消耗 AI 额度)
+
+extension DataStore {
+    /// 用户这句话是不是「把某肌群的某器械换成另一种」.
+    /// true = 已经在对话里给出预览 / 澄清 / 无匹配, 调用方不要再走 reviseRoutines.
+    /// false = 不是这类请求, 原样交给教练生成.
+    @discardableResult
+    func handleEquipmentSwapUtterance(_ text: String, onlyModify: String?, focusedPlanId: String?) -> Bool {
+        let lang = LanguageManager.currentLanguageCode
+        var conversationIds: [String] = []
+        for plan in coachSession.currentRoutines {
+            if plans.contains(where: { $0.id == plan.id }) { conversationIds.append(plan.id) }
+            if let saved = coachSession.savedIdMap[plan.id], plans.contains(where: { $0.id == saved }) {
+                conversationIds.append(saved)
+            }
+        }
+        let context = CoachEquipmentSwap.Context(
+            plans: plans,
+            library: exercises + settings.customExercises,
+            candidates: userLibrary,
+            availableEquipment: settings.availableEquipment,
+            focusedPlanId: focusedPlanId,
+            conversationPlanIds: conversationIds,
+            onlyModifyName: onlyModify,
+            languageCode: lang)
+        let outcome = CoachEquipmentSwap.interpret(text, context: context)
+        if case .notHandled = outcome { return false }
+
+        coachSession.messages.append(CoachMessage(role: .user, text: text))
+        switch outcome {
+        case .notHandled:
+            return false
+        case .preview(let proposal):
+            if coachSession.pendingEquipmentSwap?.id == proposal.id {
+                coachSession.messages.append(CoachMessage(
+                    role: .assistant,
+                    text: lang.hasPrefix("zh")
+                        ? "还是刚才那份预览, 确认后才会写入. 我没有再改一次."
+                        : "That’s the same preview as before. Nothing is written until you apply it."))
+            } else {
+                coachSession.pendingEquipmentSwap = proposal
+                coachSession.messages.append(CoachMessage(
+                    role: .assistant,
+                    text: CoachEquipmentSwap.text(for: outcome, languageCode: lang),
+                    equipmentSwapProposalId: proposal.id))
+            }
+            Analytics.shared.track("coach_equipment_swap", [
+                "phase": .string("preview"),
+                "steps": .int(proposal.lines.count),
+                "routines": .int(Set(proposal.lines.map(\.planId)).count),
+            ])
+        default:
+            coachSession.pendingEquipmentSwap = nil
+            coachSession.messages.append(CoachMessage(
+                role: .assistant,
+                text: CoachEquipmentSwap.text(for: outcome, languageCode: lang)))
+            Analytics.shared.track("coach_equipment_swap", [
+                "phase": .string("clarify"),
+                "steps": .int(0),
+                "routines": .int(0),
+            ])
+        }
+        return true
+    }
+
+    func confirmEquipmentSwap(proposalId: String) {
+        guard let proposal = coachSession.pendingEquipmentSwap, proposal.id == proposalId else { return }
+        let beforePlans = plans
+        let beforeExercises = exercises
+        let beforeCustom = settings.customExercises
+        let lang = LanguageManager.currentLanguageCode
+        let allowed = Set(userLibrary.map(\.id))
+        let applied = CoachEquipmentSwap.applyTransaction(
+            plans: plans, sets: sets, aiTodayPlan: aiTodayPlan,
+            proposal: proposal, allowedExerciseIds: allowed
+        ) { [weak self] newPlans in
+            guard let self else { return false }
+            self.plans = newPlans
+            let ok = self.saveEquipmentSwapNow()
+            if !ok { self.plans = beforePlans }
+            return ok
+        }
+        let result = applied.result
+        plans = applied.plans
+        // 工具只许改 plans. 历史、动作库、今日计划副本保持原样.
+        sets = applied.sets
+        exercises = beforeExercises
+        settings.customExercises = beforeCustom
+        aiTodayPlan = applied.aiTodayPlan
+
+        let cleared = proposal.lines.contains { $0.clearsWeight }
+        let routineCount = Set(proposal.lines.map(\.planId)).count
+        switch result {
+        case .applied:
+            coachSession.pendingEquipmentSwap = nil
+            let undo = CoachEquipmentSwap.UndoRecord(
+                id: "undo-\(proposal.id)", proposalId: proposal.id,
+                previousPlans: applied.previousPlans ?? beforePlans)
+            coachSession.equipmentSwapUndo = undo
+            refreshCoachEmbeddedPlans()
+            coachSession.messages.append(CoachMessage(
+                role: .assistant,
+                text: CoachEquipmentSwap.textApplied(
+                    stepCount: proposal.lines.count, routineCount: routineCount,
+                    clearedWeight: cleared, languageCode: lang),
+                equipmentSwapUndoId: undo.id))
+            Analytics.shared.track("coach_equipment_swap", [
+                "phase": .string("applied"),
+                "steps": .int(proposal.lines.count),
+                "routines": .int(routineCount),
+            ])
+        case .alreadyApplied:
+            coachSession.pendingEquipmentSwap = nil
+            coachSession.messages.append(CoachMessage(
+                role: .assistant,
+                text: CoachEquipmentSwap.textAlready(languageCode: lang)))
+        case .failed(.persist):
+            plans = beforePlans
+            coachSession.messages.append(CoachMessage(
+                role: .assistant,
+                text: CoachEquipmentSwap.textPersistFailed(languageCode: lang)))
+        case .failed:
+            plans = beforePlans
+            coachSession.pendingEquipmentSwap = nil
+            coachSession.messages.append(CoachMessage(
+                role: .assistant,
+                text: CoachEquipmentSwap.textConflict(languageCode: lang)))
+        }
+    }
+
+    func cancelEquipmentSwap(proposalId: String) {
+        guard coachSession.pendingEquipmentSwap?.id == proposalId else { return }
+        coachSession.pendingEquipmentSwap = nil
+        coachSession.messages.append(CoachMessage(
+            role: .assistant,
+            text: CoachEquipmentSwap.textCancelled(languageCode: LanguageManager.currentLanguageCode)))
+    }
+
+    func undoEquipmentSwap(id: String) {
+        guard let undo = coachSession.equipmentSwapUndo, undo.id == id else { return }
+        let current = plans
+        let undone = CoachEquipmentSwap.undoTransaction(
+            plans: plans, sets: sets, aiTodayPlan: aiTodayPlan,
+            previousPlans: undo.previousPlans
+        ) { [weak self] restored in
+            guard let self else { return false }
+            self.plans = restored
+            let ok = self.saveEquipmentSwapNow()
+            if !ok { self.plans = current }
+            return ok
+        }
+        plans = undone.plans
+        sets = undone.sets
+        aiTodayPlan = undone.aiTodayPlan
+        guard undone.saved else {
+            coachSession.messages.append(CoachMessage(
+                role: .assistant,
+                text: CoachEquipmentSwap.textUndoFailed(languageCode: LanguageManager.currentLanguageCode)))
+            return
+        }
+        coachSession.equipmentSwapUndo = nil
+        refreshCoachEmbeddedPlans()
+        coachSession.messages.append(CoachMessage(
+            role: .assistant,
+            text: CoachEquipmentSwap.textUndone(languageCode: LanguageManager.currentLanguageCode)))
+    }
+
+    /// 已存计划改完后, 对话里嵌着的同一 id 卡组跟着变, 不用重开页面.
+    private func refreshCoachEmbeddedPlans() {
+        let byId = Dictionary(plans.map { ($0.id, $0) }, uniquingKeysWith: { _, latest in latest })
+        for i in coachSession.currentRoutines.indices {
+            if let updated = byId[coachSession.currentRoutines[i].id] {
+                coachSession.currentRoutines[i] = updated
+            }
+        }
+        for i in coachSession.messages.indices {
+            guard var embedded = coachSession.messages[i].plans else { continue }
+            var changed = false
+            for j in embedded.indices {
+                if let updated = byId[embedded[j].id] {
+                    embedded[j] = updated
+                    changed = true
+                }
+            }
+            if changed { coachSession.messages[i].plans = embedded }
+        }
     }
 }

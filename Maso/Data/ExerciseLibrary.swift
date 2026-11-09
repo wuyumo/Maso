@@ -63,23 +63,29 @@ enum ExerciseLibrary {
             assertionFailure("exercises.json missing from bundle")
             return []
         }
+        guard let data = try? Data(contentsOf: url) else {
+            assertionFailure("Failed to read exercises.json")
+            return []
+        }
+        return load(data: data)
+    }
+
+    /// 跟 bundle 加载同一条解码路径. 测试直接喂 `exercises.json` 的字节, 不经过 UI.
+    static func load(data: Data) -> [Exercise] {
         do {
-            let data = try Data(contentsOf: url)
             // Sniff schema: v2 has objects with `name: {en, zh-Hans}`; v1 has `name: "string"`.
             if let array = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]],
                let first = array.first,
                let nameField = first["name"],
                nameField is [String: Any] {
-                // v2 schema
                 let raw = try JSONDecoder().decode([RawExerciseV2].self, from: data)
                 return raw.map(toExerciseV2)
             } else {
-                // v1 schema (yuhonas legacy)
                 let raw = try JSONDecoder().decode([RawExerciseV1].self, from: data)
                 return raw.map(toExerciseV1)
             }
         } catch {
-            assertionFailure("Failed to load exercises.json: \(error)")
+            assertionFailure("Failed to decode exercises.json: \(error)")
             return []
         }
     }

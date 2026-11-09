@@ -316,6 +316,16 @@ final class DataStore {
         writeSnapshotNow()
     }
 
+    /// 器械替换的立即落盘. 成功才算替换完成; 测试可经 EquipmentSwapPersistence.saveOverride 注入失败.
+    func saveEquipmentSwapNow() -> Bool {
+        saveWorkItem?.cancel()
+        saveWorkItem = nil
+        if let override = EquipmentSwapPersistence.saveOverride {
+            return override()
+        }
+        return PersistenceController.shared.saveReportingFailure(currentSnapshot())
+    }
+
     /// 真正构 snapshot + 写盘. 在 main actor 上 (DataStore @MainActor), 读 state 安全.
     private func writeSnapshotNow() {
         let snapshot = PersistenceController.Snapshot(

@@ -97,17 +97,22 @@ struct PersistenceController {
     /// 持久化 snapshot. 写文件用 atomic 选项防止中途崩溃产生 corrupt JSON.
     /// 失败静默 (没法做太多 — 磁盘满 / 权限问题等都是 user-out-of-control).
     func save(_ snapshot: Snapshot) {
-        guard let url = currentURL else { return }
+        _ = saveReportingFailure(snapshot)
+    }
+
+    /// 跟 save 同一次原子写入, 但把失败交回调用方.
+    /// 器械替换必须知道写盘是否成功, 失败时整单回滚, 不能对用户说已经换好.
+    func saveReportingFailure(_ snapshot: Snapshot) -> Bool {
+        guard let url = currentURL else { return false }
         do {
             let enc = JSONEncoder()
             enc.dateEncodingStrategy = .iso8601
-            // P2-1: on-disk 用 compact (无 prettyPrinted) — 文件含 base64 照片, pretty 会额外
-            // 膨胀 ~30% + 编码更慢. 机器读的文件不需要人类可读. Export 仍用 pretty (见下).
             enc.outputFormatting = []
             let data = try enc.encode(snapshot)
             try data.write(to: url, options: [.atomic])
+            return true
         } catch {
-            // swallow — DataStore 下次 launch 会再试
+            return false
         }
     }
 
