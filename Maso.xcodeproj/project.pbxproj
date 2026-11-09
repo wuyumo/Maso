@@ -16,7 +16,6 @@
 		08D011050D65842629FC04CE /* DataExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF68DB58FFB73CDB3A9FD980 /* DataExport.swift */; };
 		09AE7E2E86BAA6503292E0E4 /* exercises-matched.json in Resources */ = {isa = PBXBuildFile; fileRef = D4C5F3E72ADD7E2C06CE3FED /* exercises-matched.json */; };
 		0C9DFCCE90F73336451E893C /* HealthKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9CFBD927255937085E3C209 /* HealthKitService.swift */; };
-		B7D24F3E0A526D91AE4F6083 /* LiveHeartRateCardVisibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6C13E2D9F415C809D3E5F72 /* LiveHeartRateCardVisibility.swift */; };
 		1047791541144FB813063EC2 /* SoundPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B91FB80311BBA14D7AAC8FBF /* SoundPlayer.swift */; };
 		148E3CFD76C6112B00ABA196 /* AISummaryCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88890E68F3513CC6BC233F84 /* AISummaryCard.swift */; };
 		1605075E6DF23E750E90BD9A /* MasoBrandLogo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80FD6F69FE62071220B54EDF /* MasoBrandLogo.swift */; };
@@ -269,7 +268,6 @@
 		77A945F8200B0EA1A6D6261B /* MasoWidgets.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = MasoWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		78E9AE6303C3221E696A4367 /* _orphan-old-exercises.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "_orphan-old-exercises.md"; sourceTree = "<group>"; };
 		7D7F0F064D3300FEAAE9ABE8 /* TrainingSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingSession.swift; sourceTree = "<group>"; };
-		A6C13E2D9F415C809D3E5F72 /* LiveHeartRateCardVisibility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveHeartRateCardVisibility.swift; sourceTree = "<group>"; };
 		7DD9BAA3FD1E35EC871F4DEC /* SplashScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreen.swift; sourceTree = "<group>"; };
 		806284849E050B355DF8A75D /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		80FD6F69FE62071220B54EDF /* MasoBrandLogo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasoBrandLogo.swift; sourceTree = "<group>"; };
@@ -486,7 +484,6 @@
 				291EB7D06E7999D43C70577F /* SessionPersistence.swift */,
 				B91FB80311BBA14D7AAC8FBF /* SoundPlayer.swift */,
 				3901E5D4EB6430B5A6682418 /* SpeechManager.swift */,
-				A6C13E2D9F415C809D3E5F72 /* LiveHeartRateCardVisibility.swift */,
 				7D7F0F064D3300FEAAE9ABE8 /* TrainingSession.swift */,
 				35C81E839F1BA51AF2F89F2D /* WorkoutReminderScheduler.swift */,
 			);
@@ -957,7 +954,6 @@
 				56D4D47EC11CD4F3E8AA99C6 /* TodayScreen.swift in Sources */,
 				21EE6684F038A29EB4A5DB01 /* TrainingActivityAttributes.swift in Sources */,
 				2F004DE222001D4A20537ECF /* TrainingMiniBar.swift in Sources */,
-				B7D24F3E0A526D91AE4F6083 /* LiveHeartRateCardVisibility.swift in Sources */,
 				1E75AB0DB92635528D580692 /* TrainingSession.swift in Sources */,
 				C53D75F8EAA9D73AA902C910 /* TrainingSettingsSection.swift in Sources */,
 				9589422FFA8A7F9B610997B4 /* UnifiedShareCard.swift in Sources */,

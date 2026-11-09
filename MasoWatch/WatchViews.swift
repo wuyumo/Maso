@@ -307,7 +307,14 @@ private struct WatchFittedSession<Content: View>: View {
         GeometryReader { geo in
             let insets = geo.safeAreaInsets
             let width = max(0, geo.size.width - insets.leading - insets.trailing)
-            let height = max(0, geo.size.height - insets.top - insets.bottom)
+            let height = WatchTrainingLayout.usableHeight(
+                reportedHeight: geo.size.height,
+                insetTop: insets.top,
+                insetBottom: insets.bottom
+            )
+            let withheld = max(0, geo.size.height - height)
+            let usedTop = max(insets.top, withheld / 2)
+            let usedBottom = max(insets.bottom, withheld - usedTop)
             let chrome = WatchTrainingLayout.resolve(
                 contentWidth: width,
                 contentHeight: height,
@@ -330,8 +337,8 @@ private struct WatchFittedSession<Content: View>: View {
                     stack.frame(width: width, height: height, alignment: .top)
                 }
             }
-            .padding(.top, insets.top)
-            .padding(.bottom, insets.bottom)
+            .padding(.top, usedTop)
+            .padding(.bottom, usedBottom)
             .padding(.leading, insets.leading)
             .padding(.trailing, insets.trailing)
             .frame(width: geo.size.width, height: geo.size.height, alignment: .top)

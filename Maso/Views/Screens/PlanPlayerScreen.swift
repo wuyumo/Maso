@@ -73,21 +73,7 @@ struct PlanPlayerScreen: View {
     @State private var playlistDragStartHeight: CGFloat = 0
     /// 兼容旧逻辑: playlistExpanded 是从 height 派生的 bool. RestCountdown 圆环大小 / 文案等
     /// 还用这个 bool 决定显示, 不重写所有调用点.
-    private var playlistExpanded: Bool {
-        LiveHeartRateCardVisibility.playlistPresented(
-            height: playlistHeight,
-            collapsedHeight: Self.playlistMinHeight
-        )
-    }
-
-    /// 心率卡片只挂在训练舞台上. 播放列表抽屉打开 (默认展开 / 拖开 / 点把手)
-    /// 时不挂; 收起把手回到训练舞台再挂上. 不碰训练会话, 也不停心率采集.
-    private var showsLiveHeartRateCard: Bool {
-        LiveHeartRateCardVisibility.showsCard(
-            sessionActive: isActiveTraining,
-            playlistPresented: playlistExpanded
-        )
-    }
+    private var playlistExpanded: Bool { playlistHeight > Self.playlistMinHeight + 40 }
 
     // (旧 restRingCompactT 已删除 — 倒计时尺寸改由 GeometryReader 实测净空直接驱动,
     //  不再从 playlistHeight 间接换算, 少一层耦合也少一个抖动来源.)
@@ -334,16 +320,6 @@ struct PlanPlayerScreen: View {
                             .position(x: geo.size.width / 2, y: (top + bottom) / 2)
                         }
                         .allowsHitTesting(false)  // 透传 tap, 不挡下层 Controls / 进度条
-                    }
-
-                    // 心率卡片只属于训练舞台. 播放列表抽屉是下面的兄弟视图,
-                    // 打开时这里不挂卡片; 详情/编辑等 sheet 不参与这个判断.
-                    if showsLiveHeartRateCard {
-                        LiveHeartRateCardSlot()
-                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-                            .padding(.top, topSafeArea + 8)
-                            .padding(.leading, 16)
-                            .allowsHitTesting(false)
                     }
                 }
                 .frame(maxHeight: .infinity)

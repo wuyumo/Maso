@@ -38,46 +38,12 @@ struct WatchTrainingChrome: Equatable {
     var scrollFallback: Bool
 }
 
-struct WatchDeviceSpec: Equatable {
-    var name: String
-    var screenWidth: CGFloat
-    var screenHeight: CGFloat
-    var safeTop: CGFloat
-    var safeBottom: CGFloat
-    var safeLeading: CGFloat
-    var safeTrailing: CGFloat
-
-    var contentWidth: CGFloat { screenWidth - safeLeading - safeTrailing }
-    var contentHeight: CGFloat { screenHeight - safeTop - safeBottom }
-}
-
-enum WatchDeviceSpecs {
-    /// 40 / 41 / 44 / 45 mm insets are the published SwiftUI safe areas for
-    /// those case sizes. Series 10/11 and Ultra insets are conservative
-    /// estimates (about 0.15 of the screen height) so a fit here still fits
-    /// if the real inset is smaller. Runtime layout uses the live safe area,
-    /// not this table.
-    static let all: [WatchDeviceSpec] = [
-        WatchDeviceSpec(name: "40mm", screenWidth: 162, screenHeight: 197, safeTop: 28, safeBottom: 28, safeLeading: 0.5, safeTrailing: 0.5),
-        WatchDeviceSpec(name: "41mm", screenWidth: 176, screenHeight: 215, safeTop: 34, safeBottom: 34, safeLeading: 1, safeTrailing: 1),
-        WatchDeviceSpec(name: "44mm", screenWidth: 184, screenHeight: 224, safeTop: 31, safeBottom: 31, safeLeading: 0.5, safeTrailing: 0.5),
-        WatchDeviceSpec(name: "42mm", screenWidth: 187, screenHeight: 223, safeTop: 34, safeBottom: 34, safeLeading: 1, safeTrailing: 1),
-        WatchDeviceSpec(name: "45mm", screenWidth: 198, screenHeight: 242, safeTop: 35, safeBottom: 35, safeLeading: 1, safeTrailing: 1),
-        WatchDeviceSpec(name: "49mm", screenWidth: 205, screenHeight: 251, safeTop: 36, safeBottom: 36, safeLeading: 1, safeTrailing: 1),
-        WatchDeviceSpec(name: "46mm", screenWidth: 208, screenHeight: 248, safeTop: 36, safeBottom: 36, safeLeading: 1, safeTrailing: 1),
-        WatchDeviceSpec(name: "49mm-ultra3", screenWidth: 211, screenHeight: 257, safeTop: 37, safeBottom: 37, safeLeading: 1, safeTrailing: 1),
-    ]
-
-    static var minimum: WatchDeviceSpec {
-        all.min { $0.contentHeight < $1.contentHeight } ?? all[0]
-    }
-}
-
 private struct WatchLayoutPreset {
     var spacing: CGFloat
     var horizontalPadding: CGFloat
     var kicker: CGFloat
-    var title: CGFloat
+    var titleManual: CGFloat
+    var titleTimed: CGFloat
     var detail: CGFloat
     var countdownExercise: CGFloat
     var countdownRest: CGFloat
@@ -93,26 +59,30 @@ enum WatchTrainingLayout {
     // 36pt is the floor: the control still spans the content width.
     static let minimumButtonHeight: CGFloat = 36
 
+    /// Unused height that must remain after the line-height budget.
+    /// A preset that only clears the box by a fraction of a point is not a fit.
+    static let fitMargin: CGFloat = 12
+
     private static let roomy = WatchLayoutPreset(
         spacing: 6, horizontalPadding: 6,
-        kicker: 11, title: 17, detail: 13,
+        kicker: 11, titleManual: 17, titleTimed: 17, detail: 13,
         countdownExercise: 24, countdownRest: 40,
         buttonManual: 44, buttonOther: 36, footer: 11,
-        lineFactor: 1.25, countdownFactor: 1.10
+        lineFactor: 1.25, countdownFactor: 1.20
     )
     private static let medium = WatchLayoutPreset(
         spacing: 3, horizontalPadding: 5,
-        kicker: 11, title: 15, detail: 13,
+        kicker: 11, titleManual: 15, titleTimed: 15, detail: 13,
         countdownExercise: 20, countdownRest: 30,
         buttonManual: 40, buttonOther: 36, footer: 11,
-        lineFactor: 1.25, countdownFactor: 1.12
+        lineFactor: 1.25, countdownFactor: 1.20
     )
     private static let compact = WatchLayoutPreset(
-        spacing: 2, horizontalPadding: 4,
-        kicker: 11, title: 14, detail: 11,
-        countdownExercise: 16, countdownRest: 32,
-        buttonManual: 38, buttonOther: 36, footer: 11,
-        lineFactor: 1.25, countdownFactor: 1.05
+        spacing: 1, horizontalPadding: 4,
+        kicker: 11, titleManual: 14, titleTimed: 11, detail: 11,
+        countdownExercise: 12, countdownRest: 24,
+        buttonManual: 40, buttonOther: 36, footer: 11,
+        lineFactor: 1.25, countdownFactor: 1.20
     )
 
     private static let presets = [roomy, medium, compact]
@@ -153,7 +123,7 @@ enum WatchTrainingLayout {
                     showsDetail: showsDetail, showsNext: showsNext,
                     includeFooter: true, typeScale: 1
                 )
-                if needed <= contentHeight && contentWidth > 0 {
+                if needed + fitMargin <= contentHeight && contentWidth > 0 {
                     return chrome(from: preset, page: page, drawScale: 1, scrollFallback: false)
                 }
             }
@@ -169,22 +139,26 @@ enum WatchTrainingLayout {
     ) -> WatchTrainingChrome {
         let countdown: CGFloat
         let button: CGFloat
+        let title: CGFloat
         switch page {
         case .exerciseManual:
             countdown = preset.countdownExercise
             button = preset.buttonManual
+            title = preset.titleManual
         case .exerciseTimed:
             countdown = preset.countdownExercise
             button = preset.buttonOther
+            title = preset.titleTimed
         case .rest:
             countdown = preset.countdownRest
             button = preset.buttonOther
+            title = preset.titleManual
         }
         return WatchTrainingChrome(
             spacing: preset.spacing,
             horizontalPadding: preset.horizontalPadding,
             kicker: preset.kicker,
-            title: preset.title,
+            title: title,
             detail: preset.detail,
             countdown: countdown,
             buttonHeight: max(minimumButtonHeight, button),
@@ -206,7 +180,8 @@ enum WatchTrainingLayout {
         var rows: [CGFloat] = [line(preset.kicker)]
         switch page {
         case .exerciseManual, .exerciseTimed:
-            rows.append(line(preset.title) * 2)
+            let title = page == .exerciseManual ? preset.titleManual : preset.titleTimed
+            rows.append(line(title) * 2)
             if showsDetail { rows.append(line(preset.detail)) }
             if page == .exerciseTimed {
                 rows.append(preset.countdownExercise * preset.countdownFactor * typeScale)
@@ -222,5 +197,20 @@ enum WatchTrainingLayout {
         if includeFooter { rows.append(line(preset.footer)) }
         let gaps = preset.spacing * CGFloat(max(0, rows.count - 1))
         return rows.reduce(0, +) + gaps
+    }
+
+    /// Height the stack may use. When the reader is already inside the safe
+    /// area, insets are ~0 and the reported height is the content box — leave
+    /// it alone. When a full watch screen is proposed with no vertical inset,
+    /// keep at least 28% (and at least 48pt) so an unknown bezel is not treated
+    /// as drawable.
+    static func usableHeight(reportedHeight: CGFloat, insetTop: CGFloat, insetBottom: CGFloat) -> CGFloat {
+        let inset = max(0, insetTop) + max(0, insetBottom)
+        let base = max(0, reportedHeight - inset)
+        if inset < 16, reportedHeight >= 190 {
+            let reserve = max(48, reportedHeight * 0.28)
+            return max(0, reportedHeight - reserve)
+        }
+        return base
     }
 }
