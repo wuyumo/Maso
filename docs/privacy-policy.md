@@ -1,6 +1,6 @@
 # Masso — Privacy Policy / 隐私政策
 
-Last updated: 5 November 2026
+Last updated: 12 November 2026
 
 Contact: wuyumoawuyumo@gmail.com
 
@@ -39,6 +39,10 @@ Camera and photo-library access are requested when you choose to add an image. A
 ### Purchases
 
 New subscriptions in version 3.0 use Apple In-App Purchase. Apple processes payment and provides signed entitlement information to restore and validate access. We do not receive your card or bank details. Earlier Polar subscribers can restore their existing licence; the licence key is sent through our backend to Polar for validation. Polar handles information provided during its checkout under [its privacy policy](https://polar.sh/legal/privacy).
+
+### Optional referral program
+
+Optional referral codes: When you choose Check referral code in a compatible Masso version, we bind the first code to a random installation identifier held in the device Keychain. We receive that identifier, code and claim time, and verified Apple subscription records: transaction and original transaction identifiers, product, price/currency, purchase and expiry dates, trial/offer status, and refund or revocation status. We use them to validate the referral, prevent duplicate credit, measure trial-to-paid conversion and reconcile partner commissions. Partners see aggregate results and statements, rather than customer transaction identifiers or contact details. This feature does not send health, workout, photo or AI-chat content. Creator portal login separately uses email/name and Resend email codes; Cloudflare hosts the program. Login codes expire after ten minutes and sessions after seven days. Daily salted link-visit hashes are kept for up to 90 days. Transaction and accounting records are retained for reconciliation, disputes and applicable obligations. Referral handling is separate from optional usage analytics and AI sharing. Contact support for access, correction or deletion requests; we may need the code and enough information to locate a record. We do not receive Apple passwords or card/bank details.
 
 ### Optional usage analytics
 
@@ -97,6 +101,10 @@ Masso 将训练计划、组数、进步、餐食、所选照片、睡眠汇总�
 ### 购买
 
 3.0 版的新订阅通过 Apple 内购完成。Apple 处理付款并提供签名权益信息，用于恢复和验证权限；我们不会收到银行卡或银行账户资料。原 Polar 订阅用户可恢复原授权，授权码通过后端发送给 Polar 验证。Polar 按[其隐私政策](https://polar.sh/legal/privacy)处理结账资料。
+
+### 可选推荐计划
+
+可选推荐码：在支持此功能的 Masso 版本中主动点击「检查推荐码」后，我们会将首个推荐码与保存在设备钥匙串中的随机安装标识绑定，接收该标识、推荐码、绑定时间及 Apple 验证的订阅记录，包括交易与原始交易标识、商品、价格和币种、购买与到期日期、试用及优惠状态、退款或撤销状态，用于核验推荐、避免重复计数、统计试用转付费及核对合作佣金。合作方看到汇总结果及结算单，不会看到顾客的交易标识或联系方式。推荐功能不发送健康、训练、照片或 AI 聊天内容。合作方门户另以邮箱和名称登录，由 Resend 发送验证码、Cloudflare 托管服务。验证码十分钟有效，登录会话七天有效；按日加盐的链接访问哈希最长保留九十天，交易及会计记录按核对、争议处理和适用义务保留。推荐处理与可选使用统计、AI 数据共享分别管理。访问、更正或删除请求请联系支持，并提供足以定位记录的推荐码等资料；请勿发送密码或付款资料。我们不会收到 Apple 密码或银行卡、银行账户信息。
 
 ### 可关闭的使用统计
 
