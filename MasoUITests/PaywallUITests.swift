@@ -122,12 +122,16 @@ final class PaywallUITests: XCTestCase {
             let app = launch("device-usage",language:language,largeType:language == "ar",narrow:language == "ar")
             let intro = app.staticTexts["ai.sources.intro"]; try reveal(intro,app:app)
             capture(app,language + "-source-help-intro")
+            if language == "ar" { app.swipeUp(); capture(app,language + "-source-help-middle") }
             let hosts = app.staticTexts["ai.sources.hosts"]; try reveal(hosts,app:app)
             for host in ["strongerbyscience.com","muscleandstrength.com","strengthlog.com","hevyapp.com","exrx.net"] { XCTAssertTrue(hosts.label.contains(host)) }
             let video = app.staticTexts["ai.sources.video-limit"]; try reveal(video,app:app)
             XCTAssertTrue(video.label.contains("YouTube")); XCTAssertTrue(video.label.contains("Bilibili"))
+            if language == "ar" { app.swipeUp(); capture(app,language + "-source-help-video-scroll") }
             let limits = app.staticTexts["ai.sources.limits"]; try reveal(limits,app:app)
             XCTAssertTrue(limits.label.contains("HTTPS")); XCTAssertTrue(limits.label.contains("120"))
+            for _ in 0..<4 where limits.frame.maxY > app.frame.maxY - 20 { app.swipeUp() }
+            XCTAssertLessThanOrEqual(limits.frame.maxY,app.frame.maxY - 20,"Complete final disclosure must be reachable above the bottom safe area")
             capture(app,language + "-source-help-limits")
             app.terminate()
         }
