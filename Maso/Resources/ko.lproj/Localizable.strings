@@ -2556,3 +2556,8 @@
 "A saved training-based estimate, not a live or medical measurement." = "훈련 추정치이며 실시간 또는 의학적 측정이 아닙니다.";
 
 "Text only. New message. Draft kept." = "텍스트만 · 새 메시지 · 초안 보관";
+
+"Supported workout sources" = "지원하는 운동 자료";
+"Paste text or attach a workout photo. Direct links can read public article text or subtitle files from the listed sites when readable text is available." = "텍스트를 붙여 넣거나 운동 사진을 첨부하세요. 아래 사이트의 직접 링크는 읽을 수 있는 내용이 있을 때 공개 글의 본문이나 자막 파일을 읽습니다.";
+"Video pages, including YouTube and Bilibili, are not watched or transcribed. Login-only or restricted pages are unsupported. Paste text, a transcript or screenshots instead; an unsuccessful extraction uses no successful experience." = "YouTube와 Bilibili를 포함한 동영상 페이지를 시청하거나 받아쓰지 않습니다. 로그인이나 접근 권한이 필요한 페이지는 지원하지 않습니다. 본문, 자막 또는 스크린샷을 추가하세요. 추출 실패 시 성공 체험 횟수는 차감되지 않습니다.";
+"Direct-link limits: HTTPS, 2 MB, 120–60,000 readable characters. Some pages on these sites may still be unreadable." = "직접 링크 제한: HTTPS, 최대 2 MB, 읽을 수 있는 문자 120–60,000자. 같은 사이트에서도 일부 페이지는 읽지 못할 수 있습니다.";

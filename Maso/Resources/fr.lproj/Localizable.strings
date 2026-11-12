@@ -2556,3 +2556,8 @@
 "A saved training-based estimate, not a live or medical measurement." = "Estimation d’entraînement, pas une mesure médicale ou en direct.";
 
 "Text only. New message. Draft kept." = "Texte seul. Nouveau message. Brouillon gardé.";
+
+"Supported workout sources" = "Sources d’entraînement prises en charge";
+"Paste text or attach a workout photo. Direct links can read public article text or subtitle files from the listed sites when readable text is available." = "Collez du texte ou joignez une photo d’entraînement. Les liens directs peuvent lire le texte public d’un article ou un fichier de sous-titres des sites ci-dessous, si le contenu est lisible.";
+"Video pages, including YouTube and Bilibili, are not watched or transcribed. Login-only or restricted pages are unsupported. Paste text, a transcript or screenshots instead; an unsuccessful extraction uses no successful experience." = "Les pages vidéo, notamment YouTube et Bilibili, ne sont ni visionnées ni transcrites. Les pages privées ou nécessitant une connexion ne sont pas prises en charge. Collez plutôt le texte, une transcription ou des captures ; une extraction échouée ne consomme aucun essai réussi.";
+"Direct-link limits: HTTPS, 2 MB, 120–60,000 readable characters. Some pages on these sites may still be unreadable." = "Limites des liens directs : HTTPS, 2 Mo, 120 à 60 000 caractères lisibles. Certaines pages de ces sites peuvent rester illisibles.";

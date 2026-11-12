@@ -2556,3 +2556,8 @@
 "A saved training-based estimate, not a live or medical measurement." = "訓練紀錄估算，非即時或醫學測量。";
 
 "Text only. New message. Draft kept." = "僅文字 · 新增訊息 · 草稿保留";
+
+"Supported workout sources" = "可匯入的訓練資料";
+"Paste text or attach a workout photo. Direct links can read public article text or subtitle files from the listed sites when readable text is available." = "可貼上文字或附上訓練照片。以下網站的直連連結，僅在有可讀內容時讀取公開文章內文或字幕檔案。";
+"Video pages, including YouTube and Bilibili, are not watched or transcribed. Login-only or restricted pages are unsupported. Paste text, a transcript or screenshots instead; an unsuccessful extraction uses no successful experience." = "目前不會觀看或轉錄影片頁面，包括 YouTube 和 Bilibili；不支援須登入或受限頁面。請改為貼上內文、字幕或附上截圖；擷取未成功不會扣除成功體驗次數。";
+"Direct-link limits: HTTPS, 2 MB, 120–60,000 readable characters. Some pages on these sites may still be unreadable." = "直連讀取限制：僅 HTTPS、下載不超過 2 MB、可讀文字 120–60,000 字元。同一網站的部分頁面也可能無法讀取。";

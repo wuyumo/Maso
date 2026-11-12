@@ -234,6 +234,16 @@ struct DeviceAIUsageView: View {
                 }
             }
             if !data.settings.isPro { Button("Masso Pro") { paywall = true }.frame(minHeight: 44) }
+            Section("Supported workout sources") {
+                Text("Paste text or attach a workout photo. Direct links can read public article text or subtitle files from the listed sites when readable text is available.")
+                    .fixedSize(horizontal:false,vertical:true).accessibilityIdentifier("ai.sources.intro")
+                Text(verbatim:WorkoutSourceReader.hosts.filter { !$0.hasPrefix("www.") }.sorted().joined(separator:"\n"))
+                    .font(.footnote).fixedSize(horizontal:false,vertical:true).textSelection(.enabled).accessibilityIdentifier("ai.sources.hosts")
+                Text("Video pages, including YouTube and Bilibili, are not watched or transcribed. Login-only or restricted pages are unsupported. Paste text, a transcript or screenshots instead; an unsuccessful extraction uses no successful experience.")
+                    .fixedSize(horizontal:false,vertical:true).accessibilityIdentifier("ai.sources.video-limit")
+                Text("Direct-link limits: HTTPS, 2 MB, 120–60,000 readable characters. Some pages on these sites may still be unreadable.")
+                    .font(.footnote).fixedSize(horizontal:false,vertical:true).accessibilityIdentifier("ai.sources.limits")
+            }
         }
         .navigationTitle("AI access and saved results")
         .task { await data.aiAccess.refresh() }

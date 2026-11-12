@@ -2556,3 +2556,8 @@
 "A saved training-based estimate, not a live or medical measurement." = "Оценка по тренировкам, не текущее или медицинское измерение.";
 
 "Text only. New message. Draft kept." = "Только текст. Новое сообщение. Черновик сохранён.";
+
+"Supported workout sources" = "Поддерживаемые источники тренировок";
+"Paste text or attach a workout photo. Direct links can read public article text or subtitle files from the listed sites when readable text is available." = "Вставьте текст или прикрепите фото тренировки. Прямые ссылки могут читать общедоступный текст статьи или файл субтитров с указанных сайтов, если доступен читаемый текст.";
+"Video pages, including YouTube and Bilibili, are not watched or transcribed. Login-only or restricted pages are unsupported. Paste text, a transcript or screenshots instead; an unsuccessful extraction uses no successful experience." = "Видеостраницы, включая YouTube и Bilibili, не просматриваются и не расшифровываются. Закрытые страницы и страницы со входом не поддерживаются. Вставьте текст, расшифровку или снимки экрана; неудачное извлечение не расходует успешную пробу.";
+"Direct-link limits: HTTPS, 2 MB, 120–60,000 readable characters. Some pages on these sites may still be unreadable." = "Ограничения прямых ссылок: HTTPS, 2 МБ, 120–60 000 читаемых символов. Некоторые страницы этих сайтов всё равно могут быть недоступны для чтения.";

@@ -2556,3 +2556,8 @@
 "A saved training-based estimate, not a live or medical measurement." = "تقدير تدريب، وليس قياسًا طبيًا أو مباشرًا.";
 
 "Text only. New message. Draft kept." = "نص فقط. رسالة جديدة. المسودة محفوظة.";
+
+"Supported workout sources" = "مصادر التمارين المدعومة";
+"Paste text or attach a workout photo. Direct links can read public article text or subtitle files from the listed sites when readable text is available." = "الصق نصًا أو أرفق صورة للتمرين. يمكن للروابط المباشرة قراءة نص مقالة عامة أو ملف ترجمة من المواقع أدناه عند توفر نص قابل للقراءة.";
+"Video pages, including YouTube and Bilibili, are not watched or transcribed. Login-only or restricted pages are unsupported. Paste text, a transcript or screenshots instead; an unsuccessful extraction uses no successful experience." = "لا تتم مشاهدة صفحات الفيديو أو تفريغها، بما فيها YouTube وBilibili. الصفحات المقيدة أو التي تتطلب تسجيل الدخول غير مدعومة. الصق النص أو التفريغ أو صور الشاشة بدلًا منها؛ الاستخراج غير الناجح لا يستهلك تجربة ناجحة.";
+"Direct-link limits: HTTPS, 2 MB, 120–60,000 readable characters. Some pages on these sites may still be unreadable." = "حدود الروابط المباشرة: HTTPS، حجم 2 MB، ومن 120 إلى 60,000 حرف قابل للقراءة. قد تظل بعض صفحات هذه المواقع غير قابلة للقراءة.";

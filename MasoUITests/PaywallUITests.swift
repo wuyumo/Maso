@@ -117,6 +117,21 @@ final class PaywallUITests: XCTestCase {
             app.terminate()
         }
     }
+    func testSourceLinkHelpIsHonestAndReachableInEnglishChineseAndArabicLargeType() throws {
+        for language in ["en","zh-Hans","ar"] {
+            let app = launch("device-usage",language:language,largeType:language == "ar",narrow:language == "ar")
+            let intro = app.staticTexts["ai.sources.intro"]; try reveal(intro,app:app)
+            capture(app,language + "-source-help-intro")
+            let hosts = app.staticTexts["ai.sources.hosts"]; try reveal(hosts,app:app)
+            for host in ["strongerbyscience.com","muscleandstrength.com","strengthlog.com","hevyapp.com","exrx.net"] { XCTAssertTrue(hosts.label.contains(host)) }
+            let video = app.staticTexts["ai.sources.video-limit"]; try reveal(video,app:app)
+            XCTAssertTrue(video.label.contains("YouTube")); XCTAssertTrue(video.label.contains("Bilibili"))
+            let limits = app.staticTexts["ai.sources.limits"]; try reveal(limits,app:app)
+            XCTAssertTrue(limits.label.contains("HTTPS")); XCTAssertTrue(limits.label.contains("120"))
+            capture(app,language + "-source-help-limits")
+            app.terminate()
+        }
+    }
     func testNativeRecoverySnapshotAndFullAcquiredTextAreReadable() throws {
         for language in ["en","zh-Hans"] {
             let app = launch("device-usage",language:language)
