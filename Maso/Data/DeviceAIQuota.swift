@@ -25,6 +25,7 @@ enum DeviceAIQuotaError: String, LocalizedError {
     private struct Metadata: Codable {
         var legacy: Bool
         var acknowledgedAt: Date?
+        var noticePresentedAt: Date? = nil
         var recoverySnapshots: [DeviceRecoverySnapshot]? = nil
     }
     let ledger: CoachAccessLedger
@@ -38,7 +39,7 @@ enum DeviceAIQuotaError: String, LocalizedError {
     var needsDisclosure: Bool { metadata.acknowledgedAt == nil }
     var legacy: Bool { metadata.legacy }
     var graceEnds: Date? {
-        guard metadata.legacy, let date = metadata.acknowledgedAt else { return nil }
+        guard metadata.legacy, let date = metadata.noticePresentedAt ?? metadata.acknowledgedAt else { return nil }
         return date.addingTimeInterval(Double(ProAccessPolicy.current.legacyGraceDays * 86400))
     }
 
@@ -80,12 +81,24 @@ enum DeviceAIQuotaError: String, LocalizedError {
         } catch { storageError = true; notice = DeviceAIQuotaError.storage.localizedDescription }
     }
 
+    func recordNoticePresentation(at now: Date = Date()) {
+        guard metadata.legacy, metadata.noticePresentedAt == nil, metadata.acknowledgedAt == nil, !storageError else { return }
+        var value = metadata; value.noticePresentedAt = now
+        do {
+            if let url = metadataURL {
+                try FileManager.default.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true)
+                try JSONEncoder().encode(value).write(to: url, options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])
+            }
+            metadata = value
+        } catch { storageError = true; notice = DeviceAIQuotaError.storage.localizedDescription }
+    }
+
     static func period(_ now: Date) -> String {
         let f = DateFormatter(); f.locale = Locale(identifier: "en_US_POSIX"); f.timeZone = TimeZone(secondsFromGMT: 0); f.dateFormat = "yyyy-MM"; return f.string(from: now)
     }
 
     func context(isPro: Bool, now: Date = Date()) -> CoachAccessContext {
-        .init(now: now, period: Self.period(now), isPro: isPro, legacyNoticeAt: metadata.legacy ? metadata.acknowledgedAt : nil)
+        .init(now: now, period: Self.period(now), isPro: isPro, legacyNoticeAt: metadata.legacy ? (metadata.noticePresentedAt ?? metadata.acknowledgedAt ?? now) : nil)
     }
 
     func auxiliary<T>(_ operation: () async throws -> T) async rethrows -> T {
@@ -100,7 +113,6 @@ enum DeviceAIQuotaError: String, LocalizedError {
                              summary: (T) -> String = { _ in NSLocalizedString("Saved AI result", comment: "") },
                              operation: () async throws -> T) async throws -> T {
         guard !storageError else { throw DeviceAIQuotaError.storage }
-        guard !needsDisclosure else { notice = DeviceAIQuotaError.disclosure.localizedDescription; throw DeviceAIQuotaError.disclosure }
         var request = CoachTaskRequest(id: operationID, kind: kind, goalID: goalID ?? operationID)
         request.parentID = parentID; request.usesImage = image; request.canStoreResult = capacity
         if automatic { request.purpose = .automatic }
@@ -167,25 +179,41 @@ enum DeviceAIQuotaError: String, LocalizedError {
 struct DeviceAITextError: LocalizedError { let message: String; var errorDescription: String? { message } }
 
 
-struct DeviceAIDisclosureView: View {
+/// Benefit-change notice only; device-local policy lives in the existing details page.
+struct DeviceAIChangeNotice: View {
     @Environment(DataStore.self) private var data
+    @State private var details = false
+    private var noticeMessage: String {
+        let deadline = data.aiAccess.graceEnds ?? Date().addingTimeInterval(30 * 86400)
+        let date = deadline.formatted(.dateTime.year().month(.abbreviated).day().locale(LanguageManager.currentLocale))
+        return String(format:NSLocalizedString("AI access changed: 30-day transition. New limits start %@. Existing training stays available.",comment:""),date)
+    }
     var body: some View {
-        AppNavigationStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 20) {
-                    Text("AI access on this device").font(.title.bold())
-                    DeviceAIRulesText()
-                    if data.aiAccess.legacy {
-                        Text("Existing users have 30 days from this notice before the new AI limits apply. Previous use is not counted retroactively.")
-                    }
-                    if let error = data.aiAccess.notice { Text(error).foregroundStyle(.secondary) }
-                    Button("Continue") { data.aiAccess.acknowledge() }
-                        .buttonStyle(.borderedProminent).frame(minHeight: 44)
-                        .accessibilityIdentifier("ai.policy.acknowledge")
-                }.padding(24)
+        if data.aiAccess.legacy && data.aiAccess.needsDisclosure && !data.settings.isPro {
+            VStack(alignment:.leading,spacing:8) {
+                Text(noticeMessage)
+                    .font(.footnote).fixedSize(horizontal:false,vertical:true)
+                    .accessibilityIdentifier("ai.policy.change-notice")
+                HStack {
+                    Button { details = true } label: {
+                        Text("Details").frame(minWidth:44,minHeight:44).contentShape(Rectangle())
+                    }.accessibilityIdentifier("ai.policy.notice.details")
+                    Spacer()
+                    Button { data.aiAccess.acknowledge() } label: {
+                        Image(systemName:"xmark").frame(width:44,height:44).contentShape(Rectangle())
+                    }.accessibilityLabel("Dismiss").accessibilityIdentifier("ai.policy.notice.dismiss")
+                }.buttonStyle(.plain).foregroundStyle(.primary)
             }
-            .navigationTitle("Free and Pro details")
-        }.preferredColorScheme(.dark)
+            .padding(12).background(Color(.secondarySystemBackground),in:RoundedRectangle(cornerRadius:12))
+            .foregroundStyle(.primary).tint(.primary).padding(.horizontal,16)
+            .onAppear { data.aiAccess.recordNoticePresentation() }
+            .sheet(isPresented:$details) {
+                AppNavigationStack {
+                    DeviceAIUsageView()
+                        .toolbar { ToolbarItem(placement:.confirmationAction) { Button("Done") { details = false }.accessibilityIdentifier("ai.policy.details.close") } }
+                }.tint(.primary)
+            }
+        }
     }
 }
 
@@ -209,8 +237,12 @@ struct DeviceAIUsageView: View {
             Section("AI access on this device") {
                 DeviceAIRulesText()
                 Text(String(format: NSLocalizedString("Monthly text tasks used: %d of 2", comment: ""), data.aiAccess.monthlyTextUsed))
-                if let end = data.aiAccess.graceEnds, end > Date() {
-                    Text(end, format: .dateTime.year().month().day())
+                if data.aiAccess.legacy {
+                    Text("Existing users have 30 days from this notice before the new AI limits apply. Previous use is not counted retroactively.")
+                        .fixedSize(horizontal:false,vertical:true)
+                }
+                if let end = data.aiAccess.graceEnds {
+                    Text(end, format: .dateTime.year().month().day()).accessibilityIdentifier("ai.policy.grace-end")
                 }
                 if let notice = data.aiAccess.notice { Text(notice).foregroundStyle(.secondary) }
             }
@@ -245,6 +277,7 @@ struct DeviceAIUsageView: View {
                     .font(.footnote).fixedSize(horizontal:false,vertical:true).accessibilityIdentifier("ai.sources.limits")
             }
         }
+        .tint(.primary)
         .navigationTitle("AI access and saved results")
         .task { await data.aiAccess.refresh() }
         .sheet(isPresented: $paywall) { PaywallScreen(source: "device_ai_access") }

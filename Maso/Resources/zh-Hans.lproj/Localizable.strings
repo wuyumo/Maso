@@ -3060,7 +3060,7 @@
 
 /* Device-install policy and native user-message actions. */
 "AI access on this device" = "此设备的 AI 使用规则";
-"AI allowances are stored only on this device installation. Changing devices or reinstalling may reset them; they are not shared across devices." = "AI 额度仅保存在本设备的这次安装中。换设备或重装可能重置，不跨设备共享。";
+"AI allowances are stored only on this device installation. Changing devices or reinstalling may reset them; they are not shared across devices." = "AI 体验与额度仅保存在此设备。换设备或重新安装可能重置，不跨设备共享。";
 "Each supported AI task has one successful free experience on this installation. Free also includes 2 shared text tasks per calendar month (UTC). Repeat images and ongoing reviews need Pro." = "每种支持的 AI 任务在本次安装可免费成功体验一次；另含每个自然月（UTC）共用 2 次文本任务。重复图片与持续总结需 Pro。";
 "A task includes 2 same-goal adjustments within 24 hours. Failed requests, clarification, local tools and reopening saved results do not use the allowance." = "每个任务含同目标 24 小时内 2 次微调。失败、澄清、本地工具与重看已存结果不扣额度。";
 "Existing purchased and lifetime rights are kept. No experimental 30-task or 10-image limit is applied to existing paid users." = "已有购买与终身权益保持不变，不对旧付费用户施加 30 次任务或 10 次图片的实验上限。";
@@ -3099,5 +3099,9 @@
 
 "Supported workout sources" = "可导入的训练资料";
 "Paste text or attach a workout photo. Direct links can read public article text or subtitle files from the listed sites when readable text is available." = "可粘贴文字或附上训练照片。以下网站的直连链接，仅在有可读内容时读取公开文章正文或字幕文件。";
-"Video pages, including YouTube and Bilibili, are not watched or transcribed. Login-only or restricted pages are unsupported. Paste text, a transcript or screenshots instead; an unsuccessful extraction uses no successful experience." = "目前不会观看或转录视频页面，包括 YouTube 和 Bilibili；不支持需登录或受限页面。请改为粘贴正文、字幕或附上截图；提取未成功不会扣除成功体验次数。";
+"Video pages, including YouTube and Bilibili, are not watched or transcribed. Login-only or restricted pages are unsupported. Paste text, a transcript or screenshots instead; an unsuccessful extraction uses no successful experience." = "目前不会观看或转录视频页面，包括 YouTube 和 Bilibili；不支持需登录或受限页面。请改为粘贴正文、字幕或附上截图。 提取失败不会计为一次成功的 AI 使用。";
 "Direct-link limits: HTTPS, 2 MB, 120–60,000 readable characters. Some pages on these sites may still be unreadable." = "直连读取限制：仅 HTTPS、下载不超过 2 MB、可读文字 120–60,000 字符。同一网站的部分页面也可能无法读取。";
+
+"AI access changed: 30-day transition. New limits start %@. Existing training stays available." = "AI 规则已更新，过渡期为 30 天，新限额自 %@ 起应用。已有训练仍可使用。";
+
+"Details" = "详情";

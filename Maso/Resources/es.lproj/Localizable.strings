@@ -2520,7 +2520,7 @@
 
 /* Device-install policy and native user-message actions. */
 "AI access on this device" = "Acceso a IA en este dispositivo";
-"AI allowances are stored only on this device installation. Changing devices or reinstalling may reset them; they are not shared across devices." = "Los cupos solo se guardan en esta instalación. Cambiar de dispositivo o reinstalar puede restablecerlos; no se comparten entre dispositivos.";
+"AI allowances are stored only on this device installation. Changing devices or reinstalling may reset them; they are not shared across devices." = "Las experiencias y cuotas de IA se guardan solo en esta instalación. Cambiar de dispositivo o reinstalar puede restablecerlas; no se comparten entre dispositivos.";
 "Each supported AI task has one successful free experience on this installation. Free also includes 2 shared text tasks per calendar month (UTC). Repeat images and ongoing reviews need Pro." = "Cada tarea de IA compatible incluye una primera experiencia exitosa gratis. También hay 2 tareas de texto compartidas por mes natural (UTC). Repetir imágenes y los informes continuos requieren Pro.";
 "A task includes 2 same-goal adjustments within 24 hours. Failed requests, clarification, local tools and reopening saved results do not use the allowance." = "Una tarea incluye 2 ajustes del mismo objetivo en 24 horas. Los fallos, aclaraciones, herramientas locales y resultados guardados no gastan cupo.";
 "Existing purchased and lifetime rights are kept. No experimental 30-task or 10-image limit is applied to existing paid users." = "Se conservan las compras y los derechos de por vida existentes. No se impone a usuarios de pago el límite experimental de 30 tareas o 10 imágenes.";
@@ -2559,5 +2559,9 @@
 
 "Supported workout sources" = "Fuentes de entrenamiento compatibles";
 "Paste text or attach a workout photo. Direct links can read public article text or subtitle files from the listed sites when readable text is available." = "Pega texto o adjunta una foto de entrenamiento. Los enlaces directos pueden leer artículos públicos o archivos de subtítulos de los sitios indicados, si hay contenido legible.";
-"Video pages, including YouTube and Bilibili, are not watched or transcribed. Login-only or restricted pages are unsupported. Paste text, a transcript or screenshots instead; an unsuccessful extraction uses no successful experience." = "No se ven ni transcriben páginas de vídeo, incluidas YouTube y Bilibili. No se admiten páginas restringidas o que requieran iniciar sesión. Pega el texto, una transcripción o capturas; una extracción fallida no consume una experiencia exitosa.";
+"Video pages, including YouTube and Bilibili, are not watched or transcribed. Login-only or restricted pages are unsupported. Paste text, a transcript or screenshots instead; an unsuccessful extraction uses no successful experience." = "No se ven ni transcriben páginas de vídeo, incluidas YouTube y Bilibili. No se admiten páginas restringidas o que requieran iniciar sesión. Pega el texto, una transcripción o capturas. Una extracción fallida no cuenta como un uso completado de IA.";
 "Direct-link limits: HTTPS, 2 MB, 120–60,000 readable characters. Some pages on these sites may still be unreadable." = "Límites de enlaces directos: HTTPS, 2 MB y 120–60.000 caracteres legibles. Algunas páginas de estos sitios pueden no ser legibles.";
+
+"AI access changed: 30-day transition. New limits start %@. Existing training stays available." = "El acceso a la IA cambia: transición de 30 días. Los nuevos límites se aplican desde el %@. Tus entrenamientos siguen disponibles.";
+
+"Details" = "Detalles";

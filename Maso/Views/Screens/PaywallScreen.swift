@@ -117,13 +117,14 @@ struct PaywallScreen: View {
     }
 
     private func benefit(_ title: LocalizedStringKey, detail: LocalizedStringKey, icon: String, id: String) -> some View {
-        HStack(alignment: .center, spacing: 12) {
+        let layout = dynamicTypeSize.isAccessibilitySize ? AnyLayout(VStackLayout(alignment:.leading,spacing:8)) : AnyLayout(HStackLayout(alignment:.top,spacing:12))
+        return layout {
             Image(systemName: icon).font(.body.weight(.semibold)).foregroundStyle(MasoColor.accent)
                 .frame(width: 34, height: 34)
                 .background(MasoColor.accent.opacity(0.13), in: RoundedRectangle(cornerRadius: 9))
                 .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 3) {
-                Text(title).font(.subheadline.weight(.semibold))
+                Text(title).font(.subheadline.weight(.semibold)).fixedSize(horizontal:false,vertical:true)
                     .accessibilityIdentifier("paywall.benefit." + id)
                 Text(detail).font(.footnote).foregroundStyle(.secondary)
             }
@@ -248,25 +249,30 @@ struct PaywallScreen: View {
 
     @ViewBuilder private var secondaryActions: some View {
         Button { referralSheetShown = true } label: {
-            Text("Have a referral code?").frame(minHeight: 44).contentShape(Rectangle())
+            Text("Have a referral code?").fixedSize(horizontal:false,vertical:true).frame(minHeight: 44).contentShape(Rectangle())
         }.accessibilityIdentifier("paywall.referral")
         Button { dismiss() } label: {
-            Text("Continue free").frame(minHeight: 44).contentShape(Rectangle())
+            Text("Continue free").fixedSize(horizontal:false,vertical:true).frame(minHeight: 44).contentShape(Rectangle())
         }.accessibilityIdentifier("paywall.continue-free")
         Button {
             guard !processing else { return }
             processing = true
             Task { await subscriptions.restore(); processing = false; if data.settings.isPro { dismiss() } }
         } label: {
-            Text("Restore Purchases").frame(minHeight: 44).contentShape(Rectangle())
+            Text("Restore Purchases").fixedSize(horizontal:false,vertical:true).frame(minHeight: 44).contentShape(Rectangle())
         }.accessibilityIdentifier("paywall.restore")
     }
 
     private var footer: some View {
-        HStack(spacing: 22) {
-            Link("Terms", destination: Self.termsURL)
-            Link("Privacy", destination: Self.privacyURL)
+        ViewThatFits(in:.horizontal) {
+            HStack(spacing:22) { legalLinks }.fixedSize(horizontal:true,vertical:true)
+            VStack(spacing:4) { legalLinks }
         }.font(.footnote).foregroundStyle(.secondary)
+    }
+
+    @ViewBuilder private var legalLinks: some View {
+        Link("Terms",destination:Self.termsURL).fixedSize(horizontal:true,vertical:true).frame(minHeight:44).accessibilityIdentifier("paywall.terms")
+        Link("Privacy",destination:Self.privacyURL).fixedSize(horizontal:true,vertical:true).frame(minHeight:44).accessibilityIdentifier("paywall.privacy")
     }
 
     private func loadSubscriptionOptions() async {

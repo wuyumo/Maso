@@ -2520,7 +2520,7 @@
 
 /* Device-install policy and native user-message actions. */
 "AI access on this device" = "이 기기의 AI 이용 규칙";
-"AI allowances are stored only on this device installation. Changing devices or reinstalling may reset them; they are not shared across devices." = "AI 한도는 이 기기의 현재 설치에만 저장됩니다. 기기 변경이나 재설치로 초기화될 수 있으며 기기 간 공유되지 않습니다.";
+"AI allowances are stored only on this device installation. Changing devices or reinstalling may reset them; they are not shared across devices." = "AI 체험과 이용 한도는 이 기기의 현재 설치에만 저장됩니다. 기기를 바꾸거나 재설치하면 초기화될 수 있으며 기기 간에 공유되지 않습니다.";
 "Each supported AI task has one successful free experience on this installation. Free also includes 2 shared text tasks per calendar month (UTC). Repeat images and ongoing reviews need Pro." = "지원되는 각 AI 작업을 처음 성공할 때까지 무료 체험할 수 있습니다. 매월(UTC) 공용 텍스트 작업 2회도 포함됩니다. 반복 이미지와 지속적인 리뷰에는 Pro가 필요합니다.";
 "A task includes 2 same-goal adjustments within 24 hours. Failed requests, clarification, local tools and reopening saved results do not use the allowance." = "같은 목표로 24시간 내 2회 조정이 포함됩니다. 실패, 확인 질문, 로컬 도구와 저장 결과 다시 보기는 한도를 사용하지 않습니다.";
 "Existing purchased and lifetime rights are kept. No experimental 30-task or 10-image limit is applied to existing paid users." = "기존 구매 및 평생 혜택은 유지됩니다. 기존 유료 사용자에게 실험적인 30회 작업 또는 10회 이미지 한도를 적용하지 않습니다.";
@@ -2559,5 +2559,9 @@
 
 "Supported workout sources" = "지원하는 운동 자료";
 "Paste text or attach a workout photo. Direct links can read public article text or subtitle files from the listed sites when readable text is available." = "텍스트를 붙여 넣거나 운동 사진을 첨부하세요. 아래 사이트의 직접 링크는 읽을 수 있는 내용이 있을 때 공개 글의 본문이나 자막 파일을 읽습니다.";
-"Video pages, including YouTube and Bilibili, are not watched or transcribed. Login-only or restricted pages are unsupported. Paste text, a transcript or screenshots instead; an unsuccessful extraction uses no successful experience." = "YouTube와 Bilibili를 포함한 동영상 페이지를 시청하거나 받아쓰지 않습니다. 로그인이나 접근 권한이 필요한 페이지는 지원하지 않습니다. 본문, 자막 또는 스크린샷을 추가하세요. 추출 실패 시 성공 체험 횟수는 차감되지 않습니다.";
+"Video pages, including YouTube and Bilibili, are not watched or transcribed. Login-only or restricted pages are unsupported. Paste text, a transcript or screenshots instead; an unsuccessful extraction uses no successful experience." = "YouTube와 Bilibili를 포함한 동영상 페이지를 시청하거나 받아쓰지 않습니다. 로그인이나 접근 권한이 필요한 페이지는 지원하지 않습니다. 본문, 자막 또는 스크린샷을 추가하세요. 추출 실패는 성공한 AI 이용으로 계산되지 않습니다.";
 "Direct-link limits: HTTPS, 2 MB, 120–60,000 readable characters. Some pages on these sites may still be unreadable." = "직접 링크 제한: HTTPS, 최대 2 MB, 읽을 수 있는 문자 120–60,000자. 같은 사이트에서도 일부 페이지는 읽지 못할 수 있습니다.";
+
+"AI access changed: 30-day transition. New limits start %@. Existing training stays available." = "AI 규칙이 변경되었습니다. 30일 전환 기간 후 %@부터 새 한도가 적용됩니다. 기존 운동은 계속 이용할 수 있습니다.";
+
+"Details" = "자세히";

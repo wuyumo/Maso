@@ -100,10 +100,8 @@ struct MasoApp: App {
     private var applicationRoot: some View {
             ZStack {
                 if splashDone || splashHomePrepared {
-                    Group {
-                        if dataStore.aiAccess.needsDisclosure { DeviceAIDisclosureView() }
-                        else { RootView(launchReady: splashDone) }
-                    }
+                    RootView(launchReady: splashDone)
+                        .safeAreaInset(edge:.top,spacing:8) { DeviceAIChangeNotice() }
                         .frame(maxWidth: 760)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .background(MasoColor.background.ignoresSafeArea())

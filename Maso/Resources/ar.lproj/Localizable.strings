@@ -112,7 +112,7 @@
 "You're now Masso Pro!" = "أنت الآن (إم زبراندز) برو!";
 "Enjoy unlimited plans, full history, and everything else. Welcome aboard." = "استمتعوا بخطط التمرين الغير محدودة والتاريخ الكامل وكل شيء آخر";
 "Restore Purchases" = "استعادة المشتريات";
-"Terms" = "المصطلحات";
+"Terms" = "الشروط";
 "Privacy" = "الخصوصية";
 "Tell us about your training" = "أخبرنا عن تدريبك";
 "Three quick questions — we'll use them to recommend a plan that fits." = "ثلاثة أسئلة سريعة سنستخدمها لنوصي خطة تمرين مناسب";
@@ -2520,7 +2520,7 @@
 
 /* Device-install policy and native user-message actions. */
 "AI access on this device" = "الوصول إلى الذكاء الاصطناعي على هذا الجهاز";
-"AI allowances are stored only on this device installation. Changing devices or reinstalling may reset them; they are not shared across devices." = "تُحفظ الحصص في هذا التثبيت فقط. قد تُعاد عند تغيير الجهاز أو إعادة التثبيت، ولا تُشارك بين الأجهزة.";
+"AI allowances are stored only on this device installation. Changing devices or reinstalling may reset them; they are not shared across devices." = "تُحفظ تجارب الذكاء الاصطناعي وحصصه في هذا التثبيت على هذا الجهاز فقط. قد تُعاد عند تغيير الجهاز أو إعادة التثبيت، ولا تُشارك بين الأجهزة.";
 "Each supported AI task has one successful free experience on this installation. Free also includes 2 shared text tasks per calendar month (UTC). Repeat images and ongoing reviews need Pro." = "لكل مهمة مدعومة تجربة ناجحة أولى مجانية في هذا التثبيت، مع مهمتين نصيتين مشتركتين كل شهر تقويمي (UTC). تكرار الصور والمراجعات المستمرة يتطلب Pro.";
 "A task includes 2 same-goal adjustments within 24 hours. Failed requests, clarification, local tools and reopening saved results do not use the allowance." = "تتضمن المهمة تعديلين للهدف نفسه خلال 24 ساعة. لا تستهلك الأخطاء والاستيضاح والأدوات المحلية وإعادة فتح النتائج المحفوظة الحصة.";
 "Existing purchased and lifetime rights are kept. No experimental 30-task or 10-image limit is applied to existing paid users." = "تبقى حقوق المشتريات والحقوق مدى الحياة محفوظة. لا تُفرض حدود التجربة البالغة 30 مهمة أو 10 صور على المستخدمين المدفوعين الحاليين.";
@@ -2559,5 +2559,9 @@
 
 "Supported workout sources" = "مصادر التمارين المدعومة";
 "Paste text or attach a workout photo. Direct links can read public article text or subtitle files from the listed sites when readable text is available." = "الصق نصًا أو أرفق صورة للتمرين. يمكن للروابط المباشرة قراءة نص مقالة عامة أو ملف ترجمة من المواقع أدناه عند توفر نص قابل للقراءة.";
-"Video pages, including YouTube and Bilibili, are not watched or transcribed. Login-only or restricted pages are unsupported. Paste text, a transcript or screenshots instead; an unsuccessful extraction uses no successful experience." = "لا تتم مشاهدة صفحات الفيديو أو تفريغها، بما فيها YouTube وBilibili. الصفحات المقيدة أو التي تتطلب تسجيل الدخول غير مدعومة. الصق النص أو التفريغ أو صور الشاشة بدلًا منها؛ الاستخراج غير الناجح لا يستهلك تجربة ناجحة.";
+"Video pages, including YouTube and Bilibili, are not watched or transcribed. Login-only or restricted pages are unsupported. Paste text, a transcript or screenshots instead; an unsuccessful extraction uses no successful experience." = "لا تتم مشاهدة صفحات الفيديو أو تفريغها، بما فيها YouTube وBilibili. الصفحات المقيدة أو التي تتطلب تسجيل الدخول غير مدعومة. الصق النص أو التفريغ أو صور الشاشة بدلًا منها. لا يُحسب فشل الاستخراج استخدامًا ناجحًا للذكاء الاصطناعي.";
 "Direct-link limits: HTTPS, 2 MB, 120–60,000 readable characters. Some pages on these sites may still be unreadable." = "حدود الروابط المباشرة: HTTPS، حجم 2 MB، ومن 120 إلى 60,000 حرف قابل للقراءة. قد تظل بعض صفحات هذه المواقع غير قابلة للقراءة.";
+
+"AI access changed: 30-day transition. New limits start %@. Existing training stays available." = "تغيّرت قواعد الذكاء الاصطناعي مع فترة انتقالية مدتها 30 يومًا. تبدأ الحدود الجديدة في %@، وتبقى تدريباتك الحالية متاحة.";
+
+"Details" = "التفاصيل";

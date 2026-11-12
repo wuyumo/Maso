@@ -62,15 +62,33 @@ import UIKit
         let now = Date()
         let manager = DeviceAIQuota(directory: directory, legacy: true, acknowledged: false)
         XCTAssertTrue(manager.needsDisclosure)
-        do { _ = try await task(manager, "before-notice"); XCTFail("Must disclose first") }
-        catch DeviceAIQuotaError.disclosure { }
-        manager.acknowledge(at: now)
+        _ = try await task(manager, "before-notice") // App/AI is never acknowledgement-gated.
+        manager.recordNoticePresentation(at:now)
+        manager.recordNoticePresentation(at:now.addingTimeInterval(86400))
+        XCTAssertEqual(manager.graceEnds,now.addingTimeInterval(30 * 86400))
+        manager.acknowledge(at:now.addingTimeInterval(2 * 86400))
+        XCTAssertEqual(manager.graceEnds,now.addingTimeInterval(30 * 86400),"Dismiss must not restart grace")
         _ = try await task(manager, "grace", now: now.addingTimeInterval(15 * 86400))
         let experienced = await manager.ledger.hasExperience(.focus); XCTAssertFalse(experienced)
         let recreated = DeviceAIQuota(directory: directory, legacy: false, acknowledged: false)
         XCTAssertFalse(recreated.needsDisclosure); XCTAssertTrue(recreated.legacy)
         _ = try await task(recreated, "after-grace", now: now.addingTimeInterval(31 * 86400))
         let first = await recreated.ledger.hasExperience(.focus); XCTAssertTrue(first)
+    }
+
+    func testNewInstallAIWorksWithoutAnInterruptionAndLegacyNoticeIsStableOnRelaunch() async throws {
+        let fresh = DeviceAIQuota(acknowledged:false)
+        _ = try await task(fresh,"new-install")
+        let first = await fresh.ledger.hasExperience(.focus); XCTAssertTrue(first)
+        let dir = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at:dir) }
+        let now = Date(); let original = DeviceAIQuota(directory:dir,legacy:true,acknowledged:false)
+        original.recordNoticePresentation(at:now)
+        let reloaded = DeviceAIQuota(directory:dir,legacy:false,acknowledged:false)
+        XCTAssertTrue(reloaded.needsDisclosure); XCTAssertEqual(reloaded.graceEnds,original.graceEnds)
+        reloaded.acknowledge(at:now.addingTimeInterval(86400))
+        let dismissed = DeviceAIQuota(directory:dir,legacy:false,acknowledged:false)
+        XCTAssertFalse(dismissed.needsDisclosure); XCTAssertEqual(dismissed.graceEnds,original.graceEnds)
     }
 
     func testAutomaticRecommendationHasSeparateSuccessOnlyDailyBudget() async throws {

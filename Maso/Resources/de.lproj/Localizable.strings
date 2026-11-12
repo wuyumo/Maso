@@ -2454,7 +2454,7 @@
 
 // Partner referral redemption
 "Referral code" = "Empfehlungscode";
-"Have a referral code?" = "Hast du einen Empfehlungscode?";
+"Have a referral code?" = "Code eingeben";
 "Check referral code" = "Empfehlungscode prüfen";
 "Redeem with Apple" = "Bei Apple einlösen";
 "Checking a code binds your referral and shares an anonymous identifier and subscription transactions with Masso for referral accounting. Your health and training data are not shared." = "Die Prüfung bindet deine Empfehlung und übermittelt eine anonyme Kennung sowie Abo-Transaktionen zur Abrechnung an Masso. Gesundheits- und Trainingsdaten werden nicht geteilt.";
@@ -2498,7 +2498,7 @@
 
 
 /* Approved Pro-boundary candidate. Server quotas remain release-gated. */
-"Keep adapting with AI Coach" = "Mit dem KI-Coach weiter anpassen";
+"Keep adapting with AI Coach" = "Mit KI anpassen";
 "Adjust workouts around your time and equipment." = "Passe dein Training an Zeit und Ausrüstung an.";
 "See progress and recovery" = "Fortschritt und Erholung verstehen";
 "Lift trends and per-muscle recovery estimates." = "Kraftverlauf und geschätzte Erholung je Muskelgruppe.";
@@ -2520,7 +2520,7 @@
 
 /* Device-install policy and native user-message actions. */
 "AI access on this device" = "KI-Zugang auf diesem Gerät";
-"AI allowances are stored only on this device installation. Changing devices or reinstalling may reset them; they are not shared across devices." = "Kontingente werden nur in dieser Installation gespeichert. Gerätewechsel oder Neuinstallation können sie zurücksetzen; sie werden nicht geräteübergreifend geteilt.";
+"AI allowances are stored only on this device installation. Changing devices or reinstalling may reset them; they are not shared across devices." = "KI-Erfahrungen und Kontingente werden nur in dieser Installation gespeichert. Gerätewechsel oder Neuinstallation können sie zurücksetzen; sie werden nicht geräteübergreifend geteilt.";
 "Each supported AI task has one successful free experience on this installation. Free also includes 2 shared text tasks per calendar month (UTC). Repeat images and ongoing reviews need Pro." = "Jede unterstützte KI-Aufgabe bietet einen ersten erfolgreichen Gratisversuch. Hinzu kommen 2 gemeinsame Textaufgaben je Kalendermonat (UTC). Wiederholte Bilder und laufende Auswertungen benötigen Pro.";
 "A task includes 2 same-goal adjustments within 24 hours. Failed requests, clarification, local tools and reopening saved results do not use the allowance." = "Eine Aufgabe enthält 2 Anpassungen am selben Ziel innerhalb von 24 Stunden. Fehler, Rückfragen, lokale Werkzeuge und gespeicherte Ergebnisse verbrauchen kein Kontingent.";
 "Existing purchased and lifetime rights are kept. No experimental 30-task or 10-image limit is applied to existing paid users." = "Bestehende Kauf- und Lebenszeitrechte bleiben erhalten. Bestehende zahlende Nutzer erhalten kein experimentelles Limit von 30 Aufgaben oder 10 Bildern.";
@@ -2559,5 +2559,9 @@
 
 "Supported workout sources" = "Unterstützte Trainingsquellen";
 "Paste text or attach a workout photo. Direct links can read public article text or subtitle files from the listed sites when readable text is available." = "Füge Text oder ein Trainingsfoto ein. Direkte Links können öffentliche Artikeltexte oder Untertiteldateien der unten genannten Websites lesen, sofern lesbarer Inhalt vorhanden ist.";
-"Video pages, including YouTube and Bilibili, are not watched or transcribed. Login-only or restricted pages are unsupported. Paste text, a transcript or screenshots instead; an unsuccessful extraction uses no successful experience." = "Videoseiten wie YouTube und Bilibili werden weder angesehen noch transkribiert. Anmeldepflichtige oder eingeschränkte Seiten werden nicht unterstützt. Füge stattdessen Text, ein Transkript oder Screenshots ein; eine fehlgeschlagene Extraktion verbraucht keinen erfolgreichen Gratisversuch.";
+"Video pages, including YouTube and Bilibili, are not watched or transcribed. Login-only or restricted pages are unsupported. Paste text, a transcript or screenshots instead; an unsuccessful extraction uses no successful experience." = "Videoseiten wie YouTube und Bilibili werden weder angesehen noch transkribiert. Anmeldepflichtige oder eingeschränkte Seiten werden nicht unterstützt. Füge stattdessen Text, ein Transkript oder Screenshots ein. Eine fehlgeschlagene Extraktion zählt nicht als erfolgreiche KI-Nutzung.";
 "Direct-link limits: HTTPS, 2 MB, 120–60,000 readable characters. Some pages on these sites may still be unreadable." = "Grenzen für direkte Links: HTTPS, 2 MB, 120–60.000 lesbare Zeichen. Einzelne Seiten dieser Websites können dennoch unlesbar sein.";
+
+"AI access changed: 30-day transition. New limits start %@. Existing training stays available." = "KI-Zugang geändert: 30 Tage Übergang. Neue Grenzen ab %@. Dein vorhandenes Training bleibt verfügbar.";
+
+"Details" = "Details";

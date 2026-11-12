@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "productionAIEnforcementEnabled": true,
+  "requiresVerifiedSharedAuthority": false,
+  "freeSavedPlans": 5,
+  "freeCustomExercises": 3,
+  "freeMonthlyTextTasks": 2,
+  "includedRevisions": 2,
+  "revisionWindowHours": 24,
+  "legacyGraceDays": 30,
+  "reservationMinutes": 10,
+  "proActiveTaskLimit": null,
+  "proImageTaskLimit": null,
+  "costExperimentOnly": {
+    "activeTasks": 30,
+    "imageTasks": 10
+  },
+  "releaseGate": "Device-scoped client policy only. No account, device fingerprint or cross-device quota claim. Reinstall/device changes may reset allowances.",
+  "scope": "device-install-local-resettable"
+}

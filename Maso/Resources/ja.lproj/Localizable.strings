@@ -2520,7 +2520,7 @@
 
 /* Device-install policy and native user-message actions. */
 "AI access on this device" = "この端末のAI利用ルール";
-"AI allowances are stored only on this device installation. Changing devices or reinstalling may reset them; they are not shared across devices." = "AI利用枠はこの端末のインストール内だけに保存されます。端末変更や再インストールでリセットされる場合があり、端末間で共有しません。";
+"AI allowances are stored only on this device installation. Changing devices or reinstalling may reset them; they are not shared across devices." = "AIの体験利用と利用枠は、このデバイスの現在のインストール内にのみ保存されます。デバイスの変更や再インストールでリセットされる場合があり、デバイス間では共有されません。";
 "Each supported AI task has one successful free experience on this installation. Free also includes 2 shared text tasks per calendar month (UTC). Repeat images and ongoing reviews need Pro." = "対応する各AIタスクを初回成功まで無料体験できます。毎暦月（UTC）に共通のテキストタスク2回も含みます。画像の再利用と継続的なレビューはProが必要です。";
 "A task includes 2 same-goal adjustments within 24 hours. Failed requests, clarification, local tools and reopening saved results do not use the allowance." = "同じ目標の24時間以内の調整2回を含みます。失敗、確認、ローカルツール、保存結果の再表示は枠を使いません。";
 "Existing purchased and lifetime rights are kept. No experimental 30-task or 10-image limit is applied to existing paid users." = "既存の購入・買い切りの権利は維持されます。既存有料ユーザーに実験的な30タスク・10画像の上限は適用しません。";
@@ -2559,5 +2559,9 @@
 
 "Supported workout sources" = "読み込めるトレーニング資料";
 "Paste text or attach a workout photo. Direct links can read public article text or subtitle files from the listed sites when readable text is available." = "テキストを貼り付けるか、トレーニング写真を添付できます。下記サイトの直接リンクは、読める内容がある場合に限り、公開記事の本文や字幕ファイルを読み取ります。";
-"Video pages, including YouTube and Bilibili, are not watched or transcribed. Login-only or restricted pages are unsupported. Paste text, a transcript or screenshots instead; an unsuccessful extraction uses no successful experience." = "YouTube・Bilibili などの動画ページの視聴や文字起こしは行いません。ログインが必要なページや制限付きページには対応していません。本文・字幕・スクリーンショットを追加してください。抽出に失敗した場合、成功体験の回数は消費しません。";
+"Video pages, including YouTube and Bilibili, are not watched or transcribed. Login-only or restricted pages are unsupported. Paste text, a transcript or screenshots instead; an unsuccessful extraction uses no successful experience." = "YouTube・Bilibili などの動画ページの視聴や文字起こしは行いません。ログインが必要なページや制限付きページには対応していません。本文・字幕・スクリーンショットを追加してください。 抽出に失敗した場合、AIの成功した利用回数には数えません。";
 "Direct-link limits: HTTPS, 2 MB, 120–60,000 readable characters. Some pages on these sites may still be unreadable." = "直接リンクの制限：HTTPS、最大 2 MB、読める文字数 120～60,000。同じサイトでも読み取れないページがあります。";
+
+"AI access changed: 30-day transition. New limits start %@. Existing training stays available." = "AIのルールを更新しました。移行期間は30日間、新しい上限は%@から適用されます。既存のトレーニングは引き続き使えます。";
+
+"Details" = "詳細";

@@ -56,7 +56,13 @@ struct PaywallUITestHost: View {
         Group {
             if scene == "device-quota" { DeviceAIQuotaUITestView() }
             else if scene == "device-usage" { AppNavigationStack { DeviceAIUsageView() } }
-            else if scene == "device-notice" { DeviceAIDisclosureView() }
+            else if scene == "device-notice" {
+                VStack {
+                    DeviceAIChangeNotice()
+                    Text("Basic app content remains available").accessibilityIdentifier("ai.policy.test.basic-content")
+                    if !data.aiAccess.needsDisclosure { Text("Notice dismissed").accessibilityIdentifier("ai.policy.test.dismissed") }
+                }
+            }
             else if scene == "welcome" {
                 RootView().id(rootVersion)
                     .overlay(alignment: .topTrailing) {
@@ -89,7 +95,7 @@ struct PaywallUITestHost: View {
         .environment(\.locale, LanguageManager.currentLocale)
         .environment(\.layoutDirection, LanguageManager.currentLanguageCode == "ar" ? .rightToLeft : .leftToRight)
         .environment(\.dynamicTypeSize, ProcessInfo.processInfo.environment["MASO_PAYWALL_LARGE_TYPE"] == "1" ? .accessibility3 : .large)
-        .preferredColorScheme(.dark).tint(MasoColor.text)
+        .preferredColorScheme(ProcessInfo.processInfo.environment["MASO_UI_LIGHT"] == "1" ? .light : .dark).tint(MasoColor.text)
         .task {
             if scene == "device-usage" {
                 let _:String? = try? await data.aiAccess.perform(kind:.sourceImport,isPro:false,valid:{ !$0.isEmpty },summary:{ _ in "Synthetic saved text result" }) { "Entire acquired text fixture: sets 3, reps 8, rest 90. Reopened without any model request." }

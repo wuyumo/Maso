@@ -43,11 +43,59 @@ final class PaywallUITests: XCTestCase {
     }
 
     func testNativeExistingUserNoticeIsReachableWithLargeText() throws {
-        let app = launch("device-notice", language: "zh-Hans", largeType: true, narrow: true)
-        XCTAssertTrue(app.staticTexts["ai.policy.device-scope"].waitForExistence(timeout: 15))
-        capture(app, "zh-device-notice-large")
-        try reveal(app.buttons["ai.policy.acknowledge"], app: app)
-        capture(app, "zh-device-notice-large-ack")
+        let app = launch("device-notice",language:"zh-Hans",largeType:true,narrow:true)
+        XCTAssertTrue(app.staticTexts["ai.policy.test.basic-content"].waitForExistence(timeout:10))
+        app.buttons["ai.policy.notice.details"].tap()
+        XCTAssertTrue(app.staticTexts["ai.policy.device-scope"].waitForExistence(timeout:10))
+        capture(app,"zh-50-device-details-large")
+    }
+
+    func testDeviceNoticeAndDetailsContrastMatrixNeverBlocksBasicApp() throws {
+        for language in ["en","zh-Hans"] {
+            for light in [false,true] {
+                for large in [false,true] {
+                    let app = launch("device-notice",language:language,largeType:large,narrow:large,light:light,increasedContrast:large)
+                    let name = language + (light ? "-light" : "-dark") + (large ? "-large-increased" : "-normal")
+                    XCTAssertTrue(app.staticTexts["ai.policy.test.basic-content"].waitForExistence(timeout:10))
+                    let details = app.buttons["ai.policy.notice.details"]; XCTAssertTrue(details.isHittable); XCTAssertGreaterThanOrEqual(details.frame.height + 0.001,44)
+                    let close = app.buttons["ai.policy.notice.dismiss"]; XCTAssertGreaterThanOrEqual(close.frame.height + 0.001,44)
+                    capture(app,name + "-50-notice")
+                    details.tap()
+                    XCTAssertTrue(app.staticTexts["ai.policy.device-scope"].waitForExistence(timeout:10))
+                    capture(app,name + "-50-details")
+                    app.buttons["ai.policy.details.close"].tap()
+                    app.buttons["ai.policy.notice.dismiss"].tap()
+                    XCTAssertTrue(app.staticTexts["ai.policy.test.dismissed"].waitForExistence(timeout:5))
+                    XCTAssertFalse(app.buttons["ai.policy.notice.details"].exists)
+                    capture(app,name + "-50-dismissed")
+                    app.terminate()
+                }
+            }
+        }
+    }
+
+    func testArabicPaywallActionsHaveRealNativeAndStoreKitFixtureOutcomes() throws {
+        var app = launch("welcome",language:"ar",largeType:true,narrow:true)
+        let free = app.buttons["paywall.continue-free"]; try reveal(free,app:app); free.tap()
+        let seen = app.staticTexts["paywall.test.welcome-state"]
+        XCTAssertTrue(seen.waitForExistence(timeout:10)); XCTAssertEqual(seen.label,"seen")
+        capture(app,"ar-50-continue-free-closed-welcome")
+        app.terminate()
+        app = launch("upgrade",language:"ar",largeType:true,narrow:true)
+        let referral = app.buttons["paywall.referral"]; try reveal(referral,app:app); referral.tap()
+        XCTAssertTrue(app.textFields["referral.code"].waitForExistence(timeout:10))
+        capture(app,"ar-50-referral-sheet-open"); app.buttons["referral.close"].tap()
+        let purchase = app.buttons["paywall.purchase"]; try reveal(purchase,app:app); purchase.tap()
+        let bought = XCTNSPredicateExpectation(predicate:NSPredicate { _,_ in !self.store.allTransactions().isEmpty },object:nil)
+        XCTAssertEqual(XCTWaiter.wait(for:[bought],timeout:15),.completed)
+        let transactions = Set(store.allTransactions().map { String($0.identifier) })
+        XCTAssertFalse(transactions.isEmpty); capture(app,"ar-50-purchased-storekit-fixture")
+        let restore = app.buttons["paywall.restore"]; try reveal(restore,app:app); restore.tap()
+        XCTAssertEqual(Set(store.allTransactions().map { String($0.identifier) }),transactions,"Restore must not buy again")
+        capture(app,"ar-50-restore-after-native-tap")
+        let proof = XCTAttachment(string:"Real native AX taps: Continue free closed welcome; referral opened text field; CTA created verified StoreKit-test transaction(s) " + transactions.sorted().joined(separator:",") + "; restore tap retained transaction identity. All SKTestSession fixtures, no real charge.")
+        proof.name = "ar-50-action-outcome-proof"; proof.lifetime = .keepAlways; add(proof)
+        app.terminate()
     }
 
     func testProAIHasNoReminderAndFourthCustomCreationRequiresPro() throws {
@@ -118,7 +166,7 @@ final class PaywallUITests: XCTestCase {
         }
     }
     func testSourceLinkHelpIsHonestAndReachableInEnglishChineseAndArabicLargeType() throws {
-        for language in ["en","zh-Hans","ar"] {
+        for language in ["en","zh-Hans","zh-Hant","de","fr","es","it","pt-BR","ru","ja","ko","ar"] {
             let app = launch("device-usage",language:language,largeType:language == "ar",narrow:language == "ar")
             let intro = app.staticTexts["ai.sources.intro"]; try reveal(intro,app:app)
             capture(app,language + "-source-help-intro")
@@ -319,12 +367,13 @@ final class PaywallUITests: XCTestCase {
         }
     }
 
-    private func launch(_ scene: String, language: String = "en", largeType: Bool = false, narrow: Bool = false) -> XCUIApplication {
+    private func launch(_ scene: String, language: String = "en", largeType: Bool = false, narrow: Bool = false, light: Bool = false, increasedContrast: Bool = false) -> XCUIApplication {
         let app = XCUIApplication(bundleIdentifier: "com.yumowu.maso")
         app.terminate()
         app.launchEnvironment = ["MASO_PAYWALL_UI_TEST_SCENE": scene,
                                  "MASO_PAYWALL_LARGE_TYPE": largeType ? "1" : "0",
-                                 "MASO_PAYWALL_NARROW": narrow ? "1" : "0"]
+                                 "MASO_PAYWALL_NARROW": narrow ? "1" : "0",
+                                 "MASO_UI_LIGHT": light ? "1" : "0", "MASO_UI_CONTRAST": increasedContrast ? "1" : "0"]
         app.launchArguments = ["-maso.selectedLanguage", language, "-AppleLanguages", "(\(language))", "-AppleLocale", language]
         app.launch()
         return app
