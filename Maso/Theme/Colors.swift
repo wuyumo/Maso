@@ -3,8 +3,13 @@ import SwiftUI
 // 配色系统 — 跟 Web App 1:1 对齐
 // Web 端的 CSS 变量定义在 :root, 这里直接给出对应 Color
 enum MasoColor {
+    static let dietAccent = Color.yellow
+    static let sleepAccent = Color.blue
     // 强调色 — Spotify 风格的绿
-    static let accent = Color(red: 30.0 / 255, green: 215.0 / 255, blue: 96.0 / 255)        // #1ED760
+    static let accentRGB = (red: 30.0 / 255, green: 215.0 / 255, blue: 96.0 / 255)
+    static let accent = Color(red: accentRGB.red, green: accentRGB.green, blue: accentRGB.blue) // #1ED760
+    static let toggleAccent = accent
+    static let parameterSuggestion = text.opacity(0.62)
 
     // 文本色阶 (暗主题)
     static let text = Color(red: 1.0, green: 1.0, blue: 1.0)                                // #FFFFFF
@@ -14,7 +19,7 @@ enum MasoColor {
 
     // 背景层级 (暗主题 — 越靠前色越浅, 制造深度)
     static let background = Color(red: 18.0 / 255, green: 18.0 / 255, blue: 18.0 / 255)     // #121212
-    static let surface = Color(red: 25.0 / 255, green: 25.0 / 255, blue: 25.0 / 255)        // #191919
+    static let surface = OverviewPalette.surface                                       // #191919
     static let surfaceHi = Color(red: 38.0 / 255, green: 38.0 / 255, blue: 38.0 / 255)      // #262626
 
     // 边框 / 分隔线
@@ -27,13 +32,43 @@ enum MasoColor {
     // 警告色 — 取消等危险操作
     static let negative = Color(red: 243.0 / 255, green: 114.0 / 255, blue: 127.0 / 255)    // 柔和的红粉
 
-    // MARK: - 恢复热图配色 (跟 MuscleStatusCompute.tierFor 四档对齐)
+    // MARK: - 3D recovery surface and legend, in one-percent steps
+
+    static let recoverySurfaceGray = 0.24
+
+    /// Quantize the displayed recovery percentage first, so two surfaces showing
+    /// the same whole percent receive exactly the same gray-to-green base color.
+    /// Existing meaning is preserved: fatigue lights up green; recovery fades to gray.
+    static func recoveryBlendAmount(fatigue: Double) -> Double {
+        guard fatigue.isFinite else { return 0 }
+        let clamped = min(1, max(0, fatigue))
+        let recoveredPercent = Int(((1 - clamped) * 100).rounded())
+        return Double(100 - recoveredPercent) / 100
+    }
+
+    static func recoverySurfaceRGB(fatigue: Double) -> (red: Double, green: Double, blue: Double) {
+        let blend = recoveryBlendAmount(fatigue: fatigue)
+        return (recoverySurfaceGray + (accentRGB.red - recoverySurfaceGray) * blend,
+                recoverySurfaceGray + (accentRGB.green - recoverySurfaceGray) * blend,
+                recoverySurfaceGray + (accentRGB.blue - recoverySurfaceGray) * blend)
+    }
+
+    static func recoverySurfaceColor(fatigue: Double) -> Color {
+        let rgb = recoverySurfaceRGB(fatigue: fatigue)
+        return Color(red: rgb.red, green: rgb.green, blue: rgb.blue)
+    }
+
+    // MARK: - Categorical 2D recovery heatmap (four semantic states)
     //
     // 语义 (owner 二轮拍板, 试过"绿=可练/蓝=疲劳"反转后撤回): **绿=练过点亮 (越累越亮), 灰=没点亮**.
     // 心智模型 = "点亮": 练完一个 routine, 对应肌肉就被点成绿色 (成果感), 随恢复慢慢熄灭;
     // 暗/灰 = 还没点亮 = 该去练它. 跟 routine 卡的"绿=这张卡练到的肌肉"是同一个"点亮"动作.
     static func recoveryHeatStyle(muscle m: MuscleGroup, fatigueMap: [MuscleGroup: Double]) -> (Color, Double)? {
-        switch MuscleStatusCompute.tierFor(muscle: m, fatigueMap: fatigueMap) {
+        recoveryHeatStyle(fatigue: fatigueMap[m] ?? 0)
+    }
+
+    static func recoveryHeatStyle(fatigue: Double) -> (Color, Double)? {
+        switch MuscleStatusCompute.tierFor(fatigue: fatigue) {
         case .fresh:            return nil              // 没点亮 → idleGray (Ready to train)
         case .mostlyRecovered:  return (accent, 0.30)
         case .recovering:       return (accent, 0.60)
@@ -46,9 +81,48 @@ enum MasoColor {
     static let playerBgBottom = Color.black.opacity(0.85)
 }
 
+/// Keep the native switch while giving it a single app-wide on-state color.
+struct MassoToggleStyle: ToggleStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        Toggle(isOn: configuration.$isOn) { configuration.label }
+            .toggleStyle(.switch)
+            .tint(MasoColor.toggleAccent)
+    }
+}
+
+/// Shared visual bands relative to the personal reminder limit; not medical zones.
+enum WorkoutHeartWarningColor {
+    static func color(bpm: Int?, limit: Int?) -> Color {
+        guard let bpm, let limit, limit > 0 else { return .gray }
+        let ratio = Double(bpm) / Double(limit)
+        if ratio >= 1 { return .red }
+        if ratio >= 0.9 { return .orange }
+        if ratio >= 0.8 { return .yellow }
+        if ratio >= 0.7 { return .green }
+        return .blue
+    }
+}
+
+/// Relative to the personal reminder, not a medical heart-rate zone.
+enum WorkoutHeartLiquid {
+    static func progress(bpm: Int?, limit: Int?) -> Double? {
+        guard let bpm, let limit, limit > 0 else { return nil }
+        return min(1, max(0, (Double(bpm) / Double(limit) - 0.6) / 0.4))
+    }
+    static func color(progress: Double) -> Color {
+        let hues = [0.60, 0.34, 0.15, 0.08, 0.0]
+        let scaled = min(1, max(0, progress)) * 4
+        let lower = min(3, Int(scaled))
+        let hue = hues[lower] + (hues[lower + 1] - hues[lower]) * (scaled - Double(lower))
+        return Color(hue: hue, saturation: 0.9, brightness: 0.88)
+    }
+}
+
 // 常用的圆角 / 阴影 / 尺寸常量 — 跟 DESIGN.md §2.4 对齐
 // 所有屏 / 组件都从这里取值, 杜绝 magic number 散落各处
 enum MasoMetrics {
+    /// Protein-first Diet target card.
+    static let nutritionProteinValueSize: CGFloat = 64
     // 圆角
     static let cornerRadiusSmall: CGFloat = 8
     static let cornerRadiusMedium: CGFloat = 16
@@ -72,6 +146,16 @@ enum MasoMetrics {
     /// 卡片头部竖向节奏 — kicker(小标签) ↔ 标题 ↔ 副文案(计数/日期) 统一 8pt.
     /// 所有 routine / session 卡片头都用它, 保证跨 tab 节奏一致 (别散落 4/5/6 各写各的).
     static let cardHeaderGap: CGFloat = 8
+
+    // Today section headings and compact workout records.
+    static let sectionTitleSize: CGFloat = 13
+    static let sectionTitleTracking: CGFloat = 1.2
+    static let sectionHeaderMinHeight: CGFloat = 32
+    /// Today 首页肌肉 Hero 后的内容整体上移量 (不改变 hero / navigation chrome 的尺寸).
+    static let homePostHeroLift: CGFloat = 32
+    static let homeOverviewTopInset: CGFloat = 32
+    static let sessionMuscleMapSide: CGFloat = 100
+    static let sessionSummaryMinWidth: CGFloat = 144
 
     // TabBar — pill 高度. 缩了一圈, 78 → 62 (上下各减 8)
     static let bottomNavHeight: CGFloat = 62

@@ -120,10 +120,11 @@ final class LanguageManager {
     nonisolated(unsafe) static var currentLanguageCode: String = {
         // 启动时从 UserDefaults 读, 没有就用系统
         if let raw = UserDefaults.standard.string(forKey: storageKey),
-           let lang = SupportedLanguage(rawValue: raw) {
+           let lang = SupportedLanguage(rawValue: raw),
+           SupportedLanguage.shipped.contains(lang) {
             return lang.rawValue
         }
-        return Locale.preferredLanguages.first.map { code -> String in
+        let systemCode = Locale.preferredLanguages.first.map { code -> String in
             let lower = code.lowercased()
             if lower.hasPrefix("zh-hans") || lower.hasPrefix("zh-cn") || lower.hasPrefix("zh-sg") { return "zh-Hans" }
             if lower.hasPrefix("zh") { return "zh-Hant" }
@@ -133,6 +134,9 @@ final class LanguageManager {
             }
             return "en"
         } ?? "en"
+        // Never select a locale with no packaged .lproj. Otherwise our bundle override
+        // silently has no language bundle and every string falls back to English keys.
+        return SupportedLanguage.shipped.first(where: { $0.rawValue == systemCode })?.rawValue ?? "en"
     }()
 
     /// 同上, 但给 DateFormatter / NumberFormatter 用的 Locale 实例.
@@ -163,21 +167,24 @@ final class LanguageManager {
         // Locale.preferredLanguages[0] 形如 "zh-Hans-CN" 或 "en-US"
         guard let pref = Locale.preferredLanguages.first else { return .en }
         let lower = pref.lowercased()
+        let candidate: SupportedLanguage
         // 中文 — 区分简繁
         if lower.hasPrefix("zh-hans") || lower.hasPrefix("zh-cn") || lower.hasPrefix("zh-sg") {
-            return .zhHans
-        }
-        if lower.hasPrefix("zh") { return .zhHant }  // 其他 zh-* 当繁体
+            candidate = .zhHans
+        } else if lower.hasPrefix("zh") {
+            candidate = .zhHant  // 其他 zh-* 当繁体
         // 葡语 — 区分巴西
-        if lower.hasPrefix("pt") { return .ptBR }
-        // 普通双字母前缀匹配
-        for l in SupportedLanguage.allCases {
-            if lower.hasPrefix(l.rawValue.lowercased()) { return l }
-            // 简易匹配: 取前 2 个字符比对
-            let prefix = String(lower.prefix(2))
-            if l.rawValue.lowercased().hasPrefix(prefix) { return l }
+        } else if lower.hasPrefix("pt") {
+            candidate = .ptBR
+        } else if let match = SupportedLanguage.allCases.first(where: {
+            lower.hasPrefix($0.rawValue.lowercased()) || $0.rawValue.lowercased().hasPrefix(String(lower.prefix(2)))
+        }) {
+            candidate = match
+        } else {
+            candidate = .en
         }
-        return .en
+        // A system locale only counts as supported when its translation is in the app bundle.
+        return SupportedLanguage.shipped.contains(candidate) ? candidate : .en
     }
 
     private func persist() {
@@ -236,12 +243,14 @@ final class LocalizedBundle {
             swizzleLocalizedString()
             didSwap = true
         }
-        // 找到对应语言的 .lproj 子 bundle
-        if let path = Bundle.main.path(forResource: langCode, ofType: "lproj"),
+        // Refuse missing localization bundles instead of letting the UI silently show
+        // English for a language that the picker/system believed was selected.
+        let packagedCode = Bundle.main.localizations.contains(langCode) ? langCode : "en"
+        if let path = Bundle.main.path(forResource: packagedCode, ofType: "lproj"),
            let bundle = Bundle(path: path) {
             languageBundle = bundle
         } else {
-            languageBundle = nil
+            languageBundle = Bundle.main
         }
     }
 

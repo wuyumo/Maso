@@ -20,7 +20,7 @@ struct WorkoutCalendarScreen: View {
     private var today: Date { calendar.startOfDay(for: Date()) }
 
     var body: some View {
-        NavigationStack {
+        AppNavigationStack {
             VStack(spacing: 0) {
                 monthHeader
                     .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
@@ -45,49 +45,7 @@ struct WorkoutCalendarScreen: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    // 分享本周训练频率 — 生成 UnifiedShareCard (calendar section default on).
-                    // 三个 section data 始终算好传入; toggle 状态由卡内 inline toggle / ShareCardMode 控制.
-                    let workoutData = mostRecentWorkoutSection()
-                    let muscleData = muscleStatusSection()
-                    let calendarData = CalendarSectionData(
-                        sessionDates: sessionDates,
-                        totalSets: totalSetsThisWeek,
-                        streakDays: streakDaysCount
-                    )
-                    ShareImageButton(
-                        previewTitle: NSLocalizedString("My Week", comment: ""),
-                        defaultSections: ShareSections(calendar: true),
-                        shareContent: { photo, onTapAdd, mode in
-                            switch mode {
-                            case .editing(let binding):
-                                UnifiedShareCard(
-                                    userPhoto: photo,
-                                    onTapAddPhoto: onTapAdd,
-                                    workoutSection: workoutData,
-                                    muscleStatusSection: muscleData,
-                                    calendarSection: calendarData,
-                                    editToggles: binding
-                                )
-                            case .rendering(let visible):
-                                UnifiedShareCard(
-                                    userPhoto: photo,
-                                    onTapAddPhoto: onTapAdd,
-                                    workoutSection: workoutData,
-                                    muscleStatusSection: muscleData,
-                                    calendarSection: calendarData,
-                                    visibleSections: visible
-                                )
-                            }
-                        },
-                        label: {
-                            Image(systemName: "square.and.arrow.up")
-                                .font(.system(size: 14, weight: .bold))
-                                .foregroundStyle(MasoColor.text)
-                                .frame(width: 30, height: 30)
-                                .background(MasoColor.surfaceHi)
-                                .clipShape(Circle())
-                        }
-                    )
+                    MonthlyWorkoutShareButton(month: monthAnchor, sessionDates: sessionDates, calendar: calendar)
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") { dismiss() }
@@ -137,7 +95,7 @@ struct WorkoutCalendarScreen: View {
 
     private var monthLabel: String {
         let f = DateFormatter()
-        f.locale = Locale.current
+        f.locale = LanguageManager.currentLocale
         f.setLocalizedDateFormatFromTemplate("yMMMM")
         return f.string(from: monthAnchor)
     }
@@ -172,7 +130,7 @@ struct WorkoutCalendarScreen: View {
     /// 按 calendar.firstWeekday 渲染表头 ("Mon Tue..." 或 "Sun Mon..." 跟系统 locale)
     private func weekdaySymbol(_ i: Int) -> String {
         let f = DateFormatter()
-        f.locale = Locale.current
+        f.locale = LanguageManager.currentLocale
         let veryShort = f.veryShortStandaloneWeekdaySymbols ?? f.veryShortWeekdaySymbols ?? []
         // veryShort 是 Sun..Sat 顺序; 旋转到 calendar.firstWeekday
         let idx = (calendar.firstWeekday - 1 + i) % 7
@@ -331,6 +289,7 @@ struct WorkoutCalendarScreen: View {
         }
         let prCount = recs.reduce(0) { $0 + (data.isPR($1) ? 1 : 0) }
         let df = DateFormatter()
+        df.locale = LanguageManager.currentLocale
         df.dateStyle = .full
         df.timeStyle = .none
         return WorkoutSectionData(

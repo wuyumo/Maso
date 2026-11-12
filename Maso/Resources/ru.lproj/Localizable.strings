@@ -1,0 +1,2558 @@
+/* Base offline machine translation (Argos Translate). Review wording before release. */
+"Plans" = "Планы тренировок";
+"History" = "История";
+"Quick Workout" = "Быстрая тренировка";
+"Late Night" = "Поздняя ночь";
+"Good Morning" = "Доброе утро.";
+"Good Afternoon" = "Добрый день";
+"Good Evening" = "Добрый вечер";
+"Recommended" = "рекомендованный";
+"Start Workout" = "Начать тренировку";
+"Build Your Own" = "Построй свой собственный";
+"No training plans yet" = "Никаких тренировочных процедур пока нет";
+"Muscles trained in the last 7 days" = "Мышцы тренировались последние 7 дней";
+"No training this week yet" = "Тренингов на этой неделе пока нет";
+"Workouts" = "тренировки";
+"No workouts yet" = "Пока никаких тренировок.";
+"Finished workouts show up here. Start your first one and watch your progress grow." = "Завершенные тренировки появляются здесь. Начните свою первую и наблюдайте, как растет ваш прогресс.";
+"Retry" = "повторять";
+"Couldn't reach the AI coach — showing templates instead." = "Не удалось создать тренировки с ИИ. Вместо них показаны шаблоны.";
+"Updated your plan." = "Обновил свой план.";
+"Couldn't reach the AI coach — your plan is unchanged." = "Не смог дозвониться до тренера ИИ — ваш план не изменился.";
+"AI plan unavailable — showing your recommended plan." = "План ИИ недоступен, показывая рекомендуемый план.";
+"Today" = "Сегодня";
+"Yesterday" = "Вчера";
+"Repeat Workout" = "Повторение тренировки";
+"Exercises" = "упражнения";
+"Edit Workout" = "Редактировать Workout";
+"Workout" = "Тренировка";
+"Workout name" = "Название работы";
+"Add Exercise" = "Добавить упражнение";
+"No exercises yet — tap “Add Exercise” to start" = "Упражнений пока нет — нажмите «Добавить упражнение», чтобы начать";
+"Edit Exercise" = "Редактировать упражнение";
+"Delete Exercise" = "Удалить упражнение";
+"Remove this exercise?" = "Удалить это упражнение?";
+"Remove" = "Удалить";
+"Cancel" = "отменить";
+"Sets" = "Наборы";
+"Exercises count" = "упражнения";
+"Volume kg" = "Объем кг";
+"Total Sets" = "Всего наборов";
+"Groups Hit" = "Группы Hit";
+"Days" = "Дни";
+"Streak" = "полоса";
+"PR" = "PR";
+"%lld days/wk" = "%lld дней/wk";
+"%lld days/week" = "%lld дней в неделю";
+"Couldn't create share link" = "Не удалось создать Share Link";
+"“%@” will be removed from this workout. Past records are kept." = "\"%@\" будет удален из этой тренировки. Сохранены прошлые записи.";
+"Shared workout" = "Общие тренировки";
+"Reps" = "Повторения";
+"Weight" = "Вес";
+"Duration" = "Продолжительность";
+"Set rest" = "Успокойся.";
+"Search exercises…" = "Поисковые упражнения...";
+"All" = "Все";
+"Strength" = "Сила";
+"Cardio" = "Кардио";
+"Flexibility" = "Гибкость";
+"No exercises match your search" = "Никакие упражнения не соответствуют вашему поиску";
+"End this workout?" = "Закончите тренировку?";
+"End" = "Конец";
+"Keep going" = "Продолжай идти";
+"Sets you've completed will be kept." = "Наборы, которые вы завершили, будут сохранены.";
+"Rest" = "отдыхать";
+"Switching" = "переключение";
+"Up Next" = "Следующий";
+"Next Exercise" = "Следующее упражнение";
+"Almost done" = "Почти готово";
+"Playlist" = "Плейлист";
+"Workout Complete" = "Полная тренировка";
+"Done" = "Сделано";
+"Pick muscles" = "Выберите мышцы";
+"Pick exercises" = "Выберите упражнения";
+"Pick at least one muscle" = "Выберите хотя бы одну мышцу";
+"Pick at least one exercise" = "Выберите хотя бы одно упражнение";
+"Close" = "Закрыть";
+"Back" = "Назад";
+"Settings" = "Настройки";
+"Units" = "Подразделения";
+"Distance" = "расстояние";
+"Training" = "Подготовка";
+"Exercise rest" = "Упражнение отдых";
+"Quick-start from center tab" = "Быстрый старт с центрального таба";
+"Tap the highlighted center tab again to jump straight into today's recommended workout" = "Нажмите снова на выделенную центральную вкладку, чтобы перейти прямо к сегодняшней рекомендуемой тренировке";
+"Data" = "Данные";
+"Exercise library" = "Библиотека упражнений";
+"Plans and workout records stay on your device." = "Планы тренировок и записи тренировок остаются на вашем устройстве.";
+"Try Masso Pro" = "Попробуйте ZBRAND000X Pro";
+"Unlimited plans, full history, custom moves, and more." = "Неограниченные планы тренировок, полная история, пользовательские движения и многое другое.";
+"Unlock everything" = "Разблокировать все";
+"Unlimited plans · Full history · Custom moves" = "Неограниченные процедуры · Полная история · Пользовательские движения";
+"Unlock your full training." = "Откройте свое полное обучение.";
+"Unlimited workout plans" = "Неограниченные тренировки планы тренировок";
+"No more 3-plan cap — build a plan for every split." = "Нет больше 3-плана тренировки шапки — создайте план тренировки для каждого раздела.";
+"Full history" = "Полная история";
+"Permanent record + PR tracking + volume trends." = "Постоянный учет и отслеживание PR во все времена.";
+"Advanced analytics" = "Передовая аналитика";
+"Muscle balance, weekly volume, weak spots." = "Тенденции силы 1RM плюс мышечный баланс.";
+"Custom exercises" = "Пользовательские упражнения";
+"Add your own moves with notes and photos." = "Добавьте свои собственные движения с заметками и фотографиями.";
+"Apple Health sync" = "Синхронизация Apple Health";
+"Two-way sync — workouts go in, weight comes out." = "Двухсторонняя синхронизация — тренировки идут, вес выходит.";
+"Cloud sync" = "Облачная синхронизация";
+"Plans + history follow you across devices." = "Планы тренировок + история следуют за вами через устройства.";
+"Start 7-day free trial" = "Попробовать бесплатно 7 дней";
+"Subscribe for %@" = "Подписаться на %@";
+"Buy lifetime — %@" = "Купить Life - %@";
+"Loading price…" = "Цена загрузки...";
+"Free for 7 days, then %@ / %@. Cancel anytime in Settings." = "Бесплатно в течение 7 дней, затем %@ / %@. Отменить в любое время в настройках.";
+"month" = "месяц";
+"year" = "год";
+"You're now Masso Pro!" = "Вы теперь Masso Pro!";
+"Enjoy unlimited plans, full history, and everything else. Welcome aboard." = "Наслаждайтесь неограниченной планом тренировок, полной историей и всем остальным.";
+"Restore Purchases" = "Восстановить покупки";
+"Terms" = "Условия";
+"Privacy" = "конфиденциальность";
+"Tell us about your training" = "Расскажите о своей тренировке";
+"Three quick questions — we'll use them to recommend a plan that fits." = "Три быстрых вопроса — мы будем использовать их, чтобы рекомендовать подходящую план тренировки.";
+"About you" = "О тебе";
+"How many days a week do you train?" = "Сколько дней в неделю вы тренируетесь?";
+"Which muscles do you want to focus on?" = "На каких мышцах вы хотите сосредоточиться?";
+"Confirm & build my plan" = "Подтвердите и создайте свою план тренировки";
+"Build My Routine" = "Постройте мою план тренировки";
+"Uploading your data" = "Загрузка ваших данных";
+"Analyzing your stats" = "Анализ вашей статистики";
+"Building your plan" = "Постройте свой план";
+"All set!" = "Все готово!";
+"What's your gender?" = "Какой у тебя пол?";
+"We use this to set sensible starting weights." = "Мы используем это, чтобы установить разумные стартовые веса.";
+"How old are you?" = "Сколько тебе лет?";
+"Helps us tune your training volume." = "Помогает настроить объем тренировок.";
+"What's your weight?" = "Какой у тебя вес?";
+"We seed your starting loads from this — change any later." = "Мы посеяли ваши начальные нагрузки из этого — изменитесь позже.";
+"We'll size your weekly plan to fit." = "Мы подберем ваш недельный план.";
+"Pick any — or none for a balanced routine." = "Выберите любой — или никакой — для сбалансированной планы тренировок.";
+"Next" = "Следующий";
+"STEP %lld / 5" = "Шаг %lld / 5";
+"STEP %1$lld / %2$lld" = "Шаг %1$lld / %2$lld";
+"What can you train with?" = "С чем можно тренироваться?";
+"Pick what you have — leave all off if you train at a full gym." = "Выберите то, что у вас есть — оставьте все, если вы тренируетесь в полном спортзале.";
+"What's your main goal?" = "Какова ваша главная цель?";
+"We'll tune reps, rest, and exercise picks to match." = "Мы настраиваем повторы, отдых и упражнения, чтобы соответствовать.";
+"Build muscle" = "Наращивать мышцы";
+"Get stronger" = "Стань сильнее.";
+"Lose fat / get lean" = "Потерять жир / стать худым";
+"Stay fit & healthy" = "Оставайтесь здоровыми и здоровыми";
+"Build endurance" = "Построить выносливость";
+"Add size — moderate reps, higher volume." = "Добавьте размер — умеренные повторения, больший объем.";
+"Lift heavier — low reps, heavy compounds, long rest." = "Поднимите тяжелее — низкие повторы, тяжелые соединения, длительный отдых.";
+"Keep muscle while leaning out — compound-heavy, tighter rest." = "Держите мышцы во время наклона — сложный, более плотный отдых.";
+"Balanced full-body work, short and sustainable." = "Сбалансированная работа всего тела, короткая и устойчивая.";
+"High reps, short rest, circuit-style stamina." = "Высокие обороты, короткий отдых, выносливость в стиле схемы.";
+"Update your saved routines?" = "Обновите сохраненные планы тренировок?";
+"You changed your default rest or sets. Apply these to the exercises in all your saved routines too?" = "Вы изменили свой отдых по умолчанию или наборы. Примените их к упражнениям во всех сохраненных процедурах тоже?";
+"Update them" = "Обновить их";
+"Keep as is" = "Держите как есть";
+"Dumbbells" = "Тупой колокольчик";
+"Barbell & plates" = "Барбелл и тарелки";
+"Cable machine" = "Кабельная машина";
+"Resistance machines" = "Машины сопротивления";
+"Smith machine" = "Машина Смита";
+"Kettlebells" = "Кеттлбеллс";
+"Resistance bands" = "Группы Сопротивления";
+"Pull-up / dip bar" = "Щелчок / Dip Bar";
+"Cardio machines" = "Кардио-машины";
+"Chest" = "Грудь";
+"Upper Chest" = "Верхняя грудь";
+"Mid Chest" = "Средняя грудь";
+"Lower Chest" = "Нижняя грудь";
+"Lats" = "Крысы";
+"Upper Traps" = "Верхние ловушки";
+"Mid Traps" = "Средние ловушки";
+"Lower Traps" = "Нижние ловушки";
+"Lower Back" = "Нижняя спина";
+"Shoulders" = "Плечи";
+"Front Delts" = "Фронт Дельтс";
+"Side Delts" = "Боковые вмятины";
+"Rear Delts" = "Rear Delts";
+"Biceps" = "бицепс";
+"Biceps (Long)" = "Бицепс (длинный)";
+"Biceps (Short)" = "Бицепс (короткометражный)";
+"Brachialis" = "Брахиалис";
+"Triceps" = "Трицепс";
+"Triceps (Long)" = "Трицепс (длинный)";
+"Triceps (Lateral)" = "Трицепс (позднее)";
+"Triceps (Medial)" = "Трицепс (Медиал)";
+"Core" = "Кор";
+"Abs" = "Абс";
+"Upper Abs" = "Верхний Абс";
+"Lower Abs" = "Нижний Абс";
+"Obliques" = "косые";
+"Quads" = "Квадраты";
+"Rectus Femoris" = "Ректос Феморис";
+"Vastus Lateralis" = "Vastus Lateralis";
+"Vastus Medialis" = "Вастус Медиалис";
+"Hamstrings" = "Хамстринг";
+"Biceps Femoris" = "Бицепс Femoris";
+"Semitendinosus" = "Семитендинос";
+"Glutes" = "Глюты";
+"Gluteus Maximus" = "Глютей Максимус";
+"Gluteus Medius" = "Глутей Медий";
+"Calves" = "телята";
+"Gastrocnemius" = "Гастронемиус";
+"Soleus" = "Солей";
+"%d exercises" = "%d exercises";
+"%d sets" = "Набор %d";
+"%d days ago" = "%d несколько дней назад";
+"%d day ago" = "%d день назад";
+"Today's Workout" = "Сегодняшняя тренировка";
+"Up next" = "Следующий";
+"Upper Lats" = "Верхний лэтс";
+"Lower Lats" = "Нижний лук";
+"Rhomboids" = "Ромбоиды";
+"Teres" = "Терес";
+"Rotator Cuff" = "Наручники Rotator";
+"Brachioradialis" = "Brachioradialis";
+"Forearms" = "предплечья";
+"Forearm Flexors" = "Флекторы предплечья";
+"Forearm Extensors" = "Расширители предплечья";
+"Arms" = "Руки";
+"Serratus" = "Серрат";
+"Neck" = "шея";
+"Legs" = "Ноги";
+"Tibialis Anterior" = "Тибиалис передний";
+"Adductors" = "Проводники";
+"Help us improve" = "Помогите нам улучшить";
+"Send feedback" = "Отправить отзыв";
+"Send Feedback" = "Отправить Feedback";
+"Report a bug" = "Сообщить об ошибке";
+"Report a Bug" = "Об этом сообщает Bug";
+"Submit report" = "Доклад о представлении";
+"Sending…" = "Отправить...";
+"Report received" = "Полученный доклад";
+"Saved · will retry" = "Сохраняется · будет восстановлен";
+"Retry upload" = "Retry скачать";
+"Report received. It will be included in the next weekly digest." = "Он будет включен в следующий еженедельный дайджест.";
+"Saved on this device. It has not reached the server yet." = "Сохранился на этом устройстве. Он еще не добрался до сервера.";
+"Support" = "Поддержка";
+"Bug reports, feature requests, complaints — all bundled into a daily digest and emailed to the team." = "Отчеты о багах, запросы на функции, жалобы — все это упаковано в ежедневный дайджест и отправлено по электронной почте команде.";
+"Tell us what's broken, missing, or worth changing." = "Расскажите нам, что сломано, чего не хватает или что стоит изменить.";
+"Reports are reviewed together and emailed once a week. Your message, app version, iOS version, and language are included; no account or device ID is attached." = "Отчеты рассматриваются вместе и отправляются по электронной почте один раз в неделю.Ваше сообщение, версия приложения, версия iOS и язык включены; никакая учетная запись или идентификатор устройства не прикреплены.";
+"Type your feedback here…" = "Введите свои отзывы здесь...";
+"Submit feedback" = "Отправить отзыв";
+"%d report waiting to upload" = "Отчет %d ждет загрузки";
+"%d reports waiting to upload" = "Отчеты %d ждут загрузки";
+"Sent — thank you" = "Отправлено — спасибо";
+"Back muscle" = "Спина";
+"Trained muscles fade over 3 days, reset on day 4." = "Тренированные мышцы исчезают в течение 3 дней, сбрасываются на 4 день.";
+"2 days ago" = "2 дня назад";
+"Needs work" = "Нужна работа";
+"Workout calendar" = "Календарь тренировок";
+"Previous month" = "Предыдущий месяц";
+"Next month" = "Следующий месяц";
+"Current streak" = "Текущая полоса";
+"Week streak" = "Недельная полоса";
+"Redo" = "Редо";
+"Repeat" = "повторять";
+"Let's start your first workout." = "Давай начнем твою первую тренировку.";
+"You've trained today — rest up." = "Вы тренировались сегодня — отдыхайте.";
+"Last trained yesterday." = "Последний тренировался вчера.";
+"%lld days since your last session." = "%lld с момента последнего сеанса.";
+"%lld days off — let's get back to it." = "Выходные %lld — давайте вернемся к этому.";
+"Reminders" = "Напоминания";
+"Workout reminders" = "Напоминания о тренировках";
+"On by default: when you've taken a few days off, Masso sends one gentle reminder once your muscles have recovered. It only ever lives on your device, and you can turn it off anytime." = "По умолчанию: когда вы взяли несколько выходных дней, Masso посылает одно мягкое напоминание, как только ваши мышцы восстановились. Он всегда живет только на вашем устройстве, и вы можете выключить его в любое время.";
+"Recovered and ready" = "Восстановились и готовы";
+"Your muscles miss you" = "Мышцы ждут вас";
+"Let's get back to it" = "Вернёмся к тренировкам";
+"You're recovered — a quick session keeps your momentum going." = "Вы восстановились. Короткая тренировка поможет сохранить темп.";
+"Want a nudge when you're recovered?" = "Хочешь подтолкнуть, когда ты поправишься?";
+"Turn on reminders" = "Включите напоминания";
+"Not now" = "Не сейчас";
+"Masso can remind you to train once your muscles have recovered — all on your device. You can change this anytime in Settings." = "Masso может напоминать вам тренироваться, как только ваши мышцы восстановились — все на вашем устройстве.";
+"Progress" = "Прогресс";
+"Weekly volume" = "Недельный объем";
+"Total %@ lifted per week" = "Всего %@ поднимали в неделю";
+"Estimated 1RM" = "Оценка 1RM";
+"Unlock strength trends with Pro" = "Разблокировать тренды силы с помощью Pro";
+"Integrations" = "Интеграция";
+"Apple Fitness sync" = "Синхронизация Apple Fitness";
+"Masso writes finished workouts to Apple Health. They show up in Apple Fitness Activity rings and the Workouts tab. Heart rate is not collected." = "Masso записывает готовые тренировки в Apple Health. Они отображаются в кольцах активности Apple Fitness и вкладке Workouts. Частота сердечных сокращений не собирается.";
+"Not available on this device" = "Недоступно на этом устройстве";
+"Tap to grant access" = "Tap предоставляет доступ";
+"Denied — enable in Settings › Health" = "Отказано — включить в настройках › Здоровье";
+"On — finished workouts go to Health" = "On — готовые тренировки идут на здоровье";
+"Off" = "Оставить";
+"Synced %d workout(s) to Health" = "Синхронная тренировка %d для здоровья";
+"Days per week" = "Дни в неделю";
+"Tap to start today's workout" = "Нажмите, чтобы начать сегодняшние тренировки";
+"All %@" = "All %@";
+"AI Workout" = "AI Workout";
+"Each day, Masso bundles your profile + recent training + frequency into a prompt and asks Claude to generate today's plan. Your API key is stored locally on this device." = "Каждый день Masso объединяет ваш профиль + недавнее обучение + частоту в подсказку и просит наш сервис искусственного интеллекта генерировать сегодняшнюю тренировку.";
+"Generate plan with AI" = "Генерировать тренировки с AI";
+"Enter your API key above first" = "Введите ключ API выше";
+"Each day a new plan is built from your training history" = "Каждый день новая тренировка строится из вашей истории тренировок.";
+"Not generated yet" = "еще не созданный";
+"Generating…" = "Генерировать...";
+"Today's plan ready" = "Сегодняшняя тренировка готова";
+"Last attempt failed" = "Последняя попытка провалилась";
+"Tap Refresh to build today's plan" = "Tap Refresh построит сегодняшние тренировки";
+"Refresh" = "освежить";
+"Body Map" = "Карта тела";
+"By Muscle" = "С помощью мышц";
+"Tap a muscle on the body to filter" = "Нажмите мышцу на тело, чтобы фильтровать";
+"Clear" = "Чисто.";
+"Train Smart with AI." = "Поезд умный с ИИ.";
+"Train the gaps" = "Тренируйте пробелы";
+"Catch-up: %@" = "Обсуждение %@";
+"AI generates a personalized plan from your profile + history each day. Pro feature." = "ИИ генерирует персонализированную тренировку из вашего профиля + истории каждый день.";
+"Pro feature · personalized daily plan" = "Функция Pro · персонализированная ежедневная тренировка";
+"Tap and hold to configure API key" = "Нажмите и удерживайте для настройки ключа API";
+"On — refreshed daily" = "On — освежается ежедневно";
+"Developer · AI API" = "Разработчик: AI API";
+"DeepSeek (OpenAI-compatible). Get a key at platform.deepseek.com → API Keys." = "DeepSeek (OpenAI-совместимый). Получить ключ на платформе.deepseek.com → API-ключи.";
+"Enable AI generation" = "Позволяет генерировать ИИ";
+"Enter key above first" = "Введите ключ выше первого";
+"Auto refresh once a day" = "Автообновление один раз в день";
+"Test" = "Тест";
+"Your personal AI trainer" = "Ваш персональный тренер";
+"Close paywall" = "Закрыть paywall";
+"Close settings" = "Близкие настройки";
+"End workout" = "Конец тренировки";
+"New workout" = "Новая тренировка";
+"Previous" = "Предыдущий";
+"Force-quit and reopen the app to fully switch the language." = "Force-quit и повторное открытие приложения для полного переключения языка.";
+"Keep current" = "Поддерживайте текущий";
+"OK" = "Хорошо.";
+"One-time purchase. No subscription, no recurring charges." = "Единовременная покупка. Без подписки, без постоянных сборов.";
+"Restart Masso to apply" = "Перезагрузить Masso";
+"Starting this will replace the workout you're in. Continue?" = "Начало этой тренировки заменит тренировки, в которых вы находитесь.";
+"Language" = "Язык языка";
+"Free workout" = "Бесплатная тренировка";
+"Pick your own exercises and go" = "Выберите свои собственные упражнения и идите";
+"Add to workout" = "Добавить в тренировку";
+"Target Muscles" = "Целевые мышцы";
+"Instructions" = "Инструкции";
+"Finish here" = "Заканчивай здесь";
+"Finish here?" = "Закончил здесь?";
+"Skip the remaining sets and mark this workout complete." = "Пропустите оставшиеся наборы и отметьте, что эта тренировка завершена.";
+"Finish" = "Закончить";
+"Fatigued" = "усталый";
+"Recovering" = "Восстановление";
+"Almost fresh" = "Почти свежий";
+"Light green = synergist · worked along the way, no need to pick." = "Светло-зеленый = синергист · работал по пути, выбирать не нужно.";
+"Pick best for me" = "Выбери лучшее для меня";
+"Replace with smart pick" = "Заменить на Smart Pick";
+"Masso" = "ZBRAND000X";
+"AI" = "ИИ";
+"PRO" = "ПРО";
+"MASSO PRO" = "МАССО ПРО";
+"FROM %@/MO" = "Из %@/MO";
+"Another workout is in progress" = "Еще одна тренировка продолжается";
+"Hide playlist" = "Скрыть плейлист";
+"Show playlist" = "Показать плейлист";
+"Start workout" = "Начать тренировку";
+"Pause" = "Пауза";
+"Resume" = "Продолжить";
+"Skip rest" = "Пропустить отдых";
+"Complete set" = "Полный комплект";
+"Selected" = "выбранный";
+"Brought along during training" = "Привезен во время тренировки";
+"System Default" = "Системный по умолчанию";
+"kg" = "кг";
+"lb" = "фунт";
+"km" = "км";
+"mi" = "мой";
+"Save 50%" = "Сэкономить 50%";
+"Pay once, own it" = "Заплати один раз, владей";
+"Billed monthly" = "Оплата раз в месяц";
+"Monthly" = "ежемесячно";
+"Yearly" = "ежегодно";
+"Lifetime" = "пожизненный";
+"POPULAR" = "народный";
+"/ month" = "месяц";
+"/ year" = "/ год";
+"once" = "один раз";
+"Show muscle subdivisions" = "Показать мышечные подразделения";
+"Show muscle status" = "Показать мышечный статус";
+"Off: pick the whole muscle (chest, back) — no upper/mid/lower split. On: full anatomical detail." = "Выключите: выберите всю мышцу (грудь, спину) — никакого верхнего/среднего/нижнего раскола.";
+"Backup" = "Резервное копирование";
+"Export data" = "Экспортные данные";
+"Save plans, workouts, settings as a JSON file" = "Сохранить планы тренировок, тренировки, настройки в виде файла JSON";
+"Import data" = "Данные импорта";
+"Restore from a Masso backup file" = "Восстановление из резервного файла Masso";
+"New iPhone? Your data restores automatically from iCloud Backup. Or export anytime — it's a plain JSON file." = "Новые iPhone? Ваши данные автоматически восстанавливаются из iCloud Backup. Или экспортируются в любое время — это обычный JSON-файл.";
+"Replace current data?" = "Заменить текущие данные?";
+"Replace" = "Заменить";
+"Asking the coach…" = "Спросить тренера...";
+"Using local picker" = "Использование локального пикера";
+"Couldn't reach the AI coach. Using a local recommendation instead." = "Не смог связаться с тренером по искусственному интеллекту.";
+"New Workout" = "Новый Workout";
+"Move up" = "Вставай.";
+"Move down" = "Спуститься";
+"Delete" = "Исключить";
+"Plate calculator" = "Калькулятор пластин";
+"Target" = "Цель";
+"Per side" = "С одной стороны";
+"Bar weight" = "Барный вес";
+"Bar only — no plates needed" = "Только бар — не нужны тарелки";
+"Time to switch exercise" = "Переходите к следующему упражнению";
+"Rest's up — next set" = "Отдых закончен — следующий подход";
+"Weight (kg)" = "Вес (кг)";
+"Duration (sec)" = "Продолжительность (сек)";
+"Edit exercise parameters" = "Редактировать параметры упражнений";
+"Changes apply to this session only. To save permanently, edit the plan." = "Изменения касаются только этой сессии. Чтобы сохранить навсегда, отредактируйте план тренировки.";
+"Delete Plan" = "Удалить план тренировки";
+"Delete this plan?" = "Удалить этот план тренировки?";
+"Your training history will be kept." = "Ваша история обучения будет сохранена.";
+"Any equipment" = "Любое оборудование";
+"Gym equipment" = "Оборудование для тренажеров";
+"All equipment" = "Все оборудование";
+"Prefer community plans" = "Предпочитает общественные планы";
+"Build your AI Plans from a proven community program that matches your days per week and goal, instead of auto-generating them." = "Создайте свои планы ИИ из проверенной программы сообщества, которая соответствует вашим дням в неделю и целям, а не автоматически генерирует их.";
+"These apply to recommended routines and exercises you add — your custom routines aren't changed." = "Это относится к рекомендуемым процедурам и упражнениям, которые вы добавляете — ваши пользовательские процедуры не меняются.";
+"Any movement" = "Любое движение";
+"equipment.barbell" = "Барбелл";
+"equipment.dumbbell" = "Дурацкий колокол";
+"equipment.body only" = "Только тело";
+"equipment.cable" = "кабель";
+"equipment.machine" = "Машина";
+"equipment.kettlebells" = "Кеттлбеллс";
+"equipment.bands" = "Банда";
+"equipment.e-z curl bar" = "EZ-бар";
+"equipment.medicine ball" = "Лекарственный шар";
+"equipment.exercise ball" = "Упражнение мяч";
+"equipment.foam roll" = "пенопрокатчик";
+"equipment.stretching" = "растяжка";
+"equipment.other" = "другой";
+"Muscle Status" = "Состояние мышц";
+"Profile" = "профиль";
+"Gender" = "пол";
+"Male" = "мужчина";
+"Female" = "женщина";
+"Other" = "другой";
+"Age" = "возраст";
+"yrs" = "yrs";
+"Body weight" = "Вес тела";
+"Muscles to focus" = "Мышцы, чтобы сосредоточиться";
+"Pick the muscle groups you want to prioritize. Today's recommendations and AI plans will favor these." = "Выберите группы мышц, которые вы хотите расставить приоритеты. Сегодняшние рекомендации и процедуры искусственного интеллекта будут способствовать этому.";
+"Share Card" = "Share Card";
+"Camera" = "Камера";
+"Photos" = "Фото";
+"Add some exercises to the plan first, then start training." = "Сначала добавьте некоторые упражнения в план тренировки, а затем начните тренироваться.";
+"Hide older workouts" = "Скрыть старые тренировки";
+"My Muscle Status" = "Состояние моих мышц";
+"My Week" = "Моя неделя";
+"Save" = "Спасти";
+"Share" = "Доля";
+"Show %d older workout(s)" = "Показать %d старые тренировки";
+"This Week" = "На этой неделе";
+"This workout has no exercises yet" = "Эта тренировка еще не имеет упражнений";
+"Smart pick" = "Умный выбор";
+"Save as plan" = "Спасти как план тренировки";
+"Saved" = "Спасенный";
+"Anything else for your AI coach?" = "Что-нибудь еще для вашего тренера?";
+"Injuries, preferences, time limits — in your own words. The AI combines this with everything above. Optional." = "Травмы, предпочтения, временные рамки — своими словами. ИИ сочетает это со всем вышеперечисленным. Факультативный.";
+"e.g. Old shoulder injury — avoid overhead pressing. I like dumbbells, 45 minutes max." = "Например, старая травма плеча — избегайте нажатия сверху. Мне нравятся гантели, максимум 45 минут.";
+"Start from scratch" = "Начните с нуля";
+"Display" = "дисплей";
+"Muscle charts on exercise tags" = "Мышечные диаграммы на тегах упражнений";
+"On routine cards, show a mini muscle chart instead of the muscle name in front of each exercise." = "На обычных картах покажите мини-карту мышц вместо названия мышцы перед каждым упражнением.";
+"Saved to routines" = "Сэкономить на плану тренировок";
+"Save to routines" = "Сохранить до планы тренировок";
+"Save %lld routine" = "Сохраните план тренировки %lld";
+"Save %lld routines" = "Сохранить %lld планы тренировок";
+"Saved %lld routine" = "Экономия %lld";
+"Saved %lld routines" = "Сохранение %lld планы тренировок";
+"App Language" = "Язык приложений";
+"Continue" = "Продолжать";
+"Start" = "Начинать";
+"Add a photo" = "Добавить фото";
+"Add photo" = "Добавить фото";
+"Take Photo" = "Сделай фото";
+"Choose from Library" = "Выбор из библиотеки";
+"Remove Photo" = "Удалить фото";
+"Add to favorites" = "Добавить в избранное";
+"Remove from favorites" = "Удалить из любимых";
+"All muscles" = "Все мышцы";
+"Clear all" = "Все чисто.";
+"Delete plan?" = "Удалить план тренировки?";
+"Delete workout?" = "Удалить тренировки?";
+"Delete this workout?" = "Удалить эту тренировку?";
+"Delete workout" = "Исключить тренировки";
+"Delete exercise from plan?" = "Исключить упражнения из планы тренировок?";
+"Delete exercise from this workout?" = "Удалить упражнения из этой тренировки?";
+"All sets and PRs from this workout will be removed. Your plans stay." = "Все наборы и пиар от этой тренировки будут удалены.";
+"All sets of this exercise from this workout will be removed." = "Все наборы этого упражнения из этой тренировки будут удалены.";
+"This only removes it from the current workout. Save changes at the end to update the plan." = "Это только удаляет его из текущей тренировки. Сохранить изменения в конце, чтобы обновить план тренировки.";
+"This only removes the exercise from this plan, not from your library." = "Это только устраняет упражнение из этой планы тренировок, а не из вашей библиотеки.";
+"Detail" = "Подробнее";
+"Muscle" = "мышца";
+"Equipment" = "оборудование";
+"Variation" = "Вариация";
+"None" = "Никто";
+"Optional" = "необязательный";
+"How to do it" = "Как это сделать";
+"Show full instructions" = "Показать все инструкции";
+"Show less" = "Поменьше";
+"Listen" = "Слушай.";
+"Read instructions aloud" = "Читайте инструкции вслух";
+"Stop reading" = "Хватит читать.";
+"Stop" = "Стоп!";
+"Edit" = "Редактировать";
+"Long press to reorder" = "Длинный пресс для перезагрузки";
+"No exercises in this workout" = "Никаких упражнений в этой тренировке";
+"Share workout" = "Поделиться";
+"Save changes & end" = "Сохранить изменения и закончить";
+"End without saving" = "Конец без сохранения";
+"You changed sets, reps, weight, or order during this workout. Save the changes back to the plan?" = "Вы изменили наборы, повторы, вес или порядок во время этой тренировки.";
+"Skip" = "Пропустить";
+"Save changes to this routine?" = "Сохранить изменения в этой плану тренировок?";
+"You adjusted this routine during the workout. Save the adjustments for next time?" = "Вы настроили этот план тренировки во время тренировки. Сохраните настройки на следующий раз?";
+"Save to routine" = "Сохранить в план тренировки";
+"Don't save" = "Не спасай";
+"Removed" = "Удаленный";
+"Replaced" = "замененный";
+"Updated" = "Обновлено";
+"Moved" = "перемещенный";
+"rest %@" = "rest %@";
+"Show details for %@" = "Детали для %@";
+"STEP %lld / 2" = "Шаг %lld / 2";
+"STEP %lld / 3" = "Шаг %lld / 3";
+"Enable \"Show muscle subdivisions\" in Settings to pick details like upper chest or rear delts." = "Включите «Показать мышечные подразделения» в настройках, чтобы выбрать детали, такие как верхняя грудь или задние дельты.";
+"Free for 7 days, then %@. Cancel anytime in Settings." = "Бесплатно в течение 7 дней, затем %@. Отменить в любое время в настройках.";
+"FOR YOU" = "Для тебя";
+"TRAINING PREFERENCES" = "Профессиональные навыки";
+"Adjust" = "отрегулировать";
+"%lld days / week" = "%lld дней в неделю";
+"Full-body" = "Полное тело";
+"Upper-lower split" = "Верхне-нижний раскол";
+"Body-part split" = "Разделение частей тела";
+"Full-body coverage — each muscle group rotates through the week." = "Полное покрытие тела — каждая группа мышц вращается в течение недели.";
+"High frequency — focus muscles hit 2–3× per week, accessories rotate for recovery." = "Высокая частота — мышцы фокусировки бьют 2–3× в неделю, аксессуары вращаются для восстановления.";
+"Each focus muscle is trained 2× per week — enough stimulus, full recovery between." = "Каждая мышца фокусировки тренируется 2 раза в неделю — достаточно стимула, полное восстановление между ними.";
+"2× per week is enough to maintain steady progress — focus muscles rotate in." = "2 × в неделю достаточно, чтобы поддерживать устойчивый прогресс — мышцы фокусировки вращаются.";
+"Adjust training preferences" = "Скорректировать учебные предпочтения";
+"FROM YOUR PLAN" = "Из твоей планы тренировок";
+"Weekly Workouts" = "Еженедельные тренировки";
+"White areas were just trained" = "Белые просто тренировались.";
+"Today's Status" = "Сегодняшний статус";
+"My Workout" = "Моя тренировка";
+"Customize" = "настраивать";
+"Restore recommended" = "Восстановление рекомендуется";
+"Week starts" = "Неделя начинается";
+"Auto" = "Автомат";
+"Sun" = "Солнце";
+"Mon" = "Мон";
+"Days this month" = "Дни в этом месяце";
+"Day this month" = "День в этом месяце";
+"Sets this month" = "Назначен в этом месяце";
+"Set this month" = "Установить в этом месяце";
+"Training Preferences" = "Учебные предпочтения";
+"Rested" = "отдохнувший";
+"Fresh" = "Свежий";
+"Browse community plans" = "Просмотреть Classics";
+"Classics" = "Классика";
+"See what others train" = "Посмотрите, как тренируются другие";
+"Community" = "Классика";
+"Curated workout plans. Add any to your library." = "Регулярные тренировки. Добавьте что-нибудь в свою библиотеку.";
+"Want to publish your plan? Coming soon." = "Хочешь опубликовать свою план тренировки?";
+"Want to share your plan? Open it in Plans → tap Share." = "Хотите поделиться своей планом тренировок? Откройте ее в Workout plans → нажмите Share.";
+"Share plan" = "Обычная план тренировки";
+"Imported plan" = "Импортная план тренировки";
+"Got a plan from a friend? Tap Add to save it to your library." = "Нажмите \"Добавить\", чтобы сохранить его в библиотеке.";
+"Add to my plans" = "Добавить в мою план тренировки";
+"Added" = "Добавлено";
+"Adjusted" = "скорректированный";
+"Changes from previous routine" = "Изменения в предыдущей плану тренировок";
+"This routine stayed the same" = "Этот план тренировки остался прежним.";
+"Added to My Plans" = "Добавлено в мои планы тренировок";
+"Routines" = "Планы тренировок";
+"Generate with AI" = "Генерировать с AI";
+"Browse Classics" = "Просмотреть Classics";
+"Create from scratch" = "Создавать с нуля";
+"Create my own" = "Создай свой собственный";
+"AI Routines" = "Планы тренировок AI";
+"Generate a plan from your preferences" = "Создайте план из ваших предпочтений";
+"Proven programs to start from" = "Проверенные программы для начала";
+"New routine" = "Новый план тренировки";
+"Routines you save will appear here" = "Планы тренировок, которые вы сохраните, появятся здесь";
+"Proven programs — 5x5, PPL, 5/3/1" = "Проверенные программы — 5x5, PPL, 5/3/1";
+"Generate routines" = "Создать планы тренировок";
+"Open Training Preferences and tap Generate routines to build a set tailored to you." = "Откройте учебные предпочтения и нажмите Генерировать планы тренировок, чтобы создать набор, адаптированный для вас.";
+"Apply" = "Применить";
+"Keep editing" = "Продолжайте редактировать";
+"Apply changes?" = "Применять изменения?";
+"You changed your training preferences. Apply them and regenerate your routines?" = "Вы изменили свои предпочтения в обучении. Примените их и восстановите свою план тренировки?";
+"Generating routines…" = "Создание планы тренировок...";
+"Building routines from your preferences…" = "Построение планы тренировок из ваших предпочтений...";
+"Matching exercises to your days, equipment, and focus." = "Соответствие упражнений вашим дням, оборудованию и фокусу.";
+"Tap Generate routines to build a set tailored to your preferences." = "Tap Generate для создания набора, адаптированного к вашим предпочтениям.";
+"Beginner" = "Начинающий";
+"Intermediate" = "промежуточный";
+"Advanced" = "продвинутый";
+"%lld exercises" = "%lld exercises";
+"Featured today" = "Избранный сегодня";
+"More programs" = "Больше программ";
+"No routines match" = "Никаких планов тренировок матчей";
+"%lld routine" = "%lld workout plan";
+"%lld routines" = "%lld планы тренировок";
+"Add %lld routines" = "Добавить планы тренировок %lld";
+"Day %lld" = "Day %lld";
+"Days/wk" = "Дни / WK";
+"%lld days" = "%lld days";
+"Any level" = "Любой уровень";
+"Rotate these %lld workouts to train %lld days a week." = "Поверните эти тренировки %lld, чтобы тренировать %lld дни в неделю.";
+"%lld sets" = "Набор %lld";
+"%llds rest" = "%lld отдыхает";
+"community_plan_beginner_fb_3day_name" = "Полное тело начинающего 3 дня";
+"community_plan_beginner_fb_3day_desc" = "Два чередующихся сеанса, чтобы изучить основные подъемники и построить базу.";
+"community_plan_5x5_strength_name" = "5x5 Сила";
+"community_plan_5x5_strength_desc" = "Тяжелая 5-реповая штанга — линейная прогрессия в стиле Мэдкоу.";
+"community_plan_ppl_6day_name" = "Push / Pull / Ноги 6 дней";
+"community_plan_ppl_6day_desc" = "Каждая мышца бьет 2× в неделю — высокая частота, большой объем.";
+"community_plan_upper_lower_4day_name" = "Верхний / нижний 4-дневный";
+"community_plan_upper_lower_4day_desc" = "Классический промежуточный раскол — сбалансированная сила и гипертрофия.";
+"community_plan_bro_split_5day_name" = "Bro Split 5-дневный";
+"community_plan_bro_split_5day_desc" = "Классика бодибилдинга — одна группа мышц в день.";
+"community_plan_calisthenics_name" = "Фонды Calisthenics";
+"community_plan_calisthenics_desc" = "Постройте фундаментальную силу, используя только свой вес тела.";
+"community_plan_powerlifting_name" = "Пауэрлифтинг Prep";
+"community_plan_powerlifting_desc" = "Приседания, скамейка, становая тяга — сфокусированные тройки на сырую силу.";
+"community_plan_push_pull_4day_name" = "Push / Pull 4-дневный";
+"community_plan_push_pull_4day_desc" = "Простое двустороннее разделение — толкать мышцы и тянуть мышцы, по два раза.";
+"community_session_full_body_a" = "Полное тело A";
+"community_session_full_body_b" = "Полное тело B";
+"community_session_strength_a" = "Сила А";
+"community_session_strength_b" = "Сила B";
+"community_session_push_heavy" = "Толчок (тяжелый)";
+"community_session_pull_heavy" = "Тяжёлый (Heavy)";
+"community_session_legs_quads" = "Ноги (Quads)";
+"community_session_upper" = "Верхний";
+"community_session_lower" = "ниже";
+"community_session_chest_day" = "День грудной клетки";
+"community_session_back_day" = "День назад";
+"community_session_leg_day" = "День ног";
+"community_session_shoulder_day" = "День плеча";
+"community_session_arm_day" = "День оружия";
+"community_session_push_day" = "День пик";
+"community_session_pull_day" = "День тяни";
+"community_session_legs_core_day" = "Ноги + ядро";
+"community_session_squat_day" = "День сквота";
+"community_session_bench_day" = "День скамейки";
+"community_session_deadlift_day" = "День Deadlift";
+"community_session_accessory_day" = "День доступа";
+"community_session_push_simple" = "Толкать";
+"community_session_pull_simple" = "тянуть";
+"Favorite" = "Любимый";
+"Unfavorite" = "неблагоприятный";
+"Pin to top" = "Пин сверху";
+"Pin" = "Пин";
+"Unpin" = "раскрутить";
+"Replace exercise" = "Заменить упражнение";
+"MUSCLE STATUS" = "МУЗНЫЙ СТАТУС";
+"Couldn't load subscription options. Try again later." = "Не удалось загрузить подписку, попробуйте позже.";
+"Purchase pending approval." = "Покупка до утверждения.";
+"Purchase verification failed. Try again or contact support." = "Проверка покупки не удалась. Попробуйте еще раз или свяжитесь с службой поддержки.";
+"Free for 7 days, then auto-renews. Cancel anytime in Settings." = "Бесплатно в течение 7 дней, затем автообновление. Отменить в любое время в настройках.";
+"Workout photo" = "Фотография";
+"Share muscle status" = "Поделиться мышечный статус";
+"Toggle muscle status overlay" = "Наложение мышечного статуса";
+"IMPORTED PLAN" = "ВАЖНАЯ ПЛАН ТРЕНИРОВКИ";
+"This Masso link is damaged or unsupported. Ask your friend to share again." = "Эта ссылка Masso повреждена или не поддерживается. Попросите вашего друга снова поделиться.";
+"Invalid routine link" = "Недействительная план тренировки ссылка";
+"details" = "детали";
+"Health & Safety" = "Здоровье и безопасность";
+"About" = "О нас";
+"Privacy Policy" = "Политика конфиденциальности";
+"Terms of Service" = "Условия обслуживания";
+"Version" = "Версия";
+"Masso is for informational and motivational purposes only — not medical advice. Consult a physician before starting any new exercise program, especially if you have a medical condition, are pregnant, or have not exercised recently. Stop immediately and seek help if you feel pain, dizziness, or shortness of breath." = "Masso предназначен только для информационных и мотивационных целей, а не для медицинских консультаций. Проконсультируйтесь с врачом перед началом любой новой программы упражнений, особенно если у вас есть заболевание, вы беременны или недавно не занимались спортом. Немедленно остановитесь и обратитесь за помощью, если вы чувствуете боль, головокружение или одышку.";
+"Workout Records" = "Отчеты о работе";
+"Form cues" = "Формы сигналов";
+"Watch demo" = "Смотреть демо";
+"Compound" = "соединение";
+"Isolation" = "Изоляция";
+"Horizontal push" = "Горизонтальный толчок";
+"Vertical push" = "Вертикальный толчок";
+"Horizontal pull" = "Горизонтальное притяжение";
+"Vertical pull" = "Вертикальная тяга";
+"Hinge" = "петля";
+"Squat" = "приседание";
+"Lunge" = "Лунге";
+"Rotation" = "вращение";
+"Strength tempo" = "Темп силы";
+"Hypertrophy tempo" = "Темп гипертрофии";
+"Endurance tempo" = "Темп выносливости";
+"Explosive tempo" = "Взрывной темп";
+"Isometric hold" = "изометрический трюм";
+"Unilateral" = "Односторонний";
+"%d specialized / unusual exercises (foam rollers, battle ropes, machine isolations, etc.)" = "%d специализированные/необычные упражнения (пенные ролики, боевые веревки, изоляции машин и т.д.)";
+"12–20 reps, lighter weight, short rest" = "12-20 повторений, более легкий вес, короткий отдых";
+"1–5 reps, heavy weight, long rest" = "1-5 повторений, тяжелый вес, длительный отдых";
+"6–12 reps, moderate weight, ~90s rest" = "6–12 повторений, умеренный вес, ~ 90-е отдых";
+"Add" = "Добавить";
+"Add a name, an image, and tag it to a muscle. Best for moves we don't have." = "Добавьте имя, изображение и пометьте его на мускулы.";
+"Add exercise" = "Добавить упражнение";
+"Back to standard library" = "Вернуться в Стандартная библиотека";
+"Browse rare exercises" = "Просмотреть редкие упражнения";
+"Change" = "Изменения";
+"Couldn't save exercise" = "Не удалось сохранить упражнения";
+"Create your own" = "Создайте свой собственный";
+"Custom exercises live only on this device. You can use them in plans and they'll appear in all your pickers." = "Настраиваемые упражнения живут только на этом устройстве. Вы можете использовать их в процедурах, и они появятся во всех ваших наборщиках.";
+"Days this week" = "Дни на этой неделе";
+"Day this week" = "День на этой неделе";
+"Default sets" = "наборы по умолчанию";
+"Discard" = "выбрасывать";
+"Discard changes?" = "Откажитесь от изменений?";
+"Edit next exercise" = "Редактировать следующее упражнение";
+"Endurance" = "Выносливость";
+"Exercise name" = "Название упражнения";
+"Exercises per plan" = "Упражнения по плану тренировок";
+"Foam rolls, battle ropes, machine isolations and other specialized moves we corralled." = "Пенные рулоны, боевые веревки, изоляции машин и другие специализированные ходы мы загоняли.";
+"Hide variants" = "Скрыть варианты";
+"Hypertrophy" = "гипертрофия";
+"New exercise" = "Новое упражнение";
+"No rare exercises match" = "Редкие упражнения не совпадают";
+"No rare exercises match your search" = "Никакие редкие упражнения не соответствуют вашему поиску.";
+"Pick how to add an exercise. Either build your own from scratch, or adopt one from our specialized library." = "Выберите, как добавить упражнение. Либо создайте свое с нуля, либо примите его из нашей специализированной библиотеки.";
+"Primary muscle" = "Первичные мышцы";
+"Rare exercises" = "Редкие упражнения";
+"Required. Shown in plans and history." = "Показывается в планах тренировок и истории.";
+"Return to the everyday library" = "Вернуться в Ежедневная библиотека";
+"Search" = "Поиск";
+"Sets this week" = "На этой неделе";
+"Set this week" = "Установлено на этой неделе";
+"Show %d variants" = "Показать варианты %d";
+"Time's up" = "Время вышло";
+"Training goal" = "Цель обучения";
+"You've adopted everything in the rare library" = "Ты перенял все в редкой библиотеке";
+"Your edits to this workout's exercises won't be saved to the plan. Completed sets are already recorded." = "Ваши правки к упражнениям этой тренировки не будут сохранены в плану тренировок. Завершенные наборы уже записаны.";
+"%d kg" = "%d кг";
+"%d yrs" = "%d YRS";
+"Can't delete — in use" = "Не могу удалить — в использовании";
+"Delete exercise?" = "Удалить упражнение?";
+"Remove from library" = "Удалить из библиотеки";
+"This exercise is used by a plan or your workout history. Remove it from those first." = "Это упражнение используется планом тренировок или вашей историей тренировок.";
+"“%@” will be permanently removed." = "%@ будет удален навсегда.";
+"Couldn't load that image. Try another." = "Не смог загрузить это изображение.";
+"Couldn't process that image. Try another." = "Не смог обработать это изображение.";
+"For most strength moves." = "Большинство сил движется.";
+"For planks, stretches, carries, cardio intervals." = "Для досок, растяжек, переносок, кардиоинтервалов.";
+"Measure by" = "Измерение";
+"Reps & weight" = "Отзывы и вес";
+"Time (seconds)" = "Время (секунды)";
+"You already have a custom exercise with this name." = "У вас уже есть специальное упражнение с этим именем.";
+"All caught up" = "Все пойманные";
+"Time" = "Время";
+"Rest %@" = "Rest %@";
+"Set %d" = "Настройка %d";
+"Set %lld" = "Настройка %lld";
+"Different per set" = "Разные по набору";
+"Reps × weight per set" = "Reps × Вес на набор";
+"Last: %@ kg × %d (%@)" = "Последнее: %@ кг × %d (%@)";
+"Last: × %d (%@)" = "Последнее: × %d (%@)";
+"Last: %ds (%@)" = "%ds (%@)";
+"movement.press" = "Пресса";
+"movement.curl" = "Кёрл";
+"movement.row" = "ряд";
+"movement.squat" = "приседание";
+"movement.lunge" = "Лунге";
+"movement.deadlift" = "Дэдлифт";
+"movement.raise" = "поднимать";
+"movement.fly" = "летать";
+"movement.extension" = "Продление";
+"movement.push_up" = "Толкать";
+"movement.pull_up" = "Подтягивание";
+"movement.pulldown" = "Щелчок";
+"movement.dip" = "капать";
+"movement.thrust" = "толчок";
+"movement.shrug" = "пожимать плечами";
+"movement.crunch" = "хруст";
+"movement.plank" = "планк";
+"movement.pullover" = "опрокидывание";
+"movement.kickback" = "откат";
+"Part" = "часть";
+"Movement" = "Движение";
+"Skip to exercises" = "Пропустить упражнения";
+"Filter" = "фильтр";
+"Close search" = "Близкий поиск";
+"Library" = "Библиотека";
+"Good morning" = "Доброе утро.";
+"Good afternoon" = "Добрый день.";
+"Good evening" = "Добрый вечер.";
+"Good night" = "Доброй ночи.";
+"My plans" = "Мой план тренировки";
+"Create your own workout, or restore the recommended set." = "Создайте свою собственную тренировку или восстановите рекомендуемый набор.";
+"Variant" = "Вариант";
+"vs %@" = "%@";
+"variant.high" = "Более высокий якорь — притяжение идет сверху, смещая задние дельты и верхнюю часть спины против стандартной высоты.";
+"variant.low" = "Нижний якорь — движение вверх смещает верхнюю грудь и передние дельты против стандартной высоты.";
+"variant.mid" = "Якорь средней высоты — сбалансированная линия притяжения, ближайшая к акценту базового движения.";
+"variant.incline" = "Наклонный угол — смещает акцент на верхнюю грудь и передние дельты.";
+"variant.decline" = "Уменьшенный угол — смещает акцент на нижнюю грудь или удлиняет диапазон абса в основных движениях.";
+"variant.seated" = "Сидячий — снимает драйв ног и импульс для более строгой изоляции целевой мышцы.";
+"variant.standing" = "Standing — добавляет ядро и стабилизатор участия по сравнению с поддерживаемой версией.";
+"variant.lying" = "Ложь — устраняет импульс и напряжение нижней части спины, изолируя основной двигатель.";
+"variant.kneeling" = "Коленопреклонение — блокирует движение ног и требует большей стабильности ядра.";
+"variant.prone" = "Prone (face-down) — блокнот удаляет обман для строгой задней и верхней задней работы.";
+"variant.supine" = "Супина (face-up) — стабилизирует позвоночник и изолирует первичный двигатель.";
+"variant.single-arm" = "Одна рука за раз — устраняет дисбаланс левой/правой и добавляет антивращающую работу ядра.";
+"variant.single-leg" = "Одна нога за раз — устраняет дисбаланс и требует большей стабильности.";
+"variant.alternating" = "Переменные стороны — более длительное время под напряжением со встроенным микроотсеком каждый повтор.";
+"variant.wide-grip" = "Более широкая хватка — более короткий диапазон движения, предвзятая широта и внешняя грудь.";
+"variant.close-grip" = "Более плотное сцепление — более длительный диапазон движения, смещение трицепса и внутренней груди.";
+"variant.neutral-grip" = "Пальмы лицом — удобный для плеча угол, который смещает брахиалис и предплечья на тягах.";
+"variant.reverse-grip" = "Обратное сцепление — смещает акцент: больше бицепсов на тягах, больше верхней груди на прессах.";
+"variant.underhand" = "Подручное сцепление — больше бицепсов и более низкое латное участие, чем сверху.";
+"variant.overhand" = "Наружная хватка — больше участия предплечья и верхней части спины, чем подмышка.";
+"variant.paused" = "Пауза внизу — снимает растяжной рефлекс и наращивает силу из отверстия.";
+"variant.deficit" = "Повышенная/дефицитная установка — расширяет диапазон движения для более глубокого растяжения.";
+"variant.weighted" = "Добавленная нагрузка — такое же движение при более высокой интенсивности для усиления прогрессии.";
+"variant.assisted" = "Помощь компенсирует вес тела — та же картина при более легкой интенсивности.";
+"variant.sumo" = "Широкая позиция сумо — более аддуктивное и ягодичная вовлеченность с меньшим напряжением нижней части спины.";
+"variant.romanian" = "Бедра назад, мягкие колени — держит напряжение на подколках через растяжку.";
+"variant.bulgarian" = "Задняя нога приподнята — одноногая загрузка с глубоким ягодичным и четверным растяжением.";
+"variant.goblet" = "Загрузка, удерживаемая на груди — держит туловище вертикально, делая глубину и форму легче.";
+"variant.front" = "Загрузка спереди — более вертикальное туловище смещает квадроциклы и верхнюю часть спины.";
+"variant.overhead" = "Накладные расходы — добавляет стабильность плеча и основной спрос на движение базы.";
+"variant.walking" = "Путешествующая версия — добавляет баланс спроса и постоянного напряжения на месте.";
+"variant.reverse" = "Обратное направление — смещает акцент на противоположную часть рисунка.";
+"variant.lateral" = "Боковая плоскость — смещения похитителей и боковые дельты против прямой версии.";
+"variant.tuck" = "Заправленные колени — укорачивает рычаг; легче прогрессирует полное движение.";
+"variant.floor" = "С пола — уменьшенная дальность защищает плечи и снимает привод ног.";
+"variant.chest-supported" = "Грудь на площадке — нулевой импульс, строгая изоляция верхней части спины.";
+"variant.bent-over" = "Навесное туловище — добавляет участие нижней части спины и подколенного сухожилия; держите строгий шарнир.";
+"variant.dead-stop" = "Полная остановка каждого повторения — устраняет отскок и наращивает стартовую силу.";
+"variant.split" = "Сплит-позиция — смещение одной ноги за раз с дополнительным спросом на баланс.";
+"variant.hammer" = "Нейтральный захват молотка — предубеждения брахиалиса и предплечья.";
+"My Routines" = "Мои планы тренировок";
+"Import from photo" = "Импорт с фото";
+"Add routine" = "Добавить план тренировки";
+"Generate routine with AI" = "Создайте план тренировки с ИИ";
+"Build your routine with AI" = "Создайте свою план тренировки с помощью AI";
+"Tell AI Coach your goals and schedule to get a routine made for you." = "Расскажите AI Coach о своих целях и графике, чтобы сделать план тренировки для вас.";
+"Chat with AI Coach" = "Чат с AI Coach";
+"Hi, I’m your AI Coach" = "Привет, я твой AI Coach";
+"Create my routine based on my saved training preferences." = "Создайте свою план тренировки, основываясь на моих предпочтениях.";
+"Open AI Coach to create a routine" = "Открыть AI Coach для создания планы тренировок";
+"Imported routine" = "Импортная план тренировки";
+"Couldn't read a routine from that image" = "Не смог прочитать план тренировки с этого изображения";
+"Try a clearer screenshot — exercise names need to be readable." = "Попробуйте более четкий скриншот - имена упражнений должны быть читаемыми.";
+"Reading routine…" = "Читать план тренировки...";
+"Volume" = "Объем";
+"Share this week" = "Поделиться на этой неделе";
+"Share this month" = "Поделиться в этом месяце";
+"This Month" = "Этот месяц";
+"%d reps" = "%d Reps";
+"My Training" = "Моя тренировка";
+"Routine name" = "Название плана тренировки";
+"We added the moves we recognized. Review the rest — confirm, swap, or save as a custom move." = "Мы добавили шаги, которые мы распознали. Просмотрите остальные — подтвердите, поменяйте или сохраните как пользовательский ход.";
+"IMPORT FROM PHOTO" = "ВАЖНО С ФОТО";
+"ADDED" = "Принято";
+"NEEDS REVIEW" = "Необходим пересмотр";
+"NOT IN YOUR LIBRARY" = "Не в твоей библиотеке";
+"Looks like %@" = "Похожее: %@";
+"Use %@" = "Использование %@";
+"Choose" = "Выбрать";
+"Save as custom" = "Сохранить как обычай";
+"Not in your library" = "Не в вашей библиотеке";
+"Save “%@” as custom" = "Сохранить «%@» как заказ";
+"Select at least one" = "Выберите хотя бы один";
+"Add %lld to routine" = "Добавить %lld в план тренировки";
+"Uncheck anything you don't want. Dashed rows are our best guess — tap replace to swap." = "Проверить все, что вы не хотите. Разбитые ряды - наша лучшая догадка - нажмите замену для замены.";
+"Recognized “%@”" = "Признанный «%@»";
+"%lld reps" = "%lld Reps";
+"3 sets · default" = "3 набора · дефолт";
+"%@ / %@, auto-renews until cancelled. Cancel anytime in Settings." = "%@ / %@, автоматическое продление до отмены. Отменить в любое время в настройках.";
+"Free for 7 days, then %@ / %@, auto-renews until cancelled. Cancel anytime in Settings." = "Бесплатно в течение 7 дней, затем %@ / %@, автообновление до отмены.";
+"Auto-renewing subscription. Cancel anytime in Settings." = "Автообновление подписки. Отменить в любое время в настройках.";
+"Best value" = "Лучшая ценность";
+"No routines yet" = "Пока нет планов тренировок";
+"Add AI routines" = "Добавить планы тренировок AI";
+"No saved routines yet" = "Нет сохраненных планов тренировок";
+"Generate one with AI or browse Classics below, then tap Save." = "Создайте его с помощью AI или просмотрите Classics ниже, а затем нажмите Save.";
+"No Classics match these filters." = "Классика не соответствует этим фильтрам.";
+"No routines match these filters yet." = "Никакие процедуры пока не соответствуют этим фильтрам.";
+"Tailoring your AI routines…" = "Приспособление ваших планов тренировок ИИ...";
+"Pick the equipment your gym has — AI and recommended routines will only use moves you can actually do. Leave empty for no restriction (bodyweight is always available)." = "Выберите оборудование, которое есть в вашем спортзале — ИИ и рекомендуемые процедуры будут использовать только те движения, которые вы можете сделать. Оставьте пустой без ограничений (вес тела всегда доступен).";
+"Clear — use all equipment" = "Чистый - используйте все оборудование";
+"%@ %@ per side" = "%@ %@ сбоку";
+"Achievable: %@ %@  (off by %@)" = "Достижимый: %@ %@ (от %@)";
+"%lld picked" = "%lld picked";
+"+%lld more" = "+%lld больше";
+"Save as plan?" = "Спасти как обычно?";
+"Don't Save" = "Не спасай";
+"Keep this workout as a reusable routine." = "Держите эту тренировку как многоразовую план тренировки.";
+"Apple Health" = "ZBRAND000X";
+"Save workouts to Apple Health" = "Экономьте тренировки на Apple Health";
+"Masso saves your completed workouts to Apple Health, so they appear in your Activity rings and the Health app. On Apple Watch, Masso reads heart rate and active energy during a workout." = "Masso сохраняет завершенные тренировки до Apple Health, поэтому они появляются в ваших кольцах активности и приложении Health. На Apple Watch Masso считывает частоту сердечных сокращений и активную энергию во время тренировки.";
+"Exercise data" = "Данные о тренировках";
+"Sync params across routines" = "Синхронизация настроек упражнений в плану тренировок";
+"Creating your AI plan" = "Создайте свою план тренировки AI";
+"Your plan is ready" = "Ваша план тренировки готова";
+"Personalized from your answers" = "Персонализированные ответы";
+"Reading your profile" = "Читать свой профиль";
+"Picking exercises for your goals" = "Выбор упражнений для ваших целей";
+"Balancing your weekly plan" = "Сбалансируйте свою еженедельную план тренировки";
+"Off by default: each routine keeps its own sets, reps, weight, and rest, so heavy and light days stay independent. Turn on to apply a change to an exercise everywhere it appears." = "Выключено по умолчанию: каждая план тренировки сохраняет свои собственные наборы, повторы, вес и отдых, поэтому тяжелые и легкие дни остаются независимыми.";
+"Optional — leave all off for a balanced routine." = "Необязательно — оставьте все для сбалансированной планы тренировок.";
+"Level" = "Уровень";
+"Days/week" = "Дни/неделя";
+"All levels" = "Все уровни";
+"Any frequency" = "Любая частота";
+"Continue (%lld)" = "Продолжение (%lld)";
+"Start (%lld)" = "Старт (%lld)";
+"Exercise photos" = "Фотографии упражнений";
+"Credits" = "Кредиты";
+"Exercise photos via Pexels." = "Фотографии с помощью Pexels.";
+"Pexels License" = "Лицензия Pexels";
+"From library" = "Из библиотеки";
+"Search the web" = "Поиск в Интернете";
+"Find a photo" = "Найдите фото";
+"Photos via Pexels. Pick the one that matches your move." = "Фотографии через Pexels. Выберите тот, который соответствует вашему ходу.";
+"Type a name and search the web." = "Введите имя и ищите в Интернете.";
+"No photos found. Try a different name." = "Никаких фотографий, попробуйте другое имя.";
+"Search exercise photos" = "Поиск по фотографиям";
+"Playlist drawer drag handle" = "Ручка перетаскивания плейлиста";
+"Drag up to expand, down to collapse. Tap to toggle." = "Двигайтесь вверх, чтобы расшириться, вниз, чтобы рухнуть.";
+"Collapse calendar" = "Календарь провалов";
+"Set removed" = "Удалить";
+"Changes update this exercise across all your routines." = "Изменения обновляют это упражнение во всех ваших процедурах.";
+"Undo last set" = "Undo Last Set";
+"Full Body A · Push / Quads / Pull (Upper)" = "Полное тело A · Push / Quads / Pull";
+"Full Body B · Push / Hamstrings / Pull (Lower)" = "Полное тело B · Толчок / Хамстринги / Тяга (ниже)";
+"Full Body C · Push / Glutes / Pull (Mid)" = "Полное тело C · Push / Glutes / Pull (Mid)";
+"Day A · Chest + Triceps" = "День · Грудь + Трицепс";
+"Day B · Back + Biceps" = "День B · Назад + Бицепс";
+"Day C · Legs + Glutes" = "День C · Ноги + клещи";
+"Day D · Shoulders + Traps" = "День D · Плечи + ловушки";
+"Day E · Arms + Core" = "День E · Оружие + Ядро";
+"Push A · Heavy" = "Push A - тяжелый";
+"Pull A · Heavy" = "Тяжёлый / Heavy";
+"Legs A · Quads" = "Ноги A · Quads";
+"Push B · Volume" = "Push B - объем";
+"Pull B · Volume" = "Щелкните B · Объем";
+"Legs B · Hamstrings / Glutes" = "Ноги B · Хамстринги / Глюты";
+"Finish a workout to see which muscles need recovery." = "Завершите тренировку, чтобы увидеть, какие мышцы нуждаются в восстановлении.";
+"Last: %@ × %d (%@)" = "Последнее: %@ × %d (%@)";
+"Follow iPhone language (%@)" = "Язык iPhone (%@)";
+"This week vs last" = "Эта неделя против последней";
+"so far" = "пока";
+"NEW" = "НОВОСТИ";
+"Muscle balance" = "Мышечный баланс";
+"Training activity" = "Учебная деятельность";
+"Last 16 weeks" = "Последние 16 недель";
+"Less" = "меньше";
+"More" = "Больше";
+"Activity" = "Деятельность";
+"Insights" = "Проницательность";
+"Training insights" = "Тренинговые идеи";
+"Trends" = "тенденции";
+"Long-press a card to reorder" = "Долго нажимать на карту, чтобы перезаказать";
+"Unlock deep insights with Pro" = "Разблокируйте глубокие идеи с помощью Pro";
+"Strength by lift" = "Сила при подъеме";
+"Estimated 1RM over time" = "Оценка 1RM с течением времени";
+"Lift" = "лифт";
+"Trend" = "Тренд";
+"Distribution" = "Распределение";
+"Set weights · last 4 weeks" = "Установить вес · последние 4 недели";
+"No weighted sets in the last 4 weeks" = "Никаких взвешенных наборов за последние 4 недели";
+"Sets vs targets" = "Установки vs цели";
+"Weekly hard sets per muscle" = "Недельные жесткие наборы на мышцу";
+"MEV" = "MEV";
+"MAV" = "МАВ";
+"Volume by muscle" = "Объем мышц";
+"Weekly %@ per muscle" = "Недельный %@ на мышцу";
+"Training frequency" = "Частота тренировок";
+"Days per week per muscle" = "Дни в неделю на одну мышцу";
+"PR timeline" = "Сроки PR";
+"Your personal records" = "Ваши личные записи";
+"Consistency & load" = "Последовательность и нагрузка";
+"All-time" = "Все время";
+"Adherence" = "Соблюдение";
+"Total lifted" = "Полный подъем";
+"Unlock per-muscle recovery with Pro" = "Разблокировать восстановление мышц с помощью Pro";
+"Stats" = "Статистика";
+"This week" = "На этой неделе";
+"Last week" = "На прошлой неделе";
+"Keep training — your stats and trends show up here." = "Продолжайте тренироваться — ваша статистика и тенденции появляются здесь.";
+"Describe a change… e.g. make it harder" = "Опишите изменения, например, сделать это сложнее";
+"Tell the AI a preference or change in plain words — e.g. 'bad shoulder, no overhead'. It remembers." = "Скажите ИИ предпочтение или изменение простыми словами — например, «плохое плечо, никаких накладных расходов».";
+"Tell your AI coach" = "Расскажите своему тренеру";
+"Write anything you want your routines to consider, in plain words — injuries, likes and dislikes, schedule, goals. The AI reads it every time it builds your plan." = "Напишите все, что вы хотите, чтобы ваша план тренировки рассматривалась простыми словами - травмы, лайки и антипатии, график, цели. ИИ читает ее каждый раз, когда он строит ваш план.";
+"I can't watch the video yet — paste the key moves or the plan from it and I'll work it in." = "Я пока не могу смотреть видео — вставьте ключевые движения или план из него, и я буду работать над ним.";
+"Tuned for: %@" = "Обсуждение:%@";
+"Focus: %@" = "Источник: %@";
+"Send" = "Отправить";
+"OPTIMIZE" = "ОПТИМИЗ";
+"Optimize with AI" = "Оптимизируйте с AI";
+"%@ are undertrained" = "%@ недостаточно обучен";
+"You've done far fewer %@ sets than your top muscle group over the last 3 weeks." = "За последние 3 недели вы сделали гораздо меньше наборов %@, чем ваша группа мышц.";
+"%@ has stalled" = "%@ остановился";
+"Your estimated 1RM on %@ hasn't moved over your last few sessions." = "Ваша оценка 1RM на %@ не изменилась за последние несколько сеансов.";
+"Your main lift" = "Ваш главный лифт";
+"Fewer sessions lately" = "Меньше сеансов в последнее время";
+"You're averaging about %d sessions a week, below your %d-day goal." = "Вы в среднем проводите сеансы %d в неделю, что ниже вашей цели в %d-день.";
+"AI Coach Summary" = "Резюме ZBRAND000X";
+"Keep logging — your AI summary unlocks after about 2 weeks of training." = "Продолжайте регистрироваться — ваше резюме ИИ разблокируется примерно через 2 недели обучения.";
+"Unlock your AI coach summary with Pro" = "Разблокируйте резюме тренера AI с Pro";
+"AI summary unavailable — Retry" = "Резюме недоступно — Retry";
+"As of %@ · based on the last 14 days" = "%@ – последние 14 дней";
+"Apply to routine" = "Применять к плану тренировок";
+"Add to notes" = "Добавить в примечания";
+"Saved to your coaching notes" = "Сэкономлено на ваших коучинговых заметках";
+"Keep logging your sessions — your coach summary sharpens with more data." = "Продолжайте записывать свои сеансы — резюме вашего тренера обостряется с большим количеством данных.";
+"Rebalance your weekly volume" = "Сбалансируйте свой еженедельный объем";
+"Personalized set-by-set guidance from your data." = "Персонализированное руководство по набору из ваших данных.";
+"Break your main-lift plateau" = "Разбейте ваше основное плато";
+"Concrete progression tailored to your recent sessions." = "Конкретная прогрессия, адаптированная к вашим недавним сессиям.";
+"My Insights" = "Мои прозрения";
+"My AI Summary" = "Мой ИИ резюме";
+"Training Insights" = "Тренировки Insights";
+"My Progress" = "Мой прогресс";
+"Share my progress" = "Поделитесь своим прогрессом";
+"vs last week" = "против прошлой недели";
+"Volume this week" = "Объем на этой неделе";
+"%@ e1RM" = "%@ e1RM";
+"Consistency" = "Последовательность";
+"Last 8 weeks" = "Последние 8 недель";
+"Share Insights" = "Поделиться аналитикой";
+"Share History" = "Поделиться историей";
+"AI coach quote" = "Тренер AI цитата";
+"Tune with AI" = "Тюнинг с AI";
+"Your history" = "Ваша история";
+"Best e1RM %@" = "Лучший e1RM %@";
+"Just now: %@" = "Оригинальное название: %@";
+"Adjust last set" = "Отрегулировать последний набор";
+"Fix what you actually did — this only rewrites the set you just logged, not your plan." = "Исправьте то, что вы на самом деле сделали — это только переписывает набор, который вы только что зарегистрировали, а не ваш план.";
+"Set logged" = "Зарегистрировано";
+"Undo" = "Снять";
+"Keep screen awake during workouts" = "Держите экран бодрым во время тренировок";
+"While a workout is running, the screen won't auto-lock — your timer and next set stay visible at the rack." = "Во время тренировки экран не будет автоматически блокироваться — ваш таймер и следующий набор остаются видимыми на стойке.";
+"Finish & end" = "Завершить и сохранить";
+"Discard workout" = "Отменить тренировку";
+"Finish & end keeps this as a completed workout with your stats. Discard closes it without a summary." = "Финиш и конец сохраняют это как завершенную тренировку с вашей статистикой.";
+"Added %lld workout days" = "Добавлены дни тренировок %lld";
+"%lld training days" = "Дни обучения %lld";
+"Includes %lld training days — Save adds all of them" = "Включает в себя учебные дни %lld - Save добавляет их все";
+"Volume %@" = "Объем %@";
+"Coach" = "Тренер";
+"SAVED · %lld" = "SAVED · %lld";
+"Saved routines will appear here." = "Здесь появятся спасенные планы тренировок.";
+"~%lld min" = "- %lld мин.";
+"DAY %lld" = "ДЕНЬ %lld";
+"Hey! Tell me how you want to train — I'll build your weekly routines." = "Расскажи мне, как ты хочешь тренироваться — я построю тебе еженедельную план тренировки.";
+"COACH SUGGESTION" = "ВЕДОМОСТИ";
+"Usually takes 30–60 seconds" = "Обычно занимает 30-60 секунд";
+"Tell me how you want to train…" = "Расскажите, как вы хотите тренироваться...";
+"New conversation" = "Новый разговор";
+"Start a new conversation?" = "Начать новый разговор?";
+"This clears the current chat. Saved routines are kept." = "Это очищает текущий чат. Сохраненные процедуры сохраняются.";
+"Swap %@: " = "Обмен %@:";
+"Training in progress — keep tuning after your session." = "Обучение в процессе - продолжайте настраивать после сеанса.";
+"Try a starting point" = "Попробуйте отправную точку";
+"Choose a scenario, then edit the draft before sending." = "Выберите сценарий, затем отредактируйте проект перед отправкой.";
+"I want to focus on…" = "Я хочу сосредоточиться на...";
+"I only have 30 minutes" = "У меня всего 30 минут.";
+"I train at home" = "Я тренируюсь дома";
+"I’m getting back into training" = "Я возвращаюсь к тренировкам";
+"I want to look like this" = "Я хочу выглядеть вот так";
+"Current photo" = "Текущая фотография";
+"Goal reference" = "Ссылка на цель";
+"Change photo" = "Изменить фото";
+"Avoid faces. Photos can’t measure health, strength or body fat." = "Фотографии не могут измерить здоровье, силу или жир тела.";
+"Choose a photo from your library or camera" = "Выберите фото из вашей библиотеки или камеры";
+"I want to focus more on [shoulders and back]. Adjust my routines around that while keeping my training balanced." = "Хочу уделять больше внимания [плечам и спине]. Скорректируй мои тренировки, сохраняя баланс нагрузки.";
+"I have [30] minutes per workout. Shorten my routines to fit while keeping the main training focus." = "У меня есть [30] минут на тренировку. Сократи мои тренировки, сохранив основной акцент.";
+"I train at home with [dumbbells and bands]. Adapt my routines to the equipment I have." = "Я тренируюсь дома с [гантелями и эластичными лентами]. Адаптируй мои тренировки под имеющееся оборудование.";
+"I’m returning after [a month away]. Ease my routines back in with balanced, gradual training." = "Возвращаюсь к тренировкам после [месяца перерыва]. Скорректируй план для постепенного и сбалансированного возвращения.";
+"Compare my current photo with this goal reference. Suggest balanced training emphases based on visible muscle development, then adjust my routines. Keep the advice realistic; don’t estimate body fat or a timeline." = "Сравните мою текущую фотографию с этой целью. Предложите сбалансированные тренировочные акценты, основанные на видимом развитии мышц, а затем скорректируйте мои процедуры. Держите совет реалистичным; не оценивайте жировые отложения или временные рамки.";
+"FROM WEEKLY SUMMARY" = "Из недельного отчета";
+"FROM OPTIMIZE" = "Из ОПТИМИЗА";
+"Prompt templates" = "Быстрые шаблоны";
+"Next blank" = "Следующая заготовка";
+"FOCUS" = "Фокс";
+"SWAP" = "СВАП";
+"TIME & STRUCTURE" = "Время и структура";
+"INTENSITY" = "Взаимодействие";
+"Train [muscle] more and [muscle] less" = "Поезд [мышцы] больше и [мышцы] меньше";
+"Put extra focus on my [upper chest / rear delts]" = "Поставьте дополнительный фокус на моей верхней груди / задних дельтах";
+"Add more volume for my [weak spot]" = "Добавьте больше громкости для моего [слабого места]";
+"Swap out [exercise] because [reason]" = "Откажитесь, потому что [разум]";
+"My [body part] hurts — avoid [movement type]" = "Моя [часть тела] болит — избегайте [тип движения]";
+"Use more [dumbbells / cables] and less [barbell / machines]" = "Используйте больше [гантели / кабели] и меньше [барбеллы / машины]";
+"Keep each session under [45] minutes" = "Держите каждую сессию менее 45 минут";
+"Make it [4] days a week, split by [push/pull/legs]" = "Делайте это [4] дней в неделю, разделенные на [толчок/тяга/ноги]";
+"Only change Day [1] — keep the rest as is" = "День перемен [1] — сохраняйте все как есть";
+"I'm [worn out / not recovering] — dial the intensity down" = "I’m [worn out / not recoverying] — наберите интенсивность";
+"Make it [4] sets of [6-8] reps per exercise" = "[6][8] [[[6]]][править править код]]";
+"I'm in a [cutting / bulking] phase — tune for that" = "I’m in a [cutting / bulking] phase — мелодия для этого";
+"Add your own exercise" = "Добавьте собственное упражнение";
+"Add “%@” as your own" = "Добавьте «%@» как свой собственный";
+"Build my week — full body, about 45 minutes a day" = "Постройте мою неделю — полное тело, около 45 минут в день";
+"Update routines?" = "Обновление планы тренировок?";
+"Update routines" = "Обновление планы тренировок";
+"Save only" = "Сохранить только";
+"Save these training preferences and regenerate your routines to match?" = "Сохраните эти тренировочные предпочтения и восстановите свою план тренировки, чтобы соответствовать?";
+"Share routines" = "Поделиться планами тренировок";
+"Share (%lld)" = "Доля (%lld)";
+"Import routines" = "Импортировать планы тренировок";
+"Add (%lld)" = "Добавить (%lld)";
+"Ready to train" = "Готовы тренироваться";
+"Almost ready" = "Почти готов";
+"Workouts total" = "Общие тренировки";
+"Workout total" = "Общий объем работ";
+"Days trained" = "Тренированные дни";
+"Try %@ (+%@)" = "Попробуйте %@ (+%@)";
+"Drop to %@" = "Скачать %@";
+"Already up to date" = "Уже на сегодняшний день";
+"Smart progression" = "Умный прогресс";
+"Earn the next 2.5 kg — weight suggestions from your logged sets." = "Зарабатывайте следующие 2,5 кг — вес предложения из ваших зарегистрированных наборов.";
+"Secure checkout on the web via Polar. %@ / %@, renews until cancelled — manage or cancel anytime on the Polar page." = "Безопасная проверка в Интернете через Polar. %@ / %@, обновляется до отмены — управляйте или отменяйте в любое время на странице Polar.";
+"Enter code" = "Введите код";
+"Enter your activation code" = "Введите свой код активации";
+"After buying on the web, your code was emailed to you (and shown on the confirmation page). Paste it here to unlock Pro on this device." = "После покупки в Интернете ваш код был отправлен вам по электронной почте (и показан на странице подтверждения). Вставьте его здесь, чтобы разблокировать Pro на этом устройстве.";
+"Activate" = "активировать";
+"That code isn't active yet. Double-check it, or try again in a moment." = "Этот код еще не активен, дважды проверьте его или попробуйте еще раз.";
+"Couldn't verify — check your connection and try again." = "Не удалось проверить — проверьте соединение и попробуйте еще раз.";
+"You're Pro now — thanks for supporting Masso." = "Теперь вы Pro — спасибо за поддержку Masso.";
+"That code isn't active yet. Check the email from your purchase, or try again in a moment." = "Этот код еще не активен. Проверьте электронную почту с вашей покупки или попробуйте еще раз.";
+"Couldn't verify your code — check your connection and try again." = "Не удалось проверить код — проверьте соединение и попробуйте еще раз.";
+"ACTIVE" = "активный";
+"Thanks for supporting Masso. Manage or cancel on the Polar page." = "Спасибо за поддержку Masso. Управляйте или отменяйте на странице Polar.";
+"Scan to get this routine" = "Сканируйте, чтобы получить такой же план";
+"%lld days a week" = "%lld дней в неделю";
+"YOUR TRAINING" = "Твоё обучение";
+"Adjust preferences" = "Скорректировать предпочтения";
+"View routines" = "Посмотреть планы тренировок";
+"Adjust your routine" = "Скорректируйте свою план тренировки";
+"Body front" = "Спереди";
+"Body back" = "Сзади";
+"Notes for your AI coach" = "Заметки для вашего тренера AI";
+"AI coach memory description" = "Ваш тренер читает эти заметки всякий раз, когда это создает план тренировки.";
+"Coach memory examples" = "Например: прошлые травмы, движения во избежание, оборудование, график или цели.";
+"Saved here for good — your AI coach reads it every time it builds a routine. Write anything in plain words: past injuries, medical conditions, moves to avoid, equipment quirks, schedule, goals." = "Сохранились здесь навсегда — ваш ИИ-тренер читает его каждый раз, когда строит план тренировки. Пишите все простыми словами: прошлые травмы, медицинские условия, ходы, чтобы избежать, причуды оборудования, график, цели.";
+"Replace all" = "Заменить все";
+"Save to My Routines" = "Сохранить в мои планы тренировок";
+"Replace all routines" = "Заменить все планы тренировок";
+"Add to existing routines" = "Добавить к существующим планам";
+"Choose whether to replace your %lld saved routines or add these %lld routines alongside them." = "Замените %lld сохранённых планов или добавьте к ним эти %lld планов.";
+"Replace your routines?" = "Замените план тренировки?";
+"Your %lld saved routines will be deleted and replaced with these %lld." = "Сохраненные программы %lld будут удалены и заменены на эти %lld.";
+"Masso Pro" = "ZBRAND000X Pro";
+"Unlimited routines, unlimited AI coach, deep analytics." = "Неограниченные планы тренировок, неограниченный ИИ-тренер, глубокая аналитика.";
+"Built-in" = "встроенный";
+"AI coach" = "тренер";
+"Test connection" = "Испытательное соединение";
+"Primary route" = "первичный";
+"Backup route" = "Резервное копирование";
+"Not configured" = "Не сконфигурированный";
+"No internet" = "Нет интернета";
+"Timed out" = "Время вышло";
+"DNS blocked" = "DNS заблокирован";
+"Connection blocked" = "Подключение заблокировано";
+"TLS blocked" = "TLS заблокирован";
+"Unreachable" = "недостижимый";
+"The AI coach is reachable from this device." = "Тренер ИИ доступен с этого устройства.";
+"The AI coach can't be reached on this network. Try mobile data instead of Wi-Fi (or the other way round); if you use a VPN or proxy, switch it on or off and test again." = "Тренер ИИ не может быть достигнут в этой сети. Попробуйте мобильные данные вместо Wi-Fi (или наоборот); если вы используете VPN или прокси, включите или выключите его и снова проверьте.";
+"Edit exercise" = "Редактировать упражнение";
+"Built from" = "Построенный из";
+"Bodyweight only" = "Вес тела только";
+"%@ only" = "%@ only";
+"Under %d min" = "Под %d мин.";
+"No %@" = "Без %@";
+"More %@" = "Больше %@";
+"Your data" = "Ваши данные";
+"Export my data" = "Экспортировать свои данные";
+"A JSON backup of everything plus a CSV of every set you've logged — open it in Numbers, Excel, or any other app. Your data is yours; you can take it and go." = "JSON резервная копия всего плюс CSV каждого набора, который вы зарегистрировали - откройте его в числах, Excel или любом другом приложении.";
+"Export failed" = "Экспорт провалился";
+"Share anonymous usage data" = "Поделитесь анонимными данными об использовании";
+"Sends anonymous counts like \"a routine was generated\" or \"onboarding finished\" so I can see which parts of the app work. Never your workouts, weights, notes, or anything you typed. No account, no ads, no third-party ad networks. Turn it off and nothing is sent at all." = "Отправляет анонимные счета, такие как «создана план тренировки» или «окончена посадка», чтобы я мог видеть, какие части приложения работают. Никогда ваши тренировки, весы, заметки или что-либо, что вы набрали. Ни учетной записи, ни рекламы, ни сторонних рекламных сетей. Выключите его и ничего не отправляется вообще.";
+"Adjust your routines with your coach" = "Настройте свою план тренировки с вашим тренером";
+"Show earlier workouts (%lld)" = "Показать ранние тренировки (%lld)";
+"Start today's workout" = "Начните сегодняшние тренировки";
+"AI Coach" = "ИИ-тренер";
+"More training settings" = "Больше обучающих настроек";
+"Classic Routines" = "Классические планы тренировок";
+"Explore Routines" = "Исследуйте планы тренировок";
+"Find a classic plan and make it yours." = "Найдите классический план и сделайте его своим.";
+"Create a routine" = "Создать план тренировки";
+"Plan your exercises before you train" = "Планируйте свои упражнения перед тренировкой";
+"Start custom workout" = "Начать индивидуальные тренировки";
+"Add exercises as you go" = "Добавляйте упражнения, когда вы идете";
+"Choose your first exercise" = "Выберите первое упражнение";
+"What would you like to train next?" = "Что бы вы хотели тренировать дальше?";
+"End this workout" = "Прекратите эту тренировку";
+"Add next exercise" = "Добавить следующее упражнение";
+"Minimize workout" = "Минимизировать тренировки";
+"Workout complete" = "Завершение работы";
+"Save as a routine" = "Спасти как план тренировки";
+"Set up exercise" = "Настройка упражнения";
+"AI suggestion" = "Предложение ИИ";
+"Drag sideways to rotate. Tap for recovery details." = "Нажмите боком, чтобы повернуть.";
+"Tap to view muscle recovery" = "Нажмите, чтобы увидеть восстановление мышц";
+"3D muscle model" = "3D мышечная модель";
+"Model adapted for Masso: mirrored muscle groups, smoother surfaces, adjusted proportions and fatigue colors." = "Модель, адаптированная для Masso: зеркальные группы мышц, более гладкие поверхности, регулируемые пропорции и цвета усталости.";
+"Drag sideways to rotate" = "Перетаскивать боком, чтобы повернуть";
+"3D model unavailable" = "3D модель недоступна";
+"Start your first workout" = "Начните свою первую тренировку";
+"Your training journey starts here." = "Ваше путешествие начинается здесь";
+"Your workout is in progress." = "Ваша тренировка продолжается";
+"Rest up" = "Отдохни.";
+"You’ve trained today." = "Вы тренировались сегодня";
+"Plan your next session" = "Планируйте свою следующую сессию";
+"You last trained yesterday." = "Ты вчера тренировался.";
+"Make time to train" = "Найдите время для тренировок";
+"It’s been %lld days since your last workout." = "Это были дни %lld с момента последней тренировки.";
+"Ease back in" = "Спокойно.";
+"Your training summary" = "Ваше учебное резюме";
+"Let's plan your training" = "Давайте спланируем ваше обучение";
+"Previous suggestion" = "Предыдущее предложение";
+"Next suggestion" = "Следующее предложение";
+"Suggestion %lld of %lld" = "Предложение %lld от %lld";
+"Updating suggestions…" = "Обновление предложений...";
+"Suggestion removed" = "Предложение удалено";
+"Dismiss suggestion" = "Отклонить предложение";
+"Sent to chat" = "Отправлено в чат";
+"Applied" = "прикладной";
+"View Pro" = "Просмотреть Pro";
+"Collapse history" = "История коллапса";
+"Expand history (%lld)" = "Расширение истории (%lld)";
+"Ready" = "Готовы";
+"Routine options" = "Планы тренировок варианты";
+"Couldn’t prepare share" = "Не удалось собрать долю";
+"Please try again." = "Пожалуйста, попробуйте еще раз.";
+"Training photo" = "Учебная фотография";
+"Send to analyze with AI and suggest routine changes." = "Отправьте анализ с ИИ и предложите планы тренировок изменения.";
+"A photo can't measure strength or recovery." = "Фотография не может измерить силу или восстановление.";
+"Remove photo" = "Удалить фото";
+"Photo Library" = "Фото Библиотека";
+"Camera unavailable" = "Камера недоступна";
+"Allow camera access in Settings, or choose a photo from your library." = "Разрешите доступ к камере в настройках или выберите фотографию из своей библиотеки.";
+"Couldn't prepare this photo" = "Не удалось подготовить фото";
+"Please choose another photo." = "Пожалуйста, выберите другую фотографию.";
+"Review my training photo and suggest routine changes." = "Просмотрите мою тренировочную фотографию и предложите планы тренировок изменения.";
+"Couldn't analyze this photo. Your routines are unchanged. Please try again." = "Не могу проанализировать это фото. Ваши процедуры не изменились. Пожалуйста, попробуйте еще раз.";
+"Time range" = "Временной диапазон";
+"4 weeks" = "4 недели";
+"12 weeks" = "12 недель";
+"6 months" = "6 месяцев";
+"1 year" = "1 год";
+"All time" = "Все время";
+"%d training days · %@" = "%d учебные дни · %@";
+"Lift progress" = "Прогресс лифта";
+"%d improved" = "Улучшение %d";
+"1 lift improved" = "1 лифт улучшился";
+"%d lifts improved" = "Лифты %d улучшены";
+"Your progress starts here" = "Ваш прогресс начинается здесь";
+"Your lifts at a glance" = "Ваши лифты с первого взгляда";
+"Earlier → latest comparable records" = "Более ранние сопоставимые рекорды";
+"Log your workouts to see changes in weight and reps." = "Зарегистрируйте свои тренировки, чтобы увидеть изменения веса и повторений.";
+"All exercises" = "Все упражнения";
+"Muscles trained" = "Тренируемые мышцы";
+"This week · recorded sets" = "На этой неделе - записанные";
+"Primary muscles only · not a growth score" = "Только первичные мышцы – не показатель роста";
+"Some exercises have no muscle mapping and are excluded." = "Некоторые упражнения не имеют мышечного картирования и исключены.";
+"Training rhythm" = "Тренировочный ритм";
+"training days this week" = "Дни тренировок на этой неделе";
+"%d training days in the last %d weeks" = "Дни обучения %d в последние недели %d";
+"Trained" = "обученный";
+"Upcoming" = "приближающийся";
+"No recorded workout" = "Нет записанных тренировок";
+"Compared within the same exercise. Each day uses its best matching set. Chart scales differ between exercises." = "По сравнению с одним и тем же упражнением, каждый день использует свой лучший набор. Графики различаются между упражнениями.";
+"More matching sessions are needed to show a trend." = "Необходимы дополнительные сеансы, чтобы показать тенденцию.";
+"Strength changes do not measure muscle growth." = "Изменения силы не измеряют рост мышц.";
+"Recorded sets" = "Записанные наборы";
+"A recorded set counts once for each primary muscle group. Secondary muscles are excluded. These are logged sets, not measured effective sets or muscle growth." = "Записанный набор считается один раз для каждой основной группы мышц. Вторичные мышцы исключены. Это зарегистрированные наборы, а не измеренные эффективные наборы или рост мышц.";
+"%d → %d reps" = "%d → %d reps";
+"New" = "Новый";
+"Unchanged" = "Неизменный";
+"Weight for %d reps" = "Вес для %d";
+"Reps at %@" = "Исполнитель: %@";
+"Bodyweight reps" = "Масса тела повторяется";
+"Latest recorded set" = "Последний записанный набор";
+"Baseline" = "Базовая линия";
+"Show fewer" = "Поменьше";
+"Show all %d exercises" = "Показать все упражнения %d";
+"Describe what happened and what you expected…" = "Опишите, что произошло и чего вы ожидали...";
+"Thanks for reporting this. Your report has been sent to our team and will help us improve Masso." = "Ваш отчет был отправлен нашей команде и поможет нам улучшить Masso.";
+"Thanks for reporting this. I saved your report on this device and will retry sending it when a connection is available." = "Спасибо, что сообщили об этом. Я сохранил ваш отчет на этом устройстве и повторю отправку, когда соединение будет доступно.";
+"Diet" = "Питание";
+"What to eat today" = "Что есть сегодня";
+"Diet preferences" = "Предпочтения диеты";
+"Add your weight for portion guidance" = "Добавьте свой вес в руководство по части";
+"Approximate portions. Cooked weights except dry oats, packaged yogurt/tofu and fruit. Add cooking oil to taste." = "Приблизительные порции. Приготовленные веса, за исключением сухого овса, упакованного йогурта/тофу и фруктов. Добавьте растительное масло на вкус.";
+"Swap protein foods for similar protein, starches for similar carbs. Other nutrients may differ." = "Замените белковые продукты на аналогичные белки, крахмалы на аналогичные углеводы. Другие питательные вещества могут отличаться.";
+"Portions are approximate; calories and other nutrients may differ." = "Части являются приблизительными; калории и другие питательные вещества могут отличаться.";
+"Swap food" = "Своп еда";
+"Breakfast" = "Завтрак";
+"Lunch" = "обед";
+"Dinner" = "ужин";
+"Snack" = "Снек";
+"Chicken breast" = "Куриная грудь";
+"Lean beef" = "Говядина";
+"Firm tofu" = "Фирма Тофу";
+"Eggs" = "Яйца";
+"Plain Greek yogurt" = "Простой греческий йогурт";
+"Rice" = "рис";
+"Potatoes" = "Картофель";
+"Oats" = "овес";
+"Broccoli" = "Брокколи";
+"Leafy greens" = "Лиственная зелень";
+"Tomatoes" = "помидоры";
+"Blueberries" = "Блюмбрия";
+"Meals per day" = "Еда в день";
+"3 meals" = "3 приема пищи";
+"3 meals + snack" = "3 блюда + закуски";
+"Plant-based" = "растительного происхождения";
+"Uses your existing training goal and body information." = "Использует существующую цель обучения и информацию о теле.";
+"Allergies" = "Аллергия";
+"Milk" = "молоко";
+"Egg" = "яйцо";
+"Soy" = "соя";
+"Foods to avoid" = "Продукты, которых следует избегать";
+"Keep at least one protein, starch and fruit or vegetable option." = "Держите по крайней мере один вариант белка, крахмала и фруктов или овощей.";
+"Protein" = "Белок";
+"Diet protein progress" = "%1$dg/%2$dg Протеин";
+"Carbs" = "углеводы";
+"Fat" = "Жиры";
+"g / day" = "г/день";
+"Supports muscle recovery" = "Поддерживает восстановление мышц";
+"Fuels your training" = "Подпитывает ваше обучение";
+"Supports daily nutrition" = "Поддерживает ежедневное питание";
+"Estimated daily targets. Adjust portions to your appetite and training needs." = "Предполагаемые ежедневные цели. Настройка порций на ваш аппетит и потребности в обучении.";
+"%d/%d lifts improving" = "Улучшение подъемников %d/%d";
+"reps" = "замена";
+"sets" = "подходы";
+"%d training days" = "Дни обучения %d";
+"4 weeks · training volume" = "4 недели · объем обучения";
+"Features" = "Особенности";
+"Bedtime reminder" = "Напоминание в постель";
+"Last night's score" = "Счет прошлой ночи";
+"Tonight's goal" = "Сегодняшняя цель";
+"Notifications are off" = "Уведомления отключены";
+"Open Settings" = "Открытые настройки";
+"Allow Masso notifications in Settings to receive bedtime reminders." = "Разрешите уведомления Masso в настройках получать напоминания перед сном.";
+"Record your first meal today" = "Запишите свой первый ужин сегодня";
+"Set your body weight" = "Установите вес вашего тела";
+"Get your daily nutrition targets" = "Получите ежедневные цели питания";
+"%lld / %lld meals recorded" = "%lld / %lld приемы пищи";
+"Last night" = "Прошлой ночью";
+"Insights category" = "Категория Insights";
+"No meal records in this period" = "Никаких записей о еде в этот период";
+"No sleep records in this period" = "Записей сна в этот период нет";
+"Confirm meal photos to see nutrition trends." = "Подтвердите фотографии еды, чтобы увидеть тенденции питания.";
+"Connect Apple Health to see your sleep trends." = "Подключите Apple Health, чтобы увидеть тенденции сна.";
+"Open Diet" = "Открытая диета";
+"Open Sleep" = "Открытый сон";
+"Recorded nutrition" = "Записанное питание";
+"Daily average · logged days only" = "Ежедневная средняя • только зарегистрированные дни";
+"%lld / %lld days fully logged" = "%lld / %lld дни полностью зарегистрированы";
+"Protein intake" = "Потребление белка";
+"Yellow: recorded protein · diamond: daily target" = "Желтый: зарегистрированный белок · алмаз: ежедневная цель";
+"Partial meals count as recorded intake, not a complete day's total." = "Частичное питание считается зарегистрированным потреблением, а не полным днем.";
+"Average sleep" = "Средний сон";
+"%lld nights recorded" = "Запись ночей %lld";
+"Sleep duration" = "Продолжительность сна";
+"Blue: recorded sleep · diamond: nightly target" = "Синий: записанный сон · алмаз: ночная цель";
+"Complete days with saved nutrition targets" = "Полные дни с сохраненными целями питания";
+"Nights with saved sleep targets" = "Ночи с сохраненными целями сна";
+"Protein · %lld / %lld g" = "Белок · %lld/%lld г";
+"Last night · %@" = "Прошлой ночью %@";
+"Saved to My Routines" = "Спасенные в моих планах тренировок";
+"Sleep target" = "Цель сна";
+"Sleep preferences" = "Предпочтения сна";
+"Total sleep · each night" = "Полный сон – каждую ночь";
+"Sleep supports recovery. Adults generally need at least 7 hours." = "Сон поддерживает восстановление. Взрослым обычно требуется не менее 7 часов.";
+"Total sleep" = "Полный сон";
+"Nightly target" = "Ночная цель";
+"Deep sleep" = "Глубокий сон";
+"REM sleep" = "Быстрый сон";
+"Your device hasn't provided sleep stages." = "Ваше устройство не обеспечивает стадии сна.";
+"Your usual sleep stages" = "Обычные стадии сна";
+"Based on at least 7 recorded nights in the previous 14 days. A personal reference, not a pass/fail target." = "Основываясь, по крайней мере, на 7 зарегистрированных ночей за предыдущие 14 дней. Личная справка, а не пропуск/провал цели.";
+"Sleep stages are device estimates and do not affect your goal score." = "Стадии сна являются оценками устройства и не влияют на ваш гол.";
+"About sleep stages" = "О стадиях сна";
+"Building your baseline" = "Построение вашей базовой линии";
+"Reminder time" = "Напоминание о времени";
+"Personal reference" = "Личная ссылка";
+"Why these portions?" = "Почему именно эти порции?";
+"Meal balance" = "Равновесие еды";
+"Protein across the day" = "Протеин в течение дня";
+"Carbs and dinner" = "Углеводы и ужин";
+"Portion guide" = "Путеводитель по порциям";
+"Protein is split evenly across breakfast, lunch and dinner. An optional snack takes 15% of the daily target; the rest stays evenly split." = "Белок равномерно распределяется между завтраком, обедом и ужином. Дополнительный перекус занимает 15% of суточной цели; остальное остается равномерно разделенным.";
+"Daily protein and consistent training matter most. Small trials support balanced meals for muscle protein synthesis; long-term muscle-growth results are mixed." = "Ежедневные белковые и последовательные тренировки имеют наибольшее значение. Небольшие испытания поддерживают сбалансированное питание для синтеза мышечного белка; долгосрочные результаты мышечного роста неоднозначны.";
+"Carbs start at 25% for breakfast, 35% for lunch and 40% for dinner. With a snack, 15% goes to the snack and the remaining 85% follows the same split." = "Углеводы начинаются с завтрака 25% for, обеда 35% for и ужина 40% for. С закуской, 15% goes к закуске и оставшимся 85% follows такой же раскол.";
+"These percentages are an app planning default, not a proven optimal ratio. A small trial found faster sleep onset with a high-GI meal four hours before bed; other trials found no benefit. More dinner carbs do not guarantee better sleep or justify cutting dinner protein." = "Эти проценты являются по умолчанию планированием приложений, а не доказанным оптимальным соотношением. Небольшое исследование показало более быстрое начало сна с высоким ГИ-трапезой за четыре часа до сна; другие испытания не нашли никакой пользы. Больше углеводов для ужина не гарантирует лучший сон или не оправдывает сокращение белка ужина.";
+"Approximate cooked weights; oats are dry, yogurt/tofu are packaged weights, fruit is edible weight. Swaps match protein or carbs, not all nutrients. Cooking fats are not included in these portions." = "Приблизительные вареные веса; овес сухой, йогурт/тофу упакованный вес, фрукты съедобный вес. Свопы соответствуют белку или углеводам, не всем питательным веществам. Приготовление жиров не входит в эти порции.";
+"ISSN · Protein and exercise (2017)" = "ISSN · Белки и упражнения (2017)";
+"Mamerow · Protein distribution (2014)" = "Мамеров · Распределение белка (2014)";
+"Protein distribution review (2020)" = "Обзор распределения белка (2020)";
+"Afaghi · Carbs and sleep (2007)" = "Афаги · Углеводы и сон (2007)";
+"Athletes' evening meals trial (2019)" = "Вечернее питание спортсменов (2019)";
+"Why this sleep target?" = "Почему эта цель сна?";
+"Why 8 hours?" = "Почему 8 часов?";
+"Sleep and recovery" = "Сон и восстановление";
+"Deep sleep and REM" = "Глубокий сон и REM";
+"Apple Health records" = "Записи ZBRAND000X";
+"About sleep" = "О сне";
+"Apple Health sleep records" = "Записи сна ZBRAND000X";
+"Core sleep" = "Основной сон";
+"Awake" = "проснуться";
+"In bed" = "В постели";
+"Sleep (unspecified)" = "Сон (не уточняется)";
+"Adults generally need 7–9 hours a night. Eight hours is a starting point, not a precise calculation from your workout or body weight. Adjust for how rested you feel." = "Взрослым обычно требуется 7-9 часов в сутки. Восемь часов - это отправная точка, а не точный расчет от вашей тренировки или веса тела.";
+"Sleep supports recovery and performance. A small experiment found lower muscle protein synthesis after one sleepless night. It does not prove that every extra hour produces more muscle, or that everyone needs the same duration." = "Сон поддерживает восстановление и работоспособность. Небольшой эксперимент обнаружил синтез белка нижних мышц после одной бессонной ночи. Это не доказывает, что каждый лишний час производит больше мышц, или что всем нужна одна и та же продолжительность.";
+"Stage durations vary with age, night and device. Your ranges summarize the previous 14 days once at least 7 nights are available; they are personal references, not recommended targets. Apple Watch stages are estimates." = "Продолжительность этапа варьируется в зависимости от возраста, ночи и устройства. Ваши диапазоны суммируют предыдущие 14 дней, как минимум 7 ночей доступны; они являются личными ссылками, а не рекомендуемыми целями.";
+"Masso reads all authorized sleep-analysis history: core, deep, REM, unspecified sleep, awake and in-bed samples, with times and sources. Missing stages stay blank. Overlapping sources are not added together; detailed stage data is preferred for nightly totals. These totals may differ from Apple's source priorities. In-bed time is not sleep time." = "Masso считывает всю авторизованную историю анализа сна: основные, глубокие, быстрые, неопределенные образцы сна, бодрствования и в постели, со временем и источниками. Пропущенные этапы остаются пустыми. Перекрывающиеся источники не добавляются вместе; подробные данные стадии предпочтительны для ночных итогов. Эти цифры могут отличаться от приоритетов источника Apple. Время в постели не является временем сна.";
+"Allow Sleep access in Apple Health. Data appears after your device syncs. HealthKit does not reveal whether read access was denied, so no records can mean no data or no permission." = "Данные появляются после синхронизации вашего устройства. HealthKit не показывает, было ли отказано в доступе к чтению, поэтому никакие записи не могут означать отсутствие данных или разрешения.";
+"NIH · Recommended sleep duration" = "NIH – рекомендуемая продолжительность сна";
+"AASM / SRS · Adult sleep consensus (2015)" = "AASM / SRS · Консенсус сна для взрослых (2015)";
+"Lamon · Sleep loss and muscle protein synthesis (2021)" = "Ламон · Потеря сна и синтез мышечного белка (2021)";
+"Apple · Sleep tracking" = "Apple: отслеживание сна";
+"Apple · Sleep-analysis data" = "Apple · Данные анализа сна";
+"Sleep history" = "История сна";
+"Show earlier nights" = "Показать ранние ночи";
+"Today's meals" = "Сегодняшние блюда";
+"Diet history" = "История диеты";
+"No meal records yet" = "Пока нет записей о еде";
+"Sleep details" = "Подробности сна";
+"7 days" = "7 дней";
+"Compared with your current target" = "По сравнению с вашей текущей целью";
+"Compared with that day's target" = "По сравнению с мишенью этого дня";
+"View Apple Health records" = "Посмотреть записи Apple Health";
+"Eating window" = "Окно для еды";
+"Flexible" = "Гибкий";
+"12:12 · 12-hour window" = "12:12 · 12-часовое окно";
+"14:10 · 10-hour window" = "14:10 · 10-часовое окно";
+"16:8 · 8-hour window" = "16:8 · 8-часовое окно";
+"Starts at" = "Начинается с";
+"Ends at" = "Заканчивается на";
+"Next day" = "На следующий день";
+"Morning snack" = "Утренняя закуска";
+"Afternoon snack" = "Послеобеденная закуска";
+"Meal timing changes the split, not your daily nutrition targets." = "Время приема пищи меняет распределение, а не ваши ежедневные цели питания.";
+"Protein is split evenly across your selected 2–5 meals. Changing meal count or eating window keeps the daily target unchanged." = "Белок равномерно распределяется между выбранными вами 2-5 приемами пищи. Изменение количества приемов пищи или окна приема пищи сохраняет ежедневную цель неизменной.";
+"Two meals split carbs 45% / 55%. With three meals, the split is 25% / 35% / 40%. Four meals reserve 15% for a snack; five reserve 10% for each of two snacks. The remaining carbs follow the three-meal split." = "Два приема пищи расщепляют углеводы 45%/55%. При трех приемах пищи расщепление составляет 25%/35/40 %. Четыре приема пищи резервируют 15% for закуски; пять резервируют 10% for каждый из двух закусок. Остальные углеводы следуют за трехразовым расщеплением.";
+"Flexible timing is the default. 12:12, 14:10 and 16:8 describe fasting hours and eating hours. A shorter window does not lower your daily nutrition targets or guarantee better muscle growth." = "12:12, 14:10 и 16:8 описывают часы голодания и приема пищи. Более короткое окно не снижает ваши ежедневные цели питания или гарантирует лучший рост мышц.";
+"NIDDK · Time-restricted eating" = "NIDDK - ограниченное по времени питание";
+"%lld meals" = "%lld питание";
+"Meal 1" = "Питание 1";
+"Meal 2" = "Питание 2";
+"Meal 3" = "Питание 3";
+"Meal 4" = "Питание 4";
+"Meal 5" = "Питание 5";
+"Diet calendar" = "Диетический календарь";
+"Sleep calendar" = "Календарь сна";
+"View all months" = "Смотреть все месяцы";
+"Green marks workout days." = "Зеленые отметки тренировочных дней.";
+"Color strength shows your recorded protein progress." = "Прочность цвета показывает ваш зарегистрированный прогресс белка.";
+"Color strength shows your sleep-duration progress." = "Сила цвета показывает ваш прогресс в продолжительности сна.";
+"Grey means no record or no target. Saved daily targets are used when available; otherwise your current target is used." = "Серый означает отсутствие записи или цели.Сохраненные ежедневные цели используются, когда они доступны; в противном случае используется ваша текущая цель.";
+"Workout resources" = "Ресурсы для работы";
+"Training History" = "История обучения";
+"Share Training History" = "Поделиться История обучения";
+"No workout" = "Без тренировок";
+"Workout recorded" = "Записанная тренировка";
+"Improving lifts over 4 weeks" = "Улучшение лифтов за 4 недели";
+"Not enough data" = "Недостаточно данных";
+"Describe meal" = "Опишите еду";
+"Photo" = "Фото";
+"Diet score" = "Диета балл";
+"All meals recorded" = "Все блюда записаны";
+"In progress · record remaining meals" = "В прогрессе · запись оставшихся блюд";
+"Record a meal to see your progress" = "Запишите еду, чтобы увидеть свой прогресс";
+"Estimated target adherence, not a health score." = "Целевая приверженность, а не оценка здоровья.";
+"Try %@, or record what you eat." = "Попробуйте %@ или запишите, что вы едите.";
+"e.g. Two eggs, a bowl of rice and a glass of milk" = "Например, два яйца, миска риса и стакан молока.";
+"Estimate nutrients" = "Оценка питательных веществ";
+"AI estimate. Check portions, sauces and drinks before confirming." = "Проверь порции, соусы и напитки перед подтверждением.";
+"Describe your meal in up to 4,000 characters." = "Опишите свою еду в 4000 символов.";
+"Meal analysis unavailable" = "Анализ еды недоступен";
+"No clear meal found. Describe foods and portions, or enter nutrients manually." = "Опишите продукты и порции или введите питательные вещества вручную.";
+"Workout History" = "История тренировок";
+"Share Workout History" = "Поделиться История Workout";
+"Workout history" = "История тренировок";
+"Workout target" = "Цель тренировки";
+"%d of %d days this week" = "%d дней %d на этой неделе";
+"Membership" = "Членство";
+"Add meal" = "Добавить еду";
+"Meal" = "еда";
+"Meal %d" = "Питание %d";
+"Only confirmed nutrients count toward today's score." = "Только подтвержденные питательные вещества подсчитываются к сегодняшнему счету.";
+"Why these targets?" = "Почему эти цели?";
+"Workout Insights" = "Аналитика тренировок";
+"Share Workout" = "Поделиться Workout";
+"Share Workout Insights" = "Обсуждение Workout Insights";
+"Generate meal" = "Генерировать еду";
+"Generating meal…" = "Приготовление пищи...";
+"Could not estimate this meal. Add foods and portions, then try again." = "Не могу оценить этот прием пищи. Добавьте продукты и порции, а затем попробуйте еще раз.";
+"Daily goal contribution" = "Ежедневный целевой вклад";
+"Last 7 days" = "Последние 7 дней";
+"days / week" = "дни/неделя";
+"Delete meal" = "Исключить прием пищи";
+"Delete meal?" = "Исключить еду?";
+"Goal & color rules" = "Цели и цветовые правила";
+"Your current target" = "Ваша текущая цель";
+"What the colors mean" = "Что означают цвета";
+"How it is calculated" = "Как рассчитывается";
+"Research & guidance" = "Исследования и руководство";
+"Light color" = "Светлый цвет";
+"Medium color" = "Средний цвет";
+"Deep color" = "Глубокий цвет";
+"No recorded intake/sleep or no usable target." = "Нет зарегистрированного приема / сна или полезной цели.";
+"Solid blue means actual sleep reaches your saved nightly target. Awake and time in bed are excluded. Deep and REM are references, not scoring targets." = "Твердый синий означает, что фактический сон достигает вашей сохраненной ночной цели. Пробуждение и время в постели исключены. Глубокий и быстрый - это ссылки, а не забивающие цели.";
+"Solid yellow requires all three daily macro targets. The lower end of the carb/fat ranges is the completion threshold; the upper end is guidance, not a reason to eat extra." = "Твердо-желтый требует всех трех ежедневных макро-мишеней. Нижний конец диапазонов углеводов/жиров является порогом завершения; верхний конец - это руководство, а не причина, чтобы есть больше.";
+"Color bands are Masso's display rules, not medical thresholds. Today has a white outline. Home's oldest three dots also fade for layout." = "Цветовые полосы - это правила отображения Masso, а не медицинские пороги. Сегодня белый контур. Три самые старые точки дома также исчезают для макета.";
+"Completion = actual sleep minutes ÷ that night's target. Values above the target earn no extra credit. Stage estimates do not determine the color." = "Завершение = фактические минуты сна ÷ та ночная цель. Значения выше цели не получают дополнительного кредита. Оценки стадии не определяют цвет.";
+"The daily Diet score compares protein, carbs and fat with fixed daily targets (weights 20/10/5); each macro is capped at 100%, so extra intake cannot offset another shortfall. Meal cards show that meal's weighted contribution to the full daily targets as a percentage, not a score." = "Показатель ежедневной диеты сравнивает белок, углеводы и жир с фиксированными ежедневными целями (вес 20/10/5); каждый макрос ограничен на 100%, поэтому дополнительное потребление не может компенсировать другой дефицит. Карты питания показывают, что взвешенный вклад еды в полные ежедневные цели в процентах, а не в баллах.";
+"Only saved meal records count. AI nutrition estimates can be inaccurate; colors measure recorded target adherence, not diet quality or health." = "Оценки питания ИИ могут быть неточными; цвета измеряют зарегистрированное соблюдение цели, а не качество диеты или здоровье.";
+"Saved historical targets take priority. If a day has no saved target, the current target is used; changing today's goal does not overwrite saved goals." = "Сохраненные исторические цели имеют приоритет. Если у дня нет сохраненной цели, используется текущая цель; изменение сегодняшней цели не переписывает сохраненные цели.";
+"Adults generally need 7–9 hours; ages 13–18 need 8–10 hours and ages 6–12 need 9–12 hours. Eight hours is an adult starting point. A blue dot only confirms your chosen goal, not that your sleep is healthy." = "Взрослым обычно требуется 7-9 часов; в возрасте 13-18 лет требуется 8-10 часов, а в возрасте 6-12 лет - 9-12 часов. Восемь часов - это взрослая отправная точка. Синяя точка только подтверждает выбранную вами цель, а не то, что ваш сон здоров.";
+"ISSN supports about 1.4–2.0 g/kg/day of protein for most healthy exercising adults. Masso's targets are planning starting points. Its 20/10/5 weights and color bands are product choices, not research-validated health scores." = "ISSN поддерживает около 1,4-2,0 г / кг / день белка для большинства здоровых людей, занимающихся физическими упражнениями. Цели Masso планируют отправные точки. Его вес 20/10/5 и цветовые диапазоны являются выбором продукта, а не подтвержденными исследованиями оценками здоровья.";
+"ACSM · Nutrition and athletic performance (2016)" = "ACSM · Питание и спортивные результаты (2016)";
+"Add your weight for nutrition targets" = "Добавьте свой вес для целей питания";
+"Color strength shows your three-macro target progress." = "Сила цвета показывает ваш трехмакроцелевой прогресс.";
+"Target used today" = "Сегодня используется таргет";
+"Current sleep target" = "Текущая цель сна";
+"Edit meal" = "Редактировать еду";
+"Save changes" = "Сохранить изменения";
+"Replace photo" = "Заменить фото";
+"Weekly target" = "Недельная цель";
+"%d days / week" = "%d дней в неделю";
+"Your goal is weekly. Rest days do not count as failed daily goals." = "Ваша цель еженедельная. Дни отдыха не считаются неудачными ежедневными целями.";
+"Green means at least one recorded training set that day." = "Зеленый означает, по крайней мере, один записанный тренировочный набор в тот день.";
+"Gray means no recorded training sets that day." = "Серый означает, что в тот день не было записано никаких тренировочных наборов.";
+"The first day after a workout." = "Первый день после тренировки.";
+"The second day after a workout." = "Второй день после тренировки.";
+"Gray appears after the two-day recovery window when there is no workout." = "Серый появляется после двухдневного окна восстановления, когда нет тренировки.";
+"Recovery colors are for context and do not count toward your weekly target. Today has a white outline; the oldest three home dots fade for display only." = "Цвета восстановления предназначены для контекста и не учитываются для вашей еженедельной цели. Сегодня есть белый контур; самые старые три точки дома исчезают только для отображения.";
+"Each day with recorded training sets counts once, even if you complete several workouts. This week's count follows your calendar settings and is compared with your current weekly target." = "Каждый день с записанными тренировочными наборами считается один раз, даже если вы выполняете несколько тренировок. На этой неделе счет следует вашим настройкам календаря и сравнивается с вашей текущей еженедельной целью.";
+"Only logged workout days count toward your weekly target. The two recovery shades are a simple display rule, not a measurement of muscle recovery or workout intensity." = "Два оттенка восстановления - это простое правило отображения, а не измерение восстановления мышц или интенсивности тренировки.";
+"Why this target?" = "Почему эта цель?";
+"Your fixed gram targets use the weight, training goal and weekly training frequency saved in Masso. If you are 65 or older, the protein factor is raised modestly. Meal count only divides the daily targets; it does not change them." = "Ваши фиксированные граммовые цели используют вес, тренировочную цель и еженедельную частоту тренировок, сохраненную в Masso. Если вам 65 лет или старше, белковый фактор поднимается скромно. Количество еды только делит ежедневные цели; это не меняет их.";
+"Carbohydrate uses your goal and planned training days, with a 130 g adult reference floor. Fat uses a simple 0.8 g/kg planning value. These are practical estimates, not measured calorie needs or medical prescriptions." = "Углевод использует ваши целевые и запланированные тренировочные дни, с 130 г взрослого эталонного этажа. Жир использует простое значение планирования 0,8 г / кг. Это практические оценки, а не измеренные потребности в калориях или медицинские предписания.";
+"Masso does not currently collect height or body composition, so it cannot estimate energy needs precisely. Sleep duration is not used to change macro grams because there is no established formula for doing that." = "Masso в настоящее время не собирает высоту или состав тела, поэтому не может точно оценить энергетические потребности. Продолжительность сна не используется для изменения макрограмм, потому что для этого нет установленной формулы.";
+"ISSN describes protein needs as a range, not one proven ideal for every person. Masso selects a fixed planning point from body weight and training goal; carbohydrates also reflect planned weekly training days, and fat uses a simple weight-based estimate. Age modestly raises the protein factor from 65 onward. Height, body composition, medical conditions and reliable daily energy expenditure are not collected, so these values are estimates rather than a personalized clinical prescription. Sleep data is not used to change macro targets because there is no established conversion from sleep duration to daily macro grams. Scoring weights and color bands are product choices, not research-validated health scores." = "ISSN описывает потребности в белке как диапазон, а не один доказанный идеал для каждого человека. Masso выбирает фиксированную точку планирования из массы тела и цели тренировки; углеводы также отражают запланированные еженедельные тренировочные дни, а жир использует простую оценку на основе веса. Возраст скромно повышает белковый фактор с 65 и далее. Рост, состав тела, медицинские условия и надежные ежедневные расходы энергии не собираются, поэтому эти значения являются оценками, а не персонализированным клиническим предписанием. Данные сна не используются для изменения макроцелей, потому что нет установленной конверсии от продолжительности сна до ежедневных макрограмм. Оценка веса и цветовые полосы являются выбором продукта, а не проверенными исследованиями оценками здоровья.";
+"Sleep score" = "Сонный балл";
+"About this muscle" = "Об этой мышце";
+"Related exercises" = "Связанные упражнения";
+"Exercises for this muscle" = "Упражнения для этой мышцы";
+"No matching exercises yet" = "Совпадающих упражнений пока нет";
+"Drag sideways to rotate. Tap a muscle to learn more." = "Перетащите боком, чтобы повернуть, нажмите мышцу, чтобы узнать больше.";
+"Muscle intro · Neck" = "Поддерживает и контролирует движение головы и шеи.";
+"Muscle intro · Chest" = "Подносит руки вперед и по всему телу и помогает надавливать.";
+"Muscle intro · Shoulders" = "Поднимает и направляет руки по разным направлениям.";
+"Muscle intro · Biceps" = "Сгибает локоть и помогает тянуть.";
+"Muscle intro · Triceps" = "Выпрямляет локоть и помогает давить.";
+"Muscle intro · Forearms" = "Двигает запястье и помогает с захватом.";
+"Muscle intro · Core" = "Стабилизирует ствол и переносит силу между верхней и нижней частью тела.";
+"Muscle intro · Glutes" = "Расширяет и стабилизирует бедро.";
+"Muscle intro · Quads" = "Выпрямляет колено и поддерживает приседания и ступни.";
+"Muscle intro · Hamstrings" = "Сгибает колено и расширяет бедро.";
+"Muscle intro · Lower legs" = "Двигает лодыжку и ногу, помогая оттолкнуться и контролировать каждый шаг.";
+"Muscle intro · Adductors" = "Притягивает бедро к средней линии тела.";
+"Muscle intro · Back" = "Поддерживает тянущие движения и управление лопаткой.";
+"Home reminders" = "Домой Напоминания";
+"Meal reminders" = "Напоминания о еде";
+"Time to eat" = "Пора поесть";
+"Fuel your muscles with a balanced meal" = "Сбалансированная еда даст мышцам энергию";
+"Time to wind down" = "Время сворачивать";
+"Sleep helps your muscles recover" = "Сон помогает мышцам восстановиться";
+"Find demo" = "Найти демо";
+"Calendar colors" = "Цвета в календаре";
+"Tap to add photo" = "Нажмите, чтобы добавить фото";
+"Training in progress" = "Подготовка кадров";
+"Train again" = "Опять поезд";
+"Exercise details" = "Подробности упражнений";
+"Training today and short sleep: fuel your workout and prioritize recovery" = "Тренировки сегодня и короткий сон: подпитывайте тренировку и расставьте приоритеты для восстановления";
+"Short sleep last night: keep protein steady and prioritize recovery" = "Короткий сон прошлой ночью: держите белок стабильным и уделяйте приоритетное внимание восстановлению";
+"More training today: extra carbs support recovery" = "Больше тренировок сегодня: дополнительные углеводы поддерживают восстановление";
+"Training today: carbs adjusted, protein stays steady" = "Тренировки сегодня: углеводы скорректированы, белок остается стабильным";
+"Recovery day: keep protein steady while muscles recover" = "День восстановления: держите белок стабильным, а мышцы восстанавливаются";
+"No workout logged today: carbs follow your lighter activity" = "Никаких тренировок сегодня: углеводы следуют за вашей более легкой активностью";
+"Daily adjustments" = "Ежедневные корректировки";
+"Carb adjustment" = "Корректировка углерода";
+"Carbs follow logged workouts and working sets. Training/rest offsets use 0.5 g/kg around your weekly average; high-volume days add 0.3 g/kg. The change is limited to 50 g either way, with a 130 g floor. These are Masso planning rules, not exact doses from a study." = "Углеводы следуют зарегистрированным тренировкам и рабочим наборам. Тренировки/отдых компенсируют использование 0,5 г/кг в среднем за неделю; большие объемные дни добавляют 0,3 г/кг. Изменение ограничивается 50 г в любом случае, с полом 130 г. Это правила планирования Masso, а не точные дозы от исследования.";
+"Protein and fat remain steady. Sleep under 7 hours changes the recovery advice, not your macro targets: sleep studies do not establish a gram adjustment for missed sleep." = "Белок и жир остаются устойчивыми. Сон менее 7 часов меняет советы по восстановлению, а не ваши макроцели: исследования сна не устанавливают граммовую корректировку на пропущенный сон.";
+"Each meal shows its share of the full daily targets. Today's targets update with your workout records; earlier days retain their saved targets." = "Каждый прием пищи показывает свою долю полных ежедневных целей. Сегодняшние цели обновляются с вашими записями тренировок; предыдущие дни сохраняют свои сохраненные цели.";
+"Carbs and resistance training · Review (2022)" = "Углеводы и тренировка сопротивления · Обзор (2022)";
+"Carb feeding · Meta-analysis (2022)" = "Углеводство · Мета-анализ (2022)";
+"Sleep and dietary intake · Review (2020)" = "Сон и потребление пищи · Обзор (2020)";
+"Remember this preference?" = "Помните это предпочтение?";
+"Saved preferences appear in Training Preferences → Notes" = "Сохраненные предпочтения появляются в учебных предпочтениях";
+"Saved to Notes" = "Сэкономленные на заметках";
+"Not saved" = "Не спасли";
+"Yes" = "Да";
+"No" = "Нет";
+"/ 100" = "/ 100";
+"3D close-up of the muscles trained" = "3D крупный план мышц, обученных";
+"About your targets" = "О ваших целях";
+"Analytics events" = "Аналитические события";
+"Analyzing meal…" = "Анализируя питание...";
+"Apply suggested weight" = "Предлагаемый вес";
+"Beatriz Gomez Santamaria" = "Беатрис Гомес Сантамария";
+"CURRENT" = "КУРРЕКТ";
+"Choose a starting point, then adjust each slider. Your saved gram amounts become your daily targets. Changing the number of meals only splits those totals across the day." = "Выберите отправную точку, затем настройте каждый ползунок. Ваши сэкономленные суммы граммов становятся вашими ежедневными целями. Изменение количества блюд только разделяет эти суммы в течение дня.";
+"Choose your plan before training. Rest days count as completed only when explicitly planned." = "Выберите свой план перед тренировкой. Дни отдыха считаются завершенными только тогда, когда явно запланированы.";
+"Daily nutrition targets" = "Ежедневные цели питания";
+"Daily records" = "Ежедневные записи";
+"Daily score" = "Ежедневный счет";
+"Enjoy unlimited plans, unlimited AI, and deep analytics. Welcome aboard." = "Наслаждайтесь неограниченными планами, неограниченным ИИ и глубокой аналитикой.";
+"Foods and portions" = "Еда и порции";
+"Front and back muscle coverage" = "Покрытие передней и задней мышц";
+"GOAL REFERENCE" = "ЦЕЛЬНАЯ РЕФЕРЕНЦИЯ";
+"Goal met" = "Цель достигнута";
+"Grid" = "Сетка";
+"How are these targets calculated?" = "Как рассчитываются эти цели?";
+"List" = "Список";
+"Meal schedule" = "Расписание еды";
+"Meal timing divides your daily amounts; it does not change the daily totals." = "Время приема пищи делит ваши ежедневные количества; это не меняет ежедневные суммы.";
+"No data" = "Нет данных";
+"No sleep data yet" = "Пока нет данных о сне";
+"On workout days, Masso can shift carbohydrates around your weekly baseline using your logged training. Protein and fat stay at the amounts you choose." = "В дни тренировок Masso может перемещать углеводы вокруг вашего еженедельного базового уровня, используя зарегистрированные тренировки.";
+"Phase 0: NoOpSink — nothing leaves this device." = "Фаза 0: NoOpSink — ничто не покидает это устройство.";
+"Plan adherence, not a health or muscle-growth measurement. Training 40 · protein 20 · carbs 10 · fat 5 · sleep 25. Extra training or food earns no bonus." = "Планирование соблюдения, а не измерение здоровья или роста мышц. Обучение 40 · белок 20 · углеводы 10 · жир 5 · сон 25. Дополнительные тренировки или еда не зарабатывают бонусов.";
+"Show earlier days" = "Показать ранние дни";
+"Sleep" = "Сон";
+"Sleep recorded by Apple Watch or compatible devices appears through Apple Health." = "Сон, записанный Apple Watch или совместимыми устройствами, отображается через Apple Health.";
+"Sleep target progress" = "Цель сна прогрессирует";
+"Solid yellow means all three fixed daily targets are met. Going above a target does not add extra credit." = "Твердо-желтый означает, что все три фиксированные ежедневные цели выполнены. Переход выше цели не добавляет дополнительного кредита.";
+"Starting amounts use your body weight and training goal. Training-day carbs can adjust with your logged workouts." = "В начальных количествах используется ваш вес тела и цель тренировки. Углеводы тренировочного дня могут корректироваться с вашими зарегистрированными тренировками.";
+"The first day after a recorded workout." = "Первый день после записанной тренировки.";
+"The presets are simple starting estimates based on body weight and common sports-nutrition guidance. They are not measurements of your calorie needs or medical advice. Choose amounts that fit your appetite, training and guidance from your clinician or dietitian." = "Предустановки - это простые стартовые оценки, основанные на весе тела и общих рекомендациях по спортивному питанию. Они не являются измерениями ваших потребностей в калориях или медицинских советах. Выберите количество, которое соответствует вашему аппетиту, обучению и руководству вашего врача или диетолога.";
+"The second day after a recorded workout." = "Второй день после записанной тренировки.";
+"Today's training goal" = "Сегодняшняя цель обучения";
+"We use your body weight and training goal to set protein and carbohydrate targets. Weekly training days also shape your starting carbs; fat starts at about 0.8 g per kg of body weight." = "Мы используем ваш вес тела и цель тренировки, чтобы установить белковые и углеводные цели. Еженедельные тренировочные дни также формируют ваши стартовые углеводы; жир начинается примерно с 0,8 г на кг массы тела.";
+"⇥" = "⇥";
+
+/* Expanded SwiftUI localization audit additions. */
+"%lld working sets" = "%lld working sets";
+"%lld% daily goal" = "Дневная цель %lld%";
+"%lldh %lldm goal" = "Цель %lldh %lldm";
+"%lldh %lldm last night" = "%lldh %lldm last night";
+"A practical guide" = "Практическое руководство";
+"AI Plans" = "Планы ИИ";
+"AI estimate. Check portions and include sauces, drinks or foods outside the photo." = "Проверьте порции и включите соусы, напитки или продукты вне фотографии.";
+"Bedtime" = "время сна";
+"Below goal" = "Ниже цели";
+"Browse training plans from the community" = "Просмотреть учебные планы от сообщества";
+"Choose photo" = "Выберите фото";
+"Complete your records to see your score" = "Заполните свои записи, чтобы увидеть свой счет";
+"Confirm meal" = "Подтвердить питание";
+"Confirming replaces this meal's previous record. Only confirmed nutrients count toward today's score." = "Подтверждение заменяет предыдущий рекорд этого блюда. Только подтвержденное количество питательных веществ соответствует сегодняшнему показателю.";
+"Connect Apple Health" = "Подключите Apple Health";
+"Couldn't read sleep data" = "Не удалось прочитать данные о сне";
+"Daily goals: bright = all met · dim = partial" = "Ежедневные цели: яркие = все выполнены; тусклые = частичные";
+"Daily intake recorded" = "Ежедневное потребление зафиксировано";
+"Daily score. View Insights" = "Ежедневный счет.";
+"Debug" = "отладка";
+"Drag the moon and sun to set your schedule. This sets a goal, not an alarm." = "Перетащите луну и солнце, чтобы установить расписание. Это ставит цель, а не тревогу.";
+"Estimated meal progress" = "Предполагаемый прогресс в питании";
+"Estimated nutrients" = "Предполагаемые питательные вещества";
+"Force US storefront (debug)" = "Force US Storefront (отладка)";
+"Layout" = "планировка";
+"Make it yours" = "Сделай это своим";
+"Meals" = "Питание";
+"Muscles" = "Мышцы";
+"Personal daily targets" = "Личные ежедневные цели";
+"Planned rest day" = "Планируемый день отдыха";
+"Profile-based starting point" = "Отправная точка на основе профиля";
+"Record again" = "Запись снова";
+"Record meal" = "Рекордное питание";
+"Retry analysis" = "Анализ ретритов";
+"Sleep schedule" = "Расписание сна";
+"Sleep: bright = goal met · dim = below goal" = "Сон: яркий = цель достигнута; тусклый = ниже цели";
+"Starting point" = "Начальная точка";
+"Take photo" = "Сделать фото";
+"Today · updating" = "Сегодня · обновление";
+"Today's intake · updating" = "Сегодняшний прием · обновление";
+"Track sleep with Apple Health" = "Отслеживание сна с помощью Apple Health";
+"Training days" = "Дни тренировок";
+"Unlock Pro (debug)" = "Unlock Pro (отладка)";
+"Wake up" = "проснуться";
+"Your starting point" = "Ваша отправная точка";
+
+"Completed" = "Завершено";
+
+/* Meal nutrient evidence and portion correction */
+"Nutrition estimate" = "Оценка питательных веществ";
+"Estimated portions. Adjust grams if needed." = "Порции оценены приблизительно. При необходимости измените вес";
+"Food data: USDA" = "Данные о продуктах: USDA";
+"AI estimate" = "Оценка ИИ";
+"Nutrition label" = "Пищевая маркировка";
+
+/* Recovery timeline and remaining-nutrient meal */
+"Recovery estimate" = "Оценка восстановления";
+"Estimated from recorded workouts, not a measured recovery score." = "Оценено по записям тренировок, а не измерено непосредственно";
+"Last meal" = "Последний приём пищи";
+"Remaining today" = "Осталось на сегодня";
+"Daily targets met" = "Дневные цели достигнуты";
+"Suggested meal" = "Предлагаемый приём пищи";
+"Based on logged meals · Cooked / ready-to-eat weights" = "По записям питания · Вес готовых к употреблению продуктов";
+"Log a meal first" = "Сначала запишите приём пищи";
+"Use suggestion" = "Использовать совет";
+"No suitable foods" = "Нет подходящих продуктов";
+"No extra meal suggested" = "Дополнительный приём пищи не предложен";
+"Salmon" = "Лосось";
+"Olive oil" = "Оливковое масло";
+"Almonds" = "Миндаль";
+"Now" = "Сейчас";
+
+"Share month" = "Поделиться месяцем";
+
+"Share day" = "Поделиться днём";
+
+"Share overview" = "Поделиться итогами";
+
+"Train with Masso" = "Тренируйтесь с Masso";
+
+"Average target progress" = "Среднее выполнение цели";
+
+"%lld of %lld days recorded" = "Записано %lld из %lld дней";
+
+"Last 30 days" = "Последние 30 дней";
+
+"This month" = "Этот месяц";
+
+"Custom" = "Свой период";
+
+"Period" = "Период";
+
+"From" = "С";
+
+"To" = "По";
+
+"Tap a day to share" = "Нажмите на день, чтобы поделиться";
+
+"Target progress" = "Выполнение цели";
+
+"What can I eat to meet my remaining targets?" = "Что съесть, чтобы достичь оставшихся целей?";
+
+"Meal suggestion" = "Рекомендация по питанию";
+
+"Adjust meal" = "Изменить состав";
+
+"Refresh suggestion" = "Обновить рекомендацию";
+
+"Vegetables" = "Овощи";
+
+"Spinach" = "Шпинат";
+
+"Log this meal" = "Записать этот приём пищи";
+
+"Average per recorded day" = "Среднее за дни с записями";
+
+// Unified daily calendar
+"Week" = "Неделя";
+"Month" = "Месяц";
+"Today has a white outline." = "Сегодняшний день обведён белым.";
+"No workout recorded on this day." = "В этот день нет записанных тренировок.";
+
+"Today has a white circle and a black date number." = "Сегодняшняя дата отмечена белым кругом и чёрным числом.";
+
+"Custom workout" = "Своя тренировка";
+"g" = "g";
+
+// Muscle recovery action guidance
+"Fresh · Ready to train" = "Свежие · Можно тренироваться";
+"Rested · Ready to train" = "Восстановились · Можно тренироваться";
+"Recovering · Keep it light" = "Восстанавливаются · Лёгкая нагрузка";
+"Fatigued · Rest recommended" = "Усталость · Рекомендуется отдых";
+
+// Home summary timeframes and complete calendar legend
+"Today · %@" = "Сегодня · %@";
+"Muscle recovery shades are shown in My Muscle Status." = "Оттенки восстановления мышц показаны в разделе «Состояние моих мышц».";
+"Daily diet completion compares protein, carbs and fat with that day's targets." = "Выполнение дневных целей питания сравнивает белки, углеводы и жиры с целями этого дня.";
+"Blue shades show actual sleep relative to that night's target." = "Оттенки синего показывают фактический сон относительно цели этой ночи.";
+"Future dates have no records yet." = "Для будущих дат записей пока нет.";
+
+"Historical target unavailable" = "Цель на этот день не сохранена";
+
+"Import workouts from Apple Health" = "Импортировать тренировки из Apple Здоровье";
+
+"No imported workouts yet. Check Workout access in Apple Health." = "Импортированных тренировок пока нет. Проверьте доступ к тренировкам в Apple Здоровье.";
+
+"Unable to import workouts. Try again." = "Не удалось импортировать тренировки. Попробуйте ещё раз.";
+
+"External workout" = "Внешняя тренировка";
+
+"Walking" = "Ходьба";
+
+"Cycling" = "Велосипед";
+
+"Running" = "Бег";
+
+"Swimming" = "Плавание";
+
+"Hiking" = "Пеший туризм";
+
+"Yoga" = "Йога";
+
+"Strength training" = "Силовая тренировка";
+
+"Other workout" = "Другая тренировка";
+
+"Each day with a Masso workout or imported Apple Health workout counts once. Imported workouts do not advance your workout plan or count toward muscle progress." = "Каждый день с тренировкой Masso или импортированной из Apple Здоровье учитывается один раз. Импортированные тренировки не продвигают план и не учитываются в анализе мышечного прогресса.";
+
+"Diet score shows weighted intake relative to daily protein, carbs and fat targets (20/10/5), rounded to a whole percentage. It can exceed 100%; this means above target, not healthier. Meal percentages show their contribution to the daily targets." = "Процент учитывает потребление относительно дневных целей белка, углеводов и жиров (20/10/5), округляя до целых процентов. Более 100% означает превышение цели, а не более здоровое питание. Процент каждого приёма пищи показывает вклад в дневную цель.";
+
+"How to train this muscle" = "Как тренировать эту мышцу";
+
+"Train more" = "Усилить тренировку";
+
+"Adjust my saved workouts to train %@ more. Keep my training preferences, equipment, available time and recovery in mind. Show which exercises and sets you would change. If I have no saved workouts, create a suitable plan." = "Измени мои сохранённые планы, чтобы уделить больше внимания мышцам %@. Учти мои предпочтения, оборудование, доступное время и восстановление. Укажи, какие упражнения и подходы ты изменишь. Если сохранённых планов нет, создай подходящий план.";
+
+"Train smart, your way." = "Тренируйся с умом, по-своему.";
+
+"Deep sleep is compared with the median of your previous 14 days, using at least 3 recorded nights. It is a personal reference, not a medical target, and does not affect Sleep score. Missing sleep stages or insufficient history show —." = "Глубокий сон сравнивается с медианой за предыдущие 14 дней при наличии минимум 3 записанных ночей. Это личный ориентир, а не медицинская цель; он не влияет на оценку сна. При отсутствии стадий сна или достаточной истории отображается —.";
+
+"Show more" = "Показать больше";
+
+"Update Training Preferences?" = "Обновить настройки тренировок?";
+
+"Preferences changed. Please ask again to review the latest values." = "Настройки изменились. Повторите запрос, чтобы проверить актуальные значения";
+
+"Consider a heavier weight" = "Можно немного увеличить вес";
+
+"You logged more than 12 reps. If your form stayed steady and you had reps left, consider a small weight increase next time" = "Записано больше 12 повторений. Если техника была стабильной и оставались силы, в следующий раз можно немного увеличить вес";
+
+"Exit" = "Выйти";
+
+"This removes the record from Masso only. Apple Health keeps the original." = "Запись удаляется только из Masso. Оригинал остаётся в Apple Здоровье.";
+
+"The date ring shows Workout at the top, Diet at the lower left and Sleep at the lower right. Each colored segment shows that day's recorded progress. Grey means no recorded progress; progress above 100% fills the segment." = "Вверху кольца даты — тренировка, внизу слева — питание, внизу справа — сон. Длина цветной дуги показывает записанный прогресс за день. Серый означает отсутствие прогресса; при значении выше 100% сегмент заполнен.";
+"Your muscles are off duty. Put your phone down and sleep well." = "Мышцы на сегодня закончили работу. Отложите телефон и хорошо выспитесь.";
+
+"Fuller arcs mean more progress" = "Чем полнее дуга, тем выше прогресс";
+
+"Training fills green; rest days aren't failures" = "Тренировка заполняет зелёный; отдых — не неудача";
+
+"Today's macros vs daily targets" = "Макронутриенты за день относительно целей";
+
+"Daily overview" = "Обзор дня";
+
+"Recovery & workout" = "Восстановление и тренировка";
+
+"Single metric" = "Один показатель";
+
+"Main metric" = "Главный показатель";
+
+"Body view" = "Вид тела";
+
+"Content" = "Содержимое";
+
+"Open Masso to update" = "Откройте Masso для обновления";
+
+"Your day at a glance" = "Ваш день с первого взгляда";
+
+"Muscle recovery and your next workout" = "Восстановление мышц и следующая тренировка";
+
+"One metric, your choice" = "Выберите нужный показатель";
+
+"Full body" = "Всё тело";
+
+/* Muscle recovery list */
+"Muscle recovery" = "Восстановление мышц";
+"Most recovered first" = "По степени восстановления";
+
+/* Shared history archive */
+"All history" = "Вся история";
+
+/* Separate daily history entries */
+"All diet history" = "Вся история питания";
+"All sleep history" = "Вся история сна";
+
+"All workout history" = "Вся история тренировок";
+
+/* Lift progress empty state */
+"Keep logging workouts to see your progress" = "Продолжайте записывать тренировки, чтобы видеть прогресс";
+
+/* Exercise demo generation — shared server library */
+"demo.title" = "Демонстрация с ИИ";
+"demo.credits" = "Кредиты ИИ";
+"demo.available" = "Доступно";
+"demo.reserved" = "Зарезервировано";
+"demo.cost" = "%d кредитов";
+"demo.generate" = "Создать демонстрацию";
+"demo.insufficient" = "Недостаточно кредитов. Пополнение пока недоступно";
+"demo.unavailable" = "Создание пока недоступно. Кредиты не будут потрачены";
+"demo.sharing" = "Одобренные видео пополняют общую библиотеку Masso. Передаётся только ID упражнения, без фото, переписки и данных о здоровье";
+"demo.confirm" = "Создать демонстрацию?";
+"demo.confirmBody" = "Зарезервировать %d кредитов? Они спишутся только после проверки. При ошибке или отклонении списания не будет. Одобренное видео появится в общей библиотеке Masso";
+"demo.ready" = "Демонстрация готова";
+"demo.queued" = "В очереди; страницу можно закрыть";
+"demo.running" = "Создаётся; страницу можно закрыть";
+"demo.review" = "Проверка перед публикацией";
+"demo.failed" = "Не удалось создать видео. Резерв кредитов снят";
+"demo.corePending" = "Эта базовая демонстрация готовится";
+"demo.missing" = "Общей демонстрации пока нет";
+"demo.refresh" = "Обновить статус";
+"demo.check" = "Проверить снова";
+"demo.quoteChanged" = "Стоимость изменилась. Обновите страницу";
+"demo.unknown" = "Этого упражнения нет в поддерживаемой библиотеке";
+"demo.plan" = "Демонстрации упражнений";
+"demo.planHint" = "Выберите упражнение для проверки демонстрации. Создание плана не запускает платное создание видео";
+
+"Subscription options are unavailable right now" = "Подписки временно недоступны";
+
+"Restore web purchase" = "Восстановить покупку на сайте";
+
+"Basic workout logging and history stay free" = "Базовый учёт тренировок и история остаются бесплатными";
+
+"Compare your lifts over time with Masso Pro" = "Отслеживайте прогресс с Masso Pro";
+
+"No active subscription found" = "Активная подписка не найдена";
+
+"Unlimited plans · AI coach · Lift progress" = "Безлимитные планы · ИИ-тренер · Прогресс";
+
+"AI data sharing" = "Передача данных ИИ";
+
+"ai.dataSharing.explanation" = "Запросы ИИ передают данные тренировок, сообщения и выбранные изображения через наши серверы в Anthropic (Claude) или Alibaba Cloud Bailian (Qwen), включая видимые сведения на выбранных скриншотах. Данные из Apple Здоровья не отправляются автоматически. Разрешение можно отозвать в настройках. Разрешить?";
+
+/* Compact exercise families */
+"Everyday" = "Основные";
+"All versions (%d)" = "Все варианты (%d)";
+"Pinned and recent" = "Закреплённые и недавние";
+"Suggested replacements" = "Рекомендуемые замены";
+
+/* Restored paywall and request-based AI reminders */
+"Use AI without upgrade reminders" = "ИИ без предложений перейти на Pro";
+"Save a routine for every training day" = "Сохраняйте программу для каждого дня тренировок";
+"AI without interruptions" = "ИИ без перерывов";
+"Skip upgrade reminders whenever you use AI" = "Без предложений перейти на Pro при работе с ИИ";
+"Lift progress and personalized training summaries" = "Прогресс в упражнениях и персональные отчёты";
+"Fine-grained recovery" = "Подробное восстановление";
+"See recovery for individual muscles" = "Следите за восстановлением каждой мышцы";
+"Billed yearly" = "Ежегодная оплата";
+"7-day free trial" = "7 дней бесплатно";
+"Subscribe" = "Подписаться";
+"Continue free" = "Продолжить бесплатно";
+"Close this offer to continue your AI request" = "Закройте этот экран, чтобы продолжить запрос к ИИ";
+"7 days free, then %@ per %@. Renews automatically until cancelled." = "7 дней бесплатно, затем %@ за %@. Автопродление до отмены.";
+"%@ per %@. Renews automatically until cancelled." = "%@ за %@. Автопродление до отмены.";
+"Unlimited routines, uninterrupted AI, deep analytics." = "Безлимитные программы, ИИ без перерывов и подробная аналитика.";
+"Unlimited plans · Uninterrupted AI · Lift progress" = "Безлимитные программы · ИИ без перерывов · Прогресс";
+"Deep analytics" = "Подробная аналитика";
+"Try again" = "Повторить";
+
+"AI couldn't produce a valid routine. Please try again." = "Тренировка ИИ не соответствует требованиям. Попробуйте ещё раз.";
+
+/* Onboarding goals — words only */
+"onboarding.goal.buildMuscle" = "Набор мышц";
+"onboarding.goal.getStronger" = "Стать сильнее";
+"onboarding.goal.loseFat" = "Снизить жир";
+"onboarding.goal.generalFitness" = "Быть здоровым";
+"Training schedule" = "Расписание тренировок";
+"Training plan" = "План тренировки";
+"Tap muscles to select; tap again to clear" = "Нажмите на мышцу для выбора или отмены";
+"Session length" = "Длительность";
+"View plan" = "Посмотреть план";
+"No target" = "Без цели";
+"Workout %d" = "Тренировка %d";
+"Set your working weights when you train" = "Укажите рабочие веса во время тренировки";
+"No exercises match" = "Нет подходящих упражнений";
+"Gym" = "Зал";
+"Bodyweight" = "Свой вес";
+
+"Routine limit reached" = "Достигнут лимит планов тренировок";
+"Continue without saving" = "Продолжить без сохранения";
+"Upgrade" = "Перейти на Pro";
+
+"Preview onboarding" = "Предпросмотр знакомства";
+
+"equipment.pull_up_bar" = "Турник";
+
+"Pull-up bar" = "Турник";
+
+/* Onboarding body interaction */
+"Tap to select · Pinch to zoom" = "Нажмите для выбора · Разведите для масштаба";
+
+/* Muscle detail: focus training request */
+"Train this muscle more" = "Больше тренировать эту мышцу";
+
+"Choose at least one training day" = "Выберите хотя бы один день тренировок";
+
+/* Training environment / home equipment */
+"Training environment" = "Условия тренировок";
+"Home" = "Дома";
+"Home equipment" = "Домашний инвентарь";
+"No equipment selected. Bodyweight only." = "Без инвентаря — упражнения с весом тела.";
+"Adjustable bench" = "Регулируемая скамья";
+"equipment.bench_flat" = "Горизонтальная скамья";
+"equipment.squat_rack" = "Стойка для приседаний";
+
+/* Compact Pro brand banner, 2026-10-21 */
+"More plans, fewer interruptions" = "Больше планов, меньше отвлечений";
+"Explore Pro" = "Открыть Pro";
+
+"Watch on YouTube" = "Смотреть на YouTube";
+
+"Weight per dumbbell" = "Вес одной гантели";
+
+"Reference from %@" = "Ориентир: %@";
+
+"Update and generate" = "Обновить и создать";
+
+"Correct this set and update related weight references." = "Исправьте подход и обновите ориентиры веса для похожих упражнений.";
+
+/* First-run AI Coach launcher tooltip. */
+"Chat about your goals to get a new routine." = "Расскажите о целях, чтобы составить новый план тренировок.";
+
+"This workout" = "Эта тренировка";
+
+"Variants" = "Варианты";
+
+"Default version" = "Базовый вариант";
+
+"Hide rare variants" = "Скрывать редкие варианты";
+
+"Pinned" = "Закреплено";
+
+"Video unavailable" = "Видео недоступно";
+
+"Loading video" = "Загрузка видео";
+
+"Video playing" = "Видео воспроизводится";
+
+
+"Finish saves this workout. Discard removes it from history." = "Завершение сохраняет тренировку. Отмена удаляет её из истории.";
+"This workout won’t be saved." = "Эта тренировка не будет сохранена.";
+
+"Adjust your daily targets; saved amounts stay fixed." = "Настройте дневные цели: сохранённые значения останутся фиксированными.";
+"Automatic carb adjustments apply only before you set a daily carbohydrate target." = "Углеводы корректируются автоматически, только пока вы не задали дневную цель.";
+
+"Meal time" = "Время приёма пищи";
+
+"QR code" = "QR-код";
+
+"Calories" = "Калории";
+
+"Estimated from protein, carbs and fat." = "Оценка по белкам, углеводам и жирам.";
+
+"USDA · Food energy" = "USDA · Энергия пищи";
+
+"Read body & activity" = "Читать данные тела и активности";
+
+"Read available history for weight, height, steps and energy." = "Читать доступную историю веса, роста, шагов и энергии.";
+
+"Body measurements" = "Параметры тела";
+
+"Height" = "Рост";
+
+"Use Health weight" = "Использовать вес из Здоровья";
+
+"Use Health height" = "Использовать рост из Здоровья";
+
+"Updates your profile and local nutrition targets. Manual targets stay fixed." = "Обновляет профиль и локальные цели питания. Ручные цели сохраняются.";
+
+"Weight trend" = "Динамика веса";
+
+"Today so far" = "Сегодня на данный момент";
+
+"Steps" = "Шаги";
+
+"Active energy" = "Активная энергия";
+
+"Resting energy" = "Энергия покоя";
+
+"Energy burned" = "Расход энергии";
+
+"Health history" = "История здоровья";
+
+"Some data couldn't refresh." = "Некоторые данные не обновились.";
+
+"No records yet. Check access and data in Apple Health." = "Нет записей. Проверьте данные и доступ в Здоровье.";
+
+"Imported health data stays on this device and is not sent to AI Coach." = "Импортированные данные здоровья остаются на устройстве и не передаются AI Coach.";
+
+"Couldn't read Apple Health. Try again." = "Не удалось прочитать Здоровье. Повторите попытку.";
+
+"Connect body & activity" = "Подключить тело и активность";
+
+"Profile weight" = "Вес в профиле";
+
+"Targets use weight and training preferences. Health activity is a reference, not an extra food allowance." = "Цели учитывают вес и предпочтения тренировок. Активность из Здоровья служит ориентиром, а не добавкой к питанию.";
+
+"Nutrition targets are estimates based on weight and training preferences. Health activity does not automatically change them." = "Цели питания рассчитаны по весу и предпочтениям тренировок. Активность из Здоровья не меняет их автоматически.";
+
+"Recorded energy, not a full-day forecast. Your food target stays unchanged." = "Записанный расход, а не прогноз на день. Цель питания не меняется.";
+
+"Date" = "Дата";
+
+"Last synced" = "Последняя синхронизация";
+
+/* AI Coach: single-session workouts */
+"Single workout" = "Разовая тренировка";
+"Your workout is ready." = "Тренировка готова.";
+"Couldn't create this workout. Please try again." = "Не удалось создать тренировку. Попробуйте снова.";
+"About %d min" = "Около %d мин";
+
+/* Inline exercise family expansion */
+"%@ more versions" = "Ещё %@ вариантов";
+"Fewer versions" = "Меньше вариантов";
+
+/* Workout progress, observed timing and personal heart-rate reminders */
+"Jump to first unfinished set" = "К первому незавершённому подходу";
+"Rest duration" = "Длительность отдыха";
+"Applies to this rest only." = "Только для этого отдыха.";
+"Edit rest time" = "Изменить время отдыха";
+"Read workout heart rate" = "Читать пульс тренировки";
+"Open Masso on Apple Watch" = "Открыть Masso на Apple Watch";
+"Live readings need a heart-rate sensor. No reading means no heart-rate warning." = "Для текущих показаний нужен датчик. Без показаний нет предупреждения о пульсе.";
+"Reminder limit" = "Порог напоминания";
+"Over your limit for 15 seconds: pause and rest. This is a personal reminder, not a medical alarm." = "Выше порога 15 секунд — отдохните. Это личное напоминание, не медицинская тревога.";
+"No heart-rate samples yet" = "Показаний пульса пока нет";
+"Heart-rate data stays on this device and is not sent to AI Coach." = "Данные пульса остаются на устройстве и не передаются AI Coach.";
+"Delete heart-rate history" = "Удалить историю пульса";
+"Delete heart-rate history?" = "Удалить историю пульса?";
+"Couldn't connect to Apple Health." = "Не удалось подключиться к Apple Health.";
+"Open Masso on your paired Apple Watch to read live heart rate." = "Откройте Masso на сопряжённых Apple Watch для текущих показаний пульса.";
+"Enter a limit from 40 to 240 bpm." = "Введите порог от 40 до 240 уд/мин.";
+"Heart rate is above your limit" = "Пульс выше вашего порога";
+"Pause and rest" = "Приостановить и отдохнуть";
+"Your heart rate stayed above your personal limit for 15 seconds." = "Пульс превышал ваш личный порог 15 секунд.";
+"Heart rate" = "Пульс";
+"Workout report" = "Отчёт о тренировке";
+"Logged sets" = "Записанные подходы";
+"Tracked set time" = "Время подходов";
+"Recorded rest" = "Записанный отдых";
+"%d of %d sets have timing" = "Время есть у %d из %d подходов";
+"Tracked time follows the workout controls, not time under tension." = "Время определяется управлением тренировкой, а не напряжением мышц.";
+"Set timeline" = "Хронология подходов";
+"Sampled heart rate" = "Измерения пульса";
+"Average / peak heart rate" = "Средний / пиковый пульс";
+"Target duration" = "Целевая длительность";
+"Peak heart rate" = "Пиковый пульс";
+"Allow more recovery" = "Добавьте время на восстановление";
+"Your readings stayed above your reminder limit. Review this workout before increasing intensity." = "Показания оставались выше порога. Оцените тренировку перед повышением интенсивности.";
+"Your reps fell while rests were short. Try more recovery between sets." = "При коротком отдыхе повторений стало меньше. Попробуйте больше отдыхать между подходами.";
+"Review your logged workload and rest before increasing intensity." = "Оцените записанную нагрузку и отдых перед повышением интенсивности.";
+"bpm" = "уд/мин";
+
+"Dismiss" = "Закрыть";
+
+"equipment.ab_wheel" = "Ролик для пресса";
+"equipment.abductor_machine" = "Тренажёр";
+"equipment.adductor_machine" = "Тренажёр";
+"equipment.air_bike" = "Аэробайк";
+"equipment.arc_trainer" = "Эллипс";
+"equipment.assault_bike" = "Аэробайк";
+"equipment.axle_bar" = "Толстый гриф";
+"equipment.ball" = "Фитбол";
+"equipment.band" = "Резинка";
+"equipment.battle_rope" = "Канаты";
+"equipment.belt_squat_machine" = "Тренажёр";
+"equipment.bench" = "Скамья";
+"equipment.bench_decline" = "Скамья";
+"equipment.bench_incline" = "Скамья";
+"equipment.bike" = "Велотренажёр";
+"equipment.box" = "Тумба";
+"equipment.calf_raise_machine" = "Тренажёр";
+"equipment.captains_chair" = "Тренажёр";
+"equipment.chains" = "Цепи";
+"equipment.dip_bar" = "Брусья";
+"equipment.dip_bars" = "Брусья";
+"equipment.dip_belt" = "Пояс с отягощением";
+"equipment.donkey_calf_machine" = "Тренажёр";
+"equipment.elliptical" = "Эллипс";
+"equipment.ez_bar" = "EZ-гриф";
+"equipment.ez_curl_bar" = "EZ-гриф";
+"equipment.fat_grip" = "Толстый хват";
+"equipment.foam_roller" = "Ролик";
+"equipment.ghd_machine" = "Тренажёр";
+"equipment.glute_kickback_machine" = "Тренажёр";
+"equipment.grip_crusher" = "Кистевой эспандер";
+"equipment.gripper" = "Кистевой эспандер";
+"equipment.gymnastic_rings" = "Кольца";
+"equipment.hack_squat_machine" = "Тренажёр";
+"equipment.hip_thrust_machine" = "Тренажёр";
+"equipment.hyperextension_bench" = "Римский стул";
+"equipment.jump_rope" = "Скакалка";
+"equipment.kettlebell" = "Гиря";
+"equipment.landmine" = "Лэндмайн";
+"equipment.leg_curl_machine" = "Тренажёр";
+"equipment.leg_extension_machine" = "Тренажёр";
+"equipment.leg_press_machine" = "Тренажёр";
+"equipment.medicine_ball" = "Медбол";
+"equipment.parallel_bars" = "Брусья";
+"equipment.partner" = "Партнёр";
+"equipment.platform" = "Тумба";
+"equipment.plyo_box" = "Тумба";
+"equipment.power_rack" = "Стойка";
+"equipment.preacher_bench" = "Скамья";
+"equipment.push_up_handles" = "Упоры";
+"equipment.pvc_pipe" = "ПВХ-палка";
+"equipment.rack" = "Стойка";
+"equipment.resistance_band" = "Резинка";
+"equipment.reverse_hyper_machine" = "Тренажёр";
+"equipment.rice_bucket" = "Ведро с рисом";
+"equipment.rings" = "Кольца";
+"equipment.roman_chair" = "Римский стул";
+"equipment.rope" = "Канатная рукоять";
+"equipment.rower" = "Гребной тренажёр";
+"equipment.rowing_machine" = "Гребной тренажёр";
+"equipment.safety_squat_bar" = "Безопасный гриф";
+"equipment.sissy_squat_machine" = "Тренажёр";
+"equipment.ski_erg" = "Лыжный эргометр";
+"equipment.sled" = "Сани";
+"equipment.sledgehammer" = "Кувалда";
+"equipment.sliders" = "Слайдеры";
+"equipment.smith_machine" = "Смит";
+"equipment.spin_bike" = "Спин-байк";
+"equipment.stairmaster" = "Степпер";
+"equipment.stationary_bike" = "Велотренажёр";
+"equipment.swiss_ball" = "Фитбол";
+"equipment.t_bar" = "Штанга";
+"equipment.tibialis_machine" = "Тренажёр";
+"equipment.towel" = "Полотенце";
+"equipment.trap_bar" = "Трэп-гриф";
+"equipment.treadmill" = "Беговая дорожка";
+"equipment.trx" = "TRX";
+"equipment.v_bar" = "V-рукоять";
+"equipment.wall" = "Стена";
+"equipment.weight_belt" = "Пояс с отягощением";
+"equipment.weight_plate" = "Блин";
+"equipment.wrist_roller" = "Кистевой ролик";
+"equipment.yoga_strap" = "Ремень для йоги";
+
+"equipment.body_only" = "Собственный вес";
+
+"Save rest settings?" = "Сохранить время отдыха?";
+
+"Save to Training Preferences and apply to all workouts?" = "Сохранить в настройках и применить ко всем тренировкам?";
+
+"Create training plans based on this report?" = "Создать планы тренировок на основе отчёта?";
+
+"Generate plans from this report" = "Создать планы на основе отчёта";
+
+"Body photo" = "Фото тела";
+
+"Menu" = "Меню";
+
+"Training or health records" = "Данные тренировок или здоровья";
+
+"Share or exercise photo" = "Фото для публикации или упражнения";
+
+"Choose image use" = "Выбрать назначение изображения";
+
+"Training plans found. Review before adding." = "Планы найдены. Проверьте перед добавлением.";
+
+"Couldn't read this image. Choose its use or try a clearer photo." = "Не удалось прочитать изображение. Выберите назначение или более чёткое фото.";
+
+"Add a message or let AI identify the image." = "Добавьте сообщение или позвольте ИИ определить назначение изображения.";
+
+"Review this image" = "Проанализировать изображение";
+
+"Review routines" = "Проверить планы";
+
+"Adapt to my preferences" = "Адаптировать к моим настройкам";
+
+"Check portions and meal time before saving." = "Проверьте порции и время приёма пищи перед сохранением.";
+
+"Choose what you ate before logging a meal." = "Перед записью укажите, что вы съели.";
+
+"Possible exercises" = "Возможные упражнения";
+
+"Screenshot values are not added to your records." = "Данные со скриншота не добавляются в ваши записи.";
+
+"View my records" = "Мои записи";
+
+"Use as share photo" = "Использовать для публикации";
+
+"Use as exercise photo" = "Использовать как фото упражнения";
+
+"Change image use" = "Изменить назначение изображения";
+
+"Reading image…" = "Чтение изображения…";
+
+"Several plan codes found. Upload one share card at a time." = "Найдено несколько кодов. Загружайте по одной карточке.";
+
+"Image analysis is unavailable. Try again." = "Анализ изображения недоступен. Попробуйте ещё раз.";
+
+"AI permission wasn't granted. Your image wasn't sent." = "Разрешение на ИИ не предоставлено. Изображение не отправлено.";
+
+"Allow" = "Разрешить";
+
+// Regional exercise tutorials
+"Watch tutorial" = "Смотреть урок";
+"Watch on bilibili" = "Смотреть на bilibili";
+"Search on bilibili" = "Поиск на bilibili";
+
+"Same target muscles" = "Те же целевые мышцы";
+
+"Switch exercise" = "Сменить упражнение";
+
+"exercise.media.unverified" = "Не проверено";
+
+
+
+/* One-off quick workout */
+"AI Quick Workout" = "Быстрая тренировка с ИИ";
+"Let AI recommend" = "Рекомендация ИИ";
+"Mobility & stretching" = "Подвижность и растяжка";
+"Training type" = "Тип тренировки";
+"Intensity" = "Интенсивность";
+"Easy" = "Лёгкая";
+"Moderate" = "Умеренная";
+"High intensity" = "Высокая интенсивность";
+"Use saved equipment" = "Сохранённое оборудование";
+"%lld min" = "%lld мин";
+"Time is an estimate including rests. These choices apply only to this workout." = "Примерное время с отдыхом. Выбор действует только для этой тренировки.";
+"Anything else?" = "Другие пожелания";
+"Goals, focus or movements to avoid" = "Цели, акценты или движения, которых следует избегать";
+"Generate this workout" = "Создать эту тренировку";
+"Wait for the current response before generating another workout." = "Дождитесь завершения текущего ответа.";
+
+"Show recovery in workout calendar" = "Показывать восстановление в календаре";
+"After a recorded workout, the calendar shows a shorter green bar for two rest days. This is a time-based guide, not a muscle recovery measurement." = "После записанной тренировки зелёная полоска уменьшается в течение двух дней отдыха. Это ориентир по времени, а не измерение восстановления мышц.";
+"Recovery day" = "День восстановления";
+
+/* Exercise media reports */
+"Report exercise media" = "Сообщить о материале упражнения";
+"What is wrong?" = "В чём проблема?";
+"Wrong exercise" = "Неверное упражнение";
+"Wrong equipment" = "Неверное оборудование";
+"Image or video problem" = "Проблема с изображением или видео";
+"Add details (optional)" = "Добавить подробности (необязательно)";
+"The exercise and displayed media version are included with your report." = "В отчёт входят упражнение и версия показанного материала.";
+
+"Exercise" = "Упражнение";
+
+"Choose a previous meal" = "Выбрать предыдущий приём пищи";
+
+"Health & Features" = "Здоровье и функции";
+"App Preferences" = "Настройки приложения";
+"Privacy & Data" = "Конфиденциальность и данные";
+
+"Using recommendation" = "Используется рекомендация";
+
+"Reset to recommendation" = "Сбросить к рекомендации";
+
+"Based on your recent workout heart rates and age when available." = "На основе пульса на недавних тренировках и возраста, если он указан.";
+
+"Estimated from your age; it will adjust as workout data becomes available." = "Оценка по возрасту будет уточняться по мере накопления данных тренировок.";
+
+"Starting estimate until your age or workout heart-rate history is available." = "Начальная оценка до появления возраста или истории пульса на тренировках.";
+
+"Recommendations are estimates, not a medical safety limit. Medication and health conditions can affect heart rate." = "Рекомендации являются оценкой, а не медицинской границей безопасности. Лекарства и состояние здоровья могут влиять на пульс.";
+
+"Exercises and heart rate" = "Упражнения и пульс";
+
+"Gaps indicate missing or untracked samples." = "Пробелы обозначают отсутствующие или незаписанные измерения.";
+
+"Above your reminder limit" = "Выше порога напоминания";
+
+"During %@, heart rate reached %d bpm. Consider slowing down and resting if needed." = "Во время %@ пульс достиг %d уд/мин. При необходимости снизьте темп и отдохните.";
+
+"Heart rate settings" = "Настройки пульса";
+
+"Connect heart rate" = "Подключить пульс";
+
+"Allow heart-rate access to see available workout readings." = "Разрешите доступ к пульсу, чтобы увидеть доступные данные тренировки.";
+
+"Exercise duration" = "Длительность упражнений";
+
+"No workout timing yet" = "Время тренировки ещё не записано";
+
+"Some timing is unavailable" = "Часть времени недоступна";
+
+"If access was denied, update Masso's permissions in the Health app." = "Если доступ запрещён, измените разрешения Masso в приложении «Здоровье».";
+
+"Some samples have no saved reminder limit." = "Для некоторых измерений не сохранён порог напоминания.";
+
+"No recorded reminders" = "Нет записанных напоминаний";
+
+"Heart-rate reminders" = "Напоминания о пульсе";
+
+"No sustained above-limit episodes" = "Нет продолжительных превышений порога напоминания";
+
+"Consider slowing down or resting." = "Подумайте о снижении темпа или отдыхе.";
+
+"Expand heart rate card" = "Развернуть карточку пульса";
+"Collapse heart rate card" = "Свернуть карточку пульса";
+
+"Show heart rate card" = "Показывать карточку пульса";
+
+"Automatic heart rate control" = "Автоуправление по пульсу";
+
+"Experimental: heart rate changes can automatically log a set or skip rest. Readings may be delayed or incorrect; use Undo if needed." = "Экспериментально: изменение пульса может автоматически записать подход или пропустить отдых. Данные могут запаздывать или быть неточными; при необходимости отмените действие.";
+
+"Set logged automatically" = "Подход записан автоматически";
+
+"Rest skipped automatically" = "Отдых пропущен автоматически";
+
+"Report" = "Отчёт";
+
+"Save plans & start" = "Сохранить планы и начать";
+
+"Want to adjust your training plan? Ask AI Coach." = "Хотите изменить план тренировок? Спросите AI Coach.";
+"Share a body photo for training suggestions." = "Поделитесь фото тела, чтобы получить советы по тренировкам.";
+"Review my body photo and suggest balanced training adjustments." = "Проанализируй моё фото и предложи сбалансированные изменения тренировок.";
+
+"What are your training goals and focus areas?" = "Каковы ваши цели и на каких мышцах сосредоточиться?";
+"When and where would you like to train?" = "Когда и где вы хотите тренироваться?";
+
+"The muscle map shows which areas you have trained." = "Карта мышц показывает, какие области вы тренировали.";
+
+"Suggested focus" = "Рекомендуемый акцент";
+"Create a plan from these suggestions" = "Создать план по этим рекомендациям";
+
+"Create a plan" = "Создать план";
+
+/* Accomplishment share */
+"Training that gets you." = "Training that gets you.";
+"This month, %d training days" = "This month, %d training days";
+"This week, %d training days" = "This week, %d training days";
+"As of %@" = "As of %@";
+"%d sessions" = "%d sessions";
+"Sessions" = "Sessions";
+"No workouts logged" = "No workouts logged";
+"Just finished" = "Just finished";
+"This day's records" = "This day's records";
+"No completed sets to share" = "No completed sets to share";
+"Morning" = "Morning";
+"Afternoon" = "Afternoon";
+"Evening" = "Evening";
+"Night" = "Night";
+"Same exercise, another step" = "Same exercise, another step";
+"per dumbbell" = "per dumbbell";
+"%@ · same reps" = "%@ · same reps";
+"Share this progress" = "Share this progress";
+"Exact time" = "Exact time";
+"Photo included" = "Photo included";
+"Heart rate, body weight, location, and your name stay off this card." = "Heart rate, body weight, location, and your name stay off this card.";
+"A missing log is not a missed workout" = "A missing log is not a missed workout";
+"Future day" = "Future day";
+"No workout logged" = "No workout logged";
+"No same-reps weight increase to share yet" = "No same-reps weight increase to share yet";
+"Minutes" = "Minutes";
+
+// Calendar calorie examples
+"Recorded calories vs daily calorie target" = "Записанные калории относительно дневной цели";
+"Below calorie target" = "Ниже цели по калориям";
+"Above calorie target" = "Выше цели по калориям";
+"Well above calorie target" = "Заметно выше цели по калориям";
+"Far above calorie target" = "Значительно выше цели по калориям";
+
+/* Parameter suggestion, distinct from a user-entered target. */
+"Suggested" = "Рекомендация";
+
+/* Cross-exercise starting estimates: explicit evidence and limitations. */
+"Confirmed bench press 6RM" = "Подтверждённый 6ПМ в жиме лёжа";
+"Mark only an existing set: six full-range reps, no assistance or momentum, about 2 seconds up and down, with no seventh clean rep possible. You should already be familiar with the lift. No extra maximum test is needed." = "Отмечайте только выполненный подход: знакомое упражнение, шесть повторений с полной амплитудой, без помощи и рывков, примерно по 2 секунды вверх и вниз; седьмое правильное повторение невозможно. Дополнительный тест максимума не нужен.";
+"Six completed reps and a positive weight are required." = "Нужны шесть выполненных повторений и вес больше 0.";
+"Estimate basis" = "Основание оценки";
+"Initial estimate from %@. A small study predicts six-rep maximums; Masso uses 75%% of that estimate, rounded down. Adjust after the first set." = "Начальная оценка по %@. Небольшое исследование прогнозирует 6ПМ; Masso использует 75%% прогноза с округлением вниз. Скорректируйте после первого подхода.";
+"Masso currently limits this estimate to men aged 18–30, a confirmed 30–70 kg reference from the last 30 days, and 6–12 target reps." = "Сейчас Masso ограничивает оценку мужчинами 18–30 лет, подтверждённым жимом 30–70 кг за последние 30 дней и целью 6–12 повторений.";
+"Research source" = "Источник исследования";
+
+"Edit set" = "Изменить подход";
+
+// Partner referral redemption
+"Referral code" = "Реферальный код";
+"Have a referral code?" = "Есть реферальный код?";
+"Check referral code" = "Проверить код";
+"Redeem with Apple" = "Активировать через Apple";
+"Checking a code binds your referral and shares an anonymous identifier and subscription transactions with Masso for referral accounting. Your health and training data are not shared." = "Проверка закрепит источник рекомендации и передаст Masso анонимный идентификатор и транзакции подписки для расчёта вознаграждений. Данные о здоровье и тренировках не передаются.";
+"Couldn’t check this code. It may be unavailable, already bound, or the service may be offline. Try again later." = "Не удалось проверить код. Возможно, он недоступен, уже привязан или сервис не работает. Повторите позже.";
+"Apple confirms eligibility, the actual price, trial and renewal terms. Your discount is active only after Apple confirms redemption. This offer applies to the annual subscription." = "Apple подтверждает доступность, фактическую цену, пробный период и условия продления. Скидка действует только после подтверждения активации Apple. Предложение относится к годовой подписке.";
+
+/* Personal working-load relationships */
+"Estimated from your recorded working weights for %@ across multiple workouts at the same reps. Adjust after the first set." = "Оценка по вашим рабочим весам для %@ в нескольких тренировках с тем же числом повторений. Скорректируйте после первого подхода.";
+"Requires five consistent workout dates, including a separate validation workout, and a recent source record. This is a starting reference, not a strength measurement." = "Нужны стабильные записи за пять тренировочных дней, включая отдельную тренировку для проверки, и свежая запись исходного упражнения. Это начальный ориентир, а не измерение силы.";
+
+"Copy code and redeem with Apple" = "Скопировать код и активировать через Apple";
+"Your code is copied. Paste it into Apple’s redemption sheet if asked." = "Код скопирован. При необходимости вставьте его в окно активации Apple.";
+"Apple’s redemption sheet couldn’t open. Please try again." = "Не удалось открыть окно активации Apple. Повторите попытку.";
+
+/* Quiet load progression */
+"Weight progression" = "Прогрессия нагрузки";
+"Maintain current weights" = "Сохранять текущие веса";
+"Pause weight suggestions for all exercises. Your workout targets stay unchanged." = "Приостанавливает предложения веса для всех упражнений. Цели тренировки не меняются.";
+"Stage weight limit" = "Предел веса на этапе";
+"These preferences only limit progression suggestions. They do not change saved weights or define a safe maximum." = "Эти настройки ограничивают только предложения прогрессии. Они не меняют сохранённые веса и не определяют безопасный максимум.";
+"Global maintenance mode is on." = "Общий режим поддержания включён.";
+"Optional next weight" = "Возможный вес в следующий раз";
+"Repeated workouts reached the rep range. Only consider an increase if your form stayed steady and you had reps left." = "В нескольких тренировках достигнут диапазон повторений. Повышайте вес только при стабильной технике и запасе повторений.";
+"Use suggested weight" = "Использовать предложенный вес";
+"No weight increase suggested." = "Увеличение веса не предлагается.";
+"Suggestions depend on your goal and repeated workouts. Keeping the same weight is also an option." = "Предложения зависят от цели и нескольких тренировок. Сохранить текущий вес тоже можно.";
+
+"First-use calibration" = "Первичная калибровка";
+
+"Based on your saved weight for %@. This is a starting reference; adjust after your first set." = "На основе сохранённого веса для %@. Это начальный ориентир; скорректируйте его после первого подхода.";
+
+"Rough starting weight from your completed set of %@ and reps, using a product ratio and a 70%% multiplier. Not a measured maximum or safety guarantee; adjust for your equipment and first set." = "Примерный начальный вес по весу и повторам выполненного подхода %@ с заданным в продукте соотношением и коэффициентом 70%%. Это не измеренный максимум и не гарантия безопасности; учитывайте тренажёр и первый подход.";
+
+"Unlimited plans & custom exercises" = "Неограниченные планы и свои упражнения";
+"Training progress insights" = "Анализ прогресса тренировок";
+
+"7 days free, then renews yearly at the price above until cancelled." = "7 дней бесплатно, затем автоматическое ежегодное продление по указанной выше цене до отмены.";
+"7 days free, then renews monthly at the price above until cancelled." = "7 дней бесплатно, затем автоматическое ежемесячное продление по указанной выше цене до отмены.";
+"Renews yearly at the price above until cancelled." = "Автоматическое ежегодное продление по указанной выше цене до отмены.";
+"Renews monthly at the price above until cancelled." = "Автоматическое ежемесячное продление по указанной выше цене до отмены.";
+
+
+/* Approved Pro-boundary candidate. Server quotas remain release-gated. */
+"Keep adapting with AI Coach" = "Продолжайте настройку с ИИ-тренером";
+"Adjust workouts around your time and equipment." = "Подстраивайте тренировки под время и оборудование.";
+"See progress and recovery" = "Понимайте прогресс и восстановление";
+"Lift trends and per-muscle recovery estimates." = "Динамика силы и оценка восстановления каждой группы мышц.";
+"More room for your training" = "Больше возможностей для тренировок";
+"Save more plans and create more exercises." = "Сохраняйте больше планов и создавайте свои упражнения.";
+"Free: %d plans and %d custom exercises" = "Бесплатно: %d планов и %d своих упражнений";
+"Free and Pro details" = "Бесплатная версия и Pro";
+"Complete workouts, history, basic charts and data export stay available." = "Тренировки, история, базовые графики и экспорт данных остаются доступными.";
+"Existing plans, exercises and acquired results remain usable after Pro expires." = "Планы, упражнения и полученные результаты доступны и после окончания Pro.";
+"More with Pro" = "Больше с Pro";
+"Ongoing AI adjustments, more saved plans and custom exercises, lift progress and detailed recovery estimates." = "Постоянные корректировки ИИ, больше планов и своих упражнений, анализ силы и подробные оценки восстановления.";
+"AI access" = "Доступ к ИИ";
+"Each listed AI task has one successful free experience. Free also includes %d shared text tasks per month. A task includes %d same-goal adjustments within %d hours." = "Каждая указанная задача ИИ включает первый успешный бесплатный опыт. Также доступны %d общих текстовых задач в месяц. Каждая задача включает %d правки той же цели в течение %d часов.";
+"Failed requests, clarification, local tools and reopening results do not use AI quota." = "Ошибки, уточнения, локальные инструменты и просмотр результатов не расходуют лимит ИИ.";
+"Free AI requests continue after closing the upgrade reminder. Pro skips these reminders." = "Закройте напоминание об обновлении, чтобы продолжить бесплатные запросы ИИ. Pro убирает эти напоминания.";
+"Existing purchases keep their rights. AI needs internet access and your data-sharing permission." = "Права существующих покупок сохраняются. ИИ нужны интернет и согласие на передачу данных.";
+"Preview only: the shared quota service is not connected." = "Только предварительный просмотр: общий сервис лимитов не подключён.";
+"Free" = "Бесплатно";
+
+/* Device-install policy and native user-message actions. */
+"AI access on this device" = "Доступ к ИИ на этом устройстве";
+"AI allowances are stored only on this device installation. Changing devices or reinstalling may reset them; they are not shared across devices." = "Лимиты хранятся только в этой установке. Смена устройства или переустановка может их сбросить; между устройствами они не синхронизируются.";
+"Each supported AI task has one successful free experience on this installation. Free also includes 2 shared text tasks per calendar month (UTC). Repeat images and ongoing reviews need Pro." = "У каждой поддерживаемой задачи ИИ есть первый успешный бесплатный опыт. Также доступны 2 общие текстовые задачи в календарный месяц (UTC). Повторные изображения и постоянные обзоры требуют Pro.";
+"A task includes 2 same-goal adjustments within 24 hours. Failed requests, clarification, local tools and reopening saved results do not use the allowance." = "В задачу входят 2 правки той же цели за 24 часа. Ошибки, уточнения, локальные инструменты и сохранённые результаты не расходуют лимит.";
+"Existing purchased and lifetime rights are kept. No experimental 30-task or 10-image limit is applied to existing paid users." = "Существующие покупки и пожизненные права сохраняются. Лимиты эксперимента в 30 задач или 10 изображений не применяются к существующим платным пользователям.";
+"Automatic recommendations have a separate budget of one successful result per day; they do not spend your active AI allowance." = "Автоматические рекомендации имеют отдельный лимит: один успешный результат в день, без расхода активного лимита.";
+"Existing users have 30 days from this notice before the new AI limits apply. Previous use is not counted retroactively." = "Новые ограничения действуют для существующих пользователей через 30 дней после уведомления. Прошлое использование не учитывается задним числом.";
+"AI access and saved results" = "Доступ к ИИ и сохранённые результаты";
+"Saved AI results" = "Сохранённые результаты ИИ";
+"No saved AI results yet." = "Сохранённых результатов ИИ пока нет.";
+"Saved AI result" = "Сохранённый результат ИИ";
+"Monthly text tasks used: %d of 2" = "Текстовых задач за месяц: %d из 2";
+"Copy message" = "Скопировать сообщение";
+"Edit and resend" = "Изменить и отправить снова";
+"Editing text only. Sending adds a new message; your previous draft is kept." = "Редактируется только текст. Отправка добавит новое сообщение; прежний черновик сохранён.";
+"Cancel edit" = "Отменить правку";
+"This AI task needs Pro. Your saved results remain available." = "Эта задача ИИ требует Pro. Сохранённые результаты остаются доступны.";
+"Make room in My Plans before generating. Existing plans and training history are not deleted." = "Освободите место в Моих планах перед генерацией. Планы и история не удаляются.";
+"This AI task is already running. Please wait." = "Эта задача ИИ уже выполняется. Подождите.";
+"Review AI access on this device before continuing." = "Сначала ознакомьтесь с доступом к ИИ на этом устройстве.";
+"AI access could not be saved on this device. Nothing was charged." = "Не удалось сохранить использование ИИ. Попытка не списана.";
+"Today's automatic AI recommendation is already available." = "Автоматическая рекомендация ИИ на сегодня уже доступна.";
+
+/* Source extraction and saved recovery snapshot */
+"Source content could not be read. Paste the article, transcript or exercise list; no AI experience was used." = "Источник не прочитан. Вставьте текст, субтитры или список; попытка не списана.";
+"The source card count could not be confirmed. Nothing was saved and no AI experience was used." = "Число карточек неясно. Ничего не сохранено и не списано.";
+"Source exercises or parameters could not be verified. Nothing was substituted or saved." = "Упражнения или значения не проверены. Ничего не заменено и не сохранено.";
+"Confirm an exact library match before importing:" = "Подтвердите точное упражнение перед импортом:";
+"Extracted from your source. Review before saving." = "Извлечено. Проверьте перед сохранением.";
+"Suggested defaults for missing source parameters:" = "Предлагаемые значения отсутствующих параметров:";
+"A recovery snapshot needs at least 14 days of history, 6 recent sets and recent muscle data." = "Нужны 14 дней, 6 недавних подходов и мышечные данные.";
+"Recovery snapshot" = "Снимок восстановления";
+"Preview recovery snapshot" = "Попробовать снимок";
+"View saved recovery snapshot" = "Открыть сохранённый снимок";
+"A saved training-based estimate, not a live or medical measurement." = "Оценка по тренировкам, не текущее или медицинское измерение.";
+
+"Text only. New message. Draft kept." = "Только текст. Новое сообщение. Черновик сохранён.";

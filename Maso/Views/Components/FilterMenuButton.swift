@@ -163,145 +163,28 @@ struct ExerciseSearchFilterBar: View {
     var systemStyle: Bool = false
 
     var body: some View {
-        // 顺序: 左 = 两个筛选入口 (Muscle / Equipment), 右 = 搜索框 (flex 占满剩余宽度).
-        HStack(spacing: 8) {
-            muscleMenu       // 二级: 肌群 → (All <肌群> + 该肌群的 movements)
-            FilterMenuButton(
-                title: NSLocalizedString("Equipment", comment: "filter button placeholder"),
-                allLabel: NSLocalizedString("Any equipment", comment: ""),
-                selected: $equipmentFilter,
-                options: Exercise.knownEquipments.map { eq in
-                    FilterMenuOption(value: eq, label: Exercise.equipmentDisplayName(for: eq),
-                                     enabled: availableEquipments.contains(eq) || equipmentFilter == eq)
-                },
-                style: systemStyle ? .systemMenu : .capsule,
-                icon: systemStyle ? nil : "dumbbell.fill"
-            )
-
-            // 搜索框 — iOS 搜索框观感 (放大镜 + 圆角 + 清除), flex 占满剩余宽度, 放最右.
-            HStack(spacing: 6) {
-                Image(systemName: "magnifyingglass")
-                    .font(.system(size: 12, weight: .semibold))
-                    .foregroundStyle(MasoColor.textFaint)
-                TextField(NSLocalizedString("Search", comment: "search field placeholder"), text: $query)
-                    .textFieldStyle(.plain)
-                    .font(.system(size: 13))
-                    .autocorrectionDisabled()
-                    .textInputAutocapitalization(.never)
-                if !query.isEmpty {
-                    Button(action: { query = "" }) {
-                        Image(systemName: "xmark.circle.fill")
-                            .font(.system(size: 12))
-                            .foregroundStyle(MasoColor.textFaint)
-                    }
-                    .buttonStyle(.plain)
+        HStack {
+            Picker("Muscles", selection: $muscleFilter) {
+                Text("All muscles").tag(nil as MuscleGroup?)
+                ForEach(muscleSections, id: \.self) { muscle in
+                    Text(muscle.displayName).tag(Optional(muscle))
+                        .disabled(!availableMuscles.contains(muscle) && muscleFilter != muscle)
                 }
             }
-            .padding(.horizontal, 12)
-            .frame(height: 32)   // 固定高 — 跟左侧 Muscle / Equipment 筛选胶囊完全等高
-            .background(MasoColor.surface)
-            .clipShape(Capsule())
-            .frame(maxWidth: .infinity)
+            .pickerStyle(.menu)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            Picker("Equipment", selection: $equipmentFilter) {
+                Text("Any equipment").tag(nil as String?)
+                ForEach(Exercise.knownEquipments, id: \.self) { equipment in
+                    Text(Exercise.equipmentDisplayName(for: equipment)).tag(Optional(equipment))
+                        .disabled(!availableEquipments.contains(equipment) && equipmentFilter != equipment)
+                }
+            }
+            .pickerStyle(.menu)
+            .frame(maxWidth: .infinity, alignment: .trailing)
         }
         .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
-        .padding(.vertical, 8)
-        // systemStyle: 背景 + 底分隔线交给 caller — Exercises 页按滚动状态切 (顶部透明 → 上滑吸顶时上系统栏
-        // 材质 + 细线, 跟导航栏 scrolled 态完全一致, 消除断层). 非 systemStyle (picker sheet) 维持原纯色底 + 细线.
-        .background(systemStyle ? AnyShapeStyle(Color.clear) : AnyShapeStyle(MasoColor.background))
-        .overlay(alignment: .bottom) {
-            if !systemStyle {
-                Rectangle()
-                    .fill(MasoColor.textFaint.opacity(0.15))
-                    .frame(height: 0.5)
-            }
-        }
-    }
-
-    // MARK: - Muscle (二级: 肌群 → movement 子菜单)
-
-    /// 肌群筛选 —— 选肌群即筛 (只选部位); 肌群有可细分的 movement 时, 展开子菜单再选 (= 部位 + 动作).
-    private var muscleMenu: some View {
-        Menu {
-            menuRow(NSLocalizedString("All muscles", comment: ""), checked: muscleFilter == nil) {
-                muscleFilter = nil; movementFilter = nil
-            }
-            Divider()
-            ForEach(muscleSections.filter { availableMuscles.contains($0) || $0 == muscleFilter }, id: \.self) { sec in
-                let movs = movementsFor(sec)
-                if movs.isEmpty {
-                    // 该肌群没有可再细分的 movement → 直接选肌群.
-                    menuRow(sec.displayName, checked: muscleFilter == sec && movementFilter == nil) {
-                        muscleFilter = sec; movementFilter = nil
-                    }
-                } else {
-                    Menu {
-                        menuRow(String(format: NSLocalizedString("All %@", comment: "all of a muscle group"), sec.displayName),
-                                checked: muscleFilter == sec && movementFilter == nil) {
-                            muscleFilter = sec; movementFilter = nil
-                        }
-                        Divider()
-                        ForEach(movs, id: \.self) { mv in
-                            menuRow(mv.displayName, checked: muscleFilter == sec && movementFilter == mv) {
-                                muscleFilter = sec; movementFilter = mv
-                            }
-                        }
-                    } label: {
-                        if muscleFilter == sec { Label(sec.displayName, systemImage: "checkmark") }
-                        else { Text(sec.displayName) }
-                    }
-                }
-            }
-        } label: {
-            if systemStyle { muscleSystemLabel } else { muscleCapsule }
-        }
-        .menuOrder(.fixed)
-    }
-
-    @ViewBuilder
-    private func menuRow(_ text: String, checked: Bool, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            if checked { Label(text, systemImage: "checkmark") } else { Text(text) }
-        }
-    }
-
-    /// 胶囊 label — 未选灰底 "Muscle"; 选了肌群 accent; 选了 movement 显示 "肌群 · movement".
-    private var muscleCapsule: some View {
-        let active = muscleFilter != nil
-        return HStack(spacing: 4) {
-            Image(systemName: "figure.arms.open").font(.system(size: 11, weight: .bold))
-            Text(muscleLabelText).font(.system(size: 12, weight: .heavy)).lineLimit(1)
-            Image(systemName: "chevron.down").font(.system(size: 9, weight: .heavy))
-        }
-        .foregroundStyle(active ? MasoColor.accent : MasoColor.textDim)
-        .padding(.horizontal, 12)
-        .frame(height: 32)
-        // 小工具胶囊 → 素玻璃 (映射表③), 跟 FilterMenuButton.capsuleLabel 同配方.
-        .glassCapsuleButtonBackground(fallback: active ? MasoColor.accent.opacity(0.16) : MasoColor.surface)
-        .overlay {
-            if !systemGlassAvailable {
-                Capsule().stroke(active ? MasoColor.accent.opacity(0.5) : MasoColor.borderSoft, lineWidth: 0.5)
-            }
-        }
-    }
-
-    /// 系统菜单样式 label — tinted 文字 + chevron.up.chevron.down (= iOS Picker(.menu) 指示符), 无胶囊底.
-    /// 跟 Equipment 的 .systemMenu 一致, systemStyle 时用.
-    private var muscleSystemLabel: some View {
-        HStack(spacing: 3) {
-            Text(muscleLabelText)
-                .font(.system(size: 15))
-                .lineLimit(1)
-            Image(systemName: "chevron.up.chevron.down")
-                .font(.system(size: 11, weight: .semibold))
-        }
-        .foregroundStyle(muscleFilter != nil ? MasoColor.accent : MasoColor.textDim)
-        .padding(.vertical, 4)
-        .contentShape(Rectangle())
-    }
-
-    private var muscleLabelText: String {
-        guard let m = muscleFilter else { return NSLocalizedString("Muscle", comment: "filter button placeholder") }
-        if let mv = movementFilter { return m.displayName + " · " + mv.displayName }
-        return m.displayName
+        .padding(.vertical, MasoMetrics.rowPaddingV)
+        .onChange(of: muscleFilter) { _, _ in movementFilter = nil }
     }
 }

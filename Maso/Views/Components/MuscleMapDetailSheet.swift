@@ -1,93 +1,136 @@
 import SwiftUI
+import Charts
+import Combine
 
-// 肌肉恢复详情 — 点 Today 顶部肌肉图打开.
-//
-// 用系统默认控件搭 (owner 拍板): NavigationStack + 系统导航栏按钮 + .segmented Picker +
-// .borderedProminent 按钮. 除了人体图本身 (自绘 Canvas) 不做自定义样式.
-//
-// 跟 MuscleStatusOverviewCard (那张小图) 的区别:
-//   - 单面板 (正面 / 背面切换), 不再前后并排挤在正方形 slot 里
-//   - 只有 "Heavy fatigue" 一档引一条虚线折线指到该档最累的那块肌肉 (owner: 其余三档不画线)
-//
-// 分档精度跟卡片同一个 gate: 免费 = coarseOnly + 图例模糊 + 解锁入口 (不画引线),
-// Pro = 精细逐肌群 + 引线.
-struct MuscleMapDetailSheet: View {
+/// Full-page muscle status uses the same native model and fatigue mapping as Today.
+struct MuscleMapDetailScreen: View {
     @Environment(DataStore.self) private var data
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.scenePhase) private var scenePhase
 
     let fatigueMap: [MuscleGroup: Double]
     let gapMuscles: [MuscleGroup]
     let onStartGapWorkout: () -> Void
     var onUnlock: () -> Void = {}
+    var onOpenMuscleInfo: (MuscleSelection) -> Void = { _ in }
+    var onRecoveryCardVisibilityChange: (Bool) -> Void = { _ in }
 
-    @State private var showBack = false
+    @State private var selectedMuscle: MuscleSelection?
+    @State private var recoveryListPresented = false
 
-    /// 引线代表点的候选池 (自上而下) — 故意不是 polygon 里的全部 muscle:
-    /// 颈 / 内收 / 胫前 / 比目鱼 / 臀中 这些块太小, 当代表点读不出东西.
-    private static let frontCandidates: [MuscleGroup] = [
-        .frontDelts, .chest, .biceps, .abs, .obliques, .forearms, .quads
-    ]
-    private static let backCandidates: [MuscleGroup] = [
-        .upperTraps, .rearDelts, .upperLats, .triceps, .lowerBack, .glutes, .hamstrings, .calves
-    ]
+    @State private var footerHeight: CGFloat = 60
+    @State private var recoveryContentHeight: CGFloat = 340
+    @State private var recoveryCardTop: CGFloat?
 
     var body: some View {
         let isPro = data.settings.isPro
-        NavigationStack {
-            VStack(spacing: 18) {
-                AnnotatedBodyMap(
-                    polys: showBack ? POSTERIOR : ANTERIOR,
-                    candidates: showBack ? Self.backCandidates : Self.frontCandidates,
-                    fatigueMap: fatigueMap,
-                    coarseOnly: isPro ? !data.settings.muscleDetailEnabled : true,
-                    showLeader: isPro && !fatigueMap.isEmpty,
-                    blurLegend: !isPro
-                )
-                // 弹性高度: medium 档约 240 (留白够), 上拖到 large 时长到 380 (owner: 全屏时图要大一点).
-                .frame(minHeight: 190, maxHeight: 380)
-                // 换面板 = 重建, 清掉上一面板选中的肌肉 (它在这一面板没有 polygon, 引线会消失).
-                .id(showBack)
+        GeometryReader { geometry in
+            let fullHeight = geometry.size.height + geometry.safeAreaInsets.top + geometry.safeAreaInsets.bottom
+            let cardHeight = min(recoveryContentHeight, geometry.size.height * 0.64)
+            let recoveryCardMargin: CGFloat = 20
+            let availableHeight = max(1, geometry.size.height + geometry.safeAreaInsets.bottom - recoveryCardMargin - cardHeight - 24)
+            // Keep the initial viewport entirely between the native title and bottom controls.
+            // Selected-muscle framing still uses the full-screen SceneKit viewport.
+            let defaultHeight = max(1, geometry.size.height - footerHeight - 32)
+            let defaultScale = min(1, defaultHeight / max(1, fullHeight))
+            let defaultShift = geometry.safeAreaInsets.top + 12 + defaultHeight / 2 - fullHeight / 2
 
-                // ⚠️ key 不能直接用 "Back" —— 那个 key 已被导航的"返回"占用 (见 MuscleGroup.swift
-                //    同款注释), 中文会显示成"返回". 用独立的 Body front / Body back.
-                Picker("", selection: $showBack) {
-                    Text("Body front").tag(false)
-                    Text("Body back").tag(true)
+            VStack(spacing: 16) {
+                Spacer(minLength: 0)
+                if let selection = selectedMuscle {
+                    MuscleRecoveryOverlay(selection: selection,
+                        onClose: { selectedMuscle = nil },
+                        onOpenDetails: {
+                            MuscleNavigationBridge.shared.prepare(from: .status, to: .exercises)
+                            onOpenMuscleInfo(selection)
+                        },
+                        onContentHeightChange: { recoveryContentHeight = $0 })
+                        .frame(maxWidth: 460)
+                        .frame(height: cardHeight)
+                        .glassCardBackground(cornerRadius: 28)
+                        .clipShape(RoundedRectangle(cornerRadius: 28))
+                        .offset(y: geometry.safeAreaInsets.bottom - recoveryCardMargin)
+                        .onGeometryChange(for: CGFloat.self) { $0.frame(in: .global).minY } action: { recoveryCardTop = $0 }
+                        .transition(.opacity)
+                } else {
+                    MuscleRecoveryLegend(compact: true)
+                        .blur(radius: isPro ? 0 : 4.5)
+                        .accessibilityHidden(!isPro)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                 }
-                .pickerStyle(.segmented)
-                .labelsHidden()
-                .frame(maxWidth: 240)
 
-                if !isPro {
-                    // 图例被模糊, 这里给解锁入口 (跟卡上那颗 "Unlock per-muscle recovery" 同款).
-                    Button("Unlock per-muscle recovery with Pro", systemImage: "lock.fill") {
-                        dismiss(); onUnlock()
+                if selectedMuscle == nil {
+                VStack(spacing: 12) {
+                    if !isPro {
+                        DeviceRecoveryPreviewButton()
+                        Button("Unlock per-muscle recovery with Pro", systemImage: "lock.fill") {
+                            dismiss(); onUnlock()
+                        }
+                        .buttonStyle(.bordered)
                     }
-                    .buttonStyle(.bordered)
+                    primaryCTA
+                        .padding(.bottom, 16)
                 }
-
-                primaryCTA
+                .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { footerHeight = $0 }
+                }
             }
             .padding(.horizontal, 20)
-            .padding(.vertical, 14)
-            .frame(maxHeight: .infinity, alignment: .center)
-            .navigationTitle("Muscle Status")
-            .navigationBarTitleDisplayMode(.inline)
-            // 跟 HistoryScreen 的 session 详情 sheet / SettingsScreen 同一套工具栏写法.
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) { shareButton }
-                ToolbarItem(placement: .confirmationAction) {
-                    // .tint(MasoColor.text) = 白色 Done, 跟 SettingsScreen 一致
-                    // (app 的 AccentColor 资源是品牌绿, 不覆盖会是绿的).
-                    Button("Done") { dismiss() }
-                        .tint(MasoColor.text)
-                }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(alignment: .top) {
+                // Render independently of the safe-area content and floating card.
+                // The SceneKit viewport reaches every screen edge, including the navigation bar.
+                MuscleBody3DView(
+                    fatigueMap: fatigueMap,
+                    autoRotates: selectedMuscle == nil && !recoveryListPresented && !reduceMotion && scenePhase == .active,
+                    highlightedRegionNode: selectedMuscle?.regionNode,
+                    focusedRegionNode: selectedMuscle?.regionNode,
+                    focusShowsBack: selectedMuscle?.showsBack ?? false,
+                    focusVisibleFraction: selectedMuscle == nil ? 1 : availableHeight / max(1, fullHeight),
+                    focusTopInsetFraction: geometry.safeAreaInsets.top / max(1, fullHeight),
+                    showsFatigueColors: selectedMuscle == nil,
+                    navigationRole: .status,
+                    navigationOcclusionTop: selectedMuscle == nil ? nil : recoveryCardTop,
+                    onTap: { selectedMuscle = nil },
+                    onMuscleTap: { region, showsBack in
+                        guard let muscle = region.muscles.first else { return }
+                        Haptics.selection()
+                        selectedMuscle = MuscleSelection(muscle: muscle, relatedMuscles: region.muscles,
+                                                        regionNode: region.node, showsBack: showsBack)
+                    }
+                )
+                .accessibilityIdentifier("detail.muscleBody3D")
+                .frame(width: geometry.size.width, height: fullHeight)
+                .scaleEffect(selectedMuscle == nil ? defaultScale : 1)
+                .offset(y: -geometry.safeAreaInsets.top + (selectedMuscle == nil ? defaultShift : 0))
+                .animation(reduceMotion ? nil : .easeInOut(duration: 0.55), value: selectedMuscle)
             }
         }
-        // 标准 sheet 尺寸, 不是整页 (owner). 需要看细节可以上拖到 large.
-        .presentationDetents([.medium, .large])
-        // ⚠️ 别漏 — 不挂这个的 sheet 会用系统半透明材质, 底下 TabBar 玻璃会透上来变成一条色带.
-        .presentationBackground(MasoColor.background)
+        .background(MasoColor.background.ignoresSafeArea())
+        #if DEBUG
+        .onAppear {
+            guard ProcessInfo.processInfo.environment["MASO_MARKETING_SELECTED_MUSCLE"] == "shoulders",
+                  let region = try? MuscleBodyRegion.loadBundled().first(where: { $0.node == "shoulders_left" }) else { return }
+            selectedMuscle = MuscleSelection(muscle: .shoulders, relatedMuscles: region.muscles, regionNode: region.node, showsBack: true)
+        }
+        #endif
+        .onChange(of: selectedMuscle != nil, initial: true) { _, visible in
+            onRecoveryCardVisibilityChange(visible)
+        }
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button { recoveryListPresented = true } label: { Image(systemName: "list.bullet") }
+                    .accessibilityLabel("Muscle recovery")
+                    .accessibilityIdentifier("muscles.recoveryList")
+            }
+        }
+        .navigationDestination(isPresented: $recoveryListPresented) {
+            MuscleRecoveryListScreen(gapMuscles: gapMuscles, onStartGapWorkout: startGapWorkout) { selection in
+                Haptics.selection()
+                selectedMuscle = selection
+                recoveryListPresented = false
+            }
+        }
     }
 
     /// 底部主 CTA — 规格照抄 PlansScreen.startWorkoutCTA ("Start workout" 那颗大胶囊),
@@ -99,287 +142,386 @@ struct MuscleMapDetailSheet: View {
                 .font(.subheadline.weight(.semibold))
                 .foregroundStyle(.secondary)
         } else {
-            Button {
-                dismiss(); onStartGapWorkout()
-            } label: {
-                HStack(spacing: 8) {
-                    Image(systemName: "play.fill")
-                        .font(.system(size: 14, weight: .heavy))
-                    Text("Train the gaps")
-                        .font(.system(size: 15, weight: .heavy))
-                }
-                .padding(.vertical, 13)
-                .padding(.horizontal, 28)
-                .foregroundStyle(.black)
-                .glassCapsuleButtonBackground(tint: MasoColor.accent.opacity(0.85), fallback: MasoColor.accent)
-                .shadow(color: systemGlassAvailable ? .clear : .black.opacity(0.3), radius: 6, y: 2)
-            }
-            .buttonStyle(.plain)
+            TrainGapsButton(hasGaps: true, action: startGapWorkout)
         }
     }
 
-    /// 分享 — 复用 MuscleStatusShareCard, 口径跟 MuscleStatusOverviewCard.shareButton 一致.
-    /// label 规格照抄 HistoryScreen session 详情 sheet 的分享按钮.
-    private var shareButton: some View {
-        let isPro = data.settings.isPro
-        let coarse = isPro ? !data.settings.muscleDetailEnabled : true
-        let fatigue = fatigueMap
-        let cal = Calendar.current
-        let cutoff = cal.startOfDay(for: cal.date(byAdding: .day, value: -6, to: Date())!)
-        let weekSets = data.sets.filter { $0.performedAt >= cutoff }
-        let days = Set(weekSets.map { cal.startOfDay(for: $0.performedAt) }).count
-        var sections = Set<MuscleGroup>()
-        for set in weekSets {
-            guard let ex = data.exById[set.exerciseId] else { continue }
-            for m in ex.muscleGroups where m.section != nil {
-                sections.insert(m.section!)
-            }
-        }
-        let sectionsHit = sections.count
-        return ShareImageButton(
-            previewTitle: NSLocalizedString("Muscle Status", comment: ""),
-            defaultSections: ShareSections(),
-            shareContent: { photo, onTapAdd, _ in
-                MuscleStatusShareCard(
-                    muscleStyle: { m in MasoColor.recoveryHeatStyle(muscle: m, fatigueMap: fatigue) },
-                    workoutsThisWeek: days,
-                    totalSetsThisWeek: weekSets.count,
-                    muscleSectionsHit: sectionsHit,
-                    coarseOnly: coarse,
-                    userPhoto: photo,
-                    onTapAddPhoto: onTapAdd
-                )
-            },
-            shareSurface: "muscle_status_detail",
-            // 规格跟 HistoryScreen session 详情 sheet 的分享按钮一致.
-            label: {
-                Image(systemName: "square.and.arrow.up")
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundStyle(MasoColor.textDim)
-            }
-        )
-        .accessibilityLabel("Share")
+    private func startGapWorkout() {
+        dismiss()
+        onStartGapWorkout()
     }
 }
 
-// MARK: - 单面板 + Heavy fatigue 引线
+/// The same action and primary button are used in both recovery presentations.
+private struct TrainGapsButton: View {
+    let hasGaps: Bool
+    let action: () -> Void
+    var body: some View {
+        Button(action: action) {
+            TrainingCardActionLabel(title: "Train the gaps", icon: "play.fill", accent: MasoColor.accent)
+        }
+        .buttonStyle(.plain)
+        .disabled(!hasGaps)
+        .frame(maxWidth: .infinity, alignment: .center)
+    }
+}
 
-/// 单面板人体图 (正面**或**背面) + 四档图例.
-/// 只有最累那档 (Heavy fatigue) 引一条虚线折线到该档最累的肌肉 —— 其余三档只做色块图例
-/// (owner: 四根线太满, 只留最需要提醒的那根).
-///
-/// 为什么不复用 BodyHint: BodyHint 恒画前后两个 panel, 且引线需要跟 polygon 共享同一套
-/// 坐标变换 (才能把线钉在肌肉上). 这里自己画一个 panel, 变换公式跟 BodyHint.drawAnatomy 同源.
-private struct AnnotatedBodyMap: View {
-    let polys: [AnatomyPolygon]
-    /// 引线代表点的候选池 (自上而下).
-    let candidates: [MuscleGroup]
-    let fatigueMap: [MuscleGroup: Double]
-    let coarseOnly: Bool
-    let showLeader: Bool
-    let blurLegend: Bool
+struct MuscleRecoveryListScreen: View {
+    @Environment(DataStore.self) private var data
+    let gapMuscles: [MuscleGroup]
+    let onStartGapWorkout: () -> Void
+    let onSelect: (MuscleSelection) -> Void
+    @State private var now = Date()
 
-    /// 用户点中的肌肉 — 连线的起点. nil = 还没点过, 用默认 (最累那块).
-    /// ⚠️ 前后切换要清空, 否则会留着上一面板没有的肌肉 → 引线消失.
-    /// 由调用方给本 view 挂 `.id(showBack)` 重建来清 (见 MuscleMapDetailSheet).
-    @State private var selected: MuscleGroup? = nil
-
-    /// 四档色块 (自上而下 = 累 → 没练), 跟 MasoColor.recoveryHeatStyle 逐一对齐.
-    /// 第 0 档 (.fatigued) 是唯一画引线的那档.
-    private static let tiers: [(swatch: Color, label: String, tier: MuscleStatusCompute.RecoveryTier)] = [
-        (MasoColor.accent.opacity(1.00), "Heavy fatigue", .fatigued),
-        (MasoColor.accent.opacity(0.60), "Recovering", .recovering),
-        (MasoColor.accent.opacity(0.30), "Mostly recovered", .mostlyRecovered),
-        (Color(red: 0.165, green: 0.165, blue: 0.165), "Fresh", .fresh),
-    ]
-
-    private let chipW: CGFloat = 132
-    private let gutter: CGFloat = 16
-    /// 折线两端的水平短脚 — 有这段"出脚"才像标注引线, 不是一根斜杠.
-    private let stub: CGFloat = 13
+    private var entries: [MuscleStatusCompute.RecoverySummary] {
+        MuscleStatusCompute.recoverySummaries(regions: (try? MuscleBodyRegion.loadBundled()) ?? [],
+            sets: data.sets, exById: data.exById, now: now)
+    }
 
     var body: some View {
-        GeometryReader { geo in
-            let H = geo.size.height
-            let bodyW = min(H * (AnatomyView.width / AnatomyView.height) * 1.05,
-                            max(70, geo.size.width - chipW - gutter))
-            let bodyX = max(0, (geo.size.width - chipW - gutter - bodyW) / 2)
-            let chipX = geo.size.width - chipW
-            let chipYs = (0..<Self.tiers.count).map { i in H * (0.14 + 0.24 * CGFloat(i)) }
-
-            // 连线的那块肌肉: 用户点过就是点的那块, 没点过默认最累的那块.
-            let linked = selected ?? representative(for: .fatigued)
-
-            ZStack(alignment: .topLeading) {
-                Canvas { ctx, _ in
-                    let t = transform(bodyX: bodyX, bodyW: bodyW, H: H)
-                    drawBody(ctx: ctx, t: t)
-                    guard showLeader,
-                          let m = linked,
-                          let a = anchorPoint(for: m, t: t),
-                          let i = tierIndex(of: m) else { return }
-                    let end = CGPoint(x: chipX - 6, y: chipYs[i])
-                    let color = Self.tiers[i].swatch
-                    // 折线: 肌肉侧短横脚 → 斜段 → 图例侧短横脚.
-                    var p = Path()
-                    p.move(to: a)
-                    p.addLine(to: CGPoint(x: a.x + stub, y: a.y))
-                    p.addLine(to: CGPoint(x: end.x - stub, y: end.y))
-                    p.addLine(to: end)
-                    ctx.stroke(p, with: .color(color.opacity(0.7)),
-                               style: StrokeStyle(lineWidth: 1, lineCap: .round,
-                                                  lineJoin: .round, dash: [2.5, 3.5]))
-                    ctx.fill(Path(ellipseIn: CGRect(x: a.x - 2.5, y: a.y - 2.5, width: 5, height: 5)),
-                             with: .color(color.opacity(0.95)))
-                }
-                // 点身体任意一块肌肉 → 连线换到那块 (owner: 点哪里就在哪里连线, 全图始终只有一根).
-                // 图例那层挂了 allowsHitTesting(false), 点击能穿过去, 所以这个手势收得到整块区域.
-                .contentShape(Rectangle())
-                .onTapGesture(coordinateSpace: .local) { loc in
-                    guard showLeader else { return }
-                    let t = transform(bodyX: bodyX, bodyW: bodyW, H: H)
-                    if let m = muscleAt(loc, t: t) {
-                        withAnimation(.easeInOut(duration: 0.18)) { selected = m }
+        List {
+            Section {
+                ForEach(entries) { entry in
+                    Button {
+                        let backMuscles: Set<MuscleGroup> = [.upperTraps, .lats, .lowerBack, .glutes, .hamstrings, .calves]
+                        onSelect(MuscleSelection(muscle: entry.muscle, relatedMuscles: entry.region.muscles,
+                            regionNode: entry.region.node, showsBack: backMuscles.contains(entry.muscle)))
+                    } label: {
+                        HStack(spacing: 12) {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(entry.muscle.displayName).font(.body).foregroundStyle(.primary)
+                                    .fixedSize(horizontal: false, vertical: true)
+                                Text(status(for: entry.recovered)).font(.caption).foregroundStyle(.secondary)
+                            }
+                            Spacer(minLength: 8)
+                            Group {
+                                if let recovery = entry.recovered {
+                                    Text(recovery, format: .percent.precision(.fractionLength(0)))
+                                } else { Text("—") }
+                            }
+                            .font(.title3.weight(.semibold)).monospacedDigit().foregroundStyle(.primary)
+                            Image(systemName: "chevron.right").font(.footnote.weight(.semibold)).foregroundStyle(.tertiary)
+                        }
+                        .padding(.vertical, 4)
+                        .contentShape(Rectangle())
                     }
+                    .buttonStyle(.plain)
+                    .accessibilityIdentifier("muscles.recovery.\(entry.muscle.rawValue)")
                 }
+            } header: { Text("Most recovered first") }
+        }
+        .listStyle(.insetGrouped)
+        .scrollContentBackground(.hidden)
+        .background(AppBackground())
+        .navigationTitle("Muscle recovery")
+        .navigationBarTitleDisplayMode(.inline)
+        .safeAreaInset(edge: .bottom, spacing: 0) {
+            TrainGapsButton(hasGaps: !gapMuscles.isEmpty, action: onStartGapWorkout)
+                .padding(MasoMetrics.pagePaddingHorizontal)
+        }
+        .onAppear { now = Date() }
+        .onReceive(Timer.publish(every: 60, on: .main, in: .common).autoconnect()) { now = $0 }
+    }
 
-                // 四档色块 — 用 .position 钉在跟 Canvas 同一坐标系的点上 (引线终点要对得上).
-                ForEach(Array(Self.tiers.enumerated()), id: \.offset) { i, t in
-                    HStack(spacing: 8) {
-                        RoundedRectangle(cornerRadius: 3)
-                            .fill(t.swatch)
-                            .frame(width: 11, height: 11)
-                        Text(LocalizedStringKey(t.label))
-                            .font(.caption2)
-                            .foregroundStyle(MasoColor.text)
-                            .lineLimit(2)
-                            .fixedSize(horizontal: false, vertical: true)
-                        Spacer(minLength: 0)
-                    }
-                    .frame(width: chipW, alignment: .leading)
-                    .position(x: chipX + chipW / 2, y: chipYs[i])
-                }
-                .blur(radius: blurLegend ? 4.5 : 0)
+    private func status(for recovery: Double?) -> LocalizedStringKey {
+        guard let recovery else { return "No workouts yet" }
+        switch MuscleStatusCompute.tierFor(fatigue: 1 - recovery) {
+        case .fresh: return "Fresh"
+        case .mostlyRecovered: return "Ready"
+        case .recovering: return "Recovering"
+        case .fatigued: return "Fatigued"
+        }
+    }
+}
+
+struct MuscleSelection: Hashable {
+    let muscle: MuscleGroup
+    let relatedMuscles: [MuscleGroup]
+    let regionNode: String
+    let showsBack: Bool
+}
+
+private extension MuscleGroup {
+    var introductionKey: LocalizedStringKey {
+        switch self {
+        case .neck: return "Muscle intro · Neck"
+        case .chest, .upperChest, .midChest, .lowerChest: return "Muscle intro · Chest"
+        case .shoulders, .frontDelts, .sideDelts, .rearDelts, .rotatorCuff: return "Muscle intro · Shoulders"
+        case .biceps, .bicepsLong, .bicepsShort, .brachialis: return "Muscle intro · Biceps"
+        case .triceps, .tricepsLong, .tricepsLateral, .tricepsMedial: return "Muscle intro · Triceps"
+        case .forearms, .forearmFlexors, .forearmExtensors, .brachioradialis: return "Muscle intro · Forearms"
+        case .core, .abs, .upperAbs, .lowerAbs, .obliques, .serratus: return "Muscle intro · Core"
+        case .glutes, .gluteusMaximus, .gluteusMedius: return "Muscle intro · Glutes"
+        case .quads, .rectusFemoris, .vastusLateralis, .vastusMedialis: return "Muscle intro · Quads"
+        case .hamstrings, .bicepsFemoris, .semitendinosus: return "Muscle intro · Hamstrings"
+        case .calves, .gastrocnemius, .soleus, .tibialisAnterior: return "Muscle intro · Lower legs"
+        case .adductors: return "Muscle intro · Adductors"
+        case .back, .lats, .upperLats, .lowerLats, .upperTraps, .midTraps, .lowerTraps,
+             .rhomboids, .teres, .lowerBack, .arms, .legs, .fullBody:
+            return "Muscle intro · Back"
+        }
+    }
+
+}
+
+struct MuscleInfoScreen: View {
+    @Environment(DataStore.self) private var data
+    let muscle: MuscleGroup
+    let relatedMuscles: [MuscleGroup]
+    let regionNode: String
+    let showsBack: Bool
+    var onTrainMore: () -> Void = {}
+    @State private var useGridLayout = false
+    @State private var selectedExercise: Exercise?
+
+    private var exercises: [Exercise] {
+        let targets = Set(relatedMuscles)
+        let matches = data.userLibrary.filter { exercise in
+            exercise.primaryMuscles.contains(where: targets.contains)
+        }
+        return Array(data.sortByFavorites(matches).prefix(12))
+    }
+
+
+    var body: some View {
+        GeometryReader { geometry in
+        let heroHeight = min(640, max(500, geometry.size.height * 0.68)) * 0.6 + geometry.safeAreaInsets.top
+        ScrollView {
+        VStack(alignment: .leading, spacing: 0) {
+            MuscleBody3DView(
+                fatigueMap: [:],
+                showsBack: showsBack,
+                highlightedRegionNode: regionNode,
+                focusedRegionNode: regionNode,
+                focusShowsBack: showsBack,
+                focusVisibleFraction: 0.96,
+                focusTopInsetFraction: 0.02,
+                showsFatigueColors: false,
+                navigationRole: .exercises
+            )
+            // Extend the render surface from the physical left edge; overscan to the
+            // right preserves the previously approved right-biased muscle framing.
+            .frame(width: geometry.size.width * 1.15, height: heroHeight)
+            .frame(width: geometry.size.width, height: heroHeight, alignment: .leading)
+            .overlay {
+                LinearGradient(stops: [
+                    .init(color: MasoColor.background.opacity(0), location: 0),
+                    .init(color: MasoColor.background.opacity(0), location: 0.6),
+                    .init(color: MasoColor.background, location: 1)
+                ], startPoint: UnitPoint(x: 0, y: 0.5), endPoint: UnitPoint(x: 1, y: 0.5))
                 .allowsHitTesting(false)
             }
-        }
-    }
-
-    /// 这块肌肉落在四档里的第几档 (= 引线该连到哪一行图例).
-    private func tierIndex(of m: MuscleGroup) -> Int? {
-        let tier = MuscleStatusCompute.tierFor(muscle: m, fatigueMap: fatigueMap)
-        return Self.tiers.firstIndex { $0.tier == tier }
-    }
-
-    /// 点击命中: 屏幕点 → anatomy 坐标 → 反向遍历 polygon (后画的在上层优先命中), 跳过装饰头.
-    private func muscleAt(_ p: CGPoint, t: T) -> MuscleGroup? {
-        let a = CGPoint(x: (p.x - t.dx) / t.s, y: (p.y - t.dy) / t.s)
-        for poly in polys.reversed()
-        where poly.muscle != .fullBody && poly.points.count >= 3 {
-            if pointInside(a, poly.points) { return poly.muscle }
-        }
-        return nil
-    }
-
-    /// 该档的代表肌肉 = 候选池里落在这一档、且 fatigue 最高的那块.
-    private func representative(for tier: MuscleStatusCompute.RecoveryTier) -> MuscleGroup? {
-        var best: MuscleGroup? = nil
-        var bestFatigue = -1.0
-        for m in candidates
-        where MuscleStatusCompute.tierFor(muscle: m, fatigueMap: fatigueMap) == tier {
-            let f = fatigueMap[m] ?? 0
-            if f > bestFatigue { bestFatigue = f; best = m }
-        }
-        return best
-    }
-
-    // MARK: 坐标变换 (跟 BodyHint.drawAnatomy 同源)
-
-    private struct T { let s: CGFloat; let dx: CGFloat; let dy: CGFloat }
-
-    private func transform(bodyX: CGFloat, bodyW: CGFloat, H: CGFloat) -> T {
-        let s = min(bodyW / AnatomyView.width, H / AnatomyView.height)
-        return T(s: s,
-                 dx: bodyX + (bodyW - AnatomyView.width * s) / 2,
-                 dy: (H - AnatomyView.height * s) / 2)
-    }
-
-    private func drawBody(ctx: GraphicsContext, t: T) {
-        let idleGray = Color.white.opacity(0.22)
-        for poly in polys where poly.points.count >= 3 {
-            let fill: Color
-            if poly.muscle == .fullBody {
-                fill = idleGray
-            } else if let (c, o) = MasoColor.recoveryHeatStyle(muscle: poly.muscle, fatigueMap: fatigueMap) {
-                fill = c.opacity(o)
-            } else {
-                fill = idleGray
+            .overlay(alignment: .bottom) {
+                LinearGradient(stops: [
+                    .init(color: MasoColor.background.opacity(0), location: 0),
+                    .init(color: MasoColor.background.opacity(0.08), location: 0.3),
+                    .init(color: MasoColor.background.opacity(0.4), location: 0.6),
+                    .init(color: MasoColor.background.opacity(0.8), location: 0.85),
+                    .init(color: MasoColor.background, location: 1)
+                ], startPoint: .top, endPoint: .bottom)
+                    .frame(height: 192).allowsHitTesting(false)
             }
-            let pts = poly.points.map { CGPoint(x: t.dx + $0.x * t.s, y: t.dy + $0.y * t.s) }
-            let path = roundedPolygonPath(pts, radius: 2.5 * t.s)
-            ctx.fill(path, with: .color(fill))
-            if !coarseOnly {
-                ctx.stroke(path, with: .color(Color(white: 0.122)), lineWidth: 0.25)
+            .frame(maxWidth: .infinity, alignment: .trailing)
+            .environment(\.layoutDirection, .leftToRight)
+            .accessibilityLabel(Text(muscle.displayName))
+        VStack(alignment: .leading, spacing: 22) {
+            VStack(alignment: .leading, spacing: 8) {
+                Text(muscle.displayName)
+                    .font(.title2.weight(.bold))
+                    .foregroundStyle(MasoColor.text)
+                Text(muscle.introductionKey)
+                    .font(.body)
+                    .foregroundStyle(MasoColor.textDim)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+
+            Button(action: onTrainMore) {
+                Label("Train this muscle more", systemImage: "message")
+                    .font(.subheadline)
+            }
+                .nativeGlassButtonStyle().controlSize(.small).tint(MasoColor.text)
+                .accessibilityIdentifier("muscle.trainMore")
+
+            VStack(alignment: .leading, spacing: 8) {
+                HStack {
+                    Text("Exercises for this muscle")
+                        .font(.headline)
+                        .foregroundStyle(MasoColor.text)
+                    Spacer()
+                    Picker("Layout", selection: $useGridLayout) {
+                        Label("List", systemImage: "list.bullet").tag(false)
+                        Label("Grid", systemImage: "square.grid.2x2").tag(true)
+                    }
+                    .pickerStyle(.segmented)
+                    .frame(width: 120)
+                }
+                if exercises.isEmpty {
+                    Text("No matching exercises yet")
+                        .font(.body)
+                        .foregroundStyle(.secondary)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.vertical, 12)
+                } else if useGridLayout {
+                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
+                        ForEach(exercises) { exercise in
+                            Button { selectedExercise = exercise } label: {
+                                ExerciseGridContent(exercise: exercise)
+                            }.buttonStyle(.plain)
+                        }
+                    }
+                } else {
+                    InlineExerciseList(exercises: exercises) { selectedExercise = $0 }
+                }
             }
         }
-    }
-
-    /// 引线起点 = 该肌肉**最右侧**那块 polygon 的**内部**代表点.
-    /// 取最右 (而不是所有 polygon 合并) 是为了让线从靠图例那一侧出发, 不横穿身体.
-    /// ⚠️ 不能用包围盒中心: 斜方肌 / 阔背这类 L 形或凹多边形, bbox 中心会落在肌肉**外面**
-    ///    (实测斜方的点跑到旁边灰色的后束上, "Heavy fatigue" 指了一块没练的肌肉).
-    private func anchorPoint(for m: MuscleGroup, t: T) -> CGPoint? {
-        var bestPts: [CGPoint]? = nil
-        var bestX = -CGFloat.infinity
-        for poly in polys where poly.muscle == m && poly.points.count >= 3 {
-            let xs = poly.points.map(\.x)
-            let cx = (xs.min()! + xs.max()!) / 2
-            if cx > bestX { bestX = cx; bestPts = poly.points }
+            .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
+            .padding(.top, 8)
+            .padding(.bottom, 28)
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
-        guard let pts = bestPts, let p = interiorPoint(of: pts) else { return nil }
-        return CGPoint(x: t.dx + p.x * t.s, y: t.dy + p.y * t.s)
+        }
+        .scrollIndicators(.hidden)
+        .ignoresSafeArea(edges: .top)
+        }
+        .background(MasoColor.background.ignoresSafeArea())
+        .navigationTitle("")
+        .navigationBarTitleDisplayMode(.inline)
+        .appUnobstructedMediaHeader()
+        // Keep the system back item: hiding it disables native interactive pop.
+        // Editor role keeps the compact chevron without repeating the parent title.
+        .toolbarRole(.editor)
+        .tint(MasoColor.text)
+        .sheet(item: $selectedExercise) { exercise in
+            ExerciseDetailSheet(exercise: exercise)
+                .presentationDetents([.large])
+                .presentationDragIndicator(.visible)
+        }
     }
 }
 
-// MARK: - polygon 内部代表点
-
-/// 面积质心; 若质心落在凹多边形外面, 沿"质心→各顶点"收 50% 再试, 取最靠右的可行点.
-private func interiorPoint(of pts: [CGPoint]) -> CGPoint? {
-    guard pts.count >= 3 else { return nil }
-    var a: CGFloat = 0, cx: CGFloat = 0, cy: CGFloat = 0
-    for i in 0..<pts.count {
-        let p = pts[i], q = pts[(i + 1) % pts.count]
-        let cross = p.x * q.y - q.x * p.y
-        a += cross
-        cx += (p.x + q.x) * cross
-        cy += (p.y + q.y) * cross
+private struct MuscleRecoveryOverlay: View {
+    @Environment(DataStore.self) private var data
+    let selection: MuscleSelection
+    let onClose: () -> Void
+    let onOpenDetails: () -> Void
+    var onContentHeightChange: (CGFloat) -> Void = { _ in }
+    @State private var now = Date()
+    @State private var explanationPresented = false
+    // Measure text/padding independently from the chart to avoid a sizing feedback loop.
+    @State private var contentHeight: CGFloat = 0
+    private let preferredChartHeight: CGFloat = 180
+    @State private var actionHeight: CGFloat = 0
+    private var points: [MuscleStatusCompute.RecoveryPoint] {
+        MuscleStatusCompute.recoveryTimeline(muscles: selection.relatedMuscles, sets: data.sets, exById: data.exById, now: now)
     }
-    if abs(a) > 0.0001 {
-        let c = CGPoint(x: cx / (3 * a), y: cy / (3 * a))
-        if pointInside(c, pts) { return c }
-        // 质心在外 → 朝各顶点收一半找落在内部的点, 取最右那个 (线从靠图例一侧出发).
-        var best: CGPoint? = nil
-        for v in pts {
-            let cand = CGPoint(x: (c.x + v.x) / 2, y: (c.y + v.y) / 2)
-            if pointInside(cand, pts), best == nil || cand.x > best!.x { best = cand }
+    var body: some View {
+        GeometryReader { geometry in
+        let chartHeight = max(0, min(240, geometry.size.height - contentHeight - actionHeight))
+        let contentSpacing: CGFloat = geometry.size.height < 480 ? 12 : MasoMetrics.cardPadding
+        VStack(spacing: 0) {
+            VStack(alignment: .leading, spacing: contentSpacing) {
+                HStack(alignment: .top, spacing: 12) {
+                    Text(selection.muscle.displayName)
+                        .font(.title2.weight(.bold)).foregroundStyle(MasoColor.text)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Spacer(minLength: 0)
+                    Button(action: onClose) { Image(systemName: "xmark") }
+                        .nativeGlassButtonStyle().controlSize(.small).tint(MasoColor.text)
+                        .accessibilityLabel("Close")
+                }
+                if let current = points.last {
+                    VStack(alignment: .leading, spacing: contentSpacing) {
+                        HStack {
+                            HStack(alignment: .firstTextBaseline, spacing: 6) {
+                                TargetValueLabel(value: String(Int((current.recovered * 100).rounded())), unit: "%")
+                                Button { explanationPresented = true } label: {
+                                    Image(systemName: "info.circle").font(.caption)
+                                }
+                                .buttonStyle(.borderless).tint(.secondary)
+                                .accessibilityLabel("Recovery estimate")
+                                .popover(isPresented: $explanationPresented) {
+                                    Text("Estimated from recorded workouts, not a measured recovery score.")
+                                        .font(.footnote).foregroundStyle(.secondary)
+                                        .padding(16).frame(idealWidth: 260, maxWidth: 280)
+                                        .fixedSize(horizontal: false, vertical: true)
+                                        .presentationCompactAdaptation(.popover)
+                                }
+                            }
+                            Spacer(minLength: 12)
+                            Text(tier(current.recovered)).font(.subheadline).foregroundStyle(.secondary)
+                                .multilineTextAlignment(.trailing).fixedSize(horizontal: false, vertical: true)
+                                .frame(maxWidth: 140, alignment: .trailing)
+                        }
+                        Chart {
+                            ForEach(points) { point in
+                                AreaMark(x: .value("Date", point.date),
+                                         yStart: .value("Baseline", 0),
+                                         yEnd: .value("Recovery", point.recovered * 100))
+                                    .foregroundStyle(LinearGradient(
+                                        colors: [MasoColor.accent.opacity(0.28), MasoColor.accent.opacity(0)],
+                                        startPoint: .top, endPoint: .bottom))
+                                    .interpolationMethod(.linear)
+                                    .accessibilityHidden(true)
+                            }
+                            ForEach(points) { point in
+                                LineMark(x: .value("Date", point.date), y: .value("Recovery", point.recovered * 100))
+                                    .foregroundStyle(MasoColor.accent).interpolationMethod(.linear)
+                            }
+                            PointMark(x: .value("Date", current.date), y: .value("Recovery", current.recovered * 100))
+                                .foregroundStyle(MasoColor.accent).symbolSize(85)
+                                .annotation(position: .top, alignment: .trailing) { Text("Now").font(.caption).foregroundStyle(.secondary) }
+                            RuleMark(x: .value("Date", now)).foregroundStyle(.secondary).lineStyle(StrokeStyle(lineWidth: 1, dash: [3]))
+                        }
+                        .chartXScale(domain: (points.first?.date ?? now.addingTimeInterval(-86400))...now,
+                                     range: .plotDimension(startPadding: 8, endPadding: 14))
+                        .chartYScale(domain: 0...100, range: .plotDimension(startPadding: 12, endPadding: 12))
+                        .chartYAxis { AxisMarks(values: [0, 50, 100]) { value in
+                            AxisGridLine()
+                            AxisValueLabel { if let percent = value.as(Int.self) { Text("\(percent)%") } }
+                        } }
+                        .chartXAxis { AxisMarks(values: .stride(by: .day, count: 2)) { _ in AxisValueLabel(format: .dateTime.month().day()) } }
+                        .frame(height: chartHeight)
+                        .accessibilityLabel("Recovery estimate")
+                        .accessibilityValue("\(Int((current.recovered * 100).rounded()))%")
+                    }
+                } else {
+                    ContentUnavailableView("No workouts yet", systemImage: "chart.xyaxis.line")
+                        .frame(height: chartHeight)
+                }
+            }.padding(MasoMetrics.pagePaddingHorizontal)
+                .onGeometryChange(for: CGFloat.self) { ceil(max(0, $0.size.height - chartHeight)) } action: { height in
+                    if height > 0 { contentHeight = height }
+                }
+        VStack(spacing: 12) {
+            Divider()
+            HStack(spacing: 8) {
+                Button(action: onOpenDetails) {
+                    HStack(spacing: 8) {
+                        Text("Exercises")
+                            .fixedSize(horizontal: false, vertical: true)
+                        Image(systemName: "chevron.right").font(.caption.weight(.semibold))
+                    }.font(.subheadline.weight(.semibold))
+                }
+            }
+            .nativeGlassButtonStyle().controlSize(.regular).tint(MasoColor.text)
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
-        if let best { return best }
-    }
-    let xs = pts.map(\.x), ys = pts.map(\.y)
-    return CGPoint(x: (xs.min()! + xs.max()!) / 2, y: (ys.min()! + ys.max()!) / 2)
-}
-
-/// 标准 ray-casting (BodyHint 里那份是 private 实例方法, 这里独立一份, 逻辑相同).
-private func pointInside(_ p: CGPoint, _ polygon: [CGPoint]) -> Bool {
-    var inside = false
-    var j = polygon.count - 1
-    for i in 0..<polygon.count {
-        let pi = polygon[i], pj = polygon[j]
-        if (pi.y > p.y) != (pj.y > p.y) {
-            let x = pi.x + (p.y - pi.y) * (pj.x - pi.x) / (pj.y - pi.y)
-            if p.x < x { inside.toggle() }
+        .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
+        .padding(.bottom, MasoMetrics.pagePaddingHorizontal)
+        .onGeometryChange(for: CGFloat.self) { ceil($0.size.height) } action: { actionHeight = $0 }
         }
-        j = i
+        .onChange(of: contentHeight + actionHeight) { _, height in
+            if contentHeight > 0, actionHeight > 0 { onContentHeightChange(height + preferredChartHeight) }
+        }
+        .onReceive(Timer.publish(every: 60, on: .main, in: .common).autoconnect()) { now = $0 }
+        }
     }
-    return inside
+    private func tier(_ recovery: Double) -> LocalizedStringKey {
+        switch MuscleStatusCompute.tierFor(fatigue: 1 - recovery) {
+        case .fresh: "Fresh · Ready to train"
+        case .mostlyRecovered: "Rested · Ready to train"
+        case .recovering: "Recovering · Keep it light"
+        case .fatigued: "Fatigued · Rest recommended"
+        }
+    }
 }

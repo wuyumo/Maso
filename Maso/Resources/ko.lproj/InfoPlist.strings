@@ -1,0 +1,13 @@
+/* Localized iOS permission descriptions. */
+"NSCameraUsageDescription" = "Masso는 운동 공유, AI 훈련 제안용 신체 사진, 영양 추적을 위해 분석할 식사 사진을 촬영할 때 카메라를 사용합니다.";
+"NSHealthShareUsageDescription" = "Masso는 Apple 건강의 체중, 키, 걸음 수, 에너지, 수면, 운동 및 운동 심박수를 읽어 프로필, 기기 내 보고서와 개인 휴식 알림에 사용합니다.";
+"NSHealthUpdateUsageDescription" = "Masso는 완료한 운동을 Apple Fitness에 저장해 활동 링과 건강 타임라인에 표시합니다.";
+"NSPhotoLibraryUsageDescription" = "Masso는 사용자가 선택한 사진을 운동 공유와 AI 훈련 제안에 사용합니다.";
+
+"Start workout" = "운동 시작";
+
+"Add meal" = "식사 추가";
+
+"Free workout" = "무료 운동";
+
+"AI Coach" = "AI 코치";

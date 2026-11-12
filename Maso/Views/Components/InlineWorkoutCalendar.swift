@@ -395,3 +395,526 @@ struct InlineWorkoutCalendar: View {
         }
     }
 }
+
+/// The workout calendar uses the same rendering and full-history sheet as Diet/Sleep.
+struct WorkoutMonthDotStrip: View {
+    @Environment(DataStore.self) private var data
+    let sessionDates: Set<Date>
+    let calendar: Calendar
+    var body: some View {
+        PerformanceMonthDotStrip(snapshot: .workout(sessionDates, calendar: calendar), calendar: calendar, showRecovery: data.settings.showCalendarRecovery ?? false)
+    }
+}
+
+struct LifestyleCalendarCard: View {
+    @Environment(DataStore.self) private var data
+    let kind: PerformanceCalendarSnapshot.Kind
+    var body: some View {
+        PerformanceMonthDotStrip(snapshot: .lifestyle(kind: kind, settings: data.settings, healthSleep: HealthKitService.shared.sleepMinutes), calendar: data.settings.calendar)
+            .glassCardBackground()
+            .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
+    }
+}
+
+private extension PerformanceCalendarSnapshot.Kind {
+    var accent: Color {
+        switch self { case .workout: MasoColor.accent; case .diet: MasoColor.dietAccent; case .sleep: MasoColor.sleepAccent }
+    }
+    var title: LocalizedStringKey {
+        switch self { case .workout: "Workout calendar"; case .diet: "Diet calendar"; case .sleep: "Sleep calendar" }
+    }
+}
+
+struct PerformanceMonthDotStrip: View {
+    let snapshot: PerformanceCalendarSnapshot
+    let calendar: Calendar
+    var showRecovery = false
+    @State private var expanded = false
+    private var months: [Date] {
+        guard let current = calendar.dateInterval(of: .month, for: Date())?.start else { return [] }
+        let oldest = snapshot.earliestDay.flatMap { calendar.dateInterval(of: .month, for: $0)?.start } ?? current
+        let count = max(11, calendar.dateComponents([.month], from: oldest, to: current).month ?? 0)
+        return (0...count).reversed().compactMap { calendar.date(byAdding: .month, value: -$0, to: current) }
+    }
+    var body: some View {
+        GeometryReader { geometry in
+            let gap = MasoMetrics.cardPadding
+            let width = max(1, (geometry.size.width - 2 * MasoMetrics.cardPadding - 2 * gap) / 3)
+            ScrollView(.horizontal) {
+                LazyHStack(alignment: .top, spacing: gap) {
+                    ForEach(months, id: \.self) { month in
+                        VStack(spacing: MasoMetrics.cardHeaderGap * 2) {
+                            Text(month.formatted(calendar.isDate(month, equalTo: Date(), toGranularity: .year) ? .dateTime.month(.abbreviated) : .dateTime.month(.abbreviated).year()))
+                                .font(.subheadline.weight(.semibold)).lineLimit(1).minimumScaleFactor(0.8)
+                            PerformanceMonthGrid(month: month, snapshot: snapshot, calendar: calendar, expanded: false, showRecovery: showRecovery)
+                        }.frame(width: width)
+                    }
+                }.scrollTargetLayout().padding(MasoMetrics.cardPadding)
+            }.scrollIndicators(.hidden).defaultScrollAnchor(.trailing).scrollTargetBehavior(.viewAligned)
+        }
+        .frame(height: 160)
+        .contentShape(Rectangle())
+        .onTapGesture { expanded = true }
+        .accessibilityLabel(snapshot.kind.title)
+        .accessibilityAddTraits(.isButton)
+        .accessibilityHint("View all months")
+        .accessibilityAction { expanded = true }
+        .sheet(isPresented: $expanded) {
+            PerformanceCalendarSheet(snapshot: snapshot, calendar: calendar, showRecovery: showRecovery)
+        }
+    }
+}
+
+private struct PerformanceMonthGrid: View {
+    let month: Date
+    let snapshot: PerformanceCalendarSnapshot
+    let calendar: Calendar
+    let expanded: Bool
+    var showRecovery = false
+    @State private var shareDay: Date?
+    private var offset: Int { (calendar.component(.weekday, from: month) - calendar.firstWeekday + 7) % 7 }
+    private var days: Int { calendar.range(of: .day, in: .month, for: month)?.count ?? 0 }
+    var body: some View {
+        VStack(spacing: expanded ? 8 : 0) {
+            if expanded {
+                HStack(spacing: 0) {
+                    ForEach(0..<7, id: \.self) { index in
+                        Text(calendar.veryShortStandaloneWeekdaySymbols[(calendar.firstWeekday - 1 + index) % 7])
+                            .font(.caption).foregroundStyle(.secondary).frame(maxWidth: .infinity)
+                    }
+                }
+            }
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 0), count: 7), spacing: 8) {
+                ForEach(0..<42, id: \.self) { index in
+                    let number = index - offset + 1
+                    if number > 0 && number <= days,
+                       let date = calendar.date(byAdding: .day, value: number - 1, to: month) {
+                        dot(date, number: number)
+                    } else { Color.clear.frame(height: expanded ? 44 : 7).accessibilityHidden(true) }
+                }
+            }
+        }
+        .sheet(isPresented: Binding(get: { shareDay != nil }, set: { if !$0 { shareDay = nil } })) {
+            if let day = shareDay { PerformanceShareSheet(snapshots: [snapshot], calendar: calendar, start: day, end: day) }
+        }
+    }
+    private func dot(_ date: Date, number: Int) -> some View {
+        let today = calendar.startOfDay(for: Date())
+        let day = calendar.startOfDay(for: date)
+        let progress = day <= today ? snapshot.progress[day] : nil
+        let current = calendar.isDateInToday(date)
+        let recovery = showRecovery ? snapshot.recoveryFraction(on: day, calendar: calendar) : nil
+        let diameter: CGFloat = expanded ? (progress != nil || current ? 14 : 8) : (progress != nil || current ? 7 : 5)
+        return VStack(spacing: expanded ? 5 : 0) {
+            Circle()
+                .fill(progress.map { snapshot.kind.accent.opacity(GoalCompletionAppearance.opacity($0)) } ?? (current ? Color.clear : Color.white.opacity(day > today ? 0.12 : 0.3)))
+                .frame(width: diameter, height: diameter)
+                .overlay { if current { Circle().strokeBorder(Color.white, lineWidth: 1.5) } }
+                .overlay(alignment: .bottom) {
+                    if let recovery {
+                        Capsule().fill(MasoColor.accent)
+                            .frame(width: (expanded ? 14 : 7) * recovery, height: expanded ? 3 : 2)
+                            .offset(y: expanded ? 5 : 3)
+                    }
+                }
+            if expanded { Text("\(number)").font(.caption2).foregroundStyle(day > today ? .tertiary : .secondary) }
+        }
+        .frame(height: expanded ? 44 : 7)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Text(date, format: .dateTime.month().day().year()))
+        .accessibilityValue(recovery != nil ? Text("Recovery day") : value(progress))
+        .contentShape(Rectangle())
+        .onTapGesture { if expanded && day <= today { shareDay = day } }
+        .accessibilityHint(expanded ? "Share day" : "")
+        .accessibilityAction { if expanded && day <= today { shareDay = day } }
+    }
+    private func value(_ progress: Double?) -> Text {
+        if snapshot.kind == .workout { return Text(progress != nil ? "Workout recorded" : "No workout") }
+        if let progress { return Text("\(Int((progress * 100).rounded(.down)))%") }
+        return Text("No data")
+    }
+}
+
+private struct PerformanceCalendarSheet: View {
+    @Environment(\.dismiss) private var dismiss
+    let snapshot: PerformanceCalendarSnapshot
+    let calendar: Calendar
+    var showRecovery = false
+    @State private var visibleMonths = 12
+    @State private var explanationPresented = false
+    private var months: [Date] {
+        guard let current = calendar.dateInterval(of: .month, for: Date())?.start else { return [] }
+        return (0..<visibleMonths).compactMap { calendar.date(byAdding: .month, value: -$0, to: current) }
+    }
+    var body: some View {
+        AppNavigationStack {
+            ScrollView {
+                LazyVStack(alignment: .leading, spacing: MasoMetrics.cardPadding) {
+                    legend
+                    Text("Tap a day to share").font(.caption).foregroundStyle(.secondary)
+                    ForEach(months, id: \.self) { month in
+                        VStack(alignment: .leading, spacing: 12) {
+                            HStack {
+                                Text(month, format: .dateTime.month(.wide).year()).font(.headline)
+                                Spacer()
+                                PerformanceShareButton(snapshots: [snapshot], calendar: calendar, month: month)
+                            }
+                            PerformanceMonthGrid(month: month, snapshot: snapshot, calendar: calendar, expanded: true, showRecovery: showRecovery)
+                        }
+                        .cardChrome()
+                        .onAppear { if month == months.last { visibleMonths += 12 } }
+                    }
+                }
+                .padding(MasoMetrics.pagePaddingHorizontal)
+            }
+            .background(MasoColor.background)
+            .navigationTitle(snapshot.kind.title).navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) { CombinedPerformanceShareButton() }
+                ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() }.tint(MasoColor.text) }
+            }
+        }.presentationDetents([.large]).presentationDragIndicator(.visible)
+        .sheet(isPresented: $explanationPresented) {
+            AppNavigationStack {
+                Form {
+                    Section {
+                        Text(snapshot.kind == .workout ? "Green marks workout days." : (snapshot.kind == .diet ? "Color strength shows your three-macro target progress." : "Color strength shows your sleep-duration progress."))
+                        if snapshot.kind != .workout {
+                            Text("Grey means no record or no target. Saved daily targets are used when available; otherwise your current target is used.")
+                        }
+                    }
+                }
+                .navigationTitle("Calendar colors")
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button("Done") { explanationPresented = false }.tint(MasoColor.text)
+                    }
+                }
+            }
+            .presentationDetents([.medium, .large])
+        }
+    }
+
+    private var legend: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            legendRow(snapshot.kind == .workout ? "Workout recorded" : "Goal met", color: snapshot.kind.accent)
+            if snapshot.kind != .workout {
+                legendRow("In progress", color: snapshot.kind.accent.opacity(0.45))
+            }
+            if snapshot.kind == .workout && showRecovery { legendRow("Recovery day", color: snapshot.kind.accent.opacity(0.6)) }
+            legendRow(snapshot.kind == .workout ? "No workout" : "No data", color: .white.opacity(0.3))
+            HStack(spacing: 8) {
+                Circle().strokeBorder(.white, lineWidth: 1.5).frame(width: 9, height: 9)
+                Text("Today").font(.caption).foregroundStyle(.secondary)
+                Button { explanationPresented = true } label: {
+                    Image(systemName: "info.circle")
+                }
+                .buttonStyle(.borderless)
+                .tint(MasoColor.textDim)
+                .accessibilityLabel("Calendar colors")
+            }
+        }
+    }
+
+    private func legendRow(_ title: LocalizedStringKey, color: Color) -> some View {
+        HStack(spacing: 8) {
+            Circle().fill(color).frame(width: 9, height: 9)
+            Text(title).font(.caption).foregroundStyle(.secondary)
+        }
+    }
+}
+
+
+struct MonthlyWorkoutShareButton: View {
+    let month: Date
+    let sessionDates: Set<Date>
+    let calendar: Calendar
+    var body: some View {
+        PerformanceShareButton(snapshots: [.workout(sessionDates, calendar: calendar)], calendar: calendar, month: month)
+    }
+}
+
+struct PerformanceShareButton: View {
+    let snapshots: [PerformanceCalendarSnapshot]
+    let calendar: Calendar
+    let month: Date
+    @State private var presented = false
+    var body: some View {
+        Button { presented = true } label: { ShareIcon() }
+            .nativeGlassButtonStyle().controlSize(.small)
+            .tint(MasoColor.text).accessibilityLabel("Share month")
+            .sheet(isPresented: $presented) {
+                let interval = calendar.dateInterval(of: .month, for: month)!
+                PerformanceShareSheet(snapshots: snapshots, calendar: calendar, start: interval.start,
+                                      end: min(Date(), interval.end.addingTimeInterval(-1)))
+            }
+    }
+}
+
+/// Shared period chooser available inside the calendar, leaving Workout's main toolbar uncluttered.
+struct CombinedPerformanceShareButton: View {
+    @Environment(DataStore.self) private var data
+    @State private var presented = false
+    private var snapshots: [PerformanceCalendarSnapshot] {
+        [.workout(data.recordedWorkoutDates(), calendar: data.settings.calendar),
+         .lifestyle(kind: .diet, settings: data.settings),
+         .lifestyle(kind: .sleep, settings: data.settings, healthSleep: HealthKitService.shared.sleepMinutes)]
+    }
+    var body: some View {
+        Button { presented = true } label: { Label("Share overview", systemImage: "square.and.arrow.up") }
+            .tint(MasoColor.text)
+            .sheet(isPresented: $presented) {
+                PerformanceShareSheet(snapshots: snapshots, calendar: data.settings.calendar,
+                                      start: data.settings.calendar.date(byAdding: .day, value: -6, to: Date())!, end: Date(), allowsRange: true)
+            }
+    }
+}
+
+struct PerformanceShareSheet: View {
+    let snapshots: [PerformanceCalendarSnapshot]
+    let calendar: Calendar
+    @State var start: Date
+    @State var end: Date
+    var allowsRange = false
+    var completeDailyRecords = false
+    @Environment(\.dismiss) private var dismiss
+    @Environment(DataStore.self) private var data
+    @Environment(TrainingSessionStore.self) private var training
+    @State private var sharedImage: FullPageExport?
+    @State private var failed = false
+    @State private var range = 7
+    @State private var cardSelection = ShareCardSelection()
+    @ViewBuilder private var card: some View {
+        if completeDailyRecords && calendar.isDate(start, inSameDayAs: end) {
+            DailyRecordShareCard(day: start).environment(data).environment(training)
+        } else {
+            PerformancePeriodShareCard(snapshots: snapshots, calendar: calendar, start: start, end: end,
+                settings: data.settings, sets: data.sets, healthSleep: HealthKitService.shared.sleepMinutes)
+        }
+    }
+    var body: some View {
+        AppNavigationStack {
+            ScrollView {
+                if allowsRange {
+                    Picker("Period", selection: $range) {
+                        Text("Last 7 days").tag(7)
+                        Text("Last 30 days").tag(30)
+                        Text("This month").tag(0)
+                        Text("Custom").tag(-1)
+                    }.pickerStyle(.menu).tint(MasoColor.text)
+                        .onChange(of: range) { _, value in
+                            if value >= 0 {
+                                end = Date()
+                                start = value == 0 ? calendar.dateInterval(of: .month, for: end)!.start : calendar.date(byAdding: .day, value: 1-value, to: end)!
+                            }
+                        }
+                    if range == -1 {
+                        DatePicker("From", selection: $start, in: ...end, displayedComponents: .date)
+                        DatePicker("To", selection: $end, in: start...Date(), displayedComponents: .date)
+                    }
+                }
+                card.shareSelection(cardSelection, editing: true).padding(.vertical, 16)
+            }.padding(.horizontal, allowsRange ? 16 : 0)
+                .background(MasoColor.background)
+                .navigationTitle("Share").navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } }
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button("Share") {
+                            if let image = ShareImageRenderer.render({ card.shareSelection(cardSelection, editing: false) }) {
+                                sharedImage = FullPageExport(items: [image])
+                            } else { failed = true }
+                        }.disabled(!cardSelection.canShare)
+                    }
+                }.tint(MasoColor.text)
+                .sheet(item: $sharedImage) { result in
+                    ActivityViewController(activityItems: result.items) { done in
+                        if done { Analytics.shared.track("workout_share", ["surface": .string("performance_period")]) }
+                    }
+                }
+                .alert("Couldn’t prepare share", isPresented: $failed) { Button("OK", role: .cancel) {} }
+        }.presentationDetents([.large])
+    }
+}
+
+/// A complete day, using the same readonly cards as the calendar detail page.
+struct DailyRecordShareCard: View {
+    let day: Date
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            VStack(alignment: .leading, spacing: 24) {
+            Text(day.formatted(.dateTime.month(.wide).day().year().locale(LanguageManager.currentLocale)))
+                .font(.title2.bold()).foregroundStyle(MasoColor.text)
+            DailyRecordCards(day: day, sharing: true)
+            }.padding(ShareLayout.contentInset)
+            ShareCardFooter(qrPayload: MasoLinks.appStore, qrSize: 64)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(MasoColor.background)
+        .environment(\.colorScheme, .dark)
+        .environment(\.locale, LanguageManager.currentLocale)
+    }
+}
+
+private struct PerformancePeriodShareCard: View {
+    let snapshots: [PerformanceCalendarSnapshot]
+    let calendar: Calendar
+    let start: Date
+    let end: Date
+    let settings: UserSettings
+    let sets: [SetRecord]
+    let healthSleep: [Date: Double]
+    private var first: Date { calendar.startOfDay(for: start) }
+    private var last: Date { calendar.startOfDay(for: min(end, Date())) }
+    private var days: Int { max(1, (calendar.dateComponents([.day], from: first, to: last).day ?? 0)+1) }
+    private var isMonth: Bool { first == calendar.dateInterval(of: .month, for: first)?.start && calendar.isDate(first, equalTo: last, toGranularity: .month) }
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            VStack(alignment: .leading, spacing: 24) {
+            if calendar.isDate(first, inSameDayAs: last) {
+                Text(first, format: .dateTime.month(.wide).day().year()).font(.title2.bold())
+            } else if isMonth {
+                Text(first, format: .dateTime.month(.wide).year()).font(.title2.bold())
+            } else {
+                Text(first.formatted(.dateTime.year().month(.abbreviated).day().locale(LanguageManager.currentLocale)) + " – " + last.formatted(.dateTime.year().month(.abbreviated).day().locale(LanguageManager.currentLocale))).font(.headline)
+            }
+            ForEach(snapshots.indices, id: \.self) { index in
+                ShareSelectableCard(id: "period-\(snapshots[index].kind)", title: NSLocalizedString(snapshots[index].kind == .workout ? "Workout" : snapshots[index].kind == .diet ? "Diet" : "Sleep", comment: "")) {
+                    summary(snapshots[index])
+                }
+            }
+            }.padding(ShareLayout.contentInset)
+            ShareCardFooter(qrPayload: MasoLinks.appStore, qrSize: 64)
+        }.frame(maxWidth: .infinity, alignment: .leading)
+            .background(MasoColor.background).environment(\.colorScheme, .dark)
+            .environment(\.locale, LanguageManager.currentLocale)
+            .environment(\.layoutDirection, LanguageManager.currentLanguageCode == "ar" ? .rightToLeft : .leftToRight)
+    }
+    @ViewBuilder private func summary(_ snapshot: PerformanceCalendarSnapshot) -> some View {
+        let entries = PerformanceShareSummary.entries(snapshot, start: start, end: end, calendar: calendar)
+        let total: Double = entries.values.reduce(0.0) { $0 + $1 }
+        let average: Int = entries.isEmpty ? 0 : Int((total / Double(entries.count) * 100.0).rounded())
+        let numberSize: CGFloat = snapshots.count > 1 ? 36 : 48
+                VStack(alignment: .leading, spacing: 12) {
+                    Text(LocalizedStringKey(snapshot.kind == .workout ? "Workout" : snapshot.kind == .diet ? "Diet" : "Sleep")).font(.headline)
+                    if snapshot.kind == .workout {
+                        HStack(alignment: .firstTextBaseline) {
+                            Text("\(entries.count)").font(.system(size: snapshots.count > 1 ? 36 : 56, weight: .bold, design: .rounded)).foregroundStyle(snapshot.kind.accent)
+                            Text("Days trained").foregroundStyle(.secondary)
+                        }
+                    } else if entries.isEmpty {
+                        Text("No data").font(.title2).foregroundStyle(.secondary)
+                    } else {
+                        HStack(alignment: .firstTextBaseline) {
+                            Text("\(average)%").font(.system(size: numberSize, weight: .bold, design: .rounded)).foregroundStyle(snapshot.kind.accent)
+                            Text(LocalizedStringKey(days == 1 ? "Target progress" : "Average target progress")).font(.subheadline).foregroundStyle(.secondary)
+                        }
+                        Text(String(format: NSLocalizedString("%lld of %lld days recorded", comment: ""), entries.count, days)).font(.caption).foregroundStyle(.secondary)
+                    }
+                    if days == 1 { dailyDetails(snapshot.kind) } else { periodDetails(snapshot.kind) }
+                    if isMonth {
+                        PerformanceMonthGrid(month: first, snapshot: snapshot, calendar: calendar, expanded: snapshots.count == 1).allowsHitTesting(false)
+                    } else if days > 1 {
+                        // No missing record is presented as success: unknown days remain grey.
+                        periodDots(snapshot)
+                    }
+                }
+    }
+    private func periodDots(_ snapshot: PerformanceCalendarSnapshot) -> some View {
+        LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7), spacing: 10) {
+            ForEach(0..<days, id: \.self) { offset in
+                let day = calendar.date(byAdding: .day, value: offset, to: first)!
+                Circle().fill(dotColor(snapshot, day: day)).frame(width: 14, height: 14)
+            }
+        }
+    }
+    private func dotColor(_ snapshot: PerformanceCalendarSnapshot, day: Date) -> Color {
+        guard let value = snapshot.progress[day] else { return Color.white.opacity(0.2) }
+        return snapshot.kind.accent.opacity(GoalCompletionAppearance.opacity(value))
+    }
+    @ViewBuilder private func dailyDetails(_ kind: PerformanceCalendarSnapshot.Kind) -> some View {
+        switch kind {
+        case .workout:
+            let records = sets.filter { calendar.isDate($0.performedAt, inSameDayAs: first) && $0.performedAt <= Date() }
+            HStack {
+                Text("Sets"); Spacer(); Text("\(records.count)").monospacedDigit()
+            }.foregroundStyle(.secondary)
+        case .diet:
+            let meals = (settings.mealCheckIns ?? []).filter { calendar.isDate($0.day, inSameDayAs: first) && $0.confirmedAt <= Date() && $0.mealTime <= Date() }
+            HStack(spacing: 16) {
+                dailyMacro("Protein", meals.reduce(0) { $0 + $1.nutrition.protein })
+                dailyMacro("Carbs", meals.reduce(0) { $0 + $1.nutrition.carbs })
+                dailyMacro("Fat", meals.reduce(0) { $0 + $1.nutrition.fat })
+            }
+        case .sleep:
+            let key = SleepPreferences.dayKey(first, calendar: calendar)
+            if let minutes = healthSleep[first] ?? settings.sleepRecords?[key], minutes.isFinite, minutes >= 0 {
+                HStack { Text("Total sleep"); Spacer(); Text("\(Int(minutes)/60)h\(Int(minutes)%60)m").monospacedDigit() }.foregroundStyle(.secondary)
+            }
+        }
+    }
+    @ViewBuilder private func periodDetails(_ kind: PerformanceCalendarSnapshot.Kind) -> some View {
+        switch kind {
+        case .workout:
+            let records = sets.filter { $0.performedAt >= first && $0.performedAt < calendar.date(byAdding: .day, value: 1, to: last)! && $0.performedAt <= Date() }
+            HStack { Text("Sets"); Spacer(); Text("\(records.count)").monospacedDigit() }.foregroundStyle(.secondary)
+        case .diet:
+            let meals = (settings.mealCheckIns ?? []).filter { $0.day >= first && $0.day < calendar.date(byAdding: .day, value: 1, to: last)! && $0.confirmedAt <= Date() && $0.mealTime <= Date() }
+            let count = Set(meals.map { calendar.startOfDay(for: $0.day) }).count
+            if count > 0 {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Average per recorded day").font(.caption).foregroundStyle(.secondary)
+                    HStack(spacing: 16) {
+                        dailyMacro("Protein", meals.reduce(0.0) { $0 + $1.nutrition.protein } / Double(count))
+                        dailyMacro("Carbs", meals.reduce(0.0) { $0 + $1.nutrition.carbs } / Double(count))
+                        dailyMacro("Fat", meals.reduce(0.0) { $0 + $1.nutrition.fat } / Double(count))
+                    }
+                }
+            }
+        case .sleep:
+            let values = sleepValues
+            if !values.isEmpty {
+                let minutes = Int((values.reduce(0.0,+) / Double(values.count)).rounded())
+                HStack { Text("Average per recorded day"); Spacer(); Text("\(minutes/60)h\(minutes%60)m").monospacedDigit() }.font(.subheadline).foregroundStyle(.secondary)
+            }
+        }
+    }
+    private var sleepValues: [Double] {
+        var records: [Date: Double] = [:]
+        for (key, minutes) in settings.sleepRecords ?? [:] {
+            let parts = key.split(separator: "-").compactMap { Int($0) }
+            if parts.count == 3, let day = calendar.date(from: DateComponents(year: parts[0], month: parts[1], day: parts[2])) { records[day] = minutes }
+        }
+        for (day, minutes) in healthSleep { records[calendar.startOfDay(for: day)] = minutes }
+        return records.filter { $0.key >= first && $0.key <= last && $0.value.isFinite && $0.value >= 0 }.map(\.value)
+    }
+    private func dailyMacro(_ title: LocalizedStringKey, _ value: Double) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text("\(Int(value.rounded())) g").font(.headline)
+            Text(title).font(.caption).foregroundStyle(.secondary)
+        }.frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+}
+
+
+struct PerformanceDayShareButton: View {
+    @Environment(DataStore.self) private var data
+    let kind: PerformanceCalendarSnapshot.Kind
+    let day: Date
+    var usesSavedTargetOnly = false
+    @State private var presented = false
+    private var snapshot: PerformanceCalendarSnapshot {
+        data.dailyRecordSnapshots(usesSavedTargetOnly: usesSavedTargetOnly).first { $0.kind == kind }
+            ?? .init(kind: kind, progress: [:])
+    }
+    var body: some View {
+        Button { presented = true } label: { ShareIcon() }
+            .nativeGlassButtonStyle().controlSize(.small).tint(MasoColor.text)
+            .accessibilityLabel("Share day")
+            .sheet(isPresented: $presented) {
+                PerformanceShareSheet(snapshots: [snapshot], calendar: data.settings.calendar, start: day, end: day)
+            }
+    }
+}

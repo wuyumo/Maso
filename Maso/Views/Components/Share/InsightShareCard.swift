@@ -127,6 +127,7 @@ struct InsightShareCard: View {
         let visible = effective
         VStack(spacing: 0) {
             SharePhotoBanner(photo: userPhoto, onTapToAdd: onTapAddPhoto)
+                .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
             VStack(alignment: .leading, spacing: 16) {
                 // 头部 — kicker + hero (引言 或 纯数字标题)
                 VStack(alignment: .leading, spacing: 10) {
@@ -193,12 +194,12 @@ struct InsightShareCard: View {
                     optionsPanel(editOptions)
                 }
             }
-            .padding(.horizontal, 24)
+            .padding(.horizontal, ShareLayout.contentInset)
             .padding(.top, 22)
             .padding(.bottom, 20)
             .frame(maxWidth: .infinity, alignment: .leading)
 
-            ShareCardFooter(qrPayload: MasoLinks.appStore)
+            ShareCardFooter(qrPayload: MasoLinks.appStore, photo: userPhoto)
         }
         .background(MasoColor.background)
     }
@@ -407,17 +408,18 @@ struct InsightShareCard: View {
             Spacer()
             Toggle("", isOn: isOn)
                 .labelsHidden()
-                .tint(MasoColor.accent)
+                .toggleStyle(.switch).tint(MasoColor.toggleAccent)
                 .scaleEffect(0.78)
                 .frame(width: 40)
         }
         .frame(minHeight: 36)
     }
 
-    private static let asOfFormatter: DateFormatter = {
+    private static var asOfFormatter: DateFormatter {
         let f = DateFormatter()
+        f.locale = LanguageManager.currentLocale
         f.dateStyle = .medium
         f.timeStyle = .none
         return f
-    }()
+    }
 }

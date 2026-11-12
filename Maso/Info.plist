@@ -16,13 +16,23 @@
 	<array>
 		<string>en</string>
 		<string>zh-Hans</string>
+		<string>zh-Hant</string>
+		<string>ja</string>
+		<string>ko</string>
+		<string>es</string>
+		<string>fr</string>
+		<string>de</string>
+		<string>it</string>
+		<string>pt-BR</string>
+		<string>ru</string>
+		<string>ar</string>
 	</array>
 	<key>CFBundleName</key>
 	<string>$(PRODUCT_NAME)</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>2.0.8</string>
+	<string>3.0.1</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -36,8 +46,43 @@
 			</array>
 		</dict>
 	</array>
+	<key>UIApplicationShortcutItems</key>
+	<array>
+		<dict>
+			<key>UIApplicationShortcutItemType</key>
+			<string>com.yumowu.maso.quickAction.workout</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>Start workout</string>
+			<key>UIApplicationShortcutItemIconSymbolName</key>
+			<string>play.fill</string>
+		</dict>
+		<dict>
+			<key>UIApplicationShortcutItemType</key>
+			<string>com.yumowu.maso.quickAction.addMeal</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>Add meal</string>
+			<key>UIApplicationShortcutItemIconSymbolName</key>
+			<string>fork.knife</string>
+		</dict>
+		<dict>
+			<key>UIApplicationShortcutItemType</key>
+			<string>com.yumowu.maso.quickAction.freeWorkout</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>Free workout</string>
+			<key>UIApplicationShortcutItemIconSymbolName</key>
+			<string>figure.strengthtraining.traditional</string>
+		</dict>
+		<dict>
+			<key>UIApplicationShortcutItemType</key>
+			<string>com.yumowu.maso.quickAction.coach</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>AI Coach</string>
+			<key>UIApplicationShortcutItemIconSymbolName</key>
+			<string>bubble.left.and.bubble.right</string>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
-	<string>29</string>
+	<string>49</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>MasoAIProxyFallbackURL</key>
@@ -51,13 +96,13 @@
 	<key>MasoClientToken</key>
 	<string>$(MASO_CLIENT_TOKEN)</string>
 	<key>NSCameraUsageDescription</key>
-	<string>Masso uses the camera so you can add a selfie to your shareable workout summary.</string>
+	<string>Masso uses the camera for workout sharing, body photos for AI training suggestions, and meal photos you choose to analyze for nutrition tracking.</string>
 	<key>NSHealthShareUsageDescription</key>
-	<string>Masso reads your recent workouts from Apple Health to avoid double-counting sessions you already recorded on Apple Watch.</string>
+	<string>Masso reads weight, height, steps, energy, sleep, workouts and workout heart rate from Apple Health for your profile, local reports and personal rest reminders.</string>
 	<key>NSHealthUpdateUsageDescription</key>
 	<string>Masso saves your completed workouts to Apple Fitness so they appear in your Activity rings and Health timeline.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Masso reads a photo you pick from your library so you can add it to your shareable workout summary.</string>
+	<string>Masso uses photos you choose for workout sharing and AI training suggestions.</string>
 	<key>NSSupportsLiveActivities</key>
 	<true/>
 	<key>NSSupportsLiveActivitiesFrequentUpdates</key>
@@ -73,7 +118,14 @@
 		<string>launchBackground</string>
 	</dict>
 	<key>UIRequiresFullScreen</key>
-	<true/>
+	<false/>
+	<key>UISupportedInterfaceOrientations~ipad</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
 	<key>UIStatusBarStyle</key>
 	<string>UIStatusBarStyleLightContent</string>
 	<key>UISupportedInterfaceOrientations</key>
@@ -82,5 +134,9 @@
 	</array>
 	<key>UIUserInterfaceStyle</key>
 	<string>Dark</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>audio</string>
+	</array>
 </dict>
 </plist>

@@ -1,22 +1,32 @@
 import SwiftUI
 import StoreKit
 
-// 训练播放器 — 跟 web 端 PlanPlayer.tsx 1:1
-// 结构 (从上到下):
-//   - DragHandle (向下拖动收起)
-//   - TimelineBar (进度条)
-//   - "..." 菜单按钮 (右上角, 浮在 stage 上)
-//   - Stage (ExerciseStage 或 RestStage)
-//   - Controls (← / 主按钮 / 播放列表 toggle)
-//   - InlinePlaylist (可展开, 在 Controls 下方)
+private struct PlayerLayoutBoundsKey: PreferenceKey {
+    static var defaultValue: [String: Anchor<CGRect>] { [:] }
+    static func reduce(value: inout [String: Anchor<CGRect>], nextValue: () -> [String: Anchor<CGRect>]) {
+        value.merge(nextValue(), uniquingKeysWith: { _, last in last })
+    }
+}
+
+// Training player: one media stage, a top queue, and fixed transport controls.
 struct PlanPlayerScreen: View {
     @Environment(TrainingSessionStore.self) private var store
     @Environment(DataStore.self) private var data
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.scenePhase) private var playerScenePhase
+    @Environment(\.layoutDirection) private var layoutDirection
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     /// Apple Music 式下拉关闭 — 训练中拖动顶部 handle, 整屏跟手下移; 过阈值松手 → 关 (最小化回 mini-bar,
     /// session 继续跑). fullScreenCover 没有系统 grabber, 这是自定义的关闭手势.
+    @State private var heartAssistUndo: TrainingSessionStore.PlaybackUndo?
+    @State private var heartAssistUndoSession: String?
+    @State private var heartAssistUndoWasRest = false
+    @State private var heartAssistSuppressedUntil = Date.distantPast
+
     @State private var dragDownOffset: CGFloat = 0
+    @State private var playerSafeArea = EdgeInsets()
+    private var youtubeExerciseID: String? { store.youtubePlayback.exerciseID }
 
     /// 是否处于"训练中"段 (非空 / 未完成 / 有当前 segment) — 只有这态才显示下拉 handle + 允许下拉关闭.
     private var isActiveTraining: Bool {
@@ -24,13 +34,7 @@ struct PlanPlayerScreen: View {
         return s.completed != true && store.currentSegment != nil
     }
 
-    /// 顶部安全区高度 (Dynamic Island / 刘海) — handle 据此落在岛下方. 跟 bottomSafeArea 同款读法.
-    private var topSafeArea: CGFloat {
-        UIApplication.shared.connectedScenes
-            .compactMap { $0 as? UIWindowScene }.first?
-            .windows.first { $0.isKeyWindow }?
-            .safeAreaInsets.top ?? 47
-    }
+    private var topSafeArea: CGFloat { playerSafeArea.top }
 
     /// 内容后面那层全屏黑背板的不透明度 — 随下拉进度平滑淡出 (smoothstep 缓动): 内容整体下滑、
     /// 顶部露出缝隙, 缝隙里的背板逐步变透明 → 后面的 app (标签页) 渐渐透出 (Apple Music 式收起).
@@ -64,36 +68,30 @@ struct PlanPlayerScreen: View {
             }
     }
 
-    // 训练时默认打开播放列表 — 让用户一眼看到"还剩什么 + 整体进度", 点 ☰ 收起.
-    /// Playlist drawer 的内容高度 (不含 bottom safe area). 用户拖把手直接改这个值.
-    /// 区间: [playlistMinHeight, playlistMaxHeight]. 默认 = playlistDefaultHeight (跟之前
-    /// playlistExpanded=true 时的高度对齐).
-    @State private var playlistHeight: CGFloat = PlanPlayerScreen.playlistDefaultHeight
-    /// 拖拽开始时的 baseline — DragGesture.onChanged 只给 translation, 需要锚定起点.
-    @State private var playlistDragStartHeight: CGFloat = 0
-    /// 兼容旧逻辑: playlistExpanded 是从 height 派生的 bool. RestCountdown 圆环大小 / 文案等
-    /// 还用这个 bool 决定显示, 不重写所有调用点.
-    private var playlistExpanded: Bool { playlistHeight > Self.playlistMinHeight + 40 }
-
-    // (旧 restRingCompactT 已删除 — 倒计时尺寸改由 GeometryReader 实测净空直接驱动,
-    //  不再从 playlistHeight 间接换算, 少一层耦合也少一个抖动来源.)
-
-    /// 拖把手高度档位
-    static let playlistMinHeight: CGFloat = 56        // 仅 handle + "PLAYLIST" header, 不见任何 row
-    static let playlistDefaultHeight: CGFloat = 254   // 跟旧 expanded 视觉高度对齐
+    @ScaledMetric(relativeTo: .body) private var playerInfoHeight: CGFloat = 260
+    @ScaledMetric(relativeTo: .title2) private var playerTitleHeight: CGFloat = 44
+    @State private var playlistExpanded = false
+    @State private var restEditorPresented = false
+    @State private var editingRestSeconds = 90
+    @State private var editingSwitchSeconds = 120
+    @State private var confirmRestDefaults = false
     @State private var endConfirmOpen: Bool = false
     /// 完成流: "保存修改到 routine?" 确认页已做完决定 (保存或跳过) → 进分享卡完成页.
     /// 训练完成且 canSaveChangesToPlan 时, 这个标志 false → 先渲确认页.
     @State private var planSaveDecisionMade: Bool = false
-    /// 点 InlinePlaylist 行图片 → 弹该动作详情. sheet from sheet 是 iOS 18+ 支持的.
+    @State private var openWorkoutSaveCompleted = false
+    /// Playlist 右侧 i 打开详情；头像和名称始终选择动作。
     @State private var detailExercise: Exercise? = nil
     /// 右滑删除 step 的二次确认 — 跟 PlanDetailSheet 同模式, 存待删 stepId, alert 弹.
     @State private var pendingDeleteStepId: String? = nil
     /// 右滑编辑 step — 存 stepId 拉 EditCurrentStepSheet, 用 store.updateStep 改 session-local.
     @State private var editingStepId: String? = nil
+    @State private var replacementAfterEdit: String? = nil
     /// 替换动作 — Edit sheet 里点 "Replace exercise" 把目标 stepId 存这, 然后弹 ExercisePickerSheet.
-    /// 编辑 sheet 先 dismiss 再 set 这个值 (sheet from sheet 会 race), 用 0.32s 延迟串接.
+    /// 参数页先关闭，再由 onDismiss 打开选择页；选择完成只返回训练。
     @State private var replacingStepId: String? = nil
+    @State private var replacementUsesAllMuscles = false
+    @State private var pendingReplacement: (stepId: String, exerciseId: String)? = nil
     /// "+ Add exercise" footer (在 playlist 末尾) → 弹 ExercisePickerSheet, 选完调 store.appendStep.
     @State private var addStepPickerOpen: Bool = false
     /// P0#5-①: 休息屏"刚才: 8 × 55 kg · 调整"入口 — 存正在修正的那条 SetRecord, 弹 AdjustLastSetSheet.
@@ -105,62 +103,24 @@ struct PlanPlayerScreen: View {
         let id: String
     }
 
-    // MARK: - Layout constants (训练中 ZStack 几何真相, 共享给圆环 + 渐变 + 进度条)
-    //
-    // 把进度条 / 圆环 / 底部 info+controls 的位置参数集中放这, 让"进度条固定 + 渐变固定 +
-    // 圆环居中"三个目标基于同一组数字, 改一处就同步全部.
-    //
-    // 几何模型 (从 ZStack 顶往下):
-    //   0 ──────────── sheet drag indicator (~20pt, 系统自带)
-    //   12 ─────────── TimelineBar (训练进度条, padding.top 12)
-    //   50 ─────────── headerReservedHeight = drag indicator + TimelineBar 占位
-    //   |
-    //   |  [exercise: 背景图]
-    //   |  [rest: 倒计时圆环居中区]
-    //   |
-    //   ZStack 高 - bottomReservedHeight ───── 底部 info+controls 区顶 (渐变开始)
-    //     |
-    //     | padding.top: bottomInnerTopPadding (渐变从这开始 fade out)
-    //     | middle filler (固定 120pt, exercise infoSection / rest hint 占同样高度)
-    //     | spacing 22
-    //     | Controls (~84pt: 12 top padding + 48 max button + 24 bottom padding)
-    //     |
-    //   ZStack 底
-    //
-    // bottomReservedHeight = bottomInnerTopPadding + middleFillerHeight + 22 + 84
-    //                     = 140 + 120 + 22 + 84 = 366
-    //
-    // (Color.black 60pt 是 background 延伸到 home indicator, 不算 inner content)
-
-    /// 顶部预留 — sheet drag indicator + 进度条占位. 圆环上边界对齐这个 y.
-    static let headerReservedHeight: CGFloat = 50
-
-    /// 中间填充固定高 — exercise / rest 共用. 必须装得下 infoSection 的 BodyHint+name+chips.
-    static let middleFillerHeight: CGFloat = 120
-
-    /// 底部 inner content 顶部 padding — 渐变从此处开始 fade out.
-    static let bottomInnerTopPadding: CGFloat = 140
-
-    /// 底部预留 — info+controls inner content 总高. 圆环下边界对齐这个 y.
-    /// 公式: bottomInnerTopPadding + middleFillerHeight + 22 (spacing) + 84 (Controls 高度).
-    static let bottomReservedHeight: CGFloat = 140 + 120 + 22 + 84
-
-    // MARK: - 休息倒计时的两条刚性边界 (它必须完整落在这两者之间, 永不重叠)
-
-    /// 拖把手底边距 sheet 顶的距离 = padding.top(topSafeArea-4) + vertical 10 + 高 5 + 10.
+    // The footer is outside the changing stage so queue/rest changes cannot move it.
     static let handleClearance: CGFloat = 21
 
-    /// 底部信息区**内容**顶边距屏底的距离 = middleFillerHeight + spacing 22 + Controls 84.
-    /// 故意**不含** bottomInnerTopPadding(140) — 那段是压在动作图上的渐变过渡区, 没有文字,
-    /// 倒计时可以进入; 真正不能碰的是 UP NEXT/动作名 所在的 filler 盒顶边.
-    static let bottomContentTop: CGFloat = middleFillerHeight + 22 + 84
-
     var body: some View {
+        GeometryReader { geometry in
+            playerContent
+                .onChange(of: geometry.safeAreaInsets, initial: true) { _, insets in
+                    playerSafeArea = insets
+                }
+        }
+    }
+
+    private var playerContent: some View {
         ZStack {
             // 下拉收起时露出的"sheet 之外"黑背板 — 不随内容下滑, 随下拉进度平滑淡出,
             // 让后面的 app (标签页) 从顶部缝隙逐步透出. 需配合 RootView 的 .presentationBackground(.clear).
             if isActiveTraining {
-                Color.black
+                MasoColor.background
                     .opacity(backdropOpacity)
                     .ignoresSafeArea()
                     .allowsHitTesting(false)
@@ -196,7 +156,39 @@ struct PlanPlayerScreen: View {
                     Spacer()
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(Color.black.ignoresSafeArea())
+                .background(MasoColor.background.ignoresSafeArea())
+            } else if store.session?.completed == true && store.isOpenWorkout && !openWorkoutSaveCompleted {
+                OpenWorkoutCompletionView(
+                    durationMinutes: completedDurationSeconds / 60,
+                    setCount: store.session?.completedSets.count ?? 0,
+                    exerciseCount: completedExerciseCount,
+                    onDone: { name in
+                        if let name { saveOpenWorkout(name: name) }
+                        openWorkoutSaveCompleted = true
+                        planSaveDecisionMade = true
+                    }
+                )
+            } else if store.awaitingExercise {
+                VStack(spacing: 20) {
+                    Text("What would you like to train next?").font(.title2.bold())
+                    Text(openWorkoutSummary).font(.subheadline).foregroundStyle(MasoColor.textDim)
+                    Button("Add next exercise") { addStepPickerOpen = true }
+                        .nativeGlassProminentButtonStyle()
+                        .controlSize(.large).tint(MasoColor.accent).foregroundStyle(.black)
+                        .accessibilityIdentifier("open-workout.add-next")
+                    Button("End this workout") { store.finishEarly() }
+                        .nativeGlassButtonStyle()
+                        .controlSize(.large).tint(MasoColor.text)
+                        .accessibilityIdentifier("open-workout.end")
+                    Button("Minimize workout") { dismiss() }
+                        .nativeGlassButtonStyle()
+                        .controlSize(.large).tint(MasoColor.text)
+                        .accessibilityIdentifier("open-workout.minimize")
+                }
+                .padding(24)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(MasoColor.background)
+                .onAppear { addStepPickerOpen = true }
             } else if store.session?.completed == true {
                 // 完成流: 训练中改过 routine 参数 (canSaveChangesToPlan) → 先进"保存修改?"确认页
                 // (展示训练组列表 + 突出修改项), 用户做完保存/不保存决定后才进分享卡完成页.
@@ -223,21 +215,11 @@ struct PlanPlayerScreen: View {
                 } else {
                 // CompletedView 自带纯黑全屏底; 不再外包 Spacer (会让 sheet 默认 systemBackground 透出)
                 // 如果 store.plan 是自由训练 (autoGenerated == true 且未入 data.plans), 给"Save as plan"按钮
-                let shareBundle = completedShareBundle
                 CompletedView(
                     planName: store.plan?.name ?? "",
                     durationSeconds: completedDurationSeconds,
-                    setCount: store.session?.completedSets.count ?? 0,
-                    prCount: completedPRCount,
-                    muscles: completedMuscles,
-                    exerciseNames: completedExerciseNames,
-                    exerciseCount: completedExerciseCount,
-                    sessionId: completedSessionId,
-                    workoutDetail: shareBundle.detail,
-                    importPayload: MasoLinks.appStore,
-                    totalVolumeKg: shareBundle.volume,
-                    dateLabel: completedDateLabel,
-                    onSavePlan: canSaveCurrentPlan ? { saveCurrentPlanToLibrary() } : nil,
+                    sessionRecords: completedSessionSets,
+                    onSavePlan: canSaveCurrentPlan && !openWorkoutSaveCompleted ? { saveCurrentPlanToLibrary() } : nil,
                     onClose: {
                         store.endedExplicitly = true
                         store.end()
@@ -247,104 +229,65 @@ struct PlanPlayerScreen: View {
                 .transition(.opacity)
                 }
             } else if let seg = store.currentSegment {
-                // Stage — 图片真正"贴顶": 直接放在 ZStack 最底层 fills stage 区,
-                // DragHandle + TimelineBar 作为前景叠加层 (带黑色渐变 scrim 增加可读性)
-                ZStack(alignment: .top) {
-                    // 1) 背景: 当前动作图 (rest 段 = 黑底).
-                    //    底部 64pt 留给 controls 区 — 让图片不跟按钮粘住, 视觉呼吸感更好.
-                    //    info + controls 区位置不变 (它们各自钉底, 不受这个 padding 影响).
-                    backgroundLayer
-                        .padding(.bottom, 64)
+                activePlayer(seg: seg)
 
-                    // 2) 底部叠加: info + controls — exercise / rest 共用同一框架.
-                    //    中间填充 .frame(height: FIXED) — exercise BodyHint + rest hint 占据
-                    //    完全相同的 120pt 高度. Controls 位置 + 底部渐变开始位置, 在两态切换 /
-                    //    playlist 展开收起 / 不同设备的所有场景下完全固定.
-                    VStack(spacing: 0) {
-                        Spacer(minLength: 0)
-                        VStack(spacing: 22) {
-                            Group {
-                                if seg.isRest {
-                                    restNextExerciseHint(seg: seg)
-                                } else {
-                                    infoSection(seg: seg)
-                                }
-                            }
-                            // FIXED HEIGHT 120 — 不是 minHeight, 确保 exercise / rest 占据完全
-                            // 相同纵向空间. 120 足够装下 infoSection (BodyHint 80 + 文字 ~40).
-                            .frame(height: Self.middleFillerHeight, alignment: .center)
-
-                            controlsBar(seg: seg)
-                        }
-                        .padding(.top, Self.bottomInnerTopPadding)
-                        .background(bottomInfoGradient)
-                    }
-
-                    // 3) 顶部 scrim: 屏幕最顶 → 灵动岛底部 (≈ topSafeArea) 用**纯黑**铺满 (状态栏/岛坐在黑上),
-                    //    之后再往下 56pt 做黑→透明的渐变过渡接到动图 (类似底部那条渐变). 图仍 full-bleed,
-                    //    只是上半被黑 scrim 盖住 → 视觉上图从岛下方开始.
-                    LinearGradient(
-                        stops: [
-                            .init(color: .black, location: 0),
-                            // 整条状态栏区 (到 topSafeArea) 做成完全实色黑 → 图绝不在此露头, 看不到顶边
-                            .init(color: .black, location: topSafeArea / (topSafeArea + 74)),
-                            // 之后缓和地往下淡: 过半程仍 ~50% 黑, 平滑收 clear, 过渡不露边
-                            .init(color: .black.opacity(0.5), location: 0.7),
-                            .init(color: .clear, location: 1.0)
-                        ],
-                        startPoint: .top, endPoint: .bottom
-                    )
-                    .frame(height: topSafeArea + 74)   // 实色黑盖满状态栏 + 74pt 缓和淡出 (原 110, 收 1/3 少漫图)
-                    .frame(maxWidth: .infinity, alignment: .top)
-                    .ignoresSafeArea(edges: .top)
-                    .allowsHitTesting(false)
-
-                    // 4) 最顶层: rest 段倒计时圆环 — 必须在底部渐变 + TimelineBar 之上,
-                    //    否则圆环被 bottomInfoGradient 的 fade-out 区盖住一半.
-                    //    位置: 在"训练图 (背景图)"几何中心横竖向居中 —
-                    //    backgroundLayer 占 (0, ZStack 高 - 64) 区域 (padding.bottom 64),
-                    //    圆环 padding.bottom 64 抵消, Spacer 均分让圆环在背景图中点.
-                    if seg.isRest {
-                        // 倒计时组件放在 [拖把手底, 底部信息区内容顶] 这段净空的正中, 且**尺寸由这段
-                        // 净空实测驱动** (不再由 playlist 高度间接换算) —— 组件内部按 budget 三档降级
-                        // (环+REST+数字 → 环+数字 → 只数字), footprint 恒 ≤ 净空, 数学上不可能与
-                        // 把手 / UP NEXT / Controls 重叠, 也不可能撑破 ZStack 引起跳动.
-                        // GeometryReader 无固有高度只吃提案尺寸 → 再挤也只是组件变小, 布局不溢出.
-                        GeometryReader { geo in
-                            let top = topSafeArea + Self.handleClearance
-                            let bottom = max(top, geo.size.height - Self.bottomContentTop)
-                            restCountdownRing(
-                                seg: seg,
-                                available: CGSize(width: geo.size.width, height: bottom - top)
-                            )
-                            .position(x: geo.size.width / 2, y: (top + bottom) / 2)
-                        }
-                        .allowsHitTesting(false)  // 透传 tap, 不挡下层 Controls / 进度条
-                    }
-                }
-                .frame(maxHeight: .infinity)
-                .clipped()
-                // 整个 stage 区 (动作图 + 肌肉图/文字 info + controls) 都能下拉收起.
-                // simultaneousGesture: tap (无位移) 仍走按钮; 拖动 (>8pt) 才触发收起.
-                // 只挂在 ZStack, 不含下面 playlistDrawer (它有自己的拖拽手势).
-                .simultaneousGesture(dismissDragGesture)
-
-                playlistDrawer
             }
         }
-        // 钉死内容宽度 = 屏宽 — 修"训练态 vs 休息态 playlist 整体宽差 ~2.7pt/边": 训练态全屏动作大图
-        // 的 intrinsic 宽略溢出屏宽, 把外层 VStack 撑宽 → 下方 playlist drawer (maxWidth .infinity) 跟着变宽;
-        // 休息态(图 + 黑 mask)不溢出. cap 到屏宽后两态宽度一致, 切换不再"轻微收窄又放宽".
-        .frame(maxWidth: UIScreen.main.bounds.width)
-        // sheet 整体背景用纯黑 — Home Indicator 区延续 .black, 跟 TabBar/MiniBar 一致.
-        // (之前用 MasoColor.background = #121212, rest 段 Controls 之下会透出微弱灰, 跟 .black 有色差.)
-        .background(Color.black.ignoresSafeArea())
-        // 顶 + 底都 ignore safe area — Apple Music 式全屏: 动作图填到屏幕最顶 (灵动岛下也是图,
-        // 不再有顶部黑块) + playlistDrawer anchor 到 home indicator. 顶部 Drag Handle 自己按
-        // topSafeArea 落在岛下方, 不受影响.
+        // Keep the media stage and fixed transport within the same full-screen bounds.
+        .frame(maxWidth: 760)
+        .frame(maxWidth: .infinity)
+        .background(MasoColor.background.ignoresSafeArea())
         .ignoresSafeArea(.container, edges: [.top, .bottom])
+        .overlay {
+            if isActiveTraining && store.heartRate.warningPending && store.heartRate.hasEscalatedWarning {
+                TimelineView(.periodic(from: .now, by: 1)) { context in
+                    if store.heartRate.freshBPM(at: context.date) != nil {
+                        Color.red.opacity(0.12).ignoresSafeArea().allowsHitTesting(false)
+                            .accessibilityIdentifier("workout.heart.escalated-background")
+                    }
+                }
+            }
+        }
         // 先把整屏内容 (图 + 上/下渐变 + controls) 压成单层再裁剪 — 否则回弹时 clip 每帧重栅格化,
         // 会把 controls 那层 .background 渐变丢一帧 → 闪现图底原色. compositingGroup 把渐变烘进同层.
+        .overlayPreferenceValue(PlayerLayoutBoundsKey.self) { anchors in
+            GeometryReader { geometry in
+                if isActiveTraining && (store.heartRate.warningPending || (!inlineYouTubeActive && !playlistExpanded)),
+                   let media = anchors["media"], let heading = anchors["heading"] {
+                    let bottom = max(0, min(geometry[media].maxY, geometry[heading].minY))
+                    WorkoutHeartRateButton()
+                        .environment(\.layoutDirection, layoutDirection)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .padding(.trailing, MasoMetrics.cardPadding).padding(.bottom, 12)
+                        .frame(width: geometry.size.width, height: bottom, alignment: .bottomTrailing)
+                        .environment(\.layoutDirection, .leftToRight)
+                }
+            }
+        }
+        .overlay(alignment: .bottom) {
+            if let undo = heartAssistUndo, heartAssistUndoSession == store.workoutSessionID,
+               store.session?.playbackUndo?.last == undo, store.canUndoPlayback {
+                HStack(spacing: 12) {
+                    Text(heartAssistUndoWasRest ? LocalizedStringKey("Rest skipped automatically") : LocalizedStringKey("Set logged automatically"))
+                        .font(.footnote.weight(.semibold))
+                    Button("Undo") {
+                        if store.workoutSessionID == heartAssistUndoSession, store.session?.playbackUndo?.last == undo {
+                            _ = store.undoPlayback { data.removeSetRecord(id: $0) }
+                            heartAssistSuppressedUntil = Date().addingTimeInterval(60)
+                        }
+                        heartAssistUndo = nil
+                    }.font(.footnote.weight(.bold)).foregroundStyle(MasoColor.accent)
+                }.padding(.horizontal, 16).padding(.vertical, 11)
+                    .background(.regularMaterial, in: Capsule())
+                    .padding(.bottom, bottomSafeArea + 12)
+                    .accessibilityIdentifier("workout.heart.assist.undo")
+            }
+        }
+        .task(id: heartAssistUndo) {
+            guard let undo = heartAssistUndo else { return }
+            try? await Task.sleep(for: .seconds(8))
+            if !Task.isCancelled && heartAssistUndo == undo { heartAssistUndo = nil }
+        }
         .compositingGroup()
         // 下拉脱离顶部时给 sheet 顶部上圆角 (Apple Music 式). 始终应用同一形状 (无结构切换) →
         // 不跳变、手势不被取消; 形状底边延伸出屏 → 永不裁底部 home indicator.
@@ -357,6 +300,7 @@ struct PlanPlayerScreen: View {
                 Capsule()
                     .fill(Color.white.opacity(0.55))
                     .frame(width: 40, height: 5)
+                    .accessibilityIdentifier("workout.handle")
                     .padding(.vertical, 10)
                     .padding(.horizontal, 44)
                     .contentShape(Rectangle())
@@ -366,7 +310,7 @@ struct PlanPlayerScreen: View {
                     .ignoresSafeArea(edges: .top)
             }
         }
-        // 点 playlist 行图片 → 弹动作详情. iOS 18+ 支持 sheet 内嵌 sheet.
+        // Playlist 右侧 i → 动作详情。
         .sheet(item: $detailExercise) { ex in
             ExerciseDetailSheet(exercise: ex)
             .presentationDragIndicator(.visible)
@@ -374,8 +318,9 @@ struct PlanPlayerScreen: View {
         // P0#5-①: 修正刚落库那组 — 小 sheet 双 stepper 调 reps/weight (无重量动作调 reps/时长),
         // 写回 DataStore 里那条 SetRecord. 不动 plan/segments, 只改"已经练完的事实".
         .sheet(item: $adjustingRecord) { rec in
-            AdjustLastSetSheet(record: rec) { newReps, newWeight, newDuration in
-                data.updateSetRecord(id: rec.id, reps: newReps, weight: newWeight, duration: newDuration)
+            AdjustLastSetSheet(record: rec) { newReps, newWeight, newDuration, confirmedSixRM in
+                data.updateSetRecord(id: rec.id, reps: newReps, weight: newWeight, duration: newDuration,
+                                     sixRMConfirmed: confirmedSixRM)
             }
             .presentationDetents([.medium])
             .presentationDragIndicator(.visible)
@@ -385,7 +330,12 @@ struct PlanPlayerScreen: View {
         .sheet(item: Binding(
             get: { editingStepId.map { StepIdentifier(id: $0) } },
             set: { editingStepId = $0?.id }
-        )) { idWrapper in
+        ), onDismiss: {
+            if let step = replacementAfterEdit {
+                replacementAfterEdit = nil
+                DispatchQueue.main.async { replacingStepId = step }
+            }
+        }) { idWrapper in
             if let plan = store.plan,
                let step = plan.steps.first(where: { $0.id == idWrapper.id }),
                let ex = data.exById[step.exerciseId] {
@@ -397,7 +347,12 @@ struct PlanPlayerScreen: View {
                     initialDuration: step.duration,
                     initialSetReps: step.setReps,
                     initialSetWeights: step.setWeights,
+                    initialParameterStep: step,
+                    onConfirmParameters: { store.confirmParameters(stepId: step.id, fields: $0) },
                     onSave: { newSets, newReps, newWeight, newDuration, newSetReps, newSetWeights in
+                        if newWeight != step.weight || newSetWeights != step.setWeights {
+                            data.rememberWeight(newWeight ?? newSetWeights?.compactMap { $0 }.first, for: ex)
+                        }
                         store.updateStep(
                             idWrapper.id,
                             sets: newSets,
@@ -413,10 +368,10 @@ struct PlanPlayerScreen: View {
                         // R3: 同步开 → 训练中改的参数即时传播到所有含该动作的 routine.
                         propagateParamsIfSyncing(stepId: idWrapper.id)
                     },
-                    onReplace: { replacingStepId = idWrapper.id },
+                    onReplace: { replacementAfterEdit = idWrapper.id },
                     syncsGlobally: data.settings.globalExerciseParamSyncEnabled
                 )
-                .presentationDetents([.medium, .large])
+                .presentationDetents([.medium])
                 .presentationDragIndicator(.visible)
             }
         }
@@ -426,35 +381,66 @@ struct PlanPlayerScreen: View {
         .sheet(item: Binding(
             get: { replacingStepId.map { StepIdentifier(id: $0) } },
             set: { replacingStepId = $0?.id }
-        )) { idWrapper in
+        ), onDismiss: {
+            defer { replacementUsesAllMuscles = false }
+            guard let replacement = pendingReplacement else { return }
+            pendingReplacement = nil
+            store.replaceStepExercise(replacement.stepId, newExerciseId: replacement.exerciseId, suggestedStep: data.exById[replacement.exerciseId].map { data.makeSeededStep(for: $0, stepId: replacement.stepId) },
+                                      exById: data.exById, defaultRest: data.settings.defaultRestSeconds,
+                                      defaultBetweenExerciseRest: data.settings.defaultBetweenExerciseRestSeconds)
+        }) { idWrapper in
             ExercisePickerSheet(onPick: { newEx in
-                store.replaceStepExercise(
-                    idWrapper.id,
-                    newExerciseId: newEx.id,
-                    exById: data.exById,
-                    defaultRest: data.settings.defaultRestSeconds,
-                    defaultBetweenExerciseRest: data.settings.defaultBetweenExerciseRestSeconds
-                )
+                guard pendingReplacement == nil else { return }
+                pendingReplacement = (idWrapper.id, newEx.id)
                 replacingStepId = nil
-                // 换完动作 → 回到训练参数页 (Edit sheet, 此时已显示新动作的图与名), 让用户接着调参.
-                // 等 picker sheet 真正收完再开, 避免 sheet-from-sheet 转场打架.
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    editingStepId = idWrapper.id
-                }
             },
             directPick: true,  // J4: 替换 = 选了就换, 不先弹详情
             // 替换流程: 预选原动作的部位 (动作 + 器械留空), 落在"换个练同部位的动作".
             initialMuscle: {
+                guard !replacementUsesAllMuscles else { return nil }
                 guard let exId = store.plan?.steps.first(where: { $0.id == idWrapper.id })?.exerciseId,
                       let ex = data.exById[exId] else { return nil }
                 return ex.primaryMuscles.first?.section
-            }())
+            }(),
+            replacingExerciseId: replacementUsesAllMuscles ? nil : store.plan?.steps.first(where: { $0.id == idWrapper.id })?.exerciseId)
             .presentationDetents([.large])
             .presentationDragIndicator(.visible)
         }
         // "+ Add exercise" — playlist 末尾点了之后选动作, 多选勾选 (跟 Free Workout 一致),
         // 底部 "Add (N)" 一并 appendStep 到末尾.
         .sheet(isPresented: $addStepPickerOpen) {
+            if store.isOpenWorkout {
+                ExercisePickerSheet(
+                    onPick: { ex in
+                        store.appendStep(exercise: ex, settings: data.settings, exById: data.exById,
+                            defaultRest: data.settings.defaultRestSeconds,
+                            defaultBetweenExerciseRest: data.settings.defaultBetweenExerciseRestSeconds,
+                            suggestedStep: data.makeSeededStep(for: ex, stepId: UUID().uuidString))
+                        addStepPickerOpen = false
+                    },
+                    directPick: true,
+                    pickerTitle: "What would you like to train next?",
+                    onFinishWorkout: {
+                        addStepPickerOpen = false
+                        store.finishEarly()
+                    },
+                    workoutSummary: openWorkoutSummary,
+                    onPickConfigured: { ex, step in
+                        store.appendStep(exercise: ex, settings: data.settings, exById: data.exById,
+                            defaultRest: data.settings.defaultRestSeconds,
+                            defaultBetweenExerciseRest: data.settings.defaultBetweenExerciseRestSeconds,
+                            suggestedStep: step)
+                        if let id = store.plan?.steps.last?.id {
+                            store.updateStep(id, sets: step.sets, reps: step.reps, weight: step.weight,
+                                duration: step.duration, exById: data.exById,
+                                defaultRest: data.settings.defaultRestSeconds,
+                                defaultBetweenExerciseRest: data.settings.defaultBetweenExerciseRestSeconds)
+                        }
+                        addStepPickerOpen = false
+                    }
+                )
+                .presentationDetents([.large])
+            } else {
             ExercisePickerSheet(
                 onPick: { _ in },   // multiSelect 模式不走单选回调
                 multiSelect: true,
@@ -465,7 +451,8 @@ struct PlanPlayerScreen: View {
                             settings: data.settings,
                             exById: data.exById,
                             defaultRest: data.settings.defaultRestSeconds,
-                            defaultBetweenExerciseRest: data.settings.defaultBetweenExerciseRestSeconds
+                            defaultBetweenExerciseRest: data.settings.defaultBetweenExerciseRestSeconds,
+                            suggestedStep: data.makeSeededStep(for: ex, stepId: UUID().uuidString)
                         )
                     }
                     addStepPickerOpen = false
@@ -474,6 +461,7 @@ struct PlanPlayerScreen: View {
             )
             .presentationDetents([.large])
             .presentationDragIndicator(.visible)
+            }
         }
         // 训练中右滑 playlist 行 → 二次确认 → 调 store.deleteStep (session-local).
         // 跟 PlanDetailSheet 一致的 UX, 只是这里删的是 session-local plan, 不影响 data.plans.
@@ -509,8 +497,7 @@ struct PlanPlayerScreen: View {
                     store.finishEarly()   // 不 dismiss — completed=true 让本 view 切完成流
                 }
                 Button("Discard workout", role: .destructive) {
-                    store.endedExplicitly = true
-                    store.end()
+                    store.discard { data.discardWorkout($0, recordIDs: $1) }
                     dismiss()
                 }
             } else if canSaveChangesToPlan {
@@ -522,14 +509,12 @@ struct PlanPlayerScreen: View {
                     dismiss()
                 }
                 Button("End without saving", role: .destructive) {
-                    store.endedExplicitly = true
-                    store.end()
+                    store.discard { data.discardWorkout($0, recordIDs: $1) }
                     dismiss()
                 }
             } else {
                 Button("End", role: .destructive) {
-                    store.endedExplicitly = true
-                    store.end()
+                    store.discard { data.discardWorkout($0, recordIDs: $1) }
                     dismiss()
                 }
             }
@@ -537,47 +522,393 @@ struct PlanPlayerScreen: View {
         } message: {
             // 提示文案 — 三分支各说各的后果
             if store.session?.completedSets.isEmpty == false {
-                Text("Finish & end keeps this as a completed workout with your stats. Discard closes it without a summary.")
+                Text("Finish saves this workout. Discard removes it from history.")
             } else if canSaveChangesToPlan {
                 Text("You changed sets, reps, weight, or order during this workout. Save the changes back to the plan?")
             } else {
-                Text("Sets you've completed will be kept.")
+                Text("This workout won’t be saved.")
             }
         }
         // 新一次训练 (completed 回到 false / session 换新) → 重置确认页决定标志,
         // 否则上一场做过的决定会让下一场 dirty 完成直接跳过确认页.
+        .onChange(of: data.sets) { _, _ in store.refreshLoadSuggestions(using: data) }
+        .onChange(of: store.plan, initial: true) { _, _ in store.refreshLoadSuggestions(using: data) }
         .onChange(of: store.session?.completed == true) { _, isCompleted in
             if !isCompleted { planSaveDecisionMade = false }
         }
+        .sheet(isPresented: $restEditorPresented) {
+            AppNavigationStack {
+                Form {
+                    Stepper(value: $editingRestSeconds, in: 15...300, step: 15) {
+                        LabeledContent("Set rest", value: Duration.seconds(editingRestSeconds).formatted(.time(pattern: .minuteSecond)))
+                    }.accessibilityIdentifier("workout.rest.duration")
+                    Stepper(value: $editingSwitchSeconds, in: 0...600, step: 15) {
+                        LabeledContent("Exercise rest", value: Duration.seconds(editingSwitchSeconds).formatted(.time(pattern: .minuteSecond)))
+                    }.accessibilityIdentifier("workout.rest.switching")
+                }
+                .navigationTitle("Rest").navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) { Button("Cancel") { restEditorPresented = false } }
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button("Save") { confirmRestDefaults = true }
+                            .accessibilityIdentifier("workout.rest.save")
+                    }
+                }
+                .alert("Save rest settings?", isPresented: $confirmRestDefaults) {
+                    Button("Save") {
+                        data.settings.defaultRestSeconds = editingRestSeconds
+                        data.settings.defaultBetweenExerciseRestSeconds = editingSwitchSeconds
+                        data.save()
+                        store.applyRestPreferences(setRest: editingRestSeconds, switchingRest: editingSwitchSeconds, exById: data.exById)
+                        restEditorPresented = false
+                    }
+                    Button("Cancel", role: .cancel) {}
+                } message: {
+                    Text("Save to Training Preferences and apply to all workouts?")
+                }
+            }.presentationDetents([.medium]).presentationDragIndicator(.visible)
+        }
+        .onChange(of: backgroundExercise?.id) { _, _ in store.youtubePlayback.stop() }
+        .onChange(of: playerScenePhase) { _, phase in
+            if phase == .background { store.youtubePlayback.enteredBackground() }
+        }
         // SessionTickerView 移到了 RootView 顶层 — sheet 关掉后 MiniBar 还得 tick.
         }   // ZStack (背板 + 内容)
+        // Give the player itself full-screen bounds before its draggable content is clipped.
+        // Ignoring only the inner VStack can leave the status-bar region on the black backdrop.
+        .ignoresSafeArea(.container, edges: [.top, .bottom])
     }
 
-    /// 背景层 — exercise 段铺当前图, rest 段纯黑
-    @ViewBuilder
-    private var backgroundLayer: some View {
-        if let seg = store.currentSegment {
-            switch seg.kind {
-            case .exercise(let ex, _, _, _, _, _, _):
-                FullBleedExerciseImage(exercise: ex)
-            case .rest:
-                // 休息段背景: 显示"下一个动作"的静图 + 暗化 mask, 提前给用户预览要换什么器械.
-                // 之前是纯黑 — 信息量太少, 用户得脑补下一个是什么. 现在直接看图.
-                // 休息时用静图 (animated: false) — 大背景反复 cross-fade 在休息这个"放松"
-                // 语境下视觉太吵, 静态一张图给"看清下一动作"就够了.
-                if let next = nextExerciseSeg() {
-                    ZStack {
-                        FullBleedExerciseImage(exercise: next, animated: false)
-                        // 暗化 mask — 让上面的倒计时圆环 / "Up Next" 文字读起来舒服
-                        Color.black.opacity(0.55)
+    private func activePlayer(seg: Segment) -> some View {
+        VStack(spacing: 0) {
+            GeometryReader { geo in
+                let headerTop = topSafeArea + Self.handleClearance + 8
+                let infoHeight = min(playerInfoHeight, 300)
+                let infoTop = max(headerTop, geo.size.height - infoHeight)
+                // The media stage ends at the bottom of the title row, including that row.
+                // Match PlayerExerciseInfoLayout's centered title / spacing / parameter slots.
+                let titleBottom = infoTop + (infoHeight - (playerTitleHeight + PlayerExerciseInfoMetrics.spacing + PlayerExerciseInfoMetrics.parameterHeight)) / 2 + playerTitleHeight
+                let mediaAreaHeight = max(0, min(geo.size.height, titleBottom))
+                // Wide or short windows must keep the square inside the available stage.
+                let mediaSide = min(geo.size.width, mediaAreaHeight)
+                let mediaTop = (mediaAreaHeight - mediaSide) / 2
+                // Both layers reach the plain UI background at the title's top edge.
+                let titleTop = max(0, titleBottom - playerTitleHeight)
+                let backdropHeight = min(geo.size.height, titleTop)
+                let fadeEnd = max(0, min(1, (titleTop - mediaTop) / max(1, mediaSide)))
+                let fadeStart = min(0.70, fadeEnd * 0.70)
+                let topFadeEnd = min(0.18, fadeStart)
+                // Wide or short windows keep the square stage narrower than the
+                // screen; soften those side edges into the blurred backdrop.
+                let needsSideFade = (geo.size.width - mediaSide) > 1
+                let sideFadeEnd: CGFloat = 0.18
+                ZStack(alignment: .topLeading) {
+                    trainingMediaBackdrop
+                        .frame(width: geo.size.width, height: backdropHeight)
+                        .clipped()
+                        .mask {
+                            LinearGradient(stops: [.init(color: .white, location: 0),
+                                                   .init(color: .white, location: 0.55),
+                                                   .init(color: .clear, location: 1)],
+                                           startPoint: .top, endPoint: .bottom)
+                        }
+                        .opacity(playlistExpanded || inlineYouTubeActive ? 0 : 1)
+                        .allowsHitTesting(false)
+                        .accessibilityHidden(true)
+
+                    backgroundLayer
+                        .frame(width: mediaSide, height: mediaSide)
+                        .anchorPreference(key: PlayerLayoutBoundsKey.self, value: .bounds) { ["media": $0] }
+                        // Fade the top and bottom gradually into the blurred extension.
+                        .mask {
+                            LinearGradient(stops: [.init(color: .clear, location: 0),
+                                                   .init(color: .white.opacity(0.45), location: min(0.07, topFadeEnd)),
+                                                   .init(color: .white, location: topFadeEnd),
+                                                   .init(color: .white, location: fadeStart),
+                                                   .init(color: .clear, location: fadeEnd),
+                                                   .init(color: .clear, location: 1)],
+                                           startPoint: .top, endPoint: .bottom)
+                        }
+                        .mask {
+                            if needsSideFade {
+                                LinearGradient(stops: [.init(color: .clear, location: 0),
+                                                       .init(color: .white.opacity(0.45), location: sideFadeEnd * 0.4),
+                                                       .init(color: .white, location: sideFadeEnd),
+                                                       .init(color: .white, location: 1 - sideFadeEnd),
+                                                       .init(color: .white.opacity(0.45), location: 1 - sideFadeEnd * 0.4),
+                                                       .init(color: .clear, location: 1)],
+                                               startPoint: .leading, endPoint: .trailing)
+                            } else {
+                                Color.white
+                            }
+                        }
+                        .position(x: geo.size.width / 2, y: mediaTop + mediaSide / 2)
+                        .opacity(playlistExpanded || inlineYouTubeActive ? 0 : 1)
+                        .accessibilityHidden(playlistExpanded || inlineYouTubeActive)
+                        .allowsHitTesting(false)
+                        .accessibilityIdentifier("workout.media.square")
+
+                    if !playlistExpanded {
+                        Color.clear.contentShape(Rectangle())
+                            .gesture(dismissDragGesture)
                     }
-                } else {
-                    Color.black  // 最后一段 rest (理论上不存在, 兜底)
+                    VStack(spacing: 0) {
+                        if playlistExpanded {
+                            // Same shared geometry, with no hidden buttons or titles in the AX tree.
+                            PlayerExerciseInfoLayout(compact: false) {
+                                Color.clear
+                            } status: {
+                                Color.clear
+                            } parameters: {
+                                Color.clear
+                            }
+                        } else if seg.isRest {
+                            restNextExerciseHint(seg: seg)
+                        } else {
+                            infoSection(seg: seg)
+                        }
+                    }
+                    .frame(width: geo.size.width, height: infoHeight)
+                    .offset(y: max(headerTop, geo.size.height - infoHeight))
+                    // Preserve parameter anchors so the overlaid progress never changes position.
+                    .opacity(playlistExpanded ? 0 : 1)
+                    .allowsHitTesting(!playlistExpanded)
+                    .accessibilityElement(children: .contain)
+                    .accessibilityHidden(playlistExpanded)
+
+                    if seg.isRest && !playlistExpanded && !inlineYouTubeActive {
+                        let availableHeight = max(0, geo.size.height - headerTop - infoHeight)
+                        restCountdownRing(seg: seg, available: CGSize(width: geo.size.width, height: availableHeight))
+                            .frame(width: geo.size.width, height: availableHeight)
+                            .offset(y: headerTop)
+                    }
+
+
+                }
+                .clipped()
+            }
+            VStack(spacing: 0) {
+                Color.clear.frame(height: 26).allowsHitTesting(false)
+                controlsBar(seg: seg)
+                    .anchorPreference(key: PlayerLayoutBoundsKey.self, value: .bounds) { ["controls": $0] }
+                    .accessibilityElement(children: .contain)
+                    .accessibilityIdentifier("workout.controls")
+                PlayerTransportRow {
+                    Group {
+                        if let exercise = backgroundExercise,
+                           ExerciseMediaPolicy.youtubeID(exercise.videoURL) != nil,
+                           let url = exercise.videoURL {
+                            Button {
+                                Haptics.tap()
+                                store.noteActivity()
+                                if inlineYouTubeActive { store.youtubePlayback.stop() }
+                                else { store.youtubePlayback.select(exercise: exercise) }
+                                playlistExpanded = false
+                            } label: {
+                                Image(systemName: "play.rectangle")
+                                    .font(.system(size: 14, weight: .semibold))
+                                    .foregroundStyle(inlineYouTubeActive ? MasoColor.accent : MasoColor.textDim)
+                                    .frame(width: 44, height: 44)
+                                    .applyIf(inlineYouTubeActive) {
+                                        $0.glassCircleButtonBackground(fallback: MasoColor.surfaceHi)
+                                    }
+                            }
+                            .buttonStyle(.plain)
+                            .accessibilityLabel("Watch tutorial")
+                            .accessibilityAddTraits(inlineYouTubeActive ? .isSelected : [])
+                            .accessibilityIdentifier("workout.youtube")
+
+                        } else {
+                            Color.clear.frame(width: 44, height: 44)
+                        }
+                    }
+                } center: {
+                    TimelineView(.periodic(from: .now, by: 1)) { context in
+                        Text(Duration.seconds(max(0, Int(context.date.timeIntervalSince(store.session?.startedAt ?? context.date)))), format: .time(pattern: .minuteSecond))
+                            .foregroundStyle(MasoColor.textDim)
+                            .font(.caption.monospacedDigit())
+                    }
+                    .frame(height: 44)
+                    .accessibilityIdentifier("workout.elapsed")
+                } trailing: {
+                    Button {
+                        Haptics.tap()
+                        store.noteActivity()
+                        store.youtubePlayback.stop()
+                        withAnimation(reduceMotion ? nil : .spring(response: 0.42, dampingFraction: 0.88)) {
+                            playlistExpanded.toggle()
+                        }
+                    } label: {
+                        Image(systemName: "list.bullet")
+                            .font(.system(size: 14, weight: .semibold))
+                            .foregroundStyle(playlistExpanded ? MasoColor.accent : MasoColor.textDim)
+                            .frame(width: 44, height: 44)
+                            .applyIf(playlistExpanded) { $0.glassCircleButtonBackground(fallback: MasoColor.surfaceHi) }
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("This workout")
+                    .accessibilityAddTraits(playlistExpanded ? .isSelected : [])
+                    .accessibilityIdentifier("workout.playlist.toggle")
                 }
             }
+            .padding(.top, 8)
+            .padding(.bottom, max(12, bottomSafeArea) + 20)
+            .background(MasoColor.background)
+        }
+        .overlayPreferenceValue(PlayerLayoutBoundsKey.self) { anchors in
+            GeometryReader { geometry in
+                if inlineYouTubeActive, !playlistExpanded,
+                   let heading = anchors["heading"],
+                   let exercise = backgroundExercise, let url = exercise.videoURL,
+                   let videoID = ExerciseMediaPolicy.youtubeID(url) {
+                    // Capsule ends at safe-area top + (-4 + 10 + 5), before its hit padding.
+                    let handleBottom = topSafeArea + 11
+                    let titleTop = geometry[heading].minY
+                    let availableHeight = max(0, titleTop - handleBottom)
+                    PlayerInlineYouTubeView(videoID: videoID, sourceURL: url, playback: store.youtubePlayback)
+                        .id(exercise.id)
+                        .frame(width: geometry.size.width,
+                               height: min(availableHeight, max(200, geometry.size.width * 9 / 16)))
+                        .position(x: geometry.size.width / 2, y: (handleBottom + titleTop) / 2)
+                }
+                // The progress/media overlay spans the stage on regular-width
+                // windows. Put the label-only Rest hit target in that same layer.
+                if let label = anchors["restLabel"], !playlistExpanded, !inlineYouTubeActive {
+                    let bounds = geometry[label]
+                    Button {
+                        editingRestSeconds = data.settings.defaultRestSeconds
+                        editingSwitchSeconds = data.settings.defaultBetweenExerciseRestSeconds
+                        restEditorPresented = true
+                    } label: { Color.clear.contentShape(Rectangle()) }
+                    .buttonStyle(.plain)
+                    .frame(width: bounds.width, height: bounds.height)
+                    .position(x: bounds.midX, y: bounds.midY)
+                    .accessibilityLabel("Edit rest time")
+                    .accessibilityIdentifier("workout.rest.edit")
+                }
+                if let controls = anchors["controls"] {
+                    let controlsTop = geometry[controls].minY
+                    let center = anchors["parameters"].map { (geometry[$0].maxY + controlsTop) / 2 } ?? (controlsTop - 32)
+                    let parameterBounds = anchors["parameters"].map { geometry[$0] }
+                    if playlistExpanded {
+                        let listTop = topSafeArea + Self.handleClearance + 8
+                        let listBottom = center - 28
+                        playlistContent
+                            .frame(width: geometry.size.width, height: max(0, listBottom - listTop), alignment: .top)
+                            .clipped()
+                            .position(x: geometry.size.width / 2, y: (listTop + max(listTop, listBottom)) / 2)
+                    }
+                    exerciseProgress
+                        .frame(width: parameterBounds?.width ?? max(0, geometry.size.width - 2 * MasoMetrics.cardPadding), height: 44)
+                        .position(x: parameterBounds?.midX ?? geometry.size.width / 2, y: center)
+                }
+            }
+            .zIndex(20)
+        }
+    }
+
+    /// Equal-width segments follow action occurrences, never muscle or exercise IDs.
+    /// Fill only actual completed sets, so skipping ahead cannot claim completion.
+    private var exerciseProgress: some View {
+        let steps = (store.plan?.steps ?? []).filter { step in
+            store.segments.contains { $0.isExercise && $0.stepId == step.id }
+        }
+        let completed = store.session?.completedSets ?? []
+        let pending = store.nextUnfinishedSegment()
+        return HStack(spacing: 4) {
+            ForEach(steps) { step in
+                let sets = store.segments.filter { $0.isExercise && $0.stepId == step.id }
+                let done = sets.filter { segment in
+                    if case .exercise(_, let number, _, _, _, _, _) = segment.kind {
+                        return completed.contains(.init(stepId: step.id, setN: number))
+                    }
+                    return false
+                }.count
+                Button {
+                    Haptics.tap()
+                    _ = store.jumpToFirstUnfinishedStep(stepId: step.id)
+                } label: {
+                    GeometryReader { geometry in
+                        if step.id == pending?.stepId {
+                            HStack(spacing: min(1, geometry.size.width / CGFloat(max(1, sets.count * 3)))) {
+                                ForEach(sets) { segment in
+                                    let isComplete: Bool = {
+                                        if case .exercise(_, let number, _, _, _, _, _) = segment.kind {
+                                            return completed.contains(.init(stepId: step.id, setN: number))
+                                        }
+                                        return false
+                                    }()
+                                    Rectangle().fill(isComplete ? MasoColor.accent : segment.id == pending?.id ? (store.currentSegment?.isExercise == true ? MasoColor.accent : MasoColor.accent.opacity(0.4)) : MasoColor.text.opacity(0.18))
+                                        .modifier(BreathingArc(active: !isComplete && segment.id == pending?.id && store.currentSegment?.isExercise == true && store.session?.playing == true))
+                                        .frame(maxWidth: .infinity)
+                                }
+                            }.clipShape(Capsule())
+                        } else {
+                            Capsule().fill(MasoColor.text.opacity(0.18))
+                                .overlay(alignment: .leading) {
+                                    Capsule().fill(MasoColor.accent)
+                                        .frame(width: geometry.size.width * CGFloat(done) / CGFloat(max(1, sets.count)))
+                                }
+                        }
+                    }.frame(height: 4)
+                    .frame(maxWidth: .infinity, minHeight: 44).contentShape(Rectangle())
+                }.buttonStyle(.plain)
+                .disabled(done == sets.count)
+                .accessibilityIdentifier("workout.progress.\(step.id)")
+                .accessibilityLabel(Text(data.exById[step.exerciseId]?.displayName ?? step.exerciseId))
+                .accessibilityValue(Text("\(done)/\(sets.count)"))
+                .accessibilityHint("Jump to first unfinished set")
+            }
+        }
+        .frame(height: 44)
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Workout")
+        .accessibilityValue(Text("\(completed.count)/\(store.segments.filter(\.isExercise).count)"))
+        .accessibilityIdentifier("workout.progress")
+    }
+
+    private var inlineYouTubeActive: Bool {
+        youtubeExerciseID != nil && youtubeExerciseID == backgroundExercise?.id
+    }
+
+    /// Current and upcoming exercises use one media path; rest only adds a readability scrim.
+    private var backgroundExercise: Exercise? {
+        guard let segment = store.currentSegment else { return nil }
+        if case .exercise(let exercise, _, _, _, _, _, _) = segment.kind { return exercise }
+        return nextExerciseSeg()
+    }
+
+    @ViewBuilder
+    private var backgroundLayer: some View {
+        if let exercise = backgroundExercise {
+            FullBleedExerciseImage(exercise: exercise, playbackEnabled: !inlineYouTubeActive && store.currentSegment?.isRest != true, contentMode: .fit)
+                .overlay {
+                    if store.currentSegment?.isRest == true {
+                        Color.black.opacity(0.55)
+                    }
+                }
         } else {
             MasoColor.background
         }
+    }
+
+    /// A static, softly blurred poster extends the media colors behind the header.
+    /// The live media itself remains a single, uncropped player.
+    private var trainingMediaBackdrop: some View {
+        ZStack {
+            MasoColor.background
+            if let exercise = backgroundExercise {
+                if let bytes = exercise.customImageData, let image = UIImage(data: bytes) {
+                    ExerciseAspectFillPhoto(image: image)
+                } else if let url = ExerciseDemoService.shared.files[exercise.id] {
+                    ExerciseDemoThumbnail(url: url, fallback: CoreExerciseDemos.thumbnail(exercise.id))
+                } else if let image = CoreExerciseDemos.thumbnail(exercise.id) {
+                    ExerciseAspectFillPhoto(image: image)
+                }
+            }
+        }
+        .blur(radius: 32)
+        .overlay(Color.black.opacity(0.36))
     }
 
     /// 信息区 — 仅 exercise 段调. rest 段走 restCountdownRing + restNextExerciseHint 各自渲染.
@@ -592,12 +923,38 @@ struct PlanPlayerScreen: View {
                 duration: dur,
                 isCountdown: countdown,
                 remaining: store.remainingSeconds,
+                compact: false,
                 // tap "Replace exercise" 入口 → 通过共享 replacingStepId 状态拉 ExercisePickerSheet.
-                onRequestReplace: { replacingStepId = seg.stepId }
+                onRequestReplace: { replacingStepId = seg.stepId },
+                onRequestOtherExercise: {
+                    replacementUsesAllMuscles = true
+                    replacingStepId = seg.stepId
+                },
+                onSelectVariant: { selectVariant($0, stepId: seg.stepId) },
+                onAdjustParameter: { adjustParameter($0, by: $1, stepId: seg.stepId) }
             )
         case .rest:
             EmptyView()  // rest 段不通过 infoSection 渲染, 走专门的 restCountdownRing
         }
+    }
+
+    private func adjustParameter(_ parameter: WorkoutParameter, by direction: Int, stepId: String) {
+        Haptics.selection()
+        store.adjustParameter(parameter, by: direction, stepId: stepId, unit: data.settings.weightUnit,
+                              exById: data.exById, defaultRest: data.settings.defaultRestSeconds,
+                              defaultBetweenExerciseRest: data.settings.defaultBetweenExerciseRestSeconds)
+        if let edited = store.plan?.steps.first(where: { $0.id == stepId }), let planID = store.plan?.id {
+            data.confirmMatchingSuggestions(from: edited, in: planID)
+            data.syncExerciseParams(from: edited)
+        }
+    }
+
+    private func selectVariant(_ exercise: Exercise, stepId: String) {
+        Haptics.selection()
+        store.replaceStepExercise(stepId, newExerciseId: exercise.id,
+                                  suggestedStep: data.makeSeededStep(for: exercise, stepId: stepId), exById: data.exById,
+                                  defaultRest: data.settings.defaultRestSeconds,
+                                  defaultBetweenExerciseRest: data.settings.defaultBetweenExerciseRestSeconds)
     }
 
     /// 判断当前 rest 段是 "组间休息" 还是 "动作切换休息"
@@ -605,6 +962,7 @@ struct PlanPlayerScreen: View {
     private func isCrossExerciseRest(currentSegment seg: Segment) -> Bool {
         guard let s = store.session else { return false }
         let i = s.segmentIndex
+        guard store.segments.indices.contains(i) else { return false }
         // 找当前 rest 之前最近的 exercise
         var prevStepId: String?
         var j = i - 1
@@ -632,14 +990,14 @@ struct PlanPlayerScreen: View {
     }
 
     /// 下一个动作 segment 的目标 reps / weight — 休息屏 "Up Next" 提前显示, 让用户休息时心里有数.
-    private func nextExerciseTargets() -> (reps: Int?, weight: Double?) {
-        guard let s = store.session else { return (nil, nil) }
+    private func nextExerciseTargets() -> (reps: Int?, weight: Double?, setNumber: Int?, totalSets: Int?) {
+        guard let s = store.session else { return (nil, nil, nil, nil) }
         for i in (s.segmentIndex + 1)..<store.segments.count {
-            if case .exercise(_, _, _, let reps, let weight, _, _) = store.segments[i].kind {
-                return (reps, weight)
+            if case .exercise(_, let number, let total, let reps, let weight, _, _) = store.segments[i].kind {
+                return (reps, weight, number, total)
             }
         }
-        return (nil, nil)
+        return (nil, nil, nil, nil)
     }
 
     /// 下一个动作 segment 的 stepId — 给休息屏的"小编辑入口"用,
@@ -667,7 +1025,12 @@ struct PlanPlayerScreen: View {
                 endsAt: store.session?.endsAt,
                 pausedRemaining: store.session?.pausedRemaining,
                 isCrossExercise: isCrossExerciseRest(currentSegment: seg),
-                available: available
+                available: available,
+                onEdit: {
+                    editingRestSeconds = data.settings.defaultRestSeconds
+                    editingSwitchSeconds = data.settings.defaultBetweenExerciseRestSeconds
+                    restEditorPresented = true
+                }
             )
         }
     }
@@ -680,50 +1043,32 @@ struct PlanPlayerScreen: View {
             let targets = nextExerciseTargets()
             RestNextHint(
                 next: next,
+                compact: false,
                 nextReps: targets.reps,
                 nextWeight: targets.weight,
+                nextSetNumber: targets.setNumber,
+                nextTotalSets: targets.totalSets,
+                onSelectVariant: { variant in
+                    if let stepId = nextStepId { selectVariant(variant, stepId: stepId) }
+                },
+                onRequestOtherExercise: {
+                    if let stepId = nextStepId {
+                        replacementUsesAllMuscles = true
+                        replacingStepId = stepId
+                    }
+                },
+                onAdjustParameter: { parameter, direction in
+                    if let stepId = nextStepId { adjustParameter(parameter, by: direction, stepId: stepId) }
+                },
                 isCrossExercise: isCrossExerciseRest(currentSegment: seg),
                 // 小编辑入口 — 跟 playlist 的 onEdit 一样用 editingStepId 触发 EditAnyStepSheet,
                 // 复用已有 sheet (line ~224), 不需要新 sheet 通道.
-                onEdit: nextStepId.map { id in { editingStepId = id } },
-                // P0#5-①: "刚才: 8 × 55 kg · 调整" — ✓ 落库取的是计划值, 力竭没做满在这改回真实值.
-                justNow: justLoggedRecord.flatMap { justLoggedSummary($0) },
-                onAdjust: justLoggedRecord.map { rec in { adjustingRecord = rec } }
+                onEdit: nextStepId.map { id in { editingStepId = id } }
             )
         }
     }
 
-    /// 底部 info+controls 区的渐变遮罩 — exercise / rest 段共用一份, 让两态切换时
-    /// 渐变位置 + 强度 100% 一致, 视觉零跳动.
-    ///
-    /// 设计:
-    ///   - 上半 5-stop 渐变 (clear → 0.35 → 0.78 → 0.96 → black) 让背景图自然过渡到黑色 controls 区
-    ///   - 底部 60pt 实色 Color.black + ignoresSafeArea(.bottom) 延伸到 home indicator,
-    ///     home indicator 区跟 controls 底色无缝连接
-    private var bottomInfoGradient: some View {
-        // 终点黑统一成 playlist 的 #0A0A0A — 图片底部淡入的黑 = 下方 playlist 的黑, 无色差缝.
-        let base = Color(red: 10/255, green: 10/255, blue: 10/255)
-        return ZStack(alignment: .bottom) {
-            LinearGradient(
-                stops: [
-                    // 起黑点后移 + 上半更淡 → 少盖训练图 (尤其图下方过渡区), 露出更多动作图;
-                    // 到 info/controls 区 (≈0.46+) 才转暗, 文字/肌肉图仍够可读.
-                    .init(color: .clear, location: 0.0),
-                    // 0.18 前完全透明 (上一版 0.28 起黑太晚, info 文字/肌肉图对比不够);
-                    // 中段加深到 0.8 — 字和肌肉图底下够黑, 图上部仍露得多.
-                    .init(color: .clear, location: 0.18),
-                    .init(color: base.opacity(0.3), location: 0.38),
-                    .init(color: base.opacity(0.8), location: 0.56),
-                    .init(color: base.opacity(0.96), location: 0.72),
-                    .init(color: base, location: 0.87),
-                ],
-                startPoint: .top, endPoint: .bottom
-            )
-            base
-                .frame(height: 60)
-                .ignoresSafeArea(edges: .bottom)
-        }
-    }
+
 
     private func handlePrimary(seg: Segment) {
         switch seg.kind {
@@ -737,57 +1082,24 @@ struct PlanPlayerScreen: View {
         }
     }
 
-    // MARK: - P0#5: ✓ 后的撤销 toast + "刚才"修正入口
+    private var bottomSafeArea: CGFloat { playerSafeArea.bottom }
 
-    /// 本场刚落库的那条 SetRecord — data.sets 是 newest-first, 第一条 performedAt 在本场
-    /// 范围内的就是最新记录. 5 分钟窗口: 休息屏正常只停几十秒, 跳段乱逛后残留的旧记录不当"刚才".
-    private var justLoggedRecord: SetRecord? {
-        guard let s = store.session,
-              let rec = data.sets.first(where: { $0.performedAt >= s.startedAt }),
-              Date().timeIntervalSince(rec.performedAt) < 300 else { return nil }
-        return rec
-    }
-
-    /// "刚才: 8 × 55 kg" 摘要 — 有重量: reps × weight; 只有 reps: × 8; 计时段: 45s.
-    /// 全空 (不应发生) → nil, 调用方不渲染.
-    private func justLoggedSummary(_ rec: SetRecord) -> String? {
-        var parts: [String] = []
-        if let r = rec.reps, let w = rec.weight, w > 0 {
-            parts.append("\(r) × \(weightLabel(w))")
-        } else if let r = rec.reps {
-            parts.append("× \(r)")
-        }
-        if let d = rec.duration { parts.append("\(d)s") }
-        guard !parts.isEmpty else { return nil }
-        return String(format: NSLocalizedString("Just now: %@", comment: "rest screen just-logged set"),
-                      parts.joined(separator: " · "))
-    }
-
-    /// 当前 keyWindow 的 bottom safe area inset (home indicator 区高度).
-    /// iPhone 14+ ≈ 34pt, 旧 iPhone (home button) = 0pt. Dynamic, 不 hardcode.
-    private var bottomSafeArea: CGFloat {
-        UIApplication.shared
-            .connectedScenes
-            .compactMap { $0 as? UIWindowScene }
-            .first?
-            .windows
-            .first { $0.isKeyWindow }?
-            .safeAreaInsets.bottom ?? 34
-    }
-
-    @ViewBuilder
-    private var playlistDrawer: some View {
-        // GeometryReader 取屏幕高 → 算 max playlist height (不能让 playlist 高到把训练图挤没了).
-        // 留至少 200pt 给上方 ZStack (训练图 / TimelineBar / rest 圆环), 这样视觉永远"两段都在屏内".
-        GeometryReader { _ in EmptyView() }
-            .frame(width: 0, height: 0)
-        VStack(spacing: 0) {
-            // 顶部拖把手 + "PLAYLIST" header. 整块一起接 DragGesture: 用户拖手柄或 header 都生效.
-            playlistDragHandleBar
-                .background(
-                    Color(red: 10/255, green: 10/255, blue: 10/255)
-                )
-
+    private var playlistContent: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Text("This workout")
+                    .font(.title2.bold()).lineLimit(1)
+                    .accessibilityAddTraits(.isHeader)
+                Spacer(minLength: 8)
+                Button { addStepPickerOpen = true } label: {
+                    Label("Add exercise", systemImage: "plus")
+                        .font(.caption.weight(.semibold)).lineLimit(1)
+                }
+                .nativeGlassButtonStyle().controlSize(.small)
+                .accessibilityIdentifier("workout.queue.add")
+                .layoutPriority(1)
+            }
+            .padding(.horizontal, MasoMetrics.cardPadding)
             InlinePlaylist(
                 plan: store.plan,
                 exById: data.exById,
@@ -815,165 +1127,21 @@ struct PlanPlayerScreen: View {
                 onReplace: { stepId in
                     replacingStepId = stepId  // 弹 ExercisePickerSheet 换一个动作
                 },
-                onAddStep: { addStepPickerOpen = true },
-                showHeader: false,  // 自定义 dragHandleBar 已经做了 header, InlinePlaylist 内部别再渲一次
+                onAddStep: nil,
+                showHeader: false,
                 // J5: 竖向进度条 + 动作间休息行的数据源
                 segments: store.segments,
                 currentIndex: store.session?.segmentIndex ?? 0,
                 completedSets: store.session?.completedSets ?? [],
                 onJumpSegment: { idx in store.setIndex(idx) },
                 isResting: store.currentSegment?.isRest == true,
+                isPlaying: store.session?.playing == true,
                 restEndsAt: store.session?.endsAt,
                 restTotal: currentRestTotalSeconds,
                 activeRestAfterStepId: activeRestAfterStepId
             )
+            .accessibilityIdentifier("workout.playlist.list")
         }
-        // 总高度 = 拖把手区 + 用户拖出来的内容高度 + home indicator safe area.
-        // .clipped() 让 InlinePlaylist 被 frame 裁掉超出部分 — height 越小, List 显示的 row 越少.
-        // maxWidth: .infinity 钉住宽度 — 防止 play/pause 切换时音频会话状态变动引起
-        // 系统 safe area 微调, 导致 List 宽度抖动 (左右轻微摆动).
-        .frame(maxWidth: .infinity)
-        // 封顶到 playlistMaxHeight (= min(屏高55%, 内容高)) — 默认 254 在短计划下也不会
-        // 高过内容露出纯黑空洞. 拖拽已在 clamp 里限到 maxHeight, 这里兜住初始/tap 档位.
-        .frame(height: min(playlistHeight, playlistMaxHeight) + bottomSafeArea)
-        .clipped()
-        .background(
-            Color(red: 10/255, green: 10/255, blue: 10/255)
-                .ignoresSafeArea(.container, edges: .bottom)
-        )
-        .ignoresSafeArea(.container, edges: .bottom)
-        // 注意: drawer 上不再挂 .animation(value: playlistExpanded). 之前那条 spring 会在用户
-        // 拖到 minHeight+40 临界值时把 playlistExpanded bool 翻面 → 触发 spring 重排 → 跟正在
-        // 跟手的 drag.onChanged 抢这一帧 frame, 视觉上就是抖动.
-        // tap-to-toggle 路径用显式 withAnimation 包 height 写入, 仍能 spring 切档; drag 路径
-        // 不进任何动画事务, 严格跟手指.
-    }
-
-    /// 拖把手栏: "PLAYLIST" kicker + 居中三条杠把手 + 重排提示, 合并成**同一行**.
-    /// 整块都接 DragGesture, 上下拖即可改 playlist 高度; 单击切档 min ↔ default.
-    private var playlistDragHandleBar: some View {
-        HStack {
-            Text("Playlist")
-                .font(.system(size: 10, weight: .bold))
-                .tracking(2)
-                .textCase(.uppercase)
-                .foregroundStyle(MasoColor.textFaint)
-            Spacer()
-            if (store.plan?.steps.count ?? 0) > 1 {
-                Text("Long press to reorder")
-                    .font(.system(size: 9, weight: .semibold))
-                    .foregroundStyle(MasoColor.textFaint.opacity(0.7))
-            }
-        }
-        .padding(.horizontal, MasoMetrics.cardPadding)
-        // 六点抓握把手 (⠿ 3×2 圆点, 自绘) — 居中叠在这一行正中 (跟 PLAYLIST 横向对齐).
-        // 点阵 = 经典"可拖拽"记号 (三条杠像菜单, 横向三点像"更多").
-        // ⚠️ 自绘而非 SF Symbol: "circle.grid.3x2.fill" 并不存在 (只有 2x2/3x3),
-        //    Image(systemName:) 遇到无效名会静默渲染成空白 → 之前把手完全看不见.
-        .overlay {
-            VStack(spacing: 2.5) {
-                ForEach(0..<2, id: \.self) { _ in
-                    HStack(spacing: 2.5) {
-                        ForEach(0..<3, id: \.self) { _ in
-                            Circle()
-                                .fill(Color.white.opacity(0.32))
-                                .frame(width: 3, height: 3)
-                        }
-                    }
-                }
-            }
-        }
-        .padding(.top, 10)
-        .padding(.bottom, 8)
-        .frame(maxWidth: .infinity)
-        .contentShape(Rectangle())
-        .gesture(playlistResizeGesture)
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel("Playlist drawer drag handle")
-        .accessibilityHint("Drag up to expand, down to collapse. Tap to toggle.")
-    }
-
-    /// playlist 高度拖拽手势 — tap 和 drag 全部走这一份 DragGesture(minimumDistance: 0).
-    /// 不再用单独的 .onTapGesture, 原因: tap + drag 同时挂在一个 View 上, SwiftUI 在两者之间
-    /// 逐帧仲裁 + tap 触发的 spring 还在跑时 drag 接管, 两套动画事务打架 → 抖动.
-    /// 单 gesture + 自分发 (translation 小 = tap; 大 = drag) 彻底切断仲裁路径.
-    ///
-    /// coordinateSpace 必须 .global — 把手自身随 drawer 高度变化往上/下移动, .local 下
-    /// translation 相对"正在移动的 view"计算: 拖 10pt → drawer 长高 10pt → 把手上移 10pt →
-    /// 下一帧 local translation 被回吐归零 → 高度弹回 → 又长高… 每帧在两个高度间振荡 = 抖动
-    /// (用户实录视频里的症状). global 空间里手指位移跟 view 移动解耦, 严格跟手.
-    ///
-    /// 拖拽更新走 `Transaction.disablesAnimations = true` 显式拒收任何继承动画 (RestCountdown
-    /// 那条 .animation(value: playlistExpanded) 不会再回头影响 height frame).
-    private var playlistResizeGesture: some Gesture {
-        DragGesture(minimumDistance: 0, coordinateSpace: .global)
-            .onChanged { value in
-                let dy = value.translation.height
-                // 死区: 位移 ≤ 10pt 当作"还在判断 tap", 不动 height. 越过死区后, 锚定 startHeight,
-                // 之后每帧直接 set height. 已经锚定过的 (startHeight != 0) 永远继续跟手, 不再走判断.
-                guard playlistDragStartHeight != 0 || abs(dy) > 10 else { return }
-                if playlistDragStartHeight == 0 {
-                    playlistDragStartHeight = playlistHeight
-                }
-                let proposed = playlistDragStartHeight - dy
-                let clamped = max(Self.playlistMinHeight, min(playlistMaxHeight, proposed))
-                // 显式禁用动画 — 上一个 tap 留下的 spring transaction 不能渗透到这一帧.
-                var t = Transaction()
-                t.disablesAnimations = true
-                withTransaction(t) {
-                    playlistHeight = clamped
-                }
-            }
-            .onEnded { value in
-                let dy = value.translation.height
-                let wasDrag = playlistDragStartHeight != 0
-                playlistDragStartHeight = 0
-                // 没真拖动 (translation 没出 10pt 死区) → 当作 tap 切档 min ↔ default.
-                // P3: 死区从 3 → 10pt, 拇指轻点常带几 pt 位移, 3pt 太小会被误判为拖动.
-                if !wasDrag && abs(dy) <= 10 {
-                    withAnimation(.spring(response: 0.4, dampingFraction: 0.82)) {
-                        playlistHeight = playlistExpanded ? Self.playlistMinHeight : Self.playlistDefaultHeight
-                    }
-                }
-                store.noteActivity()  // P2-9: 拖把手 = 用户在场, 别被 6h idle 误判完成
-                Haptics.tap()
-            }
-    }
-
-    /// playlist 内容的自然高度 (拖把手 + 所有动作行 + 动作间休息行 + "+ Add" footer).
-    /// 给 drawer 高度封顶用 — drawer 不能高过内容, 否则内容下方露出一块纯黑空洞 (#4 用户报).
-    /// 估算值 (避免深层 GeometryReader): 行高跟实际接近, 默认计划都有动作间休息 → 常见场景准.
-    private var playlistContentHeight: CGFloat {
-        let steps = store.plan?.steps.count ?? 0
-        guard steps > 0 else { return Self.playlistMinHeight }
-        let handleH: CGFloat = 56       // 拖把手 + "PLAYLIST" header (= playlistMinHeight)
-        let exerciseRowH: CGFloat = 78  // 缩略图/进度环 56 + 上下 padding 10×2 + 微余量 (实测 ~76-78)
-        let restRowH = InlinePlaylist.restRowHeight  // 动作间休息行 — 两态同高 34 (防跳动)
-        let footerH: CGFloat = 52       // "+ Add exercise" (内容 ~36 + listRowInsets 8×2)
-        let crossRests = max(0, steps - 1)
-        return handleH + CGFloat(steps) * exerciseRowH + CGFloat(crossRests) * restRowH + footerH
-    }
-
-    /// rest 态 stage 区的最小硬性高度 = 上界(把手) + 下界(底部信息区) + 倒计时最小预算 + 上下安全间隙.
-    /// 倒计时已能三档降级到"只剩数字", 最小预算只需 40pt (旧版按整个圆环 97pt 预留, 白占 ~57pt),
-    /// 所以 playlist 现在能拖得更高. 训练态大图可压缩, 无此硬需求.
-    private var restStageMinHeight: CGFloat {
-        topSafeArea + Self.handleClearance + Self.bottomContentTop
-            + RestCountdown.minBudget + RestCountdown.safeGap * 2
-    }
-
-    /// playlist 高度上限 — 三重封顶:
-    ///   ① 屏高 55% (给上方训练图留视觉空间)
-    ///   ② **rest 态硬需求**: 拖拽上限必须让 stage 区永远装得下休息圆环层 (它的上下 padding + 最小
-    ///      圆环是刚性的). 否则拖满后 ✓ 切休息态 → 圆环层撑破 VStack → 整个 drawer 被顶下 ~17pt,
-    ///      休息结束又弹回 (用户报"拖高后点下一个抖动"). 训练/休息两态用同一个上限 → drawer 高度恒定.
-    ///   ③ 内容高度 (drawer 高过内容会在内容下方露纯黑空洞 → #4).
-    /// ⚠️ drawer 总高 = 这个值 + bottomSafeArea (见 playlistDrawer 的 frame), 故 ②③ 都先扣掉它.
-    private var playlistMaxHeight: CGFloat {
-        let screenH = UIScreen.main.bounds.height
-        let screenMax = max(Self.playlistDefaultHeight,
-                            min(screenH * 0.55, screenH - restStageMinHeight - bottomSafeArea))
-        return min(screenMax, max(Self.playlistMinHeight, playlistContentHeight - bottomSafeArea))
     }
 
     /// rest 段之后第一个 exercise 段 (= "UP NEXT" 那一组). 休息时 playlist 按它渲染 →
@@ -1024,6 +1192,39 @@ struct PlanPlayerScreen: View {
 
     // MARK: - Save plan (自由训练完成后的 "保存为计划" 入口)
 
+    private var openWorkoutSummary: String {
+        "\(pluralizedExercises(completedExerciseCount)) · \(pluralizedSets(store.session?.completedSets.count ?? 0)) · \(completedDurationSeconds / 60)m"
+    }
+
+    private func saveOpenWorkout(name: String) {
+        guard var plan = store.plan, let session = store.session else { return }
+        let order = session.completionOrder ?? []
+        plan.steps = order.compactMap { id in
+            guard var step = plan.steps.first(where: { $0.id == id }) else { return nil }
+            let count = session.completedSets.filter { $0.stepId == id }.count
+            guard count > 0 else { return nil }
+            let completed = session.completedSets.filter { $0.stepId == id }.map(\.setN).sorted()
+            let source = step
+            step.sets = count
+            step.setReps = completed.map { source.repsForSet($0) }
+            step.setWeights = completed.map { source.weightForSet($0) }
+            step.setDurations = completed.map { source.durationForSet($0) }
+            if let last = data.sets.first(where: {
+                $0.planId == session.planId && $0.exerciseId == step.exerciseId && $0.performedAt >= session.startedAt
+            }) {
+                step.reps = last.reps
+                step.weight = last.weight
+                step.duration = last.duration
+            }
+            return step
+        }
+        guard !plan.steps.isEmpty else { return }
+        plan.name = name
+        plan.autoGenerated = false
+        plan.updatedAt = Date()
+        data.updatePlan(plan)
+    }
+
     /// 当前 plan 是临时自由训练 (autoGenerated 标志 + 尚未入 data.plans) → 可保存
     private var canSaveCurrentPlan: Bool {
         guard let plan = store.plan, plan.autoGenerated else { return false }
@@ -1070,23 +1271,41 @@ struct PlanPlayerScreen: View {
         Controls(
             seg: seg,
             playing: store.session?.playing ?? true,
-            canGoBack: store.canSkipBack,
+            canGoBack: store.canUndoPlayback,
             onBack: { handleBack() },
             onPrimary: { handlePrimary(seg: seg) },
             onTogglePlay: { store.togglePlay() },
             onEnd: { endConfirmOpen = true }
         )
+        .background {
+            HeartRateAutomaticObserver(segment: seg, suppressedUntil: heartAssistSuppressedUntil) { sample in
+                guard data.settings.workoutHeartRateAutomaticEnabled == true, data.settings.workoutHeartRateEnabled == true,
+                      playerScenePhase == .active, Date() >= heartAssistSuppressedUntil,
+                      (!seg.isRest || !store.heartRate.warningPending),
+                      store.currentSegment?.id == seg.id, store.session?.playing == true,
+                      store.heartRate.latest?.id == sample.id, Date().timeIntervalSince(sample.date) <= 20 else { return }
+                let priorCount = store.session?.playbackUndo?.count ?? 0
+                let sessionID = store.workoutSessionID
+                handlePrimary(seg: seg)
+                if let session = store.session, (session.playbackUndo?.count ?? 0) > priorCount,
+                   let undo = session.playbackUndo?.last {
+                    heartAssistUndo = undo
+                    heartAssistUndoSession = sessionID
+                    heartAssistUndoWasRest = seg.isRest
+                }
+            }.id(seg.id)
+        }
     }
 
-    /// 回退键 — 跳过休息回到"上一个训练组"的播放态 (休息不算一步); 恒为此语义, 不再切撤销.
+    /// Undo the most recent set/rest transition and its exact completion record.
     private func handleBack() {
-        store.skipBackToPrevExercise()
+        store.undoPlayback { data.removeSetRecord(id: $0) }
     }
 
     /// R3: 同步开 → 把刚改过的 step 参数传播到所有含该动作的计划. 抽成方法 (内联会撑爆 sheet 表达式类型检查).
     private func propagateParamsIfSyncing(stepId: String) {
-        guard data.settings.globalExerciseParamSyncEnabled,
-              let edited = store.plan?.steps.first(where: { $0.id == stepId }) else { return }
+        guard let edited = store.plan?.steps.first(where: { $0.id == stepId }), let planID = store.plan?.id else { return }
+        data.confirmMatchingSuggestions(from: edited, in: planID)
         data.syncExerciseParams(from: edited)
     }
 
@@ -1114,82 +1333,25 @@ struct PlanPlayerScreen: View {
         return max(0, Int(end.timeIntervalSince(started)))
     }
 
-    /// 本次训练涉及的肌群 (从 plan.steps dedupe)
-    private var completedMuscles: [MuscleGroup] {
-        guard let plan = store.plan else { return [] }
-        var seen = Set<MuscleGroup>()
-        var out: [MuscleGroup] = []
-        for step in plan.steps {
-            guard let ex = data.exById[step.exerciseId] else { continue }
-            for m in ex.muscleGroups where seen.insert(m).inserted {
-                out.append(m)
-            }
-        }
-        return out
-    }
-
-    /// 本次训练 PR 数 — 从 data.sets 过滤本次 session 范围内的 set, isPR 检测.
-    private var completedPRCount: Int {
-        guard let session = store.session else { return 0 }
-        let started = session.startedAt
-        let recent = data.sets.filter { $0.planId == session.planId && $0.performedAt >= started }
-        return recent.filter { data.isPR($0) }.count
-    }
-
-    /// 本次训练的前几个动作名 (分享卡 chip 用).
-    private var completedExerciseNames: [String] {
-        guard let plan = store.plan else { return [] }
-        var seen = Set<String>()
-        var names: [String] = []
-        for step in plan.steps {
-            guard let ex = data.exById[step.exerciseId], seen.insert(ex.id).inserted else { continue }
-            names.append(ex.displayName)
-        }
-        return names
-    }
-
     /// 本次训练动作数 (唯一 exercise 数) — 跟 SessionSummary.exerciseCount 同义.
     private var completedExerciseCount: Int {
         guard let plan = store.plan else { return 0 }
         return Set(plan.steps.map { $0.exerciseId }).count
     }
 
-    /// sessionId — 跟 HistoryScreen.groupedSessions 同公式生成. 给分享卡持久化照片用.
-    /// 公式: "\(planId)-\(Int(startOfDay(startedAt).timeIntervalSince1970))"
-    private var completedSessionId: String? {
-        guard let session = store.session else { return nil }
-        let day = Calendar.current.startOfDay(for: session.startedAt)
-        return "\(session.planId)-\(Int(day.timeIntervalSince1970))"
-    }
-
     /// 本次 session 真正完成的 SetRecord (过滤到本场).
     private var completedSessionSets: [SetRecord] {
         guard let session = store.session else { return [] }
-        return data.sets.filter { $0.planId == session.planId && $0.performedAt >= session.startedAt }
-    }
-
-    /// 分享卡详情 bundle — 逐组明细 (动作概要用) + 总容量 (kg).
-    /// QR 现在是 App Store 下载链 (MasoLinks.appStore), 导入走 OCR 读卡上动作名+组数, 不再编 maso:// 深链.
-    private var completedShareBundle: (detail: [WorkoutExerciseDetail], volume: Double) {
-        let sets = completedSessionSets
-        guard !sets.isEmpty else { return ([], 0) }
-        let built = WorkoutShareBuilder.build(
-            sessionSets: sets,
-            orderHint: store.plan?.steps ?? [],
-            exById: data.exById,
-            planName: store.plan?.name ?? ""
-        )
-        let volume = sets.reduce(0.0) { $0 + ((($1.weight ?? 0)) * Double($1.reps ?? 0)) }
-        return (built.detail, volume)
-    }
-
-    /// 分享卡日期行 — 本场 session 开始日 (e.g. "2026-06-09 周二" zh / "Mon, Jun 9" en).
-    private var completedDateLabel: String? {
-        guard let session = store.session else { return nil }
-        let f = DateFormatter()
-        f.locale = Locale(identifier: LanguageManager.shared.effectiveLanguage.rawValue)
-        f.setLocalizedDateFormatFromTemplate("yyyyMMMdEEE")
-        return f.string(from: session.startedAt)
+        if let ids = session.recordedSetIDs, !ids.isEmpty {
+            let matched = data.sets.filter { ids.contains($0.id) && $0.performedAt <= Date() }
+            if !matched.isEmpty { return matched.sorted { $0.performedAt < $1.performedAt } }
+        }
+        if let key = store.workoutSessionID {
+            let matched = data.sets.filter { $0.workoutSessionID == key && $0.performedAt <= Date() }
+            if !matched.isEmpty { return matched.sorted { $0.performedAt < $1.performedAt } }
+        }
+        return data.sets.filter { $0.planId == session.planId && $0.performedAt >= session.startedAt && $0.performedAt <= Date() }
+            .sorted { $0.performedAt < $1.performedAt }
     }
 
     /// 每个 step 已完成的组数 —— stepId → completedSets.count.
@@ -1227,51 +1389,6 @@ private struct TopRoundedSheetShape: Shape {
     }
 }
 
-private struct FullBleedExerciseImage: View {
-    let exercise: Exercise
-    /// 是否双帧 cross-fade 动画. 默认 true (跟训练中页面一致).
-    /// 休息页面用 false (静图) — 休息时大动图反复 fade 在背景视觉太吵, 静图给"看清楚下一动作"就够.
-    var animated: Bool = true
-
-    var body: some View {
-        ZStack {
-            // 兜底渐变 (loading / failure)
-            categoryGradient
-            // 实际图片 — animated=true 双帧 cross-fade; false 只渲染 frame 0 静图.
-            if let folder = exercise.imageFolder {
-                FullBleedFrameImage(folder: folder, animated: animated)
-            }
-        }
-    }
-
-    private var categoryGradient: LinearGradient {
-        let colors: [Color] = {
-            switch exercise.category {
-            case .strength, .hypertrophyFocus, .calisthenics:
-                return [MasoColor.accent.opacity(0.4), Color.black]   // 品牌绿, 非系统绿
-            case .cardio, .plyometric:
-                return [Color.pink.opacity(0.4), Color.black]
-            case .flexibility, .stretching, .mobility:
-                return [Color.orange.opacity(0.4), Color.black]
-            }
-        }()
-        return LinearGradient(colors: colors, startPoint: .topLeading, endPoint: .bottomTrailing)
-    }
-}
-
-/// Full-bleed 两帧 cross-fade — 全屏背景版.
-/// 改为共享 CrossFadeFrames 组件: 共用 UIImage cache + GeometryReader + 严格 frame 锚定,
-/// 不再各自挂 AsyncImage + Timer, 像素位置稳定, 不闪不抖.
-private struct FullBleedFrameImage: View {
-    let folder: String
-    /// false → 只渲染 frame 0, 不挂 timer, 不加载 frame 1. 休息页面背景用.
-    var animated: Bool = true
-
-    var body: some View {
-        CrossFadeFrames(folder: folder, animated: animated)
-    }
-}
-
 /// 动作信息区 — 紧贴控件上方
 /// BodyHint + name + chips, 文字白色 / chip 半透明黑底, 在渐变背景上易读
 private struct ExerciseInfo: View {
@@ -1285,166 +1402,68 @@ private struct ExerciseInfo: View {
     let duration: Int?
     let isCountdown: Bool
     let remaining: Int?
+    var compact = false
     /// "替换动作" 回调 — 通过 EditCurrentStepSheet 的 onReplace 触发. parent 用它弹 ExercisePickerSheet.
     var onRequestReplace: (() -> Void)? = nil
+    var onRequestOtherExercise: (() -> Void)? = nil
+    var onSelectVariant: ((Exercise) -> Void)? = nil
+    var onAdjustParameter: ((WorkoutParameter, Int) -> Void)? = nil
 
-    /// 杠铃配重计算器 — 点 weight pill 弹起
-    @State private var plateCalcOpen: Bool = false
-    /// 训练中编辑参数 — 点右侧 slider icon 弹起
-    @State private var editOpen: Bool = false
-
-    /// 渐进建议 — ProgressionEngine 按最近训练日算 "下次该做多重".
-    /// 只在建议跟当前重量差 ≥0.5kg 时给 (相同就闭嘴).
-    private var progressionSuggestion: ProgressionEngine.Suggestion? {
-        guard let w = weight, w > 0 else { return nil }
-        guard let sug = ProgressionEngine.suggestion(
-            exerciseId: exercise.id, targetReps: reps, sets: data.sets, exercise: exercise
-        ) else { return nil }
-        guard abs(sug.weightKg - w) >= 0.5 else { return nil }
-        return sug
-    }
-
-    /// 应用渐进建议 — 走跟手动编辑同一条 updateCurrentStep 路 (含全局参数同步/手表推帧).
-    private func applySuggestion(_ sug: ProgressionEngine.Suggestion) {
-        Haptics.tap()
-        Analytics.shared.track("progression_apply")   // 无 PII
-        store.updateCurrentStep(
-            sets: totalSets,
-            reps: reps,
-            weight: sug.weightKg,
-            duration: duration,
-            exById: data.exById,
-            defaultRest: data.settings.defaultRestSeconds,
-            defaultBetweenExerciseRest: data.settings.defaultBetweenExerciseRestSeconds
-        )
-    }
-
-    /// "上次同动作" — 兑现 plan 理念 2 "历史即计划".
-    /// nil = 第一次做这个动作 (没历史)
-    private var lastSetSummary: String? {
-        guard let last = data.lastSet(forExerciseId: exercise.id) else { return nil }
-        // 同一段训练里 (这一次的 sets), 不算 — 用户自己的记录, 不是"上次"
-        // 简单判断: 上次 performedAt 在 30 分钟前以内 → 大概率是本场训练, skip
-        if Date().timeIntervalSince(last.performedAt) < 1800 { return nil }
-        let dateLabel = relativeDay(last.performedAt)
-        if let w = last.weight, w > 0, let r = last.reps {
-            return String(format: NSLocalizedString("Last: %@ × %d (%@)", comment: ""), weightLabel(w), r, dateLabel)
-        } else if let r = last.reps {
-            return String(format: NSLocalizedString("Last: × %d (%@)", comment: ""), r, dateLabel)
-        } else if let d = last.duration {
-            return String(format: NSLocalizedString("Last: %ds (%@)", comment: ""), d, dateLabel)
-        }
-        return nil
-    }
+    @State private var editOpen = false
+    @State private var replacementRequested = false
+    @State private var detailOpen = false
 
     /// 单个指标块: 大数值 + 60% 透明的字样标签. 文字带阴影, 在动图背景上可读.
-    private func metric(value: String, label: String) -> some View {
-        VStack(alignment: .leading, spacing: 1) {
-            Text(value)
-                .font(.system(size: 17, weight: .bold).monospacedDigit())
-                .foregroundStyle(MasoColor.text)
-            Text(label)
-                .font(.system(size: 9, weight: .heavy))
-                .tracking(0.5)
-                .textCase(.uppercase)
-                .foregroundStyle(MasoColor.text.opacity(0.6))  // 字样 60% 透明
+    private func metric(value: String, label: String, parameter: WorkoutParameter) -> some View {
+        PlayerParameterValue(value: value, label: label, parameter: parameter, onAdjust: onAdjustParameter,
+            isSuggested: parameter != .duration && store.currentSegment.flatMap { segment in store.plan?.steps.first { $0.id == segment.stepId } }?.isSuggested(parameter.rawValue) == true,
+            needsCalibration: parameter == .weight && weight == nil && ExerciseWeightReference.expectsLoad(exercise))
+    }
+
+    private var parameterDivider: some View {
+        PlayerParameterDivider()
+    }
+
+    private var metricsRow: some View {
+        HStack(alignment: .center, spacing: 0) {
+            metric(value: "\(setNumber)/\(totalSets)", label: NSLocalizedString("Sets", comment: ""), parameter: .sets)
+            if let r = reps {
+                parameterDivider.accessibilityIdentifier("workout.parameter.divider.reps")
+                metric(value: "\(r)", label: NSLocalizedString("Reps", comment: ""), parameter: .reps)
+            }
+            if weight != nil || ExerciseWeightReference.expectsLoad(exercise) {
+                parameterDivider.accessibilityIdentifier("workout.parameter.divider.weight")
+                metric(value: weight.map(weightLabel) ?? "", label: NSLocalizedString("Weight", comment: ""), parameter: .weight)
+            }
+            if isCountdown, let remaining {
+                parameterDivider
+                metric(value: formatRemaining(remaining), label: NSLocalizedString("Time", comment: ""), parameter: .duration)
+            }
         }
-        .shadow(color: .black.opacity(0.5), radius: 3)
-        .fixedSize()
     }
 
     var body: some View {
-        HStack(alignment: .center, spacing: 16) {
-            BodyHint(
-                muscles: exercise.muscleGroups,
-                height: MasoMetrics.bodyHintPlayer,
-                region: detectBodyRegion(exercise.muscleGroups),
-                square: true
-            )
-            VStack(alignment: .leading, spacing: 6) {
-                Text(exercise.displayName)
-                    .font(.system(size: 22, weight: .bold))
-                    .foregroundStyle(MasoColor.text)
-                    .lineLimit(2)
-                    .multilineTextAlignment(.leading)
-                    .shadow(color: .black.opacity(0.5), radius: 4)
-                // "上次同动作" 摘要 — 没历史时不渲染. 兑现"历史即计划".
-                if let summary = lastSetSummary {
-                    Text(summary)
-                        .font(.system(size: 11, weight: .semibold).monospacedDigit())
-                        .foregroundStyle(MasoColor.accent.opacity(0.85))
-                        .shadow(color: .black.opacity(0.5), radius: 4)
-                }
-                // 渐进建议 chip — 上次全部打满 → "Try 57.5 kg (+2.5)"; 连续两场掉次 → "Drop to 50 kg".
-                // 只在第 1 组且建议 ≠ 当前重量时出现 (沉默的进步反馈: 挣到了才说话). 点一下直接应用.
-                if setNumber == 1, !isCountdown, let sug = progressionSuggestion {
-                    Button { applySuggestion(sug) } label: {
-                        HStack(spacing: 4) {
-                            Image(systemName: sug.deltaKg >= 0 ? "arrow.up.right" : "arrow.down.right")
-                                .font(.system(size: 9, weight: .heavy))
-                            Text(sug.deltaKg >= 0
-                                 ? String(format: NSLocalizedString("Try %@ (+%@)", comment: "progression suggestion chip"),
-                                          weightLabel(sug.weightKg), weightLabel(sug.deltaKg))
-                                 : String(format: NSLocalizedString("Drop to %@", comment: "progression deload chip"),
-                                          weightLabel(sug.weightKg)))
-                                .font(.system(size: 11, weight: .heavy).monospacedDigit())
-                        }
-                        .foregroundStyle(MasoColor.accent)
-                        .padding(.horizontal, 9)
-                        .padding(.vertical, 4)
-                        .glassCapsuleButtonBackground(tint: MasoColor.accent.opacity(0.25),
-                                                      fallback: MasoColor.accent.opacity(0.16))
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel(Text("Apply suggested weight"))
-                }
-                // 指标行: SETS / REPS / WEIGHT (+ countdown TIME), 每个数值下带 60% 透明的字样标签.
-                // weight 块可点 → 杠铃配重计算器. 末尾 pencil → 完整编辑 sheet.
-                HStack(alignment: .firstTextBaseline, spacing: 18) {
-                    metric(value: "\(setNumber)/\(totalSets)", label: NSLocalizedString("Sets", comment: ""))
-                    if let r = reps {
-                        metric(value: "\(r)", label: NSLocalizedString("Reps", comment: ""))
-                    }
-                    if let w = weight, w > 0 {
-                        Button(action: {
-                            Analytics.shared.track("plate_calculator_open")   // 无 PII
-                            plateCalcOpen = true
-                        }) {
-                            metric(value: "\(weightLabel(w))", label: NSLocalizedString("Weight", comment: ""))
-                        }
-                        .buttonStyle(.plain)
-                        .accessibilityHint(NSLocalizedString("Plate calculator", comment: ""))
-                    }
-                    if isCountdown, let remaining {
-                        metric(value: formatRemaining(remaining), label: NSLocalizedString("Time", comment: ""))
-                    }
-                    Spacer(minLength: 0)
-                    Button(action: {
-                        Haptics.tap()
-                        editOpen = true
-                    }) {
-                        Image(systemName: "pencil")
-                            .font(.system(size: 16, weight: .semibold))
-                            .foregroundStyle(MasoColor.text)
-                            .frame(width: 28, height: 24)
-                            .shadow(color: .black.opacity(0.5), radius: 3)
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel(NSLocalizedString("Edit exercise parameters", comment: ""))
-                }
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
+        PlayerExerciseInfoLayout(compact: compact) {
+            PlayerExerciseHeading(exercise: exercise, compact: compact, onDetail: { detailOpen = true },
+                                  onSelectVariant: onSelectVariant, onRequestReplace: onRequestOtherExercise)
+        } status: {
+            EmptyView()
+        } parameters: {
+            PlayerParameterPanel(title: "Edit exercise parameters") {
+                Haptics.tap(); editOpen = true
+            } content: { metricsRow }
         }
-        .padding(.horizontal, MasoMetrics.cardPadding)
-        .sheet(isPresented: $plateCalcOpen) {
-            if let w = weight, w > 0 {
-                // 跟全局单位走 (P1#21) — lb 用户点 "121 lb" 弹出的是 lb 杆/lb 片, 不再硬编码 kg.
-                PlateCalculatorSheet(targetWeight: w, unit: WeightUnitProvider.current)
-                    .presentationDetents([.medium, .large])
-                    .presentationDragIndicator(.visible)
-            }
+        .sheet(isPresented: $detailOpen) {
+            ExerciseDetailSheet(exercise: exercise)
+                .presentationDetents([.large])
+                .presentationDragIndicator(.visible)
         }
-        .sheet(isPresented: $editOpen) {
+        .sheet(isPresented: $editOpen, onDismiss: {
+            if replacementRequested {
+                replacementRequested = false
+                DispatchQueue.main.async { onRequestReplace?() }
+            }
+        }) {
             // P1#10: 这个入口之前漏传 initialSetReps/initialSetWeights (对比播放列表右滑入口) →
             // perSetEnabled=false → Save 时 onSave(..., nil, nil) 把逐组配置静默压平 (金字塔组
             // 60/70/80 被抹), 全局同步再把破坏传播到所有 routine. 改成与播放列表入口同构造:
@@ -1461,8 +1480,15 @@ private struct ExerciseInfo: View {
                 initialDuration: step?.duration ?? duration,
                 initialSetReps: step?.setReps,
                 initialSetWeights: step?.setWeights,
+                initialParameterStep: step,
+                onConfirmParameters: { fields in
+                    if let id = step?.id { store.confirmParameters(stepId: id, fields: fields) }
+                },
                 onSave: { newSets, newReps, newWeight, newDuration, newSetReps, newSetWeights in
                     let editedStepId = store.currentSegment?.stepId
+                    if newWeight != step?.weight || newSetWeights != step?.setWeights {
+                        data.rememberWeight(newWeight ?? newSetWeights?.compactMap { $0 }.first, for: exercise)
+                    }
                     store.updateCurrentStep(
                         sets: newSets,
                         reps: newReps,
@@ -1475,15 +1501,16 @@ private struct ExerciseInfo: View {
                         defaultBetweenExerciseRest: data.settings.defaultBetweenExerciseRestSeconds
                     )
                     // R3: 同步开 → 训练中改的参数即时传播到所有含该动作的 routine.
-                    if data.settings.globalExerciseParamSyncEnabled, let sid = editedStepId,
-                       let edited = store.plan?.steps.first(where: { $0.id == sid }) {
+                    if let sid = editedStepId, let edited = store.plan?.steps.first(where: { $0.id == sid }),
+                       let planID = store.plan?.id {
+                        data.confirmMatchingSuggestions(from: edited, in: planID)
                         data.syncExerciseParams(from: edited)
                     }
                 },
-                onReplace: onRequestReplace,
+                onReplace: onRequestReplace == nil ? nil : { replacementRequested = true },
                 syncsGlobally: data.settings.globalExerciseParamSyncEnabled
             )
-            .presentationDetents([.medium, .large])
+            .presentationDetents([.medium])
             .presentationDragIndicator(.visible)
         }
     }
@@ -1503,19 +1530,18 @@ private struct RestCountdown: View {
     /// 调用方 (GeometryReader) 实测的可用净空 = [拖把手底, 底部信息区内容顶] 之间.
     /// 组件尺寸完全由它推导 → footprint 恒 ≤ 它, 数学上不可能与上下元素重叠.
     let available: CGSize
+    let onEdit: () -> Void
 
     private static let ringWidth: CGFloat = 3
     /// 圆环最大直径 (空间充裕时的观感尺寸).
     static let baseRing: CGFloat = 220
     /// 组件与上下刚性元素之间强制留的净距 (每侧).
     static let safeGap: CGFloat = 10
-    /// 尺寸预算下限 — playlistMaxHeight 保证净空不低于此 (再小数字就不可读了).
-    static let minBudget: CGFloat = 40
 
     /// 三档降级阈值 (作用于 budget):
     ///   ≥ full  : 环 + REST 字样 + 数字 (完整)
-    ///   ≥ ring  : 环 + 数字 — **隐掉 REST 字样**, 让它能压得更小
-    ///   <  ring : 去掉环, **只剩数字** — footprint 只有文字本身, 最不占地方
+    ///   ≥ ring  : 较小圆环、文字入口与数字
+    ///   <  ring : 去掉环，保留文字入口与数字
     private static let fullThreshold: CGFloat = 132
     private static let ringThreshold: CGFloat = 92
 
@@ -1540,7 +1566,7 @@ private struct RestCountdown: View {
         switch tier {
         case .full: return budget * 0.29   // 220 → 64pt, 与原视觉一致
         case .ring: return budget * 0.34   // 环内无 REST 字样, 数字可占更多
-        case .bare: return budget * 0.66   // 无环, 数字放大占满预算
+        case .bare: return budget * 0.48   // 保留文字入口的空间
         }
     }
 
@@ -1555,68 +1581,83 @@ private struct RestCountdown: View {
         return max(0, min(1, CGFloat(remaining) / CGFloat(durationTotal)))
     }
 
+    // Keep the interactive label outside the ticking subtree: a short touch must
+    // not be cancelled by the 10 Hz clock rebuilding its button on large screens.
     var body: some View {
-        TimelineView(.periodic(from: .now, by: 0.1)) { ctx in
-            let rem = remainingFloat(at: ctx.date)
-            content(remaining: Int(ceil(rem)), progress: progress(rem))
-        }
-    }
-
-    /// 按 tier 渲染 — 三档共用同一个数字, 只是外层包不包环 / 显不显 REST.
-    @ViewBuilder
-    private func content(remaining: Int, progress: CGFloat) -> some View {
-        let number = Text(formatRemaining(remaining))
-            .font(.system(size: numberFont, weight: .bold).monospacedDigit())
-            .foregroundStyle(MasoColor.text)
-            // 空间被压到极限时也不换行/不省略, 宁可等比小一号
-            .lineLimit(1)
-            .minimumScaleFactor(0.6)
-
-        switch tier {
-        case .bare:
-            // 只剩数字 — footprint 就是文字本身, 比环小得多, 绝不挡别的元素.
-            number
-        case .ring, .full:
-            ZStack {
-                Circle()
-                    .stroke(MasoColor.text.opacity(0.12), lineWidth: Self.ringWidth)
-                Circle()
-                    .trim(from: max(0, 1 - progress), to: 1)
-                    .stroke(
-                        MasoColor.text,   // 休息倒计时圆环白色 (不用 accent 绿)
-                        style: StrokeStyle(lineWidth: Self.ringWidth, lineCap: .round)
-                    )
-                    .rotationEffect(.degrees(-90))
-                VStack(spacing: 4) {
-                    // 空间不够时先牺牲 REST 字样 (信息量最低), 换取环+数字能继续压小.
-                    if tier == .full {
-                        Text(isCrossExercise ? "Switching" : "Rest")
-                            .font(.system(size: 11, weight: .bold))
-                            .tracking(2)
-                            .textCase(.uppercase)
-                            .foregroundStyle(MasoColor.text.opacity(0.6))
-                    }
-                    number
-                }
+        Group {
+            if tier == .bare {
+                countdownContent
+            } else {
+                ZStack {
+                    TimelineView(.periodic(from: .now, by: 0.1)) { context in
+                        let value = progress(remainingFloat(at: context.date))
+                        ZStack {
+                            Circle().stroke(MasoColor.text.opacity(0.12), lineWidth: Self.ringWidth)
+                            Circle().trim(from: max(0, 1 - value), to: 1)
+                                .stroke(MasoColor.text, style: StrokeStyle(lineWidth: Self.ringWidth, lineCap: .round))
+                                .rotationEffect(.degrees(-90))
+                        }
+                    }.allowsHitTesting(false).accessibilityHidden(true)
+                    countdownContent
+                }.frame(width: budget, height: budget)
             }
-            .frame(width: budget, height: budget)
         }
     }
+
+    private var countdownContent: some View {
+        VStack(spacing: 4) {
+            restLabel
+            TimelineView(.periodic(from: .now, by: 0.1)) { context in
+                Text(formatRemaining(Int(ceil(remainingFloat(at: context.date)))))
+                    .accessibilityIdentifier("workout.rest.countdown")
+                    .font(.system(size: numberFont, weight: .bold).monospacedDigit())
+                    .foregroundStyle(MasoColor.text)
+                    .lineLimit(1).minimumScaleFactor(0.6)
+            }.fixedSize()
+        }
+    }
+
+    private var restLabel: some View {
+        Button(action: onEdit) {
+            HStack(spacing: 4) {
+                Text(isCrossExercise ? "Switching" : "Rest")
+                    .tracking(2)
+                    .textCase(.uppercase)
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 8, weight: .bold))
+                    .flipsForRightToLeftLayoutDirection(true)
+            }
+            .font(.system(size: min(11, budget * 0.15), weight: .bold))
+            .foregroundStyle(MasoColor.text.opacity(0.6))
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel("Edit rest time")
+        .anchorPreference(key: PlayerLayoutBoundsKey.self, value: .bounds) { ["restLabel": $0] }
+        .accessibilityHidden(true)
+    }
+
+
 }
 
 /// 下一动作 hint — kicker + 动作名. 跟 Controls 同框, 共享底部渐变遮罩背景.
 /// 字号 18pt + 黑色 shadow → 在 next-exercise 动图上读得清楚.
 private struct RestNextHint: View {
+    @Environment(TrainingSessionStore.self) private var store
     let next: Exercise
+    @State private var detailOpen = false
+    var compact = false
     /// 下一动作的目标 reps / weight — 让用户休息时提前知道下一组上多少.
     var nextReps: Int? = nil
     var nextWeight: Double? = nil
+    var nextSetNumber: Int? = nil
+    var nextTotalSets: Int? = nil
+    var onSelectVariant: ((Exercise) -> Void)? = nil
+    var onRequestOtherExercise: (() -> Void)? = nil
+    var onAdjustParameter: ((WorkoutParameter, Int) -> Void)? = nil
     let isCrossExercise: Bool
     /// 小编辑入口 — 让用户在休息时改下一动作的 sets/reps/weight. nil → 不渲染.
     var onEdit: (() -> Void)? = nil
-    /// P0#5-①: "刚才: 8 × 55 kg" 摘要 + 点击修正回调. 任一为 nil → 不渲染这行.
-    var justNow: String? = nil
-    var onAdjust: (() -> Void)? = nil
 
     /// "× 8 · 60 kg" 这种目标摘要; 都没有则 nil.
     private var targetLine: String? {
@@ -1626,58 +1667,47 @@ private struct RestNextHint: View {
         return parts.isEmpty ? nil : parts.joined(separator: " · ")
     }
 
+    private func suggested(_ parameter: String) -> Bool {
+        guard let current = store.session?.segmentIndex,
+              let segment = store.segments.dropFirst(current + 1).first(where: { segment in
+                  if case .exercise(let ex, _, _, _, _, _, _) = segment.kind { return ex.id == next.id }
+                  return false
+              }) else { return false }
+        return store.plan?.steps.first { $0.id == segment.stepId }?.isSuggested(parameter) == true
+    }
+
     var body: some View {
-        VStack(spacing: 4) {
+        PlayerExerciseInfoLayout(compact: compact) {
+            PlayerExerciseHeading(exercise: next, compact: compact, onDetail: { detailOpen = true },
+                                  onSelectVariant: onSelectVariant, onRequestReplace: onRequestOtherExercise)
+        } status: {
             Text(isCrossExercise ? "Next Exercise" : "Up Next")
-                .font(.system(size: 11, weight: .bold))
-                .tracking(2)
-                .textCase(.uppercase)
-                .foregroundStyle(MasoColor.accent)
-            HStack(alignment: .center, spacing: 8) {
-                Text(next.displayName)
-                    .font(.system(size: 18, weight: .bold))
-                    .foregroundStyle(MasoColor.text)
-                    .lineLimit(2)
-                    .multilineTextAlignment(.center)
-                    .shadow(color: .black.opacity(0.6), radius: 4)
-                if let onEdit {
-                    // 22pt 小铅笔 — 跟动作名同行靠右, 半透圆底让它在动图上仍可读.
-                    Button(action: { Haptics.tap(); onEdit() }) {
-                        Image(systemName: "pencil")
-                            .font(.system(size: 11, weight: .heavy))
-                            .foregroundStyle(MasoColor.text)
-                            .frame(width: 22, height: 22)
-                            .background(Color.black.opacity(0.45))
-                            .clipShape(Circle())
+                .font(.system(size: 11, weight: .bold)).tracking(2).textCase(.uppercase)
+                .foregroundStyle(MasoColor.accent).lineLimit(1)
+        } parameters: {
+            if let onEdit {
+                PlayerParameterPanel(title: "Edit next exercise", onEdit: { Haptics.tap(); onEdit() }) {
+                    HStack(alignment: .center, spacing: 0) {
+                        if let number = nextSetNumber, let total = nextTotalSets {
+                            PlayerParameterValue(value: "\(number)/\(total)", label: NSLocalizedString("Sets", comment: ""), parameter: .sets, onAdjust: onAdjustParameter, isSuggested: suggested("sets"))
+                        }
+                        if let reps = nextReps {
+                            if nextTotalSets != nil { PlayerParameterDivider().accessibilityIdentifier("workout.parameter.divider.reps") }
+                            PlayerParameterValue(value: "\(reps)", label: NSLocalizedString("Reps", comment: ""), parameter: .reps, onAdjust: onAdjustParameter, isSuggested: suggested("reps"))
+                        }
+                        if nextWeight != nil || ExerciseWeightReference.expectsLoad(next) {
+                            if nextTotalSets != nil || nextReps != nil { PlayerParameterDivider().accessibilityIdentifier("workout.parameter.divider.weight") }
+                            PlayerParameterValue(value: nextWeight.map(weightLabel) ?? "", label: NSLocalizedString("Weight", comment: ""), parameter: .weight, onAdjust: onAdjustParameter, isSuggested: suggested("weight"), needsCalibration: nextWeight == nil && ExerciseWeightReference.expectsLoad(next))
+                        }
                     }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel(NSLocalizedString("Edit next exercise", comment: ""))
                 }
-            }
-            // 下一组目标 — × reps · weight kg. 让用户休息时就知道下一组上多少.
-            if let targetLine {
-                Text(targetLine)
-                    .font(.system(size: 13, weight: .semibold).monospacedDigit())
-                    .foregroundStyle(MasoColor.text.opacity(0.85))
-                    .shadow(color: .black.opacity(0.6), radius: 4)
-            }
-            // P0#5-①: "刚才: 8 × 55 kg · 调整" — ✓ 落库的是计划值, 力竭没做满 8 次记的还是 8;
-            // 这行是修正真实值的直达入口 (点开 AdjustLastSetSheet 写回刚落库那条 SetRecord).
-            if let justNow, let onAdjust {
-                Button(action: { Haptics.tap(); onAdjust() }) {
-                    Text("\(justNow) · \(NSLocalizedString("Adjust", comment: ""))")
-                        .font(.system(size: 12, weight: .semibold).monospacedDigit())
-                        .foregroundStyle(MasoColor.accent.opacity(0.9))
-                        .shadow(color: .black.opacity(0.6), radius: 4)
-                        // 视觉不变, 热区外扩到 ≥32pt — 休息屏是大汗手指场景.
-                        .frame(minHeight: 32)
-                        .contentShape(Rectangle())
-                }
-                .buttonStyle(.plain)
-                .accessibilityLabel(NSLocalizedString("Adjust last set", comment: ""))
             }
         }
-        .padding(.horizontal, MasoMetrics.cardPadding)
+        .sheet(isPresented: $detailOpen) {
+            ExerciseDetailSheet(exercise: next)
+                .presentationDetents([.large])
+                .presentationDragIndicator(.visible)
+        }
     }
 }
 
@@ -1688,12 +1718,66 @@ private struct Pill: View {
             .font(.system(size: 13, weight: .bold).monospacedDigit())
             .foregroundStyle(MasoColor.text)
             .padding(.horizontal, 12).padding(.vertical, 4)
-            .background(.black.opacity(0.45))
+            .background(MasoColor.background.opacity(0.6))
             .clipShape(Capsule())
     }
 }
 
 // MARK: - Controls
+
+/// Both footer rows share identical columns, even when the YouTube link is absent.
+private struct PlayerTransportRow<Leading: View, Center: View, Trailing: View>: View {
+    @ViewBuilder let leading: () -> Leading
+    @ViewBuilder let center: () -> Center
+    @ViewBuilder let trailing: () -> Trailing
+
+    var body: some View {
+        HStack(spacing: 0) {
+            Spacer(minLength: 0)
+            leading().frame(width: 44, height: 44)
+            Spacer(minLength: 0)
+            center().frame(width: 72)
+            Spacer(minLength: 0)
+            trailing().frame(width: 44, height: 44)
+            Spacer(minLength: 0)
+        }
+        .environment(\.layoutDirection, .leftToRight)
+        .padding(.horizontal, MasoMetrics.cardPadding)
+    }
+}
+
+private struct HeartRateAutomaticObserver: View {
+    @Environment(DataStore.self) private var data
+    @Environment(TrainingSessionStore.self) private var store
+    @Environment(\.scenePhase) private var scenePhase
+    let segment: Segment
+    let suppressedUntil: Date
+    let onAutomatic: (WorkoutHeartSample) -> Void
+    @State private var detector = WorkoutHeartAutomaticDetector()
+
+    private var eligible: Bool {
+        guard data.settings.workoutHeartRateAutomaticEnabled == true,
+              data.settings.workoutHeartRateEnabled == true,
+              store.session?.playing == true, store.currentSegment?.id == segment.id,
+              scenePhase == .active, Date() >= suppressedUntil else { return false }
+        if case .exercise(_, _, _, _, _, _, let countdown) = segment.kind { return !countdown }
+        return segment.isRest && !store.heartRate.warningPending
+    }
+
+    var body: some View {
+        Color.clear.frame(width: 0, height: 0).allowsHitTesting(false)
+        .onChange(of: store.heartRate.latest) { _, sample in
+            guard eligible, let sample, sample.sessionID == store.workoutSessionID,
+                  sample.date >= (store.session?.segmentEnteredAt ?? .distantFuture) else { return }
+            if detector.observe(sample, phase: segment.isRest ? .rest : .exercise, now: Date()) {
+                DispatchQueue.main.async { onAutomatic(sample) }
+            }
+        }
+        .onChange(of: eligible) { _, enabled in
+            if !enabled { detector = WorkoutHeartAutomaticDetector() }
+        }
+    }
+}
 
 private struct Controls: View {
     let seg: Segment
@@ -1729,18 +1813,15 @@ private struct Controls: View {
         //
         // 之前末尾用过 fixed 36pt Spacer 占位, 但那样 primary 被推回偏左, cancel 像贴在左边缘.
         // 改用全 flex Spacer 后, 三个按钮均匀分布在 row 中间, 两侧都有等宽呼吸.
-        HStack(spacing: 0) {
-            Spacer()
-            cancelBtn
-            Spacer()
+        PlayerTransportRow {
             backBtn
-            Spacer()
+        } center: {
             primaryBtn
-            Spacer()
+        } trailing: {
+            cancelBtn
         }
-        .padding(.horizontal, MasoMetrics.cardPadding)
-        .padding(.top, 4)     // 顶部留更小间距 — 按钮栏跟上方 info 区贴更紧, 视觉收得稳
-        .padding(.bottom, 24)
+        .padding(.top, 2)     // 顶部留更小间距 — 按钮栏跟上方 info 区贴更紧, 视觉收得稳
+        .padding(.bottom, 12)
     }
 
     /// 主操作按钮 — 48×48 accent 圆 + 庆祝动效:
@@ -1763,25 +1844,16 @@ private struct Controls: View {
             onPrimary()
             if isPrimaryComplete { celebrateTrigger &+= 1 }
         }) {
-            // 统一: 训练 / 休息 / 倒计时三态主按钮都是同一个 42 实心 accent 圆 + 居中图标
-            // (✓ 完成本组 / ▶⏸ 播放暂停 / ▶| 跳过休息) — 位置 + 形状完全不变, exercise↔rest 切换不跳动 / 不变形.
-            ZStack {
-                // halo 圆环只给"完成本组" (✓); 播放/暂停/跳过不放 (否则点了像抖动).
-                if isPrimaryComplete {
-                    HaloRing(trigger: celebrateTrigger)
-                }
-                Circle().fill(MasoColor.accent).frame(width: 42, height: 42)
-                    // 深底上用紧的中性阴影做深度, 不用彩色光晕 (去绿色 halo tell)
-                    .shadow(color: .black.opacity(0.35), radius: 5, y: 3)
-                primaryIcon
-                    .font(.system(size: 14, weight: .heavy))
-                    .foregroundStyle(.black)
-            }
-            // pulse 也只在"完成本组"时跑 (celebrateTrigger 仅在 isPrimaryComplete 时 +1).
-            .modifier(PrimaryPulseModifier(trigger: celebrateTrigger))
+            primaryIcon
+                .font(.system(size: 18, weight: .semibold))
+                .frame(width: 72, height: 72)
+                .contentShape(Circle())
+                .glassCircleButtonBackground(tint: MasoColor.accent.opacity(0.85), fallback: MasoColor.accent)
         }
-        .buttonStyle(PrimaryPressScaleStyle())
+        .buttonStyle(.plain)
+        .foregroundStyle(.black)
         .accessibilityLabel(primaryLabel)
+        .accessibilityIdentifier("workout.primary")
     }
 
     // 共用 4 个小按钮 (X 取消, ◀ 上一段, ☰ 播放列表)
@@ -1791,28 +1863,29 @@ private struct Controls: View {
             // stop.fill — 跟主按钮的 play/pause 形成 transport controls 隐喻.
             // 字号 / 字重 / 颜色 跟 backward.end.fill (上一动作) 完全一致, 视觉对称.
             Image(systemName: "stop.fill")
-                .font(.system(size: 14))
-                .foregroundStyle(MasoColor.textDim)
-                .frame(width: 36, height: 36)
+                .font(.system(size: 18))
+                .foregroundStyle(MasoColor.text)
+                .frame(width: 44, height: 44)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.borderless)
         .accessibilityLabel("End workout")
+        .accessibilityIdentifier("workout.end")
     }
     private var backBtn: some View {
         Button(action: {
             Haptics.tap()  // 轻触反馈 — 跟其它操作按钮的触觉语言一致
             onBack()
         }) {
-            // 回退键恒用"上一段"三角 (▶| 反向), 不再随状态切撤销图标.
+            // Retain transport styling; the action now undoes the previous transition.
             Image(systemName: "backward.end.fill")
-                .font(.system(size: 14))
-                .foregroundStyle(MasoColor.textDim)
-                .frame(width: 36, height: 36)
-                .opacity(canGoBack ? 1.0 : 0.3)
+                .font(.system(size: 18))
+                .foregroundStyle(MasoColor.text)
+                .frame(width: 44, height: 44)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.borderless)
         .disabled(!canGoBack)
-        .accessibilityLabel("Previous")
+        .accessibilityLabel("Undo")
+        .accessibilityIdentifier("workout.previous")
     }
     @ViewBuilder
     private var primaryIcon: some View {
@@ -1934,7 +2007,7 @@ private struct InlinePlaylist: View {
     /// stepId → 已完成组数. 让每行都能显示 "x/total" 的进度.
     let completedSetsByStep: [String: Int]
     let onJump: (String) -> Void
-    /// 点行图片 → 弹动作详情. parent (PlanPlayerScreen) 接收, 在它身上挂 sheet.
+    /// 右侧 i 打开动作详情，头像和名称都选择本行。
     var onTapImage: ((Exercise) -> Void)? = nil
     /// 长按拖拽排序 — IndexSet 是被拖的行 (单个), Int 是目标位置.
     /// nil = 不支持排序 (e.g. 训练已完成 / 空 plan).
@@ -1960,6 +2033,7 @@ private struct InlinePlaylist: View {
     /// 当前段是否是休息 — 决定: ① 进度环里"下一组"那段弧做白色呼吸 (而非实色),
     /// ② 活动的动作间休息行高亮 + 进度条.
     var isResting: Bool = false
+    var isPlaying: Bool = true
     /// 当前休息的结束时刻 + 总时长 — 给活动休息行画倒计时进度条用.
     var restEndsAt: Date? = nil
     var restTotal: Int? = nil
@@ -2012,16 +2086,14 @@ private struct InlinePlaylist: View {
     private func progressRing(stepId: String) -> some View {
         let segs = exerciseSegments(forStepId: stepId)
         let n = max(segs.count, 1)
-        let gap: Double = n > 1 ? 0.06 : 0   // 段间留 6% 空隙, lineCap .round 让缺口柔和
+        let gap: Double = n > 1 ? min(0.06, 0.28 / Double(n)) : 0   // 段间留 6% 空隙, lineCap .round 让缺口柔和
         ZStack {
             // 视觉环 — padding 让 5pt 描边不被 56 frame 裁切
             ZStack {
-                Circle()
-                    .stroke(MasoColor.textFaint.opacity(0.18), lineWidth: 5)
                 ForEach(Array(segs.enumerated()), id: \.element.idx) { i, item in
                     let color = setBarColor(idx: item.idx, stepId: stepId, setN: item.setN)
                     // 休息时 "下一组" (= 当前白色那段, 还没做) 做白色呼吸; 真到那组开练才变实白.
-                    let breathing = isResting
+                    let breathing = !isResting && isPlaying
                         && stepId == currentStepId && currentSet == item.setN
                         && !completedSets.contains(.init(stepId: stepId, setN: item.setN))
                     Circle()
@@ -2037,8 +2109,8 @@ private struct InlinePlaylist: View {
             }
             .padding(2.5)
             // 中心: 总组数
-            Text("\(segs.count)")
-                .font(.system(size: 20, weight: .bold).monospacedDigit())
+            Text("\(segs.filter { completedSets.contains(.init(stepId: stepId, setN: $0.setN)) }.count)/\(segs.count)")
+                .font(.system(size: 16, weight: .bold).monospacedDigit())
                 .foregroundStyle(MasoColor.text)
             // 命中区 — 每组一个扇形 Button (扇形互不重叠 → tap 精确落到对应组).
             // 在外层 onJump Button 之内, 但子 Button 优先级高于父 (跟缩略图 Button 同模式).
@@ -2054,6 +2126,9 @@ private struct InlinePlaylist: View {
             }
         }
         .frame(width: 56, height: 56)
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("workout.queue.progress.\(stepId)")
+        .accessibilityValue("\(segs.filter { completedSets.contains(.init(stepId: stepId, setN: $0.setN)) }.count)/\(segs.count)")
     }
 
     private func setBarColor(idx: Int, stepId: String, setN: Int) -> Color {
@@ -2067,7 +2142,7 @@ private struct InlinePlaylist: View {
             return MasoColor.accent           // 已完成 = 绿
         }
         if stepId == currentStepId, let cs = currentSet, setN == cs {
-            return MasoColor.text             // 正在进行 = 亮白
+            return isResting ? MasoColor.accent.opacity(0.4) : MasoColor.accent
         }
         return MasoColor.textFaint.opacity(0.35)  // 未做 = 暗灰
     }
@@ -2075,23 +2150,7 @@ private struct InlinePlaylist: View {
     var body: some View {
         VStack(spacing: 0) {
             if showHeader {
-                Rectangle().fill(MasoColor.borderSoft).frame(height: 0.5)
-                HStack {
-                    Text("Playlist")
-                        .font(.system(size: 10, weight: .bold))
-                        .tracking(2)
-                        .textCase(.uppercase)
-                        .foregroundStyle(MasoColor.textFaint)
-                    Spacer()
-                    // 提示文案 — 让用户知道可拖动排序 (iOS list 长按拖移交互对训练者来说不一定明显)
-                    if onReorder != nil && steps.count > 1 {
-                        Text("Long press to reorder")
-                            .font(.system(size: 9, weight: .semibold))
-                            .foregroundStyle(MasoColor.textFaint.opacity(0.7))
-                    }
-                }
-                .padding(.horizontal, MasoMetrics.cardPadding)
-                .padding(.vertical, 8)
+                DragHandle().frame(maxWidth: .infinity)
             }
             // 用原生 List + .onMove 让长按拖拽排序"自带":
             //   - List 默认 systemGroupedBackground 浅灰底 → scrollContentBackground(.hidden)
@@ -2136,22 +2195,16 @@ private struct InlinePlaylist: View {
                 }
                 // "+ Add exercise" footer — parent 传了 onAddStep 才显示. 训练中临时加一个动作走这里.
                 if let onAddStep {
-                    Button(action: onAddStep) {
-                        HStack(spacing: 10) {
-                            Image(systemName: "plus.circle.fill")
-                                .font(.system(size: 16, weight: .heavy))
-                                .foregroundStyle(MasoColor.accent)
-                            Text("Add exercise")
-                                .font(.system(size: 14, weight: .bold))
-                                .foregroundStyle(MasoColor.text)
-                            Spacer()
+                    HStack {
+                        Spacer(minLength: 0)
+                        Button(action: onAddStep) {
+                            TrainingCardActionLabel(title: "Add Exercise", icon: "plus",
+                                                    accent: MasoColor.text, prominent: false)
+                                .glassCapsuleButtonBackground(fallback: MasoColor.surfaceHi)
                         }
-                        .padding(.horizontal, MasoMetrics.rowPaddingH)
-                        .padding(.vertical, 12)
-                        .background(MasoColor.surface)
-                        .clipShape(RoundedRectangle(cornerRadius: 14))
+                        .buttonStyle(.plain)
+                        Spacer(minLength: 0)
                     }
-                    .buttonStyle(.plain)
                     .listRowSeparator(.hidden)
                     .listRowBackground(Color.clear)
                     .listRowInsets(EdgeInsets(top: 8, leading: MasoMetrics.rowPaddingH,
@@ -2170,35 +2223,38 @@ private struct InlinePlaylist: View {
         // 不透明 — playlist 背景必须跟"身后是什么"无关. 之前 0.85 半透 → 训练态透出动作大图
         // (偏红), 休息态透出"下一动作图 + 黑 mask" (偏暗), 两态 playlist 底色不一致, 行边缘 AA
         // 跟着变, 切换时看着像"item 收窄又放宽". 钉成纯不透明深色 → 两态完全一致.
-        .background(Color(red: 10/255, green: 10/255, blue: 10/255))
+        .background(MasoColor.background)
     }
 
     private func playlistRow(step: PlanStep, ex: Exercise) -> some View {
         let isCurrent = step.id == currentStepId
-        // 组间休息中: currentStepId 指向"即将到来的动作", 但此时焦点应在休息条上 —
-        // 下一动作行不显示绿底/选中点 (只休息条高亮). 非休息时正常高亮当前动作.
-        let highlightCurrent = isCurrent && !isResting
+        // Keep the ongoing exercise marked through its own set rests. Between exercises,
+        // only the rest row is active; do not mark the upcoming exercise as started.
+        let highlightCurrent = isCurrent && (!isResting || activeRestAfterStepId == nil)
         let done = progressN(for: step)
         // 已完成 step: progress 达到 sets 上限, 且不是当前行 (current 的 progress 是"正在做的组数",
         // 临界点 step.sets - 1 → step.sets 那一刻是用户做完最后一组的 transition, 此时 step 仍是 current).
         let isCompleted = !isCurrent && done >= step.sets && step.sets > 0
         // 进度环显示条件: 当前动作 OR 已经练过几组的动作 (done > 0). 这样切到别的动作后,
         // 之前练过的那几组在它自己那一行的环上仍标绿、看得见. 完全没碰过的动作才显缩略图.
-        let showsRing = isCurrent || done > 0
-        // Button 包整行处理 jump, 图片单独 Button 优先级高于外层, tap 图 → 详情而不是 jump.
-        // 整体调大一档 (跟 iOS HIG 列表 cell 64pt 视觉一致): 图片 40→56, 名字 13→15pt,
-        // 当前指示圆 6→7, 行内 spacing + padding 同步放大.
+        let showsRing = isCurrent || (done > 0 && done < step.sets)
+        // Main row selects the exercise. The separate i is the only detail entry.
+        // Keep the current marker visible through rests between this exercise's sets.
         return VStack(spacing: 0) {
-            Button(action: { onJump(step.id) }) {
-            HStack(spacing: 14) {
+            HStack(spacing: 0) {
+              Button(action: { onJump(step.id) }) {
+              HStack(spacing: 14) {
+                Circle().fill(highlightCurrent ? MasoColor.accent : .clear)
+                    .frame(width: 7, height: 7)
+                    .fixedSize()
+                    .accessibilityHidden(true)
                 // 当前动作 + 练过几组的动作: 缩略图位置换成进度环 (一组一段弧, 点段=跳到那一组);
                 // 完全没碰过的动作才保留缩略图. 进度环让"哪几组练过"在每个动作上都看得见.
                 if showsRing {
                     progressRing(stepId: step.id)
                 } else {
-                    Button(action: { onTapImage?(ex) }) {
-                        ExerciseImage(
-                            category: ex.category,
+                    ExerciseImage(
+                            category: ex.category, exerciseID: ex.id,
                             imageFolder: ex.imageFolder,
                             photoURL: ex.photoURL,
                             customImageData: ex.customImageData,
@@ -2208,27 +2264,19 @@ private struct InlinePlaylist: View {
                         )
                         // 已完成 step 缩略图整体淡化 — 暗示"这一项已经过了, 不再是焦点".
                         .opacity(isCompleted ? 0.45 : 1)
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel(String(format: NSLocalizedString("Show details for %@", comment: "exercise detail a11y"), ex.displayName))
                 }
                 VStack(alignment: .leading, spacing: 5) {
                     HStack(spacing: 7) {
                         if isCompleted {
                             // 微妙的"已完成" affordance: 实心圆 + 内嵌对勾 (跟 current 的纯实心圆区分).
                             // 14pt 半透 accent — 不抢戏, 但扫一眼就能看见.
-                            ZStack {
-                                Circle().fill(MasoColor.accent.opacity(0.85)).frame(width: 14, height: 14)
-                                Image(systemName: "checkmark")
-                                    .font(.system(size: 8, weight: .heavy))
-                                    .foregroundStyle(.black)
-                            }
-                        } else if highlightCurrent {
-                            Circle().fill(MasoColor.accent).frame(width: 7, height: 7)
+                            Image(systemName: "checkmark.circle.fill")
+                                .font(.caption).foregroundStyle(MasoColor.accent)
                         }
-                        Text(ex.displayName)
+                        ExerciseTitleLabel(exercise: ex)
                             .font(.system(size: 15, weight: .bold))
                             .lineLimit(1)
+                            .foregroundStyle(highlightCurrent ? MasoColor.accent : (isCompleted ? MasoColor.textDim : MasoColor.text))
                             // 已完成: 文字色降到 textDim + strikethrough — 视觉立刻区分 "已过去"
                             .strikethrough(isCompleted, color: MasoColor.textDim)
                     }
@@ -2238,12 +2286,19 @@ private struct InlinePlaylist: View {
                         if !showsRing {
                             Text(String(format: NSLocalizedString("%d sets", comment: "total sets"), step.sets))
                                 .font(.system(size: 12).monospacedDigit())
+                                .foregroundStyle(step.isSuggested("sets") ? MasoColor.parameterSuggestion : MasoColor.textDim)
                         }
-                        if let r = step.reps { Text("× \(r)").font(.system(size: 12).monospacedDigit()) }
-                        if let w = step.weight, w > 0 { Text("· \(weightLabel(w))").font(.system(size: 12).monospacedDigit()) }
+                        if let r = step.reps { Text("× \(r)").font(.system(size: 12).monospacedDigit())
+                            .foregroundStyle(step.isSuggested("reps") ? MasoColor.parameterSuggestion : MasoColor.textDim) }
+                        if let w = step.weight, w > 0 { Text("· \(weightLabel(w))").font(.system(size: 12).monospacedDigit())
+                            .foregroundStyle(step.isSuggested("weight") ? MasoColor.parameterSuggestion : MasoColor.textDim) }
                     }
                     .foregroundStyle(MasoColor.textDim)
                     .lineLimit(1)
+                    if ExerciseWeightReference.needsCalibration(step, exercise: ex) {
+                        Text("First-use calibration").font(.caption2).foregroundStyle(MasoColor.textDim)
+                            .accessibilityIdentifier("parameters.weight.calibration")
+                    }
                     // muscle + equipment 标签 — 训练中也能一眼看出"下一组是练什么 / 用什么器械".
                     // row 整体放大后, tags 也用正常尺寸 (非 compact).
                     ExerciseTagsRow(
@@ -2255,19 +2310,18 @@ private struct InlinePlaylist: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .padding(.horizontal, MasoMetrics.rowPaddingH)
-            .padding(.vertical, 10)  // row padding 加大让 56pt 缩略图四周呼吸更舒展
-            .background(highlightCurrent ? MasoColor.accent.opacity(0.15) : Color.clear)
-            .clipShape(RoundedRectangle(cornerRadius: 14))
+            .padding(.vertical, 8)  // row padding 加大让 56pt 缩略图四周呼吸更舒展
+
             // 整行点击热区: 没有 contentShape 时, Color.clear 背景区域不响应 tap,
             // 用户只能点到文字 / 缩略图. 加 contentShape 让整个 rect 都可点.
             .contentShape(Rectangle())
-            .foregroundStyle(
-                isCurrent ? MasoColor.accent
-                : (isCompleted ? MasoColor.textDim : MasoColor.text)
-            )
+            .foregroundStyle(MasoColor.text)
+              }
+              .buttonStyle(.borderless)
+              if let onTapImage {
+                  ExerciseDetailInfoButton(exercise: ex) { onTapImage(ex) }
+              }
             }
-            .buttonStyle(.plain)
           // J3: 动作间休息 — 显示在两动作之间, 不可拖排序 (它是 step 行尾部元素, 跟着动作走).
           if let restSec = crossRestDuration(afterStepId: step.id) {
               restRow(seconds: restSec, isActive: isResting && activeRestAfterStepId == step.id)
@@ -2327,12 +2381,17 @@ private struct InlinePlaylist: View {
 /// 让一段进度弧做"白色呼吸" — 仅 active (休息中 + 是即将开练的那组弧) 时启用:
 /// opacity 在 ~0.35↔1.0 间缓慢往复, 暗示"下一组待开始"; 到那组真正开练 active 变 false → 恢复实色.
 private struct BreathingArc: ViewModifier {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     let active: Bool
     @State private var dim = false
     func body(content: Content) -> some View {
         content
-            .opacity(active ? (dim ? 0.35 : 1.0) : 1.0)
+            .opacity(active && !reduceMotion ? (dim ? 0.35 : 1.0) : 1.0)
             .onAppear { if active { startPulse() } }
+            .onChange(of: reduceMotion) { _, reduced in
+                if reduced { withAnimation(nil) { dim = false } }
+                else if active { startPulse() }
+            }
             .onChange(of: active) { _, now in
                 if now {
                     startPulse()
@@ -2342,6 +2401,7 @@ private struct BreathingArc: ViewModifier {
             }
     }
     private func startPulse() {
+        guard !reduceMotion else { return }
         dim = false
         withAnimation(.easeInOut(duration: 0.9).repeatForever(autoreverses: true)) {
             dim = true
@@ -2353,8 +2413,8 @@ private struct BreathingArc: ViewModifier {
 
 private struct DragHandle: View {
     var body: some View {
-        Capsule().fill(.white.opacity(0.3))
-            .frame(width: 48, height: 4)
+        Capsule().fill(.white.opacity(0.35))
+            .frame(width: 40, height: 5)
             .padding(.top, 8).padding(.bottom, 6)
     }
 }
@@ -2555,16 +2615,22 @@ private struct SaveChangesConfirmView: View {
     let onSkip: () -> Void
 
     var body: some View {
+        GeometryReader { geometry in
+            let compact = geometry.size.height < 600
+            let listHeight = min(geometry.size.height * 0.46,
+                                 max(40, geometry.size.height - (compact ? 320 : 400)))
         VStack(spacing: 0) {
             // 头部 — 跟 CompletedView 同语言: 圆形 icon + 标题 + 说明
             VStack(spacing: 0) {
+                if geometry.size.height >= 400 {
                 ZStack {
-                    Circle().fill(MasoColor.accent.opacity(0.16)).frame(width: 72, height: 72)
+                    Circle().fill(MasoColor.accent.opacity(0.16)).frame(width: compact ? 48 : 72, height: compact ? 48 : 72)
                     Image(systemName: "square.and.arrow.down")
                         .font(.system(size: 28, weight: .semibold))
                         .foregroundStyle(MasoColor.accent)
                 }
-                .padding(.bottom, 18)
+                .padding(.bottom, compact ? 12 : 18)
+                }
                 Text("Save changes to this routine?")
                     .font(.system(size: 22, weight: .bold))
                     .foregroundStyle(MasoColor.text)
@@ -2580,12 +2646,12 @@ private struct SaveChangesConfirmView: View {
                     .multilineTextAlignment(.center)
                     .padding(.top, 10)
             }
-            .padding(.top, 28)
+            .padding(.top, compact ? 12 : 28)
             .padding(.horizontal, 32)
 
             // routine 训练组列表 — 修改项突出, 未改项隐退
             ScrollView {
-                VStack(spacing: 8) {
+                LazyVStack(spacing: 8) {
                     ForEach(rows) { row in
                         changeRow(row)
                     }
@@ -2593,35 +2659,19 @@ private struct SaveChangesConfirmView: View {
                 .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
                 .padding(.vertical, 18)
             }
-            .scrollIndicators(.hidden)
+            .frame(height: listHeight)
+            .clipped()
+            .scrollIndicators(.visible)
+            Spacer(minLength: 0)
 
             // 底部按钮 — 主: 保存到 routine; 次: 不保存 (跟 CompletedView 的按钮风格一致)
             VStack(spacing: 10) {
                 Button(action: onSave) {
-                    Text("Save to routine")
-                        .font(.system(size: 15, weight: .heavy))
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 14)
-                        .foregroundStyle(.black)
-                        // 主 CTA 系统玻璃 (映射表①), 旧系统保留实心 accent.
-                        // (播放器"三键+休息环"点名不动; 这是训练结束后的保存确认页, 不在豁免内.)
-                        .glassCapsuleButtonBackground(tint: MasoColor.accent.opacity(0.85),
-                                                      fallback: MasoColor.accent)
+                    decisionButtonLabel("Save to routine", primary: true)
                 }
                 .buttonStyle(.plain)
                 Button(action: onSkip) {
-                    Text("Don't save")
-                        .font(.system(size: 13, weight: .semibold))
-                        .foregroundStyle(MasoColor.textDim)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 10)
-                        // 次级"不保存" → 素玻璃 (映射表③), 灰字不变; 描边只留旧系统.
-                        .glassCapsuleButtonBackground(fallback: MasoColor.surface)
-                        .overlay {
-                            if !systemGlassAvailable {
-                                Capsule().stroke(MasoColor.borderSoft, lineWidth: 0.8)
-                            }
-                        }
+                    decisionButtonLabel("Don't save", primary: false)
                 }
                 .buttonStyle(.plain)
             }
@@ -2629,8 +2679,18 @@ private struct SaveChangesConfirmView: View {
             .padding(.top, 6)
             .padding(.bottom, 16)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.black.ignoresSafeArea())
+        .frame(width: geometry.size.width, height: geometry.size.height)
+        }
+        .background(MasoColor.background.ignoresSafeArea())
+    }
+
+    private func decisionButtonLabel(_ title: LocalizedStringKey, primary: Bool) -> some View {
+        Text(title)
+            .font(.subheadline.weight(.semibold))
+            .foregroundStyle(primary ? Color.black : MasoColor.text)
+            .frame(maxWidth: .infinity, minHeight: 48)
+            .glassCapsuleButtonBackground(tint: primary ? MasoColor.accent.opacity(0.85) : nil,
+                                          fallback: primary ? MasoColor.accent : MasoColor.surface)
     }
 
     // MARK: 行渲染
@@ -2733,22 +2793,12 @@ private struct SaveChangesConfirmView: View {
 
 private struct CompletedView: View {
     @Environment(DataStore.self) private var data
+    @Environment(TrainingSessionStore.self) private var store
+    @State private var showWorkoutReport = false
     let planName: String
     let durationSeconds: Int
-    let setCount: Int
-    let prCount: Int
-    let muscles: [MuscleGroup]
-    /// 训练涉及的动作名 (顺序保留 plan.steps), 给分享卡 chip 用.
-    var exerciseNames: [String] = []
-    var exerciseCount: Int = 0
-    /// sessionId — 用来在 DataStore 持久化照片. nil = 无法生成 id (session 状态异常).
-    var sessionId: String? = nil
-    /// 分享卡逐组实测明细 + maso:// 深链 payload (QR) + 总容量 + 日期 — caller (有 store 的
-    /// PlanPlayerScreen) 算好传入, 让 CompletedView 保持纯 view.
-    var workoutDetail: [WorkoutExerciseDetail] = []
-    var importPayload: String? = nil
-    var totalVolumeKg: Double = 0
-    var dateLabel: String? = nil
+    /// Sets that belong to this completion, already isolated from other same-day workouts.
+    var sessionRecords: [SetRecord] = []
     /// 自由训练 (临时 plan) 完成时 caller 传非 nil — 显示 "Save as plan" 按钮.
     /// 用户点了 → onSavePlan() 触发 caller 把 plan 写入 data.plans.
     /// (routine 内参数修改的保存已前移到 SaveChangesConfirmView 确认页, 不再出现在这里.)
@@ -2758,10 +2808,16 @@ private struct CompletedView: View {
     @State private var planSaved: Bool = false
     /// App Store 评分请求 — iOS 原生 (系统决定真正何时/是否弹). 在训练完成的正向时刻请求一次.
     @Environment(\.requestReview) private var requestReview
-    /// 训练结束自动拉起分享页 — onAppear 只触发一次.
-    @State private var didAutoOpenShare = false
+    /// Celebration runs once for this completion page, not when sharing is dismissed.
+    @State private var didCelebrate = false
+    @State private var celebrationStarted = Date()
+    @State private var animationFinished = false
+    @State private var celebrationFeedback = WorkoutCelebrationFeedback()
+    @Environment(\.scenePhase) private var scenePhase
+    private let celebration = WorkoutCelebrationConfiguration.approved
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var showShare = false
-    /// 自由训练: 分享页关掉后再问一次是否把这次即兴训练存为可复用计划.
+    /// Exiting an unsaved temporary workout preserves the save decision.
     @State private var showSavePrompt = false
     /// 练满 2 次时软问一次"要不要开召回提醒" (正向时刻, 全生命周期一次).
     @State private var showReminderOffer = false
@@ -2780,53 +2836,77 @@ private struct CompletedView: View {
     }
 
     var body: some View {
-        // 训练结束 → 不再有"完成"入口页 (旧的 ✓ + Share workout 按钮那一屏已去掉),
-        // 直接自动拉起分享 customize sheet. 关掉分享页 (分享完成 or 取消) = 结束本次训练.
-        // 自由训练在关之前再问一次是否把即兴训练存成可复用计划 (不丢失原 "Save as plan" 能力).
-        // 底色 #121212 跟 App 一致 — 分享是叠在播放器 sheet 上的 stacked sheet, 同色避免露出异色边.
-        MasoColor.background.ignoresSafeArea()
-            .onAppear {
-                guard !didAutoOpenShare else { return }
-                didAutoOpenShare = true
-                // 下一帧再拉 sheet — 在 onAppear 同步 set bool 偶发不呈现 (view 还没完全进层级).
-                DispatchQueue.main.async { showShare = true }
-            }
-            .sheet(isPresented: $showShare, onDismiss: {
-                if onSavePlan != nil && !planSaved {
-                    showSavePrompt = true
-                } else {
-                    closeAndMaybeReview()
+        TimelineView(.animation(minimumInterval: 1.0 / 60, paused: animationFinished)) { context in
+            let elapsed = animationFinished ? celebration.duration : didCelebrate ? max(0, context.date.timeIntervalSince(celebrationStarted)) : -1
+            let frame = celebration.frame(at: elapsed, reducedMotion: reduceMotion)
+            ZStack {
+                MasoColor.background.ignoresSafeArea()
+                if didCelebrate && !reduceMotion {
+                    WorkoutCelebrationConfetti(configuration: celebration, elapsed: elapsed).ignoresSafeArea()
                 }
-            }) {
-                ShareCustomizeSheet(
-                    previewTitle: NSLocalizedString("My Workout", comment: ""),
-                    defaultSections: ShareSections(workout: true),
-                    initialPhoto: sessionId.flatMap { data.sessionPhoto(forSessionId: $0) },
-                    shareContent: { photo, onTapAdd, mode in
-                        let isEditing: Bool = { if case .editing = mode { return true }; return false }()
-                        WorkoutDetailShareCard(
-                            dateLabel: dateLabel,
-                            planName: planName,
-                            muscles: muscles,
-                            detail: workoutDetail,
-                            setCount: setCount,
-                            totalVolumeKg: totalVolumeKg,
-                            durationLabel: durationLabel,
-                            qrPayload: importPayload,
-                            userPhoto: photo,
-                            onTapAddPhoto: isEditing ? onTapAdd : nil
-                        )
-                    },
-                    onPersistPhoto: { image in
-                        guard let id = sessionId else { return }
-                        if let image {
-                            data.setSessionPhoto(image, forSessionId: id)
-                        } else {
-                            data.removeSessionPhoto(forSessionId: id)
+                VStack(spacing: 20) {
+                    Spacer()
+                    WorkoutCelebrationSymbol(configuration: celebration, frame: frame)
+                    Text("Workout complete")
+                        .font(.largeTitle.bold())
+                        .multilineTextAlignment(.center)
+                        .opacity(frame.titleOpacity)
+                    Text(planName).font(.title3).foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                        .opacity(frame.titleOpacity)
+                    Spacer()
+                    VStack(spacing: 8) {
+                        WorkoutReportButton(title: "Workout report", keepsIntrinsicWidth: true) { showWorkoutReport = true }
+                            .frame(maxWidth: .infinity)
+                            .accessibilityIdentifier("workout.completed.report")
+                        PrimaryActionButton(title: "Share", icon: "square.and.arrow.up", size: .large) { showShare = true }
+                            .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
+                        Button {
+                            if onSavePlan != nil && !planSaved { showSavePrompt = true }
+                            else { closeAndMaybeReview() }
+                        } label: {
+                            TrainingCardActionLabel(title: "Exit", icon: "", accent: MasoColor.text,
+                                                    prominent: false, fillsWidth: true)
+                                .contentShape(Rectangle())
                         }
+                        .buttonStyle(.plain)
                     }
-                )
-                .presentationDragIndicator(.visible)
+                }
+                .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
+                .padding(.vertical, MasoMetrics.cardPadding)
+            }
+        }
+            .task {
+                guard !didCelebrate else { return }
+                celebrationFeedback.prepare(celebration)
+                celebrationStarted = Date()
+                didCelebrate = true
+                do {
+                    try await Task.sleep(for: .seconds(celebration.anchor))
+                    try Task.checkCancellation()
+                    if scenePhase == .active && !showShare { celebrationFeedback.play() }
+                    try await Task.sleep(for: .seconds(max(0, celebration.duration - celebration.anchor)))
+                    animationFinished = true
+                } catch { animationFinished = true }
+            }
+            .onChange(of: showShare) { _, showing in if showing { celebrationFeedback.cancel() } }
+            .onDisappear { celebrationFeedback.cancel() }
+            .onChange(of: showWorkoutReport) { _, presented in if presented { celebrationFeedback.cancel() } }
+            .sheet(isPresented: $showWorkoutReport) {
+                AppNavigationStack {
+                    WorkoutReportView(records: data.sets.filter { store.session?.recordedSetIDs?.contains($0.id) == true }, workoutName: planName)
+                        .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Done") { showWorkoutReport = false } } }
+                }
+            }
+            .sheet(isPresented: $showShare) {
+                let fact = AccomplishmentShare.sessionFact(
+                    records: sessionRecords,
+                    name: planName,
+                    calendar: data.settings.calendar,
+                    durationSeconds: durationSeconds)
+                AccomplishmentShareSheet(title: "Share Workout", model: { privacy in
+                    .session(fact, AccomplishmentShare.present(fact, privacy: privacy))
+                }, allowsExactTime: !fact.isAggregate, allowsPhoto: true, canShare: fact.setCount > 0)
             }
             // 自由训练 (onSavePlan 非 nil): 分享页关掉后问一次是否存为 plan.
             .alert(NSLocalizedString("Save as plan?", comment: ""), isPresented: $showSavePrompt) {
@@ -2858,16 +2938,6 @@ private struct CompletedView: View {
             } message: {
                 Text(NSLocalizedString("Masso can remind you to train once your muscles have recovered — all on your device. You can change this anytime in Settings.", comment: ""))
             }
-    }
-
-    // MARK: - Share helper data (for UnifiedShareCard)
-
-    /// "12m 30s" / "30s" — duration label for ShareStat.
-    private var durationLabel: String {
-        let m = durationSeconds / 60
-        let s = durationSeconds % 60
-        if m > 0 { return "\(m)m \(s)s" }
-        return "\(s)s"
     }
 
     /// 每个 anatomy 直接肌肉 → 最近一次被训练的时间.
@@ -2962,8 +3032,11 @@ private struct CompletedView: View {
 ///   - 力量类: 显示 Reps + Weight, 隐藏 Duration
 ///   - 非力量 (cardio / flexibility): 显示 Duration, 隐藏 Reps + Weight
 ///     (除非 step 已有 reps/weight, 那就也显示给用户改)
-private struct EditCurrentStepSheet: View {
+struct EditCurrentStepSheet: View {
     let exercise: Exercise
+    var initialParameterStep: PlanStep? = nil
+    var onConfirmParameters: ((Set<String>) -> Void)? = nil
+    @State private var editedParameters: Set<String> = []
     let initialSets: Int
     let initialReps: Int?
     let initialWeight: Double?
@@ -2978,8 +3051,8 @@ private struct EditCurrentStepSheet: View {
     /// R3: 全局同步开时, 改动会写进所有含该动作的计划 — 底部提示据此说真话 (否则文案与行为矛盾).
     var syncsGlobally: Bool = false
 
-    // 全部用数字 state — 0 = 清空字段 (save 时映射回 nil).
-    // weight step 2.5kg (健身房 plate 实际增量, 1.25kg × 2 = 2.5kg), reps step 1, duration step 5s.
+    // Initial optionals retain unknown values on an untouched Save. Zero load is valid.
+    // Numeric state backs native fields; the edited set controls explicit confirmation.
     @State private var sets: Int
     @State private var reps: Int
     @State private var weight: Double
@@ -2988,9 +3061,10 @@ private struct EditCurrentStepSheet: View {
     @State private var perSetEnabled: Bool
     @State private var perSetReps: [Int]
     @State private var perSetWeights: [Double]
-    /// P2-6: 用户点了 "Replace exercise" → dismiss 自己, 等真正消失 (.onDisappear) 再回调
+    /// A single request is queued before dismiss; the owning sheet's onDismiss presents the picker.
     /// onReplace 让 parent 弹 picker. 一次性 flag 防双击.
     @State private var replaceRequested: Bool = false
+    @State private var progressionPresented = false
     @Environment(\.dismiss) private var dismiss
 
     init(
@@ -3001,11 +3075,15 @@ private struct EditCurrentStepSheet: View {
         initialDuration: Int?,
         initialSetReps: [Int?]? = nil,
         initialSetWeights: [Double?]? = nil,
+        initialParameterStep: PlanStep? = nil,
+        onConfirmParameters: ((Set<String>) -> Void)? = nil,
         onSave: @escaping (Int, Int?, Double?, Int?, [Int?]?, [Double?]?) -> Void,
         onReplace: (() -> Void)? = nil,
         syncsGlobally: Bool = false
     ) {
         self.exercise = exercise
+        self.initialParameterStep = initialParameterStep
+        self.onConfirmParameters = onConfirmParameters
         self.syncsGlobally = syncsGlobally
         let nSets = max(1, initialSets)
         self.initialSets = nSets
@@ -3034,6 +3112,22 @@ private struct EditCurrentStepSheet: View {
         })
     }
 
+    private func input<T>(_ field: String, _ binding: Binding<T>) -> Binding<T> {
+        Binding(get: { binding.wrappedValue }, set: { editedParameters.insert(field); binding.wrappedValue = $0 })
+    }
+    private var unsupportedCrossWeight: Bool {
+        guard let suggestion = initialParameterStep?.parameterSuggestions?["weight"] else { return false }
+        if suggestion.source == .personalHistory {
+            return PersonalExerciseLoadReference.ruleID(reps: reps) == nil
+                || suggestion.ruleID != PersonalExerciseLoadReference.ruleID(reps: reps)
+        }
+        return suggestion.source == .crossExercise && !(6...12).contains(reps)
+    }
+    private func suggested(_ field: String) -> Bool {
+        if field == "weight", unsupportedCrossWeight { return false }
+        return !editedParameters.contains(field) && initialParameterStep?.isSuggested(field) == true
+    }
+
     /// 是否显示 Reps + Weight 字段. 力量类总显示; 非力量类只有 step 已存在这俩字段时显示.
     private var showsRepsWeight: Bool {
         exercise.category == .strength || initialReps != nil || initialWeight != nil
@@ -3046,52 +3140,26 @@ private struct EditCurrentStepSheet: View {
     }
 
     var body: some View {
-        NavigationStack {
+        AppNavigationStack {
             ZStack {
                 // 底色铺满整个 navigation 容器, 跟 Settings / MusclesPickerSheet 一致.
                 // ignoresSafeArea 让 home indicator 区也是 MasoColor.background, 不露 sheet 默认浅灰底.
                 MasoColor.background.ignoresSafeArea()
                 Form {
-                    // 替换动作 — 放在最顶部 (左滑已不再有 Replace, 这是唯一入口).
-                    // 模块展示**当前动作的图片 + 名称** (让用户明确在换哪个), 下方一行 accent "Replace exercise".
-                    // tap → dismiss self → caller 弹 ExercisePickerSheet (异步串接, 让 transition 干净);
-                    // 选完 caller 会重开本参数页 (此时已是新动作), 接着调参.
+                    // The entire native row requests replacement once, then returns to training after selection.
                     if onReplace != nil {
                         Section {
                             Button(action: {
-                                // 一次性 guard 防双击; onDisappear 串接 (sheet 真收完才弹 picker).
                                 guard !replaceRequested else { return }
                                 replaceRequested = true
+                                onReplace?()
                                 Haptics.tap()
                                 dismiss()
                             }) {
-                                HStack(spacing: 12) {
-                                    ExerciseImage(
-                                        category: exercise.category,
-                                        imageFolder: exercise.imageFolder,
-                                        photoURL: exercise.photoURL,
-                                        customImageData: exercise.customImageData,
-                                        cornerRadius: 10,
-                                        size: 48
-                                    )
-                                    VStack(alignment: .leading, spacing: 3) {
-                                        Text(exercise.displayName)
-                                            .font(.system(size: 15, weight: .semibold))
-                                            .foregroundStyle(MasoColor.text)
-                                            .lineLimit(2)
-                                        HStack(spacing: 5) {
-                                            Image(systemName: "arrow.triangle.2.circlepath")
-                                                .font(.system(size: 11, weight: .heavy))
-                                            Text("Replace exercise")
-                                                .font(.system(size: 12, weight: .semibold))
-                                        }
-                                        .foregroundStyle(MasoColor.accent)
-                                    }
-                                    Spacer()
-                                    Image(systemName: "chevron.right")
-                                        .font(.system(size: 12, weight: .semibold))
-                                        .foregroundStyle(MasoColor.textFaint)
-                                }
+                                Label("Replace exercise", systemImage: "arrow.triangle.2.circlepath")
+                                    .foregroundStyle(.primary)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .contentShape(Rectangle())
                             }
                         }
                         .listRowBackground(MasoColor.surface)
@@ -3099,7 +3167,7 @@ private struct EditCurrentStepSheet: View {
 
                     // Sets — 始终显示. 用 Stepper 风格 — label + 大字号 value, 自带 -/+
                     Section {
-                        intStepperRow(label: "Sets", value: $sets, range: 1...30)
+                        intStepperRow(field: "sets", label: "Sets", value: input("sets", $sets), range: 1...30)
                     }
                     .listRowBackground(MasoColor.surface)
 
@@ -3109,21 +3177,23 @@ private struct EditCurrentStepSheet: View {
                                 Text("Different per set")
                                     .foregroundStyle(MasoColor.text)
                             }
-                            .tint(MasoColor.accent)
+                            .toggleStyle(.switch).tint(MasoColor.toggleAccent)
                         }
                         .listRowBackground(MasoColor.surface)
 
                         if perSetEnabled {
                             Section {
                                 ForEach(perSetReps.indices, id: \.self) { i in
-                                    HStack(spacing: 8) {
-                                        Text("Set \(i + 1)")
-                                            .font(.system(size: 13, weight: .bold))
-                                            .foregroundStyle(MasoColor.textDim)
-                                            .frame(width: 44, alignment: .leading)
-                                        Spacer(minLength: 0)
-                                        NumStepperField(intValue: $perSetReps[i], range: 1...50, suffix: "rep", fieldWidth: 64)
-                                        weightField($perSetWeights[i], fieldWidth: 78)
+                                    VStack(alignment: .leading, spacing: 12) {
+                                        Text("Set \(i + 1)").font(.subheadline).foregroundStyle(.secondary)
+                                        intStepperRow(field: "reps", label: "Reps", value: Binding(
+                                            get: { perSetReps.indices.contains(i) ? perSetReps[i] : reps },
+                                            set: { if perSetReps.indices.contains(i) { editedParameters.insert("reps"); perSetReps[i] = $0 } }
+                                        ), range: 1...50)
+                                        weightStepperRow(label: ExerciseWeightReference.perDumbbell(exercise) ? "Weight per dumbbell" : "Weight", value: Binding(
+                                            get: { perSetWeights.indices.contains(i) ? perSetWeights[i] : weight },
+                                            set: { if perSetWeights.indices.contains(i) { editedParameters.insert("weight"); perSetWeights[i] = $0 } }
+                                        ))
                                     }
                                 }
                             } header: {
@@ -3132,8 +3202,8 @@ private struct EditCurrentStepSheet: View {
                             .listRowBackground(MasoColor.surface)
                         } else {
                             Section {
-                                intStepperRow(label: "Reps", value: $reps, range: 1...50)
-                                weightStepperRow(label: "Weight", value: $weight)
+                                intStepperRow(field: "reps", label: "Reps", value: input("reps", $reps), range: 1...50)
+                                weightStepperRow(label: ExerciseWeightReference.perDumbbell(exercise) ? "Weight per dumbbell" : "Weight", value: input("weight", $weight))
                             }
                             .listRowBackground(MasoColor.surface)
                         }
@@ -3141,7 +3211,15 @@ private struct EditCurrentStepSheet: View {
 
                     if showsDuration {
                         Section {
-                            intStepperRow(label: "Duration", value: $duration, range: 5...600, step: 5, suffix: "s")
+                            intStepperRow(field: "duration", label: "Duration", value: input("duration", $duration), range: 5...600, step: 5, suffix: "s")
+                        }
+                        .listRowBackground(MasoColor.surface)
+                    }
+
+                    if ExerciseWeightReference.expectsLoad(exercise) {
+                        Section {
+                            Button("Weight progression") { progressionPresented = true }
+                                .accessibilityIdentifier("workout.progression.open")
                         }
                         .listRowBackground(MasoColor.surface)
                     }
@@ -3158,38 +3236,51 @@ private struct EditCurrentStepSheet: View {
                 }
                 // Form 自带 systemGroupedBackground 浅灰底 — 隐掉, 走我们 ZStack 的 MasoColor.background
                 .scrollContentBackground(.hidden)
+                .accessibilityIdentifier("workout.parameters.form")
                 // sets 改变 → 同步逐组数组长度 (补/裁), 防 ForEach 越界 + 让新组继承上一组的值.
                 .onChange(of: sets) { _, n in resizePerSet(to: max(1, n)) }
+                .onChange(of: perSetEnabled) { _, _ in editedParameters.formUnion(["weight", "reps"]) }
+            }
+            .sheet(isPresented: $progressionPresented) {
+                ExerciseLoadProgressionSheet(exercise: exercise, currentWeight: editedParameters.contains("weight") ? weight : initialWeight,
+                    targetReps: reps, requiredSets: sets, allowsSuggestions: !perSetEnabled) { value in
+                        weight = value; editedParameters.insert("weight")
+                    }
             }
             .navigationTitle(exercise.displayName)
             .navigationBarTitleDisplayMode(.inline)
             // 顶部 nav bar 同色, 否则会有一道 system tint 横条
-            .toolbarBackground(MasoColor.background, for: .navigationBar)
-            .toolbarBackground(.visible, for: .navigationBar)
+            .tint(MasoColor.text)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
+                        .accessibilityIdentifier("workout.parameters.cancel")
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save") {
-                        // 0 = 清空字段 (用户用 - 减到 0 = 不想要这个字段了, save 成 nil).
-                        // duration 仅在"非 reps/weight 动作"时存 (showsDuration) — 重训动作强制 nil.
-                        let d: Int? = (showsDuration && duration > 0) ? duration : nil
+                        // Untouched missing fields stay unknown; explicit zero load stays zero.
+                        // Only edited fields become user-confirmed targets.
+                        onConfirmParameters?(editedParameters)
+                        let d: Int? = showsDuration ? (editedParameters.contains("duration") ? duration : initialDuration) : nil
                         if perSetEnabled && showsRepsWeight {
                             let n = max(1, sets)
                             let setR: [Int?] = (0..<n).map { i in
                                 (i < perSetReps.count && perSetReps[i] > 0) ? perSetReps[i] : nil
                             }
                             let setW: [Double?] = (0..<n).map { i in
-                                (i < perSetWeights.count && perSetWeights[i] > 0) ? perSetWeights[i] : nil
+                                (i < perSetWeights.count) ? perSetWeights[i] : nil
                             }
                             // 统一值用第一组当 fallback (expandPlan 在数组缺项时回退到它).
                             let r0 = perSetReps.first.flatMap { $0 > 0 ? $0 : nil }
-                            let w0 = perSetWeights.first.flatMap { $0 > 0 ? $0 : nil }
-                            onSave(n, r0, w0, d, setR, setW)
+                            let w0 = perSetWeights.first
+                            onSave(n,
+                                   editedParameters.contains("reps") ? r0 : initialReps,
+                                   editedParameters.contains("weight") ? w0 : initialWeight, d,
+                                   editedParameters.contains("reps") ? setR : initialSetReps,
+                                   editedParameters.contains("weight") ? setW : initialSetWeights)
                         } else {
-                            let r: Int? = reps > 0 ? reps : nil
-                            let w: Double? = weight > 0 ? weight : nil
+                            let r: Int? = editedParameters.contains("reps") ? reps : initialReps
+                            let w: Double? = !editedParameters.contains("weight") && initialWeight == nil ? nil : weight
                             onSave(sets, r, w, d, nil, nil)
                         }
                         Haptics.tap()
@@ -3201,10 +3292,6 @@ private struct EditCurrentStepSheet: View {
         }
         // sheet 容器底色 (含 home indicator 区) — iOS 16.4+
         .presentationBackground(MasoColor.background)
-        // P2-6: sheet 真正消失后再触发 replace — 比固定 0.32s 延迟稳, 慢设备 / reduce-motion 都 OK.
-        .onDisappear {
-            if replaceRequested { onReplace?() }
-        }
     }
 
     /// 把逐组数组补/裁到 n 组 — 补的项继承末组(或统一)值, 多的截掉. sets 变化时调.
@@ -3215,35 +3302,21 @@ private struct EditCurrentStepSheet: View {
         if perSetWeights.count > n { perSetWeights.removeLast(perSetWeights.count - n) }
     }
 
-    /// Int 字段行 — 左 label, 右统一步进控件 NumStepperField (圆形 −/+ + 可输入数字框),
-    /// 跟训练中"动作详情页" / Settings 同款. 全 app 数字步进控件统一走这一种.
+    /// Shared native numeric fields; per-set and session-only persistence stays here.
     @ViewBuilder
-    private func intStepperRow(label: LocalizedStringKey, value: Binding<Int>, range: ClosedRange<Int>, step: Int = 1, suffix: String? = nil) -> some View {
-        HStack(spacing: 8) {
-            Text(label)
-                .foregroundStyle(MasoColor.text)
-            Spacer()
-            NumStepperField(intValue: value, range: range, step: step, suffix: suffix)
-        }
+    private func intStepperRow(field: String, label: LocalizedStringKey, value: Binding<Int>, range: ClosedRange<Int>, step: Int = 1, suffix: String? = nil) -> some View {
+        NativeIntegerParameterRow(title: label, value: value, range: range, step: step, suffix: suffix ?? "", isSuggested: suggested(field))
     }
 
     /// 重量字段行 — 按用户单位 (kg/lb) 展示+编辑, 存储 canonical kg.
     @ViewBuilder
     private func weightStepperRow(label: LocalizedStringKey, value: Binding<Double>) -> some View {
-        HStack(spacing: 8) {
-            Text(label)
-                .foregroundStyle(MasoColor.text)
-            Spacer()
-            weightField(value)
+        NativeWeightParameterRow(title: label, kilograms: value, isSuggested: suggested("weight"), isUnknown: !editedParameters.contains("weight") && (initialWeight == nil || unsupportedCrossWeight) && !perSetEnabled, allowsCalibration: ExerciseWeightReference.expectsLoad(exercise))
+        if suggested("weight"), !perSetEnabled {
+            CrossExerciseSuggestionBasis(suggestion: initialParameterStep?.parameterSuggestions?["weight"])
         }
     }
 
-    /// canonical-kg 重量步进器 — 按 WeightUnitProvider.current 换算单位+标签 (kg 步进 2.5 / lb 步进 5).
-    @ViewBuilder
-    private func weightField(_ value: Binding<Double>, fieldWidth: CGFloat = 70) -> some View {
-        let u = WeightUnitProvider.current
-        NumStepperField(doubleValue: value.inUnit(u), range: 0...u.weightMax, step: u.weightStep, suffix: u.label, decimal: true, fieldWidth: fieldWidth)
-    }
 }
 
 // MARK: - 修正刚落库的一组 (P0#5-①)
@@ -3252,23 +3325,26 @@ private struct EditCurrentStepSheet: View {
 /// reps/时长), 保存写回刚落库的那条 SetRecord (DataStore.updateSetRecord, 按 id 定位).
 /// 跟 EditCurrentStepSheet 的区别: 这里改的是"已经练完的事实", 不动 plan / segments /
 /// 后续组的目标值 — 力竭没做满 8 次, 记录改回 6, 下一组目标仍是 8.
-private struct AdjustLastSetSheet: View {
+struct AdjustLastSetSheet: View {
     let record: SetRecord
     /// onSave(reps, weight, duration) — caller 写回 DataStore.
-    let onSave: (Int?, Double?, Int?) -> Void
+    let onSave: (Int?, Double?, Int?, Bool) -> Void
+    @Environment(DataStore.self) private var data
     @Environment(\.dismiss) private var dismiss
 
     // 0 = 清空字段 (save 时映射回 nil), 跟 EditCurrentStepSheet 同约定.
     @State private var reps: Int
     @State private var weight: Double
     @State private var duration: Int
+    @State private var confirmedSixRM: Bool
 
-    init(record: SetRecord, onSave: @escaping (Int?, Double?, Int?) -> Void) {
+    init(record: SetRecord, onSave: @escaping (Int?, Double?, Int?, Bool) -> Void) {
         self.record = record
         self.onSave = onSave
         self._reps = State(initialValue: record.reps ?? 0)
         self._weight = State(initialValue: record.weight ?? 0)
         self._duration = State(initialValue: record.duration ?? 0)
+        self._confirmedSixRM = State(initialValue: record.hasConfirmedSixRM)
     }
 
     /// 字段按记录本来有什么显示什么 — 力量组有 reps(+weight), 计时段只有 duration.
@@ -3278,48 +3354,50 @@ private struct AdjustLastSetSheet: View {
     private var showsDuration: Bool { record.duration != nil }
 
     var body: some View {
-        NavigationStack {
+        AppNavigationStack {
             ZStack {
                 MasoColor.background.ignoresSafeArea()
                 Form {
                     Section {
-                        if showsReps {
-                            HStack(spacing: 8) {
-                                Text("Reps").foregroundStyle(MasoColor.text)
-                                Spacer()
-                                NumStepperField(intValue: $reps, range: 0...50)
-                            }
-                        }
+                        if showsReps { NativeIntegerParameterRow(title: "Reps", value: $reps, range: 0...50) }
                         if showsWeight {
-                            HStack(spacing: 8) {
-                                Text("Weight").foregroundStyle(MasoColor.text)
-                                Spacer()
-                                weightField($weight)
-                            }
+                            NativeWeightParameterRow(title: data.exById[record.exerciseId].map(ExerciseWeightReference.perDumbbell) == true ? "Weight per dumbbell" : "Weight", kilograms: $weight)
                         }
-                        if showsDuration {
-                            HStack(spacing: 8) {
-                                Text("Duration").foregroundStyle(MasoColor.text)
-                                Spacer()
-                                NumStepperField(intValue: $duration, range: 0...600, step: 5, suffix: "s")
-                            }
+                        if showsDuration { NativeIntegerParameterRow(title: "Duration", value: $duration, range: 0...600, step: 5, suffix: "s") }
+                    }
+
+                    if record.exerciseId == CrossExerciseLoadReference.anchorID {
+                        Section {
+                            Toggle("Confirmed bench press 6RM", isOn: $confirmedSixRM)
+                                .toggleStyle(.switch)
+                                .tint(MasoColor.toggleAccent)
+                                .disabled(reps != 6 || weight <= 0 || !weight.isFinite)
+                                .accessibilityIdentifier("workout.record.confirm-six-rm")
+                        } footer: {
+                            VStack(alignment: .leading, spacing: 6) {
+                                Text("Mark only an existing set: six full-range reps, no assistance or momentum, about 2 seconds up and down, with no seventh clean rep possible. You should already be familiar with the lift. No extra maximum test is needed.")
+                                if reps != 6 || weight <= 0 {
+                                    Text("Six completed reps and a positive weight are required.")
+                                }
+                                Text("Masso currently limits this estimate to men aged 18–30, a confirmed 30–70 kg reference from the last 30 days, and 6–12 target reps.")
+                            }.font(.caption).foregroundStyle(.secondary)
                         }
                     }
-                    .listRowBackground(MasoColor.surface)
-
                     Section {
-                        Text("Fix what you actually did — this only rewrites the set you just logged, not your plan.")
+                        Text("Correct this set and update related weight references.")
                             .font(.system(size: 12))
                             .foregroundStyle(MasoColor.textDim)
                     }
                     .listRowBackground(MasoColor.surface)
                 }
                 .scrollContentBackground(.hidden)
+                .onChange(of: reps) { _, _ in confirmedSixRM = false }
+                .onChange(of: weight) { _, _ in confirmedSixRM = false }
             }
-            .navigationTitle("Adjust last set")
+            .navigationTitle("Edit set")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbarBackground(MasoColor.background, for: .navigationBar)
-            .toolbarBackground(.visible, for: .navigationBar)
+
+
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
@@ -3331,7 +3409,7 @@ private struct AdjustLastSetSheet: View {
                         let r: Int? = showsReps ? (reps > 0 ? reps : nil) : record.reps
                         let w: Double? = showsWeight ? weight : record.weight
                         let d: Int? = showsDuration ? (duration > 0 ? duration : nil) : record.duration
-                        onSave(r, w, d)
+                        onSave(r, w, d, confirmedSixRM)
                         Haptics.tap()
                         dismiss()
                     }
@@ -3342,10 +3420,804 @@ private struct AdjustLastSetSheet: View {
         .presentationBackground(MasoColor.background)
     }
 
-    /// canonical-kg 重量步进器 — 跟 EditCurrentStepSheet.weightField 同款 (按用户单位换算).
-    @ViewBuilder
-    private func weightField(_ value: Binding<Double>) -> some View {
-        let u = WeightUnitProvider.current
-        NumStepperField(doubleValue: value.inUnit(u), range: 0...u.weightMax, step: u.weightStep, suffix: u.label, decimal: true)
+}
+
+
+private struct OpenWorkoutCompletionView: View {
+    let durationMinutes: Int
+    let setCount: Int
+    let exerciseCount: Int
+    let onDone: (String?) -> Void
+    @State private var saveRoutine = true
+    @State private var name = NSLocalizedString("Workout", comment: "") + " · " + Date().formatted(.dateTime.month().day())
+
+    var body: some View {
+        VStack(spacing: 0) {
+            VStack(spacing: 12) {
+                Image(systemName: "checkmark.circle.fill")
+                    .font(.system(size: 48, weight: .regular))
+                    .foregroundStyle(MasoColor.accent)
+                Text("Workout complete")
+                    .font(.system(size: 26, weight: .bold))
+                    .foregroundStyle(MasoColor.text)
+                    .multilineTextAlignment(.center)
+            }
+            .padding(.top, 52)
+
+            HStack(spacing: 0) {
+                completionStat(value: "\(exerciseCount)", label: "Exercises")
+                statDivider
+                completionStat(value: "\(setCount)", label: "Sets")
+                statDivider
+                completionStat(value: "\(durationMinutes)m", label: "Duration")
+            }
+            .padding(.vertical, 20)
+            .background(MasoColor.surface, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+            .padding(.top, 32)
+
+            if setCount > 0 {
+                VStack(alignment: .leading, spacing: 16) {
+                    Toggle("Save as a routine", isOn: $saveRoutine)
+                        .font(.system(size: 16, weight: .semibold))
+                        .toggleStyle(.switch).tint(MasoColor.toggleAccent)
+
+                    if saveRoutine {
+                        TextField("Routine name", text: $name)
+                            .font(.system(size: 16))
+                            .padding(.horizontal, 14)
+                            .padding(.vertical, 13)
+                            .background(MasoColor.surfaceHi, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                            .transition(.opacity.combined(with: .move(edge: .top)))
+                    }
+                }
+                .padding(20)
+                .background(MasoColor.surface, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+                .padding(.top, 16)
+            }
+
+            Spacer(minLength: 24)
+
+            Button("Done") {
+                let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
+                onDone(saveRoutine && setCount > 0 ? trimmed : nil)
+            }
+            .buttonStyle(.borderedProminent)
+            .tint(MasoColor.accent)
+            .foregroundStyle(.black)
+            .font(.system(size: 17, weight: .semibold))
+            .controlSize(.large)
+            .frame(maxWidth: .infinity)
+            .disabled(saveRoutine && setCount > 0 && name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+        }
+        .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
+        .padding(.bottom, 20)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+        .background(MasoColor.background.ignoresSafeArea())
+    }
+
+    private var statDivider: some View {
+        Rectangle()
+            .fill(MasoColor.borderSoft)
+            .frame(width: 1, height: 34)
+    }
+
+    private func completionStat(value: String, label: LocalizedStringKey) -> some View {
+        VStack(spacing: 5) {
+            Text(value)
+                .font(.system(size: 21, weight: .bold, design: .rounded).monospacedDigit())
+                .foregroundStyle(MasoColor.text)
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
+            Text(label)
+                .font(.system(size: 12, weight: .medium))
+                .foregroundStyle(MasoColor.textDim)
+                .lineLimit(1)
+        }
+        .frame(maxWidth: .infinity)
+    }
+}
+
+
+private enum PlayerExerciseInfoMetrics {
+    static let spacing: CGFloat = 16
+    static let parameterHeight: CGFloat = 84
+}
+
+/// Fixed slots prevent optional history/status text and rest transitions from moving the rows.
+private struct PlayerExerciseInfoLayout<Heading: View, Status: View, Parameters: View>: View {
+    let compact: Bool
+    @ViewBuilder let heading: () -> Heading
+    @ViewBuilder let status: () -> Status
+    @ViewBuilder let parameters: () -> Parameters
+    @ScaledMetric(relativeTo: .title2) private var titleHeight: CGFloat = 44
+    @ScaledMetric(relativeTo: .caption) private var statusHeight: CGFloat = 20
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: compact ? 0 : PlayerExerciseInfoMetrics.spacing) {
+            heading().frame(height: titleHeight)
+                .anchorPreference(key: PlayerLayoutBoundsKey.self, value: .bounds) { ["heading": $0] }
+            if !compact {
+                parameters().frame(height: PlayerExerciseInfoMetrics.parameterHeight)
+                    .anchorPreference(key: PlayerLayoutBoundsKey.self, value: .bounds) { ["parameters": $0] }
+            }
+        }
+        .overlay(alignment: .topLeading) {
+            if !compact {
+                status().frame(maxWidth: .infinity, alignment: .leading).frame(height: statusHeight)
+                    .offset(y: -(statusHeight + 12))
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, MasoMetrics.cardPadding)
+        .transaction { $0.animation = nil }
+    }
+}
+
+/// Split balanced ASCII/full-width parentheses without changing the localized source name.
+struct PlayerExerciseTitleParts {
+    let title: String
+    let subtitle: String?
+
+    init(_ name: String) {
+        let pattern = #"\((?:[^()]|\([^()]*\))*\)|（(?:[^（）]|（[^（）]*）)*）"#
+        let regex = try! NSRegularExpression(pattern: pattern)
+        let range = NSRange(name.startIndex..., in: name)
+        let matches = regex.matches(in: name, range: range)
+        let details = matches.compactMap { match -> String? in
+            guard let range = Range(match.range, in: name) else { return nil }
+            let text = name[range].dropFirst().dropLast().trimmingCharacters(in: .whitespacesAndNewlines)
+            return text.isEmpty ? nil : text
+        }
+        let main = regex.stringByReplacingMatches(in: name, range: range, withTemplate: " ")
+            .split(whereSeparator: \.isWhitespace).joined(separator: " ")
+        // Parenthetical-only custom names still need a meaningful primary label.
+        title = main.isEmpty ? name : main
+        subtitle = main.isEmpty || details.isEmpty ? nil : details.joined(separator: " · ")
+    }
+}
+
+/// Presentation and its complete data are one state, so the first sheet frame
+/// cannot capture an independently initialized empty array.
+private struct PlayerVariantPickerSnapshot: Identifiable {
+    let id = UUID()
+    let defaultVersion: Exercise
+    let variants: [Exercise]
+    let selectedID: String
+    let sameTarget: [Exercise]
+
+    init(current: Exercise, base: Exercise, candidates: [Exercise], library: [Exercise]) {
+        defaultVersion = base
+        selectedID = current.id
+        var seen: Set<String> = [base.id]
+        variants = (candidates + [current]).filter { seen.insert($0.id).inserted }
+        // Match the same specific primary target; broad section matches can imply
+        // different training emphasis (for example upper vs lower chest).
+        let targets = Set(current.primaryMuscles.filter { $0 != .fullBody })
+        sameTarget = library.filter { item in
+            !seen.contains(item.id) && !targets.isDisjoint(with: item.primaryMuscles)
+        }
+    }
+}
+
+/// Shared muscle, title/subtitle and variant control for current/rest-next scenes.
+private struct PlayerExerciseHeading: View {
+    @State private var variantPicker: PlayerVariantPickerSnapshot?
+    @State private var pendingOtherExercise = false
+    @State private var pendingVariant: Exercise?
+    @State private var expandedTargetGroup: String?
+    @Environment(DataStore.self) private var data
+    let exercise: Exercise
+    var compact = false
+    let onDetail: () -> Void
+    var onSelectVariant: ((Exercise) -> Void)? = nil
+    var onRequestReplace: (() -> Void)? = nil
+
+    private var versions: [Exercise] {
+        ExerciseSelectionPolicy.shared.variants(for: exercise, in: data.userLibrary, settings: data.settings)
+    }
+    private var base: Exercise {
+        ExerciseSelectionPolicy.shared.defaultVersion(for: exercise, in: data.userLibrary, settings: data.settings)
+    }
+
+    var body: some View {
+        let parts = PlayerExerciseTitleParts(exercise.displayName)
+        HStack(spacing: 12) {
+            BodyHint(muscles: exercise.muscleGroups, height: compact ? 36 : 40,
+                     region: detectBodyRegion(exercise.muscleGroups), panelSpacing: 2)
+                .frame(width: 70, height: 44)
+                .accessibilityIdentifier("workout.muscles")
+            Button(action: onDetail) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(parts.title)
+                        .font(compact ? .headline : .title2.weight(.bold))
+                        .lineLimit(1).truncationMode(.tail)
+                        .accessibilityIdentifier("workout.exercise.title")
+                    if let subtitle = parts.subtitle {
+                        Text(subtitle)
+                            .font(.caption).foregroundStyle(MasoColor.textDim)
+                            .lineLimit(1).truncationMode(.tail)
+                            .accessibilityIdentifier("workout.exercise.subtitle")
+                    }
+                }
+                .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(Text(exercise.displayName))
+            .accessibilityHint("Exercise details")
+            .accessibilityIdentifier("workout.current.info")
+            Button {
+                variantPicker = PlayerVariantPickerSnapshot(current: exercise, base: base, candidates: versions, library: data.userLibrary)
+            } label: {
+                Image(systemName: "arrow.left.arrow.right")
+                    .font(.system(size: 11, weight: .semibold))
+                    .frame(width: 16, height: 16)
+            }
+            .sheet(item: $variantPicker, onDismiss: {
+                if pendingOtherExercise { pendingOtherExercise = false; onRequestReplace?() }
+                if let variant = pendingVariant { pendingVariant = nil; onSelectVariant?(variant) }
+            }) { snapshot in
+                AppNavigationStack {
+                    List {
+                        Section("Default version") {
+                            variantButton(snapshot.defaultVersion, selectedID: snapshot.selectedID)
+                        }
+                        if !snapshot.variants.isEmpty {
+                            Section("Variants") {
+                                ForEach(snapshot.variants) { variantButton($0, selectedID: snapshot.selectedID) }
+                            }
+                        }
+                        if !snapshot.sameTarget.isEmpty {
+                            Section("Same target muscles") {
+                                ForEach(ExerciseGrouping.group(snapshot.sameTarget)) { group in
+                                    targetGroupRow(group.canonical, group: group, isVariant: false, selectedID: snapshot.selectedID)
+                                    if !group.isSingleton && expandedTargetGroup == group.id {
+                                        groupedVariantSections(for: group, onCollapse: { expandedTargetGroup = nil }) { variant in
+                                            targetGroupRow(variant, group: group, isVariant: true, selectedID: snapshot.selectedID)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    .navigationTitle("Switch exercise").navigationBarTitleDisplayMode(.inline)
+                    .toolbar {
+                        ToolbarItem(placement: .cancellationAction) {
+                            Button("Close", systemImage: "xmark") { variantPicker = nil }
+                                .labelStyle(.iconOnly).accessibilityIdentifier("workout.variant.done")
+                        }
+                        if onRequestReplace != nil {
+                            ToolbarItem(placement: .confirmationAction) {
+                                Button("Replace") { pendingOtherExercise = true; variantPicker = nil }
+                                    .accessibilityIdentifier("workout.variant.replace-other")
+                            }
+                        }
+                    }
+                }.presentationDetents([.medium, .large]).presentationDragIndicator(.visible)
+                    .accessibilityIdentifier("workout.variant.list")
+            }
+            .nativeGlassButtonStyle()
+            .buttonBorderShape(.circle)
+            .controlSize(.regular)
+            .frame(minWidth: 44, minHeight: 44)
+            .offset(x: 2)
+            .accessibilityLabel("Variants")
+            .accessibilityIdentifier("workout.variants")
+        }
+        .foregroundStyle(MasoColor.text)
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private func targetGroupRow(_ item: Exercise, group: ExerciseGroup, isVariant: Bool, selectedID: String) -> some View {
+        GroupedExerciseRow(exercise: item, isVariant: isVariant, group: group,
+                           isExpanded: expandedTargetGroup == group.id, showDisclosure: !group.isSingleton,
+                           showVariantCategoryLabel: false, trailing: { EmptyView() },
+                           onTap: { if item.id != selectedID { pendingVariant = item }; variantPicker = nil },
+                           onToggleExpand: { withAnimation(.easeOut(duration: 0.2)) {
+                               expandedTargetGroup = expandedTargetGroup == group.id ? nil : group.id
+                           } })
+    }
+
+    private func variantButton(_ variant: Exercise, selectedID: String) -> some View {
+        Button {
+            if variant.id != selectedID { pendingVariant = variant }
+            variantPicker = nil
+        } label: {
+            HStack(spacing: 12) {
+                ExerciseImage(category: variant.category, exerciseID: variant.id,
+                              imageFolder: variant.imageFolder, photoURL: variant.photoURL,
+                              customImageData: variant.customImageData, cornerRadius: 8, size: 48, animated: false)
+                    .accessibilityHidden(true)
+                Text(variant.displayName).foregroundStyle(MasoColor.text)
+                    .lineLimit(2).fixedSize(horizontal: false, vertical: true)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                if variant.id == selectedID {
+                    Image(systemName: "checkmark").foregroundStyle(MasoColor.accent).accessibilityHidden(true)
+                }
+            }
+            .padding(.vertical, 2).contentShape(Rectangle())
+        }
+        .accessibilityLabel(Text(variant.displayName))
+        .accessibilityAddTraits(variant.id == selectedID ? .isSelected : [])
+        .accessibilityIdentifier("workout.variant.\(variant.id)")
+    }
+
+
+}
+
+private struct PlayerParameterValue: View {
+    let value: String
+    let label: String
+    var parameter: WorkoutParameter? = nil
+    var onAdjust: ((WorkoutParameter, Int) -> Void)? = nil
+    var isSuggested = false
+    var needsCalibration = false
+    var body: some View {
+        VStack(alignment: .center, spacing: 4) {
+            HStack(spacing: 0) {
+                if let parameter, let onAdjust { adjustmentButton(parameter, direction: -1, action: onAdjust) }
+                MetricValueText(value: value,
+                                numeratorColor: isSuggested && parameter != .sets ? MasoColor.parameterSuggestion : MasoColor.text,
+                                denominatorColor: isSuggested && parameter == .sets ? MasoColor.parameterSuggestion : MasoColor.textDim,
+                                numeratorWeight: .bold)
+                    .font(.system(size: 17, weight: .bold).monospacedDigit())
+                    .foregroundStyle(MasoColor.text)
+                    .lineLimit(1).minimumScaleFactor(0.65)
+                    .frame(maxWidth: .infinity).allowsHitTesting(false)
+                if let parameter, let onAdjust { adjustmentButton(parameter, direction: 1, action: onAdjust) }
+            }
+            Text(needsCalibration ? NSLocalizedString("First-use calibration", comment: "unknown weight") : (isSuggested ? label + " · " + NSLocalizedString("Suggested", comment: "parameter source") : label))
+                .accessibilityIdentifier(needsCalibration ? "workout.weight.calibration" : isSuggested ? "workout.suggested.\(parameter?.rawValue ?? "value")" : "workout.explicit.\(parameter?.rawValue ?? "value")")
+                .lineLimit(needsCalibration ? 2 : 1).minimumScaleFactor(0.6)
+                .font(.system(size: 9, weight: .heavy)).tracking(0.5).textCase(.uppercase)
+                .foregroundStyle(MasoColor.text.opacity(0.6)).allowsHitTesting(false)
+        }
+        .shadow(color: .black.opacity(0.5), radius: 3)
+        .frame(maxWidth: .infinity)
+
+    }
+
+    private func adjustmentButton(_ parameter: WorkoutParameter, direction: Int,
+                                  action: @escaping (WorkoutParameter, Int) -> Void) -> some View {
+        Button { action(parameter, direction) } label: {
+            Image(systemName: direction > 0 ? "plus" : "minus")
+                .font(.system(size: 9, weight: .semibold))
+                .foregroundStyle(MasoColor.text.opacity(0.65))
+                .frame(width: 32, height: 44).contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(Text(label) + Text(direction > 0 ? " +" : " −"))
+        .accessibilityIdentifier("workout.parameter.\(parameter.rawValue).\(direction > 0 ? "increase" : "decrease")")
+    }
+}
+
+private struct PlayerParameterDivider: View {
+    var body: some View {
+        Rectangle().fill(.white.opacity(0.14)).frame(width: 0.5, height: 32)
+            .allowsHitTesting(false)
+    }
+}
+
+private struct PlayerParameterPanel<Content: View>: View {
+    let title: LocalizedStringKey
+    let onEdit: () -> Void
+    @ViewBuilder let content: () -> Content
+    var body: some View {
+        content()
+            .zIndex(1)
+            .foregroundStyle(MasoColor.text)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 10)
+            .frame(maxWidth: .infinity, minHeight: 84)
+            .background {
+                Button(action: onEdit) {
+                    RoundedRectangle(cornerRadius: 14)
+                        .fill(.white.opacity(0.06))
+                        .contentShape(RoundedRectangle(cornerRadius: 14))
+                }
+                .buttonStyle(.plain)
+                .zIndex(0)
+                .accessibilityLabel(Text(title))
+                .accessibilityIdentifier("workout.current.edit")
+            }
+    }
+}
+
+private struct PlayerExerciseActionButton: View {
+    let symbol: String
+    let title: LocalizedStringKey
+    let action: () -> Void
+    var body: some View {
+        Button(action: action) {
+            Image(systemName: symbol)
+                .font(.system(size: 14, weight: .semibold))
+                .foregroundStyle(MasoColor.text)
+                .frame(width: 32, height: 32)
+                .glassCircleButtonBackground(fallback: MasoColor.background.opacity(0.6))
+                .contentShape(Circle())
+        }
+        .buttonStyle(.plain)
+        .fixedSize()
+        .accessibilityLabel(Text(title))
+    }
+}
+
+private struct HeartIconBoundsKey: PreferenceKey {
+    static var defaultValue: Anchor<CGRect>?
+    static func reduce(value: inout Anchor<CGRect>?, nextValue: () -> Anchor<CGRect>?) {
+        value = nextValue() ?? value
+    }
+}
+
+private struct HeartPressInteraction: UIViewRepresentable {
+    var onTap: () -> Void
+    var onHold: () -> Void
+    final class Coordinator: NSObject {
+        var onTap: () -> Void = {}
+        var onHold: () -> Void = {}
+        @objc func tap(_ gesture: UITapGestureRecognizer) { if gesture.state == .recognized { onTap() } }
+        @objc func hold(_ gesture: UILongPressGestureRecognizer) { if gesture.state == .began { onHold() } }
+    }
+    func makeCoordinator() -> Coordinator { Coordinator() }
+    func makeUIView(context: Context) -> UIView {
+        let view = UIView()
+        view.backgroundColor = .clear
+        view.isAccessibilityElement = false
+        let tap = UITapGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.tap(_:)))
+        let hold = UILongPressGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.hold(_:)))
+        hold.minimumPressDuration = 0.55
+        tap.require(toFail: hold)
+        view.addGestureRecognizer(tap)
+        view.addGestureRecognizer(hold)
+        return view
+    }
+    func updateUIView(_ view: UIView, context: Context) {
+        context.coordinator.onTap = onTap
+        context.coordinator.onHold = onHold
+    }
+}
+
+/// 心率卡片上的单圈波纹，只改画法。
+/// 节拍时钟仍是 `时间 * bpm / 60 - 0.25`，与心形缩放对齐。
+/// 不改 BPM、提醒阈值、`WorkoutHeartLiquid` 的颜色和最大半径。
+/// 半径缓出；透明度是两端为 0 的单峰，所以循环相接时不跳，也不会叠出多圈。
+/// 曲线系数是这一版的手感选择，不是约定指标。
+private enum HeartRippleMotion {
+    /// 波纹层刚出现时淡入的时长。只掩盖出现那一帧的跳变，不改变心跳周期。
+    static let unveilDuration: TimeInterval = 0.20
+
+    struct Sample {
+        var spread: CGFloat
+        var opacity: Double
+        var lineWidth: CGFloat
+        var blur: CGFloat
+    }
+
+    static func beatPhase(at date: Date, bpm: Int) -> Double {
+        let cycle = date.timeIntervalSinceReferenceDate * Double(bpm) / 60 - 0.25
+        return cycle - floor(cycle)
+    }
+
+    static func sample(phase: Double, unveil: Double) -> Sample {
+        let t = min(1, max(0, phase))
+        let eased = 1 - pow(1 - t, 1.6)
+        let peakAt = 0.22
+        let warped = t <= peakAt
+            ? 0.5 * (t / peakAt)
+            : 0.5 + 0.5 * ((t - peakAt) / (1 - peakAt))
+        let envelope = pow(max(0, sin(.pi * warped)), 1.35)
+        let u = min(1, max(0, unveil))
+        let fade = u * u * (3 - 2 * u)
+        return Sample(
+            spread: CGFloat(eased),
+            opacity: 0.46 * envelope * fade,
+            lineWidth: CGFloat(2.4 * (1 - 0.38 * eased)),
+            blur: CGFloat(0.15 + 0.9 * eased)
+        )
+    }
+}
+
+private struct HeartRippleRing<Ink: ShapeStyle>: View {
+    var origin: CGRect
+    var maxRadius: CGFloat
+    var bpm: Int
+    var color: Ink
+    @State private var unveiledAt = Date()
+
+    var body: some View {
+        TimelineView(.animation(minimumInterval: 1.0 / 30.0)) { context in
+            let motion = HeartRippleMotion.sample(
+                phase: HeartRippleMotion.beatPhase(at: context.date, bpm: bpm),
+                unveil: context.date.timeIntervalSince(unveiledAt) / HeartRippleMotion.unveilDuration
+            )
+            let diameter = max(CGFloat(0), maxRadius * motion.spread * 2)
+            Circle()
+                .stroke(color, lineWidth: motion.lineWidth)
+                .frame(width: diameter, height: diameter)
+                .blur(radius: motion.blur)
+                .opacity(motion.opacity)
+                .position(x: origin.midX, y: origin.midY)
+                .transaction { $0.disablesAnimations = true }
+        }
+        .transaction { $0.disablesAnimations = true }
+        .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+        .accessibilityHidden(true)
+        .allowsHitTesting(false)
+    }
+}
+
+struct WorkoutHeartRateButton: View {
+    @Environment(TrainingSessionStore.self) private var store
+    @Environment(DataStore.self) private var data
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.scenePhase) private var scenePhase
+    @State private var settingsPresented = false
+    @State private var expanded = false
+    @State private var expandedByWarning = false
+    @State private var now = Date()
+
+    private func toggleCard() {
+        expanded.toggle()
+        expandedByWarning = false
+        data.settings.workoutHeartRateShowCard = expanded
+        data.save()
+        Haptics.tap()
+    }
+
+    private func heartContent(bpm: Int?) -> some View {
+        Group {
+            if expanded {
+                VStack(alignment: .leading, spacing: 10) {
+                    HStack(spacing: 7) {
+                        TimelineView(.animation(minimumInterval: reduceMotion ? 1 : 1.0 / 30.0)) { context in
+                            let time = context.date.timeIntervalSinceReferenceDate
+                            let beat = bpm.map { reduceMotion ? 1.0 : 1.0 + 0.16 * pow(max(0, sin(time * Double($0) * .pi / 30)), 8) } ?? 1
+                            Image(systemName: "heart.fill").font(.subheadline.weight(.semibold)).foregroundStyle(.red).scaleEffect(beat)
+                                .anchorPreference(key: HeartIconBoundsKey.self, value: .bounds) { $0 }
+                        }.fixedSize()
+                        Text("Heart rate").font(.subheadline.weight(.semibold)).lineLimit(1).minimumScaleFactor(0.7)
+                    }
+                    HStack(alignment: .firstTextBaseline, spacing: 5) {
+                        Text(bpm.map { $0.formatted(.number.locale(LanguageManager.currentLocale)) } ?? "—")
+                            .font(.system(size: 38, weight: .bold, design: .rounded)).monospacedDigit()
+                            .lineLimit(1).fixedSize(horizontal: true, vertical: false).layoutPriority(1)
+                        Text("bpm").font(.subheadline.weight(.medium)).foregroundStyle(.white.opacity(0.8))
+                            .lineLimit(1).minimumScaleFactor(0.5)
+                    }
+                }
+                .frame(maxWidth: .infinity, minHeight: 70, alignment: .leading)
+                .foregroundStyle(.white).shadow(color: .black.opacity(0.7), radius: 3)
+                .padding(16).contentShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+            } else {
+                HStack(spacing: 5) {
+                    Image(systemName: store.heartRate.warningPending ? "heart.fill" : "heart")
+                        .foregroundStyle(bpm == nil ? MasoColor.textDim : .red)
+                    Text(bpm.map { $0.formatted(.number.locale(LanguageManager.currentLocale)) } ?? "—").monospacedDigit()
+                }
+                .font(.subheadline.weight(.semibold)).scaleEffect(0.8).padding(.horizontal, 12).frame(minHeight: 48)
+            }
+        }
+    }
+
+    @ViewBuilder private func heartBackground() -> some View {
+        if expanded {
+            let shape = RoundedRectangle(cornerRadius: 22, style: .continuous)
+            ZStack {
+                if #available(iOS 26.0, *) { shape.fill(.clear).glassEffect(.regular, in: shape) }
+                else { shape.fill(.ultraThinMaterial).overlay(shape.fill(.black.opacity(0.25))) }
+
+            }.clipShape(shape).allowsHitTesting(false)
+        } else {
+            Capsule().fill(.clear).glassCapsuleButtonBackground(fallback: MasoColor.background.opacity(0.6))
+        }
+    }
+
+    private func heartControl(bpm: Int?) -> some View {
+        let progress = WorkoutHeartLiquid.progress(bpm: bpm, limit: store.heartRate.reminderLimit)
+        let value = (bpm.map { $0.formatted(.number.locale(LanguageManager.currentLocale)) } ?? "—") +
+            (store.heartRate.warningPending ? ", " + NSLocalizedString("Above your reminder limit", comment: "") : "")
+        return Button { settingsPresented = true } label: { heartContent(bpm: bpm) }
+            .buttonStyle(.plain)
+            .frame(width: expanded ? 176 : nil, height: expanded ? 102 : 48)
+            .background { heartBackground() }
+            .overlayPreferenceValue(HeartIconBoundsKey.self) { anchor in
+                GeometryReader { geometry in
+                    if expanded, scenePhase == .active, !settingsPresented, !reduceMotion,
+                       let anchor, let bpm, let progress {
+                        let origin = geometry[anchor]
+                        let extent = max(origin.midX, geometry.size.width - origin.midX)
+                        // 最大半径仍是 extent * (0.25 + 0.75 * progress)。显式转换只消掉 CGFloat/Double，不改映射。
+                        let maxRadius = extent * CGFloat(0.25 + 0.75 * Double(progress))
+                        HeartRippleRing(
+                            origin: origin,
+                            maxRadius: maxRadius,
+                            bpm: bpm,
+                            color: WorkoutHeartLiquid.color(progress: progress)
+                        )
+                    }
+                }.allowsHitTesting(false)
+            }
+            .overlay {
+                if !expanded && store.heartRate.warningPending {
+                    Capsule().stroke(Color.red.opacity(0.9), lineWidth: 1.5).allowsHitTesting(false)
+                }
+            }
+            .overlay { HeartPressInteraction(onTap: { settingsPresented = true }, onHold: toggleCard).accessibilityHidden(true) }
+            .accessibilityAction(named: Text(LocalizedStringKey(expanded ? "Collapse heart rate card" : "Expand heart rate card"))) { toggleCard() }
+            .accessibilityLabel("Heart rate")
+            .accessibilityHint("Heart rate settings")
+            .accessibilityValue(value)
+            .accessibilityIdentifier(expanded ? "workout.heart.warning" : "workout.heart-rate")
+    }
+
+    var body: some View {
+        heartControl(bpm: store.heartRate.freshBPM(at: now))
+        .onAppear {
+            expanded = data.settings.workoutHeartRateShowCard == true
+            if store.heartRate.warningPending { expanded = true; expandedByWarning = true }
+        }
+        .onChange(of: data.settings.workoutHeartRateShowCard) { _, value in
+            expanded = value == true
+            expandedByWarning = false
+        }
+        .onChange(of: store.heartRate.warningPending) { _, pending in
+            if pending && !expanded { expanded = true; expandedByWarning = true }
+            else if !pending && expandedByWarning { expanded = data.settings.workoutHeartRateShowCard == true; expandedByWarning = false }
+        }
+        .task {
+            while !Task.isCancelled {
+                now = Date()
+                try? await Task.sleep(for: .seconds(1))
+            }
+        }
+        .sheet(isPresented: $settingsPresented) { WorkoutHeartRateSettingsSheet() }
+    }
+}
+
+struct WorkoutHeartRateSettingsSheet: View {
+    @Environment(DataStore.self) private var data
+    @Environment(TrainingSessionStore.self) private var store
+    @Environment(\.dismiss) private var dismiss
+    @State private var limitText = ""
+    @State private var usesRecommendation = true
+    @State private var showCard = false
+    @State private var heartAssist = false
+    @State private var errorText: String?
+    @State private var connecting = false
+    @State private var deleteHistory = false
+
+    private var recommendation: WorkoutHeartRecommendation.Result {
+        WorkoutHeartRecommendation.calculate(samples: WorkoutHeartLocalStore.shared.samples, age: data.settings.age, excluding: store.workoutSessionID)
+    }
+
+    private var recommendationExplanation: LocalizedStringKey {
+        switch recommendation.basis {
+        case .history: return "Based on your recent workout heart rates and age when available."
+        case .age: return "Estimated from your age; it will adjust as workout data becomes available."
+        case .fallback: return "Starting estimate until your age or workout heart-rate history is available."
+        }
+    }
+
+    var body: some View {
+        AppNavigationStack {
+            Form {
+                Section {
+                    Toggle("Show heart rate card", isOn: $showCard)
+                        .tint(MasoColor.toggleAccent)
+                        .accessibilityIdentifier("workout.heart.show-card")
+                    Toggle("Automatic heart rate control", isOn: $heartAssist)
+                        .tint(MasoColor.toggleAccent)
+                        .accessibilityIdentifier("workout.heart.assist")
+                    Text("Experimental: heart rate changes can automatically log a set or skip rest. Readings may be delayed or incorrect; use Undo if needed.")
+                        .font(.footnote).foregroundStyle(MasoColor.textDim)
+                }
+                Section {
+                    Toggle("Read workout heart rate", isOn: Binding(get: { data.settings.workoutHeartRateEnabled == true }, set: { enabled in
+                        if !enabled { data.settings.workoutHeartRateEnabled = false; store.heartRate.stop(); return }
+                        connecting = true
+                        Task {
+                            do {
+                                try await store.heartRate.requestAccess()
+                                data.settings.workoutHeartRateEnabled = true
+                                bindMonitor()
+                                await store.heartRate.startWatchWorkoutIfNeeded()
+                            }
+                            catch { errorText = NSLocalizedString("Couldn't connect to Apple Health.", comment: "") }
+                            connecting = false
+                        }
+                    })).toggleStyle(.switch).tint(MasoColor.toggleAccent).disabled(connecting)
+                        .accessibilityIdentifier("workout.heart.enable")
+                    if data.settings.workoutHeartRateEnabled == true {
+                        Button("Open Masso on Apple Watch") {
+                            Task {
+                                do { try await store.heartRate.openWatchWorkout() }
+                                catch { errorText = NSLocalizedString("Open Masso on your paired Apple Watch to read live heart rate.", comment: "") }
+                            }
+                        }
+                    }
+                } footer: {
+                    Text("Live readings need a heart-rate sensor. No reading means no heart-rate warning.")
+                    Text("If access was denied, update Masso's permissions in the Health app.")
+                }
+                Section {
+                    HStack {
+                        Text("Reminder limit")
+                        Spacer()
+                        TextField("bpm", text: Binding(get: { limitText }, set: { limitText = $0; usesRecommendation = false }))
+                            .keyboardType(.numberPad).multilineTextAlignment(.trailing)
+                            .frame(maxWidth: 110).accessibilityIdentifier("workout.heart.limit")
+                    }
+                    LabeledContent("Recommended", value: "\(recommendation.bpm.formatted(.number.locale(LanguageManager.currentLocale))) bpm")
+                    if usesRecommendation {
+                        Text("Using recommendation").font(.footnote).foregroundStyle(MasoColor.textDim)
+                    } else {
+                        Button("Reset to recommendation") {
+                            usesRecommendation = true
+                            limitText = recommendation.bpm.formatted(.number.locale(LanguageManager.currentLocale))
+                            errorText = nil
+                        }.accessibilityIdentifier("workout.heart.reset")
+                    }
+                    if let errorText { Text(errorText).foregroundStyle(.red).font(.footnote) }
+                } footer: {
+                    Text(recommendationExplanation)
+                    Text("Recommendations are estimates, not a medical safety limit. Medication and health conditions can affect heart rate.")
+                    Text("Over your limit for 15 seconds: pause and rest. This is a personal reminder, not a medical alarm.")
+                }
+                Section {
+                    if let latest = store.heartRate.latest {
+                        LabeledContent("Source", value: latest.source)
+                        LabeledContent("Last updated", value: latest.date.formatted(.dateTime.hour().minute().second().locale(LanguageManager.currentLocale)))
+                    } else { Text("No heart-rate samples yet").foregroundStyle(MasoColor.textDim) }
+                    Text("Heart-rate data stays on this device and is not sent to AI Coach.")
+                        .font(.footnote).foregroundStyle(MasoColor.textDim)
+                    Button("Delete heart-rate history", role: .destructive) { deleteHistory = true }
+                }
+            }
+            .navigationTitle("Heart rate").navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } }
+                ToolbarItem(placement: .confirmationAction) { Button("Save") { save() }.accessibilityIdentifier("workout.heart.save") }
+            }
+            .confirmationDialog("Delete heart-rate history?", isPresented: $deleteHistory, titleVisibility: .visible) {
+                Button("Delete", role: .destructive) {
+                    if !WorkoutHeartLocalStore.shared.clear() { errorText = NSLocalizedString("Try again", comment: "") }
+                }
+            }
+            .onAppear {
+                showCard = data.settings.workoutHeartRateShowCard == true
+                heartAssist = data.settings.workoutHeartRateAutomaticEnabled == true
+                usesRecommendation = WorkoutHeartRecommendation.usesRecommendation(data.settings)
+                let value = usesRecommendation ? recommendation.bpm : (data.settings.workoutHeartRateLimit ?? recommendation.bpm)
+                limitText = value.formatted(.number.locale(LanguageManager.currentLocale))
+            }
+            .onChange(of: recommendation.bpm) { _, value in
+                if usesRecommendation { limitText = value.formatted(.number.locale(LanguageManager.currentLocale)) }
+            }
+        }.presentationDetents([.large]).presentationDragIndicator(.visible)
+    }
+    private func bindMonitor() {
+        store.heartRateReadEnabled = data.settings.workoutHeartRateEnabled == true
+        store.heartRate.bind(sessionID: store.session?.completed == false ? store.workoutSessionID : nil,
+                             start: store.session?.startedAt, enabled: store.heartRateReadEnabled, limit: WorkoutHeartRecommendation.effective(settings: data.settings, samples: WorkoutHeartLocalStore.shared.samples, excluding: store.workoutSessionID))
+        store.pushWatchState()
+    }
+    private func save() {
+        if usesRecommendation {
+            data.settings.workoutHeartRateUseRecommendation = true
+            data.settings.workoutHeartRateLimit = nil
+        } else {
+            let formatter = NumberFormatter(); formatter.locale = LanguageManager.currentLocale; formatter.numberStyle = .decimal
+            let trimmed = limitText.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard trimmed.allSatisfy({ $0.wholeNumberValue != nil }),
+                  let value = formatter.number(from: trimmed)?.intValue, (40...240).contains(value) else {
+                errorText = NSLocalizedString("Enter a limit from 40 to 240 bpm.", comment: ""); return
+            }
+            data.settings.workoutHeartRateLimit = value
+            data.settings.workoutHeartRateUseRecommendation = false
+        }
+        data.settings.workoutHeartRateShowCard = showCard
+        data.settings.workoutHeartRateAutomaticEnabled = heartAssist
+        data.save()
+        bindMonitor(); dismiss()
     }
 }

@@ -1,6 +1,6 @@
 import SwiftUI
 
-// Maso — 简单的健身记录 (iOS native port)
+// Masso — 简单的健身记录 (iOS native port)
 //
 // 视觉语言:
 //   - 深色优先, Spotify 风格
@@ -16,6 +16,7 @@ import SwiftUI
 //   - 数据层暂时用 in-memory mock (DataStore), 后续可接 SwiftData
 @main
 struct MasoApp: App {
+    @UIApplicationDelegateAdaptor(HomeQuickActionAppDelegate.self) private var quickActionDelegate
     @Environment(\.scenePhase) private var scenePhase
     @State private var session = TrainingSessionStore()
     // bootstrap() 优先从 PersistenceController (Documents/maso-data.json) 加载持久化数据.
@@ -23,29 +24,109 @@ struct MasoApp: App {
     // 改自 .makeMock(): 之前每次启动都重置数据, 现在用户的 plans / sets / settings 都保留.
     // MASO_SHOWCASE_SEED=1 (仅截图流水线注入的 env) → 用 makeMock 演示数据 (跳过引导, 带计划+历史).
     // 生产无此 env, 永远走 bootstrap. 不持久化 mock (不调 save), 不污染真实数据文件.
-    @State private var dataStore = ProcessInfo.processInfo.environment["MASO_SHOWCASE_SEED"] == "1"
-        ? DataStore.makeMock()
-        : DataStore.bootstrap()
+    @State private var dataStore: DataStore = {
+        #if DEBUG
+        // Checked before bootstrap(). The test host process is created before any XCTest method.
+        if ProcessInfo.processInfo.environment["MASO_COACH_CHAT_UI_TEST"] == "1"
+            || ProcessInfo.processInfo.environment["MASO_COACH_SWAP_TEST"] == "1" {
+            return DataStore(exercises: ExerciseLibrary.all, plans: [], sets: [], settings: UserSettings())
+        }
+        if ProcessInfo.processInfo.environment["MASO_FRESH_ONBOARDING_UI_TEST"] == "1" {
+            var settings = UserSettings()
+            settings.hasSeenWelcomePaywall = true // Exercise the real post-paywall startup without a StoreKit dependency.
+            return DataStore(exercises: ExerciseLibrary.all, plans: [], sets: [], settings: settings)
+        }
+        #endif
+        return ProcessInfo.processInfo.environment["MASO_SHOWCASE_SEED"] == "1"
+            ? DataStore.makeMock() : DataStore.bootstrap()
+    }()
     /// StoreKit 2 订阅管理器 — load products / listen transactions / 回写 DataStore entitlement.
     /// 在 .task 里 configure(), 注入 callback 让它把 entitlement 变化同步到 dataStore.settings.
-    @State private var subscriptions = SubscriptionManager()
-    @State private var splashDone = false
+    /// Nil only for the coach-swap test host, so this initializer does not run.
+    @State private var subscriptions: SubscriptionManager? = {
+        #if DEBUG
+        if ProcessInfo.processInfo.environment["MASO_COACH_CHAT_UI_TEST"] == "1"
+            || ProcessInfo.processInfo.environment["MASO_COACH_SWAP_TEST"] == "1" { return nil }
+        #endif
+        return SubscriptionManager()
+    }()
+    @State private var splashDone: Bool = {
+        #if DEBUG
+        return ProcessInfo.processInfo.environment["MASO_SCREENSHOT_CAPTURE"] == "1"
+        #else
+        return false
+        #endif
+    }()
+    @State private var splashHomePrepared = false
     /// 启动时 init 一次, 让它从 UserDefaults 读上次选的语言, 立刻 apply 到 Bundle.
     /// observe 这个 manager 保证语言切换时 SwiftUI 整树 re-render.
     @State private var languageManager = LanguageManager.shared
 
+    init() {
+        #if DEBUG
+        // Coach-swap tests never reach audio, health, or the network tasks below.
+        if ProcessInfo.processInfo.environment["MASO_COACH_CHAT_UI_TEST"] == "1"
+            || ProcessInfo.processInfo.environment["MASO_COACH_SWAP_TEST"] == "1" { return }
+        #endif
+        // Set mixing before any demo/speech view is built; do not activate it.
+        AppAudioSession.configure()
+    }
+
     var body: some Scene {
         WindowGroup {
+            Group {
+            #if DEBUG
+            if ProcessInfo.processInfo.environment["MASO_COACH_CHAT_UI_TEST"] == "1" {
+                CoachChatUITestHost()
+            } else if ProcessInfo.processInfo.environment["MASO_COACH_SWAP_TEST"] == "1" {
+                // Do not build RootView. Its startup reads HealthKit and refreshes AI.
+                Color.clear
+            } else if ProcessInfo.processInfo.environment["MASO_ONBOARDING_UI_TEST"] == "1" {
+                OnboardingUITestHost()
+            } else if let scene = ProcessInfo.processInfo.environment["MASO_PAYWALL_UI_TEST_SCENE"] {
+                PaywallUITestHost(scene: scene)
+            } else if let scene = ProcessInfo.processInfo.environment["MASO_EXERCISE_UI_TEST_SCENE"] {
+                ExerciseLibraryUITestHost(scene: scene)
+            } else {
+                applicationRoot
+            }
+            #else
+            applicationRoot
+            #endif
+            }.toggleStyle(MassoToggleStyle())
+        }
+    }
+
+    private var applicationRoot: some View {
             ZStack {
-                if splashDone {
-                    RootView()
+                if splashDone || splashHomePrepared {
+                    Group {
+                        if dataStore.aiAccess.needsDisclosure { DeviceAIDisclosureView() }
+                        else { RootView(launchReady: splashDone) }
+                    }
+                        .frame(maxWidth: 760)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .background(MasoColor.background.ignoresSafeArea())
                         .environment(session)
                         .environment(dataStore)
-                        .environment(subscriptions)
-                        .transition(.opacity)
-                } else {
-                    SplashScreen { withAnimation(.easeOut(duration: 0.3)) { splashDone = true } }
-                        .transition(.opacity)
+                        .environment(subscriptions!)
+                        .allowsHitTesting(splashDone)
+                        .accessibilityHidden(!splashDone)
+                }
+                if !splashDone {
+                    SplashScreen(onPrepare: { splashHomePrepared = true }) { splashDone = true }
+                }
+            }
+            .onOpenURL { url in
+                // Capture cold-launch links while the splash screen is still visible.
+                if let destination = MassoWidgetDestination(url: url) {
+                    AppRouter.shared.pendingHomeQuickAction = nil
+                    AppRouter.shared.pendingWidgetDay = nil
+                    AppRouter.shared.pendingWidgetDestination = destination
+                } else if let day = MassoWidgetDayLink.day(from: url) {
+                    AppRouter.shared.pendingHomeQuickAction = nil
+                    AppRouter.shared.pendingWidgetDestination = nil
+                    AppRouter.shared.pendingWidgetDay = day
                 }
             }
             .preferredColorScheme(.dark)
@@ -60,11 +141,21 @@ struct MasoApp: App {
             // 但 SwiftUI Text 要重启才变. 这里把 locale 也绑到所选语言 → Text 当场重解析,
             // 切换语言无需重启 app.
             .environment(\.locale, Locale(identifier: languageManager.effectiveLanguage.rawValue))
+            .environment(\.layoutDirection, languageManager.effectiveLanguage == .ar ? .rightToLeft : .leftToRight)
             // App 进后台 → 强制持久化一次, 防止用户改了 settings 没 save 就被系统挂起.
             // (Settings 里 toggle 不直接调 dataStore.save(), 走默认 SwiftUI @Bindable mutate.)
+            .onChange(of: languageManager.effectiveLanguage.rawValue, initial: true) { _, code in
+                // Queued notification content is a snapshot: replace it immediately
+                // after changing languages, not only when the app backgrounds.
+                dataStore.settings.language = code
+                dataStore.save() // Reschedules meal and bedtime in the effective language.
+                dataStore.rescheduleWorkoutReminders()
+                RestNotificationScheduler.shared.cancel() // Recreated in the chosen language if training backgrounds.
+            }
             .onChange(of: scenePhase) { _, newPhase in
                 if newPhase == .background || newPhase == .inactive {
                     dataStore.save()
+                    WidgetSnapshotPublisher.shared.schedule(dataStore, immediately: true)
                     // 进后台时以"最近一次训练"为基重排召回提醒 (开关关时只清除).
                     dataStore.rescheduleWorkoutReminders()
                     // 分析: app_background + flush 缓冲. 这是 scenePhase 的**唯一**根级站点 —
@@ -73,13 +164,25 @@ struct MasoApp: App {
                 }
                 // 回前台 → 刷一次 entitlements (用户可能在 Settings.app 改了订阅状态 / 在 Polar 网页买了)
                 if newPhase == .active {
-                    Task { await subscriptions.refreshEntitlements() }
+                    Task { await ExerciseDemoService.shared.refreshAvailableCatalog() }
+                    MealReminderScheduler.shared.reschedule(settings: dataStore.settings)
+                    WidgetSnapshotPublisher.shared.schedule(dataStore)
+                    Task { await subscriptions!.refreshEntitlements() }
                     Task { await dataStore.refreshPolarEntitlement() }
                     Analytics.shared.handleForeground()
                 }
             }
             // configure SubscriptionManager — 注入 callback 让 StoreKit entitlement 变化时
             // 自动写到 dataStore.settings.proSubscription. .task 保证只跑一次.
+            .task {
+                // Poll the lightweight approved catalog while the app remains open.
+                // The service throttles successful refreshes and keeps its offline snapshot.
+                while !Task.isCancelled {
+                    await ExerciseDemoService.shared.refreshAvailableCatalog()
+                    do { try await Task.sleep(for: .seconds(900)) }
+                    catch { break }
+                }
+            }
             .task {
                 // 产品分析 boot — Phase 1 (2026-08-15): TelemetryDeck.
                 // 之前是 NoOpSink, 事件生成完直接丢 → 我们对自己 app 里发生的一切一无所知,
@@ -109,7 +212,7 @@ struct MasoApp: App {
                     "days_since_install": .int(daysSinceInstall),
                 ])
 
-                subscriptions.configure { newSub in
+                subscriptions!.configure { newSub in
                     // 只在变化时写 + save, 避免每次 currentEntitlements 触发都 mark dirty.
                     if dataStore.settings.proSubscription != newSub {
                         dataStore.settings.proSubscription = newSub
@@ -130,9 +233,13 @@ struct MasoApp: App {
                     defaultRest: dataStore.settings.defaultRestSeconds,
                     defaultBetweenExerciseRest: dataStore.settings.defaultBetweenExerciseRestSeconds
                 )
+                AppRouter.shared.homeQuickActionsReady = true
                 // Apple Watch 镜像 — 激活 WCSession + 接线手表动作:
                 // ✓/Skip → advance (跟手机主按钮同语义, 含 SetRecord 落库); 暂停 → togglePlay.
                 WatchSyncManager.shared.activate()
+                WatchSyncManager.shared.onCommand = { command in
+                    session.applyWatchCommand(command, data: dataStore)
+                }
                 WatchSyncManager.shared.onAdvance = {
                     session.advance { rec in dataStore.recordSet(rec) }
                 }
@@ -142,6 +249,5 @@ struct MasoApp: App {
                 // 启动即推一帧 (idle / 恢复的 session) — 防手表停留在上次训练的旧状态.
                 session.pushWatchState()
             }
-        }
     }
 }

@@ -58,29 +58,21 @@ struct UnifiedShareCard: View {
         // 算出每个 section 实际是否要画
         // 今日状态 section: render 模式下只有 photo 存在才画; edit 模式下不管有没 photo 都画 (用户能看到 toggle)
         let isEditMode = editToggles != nil
-        let hasPhotoContent = userPhoto != nil || onTapAddPhoto != nil
-        let showTodayStatus = shouldShowSection(visible: effectiveVisible.todayStatus)
-            && (isEditMode || (userPhoto != nil && effectiveVisible.todayStatus))
-            && (hasPhotoContent || isEditMode)
         let showWorkout = workoutSection != nil && shouldShowSection(visible: effectiveVisible.workout)
         let showMuscle = muscleStatusSection != nil && shouldShowSection(visible: effectiveVisible.muscleStatus)
         let showCalendar = calendarSection != nil && shouldShowSection(visible: effectiveVisible.calendar)
+        let showTodayStatus = isEditMode && onTapAddPhoto != nil
 
         return VStack(spacing: 0) {
+            if showTodayStatus {
+                TodayStatusSectionView(userPhoto: userPhoto, onTapAddPhoto: onTapAddPhoto,
+                                       toggleBinding: todayStatusToggleBinding(), isContentVisible: effectiveVisible.todayStatus)
+                    .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
+                    .padding(.top, 16)
+            }
             VStack(spacing: 20) {  // section 间 spacing, 配 SectionDivider 总间距 ≈ 41pt
                 Spacer(minLength: 24)
 
-                if showTodayStatus {
-                    TodayStatusSectionView(
-                        userPhoto: userPhoto,
-                        onTapAddPhoto: onTapAddPhoto,
-                        toggleBinding: todayStatusToggleBinding(),
-                        isContentVisible: effectiveVisible.todayStatus
-                    )
-                }
-                if showTodayStatus && (showWorkout || showMuscle || showCalendar) {
-                    SectionDivider()
-                }
                 if showWorkout, let workout = workoutSection {
                     WorkoutSectionView(
                         data: workout,
@@ -111,11 +103,11 @@ struct UnifiedShareCard: View {
 
                 Spacer(minLength: 20)
             }
-            .padding(.horizontal, 24)
+            .padding(.horizontal, ShareLayout.contentInset)
             .frame(maxWidth: .infinity, alignment: .leading)
 
             // 带上 App Store 二维码 — 跟完成卡 / routine 卡一致, 让 History 分享出去的图也能扫码下载.
-            ShareCardFooter(qrPayload: MasoLinks.appStore)
+            ShareCardFooter(qrPayload: MasoLinks.appStore, photo: effectiveVisible.todayStatus ? userPhoto : nil)
         }
         .background(MasoColor.background)
     }
@@ -240,78 +232,16 @@ private struct TodayStatusSectionView: View {
     let onTapAddPhoto: (() -> Void)?
     var toggleBinding: Binding<Bool>? = nil
     var isContentVisible: Bool
-
     var body: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            // Header — kicker + 大标题 + (optional) inline toggle
-            VStack(alignment: .leading, spacing: 4) {
-                SectionKicker(text: "Today")
-                HStack(alignment: .center, spacing: 8) {
-                    Text("My Workout")
-                        .font(.system(size: 22, weight: .bold))
-                        .foregroundStyle(MasoColor.text)
-                        .lineLimit(2)
-                    Spacer()
-                    if let toggleBinding {
-                        InlineSectionToggle(isOn: toggleBinding)
-                    }
-                }
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Text("Photo").font(.subheadline.weight(.semibold)).foregroundStyle(MasoColor.text)
+                Spacer()
+                if let toggleBinding { InlineSectionToggle(isOn: toggleBinding) }
             }
-
-            // 照片 / 占位 content — toggle off 时隐藏
-            if isContentVisible {
-                photoContent
-                    .padding(.top, 2)
-            }
+            if isContentVisible { SharePhotoBanner(photo: userPhoto, onTapToAdd: onTapAddPhoto) }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-    }
-
-    @ViewBuilder
-    private var photoContent: some View {
-        if let photo = userPhoto {
-            // 已加照片 — 严格 1:1 圆角正方形 + 细描边. tap 弹 confirmationDialog 换/删.
-            Color.clear
-                .aspectRatio(1, contentMode: .fit)
-                .overlay {
-                    Image(uiImage: photo)
-                        .resizable()
-                        .scaledToFill()
-                }
-                .clipShape(RoundedRectangle(cornerRadius: 14))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 14)
-                        .stroke(MasoColor.borderSoft, lineWidth: 1)
-                )
-                .contentShape(Rectangle())
-                .onTapGesture { onTapAddPhoto?() }
-        } else if let onTapAddPhoto {
-            // 还没加照片 + preview 模式: 虚线占位框
-            Color.clear
-                .aspectRatio(1, contentMode: .fit)
-                .overlay {
-                    ZStack {
-                        RoundedRectangle(cornerRadius: 14)
-                            .strokeBorder(
-                                MasoColor.borderSoft,
-                                style: StrokeStyle(lineWidth: 1.5, dash: [6, 4])
-                            )
-                        VStack(spacing: 10) {
-                            Image(systemName: "photo.badge.plus")
-                                .font(.system(size: 38, weight: .light))
-                                .foregroundStyle(MasoColor.textDim)
-                            Text("Add a photo")
-                                .font(.system(size: 14, weight: .semibold))
-                                .foregroundStyle(MasoColor.textDim)
-                        }
-                    }
-                    .background(MasoColor.surface.opacity(0.4))
-                    .clipShape(RoundedRectangle(cornerRadius: 14))
-                }
-                .contentShape(Rectangle())
-                .onTapGesture { onTapAddPhoto() }
-        }
-        // 渲染模式 + 无 photo: 不画 (UnifiedShareCard 已经在 showTodayStatus 那一关挡掉了)
     }
 }
 
@@ -332,7 +262,7 @@ private struct InlineSectionToggle: View {
     var body: some View {
         Toggle("", isOn: $isOn)
             .labelsHidden()
-            .tint(MasoColor.accent)
+            .toggleStyle(.switch).tint(MasoColor.toggleAccent)
             .scaleEffect(0.78)
             .frame(width: 40)
     }
@@ -404,15 +334,11 @@ private struct WorkoutSectionView: View {
                     .padding(.top, 2)
                 }
 
-                // BodyHint
+                // 肌肉覆盖图使用简洁的 2D 版本；顶部只显示用户照片。
                 if !data.muscles.isEmpty {
                     HStack {
                         Spacer()
-                        BodyHint(
-                            muscles: data.muscles,
-                            height: 140,
-                            region: detectBodyRegion(data.muscles)
-                        )
+                        ShareMuscleMap2D(muscles: data.muscles)
                         Spacer()
                     }
                     .padding(.top, 4)
@@ -450,12 +376,7 @@ private struct MuscleStatusSectionView: View {
                 // BodyHint — 同 HistoryScreen 同尺寸 + 同衰减 mapping
                 HStack {
                     Spacer()
-                    BodyHint(
-                        muscles: [],
-                        height: 180,
-                        heatStyleFor: data.muscleStyle,
-                        coarseOnly: data.coarseOnly
-                    )
+                    ShareMuscleMap2D(muscleStyle: data.muscleStyle, height: 148)
                     Spacer()
                 }
                 .padding(.top, 2)
@@ -493,6 +414,7 @@ private struct CalendarSectionView: View {
         let start = weekDates.first ?? Date()
         let end = weekDates.last ?? Date()
         let df = DateFormatter()
+        df.locale = LanguageManager.currentLocale
         df.dateFormat = "MMM d"
         let s = df.string(from: start)
         let e = df.string(from: end)
@@ -557,16 +479,18 @@ private struct UnifiedDayDot: View {
     let date: Date
     let trained: Bool
 
-    private static let weekdayFormatter: DateFormatter = {
+    private static var weekdayFormatter: DateFormatter {
         let df = DateFormatter()
+        df.locale = LanguageManager.currentLocale
         df.dateFormat = "E"
         return df
-    }()
-    private static let dayFormatter: DateFormatter = {
+    }
+    private static var dayFormatter: DateFormatter {
         let df = DateFormatter()
+        df.locale = LanguageManager.currentLocale
         df.dateFormat = "d"
         return df
-    }()
+    }
 
     var body: some View {
         VStack(spacing: 6) {

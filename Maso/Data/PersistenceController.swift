@@ -10,8 +10,8 @@ import Foundation
 /// ## 设备迁移怎么走
 /// 1. 文件存在 `Documents/maso-data.json`
 /// 2. iOS 自动把 `Documents/` 纳入 **iCloud Backup**
-/// 3. 用户买新手机 → "从 iCloud Backup 恢复" → 文件回来 → Maso 加载, 数据完整
-/// 4. **不需要 Maso 内做任何特殊操作** — iOS 标准流程
+/// 3. 用户买新手机 → "从 iCloud Backup 恢复" → 文件回来 → Masso 加载, 数据完整
+/// 4. **不需要 Masso 内做任何特殊操作** — iOS 标准流程
 ///
 /// ## 多设备实时同步 (P1)
 /// 后续做 CloudKit / iCloud Drive ubiquity 时, 把 `path` 切到 ubiquity container 路径即可.
@@ -31,8 +31,13 @@ import Foundation
 /// }
 /// ```
 /// version 字段给未来 schema migration 用.
-struct PersistenceController {
+@MainActor
+final class PersistenceController {
     static let shared = PersistenceController()
+    private let storageURL: URL?
+    private var needsRecoveryCopy = false
+
+    init(storageURL: URL? = nil) { self.storageURL = storageURL }
 
     /// 当前 schema 版本. 改 model 时一起 bump, decode 失败兜底走 mock.
     /// v2: 推荐计划模板修了失效的动作 ID + 扩到 8 个动作 → bootstrap 检到旧版本会一次性
@@ -54,7 +59,18 @@ struct PersistenceController {
     /// ```
     /// 依赖: 付费 Apple Developer Program + Apple Dev Console 建好 iCloud.com.yumowu.maso container.
     var currentURL: URL? {
-        FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+        #if DEBUG
+        if storageURL == nil, ProcessInfo.processInfo.environment["MASO_COACH_CHAT_UI_TEST"] == "1" {
+            return FileManager.default.temporaryDirectory.appendingPathComponent("maso-coach-chat-ui.json")
+        }
+        if storageURL == nil, ProcessInfo.processInfo.environment["MASO_COACH_SWAP_TEST"] == "1" {
+            return FileManager.default.temporaryDirectory.appendingPathComponent("maso-coach-swap-test.json")
+        }
+        if storageURL == nil, ProcessInfo.processInfo.environment["MASO_FRESH_ONBOARDING_UI_TEST"] == "1" {
+            return FileManager.default.temporaryDirectory.appendingPathComponent("maso-fresh-onboarding-ui.json")
+        }
+        #endif
+        return storageURL ?? FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
             .first?.appendingPathComponent("maso-data.json")
     }
 
@@ -77,6 +93,8 @@ struct PersistenceController {
     func load() -> Snapshot? {
         guard let url = currentURL,
               FileManager.default.fileExists(atPath: url.path) else { return nil }
+        // A failed decode must not let bootstrap overwrite the user's only copy.
+        needsRecoveryCopy = true
         do {
             let data = try Data(contentsOf: url)
             let dec = JSONDecoder()
@@ -85,6 +103,7 @@ struct PersistenceController {
             // schema 版本兼容性检查 — 文件版本 ≤ 当前版本时 OK (向前兼容由 JSON 字段缺失容忍处理).
             // 文件版本 > 当前版本 (用户从更新版本降级回来) → 不读, 用 mock, 避免破坏新版数据.
             guard snapshot.version <= Self.schemaVersion else { return nil }
+            needsRecoveryCopy = false
             return snapshot
         } catch {
             // 解析失败 — 大多是 schema 变了或文件损坏. 回退到 mock, 老文件保留磁盘上 (没删).
@@ -96,8 +115,11 @@ struct PersistenceController {
 
     /// 持久化 snapshot. 写文件用 atomic 选项防止中途崩溃产生 corrupt JSON.
     /// 失败静默 (没法做太多 — 磁盘满 / 权限问题等都是 user-out-of-control).
-    func save(_ snapshot: Snapshot) {
-        guard let url = currentURL else { return }
+    @discardableResult
+    func save(_ snapshot: Snapshot) -> Bool {
+        var snapshot = snapshot
+        snapshot.settings = snapshot.settings.excludingBodyHealthData
+        guard let url = currentURL else { return false }
         do {
             let enc = JSONEncoder()
             enc.dateEncodingStrategy = .iso8601
@@ -105,9 +127,20 @@ struct PersistenceController {
             // 膨胀 ~30% + 编码更慢. 机器读的文件不需要人类可读. Export 仍用 pretty (见下).
             enc.outputFormatting = []
             let data = try enc.encode(snapshot)
+            if needsRecoveryCopy {
+                if FileManager.default.fileExists(atPath: url.path) {
+                    let recovery = url.deletingLastPathComponent()
+                        .appendingPathComponent("maso-data-recovery-\(UUID().uuidString).json")
+                    // If archiving fails (for example file protection), leave the original untouched.
+                    try FileManager.default.copyItem(at: url, to: recovery)
+                }
+                needsRecoveryCopy = false
+            }
             try data.write(to: url, options: [.atomic])
+            return true
         } catch {
             // swallow — DataStore 下次 launch 会再试
+            return false
         }
     }
 
@@ -116,9 +149,11 @@ struct PersistenceController {
     /// 把当前 snapshot 写到临时文件, 返回 URL — caller 用 `.fileExporter` 把这个 URL 抛给 Files / AirDrop.
     /// 文件名带日期, 让用户在 Files app 里能区分多次备份.
     func exportToTempFile(_ snapshot: Snapshot) -> URL? {
+        var snapshot = snapshot
+        snapshot.settings = snapshot.settings.excludingBodyHealthData
         let df = DateFormatter()
         df.dateFormat = "yyyy-MM-dd-HHmm"
-        let filename = "maso-backup-\(df.string(from: Date())).json"
+        let filename = "masso-backup-\(df.string(from: Date())).json"
         let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent(filename)
 
         do {
@@ -158,6 +193,7 @@ struct PersistenceController {
     func reset() {
         guard let url = currentURL else { return }
         try? FileManager.default.removeItem(at: url)
+        needsRecoveryCopy = false
     }
 
     /// 文件存在 + size + 修改时间 — Settings UI 显示"上次保存于..."

@@ -1,0 +1,13 @@
+/* Localized iOS permission descriptions. */
+"NSCameraUsageDescription" = "Masso verwendet die Kamera für Workout-Fotos zum Teilen, Körperfotos für KI-Trainingsempfehlungen und Essensfotos zur Analyse deiner Nährstoffaufnahme.";
+"NSHealthShareUsageDescription" = "Masso liest Gewicht, Größe, Schritte, Energie, Schlaf, Trainings und Trainingspuls aus Apple Health für dein Profil, lokale Berichte und persönliche Pausenhinweise.";
+"NSHealthUpdateUsageDescription" = "Masso speichert abgeschlossene Workouts in Apple Fitness, damit sie in deinen Aktivitätsringen und im Health-Verlauf erscheinen.";
+"NSPhotoLibraryUsageDescription" = "Masso verwendet ausgewählte Fotos zum Teilen von Workouts und für KI-Trainingsempfehlungen.";
+
+"Start workout" = "Training starten";
+
+"Add meal" = "Mahlzeit hinzufügen";
+
+"Free workout" = "Free Workout";
+
+"AI Coach" = "AI Coach";

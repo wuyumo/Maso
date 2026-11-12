@@ -1,16 +1,148 @@
 import Foundation
 
+enum TrainingEnvironment: String, CaseIterable, Codable, Sendable, Identifiable {
+    case gym, home, bodyweight
+    var id: String { rawValue }
+    var title: String {
+        switch self {
+        case .gym: NSLocalizedString("Gym", comment: "training environment")
+        case .home: NSLocalizedString("Home", comment: "training environment")
+        case .bodyweight: NSLocalizedString("Bodyweight", comment: "training environment")
+        }
+    }
+
+    /// An explicit one-off equipment request may override the saved environment.
+    static func forEquipmentOverride(_ categories: [String], current: Self?) -> Self? {
+        guard current == .home || current == .bodyweight else { return current }
+        let portable: Set<String> = ["dumbbell", "bands", "kettlebell", "barbell", "pullupBar"]
+        return Set(categories).isSubset(of: portable) ? .home : .gym
+    }
+}
+
+/// Explicit home capabilities, rather than assuming a gym's benches and attachments.
+enum HomeTrainingEquipment: String, CaseIterable, Sendable, Identifiable {
+    case dumbbell, bands, kettlebell
+    case pullupBar = "pull_up_bar"
+    case flatBench = "bench_flat"
+    case adjustableBench = "adjustable_bench"
+    case barbell
+    case rack = "squat_rack"
+    var id: String { rawValue }
+    var title: String {
+        switch self {
+        case .dumbbell: EquipmentCategory.dumbbell.displayName
+        case .bands: EquipmentCategory.bands.displayName
+        case .kettlebell: EquipmentCategory.kettlebell.displayName
+        case .barbell: EquipmentCategory.barbell.displayName
+        case .pullupBar: NSLocalizedString("Pull-up bar", comment: "home equipment")
+        case .adjustableBench: NSLocalizedString("Adjustable bench", comment: "home equipment")
+        default: Exercise.equipmentDisplayName(for: rawValue)
+        }
+    }
+    var promptName: String {
+        switch self {
+        case .dumbbell: "dumbbells"
+        case .bands: "resistance bands"
+        case .kettlebell: "kettlebells"
+        case .pullupBar: "pull-up bar (not dip bars or rings)"
+        case .flatBench: "flat bench (no incline/decline)"
+        case .adjustableBench: "adjustable bench (flat/incline, no decline assumed)"
+        case .barbell: "straight barbell and plates (no rack assumed)"
+        case .rack: "squat rack"
+        }
+    }
+    func provides(_ raw: String) -> Bool {
+        switch self {
+        case .dumbbell: ["dumbbell", "dumbbells"].contains(raw)
+        case .bands: ["band", "bands", "resistance_band"].contains(raw)
+        case .kettlebell: ["kettlebell", "kettlebells"].contains(raw)
+        case .pullupBar: raw == "pull_up_bar"
+        case .flatBench: ["bench", "bench_flat"].contains(raw)
+        case .adjustableBench: ["bench", "bench_flat", "bench_incline"].contains(raw)
+        case .barbell: ["barbell", "barbells", "weight_plate", "plates"].contains(raw)
+        case .rack: ["rack", "power_rack", "squat_rack"].contains(raw)
+        }
+    }
+}
+
+/// Shared editing state; switching environment retains the user's home selection.
+struct TrainingEquipmentDraft: Equatable {
+    var environment: TrainingEnvironment? = .gym
+    var homeEquipment: Set<HomeTrainingEquipment> = []
+    var gymEquipment: Set<String> = []
+
+    init() {}
+    init(settings: UserSettings) {
+        environment = settings.trainingEnvironment
+        homeEquipment = Set((settings.homeEquipment ?? (environment == .home ? settings.availableEquipment : []))
+            .compactMap(HomeTrainingEquipment.init(rawValue:)))
+        gymEquipment = Set(settings.gymEquipment ?? (environment == .home || environment == .bodyweight ? [] : settings.availableEquipment))
+    }
+    var displayedEnvironment: TrainingEnvironment {
+        environment ?? (gymEquipment == ["bodyweight"] ? .bodyweight : .gym)
+    }
+    var availableEquipment: [String] {
+        switch environment {
+        case .home: homeEquipment.isEmpty ? ["bodyweight"] : HomeTrainingEquipment.allCases.filter(homeEquipment.contains).map(\.rawValue)
+        case .bodyweight: ["bodyweight"]
+        case .gym, nil: gymEquipment.sorted()
+        }
+    }
+    mutating func select(_ value: TrainingEnvironment) {
+        environment = value
+        if value == .gym, gymEquipment == ["bodyweight"] { gymEquipment = [] }
+    }
+    func apply(to settings: inout UserSettings) {
+        settings.trainingEnvironment = environment
+        settings.homeEquipment = HomeTrainingEquipment.allCases.filter(homeEquipment.contains).map(\.rawValue)
+        settings.gymEquipment = gymEquipment.sorted()
+        settings.availableEquipment = availableEquipment
+    }
+}
+
+/// Shared choices for first-run onboarding and later training preferences.
+enum TrainingSessionLength {
+    static let options = [30, 45, 60, 90]
+    static let defaultMinutes = 45
+
+    // Keep an existing custom/legacy value selectable without migrating the profile.
+    static func options(including savedMinutes: Int?) -> [Int] {
+        guard let savedMinutes, savedMinutes > 0, !options.contains(savedMinutes) else { return options }
+        return (options + [savedMinutes]).sorted()
+    }
+
+    /// A template size budget, not a promise of elapsed workout time.
+    static func exerciseLimit(for minutes: Int) -> Int {
+        switch minutes {
+        case ...30: 3
+        case ...45: 4
+        case ...60: 6
+        default: 8
+        }
+    }
+}
+
+/// Shared ISO weekday arrangement for count edits; never inferred as workout history.
+enum TrainingWeekSchedule {
+    static func automatic(days: Int) -> [Int] {
+        switch min(7, max(1, days)) {
+        case 1: [1]
+        case 2: [2, 5]
+        case 3: [1, 3, 5]
+        case 4: [1, 2, 4, 6]
+        case 5: [1, 2, 4, 5, 6]
+        case 6: [1, 2, 3, 4, 5, 6]
+        default: Array(1...7)
+        }
+    }
+}
+
 /// 上线开关.
 enum MasoFlags {
-    /// 旧 Apple IAP 开关 — 账号身份签不了美国 Paid Apps 协议, 一直是 false (StoreKit 购买路径停用).
-    static let iapEnabled = false
-
-    /// 外部付费墙 (Polar 网页结账 + license key) 总开关. true →
-    ///   · 仅**美区** storefront 显示购买 (Epic v. Apple 判决后美区 app 内可放外链付费, 0 抽成);
-    ///   · 其他区 (含 storefront 未解析) isPro 恒 true, 维持免费全解锁, 不显示任何购买;
-    ///   · 解锁凭 Polar license key (无账号可携带凭证), 走 Worker /pro/validate 校验.
-    /// 见 [[project_maso_paywall_live]] / worker.js /pro/validate.
-    static let externalPaywallEnabled = true
+    /// Apple subscriptions are the current purchase route in all storefronts.
+    static let iapEnabled = true
+    /// Legacy checkout is no longer offered; existing licenses remain validatable.
+    static let externalPaywallEnabled = false
 
     /// 美区 storefront 的 ISO 3166-1 alpha-3 码 (StoreKit Storefront.countryCode).
     static let usStorefrontCode = "USA"
@@ -91,8 +223,30 @@ extension SubscriptionTier: Equatable {}
 
 // 用户设置 — 跟 web 端的 Settings 1:1 对齐
 struct UserSettings: Codable, Sendable {
+    /// Explicit completions; nil marks profiles that predate completion tracking.
+    var workoutCompletions: [WorkoutCompletion]? = nil
+    /// Optional for backward-compatible decoding of existing profiles.
+    var sleepRecords: [String: Double]? = nil
+    var sleepStageRecords: [String: SleepStagesRecord]? = nil
+    var mealCheckIns: [MealCheckIn]? = nil
+    var wellnessGoals: [String: DailyWellnessGoal]? = nil
+    var showCalendarRecovery: Bool? = nil
+    var dietEnabled: Bool? = nil
+    var sleepEnabled: Bool? = nil
+    var sleepPreferences: SleepPreferences? = nil
+    var dietPreferences: DietPreferences? = nil
+    var dailyDietPlan: DailyDietPlan? = nil
     var weightUnit: WeightUnit = .kg
+    /// Per-exercise inputs; legacy values and insertion order remain stored for compatibility.
+    var exerciseWeightInputs: [String: Double]? = nil
+    var loadProgression: LoadProgressionPreferences? = nil
+    var exerciseWeightInputOrder: [String]? = nil
+    /// Legacy inputs may include auto-seeded values. Only new explicit edits earn this marker.
+    var confirmedExerciseWeightInputIDs: [String]? = nil
     var distanceUnit: DistanceUnit = .km
+    /// Optional for older profiles; ordinary browsing folds specialist versions by default.
+    var hideRareVariants: Bool? = nil
+    var hidesRareVariants: Bool { hideRareVariants ?? true }
     var defaultRestSeconds: Int = 90
     /// 动作之间的休息 (秒) — Plan 内 step 之间默认插入的过渡 rest
     /// 跟 defaultRestSeconds (同动作组间) 分开, 因为换动作往往需要更长时间走位 / 调器械
@@ -102,7 +256,23 @@ struct UserSettings: Codable, Sendable {
     var sleepGoalHours: Int = 8
 
     var onboardingCompleted: Bool = false
-    var weeklyTrainingDays: Int = 3
+    /// Optional for older saved settings; first-run offer is for fresh installs.
+    var hasSeenWelcomePaywall: Bool? = nil
+    /// Armed only when the new-user onboarding finishes; nil preserves older profiles.
+    var coachIntroTipPending: Bool? = nil
+    var firstHomeMuscleIntroPending: Bool? = nil
+    var coachBodyPhotoTipSeen: Bool? = nil
+    /// Consumed only when the shared weight-source explanation first appears.
+    var hasSeenWeightEstimateExplanation: Bool? = nil
+    var weeklyTrainingDays: Int = 3 {
+        didSet {
+            if oldValue != weeklyTrainingDays, trainingWeekdays != nil {
+                trainingWeekdays = TrainingWeekSchedule.automatic(days: weeklyTrainingDays)
+            }
+        }
+    }
+    /// Optional for old profiles. ISO weekday numbers: Monday = 1, Sunday = 7.
+    var trainingWeekdays: [Int]? = nil
     var recommendedPlanIds: [String] = []
     var programStyle: ProgramStyle = .fullBody
 
@@ -114,6 +284,16 @@ struct UserSettings: Codable, Sendable {
     var gender: Gender?
     var age: Int?
     var weight: Double?
+    var heightCentimeters: Double? = nil
+    var bodyActivityHealth: BodyActivityHealthState? = nil
+    var workoutHeartRateEnabled: Bool? = nil
+    var workoutHeartRateShowCard: Bool? = nil
+    var workoutHeartRateAssistEnabled: Bool? = nil
+    /// Automatic actions require a separate opt-in from the earlier suggestion-only experiment.
+    var workoutHeartRateAutomaticEnabled: Bool? = nil
+    var workoutHeartRateLimit: Int? = nil
+    /// nil preserves existing profiles: a saved limit is manual; no limit uses the recommendation.
+    var workoutHeartRateUseRecommendation: Bool? = nil
 
     /// 教练记忆 (Coaching Memory) — 用户用自然语言写下的长期训练偏好 / 限制
     /// (e.g. "肩膀有伤,别过顶" / "偏好哑铃" / "想练线条"). 纯自由文本, 每次生成 routine
@@ -137,10 +317,8 @@ struct UserSettings: Codable, Sendable {
     /// 只有 == "USA" 才进付费判定; 其他区/未知 → 免费全解锁.
     var appStoreCountry: String? = nil
 
-    // MARK: - AI 教练每日软额度 (仅免费美区计数; Pro / 非美区不消费)
-    /// 上次计数所属的自然日 (startOfDay). 跨天自动归零 (见 DataStore.consumeAICoach).
+    // Legacy daily counters remain decodable; per-request reminders replace the cap.
     var aiCoachDay: Date = .distantPast
-    /// 当天已用的 AI 教练生成次数. 达 FreeLimit.freeDailyAICoach → send 弹付费墙.
     var aiCoachCountToday: Int = 0
 
     /// ⚠️ 调试专用解锁 Pro — 仅 Debug 包里 Settings 的 "Debug" 开关能置位, 且 isPro 也仅在
@@ -153,35 +331,40 @@ struct UserSettings: Codable, Sendable {
     /// Release/上架包既无 UI 可写又不读 → 零影响. (测付费墙时把 debugProUnlock 关掉才看得到墙.)
     var debugForceUSStorefront: Bool = false
 
-    /// Pro 判定.
-    /// externalPaywallEnabled=true (当前): 仅美区 storefront 走 Polar 付费判定, 其他区/未知恒 Pro (免费全解锁).
-    /// externalPaywallEnabled=false: 回落旧 StoreKit 判定 (iapEnabled / proSubscription).
+    /// Cached entitlements are revalidated on launch/foreground. An expired
+    /// subscription or stale legacy license never unlocks merely because it exists.
     var isPro: Bool {
         #if DEBUG
-        if debugProUnlock { return true }   // 调试开关 — Release 包不编译这段
+        if debugProUnlock { return true }
         #endif
-        if MasoFlags.externalPaywallEnabled {
-            // 非美区 / storefront 未解析 → 维持免费全解锁 (那些区根本不显示购买, 不做功能墙).
-            guard appStoreCountry == MasoFlags.usStorefrontCode else { return true }
-            // 过期硬闸 — 到期即使还没重校验也判 not pro.
-            if let exp = polarExpiresAt, exp < Date() { return false }
-            return polarProActive
+        if !MasoFlags.iapEnabled && !MasoFlags.externalPaywallEnabled { return true }
+        if let subscription = proSubscription,
+           subscription.tier == .lifetime || (subscription.renewsAt.map { $0 > Date() } ?? false) {
+            return true
         }
-        if !MasoFlags.iapEnabled || proSubscription != nil { return true }
+        if hasActiveLegacyPro { return true }
         return false
     }
 
-    /// 是否给这个用户展示 Pro 升级入口 (Settings 升级行 / 付费墙). 仅美区非 Pro 才显示.
+    var hasActiveLegacyPro: Bool {
+        guard polarProActive, let validatedAt = polarValidatedAt,
+              Date().timeIntervalSince(validatedAt) < PolarEntitlement.offlineGrace,
+              polarExpiresAt.map({ $0 > Date() }) ?? true else { return false }
+        return true
+    }
+
     var showProUpsell: Bool {
-        MasoFlags.externalPaywallEnabled
-            && appStoreCountry == MasoFlags.usStorefrontCode
-            && !isPro
+        (MasoFlags.iapEnabled || MasoFlags.externalPaywallEnabled) && !isPro
     }
 
     /// Apple Fitness (HealthKit) 同步开关.
     /// 用户在 Settings 主动打开 → 触发 HealthKit 授权对话框 → 已存训练补写 + 之后每次完成都写.
     /// 默认 false — 不能未经允许就写入用户健康数据.
     var healthKitSyncEnabled: Bool = false
+    /// Reading is opt-in and independent from writing Masso workouts to Health.
+    var externalWorkoutImportEnabled: Bool? = nil
+    var externalWorkouts: [ExternalWorkout]? = nil
+    var deletedExternalWorkoutIDs: [String]? = nil
 
     /// 已经成功写到 HealthKit 的 session id 集合 (sessionId = "planId|day" 格式或自由组).
     /// 避免同一次训练重复 push.
@@ -194,6 +377,7 @@ struct UserSettings: Codable, Sendable {
     /// 通知权限不在冷启动要, 而是在首个训练完成的正向时刻软问一次 (见 shouldOfferReminderPrompt +
     /// PlanPlayerScreen 软提示) —— 提醒本来在第一次训练前也无意义. 用户可随时在 Settings 关掉.
     var workoutRemindersEnabled: Bool = true
+    var mealRemindersEnabled: Bool? = nil
 
     /// 是否已经在训练完成的正向时刻请求过一次通知权限 (默认开后这是首个权限入口) — 全生命周期只问一次, 不纠缠.
     /// 用户若先在 Settings 里手动开/关过, 那条路径也会置此位, 避免事后重复弹.
@@ -212,6 +396,10 @@ struct UserSettings: Codable, Sendable {
     /// 非空 = 只用所选器械 (+ 自重永远可用) 出计划; AI / 本地推荐都按这个约束选动作.
     /// 用户场景: 进健身房前勾上"我这家健身房有的设备", 之后推荐 / AI 只出这些器械能做的动作.
     var availableEquipment: [String] = []
+    /// Optional additions preserve decoding of existing profiles.
+    var trainingEnvironment: TrainingEnvironment? = nil
+    var homeEquipment: [String]? = nil
+    var gymEquipment: [String]? = nil
 
     /// 肌肉分区颗粒度. true (默认): 暴露 sub-muscle (上胸/下胸/股二头/股内肌...).
     /// false: UI 只暴露 major (chest / back / quads / hamstrings...). 身体图也合并描边显示成大块.
@@ -268,6 +456,8 @@ struct UserSettings: Codable, Sendable {
     /// 推荐 plan 每张张多少个动作. 之前硬编码 4 (kMaxStepsPerRecommendedPlan), 现在交给用户.
     /// 1-6 区间. 6 是个上限 — 单次训练超过这个会偏长 (>60 min), 不符合"今日训练"的心智.
     var exercisesPerSession: Int = 4
+    /// Optional to keep older profiles decodable; a target, never recorded workout time.
+    var trainingSessionMinutes: Int? = nil
 
     /// 每个动作默认几组. RecommendedPrograms / AI / Free workout 创建 step 都用这个.
     var defaultSetsPerExercise: Int = 3
@@ -315,6 +505,8 @@ struct UserSettings: Codable, Sendable {
 
     /// 编码后的 AISummary (JSON 串). nil = 从没生成过.
     var aiSummaryCacheJSON: String? = nil
+    /// Suggestions explicitly dismissed by the user; optional for existing snapshots.
+    var dismissedCoachSuggestionIDs: [String]? = nil
     /// 生成缓存时 payload 材料字段的粗粒度 hash — 变了才有资格重生成 (§5 coarse hash).
     var aiSummaryDataHash: String? = nil
     /// 缓存生成时间 — 卡上 "as of <date>" + 7 天 cadence 判断.
@@ -459,10 +651,7 @@ extension UserSettings {
 
 enum FreeLimit {
     /// 免费用户最多保存几个训练计划
-    static let maxPlans: Int = 3
-    /// 免费美区用户每天最多几次 AI 教练生成 (Coach chat 生成/修订; onboarding 首计划 +
-    /// Today 每日自动刷新不计). 用完当天 → Coach send 弹付费墙, Pro=无限. 调这个数即调门槛.
-    static let freeDailyAICoach: Int = 5
+    static let maxPlans: Int = ProAccessPolicy.current.freeSavedPlans
 }
 
 // MARK: - EquipmentCategory (#1)
@@ -535,5 +724,72 @@ enum EquipmentCategory: String, CaseIterable, Identifiable, Sendable {
         if primary.isEmpty || primary == "body_only" || primary == "bodyweight" || primary == "none" { return true }
         guard let cat = category(for: primary) else { return true }
         return selected.contains(cat.rawValue)
+    }
+}
+
+struct SleepPreferences: Codable, Equatable {
+    var durationTargetMinutes: Int? = nil
+    var bedtimeMinutes = 23 * 60
+    var wakeMinutes = 7 * 60
+    var bedtimeReminderEnabled: Bool? = nil
+    var healthConnected = false
+    var recordedGoals: [String: Int] = [:]
+    var targetMinutes: Int { durationTargetMinutes ?? ((wakeMinutes - bedtimeMinutes + 1440) % 1440) }
+    static func mergedMinutes(_ values: [(Date, Date)]) -> Double {
+        var merged: [(Date, Date)] = []
+        for value in values.filter({ $0.1 > $0.0 }).sorted(by: { $0.0 < $1.0 }) {
+            if let last = merged.last, value.0 <= last.1 { merged[merged.count - 1].1 = max(last.1, value.1) }
+            else { merged.append(value) }
+        }
+        return merged.reduce(0) { $0 + $1.1.timeIntervalSince($1.0) / 60 }
+    }
+    static func dayKey(_ date: Date, calendar: Calendar) -> String {
+        let c = calendar.dateComponents([.year, .month, .day], from: date)
+        return "\(c.year ?? 0)-\(c.month ?? 0)-\(c.day ?? 0)"
+    }
+}
+
+
+struct SleepStagesRecord: Codable, Sendable {
+    var deep: Double
+    var rem: Double
+    var core: Double
+    var awake: Double? = nil
+    var inBed: Double? = nil
+    var unspecified: Double? = nil
+    /// Median of at least three previous nights in the preceding 14 calendar days.
+    /// A personal comparison, not a clinical target; excludes the selected night and future data.
+    static func deepReference(on day: Date, calendar: Calendar, records: [Date: SleepStagesRecord]) -> Double? {
+        let values = priorValues(on: day, calendar: calendar, records: records, stage: \.deep).sorted()
+        guard values.count >= 3 else { return nil }
+        let middle = values.count / 2
+        let median = values.count.isMultiple(of: 2) ? (values[middle - 1] + values[middle]) / 2 : values[middle]
+        return median > 0 ? median : nil
+    }
+    static func priorValues(on day: Date, calendar: Calendar, records: [Date: SleepStagesRecord],
+                            stage: KeyPath<SleepStagesRecord, Double>) -> [Double] {
+        let end = calendar.startOfDay(for: day)
+        guard let start = calendar.date(byAdding: .day, value: -14, to: end) else { return [] }
+        let values = records.filter { $0.key >= start && $0.key < end }
+            .map { $0.value[keyPath: stage] }.filter { $0.isFinite && $0 >= 0 }
+        return values
+    }
+    /// Personal middle 50% range, not a universal medical target.
+    static func reference(_ values: [Double]) -> ClosedRange<Double>? {
+        let values = values.filter { $0.isFinite && $0 >= 0 }.sorted()
+        guard values.count >= 7 else { return nil }
+        return values[(values.count - 1) / 4]...values[(values.count - 1) * 3 / 4]
+    }
+}
+
+
+extension UserSettings {
+    /// A saved preference takes effect for today's wake-date; previous nights keep their targets.
+    mutating func applySleepPreferences(_ updated: SleepPreferences, now: Date = Date()) {
+        let key = SleepPreferences.dayKey(now, calendar: calendar)
+        var preferences = updated
+        preferences.recordedGoals[key] = updated.targetMinutes
+        sleepPreferences = preferences
+        wellnessGoals?[key]?.sleepMinutes = updated.targetMinutes
     }
 }

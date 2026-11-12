@@ -39,7 +39,7 @@ struct MuscleStatusOverviewCard: View {
     private let rightColTextWidth: CGFloat = 132
 
     /// 点肌肉图 → 放大的单面板详情 (正/背面切换 + 引线到四档色块).
-    @State private var detailShown = false
+    var onOpenStatus: (_ gapMuscles: [MuscleGroup], _ startGapWorkout: @escaping () -> Void) -> Void = { _, _ in }
 
     var body: some View {
         // tease-free / precision-Pro: 免费用户看到 body-map 热图 (漂亮 + 卖产品) 但强制 coarseOnly
@@ -73,7 +73,7 @@ struct MuscleStatusOverviewCard: View {
                         Rectangle()
                             .fill(.clear)
                             .contentShape(Rectangle())
-                            .onTapGesture { detailShown = true }
+                            .onTapGesture { onOpenStatus(gapMuscles, onStartGapWorkout) }
                     }
                     .accessibilityAddTraits(.isButton)
                     .accessibilityHint("Muscle Status")
@@ -102,9 +102,9 @@ struct MuscleStatusOverviewCard: View {
                             // Pro: 4 档精度图例 + train-the-gaps 定向 CTA (完整可执行价值).
                             VStack(alignment: .leading, spacing: 4) {
                                 // 4 档恢复, 跟 MasoColor.recoveryHeatStyle 配色逐一对齐 (绿=练过点亮/灰=没点亮).
-                                legendRow(swatch: MasoColor.accent.opacity(1.00), label: "Heavy fatigue")
+                                legendRow(swatch: MasoColor.accent.opacity(1.00), label: "Fatigued")
                                 legendRow(swatch: MasoColor.accent.opacity(0.60), label: "Recovering")
-                                legendRow(swatch: MasoColor.accent.opacity(0.30), label: "Mostly recovered")
+                                legendRow(swatch: MasoColor.accent.opacity(0.30), label: "Rested")
                                 legendRow(swatch: Color(red: 0.165, green: 0.165, blue: 0.165), label: "Fresh")
                             }
                             // 底部动作行 (owner 定稿): [主操作] ——— [分享圆钮], 分享钮钉右端,
@@ -130,12 +130,12 @@ struct MuscleStatusOverviewCard: View {
                                                 .font(.system(size: 11, weight: .heavy))
                                                 .lineLimit(1)
                                         }
-                                        .foregroundStyle(MasoColor.accent)
+                                        .foregroundStyle(Color.blue)
                                         .padding(.horizontal, 11)
                                         .padding(.vertical, 5)
                                         // 次级胶囊钮 → accent 低浓度玻璃 (映射表②), 旧系统保留半透明底.
-                                        .glassCapsuleButtonBackground(tint: MasoColor.accent.opacity(0.25),
-                                                                      fallback: MasoColor.accent.opacity(0.16))
+                                        .glassCapsuleButtonBackground(tint: Color.blue.opacity(0.25),
+                                                                      fallback: Color.blue.opacity(0.16))
                                         .fixedSize(horizontal: true, vertical: false)
                                     }
                                     .buttonStyle(.plain)
@@ -146,9 +146,9 @@ struct MuscleStatusOverviewCard: View {
                             // 免费: 图例模糊 (看得见有 4 档精度但读不清) + 解锁按钮. 视觉钩子留着,
                             // 逐肌群精度是要解锁的东西.
                             VStack(alignment: .leading, spacing: 4) {
-                                legendRow(swatch: MasoColor.accent.opacity(1.00), label: "Heavy fatigue")
+                                legendRow(swatch: MasoColor.accent.opacity(1.00), label: "Fatigued")
                                 legendRow(swatch: MasoColor.accent.opacity(0.60), label: "Recovering")
-                                legendRow(swatch: MasoColor.accent.opacity(0.30), label: "Mostly recovered")
+                                legendRow(swatch: MasoColor.accent.opacity(0.30), label: "Rested")
                                 legendRow(swatch: Color(red: 0.165, green: 0.165, blue: 0.165), label: "Fresh")
                             }
                             .blur(radius: 4.5)
@@ -165,12 +165,12 @@ struct MuscleStatusOverviewCard: View {
                                             .multilineTextAlignment(.leading)
                                             .fixedSize(horizontal: false, vertical: true)
                                     }
-                                    .foregroundStyle(MasoColor.accent)
+                                    .foregroundStyle(Color.blue)
                                     .padding(.horizontal, 11)
                                     .padding(.vertical, 6)
                                     // 次级钮玻璃 (映射表②); 形状保持圆角矩形 — 多行文案撑不成胶囊.
-                                    .glassButtonBackground(tint: MasoColor.accent.opacity(0.25),
-                                                           fallback: MasoColor.accent.opacity(0.16),
+                                    .glassButtonBackground(tint: Color.blue.opacity(0.25),
+                                                           fallback: Color.blue.opacity(0.16),
                                                            in: RoundedRectangle(cornerRadius: 10))
                                 }
                                 .buttonStyle(.plain)
@@ -191,14 +191,6 @@ struct MuscleStatusOverviewCard: View {
         // (分享圆钮四轮定稿: 提示行 → 补练行 → 区域右上角 → **右列底部动作行**, 跟
         //  "All caught up"/"Train the gaps" 同一行右端. 右上角 overlay 已移除, 勿重复挂.)
         .padding(.vertical, 6)
-        .sheet(isPresented: $detailShown) {
-            MuscleMapDetailSheet(
-                fatigueMap: fatigueMap,
-                gapMuscles: gapMuscles,
-                onStartGapWorkout: onStartGapWorkout,
-                onUnlock: onUnlock
-            )
-        }
     }
 
     /// 分享入口 — 复用现成的 MuscleStatusShareCard (卡早就存在, 之前只是没有入口).
@@ -238,11 +230,7 @@ struct MuscleStatusOverviewCard: View {
             shareSurface: "muscle_status",
             label: {
                 // 圆形素玻璃小钮 (owner 指定形态) — 高度跟旁边的补练胶囊 (~26pt) 对齐.
-                Image(systemName: "square.and.arrow.up")
-                    .font(.system(size: 12, weight: .semibold))
-                    .foregroundStyle(MasoColor.textDim)
-                    .frame(width: 27, height: 27)
-                    .glassCircleButtonBackground()
+                ShareIcon()
             }
         )
         .accessibilityLabel("Share")
@@ -261,4 +249,80 @@ struct MuscleStatusOverviewCard: View {
                 .fixedSize(horizontal: true, vertical: false)
         }
     }
+}
+
+
+/// Extends behind native navigation chrome, while scrolling away with the content.
+struct MuscleWalkthroughHeader: View {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
+    @Environment(\.scenePhase) private var scenePhase
+    let topExtension: CGFloat
+    let height: CGFloat
+    let footerClearance: CGFloat
+    let fatigueMap: [MuscleGroup: Double]
+    let gapMuscles: [MuscleGroup]
+    let motionEnabled: Bool
+    let onStartGapWorkout: () -> Void
+    let onUnlock: () -> Void
+    @State private var isVisible = false
+    @State private var isMounted = false
+    let onOpenStatus: (_ gapMuscles: [MuscleGroup], _ startGapWorkout: @escaping () -> Void) -> Void
+
+    var body: some View {
+        Color.clear
+        .frame(height: height)
+        .background {
+            GeometryReader { geometry in
+                MuscleBody3DView(
+                    fatigueMap: fatigueMap,
+                    autoRotates: motionEnabled && isMounted && isVisible && !reduceMotion && scenePhase == .active,
+                    walkthrough: true,
+                    navigationRole: .home,
+                    onTap: { onOpenStatus(gapMuscles, onStartGapWorkout) }
+                )
+                .frame(width: geometry.size.width + MasoMetrics.pagePaddingHorizontal * 2,
+                       height: geometry.size.height + topExtension)
+                .opacity(MuscleBody3DView.homeOpacity(reduceTransparency: reduceTransparency))
+                .overlay {
+                    LinearGradient(stops: [
+                        .init(color: MasoColor.background.opacity(0.70), location: 0),
+                        .init(color: MasoColor.background.opacity(0.22), location: 0.30),
+                        .init(color: .clear, location: 0.55),
+                        .init(color: .clear, location: 1)
+                    ], startPoint: .top, endPoint: .bottom)
+                    .allowsHitTesting(false)
+                }
+                // Fade the rendered model itself to transparent, exposing the exact
+                // page background beneath it instead of ending on a colored rectangle.
+                .mask {
+                    LinearGradient(stops: [
+                        .init(color: .white, location: 0),
+                        .init(color: .white, location: 0.32),
+                        .init(color: .white.opacity(0.94), location: 0.44),
+                        .init(color: .white.opacity(0.80), location: 0.57),
+                        .init(color: .white.opacity(0.58), location: 0.70),
+                        .init(color: .white.opacity(0.32), location: 0.83),
+                        .init(color: .white.opacity(0.10), location: 0.94),
+                        .init(color: .clear, location: 1)
+                    ], startPoint: .top, endPoint: .bottom)
+                }
+                .offset(x: -MasoMetrics.pagePaddingHorizontal, y: -topExtension)
+            }
+        }
+        .overlay(alignment: .bottom) {
+            HStack(alignment: .bottom, spacing: 16) {
+                MuscleRecoveryLegend(compact: true)
+                    .frame(width: 164, alignment: .leading)
+                    .allowsHitTesting(false)
+                Spacer(minLength: 12)
+
+            }
+            .padding(.bottom, footerClearance)
+        }
+        .onScrollVisibilityChange(threshold: 0.1) { isVisible = $0 }
+        .onAppear { isMounted = true }
+        .onDisappear { isMounted = false }
+    }
+
 }

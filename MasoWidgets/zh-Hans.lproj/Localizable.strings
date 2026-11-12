@@ -1,2 +1,101 @@
 /* MasoWidgets Live Activity 锁屏小组件 — 中文 */
 "Next: %@" = "下一个：%@";
+
+"Workout" = "训练";
+
+"Diet" = "饮食";
+
+"Sleep" = "睡眠";
+
+"My Muscle Status" = "我的肌肉状态";
+
+"Body front" = "正面";
+
+"Body back" = "背面";
+
+"This week" = "本周";
+
+"Protein" = "蛋白质";
+
+"Last night" = "昨晚";
+
+"Start workout" = "开始训练";
+
+"Resume" = "继续";
+
+"Create a routine" = "创建训练计划";
+
+"Daily overview" = "每日概览";
+
+"Recovery & workout" = "肌肉恢复与训练";
+
+"Single metric" = "单项数据";
+
+"Main metric" = "主要数据";
+
+"Body view" = "人体视角";
+
+"Content" = "展示内容";
+
+"Open Masso to update" = "打开 Masso 更新";
+
+"Your day at a glance" = "快速查看今天的数据";
+
+"Muscle recovery and your next workout" = "查看肌肉恢复并开始训练";
+
+"One metric, your choice" = "只看你关心的数据";
+
+"Muscles trained" = "已训练肌群";
+
+"No data" = "暂无数据";
+
+"sets" = "组";
+
+"Chest" = "胸";
+
+"Back muscle" = "背部";
+
+"Legs" = "腿部";
+
+"Shoulders" = "肩";
+
+"Arms" = "手臂";
+
+"Core" = "核心";
+
+"Full body" = "全身";
+
+"Add meal" = "添加餐食";
+
+"Daily rings" = "每日圆环";
+"Workout, diet and sleep in one ring" = "训练、饮食、睡眠，一环看全";
+
+"Diet progress" = "饮食进度";
+"Today's nutrition progress" = "今日营养目标完成进度";
+
+"Sleep progress" = "睡眠进度";
+"Progress toward your sleep goal" = "睡眠目标完成进度";
+
+"Calories" = "热量";
+
+"Today's calorie progress" = "今日热量进度";
+
+"Two metrics" = "两项指标";
+"Workout and Diet" = "训练和饮食";
+"Workout and Sleep" = "训练和睡眠";
+"Diet and Sleep" = "饮食和睡眠";
+
+"Today" = "今天";
+
+"Widget panel" = "小组件板块";
+"Calendar" = "日历";
+"Workout and Calendar" = "训练和日历";
+"Diet and Calendar" = "饮食和日历";
+"Sleep and Calendar" = "睡眠和日历";
+"Top left" = "左上";
+"Top right" = "右上";
+"Bottom left" = "左下";
+"Bottom right" = "右下";
+
+"Widget content" = "小组件内容";
+"Workout, Diet and Sleep" = "训练、饮食和睡眠";

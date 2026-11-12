@@ -25,6 +25,8 @@ struct TrainingMiniBar: View {
     let onTap: () -> Void
     let onAdvance: () -> Void
     let onTogglePlay: () -> Void
+    /// Actual native HomeLauncherButton height, measured by the home footer.
+    var controlHeight: CGFloat = 56
 
     /// 按下态 — 整 bar scale 反馈, 跟 Apple Music mini player 的"按一下凹一下"一致
     @State private var pressed = false
@@ -34,7 +36,10 @@ struct TrainingMiniBar: View {
             // 缩略图 36pt — Apple Music album art 同款大小
             ExerciseImage(
                 category: thumbCategory,
+                exerciseID: thumbnailExercise?.id,
                 imageFolder: thumbFolder,
+                photoURL: thumbnailExercise?.photoURL,
+                customImageData: thumbnailExercise?.customImageData,
                 cornerRadius: 6,
                 size: 36,
                 animated: false
@@ -67,7 +72,8 @@ struct TrainingMiniBar: View {
                         .foregroundStyle(MasoColor.text)
                         .lineLimit(1)
                     HStack(spacing: 4) {
-                        Text("\(setN)/\(total)")
+                        ProgressFractionText(numerator: String(setN), denominator: String(total), separator: "/",
+                                             numeratorColor: MasoColor.text, denominatorColor: MasoColor.textDim)
                             .font(.system(size: 11).monospacedDigit())
                         if let reps {
                             Text("× \(reps)").font(.system(size: 11).monospacedDigit())
@@ -97,10 +103,11 @@ struct TrainingMiniBar: View {
             .buttonStyle(.plain)
         }
         .padding(.horizontal, 16)
-        .padding(.vertical, 10)
+        .frame(height: controlHeight)
         // 系统真·液态玻璃: iOS 26+ 用 `.glassEffect` (Apple 官方 Liquid Glass, 带高光/折射),
         // iOS 18-25 回退到 `.bar` material + 细描边. (之前用的 `.bar` 在 26 上偏"毛玻璃", 不够玻璃.)
         .modifier(LiquidGlassBar())
+        .accessibilityIdentifier("home.trainingMiniBar")
         // 按下态 scale + spring — Apple Music mini player 同款"按一下凹一下"
         .scaleEffect(pressed ? 0.98 : 1.0)
         .animation(.spring(response: 0.28, dampingFraction: 0.65), value: pressed)
@@ -111,11 +118,14 @@ struct TrainingMiniBar: View {
                 .onChanged { _ in if !pressed { pressed = true } }
                 .onEnded { _ in pressed = false }
         )
-        // 全宽 — 跟下方系统 TabBar 同款宽度 (Apple Music 播放中 now-playing bar 风格),
-        // 只留跟 TabBar 一致的小边距, 不再是窄胶囊浮在正中.
-        .padding(.horizontal, 16)
-        // 跟下方 TabBar 留 6pt gap — 两个 bar 明显分开, 不糊成一团
-        .padding(.bottom, 6)
+        // 外部间距由底部操作行统一管理，训练条占据聊天按钮之外的剩余宽度。
+    }
+
+    private var thumbnailExercise: Exercise? {
+        switch segment.kind {
+        case .exercise(let ex, _, _, _, _, _, _): return ex
+        case .rest: return nextExercise
+        }
     }
 
     private var thumbCategory: ExerciseCategory {

@@ -1,0 +1,2558 @@
+/* Base offline machine translation (Argos Translate). Review wording before release. */
+"Plans" = "운동 계획";
+"History" = "- 연혁";
+"Quick Workout" = "빠른 운동";
+"Late Night" = "늦은 밤";
+"Good Morning" = "좋은 아침";
+"Good Afternoon" = "좋은 오후";
+"Good Evening" = "좋은 저녁";
+"Recommended" = "(주)";
+"Start Workout" = "운동 시작";
+"Build Your Own" = "당신의 자신에게";
+"No training plans yet" = "아직 훈련되지 않음";
+"Muscles trained in the last 7 days" = "마지막 7 일에서 훈련되는 근육";
+"No training this week yet" = "이번 주에 훈련 없음";
+"Workouts" = "운동";
+"No workouts yet" = "아직 운동 없음";
+"Finished workouts show up here. Start your first one and watch your progress grow." = "완성된 운동은 여기에서 보여줍니다. 당신의 첫번째 것을 시작하고 당신의 진도를 성장하는 시계.";
+"Retry" = "관련 기사";
+"Couldn't reach the AI coach — showing templates instead." = "AI 운동 계획을 생성하지 못해 템플릿을 표시합니다.";
+"Updated your plan." = "당신의 계획을 업데이트.";
+"Couldn't reach the AI coach — your plan is unchanged." = "AI 코치에 도달 할 수 없습니다 - 계획은 변경되지 않습니다.";
+"AI plan unavailable — showing your recommended plan." = "AI plan unavailable — 추천된 계획을 보여주기.";
+"Today" = "이름 *";
+"Yesterday" = "1 년 전";
+"Repeat Workout" = "반복 운동";
+"Exercises" = "운동";
+"Edit Workout" = "연습";
+"Workout" = "운동";
+"Workout name" = "작업 이름";
+"Add Exercise" = "추가 연습";
+"No exercises yet — tap “Add Exercise” to start" = "아직 운동이 없습니다 - 시작하려면 \"추가 운동 추가\"를 탭하십시오.";
+"Edit Exercise" = "연습";
+"Delete Exercise" = "운동을 삭제";
+"Remove this exercise?" = "이 운동을 제거?";
+"Remove" = "기타 제품";
+"Cancel" = "이름 *";
+"Sets" = "세트";
+"Exercises count" = "운동";
+"Volume kg" = "양 kg";
+"Total Sets" = "총 세트";
+"Groups Hit" = "그룹 히트";
+"Days" = "일 시";
+"Streak" = "사이트맵";
+"PR" = "- 연혁";
+"%lld days/wk" = "%lld 일/wk";
+"%lld days/week" = "%lld 일/주";
+"Couldn't create share link" = "공유 링크를 만들 수 없습니다";
+"“%@” will be removed from this workout. Past records are kept." = "“%@”는 이 운동에서 제거될 것입니다. 과거 기록은 지켜집니다.";
+"Shared workout" = "공유 workout";
+"Reps" = "횟수";
+"Weight" = "중량";
+"Duration" = "이름 *";
+"Set rest" = "기타 제품";
+"Search exercises…" = "운동을 검색 ...";
+"All" = "모든 것";
+"Strength" = "제품정보";
+"Cardio" = "카디오";
+"Flexibility" = "유연성";
+"No exercises match your search" = "연습은 당신의 검색에 일치하지";
+"End this workout?" = "이 운동 종료?";
+"End" = "이름 *";
+"Keep going" = "계속하기";
+"Sets you've completed will be kept." = "완료되면 유지됩니다.";
+"Rest" = "휴식";
+"Switching" = "연락처";
+"Up Next" = "맨 위로";
+"Next Exercise" = "다음 운동";
+"Almost done" = "거의 완료";
+"Playlist" = "공지사항";
+"Workout Complete" = "연습 완료";
+"Done" = "이름 *";
+"Pick muscles" = "근육 선택";
+"Pick exercises" = "운동 선택";
+"Pick at least one muscle" = "적어도 1개의 근육을 선택하십시오";
+"Pick at least one exercise" = "적어도 하나의 운동을 선택";
+"Close" = "이름 *";
+"Back" = "이름 *";
+"Settings" = "계정 설정";
+"Units" = "단위 단위";
+"Distance" = "주요 특징";
+"Training" = "교육과정";
+"Exercise rest" = "운동 휴식";
+"Quick-start from center tab" = "센터 탭에서 Quick-start";
+"Tap the highlighted center tab again to jump straight into today's recommended workout" = "강조 표시된 센터 탭을 다시 입력하여 오늘 추천된 운동으로 이동합니다.";
+"Data" = "자료실";
+"Exercise library" = "연습장";
+"Plans and workout records stay on your device." = "Workout plans and workout record stay 에 당신의 장치.";
+"Try Masso Pro" = "Masso Pro 사용";
+"Unlimited plans, full history, custom moves, and more." = "무제한 일상, 전체 역사, 사용자 정의 이동, 그리고 더.";
+"Unlock everything" = "모든 것";
+"Unlimited plans · Full history · Custom moves" = "무제한 일상 · 전체 역사 · 사용자 정의 이동";
+"Unlock your full training." = "당신의 가득 차있는 훈련을 자물쇠로 엽니다.";
+"Unlimited workout plans" = "무제한 운동 계획";
+"No more 3-plan cap — build a plan for every split." = "더 이상 3-workout plan 캡 - 모든 분할에 대한 일상을 구축.";
+"Full history" = "전체 역사";
+"Permanent record + PR tracking + volume trends." = "영구 기록 및 PR 추적, 모든 시간.";
+"Advanced analytics" = "고급 분석";
+"Muscle balance, weekly volume, weak spots." = "Per-exercise 1RM 힘 동향, 플러스 근육 균형.";
+"Custom exercises" = "사용자 정의 운동";
+"Add your own moves with notes and photos." = "노트와 사진으로 자신의 움직임을 추가합니다.";
+"Apple Health sync" = "Apple Health 동기화";
+"Two-way sync — workouts go in, weight comes out." = "양방향 동기화 — 운동은, 무게 밖으로 옵니다.";
+"Cloud sync" = "클라우드 동기화";
+"Plans + history follow you across devices." = "Workout plans + 역사는 장치 전반에 걸쳐 당신을 따릅니다.";
+"Start 7-day free trial" = "7일 무료 체험 시작";
+"Subscribe for %@" = "%@에 대한 구독";
+"Buy lifetime — %@" = "평생 구매 — %@";
+"Loading price…" = "로딩...";
+"Free for 7 days, then %@ / %@. Cancel anytime in Settings." = "7 일 동안 무료, 다음 %@ / %@. 설정에서 언제든지 취소.";
+"month" = "1 개월";
+"year" = "1 년";
+"You're now Masso Pro!" = "지금 Masso 프로!";
+"Enjoy unlimited plans, full history, and everything else. Welcome aboard." = "무제한 운동 계획, 전체 역사, 다른 모든 것을 즐길 수 있습니다. 환영 보드.";
+"Restore Purchases" = "구매 복원";
+"Terms" = "제품 정보";
+"Privacy" = "제품 정보";
+"Tell us about your training" = "훈련에 대해 알려주십시오.";
+"Three quick questions — we'll use them to recommend a plan that fits." = "세 가지 빠른 질문 - 우리는 그 적합한 일상을 추천 할 것입니다.";
+"About you" = "너에게";
+"How many days a week do you train?" = "일주일에 몇 일 기차를합니까?";
+"Which muscles do you want to focus on?" = "어떤 근육이 집중하고 싶습니까?";
+"Confirm & build my plan" = "자주 묻는 질문";
+"Build My Routine" = "내 운동 계획을 구축";
+"Uploading your data" = "데이터 업로드";
+"Analyzing your stats" = "당신의 통계를 분석";
+"Building your plan" = "계획 구축";
+"All set!" = "모든 세트!";
+"What's your gender?" = "당신의 성별은 무엇입니까?";
+"We use this to set sensible starting weights." = "우리는 sensible 시작 무게를 놓기 위하여 이것을 이용합니다.";
+"How old are you?" = "당신은 어떻게?";
+"Helps us tune your training volume." = "훈련 볼륨을 조정하는 데 도움이됩니다.";
+"What's your weight?" = "당신의 무게는 무엇입니까?";
+"We seed your starting loads from this — change any later." = "우리는이에서 시작 부하를 씨앗 — 나중에 변경.";
+"We'll size your weekly plan to fit." = "우리는 당신의 주간 계획을 적합합니다.";
+"Pick any — or none for a balanced routine." = "균형 잡힌 운동 계획을 위해 어떤 것도 선택.";
+"Next" = "이름 *";
+"STEP %lld / 5" = "단계 %lld/5";
+"STEP %1$lld / %2$lld" = "단계 %1$lld/%2$lld";
+"What can you train with?" = "당신은 무엇을 훈련 할 수 있습니까?";
+"Pick what you have — leave all off if you train at a full gym." = "당신이 가지고있는 것을 선택 — 당신이 전체 체육관에서 기차로 모든 것을 떠나.";
+"What's your main goal?" = "당신의 주요 목표는 무엇입니까?";
+"We'll tune reps, rest, and exercise picks to match." = "우리는 reps, 휴식 및 운동 경기를 조정할 것입니다.";
+"Build muscle" = "근육 구축";
+"Get stronger" = "더 강한";
+"Lose fat / get lean" = "Lose 지방 / 도착 린";
+"Stay fit & healthy" = "숙박 & 건강";
+"Build endurance" = "구조 내구시간";
+"Add size — moderate reps, higher volume." = "크기 추가 — 온건한 reps, 더 높은 볼륨.";
+"Lift heavier — low reps, heavy compounds, long rest." = "무거운 리프트 - 낮은 reps, 무거운 화합물, 긴 나머지.";
+"Keep muscle while leaning out — compound-heavy, tighter rest." = "근육을 유지하면서 밖으로 기울여 - 화합물 - 무거운, 더 단단한 휴식.";
+"Balanced full-body work, short and sustainable." = "균형 잡힌 전신 작업, 짧은 지속 가능.";
+"High reps, short rest, circuit-style stamina." = "높은 reps, 짧은 나머지, 회로 작풍 stamina.";
+"Update your saved routines?" = "저장된 운동 계획을 업데이트합니까?";
+"You changed your default rest or sets. Apply these to the exercises in all your saved routines too?" = "당신은 기본 휴식 또는 세트를 변경합니다. 저장된 모든 운동 계획에서 운동에 적용?";
+"Update them" = "업데이트";
+"Keep as is" = "계속하기";
+"Dumbbells" = "덤벨";
+"Barbell & plates" = "바벨 & 판";
+"Cable machine" = "케이블 기계";
+"Resistance machines" = "저항 기계";
+"Smith machine" = "Smith 기계";
+"Kettlebells" = "Kettlebells, 영국";
+"Resistance bands" = "저항 밴드";
+"Pull-up / dip bar" = "풀 업 / 딥 바";
+"Cardio machines" = "Cardio 기계";
+"Chest" = "가슴";
+"Upper Chest" = "위 가슴";
+"Mid Chest" = "중앙 가슴";
+"Lower Chest" = "낮은 가슴";
+"Lats" = "사이트맵";
+"Upper Traps" = "상위 Traps";
+"Mid Traps" = "중앙 Traps";
+"Lower Traps" = "낮은 Traps";
+"Lower Back" = "맨 위로";
+"Shoulders" = "어깨";
+"Front Delts" = "정면 Delts";
+"Side Delts" = "옆 Delts";
+"Rear Delts" = "후방 Delts";
+"Biceps" = "스낵 바";
+"Biceps (Long)" = "Biceps (긴)";
+"Biceps (Short)" = "Biceps (짧은)";
+"Brachialis" = "브라치리스";
+"Triceps" = "팟캐스트";
+"Triceps (Long)" = "Triceps (긴)";
+"Triceps (Lateral)" = "Triceps (자산)";
+"Triceps (Medial)" = "Triceps (미디어)";
+"Core" = "코어";
+"Abs" = "한국어";
+"Upper Abs" = "맨 위로";
+"Lower Abs" = "낮은 Abs";
+"Obliques" = "오블릭";
+"Quads" = "사이트맵";
+"Rectus Femoris" = "레퍼런스";
+"Vastus Lateralis" = "Vastus, 그리스";
+"Vastus Medialis" = "Vastus 메디알리스";
+"Hamstrings" = "뚱 베어";
+"Biceps Femoris" = "Biceps 페모리";
+"Semitendinosus" = "반테디노스";
+"Glutes" = "글 목록";
+"Gluteus Maximus" = "Gluteus 맥시";
+"Gluteus Medius" = "Gluteus 약";
+"Calves" = "뚱 베어";
+"Gastrocnemius" = "가스트로cnemius";
+"Soleus" = "댓글 RSS";
+"%d exercises" = "%d 운동";
+"%d sets" = "%d 세트";
+"%d days ago" = "%d 일 전";
+"%d day ago" = "%d 일 전";
+"Today's Workout" = "오늘의 운동";
+"Up next" = "다음 것";
+"Upper Lats" = "맨 위로";
+"Lower Lats" = "낮은 Lats";
+"Rhomboids" = "채용정보";
+"Teres" = "사이트맵";
+"Rotator Cuff" = "회전 장치 팔목";
+"Brachioradialis" = "Brachioradialis, 그리스";
+"Forearms" = "팟캐스트";
+"Forearm Flexors" = "회사소개";
+"Forearm Extensors" = "회사소개";
+"Arms" = "팔";
+"Serratus" = "스낵 바";
+"Neck" = "넥타이";
+"Legs" = "하체";
+"Tibialis Anterior" = "Tibialis 앞";
+"Adductors" = "회사 소개";
+"Help us improve" = "더 알아보기";
+"Send feedback" = "견적 요청";
+"Send Feedback" = "연락처";
+"Report a bug" = "버그 신고";
+"Report a Bug" = "버그 신고";
+"Submit report" = "자주 묻는 질문";
+"Sending…" = "이름 *";
+"Report received" = "견적 요청";
+"Saved · will retry" = "저장 · retry";
+"Retry upload" = "Retry 업로드";
+"Report received. It will be included in the next weekly digest." = "보고 받았습니다. 그것은 다음 주간 digest에 포함될 것입니다.";
+"Saved on this device. It has not reached the server yet." = "이 장치에 저장됩니다. 서버에 아직 도달하지 않았습니다.";
+"Support" = "지원하다";
+"Bug reports, feature requests, complaints — all bundled into a daily digest and emailed to the team." = "버그 보고서, 기능 요청, 불만 사항 - 매일 소화로 번들하고 팀에 이메일을 보냅니다.";
+"Tell us what's broken, missing, or worth changing." = "깨진 것, 누락, 또는 변화가 있는 것.";
+"Reports are reviewed together and emailed once a week. Your message, app version, iOS version, and language are included; no account or device ID is attached." = "보고서는 함께 검토하고 일주일에 한 번 이메일. 귀하의 메시지, 앱 버전, iOS 버전, 언어 포함; 계정이나 장치 ID가 첨부되지 않습니다.";
+"Type your feedback here…" = "당신의 의견을 입력 ...";
+"Submit feedback" = "자주 묻는 질문";
+"%d report waiting to upload" = "%d 보고서 업로드";
+"%d reports waiting to upload" = "%d는 업로드 대기";
+"Sent — thank you" = "문장 — 감사합니다";
+"Back muscle" = "등";
+"Trained muscles fade over 3 days, reset on day 4." = "훈련된 근육은 3 일 이상 퇴색합니다, 일 4.에 재시동하십시오";
+"2 days ago" = "2 일 전";
+"Needs work" = "작업 필요";
+"Workout calendar" = "운동 달력";
+"Previous month" = "지난 달";
+"Next month" = "다음 달";
+"Current streak" = "현재 streak";
+"Week streak" = "주간 streak";
+"Redo" = "레드오";
+"Repeat" = "기타 제품";
+"Let's start your first workout." = "첫 번째 운동을 시작합시다.";
+"You've trained today — rest up." = "오늘 훈련했습니다 — 휴식.";
+"Last trained yesterday." = "어제 막차.";
+"%lld days since your last session." = "마지막 세션 이후 %lld 일.";
+"%lld days off — let's get back to it." = "%lld 일 오프 - 다시 그것을 얻을 수 있습니다.";
+"Reminders" = "회사 소개";
+"Workout reminders" = "작업 알림";
+"On by default: when you've taken a few days off, Masso sends one gentle reminder once your muscles have recovered. It only ever lives on your device, and you can turn it off anytime." = "기본적으로: 당신은 떨어져 며칠을 가지고 갈 때, Masso는 당신의 근육이 회복한 한 번에 한개의 온화한 생각나는 사람을 보냅니다. 그것은 당신의 장치에 단지 생활하고, 당신은 언제든지 그것을 돌릴 수 있습니다.";
+"Recovered and ready" = "회복 완료, 운동할 준비가 됐어요";
+"Your muscles miss you" = "근육이 당신을 기다려요";
+"Let's get back to it" = "다시 운동을 시작해요";
+"You're recovered — a quick session keeps your momentum going." = "회복이 됐어요. 짧은 운동으로 좋은 흐름을 이어 가세요.";
+"Want a nudge when you're recovered?" = "복구 할 때 판결을 원하십니까?";
+"Turn on reminders" = "공지사항";
+"Not now" = "현재 위치";
+"Masso can remind you to train once your muscles have recovered — all on your device. You can change this anytime in Settings." = "Masso는 근육이 회복 한 번 훈련 할 수 있습니다 - 모든 장치에서. 당신은 설정에서이 언제든지 변경할 수 있습니다.";
+"Progress" = "주요사업";
+"Weekly volume" = "주간 볼륨";
+"Total %@ lifted per week" = "주 당 상승되는 합계 %@";
+"Estimated 1RM" = "예상 1RM";
+"Unlock strength trends with Pro" = "Pro로 힘 동향을 자물쇠로 여십시오";
+"Integrations" = "통합";
+"Apple Fitness sync" = "Apple Fitness 동기화";
+"Masso writes finished workouts to Apple Health. They show up in Apple Fitness Activity rings and the Workouts tab. Heart rate is not collected." = "Masso는 Apple Health에 완성 된 운동을 작성합니다. 그들은 Apple Fitness 활동 반지와 운동 탭에서 보여줍니다. 심박수는 수집되지 않습니다.";
+"Not available on this device" = "이 장치에 사용할 수 없습니다";
+"Tap to grant access" = "탭하여 액세스 권한을 부여";
+"Denied — enable in Settings › Health" = "Denied — 설정에서 활성화 › 건강";
+"On — finished workouts go to Health" = "On — 종료된 운동은 건강에 간다";
+"Off" = "이름 *";
+"Synced %d workout(s) to Health" = "%d 운동 (s)를 건강에 동기화";
+"Days per week" = "주 당 일";
+"Tap to start today's workout" = "오늘의 운동을 시작하려면 탭";
+"All %@" = "모든 %@";
+"AI Workout" = "AI 운동";
+"Each day, Masso bundles your profile + recent training + frequency into a prompt and asks Claude to generate today's plan. Your API key is stored locally on this device." = "매일 Masso는 프로필 + 최근 훈련 + 주파수를 신속하고 오늘 운동을 생성하기 위해 AI 서비스를 요청합니다. 귀하의 API 키는이 장치에서 로컬로 저장됩니다.";
+"Generate plan with AI" = "AI로 운동 생성";
+"Enter your API key above first" = "먼저 API 키 입력";
+"Each day a new plan is built from your training history" = "매일 새로운 운동은 당신의 훈련 역사에서 건축됩니다";
+"Not generated yet" = "아직 생성되지 않음";
+"Generating…" = "...";
+"Today's plan ready" = "오늘의 운동 준비";
+"Last attempt failed" = "마지막 시도 실패";
+"Tap Refresh to build today's plan" = "지금의 운동을 건설하기 위해 새로 고침";
+"Refresh" = "지원하다";
+"Body Map" = "본문 바로가기";
+"By Muscle" = "근육에";
+"Tap a muscle on the body to filter" = "몸에 근육을 필터링";
+"Clear" = "이름 *";
+"Train Smart with AI." = "AI로 스마트한 기차.";
+"Train the gaps" = "기차 격차";
+"Catch-up: %@" = "캐치 업 : %@";
+"AI generates a personalized plan from your profile + history each day. Pro feature." = "AI는 프로필 + 역사에서 개인화 된 운동을 매일 생성합니다. 프로 기능.";
+"Pro feature · personalized daily plan" = "Pro 기능 · 개인화 된 일일 운동";
+"Tap and hold to configure API key" = "탭 및 API 키 설정";
+"On — refreshed daily" = "- 매일 새로 고침";
+"Developer · AI API" = "개발자 · AI API";
+"DeepSeek (OpenAI-compatible). Get a key at platform.deepseek.com → API Keys." = "DeepSeek (OpenAI-compatible). platform.deepseek.com → API 키에서 키를 가져옵니다.";
+"Enable AI generation" = "AI 세대 활성화";
+"Enter key above first" = "먼저 키 입력";
+"Auto refresh once a day" = "자동차는 하루에 한 번 새로 고침";
+"Test" = "제품정보";
+"Your personal AI trainer" = "개인 AI 트레이너";
+"Close paywall" = "닫는 paywall";
+"Close settings" = "닫기 설정";
+"End workout" = "끝 운동";
+"New workout" = "새로운 운동";
+"Previous" = "이름 *";
+"Force-quit and reopen the app to fully switch the language." = "Force-quit 및 앱을 완전히 전환합니다.";
+"Keep current" = "현재 위치";
+"OK" = "이름 *";
+"One-time purchase. No subscription, no recurring charges." = "한 번 구매. 구독 없음, 반복 수수료 없음.";
+"Restart Masso to apply" = "나머지 Masso 적용";
+"Starting this will replace the workout you're in. Continue?" = "시작하면 운동을 대체합니다. 계속?";
+"Language" = "한국어";
+"Free workout" = "무료 운동";
+"Pick your own exercises and go" = "자신의 운동을 선택하고 이동";
+"Add to workout" = "연습에 추가";
+"Target Muscles" = "대상 근육";
+"Instructions" = "이름 *";
+"Finish here" = "여기에 끝";
+"Finish here?" = "여기에 완료?";
+"Skip the remaining sets and mark this workout complete." = "나머지 세트를 건너 이 운동을 완료합니다.";
+"Finish" = "제품 정보";
+"Fatigued" = "뚱 베어";
+"Recovering" = "복구";
+"Almost fresh" = "약 신선한";
+"Light green = synergist · worked along the way, no need to pick." = "밝은 녹색 = synergist · 길을 따라 일하고, 선택 할 필요가 없습니다.";
+"Pick best for me" = "나를 위해 최고의 선택";
+"Replace with smart pick" = "스마트 픽업과 교체";
+"Masso" = "모델: Masso";
+"AI" = "사이트맵";
+"PRO" = "지원하다";
+"MASSO PRO" = "MASSO 프로";
+"FROM %@/MO" = "%@/MO에서";
+"Another workout is in progress" = "또 다른 운동은 진행 중입니다.";
+"Hide playlist" = "연락처";
+"Show playlist" = "공지사항";
+"Start workout" = "운동 시작";
+"Pause" = "이용안내";
+"Resume" = "계속하기";
+"Skip rest" = "공지사항";
+"Complete set" = "완전한 세트";
+"Selected" = "인증현황";
+"Brought along during training" = "훈련 중 계속";
+"System Default" = "시스템 기본값";
+"kg" = "kg/분";
+"lb" = "사이트맵";
+"km" = "24시간";
+"mi" = "뚱 베어";
+"Save 50%" = "50% 할인";
+"Pay once, own it" = "한 번 지불, 그것을 소유";
+"Billed monthly" = "월간 청구";
+"Monthly" = "1 월";
+"Yearly" = "1 년 전";
+"Lifetime" = "이름 *";
+"POPULAR" = "인기 상품";
+"/ month" = "/ 월";
+"/ year" = "/ 년";
+"once" = "1시간";
+"Show muscle subdivisions" = "근육 subdivisions 보기";
+"Show muscle status" = "근육 상태 표시";
+"Off: pick the whole muscle (chest, back) — no upper/mid/lower split. On: full anatomical detail." = "오프 : 전체 근육 (체트, 뒤)를 선택 - 상/중/저 균열 없음. 에 : 전체 원자 세부 사항.";
+"Backup" = "지원하다";
+"Export data" = "수출 자료";
+"Save plans, workouts, settings as a JSON file" = "JSON 파일로 workout plan, 운동, 설정 저장";
+"Import data" = "수입 데이터";
+"Restore from a Masso backup file" = "Masso 백업 파일 복원";
+"New iPhone? Your data restores automatically from iCloud Backup. Or export anytime — it's a plain JSON file." = "새로운 iPhone? 데이터는 iCloud Backup에서 자동으로 복원합니다. 또는 언제든지 내보내기 - 일반 JSON 파일입니다.";
+"Replace current data?" = "현재 데이터를 대체?";
+"Replace" = "기타 제품";
+"Asking the coach…" = "코치 요청 ...";
+"Using local picker" = "로컬 피셔";
+"Couldn't reach the AI coach. Using a local recommendation instead." = "AI 코치에 도달 할 수 없습니다. 대신 현지 추천을 사용하여.";
+"New Workout" = "새로운 운동";
+"Move up" = "맨 위로";
+"Move down" = "맨 위로";
+"Delete" = "이름 *";
+"Plate calculator" = "판 계산기";
+"Target" = "제품정보";
+"Per side" = "측 당";
+"Bar weight" = "바 무게";
+"Bar only — no plates needed" = "Bar 만 - 필요한 판 없음";
+"Time to switch exercise" = "다음 운동으로 넘어가세요";
+"Rest's up — next set" = "휴식 끝, 다음 세트를 시작하세요";
+"Weight (kg)" = "무게 (kg)";
+"Duration (sec)" = "기간 (sec)";
+"Edit exercise parameters" = "연습 매개 변수";
+"Changes apply to this session only. To save permanently, edit the plan." = "변경은이 세션에만 적용됩니다. 영구적으로 저장하려면 일상을 편집하십시오.";
+"Delete Plan" = "Workout plan 삭제";
+"Delete this plan?" = "이 운동 계획을 삭제?";
+"Your training history will be kept." = "당신의 훈련 역사는 지켜질 것입니다.";
+"Any equipment" = "모든 장비";
+"Gym equipment" = "체육관 장비";
+"All equipment" = "모든 장비";
+"Prefer community plans" = "Prefer 커뮤니티 계획";
+"Build your AI Plans from a proven community program that matches your days per week and goal, instead of auto-generating them." = "AI 플랜을 빌드하는 입증 된 커뮤니티 프로그램에서 일주일과 목표 당 당신의 일을 일치, 대신 자동 생성.";
+"These apply to recommended routines and exercises you add — your custom routines aren't changed." = "이러한 권장된 운동 계획과 운동에 적용할 수 있습니다. - 사용자 정의 운동 계획은 변경되지 않습니다.";
+"Any movement" = "모든 운동";
+"equipment.barbell" = "바벨";
+"equipment.dumbbell" = "카테고리";
+"equipment.body only" = "몸만";
+"equipment.cable" = "제품정보";
+"equipment.machine" = "기계 기계";
+"equipment.kettlebells" = "Kettlebells, 영국";
+"equipment.bands" = "사이트맵";
+"equipment.e-z curl bar" = "EZ 막대기";
+"equipment.medicine ball" = "약 공";
+"equipment.exercise ball" = "운동 공";
+"equipment.foam roll" = "폼 롤러";
+"equipment.stretching" = "뚱 베어";
+"equipment.other" = "이름 *";
+"Muscle Status" = "근육 상태";
+"Profile" = "이름 *";
+"Gender" = "이름 *";
+"Male" = "이름 *";
+"Female" = "한국어";
+"Other" = "이름 *";
+"Age" = "이름 *";
+"yrs" = "한국어";
+"Body weight" = "몸 무게";
+"Muscles to focus" = "초점에 근육";
+"Pick the muscle groups you want to prioritize. Today's recommendations and AI plans will favor these." = "우선 순위를 원하는 근육 그룹을 선택합니다. 오늘의 권고와 AI 운동 계획은 이것을 호의합니다.";
+"Share Card" = "공유 카드";
+"Camera" = "제품정보";
+"Photos" = "사진 갤러리";
+"Add some exercises to the plan first, then start training." = "첫 번째로 운동을 추가하면 훈련을 시작합니다.";
+"Hide older workouts" = "더 긴 운동";
+"My Muscle Status" = "내 근육 상태";
+"My Week" = "내 주";
+"Save" = "제품 정보";
+"Share" = "지원하다";
+"Show %d older workout(s)" = "%d 이전 운동 (s)";
+"This Week" = "이번 주";
+"This workout has no exercises yet" = "이 운동은 아직 운동이 없습니다.";
+"Smart pick" = "스마트 픽업";
+"Save as plan" = "자주 묻는 질문";
+"Saved" = "다운로드";
+"Anything else for your AI coach?" = "AI 코치에 대한 다른 것?";
+"Injuries, preferences, time limits — in your own words. The AI combines this with everything above. Optional." = "Injuries, 선호도, 시간 제한 - 자신의 단어. AI는 위의 모든 것을 결합. 옵션.";
+"e.g. Old shoulder injury — avoid overhead pressing. I like dumbbells, 45 minutes max." = "e.g. 오래된 어깨 부상 - 머리 위 누르기를 피하십시오. 나는 dumbbells, 최대 45 분 같이 좋아합니다.";
+"Start from scratch" = "처음부터 시작";
+"Display" = "공지사항";
+"Muscle charts on exercise tags" = "운동 태그에 근육 차트";
+"On routine cards, show a mini muscle chart instead of the muscle name in front of each exercise." = "운동 계획의 카드에, 각 운동의 앞에 근육 이름 대신에 소형 근육 도표를 보여줍니다.";
+"Saved to routines" = "운동 계획에 저장";
+"Save to routines" = "자주 묻는 질문";
+"Save %lld routine" = "%lld 운동 계획 저장";
+"Save %lld routines" = "%lld 운동 계획 저장";
+"Saved %lld routine" = "%lld 운동 계획";
+"Saved %lld routines" = "%lld 운동 계획 저장";
+"App Language" = "앱 언어";
+"Continue" = "계속하기";
+"Start" = "지원하다";
+"Add a photo" = "사진 추가";
+"Add photo" = "사진 추가";
+"Take Photo" = "본문 바로가기";
+"Choose from Library" = "도서관에서 선택";
+"Remove Photo" = "사진 제거";
+"Add to favorites" = "자주 묻는 질문";
+"Remove from favorites" = "자주 묻는 질문";
+"All muscles" = "모든 근육";
+"Clear all" = "모든 것";
+"Delete plan?" = "일상을 삭제?";
+"Delete workout?" = "운동을 삭제?";
+"Delete this workout?" = "이 운동을 삭제?";
+"Delete workout" = "작업 삭제";
+"Delete exercise from plan?" = "일상에서 운동을 삭제?";
+"Delete exercise from this workout?" = "이 운동에서 운동을 삭제?";
+"All sets and PRs from this workout will be removed. Your plans stay." = "이 운동에서 모든 세트와 PR는 제거됩니다. 당신의 일상 생활.";
+"All sets of this exercise from this workout will be removed." = "이 운동에서 이 운동의 모든 세트는 제거될 것입니다.";
+"This only removes it from the current workout. Save changes at the end to update the plan." = "이것은 현재 운동에서 그것을 제거합니다. 마지막에 변화를 저장하여 일상을 업데이트하십시오.";
+"This only removes the exercise from this plan, not from your library." = "이 일상에서 연습을 제거, 당신의 도서관에서.";
+"Detail" = "제품 정보";
+"Muscle" = "뚱 베어";
+"Equipment" = "제품정보";
+"Variation" = "관련 기사";
+"None" = "이름 *";
+"Optional" = "옵션 정보";
+"How to do it" = "그것을 하는 방법";
+"Show full instructions" = "전체 지침";
+"Show less" = "더보기";
+"Listen" = "이름 *";
+"Read instructions aloud" = "자주 묻는 질문";
+"Stop reading" = "공지사항";
+"Stop" = "이름 *";
+"Edit" = "제품정보";
+"Long press to reorder" = "주문에 긴 압박";
+"No exercises in this workout" = "이 운동에서 운동 없음";
+"Share workout" = "공유 workout";
+"Save changes & end" = "변경 및 종료";
+"End without saving" = "저축 없이 끝";
+"You changed sets, reps, weight, or order during this workout. Save the changes back to the plan?" = "이 운동 중에 세트, reps, weight 또는 순서로 변경됩니다. 운동 계획으로 변경 사항을 저장합니까?";
+"Skip" = "팟캐스트";
+"Save changes to this routine?" = "이 운동 계획에 대한 변경을 저장?";
+"You adjusted this routine during the workout. Save the adjustments for next time?" = "당신은 운동 도중 이 운동 계획을 조정했습니다. 다음 시간 동안 조정을 저장합니까?";
+"Save to routine" = "운동 계획에 저장";
+"Don't save" = "저장하지 마십시오";
+"Removed" = "기타 제품";
+"Replaced" = "관련 제품";
+"Updated" = "(주)";
+"Moved" = "지원하다";
+"rest %@" = "나머지 %@";
+"Show details for %@" = "%@에 대한 세부 정보보기";
+"STEP %lld / 2" = "단계 %lld/2";
+"STEP %lld / 3" = "단계 %lld/3";
+"Enable \"Show muscle subdivisions\" in Settings to pick details like upper chest or rear delts." = "설정에서 \"Show muscle subdivisions\"를 사용 하 여 상단 가슴 또는 후방 delts와 같은 세부 사항.";
+"Free for 7 days, then %@. Cancel anytime in Settings." = "7 일 동안 무료, 다음 %@. 설정에서 언제든지 취소.";
+"FOR YOU" = "감사합니다.";
+"TRAINING PREFERENCES" = "교육 과정";
+"Adjust" = "지원하다";
+"%lld days / week" = "%lld 일 / 주";
+"Full-body" = "전체 바디";
+"Upper-lower split" = "위 더 낮은 균열";
+"Body-part split" = "바디 파트 분할";
+"Full-body coverage — each muscle group rotates through the week." = "전체 바디 적용 - 각 근육 그룹은 일주일에 걸쳐 회전.";
+"High frequency — focus muscles hit 2–3× per week, accessories rotate for recovery." = "고주파 - 초점 근육은 주 당 2–3×를 명중하고, 부속품은 회복을 위해 자전합니다.";
+"Each focus muscle is trained 2× per week — enough stimulus, full recovery between." = "각 초점 근육은 주 당 2× 훈련됩니다 — 충분한 stimulus의 사이에서 가득 차있는 회복.";
+"2× per week is enough to maintain steady progress — focus muscles rotate in." = "일주일에 2 ×는 꾸준한 진행을 유지하기 위해 충분합니다 - 초점 근육은 안으로 자전합니다.";
+"Adjust training preferences" = "교육 환경 조정";
+"FROM YOUR PLAN" = "당신의 운동 계획에서";
+"Weekly Workouts" = "주간 운동";
+"White areas were just trained" = "흰색 지역은 그냥 훈련되었다";
+"Today's Status" = "오늘의 상태";
+"My Workout" = "내 운동";
+"Customize" = "사용자 정의";
+"Restore recommended" = "자주 묻는 질문";
+"Week starts" = "주간 시작";
+"Auto" = "자동차";
+"Sun" = "(주)";
+"Mon" = "담당자 :";
+"Days this month" = "이번 달";
+"Day this month" = "이번 달";
+"Sets this month" = "이 달을 설정";
+"Set this month" = "이 달을 설정";
+"Training Preferences" = "교육 설정";
+"Rested" = "뚱 베어";
+"Fresh" = "제품 정보";
+"Browse community plans" = "비밀번호";
+"Classics" = "한국어";
+"See what others train" = "다른 열차가 있는지";
+"Community" = "한국어";
+"Curated workout plans. Add any to your library." = "Curated workout plan. 라이브러리에 추가.";
+"Want to publish your plan? Coming soon." = "당신의 일상을 게시하고 싶습니까? 곧 시작하십시오.";
+"Want to share your plan? Open it in Plans → tap Share." = "당신의 일상을 공유하고 싶습니까? Workout plans → 탭 공유에서 엽니 다.";
+"Share plan" = "공유하기";
+"Imported plan" = "수입된 일상";
+"Got a plan from a friend? Tap Add to save it to your library." = "친구에서 일상을 가져 가라? 탭 추가하여 도서관에 저장하십시오.";
+"Add to my plans" = "내 일상에 추가";
+"Added" = "지원하다";
+"Adjusted" = "조정된";
+"Changes from previous routine" = "이전 운동 계획의 변화";
+"This routine stayed the same" = "이 운동 계획은 똑같이 유지";
+"Added to My Plans" = "내 운동 계획에 추가";
+"Routines" = "운동 계획";
+"Generate with AI" = "AI로 생성";
+"Browse Classics" = "비밀번호";
+"Create from scratch" = "처음부터";
+"Create my own" = "내 친구 만들기";
+"AI Routines" = "AI 운동 계획";
+"Generate a plan from your preferences" = "당신의 선호도에서 계획을 생성";
+"Proven programs to start from" = "Proven 프로그램에서 시작";
+"New routine" = "새 운동 계획";
+"Routines you save will appear here" = "당신이 저장하는 운동 계획은 여기에서 나타날 것입니다";
+"Proven programs — 5x5, PPL, 5/3/1" = "입증된 프로그램 — 5x5, PPL, 5/3/1";
+"Generate routines" = "운동 계획 생성";
+"Open Training Preferences and tap Generate routines to build a set tailored to you." = "Open Training Preferences and tap Generate 운동 계획를 사용하여 세트를 만들 수 있습니다.";
+"Apply" = "적용";
+"Keep editing" = "문서 편집";
+"Apply changes?" = "변경 사항?";
+"You changed your training preferences. Apply them and regenerate your routines?" = "당신은 당신의 훈련 선호도를 변경. 그들을 적용하고 당신의 운동 계획을 재생?";
+"Generating routines…" = "운동 계획을 생성 ...";
+"Building routines from your preferences…" = "당신의 선호도에서 운동 계획 ...";
+"Matching exercises to your days, equipment, and focus." = "당신의 일, 장비 및 초점에 어울리는 운동.";
+"Tap Generate routines to build a set tailored to your preferences." = "Tap Generate 운동 계획를 사용하여 설정된 설정을 설정할 수 있습니다.";
+"Beginner" = "이름 *";
+"Intermediate" = "계정 관리";
+"Advanced" = "지원하다";
+"%lld exercises" = "%lld 운동";
+"Featured today" = "현재 위치";
+"More programs" = "더 많은 프로그램";
+"No routines match" = "운동 계획의 일치";
+"%lld routine" = "%lld 운동 계획";
+"%lld routines" = "%lld 운동 계획";
+"Add %lld routines" = "%lld 운동 계획 추가";
+"Day %lld" = "일 %lld";
+"Days/wk" = "일/월";
+"%lld days" = "%lld 일";
+"Any level" = "모든 레벨";
+"Rotate these %lld workouts to train %lld days a week." = "이 %lld 운동을 일주일에 %lld 일을 훈련.";
+"%lld sets" = "%lld 세트";
+"%llds rest" = "%llds 나머지";
+"community_plan_beginner_fb_3day_name" = "초보자 전체 바디 3 일";
+"community_plan_beginner_fb_3day_desc" = "두 개의 교체 세션은 메인 리프트를 배우고베이스를 구축합니다.";
+"community_plan_5x5_strength_name" = "5x5 힘";
+"community_plan_5x5_strength_desc" = "무거운 5-rep 바벨 작업 — Madcow-style 선형 진행.";
+"community_plan_ppl_6day_name" = "푸시 / 풀 / 다리 6 일";
+"community_plan_ppl_6day_desc" = "각 근육은 주 당 2×를 명중합니다 — 고주파, 높은 양.";
+"community_plan_upper_lower_4day_name" = "위/낮은 4 일";
+"community_plan_upper_lower_4day_desc" = "클래식 중간 분할 - 균형있는 힘과 하이퍼 트로피.";
+"community_plan_bro_split_5day_name" = "브로 분할 5 일";
+"community_plan_bro_split_5day_desc" = "보디 빌딩 클래식 - 일 당 하나의 근육 그룹.";
+"community_plan_calisthenics_name" = "Calisthenics 재단";
+"community_plan_calisthenics_desc" = "몸무게만 사용하는 기초적인 힘.";
+"community_plan_powerlifting_name" = "전력 공급 Prep";
+"community_plan_powerlifting_desc" = "Squat, 벤치, deadlift — 익지않는 힘을 위한 집중된 세겹.";
+"community_plan_push_pull_4day_name" = "푸시 / 풀 4 일";
+"community_plan_push_pull_4day_desc" = "간단한 양방향 분할 - 근육을 밀어, 각 두 번.";
+"community_session_full_body_a" = "전체 바디 A";
+"community_session_full_body_b" = "전체 바디 B";
+"community_session_strength_a" = "힘 A";
+"community_session_strength_b" = "힘 B";
+"community_session_push_heavy" = "푸시 (허브)";
+"community_session_pull_heavy" = "풀 (허브)";
+"community_session_legs_quads" = "다리 (쿼드)";
+"community_session_upper" = "한국어";
+"community_session_lower" = "이름 *";
+"community_session_chest_day" = "가슴의 날";
+"community_session_back_day" = "뒤의 날";
+"community_session_leg_day" = "다리의 날";
+"community_session_shoulder_day" = "어깨의 날";
+"community_session_arm_day" = "팔의 날";
+"community_session_push_day" = "푸시 데이";
+"community_session_pull_day" = "풀 데이";
+"community_session_legs_core_day" = "다리 + 핵심";
+"community_session_squat_day" = "스쿼트 일";
+"community_session_bench_day" = "벤치 데이";
+"community_session_deadlift_day" = "마감일";
+"community_session_accessory_day" = "오시는 길";
+"community_session_push_simple" = "기타 제품";
+"community_session_pull_simple" = "뚱 베어";
+"Favorite" = "이름 *";
+"Unfavorite" = "뚱 베어";
+"Pin to top" = "위에 핀";
+"Pin" = "핀 핀";
+"Unpin" = "다운로드";
+"Replace exercise" = "운동을 대체";
+"MUSCLE STATUS" = "머스크 STATUS";
+"Couldn't load subscription options. Try again later." = "구독 옵션을로드하지 못했습니다. 나중에 다시 시도하십시오.";
+"Purchase pending approval." = "구매 종료 승인.";
+"Purchase verification failed. Try again or contact support." = "구매 검증 실패. 다시 시도하거나 지원 접촉.";
+"Free for 7 days, then auto-renews. Cancel anytime in Settings." = "7 일 동안 무료, 자동 뉴스. 설정에서 언제든지 취소.";
+"Workout photo" = "운동 사진";
+"Share muscle status" = "근육 상태를 공유";
+"Toggle muscle status overlay" = "근육 상태 overlay";
+"IMPORTED PLAN" = "수입 WORKOUT PLAN";
+"This Masso link is damaged or unsupported. Ask your friend to share again." = "이 Masso 링크는 손상되거나 지원되지 않습니다. 다시 공유하려면 친구에게 문의하십시오.";
+"Invalid routine link" = "잘못된 운동 계획 링크";
+"details" = "이름 *";
+"Health & Safety" = "건강 & 안전";
+"About" = "제품정보";
+"Privacy Policy" = "개인 정보 보호 정책";
+"Terms of Service" = "서비스 약관";
+"Version" = "이름 *";
+"Masso is for informational and motivational purposes only — not medical advice. Consult a physician before starting any new exercise program, especially if you have a medical condition, are pregnant, or have not exercised recently. Stop immediately and seek help if you feel pain, dizziness, or shortness of breath." = "Masso는 정보 및 동기 부여 목적으로 만 의료 조언이 아닙니다. 특히 의료 상태가 있거나 최근에 운동하지 않은 경우 새로운 운동 프로그램을 시작하기 전에 의사에게 상담하십시오. 통증, 현기증 또는 호흡의 부족을 느끼면 즉시 도움을 받으십시오.";
+"Workout Records" = "운동 기록";
+"Form cues" = "양식 cues";
+"Watch demo" = "데모 보기";
+"Compound" = "제품정보";
+"Isolation" = "절연성";
+"Horizontal push" = "수평 푸시";
+"Vertical push" = "수직 푸시";
+"Horizontal pull" = "수평한 잡아당기기";
+"Vertical pull" = "수직 끌어";
+"Hinge" = "사이트맵";
+"Squat" = "팟캐스트";
+"Lunge" = "뚱 베어";
+"Rotation" = "회전 속도";
+"Strength tempo" = "힘 tempo";
+"Hypertrophy tempo" = "하이퍼 트로피 tempo";
+"Endurance tempo" = "내구력 tempo";
+"Explosive tempo" = "폭발 tempo";
+"Isometric hold" = "Isometric 파악";
+"Unilateral" = "회사연혁";
+"%d specialized / unusual exercises (foam rollers, battle ropes, machine isolations, etc.)" = "%d 전문 / 특이한 운동 (폼 롤러, 전투 로프, 기계 고립 등)";
+"12–20 reps, lighter weight, short rest" = "12~20의 reps, 점화기 무게, 짧은 나머지";
+"1–5 reps, heavy weight, long rest" = "1–5 reps, 무거운 무게, 긴 휴식";
+"6–12 reps, moderate weight, ~90s rest" = "6–12 reps, 온건한 무게, ~90s 나머지";
+"Add" = "더 보기";
+"Add a name, an image, and tag it to a muscle. Best for moves we don't have." = "이름, 이미지를 추가하고 근육에 태그하십시오. 우리가 가지고 있지 않는 움직임에 가장 좋습니다.";
+"Add exercise" = "더 많은 연습";
+"Back to standard library" = "표준 라이브러리로 돌아가기";
+"Browse rare exercises" = "검색 결과";
+"Change" = "- 기타";
+"Couldn't save exercise" = "운동을 저장하지 못했습니다.";
+"Create your own" = "내 계정";
+"Custom exercises live only on this device. You can use them in plans and they'll appear in all your pickers." = "사용자 정의 운동은이 장치에서만 살고있다. 당신은 일상에서 그들을 사용할 수 있으며 그들은 당신의 선택에 나타날 것입니다.";
+"Days this week" = "이번 주";
+"Day this week" = "이번 주";
+"Default sets" = "기본 설정";
+"Discard" = "팟캐스트";
+"Discard changes?" = "카드 변경?";
+"Edit next exercise" = "다음 연습";
+"Endurance" = "이름 *";
+"Exercise name" = "운동 이름";
+"Exercises per plan" = "일상의 운동";
+"Foam rolls, battle ropes, machine isolations and other specialized moves we corralled." = "거품 목록, 전투 밧줄, 기계 고립 및 다른 전문화된 움직임 우리는 corralled.";
+"Hide variants" = "숨기기 변형";
+"Hypertrophy" = "하이퍼 트로피";
+"New exercise" = "새로운 운동";
+"No rare exercises match" = "드문 운동 경기 없음";
+"No rare exercises match your search" = "어떤 드문 운동은 당신의 검색에 일치";
+"Pick how to add an exercise. Either build your own from scratch, or adopt one from our specialized library." = "연습을 추가하는 방법을 선택합니다. 스크래치에서 자신을 구축하거나 전문 라이브러리에서 하나를 채택하십시오.";
+"Primary muscle" = "1 차 근육";
+"Rare exercises" = "희귀 운동";
+"Required. Shown in plans and history." = "필수. 일상과 역사에 표시.";
+"Return to the everyday library" = "일상 도서관로 돌아가기";
+"Search" = "이름 *";
+"Sets this week" = "이번 주에 설정";
+"Set this week" = "이번 주에";
+"Show %d variants" = "%d 변형 표시";
+"Time's up" = "시간이 됐어요";
+"Training goal" = "교육 목표";
+"You've adopted everything in the rare library" = "드문 도서관에서 모든 것을 채택했습니다.";
+"Your edits to this workout's exercises won't be saved to the plan. Completed sets are already recorded." = "이 운동 운동에 대한 편집은 일상에 저장되지 않습니다. 완료 세트는 이미 기록됩니다.";
+"%d kg" = "%d의 KG";
+"%d yrs" = "%d 년";
+"Can't delete — in use" = "삭제할 수 없습니다 — in use";
+"Delete exercise?" = "운동을 삭제?";
+"Remove from library" = "도서관에서 제거";
+"This exercise is used by a plan or your workout history. Remove it from those first." = "이 운동은 일상 또는 운동 역사에 의해 사용됩니다. 그 첫 번째에서 제거하십시오.";
+"“%@” will be permanently removed." = "“%@”는 영구적으로 제거될 것입니다.";
+"Couldn't load that image. Try another." = "이미지를로드 할 수 없습니다. 또 다른 시도하십시오.";
+"Couldn't process that image. Try another." = "이미지를 처리 할 수 없습니다. 또 다른 시도하십시오.";
+"For most strength moves." = "대부분의 힘 움직임을 위해.";
+"For planks, stretches, carries, cardio intervals." = "planks, stretches, 운반, 심장 간격.";
+"Measure by" = "연구분야";
+"Reps & weight" = "Reps & 무게";
+"Time (seconds)" = "시간 (초)";
+"You already have a custom exercise with this name." = "당신은 이미이 이름을 가진 맞춤 운동이 있습니다.";
+"All caught up" = "모든 잡았";
+"Time" = "(주)";
+"Rest %@" = "나머지 %@";
+"Set %d" = "%d 세트";
+"Set %lld" = "%lld 세트";
+"Different per set" = "세트 당 다른";
+"Reps × weight per set" = "세트 당 × 무게";
+"Last: %@ kg × %d (%@)" = "마지막: %@ kg × %d (%@)";
+"Last: × %d (%@)" = "마지막: × %d (%@)";
+"Last: %ds (%@)" = "마지막: %ds (%@)";
+"movement.press" = "제품정보";
+"movement.curl" = "사이트맵";
+"movement.row" = "주요 특징";
+"movement.squat" = "팟캐스트";
+"movement.lunge" = "뚱 베어";
+"movement.deadlift" = "다운로드";
+"movement.raise" = "이름 *";
+"movement.fly" = "으로";
+"movement.extension" = "제품 정보";
+"movement.push_up" = "푸시 업";
+"movement.pull_up" = "풀 업";
+"movement.pulldown" = "풀다운";
+"movement.dip" = "사이트맵";
+"movement.thrust" = "제품 정보";
+"movement.shrug" = "스낵 바";
+"movement.crunch" = "계정 만들기";
+"movement.plank" = "회사 소개";
+"movement.pullover" = "풀오버";
+"movement.kickback" = "킥백";
+"Part" = "이름 *";
+"Movement" = "관련 기사";
+"Skip to exercises" = "연습하기";
+"Filter" = "제품정보";
+"Close search" = "자주 묻는 질문";
+"Library" = "관련 기사";
+"Good morning" = "좋은 아침";
+"Good afternoon" = "안녕하세요";
+"Good evening" = "좋은 저녁";
+"Good night" = "좋은 밤";
+"My plans" = "내 일상";
+"Create your own workout, or restore the recommended set." = "자신의 운동을 만들거나 권장된 세트를 복원하십시오.";
+"Variant" = "한국어";
+"vs %@" = "대 %@";
+"variant.high" = "더 높은 앵커 — 잡아당기기는 위, 비스듬한 후방 delts 및 위 뒤에서 표준 고도를 위해 옵니다.";
+"variant.low" = "더 낮은 앵커 — 위쪽 비스듬한 비스듬한 비스듬한 비스듬한 비스듬한 비스듬한 비스듬한 비스듬한 비스듬한 비스듬한 비스듬한 비스듬한";
+"variant.mid" = "Mid-height 앵커 - 끌어의 균형 잡힌 선, 기본 운동의 강조에 가깝습니다.";
+"variant.incline" = "경사각 — 위 가슴과 앞쪽에 강조합니다.";
+"variant.decline" = "경사각 — 더 낮은 가슴에 강조, 또는 핵심 움직임에 있는 abs의 범위를 길게 합니다.";
+"variant.seated" = "Seated — 대상 근육의 엄격한 고립을 위한 다리 드라이브 그리고 순간을 제거합니다.";
+"variant.standing" = "Standing — 지원된 버전과 비교된 핵심과 안정제 참여를 추가합니다.";
+"variant.lying" = "Lying — 순간과 더 낮은 뒤 긴장을 제거하고, 주요한 움직입니다.";
+"variant.kneeling" = "Kneeling — 다리 드라이브를 잠그고 더 많은 핵심 안정성을 요구합니다.";
+"variant.prone" = "Prone (face-down) — 패드는 엄격한 후방 델타 및 상부 뒤 일을 위해 속임수를 제거합니다.";
+"variant.supine" = "Supine (face-up) - 척추를 안정화시키고 뇌 이동 장치를 고립시킵니다.";
+"variant.single-arm" = "한 팔 한 번에 - 왼쪽 / 오른쪽 불균형을 수정하고 반대로 회전 코어 작업을 추가합니다.";
+"variant.single-leg" = "한 다리를 한 번에 고정하는 불균형과 더 많은 glute-medius 안정성을 필요로합니다.";
+"variant.alternating" = "Alternating side – 내장 마이크로 받침 각 rep로 긴장의 밑에 장시간.";
+"variant.wide-grip" = "Wider 그립 - 모션의 짧은 범위, 비스듬한 lat 폭 및 외부 가슴.";
+"variant.close-grip" = "Closer 그립 - 더 긴 모션의 범위, triceps 및 내부 가슴을 비스듬히.";
+"variant.neutral-grip" = "팔을 직면 - 어깨 친화적 인 각도는 brachialis와 당근을 낳는다.";
+"variant.reverse-grip" = "반전된 그립 — 이동 강조: 잡아당기기에 더 biceps, 압박에 더 위 가슴.";
+"variant.underhand" = "언더핸드 그립 — 더 많은 biceps와 더 낮은 하락은 overhand 보다는.";
+"variant.overhand" = "Overhand 그립 — 더 많은 forearm 및 상부 뒤는 underhand 보다는 포함합니다.";
+"variant.paused" = "아래에서 일시 중지 - 스트레칭 반사를 제거하고 구멍에서 강도를 구축합니다.";
+"variant.deficit" = "Elevated/deficit 설정 — 더 깊은 스트레치 모션의 범위를 확장합니다.";
+"variant.weighted" = "로드 추가 — 강도 향상에 대한 높은 강도에서 동일한 움직임.";
+"variant.assisted" = "지원 상쇄 bodyweight — 더 쉬운 강렬에 동일한 본.";
+"variant.sumo" = "넓은 sumo stance — 더 많은 adductor 및 glute는 더 적은 더 낮은 허리 긴장을 가진 관여시킵니다.";
+"variant.romanian" = "엉덩이 뒤로, 부드러운 무릎 - 스트레치를 통해 hamstrings에 긴장을 유지.";
+"variant.bulgarian" = "후방 발은 - 깊은 섬광 및 쿼드 뻗기를 가진 단 하나 다리 선적.";
+"variant.goblet" = "가슴에서 열린 로드 — torso upright 유지, 깊이와 형태를 쉽게.";
+"variant.front" = "앞의 하중 - 더 강직한 torso biases a quads and upper back.";
+"variant.overhead" = "하중 오버 헤드 - 어깨 안정성과 코어 수요를 기본 이동에 추가합니다.";
+"variant.walking" = "Travelling version — 균형 수요 및 연속 텐션 vs in-place를 추가합니다.";
+"variant.reverse" = "반전 방향 - 패턴의 반대 부분에 강조합니다.";
+"variant.lateral" = "Sideways plane – abductors와 side delts 대 직선 버전.";
+"variant.tuck" = "무릎을 밟았 — 레버를 단축; 전체 운동의 더 쉬운 진행.";
+"variant.floor" = "바닥에서 - 감소 된 범위는 어깨를 보호하고 다리 드라이브를 제거합니다.";
+"variant.chest-supported" = "패드에 가슴 — 0 순간, 엄격한 위 뒤 고립.";
+"variant.bent-over" = "경첩을 단 torso - 더 낮은 백과 hamstring 포함; 엄격한 경첩을 유지합니다.";
+"variant.dead-stop" = "풀 스톱 각 rep — 도약을 제거하고 시작 강도를 구축합니다.";
+"variant.split" = "Split stance - 추가 균형 수요로 한 번에 한 다리를 기울입니다.";
+"variant.hammer" = "중립 해머 그립 - brachialis와 forearms를 곱합니다.";
+"My Routines" = "내 운동 계획";
+"Import from photo" = "사진에서 가져 오기";
+"Add routine" = "운동 계획 추가";
+"Generate routine with AI" = "AI로 운동 계획을 생성";
+"Build your routine with AI" = "AI로 운동 계획을 만드십시오";
+"Tell AI Coach your goals and schedule to get a routine made for you." = "AI Coach에게 목표와 일정을 알려줍니다.";
+"Chat with AI Coach" = "AI Coach와 채팅";
+"Hi, I’m your AI Coach" = "안녕하세요, AI Coach";
+"Create my routine based on my saved training preferences." = "내 저장된 훈련 선호도에 따라 내 운동 계획을 만듭니다.";
+"Open AI Coach to create a routine" = "AI Coach를 열고 운동 계획을 만들기";
+"Imported routine" = "수입된 운동 계획";
+"Couldn't read a routine from that image" = "그 이미지에서 운동 계획을 읽지 못했습니다.";
+"Try a clearer screenshot — exercise names need to be readable." = "Clearer 스크린 샷을 사용해보십시오. - 연습 이름은 읽기가 필요합니다.";
+"Reading routine…" = "독서 운동 계획 ...";
+"Volume" = "훈련량";
+"Share this week" = "이번 주에";
+"Share this month" = "이번 달에";
+"This Month" = "이달";
+"%d reps" = "%d 답글";
+"My Training" = "내 훈련";
+"Routine name" = "운동 계획 이름";
+"We added the moves we recognized. Review the rest — confirm, swap, or save as a custom move." = "우리는 우리가 인식 한 움직임을 추가했습니다. 나머지를 검토 — 확인, 스왑, 또는 사용자 지정 이동으로 저장.";
+"IMPORT FROM PHOTO" = "사진에서 IMPORT";
+"ADDED" = "지원하다";
+"NEEDS REVIEW" = "NEEDS 리뷰";
+"NOT IN YOUR LIBRARY" = "법적 고지";
+"Looks like %@" = "%@처럼 보이는";
+"Use %@" = "%@ 사용";
+"Choose" = "제품 정보";
+"Save as custom" = "사용자 정의";
+"Not in your library" = "당신의 도서관에";
+"Save “%@” as custom" = "사용자 정의로 \"%@\"를 저장";
+"Select at least one" = "적어도 하나 선택";
+"Add %lld to routine" = "%lld를 운동 계획에 추가";
+"Uncheck anything you don't want. Dashed rows are our best guess — tap replace to swap." = "당신이 원하지 않는 아무것도 체크하지 않습니다. 돌진 행은 우리의 최고의 추측입니다 - 스왑을 대체 탭.";
+"Recognized “%@”" = "인식 “%@”";
+"%lld reps" = "%lld 답글";
+"3 sets · default" = "3 세트 · 과태";
+"%@ / %@, auto-renews until cancelled. Cancel anytime in Settings." = "%@ / %@, 자동 뉴스가 취소 될 때까지. 설정에서 언제든지 취소.";
+"Free for 7 days, then %@ / %@, auto-renews until cancelled. Cancel anytime in Settings." = "7 일 동안 무료, 다음 %@ / %@, 자동 갱신 취소 될 때까지. 설정에서 언제든지 취소.";
+"Auto-renewing subscription. Cancel anytime in Settings." = "자동 갱신 구독. 설정에서 언제든지 취소.";
+"Best value" = "좋은 가치";
+"No routines yet" = "아직 운동 계획이 없습니다";
+"Add AI routines" = "AI workout plan 추가";
+"No saved routines yet" = "저장 된 운동 계획 아직";
+"Generate one with AI or browse Classics below, then tap Save." = "AI와 함께 생성하거나 아래에서 Classic을 검색 한 다음 Save를 탭합니다.";
+"No Classics match these filters." = "이 필터와 일치하지 않습니다.";
+"No routines match these filters yet." = "이 필터는 아직 일치하지 않습니다.";
+"Tailoring your AI routines…" = "AI 운동 계획을...";
+"Pick the equipment your gym has — AI and recommended routines will only use moves you can actually do. Leave empty for no restriction (bodyweight is always available)." = "장비를 선택하면 체육관이 있습니다. AI 및 권장되는 운동 계획은 실제로 할 수있는 움직임 만 사용할 수 있습니다. 제한없이 빈을 두십시오 (체중은 항상 사용할 수 있습니다).";
+"Clear — use all equipment" = "Clear — 모든 장비를 사용";
+"%@ %@ per side" = "측 당 %@ %@";
+"Achievable: %@ %@  (off by %@)" = "유효한: %@ %@ (%@에 의하여 떨어져)";
+"%lld picked" = "%lld 선택";
+"+%lld more" = "+%lld 더";
+"Save as plan?" = "일상으로 저장?";
+"Don't Save" = "저장하지 마십시오";
+"Keep this workout as a reusable routine." = "이 운동을 재사용 가능한 운동 계획으로 유지하십시오.";
+"Apple Health" = "모델: Apple Health";
+"Save workouts to Apple Health" = "Apple Health에 운동 저장";
+"Masso saves your completed workouts to Apple Health, so they appear in your Activity rings and the Health app. On Apple Watch, Masso reads heart rate and active energy during a workout." = "Masso는 Apple Health에 완료된 운동을 저장합니다, 그래서 그들은 당신의 활동 반지 및 건강 앱에서 나타납니다. Apple Watch에, Masso는 운동 도중 심박수와 활동적인 에너지를 읽습니다.";
+"Exercise data" = "운동 자료";
+"Sync params across routines" = "운동 계획에서 동기화 연습 설정";
+"Creating your AI plan" = "AI workout plan 만들기";
+"Your plan is ready" = "당신의 일상은 준비";
+"Personalized from your answers" = "당신의 답변에서 개인화";
+"Reading your profile" = "자주 묻는 질문";
+"Picking exercises for your goals" = "당신의 목표에 대한 운동 선택";
+"Balancing your weekly plan" = "당신의 일상 생활";
+"Off by default: each routine keeps its own sets, reps, weight, and rest, so heavy and light days stay independent. Turn on to apply a change to an exercise everywhere it appears." = "기본적으로 : 각 운동 계획은 자체 세트, reps, weight, rest, so heavy and light days stay 독립적으로 유지한다. 그것이 나타나는 운동에 변화를 적용하기 위해 켜십시오.";
+"Optional — leave all off for a balanced routine." = "선택 — 균형 잡힌 운동 계획을 위해 모든 것을 떠나.";
+"Level" = "기본 정보";
+"Days/week" = "일/주";
+"All levels" = "모든 레벨";
+"Any frequency" = "모든 주파수";
+"Continue (%lld)" = "계속 (%lld)";
+"Start (%lld)" = "시작 (%lld)";
+"Exercise photos" = "운동 사진";
+"Credits" = "장바구니";
+"Exercise photos via Pexels." = "Pexels를 통해 사진 연습.";
+"Pexels License" = "Pexels 라이센스";
+"From library" = "도서관에서";
+"Search the web" = "웹 검색";
+"Find a photo" = "사진 찾기";
+"Photos via Pexels. Pick the one that matches your move." = "사진을 통해 Pexels. 당신의 움직임에 일치 한 하나를 선택.";
+"Type a name and search the web." = "이름을 입력하고 웹을 검색합니다.";
+"No photos found. Try a different name." = "찾을 수 없음. 다른 이름을 시도.";
+"Search exercise photos" = "검색 연습 사진";
+"Playlist drawer drag handle" = "Playlist 서랍 드래그 핸들";
+"Drag up to expand, down to collapse. Tap to toggle." = "확장, 붕괴 아래로 드래그. toggle에 탭.";
+"Collapse calendar" = "연락처";
+"Set removed" = "제거 설정";
+"Changes update this exercise across all your routines." = "모든 운동 계획에서 이 연습을 업데이트합니다.";
+"Undo last set" = "마지막 설정";
+"Full Body A · Push / Quads / Pull (Upper)" = "전체 바디 A · 푸시 / 쿼드 / 풀 (우퍼)";
+"Full Body B · Push / Hamstrings / Pull (Lower)" = "전체 바디 B · 푸시 / Hamstrings / 풀 (낮은)";
+"Full Body C · Push / Glutes / Pull (Mid)" = "전체 바디 C · 푸시 / 글루즈 / 풀 (Mid)";
+"Day A · Chest + Triceps" = "일 A · 가슴 + Triceps";
+"Day B · Back + Biceps" = "일 B · 뒤 + Biceps";
+"Day C · Legs + Glutes" = "일 C · 다리 + 글루";
+"Day D · Shoulders + Traps" = "데이 D · 어깨 + 트랩";
+"Day E · Arms + Core" = "일 E · 팔 + 핵심";
+"Push A · Heavy" = "푸시 A · 무거운";
+"Pull A · Heavy" = "잡아라.";
+"Legs A · Quads" = "다리 A · 쿼드";
+"Push B · Volume" = "푸시 B · 볼륨";
+"Pull B · Volume" = "풀 B · 볼륨";
+"Legs B · Hamstrings / Glutes" = "다리 B · Hamstrings / 글루";
+"Finish a workout to see which muscles need recovery." = "근육이 회복을 필요로하는 것을 보는 운동을 완료하십시오.";
+"Last: %@ × %d (%@)" = "마지막: %@ × %d (%@)";
+"Follow iPhone language (%@)" = "iPhone 언어 선택 (%@)";
+"This week vs last" = "이번 주 대 마지막";
+"so far" = "뚱 베어";
+"NEW" = "이름 *";
+"Muscle balance" = "근육 균형";
+"Training activity" = "교육 활동";
+"Last 16 weeks" = "마지막 16 주";
+"Less" = "뚱 베어";
+"More" = "더 보기";
+"Activity" = "- 연혁";
+"Insights" = "관련 기사";
+"Training insights" = "교육 통찰력";
+"Trends" = "연락처";
+"Long-press a card to reorder" = "긴 압박 reorder에 카드";
+"Unlock deep insights with Pro" = "Pro와 깊은 통찰력을 잠금 해제";
+"Strength by lift" = "힘 상승";
+"Estimated 1RM over time" = "예상 시간 1RM";
+"Lift" = "공지사항";
+"Trend" = "주요사업";
+"Distribution" = "제품정보";
+"Set weights · last 4 weeks" = "무게를 설정 · 마지막 4 주";
+"No weighted sets in the last 4 weeks" = "마지막 4 주에 있는 무겁게 한 세트 없음";
+"Sets vs targets" = "대 대상 설정";
+"Weekly hard sets per muscle" = "근육 당 주간 단단한 세트";
+"MEV" = "사이트맵";
+"MAV" = "사이트맵";
+"Volume by muscle" = "근육의 볼륨";
+"Weekly %@ per muscle" = "근육 당 주간 %@";
+"Training frequency" = "교육 주파수";
+"Days per week per muscle" = "근육 당 주 당 일";
+"PR timeline" = "PR 타임라인";
+"Your personal records" = "당신의 개인 기록";
+"Consistency & load" = "일관된 & 짐";
+"All-time" = "모든 시간";
+"Adherence" = "이름 *";
+"Total lifted" = "전체 상승";
+"Unlock per-muscle recovery with Pro" = "Pro로 per-muscle recovery 잠금 해제";
+"Stats" = "통계 정보";
+"This week" = "이번 주";
+"Last week" = "지난 주";
+"Keep training — your stats and trends show up here." = "훈련 유지 — 당신의 통계 및 동향은 여기 보여줍니다.";
+"Describe a change… e.g. make it harder" = "변경 설명... e.g. 더 열심히";
+"Tell the AI a preference or change in plain words — e.g. 'bad shoulder, no overhead'. It remembers." = "AI를 일반 단어에서 선호하거나 변경하십시오 - 예. '나쁜 어깨, overhead'. 그것은 기억합니다.";
+"Tell your AI coach" = "AI 코치";
+"Write anything you want your routines to consider, in plain words — injuries, likes and dislikes, schedule, goals. The AI reads it every time it builds your plan." = "당신이 고려해야 할 모든 것을 작성, 일반 단어에서 - 부상, likes and dislikes, 일정, 목표. AI는 당신의 계획을 구축 때마다 그것을 읽습니다.";
+"I can't watch the video yet — paste the key moves or the plan from it and I'll work it in." = "나는 비디오를 아직 볼 수 없습니다 - 키 이동 또는 계획에서 그것을 풀고 나는 그것을 작동 할 것입니다.";
+"Tuned for: %@" = "조정: %@";
+"Focus: %@" = "초점: %@";
+"Send" = "이름 *";
+"OPTIMIZE" = "채용 정보";
+"Optimize with AI" = "AI로 최적화";
+"%@ are undertrained" = "%@는 중단됩니다";
+"You've done far fewer %@ sets than your top muscle group over the last 3 weeks." = "당신은 마지막 3 주에 당신의 최고 근육 그룹 보다는 훨씬 더 %@ 세트를 했습니다.";
+"%@ has stalled" = "%@가 장착되었습니다.";
+"Your estimated 1RM on %@ hasn't moved over your last few sessions." = "%@에서 추정된 1RM은 지난 몇 세션에서 이동하지 않았습니다.";
+"Your main lift" = "당신의 주요 상승";
+"Fewer sessions lately" = "Fewer 세션 늦게";
+"You're averaging about %d sessions a week, below your %d-day goal." = "%d 세션은 %d-day 목표 아래 일주일에 한 번에 진행됩니다.";
+"AI Coach Summary" = "AI Coach 요약";
+"Keep logging — your AI summary unlocks after about 2 weeks of training." = "로깅 유지 - AI 요약은 훈련의 약 2 주 후에 잠금 해제됩니다.";
+"Unlock your AI coach summary with Pro" = "AI 코치 요약을 Pro로 잠금 해제";
+"AI summary unavailable — Retry" = "AI 요약 사용 불가 — Retry";
+"As of %@ · based on the last 14 days" = "%@ · 마지막 14 일 기준";
+"Apply to routine" = "자주 묻는 질문";
+"Add to notes" = "주의사항";
+"Saved to your coaching notes" = "당신의 코칭 노트에 저장";
+"Keep logging your sessions — your coach summary sharpens with more data." = "세션에 로그인 유지 - 더 많은 데이터와 코치 요약 날카로운.";
+"Rebalance your weekly volume" = "주간 볼륨을 균형";
+"Personalized set-by-set guidance from your data." = "귀하의 데이터에서 개인화된 set-by-set 지도.";
+"Break your main-lift plateau" = "메인 리프트 Plateau를 깰";
+"Concrete progression tailored to your recent sessions." = "최근 세션에 맞는 구체적인 진행.";
+"My Insights" = "내 통찰력";
+"My AI Summary" = "내 AI 요약";
+"Training Insights" = "교육 통찰력";
+"My Progress" = "내 진행";
+"Share my progress" = "내 발전";
+"vs last week" = "마지막 주";
+"Volume this week" = "이번 주에 볼륨";
+"%@ e1RM" = "%@ e1RM";
+"Consistency" = "관련 제품";
+"Last 8 weeks" = "마지막 8 주";
+"Share Insights" = "공유 Insights";
+"Share History" = "회사연혁";
+"AI coach quote" = "AI 코치 견적";
+"Tune with AI" = "Tune 와 AI";
+"Your history" = "당신의 역사";
+"Best e1RM %@" = "최고의 e1RM %@";
+"Just now: %@" = "지금: %@";
+"Adjust last set" = "마지막 세트를 조정하십시오";
+"Fix what you actually did — this only rewrites the set you just logged, not your plan." = "당신이 실제로 한 것을 수정 — 이것은 단지 로그인 한 세트를 다시 작성, 당신의 계획이 아닙니다.";
+"Set logged" = "로그아웃";
+"Undo" = "이름 *";
+"Keep screen awake during workouts" = "작업 중 화면 awake 유지";
+"While a workout is running, the screen won't auto-lock — your timer and next set stay visible at the rack." = "운동이 실행되는 동안, 스크린은 자동 자물쇠가 아닙니다 — 당신의 타이머 및 다음 세트는 선반에 눈에 보입니다.";
+"Finish & end" = "완료하고 종료";
+"Discard workout" = "운동 버리기";
+"Finish & end keeps this as a completed workout with your stats. Discard closes it without a summary." = "끝 & 끝은 당신의 통계를 가진 완성된 운동으로 이것을 지킵니다. Discard는 요약 없이 그것을 닫습니다.";
+"Added %lld workout days" = "추가 %lld 운동 일";
+"%lld training days" = "%lld 훈련 일";
+"Includes %lld training days — Save adds all of them" = "%lld 교육 일 포함 — 모두 저장";
+"Volume %@" = "양 %@";
+"Coach" = "주요 특징";
+"SAVED · %lld" = "SAVED · %lld";
+"Saved routines will appear here." = "Saved 운동 계획은 여기에 나타납니다.";
+"~%lld min" = "~%lld 분";
+"DAY %lld" = "일 %lld";
+"Hey! Tell me how you want to train — I'll build your weekly routines." = "Hey! 기차를 원하는 방법을 말해 - 나는 당신의 주간 운동 계획을 구축 할 것입니다.";
+"COACH SUGGESTION" = "COACH 소개";
+"Usually takes 30–60 seconds" = "보통 소요 30–60 초";
+"Tell me how you want to train…" = "기차를 원하는 방법을 말해 ...";
+"New conversation" = "새로운 대화";
+"Start a new conversation?" = "새로운 대화 시작?";
+"This clears the current chat. Saved routines are kept." = "이것은 현재 채팅을 삭제합니다. 저장된 운동 계획은 유지됩니다.";
+"Swap %@: " = "스왑 %@:";
+"Training in progress — keep tuning after your session." = "진행중인 교육 - 세션 후 튜닝 유지.";
+"Try a starting point" = "시작하기";
+"Choose a scenario, then edit the draft before sending." = "시나리오를 선택하고, 전송하기 전에 초안을 편집합니다.";
+"I want to focus on…" = "나는 ...에 초점을 맞추고 싶어";
+"I only have 30 minutes" = "30분만";
+"I train at home" = "집에서 기차";
+"I’m getting back into training" = "나는 훈련으로 돌아가";
+"I want to look like this" = "나는 이것을 좋아한다";
+"Current photo" = "현재 사진";
+"Goal reference" = "Goal 참고";
+"Change photo" = "본문 바로가기";
+"Avoid faces. Photos can’t measure health, strength or body fat." = "얼굴을 피하십시오. 사진은 건강, 힘 또는 몸 지방을 측정할 수 없습니다.";
+"Choose a photo from your library or camera" = "도서관 또는 카메라에서 사진을 선택하십시오.";
+"I want to focus more on [shoulders and back]. Adjust my routines around that while keeping my training balanced." = "[어깨와 등]을 더 집중적으로 운동하고 싶어요. 전체 균형을 유지하면서 운동 계획을 조정해 주세요.";
+"I have [30] minutes per workout. Shorten my routines to fit while keeping the main training focus." = "운동할 수 있는 시간은 한 번에 [30]분이에요. 주요 운동 목표를 유지하면서 시간을 줄여 주세요.";
+"I train at home with [dumbbells and bands]. Adapt my routines to the equipment I have." = "집에서 [덤벨과 밴드]로 운동해요. 가진 장비에 맞게 운동 계획을 조정해 주세요.";
+"I’m returning after [a month away]. Ease my routines back in with balanced, gradual training." = "[한 달] 쉬었다가 운동을 다시 시작해요. 균형을 유지하면서 강도를 서서히 높일 수 있도록 계획을 조정해 주세요.";
+"Compare my current photo with this goal reference. Suggest balanced training emphases based on visible muscle development, then adjust my routines. Keep the advice realistic; don’t estimate body fat or a timeline." = "이 목표 참고로 내 현재 사진을 비교하십시오. 눈에 보이는 근육 발달에 근거를 둔 균형 잡힌 훈련 emphases를 건의하고, 그 후에 나의 운동 계획을 조정하십시오. 충실함을 지키십시오; 체지방 또는 타임라인을 견적하지 마십시오.";
+"FROM WEEKLY SUMMARY" = "매주 수요일";
+"FROM OPTIMIZE" = "옵션 정보";
+"Prompt templates" = "Prompt 템플릿";
+"Next blank" = "다음 빈";
+"FOCUS" = "프로젝트";
+"SWAP" = "RSS 피드";
+"TIME & STRUCTURE" = "시간 & 특징";
+"INTENSITY" = "제품정보";
+"Train [muscle] more and [muscle] less" = "기차 [근육] 더 및 [근육] 더 적은";
+"Put extra focus on my [upper chest / rear delts]" = "추가 초점 내 [upper 가슴 / 후방 delts]";
+"Add more volume for my [weak spot]" = "내 볼륨 더 추가 [약점]";
+"Swap out [exercise] because [reason]" = "[exercise]를 [reason] 교환";
+"My [body part] hurts — avoid [movement type]" = "내 [몸 부분] 상처 - 피 [movement 유형]";
+"Use more [dumbbells / cables] and less [barbell / machines]" = "더 많은 사용 [dumbbells / 케이블] 및 더 적은 [barbell / 기계]";
+"Keep each session under [45] minutes" = "각 세션 유지 [45] 분";
+"Make it [4] days a week, split by [push/pull/legs]" = "[push/pull/legs]에 의해 일주일에 [4] 일을 만드십시오";
+"Only change Day [1] — keep the rest as is" = "만 변경 일 [1] - 나머지는 그대로 유지";
+"I'm [worn out / not recovering] — dial the intensity down" = "나는 [worn out / not recovering] - 아래로 강도를 다이얼";
+"Make it [4] sets of [6-8] reps per exercise" = "[6-8] 운동 당 reps의 그것 [4] 세트를 만드십시오";
+"I'm in a [cutting / bulking] phase — tune for that" = "나는 [절단 / bulking] 단계 - 그에 대한 조정";
+"Add your own exercise" = "자신의 운동을 추가";
+"Add “%@” as your own" = "자신의 이름으로 \"%@\"를 추가하십시오.";
+"Build my week — full body, about 45 minutes a day" = "내 주를 구축 — 전체 몸, 약 45 분";
+"Update routines?" = "업데이트 운동 계획?";
+"Update routines" = "업데이트";
+"Save only" = "구매하기";
+"Save these training preferences and regenerate your routines to match?" = "이 훈련 선호도를 저장하고 당신의 운동 계획을 재생?";
+"Share routines" = "운동 계획 공유";
+"Share (%lld)" = "공유 (%lld)";
+"Import routines" = "운동 계획 가져오기";
+"Add (%lld)" = "추가 (%lld)";
+"Ready to train" = "기차 준비";
+"Almost ready" = "거의 준비";
+"Workouts total" = "운동 총";
+"Workout total" = "운동 총";
+"Days trained" = "훈련 된 날";
+"Try %@ (+%@)" = "다운로드 %@ (+%@)";
+"Drop to %@" = "%@에 하락";
+"Already up to date" = "최신 정보";
+"Smart progression" = "Smart 진행";
+"Earn the next 2.5 kg — weight suggestions from your logged sets." = "다음 2.5 kg을 적립 - 기록 된 세트에서 무게 제안.";
+"Secure checkout on the web via Polar. %@ / %@, renews until cancelled — manage or cancel anytime on the Polar page." = "Polar를 통해 웹에서 보안 체크 아웃. %@ / %@, 취소 될 때까지 갱신 - Polar 페이지에서 언제든지 관리 또는 취소.";
+"Enter code" = "비밀번호";
+"Enter your activation code" = "활성화 코드를 입력";
+"After buying on the web, your code was emailed to you (and shown on the confirmation page). Paste it here to unlock Pro on this device." = "웹에서 구입 한 후 코드를 이메일로 전송되었습니다 (확인 페이지에 표시). 이 장치에 대한 Pro를 잠금 해제하기 위해 여기에 붙여 넣으십시오.";
+"Activate" = "이름 *";
+"That code isn't active yet. Double-check it, or try again in a moment." = "그 코드는 아직 활성화되지 않습니다. 두 배 체크, 또는 다시 한번 시도.";
+"Couldn't verify — check your connection and try again." = "couldn't valid — 연결 확인 및 다시 시도.";
+"You're Pro now — thanks for supporting Masso." = "지금 Pro — Masso 지원 감사.";
+"That code isn't active yet. Check the email from your purchase, or try again in a moment." = "이 코드는 아직 활성화되지 않습니다. 구매에서 이메일을 확인하거나 다시 시도하십시오.";
+"Couldn't verify your code — check your connection and try again." = "코드를 확인하지 못했습니다 - 연결 확인 및 다시 시도하십시오.";
+"ACTIVE" = "관련 기사";
+"Thanks for supporting Masso. Manage or cancel on the Polar page." = "Masso 지원 감사합니다. Polar 페이지에서 관리하거나 취소하십시오.";
+"Scan to get this routine" = "스캔하여 같은 운동 계획 받기";
+"%lld days a week" = "%lld 일 일주일";
+"YOUR TRAINING" = "당신의 훈련";
+"Adjust preferences" = "설정 조정";
+"View routines" = "자주 묻는 질문";
+"Adjust your routine" = "당신의 운동 계획을 조정";
+"Body front" = "정면";
+"Body back" = "후면";
+"Notes for your AI coach" = "AI 코치를위한 노트";
+"AI coach memory description" = "AI 코치는 일상을 만들 때마다 이러한 노트를 읽습니다.";
+"Coach memory examples" = "예를 들어: 과거 부상, 피하기 위해 이동, 장비, 일정, 또는 목표...";
+"Saved here for good — your AI coach reads it every time it builds a routine. Write anything in plain words: past injuries, medical conditions, moves to avoid, equipment quirks, schedule, goals." = "여기에 저장 좋은 — 당신의 AI 코치는 운동 계획을 구축 할 때마다 그것을 읽습니다. 일반 단어에서 아무것도 쓰기 : 과거 부상, 의료 조건, 피하기 위해 이동, 장비 quirks, 일정, 목표.";
+"Replace all" = "모든 것";
+"Save to My Routines" = "내 운동 계획에 저장";
+"Replace all routines" = "모든 운동 계획 바꾸기";
+"Add to existing routines" = "기존 운동 계획에 추가";
+"Choose whether to replace your %lld saved routines or add these %lld routines alongside them." = "저장된 운동 계획 %lld개를 바꾸거나 새 운동 계획 %lld개를 추가할 수 있습니다.";
+"Replace your routines?" = "당신의 운동 계획을 대체?";
+"Your %lld saved routines will be deleted and replaced with these %lld." = "%lld 저장된 운동 계획은 삭제되며이 %lld로 교체됩니다.";
+"Masso Pro" = "Masso 프로";
+"Unlimited routines, unlimited AI coach, deep analytics." = "무제한 운동 계획, 무제한 AI 코치, 깊은 분석.";
+"Built-in" = "내장형";
+"AI coach" = "AI 코치";
+"Test connection" = "시험 연결";
+"Primary route" = "주요 특징";
+"Backup route" = "지원하다";
+"Not configured" = "이름 *";
+"No internet" = "인터넷 없음";
+"Timed out" = "자세히보기";
+"DNS blocked" = "DNS 차단";
+"Connection blocked" = "연결 차단";
+"TLS blocked" = "TLS 차단";
+"Unreachable" = "기타 제품";
+"The AI coach is reachable from this device." = "AI 코치는이 장치에서 사용할 수 있습니다.";
+"The AI coach can't be reached on this network. Try mobile data instead of Wi-Fi (or the other way round); if you use a VPN or proxy, switch it on or off and test again." = "AI 코치는이 네트워크에 도달 할 수 없습니다. Wi-Fi 대신 모바일 데이터를 시도하십시오 (또는 다른 방법 라운드); VPN 또는 프록시를 사용하는 경우, 켜거나 해제하고 다시 테스트하십시오.";
+"Edit exercise" = "교육과정";
+"Built from" = "제품정보";
+"Bodyweight only" = "Bodyweight 전용";
+"%@ only" = "%@ 전용";
+"Under %d min" = "%d 분의 밑에";
+"No %@" = "%@ 없음";
+"More %@" = "더 많은 %@";
+"Your data" = "귀하의 데이터";
+"Export my data" = "내 데이터 내보내기";
+"A JSON backup of everything plus a CSV of every set you've logged — open it in Numbers, Excel, or any other app. Your data is yours; you can take it and go." = "모든 종류의 JSON 백업과 모든 세트의 CSV가 기록되었습니다. - 번호, Excel 또는 다른 응용 프로그램에서 열 수 있습니다. 귀하의 데이터는 당신입니다; 당신은 그것을 가지고 갈 수 있습니다.";
+"Export failed" = "수출 실패";
+"Share anonymous usage data" = "익명 사용 데이터";
+"Sends anonymous counts like \"a routine was generated\" or \"onboarding finished\" so I can see which parts of the app work. Never your workouts, weights, notes, or anything you typed. No account, no ads, no third-party ad networks. Turn it off and nothing is sent at all." = "익명의 카운트를 \"일생이 생성 된\"또는 \"완료\"같은 경우 앱 작업의 일부가 볼 수 있습니다. 당신의 운동, 무게, 메모, 또는 당신이 입력 한 아무것도하지 마십시오. 계정 없음, 광고 없음, 제 3 자 광고 네트워크 없음. 끄고 아무것도 전혀 전송되지 않습니다.";
+"Adjust your routines with your coach" = "당신의 코치와 함께 당신의 운동 계획을 조정";
+"Show earlier workouts (%lld)" = "이전 운동 표시 (%lld)";
+"Start today's workout" = "오늘의 운동 시작";
+"AI Coach" = "AI 코치";
+"More training settings" = "더 많은 교육 설정";
+"Classic Routines" = "클래식 운동 계획";
+"Explore Routines" = "운동 계획을 탐험";
+"Find a classic plan and make it yours." = "고전적인 계획을 찾아 당신의 것을 만듭니다.";
+"Create a routine" = "운동 계획 만들기";
+"Plan your exercises before you train" = "훈련 전에 운동 계획";
+"Start custom workout" = "주문 운동 시작";
+"Add exercises as you go" = "운동을 추가하면";
+"Choose your first exercise" = "첫 번째 운동을 선택";
+"What would you like to train next?" = "당신은 다음 기차를 좋아 합니까?";
+"End this workout" = "이 운동 종료";
+"Add next exercise" = "다음 운동";
+"Minimize workout" = "운동을 최소화";
+"Workout complete" = "작업 완료";
+"Save as a routine" = "운동 계획으로 저장";
+"Set up exercise" = "연습 설정";
+"AI suggestion" = "AI 제안";
+"Drag sideways to rotate. Tap for recovery details." = "Drag sideways 회전. 복구 세부 사항을 탭.";
+"Tap to view muscle recovery" = "근육 회복을 보는 탭";
+"3D muscle model" = "3D 근육 모형";
+"Model adapted for Masso: mirrored muscle groups, smoother surfaces, adjusted proportions and fatigue colors." = "Masso를 위해 적응되는 모형: 미끄러운 근육 그룹, 더 매끄러운 표면, 조정된 비율 및 피로 색깔.";
+"Drag sideways to rotate" = "Drag sideways 회전";
+"3D model unavailable" = "3D 모델 사용 가능";
+"Start your first workout" = "첫 번째 운동 시작";
+"Your training journey starts here." = "당신의 훈련 여행을 시작";
+"Your workout is in progress." = "당신의 운동은 진행 중입니다.";
+"Rest up" = "더 알아보기";
+"You’ve trained today." = "오늘 훈련";
+"Plan your next session" = "다음 세션 계획";
+"You last trained yesterday." = "어제 훈련";
+"Make time to train" = "운동할 시간을 내보세요";
+"It’s been %lld days since your last workout." = "그것은 당신의 마지막 운동 때문에 %lld 일입니다";
+"Ease back in" = "Ease 뒤로";
+"Your training summary" = "훈련 요약";
+"Let's plan your training" = "훈련 계획하자";
+"Previous suggestion" = "이전 제안";
+"Next suggestion" = "다음 제안";
+"Suggestion %lld of %lld" = "%lld의 제안 %lld";
+"Updating suggestions…" = "업데이트 ...";
+"Suggestion removed" = "제안 제거";
+"Dismiss suggestion" = "파기절차";
+"Sent to chat" = "채팅하기";
+"Applied" = "제품정보";
+"View Pro" = "Pro 보기";
+"Collapse history" = "붕괴 역사";
+"Expand history (%lld)" = "확장 역사 (%lld)";
+"Ready" = "지원하다";
+"Routine options" = "Workout plan 옵션";
+"Couldn’t prepare share" = "공유 할 수 없습니다";
+"Please try again." = "다시 시도하십시오.";
+"Training photo" = "교육 사진";
+"Send to analyze with AI and suggest routine changes." = "AI를 분석하고 운동 계획의 변화를 제안합니다.";
+"A photo can't measure strength or recovery." = "사진은 힘 또는 회복을 측정할 수 없습니다.";
+"Remove photo" = "사진 제거";
+"Photo Library" = "포토 라이브러리";
+"Camera unavailable" = "사진기 unavailable";
+"Allow camera access in Settings, or choose a photo from your library." = "설정에서 카메라 액세스를 허용하거나 라이브러리에서 사진을 선택하십시오.";
+"Couldn't prepare this photo" = "이 사진을 준비 할 수 없습니다";
+"Please choose another photo." = "다른 사진을 선택하십시오.";
+"Review my training photo and suggest routine changes." = "훈련 사진을 검토하고 운동 계획의 변화를 제안합니다.";
+"Couldn't analyze this photo. Your routines are unchanged. Please try again." = "이 사진을 분석 할 수 없습니다. 당신의 운동 계획은 변하지 않습니다. 다시 시도하십시오.";
+"Time range" = "시간 범위";
+"4 weeks" = "4 주";
+"12 weeks" = "12 주";
+"6 months" = "6 개월";
+"1 year" = "1 년";
+"All time" = "모든 시간";
+"%d training days · %@" = "%d 교육 일 · %@";
+"Lift progress" = "상승 진행";
+"%d improved" = "%d 개선";
+"1 lift improved" = "1 상승 향상";
+"%d lifts improved" = "%d 상승 향상";
+"Your progress starts here" = "당신의 진행이 시작되었습니다.";
+"Your lifts at a glance" = "한 눈에 리프트";
+"Earlier → latest comparable records" = "Earlier → 최신 comparable 기록";
+"Log your workouts to see changes in weight and reps." = "무게와 reps에서 변화를 볼 수있는 운동을 이동합니다.";
+"All exercises" = "모든 운동";
+"Muscles trained" = "운동한 근육";
+"This week · recorded sets" = "이번 주 · 기록 세트";
+"Primary muscles only · not a growth score" = "1 차 근육 만 · 성장 점수";
+"Some exercises have no muscle mapping and are excluded." = "일부 운동에는 근육 매핑이 없으며 제외됩니다.";
+"Training rhythm" = "교육 리듬";
+"training days this week" = "훈련 일 이번 주";
+"%d training days in the last %d weeks" = "마지막 %d 주에 있는 %d 훈련 일";
+"Trained" = "훈련 된";
+"Upcoming" = "지원하다";
+"No recorded workout" = "기록 된 운동";
+"Compared within the same exercise. Each day uses its best matching set. Chart scales differ between exercises." = "같은 운동에서 비교. 매일 가장 일치하는 세트를 사용합니다. 차트는 운동과 다릅니다.";
+"More matching sessions are needed to show a trend." = "더 매칭 세션은 추세를 보여야 합니다.";
+"Strength changes do not measure muscle growth." = "힘 변화는 근육 성장을 측정하지 않습니다.";
+"Recorded sets" = "기록된 세트";
+"A recorded set counts once for each primary muscle group. Secondary muscles are excluded. These are logged sets, not measured effective sets or muscle growth." = "각 1 차적인 근육 그룹을 위해 한 번 기록한 세트 조사. 이차적인 근육은 제외됩니다. 이들은 기록한 세트, 측정한 효과적인 세트 또는 근육 성장입니다.";
+"%d → %d reps" = "%d → %d 답글";
+"New" = "- 한국어";
+"Unchanged" = "이름 *";
+"Weight for %d reps" = "%d reps를 위한 무게";
+"Reps at %@" = "%@에 답글";
+"Bodyweight reps" = "체중 감량";
+"Latest recorded set" = "최근 기록된 설정";
+"Baseline" = "기본 정보";
+"Show fewer" = "더 보기";
+"Show all %d exercises" = "모든 %d 운동보기";
+"Describe what happened and what you expected…" = "무슨 일이 일어나고 예상되는지 설명 ...";
+"Thanks for reporting this. Your report has been sent to our team and will help us improve Masso." = "보고를 위한 감사합니다. 당신의 보고는 우리의 팀에 보내지고 Masso를 개량할 것을 도울 것입니다.";
+"Thanks for reporting this. I saved your report on this device and will retry sending it when a connection is available." = "이보고 주셔서 감사합니다. 나는이 장치에 대한 보고서를 저장하고 연결이 사용할 때 보내드립니다.";
+"Diet" = "식단";
+"What to eat today" = "오늘 먹는 것";
+"Diet preferences" = "규정 준수";
+"Add your weight for portion guidance" = "부분 지침에 대한 당신의 무게를 추가";
+"Approximate portions. Cooked weights except dry oats, packaged yogurt/tofu and fruit. Add cooking oil to taste." = "대략적인 부분. 건조한 귀, 포장된 요구르트/tofu 및 과일을 제외하고 쿡된 무게. 맛에 요리 기름을 추가하십시오.";
+"Swap protein foods for similar protein, starches for similar carbs. Other nutrients may differ." = "유사한 단백질, 유사한 탄수화물을 위한 전분을 교환하십시오. 다른 양분은 다를지도 모릅니다.";
+"Portions are approximate; calories and other nutrients may differ." = "항구는 대략적입니다; 열량 및 다른 양분은 다를지도 모릅니다.";
+"Swap food" = "Swap 음식";
+"Breakfast" = "아침 식사";
+"Lunch" = "런치 메뉴";
+"Dinner" = "저녁 식사";
+"Snack" = "스낵 바";
+"Chicken breast" = "닭 가슴";
+"Lean beef" = "카테고리";
+"Firm tofu" = "회사 소개";
+"Eggs" = "계란";
+"Plain Greek yogurt" = "일반 그리스 요구르트";
+"Rice" = "₢ 킹";
+"Potatoes" = "숙박 약관";
+"Oats" = "기타 제품";
+"Broccoli" = "브로콜리";
+"Leafy greens" = "잎 녹색";
+"Tomatoes" = "카테고리";
+"Blueberries" = "블루베리";
+"Meals per day" = "당일 식사";
+"3 meals" = "3 식사";
+"3 meals + snack" = "3식 + 스낵";
+"Plant-based" = "공장 기반";
+"Uses your existing training goal and body information." = "기존의 교육 목표와 신체 정보를 사용합니다.";
+"Allergies" = "모든 것";
+"Milk" = "우유 우유";
+"Egg" = "계란";
+"Soy" = "뚱 베어";
+"Foods to avoid" = "피할 음식";
+"Keep at least one protein, starch and fruit or vegetable option." = "적어도 1개의 단백질, 전분 및 과일 또는 야채 선택권을 지키십시오.";
+"Protein" = "단백질";
+"Diet protein progress" = "%1$dg/%2$dg 단백질";
+"Carbs" = "탄수화물";
+"Fat" = "지방";
+"g / day" = "g / 일";
+"Supports muscle recovery" = "근육 회복 지원";
+"Fuels your training" = "훈련 연료";
+"Supports daily nutrition" = "일일 영양 지원";
+"Estimated daily targets. Adjust portions to your appetite and training needs." = "예상 일일 목표. 당신의 식욕과 훈련 요구에 부분을 조정합니다.";
+"%d/%d lifts improving" = "%d/%d 상승 개선";
+"reps" = "관련 상품";
+"sets" = "세트";
+"%d training days" = "%d 훈련 일";
+"4 weeks · training volume" = "4 주 · 훈련량";
+"Features" = "주요 특징";
+"Bedtime reminder" = "비밀번호";
+"Last night's score" = "마지막 밤의 점수";
+"Tonight's goal" = "밤의 목표";
+"Notifications are off" = "공지사항";
+"Open Settings" = "설정 열기";
+"Allow Masso notifications in Settings to receive bedtime reminders." = "설정에서 Masso 알림을 허용하여 bedtime 알림을 받으십시오.";
+"Record your first meal today" = "오늘 첫 번째 식사를 기록";
+"Set your body weight" = "몸 무게를 놓으십시오";
+"Get your daily nutrition targets" = "매일 영양 목표를 달성하십시오.";
+"%lld / %lld meals recorded" = "%lld / %lld 식사 기록";
+"Last night" = "지난밤";
+"Insights category" = "Insights 범주";
+"No meal records in this period" = "이 기간에 식사 기록 없음";
+"No sleep records in this period" = "이 기간에 잠 기록 없음";
+"Confirm meal photos to see nutrition trends." = "영양 동향을 볼 수있는 식사 사진을 확인합니다.";
+"Connect Apple Health to see your sleep trends." = "Apple Health를 연결하여 수면 트렌드를 볼 수 있습니다.";
+"Open Diet" = "연락처";
+"Open Sleep" = "잠을 열기";
+"Recorded nutrition" = "기록 된 영양";
+"Daily average · logged days only" = "매일 평균 · 로그인 일 만";
+"%lld / %lld days fully logged" = "%lld / %lld 일 완전 로그인";
+"Protein intake" = "단백질 섭취";
+"Yellow: recorded protein · diamond: daily target" = "황색: 기록된 단백질 · 다이아몬드: 매일 표적";
+"Partial meals count as recorded intake, not a complete day's total." = "기록된 입구로 부분적인 식사 조사는, 완전한 일의 합계 아닙니다.";
+"Average sleep" = "평균 잠";
+"%lld nights recorded" = "%lld 밤 기록";
+"Sleep duration" = "수면 시간";
+"Blue: recorded sleep · diamond: nightly target" = "파란색 : 기록 된 수면 · 다이아몬드 : 야간 대상";
+"Complete days with saved nutrition targets" = "저장된 영양 표적을 가진 완전한 일";
+"Nights with saved sleep targets" = "저장된 수면 목표를 가진 밤";
+"Protein · %lld / %lld g" = "단백질 · %lld / %lld g";
+"Last night · %@" = "마지막 밤 · %@";
+"Saved to My Routines" = "내 운동 계획에 저장";
+"Sleep target" = "잠 표적";
+"Sleep preferences" = "수면 환경";
+"Total sleep · each night" = "총 잠 · 각 밤";
+"Sleep supports recovery. Adults generally need at least 7 hours." = "잠은 회복을 지원합니다. 성인은 일반적으로 적어도 7 시간을 필요로 합니다.";
+"Total sleep" = "전체 잠";
+"Nightly target" = "야간 대상";
+"Deep sleep" = "깊은 잠";
+"REM sleep" = "REM 수면";
+"Your device hasn't provided sleep stages." = "당신의 장치는 잠 단계 제공되지 않습니다.";
+"Your usual sleep stages" = "당신의 보통 잠 단계";
+"Based on at least 7 recorded nights in the previous 14 days. A personal reference, not a pass/fail target." = "이전 14 일 동안 적어도 7 개의 기록 된 밤을 기반으로합니다. 개인 참조, 패스 / 팜 대상이 아닙니다.";
+"Sleep stages are device estimates and do not affect your goal score." = "수면 단계는 장치 견적이며 목표 점수에 영향을 미치지 않습니다.";
+"About sleep stages" = "잠 단계에 관하여";
+"Building your baseline" = "당신의 기준";
+"Reminder time" = "Reminder 시간";
+"Personal reference" = "비밀번호";
+"Why these portions?" = "왜 이러한 부분?";
+"Meal balance" = "식사 균형";
+"Protein across the day" = "하루의 단백질";
+"Carbs and dinner" = "수화물 및 저녁 식사";
+"Portion guide" = "Portion 가이드";
+"Protein is split evenly across breakfast, lunch and dinner. An optional snack takes 15% of the daily target; the rest stays evenly split." = "단백질은 아침 식사, 점심 및 저녁 식사를 통해 균등하게 분할됩니다. 옵션 간식은 매일 목표 15% of를 걸립니다. 나머지는 균등하게 분할됩니다.";
+"Daily protein and consistent training matter most. Small trials support balanced meals for muscle protein synthesis; long-term muscle-growth results are mixed." = "매일 단백질과 일관된 훈련 문제 대부분. 작은 예심은 근육 단백질 종합을 위한 균형 잡힌 식사를 지원합니다; 장기 근육 성장 결과는 섞입니다.";
+"Carbs start at 25% for breakfast, 35% for lunch and 40% for dinner. With a snack, 15% goes to the snack and the remaining 85% follows the same split." = "25% for 아침 식사, 35% for 점심 및 40% for 저녁 식사에서 Carbs 시작. 간식으로, 15% goes 스낵과 나머지 85% follows 같은 분할.";
+"These percentages are an app planning default, not a proven optimal ratio. A small trial found faster sleep onset with a high-GI meal four hours before bed; other trials found no benefit. More dinner carbs do not guarantee better sleep or justify cutting dinner protein." = "이러한 비율은 앱 계획 기본이며 입증 된 최적의 비율이 아닙니다. 작은 평가판은 침대 4 시간 전에 높은-GI 식사와 함께 더 빠른 수면을 발견했습니다. 다른 평가판은 이점이 없습니다. 더 많은 저녁식사 carbs는 더 나은 수면을 보장하지 않거나 저녁식사 단백질을 잘라냅니다.";
+"Approximate cooked weights; oats are dry, yogurt/tofu are packaged weights, fruit is edible weight. Swaps match protein or carbs, not all nutrients. Cooking fats are not included in these portions." = "대략적인 요리된 무게; oats는 건조하고, 요구르트/tofu는 포장된 무게, 과일입니다 식용 무게입니다. Swaps 경기 단백질 또는 carbs는, 모든 양분 아닙니다. 요리한 지방은 이 부분에서 포함되지 않습니다.";
+"ISSN · Protein and exercise (2017)" = "ISSN · 단백질 및 운동 (2017)";
+"Mamerow · Protein distribution (2014)" = "Mamerow · 단백질 배포 (2014)";
+"Protein distribution review (2020)" = "단백질 분배 검토 (2020)";
+"Afaghi · Carbs and sleep (2007)" = "Afaghi · 탄수화물 및 수면 (2007)";
+"Athletes' evening meals trial (2019)" = "Athletes' 저녁 식사 체험 (2019)";
+"Why this sleep target?" = "왜 이 수면 대상?";
+"Why 8 hours?" = "왜 8 시간?";
+"Sleep and recovery" = "수면과 회복";
+"Deep sleep and REM" = "깊은 잠 및 REM";
+"Apple Health records" = "Apple Health 레코드";
+"About sleep" = "잠자리";
+"Apple Health sleep records" = "Apple Health 수면 기록";
+"Core sleep" = "핵심 잠";
+"Awake" = "아와이";
+"In bed" = "침대 유형";
+"Sleep (unspecified)" = "수면 (특정)";
+"Adults generally need 7–9 hours a night. Eight hours is a starting point, not a precise calculation from your workout or body weight. Adjust for how rested you feel." = "성인은 일반적으로 밤 7 ~ 9 시간을 필요로합니다. 8 시간은 운동 또는 체중에서 정확한 계산이 아닙니다. 당신이 느끼는 방법을 조정하십시오.";
+"Sleep supports recovery and performance. A small experiment found lower muscle protein synthesis after one sleepless night. It does not prove that every extra hour produces more muscle, or that everyone needs the same duration." = "잠은 회복과 성과를 지원합니다. 작은 실험은 1개의 잠그는 밤 후에 더 낮은 근육 단백질 종합을 발견했습니다. 그것은 각 여분 시간 더 근육을 일으킵니다, 또는 그 모두는 동일한 내구를 필요로 합니다.";
+"Stage durations vary with age, night and device. Your ranges summarize the previous 14 days once at least 7 nights are available; they are personal references, not recommended targets. Apple Watch stages are estimates." = "단계 내구는 나이, 밤 및 장치와 다를 수 있습니다. 귀하의 범위는 적어도 7 박 이상 사용할 수 있습니다. 그들은 개인 참조, 권장 대상이 아닙니다. Apple Watch 단계는 견적입니다.";
+"Masso reads all authorized sleep-analysis history: core, deep, REM, unspecified sleep, awake and in-bed samples, with times and sources. Missing stages stay blank. Overlapping sources are not added together; detailed stage data is preferred for nightly totals. These totals may differ from Apple's source priorities. In-bed time is not sleep time." = "Masso는 모든 권한의 수면 분석 역사를 읽습니다. 핵심, 깊은, REM, 불특정 수면, 아와이 및 인 침대 샘플, 시간과 소스. 미스링 단계는 공백을 유지합니다. 과잉 소스는 함께 추가되지 않습니다; 상세한 단계 자료는 야간에 총을 선호합니다. 이 합계는 Apple의 소스 우선 순위와 다를 수 있습니다. 인-bed 시간은 수면 시간입니다.";
+"Allow Sleep access in Apple Health. Data appears after your device syncs. HealthKit does not reveal whether read access was denied, so no records can mean no data or no permission." = "Apple Health에서 수면 액세스를 허용하십시오. 데이터는 장치 동기화 후 나타납니다. HealthKit는 액세스가 거부되었는지 알 수 없습니다. 따라서 레코드는 데이터 또는 권한이 없습니다.";
+"NIH · Recommended sleep duration" = "NIH · 권장 수면 시간";
+"AASM / SRS · Adult sleep consensus (2015)" = "AASM / SRS · 성인 수면 합의 (2015)";
+"Lamon · Sleep loss and muscle protein synthesis (2021)" = "라몬 · 수면 손실 및 근육 단백질 종합 (2021)";
+"Apple · Sleep tracking" = "Apple · 수면 추적";
+"Apple · Sleep-analysis data" = "Apple · Sleep-analysis 자료";
+"Sleep history" = "수면 역사";
+"Show earlier nights" = "이전 밤보기";
+"Today's meals" = "오늘의 식사";
+"Diet history" = "다이어트 역사";
+"No meal records yet" = "식사 기록 없음";
+"Sleep details" = "잠 세부사항";
+"7 days" = "7 일";
+"Compared with your current target" = "현재 목표와 비교";
+"Compared with that day's target" = "그날의 목표와 비교";
+"View Apple Health records" = "Apple Health 레코드 보기";
+"Eating window" = "연락처";
+"Flexible" = "제품정보";
+"12:12 · 12-hour window" = "12:12 · 12 시간 창";
+"14:10 · 10-hour window" = "14:10 · 10 시간 창";
+"16:8 · 8-hour window" = "16:8 · 8 시간 창";
+"Starts at" = "관련 기사";
+"Ends at" = "에 종료";
+"Next day" = "다음 날";
+"Morning snack" = "아침 식사";
+"Afternoon snack" = "오후 간식";
+"Meal timing changes the split, not your daily nutrition targets." = "식사 타이밍은 당신의 일상적인 영양 대상이 아닙니다.";
+"Protein is split evenly across your selected 2–5 meals. Changing meal count or eating window keeps the daily target unchanged." = "단백질은 선택된 2 ~ 5 식사를 통해 균등하게 나뉩니다. 식사 수 또는 식사 창을 변경하면 일일 대상이 변경되지 않습니다.";
+"Two meals split carbs 45% / 55%. With three meals, the split is 25% / 35% / 40%. Four meals reserve 15% for a snack; five reserve 10% for each of two snacks. The remaining carbs follow the three-meal split." = "두 가지 식사 분할 탄수화물 45% / 55%. 세 가지 식사로, 분할은 25 % / 35 % / 40 %입니다. 4 개의 식사 예약 15% for 간식; 5 개의 예약 10% for 두 개의 간식 각각. 나머지 탄수화물은 세 개의 메달 분할을 따릅니다.";
+"Flexible timing is the default. 12:12, 14:10 and 16:8 describe fasting hours and eating hours. A shorter window does not lower your daily nutrition targets or guarantee better muscle growth." = "유연한 타이밍은 기본입니다. 12:12, 14:10 및 16:8 빠른 시간 및 식사 시간을 설명합니다. 짧은 창은 당신의 일상적인 영양 목표를 낮추거나 더 나은 근육 성장을 보장하지 않습니다.";
+"NIDDK · Time-restricted eating" = "NIDDK · 시간 제한 식사";
+"%lld meals" = "%lld 식사";
+"Meal 1" = "식사 1";
+"Meal 2" = "식사 2";
+"Meal 3" = "식사 3";
+"Meal 4" = "식사 4";
+"Meal 5" = "식사 5";
+"Diet calendar" = "다이어트 캘린더";
+"Sleep calendar" = "잠 달력";
+"View all months" = "모든 달보기";
+"Green marks workout days." = "녹색 표 운동 일.";
+"Color strength shows your recorded protein progress." = "색깔 힘은 기록한 단백질 진전을 보여줍니다.";
+"Color strength shows your sleep-duration progress." = "색깔 힘은 당신의 잠 성숙 진도를 보여줍니다.";
+"Grey means no record or no target. Saved daily targets are used when available; otherwise your current target is used." = "회색은 기록 또는 표적이 아닙니다. 유효한 때 저장된 매일 표적은 이용됩니다; 그렇지 않으면 당신의 현재 표적은 이용됩니다.";
+"Workout resources" = "작업 자원";
+"Training History" = "교육 역사";
+"Share Training History" = "교육 역사";
+"No workout" = "운동 없음";
+"Workout recorded" = "연습 기록";
+"Improving lifts over 4 weeks" = "4 주 이상 상승";
+"Not enough data" = "데이터 없음";
+"Describe meal" = "식사 설명";
+"Photo" = "- 사진";
+"Diet score" = "다이어트 점수";
+"All meals recorded" = "모든 식사 기록";
+"In progress · record remaining meals" = "진행 중 · 나머지 식사 기록";
+"Record a meal to see your progress" = "당신의 진전을 볼 식사 기록";
+"Estimated target adherence, not a health score." = "예상 대상 준수, 건강 점수.";
+"Try %@, or record what you eat." = "%@를 사용하거나 먹는 것을 기록하십시오.";
+"e.g. Two eggs, a bowl of rice and a glass of milk" = "e.g. 두 계란, 밥 그릇 및 우유 유리";
+"Estimate nutrients" = "견적의료";
+"AI estimate. Check portions, sauces and drinks before confirming." = "AI 견적. 확인하기 전에 부분, 소스 및 음료를 확인하십시오.";
+"Describe your meal in up to 4,000 characters." = "최대 4,000자까지 식사를 설명합니다.";
+"Meal analysis unavailable" = "식사 분석 unavailable";
+"No clear meal found. Describe foods and portions, or enter nutrients manually." = "명확한 식사는 없습니다. 음식과 부분을 설명하거나, 수동으로 영양분을 입력하십시오.";
+"Workout History" = "운동 역사";
+"Share Workout History" = "업무영역";
+"Workout history" = "운동 역사";
+"Workout target" = "운동 표적";
+"%d of %d days this week" = "%d의 %d 일 이번 주";
+"Membership" = "이름 *";
+"Add meal" = "식사 추가";
+"Meal" = "식사 안내";
+"Meal %d" = "식사 %d";
+"Only confirmed nutrients count toward today's score." = "오늘 점수에 대한 확인 된 영양분 만.";
+"Why these targets?" = "왜 이 표적?";
+"Workout Insights" = "운동 통찰력";
+"Share Workout" = "회사 소개";
+"Share Workout Insights" = "작업 통찰력";
+"Generate meal" = "식사 계획";
+"Generating meal…" = "식사 ...";
+"Could not estimate this meal. Add foods and portions, then try again." = "이 식사를 견적 할 수 없습니다. 음식과 부분을 추가하면 다시 시도하십시오.";
+"Daily goal contribution" = "매일 목표 기여";
+"Last 7 days" = "마지막 7 일";
+"days / week" = "일/주";
+"Delete meal" = "자주 묻는 질문";
+"Delete meal?" = "식사 삭제?";
+"Goal & color rules" = "목표 & 색상 규칙";
+"Your current target" = "현재 목표";
+"What the colors mean" = "색상은 무엇을 의미";
+"How it is calculated" = "계산하는 방법";
+"Research & guidance" = "연구 및 지도";
+"Light color" = "연한 색";
+"Medium color" = "중간 색깔";
+"Deep color" = "깊은 색깔";
+"No recorded intake/sleep or no usable target." = "기록 된 입구 / 수면 또는 사용 가능한 대상 없음.";
+"Solid blue means actual sleep reaches your saved nightly target. Awake and time in bed are excluded. Deep and REM are references, not scoring targets." = "단단한 파란은 실제적인 잠은 당신의 저장된 밤 표적에 도달합니다. 침대에 있는 Awake 그리고 시간은 제외됩니다. 깊은과 REM는 표적을 득점하지 않는 참고입니다.";
+"Solid yellow requires all three daily macro targets. The lower end of the carb/fat ranges is the completion threshold; the upper end is guidance, not a reason to eat extra." = "단단한 황색은 모든 3개의 매일 매크로 표적을 요구합니다. carb/fat 범위의 더 낮은 끝은 완성 한계입니다; 위 끝은 지도, 여분을 먹기 위하여 이유입니다.";
+"Color bands are Masso's display rules, not medical thresholds. Today has a white outline. Home's oldest three dots also fade for layout." = "컬러 밴드는 Masso의 디스플레이 규칙, 의료 임계값이 아닙니다. 오늘에는 흰색 윤곽이 있습니다. 홈의 가장 오래된 3 점은 또한 레이아웃을 위해 퇴색합니다.";
+"Completion = actual sleep minutes ÷ that night's target. Values above the target earn no extra credit. Stage estimates do not determine the color." = "Completion = 실제 수면 분 ÷ 그 밤의 대상. 대상 위의 값은 추가 크레딧을 적립하지 않습니다. 단계 추정은 색상을 결정하지 않습니다.";
+"The daily Diet score compares protein, carbs and fat with fixed daily targets (weights 20/10/5); each macro is capped at 100%, so extra intake cannot offset another shortfall. Meal cards show that meal's weighted contribution to the full daily targets as a percentage, not a score." = "매일 다이어트 점수는 단백질, 탄수화물 및 지방을 고정 일일 대상 (무게 20/10/5); 각 매크로는 100 %로 캡핑되어 있으므로 추가 섭취는 또 다른 짧은 낙하를 상쇄 할 수 없습니다. 식사 카드는 전체 일일 목표에 대한 체중 증가 기여를 비율로 보여줍니다.";
+"Only saved meal records count. AI nutrition estimates can be inaccurate; colors measure recorded target adherence, not diet quality or health." = "저장된 식사 기록 수만. AI 영양 추정은 inaccurate 일 수 있습니다; 색깔 측정 기록한 표적 고착은, 규정식 질 또는 건강하지 않습니다.";
+"Saved historical targets take priority. If a day has no saved target, the current target is used; changing today's goal does not overwrite saved goals." = "우선 순위를 저장했습니다. 하루가 저장된 대상이 없다면 현재 대상이 사용됩니다. 오늘 목표 변경은 저장된 목표를 과도하지 않습니다.";
+"Adults generally need 7–9 hours; ages 13–18 need 8–10 hours and ages 6–12 need 9–12 hours. Eight hours is an adult starting point. A blue dot only confirms your chosen goal, not that your sleep is healthy." = "성인 일반적으로 7 ~ 9 시간; 나이 13 ~ 18 필요 8 ~ 10 시간 및 연령 6 ~ 12 필요 9 ~ 12 시간. 8 시간은 성인 출발점입니다. 파란색 점 만 당신의 수면이 건강하다는 것을 선택한 목표를 확인합니다.";
+"ISSN supports about 1.4–2.0 g/kg/day of protein for most healthy exercising adults. Masso's targets are planning starting points. Its 20/10/5 weights and color bands are product choices, not research-validated health scores." = "ISSN는 대부분의 건강한 exercising 성인을 위한 단백질의 1.4-2.0 g/kg/day에 관하여 지원합니다. Masso의 표적은 출발점 계획입니다. 그것의 20/10/5 무게 및 색깔 밴드는 제품 선택, 연구 유효했던 건강 점수 아닙니다.";
+"ACSM · Nutrition and athletic performance (2016)" = "ACSM · 영양 및 운동 성능 (2016)";
+"Add your weight for nutrition targets" = "영양 목표를 위한 당신의 무게를 추가하십시오";
+"Color strength shows your three-macro target progress." = "색깔 힘은 당신의 3 macro 표적 진전을 보여줍니다.";
+"Target used today" = "현재 사용된 목표";
+"Current sleep target" = "현재 수면 대상";
+"Edit meal" = "아침 식사";
+"Save changes" = "자주 묻는 질문";
+"Replace photo" = "사진 교체";
+"Weekly target" = "주간 대상";
+"%d days / week" = "%d 일 / 주";
+"Your goal is weekly. Rest days do not count as failed daily goals." = "당신의 목표는 주간입니다. 나머지 일은 일상적인 목표를 실패하지 않습니다.";
+"Green means at least one recorded training set that day." = "녹색은 적어도 1개의 기록한 훈련 세트 그 날을 의미합니다.";
+"Gray means no recorded training sets that day." = "회색은 기록적인 훈련 세트를 그 날 의미하지 않습니다.";
+"The first day after a workout." = "운동 후 첫날.";
+"The second day after a workout." = "운동 후 두 번째 날.";
+"Gray appears after the two-day recovery window when there is no workout." = "회색은 운동이 없을 때 2 일 회복 창 후에 나타납니다.";
+"Recovery colors are for context and do not count toward your weekly target. Today has a white outline; the oldest three home dots fade for display only." = "복구 색상은 컨텍스트이며 주간 목표를 향해 계산하지 않습니다. 오늘 흰색 윤곽이 있습니다. 가장 오래된 3 개의 홈 점 페이드 디스플레이 전용.";
+"Each day with recorded training sets counts once, even if you complete several workouts. This week's count follows your calendar settings and is compared with your current weekly target." = "기록된 훈련 세트를 가진 각 일은 당신이 몇몇 운동을 완료하더라도, 한 번 계산합니다. 이 주의 조사는 당신의 달력 조정을 따르고 당신의 현재 주간 표적과 비교됩니다.";
+"Only logged workout days count toward your weekly target. The two recovery shades are a simple display rule, not a measurement of muscle recovery or workout intensity." = "주간 목표에 대한 기록 된 운동 일 수. 두 회복 그늘은 근육 회복 또는 운동 강도의 측정이 아닌 간단한 디스플레이 규칙입니다.";
+"Why this target?" = "왜 이 표적?";
+"Your fixed gram targets use the weight, training goal and weekly training frequency saved in Masso. If you are 65 or older, the protein factor is raised modestly. Meal count only divides the daily targets; it does not change them." = "고정 그램 표적은 무게, 훈련 목표 및 Masso에서 저장된 주간 훈련 빈도를 이용합니다. 당신이 65 세 이상인 경우에, 단백질 요인은 모세로 올립니다. 식사 조사는 단지 매일 표적을 분할합니다; 그것은 그(것)들을 바꾸지 않습니다.";
+"Carbohydrate uses your goal and planned training days, with a 130 g adult reference floor. Fat uses a simple 0.8 g/kg planning value. These are practical estimates, not measured calorie needs or medical prescriptions." = "탄수화물은 목표와 계획된 훈련 일을, 130 g 성인 참고 지면과 함께 사용합니다. 지방은 간단한 0.8 g/kg 계획 가치를 이용합니다. 이들은 실제적인 추정치, 측정한 열량 필요 또는 의학 처방전입니다.";
+"Masso does not currently collect height or body composition, so it cannot estimate energy needs precisely. Sleep duration is not used to change macro grams because there is no established formula for doing that." = "Masso는 현재 높이 또는 신체 구성을 수집하지 않습니다. 따라서 에너지가 정확하게 요구할 수 없습니다. 수면 기간은 그 일을 위해 설치 된 공식이 없기 때문에 매크로 그램을 변경하는 데 사용되지 않습니다.";
+"ISSN describes protein needs as a range, not one proven ideal for every person. Masso selects a fixed planning point from body weight and training goal; carbohydrates also reflect planned weekly training days, and fat uses a simple weight-based estimate. Age modestly raises the protein factor from 65 onward. Height, body composition, medical conditions and reliable daily energy expenditure are not collected, so these values are estimates rather than a personalized clinical prescription. Sleep data is not used to change macro targets because there is no established conversion from sleep duration to daily macro grams. Scoring weights and color bands are product choices, not research-validated health scores." = "ISSN는 단백질이 범위로 요구되며, 모든 사람에 대해 입증되지는 않습니다. Masso는 신체 무게와 훈련 목표에서 고정 계획점을 선택합니다. 탄수화물은 주간 교육일을 반영하고 지방은 간단한 무게 기반 견적을 사용합니다. 연령은 65에서 단백질 계수를 상승시킵니다. 신장, 신체 구성, 의료 조건 및 신뢰할 수있는 일일 에너지 지출은 수집되지 않습니다. 이러한 값은 개인화 된 임상 처방보다 오히려 평가됩니다. 수면 데이터는 Scorcorg의 전환이 아니라 일상적 인 선택이 아닙니다.";
+"Sleep score" = "수면 점수";
+"About this muscle" = "이 근육에 관하여";
+"Related exercises" = "관련 운동";
+"Exercises for this muscle" = "이 근육에 대한 운동";
+"No matching exercises yet" = "아직 일치하는 운동 없음";
+"Drag sideways to rotate. Tap a muscle to learn more." = "Drag sideways 회전. 더 많은 것을 배울 근육을 탭합니다.";
+"Muscle intro · Neck" = "머리와 목 운동을 지원하고 통제하십시오.";
+"Muscle intro · Chest" = "팔을 앞으로 데려와 몸 전체에, 그리고 압력을 원조.";
+"Muscle intro · Shoulders" = "다른 방향을 통해 팔을 올리고 안내합니다.";
+"Muscle intro · Biceps" = "팔꿈치를 구부리고 당기는 것을 원조합니다.";
+"Muscle intro · Triceps" = "팔꿈치를 Straightens하고 압력을 가합니다.";
+"Muscle intro · Forearms" = "손목을 이동하고 그립에 도움이됩니다.";
+"Muscle intro · Core" = "트렁크를 안정화하고 위와 낮은 몸 사이의 힘을 전송합니다.";
+"Muscle intro · Glutes" = "힙을 확장하고 안정화합니다.";
+"Muscle intro · Quads" = "무릎을 펴고 스쿼트 및 스테핑을 지원합니다.";
+"Muscle intro · Hamstrings" = "무릎을 구부리고 엉덩이를 확장합니다.";
+"Muscle intro · Lower legs" = "발목과 발을 움직여 각 단계를 밀어주고 제어합니다.";
+"Muscle intro · Adductors" = "몸의 중간에 허벅지.";
+"Muscle intro · Back" = "운동과 어깨 잎 통제를 당기는 지원.";
+"Home reminders" = "홈 알림";
+"Meal reminders" = "식사 알림";
+"Time to eat" = "식사할 시간이에요";
+"Fuel your muscles with a balanced meal" = "균형 잡힌 식사로 근육에 에너지를 주세요";
+"Time to wind down" = "아래로 바람에 시간";
+"Sleep helps your muscles recover" = "수면은 근육을 회복";
+"Find demo" = "데모 보기";
+"Calendar colors" = "달력 색깔";
+"Tap to add photo" = "사진 추가하기";
+"Training in progress" = "교육 진행";
+"Train again" = "기차 다시";
+"Exercise details" = "연습";
+"Training today and short sleep: fuel your workout and prioritize recovery" = "오늘 훈련과 짧은 수면: 당신의 운동을 연료를 공급하고 회복을 우선 순위";
+"Short sleep last night: keep protein steady and prioritize recovery" = "짧은 잠 마지막 밤: 꾸준히 단백질을 유지하고 회복을 우선";
+"More training today: extra carbs support recovery" = "더 많은 훈련 오늘: 여분 carbs 지원 회복";
+"Training today: carbs adjusted, protein stays steady" = "오늘 훈련 : carbs 조정, 단백질은 꾸준히 유지";
+"Recovery day: keep protein steady while muscles recover" = "회복 일 : 근육이 회복하는 동안 꾸준히 단백질 유지";
+"No workout logged today: carbs follow your lighter activity" = "오늘 로그아웃 없음: carbs는 당신의 lighter 활동을 따릅니다";
+"Daily adjustments" = "매일 조정";
+"Carb adjustment" = "Carb 조정";
+"Carbs follow logged workouts and working sets. Training/rest offsets use 0.5 g/kg around your weekly average; high-volume days add 0.3 g/kg. The change is limited to 50 g either way, with a 130 g floor. These are Masso planning rules, not exact doses from a study." = "Carbs는 기록한 운동 및 작동 세트를 따릅니다. 훈련/걸이는 당신의 주간 평균의 주위에 0.5 g/kg를 이용합니다; 높 부피 일은 0.3 g/kg를 추가합니다. 변화는 130 g 지면과 더불어 50 g에, 제한됩니다. 이들은 Masso 계획 규칙, 학문에서 정확한 복용량 아닙니다입니다.";
+"Protein and fat remain steady. Sleep under 7 hours changes the recovery advice, not your macro targets: sleep studies do not establish a gram adjustment for missed sleep." = "단백질과 지방은 꾸준히 유지됩니다. 7 시간 미만의 수면은 복구 조언, 매크로 대상이 아닙니다. 수면 연구는 놓은 수면을위한 그램 조정을 수립하지 않습니다.";
+"Each meal shows its share of the full daily targets. Today's targets update with your workout records; earlier days retain their saved targets." = "각 식사는 전체 일일 목표의 공유를 보여줍니다. 오늘의 목표는 운동 기록으로 업데이트됩니다. 이전 일은 저장된 목표를 유지합니다.";
+"Carbs and resistance training · Review (2022)" = "Carbs 및 저항 훈련 · 검토 (2022)";
+"Carb feeding · Meta-analysis (2022)" = "캐비 피드 · 메타 분석 (2022)";
+"Sleep and dietary intake · Review (2020)" = "수면과 식이 섭취 · 리뷰 (2020)";
+"Remember this preference?" = "이 선호 사항?";
+"Saved preferences appear in Training Preferences → Notes" = "Saved 선호도는 Training Preferences → Notes에 표시됩니다.";
+"Saved to Notes" = "자주 묻는 질문";
+"Not saved" = "견적 요청";
+"Yes" = "예";
+"No" = "아니요";
+"/ 100" = "100명";
+"3D close-up of the muscles trained" = "3D 근육의 클로즈업 훈련";
+"About your targets" = "당신의 표적에 관하여";
+"Analytics events" = "Analytics 이벤트";
+"Analyzing meal…" = "맛있는 식사 ...";
+"Apply suggested weight" = "제안 된 무게";
+"Beatriz Gomez Santamaria" = "Beatriz Gomez 산타 마리아";
+"CURRENT" = "기타 제품";
+"Choose a starting point, then adjust each slider. Your saved gram amounts become your daily targets. Changing the number of meals only splits those totals across the day." = "시작 지점을 선택하면 각 슬라이더를 조정합니다. 저장된 그램 금액은 일일 대상이됩니다. 식사 수를 변경하면 하루에 총을 분할합니다.";
+"Choose your plan before training. Rest days count as completed only when explicitly planned." = "훈련 전에 계획을 선택하십시오. 명시적으로 계획할 때만 완료된 나머지 일 수.";
+"Daily nutrition targets" = "매일 영양 목표";
+"Daily records" = "매일 기록";
+"Daily score" = "일일 점수";
+"Enjoy unlimited plans, unlimited AI, and deep analytics. Welcome aboard." = "무제한 플랜, 무제한 AI 및 딥 분석. 환영 보드.";
+"Foods and portions" = "음식과 부분";
+"Front and back muscle coverage" = "정면과 뒤 근육 적용";
+"GOAL REFERENCE" = "공지사항";
+"Goal met" = "Goal 만났다";
+"Grid" = "제품정보";
+"How are these targets calculated?" = "이 대상은 어떻게 계산됩니까?";
+"List" = "이름 *";
+"Meal schedule" = "식사 일정";
+"Meal timing divides your daily amounts; it does not change the daily totals." = "식사 타이밍은 일일 금액을 분할; 그것은 매일 총을 변경하지 않습니다.";
+"No data" = "데이터 없음";
+"No sleep data yet" = "수면 데이터 없음";
+"On workout days, Masso can shift carbohydrates around your weekly baseline using your logged training. Protein and fat stay at the amounts you choose." = "운동 일에서는, Masso는 당신의 기록한 훈련을 사용하여 당신의 주간 지형의 주위에 탄수화물을 이동할 수 있습니다. 당신이 선택하는 총계에 단백질과 지방 체재.";
+"Phase 0: NoOpSink — nothing leaves this device." = "단계 0: NoOpSink — 아무것도이 장치를 나타낸다.";
+"Plan adherence, not a health or muscle-growth measurement. Training 40 · protein 20 · carbs 10 · fat 5 · sleep 25. Extra training or food earns no bonus." = "계획 준수, 건강 또는 근육 성장 측정. 훈련 40 · 단백질 20 · 탄수화물 10 · 지방 5 · 수면 25. 추가 훈련 또는 음식은 보너스가 없습니다.";
+"Show earlier days" = "이전 날 표시";
+"Sleep" = "수면";
+"Sleep recorded by Apple Watch or compatible devices appears through Apple Health." = "Apple Watch 또는 호환 장치에 의해 기록 된 수면은 Apple Health를 통해 나타납니다.";
+"Sleep target progress" = "수면 목표 진행";
+"Solid yellow means all three fixed daily targets are met. Going above a target does not add extra credit." = "솔리드 옐로우는 모든 세 가지 고정 일일 대상이 충족됩니다. 대상 위의 이동은 추가 크레딧을 추가하지 않습니다.";
+"Starting amounts use your body weight and training goal. Training-day carbs can adjust with your logged workouts." = "시작 금액은 신체 무게와 훈련 목표를 사용합니다. 교육 일 탄수화물은 기록 된 운동으로 조정할 수 있습니다.";
+"The first day after a recorded workout." = "기록 된 운동 후 첫날.";
+"The presets are simple starting estimates based on body weight and common sports-nutrition guidance. They are not measurements of your calorie needs or medical advice. Choose amounts that fit your appetite, training and guidance from your clinician or dietitian." = "전 세트는 신체 무게와 일반적인 스포츠 영양 지도에 근거를 둔 간단한 시작 추정입니다. 그들은 당신의 열량 필요 또는 의학 통보의 측정이 아닙니다. 당신의 식욕, 훈련 및 진료소 또는 규정식에서 지도에 적합한 양을 선택하십시오.";
+"The second day after a recorded workout." = "기록 된 운동 후 두 번째 날.";
+"Today's training goal" = "오늘의 훈련 목표";
+"We use your body weight and training goal to set protein and carbohydrate targets. Weekly training days also shape your starting carbs; fat starts at about 0.8 g per kg of body weight." = "우리는 단백질과 탄수화물 표적을 놓기 위하여 몸 무게와 훈련 목표를 이용합니다. 주간 훈련 일은 또한 당신의 시작 탄수를 형성합니다; 지방은 몸 무게의 kg 당 대략 0.8 g에서 시작합니다.";
+"⇥" = "·";
+
+/* Expanded SwiftUI localization audit additions. */
+"%lld working sets" = "%lld 작업 세트";
+"%lld% daily goal" = "%lld % 일일 목표";
+"%lldh %lldm goal" = "%lldh %lldm 목표";
+"%lldh %lldm last night" = "%lldh %lldm 지난 밤";
+"A practical guide" = "실제 가이드";
+"AI Plans" = "AI 계획";
+"AI estimate. Check portions and include sauces, drinks or foods outside the photo." = "AI 견적. 부분 확인 및 소스, 음료 또는 사진 밖에 음식 포함.";
+"Bedtime" = "호텔 정보";
+"Below goal" = "목표의 밑에";
+"Browse training plans from the community" = "커뮤니티에서 훈련 계획";
+"Choose photo" = "사진 보기";
+"Complete your records to see your score" = "당신의 점수를 볼 수있는 레코드를 완료";
+"Confirm meal" = "자주 묻는 질문";
+"Confirming replaces this meal's previous record. Only confirmed nutrients count toward today's score." = "확인은이 식사의 이전 기록을 대체합니다. 오늘 점수를 통해 영양소를 확인했습니다.";
+"Connect Apple Health" = "Apple Health를 연결";
+"Couldn't read sleep data" = "수면 데이터를 읽지 못했습니다.";
+"Daily goals: bright = all met · dim = partial" = "매일 목표 : 밝은 = 모든 만났 · dim = 부분";
+"Daily intake recorded" = "일일 섭취 기록";
+"Daily score. View Insights" = "일일 점수. 통찰력 보기";
+"Debug" = "디버그";
+"Drag the moon and sun to set your schedule. This sets a goal, not an alarm." = "일정을 설정하기 위해 달과 태양을 드래그하십시오. 이것은 목표, 알람이 아닙니다.";
+"Estimated meal progress" = "예상 식사 진행";
+"Estimated nutrients" = "예상된 영양";
+"Force US storefront (debug)" = "힘 미국 storefront (벌레)";
+"Layout" = "제품정보";
+"Make it yours" = "너의 것";
+"Meals" = "식사 안내";
+"Muscles" = "근육";
+"Personal daily targets" = "개인 일일 목표";
+"Planned rest day" = "계획된 나머지 일";
+"Profile-based starting point" = "프로필 기반 시작점";
+"Record again" = "다시 기록";
+"Record meal" = "숙박 약관";
+"Retry analysis" = "Retry 분석";
+"Sleep schedule" = "수면 일정";
+"Sleep: bright = goal met · dim = below goal" = "잠: 밝은 = 목표 만났 · dim = 아래 목표";
+"Starting point" = "시작점";
+"Take photo" = "본문 바로가기";
+"Today · updating" = "오늘 · 업데이트";
+"Today's intake · updating" = "오늘의 섭취 · updating";
+"Track sleep with Apple Health" = "Apple Health로 수면 추적";
+"Training days" = "운동일";
+"Unlock Pro (debug)" = "잠금 해제 Pro (debug)";
+"Wake up" = "자위하기";
+"Your starting point" = "당신의 출발점";
+
+"Completed" = "완료";
+
+/* Meal nutrient evidence and portion correction */
+"Nutrition estimate" = "영양 추정치";
+"Estimated portions. Adjust grams if needed." = "추정 분량입니다. 펼쳐서 그램 수를 조정하세요";
+"Food data: USDA" = "식품 데이터: USDA";
+"AI estimate" = "AI 추정치";
+"Nutrition label" = "영양 정보";
+
+/* Recovery timeline and remaining-nutrient meal */
+"Recovery estimate" = "회복 추정치";
+"Estimated from recorded workouts, not a measured recovery score." = "기록된 운동으로 추정한 값이며 실제 측정한 회복 수치가 아닙니다";
+"Last meal" = "마지막 식사";
+"Remaining today" = "오늘 남은 양";
+"Daily targets met" = "오늘 목표 달성";
+"Suggested meal" = "추천 식사";
+"Based on logged meals · Cooked / ready-to-eat weights" = "기록된 식사 기준 · 조리 후 또는 바로 먹는 상태의 무게";
+"Log a meal first" = "먼저 식사를 기록하세요";
+"Use suggestion" = "추천 사용";
+"No suitable foods" = "적합한 음식이 없습니다";
+"No extra meal suggested" = "추가 식사 추천 없음";
+"Salmon" = "연어";
+"Olive oil" = "올리브유";
+"Almonds" = "아몬드";
+"Now" = "현재";
+
+"Share month" = "월 공유";
+
+"Share day" = "하루 공유";
+
+"Share overview" = "종합 기록 공유";
+
+"Train with Masso" = "Masso로 운동 시작";
+
+"Average target progress" = "평균 목표 달성률";
+
+"%lld of %lld days recorded" = "%lld / %lld일 기록";
+
+"Last 30 days" = "최근 30일";
+
+"This month" = "이번 달";
+
+"Custom" = "직접 설정";
+
+"Period" = "기간";
+
+"From" = "시작일";
+
+"To" = "종료일";
+
+"Tap a day to share" = "날짜를 눌러 하루 기록 공유";
+
+"Target progress" = "목표 달성률";
+
+"What can I eat to meet my remaining targets?" = "남은 영양 목표에 맞는 식사를 추천해 줘";
+
+"Meal suggestion" = "식사 추천";
+
+"Adjust meal" = "식사 조정";
+
+"Refresh suggestion" = "추천 새로고침";
+
+"Vegetables" = "채소";
+
+"Spinach" = "시금치";
+
+"Log this meal" = "이 식사 기록";
+
+"Average per recorded day" = "기록된 날의 평균";
+
+// Unified daily calendar
+"Week" = "주간 보기";
+"Month" = "월간 보기";
+"Today has a white outline." = "오늘은 흰색 테두리로 표시됩니다.";
+"No workout recorded on this day." = "이 날의 운동 기록이 없습니다.";
+
+"Today has a white circle and a black date number." = "오늘은 흰색 원과 검은색 날짜 숫자로 표시됩니다.";
+
+"Custom workout" = "사용자 지정 운동";
+"g" = "g";
+
+// Muscle recovery action guidance
+"Fresh · Ready to train" = "양호 · 운동 가능";
+"Rested · Ready to train" = "회복됨 · 운동 가능";
+"Recovering · Keep it light" = "회복 중 · 가볍게 운동";
+"Fatigued · Rest recommended" = "피로함 · 휴식 권장";
+
+// Home summary timeframes and complete calendar legend
+"Today · %@" = "오늘 · %@";
+"Muscle recovery shades are shown in My Muscle Status." = "근육 회복의 색상 단계는 내 근육 상태에서 확인할 수 있습니다.";
+"Daily diet completion compares protein, carbs and fat with that day's targets." = "일일 식단 달성률은 단백질, 탄수화물, 지방을 해당 날짜의 목표와 비교합니다.";
+"Blue shades show actual sleep relative to that night's target." = "파란색 농도는 해당 밤의 수면 목표 대비 실제 수면 달성률을 나타냅니다.";
+"Future dates have no records yet." = "미래 날짜에는 아직 기록이 없습니다.";
+
+"Historical target unavailable" = "해당 날짜의 목표가 저장되지 않았습니다";
+
+"Import workouts from Apple Health" = "Apple 건강에서 운동 가져오기";
+
+"No imported workouts yet. Check Workout access in Apple Health." = "가져온 운동이 없습니다. Apple 건강에서 운동 읽기 권한을 확인하세요";
+
+"Unable to import workouts. Try again." = "운동을 가져올 수 없습니다. 다시 시도하세요";
+
+"External workout" = "외부 운동";
+
+"Walking" = "걷기";
+
+"Cycling" = "사이클링";
+
+"Running" = "달리기";
+
+"Swimming" = "수영";
+
+"Hiking" = "하이킹";
+
+"Yoga" = "요가";
+
+"Strength training" = "근력 운동";
+
+"Other workout" = "기타 운동";
+
+"Each day with a Masso workout or imported Apple Health workout counts once. Imported workouts do not advance your workout plan or count toward muscle progress." = "Masso 운동이나 Apple 건강에서 가져온 운동이 있는 날은 하루에 한 번만 계산합니다. 가져온 운동은 운동 계획을 진행하거나 근육 발전 분석에 포함되지 않습니다.";
+
+"Diet score shows weighted intake relative to daily protein, carbs and fat targets (20/10/5), rounded to a whole percentage. It can exceed 100%; this means above target, not healthier. Meal percentages show their contribution to the daily targets." = "식단 달성률은 일일 단백질·탄수화물·지방 목표 대비 섭취량을 가중 계산(20/10/5)하고 정수 백분율로 반올림합니다. 100% 초과는 목표 초과 섭취이며 더 건강하다는 뜻이 아닙니다. 식사별 비율은 일일 목표에 대한 기여도입니다.";
+
+"How to train this muscle" = "이 근육을 훈련하는 방법";
+
+"Train more" = "훈련 강화";
+
+"Adjust my saved workouts to train %@ more. Keep my training preferences, equipment, available time and recovery in mind. Show which exercises and sets you would change. If I have no saved workouts, create a suitable plan." = "저장된 운동 계획을 조정해 %@ 훈련을 강화해 주세요. 운동 선호도, 기구, 가능한 시간과 회복 상태를 고려하고, 어떤 운동과 세트 수를 바꿀지 설명해 주세요. 저장된 계획이 없다면 적절한 계획을 만들어 주세요.";
+
+"Train smart, your way." = "나에게 맞게, 스마트하게 운동하세요";
+
+"Deep sleep is compared with the median of your previous 14 days, using at least 3 recorded nights. It is a personal reference, not a medical target, and does not affect Sleep score. Missing sleep stages or insufficient history show —." = "깊은 수면을 이전 14일 중 기록된 최소 3일 밤의 중앙값과 비교합니다. 개인 참고값이며 의학적 목표가 아니고 수면 점수에 영향을 주지 않습니다. 수면 단계가 없거나 기록이 부족하면 —로 표시됩니다.";
+
+"Show more" = "더 보기";
+
+"Update Training Preferences?" = "훈련 설정을 업데이트할까요?";
+
+"Preferences changed. Please ask again to review the latest values." = "설정이 변경되었어요. 최신 값을 확인하려면 다시 요청해 주세요";
+
+"Consider a heavier weight" = "중량을 조금 늘려 보세요";
+
+"You logged more than 12 reps. If your form stayed steady and you had reps left, consider a small weight increase next time" = "12회를 넘겨 기록했어요. 자세가 안정적이고 여유가 있었다면 다음에는 중량을 조금 늘려 보세요";
+
+"Exit" = "나가기";
+
+"This removes the record from Masso only. Apple Health keeps the original." = "Masso의 기록만 삭제합니다. Apple 건강의 원본 기록은 유지됩니다.";
+
+"The date ring shows Workout at the top, Diet at the lower left and Sleep at the lower right. Each colored segment shows that day's recorded progress. Grey means no recorded progress; progress above 100% fills the segment." = "날짜 링의 위쪽은 운동, 왼쪽 아래는 식단, 오른쪽 아래는 수면입니다. 색이 채워진 길이는 그날 기록된 달성도를 나타냅니다. 회색은 달성 기록이 없음을 뜻하며 100%를 넘으면 구간이 가득 찹니다.";
+"Your muscles are off duty. Put your phone down and sleep well." = "근육도 오늘은 퇴근해요. 휴대폰을 내려놓고 푹 주무세요.";
+
+"Fuller arcs mean more progress" = "링이 찰수록 달성도가 높아요";
+
+"Training fills green; rest days aren't failures" = "운동 기록 시 초록이 채워져요. 휴식일은 실패가 아니에요";
+
+"Today's macros vs daily targets" = "오늘의 3대 영양소를 목표와 비교";
+
+"Daily overview" = "일일 요약";
+
+"Recovery & workout" = "근육 회복과 운동";
+
+"Single metric" = "개별 데이터";
+
+"Main metric" = "주요 데이터";
+
+"Body view" = "신체 방향";
+
+"Content" = "표시 내용";
+
+"Open Masso to update" = "Masso를 열어 업데이트";
+
+"Your day at a glance" = "오늘의 데이터를 한눈에";
+
+"Muscle recovery and your next workout" = "근육 회복 확인 및 운동 시작";
+
+"One metric, your choice" = "원하는 데이터만 확인";
+
+"Full body" = "전신";
+
+/* Muscle recovery list */
+"Muscle recovery" = "근육 회복";
+"Most recovered first" = "회복도가 높은 순";
+
+/* Shared history archive */
+"All history" = "전체 기록";
+
+/* Separate daily history entries */
+"All diet history" = "전체 식사 기록";
+"All sleep history" = "전체 수면 기록";
+
+"All workout history" = "전체 운동 기록";
+
+/* Lift progress empty state */
+"Keep logging workouts to see your progress" = "운동을 계속 기록하며 성장을 확인해 보세요";
+
+/* Exercise demo generation — shared server library */
+"demo.title" = "AI 운동 시범";
+"demo.credits" = "AI 크레딧";
+"demo.available" = "사용 가능";
+"demo.reserved" = "예약됨";
+"demo.cost" = "%d 크레딧";
+"demo.generate" = "시범 생성";
+"demo.insufficient" = "크레딧이 부족합니다. 충전은 아직 지원되지 않습니다";
+"demo.unavailable" = "시범 생성 준비 중입니다. 크레딧은 사용되지 않습니다";
+"demo.sharing" = "승인된 시범은 Masso 공유 라이브러리에 추가됩니다. 운동 ID만 전송하며 사진, 대화, 건강 기록은 보내지 않습니다";
+"demo.confirm" = "시범을 생성할까요?";
+"demo.confirmBody" = "%d 크레딧을 예약할까요? 승인 후에만 차감됩니다. 실패하거나 거절되면 차감하지 않습니다. 승인된 영상은 공유 라이브러리에 추가됩니다";
+"demo.ready" = "시범 준비 완료";
+"demo.queued" = "대기 중입니다. 이 화면을 닫아도 됩니다";
+"demo.running" = "생성 중입니다. 이 화면을 닫아도 됩니다";
+"demo.review" = "공개 전에 시범을 확인 중입니다";
+"demo.failed" = "생성 실패. 예약 크레딧이 반환되었습니다";
+"demo.corePending" = "이 기본 운동의 시범을 준비 중입니다";
+"demo.missing" = "아직 공유 시범이 없습니다";
+"demo.refresh" = "상태 새로고침";
+"demo.check" = "다시 확인";
+"demo.quoteChanged" = "필요한 크레딧이 변경되었습니다. 새로고침하세요";
+"demo.unknown" = "지원되는 라이브러리에 없는 운동입니다";
+"demo.plan" = "운동 시범";
+"demo.planHint" = "운동을 선택해 시범을 확인하세요. 운동 계획 생성만으로 유료 영상 생성이 시작되지는 않습니다";
+
+"Subscription options are unavailable right now" = "지금은 구독 옵션을 불러올 수 없어요";
+
+"Restore web purchase" = "웹 구매 복원";
+
+"Basic workout logging and history stay free" = "기본 운동 기록과 히스토리는 무료예요";
+
+"Compare your lifts over time with Masso Pro" = "Masso Pro로 동작별 향상을 확인하세요";
+
+"No active subscription found" = "활성 구독을 찾을 수 없어요";
+
+"Unlimited plans · AI coach · Lift progress" = "무제한 계획 · AI 코치 · 운동 향상";
+
+"AI data sharing" = "AI 데이터 공유";
+
+"ai.dataSharing.explanation" = "AI 기능은 서버를 통해 훈련 정보, 메시지, 선택한 이미지를 Anthropic(Claude) 또는 Alibaba Cloud Bailian(Qwen)에 전송합니다. 선택한 스크린샷에 보이는 정보도 포함되며, Apple 건강에서 가져온 데이터는 자동 전송하지 않습니다. 설정에서 권한을 철회할 수 있습니다. 허용할까요?";
+
+/* Compact exercise families */
+"Everyday" = "기본";
+"All versions (%d)" = "모든 버전 (%d)";
+"Pinned and recent" = "고정 및 최근 운동";
+"Suggested replacements" = "추천 대체 운동";
+
+/* Restored paywall and request-based AI reminders */
+"Use AI without upgrade reminders" = "업그레이드 안내 없이 AI 사용";
+"Save a routine for every training day" = "훈련일마다 운동 계획 저장";
+"AI without interruptions" = "중단 없는 AI";
+"Skip upgrade reminders whenever you use AI" = "AI 사용 시 업그레이드 안내 생략";
+"Lift progress and personalized training summaries" = "종목별 성장 추이와 맞춤 훈련 요약";
+"Fine-grained recovery" = "세부 근육 회복";
+"See recovery for individual muscles" = "개별 근육의 회복 상태 확인";
+"Billed yearly" = "연간 결제";
+"7-day free trial" = "7일 무료 체험";
+"Subscribe" = "구독";
+"Continue free" = "무료로 계속";
+"Close this offer to continue your AI request" = "이 화면을 닫으면 AI 요청이 계속됩니다";
+"7 days free, then %@ per %@. Renews automatically until cancelled." = "7일 무료, 이후 %@ / %@. 취소할 때까지 자동 갱신됩니다.";
+"%@ per %@. Renews automatically until cancelled." = "%@ / %@. 취소할 때까지 자동 갱신됩니다.";
+"Unlimited routines, uninterrupted AI, deep analytics." = "무제한 운동 계획, 중단 없는 AI, 심층 분석.";
+"Unlimited plans · Uninterrupted AI · Lift progress" = "무제한 운동 계획 · 중단 없는 AI · 종목별 성장";
+"Deep analytics" = "심층 분석";
+"Try again" = "다시 시도";
+
+"AI couldn't produce a valid routine. Please try again." = "AI 운동 계획이 요구 사항을 충족하지 못했습니다. 다시 시도해 주세요.";
+
+/* Onboarding goals — words only */
+"onboarding.goal.buildMuscle" = "근육 키우기";
+"onboarding.goal.getStronger" = "힘을 키우기";
+"onboarding.goal.loseFat" = "지방 감량";
+"onboarding.goal.generalFitness" = "건강 유지";
+"Training schedule" = "운동 일정";
+"Training plan" = "운동 계획";
+"Tap muscles to select; tap again to clear" = "근육을 눌러 선택하거나 해제하세요";
+"Session length" = "운동 시간";
+"View plan" = "계획 보기";
+"No target" = "목표 없음";
+"Workout %d" = "운동 %d";
+"Set your working weights when you train" = "운동할 때 중량을 설정하세요";
+"No exercises match" = "맞는 운동이 없습니다";
+"Gym" = "헬스장";
+"Bodyweight" = "맨몸";
+
+"Routine limit reached" = "운동 계획 한도에 도달했습니다";
+"Continue without saving" = "저장하지 않고 계속";
+"Upgrade" = "업그레이드";
+
+"Preview onboarding" = "시작 안내 미리 보기";
+
+"equipment.pull_up_bar" = "풀업 바";
+
+"Pull-up bar" = "풀업 바";
+
+/* Onboarding body interaction */
+"Tap to select · Pinch to zoom" = "탭하여 선택 · 두 손가락으로 확대";
+
+/* Muscle detail: focus training request */
+"Train this muscle more" = "이 근육 집중 훈련";
+
+"Choose at least one training day" = "운동일을 하루 이상 선택하세요";
+
+/* Training environment / home equipment */
+"Training environment" = "운동 환경";
+"Home" = "집";
+"Home equipment" = "집에 있는 기구";
+"No equipment selected. Bodyweight only." = "기구를 선택하지 않으면 맨몸으로 진행해요.";
+"Adjustable bench" = "각도 조절 벤치";
+"equipment.bench_flat" = "플랫 벤치";
+"equipment.squat_rack" = "스쿼트 랙";
+
+/* Compact Pro brand banner, 2026-10-21 */
+"More plans, fewer interruptions" = "더 많은 플랜, 더 적은 방해";
+"Explore Pro" = "Pro 살펴보기";
+
+"Watch on YouTube" = "YouTube에서 보기";
+
+"Weight per dumbbell" = "덤벨 한 개의 무게";
+
+"Reference from %@" = "%@ 기준 참고 무게";
+
+"Update and generate" = "업데이트 후 생성";
+
+"Correct this set and update related weight references." = "이 세트를 수정하고 관련 운동의 참고 무게를 업데이트합니다.";
+
+/* First-run AI Coach launcher tooltip. */
+"Chat about your goals to get a new routine." = "목표를 이야기하고 새 운동 계획을 만들어 보세요.";
+
+"This workout" = "이번 운동";
+
+"Variants" = "변형";
+
+"Default version" = "기본 동작";
+
+"Hide rare variants" = "드문 변형 숨기기";
+
+"Pinned" = "고정됨";
+
+"Video unavailable" = "동영상을 재생할 수 없습니다";
+
+"Loading video" = "동영상 로딩 중";
+
+"Video playing" = "동영상 재생 중";
+
+
+"Finish saves this workout. Discard removes it from history." = "완료하면 저장되고, 버리면 기록에서 삭제됩니다.";
+"This workout won’t be saved." = "이 운동은 저장되지 않습니다.";
+
+"Adjust your daily targets; saved amounts stay fixed." = "일일 목표를 조정하세요. 저장한 양은 고정됩니다.";
+"Automatic carb adjustments apply only before you set a daily carbohydrate target." = "일일 탄수화물 목표를 설정하기 전까지만 자동 조정됩니다.";
+
+"Meal time" = "식사 시간";
+
+"QR code" = "QR 코드";
+
+"Calories" = "칼로리";
+
+"Estimated from protein, carbs and fat." = "단백질, 탄수화물, 지방으로 추정합니다.";
+
+"USDA · Food energy" = "USDA · 식품 에너지";
+
+"Read body & activity" = "신체 및 활동 데이터 읽기";
+
+"Read available history for weight, height, steps and energy." = "사용 가능한 체중, 키, 걸음 수, 에너지 기록을 읽습니다.";
+
+"Body measurements" = "신체 데이터";
+
+"Height" = "키";
+
+"Use Health weight" = "건강 앱 체중 사용";
+
+"Use Health height" = "건강 앱 키 사용";
+
+"Updates your profile and local nutrition targets. Manual targets stay fixed." = "프로필과 기기 내 영양 목표에 반영합니다. 수동 목표는 유지됩니다.";
+
+"Weight trend" = "체중 추이";
+
+"Today so far" = "오늘 현재까지";
+
+"Steps" = "걸음 수";
+
+"Active energy" = "활동 에너지";
+
+"Resting energy" = "휴식 에너지";
+
+"Energy burned" = "소모 에너지";
+
+"Health history" = "건강 기록";
+
+"Some data couldn't refresh." = "일부 데이터를 새로 고치지 못했습니다.";
+
+"No records yet. Check access and data in Apple Health." = "기록이 없습니다. Apple 건강의 데이터와 접근 권한을 확인하세요.";
+
+"Imported health data stays on this device and is not sent to AI Coach." = "가져온 건강 데이터는 이 기기에만 저장되며 AI Coach로 전송되지 않습니다.";
+
+"Couldn't read Apple Health. Try again." = "Apple 건강을 읽을 수 없습니다. 다시 시도하세요.";
+
+"Connect body & activity" = "신체 및 활동 데이터 연결";
+
+"Profile weight" = "프로필 체중";
+
+"Targets use weight and training preferences. Health activity is a reference, not an extra food allowance." = "목표는 체중과 운동 설정을 반영합니다. 건강 앱 활동은 참고 정보이며 식사 허용량을 늘리지 않습니다.";
+
+"Nutrition targets are estimates based on weight and training preferences. Health activity does not automatically change them." = "영양 목표는 체중과 운동 설정에 따른 추정치입니다. 건강 앱 활동으로 자동 변경되지 않습니다.";
+
+"Recorded energy, not a full-day forecast. Your food target stays unchanged." = "기록된 에너지이며 하루 전체 예측이 아닙니다. 식사 목표는 유지됩니다.";
+
+"Date" = "날짜";
+
+"Last synced" = "마지막 동기화";
+
+/* AI Coach: single-session workouts */
+"Single workout" = "일회성 운동";
+"Your workout is ready." = "운동이 준비됐어요.";
+"Couldn't create this workout. Please try again." = "운동을 만들지 못했어요. 다시 시도해 주세요.";
+"About %d min" = "약 %d분";
+
+/* Inline exercise family expansion */
+"%@ more versions" = "%@개 버전 더 보기";
+"Fewer versions" = "간략히 보기";
+
+/* Workout progress, observed timing and personal heart-rate reminders */
+"Jump to first unfinished set" = "첫 미완료 세트로 이동";
+"Rest duration" = "휴식 시간";
+"Applies to this rest only." = "이번 휴식에만 적용됩니다.";
+"Edit rest time" = "휴식 시간 수정";
+"Read workout heart rate" = "운동 심박수 읽기";
+"Open Masso on Apple Watch" = "Apple Watch에서 Masso 열기";
+"Live readings need a heart-rate sensor. No reading means no heart-rate warning." = "실시간 측정에는 심박 센서가 필요합니다. 측정값이 없으면 경고할 수 없습니다.";
+"Reminder limit" = "알림 상한";
+"Over your limit for 15 seconds: pause and rest. This is a personal reminder, not a medical alarm." = "상한 초과가 15초 지속되면 쉬세요. 개인용 알림이며 의료 경보가 아닙니다.";
+"No heart-rate samples yet" = "아직 심박 측정값이 없어요";
+"Heart-rate data stays on this device and is not sent to AI Coach." = "심박 데이터는 이 기기에만 저장되며 AI Coach에 전송되지 않습니다.";
+"Delete heart-rate history" = "심박 기록 삭제";
+"Delete heart-rate history?" = "심박 기록을 삭제할까요?";
+"Couldn't connect to Apple Health." = "Apple 건강에 연결하지 못했어요.";
+"Open Masso on your paired Apple Watch to read live heart rate." = "페어링한 Apple Watch에서 Masso를 열어 실시간 심박수를 읽으세요.";
+"Enter a limit from 40 to 240 bpm." = "40~240 bpm 사이의 상한을 입력하세요.";
+"Heart rate is above your limit" = "심박수가 설정 상한을 넘었어요";
+"Pause and rest" = "일시 정지하고 쉬기";
+"Your heart rate stayed above your personal limit for 15 seconds." = "심박수가 개인 상한을 15초 동안 넘었어요.";
+"Heart rate" = "심박수";
+"Workout report" = "운동 보고서";
+"Logged sets" = "기록한 세트";
+"Tracked set time" = "측정한 세트 시간";
+"Recorded rest" = "기록한 휴식";
+"%d of %d sets have timing" = "%d/%d세트에 시간 기록";
+"Tracked time follows the workout controls, not time under tension." = "운동 조작에 따른 시간이며 근육에 힘이 가해진 시간은 아닙니다.";
+"Set timeline" = "세트 타임라인";
+"Sampled heart rate" = "심박 측정값";
+"Average / peak heart rate" = "평균 / 최고 심박수";
+"Target duration" = "목표 시간";
+"Peak heart rate" = "최고 심박수";
+"Allow more recovery" = "회복 시간을 늘리세요";
+"Your readings stayed above your reminder limit. Review this workout before increasing intensity." = "측정값이 알림 상한을 계속 넘었어요. 강도를 높이기 전에 이번 운동을 검토하세요.";
+"Your reps fell while rests were short. Try more recovery between sets." = "짧은 휴식과 함께 횟수가 줄었어요. 세트 간 회복 시간을 늘려 보세요.";
+"Review your logged workload and rest before increasing intensity." = "강도를 높이기 전에 기록한 운동량과 휴식을 검토하세요.";
+"bpm" = "bpm";
+
+"Dismiss" = "닫기";
+
+"equipment.ab_wheel" = "복근 롤러";
+"equipment.abductor_machine" = "머신";
+"equipment.adductor_machine" = "머신";
+"equipment.air_bike" = "에어 바이크";
+"equipment.arc_trainer" = "일립티컬";
+"equipment.assault_bike" = "에어 바이크";
+"equipment.axle_bar" = "액슬 바";
+"equipment.ball" = "짐볼";
+"equipment.band" = "밴드";
+"equipment.battle_rope" = "배틀로프";
+"equipment.belt_squat_machine" = "머신";
+"equipment.bench" = "벤치";
+"equipment.bench_decline" = "벤치";
+"equipment.bench_incline" = "벤치";
+"equipment.bike" = "실내 자전거";
+"equipment.box" = "박스";
+"equipment.calf_raise_machine" = "머신";
+"equipment.captains_chair" = "머신";
+"equipment.chains" = "체인";
+"equipment.dip_bar" = "평행봉";
+"equipment.dip_bars" = "평행봉";
+"equipment.dip_belt" = "중량 벨트";
+"equipment.donkey_calf_machine" = "머신";
+"equipment.elliptical" = "일립티컬";
+"equipment.ez_bar" = "EZ바";
+"equipment.ez_curl_bar" = "EZ바";
+"equipment.fat_grip" = "팻 그립";
+"equipment.foam_roller" = "폼롤러";
+"equipment.ghd_machine" = "머신";
+"equipment.glute_kickback_machine" = "머신";
+"equipment.grip_crusher" = "악력기";
+"equipment.gripper" = "악력기";
+"equipment.gymnastic_rings" = "링";
+"equipment.hack_squat_machine" = "머신";
+"equipment.hip_thrust_machine" = "머신";
+"equipment.hyperextension_bench" = "로만 체어";
+"equipment.jump_rope" = "줄넘기";
+"equipment.kettlebell" = "케틀벨";
+"equipment.landmine" = "랜드마인";
+"equipment.leg_curl_machine" = "머신";
+"equipment.leg_extension_machine" = "머신";
+"equipment.leg_press_machine" = "머신";
+"equipment.medicine_ball" = "메디신볼";
+"equipment.parallel_bars" = "평행봉";
+"equipment.partner" = "파트너";
+"equipment.platform" = "박스";
+"equipment.plyo_box" = "박스";
+"equipment.power_rack" = "랙";
+"equipment.preacher_bench" = "벤치";
+"equipment.push_up_handles" = "푸시업 바";
+"equipment.pvc_pipe" = "PVC 봉";
+"equipment.rack" = "랙";
+"equipment.resistance_band" = "밴드";
+"equipment.reverse_hyper_machine" = "머신";
+"equipment.rice_bucket" = "쌀통";
+"equipment.rings" = "링";
+"equipment.roman_chair" = "로만 체어";
+"equipment.rope" = "로프 손잡이";
+"equipment.rower" = "로잉머신";
+"equipment.rowing_machine" = "로잉머신";
+"equipment.safety_squat_bar" = "세이프티 바";
+"equipment.sissy_squat_machine" = "머신";
+"equipment.ski_erg" = "스키에르그";
+"equipment.sled" = "슬레드";
+"equipment.sledgehammer" = "슬레지해머";
+"equipment.sliders" = "슬라이더";
+"equipment.smith_machine" = "스미스 머신";
+"equipment.spin_bike" = "스핀 바이크";
+"equipment.stairmaster" = "스텝밀";
+"equipment.stationary_bike" = "실내 자전거";
+"equipment.swiss_ball" = "짐볼";
+"equipment.t_bar" = "바벨";
+"equipment.tibialis_machine" = "머신";
+"equipment.towel" = "수건";
+"equipment.trap_bar" = "트랩 바";
+"equipment.treadmill" = "러닝머신";
+"equipment.trx" = "TRX";
+"equipment.v_bar" = "V바";
+"equipment.wall" = "벽";
+"equipment.weight_belt" = "중량 벨트";
+"equipment.weight_plate" = "원판";
+"equipment.wrist_roller" = "리스트 롤러";
+"equipment.yoga_strap" = "요가 스트랩";
+
+"equipment.body_only" = "맨몸";
+
+"Save rest settings?" = "휴식 설정을 저장할까요?";
+
+"Save to Training Preferences and apply to all workouts?" = "훈련 설정에 저장하고 모든 운동에 적용할까요?";
+
+"Create training plans based on this report?" = "이 보고서를 바탕으로 훈련 계획을 만들까요?";
+
+"Generate plans from this report" = "보고서로 훈련 계획 만들기";
+
+"Body photo" = "신체 사진";
+
+"Menu" = "메뉴";
+
+"Training or health records" = "훈련 또는 건강 기록";
+
+"Share or exercise photo" = "공유 또는 운동 사진";
+
+"Choose image use" = "이미지 용도 선택";
+
+"Training plans found. Review before adding." = "훈련 계획을 찾았습니다. 확인 후 추가하세요.";
+
+"Couldn't read this image. Choose its use or try a clearer photo." = "이미지를 읽지 못했습니다. 용도를 선택하거나 선명한 사진으로 다시 시도하세요.";
+
+"Add a message or let AI identify the image." = "설명을 추가하거나 AI가 이미지 용도를 판단하게 하세요.";
+
+"Review this image" = "이 이미지 확인";
+
+"Review routines" = "훈련 계획 검토";
+
+"Adapt to my preferences" = "내 설정에 맞게 조정";
+
+"Check portions and meal time before saving." = "저장 전에 분량과 식사 시간을 확인하세요.";
+
+"Choose what you ate before logging a meal." = "실제로 먹은 음식을 입력한 후 기록하세요.";
+
+"Possible exercises" = "가능한 운동";
+
+"Screenshot values are not added to your records." = "스크린샷의 수치는 내 기록에 추가되지 않습니다.";
+
+"View my records" = "내 기록 보기";
+
+"Use as share photo" = "공유 사진으로 사용";
+
+"Use as exercise photo" = "운동 사진으로 사용";
+
+"Change image use" = "이미지 용도 변경";
+
+"Reading image…" = "이미지 읽는 중…";
+
+"Several plan codes found. Upload one share card at a time." = "계획 코드가 여러 개 있습니다. 공유 카드를 한 장씩 올려주세요.";
+
+"Image analysis is unavailable. Try again." = "이미지 분석을 사용할 수 없습니다. 다시 시도하세요.";
+
+"AI permission wasn't granted. Your image wasn't sent." = "AI 사용이 허용되지 않아 이미지를 전송하지 않았습니다.";
+
+"Allow" = "허용";
+
+// Regional exercise tutorials
+"Watch tutorial" = "운동 방법 보기";
+"Watch on bilibili" = "bilibili에서 보기";
+"Search on bilibili" = "bilibili에서 검색";
+
+"Same target muscles" = "같은 목표 근육";
+
+"Switch exercise" = "운동 변경";
+
+"exercise.media.unverified" = "미확인";
+
+
+
+/* One-off quick workout */
+"AI Quick Workout" = "AI 빠른 운동";
+"Let AI recommend" = "AI 추천";
+"Mobility & stretching" = "가동성 및 스트레칭";
+"Training type" = "운동 유형";
+"Intensity" = "강도";
+"Easy" = "가볍게";
+"Moderate" = "보통";
+"High intensity" = "고강도";
+"Use saved equipment" = "저장된 장비 사용";
+"%lld min" = "%lld분";
+"Time is an estimate including rests. These choices apply only to this workout." = "휴식을 포함한 예상 시간입니다. 선택은 이번 운동에만 적용됩니다.";
+"Anything else?" = "추가 요청";
+"Goals, focus or movements to avoid" = "목표, 중점 또는 피할 동작";
+"Generate this workout" = "이번 운동 생성";
+"Wait for the current response before generating another workout." = "현재 응답이 완료될 때까지 기다려 주세요.";
+
+"Show recovery in workout calendar" = "운동 캘린더에 회복 표시";
+"After a recorded workout, the calendar shows a shorter green bar for two rest days. This is a time-based guide, not a muscle recovery measurement." = "운동 기록 후 이틀의 휴식일에 점점 짧아지는 녹색 막대를 표시합니다. 시간에 따른 안내이며 근육 회복 측정값이 아닙니다.";
+"Recovery day" = "회복일";
+
+/* Exercise media reports */
+"Report exercise media" = "운동 자료 문제 신고";
+"What is wrong?" = "어떤 문제인가요?";
+"Wrong exercise" = "운동 동작이 잘못됨";
+"Wrong equipment" = "기구가 잘못됨";
+"Image or video problem" = "이미지 또는 동영상 문제";
+"Add details (optional)" = "상세 내용 추가 (선택)";
+"The exercise and displayed media version are included with your report." = "신고에 운동과 표시된 자료 버전이 포함됩니다.";
+
+"Exercise" = "운동 동작";
+
+"Choose a previous meal" = "이전 식사 선택";
+
+"Health & Features" = "건강 및 기능";
+"App Preferences" = "앱 환경설정";
+"Privacy & Data" = "개인정보 및 데이터";
+
+"Using recommendation" = "추천 값 사용 중";
+
+"Reset to recommendation" = "추천 값으로 재설정";
+
+"Based on your recent workout heart rates and age when available." = "최근 운동 심박수와 사용 가능한 나이를 기준으로 합니다.";
+
+"Estimated from your age; it will adjust as workout data becomes available." = "나이로 추정하며 운동 데이터가 쌓이면 조정됩니다.";
+
+"Starting estimate until your age or workout heart-rate history is available." = "나이 또는 운동 심박 기록이 없어 초기 추정값을 사용합니다.";
+
+"Recommendations are estimates, not a medical safety limit. Medication and health conditions can affect heart rate." = "추천 값은 추정치이며 의학적 안전 한도가 아닙니다. 약물과 건강 상태가 심박수에 영향을 줄 수 있습니다.";
+
+"Exercises and heart rate" = "운동과 심박수";
+
+"Gaps indicate missing or untracked samples." = "빈 구간은 측정값이 없거나 기록되지 않은 구간입니다.";
+
+"Above your reminder limit" = "알림 한도 초과";
+
+"During %@, heart rate reached %d bpm. Consider slowing down and resting if needed." = "%@ 중 심박수가 %d bpm에 도달했습니다. 필요하면 속도를 늦추고 쉬세요.";
+
+"Heart rate settings" = "심박수 설정";
+
+"Connect heart rate" = "심박수 연결";
+
+"Allow heart-rate access to see available workout readings." = "심박수 접근을 허용하면 사용 가능한 운동 기록을 볼 수 있습니다.";
+
+"Exercise duration" = "운동 시간";
+
+"No workout timing yet" = "아직 기록된 운동 시간이 없습니다";
+
+"Some timing is unavailable" = "일부 시간이 기록되지 않았습니다";
+
+"If access was denied, update Masso's permissions in the Health app." = "접근을 거부했다면 건강 앱에서 Masso의 권한을 변경하세요.";
+
+"Some samples have no saved reminder limit." = "일부 측정값에는 저장된 알림 한도가 없습니다.";
+
+"No recorded reminders" = "기록된 알림 없음";
+
+"Heart-rate reminders" = "심박수 알림";
+
+"No sustained above-limit episodes" = "알림 한도를 지속적으로 초과한 기록이 없습니다";
+
+"Consider slowing down or resting." = "속도를 줄이거나 휴식을 고려하세요.";
+
+"Expand heart rate card" = "심박수 카드 펼치기";
+"Collapse heart rate card" = "심박수 카드 접기";
+
+"Show heart rate card" = "심박수 카드 표시";
+
+"Automatic heart rate control" = "심박수 자동 제어";
+
+"Experimental: heart rate changes can automatically log a set or skip rest. Readings may be delayed or incorrect; use Undo if needed." = "실험 기능: 심박수 변화에 따라 세트 기록이나 휴식 건너뛰기가 자동으로 실행됩니다. 측정이 지연되거나 부정확하면 실행 취소하세요.";
+
+"Set logged automatically" = "세트가 자동 기록됨";
+
+"Rest skipped automatically" = "휴식을 자동으로 건너뜀";
+
+"Report" = "보고서";
+
+"Save plans & start" = "계획 저장 후 시작";
+
+"Want to adjust your training plan? Ask AI Coach." = "운동 계획을 조정하고 싶나요? AI 코치에게 물어보세요.";
+"Share a body photo for training suggestions." = "몸 사진을 공유하고 운동 제안을 받아보세요.";
+"Review my body photo and suggest balanced training adjustments." = "제 몸 사진을 분석하고 균형 잡힌 운동 조정을 제안해 주세요.";
+
+"What are your training goals and focus areas?" = "운동 목표와 집중하고 싶은 부위는 무엇인가요?";
+"When and where would you like to train?" = "언제 어디에서 운동하고 싶나요?";
+
+"The muscle map shows which areas you have trained." = "근육 지도에서 운동한 부위를 확인할 수 있어요.";
+
+"Suggested focus" = "추천 집중 부위";
+"Create a plan from these suggestions" = "제안에 따라 운동 계획 만들기";
+
+"Create a plan" = "운동 계획 만들기";
+
+/* Accomplishment share */
+"Training that gets you." = "Training that gets you.";
+"This month, %d training days" = "This month, %d training days";
+"This week, %d training days" = "This week, %d training days";
+"As of %@" = "As of %@";
+"%d sessions" = "%d sessions";
+"Sessions" = "Sessions";
+"No workouts logged" = "No workouts logged";
+"Just finished" = "Just finished";
+"This day's records" = "This day's records";
+"No completed sets to share" = "No completed sets to share";
+"Morning" = "Morning";
+"Afternoon" = "Afternoon";
+"Evening" = "Evening";
+"Night" = "Night";
+"Same exercise, another step" = "Same exercise, another step";
+"per dumbbell" = "per dumbbell";
+"%@ · same reps" = "%@ · same reps";
+"Share this progress" = "Share this progress";
+"Exact time" = "Exact time";
+"Photo included" = "Photo included";
+"Heart rate, body weight, location, and your name stay off this card." = "Heart rate, body weight, location, and your name stay off this card.";
+"A missing log is not a missed workout" = "A missing log is not a missed workout";
+"Future day" = "Future day";
+"No workout logged" = "No workout logged";
+"No same-reps weight increase to share yet" = "No same-reps weight increase to share yet";
+"Minutes" = "Minutes";
+
+// Calendar calorie examples
+"Recorded calories vs daily calorie target" = "기록한 열량과 일일 열량 목표 비교";
+"Below calorie target" = "열량 목표 미만";
+"Above calorie target" = "열량 목표 초과";
+"Well above calorie target" = "열량 목표를 크게 초과";
+"Far above calorie target" = "열량 목표를 매우 크게 초과";
+
+/* Parameter suggestion, distinct from a user-entered target. */
+"Suggested" = "추천";
+
+/* Cross-exercise starting estimates: explicit evidence and limitations. */
+"Confirmed bench press 6RM" = "확인된 벤치 프레스 6RM";
+"Mark only an existing set: six full-range reps, no assistance or momentum, about 2 seconds up and down, with no seventh clean rep possible. You should already be familiar with the lift. No extra maximum test is needed." = "기존 기록만 표시하세요. 익숙한 동작으로 보조나 반동 없이 전체 가동 범위에서 올리고 내리기 각각 약 2초로 6회를 완료하고, 올바른 자세로 7회째를 할 수 없었던 세트입니다. 추가 최대 중량 테스트는 필요하지 않습니다.";
+"Six completed reps and a positive weight are required." = "완료한 6회와 0보다 큰 중량이 필요합니다.";
+"Estimate basis" = "추정 근거";
+"Initial estimate from %@. A small study predicts six-rep maximums; Masso uses 75%% of that estimate, rounded down. Adjust after the first set." = "%@ 기록에 따른 초기 추정치입니다. 소규모 연구가 예측한 6RM의 75%%를 내림하여 사용합니다. 첫 세트 후 조정하세요.";
+"Masso currently limits this estimate to men aged 18–30, a confirmed 30–70 kg reference from the last 30 days, and 6–12 target reps." = "Masso는 현재 18–30세 남성, 최근 30일 내 확인된 30–70 kg 벤치 프레스 기록, 목표 6–12회에만 이 추정을 제공합니다.";
+"Research source" = "연구 출처";
+
+"Edit set" = "세트 편집";
+
+// Partner referral redemption
+"Referral code" = "추천 코드";
+"Have a referral code?" = "추천 코드가 있나요?";
+"Check referral code" = "추천 코드 확인";
+"Redeem with Apple" = "Apple에서 사용";
+"Checking a code binds your referral and shares an anonymous identifier and subscription transactions with Masso for referral accounting. Your health and training data are not shared." = "코드를 확인하면 추천 관계가 연결되며 추천 정산을 위해 익명 식별자와 구독 거래가 Masso에 전송됩니다. 건강 및 운동 데이터는 공유되지 않습니다.";
+"Couldn’t check this code. It may be unavailable, already bound, or the service may be offline. Try again later." = "코드를 확인할 수 없습니다. 사용할 수 없거나 이미 연결되었거나 서비스가 오프라인일 수 있습니다. 나중에 다시 시도하세요.";
+"Apple confirms eligibility, the actual price, trial and renewal terms. Your discount is active only after Apple confirms redemption. This offer applies to the annual subscription." = "자격, 실제 가격, 체험 및 갱신 조건은 Apple이 확인합니다. Apple에서 사용을 확인한 후에만 할인이 적용됩니다. 이 혜택은 연간 구독에 적용됩니다.";
+
+/* Personal working-load relationships */
+"Estimated from your recorded working weights for %@ across multiple workouts at the same reps. Adjust after the first set." = "여러 운동에서 같은 반복 횟수로 기록한 %@의 훈련 중량을 바탕으로 추정합니다. 첫 세트 후 조절하세요.";
+"Requires five consistent workout dates, including a separate validation workout, and a recent source record. This is a starting reference, not a strength measurement." = "별도 검증용 운동 1회를 포함해 서로 다른 5일의 일관된 기록과 최근 참조 운동 기록이 필요합니다. 시작 참고값이며 근력 측정값이 아닙니다.";
+
+"Copy code and redeem with Apple" = "코드 복사 후 Apple에서 사용";
+"Your code is copied. Paste it into Apple’s redemption sheet if asked." = "코드가 복사되었습니다. 요청 시 Apple 코드 사용 화면에 붙여넣으세요.";
+"Apple’s redemption sheet couldn’t open. Please try again." = "Apple 코드 사용 화면을 열 수 없습니다. 다시 시도해 주세요.";
+
+/* Quiet load progression */
+"Weight progression" = "중량 진행";
+"Maintain current weights" = "현재 중량 유지";
+"Pause weight suggestions for all exercises. Your workout targets stay unchanged." = "모든 운동의 중량 제안을 일시 중지합니다. 기존 운동 목표는 바뀌지 않습니다.";
+"Stage weight limit" = "단계별 중량 상한";
+"These preferences only limit progression suggestions. They do not change saved weights or define a safe maximum." = "이 설정은 중량 진행 제안만 제한합니다. 저장된 중량을 바꾸거나 안전한 최대 중량을 정하지 않습니다.";
+"Global maintenance mode is on." = "전체 유지 모드가 켜져 있습니다.";
+"Optional next weight" = "다음 운동의 선택 중량";
+"Repeated workouts reached the rep range. Only consider an increase if your form stayed steady and you had reps left." = "여러 운동에서 반복 횟수 범위에 도달했습니다. 자세가 안정적이고 더 반복할 여유가 있을 때만 증량을 고려하세요.";
+"Use suggested weight" = "제안 중량 사용";
+"No weight increase suggested." = "증량 제안이 없습니다.";
+"Suggestions depend on your goal and repeated workouts. Keeping the same weight is also an option." = "제안은 목표와 여러 운동 기록에 따라 달라집니다. 현재 중량을 유지해도 됩니다.";
+
+"First-use calibration" = "첫 중량 설정";
+
+"Based on your saved weight for %@. This is a starting reference; adjust after your first set." = "저장된 %@ 중량을 바탕으로 한 시작 참고값입니다. 첫 세트 후 조정하세요.";
+
+"Rough starting weight from your completed set of %@ and reps, using a product ratio and a 70%% multiplier. Not a measured maximum or safety guarantee; adjust for your equipment and first set." = "완료한 %@ 세트의 중량과 횟수에 제품에서 정한 비율과 70%% 계수를 적용한 대략적인 시작 중량입니다. 측정한 최대 중량이나 안전 보장이 아닙니다. 기구와 첫 세트에 맞게 조정하세요.";
+
+"Unlimited plans & custom exercises" = "무제한 운동 계획과 맞춤 운동";
+"Training progress insights" = "운동 성과 분석";
+
+"7 days free, then renews yearly at the price above until cancelled." = "7일 무료 체험 후 취소할 때까지 위에 표시된 연간 요금으로 매년 자동 갱신됩니다.";
+"7 days free, then renews monthly at the price above until cancelled." = "7일 무료 체험 후 취소할 때까지 위에 표시된 월간 요금으로 매월 자동 갱신됩니다.";
+"Renews yearly at the price above until cancelled." = "취소할 때까지 위에 표시된 연간 요금으로 매년 자동 갱신됩니다.";
+"Renews monthly at the price above until cancelled." = "취소할 때까지 위에 표시된 월간 요금으로 매월 자동 갱신됩니다.";
+
+
+/* Approved Pro-boundary candidate. Server quotas remain release-gated. */
+"Keep adapting with AI Coach" = "AI 코치와 계속 조정하세요";
+"Adjust workouts around your time and equipment." = "시간과 장비에 맞춰 운동을 조정하세요.";
+"See progress and recovery" = "진전과 회복을 확인하세요";
+"Lift trends and per-muscle recovery estimates." = "근력 추이와 근육군별 회복 추정치.";
+"More room for your training" = "훈련의 폭을 넓히세요";
+"Save more plans and create more exercises." = "더 많은 계획과 사용자 지정 운동을 만드세요.";
+"Free: %d plans and %d custom exercises" = "무료: 계획 %d개와 사용자 지정 운동 %d개";
+"Free and Pro details" = "무료 및 Pro 혜택";
+"Complete workouts, history, basic charts and data export stay available." = "운동 수행, 기존 기록, 기본 차트와 데이터 내보내기는 계속 사용할 수 있습니다.";
+"Existing plans, exercises and acquired results remain usable after Pro expires." = "Pro 만료 후에도 기존 계획, 운동 및 이미 받은 결과를 사용할 수 있습니다.";
+"More with Pro" = "Pro의 추가 혜택";
+"Ongoing AI adjustments, more saved plans and custom exercises, lift progress and detailed recovery estimates." = "지속적인 AI 조정, 더 많은 계획과 사용자 지정 운동, 근력 분석과 상세 회복 추정치.";
+"AI access" = "AI 이용 안내";
+"Each listed AI task has one successful free experience. Free also includes %d shared text tasks per month. A task includes %d same-goal adjustments within %d hours." = "목록의 각 AI 작업을 한 번 성공할 때까지 무료 체험할 수 있습니다. 매월 공용 텍스트 작업 %1$d회도 제공됩니다. 작업마다 같은 목표로 %3$d시간 내 %2$d회 미세 조정이 포함됩니다.";
+"Failed requests, clarification, local tools and reopening results do not use AI quota." = "실패한 요청, 확인 질문, 로컬 도구와 결과 다시 보기는 AI 한도를 사용하지 않습니다.";
+"Free AI requests continue after closing the upgrade reminder. Pro skips these reminders." = "업그레이드 알림을 닫으면 무료 AI 요청을 계속할 수 있습니다. Pro는 이 알림을 표시하지 않습니다.";
+"Existing purchases keep their rights. AI needs internet access and your data-sharing permission." = "기존 구매 혜택은 유지됩니다. AI에는 인터넷과 데이터 공유 동의가 필요합니다.";
+"Preview only: the shared quota service is not connected." = "미리 보기 전용: 공유 한도 서비스가 연결되지 않았습니다.";
+"Free" = "무료";
+
+/* Device-install policy and native user-message actions. */
+"AI access on this device" = "이 기기의 AI 이용 규칙";
+"AI allowances are stored only on this device installation. Changing devices or reinstalling may reset them; they are not shared across devices." = "AI 한도는 이 기기의 현재 설치에만 저장됩니다. 기기 변경이나 재설치로 초기화될 수 있으며 기기 간 공유되지 않습니다.";
+"Each supported AI task has one successful free experience on this installation. Free also includes 2 shared text tasks per calendar month (UTC). Repeat images and ongoing reviews need Pro." = "지원되는 각 AI 작업을 처음 성공할 때까지 무료 체험할 수 있습니다. 매월(UTC) 공용 텍스트 작업 2회도 포함됩니다. 반복 이미지와 지속적인 리뷰에는 Pro가 필요합니다.";
+"A task includes 2 same-goal adjustments within 24 hours. Failed requests, clarification, local tools and reopening saved results do not use the allowance." = "같은 목표로 24시간 내 2회 조정이 포함됩니다. 실패, 확인 질문, 로컬 도구와 저장 결과 다시 보기는 한도를 사용하지 않습니다.";
+"Existing purchased and lifetime rights are kept. No experimental 30-task or 10-image limit is applied to existing paid users." = "기존 구매 및 평생 혜택은 유지됩니다. 기존 유료 사용자에게 실험적인 30회 작업 또는 10회 이미지 한도를 적용하지 않습니다.";
+"Automatic recommendations have a separate budget of one successful result per day; they do not spend your active AI allowance." = "자동 추천은 별도로 하루 한 번의 성공 결과로 제한되며 수동 AI 한도를 쓰지 않습니다.";
+"Existing users have 30 days from this notice before the new AI limits apply. Previous use is not counted retroactively." = "기존 사용자는 이 안내 후 30일의 전환 기간을 갖습니다. 과거 사용은 소급하여 계산하지 않습니다.";
+"AI access and saved results" = "AI 이용 및 저장 결과";
+"Saved AI results" = "저장된 AI 결과";
+"No saved AI results yet." = "저장된 AI 결과가 없습니다.";
+"Saved AI result" = "저장된 AI 결과";
+"Monthly text tasks used: %d of 2" = "이번 달 텍스트 작업: %d / 2";
+"Copy message" = "메시지 복사";
+"Edit and resend" = "편집 후 다시 보내기";
+"Editing text only. Sending adds a new message; your previous draft is kept." = "텍스트만 편집합니다. 전송하면 새 메시지가 추가되며 기존 초안은 보관됩니다.";
+"Cancel edit" = "편집 취소";
+"This AI task needs Pro. Your saved results remain available." = "이 AI 작업에는 Pro가 필요합니다. 저장 결과는 계속 사용할 수 있습니다.";
+"Make room in My Plans before generating. Existing plans and training history are not deleted." = "생성 전에 내 계획에 저장 공간을 확보하세요. 기존 계획과 운동 기록은 삭제되지 않습니다.";
+"This AI task is already running. Please wait." = "이 AI 작업이 실행 중입니다. 잠시 기다려 주세요.";
+"Review AI access on this device before continuing." = "계속하기 전에 이 기기의 AI 이용 규칙을 확인하세요.";
+"AI access could not be saved on this device. Nothing was charged." = "이 기기에 AI 사용 상태를 저장할 수 없습니다. 횟수는 차감되지 않았습니다.";
+"Today's automatic AI recommendation is already available." = "오늘의 자동 AI 추천은 이미 준비되었습니다.";
+
+/* Source extraction and saved recovery snapshot */
+"Source content could not be read. Paste the article, transcript or exercise list; no AI experience was used." = "자료를 읽지 못했습니다. 본문, 자막 또는 목록을 붙여 넣으세요. 체험은 차감되지 않았습니다.";
+"The source card count could not be confirmed. Nothing was saved and no AI experience was used." = "카드 수가 불확실합니다. 저장과 차감이 없습니다.";
+"Source exercises or parameters could not be verified. Nothing was substituted or saved." = "운동이나 수치를 확인하지 못했습니다. 대체하거나 저장하지 않았습니다.";
+"Confirm an exact library match before importing:" = "정확한 라이브러리 운동을 확인하세요:";
+"Extracted from your source. Review before saving." = "추출했습니다. 확인한 후 저장하세요.";
+"Suggested defaults for missing source parameters:" = "누락된 수치의 권장 기본값:";
+"A recovery snapshot needs at least 14 days of history, 6 recent sets and recent muscle data." = "14일 기록, 최근 6세트와 근육 데이터가 필요합니다.";
+"Recovery snapshot" = "회복 스냅샷";
+"Preview recovery snapshot" = "회복 스냅샷 체험";
+"View saved recovery snapshot" = "저장된 회복 스냅샷 보기";
+"A saved training-based estimate, not a live or medical measurement." = "훈련 추정치이며 실시간 또는 의학적 측정이 아닙니다.";
+
+"Text only. New message. Draft kept." = "텍스트만 · 새 메시지 · 초안 보관";

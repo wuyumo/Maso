@@ -32,6 +32,14 @@ struct MuscleSelector: View {
     /// 为 true 时优先级最高 (覆盖 detailEnabled).
     var sectionsOnly: Bool = false
 
+    /// Settings / onboarding focus selectors can expose a one-tap select-all chip.
+    var showsAllOption: Bool = false
+    /// Empty means balanced; onboarding can expose this without selecting every group.
+    var showsBalancedOption: Bool = false
+    /// Explicit onboarding presentation; other selectors keep their existing layout.
+    var usesNativeSelectionButtons = false
+    var sectionOrder: [MuscleGroup]? = nil
+
     /// sectionsOnly 时 chip 的横向对齐. Onboarding 传 .center; 其余默认 .leading 不变.
     var chipAlignment: FlowAlignment = .leading
 
@@ -149,14 +157,23 @@ struct MuscleSelector: View {
         if sectionsOnly {
             // 只 6 个大 section chip, 一个 FlowLayout 横向 wrap — 不展开 major / sub.
             FlowLayout(spacing: largeChips ? 12 : 8, alignment: chipAlignment) {
-                ForEach(Self.focusSections, id: \.self) { sec in
-                    majorChip(sec)
+                if showsBalancedOption { balancedChip }
+                if showsAllOption { allChip }
+                ForEach(sectionOrder ?? Self.focusSections, id: \.self) { sec in
+                    if usesNativeSelectionButtons {
+                        NativeSelectionButton(title: Text(sec.displayName), isSelected: selected.contains(sec)) { toggle(sec) }
+                            .accessibilityIdentifier("muscle.focus.\(sec.rawValue)")
+                    } else {
+                        majorChip(sec)
+                    }
                 }
             }
             .frame(maxWidth: .infinity, alignment: chipAlignment == .center ? .center : .leading)
         } else if detailEnabled {
             // 细分开启: 每行 = 1 major + 它的 subs, 行内 wrap, 不同 major 跨行.
             VStack(alignment: .leading, spacing: 14) {
+                if showsBalancedOption { balancedChip }
+                if showsAllOption { allChip }
                 ForEach(Self.groupedRows, id: \.major) { row in
                     muscleRow(major: row.major, subs: row.subs)
                 }
@@ -165,6 +182,8 @@ struct MuscleSelector: View {
             // 细分关闭: 只剩 12 个 major chip — 全部塞到同一个 FlowLayout,
             // 让它们横向 wrap 填满整行, 不再每个独占一行靠左.
             FlowLayout(spacing: 8, alignment: .leading) {
+                if showsBalancedOption { balancedChip }
+                if showsAllOption { allChip }
                 ForEach(Self.groupedRows, id: \.major) { row in
                     majorChip(row.major)
                 }
@@ -207,21 +226,65 @@ struct MuscleSelector: View {
         Haptics.tap()
     }
 
+    @ViewBuilder private var balancedChip: some View {
+        if usesNativeSelectionButtons {
+            NativeSelectionButton(title: Text("Full body"), isSelected: selected.isEmpty) {
+                selected.removeAll()
+                Haptics.selection()
+            }
+            .accessibilityIdentifier("muscle.focus.balanced")
+        } else {
+            Button {
+            selected.removeAll()
+            Haptics.selection()
+        } label: {
+            Text("Full body").font(.subheadline)
+        }
+        .tint(selected.isEmpty ? MasoColor.accent : MasoColor.text)
+        .nativeGlassButtonStyle()
+        .accessibilityAddTraits(selected.isEmpty ? .isSelected : [])
+        .accessibilityIdentifier("muscle.focus.balanced")
+        }
+    }
+
+    private var allChip: some View {
+        let isSelected = Self.focusSections.allSatisfy(selected.contains)
+        return Button {
+            if isSelected {
+                selected.subtract(Self.focusSections)
+            } else {
+                selected.formUnion(Self.focusSections)
+            }
+            Haptics.tap()
+        } label: {
+            Text("All")
+                .font((largeChips ? Font.title3 : Font.subheadline).weight(.semibold))
+                .padding(.horizontal, largeChips ? 22 : 14)
+                .padding(.vertical, largeChips ? 14 : 8)
+                .glassCapsuleButtonBackground(tint: isSelected ? MasoColor.accent.opacity(0.85) : nil, fallback: isSelected ? MasoColor.accent : MasoColor.surface)
+                .foregroundStyle(isSelected ? Color.black : MasoColor.text)
+                .clipShape(Capsule())
+        }
+        .buttonStyle(.plain)
+    }
+
     // MARK: - Major chip (14pt heavy)
 
     private func majorChip(_ m: MuscleGroup) -> some View {
         let st = state(for: m)
         return Button { toggle(m) } label: {
             Text(m.displayName)
-                .font(.system(size: largeChips ? 20 : 14, weight: .heavy))
+                .font((largeChips ? Font.title3 : Font.subheadline).weight(.semibold))
                 .padding(.horizontal, largeChips ? 22 : 14)
                 .padding(.vertical, largeChips ? 14 : 8)
-                .background(majorBg(st))
+                .glassCapsuleButtonBackground(tint: st == .selected ? MasoColor.accent.opacity(0.85) : nil, fallback: majorBg(st))
                 .foregroundStyle(majorFg(st))
                 .overlay(majorBorder(st))
                 .clipShape(Capsule())
         }
         .buttonStyle(.plain)
+        .accessibilityAddTraits(st == .selected ? .isSelected : [])
+        .accessibilityIdentifier("muscle.focus.\(m.rawValue)")
     }
 
     private func majorBg(_ st: ChipState) -> Color {
@@ -251,9 +314,9 @@ struct MuscleSelector: View {
         let st = state(for: m)
         return Button { toggle(m) } label: {
             Text(m.displayName)
-                .font(.system(size: 11, weight: .bold))
+                .font(.caption2.weight(.semibold))
                 .padding(.horizontal, 10).padding(.vertical, 5)
-                .background(subBg(st))
+                .glassCapsuleButtonBackground(tint: st == .selected ? MasoColor.accent.opacity(0.85) : nil, fallback: subBg(st))
                 .foregroundStyle(subFg(st))
                 .overlay(subBorder(st))
                 .clipShape(Capsule())

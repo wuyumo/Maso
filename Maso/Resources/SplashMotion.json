@@ -1,0 +1,92 @@
+{
+  "schema": "masso.splash-motion",
+  "version": 1,
+  "status": "user-tuned-prototype",
+  "createdAt": "2026-10-16T15:10:16.942Z",
+  "preset": "F",
+  "presetName": "紧凑分拍",
+  "referenceCanvas": {
+    "width": 390,
+    "height": 844,
+    "unit": "iOS logical pt"
+  },
+  "motion": {
+    "logoSize": 160,
+    "wordSize": 28,
+    "tagSize": 16,
+    "logoGap": 56,
+    "textGap": 8,
+    "verticalOffset": -40,
+    "logoMode": "slide",
+    "wordMode": "fade",
+    "tagMode": "rise",
+    "response": 0.45,
+    "damping": 0.92,
+    "stagger": 0.035,
+    "travel": 18,
+    "startScale": 0.85,
+    "rotation": 0,
+    "wordDelay": 0.22,
+    "wordTime": 0.32,
+    "tagDelay": 0.62,
+    "tagTime": 0.36,
+    "textTravel": 6,
+    "letterStagger": 0.04,
+    "exitAt": 1.55,
+    "exitTime": 0.22,
+    "bg": "#000000",
+    "logoColor": "#1ed760",
+    "language": "en",
+    "reducedMotion": false
+  },
+  "timing": {
+    "durationSeconds": 1.77,
+    "exitStartsAt": 1.55,
+    "note": "Exit waits for logo and both text entrances; text has 0.1s margin"
+  },
+  "implementation": {
+    "logo": "Original five SVG paths; native layer order and target opacity preserved",
+    "layerOrder": [
+      2,
+      1,
+      3,
+      0,
+      4
+    ],
+    "layerOpacityTargets": [
+      0.4,
+      0.4,
+      1,
+      0.85,
+      0.7
+    ],
+    "logoAnimationDuration": 0.9,
+    "opacity": "Logo linear fade over 0.24s (fade-only uses response); text fade q, rise/reveal min(2q,1), letters/spacing min(3q,1)",
+    "spring": {
+      "mass": 1,
+      "stiffness": 194.9551486634935,
+      "damping": 25.69124658935653,
+      "initialVelocity": 0,
+      "formula": "1-exp(-zeta*w*t)*(cos(wd*t)+zeta*w/wd*sin(wd*t)); wd=w*sqrt(1-zeta²); critical damping uses 1-(1+w*t)*exp(-w*t)"
+    },
+    "textEase": "cubic ease-out: 1-(1-t)^3",
+    "reducedMotion": "No translation, scale, rotation or per-letter stagger; logo/wordmark 0.18s fade, slogan 0.18s fade after 0.08s",
+    "nativeReadiness": "Do not delay a ready home screen to force the full prototype duration",
+    "punctuation": "Splash only: remove terminal full stop in all languages; retain canonical slogan on other surfaces",
+    "webRuntime": "Finite paused WAAPI animations; external player seeks currentTime"
+  },
+  "localizedSlogans": {
+    "en": "Train smart, your way",
+    "zh-Hans": "聪明训练，适合自己",
+    "zh-Hant": "聰明訓練，適合自己",
+    "ja": "自分に合う、スマートなトレーニング",
+    "ko": "나에게 맞게, 스마트하게 운동하세요",
+    "fr": "Entraînez-vous intelligemment, à votre façon",
+    "de": "Trainiere smart, auf deine Art",
+    "es": "Entrena con cabeza, a tu manera",
+    "it": "Allenati con intelligenza, a modo tuo",
+    "pt-BR": "Treine com inteligência, do seu jeito",
+    "ru": "Тренируйся с умом, по-своему",
+    "ar": "تدرّب بذكاء، على طريقتك"
+  }
+}

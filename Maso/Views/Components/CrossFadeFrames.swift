@@ -15,10 +15,20 @@ import SwiftUI
 struct CrossFadeFrames: View {
     let folder: String
     let animated: Bool
+    let contentMode: ContentMode
 
     @State private var frame0: UIImage?
     @State private var frame1: UIImage?
     @State private var showFrame1 = false
+
+    init(folder: String, animated: Bool, contentMode: ContentMode = .fill) {
+        self.folder = folder
+        self.animated = animated
+        self.contentMode = contentMode
+        _frame0 = State(initialValue: ExerciseImageCache.shared.cached(folder: folder, frame: 0))
+        _frame1 = State(initialValue: animated ? ExerciseImageCache.shared.cached(folder: folder, frame: 1) : nil)
+    }
+
 
     /// Ken Burns 微动相位 — 跟 showFrame1 同步翻转, 让两帧切换时伴随极轻 scale + 位移,
     /// 制造"画面在运动"感而非"两张图在切换"感. 调研结论: 干净免费的真视频/GIF 数据集不存在
@@ -36,15 +46,15 @@ struct CrossFadeFrames: View {
                 // 加微 scale: 默认 1.0 → cross-fade 后 1.01 (轻微 zoom in 1%).
                 // 加微 offset: 默认 0 → cross-fade 后 +1pt x. 制造"镜头在跟动作"的感觉.
                 frameView(image: frame0, size: geo.size)
-                    .scaleEffect(1.0 + motionPhase * 0.01)
-                    .offset(x: motionPhase * 1.0)
+                    .scaleEffect(contentMode == .fit ? 1 : 1.0 + motionPhase * 0.01)
+                    .offset(x: contentMode == .fit ? 0 : motionPhase * 1.0)
 
                 // 上层: frame 1 — 通过 opacity cross-fade. 微动跟 frame 0 反向 — frame 1
                 // 从 zoom-in 状态过渡到 base, 视觉上像"动作完成时回到中心位置".
                 if animated {
                     frameView(image: frame1, size: geo.size)
-                        .scaleEffect(1.0 + (1 - motionPhase) * 0.01)
-                        .offset(x: (1 - motionPhase) * -1.0)
+                        .scaleEffect(contentMode == .fit ? 1 : 1.0 + (1 - motionPhase) * 0.01)
+                        .offset(x: contentMode == .fit ? 0 : (1 - motionPhase) * -1.0)
                         .opacity(showFrame1 ? 1 : 0)
                 }
             }
@@ -77,7 +87,7 @@ struct CrossFadeFrames: View {
                 .resizable()
                 .interpolation(.high)
                 .antialiased(true)
-                .aspectRatio(contentMode: .fill)
+                .aspectRatio(contentMode: contentMode)
                 .frame(width: size.width, height: size.height)
                 .clipped()
         } else {
@@ -89,6 +99,7 @@ struct CrossFadeFrames: View {
     private func loadFrames() async {
         // 同步先查 cache — 命中则立即填上, 视觉上"秒开"
         let cache = ExerciseImageCache.shared
+        showFrame1 = false
         frame0 = cache.cached(folder: folder, frame: 0)
         if animated { frame1 = cache.cached(folder: folder, frame: 1) }
 
@@ -100,6 +111,7 @@ struct CrossFadeFrames: View {
         async let f0task: UIImage? = needs0 ? cache.load(folder: folderCopy, frame: 0) : nil
         async let f1task: UIImage? = needs1 ? cache.load(folder: folderCopy, frame: 1) : nil
         let (loaded0, loaded1) = await (f0task, f1task)
+        guard !Task.isCancelled else { return }
         if needs0, let img = loaded0 { frame0 = img }
         if needs1, let img = loaded1 { frame1 = img }
     }

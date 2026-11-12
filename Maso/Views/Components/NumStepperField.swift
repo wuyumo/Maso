@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 extension Binding where Value == Double {
     /// canonical-kg 的 binding → 当前单位 (kg/lb) 的 binding: get 把 kg 换成单位值, set 把单位值换回 kg.
@@ -33,12 +34,6 @@ struct NumStepperField: View {
     private let decimal: Bool
     /// 输入框宽度 (含 suffix)
     private let fieldWidth: CGFloat
-
-    @FocusState private var focused: Bool
-    /// 输入框显示的字符串 — 跟 doubleValue 双向 sync, 但允许"中间态"为空字符串.
-    /// 这是让用户能 "全删后重输" 的关键: 用 String binding 而不是 value binding,
-    /// 失焦/Done 时再 parse 写回 doubleValue.
-    @State private var text: String = ""
 
     // MARK: - Init: Double 版本 (e.g. 重量)
     init(
@@ -105,16 +100,6 @@ struct NumStepperField: View {
         }
         .background(MasoColor.surfaceHi)
         .clipShape(RoundedRectangle(cornerRadius: 10))
-        // 全局键盘 toolbar — 给 decimalPad/numberPad 加 "完成"
-        .toolbar {
-            if focused {
-                ToolbarItemGroup(placement: .keyboard) {
-                    Spacer()
-                    Button("Done") { focused = false }
-                        .foregroundStyle(MasoColor.accent)
-                }
-            }
-        }
     }
 
     /// +/- 按钮段 — 无独立底 (整体共底), 36pt 高给足点击热区.
@@ -128,23 +113,9 @@ struct NumStepperField: View {
 
     private var inputField: some View {
         HStack(spacing: 2) {
-            // String binding — 允许用户随便编辑 (包括清空). 失焦/Done 时 commit 才写回数值.
-            TextField("", text: $text)
-                .keyboardType(decimal ? .decimalPad : .numberPad)
-                .multilineTextAlignment(.trailing)
-                .font(.system(size: 15, weight: .bold).monospacedDigit())
-                .foregroundStyle(MasoColor.text)
-                .focused($focused)
-                .submitLabel(.done)
-                .onSubmit { commit() }
-                .onChange(of: focused) { _, isFocused in
-                    if !isFocused { commit() }
-                }
-                .onAppear { text = format(doubleValue) }
-                .onChange(of: doubleValue) { _, newValue in
-                    // 外部 (e.g. +/- 按钮 / 父 view) 改了 value → 同步显示, 但不动当前正在输入的内容
-                    if !focused { text = format(newValue) }
-                }
+            NumericValueField(value: $doubleValue, range: range, allowsDecimal: decimal,
+                              font: .monospacedDigitSystemFont(ofSize: 15, weight: .bold),
+                              textColor: UIColor(MasoColor.text))
                 .frame(minWidth: 24)
             if let suffix {
                 Text(suffix)
@@ -155,44 +126,15 @@ struct NumStepperField: View {
         .padding(.vertical, 7)
         .frame(width: fieldWidth, alignment: .center)
         .contentShape(Rectangle())
-        .onTapGesture { focused = true }
-    }
-
-    /// 用户结束输入时调 — 失焦 / onSubmit / 键盘"完成".
-    /// 解析 text → clamp 到 range → 写回 doubleValue, 同时把 text 重置为标准化格式.
-    /// 空串或 garbage → 恢复成上一次的合法值 (不会变成 0 或留空状态).
-    private func commit() {
-        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
-        if let parsed = Double(trimmed.replacingOccurrences(of: ",", with: ".")) {
-            let clamped = min(max(parsed, range.lowerBound), range.upperBound)
-            doubleValue = clamped
-            text = format(clamped)
-        } else {
-            // parse 失败 (e.g. 全清空) → 回到当前合法值的字符串
-            text = format(doubleValue)
-        }
-    }
-
-    /// 跟 numberFormat 同义, 但直接给 String 用 (避免 FloatingPointFormatStyle 走两遍).
-    private func format(_ v: Double) -> String {
-        if decimal {
-            if v.truncatingRemainder(dividingBy: 1) == 0 { return String(Int(v)) }
-            return String(format: "%.1f", v)
-        } else {
-            return String(Int(v.rounded()))
-        }
     }
 
     private func increment() {
         let next = min(range.upperBound, doubleValue + step)
         doubleValue = next
-        // 确保 text 同步 — 如果用户当前在输入框里点 +/-, focused=true, onChange 不 sync.
-        text = format(next)
     }
     private func decrement() {
         let next = max(range.lowerBound, doubleValue - step)
         doubleValue = next
-        text = format(next)
     }
 }
 

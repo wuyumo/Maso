@@ -1,9 +1,6 @@
 import SwiftUI
 
-// 共享卡片外壳 — padding 14 + surface 填充 + corner medium (16).
-// 原本私有在 AISummaryCard.swift, 抽成 internal 让 AI Coach Summary 卡 (Progress) 跟
-// Training Preferences 卡 (Routines) 共用同一片壳, 保证两张卡颜色/圆角/内边距逐像素一致.
-// (跟 InsightsChartsView 其它卡也一致.)
+// Shared content cards use the Diet glass surface, standard padding and radius.
 /// iOS 26 系统 Liquid Glass 按钮是否可用 — 给调用处在表达式里切"玻璃态字色/描边/阴影"用
 /// (#available 进不了三目表达式, 只能预存成布尔; 值进程内不变, 存一次即可).
 let systemGlassAvailable: Bool = {
@@ -11,12 +8,36 @@ let systemGlassAvailable: Bool = {
 }()
 
 extension View {
-    func cardChrome() -> some View {
-        self
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(14)
-            .flatCardBackground()
-            .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
+    /// Shared explanatory values beside target-card progress bars.
+    func targetProgressTextStyle() -> some View {
+        self.font(.subheadline.weight(.medium))
+            .foregroundStyle(MasoColor.textSoft)
+            .monospacedDigit()
+    }
+
+    @ViewBuilder
+    func nativeGlassProminentButtonStyle() -> some View {
+        if #available(iOS 26.0, *) { self.buttonStyle(.glassProminent) }
+        else { self.buttonStyle(.borderedProminent) }
+    }
+
+    /// “iOS default button” means native Liquid Glass on supported systems.
+    @ViewBuilder
+    func nativeGlassButtonStyle() -> some View {
+        if #available(iOS 26.0, *) {
+            self.buttonStyle(.glass)
+        } else {
+            self.buttonStyle(.bordered)
+        }
+    }
+
+    func cardChrome() -> some View { contentCardChrome() }
+
+    func contentCardChrome(padding: CGFloat = MasoMetrics.cardPadding,
+                           cornerRadius: CGFloat = MasoMetrics.cornerRadiusMedium) -> some View {
+        self.frame(maxWidth: .infinity, alignment: .leading)
+            .padding(padding).glassCardBackground(cornerRadius: cornerRadius)
+            .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
     }
 
     /// 扁平卡底 — 纯 surface 填充, 无玻璃折光/无描边 (owner: routine 等内容卡去边框, 只留底色).
@@ -80,5 +101,110 @@ extension View {
     /// 圆形图标钮便捷入口.
     func glassCircleButtonBackground(tint: Color? = nil, fallback: Color? = nil) -> some View {
         glassButtonBackground(tint: tint, fallback: fallback, in: Circle())
+    }
+}
+
+// Shared typography for the Routines and History section headings on Today.
+extension Text {
+    func trainingSectionTitle() -> some View {
+        self
+            .font(.system(size: MasoMetrics.sectionTitleSize, weight: .heavy))
+            .tracking(MasoMetrics.sectionTitleTracking)
+            .textCase(.uppercase)
+            .foregroundStyle(MasoColor.textDim)
+    }
+}
+
+/// Ghost actions beside page and section headings, with a full touch target.
+struct SectionActionButton: View {
+    let title: LocalizedStringKey
+    var leadingIcon: String? = nil
+    var showsChevron = true
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: 6) {
+                if let leadingIcon { Image(systemName: leadingIcon) }
+                Text(title)
+                    .fixedSize(horizontal: false, vertical: true)
+                if showsChevron {
+                    Image(systemName: "chevron.right")
+                        .font(.caption2.weight(.semibold))
+                }
+            }
+            .font(.footnote.weight(.semibold))
+            .foregroundStyle(MasoColor.text)
+            .padding(.horizontal, 4)
+            .frame(minWidth: 44, minHeight: 44)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+    }
+}
+
+/// Reusable, brief confirmation toast for completed actions.
+/// The presenting screen controls visibility and dismissal timing.
+struct MasoToast: View {
+    let message: LocalizedStringKey
+    var systemImage: String = "checkmark"
+
+    var body: some View {
+        HStack(spacing: 8) {
+            Image(systemName: systemImage)
+                .font(.system(size: 13, weight: .bold))
+                .foregroundStyle(MasoColor.accent)
+            Text(message)
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundStyle(MasoColor.text)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 11)
+        .background(.regularMaterial, in: Capsule())
+        .overlay(Capsule().stroke(MasoColor.borderSoft.opacity(0.7), lineWidth: 0.7))
+        .shadow(color: .black.opacity(0.16), radius: 12, y: 4)
+        .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(.updatesFrequently)
+    }
+}
+
+
+/// Canonical primary-action label for the app: accent-tinted capsule, dark text/icon,
+/// 44pt minimum height. Use inside a plain Button; pass the feature accent when needed.
+struct TrainingCardActionLabel: View {
+    enum Size { case regular, large }
+    let title: LocalizedStringKey
+    let icon: String
+    let accent: Color
+    var prominent = true
+    var fillsWidth = false
+    var loading = false
+    var size: Size = .regular
+    var body: some View {
+        Group {
+            if prominent {
+                actionLabel
+                    .glassCapsuleButtonBackground(tint: accent.opacity(0.85), fallback: accent)
+            } else {
+                actionLabel
+            }
+        }
+        .contentShape(Capsule())
+    }
+
+    private var actionLabel: some View {
+        HStack(spacing: 8) {
+            if !icon.isEmpty || loading {
+                ZStack {
+                    if !icon.isEmpty { Image(systemName: icon).font((size == .large ? Font.subheadline : .caption).weight(.bold)).opacity(loading ? 0 : 1) }
+                    if loading { ProgressView().controlSize(.mini).tint(.black) }
+                }
+            }
+            Text(title).font((size == .large ? Font.body : .subheadline).weight(.semibold)).multilineTextAlignment(.center)
+        }
+        .foregroundStyle(prominent ? Color.black : MasoColor.text)
+        .padding(.horizontal, 16).padding(.vertical, size == .large ? 14 : 10)
+        .frame(maxWidth: fillsWidth ? .infinity : nil, minHeight: size == .large ? 56 : 44)
     }
 }

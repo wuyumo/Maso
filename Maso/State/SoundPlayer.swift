@@ -1,18 +1,62 @@
 import AVFoundation
 import Foundation
 
-/// 训练中的 UI 音效播放器 — set complete / skip rest 等节点用.
-///
-/// 2026-06-16: 应需求把音色对齐 Apple Watch —— watch 端这些动作用的是
-/// `WKInterfaceDevice.play(.click)`, 一个简短的"咔哒"触觉音, 而不是 iPhone 旧版那种
-/// do-mi-sol 和弦 / 上下行旋律. 这里改成合成一个同样简短轻柔的 click, 完成组 / 跳过休息
-/// 都放这一声, 听感跟手表一致.
-///
-/// 关键约束: 不打断用户正在听的 Spotify / Music.
-///   - AVAudioSession category = `.ambient` (UI 类音频, 不抢主播放权)
-///   - options = `.mixWithOthers` (跟其它 app 的音轨叠加)
-///
-/// 音色是程序合成 (AVAudioEngine), 无 bundle 音频文件 — 包体积小, 调参即可改风格.
+/// One policy for silent demos, feedback and optional speech. Configure before
+/// constructing/preparing any player: even a muted AVPlayer can activate the
+/// default soloAmbient session. Ambient implicitly mixes without ducking.
+@MainActor
+enum AppAudioSession {
+    private static var tutorialPlaybackActive = false
+
+    static func beginTutorialPlayback() {
+        tutorialPlaybackActive = true
+        _ = activateForFeedback()
+    }
+
+    static func endTutorialPlayback() {
+        guard tutorialPlaybackActive else { return }
+        tutorialPlaybackActive = false
+        _ = configure()
+    }
+
+    @discardableResult
+    static func configure() -> Bool {
+        let session = AVAudioSession.sharedInstance()
+        do {
+            if tutorialPlaybackActive {
+                if session.category != .playback || session.mode != .moviePlayback {
+                    try session.setCategory(.playback, mode: .moviePlayback, options: [.mixWithOthers])
+                }
+                return true
+            }
+            let disruptiveOptions: AVAudioSession.CategoryOptions = [.duckOthers, .interruptSpokenAudioAndMixWithOthers]
+            if session.category != .ambient || session.mode != .default ||
+                !session.categoryOptions.intersection(disruptiveOptions).isEmpty {
+                // Ambient enables mixWithOthers itself; do not request a
+                // playback-only option or activate audio merely by opening App.
+                try session.setCategory(.ambient, mode: .default, options: [])
+            }
+            return true
+        } catch {
+            #if DEBUG
+            print("[Audio] Could not configure noninterrupting playback: \(error)")
+            #endif
+            return false
+        }
+    }
+
+    static func activateForFeedback() -> Bool {
+        guard configure() else { return false }
+        do {
+            try AVAudioSession.sharedInstance().setActive(true)
+            return true
+        } catch { return false }
+    }
+}
+
+/// Shared training feedback: synthesized click/tick, approved glass completion cue,
+/// and the user's level-up WAV for the celebration. Ambient audio respects silent
+/// mode and mixes with Music/Spotify; it never ducks or interrupts their playback.
 @MainActor
 final class SoundPlayer {
     static let shared = SoundPlayer()
@@ -21,8 +65,11 @@ final class SoundPlayer {
     private let player = AVAudioPlayerNode()
     /// 短促"咔哒"click — 对齐 Apple Watch `.click` 触觉音的听感 (跳过/结束休息用).
     private var clickBuffer: AVAudioPCMBuffer?
-    /// "完成动作组"的清单勾选感 chime — 两声上行小钟琴"叮-叮" (set complete 用).
-    private var completeBuffer: AVAudioPCMBuffer?
+    enum CompletionAsset: String {
+        case exercise = "masso-celebration-glass"
+        case workout = "masso-celebration-levelup"
+    }
+    private var assetPlayers: [CompletionAsset: AVAudioPlayer] = [:]
     /// 极轻 tick — onboarding 拨盘吸附换值用 (比 click 小声, 连续滚动不刺耳).
     private var tickBuffer: AVAudioPCMBuffer?
     private var initialized = false
@@ -31,34 +78,32 @@ final class SoundPlayer {
 
     /// 真正启动 engine — 第一次调 play 才初始化, 避免 cold start 时无谓占音频会话.
     /// (用户可能刚开 app 就在听音乐, 我们不希望立刻去 set category 干扰它.)
-    private func setupIfNeeded() {
-        guard !initialized else { return }
-
-        do {
-            // .ambient + mixWithOthers — UI 音效, 跟用户的音乐叠加, 不会 ducking 或暂停.
-            try AVAudioSession.sharedInstance().setCategory(
-                .ambient, mode: .default,
-                options: [.mixWithOthers]
-            )
-            try AVAudioSession.sharedInstance().setActive(true, options: [])
-        } catch {
-            // 设置失败也不 fatal — 音效不响就不响, 不影响训练流程.
-            return
+    private func setupIfNeeded() -> Bool {
+        // Recheck even after engine initialization (e.g. after returning from
+        // a system media presentation). Failure means skip our sound.
+        guard AppAudioSession.activateForFeedback() else { return false }
+        if initialized {
+            do {
+                if !engine.isRunning { try engine.start() }
+                return true
+            } catch { return false }
         }
 
-        engine.attach(player)
         let format = AVAudioFormat(standardFormatWithSampleRate: 44100, channels: 2)!
-        engine.connect(player, to: engine.mainMixerNode, format: format)
+        if player.engine == nil {
+            engine.attach(player)
+            engine.connect(player, to: engine.mainMixerNode, format: format)
+        }
 
         clickBuffer = generateClick(format: format)
         tickBuffer = generateClick(format: format, gain: 0.11)   // 拨盘 tick — 更轻
-        completeBuffer = generateComplete(format: format)
 
         do {
             try engine.start()
             initialized = true
+            return true
         } catch {
-            return
+            return false
         }
     }
 
@@ -107,68 +152,15 @@ final class SoundPlayer {
         return buf
     }
 
-    /// 生成"完成动作组"的清单勾选感 chime — to-do 勾选那种"叮-叮"完成感.
-    ///
-    /// 设计 (参考通用 task-complete 音效: 简单两音 + 明亮上行 + 钟琴质感):
-    ///   - 两声上行: G5 (784Hz) → D6 (1175Hz, 纯五度), 第二声晚 ~45ms 入 ("flam", 给俏皮的连击感)
-    ///   - 每声 = 基频 + 八度泛音 + 十二度泛音 (递减) → 小钟琴 / 钢琴的玻璃亮质感, 不是干 click
-    ///   - 软起手 ~4ms + 指数衰减 (第一声稍快收, 第二声 ring out 更长) → 收尾自然, 有"完成"余韵
-    ///   - 总时长 ~340ms, 比 click 长、更"奖励感", 但仍短到不拖训练节奏; 音量适中 (奖励一下, 不刺耳)
-    private func generateComplete(format: AVAudioFormat) -> AVAudioPCMBuffer? {
-        let sampleRate = format.sampleRate
-        let durationSeconds = 0.34
-        let frameCount = AVAudioFrameCount(sampleRate * durationSeconds)
-        guard let buf = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: frameCount) else { return nil }
-        buf.frameLength = frameCount
-
-        let chL = buf.floatChannelData![0]
-        let chR = buf.floatChannelData![1]
-
-        let f1 = 783.99    // G5
-        let f2 = 1174.66   // D6 (上行纯五度) — 明亮、积极
-        let off2 = 0.045   // 第二声 flam 延迟
-
-        func voice(_ f: Double, _ t: Double, decay: Double) -> Double {
-            guard t >= 0 else { return 0 }
-            let env = exp(-t * decay) * min(1.0, t / 0.004)   // 4ms 软起手 + 指数衰减
-            let h1 = sin(2 * .pi * f * t)
-            let h2 = sin(2 * .pi * f * 2 * t) * 0.5
-            let h3 = sin(2 * .pi * f * 3 * t) * 0.22
-            return (h1 + h2 + h3) * env
-        }
-
-        for i in 0..<Int(frameCount) {
-            let t = Double(i) / sampleRate
-            let n1 = voice(f1, t, decay: 9.5)          // 第一声稍快收
-            let n2 = voice(f2, t - off2, decay: 6.5)   // 第二声 ring out 长一点
-            let sample = Float((n1 * 0.5 + n2 * 0.62) * 0.3)
-            chL[i] = sample
-            chR[i] = sample
-        }
-        return buf
-    }
-
-    private func playComplete() {
-        setupIfNeeded()
-        guard let buf = completeBuffer else { return }
-        if !engine.isRunning { try? engine.start() }
-        player.scheduleBuffer(buf, at: nil, options: [.interrupts], completionHandler: nil)
-        if !player.isPlaying { player.play() }
-    }
-
     private func playClick() {
-        setupIfNeeded()
-        guard let buf = clickBuffer else { return }
-        if !engine.isRunning { try? engine.start() }
+        guard setupIfNeeded(), let buf = clickBuffer else { return }
         player.scheduleBuffer(buf, at: nil, options: [.interrupts], completionHandler: nil)
         if !player.isPlaying { player.play() }
     }
 
     /// Onboarding 拨盘吸附换值 — 一声极轻 tick (随静音开关静默, 不打断音乐).
     func playTick() {
-        setupIfNeeded()
-        guard let buf = tickBuffer else { return }
-        if !engine.isRunning { try? engine.start() }
+        guard setupIfNeeded(), let buf = tickBuffer else { return }
         player.scheduleBuffer(buf, at: nil, options: [.interrupts], completionHandler: nil)
         if !player.isPlaying { player.play() }
     }
@@ -176,9 +168,35 @@ final class SoundPlayer {
     /// 通用按钮点击 — 清脆 click (比 tick 实, 给"按下/前进"的完成感; onboarding 各步按钮用).
     func playTap() { playClick() }
 
-    /// 力量组完成 — 清单勾选感的上行"叮-叮" chime (比 click 更有"完成/奖励"感).
-    /// 注: 仅 iPhone 端改成 chime; Apple Watch 完成组仍是 `.click` 触觉 (手表不走这套合成音).
-    func playSetComplete() { playComplete() }
+    /// Preload before the celebration clock begins; WAV already includes the approved 0.38 gain.
+    func prepareCelebration() {
+        guard AppAudioSession.activateForFeedback() else { return }
+        _ = assetPlayer(.workout)
+    }
+
+    private func assetPlayer(_ asset: CompletionAsset) -> AVAudioPlayer? {
+        if let cached = assetPlayers[asset] { return cached }
+        guard let url = WorkoutCelebrationConfiguration.resource(asset.rawValue, extension: "wav"),
+              let audio = try? AVAudioPlayer(contentsOf: url) else { return nil }
+        audio.volume = 1 // Do not apply the exported gain twice.
+        audio.prepareToPlay()
+        assetPlayers[asset] = audio
+        return audio
+    }
+
+    private func playAsset(_ asset: CompletionAsset) {
+        // prepareToPlay() can activate the session, so policy MUST come first.
+        guard AppAudioSession.activateForFeedback() else { return }
+        guard let audio = assetPlayer(asset) else { return }
+        if initialized { player.stop() }
+        for other in assetPlayers.values { other.stop() }
+        audio.currentTime = 0
+        audio.play()
+    }
+
+    func playCelebration() { playAsset(.workout) }
+    func stopCelebration() { assetPlayers[.workout]?.stop() }
+    func playSetComplete() { playAsset(.exercise) }
 
     /// 休息结束 / 跳过休息 — 一声 watch 风格的 click (保持简短, 不跟完成 chime 混淆).
     func playRestEnded() { playClick() }

@@ -1,6 +1,13 @@
 /* 权限弹窗 purpose strings — 中文 (审核与中文用户可见) */
-"NSCameraUsageDescription" = "Masso 使用相机拍摄自拍，添加到你的可分享训练总结卡片上。";
+"NSCameraUsageDescription" = "Masso 使用相机拍摄训练分享照片，或拍摄你主动发送给 AI 的身体照片以获取训练建议。";
 "NSHealthUpdateUsageDescription" = "Masso 将你完成的训练保存到 Apple 健身，显示在你的活动圆环和健康时间线中。";
-"NSPhotoLibraryUsageDescription" = "Masso 读取你从相册中选择的照片，添加到可分享的训练总结卡片上。";
+"NSPhotoLibraryUsageDescription" = "Masso 使用你选择的照片进行训练分享或提供 AI 训练建议。";
 
-"NSHealthShareUsageDescription" = "Masso 读取你 Apple 健康中的近期训练记录，避免重复计入你已在 Apple Watch 上记录的训练。";
+"NSHealthShareUsageDescription" = "Masso 从 Apple 健康读取身高、体重、步数、能量、睡眠、训练和训练心率，用于身体资料、本机报告和个人休息提醒。";
+"Start workout" = "开始训练";
+
+"Add meal" = "添加餐食";
+
+"Free workout" = "自由训练";
+
+"AI Coach" = "AI 教练";

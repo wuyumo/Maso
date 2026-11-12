@@ -24,28 +24,54 @@ enum ExerciseLibrary {
     /// 老用户保存的 plans / sets / favorites 用的是 v1 ID (e.g. "Barbell_Bench_Press") → 透过
     /// imageFolder alias 还能 resolve 到新 Exercise. 不需要一次性 migration, 自然过渡.
     /// 多个 new exercise 可能共享同一个 imageFolder (image sharing for variants), 只取第一个.
-    static let byId: [String: Exercise] = {
-        var m: [String: Exercise] = [:]
-        for ex in all {
-            m[ex.id] = ex
+    static let byId: [String: Exercise] = lookup(all)
+
+    /// Actual/custom IDs win, then exact retired-ID aliases, then legacy image folders.
+    static func lookup(_ exercises: [Exercise]) -> [String: Exercise] {
+        var result: [String: Exercise] = [:]
+        for exercise in exercises { result[exercise.id] = exercise }
+        for exercise in exercises {
+            for alias in exercise.mergedFrom ?? [] where result[alias] == nil { result[alias] = exercise }
         }
-        // 被合并掉的旧动作 id → 存活者 (2026-08-15 动作库收整: 938 → 728).
-        // 同一张图被 N 个"只差器械"的动作共用是历史包袱; 收整后 Bench Press 一条吃掉绳索/哑铃/
-        // 史密斯/壶铃版, 但**用户已存的 routine / 历史记录里还写着旧 id**, 必须能 resolve,
-        // 否则动作凭空消失。放在 imageFolder alias 之前: 旧动作 id 比 imageFolder 更精确.
-        for ex in all {
-            for old in ex.mergedFrom ?? [] where m[old] == nil {
-                m[old] = ex
-            }
+        for exercise in exercises {
+            if let folder = exercise.imageFolder, result[folder] == nil { result[folder] = exercise }
         }
-        // Add legacy imageFolder aliases (不覆盖已存在的真 id)
-        for ex in all {
-            if let folder = ex.imageFolder, m[folder] == nil {
-                m[folder] = ex
-            }
+        return result
+    }
+
+    /// Only reviewed exact-ID consolidations may rewrite persisted identity.
+    /// Historical image folders can be shared/ambiguous: keep those lookup-only.
+    static func consolidatedID(_ id: String, using lookup: [String: Exercise]) -> String {
+        guard let target = lookup[id], target.id == id || target.mergedFrom?.contains(id) == true else { return id }
+        return target.id
+    }
+
+    static func canonicalPlan(_ plan: Plan, using lookup: [String: Exercise]) -> Plan {
+        var copy = plan
+        copy.steps = plan.steps.map { step in
+            var copy = step
+            copy.exerciseId = consolidatedID(step.exerciseId, using: lookup)
+            return copy
         }
-        return m
-    }()
+        return copy
+    }
+
+    static func canonicalRecord(_ record: SetRecord, using lookup: [String: Exercise]) -> SetRecord {
+        var copy = record
+        copy.exerciseId = consolidatedID(record.exerciseId, using: lookup)
+        return copy // Preserve ID, historical name, load, timestamps and HR linkage.
+    }
+
+    static func canonicalSettings(_ settings: UserSettings, using lookup: [String: Exercise]) -> UserSettings {
+        var copy = settings
+        func resolve(_ ids: [String]) -> [String] {
+            var seen = Set<String>()
+            return ids.map { consolidatedID($0, using: lookup) }.filter { seen.insert($0).inserted }
+        }
+        copy.favoriteExerciseIds = resolve(copy.favoriteExerciseIds)
+        copy.adoptedNicheExerciseIds = resolve(copy.adoptedNicheExerciseIds)
+        return copy
+    }
 
     /// 反向 map: 旧库 imageFolder ID → 新库 Exercise. 给需要明确区分新旧 ID 的代码 (e.g. data migration).
     static let byLegacyImageFolder: [String: Exercise] = {
@@ -63,23 +89,29 @@ enum ExerciseLibrary {
             assertionFailure("exercises.json missing from bundle")
             return []
         }
+        guard let data = try? Data(contentsOf: url) else {
+            assertionFailure("Failed to read exercises.json")
+            return []
+        }
+        return load(data: data)
+    }
+
+    /// Same decoder as the bundled catalog. Tests and the equipment-swap tool can feed bytes
+    /// without going through Bundle.main.
+    static func load(data: Data) -> [Exercise] {
         do {
-            let data = try Data(contentsOf: url)
-            // Sniff schema: v2 has objects with `name: {en, zh-Hans}`; v1 has `name: "string"`.
             if let array = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]],
                let first = array.first,
                let nameField = first["name"],
                nameField is [String: Any] {
-                // v2 schema
                 let raw = try JSONDecoder().decode([RawExerciseV2].self, from: data)
                 return raw.map(toExerciseV2)
             } else {
-                // v1 schema (yuhonas legacy)
                 let raw = try JSONDecoder().decode([RawExerciseV1].self, from: data)
                 return raw.map(toExerciseV1)
             }
         } catch {
-            assertionFailure("Failed to load exercises.json: \(error)")
+            assertionFailure("Failed to decode exercises.json: \(error)")
             return []
         }
     }
@@ -119,6 +151,7 @@ private struct RawExerciseV2: Decodable {
 }
 
 private struct RawNameParts: Decodable {
+    let localizedBase: [String: String]?
     let variation: String?
     let base: String
     let equipment: String?
@@ -183,7 +216,7 @@ private func toExerciseV2(_ r: RawExerciseV2) -> Exercise {
         localizedName: r.name,
         localizedDangerWarnings: r.danger_warnings,
         isNiche: r.niche ?? false,
-        nameParts: r.nameParts.map { NameParts(variation: $0.variation, base: $0.base, equipment: $0.equipment) },
+        nameParts: r.nameParts.map { NameParts(localizedBase: $0.localizedBase, variation: $0.variation, base: $0.base, equipment: $0.equipment) },
         aliases: r.aliases,
         mergedFrom: r.mergedFrom
     )

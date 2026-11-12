@@ -1,4 +1,5 @@
 import Foundation
+import CryptoKit
 
 // AI Insight Summary — Progress → Insights 顶部"AI 教练小结"卡的数据模型.
 //
@@ -139,5 +140,65 @@ enum AISummaryAction: Codable, Sendable, Equatable {
         case .none:
             try c.encode("none", forKey: .type)
         }
+    }
+}
+
+/// A stable suggestion identity survives a refreshed response's transient recommendation IDs.
+struct CoachAdvice: Identifiable {
+    enum Source { case suggestion, summary, information, upgrade }
+    let title: String
+    let detail: String
+    let action: AISummaryAction
+    let source: Source
+
+    var actionKey: String {
+        switch action {
+        case .regenerateRoutines(let note): return "routine:" + Self.normalized(note)
+        case .addCoachNote(let note): return "note:" + Self.normalized(note)
+        case .none: return "information:" + Self.normalized(title + " " + detail)
+        }
+    }
+
+    var id: String {
+        let content = [actionKey, title, detail].joined(separator: "\u{1f}")
+        return SHA256.hash(data: Data(content.utf8)).map { String(format: "%02x", $0) }.joined()
+    }
+
+    private static func normalized(_ value: String) -> String {
+        value.split(whereSeparator: \.isWhitespace).joined(separator: " ").lowercased()
+    }
+
+    static func merged(local: DataStore.RoutineSuggestion?, summary: AISummary?, isPro: Bool) -> [CoachAdvice] {
+        var cards: [CoachAdvice] = []
+        if let local {
+            cards.append(CoachAdvice(title: local.title, detail: local.detail,
+                                     action: .regenerateRoutines(focusNote: local.focusNote), source: .suggestion))
+        }
+        if isPro, let summary {
+            cards += summary.recommendations.map {
+                CoachAdvice(title: $0.title, detail: $0.detail, action: $0.action, source: .summary)
+            }
+            if cards.isEmpty && !summary.tldr.isEmpty {
+                cards.append(CoachAdvice(title: NSLocalizedString("Your training summary", comment: ""),
+                                         detail: summary.tldr, action: .none, source: .information))
+            }
+        }
+        var seen = Set<String>()
+        return cards.filter { seen.insert($0.actionKey).inserted }
+    }
+
+    static func selection(afterRemoving id: String, from ids: [String]) -> String? {
+        guard let index = ids.firstIndex(of: id) else { return ids.first }
+        let remaining = ids.filter { $0 != id }
+        guard !remaining.isEmpty else { return nil }
+        return remaining[min(index, remaining.count - 1)]
+    }
+}
+
+
+extension AISummaryAction {
+    var isRoutineChange: Bool {
+        if case .regenerateRoutines = self { return true }
+        return false
     }
 }

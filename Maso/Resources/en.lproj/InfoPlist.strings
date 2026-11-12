@@ -1,7 +1,13 @@
-/* 权限弹窗 purpose strings — 跟 Info.plist 里的英文原文一致.
-   有这份 en 文件, zh-Hans 那份才会被系统当作变体生效. */
-"NSCameraUsageDescription" = "Masso uses the camera so you can add a selfie to your shareable workout summary.";
+/* iOS permission descriptions, kept in sync with Info.plist. */
+"NSCameraUsageDescription" = "Masso uses the camera for workout sharing, body photos for AI training suggestions, and meal photos you choose to analyze for nutrition tracking.";
+"NSHealthShareUsageDescription" = "Masso reads weight, height, steps, energy, sleep, workouts and workout heart rate from Apple Health for your profile, local reports and personal rest reminders.";
 "NSHealthUpdateUsageDescription" = "Masso saves your completed workouts to Apple Fitness so they appear in your Activity rings and Health timeline.";
-"NSPhotoLibraryUsageDescription" = "Masso reads a photo you pick from your library so you can add it to your shareable workout summary.";
+"NSPhotoLibraryUsageDescription" = "Masso uses photos you choose for workout sharing and AI training suggestions.";
 
-"NSHealthShareUsageDescription" = "Masso reads your recent workouts from Apple Health to avoid double-counting sessions you already recorded on Apple Watch.";
+"Start workout" = "Start workout";
+
+"Add meal" = "Add meal";
+
+"Free workout" = "Free workout";
+
+"AI Coach" = "AI Coach";

@@ -38,10 +38,7 @@ struct QuickWorkoutScreen: View {
                         pickedIds: $pickedExerciseIds,
                         aiOrder: $aiOrder,
                         exById: data.exById,
-                        // 主"选动作"入口 — 用 userLibrary (含 custom + adopted niche, 排除未采纳 niche).
-                        // 跟 ExercisePickerSheet 同 source. Smart pick / 列表不会出现 Foam Roll /
-                        // Battle Rope / Hip Abduction Machine 等怪东西, 除非用户主动采纳.
-                        allExercises: data.userLibrary,
+                        allExercises: data.curatedExerciseLibrary,
                         onStart: handleStart
                     )
                 }
@@ -157,18 +154,7 @@ struct QuickWorkoutScreen: View {
         let now = Date()
         let steps: [PlanStep] = sorted.enumerated().map { (i, ex) in
             // 用上次该动作的记录回填重量 / 次数 (跟 web 端 lastSetOf 一致, 这里简化为查 sets)
-            let lastSet = data.sets.first(where: { $0.exerciseId == ex.id })
-            let isStrength = ex.category == .strength
-            return PlanStep(
-                id: "qw-step-\(now.timeIntervalSince1970.rounded())-\(i)",
-                exerciseId: ex.id,
-                sets: 3,
-                reps: isStrength ? (lastSet?.reps ?? 10) : nil,
-                weight: isStrength ? (lastSet?.weight ?? 0) : nil,
-                duration: isStrength ? nil : 30,
-                restBetweenSets: data.settings.defaultRestSeconds,
-                rest: 0
-            )
+            return data.makeSeededStep(for: ex, stepId: "qw-step-\(now.timeIntervalSince1970.rounded())-\(i)")
         }
         let dateStr = now.formatted(.dateTime.month().day().hour().minute())
         // Plan name 走 i18n — zh-Hans "自由训练 · 5/17 9:30" / en "Free workout · 5/17 9:30"
@@ -332,19 +318,13 @@ private struct QuickMuscleStep: View {
                          : "Continue (\(selected.count))")
                     if !selected.isEmpty {
                         Image(systemName: "arrow.right")
-                            .font(.system(size: 12, weight: .heavy))
                     }
                 }
-                .font(.system(size: 14, weight: .heavy))
                 .frame(maxWidth: .infinity)
-                .padding(.vertical, 14)
-                .foregroundStyle(selected.isEmpty ? MasoColor.textDim : .black)
-                // 主 CTA 系统玻璃 (映射表①): 可点 = accent 高浓度玻璃 + 黑字, 禁用 = 素玻璃 + 灰字;
-                // 旧系统保留原 surfaceHi / 实心 accent.
-                .glassCapsuleButtonBackground(tint: selected.isEmpty ? nil : MasoColor.accent.opacity(0.85),
-                                              fallback: selected.isEmpty ? MasoColor.surfaceHi : MasoColor.accent)
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.borderedProminent)
+            .controlSize(.large)
+            .tint(MasoColor.accent)
             .disabled(selected.isEmpty)
             .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
             .padding(.bottom, 24)
@@ -477,6 +457,7 @@ private struct QuickExerciseStep: View {
     @State private var equipmentFilter: String? = nil
     /// 点图片缩略图弹的动作详情 sheet.
     @State private var detailExercise: Exercise? = nil
+    @State private var aiUpgradePrompt = UpgradePrompt()
 
     var body: some View {
         // List + Section — 替换之前的 ScrollView+VStack. 让 swipeActions 原生工作不抢手势.
@@ -520,6 +501,7 @@ private struct QuickExerciseStep: View {
             ExerciseDetailSheet(exercise: ex)
             .presentationDragIndicator(.visible)
         }
+        .aiUpgradeReminder(aiUpgradePrompt)
     }
 
     /// Equipment 筛选 badge 行 — 横向滚动, 每个器械一个 badge, 可点切换 (实心 accent = 已选,
@@ -569,41 +551,22 @@ private struct QuickExerciseStep: View {
         .buttonStyle(.plain)
     }
 
-    /// 两个 CTA 等高常量 — 不靠 padding 计算, 显式 .frame(height) 兜底
-    private static let ctaHeight: CGFloat = 50
-
-    /// AI 智能推荐 — 轻 accent 浅底 + 描边. fit-to-content (sparkles + 短文案), 不撑满.
-    /// 跟主 CTA Start 同行同高 (都用 ctaHeight 显式锁), 视觉地位"次于但同级".
+    /// AI 智能推荐 — 使用系统 bordered button，与主操作并列但保持次级层级。
     @ViewBuilder
     private var smartPickButton: some View {
         Button(action: { Task { await autoPick() } }) {
-            HStack(spacing: 6) {
+            HStack {
                 if aiLoading {
                     ProgressView()
-                        .scaleEffect(0.7)
-                        .tint(MasoColor.accent)
-                        .frame(width: 16, height: 16)
                 } else {
                     Image(systemName: "sparkles")
-                        .font(.system(size: 14, weight: .heavy))
                 }
                 Text(aiLoading ? NSLocalizedString("Asking the coach…", comment: "") : NSLocalizedString("Smart pick", comment: ""))
-                    .font(.system(size: 14, weight: .bold))
-                    .lineLimit(1)
-            }
-            .foregroundStyle(MasoColor.accent)
-            .padding(.horizontal, 16)
-            .frame(height: Self.ctaHeight)
-            // 次级胶囊钮 → accent 低浓度玻璃 (映射表②); 描边只留给旧系统的半透明底样式.
-            .glassCapsuleButtonBackground(tint: MasoColor.accent.opacity(0.25),
-                                          fallback: MasoColor.accent.opacity(0.12))
-            .overlay {
-                if !systemGlassAvailable {
-                    Capsule().stroke(MasoColor.accent.opacity(0.4), lineWidth: 0.8)
-                }
             }
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.bordered)
+        .controlSize(.large)
+        .tint(MasoColor.accent)
         .disabled(aiLoading)
         // AI fallback 到本地的提示 alert — 之前挂在 autoPickBanner, 删 banner 后移到这.
         .alert(
@@ -623,21 +586,17 @@ private struct QuickExerciseStep: View {
     @ViewBuilder
     private var startButton: some View {
         Button(action: onStart) {
-            HStack(spacing: 8) {
+            HStack {
                 Image(systemName: "play.fill")
                 Text(pickedIds.isEmpty
                      ? "Pick at least one exercise"
                      : "Start (\(pickedIds.count))")
             }
-            .font(.system(size: 14, weight: .heavy))
             .frame(maxWidth: .infinity)
-            .frame(height: Self.ctaHeight)
-            .foregroundStyle(pickedIds.isEmpty ? MasoColor.textDim : .black)
-            // 主 CTA 系统玻璃 (映射表①): 可点 = accent 高浓度玻璃, 禁用 = 素玻璃; 旧系统保留原样.
-            .glassCapsuleButtonBackground(tint: pickedIds.isEmpty ? nil : MasoColor.accent.opacity(0.85),
-                                          fallback: pickedIds.isEmpty ? MasoColor.surfaceHi : MasoColor.accent)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.borderedProminent)
+        .controlSize(.large)
+        .tint(MasoColor.accent)
         .disabled(pickedIds.isEmpty)
     }
 
@@ -657,10 +616,9 @@ private struct QuickExerciseStep: View {
         return order.filter { majors.contains($0) }
     }
 
-    /// Pro + AI 配好 → 走 AI 路径; 否则走本地启发式. (isPro 是未来变现 gate, 免费版恒 true.)
+    /// AI is available to free users after their per-request reminder.
     private var useAIPath: Bool {
-        data.settings.isPro
-            && AIWorkoutService.isConfigured
+        AIWorkoutService.isConfigured
     }
 
     /// 智能推荐 — Pro + AI 启用走 AI, 失败 fallback 本地; 非 Pro 直接本地.
@@ -670,7 +628,9 @@ private struct QuickExerciseStep: View {
     @MainActor
     private func autoPick() async {
         if useAIPath {
-            await autoPickViaAI()
+            aiUpgradePrompt.requestAI(isPro: data.settings.isPro, source: "quick_smart_pick") {
+                Task { await autoPickViaAI() }
+            }
         } else {
             autoPickLocal()
         }
@@ -682,60 +642,47 @@ private struct QuickExerciseStep: View {
         aiLoading = true
         defer { aiLoading = false }
 
-        // 1. 准备候选集 — 每个肌群 top-6 动作 (跟用户能看到的列表一致), 跨肌群 dedupe
-        var candidateIds = Set<String>()
-        var candidates: [Exercise] = []
-        for m in orderedMuscles {
-            for scored in topExercises(for: m) {
-                if candidateIds.insert(scored.exercise.id).inserted {
-                    candidates.append(scored.exercise)
-                }
-            }
-        }
-        // cap 40 — DeepSeek prompt size 控制
-        if candidates.count > 40 {
-            candidates = Array(candidates.prefix(40))
-        }
+        // Use the same concrete variants and programming-group caps as the offline path.
+        let candidates = data.suggestedTrainingExercises(
+            targetMuscles: orderedMuscles, perMuscleLimit: 6, limit: 40,
+            equipmentFilter: equipmentFilter)
 
         // 2. 构 payload — 跟 generateToday 同一个 helper
-        let payload = data.buildAIPayload()
+        var payload = data.buildAIPayload()
+        payload.selectionEquipment = DataStore.settingsForTrainingSelection(
+            data.settings, equipmentFilter: equipmentFilter).availableEquipment
 
         // 3. 调 AI
         let muscleNames = orderedMuscles.map { $0.displayName }
-        let result = await AIWorkoutService.shared.pickFreeWorkoutExercises(
-            payload: payload,
-            targetMuscles: muscleNames,
-            candidates: candidates
-        )
+        let result: [String]? = try? await data.aiAccess.perform(kind: .singleWorkout, isPro: data.settings.isPro,
+            capacity: data.settings.isPro || data.plans.count < DataStore.freeSavedPlansLimit,
+            valid: { $0?.isEmpty == false && ($0 ?? []).allSatisfy { id in candidates.contains { $0.id == id } } },
+            summary: { _ in NSLocalizedString("Saved AI result", comment: "") }) {
+                await AIWorkoutService.shared.pickFreeWorkoutExercises(payload: payload, targetMuscles: muscleNames, candidates: candidates)
+            }
 
-        // 4. 处理结果
-        if let orderedIds = result, !orderedIds.isEmpty {
-            pickedIds = Set(orderedIds)
-            aiOrder = orderedIds  // 给 synthesizePlan 用 — playlist 按 AI 顺序排
+        // Validate exact IDs even when the model returns an apparently successful response.
+        let effective = DataStore.settingsForTrainingSelection(data.settings, equipmentFilter: equipmentFilter)
+        let byID = Dictionary(candidates.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
+        let accepted = ExerciseSelectionPolicy.shared.sanitizedGeneratedExercises(
+            (result ?? []).compactMap { byID[$0] }, allowed: candidates, settings: effective)
+        if !accepted.isEmpty {
+            let ids = Array(accepted.prefix(8)).map(\.id)
+            pickedIds = Set(ids)
+            aiOrder = ids
         } else {
-            // AI 失败 → fallback 本地 + 提示用户
             autoPickLocal()
-            aiFallbackMessage = "Couldn't reach the AI coach. Using a local recommendation instead."
+            aiFallbackMessage = data.aiAccess.notice ?? "Couldn't reach the AI coach. Using a local recommendation instead."
         }
     }
 
-    /// 本地启发式 — 每个 muscle 取 top-2, 总 cap 8
+    /// Automatic selection always uses common concrete variants, once per programming group.
     private func autoPickLocal() {
-        var picked: [String] = []
-        let perMuscleCap = 2
-        let totalCap = 8
-        for m in orderedMuscles {
-            let top = topExercises(for: m).prefix(perMuscleCap)
-            for scored in top {
-                if !picked.contains(scored.exercise.id) {
-                    picked.append(scored.exercise.id)
-                    if picked.count >= totalCap { break }
-                }
-            }
-            if picked.count >= totalCap { break }
-        }
+        let picked = data.suggestedTrainingExercises(
+            targetMuscles: orderedMuscles, perMuscleLimit: 2, limit: 8,
+            equipmentFilter: equipmentFilter).map(\.id)
         pickedIds = Set(picked)
-        aiOrder = picked  // 本地排序也走 picked 的顺序, 让 playlist 按 muscle 顺序排
+        aiOrder = picked
     }
 
     /// Section header — 给 List Section 用. 透明背景, 不要 List 默认的 gray inset.
@@ -767,9 +714,12 @@ private struct QuickExerciseStep: View {
             if picked { pickedIds.remove(ex.id) } else { pickedIds.insert(ex.id) }
         } label: {
             HStack(spacing: 14) {
+                Image(systemName: picked ? "checkmark.circle.fill" : "plus.circle")
+                    .font(.system(size: 20, weight: .semibold))
+                    .foregroundStyle(picked ? MasoColor.accent : MasoColor.textFaint)
                 Button(action: { detailExercise = ex }) {
                     ExerciseImage(
-                        category: ex.category,
+                        category: ex.category, exerciseID: ex.id,
                         imageFolder: ex.imageFolder,
                         photoURL: ex.photoURL,
                         customImageData: ex.customImageData,
@@ -782,7 +732,7 @@ private struct QuickExerciseStep: View {
                 .accessibilityLabel(String(format: NSLocalizedString("Show details for %@", comment: "exercise detail a11y"), ex.displayName))
 
                 VStack(alignment: .leading, spacing: 5) {
-                    Text(ex.displayName)
+                    ExerciseTitleLabel(exercise: ex, pinColor: MasoColor.accent)
                         .font(.system(size: 15, weight: .bold))
                         .foregroundStyle(MasoColor.text)
                         .lineLimit(1)
@@ -793,16 +743,7 @@ private struct QuickExerciseStep: View {
                     )
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
-                if isFav {
-                    // 置顶标识
-                    Image(systemName: "pin.fill")
-                        .font(.system(size: 12, weight: .heavy))
-                        .foregroundStyle(MasoColor.accent)
-                }
                 MatchBadge(score: scored.score)
-                Image(systemName: picked ? "checkmark.circle.fill" : "plus.circle")
-                    .font(.system(size: 20, weight: .semibold))
-                    .foregroundStyle(picked ? MasoColor.accent : MasoColor.textFaint)
             }
             .padding(.horizontal, MasoMetrics.rowPaddingH)
             .padding(.vertical, 10)
@@ -844,13 +785,20 @@ private struct QuickExerciseStep: View {
             let s = score(ex, against: targets)
             return s > 0 ? ScoredExercise(exercise: ex, score: s) : nil
         }
-        // 收藏前置 + match score 排序 — favorites 在前 (内部按 score 排), non-favorites 在后 (按 score 排).
-        let favSet = Set(data.settings.favoriteExerciseIds)
-        let favs = scored.filter { favSet.contains($0.exercise.id) }
-            .sorted { $0.score > $1.score }
-        let rest = scored.filter { !favSet.contains($0.exercise.id) }
-            .sorted { $0.score > $1.score }
-        return Array((favs + rest).prefix(6))
+        let favoriteIDs = data.canonicalFavoriteExerciseIDs
+        let policy = ExerciseSelectionPolicy.shared
+        let order = policy.sorted(candidates, favoriteIDs: favoriteIDs, recentIDs: data.recentExerciseIDs)
+        let positions = Dictionary(order.enumerated().map { ($0.element.id, $0.offset) }, uniquingKeysWith: min)
+        let ranked = scored.sorted { lhs, rhs in
+            let lf = favoriteIDs.contains(lhs.exercise.id), rf = favoriteIDs.contains(rhs.exercise.id)
+            if lf != rf { return lf }
+            let lt = policy.tier(for: lhs.exercise), rt = policy.tier(for: rhs.exercise)
+            if lt != rt { return lt == .core || (lt == .supporting && rt == .specialist) }
+            if lhs.score != rhs.score { return lhs.score > rhs.score }
+            return positions[lhs.exercise.id, default: .max] < positions[rhs.exercise.id, default: .max]
+        }
+        var seen = Set<String>()
+        return Array(ranked.filter { seen.insert(policy.programmingGroupID(for: $0.exercise)).inserted }.prefix(6))
     }
 
     /// "训练类" category — 用户进 Pick Exercise 想要的是练这块肌肉, 不是拉它.

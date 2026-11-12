@@ -78,6 +78,7 @@ enum ShareCardMode {
 //   nil = caller 不需要持久化 (e.g. 肌肉状态 / 日历入口没有 sessionId).
 struct ShareImageButton<ShareContent: View, Label: View>: View {
     let previewTitle: String
+    var sheetTitle: LocalizedStringKey = "Customize"
     let defaultSections: ShareSections
     /// 已存在的照片 (例如这个 session 之前已经存过照片) — 进入 sheet 时预填,
     /// 用户不用每次都重新加.
@@ -95,10 +96,11 @@ struct ShareImageButton<ShareContent: View, Label: View>: View {
 
     var body: some View {
         Button(action: { showCustomize = true }, label: label)
-            .buttonStyle(.plain)
+            .tint(MasoColor.text)
             .sheet(isPresented: $showCustomize) {
                 ShareCustomizeSheet(
                     previewTitle: previewTitle,
+                    sheetTitle: sheetTitle,
                     defaultSections: defaultSections,
                     initialPhoto: initialPhoto,
                     shareSurface: shareSurface,
@@ -117,6 +119,7 @@ struct ShareImageButton<ShareContent: View, Label: View>: View {
 ///     toggle 完全不画) → 弹原生 share sheet
 struct ShareCustomizeSheet<ShareContent: View>: View {
     let previewTitle: String
+    let sheetTitle: LocalizedStringKey
     let defaultSections: ShareSections
     let initialPhoto: UIImage?
     let shareSurface: String
@@ -126,6 +129,7 @@ struct ShareCustomizeSheet<ShareContent: View>: View {
     @ViewBuilder let shareContent: (UIImage?, (() -> Void)?, ShareCardMode) -> ShareContent
     var onPersistPhoto: ((UIImage?) -> Void)? = nil
 
+    @State private var cardSelection = ShareCardSelection()
     @State private var userPhoto: UIImage? = nil
     @State private var sections: ShareSections
     /// 用 sheet(item:) 模式 — source 自身驱动 sheet, 避免 "set source + set bool" 双 state
@@ -141,6 +145,7 @@ struct ShareCustomizeSheet<ShareContent: View>: View {
 
     init(
         previewTitle: String,
+        sheetTitle: LocalizedStringKey = "Customize",
         defaultSections: ShareSections,
         initialPhoto: UIImage?,
         shareSurface: String = "unknown",
@@ -149,6 +154,7 @@ struct ShareCustomizeSheet<ShareContent: View>: View {
         onPersistPhoto: ((UIImage?) -> Void)? = nil
     ) {
         self.previewTitle = previewTitle
+        self.sheetTitle = sheetTitle
         self.defaultSections = defaultSections
         self.initialPhoto = initialPhoto
         self.shareSurface = shareSurface
@@ -160,13 +166,14 @@ struct ShareCustomizeSheet<ShareContent: View>: View {
     }
 
     var body: some View {
-        NavigationStack {
+        AppNavigationStack {
             ScrollView {
                 VStack(spacing: 16) {
                     // Preview — 传 userPhoto + tap callback + .editing(binding).
                     // tap callback 设 showPhotoOptions = true → confirmationDialog 弹
                     // Camera / Photos / Remove 选项. binding 让卡内 inline toggle 双向同步 sections.
                     shareContent(userPhoto, { showPhotoOptions = true }, .editing($sections))
+                        .shareSelection(cardSelection, editing: true)
                         // 卡片撑满 sheet 宽度 — 卡片底色与 sheet 底色同为 #121212, 满宽后左右无留白、
                         // 无投影暗边, 预览跟 sheet 融为一体 (也更贴近导出图的 390 宽). 去掉之前的
                         // .frame(width:360)+圆角裁剪+投影+横向 padding (那套"浮空卡片"留出的左右 sheet
@@ -177,7 +184,7 @@ struct ShareCustomizeSheet<ShareContent: View>: View {
                 .padding(.top, 16)
             }
             .background(MasoColor.background.ignoresSafeArea())
-            .navigationTitle("Customize")
+            .navigationTitle("Share")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -188,7 +195,7 @@ struct ShareCustomizeSheet<ShareContent: View>: View {
                     Button("Share") { renderAndShare() }
                         .fontWeight(.bold)
                         .tint(MasoColor.text)
-                        .disabled(!sections.anyEnabled || shareDisabled)
+                        .disabled(!sections.anyEnabled || shareDisabled || !cardSelection.canShare)
                 }
             }
             // 系统 confirmationDialog — iOS 原生 bottom action sheet 风格, 跟 Mail / Photos
@@ -254,7 +261,7 @@ struct ShareCustomizeSheet<ShareContent: View>: View {
         // 渲染时传 .rendering(sections snapshot) — 卡内不画 toggle, 只渲染 on 的 section.
         // 同时 callback 传 nil — banner 在没 photo 时返回 EmptyView, 最终图不含占位 UI.
         let snap = sections
-        let img = ShareImageRenderer.render { shareContent(userPhoto, nil, .rendering(snap)) }
+        let img = ShareImageRenderer.render { shareContent(userPhoto, nil, .rendering(snap)).shareSelection(cardSelection, editing: false) }
         guard let img else { return }
         // PNG 往返规整化 — ImageRenderer 的输出偶发带奇异 colorspace/scale 元数据,
         // UIActivityViewController 的预览进程会拒渲染 (空白 sheet). 转标准 PNG 再回 UIImage 兜底.
@@ -279,7 +286,222 @@ struct ActivityViewController: UIViewControllerRepresentable {
         vc.completionWithItemsHandler = { _, completed, _, _ in
             onComplete?(completed)
         }
+        anchorPopover(vc, context: context)
         return vc
     }
-    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
+    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {
+        anchorPopover(uiViewController, context: context)
+    }
+    func makeCoordinator() -> Coordinator { Coordinator() }
+
+    final class Coordinator {
+        let anchor = UIView(frame: CGRect(x: 0, y: 0, width: 1, height: 1))
+    }
+
+    /// iPad requires a source view. The anchor is a 1pt view, not a private filename or field.
+    private func anchorPopover(_ controller: UIActivityViewController, context: Context) {
+        guard let popover = controller.popoverPresentationController else { return }
+        let anchor = context.coordinator.anchor
+        if anchor.superview == nil {
+            controller.view.addSubview(anchor)
+        }
+        anchor.center = CGPoint(x: controller.view.bounds.midX, y: controller.view.bounds.midY)
+        popover.sourceView = anchor
+        popover.sourceRect = anchor.bounds
+        popover.permittedArrowDirections = []
+    }
+}
+
+/// Preview and export the complete selected progress page, including offscreen records.
+struct FullPageShareSheet<Content: View>: View {
+    let title: String
+    let surface: String
+    let imageOnly: Bool
+    @ViewBuilder let content: () -> Content
+    @Environment(\.dismiss) private var dismiss
+    @State private var cardSelection = ShareCardSelection()
+    @State private var exported: FullPageExport?
+    @State private var isExporting = false
+    @State private var exportFailed = false
+
+    init(title: String, surface: String, imageOnly: Bool = false, selection: ShareCardSelection = ShareCardSelection(),
+         @ViewBuilder content: @escaping () -> Content) {
+        self.title = title
+        self.surface = surface
+        self.imageOnly = imageOnly
+        self.content = content
+        _cardSelection = State(initialValue: selection)
+    }
+
+    var body: some View {
+        AppNavigationStack {
+            ScrollView {
+                content().frame(maxWidth: .infinity).shareSelection(cardSelection, editing: true)
+            }
+            .background(MasoColor.background)
+            .navigationTitle("Share")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") { dismiss() }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Share") {
+                        isExporting = true
+                        Task { @MainActor in
+                            await Task.yield()
+                            do {
+                                let selected = content().shareSelection(cardSelection, editing: false)
+                                if imageOnly {
+                                    guard let image = ShareImageRenderer.render({ selected }) else { throw CocoaError(.fileWriteUnknown) }
+                                    exported = FullPageExport(items: [image])
+                                } else {
+                                    exported = try FullPageExporter.export(content: selected)
+                                }
+                            } catch {
+                                exportFailed = true
+                            }
+                            isExporting = false
+                        }
+                    }
+                    .disabled(isExporting || !cardSelection.canShare)
+                }
+            }
+            .overlay { if isExporting { ProgressView().controlSize(.large) } }
+            .sheet(item: $exported) { result in
+                ActivityViewController(activityItems: result.items) { completed in
+                    if completed {
+                        Analytics.shared.track("workout_share", ["surface": .string(surface)])
+                    }
+                }
+            }
+            .alert("Couldn’t prepare share", isPresented: $exportFailed) {
+                Button("OK", role: .cancel) {}
+            } message: {
+                Text("Please try again.")
+            }
+        }
+        .tint(MasoColor.text)
+        .presentationDragIndicator(.visible)
+        .presentationBackground(MasoColor.background)
+    }
+}
+
+struct FullPageExport: Identifiable {
+    let id = UUID()
+    let items: [Any]
+}
+
+@MainActor
+enum FullPageExporter {
+    static func export<Content: View>(content: Content) throws -> FullPageExport {
+        let width: CGFloat = 390
+        let renderer = ImageRenderer(content: content.frame(width: width)
+            .background(MasoColor.background).environment(\.colorScheme, .dark))
+        renderer.proposedSize = ProposedViewSize(width: width, height: nil)
+        renderer.scale = 2
+        renderer.isOpaque = true
+        var size = CGSize.zero
+        renderer.render { measured, _ in size = measured }
+        guard size.height.isFinite, size.height > 0 else { throw CocoaError(.fileWriteUnknown) }
+        if size.height <= 6000, let image = renderer.uiImage {
+            return FullPageExport(items: [image])
+        }
+        // Long archives are paginated as vector PDF, avoiding a huge bitmap or truncated records.
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("Masso-\(UUID().uuidString).pdf")
+        let page = CGRect(x: 0, y: 0, width: width, height: 780)
+        var failure: Error?
+        renderer.render { measured, draw in
+            do {
+                try UIGraphicsPDFRenderer(bounds: page).writePDF(to: url) { pdf in
+                    for index in 0..<Int(ceil(measured.height / page.height)) {
+                        pdf.beginPage()
+                        let context = pdf.cgContext
+                        UIColor(MasoColor.background).setFill()
+                        context.fill(page)
+                        context.saveGState()
+                        context.clip(to: page)
+                        context.translateBy(x: 0, y: measured.height - CGFloat(index) * page.height)
+                        context.scaleBy(x: 1, y: -1)
+                        draw(context)
+                        context.restoreGState()
+                    }
+                }
+            } catch { failure = error }
+        }
+        if let failure { throw failure }
+        guard FileManager.default.fileExists(atPath: url.path) else { throw CocoaError(.fileWriteUnknown) }
+        return FullPageExport(items: [url])
+    }
+}
+
+/// One SF Symbols label shared by all share entry points; toolbar supplies its native glass chrome.
+struct ShareIcon: View {
+    var body: some View { Image(systemName: "square.and.arrow.up").font(.body).foregroundStyle(MasoColor.text) }
+}
+
+/// One selection state drives both the editable preview and the final export.
+@Observable
+final class ShareCardSelection {
+    var excluded: Set<String> = []
+    var available: Set<String> = []
+    var canShare: Bool { available.isEmpty || !available.subtracting(excluded).isEmpty }
+    func includes(_ id: String) -> Bool { !excluded.contains(id) }
+    func setIncluded(_ included: Bool, id: String) {
+        if included { excluded.remove(id) } else { excluded.insert(id) }
+    }
+}
+
+private struct ShareCardSelectionKey: EnvironmentKey {
+    static let defaultValue: ShareCardSelection? = nil
+}
+private struct ShareCardEditingKey: EnvironmentKey {
+    static let defaultValue = false
+}
+extension EnvironmentValues {
+    var shareCardSelection: ShareCardSelection? {
+        get { self[ShareCardSelectionKey.self] }
+        set { self[ShareCardSelectionKey.self] = newValue }
+    }
+    var shareCardEditing: Bool {
+        get { self[ShareCardEditingKey.self] }
+        set { self[ShareCardEditingKey.self] = newValue }
+    }
+}
+private struct ShareCardIDsPreferenceKey: PreferenceKey {
+    static var defaultValue: Set<String> = []
+    static func reduce(value: inout Set<String>, nextValue: () -> Set<String>) { value.formUnion(nextValue()) }
+}
+extension View {
+    func shareSelection(_ selection: ShareCardSelection, editing: Bool) -> some View {
+        environment(\.shareCardSelection, selection)
+            .environment(\.shareCardEditing, editing)
+            .onPreferenceChange(ShareCardIDsPreferenceKey.self) { ids in
+                if editing { selection.available = ids }
+            }
+    }
+}
+
+/// Off cards retain their switch in preview; exported images contain neither switches nor placeholders.
+struct ShareSelectableCard<Content: View>: View {
+    let id: String
+    let title: String
+    @ViewBuilder let content: () -> Content
+    @Environment(\.shareCardSelection) private var selection
+    @Environment(\.shareCardEditing) private var editing
+    var body: some View {
+        if let selection {
+            VStack(alignment: .leading, spacing: 12) {
+                if editing {
+                    Toggle(isOn: Binding(get: { selection.includes(id) }, set: { selection.setIncluded($0, id: id) })) {
+                        Text(title).font(.subheadline.weight(.semibold)).foregroundStyle(MasoColor.text)
+                    }
+                    .toggleStyle(.switch).tint(MasoColor.toggleAccent)
+                    .accessibilityIdentifier("share.card.\(id)")
+                }
+                if selection.includes(id) { content() }
+            }
+            .preference(key: ShareCardIDsPreferenceKey.self, value: editing ? [id] : [])
+        } else { content() }
+    }
 }

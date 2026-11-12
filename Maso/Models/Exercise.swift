@@ -113,6 +113,7 @@ enum MovementFacet: String, CaseIterable, Hashable, Sendable {
 
 /// 三段式名字结构 — "High Face Pull (Cable)" → variation "High" / base "Face Pull" / equipment "Cable".
 struct NameParts: Codable, Hashable, Sendable {
+    var localizedBase: [String: String]? = nil
     var variation: String?
     var base: String
     var equipment: String?

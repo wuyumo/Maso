@@ -33,6 +33,7 @@ struct PlanSourceBadge: View {
 // 跟 web 端 WorkoutCard.tsx 对应: 显示 plan 名 + 推断肌群 BodyHint + 步骤摘要 + 大开始按钮
 struct WorkoutCard: View {
     @Environment(DataStore.self) private var data
+    @Environment(TrainingSessionStore.self) private var training
 
     let plan: Plan
     let exById: [String: Exercise]
@@ -47,43 +48,67 @@ struct WorkoutCard: View {
     /// 当 caller 传了这个 callback, 卡片整体变成 button. 没传 → 纯展示.
     var onShowDetail: (() -> Void)? = nil
     /// Play 按钮视觉强度:
-    ///   - true (默认): 实心 accent 圆 + 黑色 play + 阴影 (Today's Workout 主 CTA, 强).
-    ///   - false: accent 半透明底 + accent play + 细描边 (My Plans 计划卡, 弱化).
+    ///   - true (默认): accent 胶囊 + 黑色图标和文案 (Today's Workout 主 CTA).
+    ///   - false: accent 半透明胶囊 + accent 图标和文案 (其它计划卡, 弱化).
     var prominentStart: Bool = true
+    /// 首页非今日卡沿用原尺寸与玻璃样式，只将次级按钮切到 iOS 系统蓝色。
+    var secondaryActionAccent: Color? = nil
     /// Tab 2 (Plans browse) 专用 — 设了这个 callback → 卡片底部出现 "★ 添加到我的计划" 主按钮,
-    /// 同时隐藏右下角的 play 圆钮 (browse 语境主操作是"加进我的计划"而非"开始"). Tab 1 不传 → 行为不变.
+    /// 同时隐藏开始训练按钮 (browse 语境主操作是"加进我的计划"而非"开始"). Tab 1 不传 → 行为不变.
     var addAction: (() -> Void)? = nil
+    /// 多日经典计划可在保存按钮上显示将加入的 routine 数量。
+    var addActionRoutineCount: Int? = nil
+    /// 计划浏览场景可将保存操作居中；其它调用点默认靠右。
+    var centersAddAction = false
     /// Today's Workout 主卡专用 — true → accent 描边 + 绿色辉光, 跟弱化的 My Plans 计划卡拉开视觉层级
     /// (两者之前样式几乎一样, 容易混淆).
     var emphasized: Bool = false
-    /// 右下角 play 圆钮是否显示. false → 不显示 (点卡片进详情页再 Start).
+    /// 右下角开始训练按钮是否显示. false → 不显示 (点卡片进详情页再 Start).
     /// Routines tab 的 Saved 计划卡用 false — 那语境主操作是"查看/管理计划", 不是即时开练.
     var showStart: Bool = true
-    /// 紧凑排版 (Routines / My Plans 列表卡用): 标题 → 计数 → [小肌肉图 左 | 动作 chips 右] 横排,
-    /// 比默认的"大居中肌肉图 + 计数 + chips 竖排"更密、更易扫. Today 英雄卡保持 false (大图突出).
+    /// 紧凑卡使用较小的居中肌肉图；动作内容在详情中查看。
     var compactLayout: Bool = false
+    /// Classics 分组内缩紧完整 routine 卡 (保留动作胶囊, 减少图与内边距).
+    var denseLayout: Bool = false
     /// 书签态覆盖 — Coach 生成卡传 data.isCoachPlanSaved(plan) (savedIdMap 反查, 副本改名后不失灵).
     /// nil → 现状 data.isPlanSaved(plan) (签名匹配), 其它调用方不受影响.
     var savedOverride: Bool? = nil
-    /// Coach 对话流专用 (coach-tab-design.md §1) — 长按动作 pill → 引用式定向反馈:
-    /// 回调收动作显示名, CoachScreen 预填 composer "换掉 {动作名}" 并在发送时作 onlyModify 传给
-    /// coachGenerate. nil (默认) = 不挂手势, 其它调用方零改动. 轻点不受影响 — 长按手势不成立时
-    /// 事件照常落到整卡 onTapGesture (详情照常打开).
+    /// Chat results show every exercise; the home carousel keeps its compact summary.
+    var showsExercisePills = false
+    var embedded = false
+    var showsSourceBadge = true
+    var onExercisePillTap: ((Exercise) -> Void)? = nil
+    /// 修订计划时传入对应的上一版, 在卡片里直接说明本次针对性调整.
+    var previousPlan: Plan? = nil
+    /// The newest chat result can target an exercise for a conversational swap.
     var onExercisePillLongPress: ((String) -> Void)? = nil
     /// 等高轮播 (#today-carousel) 专用 — Today 轮播量测所有卡自然高取 max 后回写这里:
-    /// 非 nil 时卡片拉伸到该高度, 且底部行 (chips + play) 前垫 Spacer 把播放键钉到右下角.
+    /// 非 nil 时卡片拉伸到该高度，动作区顶部对齐，播放键保留在右下角.
     /// nil (默认) = 自然高度, 其它调用方零改动.
     var fixedHeight: CGFloat? = nil
+    var reservesKickerSpace = false
+    /// Home passes this week’s explicit completion state; other surfaces keep their existing behavior.
+    var completedOverride: Bool? = nil
 
-    /// 被 LimitedFlowLayout 截断的 exercise pill 个数 — 用于动态构造 "+N more" 文案.
-    /// Layout 在 placeSubviews 里通过 onTruncate callback async 写回, SwiftUI 下一轮 re-render
-    /// 拿到正确数字. 一般 1-2 帧就稳定 (truncated 数收敛即停).
-    @State private var truncatedCount: Int = 0
+    private var displayedPlan: Plan { data.routinePlanDefaults(plan) }
+
+    private var isTraining: Bool {
+        training.session?.planId == plan.id && training.session?.completed == false
+    }
+    private var trainedToday: Bool {
+        completedOverride ?? data.sets.contains { $0.planId == plan.id && Calendar.current.isDateInToday($0.performedAt) }
+    }
+
+    private var muscleMapSideLength: CGFloat {
+        showsExercisePills ? (denseLayout ? 112 : 132) : (compactLayout ? 92 : 140)
+    }
+
+    private var cardContentPadding: CGFloat { embedded ? 0 : (denseLayout ? 14 : MasoMetrics.cardPadding) }
 
     private var inferredMuscles: [MuscleGroup] {
         var seen = Set<MuscleGroup>()
         var out: [MuscleGroup] = []
-        for step in plan.steps {
+        for step in displayedPlan.steps {
             guard let ex = exById[step.exerciseId] else { continue }
             for m in ex.muscleGroups {
                 if seen.insert(m).inserted { out.append(m) }
@@ -105,20 +130,6 @@ struct WorkoutCard: View {
             if seen.insert(m).inserted { out.append(m) }
         }
         return out
-    }
-
-    /// 动作名预览 + 各自主练部位 — 全部 step 都拿到, LimitedFlowLayout 负责换行.
-    /// chip 里动作名 (e.g. "Bench Press") + 主练部位 (e.g. "Chest") 一起显示, 一眼看清这个 routine 覆盖哪些部位.
-    /// 部位 = 主肌肉归到的大区 (MuscleGroup.section: Chest/Back/Shoulders/Arms/Core/Legs);
-    /// fullBody 等无 section 时退回该肌肉本身名.
-    private var exercisePreview: [(name: String, part: String?, section: MuscleGroup?)] {
-        plan.steps.compactMap { step in
-            guard let ex = exById[step.exerciseId] else { return nil }
-            // 用 displayName 而非 raw name — 中文环境下 chip 跟点开后的标题语言一致.
-            // section 枚举一并带出 — chip 的"肌肉图示"模式 (exerciseChipMuscleIcon) 要用它画小图.
-            let sec = ex.primaryMuscles.first.map { $0.section ?? $0 }
-            return (ex.displayName, sec?.displayName, sec)
-        }
     }
 
     /// 通过 plan.id 前缀判断这张是不是 AI 生成的 — AIWorkoutService 用 "plan-ai-..." 命名,
@@ -154,40 +165,51 @@ struct WorkoutCard: View {
             // Kicker 行 — 跟 Plans tab 的 TRAINING PREFERENCES kicker 完全对齐:
             // SF Symbol + accent 绿 10pt heavy + tracking 1.5. icon 选 figure.strengthtraining,
             // 跟 Today tab 自己的 tab icon 同款, 给"今日训练" section 一个视觉锚点.
-            if let kicker = resolvedKicker {
+            if resolvedKicker != nil || reservesKickerSpace || (showsSourceBadge && plan.resolvedSource != .custom) {
                 HStack(spacing: 6) {
-                    Image(systemName: "figure.strengthtraining.traditional")
-                        .font(.system(size: 10, weight: .heavy))
+                    if let resolvedKicker {
+                        HStack(spacing: 6) {
+                            Image(systemName: "figure.strengthtraining.traditional")
+                                .font(.system(size: 10, weight: .heavy))
+                            Text(resolvedKicker)
+                                .font(.system(size: 10, weight: .heavy))
+                                .tracking(1.5)
+                                .textCase(.uppercase)
+                        }
                         .foregroundStyle(MasoColor.accent)
-                    Text(kicker)
-                        .font(.system(size: 10, weight: .heavy))
-                        .tracking(1.5)
-                        .textCase(.uppercase)
-                        .foregroundStyle(MasoColor.accent)
-                    Spacer()
+                    }
+                    Spacer(minLength: 4)
+                    if showsSourceBadge { PlanSourceBadge(source: plan.resolvedSource) }
                 }
-                .padding(.horizontal, MasoMetrics.cardPadding)
-                .padding(.top, MasoMetrics.cardPadding + 2)   // 顶部多留白, kicker 不顶着卡边 (owner: 别太挤)
-                .padding(.bottom, MasoMetrics.cardHeaderGap)  // kicker ↔ 标题 统一节奏
+                .accessibilityHidden(resolvedKicker == nil && plan.resolvedSource == .custom)
+                .padding(.horizontal, cardContentPadding)
+                .padding(.top, denseLayout ? cardContentPadding : MasoMetrics.cardPadding + 2)   // kicker ↔ 卡边
+                .padding(.bottom, denseLayout ? 6 : MasoMetrics.cardHeaderGap)
             }
 
-            // 标题行: [来源 badge: AI / Classics] + plan name + 右侧 chevron
-            HStack(alignment: .center, spacing: 8) {
-                PlanSourceBadge(source: plan.resolvedSource)
+            // 标题行: plan name + 右侧 chevron; source badge lives in the upper-right kicker row.
+            HStack(alignment: .top, spacing: 8) {
                 Text(plan.name)
                     .font(.system(size: 16, weight: .bold))
                     .foregroundStyle(MasoColor.text)
-                    .lineLimit(1)                       // owner: 大卡标题保持单行, 超长用 … 截断不折行
-                Spacer()
+                    // Titles use their actual height so the subtitle stays attached.
+                    // The shared carousel height keeps cards equal-height.
+                    .lineLimit(3)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 if onShowDetail != nil {
                     Image(systemName: "chevron.right")
                         .font(.system(size: 12, weight: .heavy))
                         .foregroundStyle(MasoColor.textFaint)
                 }
             }
-            .padding(.horizontal, MasoMetrics.cardPadding)
+            .padding(.horizontal, cardContentPadding)
             // 没 kicker 时, title 自己撑顶部留白
-            .padding(.top, resolvedKicker == nil ? MasoMetrics.cardPadding + 2 : 0)
+            .padding(.top, resolvedKicker == nil && !reservesKickerSpace ? cardContentPadding : 0)
+            .contentShape(Rectangle())
+            .applyIf(onExercisePillTap != nil && onShowDetail != nil) {
+                $0.onTapGesture { onShowDetail?() }.accessibilityAddTraits(.isButton)
+            }
 
             // (AI 理由 rationale 已从卡上移除 — owner: 卡上只留标题+计数, 理由仅在详情页标题下显示.)
 
@@ -196,144 +218,216 @@ struct WorkoutCard: View {
                 .font(.system(size: 12).monospacedDigit())
                 .foregroundStyle(MasoColor.textDim)
                 .lineLimit(1)
-                .padding(.horizontal, MasoMetrics.cardPadding)
-                .padding(.top, MasoMetrics.cardHeaderGap)   // 标题 ↔ 计数副文案
+                .padding(.horizontal, cardContentPadding)
+                .padding(.top, 4)
 
-            if compactLayout {
-                // 紧凑版 — [小肌肉图 左 | 动作 chips 右] 同一行 (计数已上移到标题下共享区).
-                HStack(alignment: .center, spacing: 12) {
-                    MuscleVisualBlock(muscles: inferredMuscles, sideLength: 92)
-                        .frame(width: 92, height: 92)
-                    if !plan.steps.isEmpty {
-                        LimitedFlowLayout(
-                            spacing: 6,
-                            maxRows: 999,
-                            onTruncate: { _ in /* never truncates */ }
-                        ) {
-                            ForEach(Array(exercisePreview.enumerated()), id: \.offset) { _, item in
-                                exercisePill(item)
-                            }
-                            ExercisePill(name: "")   // LimitedFlowLayout 约定的末位 overflow pill
+            MuscleVisualBlock(muscles: inferredMuscles, sideLength: muscleMapSideLength)
+                .frame(width: muscleMapSideLength, height: muscleMapSideLength)
+                .frame(maxWidth: .infinity,
+                       maxHeight: reservesKickerSpace && fixedHeight != nil && !showsExercisePills ? .infinity : nil,
+                       alignment: .center)
+                .padding(.top, reservesKickerSpace && !showsExercisePills ? 20 : (denseLayout ? 8 : (compactLayout ? 12 : 20)))
+
+            if showsExercisePills, !plan.steps.isEmpty {
+                LimitedFlowLayout(spacing: 6, maxRows: 999, onTruncate: { _ in }) {
+                    ForEach(displayedPlan.steps) { step in
+                        if let exercise = exById[step.exerciseId] {
+                            let section = exercise.primaryMuscles.first.map { $0.section ?? $0 }
+                            exercisePill(exercise, section: section)
                         }
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    } else {
-                        Spacer(minLength: 0)
                     }
+                    // LimitedFlowLayout treats its last child as an overflow indicator.
+                    ExercisePill(name: "")
                 }
-                .padding(.horizontal, MasoMetrics.cardPadding)
-                .padding(.top, 12)
-            } else {
-            // Body Map — 居中摆放.
-            HStack(spacing: 0) {
-                Spacer(minLength: 0)
-                MuscleVisualBlock(muscles: inferredMuscles, sideLength: 140)
-                    .frame(width: 140, height: 140)   // 显式 frame (不用 .fixedSize) — List row 的
-                    // nil-width sizing pass 下 .fixedSize 会回报无限 ideal 宽度, 整行连同后面都不渲染.
-                Spacer(minLength: 0)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, cardContentPadding)
+                .padding(.top, denseLayout ? 8 : 12)
             }
-            .padding(.top, 20)   // 标题区与肌肉图之间多留白 (owner: 别太挤)
 
-            // 等高模式: 卡被外部拉到统一高度时, 多出来的空间垫在这里 —
-            // 底部行连同 play 键沉到卡底 (播放键仍钉右下). 自然高度时 Spacer 为 0, 无感.
-            if fixedHeight != nil {
+            if let previousPlan {
+                RoutineRevisionDetails(previous: previousPlan, current: plan, exById: exById)
+                    .padding(.horizontal, cardContentPadding)
+                    .padding(.top, denseLayout ? 10 : 14)
+            }
+
+            if fixedHeight != nil && !(reservesKickerSpace && !showsExercisePills) {
                 Spacer(minLength: 0)
             }
 
-            // 底部行: 训练动作 chip list (左, 满宽) + Play 按钮 (右下角).
-            // .bottom 对齐 → play 钉到行底, 右边距 = 下边距 = cardPadding (相等), 落在卡片右下角.
-            HStack(alignment: .bottom, spacing: 12) {
-                if !plan.steps.isEmpty {
-                    LimitedFlowLayout(
-                        spacing: 6,
-                        maxRows: 999,  // 不截断, 显示所有 exercises
-                        onTruncate: { _ in /* never truncates */ }
-                    ) {
-                        ForEach(Array(exercisePreview.enumerated()), id: \.offset) { _, item in
-                            exercisePill(item)
-                        }
-                        // LimitedFlowLayout 要求最后一个 subview 是 overflow pill,
-                        // maxRows 999 永远不截断, 这个空 pill 会被 place 到屏外.
-                        ExercisePill(name: "")
-                    }
-                } else {
-                    Spacer()
+            if addAction == nil && showStart {
+                Button(action: onStart) {
+                    startButtonLabel
                 }
-
-                // Tab 2 browse (addAction 非 nil): play 圆钮隐藏, 主操作改为底部全宽"添加"按钮.
-                // showStart=false (Saved 计划卡): 也隐藏 play 钮, 点卡片进详情页 Start.
-                if addAction == nil && showStart {
-                    Button(action: onStart) {
-                        startButtonLabel
-                    }
-                    .buttonStyle(.plain)
-                    .fixedSize()
-                    .accessibilityLabel("Start workout")
-                }
+                .buttonStyle(.plain)
+                .fixedSize(horizontal: false, vertical: true)
+                .frame(maxWidth: .infinity, alignment: .center)
+                .padding(.horizontal, cardContentPadding)
+                .padding(.top, reservesKickerSpace && !showsExercisePills ? 24 : (denseLayout ? 12 : 16))
+                .disabled(isTraining)
+                .accessibilityLabel(isTraining ? "Training in progress" : (trainedToday ? "Train again" : "Start workout"))
+                .accessibilityIdentifier("workout.card.start")
             }
-            .padding(.horizontal, MasoMetrics.cardPadding)
-            .padding(.top, 16)
-            }  // else (非紧凑版)
 
-            // Tab 2 (Plans browse): 卡片底部 "Save" 主按钮 — 靠右下角 (跟其它卡的操作按钮位一致).
+            // Tab 2 (Plans browse): 卡片底部 "Save" 主按钮.
             if let addAction {
-                AddToPlansButton(isSaved: savedOverride ?? data.isPlanSaved(plan), action: addAction)
-                    .frame(maxWidth: .infinity, alignment: .trailing)
-                    .padding(.horizontal, MasoMetrics.cardPadding)
-                    .padding(.top, 14)
+                AddToPlansButton(isSaved: savedOverride ?? data.isPlanSaved(plan),
+                                 routineCount: addActionRoutineCount,
+                                 action: addAction)
+                    .disabled(savedOverride == true)
+                    .frame(maxWidth: .infinity, alignment: centersAddAction ? .center : .trailing)
+                    .padding(.horizontal, cardContentPadding)
+                    .padding(.top, denseLayout ? 10 : 14)
             }
         }
-        .padding(.bottom, MasoMetrics.cardPadding)
+        .padding(.bottom, cardContentPadding)
         // 等高轮播: 统一高度在 background 之前生效 — surface 底随卡一起拉伸. nil 时是 no-op.
         .frame(height: fixedHeight)
         // 有 detail callback 时整张卡可点 (BodyHint hit-test 没接 onMuscleTap, 不冲突).
         // 用 contentShape + onTapGesture 而不是 Button — 避免 SwiftUI 给整卡套上 button style 改色.
         .contentShape(Rectangle())
-        .onTapGesture { onShowDetail?() }
-        // 卡壳 = 扁平 surface 填充 (owner 最新拍板: 去掉玻璃折光/边框, 内容卡只留底色;
-        // 跟 Progress 洞察卡逐像素同配方 flatCardBackground. Coach composer 例外仍用玻璃).
-        .flatCardBackground()
-        .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
-    }
-
-    /// 播放键 (owner 三轮定稿):
-    ///   强 (今日训练主卡) = 整圆绿色 + 深色三角 — 高浓度 accent 玻璃 + 黑 play, 主 CTA 加重;
-    ///   弱 (其余列表卡)   = 素玻璃圆 + accent play, 跟导航栏/分享圆钮同配方.
-    /// iOS <26 回退实心绿圆 / accent 半透明圆.
-    @ViewBuilder private var startButtonLabel: some View {
-        if prominentStart {
-            Image(systemName: "play.fill")
-                .font(.system(size: 16, weight: .heavy))
-                .foregroundStyle(.black)
-                .offset(x: 1)
-                .frame(width: 44, height: 44)
-                .glassCircleButtonBackground(tint: MasoColor.accent.opacity(0.85),
-                                             fallback: MasoColor.accent)
-        } else {
-            // 弱播放键 (owner 定稿): 半透明绿圆 + accent 三角, 比主卡小一档 (44→36).
-            Image(systemName: "play.fill")
-                .font(.system(size: 13, weight: .heavy))
-                .foregroundStyle(MasoColor.accent)
-                .offset(x: 1)
-                .frame(width: 36, height: 36)
-                .glassCircleButtonBackground(tint: MasoColor.accent.opacity(0.25),
-                                             fallback: MasoColor.accent.opacity(0.18))
+        .applyIf(onExercisePillTap == nil && onShowDetail != nil) { view in
+            view.onTapGesture { onShowDetail?() }
+                .accessibilityAddTraits(.isButton)
+                .accessibilityIdentifier("workout.card.detail.\(plan.id)")
         }
+        // Native glass gives routine cards a translucent, frosted surface.
+        .applyIf(!embedded) { $0.glassCardBackground()
+            .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium)) }
     }
 
-    /// 动作 pill + 可选长按手势 — 只有 Coach 卡 (onExercisePillLongPress 非 nil) 才挂手势,
-    /// 避免给全 app 每个 pill 白加 gesture recognizer.
+    /// 用图标 + 文案明确表达开始训练，保留今日推荐与其它 routine 的视觉层级。
+    private var startButtonLabel: some View {
+        let accent = prominentStart ? MasoColor.accent : (secondaryActionAccent ?? MasoColor.accent)
+        return TrainingCardActionLabel(title: isTraining ? "Training in progress" : (trainedToday ? "Train again" : "Start workout"),
+                                       icon: isTraining ? "figure.strengthtraining.traditional" : (trainedToday ? "arrow.clockwise" : "play.fill"),
+                                       accent: accent, prominent: prominentStart && !isTraining)
+    }
+
     @ViewBuilder
-    private func exercisePill(_ item: (name: String, part: String?, section: MuscleGroup?)) -> some View {
-        let useIcon = data.settings.exerciseChipMuscleIcon
-        if let onExercisePillLongPress {
-            ExercisePill(name: item.name, part: item.part, section: item.section, muscleIcon: useIcon)
-                .onLongPressGesture {
-                    Haptics.tap()
-                    onExercisePillLongPress(item.name)
-                }
+    private func exercisePill(_ exercise: Exercise, section: MuscleGroup?) -> some View {
+        let pill = ExercisePill(
+            name: exercise.displayName,
+            part: section?.displayName,
+            section: section,
+            muscleIcon: data.settings.exerciseChipMuscleIcon
+        )
+        if let onExercisePillTap {
+            Button { onExercisePillTap(exercise) } label: { pill }.buttonStyle(.plain)
+        } else if let onExercisePillLongPress {
+            pill.onLongPressGesture {
+                Haptics.tap()
+                onExercisePillLongPress(exercise.displayName)
+            }
         } else {
-            ExercisePill(name: item.name, part: item.part, section: item.section, muscleIcon: useIcon)
+            pill
         }
+    }
+
+
+}
+
+/// Compact, readable comparison shown only on AI revised routine cards.
+private struct RoutineRevisionDetails: View {
+    struct Change: Identifiable {
+        enum Kind: Equatable { case added, removed, adjusted }
+        let id: String
+        let kind: Kind
+        let name: String
+        let detail: String?
+    }
+
+    let previous: Plan
+    let current: Plan
+    let exById: [String: Exercise]
+
+    private var changes: [Change] {
+        var oldByExercise = Dictionary(grouping: previous.steps, by: \.exerciseId)
+        let newByExercise = Dictionary(grouping: current.steps, by: \.exerciseId)
+        var result: [Change] = []
+
+        for step in current.steps {
+            let name = exById[step.exerciseId]?.displayName ?? step.exerciseId
+            guard var oldMatches = oldByExercise[step.exerciseId], !oldMatches.isEmpty else {
+                result.append(Change(id: "added-\(step.id)", kind: .added, name: name, detail: nil))
+                continue
+            }
+            let old = oldMatches.removeFirst()
+            oldByExercise[step.exerciseId] = oldMatches
+            let before = targetSummary(old)
+            let after = targetSummary(step)
+            if before != after {
+                result.append(Change(id: "adjusted-\(step.id)", kind: .adjusted, name: name,
+                                     detail: "\(before) → \(after)"))
+            }
+        }
+
+        for step in previous.steps where oldByExercise[step.exerciseId]?.contains(where: { $0.id == step.id }) == true {
+            let name = exById[step.exerciseId]?.displayName ?? step.exerciseId
+            result.append(Change(id: "removed-\(step.id)", kind: .removed, name: name, detail: nil))
+            oldByExercise[step.exerciseId]?.removeAll(where: { $0.id == step.id })
+        }
+        return result
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(spacing: 5) {
+                Image(systemName: "arrow.trianglehead.2.clockwise.rotate.90")
+                    .font(.system(size: 10, weight: .bold))
+                Text("Changes from previous routine")
+                    .font(.system(size: 10, weight: .bold))
+                    .tracking(0.7)
+                    .textCase(.uppercase)
+            }
+            .foregroundStyle(MasoColor.accent)
+
+            if changes.isEmpty {
+                Text("This routine stayed the same")
+                    .font(.system(size: 12))
+                    .foregroundStyle(MasoColor.textDim)
+            } else {
+                ForEach(changes) { change in
+                    HStack(alignment: .firstTextBaseline, spacing: 6) {
+                        Text(label(for: change.kind))
+                            .font(.system(size: 11, weight: .semibold))
+                            .foregroundStyle(change.kind == .removed ? MasoColor.textDim : MasoColor.accent)
+                        Text(change.name)
+                            .font(.system(size: 12, weight: .medium))
+                            .foregroundStyle(MasoColor.text)
+                        if let detail = change.detail {
+                            Text(detail)
+                                .font(.system(size: 11).monospacedDigit())
+                                .foregroundStyle(MasoColor.textDim)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                    }
+                    .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(11)
+        .background(MasoColor.accent.opacity(0.08), in: RoundedRectangle(cornerRadius: 12))
+    }
+
+    private func label(for kind: Change.Kind) -> LocalizedStringKey {
+        switch kind {
+        case .added: "Added"
+        case .removed: "Removed"
+        case .adjusted: "Adjusted"
+        }
+    }
+
+    private func targetSummary(_ step: PlanStep) -> String {
+        if let duration = step.duration, step.reps == nil {
+            return "\(step.sets) × \(duration)s"
+        }
+        let reps = step.reps.map(String.init) ?? "–"
+        var summary = "\(step.sets) × \(reps)"
+        if let weight = step.weight, weight > 0 {
+            summary += " · \(weight.formatted(.number.precision(.fractionLength(0...1)))) kg"
+        }
+        return summary
     }
 }
 
@@ -377,36 +471,77 @@ private struct ExercisePill: View {
 }
 
 /// Tab 2 / Coach 卡片底部主操作 — Save ↔ Saved 书签开关 (coach-tab-design.md §2).
-/// 用 accent tinted 风格 (非实心): 它在卡片列表里重复出现, 实心会太吵; 详情页那个全宽 CTA 才用实心.
-/// icon: bookmark (未存) ↔ bookmark.fill (已存). **两态都可点** — action 恒触发, toggle 语义由
+/// 使用 iOS bordered 小按钮; 在卡片列表中保持轻量, 主页面仍由动作卡片承载视觉重点.
+/// icon: plus (未存) ↔ checkmark (已存). **两态都可点** — action 恒触发, toggle 语义由
 /// 调用方决定 (Coach: 已存再点 = unsave; Classics 这类"存整套"的调用方自己 guard). 视觉沿用现状:
 /// 未存 accent (可操作) / 已存灰 (已收藏态).
 struct AddToPlansButton: View {
-    /// 该计划是否已在"我的计划"里 — true → bookmark.fill 已存态 (仍可点, 再点由调用方 unsave).
+    /// 该计划是否已在"我的计划"里 — true → checkmark 已存态 (仍可点, 再点由调用方 unsave).
     var isSaved: Bool = false
+    /// Classics 整套保存时显示包含的 routine 数量；nil 时使用通用文案。
+    var routineCount: Int? = nil
+    var titleOverride: String? = nil
     var action: () -> Void
+
+    private var title: String {
+        if let titleOverride { return NSLocalizedString(titleOverride, comment: "routine save state") }
+        guard let routineCount else {
+            return NSLocalizedString(isSaved ? "Saved to routines" : "Save to routines", comment: "")
+        }
+        let key: String
+        if routineCount == 1 {
+            key = isSaved ? "Saved %lld routine" : "Save %lld routine"
+        } else {
+            key = isSaved ? "Saved %lld routines" : "Save %lld routines"
+        }
+        return String(format: NSLocalizedString(key, comment: ""), Int64(routineCount))
+    }
 
     var body: some View {
         Button(action: action) {
-            HStack(spacing: 6) {
-                Image(systemName: isSaved ? "bookmark.fill" : "bookmark")
-                    .font(.system(size: 11, weight: .bold))
-                // "Save to routines" 而非裸 "Save" — 用户不知道 save 去哪 (owner 反馈);
-                // 已存态对称写 "Saved to routines", 去向两态都点明.
-                Text(isSaved ? "Saved to routines" : "Save to routines")
-                    .font(.system(size: 13, weight: .bold))
-            }
-            // 包裹内容 (不撑满) → 小一号胶囊; 在卡片 VStack(.leading) 里自动靠左.
-            .padding(.vertical, 8)
-            .padding(.horizontal, 14)
-            // 未存: accent 绿 (可操作); 已存: 灰 (状态感, 但依然可点切回).
-            .foregroundStyle(isSaved ? MasoColor.textDim : MasoColor.accent)
-            // 次级胶囊钮 (映射表②): 未存 = accent 低浓度玻璃 + accent 字; 已存 = 素玻璃 + 灰字.
-            // 旧系统保留原半透明底.
-            .glassCapsuleButtonBackground(tint: isSaved ? nil : MasoColor.accent.opacity(0.25),
-                                          fallback: (isSaved ? MasoColor.textDim : MasoColor.accent).opacity(0.15))
+            Label(title, systemImage: isSaved ? "checkmark" : "plus")
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundStyle(MasoColor.text)
+                .padding(.horizontal, 14).padding(.vertical, 8)
+                .glassCapsuleButtonBackground(fallback: MasoColor.surfaceHi)
         }
         .buttonStyle(.plain)
         .animation(.easeOut(duration: 0.2), value: isSaved)
+    }
+}
+
+/// Shared horizontal stack for generated plans and the first-run preview.
+struct PlanCardCarousel<Card: View>: View {
+    let plans: [Plan]
+    var horizontalInset: CGFloat = 0
+    var onSelectionChange: (String) -> Void = { _ in }
+    @ViewBuilder var card: (Int, Plan) -> Card
+    @State private var position: String?
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    var body: some View {
+        ScrollView(.horizontal) {
+            HStack(alignment: .top, spacing: 12) {
+                ForEach(Array(plans.enumerated()), id: \.element.id) { index, plan in
+                    card(index, plan)
+                        .accessibilityIdentifier("plan.carousel.card.\(index)")
+                        .containerRelativeFrame(.horizontal) { width, _ in
+                            max(0, width - horizontalInset * 2 - (plans.count > 1 ? 32 : 0))
+                        }
+                        .scrollTransition(.interactive, axis: .horizontal) { content, phase in
+                            content.scaleEffect(reduceMotion || phase.isIdentity ? 1 : 0.97, anchor: .center)
+                        }
+                        .id(plan.id)
+                }
+            }
+            .scrollTargetLayout()
+        }
+        .contentMargins(.horizontal, horizontalInset, for: .scrollContent)
+        .scrollIndicators(.hidden)
+        .scrollTargetBehavior(.viewAligned)
+        .scrollPosition(id: $position)
+        .onChange(of: position) { _, value in
+            if let value { onSelectionChange(value) }
+        }
     }
 }

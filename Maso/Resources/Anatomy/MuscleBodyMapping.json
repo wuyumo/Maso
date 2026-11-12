@@ -1,0 +1,327 @@
+[
+  {
+    "fatigueEligible" : true,
+    "muscles" : [
+      "neck"
+    ],
+    "node" : "neck_left"
+  },
+  {
+    "fatigueEligible" : true,
+    "muscles" : [
+      "neck"
+    ],
+    "node" : "neck_right"
+  },
+  {
+    "fatigueEligible" : true,
+    "muscles" : [
+      "chest",
+      "upperChest",
+      "midChest",
+      "lowerChest"
+    ],
+    "node" : "chest_left"
+  },
+  {
+    "fatigueEligible" : true,
+    "muscles" : [
+      "chest",
+      "upperChest",
+      "midChest",
+      "lowerChest"
+    ],
+    "node" : "chest_right"
+  },
+  {
+    "fatigueEligible" : true,
+    "muscles" : [
+      "shoulders",
+      "frontDelts",
+      "sideDelts",
+      "rearDelts",
+      "rotatorCuff"
+    ],
+    "node" : "shoulders_left"
+  },
+  {
+    "fatigueEligible" : true,
+    "muscles" : [
+      "shoulders",
+      "frontDelts",
+      "sideDelts",
+      "rearDelts",
+      "rotatorCuff"
+    ],
+    "node" : "shoulders_right"
+  },
+  {
+    "fatigueEligible" : true,
+    "muscles" : [
+      "biceps",
+      "bicepsLong",
+      "bicepsShort",
+      "brachialis"
+    ],
+    "node" : "biceps_left"
+  },
+  {
+    "fatigueEligible" : true,
+    "muscles" : [
+      "biceps",
+      "bicepsLong",
+      "bicepsShort",
+      "brachialis"
+    ],
+    "node" : "biceps_right"
+  },
+  {
+    "fatigueEligible" : true,
+    "muscles" : [
+      "triceps",
+      "tricepsLong",
+      "tricepsLateral",
+      "tricepsMedial"
+    ],
+    "node" : "triceps_left"
+  },
+  {
+    "fatigueEligible" : true,
+    "muscles" : [
+      "triceps",
+      "tricepsLong",
+      "tricepsLateral",
+      "tricepsMedial"
+    ],
+    "node" : "triceps_right"
+  },
+  {
+    "fatigueEligible" : true,
+    "muscles" : [
+      "forearms",
+      "forearmFlexors",
+      "forearmExtensors",
+      "brachioradialis"
+    ],
+    "node" : "forearms_left"
+  },
+  {
+    "fatigueEligible" : true,
+    "muscles" : [
+      "forearms",
+      "forearmFlexors",
+      "forearmExtensors",
+      "brachioradialis"
+    ],
+    "node" : "forearms_right"
+  },
+  {
+    "fatigueEligible" : true,
+    "muscles" : [
+      "abs",
+      "upperAbs",
+      "lowerAbs"
+    ],
+    "node" : "abs_center"
+  },
+  {
+    "fatigueEligible" : true,
+    "muscles" : [
+      "obliques",
+      "serratus"
+    ],
+    "node" : "obliques_left"
+  },
+  {
+    "fatigueEligible" : true,
+    "muscles" : [
+      "obliques",
+      "serratus"
+    ],
+    "node" : "obliques_right"
+  },
+  {
+    "fatigueEligible" : true,
+    "muscles" : [
+      "upperTraps",
+      "midTraps",
+      "lowerTraps",
+      "rhomboids"
+    ],
+    "node" : "upperTraps_left"
+  },
+  {
+    "fatigueEligible" : true,
+    "muscles" : [
+      "upperTraps",
+      "midTraps",
+      "lowerTraps",
+      "rhomboids"
+    ],
+    "node" : "upperTraps_right"
+  },
+  {
+    "fatigueEligible" : true,
+    "muscles" : [
+      "lats",
+      "upperLats",
+      "lowerLats",
+      "teres"
+    ],
+    "node" : "lats_left"
+  },
+  {
+    "fatigueEligible" : true,
+    "muscles" : [
+      "lats",
+      "upperLats",
+      "lowerLats",
+      "teres"
+    ],
+    "node" : "lats_right"
+  },
+  {
+    "fatigueEligible" : true,
+    "muscles" : [
+      "lowerBack"
+    ],
+    "node" : "lowerBack_center"
+  },
+  {
+    "fatigueEligible" : true,
+    "muscles" : [
+      "glutes",
+      "gluteusMaximus",
+      "gluteusMedius"
+    ],
+    "node" : "glutes_left"
+  },
+  {
+    "fatigueEligible" : true,
+    "muscles" : [
+      "glutes",
+      "gluteusMaximus",
+      "gluteusMedius"
+    ],
+    "node" : "glutes_right"
+  },
+  {
+    "fatigueEligible" : true,
+    "muscles" : [
+      "quads",
+      "rectusFemoris",
+      "vastusLateralis",
+      "vastusMedialis"
+    ],
+    "node" : "quads_left"
+  },
+  {
+    "fatigueEligible" : true,
+    "muscles" : [
+      "quads",
+      "rectusFemoris",
+      "vastusLateralis",
+      "vastusMedialis"
+    ],
+    "node" : "quads_right"
+  },
+  {
+    "fatigueEligible" : true,
+    "muscles" : [
+      "hamstrings",
+      "bicepsFemoris",
+      "semitendinosus"
+    ],
+    "node" : "hamstrings_left"
+  },
+  {
+    "fatigueEligible" : true,
+    "muscles" : [
+      "hamstrings",
+      "bicepsFemoris",
+      "semitendinosus"
+    ],
+    "node" : "hamstrings_right"
+  },
+  {
+    "fatigueEligible" : true,
+    "muscles" : [
+      "adductors"
+    ],
+    "node" : "adductors_left"
+  },
+  {
+    "fatigueEligible" : true,
+    "muscles" : [
+      "adductors"
+    ],
+    "node" : "adductors_right"
+  },
+  {
+    "fatigueEligible" : true,
+    "muscles" : [
+      "calves",
+      "gastrocnemius",
+      "soleus"
+    ],
+    "node" : "calves_left"
+  },
+  {
+    "fatigueEligible" : true,
+    "muscles" : [
+      "calves",
+      "gastrocnemius",
+      "soleus"
+    ],
+    "node" : "calves_right"
+  },
+  {
+    "fatigueEligible" : true,
+    "muscles" : [
+      "tibialisAnterior"
+    ],
+    "node" : "tibialisAnterior_left"
+  },
+  {
+    "fatigueEligible" : true,
+    "muscles" : [
+      "tibialisAnterior"
+    ],
+    "node" : "tibialisAnterior_right"
+  },
+  {
+    "fatigueEligible" : false,
+    "muscles" : [
+
+    ],
+    "node" : "head_center"
+  },
+  {
+    "fatigueEligible" : false,
+    "muscles" : [
+
+    ],
+    "node" : "hands_left"
+  },
+  {
+    "fatigueEligible" : false,
+    "muscles" : [
+
+    ],
+    "node" : "hands_right"
+  },
+  {
+    "fatigueEligible" : false,
+    "muscles" : [
+
+    ],
+    "node" : "feet_left"
+  },
+  {
+    "fatigueEligible" : false,
+    "muscles" : [
+
+    ],
+    "node" : "feet_right"
+  }
+]

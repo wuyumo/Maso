@@ -17,39 +17,19 @@ struct AddExerciseChoiceSheet: View {
     let onBrowseNiche: () -> Void
 
     var body: some View {
-        NavigationStack {
-            ZStack {
-                MasoColor.background.ignoresSafeArea()
-                VStack(spacing: 12) {
-                    Text("Pick how to add an exercise. Either build your own from scratch, or adopt one from our specialized library.")
-                        .font(.system(size: 13))
-                        .foregroundStyle(MasoColor.textDim)
-                        .multilineTextAlignment(.leading)
-                        .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
-                        .padding(.top, 8)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-
-                    Button(action: { Haptics.tap(); onCreateCustom() }) {
-                        choiceCard(
-                            icon: "square.and.pencil",
-                            title: "Create your own",
-                            subtitle: "Add a name, an image, and tag it to a muscle. Best for moves we don't have."
-                        )
+        AppNavigationStack {
+            Form {
+                Section {
+                    Button { Haptics.tap(); onCreateCustom() } label: {
+                        choiceRow(icon: "square.and.pencil", title: "Create your own",
+                                  subtitle: "Add a name, an image, and tag it to a muscle. Best for moves we don't have.")
                     }
-                    .buttonStyle(.plain)
-                    .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
-
-                    Button(action: { Haptics.tap(); onBrowseNiche() }) {
-                        choiceCard(
-                            icon: "archivebox",
-                            title: "Browse rare exercises",
-                            subtitle: "Foam rolls, battle ropes, machine isolations and other specialized moves we corralled."
-                        )
+                }
+                Section {
+                    Button { Haptics.tap(); onBrowseNiche() } label: {
+                        choiceRow(icon: "archivebox", title: "Browse rare exercises",
+                                  subtitle: "Foam rolls, battle ropes, machine isolations and other specialized moves we corralled.")
                     }
-                    .buttonStyle(.plain)
-                    .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
-
-                    Spacer()
                 }
             }
             .navigationTitle("Add exercise")
@@ -59,37 +39,25 @@ struct AddExerciseChoiceSheet: View {
                     Button("Cancel") { dismiss() }
                 }
             }
-            .tint(MasoColor.text)
         }
-        .presentationBackground(MasoColor.background)
     }
 
-    private func choiceCard(icon: String, title: LocalizedStringKey, subtitle: LocalizedStringKey) -> some View {
-        HStack(alignment: .top, spacing: 14) {
+    private func choiceRow(icon: String, title: LocalizedStringKey, subtitle: LocalizedStringKey) -> some View {
+        HStack(alignment: .center, spacing: MasoMetrics.rowPaddingH) {
             Image(systemName: icon)
-                .font(.system(size: 15, weight: .semibold))
+                .font(.title3)
                 .foregroundStyle(MasoColor.accent)
-                .frame(width: 32, height: 32)
-                .background(MasoColor.accent.opacity(0.14))
-                .clipShape(RoundedRectangle(cornerRadius: 8))
-            VStack(alignment: .leading, spacing: 4) {
-                Text(title)
-                    .font(.system(size: 15, weight: .bold))
-                    .foregroundStyle(MasoColor.text)
-                Text(subtitle)
-                    .font(.system(size: 12))
-                    .foregroundStyle(MasoColor.textDim)
-                    .lineLimit(3)
-                    .multilineTextAlignment(.leading)
+                .frame(width: 32)
+            VStack(alignment: .leading, spacing: MasoMetrics.cardHeaderGap) {
+                Text(title).font(.headline).foregroundStyle(.primary)
+                Text(subtitle).font(.footnote).foregroundStyle(.secondary)
             }
-            Spacer(minLength: 0)
+            .frame(maxWidth: .infinity, alignment: .leading)
             Image(systemName: "chevron.right")
-                .font(.system(size: 11, weight: .heavy))
-                .foregroundStyle(MasoColor.textFaint)
+                .font(.footnote.weight(.semibold)).foregroundStyle(.tertiary)
         }
-        .padding(MasoMetrics.cardPadding)
-        .background(MasoColor.surface)
-        .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
+        .padding(.vertical, MasoMetrics.rowPaddingV)
+        .contentShape(Rectangle())
     }
 }
 
@@ -108,6 +76,7 @@ struct CustomExerciseFormSheet: View {
     @State private var photoItem: PhotosPickerItem? = nil
     @State private var imageData: Data? = nil
     @State private var showingError: String? = nil
+    @State private var paywallPresented = false
     /// "网上搜图" sheet 开关.
     @State private var webPickerOpen: Bool = false
     /// 加图片的来源选择 (拍照 / 相册 / 移除) —— 跟 ShareImageButton 同一套.
@@ -125,8 +94,9 @@ struct CustomExerciseFormSheet: View {
     private let editingId: String?
 
     /// 预填名字 — 从"选动作"页搜索空结果点"Add 'xxx'"进来时, 把搜索词带过来直接填好.
-    init(initialName: String = "", onCreated: ((Exercise) -> Void)? = nil) {
+    init(initialName: String = "", initialImageData: Data? = nil, onCreated: ((Exercise) -> Void)? = nil) {
         _name = State(initialValue: String(initialName.prefix(Self.maxNameLength)))
+        _imageData = State(initialValue: initialImageData)
         self.onCreated = onCreated
         self.editingId = nil
     }
@@ -160,7 +130,7 @@ struct CustomExerciseFormSheet: View {
     }
 
     var body: some View {
-        NavigationStack {
+        AppNavigationStack {
             ZStack {
                 MasoColor.background.ignoresSafeArea()
                 Form {
@@ -173,6 +143,7 @@ struct CustomExerciseFormSheet: View {
                         // 图片预览 / 占位 (展示用). 两个来源按钮在下面.
                         photoArea
                             .padding(.vertical, 4)
+                            .listRowSeparator(.hidden)
                         // 两个图片来源: 网上搜图 (主, 用动作名自动搜) + 从相册选.
                         HStack(spacing: 10) {
                             Button(action: { webPickerOpen = true }) {
@@ -211,6 +182,7 @@ struct CustomExerciseFormSheet: View {
                             .buttonStyle(.plain)
                         }
                         .padding(.vertical, 4)
+                        .listRowSeparator(.hidden)
                     }
                     .listRowBackground(MasoColor.surface)
 
@@ -262,7 +234,7 @@ struct CustomExerciseFormSheet: View {
                             Text("Reps & weight").tag(false)
                             Text("Time (seconds)").tag(true)
                         }
-                        .pickerStyle(.segmented)
+                        .pickerStyle(.inline)
                     } footer: {
                         Text(isTimed
                              ? NSLocalizedString("For planks, stretches, carries, cardio intervals.", comment: "")
@@ -285,8 +257,8 @@ struct CustomExerciseFormSheet: View {
                              ? NSLocalizedString("New exercise", comment: "")
                              : NSLocalizedString("Edit exercise", comment: ""))
             .navigationBarTitleDisplayMode(.inline)
-            .toolbarBackground(MasoColor.background, for: .navigationBar)
-            .toolbarBackground(.visible, for: .navigationBar)
+
+
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
@@ -354,6 +326,7 @@ struct CustomExerciseFormSheet: View {
             WebImagePickerSheet(initialQuery: name) { data in imageData = data }
             .presentationDragIndicator(.visible)
         }
+        .sheet(isPresented: $paywallPresented) { PaywallScreen(source: "custom_exercise") }
         .alert("Couldn't save exercise", isPresented: Binding(
             get: { showingError != nil }, set: { if !$0 { showingError = nil } }
         )) {
@@ -403,24 +376,7 @@ struct CustomExerciseFormSheet: View {
                     .allowsHitTesting(false)  // 让 tap 直接命中外层 PhotosPicker, 不被胶囊吃
                 }
             } else {
-                // 没图: 虚线 + photo.badge.plus + "Add a photo" — UnifiedShareCard 同款.
-                ZStack {
-                    RoundedRectangle(cornerRadius: 14)
-                        .strokeBorder(
-                            MasoColor.borderSoft,
-                            style: StrokeStyle(lineWidth: 1.5, dash: [6, 4])
-                        )
-                    VStack(spacing: 10) {
-                        Image(systemName: "photo.badge.plus")
-                            .font(.system(size: 38, weight: .light))
-                            .foregroundStyle(MasoColor.textDim)
-                        Text("Add a photo")
-                            .font(.system(size: 14, weight: .semibold))
-                            .foregroundStyle(MasoColor.textDim)
-                    }
-                }
-                .background(MasoColor.surface.opacity(0.4))
-                .clipShape(RoundedRectangle(cornerRadius: 14))
+                AddPhotoPlaceholder()
             }
         }
         .frame(maxWidth: .infinity)
@@ -452,6 +408,7 @@ struct CustomExerciseFormSheet: View {
     }
 
     private func save() {
+        guard editingId != nil || data.canCreateCustomExercise else { paywallPresented = true; return }
         let trimmed = name.trimmingCharacters(in: .whitespaces)
         guard !trimmed.isEmpty else { return }
         // P2-12: 重名检查 (大小写不敏感) — 防 3 个都叫 "Curl" + 触发幽灵变种.
@@ -498,7 +455,9 @@ struct CustomExerciseFormSheet: View {
             isNiche: false,
             customImageData: imageData
         )
-        if editingId == nil { data.addCustomExercise(ex) } else { data.updateCustomExercise(ex) }
+        if editingId == nil {
+            guard data.addCustomExercise(ex) else { paywallPresented = true; return }
+        } else { data.updateCustomExercise(ex) }
         onCreated?(ex)
         Haptics.tap()
         dismiss()
@@ -554,7 +513,7 @@ struct NicheLibraryBrowseSheet: View {
 
     /// filtered 折叠成变种组 — 跟主库 / picker 用同一份 ExerciseGrouping.group(...).
     private var filteredGroups: [ExerciseGroup] {
-        ExerciseGrouping.group(filtered)
+        ExerciseGrouping.group(filtered, groupByName: true)
     }
 
     /// 当前 equipment / text filter 下还有动作的 muscle section (menu 里 dim disabled).
@@ -600,10 +559,9 @@ struct NicheLibraryBrowseSheet: View {
     }
 
     var body: some View {
-        NavigationStack {
+        AppNavigationStack {
             List {
                 // 搜索 + 两个筛选菜单作为列表首行 — 跟 Exercise Library 完全一致.
-                filterHeaderRow
 
                 if filteredGroups.isEmpty {
                     emptyState
@@ -613,7 +571,7 @@ struct NicheLibraryBrowseSheet: View {
                     ForEach(filteredGroups) { group in
                         nicheRow(group.canonical, isVariant: false, group: group)
                         if !group.variants.isEmpty, expandedGroupKey == group.id {
-                            groupedVariantSections(for: group) { variant in
+                            groupedVariantSections(for: group, onCollapse: { expandedGroupKey = nil }) { variant in
                                 nicheRow(variant, isVariant: true, group: group)
                             }
                         }
@@ -621,6 +579,9 @@ struct NicheLibraryBrowseSheet: View {
                 }
             }
             .listStyle(.plain)
+            .safeAreaInset(edge: .top, spacing: 0) { filterHeaderRow }
+            .searchable(text: $query, placement: .navigationBarDrawer(displayMode: .always), prompt: Text("Search"))
+            .autocorrectionDisabled().textInputAutocapitalization(.never)
             .scrollContentBackground(.hidden)
             // filter / 搜索变化 → 收起手风琴 (避免残留孤儿展开态).
             .onChange(of: query) { _, _ in expandedGroupKey = nil }
@@ -629,8 +590,8 @@ struct NicheLibraryBrowseSheet: View {
             .background(MasoColor.background.ignoresSafeArea())
             .navigationTitle("Rare exercises")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbarBackground(MasoColor.background, for: .navigationBar)
-            .toolbarBackground(.visible, for: .navigationBar)
+
+
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") { dismiss() }
@@ -649,45 +610,10 @@ struct NicheLibraryBrowseSheet: View {
 
     @ViewBuilder
     private var filterHeaderRow: some View {
-        VStack(spacing: 10) {
-            SearchBar(query: $query)
-
-            HStack(spacing: 8) {
-                let availM = availableMuscles
-                FilterMenuButton(
-                    title: NSLocalizedString("Muscle", comment: "filter button placeholder"),
-                    allLabel: NSLocalizedString("All muscles", comment: ""),
-                    selected: $muscleFilter,
-                    options: Self.muscleSections.map { m in
-                        FilterMenuOption(
-                            value: m,
-                            label: m.displayName,
-                            enabled: availM.contains(m) || muscleFilter == m
-                        )
-                    }
-                )
-
-                let availE = availableEquipments
-                FilterMenuButton(
-                    title: NSLocalizedString("Equipment", comment: "filter button placeholder"),
-                    allLabel: NSLocalizedString("Any equipment", comment: ""),
-                    selected: $equipmentFilter,
-                    options: Exercise.knownEquipments.map { eq in
-                        FilterMenuOption(
-                            value: eq,
-                            label: Exercise.equipmentDisplayName(for: eq),
-                            enabled: availE.contains(eq) || equipmentFilter == eq
-                        )
-                    }
-                )
-
-                Spacer()
-            }
-        }
-        .listRowInsets(EdgeInsets(top: 10, leading: MasoMetrics.pagePaddingHorizontal,
-                                  bottom: 6, trailing: MasoMetrics.pagePaddingHorizontal))
-        .listRowBackground(Color.clear)
-        .listRowSeparator(.hidden)
+        ExerciseSearchFilterBar(query: $query, muscleFilter: $muscleFilter,
+            movementFilter: .constant(nil), equipmentFilter: $equipmentFilter,
+            muscleSections: Self.muscleSections, availableMuscles: availableMuscles,
+            movementsFor: { _ in [] }, availableEquipments: availableEquipments)
     }
 
     @ViewBuilder
@@ -722,7 +648,6 @@ struct NicheLibraryBrowseSheet: View {
             showVariantCategoryLabel: false,
             trailing: { addButton(ex) },
             onTap: { selected = ex },
-            onTapImage: { selected = ex },
             onToggleExpand: {
                 Haptics.tap()
                 withAnimation(.easeOut(duration: 0.2)) {
@@ -789,7 +714,7 @@ private struct SearchBar: View {
 
 // MARK: - Web image search — 自创动作"网上搜图"
 //
-// 走 Maso 的 Vercel 代理 (Pexels key 留服务端, app 只拿现成图片 URL, 不碰 key).
+// 走 Masso 的 Vercel 代理 (Pexels key 留服务端, app 只拿现成图片 URL, 不碰 key).
 // 换搜索源 (Pexels / Google / Bing) 只改服务端, app 不动.
 
 struct ExerciseImagePhoto: Identifiable, Decodable, Hashable {
@@ -861,7 +786,7 @@ struct WebImagePickerSheet: View {
                         GridItem(.flexible(), spacing: 8)]
 
     var body: some View {
-        NavigationStack {
+        AppNavigationStack {
             ZStack {
                 MasoColor.background.ignoresSafeArea()
                 VStack(spacing: 0) {
@@ -912,8 +837,8 @@ struct WebImagePickerSheet: View {
             }
             .navigationTitle(NSLocalizedString("Find a photo", comment: ""))
             .navigationBarTitleDisplayMode(.inline)
-            .toolbarBackground(MasoColor.background, for: .navigationBar)
-            .toolbarBackground(.visible, for: .navigationBar)
+
+
             .toolbar { ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } } }
             .tint(MasoColor.text)
             .task { if !query.isEmpty && !searched { runSearch() } }

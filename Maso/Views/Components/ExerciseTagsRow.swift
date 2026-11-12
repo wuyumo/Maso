@@ -106,6 +106,7 @@ struct ExerciseTagsRow: View {
 // 行为差异 (tap 进详情 / tap 选中 / 末尾勾选 / 右滑动作) 由调用方通过闭包 + trailing + 链 .swipeActions 注入.
 struct GroupedExerciseRow<Trailing: View>: View {
     @Environment(DataStore.self) private var data
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     let exercise: Exercise
     let isVariant: Bool
@@ -120,141 +121,80 @@ struct GroupedExerciseRow<Trailing: View>: View {
     /// 行背景高亮 (multiSelect 选中态用).
     var highlighted: Bool = false
     /// 末尾附加视图 (multiSelect 的勾选圈; 库浏览传 EmptyView).
+    var selectionAtLeading = false
     @ViewBuilder var trailing: () -> Trailing
     /// 整行点击.
     let onTap: () -> Void
-    /// 左侧图/图标点击 (一般 = 查看详情, 优先于整行).
-    let onTapImage: () -> Void
+    /// 选择场景的详情入口独立于选中热区；缩略图始终随名称执行整行操作。
+    var onShowDetail: (() -> Void)? = nil
     /// "+N variants" 胶囊点击 (toggle 展开).
     let onToggleExpand: () -> Void
 
-    var body: some View {
-        let ex = exercise
-        let isFav = data.isFavorite(ex.id)
-        Button(action: onTap) {
-            HStack(spacing: 14) {
-                // 左侧视觉 — 真实动作图 (变种用小尺寸). 缩进靠 listRowInsets, 不再用竖线.
-                Button(action: onTapImage) {
-                    leadingVisual(ex)
-                }
-                .buttonStyle(.plain)
-                .accessibilityLabel(String(format: NSLocalizedString("Show details for %@", comment: "exercise detail a11y"), ex.displayName))
+    private var disambiguationText: String? {
+        ExerciseGrouping.disambiguationText(for: exercise, among: data.userLibrary)
+    }
 
-                VStack(alignment: .leading, spacing: isVariant ? 3 : 5) {
-                    if isVariant {
-                        // 变种: 主文案 = 完整动作名 ("Incline Push-Up" 而不是裸 "Incline" —
-                        // 裸修饰词当标题在大库里太晦涩, #lib-feedback), 下方 = 分类标签.
-                        let diff = variantDiff(ex)
-                        Text(ex.displayName)
-                            .font(.system(size: 13, weight: .bold))
-                            .foregroundStyle(MasoColor.text)
-                            .lineLimit(1)
-                        if showVariantCategoryLabel {
-                            Text(diff.category)
-                                .font(.system(size: 10, weight: .heavy))
-                                .tracking(0.6)
-                                .textCase(.uppercase)
-                                .foregroundStyle(diff.color)
-                        }
-                    } else {
-                        // 组入口只显示"主动作"名 (#nameParts: "Squat" / "Face Pull"), 不带器械/变体 —
-                        // 器械和变体在展开后的 Equipment / Variation 两个 section 里看.
-                        // 单成员组 entryTitle == displayName (无信息损失).
-                        Text(group.entryTitle)
-                            .font(.system(size: 15, weight: .bold))
-                            .foregroundStyle(MasoColor.text)
-                            .lineLimit(1)
-                        ExerciseTagsRow(muscleGroups: ex.muscleGroups, equipment: ex.equipment, muscleLimit: 1)
-                    }
+    var body: some View {
+        HStack(spacing: 8) {
+            if selectionAtLeading { trailing() }
+            Button(action: onTap) {
+                HStack(spacing: 8) {
+                    ExerciseRowContent(exercise: exercise,
+                                       titleOverride: !isVariant && !group.isSingleton ? group.entryTitle : nil,
+                                       detailLine: isVariant || group.isSingleton ? disambiguationText : nil)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
-
-                if isFav {
-                    Image(systemName: "pin.fill")
-                        .font(.system(size: 12, weight: .heavy))
-                        .foregroundStyle(MasoColor.accent)
-                }
-                // canonical 末尾 "+N variants" 胶囊 — 放在 radio 勾选圈左边.
-                if !isVariant, !group.isSingleton, showDisclosure {
-                    Button(action: onToggleExpand) {
-                        HStack(spacing: 4) {
-                            Text("+\(group.variants.count)")
-                                .font(.system(size: 11, weight: .heavy))
-                            Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
-                                .font(.system(size: 10, weight: .heavy))
-                        }
-                        .foregroundStyle(MasoColor.accent)
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 4)
-                        .background(MasoColor.accent.opacity(0.14))
-                        .overlay(Capsule().stroke(MasoColor.accent.opacity(0.35), lineWidth: 0.5))
-                        .clipShape(Capsule())
+                .contentShape(Rectangle())
+            }.buttonStyle(.plain)
+            .accessibilityIdentifier("exercise.primary.\(exercise.id)")
+            .accessibilityAddTraits(highlighted ? [.isSelected] : [])
+            if !selectionAtLeading { trailing() }
+            if !isVariant, !group.isSingleton, showDisclosure {
+                Button(action: onToggleExpand) {
+                    HStack(spacing: 4) {
+                        Text("+\((group.count - 1).formatted(.number.locale(LanguageManager.currentLocale)))")
+                            .font(.caption)
+                        Image(systemName: "chevron.down")
+                            .rotationEffect(.degrees(isExpanded ? 180 : 0))
+                            .animation(reduceMotion ? nil : .easeOut(duration: 0.18), value: isExpanded)
+                            .scaleEffect(0.5)
+                            .frame(width: 8, height: 8)
                     }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel(
-                        isExpanded
-                        ? NSLocalizedString("Hide variants", comment: "")
-                        : String(format: NSLocalizedString("Show %d variants", comment: ""), group.variants.count)
-                    )
-                }
-                // radio 勾选圈 (多选模式) — 永远在行最右边, "+N variants" 胶囊在它左边.
-                trailing()
+                }.nativeGlassButtonStyle().controlSize(.mini).tint(MasoColor.text)
+                .accessibilityIdentifier("exercise.family.expand.\(group.id)")
+                .accessibilityLabel(isExpanded ? NSLocalizedString("Hide variants", comment: "")
+                    : String(format: NSLocalizedString("Show %d variants", comment: ""), group.count - 1))
             }
-            .padding(.horizontal, MasoMetrics.rowPaddingH)
-            .padding(.vertical, isVariant ? 6 : 10)
-            .background(highlighted ? MasoColor.accent.opacity(0.15) : MasoColor.surface)
-            .clipShape(RoundedRectangle(cornerRadius: 14))
+            if let onShowDetail {
+                ExerciseDetailInfoButton(exercise: exercise, action: onShowDetail)
+            }
         }
-        .buttonStyle(.plain)
-        .listRowSeparator(.hidden)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
+        .alignmentGuide(.listRowSeparatorTrailing) { dimensions in dimensions.width }
+        .listRowSeparator(.visible)
         .listRowBackground(Color.clear)
-        // 标题 (canonical) 上下都收紧 (3→2), 让母动作贴近自己的变种; 变种行 1pt 内聚.
-        // 组与组之间的"呼吸" 由 groupedVariantSections 末尾的 spacer 负责 (展开态才加).
-        .listRowInsets(EdgeInsets(
-            top: isVariant ? 1 : 2,
-            leading: MasoMetrics.pagePaddingHorizontal + (isVariant ? 16 : 0),  // 变种缩进 16pt
-            bottom: isVariant ? 1 : 2,
-            trailing: MasoMetrics.pagePaddingHorizontal
-        ))
     }
 
-    @ViewBuilder
-    private func leadingVisual(_ ex: Exercise) -> some View {
-        // canonical + variant 都用真实动作图; 变种用小尺寸 (40) 体现层级 (不再用文字胶囊 / SF 图标).
-        ExerciseImage(
-            category: ex.category,
-            imageFolder: ex.imageFolder,
-            photoURL: ex.photoURL,
-            customImageData: ex.customImageData,
-            cornerRadius: 8,
-            size: isVariant ? 40 : 56,
-            animated: false
-        )
-    }
+}
 
-    /// 变种的"差异"描述 — 明确分两类: 器械差异 / 动作差异 (执行方式).
-    /// 返回 (主文案=具体差异, 分类标签, 分类色). accent=动作差异, 中性灰=器械差异.
-    private func variantDiff(_ ex: Exercise) -> (text: String, category: String, color: Color) {
-        if group.isModifierVariant(ex) {
-            // 动作差异 (Seated / Single-Leg / Lean-Forward / 括号内动作细节 …).
-            var text = group.variationLabel(for: ex)
-            // 器械跟 canonical 不同 → 附器械名消歧 (主库 "Close-Grip · Dumbbell"); 相同 → 不附 (niche, 冗余).
-            if !ExerciseGrouping.sameEquipment(ex, group.canonical),
-               let eq = ex.equipmentDisplayName, !eq.isEmpty {
-                text += " · \(eq)"
-            }
-            return (text,
-                    NSLocalizedString("Variation", comment: "movement/form variant category"),
-                    MasoColor.accent)
+/// Shared accessory for rows whose primary action selects an exercise.
+/// Keeping this outside that primary Button avoids nested thumbnail/detail taps.
+struct ExerciseDetailInfoButton: View {
+    let exercise: Exercise
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Image(systemName: "info.circle")
+                .font(.caption)
+                .foregroundStyle(MasoColor.textDim.opacity(0.65))
+                .frame(minWidth: 44, minHeight: 44)
+                .contentShape(Rectangle())
         }
-        // 器械差异 (Dumbbell / Machine / Swiss Ball …) — 优先括号内全文, 退器械名.
-        let raw = ex.displayName
-        var diff = ex.equipmentDisplayName ?? ""
-        if let o = raw.firstIndex(of: "("), let c = raw.lastIndex(of: ")"), raw.index(after: o) < c {
-            diff = String(raw[raw.index(after: o)..<c])
-        }
-        if diff.isEmpty { diff = raw }
-        return (diff, NSLocalizedString("Equipment", comment: "equipment variant category"), MasoColor.textDim)
+        .buttonStyle(.borderless)
+        .accessibilityIdentifier("exercise.info.\(exercise.id)")
+        .accessibilityLabel(String(format: NSLocalizedString("Show details for %@", comment: "exercise detail a11y"), exercise.displayName))
     }
 }
 
@@ -265,44 +205,131 @@ struct GroupedExerciseRow<Trailing: View>: View {
 // 缩进对齐变种卡片 (= pagePaddingHorizontal + 16), 让它正好"盖"在它统领的那几行上方.
 struct VariantSectionHeader: View {
     let title: String
-    var color: Color = MasoColor.textFaint
+    var color: Color = MasoColor.textDim
 
     var body: some View {
-        Text(title)
-            .font(.system(size: 10, weight: .heavy))
-            .tracking(0.8)
-            .textCase(.uppercase)
+        Text(verbatim: title)
+            .font(.caption.weight(.semibold))
             .foregroundStyle(color)
+            .fixedSize(horizontal: false, vertical: true)
+            .accessibilityAddTraits(.isHeader)
             .frame(maxWidth: .infinity, alignment: .leading)
             .listRowSeparator(.hidden)
             .listRowBackground(Color.clear)
             .listRowInsets(EdgeInsets(
-                top: 3,   // 收紧 (7→3) — 小节头贴近上面的母动作 / 上一段变种.
-                leading: MasoMetrics.pagePaddingHorizontal + 16 + MasoMetrics.rowPaddingH,
-                bottom: 2,
+                top: 8,
+                leading: MasoMetrics.pagePaddingHorizontal,
+                bottom: 4,
                 trailing: MasoMetrics.pagePaddingHorizontal
             ))
     }
 }
 
-// 展开收折组 — 不再分 Variation / Equipment 两节 (#flat-variants), 全部变种按显示名排序平铺.
-// 名字本身已带三段信息 "主动作 (器械 · 变体)", 节标题成了冗余.
-// 三处共用 (Exercise Library / 训练中选动作 picker / Rare exercises 浏览).
+/// Shared inline expansion in Exercises, Choose/Replace and rare adoption.
 @ViewBuilder
 func groupedVariantSections<RowView: View>(
     for group: ExerciseGroup,
+    showAll: Bool = false,
+    onCollapse: (() -> Void)? = nil,
     @ViewBuilder row: @escaping (Exercise) -> RowView
 ) -> some View {
-    let sorted = group.variants.sorted {
-        $0.displayName.localizedStandardCompare($1.displayName) == .orderedAscending
+    ExerciseFamilyPreview(group: group, showAll: showAll, onCollapse: onCollapse, row: row)
+}
+
+struct ExerciseFamilyPreview<RowView: View>: View {
+    let group: ExerciseGroup
+    var showAll: Bool = false
+    var onCollapse: (() -> Void)? = nil
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ViewBuilder let row: (Exercise) -> RowView
+    @State private var showsLessCommon = false
+
+    private var equipmentSections: [(key: String, title: String, exercises: [Exercise])] {
+        let buckets = Dictionary(grouping: group.variants) { $0.equipment ?? "other" }
+        return buckets.map { key, exercises in
+            (key: key, title: Exercise.equipmentDisplayName(for: key), exercises: exercises)
+        }.sorted { ExerciseNameSort.precedes($0.title, $1.title) }
     }
-    ForEach(sorted, id: \.id) { row($0) }
-    // 组尾必须留一个"终结行" — onToggleExpand 用了 withAnimation, List 动画插入"条件式裸 ForEach"
-    // 会崩 (经典 SwiftUI List batch-update 越界); 这个稳定的尾行撑住动画 diff. ⚠️ 别删它.
-    // 高度压到 1pt (原来 5pt 显得"最后一个变种 ↔ 下一个母动作"间距太大) → 视觉上跟普通行距基本一致.
-    Color.clear
-        .frame(height: 1)
-        .listRowInsets(EdgeInsets())
-        .listRowBackground(Color.clear)
-        .listRowSeparator(.hidden)
+
+    var body: some View {
+        if showAll {
+            ForEach(equipmentSections, id: \.key) { section in
+                VariantSectionHeader(title: section.title)
+                ForEach(section.exercises, id: \.id) { row($0) }
+            }
+        } else {
+            ForEach(group.commonVariants, id: \.id) { row($0) }
+        }
+        if !showAll && !group.lessCommonVariants.isEmpty {
+            Button {
+                Haptics.tap()
+                // Keep existing rows anchored; insert the remaining versions below
+                // the disclosure instead of navigating or re-sorting the whole list.
+                showsLessCommon.toggle()
+            } label: {
+                HStack(spacing: 6) {
+                    Text(showsLessCommon ? NSLocalizedString("Fewer versions", comment: "exercise family fold")
+                         : String(format: NSLocalizedString("%@ more versions", comment: "exercise family fold"),
+                                  group.lessCommonVariants.count.formatted(.number.locale(LanguageManager.currentLocale))))
+                    Image(systemName: showsLessCommon ? "chevron.up" : "chevron.down")
+                        .font(.caption2)
+                }
+                .font(.subheadline)
+                .foregroundStyle(MasoColor.textDim)
+                .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.borderless)
+            .accessibilityIdentifier("exercise.family.more.\(group.id)")
+            .listRowBackground(Color.clear)
+            if showsLessCommon {
+                ForEach(group.lessCommonVariants, id: \.id) { row($0) }
+            }
+        }
+        if let onCollapse {
+            Button {
+                Haptics.tap()
+                withAnimation(reduceMotion ? nil : .easeOut(duration: 0.2)) { onCollapse() }
+            } label: {
+                Label("Hide variants", systemImage: "chevron.up")
+                    .font(.subheadline.weight(.medium))
+                    .frame(maxWidth: .infinity, minHeight: 44, alignment: .center)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain).foregroundStyle(MasoColor.textDim)
+            .accessibilityIdentifier("exercise.family.collapse.\(group.id)")
+            .listRowBackground(Color.clear).listRowSeparator(.hidden)
+        }
+        // A stable tail protects List insertions/removals.
+        Color.clear.frame(height: 1).listRowInsets(EdgeInsets())
+            .listRowBackground(Color.clear).listRowSeparator(.hidden)
+    }
+}
+
+struct ExerciseFamilyVersionsPage<RowView: View>: View {
+    let title: String
+    let exercises: [Exercise]
+    @ViewBuilder let row: (Exercise) -> RowView
+    @State private var query = ""
+
+    private var filtered: [Exercise] {
+        let words = exerciseSearchWords(query)
+        return exercises.filter { $0.matchesSearch(words) }
+    }
+
+    var body: some View {
+        List {
+            ForEach(filtered, id: \.id) { row($0) }
+            if filtered.isEmpty {
+                Text("No exercises match your search").foregroundStyle(MasoColor.textDim)
+                    .listRowBackground(Color.clear)
+            }
+        }
+        .listStyle(.plain).scrollContentBackground(.hidden)
+        .background(MasoColor.background.ignoresSafeArea())
+        .navigationTitle(title).navigationBarTitleDisplayMode(.inline)
+        .searchable(text: $query, prompt: Text("Search"))
+        .autocorrectionDisabled().textInputAutocapitalization(.never)
+        .accessibilityIdentifier("exercise.family.versions")
+    }
 }

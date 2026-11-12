@@ -8,8 +8,8 @@ import Foundation
 // 结构化偏好, **完全无视用户打的字** —— 用户说"多练胸/只用哑铃/45 分钟内", 兜底一个字不看,
 // 出来的计划跟他的要求无关, 体感就是"AI 挂了 = 这功能废了".
 //
-// 这里只做"解析 + 叠加", **不重写选动作逻辑** —— 裁剪/器械替换/重量折算/enforceScience
-// 全部复用 DataStore 已有的那套 (它们已经过实战). 加的是"听懂用户这次要什么".
+// 这里只做"解析 + 叠加", 裁剪/器械替换/重量折算/enforceScience
+// 与共享 ExerciseSelectionPolicy 复用 DataStore 的生成入口 (它们已经过实战). 加的是"听懂用户这次要什么".
 //
 // ⚠️ 刻意不做自然语言理解: 就是关键词匹配. 本地没有模型, 假装聪明只会更糟 ——
 //    匹配不到就退回纯 Settings 行为 (跟改动前一致), 不会更差.
@@ -19,6 +19,7 @@ enum LocalRoutineRules {
     struct Intent: Equatable {
         /// 想多练的大肌群区 (chest/back/shoulders/arms/core/legs)
         var focusSections: Set<MuscleGroup> = []
+        var focusMuscles: Set<MuscleGroup> = []
         /// 想少练/避开的大肌群区 — 优先级高于 focus (用户明说不练就别塞)
         var avoidSections: Set<MuscleGroup> = []
         /// 限定器械 (EquipmentCategory.rawValue); 空 = 不限制
@@ -29,7 +30,7 @@ enum LocalRoutineRules {
         var maxExercises: Int? = nil
 
         var isEmpty: Bool {
-            focusSections.isEmpty && avoidSections.isEmpty && equipment.isEmpty
+            focusSections.isEmpty && focusMuscles.isEmpty && avoidSections.isEmpty && equipment.isEmpty
                 && !bodyweightOnly && maxExercises == nil
         }
     }
@@ -44,6 +45,23 @@ enum LocalRoutineRules {
         (.arms,      ["arm", "bicep", "tricep", "curl", "臂", "手臂", "二头", "三头"]),
         (.core,      ["core", "ab ", "abs", "腹", "核心"]),
         (.legs,      ["leg", "quad", "hamstring", "glute", "squat", "腿", "臀", "深蹲", "股四头"]),
+    ]
+
+    private static let preciseMuscleWords: [(MuscleGroup, [String])] = [
+        (.upperChest, ["上胸", "upper chest", "upper pec"]),
+        (.midChest, ["中胸", "middle chest", "mid chest"]),
+        (.lowerChest, ["下胸", "lower chest", "lower pec"]),
+        (.frontDelts, ["前束", "front delt", "anterior delt"]),
+        (.sideDelts, ["中束", "侧束", "side delt", "lateral delt"]),
+        (.rearDelts, ["后束", "rear delt", "posterior delt"]),
+        (.upperLats, ["上背阔", "upper lat"]), (.lowerLats, ["下背阔", "lower lat"]),
+        (.upperTraps, ["上斜方", "upper trap"]), (.midTraps, ["中斜方", "mid trap"]),
+        (.lowerTraps, ["下斜方", "lower trap"]),
+        (.upperAbs, ["上腹", "upper abs"]), (.lowerAbs, ["下腹", "lower abs"]),
+        (.gluteusMedius, ["臀中肌", "gluteus medius"]), (.gluteusMaximus, ["臀大肌", "gluteus maximus"]),
+        (.vastusMedialis, ["股内侧", "vastus medialis"]), (.vastusLateralis, ["股外侧", "vastus lateralis"]),
+        (.soleus, ["比目鱼", "soleus"]), (.gastrocnemius, ["腓肠", "gastrocnemius"]),
+        (.tricepsLong, ["三头长头", "triceps long head"]), (.bicepsLong, ["二头长头", "biceps long head"])
     ]
 
     /// 器械关键词 → EquipmentCategory.rawValue
@@ -84,6 +102,13 @@ enum LocalRoutineRules {
         let clauses = s.split(whereSeparator: { ",，.。;；!！?？、\n".contains($0) })
         for clause in clauses {
             let negated = avoidWords.contains(where: { clause.contains($0) })
+            for (muscle, words) in preciseMuscleWords where words.contains(where: { clause.contains($0) }) {
+                if negated { intent.avoidSections.insert(muscle.section ?? muscle) }
+                else {
+                    intent.focusMuscles.insert(muscle)
+                    intent.focusSections.insert(muscle.section ?? muscle)
+                }
+            }
             for (section, words) in sectionWords where words.contains(where: { clause.contains($0) }) {
                 if negated { intent.avoidSections.insert(section) }
                 else { intent.focusSections.insert(section) }
@@ -91,6 +116,7 @@ enum LocalRoutineRules {
         }
         // 明说避开的, 从 focus 里剔掉 (同一句里两边都命中时以 avoid 为准)
         intent.focusSections.subtract(intent.avoidSections)
+        intent.focusMuscles = intent.focusMuscles.filter { !intent.avoidSections.contains($0.section ?? $0) }
 
         // 徒手优先级最高 — 说了徒手就不再收集具体器械
         if bodyweightWords.contains(where: { s.contains($0) }) {
@@ -179,9 +205,12 @@ enum LocalRoutineRules {
         // 器械约束: 用 intent 覆盖出一份临时 settings, 复用 applyEquipmentPreference.
         var effective = settings
         if intent.bodyweightOnly {
-            effective.availableEquipment = []          // 空 = 不限制, 所以徒手单独在下面过滤
+            // A nonempty bodyweight-only selection excludes every actual resistance source.
+            effective.availableEquipment = ["bodyweight"]
+            effective.trainingEnvironment = .bodyweight
         } else if !intent.equipment.isEmpty {
             effective.availableEquipment = Array(intent.equipment)
+            effective.trainingEnvironment = TrainingEnvironment.forEquipmentOverride(effective.availableEquipment, current: effective.trainingEnvironment)
         }
 
         func section(of step: PlanStep) -> MuscleGroup? {
@@ -198,13 +227,16 @@ enum LocalRoutineRules {
             var p = plan
             var steps = p.steps
 
-            // 1. 徒手: 只留自重动作 (全滤没了就放弃这条约束, 不给空计划)
-            if intent.bodyweightOnly {
-                let bw = steps.filter(isBodyweight)
-                if !bw.isEmpty { steps = bw }
-            } else if !intent.equipment.isEmpty {
-                steps = DataStore.applyEquipmentPreference(steps, settings: effective, exById: exById)
-            }
+            // Normalize only this new result; saved routines and historical variants are untouched.
+            // AI validation already decided which exact specialist IDs were requested/retained.
+            // Keep those input variants when feasible; replacement/focus pools still use common work.
+            let retainedSpecialistIDs = Set(steps.compactMap { step -> String? in
+                guard let exercise = exById[step.exerciseId],
+                      ExerciseSelectionPolicy.shared.tier(for: exercise).isSpecialist else { return nil }
+                return exercise.id
+            })
+            steps = DataStore.applyEquipmentPreference(steps, settings: effective, exById: exById,
+                                                       allowSpecialistIDs: retainedSpecialistIDs)
 
             // 2. avoid: 剔掉明确不想练的区 (剔空则保留)
             if !intent.avoidSections.isEmpty {
@@ -213,6 +245,42 @@ enum LocalRoutineRules {
                     return !intent.avoidSections.contains(sec)
                 }
                 if !kept.isEmpty { steps = kept }
+            }
+
+            // Prefer exact subdivisions over generic major-muscle work on applicable days.
+            for muscle in intent.focusMuscles.sorted(by: { $0.rawValue < $1.rawValue }) {
+                let major = muscle.section ?? muscle
+                guard steps.contains(where: { section(of: $0) == major }) else { continue }
+                let precise = steps.firstIndex { exById[$0.exerciseId]?.primaryMuscles.contains(muscle) == true }
+                if let precise {
+                    let focused = steps.remove(at: precise)
+                    steps.insert(focused, at: 0)
+                    continue
+                }
+                guard let slot = steps.firstIndex(where: { section(of: $0) == major }) else { continue }
+                let template = steps[slot]
+                let policy = ExerciseSelectionPolicy.shared
+                let usedGroups = Set(steps.enumerated().compactMap { index, step -> String? in
+                    guard index != slot, let exercise = exById[step.exerciseId] else { return nil }
+                    return policy.programmingGroupID(for: exercise)
+                })
+                let candidates = policy.generationCandidates(
+                    from: Array(exById.values).filter {
+                        $0.primaryMuscles.contains(muscle) &&
+                        !usedGroups.contains(policy.programmingGroupID(for: $0))
+                    }, settings: effective, maxPerProgrammingGroup: 1,
+                    preferredIDs: Set(settings.favoriteExerciseIds))
+                for candidate in candidates {
+                    var replacement = PlanStep(id: template.id, exerciseId: candidate.id, sets: template.sets,
+                                               reps: template.reps, weight: nil,
+                                               restBetweenSets: template.restBetweenSets, rest: template.rest)
+                    if intent.bodyweightOnly && !isBodyweight(replacement) { continue }
+                    guard policy.equipmentAllows(candidate, selected: Set(effective.availableEquipment), environment: effective.trainingEnvironment) else { continue }
+                    replacement.sets = max(1, template.sets)
+                    steps.remove(at: slot)
+                    steps.insert(replacement, at: 0)
+                    break
+                }
             }
 
             // 3. focus: 命中的排前面 (稳定 — 同类保持原相对顺序)

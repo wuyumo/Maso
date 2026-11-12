@@ -7,9 +7,13 @@ import WatchConnectivity
 final class WatchSyncManager: NSObject, @unchecked Sendable {
     static let shared = WatchSyncManager()
 
+    @MainActor var onCommand: ((WatchCommand) -> Bool)?
+    @MainActor private var handledCommands: [String: [String: Any]] = [:]
+
     /// 手表点 ✓ / Skip → store.advance (RootView 接线, 带 recordSet 落库)
     @MainActor var onAdvance: (() -> Void)?
     /// 手表点 暂停/继续 → store.togglePlay
+    @MainActor var onHeartRate: ((String, Double, Date) -> Void)?
     @MainActor var onTogglePlay: (() -> Void)?
     /// 手表本次训练开了 HKWorkoutSession → 手机端不再写自己的 HKWorkout
     /// (手表那份带实时心率 + 实测卡路里, 数据更全; 双写会让 Health 双计).
@@ -67,6 +71,28 @@ final class WatchSyncManager: NSObject, @unchecked Sendable {
 }
 
 extension WatchSyncManager: WCSessionDelegate {
+    func session(_ session: WCSession, didReceiveMessage message: [String: Any],
+                 replyHandler: @escaping ([String: Any]) -> Void) {
+        guard let bytes = message["command"] as? Data,
+              let command = try? JSONDecoder().decode(WatchCommand.self, from: bytes) else {
+            replyHandler(["ok": false]); return
+        }
+        Task { @MainActor in
+            if let cached = self.handledCommands[command.id] { replyHandler(cached); return }
+            let accepted = self.onCommand?(command) ?? false
+            var reply: [String: Any] = ["ok": accepted]
+            if var state = self.lastState {
+                state.sentAt = Date()
+                if let data = state.encoded() { reply["s"] = data }
+            }
+            // Only the confirmed discard can discard the Watch Health workout.
+            if accepted && command.kind == .discard { reply["discarded"] = true }
+            if self.handledCommands.count >= 100 { self.handledCommands.removeAll() }
+            self.handledCommands[command.id] = reply
+            replyHandler(reply)
+        }
+    }
+
     func session(_ session: WCSession,
                  activationDidCompleteWith activationState: WCSessionActivationState,
                  error: Error?) {
@@ -89,6 +115,11 @@ extension WatchSyncManager: WCSessionDelegate {
     }
 
     func session(_ session: WCSession, didReceiveMessage message: [String: Any]) {
+        if let key = message["workoutSessionID"] as? String,
+           let bpm = message["heartRate"] as? Double, let date = message["sampleDate"] as? Date {
+            Task { @MainActor in self.onHeartRate?(key, bpm, date) }
+            return
+        }
         guard let raw = message["a"] as? String,
               let action = WatchAction(rawValue: raw) else { return }
         Task { @MainActor in

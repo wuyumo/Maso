@@ -31,12 +31,19 @@ struct SummaryKeyStats {
 final class DataStore {
     var exercises: [Exercise]
     var plans: [Plan]
-    var sets: [SetRecord]
+    var sets: [SetRecord] {
+        didSet {
+            let removedSessions = Set(oldValue.compactMap(\.workoutSessionID)).subtracting(sets.compactMap(\.workoutSessionID))
+            WorkoutHeartLocalStore.shared.removeSessions(removedSessions)
+        }
+    }
+    var refreshingBodyActivityHealth = false
     var settings: UserSettings
 
     /// AI 生成的今日训练计划 — TodayScreen 优先用这个, fallback 系统推荐.
     /// `lastAIRefreshAt` 是当天日期, 同一天不重复 refresh.
     var aiTodayPlan: Plan? = nil
+    private(set) var importingExternalWorkouts = false
     var lastAIRefreshAt: Date? = nil
     /// 用户最近一次手调 aiTodayPlan 的时间 (P0#1-④) — 置位当天 refreshAIWorkoutIfNeeded 跳过自动
     /// 重生成, 不冲掉用户调过的重量 (每天静默重生成会把手调值重置回 LLM 猜值). 持久化进 snapshot,
@@ -52,6 +59,9 @@ final class DataStore {
 
     /// Coach tab 对话状态 (V1 in-memory, 不持久化 — 头注/修订环见 CoachSession.swift).
     let coachSession = CoachSession()
+    /// Nil in production. A test may return false here to simulate a failed write
+    /// without reading or writing the user's maso-data.json.
+    var equipmentSwapSaveOverride: (() -> Bool)?
     /// Coach 生成任务 — 收归 DataStore 持有: 切 tab / 视图销毁不取消, 结果落回 coachSession
     /// (工程评审钦点, 修"60s 生成被切走即丢"). @ObservationIgnored — 任务句柄不驱动 UI,
     /// UI 看的是 coachSession.isGenerating.
@@ -75,13 +85,7 @@ final class DataStore {
     /// P2-11: bundle 部分 (~1000 动作 + imageFolder alias) 只构建一次 —— exercises 是 app 生命周期内
     /// 不变的静态库, 没必要每次访问 exById 都重建 3 遍. lazy 建好后缓存.
     // @ObservationIgnored — lazy 在 @Observable 下不允许被 macro 追踪; 这是不可变缓存, 不需要观察.
-    @ObservationIgnored private lazy var _bundleExById: [String: Exercise] = {
-        var m: [String: Exercise] = [:]
-        for ex in exercises { m[ex.id] = ex }
-        // Legacy alias — 不覆盖已存在的 key.
-        for ex in exercises { if let folder = ex.imageFolder, m[folder] == nil { m[folder] = ex } }
-        return m
-    }()
+    @ObservationIgnored private lazy var _bundleExById: [String: Exercise] = ExerciseLibrary.lookup(exercises)
 
     var exById: [String: Exercise] {
         // 0 个自创动作 (绝大多数用户) → 直接返回缓存, O(1) 无拷贝.
@@ -93,28 +97,144 @@ final class DataStore {
         return m
     }
 
-    // MARK: - Library 视图 (user-facing union)
-    //
-    // bundle exercises 包含 ~979 个动作, 其中 58 个 niche. 用户视角的"动作库"应该是:
-    //   - bundle 非 niche (主流动作, 默认全可见)
-    //   - bundle niche 中被用户"采纳"过的 (settings.adoptedNicheExerciseIds 里命中的)
-    //   - 用户自创的 (settings.customExercises)
-    //
-    // 所有 picker / library browser 都应该 source from `userLibrary` 而不是裸 `exercises`,
-    // 否则要么暴露所有 niche, 要么看不到 custom 动作.
+    // MARK: - Library views
 
-    /// 用户的"个人库" — 主 picker / Library Browser 用这个 source.
+    /// Complete searchable library. Personal records always retain their exact variant IDs.
     var userLibrary: [Exercise] {
-        let adopted = Set(settings.adoptedNicheExerciseIds)
-        let bundle = exercises.filter { !$0.isNiche || adopted.contains($0.id) }
-        return bundle + settings.customExercises
+        exercises + settings.customExercises
     }
 
-    /// 小众库里还没采纳的部分 — "Browse rare exercises" 入口用.
-    /// 已采纳的不再出现 (它们已经在 userLibrary 里), 避免重复添加.
+    var visibleExerciseLibrary: [Exercise] {
+        ExerciseSelectionPolicy.shared.visibleExercises(from: userLibrary, settings: settings,
+            retainingIDs: personalExerciseIDs, availableMediaIDs: ExerciseDemoService.shared.availableMediaIDs,
+            legacyOnlyIDs: Set(ExerciseMediaPolicy.legacyOwners.values))
+    }
+
+    func routinePlanDefaults(_ plan: Plan) -> Plan {
+        let canonical = ExerciseLibrary.canonicalPlan(plan, using: exById)
+        var result = ExerciseSelectionPolicy.shared.routineDefaults(canonical, library: userLibrary, settings: settings)
+        result.steps = result.steps.map { suggestingMissingParameters(for: $0) }
+        return result
+    }
+
+    /// Canonical IDs of personally meaningful exercises, including existing saved plans.
+    var personalExerciseIDs: Set<String> {
+        var ids = settings.favoriteExerciseIds + settings.adoptedNicheExerciseIds
+        ids.append(contentsOf: settings.customExercises.map(\.id))
+        ids.append(contentsOf: sets.map(\.exerciseId))
+        ids.append(contentsOf: plans.flatMap { $0.steps.map(\.exerciseId) })
+        ids.append(contentsOf: aiTodayPlan?.steps.map(\.exerciseId) ?? [])
+        let lookup = exById
+        return Set(ids.map { lookup[$0]?.id ?? $0 })
+    }
+
+    /// Most recently performed concrete variants, deduplicated after legacy ID resolution.
+    var recentExerciseIDs: [String] {
+        let lookup = exById
+        var seen = Set<String>()
+        return sets.enumerated().sorted {
+            $0.element.performedAt == $1.element.performedAt
+                ? $0.offset < $1.offset : $0.element.performedAt > $1.element.performedAt
+        }.compactMap { item in
+            let record = item.element
+            let id = lookup[record.exerciseId]?.id ?? record.exerciseId
+            return seen.insert(id).inserted ? id : nil
+        }
+    }
+
+    /// Compact default browsing, with personal and saved-plan exercises kept discoverable.
+    /// Searching still uses userLibrary, so less common variants remain available.
+    var curatedExerciseLibrary: [Exercise] {
+        let policy = ExerciseSelectionPolicy.shared
+        return policy.sorted(
+            policy.browseCandidates(from: visibleExerciseLibrary, settings: settings, retainingIDs: personalExerciseIDs, availableMediaIDs: ExerciseDemoService.shared.availableMediaIDs),
+            favoriteIDs: canonicalFavoriteExerciseIDs, recentIDs: recentExerciseIDs)
+    }
+
+    var canonicalFavoriteExerciseIDs: Set<String> {
+        let lookup = exById
+        return Set(settings.favoriteExerciseIds.map { lookup[$0]?.id ?? $0 })
+    }
+
+    /// One deterministic selection path for Quick Workout and catch-up training.
+    /// Each programming group gets at most one slot, however many variants it contains.
+    func suggestedTrainingExercises(
+        targetMuscles: [MuscleGroup],
+        perMuscleLimit: Int = 2,
+        limit: Int = 8,
+        equipmentFilter: String? = nil
+    ) -> [Exercise] {
+        return Self.suggestedTrainingExercises(
+            targetMuscles: targetMuscles, library: userLibrary, settings: settings,
+            preferredIDs: canonicalFavoriteExerciseIDs.union(recentExerciseIDs.prefix(40)),
+            perMuscleLimit: perMuscleLimit, limit: limit, equipmentFilter: equipmentFilter)
+    }
+
+    /// Quick Workout filters name a concrete piece of equipment; profile preferences use categories.
+    /// Keep the exact filter on the candidate library and only map its profile constraint here.
+    static func settingsForTrainingSelection(_ settings: UserSettings, equipmentFilter: String?) -> UserSettings {
+        guard let equipmentFilter else { return settings }
+        var effective = settings
+        if let category = EquipmentCategory.category(for: equipmentFilter) {
+            effective.availableEquipment = [category.rawValue]
+        } else if ["body_only", "bodyweight", "none"].contains(equipmentFilter) {
+            effective.availableEquipment = ["bodyweight"]
+        }
+        return effective
+    }
+
+    static func suggestedTrainingExercises(
+        targetMuscles: [MuscleGroup],
+        library: [Exercise],
+        settings: UserSettings,
+        preferredIDs: Set<String> = [],
+        perMuscleLimit: Int = 2,
+        limit: Int = 8,
+        equipmentFilter: String? = nil
+    ) -> [Exercise] {
+        guard perMuscleLimit > 0, limit > 0 else { return [] }
+        let policy = ExerciseSelectionPolicy.shared
+        let effective = settingsForTrainingSelection(settings, equipmentFilter: equipmentFilter)
+        let matching = library.filter { exercise in
+            guard let equipmentFilter else { return true }
+            if equipmentFilter == "other" { return exercise.equipment == "other" || exercise.equipment == nil }
+            return exercise.equipment == equipmentFilter
+        }
+        let pool = policy.generationCandidates(
+            from: matching.filter { $0.category == .strength || $0.category == .hypertrophyFocus || $0.category == .calisthenics },
+            settings: effective, maxPerProgrammingGroup: Int.max, preferredIDs: preferredIDs)
+        var selected: [Exercise] = []
+        var groups = Set<String>()
+        for muscle in targetMuscles {
+            let targets = expandAnatomyMuscles([muscle])
+            let ranked = pool.enumerated().compactMap { index, exercise -> (Int, Exercise, Int)? in
+                let score = exercise.muscleGroups.enumerated().reduce(0) { total, item in
+                    total + (targets.contains(item.element) ? max(20, 100 - item.offset * 18) : 0)
+                }
+                return score > 0 ? (index, exercise, score) : nil
+            }.sorted { lhs, rhs in
+                let lt = policy.tier(for: lhs.1), rt = policy.tier(for: rhs.1)
+                if lt != rt { return lt == .core }
+                if lhs.2 != rhs.2 { return lhs.2 > rhs.2 }
+                return lhs.0 < rhs.0
+            }
+            var count = 0
+            for (_, exercise, _) in ranked {
+                guard groups.insert(policy.programmingGroupID(for: exercise)).inserted else { continue }
+                selected.append(exercise)
+                count += 1
+                if selected.count >= limit { return selected }
+                if count >= perMuscleLimit { break }
+            }
+        }
+        return selected
+    }
+
+    /// Specialist versions not yet adopted, using the same editorial tiers as browsing/generation.
     var unadoptedNicheExercises: [Exercise] {
         let adopted = Set(settings.adoptedNicheExerciseIds)
-        return exercises.filter { $0.isNiche && !adopted.contains($0.id) }
+        let policy = ExerciseSelectionPolicy.shared
+        return policy.sorted(exercises.filter { policy.tier(for: $0).isSpecialist && !adopted.contains($0.id) })
     }
 
     /// 采纳一个小众动作 — 加进 settings.adoptedNicheExerciseIds. 之后主 picker 能看到它.
@@ -133,10 +253,18 @@ final class DataStore {
 
     /// 加一个用户自创动作. caller 自己负责 build Exercise (含 customImageData / muscleGroups 等).
     /// id 由 caller 给 (推荐 "custom-{UUID}" 格式), 防止跟 bundle ID 冲突.
-    func addCustomExercise(_ ex: Exercise) {
+    var canCreateCustomExercise: Bool {
+        settings.isPro || settings.customExercises.count < ProAccessPolicy.current.freeCustomExercises
+    }
+
+    @discardableResult
+    func addCustomExercise(_ ex: Exercise) -> Bool {
+        if let existing = settings.customExercises.first(where: { $0.id == ex.id }) { return existing == ex }
+        guard canCreateCustomExercise else { return false }
         settings.customExercises.append(ex)
         Analytics.shared.track("custom_exercise_add")   // 无 PII: 不带名字/图
         save()
+        return true
     }
 
     // (旧"从截图导入 → 存为自创动作"工厂已删 — 导入改版后未匹配动作只能从库里替换,
@@ -161,17 +289,13 @@ final class DataStore {
 
     /// 教练记忆 (Coaching Memory) — append 一条用户用自然语言写下的偏好 / 限制.
     /// AI 对话框发送时调 (那句话同时驱动本次重生成). 以 bullet ("- xxx") 累积成一份长期备忘,
-    /// 每次生成 routine 都注进 prompt. 去掉首尾空白后为空则忽略; 跟末行完全重复 (连续) 则不重复追加.
+    /// 每次生成 routine 都注进 prompt. 忽略空文本，并与全部已有 Notes 去重。
     func appendCoachNote(_ note: String) {
         let trimmed = note.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
         let bullet = "- \(trimmed)"
-        // 避免跟最后一条完全相同的连续重复 (用户连发两次同一句).
-        let lastLine = settings.coachMemory
-            .split(separator: "\n", omittingEmptySubsequences: false)
-            .last
-            .map { $0.trimmingCharacters(in: .whitespaces) }
-        guard lastLine != bullet else { return }
+        // De-duplicate across all Notes, not only consecutive lines.
+        guard !CoachMemoryProposal.key(settings.coachMemory).contains(CoachMemoryProposal.key(trimmed)) else { return }
         if settings.coachMemory.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             settings.coachMemory = bullet
         } else {
@@ -221,11 +345,25 @@ final class DataStore {
         return false
     }
 
+    var aiAccess = DeviceAIQuota()
+
     init(exercises: [Exercise], plans: [Plan], sets: [SetRecord], settings: UserSettings) {
+        let lookup = ExerciseLibrary.lookup(exercises + settings.customExercises)
         self.exercises = exercises
-        self.plans = plans
-        self.sets = sets
-        self.settings = settings
+        self.plans = plans.map { ExerciseLibrary.canonicalPlan($0, using: lookup) }
+        self.sets = sets.map { ExerciseLibrary.canonicalRecord($0, using: lookup) }
+        self.settings = ExerciseLibrary.canonicalSettings(settings, using: lookup)
+        if self.settings.workoutCompletions == nil {
+            // Existing history has no finish events. Migrate its plan/day records
+            // once; future set logging does not advance the workout rotation.
+            let grouped = Dictionary(grouping: sets.filter { $0.planId != nil }) {
+                "\($0.planId!)|\(settings.calendar.startOfDay(for: $0.performedAt).timeIntervalSince1970)"
+            }
+            self.settings.workoutCompletions = grouped.compactMap { key, records in
+                guard let last = records.max(by: { $0.performedAt < $1.performedAt }), let planID = last.planId else { return nil }
+                return WorkoutCompletion(sessionID: "legacy-" + key, planID: planID, finishedAt: last.performedAt)
+            }
+        }
     }
 
     // MARK: - Persistence bootstrap
@@ -245,7 +383,7 @@ final class DataStore {
                 sets: snapshot.sets,
                 settings: snapshot.settings
             )
-            store.aiTodayPlan = snapshot.aiTodayPlan
+            store.aiTodayPlan = snapshot.aiTodayPlan.map { ExerciseLibrary.canonicalPlan($0, using: store.exById) }
             store.lastAIRefreshAt = snapshot.lastAIRefreshAt
             store.aiTodayPlanEditedAt = snapshot.aiTodayPlanEditedAt
             // 匿名分析 ID — 老快照 (UserSettings.anonymousId 字段加之前存的) 解码会落空串, 这里补铸一个.
@@ -258,6 +396,13 @@ final class DataStore {
                 store.plans.removeAll { p in autoPrefixes.contains { p.id.hasPrefix($0) } }
                 store.flushSave()
             }
+            if store.plans != snapshot.plans || store.sets != snapshot.sets ||
+                store.settings.favoriteExerciseIds != snapshot.settings.favoriteExerciseIds ||
+                store.settings.adoptedNicheExerciseIds != snapshot.settings.adoptedNicheExerciseIds ||
+                store.aiTodayPlan != snapshot.aiTodayPlan {
+                store.flushSave()
+            }
+            store.aiAccess = DeviceAIQuota.installed(legacy: snapshot.settings.onboardingCompleted || !snapshot.plans.isEmpty || !snapshot.sets.isEmpty)
             return store
         }
         // 第一次启动 (磁盘无存档) → 全新空档: 空 plans/sets + onboardingCompleted=false.
@@ -266,6 +411,7 @@ final class DataStore {
         // ⚠️ 绝不能用 makeMock() —— 它带假训练历史 + 假画像 (男/30/75) + onboardingCompleted=true,
         //    会让真实新用户跳过引导、看到自己没做过的训练. makeMock 仅供 SwiftUI Preview / 演示.
         let store = freshInstall()
+        store.aiAccess = DeviceAIQuota.installed(legacy: false)
         store.mintAnonymousIdIfNeeded()
         store.flushSave()
         return store
@@ -301,6 +447,9 @@ final class DataStore {
     /// 持久化当前状态 — 真 debounced (0.8s 合并). 关键时刻 (进后台 / 退出) 调 flushSave() 立即落盘.
     /// 不抛错, 失败静默 (写不进文件不影响 app 运行).
     func save() {
+        settings.reconcileHealthProfileOverrides()
+        SleepReminderScheduler.shared.reschedule(settings: settings)
+        MealReminderScheduler.shared.reschedule(settings: settings)
         saveWorkItem?.cancel()
         let item = DispatchWorkItem { [weak self] in
             self?.writeSnapshotNow()
@@ -311,13 +460,30 @@ final class DataStore {
 
     /// 立即把当前状态落盘 (取消 pending debounce). RootView 在 scenePhase → background/inactive 调.
     func flushSave() {
+        settings.reconcileHealthProfileOverrides()
+        MealReminderScheduler.shared.reschedule(settings: settings)
         saveWorkItem?.cancel()
         saveWorkItem = nil
         writeSnapshotNow()
     }
 
+    /// Equipment-swap commit. flushSave() ignores the Bool from PersistenceController.save,
+    /// so a failed atomic write would still look saved. This cancels the debounced save,
+    /// writes the current snapshot (plans plus history, settings, and today's plan), and
+    /// returns whether that write succeeded. It does not replace flushSave().
+    @discardableResult
+    func saveEquipmentSwapNow() -> Bool {
+        settings.reconcileHealthProfileOverrides()
+        MealReminderScheduler.shared.reschedule(settings: settings)
+        saveWorkItem?.cancel()
+        saveWorkItem = nil
+        if let equipmentSwapSaveOverride { return equipmentSwapSaveOverride() }
+        return PersistenceController.shared.save(currentSnapshot())
+    }
+
     /// 真正构 snapshot + 写盘. 在 main actor 上 (DataStore @MainActor), 读 state 安全.
     private func writeSnapshotNow() {
+        BodyHealthLocalStore.saveIfNeeded(settings)
         let snapshot = PersistenceController.Snapshot(
             version: PersistenceController.schemaVersion,
             plans: plans,
@@ -329,15 +495,17 @@ final class DataStore {
             updatedAt: Date()
         )
         PersistenceController.shared.save(snapshot)
+        WidgetSnapshotPublisher.shared.schedule(self)
     }
 
     /// 用 imported snapshot 替换当前所有数据. UI 调 import 时用.
     /// exercises 不动 — 那个是静态库, 不进 snapshot.
     func replaceFromSnapshot(_ snapshot: PersistenceController.Snapshot) {
-        self.plans = snapshot.plans
-        self.sets = snapshot.sets
-        self.settings = snapshot.settings
-        self.aiTodayPlan = snapshot.aiTodayPlan
+        let lookup = ExerciseLibrary.lookup(exercises + snapshot.settings.customExercises)
+        self.plans = snapshot.plans.map { ExerciseLibrary.canonicalPlan($0, using: lookup) }
+        self.sets = snapshot.sets.map { ExerciseLibrary.canonicalRecord($0, using: lookup) }
+        self.settings = ExerciseLibrary.canonicalSettings(snapshot.settings, using: lookup)
+        self.aiTodayPlan = snapshot.aiTodayPlan.map { ExerciseLibrary.canonicalPlan($0, using: lookup) }
         self.lastAIRefreshAt = snapshot.lastAIRefreshAt
         self.aiTodayPlanEditedAt = snapshot.aiTodayPlanEditedAt
         flushSave()  // import 是显式动作, 立即落盘不 debounce
@@ -471,6 +639,7 @@ final class DataStore {
                 }
                 return s
             }
+            p.steps = DataStore.applyEquipmentPreference(p.steps, settings: settings, exById: exById)
             // 3. 科学化兜底: 复合优先 + 同 section ≤2 + slot-1 复合 + push≥pull (先于 pad, 这样若丢了同 section
             //    第 3 个, 下面 pad 会按用户 exercises-per-plan 用别的 section 补回, 不让总数掉档).
             p.steps = DataStore.enforceScience(p.steps, exById: exById)
@@ -479,10 +648,95 @@ final class DataStore {
             p.steps = DataStore.padStepsToTarget(p.steps, target: cap, settings: settings, exById: exById)
             // #1 器械约束: 把所选器械做不了的动作换成可用替代 (availableEquipment 空时无操作).
             p.steps = DataStore.applyEquipmentPreference(p.steps, settings: settings, exById: exById)
+            if p.steps.isEmpty {
+                // A strict no-equipment profile can remove every pull-day step.
+                // Keep a usable card by choosing a familiar, equipment-compatible
+                // full-body session rather than returning an empty day or borrowing a bar.
+                let targets = settings.wantStrengthen + [.chest, .legs, .back, .shoulders, .core, .arms]
+                let safe = suggestedTrainingExercises(targetMuscles: targets, library: Array(exById.values),
+                    settings: settings, preferredIDs: Set(settings.favoriteExerciseIds), perMuscleLimit: 1, limit: cap)
+                if !safe.isEmpty {
+                    p.name = NSLocalizedString("Full body", comment: "Equipment-compatible fallback workout")
+                    p.steps = enforceScience(safe.enumerated().map { index, exercise in
+                        PlanStep(id: "\(p.id)-fallback-\(index)", exerciseId: exercise.id,
+                                 sets: floorSets, reps: exercise.mechanic == .isolation ? goal.defaultRepsForIsolation() : goal.defaultRepsForCompound(),
+                                 weight: nil, duration: nil, restBetweenSets: settings.defaultRestSeconds, rest: 0)
+                    }, exById: exById)
+                }
+            }
+            p = ExerciseSelectionPolicy.shared.routineDefaults(p, library: Array(exById.values), settings: settings, preferPinned: true)
+            p.steps = DataStore.applyTrainingGoal(p.steps, settings: settings, exById: exById)
+            p.steps = p.steps.map { step in
+                var step = step
+                if step.weight == nil, step.setWeights?.contains(where: { $0 != nil }) != true,
+                   let ex = exById[step.exerciseId], ExerciseWeightReference.expectsLoad(ex),
+                   let reference = ExerciseWeightReference.latest(for: ex, records: sets, library: exById) {
+                    step.weight = reference.kilograms
+                    step.markSuggested("weight", value: reference.kilograms, source: .history,
+                                       exerciseID: ex.id, recordID: reference.recordID, recordedAt: reference.recordedAt)
+                }
+                return step
+            }
             // LRU 回填: 该 plan 在历史里最近一次训练时间 (没练过 → nil → distantPast 排最前)
             p.lastUsedAt = sets.filter { $0.planId == p.id }.map(\.performedAt).max()
             return p
         }
+    }
+
+    /// One prescription for every local plan. Reps come from the existing loading
+    /// table. Fat loss keeps those compound lifts and drops extra isolation work;
+    /// it does not add cardio or a spot-reduction list. Missing weight, height,
+    /// injuries and experience stay missing.
+    static func applyTrainingGoal(
+        _ steps: [PlanStep], settings: UserSettings, exById: [String: Exercise]
+    ) -> [PlanStep] {
+        let kind = settings.trainingGoalKind
+        let loading = kind.loading
+        let rest = kind.recommendedRestSeconds()
+        let floor = max(1, kind.recommendedSetsFloor())
+        func prescribed(_ step: PlanStep) -> PlanStep {
+            var step = step
+            if step.reps != nil {
+                let isolation = exById[step.exerciseId]?.mechanic == .isolation
+                step.reps = isolation ? loading.defaultRepsForIsolation() : loading.defaultRepsForCompound()
+                if kind == .generalFitness { step.sets = min(step.sets, floor) }
+                else { step.sets = max(step.sets, floor) }
+            } else if kind == .generalFitness {
+                step.sets = min(step.sets, floor)
+            }
+            step.restBetweenSets = rest
+            step.markSuggested("sets", value: Double(step.sets), source: .preference)
+            if let reps = step.reps { step.markSuggested("reps", value: Double(reps), source: .preference) }
+            return step
+        }
+        var result = steps.map(prescribed)
+        guard kind == .loseFat else { return result }
+        let originalCount = result.count
+        let kept = result.filter { exById[$0.exerciseId]?.mechanic != .isolation }
+        guard kept.contains(where: { exById[$0.exerciseId]?.mechanic == .compound }) else { return result }
+        result = fillCompounds(kept, target: originalCount, settings: settings, exById: exById, sets: floor, reps: loading.defaultRepsForCompound(), rest: rest)
+        return result
+    }
+
+    private static func fillCompounds(
+        _ steps: [PlanStep], target: Int, settings: UserSettings, exById: [String: Exercise],
+        sets: Int, reps: Int, rest: Int
+    ) -> [PlanStep] {
+        guard steps.count < target else { return steps }
+        let policy = ExerciseSelectionPolicy.shared
+        let pool = policy.generationCandidates(
+            from: Array(exById.values), settings: settings, maxPerProgrammingGroup: 1,
+            preferredIDs: Set(settings.favoriteExerciseIds))
+        var result = steps
+        var used = Set(steps.compactMap { exById[$0.exerciseId] }.map { policy.programmingGroupID(for: $0) })
+        for exercise in pool where exercise.mechanic == .compound && !used.contains(policy.programmingGroupID(for: exercise)) {
+            if result.count >= target { break }
+            used.insert(policy.programmingGroupID(for: exercise))
+            result.append(PlanStep(
+                id: "goal-compound-\(exercise.id)-\(result.count)", exerciseId: exercise.id,
+                sets: sets, reps: reps, weight: nil, duration: nil, restBetweenSets: rest, rest: 0))
+        }
+        return result
     }
 
     /// "偏好社区计划" 开关打开时的推荐计划来源 — 不再从模板自动生成, 而是从 Community 里挑一套
@@ -531,6 +785,7 @@ final class DataStore {
                     p.steps = p.steps.indices.filter { keep.contains($0) }.map { p.steps[$0] }
                 }
             }
+            p.steps = applyEquipmentPreference(p.steps, settings: settings, exById: exById)
             // 科学化兜底 (先于 pad): 复合优先 + 同 section ≤2 + slot-1 复合 + push≥pull.
             p.steps = enforceScience(p.steps, exById: exById)
             // 反向: 动作数 < 用户设定时补足配件 —— 社区计划自身偏短 (一个 session 只有 5 个动作) 也
@@ -547,12 +802,8 @@ final class DataStore {
             : plans
     }
 
-    /// 把一组 step 补足到 `target` 个动作 —— 计划自身的动作数 < 用户设定的 "exercises per plan"
-    /// 时调用, 严格兑现用户偏好 (用户设 7 就给 7, 而不是被社区计划自身的 5 个卡住).
-    ///
-    /// 补动作原则: 只从"这次 session 已经在练的大肌群"里挑配件 (聚焦肌群优先) —— Push 日补的是
-    /// 胸/肩/三头配件, 不会乱加腿, 保持计划的肌群主题一致. 候选优先孤立动作 (配件感更对),
-    /// 不够再放宽到复合; 排除 niche / 计划里已有的; 稳定排序保证结果可复现. 找不到更多就停 (不死循环).
+    /// Fill generated plans with familiar accessories from their existing muscle sections.
+    /// Selection is by programming group, so extra equipment variants never gain extra slots.
     static func padStepsToTarget(
         _ steps: [PlanStep],
         target: Int,
@@ -560,95 +811,88 @@ final class DataStore {
         exById: [String: Exercise]
     ) -> [PlanStep] {
         guard steps.count < target else { return steps }
+        let policy = ExerciseSelectionPolicy.shared
         var result = steps
-        var used = Set(steps.map { $0.exerciseId })
-
-        // 本次已练的大肌群 section (按出现顺序), 聚焦肌群整体提前.
+        var usedGroups = Set(steps.compactMap { exById[$0.exerciseId] }.map { policy.programmingGroupID(for: $0) })
         var sections: [MuscleGroup] = []
-        for s in steps {
-            guard let ex = exById[s.exerciseId] else { continue }
-            for m in ex.primaryMuscles {
-                let sec = m.section ?? m
-                if sec != .fullBody, !sections.contains(sec) { sections.append(sec) }
+        for step in steps {
+            guard let exercise = exById[step.exerciseId] else { continue }
+            for muscle in exercise.primaryMuscles {
+                let section = muscle.section ?? muscle
+                if section != .fullBody, !sections.contains(section) { sections.append(section) }
             }
         }
-        let focus = Set(settings.wantStrengthen.compactMap { $0.section ?? $0 })
+        let focus = Set(settings.wantStrengthen.map { $0.section ?? $0 })
         sections = sections.filter { focus.contains($0) } + sections.filter { !focus.contains($0) }
         guard !sections.isEmpty else { return result }
-
-        let setsFloor = max(1, settings.defaultSetsPerExercise)
-        let reps = settings.trainingGoal.defaultRepsForIsolation()
-
-        func pool(_ section: MuscleGroup, isolationOnly: Bool) -> [String] {
-            exById.values
-                .filter { ex in
-                    ex.category == .strength && !ex.isNiche &&
-                    (!isolationOnly || ex.mechanic == .isolation) &&
-                    ex.primaryMuscles.contains { ($0.section ?? $0) == section }
-                }
-                .map(\.id)
-                .sorted()
+        let pool = policy.generationCandidates(
+            from: Array(exById.values).filter { $0.category == .strength || $0.category == .hypertrophyFocus || $0.category == .calisthenics },
+            settings: settings, maxPerProgrammingGroup: Int.max,
+            preferredIDs: Set(settings.favoriteExerciseIds))
+        let pools = sections.map { section in
+            pool.enumerated().filter { item in
+                item.element.primaryMuscles.contains { ($0.section ?? $0) == section }
+            }.sorted { lhs, rhs in
+                let lt = policy.tier(for: lhs.element), rt = policy.tier(for: rhs.element)
+                if lt != rt { return lt == .core }
+                let li = lhs.element.mechanic == .isolation, ri = rhs.element.mechanic == .isolation
+                if li != ri { return li }
+                return lhs.offset < rhs.offset
+            }.map(\.element)
         }
-
-        // 两轮: 先填孤立配件, 还不够再放宽到复合.
-        for isolationOnly in [true, false] {
-            let pools = sections.map { pool($0, isolationOnly: isolationOnly) }
-            var cursor = 0, emptyStreak = 0
-            while result.count < target && emptyStreak < pools.count {
-                let p = pools[cursor % pools.count]
-                cursor += 1
-                if let pick = p.first(where: { !used.contains($0) }) {
-                    used.insert(pick)
-                    result.append(PlanStep(
-                        id: "step-\(pick)-pad\(result.count)",
-                        exerciseId: pick,
-                        sets: setsFloor,
-                        reps: reps,
-                        weight: nil,
-                        restBetweenSets: settings.defaultRestSeconds,
-                        rest: 0
-                    ))
-                    emptyStreak = 0
-                } else {
-                    emptyStreak += 1
-                }
+        var cursor = 0, emptyStreak = 0
+        while result.count < target && emptyStreak < pools.count {
+            let candidates = pools[cursor % pools.count]
+            cursor += 1
+            guard let pick = candidates.first(where: { !usedGroups.contains(policy.programmingGroupID(for: $0)) }) else {
+                emptyStreak += 1
+                continue
             }
-            if result.count >= target { break }
+            usedGroups.insert(policy.programmingGroupID(for: pick))
+            result.append(PlanStep(
+                id: "step-\(pick.id)-pad\(result.count)", exerciseId: pick.id,
+                sets: max(1, settings.defaultSetsPerExercise),
+                reps: pick.mechanic == .isolation ? settings.trainingGoal.defaultRepsForIsolation() : settings.trainingGoal.defaultRepsForCompound(),
+                weight: nil, restBetweenSets: settings.defaultRestSeconds, rest: 0))
+            emptyStreak = 0
         }
         return result
     }
 
-    /// #1 器械约束 — 把"所选器械做不了"的动作换成同主肌群 section + 可用器械的替代动作.
-    /// settings.availableEquipment 空 → 原样返回 (不限制). 找不到替代 → 保留原动作 (不留空).
-    static func applyEquipmentPreference(_ steps: [PlanStep], settings: UserSettings, exById: [String: Exercise]) -> [PlanStep] {
-        let selected = Set(settings.availableEquipment)
-        guard !selected.isEmpty else { return steps }
-        var used = Set(steps.map { $0.exerciseId })
-        return steps.map { step -> PlanStep in
-            guard let ex = exById[step.exerciseId],
-                  !EquipmentCategory.allows(ex, selected: selected) else { return step }
-            let targetSection = ex.primaryMuscles.first.map { $0.section ?? $0 }
-            let alt = exById.values
-                .filter { c in
-                    c.id != ex.id && !used.contains(c.id) && c.category == ex.category && !c.isNiche &&
-                    EquipmentCategory.allows(c, selected: selected) &&
-                    (targetSection == nil || c.primaryMuscles.contains { ($0.section ?? $0) == targetSection })
-                }
-                .sorted { a, b in
-                    let am = (a.mechanic == ex.mechanic) ? 0 : 1
-                    let bm = (b.mechanic == ex.mechanic) ? 0 : 1
-                    return am != bm ? am < bm : a.name < b.name
-                }
-                .first
-            guard let alt else { return step }
-            used.insert(alt.id)
-            // exerciseId 是 let → 重建. 换了动作, weight/逐组覆盖清掉 (不同动作重量不通用).
-            return PlanStep(
-                id: step.id, exerciseId: alt.id, sets: step.sets, reps: step.reps,
+    /// Normalize newly generated steps against the shared familiarity and equipment rules.
+    /// Existing saved plans never enter this path merely because the catalog changes.
+    /// Substituting a concrete variant clears load overrides; equipment loads are not interchangeable.
+    static func applyEquipmentPreference(
+        _ steps: [PlanStep], settings: UserSettings, exById: [String: Exercise],
+        allowSpecialistIDs: Set<String> = []
+    ) -> [PlanStep] {
+        let policy = ExerciseSelectionPolicy.shared
+        let pool = policy.generationCandidates(from: Array(exById.values), settings: settings,
+                                               maxPerProgrammingGroup: Int.max,
+                                               preferredIDs: Set(settings.favoriteExerciseIds))
+        let eligibleIDs = Set(pool.map(\.id))
+        var usedGroups = Set<String>()
+        var result: [PlanStep] = []
+        for step in steps {
+            guard let original = exById[step.exerciseId] else { continue }
+            let group = policy.programmingGroupID(for: original)
+            let retainedSpecialist = allowSpecialistIDs.contains(original.id)
+                && policy.equipmentAllows(original, selected: Set(settings.availableEquipment), environment: settings.trainingEnvironment)
+            if (eligibleIDs.contains(original.id) || retainedSpecialist), !usedGroups.contains(group) {
+                usedGroups.insert(group)
+                result.append(step)
+                continue
+            }
+            let available = pool.filter { !usedGroups.contains(policy.programmingGroupID(for: $0)) }
+            guard let replacement = policy.replacementCandidates(
+                for: original, from: available, settings: settings, limit: 1).first else { continue }
+            usedGroups.insert(policy.programmingGroupID(for: replacement))
+            result.append(PlanStep(
+                id: step.id, exerciseId: replacement.id, sets: step.sets, reps: step.reps,
                 weight: nil, duration: step.duration,
-                restBetweenSets: step.restBetweenSets, rest: step.rest
-            )
+                restBetweenSets: step.restBetweenSets, rest: step.rest))
         }
+        return result
     }
 
     // MARK: - enforceScience — 出计划后的科学化硬规则兜底 (AI 输出 + 模板/社区都过这一关)
@@ -669,7 +913,16 @@ final class DataStore {
 
         func sectionKey(_ s: PlanStep) -> MuscleGroup? {
             guard let ex = exById[s.exerciseId], let first = ex.primaryMuscles.first else { return nil }
-            return first.section ?? first
+            // Legs contain several independent training roles; a two-exercise cap on all
+            // of them would remove hamstring/glute/calf work from an ordinary leg day.
+            switch first {
+            case .quads, .rectusFemoris, .vastusLateralis, .vastusMedialis: return .quads
+            case .hamstrings, .bicepsFemoris, .semitendinosus: return .hamstrings
+            case .glutes, .gluteusMaximus, .gluteusMedius: return .glutes
+            case .calves, .gastrocnemius, .soleus, .tibialisAnterior: return .calves
+            case .adductors: return .adductors
+            default: return first.section ?? first
+            }
         }
         func isCompound(_ s: PlanStep) -> Bool { exById[s.exerciseId]?.mechanic == .compound }
         func force(_ s: PlanStep) -> ExerciseForce? { exById[s.exerciseId]?.force }
@@ -730,7 +983,17 @@ final class DataStore {
     // MARK: - 简单的 plan 操作
 
     func updatePlan(_ plan: Plan) {
+        let enteredSteps = plan.steps
+        var plan = routinePlanDefaults(plan)
         let old = plans.first(where: { $0.id == plan.id })
+        for step in enteredSteps {
+            let prior = old?.steps.first(where: { $0.id == step.id })
+            guard !step.isSuggested("weight"),
+                  prior == nil || prior?.weight != step.weight || prior?.setWeights != step.setWeights,
+                  let exercise = exById[step.exerciseId] else { continue }
+            rememberWeight(step.weight ?? step.setWeights?.compactMap { $0 }.first, for: exercise)
+        }
+        plan = routinePlanDefaults(plan)
         let isAIToday = aiTodayPlan?.id == plan.id
         if let idx = plans.firstIndex(where: { $0.id == plan.id }) {
             plans[idx] = plan
@@ -763,21 +1026,40 @@ final class DataStore {
 
     // MARK: - R3 全局动作参数同步
 
+    /// A same-number edit confirms its origin without presenting an empty numeric
+    /// change review. Never save another session value or modify any target here.
+    func confirmMatchingSuggestions(from edited: PlanStep, in planID: String) {
+        guard let pi = plans.firstIndex(where: { $0.id == planID }),
+              let si = plans[pi].steps.firstIndex(where: { $0.id == edited.id && $0.exerciseId == edited.exerciseId }) else { return }
+        var step = plans[pi].steps[si]
+        let before = step
+        for field in ["sets", "reps", "weight", "duration"] where step.isSuggested(field) && !edited.isSuggested(field) {
+            let matches: Bool
+            switch field {
+            case "sets": matches = step.sets == edited.sets
+            case "reps": matches = step.reps == edited.reps && step.setReps == edited.setReps
+            case "weight": matches = step.weight == edited.weight && step.setWeights == edited.setWeights
+            default: matches = step.duration == edited.duration && step.setDurations == edited.setDurations
+            }
+            if matches { step.confirmParameter(field) }
+        }
+        if step != before {
+            plans[pi].steps[si] = step; plans[pi].updatedAt = Date(); save()
+        }
+    }
+
     /// 把 src 的训练参数 (组数/次数/重量/时长/休息 + 逐组覆盖) 写到所有 plan (+ aiTodayPlan)
     /// 里同 exerciseId 的 step. 仅在 globalExerciseParamSyncEnabled 开启时生效.
     /// 不改 id / exerciseId; 源 step 被自己覆盖是幂等 no-op.
     func syncExerciseParams(from src: PlanStep) {
         guard settings.globalExerciseParamSyncEnabled else { return }
         func apply(_ s: inout PlanStep) {
-            s.sets = src.sets
-            s.reps = src.reps
-            s.weight = src.weight
-            s.duration = src.duration
+            if !src.isSuggested("sets") { s.sets = src.sets; s.confirmParameter("sets") }
+            if !src.isSuggested("reps") { s.reps = src.reps; s.setReps = src.setReps; s.confirmParameter("reps") }
+            if !src.isSuggested("weight"), src.weight != nil || src.setWeights?.contains(where: { $0 != nil }) == true { s.weight = src.weight; s.setWeights = src.setWeights; s.confirmParameter("weight") }
+            if !src.isSuggested("duration") { s.duration = src.duration; s.setDurations = src.setDurations; s.confirmParameter("duration") }
             s.restBetweenSets = src.restBetweenSets
             s.rest = src.rest
-            s.setReps = src.setReps
-            s.setWeights = src.setWeights
-            s.setDurations = src.setDurations
         }
         var changed = false
         let now = Date()
@@ -845,48 +1127,110 @@ final class DataStore {
         a.sets == b.sets && a.reps == b.reps && a.weight == b.weight && a.duration == b.duration
             && a.restBetweenSets == b.restBetweenSets && a.rest == b.rest
             && a.setReps == b.setReps && a.setWeights == b.setWeights && a.setDurations == b.setDurations
+            && a.parameterSuggestions == b.parameterSuggestions
     }
 
     /// 新建一个 PlanStep, 训练参数按"全局同步开/关"取默认 (R3):
     ///   - 同步开 + 已有别的 routine 含该动作 → 采用那份参数 (保持全局一致).
     ///   - 否则 → 从该动作"最近一次记录" (lastSet) 回填 reps/weight/duration; 组数/休息用偏好默认.
     func makeSeededStep(for ex: Exercise, stepId: String) -> PlanStep {
-        let isStrength = ex.category == .strength
         if settings.globalExerciseParamSyncEnabled,
            let existing = plans.lazy.flatMap({ $0.steps }).first(where: { $0.exerciseId == ex.id }) {
-            return PlanStep(
-                id: stepId, exerciseId: ex.id,
-                sets: existing.sets, reps: existing.reps, weight: existing.weight,
-                setReps: existing.setReps, setWeights: existing.setWeights, setDurations: existing.setDurations,
-                duration: existing.duration,
-                restBetweenSets: existing.restBetweenSets, rest: existing.rest
-            )
+            let copied = PlanStep(id: stepId, exerciseId: ex.id, sets: existing.sets, reps: existing.reps,
+                                 weight: existing.weight, setReps: existing.setReps, setWeights: existing.setWeights,
+                                 setDurations: existing.setDurations, duration: existing.duration,
+                                 restBetweenSets: existing.restBetweenSets, rest: existing.rest,
+                                 parameterSuggestions: existing.parameterSuggestions)
+            return suggestingMissingParameters(for: copied)
         }
-        let last = lastSet(forExerciseId: ex.id)
-        // reps 默认跟训练目标走 (复合取低端 / 孤立取高端) —— 没历史时不再硬填 10, 让临时加的动作也遵从目标.
-        // 有历史则优先沿用上次实际 reps (用户真练过的比目标默认更贴个人).
-        let goalReps = ex.mechanic == .isolation
-            ? settings.trainingGoal.defaultRepsForIsolation()
-            : settings.trainingGoal.defaultRepsForCompound()
-        return PlanStep(
-            id: stepId, exerciseId: ex.id,
-            sets: settings.defaultSetsPerExercise,
-            reps: isStrength ? (last?.reps ?? goalReps) : nil,
-            weight: isStrength ? (last?.weight ?? 0) : nil,
-            duration: isStrength ? nil : (last?.duration ?? 30),
-            restBetweenSets: settings.defaultRestSeconds,
-            rest: 0
-        )
+        var step = PlanStep(id: stepId, exerciseId: ex.id, sets: settings.defaultSetsPerExercise,
+                            reps: nil, weight: nil, duration: nil,
+                            restBetweenSets: settings.defaultRestSeconds, rest: 0)
+        step.markSuggested("sets", value: Double(step.sets), source: .preference)
+        return suggestingMissingParameters(for: step)
+    }
+
+    /// Fill unknown fields and refresh unconfirmed suggestions outside the live session.
+    /// Zero and every explicit per-set override are user targets.
+    /// Shared by Coach, routine editing, free workouts and player replacements.
+    func suggestingMissingParameters(for original: PlanStep, roughRecords: [SetRecord]? = nil) -> PlanStep {
+        guard let exercise = exById[original.exerciseId] else { return original }
+        var step = original
+        for field in ["sets", "reps", "weight", "duration"] where !step.isSuggested(field) {
+            step.confirmParameter(field)
+        }
+        let history = sets.filter { record in
+            record.exerciseId == exercise.id && record.performedAt <= Date()
+                && (record.reps.map { $0 > 0 && $0 <= 999 } ?? false)
+                && (record.weight.map { $0.isFinite && $0 >= 0 && $0 <= 500 } ?? true)
+        }.max { $0.performedAt < $1.performedAt }
+        if exercise.category == .strength {
+            if step.reps == nil || (step.isSuggested("reps") && step.parameterSuggestions?["reps"]?.source != .shared), step.setReps?.contains(where: { $0 != nil }) != true {
+                let value = history?.reps ?? (exercise.mechanic == .isolation
+                    ? settings.trainingGoal.defaultRepsForIsolation() : settings.trainingGoal.defaultRepsForCompound())
+                step.reps = value
+                step.markSuggested("reps", value: Double(value), source: history == nil ? .preference : .history,
+                                   exerciseID: history?.exerciseId, recordID: history?.id, recordedAt: history?.performedAt)
+            }
+            if step.weight == nil || (step.isSuggested("weight") && step.parameterSuggestions?["weight"]?.source != .shared),
+               step.setWeights?.contains(where: { $0 != nil }) != true {
+                if let reference = referenceWeight(for: exercise, targetReps: step.reps, roughRecords: roughRecords),
+                   ExerciseWeightReference.expectsLoad(exercise) || reference.kilograms > 0 {
+                    step.weight = reference.kilograms
+                    step.markSuggested("weight", value: reference.kilograms, source: reference.source,
+                                       exerciseID: reference.sourceExerciseID, recordID: reference.recordID,
+                                       recordedAt: reference.recordedAt, ruleID: reference.ruleID)
+                } else if step.parameterSuggestions?["weight"]?.isCrossExerciseEstimate == true {
+                    // Withdraw expired/revoked/inapplicable estimates; never clear manual targets.
+                    step.weight = nil; step.confirmParameter("weight")
+                }
+            }
+        } else if step.duration == nil || (step.isSuggested("duration") && step.parameterSuggestions?["duration"]?.source != .shared), step.setDurations?.contains(where: { $0 != nil }) != true {
+            let last = sets.filter { $0.exerciseId == exercise.id && $0.performedAt <= Date()
+                && ($0.duration ?? 0) > 0 }.max { $0.performedAt < $1.performedAt }
+            step.duration = last?.duration ?? 30
+            step.markSuggested("duration", value: Double(step.duration!), source: last == nil ? .preference : .history,
+                               exerciseID: last?.exerciseId, recordID: last?.id, recordedAt: last?.performedAt)
+        }
+        CrossExerciseLoadReference.clearIfUnsupported(&step)
+        if step.parameterSuggestions?["weight"]?.source == .roughEstimate,
+           step.duration != nil || step.setReps?.contains(where: { $0 != nil }) == true {
+            step.weight = nil; step.confirmParameter("weight")
+        }
+        return step
     }
 
     /// P0#5 修正: ✓ 落库时 SetRecord 直接取计划值, 力竭没做满的组记的是虚高的计划数 —
     /// 休息屏"刚才: 8 × 55 kg · 调整"入口用这个窄方法把刚落库那条改回真实值 (按 id 定位, 持久化).
     /// 只动 reps/weight/duration 三个可变字段, 不动 performedAt/planId (不是"重记一组").
-    func updateSetRecord(id: String, reps: Int?, weight: Double?, duration: Int?) {
+    func updateSetRecord(id: String, reps: Int?, weight: Double?, duration: Int?, sixRMConfirmed: Bool? = nil) {
         guard let idx = sets.firstIndex(where: { $0.id == id }) else { return }
         sets[idx].reps = reps
         sets[idx].weight = weight
         sets[idx].duration = duration
+        if let confirmed = sixRMConfirmed {
+            sets[idx].sixRMReference = confirmed && sets[idx].exerciseId == CrossExerciseLoadReference.anchorID
+                && reps == 6 && (weight ?? 0) > 0 && weight?.isFinite == true
+                ? SixRMReference(kilograms: weight!) : nil
+        } else if !sets[idx].hasConfirmedSixRM {
+            sets[idx].sixRMReference = nil
+        }
+        save()
+    }
+
+    /// A plan may be used repeatedly on the same day. Never discard by plan/day or elapsed time.
+    func discardWorkout(_ session: TrainingSessionStore.Session, recordIDs: Set<String>) {
+        sets.removeAll { recordIDs.contains($0.id) }
+        let completionID = "\(session.planId)|\(session.startedAt.timeIntervalSince1970)"
+        settings.workoutCompletions?.removeAll { $0.sessionID == completionID }
+        // Commit removal before the player clears active-session.json, including immediate app exit.
+        flushSave()
+    }
+
+    /// Playback undo removes only the record created by that transition.
+    func removeSetRecord(id: String) {
+        guard let index = sets.firstIndex(where: { $0.id == id }) else { return }
+        sets.remove(at: index)
         save()
     }
 
@@ -935,6 +1279,7 @@ final class DataStore {
             plans[idx].lastUsedAt = record.performedAt
             plans[idx].updatedAt = record.performedAt
         }
+        if settings.calendar.isDate(record.performedAt, inSameDayAs: Date()) { captureWellnessGoal(updateDiet: true) }
         save()  // 持久化变更
     }
 
@@ -972,37 +1317,82 @@ final class DataStore {
     /// sets 是 newest-first (recordSet insert at 0), 所以 sets.first = 最近一次.
     func rescheduleWorkoutReminders() {
         let last = sets.first?.performedAt
-        let body = NSLocalizedString("You're recovered — a quick session keeps your momentum going.",
-                                     comment: "comeback reminder body")
-        let enabled = settings.workoutRemindersEnabled
-        Task { @MainActor in
-            WorkoutReminderScheduler.shared.reschedule(enabled: enabled, lastWorkout: last, body: body)
-        }
+        let body = AppNotificationText.string("You're recovered — a quick session keeps your momentum going.")
+        WorkoutReminderScheduler.shared.reschedule(enabled: settings.workoutRemindersEnabled, lastWorkout: last, body: body)
     }
 
     /// 今日推荐 plan — 恢复档位 + LRU + wantStrengthen 覆盖度.
     /// 把首屏肌肉恢复模型真正接进推荐: 主肌群还在疲劳的 plan 沉底, 全员恢复时退化成 LRU 轮转.
-    var todayRecommendedPlan: Plan? {
-        pickTodayPlan(plans: plans, settings: settings, exById: exById,
-                      fatigueMap: MuscleStatusCompute.muscleFatigueMap(sets: sets, exById: exById))
+    var workoutRotation: WorkoutRotation {
+        WorkoutRotation(plans: plans, completions: settings.workoutCompletions ?? [],
+                        calendar: settings.calendar, now: Date())
     }
 
-    /// Today 主卡实际展示的"今日训练" — TodayScreen 卡片与 RootView 中键 quickStart 共用
-    /// (两处必须同一优先级, 否则点中间 tab 启动的训练 ≠ 卡片上显示的那张).
-    /// 默认用户自己的 plans 优先 (pickTodayPlan LRU) — 那些是用户见过/调过的, 更可信任.
-    /// 例外 (P0#1-①): plans 里全部是引导种下的 autoGenerated 模板 (seedStarterRoutines 产物,
-    /// 用户同样没见过) 且真 AI 计划已生成 → 优先展示 AI (✨AI badge), 否则新用户的 AI 分支永不可达,
-    /// "AI Workout Planner" 的首日承诺落空. 用户一旦 save/自建过任何一条 (非 autoGenerated),
-    /// 回到"用户自己的 plans 优先".
+    func updateWorkoutCompletion(planID: String, startedAt: Date, completed: Bool, now: Date = Date()) {
+        let sessionID = "\(planID)|\(startedAt.timeIntervalSince1970)"
+        var records = settings.workoutCompletions ?? []
+        if completed {
+            guard plans.contains(where: { $0.id == planID }), !records.contains(where: { $0.sessionID == sessionID }) else { return }
+            records.append(WorkoutCompletion(sessionID: sessionID, planID: planID, finishedAt: now))
+        } else {
+            guard records.contains(where: { $0.sessionID == sessionID }) else { return }
+            records.removeAll { $0.sessionID == sessionID }
+        }
+        settings.workoutCompletions = records
+        save()
+    }
+
+    var todayRecommendedPlan: Plan? {
+        guard let id = workoutRotation.todayPlanID else { return nil }
+        return plans.first { $0.id == id }
+    }
+
+    /// The home carousel and quick-start always use the same selection.
     var suggestedTodayPlan: Plan? {
-        let onlySeeded = !plans.isEmpty && plans.allSatisfy(\.autoGenerated)
-        if onlySeeded, let ai = aiTodayPlan, !ai.steps.isEmpty { return ai }
-        return todayRecommendedPlan ?? aiTodayPlan
+        todayRecommendedPlan ?? (plans.isEmpty ? aiTodayPlan : nil)
     }
 
     /// 给定 exerciseId, 找最近一次的 set 记录. 用来在 PlanPlayer / PlanDetailSheet 显示
     /// "上次: 100kg × 8" — 兑现 plan 理念 2 "历史即计划".
     /// sets 按 performedAt 倒序存 (recordSet insert at 0), 所以 first(where:) 就是最新.
+    func rememberWeight(_ kilograms: Double?, for exercise: Exercise) {
+        guard let kilograms, kilograms.isFinite, kilograms >= 0, kilograms <= 500,
+              ExerciseWeightReference.expectsLoad(exercise) else { return }
+        var inputs = settings.exerciseWeightInputs ?? [:]
+        var order = settings.exerciseWeightInputOrder ?? []
+        if inputs[exercise.id] == nil { order.append(exercise.id) }
+        inputs[exercise.id] = kilograms
+        settings.exerciseWeightInputs = inputs
+        settings.exerciseWeightInputOrder = order
+        var confirmed = settings.confirmedExerciseWeightInputIDs ?? []
+        if !confirmed.contains(exercise.id) { confirmed.append(exercise.id) }
+        settings.confirmedExerciseWeightInputIDs = confirmed
+        // Remember only this explicit input. Suggestions are resolved on new targets,
+        // never propagated over saved plans or used as another exercise's evidence.
+        save()
+    }
+
+    func referenceWeight(for exercise: Exercise, targetReps: Int? = nil, roughRecords: [SetRecord]? = nil) -> ExerciseWeightReference.Reference? {
+        let own = ExerciseWeightReference.latest(for: exercise, records: sets, library: exById)
+        if let own, let date = own.recordedAt, Date().timeIntervalSince(date) <= 14 * 86400 { return own }
+        // A cache matching the old completed load is history, not a new target.
+        // A distinct explicit input still blocks personal inference; neither cache is mutated.
+        let remembered = settings.confirmedExerciseWeightInputIDs?.contains(exercise.id) == true
+            ? settings.exerciseWeightInputs?[exercise.id] : nil
+        if remembered == nil || remembered == own?.kilograms,
+           let personal = PersonalExerciseLoadReference.reference(for: exercise, targetReps: targetReps, records: sets, library: exById) {
+            return personal
+        }
+        if let own { return own }
+        if settings.confirmedExerciseWeightInputIDs?.contains(exercise.id) == true,
+           let value = settings.exerciseWeightInputs?[exercise.id], value.isFinite, value >= 0, value <= 500 {
+            return .init(kilograms: value, sourceExerciseID: exercise.id, source: .userInput)
+        }
+        return CrossExerciseLoadReference.reference(for: exercise, targetReps: targetReps,
+                                                     records: sets, settings: settings, library: exById)
+            ?? RoughExerciseLoadReference.reference(for: exercise, targetReps: targetReps, records: roughRecords ?? sets)
+    }
+
     func lastSet(forExerciseId id: String) -> SetRecord? {
         sets.first(where: { $0.exerciseId == id })
     }
@@ -1063,35 +1453,36 @@ final class DataStore {
     /// 夸 "generous"; Strong 的 3 个上限吃到 2★ "should be borderline illegal"。我们卡在 3 =
     /// 比最受欢迎的那个还少一个, 而放宽的边际成本是零 (routine 存本地, 不耗服务端)。
     /// 真正的付费理由是 AI 教练/深度图表/自创动作, 不是"能存几张"。
-    static let freeSavedPlansLimit = 5
+    static let freeSavedPlansLimit = FreeLimit.maxPlans
 
     /// 还能不能再 save plan — 免费上限见 freeSavedPlansLimit, Pro 无限.
     var canSaveMorePlans: Bool {
         settings.isPro || plans.count < Self.freeSavedPlansLimit
     }
 
-    // MARK: - AI 教练每日软额度 (仅免费美区)
-    /// 今天还剩几次 AI 教练生成. Pro / 非美区 (showProUpsell=false) → Int.max (无限).
-    var aiCoachRemainingToday: Int {
-        guard settings.showProUpsell else { return .max }
-        let cal = Calendar.current
-        let used = cal.isDate(settings.aiCoachDay, inSameDayAs: Date()) ? settings.aiCoachCountToday : 0
-        return max(0, FreeLimit.freeDailyAICoach - used)
+    private func importedAdditions(_ incoming: [Plan]) -> [Plan] {
+        var signatures = Set(plans.map { Self.planSignature(routinePlanDefaults($0)) })
+        var identifiers = Set(plans.map(\.id))
+        return incoming.map { routinePlanDefaults($0) }.filter {
+            guard !identifiers.contains($0.id), signatures.insert(Self.planSignature($0)).inserted else { return false }
+            identifiers.insert($0.id)
+            return true
+        }
     }
 
-    /// 免费美区用户今天还能不能再让 AI 生成. false → caller 弹付费墙.
-    var canUseAICoach: Bool { aiCoachRemainingToday > 0 }
+    func canSaveImportedPlans(_ incoming: [Plan]) -> Bool {
+        let additions = importedAdditions(incoming)
+        return additions.isEmpty || settings.isPro || plans.count + additions.count <= Self.freeSavedPlansLimit
+    }
 
-    /// 消费一次 AI 教练额度. 只对免费美区计数 (Pro/非美区 no-op). 跨天先归零.
-    func consumeAICoach() {
-        guard settings.showProUpsell else { return }
-        let cal = Calendar.current
-        if !cal.isDate(settings.aiCoachDay, inSameDayAs: Date()) {
-            settings.aiCoachDay = cal.startOfDay(for: Date())
-            settings.aiCoachCountToday = 0
-        }
-        settings.aiCoachCountToday += 1
-        save()
+    /// Shared by QR, OCR and URL imports: a batch is accepted atomically.
+    @discardableResult
+    func saveImportedPlans(_ incoming: [Plan]) -> Bool {
+        guard canSaveImportedPlans(incoming) else { return false }
+        let additions = importedAdditions(incoming)
+        plans.append(contentsOf: additions)
+        if !additions.isEmpty { save() }
+        return true
     }
 
     /// Onboarding 完成后种少量 AI routine 进 "My Routines" — 让用户首次进 Today 不是空状态.
@@ -1128,8 +1519,9 @@ final class DataStore {
     ///   - 已存在 → 返回命中的既有副本 (幂等);
     ///   - 撞免费上限 → nil (调用方弹 paywall).
     func savePlanReturningCopy(_ plan: Plan) -> Plan? {
+        let plan = routinePlanDefaults(plan)
         let sig = Self.planSignature(plan)
-        if let existing = plans.first(where: { Self.planSignature($0) == sig }) { return existing }
+        if let existing = plans.first(where: { Self.planSignature(routinePlanDefaults($0)) == sig }) { return existing }
         guard canSaveMorePlans else {
             // 撞免费上限 → 不保存 (调用方弹 paywall). 报一次 at-cap 的 save 尝试. 无 PII (来源枚举).
             Analytics.shared.track("routine_save", [
@@ -1148,7 +1540,9 @@ final class DataStore {
             autoGenerated: false,
             lastUsedAt: nil,
             source: plan.resolvedSource,   // 保留来源 (AI/Classics) → 重 id 后标签不丢
-            rationale: plan.rationale      // 保留 AI 理由 → 存下来后卡上仍显示
+            rationale: plan.rationale,
+            constraints: plan.constraints, // Keep one-off equipment intent when the saved copy starts later.
+            preservesExerciseVariants: plan.preservesExerciseVariants
         )
         plans.append(copy)
         Analytics.shared.track("routine_save", [
@@ -1168,8 +1562,8 @@ final class DataStore {
             idx = plans.firstIndex(where: { $0.id == savedId })
         }
         if idx == nil {
-            let sig = Self.planSignature(plan)
-            idx = plans.firstIndex(where: { Self.planSignature($0) == sig })
+            let sig = Self.planSignature(routinePlanDefaults(plan))
+            idx = plans.firstIndex(where: { Self.planSignature(routinePlanDefaults($0)) == sig })
         }
         guard let idx else { return }
         let removed = plans.remove(at: idx)
@@ -1185,12 +1579,12 @@ final class DataStore {
     /// 按 名字 + 动作序列 的内容签名匹配. 给 Tab 2 卡片"添加"按钮显示"已添加"态用 (响应式: plans 一变即更新).
     /// ⚠️ Coach 生成卡优先用 isCoachPlanSaved (savedIdMap 反查, 副本改名后不失灵), 这个只作签名兜底.
     func isPlanSaved(_ plan: Plan) -> Bool {
-        let sig = Self.planSignature(plan)
-        return plans.contains { Self.planSignature($0) == sig }
+        let sig = Self.planSignature(routinePlanDefaults(plan))
+        return plans.contains { Self.planSignature(routinePlanDefaults($0)) == sig }
     }
 
     private static func planSignature(_ plan: Plan) -> String {
-        plan.name + "\u{1}" + plan.steps.map(\.exerciseId).joined(separator: ",")
+        (plan.preservesExerciseVariants == true ? "exact-variants\u{1}" : "") + plan.name + "\u{1}" + plan.steps.map(\.exerciseId).joined(separator: ",")
     }
 
     /// planId → SHA256 前 8 位十六进制 — 给分析事件用. 稳定 (同 install 同 plan 同值) 但不可逆回标题,
@@ -1245,30 +1639,34 @@ final class DataStore {
     /// History 列表的"删除这次训练" — session 是 SetRecord 聚合而成, 删 session = 删它的 sets.
     /// planId 用 `?? "free"` 跟 groupedSessions 保持一致 — nil 表自由训练(没绑 plan).
     func deleteSession(planId: String?, day: Date) {
-        let cal = Calendar.current
+        let cal = settings.calendar
+        settings.workoutCompletions?.removeAll {
+            $0.planID == planId && cal.isDate($0.finishedAt, inSameDayAs: day)
+        }
         sets.removeAll { rec in
             let recDay = cal.startOfDay(for: rec.performedAt)
             let recPid: String? = rec.planId
             // 比较 planId — nil ↔ nil 或者 string ↔ string
-            return recDay == day && recPid == planId
+            return cal.isDate(recDay, inSameDayAs: day) && recPid == planId
         }
         save()
     }
 
     // MARK: - Favorites — 收藏的动作
 
-    /// 检查动作是否已收藏. O(1) wrapper around Settings.favoriteExerciseIds 查询.
-    /// 用 Set 转换避免 array contains O(n) — favorites 可能几十个, list 一刷新查多次.
+    /// Resolve legacy image-folder aliases without rewriting the user's stored records.
     func isFavorite(_ exerciseId: String) -> Bool {
-        settings.favoriteExerciseIds.contains(exerciseId)
+        canonicalFavoriteExerciseIDs.contains(exById[exerciseId]?.id ?? exerciseId)
     }
 
-    /// 切换动作的收藏态. 已收藏 → 取消; 未收藏 → 加入.
+    /// Toggle the concrete exercise once, removing all legacy aliases when unpinning.
     func toggleFavorite(_ exerciseId: String) {
-        if let idx = settings.favoriteExerciseIds.firstIndex(of: exerciseId) {
-            settings.favoriteExerciseIds.remove(at: idx)
+        let lookup = exById
+        let canonicalID = lookup[exerciseId]?.id ?? exerciseId
+        if isFavorite(canonicalID) {
+            settings.favoriteExerciseIds.removeAll { (lookup[$0]?.id ?? $0) == canonicalID }
         } else {
-            settings.favoriteExerciseIds.append(exerciseId)
+            settings.favoriteExerciseIds.append(canonicalID)
         }
         save()
     }
@@ -1278,7 +1676,7 @@ final class DataStore {
     /// 不在的保持原顺序排后面. 给 ExerciseLibrary / Picker / QuickWorkout 等列表用.
     func sortByFavorites(_ exercises: [Exercise]) -> [Exercise] {
         guard !settings.favoriteExerciseIds.isEmpty else { return exercises }
-        let favSet = Set(settings.favoriteExerciseIds)
+        let favSet = canonicalFavoriteExerciseIDs
         let favs = exercises.filter { favSet.contains($0.id) }
         let rest = exercises.filter { !favSet.contains($0.id) }
         return favs + rest
@@ -1328,6 +1726,9 @@ final class DataStore {
     /// - 跳过条件: 同一日历日已经成功 refresh 过 / settings 关
     /// - 网络失败 → state 写入失败但不抛, TodayScreen 继续 fallback 到系统推荐
     func refreshAIWorkoutIfNeeded() async {
+        // Background recommendations never trigger a consent prompt or send
+        // personal data before the user has explicitly opted in.
+        guard AIDataConsent.shared.isGranted else { return }
         // gate 只看代理是否配好 (Path B: 不再要求 aiWorkoutEnabled — 代理 server-side 配好就跑, 失败回落).
         guard AIWorkoutService.isConfigured else { return }
         // 引导首次生成还在飞 (弱网下过渡页 9s 兜底先落地) → 让路, 别并发双跑冲掉带 focusNote 的首次结果.
@@ -1344,11 +1745,11 @@ final class DataStore {
             return
         }
         let payload = buildAIPayload()
-        let plan = await AIWorkoutService.shared.generateToday(
-            payload: payload,
-            library: exercises,
-            maxExercises: settings.exercisesPerSession
-        )
+        let plan: Plan? = try? await aiAccess.perform(kind: .singleWorkout, isPro: settings.isPro,
+            automatic: true, valid: { $0?.steps.isEmpty == false }, summary: { $0?.name ?? "" }) {
+                await AIWorkoutService.shared.generateToday(payload: payload, library: userLibrary,
+                    maxExercises: settings.exercisesPerSession)
+            }
         if let plan {
             aiTodayPlan = applyScience(to: plan)   // 科学化兜底: 复合优先 + 同 section ≤2 + slot-1 + push≥pull
             aiTodayPlanEditedAt = nil              // 新生成的还没被手调过 — 清脏标
@@ -1359,20 +1760,18 @@ final class DataStore {
         }
     }
 
-    /// 把 enforceScience 套到单个 Plan 的 steps 上 (AI 路径用 —— AI plan 不走 pad, 仅重排/去多余同 section).
-    /// 顺带做客户端负重兜底 (P0#1-③): LLM 的 weight_kg 是猜值 — 有真实训练记录的动作用 lastSet.weight
-    /// 覆盖, 猜值只对无历史动作生效. 做在"AI 结果落 plan"这一层, AIWorkoutService 保持无 DataStore 依赖
-    /// (它是 singleton service, 反向引用会成循环依赖).
+    /// Reuse shared history suggestions for unknown targets; preserve supplied plan values.
     private func applyScience(to plan: Plan) -> Plan {
         var p = plan
         p.steps = DataStore.enforceScience(p.steps, exById: exById)
         p.steps = p.steps.map { step in
             var s = step
-            // 只覆盖力量类 (有 reps); w>0 排除自重记录 (引体等), 别把 LLM 给的负重清成 0.
-            if s.reps != nil, let w = lastSet(forExerciseId: s.exerciseId)?.weight, w > 0 {
-                s.weight = w
-            }
+            s = suggestingMissingParameters(for: s)
             return s
+        }
+        let intent = LocalRoutineRules.parse(settings.coachMemory)
+        if !intent.focusMuscles.isEmpty {
+            p = LocalRoutineRules.apply(to: [p], intent: intent, settings: settings, exById: exById).first ?? p
         }
         return p
     }
@@ -1381,11 +1780,11 @@ final class DataStore {
     func forceRefreshAIWorkout() async {
         guard AIWorkoutService.isConfigured else { return }
         let payload = buildAIPayload()
-        let plan = await AIWorkoutService.shared.generateToday(
-            payload: payload,
-            library: exercises,
-            maxExercises: settings.exercisesPerSession
-        )
+        let plan: Plan? = try? await aiAccess.perform(kind: .singleWorkout, isPro: settings.isPro,
+            capacity: settings.isPro || plans.count < Self.freeSavedPlansLimit, valid: { $0?.steps.isEmpty == false }, summary: { $0?.name ?? "" }) {
+                await AIWorkoutService.shared.generateToday(payload: payload, library: userLibrary,
+                    maxExercises: settings.exercisesPerSession)
+            }
         if let plan {
             aiTodayPlan = applyScience(to: plan)
             aiTodayPlanEditedAt = nil   // 用户主动重生成 = 放弃之前的手调 — 清脏标
@@ -1410,9 +1809,13 @@ final class DataStore {
         defer { firstPlanGenerationInFlight = false }
         var payload = buildAIPayload()
         payload.focusNote = userPrompt
-        if let plan = await AIWorkoutService.shared.generateToday(
-            payload: payload, library: exercises, maxExercises: settings.exercisesPerSession,
-            surface: "onboarding") {
+        let generated: Plan? = try? await aiAccess.perform(kind: .singleWorkout, isPro: settings.isPro,
+            capacity: settings.isPro || plans.count < Self.freeSavedPlansLimit,
+            valid: { $0?.steps.isEmpty == false }, summary: { $0?.name ?? "" }) {
+                await AIWorkoutService.shared.generateToday(payload: payload, library: userLibrary,
+                    maxExercises: settings.exercisesPerSession, surface: "onboarding")
+            }
+        if let plan = generated {
             aiTodayPlan = applyScience(to: plan)
             aiTodayPlanEditedAt = nil
             lastAIRefreshAt = Date()
@@ -1427,13 +1830,32 @@ final class DataStore {
     /// 返回 (plans, 是否回落到纯本地). 失败/未配置 → 纯本地 + usedFallback=true.
     /// - parameter focusNote: optimize 建议卡传进来的本次侧重 (e.g. "bias the split toward legs"),
     ///   非 nil 时注进 prompt 的 PRIORITY 行, 让这批 routine 偏向修复诊断出的问题. 默认 nil = 普通生成.
-    func generateAIRoutines(focusNote: String? = nil, surface: String = "ai_segment") async -> (plans: [Plan], usedFallback: Bool) {
+    private struct AIPlanBatch: Codable { let plans: [Plan]; let usedFallback: Bool }
+
+    func generateAIRoutines(focusNote: String? = nil, surface: String = "ai_segment",
+                            taskKind: CoachTaskKind = .weeklyPlan, operationID: String = UUID().uuidString,
+                            goalID: String? = nil, parentID: String? = nil) async -> (plans: [Plan], usedFallback: Bool) {
+        let count = max(1, min(7, settings.weeklyTrainingDays))
+        do {
+            let result = try await aiAccess.perform(kind: taskKind, isPro: settings.isPro, operationID: operationID,
+                goalID: goalID, parentID: parentID,
+                capacity: settings.isPro || count <= max(0, Self.freeSavedPlansLimit - plans.count),
+                valid: { !$0.usedFallback && !$0.plans.isEmpty && $0.plans.allSatisfy { !$0.steps.isEmpty } },
+                summary: { $0.plans.map(\.name).joined(separator: " · ") }) {
+                    let result = await generateAIRoutinesUnmetered(focusNote: focusNote, surface: surface)
+                    return AIPlanBatch(plans: result.plans, usedFallback: result.usedFallback)
+                }
+            return (result.plans, result.usedFallback)
+        } catch { aiAccess.notice = error.localizedDescription; return ([], true) }
+    }
+
+    private func generateAIRoutinesUnmetered(focusNote: String? = nil, surface: String = "ai_segment") async -> (plans: [Plan], usedFallback: Bool) {
         // 本地兜底 —— 模板池 → 裁剪 → 器械替换 → 重量折算 → enforceScience.
         // ⚠️ 再叠一层 LocalRoutineRules: 把用户这次打的字 (focusNote) 解析成意图 (多练哪块 /
         //    避开哪块 / 只用什么器械 / 多长时间) 应用上去. 大陆有相当一部分用户长期够不到 AI
         //    (workers.dev 和 vercel.app 都可能被 DNS 污染), 兜底不能对用户的要求装聋.
         //    解析不到任何关键词 → Intent 为空 → apply 原样返回, 行为跟以前完全一致.
-        let localIntent = LocalRoutineRules.parse(focusNote)
+        let localIntent = LocalRoutineRules.parse([settings.coachMemory, focusNote ?? ""].joined(separator: "\n"))
         let local = DataStore.markBuiltIn(LocalRoutineRules.apply(
             to: DataStore.tunedRecommendedPlans(
                 forDays: settings.weeklyTrainingDays, settings: settings,
@@ -1441,12 +1863,12 @@ final class DataStore {
             intent: localIntent, settings: settings, exById: exById))
         guard AIWorkoutService.isConfigured else { return (local, true) }
         // 一次 LLM 调用产出多套真 AI routine (各带 rationale, 组成周分化) — 标签页每张都是真 AI,
-        // 不再 [aiPlan] + local 混本地凑数计划. 套数 = 每周天数, 夹到 2...4 (token 预算 + 不过载).
-        let count = max(2, min(4, settings.weeklyTrainingDays))
+        // 不再 [aiPlan] + local 混本地凑数计划. 套数严格等于每周训练天数（1...7），由响应校验约束。
+        let count = max(1, min(7, settings.weeklyTrainingDays))
         var payload = buildAIPayload()
         payload.focusNote = focusNote
         if let aiPlans = await AIWorkoutService.shared.generateRoutines(
-            payload: payload, library: exercises, count: count,
+            payload: payload, library: userLibrary, count: count,
             maxExercises: settings.exercisesPerSession, surface: surface), !aiPlans.isEmpty {
             // 科学化兜底: 每套真 AI routine 也过 enforceScience (复合优先 + 同 section ≤2 + slot-1 + push≥pull).
             var out = aiPlans.map { applyScience(to: $0) }
@@ -1465,8 +1887,11 @@ final class DataStore {
     /// 空约束不写 nil 之外的东西 (老计划/无约束计划照旧不显示凭据条).
     private func attachConstraints(_ plans: [Plan], intent: LocalRoutineRules.Intent) -> [Plan] {
         let cs = LocalRoutineRules.constraints(from: intent)
-        guard !cs.isEmpty else { return plans }
-        return plans.map { var p = $0; p.constraints = cs; return p }
+        return plans.map { original in
+            var p = original
+            if !cs.isEmpty { p.constraints = cs }
+            return routinePlanDefaults(p)
+        }
     }
 
     // MARK: - 数据驱动优化建议 (Pro feature ②)
@@ -1481,12 +1906,44 @@ final class DataStore {
         let id: String        // 诊断类型 key (lagging/stall/adherence) — 同问题不重复弹
         let title: String     // e.g. "Legs are undertrained"
         let detail: String    // 一句话说明诊断依据
-        let focusNote: String // 注进 AI 的英文指令, e.g. "bias the split toward legs"
+        let focusNote: String // Ordinary workout evidence only; HealthKit data stays local.
+        var reportRecordIDs: [String]? = nil
+        var containsHealthEvidence = false
     }
 
     /// 诊断当前训练数据, 返回最该处理的一条建议; 数据不足或一切正常 → nil.
     /// 只读 sets, 不改任何状态.
+    private func observedWorkoutSuggestion() -> RoutineSuggestion? {
+        guard let latest = sets.filter({ $0.performedAt <= Date() && $0.performedAt >= Date().addingTimeInterval(-7 * 86400) })
+            .max(by: { $0.performedAt < $1.performedAt }), let key = latest.workoutSessionID else { return nil }
+        let records = sets.filter { $0.workoutSessionID == key }.sorted { $0.performedAt < $1.performedAt }
+        guard records.count >= 3 else { return nil }
+        var heartPolicy = WorkoutHeartAlertPolicy()
+        let samples = records.flatMap { WorkoutHeartLocalStore.shared.samples(for: $0) }.sorted { $0.date < $1.date }
+        let hadReminder = samples.contains { sample in
+            heartPolicy.observe(bpm: sample.bpm, date: sample.date, limit: sample.reminderLimit, now: sample.date)
+        }
+        let pacingIssue = Dictionary(grouping: records, by: \.exerciseId).values.contains { group in
+            guard group.count >= 3, let first = group.first, let last = group.last,
+                  let startReps = first.reps, startReps > 0, let endReps = last.reps,
+                  let startWeight = first.weight, let endWeight = last.weight,
+                  abs(startWeight - endWeight) <= max(0.5, startWeight * 0.025),
+                  Double(endReps) <= Double(startReps) * 0.8 else { return false }
+            let rests = group.compactMap(\.restBeforeSeconds)
+            return rests.count >= 2 && rests.reduce(0, +) / Double(rests.count) < Double(settings.defaultRestSeconds) * 0.75
+        }
+        guard hadReminder || pacingIssue else { return nil }
+        let report = WorkoutTimelineReport(records: records)
+        return RoutineSuggestion(id: "workout-recovery-\(key)",
+            title: NSLocalizedString("Allow more recovery", comment: ""),
+            detail: NSLocalizedString(hadReminder ? "Your readings stayed above your reminder limit. Review this workout before increasing intensity."
+                : "Your reps fell while rests were short. Try more recovery between sets.", comment: ""),
+            focusNote: "Review my rest and logged training workload for recovery before increasing intensity. " + report.coachEvidence,
+            reportRecordIDs: records.map(\.id), containsHealthEvidence: hadReminder)
+    }
+
     func routineSuggestion() -> RoutineSuggestion? {
+        if let observed = observedWorkoutSuggestion() { return observed }
         let cal = Calendar.current
         let now = Date()
         let win3w = now.addingTimeInterval(-21 * 86400)
@@ -1546,7 +2003,10 @@ final class DataStore {
 
     /// AI 教练小结所需的可否生成阈值 — 复用 routineSuggestion() 同一守卫 (≥2 周 + ≥6 组).
     /// 达不到 → 卡显示 "Insufficient data" 态, 不调 LLM.
-    var summaryMinDataMet: Bool { routineSuggestion() != nil }
+    var summaryMinDataMet: Bool {
+        guard let first = sets.map(\.performedAt).min(), Date().timeIntervalSince(first) >= 14 * 86400 else { return false }
+        return sets.filter { $0.performedAt >= Date().addingTimeInterval(-21 * 86400) }.count >= 6
+    }
 
     /// 组装发给 Worker 的确定性 payload (§2) — 全部数字来自既有 helper, 无 PII.
     /// 这里内联复刻 InsightsChartsView 的各私有 helper 计算 (它们 private 在 View 里),
@@ -1633,7 +2093,8 @@ final class DataStore {
 
         // ── diagnosis (routineSuggestion 预烘) ──
         let diag = routineSuggestion().map {
-            AISummaryPayload.Diagnosis(title: $0.title, detail: $0.detail, focusNote: $0.focusNote)
+            AISummaryPayload.Diagnosis(title: $0.title,
+                detail: $0.containsHealthEvidence ? $0.focusNote : $0.detail, focusNote: $0.focusNote)
         }
 
         return AISummaryPayload(
@@ -1835,9 +2296,15 @@ final class DataStore {
         let payload = buildSummaryPayload()
         let hash = summaryDataHash()
         do {
-            let summary = try await AIWorkoutService.shared.summarizeTraining(payload: payload)
+            let summary = try await aiAccess.perform(kind: .trainingReview, isPro: settings.isPro,
+                valid: { !$0.tldr.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }, summary: { $0.tldr }) {
+                    try await AIWorkoutService.shared.summarizeTraining(payload: payload)
+                }
             writeSummaryCache(summary, hash: hash)
             return summary
+        } catch let error as DeviceAIQuotaError {
+            aiAccess.notice = error.localizedDescription
+            return cachedSummary // Quota denial is not a new generated or local "AI" success.
         } catch {
             // 任何 AISummaryError → 确定性本地回落 (never 空卡; apply 路径仍可用).
             let fallback = localSummaryFallback()
@@ -1850,13 +2317,14 @@ final class DataStore {
     /// 无诊断时给个中性观察. 跟 generateAIRoutines 的 tunedRecommendedPlans 回落同哲学.
     func localSummaryFallback() -> AISummary {
         if let s = routineSuggestion() {
+            let safeDetail = s.containsHealthEvidence ? NSLocalizedString("Review your logged workload and rest before increasing intensity.", comment: "") : s.detail
             return AISummary(
-                tldr: s.detail,
+                tldr: safeDetail,
                 recommendations: [
                     AIRecommendation(
                         id: "local-\(s.id)",
                         title: s.title,
-                        detail: s.detail,
+                        detail: safeDetail,
                         action: .regenerateRoutines(focusNote: s.focusNote)
                     )
                 ]
@@ -2024,7 +2492,7 @@ final class DataStore {
         return AIPayload(
             gender: settings.gender?.rawValue,
             age: settings.age,
-            weightKg: settings.weight,
+            weightKg: settings.weightForAI,
             daysPerWeek: settings.weeklyTrainingDays,
             wantStrengthen: settings.wantStrengthen.map { $0.displayName },
             recentHistory: history,
@@ -2042,11 +2510,17 @@ final class DataStore {
             equipment: EquipmentCategory.allCases
                 .filter { settings.availableEquipment.contains($0.rawValue) }
                 .map { $0.displayName },
+            selectionEquipment: settings.availableEquipment,
+            selectionFavoriteIDs: canonicalFavoriteExerciseIDs,
+            selectionRecentIDs: Array(recentExerciseIDs.prefix(40)),
             // 教练记忆 — 空白时传 nil (prompt 不注入这块). prompt 侧再做长度截断.
             coachMemory: {
                 let trimmed = settings.coachMemory.trimmingCharacters(in: .whitespacesAndNewlines)
                 return trimmed.isEmpty ? nil : trimmed
-            }()
+            }(),
+            trainingWeekdays: settings.trainingWeekdays ?? [],
+            trainingSessionMinutes: settings.trainingSessionMinutes,
+            trainingEnvironment: settings.trainingEnvironment
         )
     }
 
@@ -2163,4 +2637,151 @@ private func sampleSets(now: Date, plans: [Plan], byId: [String: Exercise]) -> [
 
     // 按 performedAt 倒序返回 (最近的在最前面)
     return out.sorted { $0.performedAt > $1.performedAt }
+}
+
+extension DataStore {
+    func deleteMeal(mealID: String, on day: Date) {
+        let records = settings.mealCheckIns ?? []
+        let removed = records.filter { $0.mealID == mealID && settings.calendar.isDate($0.day, inSameDayAs: day) }
+        guard !removed.isEmpty else { return }
+        // Delete every version so an older estimate cannot reappear.
+        let remaining = records.filter { !($0.mealID == mealID && settings.calendar.isDate($0.day, inSameDayAs: day)) }
+        settings.mealCheckIns = remaining
+        flushSave()
+        let referenced = Set(remaining.map(\.photoFilename))
+        let directory = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
+            .appendingPathComponent("DietPhotos", isDirectory: true)
+        for filename in Set(removed.map(\.photoFilename)) where !referenced.contains(filename) {
+            guard !filename.isEmpty, URL(fileURLWithPath: filename).lastPathComponent == filename,
+                  (filename as NSString).pathExtension.lowercased() == "jpg" else { continue }
+            try? FileManager.default.removeItem(at: directory.appendingPathComponent(filename))
+        }
+    }
+    /// Moving an edited meal to another day removes its old bucket without touching other meals.
+    @discardableResult
+    func saveMealRecord(_ record: MealCheckIn, replacing previous: MealCheckIn? = nil) -> [MealCheckIn] {
+        let calendar = settings.calendar
+        let records = settings.mealCheckIns ?? []
+        var record = record
+        // Old scheduled meals can reuse one ID across dates. Moving one must not overwrite another day's meal.
+        if let previous, !calendar.isDate(previous.day, inSameDayAs: record.day),
+           records.contains(where: { $0.mealID == record.mealID && calendar.isDate($0.day, inSameDayAs: record.day) }) {
+            record.mealID = UUID().uuidString
+        }
+        func replaced(_ candidate: MealCheckIn) -> Bool {
+            let sameDestination = candidate.mealID == record.mealID && calendar.isDate(candidate.day, inSameDayAs: record.day)
+            let sameSource = previous.map { candidate.mealID == $0.mealID && calendar.isDate(candidate.day, inSameDayAs: $0.day) } ?? false
+            return sameDestination || sameSource
+        }
+        let removed = records.filter(replaced)
+        if calendar.isDateInToday(record.day) { captureWellnessGoal() }
+        settings.mealCheckIns = records.filter { !replaced($0) } + [record]
+        flushSave()
+        return removed
+    }
+
+    func wellnessMeals(on date: Date) -> [MealCheckIn] {
+        let records = (settings.mealCheckIns ?? []).filter { settings.calendar.isDate($0.day, inSameDayAs: date) }
+        return Self.latestMealRecords(records)
+    }
+    static func latestMealRecords(_ records: [MealCheckIn]) -> [MealCheckIn] {
+        return Dictionary(grouping: records, by: \.mealID).values.compactMap { $0.max(by: { $0.confirmedAt < $1.confirmedAt }) }.sorted {
+            if $0.mealTime != $1.mealTime { return $0.mealTime < $1.mealTime }
+            if $0.confirmedAt != $1.confirmedAt { return $0.confirmedAt < $1.confirmedAt }
+            return $0.mealID < $1.mealID
+        }
+    }
+    func dietGuidance(on date: Date = Date()) -> DietDailyGuidance? {
+        let day = settings.calendar.startOfDay(for: date)
+        let sleep = HealthKitService.shared.sleepMinutes[day]
+            ?? settings.sleepRecords?[SleepPreferences.dayKey(day, calendar: settings.calendar)]
+        return DietDailyGuidance.build(settings: settings, sets: sets, exById: exById,
+                                       sleptMinutes: sleep, now: date)
+    }
+
+    func wellnessGoal(on date: Date) -> DailyWellnessGoal? {
+        var goal = settings.wellnessGoals?[SleepPreferences.dayKey(date, calendar: settings.calendar)]
+        if settings.calendar.isDate(date, inSameDayAs: Date()), let targets = dietGuidance(on: date)?.targets {
+            if goal == nil {
+                let mealIDs = DailyDietPlan.build(settings: settings, preferences: settings.dietPreferences ?? DietPreferences()).meals.map(\.id)
+                goal = .init(protein: targets.protein, carbsMinimum: targets.carbohydrate,
+                             fatMinimum: targets.fat, sleepMinutes: (settings.sleepPreferences ?? SleepPreferences()).targetMinutes,
+                             mealIDs: mealIDs)
+            }
+            goal?.protein = targets.protein
+            goal?.carbsMinimum = targets.carbohydrate
+            goal?.fatMinimum = targets.fat
+        }
+        return goal
+    }
+    func captureWellnessGoal(plan: Plan? = nil, updateDiet: Bool = false) {
+        guard let targets = dietGuidance()?.targets else { return }
+        let day = settings.calendar.startOfDay(for: Date())
+        let key = SleepPreferences.dayKey(day, calendar: settings.calendar)
+        var goals = settings.wellnessGoals ?? [:]
+        if goals[key] == nil {
+            let meals = DailyDietPlan.build(settings: settings, preferences: settings.dietPreferences ?? DietPreferences()).meals.map(\.id)
+            goals[key] = .init(trainingSets: plan.map { $0.steps.reduce(0) { $0 + $1.sets } }, planID: plan?.id, protein: targets.protein, carbsMinimum: targets.carbohydrate, fatMinimum: targets.fat, sleepMinutes: (settings.sleepPreferences ?? SleepPreferences()).targetMinutes, mealIDs: meals)
+        } else if let plan, !plan.steps.isEmpty {
+            goals[key]?.trainingSets = plan.steps.reduce(0) { $0 + $1.sets }
+            goals[key]?.planID = plan.id
+        }
+        // Today's target tracks actual workouts even after a meal is logged.
+        // Earlier dates retain their saved target snapshots.
+        if updateDiet || wellnessMeals(on: day).isEmpty
+            || goals[key]?.protein != targets.protein
+            || goals[key]?.carbsMinimum != targets.carbohydrate
+            || goals[key]?.fatMinimum != targets.fat {
+            goals[key]?.protein = targets.protein; goals[key]?.carbsMinimum = targets.carbohydrate
+            goals[key]?.fatMinimum = targets.fat
+            goals[key]?.mealIDs = DailyDietPlan.build(settings: settings, preferences: settings.dietPreferences ?? DietPreferences()).meals.map(\.id)
+        }
+        settings.wellnessGoals = goals; save()
+    }
+    func wellnessScore(on date: Date) -> DailyWellnessScore {
+        let day = settings.calendar.startOfDay(for: date)
+        return .calculate(goal: wellnessGoal(on: day), sets: sets.filter { settings.calendar.isDate($0.performedAt, inSameDayAs: day) }, meals: wellnessMeals(on: day), slept: HealthKitService.shared.sleepMinutes[day] ?? settings.sleepRecords?[SleepPreferences.dayKey(day, calendar: settings.calendar)])
+    }
+}
+
+
+extension DataStore {
+    func refreshExternalWorkouts() async throws {
+        guard settings.externalWorkoutImportEnabled == true, !importingExternalWorkouts else { return }
+        importingExternalWorkouts = true
+        defer { importingExternalWorkouts = false }
+        let records = try await HealthKitService.shared.readWorkouts()
+        guard settings.externalWorkoutImportEnabled == true else { return }
+        replaceExternalWorkoutSnapshot(records)
+    }
+    /// Replace rather than append so repeated refreshes stay idempotent and Health deletions propagate.
+    func replaceExternalWorkoutSnapshot(_ records: [ExternalWorkout], now: Date = Date()) {
+        guard settings.externalWorkoutImportEnabled == true else { return }
+        let deleted = Set(settings.deletedExternalWorkoutIDs ?? [])
+        let valid = ExternalWorkout.normalized(records, now: now).filter { !deleted.contains($0.id) }
+        if valid != settings.externalWorkouts {
+            settings.externalWorkouts = valid
+            save()
+        }
+    }
+    /// Remove only the Masso copy; retain a tombstone so Health refresh cannot restore it.
+    func deleteExternalWorkout(id: String) {
+        var deleted = Set(settings.deletedExternalWorkoutIDs ?? [])
+        deleted.insert(id)
+        settings.deletedExternalWorkoutIDs = deleted.sorted()
+        settings.externalWorkouts?.removeAll { $0.id == id }
+        save()
+    }
+    func recordedExternalWorkouts(on day: Date? = nil, now: Date = Date()) -> [ExternalWorkout] {
+        (settings.externalWorkouts ?? []).filter { record in
+            !(settings.deletedExternalWorkoutIDs ?? []).contains(record.id) && record.isRecorded(by: now) && (day.map { settings.calendar.isDate(record.startedAt, inSameDayAs: $0) } ?? true)
+        }.sorted { $0.startedAt > $1.startedAt }
+    }
+    /// Count real activity days once, across Masso and Apple Health. Recovery-only days stay blank.
+    func recordedWorkoutDates(now: Date = Date(), calendar: Calendar? = nil) -> Set<Date> {
+        let calendar = calendar ?? settings.calendar
+        let dates = sets.filter { $0.performedAt <= now }.map(\.performedAt)
+            + recordedExternalWorkouts(now: now).map(\.startedAt)
+        return Set(dates.map { calendar.startOfDay(for: $0) })
+    }
 }

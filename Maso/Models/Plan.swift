@@ -1,9 +1,21 @@
 import Foundation
 
+/// A suggestion is a planned target, never evidence that a set was performed.
+struct ExerciseParameterSuggestion: Codable, Hashable, Sendable {
+    enum Source: String, Codable, Sendable { case history, preference, userInput, shared, crossExercise, personalHistory, roughEstimate }
+    let value: Double
+    let source: Source
+    var exerciseID: String?
+    var recordID: String?
+    var recordedAt: Date?
+    var ruleID: String? = nil
+    var isCrossExerciseEstimate: Bool { source == .crossExercise || source == .personalHistory || source == .roughEstimate }
+}
+
 // 训练计划的一个步骤 (= web 端 PlanStep)
 struct PlanStep: Identifiable, Hashable, Codable, Sendable {
     let id: String
-    let exerciseId: String
+    var exerciseId: String
     var sets: Int = 1
     var reps: Int?
     var weight: Double?
@@ -20,6 +32,32 @@ struct PlanStep: Identifiable, Hashable, Codable, Sendable {
     var restBetweenSets: Int = 90
     /// 步骤之间额外的休息 (秒); 默认 0
     var rest: Int = 0
+
+    /// Optional provenance: legacy values stay explicit/unknown; never infer their origin.
+    var parameterSuggestions: [String: ExerciseParameterSuggestion]? = nil
+
+    func isSuggested(_ parameter: String) -> Bool {
+        guard let suggestion = parameterSuggestions?[parameter] else { return false }
+        switch parameter {
+        case "sets": return suggestion.value == Double(sets)
+        case "reps": return suggestion.value == reps.map(Double.init) && setReps?.contains(where: { $0 != nil }) != true
+        case "weight": return suggestion.value == weight && setWeights?.contains(where: { $0 != nil }) != true
+        case "duration": return suggestion.value == duration.map(Double.init) && setDurations?.contains(where: { $0 != nil }) != true
+        default: return false
+        }
+    }
+
+    mutating func confirmParameter(_ parameter: String) {
+        parameterSuggestions?.removeValue(forKey: parameter)
+        if parameterSuggestions?.isEmpty == true { parameterSuggestions = nil }
+    }
+
+    mutating func markSuggested(_ parameter: String, value: Double, source: ExerciseParameterSuggestion.Source,
+                                exerciseID: String? = nil, recordID: String? = nil, recordedAt: Date? = nil, ruleID: String? = nil) {
+        if parameterSuggestions == nil { parameterSuggestions = [:] }
+        parameterSuggestions?[parameter] = .init(value: value, source: source, exerciseID: exerciseID,
+                                                recordID: recordID, recordedAt: recordedAt, ruleID: ruleID)
+    }
 
     /// 第 n 组 (1-based) 的目标 reps — 有逐组覆盖用它, 否则回退统一 reps.
     func repsForSet(_ n: Int) -> Int? {
@@ -105,6 +143,8 @@ struct Plan: Identifiable, Hashable, Codable, Sendable {
     /// ⚠️ 必须 Optional: Plan 会整体落盘, Swift 合成的 Codable 对**缺失的 key 直接抛错**,
     ///    老用户的存档里没有这个字段 (跟 Session.completionOrder / Plan.source 同一个坑).
     var constraints: [PlanConstraint]? = nil
+    /// Exact screenshot exercise identities survive saving and default-version projection.
+    var preservesExerciseVariants: Bool? = nil
 
     /// 解析后的来源: 有显式 source 用它; 否则按 id 前缀兜底 (旧数据 / savePlan 重 id 前的); 都不命中 → custom.
     var resolvedSource: PlanSource {
@@ -115,10 +155,17 @@ struct Plan: Identifiable, Hashable, Codable, Sendable {
     }
 }
 
+/// Explicit confirmation of an already completed standardized bench-press 6RM.
+/// Snapshot matching prevents later numeric corrections from silently changing the evidence.
+struct SixRMReference: Codable, Hashable, Sendable {
+    let kilograms: Double
+    var protocolID = "bench-press-6rm-2013-v1"
+}
+
 // 历史记录 (= web 端 SetRecord)
 struct SetRecord: Identifiable, Hashable, Codable, Sendable {
     let id: String
-    let exerciseId: String
+    var exerciseId: String
     let exerciseName: String
     let category: ExerciseCategory
     var weight: Double?
@@ -129,4 +176,100 @@ struct SetRecord: Identifiable, Hashable, Codable, Sendable {
     /// 落库时的 plan 名快照 — plan 之后被删, 历史卡名不再退化成"自由训练".
     /// optional + 默认 nil: 旧记录缺这个 key 也能解码 (沿用原 fallback 链).
     var planName: String? = nil
+    var workoutSessionID: String? = nil
+    var stepID: String? = nil
+    var setNumber: Int? = nil
+    var activeIntervals: [WorkoutActiveInterval]? = nil
+    var restBeforeSeconds: Double? = nil
+    var sixRMReference: SixRMReference? = nil
+    var hasConfirmedSixRM: Bool {
+        sixRMReference?.protocolID == "bench-press-6rm-2013-v1" && reps == 6
+            && weight == sixRMReference?.kilograms && (weight ?? 0) > 0
+    }
+    var activeSeconds: Double? { activeIntervals.map { $0.reduce(0) { $0 + $1.seconds } } }
+}
+
+/// Observed App playback intervals, never inferred time under muscular tension.
+struct WorkoutActiveInterval: Codable, Hashable, Sendable {
+    let start: Date
+    let end: Date
+    var seconds: Double { max(0, end.timeIntervalSince(start)) }
+}
+
+struct WorkoutSetTiming: Codable, Hashable, Sendable {
+    var intervals: [WorkoutActiveInterval] = []
+    var openSince: Date?
+    var completeCoverage = true
+    mutating func open(at date: Date) { if openSince == nil { openSince = date } }
+    mutating func close(at date: Date) {
+        if let start = openSince, date > start { intervals.append(.init(start: start, end: date)) }
+        openSince = nil
+    }
+    func measuredIntervals(at date: Date) -> [WorkoutActiveInterval] {
+        var copy = self; copy.close(at: date); return copy.intervals
+    }
+}
+
+/// Set-aligned report built from exact completed-record IDs; old records remain valid.
+struct WorkoutTimelineReport {
+    let records: [SetRecord]
+    var measuredSets: [SetRecord] { records.filter { $0.activeIntervals != nil } }
+    var activeSeconds: Double? {
+        let values = records.compactMap(\.activeSeconds)
+        return values.isEmpty ? nil : values.reduce(0, +)
+    }
+    var restSeconds: Double? {
+        let values = records.compactMap(\.restBeforeSeconds)
+        return values.isEmpty ? nil : values.reduce(0, +)
+    }
+    var volumeKg: Double? {
+        let values = records.compactMap { record -> Double? in
+            guard let weight = record.weight, weight >= 0, let reps = record.reps, reps > 0 else { return nil }
+            return weight * Double(reps)
+        }
+        return values.isEmpty ? nil : values.reduce(0, +)
+    }
+    /// Contains ordinary workout data only. HealthKit heart-rate data stays local.
+    var coachEvidence: String {
+        let duration = activeSeconds.map { String(Int($0.rounded())) } ?? "unavailable"
+        let rest = restSeconds.map { String(Int($0.rounded())) } ?? "unavailable"
+        return "Workout evidence: \(records.count) completed sets, tracked active seconds \(duration) (\(measuredSets.count) measured sets), recorded rest seconds \(rest). Tracked App time is not time under tension. Missing timing is unknown."
+    }
+}
+
+/// Consecutive occurrences stay separate, even when the same exercise appears twice.
+struct WorkoutReportExerciseBlock: Identifiable {
+    let records: [SetRecord]
+    var id: String { records[0].id }
+    var exerciseId: String { records[0].exerciseId }
+    var start: Date? { records.flatMap { $0.activeIntervals ?? [] }.map(\.start).min() }
+    var end: Date? { records.flatMap { $0.activeIntervals ?? [] }.map(\.end).max() }
+    var trackedSeconds: Double? {
+        let values = records.compactMap(\.activeSeconds)
+        return values.isEmpty ? nil : values.reduce(0, +)
+    }
+    var hasMissingTiming: Bool { records.contains { $0.activeIntervals == nil } }
+
+    static func group(_ records: [SetRecord]) -> [WorkoutReportExerciseBlock] {
+        var groups: [[SetRecord]] = []
+        for record in records.sorted(by: { $0.performedAt < $1.performedAt }) {
+            if let last = groups.last?.last,
+               last.exerciseId == record.exerciseId,
+               last.workoutSessionID == record.workoutSessionID,
+               last.stepID == record.stepID {
+                groups[groups.count - 1].append(record)
+            } else { groups.append([record]) }
+        }
+        return groups.map { WorkoutReportExerciseBlock(records: $0) }
+    }
+
+    static func totalsByExercise(_ records: [SetRecord]) -> [WorkoutReportExerciseBlock] {
+        var positions: [String: Int] = [:]
+        var groups: [[SetRecord]] = []
+        for record in records.sorted(by: { $0.performedAt < $1.performedAt }) {
+            if let index = positions[record.exerciseId] { groups[index].append(record) }
+            else { positions[record.exerciseId] = groups.count; groups.append([record]) }
+        }
+        return groups.map { WorkoutReportExerciseBlock(records: $0) }
+    }
 }

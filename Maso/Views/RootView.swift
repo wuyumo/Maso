@@ -1,10 +1,15 @@
 import HealthKit
 import SwiftUI
 
-// Tab 顺序 = today / coach / history (4→3, docs/coach-tab-design.md §0):
-//   Today = 今天练什么 + 开练; Coach = 对话式生成与管理 routines (原 Plans tab 整体退役 + Exercises
-//   tab 并入 Coach 导航栏 dumbbell); history tag 名保留 (analytics / showcase 路由按它写死), label 显示 "Progress".
-enum RootTab: Hashable { case today, coach, history }
+// Secondary destinations; Today is the sole home screen.
+// Keep legacy route names for existing summary/optimization links.
+enum AppDestination: Hashable {
+    case today, coach, history, insights, exerciseLibrary, classicRoutines, diet, sleep, settings
+    case muscleStatus
+    case muscleInfo(MuscleSelection)
+    /// Home calendar day, including the widget deep link. The value is the start of that day.
+    case dailyRecord(Date)
+}
 
 extension View {
     /// 条件应用一个 transform — 内嵌 (embedded) 场景各分页跳过自己的 screenHeader,
@@ -32,21 +37,16 @@ extension View {
 
 // 顶级路由
 //   - onboarding 未完成: 整屏 Onboarding
-//   - 已完成: 系统 TabView + 3 个屏 (Today / Coach / Progress), 加 PlanPlayer fullScreenCover
+//   - 已完成: Today + Insights/Coach destinations, 加 PlanPlayer fullScreenCover
 struct RootView: View {
+    var launchReady: Bool = true
     @Environment(DataStore.self) private var data
+    @Environment(SubscriptionManager.self) private var subscriptions
     @Environment(TrainingSessionStore.self) private var session
     @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.layoutDirection) private var layoutDirection
 
-    @State private var tab: RootTab = .today
-    /// RootTab → 分析事件 tab 名 (无 PII, 纯枚举名). tab_switch 的 coach 映射在这 (设计文档 §4).
-    private static func tabName(_ t: RootTab) -> String {
-        switch t {
-        case .today: return "today"
-        case .coach: return "coach"
-        case .history: return "history"
-        }
-    }
+    @State private var navigationPath: [AppDestination] = []
     /// 反馈队列 — 没 inject 进 environment, 因为它只在 Settings + scenePhase 监听里用,
     /// 直接拿 shared 单例最简单, 避免到处 propagate.
     @State private var feedbackStore = FeedbackStore.shared
@@ -63,19 +63,137 @@ struct RootView: View {
             && session.session != nil
             && session.session?.completed != true
     }
-    @State private var settingsPresented: Bool = false
+
+    @ViewBuilder
+    private var muscleStatusDestination: some View {
+        MuscleMapDetailScreen(
+            fatigueMap: MuscleStatusCompute.muscleFatigueMap(sets: data.sets, exById: data.exById),
+            gapMuscles: muscleStatusGapMuscles,
+            onStartGapWorkout: {
+                navigationPath = []
+                muscleStatusStartGapWorkout?()
+            },
+            onUnlock: { paywallPresented = true },
+            onOpenMuscleInfo: { navigationPath.append(.muscleInfo($0)) }
+        )
+        .navigationTitle("My Muscle Status")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar(.visible, for: .navigationBar)
+    }
+
+    @ViewBuilder
+    private func muscleInfoDestination(_ selection: MuscleSelection) -> some View {
+        MuscleInfoScreen(
+            muscle: selection.muscle,
+            relatedMuscles: selection.relatedMuscles,
+            regionNode: selection.regionNode,
+            showsBack: selection.showsBack,
+            onTrainMore: {
+                AppRouter.shared.pendingMuscleTraining = selection.muscle
+                navigationPath.append(.coach)
+            }
+        )
+        .toolbar(.visible, for: .navigationBar)
+    }
+
+    @ViewBuilder
+    private func destinationView(for destination: AppDestination) -> some View {
+        switch destination {
+        case .coach:
+            CoachScreen(
+                onStart: startTraining,
+                onNewPlan: handleNewPlan,
+                libraryRequested: $coachLibraryRequested,
+                routinePromptRequested: $coachRoutinePromptRequested,
+                quickWorkoutRequested: $coachQuickWorkoutRequested,
+                bodyPhotoRequested: $coachBodyPhotoRequested
+            )
+            .marketingCaptureReady("coach_chat")
+            .toolbar(.visible, for: .navigationBar)
+
+        case .history, .insights:
+            HistoryScreen(
+                onReplay: startTraining,
+                onOpenSettings: { navigationPath.append(.settings) },
+                mode: destination == .history ? .records : .insights
+            )
+            .marketingCaptureReady("insights")
+            .toolbar(.visible, for: .navigationBar)
+
+        case .sleep:
+            SleepScreen().marketingCaptureReady("sleep").toolbar(.visible, for: .navigationBar)
+        case .diet:
+            DietScreen().marketingCaptureReady("diet").toolbar(.visible, for: .navigationBar)
+        case .exerciseLibrary:
+            ExerciseLibraryBrowser(embedded: true, addRequested: $libraryAddRequested)
+                .navigationTitle("Exercises")
+                .navigationBarTitleDisplayMode(.large)
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button { libraryAddRequested = true } label: { Image(systemName: "plus") }
+                            .accessibilityLabel("Add exercise")
+                    }
+                }
+                .toolbar(.visible, for: .navigationBar)
+
+        case .classicRoutines:
+            ClassicsScreen(onStart: { plan in
+                navigationPath = []
+                DispatchQueue.main.async { startTraining(plan) }
+            })
+            .toolbar(.visible, for: .navigationBar)
+
+        case .settings:
+            SettingsScreen(onStartWorkout: { plan in
+                navigationPath = []
+                DispatchQueue.main.async { startTraining(plan) }
+            }, isPushed: true)
+            .toolbar(.visible, for: .navigationBar)
+        case .muscleStatus:
+            muscleStatusDestination.marketingCaptureReady("muscle_status")
+        case .muscleInfo(let selection):
+            muscleInfoDestination(selection)
+        case .dailyRecord(let day):
+            DailyRecordSheet(day: day, onReplay: { plan in
+                navigationPath.removeAll { destination in
+                    if case .dailyRecord = destination { return true }
+                    return false
+                }
+                DispatchQueue.main.async { startTraining(plan) }
+            }, pushed: true)
+                .accessibilityIdentifier("page.dailyRecord")
+                .toolbar(.visible, for: .navigationBar)
+        case .today:
+            EmptyView()
+        }
+    }
     /// showcase "exercises"/"library" 路由 → 翻 true, CoachScreen 监听后拉起动作库 sheet
     /// (Exercises 不再是 tab — 库入口在 Coach 导航栏 dumbbell, 路由名保持不变让夜间 driver 不断).
     @State private var coachLibraryRequested = false
+    @State private var homeFooterControlHeight: CGFloat = 56
+    @State private var homeContentWidth: CGFloat = 0
+    private enum CoachTip { case intro, bodyPhoto }
+    @State private var coachIntroTipVisible = false
+    @State private var firstHomeMuscleIntroVisible = false
+    @State private var visibleCoachTip: CoachTip = .intro
+    @State private var coachTipSessionReady = false
+    @State private var coachTipInitialized = false
+    @State private var coachTipShownThisSession = false
+    @State private var coachBodyPhotoRequested = false
+    /// Today 空 Routines 引导卡请求在 AI Coach 输入框预填建计划提示.
+    @State private var coachRoutinePromptRequested = false
+    @State private var coachQuickWorkoutRequested = false
+    @State private var libraryAddRequested = false
     @State private var quickWorkoutPresented: Bool = false
     // DESIGN 5.3: 当用户尝试开第二个训练时, 用 plan 作为 pending 标记弹替换确认
     @State private var pendingReplacePlan: Plan?
     // + 按钮新建的 plan — 用 sheet(item:) 双向绑定; nil 表示关闭
     @State private var newPlanForEdit: Plan?
     /// 记录最近一次 + 按钮创建的 planId, 关 sheet 时用来判断要不要清理
-    @State private var lastCreatedPlanId: String?
+    @State private var isCreatingPlan = false
     /// Free 用户撞到 plan 上限时弹的 paywall
     @State private var paywallPresented: Bool = false
+    @State private var welcomePaywallPresented = false
     /// Imported plan from maso:// deep link — set ≠ nil 时弹 ImportedPlanSheet
     @State private var importedPlan: Plan? = nil
     /// 解析 deep link 出错 (base64 invalid / JSON invalid / 链接残破) → 弹通用错误 alert
@@ -83,6 +201,99 @@ struct RootView: View {
     /// Polar 激活结果提示 (maso://activate?key= 深链回跳后弹).
     @State private var activateMessage: String? = nil
     @State private var activateShown: Bool = false
+    @State private var muscleStatusGapMuscles: [MuscleGroup] = []
+    @State private var muscleStatusStartGapWorkout: (() -> Void)?
+
+    @State private var widgetMealToRecord: DietMeal?
+
+    private var showingDailyRecord: Bool {
+        navigationPath.contains { destination in
+            if case .dailyRecord = destination { return true }
+            return false
+        }
+    }
+
+    private var homeQuickActionBlocked: Bool {
+        welcomePaywallPresented || paywallPresented || newPlanForEdit != nil || importedPlan != nil
+            || pendingReplacePlan != nil || quickWorkoutPresented || widgetMealToRecord != nil || showingDailyRecord
+    }
+    private func openHomeQuickActionIfReady() {
+        guard let request = router.pendingHomeQuickAction, launchReady,
+              data.settings.onboardingCompleted, router.homeQuickActionsReady, scenePhase == .active else { return }
+        if (request.action == .addMeal && widgetMealToRecord != nil)
+            || (request.action == .freeWorkout && quickWorkoutPresented)
+            || (request.action == .workout && playerPresented) {
+            router.pendingHomeQuickAction = nil
+            return
+        }
+        // Preserve an in-progress editor. Its normal dismissal resumes the latest request.
+        guard !homeQuickActionBlocked else { return }
+        if request.action == .freeWorkout, playerPresented {
+            playerPresented = false
+            return
+        }
+        router.pendingHomeQuickAction = nil
+        switch request.action {
+        case .addMeal: router.pendingWidgetDestination = .addMeal
+        case .coach: router.pendingWidgetDestination = .coach
+        case .freeWorkout: navigationPath = []; quickWorkoutPresented = true
+        case .workout:
+            navigationPath = []
+            if let current = session.session, !current.completed { playerPresented = true }
+            else if data.todayRecommendedPlan != nil { router.pendingWidgetDestination = .playWorkout }
+            else { quickWorkoutPresented = true }
+        }
+        // The existing pendingWidgetDestination observer owns the shared presentation.
+    }
+
+    private func openWidgetDestinationIfReady() {
+        guard data.settings.onboardingCompleted,
+              router.pendingWidgetDay != nil || router.pendingWidgetDestination != nil else { return }
+        if playerPresented { playerPresented = false; return }
+        if widgetMealToRecord != nil {
+            if router.pendingWidgetDestination == .addMeal { router.pendingWidgetDestination = nil }
+            else { widgetMealToRecord = nil }
+            return
+        }
+        // A newly requested section replaces the day page on the next pass, matching
+        // the previous sheet handoff where the day closed before the other link opened.
+        if showingDailyRecord && router.pendingWidgetDestination != nil {
+            navigationPath.removeAll { destination in
+                if case .dailyRecord = destination { return true }
+                return false
+            }
+            return
+        }
+        let requestedDay = router.pendingWidgetDay
+        if requestedDay != nil { router.pendingWidgetDay = nil }
+        guard let destination = router.pendingWidgetDestination else {
+            if let requestedDay {
+                navigationPath = [.dailyRecord(data.settings.calendar.startOfDay(for: requestedDay))]
+            }
+            return
+        }
+        router.pendingWidgetDestination = nil
+        switch destination {
+        case .addMeal:
+            navigationPath = []
+            widgetMealToRecord = DietMeal(id: UUID().uuidString, title: "Meal", portions: [])
+        case .home: navigationPath = []
+        case .workout: navigationPath = [.insights]
+        case .diet: navigationPath = data.settings.dietEnabled == false ? [.settings] : [.diet]
+        case .sleep: navigationPath = data.settings.sleepEnabled == false ? [.settings] : [.sleep]
+        case .recovery: navigationPath = [.muscleStatus]
+        case .coach: navigationPath = [.coach]; coachRoutinePromptRequested = true
+        case .playWorkout:
+            navigationPath = []
+            startTodayWorkout()
+        case .start:
+            // Retired widget play links now open Home; never launch training automatically.
+            navigationPath = []
+        }
+        if let requestedDay {
+            navigationPath.append(.dailyRecord(data.settings.calendar.startOfDay(for: requestedDay)))
+        }
+    }
 
     /// maso://activate?key=<license> 深链 — Polar 结账成功回跳自动激活.
     /// 返回 true = 已消费掉 (是 activate 链接), 调用方就别再当 plan import 处理.
@@ -111,11 +322,34 @@ struct RootView: View {
         return true
     }
 
+    #if DEBUG
+    /// Six real library exercises. Used only by MASO_SHOWCASE=plan_detail_layout.
+    private static func layoutCheckPlan() -> Plan {
+        let ids = [
+            "bench_press_barbell", "squat_barbell", "pull_up",
+            "leg_curl_lying", "overhead_press_barbell", "barbell_row",
+        ]
+        let now = Date()
+        return Plan(
+            id: "layout-check-plan",
+            name: "Layout Check",
+            steps: ids.enumerated().map { index, exerciseId in
+                PlanStep(id: "layout-check-\(index)", exerciseId: exerciseId, sets: 3, reps: 8, weight: 40)
+            },
+            createdAt: now,
+            updatedAt: now
+        )
+    }
+    #endif
+
     /// Marketing screenshot mode — set MASO_SHOWCASE env var on simulator launch to land on a specific screen.
     /// Values: today (default) / history / settings / player / free_workout / rest
     /// Used by App Store screenshot pipeline. No-op in production (env var only set when launching
     /// from CI / asset gen script). Safe to keep — no behavior change for real users.
     private func applyShowcaseModeIfNeeded() {
+        #if DEBUG
+        MarketingCaptureSeed.apply(to: data)
+        #endif
         let mode = ProcessInfo.processInfo.environment["MASO_SHOWCASE"] ?? ""
         guard !mode.isEmpty else { return }
         switch mode {
@@ -123,25 +357,60 @@ struct RootView: View {
             // 路由名保持不变 (夜间 verify-app driver 的 ROUTES 依赖) — Exercises 已并入 Coach:
             // 落 Coach tab + 拉起动作库 sheet. 延迟到 CoachScreen 挂载后再翻, onChange 才收得到;
             // sheet 全屏盖住 Coach → 截图跟 "routines"/today 保持 distinct.
-            tab = .coach
+            navigationPath = [.coach]
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) { coachLibraryRequested = true }
+        #if DEBUG
+        case "home_muscle_intro":
+            navigationPath = []
+            data.settings.firstHomeMuscleIntroPending = true
+            data.settings.coachIntroTipPending = false
+            data.settings.coachBodyPhotoTipSeen = true
+        case "coach_tip":
+            navigationPath = []
+            data.settings.coachIntroTipPending = true
+        case "coach_photo_tip":
+            navigationPath = []
+            data.settings.coachIntroTipPending = false
+            data.settings.coachBodyPhotoTipSeen = false
+        #endif
         case "routines":
-            tab = .coach          // 原 Routines tab 能力已整体迁入 Coach
-        case "coach_templates", "coach_prefs", "coach_chat":
+            navigationPath = [.coach]          // 原 Routines tab 能力已整体迁入 Coach
+        case "coach_templates", "coach_prefs", "coach_chat", "coach_advice":
             // 顶栏走查用: 只负责落 Coach tab, sheet/种子对话由 CoachScreen 自己读 env 拉起
             // (templatesPresented/prefsPresented 是 CoachScreen 私有 state, 不走 binding 减少管线).
-            tab = .coach
+            navigationPath = [.coach]
         case "plan_detail":
             // 计划详情 sheet — 复用 newPlanForEdit 通道 (今日推荐做内容, 截图够看).
-            tab = .today
+            navigationPath = []
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 newPlanForEdit = data.todayRecommendedPlan ?? data.plans.first
             }
+        #if DEBUG
+        case "plan_detail_layout":
+            // UI test only. The plan stays in the sheet and is not written into the library.
+            navigationPath = []
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                newPlanForEdit = Self.layoutCheckPlan()
+            }
+        #endif
         case "history":
-            tab = .history
+            navigationPath = []
+        case "diet":
+            navigationPath = [.diet]
+        case "sleep":
+            navigationPath = [.sleep]
+        case "muscle_status":
+            #if DEBUG
+            if ProcessInfo.processInfo.environment["MASO_MARKETING_GAPS"] == "1" {
+                muscleStatusGapMuscles = [.back, .quads]
+            }
+            #endif
+            navigationPath = [.muscleStatus]
+        case "insights", "coach_insights":
+            navigationPath = [.insights]
         case "settings":
-            tab = .history
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { settingsPresented = true }
+            navigationPath = []
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { navigationPath.append(.settings) }
         case "free_workout":
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { quickWorkoutPresented = true }
         case "player":
@@ -163,114 +432,161 @@ struct RootView: View {
         }
     }
 
+    @ViewBuilder
+    private var demoPrefetchIDs: [String] {
+        let plans = (data.suggestedTodayPlan.map { [$0] } ?? []) + data.plans + (data.aiTodayPlan.map { [$0] } ?? [])
+        return plans.flatMap { $0.steps }.compactMap { data.exById[$0.exerciseId]?.id }
+    }
+
     var body: some View {
-        if !data.settings.onboardingCompleted {
-            // onDone = "AI 生成中"过渡跑完后回调 —— 此时才置 onboardingCompleted 切到主界面.
-            // (confirm() 不再当场置位, 否则过渡 overlay 来不及显示, 见 OnboardingScreen.confirm.)
-            OnboardingScreen {
+        Group {
+            if data.settings.onboardingCompleted { appNavigationContent }
+            else { onboardingContent }
+        }
+        .background {
+            WorkoutYouTubeRetentionHost(playback: session.youtubePlayback)
+                .frame(width: 1, height: 1).allowsHitTesting(false).accessibilityHidden(true)
+        }
+        .task(id: "\(session.workoutSessionID ?? "none")|\(session.session?.completed == true)|\(data.settings.workoutHeartRateEnabled == true)|\(WorkoutHeartRecommendation.effective(settings: data.settings, samples: WorkoutHeartLocalStore.shared.samples, excluding: session.workoutSessionID))") {
+            session.heartRateReadEnabled = data.settings.workoutHeartRateEnabled == true
+            session.heartRate.bind(sessionID: session.session?.completed == false ? session.workoutSessionID : nil,
+                                   start: session.session?.startedAt, enabled: session.heartRateReadEnabled,
+                                   limit: WorkoutHeartRecommendation.effective(settings: data.settings, samples: WorkoutHeartLocalStore.shared.samples, excluding: session.workoutSessionID))
+            session.pushWatchState()
+            await session.heartRate.startWatchWorkoutIfNeeded()
+        }
+        .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { homeContentWidth = $0 }
+        .onAppear {
+            #if DEBUG
+            if ProcessInfo.processInfo.environment["MASO_SHOWCASE"] == "plan_detail_layout" {
                 data.settings.onboardingCompleted = true
-                // reached_home — 引导过渡跑完、首次进主界面 (含 AI 首份计划是否失败).
-                Analytics.shared.track("reached_home", ["ai_today_failed": .bool(data.aiTodayFailed)])
-                data.flushSave()
             }
-                .transition(.opacity)
-                // 引导期也接收 maso:// 邀请链接 — 解码后暂存 importedPlan, 引导完成进主界面时
-                // else 分支的 .sheet(item:$importedPlan) 会因其非空自动弹出. 不再静默丢弃朋友的分享链接.
-                .onOpenURL { url in
-                    if handleActivateURL(url) { return }
-                    if let plan = PlanShareCodec.decodePlan(from: url) {
-                        importedPlan = plan
-                    } else if url.scheme == PlanShareCodec.urlScheme {
-                        importFailed = true
-                    }
-                }
-        } else {
-            // iOS 默认 TabView — 3 个 tab 用系统标准 bar
-            // MiniBar 通过 .safeAreaInset(edge:.bottom) 应用到每个 tab 的内容上
-            // (而不是整个 TabView), 这样系统 TabBar 始终留在底部, MiniBar 紧贴 TabBar 上方,
-            // 两者并排显示. 之前在 TabView 上加 safeAreaInset 会出现 MiniBar 跟 TabBar
-            // 视觉粘在一起像一个大方块的情况.
-            // ⚠️ inset 必须挂在 NavigationStack **里面** (screen 视图上): 挂外面时 NavigationStack
-            // 不把缩小的 safe area 传给内部固定钉底的内容 — 三个旧 tab 全是 ScrollView 看不出来,
-            // Coach 的 composer 是第一个钉底实体控件, 训练中 MiniBar 直接盖住它 (owner 实机报障)。
-            TabView(selection: $tab) {
-                // 三个 tab 都包 NavigationStack — 走 iOS 默认 navigationTitle + toolbar 样式.
-                // .tint(MasoColor.text) 覆盖系统默认 (Asset AccentColor 是绿) — toolbar 右上角按钮
-                // 走白色, 跟 dark theme 配色一致 (不再绿).
-                // Today — 今日总览: 肌肉状态 + 今日训练轮播 (落地页, .today tag; 自由训练在导航栏右上角).
-                NavigationStack {
-                    TodayScreen(
-                        onStart: startTraining,
-                        onFreeWorkout: { quickWorkoutPresented = true },
-                        onNewPlan: handleNewPlan,
-                        onOpenSettings: { settingsPresented = true },
-                        embedded: true,
-                        mode: .trainToday   // Today = 肌肉状态 + 今日训练轮播 (#today-carousel); 自由训练 = 轮播尾部空卡.
-                    )
-                    .screenHeader("Today") {
-                        // 自由训练入口 = 轮播尾部空卡 (owner 拍板回退导航栏 dumbbell), 这里只留齿轮.
-                        Button(action: { settingsPresented = true }) {
-                            Image(systemName: "gearshape")
-                                .font(.system(size: 16, weight: .regular))
-                        }
-                        .accessibilityLabel("Settings")
-                    }
-                    .safeAreaInset(edge: .bottom, spacing: 0) { miniBarContent }
-                }
-                .tint(MasoColor.text)
-                .tabItem {
-                    Label("Today", systemImage: "figure.strengthtraining.traditional")
-                }
-                .tag(RootTab.today)
-
-                // Coach — 对话式生成与管理 routines (docs/coach-tab-design.md §1 三段式).
-                // 原 Plans tab 能力全部迁入 (SAVED 货架 + All sheet); Exercises 从导航栏 dumbbell 一步拉起.
-                // 注入跟原 Plans tab 同构: onStart → player fullScreenCover 管线 / onNewPlan → handleNewPlan
-                // (paywall gating + 共享 sheet 容器) / onOpenSettings → settings sheet.
-                NavigationStack {
-                    CoachScreen(
-                        onStart: startTraining,
-                        onNewPlan: handleNewPlan,
-                        onOpenSettings: { settingsPresented = true },
-                        libraryRequested: $coachLibraryRequested
-                    )
-                    .safeAreaInset(edge: .bottom, spacing: 0) { miniBarContent }
-                }
-                .tint(MasoColor.text)
-                .tabItem {
-                    // 单气泡 message = "跟教练聊" 最素的表达 (双气泡版 owner 嫌丑;
-                    // ✨ 留给 AI badge / 生成按钮, tab 表达的是"对话"这个动作本身).
-                    Label("Coach", systemImage: "message")
-                }
-                .tag(RootTab.coach)
-
-                NavigationStack {
-                    HistoryScreen(
-                        onReplay: startTraining,
-                        onOpenSettings: { settingsPresented = true }
-                    )
-                    .safeAreaInset(edge: .bottom, spacing: 0) { miniBarContent }
-                }
-                .tint(MasoColor.text)
-                .tabItem {
-                    // Tab 标签重命名 → "Progress" (进度): 这个 tab 现在既装分析(Insights)又装
-                    // 记录(History), "History" 只描述了一半. 复用已有的 "Progress"="进度" key.
-                    // icon = chart.bar (空心柱, 留白多 → 视觉体量最轻, 跟 dumbbell 的通透感一致;
-                    // chart.bar.fill 四根实心高柱填满整格显重, chart.line.uptrend.xyaxis 又太细碎).
-                    // 只改 LABEL — RootTab.history / case "history" 路由 / 类型名保持不动 (analytics tag 也走 RootTab, 无需改).
-                    Label("Progress", systemImage: "chart.bar")
-                }
-                .tag(RootTab.history)
+            #endif
+            if !coachTipInitialized {
+                coachTipInitialized = true
+                coachTipSessionReady = data.settings.onboardingCompleted
             }
-            .tint(MasoColor.accent)
-            // 共享底纹铺到整个 TabView 底下 (含 tab bar / composer 下方那条系统安全区) — 各 tab 屏自己的
-            // AppBackground 只到内容边缘, tab bar 后面那片会落到系统纯黑 (owner 报"暗色地板挡住绿光斑").
-            // 这里补一层, 让液态光斑一路透到屏幕最底, 底部不再是死黑的一层.
+        }
+        .task(id: nextCoachTip) {
+            guard let tip = nextCoachTip else { return }
+            // Let onboarding / modal dismissal and footer layout finish; cancel on navigation.
+            do { try await Task.sleep(for: .milliseconds(500)) } catch { return }
+            guard !Task.isCancelled, nextCoachTip == tip else { return }
+            visibleCoachTip = tip
+            coachIntroTipVisible = true
+        }
+        .task(id: "\(coachTipHomeAvailable)|\(data.settings.firstHomeMuscleIntroPending == true)") {
+            guard data.settings.onboardingCompleted, coachTipHomeAvailable, data.settings.firstHomeMuscleIntroPending == true else { return }
+            do { try await Task.sleep(for: .milliseconds(500)) } catch { return }
+            guard !Task.isCancelled, coachTipHomeAvailable, data.settings.firstHomeMuscleIntroPending == true else { return }
+            firstHomeMuscleIntroVisible = true
+            data.settings.firstHomeMuscleIntroPending = false
+            data.save()
+        }
+        .onChange(of: coachTipHomeAvailable) { _, available in
+            if !available {
+                coachIntroTipVisible = false
+                firstHomeMuscleIntroVisible = false
+            }
+        }
+        .onChange(of: navigationPath) { _, path in
+            if path.contains(.coach), coachTipSessionReady, data.settings.coachIntroTipPending == true {
+                dismissCoachIntroTip()
+            }
+        }
+        .onChange(of: router.pendingHomeQuickAction, initial: true) { _, _ in openHomeQuickActionIfReady() }
+        .onChange(of: router.homeQuickActionsReady) { _, _ in openHomeQuickActionIfReady() }
+        .onChange(of: homeQuickActionBlocked) { _, blocked in
+            if !blocked {
+                Task { try? await Task.sleep(for: .milliseconds(350)); openHomeQuickActionIfReady() }
+            }
+        }
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .background && data.settings.onboardingCompleted {
+                coachTipSessionReady = true
+                coachTipShownThisSession = false
+            }
+            if phase == .active { openHomeQuickActionIfReady() }
+        }
+        .onChange(of: router.pendingWidgetDestination, initial: true) { _, _ in openWidgetDestinationIfReady() }
+        .onChange(of: router.pendingWidgetDay, initial: true) { _, _ in openWidgetDestinationIfReady() }
+        .onChange(of: data.settings.onboardingCompleted) { _, _ in openWidgetDestinationIfReady(); openHomeQuickActionIfReady() }
+        .onChange(of: launchReady, initial: true) { _, _ in presentWelcomePaywallIfNeeded(); openHomeQuickActionIfReady() }
+        .onChange(of: subscriptions.hasCheckedEntitlements) { _, _ in presentWelcomePaywallIfNeeded() }
+        .fullScreenCover(isPresented: $welcomePaywallPresented, onDismiss: {
+            data.settings.hasSeenWelcomePaywall = true
+            data.save()
+        }) {
+            PaywallScreen(source: "first_launch", context: .welcome)
+        }
+    }
+
+    private func presentWelcomePaywallIfNeeded() {
+        guard launchReady, subscriptions.hasCheckedEntitlements,
+              ProcessInfo.processInfo.environment["MASO_SHOWCASE_SEED"] != "1" else { return }
+        if WelcomePaywallPolicy.shouldPresent(hasSeen: data.settings.hasSeenWelcomePaywall,
+                                              onboardingCompleted: data.settings.onboardingCompleted,
+                                              isPro: data.settings.isPro) {
+            welcomePaywallPresented = true
+        }
+    }
+
+    private func receiveSharedPlan(_ url: URL) {
+        if let plan = PlanShareCodec.decodePlan(from: url) { importedPlan = plan }
+    }
+
+    private var onboardingContent: some View {
+        OnboardingScreen { plan in
+            data.settings.onboardingCompleted = true
+            data.settings.firstHomeMuscleIntroPending = true
+            data.settings.coachIntroTipPending = true
+            Analytics.shared.track("reached_home")
+            data.flushSave()
+            if let plan, router.pendingHomeQuickAction == nil { DispatchQueue.main.async { startTraining(plan) } }
+        }
+        .transition(.opacity)
+        .onContinueUserActivity(NSUserActivityTypeBrowsingWeb) { activity in
+            if let url = activity.webpageURL { receiveSharedPlan(url) }
+        }
+        .onOpenURL { url in
+            if url.scheme == "maso", url.host == "widget" { return }
+            if handleActivateURL(url) { return }
+            if let plan = PlanShareCodec.decodePlan(from: url) {
+                importedPlan = plan
+            } else if url.scheme == PlanShareCodec.urlScheme {
+                importFailed = true
+            }
+        }
+    }
+
+    private var appNavigationContent: some View {
+            AppNavigationStack(path: $navigationPath) {
+                TodayScreen(
+                    onStart: startTraining,
+                    onFreeWorkout: { quickWorkoutPresented = true },
+                    onNewPlan: handleNewPlan,
+                    onOpenSettings: { navigationPath.append(.settings) },
+                    onOpenMuscleStatus: { gaps, startGapWorkout in
+                        muscleStatusGapMuscles = gaps
+                        muscleStatusStartGapWorkout = startGapWorkout
+                        navigationPath.append(.muscleStatus)
+                    },
+                    onOpenCoach: {
+                        coachRoutinePromptRequested = true
+                        navigationPath.append(.coach)
+                    },
+                    embedded: true,
+                    mode: .trainToday,
+                    showsHistory: true,
+                    showMuscleIntro: firstHomeMuscleIntroVisible,
+                    homeMotionEnabled: navigationPath.isEmpty && !playerPresented
+                )
+                .marketingCaptureReady("today")
+                .safeAreaInset(edge: .bottom, spacing: 0) { homeBottomControls }
+                .navigationDestination(for: AppDestination.self) { destination in destinationView(for: destination) }
+            }
+            .tint(MasoColor.text)
             .background(AppBackground())
-            // tab_switch — 用户切底 Tab (含程序化切换都流经这, 见 router.requestedTab / showcase).
-            .onChange(of: tab) { _, newTab in
-                Analytics.shared.track("tab_switch", ["tab": .string(Self.tabName(newTab))])
-            }
             // "AI 正在按新偏好重算计划" loading 浮层 — 离开 Training Preferences 且改过设置时显示 ~0.9s.
             .overlay { tailoringPlansOverlay }
             .animation(.easeInOut(duration: 0.25), value: data.isTailoringPlans)
@@ -280,35 +596,37 @@ struct RootView: View {
             // MiniBar 上的倒计时就定住了. 挪到 RootView 顶层后, MiniBar 跟 Player 都靠它驱动.
             .background(SessionTickerView())
             // 反馈队列 daily digest — app 启动 + 每次回前台都尝试一次. 24h 内最多 send 一次,
-            // 由 FeedbackStore 内部判断. 没 pending 时 trySendDigest 是 no-op.
+            // 有离线报告时重试上传；汇总和每周邮件由服务端负责.
             .task {
+                SleepReminderScheduler.shared.reschedule(settings: data.settings)
                 // 先落 showcase 屏 (截图流水线) — 不能被下面的网络 await 阻塞.
                 // (Path B 后 refreshAIWorkoutIfNeeded 会发真 LLM 网络调用, 不能再排在 showcase 前.)
                 applyShowcaseModeIfNeeded()
-                await feedbackStore.trySendDigest()
+                if ProcessInfo.processInfo.environment["MASO_SHOWCASE_SEED"] != "1", NSClassFromString("XCTestCase") == nil,
+                   ProcessInfo.processInfo.environment["MASO_EXERCISE_UI_TEST_SCENE"] == nil, let local = BodyHealthLocalStore.read() {
+                    data.settings.restoreLocalBodyHealth(local)
+                }
+                await data.refreshBodyActivityHealth()
+                try? await data.refreshExternalWorkouts()
+                await feedbackStore.tryUploadPending()
                 // App 启动时也尝试 refresh AI 训练计划 — 同一天已经生成则 no-op
                 await data.refreshAIWorkoutIfNeeded()
             }
-            .onChange(of: scenePhase) { _, newPhase in
-                if newPhase == .active {
-                    Task { await feedbackStore.trySendDigest() }
-                    // 回前台也顺手同步一次 HealthKit (中间用户可能在 Health.app 改了权限)
-                    if data.settings.healthKitSyncEnabled {
-                        Task { await catchUpHealthKitSync() }
-                    }
-                    // 回前台 — 如果跨天了, refreshAIWorkoutIfNeeded 会触发新一次 AI 生成
-                    Task { await data.refreshAIWorkoutIfNeeded() }
-                    // 回前台 → 取消 rest 通知 (app 自己有 visible 倒计时, 不再需要 push)
-                    RestNotificationScheduler.shared.cancel()
-                } else if newPhase == .background || newPhase == .inactive {
-                    // 进后台 → 如果当前在休息段, 调度倒计时结束通知 (锁屏 / 切其它 app 时收到)
-                    scheduleRestNotificationIfNeeded()
-                    // P2-1: save() 现在是 debounced — 进后台/inactive 立即 flush, 防 pending 写丢失.
-                    data.flushSave()
-                }
+            .task(id: demoPrefetchIDs) {
+                await ExerciseDemoService.shared.prefetch(demoPrefetchIDs)
+            }
+            .onChange(of: scenePhase) { _, newPhase in handleScenePhaseChange(newPhase) }
+            .onChange(of: data.sets) { _, _ in session.refreshLoadSuggestions(using: data) }
+            .onChange(of: session.plan, initial: true) { _, _ in session.refreshLoadSuggestions(using: data) }
+            .onChange(of: session.awaitingExercise) { _, waiting in
+                if waiting { playerPresented = true }
             }
             // 训练完成 (session.completed flip true) → 实时写 HealthKit
-            .onChange(of: session.session?.completed ?? false) { _, completed in
+            .onChange(of: session.session?.completed ?? false, initial: true) { _, completed in
+                if let current = session.session {
+                    data.updateWorkoutCompletion(planID: current.planId, startedAt: current.startedAt,
+                                                 completed: completed && !current.completedSets.isEmpty)
+                }
                 if completed && data.settings.healthKitSyncEnabled {
                     Task { await catchUpHealthKitSync() }
                 }
@@ -319,13 +637,16 @@ struct RootView: View {
                     playerPresented = true
                 }
             }
-            // 跨 sheet tab 切换请求 — e.g. Progress AI 小结 Apply → 切到 Coach (深链消息由 CoachScreen 消费).
-            // 3-tab 后不再需要旧的 .library → .plans+trainPage 映射, 直取即可.
-            .onChange(of: router.requestedTab) { _, newTab in
-                if let newTab {
-                    tab = newTab
-                    settingsPresented = false
-                    router.requestedTab = nil
+            // Summary/optimization links open Coach after their presenting sheet dismisses.
+            .onChange(of: router.requestedDestination) { _, destination in
+                if let destination {
+                    switch destination {
+                    case .today:
+                        navigationPath.removeAll()
+                    default:
+                        navigationPath = [destination]
+                    }
+                    router.requestedDestination = nil
                 }
             }
             // P1#12: 训练时保持屏幕常亮 — 力量组不倒计时, 系统 30s 自动锁屏会让每组结束时屏幕已黑.
@@ -337,15 +658,14 @@ struct RootView: View {
             }
             // 训练界面 = Apple Music 式全屏 (fullScreenCover 填满整页, 无顶部缝隙/无系统 grabber).
             // 关闭走 PlanPlayerScreen 自带的顶部 Drag Handle 下拉手势 (训练中) / 完成页按钮.
-            .fullScreenCover(isPresented: $playerPresented) {
-                PlanPlayerScreen()
+            .fullScreenCover(isPresented: $playerPresented, onDismiss: { session.youtubePlayback.minimize(); openWidgetDestinationIfReady(); openHomeQuickActionIfReady() }) {
+                PlanPlayerScreen().marketingCaptureReady("player")
                     // 透明 cover 背景 → 下拉收起时, PlanPlayerScreen 内的淡出黑背板变透明后,
                     // 后面的标签页界面能透出来 (Apple Music 式收起). 平时背板不透明, 视觉等同全屏.
                     .presentationBackground(.clear)
             }
-            .sheet(isPresented: $settingsPresented) {
-                NavigationStack { SettingsScreen() }
-                .presentationDragIndicator(.visible)
+            .sheet(item: $widgetMealToRecord, onDismiss: { openWidgetDestinationIfReady(); openHomeQuickActionIfReady() }) { meal in
+                MealEditorSheet(meal: meal, image: nil)
             }
             .sheet(isPresented: $paywallPresented) {
                 PaywallScreen()
@@ -355,10 +675,20 @@ struct RootView: View {
             // 选好若干动作 → Start → 合成 plan 开练.
             .sheet(isPresented: $quickWorkoutPresented) {
                 ExercisePickerSheet(
-                    onPick: { _ in },               // multiSelect 模式不走单选回调
-                    multiSelect: true,
-                    onPickMultiple: { startFreeWorkout($0) },
-                    startTitle: NSLocalizedString("Start workout", comment: "")
+                    onPick: { exercise in
+                        quickWorkoutPresented = false
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
+                            startFreeWorkout([exercise])
+                        }
+                    },
+                    directPick: true,
+                    pickerTitle: "Choose your first exercise",
+                    onPickConfigured: { exercise, step in
+                        quickWorkoutPresented = false
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
+                            startFreeWorkout([exercise], configuredStep: step)
+                        }
+                    }
                 )
                 .presentationDragIndicator(.visible)
             }
@@ -369,7 +699,11 @@ struct RootView: View {
             }
             // maso://import?plan=<base64> — 拦截 deep link, 解码 → 弹 ImportedPlanSheet.
             // 失败 (链接残破 / base64 invalid / JSON 解码错) 弹通用 alert, 不静默吞掉.
+            .onContinueUserActivity(NSUserActivityTypeBrowsingWeb) { activity in
+                if let url = activity.webpageURL { receiveSharedPlan(url) }
+            }
             .onOpenURL { url in
+                if url.scheme == "maso", url.host == "widget" { return }
                 if handleActivateURL(url) { return }
                 if let plan = PlanShareCodec.decodePlan(from: url) {
                     importedPlan = plan
@@ -388,69 +722,73 @@ struct RootView: View {
                         // 防 sheet 关闭过渡中引用的旧 plan 副本闪一下.
                         importedPlan = nil
                         DispatchQueue.main.async {
-                            data.plans.append(p)
-                            data.save()
+                            guard data.saveImportedPlans([p]) else { paywallPresented = true; return }
                             Haptics.tap()
-                            // 落到 Coach — SAVED 货架常驻钉顶, 新加的 plan 一眼可见.
-                            tab = .coach
+                            // Imported routines are immediately available on Today.
+                            navigationPath = []
                         }
                     }
                 )
                 .presentationDetents([.medium, .large])
                 .presentationDragIndicator(.visible)
             }
-            .alert("Invalid routine link", isPresented: $importFailed) {
-                Button("OK", role: .cancel) {}
-            } message: {
-                Text("This Maso link is damaged or unsupported. Ask your friend to share again.")
-            }
+            .alert(isPresented: $importFailed) { invalidRoutineLinkAlert }
             // Polar 激活结果 (maso://activate 深链回跳后).
-            .alert("Masso Pro", isPresented: $activateShown) {
-                Button("OK", role: .cancel) { activateMessage = nil }
-            } message: {
-                Text(activateMessage ?? "")
-            }
-            // + 按钮创建的新 plan — 关 sheet 时如果空了自动清理
+            .alert(isPresented: $activateShown) { activationAlert }
+            // Creation uses a local draft; only Save adds it to the library.
             .sheet(item: $newPlanForEdit, onDismiss: {
-                if let planId = lastCreatedPlanId { data.removePlanIfEmpty(planId) }
-                lastCreatedPlanId = nil
-                // 新建的 plan 出现在 Coach 的 SAVED 货架 — 切过去让用户看到.
-                tab = .coach
+                isCreatingPlan = false
+                // Return to the routines on Today.
+                navigationPath = []
             }) { plan in
                 PlanDetailSheet(
                     initialPlan: plan,
+                    isCreating: isCreatingPlan,
                     onStart: { p in
                         newPlanForEdit = nil
                         DispatchQueue.main.async { startTraining(p) }
                     }
                 )
-                .presentationDetents([.medium, .large])
+                .presentationDetents([.large])
                 .presentationDragIndicator(.visible)
             }
             // DESIGN 5.3: 替换正在进行的训练 — 二次确认
-            .alert(
-                "Another workout is in progress",
-                isPresented: Binding(
-                    get: { pendingReplacePlan != nil },
-                    set: { if !$0 { pendingReplacePlan = nil } }
-                ),
-                presenting: pendingReplacePlan
-            ) { plan in
-                Button("Replace", role: .destructive) {
-                    session.endedExplicitly = true
-                    session.end()
-                    pendingReplacePlan = nil
-                    DispatchQueue.main.async {
-                        startTrainingNow(plan)
-                    }
-                }
-                Button("Keep current", role: .cancel) {
-                    pendingReplacePlan = nil
-                }
-            } message: { _ in
-                Text("Starting this will replace the workout you're in. Continue?")
-            }
-        }
+            .alert(isPresented: replacementAlertBinding) { replacementAlert }
+    }
+
+    private var invalidRoutineLinkAlert: Alert {
+        Alert(title: Text("Invalid routine link"),
+              message: Text("This Masso link is damaged or unsupported. Ask your friend to share again."),
+              dismissButton: .default(Text("OK")))
+    }
+
+    private var activationAlert: Alert {
+        Alert(title: Text("Masso Pro"),
+              message: Text(verbatim: activateMessage ?? ""),
+              dismissButton: .default(Text("OK")) { activateMessage = nil })
+    }
+
+    private var replacementAlertBinding: Binding<Bool> {
+        Binding(
+            get: { pendingReplacePlan != nil },
+            set: { isPresented in if !isPresented { pendingReplacePlan = nil } }
+        )
+    }
+
+    private var replacementAlert: Alert {
+        let plan = pendingReplacePlan
+        return Alert(
+            title: Text("Another workout is in progress"),
+            message: Text("Starting this will replace the workout you're in. Continue?"),
+            primaryButton: .destructive(Text("Replace"), action: {
+                guard let plan else { return }
+                session.endedExplicitly = true
+                session.end()
+                pendingReplacePlan = nil
+                DispatchQueue.main.async { startTrainingNow(plan) }
+            }),
+            secondaryButton: .cancel(Text("Keep current"), action: { pendingReplacePlan = nil })
+        )
     }
 
     /// "AI 正在按新偏好重算计划" loading 浮层. 用户在 Training Preferences 改了设置并离开页面后,
@@ -486,6 +824,154 @@ struct RootView: View {
         }
     }
 
+    /// Only show against the visible home launcher, after the startup flow and any modal.
+    private var coachTipHomeAvailable: Bool {
+        launchReady && scenePhase == .active && homeContentWidth > 0
+            && navigationPath.isEmpty && !welcomePaywallPresented && !paywallPresented
+            && !playerPresented && !quickWorkoutPresented && newPlanForEdit == nil
+            && importedPlan == nil && widgetMealToRecord == nil && !showingDailyRecord
+            && pendingReplacePlan == nil && !importFailed && !activateShown
+            && !data.isTailoringPlans && router.pendingWidgetDestination == nil
+            && router.pendingWidgetDay == nil && router.pendingHomeQuickAction == nil
+    }
+
+    private var nextCoachTip: CoachTip? {
+        guard !coachTipShownThisSession else { return nil }
+        if CoachIntroTipPolicy.shouldOffer(pending: data.settings.coachIntroTipPending,
+                                           onboardingCompleted: data.settings.onboardingCompleted,
+                                           homeAvailable: coachTipHomeAvailable, reopened: coachTipSessionReady) {
+            return .intro
+        }
+        guard data.settings.coachIntroTipPending != true, coachTipSessionReady, coachTipHomeAvailable,
+              data.settings.coachBodyPhotoTipSeen != true, data.settings.onboardingCompleted else { return nil }
+        if CoachIntroTipPolicy.shouldOfferPhoto(seen: data.settings.coachBodyPhotoTipSeen,
+            onboardingCompleted: data.settings.onboardingCompleted, homeAvailable: coachTipHomeAvailable,
+            reopened: coachTipSessionReady, shownThisSession: coachTipShownThisSession,
+            workoutCount: data.recordedWorkoutSessions().count) { return .bodyPhoto }
+        return nil
+    }
+
+    private func dismissCoachIntroTip() {
+        let wasVisible = coachIntroTipVisible
+        coachIntroTipVisible = false
+        if data.settings.coachIntroTipPending == true && (wasVisible || coachTipSessionReady) {
+            data.settings.coachIntroTipPending = false
+            data.save()
+        }
+    }
+
+    private var coachLauncherTooltip: some View {
+        VStack(alignment: .trailing, spacing: -1) {
+            HStack(alignment: visibleCoachTip == .intro ? .center : .top, spacing: 10) {
+                if visibleCoachTip == .intro {
+                    Color.clear.frame(width: 28, height: 1).accessibilityHidden(true)
+                }
+                VStack(alignment: visibleCoachTip == .intro ? .center : .leading, spacing: 8) {
+                    Text(LocalizedStringKey(visibleCoachTip == .intro
+                         ? "Want to adjust your training plan? Ask AI Coach."
+                         : "Share a body photo for training suggestions."))
+                        .font(.caption.weight(.semibold))
+                        .fixedSize(horizontal: false, vertical: true)
+                        .multilineTextAlignment(visibleCoachTip == .intro ? .center : .leading)
+                        .frame(maxWidth: .infinity, alignment: visibleCoachTip == .intro ? .center : .leading)
+                        .foregroundStyle(MasoColor.text)
+                        .accessibilityIdentifier("home.coachTip.text")
+                    if visibleCoachTip == .bodyPhoto {
+                        Button("Choose photo") {
+                            dismissCoachIntroTip()
+                            coachBodyPhotoRequested = true
+                            navigationPath.append(.coach)
+                        }
+                        .nativeGlassButtonStyle().controlSize(.small).tint(MasoColor.accent)
+                        .accessibilityIdentifier("home.coachTip.photo")
+                    }
+                }
+                Button(action: dismissCoachIntroTip) {
+                    Image(systemName: "xmark")
+                        .font(.caption.weight(.semibold))
+                        .frame(minWidth: 28, minHeight: 28)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .foregroundStyle(MasoColor.textDim)
+                .accessibilityLabel("Close")
+                .accessibilityIdentifier("home.coachTip.close")
+            }
+            .padding(.horizontal, 12).padding(.vertical, 8)
+            .environment(\.layoutDirection, layoutDirection)
+            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 16))
+            .overlay(RoundedRectangle(cornerRadius: 16).stroke(MasoColor.borderSoft, lineWidth: 0.7))
+            .shadow(color: .black.opacity(0.14), radius: 8, y: 3)
+            Image(systemName: "arrowtriangle.down.fill")
+                .font(.system(size: 9, weight: .semibold))
+                .foregroundStyle(MasoColor.surfaceHi)
+                .padding(.trailing, 26)
+                .accessibilityHidden(true)
+        }
+        .frame(width: min(300, max(0, homeContentWidth - 64)))
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("home.coachTip")
+        .onAppear {
+            // Consume only once the actual tooltip is on screen, never under onboarding/player.
+            coachTipShownThisSession = true
+            if visibleCoachTip == .intro { data.settings.coachIntroTipPending = false }
+            else { data.settings.coachBodyPhotoTipSeen = true }
+            data.save()
+        }
+    }
+
+    private var coachLauncherButton: some View {
+        HomeLauncherButton(symbol: "message", prominent: false) {
+            dismissCoachIntroTip()
+            Haptics.tap()
+            navigationPath.append(.coach)
+        }
+        .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { height in
+            if height > 0 { homeFooterControlHeight = height }
+        }
+        .accessibilityLabel("AI Coach")
+        .accessibilityIdentifier("home.coach")
+        .accessibilityHint("Adjust your routines with your coach")
+        .overlay(alignment: .bottomTrailing) {
+            if coachIntroTipVisible && coachTipHomeAvailable {
+                coachLauncherTooltip
+                    .padding(.bottom, homeFooterControlHeight + (visibleCoachTip == .intro ? 4 : 10))
+            }
+        }
+    }
+
+    /// Both the Home launcher and the explicit Widget play link use this action.
+    private func startTodayWorkout() {
+        guard let plan = data.todayRecommendedPlan else { return }
+        Haptics.tap()
+        startTraining(plan)
+    }
+
+    private var todayWorkoutLauncher: some View {
+        HomeLauncherButton(symbol: "play.fill", prominent: true) {
+            Analytics.shared.track("home_workout_entry", ["entry": .string("today")])
+            startTodayWorkout()
+        }
+        .accessibilityLabel("Today's Workout")
+        .accessibilityIdentifier("home.startTodayWorkout")
+        .contextMenu {
+            Button("Today's Workout") {
+                Analytics.shared.track("home_workout_entry", ["entry": .string("today")])
+                startTodayWorkout()
+            }.disabled(data.todayRecommendedPlan == nil)
+            Button("Start custom workout") {
+                Analytics.shared.track("home_workout_entry", ["entry": .string("custom")])
+                quickWorkoutPresented = true
+            }
+            Button("AI Quick Workout") {
+                Analytics.shared.track("home_workout_entry", ["entry": .string("ai")])
+                dismissCoachIntroTip()
+                coachQuickWorkoutRequested = true
+                navigationPath.append(.coach)
+            }
+        }
+    }
+
     /// + 按钮 — 建一个空白 plan, 弹出编辑 sheet.
     ///
     /// Free 用户撞到 plan 上限 (FreeLimit.maxPlans) 弹 paywall; Pro 用户无限新建.
@@ -494,8 +980,9 @@ struct RootView: View {
             paywallPresented = true
             return
         }
-        let plan = data.createBlankPlan()
-        lastCreatedPlanId = plan.id
+        let now = Date()
+        let plan = Plan(id: "plan-\(UUID().uuidString)", name: "", steps: [], createdAt: now, updatedAt: now)
+        isCreatingPlan = true
         newPlanForEdit = plan
     }
 
@@ -505,8 +992,27 @@ struct RootView: View {
         return !s.completed && session.currentSegment != nil
     }
 
-    /// MiniBar 内容 — 给每个 tab 的 .safeAreaInset 复用. 用 @ViewBuilder 让它能在
-    /// hasActiveSession=false 时返回 EmptyView (MiniBarHost 会判断是否实际渲染).
+    /// Mounted exclusively on Today, never on navigation destinations.
+    private var homeBottomControls: some View {
+        HStack(spacing: 12) {
+            if hasActiveSession {
+                miniBarContent
+                    .environment(\.layoutDirection, layoutDirection)
+                    .frame(maxWidth: .infinity)
+            } else {
+                todayWorkoutLauncher.fixedSize()
+                Spacer(minLength: 0)
+            }
+            coachLauncherButton.fixedSize()
+        }
+        // Physical placements; text inside the minibar retains the app's direction.
+        .environment(\.layoutDirection, .leftToRight)
+        .padding(.leading, hasActiveSession ? MasoMetrics.pagePaddingHorizontal : 32)
+        .padding(.trailing, 32)
+        .padding(.top, 8)
+    }
+
+    /// Training continues on other pages; only Today renders its compact controls.
     @ViewBuilder
     private var miniBarContent: some View {
         if hasActiveSession, let seg = session.currentSegment {
@@ -518,7 +1024,8 @@ struct RootView: View {
                 isCrossExercise: isCrossExerciseRest(seg),
                 onTap: { playerPresented = true },
                 onAdvance: { session.advance { rec in data.recordSet(rec) } },
-                onTogglePlay: { session.togglePlay() }
+                onTogglePlay: { session.togglePlay() },
+                controlHeight: homeFooterControlHeight
             )
             .transition(.move(edge: .bottom).combined(with: .opacity))
         }
@@ -559,7 +1066,7 @@ struct RootView: View {
     /// 如果已有别的进行中 session, 先弹确认; 用户确认后才替换
     /// 自由训练 — 把多选 picker 选出的动作合成一个 autoGenerated plan 开练.
     /// (镜像旧 QuickWorkoutScreen.synthesizePlan: 默认 category 排序 + 上次负荷回填.)
-    private func startFreeWorkout(_ exercises: [Exercise]) {
+    private func startFreeWorkout(_ exercises: [Exercise], configuredStep: PlanStep? = nil) {
         guard !exercises.isEmpty else { return }
         let now = Date()
         let sorted = exercises.sorted { l, r in
@@ -569,24 +1076,13 @@ struct RootView: View {
             return false
         }
         let steps: [PlanStep] = sorted.enumerated().map { (i, ex) in
-            let lastSet = data.sets.first(where: { $0.exerciseId == ex.id })
-            let isStrength = ex.category == .strength
-            return PlanStep(
-                id: "qw-step-\(Int(now.timeIntervalSince1970))-\(i)",
-                exerciseId: ex.id,
-                sets: 3,
-                reps: isStrength ? (lastSet?.reps ?? 10) : nil,
-                weight: isStrength ? (lastSet?.weight ?? 0) : nil,
-                duration: isStrength ? nil : 30,
-                restBetweenSets: data.settings.defaultRestSeconds,
-                rest: 0
-            )
+            return data.makeSeededStep(for: ex, stepId: "qw-step-\(Int(now.timeIntervalSince1970))-\(i)")
         }
         let dateStr = now.formatted(.dateTime.month().day().hour().minute())
         let plan = Plan(
-            id: "qw-\(Int(now.timeIntervalSince1970))",
+            id: "qw-open-\(UUID().uuidString)",
             name: "\(NSLocalizedString("Free workout", comment: "")) · \(dateStr)",
-            steps: steps,
+            steps: configuredStep.map { [$0] } ?? steps,
             createdAt: now,
             updatedAt: now,
             autoGenerated: true
@@ -661,6 +1157,22 @@ struct RootView: View {
         }
     }
 
+    private func handleScenePhaseChange(_ newPhase: ScenePhase) {
+        if newPhase == .active {
+            Task { await data.refreshBodyActivityHealth() }
+            Task { try? await data.refreshExternalWorkouts() }
+            Task { await feedbackStore.tryUploadPending() }
+            if data.settings.healthKitSyncEnabled {
+                Task { await catchUpHealthKitSync() }
+            }
+            Task { await data.refreshAIWorkoutIfNeeded() }
+            RestNotificationScheduler.shared.cancel()
+        } else if newPhase == .background || newPhase == .inactive {
+            scheduleRestNotificationIfNeeded()
+            data.flushSave()
+        }
+    }
+
     /// 进后台时如果在休息段 *或正在跑的有氧倒计时段*, 调度倒计时通知.
     /// 前台时由 app 自己提示, 不发通知.
     /// P1-9: 之前只给 rest 发通知, 有氧 countdown 动作在后台到点无任何提示.
@@ -719,12 +1231,14 @@ struct RootView: View {
 
     /// 直接启动 (无确认) — 仅在确认替换后或没有冲突时调用
     private func startTrainingNow(_ plan: Plan) {
+        let plan = data.routinePlanDefaults(plan)
         let segments = expandPlan(
             plan,
             exById: data.exById,
             defaultRest: data.settings.defaultRestSeconds,
             defaultBetweenExerciseRest: data.settings.defaultBetweenExerciseRestSeconds
         )
+        if !plan.steps.isEmpty { data.captureWellnessGoal(plan: plan) }
         session.start(planId: plan.id, plan: plan, segments: segments, source: Self.workoutSource(for: plan))
         playerPresented = true
     }
@@ -750,8 +1264,25 @@ struct NavStackIf<Content: View>: View {
     let embedded: Bool
     @ViewBuilder let content: () -> Content
     var body: some View {
-        if embedded { content() } else { NavigationStack { content() } }
+        if embedded { content() } else { AppNavigationStack { content() } }
     }
 }
 
 
+
+
+/// Identical native sizing for both home launchers; only the glass style and tint differ.
+private struct HomeLauncherButton: View {
+    let symbol: String
+    let prominent: Bool
+    let action: () -> Void
+    @ViewBuilder var body: some View {
+        let button = Button(action: action) {
+            Image(systemName: symbol)
+                .font(.system(size: 23, weight: .medium))
+                .frame(width: 32, height: 32)
+        }.controlSize(.large).buttonBorderShape(.circle)
+        if prominent { button.nativeGlassProminentButtonStyle().tint(MasoColor.accent) }
+        else { button.nativeGlassButtonStyle().tint(MasoColor.text) }
+    }
+}

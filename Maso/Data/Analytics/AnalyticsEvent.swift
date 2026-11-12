@@ -11,11 +11,15 @@ import Foundation
 
 /// 单条分析事件 — 名称 + 时间戳 + 标量属性. Codable 落盘到 Documents/maso-analytics.json.
 struct AnalyticsEvent: Codable, Sendable {
+    var envelope: AnalyticsEnvelope? = nil
+    var sessionID: String? = nil
+    let id: UUID?
     let name: String
     let ts: Date                          // encode 时走 iso8601
     let props: [String: AnyCodableScalar] // 仅标量 — 编译期约束
 
     init(name: String, ts: Date = Date(), props: [String: AnyCodableScalar] = [:]) {
+        self.id = UUID()
         self.name = name
         self.ts = ts
         self.props = props

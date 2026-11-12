@@ -1,7 +1,13 @@
 import SwiftUI
 
+/// Distinct from other plan pushes so each screen owns its own navigation destination.
+private struct TodayWorkoutDetail: Hashable {
+    let plan: Plan
+}
+
 struct TodayScreen: View {
     @Environment(DataStore.self) private var data
+    @Environment(TrainingSessionStore.self) private var training
     let onStart: (Plan) -> Void
     /// 拉起"自由训练" flow — Today 导航栏右上角 dumbbell 按钮触发 (RootView 的 toolbar;
     /// 非 embedded 时本 view 自己的 screenHeader 也挂同款), 走 QuickWorkout sheet 选动作开练.
@@ -10,14 +16,19 @@ struct TodayScreen: View {
     let onNewPlan: () -> Void
     /// 标题行右上角齿轮 → 弹 Settings sheet (RootView 持有 sheet state)
     let onOpenSettings: () -> Void
+    /// My Muscle Status is a regular pushed page in the app navigation stack.
+    var onOpenMuscleStatus: (_ gapMuscles: [MuscleGroup], _ startGapWorkout: @escaping () -> Void) -> Void = { _, _ in }
+    /// Classic Routines 是独立导航页, 从右侧 push 进入.
+    /// Push the AI Coach when the user asks for a routine from the empty state or add menu.
+    var onOpenCoach: () -> Void = {}
     /// Pro feature ②: My Routines 顶部优化建议卡点 "Optimize with AI" → 把诊断 focusNote 上抛给
     /// PlansScreen, 由它带 focusNote 重生成 routine (Pro gating 也在 PlansScreen 那侧). 其他用法不传.
     var onOptimize: (DataStore.RoutineSuggestion) -> Void = { _ in }
-    /// 嵌在外层 NavigationStack (Train / Plans tab) 里时 true — 不渲染自己的大标题/齿轮.
+    /// 嵌在外层 AppNavigationStack (Train / Plans tab) 里时 true — 不渲染自己的大标题/齿轮.
     var embedded: Bool = false
     /// 渲染哪部分内容:
     ///   - .trainToday: 肌肉状态 + 今日训练轮播 (Today tab; 自由训练在导航栏右上角)
-    ///   - .myPlans:    我的训练列表 (SavedRoutinesAllSheet 复用这块做完整管理面)
+    ///   - .myPlans:    旧 Plans 容器复用的训练列表内容
     ///   - .full:       全部 (兼容老用法)
     enum Mode { case full, trainToday, myPlans }
     var mode: Mode = .full
@@ -25,12 +36,21 @@ struct TodayScreen: View {
     /// 外层 PlansScreen 的滚动页接管 (本 view 只出内容 VStack, sheets/alerts 照常挂在上面).
     /// Today tab (RootView) 不传, 默认 false 走自己的 ScrollView.
     var embeddedInScroll: Bool = false
+    /// The home screen appends workout records directly below routines.
+    var showsHistory: Bool = false
+    var showMuscleIntro: Bool = false
+    var homeMotionEnabled: Bool = true
     /// Routines tab (#IA-A): "+ new routine" 菜单在导航栏 (PlansScreen). 点 "Import from photo" 翻这个 →
     /// 这里开图片选择器. 其他用法 (Today tab) 不传, 默认 .constant(false) 不触发.
     var triggerImport: Binding<Bool> = .constant(false)
 
-    /// 卡片 tap → 弹 plan detail sheet 查看动作 + 每组 sets/reps/weight (WorkoutCard + PlanRow 共用)
-    @State private var detailPlan: Plan? = nil
+    /// 卡片 tap → 从右侧推入训练详情, 查看动作 + 每组 sets/reps/weight.
+    @Environment(\.scenePhase) private var scenePhase
+    @State private var headingDate = Date()
+    @State private var homeTopInset: CGFloat = 0
+    @State private var homeTitleHeight: CGFloat = 0
+    @State private var homeTitleCollapsed = false
+    @State private var detailPlan: TodayWorkoutDetail? = nil
     /// 删 plan 的二次确认 (从原 Plans 页迁来).
     @State private var pendingDeletePlanId: String? = nil
     /// 图片导入 routine (#image-import): 选图 → QR/OCR 解析 → ImportedPlanSheet 确认.
@@ -45,11 +65,9 @@ struct TodayScreen: View {
     @State private var importFailed = false
     /// Muscle Status 卡"解锁逐肌群恢复" → 付费墙 (非 Pro). 跟 HistoryScreen 的 paywall 同款.
     @State private var paywallPresented = false
-    /// 轮播标题行尾部 "All" → 完整管理 sheet (SavedRoutinesAllSheet: 删/编辑/照片导入/优化卡).
+    @State private var aiUpgradePrompt = UpgradePrompt()
+    /// 首页 History / Insights 切换及经典训练入口。
     /// Coach 撤掉 SAVED 货架后, 这里是管理面在 Today 侧的一步可达入口.
-    @State private var allSheetPresented = false
-    /// "All" sheet 内的照片导入触发 — SavedRoutinesAllSheet 要求的 binding, Today 侧暂无外部触发方.
-    @State private var allSheetTriggerImport = false
     /// 轮播卡等高 (#today-carousel): PreferenceKey 量测每张卡自然高取 max 回写.
     /// 非 nil 后所有卡 (含尾部"自由训练"空卡) 统一到该高度; plans 变化时重置重量.
     @State private var carouselCardHeight: CGFloat? = nil
@@ -63,22 +81,10 @@ struct TodayScreen: View {
         data.suggestedTodayPlan
     }
 
-    /// 轮播卡序 (#today-carousel): 今日那张在最前, 其余按 lastUsedAt 升序 (= "接下来"的轮换顺序).
-    /// 今日 = suggestedTodayPlan (LRU 挑最久没练的) — 不另造轮换器: 练完第一张, 它的 lastUsedAt
-    /// 变最新 → 下次 LRU 自动轮到第二张, 天然满足 owner 的 ①②③.
-    /// suggested 是 aiTodayPlan (新用户首日 AI 优先, 不在 data.plans 里) 时它作额外的第一张卡.
-    private var carouselPlans: [Plan] {
-        guard let today = suggested else { return [] }
-        let rest = data.plans
-            .filter { $0.id != today.id }
-            .sorted { a, b in
-                let l = a.lastUsedAt ?? .distantPast
-                let r = b.lastUsedAt ?? .distantPast
-                if l != r { return l < r }
-                return a.createdAt < b.createdAt   // 兜底末键跟 pickTodayPlan 一致
-            }
-        return [today] + rest
-    }
+    /// Stored order is the presentation order. Only the scroll position advances.
+    private var carouselPlans: [Plan] { data.plans }
+    private var rotation: WorkoutRotation { data.workoutRotation }
+    @State private var carouselPosition: String?
 
     /// 时段问候 — DESIGN.md §4.2: 0-5 凌晨 / 5-12 早上 / 12-18 下午 / 18-24 晚上.
     private var greeting: String {
@@ -90,20 +96,55 @@ struct TodayScreen: View {
         }
     }
 
-    /// 大标题下的一句贴心提示 — 按"距上次训练多久"给极简一句, 提醒今天该不该练.
-    /// sets 是 newest-first (recordSet insert at 0), 所以 first = 最近一次.
-    private var todayTipLine: String {
-        let cal = Calendar.current
+    /// Action first, followed by the recorded context. An unfinished workout takes priority.
+    private var todayHeading: (title: String, subtitle: String) {
+        if let session = training.session, !session.completed {
+            return (NSLocalizedString("Keep going", comment: "home action"),
+                    NSLocalizedString("Your workout is in progress.", comment: "home context"))
+        }
+        #if DEBUG
+        let contextDate = ProcessInfo.processInfo.environment["MASO_MARKETING_MORNING"] == "1"
+            ? (Calendar.current.date(bySettingHour: 9, minute: 41, second: 0, of: headingDate) ?? headingDate)
+            : headingDate
+        #else
+        let contextDate = headingDate
+        #endif
+        if let context = DailyReminderContext.heading(settings: data.settings, now: contextDate) {
+            return context
+        }
         guard let last = data.sets.first?.performedAt else {
-            return NSLocalizedString("Let's start your first workout.", comment: "today tip — never trained")
+            return (NSLocalizedString("Start your first workout", comment: "home action"),
+                    NSLocalizedString("Your training journey starts here.", comment: "home context"))
         }
-        let days = cal.dateComponents([.day], from: cal.startOfDay(for: last), to: cal.startOfDay(for: Date())).day ?? 0
+        let cal = Calendar.current
+        let days = cal.dateComponents([.day], from: cal.startOfDay(for: last), to: cal.startOfDay(for: headingDate)).day ?? 0
         switch days {
-        case ..<0, 0: return NSLocalizedString("You've trained today — rest up.", comment: "today tip — trained today")
-        case 1:       return NSLocalizedString("Last trained yesterday.", comment: "today tip — yesterday")
-        case 2...6:   return String(format: NSLocalizedString("%lld days since your last session.", comment: "today tip — N days"), days)
-        default:      return String(format: NSLocalizedString("%lld days off — let's get back to it.", comment: "today tip — long gap"), days)
+        case ...0:
+            return (NSLocalizedString("Rest up", comment: "home action"),
+                    NSLocalizedString("You’ve trained today.", comment: "home context"))
+        case 1:
+            return (NSLocalizedString("Plan your next session", comment: "home action"),
+                    NSLocalizedString("You last trained yesterday.", comment: "home context"))
+        default:
+            let title = days < 7 ? NSLocalizedString("Make time to train", comment: "home action")
+                                : NSLocalizedString("Ease back in", comment: "home action")
+            let subtitle = String(format: NSLocalizedString("It’s been %lld days since your last workout.", comment: "home context"), days)
+            return (title, subtitle)
         }
+    }
+
+    private var todayTipLine: String {
+        showMuscleIntro ? NSLocalizedString("The muscle map shows which areas you have trained.", comment: "first home muscle map introduction") : todayHeading.subtitle
+    }
+
+    private var overlapsMuscleHero: Bool {
+        showsHistory && !embeddedInScroll && mode != .myPlans
+            && !data.settings.showProUpsell && !data.aiTodayFailed
+    }
+
+    /// Share the overlap calculation so moving the overview preserves the legend gap.
+    private var homeContentOverlap: CGFloat {
+        (overlapsMuscleHero ? (16 + 44 + 10 + 32) : 0) + MasoMetrics.homePostHeroLift
     }
 
     // MARK: - 我的训练 section (从 Plans 页迁来)
@@ -125,53 +166,58 @@ struct TodayScreen: View {
         // contextMenu (代替 List 的右滑); 排序暂不提供 (原 Plans 页的拖拽随 List 一起去掉了).
         // embeddedInScroll (Routines 单页嵌入) 时不自带 ScrollView/背景 — 外层滚动页接管,
         // sheets / alerts / import flow 仍挂本 view (修饰链原样生效).
+        ScrollViewReader { _ in
         ScrollIf(scroll: !embeddedInScroll) {
             VStack(alignment: .leading, spacing: 16) {
+                if showsHistory && !embeddedInScroll && mode != .myPlans {
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text(todayHeading.title)
+                            .font(.largeTitle.bold())
+                            .lineLimit(2)
+                            .fixedSize(horizontal: false, vertical: true)
+                        Text(todayTipLine)
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { homeTitleHeight = $0 }
+                    .zIndex(2)
+                    MuscleWalkthroughHeader(
+                        topExtension: homeTopInset + homeTitleHeight + 16,
+                        height: 432,
+                        // Match the gap to the shared card padding (20pt).
+                        footerClearance: overlapsMuscleHero
+                            ? homeContentOverlap - 16 - MasoMetrics.homeOverviewTopInset + MasoMetrics.cardPadding
+                            : 48,
+                        fatigueMap: fatigueMap,
+                        gapMuscles: gapMuscles,
+                        motionEnabled: homeMotionEnabled && !paywallPresented && detailPlan == nil,
+                        onStartGapWorkout: startGapWorkout,
+                        onUnlock: { paywallPresented = true },
+                        onOpenStatus: { onOpenMuscleStatus($0, $1) }
+                    )
+                }
                 // ===== Today tab 内容: 肌肉状态 + 今日推荐 + 自由训练 (mode != .myPlans) =====
                 if mode != .myPlans {
-                    // ── Pro 升级 banner ── (owner: 付费入口放第一个 tab 的首屏).
-                    // 只有真能买的人看得到: showProUpsell = 外链墙开 && 美区 storefront && 未订阅
-                    // (非美区恒免费全解锁, 给他们看升级条是骚扰 + 无法完成购买).
-                    // 容器规格照抄同屏的 aiTodayFailed 提示条 (surface 底 + 10 圆角 + 12/10 内边距),
-                    // 只把语气从"错误灰"换成 accent —— 它是推荐不是报错.
+                    // Shared marketing banner; paid and valid legacy users are excluded.
                     if data.settings.showProUpsell {
-                        Button { paywallPresented = true } label: {
-                            HStack(spacing: 10) {
-                                Image(systemName: "bolt.fill")
-                                    .font(.system(size: 13, weight: .bold))
-                                    .foregroundStyle(MasoColor.accent)
-                                VStack(alignment: .leading, spacing: 2) {
-                                    Text("Masso Pro")
-                                        .font(.system(size: 13, weight: .heavy))
-                                        .foregroundStyle(MasoColor.text)
-                                    Text("Unlimited routines, unlimited AI coach, deep analytics.")
-                                        .font(.system(size: 11))
-                                        .foregroundStyle(MasoColor.textDim)
-                                        .fixedSize(horizontal: false, vertical: true)
-                                }
-                                Spacer(minLength: 0)
-                                Image(systemName: "chevron.right")
-                                    .font(.system(size: 11, weight: .semibold))
-                                    .foregroundStyle(MasoColor.textFaint)
-                            }
-                            .padding(.horizontal, 12).padding(.vertical, 10)
-                            .background(MasoColor.surface)
-                            .clipShape(RoundedRectangle(cornerRadius: 10))
-                        }
-                        .buttonStyle(.plain)
+                        ProBanner { paywallPresented = true }
                     }
 
                     // ── 训练状态 ── (MuscleStatusOverviewCard 自带图例/提示/Train the gaps).
                     // 零训练数据时整块隐藏 (owner 拍板): 空态的灰肌肉图+引导句反而奇怪,
                     // 练过第一次 (sets 非空) 这块才出现. ROUTINES 轮播顶上来作首屏内容.
                     if !data.sets.isEmpty {
+                        if !showsHistory || embeddedInScroll {
                         MuscleStatusOverviewCard(
                             fatigueMap: fatigueMap,
                             gapMuscles: gapMuscles,
                             onStartGapWorkout: startGapWorkout,
                             tipLine: todayTipLine,
-                            onUnlock: { paywallPresented = true }
+                            onUnlock: { paywallPresented = true },
+                            onOpenStatus: { onOpenMuscleStatus($0, $1) }
                         )
+                        }
                     }
 
                     // AI 生成失败 → 提示条 (已回落到本地推荐, 一键重试真 AI).
@@ -184,7 +230,9 @@ struct TodayScreen: View {
                             Spacer(minLength: 0)
                             Button {
                                 Haptics.tap()
-                                Task { await data.forceRefreshAIWorkout() }
+                                aiUpgradePrompt.requestAI(isPro: data.settings.isPro, source: "today_ai_retry") {
+                                    Task { await data.forceRefreshAIWorkout() }
+                                }
                             } label: {
                                 // 失败条 Retry → 次级玻璃胶囊 (映射表②); 旧系统保留原裸文字 (无底无内边距).
                                 Text("Retry").font(.system(size: 12, weight: .bold))
@@ -202,13 +250,19 @@ struct TodayScreen: View {
 
                     // ── 今日训练轮播 ── (#today-carousel): 全部已存 routine 横滑成卡组,
                     // 首卡 = 今日 (卡内自带 "TODAY'S WORKOUT" kicker), 右缘 peek 暗示可滑.
-                    // 零 saved 且无 aiTodayPlan → carouselPlans 空, 整个轮播 (含"新建"尾卡) 不渲染 —
-                    // Today 会变死端 (导航栏只剩齿轮, 无任何训练入口). 兜底: 同位置单独渲染新建虚线卡.
-                    if !carouselPlans.isEmpty {
+                    VStack(alignment: .leading, spacing: 16) {
+                        if showsHistory {
+                            DailyOverviewCard(onReplay: onStart)
+                                .padding(.top, MasoMetrics.homeOverviewTopInset)
+                        }
                         workoutCarousel
-                    } else {
-                        emptyNewRoutineCard
                     }
+                    .padding(.top, -homeContentOverlap)
+                    .zIndex(1)
+                }
+
+                if showsHistory && mode == .myPlans {
+                    DailyOverviewCard(onReplay: onStart)
                 }
 
                 // ===== Plans tab 的 My Plans 分页: 我的训练 + 自由训练 + 社区 (mode != .trainToday) =====
@@ -226,13 +280,13 @@ struct TodayScreen: View {
                             exById: data.exById,
                             kicker: "TODAY'S WORKOUT",
                             onStart: { onStart(today) },
-                            onShowDetail: { detailPlan = today },
+                            onShowDetail: { detailPlan = TodayWorkoutDetail(plan: today) },
                             prominentStart: false,
                             showStart: false,
                             compactLayout: true
                         )
                         .contextMenu {
-                            Button { detailPlan = today } label: { Label("Edit", systemImage: "pencil") }
+                            Button { detailPlan = TodayWorkoutDetail(plan: today) } label: { Label("Edit", systemImage: "pencil") }
                             // deletePlan 对 aiTodayPlan 有特判 (清空 + 抑制当天重生成).
                             Button(role: .destructive) { pendingDeletePlanId = today.id } label: {
                                 Label("Delete", systemImage: "trash")
@@ -255,14 +309,14 @@ struct TodayScreen: View {
                                 exById: data.exById,
                                 kicker: "",
                                 onStart: { onStart(plan) },
-                                onShowDetail: { detailPlan = plan },
+                                onShowDetail: { detailPlan = TodayWorkoutDetail(plan: plan) },
                                 prominentStart: false,  // 计划卡的开始键弱化 (半透明绿底)
                                 showStart: false,       // Routines/Saved: 不显示 play 钮, 点卡片进详情 Start
                                 compactLayout: true     // 列表卡用紧凑横排 (标题/计数/[图|chips])
                             )
                             // 长按菜单代替 List 右滑 — 改/删.
                             .contextMenu {
-                                Button { detailPlan = plan } label: { Label("Edit", systemImage: "pencil") }
+                                Button { detailPlan = TodayWorkoutDetail(plan: plan) } label: { Label("Edit", systemImage: "pencil") }
                                 Button(role: .destructive) { pendingDeletePlanId = plan.id } label: {
                                     Label("Delete", systemImage: "trash")
                                 }
@@ -276,11 +330,48 @@ struct TodayScreen: View {
 
                 // 底部留白 — Routines 单页嵌入时由外层滚动页统一给, 这里不重复.
                 if !embeddedInScroll {
-                    Spacer(minLength: MasoMetrics.pageBottomInset)
+                    Spacer(minLength: showsHistory ? 0 : MasoMetrics.pageBottomInset)
                 }
             }
             // 页边距 — 嵌入模式下外层已给 pagePaddingHorizontal, 置 0 防双重缩进.
             .padding(.horizontal, embeddedInScroll ? 0 : MasoMetrics.pagePaddingHorizontal)
+        }
+        }
+        .onAppear { headingDate = Date() }
+        .onReceive(Timer.publish(every: 60, on: .main, in: .common).autoconnect()) { headingDate = $0 }
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .active { headingDate = Date() }
+        }
+        .onScrollGeometryChange(for: CGFloat.self) { geometry in
+            max(0, geometry.contentInsets.top)
+        } action: { _, inset in
+            homeTopInset = inset
+        }
+        .onScrollGeometryChange(for: Bool.self) { geometry in
+            geometry.contentOffset.y + geometry.contentInsets.top > homeTitleHeight
+        } action: { _, collapsed in homeTitleCollapsed = collapsed }
+        .applyIf(showsHistory && !embeddedInScroll && mode != .myPlans) { view in
+            view
+                .navigationTitle(todayHeading.title)
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbarRole(.navigationStack)
+                .toolbar {
+                    ToolbarItem(placement: .principal) {
+                        Text(todayHeading.title)
+                            .font(.headline)
+                            .lineLimit(2)
+                            .multilineTextAlignment(.center)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .opacity(homeTitleCollapsed ? 1 : 0)
+                            .accessibilityHidden(!homeTitleCollapsed)
+                    }
+                    ToolbarItemGroup(placement: .topBarTrailing) {
+                        Button(action: onOpenSettings) {
+                            Label("Settings", systemImage: "gearshape")
+                        }
+                        .accessibilityIdentifier("home.settings")
+                    }
+                }
         }
         // 自定义页头: greeting kicker + "Today" 大标题 + 齿轮. embedded (Today / Plans tab) 时跳过 —
         // 由外层 NavigationStack 的 screenHeader / segmented 接管.
@@ -294,38 +385,22 @@ struct TodayScreen: View {
                 .accessibilityLabel("Settings")
             }
         }
-        .sheet(item: $detailPlan) { plan in
+        .navigationDestination(item: $detailPlan) { route in
             PlanDetailSheet(
-                initialPlan: plan,
+                initialPlan: route.plan,
                 onStart: { p in
                     detailPlan = nil
                     DispatchQueue.main.async { onStart(p) }
-                }
-            )
-            .presentationDetents([.medium, .large])
-            .presentationDragIndicator(.visible)
-        }
-        // (showcase "classics" 路由 + CommunityScreen sheet 已删 — CommunityScreen 生产不可达,
-        //  Classics 现役实现是 ClassicsSheet (PlansScreen.swift), 走 Today 入口卡 addRoute 打开.)
-        // 轮播标题行 "All" → 完整管理 sheet (定义在 CoachScreen.swift, Coach 的照片导入路径也用它).
-        // 优化卡 Apply: Pro gate 在本侧过闸后, 经 AppRouter 深链到 Coach 对话流发 focusNote
-        // (surface "optimize", 跟 Coach 侧 All sheet 的语义一致 — CoachScreen 消费 pendingOptimizeFocus).
-        .sheet(isPresented: $allSheetPresented) {
-            SavedRoutinesAllSheet(
-                triggerImport: $allSheetTriggerImport,
-                onStart: onStart,
-                onNewPlan: onNewPlan,
-                onOptimize: { sug in
-                    guard data.settings.isPro else { paywallPresented = true; return }
-                    AppRouter.shared.pendingOptimizeFocus = sug.focusNote
-                    AppRouter.shared.requestedTab = .coach
-                }
+                },
+                usesParentNavigation: true
             )
         }
+        // Classic Routines 通过外层 NavigationStack 从右侧 push, 不再以 sheet 呈现.
         .sheet(isPresented: $paywallPresented) {
-            PaywallScreen()
+            PaywallScreen(source: "today_pro_feature")
             .presentationDragIndicator(.visible)
         }
+        .aiUpgradeReminder(aiUpgradePrompt)
         // ── 图片导入 routine (#image-import) — 流程收进 ViewModifier, 避免 body 类型检查超时.
         .modifier(RoutineImportFlow(
             pickerShown: $importPickerShown,
@@ -397,59 +472,61 @@ struct TodayScreen: View {
 
     // MARK: - 今日训练轮播 (#today-carousel)
 
-    /// 横滑卡片轮播: viewAligned 分页吸附 + 右缘 peek (~18pt) 暗示可滑; 不加 page dots (极简取向).
+    /// 横滑卡片轮播: viewAligned 分页吸附 + 右缘 peek (~60pt) 暗示可滑; 不加 page dots (极简取向).
     /// 卡片等高: 每张卡 GeometryReader 上报自然高, PreferenceKey reduce 取 max → 回写
     /// WorkoutCard.fixedHeight (卡内在底部行前垫 Spacer, 播放键仍钉右下). 标记只给前两张:
     /// 首卡 TODAY'S WORKOUT / 次卡 UP NEXT, 第三张起 kicker 留空 (顺序本身已表达).
-    /// 尾卡 = "自由训练"空卡 (虚线描边, 无 surface 填充), tap → onFreeWorkout.
     private var workoutCarousel: some View {
         VStack(alignment: .leading, spacing: 10) {   // 标题行与卡片间距 ≥10pt (owner 指定)
             // 区块标题行 — 左 "ROUTINES" 标题 (13pt, owner 反馈 10pt kicker 太小) +
-            // 右 "All ›" 入口: Coach 撤掉 SAVED 货架后, 完整管理面
-            // (删/编辑/照片导入/优化卡) 的家在这一步. 热区 ≥32pt 高.
+            // Create / free-train / photo import; Classic Routines lives with History and Insights below.
             HStack(alignment: .center) {
-                Text("Routines")
-                    .font(.system(size: 13, weight: .heavy))
-                    .tracking(1.2)
-                    .textCase(.uppercase)
-                    .foregroundStyle(MasoColor.textDim)
+                Text("Workouts")
+                    .trainingSectionTitle()
                 Spacer()
-                Button {
-                    Haptics.tap()
-                    allSheetPresented = true
-                } label: {
-                    HStack(spacing: 3) {
-                        Text("All")
-                            .font(.system(size: 13, weight: .semibold))
-                        Image(systemName: "chevron.right")
-                            .font(.system(size: 10, weight: .semibold))
+                Menu {
+                    if data.plans.isEmpty {
+                        Button(action: onOpenCoach) {
+                            Label("Generate routine with AI", systemImage: "message")
+                        }
                     }
-                    .foregroundStyle(MasoColor.textDim)
-                    .frame(minHeight: 32)          // 点击热区 ≥32pt
-                    .contentShape(Rectangle())
+                    Button { Haptics.tap(); onNewPlan() } label: {
+                        Label("Create a routine", systemImage: "plus")
+                    }
+                    .accessibilityIdentifier("home.createRoutine")
+                    Button { importPickerShown = true } label: {
+                        Label("Import from photo", systemImage: "photo")
+                    }
+                } label: {
+                    Image(systemName: "plus").frame(width: 44, height: 44)
                 }
-                .buttonStyle(.plain)
-                .accessibilityLabel(Text("All"))
+                .accessibilityLabel("Add routine")
             }
-            .frame(height: 32)   // 行高定住 32 — 文字垂直居中, 不让热区把行撑得忽高忽低
+            .frame(minHeight: 44)   // Match the shared action button’s full touch target.
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(alignment: .top, spacing: 12) {
-                    ForEach(Array(carouselPlans.enumerated()), id: \.element.id) { i, plan in
+                    if data.plans.isEmpty {
+                        emptyRoutinesEducationCard
+                            .containerRelativeFrame(.horizontal) { length, _ in length - 56 }
+                    } else {
+                    ForEach(carouselPlans) { plan in
                         WorkoutCard(
                             plan: plan,
                             exById: data.exById,
-                            // 首卡 = 今日标记; 次卡 = "接下来"; 之后留空 ("" 强制不显示).
-                            kicker: i == 0 ? "Today's Workout" : (i == 1 ? "Up next" : ""),
+                            // Completion and recommendation affect labels, never card order.
+                            kicker: rotation.completedPlanIDs.contains(plan.id) ? "Completed" : (rotation.todayPlanID == plan.id ? "Today's Workout" : ""),
                             onStart: { onStart(plan) },
-                            onShowDetail: { detailPlan = plan },
-                            prominentStart: i == 0,   // 今日卡主 CTA 强; up-next 卡播放键弱化
-                            emphasized: i == 0,       // accent 描边 + 辉光只给今日卡
-                            fixedHeight: carouselCardHeight   // 等高: 隐藏测量层量出 max 后统一回写
+                            onShowDetail: { detailPlan = TodayWorkoutDetail(plan: plan) },
+                            prominentStart: rotation.todayPlanID == plan.id,   // Only Today’s Workout uses the green primary action.
+                            emphasized: rotation.todayPlanID == plan.id,       // accent 描边 + 辉光只给今日卡
+                            fixedHeight: carouselCardHeight,
+                            reservesKickerSpace: true,
+                            completedOverride: rotation.completedPlanIDs.contains(plan.id)
                         )
                         // 长按菜单 — 跟 "All" sheet 里的列表卡同款 (改/删); 今日 AI 卡 (aiTodayPlan)
                         // 的删除由 DataStore.deletePlan 特判处理 (清卡 + 当天不自动重生成).
                         .contextMenu {
-                            Button { detailPlan = plan } label: { Label("Edit", systemImage: "pencil") }
+                            Button { detailPlan = TodayWorkoutDetail(plan: plan) } label: { Label("Edit", systemImage: "pencil") }
                             Button(role: .destructive) { pendingDeletePlanId = plan.id } label: {
                                 Label("Delete", systemImage: "trash")
                             }
@@ -458,18 +535,29 @@ struct TodayScreen: View {
                         // 持续量"自然高", 这里只消费 fixedHeight. (v2 的 可见卡自报+棘轮+560上限+onAppear重置
                         // 会互相打架: 重置窗口内量测被上限拒收 → 卡死 nil → 卡片各自自然高 + 尾卡隐身,
                         // 就是 owner 实机看到的两个 bug.)
-                        // 卡宽 = 容器宽 − 14 (容器 = 滚动区减去 contentMargins 后的正文宽):
-                        // 吸附时右缘露出下一张 页边距16 + 14 − 卡间距12 = 18pt 的 peek.
-                        // 尾部恒有自由训练空卡 → 总卡数 ≥2, 恒留 peek.
-                        .containerRelativeFrame(.horizontal) { length, _ in length - 14 }
+                        // 卡宽 = 容器宽 − 56 (容器 = 滚动区减去 contentMargins 后的正文宽):
+                        // 吸附时右缘露出下一张 页边距16 + 56 − 卡间距12 = 60pt 的 peek.
+                        .containerRelativeFrame(.horizontal) { length, _ in length - 56 }
+                        .id(plan.id)
                     }
-                    // 尾卡: 自由训练 (空卡片样式) — 高度与其它卡对齐.
-                    freeWorkoutCard
-                        .containerRelativeFrame(.horizontal) { length, _ in length - 14 }
+                    }
+                    customWorkoutCard
                 }
                 .scrollTargetLayout()
             }
+            // Let the native long-press lift extend above and below the carousel bounds.
+            .scrollClipDisabled()
             .scrollTargetBehavior(.viewAligned)
+            .scrollPosition(id: $carouselPosition, anchor: .leading)
+            .onAppear {
+                if !Self.showcaseCarouselEnd { carouselPosition = rotation.defaultPlanID }
+            }
+            .onChange(of: rotation.defaultPlanID) { _, id in
+                if !Self.showcaseCarouselEnd { carouselPosition = id }
+            }
+            .onChange(of: scenePhase) { _, phase in
+                if phase == .active && !Self.showcaseCarouselEnd { carouselPosition = rotation.defaultPlanID }
+            }
             // showcase 专用 (SIMCTL_CHILD_MASO_SHOWCASE_CAROUSEL=end): 初始滚到轮播尾部 —
             // 夜间验证/截图能看到尾部自由训练空卡 + 等高效果. 真实用户 env 不存在, 恒 .leading.
             .defaultScrollAnchor(Self.showcaseCarouselEnd ? .trailing : .leading)
@@ -477,7 +565,7 @@ struct TodayScreen: View {
             .padding(.horizontal, -MasoMetrics.pagePaddingHorizontal)
             .contentMargins(.horizontal, MasoMetrics.pagePaddingHorizontal, for: .scrollContent)
             // ── 隐藏测量层: 每张卡渲染一份"永远自然高" (fixedHeight: nil) 的隐形副本, 宽度与可见卡
-            // 一致 (页宽 − 边距×2 − 14), 持续上报自然高, reduce 取 max → 直接赋值 (无棘轮/无重置/无上限).
+            // 一致 (页宽 − 边距×2 − 56), 持续上报自然高, reduce 取 max → 直接赋值 (无棘轮/无重置/无上限).
             // plans 变化 → 副本跟着变 → 新 max 自动流入; 副本永不吃 fixedHeight, 量测不会被自身污染.
             // 成本 = 多渲染 3-6 张不上屏的卡, 可接受.
             .background {
@@ -485,8 +573,9 @@ struct TodayScreen: View {
                     HStack(alignment: .top, spacing: 0) {
                         ForEach(carouselPlans) { plan in
                             WorkoutCard(plan: plan, exById: data.exById, kicker: "Today's Workout",
-                                        onStart: {}, prominentStart: true, emphasized: true)
-                                .frame(width: max(geo.size.width - 14, 100))
+                                        onStart: {}, onShowDetail: {}, prominentStart: true, emphasized: true,
+                                        reservesKickerSpace: true)
+                                .frame(width: max(geo.size.width - 56, 100))
                                 // 抗压缩: 外层 10×10 小 frame 的提案不许把副本竖向压扁 —
                                 // 量到的必须是自然高.
                                 .fixedSize(horizontal: false, vertical: true)
@@ -510,58 +599,75 @@ struct TodayScreen: View {
         .padding(.top, 4)   // 外层 VStack spacing 16 + 4 = 与上方肌肉状态区间距 20pt (owner 指定 ≥20)
     }
 
-    /// 尾卡 "自由训练" — 空卡片样式: 虚线描边 / 无 surface 填充 / 居中 plus + 标签,
-    /// 高度对齐其它卡 (等高量测值; 首帧未量到时给近似兜底). tap → onFreeWorkout
-    /// (QuickWorkout flow 完成页本就支持存为 routine, 不用新做).
-    private var freeWorkoutCard: some View {
+    /// Empty-state education card routes users directly to AI Coach to build their first routine.
+    private var emptyRoutinesEducationCard: some View {
+        Button {
+            Haptics.tap()
+            onOpenCoach()
+        } label: {
+            VStack(alignment: .leading, spacing: 12) {
+                Image(systemName: "message")
+                    .font(.system(size: 17, weight: .semibold))
+                    .foregroundStyle(MasoColor.accent)
+                    .frame(width: 38, height: 38)
+                    .background(MasoColor.accent.opacity(0.13), in: RoundedRectangle(cornerRadius: 12))
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Build your routine with AI")
+                        .font(.headline.weight(.semibold))
+                        .foregroundStyle(MasoColor.text)
+                    Text("Tell AI Coach your goals and schedule to get a routine made for you.")
+                        .font(.subheadline)
+                        .foregroundStyle(MasoColor.textDim)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                HStack(spacing: 6) {
+                    Text("Chat with AI Coach")
+                    Spacer()
+                    Image(systemName: "arrow.down.right")
+                        .environment(\.layoutDirection, .leftToRight)
+                }
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(.white)
+                .padding(.horizontal, 16)
+                .frame(maxWidth: .infinity)
+                .frame(height: 44)
+                .background(Color.blue, in: Capsule())
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(MasoMetrics.cardPadding)
+            .frame(height: carouselCardHeight ?? 320, alignment: .center)
+            .glassCardBackground()
+            .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
+            .contentShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
+        }
+        .buttonStyle(.plain)
+        .accessibilityHint("Open AI Coach to create a routine")
+    }
+
+    /// Routines carousel 的尾部空卡 — 直接启动一个不带预设动作的自定义训练。
+    private var customWorkoutCard: some View {
         Button {
             Haptics.tap()
             onFreeWorkout()
         } label: {
-            // 高度严格 = 量测出的卡高; 没量到时 (首帧) 整卡隐形 — 不再用 220 兜底值渲染一张
-            // 比邻卡矮的空卡 (owner 实机看到的"高度不够"就是这个状态).
-            newRoutineCardLabel(height: carouselCardHeight ?? 320)
+            VStack(spacing: 12) {
+                Image(systemName: "play.fill")
+                    .font(.system(size: 22, weight: .semibold))
+                    .foregroundStyle(MasoColor.text)
+                    .frame(width: 48, height: 48)
+                    .glassCircleButtonBackground(fallback: MasoColor.surfaceHi)
+                Text("Start custom workout")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundStyle(MasoColor.text)
+            }
+            .frame(maxWidth: .infinity)
+            .frame(height: carouselCardHeight ?? 320)
+            .glassCardBackground()
+            .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
         }
         .buttonStyle(.plain)
-        .opacity(carouselCardHeight == nil ? 0 : 1)
-        .accessibilityLabel(Text("New routine"))
-    }
-
-    /// carouselPlans 空 (plans 全删 + aiTodayPlan nil) 时的兜底训练入口 — 轮播整个不渲染会让
-    /// Today 变死端 (导航栏只剩齿轮). 同位置满宽渲染一张"新建"虚线卡, 点击行为同轮播尾卡.
-    /// 注意不能套尾卡的"未量到隐形"opacity — 空态下没有量测层, carouselCardHeight 恒 nil (走 320 兜底).
-    private var emptyNewRoutineCard: some View {
-        Button {
-            Haptics.tap()
-            onFreeWorkout()
-        } label: {
-            newRoutineCardLabel(height: carouselCardHeight ?? 320)
-        }
-        .buttonStyle(.plain)
-        .accessibilityLabel(Text("New routine"))
-    }
-
-    /// 虚线"新建"卡的共享外观 — 轮播尾卡 (freeWorkoutCard) 与空态兜底卡 (emptyNewRoutineCard)
-    /// 共用一份, 改样式只动这里, 两边不漂移.
-    private func newRoutineCardLabel(height: CGFloat) -> some View {
-        VStack(spacing: 10) {
-            Image(systemName: "plus")
-                .font(.system(size: 22, weight: .semibold))   // 26→22, owner: 加号小一点点
-            // 文案三改: Free workout → Start from scratch → "New routine/新建训练"
-            // (这区叫 ROUTINES, 尾卡语义 = 新建一条 — 现挑动作开练, 完成后可存为 routine).
-            Text("New routine")
-                .font(.system(size: 14, weight: .semibold))
-        }
-        .foregroundStyle(MasoColor.textDim)
-        .frame(maxWidth: .infinity)
-        .frame(height: height)
-        .overlay(
-            RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium)
-                // 0.5pt — 跟 composer 等其它卡的描边同粗细 (owner: 虚线别比别的卡粗).
-                .strokeBorder(MasoColor.textDim.opacity(0.45),
-                              style: StrokeStyle(lineWidth: 0.5, dash: [6, 5]))
-        )
-        .contentShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
+        .containerRelativeFrame(.horizontal) { length, _ in length - 56 }
+        .accessibilityLabel("Start custom workout")
     }
 
     // MARK: - 肌肉状态 + 训练日历计算 helpers
@@ -610,46 +716,16 @@ struct TodayScreen: View {
     private func startGapWorkout() {
         let gaps = gapMuscles
         guard !gaps.isEmpty else { return }
-        let favSet = Set(data.settings.favoriteExerciseIds)
-        var seenExerciseIds = Set<String>()
-        var steps: [PlanStep] = []
-        var idx = 0
-        let maxSteps = 12
-
-        for major in gaps {
-            let targetMuscles = expandAnatomyMuscles([major])
-            struct Scored { let ex: Exercise; let score: Int; let isFav: Bool }
-            var scored: [Scored] = []
-            // gap-fill 候选: 跳过 niche — 训练日历空缺时智能补的动作不该是 Foam Roll / Battle Rope.
-            for ex in data.exercises where ex.category == .strength && !ex.isNiche {
-                if seenExerciseIds.contains(ex.id) { continue }
-                let s = gapScore(ex, against: targetMuscles)
-                if s > 0 {
-                    scored.append(Scored(ex: ex, score: s, isFav: favSet.contains(ex.id)))
-                }
-            }
-            scored.sort { lhs, rhs in
-                if lhs.isFav != rhs.isFav { return lhs.isFav && !rhs.isFav }
-                return lhs.score > rhs.score
-            }
-            for pick in scored.prefix(2) {
-                let ex = pick.ex
-                seenExerciseIds.insert(ex.id)
-                let isStrength = ex.category == .strength
-                steps.append(PlanStep(
-                    id: "gap-\(idx)-\(ex.id)",
-                    exerciseId: ex.id,
-                    sets: 3,
-                    reps: isStrength ? 10 : nil,
-                    weight: isStrength ? 0 : nil,
-                    duration: isStrength ? nil : 45,
-                    restBetweenSets: 90,
-                    rest: 0
-                ))
-                idx += 1
-                if steps.count >= maxSteps { break }
-            }
-            if steps.count >= maxSteps { break }
+        let exercises = data.suggestedTrainingExercises(
+            targetMuscles: gaps, perMuscleLimit: 2, limit: 12)
+        let steps = exercises.enumerated().map { index, exercise in
+            PlanStep(
+                id: "gap-\(index)-\(exercise.id)", exerciseId: exercise.id,
+                sets: max(1, data.settings.defaultSetsPerExercise),
+                reps: exercise.mechanic == .isolation
+                    ? data.settings.trainingGoal.defaultRepsForIsolation()
+                    : data.settings.trainingGoal.defaultRepsForCompound(),
+                weight: nil, restBetweenSets: data.settings.defaultRestSeconds, rest: 0)
         }
         guard !steps.isEmpty else { return }
         let now = Date()
@@ -671,15 +747,7 @@ struct TodayScreen: View {
         onStart(plan)
     }
 
-    private func gapScore(_ ex: Exercise, against targets: Set<MuscleGroup>) -> Int {
-        var total = 0
-        for (idx, mg) in ex.muscleGroups.enumerated() {
-            if targets.contains(mg) {
-                total += max(20, 100 - idx * 18)
-            }
-        }
-        return total
-    }
+
 }
 
 // MARK: - CarouselCardHeightKey — 今日轮播等高量测 (#today-carousel)
@@ -703,6 +771,7 @@ private struct ScrollIf<Content: View>: View {
         if scroll {
             // 试验性: 共享背景 = #121212 + 底部液态光斑 (embedded-in-scroll 路径不带背景, 不受影响).
             ScrollView { content() }
+                .scrollClipDisabled()
                 .background(AppBackground())
         } else {
             content()
@@ -714,7 +783,7 @@ private struct ScrollIf<Content: View>: View {
 //
 // 单独收成 ViewModifier: TodayScreen.body 修饰链已经很长, 再内联 4 个 sheet/alert/overlay
 // 会让 SwiftUI 类型检查超时 ("unable to type-check in reasonable time").
-private struct RoutineImportFlow: ViewModifier {
+struct RoutineImportFlow: ViewModifier {
     @Binding var pickerShown: Bool
     @Binding var pickedImage: UIImage?
     @Binding var parsing: Bool
@@ -773,8 +842,7 @@ private struct RoutineImportFlow: ViewModifier {
                         "recognized_count": .int(p.steps.count), "result": .string("qr"),
                     ])
                     DispatchQueue.main.async {
-                        data.plans.append(p)
-                        data.save()
+                        _ = data.saveImportedPlans([p])
                         Haptics.tap()
                     }
                 })
@@ -788,8 +856,7 @@ private struct RoutineImportFlow: ViewModifier {
                         "recognized_count": .int(chosen.count), "result": .string("qr_batch"),
                     ])
                     DispatchQueue.main.async {
-                        data.plans.append(contentsOf: chosen)
-                        data.save()
+                        _ = data.saveImportedPlans(chosen)
                         Haptics.tap()
                     }
                 })
@@ -803,8 +870,7 @@ private struct RoutineImportFlow: ViewModifier {
                         "recognized_count": .int(p.steps.count), "result": .string("ocr"),
                     ])
                     DispatchQueue.main.async {
-                        data.plans.append(p)
-                        data.save()
+                        _ = data.saveImportedPlans([p])
                         Haptics.tap()
                     }
                 })
@@ -831,5 +897,20 @@ private struct RoutineImportFlow: ViewModifier {
                     }
                 }
             }
+    }
+}
+
+
+/// iOS 26 supplies the native navigation subtitle; older iOS uses the content fallback.
+private struct HomeNavigationSubtitle: ViewModifier {
+    let subtitle: String
+
+    @ViewBuilder
+    func body(content: Content) -> some View {
+        if #available(iOS 26.0, *) {
+            content.navigationSubtitle(subtitle)
+        } else {
+            content
+        }
     }
 }

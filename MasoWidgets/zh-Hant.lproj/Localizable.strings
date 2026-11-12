@@ -1,0 +1,100 @@
+/* Traditional Chinese (Taiwan). Generated from zh-Hans by scripts/rebuild_zh_hant.py — edit zh-Hans and re-run, do not patch this file alone. */
+"Workout" = "訓練";
+
+"Diet" = "飲食";
+
+"Sleep" = "睡眠";
+
+"My Muscle Status" = "我的肌肉狀態";
+
+"Body front" = "正面";
+
+"Body back" = "背面";
+
+"This week" = "本週";
+
+"Protein" = "蛋白質";
+
+"Last night" = "昨晚";
+
+"Start workout" = "開始訓練";
+
+"Resume" = "繼續";
+
+"Create a routine" = "建立訓練計畫";
+
+"Daily overview" = "每日概覽";
+
+"Recovery & workout" = "肌肉恢復與訓練";
+
+"Single metric" = "單項資料";
+
+"Main metric" = "主要資料";
+
+"Body view" = "人體視角";
+
+"Content" = "展示內容";
+
+"Open Masso to update" = "開啟 Masso 更新";
+
+"Your day at a glance" = "快速檢視今天的資料";
+
+"Muscle recovery and your next workout" = "檢視肌肉恢復並開始訓練";
+
+"One metric, your choice" = "只看你關心的資料";
+
+"Muscles trained" = "已訓練肌群";
+
+"No data" = "暫無資料";
+
+"sets" = "組";
+
+"Chest" = "胸";
+
+"Back muscle" = "背部";
+
+"Legs" = "腿部";
+
+"Shoulders" = "肩";
+
+"Arms" = "手臂";
+
+"Core" = "核心";
+
+"Full body" = "全身";
+
+"Add meal" = "新增餐點";
+
+"Daily rings" = "每日圓環";
+"Workout, diet and sleep in one ring" = "訓練、飲食、睡眠，一環看全";
+
+"Diet progress" = "飲食進度";
+"Today's nutrition progress" = "今日營養目標完成進度";
+
+"Sleep progress" = "睡眠進度";
+"Progress toward your sleep goal" = "睡眠目標完成進度";
+
+"Calories" = "熱量";
+
+"Today's calorie progress" = "今日熱量進度";
+
+"Two metrics" = "兩項指標";
+"Workout and Diet" = "訓練和飲食";
+"Workout and Sleep" = "訓練和睡眠";
+"Diet and Sleep" = "飲食和睡眠";
+
+"Today" = "今天";
+
+"Widget panel" = "小工具板塊";
+"Calendar" = "日曆";
+"Workout and Calendar" = "訓練和日曆";
+"Diet and Calendar" = "飲食和日曆";
+"Sleep and Calendar" = "睡眠和日曆";
+"Top left" = "左上";
+"Top right" = "右上";
+"Bottom left" = "左下";
+"Bottom right" = "右下";
+
+"Widget content" = "小工具內容";
+"Workout, Diet and Sleep" = "訓練、飲食和睡眠";
+"Next: %@" = "下一個：%@";

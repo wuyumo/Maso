@@ -33,7 +33,7 @@ enum DataExport {
         let version = Foundation.Bundle.main
             .object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "?"
         let env = Envelope(exportedAt: Date(), appVersion: version,
-                           plans: data.plans, sets: data.sets, settings: data.settings)
+                           plans: data.plans, sets: data.sets, settings: data.settings.excludingBodyHealthData)
 
         let enc = JSONEncoder()
         enc.outputFormatting = [.prettyPrinted, .sortedKeys]

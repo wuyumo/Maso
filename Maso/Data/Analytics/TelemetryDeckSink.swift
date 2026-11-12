@@ -31,20 +31,21 @@ struct TelemetryDeckSink: AnalyticsSink {
         iso.formatOptions = [.withInternetDateTime]
 
         let signals: [[String: Any]] = batch.map { e in
+            let context = e.envelope ?? envelope
             var payload: [String: String] = [
                 // 信封放进 payload —— TelemetryDeck 侧就能按版本/系统/语言切分.
-                "appVersion": envelope.appVersion,
-                "osVersion": envelope.osVersion,
-                "language": envelope.language,
+                "appVersion": context.appVersion,
+                "osVersion": context.osVersion,
+                "language": context.language,
             ]
             for (k, v) in e.props { payload[k] = v.stringForAnalytics }
             return [
                 "appID": appID,
-                "clientUser": envelope.anonId,
-                "sessionID": envelope.anonId,
+                "clientUser": context.anonId,
+                "sessionID": e.sessionID ?? UUID().uuidString,
                 "type": e.name,
                 "receivedAt": iso.string(from: e.ts),
-                "isTestMode": isTestMode ? "true" : "false",
+                "isTestMode": isTestMode,
                 "payload": payload,
             ]
         }
@@ -58,6 +59,7 @@ struct TelemetryDeckSink: AnalyticsSink {
         req.httpBody = body
 
         do {
+            try Task.checkCancellation()
             let (_, resp) = try await URLSession.shared.data(for: req)
             let code = (resp as? HTTPURLResponse)?.statusCode ?? 0
             // 只有 2xx 才算收下. 其余 (含 5xx / 断网) 返回 false → Analytics 保留缓冲下次重试.

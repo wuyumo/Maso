@@ -19,6 +19,7 @@ final class RestNotificationScheduler {
 
     private static let notificationId = "maso.rest.ending"
     private var permissionAsked: Bool = false
+    private var schedulingRevision = 0
 
     private init() {}
 
@@ -29,6 +30,7 @@ final class RestNotificationScheduler {
                   exerciseCountdown: Bool = false) {
         // 取消上一次
         cancel()
+        let revision = schedulingRevision
 
         let delay = endsAt.timeIntervalSinceNow
         // < 2s 直接 skip — 用户可能在前台 advance, 没必要发了又秒收
@@ -43,13 +45,16 @@ final class RestNotificationScheduler {
                 guard granted else { return }
             }
 
+            // A language change or foreground cancellation may happen while the
+            // permission prompt is open. Never restore that cancelled old request.
+            guard schedulingRevision == revision else { return }
             let center = UNUserNotificationCenter.current()
             let content = UNMutableNotificationContent()
             content.title = exerciseCountdown
-                ? NSLocalizedString("Time's up", comment: "timed exercise interval ended")
+                ? AppNotificationText.string("Time's up")
                 : (isCrossExercise
-                   ? NSLocalizedString("Time to switch exercise", comment: "")
-                   : NSLocalizedString("Rest's up — next set", comment: ""))
+                   ? AppNotificationText.string("Time to switch exercise")
+                   : AppNotificationText.string("Rest's up — next set"))
             if let name = nextExerciseName {
                 content.body = name
             }
@@ -71,6 +76,7 @@ final class RestNotificationScheduler {
 
     /// 取消 pending rest 通知. app 回前台 / 用户 advance / 训练结束都该调.
     func cancel() {
+        schedulingRevision &+= 1
         let center = UNUserNotificationCenter.current()
         center.removePendingNotificationRequests(withIdentifiers: [Self.notificationId])
         // 已经 deliver 到通知中心的也清掉 — 用户回 app 没必要再看一次

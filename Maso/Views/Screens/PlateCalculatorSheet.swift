@@ -63,19 +63,13 @@ struct PlateCalculatorSheet: View {
     }
 
     var body: some View {
-        NavigationStack {
+        AppNavigationStack {
             ScrollView {
                 VStack(spacing: 24) {
                     // 顶部: target weight 大字
                     VStack(spacing: 4) {
-                        Text("Target")
-                            .font(.system(size: 11, weight: .heavy))
-                            .tracking(2)
-                            .textCase(.uppercase)
-                            .foregroundStyle(MasoColor.textDim)
-                        Text("\(formatWeight(target)) \(unit.rawValue)")
-                            .font(.system(size: 48, weight: .black))
-                            .foregroundStyle(MasoColor.text)
+                        Text("Target").font(.headline).foregroundStyle(.secondary)
+                        TargetValueLabel(value: formatWeight(target), unit: LocalizedStringKey(unit.rawValue))
                         if abs(remainder) > 0.01 {
                             Text(String(format: NSLocalizedString("Achievable: %@ %@  (off by %@)", comment: ""), formatWeight(achievableTotal), unit.rawValue, formatWeight(abs(remainder))))
                                 .font(.system(size: 12))

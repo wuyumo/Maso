@@ -1,6 +1,7 @@
 import Foundation
 import StoreKit
 import Observation
+import Security
 
 // StoreKit 2 订阅管理器
 //
@@ -36,6 +37,9 @@ final class SubscriptionManager {
 
     /// load products 是否完成 (即使是空数组也算完成 — 区分 "还没尝试" vs "尝试过但拿不到").
     var hasLoadedProducts: Bool = false
+    var isLoadingProducts = false
+    /// Returning subscribers must be checked before a first-run upgrade prompt.
+    var hasCheckedEntitlements: Bool = false
 
     /// 最近一次操作的错误信息 — 给 UI 弹 alert 用. 用户 dismiss 后清空.
     var lastError: String?
@@ -45,6 +49,8 @@ final class SubscriptionManager {
     static let monthlyProductID = "com.yumowu.maso.pro.monthly"
     static let yearlyProductID = "com.yumowu.maso.pro.yearly"
     static let lifetimeProductID = "com.yumowu.maso.pro.lifetime"
+
+    static let subscriptionProductIDs = [monthlyProductID, yearlyProductID]
 
     static let allProductIDs: [String] = [
         monthlyProductID, yearlyProductID, lifetimeProductID
@@ -58,11 +64,17 @@ final class SubscriptionManager {
     @ObservationIgnored private var updateListenerTask: Task<Void, Never>?
 
     /// entitlement 变化时回调 (MasoApp 注入, 写 DataStore).
+    @ObservationIgnored private let productLoader: @MainActor () async throws -> [Product]
+    @ObservationIgnored private var productLoadTask: Task<Void, Never>?
+
     private var onEntitlementChange: ((ProSubscription?) -> Void)?
 
     // MARK: - Init / Deinit
 
-    init() {
+    init(productLoader: @escaping @MainActor () async throws -> [Product] = {
+        try await Product.products(for: SubscriptionManager.allProductIDs)
+    }) {
+        self.productLoader = productLoader
         // 立刻起监听 — Transaction.updates 是 AsyncSequence, 后台 task 持续消费.
         updateListenerTask = listenForTransactions()
     }
@@ -78,29 +90,53 @@ final class SubscriptionManager {
     func configure(onChange: @escaping (ProSubscription?) -> Void) {
         self.onEntitlementChange = onChange
         Task {
-            await loadProducts()
+            // Entitlements must not wait for a product-network request.
             await refreshEntitlements()
+            await loadProducts()
         }
     }
 
     // MARK: - Product loading
 
-    /// 从 StoreKit 拉 3 个 product. 失败不抛 — UI 用 hasLoadedProducts + products.isEmpty 判断.
+    /// App startup and paywall share one in-flight request. Loading failures are
+    /// presented by the paywall, never as a stale purchase/restore error.
     func loadProducts() async {
-        do {
-            let fetched = try await Product.products(for: Self.allProductIDs)
-            // 按 monthly → yearly → lifetime 排序, 保证 UI 顺序稳定 (StoreKit 返回顺序不保证).
-            let order: [String: Int] = [
-                Self.monthlyProductID: 0,
-                Self.yearlyProductID: 1,
-                Self.lifetimeProductID: 2,
-            ]
-            self.products = fetched.sorted { (order[$0.id] ?? 99) < (order[$1.id] ?? 99) }
-            self.hasLoadedProducts = true
-        } catch {
-            self.hasLoadedProducts = true
-            self.lastError = NSLocalizedString("Couldn't load subscription options. Try again later.", comment: "")
+        if let productLoadTask { await productLoadTask.value; return }
+        let task = Task { @MainActor in
+            isLoadingProducts = true
+            defer { isLoadingProducts = false; hasLoadedProducts = true }
+            do {
+                let fetched = try await productLoader()
+#if DEBUG
+                print("[Masso StoreKit] requested=\(Self.allProductIDs.joined(separator: ",")) returned=\(fetched.map(\.id).joined(separator: ","))")
+                if fetched.isEmpty && ProcessInfo.processInfo.arguments.contains("--diagnose-live-storekit") {
+                    let storefront = await Storefront.current
+                    print("[Masso StoreKit] storefront=\(storefront?.countryCode ?? "unavailable")")
+                    for identifier in Self.subscriptionProductIDs {
+                        do {
+                            let result = try await Product.products(for: [identifier])
+                            print("[Masso StoreKit] independent=\(identifier) returned=\(result.map(\.id).joined(separator: ","))")
+                        } catch {
+                            let failure = error as NSError
+                            print("[Masso StoreKit] independent=\(identifier) error=\(failure.domain):\(failure.code)")
+                        }
+                    }
+                }
+#endif
+                let order = Dictionary(uniqueKeysWithValues: Self.allProductIDs.enumerated().map { ($1, $0) })
+                products = fetched.sorted { (order[$0.id] ?? 99) < (order[$1.id] ?? 99) }
+            } catch {
+#if DEBUG
+                let failure = error as NSError
+                print("[Masso StoreKit] product load failed domain=\(failure.domain) code=\(failure.code) description=\(failure.localizedDescription)")
+#endif
+                // Preserve previously fetched products; an empty result is handled
+                // by the visible paywall with a retryable system notice.
+            }
         }
+        productLoadTask = task
+        await task.value
+        productLoadTask = nil
     }
 
     func product(for tier: SubscriptionTier) -> Product? {
@@ -131,15 +167,17 @@ final class SubscriptionManager {
     @discardableResult
     func purchase(_ product: Product) async -> Bool {
         do {
-            let result = try await product.purchase()
+            let options: Set<Product.PurchaseOption> = PartnerReferral.appAccountToken.map { [.appAccountToken($0)] } ?? []
+            let result = try await product.purchase(options: options)
             switch result {
             case .success(let verification):
                 // verification 用 .verified / .unverified 区分受信任的 transaction.
                 // 不受信任的不要写 entitlement (可能是越狱 / Cydia tweak 伪造的 receipt).
                 let transaction = try checkVerified(verification)
-                await transaction.finish()
+                PartnerReferral.report(verification)
                 await refreshEntitlements()
-                return true
+                await transaction.finish()
+                return currentSubscription != nil
             case .userCancelled:
                 return false
             case .pending:
@@ -160,9 +198,13 @@ final class SubscriptionManager {
     /// "Restore Purchases" — 用户换设备 / 重装 app 后点这个把之前买过的 entitlement 拉回来.
     /// AppStore.sync() 是 force-refresh, 比单纯 currentEntitlements 强 — 会跟 server 对账.
     func restore() async {
+        lastError = nil
         do {
             try await AppStore.sync()
             await refreshEntitlements()
+            if currentSubscription == nil {
+                lastError = NSLocalizedString("No active subscription found", comment: "")
+            }
         } catch {
             lastError = error.localizedDescription
         }
@@ -174,11 +216,25 @@ final class SubscriptionManager {
     func refreshEntitlements() async {
         var best: ProSubscription? = nil
         for await result in Transaction.currentEntitlements {
+            PartnerReferral.report(result)
             guard case .verified(let transaction) = result else { continue }
             // 过期 transaction 跳过 — currentEntitlements 通常已经过滤, 但保险起见再 check.
-            if let exp = transaction.expirationDate, exp < Date() { continue }
+            var validUntil = transaction.expirationDate
+            if let expiration = validUntil, expiration <= Date() {
+                guard let group = transaction.subscriptionGroupID,
+                      let statuses = try? await Product.SubscriptionInfo.status(for: group),
+                      let grace = statuses.compactMap({ status -> Date? in
+                          guard status.state == .inGracePeriod,
+                                case .verified(let info) = status.renewalInfo,
+                                case .verified(let entitled) = status.transaction,
+                                entitled.originalID == transaction.originalID,
+                                entitled.revocationDate == nil else { return nil }
+                          return info.gracePeriodExpirationDate
+                      }).filter({ $0 > Date() }).max() else { continue }
+                validUntil = grace
+            }
             // 退款 / 撤销 的 transaction 跳过.
-            if transaction.revocationDate != nil { continue }
+            if transaction.revocationDate != nil || transaction.isUpgraded { continue }
 
             let tier: SubscriptionTier
             switch transaction.productID {
@@ -191,12 +247,13 @@ final class SubscriptionManager {
             let candidate = ProSubscription(
                 tier: tier,
                 startedAt: transaction.originalPurchaseDate,
-                renewsAt: transaction.expirationDate  // lifetime = nil
+                renewsAt: validUntil  // includes verified billing grace; lifetime = nil
             )
             best = pickBetter(best, candidate)
         }
         currentSubscription = best
         onEntitlementChange?(best)
+        hasCheckedEntitlements = true
     }
 
     /// 选优 — lifetime > yearly > monthly. 同 tier 取 renewsAt 更晚的.
@@ -239,8 +296,9 @@ final class SubscriptionManager {
         Task.detached { [weak self] in
             for await result in Transaction.updates {
                 guard case .verified(let transaction) = result else { continue }
-                await transaction.finish()
+                await PartnerReferral.report(result)
                 await self?.refreshEntitlements()
+                await transaction.finish()
             }
         }
     }
@@ -253,6 +311,133 @@ enum SubscriptionError: LocalizedError {
         switch self {
         case .failedVerification:
             return NSLocalizedString("Purchase verification failed. Try again or contact support.", comment: "")
+        }
+    }
+}
+
+// Referral accounting is optional and never gates StoreKit delivery or legacy rights.
+@MainActor
+enum PartnerReferral {
+    static func isCancellation(_ error: Error) -> Bool {
+        if let error = error as? StoreKitError, case .userCancelled = error { return true }
+        let error = error as NSError
+        return error.domain == SKErrorDomain && error.code == SKError.paymentCancelled.rawValue
+    }
+
+    private static let base = URL(string: "https://ai.replai.sh/partners/api/app/")!
+    private static let service = "com.yumowu.maso.partner-referral"
+    private static let account = "installation"
+    private static var sent = Set<String>()
+    private static var registration: Task<String, Error>?
+
+    struct Offer: Decodable {
+        let code: String
+        let offer: String
+        let redemptionURL: URL
+    }
+    enum Failure: Error {
+        case unavailable, identity
+        case keychain(OSStatus)
+        case service(Int, String)
+    }
+
+    /// Diagnostics contain only a stage/status, never credentials, codes or response bodies.
+    static func diagnostic(for error: Error) -> String {
+        if let failure = error as? Failure {
+            switch failure {
+            case .unavailable: return "referral: unavailable"
+            case .identity: return "referral: missing installation identity"
+            case .keychain(let status): return "referral: keychain \(status)"
+            case .service(let status, let code): return "referral: HTTP \(status) \(code)"
+            }
+        }
+        let value = error as NSError
+        return "referral: \(value.domain) \(value.code)"
+    }
+
+    private static func credential() -> String? {
+        let query: [String: Any] = [kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: service, kSecAttrAccount as String: account,
+            kSecReturnData as String: true]
+        var item: CFTypeRef?
+        guard SecItemCopyMatching(query as CFDictionary, &item) == errSecSuccess,
+              let bytes = item as? Data else { return nil }
+        return String(data: bytes, encoding: .utf8)
+    }
+    static var appAccountToken: UUID? {
+        guard UserDefaults.standard.bool(forKey: "maso.referral.bound") else { return nil }
+        return credential()?.split(separator: ".").first.flatMap { UUID(uuidString: String($0)) }
+    }
+    private static func register() async throws -> String {
+        if let saved = credential() { return saved }
+        if let registration { return try await registration.value }
+        let task = Task { @MainActor () async throws -> String in
+            let bytes = try await request("register", payload: [:], authenticated: false)
+            struct Identity: Decodable { let credential: String }
+            let value = try JSONDecoder().decode(Identity.self, from: bytes).credential
+            guard let first = value.split(separator: ".").first, UUID(uuidString: String(first)) != nil else { throw Failure.identity }
+            let query: [String: Any] = [kSecClass as String: kSecClassGenericPassword,
+                kSecAttrService as String: service, kSecAttrAccount as String: account,
+                kSecAttrAccessible as String: kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly,
+                kSecValueData as String: Data(value.utf8)]
+            let status = SecItemAdd(query as CFDictionary, nil)
+            guard status == errSecSuccess else { throw Failure.keychain(status) }
+            return value
+        }
+        registration = task
+        defer { registration = nil }
+        return try await task.value
+    }
+    private static func request(_ path: String, payload: [String: String], authenticated: Bool = true) async throws -> Data {
+        var req = URLRequest(url: base.appendingPathComponent(path))
+        req.httpMethod = "POST"; req.timeoutInterval = 20
+        req.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        if authenticated {
+            guard let token = credential() else { throw Failure.identity }
+            req.setValue("Bearer " + token, forHTTPHeaderField: "Authorization")
+        }
+        req.httpBody = try JSONSerialization.data(withJSONObject: payload)
+        let (bytes, response) = try await URLSession.shared.data(for: req)
+        guard let response = response as? HTTPURLResponse else { throw Failure.unavailable }
+        guard response.statusCode == 200 else {
+            let known = ["invalid_code", "code_unavailable", "unauthorized", "referral_already_bound", "referral_expired", "rate_limited"]
+            let code = (try? JSONSerialization.jsonObject(with: bytes) as? [String: String])?["error"]
+            throw Failure.service(response.statusCode, code.flatMap { known.contains($0) ? $0 : nil } ?? "service_unavailable")
+        }
+        return bytes
+    }
+    static func claim(_ code: String) async throws -> Offer {
+        _ = try await register()
+        let bytes = try await request("claim", payload: ["code": code.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()])
+        let offer = try JSONDecoder().decode(Offer.self, from: bytes)
+        guard offer.redemptionURL.scheme == "https", offer.redemptionURL.host == "apps.apple.com",
+              offer.redemptionURL.path == "/redeem" else { throw Failure.unavailable }
+        UserDefaults.standard.set(true, forKey: "maso.referral.bound")
+        return offer
+    }
+    static func report(_ result: VerificationResult<StoreKit.Transaction>) {
+        guard UserDefaults.standard.bool(forKey: "maso.referral.bound"), credential() != nil, case .verified(let transaction) = result,
+              SubscriptionManager.subscriptionProductIDs.contains(transaction.productID) else { return }
+        let key = "\(transaction.id):\(transaction.revocationDate?.timeIntervalSince1970 ?? 0)"
+        guard !sent.contains(key) else { return }
+        // A failed upload is retried when StoreKit refreshes on foreground/restore.
+        sent.insert(key)
+        Task { @MainActor in
+            do {
+                var payload = ["signedTransaction": result.jwsRepresentation,
+                    "environment": transaction.environment == .sandbox ? "Sandbox" : "Production"]
+                if let group = transaction.subscriptionGroupID,
+                   let statuses = try? await Product.SubscriptionInfo.status(for: group),
+                   let status = statuses.first(where: { status in
+                       guard case .verified(let current) = status.transaction else { return false }
+                       return current.originalID == transaction.originalID
+                   }), case .verified = status.renewalInfo {
+                    payload["signedRenewal"] = status.renewalInfo.jwsRepresentation
+                }
+                let bytes = try await request("transaction", payload: payload)
+                struct Report: Decodable { let attributed: Bool }
+                if try JSONDecoder().decode(Report.self, from: bytes).attributed == false { sent.remove(key) }
+            } catch { sent.remove(key) }
         }
     }
 }

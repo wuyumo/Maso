@@ -1,0 +1,13 @@
+/* Localized iOS permission descriptions. */
+"NSCameraUsageDescription" = "O Masso usa a câmera para compartilhar treinos, tirar fotos do corpo para sugestões de treino com IA e fotografar refeições para análise nutricional.";
+"NSHealthShareUsageDescription" = "O Masso lê peso, altura, passos, energia, sono, treinos e frequência cardíaca do Apple Health para seu perfil, relatórios locais e lembretes pessoais de descanso.";
+"NSHealthUpdateUsageDescription" = "O Masso salva os treinos concluídos no Apple Fitness para que apareçam nos seus anéis de Atividade e no histórico de Saúde.";
+"NSPhotoLibraryUsageDescription" = "O Masso usa as fotos que você escolher para compartilhar treinos e receber sugestões de treino com IA.";
+
+"Start workout" = "Iniciar treino";
+
+"Add meal" = "Adicionar refeição";
+
+"Free workout" = "Exercício livre";
+
+"AI Coach" = "AI Coach";

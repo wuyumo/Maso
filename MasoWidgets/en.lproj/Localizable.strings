@@ -1,2 +1,101 @@
 /* MasoWidgets Live Activity — widget 独立进程, 没主 app 的语言 swizzle, 跟系统语言走 */
 "Next: %@" = "Next: %@";
+
+"Workout" = "Workout";
+
+"Diet" = "Diet";
+
+"Sleep" = "Sleep";
+
+"My Muscle Status" = "My Muscle Status";
+
+"Body front" = "Front";
+
+"Body back" = "Back";
+
+"This week" = "This week";
+
+"Protein" = "Protein";
+
+"Last night" = "Last night";
+
+"Start workout" = "Start workout";
+
+"Resume" = "Resume";
+
+"Create a routine" = "Create a workout plan";
+
+"Daily overview" = "Daily overview";
+
+"Recovery & workout" = "Recovery & workout";
+
+"Single metric" = "Single metric";
+
+"Main metric" = "Main metric";
+
+"Body view" = "Body view";
+
+"Content" = "Content";
+
+"Open Masso to update" = "Open Masso to update";
+
+"Your day at a glance" = "Your day at a glance";
+
+"Muscle recovery and your next workout" = "Muscle recovery and your next workout";
+
+"One metric, your choice" = "One metric, your choice";
+
+"Muscles trained" = "Muscles trained";
+
+"No data" = "No data";
+
+"sets" = "sets";
+
+"Chest" = "Chest";
+
+"Back muscle" = "Back";
+
+"Legs" = "Legs";
+
+"Shoulders" = "Shoulders";
+
+"Arms" = "Arms";
+
+"Core" = "Core";
+
+"Full body" = "Full body";
+
+"Add meal" = "Add meal";
+
+"Daily rings" = "Daily rings";
+"Workout, diet and sleep in one ring" = "Workout, diet and sleep in one ring";
+
+"Diet progress" = "Diet progress";
+"Today's nutrition progress" = "Today's nutrition progress";
+
+"Sleep progress" = "Sleep progress";
+"Progress toward your sleep goal" = "Progress toward your sleep goal";
+
+"Calories" = "Calories";
+
+"Today's calorie progress" = "Today's calorie progress";
+
+"Two metrics" = "Two metrics";
+"Workout and Diet" = "Workout and Diet";
+"Workout and Sleep" = "Workout and Sleep";
+"Diet and Sleep" = "Diet and Sleep";
+
+"Today" = "Today";
+
+"Widget panel" = "Widget panel";
+"Calendar" = "Calendar";
+"Workout and Calendar" = "Workout and Calendar";
+"Diet and Calendar" = "Diet and Calendar";
+"Sleep and Calendar" = "Sleep and Calendar";
+"Top left" = "Top left";
+"Top right" = "Top right";
+"Bottom left" = "Bottom left";
+"Bottom right" = "Bottom right";
+
+"Widget content" = "Widget content";
+"Workout, Diet and Sleep" = "Workout, Diet and Sleep";

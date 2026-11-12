@@ -1,366 +1,248 @@
 import SwiftUI
 
-// AI Insight Summary 卡 — 钉在 Progress→Insights 列表最顶 (InsightsChartsView body 的第一个子, 固定不可重排).
-// 教练的一句话判读 + 2-4 条可一键 apply 的建议. 见 docs/ai-insight-summary-design.md §1 / §6.
-//
-// 状态 (§1):
-//   · insufficient-data  — 未达 min-data 阈值 (routineSuggestion() == nil): 灰底文案, 不调 LLM.
-//   · locked (非 Pro)     — TL;DR 用本地 routineSuggestion() 免费露出; AI 建议行 blur + 中央解锁按钮 → onUnlock.
-//   · idle/cached         — 渲缓存 + "as of <date>" + Refresh.
-//   · loading             — 缓存内容变暗 + spinner (never 空卡).
-//   · generated           — TL;DR + 建议行 + Apply; 一次 session 显 "Updated" 标.
-//   · error               — inline chip "AI summary unavailable — Retry" (有缓存则叠在缓存上).
-//
-// LLM 调用只在 Pro (§6 — 非 Pro 免费 teaser 100% 本地, 绝不花 token).
+/// Local coaching advice and summary recommendations share one dismissible card deck.
 struct AISummaryCard: View {
     let data: DataStore
-    /// 非 Pro 点锁 → 拉付费墙.
+    let localSuggestion: DataStore.RoutineSuggestion?
     var onUnlock: () -> Void = {}
-    /// Apply 一条建议 — parent (HistoryScreen) 接管 Pro gate + 路由到 AI Routines / 写 coach note + toast.
-    var onApply: (AISummaryAction) -> Void = { _ in }
+    var onApply: (AISummaryAction) -> Bool = { _ in false }
+    var onApplyLocal: (DataStore.RoutineSuggestion) -> Bool = { _ in false }
 
-    /// 当前渲染的 summary (缓存优先; 生成成功后更新). nil 且 Pro → 触发首次生成.
-    @State private var summary: AISummary? = nil
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var swipeOffset: CGFloat = 0
+    @State private var departureOpacity: Double = 1
+    @State private var isCycling = false
+    @Environment(\.dynamicTypeSize) private var typeSize
+    @State private var selectedID = ""
+    @State private var lastDismissedID: String?
     @State private var isGenerating = false
-    @State private var errorNote: String? = nil
-    /// 本 session 刚生成过 → 显 "Updated" 标一次.
-    @State private var justUpdated = false
-    @State private var didAppear = false
-    /// "已是最新" 2 秒提示 — Refresh 被 dataHash 门拦下时给的反馈 (没花钱, 没打网络).
-    @State private var upToDate = false
-    /// 手动刷新 30s 冷却 — 防双击/手抖连发 (dataHash 门是主闸, 这是兜底).
-    @State private var lastManualRefreshAt: Date? = nil
+    @State private var errorNote: String?
+    @State private var lastRefresh: Date?
 
-    private var isPro: Bool { data.settings.isPro }
+    private var allCards: [CoachAdvice] {
+        #if DEBUG
+        if ProcessInfo.processInfo.environment["MASO_SHOWCASE"] == "coach_advice" {
+            return [
+                CoachAdvice(title: "Give your legs more attention", detail: "Your recent sessions focus on upper body. Add a little more leg work to balance your routine.", action: .regenerateRoutines(focusNote: "Add more leg work"), source: .summary),
+                CoachAdvice(title: "Keep sessions manageable", detail: "Try shorter sessions that are easier to fit into your week.", action: .addCoachNote(note: "Prefer shorter sessions"), source: .summary),
+                CoachAdvice(title: "Make room for recovery", detail: "Spread demanding sessions across your week to leave time between them.", action: .regenerateRoutines(focusNote: "Spread sessions across the week"), source: .summary)
+            ]
+        }
+        #endif
+        var cards = CoachAdvice.merged(local: localSuggestion, summary: data.cachedSummary,
+                                       isPro: data.settings.isPro)
+        if !data.settings.isPro && data.summaryMinDataMet {
+            cards.append(CoachAdvice(title: NSLocalizedString("AI Coach Summary", comment: ""),
+                                     detail: NSLocalizedString("Unlock your AI coach summary with Pro", comment: ""),
+                                     action: .none, source: .upgrade))
+        }
+        return cards
+    }
+
+    private var cards: [CoachAdvice] {
+        let dismissed = Set(data.settings.dismissedCoachSuggestionIDs ?? [])
+        let visible = allCards.filter { !dismissed.contains($0.id) }
+        guard let index = visible.firstIndex(where: { $0.id == selectedID }) else { return visible }
+        return Array(visible[index...]) + Array(visible[..<index])
+    }
+    private var currentID: String { cards.contains { $0.id == selectedID } ? selectedID : cards.first?.id ?? "" }
 
     var body: some View {
-        Group {
-            if !data.summaryMinDataMet {
-                insufficientCard
-            } else if !isPro {
-                lockedCard
-            } else {
-                proCard
+        VStack(alignment: .leading, spacing: 8) {
+            if !cards.isEmpty {
+                ZStack(alignment: .top) {
+                    ForEach(Array(cards.enumerated()), id: \.element.id) { index, card in
+                        adviceCard(card)
+                            .scaleEffect(1 - CGFloat(min(index, 2)) * 0.03, anchor: .top)
+                            .offset(x: index == 0 && !reduceMotion ? swipeOffset : 0,
+                                    y: -CGFloat(min(index, 2)) * 8)
+                            .opacity(index >= 3 ? 0 : (index == 0 ? departureOpacity : 1))
+                            .zIndex(-Double(index))
+                            .allowsHitTesting(index == 0 && !isCycling)
+                            .accessibilityElement(children: index == 0 ? .contain : .ignore)
+                            .accessibilityHidden(index != 0)
+                            .accessibilityIdentifier(index == 0 ? "coach.adviceDeck" : "coach.adviceDeck.back")
+                            .simultaneousGesture(DragGesture(minimumDistance: 16)
+                                .onChanged { value in
+                                    guard index == 0, cards.count > 1, !isCycling,
+                                          abs(value.translation.width) > abs(value.translation.height) * 1.2 else { return }
+                                    swipeOffset = value.translation.width
+                                }
+                                .onEnded { value in
+                                    guard index == 0, !isCycling else { return }
+                                    let horizontal = abs(value.translation.width) > abs(value.translation.height) * 1.2
+                                    if horizontal && (abs(value.translation.width) > 50 ||
+                                        (abs(value.translation.width) > 16 && abs(value.predictedEndTranslation.width) > 120)) {
+                                        cycleAdvice(direction: value.translation.width < 0 ? -1 : 1)
+                                    } else {
+                                        withAnimation(reduceMotion ? nil : .spring(response: 0.3, dampingFraction: 0.9)) { swipeOffset = 0 }
+                                    }
+                                })
+                    }
+                }
+                .padding(.top, CGFloat(min(2, max(0, cards.count - 1))) * 8)
+            }
+            if isGenerating {
+                HStack(spacing: 8) {
+                    ProgressView().controlSize(.small)
+                    Text("Updating suggestions…").font(.caption).foregroundStyle(MasoColor.textDim)
+                }
+            }
+            if let errorNote {
+                Text(errorNote).font(.caption).foregroundStyle(MasoColor.textDim)
+            }
+            if lastDismissedID != nil {
+                HStack {
+                    Text("Suggestion removed").font(.caption).foregroundStyle(MasoColor.textDim)
+                    Spacer(minLength: 8)
+                    Button("Undo", action: undoDismiss)
+                        .font(.footnote.weight(.semibold))
+                        .frame(minWidth: 44, minHeight: 44)
+                }
             }
         }
-        .onAppear(perform: handleAppear)
-    }
-
-    // MARK: - 生命周期
-
-    private func handleAppear() {
-        guard !didAppear else { return }
-        didAppear = true
-        guard data.summaryMinDataMet else { return }
-        // 先渲缓存 (立即).
-        summary = data.cachedSummary ?? (isPro ? nil : data.localSummaryFallback())
-        // 非 Pro 不花 token — teaser 走本地.
-        guard isPro else { return }
-        // 冷启动 (没缓存) 或满足 cadence → 一次后台生成 (dimmed spinner 叠缓存).
-        if summary == nil || data.shouldRegenerateSummary() {
-            regenerate()
+        .onChange(of: cards.map(\.id), initial: true) { _, ids in
+            if !ids.contains(selectedID) { selectedID = ids.first ?? "" }
+        }
+        .task(id: data.settings.isPro) {
+            #if DEBUG
+            if ProcessInfo.processInfo.environment["MASO_SHOWCASE"] == "coach_advice" { return }
+            #endif
+            if data.settings.isPro && data.summaryMinDataMet && data.shouldRegenerateSummary() {
+                await refresh()
+            }
         }
     }
 
-    private func regenerate() {
-        guard isPro, !isGenerating else { return }
-        // 滥用闸 (owner 拍板): Refresh 不再裸连 DeepSeek —
-        //   ① dataHash 门: 训练数据没变 (没记新组) → 不打网络, 显示"已是最新" 2 秒.
-        //      数据只在记组后变化, 这一道就杀死了连点刷屏 (刷一万次也只有第一次花钱).
-        //   ② 30s 冷却: 数据刚变时也不许连发 (双击/手抖), 生成中本就 disabled, 这是兜底.
-        if summary != nil, !data.shouldRegenerateSummary() {
-            Haptics.tap()
-            withAnimation(.easeOut(duration: 0.2)) { upToDate = true }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                withAnimation(.easeOut(duration: 0.25)) { upToDate = false }
-            }
+    private func cycleAdvice(direction: CGFloat = 1) {
+        guard cards.count > 1, !isCycling else { return }
+        let nextID = cards[1].id
+        if reduceMotion {
+            selectedID = nextID
+            swipeOffset = 0
+            Haptics.selection()
             return
         }
-        if let last = lastManualRefreshAt, Date().timeIntervalSince(last) < 30 { return }
-        lastManualRefreshAt = Date()
-        Haptics.tap()
-        errorNote = nil
-        withAnimation(.easeOut(duration: 0.2)) { isGenerating = true }
-        Task { @MainActor in
-            let result = await data.generateSummary()
-            withAnimation(.easeOut(duration: 0.25)) {
-                isGenerating = false
-                if let result {
-                    let changed = result.tldr != summary?.tldr
-                    summary = result
-                    justUpdated = changed
-                    // AISummaryService 成功与否都写了缓存; 若返回的是本地回落, 给个温和 error chip.
-                    errorNote = nil
+        isCycling = true
+        withAnimation(.easeOut(duration: 0.18), completionCriteria: .logicallyComplete) {
+            swipeOffset = direction * max(420, abs(swipeOffset) + 180)
+            departureOpacity = 0
+        } completion: {
+            withAnimation(.spring(response: 0.3, dampingFraction: 0.9)) {
+                if cards.contains(where: { $0.id == nextID }) { selectedID = nextID }
+                swipeOffset = 0
+                departureOpacity = 1
+                isCycling = false
+            }
+            Haptics.selection()
+        }
+    }
+
+    private func adviceCard(_ card: CoachAdvice) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Label("AI suggestion", systemImage: "sparkles")
+                .accessibilityAction(named: Text("Next")) { cycleAdvice() }
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(MasoColor.accent)
+            VStack(alignment: .leading, spacing: 6) {
+                Text(card.title).font(.subheadline.weight(.bold)).foregroundStyle(MasoColor.text)
+                Text(card.detail).font(.footnote).foregroundStyle(MasoColor.textDim)
+            }
+            .fixedSize(horizontal: false, vertical: true)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            Group {
+                if typeSize.isAccessibilitySize {
+                    VStack(alignment: .leading, spacing: 8) { adviceActions(card) }
                 } else {
-                    errorNote = NSLocalizedString("AI summary unavailable — Retry", comment: "AI summary error chip")
+                    HStack(alignment: .center, spacing: 12) { adviceActions(card) }
                 }
             }
         }
-    }
-
-    // MARK: - 状态: insufficient data
-
-    private var insufficientCard: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            header(showRefresh: false)
-            Text(NSLocalizedString("Keep logging — your AI summary unlocks after about 2 weeks of training.", comment: "AI summary insufficient data"))
-                .font(.system(size: 13))
-                .foregroundStyle(MasoColor.textDim)
-                .fixedSize(horizontal: false, vertical: true)
+        .padding(14)
+        .background {
+            MasoColor.background.overlay(MasoColor.accent.opacity(0.10))
         }
-        .cardChrome()
-    }
-
-    // MARK: - 状态: locked (非 Pro) — 本地 TL;DR teaser + blurred 建议行 + 解锁按钮
-
-    private var lockedCard: some View {
-        let teaser = summary ?? data.localSummaryFallback()
-        return VStack(alignment: .leading, spacing: 10) {
-            header(showRefresh: false)
-            // TL;DR 免费露出 (本地 routineSuggestion(), 无 LLM).
-            Text(teaser.tldr)
-                .font(.system(size: 14, weight: .medium))
-                .foregroundStyle(MasoColor.text)
-                .fixedSize(horizontal: false, vertical: true)
-
-            ZStack {
-                VStack(alignment: .leading, spacing: 10) {
-                    // blur 的假建议行 — 用本地回落 (或占位) 撑起高度, 视觉暗示"这里有内容".
-                    ForEach(placeholderRecs(from: teaser)) { rec in
-                        recommendationRow(rec, applyEnabled: false)
-                    }
-                }
-                .blur(radius: isPro ? 0 : 7)
-                .allowsHitTesting(isPro)
-
-                Button(action: onUnlock) {
-                    VStack(spacing: 6) {
-                        Image(systemName: "lock.fill").font(.system(size: 15, weight: .bold))
-                        Text(NSLocalizedString("Unlock your AI coach summary with Pro", comment: "AI summary paywall"))
-                            .font(.system(size: 12, weight: .semibold))
-                            .multilineTextAlignment(.center)
-                    }
-                    .foregroundStyle(MasoColor.text)
-                    .padding(.horizontal, 16).padding(.vertical, 12)
-                }
-                .buttonStyle(.plain)
-            }
-        }
-        .cardChrome()
-    }
-
-    /// 非 Pro 时给 blur 层用的占位建议行 — 有本地建议就用它 (+1 条通用占位), 否则两条通用占位.
-    private func placeholderRecs(from s: AISummary) -> [AIRecommendation] {
-        if !s.recommendations.isEmpty {
-            var out = s.recommendations
-            out.append(AIRecommendation(
-                id: "ph-more",
-                title: NSLocalizedString("Rebalance your weekly volume", comment: "AI summary locked placeholder title"),
-                detail: NSLocalizedString("Personalized set-by-set guidance from your data.", comment: "AI summary locked placeholder detail"),
-                action: .none))
-            return out
-        }
-        return [
-            AIRecommendation(id: "ph1",
-                             title: NSLocalizedString("Rebalance your weekly volume", comment: "AI summary locked placeholder title"),
-                             detail: NSLocalizedString("Personalized set-by-set guidance from your data.", comment: "AI summary locked placeholder detail"),
-                             action: .none),
-            AIRecommendation(id: "ph2",
-                             title: NSLocalizedString("Break your main-lift plateau", comment: "AI summary locked placeholder title 2"),
-                             detail: NSLocalizedString("Concrete progression tailored to your recent sessions.", comment: "AI summary locked placeholder detail 2"),
-                             action: .none),
-        ]
-    }
-
-    // MARK: - 状态: Pro — cached / loading / generated / error
-
-    private var proCard: some View {
-        let shown = summary ?? data.localSummaryFallback()
-        return VStack(alignment: .leading, spacing: 10) {
-            header(showRefresh: true)
-
-            ZStack(alignment: .center) {
-                VStack(alignment: .leading, spacing: 10) {
-                    Text(shown.tldr)
-                        .font(.system(size: 14, weight: .medium))
-                        .foregroundStyle(MasoColor.text)
-                        .fixedSize(horizontal: false, vertical: true)
-
-                    ForEach(shown.recommendations) { rec in
-                        recommendationRow(rec, applyEnabled: true)
-                    }
-                }
-                .opacity(isGenerating ? 0.4 : 1)      // loading = 缓存变暗, never 空卡
-                .allowsHitTesting(!isGenerating)
-
-                if isGenerating {
-                    ProgressView().tint(MasoColor.accent)
-                }
-            }
-
-            if let errorNote {
-                Button(action: regenerate) {
-                    HStack(spacing: 6) {
-                        Image(systemName: "exclamationmark.triangle.fill").font(.system(size: 11, weight: .bold))
-                        Text(errorNote).font(.system(size: 12, weight: .semibold))
-                    }
-                    .foregroundStyle(MasoColor.negative)
-                    .padding(.top, 2)
-                }
-                .buttonStyle(.plain)
-            }
-
-            footer(generatedAt: data.settings.aiSummaryGeneratedAt)
-        }
-        .cardChrome()
-    }
-
-    // MARK: - 子组件
-
-    private func header(showRefresh: Bool) -> some View {
-        HStack(spacing: 8) {
-            Image(systemName: "sparkles")
-                .font(.system(size: 12, weight: .bold))
-                .foregroundStyle(MasoColor.accent)
-            Text(NSLocalizedString("AI Coach Summary", comment: "AI summary card title"))
-                .font(.system(size: 14, weight: .bold))
-                .foregroundStyle(MasoColor.text)
-            if justUpdated {
-                Text(NSLocalizedString("Updated", comment: "AI summary just-updated tag"))
-                    .font(.system(size: 9, weight: .heavy)).tracking(0.5)
-                    .foregroundStyle(.black)
-                    .padding(.horizontal, 6).padding(.vertical, 2)
-                    .background(Capsule().fill(MasoColor.accent))
-            } else if upToDate {
-                // dataHash 门拦下 Refresh 时的反馈 — 灰色, 不庆祝 (什么都没发生).
-                Text(NSLocalizedString("Already up to date", comment: "AI summary refresh skipped tag"))
-                    .font(.system(size: 9, weight: .heavy)).tracking(0.5)
-                    .foregroundStyle(MasoColor.textDim)
-                    .padding(.horizontal, 6).padding(.vertical, 2)
-                    .background(Capsule().fill(MasoColor.surfaceHi))
-            }
-            Spacer()
-            if showRefresh {
-                // 分享小结 — 只在 cached/generated 态出现 (summary 非 nil):
-                // insufficient / locked teaser / 无缓存的 loading/error 都拿不到 showRefresh
-                // 或 summary, 不给用户广播占位内容的机会.
-                if summary != nil {
-                    shareButton
-                }
-                Button(action: regenerate) {
-                    Image(systemName: "arrow.clockwise")
-                        .font(.system(size: 13, weight: .semibold))
-                        .foregroundStyle(MasoColor.textDim)
-                }
-                .buttonStyle(.plain)
-                .disabled(isGenerating)
-                .accessibilityLabel(Text(NSLocalizedString("Refresh", comment: "AI summary refresh")))
-            }
-        }
-    }
-
-    /// 分享入口 — InsightShareCard (TL;DR hero + 真内容块: 环比 tile / 周容量柱状图 / e1RM 折线 /
-    /// 坚持度). 只读缓存/已生成结果, 绝不为分享触发 LLM. 分享本身免费 (有机增长),
-    /// 数字/图表序列由 DataStore.summaryKeyStats() + summary*Series() 统一供给.
-    private var shareButton: some View {
-        ShareImageButton(
-            previewTitle: NSLocalizedString("My AI Summary", comment: ""),
-            defaultSections: ShareSections(),
-            shareContent: { photo, onTapAdd, _ in
-                InsightShareCard(
-                    tldr: summary?.tldr ?? data.cachedSummary?.tldr,
-                    generatedAt: data.settings.aiSummaryGeneratedAt,
-                    stats: data.summaryKeyStats(),
-                    // 这个入口只在有已生成小结时出现 (= Pro), 但仍显式传 isPro —
-                    // 渲染层兜底: 非 Pro 永远分享不出 quote/e1RM/坚持度 (#insights-share-pro).
-                    isPro: data.settings.isPro,
-                    userPhoto: photo,
-                    onTapAddPhoto: onTapAdd,
-                    volumeSeries: data.summaryWeeklyVolumeSeries(),
-                    topLiftSeries: data.summaryTopLiftSeries().series,
-                    unit: data.settings.weightUnit
-                )
-            },
-            shareSurface: "ai_summary",
-            label: {
-                Image(systemName: "square.and.arrow.up")
-                    .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(MasoColor.textDim)
-            }
-        )
-        .accessibilityLabel(Text(NSLocalizedString("Share", comment: "")))
-    }
-
-    private func footer(generatedAt: Date?) -> some View {
-        Group {
-            if let generatedAt {
-                let df: DateFormatter = {
-                    let f = DateFormatter(); f.dateStyle = .medium; f.timeStyle = .none; return f
-                }()
-                Text(String(format: NSLocalizedString("As of %@ · based on the last 14 days", comment: "AI summary footer"), df.string(from: generatedAt)))
-                    .font(.system(size: 11))
-                    .foregroundStyle(MasoColor.textFaint)
-            } else {
-                EmptyView()
-            }
-        }
-    }
-
-    @ViewBuilder
-    private func recommendationRow(_ rec: AIRecommendation, applyEnabled: Bool) -> some View {
-        HStack(alignment: .top, spacing: 10) {
-            Image(systemName: "chevron.forward.circle.fill")
-                .font(.system(size: 13, weight: .bold))
-                .foregroundStyle(MasoColor.accent)
-                .padding(.top, 1)
-            VStack(alignment: .leading, spacing: 2) {
-                Text(rec.title)
-                    .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(MasoColor.text)
-                    .fixedSize(horizontal: false, vertical: true)
-                Text(rec.detail)
-                    .font(.system(size: 12))
-                    .foregroundStyle(MasoColor.textDim)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-            Spacer(minLength: 8)
-            applyControl(for: rec, enabled: applyEnabled)
-        }
-        .padding(.vertical, 6)
-        .overlay(alignment: .top) { Rectangle().fill(MasoColor.borderSoft).frame(height: 0.5) }
-    }
-
-    /// Apply 控件 — action 决定文案/是否有按钮. .none = 纯观察, 无按钮.
-    @ViewBuilder
-    private func applyControl(for rec: AIRecommendation, enabled: Bool) -> some View {
-        switch rec.action {
-        case .none:
-            EmptyView()
-        case .regenerateRoutines:
-            applyButton(NSLocalizedString("Apply to routine", comment: "AI summary apply — regenerate"), rec.action, enabled: enabled)
-        case .addCoachNote:
-            applyButton(NSLocalizedString("Add to notes", comment: "AI summary apply — coach note"), rec.action, enabled: enabled)
-        }
-    }
-
-    private func applyButton(_ label: String, _ action: AISummaryAction, enabled: Bool) -> some View {
-        Button {
-            Haptics.tap()
-            onApply(action)
-        } label: {
-            // 卡内 Apply 小实心钮 → 次级玻璃 (映射表②同类归置): iOS 26 低浓度玻璃 + accent 字,
-            // 旧系统保留实心 accent + 黑字.
-            Text(label)
-                .font(.system(size: 11, weight: .heavy))
-                .foregroundStyle(systemGlassAvailable ? MasoColor.accent : .black)
-                .padding(.vertical, 6).padding(.horizontal, 10)
-                .glassCapsuleButtonBackground(tint: MasoColor.accent.opacity(0.25), fallback: MasoColor.accent)
+        .clipShape(RoundedRectangle(cornerRadius: 18))
+        .overlay {
+            RoundedRectangle(cornerRadius: 18)
+                .strokeBorder(MasoColor.accent.opacity(0.14), lineWidth: 0.5).allowsHitTesting(false)
         }
         .buttonStyle(.plain)
-        .disabled(!enabled)
-        .allowsHitTesting(enabled)
+    }
+
+    @ViewBuilder private func adviceActions(_ card: CoachAdvice) -> some View {
+        if card.source == .upgrade {
+            matchingRowButton("View Pro", prominent: true, action: onUnlock)
+                .accessibilityIdentifier("coach.applyAdvice")
+        } else if card.action != .none {
+            matchingRowButton("Apply", prominent: true) {
+                let accepted: Bool
+                if card.source == .suggestion, let localSuggestion {
+                    accepted = onApplyLocal(localSuggestion)
+                } else {
+                    accepted = onApply(card.action)
+                }
+                if accepted { dismiss(card, allowsUndo: false) }
+            }
+            .accessibilityIdentifier("coach.applyAdvice")
+        }
+        matchingRowButton("Skip") { dismiss(card) }
+            .accessibilityIdentifier("coach.skipAdvice")
+    }
+
+    /// Apply stays accent glass; Skip stays neutral. Vertical padding 8 captured
+    /// about 34pt, above the run15 suggestion pill (about 30pt), so this uses 6.
+    /// The 44pt frame is the hit target outside the glass.
+    private func matchingRowButton(_ title: LocalizedStringKey, prominent: Bool = false, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Text(title)
+                .font(.footnote.weight(.semibold))
+                .lineLimit(1)
+                .fixedSize(horizontal: true, vertical: false)
+                .foregroundStyle(prominent ? Color.black : MasoColor.text)
+                .padding(.horizontal, 14)
+                .padding(.vertical, 6)
+                .glassCapsuleButtonBackground(
+                    tint: prominent ? MasoColor.accent.opacity(0.85) : nil,
+                    fallback: prominent ? MasoColor.accent : MasoColor.surfaceHi)
+                .frame(minWidth: 44, minHeight: 44)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .fixedSize(horizontal: true, vertical: true)
+    }
+
+    private func dismiss(_ card: CoachAdvice, allowsUndo: Bool = true) {
+        let next = CoachAdvice.selection(afterRemoving: card.id, from: cards.map(\.id))
+        var ids = data.settings.dismissedCoachSuggestionIDs ?? []
+        if !ids.contains(card.id) { ids.append(card.id) }
+        selectedID = next ?? ""
+        data.settings.dismissedCoachSuggestionIDs = ids
+        lastDismissedID = allowsUndo ? card.id : nil
+        data.save()
+        Haptics.tap()
+    }
+
+    private func undoDismiss() {
+        guard let id = lastDismissedID else { return }
+        data.settings.dismissedCoachSuggestionIDs?.removeAll { $0 == id }
+        selectedID = id
+        lastDismissedID = nil
+        data.save()
+    }
+
+    @MainActor private func refresh() async {
+        guard data.settings.isPro, data.summaryMinDataMet, !isGenerating else { return }
+        guard data.shouldRegenerateSummary() else {
+            errorNote = NSLocalizedString("Already up to date", comment: "")
+            return
+        }
+        guard lastRefresh.map({ Date().timeIntervalSince($0) >= 30 }) ?? true else { return }
+        lastRefresh = Date()
+        isGenerating = true
+        errorNote = nil
+        let result = await data.generateSummary()
+        isGenerating = false
+        if result == nil { errorNote = NSLocalizedString("AI summary unavailable — Retry", comment: "") }
     }
 }
-
-// 卡片外壳 cardChrome() 已抽到 Maso/Theme/CardChrome.swift (internal),
-// 跟 Training Preferences 卡共用同一片壳.

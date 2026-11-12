@@ -6,7 +6,7 @@ import Observation
 // 用 iOS 原生 AVSpeechSynthesizer:
 //   - 离线 (不依赖网络)
 //   - 免费 (没 API quota)
-//   - 12+ 语言全覆盖 (跟 Maso i18n 完美对接)
+//   - 12+ 语言全覆盖 (跟 Masso i18n 完美对接)
 //   - Siri Voice / Enhanced voice 自动升级路径 — 用户在 Settings → Accessibility →
 //     Spoken Content → Voices 下载高质量声音后, 这里自动用上, 不用改代码
 //
@@ -23,6 +23,7 @@ final class SpeechManager: NSObject {
     static let shared = SpeechManager()
 
     private let synthesizer = AVSpeechSynthesizer()
+    private var activeUtterance: AVSpeechUtterance?
 
     /// 当前是否在朗读. 由 delegate (didFinish / didCancel) 维护. View 可 observe 切换按钮 icon.
     private(set) var isSpeaking: Bool = false
@@ -34,24 +35,9 @@ final class SpeechManager: NSObject {
     override init() {
         super.init()
         synthesizer.delegate = self
-        configureAudioSession()
-    }
-
-    /// 配置 AVAudioSession — .playback 类别让 app 后台仍能继续朗读 (e.g. 用户切到锁屏).
-    /// .duckOthers + .mixWithOthers 让背景音乐变小但不停, 跟 iOS 系统 TTS 行为一致.
-    private func configureAudioSession() {
-        let session = AVAudioSession.sharedInstance()
-        do {
-            try session.setCategory(
-                .playback,
-                mode: .spokenAudio,
-                options: [.duckOthers, .mixWithOthers]
-            )
-        } catch {
-            #if DEBUG
-            print("[Speech] AVAudioSession setup failed: \(error)")
-            #endif
-        }
+        // Do not let the synthesizer create a separate automatically ducking
+        // session. Merely observing this manager must not claim audio either.
+        synthesizer.usesApplicationAudioSession = true
     }
 
     /// 朗读一组步骤 (内部拼接成一段, 用 ". " 分隔让 TTS 在句号处自然停顿模拟"步骤分隔").
@@ -60,14 +46,14 @@ final class SpeechManager: NSObject {
     /// - parameter source: 标识 caller (e.g. exercise.id) — view 用它判断按钮态
     func speak(steps: [String], locale: String? = nil, source: String) {
         // 先停旧的 — 不管谁触发的, 防叠播
-        synthesizer.stopSpeaking(at: .immediate)
-        currentSource = source
+        stop()
 
         let text = steps
             .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
             .filter { !$0.isEmpty }
             .joined(separator: ". ")
         guard !text.isEmpty else { return }
+        guard AppAudioSession.activateForFeedback() else { return }
 
         let utterance = AVSpeechUtterance(string: text)
         let voiceLocale = locale ?? Locale.current.identifier
@@ -78,19 +64,21 @@ final class SpeechManager: NSObject {
         utterance.volume = 1.0
         utterance.postUtteranceDelay = 0.0
 
-        // 激活 audio session — 不激活的话锁屏 / 切 app 后会停
-        try? AVAudioSession.sharedInstance().setActive(true)
+        activeUtterance = utterance
+        currentSource = source
         synthesizer.speak(utterance)
         isSpeaking = true
     }
 
     /// 立即停止朗读. 用户主动 tap stop / sheet dismiss / 切换语言 时调用.
     func stop() {
+        activeUtterance = nil
         synthesizer.stopSpeaking(at: .immediate)
         // isSpeaking / currentSource 由 delegate 的 didCancel 重置, 但为了 UI 立即响应, 这里也 set.
         isSpeaking = false
         currentSource = nil
-        deactivateSession()  // P3: 立即让用户的音乐恢复音量
+        // Other Masso sounds/video may still use this shared session. Never
+        // globally deactivate it from an individual speech callback.
     }
 
     /// 拿"最好的"语音 — 优先 Enhanced / Premium 质量声 (Siri voice 系列), fallback default.
@@ -146,26 +134,19 @@ final class SpeechManager: NSObject {
 extension SpeechManager: AVSpeechSynthesizerDelegate {
     nonisolated func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
         Task { @MainActor in
+            guard self.activeUtterance === utterance else { return }
+            self.activeUtterance = nil
             self.isSpeaking = false
             self.currentSource = nil
-            self.deactivateSession()
         }
     }
 
     nonisolated func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didCancel utterance: AVSpeechUtterance) {
         Task { @MainActor in
+            guard self.activeUtterance === utterance else { return }
+            self.activeUtterance = nil
             self.isSpeaking = false
             self.currentSource = nil
-            self.deactivateSession()
         }
-    }
-}
-
-extension SpeechManager {
-    /// P3: 朗读结束后停用 audio session 并通知系统 — 否则 .duckOthers 会让用户的音乐一直保持
-    /// 压低音量, 直到别的东西去激活/停用 session.
-    @MainActor
-    fileprivate func deactivateSession() {
-        try? AVAudioSession.sharedInstance().setActive(false, options: [.notifyOthersOnDeactivation])
     }
 }

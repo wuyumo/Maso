@@ -1,11 +1,14 @@
 import SwiftUI
 import WidgetKit
 
-// Widget extension 入口 — 只声明 Maso 的 Live Activity widget.
-// 暂时没传统 Home Screen widget; 后续要加直接在 body 加.
+// Home Screen widgets and the existing training Live Activity share one extension.
 @main
 struct MasoWidgetsBundle: WidgetBundle {
     var body: some Widget {
+        MassoDailyOverviewWidget()
+        MassoDailyRingWidget()
+        MassoDietProgressWidget()
+        MassoSleepProgressWidget()
         MasoTrainingLiveActivity()
     }
 }

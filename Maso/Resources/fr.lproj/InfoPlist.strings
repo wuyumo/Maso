@@ -1,0 +1,13 @@
+/* Localized iOS permission descriptions. */
+"NSCameraUsageDescription" = "Masso utilise l’appareil photo pour partager des entraînements, prendre des photos du corps pour les conseils d’entraînement par IA et photographier des repas à analyser pour le suivi nutritionnel.";
+"NSHealthShareUsageDescription" = "Masso lit le poids, la taille, les pas, l’énergie, le sommeil, les entraînements et le pouls depuis Apple Health pour votre profil, les rapports locaux et les rappels de repos.";
+"NSHealthUpdateUsageDescription" = "Masso enregistre vos entraînements terminés dans Apple Fitness afin qu’ils apparaissent dans vos anneaux Activité et votre historique Santé.";
+"NSPhotoLibraryUsageDescription" = "Masso utilise les photos que vous choisissez pour partager vos entraînements et obtenir des conseils d’entraînement par IA.";
+
+"Start workout" = "Commencer l’entraînement";
+
+"Add meal" = "Ajouter le repas";
+
+"Free workout" = "Un entraînement gratuit";
+
+"AI Coach" = "AI Coach";

@@ -22,7 +22,7 @@ settings:
   base:
     SWIFT_VERSION: "5.10"
     IPHONEOS_DEPLOYMENT_TARGET: "18.0"
-    TARGETED_DEVICE_FAMILY: "1"  # iPhone only (上架决定); watch target 自己覆写成 4
+    TARGETED_DEVICE_FAMILY: "1,2"  # iPhone + iPad; Watch overrides with 4
     ENABLE_USER_SCRIPT_SANDBOXING: NO
     SWIFT_STRICT_CONCURRENCY: minimal
     # 上架签名: Eric Ng 付费 Developer Program (Apple ID wuyumoawuyumo@outlook.com).
@@ -37,9 +37,21 @@ schemes:
     build:
       targets:
         Maso: all
+    test:
+      targets:
+        - MasoTests
     run:
       config: Debug
       storeKitConfiguration: Maso.storekit
+  MasoExerciseUI:
+    build:
+      targets:
+        Maso: all
+    test:
+      targets:
+        - MasoUITests
+    run:
+      config: Debug
 
 # ⚠️ Info.plist 全部手维护 (Maso/Info.plist, MasoWidgets/Info.plist, MasoWatch/Info.plist):
 # 上架前的合规改动 (Masso 文案 / 权限描述 / 加密豁免 / 版本号) 直接改 plist 文件,
@@ -66,20 +78,25 @@ targets:
           - "**/.DS_Store"
           - "Secrets.xcconfig"
           - "Secrets.xcconfig.example"
+          - "Resources/CoreExerciseDemos"
       # 手机⇄手表共享的同步协议 (WatchSyncState / WatchAction)
       - path: MasoWatch/Shared
+      - path: Maso/Resources/CoreExerciseDemos
+        type: folder
     entitlements:
       path: Maso/Maso.entitlements
       properties:
         # HealthKit — 让 Maso 把训练数据写到 Apple Fitness / Health
         com.apple.developer.healthkit: true
+        com.apple.security.application-groups:
+          - group.com.yumowu.masso.widgets
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.yumowu.maso
         GENERATE_INFOPLIST_FILE: NO
         INFOPLIST_FILE: Maso/Info.plist
-        # iPhone only — 显式锁死, 否则 xcodegen target 级派生 "1,2" 会让 iPad 跑未测试布局.
-        TARGETED_DEVICE_FAMILY: "1"
+        # Universal app; wide windows retain a centered readable training column.
+        TARGETED_DEVICE_FAMILY: "1,2"
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
 
@@ -91,15 +108,19 @@ targets:
       - path: MasoWidgets
       # 跟 main app 共享 ActivityAttributes schema
       - path: Maso/Shared
+    entitlements:
+      path: MasoWidgets/MasoWidgets.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.com.yumowu.masso.widgets
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.yumowu.maso.widgets
         GENERATE_INFOPLIST_FILE: NO
         INFOPLIST_FILE: MasoWidgets/Info.plist
         SKIP_INSTALL: YES
-        # iPhone only — xcodegen 在 target 级会自动派生成 "1,2" 覆盖 project base 的 "1",
-        # 必须在 target 显式锁死, 否则 iPad 跑未测试布局 → 上架审核风险.
-        TARGETED_DEVICE_FAMILY: "1"
+        # Match the universal host device family; keep Watch family separate.
+        TARGETED_DEVICE_FAMILY: "1,2"
         INFOPLIST_KEY_CFBundleDisplayName: Masso Widgets
 
   # watchOS companion app — 训练镜像: 当前动作 / 组数 / 休息倒计时 / 完成组按钮;
@@ -116,6 +137,7 @@ targets:
         excludes:
           - Shared
       - path: MasoWatch/Shared
+      - path: Maso/Shared/ProgressFractionText.swift
     entitlements:
       path: MasoWatch/MasoWatch.entitlements
       properties:
@@ -128,3 +150,34 @@ targets:
         TARGETED_DEVICE_FAMILY: "4"
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+
+  MasoTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: MasoTests
+      - path: MasoWidgets/MassoHomeWidgets.swift
+    dependencies:
+      - target: Maso
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.yumowu.maso.tests
+        OTHER_SWIFT_FLAGS: "$(inherited) -D MASSO_WIDGET_TESTS"
+        GENERATE_INFOPLIST_FILE: YES
+
+  MasoUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - path: MasoUITests
+      - path: Maso/Resources/exercise-selection.json
+        buildPhase: resources
+      - path: Maso.storekit
+        buildPhase: resources
+    dependencies:
+      - target: Maso
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.yumowu.maso.uitests
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_TARGET_NAME: Maso

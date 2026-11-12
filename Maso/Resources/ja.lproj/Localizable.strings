@@ -1,0 +1,2558 @@
+/* Base offline machine translation (Argos Translate). Review wording before release. */
+"Plans" = "トレーニングプラン";
+"History" = "プロフィール";
+"Quick Workout" = "クイックワークアウト";
+"Late Night" = "レイトナイト";
+"Good Morning" = "グッドモーニング";
+"Good Afternoon" = "グッドアフタヌーン";
+"Good Evening" = "グッドイブニング";
+"Recommended" = "おすすめ商品";
+"Start Workout" = "ワークアウトを開始";
+"Build Your Own" = "自分で構築する";
+"No training plans yet" = "まだトレーニングプランはありません";
+"Muscles trained in the last 7 days" = "最後の7日で訓練された筋肉";
+"No training this week yet" = "今週のトレーニングはまだありません";
+"Workouts" = "ワークアウト";
+"No workouts yet" = "ワークアウトはまだありません";
+"Finished workouts show up here. Start your first one and watch your progress grow." = "完成したワークアウトがここに現れます。 最初から始めて、進行状況が成長します。";
+"Retry" = "リトリート";
+"Couldn't reach the AI coach — showing templates instead." = "AIでトレーニングを作成できなかったため、テンプレートを表示しています。";
+"Updated your plan." = "プランの更新";
+"Couldn't reach the AI coach — your plan is unchanged." = "AI のコーチには到達できません。あなたの計画は変更されません。";
+"AI plan unavailable — showing your recommended plan." = "AIプランは利用できません。おすすめプランをご提示ください。";
+"Today" = "今日更新";
+"Yesterday" = "昨日";
+"Repeat Workout" = "繰り返しワークアウト";
+"Exercises" = "エクササイズ";
+"Edit Workout" = "ワークアウトの編集";
+"Workout" = "トレーニング";
+"Workout name" = "ワークアウト名";
+"Add Exercise" = "エクササイズを追加";
+"No exercises yet — tap “Add Exercise” to start" = "まだ練習をしない — 「エクササイズを追加」をタップして開始";
+"Edit Exercise" = "エクササイズの編集";
+"Delete Exercise" = "エクササイズの削除";
+"Remove this exercise?" = "この演習を削除しますか?";
+"Remove" = "削除";
+"Cancel" = "キャンセル";
+"Sets" = "セット";
+"Exercises count" = "エクササイズ";
+"Volume kg" = "容積 kg";
+"Total Sets" = "総セット";
+"Groups Hit" = "グループヒット";
+"Days" = "デイリー";
+"Streak" = "ストール";
+"PR" = "プロモーション";
+"%lld days/wk" = "%lld 日/週";
+"%lld days/week" = "%lld日/週";
+"Couldn't create share link" = "共有リンクを作成できません";
+"“%@” will be removed from this workout. Past records are kept." = "「%@」は、このワークアウトから削除されます。過去の記録は保存されます。";
+"Shared workout" = "共有ワークアウト";
+"Reps" = "回数";
+"Weight" = "重量";
+"Duration" = "期間";
+"Set rest" = "残りセット";
+"Search exercises…" = "トレーニングを検索...";
+"All" = "すべて";
+"Strength" = "強み";
+"Cardio" = "カーディオ";
+"Flexibility" = "柔軟性";
+"No exercises match your search" = "あなたの検索に一致しない練習";
+"End this workout?" = "このトレーニングを終了しますか?";
+"End" = "リリース";
+"Keep going" = "行く";
+"Sets you've completed will be kept." = "完了したセットは保存されます。";
+"Rest" = "休憩";
+"Switching" = "スイッチング";
+"Up Next" = "次へ";
+"Next Exercise" = "次の演習";
+"Almost done" = "ほぼ完了";
+"Playlist" = "プレイリスト";
+"Workout Complete" = "ワークアウト完了";
+"Done" = "ログイン";
+"Pick muscles" = "筋肉を選ぶ";
+"Pick exercises" = "練習を選ぶ";
+"Pick at least one muscle" = "少なくとも1つの筋肉を選ぶ";
+"Pick at least one exercise" = "少なくとも1つの運動を選ぶ";
+"Close" = "閉じる";
+"Back" = "バックナンバー";
+"Settings" = "コンテンツ";
+"Units" = "ユニット";
+"Distance" = "アクセス";
+"Training" = "トレーニング";
+"Exercise rest" = "エクササイズレスト";
+"Quick-start from center tab" = "センタータブからクイックスタート";
+"Tap the highlighted center tab again to jump straight into today's recommended workout" = "ハイライトされたセンタータブをタップして、今日の推奨ワークアウトに直進します";
+"Data" = "データデータ";
+"Exercise library" = "エクササイズライブラリ";
+"Plans and workout records stay on your device." = "トレーニングプランとワークアウトレコードは、デバイスにとどまります。";
+"Try Masso Pro" = "Masso Proをお試しください";
+"Unlimited plans, full history, custom moves, and more." = "無制限のトレーニングプラン、完全な歴史、カスタム移動など。";
+"Unlock everything" = "すべてをロック解除";
+"Unlimited plans · Full history · Custom moves" = "無制限のトレーニングプラン・完全な歴史・カスタムの動き";
+"Unlock your full training." = "トレーニングを解除します。";
+"Unlimited workout plans" = "無制限のトレーニングプラン";
+"No more 3-plan cap — build a plan for every split." = "これ以上の3トレーニングプランキャップはありません。すべての分割のためのトレーニングプランを構築します。";
+"Full history" = "完全な歴史";
+"Permanent record + PR tracking + volume trends." = "永続的記録とPR追跡、常に。";
+"Advanced analytics" = "高度な分析";
+"Muscle balance, weekly volume, weak spots." = "1RMの強さの傾向、プラスの筋肉バランスを組み立てて下さい。";
+"Custom exercises" = "カスタム演習";
+"Add your own moves with notes and photos." = "メモや写真で自分の動きを追加します。";
+"Apple Health sync" = "Apple Health 同期";
+"Two-way sync — workouts go in, weight comes out." = "双方向同期 — ワークアウトが入る、重量が出ます。";
+"Cloud sync" = "クラウド同期";
+"Plans + history follow you across devices." = "トレーニングプラン+歴史は、デバイス間であなたをフォローします。";
+"Start 7-day free trial" = "7日間の無料トライアルを開始";
+"Subscribe for %@" = "%@の購読";
+"Buy lifetime — %@" = "購入寿命 — %@";
+"Loading price…" = "ローディング価格...";
+"Free for 7 days, then %@ / %@. Cancel anytime in Settings." = "7日間無料、%@ / %@。 いつでも設定でキャンセル。";
+"month" = "月 日";
+"year" = "年間行事";
+"You're now Masso Pro!" = "Masso Proを今すぐお試しください!";
+"Enjoy unlimited plans, full history, and everything else. Welcome aboard." = "無制限のトレーニングプラン、完全な歴史、その他すべてをお楽しみください。 ようこそアボード。";
+"Restore Purchases" = "購入を復元する";
+"Terms" = "利用規約";
+"Privacy" = "プライバシー";
+"Tell us about your training" = "あなたのトレーニングについて教えてください";
+"Three quick questions — we'll use them to recommend a plan that fits." = "3つの簡単な質問 - 私たちはそれらを使用して、収まるトレーニングプランをお勧めします。";
+"About you" = "お問い合わせ";
+"How many days a week do you train?" = "週に何日か訓練しますか?";
+"Which muscles do you want to focus on?" = "どの筋肉に集中したいですか?";
+"Confirm & build my plan" = "トレーニングプランの確認とビルド";
+"Build My Routine" = "私のトレーニングプランをビルドする";
+"Uploading your data" = "データのアップロード";
+"Analyzing your stats" = "統計分析";
+"Building your plan" = "プランの構築";
+"All set!" = "すべてのセット!";
+"What's your gender?" = "あなたの性別は何ですか?";
+"We use this to set sensible starting weights." = "センシブル開始重量を設定するために使用します。";
+"How old are you?" = "何歳ですか?";
+"Helps us tune your training volume." = "トレーニングボリュームをチューニングするのに役立ちます。";
+"What's your weight?" = "あなたの体重は何ですか?";
+"We seed your starting loads from this — change any later." = "開始荷重をこのから確認しました。";
+"We'll size your weekly plan to fit." = "ウィークリープランをサイズ変更します。";
+"Pick any — or none for a balanced routine." = "バランスの取れたトレーニングプランのために、いずれかを選ぶ。";
+"Next" = "次へ";
+"STEP %lld / 5" = "ステップ%lld/5";
+"STEP %1$lld / %2$lld" = "ステップ%1$lld/%2$lld";
+"What can you train with?" = "電車は?";
+"Pick what you have — leave all off if you train at a full gym." = "あなたが持っているものを選ぶ - 完全なジムで訓練する場合は、すべてのオフを残します。";
+"What's your main goal?" = "あなたの主な目標は何ですか?";
+"We'll tune reps, rest, and exercise picks to match." = "返信、休息、運動ピックを合わせます。";
+"Build muscle" = "筋肉の構築";
+"Get stronger" = "強くなる";
+"Lose fat / get lean" = "脂肪を失う/細い取得";
+"Stay fit & healthy" = "フィット&健康を維持";
+"Build endurance" = "ビルド耐久性";
+"Add size — moderate reps, higher volume." = "サイズの追加 — 適度な担当者、より高いボリューム。";
+"Lift heavier — low reps, heavy compounds, long rest." = "リフトヘビアー — 低応答、重い化合物、長い休憩。";
+"Keep muscle while leaning out — compound-heavy, tighter rest." = "脱退しながら筋肉を保つ — 化合物重い, より堅い残り.";
+"Balanced full-body work, short and sustainable." = "バランスの取れたフルボディワーク、ショート、サステナブル。";
+"High reps, short rest, circuit-style stamina." = "高応答、短休憩、回路スタイルのスタミナ。";
+"Update your saved routines?" = "保存されたトレーニングプランを更新しますか?";
+"You changed your default rest or sets. Apply these to the exercises in all your saved routines too?" = "デフォルト休息またはセットを変更します。これらをすべての保存されたトレーニングプランでエクササイズに適用しますか?";
+"Update them" = "アップデート";
+"Keep as is" = "そのまま";
+"Dumbbells" = "ダンベル";
+"Barbell & plates" = "バーベル&プレート";
+"Cable machine" = "ケーブル機械";
+"Resistance machines" = "抵抗機械";
+"Smith machine" = "スミスマシン";
+"Kettlebells" = "ケトルベル";
+"Resistance bands" = "抵抗バンド";
+"Pull-up / dip bar" = "プルアップ/ディップバー";
+"Cardio machines" = "カーディオマシン";
+"Chest" = "胸";
+"Upper Chest" = "アッパーチェスト";
+"Mid Chest" = "ミッドチェスト";
+"Lower Chest" = "低チェスト";
+"Lats" = "ラッツ";
+"Upper Traps" = "アッパートラップ";
+"Mid Traps" = "ミッドトラプス";
+"Lower Traps" = "低いトラップ";
+"Lower Back" = "低い背部";
+"Shoulders" = "肩";
+"Front Delts" = "フロント・デルッツ";
+"Side Delts" = "サイドデルツ";
+"Rear Delts" = "リアデルッツ";
+"Biceps" = "フィードバック";
+"Biceps (Long)" = "Biceps (ロング)";
+"Biceps (Short)" = "Biceps (ショート)";
+"Brachialis" = "ブラチハリス";
+"Triceps" = "トリセプト";
+"Triceps (Long)" = "トライセプ(ロング)";
+"Triceps (Lateral)" = "トライセプ(Lateral)";
+"Triceps (Medial)" = "トリセプト(メディア)";
+"Core" = "体幹";
+"Abs" = "トピックス";
+"Upper Abs" = "アッパー・アブス";
+"Lower Abs" = "低い Abs";
+"Obliques" = "斜め";
+"Quads" = "クワッド";
+"Rectus Femoris" = "レクタス・フェモリス";
+"Vastus Lateralis" = "ヴァスタス・ラダリス";
+"Vastus Medialis" = "ヴァスタス・メディアリス";
+"Hamstrings" = "ハムストリング";
+"Biceps Femoris" = "スパイスフェモリス";
+"Semitendinosus" = "Semitendinosus(セミエンドノサス)";
+"Glutes" = "グルーツ";
+"Gluteus Maximus" = "グルテスマキシム";
+"Gluteus Medius" = "グルテス・メディウス";
+"Calves" = "カルフ";
+"Gastrocnemius" = "Gastrocnemiusの特長";
+"Soleus" = "ソレウス";
+"%d exercises" = "%d演習";
+"%d sets" = "%dセット";
+"%d days ago" = "%d 日前";
+"%d day ago" = "%d 日前";
+"Today's Workout" = "今日のトレーニング";
+"Up next" = "次へ";
+"Upper Lats" = "アッパーラット";
+"Lower Lats" = "低いラット";
+"Rhomboids" = "ログイン";
+"Teres" = "テレス";
+"Rotator Cuff" = "ローテーターカフ";
+"Brachioradialis" = "ブラチオラディハリス";
+"Forearms" = "フォーム";
+"Forearm Flexors" = "ForearmのFlexors";
+"Forearm Extensors" = "Forearmのエクステンサー";
+"Arms" = "腕";
+"Serratus" = "セラタス";
+"Neck" = "ログイン";
+"Legs" = "脚";
+"Tibialis Anterior" = "ティビアリス・アンテリオール";
+"Adductors" = "アダプター";
+"Help us improve" = "改善に役立つ";
+"Send feedback" = "フィードバックを送信";
+"Send Feedback" = "フィードバックを送信";
+"Report a bug" = "バグ報告";
+"Report a Bug" = "バグ報告";
+"Submit report" = "レポートを提出";
+"Sending…" = "送信...";
+"Report received" = "レポート受領";
+"Saved · will retry" = "保存・再試行";
+"Retry upload" = "リトリーアップロード";
+"Report received. It will be included in the next weekly digest." = "レポートが届きます。翌週の消化に含まれます。";
+"Saved on this device. It has not reached the server yet." = "このデバイスに保存されます。サーバーはまだ到達していません。";
+"Support" = "サポート";
+"Bug reports, feature requests, complaints — all bundled into a daily digest and emailed to the team." = "バグ報告、機能のリクエスト、苦情 - 毎日の消化にバンドルされ、チームに電子メールが送信されます。";
+"Tell us what's broken, missing, or worth changing." = "壊れた、欠けている、または変化する価値があることを私達に知らせて下さい。";
+"Reports are reviewed together and emailed once a week. Your message, app version, iOS version, and language are included; no account or device ID is attached." = "レポートは一週間に一度にまとめてメールが届きます。メッセージ、アプリのバージョン、iOSバージョン、言語は含まれていません。アカウントやデバイスIDは添付されていません。";
+"Type your feedback here…" = "フィードバックを入力してください。";
+"Submit feedback" = "フィードバックを送信";
+"%d report waiting to upload" = "%d アップロード待ちレポート";
+"%d reports waiting to upload" = "%dはアップロードを待っています";
+"Sent — thank you" = "ありがとうございました";
+"Back muscle" = "背中";
+"Trained muscles fade over 3 days, reset on day 4." = "訓練された筋肉は3日以上フェード, 日にリセット 4.";
+"2 days ago" = "2日前";
+"Needs work" = "仕事の必要性";
+"Workout calendar" = "ワークアウトカレンダー";
+"Previous month" = "前の月";
+"Next month" = "次の月";
+"Current streak" = "現在の縞";
+"Week streak" = "週ストリーク";
+"Redo" = "ログイン";
+"Repeat" = "リピート";
+"Let's start your first workout." = "最初のワークアウトを始めましょう。";
+"You've trained today — rest up." = "今日は訓練を受けました。";
+"Last trained yesterday." = "昨日の最終訓練。";
+"%lld days since your last session." = "最後のセッションから%lld日。";
+"%lld days off — let's get back to it." = "%lld 日オフ — 戻りましょう。";
+"Reminders" = "リマインダー";
+"Workout reminders" = "ワークアウトリマインダー";
+"On by default: when you've taken a few days off, Masso sends one gentle reminder once your muscles have recovered. It only ever lives on your device, and you can turn it off anytime." = "デフォルトで: 数日オフを取ったとき、Massoは筋肉が回復したら1つの穏やかなリマインダーを送ります。それはあなたの装置にとどまり、いつでもそれを消すことができます。";
+"Recovered and ready" = "回復完了、トレーニングの準備OK";
+"Your muscles miss you" = "筋肉があなたを待っています";
+"Let's get back to it" = "またトレーニングを始めよう";
+"You're recovered — a quick session keeps your momentum going." = "回復できました。短いトレーニングで調子を保ちましょう。";
+"Want a nudge when you're recovered?" = "あなたが回復したときに、nudgeをしたいですか?";
+"Turn on reminders" = "リマインダーをオンにする";
+"Not now" = "今は今";
+"Masso can remind you to train once your muscles have recovered — all on your device. You can change this anytime in Settings." = "Massoは、あなたの筋肉が回復したら、あなたのデバイス上のすべてを訓練するためにあなたに思い出させることができます。 あなたは、設定でいつでもこれを変更することができます。";
+"Progress" = "ニュース";
+"Weekly volume" = "週単位";
+"Total %@ lifted per week" = "合計 %@ 週あたりの上昇";
+"Estimated 1RM" = "見積もり1RM";
+"Unlock strength trends with Pro" = "Proで強度のトレンドをロック解除";
+"Integrations" = "インテグレーション";
+"Apple Fitness sync" = "Apple Fitness 同期";
+"Masso writes finished workouts to Apple Health. They show up in Apple Fitness Activity rings and the Workouts tab. Heart rate is not collected." = "MassoはApple Healthに完成したワークアウトを書きます。それらはApple Fitness活動リングおよびワークアウトタブに表示されます。心拍数は収集されません。";
+"Not available on this device" = "このデバイスではご利用いただけません";
+"Tap to grant access" = "アクセスを許可するタップ";
+"Denied — enable in Settings › Health" = "拒否 — 設定を有効にします › 健康";
+"On — finished workouts go to Health" = "で — 完成したトレーニングは健康に行く";
+"Off" = "オフ";
+"Synced %d workout(s) to Health" = "%dのワークアウトを健康に同期";
+"Days per week" = "週1日";
+"Tap to start today's workout" = "タップして今日のワークアウトを開始します";
+"All %@" = "すべての%@";
+"AI Workout" = "AIワークアウト";
+"Each day, Masso bundles your profile + recent training + frequency into a prompt and asks Claude to generate today's plan. Your API key is stored locally on this device." = "毎日、Massoはプロフィール+最近の訓練+頻度をプロンプトに束ね、今日のトレーニングを生成するためにAIサービスを要求します。あなたのAPIキーは、このデバイスにローカルに保存されます。";
+"Generate plan with AI" = "AIでワークアウトを生成";
+"Enter your API key above first" = "上記APIキーを入力してください。";
+"Each day a new plan is built from your training history" = "トレーニング履歴から新しいワークアウトが作成されます。";
+"Not generated yet" = "まだ生成されない";
+"Generating…" = "生成...";
+"Today's plan ready" = "今日のトレーニングの準備";
+"Last attempt failed" = "最後の試みは失敗しました";
+"Tap Refresh to build today's plan" = "今日のワークアウトを作成するためにリフレッシュをタップ";
+"Refresh" = "リフレッシュ";
+"Body Map" = "ボディマップ";
+"By Muscle" = "筋肉によって";
+"Tap a muscle on the body to filter" = "体内の筋肉をタップしてフィルタリング";
+"Clear" = "クリア";
+"Train Smart with AI." = "AIでスマートに走る";
+"Train the gaps" = "ギャップを訓練する";
+"Catch-up: %@" = "キャッチアップ:%@";
+"AI generates a personalized plan from your profile + history each day. Pro feature." = "AIは、毎日プロフィール+履歴からパーソナライズされたワークアウトを生成します。 Proの機能。";
+"Pro feature · personalized daily plan" = "プロの機能・パーソナライズされた毎日のトレーニング";
+"Tap and hold to configure API key" = "タップして保持してAPIキーを設定";
+"On — refreshed daily" = "日々リフレッシュ";
+"Developer · AI API" = "開発者・AI API";
+"DeepSeek (OpenAI-compatible). Get a key at platform.deepseek.com → API Keys." = "DeepSeek(OpenAI互換)。 platform.deepseek.com → API Keys でキーを取得します。";
+"Enable AI generation" = "AI生成を有効に";
+"Enter key above first" = "上記キーを入力してください。";
+"Auto refresh once a day" = "1日1回オートリフレッシュ";
+"Test" = "テスト";
+"Your personal AI trainer" = "パーソナルAIトレーナー";
+"Close paywall" = "クローズ ペイウォール";
+"Close settings" = "設定を閉じる";
+"End workout" = "エンドワークアウト";
+"New workout" = "新しいワークアウト";
+"Previous" = "新着情報";
+"Force-quit and reopen the app to fully switch the language." = "強制終了し、アプリを再オープンして、言語を完全に切り替えます。";
+"Keep current" = "流れを保って下さい";
+"OK" = "お問い合わせ";
+"One-time purchase. No subscription, no recurring charges." = "一度の購入。 サブスクリプションなし、再発手数料なし。";
+"Restart Masso to apply" = "Massoを再起動して適用します";
+"Starting this will replace the workout you're in. Continue?" = "起動すると、その中のワークアウトを交換します。続行しますか?";
+"Language" = "日本語 English";
+"Free workout" = "フリーワークアウト";
+"Pick your own exercises and go" = "自分の練習を受け取り、行く";
+"Add to workout" = "ワークアウトに追加";
+"Target Muscles" = "ターゲット筋肉";
+"Instructions" = "取扱説明書";
+"Finish here" = "詳細はこちら";
+"Finish here?" = "詳しくはこちら";
+"Skip the remaining sets and mark this workout complete." = "残りのセットをスキップして、このワークアウトが完了します。";
+"Finish" = "フィニッシュ";
+"Fatigued" = "よくある質問";
+"Recovering" = "回復する";
+"Almost fresh" = "ほぼ新鮮な";
+"Light green = synergist · worked along the way, no need to pick." = "ライトグリーン = シナジー ・ 方法に沿って働いた, ピックする必要はありません。.";
+"Pick best for me" = "お問い合わせ";
+"Replace with smart pick" = "スマートピックで交換";
+"Masso" = "Massoの特長";
+"AI" = "ツイート";
+"PRO" = "ログイン";
+"MASSO PRO" = "マッソプロ";
+"FROM %@/MO" = "%@/MOから";
+"Another workout is in progress" = "別のトレーニングは進行中です";
+"Hide playlist" = "プレイリストを隠す";
+"Show playlist" = "プレイリストを表示する";
+"Start workout" = "トレーニング開始";
+"Pause" = "パデュース";
+"Resume" = "再開";
+"Skip rest" = "休憩をスキップ";
+"Complete set" = "完全なセット";
+"Selected" = "選択する";
+"Brought along during training" = "トレーニング中に一緒に戦った";
+"System Default" = "システムデフォルト";
+"kg" = "kg";
+"lb" = "ポンド";
+"km" = "マイル";
+"mi" = "ログイン";
+"Save 50%" = "保存 50%";
+"Pay once, own it" = "一度支払う、それを所有して下さい";
+"Billed monthly" = "毎月請求";
+"Monthly" = "月別アーカイブ";
+"Yearly" = "年間行事";
+"Lifetime" = "ライフタイム";
+"POPULAR" = "ポピラー";
+"/ month" = "/ 月";
+"/ year" = "/ 年";
+"once" = "一度に";
+"Show muscle subdivisions" = "筋肉サブディビジョンを表示する";
+"Show muscle status" = "筋肉の状態を表示";
+"Off: pick the whole muscle (chest, back) — no upper/mid/lower split. On: full anatomical detail." = "オフ:全筋肉(チェット、バック)を選ぶ - 上部/中/下分割なし。 上:完全な解剖学的詳細。";
+"Backup" = "バックアップ";
+"Export data" = "データのエクスポート";
+"Save plans, workouts, settings as a JSON file" = "JSONファイルとしてトレーニングプラン、ワークアウト、設定を保存";
+"Import data" = "インポートデータ";
+"Restore from a Masso backup file" = "Massoバックアップファイルから復元";
+"New iPhone? Your data restores automatically from iCloud Backup. Or export anytime — it's a plain JSON file." = "新しいiPhone? あなたのデータは、iCloudバックアップから自動的に復元します。 またはいつでもエクスポート - 明白なJSONファイルです。";
+"Replace current data?" = "現在のデータを置換しますか?";
+"Replace" = "リプレース";
+"Asking the coach…" = "コーチを依頼する...";
+"Using local picker" = "ローカルピッカーの使用";
+"Couldn't reach the AI coach. Using a local recommendation instead." = "AI のコーチに到達できません。 代わりにローカルの勧告を使用してください。";
+"New Workout" = "新しいワークアウト";
+"Move up" = "移動する";
+"Move down" = "移動する";
+"Delete" = "削除";
+"Plate calculator" = "プレート計算機";
+"Target" = "ターゲット";
+"Per side" = "パーサイド";
+"Bar weight" = "棒の重量";
+"Bar only — no plates needed" = "棒だけ — 必要な版無し";
+"Time to switch exercise" = "次の種目に移りましょう";
+"Rest's up — next set" = "休憩終了、次のセットへ";
+"Weight (kg)" = "重量(キログラム)";
+"Duration (sec)" = "期間(秒)";
+"Edit exercise parameters" = "運動パラメータの編集";
+"Changes apply to this session only. To save permanently, edit the plan." = "変更は、このセッションのみに適用されます。 永続的に保存するには、トレーニングプランを編集します。";
+"Delete Plan" = "トレーニングプランを削除";
+"Delete this plan?" = "このトレーニングプランを削除しますか?";
+"Your training history will be kept." = "トレーニング履歴が保存されます。";
+"Any equipment" = "あらゆる装置";
+"Gym equipment" = "ジム機器";
+"All equipment" = "すべての機器";
+"Prefer community plans" = "コミュニティプラン";
+"Build your AI Plans from a proven community program that matches your days per week and goal, instead of auto-generating them." = "週1日と目標にマッチする実証済みのコミュニティプログラムからAIプランを構築し、自動生成する代わりに。";
+"These apply to recommended routines and exercises you add — your custom routines aren't changed." = "これらは、あなたが追加する推奨トレーニングプランと演習に適用されます - あなたのカスタムトレーニングプランは変更されません。";
+"Any movement" = "すべての動き";
+"equipment.barbell" = "バーベル";
+"equipment.dumbbell" = "ダンベル";
+"equipment.body only" = "ボディのみ";
+"equipment.cable" = "ケーブル";
+"equipment.machine" = "マシン";
+"equipment.kettlebells" = "ケトルベル";
+"equipment.bands" = "バンド";
+"equipment.e-z curl bar" = "EZバー";
+"equipment.medicine ball" = "薬の球";
+"equipment.exercise ball" = "練習の球";
+"equipment.foam roll" = "泡のローラー";
+"equipment.stretching" = "ストレッチ";
+"equipment.other" = "その他";
+"Muscle Status" = "筋肉の状態";
+"Profile" = "プロフィール";
+"Gender" = "ジェンダー";
+"Male" = "男性 男性";
+"Female" = "女性 女性";
+"Other" = "その他";
+"Age" = "年齢";
+"yrs" = "ログイン";
+"Body weight" = "体重";
+"Muscles to focus" = "集中する筋肉";
+"Pick the muscle groups you want to prioritize. Today's recommendations and AI plans will favor these." = "優先する筋肉グループを選択します。 今日の推奨事項とAIトレーニングプランは、これらを支持します。";
+"Share Card" = "シェアカード";
+"Camera" = "カメラ";
+"Photos" = "ニュース";
+"Add some exercises to the plan first, then start training." = "最初はトレーニングプランにいくつかのエクササイズを追加し、トレーニングを開始します。";
+"Hide older workouts" = "古いワークアウトを隠す";
+"My Muscle Status" = "筋肉の状態";
+"My Week" = "私の週";
+"Save" = "保存する";
+"Share" = "シェア";
+"Show %d older workout(s)" = "%d 古いワークアウト(s)を表示";
+"This Week" = "今週の今週";
+"This workout has no exercises yet" = "このトレーニングはまだ練習はありません";
+"Smart pick" = "スマートピック";
+"Save as plan" = "トレーニングプランとして保存";
+"Saved" = "保存済み";
+"Anything else for your AI coach?" = "あなたのAIコーチのために他に何か?";
+"Injuries, preferences, time limits — in your own words. The AI combines this with everything above. Optional." = "負傷、好み、時間制限 - あなた自身の言葉で。 AIは、上記のすべてとこれを組み合わせたものです。 オプション。";
+"e.g. Old shoulder injury — avoid overhead pressing. I like dumbbells, 45 minutes max." = "例:古い肩こり — 頭上が押すことを避けます。 私はダンベル、45分最大が好きです。";
+"Start from scratch" = "ゼロから始める";
+"Display" = "ディスプレイ";
+"Muscle charts on exercise tags" = "運動タグの筋肉チャート";
+"On routine cards, show a mini muscle chart instead of the muscle name in front of each exercise." = "トレーニングプランカードでは、各演習の前で筋肉名の代わりにミニ筋肉チャートが表示されます。";
+"Saved to routines" = "トレーニングプランに保存";
+"Save to routines" = "トレーニングプランへの保存";
+"Save %lld routine" = "%lldトレーニングプランを保存";
+"Save %lld routines" = "%lldトレーニングプランを保存";
+"Saved %lld routine" = "保存%lldトレーニングプラン";
+"Saved %lld routines" = "%lldトレーニングプランを保存";
+"App Language" = "アプリの言語";
+"Continue" = "お問い合わせ";
+"Start" = "スタート";
+"Add a photo" = "写真を追加";
+"Add photo" = "写真を追加";
+"Take Photo" = "写真を撮る";
+"Choose from Library" = "図書館から選ぶ";
+"Remove Photo" = "写真を削除";
+"Add to favorites" = "お気に入りに追加";
+"Remove from favorites" = "お気に入りから削除する";
+"All muscles" = "すべての筋肉";
+"Clear all" = "すべてクリア";
+"Delete plan?" = "トレーニングプランを削除?";
+"Delete workout?" = "ワークアウトを削除しますか?";
+"Delete this workout?" = "このワークアウトを削除しますか?";
+"Delete workout" = "ワークアウトの削除";
+"Delete exercise from plan?" = "トレーニングプランから運動を削除する?";
+"Delete exercise from this workout?" = "このトレーニングから運動を削除する?";
+"All sets and PRs from this workout will be removed. Your plans stay." = "このワークアウトからのすべてのセットとPRは削除されます。あなたのトレーニングプランは滞在します。";
+"All sets of this exercise from this workout will be removed." = "このトレーニングの全てのセットは削除されます。";
+"This only removes it from the current workout. Save changes at the end to update the plan." = "これにより、現在のワークアウトから削除されます。最後に変更を保存してトレーニングプランを更新します。";
+"This only removes the exercise from this plan, not from your library." = "これは、あなたのライブラリからではなく、このトレーニングプランから運動を削除するだけです。";
+"Detail" = "詳細を見る";
+"Muscle" = "筋肉";
+"Equipment" = "ソリューション";
+"Variation" = "バリエーション";
+"None" = "なし";
+"Optional" = "オプション";
+"How to do it" = "それを行う方法";
+"Show full instructions" = "完全な指示を表示する";
+"Show less" = "もっと表示";
+"Listen" = "ログイン";
+"Read instructions aloud" = "指示を読んで下さい aloud";
+"Stop reading" = "読書停止";
+"Stop" = "ストップ";
+"Edit" = "編集";
+"Long press to reorder" = "再注文するロングプレス";
+"No exercises in this workout" = "このトレーニングで運動しません";
+"Share workout" = "シェアワークアウト";
+"Save changes & end" = "変更と終了を保存";
+"End without saving" = "保存せずに終了";
+"You changed sets, reps, weight, or order during this workout. Save the changes back to the plan?" = "このトレーニング中にセット、担当者、体重、または注文を変更しました。 変更をトレーニングプランに戻す?";
+"Skip" = "ツイート";
+"Save changes to this routine?" = "このトレーニングプランの変更を保存しますか?";
+"You adjusted this routine during the workout. Save the adjustments for next time?" = "トレーニング中にこのトレーニングプランを調整します。 次回の調整を保存しますか?";
+"Save to routine" = "トレーニングプランに保存";
+"Don't save" = "保存しない";
+"Removed" = "削除";
+"Replaced" = "置換";
+"Updated" = "新着情報";
+"Moved" = "移動する";
+"rest %@" = "残り %@";
+"Show details for %@" = "%@の詳細を表示";
+"STEP %lld / 2" = "ステップ%lld/2";
+"STEP %lld / 3" = "ステップ%lld/3";
+"Enable \"Show muscle subdivisions\" in Settings to pick details like upper chest or rear delts." = "設定で「筋肉のサブディビジョンを表示」を有効にして、上部の胸やリアのデルツなどの詳細を選択します。";
+"Free for 7 days, then %@. Cancel anytime in Settings." = "7日間無料、%@。 設定でいつでもキャンセル。";
+"FOR YOU" = "お問い合わせ";
+"TRAINING PREFERENCES" = "トレーニング体験";
+"Adjust" = "調節して下さい";
+"%lld days / week" = "%lldの日/週";
+"Full-body" = "フルボディ";
+"Upper-lower split" = "アッパーローワー分割";
+"Body-part split" = "ボディ部分の割れ目";
+"Full-body coverage — each muscle group rotates through the week." = "全身のカバレッジ - 各筋肉グループは週を通して回ります。";
+"High frequency — focus muscles hit 2–3× per week, accessories rotate for recovery." = "高周波 — 焦点の筋肉は週2–3×に、付属品は回復のために回ります。";
+"Each focus muscle is trained 2× per week — enough stimulus, full recovery between." = "各焦点の筋肉は週に2×訓練されます —十分な刺激、間の完全な回復。";
+"2× per week is enough to maintain steady progress — focus muscles rotate in." = "1週間2×は、安定した進行を維持するのに十分です。フォーカス筋肉が回転します。";
+"Adjust training preferences" = "トレーニングの好みを調整する";
+"FROM YOUR PLAN" = "あなたのラインから";
+"Weekly Workouts" = "週刊ワークアウト";
+"White areas were just trained" = "ちょうど訓練された白い区域";
+"Today's Status" = "今日のステータス";
+"My Workout" = "私のトレーニング";
+"Customize" = "カスタマイズ";
+"Restore recommended" = "おすすめの復元";
+"Week starts" = "週始スタート";
+"Auto" = "自動車";
+"Sun" = "日曜日";
+"Mon" = "モンテネグロ";
+"Days this month" = "今月の日";
+"Day this month" = "今月の日";
+"Sets this month" = "今月のセット";
+"Set this month" = "今月のセット";
+"Training Preferences" = "トレーニング環境";
+"Rested" = "休息日";
+"Fresh" = "フレッシュ";
+"Browse community plans" = "クラシックをブラウズ";
+"Classics" = "クラシック";
+"See what others train" = "他の電車を見る";
+"Community" = "クラシック";
+"Curated workout plans. Add any to your library." = "キュレーションされたワークアウトトレーニングプラン。 あなたのライブラリに追加します。";
+"Want to publish your plan? Coming soon." = "あなたのトレーニングプランを出版したいですか? 近日公開します。";
+"Want to share your plan? Open it in Plans → tap Share." = "トレーニングプランで開く → シェアをタップします。";
+"Share plan" = "シェアトレーニングプラン";
+"Imported plan" = "インポートされたトレーニングプラン";
+"Got a plan from a friend? Tap Add to save it to your library." = "友達からトレーニングプランをつかむ? [追加] をタップして、ライブラリに保存します。";
+"Add to my plans" = "私のトレーニングプランに追加";
+"Added" = "追加";
+"Adjusted" = "調節される";
+"Changes from previous routine" = "前のトレーニングプランからの変更";
+"This routine stayed the same" = "このトレーニングプランは同じまま";
+"Added to My Plans" = "私のトレーニングプランに追加";
+"Routines" = "トレーニングプラン";
+"Generate with AI" = "AIで生成する";
+"Browse Classics" = "クラシックをブラウズ";
+"Create from scratch" = "ゼロから作成";
+"Create my own" = "自分で作成する";
+"AI Routines" = "AIトレーニングプラン";
+"Generate a plan from your preferences" = "あなたの好みから計画を生成します";
+"Proven programs to start from" = "実績のあるプログラムから始める";
+"New routine" = "新しいトレーニングプラン";
+"Routines you save will appear here" = "保存するトレーニングプランはここに表示されます";
+"Proven programs — 5x5, PPL, 5/3/1" = "実績のあるプログラム — 5x5、PLL、5/3/1";
+"Generate routines" = "トレーニングプランを生成";
+"Open Training Preferences and tap Generate routines to build a set tailored to you." = "トレーニング環境を開き、トレーニングプランを生成して、あなたに合わせたセットを構築します。";
+"Apply" = "適用";
+"Keep editing" = "編集を続ける";
+"Apply changes?" = "変更を適用しますか?";
+"You changed your training preferences. Apply them and regenerate your routines?" = "あなたのトレーニングの好みを変更しました。それらを適用し、あなたのトレーニングプランを再生しますか?";
+"Generating routines…" = "トレーニングプランを発生させる...";
+"Building routines from your preferences…" = "あなたの好みからトレーニングプランを建てる...";
+"Matching exercises to your days, equipment, and focus." = "あなたの日、装置および焦点への一致の練習。";
+"Tap Generate routines to build a set tailored to your preferences." = "トレーニングプランを生成して、設定を好みに合わせて作成します。";
+"Beginner" = "初心者向け";
+"Intermediate" = "中出し";
+"Advanced" = "アドバンスト";
+"%lld exercises" = "%lld演習";
+"Featured today" = "最近の投稿";
+"More programs" = "その他のプログラム";
+"No routines match" = "トレーニングプランマッチなし";
+"%lld routine" = "%lldトレーニングプラン";
+"%lld routines" = "%lldトレーニングプラン";
+"Add %lld routines" = "%lldトレーニングプランを追加";
+"Day %lld" = "日 %lld";
+"Days/wk" = "日/週";
+"%lld days" = "%lld日";
+"Any level" = "任意のレベル";
+"Rotate these %lld workouts to train %lld days a week." = "これらの %lld ワークアウトを 1 週間 %lld 日を訓練するために回転させます。";
+"%lld sets" = "%lldセット";
+"%llds rest" = "%lldsの残り";
+"community_plan_beginner_fb_3day_name" = "初心者フルボディ3デー";
+"community_plan_beginner_fb_3day_desc" = "メインリフトを学び、ベースを構築するための2つの交流セッション。";
+"community_plan_5x5_strength_name" = "5x5 強さ";
+"community_plan_5x5_strength_desc" = "重い5-repバーベル作業 — マドカウスタイルのリニアプログレッション。";
+"community_plan_ppl_6day_name" = "プッシュ/プル/脚 6日間";
+"community_plan_ppl_6day_desc" = "各筋肉は週2×に当たる - 高周波、高容量。";
+"community_plan_upper_lower_4day_name" = "上/下4日";
+"community_plan_upper_lower_4day_desc" = "古典的な中間分割 — バランスの取れた強度と高精細。";
+"community_plan_bro_split_5day_name" = "ブロスプリット5日";
+"community_plan_bro_split_5day_desc" = "ボディービルの古典 — 1 日あたりの筋肉グループ。";
+"community_plan_calisthenics_name" = "カリステニックス財団";
+"community_plan_calisthenics_desc" = "あなたの体重だけを使用して基礎的な強さを造ります。";
+"community_plan_powerlifting_name" = "パワーリフトプレップ";
+"community_plan_powerlifting_desc" = "スクワット、ベンチ、デッドリフト — 生の強さのためにトリプルを集中しました。";
+"community_plan_push_pull_4day_name" = "プッシュ/プル4日";
+"community_plan_push_pull_4day_desc" = "簡単な双方向の分割 — 筋肉を押し、それぞれ2回筋肉を引っ張ります。";
+"community_session_full_body_a" = "フルボディ A";
+"community_session_full_body_b" = "フルボディB";
+"community_session_strength_a" = "強み A";
+"community_session_strength_b" = "強度 B";
+"community_session_push_heavy" = "プッシュ(ヘビー)";
+"community_session_pull_heavy" = "プル(ヘビー)";
+"community_session_legs_quads" = "足 (クォード)";
+"community_session_upper" = "アッパー";
+"community_session_lower" = "ダウンロー";
+"community_session_chest_day" = "チェストデー";
+"community_session_back_day" = "バックデイ";
+"community_session_leg_day" = "足の日";
+"community_session_shoulder_day" = "ショルダーデー";
+"community_session_arm_day" = "腕の日";
+"community_session_push_day" = "プッシュ・デイ";
+"community_session_pull_day" = "プルデイ";
+"community_session_legs_core_day" = "足+中心";
+"community_session_squat_day" = "スクワットの日";
+"community_session_bench_day" = "ベンチデイ";
+"community_session_deadlift_day" = "デッドリフトの日";
+"community_session_accessory_day" = "アクセサリーデー";
+"community_session_push_simple" = "プッシュ";
+"community_session_pull_simple" = "キャップ";
+"Favorite" = "お気に入り";
+"Unfavorite" = "お気に入り";
+"Pin to top" = "ピントップ";
+"Pin" = "ピン";
+"Unpin" = "アンパン";
+"Replace exercise" = "練習を取り替えて下さい";
+"MUSCLE STATUS" = "マッスル・スタタス";
+"Couldn't load subscription options. Try again later." = "サブスクリプションオプションをロードできません。後でお試しください。";
+"Purchase pending approval." = "保留資格取得";
+"Purchase verification failed. Try again or contact support." = "購入確認が失敗しました。もう一度お試しください。サポートにお問い合わせください。";
+"Free for 7 days, then auto-renews. Cancel anytime in Settings." = "7日間無料、自動更新。設定でいつでもキャンセルできます。";
+"Workout photo" = "ワークアウト写真";
+"Share muscle status" = "筋肉の状態を共有する";
+"Toggle muscle status overlay" = "筋肉状態のオーバーレイをトグル";
+"IMPORTED PLAN" = "インポートライン";
+"This Masso link is damaged or unsupported. Ask your friend to share again." = "このMassoリンクは、破損しているか、サポートされていないかです。 友人に再度共有するように依頼してください。";
+"Invalid routine link" = "無効なトレーニングプランリンク";
+"details" = "ニュース";
+"Health & Safety" = "健康と安全";
+"About" = "お問い合わせ";
+"Privacy Policy" = "プライバシーポリシー";
+"Terms of Service" = "サービス利用規約";
+"Version" = "バージョン";
+"Masso is for informational and motivational purposes only — not medical advice. Consult a physician before starting any new exercise program, especially if you have a medical condition, are pregnant, or have not exercised recently. Stop immediately and seek help if you feel pain, dizziness, or shortness of breath." = "Massoは、情報的およびモチベーション的な目的のためにのみ、医療の助言ではありません。 特に、あなたが病気を持っている場合は、医師に相談し、妊娠している、または最近運動されていない。 痛み、めまい、または息の不足を感じる場合は、すぐに停止し、助けを求める。";
+"Workout Records" = "ワークアウトレコード";
+"Form cues" = "フォームキュー";
+"Watch demo" = "デモを見る";
+"Compound" = "コンパウンド";
+"Isolation" = "ソリューション";
+"Horizontal push" = "横押し";
+"Vertical push" = "縦押し";
+"Horizontal pull" = "横の引き";
+"Vertical pull" = "縦の引き";
+"Hinge" = "ヒンジ";
+"Squat" = "スクワット";
+"Lunge" = "ログイン";
+"Rotation" = "ローテーション";
+"Strength tempo" = "強さのtempo";
+"Hypertrophy tempo" = "Hypertrophyテンポ";
+"Endurance tempo" = "耐久性のtempo";
+"Explosive tempo" = "爆発性テンポ";
+"Isometric hold" = "イソメトリックホールド";
+"Unilateral" = "ユニランド";
+"%d specialized / unusual exercises (foam rollers, battle ropes, machine isolations, etc.)" = "%dは/異常な練習(泡のローラー、戦いロープ、機械分離、等)を専門にしました";
+"12–20 reps, lighter weight, short rest" = "12～20名、軽量、短い休息";
+"1–5 reps, heavy weight, long rest" = "1–5 応答、重重量、長い残り";
+"6–12 reps, moderate weight, ~90s rest" = "6〜12の担当者、適度な体重、〜90秒の残り";
+"Add" = "追加する";
+"Add a name, an image, and tag it to a muscle. Best for moves we don't have." = "名前、イメージを追加し、それを筋肉にタグ付けします。私たちが持っていない動きに最適です。";
+"Add exercise" = "運動を追加";
+"Back to standard library" = "標準ライブラリに戻る";
+"Browse rare exercises" = "希少なエクササイズをブラウズ";
+"Change" = "アクセス";
+"Couldn't save exercise" = "運動を保存できません";
+"Create your own" = "自分で作成";
+"Custom exercises live only on this device. You can use them in plans and they'll appear in all your pickers." = "カスタム演習は、このデバイス上でのみ生きます。 あなたはトレーニングプランでそれらを使用することができ、彼らはすべてのあなたのピッカーに表示されます。";
+"Days this week" = "今週の日";
+"Day this week" = "今週の日";
+"Default sets" = "デフォルトセット";
+"Discard" = "マスタード";
+"Discard changes?" = "変更を破棄しますか?";
+"Edit next exercise" = "次の演習を編集する";
+"Endurance" = "耐久性";
+"Exercise name" = "練習名";
+"Exercises per plan" = "定期的な練習";
+"Foam rolls, battle ropes, machine isolations and other specialized moves we corralled." = "泡ロール、戦いロープ、機械分離および他の専門にされた動き私達はcorralled。";
+"Hide variants" = "多様体を隠す";
+"Hypertrophy" = "ハイパートロフィー";
+"New exercise" = "新しい練習";
+"No rare exercises match" = "希少なエクササイズマッチなし";
+"No rare exercises match your search" = "希少なエクササイズがあなたの検索に一致しません";
+"Pick how to add an exercise. Either build your own from scratch, or adopt one from our specialized library." = "エクササイズを追加する方法を選択します。スクラッチから自分をビルドするか、専門ライブラリから1つを採用します。";
+"Primary muscle" = "第一次筋肉";
+"Rare exercises" = "まれな演習";
+"Required. Shown in plans and history." = "必須。 トレーニングプランと歴史に表示。";
+"Return to the everyday library" = "日常の図書館に戻る";
+"Search" = "インフォメーション";
+"Sets this week" = "今週のセット";
+"Set this week" = "今週の予定";
+"Show %d variants" = "%dの変形を表示";
+"Time's up" = "時間です";
+"Training goal" = "トレーニングゴール";
+"You've adopted everything in the rare library" = "まれなライブラリですべてを採用しました";
+"Your edits to this workout's exercises won't be saved to the plan. Completed sets are already recorded." = "このワークアウトの演習へのあなたの編集は、トレーニングプランに保存されません。 完了したセットは既に記録されています。";
+"%d kg" = "%dのkg";
+"%d yrs" = "%dのyrs";
+"Can't delete — in use" = "削除できません。";
+"Delete exercise?" = "運動を削除?";
+"Remove from library" = "ライブラリから削除";
+"This exercise is used by a plan or your workout history. Remove it from those first." = "この演習は、トレーニングプランやワークアウトの履歴によって使用されます。 それらを最初から削除します。";
+"“%@” will be permanently removed." = "「%@」は永久に削除されます。";
+"Couldn't load that image. Try another." = "そのイメージをロードできません。別のイメージを試してみてください。";
+"Couldn't process that image. Try another." = "そのイメージを処理できません。別のイメージを試してみてください。";
+"For most strength moves." = "ほとんどの強さのために動きます。";
+"For planks, stretches, carries, cardio intervals." = "プランク、ストレッチ、キャリー、カーディオの間隔。";
+"Measure by" = "測定による";
+"Reps & weight" = "唇及び重量";
+"Time (seconds)" = "時間 (秒)";
+"You already have a custom exercise with this name." = "あなたは既にこの名前でカスタム演習を持っています。";
+"All caught up" = "キャッチアップ";
+"Time" = "タイムタイム";
+"Rest %@" = "残り%@";
+"Set %d" = "%dの設定";
+"Set %lld" = "%lldの設定";
+"Different per set" = "セットごとに異なる";
+"Reps × weight per set" = "セット1組あたりのRepsの×の重量";
+"Last: %@ kg × %d (%@)" = "最後:%@ kg×%d(%@)";
+"Last: × %d (%@)" = "最後の: × %d (%@)";
+"Last: %ds (%@)" = "最後の: %ds (%@)";
+"movement.press" = "ニュース";
+"movement.curl" = "ログイン";
+"movement.row" = "ログイン";
+"movement.squat" = "スクワット";
+"movement.lunge" = "ログイン";
+"movement.deadlift" = "デッドリフト";
+"movement.raise" = "レイズ";
+"movement.fly" = "フライト";
+"movement.extension" = "エクステンション";
+"movement.push_up" = "プッシュアップ";
+"movement.pull_up" = "プルアップ";
+"movement.pulldown" = "プルダウン";
+"movement.dip" = "ディップ";
+"movement.thrust" = "スラスト";
+"movement.shrug" = "スラグ";
+"movement.crunch" = "クランチ";
+"movement.plank" = "プランク";
+"movement.pullover" = "プルオーバー";
+"movement.kickback" = "キックバック";
+"Part" = "パーツ";
+"Movement" = "アクション";
+"Skip to exercises" = "練習にスキップ";
+"Filter" = "フィルター";
+"Close search" = "検索を閉じる";
+"Library" = "ライブラリー";
+"Good morning" = "おはようございます";
+"Good afternoon" = "お昼過ぎ";
+"Good evening" = "夕方 夕方";
+"Good night" = "お泊まり";
+"My plans" = "私のトレーニングプラン";
+"Create your own workout, or restore the recommended set." = "自分のワークアウトを作成したり、推奨セットを復元したりできます。";
+"Variant" = "バリアント";
+"vs %@" = "対 %@";
+"variant.high" = "より高いアンカー — プルは、上から来る, リアデルツと上背対標準高さ.";
+"variant.low" = "アンカーを下げる - 上部の胸と正面のデルツと標準の高さをバイアスする。";
+"variant.mid" = "中の高さのアンカー — プルのバランスの取れたライン、ベースの動きの重点に最も近い。";
+"variant.incline" = "傾斜角度 — 上部の胸と正面の角に重点を置きます。";
+"variant.decline" = "斜角 — 下胸に重点を移し、またはコアの動きのabsの範囲を長くなります。";
+"variant.seated" = "座った — ターゲット筋肉の厳しい分離のために足ドライブと運動量を削除します。";
+"variant.standing" = "スタンド — サポートされているバージョンと比較してコアとスタビライザーの関与を追加します。";
+"variant.lying" = "ライイング — 勢いと低背のストレスを排除し、プライム・ムーバーを分離します。";
+"variant.kneeling" = "ニーリング — 脚ドライブをロックし、コアの安定性を要求します。";
+"variant.prone" = "Prone(フェースダウン) — パッドは、厳格なリアデルトとアッパーバック作業のために不正行為を取り除きます。";
+"variant.supine" = "Supine (face-up) — スピンを安定させ、プライム・ムーバーを分離します。";
+"variant.single-arm" = "一度に1つの腕 — 左右の不均衡を固定し、反回転の中心の仕事を加えます。";
+"variant.single-leg" = "一度に1つの足 — 不均衡を固定し、よりグルテンフリーの安定性を要求します。";
+"variant.alternating" = "側面を交互に — ビルトインマイクロレストの各担当者との張力の下で長い時間。";
+"variant.wide-grip" = "より広いグリップ — 動きのより短い範囲、偏光線の幅および外の箱。";
+"variant.close-grip" = "より近いグリップ — 動きの長い範囲、triceps および内部の箱をbiasing。";
+"variant.neutral-grip" = "手のひらがな — 肩に優しい角度で、バキアリスとプルの敵対。";
+"variant.reverse-grip" = "逆のグリップ — 重点をシフト: プル、プレスのより多くの上胸により多くのバイスプス。";
+"variant.underhand" = "アンダーハンドグリップ — オーバーハンドよりも多くのバセップと低レイの関与。";
+"variant.overhand" = "オーバーハンドグリップ — アンダーハンドよりも、オーバーアームとアッパーバックの関与。";
+"variant.paused" = "底面のポーズ — ストレッチの反射を取り除き、穴の強さを築きます。";
+"variant.deficit" = "上昇/欠乏セットアップ — より深いストレッチのための動きの範囲を拡張します。";
+"variant.weighted" = "負荷を追加 — 強度の進行のためのより高い強度で同じ動き。";
+"variant.assisted" = "アシスタンスは体重を相殺します - 同じパターンはより簡単な強度で。";
+"variant.sumo" = "ワイド・サオスタンス — ダウン・バックのストレスを伴って、より adductor と glute の関与。";
+"variant.romanian" = "ヒップバック、柔らかい膝 — ストレッチを通してハムストの緊張を保ちます。";
+"variant.bulgarian" = "リア足が高まる — ディープグルットとクワッドストレッチでシングルラグローディング。";
+"variant.goblet" = "胸部で保持されたロード — 胴体を直立させ、深さを上げ、より簡単に形成します。";
+"variant.front" = "フロントにロード — より直立したトルソは、クワッドとアッパーバックをバイアスします。";
+"variant.overhead" = "オーバーヘッドをロード — 肩の安定性とコアの需要をベースに移動に追加します。";
+"variant.walking" = "トラベリング版 — バランスの要求と継続的なテンションと場所の差を追加します。";
+"variant.reverse" = "逆方向 — パターンの反対部分に重点を置きます。";
+"variant.lateral" = "サイドウェイ平面 — アブダクターとサイドデルツとストレートバージョンをバイアス。";
+"variant.tuck" = "Knees は、レバーを短くし、動きの進行が容易になります。";
+"variant.floor" = "床から - 減らされた範囲は肩を保護し、足ドライブを取除きます。";
+"variant.chest-supported" = "パッド上の箱 — ゼロの勢力、厳密な上部背部分離。";
+"variant.bent-over" = "ヒンジされたトルソ — ダウンバックとハムストの関与を追加します。厳密なヒンジを保持します。";
+"variant.dead-stop" = "各担当者をフルストップ — バウンスを排除し、開始強度をビルドします。";
+"variant.split" = "スプリットスタンス — バランスの要求を追加した時点で1つの足をバイアスします。";
+"variant.hammer" = "神経のハンマーのグリップ — brachialis と forearms をバイアスします。";
+"My Routines" = "マイプラン";
+"Import from photo" = "写真からのインポート";
+"Add routine" = "トレーニングプランを追加";
+"Generate routine with AI" = "AIでトレーニングプランを生成";
+"Build your routine with AI" = "AIでトレーニングプランを構築";
+"Tell AI Coach your goals and schedule to get a routine made for you." = "AI Coach の目標とスケジュールを聞かせてください。";
+"Chat with AI Coach" = "AI Coachとチャット";
+"Hi, I’m your AI Coach" = "こんにちは、私はあなたのAI Coachです";
+"Create my routine based on my saved training preferences." = "私の保存されたトレーニングの好みに基づいて私のトレーニングプランを作成します。";
+"Open AI Coach to create a routine" = "AI Coachを開き、トレーニングプランを作成する";
+"Imported routine" = "インポートされたトレーニングプラン";
+"Couldn't read a routine from that image" = "そのイメージからトレーニングプランを読み込めない";
+"Try a clearer screenshot — exercise names need to be readable." = "より明確にスクリーンショットを試す — 練習名は読みやすくなります。";
+"Reading routine…" = "読書トレーニングプラン...";
+"Volume" = "ボリューム";
+"Share this week" = "今週のシェア";
+"Share this month" = "今月のシェア";
+"This Month" = "月～金";
+"%d reps" = "%d担当者";
+"My Training" = "私のトレーニング";
+"Routine name" = "トレーニングプラン名";
+"We added the moves we recognized. Review the rest — confirm, swap, or save as a custom move." = "我々が認識した動きを追加しました。残りの部分を見直し、確認、スワップ、またはカスタム移動として保存します。";
+"IMPORT FROM PHOTO" = "写真を撮る";
+"ADDED" = "お問い合わせ";
+"NEEDS REVIEW" = "NEEDSレビュー";
+"NOT IN YOUR LIBRARY" = "あなたの図書館にない";
+"Looks like %@" = "%@ のように見える";
+"Use %@" = "%@の使用";
+"Choose" = "お問い合わせ";
+"Save as custom" = "カスタムとして保存";
+"Not in your library" = "ライブラリにない";
+"Save “%@” as custom" = "カスタムとして「%@」を保存";
+"Select at least one" = "少なくとも1つを選択";
+"Add %lld to routine" = "%lldをトレーニングプランに追加";
+"Uncheck anything you don't want. Dashed rows are our best guess — tap replace to swap." = "何もチェックしないようにします。 ダッシュされた行は最高の推測です。 交換をタップしてスワップします。";
+"Recognized “%@”" = "「%@」を認識";
+"%lld reps" = "%lld担当者";
+"3 sets · default" = "3セット・デフォルト";
+"%@ / %@, auto-renews until cancelled. Cancel anytime in Settings." = "%@ / %@, キャンセルするまで自動更新. いつでもキャンセル 設定.";
+"Free for 7 days, then %@ / %@, auto-renews until cancelled. Cancel anytime in Settings." = "7日間無料、%@ / %@、キャンセルされるまで自動更新。設定でいつでもキャンセル。";
+"Auto-renewing subscription. Cancel anytime in Settings." = "サブスクリプションの自動更新。設定でいつでもキャンセル。";
+"Best value" = "ベストバリュー";
+"No routines yet" = "トレーニングプランはまだありません";
+"Add AI routines" = "AIトレーニングプランの追加";
+"No saved routines yet" = "まだ保存されていないトレーニングプラン";
+"Generate one with AI or browse Classics below, then tap Save." = "AI で 1 つを生成するか、下の Classics を参照するか、[保存] をタップします。";
+"No Classics match these filters." = "クラシックはこれらのフィルタにマッチしません。";
+"No routines match these filters yet." = "トレーニングプランはこれらのフィルタにマッチしません。";
+"Tailoring your AI routines…" = "あなたのAIトレーニングプランを調整する...";
+"Pick the equipment your gym has — AI and recommended routines will only use moves you can actually do. Leave empty for no restriction (bodyweight is always available)." = "ジムが持っている機器を選ぶ — AI と推奨されるトレーニングプランは、実際にできる移動のみを使用します。制限なしの空のまま (体重は常に利用できます)。";
+"Clear — use all equipment" = "クリア — すべての機器を使用する";
+"%@ %@ per side" = "側面ごとの%@ %@";
+"Achievable: %@ %@  (off by %@)" = "Achievable: %@ %@ (%@による)";
+"%lld picked" = "%lldピックアップ";
+"+%lld more" = "+%lld 以上";
+"Save as plan?" = "トレーニングプランとして保存?";
+"Don't Save" = "保存しない";
+"Keep this workout as a reusable routine." = "再利用可能なトレーニングプランとして、このトレーニングを保ちます。";
+"Apple Health" = "Apple Healthの特長";
+"Save workouts to Apple Health" = "Apple Healthにワークアウトを保存";
+"Masso saves your completed workouts to Apple Health, so they appear in your Activity rings and the Health app. On Apple Watch, Masso reads heart rate and active energy during a workout." = "MassoはApple Healthに完成したワークアウトを保存しますので、それらはあなたの活動リングと健康アプリに表示されます。 Apple Watchでは、Massoは、ワークアウト中に心拍数とアクティブなエネルギーを読みます。";
+"Exercise data" = "練習データ";
+"Sync params across routines" = "トレーニングプラン全体でエクササイズの設定を同期";
+"Creating your AI plan" = "AIトレーニングプランの作成";
+"Your plan is ready" = "あなたのトレーニングプランは準備ができています";
+"Personalized from your answers" = "回答からパーソナライズ";
+"Reading your profile" = "あなたのプロフィールを読む";
+"Picking exercises for your goals" = "あなたの目標のための練習を選ぶ";
+"Balancing your weekly plan" = "あなたの週のトレーニングプランのバランスをとる";
+"Off by default: each routine keeps its own sets, reps, weight, and rest, so heavy and light days stay independent. Turn on to apply a change to an exercise everywhere it appears." = "デフォルトでオフ:各トレーニングプランは、独自のセット、担当者、体重、残りを保ちます。したがって、重くて軽い日は独立しています。 オンにすると、どこにでも運動に変化を加えることができます。";
+"Optional — leave all off for a balanced routine." = "オプション — バランスの取れたトレーニングプランをすべて残します。";
+"Level" = "レベル";
+"Days/week" = "日/週";
+"All levels" = "すべてのレベル";
+"Any frequency" = "任意の頻度";
+"Continue (%lld)" = "続行 (%lld)";
+"Start (%lld)" = "開始(%lld)";
+"Exercise photos" = "エクササイズ写真";
+"Credits" = "クレジット";
+"Exercise photos via Pexels." = "Pexelsでエクササイズ写真。";
+"Pexels License" = "Pexelsライセンス";
+"From library" = "ライブラリから";
+"Search the web" = "ウェブ検索";
+"Find a photo" = "写真を見る";
+"Photos via Pexels. Pick the one that matches your move." = "Pexels経由で写真。あなたの移動に一致するものを選ぶ。";
+"Type a name and search the web." = "名前を入力し、Webを検索します。";
+"No photos found. Try a different name." = "写真が見つかりません。 別の名前をお試しください。";
+"Search exercise photos" = "練習写真を検索";
+"Playlist drawer drag handle" = "プレイリスト引き出しドラッグハンドル";
+"Drag up to expand, down to collapse. Tap to toggle." = "ドラッグして拡大、ダウンして崩壊します。 タップトグル。";
+"Collapse calendar" = "崩壊カレンダー";
+"Set removed" = "削除されたセット";
+"Changes update this exercise across all your routines." = "すべてのトレーニングプランでこのエクササイズを更新します。";
+"Undo last set" = "Undo 最後のセット";
+"Full Body A · Push / Quads / Pull (Upper)" = "フルボディA・プッシュ/クワッド/プル(アップパー)";
+"Full Body B · Push / Hamstrings / Pull (Lower)" = "フルボディB・プッシュ・ハムスト・プル(ローワー)";
+"Full Body C · Push / Glutes / Pull (Mid)" = "フルボディC・プッシュ/グルット/プル(マイド)";
+"Day A · Chest + Triceps" = "A日目・チェスト+トリセプ";
+"Day B · Back + Biceps" = "デイB・バック+ビプス";
+"Day C · Legs + Glutes" = "C日目・脚+グルット";
+"Day D · Shoulders + Traps" = "デイD・ショルダー+トラップ";
+"Day E · Arms + Core" = "日 E・腕 + コア";
+"Push A · Heavy" = "プッシュA・ヘビー";
+"Pull A · Heavy" = "引き A・ヘビー";
+"Legs A · Quads" = "足 A・クワッド";
+"Push B · Volume" = "プッシュB・ボリューム";
+"Pull B · Volume" = "プルB・ボリューム";
+"Legs B · Hamstrings / Glutes" = "脚 B・ハムストリング/グルテ";
+"Finish a workout to see which muscles need recovery." = "筋肉が回復を必要とするかを見るために運動を終えて下さい。";
+"Last: %@ × %d (%@)" = "最後:%@×%d(%@)";
+"Follow iPhone language (%@)" = "iPhoneの言語に従う(%@)";
+"This week vs last" = "今週の対前";
+"so far" = "ここまで";
+"NEW" = "ニュース";
+"Muscle balance" = "筋肉バランス";
+"Training activity" = "トレーニング活動";
+"Last 16 weeks" = "最後 16 週間";
+"Less" = "キャンセル";
+"More" = "ニュース";
+"Activity" = "活動内容";
+"Insights" = "インサイト";
+"Training insights" = "トレーニングインサイト";
+"Trends" = "トレンド";
+"Long-press a card to reorder" = "再注文するカードを長押し";
+"Unlock deep insights with Pro" = "Proで深いインサイトをロック解除";
+"Strength by lift" = "上昇による強さ";
+"Estimated 1RM over time" = "所要時間1RM";
+"Lift" = "リフトアップ";
+"Trend" = "トレンド";
+"Distribution" = "コンテンツ";
+"Set weights · last 4 weeks" = "体重設定・最終4週間";
+"No weighted sets in the last 4 weeks" = "過去4週間の重み付きセットなし";
+"Sets vs targets" = "対のターゲットを設定する";
+"Weekly hard sets per muscle" = "週1回のハードセット";
+"MEV" = "メニュー";
+"MAV" = "メニュー";
+"Volume by muscle" = "筋肉によるボリューム";
+"Weekly %@ per muscle" = "筋肉ごとの週刊%@";
+"Training frequency" = "トレーニング頻度";
+"Days per week per muscle" = "週あたりの筋肉";
+"PR timeline" = "PRタイムライン";
+"Your personal records" = "あなたの個人的な記録";
+"Consistency & load" = "一貫性と負荷";
+"All-time" = "オールタイム";
+"Adherence" = "カンファレンス";
+"Total lifted" = "総持ち上がること";
+"Unlock per-muscle recovery with Pro" = "プロで筋肉の回復をアンロック";
+"Stats" = "統計情報";
+"This week" = "今週";
+"Last week" = "最終週";
+"Keep training — your stats and trends show up here." = "トレーニングを続けましょう。あなたのステータスとトレンドがここに表示されます。";
+"Describe a change… e.g. make it harder" = "変更を記述する...例えば、それを困難にする";
+"Tell the AI a preference or change in plain words — e.g. 'bad shoulder, no overhead'. It remembers." = "「悪い肩、頭上なし」など、AIは言葉を好みにしたり、普通の単語に変更したりします。";
+"Tell your AI coach" = "あなたのAIコーチに教えてください";
+"Write anything you want your routines to consider, in plain words — injuries, likes and dislikes, schedule, goals. The AI reads it every time it builds your plan." = "あなたのトレーニングプランが考慮したいものを書きます, 明白な言葉で — 怪我, 好き嫌い, スケジュール, 目標. 人工知能は、あなたの計画を構築するたびにそれを読みます.";
+"I can't watch the video yet — paste the key moves or the plan from it and I'll work it in." = "私はまだビデオを見ることができません - キーの動きやそれから計画を貼り付けて、私はそれで動作します。";
+"Tuned for: %@" = "のために調整される: %@";
+"Focus: %@" = "焦点: %@";
+"Send" = "お問い合わせ";
+"OPTIMIZE" = "オプション";
+"Optimize with AI" = "AIで最適化";
+"%@ are undertrained" = "%@は禁忌です";
+"You've done far fewer %@ sets than your top muscle group over the last 3 weeks." = "過去3週間にトップの筋肉群よりもはるかに少ない%@セットを実行しました。";
+"%@ has stalled" = "%@はstalled";
+"Your estimated 1RM on %@ hasn't moved over your last few sessions." = "%@の推定1RMは、最後のセッションで移動しません。";
+"Your main lift" = "あなたの主要な上昇";
+"Fewer sessions lately" = "深層セッション";
+"You're averaging about %d sessions a week, below your %d-day goal." = "%d-dayの目標の下、%dセッションを週に平均しています。";
+"AI Coach Summary" = "AI Coachの概要";
+"Keep logging — your AI summary unlocks after about 2 weeks of training." = "あなたのAIの要約は、約2週間のトレーニング後にロックを解除します。";
+"Unlock your AI coach summary with Pro" = "ProでAIコーチの要約を解除";
+"AI summary unavailable — Retry" = "AIの要約が利用できなくなった — 再試行";
+"As of %@ · based on the last 14 days" = "%@のよう・最終14日間";
+"Apply to routine" = "トレーニングプランに適用";
+"Add to notes" = "メモに追加";
+"Saved to your coaching notes" = "コーチングノートに保存";
+"Keep logging your sessions — your coach summary sharpens with more data." = "セッションをログアウトし続ける — コーチの要約は、より多くのデータで鋭くなります。";
+"Rebalance your weekly volume" = "週単位の残高を回復";
+"Personalized set-by-set guidance from your data." = "データを個別に設定したガイダンス。";
+"Break your main-lift plateau" = "メインリフト高原を破る";
+"Concrete progression tailored to your recent sessions." = "最近のセッションに合わせた具体的な進行。";
+"My Insights" = "私の洞察";
+"My AI Summary" = "私のAIの概要";
+"Training Insights" = "トレーニングインサイト";
+"My Progress" = "私の進歩";
+"Share my progress" = "進捗状況を把握";
+"vs last week" = "先週の対比";
+"Volume this week" = "今週のボリューム";
+"%@ e1RM" = "%@のe1RM";
+"Consistency" = "コンサルティング";
+"Last 8 weeks" = "最後の 8 週間";
+"Share Insights" = "シェア・インサイト";
+"Share History" = "株式履歴";
+"AI coach quote" = "AIコーチの引用";
+"Tune with AI" = "AIでチューニング";
+"Your history" = "あなたの歴史";
+"Best e1RM %@" = "ベストe1RM %@";
+"Just now: %@" = "ただ今: %@";
+"Adjust last set" = "最後のセットを調節して下さい";
+"Fix what you actually did — this only rewrites the set you just logged, not your plan." = "実際に何をしたかを修正 — これは、ログオンしたセットを、あなたのプランではなく書き換えるだけです。";
+"Set logged" = "記録されたセット";
+"Undo" = "ログイン";
+"Keep screen awake during workouts" = "ワークアウト中に画面を目覚めさせる";
+"While a workout is running, the screen won't auto-lock — your timer and next set stay visible at the rack." = "ワークアウトが実行されている間、画面は自動ロックされません。タイマーと次のセットはラックで表示します。";
+"Finish & end" = "完了して終了";
+"Discard workout" = "ワークアウトを破棄";
+"Finish & end keeps this as a completed workout with your stats. Discard closes it without a summary." = "フィニッシュ&エンドは、あなたの統計との完全なトレーニングとしてこれを維持します。 要約なしでそれを閉じます。";
+"Added %lld workout days" = "%lldのワークアウト日を追加";
+"%lld training days" = "%lldの訓練日";
+"Includes %lld training days — Save adds all of them" = "%lldのトレーニング日が含まれています - 保存はそれらすべてを追加します";
+"Volume %@" = "ボリューム %@";
+"Coach" = "コーチング";
+"SAVED · %lld" = "SAVED・%lld";
+"Saved routines will appear here." = "保存されたトレーニングプランはここに表示されます。";
+"~%lld min" = "～%lld分";
+"DAY %lld" = "日 %lld";
+"Hey! Tell me how you want to train — I'll build your weekly routines." = "こんにちは! 訓練したい方法を教えてください。毎週のトレーニングプランを構築します。";
+"COACH SUGGESTION" = "コー チの課題";
+"Usually takes 30–60 seconds" = "通常30〜60秒かかります";
+"Tell me how you want to train…" = "訓練したい方法を教えてください。";
+"New conversation" = "新しい会話";
+"Start a new conversation?" = "新しい会話を始める?";
+"This clears the current chat. Saved routines are kept." = "これは現在のチャットをクリアします。 保存されたトレーニングプランが保存されます。";
+"Swap %@: " = "スワップ %@:";
+"Training in progress — keep tuning after your session." = "進行中のトレーニング — セッション後に調整してください。";
+"Try a starting point" = "スタートポイントを試す";
+"Choose a scenario, then edit the draft before sending." = "シナリオを選択し、送信前にドラフトを編集します。";
+"I want to focus on…" = "私は焦点を合わせたい...";
+"I only have 30 minutes" = "30分しかかかりません";
+"I train at home" = "自宅で電車";
+"I’m getting back into training" = "トレーニングに戻る";
+"I want to look like this" = "こんな感じにしたい";
+"Current photo" = "現在の写真";
+"Goal reference" = "ゴール参照";
+"Change photo" = "写真の変更";
+"Avoid faces. Photos can’t measure health, strength or body fat." = "顔を避けてください。 写真は健康、強度、または体脂肪を測定することはできません。";
+"Choose a photo from your library or camera" = "ライブラリやカメラから写真を選ぶ";
+"I want to focus more on [shoulders and back]. Adjust my routines around that while keeping my training balanced." = "「肩と背中」を重点的に鍛えたいです。全身のバランスを保ちながら、トレーニングプランを調整してください。";
+"I have [30] minutes per workout. Shorten my routines to fit while keeping the main training focus." = "1回のトレーニングに使える時間は「30」分です。主な目的を保ちながら、時間内に収まるようプランを短縮してください。";
+"I train at home with [dumbbells and bands]. Adapt my routines to the equipment I have." = "自宅で「ダンベルとトレーニングバンド」を使っています。手持ちの器具に合わせてプランを調整してください。";
+"I’m returning after [a month away]. Ease my routines back in with balanced, gradual training." = "「1か月」休んでからトレーニングを再開します。バランスを保ち、徐々に負荷を戻せるプランにしてください。";
+"Compare my current photo with this goal reference. Suggest balanced training emphases based on visible muscle development, then adjust my routines. Keep the advice realistic; don’t estimate body fat or a timeline." = "この目標参照で私の現在の写真を比較します。 バランスの取れたトレーニングは、目に見える筋肉の開発に基づいて、私のトレーニングプランを調整します。 アドバイスを現実的に保ちます。 体脂肪やタイムラインを推定しないでください。";
+"FROM WEEKLY SUMMARY" = "週刊から";
+"FROM OPTIMIZE" = "オプション";
+"Prompt templates" = "プロンプトテンプレート";
+"Next blank" = "次の空白";
+"FOCUS" = "ファクサス";
+"SWAP" = "スワッピング";
+"TIME & STRUCTURE" = "時間と戦略";
+"INTENSITY" = "インテンシティ";
+"Train [muscle] more and [muscle] less" = "列車 [筋肉] 多くと [筋肉] 少ない";
+"Put extra focus on my [upper chest / rear delts]" = "[upper 胸/リア デルツ] に余分な焦点を合わせます";
+"Add more volume for my [weak spot]" = "[弱点] のボリュームを追加";
+"Swap out [exercise] because [reason]" = "[理由]をスワプアウト [実行]";
+"My [body part] hurts — avoid [movement type]" = "私の [身体部分] 痛む — [移動タイプ] を避けます";
+"Use more [dumbbells / cables] and less [barbell / machines]" = "[ダンベル/ケーブル] と [バーベル/マシン] が少ない";
+"Keep each session under [45] minutes" = "各セッションを [45] 分以内に保つ";
+"Make it [4] days a week, split by [push/pull/legs]" = "[push/pull/legs] で区切って、週に [4] 日を作る";
+"Only change Day [1] — keep the rest as is" = "1日目のみ変更します。";
+"I'm [worn out / not recovering] — dial the intensity down" = "[worn out / 回復しない] — 強度を下げる";
+"Make it [4] sets of [6-8] reps per exercise" = "[6〜8] 練習あたりの担当者のセットを作る";
+"I'm in a [cutting / bulking] phase — tune for that" = "私は [切断/増量] フェーズにある — そのためにチューン";
+"Add your own exercise" = "自分のエクササイズを追加";
+"Add “%@” as your own" = "「%@」を自分で追加";
+"Build my week — full body, about 45 minutes a day" = "週をビルド — フルボディ、約 45 分";
+"Update routines?" = "トレーニングプランの更新?";
+"Update routines" = "定期的な更新";
+"Save only" = "保存のみ";
+"Save these training preferences and regenerate your routines to match?" = "これらのトレーニングの好みを保存し、トレーニングプランを再生して一致させますか?";
+"Share routines" = "トレーニングプランを共有";
+"Share (%lld)" = "共有(%lld)";
+"Import routines" = "トレーニングプランを読み込む";
+"Add (%lld)" = "追加 (%lld)";
+"Ready to train" = "訓練する準備";
+"Almost ready" = "ほとんど準備が整いました";
+"Workouts total" = "ワークアウト合計";
+"Workout total" = "ワークアウト合計";
+"Days trained" = "訓練された日";
+"Try %@ (+%@)" = "%@ (+%@) を試して下さい";
+"Drop to %@" = "%@にドロップ";
+"Already up to date" = "すでに最新";
+"Smart progression" = "スマートな進歩";
+"Earn the next 2.5 kg — weight suggestions from your logged sets." = "次の 2.5 kg を獲得します。 – 記録されたセットからの重量の提案.";
+"Secure checkout on the web via Polar. %@ / %@, renews until cancelled — manage or cancel anytime on the Polar page." = "ポーラ経由でWeb上での安全なチェックアウト。 %@ / %@は、キャンセルされるまで再更新し、極上のページでいつでも管理またはキャンセルします。";
+"Enter code" = "コードを入力してください";
+"Enter your activation code" = "アクティベーションコードを入力してください";
+"After buying on the web, your code was emailed to you (and shown on the confirmation page). Paste it here to unlock Pro on this device." = "ウェブで購入した後、あなたのコードはあなたに電子メールで送信されました(そして確認ページに表示されます)。 このデバイスでProのロックを解除するためにここに貼り付けます。";
+"Activate" = "アクティブ";
+"That code isn't active yet. Double-check it, or try again in a moment." = "そのコードはまだアクティブではありません。 それをダブルチェックするか、一度にもう一度お試しください。";
+"Couldn't verify — check your connection and try again." = "確認できません — 接続を確認し、もう一度お試しください。";
+"You're Pro now — thanks for supporting Masso." = "Massoをサポートしていただきありがとうございます。";
+"That code isn't active yet. Check the email from your purchase, or try again in a moment." = "そのコードはまだアクティブではありません。 購入からメールをチェックするか、一度にもう一度お試しください。";
+"Couldn't verify your code — check your connection and try again." = "コードを検証できません。接続を確認してもう一度お試しください。";
+"ACTIVE" = "アクション";
+"Thanks for supporting Masso. Manage or cancel on the Polar page." = "Massoをサポートしていただきありがとうございます。  Polarページを管理またはキャンセルします。";
+"Scan to get this routine" = "スキャンして同じワークアウトプランを入手";
+"%lld days a week" = "%lld 曜日";
+"YOUR TRAINING" = "あなたのトレーニング";
+"Adjust preferences" = "設定を調整する";
+"View routines" = "トレーニングプランを見る";
+"Adjust your routine" = "あなたのトレーニングプランを調整する";
+"Body front" = "正面";
+"Body back" = "背面";
+"Notes for your AI coach" = "AIコーチのメモ";
+"AI coach memory description" = "あなたのAIコーチは、トレーニングプランを作成するたびに、これらのメモを読みます。";
+"Coach memory examples" = "例えば、過去の怪我、避け、機器、スケジュール、または目標に移動...";
+"Saved here for good — your AI coach reads it every time it builds a routine. Write anything in plain words: past injuries, medical conditions, moves to avoid, equipment quirks, schedule, goals." = "あなたのAIのコーチは、トレーニングプランを構築するたびにそれを読んで、ここに保存しました。 過去の怪我、医学的条件、避けるために動き、機器の質問、スケジュール、目標を書いてください。";
+"Replace all" = "すべての置換";
+"Save to My Routines" = "マイプランに保存";
+"Replace all routines" = "すべてのトレーニングプランを置き換える";
+"Add to existing routines" = "既存のトレーニングプランに追加";
+"Choose whether to replace your %lld saved routines or add these %lld routines alongside them." = "保存済みの%lld件を置き換えるか、新しい%lld件を追加するか選択してください。";
+"Replace your routines?" = "あなたのトレーニングプランを交換しますか?";
+"Your %lld saved routines will be deleted and replaced with these %lld." = "%lld保存トレーニングプランは削除され、これらの%lldに置き換えられます。";
+"Masso Pro" = "Massoプロ";
+"Unlimited routines, unlimited AI coach, deep analytics." = "無制限のトレーニングプラン、無制限のAIコーチ、深い分析。";
+"Built-in" = "作り付け";
+"AI coach" = "AIコーチ";
+"Test connection" = "テスト接続";
+"Primary route" = "プライマー";
+"Backup route" = "バックアップ";
+"Not configured" = "設定されていない";
+"No internet" = "インターネットなし";
+"Timed out" = "タイムアウト";
+"DNS blocked" = "DNSブロック";
+"Connection blocked" = "接続ブロック";
+"TLS blocked" = "TLSブロック";
+"Unreachable" = "到達不能";
+"The AI coach is reachable from this device." = "このデバイスからAIコーチが届きます。";
+"The AI coach can't be reached on this network. Try mobile data instead of Wi-Fi (or the other way round); if you use a VPN or proxy, switch it on or off and test again." = "このネットワークではAIのコーチが到達できません。Wi-Fi(または他の方法のラウンド)の代わりにモバイルデータを試してみてください。VPNやプロキシを使用する場合は、それをオンまたはオフにし、再度テストします。";
+"Edit exercise" = "運動の編集";
+"Built from" = "から構築";
+"Bodyweight only" = "体重のみ";
+"%@ only" = "%@のみ";
+"Under %d min" = "%d分";
+"No %@" = "%@無し";
+"More %@" = "その他の%@";
+"Your data" = "あなたのデータ";
+"Export my data" = "データのエクスポート";
+"A JSON backup of everything plus a CSV of every set you've logged — open it in Numbers, Excel, or any other app. Your data is yours; you can take it and go." = "すべてのJSONバックアップと、あなたが記録したすべてのセットのCSV - 番号、Excel、またはその他のアプリで開く。 あなたのデータは、あなたのものです。 あなたはそれを取ると行くことができます。";
+"Export failed" = "輸出失敗";
+"Share anonymous usage data" = "匿名利用データの共有";
+"Sends anonymous counts like \"a routine was generated\" or \"onboarding finished\" so I can see which parts of the app work. Never your workouts, weights, notes, or anything you typed. No account, no ads, no third-party ad networks. Turn it off and nothing is sent at all." = "「トレーニングプランが生成された」や「オンボーディング終了」などの匿名カウントを送信します。そのため、アプリのどの部分が機能するかを確認することができます。あなたのワークアウト、体重、メモ、または入力されたものはありません。アカウント、広告なし、サードパーティの広告ネットワークはありません。それをオフにし、何もまったく送信されません。";
+"Adjust your routines with your coach" = "あなたのコーチであなたのトレーニングプランを調整する";
+"Show earlier workouts (%lld)" = "初期のワークアウト(%lld)を表示";
+"Start today's workout" = "今日のワークアウトを開始";
+"AI Coach" = "AIコーチ";
+"More training settings" = "その他のトレーニング設定";
+"Classic Routines" = "定番のトレーニングプラン";
+"Explore Routines" = "トレーニングプランを探索";
+"Find a classic plan and make it yours." = "クラシックなプランを見つけて、それをあなたのものにしましょう。";
+"Create a routine" = "トレーニングプランを作成";
+"Plan your exercises before you train" = "トレーニングの前に練習を計画する";
+"Start custom workout" = "カスタムワークアウトを開始する";
+"Add exercises as you go" = "あなたが行くように運動を追加";
+"Choose your first exercise" = "あなたの最初の演習を選択してください";
+"What would you like to train next?" = "次へ電車に乗るには?";
+"End this workout" = "このトレーニングを終了";
+"Add next exercise" = "次の演習を追加します。";
+"Minimize workout" = "ワークアウトの最小化";
+"Workout complete" = "ワークアウト完了";
+"Save as a routine" = "トレーニングプランとして保存";
+"Set up exercise" = "運動のセットアップ";
+"AI suggestion" = "AI提案";
+"Drag sideways to rotate. Tap for recovery details." = "サイドウェイをドラッグして回転します。 回復の詳細をタップします。";
+"Tap to view muscle recovery" = "タップして筋肉の回復を見る";
+"3D muscle model" = "3D筋肉モデル";
+"Model adapted for Masso: mirrored muscle groups, smoother surfaces, adjusted proportions and fatigue colors." = "Massoのために合わせられるモデル:映された筋肉グループ、より滑らかな表面、調節された比率および疲労色。";
+"Drag sideways to rotate" = "横方向をドラッグして回転";
+"3D model unavailable" = "3Dモデル対応不可";
+"Start your first workout" = "最初のトレーニングを開始する";
+"Your training journey starts here." = "トレーニングの旅が始まります";
+"Your workout is in progress." = "あなたのトレーニングは進行中です";
+"Rest up" = "バックアップ";
+"You’ve trained today." = "今日のトレーニング";
+"Plan your next session" = "次のセッションを計画する";
+"You last trained yesterday." = "昨日の最終列車";
+"Make time to train" = "トレーニングの時間を作ろう";
+"It’s been %lld days since your last workout." = "最後のワークアウト以来、それは%lld日です";
+"Ease back in" = "再入荷";
+"Your training summary" = "トレーニングの要約";
+"Let's plan your training" = "トレーニングを計画しましょう";
+"Previous suggestion" = "前の提案";
+"Next suggestion" = "次の提案";
+"Suggestion %lld of %lld" = "%lldの提案%lld";
+"Updating suggestions…" = "提案の更新...";
+"Suggestion removed" = "提案削除";
+"Dismiss suggestion" = "免責事項";
+"Sent to chat" = "チャットへの送信";
+"Applied" = "応用分野";
+"View Pro" = "Proを見る";
+"Collapse history" = "崩壊履歴";
+"Expand history (%lld)" = "拡張履歴(%lld)";
+"Ready" = "レディー";
+"Routine options" = "トレーニングプランオプション";
+"Couldn’t prepare share" = "シェアを準備できません";
+"Please try again." = "お問い合わせ";
+"Training photo" = "トレーニング写真";
+"Send to analyze with AI and suggest routine changes." = "AIで分析し、定期的な変更を提案します。";
+"A photo can't measure strength or recovery." = "強度や回復を測定することはできません。";
+"Remove photo" = "写真の削除";
+"Photo Library" = "フォトライブラリー";
+"Camera unavailable" = "カメラ使用不可";
+"Allow camera access in Settings, or choose a photo from your library." = "設定でカメラアクセスを許可するか、ライブラリから写真を選択します。";
+"Couldn't prepare this photo" = "この写真は準備できません";
+"Please choose another photo." = "別の写真を選択してください。";
+"Review my training photo and suggest routine changes." = "トレーニングの写真を確認し、定期的な変更を提案します。";
+"Couldn't analyze this photo. Your routines are unchanged. Please try again." = "この写真は分析できません。トレーニングプランは変更されません。もう一度お試しください。";
+"Time range" = "時間範囲";
+"4 weeks" = "4週間";
+"12 weeks" = "12 週間";
+"6 months" = "6ヶ月";
+"1 year" = "1 年";
+"All time" = "すべての時間";
+"%d training days · %@" = "%d研修日・%@";
+"Lift progress" = "リフト進行状況";
+"%d improved" = "%dの改善";
+"1 lift improved" = "1 上昇の改善";
+"%d lifts improved" = "%dリフトアップ";
+"Your progress starts here" = "進行状況はこちら";
+"Your lifts at a glance" = "あなたのリフトは一目で";
+"Earlier → latest comparable records" = "イヤーラ → 最新の比較記録";
+"Log your workouts to see changes in weight and reps." = "ワークアウトをログに記録して、体重と担当者の変化を確認します。";
+"All exercises" = "すべての練習";
+"Muscles trained" = "鍛えた筋肉";
+"This week · recorded sets" = "今週・録画セット";
+"Primary muscles only · not a growth score" = "第一次筋肉だけ・成長スコアではなく";
+"Some exercises have no muscle mapping and are excluded." = "いくつかの演習には筋肉のマッピングがなく、除外されています。";
+"Training rhythm" = "トレーニングリズム";
+"training days this week" = "今週のトレーニング日";
+"%d training days in the last %d weeks" = "最後の%d週の%dの訓練日";
+"Trained" = "トレーニング";
+"Upcoming" = "アップカム";
+"No recorded workout" = "記録されたワークアウト無し";
+"Compared within the same exercise. Each day uses its best matching set. Chart scales differ between exercises." = "同じ演習内で比較。毎日最高のマッチングセットを使用しています。チャートのスケールは演習と異なる。";
+"More matching sessions are needed to show a trend." = "トレンドを表示するには、より多くのマッチングセッションが必要です。";
+"Strength changes do not measure muscle growth." = "筋力の変化は筋肉の成長を測定しません。";
+"Recorded sets" = "記録されたセット";
+"A recorded set counts once for each primary muscle group. Secondary muscles are excluded. These are logged sets, not measured effective sets or muscle growth." = "記録されたセットは各第一次筋肉グループのために一度カウントします。二次筋肉は除外されます。これらは記録されたセット、測定された有効なセットまたは筋肉成長ではないです。";
+"%d → %d reps" = "%d → %d 応答";
+"New" = "ニュース";
+"Unchanged" = "変更なし";
+"Weight for %d reps" = "%dの応答のための重量";
+"Reps at %@" = "%@ の出力";
+"Bodyweight reps" = "体重の担当者";
+"Latest recorded set" = "最新の録画セット";
+"Baseline" = "ベースライン";
+"Show fewer" = "少ないショー";
+"Show all %d exercises" = "すべての%dの演習を表示する";
+"Describe what happened and what you expected…" = "何が起こったのかを説明し、何を期待したのかを説明してください。";
+"Thanks for reporting this. Your report has been sent to our team and will help us improve Masso." = "このレポートを報告していただきありがとうございます。 あなたのレポートは、私たちのチームに送信され、Massoを改善するのに役立ちます。";
+"Thanks for reporting this. I saved your report on this device and will retry sending it when a connection is available." = "報告をありがとう。このデバイスでレポートを保存し、接続が利用可能になったときにそれをやり直します。";
+"Diet" = "食事";
+"What to eat today" = "今日食べるもの";
+"Diet preferences" = "ダイエットの好み";
+"Add your weight for portion guidance" = "部分の指導のためのあなたの重量を加えて下さい";
+"Approximate portions. Cooked weights except dry oats, packaged yogurt/tofu and fruit. Add cooking oil to taste." = "おおよその部分。 ドライオート麦、パッケージヨーグルト/豆腐、フルーツを除く煮込み重量。 味に料理油を追加します。";
+"Swap protein foods for similar protein, starches for similar carbs. Other nutrients may differ." = "同様のタンパク質、類似の炭水化物の澱粉のためのタンパク質食品をスワップします。他の栄養素は異なる場合があります。";
+"Portions are approximate; calories and other nutrients may differ." = "ポーションは目安です。カロリーや栄養素は異なります。";
+"Swap food" = "スワップフード";
+"Breakfast" = "朝食";
+"Lunch" = "ランチ";
+"Dinner" = "ディナー";
+"Snack" = "スナック";
+"Chicken breast" = "鶏の母乳";
+"Lean beef" = "リーンビーフ";
+"Firm tofu" = "ファーム豆腐";
+"Eggs" = "エッグ";
+"Plain Greek yogurt" = "平野ギリシャヨーグルト";
+"Rice" = "ライス";
+"Potatoes" = "ポテト";
+"Oats" = "オアツ";
+"Broccoli" = "ブロッコリー";
+"Leafy greens" = "葉の緑";
+"Tomatoes" = "トマト";
+"Blueberries" = "ブルーベリー";
+"Meals per day" = "1日あたりの食事";
+"3 meals" = "3食付き";
+"3 meals + snack" = "3食+スナック";
+"Plant-based" = "プラントベース";
+"Uses your existing training goal and body information." = "既存のトレーニング目標と身体情報を使用します。";
+"Allergies" = "アレルギー";
+"Milk" = "ミルク";
+"Egg" = "ツイート";
+"Soy" = "ソイ";
+"Foods to avoid" = "食品を避けるため";
+"Keep at least one protein, starch and fruit or vegetable option." = "少なくとも 1 つの蛋白質、澱粉およびフルーツまたは野菜の選択を保って下さい。";
+"Protein" = "たんぱく質";
+"Diet protein progress" = "%1$dg/%2$dg蛋白質";
+"Carbs" = "炭水化物";
+"Fat" = "ファット";
+"g / day" = "g / 日";
+"Supports muscle recovery" = "筋肉回復をサポート";
+"Fuels your training" = "トレーニングの燃料";
+"Supports daily nutrition" = "毎日の栄養をサポート";
+"Estimated daily targets. Adjust portions to your appetite and training needs." = "毎日のターゲットを推定します。あなたの食欲とトレーニングのニーズに部分を調整します。";
+"%d/%d lifts improving" = "%d/%dの上昇の改善";
+"reps" = "回数";
+"sets" = "セット";
+"%d training days" = "%dの訓練の日";
+"4 weeks · training volume" = "4週間・研修量";
+"Features" = "特徴:";
+"Bedtime reminder" = "ベッドタイムリマインダー";
+"Last night's score" = "最終日のスコア";
+"Tonight's goal" = "夜の目標";
+"Notifications are off" = "通知はオフです";
+"Open Settings" = "設定を開く";
+"Allow Masso notifications in Settings to receive bedtime reminders." = "Masso通知をSettingsで許可して、ベッドタイムリマインダーを受け取ることができます。";
+"Record your first meal today" = "今日の最初の食事を記録";
+"Set your body weight" = "あなたの体重を設定します";
+"Get your daily nutrition targets" = "毎日の栄養目標をゲット";
+"%lld / %lld meals recorded" = "%lld/%lldの食事記録";
+"Last night" = "昨夜";
+"Insights category" = "インサイトカテゴリ";
+"No meal records in this period" = "この期間のお食事記録なし";
+"No sleep records in this period" = "この期間の睡眠記録なし";
+"Confirm meal photos to see nutrition trends." = "食事の写真を確認し、栄養の傾向を確認します。";
+"Connect Apple Health to see your sleep trends." = "Apple Healthを接続して、眠りの傾向を確認します。";
+"Open Diet" = "オープンダイエット";
+"Open Sleep" = "オープン睡眠";
+"Recorded nutrition" = "記録された栄養";
+"Daily average · logged days only" = "日平均・記録日のみ";
+"%lld / %lld days fully logged" = "%lld/%lld 日は十分に記録しました";
+"Protein intake" = "蛋白質の取入口";
+"Yellow: recorded protein · diamond: daily target" = "黄色:記録された蛋白質/ダイヤモンド:毎日のターゲット";
+"Partial meals count as recorded intake, not a complete day's total." = "一日の合計ではなく、記録された取入口として部分的な食事カウント。";
+"Average sleep" = "平均睡眠";
+"%lld nights recorded" = "%lld 夜記録";
+"Sleep duration" = "睡眠時間";
+"Blue: recorded sleep · diamond: nightly target" = "青:記録された眠り・ダイヤモンド:夜間ターゲット";
+"Complete days with saved nutrition targets" = "保存された栄養ターゲットとの完全な日";
+"Nights with saved sleep targets" = "保存された睡眠ターゲットを持つ夜";
+"Protein · %lld / %lld g" = "蛋白質 · %lld/%lld g";
+"Last night · %@" = "最終夜・%@";
+"Saved to My Routines" = "私のトレーニングプランに保存";
+"Sleep target" = "睡眠ターゲット";
+"Sleep preferences" = "睡眠の好み";
+"Total sleep · each night" = "総眠り・各夜";
+"Sleep supports recovery. Adults generally need at least 7 hours." = "睡眠は回復を支えます。大人は一般に少なくとも7時間を必要とします。";
+"Total sleep" = "総睡眠";
+"Nightly target" = "夜間目標";
+"Deep sleep" = "深い眠り";
+"REM sleep" = "REM 睡眠";
+"Your device hasn't provided sleep stages." = "デバイスは睡眠ステージを提供していません。";
+"Your usual sleep stages" = "あなたの通常の睡眠段階";
+"Based on at least 7 recorded nights in the previous 14 days. A personal reference, not a pass/fail target." = "過去14日間の少なくとも7の記録された夜に基づいて。 個人的な参照、パス/失敗のターゲットではありません。";
+"Sleep stages are device estimates and do not affect your goal score." = "睡眠段階はデバイス推定であり、目標スコアに影響を与えません。";
+"About sleep stages" = "睡眠ステージについて";
+"Building your baseline" = "ベースラインの構築";
+"Reminder time" = "リマインダーの時間";
+"Personal reference" = "個人的な参照";
+"Why these portions?" = "なぜこれらの部分?";
+"Meal balance" = "食事バランス";
+"Protein across the day" = "一日中タンパク質";
+"Carbs and dinner" = "炭水化物と夕食";
+"Portion guide" = "ポーションガイド";
+"Protein is split evenly across breakfast, lunch and dinner. An optional snack takes 15% of the daily target; the rest stays evenly split." = "タンパク質は、朝食、ランチ、ディナーに均等に分割されます。オプションのスナックは、毎日ターゲット15% ofかかります。残りは均等に分割されます。";
+"Daily protein and consistent training matter most. Small trials support balanced meals for muscle protein synthesis; long-term muscle-growth results are mixed." = "毎日のたんぱく質および一貫した訓練問題ほとんど。小さい試験は筋肉蛋白質の統合のためのバランスの取れた食事を支えます;長期筋肉成長の結果は混合されます。";
+"Carbs start at 25% for breakfast, 35% for lunch and 40% for dinner. With a snack, 15% goes to the snack and the remaining 85% follows the same split." = "カルブは25% for朝食、35% forランチ、40% forディナーから始まります。スナックでは、スナックに15% goes、残りの85% follows同じスプリット。";
+"These percentages are an app planning default, not a proven optimal ratio. A small trial found faster sleep onset with a high-GI meal four hours before bed; other trials found no benefit. More dinner carbs do not guarantee better sleep or justify cutting dinner protein." = "これらのパーセンテージは、実証済みの最適な比率ではなく、アプリの計画のデフォルトです。 小さな試用期間は、ベッド4時間前に高GIの食事とより速い睡眠のオンセットを発見しました。 他の試験は、利益が見つかりません。 より多くのディナーカーブは、より良い睡眠を保証するか、夕食のタンパク質を正当化するものではありません。";
+"Approximate cooked weights; oats are dry, yogurt/tofu are packaged weights, fruit is edible weight. Swaps match protein or carbs, not all nutrients. Cooking fats are not included in these portions." = "おおよその調理された重量;オート麦は乾燥しています、ヨーグルト/豆腐は包装された重量です、果物は食用体重です。すべての栄養素ではなく、タンパク質または炭水化物にスワッピングマッチします。脂肪を調理することは、これらの部分には含まれていません。";
+"ISSN · Protein and exercise (2017)" = "ISSN・タンパク質・運動(2017)";
+"Mamerow · Protein distribution (2014)" = "マメロウ・タンパク質分布 (2014)";
+"Protein distribution review (2020)" = "タンパク質分布レビュー (2020)";
+"Afaghi · Carbs and sleep (2007)" = "Afaghi・炭水化物・スリープ(2007年)";
+"Athletes' evening meals trial (2019)" = "アスレツの夜食トライアル(2019)";
+"Why this sleep target?" = "なぜこの睡眠ターゲット?";
+"Why 8 hours?" = "なぜ8時間?";
+"Sleep and recovery" = "睡眠と回復";
+"Deep sleep and REM" = "ディープスリープとREM";
+"Apple Health records" = "Apple Healthレコード";
+"About sleep" = "睡眠について";
+"Apple Health sleep records" = "Apple Health 睡眠記録";
+"Core sleep" = "コア睡眠";
+"Awake" = "アワケ";
+"In bed" = "ベッド内";
+"Sleep (unspecified)" = "睡眠(未指定)";
+"Adults generally need 7–9 hours a night. Eight hours is a starting point, not a precise calculation from your workout or body weight. Adjust for how rested you feel." = "大人は通常、夜7〜9時間必要です。 8時間は、あなたのワークアウトまたは体重からの正確な計算ではなく、出発点です。 落ち着きを感じる方法を調整します。";
+"Sleep supports recovery and performance. A small experiment found lower muscle protein synthesis after one sleepless night. It does not prove that every extra hour produces more muscle, or that everyone needs the same duration." = "睡眠は回復および性能を支えます。小さい実験は1つの眠らない夜の後で筋肉蛋白質の統合を下げました。それはあらゆる余分時間がより多くの筋肉を作り出すことを証明しません、または皆が同じ持続期間を必要とすること。";
+"Stage durations vary with age, night and device. Your ranges summarize the previous 14 days once at least 7 nights are available; they are personal references, not recommended targets. Apple Watch stages are estimates." = "ステージの期間は、年齢、夜間、デバイスによって異なります。 少なくとも7泊分の14日を要約する範囲は、個人的な参照であり、推奨対象ではありません。 Apple Watchステージは推定されます。";
+"Masso reads all authorized sleep-analysis history: core, deep, REM, unspecified sleep, awake and in-bed samples, with times and sources. Missing stages stay blank. Overlapping sources are not added together; detailed stage data is preferred for nightly totals. These totals may differ from Apple's source priorities. In-bed time is not sleep time." = "Massoは、コア、ディープ、REM、未指定の睡眠、覚醒、ベッド内サンプルを、時間とソースですべて承認された睡眠分析履歴を読んでいます。 欠損ステージは空白にとどまります。 重複するソースは一緒に追加されません。 詳細なステージデータは、夜間の合計に優先されます。 これらの合計は、Appleのソース優先事項とは異なる可能性があります。 寝具時間はありません。";
+"Allow Sleep access in Apple Health. Data appears after your device syncs. HealthKit does not reveal whether read access was denied, so no records can mean no data or no permission." = "Apple Healthでスリープアクセスを許可します。 デバイスが同期した後にデータが表示されます。 HealthKitは、読み取りアクセスが拒否されたかどうかを明らかにしません。そのため、レコードはデータや権限を意味しません。";
+"NIH · Recommended sleep duration" = "NIH・おすすめ睡眠時間";
+"AASM / SRS · Adult sleep consensus (2015)" = "AASM/SRS・大人睡眠コンセンサス(2015)";
+"Lamon · Sleep loss and muscle protein synthesis (2021)" = "ラモン・睡眠損失・筋肉タンパク質合成 (2021)";
+"Apple · Sleep tracking" = "アップル・スリープトラッキング";
+"Apple · Sleep-analysis data" = "アップル・睡眠分析データ";
+"Sleep history" = "睡眠履歴";
+"Show earlier nights" = "前の夜を表示";
+"Today's meals" = "本日のお食事";
+"Diet history" = "ダイエットの歴史";
+"No meal records yet" = "食事の記録はまだありません";
+"Sleep details" = "睡眠の詳細";
+"7 days" = "7日間";
+"Compared with your current target" = "現在のターゲットと比較";
+"Compared with that day's target" = "その日の目標と比較";
+"View Apple Health records" = "Apple Healthレコードを見る";
+"Eating window" = "食べるウィンドウ";
+"Flexible" = "フレキシブル";
+"12:12 · 12-hour window" = "12:12・12時間窓";
+"14:10 · 10-hour window" = "14:10・10時間窓";
+"16:8 · 8-hour window" = "16:8・8時間窓";
+"Starts at" = "スタート";
+"Ends at" = "終了時";
+"Next day" = "次の日";
+"Morning snack" = "モーニングスナック";
+"Afternoon snack" = "午後のスナック";
+"Meal timing changes the split, not your daily nutrition targets." = "食事のタイミングは、あなたの毎日の栄養目標ではなく、分割された変化します。";
+"Protein is split evenly across your selected 2–5 meals. Changing meal count or eating window keeps the daily target unchanged." = "タンパク質は、選択した2〜5食に均等に分割されます。 食事のカウントまたは食べウィンドウを変更すると、毎日のターゲットは変更されません。";
+"Two meals split carbs 45% / 55%. With three meals, the split is 25% / 35% / 40%. Four meals reserve 15% for a snack; five reserve 10% for each of two snacks. The remaining carbs follow the three-meal split." = "2食分裂カルブ45% / 55%。 3食付きで、分割は25% / 35% / 40%です。 4食は15% forスナックを予約します。 5予約10% forそれぞれ2つのスナック。 残りの炭水化物は3枚分の分割に従います。";
+"Flexible timing is the default. 12:12, 14:10 and 16:8 describe fasting hours and eating hours. A shorter window does not lower your daily nutrition targets or guarantee better muscle growth." = "柔軟なタイミングはデフォルトです。 12:12、14:10、16:8は、高速な時間と摂食時間を説明しています。 より短いウィンドウは、毎日の栄養目標を下げたり、より良い筋肉の成長を保証します。";
+"NIDDK · Time-restricted eating" = "NIDDK・期間限定食べ放題";
+"%lld meals" = "%lldの食事";
+"Meal 1" = "お食事 1";
+"Meal 2" = "お食事2";
+"Meal 3" = "お食事 3";
+"Meal 4" = "お食事 4";
+"Meal 5" = "お食事 5";
+"Diet calendar" = "ダイエットカレンダー";
+"Sleep calendar" = "睡眠カレンダー";
+"View all months" = "すべての月を表示";
+"Green marks workout days." = "緑の印の仕事日。";
+"Color strength shows your recorded protein progress." = "色の強さは記録された蛋白質の進歩を示します。";
+"Color strength shows your sleep-duration progress." = "色強さはあなたの睡眠率の進歩を示します。";
+"Grey means no record or no target. Saved daily targets are used when available; otherwise your current target is used." = "灰色は、レコードまたはターゲットなしを意味します。利用可能なときに保存された毎日のターゲットが使用されます。それ以外の場合は、現在のターゲットが使用されます。";
+"Workout resources" = "ワークアウトリソース";
+"Training History" = "トレーニング履歴";
+"Share Training History" = "シェアトレーニング履歴";
+"No workout" = "ワークアウトなし";
+"Workout recorded" = "ワークアウト記録";
+"Improving lifts over 4 weeks" = "4週間にわたるリフトの改善";
+"Not enough data" = "十分なデータがない";
+"Describe meal" = "お食事について";
+"Photo" = "プロフィール";
+"Diet score" = "ダイエットスコア";
+"All meals recorded" = "すべての食事記録";
+"In progress · record remaining meals" = "進行中・残食記録";
+"Record a meal to see your progress" = "あなたの進行状況を見るために食事を録音";
+"Estimated target adherence, not a health score." = "目標遵守を推定し、健康スコアではありません。";
+"Try %@, or record what you eat." = "%@を試すか、食べるものを録音してください。";
+"e.g. Two eggs, a bowl of rice and a glass of milk" = "例えば、卵2本、米1本、牛乳1本";
+"Estimate nutrients" = "栄養素を刺激して下さい";
+"AI estimate. Check portions, sauces and drinks before confirming." = "AI推定。確認前に部分、ソース、ドリンクをチェックしてください。";
+"Describe your meal in up to 4,000 characters." = "4,000文字までご飲食ください。";
+"Meal analysis unavailable" = "お食事分析 利用不可";
+"No clear meal found. Describe foods and portions, or enter nutrients manually." = "明確な食事が見つかりません。 食物と部分を記述するか、または手動で栄養素を入力してください。";
+"Workout History" = "ワークアウト履歴";
+"Share Workout History" = "ワークアウト履歴を共有する";
+"Workout history" = "ワークアウト履歴";
+"Workout target" = "ワークアウトターゲット";
+"%d of %d days this week" = "%dの今週の%d日";
+"Membership" = "会員登録";
+"Add meal" = "食事を追加";
+"Meal" = "お食事処";
+"Meal %d" = "食事 %d";
+"Only confirmed nutrients count toward today's score." = "今日のスコアにカウントする栄養素だけを確認しました。";
+"Why these targets?" = "なぜこれらのターゲット?";
+"Workout Insights" = "ワークアウト・インサイト";
+"Share Workout" = "シェアワークアウト";
+"Share Workout Insights" = "ワークアウトの洞察を共有する";
+"Generate meal" = "食事を発生させる";
+"Generating meal…" = "食事の発生";
+"Could not estimate this meal. Add foods and portions, then try again." = "この食事を推定することはできません。 食べ物と部分を追加してから、もう一度試してください。";
+"Daily goal contribution" = "毎日の目標の貢献";
+"Last 7 days" = "7日前";
+"days / week" = "日 / 週";
+"Delete meal" = "お食事の削除";
+"Delete meal?" = "お食事の削除";
+"Goal & color rules" = "ゴール&カラールール";
+"Your current target" = "現在のターゲット";
+"What the colors mean" = "色がどういう意味か";
+"How it is calculated" = "計算方法";
+"Research & guidance" = "研究・指導";
+"Light color" = "ライトカラー";
+"Medium color" = "媒体色";
+"Deep color" = "ディープカラー";
+"No recorded intake/sleep or no usable target." = "記録された取入口/眠りまたは使用可能なターゲット無し。";
+"Solid blue means actual sleep reaches your saved nightly target. Awake and time in bed are excluded. Deep and REM are references, not scoring targets." = "ソリッドブルーは、実際の睡眠があなたの保存されたナイトリーターゲットに到達することを意味します。 ベッドの覚醒と時間は除外されます。 深くてREMは、ターゲットをスコアリングしない参照です。";
+"Solid yellow requires all three daily macro targets. The lower end of the carb/fat ranges is the completion threshold; the upper end is guidance, not a reason to eat extra." = "ソリッドイエローは、すべての3日間のマクロターゲットを必要とします。 炭水化物/脂肪の範囲の下の端は、完了しきい値です。 上限はガイダンスで、余分な食べる理由ではありません。";
+"Color bands are Masso's display rules, not medical thresholds. Today has a white outline. Home's oldest three dots also fade for layout." = "色帯はMassoのディスプレイルールであり、医療しきい値ではありません。 今日は白い輪郭を持っています。 最古の3つの点もレイアウトのためにフェードされています。";
+"Completion = actual sleep minutes ÷ that night's target. Values above the target earn no extra credit. Stage estimates do not determine the color." = "完了 = 実際の眠り分 ÷ その夜の目標。 ターゲットの上の値が余分なクレジットを獲得しません。 ステージ推定は、色を決定しません。";
+"The daily Diet score compares protein, carbs and fat with fixed daily targets (weights 20/10/5); each macro is capped at 100%, so extra intake cannot offset another shortfall. Meal cards show that meal's weighted contribution to the full daily targets as a percentage, not a score." = "毎日の食事療法のスコアは固定された毎日のターゲット(重量20/10/5)の蛋白質、炭水化物および脂肪を比較します;各マクロは100%でおおわれます、従って余分取入口は別の不足分を相殺しません。食事カードは食事の総計が比率としてフル デイリー ターゲットに加わった貢献を示す、スコアをしません。";
+"Only saved meal records count. AI nutrition estimates can be inaccurate; colors measure recorded target adherence, not diet quality or health." = "保存された食事の記録数だけ。AIの栄養の見積もりは不正確である場合もあります;色は記録されたターゲット付着力を測定します、食事の質か健康を食事療法しません。";
+"Saved historical targets take priority. If a day has no saved target, the current target is used; changing today's goal does not overwrite saved goals." = "保存された歴史的ターゲットは優先されます。 1日が保存されていない場合は、現在のターゲットが使用されます。 今日の目標を変更すると、保存された目標を上書きしません。";
+"Adults generally need 7–9 hours; ages 13–18 need 8–10 hours and ages 6–12 need 9–12 hours. Eight hours is an adult starting point. A blue dot only confirms your chosen goal, not that your sleep is healthy." = "大人は、一般的に7〜9時間が必要です。 13〜18歳は8〜10時間と6〜12歳は9〜12時間を必要とします。 8時間は大人の出発点です。 青の点は、あなたの睡眠が健康であるだけでなく、選択した目標を確認するだけです。";
+"ISSN supports about 1.4–2.0 g/kg/day of protein for most healthy exercising adults. Masso's targets are planning starting points. Its 20/10/5 weights and color bands are product choices, not research-validated health scores." = "ISSNは、最も健康な運動の大人のためのタンパク質の約1.4〜2.0 g / kg /日をサポートしています。 Massoの目標は、開始点を計画しています。 その20 / 10 / 5体重とカラーバンドは、研究有給健康スコアではなく、製品選択肢です。";
+"ACSM · Nutrition and athletic performance (2016)" = "ACSM・栄養・運動性能(2016)";
+"Add your weight for nutrition targets" = "栄養ターゲットに体重を追加します。";
+"Color strength shows your three-macro target progress." = "色の強さは3macroターゲット進歩を示します。";
+"Target used today" = "今日のターゲット";
+"Current sleep target" = "現在の睡眠ターゲット";
+"Edit meal" = "食事の編集";
+"Save changes" = "変更を保存";
+"Replace photo" = "写真を交換";
+"Weekly target" = "週次目標";
+"%d days / week" = "%dの日/週";
+"Your goal is weekly. Rest days do not count as failed daily goals." = "あなたの目標は週単位です。 残りの日は、毎日失敗した目標としてカウントされません。";
+"Green means at least one recorded training set that day." = "グリーンは、その日の少なくとも1つの記録されたトレーニングセットを意味します。";
+"Gray means no recorded training sets that day." = "灰色は記録された訓練セットをその日の意味しません。";
+"The first day after a workout." = "ワークアウト後の最初の日。";
+"The second day after a workout." = "ワークアウト後2日目。";
+"Gray appears after the two-day recovery window when there is no workout." = "グレーは、ワークアウトがない場合、2日間の回復ウィンドウの後に表示されます。";
+"Recovery colors are for context and do not count toward your weekly target. Today has a white outline; the oldest three home dots fade for display only." = "回復色は文脈のためであり、あなたの週単位目標に向かってカウントしません。今日は白い輪郭を持っています。最も古い3つの家は表示だけのために衰退します。";
+"Each day with recorded training sets counts once, even if you complete several workouts. This week's count follows your calendar settings and is compared with your current weekly target." = "記録されたトレーニングセットで毎日数回、複数のトレーニングを完了してもカウントされます。今週のカウントは、カレンダーの設定に従い、現在の週単位で比較されます。";
+"Only logged workout days count toward your weekly target. The two recovery shades are a simple display rule, not a measurement of muscle recovery or workout intensity." = "週単位の目標に向かってログアウト日数だけカウントします。 2つの回復日は、筋肉の回復や運動強度の測定ではなく、単純な表示ルールです。";
+"Why this target?" = "なぜこのターゲット?";
+"Your fixed gram targets use the weight, training goal and weekly training frequency saved in Masso. If you are 65 or older, the protein factor is raised modestly. Meal count only divides the daily targets; it does not change them." = "Massoで保存された体重、トレーニング目標、週単位のトレーニング頻度を使用しています。65歳以上の場合、タンパク質因子は適度に上昇します。食事のカウントは毎日のターゲットだけを分割します。それはそれらを変更しません。";
+"Carbohydrate uses your goal and planned training days, with a 130 g adult reference floor. Fat uses a simple 0.8 g/kg planning value. These are practical estimates, not measured calorie needs or medical prescriptions." = "Carbohydrateは、目標と計画されたトレーニング日を使用し、130 g大人の参照床を使用します。脂肪は、単純な0.8 g / kg計画値を使用します。これらは、実用的な推定値であり、カロリーのニーズや医療処方を測定しません。";
+"Masso does not currently collect height or body composition, so it cannot estimate energy needs precisely. Sleep duration is not used to change macro grams because there is no established formula for doing that." = "Massoは、現在、身長や体組成を収集していませんので、エネルギーを正確に推定することはできません。 睡眠時間は、確立された式がないので、マクログラムを変更するために使用されていません。";
+"ISSN describes protein needs as a range, not one proven ideal for every person. Masso selects a fixed planning point from body weight and training goal; carbohydrates also reflect planned weekly training days, and fat uses a simple weight-based estimate. Age modestly raises the protein factor from 65 onward. Height, body composition, medical conditions and reliable daily energy expenditure are not collected, so these values are estimates rather than a personalized clinical prescription. Sleep data is not used to change macro targets because there is no established conversion from sleep duration to daily macro grams. Scoring weights and color bands are product choices, not research-validated health scores." = "ISSNは、すべての人にとって理想的な1つではなく、タンパク質のニーズを範囲として説明しています。 Massoは、体重とトレーニングの目標から固定計画ポイントを選択します。 炭水化物は、計画された週単位の訓練日を反映しており、脂肪は簡単な体重ベースの見積もりを使用します。 年齢は控えめに65からタンパク質因子を上げます。 高さ、体組成、医療条件、信頼性の高い毎日のエネルギー支出は収集されません。したがって、これらの値は、パーソナライズされた臨床処方ではなく、推定されます。 睡眠データは、ターゲットを変化させないため、スクイージは、体重や体重を減らすために使用されていません。";
+"Sleep score" = "睡眠スコア";
+"About this muscle" = "この筋肉について";
+"Related exercises" = "関連演習";
+"Exercises for this muscle" = "この筋肉のための演習";
+"No matching exercises yet" = "マッチする練習はまだありません";
+"Drag sideways to rotate. Tap a muscle to learn more." = "サイドウェイをドラッグして回転します。 筋肉をタップして、もっと学びます。";
+"Muscle intro · Neck" = "ヘッドとネックの動きをサポートし、制御します。";
+"Muscle intro · Chest" = "腕を前進させ、ボディを越え、押すのを助けて下さい。";
+"Muscle intro · Shoulders" = "腕を異なる方向に上げ、ガイドします。";
+"Muscle intro · Biceps" = "肘を曲げ、引っ張るのを助けます。";
+"Muscle intro · Triceps" = "肘をまっすぐにし、押すことを助けます。";
+"Muscle intro · Forearms" = "手首を動かし、握りに役立ちます。";
+"Muscle intro · Core" = "トランクを安定させ、上部と下部のボディ間の力を転送します。";
+"Muscle intro · Glutes" = "ヒップを伸ばし、安定させます。";
+"Muscle intro · Quads" = "膝をまっすぐにし、スクワッティングとステッピングをサポートしています。";
+"Muscle intro · Hamstrings" = "膝を曲げ、腰を伸ばします。";
+"Muscle intro · Lower legs" = "足首と足を移動し、各ステップをプッシュして制御するのに役立ちます。";
+"Muscle intro · Adductors" = "体の中線に向かって太もを引く。";
+"Muscle intro · Back" = "動きおよび肩の刃制御を引っ張るサポート。";
+"Home reminders" = "ホームリマインダー";
+"Meal reminders" = "お食事のリマインダー";
+"Time to eat" = "食事の時間です";
+"Fuel your muscles with a balanced meal" = "バランスのよい食事で筋肉にエネルギーを";
+"Time to wind down" = "風が降る時間";
+"Sleep helps your muscles recover" = "睡眠はあなたの筋肉を回復するのに役立ちます";
+"Find demo" = "デモを探す";
+"Calendar colors" = "カレンダーの色";
+"Tap to add photo" = "タップして写真を追加";
+"Training in progress" = "進行中のトレーニング";
+"Train again" = "再び訓練";
+"Exercise details" = "エクササイズの詳細";
+"Training today and short sleep: fuel your workout and prioritize recovery" = "今日のトレーニングと睡眠不足:あなたのトレーニングを燃料化し、回復を優先します";
+"Short sleep last night: keep protein steady and prioritize recovery" = "短い眠り最後の夜:蛋白質を着実に保ち、回復を優先して下さい";
+"More training today: extra carbs support recovery" = "今日のトレーニング:追加の炭水化物のサポート回復";
+"Training today: carbs adjusted, protein stays steady" = "今日のトレーニング:炭水化物調整、タンパク質は安定したまま";
+"Recovery day: keep protein steady while muscles recover" = "回復日:筋肉が回復する間蛋白質を着実に保って下さい";
+"No workout logged today: carbs follow your lighter activity" = "今日ログアウトなし:あなたの軽い活動に従う炭水化物";
+"Daily adjustments" = "毎日の調節";
+"Carb adjustment" = "炭水化物調整";
+"Carbs follow logged workouts and working sets. Training/rest offsets use 0.5 g/kg around your weekly average; high-volume days add 0.3 g/kg. The change is limited to 50 g either way, with a 130 g floor. These are Masso planning rules, not exact doses from a study." = "カルブは、記録されたワークアウトと作業セットに従います。 トレーニング/レストオフセットは、週平均約0.5 g / kgを使用します。 大量の日は0.3 g / kgを追加します。 変更は、130 gの床で、50 gに制限されます。 これらは、Masso計画規則であり、研究からの正確な用量ではありません。";
+"Protein and fat remain steady. Sleep under 7 hours changes the recovery advice, not your macro targets: sleep studies do not establish a gram adjustment for missed sleep." = "タンパク質と脂肪は安定したままです。 7時間未満の睡眠は回復のアドバイス、あなたのマクロのターゲットを変えます:睡眠研究は、欠落した睡眠のためのグラムの調整を確立しません。";
+"Each meal shows its share of the full daily targets. Today's targets update with your workout records; earlier days retain their saved targets." = "各食事は、毎日のターゲットの完全な共有を示しています。 今日の目標は、ワークアウトレコードで更新します。 以前の日は、保存されたターゲットを保持します。";
+"Carbs and resistance training · Review (2022)" = "炭水化物・抵抗訓練・見直し (2022)";
+"Carb feeding · Meta-analysis (2022)" = "炭水化物供給・メタアナリシス (2022)";
+"Sleep and dietary intake · Review (2020)" = "睡眠と栄養摂取量・見直し(2020)";
+"Remember this preference?" = "この設定を記憶しますか?";
+"Saved preferences appear in Training Preferences → Notes" = "保存された好みはトレーニング環境→ノートに表示されます";
+"Saved to Notes" = "メモに保存";
+"Not saved" = "保存しない";
+"Yes" = "はい";
+"No" = "いいえ";
+"/ 100" = "/ 100";
+"3D close-up of the muscles trained" = "訓練された筋肉の3Dクローズアップ";
+"About your targets" = "ターゲットについて";
+"Analytics events" = "アナリティクスイベント";
+"Analyzing meal…" = "お食事の分析";
+"Apply suggested weight" = "提案された重量を加えて下さい";
+"Beatriz Gomez Santamaria" = "Beatriz Gomez サンタマリア";
+"CURRENT" = "ログイン";
+"Choose a starting point, then adjust each slider. Your saved gram amounts become your daily targets. Changing the number of meals only splits those totals across the day." = "スタートポイントを選択し、各スライダを調整します。保存されたグラムの量は毎日のターゲットになります。食事の数を変更すると、その合計が一日に分割されます。";
+"Choose your plan before training. Rest days count as completed only when explicitly planned." = "トレーニングの前に計画を選択してください。 明示的に計画されたときだけ、残り日数が完了します。";
+"Daily nutrition targets" = "毎日の栄養目標";
+"Daily records" = "毎日の記録";
+"Daily score" = "毎日のスコア";
+"Enjoy unlimited plans, unlimited AI, and deep analytics. Welcome aboard." = "無制限の計画、無制限のAI、および深い分析をお楽しみください。 ようこそ、ボード。";
+"Foods and portions" = "食品と部分";
+"Front and back muscle coverage" = "前部および背部筋肉適用範囲";
+"GOAL REFERENCE" = "ゴールレファーレンス";
+"Goal met" = "ゴールミート";
+"Grid" = "グリッド";
+"How are these targets calculated?" = "これらのターゲットはどのように計算されますか?";
+"List" = "プロフィール";
+"Meal schedule" = "お食事スケジュール";
+"Meal timing divides your daily amounts; it does not change the daily totals." = "食事のタイミングは、毎日の量を分割します。それは毎日の合計を変えません。";
+"No data" = "データなし";
+"No sleep data yet" = "睡眠データなし";
+"On workout days, Masso can shift carbohydrates around your weekly baseline using your logged training. Protein and fat stay at the amounts you choose." = "ワークアウト日には、Massoは、記録されたトレーニングを使用して、毎週のベースラインの周りに炭水化物をシフトすることができます。 タンパク質と脂肪は、選択した量にとどまります。";
+"Phase 0: NoOpSink — nothing leaves this device." = "フェーズ0:NoOpSink — このデバイスは何も残しません。";
+"Plan adherence, not a health or muscle-growth measurement. Training 40 · protein 20 · carbs 10 · fat 5 · sleep 25. Extra training or food earns no bonus." = "計画遵守, 健康や筋肉の成長測定ではありません. トレーニング 40 · タンパク質 20 · 炭水化物 10 · 脂肪 5 · 睡眠 25. 余分なトレーニングや食品は、ボーナスを獲得しません.";
+"Show earlier days" = "初期の日を表示";
+"Sleep" = "睡眠";
+"Sleep recorded by Apple Watch or compatible devices appears through Apple Health." = "Apple Watch または Apple Health で記録された睡眠。";
+"Sleep target progress" = "睡眠目標の進捗";
+"Solid yellow means all three fixed daily targets are met. Going above a target does not add extra credit." = "ソリッドイエローは、すべての3つの固定された毎日のターゲットが満たされていることを意味します。 ターゲットの上に行くと、余分なクレジットを追加しません。";
+"Starting amounts use your body weight and training goal. Training-day carbs can adjust with your logged workouts." = "開始量はあなたの体重とトレーニングの目標を使用します。 トレーニングデイの炭水化物は、記録されたトレーニングと調整できます。";
+"The first day after a recorded workout." = "記録されたワークアウトの後の最初の日。";
+"The presets are simple starting estimates based on body weight and common sports-nutrition guidance. They are not measurements of your calorie needs or medical advice. Choose amounts that fit your appetite, training and guidance from your clinician or dietitian." = "プリセットは、体重と一般的なスポーツ栄養ガイダンスに基づいて簡単な開始推定値です。 彼らはあなたのカロリーのニーズや医療のアドバイスの測定ではありません。 あなたの食欲に合う量を選択し、あなたの臨床医や栄養士からのトレーニングとガイダンス。";
+"The second day after a recorded workout." = "記録されたワークアウト後の2日目。";
+"Today's training goal" = "今日のトレーニング目標";
+"We use your body weight and training goal to set protein and carbohydrate targets. Weekly training days also shape your starting carbs; fat starts at about 0.8 g per kg of body weight." = "私たちは、タンパク質と炭水化物のターゲットを設定するために、あなたの体重とトレーニングの目標を使用します。 毎週のトレーニング日はまた、あなたの開始炭水化物を形成します。 脂肪は体重のkgあたり約0.8 gから始まります。";
+"⇥" = "ふりがな";
+
+/* Expanded SwiftUI localization audit additions. */
+"%lld working sets" = "%lld 作業セット";
+"%lld% daily goal" = "%lld% 毎日の目標";
+"%lldh %lldm goal" = "%lldh %lldm ゴール";
+"%lldh %lldm last night" = "%lldh %lldm 最後の夜";
+"A practical guide" = "実用的なガイド";
+"AI Plans" = "AIプラン";
+"AI estimate. Check portions and include sauces, drinks or foods outside the photo." = "AI推定。写真の外側にソース、飲み物、食べ物など、部分をチェックし、";
+"Bedtime" = "ベッドタイム";
+"Below goal" = "目標の下";
+"Browse training plans from the community" = "コミュニティからトレーニング計画を閲覧する";
+"Choose photo" = "写真を選ぶ";
+"Complete your records to see your score" = "あなたのスコアを見るためにあなたの記録を完了して下さい";
+"Confirm meal" = "お食事確認";
+"Confirming replaces this meal's previous record. Only confirmed nutrients count toward today's score." = "確認は、この食事の前の記録を置き換えます。今日のスコアに対する栄養素のみが確認されます。";
+"Connect Apple Health" = "Apple Healthの接続";
+"Couldn't read sleep data" = "睡眠データを読み込めない";
+"Daily goals: bright = all met · dim = partial" = "毎日の目標: 明るい = すべて満たされた · ディム = 部分的";
+"Daily intake recorded" = "毎日の取入口の記録";
+"Daily score. View Insights" = "毎日のスコア。 洞察を見る";
+"Debug" = "デブグ";
+"Drag the moon and sun to set your schedule. This sets a goal, not an alarm." = "月と日をドラッグして、スケジュールを設定します。これは目標を設定し、アラームはしません。";
+"Estimated meal progress" = "定食の進行状況";
+"Estimated nutrients" = "刺激された栄養素";
+"Force US storefront (debug)" = "フォースUSストアフロント(デバッグ)";
+"Layout" = "レイアウト";
+"Make it yours" = "あなたのものにする";
+"Meals" = "お食事";
+"Muscles" = "筋肉";
+"Personal daily targets" = "個人的な毎日のターゲット";
+"Planned rest day" = "定休日";
+"Profile-based starting point" = "プロファイルベース開始点";
+"Record again" = "再び記録する";
+"Record meal" = "記録的な食事";
+"Retry analysis" = "リトリー分析";
+"Sleep schedule" = "睡眠スケジュール";
+"Sleep: bright = goal met · dim = below goal" = "睡眠: 明るい = 目標が満たされる・薄暗い = 目標の下";
+"Starting point" = "開始ポイント";
+"Take photo" = "写真を撮る";
+"Today · updating" = "本日・更新";
+"Today's intake · updating" = "本日の取込み・更新";
+"Track sleep with Apple Health" = "Apple Healthで睡眠を追跡";
+"Training days" = "トレーニング日";
+"Unlock Pro (debug)" = "Unlock Pro(デバッグ)";
+"Wake up" = "ウェイクアップ";
+"Your starting point" = "あなたの出発点";
+
+"Completed" = "完了";
+
+/* Meal nutrient evidence and portion correction */
+"Nutrition estimate" = "栄養の推定";
+"Estimated portions. Adjust grams if needed." = "量は推定値です。展開してグラム数を調整できます";
+"Food data: USDA" = "食品データ：USDA";
+"AI estimate" = "AI の推定";
+"Nutrition label" = "栄養成分表示";
+
+/* Recovery timeline and remaining-nutrient meal */
+"Recovery estimate" = "回復の推定";
+"Estimated from recorded workouts, not a measured recovery score." = "記録したトレーニングからの推定で、回復度の実測値ではありません";
+"Last meal" = "最後の食事";
+"Remaining today" = "今日の残り";
+"Daily targets met" = "今日の目標達成";
+"Suggested meal" = "食事の提案";
+"Based on logged meals · Cooked / ready-to-eat weights" = "記録した食事に基づく · 調理後・そのまま食べる状態の重量";
+"Log a meal first" = "まず食事を記録";
+"Use suggestion" = "提案を使う";
+"No suitable foods" = "適した食品がありません";
+"No extra meal suggested" = "追加の食事提案はありません";
+"Salmon" = "サーモン";
+"Olive oil" = "オリーブオイル";
+"Almonds" = "アーモンド";
+"Now" = "現在";
+
+"Share month" = "月を共有";
+
+"Share day" = "日を共有";
+
+"Share overview" = "振り返りを共有";
+
+"Train with Masso" = "Masso でトレーニング";
+
+"Average target progress" = "目標達成率の平均";
+
+"%lld of %lld days recorded" = "%lld / %lld 日を記録";
+
+"Last 30 days" = "過去30日";
+
+"This month" = "今月";
+
+"Custom" = "カスタム";
+
+"Period" = "期間";
+
+"From" = "開始日";
+
+"To" = "終了日";
+
+"Tap a day to share" = "日付をタップして共有";
+
+"Target progress" = "目標達成率";
+
+"What can I eat to meet my remaining targets?" = "残りの栄養目標に合う食事を提案して";
+
+"Meal suggestion" = "食事の提案";
+
+"Adjust meal" = "食事を調整";
+
+"Refresh suggestion" = "提案を更新";
+
+"Vegetables" = "野菜";
+
+"Spinach" = "ほうれん草";
+
+"Log this meal" = "この食事を記録";
+
+"Average per recorded day" = "記録日の平均";
+
+// Unified daily calendar
+"Week" = "週表示";
+"Month" = "月表示";
+"Today has a white outline." = "今日は白い輪で表示されます。";
+"No workout recorded on this day." = "この日のトレーニング記録はありません。";
+
+"Today has a white circle and a black date number." = "今日の日付は白い円と黒い数字で表示されます。";
+
+"Custom workout" = "カスタムワークアウト";
+"g" = "g";
+
+// Muscle recovery action guidance
+"Fresh · Ready to train" = "良好 · トレーニング可能";
+"Rested · Ready to train" = "回復済み · トレーニング可能";
+"Recovering · Keep it light" = "回復中 · 軽い運動を";
+"Fatigued · Rest recommended" = "疲労あり · 休息がおすすめ";
+
+// Home summary timeframes and complete calendar legend
+"Today · %@" = "今日 · %@";
+"Muscle recovery shades are shown in My Muscle Status." = "筋肉の回復を示す色の濃淡は「自分の筋肉状態」で確認できます。";
+"Daily diet completion compares protein, carbs and fat with that day's targets." = "食事の達成度は、タンパク質・炭水化物・脂質をその日の目標と比較して計算します。";
+"Blue shades show actual sleep relative to that night's target." = "青の濃淡は、その夜の睡眠目標に対する実際の睡眠時間の達成度を示します。";
+"Future dates have no records yet." = "未来の日付にはまだ記録がありません。";
+
+"Historical target unavailable" = "その日の目標は保存されていません";
+
+"Import workouts from Apple Health" = "Appleヘルスケアからワークアウトを読み込む";
+
+"No imported workouts yet. Check Workout access in Apple Health." = "読み込んだワークアウトがありません。Appleヘルスケアのワークアウトへのアクセスを確認してください";
+
+"Unable to import workouts. Try again." = "ワークアウトを読み込めませんでした。もう一度お試しください";
+
+"External workout" = "外部ワークアウト";
+
+"Walking" = "ウォーキング";
+
+"Cycling" = "サイクリング";
+
+"Running" = "ランニング";
+
+"Swimming" = "水泳";
+
+"Hiking" = "ハイキング";
+
+"Yoga" = "ヨガ";
+
+"Strength training" = "筋力トレーニング";
+
+"Other workout" = "その他のワークアウト";
+
+"Each day with a Masso workout or imported Apple Health workout counts once. Imported workouts do not advance your workout plan or count toward muscle progress." = "MassoまたはAppleヘルスケアに記録されたワークアウトがある日は、1日につき1回カウントします。読み込んだワークアウトはトレーニングプランを進めず、筋肉の進歩分析にも含まれません。";
+
+"Diet score shows weighted intake relative to daily protein, carbs and fat targets (20/10/5), rounded to a whole percentage. It can exceed 100%; this means above target, not healthier. Meal percentages show their contribution to the daily targets." = "食事達成率はタンパク質・炭水化物・脂質の1日の目標に対する摂取量を加重計算（20/10/5）し、整数のパーセントに丸めます。100%を超える場合は目標を超えた摂取であり、より健康という意味ではありません。各食事の割合は1日の目標への寄与を示します。";
+
+"How to train this muscle" = "この筋肉を鍛えるには";
+
+"Train more" = "トレーニングを強化";
+
+"Adjust my saved workouts to train %@ more. Keep my training preferences, equipment, available time and recovery in mind. Show which exercises and sets you would change. If I have no saved workouts, create a suitable plan." = "保存済みのワークアウトを調整して、%@のトレーニングを強化してください。トレーニング設定、器具、使える時間、回復状態を考慮し、変更する種目とセット数を説明してください。保存済みのプランがない場合は、適切なプランを作成してください。";
+
+"Train smart, your way." = "自分に合う、スマートなトレーニング";
+
+"Deep sleep is compared with the median of your previous 14 days, using at least 3 recorded nights. It is a personal reference, not a medical target, and does not affect Sleep score. Missing sleep stages or insufficient history show —." = "深い睡眠を、過去14日間に記録された3晩以上の中央値と比較します。個人の参考値であり、医学的な目標ではなく、睡眠スコアには影響しません。睡眠ステージがない場合や履歴が不足している場合は — を表示します。";
+
+"Show more" = "もっと表示";
+
+"Update Training Preferences?" = "トレーニング設定を更新しますか？";
+
+"Preferences changed. Please ask again to review the latest values." = "設定が変更されました。最新の値を確認するには、もう一度依頼してください";
+
+"Consider a heavier weight" = "少し重くすることを検討";
+
+"You logged more than 12 reps. If your form stayed steady and you had reps left, consider a small weight increase next time" = "12 回を超えて記録しました。フォームが安定し、まだ余力があれば、次回は少し重量を増やすことを検討してください";
+
+"Exit" = "終了";
+
+"This removes the record from Masso only. Apple Health keeps the original." = "Masso の記録のみ削除します。Apple ヘルスケアの元の記録は残ります。";
+
+"The date ring shows Workout at the top, Diet at the lower left and Sleep at the lower right. Each colored segment shows that day's recorded progress. Grey means no recorded progress; progress above 100% fills the segment." = "日付リングの上部はワークアウト、左下は食事、右下は睡眠です。色付きの弧はその日の記録された達成度を示します。灰色は達成記録なし、100%を超えると区間全体が塗られます。";
+"Your muscles are off duty. Put your phone down and sleep well." = "筋肉も今日はお休み。スマホを置いて、ぐっすり眠りましょう。";
+
+"Fuller arcs mean more progress" = "弧が長いほど達成度が高い";
+
+"Training fills green; rest days aren't failures" = "運動を記録すると緑が満タン。休養日は未達成扱いなし";
+
+"Today's macros vs daily targets" = "今日の三大栄養素を目標と比較";
+
+"Daily overview" = "毎日の概要";
+
+"Recovery & workout" = "筋肉の回復とワークアウト";
+
+"Single metric" = "個別データ";
+
+"Main metric" = "メインデータ";
+
+"Body view" = "体の向き";
+
+"Content" = "表示内容";
+
+"Open Masso to update" = "Massoを開いて更新";
+
+"Your day at a glance" = "今日のデータをひと目で";
+
+"Muscle recovery and your next workout" = "筋肉の回復を確認してトレーニング";
+
+"One metric, your choice" = "気になるデータを選択";
+
+"Full body" = "全身";
+
+/* Muscle recovery list */
+"Muscle recovery" = "筋肉の回復";
+"Most recovered first" = "回復度が高い順";
+
+/* Shared history archive */
+"All history" = "すべての履歴";
+
+/* Separate daily history entries */
+"All diet history" = "すべての食事履歴";
+"All sleep history" = "すべての睡眠履歴";
+
+"All workout history" = "すべてのワークアウト履歴";
+
+/* Lift progress empty state */
+"Keep logging workouts to see your progress" = "トレーニングを記録して、成長を確かめよう";
+
+/* Exercise demo generation — shared server library */
+"demo.title" = "AI エクササイズ動画";
+"demo.credits" = "AI クレジット";
+"demo.available" = "利用可能";
+"demo.reserved" = "予約済み";
+"demo.cost" = "%d クレジット";
+"demo.generate" = "動画を生成";
+"demo.insufficient" = "クレジットが不足しています。追加購入はまだ利用できません";
+"demo.unavailable" = "動画生成は準備中です。クレジットは消費されません";
+"demo.sharing" = "承認された動画は Masso の共有ライブラリに追加されます。送信するのは種目 ID のみで、写真・会話・健康記録は含みません";
+"demo.confirm" = "動画を生成しますか？";
+"demo.confirmBody" = "%d クレジットを予約しますか？承認後にのみ消費されます。失敗・却下時は消費されません。動画は共有ライブラリに追加されます";
+"demo.ready" = "動画の準備ができました";
+"demo.queued" = "順番待ちです。この画面は閉じられます";
+"demo.running" = "生成中です。この画面は閉じられます";
+"demo.review" = "公開前に動画を確認しています";
+"demo.failed" = "生成に失敗しました。予約分は返却されました";
+"demo.corePending" = "この基本種目の動画は準備中です";
+"demo.missing" = "共有動画はまだありません";
+"demo.refresh" = "状態を更新";
+"demo.check" = "再確認";
+"demo.quoteChanged" = "必要クレジットが変更されました。更新してください";
+"demo.unknown" = "この種目は対応ライブラリにありません";
+"demo.plan" = "エクササイズ動画";
+"demo.planHint" = "種目を選んで動画を確認できます。プラン生成だけで有料動画の生成は始まりません";
+
+"Subscription options are unavailable right now" = "現在サブスクリプションを読み込めません";
+
+"Restore web purchase" = "ウェブ購入を復元";
+
+"Basic workout logging and history stay free" = "基本のトレーニング記録と履歴は無料です";
+
+"Compare your lifts over time with Masso Pro" = "Masso Proで種目ごとの成長を確認";
+
+"No active subscription found" = "有効なサブスクリプションがありません";
+
+"Unlimited plans · AI coach · Lift progress" = "無制限のプラン · AIコーチ · 成長の記録";
+
+"AI data sharing" = "AIとのデータ共有";
+
+"ai.dataSharing.explanation" = "AI機能では、トレーニング情報、メッセージ、選択した画像を当社サーバー経由でAnthropic（Claude）またはAlibaba Cloud Bailian（Qwen）へ送信します。選択したスクリーンショット内の情報も含まれます。Appleヘルスケアから取り込んだデータは自動送信しません。設定で許可を取り消せます。許可しますか？";
+
+/* Compact exercise families */
+"Everyday" = "定番";
+"All versions (%d)" = "すべてのバリエーション（%d）";
+"Pinned and recent" = "ピン留め・最近の種目";
+"Suggested replacements" = "おすすめの代替種目";
+
+/* Restored paywall and request-based AI reminders */
+"Use AI without upgrade reminders" = "アップグレードの案内なしで AI を利用";
+"Save a routine for every training day" = "トレーニング日ごとにトレーニングプランを保存";
+"AI without interruptions" = "中断のない AI";
+"Skip upgrade reminders whenever you use AI" = "AI 利用時のアップグレード案内を省略";
+"Lift progress and personalized training summaries" = "種目ごとの進歩と個別のトレーニングまとめ";
+"Fine-grained recovery" = "筋肉ごとの回復";
+"See recovery for individual muscles" = "個々の筋肉の回復状態を確認";
+"Billed yearly" = "年ごとに請求";
+"7-day free trial" = "7 日間無料体験";
+"Subscribe" = "登録する";
+"Continue free" = "無料で続ける";
+"Close this offer to continue your AI request" = "この画面を閉じると AI の処理を続行します";
+"7 days free, then %@ per %@. Renews automatically until cancelled." = "7 日間無料、その後は %@／%@。解約するまで自動更新されます。";
+"%@ per %@. Renews automatically until cancelled." = "%@／%@。解約するまで自動更新されます。";
+"Unlimited routines, uninterrupted AI, deep analytics." = "無制限のトレーニングプラン、中断のない AI、詳細な分析。";
+"Unlimited plans · Uninterrupted AI · Lift progress" = "無制限のトレーニングプラン · 中断のない AI · 種目の進歩";
+"Deep analytics" = "詳細な分析";
+"Try again" = "再試行";
+
+"AI couldn't produce a valid routine. Please try again." = "AIのトレーニングが要件を満たしていません。もう一度お試しください。";
+
+/* Onboarding goals — words only */
+"onboarding.goal.buildMuscle" = "筋肉を増やす";
+"onboarding.goal.getStronger" = "筋力を高める";
+"onboarding.goal.loseFat" = "脂肪を落とす";
+"onboarding.goal.generalFitness" = "健康を保つ";
+"Training schedule" = "トレーニング日程";
+"Training plan" = "トレーニングプラン";
+"Tap muscles to select; tap again to clear" = "筋肉をタップで選択・解除";
+"Session length" = "1回の時間";
+"View plan" = "プランを見る";
+"No target" = "目標なし";
+"Workout %d" = "トレーニング %d";
+"Set your working weights when you train" = "トレーニング時に重量を設定";
+"No exercises match" = "該当する種目がありません";
+"Gym" = "ジム";
+"Bodyweight" = "自重";
+
+"Routine limit reached" = "トレーニングプランの上限に達しました";
+"Continue without saving" = "保存せず続ける";
+"Upgrade" = "アップグレード";
+
+"Preview onboarding" = "初回ガイドをプレビュー";
+
+"equipment.pull_up_bar" = "懸垂バー";
+
+"Pull-up bar" = "懸垂バー";
+
+/* Onboarding body interaction */
+"Tap to select · Pinch to zoom" = "タップで選択 · ピンチで拡大";
+
+/* Muscle detail: focus training request */
+"Train this muscle more" = "この筋肉を重点的に鍛える";
+
+"Choose at least one training day" = "トレーニング日を1日以上選択";
+
+/* Training environment / home equipment */
+"Training environment" = "トレーニング環境";
+"Home" = "自宅";
+"Home equipment" = "自宅の器具";
+"No equipment selected. Bodyweight only." = "器具を選ばない場合は自重で行います";
+"Adjustable bench" = "角度調整ベンチ";
+"equipment.bench_flat" = "フラットベンチ";
+"equipment.squat_rack" = "スクワットラック";
+
+/* Compact Pro brand banner, 2026-10-21 */
+"More plans, fewer interruptions" = "プランは多く、中断は少なく";
+"Explore Pro" = "Pro を見る";
+
+"Watch on YouTube" = "YouTube で再生";
+
+"Weight per dumbbell" = "ダンベル1個の重量";
+
+"Reference from %@" = "%@を参考に設定";
+
+"Update and generate" = "更新して作成";
+
+"Correct this set and update related weight references." = "このセットを修正し、関連種目の参考重量を更新します。";
+
+/* First-run AI Coach launcher tooltip. */
+"Chat about your goals to get a new routine." = "目標を話して、新しいトレーニングプランを作ろう。";
+
+"This workout" = "今回のトレーニング";
+
+"Variants" = "バリエーション";
+
+"Default version" = "基本種目";
+
+"Hide rare variants" = "珍しいバリエーションを非表示";
+
+"Pinned" = "固定済み";
+
+"Video unavailable" = "動画を再生できません";
+
+"Loading video" = "動画を読み込み中";
+
+"Video playing" = "動画を再生中";
+
+
+"Finish saves this workout. Discard removes it from history." = "完了すると保存され、破棄すると履歴から削除されます。";
+"This workout won’t be saved." = "このワークアウトは保存されません。";
+
+"Adjust your daily targets; saved amounts stay fixed." = "毎日の目標を調整できます。保存した量は固定されます。";
+"Automatic carb adjustments apply only before you set a daily carbohydrate target." = "炭水化物は、毎日の目標量を設定するまで自動調整されます。";
+
+"Meal time" = "食事の日時";
+
+"QR code" = "QRコード";
+
+"Calories" = "カロリー";
+
+"Estimated from protein, carbs and fat." = "たんぱく質・炭水化物・脂質から推定。";
+
+"USDA · Food energy" = "USDA · 食品のエネルギー";
+
+"Read body & activity" = "身体・活動データを読み込む";
+
+"Read available history for weight, height, steps and energy." = "利用可能な体重・身長・歩数・エネルギーの履歴を読み込みます。";
+
+"Body measurements" = "身体データ";
+
+"Height" = "身長";
+
+"Use Health weight" = "ヘルスケアの体重を使用";
+
+"Use Health height" = "ヘルスケアの身長を使用";
+
+"Updates your profile and local nutrition targets. Manual targets stay fixed." = "プロフィールと端末内の栄養目標に反映。手動の目標は変更しません。";
+
+"Weight trend" = "体重の推移";
+
+"Today so far" = "今日ここまで";
+
+"Steps" = "歩数";
+
+"Active energy" = "活動エネルギー";
+
+"Resting energy" = "安静時エネルギー";
+
+"Energy burned" = "消費エネルギー";
+
+"Health history" = "健康データの履歴";
+
+"Some data couldn't refresh." = "一部のデータを更新できませんでした。";
+
+"No records yet. Check access and data in Apple Health." = "記録がありません。ヘルスケアのデータとアクセスを確認してください。";
+
+"Imported health data stays on this device and is not sent to AI Coach." = "読み込んだ健康データは端末内に保存され、AI Coachには送信されません。";
+
+"Couldn't read Apple Health. Try again." = "ヘルスケアを読み込めません。再試行してください。";
+
+"Connect body & activity" = "身体・活動データを接続";
+
+"Profile weight" = "プロフィールの体重";
+
+"Targets use weight and training preferences. Health activity is a reference, not an extra food allowance." = "目標は体重とトレーニング設定に基づきます。ヘルスケアの活動は参考情報で、食事量への上乗せはしません。";
+
+"Nutrition targets are estimates based on weight and training preferences. Health activity does not automatically change them." = "栄養目標は体重とトレーニング設定からの推定です。ヘルスケアの活動で自動変更されません。";
+
+"Recorded energy, not a full-day forecast. Your food target stays unchanged." = "記録済みの消費量で、1日の予測ではありません。食事目標は変更しません。";
+
+"Date" = "日付";
+
+"Last synced" = "最終同期";
+
+/* AI Coach: single-session workouts */
+"Single workout" = "単発ワークアウト";
+"Your workout is ready." = "ワークアウトの準備ができました。";
+"Couldn't create this workout. Please try again." = "ワークアウトを作成できませんでした。もう一度お試しください。";
+"About %d min" = "約%d分";
+
+/* Inline exercise family expansion */
+"%@ more versions" = "ほか %@ バージョン";
+"Fewer versions" = "表示を減らす";
+
+/* Workout progress, observed timing and personal heart-rate reminders */
+"Jump to first unfinished set" = "最初の未完了セットへ移動";
+"Rest duration" = "休憩時間";
+"Applies to this rest only." = "今回の休憩のみに適用。";
+"Edit rest time" = "休憩時間を変更";
+"Read workout heart rate" = "トレーニング中の心拍数を読む";
+"Open Masso on Apple Watch" = "Apple WatchでMassoを開く";
+"Live readings need a heart-rate sensor. No reading means no heart-rate warning." = "ライブ測定には心拍センサーが必要です。測定値がないと通知できません。";
+"Reminder limit" = "通知の上限";
+"Over your limit for 15 seconds: pause and rest. This is a personal reminder, not a medical alarm." = "上限超過が15秒続いたら休憩を。個人用の目安であり医療アラームではありません。";
+"No heart-rate samples yet" = "心拍データはまだありません";
+"Heart-rate data stays on this device and is not sent to AI Coach." = "心拍データはこの端末に保存され、AI Coachには送信されません。";
+"Delete heart-rate history" = "心拍履歴を削除";
+"Delete heart-rate history?" = "心拍履歴を削除しますか？";
+"Couldn't connect to Apple Health." = "Appleヘルスケアに接続できませんでした。";
+"Open Masso on your paired Apple Watch to read live heart rate." = "ペアリング済みのApple WatchでMassoを開くとライブ心拍を読めます。";
+"Enter a limit from 40 to 240 bpm." = "40〜240 bpmの上限を入力してください。";
+"Heart rate is above your limit" = "心拍数が通知上限を超えています";
+"Pause and rest" = "一時停止して休憩";
+"Your heart rate stayed above your personal limit for 15 seconds." = "心拍数が設定した上限を15秒間超えました。";
+"Heart rate" = "心拍数";
+"Workout report" = "トレーニングレポート";
+"Logged sets" = "記録済みセット";
+"Tracked set time" = "セット計測時間";
+"Recorded rest" = "記録済み休憩";
+"%d of %d sets have timing" = "%d / %dセットで時間を記録";
+"Tracked time follows the workout controls, not time under tension." = "操作に基づく計測時間で、筋肉に負荷がかかった時間ではありません。";
+"Set timeline" = "セットの時間軸";
+"Sampled heart rate" = "心拍サンプル";
+"Average / peak heart rate" = "平均／最大心拍数";
+"Target duration" = "目標時間";
+"Peak heart rate" = "最大心拍数";
+"Allow more recovery" = "回復時間を増やす";
+"Your readings stayed above your reminder limit. Review this workout before increasing intensity." = "測定値が上限を超え続けました。強度を上げる前に今回の内容を見直しましょう。";
+"Your reps fell while rests were short. Try more recovery between sets." = "短い休憩で回数が減りました。セット間の回復時間を増やしてみましょう。";
+"Review your logged workload and rest before increasing intensity." = "強度を上げる前に記録した負荷と休憩を見直しましょう。";
+"bpm" = "bpm";
+
+"Dismiss" = "閉じる";
+
+"equipment.ab_wheel" = "アブローラー";
+"equipment.abductor_machine" = "マシン";
+"equipment.adductor_machine" = "マシン";
+"equipment.air_bike" = "エアバイク";
+"equipment.arc_trainer" = "クロストレーナー";
+"equipment.assault_bike" = "エアバイク";
+"equipment.axle_bar" = "アクスルバー";
+"equipment.ball" = "バランスボール";
+"equipment.band" = "バンド";
+"equipment.battle_rope" = "バトルロープ";
+"equipment.belt_squat_machine" = "マシン";
+"equipment.bench" = "ベンチ";
+"equipment.bench_decline" = "ベンチ";
+"equipment.bench_incline" = "ベンチ";
+"equipment.bike" = "エアロバイク";
+"equipment.box" = "ボックス";
+"equipment.calf_raise_machine" = "マシン";
+"equipment.captains_chair" = "マシン";
+"equipment.chains" = "チェーン";
+"equipment.dip_bar" = "平行棒";
+"equipment.dip_bars" = "平行棒";
+"equipment.dip_belt" = "ディップベルト";
+"equipment.donkey_calf_machine" = "マシン";
+"equipment.elliptical" = "クロストレーナー";
+"equipment.ez_bar" = "EZバー";
+"equipment.ez_curl_bar" = "EZバー";
+"equipment.fat_grip" = "ファットグリップ";
+"equipment.foam_roller" = "フォームローラー";
+"equipment.ghd_machine" = "マシン";
+"equipment.glute_kickback_machine" = "マシン";
+"equipment.grip_crusher" = "ハンドグリッパー";
+"equipment.gripper" = "ハンドグリッパー";
+"equipment.gymnastic_rings" = "リング";
+"equipment.hack_squat_machine" = "マシン";
+"equipment.hip_thrust_machine" = "マシン";
+"equipment.hyperextension_bench" = "ローマンチェア";
+"equipment.jump_rope" = "縄跳び";
+"equipment.kettlebell" = "ケトルベル";
+"equipment.landmine" = "ランドマイン";
+"equipment.leg_curl_machine" = "マシン";
+"equipment.leg_extension_machine" = "マシン";
+"equipment.leg_press_machine" = "マシン";
+"equipment.medicine_ball" = "メディシンボール";
+"equipment.parallel_bars" = "平行棒";
+"equipment.partner" = "パートナー";
+"equipment.platform" = "ボックス";
+"equipment.plyo_box" = "ボックス";
+"equipment.power_rack" = "ラック";
+"equipment.preacher_bench" = "ベンチ";
+"equipment.push_up_handles" = "プッシュアップバー";
+"equipment.pvc_pipe" = "PVCパイプ";
+"equipment.rack" = "ラック";
+"equipment.resistance_band" = "バンド";
+"equipment.reverse_hyper_machine" = "マシン";
+"equipment.rice_bucket" = "ライスバケット";
+"equipment.rings" = "リング";
+"equipment.roman_chair" = "ローマンチェア";
+"equipment.rope" = "ロープアタッチメント";
+"equipment.rower" = "ローイングマシン";
+"equipment.rowing_machine" = "ローイングマシン";
+"equipment.safety_squat_bar" = "セーフティバー";
+"equipment.sissy_squat_machine" = "マシン";
+"equipment.ski_erg" = "スキーエルゴ";
+"equipment.sled" = "スレッド";
+"equipment.sledgehammer" = "ハンマー";
+"equipment.sliders" = "スライダー";
+"equipment.smith_machine" = "スミスマシン";
+"equipment.spin_bike" = "スピンバイク";
+"equipment.stairmaster" = "ステアクライマー";
+"equipment.stationary_bike" = "エアロバイク";
+"equipment.swiss_ball" = "バランスボール";
+"equipment.t_bar" = "バーベル";
+"equipment.tibialis_machine" = "マシン";
+"equipment.towel" = "タオル";
+"equipment.trap_bar" = "トラップバー";
+"equipment.treadmill" = "トレッドミル";
+"equipment.trx" = "TRX";
+"equipment.v_bar" = "Vバー";
+"equipment.wall" = "壁";
+"equipment.weight_belt" = "ディップベルト";
+"equipment.weight_plate" = "プレート";
+"equipment.wrist_roller" = "リストローラー";
+"equipment.yoga_strap" = "ヨガストラップ";
+
+"equipment.body_only" = "自重";
+
+"Save rest settings?" = "休憩設定を保存しますか？";
+
+"Save to Training Preferences and apply to all workouts?" = "トレーニング設定に保存し、すべてのワークアウトに適用しますか？";
+
+"Create training plans based on this report?" = "このレポートに基づいてトレーニングプランを作成しますか？";
+
+"Generate plans from this report" = "レポートからプランを作成";
+
+"Body photo" = "体の写真";
+
+"Menu" = "メニュー";
+
+"Training or health records" = "トレーニング・健康記録";
+
+"Share or exercise photo" = "共有・種目用の写真";
+
+"Choose image use" = "画像の用途を選択";
+
+"Training plans found. Review before adding." = "プランを検出しました。追加前に確認してください。";
+
+"Couldn't read this image. Choose its use or try a clearer photo." = "画像を読み取れません。用途を選ぶか、鮮明な写真で再試行してください。";
+
+"Add a message or let AI identify the image." = "説明を追加するか、AIに画像の用途を判断させます。";
+
+"Review this image" = "この画像を確認";
+
+"Review routines" = "プランを確認";
+
+"Adapt to my preferences" = "自分の設定に合わせる";
+
+"Check portions and meal time before saving." = "保存前に量と食事時刻を確認してください。";
+
+"Choose what you ate before logging a meal." = "食べたものを入力してから記録してください。";
+
+"Possible exercises" = "候補の種目";
+
+"Screenshot values are not added to your records." = "スクリーンショットの値は記録に追加されません。";
+
+"View my records" = "自分の記録を見る";
+
+"Use as share photo" = "共有用の写真にする";
+
+"Use as exercise photo" = "種目の写真にする";
+
+"Change image use" = "画像の用途を変更";
+
+"Reading image…" = "画像を読み取り中…";
+
+"Several plan codes found. Upload one share card at a time." = "複数のプランコードがあります。共有カードを1枚ずつアップロードしてください。";
+
+"Image analysis is unavailable. Try again." = "画像分析を利用できません。もう一度お試しください。";
+
+"AI permission wasn't granted. Your image wasn't sent." = "AI利用が許可されていないため、画像は送信されませんでした。";
+
+"Allow" = "許可";
+
+// Regional exercise tutorials
+"Watch tutorial" = "チュートリアルを見る";
+"Watch on bilibili" = "bilibiliで見る";
+"Search on bilibili" = "bilibiliで検索";
+
+"Same target muscles" = "同じ対象筋";
+
+"Switch exercise" = "種目を切り替え";
+
+"exercise.media.unverified" = "未確認";
+
+
+
+/* One-off quick workout */
+"AI Quick Workout" = "AI クイックトレーニング";
+"Let AI recommend" = "AI におまかせ";
+"Mobility & stretching" = "可動性とストレッチ";
+"Training type" = "トレーニングの種類";
+"Intensity" = "強度";
+"Easy" = "軽め";
+"Moderate" = "中程度";
+"High intensity" = "高強度";
+"Use saved equipment" = "保存した器具を使う";
+"%lld min" = "%lld 分";
+"Time is an estimate including rests. These choices apply only to this workout." = "休憩を含む推定時間です。選択は今回のトレーニングにのみ適用されます。";
+"Anything else?" = "その他の希望";
+"Goals, focus or movements to avoid" = "目標、重点、避けたい動作";
+"Generate this workout" = "今回のトレーニングを作成";
+"Wait for the current response before generating another workout." = "現在の応答が完了するまでお待ちください。";
+
+"Show recovery in workout calendar" = "ワークアウトカレンダーに回復を表示";
+"After a recorded workout, the calendar shows a shorter green bar for two rest days. This is a time-based guide, not a muscle recovery measurement." = "記録したワークアウト後、2日間の休息日に短くなる緑のバーを表示します。時間に基づく目安で、筋肉の回復を測定したものではありません。";
+"Recovery day" = "回復日";
+
+/* Exercise media reports */
+"Report exercise media" = "動作の素材を報告";
+"What is wrong?" = "問題の内容";
+"Wrong exercise" = "動作が違う";
+"Wrong equipment" = "器具が違う";
+"Image or video problem" = "画像または動画の問題";
+"Add details (optional)" = "詳細を追加（任意）";
+"The exercise and displayed media version are included with your report." = "レポートには動作と表示中の素材のバージョンが含まれます。";
+
+"Exercise" = "エクササイズ";
+
+"Choose a previous meal" = "以前の食事を選択";
+
+"Health & Features" = "ヘルスケアと機能";
+"App Preferences" = "アプリ設定";
+"Privacy & Data" = "プライバシーとデータ";
+
+"Using recommendation" = "推奨値を使用中";
+
+"Reset to recommendation" = "推奨値に戻す";
+
+"Based on your recent workout heart rates and age when available." = "最近の運動時の心拍数と、利用可能な年齢に基づきます。";
+
+"Estimated from your age; it will adjust as workout data becomes available." = "年齢から推定しています。運動データが増えると調整されます。";
+
+"Starting estimate until your age or workout heart-rate history is available." = "年齢や運動時の心拍履歴がないため、初期推定値を使用します。";
+
+"Recommendations are estimates, not a medical safety limit. Medication and health conditions can affect heart rate." = "推奨値は推定であり、医学的な安全上限ではありません。薬や健康状態が心拍数に影響することがあります。";
+
+"Exercises and heart rate" = "種目と心拍数";
+
+"Gaps indicate missing or untracked samples." = "空白は測定値がないか記録されていない部分です。";
+
+"Above your reminder limit" = "通知の上限を超過";
+
+"During %@, heart rate reached %d bpm. Consider slowing down and resting if needed." = "%@中の心拍数は %d bpm に達しました。必要に応じてペースを落として休みましょう。";
+
+"Heart rate settings" = "心拍数の設定";
+
+"Connect heart rate" = "心拍数を接続";
+
+"Allow heart-rate access to see available workout readings." = "心拍数へのアクセスを許可すると、利用可能な運動記録を確認できます。";
+
+"Exercise duration" = "種目の時間";
+
+"No workout timing yet" = "運動時間の記録はまだありません";
+
+"Some timing is unavailable" = "一部の時間が記録されていません";
+
+"If access was denied, update Masso's permissions in the Health app." = "アクセスを拒否した場合は、ヘルスケアアプリでMassoの権限を変更してください。";
+
+"Some samples have no saved reminder limit." = "一部の測定値には通知上限が保存されていません。";
+
+"No recorded reminders" = "記録された通知はありません";
+
+"Heart-rate reminders" = "心拍数の通知";
+
+"No sustained above-limit episodes" = "通知上限を継続して超えた記録はありません";
+
+"Consider slowing down or resting." = "ペースを落とすか、休憩を検討してください。";
+
+"Expand heart rate card" = "心拍数カードを展開";
+"Collapse heart rate card" = "心拍数カードを折りたたむ";
+
+"Show heart rate card" = "心拍数カードを表示";
+
+"Automatic heart rate control" = "心拍数による自動操作";
+
+"Experimental: heart rate changes can automatically log a set or skip rest. Readings may be delayed or incorrect; use Undo if needed." = "実験的機能：心拍数の変化によりセットの記録や休憩のスキップを自動で行います。読み取りが遅れたり不正確な場合は取り消してください。";
+
+"Set logged automatically" = "セットを自動記録しました";
+
+"Rest skipped automatically" = "休憩を自動でスキップしました";
+
+"Report" = "レポート";
+
+"Save plans & start" = "プランを保存して開始";
+
+"Want to adjust your training plan? Ask AI Coach." = "トレーニングプランを調整したい？AIコーチに相談しましょう。";
+"Share a body photo for training suggestions." = "体の写真を共有して、トレーニングの提案を受けましょう。";
+"Review my body photo and suggest balanced training adjustments." = "体の写真を確認し、バランスのよいトレーニング調整を提案してください。";
+
+"What are your training goals and focus areas?" = "トレーニングの目標と重点的に鍛えたい部位は？";
+"When and where would you like to train?" = "いつ、どこでトレーニングしたいですか？";
+
+"The muscle map shows which areas you have trained." = "筋肉マップで、鍛えた部位を確認できます。";
+
+"Suggested focus" = "おすすめの重点部位";
+"Create a plan from these suggestions" = "提案に基づいてプランを作成";
+
+"Create a plan" = "プランを作成";
+
+/* Accomplishment share */
+"Training that gets you." = "Training that gets you.";
+"This month, %d training days" = "This month, %d training days";
+"This week, %d training days" = "This week, %d training days";
+"As of %@" = "As of %@";
+"%d sessions" = "%d sessions";
+"Sessions" = "Sessions";
+"No workouts logged" = "No workouts logged";
+"Just finished" = "Just finished";
+"This day's records" = "This day's records";
+"No completed sets to share" = "No completed sets to share";
+"Morning" = "Morning";
+"Afternoon" = "Afternoon";
+"Evening" = "Evening";
+"Night" = "Night";
+"Same exercise, another step" = "Same exercise, another step";
+"per dumbbell" = "per dumbbell";
+"%@ · same reps" = "%@ · same reps";
+"Share this progress" = "Share this progress";
+"Exact time" = "Exact time";
+"Photo included" = "Photo included";
+"Heart rate, body weight, location, and your name stay off this card." = "Heart rate, body weight, location, and your name stay off this card.";
+"A missing log is not a missed workout" = "A missing log is not a missed workout";
+"Future day" = "Future day";
+"No workout logged" = "No workout logged";
+"No same-reps weight increase to share yet" = "No same-reps weight increase to share yet";
+"Minutes" = "Minutes";
+
+// Calendar calorie examples
+"Recorded calories vs daily calorie target" = "記録したカロリーと1日の目標の比較";
+"Below calorie target" = "カロリー目標未満";
+"Above calorie target" = "カロリー目標超過";
+"Well above calorie target" = "カロリー目標を大きく超過";
+"Far above calorie target" = "カロリー目標を非常に大きく超過";
+
+/* Parameter suggestion, distinct from a user-entered target. */
+"Suggested" = "提案";
+
+/* Cross-exercise starting estimates: explicit evidence and limitations. */
+"Confirmed bench press 6RM" = "確認済みベンチプレス6RM";
+"Mark only an existing set: six full-range reps, no assistance or momentum, about 2 seconds up and down, with no seventh clean rep possible. You should already be familiar with the lift. No extra maximum test is needed." = "既存の記録のみを指定してください。慣れた動作で、補助や反動なしに全可動域を6回、上げ下げ各約2秒で行い、正しい7回目はできなかったセットです。追加の最大重量テストは不要です。";
+"Six completed reps and a positive weight are required." = "完了した6回と、0より大きい重量が必要です。";
+"Estimate basis" = "推定の根拠";
+"Initial estimate from %@. A small study predicts six-rep maximums; Masso uses 75%% of that estimate, rounded down. Adjust after the first set." = "%@を参考にした初期推定です。小規模研究の6RM予測の75%%を切り下げて使用します。最初のセット後に調整してください。";
+"Masso currently limits this estimate to men aged 18–30, a confirmed 30–70 kg reference from the last 30 days, and 6–12 target reps." = "Massoでは現在、18〜30歳の男性、過去30日以内に確認した30〜70 kgのベンチプレス記録、目標6〜12回に限定しています。";
+"Research source" = "研究資料";
+
+"Edit set" = "セットを編集";
+
+// Partner referral redemption
+"Referral code" = "紹介コード";
+"Have a referral code?" = "紹介コードをお持ちですか？";
+"Check referral code" = "紹介コードを確認";
+"Redeem with Apple" = "Appleで引き換える";
+"Checking a code binds your referral and shares an anonymous identifier and subscription transactions with Masso for referral accounting. Your health and training data are not shared." = "コードの確認により紹介元が登録され、紹介報酬の集計用に匿名IDとサブスクリプション取引がMassoに送信されます。健康・トレーニングデータは共有されません。";
+"Couldn’t check this code. It may be unavailable, already bound, or the service may be offline. Try again later." = "コードを確認できません。無効、登録済み、またはサービスがオフラインの可能性があります。後でもう一度お試しください。";
+"Apple confirms eligibility, the actual price, trial and renewal terms. Your discount is active only after Apple confirms redemption. This offer applies to the annual subscription." = "利用資格、実際の価格、体験期間、更新条件はAppleが確認します。Appleが引き換えを確認してから割引が適用されます。この特典は年間プランが対象です。";
+
+/* Personal working-load relationships */
+"Estimated from your recorded working weights for %@ across multiple workouts at the same reps. Adjust after the first set." = "複数のワークアウトで記録した %@ の同じ回数のトレーニング重量から推定します。最初のセット後に調整してください。";
+"Requires five consistent workout dates, including a separate validation workout, and a recent source record. This is a starting reference, not a strength measurement." = "5日分の安定した記録（うち1回は独立した検証用）と、参照種目の最近の記録が必要です。開始時の参考値であり、筋力の測定値ではありません。";
+
+"Copy code and redeem with Apple" = "コードをコピーして Apple で引き換える";
+"Your code is copied. Paste it into Apple’s redemption sheet if asked." = "コードをコピーしました。求められた場合は Apple の引き換え画面に貼り付けてください。";
+"Apple’s redemption sheet couldn’t open. Please try again." = "Apple の引き換え画面を開けませんでした。もう一度お試しください。";
+
+/* Quiet load progression */
+"Weight progression" = "重量の進め方";
+"Maintain current weights" = "現在の重量を維持";
+"Pause weight suggestions for all exercises. Your workout targets stay unchanged." = "すべての種目で重量の提案を一時停止します。現在のトレーニング目標は変わりません。";
+"Stage weight limit" = "この段階の重量上限";
+"These preferences only limit progression suggestions. They do not change saved weights or define a safe maximum." = "この設定は重量の進め方の提案だけを制限します。保存済みの重量は変更せず、安全な最大重量を示すものでもありません。";
+"Global maintenance mode is on." = "全体の維持モードが有効です。";
+"Optional next weight" = "次回の重量候補";
+"Repeated workouts reached the rep range. Only consider an increase if your form stayed steady and you had reps left." = "複数回のトレーニングで目標の回数範囲に達しました。フォームが安定し、まだ数回できる余力がある場合にのみ増量を検討してください。";
+"Use suggested weight" = "提案された重量を使う";
+"No weight increase suggested." = "重量を増やす提案はありません。";
+"Suggestions depend on your goal and repeated workouts. Keeping the same weight is also an option." = "提案は目標と複数回の記録に基づきます。現在の重量を維持することも選べます。";
+
+"First-use calibration" = "初回の重量設定";
+
+"Based on your saved weight for %@. This is a starting reference; adjust after your first set." = "保存された%@の重量に基づく開始時の目安です。最初のセット後に調整してください。";
+
+"Rough starting weight from your completed set of %@ and reps, using a product ratio and a 70%% multiplier. Not a measured maximum or safety guarantee; adjust for your equipment and first set." = "%@で完了したセットの重量と回数から、製品上の比率と70%%の係数で算出した大まかな開始重量です。実測の限界値や安全性の保証ではありません。器具と最初のセットに合わせて調整してください。";
+
+"Unlimited plans & custom exercises" = "プラン保存数の制限なし・カスタム種目";
+"Training progress insights" = "トレーニングの進歩を分析";
+
+"7 days free, then renews yearly at the price above until cancelled." = "7日間無料。その後は上記の年額料金で、解約まで毎年自動更新されます。";
+"7 days free, then renews monthly at the price above until cancelled." = "7日間無料。その後は上記の月額料金で、解約まで毎月自動更新されます。";
+"Renews yearly at the price above until cancelled." = "上記の年額料金で、解約まで毎年自動更新されます。";
+"Renews monthly at the price above until cancelled." = "上記の月額料金で、解約まで毎月自動更新されます。";
+
+
+/* Approved Pro-boundary candidate. Server quotas remain release-gated. */
+"Keep adapting with AI Coach" = "AIコーチと継続して調整";
+"Adjust workouts around your time and equipment." = "時間と器具に合わせてトレーニングを調整。";
+"See progress and recovery" = "進歩と回復を確認";
+"Lift trends and per-muscle recovery estimates." = "筋力の推移と筋群ごとの回復推定。";
+"More room for your training" = "トレーニングの幅を広げる";
+"Save more plans and create more exercises." = "プランとカスタム種目をさらに追加。";
+"Free: %d plans and %d custom exercises" = "無料：プラン%d件・カスタム種目%d件";
+"Free and Pro details" = "無料版とProの詳細";
+"Complete workouts, history, basic charts and data export stay available." = "トレーニングの実行、履歴、基本グラフ、データ書き出しは引き続き利用できます。";
+"Existing plans, exercises and acquired results remain usable after Pro expires." = "Pro終了後も既存のプラン・種目・取得済みの結果を利用できます。";
+"More with Pro" = "Proでさらに便利に";
+"Ongoing AI adjustments, more saved plans and custom exercises, lift progress and detailed recovery estimates." = "継続的なAI調整、より多くのプランとカスタム種目、筋力分析、詳細な回復推定。";
+"AI access" = "AIの利用について";
+"Each listed AI task has one successful free experience. Free also includes %d shared text tasks per month. A task includes %d same-goal adjustments within %d hours." = "記載された各AIタスクを1回成功まで無料体験できます。さらに毎月、共通のテキストタスク%1$d回分を利用できます。各タスクには同じ目標に対する%3$d時間以内の調整%2$d回が含まれます。";
+"Failed requests, clarification, local tools and reopening results do not use AI quota." = "失敗したリクエスト、確認、ローカルツール、結果の再表示はAI枠を消費しません。";
+"Free AI requests continue after closing the upgrade reminder. Pro skips these reminders." = "アップグレード案内を閉じると無料AIを続けられます。Proではこの案内を表示しません。";
+"Existing purchases keep their rights. AI needs internet access and your data-sharing permission." = "購入済みの権利は維持されます。AIにはインターネット接続とデータ共有への同意が必要です。";
+"Preview only: the shared quota service is not connected." = "プレビューのみ：共有利用枠サービスは未接続です。";
+"Free" = "無料";
+
+/* Device-install policy and native user-message actions. */
+"AI access on this device" = "この端末のAI利用ルール";
+"AI allowances are stored only on this device installation. Changing devices or reinstalling may reset them; they are not shared across devices." = "AI利用枠はこの端末のインストール内だけに保存されます。端末変更や再インストールでリセットされる場合があり、端末間で共有しません。";
+"Each supported AI task has one successful free experience on this installation. Free also includes 2 shared text tasks per calendar month (UTC). Repeat images and ongoing reviews need Pro." = "対応する各AIタスクを初回成功まで無料体験できます。毎暦月（UTC）に共通のテキストタスク2回も含みます。画像の再利用と継続的なレビューはProが必要です。";
+"A task includes 2 same-goal adjustments within 24 hours. Failed requests, clarification, local tools and reopening saved results do not use the allowance." = "同じ目標の24時間以内の調整2回を含みます。失敗、確認、ローカルツール、保存結果の再表示は枠を使いません。";
+"Existing purchased and lifetime rights are kept. No experimental 30-task or 10-image limit is applied to existing paid users." = "既存の購入・買い切りの権利は維持されます。既存有料ユーザーに実験的な30タスク・10画像の上限は適用しません。";
+"Automatic recommendations have a separate budget of one successful result per day; they do not spend your active AI allowance." = "自動おすすめは別枠で1日1回の成功結果までです。手動AI利用枠を消費しません。";
+"Existing users have 30 days from this notice before the new AI limits apply. Previous use is not counted retroactively." = "既存ユーザーはこの案内から30日後に新しい制限が適用されます。過去の利用は遡って数えません。";
+"AI access and saved results" = "AI利用と保存結果";
+"Saved AI results" = "保存済みAI結果";
+"No saved AI results yet." = "保存済みAI結果はありません。";
+"Saved AI result" = "保存済みAI結果";
+"Monthly text tasks used: %d of 2" = "今月のテキスト利用：%d / 2";
+"Copy message" = "メッセージをコピー";
+"Edit and resend" = "編集して再送信";
+"Editing text only. Sending adds a new message; your previous draft is kept." = "テキストのみ編集します。送信で新しいメッセージを追加し、元の下書きは保持します。";
+"Cancel edit" = "編集をキャンセル";
+"This AI task needs Pro. Your saved results remain available." = "このAIタスクにはProが必要です。保存済み結果は引き続き利用できます。";
+"Make room in My Plans before generating. Existing plans and training history are not deleted." = "生成前にマイプランの保存枠を空けてください。既存のプランや履歴は削除しません。";
+"This AI task is already running. Please wait." = "このAIタスクは実行中です。お待ちください。";
+"Review AI access on this device before continuing." = "続行前にこの端末のAI利用ルールをご確認ください。";
+"AI access could not be saved on this device. Nothing was charged." = "この端末にAI利用状態を保存できませんでした。回数は消費していません。";
+"Today's automatic AI recommendation is already available." = "本日の自動AIおすすめは取得済みです。";
+
+/* Source extraction and saved recovery snapshot */
+"Source content could not be read. Paste the article, transcript or exercise list; no AI experience was used." = "資料を読めません。本文・字幕・種目一覧を貼り付けてください。体験枠は未消費です。";
+"The source card count could not be confirmed. Nothing was saved and no AI experience was used." = "カード数が不明です。保存・消費していません。";
+"Source exercises or parameters could not be verified. Nothing was substituted or saved." = "元の種目や値を確認できません。置換・保存していません。";
+"Confirm an exact library match before importing:" = "正確なライブラリ種目を確認：";
+"Extracted from your source. Review before saving." = "資料から抽出しました。確認して保存してください。";
+"Suggested defaults for missing source parameters:" = "未記載の値の推奨初期値：";
+"A recovery snapshot needs at least 14 days of history, 6 recent sets and recent muscle data." = "14日以上の履歴、最近6セットと筋群データが必要です。";
+"Recovery snapshot" = "回復スナップショット";
+"Preview recovery snapshot" = "回復の記録を体験";
+"View saved recovery snapshot" = "保存済み回復記録を見る";
+"A saved training-based estimate, not a live or medical measurement." = "トレーニングの推定。リアルタイム・医学的測定ではありません。";
+
+"Text only. New message. Draft kept." = "テキストのみ・新規送信・下書き保持";

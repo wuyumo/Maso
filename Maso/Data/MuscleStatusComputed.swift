@@ -53,16 +53,16 @@ enum MuscleStatusCompute {
     /// 用 expandAnatomyMuscles 展开 — 训练动作的 .chest 自动点亮所有 sub-chest.
     static func muscleFatigueMap(
         sets: [SetRecord],
-        exById: [String: Exercise]
+        exById: [String: Exercise],
+        now: Date = Date()
     ) -> [MuscleGroup: Double] {
-        let now = Date()
         let lambda = log(2.0) / halfLifeSeconds
 
         var stressByMuscle: [MuscleGroup: Double] = [:]
         for s in sets {
             guard let ex = exById[s.exerciseId] else { continue }
             let elapsed = now.timeIntervalSince(s.performedAt)
-            guard elapsed > 0, elapsed < maxAgeSeconds else { continue }
+            guard elapsed >= 0, elapsed < maxAgeSeconds else { continue }
             let decay = exp(-lambda * elapsed)
 
             // 区分 primary / synergist — primary 肌肉吃 full stress, synergist 吃 40%
@@ -92,6 +92,66 @@ enum MuscleStatusCompute {
         return result
     }
 
+    struct RecoveryPoint: Identifiable {
+        var id: Date { date }
+        let date: Date
+        let recovered: Double
+    }
+
+    struct RecoverySummary: Identifiable {
+        let region: MuscleBodyRegion
+        let muscle: MuscleGroup
+        /// Nil means no recorded training, not a measured 100% recovery.
+        let recovered: Double?
+        var id: MuscleGroup { muscle }
+    }
+
+    /// Match the model's compound surfaces, merging left/right into one row.
+    /// Known values descend; unknown muscles follow in stable model order.
+    static func recoverySummaries(regions: [MuscleBodyRegion], sets: [SetRecord],
+                                  exById: [String: Exercise], now: Date = Date()) -> [RecoverySummary] {
+        let fatigue = muscleFatigueMap(sets: sets, exById: exById, now: now)
+        var trained = Set<MuscleGroup>()
+        for record in sets where record.performedAt <= now {
+            guard let exercise = exById[record.exerciseId] else { continue }
+            trained.formUnion(expandAnatomyMuscles(exercise.primaryMuscles + exercise.muscleGroups))
+        }
+        var seen = Set<Set<MuscleGroup>>()
+        let rows: [RecoverySummary] = regions.compactMap { region in
+            guard region.fatigueEligible, let muscle = region.muscles.first,
+                  seen.insert(Set(region.muscles)).inserted else { return nil }
+            let targets = Set(expandAnatomyMuscles(region.muscles))
+            let recovery = trained.isDisjoint(with: targets) ? nil : 1 - region.fatigue(in: fatigue)
+            return RecoverySummary(region: region, muscle: muscle, recovered: recovery)
+        }
+        return rows.enumerated().sorted { lhs, rhs in
+            let left = lhs.element.recovered ?? -1
+            let right = rhs.element.recovered ?? -1
+            return left == right ? lhs.offset < rhs.offset : left > right
+        }.map(\.element)
+    }
+    static func recoveryTimeline(muscles: [MuscleGroup], sets: [SetRecord], exById: [String: Exercise], now: Date = Date()) -> [RecoveryPoint] {
+        let targets = Set(expandAnatomyMuscles(muscles))
+        let relatedIDs = Set(exById.values.filter {
+            !targets.isDisjoint(with: expandAnatomyMuscles($0.primaryMuscles + $0.muscleGroups))
+        }.map(\.id))
+        let recorded = sets.filter { relatedIDs.contains($0.exerciseId) && $0.performedAt <= now }
+        guard !recorded.isEmpty else { return [] }
+        let start = now.addingTimeInterval(-7 * 86400)
+        let recent = recorded.filter { $0.performedAt >= start.addingTimeInterval(-maxAgeSeconds) }
+        var dates = Set((0...28).map { start.addingTimeInterval(Double($0) * 6 * 3600) })
+        dates.insert(now)
+        for record in recent where record.performedAt >= start {
+            dates.insert(record.performedAt)
+            dates.insert(max(start, record.performedAt.addingTimeInterval(-1)))
+        }
+        return dates.sorted().map { date in
+            let map = muscleFatigueMap(sets: recent, exById: exById, now: date)
+            let fatigue = targets.map { map[$0] ?? 0 }.max() ?? 0
+            return RecoveryPoint(date: date, recovered: min(1, max(0, 1 - fatigue)))
+        }
+    }
+
     /// 恢复四档 — 阈值跟 opacity 映射一致, 输出语义档位而非透明度.
     /// 颜色/透明度由视图层决定 (MasoColor.recoveryHeatStyle):
     /// 绿=练过点亮 (越累越亮), 灰=没点亮=该去练 (owner 二轮拍板, 反转试过后撤回).
@@ -103,7 +163,11 @@ enum MuscleStatusCompute {
     }
 
     static func tierFor(muscle m: MuscleGroup, fatigueMap: [MuscleGroup: Double]) -> RecoveryTier {
-        guard let fatigue = fatigueMap[m], fatigue >= 0.12 else { return .fresh }
+        tierFor(fatigue: fatigueMap[m] ?? 0)
+    }
+
+    static func tierFor(fatigue: Double) -> RecoveryTier {
+        guard fatigue.isFinite, fatigue >= 0.12 else { return .fresh }
         if fatigue >= 0.65 { return .fatigued }
         if fatigue >= 0.35 { return .recovering }
         return .mostlyRecovered

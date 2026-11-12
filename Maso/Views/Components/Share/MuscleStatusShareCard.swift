@@ -20,6 +20,7 @@ struct MuscleStatusShareCard: View {
 
     private var todayLabel: String {
         let df = DateFormatter()
+        df.locale = LanguageManager.currentLocale
         df.dateStyle = .medium
         df.timeStyle = .none
         return df.string(from: Date())
@@ -27,9 +28,13 @@ struct MuscleStatusShareCard: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            SharePhotoBanner(photo: userPhoto, onTapToAdd: onTapAddPhoto)
+            if onTapAddPhoto != nil {
+                ShareSelectableCard(id: "muscle-photo", title: NSLocalizedString("Photo", comment: "")) {
+                    SharePhotoBanner(photo: userPhoto, onTapToAdd: onTapAddPhoto)
+                }.padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
+            }
             VStack(spacing: 14) {
-                Spacer(minLength: userPhoto == nil ? 24 : 12)
+                Spacer(minLength: 24)
 
                 // 标题
                 VStack(spacing: 4) {
@@ -42,15 +47,13 @@ struct MuscleStatusShareCard: View {
                         .foregroundStyle(MasoColor.text)
                 }
 
+                ShareSelectableCard(id: "muscle-map", title: NSLocalizedString("Muscle Status", comment: "")) {
                 // BodyHint — 同 HistoryScreen 同尺寸 + 同衰减 mapping
-                BodyHint(
-                    muscles: [],
-                    height: 200,
-                    heatStyleFor: muscleStyle,
-                    coarseOnly: coarseOnly
-                )
+                ShareMuscleMap2D(muscleStyle: muscleStyle, height: 148)
                 .padding(.top, 4)
 
+                }
+                ShareSelectableCard(id: "muscle-summary", title: NSLocalizedString("Workouts", comment: "")) {
                 // 关键数据 — 标签走本地化 (跟 ShareCardFooter 的 stat 标签同一套键)
                 HStack(spacing: 18) {
                     ShareStat(value: "\(workoutsThisWeek)", label: NSLocalizedString("Workouts", comment: ""))
@@ -59,12 +62,13 @@ struct MuscleStatusShareCard: View {
                 }
                 .padding(.top, 4)
 
+                }
                 Spacer(minLength: 20)
             }
-            .padding(.horizontal, 24)
+            .padding(.horizontal, ShareLayout.contentInset)
             .frame(maxWidth: .infinity)
 
-            ShareCardFooter(qrPayload: MasoLinks.appStore)
+            ShareCardFooter(qrPayload: MasoLinks.appStore, photo: userPhoto, photoSelectionID: "muscle-photo")
         }
         .background(MasoColor.background)
     }

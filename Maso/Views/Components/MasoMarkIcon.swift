@@ -1,6 +1,6 @@
 import SwiftUI
 
-// Maso M 标志 — 小尺寸版本.
+// Masso M 标志 — 小尺寸版本.
 // 新一套素材 (2026-05) 取消了 BrandLogo (大) vs MarkIcon (小) 的 path 数据差异 —
 // 两个组件都用同一套 320×320 path (`MasoBrandLogo.swift` 里的 BrandBar1/2/3 + BrandEcho1/2),
 // 只是 caller 控制 frame 不同.

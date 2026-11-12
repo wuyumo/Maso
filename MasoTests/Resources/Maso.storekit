@@ -1,0 +1,144 @@
+{
+  "identifier": "c27b1310-7cae-418d-9618-3436797ed536",
+  "nonRenewingSubscriptions": [],
+  "products": [],
+  "settings": {
+    "_applicationInternalID": "6776689750",
+    "_developerTeamID": "TW8ZVVX529",
+    "_failTransactionsEnabled": false,
+    "_lastSynchronizedDate": 0,
+    "_locale": "en_US",
+    "_storefront": "USA",
+    "_storeKitErrors": [
+      {
+        "current": null,
+        "enabled": false,
+        "name": "Load Products"
+      },
+      {
+        "current": null,
+        "enabled": false,
+        "name": "Purchase"
+      },
+      {
+        "current": null,
+        "enabled": false,
+        "name": "Verification"
+      },
+      {
+        "current": null,
+        "enabled": false,
+        "name": "App Store Sync"
+      },
+      {
+        "current": null,
+        "enabled": false,
+        "name": "Subscription Status"
+      },
+      {
+        "current": null,
+        "enabled": false,
+        "name": "App Transaction"
+      },
+      {
+        "current": null,
+        "enabled": false,
+        "name": "Manage Subscriptions Sheet"
+      },
+      {
+        "current": null,
+        "enabled": false,
+        "name": "Refund Request Sheet"
+      },
+      {
+        "current": null,
+        "enabled": false,
+        "name": "Offer Code Redeem Sheet"
+      }
+    ]
+  },
+  "subscriptionGroups": [
+    {
+      "id": "22493576",
+      "localizations": [
+        {
+          "description": "Masso Pro 订阅",
+          "displayName": "Masso Pro",
+          "locale": "zh_Hans"
+        },
+        {
+          "description": "Masso Pro subscription",
+          "displayName": "Masso Pro",
+          "locale": "en_US"
+        }
+      ],
+      "name": "Masso Pro",
+      "subscriptions": [
+        {
+          "adHocOffers": [],
+          "codeOffers": [],
+          "displayPrice": "4.99",
+          "familyShareable": false,
+          "groupNumber": 1,
+          "internalID": "6824543049",
+          "localizations": [
+            {
+              "description": "Unlimited routines, AI without upgrade reminders, and deep analytics.",
+              "displayName": "Masso Pro — Monthly",
+              "locale": "en_US"
+            },
+            {
+              "description": "无限训练、免提醒 AI 和深度分析。",
+              "displayName": "Masso Pro — 月度",
+              "locale": "zh_Hans"
+            }
+          ],
+          "productID": "com.yumowu.maso.pro.monthly",
+          "recurringSubscriptionPeriod": "P1M",
+          "referenceName": "Pro Monthly",
+          "subscriptionGroupID": "22493576",
+          "type": "RecurringSubscription",
+          "introductoryOffer": {
+            "internalID": "6824543049-trial7",
+            "paymentMode": "free",
+            "subscriptionPeriod": "P1W"
+          }
+        },
+        {
+          "adHocOffers": [],
+          "codeOffers": [],
+          "displayPrice": "29.99",
+          "familyShareable": false,
+          "groupNumber": 1,
+          "internalID": "6824543280",
+          "localizations": [
+            {
+              "description": "Unlimited routines, AI without upgrade reminders, and deep analytics.",
+              "displayName": "Masso Pro — Yearly",
+              "locale": "en_US"
+            },
+            {
+              "description": "无限训练、免提醒 AI 和深度分析。",
+              "displayName": "Masso Pro — 年度",
+              "locale": "zh_Hans"
+            }
+          ],
+          "productID": "com.yumowu.maso.pro.yearly",
+          "recurringSubscriptionPeriod": "P1Y",
+          "referenceName": "Pro Yearly",
+          "subscriptionGroupID": "22493576",
+          "type": "RecurringSubscription",
+          "introductoryOffer": {
+            "internalID": "6824543280-trial7",
+            "paymentMode": "free",
+            "subscriptionPeriod": "P1W"
+          }
+        }
+      ]
+    }
+  ],
+  "version": {
+    "major": 4,
+    "minor": 0
+  }
+}

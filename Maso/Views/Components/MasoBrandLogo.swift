@@ -1,6 +1,16 @@
 import SwiftUI
 
-// Maso 品牌 logo — 5 根斜柱叠层版.
+enum MasoBrand {
+    static let slogan: LocalizedStringKey = "Train smart, your way."
+    /// Launch copy omits terminal full stops; other brand surfaces retain approved punctuation.
+    static var splashSlogan: String {
+        NSLocalizedString("Train smart, your way.", comment: "Brand slogan")
+            .trimmingCharacters(in: CharacterSet(charactersIn: ".。．"))
+    }
+}
+
+
+// Masso 品牌 logo — 5 根斜柱叠层版.
 // 直接从 `Maso Green.svg` / `Maso Black.svg` / `Maso white.svg` 解析的 path, viewBox 320×320.
 //
 // 2026-06-16: 跟最新一版 SVG 对齐 —— 新 SVG 是**纯平**的 (只有 5 个 path 各带 opacity,
@@ -83,15 +93,15 @@ struct BrandEcho1: Shape {
     func path(in rect: CGRect) -> Path {
         let c = BrandSVGScale.map(rect)
         var p = Path()
-        p._move(202.245, 81.3876, c)
-        p._curve(to: (212.144, 76.6644), c1: (202.103, 76.188), c2: (208.192, 73.2824), c)
-        p._line(234.265, 95.5946, c)
-        p._curve(to: (241.238, 109.83), c1: (238.451, 99.1768), c2: (240.973, 104.327), c)
+        p._move(196.939, 81.4358, c)
+        p._curve(to: (212.838, 77.2582), c1: (199.327, 74.8748), c2: (207.533, 72.7186), c)
+        p._line(233.452, 94.8993, c)
+        p._curve(to: (237.505, 110.324), c1: (237.886, 98.6937), c2: (239.501, 104.84), c)
         p._line(247.044, 230.653, c)
-        p._curve(to: (242.804, 237.425), c1: (247.184, 233.575), c2: (245.494, 236.275), c)
-        p._line(224.529, 245.24, c)
-        p._curve(to: (206.422, 233.644), c1: (216.092, 248.848), c2: (206.674, 242.816), c)
-        p._line(202.245, 81.3876, c)
+        p._curve(to: (242.497, 237.558), c1: (247.184, 233.575), c2: (245.546, 236.254), c)
+        p._line(223.925, 245.5, c)
+        p._curve(to: (213.262, 235.408), c1: (217.485, 248.253), c2: (210.866, 241.989), c)
+        p._line(196.939, 81.4358, c)
         p.closeSubpath()
         return p
     }
@@ -102,14 +112,15 @@ struct BrandEcho2: Shape {
     func path(in rect: CGRect) -> Path {
         let c = BrandSVGScale.map(rect)
         var p = Path()
-        p._move(127.238, 57.0463, c)
-        p._curve(to: (169.751, 35.1531), c1: (127.16, 35.1314), c2: (151.956, 22.3621), c)
-        p._curve(to: (180.927, 57.1607), c1: (176.828, 40.2399), c2: (180.995, 48.4456), c)
-        p._line(179.337, 260.524, c)
-        p._curve(to: (169.434, 270.445), c1: (179.294, 265.978), c2: (174.889, 270.393), c)
-        p._line(143.09, 270.701, c)
-        p._curve(to: (127.945, 255.755), c1: (134.77, 270.782), c2: (127.975, 264.075), c)
-        p._line(127.238, 57.0463, c)
+        p._move(121.633, 19.3457, c)
+        p._curve(to: (139.914, 13.706), c1: (124.353, 11.8734), c2: (133.457, 9.06477), c)
+        p._line(171.193, 36.1897, c)
+        p._curve(to: (176.89, 54.654), c1: (177.014, 40.3736), c2: (179.341, 47.9181), c)
+        p._line(182.578, 261.235, c)
+        p._curve(to: (169.558, 270.446), c1: (180.582, 266.719), c2: (175.394, 270.39), c)
+        p._line(142.427, 270.71, c)
+        p._curve(to: (132.934, 257.29), c1: (135.446, 270.777), c2: (130.546, 263.851), c)
+        p._line(121.633, 19.3457, c)
         p.closeSubpath()
         return p
     }

@@ -2,7 +2,7 @@ import ActivityKit
 import SwiftUI
 import WidgetKit
 
-// Maso 训练 Live Activity — 锁屏 banner + Dynamic Island.
+// Masso 训练 Live Activity — 锁屏 banner + Dynamic Island.
 // 用户退出 app 后, 训练状态实时显示在锁屏顶部 + Dynamic Island.
 //
 // 4 个 region (Apple Live Activity 必备):
@@ -43,7 +43,7 @@ struct MasoTrainingLiveActivity: Widget {
                             .lineLimit(1)
                             .frame(maxWidth: .infinity, alignment: .trailing)
                     } else if !context.state.setProgress.isEmpty {
-                        Text(context.state.setProgress)
+                        MetricValueText(value: context.state.setProgress, numeratorColor: .green, numeratorWeight: .heavy)
                             .font(.system(size: 22, weight: .heavy).monospacedDigit())
                             .foregroundStyle(Color.green)
                             .lineLimit(1)
@@ -73,7 +73,7 @@ struct MasoTrainingLiveActivity: Widget {
                         .foregroundStyle(Color.green)
                         .frame(maxWidth: 50)
                 } else if !context.state.setProgress.isEmpty {
-                    Text(context.state.setProgress)
+                    MetricValueText(value: context.state.setProgress, numeratorColor: .green)
                         .monospacedDigit()
                         .foregroundStyle(Color.green)
                 }
@@ -121,7 +121,7 @@ private struct LockScreenView: View {
                             .foregroundStyle(.secondary)
                             .lineLimit(1)
                     } else if !context.state.setProgress.isEmpty {
-                        Text(context.state.setProgress)
+                        MetricValueText(value: context.state.setProgress)
                             .font(.system(size: 12).monospacedDigit())
                             .foregroundStyle(.secondary)
                     }

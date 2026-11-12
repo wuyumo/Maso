@@ -1,14 +1,42 @@
 import SwiftUI
+#if DEBUG
+import StoreKit
+#endif
+
+/// One neutral trailing action indicator for settings actions and external links.
+private struct SettingsActionIcon: View {
+    var body: some View {
+        Image(systemName: "arrow.up.right")
+            .font(.body)
+            .foregroundStyle(.secondary)
+    }
+}
 
 struct SettingsScreen: View {
+    let onStartWorkout: (Plan) -> Void
+    var isPushed = false
     @Environment(DataStore.self) private var data
+    @Environment(SubscriptionManager.self) private var subscriptions
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.openURL) private var openURL
+    @State private var notificationPermissionDenied = false
+    @State private var workoutImportFailed = false
+    @State private var libraryAddRequested = false
     @State private var showPaywall: Bool = false
+    @State private var showReferralCode = false
     @State private var showLanguagePicker: Bool = false
     /// 训练偏好独立编辑 sheet (owner 拍板: Settings 不再内嵌 6 行, 只留入口).
     @State private var showTrainingPrefs: Bool = false
+    @State private var updateRoutinesAfterPreferences = false
+    @State private var showFeedback: Bool = false
+    #if DEBUG
+    @State private var showOnboardingPreview = false
+    @State private var sandboxRefundMessage = ""
+    @State private var showSandboxRefundMessage = false
+    #endif
+    @State private var feedbackSuccessToastVisible = false
+    @State private var testingAIConnection = false
     @State private var aiDiagnostics: [AIWorkoutService.Diagnostic] = []
-    @State private var aiTesting: Bool = false
     /// 导出产物 — 非 nil 时拉起系统分享面板 (Files / AirDrop / 邮件…)
     @State private var exportItems: [Any]? = nil
     @State private var exportError: String? = nil
@@ -21,11 +49,21 @@ struct SettingsScreen: View {
     var body: some View {
         @Bindable var data = data
         content
+            .alert("Unable to import workouts. Try again.", isPresented: $workoutImportFailed) {
+                Button("OK", role: .cancel) {}
+            }
+            .alert("Notifications are off", isPresented: $notificationPermissionDenied) {
+                Button("Settings") {
+                    if let url = URL(string: UIApplication.openSettingsURLString) { UIApplication.shared.open(url) }
+                }
+                Button("Cancel", role: .cancel) {}
+            }
             .toolbar {
                 // iOS 默认风格 — 系统自带"Done"文字按钮 (Settings sheet 关闭)
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Done") { dismiss() }
-                        .tint(MasoColor.text)
+                if !isPushed {
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button("Done") { dismiss() }.tint(MasoColor.text)
+                    }
                 }
             }
     }
@@ -33,15 +71,71 @@ struct SettingsScreen: View {
     @ViewBuilder
     private var content: some View {
         @Bindable var data = data
-        ScrollView {
-            VStack(alignment: .leading, spacing: 24) {
-                // Maso Pro 入口 — 永远顶部 (Pro 时显示状态; Free 时是 upgrade banner)
-                proSection
+        Form {
+                Section("Membership") { proSection }
 
+                Section {
+                    Button { showTrainingPrefs = true } label: {
+                        LabeledContent {
+                            Image(systemName: "chevron.right")
+                                .font(.footnote.weight(.semibold)).foregroundStyle(.tertiary)
+                        } label: {
+                            Text("Training Preferences")
+                        }
+                    }.buttonStyle(.plain).foregroundStyle(MasoColor.text)
+                    Toggle("Hide rare variants", isOn: Binding(
+                        get: { data.settings.hidesRareVariants },
+                        set: { data.settings.hideRareVariants = $0; data.save() }
+                    ))
+                    .toggleStyle(.switch).tint(MasoColor.toggleAccent)
+                    .accessibilityIdentifier("settings.hideRareVariants")
+                    Toggle(
+                         "Sync params across routines",
+                        isOn: $data.settings.globalExerciseParamSyncEnabled
+                    ).toggleStyle(.switch).tint(MasoColor.toggleAccent)
+                    Toggle("Show recovery in workout calendar", isOn: Binding(
+                        get: { data.settings.showCalendarRecovery ?? false },
+                        set: { data.settings.showCalendarRecovery = $0; data.save() }
+                    )).toggleStyle(.switch).tint(MasoColor.toggleAccent)
+                } header: {
+                    Text("Training")
+                } footer: {
+                    Text("After a recorded workout, the calendar shows a shorter green bar for two rest days. This is a time-based guide, not a muscle recovery measurement.")
+                }
+
+                .onChange(of: data.settings.globalExerciseParamSyncEnabled) { _, on in
+                    Analytics.shared.track("settings_toggle", [
+                        "key": .string("exercise_sync"), "value": .string(on ? "on" : "off"),
+                    ])
+                }
+
+                Section("Workout resources") {
+                    NavigationLink {
+                        ExerciseLibraryBrowser(embedded: true, addRequested: $libraryAddRequested)
+                            .navigationTitle("Exercises")
+                            .navigationBarTitleDisplayMode(.large)
+                            .toolbarRole(.navigationStack)
+                            .toolbar {
+                                ToolbarItem(placement: .topBarTrailing) {
+                                    Button { libraryAddRequested = true } label: { Image(systemName: "plus") }
+                                        .tint(MasoColor.text).accessibilityLabel("Add exercise")
+                                }
+                            }
+                    } label: {
+                        Text("Exercises").foregroundStyle(MasoColor.text)
+                    }
+                    NavigationLink {
+                        ClassicsScreen(onStart: onStartWorkout)
+                    } label: {
+                        Text("Classic Routines").foregroundStyle(MasoColor.text)
+                    }
+                }
                 // Profile — onboarding 收集的基础信息. 在 Settings 里查看/修改.
-                Section_(title: "Profile") {
-                    Row(label: "Gender") {
-                        Choice(value: Binding(
+                Section("Profile") {
+                    NavigationLink("Body measurements") { BodyProfileScreen() }
+                        .accessibilityIdentifier("settings.health-body")
+                    LabeledContent("Gender") {
+                        NativeSettingsChoice(value: Binding(
                             get: { data.settings.gender ?? .male },
                             set: { data.settings.gender = $0 }
                         ), options: [
@@ -50,9 +144,8 @@ struct SettingsScreen: View {
                             (.other, "Other"),
                         ])
                     }
-                    Divider().background(MasoColor.borderSoft)
-                    Row(label: "Age") {
-                        IntStepperContent(
+                    LabeledContent("Age") {
+                        NativeSettingsIntStepper(
                             value: Binding(
                                 get: { data.settings.age ?? 25 },
                                 set: { data.settings.age = $0 }
@@ -61,87 +154,11 @@ struct SettingsScreen: View {
                             suffix: "yrs"
                         )
                     }
-                    Divider().background(MasoColor.borderSoft)
-                    Row(label: "Body weight") {
-                        // 按用户单位 (kg/lb) 展示+编辑, 存储 canonical kg.
-                        DoubleStepperContent(
-                            value: Binding(
-                                get: { data.settings.weight ?? 70 },
-                                set: { data.settings.weight = $0 }
-                            ).inUnit(data.settings.weightUnit),
-                            range: data.settings.weightUnit.fromKg(30)...data.settings.weightUnit.fromKg(200),
-                            step: data.settings.weightUnit.bodyWeightStep,
-                            suffix: data.settings.weightUnit.label
-                        )
-                    }
                 }
 
-                // 训练 — 入口行拉起独立 TrainingPreferencesSheet (跟 Coach 左上角同一张 sheet,
-                // 双链路: 右上 Save 只保存 / 底部保存并生成). 不再内嵌 6 行编辑.
-                Section_(title: "Training") {
-                    Button(action: { showTrainingPrefs = true }) {
-                        Row(label: "Training Preferences") {
-                            Image(systemName: "chevron.right")
-                                .font(.system(size: 11, weight: .semibold))
-                                .foregroundStyle(MasoColor.textFaint)
-                        }
-                        // 整行可点 — Row 中段空白默认不参与 hit-test (实测点中间没反应).
-                        .contentShape(Rectangle())
-                    }
-                    .buttonStyle(.plain)
-                }
-
-                // 单位
-                Section_(title: "Units") {
-                    Row(label: "Weight") {
-                        Choice(value: $data.settings.weightUnit, options: [(.kg, "kg"), (.lb, "lb")])
-                    }
-                    Divider().background(MasoColor.borderSoft)
-                    Row(label: "Distance") {
-                        Choice(value: $data.settings.distanceUnit, options: [(.km, "km"), (.mi, "mi")])
-                    }
-                    Divider().background(MasoColor.borderSoft)
-                    // "周从哪天开始" — 影响 History 日历 / 本周 stats / 任何 weekOfYear 分组.
-                    // 默认 Auto = 跟随 iOS 系统 locale (US/JP 周日, 欧洲中国周一).
-                    Row(label: "Week starts") {
-                        Choice(value: $data.settings.weekStartDay, options: [
-                            (.system, "Auto"),
-                            (.sunday, "Sun"),
-                            (.monday, "Mon"),
-                        ])
-                    }
-                }
-                // settings_toggle — 单位类设置改动 (无 PII: key + value 枚举).
-                .onChange(of: data.settings.weightUnit) { _, v in
-                    Analytics.shared.track("settings_toggle", ["key": .string("weight_unit"), "value": .string(v.rawValue)])
-                }
-                .onChange(of: data.settings.weekStartDay) { _, v in
-                    Analytics.shared.track("settings_toggle", ["key": .string("week_start"), "value": .string(v.rawValue)])
-                }
-
-                // 展示偏好 — Routines 卡动作标签的部位前缀: 文字 (默认) vs 迷你肌肉图 (owner 的可切换偏好).
-                Section_(title: "Display") {
-                    ToggleRow(
-                        title: "Muscle charts on exercise tags",
-                        desc: "On routine cards, show a mini muscle chart instead of the muscle name in front of each exercise.",
-                        isOn: Binding(
-                            get: { data.settings.exerciseChipMuscleIcon },
-                            set: { on in
-                                data.settings.exerciseChipMuscleIcon = on
-                                Analytics.shared.track("settings_toggle", [
-                                    "key": .string("chip_muscle_icon"), "value": .string(on ? "on" : "off"),
-                                ])
-                            }
-                        )
-                    )
-                }
-
-                // Apple 健康 — 在 UI 里明确标识 HealthKit 功能 (Apple 2.5.1: 用了 HealthKit 必须可见地告知用户).
-                // 开关打开 → 弹系统授权; 之后完成的训练写入 Apple 健康. 默认关 (用户主动开启).
-                Section_(title: "Apple Health") {
-                    ToggleRow(
-                        title: "Save workouts to Apple Health",
-                        desc: "Masso saves your completed workouts to Apple Health, so they appear in your Activity rings and the Health app. On Apple Watch, Masso reads heart rate and active energy during a workout.",
+                Section("Health & Features") {
+                    Toggle(
+                         "Save workouts to Apple Health",
                         isOn: Binding(
                             get: { data.settings.healthKitSyncEnabled },
                             set: { on in
@@ -165,15 +182,36 @@ struct SettingsScreen: View {
                                 }
                             }
                         )
-                    )
+                    ).toggleStyle(.switch).tint(MasoColor.toggleAccent)
+                    Toggle("Import workouts from Apple Health", isOn: Binding(
+                        get: { data.settings.externalWorkoutImportEnabled ?? false },
+                        set: { enabled in
+                            data.settings.externalWorkoutImportEnabled = enabled
+                            data.save()
+                            if enabled {
+                                Task {
+                                    do {
+                                        try await HealthKitService.shared.connectWorkouts()
+                                        try await data.refreshExternalWorkouts()
+                                    } catch { workoutImportFailed = true }
+                                }
+                            }
+                        }
+                    )).toggleStyle(.switch).tint(MasoColor.toggleAccent).disabled(data.importingExternalWorkouts)
+                    if data.settings.externalWorkoutImportEnabled == true,
+                       data.recordedExternalWorkouts().isEmpty, !data.importingExternalWorkouts {
+                        Text("No imported workouts yet. Check Workout access in Apple Health.")
+                            .font(.footnote).foregroundStyle(.secondary)
+                    }
+
+                    Toggle("Diet", isOn: Binding(get: { data.settings.dietEnabled ?? true }, set: { data.settings.dietEnabled = $0; data.save() })).toggleStyle(.switch).tint(MasoColor.dietAccent)
+                    Toggle("Sleep", isOn: Binding(get: { data.settings.sleepEnabled ?? true }, set: { data.settings.sleepEnabled = $0; data.save() })).toggleStyle(.switch).tint(MasoColor.sleepAccent)
+
                 }
 
-                // 召回提醒 — 默认开 (opt-out). 开 → 请求通知权限; 被拒则弹回关.
-                // 全本地通知, 停训后在恢复窗口轻推一次. 见 WorkoutReminderScheduler.
-                Section_(title: "Reminders") {
-                    ToggleRow(
-                        title: "Workout reminders",
-                        desc: "On by default: when you've taken a few days off, Masso sends one gentle reminder once your muscles have recovered. It only ever lives on your device, and you can turn it off anytime.",
+                Section("Reminders") {
+                    Toggle(
+                         "Workout reminders",
                         isOn: Binding(
                             get: { data.settings.workoutRemindersEnabled },
                             set: { on in
@@ -184,6 +222,8 @@ struct SettingsScreen: View {
                                     Task { @MainActor in
                                         let granted = await WorkoutReminderScheduler.shared.requestAuthorization()
                                         data.settings.workoutRemindersEnabled = granted  // 被拒 → 弹回 off
+                                        notificationPermissionDenied = !granted
+                                        data.save()
                                         if granted { data.rescheduleWorkoutReminders() }
                                         // settings_toggle (reminders) + reminder_opt_in — accepted = 最终授权结果.
                                         Analytics.shared.track("settings_toggle", [
@@ -202,191 +242,297 @@ struct SettingsScreen: View {
                                 }
                             }
                         )
-                    )
+                    ).toggleStyle(.switch).tint(MasoColor.toggleAccent)
+                    Toggle("Meal reminders", isOn: Binding(
+                        get: { data.settings.mealRemindersEnabled ?? false },
+                        set: { enabled in
+                            if enabled {
+                                Task { @MainActor in
+                                    let granted = await WorkoutReminderScheduler.shared.requestAuthorization()
+                                    data.settings.mealRemindersEnabled = granted
+                                    notificationPermissionDenied = !granted
+                                    data.save()
+                                }
+                            } else {
+                                data.settings.mealRemindersEnabled = false
+                                data.save()
+                            }
+                        }
+                    )).toggleStyle(.switch).tint(MasoColor.toggleAccent)
+                    Toggle("Bedtime reminder", isOn: Binding(
+                        get: { data.settings.sleepPreferences?.bedtimeReminderEnabled ?? false },
+                        set: { enabled in
+                            if enabled {
+                                Task { @MainActor in
+                                    let granted = await WorkoutReminderScheduler.shared.requestAuthorization()
+                                    var preferences = data.settings.sleepPreferences ?? SleepPreferences()
+                                    preferences.bedtimeReminderEnabled = granted
+                                    data.settings.sleepPreferences = preferences
+                                    notificationPermissionDenied = !granted
+                                    data.save()
+                                }
+                            } else {
+                                var preferences = data.settings.sleepPreferences ?? SleepPreferences()
+                                preferences.bedtimeReminderEnabled = false
+                                data.settings.sleepPreferences = preferences
+                                data.save()
+                            }
+                        }
+                    )).toggleStyle(.switch).tint(MasoColor.toggleAccent)
                 }
 
-                // 动作参数全局同步 (R3) — 默认关 (opt-in, P0#4): 默认开会静默压平
-                // "重量日/轻量日"这类逐计划周期化配置. 文案按 opt-in 语义写 (先说默认态).
-                Section_(title: "Exercise data") {
-                    ToggleRow(
-                        title: "Sync params across routines",
-                        desc: "Off by default: each routine keeps its own sets, reps, weight, and rest, so heavy and light days stay independent. Turn on to apply a change to an exercise everywhere it appears.",
-                        isOn: $data.settings.globalExerciseParamSyncEnabled
-                    )
-                }
-                .onChange(of: data.settings.globalExerciseParamSyncEnabled) { _, on in
-                    Analytics.shared.track("settings_toggle", [
-                        "key": .string("exercise_sync"), "value": .string(on ? "on" : "off"),
-                    ])
-                }
-
-                // 语言
-                Section_(title: "Language") {
+                Section("App Preferences") {
                     Button(action: { showLanguagePicker = true }) {
-                        Row(label: "App Language") {
+                        LabeledContent {
                             HStack(spacing: 6) {
                                 Text(languageManager.effectiveLanguage.nativeName)
                                     .foregroundStyle(MasoColor.text)
                                 Image(systemName: "chevron.right")
-                                    .font(.system(size: 11, weight: .semibold))
-                                    .foregroundStyle(MasoColor.textFaint)
+                                    .font(.footnote.weight(.semibold))
+                                    .foregroundStyle(.tertiary)
                             }
+                        } label: {
+                            Label("App Language", systemImage: "globe")
+                                .foregroundStyle(MasoColor.text)
                         }
                     }
                     .buttonStyle(.plain)
+
+                    LabeledContent("Weight") {
+                        NativeSettingsChoice(value: $data.settings.weightUnit, options: [(.kg, "kg"), (.lb, "lb")])
+                    }
+                    LabeledContent("Distance") {
+                        NativeSettingsChoice(value: $data.settings.distanceUnit, options: [(.km, "km"), (.mi, "mi")])
+                    }
+                    // "周从哪天开始" — 影响 History 日历 / 本周 stats / 任何 weekOfYear 分组.
+                    // 默认 Auto = 跟随 iOS 系统 locale (US/JP 周日, 欧洲中国周一).
+                    LabeledContent("Week starts") {
+                        NativeSettingsChoice(value: $data.settings.weekStartDay, options: [
+                            (.system, "Auto"),
+                            (.sunday, "Sun"),
+                            (.monday, "Mon"),
+                        ])
+                    }
+                }
+                // settings_toggle — 单位类设置改动 (无 PII: key + value 枚举).
+                .onChange(of: data.settings.weightUnit) { _, v in
+                    Analytics.shared.track("settings_toggle", ["key": .string("weight_unit"), "value": .string(v.rawValue)])
+                }
+                .onChange(of: data.settings.weekStartDay) { _, v in
+                    Analytics.shared.track("settings_toggle", ["key": .string("week_start"), "value": .string(v.rawValue)])
                 }
 
-                // AI 连接自检 — "Couldn't reach the AI coach" 对用户是黑箱, 给他一个能自己按的按钮.
-                Section_(title: "AI coach") {
-                    aiDiagnosticsRow
-                }
-
-                // 数据导出 —— 竞品第二大痛点是"历史数据把人锁死", 而没有一家因可导出被夸过.
-                Section_(title: "Your data") {
+                Section("Privacy & Data") {
+                    Toggle("AI data sharing", isOn: Binding(
+                        get: { AIDataConsent.shared.isGranted },
+                        set: { allowed in
+                            if allowed { Task { try? await AIDataConsent.shared.requirePermission() } }
+                            else { AIDataConsent.shared.revoke() }
+                        }))
+                        .toggleStyle(.switch).tint(MasoColor.toggleAccent)
                     Button(action: runExport) {
-                        Row(label: "Export my data") {
-                            Image(systemName: "square.and.arrow.up")
-                                .font(.system(size: 13, weight: .semibold))
-                                .foregroundStyle(MasoColor.textFaint)
+                        LabeledContent("Export my data") {
+                            SettingsActionIcon()
                         }
                     }
                     .buttonStyle(.plain)
-                    Text("A JSON backup of everything plus a CSV of every set you've logged — open it in Numbers, Excel, or any other app. Your data is yours; you can take it and go.")
-                        .font(.system(size: 12))
-                        .foregroundStyle(MasoColor.textFaint)
-                        .fixedSize(horizontal: false, vertical: true)
-                        .padding(.horizontal, MasoMetrics.cardPadding)
-                        .padding(.bottom, 12)
-
-                    Divider().background(MasoColor.borderSoft)
 
                     // ⚠️ 用了分析就**必须**在界面里能看见、能关 —— 1.0(5) 那次被 Apple 按
                     //    Guideline 2.5.1 拒过一模一样的问题 (用了 HealthKit 但 UI 里没有任何体现).
                     //    取反绑定: 存的是 optOut, 展示的是"参与", 开=发, 关=一条都不发.
-                    ToggleRow(
-                        title: "Share anonymous usage data",
-                        desc: "Sends anonymous counts like \"a routine was generated\" or \"onboarding finished\" so I can see which parts of the app work. Never your workouts, weights, notes, or anything you typed. No account, no ads, no third-party ad networks. Turn it off and nothing is sent at all.",
+                    Toggle(
+                         "Share anonymous usage data",
                         isOn: Binding(
-                            get: { !data.settings.analyticsOptOut },
-                            set: { data.settings.analyticsOptOut = !$0 }
+                            get: { Analytics.shared.sharingConsentGranted && !data.settings.analyticsOptOut },
+                            set: { enabled in
+                                Analytics.shared.setSharingEnabled(enabled)
+                                data.settings.analyticsOptOut = !enabled
+                                if !enabled { Analytics.shared.clearPendingEvents() }
+                            }
                         )
-                    )
+                    ).toggleStyle(.switch).tint(MasoColor.toggleAccent)
+                    Link("Privacy Policy", destination: PaywallScreen.privacyURL)
                 }
 
-                // Exercise library 入口已挪到 Plans tab 底部 — 那是用户实际"用"动作的地方,
-                // 跟 plan 编辑/选动作动线更顺. Settings 这里不再展示, 也不再 import 整张
-                // ExerciseLibraryBrowser sheet.
-
-                Text("Plans and workout records stay on your device.")
-                    .font(.system(size: 12))
-                    .foregroundStyle(MasoColor.textFaint)
-                    .padding(.horizontal, 6)
-                    // 紧贴上面 section (顶层 VStack spacing 24, 这里抵消 16 → 实际间距 8pt)
-                    .padding(.top, -16)
-
-                // 法律 + 健康合规链接. 医疗免责正文 (Apple 1.4.1 必需) 不再首页平铺,
-                // 收进二级页 (HealthSafetyDetail), 入口放 About 里 — 仍可访问 = 合规, 首页更清爽.
-                Section_(title: "About") {
-                    Link(destination: PaywallScreen.privacyURL) {
-                        Row(label: "Privacy Policy") {
-                            Image(systemName: "arrow.up.right.square")
-                                .font(.system(size: 13, weight: .semibold))
-                                .foregroundStyle(MasoColor.textFaint)
+                Section("Support") {
+                    #if DEBUG
+                    Button("Preview onboarding") { showOnboardingPreview = true }
+                        .foregroundStyle(.primary)
+                        .accessibilityIdentifier("settings.onboarding.preview")
+                    #endif
+                    Button {
+                        testingAIConnection = true
+                        aiDiagnostics = []
+                        Task {
+                            aiDiagnostics = await AIWorkoutService.diagnose()
+                            testingAIConnection = false
+                        }
+                    } label: {
+                        HStack {
+                            Text("Test connection")
+                            Spacer()
+                            if testingAIConnection { ProgressView() }
                         }
                     }
                     .buttonStyle(.plain)
+                    .disabled(testingAIConnection)
+                    .accessibilityIdentifier("settings.ai.test")
+                    ForEach(aiDiagnostics) { diagnostic in
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(LocalizedStringKey(diagnostic.role)).font(.subheadline)
+                            Text(diagnostic.host).font(.caption).foregroundStyle(.secondary)
+                            Text(diagnostic.detail).font(.footnote).foregroundStyle(.secondary)
+                        }
+                        .accessibilityElement(children: .combine)
+                        .accessibilityIdentifier("settings.ai.\(diagnostic.role)")
+                    }
+                    Button { showFeedback = true } label: {
+                        LabeledContent("Report a bug") {
+                            SettingsActionIcon()
+                        }
+                    }
+                    .buttonStyle(.plain)
+                }
+
+                Section("About") {
                     Link(destination: PaywallScreen.termsURL) {
-                        Row(label: "Terms of Service") {
-                            Image(systemName: "arrow.up.right.square")
-                                .font(.system(size: 13, weight: .semibold))
-                                .foregroundStyle(MasoColor.textFaint)
+                        LabeledContent("Terms of Service") {
+                            SettingsActionIcon()
                         }
                     }
                     .buttonStyle(.plain)
                     // 健康与安全 — push 进二级页看医疗免责正文.
-                    NavigationLink(destination: HealthSafetyDetail()) {
-                        Row(label: "Health & Safety") {
-                            Image(systemName: "chevron.right")
-                                .font(.system(size: 12, weight: .semibold))
-                                .foregroundStyle(MasoColor.textFaint)
-                        }
-                    }
+                    NavigationLink(destination: HealthSafetyDetail()) { Text("Health & Safety") }
                     .buttonStyle(.plain)
-                    Row(label: "Version") {
+                    NavigationLink(destination: CreditsScreen()) { Text("Credits") }
+                    .buttonStyle(.plain)
+                    LabeledContent("Version") {
                         Text(appVersionLabel)
-                            .font(.system(size: 13).monospacedDigit())
-                            .foregroundStyle(MasoColor.textDim)
-                    }
-                    // 部分动作缩略图来自 Pexels (Pexels License, 免费可商用) — 鸣谢.
-                    Row(label: "Exercise photos") {
-                        Text("Pexels")
-                            .font(.system(size: 13))
-                            .foregroundStyle(MasoColor.textDim)
+                            .font(.body.monospacedDigit())
+                            .foregroundStyle(.secondary)
                     }
                 }
 
                 #if DEBUG
                 // ⚠️ 调试专用 — 整段被 #if DEBUG 包裹, Xcode archive 出的 Release/上架包**不编译**,
                 // 无需上线前手动删. install_iphone.sh 装的是 Debug 包, 故真机上能看到并使用.
-                Section_(title: "Debug") {
-                    ToggleRow(
-                        title: "Unlock Pro (debug)",
-                        desc: "Force-unlocks all Pro features for testing. Debug builds only — this toggle never ships to the App Store.",
-                        isOn: $data.settings.debugProUnlock
-                    )
-                    Divider().background(MasoColor.borderSoft)
-                    ToggleRow(
-                        title: "Force US storefront (debug)",
-                        desc: "Pretend the App Store region is the US so the paywall + activation flow show on a non-US Apple ID. Turn OFF 'Unlock Pro' above to actually see the paywall. Debug builds only.",
+                Section("Debug") {
+                    Button("Inspect sandbox transactions") {
+                        Task {
+                            var rows: [(Date, String)] = []
+                            for await result in Transaction.all {
+                                guard case .verified(let transaction) = result,
+                                      transaction.environment == .sandbox,
+                                      SubscriptionManager.subscriptionProductIDs.contains(transaction.productID) else { continue }
+                                rows.append((transaction.purchaseDate, "Product: \(transaction.productID)\nID: \(transaction.id)\nPurchased: \(transaction.purchaseDate)\nExpires: \(transaction.expirationDate?.description ?? "none")\nRevoked: \(transaction.revocationDate?.description ?? "no")"))
+                            }
+                            var active: [String] = []
+                            for await result in Transaction.currentEntitlements {
+                                if case .verified(let transaction) = result, transaction.environment == .sandbox {
+                                    active.append("\(transaction.productID): \(transaction.id)")
+                                }
+                            }
+                            let sorted = rows.sorted { $0.0 > $1.0 }
+                            let revoked = sorted.filter { !$0.1.hasSuffix("Revoked: no") }
+                            sandboxRefundMessage = "Current: \(active.joined(separator: ", "))\n\nRevoked:\n" + (revoked.first?.1 ?? "none") + "\n\nLatest:\n" + sorted.prefix(2).map(\.1).joined(separator: "\n\n")
+                            showSandboxRefundMessage = true
+                        }
+                    }
+                    Button("Request sandbox refund") {
+                        Task {
+                            do {
+                                var candidates: [StoreKit.Transaction] = []
+                                for await result in Transaction.currentEntitlements {
+                                    if case .verified(let transaction) = result,
+                                       transaction.environment == .sandbox,
+                                       transaction.revocationDate == nil,
+                                       SubscriptionManager.subscriptionProductIDs.contains(transaction.productID) {
+                                        candidates.append(transaction)
+                                    }
+                                }
+                                guard let transaction = candidates.max(by: { $0.purchaseDate < $1.purchaseDate }),
+                                      let scene = UIApplication.shared.connectedScenes.compactMap({ $0 as? UIWindowScene }).first(where: { $0.activationState == .foregroundActive }) else {
+                                    sandboxRefundMessage = "No verified active sandbox subscription or active window."
+                                    showSandboxRefundMessage = true
+                                    return
+                                }
+                                let status = try await transaction.beginRefundRequest(in: scene)
+                                sandboxRefundMessage = status == .success ? "Refund request submitted for \(transaction.productID), ID: \(transaction.id). Check the updated entitlement." : "Refund request cancelled."
+                            } catch {
+                                sandboxRefundMessage = error.localizedDescription
+                            }
+                            showSandboxRefundMessage = true
+                        }
+                    }
+                    Toggle(
+                         "Unlock Pro (debug)",
+                        isOn: Binding(
+                            get: { data.settings.debugProUnlock },
+                            set: { data.settings.debugProUnlock = $0; data.save() }
+                        )
+                    ).toggleStyle(.switch).tint(MasoColor.toggleAccent)
+                    Toggle(
+                         "Force US storefront (debug)",
                         isOn: Binding(
                             get: { data.settings.debugForceUSStorefront },
                             set: { data.settings.debugForceUSStorefront = $0; data.save()
                                    Task { await data.refreshStorefrontCountry() } }
                         )
-                    )
-                    Divider().background(MasoColor.borderSoft)
+                    ).toggleStyle(.switch).tint(MasoColor.toggleAccent)
                     // 本地分析事件查看器 — 看 track() 真的在触发 (Phase 0 NoOpSink, 事件只在本机).
-                    NavigationLink(destination: AnalyticsInspectorScreen()) {
-                        HStack {
-                            Text("Analytics events")
-                                .font(.system(size: 15))
-                                .foregroundStyle(MasoColor.text)
-                            Spacer()
-                            Image(systemName: "chevron.right")
-                                .font(.system(size: 13, weight: .semibold))
-                                .foregroundStyle(MasoColor.textDim)
-                        }
-                        .padding(.vertical, 6)
-                        .contentShape(Rectangle())
-                    }
+                    NavigationLink(destination: AnalyticsInspectorScreen()) { Text("Analytics events") }
                     .buttonStyle(.plain)
                 }
                 #endif
 
-                Spacer(minLength: MasoMetrics.pageBottomInset)
-            }
-            .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
-            .padding(.top, 16)
         }
-        .background(MasoColor.background.ignoresSafeArea())
+        // Keep native dropdowns / pickers neutral; tint workout toggles individually above.
+        .tint(MasoColor.text)
         .navigationTitle("Settings")
+        .toolbarRole(.navigationStack)
         .navigationBarTitleDisplayMode(.inline)
+        .overlay(alignment: .bottom) {
+            if feedbackSuccessToastVisible {
+                MasoToast(message: "Report sent")
+                    .padding(.bottom, MasoMetrics.pageBottomInset)
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+            }
+        }
+        #if DEBUG
+        .alert("Sandbox refund", isPresented: $showSandboxRefundMessage) {
+            Button("OK", role: .cancel) { }
+        } message: { Text(sandboxRefundMessage) }
+        .sheet(isPresented: $showOnboardingPreview) {
+            OnboardingScreen(previewOnly: true) { _ in showOnboardingPreview = false }
+                .presentationDetents([.large]).presentationDragIndicator(.visible)
+        }
+        #endif
         .sheet(isPresented: $showPaywall) {
             PaywallScreen()
             .presentationDragIndicator(.visible)
         }
+        .sheet(isPresented: $showReferralCode) { ReferralCodeSheet() }
         .sheet(isPresented: $showLanguagePicker) {
             LanguagePickerSheet(manager: languageManager)
             .presentationDragIndicator(.visible)
         }
-        .sheet(isPresented: $showTrainingPrefs) {
-            // 保存并生成 → 走 Coach 会话生成管线 (结果落 Coach tab 对话流, 跟 Coach 入口一致).
-            TrainingPreferencesSheet(onConfirm: { data.startCoachGenerate(surface: "settings_prefs") })
+        .sheet(isPresented: $showTrainingPrefs, onDismiss: {
+            guard updateRoutinesAfterPreferences else { return }
+            updateRoutinesAfterPreferences = false
+            AppRouter.shared.pendingTrainingPreferencesUpdate = true
+            AppRouter.shared.requestedDestination = .coach
+        }) {
+            TrainingPreferencesSheet(onConfirm: { updateRoutinesAfterPreferences = true })
+                .tint(MasoColor.text)
+        }
+        .sheet(isPresented: $showFeedback) {
+            FeedbackSheet(onSuccess: showFeedbackSuccessToast)
+                .presentationDragIndicator(.visible)
         }
         // 导出 —— items 非 nil 就拉起系统面板; 关掉时清空, 下次导出重新生成带新时间戳的文件.
         .sheet(isPresented: Binding(get: { exportItems != nil },
                                     set: { if !$0 { exportItems = nil } })) {
-            if let items = exportItems { ShareSheet(activityItems: items) }
+            if let items = exportItems { ActivityViewController(activityItems: items) }
         }
         .alert("Export failed", isPresented: Binding(get: { exportError != nil },
                                                      set: { if !$0 { exportError = nil } })) {
@@ -399,64 +545,6 @@ struct SettingsScreen: View {
     }
 
     /// App 版本号 — "1.0 (1)" 格式. 从 Bundle 读 CFBundleShortVersionString + CFBundleVersion.
-    // 主/备两个 endpoint 各发一次真请求, 把 "Couldn't reach the AI coach" 换成具体错误码.
-    // 结论行故意分主/备两条: 只有"两条都红"才是用户网络的问题, "主红备绿"= AI 其实能用.
-    @ViewBuilder
-    private var aiDiagnosticsRow: some View {
-        Button(action: runAIDiagnostics) {
-            Row(label: "Test connection") {
-                if aiTesting {
-                    ProgressView().controlSize(.small)
-                } else {
-                    Image(systemName: "arrow.clockwise")
-                        .font(.system(size: 13, weight: .semibold))
-                        .foregroundStyle(MasoColor.textFaint)
-                }
-            }
-        }
-        .buttonStyle(.plain)
-        .disabled(aiTesting)
-
-        if !aiDiagnostics.isEmpty {
-            Divider().background(MasoColor.borderSoft)
-            VStack(alignment: .leading, spacing: 8) {
-                ForEach(aiDiagnostics) { d in
-                    HStack(spacing: 8) {
-                        Image(systemName: d.ok ? "checkmark.circle.fill" : "xmark.circle.fill")
-                            .font(.system(size: 13))
-                            .foregroundStyle(d.ok ? MasoColor.accent : MasoColor.textDim)
-                        Text(LocalizedStringKey(d.role))
-                            .font(.system(size: 13, weight: .bold))
-                        Spacer()
-                        Text(d.detail)
-                            .font(.system(size: 12).monospacedDigit())
-                            .foregroundStyle(MasoColor.textDim)
-                    }
-                    Text(d.host)
-                        .font(.system(size: 11))
-                        .foregroundStyle(MasoColor.textFaint)
-                        .lineLimit(1)
-                        .truncationMode(.middle)
-                        .padding(.leading, 21)
-                }
-                Text(LocalizedStringKey(aiDiagnosticsVerdict))
-                    .font(.system(size: 12))
-                    .foregroundStyle(MasoColor.textFaint)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .padding(.top, 2)
-            }
-            .padding(.horizontal, MasoMetrics.cardPadding)
-            .padding(.vertical, 14)
-        }
-    }
-
-    private var aiDiagnosticsVerdict: String {
-        if aiDiagnostics.contains(where: \.ok) {
-            return "The AI coach is reachable from this device."
-        }
-        return "The AI coach can't be reached on this network. Try mobile data instead of Wi-Fi (or the other way round); if you use a VPN or proxy, switch it on or off and test again."
-    }
-
     /// 生成 JSON + CSV 并拉起系统分享面板. 失败必须**说出来** —— 备份功能静默失败最伤信任.
     private func runExport() {
         do {
@@ -470,17 +558,11 @@ struct SettingsScreen: View {
         }
     }
 
-    private func runAIDiagnostics() {
-        aiTesting = true
+    private func showFeedbackSuccessToast() {
+        withAnimation(.easeOut(duration: 0.2)) { feedbackSuccessToastVisible = true }
         Task {
-            let result = await AIWorkoutService.diagnose()
-            await MainActor.run {
-                aiDiagnostics = result
-                aiTesting = false
-            }
-            Analytics.shared.track("ai_diagnostics_run", [
-                "reachable": .string(result.contains(where: \.ok) ? "yes" : "no"),
-            ])
+            try? await Task.sleep(for: .seconds(2.2))
+            withAnimation(.easeIn(duration: 0.2)) { feedbackSuccessToastVisible = false }
         }
     }
 
@@ -490,119 +572,35 @@ struct SettingsScreen: View {
         return "\(short) (\(build))"
     }
 
-    // MARK: - Maso Pro banner / status row
+    // MARK: - Masso Pro banner / status row
 
     @ViewBuilder
     private var proSection: some View {
-        if MasoFlags.externalPaywallEnabled
-            && !data.settings.showProUpsell
-            && !(data.settings.polarProActive && data.settings.appStoreCountry == MasoFlags.usStorefrontCode) {
-            EmptyView()   // 非美区 (免费全解锁) → 不显示任何 Pro/购买 区.
-        } else if MasoFlags.externalPaywallEnabled
-            && data.settings.polarProActive
-            && data.settings.appStoreCountry == MasoFlags.usStorefrontCode {
-            polarActiveCard   // 美区已付费.
-        } else if !MasoFlags.externalPaywallEnabled && !MasoFlags.iapEnabled {
-            EmptyView()   // 旧 StoreKit 免费版路径.
-        } else if let sub = data.settings.proSubscription {
-            // Pro 用户 — 显示订阅状态卡 (轻量, 不抢戏)
-            HStack(spacing: 12) {
-                MasoMarkIcon(color: MasoColor.accent)
-                    .frame(width: 40, height: 40)
-                VStack(alignment: .leading, spacing: 2) {
-                    HStack(spacing: 6) {
-                        Text("Maso Pro")
-                            .font(.system(size: 14, weight: .bold))
-                            .foregroundStyle(MasoColor.text)
-                        Text(sub.tier.label.uppercased())
-                            .font(.system(size: 9, weight: .heavy))
-                            .tracking(1)
-                            .foregroundStyle(.black)
-                            .padding(.horizontal, 6).padding(.vertical, 2)
-                            .background(MasoColor.accent)
-                            .clipShape(Capsule())
-                    }
-                    Text(sub.statusLine)
-                        .font(.system(size: 11))
-                        .foregroundStyle(MasoColor.textDim)
-                }
-                Spacer()
+        if let subscription = data.settings.proSubscription, data.settings.isPro {
+            LabeledContent("Masso Pro") {
+                Text(LocalizedStringKey(subscription.tier.label)).foregroundStyle(.secondary)
             }
-            .padding(MasoMetrics.cardPadding)
-            .background(MasoColor.surface)
-            .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
-            .overlay(
-                RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium)
-                    .stroke(MasoColor.accent.opacity(0.35), lineWidth: 0.5)
-            )
-        } else {
-            // Free 用户 — Upgrade banner, 整张可点
-            Button(action: { showPaywall = true }) {
-                HStack(spacing: 12) {
-                    MasoMarkIcon(color: MasoColor.accent)
-                        .frame(width: 40, height: 40)
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("Try Maso Pro")
-                            .font(.system(size: 15, weight: .heavy))
-                            .foregroundStyle(MasoColor.text)
-                        Text("Unlimited plans, full history, custom moves, and more.")
-                            .font(.system(size: 11))
-                            .foregroundStyle(MasoColor.textDim)
-                            .multilineTextAlignment(.leading)
-                            .lineLimit(2)
-                    }
-                    Spacer()
-                    Image(systemName: "chevron.right")
-                        .font(.system(size: 12, weight: .semibold))
-                        .foregroundStyle(MasoColor.accent)
-                }
-                .padding(MasoMetrics.cardPadding)
-                .background(
-                    LinearGradient(
-                        colors: [MasoColor.accent.opacity(0.18), MasoColor.surface],
-                        startPoint: .topLeading, endPoint: .bottomTrailing
-                    )
-                )
-                .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
-                .overlay(
-                    RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium)
-                        .stroke(MasoColor.accent.opacity(0.35), lineWidth: 0.5)
-                )
+            Button("Manage Subscription") {
+                if let url = URL(string: "https://apps.apple.com/account/subscriptions") { openURL(url) }
             }
-            .buttonStyle(.plain)
+        } else if data.settings.hasActiveLegacyPro {
+            polarActiveCard
+        } else if data.settings.showProUpsell {
+            ProBanner(squareBottom: MasoFlags.iapEnabled) { showPaywall = true }
+                .listRowInsets(EdgeInsets())
+                .listRowBackground(Color.clear)
+        }
+        if MasoFlags.iapEnabled {
+            Button("Restore Purchases") { Task { await subscriptions.restore() } }
+            Button("Referral code") { showReferralCode = true }
+                .accessibilityIdentifier("settings.referral")
         }
     }
 
-    /// 美区已付费 (Polar) 的 Pro 状态卡 — 无 tier (外部付费不存档位), 提示网页管理.
     private var polarActiveCard: some View {
-        HStack(spacing: 12) {
-            MasoMarkIcon(color: MasoColor.accent)
-                .frame(width: 40, height: 40)
-            VStack(alignment: .leading, spacing: 2) {
-                HStack(spacing: 6) {
-                    Text("Maso Pro")
-                        .font(.system(size: 14, weight: .bold))
-                        .foregroundStyle(MasoColor.text)
-                    Text("ACTIVE")
-                        .font(.system(size: 9, weight: .heavy)).tracking(1)
-                        .foregroundStyle(.black)
-                        .padding(.horizontal, 6).padding(.vertical, 2)
-                        .background(MasoColor.accent)
-                        .clipShape(Capsule())
-                }
-                Text("Thanks for supporting Masso. Manage or cancel on the Polar page.")
-                    .font(.system(size: 11))
-                    .foregroundStyle(MasoColor.textDim)
-            }
-            Spacer()
+        LabeledContent("Masso Pro") {
+            Text("ACTIVE").foregroundStyle(.secondary)
         }
-        .padding(MasoMetrics.cardPadding)
-        .background(MasoColor.surface)
-        .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
-        .overlay(
-            RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium)
-                .stroke(MasoColor.accent.opacity(0.35), lineWidth: 0.5)
-        )
     }
 }
 
@@ -734,11 +732,11 @@ private struct Choice<Value: Hashable>: View {
 
 struct ToggleRow: View {
     let title: String
-    let desc: String?
+    var desc: String? = nil
     @Binding var isOn: Bool
     var body: some View {
         Button(action: { isOn.toggle() }) {
-            HStack(alignment: .top, spacing: 12) {
+            HStack(alignment: .center, spacing: 12) {
                 VStack(alignment: .leading, spacing: 2) {
                     // title + desc 都走 LocalizedStringKey
                     Text(LocalizedStringKey(title))
@@ -752,7 +750,7 @@ struct ToggleRow: View {
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
-                Toggle("", isOn: $isOn).labelsHidden().tint(MasoColor.accent)
+                Toggle("", isOn: $isOn).labelsHidden().toggleStyle(.switch).tint(MasoColor.toggleAccent)
             }
             .padding(.horizontal, MasoMetrics.cardPadding)
             .padding(.vertical, 12)
@@ -763,20 +761,14 @@ struct ToggleRow: View {
 
 /// UIActivityViewController 的 SwiftUI 桥 — 给 Export 文件用系统 share sheet 选目的地
 /// (Files app / AirDrop / 邮件 / Messages 等)
-private struct ShareSheet: UIViewControllerRepresentable {
-    let activityItems: [Any]
-    func makeUIViewController(context: Context) -> UIActivityViewController {
-        UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
-    }
-    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
-}
+
 
 // MARK: - HealthSafetyDetail — 医疗免责二级页 (Apple 1.4.1 必需正文, 从 Settings 首页收进来)
 private struct HealthSafetyDetail: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 14) {
-                Text("Maso is for informational and motivational purposes only — not medical advice. Consult a physician before starting any new exercise program, especially if you have a medical condition, are pregnant, or have not exercised recently. Stop immediately and seek help if you feel pain, dizziness, or shortness of breath.")
+                Text("Masso is for informational and motivational purposes only — not medical advice. Consult a physician before starting any new exercise program, especially if you have a medical condition, are pregnant, or have not exercised recently. Stop immediately and seek help if you feel pain, dizziness, or shortness of breath.")
                     .font(.system(size: 14))
                     .foregroundStyle(MasoColor.textDim)
                     .lineSpacing(3)
@@ -790,5 +782,42 @@ private struct HealthSafetyDetail: View {
         .navigationTitle("Health & Safety")
         .navigationBarTitleDisplayMode(.inline)
         .tint(MasoColor.text)
+    }
+}
+
+private struct NativeSettingsChoice<Value: Hashable>: View {
+    @Binding var value: Value
+    let options: [(Value, String)]
+    var body: some View {
+        Picker("", selection: $value) {
+            ForEach(options, id: \.0) { option in
+                Text(LocalizedStringKey(option.1)).tag(option.0)
+            }
+        }
+        .labelsHidden()
+    }
+}
+
+private struct NativeSettingsIntStepper: View {
+    @Binding var value: Int
+    let range: ClosedRange<Int>
+    var suffix: String = ""
+    var body: some View {
+        Stepper(value: $value, in: range) {
+            Text("\(value) \(suffix)").monospacedDigit()
+        }
+    }
+}
+
+private struct NativeSettingsDoubleStepper: View {
+    @Binding var value: Double
+    let range: ClosedRange<Double>
+    let step: Double
+    let suffix: String
+    var body: some View {
+        Stepper(value: $value, in: range, step: step) {
+            Text("\(value.formatted(.number.precision(.fractionLength(0...1)))) \(suffix)")
+                .monospacedDigit()
+        }
     }
 }

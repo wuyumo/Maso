@@ -1,0 +1,19 @@
+# Ecorche - Anatomy study
+
+“Ecorche - Anatomy study” (https://skfb.ly/66Wsn) by Beatriz Gomez Santamaria is licensed under Creative Commons Attribution 4.0 (https://creativecommons.org/licenses/by/4.0/).
+
+Original model: https://sketchfab.com/3d-models/ecorche-anatomy-study-e402d3d541eb4b199c57d5410f5d3c57
+
+The user supplied the original OBJ archive and Sketchfab-converted USDZ on 2026-10-10.
+
+Original comparison version (`assets/ecorche-preview.glb`): converted the three original OBJ layers into GLB, decoded ZBrush MRGB vertex paint, generated smooth vertex normals, centered and uniformly scaled the model to 1.8 units tall. Original colors are preserved. The supplied USDZ copy is unmodified.
+
+Symmetric training version (`assets/ecorche-symmetric.glb`): selected the front-view left side's superficial muscle components; omitted bone and unsupported fine/deep structures; combined selected components into 17 training visualization groups using voxel union/closing, Gaussian surface smoothing and Taubin smoothing; cropped excess neck/wrist/ankle tails and the centerline; mirrored the resulting left geometry and corrected winding; decimated, computed smooth normals and applied new preview materials. This derivative has 30 muscle meshes, five neutral landmark meshes and approximately 327,580 triangles. Abs, neck, trapezius and lower-back halves are joined in volume space to remove the centerline split; chest halves retain separation. The head is remeshed with local closing and smoothing to join facial muscle gaps, retaining the larger facial features rather than applying a convex hull. An additional feathered front-surface envelope fills the lower-face furrows for a skin-like surface while protecting nose and lip contours and keeping the eye sockets. Hands are reduced by approximately 12%; feet are reduced 18% in width, 20% in length and 9% vertically relative to the source, blending to unchanged joint positions. Wrist and ankle cuffs are narrowed to adjacent limb cross-sections and locally smoothed to remove their protruding rims. Finger and toe topology is preserved and mirrored. All landmarks use a fixed gray material. These structures are excluded from all muscle/fatigue mapping. Explicit component selections and app mappings are recorded in `processed/mapping.json`.
+
+Training group labels are inferred visual mappings to Masso's MuscleGroup data, not anatomical names supplied by the original author. Deeper muscles use documented surface proxies rather than additional exposed deep anatomy. The lower-back surface is partitioned from the original latissimus/erector volume using a shared boundary so it remains visible instead of being occluded by the source superficial layer. The preview is not connected to live training data.
+
+This local preview does not represent the artist's endorsement. Retain the attribution and change notice when redistributing modified assets.
+
+Approved head/neck refinement (2026-10-11): original shoulder/neck anatomical surfaces restored symmetrically; medial shoulder-neck gap filled within existing silhouettes and connected to the occipital base; original head muscle seams volumetrically closed and cheeks/mouth-side grooves locally softened while retaining eyes, nose and lips. Converted directly from ecorche-head-neck-connected.glb to native SceneKit: 37 meshes, 32 fatigue-eligible muscle meshes and 5 neutral landmarks; 500,410 unchanged triangles.
+
+Approved arm refinement (2026-10-11): original arm anatomical surfaces restored symmetrically; internal grooves filled and surfaces softened while retaining muscle-group silhouettes; wrist tendon ends blended into a continuous palm transition, with neutral hands retained. Native SceneKit source: ecorche-arms-preview.glb; 37 meshes, 32 fatigue-eligible muscle meshes, 5 neutral landmarks and 773,882 triangles. Homepage and Muscle Status share this resource.

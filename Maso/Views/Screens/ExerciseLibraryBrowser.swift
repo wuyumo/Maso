@@ -1,16 +1,6 @@
 import SwiftUI
 import Charts
 
-// 每个可见动作行上报 (所属大区, 在列表坐标系的 minY) — 右侧索引据此高亮"当前滚到顶部的区".
-// 用全行上报 (而非只第一行): 第一行滚出屏幕后会被 List 虚拟化掉、不再上报, 用第一行会误判.
-struct RowAnchor: Equatable { let section: MuscleGroup; let minY: CGFloat }
-private struct SectionMinYKey: PreferenceKey {
-    static var defaultValue: [RowAnchor] { [] }
-    static func reduce(value: inout [RowAnchor], nextValue: () -> [RowAnchor]) {
-        value.append(contentsOf: nextValue())
-    }
-}
-
 /// 单面板、缩放到某肌肉大区 bbox 的精细局部图 (右侧分区索引的图标).
 /// 背部用 POSTERIOR, 其余用 ANTERIOR; 取该区肌群 polygon 的包围盒 + 留白 (带出周边肌群),
 /// 整体不再画前后两个小人, 而是聚焦那块区域的精细分块.
@@ -63,7 +53,7 @@ struct MuscleRegionIcon: View {
     }
 }
 
-// 浏览全部 873 个动作的 sheet — Settings → Data → Exercise library 入口.
+// Shared curated family browser; full catalog and precise search retain every ID.
 // 跟 ExercisePicker 类似 UI (search + chip + list), 但 tap 一项不是"加进 plan",
 // 而是展开/弹出动作详情 (instructions / muscles / category) — 纯浏览模式.
 struct ExerciseLibraryBrowser: View {
@@ -77,6 +67,7 @@ struct ExerciseLibraryBrowser: View {
     var addRequested: Binding<Bool>? = nil
 
     @State private var query: String = ""
+    @State private var searchExpanded = false
     @State private var muscleFilter: MuscleGroup? = nil
     @State private var equipmentFilter: String? = nil
     @State private var movementFilter: MovementFacet? = nil
@@ -97,41 +88,16 @@ struct ExerciseLibraryBrowser: View {
     @State private var deleteBlockedRef: Exercise? = nil
     /// P1-7: 自创动作是 Pro 功能 (付费墙广告语承诺) — 免费用户走这弹 paywall.
     @State private var paywallOpen: Bool = false
-    /// 右侧跳转索引当前高亮的分区 (拖拽 scrubber 或滚动跟随). nil → 默认高亮第一个区.
-    @State private var activeSection: MuscleGroup? = nil
-    /// 正在拖右侧 scrubber — 期间屏蔽"滚动跟随高亮", 否则 scrubber 设的区与跟随算出的区互斗 → 来回抖.
-    @State private var isScrubbing: Bool = false
-    /// 仅拖动时才弹出文案 pill (松手即收, 平时只剩小绿点) — 仿通讯录右侧索引.
-    @State private var showScrubLabel: Bool = false
-    /// 右侧索引条静止时隐藏 — 滚动时浮现, 停下 ~1.3s 淡出. 仿系统滚动条.
-    @State private var railVisible: Bool = false
-    /// 每次"活动"(滚动/拖拽)自增, 待执行的隐藏闭包对比它判断期间有无新活动.
-    @State private var railActivityID: Int = 0
-
-    /// 有滚动/拖拽活动 → 浮现索引条 + 取消待执行的隐藏.
-    private func revealRail() {
-        railActivityID &+= 1
-        if !railVisible { withAnimation(.easeOut(duration: 0.2)) { railVisible = true } }
-    }
-    /// 滚动停下 → 排一个延时隐藏; 期间若有新活动 (railActivityID 变了) 或正在拖, 则不隐藏.
-    private func scheduleRailHide() {
-        railActivityID &+= 1
-        let id = railActivityID
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.3) {
-            if railActivityID == id, !isScrubbing {
-                withAnimation(.easeOut(duration: 0.45)) { railVisible = false }
-            }
-        }
-    }
-
     private static let muscleSections: [MuscleGroup] = [
         .chest, .back, .shoulders, .arms, .core, .legs,
     ]
 
-    private var filtered: [Exercise] {
-        // Library 浏览也走 userLibrary — niche 默认不暴露, 但用户自创 + 已采纳的 niche 在.
-        // 想看 niche stash 走顶部 toolbar 的 "+ Add" → "Browse rare exercises".
-        var arr = data.userLibrary
+    private var sourceExercises: [Exercise] {
+        data.visibleExerciseLibrary
+    }
+
+    private func applyFilters(_ exercises: [Exercise]) -> [Exercise] {
+        var arr = exercises
         if let m = muscleFilter {
             // 严格筛选 — 只看 primaryMuscles (主练肌), 跟 ExercisePickerSheet 同一行为.
             // 不再因为某个动作 secondary 含 m 就出现 (e.g. deadlift secondary 含 core 也不算 core 动作).
@@ -156,55 +122,39 @@ struct ExerciseLibraryBrowser: View {
         // 收藏置顶 — 在 filter 之后排序, 让收藏的动作在当前 filter 结果里排最前.
         // 不截断 (曾经 prefix(200)): List 是 lazy 的, 700+ 行无性能问题; 截断会把字母序
         // 靠后的 pull-up / overhead press 全家和 append 在库末尾的自创动作静默切掉.
-        return data.sortByFavorites(arr)
+        return ExerciseSelectionPolicy.shared.sorted(arr, favoriteIDs: data.canonicalFavoriteExerciseIDs,
+                                                     recentIDs: data.recentExerciseIDs)
+    }
+
+    private var filtered: [Exercise] { applyFilters(sourceExercises) }
+
+    private var previewExercises: [Exercise] {
+        // Hide rare variants keeps rare-only groups out of default browsing;
+        // explicit “more versions” still makes every matching family member reachable.
+        applyFilters(data.visibleExerciseLibrary)
     }
 
     /// 把 filtered 折叠成变种组 — 跟 ExercisePickerSheet 同一份 ExerciseGrouping.group(...).
     /// 排序: 收藏组置顶 (沿用置顶语义), 其余按"组代表的显示名"字母序 (中文走 locale 排序) —
     /// 列表上看到什么名字就按什么排, 不按 JSON 内部顺序.
     private var filteredGroups: [ExerciseGroup] {
-        let groups = ExerciseGrouping.group(filtered)
-        func isFavGroup(_ g: ExerciseGroup) -> Bool {
-            g.all.contains { data.isFavorite($0.id) }
-        }
+        let preferred = ExerciseGrouping.exactSearchIDs(in: filtered, query: query)
+        let groups = ExerciseGrouping.group(filtered, preferredExerciseIDs: preferred, fullLibrary: data.visibleExerciseLibrary,
+                                            previewLibrary: previewExercises, groupByName: true)
         return groups.sorted { a, b in
-            let fa = isFavGroup(a), fb = isFavGroup(b)
-            if fa != fb { return fa }
-            // 中英混排: 中文名在前按拼音, 未翻译英文名在后按字母 — 不再交叉穿插 (观感).
-            return ExerciseNameSort.precedes(a.canonical.displayName, b.canonical.displayName)
+            if a.entryTitle == b.entryTitle { return a.id < b.id }
+            return ExerciseNameSort.precedes(a.entryTitle, b.entryTitle)
         }
     }
 
-    /// 该变种组归属的肌肉大区 (按 canonical 的首个主练肌 .section). 用于竖向分区.
-    private func sectionOf(_ g: ExerciseGroup) -> MuscleGroup {
-        let muscles = g.canonical.primaryMuscles.isEmpty ? g.canonical.muscleGroups : g.canonical.primaryMuscles
-        for m in muscles {
-            if let sec = m.section, Self.muscleSections.contains(sec) {
-                return sec
-            }
-        }
-        return Self.muscleSections.first ?? .chest   // 兜底 (实际每个动作都落在 6 区之一)
-    }
-
-    /// filteredGroups 按肌肉大区分桶, 只保留有内容的区; 顺序 = muscleSections (胸→腿),
-    /// 区内顺序沿用 filteredGroups (置顶优先 + 名字序). 喂给竖向 Section + 底部跳转条.
-    private var sectionedGroups: [(MuscleGroup, [ExerciseGroup])] {
-        var buckets: [MuscleGroup: [ExerciseGroup]] = [:]
-        for g in filteredGroups { buckets[sectionOf(g), default: []].append(g) }
-        return Self.muscleSections.compactMap { sec in
-            guard let gs = buckets[sec], !gs.isEmpty else { return nil }
-            return (sec, gs)
-        }
-    }
-
-    /// 搜索进行中 — 命中组默认展开 (结果里的成员全是命中项, 折在 +N 里等于藏结果).
+    /// Search reaches every exact version; a broad family query stays compact.
     private var searchActive: Bool {
         !query.trimmingCharacters(in: .whitespaces).isEmpty
     }
 
-    /// 组是否处于展开态: 手动展开 (expandedGroupKey), 或搜索中的多成员命中组 (自动展开).
+    /// Broad queries and equipment filters keep families collapsed until requested.
     private func isGroupExpanded(_ group: ExerciseGroup) -> Bool {
-        expandedGroupKey == group.id || (searchActive && !group.variants.isEmpty)
+        expandedGroupKey == group.id
     }
 
     /// 单行 — 共用 GroupedExerciseRow (跟 picker 同款展示), tap → 详情, 右滑 → 置顶 / 删除 / 移回冷门库.
@@ -219,7 +169,6 @@ struct ExerciseLibraryBrowser: View {
             showVariantCategoryLabel: false,
             trailing: { EmptyView() },
             onTap: { selected = ex },
-            onTapImage: { selected = ex },
             onToggleExpand: {
                 Haptics.tap()
                 withAnimation(.easeOut(duration: 0.2)) {
@@ -262,15 +211,6 @@ struct ExerciseLibraryBrowser: View {
                 }
                 .tint(MasoColor.negative)
                 .accessibilityLabel(NSLocalizedString("Delete", comment: ""))
-            } else if data.settings.adoptedNicheExerciseIds.contains(ex.id) {
-                Button {
-                    data.unadoptNicheExercise(ex.id)
-                    Haptics.tap()
-                } label: {
-                    Image(systemName: "arrow.uturn.backward")
-                }
-                .tint(MasoColor.textDim)
-                .accessibilityLabel(NSLocalizedString("Remove from library", comment: ""))
             }
         }
     }
@@ -283,7 +223,7 @@ struct ExerciseLibraryBrowser: View {
     private var availableMuscles: Set<MuscleGroup> {
         var out: Set<MuscleGroup> = []
         let words = exerciseSearchWords(query)
-        for ex in data.userLibrary {
+        for ex in sourceExercises {
             if let eq = equipmentFilter, !matchesEquipment(ex, eq) { continue }
             if let mv = movementFilter, ex.movementFacet != mv { continue }
             if !words.isEmpty, !ex.matchesSearch(words) { continue }
@@ -298,7 +238,7 @@ struct ExerciseLibraryBrowser: View {
     private var availableEquipments: Set<String> {
         var out: Set<String> = []
         let words = exerciseSearchWords(query)
-        for ex in data.userLibrary {
+        for ex in sourceExercises {
             if let m = muscleFilter, !ex.primaryMuscles.contains(where: { $0.section == m }) { continue }
             if let mv = movementFilter, ex.movementFacet != mv { continue }
             if !words.isEmpty, !ex.matchesSearch(words) { continue }
@@ -311,7 +251,7 @@ struct ExerciseLibraryBrowser: View {
     private func movementsForSection(_ sec: MuscleGroup) -> [MovementFacet] {
         let words = exerciseSearchWords(query)
         var set = Set<MovementFacet>()
-        for ex in data.userLibrary {
+        for ex in sourceExercises {
             guard ex.primaryMuscles.contains(where: { $0.section == sec }) else { continue }
             if let eq = equipmentFilter, !matchesEquipment(ex, eq) { continue }
             if !words.isEmpty, !ex.matchesSearch(words) { continue }
@@ -351,99 +291,37 @@ struct ExerciseLibraryBrowser: View {
     /// 常驻搜索 + 筛选条 — 用全 app 共享的 ExerciseSearchFilterBar (跟训练 picker 同一组件,
     /// 调一处两边都变). 钉在列表上方 (不随列表滚动).
     private var searchFilterBar: some View {
-        ExerciseSearchFilterBar(
-            query: $query,
-            muscleFilter: $muscleFilter,
-            movementFilter: $movementFilter,
-            equipmentFilter: $equipmentFilter,
-            muscleSections: Self.muscleSections,
-            availableMuscles: availableMuscles,
-            movementsFor: movementsForSection,
-            availableEquipments: availableEquipments,
-            systemStyle: true   // Exercises 页: 系统材质底 (跟收折导航栏一致) + 系统菜单样式筛选
-        )
+        VStack(spacing: 8) {
+          ExerciseSearchFilterBar(
+            query: $query, muscleFilter: $muscleFilter, movementFilter: $movementFilter,
+            equipmentFilter: $equipmentFilter, muscleSections: Self.muscleSections,
+            availableMuscles: availableMuscles, movementsFor: movementsForSection,
+            availableEquipments: availableEquipments, systemStyle: true
+          )
+          .accessibilityIdentifier("exercise.library.filters")
+        }.padding(.top, 6)
     }
 
-    // MARK: - 右侧肌肉分区跳转索引 (Section Navigation — 肌肉图 scrubber)
+    private var personalShortcutExercises: [Exercise] {
+        let ids = data.canonicalFavoriteExerciseIDs.union(data.recentExerciseIDs)
+        return ExerciseSelectionPolicy.shared.sorted(filtered.filter { ids.contains($0.id) },
+            favoriteIDs: data.canonicalFavoriteExerciseIDs, recentIDs: data.recentExerciseIDs)
+    }
 
-    /// 右侧竖排"肌肉部位"索引: 每区一个迷你人体图 (该区肌肉高亮).
-    ///   - 默认 (未选中): 仅 dim 显示该区肌肉图, 无文字 / 无底.
-    ///   - 选中 / 手指滑到: 该区亮 accent, 左侧浮出文字, "图+文字"用 chip 底包裹 (整条无卡底).
-    ///   - 拖拽 scrubber: 手指 Y → 对应行高亮 + 滚到该区第一行; 其余保持默认未选中.
-    private func jumpNav(proxy: ScrollViewProxy) -> some View {
-        let secs = sectionedGroups
-        let rowH: CGFloat = 32
-        return VStack(alignment: .trailing, spacing: 0) {
-            ForEach(secs, id: \.0) { entry in
-                let sec = entry.0
-                let isActive = (activeSection ?? secs.first?.0) == sec
-                let expanded = showScrubLabel && isActive   // 仅拖动 + 当前区 → 弹出文案 pill
-                Group {
-                    if expanded {
-                        // 拖动 HUD: 亮绿 capsule + 深色 [名称 + 肌肉图] (深色配亮绿 ~11:1 AAA).
-                        HStack(spacing: 5) {
-                            Text(sec.displayName)
-                                .font(.system(size: 12, weight: .bold))
-                                .foregroundStyle(MasoColor.background)
-                                .lineLimit(1).fixedSize()
-                            MuscleRegionIcon(region: sec,
-                                             focusColor: MasoColor.background,
-                                             surroundColor: MasoColor.background.opacity(0.35),
-                                             size: 22)
-                        }
-                        .padding(.horizontal, 8).padding(.vertical, 4)
-                        .background { Capsule().fill(MasoColor.accent) }
-                    } else if isActive {
-                        // 平时选中态: [区域名 + 小号绿肌肉图] — 不只看图, 也标出所在肌群名.
-                        // 深色 chip 底保证压在列表上可读; 跟拖动态的亮绿 capsule 区分.
-                        HStack(spacing: 5) {
-                            Text(sec.displayName)
-                                .font(.system(size: 12, weight: .bold))
-                                .foregroundStyle(MasoColor.accent)
-                                .lineLimit(1).fixedSize()
-                            MuscleRegionIcon(region: sec,
-                                             focusColor: MasoColor.accent,
-                                             surroundColor: MasoColor.accent.opacity(0.3),
-                                             size: 18)
-                        }
-                        .padding(.horizontal, 8).padding(.vertical, 4)
-                        .background { Capsule().fill(MasoColor.background.opacity(0.6)) }
-                    } else {
-                        // 其余区: 统一小灰点.
-                        Circle()
-                            .fill(MasoColor.textDim.opacity(0.35))
-                            .frame(width: 5, height: 5)
-                    }
-                }
-                .frame(width: 30, height: rowH, alignment: .trailing)   // 固定 30pt 宽拖拽热区, 内容右对齐
-                .contentShape(Rectangle())
+    private var personalShortcutsLink: some View {
+        NavigationLink {
+            ExerciseFamilyVersionsPage(title: NSLocalizedString("Pinned and recent", comment: ""),
+                                       exercises: personalShortcutExercises) { exercise in
+                let group = ExerciseGroup(baseName: exercise.name, canonical: exercise, variants: [])
+                libraryRow(exercise, isVariant: true, group: group)
             }
+        } label: {
+            Label("Pinned and recent", systemImage: "pin")
+                .foregroundStyle(MasoColor.text)
+                .padding(.vertical, 4)
         }
-        .padding(.trailing, 8)
-        .gesture(
-            DragGesture(minimumDistance: 0, coordinateSpace: .local)
-                .onChanged { value in
-                    isScrubbing = true   // 屏蔽滚动跟随, 否则与下面 scrollTo 触发的跟随互斗 → 抖
-                    showScrubLabel = true // 拖动时弹出文案 pill
-                    revealRail()          // 拖拽期间保持索引条可见 + 刷新隐藏计时
-                    let idx = max(0, min(secs.count - 1, Int(value.location.y / rowH)))
-                    let target = secs[idx].0
-                    if target != activeSection {
-                        withAnimation(.easeOut(duration: 0.15)) { activeSection = target }
-                        Haptics.selection()
-                        if let firstId = secs[idx].1.first?.id {
-                            proxy.scrollTo(firstId, anchor: .top)   // 即时滚 (不动画), 跟手不打架
-                        }
-                    }
-                }
-                .onEnded { _ in
-                    withAnimation(.easeOut(duration: 0.18)) { showScrubLabel = false }  // 松手即收回小绿点
-                    // 松手后留一小窗口让滚动 settle, 期间仍屏蔽跟随, 防回弹抖动; 之后恢复滚动跟随.
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) { isScrubbing = false }
-                    // 拖到当前区不触发滚动 → 没有 .idle 相位来排隐藏, rail 会永挂; 松手统一排一次自隐.
-                    scheduleRailHide()
-                }
-        )
+        .listRowBackground(Color.clear)
+        .accessibilityIdentifier("exercise.personal")
     }
 
     /// 动作列表 List 本体 — headerFilter=true 时把筛选条放进 plain List 的 pinned section header
@@ -459,85 +337,44 @@ struct ExerciseLibraryBrowser: View {
                             .listRowInsets(EdgeInsets())
                     }
                 }
+                if !searchActive, !personalShortcutExercises.isEmpty {
+                    personalShortcutsLink
+                }
                 if filteredGroups.isEmpty {
                     // 零结果不再空白死路 — 给提示 + 入口 (跟 picker 的空状态一致).
                     Section { emptyResultsRow }
                 } else {
-                    // 按肌肉大区分组 (决定顺序), 但不显示分区标题 — 吸顶时底色跟导航栏对不齐, 索性去掉.
-                    // 跳转条 scrollTo 锚到每区第一行 (group.id), 不依赖 section 表头.
-                    ForEach(sectionedGroups, id: \.0) { entry in
-                        let sec = entry.0
-                        Section {
-                            // 收折分组 — 跟"训练中选动作 picker"用同一份 ExerciseGrouping + GroupedExerciseRow.
-                            ForEach(entry.1) { group in
-                                libraryRow(group.canonical, isVariant: false, group: group)
-                                    .background {
-                                        // 每个可见行上报 (区, minY) → 右侧索引高亮当前滚到顶部的区.
-                                        GeometryReader { geo in
-                                            Color.clear.preference(
-                                                key: SectionMinYKey.self,
-                                                value: [RowAnchor(section: sec,
-                                                                  minY: geo.frame(in: .named("exerciseList")).minY)])
-                                        }
-                                    }
-                                // 展开 → 变种拆 "Variation"(动作)/"Equipment"(器械) 两段, 跟 picker/Rare 一致.
-                                // 搜索中命中组自动展开 (isGroupExpanded) — 命中的变体不再藏在 +N 里.
-                                if !group.variants.isEmpty, isGroupExpanded(group) {
-                                    groupedVariantSections(for: group) { variant in
-                                        libraryRow(variant, isVariant: true, group: group)
-                                    }
-                                }
+                    ForEach(filteredGroups) { group in
+                        libraryRow(group.canonical, isVariant: false, group: group)
+                        if !group.isSingleton, isGroupExpanded(group) {
+                            groupedVariantSections(for: group, showAll: true, onCollapse: { expandedGroupKey = nil }) { variant in
+                                libraryRow(variant, isVariant: true, group: group)
                             }
                         }
                     }
                 }
             }
             .listStyle(.plain)
+            .scrollDismissesKeyboard(.interactively)
             // 最小行高降到 1 — 否则 groupedVariantSections 的 1pt"终结行"(撑住动画 diff 防崩) 会被默认最小行高
             // (~44pt) 撑大, 让"最后一个变种 ↔ 下一个母动作"间距过宽. 普通动作行有图片, 内容高远大于 1, 不受影响.
             .environment(\.defaultMinListRowHeight, 1)
             .scrollContentBackground(.hidden)
             .background(MasoColor.background.ignoresSafeArea())
-            .coordinateSpace(name: "exerciseList")
-            // 当前区 = 顶部那一行所属的区: 顶部参考线 ~70 (含筛选条高度), 取 minY <= 70 里 minY 最大的行
-            // (= 顶部刚越过参考线的那行); 若都在参考线下方 (列表最顶) 则取最靠上的行.
-            .onPreferenceChange(SectionMinYKey.self) { vals in
-                guard !isScrubbing, !vals.isEmpty else { return }   // 拖 scrubber 时不让跟随插手 → 不抖
-                let above = vals.filter { $0.minY <= 70 }
-                let pick = (above.max(by: { $0.minY < $1.minY })
-                    ?? vals.min(by: { $0.minY < $1.minY }))?.section
-                if let pick, pick != activeSection {
-                    withAnimation(.easeOut(duration: 0.15)) { activeSection = pick }
-                }
-            }
-            // 右侧索引条静止隐藏: 滚动中浮现, 滚动停下 (.idle) 排延时隐藏.
-            .onScrollPhaseChange { _, phase in
-                if phase == .idle { scheduleRailHide() } else { revealRail() }
-            }
-            // filter/搜索变化 → 收起手风琴 (跟 picker 一致, 避免残留孤儿展开态).
-            // 搜索豁免: 手动展开的组仍在当前结果里 (命中组) 则保留 — 边敲边看展开的变体不被打断.
-            // activeSection 一并归零: 旧高亮区可能已被过滤掉 (secs 里没有它) → 索引条全灰;
-            // 置 nil 回退到第一个区, 滚动跟随随后会再对准.
             .onChange(of: query) { _, _ in
-                activeSection = nil
                 if let key = expandedGroupKey, filteredGroups.contains(where: { $0.id == key }) { return }
                 expandedGroupKey = nil
             }
-            .onChange(of: muscleFilter) { _, _ in expandedGroupKey = nil; activeSection = nil }
-            .onChange(of: equipmentFilter) { _, _ in expandedGroupKey = nil; activeSection = nil }
-            .onChange(of: movementFilter) { _, _ in expandedGroupKey = nil; activeSection = nil }
+            .onChange(of: muscleFilter) { _, _ in expandedGroupKey = nil }
+            .onChange(of: equipmentFilter) { _, _ in expandedGroupKey = nil }
+            .onChange(of: movementFilter) { _, _ in expandedGroupKey = nil }
     }
 
     var body: some View {
         NavStackIf(embedded: embedded) {
-            // 头栏 + 吸顶筛选条共用「同一片」深色毛玻璃 — 关键: iOS 26 改了 plain List 的吸顶 header,
-            // 不再自动带半透明材质, 而手动拼任何 SwiftUI 材质 (.bar / 不透明色) 都对不齐导航栏的 Liquid Glass.
-            // 官方解法 (Apple 论坛 / iOS 26): 吸顶条放进 `.safeAreaBar(edge:.top)` — 它的内容自动获得跟导航栏
-            // 同一套系统材质; 配 `.scrollEdgeEffectStyle(.hard, for:.top)` 让吸顶区跟导航栏连成一整片毛玻璃.
-            //   - iOS 26+: 筛选条走 safeAreaBar (header 不放), 跟导航栏天然同材质.
-            //   - iOS 18-25: plain List 的 section header 系统会自动给吸顶毛玻璃, 仍走 header 方案.
-            ScrollViewReader { proxy in
-              Group {
+            // The native filter bar participates in the shared app header's soft
+            // scroll edge. Earlier iOS versions retain their pinned section header.
+            Group {
                 if #available(iOS 26.0, *) {
                     exerciseList(headerFilter: false)
                         // 筛选 + 搜索条常显 (不再随上划隐藏); 放进 safeAreaBar 跟导航栏共享同一片系统毛玻璃.
@@ -545,23 +382,25 @@ struct ExerciseLibraryBrowser: View {
                             searchFilterBar
                         }
                         // inline 标题: 带搜索/筛选条的页面原生就是 inline (e.g. 设置/邮件), 跟筛选条同一片玻璃.
-                        .navigationBarTitleDisplayMode(.inline)
+                        .navigationBarTitleDisplayMode(.large)
                 } else {
                     exerciseList(headerFilter: true)
                 }
               }
-              // 右侧竖排肌肉分区索引 — 浮在列表右缘垂直居中, ≥2 区才显示. 静止时隐藏 (railVisible).
-              .overlay(alignment: .trailing) {
-                  if sectionedGroups.count >= 2 {
-                      jumpNav(proxy: proxy)
-                          .opacity(railVisible ? 1 : 0)
-                          .allowsHitTesting(railVisible)   // 隐藏时不抢右缘触摸
-                  }
-              }
-            }
+                .searchable(text: $query, isPresented: $searchExpanded,
+                            placement: .navigationBarDrawer(displayMode: .automatic), prompt: Text("Search"))
+                .autocorrectionDisabled()
+                .textInputAutocapitalization(.never)
+                .onChange(of: searchExpanded) { _, presented in
+                    if !presented { query = "" }
+                }
                 // embedded 时跳过自己的大标题 / +按钮 (Train 统一导航栏接管); 非 embedded 保持原样.
                 .applyIf(!embedded) { v in
-                    v.screenHeader(NSLocalizedString("Exercise library", comment: "")) {
+                    v.screenHeader(NSLocalizedString("Exercises", comment: "")) {
+                        Button { searchExpanded = true } label: {
+                            Image(systemName: "magnifyingglass")
+                        }
+                        .accessibilityLabel("Search")
                         Button(action: { addChoiceOpen = true }) {
                             Image(systemName: "plus")
                         }
@@ -594,10 +433,8 @@ struct ExerciseLibraryBrowser: View {
                 AddExerciseChoiceSheet(
                     onCreateCustom: {
                         addChoiceOpen = false
-                        // P1-7: 自创动作是 Pro 功能. 免费用户 → paywall, 不进表单.
-                        let pro = data.settings.isPro
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.32) {
-                            if pro { customFormOpen = true } else { paywallOpen = true }
+                            if data.canCreateCustomExercise { customFormOpen = true } else { paywallOpen = true }
                         }
                     },
                     onBrowseNiche: {
@@ -660,6 +497,7 @@ struct ExerciseLibraryBrowser: View {
 
 struct ExerciseDetailSheet: View {
     @Environment(DataStore.self) private var data
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     let exercise: Exercise
     /// 可选 — 传了就显示底部 "Add to workout" 按钮, tap 时调用并 dismiss.
     /// 没传 → 纯浏览模式 (Library Browser 路径).
@@ -667,17 +505,73 @@ struct ExerciseDetailSheet: View {
     @Environment(\.dismiss) private var dismiss
     /// 是否展开"完整原文" 说明. 默认折叠 — 只显示简化版.
     @State private var showFullInstructions: Bool = false
-    /// SpeechManager 单例 — observable, 当前 source / isSpeaking 切按钮态.
-    @State private var speech = SpeechManager.shared
+    @State private var relatedExercises: [Exercise] = []
+    @State private var selectedRelatedExercise: Exercise?
+    @State private var demoVideoUnavailable = false
+    @State private var progressionPresented = false
+    @State private var mediaReportPresented = false
+    @State private var mediaReportSent = false
 
-    /// "看示范" 链接 — 优先 curated videoURL (有的动作 schema 自带); 否则回退到 YouTube 搜索
-    /// "<英文动作名> exercise how to". 用搜索而不是写死具体视频 → 不会失效 / 张冠李戴, 且覆盖全部动作.
-    /// 用英文 name (而非本地化 displayName) 搜 — 健身教程英文资源最全, 命中率高.
+    /// Prefer a verified direct demonstration. Search is reserved for unmapped or confirmed unavailable videos.
+    /// Transient connection failures and embedding restrictions preserve the direct watch link.
     private var watchDemoURL: URL? {
-        if let u = exercise.videoURL { return u }
+        if !demoVideoUnavailable, let u = exercise.videoURL { return u }
         let query = "\(exercise.name) exercise how to"
         guard let enc = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else { return nil }
         return URL(string: "https://www.youtube.com/results?search_query=\(enc)")
+    }
+
+    /// YouTube provides a public thumbnail for curated video links; search results have no reliable single preview.
+    private var videoThumbnailURL: URL? {
+        demoVideoUnavailable ? nil : ExerciseMediaPolicy.youtubeThumbnail(for: exercise)
+    }
+
+    @ViewBuilder
+    private var watchDemoControl: some View {
+        if let url = watchDemoURL {
+            if videoThumbnailURL == nil {
+                Link(destination: url) {
+                    HStack(spacing: 6) {
+                        Text("Find demo")
+                        Image(systemName: "arrow.up.right")
+                    }
+                }
+                .buttonStyle(.bordered)
+                .controlSize(.small)
+                .fixedSize(horizontal: true, vertical: false)
+                .tint(MasoColor.text)
+            } else {
+            Link(destination: url) {
+                MasoColor.surfaceHi
+                    .aspectRatio(16.0 / 9.0, contentMode: .fit)
+                    .overlay {
+                        if let thumbnailURL = videoThumbnailURL {
+                            GeometryReader { geometry in
+                                AsyncImage(url: thumbnailURL) { phase in
+                                    if case .success(let image) = phase {
+                                        image.resizable().scaledToFill()
+                                            .frame(width: geometry.size.width, height: geometry.size.height)
+                                            .clipped()
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    .overlay {
+                        Image(systemName: "play.fill")
+                            .font(.title2.weight(.semibold))
+                            .foregroundStyle(.white)
+                            .frame(width: 56, height: 56)
+                            .background(.ultraThinMaterial, in: Circle())
+                    }
+                    .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
+                    .contentShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(NSLocalizedString("Watch demo", comment: ""))
+            .padding(.top, 8)
+            }
+        }
     }
 
     /// 是否值得显示"展开"按钮 — 仅当原 instructions 比简化版有"多余信息" 时.
@@ -691,12 +585,6 @@ struct ExerciseDetailSheet: View {
         return origJoined.count > simpJoined.count
     }
 
-    /// 当前 sheet 是不是正在朗读 — speech.currentSource == 我的 exercise.id && isSpeaking.
-    /// 多 sheet 共存 (e.g. 用户从 Library 打开一个详情, 又长按弹了另一个) 各自按钮态正确.
-    private var isSpeakingThis: Bool {
-        speech.isSpeaking && speech.currentSource == exercise.id
-    }
-
     /// VARIANT 区 — 名字拆解出 variant 前缀时显示: [标签] vs [基础动作] + 对比说明.
     /// e.g. "High Face Pull (Cable)" → High · vs Face Pull · "锚点更高 … 更偏后束与上背".
     @ViewBuilder
@@ -707,24 +595,19 @@ struct ExerciseDetailSheet: View {
             let comparison = ExerciseGrouping.variantComparison(forLabel: label)
             VStack(alignment: .leading, spacing: 8) {
                 Text("Variant")
-                    .font(.system(size: 10, weight: .heavy))
-                    .tracking(1.5)
-                    .textCase(.uppercase)
-                    .foregroundStyle(MasoColor.textFaint)
+                    .font(.headline)
+                    .foregroundStyle(MasoColor.text)
                 HStack(spacing: 8) {
                     Text(label)
-                        .font(.system(size: 12, weight: .bold))
-                        .foregroundStyle(MasoColor.accent)
-                        .padding(.horizontal, 10).padding(.vertical, 5)
-                        .background(Capsule().fill(MasoColor.accent.opacity(0.12)))
-                        .overlay(Capsule().stroke(MasoColor.accent.opacity(0.35), lineWidth: 0.5))
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(MasoColor.text)
                     Text(String(format: NSLocalizedString("vs %@", comment: "variant compared with base move"), base))
-                        .font(.system(size: 13, weight: .semibold))
-                        .foregroundStyle(MasoColor.textDim)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
                 }
                 if !comparison.isEmpty {
                     Text(comparison)
-                        .font(.system(size: 13))
+                        .font(.body)
                         .foregroundStyle(MasoColor.text)
                         .fixedSize(horizontal: false, vertical: true)
                         .lineSpacing(2)
@@ -733,32 +616,46 @@ struct ExerciseDetailSheet: View {
         }
     }
 
-    /// EQUIPMENT 区 — equipmentAll (多器械) 或单 equipment, chips 罗列该动作可能用到的器材.
     @ViewBuilder
     private var equipmentSection: some View {
-        let raws: [String] = {
-            if let all = exercise.equipmentAll, !all.isEmpty { return all }
-            if let eq = exercise.equipment { return [eq] }
-            return []
-        }()
-        if !raws.isEmpty {
+        let raws = exercise.equipmentAll?.isEmpty == false ? exercise.equipmentAll! : [exercise.equipment].compactMap { $0 }
+        let names = Array(Set(raws)).sorted().map(Exercise.equipmentDisplayName(for:))
+        if !names.isEmpty {
+            Text(verbatim: names.joined(separator: " · "))
+                .font(.caption.weight(.medium))
+                .foregroundStyle(MasoColor.textDim)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+    }
+
+    /// 关联动作区 — 基础动作显示所有变种；变种动作显示基础动作和同组变种。
+    /// 当前动作从入口列表中排除，避免重复打开自身。
+    @ViewBuilder
+    private var relatedExercisesSection: some View {
+        if !relatedExercises.isEmpty {
             VStack(alignment: .leading, spacing: 8) {
-                Text("Equipment")
-                    .font(.system(size: 10, weight: .heavy))
-                    .tracking(1.5)
-                    .textCase(.uppercase)
-                    .foregroundStyle(MasoColor.textFaint)
-                FlowLayout(spacing: 6) {
-                    ForEach(Array(Set(raws)).sorted(), id: \.self) { raw in
-                        Text(Exercise.equipmentDisplayName(for: raw))
-                            .font(.system(size: 11, weight: .bold))
-                            .foregroundStyle(MasoColor.text.opacity(0.85))
-                            .padding(.horizontal, 10).padding(.vertical, 5)
-                            .background(Capsule().fill(MasoColor.surfaceHi))
-                    }
+                Text("Related exercises").font(.headline).foregroundStyle(.primary)
+                InlineExerciseList(exercises: relatedExercises) {
+                    selectedRelatedExercise = $0
                 }
             }
         }
+    }
+
+    /// 将分组计算放到后台，避免大动作库在详情页打开时阻塞首帧。
+    @MainActor
+    private func loadRelatedExercises() async {
+        let library = data.userLibrary + data.unadoptedNicheExercises
+        var seenIDs = Set<String>()
+        let uniqueLibrary = library.filter { seenIDs.insert($0.id).inserted }
+        let currentID = exercise.id
+        let matches = await Task.detached(priority: .userInitiated) {
+            ExerciseGrouping.group(uniqueLibrary)
+                .first(where: { $0.all.contains(where: { $0.id == currentID }) })?
+                .all.filter { $0.id != currentID } ?? []
+        }.value
+        guard !Task.isCancelled else { return }
+        relatedExercises = matches
     }
 
     /// 顶部 metadata chip row — level / mechanic / movement / tempo / unilateral / equipment.
@@ -767,16 +664,9 @@ struct ExerciseDetailSheet: View {
     private var metadataChipsRow: some View {
         let chips = exerciseMetadataChips()
         if !chips.isEmpty {
-            FlowLayout(spacing: 6) {
-                ForEach(Array(chips.enumerated()), id: \.offset) { _, label in
-                    Text(label)
-                        .font(.system(size: 10, weight: .semibold))
-                        .foregroundStyle(MasoColor.textDim)
-                        .padding(.horizontal, 8).padding(.vertical, 4)
-                        .background(MasoColor.surfaceHi)
-                        .clipShape(Capsule())
-                }
-            }
+            Text(chips.joined(separator: " · "))
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
         }
     }
 
@@ -881,10 +771,8 @@ struct ExerciseDetailSheet: View {
             VStack(alignment: .leading, spacing: 10) {
                 HStack {
                     Text("Your history")
-                        .font(.system(size: 10, weight: .heavy))
-                        .tracking(1.5)
-                        .textCase(.uppercase)
-                        .foregroundStyle(MasoColor.textFaint)
+                        .font(.headline)
+                        .foregroundStyle(MasoColor.text)
                     Spacer()
                     // 历史最佳 (max e1RM) — 单位走 weightLabel 管线, 跟随 kg/lb 设置.
                     if let top = rmSeries.compactMap(\.e1rm).max() {
@@ -925,10 +813,10 @@ struct ExerciseDetailSheet: View {
                     }
                 }
             }
-            .padding(12)
+            .padding(MasoMetrics.cardPadding)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(MasoColor.surfaceHi.opacity(0.5))
-            .clipShape(RoundedRectangle(cornerRadius: 12))
+            .glassCardBackground()
+            .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
         }
     }
 
@@ -940,198 +828,69 @@ struct ExerciseDetailSheet: View {
         return (lo - pad)...(hi + pad)
     }
 
-    /// 语音播报按钮 — speaking 时显 stop, idle 时显 play. tap toggle.
-    /// 朗读内容跟着 showFullInstructions 走 — 展开了就读全文, 没展开就读简化版.
-    @ViewBuilder
-    private var speakButton: some View {
-        Button(action: toggleSpeak) {
-            HStack(spacing: 4) {
-                Image(systemName: isSpeakingThis ? "stop.fill" : "speaker.wave.2.fill")
-                    .font(.system(size: 11, weight: .heavy))
-                Text(isSpeakingThis
-                     ? NSLocalizedString("Stop", comment: "")
-                     : NSLocalizedString("Listen", comment: ""))
-                    .font(.system(size: 11, weight: .semibold))
-            }
-            // 玻璃态: 朗读中 = accent 高浓度玻璃 + 黑字 (全 app 激活态统一配方), 空闲 = 低浓度 + accent 字;
-            // 旧系统保留原实心/半透明底 + 白字.
-            .foregroundStyle(isSpeakingThis ? (systemGlassAvailable ? .black : MasoColor.text) : MasoColor.accent)
-            .padding(.horizontal, 10).padding(.vertical, 5)
-            .glassCapsuleButtonBackground(tint: MasoColor.accent.opacity(isSpeakingThis ? 0.85 : 0.25),
-                                          fallback: isSpeakingThis ? MasoColor.accent : MasoColor.accent.opacity(0.16))
-            .overlay {
-                if !systemGlassAvailable {
-                    Capsule().stroke(MasoColor.accent.opacity(isSpeakingThis ? 0 : 0.4), lineWidth: 0.6)
-                }
-            }
-        }
-        .buttonStyle(.plain)
-        .accessibilityLabel(isSpeakingThis
-                            ? NSLocalizedString("Stop reading", comment: "")
-                            : NSLocalizedString("Read instructions aloud", comment: ""))
-    }
-
-    /// 切换朗读 / 停止. 朗读时用当前 effectiveLanguage 的 locale, 让 Chinese 用户听到中文 TTS,
-    /// English 用户听到英文 TTS — 跟 displayName / instructions 的 i18n 一致.
-    private func toggleSpeak() {
-        if isSpeakingThis {
-            speech.stop()
-        } else {
-            let lines = showFullInstructions
-                ? exercise.instructions
-                : exercise.simplifiedInstructions
-            // 在动作名前缀朗读 — 让用户先听到"是哪个动作", 上下文更清楚
-            let intro = exercise.displayName
-            let allLines = [intro] + lines
-            speech.speak(
-                steps: allLines,
-                locale: LanguageManager.shared.effectiveLanguage.rawValue,
-                source: exercise.id
-            )
-            Haptics.tap()
-        }
-    }
-
     var body: some View {
-        NavigationStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 16) {
-                    ExerciseImage(
-                        category: exercise.category,
-                        imageFolder: exercise.imageFolder,
-                        photoURL: exercise.photoURL,
-                        customImageData: exercise.customImageData,
-                        cornerRadius: 14,
-                        size: 220,
-                        animated: true,
-                        fitCustomImage: true   // P3: 详情大图不裁竖图
-                    )
-                    .frame(maxWidth: .infinity)
+        AppNavigationStack {
+            GeometryReader { geometry in
+            ZStack(alignment: .top) {
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 16) {
+                        ExerciseMediaHero(exercise: exercise, width: geometry.size.width, allowsYouTubePlayback: !demoVideoUnavailable, showsTutorial: false)
+                        .padding(.horizontal, -MasoMetrics.pagePaddingHorizontal)
 
                     VStack(alignment: .leading, spacing: 6) {
                         Text(exercise.displayName)
-                            .font(.system(size: 22, weight: .heavy))
+                            .font(.title2.weight(.bold))
                             .foregroundStyle(MasoColor.text)
-                        if let first = exercise.tags.first {
-                            Text(first)
-                                .font(.system(size: 13))
-                                .foregroundStyle(MasoColor.textDim)
-                        }
                     }
 
-                    // Metadata chips — level / mechanic / movement / tempo / unilateral / equipment
-                    // 全部走 nil-skip, 只展示存在的字段, 避免空 chip 占位.
-                    metadataChipsRow
-
-                    // #variant 拆解: 名字 = [Variant 前缀] 基础动作 (器械).
-                    // 有 variant 前缀 → 显示 "VARIANT" 区: 标签 + vs 基础动作 + 对比说明 (强化了哪里).
-                    variantSection
-
-                    // EQUIPMENT 区 — 该动作可能用到的全部器材, chips 罗列.
-                    equipmentSection
-
-                    // Muscles — section title + 人体分区图 (target 肌肉高亮) + chip 列表.
-                    // MuscleVisualBlock 前后身分别画, ex.muscleGroups 命中位置上色, 一眼能看出
-                    // "这个动作主要顶哪里".
-                    if !exercise.muscleGroups.isEmpty {
-                        VStack(alignment: .leading, spacing: 10) {
-                            Text("Target Muscles")
-                                .font(.system(size: 10, weight: .heavy))
-                                .tracking(1.5)
-                                .foregroundStyle(MasoColor.textFaint)
-                            HStack(spacing: 0) {
-                                Spacer(minLength: 0)
-                                MuscleVisualBlock(muscles: exercise.muscleGroups, sideLength: 160)
-                                    .fixedSize()
-                                Spacer(minLength: 0)
-                            }
-                            FlowLayout(spacing: 6) {
-                                ForEach(exercise.muscleGroups, id: \.self) { m in
-                                    Text(m.displayName)
-                                        .font(.system(size: 11, weight: .bold))
-                                        .foregroundStyle(MasoColor.accent)
-                                        .padding(.horizontal, 10).padding(.vertical, 5)
-                                        .background(MasoColor.accent.opacity(0.12))
-                                        .overlay(
-                                            Capsule().stroke(MasoColor.accent.opacity(0.35), lineWidth: 0.5)
-                                        )
-                                        .clipShape(Capsule())
-                                }
-                            }
+                    HStack(alignment: .top, spacing: 12) {
+                        if !exercise.muscleGroups.isEmpty {
+                            MuscleVisualBlock(muscles: exercise.muscleGroups, sideLength: 56)
+                                .frame(width: 56, height: 56)
+                                .accessibilityHidden(true)
                         }
-                    }
-
-                    // Safety / form cues — 来自 danger_warnings 字段 (新 schema).
-                    // 高难度动作 (deadlift / squat / OHP / etc.) 才会有, isolation 通常空.
-                    let warnings = exercise.localizedDangers
-                    if !warnings.isEmpty {
                         VStack(alignment: .leading, spacing: 8) {
-                            Text("Form cues")
-                                .font(.system(size: 10, weight: .heavy))
-                                .tracking(1.5)
-                                .foregroundStyle(MasoColor.textFaint)
-                            ForEach(Array(warnings.enumerated()), id: \.offset) { _, line in
-                                HStack(alignment: .top, spacing: 8) {
-                                    Image(systemName: "exclamationmark.triangle.fill")
-                                        .font(.system(size: 10, weight: .heavy))
-                                        .foregroundStyle(MasoColor.accent)
-                                        .padding(.top, 3)
-                                    Text(line)
-                                        .font(.system(size: 13))
-                                        .foregroundStyle(MasoColor.text)
-                                        .fixedSize(horizontal: false, vertical: true)
-                                }
+                            let primary = exercise.primaryMuscles.filter { exercise.muscleGroups.contains($0) }
+                            let secondary = exercise.muscleGroups.filter { !primary.contains($0) }
+                            if !primary.isEmpty || !secondary.isEmpty {
+                                let first = Text(verbatim: primary.map(\.displayName).joined(separator: " · "))
+                                    .fontWeight(.semibold).foregroundColor(MasoColor.text)
+                                let rest = Text(verbatim: (primary.isEmpty || secondary.isEmpty ? "" : " · ") + secondary.map(\.displayName).joined(separator: " · "))
+                                    .foregroundColor(MasoColor.textDim)
+                                (first + rest).font(.subheadline).fixedSize(horizontal: false, vertical: true)
                             }
-                        }
-                        .padding(12)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .background(MasoColor.accent.opacity(0.08))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 12)
-                                .stroke(MasoColor.accent.opacity(0.25), lineWidth: 0.6)
-                        )
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                            equipmentSection
+                        }.frame(maxWidth: .infinity, alignment: .leading)
                     }
 
-                    // Your history — 该动作的个人记录 (最近 3 次最佳组 + 历史最佳 e1RM + 趋势).
-                    // 放在要领区上方: 组间想确认"上次推了多重"比看文字要领更高频.
-                    historySection
+                    Button {
+                        mediaReportPresented = true
+                    } label: {
+                        Label("Report exercise media", systemImage: "flag")
+                            .font(.caption.weight(.medium))
+                    }
+                    .buttonStyle(.borderless)
+                    .foregroundStyle(MasoColor.accent)
+                    .accessibilityIdentifier("exercise.media.report")
+
+                    if ExerciseWeightReference.expectsLoad(exercise) {
+                        Button("Weight progression") { progressionPresented = true }
+                            .buttonStyle(.bordered).controlSize(.small)
+                            .accessibilityIdentifier("exercise.progression.open")
+                    }
 
                     // Instructions — 默认显示简化版 (LLM 提取的 2-3 个关键要点 / fallback 截断).
                     // 用户想看完整原文 → 点 "Show full instructions" 展开.
-                    if !exercise.instructions.isEmpty {
-                        VStack(alignment: .leading, spacing: 8) {
-                            HStack(spacing: 8) {
+                    if !exercise.instructions.isEmpty || (!demoVideoUnavailable && ExerciseMediaPolicy.youtubeID(exercise.videoURL) != nil) {
+                        VStack(alignment: .leading, spacing: 12) {
+                            HStack(alignment: .center, spacing: 8) {
                                 Text("How to do it")
-                                    .font(.system(size: 10, weight: .heavy))
-                                    .tracking(1.5)
-                                    .foregroundStyle(MasoColor.textFaint)
-                                Spacer()
-                                // Watch demo — 优先 curated video_url; 没有就回退到 YouTube 搜索该动作的教程,
-                                // 所以现在每个动作都有"看示范"入口. 系统会用默认浏览器 / YouTube app 打开.
-                                if let url = watchDemoURL {
-                                    Link(destination: url) {
-                                        HStack(spacing: 4) {
-                                            Image(systemName: "play.rectangle.fill")
-                                                .font(.system(size: 11, weight: .heavy))
-                                            Text("Watch demo")
-                                                .font(.system(size: 11, weight: .semibold))
-                                        }
-                                        .foregroundStyle(MasoColor.accent)
-                                        .padding(.horizontal, 10).padding(.vertical, 5)
-                                        // 次级胶囊钮 → accent 低浓度玻璃 (映射表②); 描边只留旧系统.
-                                        .glassCapsuleButtonBackground(tint: MasoColor.accent.opacity(0.25),
-                                                                      fallback: MasoColor.accent.opacity(0.16))
-                                        .overlay {
-                                            if !systemGlassAvailable {
-                                                Capsule().stroke(MasoColor.accent.opacity(0.4), lineWidth: 0.6)
-                                            }
-                                        }
-                                    }
+                                    .font(.headline).foregroundStyle(MasoColor.text)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                if !demoVideoUnavailable, ExerciseMediaPolicy.youtubeID(exercise.videoURL) != nil, let url = exercise.videoURL {
+                                    ExerciseYouTubeLink(url: url, exercise: exercise, compact: true)
+                                        .accessibilityIdentifier("exercise.youtube")
                                 }
-                                // 语音播报按钮 — iOS AVSpeechSynthesizer 朗读 instructions
-                                // (跟 i18n / 系统语言对齐, Siri Voice 高质量自动用上).
-                                speakButton
                             }
 
                             // 展示数据源: 折叠状态 = simplified; 展开 = 原 instructions
@@ -1141,38 +900,66 @@ struct ExerciseDetailSheet: View {
                             ForEach(Array(lines.enumerated()), id: \.offset) { idx, line in
                                 HStack(alignment: .top, spacing: 8) {
                                     Text("\(idx + 1).")
-                                        .font(.system(size: 13, weight: .heavy).monospacedDigit())
-                                        .foregroundStyle(MasoColor.accent)
-                                        .frame(width: 20, alignment: .leading)
+                                        .font(.body.monospacedDigit())
+                                        .foregroundStyle(.secondary)
+                                        .frame(minWidth: 22, alignment: .leading)
                                     Text(line)
-                                        .font(.system(size: 13))
-                                        .foregroundStyle(MasoColor.text)
+                                        .font(.body)
+                                        .foregroundStyle(.secondary)
                                         .fixedSize(horizontal: false, vertical: true)
                                 }
                             }
 
                             // 仅当原文比简化版有"多余" (条目数更多 / 单条更长被截断) 时显示折叠按钮
                             if hasMoreDetail {
-                                Button(action: {
-                                    withAnimation(.easeOut(duration: 0.2)) {
+                                Button {
+                                    withAnimation(reduceMotion ? nil : .easeOut(duration: 0.18)) {
                                         showFullInstructions.toggle()
                                     }
-                                }) {
-                                    HStack(spacing: 4) {
-                                        Image(systemName: showFullInstructions ? "chevron.up" : "chevron.down")
-                                            .font(.system(size: 9, weight: .heavy))
-                                        Text(showFullInstructions
-                                             ? NSLocalizedString("Show less", comment: "")
-                                             : NSLocalizedString("Show full instructions", comment: ""))
-                                            .font(.system(size: 12, weight: .semibold))
-                                    }
-                                    .foregroundStyle(MasoColor.textDim)
-                                    .padding(.top, 4)
+                                } label: {
+                                    Label(showFullInstructions
+                                          ? NSLocalizedString("Show less", comment: "")
+                                          : NSLocalizedString("Show full instructions", comment: ""),
+                                          systemImage: showFullInstructions ? "chevron.up" : "chevron.down")
                                 }
-                                .buttonStyle(.plain)
+                                .buttonStyle(.borderless)
+                                .foregroundStyle(.secondary)
+                            }
+
+                            // Video preview sits below the instructions and aligns to the section's leading edge.
+                            if demoVideoUnavailable || ExerciseMediaPolicy.youtubeID(exercise.videoURL) == nil {
+                                watchDemoControl
                             }
                         }
                     }
+
+
+                    // Safety / form cues — 来自 danger_warnings 字段 (新 schema).
+                    // 高难度动作 (deadlift / squat / OHP / etc.) 才会有, isolation 通常空.
+                    let warnings = exercise.localizedDangers
+                    if !warnings.isEmpty {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Form cues")
+                                .font(.headline)
+                                .foregroundStyle(MasoColor.text)
+                            ForEach(Array(warnings.enumerated()), id: \.offset) { _, line in
+                                HStack(alignment: .top, spacing: 8) {
+                                    Image(systemName: "exclamationmark.triangle.fill")
+                                        .font(.body)
+                                        .foregroundStyle(.secondary)
+                                        .padding(.top, 3)
+                                    Text(line)
+                                        .font(.body)
+                                        .foregroundStyle(MasoColor.text)
+                                        .fixedSize(horizontal: false, vertical: true)
+                                }
+                            }
+                        }
+                    }
+
+                    // Your history — 该动作的个人记录 (最近 3 次最佳组 + 历史最佳 e1RM + 趋势).
+                    // 个人记录位于动作说明之后、关联动作之前。
+                    historySection
 
                     // 选择训练 CTA (ExercisePicker 路径传 onAdd 时显示)
                     if let onAdd {
@@ -1180,29 +967,33 @@ struct ExerciseDetailSheet: View {
                             onAdd()
                             dismiss()
                         }) {
-                            HStack(spacing: 8) {
-                                Image(systemName: "plus.circle.fill")
-                                    .font(.system(size: 14, weight: .heavy))
-                                Text("Add to workout")
-                                    .font(.system(size: 14, weight: .heavy))
-                            }
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 14)
-                            .foregroundStyle(.black)
-                            // 主 CTA 系统玻璃 (映射表①), 旧系统保留实心 accent.
-                            .glassCapsuleButtonBackground(tint: MasoColor.accent.opacity(0.85),
-                                                          fallback: MasoColor.accent)
+                            Label("Add to workout", systemImage: "plus")
+                                .frame(maxWidth: .infinity)
                         }
-                        .buttonStyle(.plain)
-                        .padding(.top, 8)
+                        .buttonStyle(.borderedProminent)
+                        .controlSize(.large)
                     }
+
+                    // Keep the variant explanation next to related exercises.
+                    variantSection
+
+                    // Show all related variants at the bottom.
+                    relatedExercisesSection
                 }
-                .padding(MasoMetrics.pagePaddingHorizontal)
+                    .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
+                    .padding(.bottom, MasoMetrics.pagePaddingHorizontal)
+                }
+                .scrollIndicators(.hidden)
+                .ignoresSafeArea(edges: .top)
+
             }
+            .ignoresSafeArea(edges: .top)
+            }
+            .ignoresSafeArea(edges: .top)
             .background(MasoColor.background.ignoresSafeArea())
             .navigationBarTitleDisplayMode(.inline)
+            .appUnobstructedMediaHeader()
             .toolbar {
-                // 置顶按钮 — pin toggle (语义从"收藏"改成"置顶到列表顶部")
                 ToolbarItem(placement: .topBarLeading) {
                     let favorited = data.isFavorite(exercise.id)
                     Button {
@@ -1220,12 +1011,93 @@ struct ExerciseDetailSheet: View {
                 }
             }
             .tint(MasoColor.text)
+            .task(id: exercise.id) {
+                await loadRelatedExercises()
+            }
+            .task(id: exercise.videoURL) {
+                demoVideoUnavailable = false
+                if let url = exercise.videoURL {
+                    let unavailable = await ExerciseDemoVideoValidator.shared.isUnavailable(url)
+                    if !Task.isCancelled { demoVideoUnavailable = unavailable }
+                }
+            }
+            .sheet(isPresented: $progressionPresented) {
+                ExerciseLoadProgressionSheet(exercise: exercise)
+            }
+            .sheet(isPresented: $mediaReportPresented) {
+                FeedbackSheet(onSuccess: { mediaReportSent = true }, exercise: exercise)
+                    .presentationDragIndicator(.visible)
+            }
+            .alert("Report received", isPresented: $mediaReportSent) {
+                Button("OK", role: .cancel) {}
+            } message: {
+                Text("Report received. It will be included in the next weekly digest.")
+            }
+            .sheet(item: $selectedRelatedExercise) { related in
+                ExerciseDetailSheet(exercise: related)
+                    .presentationDetents([.large])
+                    .presentationDragIndicator(.visible)
+            }
         }
-        .presentationDetents([.medium, .large])
+        .presentationDetents([.large])
         .presentationDragIndicator(.visible)
-        // sheet 关闭时停掉朗读 — 不让用户切走 sheet 后还在念
-        .onDisappear {
-            if isSpeakingThis { speech.stop() }
+    }
+}
+
+
+/// Only confirmed removed/private videos fall back to search; network failures retain the direct link.
+private actor ExerciseDemoVideoValidator {
+    static let shared = ExerciseDemoVideoValidator()
+    private var cache: [URL: (date: Date, unavailable: Bool)] = [:]
+
+    func isUnavailable(_ url: URL) async -> Bool {
+        if let cached = cache[url], Date().timeIntervalSince(cached.date) < 6 * 3600 {
+            return cached.unavailable
+        }
+        guard let host = url.host?.lowercased(),
+              host == "youtu.be" || host == "youtube.com" || host.hasSuffix(".youtube.com") else { return false }
+        var components = URLComponents(string: "https://www.youtube.com/oembed")!
+        components.queryItems = [URLQueryItem(name: "url", value: url.absoluteString), URLQueryItem(name: "format", value: "json")]
+        guard let endpoint = components.url else { return false }
+        do {
+            let (_, response) = try await URLSession.shared.data(for: URLRequest(url: endpoint, timeoutInterval: 8))
+            guard let response = response as? HTTPURLResponse else { return false }
+            var unavailable = [404, 410].contains(response.statusCode)
+            // An oEmbed 401 can also mean embedding is disabled while the watch link still works.
+            // Inspect the watch page before treating it as a private/removed video.
+            if response.statusCode == 401 {
+                unavailable = await watchPageConfirmsUnavailable(url)
+            }
+            if response.statusCode == 200 || unavailable { cache[url] = (Date(), unavailable) }
+            return unavailable
+        } catch {
+            return false
         }
     }
+
+    private func watchPageConfirmsUnavailable(_ url: URL) async -> Bool {
+        do {
+            var components = URLComponents(url: url, resolvingAgainstBaseURL: false)
+            var query = components?.queryItems ?? []
+            query.append(URLQueryItem(name: "hl", value: "en"))
+            components?.queryItems = query
+            guard let watchURL = components?.url else { return false }
+            let (bytes, _) = try await URLSession.shared.data(for: URLRequest(url: watchURL, timeoutInterval: 8))
+            guard let html = String(data: bytes, encoding: .utf8),
+                  let pattern = try? NSRegularExpression(pattern: #"(?:var )?ytInitialPlayerResponse\s*=\s*(\{.*?\});"#, options: [.dotMatchesLineSeparators]),
+                  let match = pattern.firstMatch(in: html, range: NSRange(html.startIndex..., in: html)),
+                  let range = Range(match.range(at: 1), in: html),
+                  let json = String(html[range]).data(using: .utf8),
+                  let player = try JSONSerialization.jsonObject(with: json) as? [String: Any],
+                  let playability = player["playabilityStatus"] as? [String: Any],
+                  let status = playability["status"] as? String,
+                  status != "OK",
+                  let reason = playability["reason"] as? String else { return false }
+            let message = reason.lowercased()
+            return ["private", "removed", "deleted", "video unavailable", "no longer available"].contains(where: message.contains)
+        } catch {
+            return false
+        }
+    }
+
 }

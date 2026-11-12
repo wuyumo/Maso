@@ -1,22 +1,8 @@
 import Foundation
 
 // MARK: - ExerciseGrouping
-//
-// 把"同基础动作 + 不同器械变种"折叠成一个 group, 让 picker 列表不至于被 5 种 Bench Press
-// (machine / dumbbell / smith / decline / incline) 挤爆.
-//
-// Rule (跟用户原话对齐):
-//   - 带括号的动作 → 基础名 = 括号前的部分. "Bench Press (Machine)" → base "Bench Press"
-//   - 没括号的动作 → 基础名 = 自身. "Bench Press" → base "Bench Press"
-//   - 同 base 的动作收到同一 group. Group 里 name 跟 base 完全相等的那个 = "canonical"
-//     (默认推荐); 其它都是 variant.
-//   - 关键反例: "Speed Bench Press" 的 base = "Speed Bench Press" (它自己), 不收进
-//     "Bench Press" group — 因为它本身不带括号, base 就是它自己, 跟 "Bench Press" 是两组.
-//
-// UI 用法:
-//   - picker 默认渲染每组 canonical 那一项 (折叠态)
-//   - 有 variants → 行右侧带"+N 变种" disclosure
-//   - 用户 tap row 直接选 canonical; tap disclosure 展开看每个变种 (各自带 equipment icon)
+// Browsing families come from the reviewed catalog. Concrete exercise IDs remain
+// independent for selection, media, history and PRs. Display names never deduplicate.
 
 /// 一组"同基础动作"的 exercise 集合.
 /// canonical: 这个 group 推荐默认的那一项. 永远非 nil — 即使没有跟 base 同名的 exercise (e.g.
@@ -26,27 +12,48 @@ struct ExerciseGroup: Hashable, Identifiable {
     let canonical: Exercise
     let variants: [Exercise]  // 不含 canonical
 
-    var id: String { baseName + "|" + canonical.id }
+    /// Stable family identity survives filtering, pinning and language changes.
+    var familyID: String? = nil
+    var id: String { familyID ?? (baseName + "|" + canonical.id) }
 
     /// 全部 exercise: canonical + variants. 顺序: canonical 第一.
     var all: [Exercise] { [canonical] + variants }
 
     /// 这个组有多少个 exercise (含 canonical).
-    var count: Int { 1 + variants.count }
+    var totalVersionCount: Int? = nil
+    var count: Int { totalVersionCount ?? (1 + variants.count) }
+
+    /// Reviewed familiarity is a browsing proxy, not measured user probability.
+    /// Keep every common version; specialists require an explicit inline expansion.
+    var commonVariants: [Exercise] {
+        variants.filter { ExerciseSelectionPolicy.shared.tier(for: $0) != .specialist }
+    }
+    var lessCommonVariants: [Exercise] {
+        variants.filter { ExerciseSelectionPolicy.shared.tier(for: $0) == .specialist }
+    }
 
     /// 是不是单 exercise 组 (没变种). UI 用这个决定要不要显 disclosure.
-    var isSingleton: Bool { variants.isEmpty }
+    var isSingleton: Bool { count <= 1 }
 
     /// 组入口标题 — 只显示"主动作"名 (#nameParts: "Squat" / "Face Pull"), 不带器械/变体.
     /// zh 本地化: 组里存在"纯 base 成员"(无 variation 无 equipment) → 用它的 displayName (跟随语言);
     /// 没有纯成员 → 用 canonical.displayName (仍跟随语言). 不再回退英文 baseName —
     /// zh UI 搜索时组内常无纯成员, 回退会让组标题突然变英文 (搜"上斜"出一排 "Bench Press").
     var entryTitle: String {
+        if let base = canonical.nameParts?.localizedBase {
+            return Self.withoutParenthetical(base[LanguageManager.currentLanguageCode] ?? base["en"] ?? baseName)
+        }
         // #refold: 组入口显示"无括号主动作"名.
         if let pure = all.first(where: { $0.nameParts != nil && $0.nameParts?.variation == nil && $0.nameParts?.equipment == nil }) {
-            return pure.displayName
+            return Self.withoutParenthetical(pure.displayName)
         }
-        return canonical.displayName
+        return Self.withoutParenthetical(canonical.displayName)
+    }
+
+    private static func withoutParenthetical(_ name: String) -> String {
+        let prefix = name.prefix { $0 != "(" && $0 != "（" }
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        return prefix.isEmpty ? name : prefix
     }
 
     /// 这个 exercise 是不是"动作差异变种" (Variation), 区别于"器械差异变种" (Equipment).
@@ -323,74 +330,83 @@ enum ExerciseGrouping {
         return name.trimmingCharacters(in: .whitespaces)
     }
 
-    /// 把一组 exercise 折叠成 ExerciseGroup 列表.
-    /// 顺序: 跟 input 一致 (拿每组第一次出现的 exercise 决定 group 顺序).
-    /// 同 group 内 variants 顺序: input 顺序 (除去 canonical).
-    ///
-    /// 运动修饰词折叠策略 (J-session 新增):
-    ///   "Seated Lateral Raise" 和 "Single-Arm Rear Delt Fly" 这类带修饰词的动作,
-    ///   只在目标 base 已有"无修饰词变种"时才并入 — 这样 "Lateral Raise (Dumbbell)" 存在 →
-    ///   "Seated Lateral Raise" 合法并入 "Lateral Raise" 组; 而 "Alternating Dumbbell Curl"
-    ///   没有无修饰词的 "Curl" 变种 → 保持在自己的器械只 base "Alternating Curl" 里, 不强行并入.
-    static func group(_ exercises: [Exercise]) -> [ExerciseGroup] {
-        // 1. 先算所有"纯器械 base" (不删修饰词) — 用于检测 "目标 base 是否有无修饰词成员".
-        let equipBasesSet = Set(exercises.map { equipmentOnlyBase(of: $0) })
-
-        // 2. 为每个 exercise 确定最终 key:
-        //    fullBase = modifier-stripped base; equipBase = equipment-only base.
-        //    只有当 fullBase 出现在 equipBasesSet 里 (即有真正的"无修饰词"变种存在), 才采用 fullBase;
-        //    否则回退 equipBase.
-        func contextualKey(_ ex: Exercise) -> String {
-            // #5: 泛家族词 (Row/Curl/Press/Fly…) — 剥到只剩家族词时, 器械才是身份.
-            //     命名规范化后器械在括号里 ("Row (Cable)"), 名字前缀不再携带器械 —
-            //     改用 equipment 数据字段构 key: "Seated Row (Cable)" → key "Cable Row";
-            //     "Row (Barbell)" → key "Barbell Row". 同家族不同器械仍分组, 体位/握法照折.
-            let noMod = ExerciseGrouping.stripMovementModifiers(ExerciseGrouping.beforeParen(ex.name))
-            let family = ExerciseGrouping.stripEquipmentWords(noMod)
-            if ExerciseGrouping.genericFamilyWords.contains(family.lowercased()) {
-                let eq = ExerciseGrouping.normalizedEquipment(ex.equipment)
-                return Exercise.equipmentDisplayName(for: eq) + " " + family
+    /// Only input families enter the main list. The supplied preview library is
+    /// already filtered by query/equipment/muscle. Never refill from an unfiltered
+    /// catalog when expanding. Explicit exact-search matches may lead a group;
+    /// otherwise reviewed familiarity chooses its representative, independent of pins.
+    static func group(_ exercises: [Exercise], preferredExerciseIDs: [String] = [],
+                      fullLibrary: [Exercise] = [], previewLibrary: [Exercise] = [],
+                      groupByName: Bool = false) -> [ExerciseGroup] {
+        let policy = ExerciseSelectionPolicy.shared
+        let preferred = Dictionary(preferredExerciseIDs.enumerated().map { ($0.element, $0.offset) },
+                                   uniquingKeysWith: min)
+        // Browsing folds these movement families together while preserving their
+        // separate programming groups for training and load selection.
+        func browsingKey(_ exercise: Exercise) -> String {
+            if groupByName {
+                let raw = exercise.name.split(separator: "(", maxSplits: 1).first.map(String.init) ?? exercise.name
+                return "name." + raw.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
             }
-            let eBase = equipmentOnlyBase(of: ex)
-            let fBase = baseName(of: ex)      // strips both equipment + modifiers
-            if fBase != eBase && equipBasesSet.contains(fBase) {
-                return fBase
-            }
-            return eBase
+            let family = policy.displayFamilyID(for: exercise)
+            if family == "pull_up" || family == "push_up" { return "browse." + family }
+            if exercise.id == "handstand_push_up" { return "browse.push_up" }
+            return policy.programmingGroupID(for: exercise)
         }
-
-        // #refold: 带括号的动作 (有 variation 或 equipment) 全部收折到"无括号主动作"下.
-        // 分组 key = nameParts.base; 组代表优先选纯 base 成员 (裸名, 无括号), 没有就按器械 rank 挑.
-        // 自创动作 (无 nameParts) 回退老 contextualKey 启发式.
+        let previewBuckets = Dictionary(grouping: previewLibrary, by: browsingKey)
         var orderedKeys: [String] = []
         var buckets: [String: [Exercise]] = [:]
-        for ex in exercises {
-            let key = ex.nameParts?.base ?? contextualKey(ex)
-            if buckets[key] == nil {
-                orderedKeys.append(key)
-                buckets[key] = []
-            }
-            buckets[key]?.append(ex)
+        var seenIDs = Set<String>()
+        for exercise in exercises where seenIDs.insert(exercise.id).inserted {
+            let key = browsingKey(exercise)
+            if buckets[key] == nil { orderedKeys.append(key) }
+            buckets[key, default: []].append(exercise)
         }
-        return orderedKeys.compactMap { key -> ExerciseGroup? in
+        return orderedKeys.compactMap { key in
             guard let items = buckets[key], !items.isEmpty else { return nil }
-            let canonical = items.first(where: { $0.nameParts != nil && $0.nameParts?.variation == nil && $0.nameParts?.equipment == nil })
-                ?? items.first(where: { $0.name == key })
-                ?? items.min(by: { a, b in
-                    let ra = canonicalRank(a), rb = canonicalRank(b)
-                    if ra != rb { return ra < rb }
-                    if a.name.count != b.name.count { return a.name.count < b.name.count }
-                    return a.name < b.name
-                })
-                ?? items[0]
-            // 幽灵变种去重 (同 displayName 不重复列).
-            var seenNames = Set([canonical.displayName])
-            let variants = items.filter { v -> Bool in
-                guard v.id != canonical.id else { return false }
-                return seenNames.insert(v.displayName).inserted
+            let ranked = policy.sorted(items + (previewBuckets[key] ?? [])).sorted { lhs, rhs in
+                let l = preferred[lhs.id] ?? Int.max, r = preferred[rhs.id] ?? Int.max
+                return l < r
             }
-            return ExerciseGroup(baseName: key, canonical: canonical, variants: variants)
+            guard let canonical = ranked.first else { return nil }
+            // Translated names never merge distinct IDs. Count only the scoped
+            // members actually available below this entry, including folded ones.
+            return ExerciseGroup(baseName: canonical.nameParts?.base ?? baseName(of: canonical),
+                                 canonical: canonical,
+                                 variants: ranked.filter { $0.id != canonical.id }, familyID: key,
+                                 totalVersionCount: fullLibrary.isEmpty ? nil : ranked.count)
         }
+    }
+
+    /// Use the complete catalog when a filtered family opens all its versions. A
+    /// localized name can collide even when the two concrete IDs have different form.
+    static func disambiguationText(for exercise: Exercise, among exercises: [Exercise]) -> String? {
+        let collisions = exercises.filter { $0.id != exercise.id && $0.displayName == exercise.displayName }
+        guard !collisions.isEmpty else { return nil }
+        if exercise.name != exercise.displayName,
+           collisions.allSatisfy({ $0.name != exercise.name }) {
+            return exercise.name
+        }
+        // Some original English names also collide (for example strict military
+        // stance vs ordinary overhead press). Their existing localized form cues
+        // distinguish the movement without exposing database IDs to the user.
+        return exercise.simplifiedInstructions.first { cue in
+            !cue.isEmpty && collisions.allSatisfy { !$0.simplifiedInstructions.contains(cue) }
+        }
+    }
+
+    /// Exact names/aliases lead a family while broad terms keep its usual representative.
+    /// Word-order tolerance accepts "Dumbbell Bench Press" for "Bench Press (Dumbbell)".
+    static func exactSearchIDs(in exercises: [Exercise], query: String) -> [String] {
+        let words = exerciseSearchWords(query)
+        guard !words.isEmpty else { return [] }
+        let normalized = words.joined()
+        let wordSet = words.sorted()
+        return exercises.filter { exercise in
+            ([exercise.name, exercise.displayName] + (exercise.aliases ?? [])).contains { name in
+                let candidate = exerciseSearchWords(name)
+                return candidate.joined() == normalized || (words.count > 1 && candidate.sorted() == wordSet)
+            }
+        }.map(\.id)
     }
 
     // MARK: - VariantInfo — variant 词 → "与原动作对比"说明 (#variant 拆解)

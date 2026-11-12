@@ -2,6 +2,13 @@ import SwiftUI
 import UIKit
 import CoreImage.CIFilterBuiltins
 
+/// Shared share-page spacing; dense routine QR codes retain their larger scan size.
+enum ShareLayout {
+    static let contentInset: CGFloat = 24
+    static let topInset: CGFloat = 16
+    static let footerQRSize: CGFloat = 64
+}
+
 // App 全局链接常量.
 enum MasoLinks {
     /// App Store 产品页 — routine 分享卡的 QR (引导没装 app 的人扫码下载).
@@ -9,142 +16,125 @@ enum MasoLinks {
     static let appStore = "https://apps.apple.com/app/id6776689750"
 }
 
-/// Share card 顶部可选 photo banner — 用户在 customize sheet 加了自己照片就显示.
-/// 4 个 share card 都用这个 (放在内容区最顶, footer 不动).
-///
-/// 三种状态:
-///   1. 有 photo → 显示正方形照片 (中心裁切)
-///   2. 没 photo + onTapToAdd 非 nil (preview 模式) → 显示"Add photo" 虚线占位, tap 触发 add
-///   3. 没 photo + onTapToAdd nil (渲染最终图模式) → 不渲染 (EmptyView)
-///
-/// 视觉: 正方形 1:1, 用 .fill + .clipped() 中心裁切 — 不管用户照片是横/竖, 都裁成正方形.
+/// Photo editing affordance only; the actual share photo is rendered once in the footer.
 struct SharePhotoBanner: View {
     let photo: UIImage?
-    /// preview 模式: 传 callback → 没 photo 时显示"添加照片"占位, tap 触发 caller 弹选择器.
-    /// 渲染模式: 传 nil → 没 photo 时不渲染, 让最终输出图干净不带 UI.
     var onTapToAdd: (() -> Void)? = nil
-
     var body: some View {
-        if let img = photo {
-            // 有照片 — 显示, tap 仍可触发 onTapToAdd (用户改照片). 渲染模式 (onTapToAdd nil)
-            // tap gesture 不挂, 渲染图无副作用.
-            Color.clear
-                .aspectRatio(1, contentMode: .fit)
-                .overlay(
-                    Image(uiImage: img)
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                )
-                .clipped()
-                .contentShape(Rectangle())
-                .onTapGesture { onTapToAdd?() }
-        } else if let onTap = onTapToAdd {
-            // 没照片 + preview 模式 — 显示"添加照片" 占位 (1:1 dashed border)
-            Color.clear
-                .aspectRatio(1, contentMode: .fit)
-                .overlay {
-                    ZStack {
-                        // 虚线 border 提示"可点击区域"
-                        RoundedRectangle(cornerRadius: 12)
-                            .strokeBorder(
-                                MasoColor.borderSoft,
-                                style: StrokeStyle(lineWidth: 1.5, dash: [6, 4])
-                            )
-                            .padding(12)
-                        VStack(spacing: 10) {
-                            Image(systemName: "photo.badge.plus")
-                                .font(.system(size: 38, weight: .light))
-                                .foregroundStyle(MasoColor.textDim)
-                            Text("Add a photo")
-                                .font(.system(size: 14, weight: .semibold))
-                                .foregroundStyle(MasoColor.textDim)
-                        }
+        if let onTapToAdd {
+            Button(action: onTapToAdd) {
+                if let photo {
+                    HStack(spacing: 12) {
+                        Color.clear.frame(width: 48, height: 48)
+                            .overlay { Image(uiImage: photo).resizable().scaledToFill() }
+                            .clipped().clipShape(RoundedRectangle(cornerRadius: 8))
+                            .accessibilityHidden(true)
+                        Text("Replace photo").font(.body).foregroundStyle(MasoColor.text)
+                        Spacer(minLength: 0)
                     }
-                    .background(MasoColor.surface.opacity(0.4))
+                    .padding(MasoMetrics.cardPadding)
+                    .contentCardChrome(padding: 0)
+                } else {
+                    AddPhotoPlaceholder().frame(height: 160)
                 }
-                .clipShape(RoundedRectangle(cornerRadius: 0))
-                .contentShape(Rectangle())
-                .onTapGesture { onTap() }
+            }
+            .buttonStyle(.plain)
+            .contentShape(Rectangle())
+            .accessibilityLabel(photo == nil ? Text("Add photo") : Text("Replace photo"))
+            .accessibilityIdentifier("share.photo.upload")
         }
-        // 渲染模式: photo nil + onTapToAdd nil → EmptyView
     }
 }
 
-// 分享图底部 footer — 所有 4 个 share card 共用.
-// 内容: 左侧 App icon + 名称, 右侧 QR placeholder (后期换真 App Store 二维码).
-//
-// 视觉规则:
-//   - 左 App icon 32×32 accent + "MASSO" wordmark + tagline
-//   - 右 QR placeholder (36×36 灰底 + qrcode SF symbol)
-//   - 整条 footer 上方有 0.5pt 细分割线, 跟主内容区视觉分割
+/// Kept as a shared workout scene adapter, without adding a second inset.
+struct WorkoutSharePhotoBanner: View {
+    let photo: UIImage?
+    let muscles: [MuscleGroup]
+    var onTapToAdd: (() -> Void)? = nil
+    var body: some View { SharePhotoBanner(photo: photo, onTapToAdd: onTapToAdd) }
+}
+
+/// Shared export footer: physical left QR above brand, physical right square photo.
 struct ShareCardFooter: View {
-    /// 真 QR 内容 (e.g. maso:// routine 深链). nil → 占位 qrcode 图标 (后期接 App Store 链接).
+    @Environment(\.shareCardSelection) private var selection
+    @Environment(\.layoutDirection) private var contentDirection
+    private var visibleQRPayload: String? {
+        selection?.excluded.isEmpty == false ? MasoLinks.appStore : qrPayload
+    }
     var qrPayload: String? = nil
-    /// 真 QR 边长 — routine 深链 payload 压缩后仍 ~300 字符 (QR v13), 38pt 太密难扫,
-    /// routine 卡传 64. 占位图标始终 38.
-    var qrSize: CGFloat = 38
+    /// Inner QR edge; the existing 3pt quiet-zone padding remains part of its visible size.
+    var qrSize: CGFloat = ShareLayout.footerQRSize
+    var photo: UIImage? = nil
+    var photoSelectionID: String? = nil
+    private var visiblePhoto: UIImage? {
+        if let photoSelectionID, selection?.includes(photoSelectionID) == false { return nil }
+        return photo
+    }
+    private var mediaSide: CGFloat { qrSize + 6 }
 
     var body: some View {
         VStack(spacing: 0) {
-            Rectangle()
-                .fill(MasoColor.borderSoft)
-                .frame(height: 0.5)
-            HStack(spacing: 12) {
-                // 只在有真实 payload 时画二维码 (RoutineShareCard 传 maso:// 深链).
-                // 其余卡片没 payload → 不画 — 假占位二维码"扫了能下载"是误导, 扫出来是空的.
-                // App Store 链接出来后给这些卡传固定 https://apps.apple.com/app/id... 即可恢复.
-                if let payload = qrPayload, let qr = ShareQR.image(for: payload) {
-                    // 左列: 顶部"扫码获取"文案 + 浅色右箭头 (指向右侧 QR); 品牌块沉到列底,
-                    // 与上方文案自然拉开距离. 列高钉到 QR 高度让两端对齐.
-                    VStack(alignment: .leading, spacing: 0) {
-                        // 这行是分享传播的 CTA (告诉看图的人 QR 能干嘛) — 比品牌块低一档但要看得清:
-                        // 12pt bold + 正文白, 仍轻于 13pt heavy 的 MASSO 字标, 不喧宾夺主.
-                        HStack(spacing: 6) {
-                            Text("Scan to get this routine")
-                                .font(.system(size: 12, weight: .bold))
-                                .foregroundStyle(MasoColor.text)
-                                .fixedSize()
-                            Image(systemName: "arrow.right")
-                                .font(.system(size: 11, weight: .bold))
-                                .foregroundStyle(MasoColor.textDim)   // 箭头仍比文字浅一档
-                        }
-                        .padding(.top, 10)   // 不死贴 QR 顶边, 往下挪一点更透气
-                        Spacer(minLength: 12)
-                        brandBlock
+            Rectangle().fill(MasoColor.borderSoft).frame(height: 0.5)
+            HStack(alignment: .top, spacing: 16) {
+                if visiblePhoto == nil { Spacer(minLength: 0) }
+                VStack(alignment: visiblePhoto == nil ? .center : .leading, spacing: 12) {
+                    if let payload = visibleQRPayload, let qr = ShareQR.image(for: payload) {
+                        Image(uiImage: qr).interpolation(.none).resizable()
+                            .frame(width: qrSize, height: qrSize)
+                            .padding(3).background(Color.white)
+                            .clipShape(RoundedRectangle(cornerRadius: 6))
+                            .accessibilityElement(children: .ignore)
+                            .accessibilityLabel("QR code")
+                            .accessibilityIdentifier("share.footer.qr")
                     }
-                    .frame(height: qrSize + 6)   // = QR 边长 + 白边 padding, 两列同高
-                    Spacer()
-                    Image(uiImage: qr)
-                        .interpolation(.none)
-                        .resizable()
-                        .frame(width: qrSize, height: qrSize)
-                        .padding(3)
-                        .background(Color.white)
-                        .clipShape(RoundedRectangle(cornerRadius: 6))
-                } else {
+                    if let payload = visibleQRPayload, payload.contains("#ps=") {
+                        Text("Scan to get this routine")
+                            .font(.system(size: 11)).foregroundStyle(MasoColor.textDim)
+                            .multilineTextAlignment(.center).fixedSize(horizontal: false, vertical: true)
+                            .environment(\.layoutDirection, contentDirection)
+                    }
                     brandBlock
-                    Spacer()
+                        .environment(\.layoutDirection, contentDirection)
+                        .accessibilityElement(children: .combine)
+                        .accessibilityIdentifier("share.footer.brand")
+                }
+                Spacer(minLength: 0)
+                if let photo = visiblePhoto {
+                    Color.clear.frame(width: mediaSide, height: mediaSide)
+                        .overlay { Image(uiImage: photo).resizable().scaledToFill() }
+                        .clipped().clipShape(RoundedRectangle(cornerRadius: 6))
+                        .contentShape(Rectangle())
+                        .accessibilityElement(children: .ignore)
+                        .accessibilityLabel("Photo")
+                        .accessibilityIdentifier("share.footer.photo")
                 }
             }
-            .padding(.horizontal, 20)
+            // Owner-defined physical left/right positions stay the same in RTL exports.
+            .environment(\.layoutDirection, .leftToRight)
+            .padding(.horizontal, MasoMetrics.cardPadding)
             .padding(.vertical, 14)
         }
     }
 
-    /// App icon + "MASSO" + slogan — footer 两种布局共用.
-    private var brandBlock: some View {
-        HStack(spacing: 10) {
-            MasoMarkIcon(color: MasoColor.accent)
-                .frame(width: 32, height: 32)
-            VStack(alignment: .leading, spacing: 1) {
-                Text(verbatim: "MASSO")
-                    .font(.system(size: 13, weight: .heavy))
-                    .tracking(2)
-                    .foregroundStyle(MasoColor.text)
-                Text("My Personal AI Trainer")
-                    .font(.system(size: 10))
-                    .foregroundStyle(MasoColor.textDim)
+    @ViewBuilder private var brandBlock: some View {
+        if visiblePhoto == nil {
+            VStack(spacing: 4) {
+                MasoMarkIcon(color: MasoColor.accent).frame(width: 32, height: 32)
+                Text(verbatim: "MASSO").font(.system(size: 13, weight: .heavy))
+                    .tracking(2).foregroundStyle(MasoColor.text)
+                Text(MasoBrand.slogan).font(.system(size: 10)).foregroundStyle(MasoColor.textDim)
+                    .multilineTextAlignment(.center).fixedSize(horizontal: false, vertical: true)
             }
+        } else {
+        HStack(spacing: 10) {
+            MasoMarkIcon(color: MasoColor.accent).frame(width: 32, height: 32)
+            VStack(alignment: .leading, spacing: 1) {
+                Text(verbatim: "MASSO").font(.system(size: 13, weight: .heavy))
+                    .tracking(2).foregroundStyle(MasoColor.text)
+                Text(MasoBrand.slogan).fixedSize(horizontal: false, vertical: true)
+                    .font(.system(size: 10)).foregroundStyle(MasoColor.textDim)
+            }
+        }
         }
     }
 }
@@ -217,7 +207,7 @@ struct RoutineShareCard: View {
                         Image(systemName: "square.stack.3d.up.fill")
                             .font(.system(size: 11, weight: .heavy))
                             .foregroundStyle(MasoColor.accent)
-                        Text(verbatim: "ROUTINE")
+                        Text("Training plan").textCase(.uppercase)
                             .font(.system(size: 11, weight: .heavy))
                             .tracking(1.5)
                             .foregroundStyle(MasoColor.accent)
@@ -229,16 +219,19 @@ struct RoutineShareCard: View {
                 }
                 .padding(.top, 6)
 
+                ShareSelectableCard(id: "routine-muscles", title: NSLocalizedString("Muscles trained", comment: "")) {
                 // 肌肉图居中
                 if !muscles.isEmpty {
                     HStack {
                         Spacer(minLength: 0)
-                        MuscleVisualBlock(muscles: muscles, sideLength: 150)
-                            .frame(width: 150, height: 150)
+                        ShareMuscleMap2D(muscles: muscles)
                         Spacer(minLength: 0)
                     }
                 }
 
+                }
+
+                ShareSelectableCard(id: "routine-summary", title: NSLocalizedString("Workout", comment: "")) {
                 // 汇总数据 — Exercises / Sets (/ Volume 只在有配重时显示)
                 HStack(spacing: 24) {
                     ShareStat(value: "\(plan.steps.count)", label: NSLocalizedString("Exercises count", comment: "exercise count stat label"))
@@ -249,8 +242,11 @@ struct RoutineShareCard: View {
                     Spacer(minLength: 0)
                 }
 
+                }
+
                 Rectangle().fill(MasoColor.borderSoft).frame(height: 0.5)
 
+                ShareSelectableCard(id: "routine-exercises", title: NSLocalizedString("Exercises", comment: "")) {
                 // 动作清单 — 每个动作一行: 全名 (不截断) + "组数 × 次数 (· 配重)".
                 // 故意用 "N × M" 这种 OCR 友好格式且把所有动作完整列出: 收图的人 "从照片导入" 时,
                 // OCR 能逐行读出动作名 + 组数/次数, 把这份 routine 识别还原 (QR 现在是 App Store 下载链,
@@ -270,8 +266,9 @@ struct RoutineShareCard: View {
                         }
                     }
                 }
+                }
             }
-            .padding(.horizontal, 22)
+            .padding(.horizontal, ShareLayout.contentInset)
             .padding(.top, 22)
             .padding(.bottom, 20)
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -305,7 +302,7 @@ struct ShareStat: View {
     let label: String
     var body: some View {
         VStack(spacing: 2) {
-            Text(value)
+            MetricValueText(value: value, numeratorColor: MasoColor.text, denominatorColor: MasoColor.textDim, numeratorWeight: .heavy)
                 .font(.system(size: 18, weight: .heavy).monospacedDigit())
                 .foregroundStyle(MasoColor.text)
             Text(label.uppercased())
@@ -313,5 +310,33 @@ struct ShareStat: View {
                 .tracking(1.2)
                 .foregroundStyle(MasoColor.textDim)
         }
+    }
+}
+
+/// Shared photo placeholder for share previews and meal entry. Caller controls size.
+struct AddPhotoPlaceholder: View {
+    var compact = false
+    var body: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 14)
+                .strokeBorder(MasoColor.borderSoft,
+                              style: StrokeStyle(lineWidth: 1.5, dash: [6, 4]))
+            Group {
+                if compact {
+                    HStack(spacing: 12) {
+                        Image(systemName: "photo.badge.plus").font(.body.weight(.light))
+                        Text("Add a photo").font(.subheadline.weight(.semibold))
+                        Spacer()
+                    }.padding(.horizontal, 14)
+                } else {
+                    VStack(spacing: 10) {
+                        Image(systemName: "photo.badge.plus").font(.system(size: 38, weight: .light))
+                        Text("Add a photo").font(.subheadline.weight(.semibold))
+                    }
+                }
+            }.foregroundStyle(MasoColor.textDim)
+        }
+        .background(MasoColor.surface.opacity(0.4), in: RoundedRectangle(cornerRadius: 14))
+        .contentShape(RoundedRectangle(cornerRadius: 14))
     }
 }

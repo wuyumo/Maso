@@ -22,6 +22,8 @@ struct MuscleVisualBlock: View {
     var sideLength: CGFloat = 110
     /// 用户该 session 的照片 (SessionCard 用; WorkoutCard 暂时不传).
     var photo: UIImage? = nil
+    /// 窄卡片中将照片排在肌肉图下方，给右侧文案留足宽度。
+    var stacksPhotoVertically: Bool = false
     /// 恢复热图模式 — MuscleStatusOverviewCard 用. 传了之后 BodyHint 走 heatStyleFor 路径 (忽略 muscles 参数).
     var heatStyleFor: ((MuscleGroup) -> (Color, Double)?)? = nil
     /// 粗颗粒模式 — Settings.muscleDetailEnabled 取反时传 true.
@@ -33,7 +35,10 @@ struct MuscleVisualBlock: View {
     private var bodyHintHeight: CGFloat { sideLength * 0.82 }
 
     var body: some View {
-        HStack(alignment: .center, spacing: 12) {
+        let layout = stacksPhotoVertically
+            ? AnyLayout(VStackLayout(alignment: .leading, spacing: 12))
+            : AnyLayout(HStackLayout(alignment: .center, spacing: 12))
+        layout {
             // Muscle Map 正方形 slot — BodyHint 在内部居中, 上下有 ~7% 透气
             BodyHint(
                 muscles: muscles,
@@ -60,9 +65,11 @@ struct MuscleVisualBlock: View {
             }
 
             // 整体左对齐 (frame .infinity + .leading 显式约束, 不依赖 caller 是否撑全宽)
-            Spacer(minLength: 0)
+            if !stacksPhotoVertically {
+                Spacer(minLength: 0)
+            }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .frame(height: sideLength)
+        .frame(height: stacksPhotoVertically && photo != nil ? sideLength * 2 + 12 : sideLength)
     }
 }

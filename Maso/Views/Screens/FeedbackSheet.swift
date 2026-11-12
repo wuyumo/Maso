@@ -1,9 +1,11 @@
 import SwiftUI
 
-// 用户反馈表单 sheet — 在 Settings 底部入口拉起.
-// 写完 Submit → 入 FeedbackStore 队列 + 立刻试 send → dismiss + 提示.
+// Bug report sheet — reports are queued locally then sent to the weekly central digest.
 struct FeedbackSheet: View {
     @Environment(\.dismiss) private var dismiss
+    var onSuccess: () -> Void = {}
+    var exercise: Exercise? = nil
+    @State private var mediaIssue = ""
 
     @State private var text: String = ""
     @State private var feedbackStore = FeedbackStore.shared
@@ -12,117 +14,139 @@ struct FeedbackSheet: View {
     @State private var status: SubmitStatus = .idle
 
     private enum SubmitStatus {
-        case idle, submitting, submitted
+        case idle, submitting, submitted, queued
     }
 
     var body: some View {
-        NavigationStack {
-            VStack(alignment: .leading, spacing: 16) {
-                // header 提示
-                VStack(alignment: .leading, spacing: 6) {
-                    Text("Tell us what's broken, missing, or worth changing.")
-                        .font(.system(size: 14, weight: .semibold))
-                        .foregroundStyle(MasoColor.text)
-                    Text("Your feedback gets bundled into a daily digest and emailed to the team. No account, no tracking.")
-                        .font(.system(size: 12))
-                        .foregroundStyle(MasoColor.textDim)
-                }
-                .padding(.top, 8)
 
-                // 输入区
-                ZStack(alignment: .topLeading) {
-                    if text.isEmpty {
-                        Text("Type your feedback here…")
-                            .font(.system(size: 15))
-                            .foregroundStyle(MasoColor.textFaint)
-                            .padding(.top, 12)
-                            .padding(.leading, 12)
-                            .allowsHitTesting(false)
-                    }
-                    TextEditor(text: $text)
-                        .font(.system(size: 15))
-                        .foregroundStyle(MasoColor.text)
-                        .scrollContentBackground(.hidden)
-                        .padding(8)
-                        .focused($focused)
-                }
-                .frame(minHeight: 160, maxHeight: 280, alignment: .topLeading)
-                .background(MasoColor.surface)
-                .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
-
-                // pending count — 让用户知道队列状态
-                if feedbackStore.pending.count > 0 {
-                    HStack(spacing: 6) {
-                        Image(systemName: "tray.full")
-                            .font(.system(size: 11, weight: .semibold))
-                        Text("\(feedbackStore.pending.count) item\(feedbackStore.pending.count > 1 ? "s" : "") queued · digest sends within 24h")
-                            .font(.system(size: 11))
-                    }
-                    .foregroundStyle(MasoColor.textDim)
-                }
-
-                Spacer()
-
-                // 提交按钮
-                Button(action: submit) {
-                    HStack(spacing: 8) {
-                        if status == .submitting {
-                            ProgressView()
-                                .progressViewStyle(CircularProgressViewStyle(tint: .black))
-                                .scaleEffect(0.8)
+        AppNavigationStack {
+            Form {
+                if let exercise {
+                    Section("Exercise") { Text(exercise.displayName) }
+                    Section("What is wrong?") {
+                        Picker("What is wrong?", selection: $mediaIssue) {
+                            Text("Wrong exercise").tag("wrong_action")
+                            Text("Wrong equipment").tag("wrong_equipment")
+                            Text("Image or video problem").tag("media_problem")
+                            Text("Other").tag("other")
                         }
-                        Text(status == .submitted ? "Sent — thank you" : "Submit feedback")
-                            .font(.system(size: 14, weight: .heavy))
+                        .pickerStyle(.inline)
+                        .labelsHidden()
+                        .disabled(status != .idle)
+                        .accessibilityIdentifier("exercise.media.report.issue")
                     }
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 14)
-                    .foregroundStyle(canSubmit ? .black : MasoColor.textDim)
-                    // 主 CTA 系统玻璃 (映射表①): 可提交 = accent 高浓度玻璃, 禁用 = 素玻璃; 旧系统保留原样.
-                    .glassCapsuleButtonBackground(tint: canSubmit ? MasoColor.accent.opacity(0.85) : nil,
-                                                  fallback: canSubmit ? MasoColor.accent : MasoColor.surfaceHi)
                 }
-                .buttonStyle(.plain)
-                .disabled(!canSubmit)
+                Section {
+                    ZStack(alignment: .topLeading) {
+                        TextEditor(text: $text).font(.body).frame(minHeight: 200)
+                            .disabled(status != .idle)
+                            .focused($focused)
+                        if text.isEmpty {
+                            Text("Type your feedback here…").foregroundStyle(.tertiary)
+                                .padding(.top, 8).padding(.leading, 5).allowsHitTesting(false)
+                        }
+                    }
+                } header: {
+                    Text(exercise == nil ? "Tell us what's broken, missing, or worth changing." : "Add details (optional)")
+                } footer: {
+                    VStack(alignment: .leading, spacing: 8) {
+                        ProgressFractionText(numerator: String(text.count), denominator: String(max(0, 4000 - (reportBody.count - text.count))))
+                        if exercise != nil { Text("The exercise and displayed media version are included with your report.") }
+                        Text("Reports are reviewed together and emailed once a week. Your message, app version, iOS version, and language are included; no account or device ID is attached.")
+                    }
+                }
+                if !feedbackStore.pending.isEmpty {
+                    Section {
+                        Label(String(format: NSLocalizedString(feedbackStore.pending.count == 1
+                            ? "%d report waiting to upload" : "%d reports waiting to upload", comment: ""),
+                            feedbackStore.pending.count), systemImage: "tray.full")
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            }.scrollDismissesKeyboard(.interactively).scrollContentBackground(.hidden)
+            .safeAreaInset(edge: .bottom) {
+                VStack(spacing: 8) {
+                    if status == .queued {
+                        Label("Saved on this device. It has not reached the server yet.", systemImage: "exclamationmark.circle")
+                            .font(.footnote).foregroundStyle(.secondary)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .accessibilityIdentifier("feedback.queued")
+                    }
+                    PrimaryActionButton(title: LocalizedStringKey(buttonTitle), icon: "paperplane",
+                                        loading: status == .submitting, action: submitOrRetry)
+                        .disabled(!canSubmit)
+                }.padding(MasoMetrics.pagePaddingHorizontal)
+                .background(MasoColor.background)
             }
-            .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
-            .padding(.bottom, 20)
             .background(MasoColor.background.ignoresSafeArea())
-            .navigationTitle("Send Feedback")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Done") { dismiss() }
-                }
+            .navigationTitle(exercise == nil ? "Report a Bug" : "Report exercise media").navigationBarTitleDisplayMode(.inline)
+            .toolbar { ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } } }
+            .onChange(of: text) { _, value in
+                if status == .submitted && !value.isEmpty { status = .idle }
             }
-            .onAppear { focused = true }
-        }
-        .tint(MasoColor.text)
+        }.tint(MasoColor.text)
+
+
     }
 
     private var canSubmit: Bool {
-        !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
-        status != .submitting
+        guard status != .submitting && status != .submitted else { return false }
+        if status == .queued { return !feedbackStore.pending.isEmpty }
+        return (exercise == nil ? !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty : !mediaIssue.isEmpty) && reportBody.count <= 4000
     }
 
-    private func submit() {
+    private var buttonTitle: String {
+        switch status {
+        case .idle: return "Submit report"
+        case .submitting: return "Sending…"
+        case .submitted: return "Report received"
+        case .queued: return "Retry upload"
+        }
+    }
+
+    private var reportBody: String {
+        guard let exercise else { return text }
+        let source: String
+        if exercise.customImageData != nil { source = "personal_image" }
+        else if let url = ExerciseDemoService.shared.files[exercise.id] {
+            source = "downloaded_demo:" + url.deletingPathExtension().lastPathComponent
+        } else if CoreExerciseDemos.thumbnail(exercise.id) != nil { source = "bundled_poster" }
+        else if let folder = exercise.imageFolder, ExerciseMediaPolicy.ownsLegacy(exercise.id, folder: folder) { source = "legacy_frames" }
+        else if ExerciseMediaPolicy.youtubeThumbnail(for: exercise) != nil { source = "youtube_thumbnail" }
+        else if exercise.photoURL != nil { source = "project_photo" }
+        else { source = "placeholder" }
+        let catalogSHA = CoreExerciseDemos.assets[exercise.id]?.sha256 ?? "none"
+        return "[exercise_media_report]\nexercise_id: \(exercise.id)\nmedia_source: \(source)\ncatalog_sha256: \(catalogSHA)\nissue: \(mediaIssue)\n\n\(text)"
+    }
+
+    private func submitOrRetry() {
         guard canSubmit else { return }
-        let body = text
-        status = .submitting
-        feedbackStore.submit(body)
-        // 给个短暂"sent"反馈, 然后 dismiss.
-        // 实际发送是 fire-and-forget, 失败也保留在 pending 下次再试.
-        Task {
-            // 等 1.2s 让用户看到 "Sent — thank you" 状态
-            try? await Task.sleep(nanoseconds: 1_200_000_000)
-            await MainActor.run {
-                status = .submitted
-                // 再 0.5s dismiss
+        if status == .queued {
+            status = .submitting
+            Task {
+                let accepted = await feedbackStore.retryPending()
+                status = accepted ? .submitted : .queued
+                if accepted {
+                    finishSuccessfully()
+                }
             }
-            try? await Task.sleep(nanoseconds: 500_000_000)
-            await MainActor.run {
-                dismiss()
+            return
+        }
+
+        let body = reportBody
+        status = .submitting
+        Task {
+            let accepted = await feedbackStore.submit(body)
+            status = accepted ? .submitted : .queued
+            if accepted {
+                finishSuccessfully()
             }
         }
+    }
+
+    private func finishSuccessfully() {
+        dismiss()
+        onSuccess()
     }
 }
 

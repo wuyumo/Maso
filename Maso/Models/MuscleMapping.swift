@@ -3,7 +3,7 @@ import MuscleMap
 
 // MARK: - Maso.MuscleGroup ↔ MuscleMap.Muscle 桥接
 //
-// Maso 内部用 MuscleGroup (52 个 case, 含 sub-muscle) 表达"哪块肌肉".
+// Masso 内部用 MuscleGroup (52 个 case, 含 sub-muscle) 表达"哪块肌肉".
 // MuscleMap SDK 用它自己的 Muscle (35 个 case). 这文件是双向映射.
 //
 // 设计:
@@ -14,7 +14,7 @@ import MuscleMap
 //     proxy. 跟之前 BodyHint 的 proxyAnatomy 类似但表更短.
 
 extension MuscleGroup {
-    /// 把一个 Maso MuscleGroup 展开成 MuscleMap.Muscle 列表 (用于 BodyView.highlight).
+    /// 把一个 Masso MuscleGroup 展开成 MuscleMap.Muscle 列表 (用于 BodyView.highlight).
     /// 主肌群展开到所有 sub. Sub 直接返回自己 (单点高亮).
     var mmMuscles: [Muscle] {
         switch self {
@@ -43,7 +43,7 @@ extension MuscleGroup {
         case .rearDelts:       return [.rearDeltoid]
         case .rotatorCuff:     return [.rotatorCuff]
 
-        // 二头 (Maso 还细分长 / 短 / 肱肌; MuscleMap 只有 biceps + brachialis 没有)
+        // 二头 (Masso 还细分长 / 短 / 肱肌; MuscleMap 只有 biceps + brachialis 没有)
         case .biceps:          return [.biceps]
         case .bicepsLong:      return [.biceps]
         case .bicepsShort:     return [.biceps]
@@ -107,7 +107,7 @@ extension MuscleGroup {
 }
 
 extension Muscle {
-    /// 反向: MuscleMap.Muscle → Maso MuscleGroup. 用于 onMuscleSelected callback 把
+    /// 反向: MuscleMap.Muscle → Masso MuscleGroup. 用于 onMuscleSelected callback 把
     /// 用户点的肌肉传回 caller.
     var masoMuscleGroup: MuscleGroup {
         switch self {

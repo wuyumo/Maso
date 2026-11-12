@@ -1,0 +1,35 @@
+/* Traditional Chinese (Taiwan). Generated from zh-Hans by scripts/rebuild_zh_hant.py — edit zh-Hans and re-run, do not patch this file alone. */
+/* Masso Watch — small-watch-first */
+"%d reps" = "%d 次";
+"%d sets" = "%d 組";
+"Cancel" = "取消";
+"Discard workout" = "丟棄訓練";
+"Done" = "完成";
+"End & save" = "結束並儲存";
+"End workout" = "結束訓練";
+"End workout?" = "結束訓練？";
+"It will appear here automatically" = "訓練會自動同步到這裡";
+"Log set" = "完成這組";
+"More" = "更多";
+"Next" = "下一組";
+"Open your iPhone to reconnect" = "請開啟 iPhone 重新連線";
+"Pause" = "暫停";
+"REST" = "休息中";
+"Reps" = "次數";
+"Rest" = "休息中";
+"Resume" = "繼續";
+"SET %d/%d" = "第 %d/%d 組";
+"Set logged · Undo" = "已記錄 · 復原";
+"Skip" = "略過";
+"Skip rest" = "略過休息";
+"Start a workout on your iPhone" = "在 iPhone 上開始訓練";
+"This Workout" = "本次訓練";
+"This rest only" = "僅本次休息";
+"Undo last action" = "復原上一步";
+"Weight" = "重量";
+"Workout" = "訓練";
+"Workout changed. Try again." = "訓練已變化，請重試。";
+"Workout complete" = "訓練完成";
+"kg" = "kg";
+"lb" = "lb";
+"seconds" = "秒";

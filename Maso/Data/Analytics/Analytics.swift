@@ -16,10 +16,23 @@ import Observation
 @Observable
 final class Analytics {
     static let shared = Analytics()
+    private static let sharingConsentKey = "masso.analyticsSharingConsent.v1"
+    private(set) var sharingConsentGranted = UserDefaults.standard.bool(forKey: "masso.analyticsSharingConsent.v1")
+
+    /// A legacy default-on value is not an explicit sharing decision.
+    func setSharingEnabled(_ enabled: Bool) {
+        if enabled != sharingConsentGranted { clearPendingEvents() }
+        sharingConsentGranted = enabled
+        UserDefaults.standard.set(enabled, forKey: Self.sharingConsentKey)
+    }
 
     /// 内存 + 落盘缓冲 (newest appended). 本地查看器读这个 (newest-first 由 UI 反转).
     private(set) var buffer: [AnalyticsEvent] = []
     private var lastFlushAt: Date?
+    private var sendTask: Task<Bool, Never>?
+    private var sessionID = UUID().uuidString
+    private var isFlushing = false
+    private var privacyGeneration = 0
 
     /// 攒够这么多条就机会式 flush 一次.
     private let flushThreshold = 20
@@ -54,6 +67,14 @@ final class Analytics {
     func configure(sink: AnalyticsSink, context: @escaping () -> Context) {
         self.sink = sink
         self.contextProvider = context
+        if context().optOut || !sharingConsentGranted { clearPendingEvents() }
+    }
+
+    func clearPendingEvents() {
+        sendTask?.cancel()
+        privacyGeneration += 1
+        buffer.removeAll()
+        persist()
     }
 
     // MARK: - 唯一对外 API (call-site 只用这个)
@@ -78,7 +99,10 @@ final class Analytics {
         print("📊 analytics: \(name) \(props.mapValues { $0.displayValue })")
         #endif
 
-        buffer.append(AnalyticsEvent(name: name, props: props))
+        var event = AnalyticsEvent(name: name, props: props)
+        event.envelope = makeEnvelope()
+        event.sessionID = sessionID
+        buffer.append(event)
         sessionEventCount += 1
         if buffer.count > bufferCap { buffer.removeFirst(buffer.count - bufferCap) }
         persist()
@@ -90,6 +114,7 @@ final class Analytics {
     /// 回前台 — 报 app_foreground (带离开后台时长), 清零前台会话事件计数, 并机会式 flush 一次.
     func handleForeground() {
         let secs = backgroundedAt.map { Int(Date().timeIntervalSince($0)) } ?? 0
+        sessionID = UUID().uuidString
         backgroundedAt = nil
         sessionEventCount = 0
         track("app_foreground", ["seconds_backgrounded": .int(max(0, secs))])
@@ -108,11 +133,24 @@ final class Analytics {
     /// 把缓冲整批交给 sink. 成功 → 清掉已发的; 失败 → 留着下次重试 (FeedbackStore digest 同款).
     /// Phase 0 sink = NoOpSink (总成功 → 缓冲被清空, 但什么都没离开设备).
     func flush() async {
-        guard !buffer.isEmpty else { return }
+        guard contextProvider != nil, MasoFlags.analyticsEnabled, !currentContext().optOut,
+              !isFlushing, !buffer.isEmpty else { return }
+        isFlushing = true
+        defer { isFlushing = false }
+        let generation = privacyGeneration
         let batch = buffer
-        let ok = await sink.send(batch, envelope: makeEnvelope())
-        if ok {
-            buffer.removeFirst(min(batch.count, buffer.count))
+        let sink = self.sink
+        let envelope = makeEnvelope()
+        let task = Task { await sink.send(batch, envelope: envelope) }
+        sendTask = task
+        let ok = await task.value
+        sendTask = nil
+        if ok && generation == privacyGeneration && !currentContext().optOut {
+            let sentIDs = Set(batch.compactMap(\.id))
+            buffer.removeAll { event in
+                if let id = event.id { return sentIDs.contains(id) }
+                return batch.contains { $0.id == nil && $0.name == event.name && $0.ts == event.ts }
+            }
             lastFlushAt = Date()
             persist()
         }
@@ -120,7 +158,9 @@ final class Analytics {
     }
 
     private func currentContext() -> Context {
-        contextProvider?() ?? Context(anonymousId: "", optOut: false)
+        var context = contextProvider?() ?? Context(anonymousId: "", optOut: true)
+        context.optOut = context.optOut || !sharingConsentGranted
+        return context
     }
 
     private func makeEnvelope() -> AnalyticsEnvelope {

@@ -17,6 +17,8 @@ struct WatchSyncState: Codable, Equatable {
 
     var mode: Mode = .idle
     var planName: String = ""
+    var workoutSessionID: String? = nil
+    var heartRateSharingEnabled: Bool? = nil
 
     // exercise 态
     var exerciseName: String = ""
@@ -26,6 +28,17 @@ struct WatchSyncState: Codable, Equatable {
     var detail: String = ""
     /// true = 力量组, 等用户打勾; false = 计时段 (倒计时自动走)
     var manualConfirm: Bool = false
+
+    var context: String? = nil
+    var stepID: String? = nil
+    var reps: Int? = nil
+    var weight: Double? = nil // canonical kg; display with weightUnit
+    var expectsWeight: Bool? = nil
+    var weightUnit: String? = nil
+    var rows: [WatchExerciseRow]? = nil
+    var canUndo: Bool? = nil
+    var restDuration: Int? = nil
+    var discarded: Bool? = nil
 
     // rest 态
     var nextExercise: String? = nil
@@ -47,7 +60,11 @@ struct WatchSyncState: Codable, Equatable {
 
     static let idle = WatchSyncState()
 
-    func encoded() -> Data? { try? JSONEncoder().encode(self) }
+    func encoded() -> Data? {
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.sortedKeys]
+        return try? encoder.encode(self)
+    }
     static func decode(_ data: Data) -> WatchSyncState? {
         try? JSONDecoder().decode(WatchSyncState.self, from: data)
     }
@@ -60,4 +77,23 @@ enum WatchAction: String {
     /// 手表已开 HKWorkoutSession — 手机端这次训练跳过自己的 HealthKit 写入,
     /// 由手表保存 (带实时心率 + 实测卡路里, 数据更全), 防止 Health 里双计.
     case hkActive
+}
+
+/// Optional additions keep older phone/watch payloads decodable.
+struct WatchExerciseRow: Codable, Equatable, Identifiable {
+    var id: String
+    var name: String
+    var detail: String
+    var completed: Int
+    var total: Int
+}
+
+struct WatchCommand: Codable {
+    enum Kind: String, Codable { case advance, togglePlay, undo, jump, reps, weight, rest, finish, discard }
+    var id = UUID().uuidString
+    var sessionID: String
+    var context: String
+    var kind: Kind
+    var stepID: String? = nil
+    var value: Double? = nil
 }

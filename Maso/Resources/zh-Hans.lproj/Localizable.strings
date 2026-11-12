@@ -1,4 +1,4 @@
-/* Maso — 简体中文 */
+/* Masso — 简体中文 */
 
 /* ── Tabs ──────────────────────────────────────────── */
 "Plans" = "训练计划";
@@ -23,14 +23,13 @@
 "No workouts yet" = "还没有训练记录";
 "Finished workouts show up here. Start your first one and watch your progress grow." = "完成的训练会显示在这里。开始第一次训练，见证你的进步。";
 "Retry" = "重试";
-"Couldn't reach the AI coach — showing templates instead." = "够不到 AI 教练——先显示模板。";
+"Couldn't reach the AI coach — showing templates instead." = "AI 暂时未能生成训练，先显示模板。";
 "Updated your plan." = "已按你的反馈更新计划。";
 "Couldn't reach the AI coach — your plan is unchanged." = "够不到 AI 教练——计划保持原样。";
 "AI plan unavailable — showing your recommended plan." = "AI 计划暂不可用——已显示推荐计划。";
 "Yesterday" = "昨天";
 "Repeat Workout" = "再次训练";
 "Exercises" = "动作列表";
-"AI Plans" = "AI 计划";
 
 /* ── Plan detail ───────────────────────────────────── */
 "Edit Workout" = "编辑训练";
@@ -55,7 +54,7 @@
 "%lld days/wk" = "每周 %lld 天";
 "%lld days/week" = "每周 %lld 天";
 "Couldn't create share link" = "无法生成分享链接";
-"“%@” will be removed from this workout. Past records are kept." = "“%@” 会从这个训练里移除,过往记录保留。";
+"“%@” will be removed from this workout. Past records are kept." = "“%@”会从这个训练里移除,过往记录保留。";
 "Shared workout" = "分享的训练";
 "Reps" = "次数";
 "Weight" = "重量";
@@ -103,8 +102,7 @@
 "Plans and workout records stay on your device." = "训练计划和训练记录仍保存在你的设备上。";
 
 /* ── Paywall / Pro Banner ──────────────────────────── */
-"Maso Pro" = "Masso Pro";
-"Try Maso Pro" = "试用 Masso Pro";
+"Try Masso Pro" = "试用 Masso Pro";
 "Unlimited plans, full history, custom moves, and more." = "无限训练计划、完整历史、自定义动作以及更多。";
 "Unlock everything" = "解锁全部功能";
 "Unlimited plans · Full history · Custom moves" = "无限计划 · 完整历史 · 自定义动作";
@@ -128,7 +126,7 @@
 "Free for 7 days, then %@ / %@. Cancel anytime in Settings." = "7 天免费试用,之后 %@ / %@。可随时在设置中取消。";
 "month" = "月";
 "year" = "年";
-"You're now Maso Pro!" = "已成为 Masso Pro!";
+"You're now Masso Pro!" = "已成为 Masso Pro!";
 "Enjoy unlimited plans, full history, and everything else. Welcome aboard." = "享受无限计划、完整历史以及所有功能。欢迎加入。";
 "Restore Purchases" = "恢复购买";
 "Terms" = "条款";
@@ -261,11 +259,23 @@
 "Help us improve" = "帮助我们改进";
 "Send feedback" = "发送反馈";
 "Send Feedback" = "发送反馈";
+"Report a bug" = "报告问题";
+"Report a Bug" = "报告问题";
+"Submit report" = "提交报告";
+"Sending…" = "正在发送…";
+"Report received" = "已收到报告";
+"Saved · will retry" = "已保存 · 将重试";
+"Retry upload" = "重新上传";
+"Report received. It will be included in the next weekly digest." = "报告已收到，将纳入下周的汇总邮件。";
+"Saved on this device. It has not reached the server yet." = "报告已保存在本机，尚未上传到服务器。";
+"Support" = "支持";
 "Bug reports, feature requests, complaints — all bundled into a daily digest and emailed to the team." = "Bug、功能建议、吐槽 — 每天汇总成一封邮件发给开发团队。";
 "Tell us what's broken, missing, or worth changing." = "告诉我们哪里有问题、缺什么、想改什么。";
-"Your feedback gets bundled into a daily digest and emailed to the team. No account, no tracking." = "反馈每天汇总成一封邮件发给团队。不需要注册,不做追踪。";
+"Reports are reviewed together and emailed once a week. Your message, app version, iOS version, and language are included; no account or device ID is attached." = "问题报告每周汇总后发送。报告会包含描述、App 版本、iOS 版本和语言，不会附带账号或设备 ID。";
 "Type your feedback here…" = "在这里输入反馈…";
 "Submit feedback" = "提交反馈";
+"%d report waiting to upload" = "%d 条报告等待上传";
+"%d reports waiting to upload" = "%d 条报告等待上传";
 "Sent — thank you" = "已发送 — 谢谢";
 
 "Back muscle" = "背部";
@@ -289,10 +299,10 @@
 "Reminders" = "提醒";
 "Workout reminders" = "训练提醒";
 "On by default: when you've taken a few days off, Masso sends one gentle reminder once your muscles have recovered. It only ever lives on your device, and you can turn it off anytime." = "默认开启:歇了几天后,等肌肉恢复得差不多,Masso 会温和地提醒你一次。只存在本机、不上传,随时可以关掉。";
-"Recovered and ready" = "恢复好了,可以练了";
+"Recovered and ready" = "恢复好了，可以训练了";
 "Your muscles miss you" = "肌肉想你了";
 "Let's get back to it" = "回来继续练吧";
-"You're recovered — a quick session keeps your momentum going." = "你已经恢复了 —— 练一小会儿就能保持状态。";
+"You're recovered — a quick session keeps your momentum going." = "你已经恢复了，练一会儿就能保持状态。";
 "Want a nudge when you're recovered?" = "恢复好了提醒你一下?";
 "Turn on reminders" = "开启提醒";
 "Not now" = "暂不";
@@ -306,13 +316,13 @@
 /* ── HealthKit + Training freq ── */
 "Integrations" = "应用集成";
 "Apple Fitness sync" = "Apple Fitness 同步";
-"Maso writes finished workouts to Apple Health. They show up in Apple Fitness Activity rings and the Workouts tab. Heart rate is not collected." = "完成的训练会写到 Apple Health,然后在 Apple Fitness 的圆环和 Workouts 里展示。心率不会被采集。";
+"Masso writes finished workouts to Apple Health. They show up in Apple Fitness Activity rings and the Workouts tab. Heart rate is not collected." = "完成的训练会写到 Apple Health,然后在 Apple Fitness 的圆环和 Workouts 里展示。心率不会被采集。";
 "Not available on this device" = "本设备不支持";
 "Tap to grant access" = "点击授予访问";
-"Denied — enable in Settings › Health" = "已拒绝 — 去 设置 › 健康 开启";
-"On — finished workouts go to Health" = "已开启 — 完成的训练写入 Health";
+"Denied — enable in Settings › Health" = "已拒绝 — 请在“设置”›“健康”中开启";
+"On — finished workouts go to Health" = "已开启 — 完成的训练写入「健康」";
 "Off" = "已关闭";
-"Synced %d workout(s) to Health" = "已同步 %d 次训练到 Health";
+"Synced %d workout(s) to Health" = "已同步 %d 次训练到「健康」";
 "Days per week" = "每周训练天数";
 
 /* ── center-tab hint ── */
@@ -323,7 +333,7 @@
 
 /* ── AI Workout ── */
 "AI Workout" = "AI 训练计划";
-"Each day, Maso bundles your profile + recent training + frequency into a prompt and asks Claude to generate today's plan. Your API key is stored locally on this device." = "每天 Masso 把你的基础信息、最近训练记录、频率打包发给 AI 服务,让它生成今日训练计划。API key 仅保存在本机。";
+"Each day, Masso bundles your profile + recent training + frequency into a prompt and asks Claude to generate today's plan. Your API key is stored locally on this device." = "每天 Masso 把你的基础信息、最近训练记录、频率打包发给 AI 服务,让它生成今日训练计划。API key 仅保存在本机。";
 "Generate plan with AI" = "用 AI 生成训练计划";
 "Enter your API key above first" = "先在上方输入 API key";
 "Each day a new plan is built from your training history" = "每天根据你的训练记录生成新计划";
@@ -331,7 +341,7 @@
 "Generating…" = "生成中…";
 "Today's plan ready" = "今日计划已就绪";
 "Last attempt failed" = "上次尝试失败";
-"Tap Refresh to build today's plan" = "点 Refresh 立即生成今日计划";
+"Tap Refresh to build today's plan" = "点「刷新」立即生成今日计划";
 "Refresh" = "刷新";
 
 /* ── ExercisePicker modes ── */
@@ -372,14 +382,13 @@
 "Keep current" = "保留当前";
 "OK" = "好的";
 "One-time purchase. No subscription, no recurring charges." = "一次性购买。无订阅、无周期扣费。";
-"Restart Maso to apply" = "重启 Masso 应用更改";
+"Restart Masso to apply" = "重启 Masso 应用更改";
 "Starting this will replace the workout you're in. Continue?" = "开始这个会替换当前进行中的训练,继续吗?";
 "Language" = "语言";
 
 /* ── free workout + ex detail ── */
 "Free workout" = "自由训练";
 "Pick your own exercises and go" = "自己挑动作直接开练";
-"Browse training plans from the community" = "浏览经典训练法";
 "Add to workout" = "加入训练";
 "Target Muscles" = "目标肌群";
 "Instructions" = "动作说明";
@@ -391,10 +400,9 @@
 "Finish" = "完成";
 
 /* ── History muscle recovery legend ── */
-"Fatigued" = "刚练完";
+"Fatigued" = "疲劳";
 "Recovering" = "恢复中";
 "Almost fresh" = "接近恢复";
-"Ready to train" = "可以训练";
 
 /* ── QuickWorkout Step 1 — chip color helper ── */
 "Light green = synergist · worked along the way, no need to pick." = "浅绿色 = 协同肌 · 训练时自动带到，不用单独选";
@@ -403,10 +411,10 @@
 
 /* ── i18n audit 2026-05-16 — missing UI keys ── */
 /* 品牌 / 标签 (一般不翻译) */
-"Maso" = "Masso";
+"Masso" = "Masso";
 "AI" = "AI";
 "PRO" = "PRO";
-"MASO PRO" = "MASSO PRO";
+"MASSO PRO" = "MASSO PRO";
 "FROM %@/MO" = "%@/月起";
 
 /* RootView — 训练替换确认 */
@@ -452,7 +460,7 @@
 "Export data" = "导出数据";
 "Save plans, workouts, settings as a JSON file" = "把训练计划、记录、设置打包成 JSON 文件";
 "Import data" = "导入数据";
-"Restore from a Maso backup file" = "从 Masso 备份文件还原";
+"Restore from a Masso backup file" = "从 Masso 备份文件还原";
 "New iPhone? Your data restores automatically from iCloud Backup. Or export anytime — it's a plain JSON file." = "换新手机?iCloud 备份自动恢复你的数据。也可以随时导出 — 就是一个 JSON 文件,你完全掌握。";
 "Replace current data?" = "替换当前数据?";
 "Replace" = "替换";
@@ -477,7 +485,7 @@
 
 /* ── Rest notifications ── */
 "Time to switch exercise" = "该换动作了";
-"Rest's up — next set" = "休息结束 — 下一组";
+"Rest's up — next set" = "休息结束，开始下一组";
 
 /* Edit current step sheet (training-time parameter editing) */
 "Weight (kg)" = "重量 (kg)";
@@ -560,6 +568,10 @@
 "On routine cards, show a mini muscle chart instead of the muscle name in front of each exercise." = "计划卡上每个动作前的部位文字, 改为迷你肌肉部位图。";
 "Saved to routines" = "已存入训练计划";
 "Save to routines" = "存入训练计划";
+"Save %lld routine" = "存入 %lld 个训练计划";
+"Save %lld routines" = "存入 %lld 个训练计划";
+"Saved %lld routine" = "已存入 %lld 个训练计划";
+"Saved %lld routines" = "已存入 %lld 个训练计划";
 
 /* ── i18n audit 2026-05-17 — 补齐缺失的 UI keys ── */
 "App Language" = "应用语言";
@@ -683,9 +695,8 @@
 "Sets this month" = "本月组数";
 "Set this month" = "本月组数";
 /* 肌肉状态 legend (累计 volume 衰减模型) */
-"Heavy fatigue" = "高度疲劳";
-"Mostly recovered" = "大部分恢复";
-"Fresh" = "充满活力";
+"Rested" = "恢复良好";
+"Fresh" = "充沛";
 
 /* ── Community (社区精选训练计划) ── */
 "Browse community plans" = "浏览经典训练法";
@@ -700,6 +711,9 @@
 "Got a plan from a friend? Tap Add to save it to your library." = "朋友分享给你的计划?点添加保存到你的库";
 "Add to my plans" = "添加到我的计划";
 "Added" = "已添加";
+"Adjusted" = "调整";
+"Changes from previous routine" = "相比上一版的调整";
+"This routine stayed the same" = "这个训练日保持不变";
 "Added to My Plans" = "已添加到我的计划";
 /* Routines tab IA (#IA-A): 库标题 + "+ 新建 routine" 菜单的来源 */
 "Routines" = "训练计划";
@@ -710,7 +724,7 @@
 "AI Routines" = "AI 训练计划";
 "Generate a plan from your preferences" = "根据你的偏好生成";
 "Proven programs to start from" = "成熟的现成计划";
-"New routine" = "新建计划";
+"New routine" = "新建训练计划";
 
 /* Routines 单页 IA (#single-page-IA): 我的计划 → 为你设计 → Classics 入口 */
 "Routines you save will appear here" = "保存的计划会出现在这里";
@@ -718,7 +732,7 @@
 
 /* AI routine 生成 CTA + 可感知生成态 (Routines tab → AI) */
 "Generate routines" = "生成训练计划";
-"Open Training Preferences and tap Generate routines to build a set tailored to you." = "打开「训练偏好」点 Generate routines,按你的情况生成一组方案。";
+"Open Training Preferences and tap Generate routines to build a set tailored to you." = "打开「训练偏好」点「生成训练计划」,按你的情况生成一组方案。";
 "Apply" = "应用";
 "Keep editing" = "继续编辑";
 "Apply changes?" = "应用更改?";
@@ -739,6 +753,8 @@
 "No routines match" = "没有符合条件的计划";
 "%lld routine" = "%lld 个计划";
 "%lld routines" = "%lld 个计划";
+"Add %lld routines" = "添加 %lld 个训练计划";
+"Day %lld" = "第 %lld 天";
 "Days/wk" = "每周天数";
 "%lld days" = "%lld 天";
 "Any level" = "全部难度";
@@ -796,7 +812,7 @@
 /* Today tab — 肌肉状态 hero kicker (替换 "RECOVERY") */
 "MUSCLE STATUS" = "肌肉状态";
 
-/* StoreKit / IAP — Maso Pro 付费流 */
+/* StoreKit / IAP — Masso Pro 付费流 */
 "Couldn't load subscription options. Try again later." = "无法加载订阅选项,请稍后重试。";
 "Purchase pending approval." = "购买等待审批。";
 "Purchase verification failed. Try again or contact support." = "购买验证失败,请重试或联系客服。";
@@ -809,7 +825,7 @@
 
 /* Deep link / plan sharing */
 "IMPORTED PLAN" = "已导入的计划";
-"This Maso link is damaged or unsupported. Ask your friend to share again." = "此 Masso 链接已损坏或不受支持,请让朋友重新分享。";
+"This Masso link is damaged or unsupported. Ask your friend to share again." = "此 Masso 链接已损坏或不受支持,请让朋友重新分享。";
 "Invalid routine link" = "无效的训练计划链接";
 
 /* Misc */
@@ -821,7 +837,7 @@
 "Privacy Policy" = "隐私政策";
 "Terms of Service" = "服务条款";
 "Version" = "版本";
-"Maso is for informational and motivational purposes only — not medical advice. Consult a physician before starting any new exercise program, especially if you have a medical condition, are pregnant, or have not exercised recently. Stop immediately and seek help if you feel pain, dizziness, or shortness of breath." = "Masso 仅供参考与激励之用,并非医学建议。开始任何新的锻炼计划之前请咨询医生,尤其是当你有疾病、怀孕或近期未运动时。如出现疼痛、头晕或呼吸急促,请立即停止并寻求帮助。";
+"Masso is for informational and motivational purposes only — not medical advice. Consult a physician before starting any new exercise program, especially if you have a medical condition, are pregnant, or have not exercised recently. Stop immediately and seek help if you feel pain, dizziness, or shortness of breath." = "Masso 仅供参考与激励之用,并非医学建议。开始任何新的锻炼计划之前请咨询医生,尤其是当你有疾病、怀孕或近期未运动时。如出现疼痛、头晕或呼吸急促,请立即停止并寻求帮助。";
 
 /* Tab label — workout records */
 "Workout Records" = "训练记录";
@@ -898,7 +914,7 @@
 "Delete exercise?" = "删除动作？";
 "Remove from library" = "移出我的库";
 "This exercise is used by a plan or your workout history. Remove it from those first." = "这个动作正被某个训练计划或历史记录使用。请先从那里移除。";
-"“%@” will be permanently removed." = "“%@” 将被永久删除。";
+"“%@” will be permanently removed." = "“%@”将被永久删除。";
 
 /* ── Batch F: custom measure/photo ── */
 "Couldn't load that image. Try another." = "无法加载该图片，换一张试试。";
@@ -1013,11 +1029,18 @@
 "variant.split" = "分腿站 — 单腿偏重并增加平衡需求。";
 "variant.hammer" = "锤式对握 — 更偏肱肌与前臂。";
 
-"My Routines" = "我的计划";
+"My Routines" = "我的训练计划";
 
 /* ── Routine 分享卡 / 图片导入 / History 周期分享 ── */
 "Import from photo" = "从照片导入";
-"Add routine" = "添加计划";
+"Add routine" = "添加训练计划";
+"Generate routine with AI" = "用 AI 生成训练计划";
+"Build your routine with AI" = "用 AI 创建你的训练计划";
+"Tell AI Coach your goals and schedule to get a routine made for you." = "告诉 AI 教练你的目标和训练安排，为你生成合适的计划。";
+"Chat with AI Coach" = "与 AI 教练对话";
+"Hi, I’m your AI Coach" = "嗨，我是你的 AI 教练";
+"Create my routine based on my saved training preferences." = "请根据我已保存的训练偏好，为我创建训练计划。";
+"Open AI Coach to create a routine" = "打开 AI 教练创建训练计划";
 "Imported routine" = "导入的训练计划";
 "Couldn't read a routine from that image" = "没能从这张图片识别出训练计划";
 "Try a clearer screenshot — exercise names need to be readable." = "换一张更清晰的截图 — 动作名需要能看清。";
@@ -1061,11 +1084,10 @@
 "No routines yet" = "还没有训练计划";
 "Add AI routines" = "添加 AI 训练计划";
 "No saved routines yet" = "还没有保存的训练计划";
-"Generate one with AI or browse Classics below, then tap Save." = "用 AI 生成一个,或浏览下方的 Classics,然后点保存。";
-"No Classics match these filters." = "没有符合筛选条件的 Classics。";
+"Generate one with AI or browse Classics below, then tap Save." = "用 AI 生成一个,或浏览下方的「经典」,然后点「保存」。";
+"No Classics match these filters." = "没有符合筛选条件的「经典」。";
 "No routines match these filters yet." = "没有符合筛选条件的训练计划。";
 "Tailoring your AI routines…" = "正在为你定制 AI 训练计划…";
-"My Personal AI Trainer" = "我的私人 AI 教练";
 "Pick the equipment your gym has — AI and recommended routines will only use moves you can actually do. Leave empty for no restriction (bodyweight is always available)." = "选择你健身房有的器械——AI 和推荐计划只会用你实际能做的动作。留空则不限制(自重动作始终可用)。";
 "Clear — use all equipment" = "清空——使用所有器械";
 "%@ %@ per side" = "每侧 %1$@ %2$@";
@@ -1107,6 +1129,9 @@
 "Continue (%lld)" = "继续 (%lld)";
 "Start (%lld)" = "开始 (%lld)";
 "Exercise photos" = "动作配图";
+"Credits" = "鸣谢与来源";
+"Exercise photos via Pexels." = "动作配图来自 Pexels。";
+"Pexels License" = "Pexels 使用许可";
 "From library" = "从相册选";
 "Search the web" = "网络搜图";
 "Find a photo" = "找张图";
@@ -1159,7 +1184,8 @@
 "Activity" = "活跃度";
 
 /* Progress tab — Insights/History 分段 + Trends section 标题 */
-"Insights" = "数据";
+"Insights" = "训练数据";
+"Training insights" = "训练数据";
 "Trends" = "趋势";
 
 /* Progress — Insights 卡片可拖拽重排; 列表顶部一行提示 */
@@ -1300,6 +1326,23 @@
 "This clears the current chat. Saved routines are kept." = "会清空当前对话;已保存的计划不受影响。";
 "Swap %@: " = "换掉%@:";
 "Training in progress — keep tuning after your session." = "训练中 — 结束后继续调整。";
+"Try a starting point" = "从一个场景开始";
+"Choose a scenario, then edit the draft before sending." = "选择场景后，可以先修改草稿再发送。";
+"I want to focus on…" = "我想重点练……";
+"I only have 30 minutes" = "我只有 30 分钟";
+"I train at home" = "我在家训练";
+"I’m getting back into training" = "我想恢复训练";
+"I want to look like this" = "我想练成这样";
+"Current photo" = "当前身材";
+"Goal reference" = "目标参考图";
+"Change photo" = "更换照片";
+"Avoid faces. Photos can’t measure health, strength or body fat." = "尽量避开面部。照片无法判断健康、力量或体脂。";
+"Choose a photo from your library or camera" = "从相册或相机选择照片";
+"I want to focus more on [shoulders and back]. Adjust my routines around that while keeping my training balanced." = "我想更多训练「肩部和背部」，请据此调整训练计划，同时保持整体均衡。";
+"I have [30] minutes per workout. Shorten my routines to fit while keeping the main training focus." = "我每次只能训练「30」分钟，请缩短训练计划，同时保留主要训练重点。";
+"I train at home with [dumbbells and bands]. Adapt my routines to the equipment I have." = "我在家用「哑铃和弹力带」训练，请按现有器械调整计划。";
+"I’m returning after [a month away]. Ease my routines back in with balanced, gradual training." = "我停练「一个月」后准备恢复，请循序渐进地调整计划，保持训练均衡。";
+"Compare my current photo with this goal reference. Suggest balanced training emphases based on visible muscle development, then adjust my routines. Keep the advice realistic; don’t estimate body fat or a timeline." = "请对比我的当前照片和目标参考图，根据可见的肌肉发展情况提出均衡的训练重点，并据此调整计划。建议请保持现实，不要估算体脂或达成时间。";
 
 /* ── Coach tab 批次 3: 全局接线 (深链来源 kicker, docs/coach-tab-design.md §4) ── */
 "FROM WEEKLY SUMMARY" = "来自每周小结";
@@ -1329,7 +1372,10 @@
 "Add your own exercise" = "添加自创动作";
 "Add “%@” as your own" = "把“%@”添加为自创动作";
 "Build my week — full body, about 45 minutes a day" = "帮我排一周训练——全身练,每天 45 分钟左右";
-"Save & generate routines" = "保存并生成计划";
+"Update routines?" = "更新训练计划？";
+"Update routines" = "更新训练计划";
+"Save only" = "仅保存";
+"Save these training preferences and regenerate your routines to match?" = "保存这些训练偏好，并根据它们重新生成训练计划吗？";
 "Share routines" = "分享训练计划";
 "Share (%lld)" = "分享 (%lld)";
 "Import routines" = "导入训练计划";
@@ -1338,7 +1384,6 @@
 /* 恢复热图图例 (绿=可练/蓝=疲劳, 2026-07 语义反转) */
 "Ready to train" = "可以练";
 "Almost ready" = "快恢复了";
-"Fatigued" = "疲劳";
 
 /* Progress 顶部统计 — 累计训练 (替代 Week streak) */
 "Workouts total" = "累计训练";
@@ -1370,7 +1415,7 @@
 "ACTIVE" = "已激活";
 "Thanks for supporting Masso. Manage or cancel on the Polar page." = "感谢支持 Masso。可在 Polar 页面管理或取消。";
 
-"Scan to get this routine" = "扫码获取这套训练计划";
+"Scan to get this routine" = "扫码获取同款训练计划";
 
 /* Coach 空态偏好卡 + 调整入口 */
 "%lld days a week" = "每周 %lld 天";
@@ -1383,9 +1428,15 @@
 "Body back" = "背面";
 
 "Notes for your AI coach" = "给 AI 教练的备注";
+"AI coach memory description" = "AI 教练每次生成训练计划时都会参考这里的备注。";
+"Coach memory examples" = "例如：旧伤、想避开的动作、器械限制、训练时间或目标……";
 "Saved here for good — your AI coach reads it every time it builds a routine. Write anything in plain words: past injuries, medical conditions, moves to avoid, equipment quirks, schedule, goals." = "这段会一直保存在这里 —— AI 教练每次生成训练计划时都会读一遍。用大白话写任何需要它考虑的情况：旧伤、基础病、不能做的动作、器械限制、时间安排、目标。";
 
 "Replace all" = "全部替换";
+"Save to My Routines" = "保存到我的训练计划";
+"Replace all routines" = "替换现有训练计划";
+"Add to existing routines" = "添加到现有训练计划";
+"Choose whether to replace your %lld saved routines or add these %lld routines alongside them." = "你可以替换已保存的 %lld 个训练计划，或将这 %lld 个训练计划添加到现有计划中。";
 "Replace your routines?" = "替换你的训练计划？";
 "Your %lld saved routines will be deleted and replaced with these %lld." = "已存的 %lld 个计划会被删除，换成这 %lld 个。";
 
@@ -1424,3 +1475,1624 @@
 "Export failed" = "导出失败";
 "Share anonymous usage data" = "共享匿名使用数据";
 "Sends anonymous counts like \"a routine was generated\" or \"onboarding finished\" so I can see which parts of the app work. Never your workouts, weights, notes, or anything you typed. No account, no ads, no third-party ad networks. Turn it off and nothing is sent at all." = "只发送「生成了一份计划」「引导完成了」这类匿名计数，好让我知道哪些功能真的有人用。绝不发送你的训练记录、重量、备注，或你输入的任何文字。无账号、无广告、不接任何广告网络。关掉之后一条都不会发。";
+
+"Adjust your routines with your coach" = "与教练聊天，调整你的训练计划";
+
+"Show earlier workouts (%lld)" = "显示更早记录（%lld）";
+"Start today's workout" = "开始今日训练";
+
+"AI Coach" = "AI 教练";
+"More training settings" = "更多训练设置";
+
+"Classic Routines" = "经典训练计划";
+"Explore Routines" = "探索训练计划";
+"Find a classic plan and make it yours." = "挑选经典计划，加入你的训练。";
+
+"Create a routine" = "创建训练计划";
+
+"Plan your exercises before you train" = "先安排动作，再开始训练";
+
+"Start custom workout" = "开始自定义训练";
+
+"Add exercises as you go" = "边练边添加动作";
+
+"Choose your first exercise" = "先练哪个动作？";
+
+"What would you like to train next?" = "接下来练什么？";
+
+"End this workout" = "结束本次训练";
+
+"Add next exercise" = "添加下一个动作";
+
+"Minimize workout" = "收起训练";
+
+"Workout complete" = "本次训练已完成";
+
+"Save as a routine" = "保存为训练计划";
+
+"Set up exercise" = "设置训练动作";
+
+/* AI assistant suggestion card */
+"AI suggestion" = "AI 建议";
+
+// Native muscle model
+"Drag sideways to rotate. Tap for recovery details." = "左右拖动旋转，轻点查看恢复详情。";
+"Tap to view muscle recovery" = "轻点查看肌肉恢复状态";
+"3D muscle model" = "3D 肌肉模型";
+"Model adapted for Masso: mirrored muscle groups, smoother surfaces, adjusted proportions and fatigue colors." = "Masso 修改：对称肌群、曲面平滑、比例调整与疲劳状态配色。";
+
+"Drag sideways to rotate" = "左右拖动旋转";
+"3D model unavailable" = "暂时无法显示 3D 模型";
+
+// Home action heading and supporting context.
+"Start your first workout" = "开启首次训练";
+"Your training journey starts here." = "从这里开启你的训练之旅";
+"Your workout is in progress." = "本次训练正在进行中";
+"Rest up" = "好好休息";
+"You’ve trained today." = "你今天已经训练过了";
+"Plan your next session" = "安排下一次训练";
+"You last trained yesterday." = "你上次训练是在昨天";
+"Make time to train" = "抽点时间练一练";
+"It’s been %lld days since your last workout." = "距离上次训练已过去 %lld 天";
+"Ease back in" = "慢慢找回节奏";
+
+// Swipeable coaching suggestions.
+"Your training summary" = "你的训练小结";
+"Let's plan your training" = "一起安排训练吧";
+"Previous suggestion" = "上一条建议";
+"Next suggestion" = "下一条建议";
+"Suggestion %lld of %lld" = "第 %lld 条建议，共 %lld 条";
+"Updating suggestions…" = "正在更新建议…";
+"Suggestion removed" = "已移除建议";
+"Dismiss suggestion" = "移除建议";
+"Sent to chat" = "已发送";
+"Applied" = "已应用";
+"View Pro" = "了解 Pro";
+
+// History disclosure
+"Collapse history" = "收起历史记录";
+"Expand history (%lld)" = "展开历史记录（%lld）";
+
+// Muscle readiness legend
+"Ready" = "可练";
+
+"Routine options" = "训练计划选项";
+
+"Couldn’t prepare share" = "暂时无法生成分享内容";
+
+"Please try again." = "请再试一次。";
+
+// Body photo coaching
+"Training photo" = "训练照片";
+"Send to analyze with AI and suggest routine changes." = "发送后由 AI 分析照片，并建议如何调整训练计划。";
+"A photo can't measure strength or recovery." = "照片无法判断实际力量或恢复状态。";
+"Remove photo" = "移除照片";
+"Photo Library" = "相册";
+"Camera unavailable" = "相机不可用";
+"Allow camera access in Settings, or choose a photo from your library." = "请在设置中允许使用相机，或从相册选择照片。";
+"Couldn't prepare this photo" = "无法处理这张照片";
+"Please choose another photo." = "请选择另一张照片。";
+"Review my training photo and suggest routine changes." = "请分析我的训练照片，并建议如何调整训练计划。";
+"Couldn't analyze this photo. Your routines are unchanged. Please try again." = "暂时无法分析这张照片，训练计划未更改。请重试。";
+
+/* Insights — progress, muscle inputs, training rhythm */
+"Time range" = "时间范围";
+"4 weeks" = "4 周";
+"12 weeks" = "12 周";
+"6 months" = "6 个月";
+"1 year" = "1 年";
+"All time" = "全部时间";
+"%d training days · %@" = "训练 %1$d 天 · %2$@";
+"Lift progress" = "动作进步";
+"%d improved" = "%d 项有提升";
+"1 lift improved" = "1 个动作有提升";
+"%d lifts improved" = "%d 个动作有提升";
+"Your progress starts here" = "从这里记录进步";
+"Your lifts at a glance" = "你的动作表现";
+"Earlier → latest comparable records" = "早期记录 → 最近的可比记录";
+"Log your workouts to see changes in weight and reps." = "记录训练，查看重量与次数的变化。";
+"All exercises" = "全部动作";
+"Muscles trained" = "已训练肌群";
+"This week · recorded sets" = "本周 · 记录组数";
+"Primary muscles only · not a growth score" = "仅统计主要肌群 · 不代表肌肉增长";
+"Some exercises have no muscle mapping and are excluded." = "部分动作未标注肌群，未计入统计。";
+"Training rhythm" = "训练规律";
+"training days this week" = "天，本周已训练";
+"%d training days in the last %d weeks" = "最近 %2$d 周训练了 %1$d 天";
+"Trained" = "已训练";
+"Upcoming" = "未到日期";
+"No recorded workout" = "无训练记录";
+"Compared within the same exercise. Each day uses its best matching set. Chart scales differ between exercises." = "仅比较同一动作，每天取条件相同的最佳组。不同动作的图表刻度独立。";
+"More matching sessions are needed to show a trend." = "有更多可比训练记录后，即可展示趋势。";
+"Strength changes do not measure muscle growth." = "力量变化不代表肌肉增长量。";
+"Recorded sets" = "记录组数";
+"A recorded set counts once for each primary muscle group. Secondary muscles are excluded. These are logged sets, not measured effective sets or muscle growth." = "每个记录组在其主要肌群中各计一次，辅助肌群不计入。这里展示记录组数，不代表有效组数或肌肉增长量。";
+"%d → %d reps" = "%d → %d 次";
+"New" = "新记录";
+"Unchanged" = "持平";
+"Weight for %d reps" = "完成 %d 次的重量";
+"Reps at %@" = "%@ 下的次数";
+"Bodyweight reps" = "自重动作次数";
+"Latest recorded set" = "最近记录组";
+
+"Baseline" = "基准记录";
+"Show fewer" = "收起动作";
+"Show all %d exercises" = "展开全部 %d 个动作";
+"Describe what happened and what you expected…" = "描述一下发生了什么，以及你原本期待怎样的结果…";
+"Thanks for reporting this. Your report has been sent to our team and will help us improve Masso." = "谢谢你告诉我这个问题。报告已发送给我们的团队，会帮助我们持续改进 Masso。";
+"Thanks for reporting this. I saved your report on this device and will retry sending it when a connection is available." = "谢谢你告诉我这个问题。报告已保存在这台设备上，网络恢复后我会继续尝试发送。";
+
+// Lightweight Diet
+"Diet" = "饮食";
+"What to eat today" = "今天怎么吃";
+"Diet preferences" = "饮食偏好";
+"Add your weight for portion guidance" = "补充体重，查看建议份量";
+"Approximate portions. Cooked weights except dry oats, packaged yogurt/tofu and fruit. Add cooking oil to taste." = "份量仅供参考。肉类、主食与蔬菜为熟重；燕麦为干重，酸奶和豆腐按包装重量，水果按可食用部分计算。烹调油可适量添加。";
+"Swap protein foods for similar protein, starches for similar carbs. Other nutrients may differ." = "蛋白质食材按相近蛋白质份量换算，主食按相近碳水份量换算。其他营养可能不同。";
+"Portions are approximate; calories and other nutrients may differ." = "份量为近似换算，热量和其他营养可能不同。";
+"Swap food" = "替换食材";
+"Breakfast" = "早餐";
+"Lunch" = "午餐";
+"Dinner" = "晚餐";
+"Snack" = "加餐";
+"Chicken breast" = "鸡胸肉";
+"Lean beef" = "瘦牛肉";
+"Firm tofu" = "硬豆腐";
+"Eggs" = "鸡蛋";
+"Plain Greek yogurt" = "无糖希腊酸奶";
+"Rice" = "米饭";
+"Potatoes" = "土豆";
+"Oats" = "燕麦";
+"Broccoli" = "西兰花";
+"Leafy greens" = "绿叶蔬菜";
+"Tomatoes" = "番茄";
+"Blueberries" = "蓝莓";
+"Meals per day" = "每天几餐";
+"3 meals" = "3 餐";
+"3 meals + snack" = "3 餐＋加餐";
+"Plant-based" = "植物性饮食";
+"Uses your existing training goal and body information." = "沿用已有的训练目标与身体资料。";
+"Allergies" = "过敏原";
+"Milk" = "乳制品";
+"Egg" = "鸡蛋";
+"Soy" = "大豆";
+"Foods to avoid" = "不吃的食材";
+"Keep at least one protein, starch and fruit or vegetable option." = "请至少保留一种蛋白质食材、主食和蔬果。";
+
+"Protein" = "蛋白质";
+"Diet protein progress" = "%1$dg/%2$dg 蛋白质";
+
+"Carbs" = "碳水";
+
+"Fat" = "脂肪";
+
+"g / day" = "克 / 天";
+
+"Supports muscle recovery" = "支持肌肉修复";
+
+"Fuels your training" = "支持训练表现";
+
+"Supports daily nutrition" = "维持日常营养";
+
+"Estimated daily targets. Adjust portions to your appetite and training needs." = "每日目标为估算值，可按食欲和训练需求调整份量。";
+
+"%d/%d lifts improving" = "%d/%d 个动作提升";
+
+"reps" = "次";
+
+"sets" = "组";
+
+"%d training days" = "%d 天训练";
+
+"4 weeks · training volume" = "4 周 · 训练投入";
+
+/* Sleep */
+"Sleep" = "睡眠";
+"Goal met" = "已达目标";
+"No sleep data yet" = "暂无睡眠数据";
+"Sleep recorded by Apple Watch or compatible devices appears through Apple Health." = "通过 Apple 健康读取 Apple Watch 或兼容设备记录的睡眠。";
+
+/* Meal check-ins and daily score */
+"Daily score" = "今日评分";
+"Analyzing meal…" = "正在分析这一餐…";
+"Foods and portions" = "食物和份量";
+"Today's training goal" = "今日训练目标";
+"Choose your plan before training. Rest days count as completed only when explicitly planned." = "训练前设置目标。只有明确安排的休息日才会视为完成训练计划。";
+"Plan adherence, not a health or muscle-growth measurement. Training 40 · protein 20 · carbs 10 · fat 5 · sleep 25. Extra training or food earns no bonus." = "评分反映计划执行情况，不代表健康或增肌效果。训练 40、蛋白质 20、碳水 10、脂肪 5、睡眠 25 分。超额训练或摄入不会加分。";
+"Daily records" = "每日记录";
+"Show earlier days" = "查看更早记录";
+
+"Features" = "功能";
+
+"Bedtime reminder" = "睡眠提醒";
+
+"Last night's score" = "昨晚睡眠分数";
+
+"Tonight's goal" = "今晚睡眠目标";
+
+"Notifications are off" = "通知未开启";
+
+"Open Settings" = "打开设置";
+
+"Allow Masso notifications in Settings to receive bedtime reminders." = "在系统设置中允许 Masso 发送通知，即可接收睡眠提醒。";
+
+"Record your first meal today" = "记录今天的第一餐";
+
+"Set your body weight" = "设置你的体重";
+
+"Get your daily nutrition targets" = "查看每日营养目标";
+
+"%lld / %lld meals recorded" = "已记录 %lld / %lld 餐";
+
+"Last night" = "昨晚";
+
+"Insights category" = "分析类别";
+
+"No meal records in this period" = "此时段暂无饮食记录";
+
+"No sleep records in this period" = "此时段暂无睡眠记录";
+
+"Confirm meal photos to see nutrition trends." = "确认餐食照片后，即可查看营养趋势。";
+
+"Connect Apple Health to see your sleep trends." = "连接 Apple 健康，查看睡眠趋势。";
+
+"Open Diet" = "查看饮食";
+
+"Open Sleep" = "查看睡眠";
+
+"Recorded nutrition" = "已记录营养";
+
+"Daily average · logged days only" = "日均摄入 · 仅统计有记录的日期";
+
+"%lld / %lld days fully logged" = "完整记录 %lld / %lld 天";
+
+"Protein intake" = "蛋白质摄入";
+
+"Yellow: recorded protein · diamond: daily target" = "黄色：已记录蛋白质 · 菱形：当天目标";
+
+"Partial meals count as recorded intake, not a complete day's total." = "部分餐食记录不代表全天总摄入。";
+
+"Average sleep" = "平均睡眠";
+
+"%lld nights recorded" = "已记录 %lld 晚";
+
+"Sleep duration" = "睡眠时长";
+
+"Blue: recorded sleep · diamond: nightly target" = "蓝色：实际睡眠 · 菱形：当晚目标";
+
+"Complete days with saved nutrition targets" = "仅统计餐食完整且已保存目标的日期";
+
+"Nights with saved sleep targets" = "仅统计已保存目标的夜晚";
+
+"Protein · %lld / %lld g" = "蛋白质 · %lld / %lld g";
+
+"Last night · %@" = "昨晚 · %@";
+
+"Saved to My Routines" = "已保存到我的训练";
+
+"Sleep target" = "睡眠目标";
+
+"Sleep preferences" = "睡眠偏好";
+
+"Total sleep · each night" = "每晚总睡眠时长";
+
+"Sleep supports recovery. Adults generally need at least 7 hours." = "睡眠支持恢复。成人一般每晚至少需要 7 小时睡眠。";
+
+"Total sleep" = "总睡眠";
+
+"Nightly target" = "当晚目标";
+
+"Deep sleep" = "深睡";
+
+"REM sleep" = "REM 睡眠";
+
+"Your device hasn't provided sleep stages." = "设备尚未提供睡眠分期数据。";
+
+"Your usual sleep stages" = "你的睡眠分期参考";
+
+"Based on at least 7 recorded nights in the previous 14 days. A personal reference, not a pass/fail target." = "基于过去 14 天中至少 7 晚的记录。这是个人参考范围，不作达标判断。";
+
+"Sleep stages are device estimates and do not affect your goal score." = "睡眠分期为设备估计，不参与目标达成评分。";
+
+"About sleep stages" = "了解睡眠分期";
+
+"Building your baseline" = "正在建立个人参考";
+
+"Reminder time" = "提醒时间";
+
+"Personal reference" = "个人参考";
+
+"Why these portions?" = "为什么这样分配？";
+"Meal balance" = "每餐配比";
+"Protein across the day" = "三餐蛋白质";
+"Carbs and dinner" = "晚餐与碳水";
+"Portion guide" = "食材份量";
+"Protein is split evenly across breakfast, lunch and dinner. An optional snack takes 15% of the daily target; the rest stays evenly split." = "蛋白质平均分配到早餐、午餐和晚餐。开启加餐后，加餐占全天目标的 15%，其余仍平均分配。";
+"Daily protein and consistent training matter most. Small trials support balanced meals for muscle protein synthesis; long-term muscle-growth results are mixed." = "全天蛋白质和持续训练更重要。小规模试验支持均衡分配促进肌肉蛋白合成，但长期增肌效果的研究结果并不一致。";
+"Carbs start at 25% for breakfast, 35% for lunch and 40% for dinner. With a snack, 15% goes to the snack and the remaining 85% follows the same split." = "碳水起始分配为早餐 25%、午餐 35%、晚餐 40%。开启加餐后，加餐占 15%，剩余 85% 按上述比例分配。";
+"These percentages are an app planning default, not a proven optimal ratio. A small trial found faster sleep onset with a high-GI meal four hours before bed; other trials found no benefit. More dinner carbs do not guarantee better sleep or justify cutting dinner protein." = "这些比例是 App 的起始安排，并非经验证的最佳比例。一项小规模试验发现睡前四小时的高 GI 餐可缩短入睡时间，其他试验未发现改善。晚餐多吃碳水并不保证睡得更好，也不代表应该减少晚餐蛋白质。";
+"Approximate cooked weights; oats are dry, yogurt/tofu are packaged weights, fruit is edible weight. Swaps match protein or carbs, not all nutrients. Cooking fats are not included in these portions." = "份量为估算熟重；燕麦用干重，酸奶和豆腐用包装净重，水果用可食重量。替换时匹配蛋白质或碳水，不保证其他营养相同。份量未包含烹调用油。";
+"ISSN · Protein and exercise (2017)" = "ISSN · 蛋白质与运动（2017）";
+"Mamerow · Protein distribution (2014)" = "Mamerow · 蛋白质分配（2014）";
+"Protein distribution review (2020)" = "蛋白质分配研究综述（2020）";
+"Afaghi · Carbs and sleep (2007)" = "Afaghi · 碳水与睡眠（2007）";
+"Athletes' evening meals trial (2019)" = "运动员晚餐试验（2019）";
+
+"Why this sleep target?" = "为什么需要睡这么久？";
+"Why 8 hours?" = "为什么从 8 小时开始？";
+"Sleep and recovery" = "睡眠与恢复";
+"Deep sleep and REM" = "深睡与 REM";
+"Apple Health records" = "Apple Health 记录";
+"About sleep" = "关于睡眠";
+"Apple Health sleep records" = "Apple Health 睡眠记录";
+"Core sleep" = "核心睡眠";
+"Awake" = "清醒";
+"In bed" = "卧床";
+"Sleep (unspecified)" = "睡眠（未分期）";
+"Adults generally need 7–9 hours a night. Eight hours is a starting point, not a precise calculation from your workout or body weight. Adjust for how rested you feel." = "成年人通常每晚需要 7–9 小时。8 小时是起始目标，并非根据训练或体重精算出的需求。可以结合醒来后的精神状态调整。";
+"Sleep supports recovery and performance. A small experiment found lower muscle protein synthesis after one sleepless night. It does not prove that every extra hour produces more muscle, or that everyone needs the same duration." = "睡眠有助于恢复和训练表现。一项小规模实验发现，整夜不睡后肌肉蛋白合成降低。这不代表多睡一小时就多长肌肉，也不代表每个人都需要相同时长。";
+"Stage durations vary with age, night and device. Your ranges summarize the previous 14 days once at least 7 nights are available; they are personal references, not recommended targets. Apple Watch stages are estimates." = "睡眠分期随年龄、夜晚和设备而变化。累积至少 7 晚记录后，显示过去 14 天的个人参考范围，不作为建议目标。Apple Watch 的分期为估计值。";
+"Masso reads all authorized sleep-analysis history: core, deep, REM, unspecified sleep, awake and in-bed samples, with times and sources. Missing stages stay blank. Overlapping sources are not added together; detailed stage data is preferred for nightly totals. These totals may differ from Apple's source priorities. In-bed time is not sleep time." = "Masso 读取获授权的完整睡眠历史：核心、深睡、REM、未分期睡眠、清醒和卧床记录，包含时间和来源。缺失分期不填零。重叠来源不累加，每晚优先采用详细分期数据；与 Apple 的来源优先级不同可能导致总量差异。卧床时长不等于睡眠时长。";
+"Allow Sleep access in Apple Health. Data appears after your device syncs. HealthKit does not reveal whether read access was denied, so no records can mean no data or no permission." = "请在 Apple Health 中允许读取睡眠，设备同步后会显示记录。HealthKit 不透露用户是否拒绝读取，因此没有记录也可能是尚未授权。";
+"NIH · Recommended sleep duration" = "NIH · 建议睡眠时长";
+"AASM / SRS · Adult sleep consensus (2015)" = "AASM / SRS · 成人睡眠共识（2015）";
+"Lamon · Sleep loss and muscle protein synthesis (2021)" = "Lamon · 缺觉与肌肉蛋白合成（2021）";
+"Apple · Sleep tracking" = "Apple · 睡眠追踪";
+"Apple · Sleep-analysis data" = "Apple · 睡眠分期数据";
+
+"Sleep history" = "睡眠记录";
+"Show earlier nights" = "查看更早的睡眠";
+
+"Today's meals" = "今日食谱";
+"Diet history" = "饮食记录";
+"No meal records yet" = "暂无饮食记录";
+"Sleep details" = "睡眠明细";
+
+"7 days" = "7 天";
+"Compared with your current target" = "与当前目标相比";
+"Compared with that day's target" = "与当天保存的目标相比";
+
+"View Apple Health records" = "查看 Apple Health 记录";
+
+"Eating window" = "进食窗口";
+"Flexible" = "不限制";
+"12:12 · 12-hour window" = "12:12 · 12 小时进食";
+"14:10 · 10-hour window" = "14:10 · 10 小时进食";
+"16:8 · 8-hour window" = "16:8 · 8 小时进食";
+"Starts at" = "开始时间";
+"Ends at" = "结束时间";
+"Next day" = "次日";
+"Morning snack" = "上午加餐";
+"Afternoon snack" = "下午加餐";
+"Meal timing changes the split, not your daily nutrition targets." = "调整餐次和时间，不改变全天营养目标。";
+"Protein is split evenly across your selected 2–5 meals. Changing meal count or eating window keeps the daily target unchanged." = "蛋白质平均分配到你选择的 2–5 餐。调整餐次或进食窗口，不改变全天目标。";
+"Two meals split carbs 45% / 55%. With three meals, the split is 25% / 35% / 40%. Four meals reserve 15% for a snack; five reserve 10% for each of two snacks. The remaining carbs follow the three-meal split." = "两餐的碳水按 45% / 55% 分配，三餐按 25% / 35% / 40% 分配。四餐留 15% 给加餐，五餐分别留 10% 给两次加餐，其余碳水沿用三餐比例。";
+"Flexible timing is the default. 12:12, 14:10 and 16:8 describe fasting hours and eating hours. A shorter window does not lower your daily nutrition targets or guarantee better muscle growth." = "默认不限制时间。12:12、14:10 和 16:8 表示禁食小时数与进食小时数。缩短进食窗口不降低全天营养目标，也不保证更好的增肌效果。";
+"NIDDK · Time-restricted eating" = "NIDDK · 限时进食";
+"%lld meals" = "%lld 餐";
+"Meal 1" = "第 1 餐";
+"Meal 2" = "第 2 餐";
+"Meal 3" = "第 3 餐";
+"Meal 4" = "第 4 餐";
+"Meal 5" = "第 5 餐";
+
+"Diet calendar" = "饮食日历";
+"Sleep calendar" = "睡眠日历";
+"View all months" = "查看全部月份";
+"Green marks workout days." = "绿色表示有训练记录。";
+"Color strength shows your recorded protein progress." = "颜色越实，记录的蛋白质摄入越接近目标。";
+"Color strength shows your sleep-duration progress." = "颜色越实，睡眠时长越接近目标。";
+"Grey means no record or no target. Saved daily targets are used when available; otherwise your current target is used." = "灰色表示没有记录或目标。优先参照当天保存的目标，未保存时参照当前目标。";
+
+"Workout resources" = "训练资源";
+
+"Training History" = "训练记录";
+
+"Share Training History" = "分享训练记录";
+
+"No workout" = "无训练";
+
+"Workout recorded" = "已训练";
+
+"Improving lifts over 4 weeks" = "最近 4 周进步动作数";
+
+"Not enough data" = "数据不足";
+
+"Describe meal" = "描述餐食";
+
+"Photo" = "照片";
+
+"Diet score" = "饮食评分";
+
+"All meals recorded" = "餐食已全部记录";
+
+"In progress · record remaining meals" = "记录中 · 请补充剩余餐食";
+
+"Record a meal to see your progress" = "记录一餐，查看目标达成度";
+
+"Estimated target adherence, not a health score." = "基于估算摄入的目标达成度，不是健康评分。";
+
+"Try %@, or record what you eat." = "可以试试%@，也可以记录实际吃的食物。";
+
+"e.g. Two eggs, a bowl of rice and a glass of milk" = "例如：两个鸡蛋、一碗米饭和一杯牛奶";
+
+"Estimate nutrients" = "估算营养";
+
+"AI estimate. Check portions, sauces and drinks before confirming." = "AI 估算，请核对分量、酱料和饮料后确认。";
+
+"Describe your meal in up to 4,000 characters." = "请在 4,000 字以内描述餐食。";
+
+"Meal analysis unavailable" = "暂时无法分析餐食，请重试。";
+
+"No clear meal found. Describe foods and portions, or enter nutrients manually." = "未识别到餐食，请描述食物和分量，或手动填写营养数据。";
+
+"Workout History" = "训练历史";
+
+"Share Workout History" = "分享训练历史";
+
+"Workout history" = "训练历史";
+
+"Workout target" = "训练目标";
+
+"%d of %d days this week" = "本周已训练 %d / %d 天";
+
+"Membership" = "会员";
+
+"Add meal" = "添加餐食";
+
+"Meal" = "餐食";
+
+"Meal %d" = "第 %d 餐";
+
+"Only confirmed nutrients count toward today's score." = "确认后，营养数据才会计入当天评分。";
+
+"Why these targets?" = "为什么设置这些目标？";
+
+"Workout Insights" = "训练洞察";
+
+"Share Workout" = "分享训练";
+
+"Share Workout Insights" = "分享训练洞察";
+
+"Generate meal" = "生成餐食";
+
+"Generating meal…" = "正在生成餐食…";
+
+"Could not estimate this meal. Add foods and portions, then try again." = "无法估算这顿餐食，请补充食物和分量后重试。";
+
+"Daily goal contribution" = "对今日目标的贡献";
+
+"Last 7 days" = "最近 7 天";
+
+"days / week" = "天 / 周";
+
+"Delete meal" = "删除餐食";
+
+"Delete meal?" = "删除这顿餐食？";
+
+"Goal & color rules" = "达标与颜色规则";
+
+"Your current target" = "当前目标";
+
+"What the colors mean" = "颜色含义";
+
+"How it is calculated" = "计算方式";
+
+"Research & guidance" = "参考依据";
+
+"Light color" = "浅色";
+
+"Medium color" = "中等颜色";
+
+"Deep color" = "深色";
+
+"No recorded intake/sleep or no usable target." = "没有摄入／睡眠记录，或缺少有效目标。";
+
+"Solid blue means actual sleep reaches your saved nightly target. Awake and time in bed are excluded. Deep and REM are references, not scoring targets." = "实际睡眠时长达到当晚保存的目标，才显示实蓝。清醒和卧床时间不计入；深睡和 REM 仅供参考，不参与判定。";
+
+"Solid yellow requires all three daily macro targets. The lower end of the carb/fat ranges is the completion threshold; the upper end is guidance, not a reason to eat extra." = "蛋白质、碳水和脂肪都达到当天目标，才显示实黄。碳水／脂肪范围的下限用于判断达标，上限是建议，不鼓励额外摄入。";
+
+"Color bands are Masso's display rules, not medical thresholds. Today has a white outline. Home's oldest three dots also fade for layout." = "颜色档位是 Masso 的展示规则，不是医学阈值。今天用白色圆环标记；首页最左侧三天还有额外的视觉淡出。";
+
+"Completion = actual sleep minutes ÷ that night's target. Values above the target earn no extra credit. Stage estimates do not determine the color." = "完成度＝实际睡眠分钟数÷当晚目标。超过目标不额外加分，睡眠阶段估算不决定颜色。";
+
+"The daily Diet score compares protein, carbs and fat with fixed daily targets (weights 20/10/5); each macro is capped at 100%, so extra intake cannot offset another shortfall. Meal cards show that meal's weighted contribution to the full daily targets as a percentage, not a score." = "每日饮食评分按蛋白质、碳水和脂肪的固定日目标计算（权重为 20/10/5）；每项最高计 100%，多余摄入不能抵消其他营养素的不足。每餐卡片则显示本餐对全天目标的加权贡献百分比，不是评分。";
+
+"Only saved meal records count. AI nutrition estimates can be inaccurate; colors measure recorded target adherence, not diet quality or health." = "仅保存后的餐食计入。AI 营养估算可能有误差；颜色表示已记录摄入的目标达成度，不代表饮食质量或健康程度。";
+
+"Saved historical targets take priority. If a day has no saved target, the current target is used; changing today's goal does not overwrite saved goals." = "优先采用当天保存的目标；没有历史目标时采用当前目标。修改今天的目标不会覆盖已保存的历史目标。";
+
+"Adults generally need 7–9 hours; ages 13–18 need 8–10 hours and ages 6–12 need 9–12 hours. Eight hours is an adult starting point. A blue dot only confirms your chosen goal, not that your sleep is healthy." = "成人通常需要 7–9 小时；13–18 岁通常需要 8–10 小时，6–12 岁需要 9–12 小时。8 小时是成人的起点。蓝色仅表示达到你设置的目标，不代表睡眠健康评估。";
+
+"ISSN supports about 1.4–2.0 g/kg/day of protein for most healthy exercising adults. Masso's targets are planning starting points. Its 20/10/5 weights and color bands are product choices, not research-validated health scores." = "ISSN 建议多数健康成人运动人群每天约摄入 1.4–2.0g／kg 蛋白质。Masso 的目标是规划起点；20／10／5 权重及颜色档位是产品设定，不是经研究验证的健康评分。";
+
+"ACSM · Nutrition and athletic performance (2016)" = "ACSM · 营养与运动表现（2016）";
+
+"Add your weight for nutrition targets" = "补充体重以计算营养目标";
+
+"Color strength shows your three-macro target progress." = "颜色深浅表示三大营养素的目标达成度。";
+
+"Target used today" = "今天记录采用的目标";
+
+"Current sleep target" = "当前睡眠设置目标";
+
+"Edit meal" = "编辑餐食";
+
+"Save changes" = "保存修改";
+
+"Replace photo" = "替换照片";
+
+"Weekly target" = "每周目标";
+
+"%d days / week" = "每周 %d 天";
+
+"Your goal is weekly. Rest days do not count as failed daily goals." = "目标按周计算，休息日不代表未达标。";
+
+"Green means at least one recorded training set that day." = "绿色表示当天至少记录了一组训练。";
+
+"Gray means no recorded training sets that day." = "灰色表示当天没有训练组记录。";
+
+"The first day after a workout." = "训练后的第 1 天。";
+
+"The second day after a workout." = "训练后的第 2 天。";
+
+"Gray appears after the two-day recovery window when there is no workout." = "训练后两天恢复期结束且当天无训练时显示灰色。";
+
+"Recovery colors are for context and do not count toward your weekly target. Today has a white outline; the oldest three home dots fade for display only." = "恢复色仅供参考，不计入周目标。今天有白色描边；首页最早三天淡化仅为视觉处理。";
+
+"Each day with recorded training sets counts once, even if you complete several workouts. This week's count follows your calendar settings and is compared with your current weekly target." = "有训练组记录的日期计为一天，同一天多次训练只计一次。本周按你的日历设置统计，并与当前每周目标比较。";
+
+"Only logged workout days count toward your weekly target. The two recovery shades are a simple display rule, not a measurement of muscle recovery or workout intensity." = "只有有训练记录的日期计入周目标。训练后两天的恢复色仅作参考，不代表实际肌肉恢复或训练强度。";
+
+"Why this target?" = "为什么设置这个目标？";
+
+"Your fixed gram targets use the weight, training goal and weekly training frequency saved in Masso. If you are 65 or older, the protein factor is raised modestly. Meal count only divides the daily targets; it does not change them." = "固定克数目标根据你在 Masso 保存的体重、训练目标和每周训练天数计算。65 岁及以上会适度提高蛋白质系数。餐数只影响每餐分配，不改变全天目标。";
+
+"Carbohydrate uses your goal and planned training days, with a 130 g adult reference floor. Fat uses a simple 0.8 g/kg planning value. These are practical estimates, not measured calorie needs or medical prescriptions." = "碳水按训练目标和计划训练天数计算，并设有成人每日 130 克的参考下限。脂肪按每公斤体重 0.8 克估算。这些是实用规划值，不是测得的热量需求或医疗处方。";
+
+"Masso does not currently collect height or body composition, so it cannot estimate energy needs precisely. Sleep duration is not used to change macro grams because there is no established formula for doing that." = "Masso 目前没有收集身高或体脂组成，因此无法精确估算能量需求。睡眠时长也不会用于调整营养素克数，因为目前没有可靠的换算公式。";
+
+"ISSN describes protein needs as a range, not one proven ideal for every person. Masso selects a fixed planning point from body weight and training goal; carbohydrates also reflect planned weekly training days, and fat uses a simple weight-based estimate. Age modestly raises the protein factor from 65 onward. Height, body composition, medical conditions and reliable daily energy expenditure are not collected, so these values are estimates rather than a personalized clinical prescription. Sleep data is not used to change macro targets because there is no established conversion from sleep duration to daily macro grams. Scoring weights and color bands are product choices, not research-validated health scores." = "ISSN 将蛋白质需求描述为一个范围，并没有证实适用于所有人的单一最佳值。Masso 根据体重和训练目标选取固定规划值；碳水也参考每周计划训练天数，脂肪则按体重估算。65 岁起适度提高蛋白质系数。由于目前没有收集身高、体脂组成、健康状况或可靠的每日能量消耗，这些数值属于估算，不是个人医疗处方。睡眠时长没有公认的换算方式，因此不会用于调整宏量营养素目标。评分权重和颜色分级是产品规则，不是经研究验证的健康评分。";
+
+"Sleep score" = "睡眠得分";
+
+"About this muscle" = "肌肉介绍";
+"Related exercises" = "相关动作";
+"Exercises for this muscle" = "训练动作";
+"No matching exercises yet" = "暂时没有匹配的动作";
+"Drag sideways to rotate. Tap a muscle to learn more." = "左右拖动旋转；点击肌肉查看介绍。";
+"Muscle intro · Neck" = "支撑头部并控制颈部运动。";
+"Muscle intro · Chest" = "帮助手臂向前、向身体中线靠拢，并参与推举动作。";
+"Muscle intro · Shoulders" = "帮助手臂向不同方向抬起和移动。";
+"Muscle intro · Biceps" = "屈曲肘部，并辅助拉的动作。";
+"Muscle intro · Triceps" = "伸直肘部，并参与推的动作。";
+"Muscle intro · Forearms" = "控制手腕运动并辅助抓握。";
+"Muscle intro · Core" = "稳定躯干，并在上下肢之间传递力量。";
+"Muscle intro · Glutes" = "帮助髋部伸展并保持稳定。";
+"Muscle intro · Quads" = "伸展膝关节，并参与深蹲和迈步。";
+"Muscle intro · Hamstrings" = "屈曲膝关节并帮助髋部伸展。";
+"Muscle intro · Lower legs" = "控制脚踝和足部，帮助蹬地并稳定步伐。";
+"Muscle intro · Adductors" = "帮助大腿向身体中线靠拢。";
+"Muscle intro · Back" = "参与拉的动作，并帮助控制肩胛骨。";
+
+"Home reminders" = "首页时段提示";
+
+"Meal reminders" = "用餐提醒";
+
+"Time to eat" = "该吃饭了";
+
+"Fuel your muscles with a balanced meal" = "均衡吃一餐，为肌肉补充能量";
+
+"Time to wind down" = "准备睡觉吧";
+
+"Sleep helps your muscles recover" = "睡个好觉，让肌肉好好恢复";
+
+"Find demo" = "查找演示";
+
+"Calendar colors" = "日历颜色说明";
+
+"Tap to add photo" = "点击添加图片";
+
+"Training in progress" = "训练中";
+
+"Train again" = "再次训练";
+
+"Exercise details" = "动作详情";
+
+"Training today and short sleep: fuel your workout and prioritize recovery" = "今天已训练但睡眠偏少，补足营养并优先恢复";
+
+"Short sleep last night: keep protein steady and prioritize recovery" = "昨晚睡眠偏少，保持蛋白质摄入并优先恢复";
+
+"More training today: extra carbs support recovery" = "今天训练量较大，适当增加碳水帮助恢复";
+
+"Training today: carbs adjusted, protein stays steady" = "今天已训练，碳水已调整，蛋白质保持不变";
+
+"Recovery day: keep protein steady while muscles recover" = "今天以恢复为主，蛋白质目标保持不变";
+
+"No workout logged today: carbs follow your lighter activity" = "今天尚无训练记录，碳水按较轻活动量安排";
+
+"Daily adjustments" = "每日调整";
+
+"Carb adjustment" = "碳水调整";
+
+"Carbs follow logged workouts and working sets. Training/rest offsets use 0.5 g/kg around your weekly average; high-volume days add 0.3 g/kg. The change is limited to 50 g either way, with a 130 g floor. These are Masso planning rules, not exact doses from a study." = "碳水根据实际训练和完成的组数调整。训练与非训练日以每千克体重 0.5 克围绕周平均目标调节；训练量较大时额外增加每千克 0.3 克。每日增减最多 50 克，目标不低于 130 克。这是 Masso 的保守规划规则，并非研究给出的精确剂量。";
+
+"Protein and fat remain steady. Sleep under 7 hours changes the recovery advice, not your macro targets: sleep studies do not establish a gram adjustment for missed sleep." = "蛋白质与脂肪保持稳定。睡眠不足 7 小时会改变恢复建议，不改变营养目标；目前研究没有可靠的睡眠不足克数换算规则。";
+
+"Each meal shows its share of the full daily targets. Today's targets update with your workout records; earlier days retain their saved targets." = "每餐显示占全天营养目标的比例。今天的目标随实际训练记录更新，过去日期保留当时的目标。";
+
+"Carbs and resistance training · Review (2022)" = "碳水与抗阻训练 · 系统综述（2022）";
+
+"Carb feeding · Meta-analysis (2022)" = "碳水补充 · Meta 分析（2022）";
+
+"Sleep and dietary intake · Review (2020)" = "睡眠与饮食摄入 · 综述（2020）";
+
+"Remember this preference?" = "要将这条偏好记到备注吗？";
+
+"Saved preferences appear in Training Preferences → Notes" = "保存后可在训练偏好的备注中修改";
+
+"Saved to Notes" = "已添加到备注";
+
+"Not saved" = "未保存";
+
+"Yes" = "是";
+
+"No" = "否";
+
+/* Registered SwiftUI literals — i18n coverage. */
+"/ 100" = "/ 100";
+"3D close-up of the muscles trained" = "训练肌群 3D 特写";
+"About your targets" = "关于你的目标";
+"Analytics events" = "分析事件";
+"Apply suggested weight" = "应用建议重量";
+"Beatriz Gomez Santamaria" = "Beatriz Gomez Santamaria";
+"CURRENT" = "当前";
+"Choose a starting point, then adjust each slider. Your saved gram amounts become your daily targets. Changing the number of meals only splits those totals across the day." = "选择一个起点，然后调整各项滑块。保存的克数即为每日目标。调整每日餐数只会分配每日总量，不会改变总量。";
+"Daily nutrition targets" = "每日营养目标";
+"Enjoy unlimited plans, unlimited AI, and deep analytics. Welcome aboard." = "尽享无限计划、AI 和深度分析。欢迎加入。";
+"Front and back muscle coverage" = "前后侧肌群覆盖";
+"GOAL REFERENCE" = "目标参考";
+"Grid" = "网格";
+"How are these targets calculated?" = "这些目标如何计算？";
+"List" = "列表";
+"Meal schedule" = "用餐安排";
+"Meal timing divides your daily amounts; it does not change the daily totals." = "用餐时间只分配每日摄入量，不会改变全天目标。";
+"No data" = "暂无数据";
+"On workout days, Masso can shift carbohydrates around your weekly baseline using your logged training. Protein and fat stay at the amounts you choose." = "训练日根据记录的训练情况调整碳水；蛋白质和脂肪保持你设定的目标。";
+"Phase 0: NoOpSink — nothing leaves this device." = "阶段 0：NoOpSink — 数据不会离开此设备。";
+"Sleep target progress" = "睡眠目标进度";
+"Solid yellow means all three fixed daily targets are met. Going above a target does not add extra credit." = "实心黄色表示三项每日目标均已达成。超过目标不会额外加分。";
+"Starting amounts use your body weight and training goal. Training-day carbs can adjust with your logged workouts." = "初始数值根据体重和训练目标设定。训练日碳水会根据记录的训练情况调整。";
+"The first day after a recorded workout." = "记录训练后的第一天。";
+"The presets are simple starting estimates based on body weight and common sports-nutrition guidance. They are not measurements of your calorie needs or medical advice. Choose amounts that fit your appetite, training and guidance from your clinician or dietitian." = "预设值依据体重和常见运动营养建议估算，仅作起点参考；并非对热量需求的测量或医疗建议。请根据食欲、训练安排及医生或营养师建议选择合适数值。";
+"The second day after a recorded workout." = "记录训练后的第二天。";
+"We use your body weight and training goal to set protein and carbohydrate targets. Weekly training days also shape your starting carbs; fat starts at about 0.8 g per kg of body weight." = "我们根据体重和训练目标设定蛋白质与碳水目标。每周训练天数也会影响碳水初始值；脂肪按每公斤体重约 0.8 克估算。";
+"⇥" = "⇥";
+
+/* Newly registered labels discovered by the expanded localization audit. */
+"%lld working sets" = "%lld 个有效训练组";
+"%lld% daily goal" = "今日目标已完成 %lld%%";
+"%lldh %lldm goal" = "目标 %lld 小时 %lld 分钟";
+"%lldh %lldm last night" = "昨晚 %lld 小时 %lld 分钟";
+"A practical guide" = "实用指南";
+"AI Plans" = "AI 计划";
+"AI estimate. Check portions and include sauces, drinks or foods outside the photo." = "AI 估算，请核对份量，并补充照片外的酱料、饮料或食物。";
+"Bedtime" = "就寝时间";
+"Below goal" = "未达目标";
+"Browse training plans from the community" = "浏览经典训练法";
+"Choose photo" = "选择照片";
+"Complete your records to see your score" = "补全记录后显示评分";
+"Confirm meal" = "确认记录";
+"Confirming replaces this meal's previous record. Only confirmed nutrients count toward today's score." = "确认后会替换这餐之前的记录。只有确认过的营养值才会计入今日评分。";
+"Connect Apple Health" = "连接 Apple 健康";
+"Couldn't read sleep data" = "无法读取睡眠数据";
+"Daily goals: bright = all met · dim = partial" = "亮色为三项目标全达标，浅色为部分完成";
+"Daily intake recorded" = "今日饮食已记录";
+"Daily score. View Insights" = "今日评分，查看详情";
+"Debug" = "调试";
+"Drag the moon and sun to set your schedule. This sets a goal, not an alarm." = "拖动月亮和太阳设置睡眠时间。此设置只保存目标，不会设置闹钟。";
+"Estimated meal progress" = "这餐的估算进度";
+"Estimated nutrients" = "估算营养摄入";
+"Force US storefront (debug)" = "强制使用美国商店（调试）";
+"Layout" = "布局";
+"Make it yours" = "打造你的计划";
+"Meals" = "餐次";
+"Muscles" = "肌群";
+"Personal daily targets" = "个人每日目标";
+"Planned rest day" = "计划休息日";
+"Profile-based starting point" = "根据个人资料估算起始目标";
+"Record again" = "重新记录";
+"Record meal" = "记录这餐";
+"Retry analysis" = "重新分析";
+"Sleep schedule" = "睡眠时间";
+"Sleep: bright = goal met · dim = below goal" = "睡眠：亮色为达标，浅色为未达标";
+"Starting point" = "起始目标";
+"Take photo" = "拍照";
+"Today · updating" = "今日 · 更新中";
+"Today's intake · updating" = "今日摄入 · 更新中";
+"Track sleep with Apple Health" = "通过 Apple 健康查看睡眠";
+"Training days" = "训练日";
+"Unlock Pro (debug)" = "解锁 Pro（调试）";
+"Wake up" = "起床时间";
+"Your starting point" = "你的起始目标";
+
+"Completed" = "已完成";
+
+/* Meal nutrient evidence and portion correction */
+"Nutrition estimate" = "营养估算";
+"Estimated portions. Adjust grams if needed." = "份量为估算，可展开修改克数";
+"Food data: USDA" = "食物数据：USDA";
+"AI estimate" = "AI 估算";
+"Nutrition label" = "营养标签";
+
+/* Recovery timeline and remaining-nutrient meal */
+"Recovery estimate" = "恢复估算";
+"Estimated from recorded workouts, not a measured recovery score." = "根据训练记录估算，并非实测恢复状态";
+"Last meal" = "最后一餐";
+"Remaining today" = "今日还需";
+"Daily targets met" = "今日目标已达成";
+"Suggested meal" = "建议搭配";
+"Based on logged meals · Cooked / ready-to-eat weights" = "根据已记录餐食 · 熟重或即食重量";
+"Log a meal first" = "先记录一餐";
+"Use suggestion" = "使用建议";
+"No suitable foods" = "没有合适的食物";
+"No extra meal suggested" = "无需额外餐食建议";
+"Salmon" = "三文鱼";
+"Olive oil" = "橄榄油";
+"Almonds" = "杏仁";
+"Now" = "现在";
+
+"Share month" = "分享本月";
+
+"Share day" = "分享当天";
+
+"Share overview" = "分享综合回顾";
+
+"Train with Masso" = "用 Masso 开始训练";
+
+"Average target progress" = "平均目标完成度";
+
+"%lld of %lld days recorded" = "已记录 %lld / %lld 天";
+
+"Last 30 days" = "最近 30 天";
+
+"This month" = "本月";
+
+"Custom" = "自定义";
+
+"Period" = "时间范围";
+
+"From" = "开始日期";
+
+"To" = "结束日期";
+
+"Tap a day to share" = "点击日期分享当天";
+
+"Target progress" = "目标完成度";
+
+"What can I eat to meet my remaining targets?" = "按剩余营养目标，帮我搭配一餐";
+
+"Meal suggestion" = "餐食建议";
+
+"Adjust meal" = "微调搭配";
+
+"Refresh suggestion" = "刷新建议";
+
+"Vegetables" = "蔬菜";
+
+"Spinach" = "菠菜";
+
+"Log this meal" = "记录这餐";
+
+"Average per recorded day" = "有记录日的平均值";
+
+// Unified daily calendar
+"Week" = "周视图";
+"Month" = "月视图";
+"Today has a white outline." = "今天以白色圆圈标记。";
+"No workout recorded on this day." = "当天没有训练记录。";
+
+"Today has a white circle and a black date number." = "今天用白色圆形背景和黑色日期数字标记。";
+
+"Custom workout" = "自定义训练";
+"g" = "g";
+
+// Muscle recovery action guidance
+"Fresh · Ready to train" = "状态充足 · 可以训练";
+"Rested · Ready to train" = "已恢复 · 可以训练";
+"Recovering · Keep it light" = "恢复中 · 建议轻练";
+"Fatigued · Rest recommended" = "疲劳 · 建议休息";
+
+// Home summary timeframes and complete calendar legend
+"Today · %@" = "今日 · %@";
+"Muscle recovery shades are shown in My Muscle Status." = "肌肉恢复的颜色深浅在「我的肌肉状态」中展示。";
+"Daily diet completion compares protein, carbs and fat with that day's targets." = "每日饮食完成度按蛋白质、碳水和脂肪相对当天目标计算。";
+"Blue shades show actual sleep relative to that night's target." = "蓝色深浅表示实际睡眠相对当晚目标的完成度。";
+"Future dates have no records yet." = "未来的日期尚无记录。";
+
+"Historical target unavailable" = "当天的目标未保存";
+
+"Import workouts from Apple Health" = "从 Apple 健康导入训练";
+
+"No imported workouts yet. Check Workout access in Apple Health." = "暂无导入的训练，请检查 Apple 健康中的训练读取权限";
+
+"Unable to import workouts. Try again." = "无法导入训练，请重试";
+
+"External workout" = "外部训练";
+
+"Walking" = "步行";
+
+"Cycling" = "骑行";
+
+"Running" = "跑步";
+
+"Swimming" = "游泳";
+
+"Hiking" = "徒步";
+
+"Yoga" = "瑜伽";
+
+"Strength training" = "力量训练";
+
+"Other workout" = "其他训练";
+
+"Each day with a Masso workout or imported Apple Health workout counts once. Imported workouts do not advance your workout plan or count toward muscle progress." = "每天完成 Masso 训练或导入 Apple 健康训练均计为一个训练日，同一天只计一次。外部训练不会推进训练计划，也不计入肌肉进步分析";
+
+"Diet score shows weighted intake relative to daily protein, carbs and fat targets (20/10/5), rounded to a whole percentage. It can exceed 100%; this means above target, not healthier. Meal percentages show their contribution to the daily targets." = "饮食完成度按蛋白质、碳水和脂肪的全天目标加权计算（20/10/5），四舍五入为整数百分比。可以超过 100%，表示摄入超出目标，并不代表更健康。每餐百分比表示其对全天目标的贡献。";
+
+"How to train this muscle" = "如何训练这块肌肉";
+
+"Train more" = "加强训练";
+
+"Adjust my saved workouts to train %@ more. Keep my training preferences, equipment, available time and recovery in mind. Show which exercises and sets you would change. If I have no saved workouts, create a suitable plan." = "请在我已保存的训练计划基础上加强%@的训练，兼顾我的训练偏好、器械、可用时间和恢复情况。说明你会调整哪些动作和组数。如果我还没有训练计划，请创建一个合适的计划。";
+
+"Train smart, your way." = "聪明训练，适合自己";
+
+"Deep sleep is compared with the median of your previous 14 days, using at least 3 recorded nights. It is a personal reference, not a medical target, and does not affect Sleep score. Missing sleep stages or insufficient history show —." = "深睡时长与此前 14 天至少 3 晚记录的中位数比较。这是个人参考，不是医学目标，不影响睡眠分数。缺少睡眠阶段或历史记录不足时显示 —。";
+
+"Show more" = "展开更多";
+
+"Update Training Preferences?" = "更新训练偏好？";
+
+"Preferences changed. Please ask again to review the latest values." = "偏好已发生变化，请重新提出请求以核对最新设置";
+
+"Consider a heavier weight" = "可以考虑小幅加重";
+
+"You logged more than 12 reps. If your form stayed steady and you had reps left, consider a small weight increase next time" = "这组已记录超过 12 次。如果动作稳定且仍有余力，下次可以考虑小幅增加重量";
+
+"Exit" = "退出";
+
+"This removes the record from Masso only. Apple Health keeps the original." = "仅删除 Masso 中的记录，Apple 健康中的原始记录会保留。";
+
+"The date ring shows Workout at the top, Diet at the lower left and Sleep at the lower right. Each colored segment shows that day's recorded progress. Grey means no recorded progress; progress above 100% fills the segment." = "日期圆环上方是训练、左下是饮食、右下是睡眠。彩色弧线长度表示当天记录的完成度；灰色表示暂无完成记录，超过 100% 时该段显示满格。";
+"Your muscles are off duty. Put your phone down and sleep well." = "肌肉也要下班啦。放下手机，睡个好觉。";
+
+"Fuller arcs mean more progress" = "圆环越满，完成度越高";
+
+"Training fills green; rest days aren't failures" = "有训练记录即满格，休息日不算未达标";
+
+"Today's macros vs daily targets" = "按当天三大营养素目标计算";
+
+"Daily overview" = "每日概览";
+
+"Recovery & workout" = "肌肉恢复与训练";
+
+"Single metric" = "单项数据";
+
+"Main metric" = "主要数据";
+
+"Body view" = "人体视角";
+
+"Content" = "展示内容";
+
+"Open Masso to update" = "打开 Masso 更新";
+
+"Your day at a glance" = "快速查看今天的数据";
+
+"Muscle recovery and your next workout" = "查看肌肉恢复并开始训练";
+
+"One metric, your choice" = "只看你关心的数据";
+
+"Full body" = "全身";
+
+/* Muscle recovery list */
+"Muscle recovery" = "肌群恢复";
+"Most recovered first" = "按恢复程度从高到低";
+
+/* Shared history archive */
+"All history" = "全部记录";
+
+/* Separate daily history entries */
+"All diet history" = "全部饮食记录";
+"All sleep history" = "全部睡眠记录";
+
+"All workout history" = "全部训练记录";
+
+/* Lift progress empty state */
+"Keep logging workouts to see your progress" = "继续记录，让进步看得见";
+
+/* Exercise demo generation — shared server library */
+"demo.title" = "AI 动作演示";
+"demo.credits" = "AI 额度";
+"demo.available" = "可用额度";
+"demo.reserved" = "预留额度";
+"demo.cost" = "需要 %d 额度";
+"demo.generate" = "生成演示";
+"demo.insufficient" = "额度不足，暂未开放充值";
+"demo.unavailable" = "演示生成尚未开放，不会消耗额度";
+"demo.sharing" = "审核通过的演示将加入 Masso 公共素材库。仅发送动作 ID，不发送照片、聊天或健康记录";
+"demo.confirm" = "生成这个演示？";
+"demo.confirmBody" = "预留 %d 额度？审核通过后才扣除，失败或未通过审核不扣除。成品将加入 Masso 公共素材库";
+"demo.ready" = "演示已就绪";
+"demo.queued" = "已排队，可以离开此页";
+"demo.running" = "正在生成，可以离开此页";
+"demo.review" = "正在检查演示，暂未公开";
+"demo.failed" = "生成失败，预留额度已释放";
+"demo.corePending" = "这个核心动作的演示正在准备中";
+"demo.missing" = "暂无公共演示";
+"demo.refresh" = "刷新状态";
+"demo.check" = "重新检查";
+"demo.quoteChanged" = "额度报价已变化，请刷新后继续";
+"demo.unknown" = "这个动作暂不在支持的动作库中";
+"demo.plan" = "动作演示";
+"demo.planHint" = "选择动作查看演示状态。生成训练计划不会自动发起付费视频任务";
+
+"Subscription options are unavailable right now" = "暂时无法加载订阅选项";
+
+"Restore web purchase" = "恢复网页购买";
+
+"Basic workout logging and history stay free" = "基础训练记录与历史始终免费";
+
+"Compare your lifts over time with Masso Pro" = "用 Masso Pro 查看动作进步趋势";
+
+"No active subscription found" = "未找到有效订阅";
+
+"Unlimited plans · AI coach · Lift progress" = "无限计划 · AI 教练 · 动作进步";
+
+"AI data sharing" = "AI 数据共享";
+
+"ai.dataSharing.explanation" = "AI 功能会通过我们的服务器将训练资料、消息和所选图片发送给 Anthropic（Claude）或阿里云百炼（通义千问），包括你所选截图中的可见信息；不会自动发送 Apple 健康导入的数据。你可随时在设置中撤回许可。是否允许？";
+
+/* Compact exercise families */
+"Everyday" = "常用";
+"All versions (%d)" = "全部版本（%d）";
+"Pinned and recent" = "置顶与最近使用";
+"Suggested replacements" = "推荐替代动作";
+
+/* Restored paywall and request-based AI reminders */
+"Use AI without upgrade reminders" = "使用 AI，无需反复查看升级提醒";
+"Save a routine for every training day" = "为每个训练日保存专属训练";
+"AI without interruptions" = "免提醒使用 AI";
+"Skip upgrade reminders whenever you use AI" = "使用 AI 时不再显示升级提醒";
+"Lift progress and personalized training summaries" = "动作进步趋势与个性化训练总结";
+"Fine-grained recovery" = "精细肌群恢复";
+"See recovery for individual muscles" = "查看各个肌肉的恢复状态";
+"Billed yearly" = "按年计费";
+"7-day free trial" = "7 天免费试用";
+"Subscribe" = "订阅";
+"Continue free" = "继续免费使用";
+"Close this offer to continue your AI request" = "关闭此页面后继续本次 AI 操作";
+"7 days free, then %@ per %@. Renews automatically until cancelled." = "免费试用 7 天，之后 %@／%@。取消前将自动续订。";
+"%@ per %@. Renews automatically until cancelled." = "每期 %@／%@。取消前将自动续订。";
+"Unlimited routines, uninterrupted AI, deep analytics." = "无限训练、免提醒 AI、深度分析。";
+"Unlimited plans · Uninterrupted AI · Lift progress" = "无限训练 · 免提醒 AI · 动作进步";
+"Deep analytics" = "深度分析";
+"Try again" = "重试";
+
+"AI couldn't produce a valid routine. Please try again." = "AI 返回的训练仍不符合要求，请重试。";
+
+/* Onboarding goals — words only */
+"onboarding.goal.buildMuscle" = "增肌";
+"onboarding.goal.getStronger" = "增强力量";
+"onboarding.goal.loseFat" = "减脂";
+"onboarding.goal.generalFitness" = "保持健康";
+"Training schedule" = "训练安排";
+"Training plan" = "训练计划";
+"Tap muscles to select; tap again to clear" = "点选肌肉，再点取消";
+"Session length" = "每次时长";
+"View plan" = "查看计划";
+"No target" = "不设目标";
+"Workout %d" = "训练 %d";
+"Set your working weights when you train" = "训练时设置负重";
+"No exercises match" = "没有匹配的动作";
+"Gym" = "健身房";
+"Bodyweight" = "徒手";
+
+"Routine limit reached" = "已达到训练计划上限";
+"Continue without saving" = "不保存，继续";
+"Upgrade" = "升级";
+
+"Preview onboarding" = "预览首次引导";
+
+"equipment.pull_up_bar" = "单杠";
+
+"Pull-up bar" = "单杠";
+
+/* Onboarding body interaction */
+"Tap to select · Pinch to zoom" = "点选肌群 · 双指缩放";
+
+/* Muscle detail: focus training request */
+"Train this muscle more" = "加强此肌群";
+
+"Choose at least one training day" = "至少选择一个训练日";
+
+/* Training environment / home equipment */
+"Training environment" = "训练环境";
+"Home" = "居家";
+"Home equipment" = "家中器械";
+"No equipment selected. Bodyweight only." = "不选器械，按徒手安排";
+"Adjustable bench" = "可调凳";
+"equipment.bench_flat" = "平板凳";
+"equipment.squat_rack" = "深蹲架";
+
+/* Compact Pro brand banner, 2026-10-21 */
+"More plans, fewer interruptions" = "更多计划，更少打断";
+"Explore Pro" = "探索 Pro";
+
+"Watch on YouTube" = "在 YouTube 播放";
+
+"Weight per dumbbell" = "每只哑铃重量";
+
+"Reference from %@" = "参考：%@";
+
+"Update and generate" = "更新并生成";
+
+"Correct this set and update related weight references." = "修正这组记录，并更新相关动作的参考重量。";
+
+/* First-run AI Coach launcher tooltip. */
+"Chat about your goals to get a new routine." = "聊聊你的目标，生成新训练计划";
+
+"This workout" = "本次训练";
+
+"Variants" = "变种";
+
+"Default version" = "基础版";
+
+"Hide rare variants" = "隐藏小众变种";
+
+"Pinned" = "已置顶";
+
+"Video unavailable" = "暂时无法播放视频";
+
+"Loading video" = "正在加载视频";
+
+"Video playing" = "视频播放中";
+
+
+"Finish saves this workout. Discard removes it from history." = "完成并结束会保存训练；放弃会删除本次训练记录。";
+"This workout won’t be saved." = "本次训练不会保存。";
+
+"Adjust your daily targets; saved amounts stay fixed." = "调整每日营养目标，保存后按设定值执行。";
+"Automatic carb adjustments apply only before you set a daily carbohydrate target." = "未设定每日碳水目标时，才会自动调整碳水。";
+
+"Meal time" = "用餐时间";
+
+"QR code" = "二维码";
+
+"Calories" = "热量";
+
+"Estimated from protein, carbs and fat." = "由蛋白质、碳水和脂肪估算。";
+
+"USDA · Food energy" = "USDA · 食物热量";
+
+"Read body & activity" = "读取身体与活动数据";
+
+"Read available history for weight, height, steps and energy." = "读取可用的体重、身高、步数与能量历史。";
+
+"Body measurements" = "身体数据";
+
+"Height" = "身高";
+
+"Use Health weight" = "使用健康中的体重";
+
+"Use Health height" = "使用健康中的身高";
+
+"Updates your profile and local nutrition targets. Manual targets stay fixed." = "用于个人资料和本机营养目标。手动目标保持不变。";
+
+"Weight trend" = "体重趋势";
+
+"Today so far" = "今日截至目前";
+
+"Steps" = "步数";
+
+"Active energy" = "活动消耗";
+
+"Resting energy" = "静息消耗";
+
+"Energy burned" = "总消耗";
+
+"Health history" = "健康历史";
+
+"Some data couldn't refresh." = "部分数据暂未更新。";
+
+"No records yet. Check access and data in Apple Health." = "暂无记录，请检查苹果健康中的数据与访问权限。";
+
+"Imported health data stays on this device and is not sent to AI Coach." = "导入的健康数据仅保存在本机，不发送给 AI Coach。";
+
+"Couldn't read Apple Health. Try again." = "暂时无法读取苹果健康，请重试。";
+
+"Connect body & activity" = "连接身体与活动数据";
+
+"Profile weight" = "资料体重";
+
+"Targets use weight and training preferences. Health activity is a reference, not an extra food allowance." = "目标参考体重和训练偏好。健康活动数据仅作参考，不增加饮食额度。";
+
+"Nutrition targets are estimates based on weight and training preferences. Health activity does not automatically change them." = "营养目标依据体重和训练偏好估算，不随健康活动数据自动改变。";
+
+"Recorded energy, not a full-day forecast. Your food target stays unchanged." = "仅显示已记录的消耗，不预测全天，也不改变饮食目标。";
+
+"Date" = "日期";
+
+"Last synced" = "同步于";
+
+/* AI Coach: single-session workouts */
+"Single workout" = "单次训练";
+"Your workout is ready." = "训练准备好了。";
+"Couldn't create this workout. Please try again." = "未能生成训练，请重试。";
+"About %d min" = "约 %d 分钟";
+
+/* Inline exercise family expansion */
+"%@ more versions" = "另外 %@ 个版本";
+"Fewer versions" = "收起低频版本";
+
+/* Workout progress, observed timing and personal heart-rate reminders */
+"Jump to first unfinished set" = "跳到最早未完成的组";
+"Rest duration" = "休息时长";
+"Applies to this rest only." = "仅用于本次休息。";
+"Edit rest time" = "修改休息时间";
+"Read workout heart rate" = "读取训练心率";
+"Open Masso on Apple Watch" = "在 Apple Watch 打开 Masso";
+"Live readings need a heart-rate sensor. No reading means no heart-rate warning." = "实时读数需要心率传感器；没有读数时无法提醒。";
+"Reminder limit" = "提醒上限";
+"Over your limit for 15 seconds: pause and rest. This is a personal reminder, not a medical alarm." = "超过上限持续 15 秒时提醒休息；这不是医疗警报。";
+"No heart-rate samples yet" = "暂无心率读数";
+"Heart-rate data stays on this device and is not sent to AI Coach." = "心率数据仅保存在本机，不发送给 AI Coach。";
+"Delete heart-rate history" = "删除心率记录";
+"Delete heart-rate history?" = "删除心率记录？";
+"Couldn't connect to Apple Health." = "暂时无法连接 Apple 健康。";
+"Open Masso on your paired Apple Watch to read live heart rate." = "请在配对的 Apple Watch 打开 Masso 读取实时心率。";
+"Enter a limit from 40 to 240 bpm." = "请输入 40–240 bpm 的上限。";
+"Heart rate is above your limit" = "心率超过提醒上限";
+"Pause and rest" = "暂停并休息";
+"Your heart rate stayed above your personal limit for 15 seconds." = "心率已持续 15 秒超过你设置的上限。";
+"Heart rate" = "心率";
+"Workout report" = "训练报告";
+"Logged sets" = "已记录组数";
+"Tracked set time" = "做组计时";
+"Recorded rest" = "已记录休息";
+"%d of %d sets have timing" = "%d/%d 组有计时记录";
+"Tracked time follows the workout controls, not time under tension." = "计时按训练操作记录，不代表肌肉受力时长。";
+"Set timeline" = "训练组时间轴";
+"Sampled heart rate" = "心率采样";
+"Average / peak heart rate" = "平均／峰值心率";
+"Target duration" = "目标时长";
+"Peak heart rate" = "峰值心率";
+"Allow more recovery" = "多留些恢复时间";
+"Your readings stayed above your reminder limit. Review this workout before increasing intensity." = "读数持续超过了提醒上限，增加强度前先回顾本次训练。";
+"Your reps fell while rests were short. Try more recovery between sets." = "休息较短时次数下降了，可以增加组间休息。";
+"Review your logged workload and rest before increasing intensity." = "增加强度前先回顾已记录的训练量和休息。";
+"bpm" = "bpm";
+
+"Dismiss" = "关闭";
+
+"equipment.ab_wheel" = "健腹轮";
+"equipment.abductor_machine" = "器械";
+"equipment.adductor_machine" = "器械";
+"equipment.air_bike" = "风阻单车";
+"equipment.arc_trainer" = "椭圆机";
+"equipment.assault_bike" = "风阻单车";
+"equipment.axle_bar" = "粗杆杠铃";
+"equipment.ball" = "健身球";
+"equipment.band" = "弹力带";
+"equipment.battle_rope" = "战绳";
+"equipment.belt_squat_machine" = "器械";
+"equipment.bench" = "训练凳";
+"equipment.bench_decline" = "训练凳";
+"equipment.bench_incline" = "训练凳";
+"equipment.bike" = "健身车";
+"equipment.box" = "训练箱";
+"equipment.calf_raise_machine" = "器械";
+"equipment.captains_chair" = "器械";
+"equipment.chains" = "铁链";
+"equipment.dip_bar" = "双杠";
+"equipment.dip_bars" = "双杠";
+"equipment.dip_belt" = "负重腰带";
+"equipment.donkey_calf_machine" = "器械";
+"equipment.elliptical" = "椭圆机";
+"equipment.ez_bar" = "EZ 杠";
+"equipment.ez_curl_bar" = "EZ 杠";
+"equipment.fat_grip" = "加粗握把";
+"equipment.foam_roller" = "泡沫轴";
+"equipment.ghd_machine" = "器械";
+"equipment.glute_kickback_machine" = "器械";
+"equipment.grip_crusher" = "握力器";
+"equipment.gripper" = "握力器";
+"equipment.gymnastic_rings" = "吊环";
+"equipment.hack_squat_machine" = "器械";
+"equipment.hip_thrust_machine" = "器械";
+"equipment.hyperextension_bench" = "罗马椅";
+"equipment.jump_rope" = "跳绳";
+"equipment.kettlebell" = "壶铃";
+"equipment.landmine" = "地雷管";
+"equipment.leg_curl_machine" = "器械";
+"equipment.leg_extension_machine" = "器械";
+"equipment.leg_press_machine" = "器械";
+"equipment.medicine_ball" = "药球";
+"equipment.parallel_bars" = "双杠";
+"equipment.partner" = "同伴辅助";
+"equipment.platform" = "训练箱";
+"equipment.plyo_box" = "训练箱";
+"equipment.power_rack" = "训练架";
+"equipment.preacher_bench" = "训练凳";
+"equipment.push_up_handles" = "俯卧撑支架";
+"equipment.pvc_pipe" = "PVC 杆";
+"equipment.rack" = "训练架";
+"equipment.resistance_band" = "弹力带";
+"equipment.reverse_hyper_machine" = "器械";
+"equipment.rice_bucket" = "米桶";
+"equipment.rings" = "吊环";
+"equipment.roman_chair" = "罗马椅";
+"equipment.rope" = "绳把";
+"equipment.rower" = "划船机";
+"equipment.rowing_machine" = "划船机";
+"equipment.safety_squat_bar" = "安全深蹲杠";
+"equipment.sissy_squat_machine" = "器械";
+"equipment.ski_erg" = "滑雪机";
+"equipment.sled" = "雪橇";
+"equipment.sledgehammer" = "大锤";
+"equipment.sliders" = "滑盘";
+"equipment.smith_machine" = "史密斯机";
+"equipment.spin_bike" = "动感单车";
+"equipment.stairmaster" = "爬楼机";
+"equipment.stationary_bike" = "健身车";
+"equipment.swiss_ball" = "健身球";
+"equipment.t_bar" = "杠铃";
+"equipment.tibialis_machine" = "器械";
+"equipment.towel" = "毛巾";
+"equipment.trap_bar" = "六角杠";
+"equipment.treadmill" = "跑步机";
+"equipment.trx" = "TRX";
+"equipment.v_bar" = "V 把";
+"equipment.wall" = "墙面";
+"equipment.weight_belt" = "负重腰带";
+"equipment.weight_plate" = "杠铃片";
+"equipment.wrist_roller" = "腕力器";
+"equipment.yoga_strap" = "瑜伽带";
+
+"equipment.body_only" = "徒手";
+
+"Save rest settings?" = "保存休息设置？";
+
+"Save to Training Preferences and apply to all workouts?" = "保存到训练偏好并应用于全部训练？";
+
+"Create training plans based on this report?" = "根据这份报告生成训练计划？";
+
+"Generate plans from this report" = "根据报告生成训练计划";
+
+"Body photo" = "身体照片";
+
+"Menu" = "菜单";
+
+"Training or health records" = "训练或健康记录";
+
+"Share or exercise photo" = "分享或动作配图";
+
+"Choose image use" = "选择图片用途";
+
+"Training plans found. Review before adding." = "已识别训练计划，请核对后添加。";
+
+"Couldn't read this image. Choose its use or try a clearer photo." = "未能读取图片，请选择用途或换一张清晰照片。";
+
+"Add a message or let AI identify the image." = "添加说明，或让 AI 判断图片用途。";
+
+"Review this image" = "查看这张图片";
+
+"Review routines" = "核对训练计划";
+
+"Adapt to my preferences" = "按我的偏好调整";
+
+"Check portions and meal time before saving." = "保存前核对份量和用餐时间。";
+
+"Choose what you ate before logging a meal." = "先填写实际吃了什么，再记录餐食。";
+
+"Possible exercises" = "可能匹配的动作";
+
+"Screenshot values are not added to your records." = "截图数据不会写入你的记录。";
+
+"View my records" = "查看我的记录";
+
+"Use as share photo" = "用作分享照片";
+
+"Use as exercise photo" = "用作动作配图";
+
+"Change image use" = "更改图片用途";
+
+"Reading image…" = "正在读取图片…";
+
+"Several plan codes found. Upload one share card at a time." = "发现多个计划二维码，请每次上传一张分享卡。";
+
+"Image analysis is unavailable. Try again." = "图片分析暂不可用，请重试。";
+
+"AI permission wasn't granted. Your image wasn't sent." = "未获得 AI 授权，图片没有发送。";
+
+"Allow" = "允许";
+
+// Regional exercise tutorials
+"Watch tutorial" = "观看教程";
+"Watch on bilibili" = "在哔哩哔哩观看";
+"Search on bilibili" = "在哔哩哔哩搜索";
+
+"Same target muscles" = "相同目标肌群";
+
+"Switch exercise" = "切换动作";
+
+"exercise.media.unverified" = "未核实";
+
+
+
+/* One-off quick workout */
+"AI Quick Workout" = "AI 快速训练";
+"Let AI recommend" = "让 AI 推荐";
+"Mobility & stretching" = "灵活性与拉伸";
+"Training type" = "训练类型";
+"Intensity" = "强度";
+"Easy" = "轻松";
+"Moderate" = "适中";
+"High intensity" = "高强度";
+"Use saved equipment" = "使用已存器械";
+"%lld min" = "%lld 分钟";
+"Time is an estimate including rests. These choices apply only to this workout." = "时长为包含休息的估计值。这些选择仅用于本次训练。";
+"Anything else?" = "其他要求";
+"Goals, focus or movements to avoid" = "目标、重点或需要避免的动作";
+"Generate this workout" = "生成本次训练";
+"Wait for the current response before generating another workout." = "请等待当前回复完成后再生成新训练。";
+
+"Show recovery in workout calendar" = "在训练日历中显示恢复";
+"After a recorded workout, the calendar shows a shorter green bar for two rest days. This is a time-based guide, not a muscle recovery measurement." = "记录训练后，日历会在接下来两个休息日显示逐渐缩短的绿色条。此提示仅基于时间，并非肌肉恢复程度的测量。";
+"Recovery day" = "恢复日";
+
+/* Exercise media reports */
+"Report exercise media" = "报告动作素材问题";
+"What is wrong?" = "有什么问题？";
+"Wrong exercise" = "动作不正确";
+"Wrong equipment" = "器械不正确";
+"Image or video problem" = "图片或视频有问题";
+"Add details (optional)" = "补充说明（可选）";
+"The exercise and displayed media version are included with your report." = "报告将包含动作及当前显示的素材版本。";
+
+"Exercise" = "动作";
+
+"Choose a previous meal" = "选择之前的餐食";
+
+"Health & Features" = "健康与功能";
+"App Preferences" = "应用偏好";
+"Privacy & Data" = "隐私与数据";
+
+"Using recommendation" = "正在使用推荐值";
+
+"Reset to recommendation" = "恢复推荐值";
+
+"Based on your recent workout heart rates and age when available." = "根据近期训练心率及可用的年龄信息计算。";
+
+"Estimated from your age; it will adjust as workout data becomes available." = "根据年龄估算，积累训练数据后会调整。";
+
+"Starting estimate until your age or workout heart-rate history is available." = "暂无年龄或训练心率历史，使用初始估算值。";
+
+"Recommendations are estimates, not a medical safety limit. Medication and health conditions can affect heart rate." = "推荐值仅供参考，并非医疗安全上限。药物和健康状况可能影响心率。";
+
+"Exercises and heart rate" = "动作与心率";
+
+"Gaps indicate missing or untracked samples." = "空档表示采样缺失或未记录。";
+
+"Above your reminder limit" = "超过你的提醒值";
+
+"During %@, heart rate reached %d bpm. Consider slowing down and resting if needed." = "%@期间心率达到 %d bpm。可以留意节奏，必要时放慢并休息。";
+
+"Heart rate settings" = "心率设置";
+
+"Connect heart rate" = "连接心率";
+
+"Allow heart-rate access to see available workout readings." = "允许访问心率，查看可用的训练心率记录。";
+
+"Exercise duration" = "动作时长";
+
+"No workout timing yet" = "暂无训练时长记录";
+
+"Some timing is unavailable" = "部分时长未记录";
+
+"If access was denied, update Masso's permissions in the Health app." = "如果曾拒绝访问，请在健康 App 中更新 Masso 的权限。";
+
+"Some samples have no saved reminder limit." = "部分采样没有保存当时的提醒上限。";
+
+"No recorded reminders" = "没有已记录的提醒";
+
+"Heart-rate reminders" = "心率提醒";
+
+"No sustained above-limit episodes" = "没有持续超过提醒上限的记录";
+
+"Consider slowing down or resting." = "考虑放慢速度或休息。";
+
+"Expand heart rate card" = "展开心率卡片";
+"Collapse heart rate card" = "收起心率卡片";
+
+"Show heart rate card" = "显示心率卡片";
+
+"Automatic heart rate control" = "心率自动控制";
+
+"Experimental: heart rate changes can automatically log a set or skip rest. Readings may be delayed or incorrect; use Undo if needed." = "实验功能：心率变化可能自动记录一组或跳过休息。读数可能延迟或不准确，需要时请撤销。";
+
+"Set logged automatically" = "已自动记录一组";
+
+"Rest skipped automatically" = "已自动跳过休息";
+
+"Report" = "报告";
+
+"Save plans & start" = "保存计划并开始";
+
+"Want to adjust your training plan? Ask AI Coach." = "想调整训练计划？试试 AI Coach。";
+"Share a body photo for training suggestions." = "上传身材照，获取训练建议。";
+"Review my body photo and suggest balanced training adjustments." = "请分析我的身材照，并给出均衡调整训练的建议。";
+
+"What are your training goals and focus areas?" = "你想达成什么训练目标，重点锻炼哪些部位？";
+"When and where would you like to train?" = "你希望什么时候、在哪里训练？";
+
+"The muscle map shows which areas you have trained." = "肌肉图展示各部位的训练情况。";
+
+"Suggested focus" = "建议重点";
+"Create a plan from these suggestions" = "根据建议生成训练计划";
+
+"Create a plan" = "生成训练计划";
+
+/* Accomplishment share */
+"Training that gets you." = "懂你，也懂怎么练";
+"This month, %d training days" = "这个月，给训练留了 %d 天";
+"This week, %d training days" = "这周，给训练留了 %d 天";
+"As of %@" = "截至 %@";
+"%d sessions" = "共 %d 场";
+"Sessions" = "场次";
+"No workouts logged" = "这段还没有训练记录";
+"Just finished" = "刚练完";
+"This day's records" = "当天的记录";
+"No completed sets to share" = "没有已完成的组可分享";
+"Morning" = "上午";
+"Afternoon" = "下午";
+"Evening" = "傍晚";
+"Night" = "夜间";
+"Same exercise, another step" = "同动作，又进了一步";
+"per dumbbell" = "每只哑铃";
+"%@ · same reps" = "%@ · 同次数";
+"Share this progress" = "分享这次进步";
+"Exact time" = "具体时间";
+"Photo included" = "已包含照片";
+"Heart rate, body weight, location, and your name stay off this card." = "心率、体重、位置和名字不会出现在这张卡上。";
+"A missing log is not a missed workout" = "没记录不等于没练";
+"Future day" = "还没到的日期";
+"No workout logged" = "没有训练记录";
+"No same-reps weight increase to share yet" = "还没有同次数变重的记录可分享";
+"Minutes" = "分钟";
+
+// Calendar calorie examples
+"Recorded calories vs daily calorie target" = "已记录热量与当日热量目标的对比";
+"Below calorie target" = "低于热量目标";
+"Above calorie target" = "高于热量目标";
+"Well above calorie target" = "明显高于热量目标";
+"Far above calorie target" = "远高于热量目标";
+
+/* Parameter suggestion, distinct from a user-entered target. */
+"Suggested" = "建议";
+
+/* Cross-exercise starting estimates: explicit evidence and limitations. */
+"Confirmed bench press 6RM" = "已确认的卧推6RM";
+"Mark only an existing set: six full-range reps, no assistance or momentum, about 2 seconds up and down, with no seventh clean rep possible. You should already be familiar with the lift. No extra maximum test is needed." = "仅标记已有记录：已熟悉该动作，完成6次全程动作，无协助或借力，上下各约2秒，无法再规范完成第7次。不需要额外测试极限。";
+"Six completed reps and a positive weight are required." = "需要已完成6次，且重量大于0。";
+"Estimate basis" = "估算依据";
+"Initial estimate from %@. A small study predicts six-rep maximums; Masso uses 75%% of that estimate, rounded down. Adjust after the first set." = "初始估算参考%@。一项小样本研究预测6次极限重量；Masso取其75%%并向下取整。请在第一组后调整。";
+"Masso currently limits this estimate to men aged 18–30, a confirmed 30–70 kg reference from the last 30 days, and 6–12 target reps." = "Masso目前仅对18–30岁男性、近30天已确认的30–70 kg卧推参考记录，以及6–12次的目标提供此估算。";
+"Research source" = "研究来源";
+
+"Edit set" = "编辑本组记录";
+
+// Partner referral redemption
+"Referral code" = "推荐码";
+"Have a referral code?" = "有推荐码？";
+"Check referral code" = "检查推荐码";
+"Redeem with Apple" = "通过 Apple 兑换";
+"Checking a code binds your referral and shares an anonymous identifier and subscription transactions with Masso for referral accounting. Your health and training data are not shared." = "检查推荐码将绑定推荐关系，并向 Masso 提供匿名标识和订阅交易用于推荐结算。不会共享健康或训练数据。";
+"Couldn’t check this code. It may be unavailable, already bound, or the service may be offline. Try again later." = "无法检查此推荐码。推荐码可能不可用、已有绑定，或服务暂时离线。请稍后重试。";
+"Apple confirms eligibility, the actual price, trial and renewal terms. Your discount is active only after Apple confirms redemption. This offer applies to the annual subscription." = "资格、实际价格、试用及续订条款以 Apple 确认为准。仅在 Apple 确认兑换后优惠才会生效。此优惠适用于年度订阅。";
+
+/* Personal working-load relationships */
+"Estimated from your recorded working weights for %@ across multiple workouts at the same reps. Adjust after the first set." = "依据你多次训练中 %@ 在相同次数下的实际工作重量估算。请在第一组后按表现调整。";
+"Requires five consistent workout dates, including a separate validation workout, and a recent source record. This is a starting reference, not a strength measurement." = "需要五个不同训练日的稳定记录（其中一次用于独立验证），以及近期来源动作记录。这是起始参考，不是力量测量。";
+
+"Copy code and redeem with Apple" = "复制推荐码并通过 Apple 兑换";
+"Your code is copied. Paste it into Apple’s redemption sheet if asked." = "推荐码已复制。如有提示，请将其粘贴到 Apple 兑换页面。";
+"Apple’s redemption sheet couldn’t open. Please try again." = "无法打开 Apple 兑换页面，请重试。";
+
+/* Quiet load progression */
+"Weight progression" = "重量进展";
+"Maintain current weights" = "维持当前重量";
+"Pause weight suggestions for all exercises. Your workout targets stay unchanged." = "暂停所有动作的重量建议。现有训练目标保持不变。";
+"Stage weight limit" = "阶段重量上限";
+"These preferences only limit progression suggestions. They do not change saved weights or define a safe maximum." = "这些偏好仅限制重量进展建议，不会修改已保存的重量，也不代表安全重量上限。";
+"Global maintenance mode is on." = "已开启全局维持模式。";
+"Optional next weight" = "可选的下次重量";
+"Repeated workouts reached the rep range. Only consider an increase if your form stayed steady and you had reps left." = "多次训练已达到次数范围。只有动作保持稳定且仍有余力时，才考虑加重。";
+"Use suggested weight" = "使用建议重量";
+"No weight increase suggested." = "暂无加重建议。";
+"Suggestions depend on your goal and repeated workouts. Keeping the same weight is also an option." = "建议结合你的目标和多次训练表现。保持现有重量也是一种选择。";
+
+"First-use calibration" = "首次校准";
+
+"Based on your saved weight for %@. This is a starting reference; adjust after your first set." = "根据你保存的%@重量提供起始参考；完成第一组后请按实际情况调整。";
+
+"Rough starting weight from your completed set of %@ and reps, using a product ratio and a 70%% multiplier. Not a measured maximum or safety guarantee; adjust for your equipment and first set." = "根据你完成的%@重量及次数，按产品设定比例推算后取70%%，作为粗略起始建议。这不是实测极限或安全保证；请按器械和首组表现调整。";
+
+"Unlimited plans & custom exercises" = "无限训练计划与自定义动作";
+"Training progress insights" = "训练进步分析";
+
+"7 days free, then renews yearly at the price above until cancelled." = "免费试用7天，之后按上方年费自动续订，直至取消。";
+"7 days free, then renews monthly at the price above until cancelled." = "免费试用7天，之后按上方月费自动续订，直至取消。";
+"Renews yearly at the price above until cancelled." = "按上方年费自动续订，直至取消。";
+"Renews monthly at the price above until cancelled." = "按上方月费自动续订，直至取消。";
+
+
+/* Approved Pro-boundary candidate. Server quotas remain release-gated. */
+"Keep adapting with AI Coach" = "让 AI 教练持续帮你调整";
+"Adjust workouts around your time and equipment." = "按你的时间与器械调整训练。";
+"See progress and recovery" = "看懂进步与恢复";
+"Lift trends and per-muscle recovery estimates." = "追踪力量趋势与逐肌群恢复估算。";
+"More room for your training" = "让训练有更多空间";
+"Save more plans and create more exercises." = "保存更多计划，创建更多自定义动作。";
+"Free: %d plans and %d custom exercises" = "免费：%d 个计划与 %d 个自定义动作";
+"Free and Pro details" = "免费版与 Pro 权益";
+"Complete workouts, history, basic charts and data export stay available." = "完成训练、原始历史、基础图表与数据导出始终可用。";
+"Existing plans, exercises and acquired results remain usable after Pro expires." = "Pro 到期后，已有计划、动作与已获得的结果仍可使用。";
+"More with Pro" = "Pro 提供更多";
+"Ongoing AI adjustments, more saved plans and custom exercises, lift progress and detailed recovery estimates." = "持续 AI 调整、更多计划与自定义动作、力量进步分析及精细肌群恢复估算。";
+"AI access" = "AI 使用说明";
+"Each listed AI task has one successful free experience. Free also includes %d shared text tasks per month. A task includes %d same-goal adjustments within %d hours." = "每项所列 AI 任务可免费成功体验一次。免费版每月另含 %1$d 次共用文本任务。每个任务包含 %3$d 小时内同目标的 %2$d 次微调。";
+"Failed requests, clarification, local tools and reopening results do not use AI quota." = "失败请求、澄清问题、本地工具和重看结果不消耗 AI 额度。";
+"Free AI requests continue after closing the upgrade reminder. Pro skips these reminders." = "关闭升级提醒后，仍可继续免费 AI 请求。Pro 不显示此类提醒。";
+"Existing purchases keep their rights. AI needs internet access and your data-sharing permission." = "已有购买权益保持不变。AI 需要联网与数据共享授权。";
+"Preview only: the shared quota service is not connected." = "仅为预览：尚未连接共享额度服务。";
+"Free" = "免费版";
+
+/* Device-install policy and native user-message actions. */
+"AI access on this device" = "此设备的 AI 使用规则";
+"AI allowances are stored only on this device installation. Changing devices or reinstalling may reset them; they are not shared across devices." = "AI 额度仅保存在本设备的这次安装中。换设备或重装可能重置，不跨设备共享。";
+"Each supported AI task has one successful free experience on this installation. Free also includes 2 shared text tasks per calendar month (UTC). Repeat images and ongoing reviews need Pro." = "每种支持的 AI 任务在本次安装可免费成功体验一次；另含每个自然月（UTC）共用 2 次文本任务。重复图片与持续总结需 Pro。";
+"A task includes 2 same-goal adjustments within 24 hours. Failed requests, clarification, local tools and reopening saved results do not use the allowance." = "每个任务含同目标 24 小时内 2 次微调。失败、澄清、本地工具与重看已存结果不扣额度。";
+"Existing purchased and lifetime rights are kept. No experimental 30-task or 10-image limit is applied to existing paid users." = "已有购买与终身权益保持不变，不对旧付费用户施加 30 次任务或 10 次图片的实验上限。";
+"Automatic recommendations have a separate budget of one successful result per day; they do not spend your active AI allowance." = "自动推荐单独限制为每天一次成功结果，不消耗主动 AI 额度。";
+"Existing users have 30 days from this notice before the new AI limits apply. Previous use is not counted retroactively." = "旧用户自本次告知起有 30 天过渡期，之后才应用新 AI 限制；不追溯扣除旧使用次数。";
+"AI access and saved results" = "AI 规则与已存结果";
+"Saved AI results" = "已保存的 AI 结果";
+"No saved AI results yet." = "暂无已保存的 AI 结果。";
+"Saved AI result" = "已保存的 AI 结果";
+"Monthly text tasks used: %d of 2" = "本月已用文本任务：%d / 2";
+"Copy message" = "复制信息";
+"Edit and resend" = "编辑后重发";
+"Editing text only. Sending adds a new message; your previous draft is kept." = "仅编辑文字。发送会追加新消息；原来的草稿已保留。";
+"Cancel edit" = "取消编辑";
+"This AI task needs Pro. Your saved results remain available." = "此 AI 任务需要 Pro，已保存的结果仍可使用。";
+"Make room in My Plans before generating. Existing plans and training history are not deleted." = "请先在我的计划中腾出保存位置，再生成。不会删除已有计划或训练历史。";
+"This AI task is already running. Please wait." = "此 AI 任务正在进行，请稍候。";
+"Review AI access on this device before continuing." = "请先查看此设备的 AI 使用规则。";
+"AI access could not be saved on this device. Nothing was charged." = "无法在此设备保存 AI 使用状态，未扣除次数。";
+"Today's automatic AI recommendation is already available." = "今天的自动 AI 推荐已可查看。";
+
+/* Source extraction and saved recovery snapshot */
+"Source content could not be read. Paste the article, transcript or exercise list; no AI experience was used." = "无法读取资料，请粘贴正文、字幕或动作清单；未扣体验。";
+"The source card count could not be confirmed. Nothing was saved and no AI experience was used." = "无法确认卡片数量，未保存或扣除体验。";
+"Source exercises or parameters could not be verified. Nothing was substituted or saved." = "无法核实动作或参数，未替换或保存。";
+"Confirm an exact library match before importing:" = "导入前请确认库内准确动作：";
+"Extracted from your source. Review before saving." = "已提取，请检查后保存。";
+"Suggested defaults for missing source parameters:" = "缺失参数的建议默认值：";
+"A recovery snapshot needs at least 14 days of history, 6 recent sets and recent muscle data." = "需14天历史、近期6组记录及肌群数据。";
+"Recovery snapshot" = "恢复快照";
+"Preview recovery snapshot" = "体验恢复快照";
+"View saved recovery snapshot" = "查看已存恢复快照";
+"A saved training-based estimate, not a live or medical measurement." = "训练记录估算，非实时或医学测量。";
+
+"Text only. New message. Draft kept." = "仅文字 · 追加新消息 · 草稿保留";

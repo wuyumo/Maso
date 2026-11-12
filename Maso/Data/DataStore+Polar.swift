@@ -47,8 +47,8 @@ extension DataStore {
     /// 重校验已存的 key (启动 / 回前台). 无 key 直接返回.
     /// 网络失败 → 保留上次状态 (离线宽限内不降级); 宽限窗外且拿不到 → 判 not active.
     func refreshPolarEntitlement() async {
-        guard MasoFlags.externalPaywallEnabled,
-              let key = settings.polarLicenseKey, !key.isEmpty else { return }
+        // Honor earlier web subscribers while new purchases use Apple.
+        guard let key = settings.polarLicenseKey, !key.isEmpty else { return }
         do {
             let result = try await PolarEntitlement.validate(key: key)
             settings.polarProActive = result.active

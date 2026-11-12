@@ -1,7 +1,7 @@
-/* Maso — English localization (default / source locale) */
+/* Masso — English localization (default / source locale) */
 
 /* ── Tabs ──────────────────────────────────────────── */
-"Plans" = "Routines";
+"Plans" = "Workout Plans";
 "History" = "History";
 "Quick Workout" = "Quick Workout";
 
@@ -13,7 +13,7 @@
 "Recommended" = "Recommended";
 "Start Workout" = "Start Workout";
 "Build Your Own" = "Build Your Own";
-"No training plans yet" = "No training routines yet";
+"No training plans yet" = "No workout plans yet";
 
 /* ── History ───────────────────────────────────────── */
 "Muscles trained in the last 7 days" = "Muscles trained in the last 7 days";
@@ -22,7 +22,7 @@
 "No workouts yet" = "No workouts yet";
 "Finished workouts show up here. Start your first one and watch your progress grow." = "Finished workouts show up here. Start your first one and watch your progress grow.";
 "Retry" = "Retry";
-"Couldn't reach the AI coach — showing templates instead." = "Couldn't reach the AI coach — showing templates instead.";
+"Couldn't reach the AI coach — showing templates instead." = "Couldn't generate AI workout plans — showing templates instead.";
 "Updated your plan." = "Updated your plan.";
 "Couldn't reach the AI coach — your plan is unchanged." = "Couldn't reach the AI coach — your plan is unchanged.";
 "AI plan unavailable — showing your recommended plan." = "AI plan unavailable — showing your recommended plan.";
@@ -99,17 +99,16 @@
 "Tap the highlighted center tab again to jump straight into today's recommended workout" = "Tap the highlighted center tab again to jump straight into today's recommended workout";
 "Data" = "Data";
 "Exercise library" = "Exercise library";
-"Plans and workout records stay on your device." = "Routines and workout records stay on your device.";
+"Plans and workout records stay on your device." = "Workout plans and workout records stay on your device.";
 
 /* ── Paywall / Pro Banner ──────────────────────────── */
-"Maso Pro" = "Masso Pro";
-"Try Maso Pro" = "Try Masso Pro";
-"Unlimited plans, full history, custom moves, and more." = "Unlimited routines, full history, custom moves, and more.";
+"Try Masso Pro" = "Try Masso Pro";
+"Unlimited plans, full history, custom moves, and more." = "Unlimited workout plans, full history, custom moves, and more.";
 "Unlock everything" = "Unlock everything";
-"Unlimited plans · Full history · Custom moves" = "Unlimited routines · Full history · Custom moves";
+"Unlimited plans · Full history · Custom moves" = "Unlimited workout plans · Full history · Custom moves";
 "Unlock your full training." = "Unlock your full training.";
-"Unlimited workout plans" = "Unlimited workout routines";
-"No more 3-plan cap — build a plan for every split." = "No more 3-routine cap — build a routine for every split.";
+"Unlimited workout plans" = "Unlimited workout plans";
+"No more 3-plan cap — build a plan for every split." = "No more 3-workout plan cap — build a workout plan for every split.";
 "Full history" = "Full history";
 "Permanent record + PR tracking + volume trends." = "Permanent record and PR tracking, across all time.";
 "Advanced analytics" = "Advanced analytics";
@@ -119,7 +118,7 @@
 "Apple Health sync" = "Apple Health sync";
 "Two-way sync — workouts go in, weight comes out." = "Two-way sync — workouts go in, weight comes out.";
 "Cloud sync" = "Cloud sync";
-"Plans + history follow you across devices." = "Routines + history follow you across devices.";
+"Plans + history follow you across devices." = "Workout plans + history follow you across devices.";
 "Start 7-day free trial" = "Start 7-day free trial";
 "Subscribe for %@" = "Subscribe for %@";
 "Buy lifetime — %@" = "Buy lifetime — %@";
@@ -127,20 +126,20 @@
 "Free for 7 days, then %@ / %@. Cancel anytime in Settings." = "Free for 7 days, then %@ / %@. Cancel anytime in Settings.";
 "month" = "month";
 "year" = "year";
-"You're now Maso Pro!" = "You're now Masso Pro!";
-"Enjoy unlimited plans, full history, and everything else. Welcome aboard." = "Enjoy unlimited routines, full history, and everything else. Welcome aboard.";
+"You're now Masso Pro!" = "You're now Masso Pro!";
+"Enjoy unlimited plans, full history, and everything else. Welcome aboard." = "Enjoy unlimited workout plans, full history, and everything else. Welcome aboard.";
 "Restore Purchases" = "Restore Purchases";
 "Terms" = "Terms";
 "Privacy" = "Privacy";
 
 /* ── Onboarding ────────────────────────────────────── */
 "Tell us about your training" = "Tell us about your training";
-"Three quick questions — we'll use them to recommend a plan that fits." = "Three quick questions — we'll use them to recommend a routine that fits.";
+"Three quick questions — we'll use them to recommend a plan that fits." = "Three quick questions — we'll use them to recommend a workout plan that fits.";
 "About you" = "About you";
 "How many days a week do you train?" = "How many days a week do you train?";
 "Which muscles do you want to focus on?" = "Which muscles do you want to focus on?";
-"Confirm & build my plan" = "Confirm & build my routine";
-"Build My Routine" = "Build My Routine";
+"Confirm & build my plan" = "Confirm & build my workout plan";
+"Build My Routine" = "Build My Workout plan";
 "Uploading your data" = "Uploading your data";
 "Analyzing your stats" = "Analyzing your stats";
 "Building your plan" = "Building your plan";
@@ -152,7 +151,7 @@
 "What's your weight?" = "What's your weight?";
 "We seed your starting loads from this — change any later." = "We seed your starting loads from this — change any later.";
 "We'll size your weekly plan to fit." = "We'll size your weekly plan to fit.";
-"Pick any — or none for a balanced routine." = "Pick any — or none for a balanced routine.";
+"Pick any — or none for a balanced routine." = "Pick any — or none for a balanced workout plan.";
 "Next" = "Next";
 "STEP %lld / 5" = "STEP %lld / 5";
 "STEP %1$lld / %2$lld" = "STEP %1$lld / %2$lld";
@@ -175,8 +174,8 @@
 "High reps, short rest, circuit-style stamina." = "High reps, short rest, circuit-style stamina.";
 
 /* Request #3 — apply default rest/sets to existing routines */
-"Update your saved routines?" = "Update your saved routines?";
-"You changed your default rest or sets. Apply these to the exercises in all your saved routines too?" = "You changed your default rest or sets. Apply these to the exercises in all your saved routines too?";
+"Update your saved routines?" = "Update your saved workout plans?";
+"You changed your default rest or sets. Apply these to the exercises in all your saved routines too?" = "You changed your default rest or sets. Apply these to the exercises in all your saved workout plans too?";
 "Update them" = "Update them";
 "Keep as is" = "Keep as is";
 "Dumbbells" = "Dumbbells";
@@ -260,11 +259,23 @@
 "Help us improve" = "Help us improve";
 "Send feedback" = "Send feedback";
 "Send Feedback" = "Send Feedback";
+"Report a bug" = "Report a bug";
+"Report a Bug" = "Report a Bug";
+"Submit report" = "Submit report";
+"Sending…" = "Sending…";
+"Report received" = "Report received";
+"Saved · will retry" = "Saved · will retry";
+"Retry upload" = "Retry upload";
+"Report received. It will be included in the next weekly digest." = "Report received. It will be included in the next weekly digest.";
+"Saved on this device. It has not reached the server yet." = "Saved on this device. It has not reached the server yet.";
+"Support" = "Support";
 "Bug reports, feature requests, complaints — all bundled into a daily digest and emailed to the team." = "Bug reports, feature requests, complaints — all bundled into a daily digest and emailed to the team.";
 "Tell us what's broken, missing, or worth changing." = "Tell us what's broken, missing, or worth changing.";
-"Your feedback gets bundled into a daily digest and emailed to the team. No account, no tracking." = "Your feedback gets bundled into a daily digest and emailed to the team. No account, no tracking.";
+"Reports are reviewed together and emailed once a week. Your message, app version, iOS version, and language are included; no account or device ID is attached." = "Reports are reviewed together and emailed once a week. Your message, app version, iOS version, and language are included; no account or device ID is attached.";
 "Type your feedback here…" = "Type your feedback here…";
 "Submit feedback" = "Submit feedback";
+"%d report waiting to upload" = "%d report waiting to upload";
+"%d reports waiting to upload" = "%d reports waiting to upload";
 "Sent — thank you" = "Sent — thank you";
 
 "Back muscle" = "Back";
@@ -305,7 +316,7 @@
 /* ── HealthKit + Training freq ── */
 "Integrations" = "Integrations";
 "Apple Fitness sync" = "Apple Fitness sync";
-"Maso writes finished workouts to Apple Health. They show up in Apple Fitness Activity rings and the Workouts tab. Heart rate is not collected." = "Masso writes finished workouts to Apple Health. They show up in Apple Fitness Activity rings and the Workouts tab. Heart rate is not collected.";
+"Masso writes finished workouts to Apple Health. They show up in Apple Fitness Activity rings and the Workouts tab. Heart rate is not collected." = "Masso writes finished workouts to Apple Health. They show up in Apple Fitness Activity rings and the Workouts tab. Heart rate is not collected.";
 "Not available on this device" = "Not available on this device";
 "Tap to grant access" = "Tap to grant access";
 "Denied — enable in Settings › Health" = "Denied — enable in Settings › Health";
@@ -322,7 +333,7 @@
 
 /* ── AI Workout ── */
 "AI Workout" = "AI Workout";
-"Each day, Maso bundles your profile + recent training + frequency into a prompt and asks Claude to generate today's plan. Your API key is stored locally on this device." = "Each day, Masso bundles your profile + recent training + frequency into a prompt and asks our AI service to generate today's workout. Your API key is stored locally on this device.";
+"Each day, Masso bundles your profile + recent training + frequency into a prompt and asks Claude to generate today's plan. Your API key is stored locally on this device." = "Each day, Masso bundles your profile + recent training + frequency into a prompt and asks our AI service to generate today's workout. Your API key is stored locally on this device.";
 "Generate plan with AI" = "Generate workout with AI";
 "Enter your API key above first" = "Enter your API key above first";
 "Each day a new plan is built from your training history" = "Each day a new workout is built from your training history";
@@ -371,7 +382,7 @@
 "Keep current" = "Keep current";
 "OK" = "OK";
 "One-time purchase. No subscription, no recurring charges." = "One-time purchase. No subscription, no recurring charges.";
-"Restart Maso to apply" = "Restart Masso to apply";
+"Restart Masso to apply" = "Restart Masso to apply";
 "Starting this will replace the workout you're in. Continue?" = "Starting this will replace the workout you're in. Continue?";
 "Language" = "Language";
 
@@ -392,7 +403,6 @@
 "Fatigued" = "Fatigued";
 "Recovering" = "Recovering";
 "Almost fresh" = "Almost fresh";
-"Ready to train" = "Ready to train";
 
 /* ── QuickWorkout Step 1 — chip color helper ── */
 "Light green = synergist · worked along the way, no need to pick." = "Light green = synergist · worked along the way, no need to pick.";
@@ -401,10 +411,10 @@
 
 /* ── i18n audit 2026-05-16 — missing UI keys ── */
 /* Brand / badges (rarely translated) */
-"Maso" = "Masso";
+"Masso" = "Masso";
 "AI" = "AI";
 "PRO" = "PRO";
-"MASO PRO" = "MASSO PRO";
+"MASSO PRO" = "MASSO PRO";
 "FROM %@/MO" = "FROM %@/MO";
 
 /* RootView — replace-workout alert */
@@ -448,9 +458,9 @@
 /* ── Settings — Backup / Export / Import ── */
 "Backup" = "Backup";
 "Export data" = "Export data";
-"Save plans, workouts, settings as a JSON file" = "Save routines, workouts, settings as a JSON file";
+"Save plans, workouts, settings as a JSON file" = "Save workout plans, workouts, settings as a JSON file";
 "Import data" = "Import data";
-"Restore from a Maso backup file" = "Restore from a Masso backup file";
+"Restore from a Masso backup file" = "Restore from a Masso backup file";
 "New iPhone? Your data restores automatically from iCloud Backup. Or export anytime — it's a plain JSON file." = "New iPhone? Your data restores automatically from iCloud Backup. Or export anytime — it's a plain JSON file.";
 "Replace current data?" = "Replace current data?";
 "Replace" = "Replace";
@@ -481,11 +491,11 @@
 "Weight (kg)" = "Weight (kg)";
 "Duration (sec)" = "Duration (sec)";
 "Edit exercise parameters" = "Edit exercise parameters";
-"Changes apply to this session only. To save permanently, edit the plan." = "Changes apply to this session only. To save permanently, edit the routine.";
+"Changes apply to this session only. To save permanently, edit the plan." = "Changes apply to this session only. To save permanently, edit the workout plan.";
 
 /* Delete plan flow (PlansScreen contextMenu + PlanDetailSheet ellipsis menu) */
-"Delete Plan" = "Delete Routine";
-"Delete this plan?" = "Delete this routine?";
+"Delete Plan" = "Delete Workout plan";
+"Delete this plan?" = "Delete this workout plan?";
 "Your training history will be kept." = "Your training history will be kept.";
 
 /* Equipment filter chips (ExercisePickerSheet) */
@@ -494,7 +504,7 @@
 "All equipment" = "All equipment";
 "Prefer community plans" = "Prefer community plans";
 "Build your AI Plans from a proven community program that matches your days per week and goal, instead of auto-generating them." = "Build your AI Plans from a proven community program that matches your days per week and goal, instead of auto-generating them.";
-"These apply to recommended routines and exercises you add — your custom routines aren't changed." = "These apply to recommended routines and exercises you add — your custom routines aren't changed.";
+"These apply to recommended routines and exercises you add — your custom routines aren't changed." = "These apply to recommended workout plans and exercises you add — your custom workout plans aren't changed.";
 "Any movement" = "Any movement";
 "equipment.barbell" = "Barbell";
 "equipment.dumbbell" = "Dumbbell";
@@ -525,7 +535,7 @@
 "yrs" = "yrs";
 "Body weight" = "Body weight";
 "Muscles to focus" = "Muscles to focus";
-"Pick the muscle groups you want to prioritize. Today's recommendations and AI plans will favor these." = "Pick the muscle groups you want to prioritize. Today's recommendations and AI routines will favor these.";
+"Pick the muscle groups you want to prioritize. Today's recommendations and AI plans will favor these." = "Pick the muscle groups you want to prioritize. Today's recommendations and AI workout plans will favor these.";
 
 /* Share customize sheet — add photo flow */
 "Share Card" = "Share Card";
@@ -533,7 +543,7 @@
 "Photos" = "Photos";
 
 /* Recently added Swift literals that were not registered (i18n audit fix) */
-"Add some exercises to the plan first, then start training." = "Add some exercises to the routine first, then start training.";
+"Add some exercises to the plan first, then start training." = "Add some exercises to the workout plan first, then start training.";
 "Hide older workouts" = "Hide older workouts";
 "My Muscle Status" = "My Muscle Status";
 "My Week" = "My Week";
@@ -547,7 +557,7 @@
 "Smart pick" = "Smart pick";
 
 /* Free workout: save to plan library after finishing */
-"Save as plan" = "Save as routine";
+"Save as plan" = "Save as workout plan";
 "Saved" = "Saved";
 "Anything else for your AI coach?" = "Anything else for your AI coach?";
 "Injuries, preferences, time limits — in your own words. The AI combines this with everything above. Optional." = "Injuries, preferences, time limits — in your own words. The AI combines this with everything above. Optional.";
@@ -555,9 +565,13 @@
 "Start from scratch" = "Start from scratch";
 "Display" = "Display";
 "Muscle charts on exercise tags" = "Muscle charts on exercise tags";
-"On routine cards, show a mini muscle chart instead of the muscle name in front of each exercise." = "On routine cards, show a mini muscle chart instead of the muscle name in front of each exercise.";
-"Saved to routines" = "Saved to routines";
-"Save to routines" = "Save to routines";
+"On routine cards, show a mini muscle chart instead of the muscle name in front of each exercise." = "On workout plan cards, show a mini muscle chart instead of the muscle name in front of each exercise.";
+"Saved to routines" = "Saved to workout plans";
+"Save to routines" = "Save to workout plans";
+"Save %lld routine" = "Save %lld workout plan";
+"Save %lld routines" = "Save %lld workout plans";
+"Saved %lld routine" = "Saved %lld workout plan";
+"Saved %lld routines" = "Saved %lld workout plans";
 
 /* ── i18n audit 2026-05-17 — additional missing UI keys ── */
 "App Language" = "App Language";
@@ -580,16 +594,16 @@
 "Clear all" = "Clear all";
 
 /* Delete plan / workout / exercise dialogs */
-"Delete plan?" = "Delete routine?";
+"Delete plan?" = "Delete workout plan?";
 "Delete workout?" = "Delete workout?";
 "Delete this workout?" = "Delete this workout?";
 "Delete workout" = "Delete workout";
-"Delete exercise from plan?" = "Delete exercise from routine?";
+"Delete exercise from plan?" = "Delete exercise from workout plan?";
 "Delete exercise from this workout?" = "Delete exercise from this workout?";
-"All sets and PRs from this workout will be removed. Your plans stay." = "All sets and PRs from this workout will be removed. Your routines stay.";
+"All sets and PRs from this workout will be removed. Your plans stay." = "All sets and PRs from this workout will be removed. Your workout plans stay.";
 "All sets of this exercise from this workout will be removed." = "All sets of this exercise from this workout will be removed.";
-"This only removes it from the current workout. Save changes at the end to update the plan." = "This only removes it from the current workout. Save changes at the end to update the routine.";
-"This only removes the exercise from this plan, not from your library." = "This only removes the exercise from this routine, not from your library.";
+"This only removes it from the current workout. Save changes at the end to update the plan." = "This only removes it from the current workout. Save changes at the end to update the workout plan.";
+"This only removes the exercise from this plan, not from your library." = "This only removes the exercise from this workout plan, not from your library.";
 
 /* Exercise detail (anatomy/instructions sheet) */
 "Detail" = "Detail";
@@ -619,13 +633,13 @@
 /* End-of-workout: save changes back to plan */
 "Save changes & end" = "Save changes & end";
 "End without saving" = "End without saving";
-"You changed sets, reps, weight, or order during this workout. Save the changes back to the plan?" = "You changed sets, reps, weight, or order during this workout. Save the changes back to the routine?";
+"You changed sets, reps, weight, or order during this workout. Save the changes back to the plan?" = "You changed sets, reps, weight, or order during this workout. Save the changes back to the workout plan?";
 
 /* End-of-workout: save-changes confirm page (before share card) */
 "Skip" = "Skip";
-"Save changes to this routine?" = "Save changes to this routine?";
-"You adjusted this routine during the workout. Save the adjustments for next time?" = "You adjusted this routine during the workout. Save the adjustments for next time?";
-"Save to routine" = "Save to routine";
+"Save changes to this routine?" = "Save changes to this workout plan?";
+"You adjusted this routine during the workout. Save the adjustments for next time?" = "You adjusted this workout plan during the workout. Save the adjustments for next time?";
+"Save to routine" = "Save to Workout Plan";
 "Don't save" = "Don't save";
 "Removed" = "Removed";
 "Replaced" = "Replaced";
@@ -660,7 +674,7 @@
 "Each focus muscle is trained 2× per week — enough stimulus, full recovery between." = "Each focus muscle is trained 2× per week — enough stimulus, full recovery between.";
 "2× per week is enough to maintain steady progress — focus muscles rotate in." = "2× per week is enough to maintain steady progress — focus muscles rotate in.";
 "Adjust training preferences" = "Adjust training preferences";
-"FROM YOUR PLAN" = "FROM YOUR ROUTINE";
+"FROM YOUR PLAN" = "FROM YOUR WORKOUT PLAN";
 "Weekly Workouts" = "Weekly Workouts";
 "White areas were just trained" = "White areas were just trained";
 "Today's Status" = "Today's Status";
@@ -682,8 +696,7 @@
 /* Plans tab card kicker (re-used in Settings section title) */
 "Training Preferences" = "Training Preferences";
 /* Muscle status legend (volume-based fatigue model) */
-"Heavy fatigue" = "Heavy fatigue";
-"Mostly recovered" = "Mostly recovered";
+"Rested" = "Rested";
 "Fresh" = "Fresh";
 
 /* ── Community (社区精选训练计划) ── */
@@ -691,41 +704,44 @@
 "Classics" = "Classics";
 "See what others train" = "See what others train";
 "Community" = "Classics";
-"Curated workout plans. Add any to your library." = "Curated workout routines. Add any to your library.";
-"Want to publish your plan? Coming soon." = "Want to publish your routine? Coming soon.";
-"Want to share your plan? Open it in Plans → tap Share." = "Want to share your routine? Open it in Routines → tap Share.";
-"Share plan" = "Share routine";
-"Imported plan" = "Imported routine";
-"Got a plan from a friend? Tap Add to save it to your library." = "Got a routine from a friend? Tap Add to save it to your library.";
-"Add to my plans" = "Add to my routines";
+"Curated workout plans. Add any to your library." = "Curated workout plans. Add any to your library.";
+"Want to publish your plan? Coming soon." = "Want to publish your workout plan? Coming soon.";
+"Want to share your plan? Open it in Plans → tap Share." = "Want to share your workout plan? Open it in Workout plans → tap Share.";
+"Share plan" = "Share workout plan";
+"Imported plan" = "Imported workout plan";
+"Got a plan from a friend? Tap Add to save it to your library." = "Got a workout plan from a friend? Tap Add to save it to your library.";
+"Add to my plans" = "Add to my workout plans";
 "Added" = "Added";
-"Added to My Plans" = "Added to My Routines";
+"Adjusted" = "Adjusted";
+"Changes from previous routine" = "Changes from previous workout plan";
+"This routine stayed the same" = "This workout plan stayed the same";
+"Added to My Plans" = "Added to My Workout plans";
 /* Routines tab IA (#IA-A): library title + "+ new routine" menu sources */
-"Routines" = "Routines";
+"Routines" = "Workout Plans";
 "Generate with AI" = "Generate with AI";
 "Browse Classics" = "Browse Classics";
 "Create from scratch" = "Create from scratch";
 "Create my own" = "Create my own";
-"AI Routines" = "AI Routines";
+"AI Routines" = "AI Workout plans";
 "Generate a plan from your preferences" = "Generate a plan from your preferences";
 "Proven programs to start from" = "Proven programs to start from";
-"New routine" = "New routine";
+"New routine" = "New Workout Plan";
 
 /* Routines single-page IA (#single-page-IA): My Routines → FOR YOU → Classics entry */
-"Routines you save will appear here" = "Routines you save will appear here";
+"Routines you save will appear here" = "Workout plans you save will appear here";
 "Proven programs — 5x5, PPL, 5/3/1" = "Proven programs — 5x5, PPL, 5/3/1";
 
 /* AI routine generation CTA + perceived-generation states (Routines tab → AI) */
-"Generate routines" = "Generate routines";
-"Open Training Preferences and tap Generate routines to build a set tailored to you." = "Open Training Preferences and tap Generate routines to build a set tailored to you.";
+"Generate routines" = "Generate Workout Plans";
+"Open Training Preferences and tap Generate routines to build a set tailored to you." = "Open Training Preferences and tap Generate workout plans to build a set tailored to you.";
 "Apply" = "Apply";
 "Keep editing" = "Keep editing";
 "Apply changes?" = "Apply changes?";
-"You changed your training preferences. Apply them and regenerate your routines?" = "You changed your training preferences. Apply them and regenerate your routines?";
-"Generating routines…" = "Generating routines…";
-"Building routines from your preferences…" = "Building routines from your preferences…";
+"You changed your training preferences. Apply them and regenerate your routines?" = "You changed your training preferences. Apply them and regenerate your workout plans?";
+"Generating routines…" = "Generating workout plans…";
+"Building routines from your preferences…" = "Building workout plans from your preferences…";
 "Matching exercises to your days, equipment, and focus." = "Matching exercises to your days, equipment, and focus.";
-"Tap Generate routines to build a set tailored to your preferences." = "Tap Generate routines to build a set tailored to your preferences.";
+"Tap Generate routines to build a set tailored to your preferences." = "Tap Generate workout plans to build a set tailored to your preferences.";
 "Beginner" = "Beginner";
 "Intermediate" = "Intermediate";
 "Advanced" = "Advanced";
@@ -734,9 +750,11 @@
 /* Classics 列表/筛选 — CommunityScreen */
 "Featured today" = "Featured today";
 "More programs" = "More programs";
-"No routines match" = "No routines match";
-"%lld routine" = "%lld routine";
-"%lld routines" = "%lld routines";
+"No routines match" = "No workout plans match";
+"%lld routine" = "%lld workout plan";
+"%lld routines" = "%lld workout plans";
+"Add %lld routines" = "Add %lld workout plans";
+"Day %lld" = "Day %lld";
 "Days/wk" = "Days/wk";
 "%lld days" = "%lld days";
 "Any level" = "Any level";
@@ -794,7 +812,7 @@
 /* Today tab — Muscle status hero kicker (renamed from "RECOVERY") */
 "MUSCLE STATUS" = "MUSCLE STATUS";
 
-/* StoreKit / IAP — Maso Pro 付费流 */
+/* StoreKit / IAP — Masso Pro 付费流 */
 "Couldn't load subscription options. Try again later." = "Couldn't load subscription options. Try again later.";
 "Purchase pending approval." = "Purchase pending approval.";
 "Purchase verification failed. Try again or contact support." = "Purchase verification failed. Try again or contact support.";
@@ -806,9 +824,9 @@
 "Toggle muscle status overlay" = "Toggle muscle status overlay";
 
 /* Deep link / plan sharing */
-"IMPORTED PLAN" = "IMPORTED ROUTINE";
-"This Maso link is damaged or unsupported. Ask your friend to share again." = "This Masso link is damaged or unsupported. Ask your friend to share again.";
-"Invalid routine link" = "Invalid routine link";
+"IMPORTED PLAN" = "IMPORTED WORKOUT PLAN";
+"This Masso link is damaged or unsupported. Ask your friend to share again." = "This Masso link is damaged or unsupported. Ask your friend to share again.";
+"Invalid routine link" = "Invalid workout plan link";
 
 /* Misc */
 "details" = "details";
@@ -819,7 +837,7 @@
 "Privacy Policy" = "Privacy Policy";
 "Terms of Service" = "Terms of Service";
 "Version" = "Version";
-"Maso is for informational and motivational purposes only — not medical advice. Consult a physician before starting any new exercise program, especially if you have a medical condition, are pregnant, or have not exercised recently. Stop immediately and seek help if you feel pain, dizziness, or shortness of breath." = "Masso is for informational and motivational purposes only — not medical advice. Consult a physician before starting any new exercise program, especially if you have a medical condition, are pregnant, or have not exercised recently. Stop immediately and seek help if you feel pain, dizziness, or shortness of breath.";
+"Masso is for informational and motivational purposes only — not medical advice. Consult a physician before starting any new exercise program, especially if you have a medical condition, are pregnant, or have not exercised recently. Stop immediately and seek help if you feel pain, dizziness, or shortness of breath." = "Masso is for informational and motivational purposes only — not medical advice. Consult a physician before starting any new exercise program, especially if you have a medical condition, are pregnant, or have not exercised recently. Stop immediately and seek help if you feel pain, dizziness, or shortness of breath.";
 
 /* Tab labels — workout records (former "Muscle Status" tab, repurposed) */
 "Workout Records" = "Workout Records";
@@ -857,7 +875,7 @@
 "Change" = "Change";
 "Couldn't save exercise" = "Couldn't save exercise";
 "Create your own" = "Create your own";
-"Custom exercises live only on this device. You can use them in plans and they'll appear in all your pickers." = "Custom exercises live only on this device. You can use them in routines and they'll appear in all your pickers.";
+"Custom exercises live only on this device. You can use them in plans and they'll appear in all your pickers." = "Custom exercises live only on this device. You can use them in workout plans and they'll appear in all your pickers.";
 "Days this week" = "Days this week";
 "Day this week" = "Day this week";
 "Default sets" = "Default sets";
@@ -866,7 +884,7 @@
 "Edit next exercise" = "Edit next exercise";
 "Endurance" = "Endurance";
 "Exercise name" = "Exercise name";
-"Exercises per plan" = "Exercises per routine";
+"Exercises per plan" = "Exercises per workout plan";
 "Foam rolls, battle ropes, machine isolations and other specialized moves we corralled." = "Foam rolls, battle ropes, machine isolations and other specialized moves we corralled.";
 "Hide variants" = "Hide variants";
 "Hypertrophy" = "Hypertrophy";
@@ -876,7 +894,7 @@
 "Pick how to add an exercise. Either build your own from scratch, or adopt one from our specialized library." = "Pick how to add an exercise. Either build your own from scratch, or adopt one from our specialized library.";
 "Primary muscle" = "Primary muscle";
 "Rare exercises" = "Rare exercises";
-"Required. Shown in plans and history." = "Required. Shown in routines and history.";
+"Required. Shown in plans and history." = "Required. Shown in workout plans and history.";
 "Return to the everyday library" = "Return to the everyday library";
 "Search" = "Search";
 "Sets this week" = "Sets this week";
@@ -885,7 +903,7 @@
 "Time's up" = "Time's up";
 "Training goal" = "Training goal";
 "You've adopted everything in the rare library" = "You've adopted everything in the rare library";
-"Your edits to this workout's exercises won't be saved to the plan. Completed sets are already recorded." = "Your edits to this workout's exercises won't be saved to the routine. Completed sets are already recorded.";
+"Your edits to this workout's exercises won't be saved to the plan. Completed sets are already recorded." = "Your edits to this workout's exercises won't be saved to the workout plan. Completed sets are already recorded.";
 
 /* ── Batch C: onboarding gender/units ── */
 "%d kg" = "%d kg";
@@ -895,7 +913,7 @@
 "Can't delete — in use" = "Can't delete — in use";
 "Delete exercise?" = "Delete exercise?";
 "Remove from library" = "Remove from library";
-"This exercise is used by a plan or your workout history. Remove it from those first." = "This exercise is used by a routine or your workout history. Remove it from those first.";
+"This exercise is used by a plan or your workout history. Remove it from those first." = "This exercise is used by a workout plan or your workout history. Remove it from those first.";
 "“%@” will be permanently removed." = "“%@” will be permanently removed.";
 
 /* ── Batch F: custom measure/photo ── */
@@ -964,7 +982,7 @@
 "Good afternoon" = "Good afternoon";
 "Good evening" = "Good evening";
 "Good night" = "Good night";
-"My plans" = "My routines";
+"My plans" = "My workout plans";
 "Create your own workout, or restore the recommended set." = "Create your own workout, or restore the recommended set.";
 
 /* ── Variant 拆解: variant 词 → 与原动作对比说明 (ExerciseDetailSheet VARIANT 区) ── */
@@ -1011,15 +1029,22 @@
 "variant.split" = "Split stance — biases one leg at a time with an added balance demand.";
 "variant.hammer" = "Neutral hammer grip — biases the brachialis and forearms.";
 
-"My Routines" = "My Routines";
+"My Routines" = "My Workout Plans";
 
 /* ── Routine share card / image import / history period share ── */
 "Import from photo" = "Import from photo";
-"Add routine" = "Add routine";
-"Imported routine" = "Imported routine";
-"Couldn't read a routine from that image" = "Couldn't read a routine from that image";
+"Add routine" = "Add Workout Plan";
+"Generate routine with AI" = "Generate workout plan with AI";
+"Build your routine with AI" = "Build your workout plan with AI";
+"Tell AI Coach your goals and schedule to get a routine made for you." = "Tell AI Coach your goals and schedule to get a workout plan made for you.";
+"Chat with AI Coach" = "Chat with AI Coach";
+"Hi, I’m your AI Coach" = "Hi, I’m your AI Coach";
+"Create my routine based on my saved training preferences." = "Create my workout plan based on my saved training preferences.";
+"Open AI Coach to create a routine" = "Open AI Coach to create a workout plan";
+"Imported routine" = "Imported workout plan";
+"Couldn't read a routine from that image" = "Couldn't read a workout plan from that image";
 "Try a clearer screenshot — exercise names need to be readable." = "Try a clearer screenshot — exercise names need to be readable.";
-"Reading routine…" = "Reading routine…";
+"Reading routine…" = "Reading workout plan…";
 "Volume" = "Volume";
 "Share this week" = "Share this week";
 "Share this month" = "Share this month";
@@ -1030,7 +1055,7 @@
 "My Training" = "My Training";
 
 /* ── 截图导入确认页 (#image-import review) ── */
-"Routine name" = "Routine name";
+"Routine name" = "Workout Plan Name";
 "We added the moves we recognized. Review the rest — confirm, swap, or save as a custom move." = "We added the moves we recognized. Review the rest — confirm, swap, or save as a custom move.";
 "IMPORT FROM PHOTO" = "IMPORT FROM PHOTO";
 "ADDED" = "ADDED";
@@ -1043,7 +1068,7 @@
 "Not in your library" = "Not in your library";
 "Save “%@” as custom" = "Save “%@” as custom";
 "Select at least one" = "Select at least one";
-"Add %lld to routine" = "Add %lld to routine";
+"Add %lld to routine" = "Add %lld to workout plan";
 
 "Uncheck anything you don't want. Dashed rows are our best guess — tap replace to swap." = "Uncheck anything you don't want. Dashed rows are our best guess — tap replace to swap.";
 
@@ -1056,15 +1081,14 @@
 "Best value" = "Best value";
 
 /* 上线润色: 空状态 / 引导 / 器械选择 英文字面量补译 */
-"No routines yet" = "No routines yet";
-"Add AI routines" = "Add AI routines";
-"No saved routines yet" = "No saved routines yet";
+"No routines yet" = "No workout plans yet";
+"Add AI routines" = "Add AI workout plans";
+"No saved routines yet" = "No saved workout plans yet";
 "Generate one with AI or browse Classics below, then tap Save." = "Generate one with AI or browse Classics below, then tap Save.";
 "No Classics match these filters." = "No Classics match these filters.";
-"No routines match these filters yet." = "No routines match these filters yet.";
-"Tailoring your AI routines…" = "Tailoring your AI routines…";
-"My Personal AI Trainer" = "My Personal AI Trainer";
-"Pick the equipment your gym has — AI and recommended routines will only use moves you can actually do. Leave empty for no restriction (bodyweight is always available)." = "Pick the equipment your gym has — AI and recommended routines will only use moves you can actually do. Leave empty for no restriction (bodyweight is always available).";
+"No routines match these filters yet." = "No workout plans match these filters yet.";
+"Tailoring your AI routines…" = "Tailoring your AI workout plans…";
+"Pick the equipment your gym has — AI and recommended routines will only use moves you can actually do. Leave empty for no restriction (bodyweight is always available)." = "Pick the equipment your gym has — AI and recommended workout plans will only use moves you can actually do. Leave empty for no restriction (bodyweight is always available).";
 "Clear — use all equipment" = "Clear — use all equipment";
 "%@ %@ per side" = "%@ %@ per side";
 "Achievable: %@ %@  (off by %@)" = "Achievable: %@ %@  (off by %@)";
@@ -1072,9 +1096,9 @@
 "+%lld more" = "+%lld more";
 
 /* 训练完成自动分享 — 自由训练存为计划的二次确认 */
-"Save as plan?" = "Save as routine?";
+"Save as plan?" = "Save as workout plan?";
 "Don't Save" = "Don't Save";
-"Keep this workout as a reusable routine." = "Keep this workout as a reusable routine.";
+"Keep this workout as a reusable routine." = "Keep this workout as a reusable workout plan.";
 
 /* Apple Health (HealthKit) — Settings section */
 "Apple Health" = "Apple Health";
@@ -1083,19 +1107,19 @@
 
 /* Exercise data — global param sync (R3) */
 "Exercise data" = "Exercise data";
-"Sync params across routines" = "Sync exercise settings across routines";
+"Sync params across routines" = "Sync exercise settings across workout plans";
 
 /* Onboarding — AI plan generating transition */
-"Creating your AI plan" = "Creating your AI routine";
-"Your plan is ready" = "Your routine is ready";
+"Creating your AI plan" = "Creating your AI workout plan";
+"Your plan is ready" = "Your workout plan is ready";
 "Personalized from your answers" = "Personalized from your answers";
 "Reading your profile" = "Reading your profile";
 "Picking exercises for your goals" = "Picking exercises for your goals";
-"Balancing your weekly plan" = "Balancing your weekly routine";
-"Off by default: each routine keeps its own sets, reps, weight, and rest, so heavy and light days stay independent. Turn on to apply a change to an exercise everywhere it appears." = "Off by default: each routine keeps its own sets, reps, weight, and rest, so heavy and light days stay independent. Turn on to apply a change to an exercise everywhere it appears.";
+"Balancing your weekly plan" = "Balancing your weekly workout plan";
+"Off by default: each routine keeps its own sets, reps, weight, and rest, so heavy and light days stay independent. Turn on to apply a change to an exercise everywhere it appears." = "Off by default: each workout plan keeps its own sets, reps, weight, and rest, so heavy and light days stay independent. Turn on to apply a change to an exercise everywhere it appears.";
 
 /* Onboarding step 3 focus-muscles hint */
-"Optional — leave all off for a balanced routine." = "Optional — leave all off for a balanced routine.";
+"Optional — leave all off for a balanced routine." = "Optional — leave all off for a balanced workout plan.";
 
 /* ── UX audit 2026-06: missing keys (were showing English in zh) ── */
 "Level" = "Level";
@@ -1105,6 +1129,9 @@
 "Continue (%lld)" = "Continue (%lld)";
 "Start (%lld)" = "Start (%lld)";
 "Exercise photos" = "Exercise photos";
+"Credits" = "Credits";
+"Exercise photos via Pexels." = "Exercise photos via Pexels.";
+"Pexels License" = "Pexels License";
 "From library" = "From library";
 "Search the web" = "Search the web";
 "Find a photo" = "Find a photo";
@@ -1118,7 +1145,7 @@
 
 /* Player — R2 undo toast + R3 global-sync edit footer */
 "Set removed" = "Set removed";
-"Changes update this exercise across all your routines." = "Changes update this exercise across all your routines.";
+"Changes update this exercise across all your routines." = "Changes update this exercise across all your workout plans.";
 "Undo last set" = "Undo last set";
 
 /* Recommended / seeded plan names (Today card + Classics) */
@@ -1158,6 +1185,7 @@
 
 /* Progress tab — Insights/History segments + Trends section header */
 "Insights" = "Insights";
+"Training insights" = "Training insights";
 "Trends" = "Trends";
 
 /* Progress — Insights cards are drag-reorderable; one-line hint at top of the list */
@@ -1204,7 +1232,7 @@
 
 /* Coaching memory — persistent free-text training preferences the AI reads every generation */
 "Tell your AI coach" = "Tell your AI coach";
-"Write anything you want your routines to consider, in plain words — injuries, likes and dislikes, schedule, goals. The AI reads it every time it builds your plan." = "Write anything you want your routines to consider, in plain words — injuries, likes and dislikes, schedule, goals. The AI reads it every time it builds your plan.";
+"Write anything you want your routines to consider, in plain words — injuries, likes and dislikes, schedule, goals. The AI reads it every time it builds your plan." = "Write anything you want your workout plans to consider, in plain words — injuries, likes and dislikes, schedule, goals. The AI reads it every time it builds your plan.";
 "I can't watch the video yet — paste the key moves or the plan from it and I'll work it in." = "I can't watch the video yet — paste the key moves or the plan from it and I'll work it in.";
 "Tuned for: %@" = "Tuned for: %@";
 "Focus: %@" = "Focus: %@";
@@ -1227,7 +1255,7 @@
 "Unlock your AI coach summary with Pro" = "Unlock your AI coach summary with Pro";
 "AI summary unavailable — Retry" = "AI summary unavailable — Retry";
 "As of %@ · based on the last 14 days" = "As of %@ · based on the last 14 days";
-"Apply to routine" = "Apply to routine";
+"Apply to routine" = "Apply to workout plan";
 "Add to notes" = "Add to notes";
 "Saved to your coaching notes" = "Saved to your coaching notes";
 "Keep logging your sessions — your coach summary sharpens with more data." = "Keep logging your sessions — your coach summary sharpens with more data.";
@@ -1286,18 +1314,35 @@
 /* ── Coach tab 批次 2: CoachScreen 三段式 UI (docs/coach-tab-design.md §1) ── */
 "Coach" = "Coach";
 "SAVED · %lld" = "SAVED · %lld";
-"Saved routines will appear here." = "Saved routines will appear here.";
+"Saved routines will appear here." = "Saved workout plans will appear here.";
 "~%lld min" = "~%lld min";
 "DAY %lld" = "DAY %lld";
-"Hey! Tell me how you want to train — I'll build your weekly routines." = "Hey! Tell me how you want to train — I'll build your weekly routines.";
+"Hey! Tell me how you want to train — I'll build your weekly routines." = "Hey! Tell me how you want to train — I'll build your weekly workout plans.";
 "COACH SUGGESTION" = "COACH SUGGESTION";
 "Usually takes 30–60 seconds" = "Usually takes 30–60 seconds";
 "Tell me how you want to train…" = "Tell me how you want to train…";
 "New conversation" = "New conversation";
 "Start a new conversation?" = "Start a new conversation?";
-"This clears the current chat. Saved routines are kept." = "This clears the current chat. Saved routines are kept.";
+"This clears the current chat. Saved routines are kept." = "This clears the current chat. Saved workout plans are kept.";
 "Swap %@: " = "Swap %@: ";
 "Training in progress — keep tuning after your session." = "Training in progress — keep tuning after your session.";
+"Try a starting point" = "Try a starting point";
+"Choose a scenario, then edit the draft before sending." = "Choose a scenario, then edit the draft before sending.";
+"I want to focus on…" = "I want to focus on…";
+"I only have 30 minutes" = "I only have 30 minutes";
+"I train at home" = "I train at home";
+"I’m getting back into training" = "I’m getting back into training";
+"I want to look like this" = "I want to look like this";
+"Current photo" = "Current photo";
+"Goal reference" = "Goal reference";
+"Change photo" = "Change photo";
+"Avoid faces. Photos can’t measure health, strength or body fat." = "Avoid faces. Photos can’t measure health, strength or body fat.";
+"Choose a photo from your library or camera" = "Choose a photo from your library or camera";
+"I want to focus more on [shoulders and back]. Adjust my routines around that while keeping my training balanced." = "I want to focus more on [shoulders and back]. Adjust my workout plans around that while keeping my training balanced.";
+"I have [30] minutes per workout. Shorten my routines to fit while keeping the main training focus." = "I have [30] minutes per workout. Shorten my workout plans to fit while keeping the main training focus.";
+"I train at home with [dumbbells and bands]. Adapt my routines to the equipment I have." = "I train at home with [dumbbells and bands]. Adapt my workout plans to the equipment I have.";
+"I’m returning after [a month away]. Ease my routines back in with balanced, gradual training." = "I’m returning after [a month away]. Ease my workout plans back in with balanced, gradual training.";
+"Compare my current photo with this goal reference. Suggest balanced training emphases based on visible muscle development, then adjust my routines. Keep the advice realistic; don’t estimate body fat or a timeline." = "Compare my current photo with this goal reference. Suggest balanced training emphases based on visible muscle development, then adjust my workout plans. Keep the advice realistic; don’t estimate body fat or a timeline.";
 
 /* ── Coach tab 批次 3: 全局接线 (深链来源 kicker, docs/coach-tab-design.md §4) ── */
 "FROM WEEKLY SUMMARY" = "FROM WEEKLY SUMMARY";
@@ -1327,16 +1372,18 @@
 "Add your own exercise" = "Add your own exercise";
 "Add “%@” as your own" = "Add “%@” as your own";
 "Build my week — full body, about 45 minutes a day" = "Build my week — full body, about 45 minutes a day";
-"Save & generate routines" = "Save & generate routines";
-"Share routines" = "Share routines";
+"Update routines?" = "Update workout plans?";
+"Update routines" = "Update workout plans";
+"Save only" = "Save only";
+"Save these training preferences and regenerate your routines to match?" = "Save these training preferences and regenerate your workout plans to match?";
+"Share routines" = "Share Workout Plans";
 "Share (%lld)" = "Share (%lld)";
-"Import routines" = "Import routines";
+"Import routines" = "Import Workout Plans";
 "Add (%lld)" = "Add (%lld)";
 
 /* 恢复热图图例 (绿=可练/蓝=疲劳, 2026-07 语义反转) */
 "Ready to train" = "Ready to train";
 "Almost ready" = "Almost ready";
-"Fatigued" = "Fatigued";
 
 /* Progress 顶部统计 — 累计训练 (替代 Week streak) */
 "Workouts total" = "Workouts total";
@@ -1368,27 +1415,33 @@
 "ACTIVE" = "ACTIVE";
 "Thanks for supporting Masso. Manage or cancel on the Polar page." = "Thanks for supporting Masso. Manage or cancel on the Polar page.";
 
-"Scan to get this routine" = "Scan to get this routine";
+"Scan to get this routine" = "Scan to get the same workout plan";
 
 /* Coach 空态偏好卡 + 调整入口 */
 "%lld days a week" = "%lld days a week";
 "YOUR TRAINING" = "YOUR TRAINING";
 "Adjust preferences" = "Adjust preferences";
-"View routines" = "View routines";
-"Adjust your routine" = "Adjust your routine";
+"View routines" = "View workout plans";
+"Adjust your routine" = "Adjust your workout plan";
 
 "Body front" = "Front";
 "Body back" = "Back";
 
 "Notes for your AI coach" = "Notes for your AI coach";
-"Saved here for good — your AI coach reads it every time it builds a routine. Write anything in plain words: past injuries, medical conditions, moves to avoid, equipment quirks, schedule, goals." = "Saved here for good — your AI coach reads it every time it builds a routine. Write anything in plain words: past injuries, medical conditions, moves to avoid, equipment quirks, schedule, goals.";
+"AI coach memory description" = "Your AI coach reads these notes whenever it creates a workout plan.";
+"Coach memory examples" = "For example: past injuries, moves to avoid, equipment, schedule, or goals…";
+"Saved here for good — your AI coach reads it every time it builds a routine. Write anything in plain words: past injuries, medical conditions, moves to avoid, equipment quirks, schedule, goals." = "Saved here for good — your AI coach reads it every time it builds a workout plan. Write anything in plain words: past injuries, medical conditions, moves to avoid, equipment quirks, schedule, goals.";
 
 "Replace all" = "Replace all";
-"Replace your routines?" = "Replace your routines?";
-"Your %lld saved routines will be deleted and replaced with these %lld." = "Your %lld saved routines will be deleted and replaced with these %lld.";
+"Save to My Routines" = "Save to My Workout Plans";
+"Replace all routines" = "Replace all workout plans";
+"Add to existing routines" = "Add to existing workout plans";
+"Choose whether to replace your %lld saved routines or add these %lld routines alongside them." = "Choose whether to replace your %lld saved workout plans or add these %lld workout plans alongside them.";
+"Replace your routines?" = "Replace your workout plans?";
+"Your %lld saved routines will be deleted and replaced with these %lld." = "Your %lld saved workout plans will be deleted and replaced with these %lld.";
 
 "Masso Pro" = "Masso Pro";
-"Unlimited routines, unlimited AI coach, deep analytics." = "Unlimited routines, unlimited AI coach, deep analytics.";
+"Unlimited routines, unlimited AI coach, deep analytics." = "Unlimited workout plans, unlimited AI coach, deep analytics.";
 
 "Built-in" = "Built-in";
 
@@ -1421,4 +1474,1621 @@
 "A JSON backup of everything plus a CSV of every set you've logged — open it in Numbers, Excel, or any other app. Your data is yours; you can take it and go." = "A JSON backup of everything plus a CSV of every set you've logged — open it in Numbers, Excel, or any other app. Your data is yours; you can take it and go.";
 "Export failed" = "Export failed";
 "Share anonymous usage data" = "Share anonymous usage data";
-"Sends anonymous counts like \"a routine was generated\" or \"onboarding finished\" so I can see which parts of the app work. Never your workouts, weights, notes, or anything you typed. No account, no ads, no third-party ad networks. Turn it off and nothing is sent at all." = "Sends anonymous counts like \"a routine was generated\" or \"onboarding finished\" so I can see which parts of the app work. Never your workouts, weights, notes, or anything you typed. No account, no ads, no third-party ad networks. Turn it off and nothing is sent at all.";
+"Sends anonymous counts like \"a routine was generated\" or \"onboarding finished\" so I can see which parts of the app work. Never your workouts, weights, notes, or anything you typed. No account, no ads, no third-party ad networks. Turn it off and nothing is sent at all." = "Sends anonymous counts like \"a workout plan was generated\" or \"onboarding finished\" so I can see which parts of the app work. Never your workouts, weights, notes, or anything you typed. No account, no ads, no third-party ad networks. Turn it off and nothing is sent at all.";
+
+"Adjust your routines with your coach" = "Adjust your workout plans with your coach";
+
+"Show earlier workouts (%lld)" = "Show earlier workouts (%lld)";
+"Start today's workout" = "Start today's workout";
+
+"AI Coach" = "AI Coach";
+"More training settings" = "More training settings";
+
+"Classic Routines" = "Classic Workout Plans";
+"Explore Routines" = "Explore Workout plans";
+"Find a classic plan and make it yours." = "Find a classic plan and make it yours.";
+
+"Create a routine" = "Create a Workout Plan";
+
+"Plan your exercises before you train" = "Plan your exercises before you train";
+
+"Start custom workout" = "Start custom workout";
+
+"Add exercises as you go" = "Add exercises as you go";
+
+"Choose your first exercise" = "Choose your first exercise";
+
+"What would you like to train next?" = "What would you like to train next?";
+
+"End this workout" = "End this workout";
+
+"Add next exercise" = "Add next exercise";
+
+"Minimize workout" = "Minimize workout";
+
+"Workout complete" = "Workout complete";
+
+"Save as a routine" = "Save as a workout plan";
+
+"Set up exercise" = "Set up exercise";
+
+/* AI assistant suggestion card */
+"AI suggestion" = "AI suggestion";
+
+// Native muscle model
+"Drag sideways to rotate. Tap for recovery details." = "Drag sideways to rotate. Tap for recovery details.";
+"Tap to view muscle recovery" = "Tap to view muscle recovery";
+"3D muscle model" = "3D muscle model";
+"Model adapted for Masso: mirrored muscle groups, smoother surfaces, adjusted proportions and fatigue colors." = "Model adapted for Masso: mirrored muscle groups, smoother surfaces, adjusted proportions and fatigue colors.";
+
+"Drag sideways to rotate" = "Drag sideways to rotate";
+"3D model unavailable" = "3D model unavailable";
+
+// Home action heading and supporting context.
+"Start your first workout" = "Start your first workout";
+"Your training journey starts here." = "Your training journey starts here";
+"Your workout is in progress." = "Your workout is in progress";
+"Rest up" = "Rest up";
+"You’ve trained today." = "You’ve trained today";
+"Plan your next session" = "Plan your next session";
+"You last trained yesterday." = "You last trained yesterday";
+"Make time to train" = "Make time to train";
+"It’s been %lld days since your last workout." = "It’s been %lld days since your last workout";
+"Ease back in" = "Ease back in";
+
+// Swipeable coaching suggestions.
+"Your training summary" = "Your training summary";
+"Let's plan your training" = "Let's plan your training";
+"Previous suggestion" = "Previous suggestion";
+"Next suggestion" = "Next suggestion";
+"Suggestion %lld of %lld" = "Suggestion %lld of %lld";
+"Updating suggestions…" = "Updating suggestions…";
+"Suggestion removed" = "Suggestion removed";
+"Dismiss suggestion" = "Dismiss suggestion";
+"Sent to chat" = "Sent to chat";
+"Applied" = "Applied";
+"View Pro" = "View Pro";
+
+// History disclosure
+"Collapse history" = "Collapse history";
+"Expand history (%lld)" = "Expand history (%lld)";
+
+// Muscle readiness legend
+"Ready" = "Ready";
+
+"Routine options" = "Workout plan options";
+
+"Couldn’t prepare share" = "Couldn’t prepare share";
+
+"Please try again." = "Please try again.";
+
+// Body photo coaching
+"Training photo" = "Training photo";
+"Send to analyze with AI and suggest routine changes." = "Send to analyze with AI and suggest workout plan changes.";
+"A photo can't measure strength or recovery." = "A photo can't measure strength or recovery.";
+"Remove photo" = "Remove photo";
+"Photo Library" = "Photo Library";
+"Camera unavailable" = "Camera unavailable";
+"Allow camera access in Settings, or choose a photo from your library." = "Allow camera access in Settings, or choose a photo from your library.";
+"Couldn't prepare this photo" = "Couldn't prepare this photo";
+"Please choose another photo." = "Please choose another photo.";
+"Review my training photo and suggest routine changes." = "Review my training photo and suggest workout plan changes.";
+"Couldn't analyze this photo. Your routines are unchanged. Please try again." = "Couldn't analyze this photo. Your workout plans are unchanged. Please try again.";
+
+/* Insights — progress, muscle inputs, training rhythm */
+"Time range" = "Time range";
+"4 weeks" = "4 weeks";
+"12 weeks" = "12 weeks";
+"6 months" = "6 months";
+"1 year" = "1 year";
+"All time" = "All time";
+"%d training days · %@" = "%d training days · %@";
+"Lift progress" = "Lift progress";
+"%d improved" = "%d improved";
+"1 lift improved" = "1 lift improved";
+"%d lifts improved" = "%d lifts improved";
+"Your progress starts here" = "Your progress starts here";
+"Your lifts at a glance" = "Your lifts at a glance";
+"Earlier → latest comparable records" = "Earlier → latest comparable records";
+"Log your workouts to see changes in weight and reps." = "Log your workouts to see changes in weight and reps.";
+"All exercises" = "All exercises";
+"Muscles trained" = "Muscles trained";
+"This week · recorded sets" = "This week · recorded sets";
+"Primary muscles only · not a growth score" = "Primary muscles only · not a growth score";
+"Some exercises have no muscle mapping and are excluded." = "Some exercises have no muscle mapping and are excluded.";
+"Training rhythm" = "Training rhythm";
+"training days this week" = "training days this week";
+"%d training days in the last %d weeks" = "%d training days in the last %d weeks";
+"Trained" = "Trained";
+"Upcoming" = "Upcoming";
+"No recorded workout" = "No recorded workout";
+"Compared within the same exercise. Each day uses its best matching set. Chart scales differ between exercises." = "Compared within the same exercise. Each day uses its best matching set. Chart scales differ between exercises.";
+"More matching sessions are needed to show a trend." = "More matching sessions are needed to show a trend.";
+"Strength changes do not measure muscle growth." = "Strength changes do not measure muscle growth.";
+"Recorded sets" = "Recorded sets";
+"A recorded set counts once for each primary muscle group. Secondary muscles are excluded. These are logged sets, not measured effective sets or muscle growth." = "A recorded set counts once for each primary muscle group. Secondary muscles are excluded. These are logged sets, not measured effective sets or muscle growth.";
+"%d → %d reps" = "%d → %d reps";
+"New" = "New";
+"Unchanged" = "Unchanged";
+"Weight for %d reps" = "Weight for %d reps";
+"Reps at %@" = "Reps at %@";
+"Bodyweight reps" = "Bodyweight reps";
+"Latest recorded set" = "Latest recorded set";
+
+"Baseline" = "Baseline";
+"Show fewer" = "Show fewer";
+"Show all %d exercises" = "Show all %d exercises";
+"Describe what happened and what you expected…" = "Describe what happened and what you expected…";
+"Thanks for reporting this. Your report has been sent to our team and will help us improve Masso." = "Thanks for reporting this. Your report has been sent to our team and will help us improve Masso.";
+"Thanks for reporting this. I saved your report on this device and will retry sending it when a connection is available." = "Thanks for reporting this. I saved your report on this device and will retry sending it when a connection is available.";
+
+// Lightweight Diet
+"Diet" = "Diet";
+"What to eat today" = "What to eat today";
+"Diet preferences" = "Diet preferences";
+"Add your weight for portion guidance" = "Add your weight for portion guidance";
+"Approximate portions. Cooked weights except dry oats, packaged yogurt/tofu and fruit. Add cooking oil to taste." = "Approximate portions. Cooked weights except dry oats, packaged yogurt/tofu and fruit. Add cooking oil to taste.";
+"Swap protein foods for similar protein, starches for similar carbs. Other nutrients may differ." = "Swap protein foods for similar protein, starches for similar carbs. Other nutrients may differ.";
+"Portions are approximate; calories and other nutrients may differ." = "Portions are approximate; calories and other nutrients may differ.";
+"Swap food" = "Swap food";
+"Breakfast" = "Breakfast";
+"Lunch" = "Lunch";
+"Dinner" = "Dinner";
+"Snack" = "Snack";
+"Chicken breast" = "Chicken breast";
+"Lean beef" = "Lean beef";
+"Firm tofu" = "Firm tofu";
+"Eggs" = "Eggs";
+"Plain Greek yogurt" = "Plain Greek yogurt";
+"Rice" = "Rice";
+"Potatoes" = "Potatoes";
+"Oats" = "Oats";
+"Broccoli" = "Broccoli";
+"Leafy greens" = "Leafy greens";
+"Tomatoes" = "Tomatoes";
+"Blueberries" = "Blueberries";
+"Meals per day" = "Meals per day";
+"3 meals" = "3 meals";
+"3 meals + snack" = "3 meals + snack";
+"Plant-based" = "Plant-based";
+"Uses your existing training goal and body information." = "Uses your existing training goal and body information.";
+"Allergies" = "Allergies";
+"Milk" = "Milk";
+"Egg" = "Egg";
+"Soy" = "Soy";
+"Foods to avoid" = "Foods to avoid";
+"Keep at least one protein, starch and fruit or vegetable option." = "Keep at least one protein, starch and fruit or vegetable option.";
+
+"Protein" = "Protein";
+"Diet protein progress" = "%1$dg/%2$dg Protein";
+
+"Carbs" = "Carbs";
+
+"Fat" = "Fat";
+
+"g / day" = "g / day";
+
+"Supports muscle recovery" = "Supports muscle recovery";
+
+"Fuels your training" = "Fuels your training";
+
+"Supports daily nutrition" = "Supports daily nutrition";
+
+"Estimated daily targets. Adjust portions to your appetite and training needs." = "Estimated daily targets. Adjust portions to your appetite and training needs.";
+
+"%d/%d lifts improving" = "%d/%d lifts improving";
+
+"reps" = "reps";
+
+"sets" = "sets";
+
+"%d training days" = "%d training days";
+
+"4 weeks · training volume" = "4 weeks · training volume";
+
+"Features" = "Features";
+
+"Bedtime reminder" = "Bedtime reminder";
+
+"Last night's score" = "Last night's score";
+
+"Tonight's goal" = "Tonight's goal";
+
+"Notifications are off" = "Notifications are off";
+
+"Open Settings" = "Open Settings";
+
+"Allow Masso notifications in Settings to receive bedtime reminders." = "Allow Masso notifications in Settings to receive bedtime reminders.";
+
+"Record your first meal today" = "Record your first meal today";
+
+"Set your body weight" = "Set your body weight";
+
+"Get your daily nutrition targets" = "Get your daily nutrition targets";
+
+"%lld / %lld meals recorded" = "%lld / %lld meals recorded";
+
+"Last night" = "Last night";
+
+"Insights category" = "Insights category";
+
+"No meal records in this period" = "No meal records in this period";
+
+"No sleep records in this period" = "No sleep records in this period";
+
+"Confirm meal photos to see nutrition trends." = "Confirm meal photos to see nutrition trends.";
+
+"Connect Apple Health to see your sleep trends." = "Connect Apple Health to see your sleep trends.";
+
+"Open Diet" = "Open Diet";
+
+"Open Sleep" = "Open Sleep";
+
+"Recorded nutrition" = "Recorded nutrition";
+
+"Daily average · logged days only" = "Daily average · logged days only";
+
+"%lld / %lld days fully logged" = "%lld / %lld days fully logged";
+
+"Protein intake" = "Protein intake";
+
+"Yellow: recorded protein · diamond: daily target" = "Yellow: recorded protein · diamond: daily target";
+
+"Partial meals count as recorded intake, not a complete day's total." = "Partial meals count as recorded intake, not a complete day's total.";
+
+"Average sleep" = "Average sleep";
+
+"%lld nights recorded" = "%lld nights recorded";
+
+"Sleep duration" = "Sleep duration";
+
+"Blue: recorded sleep · diamond: nightly target" = "Blue: recorded sleep · diamond: nightly target";
+
+"Complete days with saved nutrition targets" = "Complete days with saved nutrition targets";
+
+"Nights with saved sleep targets" = "Nights with saved sleep targets";
+
+"Protein · %lld / %lld g" = "Protein · %lld / %lld g";
+
+"Last night · %@" = "Last night · %@";
+
+"Saved to My Routines" = "Saved to My Workout plans";
+
+"Sleep target" = "Sleep target";
+
+"Sleep preferences" = "Sleep preferences";
+
+"Total sleep · each night" = "Total sleep · each night";
+
+"Sleep supports recovery. Adults generally need at least 7 hours." = "Sleep supports recovery. Adults generally need at least 7 hours.";
+
+"Total sleep" = "Total sleep";
+
+"Nightly target" = "Nightly target";
+
+"Deep sleep" = "Deep sleep";
+
+"REM sleep" = "REM sleep";
+
+"Your device hasn't provided sleep stages." = "Your device hasn't provided sleep stages.";
+
+"Your usual sleep stages" = "Your usual sleep stages";
+
+"Based on at least 7 recorded nights in the previous 14 days. A personal reference, not a pass/fail target." = "Based on at least 7 recorded nights in the previous 14 days. A personal reference, not a pass/fail target.";
+
+"Sleep stages are device estimates and do not affect your goal score." = "Sleep stages are device estimates and do not affect your goal score.";
+
+"About sleep stages" = "About sleep stages";
+
+"Building your baseline" = "Building your baseline";
+
+"Reminder time" = "Reminder time";
+
+"Personal reference" = "Personal reference";
+
+"Why these portions?" = "Why these portions?";
+"Meal balance" = "Meal balance";
+"Protein across the day" = "Protein across the day";
+"Carbs and dinner" = "Carbs and dinner";
+"Portion guide" = "Portion guide";
+"Protein is split evenly across breakfast, lunch and dinner. An optional snack takes 15% of the daily target; the rest stays evenly split." = "Protein is split evenly across breakfast, lunch and dinner. An optional snack takes 15% of the daily target; the rest stays evenly split.";
+"Daily protein and consistent training matter most. Small trials support balanced meals for muscle protein synthesis; long-term muscle-growth results are mixed." = "Daily protein and consistent training matter most. Small trials support balanced meals for muscle protein synthesis; long-term muscle-growth results are mixed.";
+"Carbs start at 25% for breakfast, 35% for lunch and 40% for dinner. With a snack, 15% goes to the snack and the remaining 85% follows the same split." = "Carbs start at 25% for breakfast, 35% for lunch and 40% for dinner. With a snack, 15% goes to the snack and the remaining 85% follows the same split.";
+"These percentages are an app planning default, not a proven optimal ratio. A small trial found faster sleep onset with a high-GI meal four hours before bed; other trials found no benefit. More dinner carbs do not guarantee better sleep or justify cutting dinner protein." = "These percentages are an app planning default, not a proven optimal ratio. A small trial found faster sleep onset with a high-GI meal four hours before bed; other trials found no benefit. More dinner carbs do not guarantee better sleep or justify cutting dinner protein.";
+"Approximate cooked weights; oats are dry, yogurt/tofu are packaged weights, fruit is edible weight. Swaps match protein or carbs, not all nutrients. Cooking fats are not included in these portions." = "Approximate cooked weights; oats are dry, yogurt/tofu are packaged weights, fruit is edible weight. Swaps match protein or carbs, not all nutrients. Cooking fats are not included in these portions.";
+"ISSN · Protein and exercise (2017)" = "ISSN · Protein and exercise (2017)";
+"Mamerow · Protein distribution (2014)" = "Mamerow · Protein distribution (2014)";
+"Protein distribution review (2020)" = "Protein distribution review (2020)";
+"Afaghi · Carbs and sleep (2007)" = "Afaghi · Carbs and sleep (2007)";
+"Athletes' evening meals trial (2019)" = "Athletes' evening meals trial (2019)";
+
+"Why this sleep target?" = "Why this sleep target?";
+"Why 8 hours?" = "Why 8 hours?";
+"Sleep and recovery" = "Sleep and recovery";
+"Deep sleep and REM" = "Deep sleep and REM";
+"Apple Health records" = "Apple Health records";
+"About sleep" = "About sleep";
+"Apple Health sleep records" = "Apple Health sleep records";
+"Core sleep" = "Core sleep";
+"Awake" = "Awake";
+"In bed" = "In bed";
+"Sleep (unspecified)" = "Sleep (unspecified)";
+"Adults generally need 7–9 hours a night. Eight hours is a starting point, not a precise calculation from your workout or body weight. Adjust for how rested you feel." = "Adults generally need 7–9 hours a night. Eight hours is a starting point, not a precise calculation from your workout or body weight. Adjust for how rested you feel.";
+"Sleep supports recovery and performance. A small experiment found lower muscle protein synthesis after one sleepless night. It does not prove that every extra hour produces more muscle, or that everyone needs the same duration." = "Sleep supports recovery and performance. A small experiment found lower muscle protein synthesis after one sleepless night. It does not prove that every extra hour produces more muscle, or that everyone needs the same duration.";
+"Stage durations vary with age, night and device. Your ranges summarize the previous 14 days once at least 7 nights are available; they are personal references, not recommended targets. Apple Watch stages are estimates." = "Stage durations vary with age, night and device. Your ranges summarize the previous 14 days once at least 7 nights are available; they are personal references, not recommended targets. Apple Watch stages are estimates.";
+"Masso reads all authorized sleep-analysis history: core, deep, REM, unspecified sleep, awake and in-bed samples, with times and sources. Missing stages stay blank. Overlapping sources are not added together; detailed stage data is preferred for nightly totals. These totals may differ from Apple's source priorities. In-bed time is not sleep time." = "Masso reads all authorized sleep-analysis history: core, deep, REM, unspecified sleep, awake and in-bed samples, with times and sources. Missing stages stay blank. Overlapping sources are not added together; detailed stage data is preferred for nightly totals. These totals may differ from Apple's source priorities. In-bed time is not sleep time.";
+"Allow Sleep access in Apple Health. Data appears after your device syncs. HealthKit does not reveal whether read access was denied, so no records can mean no data or no permission." = "Allow Sleep access in Apple Health. Data appears after your device syncs. HealthKit does not reveal whether read access was denied, so no records can mean no data or no permission.";
+"NIH · Recommended sleep duration" = "NIH · Recommended sleep duration";
+"AASM / SRS · Adult sleep consensus (2015)" = "AASM / SRS · Adult sleep consensus (2015)";
+"Lamon · Sleep loss and muscle protein synthesis (2021)" = "Lamon · Sleep loss and muscle protein synthesis (2021)";
+"Apple · Sleep tracking" = "Apple · Sleep tracking";
+"Apple · Sleep-analysis data" = "Apple · Sleep-analysis data";
+
+"Sleep history" = "Sleep history";
+"Show earlier nights" = "Show earlier nights";
+
+"Today's meals" = "Today's meals";
+"Diet history" = "Diet history";
+"No meal records yet" = "No meal records yet";
+"Sleep details" = "Sleep details";
+
+"7 days" = "7 days";
+"Compared with your current target" = "Compared with your current target";
+"Compared with that day's target" = "Compared with that day's target";
+
+"View Apple Health records" = "View Apple Health records";
+
+"Eating window" = "Eating window";
+"Flexible" = "Flexible";
+"12:12 · 12-hour window" = "12:12 · 12-hour window";
+"14:10 · 10-hour window" = "14:10 · 10-hour window";
+"16:8 · 8-hour window" = "16:8 · 8-hour window";
+"Starts at" = "Starts at";
+"Ends at" = "Ends at";
+"Next day" = "Next day";
+"Morning snack" = "Morning snack";
+"Afternoon snack" = "Afternoon snack";
+"Meal timing changes the split, not your daily nutrition targets." = "Meal timing changes the split, not your daily nutrition targets.";
+"Protein is split evenly across your selected 2–5 meals. Changing meal count or eating window keeps the daily target unchanged." = "Protein is split evenly across your selected 2–5 meals. Changing meal count or eating window keeps the daily target unchanged.";
+"Two meals split carbs 45% / 55%. With three meals, the split is 25% / 35% / 40%. Four meals reserve 15% for a snack; five reserve 10% for each of two snacks. The remaining carbs follow the three-meal split." = "Two meals split carbs 45% / 55%. With three meals, the split is 25% / 35% / 40%. Four meals reserve 15% for a snack; five reserve 10% for each of two snacks. The remaining carbs follow the three-meal split.";
+"Flexible timing is the default. 12:12, 14:10 and 16:8 describe fasting hours and eating hours. A shorter window does not lower your daily nutrition targets or guarantee better muscle growth." = "Flexible timing is the default. 12:12, 14:10 and 16:8 describe fasting hours and eating hours. A shorter window does not lower your daily nutrition targets or guarantee better muscle growth.";
+"NIDDK · Time-restricted eating" = "NIDDK · Time-restricted eating";
+"%lld meals" = "%lld meals";
+"Meal 1" = "Meal 1";
+"Meal 2" = "Meal 2";
+"Meal 3" = "Meal 3";
+"Meal 4" = "Meal 4";
+"Meal 5" = "Meal 5";
+
+"Diet calendar" = "Diet calendar";
+"Sleep calendar" = "Sleep calendar";
+"View all months" = "View all months";
+"Green marks workout days." = "Green marks workout days.";
+"Color strength shows your recorded protein progress." = "Color strength shows your recorded protein progress.";
+"Color strength shows your sleep-duration progress." = "Color strength shows your sleep-duration progress.";
+"Grey means no record or no target. Saved daily targets are used when available; otherwise your current target is used." = "Grey means no record or no target. Saved daily targets are used when available; otherwise your current target is used.";
+
+"Workout resources" = "Workout resources";
+
+"Training History" = "Training History";
+
+"Share Training History" = "Share Training History";
+
+"No workout" = "No workout";
+
+"Workout recorded" = "Workout recorded";
+
+"Improving lifts over 4 weeks" = "Improving lifts over 4 weeks";
+
+"Not enough data" = "Not enough data";
+
+"Describe meal" = "Describe meal";
+
+"Photo" = "Photo";
+
+"Diet score" = "Diet score";
+
+"All meals recorded" = "All meals recorded";
+
+"In progress · record remaining meals" = "In progress · record remaining meals";
+
+"Record a meal to see your progress" = "Record a meal to see your progress";
+
+"Estimated target adherence, not a health score." = "Estimated target adherence, not a health score.";
+
+"Try %@, or record what you eat." = "Try %@, or record what you eat.";
+
+"e.g. Two eggs, a bowl of rice and a glass of milk" = "e.g. Two eggs, a bowl of rice and a glass of milk";
+
+"Estimate nutrients" = "Estimate nutrients";
+
+"AI estimate. Check portions, sauces and drinks before confirming." = "AI estimate. Check portions, sauces and drinks before confirming.";
+
+"Describe your meal in up to 4,000 characters." = "Describe your meal in up to 4,000 characters.";
+
+"Meal analysis unavailable" = "Meal analysis unavailable";
+
+"No clear meal found. Describe foods and portions, or enter nutrients manually." = "No clear meal found. Describe foods and portions, or enter nutrients manually.";
+
+"Workout History" = "Workout History";
+
+"Share Workout History" = "Share Workout History";
+
+"Workout history" = "Workout history";
+
+"Workout target" = "Workout target";
+
+"%d of %d days this week" = "%d of %d days this week";
+
+"Membership" = "Membership";
+
+"Add meal" = "Add meal";
+
+"Meal" = "Meal";
+
+"Meal %d" = "Meal %d";
+
+"Only confirmed nutrients count toward today's score." = "Only confirmed nutrients count toward today's score.";
+
+"Why these targets?" = "Why these targets?";
+
+"Workout Insights" = "Workout Insights";
+
+"Share Workout" = "Share Workout";
+
+"Share Workout Insights" = "Share Workout Insights";
+
+"Generate meal" = "Generate meal";
+
+"Generating meal…" = "Generating meal…";
+
+"Could not estimate this meal. Add foods and portions, then try again." = "Could not estimate this meal. Add foods and portions, then try again.";
+
+"Daily goal contribution" = "Daily goal contribution";
+
+"Last 7 days" = "Last 7 days";
+
+"days / week" = "days / week";
+
+"Delete meal" = "Delete meal";
+
+"Delete meal?" = "Delete meal?";
+
+"Goal & color rules" = "Goal & color rules";
+
+"Your current target" = "Your current target";
+
+"What the colors mean" = "What the colors mean";
+
+"How it is calculated" = "How it is calculated";
+
+"Research & guidance" = "Research & guidance";
+
+"Light color" = "Light color";
+
+"Medium color" = "Medium color";
+
+"Deep color" = "Deep color";
+
+"No recorded intake/sleep or no usable target." = "No recorded intake/sleep or no usable target.";
+
+"Solid blue means actual sleep reaches your saved nightly target. Awake and time in bed are excluded. Deep and REM are references, not scoring targets." = "Solid blue means actual sleep reaches your saved nightly target. Awake and time in bed are excluded. Deep and REM are references, not scoring targets.";
+
+"Solid yellow requires all three daily macro targets. The lower end of the carb/fat ranges is the completion threshold; the upper end is guidance, not a reason to eat extra." = "Solid yellow requires all three daily macro targets. The lower end of the carb/fat ranges is the completion threshold; the upper end is guidance, not a reason to eat extra.";
+
+"Color bands are Masso's display rules, not medical thresholds. Today has a white outline. Home's oldest three dots also fade for layout." = "Color bands are Masso's display rules, not medical thresholds. Today has a white outline. Home's oldest three dots also fade for layout.";
+
+"Completion = actual sleep minutes ÷ that night's target. Values above the target earn no extra credit. Stage estimates do not determine the color." = "Completion = actual sleep minutes ÷ that night's target. Values above the target earn no extra credit. Stage estimates do not determine the color.";
+
+"The daily Diet score compares protein, carbs and fat with fixed daily targets (weights 20/10/5); each macro is capped at 100%, so extra intake cannot offset another shortfall. Meal cards show that meal's weighted contribution to the full daily targets as a percentage, not a score." = "The daily Diet score compares protein, carbs and fat with fixed daily targets (weights 20/10/5); each macro is capped at 100%, so extra intake cannot offset another shortfall. Meal cards show that meal's weighted contribution to the full daily targets as a percentage, not a score.";
+
+"Only saved meal records count. AI nutrition estimates can be inaccurate; colors measure recorded target adherence, not diet quality or health." = "Only saved meal records count. AI nutrition estimates can be inaccurate; colors measure recorded target adherence, not diet quality or health.";
+
+"Saved historical targets take priority. If a day has no saved target, the current target is used; changing today's goal does not overwrite saved goals." = "Saved historical targets take priority. If a day has no saved target, the current target is used; changing today's goal does not overwrite saved goals.";
+
+"Adults generally need 7–9 hours; ages 13–18 need 8–10 hours and ages 6–12 need 9–12 hours. Eight hours is an adult starting point. A blue dot only confirms your chosen goal, not that your sleep is healthy." = "Adults generally need 7–9 hours; ages 13–18 need 8–10 hours and ages 6–12 need 9–12 hours. Eight hours is an adult starting point. A blue dot only confirms your chosen goal, not that your sleep is healthy.";
+
+"ISSN supports about 1.4–2.0 g/kg/day of protein for most healthy exercising adults. Masso's targets are planning starting points. Its 20/10/5 weights and color bands are product choices, not research-validated health scores." = "ISSN supports about 1.4–2.0 g/kg/day of protein for most healthy exercising adults. Masso's targets are planning starting points. Its 20/10/5 weights and color bands are product choices, not research-validated health scores.";
+
+"ACSM · Nutrition and athletic performance (2016)" = "ACSM · Nutrition and athletic performance (2016)";
+
+"Add your weight for nutrition targets" = "Add your weight for nutrition targets";
+
+"Color strength shows your three-macro target progress." = "Color strength shows your three-macro target progress.";
+
+"Target used today" = "Target used today";
+
+"Current sleep target" = "Current sleep target";
+
+"Edit meal" = "Edit meal";
+
+"Save changes" = "Save changes";
+
+"Replace photo" = "Replace photo";
+
+"Weekly target" = "Weekly target";
+
+"%d days / week" = "%d days / week";
+
+"Your goal is weekly. Rest days do not count as failed daily goals." = "Your goal is weekly. Rest days do not count as failed daily goals.";
+
+"Green means at least one recorded training set that day." = "Green means at least one recorded training set that day.";
+
+"Gray means no recorded training sets that day." = "Gray means no recorded training sets that day.";
+
+"The first day after a workout." = "The first day after a workout.";
+
+"The second day after a workout." = "The second day after a workout.";
+
+"Gray appears after the two-day recovery window when there is no workout." = "Gray appears after the two-day recovery window when there is no workout.";
+
+"Recovery colors are for context and do not count toward your weekly target. Today has a white outline; the oldest three home dots fade for display only." = "Recovery colors are for context and do not count toward your weekly target. Today has a white outline; the oldest three home dots fade for display only.";
+
+"Each day with recorded training sets counts once, even if you complete several workouts. This week's count follows your calendar settings and is compared with your current weekly target." = "Each day with recorded training sets counts once, even if you complete several workouts. This week's count follows your calendar settings and is compared with your current weekly target.";
+
+"Only logged workout days count toward your weekly target. The two recovery shades are a simple display rule, not a measurement of muscle recovery or workout intensity." = "Only logged workout days count toward your weekly target. The two recovery shades are a simple display rule, not a measurement of muscle recovery or workout intensity.";
+
+"Why this target?" = "Why this target?";
+
+"Your fixed gram targets use the weight, training goal and weekly training frequency saved in Masso. If you are 65 or older, the protein factor is raised modestly. Meal count only divides the daily targets; it does not change them." = "Your fixed gram targets use the weight, training goal and weekly training frequency saved in Masso. If you are 65 or older, the protein factor is raised modestly. Meal count only divides the daily targets; it does not change them.";
+
+"Carbohydrate uses your goal and planned training days, with a 130 g adult reference floor. Fat uses a simple 0.8 g/kg planning value. These are practical estimates, not measured calorie needs or medical prescriptions." = "Carbohydrate uses your goal and planned training days, with a 130 g adult reference floor. Fat uses a simple 0.8 g/kg planning value. These are practical estimates, not measured calorie needs or medical prescriptions.";
+
+"Masso does not currently collect height or body composition, so it cannot estimate energy needs precisely. Sleep duration is not used to change macro grams because there is no established formula for doing that." = "Masso does not currently collect height or body composition, so it cannot estimate energy needs precisely. Sleep duration is not used to change macro grams because there is no established formula for doing that.";
+
+"ISSN describes protein needs as a range, not one proven ideal for every person. Masso selects a fixed planning point from body weight and training goal; carbohydrates also reflect planned weekly training days, and fat uses a simple weight-based estimate. Age modestly raises the protein factor from 65 onward. Height, body composition, medical conditions and reliable daily energy expenditure are not collected, so these values are estimates rather than a personalized clinical prescription. Sleep data is not used to change macro targets because there is no established conversion from sleep duration to daily macro grams. Scoring weights and color bands are product choices, not research-validated health scores." = "ISSN describes protein needs as a range, not one proven ideal for every person. Masso selects a fixed planning point from body weight and training goal; carbohydrates also reflect planned weekly training days, and fat uses a simple weight-based estimate. Age modestly raises the protein factor from 65 onward. Height, body composition, medical conditions and reliable daily energy expenditure are not collected, so these values are estimates rather than a personalized clinical prescription. Sleep data is not used to change macro targets because there is no established conversion from sleep duration to daily macro grams. Scoring weights and color bands are product choices, not research-validated health scores.";
+
+"Sleep score" = "Sleep score";
+
+"About this muscle" = "About this muscle";
+"Related exercises" = "Related exercises";
+"Exercises for this muscle" = "Exercises for this muscle";
+"No matching exercises yet" = "No matching exercises yet";
+"Drag sideways to rotate. Tap a muscle to learn more." = "Drag sideways to rotate. Tap a muscle to learn more.";
+"Muscle intro · Neck" = "Supports and controls head and neck movement.";
+"Muscle intro · Chest" = "Brings the arms forward and across the body, and assists pressing.";
+"Muscle intro · Shoulders" = "Raises and guides the arms through different directions.";
+"Muscle intro · Biceps" = "Bends the elbow and assists pulling.";
+"Muscle intro · Triceps" = "Straightens the elbow and assists pressing.";
+"Muscle intro · Forearms" = "Moves the wrist and helps with grip.";
+"Muscle intro · Core" = "Stabilizes the trunk and transfers force between the upper and lower body.";
+"Muscle intro · Glutes" = "Extends and stabilizes the hip.";
+"Muscle intro · Quads" = "Straightens the knee and supports squatting and stepping.";
+"Muscle intro · Hamstrings" = "Bends the knee and extends the hip.";
+"Muscle intro · Lower legs" = "Moves the ankle and foot, helping you push off and control each step.";
+"Muscle intro · Adductors" = "Draws the thigh toward the body's midline.";
+"Muscle intro · Back" = "Supports pulling movements and shoulder blade control.";
+
+"Home reminders" = "Home reminders";
+
+"Meal reminders" = "Meal reminders";
+
+"Time to eat" = "Time to eat";
+
+"Fuel your muscles with a balanced meal" = "Fuel your muscles with a balanced meal";
+
+"Time to wind down" = "Time to wind down";
+
+"Sleep helps your muscles recover" = "Sleep helps your muscles recover";
+
+"Find demo" = "Find demo";
+
+"Calendar colors" = "Calendar colors";
+
+"Tap to add photo" = "Tap to add photo";
+
+"Training in progress" = "Training in progress";
+
+"Train again" = "Train again";
+
+"Exercise details" = "Exercise details";
+
+"Training today and short sleep: fuel your workout and prioritize recovery" = "Training today and short sleep: fuel your workout and prioritize recovery";
+
+"Short sleep last night: keep protein steady and prioritize recovery" = "Short sleep last night: keep protein steady and prioritize recovery";
+
+"More training today: extra carbs support recovery" = "More training today: extra carbs support recovery";
+
+"Training today: carbs adjusted, protein stays steady" = "Training today: carbs adjusted, protein stays steady";
+
+"Recovery day: keep protein steady while muscles recover" = "Recovery day: keep protein steady while muscles recover";
+
+"No workout logged today: carbs follow your lighter activity" = "No workout logged today: carbs follow your lighter activity";
+
+"Daily adjustments" = "Daily adjustments";
+
+"Carb adjustment" = "Carb adjustment";
+
+"Carbs follow logged workouts and working sets. Training/rest offsets use 0.5 g/kg around your weekly average; high-volume days add 0.3 g/kg. The change is limited to 50 g either way, with a 130 g floor. These are Masso planning rules, not exact doses from a study." = "Carbs follow logged workouts and working sets. Training/rest offsets use 0.5 g/kg around your weekly average; high-volume days add 0.3 g/kg. The change is limited to 50 g either way, with a 130 g floor. These are Masso planning rules, not exact doses from a study.";
+
+"Protein and fat remain steady. Sleep under 7 hours changes the recovery advice, not your macro targets: sleep studies do not establish a gram adjustment for missed sleep." = "Protein and fat remain steady. Sleep under 7 hours changes the recovery advice, not your macro targets: sleep studies do not establish a gram adjustment for missed sleep.";
+
+"Each meal shows its share of the full daily targets. Today's targets update with your workout records; earlier days retain their saved targets." = "Each meal shows its share of the full daily targets. Today's targets update with your workout records; earlier days retain their saved targets.";
+
+"Carbs and resistance training · Review (2022)" = "Carbs and resistance training · Review (2022)";
+
+"Carb feeding · Meta-analysis (2022)" = "Carb feeding · Meta-analysis (2022)";
+
+"Sleep and dietary intake · Review (2020)" = "Sleep and dietary intake · Review (2020)";
+
+"Remember this preference?" = "Remember this preference?";
+
+"Saved preferences appear in Training Preferences → Notes" = "Saved preferences appear in Training Preferences → Notes";
+
+"Saved to Notes" = "Saved to Notes";
+
+"Not saved" = "Not saved";
+
+"Yes" = "Yes";
+
+"No" = "No";
+
+/* Registered SwiftUI literals — i18n coverage. */
+"/ 100" = "/ 100";
+"3D close-up of the muscles trained" = "3D close-up of the muscles trained";
+"About your targets" = "About your targets";
+"Analytics events" = "Analytics events";
+"Analyzing meal…" = "Analyzing meal…";
+"Apply suggested weight" = "Apply suggested weight";
+"Beatriz Gomez Santamaria" = "Beatriz Gomez Santamaria";
+"CURRENT" = "CURRENT";
+"Choose a starting point, then adjust each slider. Your saved gram amounts become your daily targets. Changing the number of meals only splits those totals across the day." = "Choose a starting point, then adjust each slider. Your saved gram amounts become your daily targets. Changing the number of meals only splits those totals across the day.";
+"Choose your plan before training. Rest days count as completed only when explicitly planned." = "Choose your plan before training. Rest days count as completed only when explicitly planned.";
+"Daily nutrition targets" = "Daily nutrition targets";
+"Daily records" = "Daily records";
+"Daily score" = "Daily score";
+"Enjoy unlimited plans, unlimited AI, and deep analytics. Welcome aboard." = "Enjoy unlimited plans, unlimited AI, and deep analytics. Welcome aboard.";
+"Foods and portions" = "Foods and portions";
+"Front and back muscle coverage" = "Front and back muscle coverage";
+"GOAL REFERENCE" = "GOAL REFERENCE";
+"Goal met" = "Goal met";
+"Grid" = "Grid";
+"How are these targets calculated?" = "How are these targets calculated?";
+"List" = "List";
+"Meal schedule" = "Meal schedule";
+"Meal timing divides your daily amounts; it does not change the daily totals." = "Meal timing divides your daily amounts; it does not change the daily totals.";
+"No data" = "No data";
+"No sleep data yet" = "No sleep data yet";
+"On workout days, Masso can shift carbohydrates around your weekly baseline using your logged training. Protein and fat stay at the amounts you choose." = "On workout days, Masso can shift carbohydrates around your weekly baseline using your logged training. Protein and fat stay at the amounts you choose.";
+"Phase 0: NoOpSink — nothing leaves this device." = "Phase 0: NoOpSink — nothing leaves this device.";
+"Plan adherence, not a health or muscle-growth measurement. Training 40 · protein 20 · carbs 10 · fat 5 · sleep 25. Extra training or food earns no bonus." = "Plan adherence, not a health or muscle-growth measurement. Training 40 · protein 20 · carbs 10 · fat 5 · sleep 25. Extra training or food earns no bonus.";
+"Show earlier days" = "Show earlier days";
+"Sleep" = "Sleep";
+"Sleep recorded by Apple Watch or compatible devices appears through Apple Health." = "Sleep recorded by Apple Watch or compatible devices appears through Apple Health.";
+"Sleep target progress" = "Sleep target progress";
+"Solid yellow means all three fixed daily targets are met. Going above a target does not add extra credit." = "Solid yellow means all three fixed daily targets are met. Going above a target does not add extra credit.";
+"Starting amounts use your body weight and training goal. Training-day carbs can adjust with your logged workouts." = "Starting amounts use your body weight and training goal. Training-day carbs can adjust with your logged workouts.";
+"The first day after a recorded workout." = "The first day after a recorded workout.";
+"The presets are simple starting estimates based on body weight and common sports-nutrition guidance. They are not measurements of your calorie needs or medical advice. Choose amounts that fit your appetite, training and guidance from your clinician or dietitian." = "The presets are simple starting estimates based on body weight and common sports-nutrition guidance. They are not measurements of your calorie needs or medical advice. Choose amounts that fit your appetite, training and guidance from your clinician or dietitian.";
+"The second day after a recorded workout." = "The second day after a recorded workout.";
+"Today's training goal" = "Today's training goal";
+"We use your body weight and training goal to set protein and carbohydrate targets. Weekly training days also shape your starting carbs; fat starts at about 0.8 g per kg of body weight." = "We use your body weight and training goal to set protein and carbohydrate targets. Weekly training days also shape your starting carbs; fat starts at about 0.8 g per kg of body weight.";
+"⇥" = "⇥";
+
+/* Additional SwiftUI labels found by the expanded localization audit. */
+"%lld working sets" = "%lld working sets";
+"%lld% daily goal" = "%lld% daily goal";
+"%lldh %lldm goal" = "%lldh %lldm goal";
+"%lldh %lldm last night" = "%lldh %lldm last night";
+"A practical guide" = "A practical guide";
+"AI Plans" = "AI Plans";
+"AI estimate. Check portions and include sauces, drinks or foods outside the photo." = "AI estimate. Check portions and include sauces, drinks or foods outside the photo.";
+"Bedtime" = "Bedtime";
+"Below goal" = "Below goal";
+"Browse training plans from the community" = "Browse training plans from the community";
+"Choose photo" = "Choose photo";
+"Complete your records to see your score" = "Complete your records to see your score";
+"Confirm meal" = "Confirm meal";
+"Confirming replaces this meal's previous record. Only confirmed nutrients count toward today's score." = "Confirming replaces this meal's previous record. Only confirmed nutrients count toward today's score.";
+"Connect Apple Health" = "Connect Apple Health";
+"Couldn't read sleep data" = "Couldn't read sleep data";
+"Daily goals: bright = all met · dim = partial" = "Daily goals: bright = all met · dim = partial";
+"Daily intake recorded" = "Daily intake recorded";
+"Daily score. View Insights" = "Daily score. View Insights";
+"Debug" = "Debug";
+"Drag the moon and sun to set your schedule. This sets a goal, not an alarm." = "Drag the moon and sun to set your schedule. This sets a goal, not an alarm.";
+"Estimated meal progress" = "Estimated meal progress";
+"Estimated nutrients" = "Estimated nutrients";
+"Force US storefront (debug)" = "Force US storefront (debug)";
+"Layout" = "Layout";
+"Make it yours" = "Make it yours";
+"Meals" = "Meals";
+"Muscles" = "Muscles";
+"Personal daily targets" = "Personal daily targets";
+"Planned rest day" = "Planned rest day";
+"Profile-based starting point" = "Profile-based starting point";
+"Record again" = "Record again";
+"Record meal" = "Record meal";
+"Retry analysis" = "Retry analysis";
+"Sleep schedule" = "Sleep schedule";
+"Sleep: bright = goal met · dim = below goal" = "Sleep: bright = goal met · dim = below goal";
+"Starting point" = "Starting point";
+"Take photo" = "Take photo";
+"Today · updating" = "Today · updating";
+"Today's intake · updating" = "Today's intake · updating";
+"Track sleep with Apple Health" = "Track sleep with Apple Health";
+"Training days" = "Training days";
+"Unlock Pro (debug)" = "Unlock Pro (debug)";
+"Wake up" = "Wake up";
+"Your starting point" = "Your starting point";
+
+"Completed" = "Completed";
+
+/* Meal nutrient evidence and portion correction */
+"Nutrition estimate" = "Nutrition estimate";
+"Estimated portions. Adjust grams if needed." = "Estimated portions. Adjust grams if needed.";
+"Food data: USDA" = "Food data: USDA";
+"AI estimate" = "AI estimate";
+"Nutrition label" = "Nutrition label";
+
+/* Recovery timeline and remaining-nutrient meal */
+"Recovery estimate" = "Recovery estimate";
+"Estimated from recorded workouts, not a measured recovery score." = "Estimated from recorded workouts, not a measured recovery score.";
+"Last meal" = "Last meal";
+"Remaining today" = "Remaining today";
+"Daily targets met" = "Daily targets met";
+"Suggested meal" = "Suggested meal";
+"Based on logged meals · Cooked / ready-to-eat weights" = "Based on logged meals · Cooked / ready-to-eat weights";
+"Log a meal first" = "Log a meal first";
+"Use suggestion" = "Use suggestion";
+"No suitable foods" = "No suitable foods";
+"No extra meal suggested" = "No extra meal suggested";
+"Salmon" = "Salmon";
+"Olive oil" = "Olive oil";
+"Almonds" = "Almonds";
+"Now" = "Now";
+
+"Share month" = "Share month";
+
+"Share day" = "Share day";
+
+"Share overview" = "Share overview";
+
+"Train with Masso" = "Train with Masso";
+
+"Average target progress" = "Average target progress";
+
+"%lld of %lld days recorded" = "%lld of %lld days recorded";
+
+"Last 30 days" = "Last 30 days";
+
+"This month" = "This month";
+
+"Custom" = "Custom";
+
+"Period" = "Period";
+
+"From" = "From";
+
+"To" = "To";
+
+"Tap a day to share" = "Tap a day to share";
+
+"Target progress" = "Target progress";
+
+"What can I eat to meet my remaining targets?" = "What can I eat to meet my remaining targets?";
+
+"Meal suggestion" = "Meal suggestion";
+
+"Adjust meal" = "Adjust meal";
+
+"Refresh suggestion" = "Refresh suggestion";
+
+"Vegetables" = "Vegetables";
+
+"Spinach" = "Spinach";
+
+"Log this meal" = "Log this meal";
+
+"Average per recorded day" = "Average per recorded day";
+
+// Unified daily calendar
+"Week" = "Week";
+"Month" = "Month";
+"Today has a white outline." = "Today has a white outline.";
+"No workout recorded on this day." = "No workout recorded on this day.";
+
+"Today has a white circle and a black date number." = "Today has a white circle and a black date number.";
+
+"Custom workout" = "Custom workout";
+"g" = "g";
+
+// Muscle recovery action guidance
+"Fresh · Ready to train" = "Fresh · Ready to train";
+"Rested · Ready to train" = "Rested · Ready to train";
+"Recovering · Keep it light" = "Recovering · Keep it light";
+"Fatigued · Rest recommended" = "Fatigued · Rest recommended";
+
+// Home summary timeframes and complete calendar legend
+"Today · %@" = "Today · %@";
+"Muscle recovery shades are shown in My Muscle Status." = "Muscle recovery shades are shown in My Muscle Status.";
+"Daily diet completion compares protein, carbs and fat with that day's targets." = "Daily diet completion compares protein, carbs and fat with that day's targets.";
+"Blue shades show actual sleep relative to that night's target." = "Blue shades show actual sleep relative to that night's target.";
+"Future dates have no records yet." = "Future dates have no records yet.";
+
+"Historical target unavailable" = "Historical target unavailable";
+
+"Import workouts from Apple Health" = "Import workouts from Apple Health";
+
+"No imported workouts yet. Check Workout access in Apple Health." = "No imported workouts yet. Check Workout access in Apple Health.";
+
+"Unable to import workouts. Try again." = "Unable to import workouts. Try again.";
+
+"External workout" = "External workout";
+
+"Walking" = "Walking";
+
+"Cycling" = "Cycling";
+
+"Running" = "Running";
+
+"Swimming" = "Swimming";
+
+"Hiking" = "Hiking";
+
+"Yoga" = "Yoga";
+
+"Strength training" = "Strength training";
+
+"Other workout" = "Other workout";
+
+"Each day with a Masso workout or imported Apple Health workout counts once. Imported workouts do not advance your workout plan or count toward muscle progress." = "Each day with a Masso workout or imported Apple Health workout counts once. Imported workouts do not advance your workout plan or count toward muscle progress.";
+
+"Diet score shows weighted intake relative to daily protein, carbs and fat targets (20/10/5), rounded to a whole percentage. It can exceed 100%; this means above target, not healthier. Meal percentages show their contribution to the daily targets." = "Diet score shows weighted intake relative to daily protein, carbs and fat targets (20/10/5), rounded to a whole percentage. It can exceed 100%; this means above target, not healthier. Meal percentages show their contribution to the daily targets.";
+
+"How to train this muscle" = "How to train this muscle";
+
+"Train more" = "Train more";
+
+"Adjust my saved workouts to train %@ more. Keep my training preferences, equipment, available time and recovery in mind. Show which exercises and sets you would change. If I have no saved workouts, create a suitable plan." = "Adjust my saved workouts to train %@ more. Keep my training preferences, equipment, available time and recovery in mind. Show which exercises and sets you would change. If I have no saved workouts, create a suitable plan.";
+
+"Train smart, your way." = "Train smart, your way.";
+
+"Deep sleep is compared with the median of your previous 14 days, using at least 3 recorded nights. It is a personal reference, not a medical target, and does not affect Sleep score. Missing sleep stages or insufficient history show —." = "Deep sleep is compared with the median of your previous 14 days, using at least 3 recorded nights. It is a personal reference, not a medical target, and does not affect Sleep score. Missing sleep stages or insufficient history show —.";
+
+"Show more" = "Show more";
+
+"Update Training Preferences?" = "Update Training Preferences?";
+
+"Preferences changed. Please ask again to review the latest values." = "Preferences changed. Please ask again to review the latest values.";
+
+"Consider a heavier weight" = "Consider a heavier weight";
+
+"You logged more than 12 reps. If your form stayed steady and you had reps left, consider a small weight increase next time" = "You logged more than 12 reps. If your form stayed steady and you had reps left, consider a small weight increase next time";
+
+"Exit" = "Exit";
+
+"This removes the record from Masso only. Apple Health keeps the original." = "This removes the record from Masso only. Apple Health keeps the original.";
+
+"The date ring shows Workout at the top, Diet at the lower left and Sleep at the lower right. Each colored segment shows that day's recorded progress. Grey means no recorded progress; progress above 100% fills the segment." = "The date ring shows Workout at the top, Diet at the lower left and Sleep at the lower right. Each colored segment shows that day's recorded progress. Grey means no recorded progress; progress above 100% fills the segment.";
+"Your muscles are off duty. Put your phone down and sleep well." = "Your muscles are off duty. Put your phone down and sleep well.";
+
+"Fuller arcs mean more progress" = "Fuller arcs mean more progress";
+
+"Training fills green; rest days aren't failures" = "Training fills green; rest days aren't failures";
+
+"Today's macros vs daily targets" = "Today's macros vs daily targets";
+
+"Daily overview" = "Daily overview";
+
+"Recovery & workout" = "Recovery & workout";
+
+"Single metric" = "Single metric";
+
+"Main metric" = "Main metric";
+
+"Body view" = "Body view";
+
+"Content" = "Content";
+
+"Open Masso to update" = "Open Masso to update";
+
+"Your day at a glance" = "Your day at a glance";
+
+"Muscle recovery and your next workout" = "Muscle recovery and your next workout";
+
+"One metric, your choice" = "One metric, your choice";
+
+"Full body" = "Full body";
+
+/* Muscle recovery list */
+"Muscle recovery" = "Muscle recovery";
+"Most recovered first" = "Most recovered first";
+
+/* Shared history archive */
+"All history" = "All history";
+
+/* Separate daily history entries */
+"All diet history" = "All diet history";
+"All sleep history" = "All sleep history";
+
+"All workout history" = "All workout history";
+
+/* Lift progress empty state */
+"Keep logging workouts to see your progress" = "Keep logging workouts to see your progress";
+
+/* Exercise demo generation — shared server library */
+"demo.title" = "AI exercise demo";
+"demo.credits" = "AI credits";
+"demo.available" = "Available";
+"demo.reserved" = "Reserved";
+"demo.cost" = "%d credits";
+"demo.generate" = "Generate demo";
+"demo.insufficient" = "Not enough credits. Credit top-ups are not available yet.";
+"demo.unavailable" = "Demo generation is not available yet. No credits will be used.";
+"demo.sharing" = "Approved demos join Masso’s shared library. Only the exercise ID is sent; no photos, chat or health records.";
+"demo.confirm" = "Generate this demo?";
+"demo.confirmBody" = "Reserve %d credits? They are charged only after approval. Failed or rejected demos use no credits. The approved video will be shared in Masso’s library.";
+"demo.ready" = "Demo ready";
+"demo.queued" = "Queued — you can close this page";
+"demo.running" = "Generating — you can close this page";
+"demo.review" = "Checking the demo before sharing";
+"demo.failed" = "Generation failed. Reserved credits were released.";
+"demo.corePending" = "This core demo is being prepared";
+"demo.missing" = "No shared demo yet";
+"demo.refresh" = "Refresh status";
+"demo.check" = "Check again";
+"demo.quoteChanged" = "The quote changed. Refresh before continuing.";
+"demo.unknown" = "This exercise is not in the supported library.";
+"demo.plan" = "Exercise demos";
+"demo.planHint" = "Choose an exercise to check its demo. Generating your workout never starts a paid video task.";
+
+"Subscription options are unavailable right now" = "Subscription options are unavailable right now";
+
+"Restore web purchase" = "Restore web purchase";
+
+"Basic workout logging and history stay free" = "Basic workout logging and history stay free";
+
+"Compare your lifts over time with Masso Pro" = "Compare your lifts over time with Masso Pro";
+
+"No active subscription found" = "No active subscription found";
+
+"Unlimited plans · AI coach · Lift progress" = "Unlimited plans · AI coach · Lift progress";
+
+"AI data sharing" = "AI data sharing";
+
+"ai.dataSharing.explanation" = "AI requests send your training details, messages and selected images to Anthropic (Claude) or Alibaba Cloud Bailian (Qwen) through our servers. Information visible in selected screenshots is included; Apple Health imports are not sent automatically. You can withdraw permission in Settings. Allow AI data sharing?";
+
+/* Compact exercise families */
+"Everyday" = "Everyday";
+"All versions (%d)" = "All versions (%d)";
+"Pinned and recent" = "Pinned and recent";
+"Suggested replacements" = "Suggested replacements";
+
+/* Restored paywall and request-based AI reminders */
+"Use AI without upgrade reminders" = "Use AI without upgrade reminders";
+"Save a routine for every training day" = "Save a workout plan for every training day";
+"AI without interruptions" = "AI without interruptions";
+"Skip upgrade reminders whenever you use AI" = "Skip upgrade reminders whenever you use AI";
+"Lift progress and personalized training summaries" = "Lift progress and personalized training summaries";
+"Fine-grained recovery" = "Fine-grained recovery";
+"See recovery for individual muscles" = "See recovery for individual muscles";
+"Billed yearly" = "Billed yearly";
+"7-day free trial" = "7-day free trial";
+"Subscribe" = "Subscribe";
+"Continue free" = "Continue free";
+"Close this offer to continue your AI request" = "Close this offer to continue your AI request";
+"7 days free, then %@ per %@. Renews automatically until cancelled." = "7 days free, then %@ per %@. Renews automatically until cancelled.";
+"%@ per %@. Renews automatically until cancelled." = "%@ per %@. Renews automatically until cancelled.";
+"Unlimited routines, uninterrupted AI, deep analytics." = "Unlimited workout plans, uninterrupted AI, deep analytics.";
+"Unlimited plans · Uninterrupted AI · Lift progress" = "Unlimited plans · Uninterrupted AI · Lift progress";
+"Deep analytics" = "Deep analytics";
+"Try again" = "Try again";
+
+"AI couldn't produce a valid routine. Please try again." = "AI couldn't produce a valid workout plan. Please try again.";
+
+/* Onboarding goals — words only */
+"onboarding.goal.buildMuscle" = "Build muscle";
+"onboarding.goal.getStronger" = "Get stronger";
+"onboarding.goal.loseFat" = "Lose fat";
+"onboarding.goal.generalFitness" = "Stay fit & healthy";
+"Training schedule" = "Training schedule";
+"Training plan" = "Workout Plan";
+"Tap muscles to select; tap again to clear" = "Tap muscles to select; tap again to clear";
+"Session length" = "Session length";
+"View plan" = "View plan";
+"No target" = "No target";
+"Workout %d" = "Workout %d";
+"Set your working weights when you train" = "Set your working weights when you train";
+"No exercises match" = "No exercises match";
+"Gym" = "Gym";
+"Bodyweight" = "Bodyweight";
+
+"Routine limit reached" = "Workout plan limit reached";
+"Continue without saving" = "Continue without saving";
+"Upgrade" = "Upgrade";
+
+"Preview onboarding" = "Preview onboarding";
+
+"equipment.pull_up_bar" = "Pull-up bar";
+
+"Pull-up bar" = "Pull-up bar";
+
+/* Onboarding body interaction */
+"Tap to select · Pinch to zoom" = "Tap to select · Pinch to zoom";
+
+/* Muscle detail: focus training request */
+"Train this muscle more" = "Train this muscle more";
+
+"Choose at least one training day" = "Choose at least one training day";
+
+/* Training environment / home equipment */
+"Training environment" = "Training environment";
+"Home" = "Home";
+"Home equipment" = "Home equipment";
+"No equipment selected. Bodyweight only." = "No equipment selected. Bodyweight only.";
+"Adjustable bench" = "Adjustable bench";
+"equipment.bench_flat" = "Flat bench";
+"equipment.squat_rack" = "Squat rack";
+
+/* Compact Pro brand banner, 2026-10-21 */
+"More plans, fewer interruptions" = "More plans, fewer interruptions";
+"Explore Pro" = "Explore Pro";
+
+"Watch on YouTube" = "Watch on YouTube";
+
+"Weight per dumbbell" = "Weight per dumbbell";
+
+"Reference from %@" = "Reference from %@";
+
+"Update and generate" = "Update and generate";
+
+"Correct this set and update related weight references." = "Correct this set and update related weight references.";
+
+/* First-run AI Coach launcher tooltip. */
+"Chat about your goals to get a new routine." = "Chat about your goals to get a new workout plan.";
+
+"This workout" = "This workout";
+
+"Variants" = "Variants";
+
+"Default version" = "Default version";
+
+"Hide rare variants" = "Hide rare variants";
+
+"Pinned" = "Pinned";
+
+"Video unavailable" = "Video unavailable";
+
+"Loading video" = "Loading video";
+
+"Video playing" = "Video playing";
+
+
+"Finish saves this workout. Discard removes it from history." = "Finish saves this workout. Discard removes it from history.";
+"This workout won’t be saved." = "This workout won’t be saved.";
+
+"Adjust your daily targets; saved amounts stay fixed." = "Adjust your daily targets; saved amounts stay fixed.";
+"Automatic carb adjustments apply only before you set a daily carbohydrate target." = "Automatic carb adjustments apply only before you set a daily carbohydrate target.";
+
+"Meal time" = "Meal time";
+
+"QR code" = "QR code";
+
+"Calories" = "Calories";
+
+"Estimated from protein, carbs and fat." = "Estimated from protein, carbs and fat.";
+
+"USDA · Food energy" = "USDA · Food energy";
+
+"Read body & activity" = "Read body & activity";
+
+"Read available history for weight, height, steps and energy." = "Read available history for weight, height, steps and energy.";
+
+"Body measurements" = "Body measurements";
+
+"Height" = "Height";
+
+"Use Health weight" = "Use Health weight";
+
+"Use Health height" = "Use Health height";
+
+"Updates your profile and local nutrition targets. Manual targets stay fixed." = "Updates your profile and local nutrition targets. Manual targets stay fixed.";
+
+"Weight trend" = "Weight trend";
+
+"Today so far" = "Today so far";
+
+"Steps" = "Steps";
+
+"Active energy" = "Active energy";
+
+"Resting energy" = "Resting energy";
+
+"Energy burned" = "Energy burned";
+
+"Health history" = "Health history";
+
+"Some data couldn't refresh." = "Some data couldn't refresh.";
+
+"No records yet. Check access and data in Apple Health." = "No records yet. Check access and data in Apple Health.";
+
+"Imported health data stays on this device and is not sent to AI Coach." = "Imported health data stays on this device and is not sent to AI Coach.";
+
+"Couldn't read Apple Health. Try again." = "Couldn't read Apple Health. Try again.";
+
+"Connect body & activity" = "Connect body & activity";
+
+"Profile weight" = "Profile weight";
+
+"Targets use weight and training preferences. Health activity is a reference, not an extra food allowance." = "Targets use weight and training preferences. Health activity is a reference, not an extra food allowance.";
+
+"Nutrition targets are estimates based on weight and training preferences. Health activity does not automatically change them." = "Nutrition targets are estimates based on weight and training preferences. Health activity does not automatically change them.";
+
+"Recorded energy, not a full-day forecast. Your food target stays unchanged." = "Recorded energy, not a full-day forecast. Your food target stays unchanged.";
+
+"Date" = "Date";
+
+"Last synced" = "Last synced";
+
+/* AI Coach: single-session workouts */
+"Single workout" = "Single workout";
+"Your workout is ready." = "Your workout is ready.";
+"Couldn't create this workout. Please try again." = "Couldn’t create this workout. Please try again.";
+"About %d min" = "About %d min";
+
+/* Inline exercise family expansion */
+"%@ more versions" = "%@ more versions";
+"Fewer versions" = "Fewer versions";
+
+/* Workout progress, observed timing and personal heart-rate reminders */
+"Jump to first unfinished set" = "Jump to first unfinished set";
+"Rest duration" = "Rest duration";
+"Applies to this rest only." = "Applies to this rest only.";
+"Edit rest time" = "Edit rest time";
+"Read workout heart rate" = "Read workout heart rate";
+"Open Masso on Apple Watch" = "Open Masso on Apple Watch";
+"Live readings need a heart-rate sensor. No reading means no heart-rate warning." = "Live readings need a heart-rate sensor. No reading means no heart-rate warning.";
+"Reminder limit" = "Reminder limit";
+"Over your limit for 15 seconds: pause and rest. This is a personal reminder, not a medical alarm." = "Over your limit for 15 seconds: pause and rest. This is a personal reminder, not a medical alarm.";
+"No heart-rate samples yet" = "No heart-rate samples yet";
+"Heart-rate data stays on this device and is not sent to AI Coach." = "Heart-rate data stays on this device and is not sent to AI Coach.";
+"Delete heart-rate history" = "Delete heart-rate history";
+"Delete heart-rate history?" = "Delete heart-rate history?";
+"Couldn't connect to Apple Health." = "Couldn't connect to Apple Health.";
+"Open Masso on your paired Apple Watch to read live heart rate." = "Open Masso on your paired Apple Watch to read live heart rate.";
+"Enter a limit from 40 to 240 bpm." = "Enter a limit from 40 to 240 bpm.";
+"Heart rate is above your limit" = "Heart rate is above your limit";
+"Pause and rest" = "Pause and rest";
+"Your heart rate stayed above your personal limit for 15 seconds." = "Your heart rate stayed above your personal limit for 15 seconds.";
+"Heart rate" = "Heart rate";
+"Workout report" = "Workout report";
+"Logged sets" = "Logged sets";
+"Tracked set time" = "Tracked set time";
+"Recorded rest" = "Recorded rest";
+"%d of %d sets have timing" = "%d of %d sets have timing";
+"Tracked time follows the workout controls, not time under tension." = "Tracked time follows the workout controls, not time under tension.";
+"Set timeline" = "Set timeline";
+"Sampled heart rate" = "Sampled heart rate";
+"Average / peak heart rate" = "Average / peak heart rate";
+"Target duration" = "Target duration";
+"Peak heart rate" = "Peak heart rate";
+"Allow more recovery" = "Allow more recovery";
+"Your readings stayed above your reminder limit. Review this workout before increasing intensity." = "Your readings stayed above your reminder limit. Review this workout before increasing intensity.";
+"Your reps fell while rests were short. Try more recovery between sets." = "Your reps fell while rests were short. Try more recovery between sets.";
+"Review your logged workload and rest before increasing intensity." = "Review your logged workload and rest before increasing intensity.";
+"bpm" = "bpm";
+
+"Dismiss" = "Dismiss";
+
+"equipment.ab_wheel" = "Ab Wheel";
+"equipment.abductor_machine" = "Machine";
+"equipment.adductor_machine" = "Machine";
+"equipment.air_bike" = "Air Bike";
+"equipment.arc_trainer" = "Elliptical";
+"equipment.assault_bike" = "Air Bike";
+"equipment.axle_bar" = "Axle Bar";
+"equipment.ball" = "Stability Ball";
+"equipment.band" = "Band";
+"equipment.battle_rope" = "Battle Rope";
+"equipment.belt_squat_machine" = "Machine";
+"equipment.bench" = "Bench";
+"equipment.bench_decline" = "Bench";
+"equipment.bench_incline" = "Bench";
+"equipment.bike" = "Stationary Bike";
+"equipment.box" = "Box";
+"equipment.calf_raise_machine" = "Machine";
+"equipment.captains_chair" = "Machine";
+"equipment.chains" = "Chains";
+"equipment.dip_bar" = "Parallel Bars";
+"equipment.dip_bars" = "Parallel Bars";
+"equipment.dip_belt" = "Weight Belt";
+"equipment.donkey_calf_machine" = "Machine";
+"equipment.elliptical" = "Elliptical";
+"equipment.ez_bar" = "EZ-Bar";
+"equipment.ez_curl_bar" = "EZ-Bar";
+"equipment.fat_grip" = "Fat Grip";
+"equipment.foam_roller" = "Foam Roller";
+"equipment.ghd_machine" = "Machine";
+"equipment.glute_kickback_machine" = "Machine";
+"equipment.grip_crusher" = "Hand Gripper";
+"equipment.gripper" = "Hand Gripper";
+"equipment.gymnastic_rings" = "Rings";
+"equipment.hack_squat_machine" = "Machine";
+"equipment.hip_thrust_machine" = "Machine";
+"equipment.hyperextension_bench" = "Roman Chair";
+"equipment.jump_rope" = "Jump Rope";
+"equipment.kettlebell" = "Kettlebell";
+"equipment.landmine" = "Landmine";
+"equipment.leg_curl_machine" = "Machine";
+"equipment.leg_extension_machine" = "Machine";
+"equipment.leg_press_machine" = "Machine";
+"equipment.medicine_ball" = "Medicine Ball";
+"equipment.parallel_bars" = "Parallel Bars";
+"equipment.partner" = "Partner";
+"equipment.platform" = "Box";
+"equipment.plyo_box" = "Box";
+"equipment.power_rack" = "Rack";
+"equipment.preacher_bench" = "Bench";
+"equipment.push_up_handles" = "Push-Up Handles";
+"equipment.pvc_pipe" = "PVC Pipe";
+"equipment.rack" = "Rack";
+"equipment.resistance_band" = "Band";
+"equipment.reverse_hyper_machine" = "Machine";
+"equipment.rice_bucket" = "Rice Bucket";
+"equipment.rings" = "Rings";
+"equipment.roman_chair" = "Roman Chair";
+"equipment.rope" = "Rope Attachment";
+"equipment.rower" = "Rowing Machine";
+"equipment.rowing_machine" = "Rowing Machine";
+"equipment.safety_squat_bar" = "Safety Bar";
+"equipment.sissy_squat_machine" = "Machine";
+"equipment.ski_erg" = "Ski Erg";
+"equipment.sled" = "Sled";
+"equipment.sledgehammer" = "Sledgehammer";
+"equipment.sliders" = "Sliders";
+"equipment.smith_machine" = "Smith Machine";
+"equipment.spin_bike" = "Spin Bike";
+"equipment.stairmaster" = "Stair Climber";
+"equipment.stationary_bike" = "Stationary Bike";
+"equipment.swiss_ball" = "Stability Ball";
+"equipment.t_bar" = "Barbell";
+"equipment.tibialis_machine" = "Machine";
+"equipment.towel" = "Towel";
+"equipment.trap_bar" = "Trap Bar";
+"equipment.treadmill" = "Treadmill";
+"equipment.trx" = "TRX";
+"equipment.v_bar" = "V-Bar";
+"equipment.wall" = "Wall";
+"equipment.weight_belt" = "Weight Belt";
+"equipment.weight_plate" = "Weight Plate";
+"equipment.wrist_roller" = "Wrist Roller";
+"equipment.yoga_strap" = "Yoga Strap";
+
+"equipment.body_only" = "Bodyweight";
+
+"Save rest settings?" = "Save rest settings?";
+
+"Save to Training Preferences and apply to all workouts?" = "Save to Training Preferences and apply to all workouts?";
+
+"Create training plans based on this report?" = "Create training plans based on this report?";
+
+"Generate plans from this report" = "Generate plans from this report";
+
+"Body photo" = "Body photo";
+
+"Menu" = "Menu";
+
+"Training or health records" = "Training or health records";
+
+"Share or exercise photo" = "Share or exercise photo";
+
+"Choose image use" = "Choose image use";
+
+"Training plans found. Review before adding." = "Training plans found. Review before adding.";
+
+"Couldn't read this image. Choose its use or try a clearer photo." = "Couldn't read this image. Choose its use or try a clearer photo.";
+
+"Add a message or let AI identify the image." = "Add a message or let AI identify the image.";
+
+"Review this image" = "Review this image";
+
+"Review routines" = "Review workout plans";
+
+"Adapt to my preferences" = "Adapt to my preferences";
+
+"Check portions and meal time before saving." = "Check portions and meal time before saving.";
+
+"Choose what you ate before logging a meal." = "Choose what you ate before logging a meal.";
+
+"Possible exercises" = "Possible exercises";
+
+"Screenshot values are not added to your records." = "Screenshot values are not added to your records.";
+
+"View my records" = "View my records";
+
+"Use as share photo" = "Use as share photo";
+
+"Use as exercise photo" = "Use as exercise photo";
+
+"Change image use" = "Change image use";
+
+"Reading image…" = "Reading image…";
+
+"Several plan codes found. Upload one share card at a time." = "Several plan codes found. Upload one share card at a time.";
+
+"Image analysis is unavailable. Try again." = "Image analysis is unavailable. Try again.";
+
+"AI permission wasn't granted. Your image wasn't sent." = "AI permission wasn't granted. Your image wasn't sent.";
+
+"Allow" = "Allow";
+
+// Regional exercise tutorials
+"Watch tutorial" = "Watch tutorial";
+"Watch on bilibili" = "Watch on bilibili";
+"Search on bilibili" = "Search on bilibili";
+
+"Same target muscles" = "Same target muscles";
+
+"Switch exercise" = "Switch exercise";
+
+"exercise.media.unverified" = "Unverified";
+
+
+
+/* One-off quick workout */
+"AI Quick Workout" = "AI Quick Workout";
+"Let AI recommend" = "Let AI recommend";
+"Mobility & stretching" = "Mobility & stretching";
+"Training type" = "Training type";
+"Intensity" = "Intensity";
+"Easy" = "Easy";
+"Moderate" = "Moderate";
+"High intensity" = "High intensity";
+"Use saved equipment" = "Use saved equipment";
+"%lld min" = "%lld min";
+"Time is an estimate including rests. These choices apply only to this workout." = "Time is an estimate including rests. These choices apply only to this workout.";
+"Anything else?" = "Anything else?";
+"Goals, focus or movements to avoid" = "Goals, focus or movements to avoid";
+"Generate this workout" = "Generate this workout";
+"Wait for the current response before generating another workout." = "Wait for the current response before generating another workout.";
+
+"Show recovery in workout calendar" = "Show recovery in workout calendar";
+"After a recorded workout, the calendar shows a shorter green bar for two rest days. This is a time-based guide, not a muscle recovery measurement." = "After a recorded workout, the calendar shows a shorter green bar for two rest days. This is a time-based guide, not a muscle recovery measurement.";
+"Recovery day" = "Recovery day";
+
+/* Exercise media reports */
+"Report exercise media" = "Report exercise media";
+"What is wrong?" = "What is wrong?";
+"Wrong exercise" = "Wrong exercise";
+"Wrong equipment" = "Wrong equipment";
+"Image or video problem" = "Image or video problem";
+"Add details (optional)" = "Add details (optional)";
+"The exercise and displayed media version are included with your report." = "The exercise and displayed media version are included with your report.";
+
+"Exercise" = "Exercise";
+
+"Choose a previous meal" = "Choose a previous meal";
+
+"Health & Features" = "Health & Features";
+"App Preferences" = "App Preferences";
+"Privacy & Data" = "Privacy & Data";
+
+"Using recommendation" = "Using recommendation";
+
+"Reset to recommendation" = "Reset to recommendation";
+
+"Based on your recent workout heart rates and age when available." = "Based on your recent workout heart rates and age when available.";
+
+"Estimated from your age; it will adjust as workout data becomes available." = "Estimated from your age; it will adjust as workout data becomes available.";
+
+"Starting estimate until your age or workout heart-rate history is available." = "Starting estimate until your age or workout heart-rate history is available.";
+
+"Recommendations are estimates, not a medical safety limit. Medication and health conditions can affect heart rate." = "Recommendations are estimates, not a medical safety limit. Medication and health conditions can affect heart rate.";
+
+"Exercises and heart rate" = "Exercises and heart rate";
+
+"Gaps indicate missing or untracked samples." = "Gaps indicate missing or untracked samples.";
+
+"Above your reminder limit" = "Above your reminder limit";
+
+"During %@, heart rate reached %d bpm. Consider slowing down and resting if needed." = "During %@, heart rate reached %d bpm. Consider slowing down and resting if needed.";
+
+"Heart rate settings" = "Heart rate settings";
+
+"Connect heart rate" = "Connect heart rate";
+
+"Allow heart-rate access to see available workout readings." = "Allow heart-rate access to see available workout readings.";
+
+"Exercise duration" = "Exercise duration";
+
+"No workout timing yet" = "No workout timing yet";
+
+"Some timing is unavailable" = "Some timing is unavailable";
+
+"If access was denied, update Masso's permissions in the Health app." = "If access was denied, update Masso's permissions in the Health app.";
+
+"Some samples have no saved reminder limit." = "Some samples have no saved reminder limit.";
+
+"No recorded reminders" = "No recorded reminders";
+
+"Heart-rate reminders" = "Heart-rate reminders";
+
+"No sustained above-limit episodes" = "No sustained above-limit episodes";
+
+"Consider slowing down or resting." = "Consider slowing down or resting.";
+
+"Expand heart rate card" = "Expand heart rate card";
+"Collapse heart rate card" = "Collapse heart rate card";
+
+"Show heart rate card" = "Show heart rate card";
+
+"Automatic heart rate control" = "Automatic heart rate control";
+
+"Experimental: heart rate changes can automatically log a set or skip rest. Readings may be delayed or incorrect; use Undo if needed." = "Experimental: heart rate changes can automatically log a set or skip rest. Readings may be delayed or incorrect; use Undo if needed.";
+
+"Set logged automatically" = "Set logged automatically";
+
+"Rest skipped automatically" = "Rest skipped automatically";
+
+"Report" = "Report";
+
+"Save plans & start" = "Save plans & start";
+
+"Want to adjust your training plan? Ask AI Coach." = "Want to adjust your training plan? Ask AI Coach.";
+"Share a body photo for training suggestions." = "Share a body photo for training suggestions.";
+"Review my body photo and suggest balanced training adjustments." = "Review my body photo and suggest balanced training adjustments.";
+
+"What are your training goals and focus areas?" = "What are your training goals and focus areas?";
+"When and where would you like to train?" = "When and where would you like to train?";
+
+"The muscle map shows which areas you have trained." = "The muscle map shows which areas you have trained.";
+
+"Suggested focus" = "Suggested focus";
+"Create a plan from these suggestions" = "Create a plan from these suggestions";
+
+"Create a plan" = "Create a plan";
+
+/* Accomplishment share */
+"Training that gets you." = "Training that gets you.";
+"This month, %d training days" = "This month, %d training days";
+"This week, %d training days" = "This week, %d training days";
+"As of %@" = "As of %@";
+"%d sessions" = "%d sessions";
+"Sessions" = "Sessions";
+"No workouts logged" = "No workouts logged";
+"Just finished" = "Just finished";
+"This day's records" = "This day's records";
+"No completed sets to share" = "No completed sets to share";
+"Morning" = "Morning";
+"Afternoon" = "Afternoon";
+"Evening" = "Evening";
+"Night" = "Night";
+"Same exercise, another step" = "Same exercise, another step";
+"per dumbbell" = "per dumbbell";
+"%@ · same reps" = "%@ · same reps";
+"Share this progress" = "Share this progress";
+"Exact time" = "Exact time";
+"Photo included" = "Photo included";
+"Heart rate, body weight, location, and your name stay off this card." = "Heart rate, body weight, location, and your name stay off this card.";
+"A missing log is not a missed workout" = "A missing log is not a missed workout";
+"Future day" = "Future day";
+"No workout logged" = "No workout logged";
+"No same-reps weight increase to share yet" = "No same-reps weight increase to share yet";
+"Minutes" = "Minutes";
+
+// Calendar calorie examples
+"Recorded calories vs daily calorie target" = "Recorded calories vs daily calorie target";
+"Below calorie target" = "Below calorie target";
+"Above calorie target" = "Above calorie target";
+"Well above calorie target" = "Well above calorie target";
+"Far above calorie target" = "Far above calorie target";
+
+/* Parameter suggestion, distinct from a user-entered target. */
+"Suggested" = "Suggested";
+
+/* Cross-exercise starting estimates: explicit evidence and limitations. */
+"Confirmed bench press 6RM" = "Confirmed bench press 6RM";
+"Mark only an existing set: six full-range reps, no assistance or momentum, about 2 seconds up and down, with no seventh clean rep possible. You should already be familiar with the lift. No extra maximum test is needed." = "Mark only an existing set: six full-range reps, no assistance or momentum, about 2 seconds up and down, with no seventh clean rep possible. You should already be familiar with the lift. No extra maximum test is needed.";
+"Six completed reps and a positive weight are required." = "Six completed reps and a positive weight are required.";
+"Estimate basis" = "Estimate basis";
+"Initial estimate from %@. A small study predicts six-rep maximums; Masso uses 75%% of that estimate, rounded down. Adjust after the first set." = "Initial estimate from %@. A small study predicts six-rep maximums; Masso uses 75%% of that estimate, rounded down. Adjust after the first set.";
+"Masso currently limits this estimate to men aged 18–30, a confirmed 30–70 kg reference from the last 30 days, and 6–12 target reps." = "Masso currently limits this estimate to men aged 18–30, a confirmed 30–70 kg reference from the last 30 days, and 6–12 target reps.";
+"Research source" = "Research source";
+
+"Edit set" = "Edit set";
+
+// Partner referral redemption
+"Referral code" = "Referral code";
+"Have a referral code?" = "Have a referral code?";
+"Check referral code" = "Check referral code";
+"Redeem with Apple" = "Redeem with Apple";
+"Checking a code binds your referral and shares an anonymous identifier and subscription transactions with Masso for referral accounting. Your health and training data are not shared." = "Checking a code binds your referral and shares an anonymous identifier and subscription transactions with Masso for referral accounting. Your health and training data are not shared.";
+"Couldn’t check this code. It may be unavailable, already bound, or the service may be offline. Try again later." = "Couldn’t check this code. It may be unavailable, already bound, or the service may be offline. Try again later.";
+"Apple confirms eligibility, the actual price, trial and renewal terms. Your discount is active only after Apple confirms redemption. This offer applies to the annual subscription." = "Apple confirms eligibility, the actual price, trial and renewal terms. Your discount is active only after Apple confirms redemption. This offer applies to the annual subscription.";
+
+/* Personal working-load relationships */
+"Estimated from your recorded working weights for %@ across multiple workouts at the same reps. Adjust after the first set." = "Estimated from your recorded working weights for %@ across multiple workouts at the same reps. Adjust after the first set.";
+"Requires five consistent workout dates, including a separate validation workout, and a recent source record. This is a starting reference, not a strength measurement." = "Requires five consistent workout dates, including a separate validation workout, and a recent source record. This is a starting reference, not a strength measurement.";
+
+"Copy code and redeem with Apple" = "Copy code and redeem with Apple";
+"Your code is copied. Paste it into Apple’s redemption sheet if asked." = "Your code is copied. Paste it into Apple’s redemption sheet if asked.";
+"Apple’s redemption sheet couldn’t open. Please try again." = "Apple’s redemption sheet couldn’t open. Please try again.";
+
+/* Quiet load progression */
+"Weight progression" = "Weight progression";
+"Maintain current weights" = "Maintain current weights";
+"Pause weight suggestions for all exercises. Your workout targets stay unchanged." = "Pause weight suggestions for all exercises. Your workout targets stay unchanged.";
+"Stage weight limit" = "Stage weight limit";
+"These preferences only limit progression suggestions. They do not change saved weights or define a safe maximum." = "These preferences only limit progression suggestions. They do not change saved weights or define a safe maximum.";
+"Global maintenance mode is on." = "Global maintenance mode is on.";
+"Optional next weight" = "Optional next weight";
+"Repeated workouts reached the rep range. Only consider an increase if your form stayed steady and you had reps left." = "Repeated workouts reached the rep range. Only consider an increase if your form stayed steady and you had reps left.";
+"Use suggested weight" = "Use suggested weight";
+"No weight increase suggested." = "No weight increase suggested.";
+"Suggestions depend on your goal and repeated workouts. Keeping the same weight is also an option." = "Suggestions depend on your goal and repeated workouts. Keeping the same weight is also an option.";
+
+"First-use calibration" = "First-use calibration";
+
+"Based on your saved weight for %@. This is a starting reference; adjust after your first set." = "Based on your saved weight for %@. This is a starting reference; adjust after your first set.";
+
+"Rough starting weight from your completed set of %@ and reps, using a product ratio and a 70%% multiplier. Not a measured maximum or safety guarantee; adjust for your equipment and first set." = "Rough starting weight from your completed set of %@ and reps, using a product ratio and a 70%% multiplier. Not a measured maximum or safety guarantee; adjust for your equipment and first set.";
+
+"Unlimited plans & custom exercises" = "Unlimited plans & custom exercises";
+"Training progress insights" = "Training progress insights";
+
+"7 days free, then renews yearly at the price above until cancelled." = "7 days free, then renews yearly at the price above until cancelled.";
+"7 days free, then renews monthly at the price above until cancelled." = "7 days free, then renews monthly at the price above until cancelled.";
+"Renews yearly at the price above until cancelled." = "Renews yearly at the price above until cancelled.";
+"Renews monthly at the price above until cancelled." = "Renews monthly at the price above until cancelled.";
+
+
+/* Approved Pro-boundary candidate. Server quotas remain release-gated. */
+"Keep adapting with AI Coach" = "Keep adapting with AI Coach";
+"Adjust workouts around your time and equipment." = "Adjust workouts around your time and equipment.";
+"See progress and recovery" = "See progress and recovery";
+"Lift trends and per-muscle recovery estimates." = "Lift trends and per-muscle recovery estimates.";
+"More room for your training" = "More room for your training";
+"Save more plans and create more exercises." = "Save more plans and create more exercises.";
+"Free: %d plans and %d custom exercises" = "Free: %d plans and %d custom exercises";
+"Free and Pro details" = "Free and Pro details";
+"Complete workouts, history, basic charts and data export stay available." = "Complete workouts, history, basic charts and data export stay available.";
+"Existing plans, exercises and acquired results remain usable after Pro expires." = "Existing plans, exercises and acquired results remain usable after Pro expires.";
+"More with Pro" = "More with Pro";
+"Ongoing AI adjustments, more saved plans and custom exercises, lift progress and detailed recovery estimates." = "Ongoing AI adjustments, more saved plans and custom exercises, lift progress and detailed recovery estimates.";
+"AI access" = "AI access";
+"Each listed AI task has one successful free experience. Free also includes %d shared text tasks per month. A task includes %d same-goal adjustments within %d hours." = "Each listed AI task has one successful free experience. Free also includes %d shared text tasks per month. A task includes %d same-goal adjustments within %d hours.";
+"Failed requests, clarification, local tools and reopening results do not use AI quota." = "Failed requests, clarification, local tools and reopening results do not use AI quota.";
+"Free AI requests continue after closing the upgrade reminder. Pro skips these reminders." = "Free AI requests continue after closing the upgrade reminder. Pro skips these reminders.";
+"Existing purchases keep their rights. AI needs internet access and your data-sharing permission." = "Existing purchases keep their rights. AI needs internet access and your data-sharing permission.";
+"Preview only: the shared quota service is not connected." = "Preview only: the shared quota service is not connected.";
+"Free" = "Free";
+
+/* Device-install policy and native user-message actions. */
+"AI access on this device" = "AI access on this device";
+"AI allowances are stored only on this device installation. Changing devices or reinstalling may reset them; they are not shared across devices." = "AI allowances are stored only on this device installation. Changing devices or reinstalling may reset them; they are not shared across devices.";
+"Each supported AI task has one successful free experience on this installation. Free also includes 2 shared text tasks per calendar month (UTC). Repeat images and ongoing reviews need Pro." = "Each supported AI task has one successful free experience on this installation. Free also includes 2 shared text tasks per calendar month (UTC). Repeat images and ongoing reviews need Pro.";
+"A task includes 2 same-goal adjustments within 24 hours. Failed requests, clarification, local tools and reopening saved results do not use the allowance." = "A task includes 2 same-goal adjustments within 24 hours. Failed requests, clarification, local tools and reopening saved results do not use the allowance.";
+"Existing purchased and lifetime rights are kept. No experimental 30-task or 10-image limit is applied to existing paid users." = "Existing purchased and lifetime rights are kept. No experimental 30-task or 10-image limit is applied to existing paid users.";
+"Automatic recommendations have a separate budget of one successful result per day; they do not spend your active AI allowance." = "Automatic recommendations have a separate budget of one successful result per day; they do not spend your active AI allowance.";
+"Existing users have 30 days from this notice before the new AI limits apply. Previous use is not counted retroactively." = "Existing users have 30 days from this notice before the new AI limits apply. Previous use is not counted retroactively.";
+"AI access and saved results" = "AI access and saved results";
+"Saved AI results" = "Saved AI results";
+"No saved AI results yet." = "No saved AI results yet.";
+"Saved AI result" = "Saved AI result";
+"Monthly text tasks used: %d of 2" = "Monthly text tasks used: %d of 2";
+"Copy message" = "Copy message";
+"Edit and resend" = "Edit and resend";
+"Editing text only. Sending adds a new message; your previous draft is kept." = "Editing text only. Sending adds a new message; your previous draft is kept.";
+"Cancel edit" = "Cancel edit";
+"This AI task needs Pro. Your saved results remain available." = "This AI task needs Pro. Your saved results remain available.";
+"Make room in My Plans before generating. Existing plans and training history are not deleted." = "Make room in My Plans before generating. Existing plans and training history are not deleted.";
+"This AI task is already running. Please wait." = "This AI task is already running. Please wait.";
+"Review AI access on this device before continuing." = "Review AI access on this device before continuing.";
+"AI access could not be saved on this device. Nothing was charged." = "AI access could not be saved on this device. Nothing was charged.";
+"Today's automatic AI recommendation is already available." = "Today's automatic AI recommendation is already available.";
+
+/* Source extraction and saved recovery snapshot */
+"Source content could not be read. Paste the article, transcript or exercise list; no AI experience was used." = "Source content could not be read. Paste the article, transcript or exercise list; no AI experience was used.";
+"The source card count could not be confirmed. Nothing was saved and no AI experience was used." = "The source card count could not be confirmed. Nothing was saved and no AI experience was used.";
+"Source exercises or parameters could not be verified. Nothing was substituted or saved." = "Source exercises or parameters could not be verified. Nothing was substituted or saved.";
+"Confirm an exact library match before importing:" = "Confirm an exact library match before importing:";
+"Extracted from your source. Review before saving." = "Extracted from your source. Review before saving.";
+"Suggested defaults for missing source parameters:" = "Suggested defaults for missing source parameters:";
+"A recovery snapshot needs at least 14 days of history, 6 recent sets and recent muscle data." = "A recovery snapshot needs at least 14 days of history, 6 recent sets and recent muscle data.";
+"Recovery snapshot" = "Recovery snapshot";
+"Preview recovery snapshot" = "Preview recovery snapshot";
+"View saved recovery snapshot" = "View saved recovery snapshot";
+"A saved training-based estimate, not a live or medical measurement." = "A saved training-based estimate, not a live or medical measurement.";
+
+"Text only. New message. Draft kept." = "Text only. New message. Draft kept.";

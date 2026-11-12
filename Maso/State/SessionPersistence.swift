@@ -12,7 +12,7 @@ enum SessionPersistence {
     /// 当前播放位置的语义锚 — segmentIndex 是对"当时展开的 segments"的裸下标,
     /// 恢复时 rest 默认值可能已被用户改过 (mid-workout 进 Settings), 重新展开后段数不同,
     /// 裸下标会落错位置. 锚定 (stepId, setN) 跟 store 内 mutator 的映射逻辑一致.
-    struct Anchor: Codable {
+    struct Anchor: Codable, Hashable, Sendable {
         var stepId: String
         var setN: Int
         /// 保存时停在该组前面的 rest 段上 (恢复时若 rest 还在, 落回 rest)

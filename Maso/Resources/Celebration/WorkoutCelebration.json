@@ -1,0 +1,120 @@
+{
+  "schema": "masso.workout-celebration",
+  "version": 1,
+  "createdAt": "2026-10-15T05:48:01.176Z",
+  "status": "user-tuned-prototype",
+  "notes": "",
+  "motion": {
+    "enterDelay": 0,
+    "size": 104,
+    "startScale": 0.16,
+    "peakScale": 1.55,
+    "growTime": 0.36,
+    "response": 0.4,
+    "damping": 0.3,
+    "springVelocity": 0,
+    "turns": 1.9,
+    "spinTime": 1.05,
+    "spinPower": 3.1,
+    "direction": 1,
+    "checkDelay": 0,
+    "checkTime": 0.26,
+    "checkStart": 0.55,
+    "checkResponse": 0.3,
+    "checkDamping": 0.65,
+    "stroke": 8,
+    "titleDelay": 0.14,
+    "titleTime": 0.3
+  },
+  "confetti": {
+    "confettiOffset": 0,
+    "count": 150,
+    "life": 2.6,
+    "speed": 850,
+    "gravity": 900,
+    "spread": 70,
+    "drag": 0.75,
+    "pieceSize": 6,
+    "flutter": 1.2,
+    "emission": 0.12,
+    "origin": 0.65,
+    "mode": "sides",
+    "seed": 42,
+    "colors": [
+      "#15ce59",
+      "#f4c544",
+      "#399dff",
+      "#f26c74",
+      "#ffffff"
+    ]
+  },
+  "sound": {
+    "sound": "levelup",
+    "volume": 0.38,
+    "transpose": 0,
+    "audioTempo": 1,
+    "tail": 1,
+    "audioOffset": 0,
+    "recipe": {
+      "wave": "triangle",
+      "notes": [
+        [
+          0,
+          60,
+          0.14
+        ],
+        [
+          0.1,
+          64,
+          0.15
+        ],
+        [
+          0.2,
+          67,
+          0.16
+        ],
+        [
+          0.32,
+          72,
+          0.5
+        ]
+      ],
+      "harmonics": 0.12
+    }
+  },
+  "haptics": {
+    "haptic": true,
+    "intensity": 0.65,
+    "sharpness": 0.5,
+    "hapticCount": 2,
+    "hapticGap": 0.09
+  },
+  "timing": {
+    "anchor": "enterDelay + growTime + checkDelay",
+    "anchorSeconds": 0.36,
+    "checkSeconds": 0.36,
+    "confettiSeconds": 0.36,
+    "soundSeconds": 0.36,
+    "hapticSeconds": 0.36,
+    "timeUnit": "seconds",
+    "positionUnit": "CSS pt at 390-wide reference"
+  },
+  "implementation": {
+    "badge": "Eight rounded lobes; check is an independent non-rotating layer",
+    "scale": "Cubic ease-out to oversize, then unit-mass damped spring to 1; carry configured initial velocity",
+    "rotation": "angle = -direction * turns * 360 * pow(1-clamp((t-enterDelay)/spinTime), spinPower)",
+    "spring": {
+      "mass": 1,
+      "stiffness": 246.74011002723395,
+      "damping": 9.42477796076938,
+      "swiftUIRelativeInitialVelocity": 0
+    },
+    "reducedMotion": "Static scale/rotation; brief opacity reveal; no confetti; preserve optional sound and success haptic",
+    "soundAsset": "masso-celebration-levelup.wav",
+    "webHaptics": "Browser cannot preview precise Core Haptics; parameters require native validation"
+  },
+  "sources": [
+    "https://developer.apple.com/videos/play/wwdc2023/10158/",
+    "https://developer.apple.com/videos/play/wwdc2019/810/"
+  ]
+}

@@ -1,0 +1,2558 @@
+/* Base offline machine translation (Argos Translate). Review wording before release. */
+"Plans" = "Planos de treino";
+"History" = "Histórico";
+"Quick Workout" = "Exercício Rápido";
+"Late Night" = "Noite tardia";
+"Good Morning" = "Bom dia.";
+"Good Afternoon" = "Boa tarde.";
+"Good Evening" = "Boa noite.";
+"Recommended" = "Recomendado";
+"Start Workout" = "Iniciar treino";
+"Build Your Own" = "Construa o seu próprio";
+"No training plans yet" = "Sem planos de treino ainda";
+"Muscles trained in the last 7 days" = "Músculos treinados nos últimos 7 dias";
+"No training this week yet" = "Ainda não há treino esta semana.";
+"Workouts" = "Exercícios";
+"No workouts yet" = "Sem treinos ainda";
+"Finished workouts show up here. Start your first one and watch your progress grow." = "Os treinos acabados aparecem aqui. Comece o seu primeiro e veja o seu progresso crescer.";
+"Retry" = "Repetir";
+"Couldn't reach the AI coach — showing templates instead." = "Não foi possível gerar os treinos com IA. Mostrando modelos.";
+"Updated your plan." = "Atualizou o seu plano.";
+"Couldn't reach the AI coach — your plan is unchanged." = "Não foi possível alcançar o técnico de IA — seu plano está inalterado.";
+"AI plan unavailable — showing your recommended plan." = "Plano de IA não disponível — mostrando o plano recomendado.";
+"Today" = "Hoje";
+"Yesterday" = "Ontem";
+"Repeat Workout" = "Repetir o treino";
+"Exercises" = "Exercícios";
+"Edit Workout" = "Editar o Exercício";
+"Workout" = "Treino";
+"Workout name" = "Nome do treino";
+"Add Exercise" = "Adicionar exercício";
+"No exercises yet — tap “Add Exercise” to start" = "Sem exercícios ainda — toque em \"Adicionar exercício\" para iniciar";
+"Edit Exercise" = "Editar o Exercício";
+"Delete Exercise" = "Apagar o Exercício";
+"Remove this exercise?" = "Remover este exercício?";
+"Remove" = "Remover";
+"Cancel" = "Cancelar";
+"Sets" = "Conjuntos";
+"Exercises count" = "Exercícios";
+"Volume kg" = "Volume kg";
+"Total Sets" = "Total de conjuntos";
+"Groups Hit" = "Grupos atingidos";
+"Days" = "Dias";
+"Streak" = "Streak";
+"PR" = "PR";
+"%lld days/wk" = "%lld dias/wk";
+"%lld days/week" = "%lld dias/semana";
+"Couldn't create share link" = "Não foi possível criar o link de compartilhamento";
+"“%@” will be removed from this workout. Past records are kept." = "“%@” será removido deste treino. Registros passados são mantidos.";
+"Shared workout" = "Exercício compartilhado";
+"Reps" = "Reps";
+"Weight" = "Peso";
+"Duration" = "Duração";
+"Set rest" = "Definir descanso";
+"Search exercises…" = "Exercícios de pesquisa...";
+"All" = "Tudo";
+"Strength" = "Dosagem";
+"Cardio" = "Cardio";
+"Flexibility" = "Flexibilidade";
+"No exercises match your search" = "Nenhum exercício corresponde à sua pesquisa";
+"End this workout?" = "Acabar com este treino?";
+"End" = "Fim";
+"Keep going" = "Continua.";
+"Sets you've completed will be kept." = "Os conjuntos que completaram serão mantidos.";
+"Rest" = "Repouso";
+"Switching" = "Alternando";
+"Up Next" = "Subir Próxima";
+"Next Exercise" = "Exercício Seguinte";
+"Almost done" = "Quase pronto.";
+"Playlist" = "Lista de Reprodução";
+"Workout Complete" = "Exercício Completo";
+"Done" = "Feito";
+"Pick muscles" = "Escolha músculos";
+"Pick exercises" = "Escolha exercícios";
+"Pick at least one muscle" = "Escolha pelo menos um músculo";
+"Pick at least one exercise" = "Escolha pelo menos um exercício";
+"Close" = "Fechar";
+"Back" = "Voltar";
+"Settings" = "Configuração";
+"Units" = "Unidades";
+"Distance" = "Distância";
+"Training" = "Formação";
+"Exercise rest" = "Descansar no exercício";
+"Quick-start from center tab" = "Início rápido da página central";
+"Tap the highlighted center tab again to jump straight into today's recommended workout" = "Toque novamente na aba central realçada para saltar diretamente para o treino recomendado de hoje";
+"Data" = "Dados";
+"Exercise library" = "Biblioteca de exercícios";
+"Plans and workout records stay on your device." = "Os planos de treino e os registos de treino permanecem no seu dispositivo.";
+"Try Masso Pro" = "Tente Masso Pro";
+"Unlimited plans, full history, custom moves, and more." = "Planos de treino ilimitadas, histórico completo, movimentos personalizados e muito mais.";
+"Unlock everything" = "Desbloquear tudo";
+"Unlimited plans · Full history · Custom moves" = "Planos de treino ilimitadas · Histórico completo · Movimentos personalizados";
+"Unlock your full training." = "Desbloqueie o treino completo.";
+"Unlimited workout plans" = "Planos de treino ilimitadas";
+"No more 3-plan cap — build a plan for every split." = "Não há mais tampa de 3 planos de treino — crie um plano de treino para cada divisão.";
+"Full history" = "Histórico completo";
+"Permanent record + PR tracking + volume trends." = "Registro permanente e rastreamento de RP, em todos os momentos.";
+"Advanced analytics" = "Análise avançada";
+"Muscle balance, weekly volume, weak spots." = "Por-exercício 1RM tendências de força, mais equilíbrio muscular.";
+"Custom exercises" = "Exercícios personalizados";
+"Add your own moves with notes and photos." = "Adicione seus próprios movimentos com notas e fotos.";
+"Apple Health sync" = "Sincronização Apple Health";
+"Two-way sync — workouts go in, weight comes out." = "Sincronização bidirecional — os treinos entram, o peso sai.";
+"Cloud sync" = "Sincronização em nuvem";
+"Plans + history follow you across devices." = "Planos de treino + histórico seguem você através de dispositivos.";
+"Start 7-day free trial" = "Teste grátis por 7 dias";
+"Subscribe for %@" = "Subscrever o %@";
+"Buy lifetime — %@" = "Vida útil de compra — %@";
+"Loading price…" = "A carregar o preço...";
+"Free for 7 days, then %@ / %@. Cancel anytime in Settings." = "Livre para 7 dias, em seguida, %@ / %@. Cancelar a qualquer momento em Configurações.";
+"month" = "mês";
+"year" = "ano";
+"You're now Masso Pro!" = "Agora és Masso Pro!";
+"Enjoy unlimited plans, full history, and everything else. Welcome aboard." = "Desfrute de planos de treino ilimitadas, história completa e tudo o mais.";
+"Restore Purchases" = "Restaurar compras";
+"Terms" = "Termos";
+"Privacy" = "Privacidade";
+"Tell us about your training" = "Fale-nos do seu treino.";
+"Three quick questions — we'll use them to recommend a plan that fits." = "Três perguntas rápidas — vamos usá-las para recomendar um plano de treino que se encaixa.";
+"About you" = "Sobre ti";
+"How many days a week do you train?" = "Quantos dias por semana treinas?";
+"Which muscles do you want to focus on?" = "Em que músculos queres concentrar-te?";
+"Confirm & build my plan" = "Confirmar a & compilação da meu plano de treino";
+"Build My Routine" = "Construa Minha Plano de treino";
+"Uploading your data" = "Enviando seus dados";
+"Analyzing your stats" = "Analisando suas estatísticas";
+"Building your plan" = "Construindo o seu plano";
+"All set!" = "Tudo pronto!";
+"What's your gender?" = "Qual é o seu sexo?";
+"We use this to set sensible starting weights." = "Usamos isto para definir pesos de partida sensatos.";
+"How old are you?" = "Quantos anos tens?";
+"Helps us tune your training volume." = "Ajuda-nos a ajustar o seu volume de treino.";
+"What's your weight?" = "Qual é o teu peso?";
+"We seed your starting loads from this — change any later." = "Semeamos suas cargas iniciais a partir disso — mude mais tarde.";
+"We'll size your weekly plan to fit." = "Vamos avaliar o seu plano semanal para caber.";
+"Pick any — or none for a balanced routine." = "Escolha qualquer — ou nenhum para um plano de treino equilibrada.";
+"Next" = "Próxima";
+"STEP %lld / 5" = "PASSO %lld / 5";
+"STEP %1$lld / %2$lld" = "PASSO %1$lld / %2$lld";
+"What can you train with?" = "Com que pode treinar?";
+"Pick what you have — leave all off if you train at a full gym." = "Escolha o que você tem — deixe tudo fora se você treinar em um ginásio completo.";
+"What's your main goal?" = "Qual é o teu objectivo principal?";
+"We'll tune reps, rest, and exercise picks to match." = "Vamos sintonizar reps, descansar, e exercícios para combinar.";
+"Build muscle" = "Construir músculo";
+"Get stronger" = "Fica mais forte";
+"Lose fat / get lean" = "Perder gordura / ficar magra";
+"Stay fit & healthy" = "Manter- se em forma e saudável";
+"Build endurance" = "Construir resistência";
+"Add size — moderate reps, higher volume." = "Adicionar tamanho — moderado reps, maior volume.";
+"Lift heavier — low reps, heavy compounds, long rest." = "Levantar mais pesado — baixos reps, compostos pesados, descanso longo.";
+"Keep muscle while leaning out — compound-heavy, tighter rest." = "Mantenha o músculo enquanto se inclina para fora — composto-pesado, descanso mais apertado.";
+"Balanced full-body work, short and sustainable." = "Trabalho corpo inteiro equilibrado, curto e sustentável.";
+"High reps, short rest, circuit-style stamina." = "Altos representantes, descanso curto, resistência ao circuito.";
+"Update your saved routines?" = "Atualizar suos planos de treino salvos?";
+"You changed your default rest or sets. Apply these to the exercises in all your saved routines too?" = "Você mudou o descanso padrão ou os conjuntos. Aplique estes nos exercícios em todas as suos planos de treino salvos também?";
+"Update them" = "Actualizá-los";
+"Keep as is" = "Manter como está";
+"Dumbbells" = "Abóboras";
+"Barbell & plates" = "Barbell & placas";
+"Cable machine" = "Máquina de cabos";
+"Resistance machines" = "Máquinas de resistência";
+"Smith machine" = "Máquina Smith";
+"Kettlebells" = "Beterrabas";
+"Resistance bands" = "Bandas de resistência";
+"Pull-up / dip bar" = "Puxe para cima / barra de mergulho";
+"Cardio machines" = "Máquinas e aparelhos para a indústria do calçado";
+"Chest" = "Peito";
+"Upper Chest" = "Peito Superior";
+"Mid Chest" = "Peito médio";
+"Lower Chest" = "Peito inferior";
+"Lats" = "Lats";
+"Upper Traps" = "Armadilhas Superiores";
+"Mid Traps" = "Armadilhas médias";
+"Lower Traps" = "Armadilhas Baixas";
+"Lower Back" = "Inferior";
+"Shoulders" = "Ombros";
+"Front Delts" = "Delts frontais";
+"Side Delts" = "Deltas laterais";
+"Rear Delts" = "Deltas traseiras";
+"Biceps" = "Bíceps";
+"Biceps (Long)" = "Bíceps (Long)";
+"Biceps (Short)" = "Bíceps (curto)";
+"Brachialis" = "Brachialis";
+"Triceps" = "Tríceps";
+"Triceps (Long)" = "Tríceps (Long)";
+"Triceps (Lateral)" = "Tríceps (Laterais)";
+"Triceps (Medial)" = "Triceps (Medial)";
+"Core" = "Core";
+"Abs" = "Abs";
+"Upper Abs" = "Abs superior";
+"Lower Abs" = "Abs inferior";
+"Obliques" = "Obliques";
+"Quads" = "Quads";
+"Rectus Femoris" = "Rectus Femoris";
+"Vastus Lateralis" = "Vastus Lateralis";
+"Vastus Medialis" = "Vastus Medialis";
+"Hamstrings" = "Cordões dentais";
+"Biceps Femoris" = "Bíceps Femoris";
+"Semitendinosus" = "Semitendinoso";
+"Glutes" = "Glútes";
+"Gluteus Maximus" = "Glúteo Máximo";
+"Gluteus Medius" = "Glúteo Medio";
+"Calves" = "Bezerros";
+"Gastrocnemius" = "Gastrocnêmio";
+"Soleus" = "Sóleo";
+"%d exercises" = "Exercícios %d";
+"%d sets" = "Conjuntos %d";
+"%d days ago" = "%d dias atrás";
+"%d day ago" = "%d há um dia";
+"Today's Workout" = "O treino de hoje";
+"Up next" = "Próxima";
+"Upper Lats" = "Lats Superiores";
+"Lower Lats" = "Lats inferiores";
+"Rhomboids" = "Rhombóides";
+"Teres" = "Teres";
+"Rotator Cuff" = "Algema rotadora";
+"Brachioradialis" = "Brachioradialis";
+"Forearms" = "Antebraços";
+"Forearm Flexors" = "Flexores do antebraço";
+"Forearm Extensors" = "Extensores do antebraço";
+"Arms" = "Braços";
+"Serratus" = "Serrato";
+"Neck" = "Pescoço";
+"Legs" = "Pernas";
+"Tibialis Anterior" = "Tibialis Anterior";
+"Adductors" = "Adutores";
+"Help us improve" = "Ajude-nos a melhorar";
+"Send feedback" = "Enviar feedback";
+"Send Feedback" = "Enviar Feedback";
+"Report a bug" = "Reportar um erro";
+"Report a Bug" = "Reportar um Erro";
+"Submit report" = "Enviar relatório";
+"Sending…" = "Enviando...";
+"Report received" = "Relatório recebido";
+"Saved · will retry" = "Gravado · irá tentar novamente";
+"Retry upload" = "Repetir o envio";
+"Report received. It will be included in the next weekly digest." = "Relatório recebido. Será incluído no próximo digest semanal.";
+"Saved on this device. It has not reached the server yet." = "Salvo neste dispositivo. Ainda não chegou ao servidor.";
+"Support" = "Suporte";
+"Bug reports, feature requests, complaints — all bundled into a daily digest and emailed to the team." = "Relatórios de bugs, solicitações de recursos, reclamações — todos embalados em um digest diário e enviados por e-mail para a equipe.";
+"Tell us what's broken, missing, or worth changing." = "Diz-nos o que está partido, perdido ou que vale a pena mudar.";
+"Reports are reviewed together and emailed once a week. Your message, app version, iOS version, and language are included; no account or device ID is attached." = "Os relatórios são revisados juntos e enviados por e-mail uma vez por semana. Sua mensagem, versão do aplicativo, versão iOS e idioma estão incluídos; nenhuma conta ou ID do dispositivo está anexado.";
+"Type your feedback here…" = "Digite seu feedback aqui...";
+"Submit feedback" = "Enviar comentários";
+"%d report waiting to upload" = "Relatório %d aguardando para enviar";
+"%d reports waiting to upload" = "Relatórios %d aguardando para enviar";
+"Sent — thank you" = "Enviado — obrigado";
+"Back muscle" = "Costas";
+"Trained muscles fade over 3 days, reset on day 4." = "Os músculos treinados desaparecem durante 3 dias, reiniciados no dia 4.";
+"2 days ago" = "2 dias atrás";
+"Needs work" = "Precisa de trabalho";
+"Workout calendar" = "Calendário de exercícios";
+"Previous month" = "Mês anterior";
+"Next month" = "Próximo mês";
+"Current streak" = "Raia atual";
+"Week streak" = "Sequência de semana";
+"Redo" = "Refazer";
+"Repeat" = "Repetir";
+"Let's start your first workout." = "Vamos começar o teu primeiro treino.";
+"You've trained today — rest up." = "Treinaste hoje, descansa.";
+"Last trained yesterday." = "O último treino foi ontem.";
+"%lld days since your last session." = "%lld dias desde a sua última sessão.";
+"%lld days off — let's get back to it." = "%lld dias de folga - vamos voltar para ele.";
+"Reminders" = "Lembretes";
+"Workout reminders" = "Avisos de treino";
+"On by default: when you've taken a few days off, Masso sends one gentle reminder once your muscles have recovered. It only ever lives on your device, and you can turn it off anytime." = "On por padrão: quando você tirou alguns dias de folga, Masso envia um lembrete suave uma vez que seus músculos recuperaram. Ele só vive em seu dispositivo, e você pode desligá-lo a qualquer hora.";
+"Recovered and ready" = "Recuperado e pronto";
+"Your muscles miss you" = "Seus músculos estão esperando";
+"Let's get back to it" = "Vamos voltar a treinar";
+"You're recovered — a quick session keeps your momentum going." = "Você já se recuperou. Um treino curto ajuda a manter o ritmo.";
+"Want a nudge when you're recovered?" = "Queres um empurrão quando estiveres recuperado?";
+"Turn on reminders" = "Activar os lembretes";
+"Not now" = "Agora não.";
+"Masso can remind you to train once your muscles have recovered — all on your device. You can change this anytime in Settings." = "Masso pode lembrá-lo de treinar uma vez que seus músculos tenham recuperado — tudo no seu dispositivo. Você pode mudar isso a qualquer momento em Configurações.";
+"Progress" = "Progresso";
+"Weekly volume" = "Volume semanal";
+"Total %@ lifted per week" = "Total %@ levantado por semana";
+"Estimated 1RM" = "Estimativa de 1RM";
+"Unlock strength trends with Pro" = "Desbloquear tendências de força com o Pro";
+"Integrations" = "Integração";
+"Apple Fitness sync" = "Sincronização Apple Fitness";
+"Masso writes finished workouts to Apple Health. They show up in Apple Fitness Activity rings and the Workouts tab. Heart rate is not collected." = "Masso escreve treinos terminados para Apple Health. Eles aparecem em anéis de atividade Apple Fitness e na aba Exercícios. A frequência cardíaca não é coletada.";
+"Not available on this device" = "Não disponível neste dispositivo";
+"Tap to grant access" = "Toque em para conceder acesso";
+"Denied — enable in Settings › Health" = "Negado — habilitar em Configurações › Saúde";
+"On — finished workouts go to Health" = "Em — exercícios terminados ir para a saúde";
+"Off" = "Desligado";
+"Synced %d workout(s) to Health" = "Exercício(s) %d sincronizado(s) para Saúde";
+"Days per week" = "Dias por semana";
+"Tap to start today's workout" = "Toque para iniciar o treino de hoje";
+"All %@" = "Todos %@";
+"AI Workout" = "AI Treino";
+"Each day, Masso bundles your profile + recent training + frequency into a prompt and asks Claude to generate today's plan. Your API key is stored locally on this device." = "Todos os dias, Masso agrupa seu perfil + treinamento recente + frequência em um prompt e pede ao nosso serviço de IA para gerar o treino de hoje. Sua chave API é armazenada localmente neste dispositivo.";
+"Generate plan with AI" = "Gerar treino com IA";
+"Enter your API key above first" = "Introduza primeiro a sua chave de API";
+"Each day a new plan is built from your training history" = "Cada dia um novo treino é construído a partir do seu histórico de treino";
+"Not generated yet" = "Ainda não gerado";
+"Generating…" = "Gerando...";
+"Today's plan ready" = "O treino de hoje está pronto";
+"Last attempt failed" = "Falha na última tentativa";
+"Tap Refresh to build today's plan" = "Toque em Atualizar para construir o treino de hoje";
+"Refresh" = "Actualizar";
+"Body Map" = "Mapa do Corpo";
+"By Muscle" = "Por Músculo";
+"Tap a muscle on the body to filter" = "Toque num músculo no corpo para filtrar";
+"Clear" = "Limpar";
+"Train Smart with AI." = "Trem inteligente com IA.";
+"Train the gaps" = "Treinar as lacunas";
+"Catch-up: %@" = "Acompanhamento: %@";
+"AI generates a personalized plan from your profile + history each day. Pro feature." = "A IA gera um treino personalizado a partir do seu perfil + histórico todos os dias.";
+"Pro feature · personalized daily plan" = "Pro feature · treino diário personalizado";
+"Tap and hold to configure API key" = "Toque e segure para configurar a chave API";
+"On — refreshed daily" = "Em — refrescado diariamente";
+"Developer · AI API" = "Desenvolvedor · API AI";
+"DeepSeek (OpenAI-compatible). Get a key at platform.deepseek.com → API Keys." = "DeepSeek (OpenAI-compatível). Obtenha uma chave na plataforma.deepseek.com → API Keys.";
+"Enable AI generation" = "Activar a geração de IA";
+"Enter key above first" = "Digite a tecla acima primeiro";
+"Auto refresh once a day" = "Actualizar automaticamente uma vez por dia";
+"Test" = "Ensaio";
+"Your personal AI trainer" = "O seu treinador pessoal de IA";
+"Close paywall" = "Fechar o paywall";
+"Close settings" = "Fechar as configurações";
+"End workout" = "Exercício final";
+"New workout" = "Novo treino";
+"Previous" = "Anterior";
+"Force-quit and reopen the app to fully switch the language." = "Forçar a saída e reabrir o aplicativo para mudar completamente o idioma.";
+"Keep current" = "Manter atual";
+"OK" = "Está bem.";
+"One-time purchase. No subscription, no recurring charges." = "Compra única, sem assinatura, sem cobranças recorrentes.";
+"Restart Masso to apply" = "Reiniciar Masso para aplicar";
+"Starting this will replace the workout you're in. Continue?" = "Começar isto irá substituir o treino em que está. Continuar?";
+"Language" = "Língua";
+"Free workout" = "Exercício livre";
+"Pick your own exercises and go" = "Escolhe os teus próprios exercícios e vai";
+"Add to workout" = "Adicionar ao treino";
+"Target Muscles" = "Músculos- Alvo";
+"Instructions" = "Instruções";
+"Finish here" = "Terminar aqui";
+"Finish here?" = "Acabou aqui?";
+"Skip the remaining sets and mark this workout complete." = "Pular os restantes conjuntos e marcar este treino completo.";
+"Finish" = "Terminar";
+"Fatigued" = "Fatigado";
+"Recovering" = "Recuperação";
+"Almost fresh" = "Quase fresco.";
+"Light green = synergist · worked along the way, no need to pick." = "Verde claro = sinergista · trabalhou ao longo do caminho, não há necessidade de escolher.";
+"Pick best for me" = "Escolhe o melhor para mim.";
+"Replace with smart pick" = "Substituir pela escolha inteligente";
+"Masso" = "Masso";
+"AI" = "IA";
+"PRO" = "PRO";
+"MASSO PRO" = "MASSO PRO";
+"FROM %@/MO" = "DE %@/MO";
+"Another workout is in progress" = "Outro treino está em andamento";
+"Hide playlist" = "Esconder a lista de reprodução";
+"Show playlist" = "Mostrar lista de reprodução";
+"Start workout" = "Iniciar treino";
+"Pause" = "Pausa";
+"Resume" = "Continuar";
+"Skip rest" = "Ignorar descanso";
+"Complete set" = "Conjunto completo";
+"Selected" = "Seleccionado";
+"Brought along during training" = "Trazido durante o treino";
+"System Default" = "Padrão do Sistema";
+"kg" = "kg";
+"lb" = "lb";
+"km" = "km";
+"mi" = "mi";
+"Save 50%" = "Salvar 50%";
+"Pay once, own it" = "Paga uma vez, fica com ele.";
+"Billed monthly" = "Faturado mensalmente";
+"Monthly" = "Mensal";
+"Yearly" = "Anual";
+"Lifetime" = "Tempo de vida";
+"POPULAR" = "POPULAR";
+"/ month" = "/ mês";
+"/ year" = "/ ano";
+"once" = "uma vez";
+"Show muscle subdivisions" = "Mostrar subdivisões musculares";
+"Show muscle status" = "Mostrar o estado muscular";
+"Off: pick the whole muscle (chest, back) — no upper/mid/lower split. On: full anatomical detail." = "Off: escolher todo o músculo (peito, costas) — sem parte superior / média / inferior. On: detalhe anatômico completo.";
+"Backup" = "Cópia de Segurança";
+"Export data" = "Dados de exportação";
+"Save plans, workouts, settings as a JSON file" = "Salvar planos de treino, exercícios, configurações como um arquivo JSON";
+"Import data" = "Dados de importação";
+"Restore from a Masso backup file" = "Restaurar a partir de um arquivo de backup Masso";
+"New iPhone? Your data restores automatically from iCloud Backup. Or export anytime — it's a plain JSON file." = "Novo iPhone? Seus dados restauram automaticamente a partir do backup do iCloud. Ou exportam a qualquer hora — é um arquivo JSON simples.";
+"Replace current data?" = "Substituir os dados actuais?";
+"Replace" = "Substituir";
+"Asking the coach…" = "Perguntar ao treinador...";
+"Using local picker" = "Usando o selecionador local";
+"Couldn't reach the AI coach. Using a local recommendation instead." = "Não consegui contactar o técnico de IA.";
+"New Workout" = "Novo treino";
+"Move up" = "Subir";
+"Move down" = "Mover para baixo";
+"Delete" = "Apagar";
+"Plate calculator" = "Calculadora de placas";
+"Target" = "Alvo";
+"Per side" = "Por lado";
+"Bar weight" = "Peso da barra";
+"Bar only — no plates needed" = "Apenas bar – não são necessárias chapas";
+"Time to switch exercise" = "Passe para o próximo exercício";
+"Rest's up — next set" = "Descanso encerrado – próxima série";
+"Weight (kg)" = "Peso (kg)";
+"Duration (sec)" = "Duração (seg)";
+"Edit exercise parameters" = "Editar parâmetros de exercício";
+"Changes apply to this session only. To save permanently, edit the plan." = "As alterações aplicam- se apenas a esta sessão. Para gravar permanentemente, edite a plano de treino.";
+"Delete Plan" = "Apagar Plano de treino";
+"Delete this plan?" = "Apagar este plano de treino?";
+"Your training history will be kept." = "O seu histórico de treino será mantido.";
+"Any equipment" = "Qualquer equipamento";
+"Gym equipment" = "Equipamento de ginástica";
+"All equipment" = "Todos os equipamentos";
+"Prefer community plans" = "Preferir planos comunitários";
+"Build your AI Plans from a proven community program that matches your days per week and goal, instead of auto-generating them." = "Crie seus planos de IA a partir de um programa comunitário comprovado que corresponda aos seus dias por semana e meta, em vez de auto-gerá-los.";
+"These apply to recommended routines and exercises you add — your custom routines aren't changed." = "Estas se aplicam às planos de treino e exercícios recomendados que você adiciona — suos planos de treino personalizados não são alteradas.";
+"Any movement" = "Qualquer movimento";
+"equipment.barbell" = "Barbell";
+"equipment.dumbbell" = "Dumblebell";
+"equipment.body only" = "Apenas o corpo";
+"equipment.cable" = "Cabo";
+"equipment.machine" = "Máquina";
+"equipment.kettlebells" = "Beterrabas";
+"equipment.bands" = "Bandas";
+"equipment.e-z curl bar" = "Barra EZ";
+"equipment.medicine ball" = "Bola de medicina";
+"equipment.exercise ball" = "Bola de exercício";
+"equipment.foam roll" = "Rolo de espuma";
+"equipment.stretching" = "Alongamento";
+"equipment.other" = "Outros";
+"Muscle Status" = "Estado muscular";
+"Profile" = "Perfil";
+"Gender" = "Sexo";
+"Male" = "Masculino";
+"Female" = "Mulheres";
+"Other" = "Outros";
+"Age" = "Idade";
+"yrs" = "yrs";
+"Body weight" = "Peso corporal";
+"Muscles to focus" = "Músculos para focar";
+"Pick the muscle groups you want to prioritize. Today's recommendations and AI plans will favor these." = "Escolha os grupos musculares que você quer priorizar. Recomendações de hoje e planos de treino de IA vai favorecer estes.";
+"Share Card" = "Cartão de Partilha";
+"Camera" = "Câmera";
+"Photos" = "Fotos";
+"Add some exercises to the plan first, then start training." = "Adicione alguns exercícios ao plano de treino primeiro, depois comece a treinar.";
+"Hide older workouts" = "Esconder exercícios antigos";
+"My Muscle Status" = "Estado dos meus músculos";
+"My Week" = "Minha Semana";
+"Save" = "Gravar";
+"Share" = "Partilha";
+"Show %d older workout(s)" = "Mostrar os exercícios mais antigos do %d";
+"This Week" = "Esta semana";
+"This workout has no exercises yet" = "Este exercício ainda não tem exercícios";
+"Smart pick" = "Escolha inteligente";
+"Save as plan" = "Gravar como plano de treino";
+"Saved" = "Gravado";
+"Anything else for your AI coach?" = "Mais alguma coisa para o seu treinador de IA?";
+"Injuries, preferences, time limits — in your own words. The AI combines this with everything above. Optional." = "Ferimentos, preferências, prazos — nas suas próprias palavras. A IA combina isto com tudo o que está acima. Opcional.";
+"e.g. Old shoulder injury — avoid overhead pressing. I like dumbbells, 45 minutes max." = "Por exemplo, lesões antigas no ombro - evitar a sobrecarga pressionando. Eu gosto de halteres, 45 minutos no máximo.";
+"Start from scratch" = "Iniciar do zero";
+"Display" = "Visualização";
+"Muscle charts on exercise tags" = "Gráficos musculares em etiquetas de exercícios";
+"On routine cards, show a mini muscle chart instead of the muscle name in front of each exercise." = "Nas cartas de plano de treino, mostrar um mini gráfico muscular em vez do nome muscular na frente de cada exercício.";
+"Saved to routines" = "Gravado em planos de treino";
+"Save to routines" = "Gravar nos planos de treino";
+"Save %lld routine" = "Gravar a plano de treino do %lld";
+"Save %lld routines" = "Gravar os planos de treino %lld";
+"Saved %lld routine" = "Plano de treino %lld salva";
+"Saved %lld routines" = "Planos de treino %lld salvas";
+"App Language" = "Língua da Aplicação";
+"Continue" = "Continuar";
+"Start" = "Iniciar";
+"Add a photo" = "Adicionar uma foto";
+"Add photo" = "Adicionar uma foto";
+"Take Photo" = "Tirar foto";
+"Choose from Library" = "Escolher na Biblioteca";
+"Remove Photo" = "Remover foto";
+"Add to favorites" = "Adicionar aos favoritos";
+"Remove from favorites" = "Remover dos favoritos";
+"All muscles" = "Todos os músculos";
+"Clear all" = "Limpar tudo";
+"Delete plan?" = "Apagar plano de treino?";
+"Delete workout?" = "Apagar o treino?";
+"Delete this workout?" = "Apagar este exercício?";
+"Delete workout" = "Apagar o treino";
+"Delete exercise from plan?" = "Apagar o exercício do plano de treino?";
+"Delete exercise from this workout?" = "Apagar o exercício deste exercício?";
+"All sets and PRs from this workout will be removed. Your plans stay." = "Todos os conjuntos e RPs deste treino serão removidos. Suos planos de treino permanecem.";
+"All sets of this exercise from this workout will be removed." = "Todos os conjuntos deste exercício deste treino serão removidos.";
+"This only removes it from the current workout. Save changes at the end to update the plan." = "Isto só o remove do treino actual. Salve as alterações no final para atualizar a plano de treino.";
+"This only removes the exercise from this plan, not from your library." = "Isto só remove o exercício deste plano de treino, não da sua biblioteca.";
+"Detail" = "Detalhe";
+"Muscle" = "Músculo";
+"Equipment" = "Equipamento";
+"Variation" = "Variação";
+"None" = "Nenhum";
+"Optional" = "Opcional";
+"How to do it" = "Como fazê-lo";
+"Show full instructions" = "Mostrar instruções completas";
+"Show less" = "Mostrar menos";
+"Listen" = "Ouve.";
+"Read instructions aloud" = "Ler as instruções em voz alta";
+"Stop reading" = "Parar de ler";
+"Stop" = "Parar";
+"Edit" = "Editar";
+"Long press to reorder" = "Pressionar para reordenar";
+"No exercises in this workout" = "Sem exercícios neste exercício";
+"Share workout" = "Compartilhar o treino";
+"Save changes & end" = "Gravar as alterações e terminar";
+"End without saving" = "Terminar sem gravar";
+"You changed sets, reps, weight, or order during this workout. Save the changes back to the plan?" = "Você mudou os conjuntos, representantes, peso ou ordem durante este treino. Salvar as mudanças de volta ao plano de treino?";
+"Skip" = "Pular";
+"Save changes to this routine?" = "Salvar mudanças neste plano de treino?";
+"You adjusted this routine during the workout. Save the adjustments for next time?" = "Ajustou este plano de treino durante o treino.";
+"Save to routine" = "Salvar no plano de treino";
+"Don't save" = "Não salvar";
+"Removed" = "Removido";
+"Replaced" = "Substituido";
+"Updated" = "Atualizado";
+"Moved" = "Movido";
+"rest %@" = "repouso %@";
+"Show details for %@" = "Mostrar os detalhes do %@";
+"STEP %lld / 2" = "PASSO %lld / 2";
+"STEP %lld / 3" = "PASSO %lld / 3";
+"Enable \"Show muscle subdivisions\" in Settings to pick details like upper chest or rear delts." = "Habilite \"Mostrar subdivisões musculares\" em Configurações para escolher detalhes como peito superior ou delts traseiros.";
+"Free for 7 days, then %@. Cancel anytime in Settings." = "Livre para 7 dias, em seguida, %@. Cancelar a qualquer momento em Configurações.";
+"FOR YOU" = "PARA VOCÊ";
+"TRAINING PREFERENCES" = "PREFERÊNCIAS DE FORMAÇÃO";
+"Adjust" = "Ajustar";
+"%lld days / week" = "%lld dias / semana";
+"Full-body" = "Corpo inteiro";
+"Upper-lower split" = "Divisão superior inferior";
+"Body-part split" = "Divisão da parte do corpo";
+"Full-body coverage — each muscle group rotates through the week." = "Cobertura de corpo inteiro — cada grupo muscular gira durante a semana.";
+"High frequency — focus muscles hit 2–3× per week, accessories rotate for recovery." = "Alta frequência — os músculos de foco atingiram 2-3× por semana, os acessórios giram para recuperação.";
+"Each focus muscle is trained 2× per week — enough stimulus, full recovery between." = "Cada músculo focal é treinado 2× por semana — estímulo suficiente, recuperação completa entre eles.";
+"2× per week is enough to maintain steady progress — focus muscles rotate in." = "2× por semana é suficiente para manter o progresso constante — os músculos de foco giram.";
+"Adjust training preferences" = "Ajuste as preferências de treinamento";
+"FROM YOUR PLAN" = "DE SUA PLANO DE TREINO";
+"Weekly Workouts" = "Exercícios Semanais";
+"White areas were just trained" = "As áreas brancas foram treinadas";
+"Today's Status" = "Status de hoje";
+"My Workout" = "Meu treino";
+"Customize" = "Personalizar";
+"Restore recommended" = "Restaurar recomendado";
+"Week starts" = "Início da semana";
+"Auto" = "Automático";
+"Sun" = "Sol";
+"Mon" = "Mon";
+"Days this month" = "Dias este mês";
+"Day this month" = "Dia este mês";
+"Sets this month" = "Define este mês";
+"Set this month" = "Definir este mês";
+"Training Preferences" = "Preferências de Treinamento";
+"Rested" = "Descansado";
+"Fresh" = "Fresco";
+"Browse community plans" = "Navegar em Clássicos";
+"Classics" = "Clássicos";
+"See what others train" = "Veja o que os outros treinam";
+"Community" = "Clássicos";
+"Curated workout plans. Add any to your library." = "Práticas de treino com curadoria. Adicione qualquer um à sua biblioteca.";
+"Want to publish your plan? Coming soon." = "Queres publicar a tua plano de treino?";
+"Want to share your plan? Open it in Plans → tap Share." = "Quer compartilhar sua plano de treino? Abra-a em Planos de treino → toque em Compartilhar.";
+"Share plan" = "Compartilhar plano de treino";
+"Imported plan" = "Plano de treino importada";
+"Got a plan from a friend? Tap Add to save it to your library." = "Tem um plano de treino de um amigo? Toque em Adicionar para salvá-lo na sua biblioteca.";
+"Add to my plans" = "Adicionar às meus planos de treino";
+"Added" = "Adicionado";
+"Adjusted" = "Ajustado";
+"Changes from previous routine" = "Alterações do plano de treino anterior";
+"This routine stayed the same" = "Esta plano de treino permaneceu a mesma";
+"Added to My Plans" = "Adicionado às Meus planos de treino";
+"Routines" = "Planos de treino";
+"Generate with AI" = "Gerar com IA";
+"Browse Classics" = "Navegar em Clássicos";
+"Create from scratch" = "Criar do zero";
+"Create my own" = "Criar o meu próprio";
+"AI Routines" = "Planos de treino de IA";
+"Generate a plan from your preferences" = "Gerar um plano a partir das suas preferências";
+"Proven programs to start from" = "Programas comprovados a partir de";
+"New routine" = "Novo plano de treino";
+"Routines you save will appear here" = "Os planos de treino que salvar aparecerão aqui";
+"Proven programs — 5x5, PPL, 5/3/1" = "Programas comprovados — 5x5, PPL, 5/3/1";
+"Generate routines" = "Gerar planos de treino";
+"Open Training Preferences and tap Generate routines to build a set tailored to you." = "Abra Preferências de Treinamento e toque rapidamente Gere planos de treino para construir um conjunto adaptado a você.";
+"Apply" = "Aplicar";
+"Keep editing" = "Continuar a editar";
+"Apply changes?" = "Aplicar alterações?";
+"You changed your training preferences. Apply them and regenerate your routines?" = "Mudaste as tuas preferências de treino.";
+"Generating routines…" = "Gerando planos de treino...";
+"Building routines from your preferences…" = "Construindo planos de treino de suas preferências...";
+"Matching exercises to your days, equipment, and focus." = "Combine exercícios com seus dias, equipamentos e foco.";
+"Tap Generate routines to build a set tailored to your preferences." = "Toque em Gerar planos de treino para criar um conjunto adaptado às suas preferências.";
+"Beginner" = "Iniciante";
+"Intermediate" = "Intermediário";
+"Advanced" = "Avançado";
+"%lld exercises" = "Exercícios %lld";
+"Featured today" = "Apresentado hoje";
+"More programs" = "Mais programas";
+"No routines match" = "Nenhum plano de treino corresponde";
+"%lld routine" = "Plano de treino %lld";
+"%lld routines" = "Planos de treino %lld";
+"Add %lld routines" = "Adicionar planos de treino %lld";
+"Day %lld" = "Dia %lld";
+"Days/wk" = "Dias/kw";
+"%lld days" = "Dias %lld";
+"Any level" = "Qualquer nível";
+"Rotate these %lld workouts to train %lld days a week." = "Rodar estes exercícios %lld para treinar %lld dias por semana.";
+"%lld sets" = "Conjuntos %lld";
+"%llds rest" = "%llds resto";
+"community_plan_beginner_fb_3day_name" = "3 dias de corpo completo iniciante";
+"community_plan_beginner_fb_3day_desc" = "Duas sessões alternadas para aprender os elevadores principais e construir uma base.";
+"community_plan_5x5_strength_name" = "5x5 Dosagem";
+"community_plan_5x5_strength_desc" = "Heavy 5-rep barbell trabalho — progressão linear estilo Madcow.";
+"community_plan_ppl_6day_name" = "Empurre / Puxe / Pernas 6 dias";
+"community_plan_ppl_6day_desc" = "Cada músculo atingiu 2× por semana — alta frequência, alto volume.";
+"community_plan_upper_lower_4day_name" = "4 dias superiores / inferiores";
+"community_plan_upper_lower_4day_desc" = "Fraccionamento intermédio clássico — força e hipertrofia equilibradas.";
+"community_plan_bro_split_5day_name" = "Bro Dividir 5 dias";
+"community_plan_bro_split_5day_desc" = "Clássico de musculação — um grupo muscular por dia.";
+"community_plan_calisthenics_name" = "Fundações Calistênicas";
+"community_plan_calisthenics_desc" = "Construa força fundamental usando apenas o seu peso corporal.";
+"community_plan_powerlifting_name" = "Preparação para a elevação de energia";
+"community_plan_powerlifting_desc" = "Agachamento, banco, deadlift — foco triplos para força bruta.";
+"community_plan_push_pull_4day_name" = "Empurre / Puxe 4 dias";
+"community_plan_push_pull_4day_desc" = "Simples divisão bidirecional — empurrar músculos e puxar músculos, duas vezes cada.";
+"community_session_full_body_a" = "Corpo completo A";
+"community_session_full_body_b" = "Corpo completo B";
+"community_session_strength_a" = "Dosagem A";
+"community_session_strength_b" = "Dosagem B";
+"community_session_push_heavy" = "Empurre (pesado)";
+"community_session_pull_heavy" = "Puxe (pesado)";
+"community_session_legs_quads" = "Pernas (Quads)";
+"community_session_upper" = "Superior";
+"community_session_lower" = "Baixo";
+"community_session_chest_day" = "Dia do Peito";
+"community_session_back_day" = "Dia de Volta";
+"community_session_leg_day" = "Dia das Pernas";
+"community_session_shoulder_day" = "Dia do ombro";
+"community_session_arm_day" = "Dia do Braço";
+"community_session_push_day" = "Dia de empurrar";
+"community_session_pull_day" = "Dia de puxar";
+"community_session_legs_core_day" = "Pernas + Núcleo";
+"community_session_squat_day" = "Dia de Agachamento";
+"community_session_bench_day" = "Dia do Banco";
+"community_session_deadlift_day" = "Dia do Deadlift";
+"community_session_accessory_day" = "Dia Acessório";
+"community_session_push_simple" = "Empurre";
+"community_session_pull_simple" = "Puxar";
+"Favorite" = "Favorito";
+"Unfavorite" = "Desfavorito";
+"Pin to top" = "Pino para cima";
+"Pin" = "Pin";
+"Unpin" = "Unpin";
+"Replace exercise" = "Substituir o exercício";
+"MUSCLE STATUS" = "ESTATUTO MUSCULAR";
+"Couldn't load subscription options. Try again later." = "Não foi possível carregar as opções de subscrição.";
+"Purchase pending approval." = "Compra pendente aprovação.";
+"Purchase verification failed. Try again or contact support." = "A verificação da compra falhou. Tente novamente ou contacte o suporte.";
+"Free for 7 days, then auto-renews. Cancel anytime in Settings." = "Livre para 7 dias, em seguida, auto-renova. Cancelar a qualquer momento em Configurações.";
+"Workout photo" = "Foto de treino";
+"Share muscle status" = "Compartilhar o status muscular";
+"Toggle muscle status overlay" = "Alternar a sobreposição do estado muscular";
+"IMPORTED PLAN" = "PLANO DE TREINO IMPORTADA";
+"This Masso link is damaged or unsupported. Ask your friend to share again." = "Este link Masso está danificado ou não suportado. Peça ao seu amigo para compartilhar novamente.";
+"Invalid routine link" = "Ligação de plano de treino inválida";
+"details" = "detalhes";
+"Health & Safety" = "Saúde e Segurança";
+"About" = "Sobre";
+"Privacy Policy" = "Política de Privacidade";
+"Terms of Service" = "Termos de serviço";
+"Version" = "Versão";
+"Masso is for informational and motivational purposes only — not medical advice. Consult a physician before starting any new exercise program, especially if you have a medical condition, are pregnant, or have not exercised recently. Stop immediately and seek help if you feel pain, dizziness, or shortness of breath." = "Masso é apenas para fins informativos e motivacionais — não aconselhamento médico. Consulte um médico antes de iniciar qualquer novo programa de exercícios, especialmente se você tem uma condição médica, está grávida, ou não se exercitou recentemente. Pare imediatamente e procure ajuda se você sentir dor, tonturas ou falta de ar.";
+"Workout Records" = "Registos de treino";
+"Form cues" = "Códigos de formulário";
+"Watch demo" = "Assista demo";
+"Compound" = "Composto";
+"Isolation" = "Isolamento";
+"Horizontal push" = "Empurre horizontal";
+"Vertical push" = "Push vertical";
+"Horizontal pull" = "Puxão horizontal";
+"Vertical pull" = "Pull vertical";
+"Hinge" = "Enrolamento";
+"Squat" = "Agachar";
+"Lunge" = "Lunge";
+"Rotation" = "Rotação";
+"Strength tempo" = "Tempo de força";
+"Hypertrophy tempo" = "Hipertrofia";
+"Endurance tempo" = "Tempo de resistência";
+"Explosive tempo" = "Tempo de explosão";
+"Isometric hold" = "Manutenção isométrica";
+"Unilateral" = "Unilateral";
+"%d specialized / unusual exercises (foam rollers, battle ropes, machine isolations, etc.)" = "%d exercícios especializados / incomuns (rolos de espuma, cordas de batalha, isolamentos de máquinas, etc.)";
+"12–20 reps, lighter weight, short rest" = "12–20 reps, peso mais leve, repouso curto";
+"1–5 reps, heavy weight, long rest" = "1–5 reps, peso pesado, repouso prolongado";
+"6–12 reps, moderate weight, ~90s rest" = "6–12 reps, peso moderado, ~90s repouso";
+"Add" = "Adicionar";
+"Add a name, an image, and tag it to a muscle. Best for moves we don't have." = "Adicione um nome, uma imagem, e marque-o para um músculo. Melhor para movimentos que não temos.";
+"Add exercise" = "Adicionar exercício";
+"Back to standard library" = "Voltar à biblioteca padrão";
+"Browse rare exercises" = "Navegue por exercícios raros";
+"Change" = "Alterar";
+"Couldn't save exercise" = "Não foi possível salvar o exercício";
+"Create your own" = "Criar o seu próprio";
+"Custom exercises live only on this device. You can use them in plans and they'll appear in all your pickers." = "Os exercícios personalizados só vivem neste dispositivo. Você pode usá-los em planos de treino e eles aparecerão em todos os seus catadores.";
+"Days this week" = "Dias esta semana";
+"Day this week" = "Dia esta semana";
+"Default sets" = "Conjuntos por omissão";
+"Discard" = "Descartar";
+"Discard changes?" = "Descartar as alterações?";
+"Edit next exercise" = "Editar o próximo exercício";
+"Endurance" = "Endurance";
+"Exercise name" = "Nome do exercício";
+"Exercises per plan" = "Exercícios por plano de treino";
+"Foam rolls, battle ropes, machine isolations and other specialized moves we corralled." = "Rolos de espuma, cordas de batalha, isolamentos de máquinas e outros movimentos especializados que cercamos.";
+"Hide variants" = "Esconder as variantes";
+"Hypertrophy" = "Hipertrofia";
+"New exercise" = "Novo exercício";
+"No rare exercises match" = "Nenhum exercício raro corresponde";
+"No rare exercises match your search" = "Nenhum exercício raro corresponde à sua pesquisa";
+"Pick how to add an exercise. Either build your own from scratch, or adopt one from our specialized library." = "Escolha como adicionar um exercício. Ou construir o seu próprio do zero, ou adotar um de nossa biblioteca especializada.";
+"Primary muscle" = "Músculo primário";
+"Rare exercises" = "Exercícios raros";
+"Required. Shown in plans and history." = "Necessário. Mostrado em planos de treino e história.";
+"Return to the everyday library" = "Voltar para a biblioteca diária";
+"Search" = "Procurar";
+"Sets this week" = "Define esta semana";
+"Set this week" = "Definir esta semana";
+"Show %d variants" = "Mostrar as variantes %d";
+"Time's up" = "Tempo encerrado";
+"Training goal" = "Objectivo de formação";
+"You've adopted everything in the rare library" = "Adoptaste tudo na biblioteca rara.";
+"Your edits to this workout's exercises won't be saved to the plan. Completed sets are already recorded." = "As suas edições dos exercícios deste treino não serão gravadas no plano de treino. Os conjuntos completados já estão gravados.";
+"%d kg" = "%d kg";
+"%d yrs" = "%d anos";
+"Can't delete — in use" = "Não é possível apagar — em uso";
+"Delete exercise?" = "Apagar o exercício?";
+"Remove from library" = "Remover da biblioteca";
+"This exercise is used by a plan or your workout history. Remove it from those first." = "Este exercício é usado por um plano de treino ou seu histórico de treino. Remova-o daqueles primeiro.";
+"“%@” will be permanently removed." = "“%@” será removido permanentemente.";
+"Couldn't load that image. Try another." = "Não consegui carregar a imagem.";
+"Couldn't process that image. Try another." = "Não consegui processar essa imagem.";
+"For most strength moves." = "Para a maioria dos movimentos de força.";
+"For planks, stretches, carries, cardio intervals." = "Para pranchas, estica, carrega, intervalos cardio.";
+"Measure by" = "Medida por";
+"Reps & weight" = "Reps & peso";
+"Time (seconds)" = "Tempo (segundos)";
+"You already have a custom exercise with this name." = "Você já tem um exercício personalizado com este nome.";
+"All caught up" = "Todos apanhados.";
+"Time" = "Tempo";
+"Rest %@" = "Repouso %@";
+"Set %d" = "Definir %d";
+"Set %lld" = "Definir %lld";
+"Different per set" = "Diferente por conjunto";
+"Reps × weight per set" = "Reps × peso por conjunto";
+"Last: %@ kg × %d (%@)" = "Último: %@ kg × %d (%@)";
+"Last: × %d (%@)" = "Último: × %d (%@)";
+"Last: %ds (%@)" = "Último: %ds (%@)";
+"movement.press" = "Pressione";
+"movement.curl" = "Curl";
+"movement.row" = "Linha";
+"movement.squat" = "Agachar";
+"movement.lunge" = "Lunge";
+"movement.deadlift" = "Deadlift";
+"movement.raise" = "Aumento";
+"movement.fly" = "Voar";
+"movement.extension" = "Extensão";
+"movement.push_up" = "Push-up";
+"movement.pull_up" = "Puxar para cima";
+"movement.pulldown" = "Puxar para baixo";
+"movement.dip" = "Dip";
+"movement.thrust" = "Impulso";
+"movement.shrug" = "Encolher";
+"movement.crunch" = "Crunch";
+"movement.plank" = "Plank";
+"movement.pullover" = "Pullover";
+"movement.kickback" = "Propina";
+"Part" = "Parte";
+"Movement" = "Movimento";
+"Skip to exercises" = "Ir para os exercícios";
+"Filter" = "Filtro";
+"Close search" = "Fechar a pesquisa";
+"Library" = "Biblioteca";
+"Good morning" = "Bom dia.";
+"Good afternoon" = "Boa tarde.";
+"Good evening" = "Boa noite.";
+"Good night" = "Boa noite.";
+"My plans" = "As meus planos de treino";
+"Create your own workout, or restore the recommended set." = "Crie seu próprio treino ou restaure o conjunto recomendado.";
+"Variant" = "Variante";
+"vs %@" = "vs %@";
+"variant.high" = "Ancoração superior — a tração vem de cima, inclinando os delts traseiros e as costas superiores contra a altura padrão.";
+"variant.low" = "Ancoração inferior — direcionando para cima vieses do peito superior e delts frontais vs a altura padrão.";
+"variant.mid" = "Ancoração de altura média — uma linha de tração equilibrada, mais próxima da ênfase do movimento de base.";
+"variant.incline" = "Ângulo inclinado — desloca a ênfase para o peito superior e delts frontais.";
+"variant.decline" = "Ângulo declinado — desloca a ênfase para o peito inferior, ou alonga o alcance do abs em movimentos de núcleo.";
+"variant.seated" = "Sentado — remove o impulso da perna e o impulso para um isolamento mais rigoroso do músculo alvo.";
+"variant.standing" = "Em pé — adiciona envolvimento de núcleo e estabilizador em comparação com a versão suportada.";
+"variant.lying" = "Mentir — elimina o impulso e o stress lombar, isolando o primeiro movimento.";
+"variant.kneeling" = "Ajoelha - bloqueia a movimentação da perna e exige mais estabilidade do núcleo.";
+"variant.prone" = "Prone (face-down) — a almofada remove a batota para o trabalho rígido traseiro e superior-back.";
+"variant.supine" = "Supina (face-up) — estabiliza a coluna vertebral e isola o primeiro movedor.";
+"variant.single-arm" = "Um braço de cada vez — corrige desequilíbrios esquerda/direita e adiciona o trabalho de núcleo anti-rotação.";
+"variant.single-leg" = "Uma perna de cada vez — corrige desequilíbrios e exige mais estabilidade glútea-medium.";
+"variant.alternating" = "Lados alternantes — tempo mais longo sob tensão com um micro-repouso incorporado cada rep.";
+"variant.wide-grip" = "Maior aderência – menor amplitude de movimento, largura da lat tendenciosa e o tórax externo.";
+"variant.close-grip" = "Aperto mais próximo – maior amplitude de movimento, tendenciosa o tríceps e peito interno.";
+"variant.neutral-grip" = "As palmas voltadas para o ombro — um ângulo favorável ao ombro que tende a braquialis e antebraços em puxar.";
+"variant.reverse-grip" = "Aperto reverso — ênfase de deslocamentos: mais bíceps em puxamentos, mais peito superior em prensas.";
+"variant.underhand" = "Embraiagem por baixo da mão — mais envolvimento bíceps e inferior-lat do que sobremão.";
+"variant.overhand" = "Aperto superior — mais envolvimento do antebraço e do dorso superior do que em baixo.";
+"variant.paused" = "Pausa no fundo — remove o reflexo de estiramento e constrói força para fora do buraco.";
+"variant.deficit" = "Configuração elevada/deficiência — amplia a amplitude de movimento para uma extensão mais profunda.";
+"variant.weighted" = "Carga adicionada — o mesmo movimento com maior intensidade para a progressão da força.";
+"variant.assisted" = "A assistência compensa o peso corporal — o mesmo padrão numa intensidade mais fácil.";
+"variant.sumo" = "Ampla postura sumô — mais envolvimento adutor e glúteo com menos estresse lombar.";
+"variant.romanian" = "Ancas para trás, joelhos macios — mantém tensão nos isquiotibiais através do estiramento.";
+"variant.bulgarian" = "Pé traseiro elevado - carga de uma perna com um glúteo profundo e quad estiramento.";
+"variant.goblet" = "Carga mantida no peito — mantém o tronco ereto, tornando a profundidade e forma mais fácil.";
+"variant.front" = "Carregar na frente — um tronco mais ereto tende a parcializar os quadris e a parte superior das costas.";
+"variant.overhead" = "A sobrecarga de carga – adiciona a estabilidade do ombro e a demanda do núcleo ao movimento de base.";
+"variant.walking" = "Versão de viagem — adiciona demanda de equilíbrio e tensão contínua vs in-place.";
+"variant.reverse" = "Direção inversa — desloca a ênfase para a parte oposta do padrão.";
+"variant.lateral" = "Plano lateral — vieses os abdutores e delts laterais vs a versão reta.";
+"variant.tuck" = "Joelhos dobrados — encurta a alavanca; uma progressão mais fácil do movimento completo.";
+"variant.floor" = "Do chão — o alcance reduzido protege os ombros e remove a movimentação das pernas.";
+"variant.chest-supported" = "Peito sobre a almofada — momento zero, rigoroso isolamento das costas superiores.";
+"variant.bent-over" = "Torso dobrado — adiciona envolvimento das costas inferiores e isquiotibiais; mantenha uma dobradiça rígida.";
+"variant.dead-stop" = "Pare completamente cada representante — elimina o salto e constrói a força inicial.";
+"variant.split" = "Posição dividida — parcializa uma perna de cada vez com uma demanda de saldo adicional.";
+"variant.hammer" = "Garra de martelo neutra — vieses o braquial e antebraços.";
+"My Routines" = "Meus planos de treino";
+"Import from photo" = "Importar da foto";
+"Add routine" = "Adicionar plano de treino";
+"Generate routine with AI" = "Gerar plano de treino com IA";
+"Build your routine with AI" = "Construir sua plano de treino com IA";
+"Tell AI Coach your goals and schedule to get a routine made for you." = "Diga à AI Coach seus objetivos e agendar um plano de treino feita para você.";
+"Chat with AI Coach" = "Conversar com AI Coach";
+"Hi, I’m your AI Coach" = "Oi, eu sou o seu AI Coach";
+"Create my routine based on my saved training preferences." = "Crie meu plano de treino com base nas minhas preferências de treinamento salvas.";
+"Open AI Coach to create a routine" = "Abra o AI Coach para criar um plano de treino";
+"Imported routine" = "Plano de treino importada";
+"Couldn't read a routine from that image" = "Não foi possível ler um plano de treino dessa imagem";
+"Try a clearer screenshot — exercise names need to be readable." = "Tente uma captura de tela mais clara — os nomes dos exercícios precisam ser legíveis.";
+"Reading routine…" = "Plano de treino de leitura...";
+"Volume" = "Volume";
+"Share this week" = "Compartilhar esta semana";
+"Share this month" = "Compartilhar este mês";
+"This Month" = "Este mês";
+"%d reps" = "%d reps";
+"My Training" = "Meu treinamento";
+"Routine name" = "Nome do plano de treino";
+"We added the moves we recognized. Review the rest — confirm, swap, or save as a custom move." = "Adicionamos os movimentos que reconhecemos. Revise o resto — confirme, troque ou salve como um movimento personalizado.";
+"IMPORT FROM PHOTO" = "IMPORTAÇÃO DA FOTO";
+"ADDED" = "ADDED";
+"NEEDS REVIEW" = "REVISÃO DAS NECESSIDADES";
+"NOT IN YOUR LIBRARY" = "NÃO NA SUA LIBRARIA";
+"Looks like %@" = "Parece %@";
+"Use %@" = "Usar o %@";
+"Choose" = "Escolher";
+"Save as custom" = "Salvar como personalizado";
+"Not in your library" = "Não na sua biblioteca.";
+"Save “%@” as custom" = "Salvar “%@” como personalizado";
+"Select at least one" = "Selecionar pelo menos um";
+"Add %lld to routine" = "Adicionar %lld ao plano de treino";
+"Uncheck anything you don't want. Dashed rows are our best guess — tap replace to swap." = "Desmarque o que não quiser. As linhas riscadas são o nosso melhor palpite — toque em substituir para trocar.";
+"Recognized “%@”" = "Reconheceu “%@”";
+"%lld reps" = "%lld reps";
+"3 sets · default" = "3 conjuntos · padrão";
+"%@ / %@, auto-renews until cancelled. Cancel anytime in Settings." = "%@ / %@, renova automaticamente até ser cancelada. Cancelar a qualquer momento nas Definições.";
+"Free for 7 days, then %@ / %@, auto-renews until cancelled. Cancel anytime in Settings." = "Livre por 7 dias, em seguida, %@ / %@, renova automaticamente até cancelado. Cancelar a qualquer momento em Configurações.";
+"Auto-renewing subscription. Cancel anytime in Settings." = "Renovação automática da subscrição. Cancelar a qualquer momento nas Definições.";
+"Best value" = "Melhor valor";
+"No routines yet" = "Nenhum plano de treino";
+"Add AI routines" = "Adicionar planos de treino de IA";
+"No saved routines yet" = "Sem planos de treino salvos ainda";
+"Generate one with AI or browse Classics below, then tap Save." = "Gere um com IA ou procure Clássicos abaixo e toque rapidamente em Salvar.";
+"No Classics match these filters." = "Nenhum clássico corresponde a estes filtros.";
+"No routines match these filters yet." = "Ainda não há planos de treino iguais a estes filtros.";
+"Tailoring your AI routines…" = "Alfaiatar as tuos planos de treino de IA...";
+"Pick the equipment your gym has — AI and recommended routines will only use moves you can actually do. Leave empty for no restriction (bodyweight is always available)." = "Escolha o equipamento que sua academia tem — IA e planos de treino recomendadas só usarão movimentos que você realmente pode fazer. Deixe vazio para nenhuma restrição (peso corporal está sempre disponível).";
+"Clear — use all equipment" = "Limpar — utilizar todo o equipamento";
+"%@ %@ per side" = "%@ %@ por lado";
+"Achievable: %@ %@  (off by %@)" = "Atingível: %@ %@ (off by %@)";
+"%lld picked" = "%lld escolhido";
+"+%lld more" = "+%lld mais";
+"Save as plan?" = "Salvar como plano de treino?";
+"Don't Save" = "Não salvar";
+"Keep this workout as a reusable routine." = "Mantenha este treino como um plano de treino reutilizável.";
+"Apple Health" = "Apple Health";
+"Save workouts to Apple Health" = "Salvar exercícios para Apple Health";
+"Masso saves your completed workouts to Apple Health, so they appear in your Activity rings and the Health app. On Apple Watch, Masso reads heart rate and active energy during a workout." = "Masso salva seus treinos completos para Apple Health, para que eles apareçam em seus anéis de atividade e no aplicativo Saúde. Em Apple Watch, Masso lê frequência cardíaca e energia ativa durante um treino.";
+"Exercise data" = "Dados do exercício";
+"Sync params across routines" = "Sincronizar configurações de exercícios entre planos de treino";
+"Creating your AI plan" = "Criando sua plano de treino de IA";
+"Your plan is ready" = "A tua plano de treino está pronta.";
+"Personalized from your answers" = "Personalizado a partir de suas respostas";
+"Reading your profile" = "Ler o seu perfil";
+"Picking exercises for your goals" = "Escolher exercícios para seus objetivos";
+"Balancing your weekly plan" = "Equilibrando sua plano de treino semanal";
+"Off by default: each routine keeps its own sets, reps, weight, and rest, so heavy and light days stay independent. Turn on to apply a change to an exercise everywhere it appears." = "Desligado por padrão: cado plano de treino mantém seus próprios conjuntos, reps, peso e descanso, dias tão pesados e leves permanecem independentes. Ligue para aplicar uma mudança em um exercício em qualquer lugar que ele apareça.";
+"Optional — leave all off for a balanced routine." = "Opcional — deixe tudo para um plano de treino equilibrada.";
+"Level" = "Nível";
+"Days/week" = "Dias/semana";
+"All levels" = "Todos os níveis";
+"Any frequency" = "Qualquer frequência";
+"Continue (%lld)" = "Continuar (%lld)";
+"Start (%lld)" = "Início (%lld)";
+"Exercise photos" = "Fotos de exercício";
+"Credits" = "Créditos";
+"Exercise photos via Pexels." = "Fotos de exercício via Pexels.";
+"Pexels License" = "Licença Pexels";
+"From library" = "Da biblioteca";
+"Search the web" = "Procurar na Web";
+"Find a photo" = "Procurar uma foto";
+"Photos via Pexels. Pick the one that matches your move." = "Fotos via Pexels. Escolha a que corresponde à sua jogada.";
+"Type a name and search the web." = "Digite um nome e procure na web.";
+"No photos found. Try a different name." = "Nenhuma foto encontrada. Tente um nome diferente.";
+"Search exercise photos" = "Procurar fotos de exercícios";
+"Playlist drawer drag handle" = "Arrastar o cabo da gaveta da lista de reprodução";
+"Drag up to expand, down to collapse. Tap to toggle." = "Arraste para cima para expandir, para baixo para entrar em colapso. Toque em para alternar.";
+"Collapse calendar" = "Recolher o calendário";
+"Set removed" = "Set removido";
+"Changes update this exercise across all your routines." = "Alterações atualizam este exercício em todas as suos planos de treino.";
+"Undo last set" = "Desfazer o último conjunto";
+"Full Body A · Push / Quads / Pull (Upper)" = "Corpo completo A · Empurre / Quadras / Puxe (mais alto)";
+"Full Body B · Push / Hamstrings / Pull (Lower)" = "Corpo completo B · Empurre / Pressões / Puxe (baixo)";
+"Full Body C · Push / Glutes / Pull (Mid)" = "Corpo completo C · Empurre / Glútes / Puxe (Mid)";
+"Day A · Chest + Triceps" = "Dia A · Peito + Tríceps";
+"Day B · Back + Biceps" = "Dia B · Voltar + Bíceps";
+"Day C · Legs + Glutes" = "Dia C · Pernas + Glútes";
+"Day D · Shoulders + Traps" = "Dia D · ombros + armadilhas";
+"Day E · Arms + Core" = "Dia E · Braços + Núcleo";
+"Push A · Heavy" = "Empurre A · Pesado";
+"Pull A · Heavy" = "Puxe A · Pesado";
+"Legs A · Quads" = "Pernas A · Quads";
+"Push B · Volume" = "Empurre B · Volume";
+"Pull B · Volume" = "Puxar B · Volume";
+"Legs B · Hamstrings / Glutes" = "Pernas B · Fios dentais / Glútes";
+"Finish a workout to see which muscles need recovery." = "Termine um exercício para ver quais músculos precisam de recuperação.";
+"Last: %@ × %d (%@)" = "Último: %@ × %d (%@)";
+"Follow iPhone language (%@)" = "Siga o idioma do iPhone (%@)";
+"This week vs last" = "Esta semana vs última";
+"so far" = "até agora";
+"NEW" = "NOVO";
+"Muscle balance" = "Balança muscular";
+"Training activity" = "Actividades de formação";
+"Last 16 weeks" = "Nas últimas 16 semanas";
+"Less" = "Menos";
+"More" = "Mais";
+"Activity" = "Actividade";
+"Insights" = "Perspectivas";
+"Training insights" = "Perspectivas de formação";
+"Trends" = "Tendências";
+"Long-press a card to reorder" = "Pressione um cartão para reordenar";
+"Unlock deep insights with Pro" = "Desbloqueie insights profundos com o Pro";
+"Strength by lift" = "Resistência por elevação";
+"Estimated 1RM over time" = "Estimativa de 1RM ao longo do tempo";
+"Lift" = "Levantar";
+"Trend" = "Tendência";
+"Distribution" = "Distribuição";
+"Set weights · last 4 weeks" = "Definir pesos · últimas 4 semanas";
+"No weighted sets in the last 4 weeks" = "Sem séries ponderadas nas últimas 4 semanas";
+"Sets vs targets" = "Define vs alvos";
+"Weekly hard sets per muscle" = "Conjuntos duros semanais por músculo";
+"MEV" = "MEV";
+"MAV" = "MAV";
+"Volume by muscle" = "Volume por músculo";
+"Weekly %@ per muscle" = "%@ semanal por músculo";
+"Training frequency" = "Frequência de treino";
+"Days per week per muscle" = "Dias por semana por músculo";
+"PR timeline" = "Tempo de RP";
+"Your personal records" = "Os seus registos pessoais.";
+"Consistency & load" = "& Carga de consistência";
+"All-time" = "O tempo todo";
+"Adherence" = "Adesão";
+"Total lifted" = "Total retirado";
+"Unlock per-muscle recovery with Pro" = "Desbloquear a recuperação por músculo com Pro";
+"Stats" = "Estatísticas";
+"This week" = "Esta semana";
+"Last week" = "Semana passada";
+"Keep training — your stats and trends show up here." = "Continue treinando — suas estatísticas e tendências aparecem aqui.";
+"Describe a change… e.g. make it harder" = "Descrever uma mudança... por exemplo, tornar mais difícil";
+"Tell the AI a preference or change in plain words — e.g. 'bad shoulder, no overhead'. It remembers." = "Diga à IA uma preferência ou mudança em palavras simples — por exemplo, \"ombro ruim, sem sobrecarga\".";
+"Tell your AI coach" = "Diga ao seu treinador de IA";
+"Write anything you want your routines to consider, in plain words — injuries, likes and dislikes, schedule, goals. The AI reads it every time it builds your plan." = "Escreva tudo o que quiser que suos planos de treino considerem, em palavras simples — lesões, gostos e desgostos, horários, metas.";
+"I can't watch the video yet — paste the key moves or the plan from it and I'll work it in." = "Ainda não consigo ver o vídeo — cole os movimentos da chave ou o plano dele e vou trabalhar nele.";
+"Tuned for: %@" = "Sintonizado para: %@";
+"Focus: %@" = "Temática: %@";
+"Send" = "Enviar";
+"OPTIMIZE" = "OPTIMIZE";
+"Optimize with AI" = "Otimizar com IA";
+"%@ are undertrained" = "%@ são pouco treinados";
+"You've done far fewer %@ sets than your top muscle group over the last 3 weeks." = "Você fez muito menos %@ conjuntos do que seu grupo muscular superior nas últimas 3 semanas.";
+"%@ has stalled" = "%@ está parado";
+"Your estimated 1RM on %@ hasn't moved over your last few sessions." = "Seu 1RM estimado em %@ não se moveu sobre suas últimas sessões.";
+"Your main lift" = "O seu elevador principal";
+"Fewer sessions lately" = "Menos sessões ultimamente";
+"You're averaging about %d sessions a week, below your %d-day goal." = "Você está com média de sessões %d por semana, abaixo do seu objetivo %d-day.";
+"AI Coach Summary" = "Resumo AI Coach";
+"Keep logging — your AI summary unlocks after about 2 weeks of training." = "Continue registrando — seu resumo de IA desbloqueia após cerca de 2 semanas de treinamento.";
+"Unlock your AI coach summary with Pro" = "Desbloqueie o resumo do treinador de IA com o Pro";
+"AI summary unavailable — Retry" = "Resumo de IA não disponível — Repetir";
+"As of %@ · based on the last 14 days" = "A partir de %@ · com base nos últimos 14 dias";
+"Apply to routine" = "Aplicar ao plano de treino";
+"Add to notes" = "Adicionar às notas";
+"Saved to your coaching notes" = "Salvo nas suas notas de treino";
+"Keep logging your sessions — your coach summary sharpens with more data." = "Continue registrando suas sessões — seu resumo de treinador aguça com mais dados.";
+"Rebalance your weekly volume" = "Reequilibrar o seu volume semanal";
+"Personalized set-by-set guidance from your data." = "Orientação personalizada a partir dos seus dados.";
+"Break your main-lift plateau" = "Quebre o seu planalto de elevação principal";
+"Concrete progression tailored to your recent sessions." = "Progressão concreta adaptada às suas sessões recentes.";
+"My Insights" = "Minhas Perspectivas";
+"My AI Summary" = "Meu resumo de IA";
+"Training Insights" = "Insights de Treinamento";
+"My Progress" = "Meu Progresso";
+"Share my progress" = "Partilhar o meu progresso";
+"vs last week" = "vs na semana passada";
+"Volume this week" = "Volume esta semana";
+"%@ e1RM" = "%@ e1RM";
+"Consistency" = "Coerência";
+"Last 8 weeks" = "Nas últimas 8 semanas";
+"Share Insights" = "Compartilhar as Perspectivas";
+"Share History" = "Partilhar o Histórico";
+"AI coach quote" = "Citação do treinador de IA";
+"Tune with AI" = "Sintonizar com IA";
+"Your history" = "Sua história";
+"Best e1RM %@" = "Melhor e1RM %@";
+"Just now: %@" = "Agora mesmo: %@";
+"Adjust last set" = "Ajustar o último conjunto";
+"Fix what you actually did — this only rewrites the set you just logged, not your plan." = "Corrija o que você realmente fez — isso só reescreve o conjunto que você acabou de registrar, não seu plano.";
+"Set logged" = "Definir registrado";
+"Undo" = "Desfazer";
+"Keep screen awake during workouts" = "Mantenha a tela acordada durante os treinos";
+"While a workout is running, the screen won't auto-lock — your timer and next set stay visible at the rack." = "Enquanto um treino está em execução, a tela não irá auto-bloquear — seu timer e próximo conjunto permanecer visível no rack.";
+"Finish & end" = "Concluir e encerrar";
+"Discard workout" = "Descartar treino";
+"Finish & end keeps this as a completed workout with your stats. Discard closes it without a summary." = "Terminar o & fim mantém isto como um treino completo com as suas estatísticas. Descarta- o sem um resumo.";
+"Added %lld workout days" = "Dias de treino %lld adicionados";
+"%lld training days" = "Dias de treino %lld";
+"Includes %lld training days — Save adds all of them" = "Inclui dias de treinamento %lld — Save adiciona todos eles";
+"Volume %@" = "Volume %@";
+"Coach" = "Treinador";
+"SAVED · %lld" = "SAVED · %lld";
+"Saved routines will appear here." = "Os planos de treino salvos aparecerão aqui.";
+"~%lld min" = "~%lld min";
+"DAY %lld" = "DIA %lld";
+"Hey! Tell me how you want to train — I'll build your weekly routines." = "Diz-me como queres treinar, vou construir as tuos planos de treino semanais.";
+"COACH SUGGESTION" = "SUGESTÃO DE CARACTERÍSTICA";
+"Usually takes 30–60 seconds" = "Normalmente leva 30-60 segundos";
+"Tell me how you want to train…" = "Diz-me como queres treinar...";
+"New conversation" = "Nova conversa";
+"Start a new conversation?" = "Começar uma nova conversa?";
+"This clears the current chat. Saved routines are kept." = "Isto limpa a conversa actual. Os planos de treino gravadas são mantidas.";
+"Swap %@: " = "Trocar %@:";
+"Training in progress — keep tuning after your session." = "Treinamento em andamento — continue afinando após sua sessão.";
+"Try a starting point" = "Tente um ponto de partida";
+"Choose a scenario, then edit the draft before sending." = "Escolha um cenário e, em seguida, edite o rascunho antes de enviar.";
+"I want to focus on…" = "Quero concentrar-me...";
+"I only have 30 minutes" = "Só tenho 30 minutos.";
+"I train at home" = "Eu treino em casa.";
+"I’m getting back into training" = "Estou voltando ao treinamento";
+"I want to look like this" = "Quero ficar assim.";
+"Current photo" = "Foto atual";
+"Goal reference" = "Referência do objectivo";
+"Change photo" = "Mudar foto";
+"Avoid faces. Photos can’t measure health, strength or body fat." = "Evite rostos. Fotos não podem medir a saúde, força ou gordura corporal.";
+"Choose a photo from your library or camera" = "Escolha uma foto de sua biblioteca ou câmera";
+"I want to focus more on [shoulders and back]. Adjust my routines around that while keeping my training balanced." = "Quero dar mais atenção a [ombros e costas]. Ajuste meus treinos mantendo o equilíbrio.";
+"I have [30] minutes per workout. Shorten my routines to fit while keeping the main training focus." = "Tenho [30] minutos por treino. Encurte meus treinos sem perder o foco principal.";
+"I train at home with [dumbbells and bands]. Adapt my routines to the equipment I have." = "Treino em casa com [halteres e faixas elásticas]. Adapte meus treinos ao equipamento que tenho.";
+"I’m returning after [a month away]. Ease my routines back in with balanced, gradual training." = "Estou voltando após [um mês de pausa]. Ajuste meus treinos para uma retomada gradual e equilibrada.";
+"Compare my current photo with this goal reference. Suggest balanced training emphases based on visible muscle development, then adjust my routines. Keep the advice realistic; don’t estimate body fat or a timeline." = "Compare minha foto atual com esta referência objetivo. Sugerir ênfases de treinamento equilibrado com base no desenvolvimento muscular visível, em seguida, ajustar meus planos de treino. Mantenha o conselho realista; não estimar gordura corporal ou uma linha do tempo.";
+"FROM WEEKLY SUMMARY" = "DOS RESUMOS SEMANAS";
+"FROM OPTIMIZE" = "DE OPTIMIZA";
+"Prompt templates" = "Modelos de instruções";
+"Next blank" = "Próximo em branco";
+"FOCUS" = "FOCUS";
+"SWAP" = "SWAP";
+"TIME & STRUCTURE" = "TEMPO & ESTRUTURA";
+"INTENSITY" = "INTENSIDADE";
+"Train [muscle] more and [muscle] less" = "Treinar mais e menos";
+"Put extra focus on my [upper chest / rear delts]" = "Coloque foco extra no meu [peito superior / delts traseiros]";
+"Add more volume for my [weak spot]" = "Adicione mais volume para o meu [ponto fraco]";
+"Swap out [exercise] because [reason]" = "Troque [exercício] porque [razão]";
+"My [body part] hurts — avoid [movement type]" = "Minha [parte do corpo] dói — evite [tipo de movimento]";
+"Use more [dumbbells / cables] and less [barbell / machines]" = "Use mais [dumbbells / cabos] e menos [barbell / máquinas]";
+"Keep each session under [45] minutes" = "Manter cada sessão em [45] minutos";
+"Make it [4] days a week, split by [push/pull/legs]" = "Faça [4] dias por semana, dividido por [empurrar/puxar/pernas]";
+"Only change Day [1] — keep the rest as is" = "Apenas mudança Dia [1] — manter o resto como está";
+"I'm [worn out / not recovering] — dial the intensity down" = "Estou [desgastado / não recuperando] — diminua a intensidade";
+"Make it [4] sets of [6-8] reps per exercise" = "Tornar [4] conjuntos de [6-8] reps por exercício";
+"I'm in a [cutting / bulking] phase — tune for that" = "Estou numa fase de [corte / volume] — sintonizar para isso";
+"Add your own exercise" = "Adicione seu próprio exercício";
+"Add “%@” as your own" = "Adicione “%@” como seu próprio";
+"Build my week — full body, about 45 minutes a day" = "Construa minha semana — corpo inteiro, cerca de 45 minutos por dia";
+"Update routines?" = "Atualizar planos de treino?";
+"Update routines" = "Atualizar planos de treino";
+"Save only" = "Gravar apenas";
+"Save these training preferences and regenerate your routines to match?" = "Salvar essas preferências de treinamento e regenerar suos planos de treino para combinar?";
+"Share routines" = "Compartilhar planos de treino";
+"Share (%lld)" = "Partilha (%lld)";
+"Import routines" = "Importar planos de treino";
+"Add (%lld)" = "Adicionar (%lld)";
+"Ready to train" = "Pronto para treinar.";
+"Almost ready" = "Quase pronto.";
+"Workouts total" = "Total de exercícios";
+"Workout total" = "Total de exercícios";
+"Days trained" = "Dias treinados";
+"Try %@ (+%@)" = "Tente %@ (+%@)";
+"Drop to %@" = "Baixar para %@";
+"Already up to date" = "Já actualizado";
+"Smart progression" = "Progressão inteligente";
+"Earn the next 2.5 kg — weight suggestions from your logged sets." = "Ganhe os próximos 2,5 kg — sugestões de peso de seus conjuntos registrados.";
+"Secure checkout on the web via Polar. %@ / %@, renews until cancelled — manage or cancel anytime on the Polar page." = "Checkout seguro na web via Polar. %@ / %@, renova até cancelado — gerencie ou cancele a qualquer momento na página Polar.";
+"Enter code" = "Digite o código";
+"Enter your activation code" = "Digite seu código de ativação";
+"After buying on the web, your code was emailed to you (and shown on the confirmation page). Paste it here to unlock Pro on this device." = "Depois de comprar na web, seu código foi enviado para você (e mostrado na página de confirmação). Colar aqui para desbloquear Pro neste dispositivo.";
+"Activate" = "Activar";
+"That code isn't active yet. Double-check it, or try again in a moment." = "Esse código ainda não está activo.";
+"Couldn't verify — check your connection and try again." = "Não foi possível verificar — verifique sua conexão e tente novamente.";
+"You're Pro now — thanks for supporting Masso." = "Você é Pro agora — obrigado por apoiar o Masso.";
+"That code isn't active yet. Check the email from your purchase, or try again in a moment." = "Esse código ainda não está ativo. Verifique o email da sua compra, ou tente novamente em um momento.";
+"Couldn't verify your code — check your connection and try again." = "Não foi possível verificar seu código — verifique sua conexão e tente novamente.";
+"ACTIVE" = "ACTIVO";
+"Thanks for supporting Masso. Manage or cancel on the Polar page." = "Obrigado por apoiar o Masso. Gerencie ou cancele na página Polar.";
+"Scan to get this routine" = "Escaneie para obter o mesmo plano";
+"%lld days a week" = "%lld dias por semana";
+"YOUR TRAINING" = "SUA FORMAÇÃO";
+"Adjust preferences" = "Ajustar preferências";
+"View routines" = "Ver planos de treino";
+"Adjust your routine" = "Ajuste sua plano de treino";
+"Body front" = "Frente";
+"Body back" = "Costas";
+"Notes for your AI coach" = "Notas para o seu treinador de IA";
+"AI coach memory description" = "O seu treinador de IA lê estas notas sempre que cria um plano de treino.";
+"Coach memory examples" = "Por exemplo: ferimentos passados, movimentos para evitar, equipamentos, horários, ou objetivos...";
+"Saved here for good — your AI coach reads it every time it builds a routine. Write anything in plain words: past injuries, medical conditions, moves to avoid, equipment quirks, schedule, goals." = "Salvo aqui para sempre — seu técnico de IA lê-lo toda vez que constrói um plano de treino. Escreva qualquer coisa em palavras simples: lesões passadas, condições médicas, movimentos para evitar, peculiares equipamentos, programação, objetivos.";
+"Replace all" = "Substituir todos";
+"Save to My Routines" = "Salvar nos meus planos de treino";
+"Replace all routines" = "Substituir todos os planos de treino";
+"Add to existing routines" = "Adicionar aos planos existentes";
+"Choose whether to replace your %lld saved routines or add these %lld routines alongside them." = "Substitua seus %lld planos salvos ou adicione estes %lld planos aos existentes.";
+"Replace your routines?" = "Substituir as tuos planos de treino?";
+"Your %lld saved routines will be deleted and replaced with these %lld." = "Suos planos de treino salvos %lld serão excluídas e substituídas por estas %lld.";
+"Masso Pro" = "Masso Pro";
+"Unlimited routines, unlimited AI coach, deep analytics." = "Planos de treino ilimitadas, treinador de IA ilimitado, análise profunda.";
+"Built-in" = "Incorporado";
+"AI coach" = "Treinador de IA";
+"Test connection" = "Conexão de teste";
+"Primary route" = "Primário";
+"Backup route" = "Cópia de Segurança";
+"Not configured" = "Não configurado";
+"No internet" = "Sem internet";
+"Timed out" = "Tempo esgotado";
+"DNS blocked" = "DNS bloqueado";
+"Connection blocked" = "Ligação bloqueada";
+"TLS blocked" = "TLS bloqueado";
+"Unreachable" = "Inalcançável";
+"The AI coach is reachable from this device." = "O técnico de IA está acessível a partir deste dispositivo.";
+"The AI coach can't be reached on this network. Try mobile data instead of Wi-Fi (or the other way round); if you use a VPN or proxy, switch it on or off and test again." = "O treinador de IA não pode ser acessado nesta rede. Experimente dados móveis em vez de Wi-Fi (ou o contrário); se você usar uma VPN ou proxy, ligue ou desligue e teste novamente.";
+"Edit exercise" = "Editar o exercício";
+"Built from" = "Construído a partir de";
+"Bodyweight only" = "Apenas peso corporal";
+"%@ only" = "Apenas %@";
+"Under %d min" = "Sob %d min";
+"No %@" = "Sem %@";
+"More %@" = "Mais %@";
+"Your data" = "Os seus dados";
+"Export my data" = "Exportar meus dados";
+"A JSON backup of everything plus a CSV of every set you've logged — open it in Numbers, Excel, or any other app. Your data is yours; you can take it and go." = "Um backup JSON de tudo mais um CSV de cada conjunto que você tenha registrado — abra-o em Números, Excel ou qualquer outro aplicativo. Seus dados são seus; você pode pegá-lo e ir.";
+"Export failed" = "A exportação falhou";
+"Share anonymous usage data" = "Partilhar dados de utilização anónimos";
+"Sends anonymous counts like \"a routine was generated\" or \"onboarding finished\" so I can see which parts of the app work. Never your workouts, weights, notes, or anything you typed. No account, no ads, no third-party ad networks. Turn it off and nothing is sent at all." = "Envia contas anônimas como \"um plano de treino foi gerada\" ou \"onboarding terminou\" para que eu possa ver quais partes do app funcionam. Nunca seus exercícios, pesos, notas, ou qualquer coisa que você digitou. Nenhuma conta, nenhum anúncio, nenhum anúncio de terceiros redes. Desligue-o e nada é enviado em tudo.";
+"Adjust your routines with your coach" = "Ajuste suos planos de treino com seu treinador";
+"Show earlier workouts (%lld)" = "Mostrar exercícios anteriores (%lld)";
+"Start today's workout" = "Comece o treino de hoje";
+"AI Coach" = "AI Coach";
+"More training settings" = "Mais configurações de treinamento";
+"Classic Routines" = "Planos de treino clássicos";
+"Explore Routines" = "Explorar as Planos de treino";
+"Find a classic plan and make it yours." = "Encontrar um plano clássico e torná-lo seu.";
+"Create a routine" = "Criar um plano de treino";
+"Plan your exercises before you train" = "Planeje seus exercícios antes de treinar";
+"Start custom workout" = "Iniciar treino personalizado";
+"Add exercises as you go" = "Adicionar exercícios à medida que vai";
+"Choose your first exercise" = "Escolha seu primeiro exercício";
+"What would you like to train next?" = "O que gostaria de treinar a seguir?";
+"End this workout" = "Terminar este treino";
+"Add next exercise" = "Adicionar o próximo exercício";
+"Minimize workout" = "Minimizar o treino";
+"Workout complete" = "Exercício concluído";
+"Save as a routine" = "Salvar como um plano de treino";
+"Set up exercise" = "Configurar exercício";
+"AI suggestion" = "Sugestão de IA";
+"Drag sideways to rotate. Tap for recovery details." = "Arraste de lado para rodar. Toque para obter detalhes de recuperação.";
+"Tap to view muscle recovery" = "Toque para ver a recuperação muscular";
+"3D muscle model" = "Modelo muscular 3D";
+"Model adapted for Masso: mirrored muscle groups, smoother surfaces, adjusted proportions and fatigue colors." = "Modelo adaptado para Masso: grupos musculares espelhados, superfícies mais lisas, proporções ajustadas e cores de fadiga.";
+"Drag sideways to rotate" = "Arraste de lado para rodar";
+"3D model unavailable" = "Modelo 3D não disponível";
+"Start your first workout" = "Iniciar seu primeiro treino";
+"Your training journey starts here." = "A sua jornada de treino começa aqui.";
+"Your workout is in progress." = "Seu treino está em andamento";
+"Rest up" = "Descansar";
+"You’ve trained today." = "Você treinou hoje";
+"Plan your next session" = "Planeje sua próxima sessão";
+"You last trained yesterday." = "Treinaste ontem pela última vez.";
+"Make time to train" = "Arranja tempo para treinar.";
+"It’s been %lld days since your last workout." = "Tem sido %lld dias desde o seu último treino";
+"Ease back in" = "Descontrair";
+"Your training summary" = "Seu resumo de treinamento";
+"Let's plan your training" = "Vamos planear o teu treino.";
+"Previous suggestion" = "Sugestão anterior";
+"Next suggestion" = "Próxima sugestão";
+"Suggestion %lld of %lld" = "Sugestão %lld de %lld";
+"Updating suggestions…" = "Atualizando sugestões...";
+"Suggestion removed" = "Sugestão removida";
+"Dismiss suggestion" = "Demitir sugestão";
+"Sent to chat" = "Enviado para chat";
+"Applied" = "Aplicado";
+"View Pro" = "Ver Pro";
+"Collapse history" = "Recolher o histórico";
+"Expand history (%lld)" = "Expandir o histórico (%lld)";
+"Ready" = "Pronto";
+"Routine options" = "Opções de plano de treino";
+"Couldn’t prepare share" = "Não foi possível preparar a partilha";
+"Please try again." = "Por favor, tente novamente.";
+"Training photo" = "Fotografia de treino";
+"Send to analyze with AI and suggest routine changes." = "Enviar para analisar com IA e sugerir mudanças de plano de treino.";
+"A photo can't measure strength or recovery." = "Uma foto não pode medir força ou recuperação.";
+"Remove photo" = "Remover foto";
+"Photo Library" = "Fototeca";
+"Camera unavailable" = "Câmera não disponível";
+"Allow camera access in Settings, or choose a photo from your library." = "Permitir o acesso da câmera em Configurações, ou escolher uma foto de sua biblioteca.";
+"Couldn't prepare this photo" = "Não consegui preparar esta foto.";
+"Please choose another photo." = "Por favor escolha outra foto.";
+"Review my training photo and suggest routine changes." = "Reveja minha foto de treinamento e sugira mudanças de plano de treino.";
+"Couldn't analyze this photo. Your routines are unchanged. Please try again." = "Não foi possível analisar esta foto. Suos planos de treino estão inalteradas. Por favor, tente novamente.";
+"Time range" = "Intervalo de tempo";
+"4 weeks" = "4 semanas";
+"12 weeks" = "12 semanas";
+"6 months" = "6 meses";
+"1 year" = "1 ano";
+"All time" = "Sempre.";
+"%d training days · %@" = "Dias de treino %d · %@";
+"Lift progress" = "Levantar o progresso";
+"%d improved" = "%d melhorado";
+"1 lift improved" = "1 elevador melhorado";
+"%d lifts improved" = "Elevadores %d melhorados";
+"Your progress starts here" = "Seu progresso começa aqui";
+"Your lifts at a glance" = "Os teus elevadores de relance";
+"Earlier → latest comparable records" = "Anteriormente → últimos registros comparáveis";
+"Log your workouts to see changes in weight and reps." = "Registre seus exercícios para ver mudanças de peso e reps.";
+"All exercises" = "Todos os exercícios";
+"Muscles trained" = "Músculos treinados";
+"This week · recorded sets" = "Esta semana · jogos gravados";
+"Primary muscles only · not a growth score" = "Músculos primários apenas · não uma pontuação de crescimento";
+"Some exercises have no muscle mapping and are excluded." = "Alguns exercícios não possuem mapeamento muscular e são excluídos.";
+"Training rhythm" = "Ritmo de treino";
+"training days this week" = "dias de treino esta semana";
+"%d training days in the last %d weeks" = "Dias de treino %d nas últimas semanas %d";
+"Trained" = "Treinado";
+"Upcoming" = "Próximo";
+"No recorded workout" = "Sem treino gravado";
+"Compared within the same exercise. Each day uses its best matching set. Chart scales differ between exercises." = "Comparado dentro do mesmo exercício. Cada dia usa seu melhor conjunto de correspondência. Escalas de gráfico diferem entre exercícios.";
+"More matching sessions are needed to show a trend." = "Mais sessões correspondentes são necessárias para mostrar uma tendência.";
+"Strength changes do not measure muscle growth." = "As alterações de força não medem o crescimento muscular.";
+"Recorded sets" = "Conjuntos gravados";
+"A recorded set counts once for each primary muscle group. Secondary muscles are excluded. These are logged sets, not measured effective sets or muscle growth." = "Um conjunto gravado conta uma vez para cada grupo muscular primário. Os músculos secundários são excluídos. Estes são conjuntos registrados, não medidos conjuntos eficazes ou crescimento muscular.";
+"%d → %d reps" = "%d → %d reps";
+"New" = "Novo";
+"Unchanged" = "Inalterado";
+"Weight for %d reps" = "Peso para %d reps";
+"Reps at %@" = "Representantes em %@";
+"Bodyweight reps" = "Peso corporal";
+"Latest recorded set" = "Último conjunto gravado";
+"Baseline" = "Base";
+"Show fewer" = "Mostrar menos";
+"Show all %d exercises" = "Mostrar todos os exercícios %d";
+"Describe what happened and what you expected…" = "Descreva o que aconteceu e o que esperava...";
+"Thanks for reporting this. Your report has been sent to our team and will help us improve Masso." = "Obrigado por informar isso. Seu relatório foi enviado para nossa equipe e nos ajudará a melhorar o Masso.";
+"Thanks for reporting this. I saved your report on this device and will retry sending it when a connection is available." = "Obrigado por informar isso. Salvei seu relatório neste dispositivo e tentarei novamente enviá-lo quando uma conexão estiver disponível.";
+"Diet" = "Alimentação";
+"What to eat today" = "O que comer hoje";
+"Diet preferences" = "Preferências alimentares";
+"Add your weight for portion guidance" = "Adicione seu peso para orientação de porções";
+"Approximate portions. Cooked weights except dry oats, packaged yogurt/tofu and fruit. Add cooking oil to taste." = "Porções aproximadas. Pesos cozidos, exceto aveia seca, iogurte embalado / tofu e frutas. Adicionar óleo de cozinha ao gosto.";
+"Swap protein foods for similar protein, starches for similar carbs. Other nutrients may differ." = "Trocar alimentos proteicos por proteínas semelhantes, amidos para carboidratos semelhantes. Outros nutrientes podem diferir.";
+"Portions are approximate; calories and other nutrients may differ." = "As porções são aproximadas; calorias e outros nutrientes podem diferir.";
+"Swap food" = "Trocar alimentos";
+"Breakfast" = "Pequeno-almoço";
+"Lunch" = "Almoço";
+"Dinner" = "Jantar";
+"Snack" = "Lanche";
+"Chicken breast" = "Peito de galinha";
+"Lean beef" = "Carne magra";
+"Firm tofu" = "Tofu firme";
+"Eggs" = "Ovos";
+"Plain Greek yogurt" = "Iogurte simples grego";
+"Rice" = "Rice";
+"Potatoes" = "Batatas";
+"Oats" = "Aveia";
+"Broccoli" = "Brócolos";
+"Leafy greens" = "Verduras de folha";
+"Tomatoes" = "Tomates";
+"Blueberries" = "Mirtilos";
+"Meals per day" = "Refeições por dia";
+"3 meals" = "3 refeições";
+"3 meals + snack" = "3 refeições + lanche";
+"Plant-based" = "À base de plantas";
+"Uses your existing training goal and body information." = "Usa sua meta de treinamento existente e informações do corpo.";
+"Allergies" = "Alergias";
+"Milk" = "Leite";
+"Egg" = "Ovos";
+"Soy" = "Soja";
+"Foods to avoid" = "Alimentos para evitar";
+"Keep at least one protein, starch and fruit or vegetable option." = "Mantenha pelo menos uma opção de proteína, amido e frutas ou vegetais.";
+"Protein" = "Proteína";
+"Diet protein progress" = "Proteína %1$dg/%2$dg";
+"Carbs" = "Carboidratos";
+"Fat" = "Gordura";
+"g / day" = "g / dia";
+"Supports muscle recovery" = "Suporta recuperação muscular";
+"Fuels your training" = "Alimenta o seu treino";
+"Supports daily nutrition" = "Suporta nutrição diária";
+"Estimated daily targets. Adjust portions to your appetite and training needs." = "Estimativa de alvos diários. Ajuste porções para suas necessidades de apetite e treinamento.";
+"%d/%d lifts improving" = "Elevadores %d/%d melhorando";
+"reps" = "reps";
+"sets" = "séries";
+"%d training days" = "Dias de treino %d";
+"4 weeks · training volume" = "4 semanas · volume de treino";
+"Features" = "Características";
+"Bedtime reminder" = "Atenção à hora de dormir";
+"Last night's score" = "A pontuação de ontem à noite";
+"Tonight's goal" = "O objectivo desta noite";
+"Notifications are off" = "As notificações estão desligadas";
+"Open Settings" = "Abrir Configurações";
+"Allow Masso notifications in Settings to receive bedtime reminders." = "Permitir notificações Masso em Configurações para receber lembretes para dormir.";
+"Record your first meal today" = "Grave sua primeira refeição hoje";
+"Set your body weight" = "Definir o seu peso corporal";
+"Get your daily nutrition targets" = "Obtenha seus alvos nutricionais diários";
+"%lld / %lld meals recorded" = "%lld / %lld refeições gravadas";
+"Last night" = "Ontem à noite";
+"Insights category" = "Categoria do Insights";
+"No meal records in this period" = "Nenhum registro de refeições neste período";
+"No sleep records in this period" = "Nenhum registro de sono neste período";
+"Confirm meal photos to see nutrition trends." = "Confirme fotos de refeição para ver tendências nutricionais.";
+"Connect Apple Health to see your sleep trends." = "Conecte Apple Health para ver suas tendências de sono.";
+"Open Diet" = "Dieta aberta";
+"Open Sleep" = "Abrir o Sono";
+"Recorded nutrition" = "Nutrição registada";
+"Daily average · logged days only" = "Média diária · dias registrados apenas";
+"%lld / %lld days fully logged" = "%lld / %lld dias totalmente logados";
+"Protein intake" = "Ingestão de proteínas";
+"Yellow: recorded protein · diamond: daily target" = "Amarelo: proteína registrada · diamante: alvo diário";
+"Partial meals count as recorded intake, not a complete day's total." = "As refeições parciais contam como ingestão registrada, não um total de um dia completo.";
+"Average sleep" = "Sono médio";
+"%lld nights recorded" = "%lld noites gravadas";
+"Sleep duration" = "Duração do sono";
+"Blue: recorded sleep · diamond: nightly target" = "Azul: sono gravado · diamante: alvo noturno";
+"Complete days with saved nutrition targets" = "Dias completos com alvos nutricionais salvos";
+"Nights with saved sleep targets" = "Noites com alvos de sono salvos";
+"Protein · %lld / %lld g" = "Proteína · %lld / %lld g";
+"Last night · %@" = "Ontem à noite · %@";
+"Saved to My Routines" = "Salvo nas Meus planos de treino";
+"Sleep target" = "Alvo do sono";
+"Sleep preferences" = "Preferências de sono";
+"Total sleep · each night" = "Sono total · todas as noites";
+"Sleep supports recovery. Adults generally need at least 7 hours." = "Os adultos geralmente precisam de pelo menos 7 horas.";
+"Total sleep" = "Dormência total";
+"Nightly target" = "Alvo noturno";
+"Deep sleep" = "Sono profundo";
+"REM sleep" = "Sono REM";
+"Your device hasn't provided sleep stages." = "O seu dispositivo não forneceu estágios de sono.";
+"Your usual sleep stages" = "Os seus estágios habituais de sono";
+"Based on at least 7 recorded nights in the previous 14 days. A personal reference, not a pass/fail target." = "Com base em pelo menos 7 noites gravadas nos últimos 14 dias. Uma referência pessoal, não um alvo passe/falha.";
+"Sleep stages are device estimates and do not affect your goal score." = "Os estágios de sono são estimativas do dispositivo e não afetam a pontuação do seu objetivo.";
+"About sleep stages" = "Sobre os estágios de sono";
+"Building your baseline" = "Construir a sua linha de base";
+"Reminder time" = "Hora do lembrete";
+"Personal reference" = "Referência pessoal";
+"Why these portions?" = "Porquê estas porções?";
+"Meal balance" = "Saldo de refeições";
+"Protein across the day" = "Proteínas ao longo do dia";
+"Carbs and dinner" = "Carbos e jantar";
+"Portion guide" = "Guia de porções";
+"Protein is split evenly across breakfast, lunch and dinner. An optional snack takes 15% of the daily target; the rest stays evenly split." = "A proteína é dividida uniformemente entre café da manhã, almoço e jantar. Um lanche opcional leva 15% of o alvo diário; o resto permanece uniformemente dividido.";
+"Daily protein and consistent training matter most. Small trials support balanced meals for muscle protein synthesis; long-term muscle-growth results are mixed." = "Proteína diária e matéria de treinamento consistente mais. Pequenos ensaios suportam refeições equilibradas para a síntese de proteínas musculares; resultados de crescimento muscular a longo prazo são mistos.";
+"Carbs start at 25% for breakfast, 35% for lunch and 40% for dinner. With a snack, 15% goes to the snack and the remaining 85% follows the same split." = "Os carboidratos começam com 25% f ou pequeno-almoço, 35% f ou almoço e 40% f ou jantar. Com um lanche, 15% goes para o lanche e os restantes 85% follows a mesma divisão.";
+"These percentages are an app planning default, not a proven optimal ratio. A small trial found faster sleep onset with a high-GI meal four hours before bed; other trials found no benefit. More dinner carbs do not guarantee better sleep or justify cutting dinner protein." = "Estas percentagens são um padrão de planejamento de aplicativo, não uma relação comprovada ótima. Um pequeno ensaio encontrou início de sono mais rápido com uma refeição de alta IG quatro horas antes da cama; outros ensaios não encontraram nenhum benefício. Mais carboidratos jantar não garantem melhor sono ou justificar o corte de proteína jantar.";
+"Approximate cooked weights; oats are dry, yogurt/tofu are packaged weights, fruit is edible weight. Swaps match protein or carbs, not all nutrients. Cooking fats are not included in these portions." = "Pesos cozidos aproximados; aveia são secos, iogurte / tofu são pesos embalados, fruta é peso comestível. Swaps correspondem à proteína ou carboidratos, nem todos os nutrientes.";
+"ISSN · Protein and exercise (2017)" = "ISSN · Proteína e exercício (2017)";
+"Mamerow · Protein distribution (2014)" = "Mamerow · Distribuição de proteínas (2014)";
+"Protein distribution review (2020)" = "Revisão da distribuição das proteínas (2020)";
+"Afaghi · Carbs and sleep (2007)" = "Afaghi · Carboidratos e sono (2007)";
+"Athletes' evening meals trial (2019)" = "Ensaio de refeições noturnas de atletas (2019)";
+"Why this sleep target?" = "Porquê este alvo do sono?";
+"Why 8 hours?" = "Porquê 8 horas?";
+"Sleep and recovery" = "Sono e recuperação";
+"Deep sleep and REM" = "Sono profundo e REM";
+"Apple Health records" = "Registros Apple Health";
+"About sleep" = "Sobre o sono";
+"Apple Health sleep records" = "Apple Health registros de sono";
+"Core sleep" = "Sono principal";
+"Awake" = "Despertai";
+"In bed" = "Na cama";
+"Sleep (unspecified)" = "Sono (não especificado)";
+"Adults generally need 7–9 hours a night. Eight hours is a starting point, not a precise calculation from your workout or body weight. Adjust for how rested you feel." = "Os adultos geralmente precisam de 7-9 horas por noite. Oito horas é um ponto de partida, não um cálculo preciso do seu treino ou peso corporal. Ajuste para como você se sente descansado.";
+"Sleep supports recovery and performance. A small experiment found lower muscle protein synthesis after one sleepless night. It does not prove that every extra hour produces more muscle, or that everyone needs the same duration." = "Um pequeno experimento encontrou síntese de proteína muscular inferior após uma noite sem dormir. Ele não prova que cada hora extra produz mais músculo, ou que todos precisam da mesma duração.";
+"Stage durations vary with age, night and device. Your ranges summarize the previous 14 days once at least 7 nights are available; they are personal references, not recommended targets. Apple Watch stages are estimates." = "A duração do estágio varia com a idade, noite e dispositivo. Suas faixas resumem os 14 dias anteriores uma vez que pelo menos 7 noites estão disponíveis; são referências pessoais, não metas recomendadas.";
+"Masso reads all authorized sleep-analysis history: core, deep, REM, unspecified sleep, awake and in-bed samples, with times and sources. Missing stages stay blank. Overlapping sources are not added together; detailed stage data is preferred for nightly totals. These totals may differ from Apple's source priorities. In-bed time is not sleep time." = "Masso lê todos os antecedentes autorizados de análise do sono: núcleo, profundo, REM, sono não especificado, amostras acordadas e na cama, com tempos e fontes. Estágios em falta permanecem em branco. Fontes de sobreposição não são adicionadas; dados de fase detalhados são preferidos para os totais noturnos. Estes totais podem diferir das prioridades de origem da Apple. O tempo na cama não é tempo de dormir.";
+"Allow Sleep access in Apple Health. Data appears after your device syncs. HealthKit does not reveal whether read access was denied, so no records can mean no data or no permission." = "Permitir o acesso ao sono em Apple Health. Os dados aparecem após as sincronizaçãos do dispositivo. O HealthKit não revela se o acesso de leitura foi negado, então nenhum registro pode significar nenhum dado ou nenhuma permissão.";
+"NIH · Recommended sleep duration" = "NIH · Duração recomendada do sono";
+"AASM / SRS · Adult sleep consensus (2015)" = "AASM/SRS · Consenso de sono para adultos (2015)";
+"Lamon · Sleep loss and muscle protein synthesis (2021)" = "Lamon · Perda de sono e síntese de proteínas musculares (2021)";
+"Apple · Sleep tracking" = "Apple · Monitoramento de sono";
+"Apple · Sleep-analysis data" = "Apple · Dados da análise do sono";
+"Sleep history" = "História do sono";
+"Show earlier nights" = "Mostrar as noites anteriores";
+"Today's meals" = "As refeições de hoje";
+"Diet history" = "História da dieta";
+"No meal records yet" = "Ainda não há registos de refeições.";
+"Sleep details" = "Detalhes do sono";
+"7 days" = "7 dias";
+"Compared with your current target" = "Comparado com seu alvo atual";
+"Compared with that day's target" = "Comparado com o alvo desse dia";
+"View Apple Health records" = "Ver registros Apple Health";
+"Eating window" = "Janela de comer";
+"Flexible" = "Flexível";
+"12:12 · 12-hour window" = "12:12 · janela de 12 horas";
+"14:10 · 10-hour window" = "14:10 · janela de 10 horas";
+"16:8 · 8-hour window" = "16:8 · janela de 8 horas";
+"Starts at" = "Inicia em";
+"Ends at" = "Termina em";
+"Next day" = "No dia seguinte";
+"Morning snack" = "Lanche matinal";
+"Afternoon snack" = "Lanche da tarde";
+"Meal timing changes the split, not your daily nutrition targets." = "O tempo de refeições muda a divisão, não os seus alvos nutricionais diários.";
+"Protein is split evenly across your selected 2–5 meals. Changing meal count or eating window keeps the daily target unchanged." = "A proteína é dividida uniformemente em suas refeições selecionadas 2-5. Mudar a contagem de refeições ou comer janela mantém o alvo diário inalterado.";
+"Two meals split carbs 45% / 55%. With three meals, the split is 25% / 35% / 40%. Four meals reserve 15% for a snack; five reserve 10% for each of two snacks. The remaining carbs follow the three-meal split." = "Duas refeições dividem carboidratos 45% / 55%. Com três refeições, a divisão é 25% / 35% / 40%. Quatro refeições reserva 15% f ou um lanche; cinco reservas 10% f ou cada um dos dois lanches.";
+"Flexible timing is the default. 12:12, 14:10 and 16:8 describe fasting hours and eating hours. A shorter window does not lower your daily nutrition targets or guarantee better muscle growth." = "Tempo flexível é o padrão. 12:12, 14:10 e 16:8 descrever horas de jejum e horas de alimentação. Uma janela mais curta não baixa seus alvos de nutrição diária ou garantir melhor crescimento muscular.";
+"NIDDK · Time-restricted eating" = "NIDDK · Comer com restrição temporal";
+"%lld meals" = "%lld refeições";
+"Meal 1" = "Refeição 1";
+"Meal 2" = "Refeição 2";
+"Meal 3" = "Refeição 3";
+"Meal 4" = "Refeição 4";
+"Meal 5" = "Refeição 5";
+"Diet calendar" = "Calendário da dieta";
+"Sleep calendar" = "Calendário do sono";
+"View all months" = "Ver todos os meses";
+"Green marks workout days." = "Dias de treino de marcas verdes.";
+"Color strength shows your recorded protein progress." = "A força da cor mostra o progresso das proteínas.";
+"Color strength shows your sleep-duration progress." = "A força da cor mostra o progresso da duração do sono.";
+"Grey means no record or no target. Saved daily targets are used when available; otherwise your current target is used." = "Cinzento significa nenhum registro ou nenhum alvo. Alvos diários salvos são usados quando disponíveis; caso contrário, seu alvo atual é usado.";
+"Workout resources" = "Recursos de treino";
+"Training History" = "Histórico de Treinamento";
+"Share Training History" = "Compartilhar o histórico de treinamento";
+"No workout" = "Sem treino";
+"Workout recorded" = "Exercício gravado";
+"Improving lifts over 4 weeks" = "Melhorar os elevadores durante 4 semanas";
+"Not enough data" = "Dados insuficientes";
+"Describe meal" = "Descrever refeição";
+"Photo" = "Foto";
+"Diet score" = "Pontuação da dieta";
+"All meals recorded" = "Todas as refeições registadas";
+"In progress · record remaining meals" = "Em andamento · registrar refeições restantes";
+"Record a meal to see your progress" = "Grave uma refeição para ver o seu progresso";
+"Estimated target adherence, not a health score." = "Adesão alvo estimada, não um escore de saúde.";
+"Try %@, or record what you eat." = "Experimente %@, ou grave o que você come.";
+"e.g. Two eggs, a bowl of rice and a glass of milk" = "Por exemplo, dois ovos, uma tigela de arroz e um copo de leite";
+"Estimate nutrients" = "Estimativa de nutrientes";
+"AI estimate. Check portions, sauces and drinks before confirming." = "Estimativa de IA. Verifique porções, molhos e bebidas antes de confirmar.";
+"Describe your meal in up to 4,000 characters." = "Descreva sua refeição em até 4.000 caracteres.";
+"Meal analysis unavailable" = "Análise das refeições indisponível";
+"No clear meal found. Describe foods and portions, or enter nutrients manually." = "Nenhuma refeição clara encontrada. Descreva alimentos e porções, ou insira nutrientes manualmente.";
+"Workout History" = "Histórico de treinos";
+"Share Workout History" = "Compartilhar o histórico de exercícios";
+"Workout history" = "Histórico de treino";
+"Workout target" = "Alvo de treino";
+"%d of %d days this week" = "%d de dias %d esta semana";
+"Membership" = "Composição";
+"Add meal" = "Adicionar refeição";
+"Meal" = "Farinha";
+"Meal %d" = "Refeição %d";
+"Only confirmed nutrients count toward today's score." = "Apenas os nutrientes confirmados contam para a pontuação de hoje.";
+"Why these targets?" = "Porquê estes alvos?";
+"Workout Insights" = "Insights de treino";
+"Share Workout" = "Compartilhar o treino";
+"Share Workout Insights" = "Partilhar as Perspectivas de Exercício";
+"Generate meal" = "Gerar a refeição";
+"Generating meal…" = "Gerando refeição...";
+"Could not estimate this meal. Add foods and portions, then try again." = "Não foi possível estimar esta refeição. Adicione alimentos e porções, em seguida, tente novamente.";
+"Daily goal contribution" = "Contribuição diária do objetivo";
+"Last 7 days" = "Últimos 7 dias";
+"days / week" = "dias / semana";
+"Delete meal" = "Apagar a refeição";
+"Delete meal?" = "Apagar a refeição?";
+"Goal & color rules" = "Regras de & cores do objetivo";
+"Your current target" = "Seu alvo atual";
+"What the colors mean" = "O que significam as cores";
+"How it is calculated" = "Como é calculado";
+"Research & guidance" = "Investigação e orientação";
+"Light color" = "Cor clara";
+"Medium color" = "Cor média";
+"Deep color" = "Cor profunda";
+"No recorded intake/sleep or no usable target." = "Sem registro de ingestão/dormir ou sem alvo utilizável.";
+"Solid blue means actual sleep reaches your saved nightly target. Awake and time in bed are excluded. Deep and REM are references, not scoring targets." = "Azul sólido significa que o sono real atinge o seu alvo noturno salvo. Despertar e o tempo na cama são excluídos. Profunda e REM são referências, não marcar alvos.";
+"Solid yellow requires all three daily macro targets. The lower end of the carb/fat ranges is the completion threshold; the upper end is guidance, not a reason to eat extra." = "Amarelo sólido requer todos os três macro alvos diários. A extremidade inferior dos intervalos carboidratos/gordura é o limiar de conclusão; a extremidade superior é orientação, não uma razão para comer extra.";
+"Color bands are Masso's display rules, not medical thresholds. Today has a white outline. Home's oldest three dots also fade for layout." = "Bandas de cores são as regras de exibição do Masso, não limiares médicos. Hoje tem um contorno branco. Os três pontos mais antigos da casa também desaparecem para layout.";
+"Completion = actual sleep minutes ÷ that night's target. Values above the target earn no extra credit. Stage estimates do not determine the color." = "Completação = minutos de sono reais □ o alvo dessa noite. Valores acima do alvo não ganham crédito extra. Estimativas de estágio não determinam a cor.";
+"The daily Diet score compares protein, carbs and fat with fixed daily targets (weights 20/10/5); each macro is capped at 100%, so extra intake cannot offset another shortfall. Meal cards show that meal's weighted contribution to the full daily targets as a percentage, not a score." = "O escore diário da Dieta compara proteína, carboidratos e gordura com metas diárias fixas (pesos 20/10/5); cada macro é nivelada em 100%, então a ingestão extra não pode compensar outro déficit.Cartões de refeições mostram que a contribuição ponderada da refeição para as metas diárias completas em porcentagem, não uma pontuação.";
+"Only saved meal records count. AI nutrition estimates can be inaccurate; colors measure recorded target adherence, not diet quality or health." = "As estimativas nutricionais de IA podem ser imprecisas; as cores medem a adesão ao alvo, não a qualidade da dieta ou a saúde.";
+"Saved historical targets take priority. If a day has no saved target, the current target is used; changing today's goal does not overwrite saved goals." = "Alvos históricos salvos têm prioridade. Se um dia não tiver nenhum alvo salvo, o alvo atual é usado; mudar o objetivo de hoje não substitui os objetivos salvos.";
+"Adults generally need 7–9 hours; ages 13–18 need 8–10 hours and ages 6–12 need 9–12 hours. Eight hours is an adult starting point. A blue dot only confirms your chosen goal, not that your sleep is healthy." = "Os adultos geralmente precisam de 7–9 horas; os 13–18 anos precisam de 8–10 horas e os 6–12 anos precisam de 9–12 horas. Oito horas é um ponto de partida para adultos. Um ponto azul só confirma o seu objetivo escolhido, não que o seu sono seja saudável.";
+"ISSN supports about 1.4–2.0 g/kg/day of protein for most healthy exercising adults. Masso's targets are planning starting points. Its 20/10/5 weights and color bands are product choices, not research-validated health scores." = "ISSN suporta cerca de 1,4-2,0 g/kg/dia de proteína para a maioria dos adultos em exercício saudável. As metas do Masso estão planejando pontos de partida. Seus pesos 20/10/5 e faixas de cores são escolhas de produtos, não escores de saúde validados por pesquisa.";
+"ACSM · Nutrition and athletic performance (2016)" = "ACSM · Nutrição e desempenho atlético (2016)";
+"Add your weight for nutrition targets" = "Adicione seu peso para alvos nutricionais";
+"Color strength shows your three-macro target progress." = "A força da cor mostra o progresso do alvo.";
+"Target used today" = "Alvo utilizado hoje";
+"Current sleep target" = "Alvo atual do sono";
+"Edit meal" = "Editar refeição";
+"Save changes" = "Salvar alterações";
+"Replace photo" = "Substituir foto";
+"Weekly target" = "Alvo semanal";
+"%d days / week" = "%d dias / semana";
+"Your goal is weekly. Rest days do not count as failed daily goals." = "Seu objetivo é semanal. Dias de descanso não contam como metas diárias falhadas.";
+"Green means at least one recorded training set that day." = "Verde significa pelo menos um conjunto de treino gravado naquele dia.";
+"Gray means no recorded training sets that day." = "Gray significa que não há treinos gravados naquele dia.";
+"The first day after a workout." = "O primeiro dia depois de um treino.";
+"The second day after a workout." = "O segundo dia depois de um treino.";
+"Gray appears after the two-day recovery window when there is no workout." = "Gray aparece após a janela de recuperação de dois dias quando não há treino.";
+"Recovery colors are for context and do not count toward your weekly target. Today has a white outline; the oldest three home dots fade for display only." = "As cores de recuperação são para o contexto e não contam para o seu alvo semanal. Hoje tem um contorno branco; os três pontos mais antigos casa desvanecer apenas para exibição.";
+"Each day with recorded training sets counts once, even if you complete several workouts. This week's count follows your calendar settings and is compared with your current weekly target." = "Cada dia com conjuntos de treino gravados conta uma vez, mesmo que você complete vários exercícios. A contagem desta semana segue as configurações do seu calendário e é comparada com o seu alvo semanal atual.";
+"Only logged workout days count toward your weekly target. The two recovery shades are a simple display rule, not a measurement of muscle recovery or workout intensity." = "Os dois tons de recuperação são uma regra de exibição simples, não uma medição de recuperação muscular ou intensidade de treino.";
+"Why this target?" = "Porquê este alvo?";
+"Your fixed gram targets use the weight, training goal and weekly training frequency saved in Masso. If you are 65 or older, the protein factor is raised modestly. Meal count only divides the daily targets; it does not change them." = "Seus alvos de grama fixo usam o peso, objetivo de treinamento e frequência de treinamento semanal salva em Masso. Se você tiver 65 anos ou mais, o fator proteína é aumentado modestamente. Contagem de refeições só divide os alvos diários; não os altera.";
+"Carbohydrate uses your goal and planned training days, with a 130 g adult reference floor. Fat uses a simple 0.8 g/kg planning value. These are practical estimates, not measured calorie needs or medical prescriptions." = "Carboidrato usa seu objetivo e dias de treinamento planejados, com um piso de referência de 130 g adulto. Gordura usa um valor de planejamento simples 0,8 g/kg. Estas são estimativas práticas, não medidas necessidades de calorias ou prescrições médicas.";
+"Masso does not currently collect height or body composition, so it cannot estimate energy needs precisely. Sleep duration is not used to change macro grams because there is no established formula for doing that." = "Masso não coleta atualmente altura ou composição corporal, por isso não pode estimar as necessidades de energia com precisão. A duração do sono não é usada para alterar macro gramas porque não há fórmula estabelecida para fazer isso.";
+"ISSN describes protein needs as a range, not one proven ideal for every person. Masso selects a fixed planning point from body weight and training goal; carbohydrates also reflect planned weekly training days, and fat uses a simple weight-based estimate. Age modestly raises the protein factor from 65 onward. Height, body composition, medical conditions and reliable daily energy expenditure are not collected, so these values are estimates rather than a personalized clinical prescription. Sleep data is not used to change macro targets because there is no established conversion from sleep duration to daily macro grams. Scoring weights and color bands are product choices, not research-validated health scores." = "ISSN descreve as necessidades proteicas como uma faixa, não uma ideal comprovada para cada pessoa. Masso seleciona um ponto de planejamento fixo a partir do peso corporal e objetivo de treinamento; carboidratos também refletem dias de treinamento semanais planejados, e a gordura usa uma estimativa baseada em peso simples. A idade eleva modestamente o fator proteico a partir de 65. Altura, composição corporal, condições médicas e gasto energético diário confiável não são coletados, portanto esses valores são estimativas em vez de uma prescrição clínica personalizada. Dados de sono não são usados para alterar macro-alvo, pois não há conversão estabelecida da duração do sono para macro-gramas diários. Pesos de pontuação e faixas de cores são escolhas de produto, não escores de saúde validados por pesquisa.";
+"Sleep score" = "Pontuação de sono";
+"About this muscle" = "Sobre este músculo";
+"Related exercises" = "Exercícios relacionados";
+"Exercises for this muscle" = "Exercícios para este músculo";
+"No matching exercises yet" = "Nenhum exercício de correspondência ainda";
+"Drag sideways to rotate. Tap a muscle to learn more." = "Arraste de lado para rodar. Toque num músculo para aprender mais.";
+"Muscle intro · Neck" = "Suporta e controla o movimento de cabeça e pescoço.";
+"Muscle intro · Chest" = "Traz os braços para a frente e através do corpo, e ajuda a pressionar.";
+"Muscle intro · Shoulders" = "Levanta e guia os braços por diferentes direções.";
+"Muscle intro · Biceps" = "Dobra o cotovelo e ajuda a puxar.";
+"Muscle intro · Triceps" = "Endireita o cotovelo e ajuda a pressionar.";
+"Muscle intro · Forearms" = "Move o pulso e ajuda com o aperto.";
+"Muscle intro · Core" = "Estabiliza o tronco e transfere a força entre o corpo superior e inferior.";
+"Muscle intro · Glutes" = "Estenda e estabilize o quadril.";
+"Muscle intro · Quads" = "Endireita o joelho e suporta agachamento e passo.";
+"Muscle intro · Hamstrings" = "Dobra o joelho e estende a anca.";
+"Muscle intro · Lower legs" = "Move o tornozelo e o pé, ajudando-o a empurrar e controlar cada passo.";
+"Muscle intro · Adductors" = "Desenha a coxa para a linha média do corpo.";
+"Muscle intro · Back" = "Suporta movimentos de tração e controle da omoplata.";
+"Home reminders" = "Lembretes caseiros";
+"Meal reminders" = "Avisos de refeições";
+"Time to eat" = "Hora de comer";
+"Fuel your muscles with a balanced meal" = "Dê energia aos seus músculos com uma refeição equilibrada";
+"Time to wind down" = "Hora de relaxar";
+"Sleep helps your muscles recover" = "O sono ajuda os músculos a recuperar";
+"Find demo" = "Procurar demonstração";
+"Calendar colors" = "Cores do calendário";
+"Tap to add photo" = "Toque em para adicionar foto";
+"Training in progress" = "Formação em curso";
+"Train again" = "Trem outra vez.";
+"Exercise details" = "Detalhes do exercício";
+"Training today and short sleep: fuel your workout and prioritize recovery" = "Treinamento hoje e sono curto: alimentar seu treino e priorizar a recuperação";
+"Short sleep last night: keep protein steady and prioritize recovery" = "Sono curto ontem à noite: manter a proteína estável e priorizar a recuperação";
+"More training today: extra carbs support recovery" = "Mais treinamento hoje: extra carboidratos suporte recuperação";
+"Training today: carbs adjusted, protein stays steady" = "Treinamento hoje: carboidratos ajustados, proteína permanece estável";
+"Recovery day: keep protein steady while muscles recover" = "Dia de recuperação: manter a proteína estável enquanto os músculos recuperar";
+"No workout logged today: carbs follow your lighter activity" = "Nenhum treino registado hoje: carboidratos seguir sua atividade mais leve";
+"Daily adjustments" = "Ajustamentos diários";
+"Carb adjustment" = "Ajuste de carboidratos";
+"Carbs follow logged workouts and working sets. Training/rest offsets use 0.5 g/kg around your weekly average; high-volume days add 0.3 g/kg. The change is limited to 50 g either way, with a 130 g floor. These are Masso planning rules, not exact doses from a study." = "Os carboidratos seguem exercícios registrados e conjuntos de trabalho. Os offsets de treino/descanso usam 0,5 g/kg em torno da sua média semanal; dias de alto volume adicionam 0,3 g/kg. A mudança é limitada a 50 g de qualquer forma, com um piso de 130 g. Estas são as regras de planejamento Masso, não as doses exatas de um estudo.";
+"Protein and fat remain steady. Sleep under 7 hours changes the recovery advice, not your macro targets: sleep studies do not establish a gram adjustment for missed sleep." = "Proteína e gordura permanecem estáveis. Dormir menos de 7 horas muda o conselho de recuperação, não seus objetivos macro: estudos de sono não estabelecem um ajuste grama para o sono perdido.";
+"Each meal shows its share of the full daily targets. Today's targets update with your workout records; earlier days retain their saved targets." = "Cada refeição mostra a sua quota-parte das metas diárias completas. As metas de hoje atualizam com os seus registos de treino; os dias anteriores mantêm os seus alvos salvos.";
+"Carbs and resistance training · Review (2022)" = "Carbos e treinamento de resistência · Revisão (2022)";
+"Carb feeding · Meta-analysis (2022)" = "Alimentação de carboidratos · Meta-análise (2022)";
+"Sleep and dietary intake · Review (2020)" = "Sono e ingestão alimentar · Revisão (2020)";
+"Remember this preference?" = "Lembras-te desta preferência?";
+"Saved preferences appear in Training Preferences → Notes" = "Preferências salvas aparecem em Preferências de Treinamento → Notas";
+"Saved to Notes" = "Gravado em Notas";
+"Not saved" = "Não gravado";
+"Yes" = "Sim";
+"No" = "Não";
+"/ 100" = "/ 100";
+"3D close-up of the muscles trained" = "close-up 3D dos músculos treinados";
+"About your targets" = "Sobre os seus alvos";
+"Analytics events" = "Eventos de análise";
+"Analyzing meal…" = "A analisar a refeição...";
+"Apply suggested weight" = "Aplicar o peso sugerido";
+"Beatriz Gomez Santamaria" = "Beatriz Gomez Santamaria";
+"CURRENT" = "CURRENTE";
+"Choose a starting point, then adjust each slider. Your saved gram amounts become your daily targets. Changing the number of meals only splits those totals across the day." = "Escolha um ponto de partida e, em seguida, ajuste cada controle deslizante. Suas quantidades de grama salvas tornam-se seus alvos diários. Mudar o número de refeições só divide esses totais ao longo do dia.";
+"Choose your plan before training. Rest days count as completed only when explicitly planned." = "Escolha o seu plano antes do treino. Os dias de descanso contam como terminados apenas quando explicitamente planeados.";
+"Daily nutrition targets" = "Metas nutricionais diárias";
+"Daily records" = "Registos diários";
+"Daily score" = "Pontuação diária";
+"Enjoy unlimited plans, unlimited AI, and deep analytics. Welcome aboard." = "Desfrute de planos ilimitados, IA ilimitada e análises profundas. Bem-vindo a bordo.";
+"Foods and portions" = "Alimentos e porções";
+"Front and back muscle coverage" = "Cobertura muscular frontal e traseira";
+"GOAL REFERENCE" = "REFERÊNCIA DO OBJETIVO";
+"Goal met" = "Objectivo atingido";
+"Grid" = "Grade";
+"How are these targets calculated?" = "Como esses alvos são calculados?";
+"List" = "Lista";
+"Meal schedule" = "Esquema de refeições";
+"Meal timing divides your daily amounts; it does not change the daily totals." = "O tempo de refeições divide as suas quantidades diárias; não altera os totais diários.";
+"No data" = "Sem dados";
+"No sleep data yet" = "Sem dados de sono ainda";
+"On workout days, Masso can shift carbohydrates around your weekly baseline using your logged training. Protein and fat stay at the amounts you choose." = "Nos dias de treino, o Masso pode deslocar hidratos de carbono em torno da sua linha de base semanal usando o seu treino registado.";
+"Phase 0: NoOpSink — nothing leaves this device." = "Fase 0: NoOpSink — nada sai deste dispositivo.";
+"Plan adherence, not a health or muscle-growth measurement. Training 40 · protein 20 · carbs 10 · fat 5 · sleep 25. Extra training or food earns no bonus." = "Plano de adesão, não uma medição de saúde ou crescimento muscular. Treinamento 40 · proteína 20 · carboidratos 10 · gordura 5 · sono 25. Treinamento extra ou comida não ganha nenhum bônus.";
+"Show earlier days" = "Mostrar os dias anteriores";
+"Sleep" = "Sono";
+"Sleep recorded by Apple Watch or compatible devices appears through Apple Health." = "O sono gravado por Apple Watch ou dispositivos compatíveis aparece através de Apple Health.";
+"Sleep target progress" = "Progresso do alvo do sono";
+"Solid yellow means all three fixed daily targets are met. Going above a target does not add extra credit." = "Amarelo sólido significa que todas as três metas diárias fixas são cumpridas. Ir acima de um alvo não adiciona crédito extra.";
+"Starting amounts use your body weight and training goal. Training-day carbs can adjust with your logged workouts." = "As quantidades iniciais usam seu peso corporal e objetivo de treinamento. Os carboidratos do dia de treinamento podem se ajustar com seus exercícios registrados.";
+"The first day after a recorded workout." = "O primeiro dia após um treino gravado.";
+"The presets are simple starting estimates based on body weight and common sports-nutrition guidance. They are not measurements of your calorie needs or medical advice. Choose amounts that fit your appetite, training and guidance from your clinician or dietitian." = "As predefinições são estimativas de início simples com base no peso corporal e orientação comum de nutrição esportiva. Eles não são medidas de suas necessidades de calorias ou aconselhamento médico. Escolha quantidades que se encaixam em seu apetite, treinamento e orientação de seu médico ou nutricionista.";
+"The second day after a recorded workout." = "O segundo dia após um treino gravado.";
+"Today's training goal" = "Objetivo de treinamento de hoje";
+"We use your body weight and training goal to set protein and carbohydrate targets. Weekly training days also shape your starting carbs; fat starts at about 0.8 g per kg of body weight." = "Usamos seu peso corporal e objetivo de treinamento para definir alvos de proteína e carboidratos. Dias de treinamento semanal também moldar seus carboidratos iniciais; gordura começa em cerca de 0,8 g por kg de peso corporal.";
+"⇥" = "□";
+
+/* Expanded SwiftUI localization audit additions. */
+"%lld working sets" = "%lld conjuntos de trabalho";
+"%lld% daily goal" = "%lld% golo diário";
+"%lldh %lldm goal" = "%lldh %lldm goal";
+"%lldh %lldm last night" = "%lldh %lldm last night";
+"A practical guide" = "Um guia prático";
+"AI Plans" = "Planos de IA";
+"AI estimate. Check portions and include sauces, drinks or foods outside the photo." = "Estimativa de IA. Verifique porções e inclua molhos, bebidas ou alimentos fora da foto.";
+"Bedtime" = "Hora de dormir";
+"Below goal" = "Abaixo do gol";
+"Browse training plans from the community" = "Navegue por planos de treinamento da comunidade";
+"Choose photo" = "Escolher foto";
+"Complete your records to see your score" = "Complete seus registros para ver sua pontuação";
+"Confirm meal" = "Confirmar refeição";
+"Confirming replaces this meal's previous record. Only confirmed nutrients count toward today's score." = "Confirmar substitui o histórico anterior desta refeição, apenas a contagem de nutrientes confirmada para a pontuação de hoje.";
+"Connect Apple Health" = "Conecte a saúde da Apple";
+"Couldn't read sleep data" = "Não foi possível ler dados de sono";
+"Daily goals: bright = all met · dim = partial" = "Objetivos diários: brilhante = todos atendidos · escuro = parcial";
+"Daily intake recorded" = "Ingestão diária registada";
+"Daily score. View Insights" = "Pontuação diária. View Insights";
+"Debug" = "Depurar";
+"Drag the moon and sun to set your schedule. This sets a goal, not an alarm." = "Arraste a lua e o sol para definir o seu horário.";
+"Estimated meal progress" = "Evolução estimada das refeições";
+"Estimated nutrients" = "Nutrientes estimados";
+"Force US storefront (debug)" = "Forçar o storefront dos EUA (depuração)";
+"Layout" = "Disposição";
+"Make it yours" = "Faz com que seja teu.";
+"Meals" = "Refeições";
+"Muscles" = "Músculos";
+"Personal daily targets" = "Alvos diários pessoais";
+"Planned rest day" = "Dia de descanso planeado";
+"Profile-based starting point" = "Ponto de partida baseado no perfil";
+"Record again" = "Gravar novamente";
+"Record meal" = "Refeição recorde";
+"Retry analysis" = "Análise de repetição";
+"Sleep schedule" = "Esquema de sono";
+"Sleep: bright = goal met · dim = below goal" = "Sono: brilhante = objetivo atingido · escuro = abaixo do gol";
+"Starting point" = "Ponto de partida";
+"Take photo" = "Tirar uma foto";
+"Today · updating" = "Hoje · atualização";
+"Today's intake · updating" = "Entrada de hoje · atualização";
+"Track sleep with Apple Health" = "Trilha de sono com a Apple Health";
+"Training days" = "Dias de treino";
+"Unlock Pro (debug)" = "Desbloquear o Pro (depurar)";
+"Wake up" = "Acorda.";
+"Your starting point" = "O teu ponto de partida.";
+
+"Completed" = "Concluído";
+
+/* Meal nutrient evidence and portion correction */
+"Nutrition estimate" = "Estimativa nutricional";
+"Estimated portions. Adjust grams if needed." = "Porções estimadas. Ajuste os gramas se necessário";
+"Food data: USDA" = "Dados alimentares: USDA";
+"AI estimate" = "Estimativa da IA";
+"Nutrition label" = "Rótulo nutricional";
+
+/* Recovery timeline and remaining-nutrient meal */
+"Recovery estimate" = "Recuperação estimada";
+"Estimated from recorded workouts, not a measured recovery score." = "Estimativa dos treinos registrados, não uma medição da recuperação";
+"Last meal" = "Última refeição";
+"Remaining today" = "Restante hoje";
+"Daily targets met" = "Metas diárias atingidas";
+"Suggested meal" = "Refeição sugerida";
+"Based on logged meals · Cooked / ready-to-eat weights" = "Com base nas refeições registradas · Peso cozido/pronto para consumo";
+"Log a meal first" = "Registre uma refeição primeiro";
+"Use suggestion" = "Usar sugestão";
+"No suitable foods" = "Nenhum alimento adequado";
+"No extra meal suggested" = "Nenhuma refeição extra sugerida";
+"Salmon" = "Salmão";
+"Olive oil" = "Azeite";
+"Almonds" = "Amêndoas";
+"Now" = "Agora";
+
+"Share month" = "Compartilhar mês";
+
+"Share day" = "Compartilhar dia";
+
+"Share overview" = "Compartilhar resumo";
+
+"Train with Masso" = "Treine com Masso";
+
+"Average target progress" = "Progresso médio da meta";
+
+"%lld of %lld days recorded" = "%lld de %lld dias registrados";
+
+"Last 30 days" = "Últimos 30 dias";
+
+"This month" = "Este mês";
+
+"Custom" = "Personalizado";
+
+"Period" = "Período";
+
+"From" = "De";
+
+"To" = "Até";
+
+"Tap a day to share" = "Toque em um dia para compartilhar";
+
+"Target progress" = "Progresso da meta";
+
+"What can I eat to meet my remaining targets?" = "O que posso comer para completar minhas metas restantes?";
+
+"Meal suggestion" = "Sugestão de refeição";
+
+"Adjust meal" = "Ajustar refeição";
+
+"Refresh suggestion" = "Atualizar sugestão";
+
+"Vegetables" = "Vegetais";
+
+"Spinach" = "Espinafre";
+
+"Log this meal" = "Registrar esta refeição";
+
+"Average per recorded day" = "Média por dia registrado";
+
+// Unified daily calendar
+"Week" = "Semana";
+"Month" = "Mês";
+"Today has a white outline." = "Hoje tem um contorno branco.";
+"No workout recorded on this day." = "Nenhum treino registrado neste dia.";
+
+"Today has a white circle and a black date number." = "Hoje é indicado por um círculo branco e um número de data preto.";
+
+"Custom workout" = "Treino personalizado";
+"g" = "g";
+
+// Muscle recovery action guidance
+"Fresh · Ready to train" = "Disposto · Pronto para treinar";
+"Rested · Ready to train" = "Recuperado · Pronto para treinar";
+"Recovering · Keep it light" = "Recuperando · Treino leve";
+"Fatigued · Rest recommended" = "Fatigado · Descanso recomendado";
+
+// Home summary timeframes and complete calendar legend
+"Today · %@" = "Hoje · %@";
+"Muscle recovery shades are shown in My Muscle Status." = "Os tons de recuperação muscular aparecem em Meu estado muscular.";
+"Daily diet completion compares protein, carbs and fat with that day's targets." = "O cumprimento alimentar diário compara proteínas, carboidratos e gorduras com as metas daquele dia.";
+"Blue shades show actual sleep relative to that night's target." = "Os tons azuis mostram o sono real em relação à meta daquela noite.";
+"Future dates have no records yet." = "As datas futuras ainda não têm registros.";
+
+"Historical target unavailable" = "A meta daquele dia não foi salva";
+
+"Import workouts from Apple Health" = "Importar treinos do Apple Saúde";
+
+"No imported workouts yet. Check Workout access in Apple Health." = "Ainda não há treinos importados. Confira o acesso aos treinos no Apple Saúde.";
+
+"Unable to import workouts. Try again." = "Não foi possível importar os treinos. Tente novamente.";
+
+"External workout" = "Treino externo";
+
+"Walking" = "Caminhada";
+
+"Cycling" = "Ciclismo";
+
+"Running" = "Corrida";
+
+"Swimming" = "Natação";
+
+"Hiking" = "Trilha";
+
+"Yoga" = "Yoga";
+
+"Strength training" = "Treino de força";
+
+"Other workout" = "Outro treino";
+
+"Each day with a Masso workout or imported Apple Health workout counts once. Imported workouts do not advance your workout plan or count toward muscle progress." = "Cada dia com um treino do Masso ou importado do Apple Saúde conta apenas uma vez. Os treinos importados não avançam seu plano nem contam para o progresso muscular.";
+
+"Diet score shows weighted intake relative to daily protein, carbs and fat targets (20/10/5), rounded to a whole percentage. It can exceed 100%; this means above target, not healthier. Meal percentages show their contribution to the daily targets." = "A porcentagem pondera a ingestão em relação às metas diárias de proteína, carboidratos e gordura (20/10/5), arredondada para porcentagens inteiras. Pode superar 100%: significa acima da meta, não mais saudável. Cada refeição mostra sua contribuição à meta diária.";
+
+"How to train this muscle" = "Como treinar este músculo";
+
+"Train more" = "Treinar mais";
+
+"Adjust my saved workouts to train %@ more. Keep my training preferences, equipment, available time and recovery in mind. Show which exercises and sets you would change. If I have no saved workouts, create a suitable plan." = "Ajuste meus treinos salvos para treinar mais %@. Considere minhas preferências, equipamentos, tempo disponível e recuperação. Explique quais exercícios e séries mudaria. Se não houver treinos salvos, crie um plano adequado.";
+
+"Train smart, your way." = "Treine com inteligência, do seu jeito.";
+
+"Deep sleep is compared with the median of your previous 14 days, using at least 3 recorded nights. It is a personal reference, not a medical target, and does not affect Sleep score. Missing sleep stages or insufficient history show —." = "O sono profundo é comparado com a mediana dos 14 dias anteriores, com pelo menos 3 noites registradas. É uma referência pessoal, não uma meta médica, e não altera a pontuação de sono. Sem estágios do sono ou histórico suficiente, aparece —.";
+
+"Show more" = "Mostrar mais";
+
+"Update Training Preferences?" = "Atualizar preferências de treino?";
+
+"Preferences changed. Please ask again to review the latest values." = "As preferências mudaram. Peça novamente para conferir os valores atuais";
+
+"Consider a heavier weight" = "Considere aumentar um pouco a carga";
+
+"You logged more than 12 reps. If your form stayed steady and you had reps left, consider a small weight increase next time" = "Você registrou mais de 12 repetições. Se manteve a técnica e ainda tinha reserva, considere aumentar um pouco a carga na próxima vez";
+
+"Exit" = "Sair";
+
+"This removes the record from Masso only. Apple Health keeps the original." = "Remove apenas o registro do Masso. O Apple Saúde mantém o original.";
+
+"The date ring shows Workout at the top, Diet at the lower left and Sleep at the lower right. Each colored segment shows that day's recorded progress. Grey means no recorded progress; progress above 100% fills the segment." = "O anel mostra treino no topo, dieta embaixo à esquerda e sono embaixo à direita. O trecho colorido indica o progresso registrado do dia. Cinza significa nenhum progresso registrado; acima de 100%, o segmento fica cheio.";
+"Your muscles are off duty. Put your phone down and sleep well." = "Seus músculos encerraram o expediente. Deixe o celular de lado e durma bem.";
+
+"Fuller arcs mean more progress" = "Quanto mais preenchido, maior o progresso";
+
+"Training fills green; rest days aren't failures" = "Treino preenche o verde; descanso não é falha";
+
+"Today's macros vs daily targets" = "Macros de hoje comparados às metas diárias";
+
+"Daily overview" = "Resumo diário";
+
+"Recovery & workout" = "Recuperação e treino";
+
+"Single metric" = "Dado individual";
+
+"Main metric" = "Dado principal";
+
+"Body view" = "Vista do corpo";
+
+"Content" = "Conteúdo";
+
+"Open Masso to update" = "Abra o Masso para atualizar";
+
+"Your day at a glance" = "Seu dia em um relance";
+
+"Muscle recovery and your next workout" = "Recuperação muscular e próximo treino";
+
+"One metric, your choice" = "Escolha o dado que deseja ver";
+
+"Full body" = "Corpo inteiro";
+
+/* Muscle recovery list */
+"Muscle recovery" = "Recuperação muscular";
+"Most recovered first" = "Mais recuperados primeiro";
+
+/* Shared history archive */
+"All history" = "Todo o histórico";
+
+/* Separate daily history entries */
+"All diet history" = "Todo o histórico alimentar";
+"All sleep history" = "Todo o histórico de sono";
+
+"All workout history" = "Todo o histórico de treinos";
+
+/* Lift progress empty state */
+"Keep logging workouts to see your progress" = "Continue registrando seus treinos para acompanhar seu progresso";
+
+/* Exercise demo generation — shared server library */
+"demo.title" = "Demonstração com IA";
+"demo.credits" = "Créditos de IA";
+"demo.available" = "Disponíveis";
+"demo.reserved" = "Reservados";
+"demo.cost" = "%d créditos";
+"demo.generate" = "Gerar demonstração";
+"demo.insufficient" = "Créditos insuficientes. Recargas ainda não estão disponíveis";
+"demo.unavailable" = "A geração ainda não está disponível. Nenhum crédito será usado";
+"demo.sharing" = "Demonstrações aprovadas entram na biblioteca compartilhada do Masso. Só o ID do exercício é enviado, sem fotos, conversas ou dados de saúde";
+"demo.confirm" = "Gerar esta demonstração?";
+"demo.confirmBody" = "Reservar %d créditos? Só serão cobrados após aprovação. Falhas ou rejeições não consomem créditos. O vídeo aprovado será compartilhado no Masso";
+"demo.ready" = "Demonstração pronta";
+"demo.queued" = "Na fila; você pode fechar esta página";
+"demo.running" = "Gerando; você pode fechar esta página";
+"demo.review" = "Verificando a demonstração antes de compartilhar";
+"demo.failed" = "A geração falhou. Os créditos reservados foram liberados";
+"demo.corePending" = "Esta demonstração básica está sendo preparada";
+"demo.missing" = "Ainda não há demonstração compartilhada";
+"demo.refresh" = "Atualizar status";
+"demo.check" = "Verificar novamente";
+"demo.quoteChanged" = "O custo mudou. Atualize para continuar";
+"demo.unknown" = "Este exercício não está na biblioteca compatível";
+"demo.plan" = "Demonstrações";
+"demo.planHint" = "Escolha um exercício para ver a demonstração. Criar um plano nunca inicia uma geração de vídeo paga";
+
+"Subscription options are unavailable right now" = "As assinaturas estão indisponíveis no momento";
+
+"Restore web purchase" = "Restaurar compra na web";
+
+"Basic workout logging and history stay free" = "O registro básico e o histórico continuam gratuitos";
+
+"Compare your lifts over time with Masso Pro" = "Compare sua evolução com o Masso Pro";
+
+"No active subscription found" = "Nenhuma assinatura ativa encontrada";
+
+"Unlimited plans · AI coach · Lift progress" = "Planos ilimitados · Coach IA · Progresso";
+
+"AI data sharing" = "Compartilhar dados com IA";
+
+"ai.dataSharing.explanation" = "As solicitações de IA enviam seus dados de treino, mensagens e imagens escolhidas à Anthropic (Claude) ou Alibaba Cloud Bailian (Qwen) pelos nossos servidores. Isso inclui informações visíveis nas capturas escolhidas; dados importados do Apple Saúde não são enviados automaticamente. Você pode retirar a permissão nos Ajustes. Permitir?";
+
+/* Compact exercise families */
+"Everyday" = "Comuns";
+"All versions (%d)" = "Todas as variantes (%d)";
+"Pinned and recent" = "Fixados e recentes";
+"Suggested replacements" = "Alternativas sugeridas";
+
+/* Restored paywall and request-based AI reminders */
+"Use AI without upgrade reminders" = "Use a IA sem avisos de upgrade";
+"Save a routine for every training day" = "Salve um plano de treino para cada dia de treino";
+"AI without interruptions" = "IA sem interrupções";
+"Skip upgrade reminders whenever you use AI" = "Sem avisos de upgrade ao usar a IA";
+"Lift progress and personalized training summaries" = "Evolução por exercício e resumos personalizados";
+"Fine-grained recovery" = "Recuperação detalhada";
+"See recovery for individual muscles" = "Veja a recuperação de cada músculo";
+"Billed yearly" = "Cobrança anual";
+"7-day free trial" = "Teste grátis por 7 dias";
+"Subscribe" = "Assinar";
+"Continue free" = "Continuar grátis";
+"Close this offer to continue your AI request" = "Feche esta tela para continuar sua solicitação à IA";
+"7 days free, then %@ per %@. Renews automatically until cancelled." = "7 dias grátis; depois, %@ por %@. Renovação automática até o cancelamento.";
+"%@ per %@. Renews automatically until cancelled." = "%@ por %@. Renovação automática até o cancelamento.";
+"Unlimited routines, uninterrupted AI, deep analytics." = "Planos de treino ilimitadas, IA sem interrupções e análises detalhadas.";
+"Unlimited plans · Uninterrupted AI · Lift progress" = "Planos de treino ilimitadas · IA sem interrupções · Evolução";
+"Deep analytics" = "Análises detalhadas";
+"Try again" = "Tentar novamente";
+
+"AI couldn't produce a valid routine. Please try again." = "O treino da IA não atende aos requisitos. Tente novamente.";
+
+/* Onboarding goals — words only */
+"onboarding.goal.buildMuscle" = "Ganhar músculo";
+"onboarding.goal.getStronger" = "Ficar mais forte";
+"onboarding.goal.loseFat" = "Perder gordura";
+"onboarding.goal.generalFitness" = "Manter a saúde";
+"Training schedule" = "Agenda de treinos";
+"Training plan" = "Plano de treino";
+"Tap muscles to select; tap again to clear" = "Toque no músculo para selecionar ou remover";
+"Session length" = "Duração";
+"View plan" = "Ver plano";
+"No target" = "Sem meta";
+"Workout %d" = "Treino %d";
+"Set your working weights when you train" = "Defina as cargas durante o treino";
+"No exercises match" = "Nenhum exercício compatível";
+"Gym" = "Academia";
+"Bodyweight" = "Peso corporal";
+
+"Routine limit reached" = "Limite de planos de treino atingido";
+"Continue without saving" = "Continuar sem salvar";
+"Upgrade" = "Assinar Pro";
+
+"Preview onboarding" = "Prévia da introdução";
+
+"equipment.pull_up_bar" = "Barra fixa";
+
+"Pull-up bar" = "Barra fixa";
+
+/* Onboarding body interaction */
+"Tap to select · Pinch to zoom" = "Toque para escolher · Pince para ampliar";
+
+/* Muscle detail: focus training request */
+"Train this muscle more" = "Treinar mais este músculo";
+
+"Choose at least one training day" = "Escolha pelo menos um dia de treino";
+
+/* Training environment / home equipment */
+"Training environment" = "Ambiente de treino";
+"Home" = "Em casa";
+"Home equipment" = "Equipamentos em casa";
+"No equipment selected. Bodyweight only." = "Sem equipamento selecionado: só peso corporal.";
+"Adjustable bench" = "Banco ajustável";
+"equipment.bench_flat" = "Banco reto";
+"equipment.squat_rack" = "Rack de agachamento";
+
+/* Compact Pro brand banner, 2026-10-21 */
+"More plans, fewer interruptions" = "Mais planos, menos interrupções";
+"Explore Pro" = "Conheça o Pro";
+
+"Watch on YouTube" = "Ver no YouTube";
+
+"Weight per dumbbell" = "Peso por halter";
+
+"Reference from %@" = "Referência: %@";
+
+"Update and generate" = "Atualizar e gerar";
+
+"Correct this set and update related weight references." = "Corrija esta série e atualize os pesos de referência relacionados.";
+
+/* First-run AI Coach launcher tooltip. */
+"Chat about your goals to get a new routine." = "Conte seus objetivos e crie uma nova plano de treino.";
+
+"This workout" = "Este treino";
+
+"Variants" = "Variações";
+
+"Default version" = "Versão básica";
+
+"Hide rare variants" = "Ocultar variações raras";
+
+"Pinned" = "Fixado";
+
+"Video unavailable" = "Vídeo indisponível";
+
+"Loading video" = "Carregando vídeo";
+
+"Video playing" = "Vídeo em reprodução";
+
+
+"Finish saves this workout. Discard removes it from history." = "Concluir salva o treino. Descartar o remove do histórico.";
+"This workout won’t be saved." = "Este treino não será salvo.";
+
+"Adjust your daily targets; saved amounts stay fixed." = "Ajuste suas metas diárias; os valores salvos permanecem fixos.";
+"Automatic carb adjustments apply only before you set a daily carbohydrate target." = "Os carboidratos só são ajustados automaticamente enquanto você não definir uma meta diária.";
+
+"Meal time" = "Horário da refeição";
+
+"QR code" = "Código QR";
+
+"Calories" = "Calorias";
+
+"Estimated from protein, carbs and fat." = "Estimadas a partir de proteínas, carboidratos e gorduras.";
+
+"USDA · Food energy" = "USDA · Energia dos alimentos";
+
+"Read body & activity" = "Ler dados corporais e de atividade";
+
+"Read available history for weight, height, steps and energy." = "Ler o histórico disponível de peso, altura, passos e energia.";
+
+"Body measurements" = "Medidas corporais";
+
+"Height" = "Altura";
+
+"Use Health weight" = "Usar peso do Saúde";
+
+"Use Health height" = "Usar altura do Saúde";
+
+"Updates your profile and local nutrition targets. Manual targets stay fixed." = "Atualiza o perfil e as metas nutricionais locais. Metas manuais são mantidas.";
+
+"Weight trend" = "Evolução do peso";
+
+"Today so far" = "Hoje até agora";
+
+"Steps" = "Passos";
+
+"Active energy" = "Energia ativa";
+
+"Resting energy" = "Energia em repouso";
+
+"Energy burned" = "Energia gasta";
+
+"Health history" = "Histórico de saúde";
+
+"Some data couldn't refresh." = "Alguns dados não foram atualizados.";
+
+"No records yet. Check access and data in Apple Health." = "Sem registros. Verifique os dados e o acesso no Saúde.";
+
+"Imported health data stays on this device and is not sent to AI Coach." = "Os dados de saúde importados ficam neste dispositivo e não são enviados ao AI Coach.";
+
+"Couldn't read Apple Health. Try again." = "Não foi possível ler o Saúde. Tente novamente.";
+
+"Connect body & activity" = "Conectar corpo e atividade";
+
+"Profile weight" = "Peso do perfil";
+
+"Targets use weight and training preferences. Health activity is a reference, not an extra food allowance." = "As metas usam peso e preferências de treino. A atividade do Saúde é uma referência, não uma cota extra de comida.";
+
+"Nutrition targets are estimates based on weight and training preferences. Health activity does not automatically change them." = "As metas nutricionais são estimativas baseadas no peso e nas preferências de treino. A atividade do Saúde não as altera automaticamente.";
+
+"Recorded energy, not a full-day forecast. Your food target stays unchanged." = "Energia registrada, não uma previsão do dia inteiro. Sua meta alimentar não muda.";
+
+"Date" = "Data";
+
+"Last synced" = "Última sincronização";
+
+/* AI Coach: single-session workouts */
+"Single workout" = "Treino avulso";
+"Your workout is ready." = "Seu treino está pronto.";
+"Couldn't create this workout. Please try again." = "Não foi possível criar o treino. Tente novamente.";
+"About %d min" = "Cerca de %d min";
+
+/* Inline exercise family expansion */
+"%@ more versions" = "Mais %@ versões";
+"Fewer versions" = "Menos versões";
+
+/* Workout progress, observed timing and personal heart-rate reminders */
+"Jump to first unfinished set" = "Ir à primeira série incompleta";
+"Rest duration" = "Duração do descanso";
+"Applies to this rest only." = "Apenas para este descanso.";
+"Edit rest time" = "Editar descanso";
+"Read workout heart rate" = "Ler frequência do treino";
+"Open Masso on Apple Watch" = "Abrir Masso no Apple Watch";
+"Live readings need a heart-rate sensor. No reading means no heart-rate warning." = "Leituras ao vivo precisam de sensor. Sem leituras não há aviso de frequência.";
+"Reminder limit" = "Limite do aviso";
+"Over your limit for 15 seconds: pause and rest. This is a personal reminder, not a medical alarm." = "Acima do limite por 15 segundos: descanse. É um lembrete pessoal, não um alarme médico.";
+"No heart-rate samples yet" = "Ainda sem leituras cardíacas";
+"Heart-rate data stays on this device and is not sent to AI Coach." = "Os dados cardíacos ficam neste dispositivo e não são enviados ao AI Coach.";
+"Delete heart-rate history" = "Apagar histórico cardíaco";
+"Delete heart-rate history?" = "Apagar histórico cardíaco?";
+"Couldn't connect to Apple Health." = "Não foi possível conectar ao Apple Health.";
+"Open Masso on your paired Apple Watch to read live heart rate." = "Abra o Masso no Apple Watch emparelhado para ler a frequência ao vivo.";
+"Enter a limit from 40 to 240 bpm." = "Insira um limite entre 40 e 240 bpm.";
+"Heart rate is above your limit" = "Frequência acima do seu limite";
+"Pause and rest" = "Pausar e descansar";
+"Your heart rate stayed above your personal limit for 15 seconds." = "Sua frequência ficou acima do limite pessoal por 15 segundos.";
+"Heart rate" = "Frequência cardíaca";
+"Workout report" = "Relatório do treino";
+"Logged sets" = "Séries registradas";
+"Tracked set time" = "Tempo de série registrado";
+"Recorded rest" = "Descanso registrado";
+"%d of %d sets have timing" = "%d de %d séries têm tempo";
+"Tracked time follows the workout controls, not time under tension." = "O tempo segue os controles do treino, não a tensão muscular.";
+"Set timeline" = "Linha do tempo das séries";
+"Sampled heart rate" = "Amostras cardíacas";
+"Average / peak heart rate" = "Frequência média / máxima";
+"Target duration" = "Duração alvo";
+"Peak heart rate" = "Frequência máxima";
+"Allow more recovery" = "Reserve mais recuperação";
+"Your readings stayed above your reminder limit. Review this workout before increasing intensity." = "As leituras ficaram acima do limite. Revise este treino antes de aumentar a intensidade.";
+"Your reps fell while rests were short. Try more recovery between sets." = "As repetições caíram com descansos curtos. Tente mais recuperação entre as séries.";
+"Review your logged workload and rest before increasing intensity." = "Revise a carga e os descansos registrados antes de aumentar a intensidade.";
+"bpm" = "bpm";
+
+"Dismiss" = "Fechar";
+
+"equipment.ab_wheel" = "Roda abdominal";
+"equipment.abductor_machine" = "Máquina";
+"equipment.adductor_machine" = "Máquina";
+"equipment.air_bike" = "Air bike";
+"equipment.arc_trainer" = "Elíptico";
+"equipment.assault_bike" = "Air bike";
+"equipment.axle_bar" = "Barra grossa";
+"equipment.ball" = "Bola suíça";
+"equipment.band" = "Elástico";
+"equipment.battle_rope" = "Corda naval";
+"equipment.belt_squat_machine" = "Máquina";
+"equipment.bench" = "Banco";
+"equipment.bench_decline" = "Banco";
+"equipment.bench_incline" = "Banco";
+"equipment.bike" = "Bicicleta ergométrica";
+"equipment.box" = "Caixa";
+"equipment.calf_raise_machine" = "Máquina";
+"equipment.captains_chair" = "Máquina";
+"equipment.chains" = "Correntes";
+"equipment.dip_bar" = "Paralelas";
+"equipment.dip_bars" = "Paralelas";
+"equipment.dip_belt" = "Cinto de lastro";
+"equipment.donkey_calf_machine" = "Máquina";
+"equipment.elliptical" = "Elíptico";
+"equipment.ez_bar" = "Barra EZ";
+"equipment.ez_curl_bar" = "Barra EZ";
+"equipment.fat_grip" = "Pegada grossa";
+"equipment.foam_roller" = "Rolo de espuma";
+"equipment.ghd_machine" = "Máquina";
+"equipment.glute_kickback_machine" = "Máquina";
+"equipment.grip_crusher" = "Hand grip";
+"equipment.gripper" = "Hand grip";
+"equipment.gymnastic_rings" = "Argolas";
+"equipment.hack_squat_machine" = "Máquina";
+"equipment.hip_thrust_machine" = "Máquina";
+"equipment.hyperextension_bench" = "Banco romano";
+"equipment.jump_rope" = "Corda";
+"equipment.kettlebell" = "Kettlebell";
+"equipment.landmine" = "Landmine";
+"equipment.leg_curl_machine" = "Máquina";
+"equipment.leg_extension_machine" = "Máquina";
+"equipment.leg_press_machine" = "Máquina";
+"equipment.medicine_ball" = "Medicine ball";
+"equipment.parallel_bars" = "Paralelas";
+"equipment.partner" = "Parceiro";
+"equipment.platform" = "Caixa";
+"equipment.plyo_box" = "Caixa";
+"equipment.power_rack" = "Rack";
+"equipment.preacher_bench" = "Banco";
+"equipment.push_up_handles" = "Barras de flexão";
+"equipment.pvc_pipe" = "Tubo de PVC";
+"equipment.rack" = "Rack";
+"equipment.resistance_band" = "Elástico";
+"equipment.reverse_hyper_machine" = "Máquina";
+"equipment.rice_bucket" = "Balde de arroz";
+"equipment.rings" = "Argolas";
+"equipment.roman_chair" = "Banco romano";
+"equipment.rope" = "Corda de polia";
+"equipment.rower" = "Remo ergométrico";
+"equipment.rowing_machine" = "Remo ergométrico";
+"equipment.safety_squat_bar" = "Barra de segurança";
+"equipment.sissy_squat_machine" = "Máquina";
+"equipment.ski_erg" = "Ski erg";
+"equipment.sled" = "Trenó";
+"equipment.sledgehammer" = "Marreta";
+"equipment.sliders" = "Discos deslizantes";
+"equipment.smith_machine" = "Máquina Smith";
+"equipment.spin_bike" = "Bicicleta de spinning";
+"equipment.stairmaster" = "Escada ergométrica";
+"equipment.stationary_bike" = "Bicicleta ergométrica";
+"equipment.swiss_ball" = "Bola suíça";
+"equipment.t_bar" = "Barra";
+"equipment.tibialis_machine" = "Máquina";
+"equipment.towel" = "Toalha";
+"equipment.trap_bar" = "Barra hexagonal";
+"equipment.treadmill" = "Esteira";
+"equipment.trx" = "TRX";
+"equipment.v_bar" = "Barra V";
+"equipment.wall" = "Parede";
+"equipment.weight_belt" = "Cinto de lastro";
+"equipment.weight_plate" = "Anilha";
+"equipment.wrist_roller" = "Rolo de punho";
+"equipment.yoga_strap" = "Faixa de yoga";
+
+"equipment.body_only" = "Peso corporal";
+
+"Save rest settings?" = "Salvar os descansos?";
+
+"Save to Training Preferences and apply to all workouts?" = "Salvar nas preferências e aplicar a todos os treinos?";
+
+"Create training plans based on this report?" = "Criar planos de treino com base neste relatório?";
+
+"Generate plans from this report" = "Criar planos com base no relatório";
+
+"Body photo" = "Foto do corpo";
+
+"Menu" = "Cardápio";
+
+"Training or health records" = "Registros de treino ou saúde";
+
+"Share or exercise photo" = "Foto para compartilhar ou de exercício";
+
+"Choose image use" = "Escolher uso da imagem";
+
+"Training plans found. Review before adding." = "Planos encontrados. Revise antes de adicionar.";
+
+"Couldn't read this image. Choose its use or try a clearer photo." = "Não foi possível ler a imagem. Escolha o uso ou tente uma foto mais nítida.";
+
+"Add a message or let AI identify the image." = "Adicione uma mensagem ou deixe a IA identificar a imagem.";
+
+"Review this image" = "Analisar esta imagem";
+
+"Review routines" = "Revisar planos";
+
+"Adapt to my preferences" = "Adaptar às minhas preferências";
+
+"Check portions and meal time before saving." = "Confira as porções e o horário antes de salvar.";
+
+"Choose what you ate before logging a meal." = "Informe o que comeu antes de registrar a refeição.";
+
+"Possible exercises" = "Possíveis exercícios";
+
+"Screenshot values are not added to your records." = "Os valores da captura não são adicionados aos seus registros.";
+
+"View my records" = "Ver meus registros";
+
+"Use as share photo" = "Usar como foto para compartilhar";
+
+"Use as exercise photo" = "Usar como foto de exercício";
+
+"Change image use" = "Alterar uso da imagem";
+
+"Reading image…" = "Lendo imagem…";
+
+"Several plan codes found. Upload one share card at a time." = "Vários códigos encontrados. Envie um cartão de cada vez.";
+
+"Image analysis is unavailable. Try again." = "A análise de imagem está indisponível. Tente novamente.";
+
+"AI permission wasn't granted. Your image wasn't sent." = "A permissão de IA não foi concedida. Sua imagem não foi enviada.";
+
+"Allow" = "Permitir";
+
+// Regional exercise tutorials
+"Watch tutorial" = "Ver tutorial";
+"Watch on bilibili" = "Ver no bilibili";
+"Search on bilibili" = "Buscar no bilibili";
+
+"Same target muscles" = "Mesmos músculos-alvo";
+
+"Switch exercise" = "Trocar exercício";
+
+"exercise.media.unverified" = "Não verificado";
+
+
+
+/* One-off quick workout */
+"AI Quick Workout" = "Treino rápido com IA";
+"Let AI recommend" = "Deixar a IA recomendar";
+"Mobility & stretching" = "Mobilidade e alongamento";
+"Training type" = "Tipo de treino";
+"Intensity" = "Intensidade";
+"Easy" = "Leve";
+"Moderate" = "Moderada";
+"High intensity" = "Alta intensidade";
+"Use saved equipment" = "Usar equipamentos salvos";
+"%lld min" = "%lld min";
+"Time is an estimate including rests. These choices apply only to this workout." = "Tempo estimado com descansos. As escolhas valem apenas para este treino.";
+"Anything else?" = "Mais alguma coisa?";
+"Goals, focus or movements to avoid" = "Objetivos, foco ou movimentos a evitar";
+"Generate this workout" = "Gerar este treino";
+"Wait for the current response before generating another workout." = "Aguarde a conclusão da resposta atual.";
+
+"Show recovery in workout calendar" = "Mostrar recuperação no calendário";
+"After a recorded workout, the calendar shows a shorter green bar for two rest days. This is a time-based guide, not a muscle recovery measurement." = "Após um treino registrado, uma barra verde diminui durante dois dias de descanso. É uma indicação baseada no tempo, não uma medição da recuperação muscular.";
+"Recovery day" = "Dia de recuperação";
+
+/* Exercise media reports */
+"Report exercise media" = "Reportar mídia do exercício";
+"What is wrong?" = "Qual é o problema?";
+"Wrong exercise" = "Exercício incorreto";
+"Wrong equipment" = "Equipamento incorreto";
+"Image or video problem" = "Problema na imagem ou no vídeo";
+"Add details (optional)" = "Adicionar detalhes (opcional)";
+"The exercise and displayed media version are included with your report." = "O relato inclui o exercício e a versão da mídia exibida.";
+
+"Exercise" = "Exercício";
+
+"Choose a previous meal" = "Escolher uma refeição anterior";
+
+"Health & Features" = "Saúde e recursos";
+"App Preferences" = "Preferências do app";
+"Privacy & Data" = "Privacidade e dados";
+
+"Using recommendation" = "Usando recomendação";
+
+"Reset to recommendation" = "Restaurar recomendação";
+
+"Based on your recent workout heart rates and age when available." = "Com base na frequência cardíaca dos treinos recentes e na idade, se disponível.";
+
+"Estimated from your age; it will adjust as workout data becomes available." = "Estimado pela idade; será ajustado conforme houver dados de treino.";
+
+"Starting estimate until your age or workout heart-rate history is available." = "Estimativa inicial até haver idade ou histórico cardíaco dos treinos.";
+
+"Recommendations are estimates, not a medical safety limit. Medication and health conditions can affect heart rate." = "As recomendações são estimativas, não um limite médico de segurança. Medicamentos e condições de saúde podem afetar a frequência cardíaca.";
+
+"Exercises and heart rate" = "Exercícios e frequência cardíaca";
+
+"Gaps indicate missing or untracked samples." = "Lacunas indicam amostras ausentes ou não registradas.";
+
+"Above your reminder limit" = "Acima do limite de lembrete";
+
+"During %@, heart rate reached %d bpm. Consider slowing down and resting if needed." = "Durante %@, sua frequência cardíaca atingiu %d bpm. Reduza o ritmo e descanse se necessário.";
+
+"Heart rate settings" = "Ajustes de frequência cardíaca";
+
+"Connect heart rate" = "Conectar frequência cardíaca";
+
+"Allow heart-rate access to see available workout readings." = "Permita o acesso à frequência cardíaca para ver os registros disponíveis.";
+
+"Exercise duration" = "Duração dos exercícios";
+
+"No workout timing yet" = "Ainda não há tempos registrados";
+
+"Some timing is unavailable" = "Alguns tempos não estão disponíveis";
+
+"If access was denied, update Masso's permissions in the Health app." = "Se o acesso foi negado, atualize as permissões do Masso no app Saúde.";
+
+"Some samples have no saved reminder limit." = "Algumas amostras não têm um limite de lembrete salvo.";
+
+"No recorded reminders" = "Nenhum lembrete registrado";
+
+"Heart-rate reminders" = "Lembretes de frequência cardíaca";
+
+"No sustained above-limit episodes" = "Nenhum episódio prolongado acima do limite";
+
+"Consider slowing down or resting." = "Considere reduzir o ritmo ou descansar.";
+
+"Expand heart rate card" = "Expandir cartão de frequência cardíaca";
+"Collapse heart rate card" = "Recolher cartão de frequência cardíaca";
+
+"Show heart rate card" = "Mostrar cartão de frequência cardíaca";
+
+"Automatic heart rate control" = "Controle automático por frequência cardíaca";
+
+"Experimental: heart rate changes can automatically log a set or skip rest. Readings may be delayed or incorrect; use Undo if needed." = "Experimental: alterações podem registrar uma série ou pular o descanso automaticamente. As leituras podem atrasar ou estar incorretas; use Desfazer se necessário.";
+
+"Set logged automatically" = "Série registrada automaticamente";
+
+"Rest skipped automatically" = "Descanso pulado automaticamente";
+
+"Report" = "Relatório";
+
+"Save plans & start" = "Salvar planos e começar";
+
+"Want to adjust your training plan? Ask AI Coach." = "Quer ajustar seu plano de treino? Pergunte ao coach de IA.";
+"Share a body photo for training suggestions." = "Compartilhe uma foto corporal para receber sugestões de treino.";
+"Review my body photo and suggest balanced training adjustments." = "Analise minha foto corporal e sugira ajustes equilibrados no meu treino.";
+
+"What are your training goals and focus areas?" = "Quais são seus objetivos e áreas de foco no treino?";
+"When and where would you like to train?" = "Quando e onde você quer treinar?";
+
+"The muscle map shows which areas you have trained." = "O mapa muscular mostra as áreas que você treinou.";
+
+"Suggested focus" = "Áreas sugeridas";
+"Create a plan from these suggestions" = "Criar plano com base nas sugestões";
+
+"Create a plan" = "Criar um plano";
+
+/* Accomplishment share */
+"Training that gets you." = "Training that gets you.";
+"This month, %d training days" = "This month, %d training days";
+"This week, %d training days" = "This week, %d training days";
+"As of %@" = "As of %@";
+"%d sessions" = "%d sessions";
+"Sessions" = "Sessions";
+"No workouts logged" = "No workouts logged";
+"Just finished" = "Just finished";
+"This day's records" = "This day's records";
+"No completed sets to share" = "No completed sets to share";
+"Morning" = "Morning";
+"Afternoon" = "Afternoon";
+"Evening" = "Evening";
+"Night" = "Night";
+"Same exercise, another step" = "Same exercise, another step";
+"per dumbbell" = "per dumbbell";
+"%@ · same reps" = "%@ · same reps";
+"Share this progress" = "Share this progress";
+"Exact time" = "Exact time";
+"Photo included" = "Photo included";
+"Heart rate, body weight, location, and your name stay off this card." = "Heart rate, body weight, location, and your name stay off this card.";
+"A missing log is not a missed workout" = "A missing log is not a missed workout";
+"Future day" = "Future day";
+"No workout logged" = "No workout logged";
+"No same-reps weight increase to share yet" = "No same-reps weight increase to share yet";
+"Minutes" = "Minutes";
+
+// Calendar calorie examples
+"Recorded calories vs daily calorie target" = "Calorias registradas em relação à meta diária";
+"Below calorie target" = "Abaixo da meta calórica";
+"Above calorie target" = "Acima da meta calórica";
+"Well above calorie target" = "Bem acima da meta calórica";
+"Far above calorie target" = "Muito acima da meta calórica";
+
+/* Parameter suggestion, distinct from a user-entered target. */
+"Suggested" = "Sugerido";
+
+/* Cross-exercise starting estimates: explicit evidence and limitations. */
+"Confirmed bench press 6RM" = "6RM de supino confirmado";
+"Mark only an existing set: six full-range reps, no assistance or momentum, about 2 seconds up and down, with no seventh clean rep possible. You should already be familiar with the lift. No extra maximum test is needed." = "Marque apenas uma série já concluída: exercício conhecido, seis repetições completas sem ajuda ou impulso, cerca de 2 segundos para subir e descer, sem conseguir uma sétima repetição correta. Não é necessário outro teste máximo.";
+"Six completed reps and a positive weight are required." = "São necessárias seis repetições concluídas e peso maior que 0.";
+"Estimate basis" = "Base da estimativa";
+"Initial estimate from %@. A small study predicts six-rep maximums; Masso uses 75%% of that estimate, rounded down. Adjust after the first set." = "Estimativa inicial baseada em %@. Um pequeno estudo prevê o 6RM; o Masso usa 75%% desse valor, arredondado para baixo. Ajuste após a primeira série.";
+"Masso currently limits this estimate to men aged 18–30, a confirmed 30–70 kg reference from the last 30 days, and 6–12 target reps." = "O Masso limita esta estimativa a homens de 18–30 anos, com referência confirmada de supino de 30–70 kg nos últimos 30 dias e metas de 6–12 repetições.";
+"Research source" = "Fonte do estudo";
+
+"Edit set" = "Editar série";
+
+// Partner referral redemption
+"Referral code" = "Código de indicação";
+"Have a referral code?" = "Tem um código de indicação?";
+"Check referral code" = "Verificar código";
+"Redeem with Apple" = "Resgatar com a Apple";
+"Checking a code binds your referral and shares an anonymous identifier and subscription transactions with Masso for referral accounting. Your health and training data are not shared." = "A verificação vincula sua indicação e envia à Masso um identificador anônimo e as transações de assinatura para calcular comissões. Dados de saúde e treino não são compartilhados.";
+"Couldn’t check this code. It may be unavailable, already bound, or the service may be offline. Try again later." = "Não foi possível verificar o código. Ele pode estar indisponível, já vinculado ou o serviço pode estar offline. Tente mais tarde.";
+"Apple confirms eligibility, the actual price, trial and renewal terms. Your discount is active only after Apple confirms redemption. This offer applies to the annual subscription." = "A Apple confirma a elegibilidade, o preço real, o teste e os termos de renovação. O desconto só é ativado após a confirmação do resgate pela Apple. Esta oferta vale para a assinatura anual.";
+
+/* Personal working-load relationships */
+"Estimated from your recorded working weights for %@ across multiple workouts at the same reps. Adjust after the first set." = "Estimativa com base nas suas cargas registradas para %@ em vários treinos com as mesmas repetições. Ajuste após a primeira série.";
+"Requires five consistent workout dates, including a separate validation workout, and a recent source record. This is a starting reference, not a strength measurement." = "Exige cinco dias de treino com registros consistentes, incluindo um treino separado para validação, e um registro recente do exercício de origem. É uma referência inicial, não uma medida de força.";
+
+"Copy code and redeem with Apple" = "Copiar código e resgatar com a Apple";
+"Your code is copied. Paste it into Apple’s redemption sheet if asked." = "Seu código foi copiado. Cole-o na tela de resgate da Apple se solicitado.";
+"Apple’s redemption sheet couldn’t open. Please try again." = "Não foi possível abrir a tela de resgate da Apple. Tente novamente.";
+
+/* Quiet load progression */
+"Weight progression" = "Progressão de carga";
+"Maintain current weights" = "Manter as cargas atuais";
+"Pause weight suggestions for all exercises. Your workout targets stay unchanged." = "Pausa sugestões de carga para todos os exercícios. Seus objetivos de treino permanecem iguais.";
+"Stage weight limit" = "Limite de carga da etapa";
+"These preferences only limit progression suggestions. They do not change saved weights or define a safe maximum." = "Estas preferências limitam apenas sugestões de progressão. Não alteram cargas salvas nem definem um máximo seguro.";
+"Global maintenance mode is on." = "O modo de manutenção global está ativo.";
+"Optional next weight" = "Carga opcional para a próxima vez";
+"Repeated workouts reached the rep range. Only consider an increase if your form stayed steady and you had reps left." = "Vários treinos atingiram a faixa de repetições. Considere aumentar apenas com técnica estável e repetições em reserva.";
+"Use suggested weight" = "Usar a carga sugerida";
+"No weight increase suggested." = "Nenhum aumento de carga sugerido.";
+"Suggestions depend on your goal and repeated workouts. Keeping the same weight is also an option." = "As sugestões dependem do seu objetivo e de vários treinos. Manter a mesma carga também é uma opção.";
+
+"First-use calibration" = "Calibração inicial";
+
+"Based on your saved weight for %@. This is a starting reference; adjust after your first set." = "Com base na sua carga salva para %@. É uma referência inicial; ajuste após a primeira série.";
+
+"Rough starting weight from your completed set of %@ and reps, using a product ratio and a 70%% multiplier. Not a measured maximum or safety guarantee; adjust for your equipment and first set." = "Carga inicial aproximada a partir do peso e das repetições da série concluída de %@, usando uma proporção do produto e um fator de 70%%. Não é uma carga máxima medida nem garantia de segurança; ajuste ao equipamento e à primeira série.";
+
+"Unlimited plans & custom exercises" = "Planos ilimitados e exercícios personalizados";
+"Training progress insights" = "Análise do progresso";
+
+"7 days free, then renews yearly at the price above until cancelled." = "7 dias grátis; depois, renovação anual automática pelo preço acima até o cancelamento.";
+"7 days free, then renews monthly at the price above until cancelled." = "7 dias grátis; depois, renovação mensal automática pelo preço acima até o cancelamento.";
+"Renews yearly at the price above until cancelled." = "Renovação anual automática pelo preço acima até o cancelamento.";
+"Renews monthly at the price above until cancelled." = "Renovação mensal automática pelo preço acima até o cancelamento.";
+
+
+/* Approved Pro-boundary candidate. Server quotas remain release-gated. */
+"Keep adapting with AI Coach" = "Continue ajustando com o coach IA";
+"Adjust workouts around your time and equipment." = "Adapte os treinos ao seu tempo e equipamento.";
+"See progress and recovery" = "Entenda seu progresso e recuperação";
+"Lift trends and per-muscle recovery estimates." = "Tendências de força e recuperação estimada por grupo muscular.";
+"More room for your training" = "Mais espaço para seus treinos";
+"Save more plans and create more exercises." = "Salve mais planos e crie mais exercícios próprios.";
+"Free: %d plans and %d custom exercises" = "Grátis: %d planos e %d exercícios próprios";
+"Free and Pro details" = "Detalhes de Grátis e Pro";
+"Complete workouts, history, basic charts and data export stay available." = "Treinos, histórico, gráficos básicos e exportação de dados continuam disponíveis.";
+"Existing plans, exercises and acquired results remain usable after Pro expires." = "Planos, exercícios e resultados obtidos continuam disponíveis após o Pro expirar.";
+"More with Pro" = "Mais com Pro";
+"Ongoing AI adjustments, more saved plans and custom exercises, lift progress and detailed recovery estimates." = "Ajustes contínuos com IA, mais planos e exercícios próprios, análise de força e estimativas detalhadas de recuperação.";
+"AI access" = "Acesso à IA";
+"Each listed AI task has one successful free experience. Free also includes %d shared text tasks per month. A task includes %d same-goal adjustments within %d hours." = "Cada tarefa de IA listada oferece uma primeira experiência bem-sucedida grátis. Grátis também inclui %d tarefas de texto compartilhadas por mês. Cada tarefa inclui %d ajustes do mesmo objetivo em %d horas.";
+"Failed requests, clarification, local tools and reopening results do not use AI quota." = "Falhas, esclarecimentos, ferramentas locais e reabertura de resultados não gastam cota de IA.";
+"Free AI requests continue after closing the upgrade reminder. Pro skips these reminders." = "Feche o lembrete de upgrade para continuar usando a IA grátis. O Pro remove esses lembretes.";
+"Existing purchases keep their rights. AI needs internet access and your data-sharing permission." = "Os direitos de compras existentes são mantidos. A IA precisa de internet e da sua permissão para compartilhar dados.";
+"Preview only: the shared quota service is not connected." = "Somente prévia: o serviço de cota compartilhada não está conectado.";
+"Free" = "Grátis";
+
+/* Device-install policy and native user-message actions. */
+"AI access on this device" = "Acesso à IA neste dispositivo";
+"AI allowances are stored only on this device installation. Changing devices or reinstalling may reset them; they are not shared across devices." = "As cotas ficam apenas nesta instalação. Trocar de dispositivo ou reinstalar pode redefini-las; elas não são compartilhadas entre dispositivos.";
+"Each supported AI task has one successful free experience on this installation. Free also includes 2 shared text tasks per calendar month (UTC). Repeat images and ongoing reviews need Pro." = "Cada tarefa de IA compatível tem uma primeira experiência bem-sucedida grátis. Há também 2 tarefas de texto compartilhadas por mês civil (UTC). Imagens repetidas e análises contínuas exigem Pro.";
+"A task includes 2 same-goal adjustments within 24 hours. Failed requests, clarification, local tools and reopening saved results do not use the allowance." = "Uma tarefa inclui 2 ajustes do mesmo objetivo em 24 horas. Falhas, esclarecimentos, ferramentas locais e resultados salvos não gastam cota.";
+"Existing purchased and lifetime rights are kept. No experimental 30-task or 10-image limit is applied to existing paid users." = "Os direitos de compras e vitalícios existentes são mantidos. Usuários pagos existentes não recebem limites experimentais de 30 tarefas ou 10 imagens.";
+"Automatic recommendations have a separate budget of one successful result per day; they do not spend your active AI allowance." = "Recomendações automáticas têm cota separada de um resultado bem-sucedido por dia e não gastam a cota ativa.";
+"Existing users have 30 days from this notice before the new AI limits apply. Previous use is not counted retroactively." = "Usuários existentes têm 30 dias a partir deste aviso antes dos novos limites. O uso anterior não é descontado retroativamente.";
+"AI access and saved results" = "Acesso à IA e resultados salvos";
+"Saved AI results" = "Resultados de IA salvos";
+"No saved AI results yet." = "Ainda não há resultados de IA salvos.";
+"Saved AI result" = "Resultado de IA salvo";
+"Monthly text tasks used: %d of 2" = "Tarefas de texto neste mês: %d de 2";
+"Copy message" = "Copiar mensagem";
+"Edit and resend" = "Editar e reenviar";
+"Editing text only. Sending adds a new message; your previous draft is kept." = "Somente o texto é editado. Enviar adiciona uma nova mensagem e mantém o rascunho anterior.";
+"Cancel edit" = "Cancelar edição";
+"This AI task needs Pro. Your saved results remain available." = "Esta tarefa de IA exige Pro. Os resultados salvos continuam disponíveis.";
+"Make room in My Plans before generating. Existing plans and training history are not deleted." = "Libere espaço em Meus planos antes de gerar. Seus planos e histórico não são apagados.";
+"This AI task is already running. Please wait." = "Esta tarefa de IA já está em andamento. Aguarde.";
+"Review AI access on this device before continuing." = "Revise as regras de IA deste dispositivo antes de continuar.";
+"AI access could not be saved on this device. Nothing was charged." = "Não foi possível salvar o uso de IA. Nenhuma tentativa foi descontada.";
+"Today's automatic AI recommendation is already available." = "A recomendação automática de hoje já está disponível.";
+
+/* Source extraction and saved recovery snapshot */
+"Source content could not be read. Paste the article, transcript or exercise list; no AI experience was used." = "Fonte ilegível. Cole texto, legendas ou lista; nenhuma tentativa gasta.";
+"The source card count could not be confirmed. Nothing was saved and no AI experience was used." = "Quantidade de cartões incerta. Nada salvo nem descontado.";
+"Source exercises or parameters could not be verified. Nothing was substituted or saved." = "Exercícios ou valores não verificados. Nada substituído ou salvo.";
+"Confirm an exact library match before importing:" = "Confirme o exercício exato antes de importar:";
+"Extracted from your source. Review before saving." = "Extraído. Revise antes de salvar.";
+"Suggested defaults for missing source parameters:" = "Valores sugeridos para parâmetros ausentes:";
+"A recovery snapshot needs at least 14 days of history, 6 recent sets and recent muscle data." = "Exige 14 dias, 6 séries recentes e dados musculares.";
+"Recovery snapshot" = "Retrato de recuperação";
+"Preview recovery snapshot" = "Experimentar retrato";
+"View saved recovery snapshot" = "Ver retrato salvo";
+"A saved training-based estimate, not a live or medical measurement." = "Estimativa de treino, não medição médica ou ao vivo.";
+
+"Text only. New message. Draft kept." = "Só texto. Nova mensagem. Rascunho mantido.";

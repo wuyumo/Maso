@@ -6,6 +6,7 @@ import UIKit
 // 分享图 = 逐计划区块 (名称 + 动作清单) + ShareCardFooter (宣传 logo + MASSO 名称 + slogan + App Store 二维码).
 
 struct RoutinesShareSheet: View {
+    var initialPhoto: UIImage? = nil
     @Environment(DataStore.self) private var data
     @Environment(\.dismiss) private var dismiss
     /// 勾选的 plan.id 集合 — 默认全选 (onAppear 填充).
@@ -28,7 +29,7 @@ struct RoutinesShareSheet: View {
     private var selectedPlans: [Plan] { sharablePlans.filter { selected.contains($0.id) } }
 
     var body: some View {
-        NavigationStack {
+        AppNavigationStack {
             ScrollView {
                 VStack(spacing: 10) {
                     ForEach(sharablePlans) { plan in
@@ -40,7 +41,7 @@ struct RoutinesShareSheet: View {
                 .padding(.bottom, 16)
             }
             .background(MasoColor.background.ignoresSafeArea())
-            .navigationTitle(NSLocalizedString("Share routines", comment: "batch share sheet title"))
+            .navigationTitle("Share")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -50,7 +51,7 @@ struct RoutinesShareSheet: View {
             .safeAreaInset(edge: .bottom) {
                 Button(action: renderAndShare) {
                     HStack(spacing: 8) {
-                        Image(systemName: "square.and.arrow.up").font(.system(size: 14, weight: .heavy))
+                        ShareIcon()
                         Text(String(format: NSLocalizedString("Share (%lld)", comment: "batch share CTA with count"),
                                     selectedPlans.count))
                             .font(.system(size: 15, weight: .heavy))
@@ -97,15 +98,10 @@ struct RoutinesShareSheet: View {
 
     /// 勾选行 — 左圆形勾选 + 计划名/badge + 动作·组数 meta. 整行可点切换.
     private func row(_ plan: Plan) -> some View {
-        let on = selected.contains(plan.id)
-        return Button {
-            Haptics.tap()
-            if on { selected.remove(plan.id) } else { selected.insert(plan.id) }
-        } label: {
+        return Toggle(isOn: Binding(get: { selected.contains(plan.id) }, set: { included in
+            if included { selected.insert(plan.id) } else { selected.remove(plan.id) }
+        })) {
             HStack(spacing: 12) {
-                Image(systemName: on ? "checkmark.circle.fill" : "circle")
-                    .font(.system(size: 22))
-                    .foregroundStyle(on ? MasoColor.accent : MasoColor.textFaint)
                 VStack(alignment: .leading, spacing: 3) {
                     HStack(spacing: 6) {
                         PlanSourceBadge(source: plan.resolvedSource)
@@ -125,7 +121,7 @@ struct RoutinesShareSheet: View {
             .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
             .contentShape(Rectangle())
         }
-        .buttonStyle(.plain)
+        .toggleStyle(.switch).tint(MasoColor.toggleAccent)
     }
 
     private func renderAndShare() {
@@ -136,7 +132,7 @@ struct RoutinesShareSheet: View {
         // 数据过大 (QR 印卡上扫不出) → 回落纯 App Store 链, 导入走 OCR 尽力解析.
         let qr = PlanShareCodec.appStoreDataLink(for: plans) ?? MasoLinks.appStore
         let img = ShareImageRenderer.render {
-            MultiRoutinesShareCard(plans: plans, exById: data.exById, qrPayload: qr)
+            MultiRoutinesShareCard(plans: plans, exById: data.exById, qrPayload: qr, userPhoto: initialPhoto)
         }
         guard let img else { return }
         // PNG 往返规整化 — 跟 ShareImageButton 同因 (ImageRenderer 偶发奇异元数据).
@@ -155,6 +151,7 @@ struct MultiRoutinesShareCard: View {
     let exById: [String: Exercise]
     /// footer QR 载荷 — 二合一链接 (App Store + 数据锚点), 回落纯 App Store 链.
     var qrPayload: String = MasoLinks.appStore
+    var userPhoto: UIImage? = nil
 
     var body: some View {
         VStack(spacing: 0) {
@@ -165,7 +162,7 @@ struct MultiRoutinesShareCard: View {
                         Image(systemName: "square.stack.3d.up.fill")
                             .font(.system(size: 11, weight: .heavy))
                             .foregroundStyle(MasoColor.accent)
-                        Text(verbatim: "ROUTINES")
+                        Text("Routines").textCase(.uppercase)
                             .font(.system(size: 11, weight: .heavy))
                             .tracking(1.5)
                             .foregroundStyle(MasoColor.accent)
@@ -183,14 +180,14 @@ struct MultiRoutinesShareCard: View {
                     planBlock(plan)
                 }
             }
-            .padding(.horizontal, 22)
+            .padding(.horizontal, ShareLayout.contentInset)
             .padding(.top, 22)
             .padding(.bottom, 20)
             .frame(maxWidth: .infinity, alignment: .leading)
 
             // 宣传 footer — logo + MASSO 名称 + slogan + 二维码 (owner 指定四件套).
             // QR 是二合一链接, 带数据锚点时更密 → 用 104pt (跟 RoutineShareCard 数据 QR 同档) 保证可扫.
-            ShareCardFooter(qrPayload: qrPayload, qrSize: 104)
+            ShareCardFooter(qrPayload: qrPayload, qrSize: 104, photo: userPhoto)
         }
         .background(MasoColor.background)
     }
