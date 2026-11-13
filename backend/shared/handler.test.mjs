@@ -65,6 +65,41 @@ test("upstream auth errors are returned without retrying a second paid model", a
   assert.equal(mock.mock.callCount(), 1);
 });
 
+function regionRequest(headers = {}) {
+  return new Request("https://example.test/region", {
+    method: "GET",
+    headers: { "X-Maso-Client-Token": env.MASO_CLIENT_TOKEN, "x-forwarded-for": "203.0.113.8", ...headers },
+  });
+}
+
+test("region returns Cloudflare country and never the client IP", async () => {
+  const request = regionRequest({ "x-vercel-ip-country": "US" });
+  Object.defineProperty(request, "cf", { value: { country: "CN" } });
+  const res = await handleRequest(request, env);
+  assert.equal(res.status, 200);
+  assert.equal(res.headers.get("cache-control"), "private, no-store");
+  const body = await res.text();
+  assert.deepEqual(JSON.parse(body), { country: "CN" });
+  assert.equal(body.includes("203.0.113.8"), false);
+});
+
+test("region ignores a spoofed header when Cloudflare already marked the country unknown", async () => {
+  const request = regionRequest({ "x-vercel-ip-country": "US" });
+  Object.defineProperty(request, "cf", { value: { country: "XX" } });
+  const res = await handleRequest(request, env);
+  assert.deepEqual(await res.json(), { country: null });
+});
+
+test("region uses the Vercel country header only when Cloudflare geo is absent", async () => {
+  const res = await handleRequest(regionRequest({ "x-vercel-ip-country": "GB" }), env);
+  assert.deepEqual(await res.json(), { country: "GB" });
+});
+
+test("region rejects a missing client token", async () => {
+  const request = new Request("https://example.test/region");
+  assert.equal((await handleRequest(request, env)).status, 401);
+});
+
 test("both unusable outputs fail visibly instead of returning truncated JSON", async t => {
   t.mock.method(globalThis, "fetch", async () => completion('{"routines":', "max_tokens"));
   assert.equal((await handleRequest(request(), env)).status, 502);

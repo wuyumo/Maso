@@ -8,10 +8,11 @@
 //
 // 路由匹配用 endsWith 而不是 ===: Vercel 把所有路径 rewrite 到 /api, 实际 pathname 可能带前缀.
 //
-// 两条职责:
+// 职责:
 //   1. POST /v1/chat/completions  → Claude AI 代理 (对外仍是 OpenAI 形状) (把 API key 从 app binary 里挪出来)
 //   2. POST /pro/validate         → Polar license key 校验 (把 Polar org token 藏在这里)
 //   3. GET  /pro/return           → Polar 结账成功后的回跳页: 查出 license key → 深链回 app
+//   4. GET  /region               → 平台已附带的粗粒度国家码 (不回传、不存储 IP)
 //
 // 部署:
 //   wrangler secret put ANTHROPIC_API_KEY   ← Claude API key (AI 后端已从 DeepSeek 切到 Claude)
@@ -74,8 +75,39 @@ export async function handleRequest(request, env) {
     if (request.method === "GET" && path.endsWith("/pro/return")) {
       return handleProReturn(url, env);
     }
+    if (request.method === "GET" && path.endsWith("/region")) {
+      return handleRegion(request, env);
+    }
     return new Response("Not Found", { status: 404 });
   }
+}
+
+// Coarse country already attached by our own edge (Cloudflare request.cf or
+// Vercel's x-vercel-ip-country). Never reads or returns the client IP.
+export function platformCountry(request) {
+  const cf = request?.cf;
+  if (cf && Object.prototype.hasOwnProperty.call(cf, "country")) {
+    return normalizeCountry(cf.country);
+  }
+  return normalizeCountry(request?.headers?.get?.("x-vercel-ip-country"));
+}
+
+function normalizeCountry(value) {
+  if (typeof value !== "string") return null;
+  const code = value.trim().toUpperCase();
+  if (!/^[A-Z]{2}$/.test(code) || code === "XX" || code === "T1") return null;
+  return code;
+}
+
+function handleRegion(request, env) {
+  const clientToken = request.headers.get(CLIENT_TOKEN_HEADER);
+  if (!clientToken || clientToken !== env.MASO_CLIENT_TOKEN) {
+    return new Response("Unauthorized", { status: 401 });
+  }
+  return new Response(JSON.stringify({ country: platformCountry(request) }), {
+    status: 200,
+    headers: { ...CORS, "Content-Type": "application/json", "Cache-Control": "private, no-store" },
+  });
 }
 
 // ─────────────────────────────────────────────────────────────
