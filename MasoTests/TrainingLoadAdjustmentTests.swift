@@ -392,19 +392,10 @@ final class CrossExerciseLoadReferenceTests: XCTestCase {
 
     func testPublishedSharedObjectEquationsGiveConservativeStartingTargetsAndProvenance() throws {
         let data = fixture(), originalRecords = data.sets
-        for (id, expected, rule) in [("bicep_curl_barbell", 15.0, "wong2013-curl-start-v1"),
-                                     ("overhead_extension_dumbbell_two_hand", 10.0, "wong2013-triceps-start-v1")] {
-            let step = data.suggestingMissingParameters(for: target(id))
-            XCTAssertEqual(step.weight, expected)
-            XCTAssertTrue(step.isSuggested("weight"))
-            XCTAssertEqual(step.parameterSuggestions?["weight"]?.source, .crossExercise)
-            XCTAssertEqual(step.parameterSuggestions?["weight"]?.exerciseID, "bench_press_barbell")
-            XCTAssertEqual(step.parameterSuggestions?["weight"]?.recordID, "six-rm")
-            XCTAssertEqual(step.parameterSuggestions?["weight"]?.ruleID, rule)
-            XCTAssertEqual(try JSONDecoder().decode(PlanStep.self, from: JSONEncoder().encode(step)), step)
-        }
+        XCTAssertNil(data.suggestingMissingParameters(for: target()).weight,
+                     "A confirmed 6RM alone is not the approved full-body trigger")
         data.settings.weightUnit = .lb
-        XCTAssertEqual(data.suggestingMissingParameters(for: target()).weight, 15, "Storage and rounding are canonical kg")
+        XCTAssertNil(data.suggestingMissingParameters(for: target("overhead_extension_dumbbell_two_hand")).weight)
         XCTAssertEqual(data.sets, originalRecords)
         XCTAssertNil(data.settings.exerciseWeightInputs)
     }
@@ -471,14 +462,10 @@ final class CrossExerciseLoadReferenceTests: XCTestCase {
         var step = target(); step.setWeights = [10, nil, 15]
         XCTAssertEqual(data.suggestingMissingParameters(for: step), step)
         step = data.suggestingMissingParameters(for: target())
+        XCTAssertNil(step.weight)
         let plan = Plan(id: "estimate", name: "Workout", steps: [step], createdAt: Date(), updatedAt: Date())
         data.updatePlan(plan)
         XCTAssertNil(data.settings.exerciseWeightInputs?[step.exerciseId], "An estimate must not become an explicit input")
-        let shared = try XCTUnwrap(PlanShareCodec.decode(try XCTUnwrap(PlanShareCodec.encode(plan))))
-        XCTAssertEqual(shared.steps[0].parameterSuggestions?["weight"]?.source, .shared)
-        XCTAssertNil(shared.steps[0].parameterSuggestions?["weight"]?.ruleID)
-        data.settings.age = nil
-        XCTAssertEqual(data.suggestingMissingParameters(for: shared.steps[0]).weight, 15)
     }
 
     func testRevokedOrExpiredEvidenceWithdrawsOnlyUnconfirmedEstimate() {
@@ -487,7 +474,7 @@ final class CrossExerciseLoadReferenceTests: XCTestCase {
         data.sets[0].sixRMReference = nil
         XCTAssertNil(data.suggestingMissingParameters(for: step).weight)
         step.confirmParameter("weight")
-        XCTAssertEqual(data.suggestingMissingParameters(for: step).weight, 15)
+        XCTAssertNil(data.suggestingMissingParameters(for: step).weight)
         let expired = fixture(age: -40 * 86400)
         var old = target(); old.weight = 15
         old.markSuggested("weight", value: 15, source: .crossExercise, exerciseID: "bench_press_barbell")
@@ -513,7 +500,9 @@ final class CrossExerciseLoadReferenceTests: XCTestCase {
         let data = fixture()
         var step = target(); step.setReps = [6, 20, nil]
         XCTAssertNil(data.suggestingMissingParameters(for: step).weight)
-        step = data.suggestingMissingParameters(for: target())
+        step = target()
+        step.weight = 15
+        step.markSuggested("weight", value: 15, source: .crossExercise, exerciseID: "bench_press_barbell", ruleID: "wong2013-curl-start-v1")
         let plan = Plan(id: "active-cross", name: "Workout", steps: [step], createdAt: Date(), updatedAt: Date())
         let store = TrainingSessionStore(completionSound: {})
         store.start(planId: plan.id, plan: plan, segments: expandPlan(plan, exById: data.exById))
@@ -860,18 +849,26 @@ final class RoughLoadEstimateTests: XCTestCase {
         let (data, store) = fixture(); defer { store.end() }
         store.refreshLoadSuggestions(using: data)
         XCTAssertNil(store.plan?.steps[1].weight, "Input alone is not completion evidence")
-        store.advance { data.recordSet($0) }
+        func completeOneSet() {
+            let before = data.sets.count
+            var guardrail = 0
+            while data.sets.count == before && guardrail < 6 {
+                store.advance { data.recordSet($0) }
+                guardrail += 1
+            }
+        }
+        completeOneSet(); completeOneSet()
+        store.refreshLoadSuggestions(using: data)
+        XCTAssertNil(store.plan?.steps[1].weight, "Two completed sets do not anchor")
+        XCTAssertNil(store.plan?.steps[2].weight)
+        completeOneSet()
         let records = data.sets
         let ids = store.segments.map(\.id)
         let state = store.session
         store.refreshLoadSuggestions(using: data)
         XCTAssertEqual(store.plan?.steps[1].weight, 32.5)
-        XCTAssertEqual(store.plan?.steps[2].weight, 12.5)
-        XCTAssertEqual(store.plan?.steps[1].parameterSuggestions?["weight"]?.source, .roughEstimate)
-        XCTAssertTrue(store.updateStepWeight(stepId: "bench", weightKg: 50))
-        store.refreshLoadSuggestions(using: data)
-        XCTAssertEqual(store.plan?.steps[1].weight, 27.5)
-        XCTAssertEqual(store.plan?.steps[2].weight, 10)
+        XCTAssertEqual(store.plan?.steps[1].parameterSuggestions?["weight"]?.source, .fullBodyRough)
+        XCTAssertNil(store.plan?.steps[2].weight, "Cable pushdowns are outside the approved table")
         XCTAssertEqual(data.sets, records)
         XCTAssertEqual(store.segments.map(\.id), ids)
         XCTAssertEqual(store.session?.endsAt, state?.endsAt)
@@ -879,7 +876,7 @@ final class RoughLoadEstimateTests: XCTestCase {
         XCTAssertEqual(store.session?.completedSets, state?.completedSets)
         XCTAssertTrue(store.undoPlayback { data.removeSetRecord(id: $0) })
         store.refreshLoadSuggestions(using: data)
-        XCTAssertTrue(data.sets.isEmpty)
+        XCTAssertEqual(data.sets.count, 2)
         XCTAssertNil(store.plan?.steps[1].weight)
         XCTAssertNil(store.plan?.steps[2].weight)
     }
@@ -916,9 +913,15 @@ final class RoughLoadEstimateTests: XCTestCase {
             return WatchCommand(sessionID: try XCTUnwrap(state.workoutSessionID),
                                 context: try XCTUnwrap(state.context), kind: kind)
         }
-        XCTAssertTrue(store.applyWatchCommand(try command(.advance), data: data))
+        var completed = 0
+        while completed < 3 {
+            let before = data.sets.count
+            XCTAssertTrue(store.applyWatchCommand(try command(.advance), data: data))
+            if data.sets.count > before { completed += 1 }
+            XCTAssertLessThan(completed + data.sets.count, 20)
+        }
         XCTAssertEqual(store.plan?.steps[1].weight, 32.5)
-        XCTAssertEqual(store.plan?.steps[2].weight, 12.5)
+        XCTAssertNil(store.plan?.steps[2].weight)
         XCTAssertTrue(store.applyWatchCommand(try command(.undo), data: data))
         XCTAssertNil(store.plan?.steps[1].weight)
         XCTAssertNil(store.plan?.steps[2].weight)
