@@ -2565,3 +2565,15 @@
 "AI access changed: 30-day transition. New limits start %@. Existing training stays available." = "AI 규칙이 변경되었습니다. 30일 전환 기간 후 %@부터 새 한도가 적용됩니다. 기존 운동은 계속 이용할 수 있습니다.";
 
 "Details" = "자세히";
+
+"How this is counted" = "집계 설명";
+"No heart rate" = "심박수 없음";
+"Timing incomplete" = "시간 기록 불완전";
+"Work time" = "운동 시간";
+"Include exercise detail" = "동작 상세 포함";
+"Include heart rate" = "심박수 포함";
+"Most volume" = "가장 많음";
+"Some volume" = "보통";
+"Light volume" = "적음";
+"Not trained" = "안 함";
+"Report counting explanation" = "녹색은 이번 운동의 상대 훈련량이며 지난 회복이 아닙니다. 세 숫자는 운동 시간, 완료 세트, 부하량입니다. 부하량은 외부 무게 곱하기 횟수이고 완료된 세트는 한 번만 계산합니다. 근육 숫자는 주동근 1.0, 협응근 0.4 세트 배분이며 킬로그램이 아닙니다. 맨몸과 시간 운동은 무게로 바꾸지 않습니다. 유산소는 몸에 표시하지 않습니다. 심박수 선은 세트의 측정 구간만 잇고, 일시정지, 휴식, 20초를 넘는 공백에서는 끊깁니다. 계획 저장은 다음 운동에만 영향을 줍니다.";

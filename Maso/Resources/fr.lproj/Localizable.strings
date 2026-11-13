@@ -2565,3 +2565,15 @@
 "AI access changed: 30-day transition. New limits start %@. Existing training stays available." = "L’accès à l’IA évolue : transition de 30 jours, nouvelles limites à partir du %@. Vos entraînements restent accessibles.";
 
 "Details" = "Détails";
+
+"How this is counted" = "Comment c'est compté";
+"No heart rate" = "Pas de fréquence cardiaque";
+"Timing incomplete" = "Durée incomplète";
+"Work time" = "Temps de travail";
+"Include exercise detail" = "Inclure le détail des exercices";
+"Include heart rate" = "Inclure la fréquence cardiaque";
+"Most volume" = "Le plus";
+"Some volume" = "Moyen";
+"Light volume" = "Léger";
+"Not trained" = "Non travaillé";
+"Report counting explanation" = "Le vert est le volume relatif de cette séance, pas la récupération dans le temps. Les trois nombres sont le temps de travail, les séries terminées et la charge. La charge est le poids externe multiplié par les répétitions, et chaque série terminée ne compte qu'une fois. Le nombre sur un muscle est 1,0 pour le muscle principal et 0,4 pour un muscle d'assistance ; ce n'est pas des kilogrammes. Le poids du corps et le travail minuté ne sont pas convertis en poids. Le cardio n'est pas dessiné sur le corps. Les lignes de fréquence cardiaque suivent les parties minutées d'une série et s'interrompent lors des pauses, du repos et des écarts de plus de 20 secondes. Enregistrer le plan ne concerne que la prochaine séance.";

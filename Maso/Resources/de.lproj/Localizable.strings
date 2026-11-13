@@ -2565,3 +2565,15 @@
 "AI access changed: 30-day transition. New limits start %@. Existing training stays available." = "KI-Zugang geändert: 30 Tage Übergang. Neue Grenzen ab %@. Dein vorhandenes Training bleibt verfügbar.";
 
 "Details" = "Details";
+
+"How this is counted" = "So wird gezählt";
+"No heart rate" = "Keine Herzfrequenz";
+"Timing incomplete" = "Zeit unvollständig";
+"Work time" = "Arbeitszeit";
+"Include exercise detail" = "Übungsdetails einschließen";
+"Include heart rate" = "Herzfrequenz einschließen";
+"Most volume" = "Am meisten";
+"Some volume" = "Mittel";
+"Light volume" = "Wenig";
+"Not trained" = "Nicht trainiert";
+"Report counting explanation" = "Grün ist der relative Trainingsumfang dieser Einheit, nicht die Erholung über die Zeit. Die drei Zahlen sind Arbeitszeit, abgeschlossene Sätze und Last. Die Last ist externes Gewicht mal Wiederholungen und jeder abgeschlossene Satz zählt einmal. Die Zahl an einem Muskel ist 1,0 für den Hauptmuskel und 0,4 für einen mitarbeitenden Muskel, nicht Kilogramm. Eigengewicht und Zeitübungen werden nicht in Gewicht umgerechnet. Cardio wird nicht auf den Körper gezeichnet. Herzfrequenzlinien folgen den gemessenen Abschnitten eines Satzes und brechen bei Pausen, Ruhe und Lücken über 20 Sekunden. Das Speichern des Plans gilt nur für das nächste Training.";

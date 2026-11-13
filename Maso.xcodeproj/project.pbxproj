@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A7C31E904B2D4F18A6E0C112 /* SessionMuscleReport.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7C31E904B2D4F18A6E0C111 /* SessionMuscleReport.swift */; };
+		B8D42FA15C3E5029B7F1D222 /* WorkoutSessionReportScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8D42FA15C3E5029B7F1D221 /* WorkoutSessionReportScreen.swift */; };
+		C9E530B26D4F6130C802E332 /* SessionMuscleReportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E530B26D4F6130C802E331 /* SessionMuscleReportTests.swift */; };
 		E302A0C89EB5411DA31A0032 /* WorkoutSourceReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = E302A0C89EB5411DA31A0031; };
 		E302A0C89EB5411DA31A0022 /* WorkoutSourceExtractionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E302A0C89EB5411DA31A0021; };
 		E302A0C89EB5411DA31A0012 /* WorkoutSourceExtraction.swift in Sources */ = {isa = PBXBuildFile; fileRef = E302A0C89EB5411DA31A0011; };
@@ -452,6 +455,9 @@
 		6D25C3388775F8C9E7931C3D /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		6D71842FF34DFD253971E701 /* DietPlanTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanTests.swift; sourceTree = "<group>"; };
 		6DC4E04539409F755E9C7B77 /* Plan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Plan.swift; sourceTree = "<group>"; };
+		A7C31E904B2D4F18A6E0C111 /* SessionMuscleReport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionMuscleReport.swift; sourceTree = "<group>"; };
+		B8D42FA15C3E5029B7F1D221 /* WorkoutSessionReportScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutSessionReportScreen.swift; sourceTree = "<group>"; };
+		C9E530B26D4F6130C802E331 /* SessionMuscleReportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionMuscleReportTests.swift; sourceTree = "<group>"; };
 		6E8A2177731558F1A09B9D11 /* ExerciseSelectionPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseSelectionPolicy.swift; sourceTree = "<group>"; };
 		71828AB12DF85E9E6B7E3650 /* MasoWidgetsBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasoWidgetsBundle.swift; sourceTree = "<group>"; };
 		749D14202F2DADE9E946D07D /* AppRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRouter.swift; sourceTree = "<group>"; };
@@ -666,6 +672,7 @@
 				7CFD65FC65CDC205071A9F1B /* HomeWidgetTests.swift */,
 				E6EA41AA6D8C407C72148C6E /* LocalExerciseSelectionTests.swift */,
 				45F7D6B15155F0605B6972DB /* MuscleBodyTests.swift */,
+				C9E530B26D4F6130C802E331 /* SessionMuscleReportTests.swift */,
 				E0C24E30DD40378141D2337F /* NativeNumericAlertTests.swift */,
 				E78B78F98524E9399EE53F3E /* NumericEntryTests.swift */,
 				DF65BEC419177F3CAD6675E3 /* OnboardingTests.swift */,
@@ -797,6 +804,7 @@
 				FEDA5CD52A27EE48B089AD46 /* SettingsScreen.swift */,
 				4A2FC82B09BFE985CB928FDB /* TodayScreen.swift */,
 				E971064231D3F55030DBE2F5 /* WorkoutCalendarScreen.swift */,
+				B8D42FA15C3E5029B7F1D221 /* WorkoutSessionReportScreen.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -855,6 +863,7 @@
 				652661E7A8B67B3B7F5E7241 /* MuscleGroup.swift */,
 				1545AEA651F97CD56E65D4E5 /* MuscleMapping.swift */,
 				6DC4E04539409F755E9C7B77 /* Plan.swift */,
+				A7C31E904B2D4F18A6E0C111 /* SessionMuscleReport.swift */,
 				03E88525E276032B0BCAB227 /* Settings.swift */,
 				B718C6B336FB3DDE84F7922C /* WorkoutRotation.swift */,
 			);
@@ -1371,6 +1380,7 @@
 				16ABD958958B5EF2A7B9A929 /* LocalExerciseSelectionTests.swift in Sources */,
 				67F11FCEA9B52433234D1C03 /* MassoHomeWidgets.swift in Sources */,
 				00E9311A5A4151DE31EAE983 /* MuscleBodyTests.swift in Sources */,
+				C9E530B26D4F6130C802E332 /* SessionMuscleReportTests.swift in Sources */,
 				E19E83525F23FB9B0DF6011B /* NativeNumericAlertTests.swift in Sources */,
 				0AC2668A82F2B6C2EBC403C8 /* NumericEntryTests.swift in Sources */,
 				99135B3BC3500ECABAAB1ABC /* OnboardingTests.swift in Sources */,
@@ -1506,6 +1516,8 @@
 				CE995F4FE19088CC54F0C21C /* PersistenceController.swift in Sources */,
 				D2A5A66A03EA5AFD75D478EB /* PhotoPicker.swift in Sources */,
 				C17EA63579305A76D115C431 /* Plan.swift in Sources */,
+				A7C31E904B2D4F18A6E0C112 /* SessionMuscleReport.swift in Sources */,
+				B8D42FA15C3E5029B7F1D222 /* WorkoutSessionReportScreen.swift in Sources */,
 				824F7863E8635C58E60C147B /* PlanPlayerScreen.swift in Sources */,
 				E713BB3AD37D051B6B9D716A /* PlanSegments.swift in Sources */,
 				78847633826CBE7F80F82523 /* PlanShareCodec.swift in Sources */,

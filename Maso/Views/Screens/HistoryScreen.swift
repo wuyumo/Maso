@@ -856,7 +856,7 @@ struct WorkoutHistoryRecordRow: View {
             .workoutRecordDeletion(session: session)
             .sheet(isPresented: $reportPresented) {
                 AppNavigationStack {
-                    WorkoutReportView(records: data.recordedSets(for: session), workoutName: session.planName)
+                    WorkoutSessionReportScreen(records: data.recordedSets(for: session), workoutName: session.planName, presentation: .history)
                         .toolbar {
                             ToolbarItem(placement: .topBarLeading) {
                                 Button { reportPresented = false } label: { Image(systemName: "xmark") }
@@ -1103,7 +1103,7 @@ struct SessionDetailSheet: View {
                 }
             }
             .navigationDestination(isPresented: $showWorkoutReport) {
-                WorkoutReportView(records: data.recordedSets(for: session), workoutName: session.planName)
+                WorkoutSessionReportScreen(records: data.recordedSets(for: session), workoutName: session.planName, presentation: .history)
             }
             .sheet(isPresented: $showShare) {
                 let records = data.recordedSets(for: session)
@@ -1389,6 +1389,12 @@ extension View {
     }
 }
 
+enum WorkoutReportSection: String, Identifiable {
+    case heart
+    case duration
+    var id: String { rawValue }
+}
+
 /// A local set timeline. Sensor samples never enter share cards or AI payloads.
 struct WorkoutReportView: View {
     @Environment(DataStore.self) private var data
@@ -1401,6 +1407,7 @@ struct WorkoutReportView: View {
     @State private var heartTooltipPosition: CGPoint?
     let records: [SetRecord]
     var workoutName: String? = nil
+    var focus: WorkoutReportSection? = nil
     private var report: WorkoutTimelineReport { .init(records: records.sorted { $0.performedAt < $1.performedAt }) }
     private var blocks: [WorkoutReportExerciseBlock] { WorkoutReportExerciseBlock.group(records) }
     private var durationGroups: [WorkoutReportExerciseBlock] { WorkoutReportExerciseBlock.totalsByExercise(records) }
@@ -1496,6 +1503,7 @@ struct WorkoutReportView: View {
     }
 
     var body: some View {
+        ScrollViewReader { proxy in
         ScrollView {
             VStack(alignment: .leading, spacing: 28) {
                 VStack(alignment: .leading, spacing: 16) {
@@ -1519,10 +1527,12 @@ struct WorkoutReportView: View {
                     Text("Exercises and heart rate").font(.title3.weight(.semibold))
                     heartReportCard.contentCardChrome()
                 }
+                .id(WorkoutReportSection.heart.id)
                 VStack(alignment: .leading, spacing: 12) {
                     Text("Exercise duration").font(.title3.weight(.semibold)).accessibilityIdentifier("workout.report.timeline")
                     durationReportCard.contentCardChrome()
                 }
+                .id(WorkoutReportSection.duration.id)
                 DisclosureGroup("Logged sets") {
                     VStack(alignment: .leading, spacing: 16) {
                         ForEach(report.records) { record in
@@ -1550,6 +1560,11 @@ struct WorkoutReportView: View {
             }
             .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
             .padding(.top, 16).padding(.bottom, 32)
+        }
+        .onAppear {
+            guard let focus else { return }
+            proxy.scrollTo(focus.id, anchor: .top)
+        }
         }
         .background(MasoColor.background.ignoresSafeArea())
         .sheet(isPresented: $heartSettingsPresented, onDismiss: { Task { await refreshHeart() } }) { WorkoutHeartRateSettingsSheet() }

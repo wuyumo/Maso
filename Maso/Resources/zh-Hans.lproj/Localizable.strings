@@ -3105,3 +3105,15 @@
 "AI access changed: 30-day transition. New limits start %@. Existing training stays available." = "AI 规则已更新，过渡期为 30 天，新限额自 %@ 起应用。已有训练仍可使用。";
 
 "Details" = "详情";
+
+"How this is counted" = "统计说明";
+"No heart rate" = "无心率";
+"Timing incomplete" = "计时不完整";
+"Work time" = "工作";
+"Include exercise detail" = "加入动作明细";
+"Include heart rate" = "加入心率";
+"Most volume" = "最多";
+"Some volume" = "一些";
+"Light volume" = "较少";
+"Not trained" = "未练";
+"Report counting explanation" = "绿色表示这一次训练的相对训练量，不是一段时间的恢复。上面三个数是工作时长、完成组数和负重总量。负重是外部重量乘次数，每个完成组只计一次。肌群上的数字是主练 1.0、协同 0.4 的分摊组数，不是公斤。自重和计时不换算成重量。有氧不画在身体上。心率只连接一组里连续的计时段，暂停、休息和超过 20 秒的缺口会断开。保存计划只影响下次。";

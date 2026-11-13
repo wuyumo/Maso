@@ -3101,3 +3101,15 @@
 "AI access changed: 30-day transition. New limits start %@. Existing training stays available." = "AI access changed: 30-day transition. New limits start %@. Existing training stays available.";
 
 "Details" = "Details";
+
+"How this is counted" = "How this is counted";
+"No heart rate" = "No heart rate";
+"Timing incomplete" = "Timing incomplete";
+"Work time" = "Work time";
+"Include exercise detail" = "Include exercise detail";
+"Include heart rate" = "Include heart rate";
+"Most volume" = "Most";
+"Some volume" = "Some";
+"Light volume" = "Light";
+"Not trained" = "Not trained";
+"Report counting explanation" = "Green is this workout's relative training, not recovery over time. The three numbers are work time, completed sets, and loaded volume. Loaded volume is external weight times reps and each completed set is counted once. The number on a muscle is 1.0 for the main muscle and 0.4 for a muscle that assists; it is not kilograms. Bodyweight and timed sets are not converted to weight. Cardio is not drawn on the body. Heart-rate lines follow the timed parts of a set and break across pauses, rest, and gaps over 20 seconds. Saving routine changes updates the next plan only.";

@@ -2565,3 +2565,15 @@
 "AI access changed: 30-day transition. New limits start %@. Existing training stays available." = "AIのルールを更新しました。移行期間は30日間、新しい上限は%@から適用されます。既存のトレーニングは引き続き使えます。";
 
 "Details" = "詳細";
+
+"How this is counted" = "集計の説明";
+"No heart rate" = "心拍なし";
+"Timing incomplete" = "計測が不完全";
+"Work time" = "作業時間";
+"Include exercise detail" = "種目の詳細を含める";
+"Include heart rate" = "心拍を含める";
+"Most volume" = "最多";
+"Some volume" = "中程度";
+"Light volume" = "少なめ";
+"Not trained" = "未実施";
+"Report counting explanation" = "緑はこのワークアウトの相対的なトレーニング量で、過去の回復ではありません。3つの数字は作業時間、完了セット、負荷量です。負荷量は外部重量×回数で、完了したセットは1回だけ数えます。筋肉の数字は主働筋1.0、補助筋0.4のセット配分で、キログラムではありません。自重と時間制は重量に換算しません。有酸素は体に描きません。心拍の線はセットの計測区間だけを結び、一時停止、休憩、20秒を超える空白では切れます。プランの保存は次回だけに影響します。";
