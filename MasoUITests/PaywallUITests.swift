@@ -98,6 +98,33 @@ final class PaywallUITests: XCTestCase {
         app.terminate()
     }
 
+    // Requires the real OS simctl content_size setting documented in this release receipt.
+    func testDetailsAtActualSystemAccessibilitySizeCanScrollAndClose() throws {
+        for language in ["en","zh-Hans"] {
+            for light in [false,true] {
+                let app = launch("device-notice",language:language,largeType:true,narrow:true,light:light,increasedContrast:true)
+                XCTAssertTrue(app.buttons["ai.policy.notice.details"].waitForExistence(timeout:10))
+                app.buttons["ai.policy.notice.details"].tap()
+                let name = language + (light ? "-light" : "-dark") + "-50-system-AX"
+                XCTAssertTrue(app.staticTexts["ai.policy.device-scope"].waitForExistence(timeout:10))
+                capture(app,name + "-0-top")
+                let limits = app.staticTexts["ai.sources.limits"]
+                for page in 1...18 {
+                    if limits.exists && limits.isHittable && limits.frame.height > 0 && limits.frame.maxY <= app.frame.maxY - 20 { break }
+                    app.swipeUp(); capture(app,name + "-" + String(page))
+                }
+                XCTAssertTrue(limits.exists && limits.isHittable)
+                XCTAssertLessThanOrEqual(limits.frame.maxY,app.frame.maxY - 20)
+                app.buttons["ai.policy.details.close"].tap()
+                app.buttons["ai.policy.notice.dismiss"].tap()
+                XCTAssertTrue(app.staticTexts["ai.policy.test.basic-content"].exists)
+                XCTAssertTrue(app.staticTexts["ai.policy.test.dismissed"].exists)
+                capture(app,name + "-dismissed")
+                app.terminate()
+            }
+        }
+    }
+
     func testProAIHasNoReminderAndFourthCustomCreationRequiresPro() throws {
         var app = launch("pro")
         XCTAssertTrue(app.buttons["paywall.test.run-ai"].waitForExistence(timeout: 10))
