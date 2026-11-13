@@ -36,7 +36,7 @@ final class SessionMuscleReportTests: XCTestCase {
         XCTAssertEqual(report.loadedVolumeKg ?? 0, 320, accuracy: 0.001)
     }
 
-    func testBodyweightTimedCardioAndMissingWeightDoNotBecomeKilograms() {
+    func testBodyweightTimedCardioAndMissingWeightDoNotBecomeKilograms() throws {
         let pushup = exercise("pushup", primary: [.chest], secondary: [], equipment: "body_only")
         let plank = exercise("plank", primary: [.abs], secondary: [.obliques])
         let ride = exercise("ride", primary: [.quads], secondary: [], category: .cardio)
@@ -127,6 +127,7 @@ final class SessionMuscleReportTests: XCTestCase {
             MuscleBodyRegion(node: "chest_left", muscles: [.chest], fatigueEligible: true),
             MuscleBodyRegion(node: "chest_right", muscles: [.chest], fatigueEligible: true),
             MuscleBodyRegion(node: "shoulders_left", muscles: [.shoulders], fatigueEligible: true),
+            MuscleBodyRegion(node: "shoulders_right", muscles: [.shoulders], fatigueEligible: true),
             MuscleBodyRegion(node: "triceps_left", muscles: [.triceps], fatigueEligible: true),
             MuscleBodyRegion(node: "abs_center", muscles: [.abs], fatigueEligible: true),
             MuscleBodyRegion(node: "obliques_left", muscles: [.obliques], fatigueEligible: true),
@@ -143,7 +144,7 @@ final class SessionMuscleReportTests: XCTestCase {
         equipment: String? = "barbell"
     ) -> Exercise {
         Exercise(id: id, name: id, category: category, tags: [], primaryMuscles: primary,
-                 muscleGroups: primary + secondary, imageFolder: nil, instructions: [], equipment: equipment)
+                 muscleGroups: primary + secondary, imageFolder: nil, equipment: equipment, instructions: [])
     }
 
     private func record(
