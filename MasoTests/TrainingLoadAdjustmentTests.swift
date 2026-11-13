@@ -892,7 +892,11 @@ final class RoughLoadEstimateTests: XCTestCase {
                 store.advance { data.recordSet($0) }
             } else {
                 if mode == "perSet" { step.setWeights = [nil, 20, nil] }
-                else if mode == "shared" { step.markSuggested("weight", value: step.weight!, source: .shared) }
+                else if mode == "shared" {
+                    let value = step.weight ?? 45
+                    step.weight = value
+                    step.markSuggested("weight", value: value, source: .shared)
+                }
                 else { step.weight = mode == "zero" ? 0 : 45; step.confirmParameter("weight") }
                 store.plan?.steps[1] = step
             }

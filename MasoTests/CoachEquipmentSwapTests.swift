@@ -10,12 +10,12 @@ import XCTest
 final class CoachEquipmentSwapTests: XCTestCase {
     private let request = "把所有练胸的杠铃器械都换成machine"
 
-    override func setUp() {
-        super.setUp()
+    override func setUpWithError() throws {
+        try super.setUpWithError()
         continueAfterFailure = false
-        XCTAssertEqual(
-            ProcessInfo.processInfo.environment["MASO_COACH_SWAP_TEST"], "1",
-            "Refusing to run. Scheme Maso does not set the host guard, so MasoApp would call bootstrap() before this method.")
+        try XCTSkipUnless(
+            ProcessInfo.processInfo.environment["MASO_COACH_SWAP_TEST"] == "1",
+            "Scheme MasoCoachSwapTests sets MASO_COACH_SWAP_TEST before MasoApp.init. The Maso scheme does not, and bootstrap() must stay unchanged.")
     }
 
     func testHostStorageIsNotTheUserSnapshot() {

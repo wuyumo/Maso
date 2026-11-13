@@ -96,7 +96,7 @@ struct SessionMuscleReport: Equatable {
             if let name, !name.isEmpty { result.append(name) }
             if let day { result.append(SessionMuscleReport.dayLabel(day)) }
             result.append(contentsOf: [work, sets, volume])
-            for muscle in muscles {
+            for muscle in muscles where !muscle.exercises.isEmpty || muscle.heart != nil {
                 result.append(muscle.name)
                 for exercise in muscle.exercises {
                     result.append(exercise.name)
@@ -343,6 +343,13 @@ struct SessionMuscleReport: Equatable {
         }.sorted { $0.performedAt < $1.performedAt }
     }
 
+    /// Peak heart rate for one muscle, using the existing Heart rate and bpm labels.
+    static func heartShareLine(_ peak: Double?) -> String {
+        guard let peak else { return NSLocalizedString("No heart rate", comment: "") }
+        let value = Int(peak.rounded()).formatted(.number.locale(LanguageManager.currentLocale))
+        return "\(NSLocalizedString("Heart rate", comment: "")) \(value) \(NSLocalizedString("bpm", comment: ""))"
+    }
+
     static func sessionID(_ raw: String?) -> String? {
         guard let raw, !raw.isEmpty else { return nil }
         return raw
@@ -364,7 +371,7 @@ struct SessionMuscleReport: Equatable {
                     exercises: selection.includeDetails ? muscle.exercises.map { exercise in
                         ShareContent.ExerciseShare(id: exercise.id, name: exercise.name, sets: exercise.records.compactMap(setLine))
                     } : [],
-                    heart: selection.includeHeart ? (peak.map { "\(Int($0.rounded()))" } ?? "No heart rate") : nil
+                    heart: selection.includeHeart ? Self.heartShareLine(peak) : nil
                 )
             },
             includesPhoto: selection.includePhoto

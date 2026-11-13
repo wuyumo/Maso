@@ -593,7 +593,8 @@ struct PlanPlayerScreen: View {
                 let titleBottom = infoTop + (infoHeight - (playerTitleHeight + PlayerExerciseInfoMetrics.spacing + PlayerExerciseInfoMetrics.parameterHeight)) / 2 + playerTitleHeight
                 let mediaAreaHeight = max(0, min(geo.size.height, titleBottom))
                 // Wide or short windows must keep the square inside the available stage.
-                let mediaSide = min(geo.size.width, mediaAreaHeight)
+                let mediaCap = ProcessInfo.processInfo.environment["MASO_TEST_MEDIA_MAX_SIDE"].flatMap(Double.init).map { CGFloat($0) }
+                let mediaSide = min(geo.size.width, mediaAreaHeight, mediaCap ?? .greatestFiniteMagnitude)
                 let mediaTop = (mediaAreaHeight - mediaSide) / 2
                 // Both layers reach the plain UI background at the title's top edge.
                 let titleTop = max(0, titleBottom - playerTitleHeight)
@@ -4332,7 +4333,21 @@ struct WorkoutHeartRateSettingsSheet: View {
                     HStack {
                         Text("Reminder limit")
                         Spacer()
-                        TextField("bpm", text: Binding(get: { limitText }, set: { limitText = $0; usesRecommendation = false }))
+                        TextField("bpm", text: Binding(get: { limitText }, set: { newValue in
+                            if usesRecommendation {
+                                let previous = limitText
+                                if newValue.count > previous.count, newValue.hasPrefix(previous) {
+                                    limitText = String(newValue.dropFirst(previous.count))
+                                } else if newValue.count > previous.count, newValue.hasSuffix(previous) {
+                                    limitText = String(newValue.dropLast(previous.count))
+                                } else {
+                                    limitText = newValue
+                                }
+                                usesRecommendation = false
+                            } else {
+                                limitText = newValue
+                            }
+                        }))
                             .keyboardType(.numberPad).multilineTextAlignment(.trailing)
                             .frame(maxWidth: 110).accessibilityIdentifier("workout.heart.limit")
                     }

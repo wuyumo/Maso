@@ -154,6 +154,12 @@ private struct DailyHistoryCards: View {
     private var visibleDays: [RecordHistoryFilter.Day] {
         limitsToPreview ? Array(days.prefix(3)) : days
     }
+    private func dayHasWorkoutPhoto(_ day: RecordHistoryFilter.Day) -> Bool {
+        day.items.contains { item in
+            if case .workout(let session) = item { return data.sessionPhoto(forSessionId: session.id) != nil }
+            return false
+        }
+    }
     var body: some View {
         LazyVStack(spacing: MasoMetrics.cardPadding) {
             if days.isEmpty {
@@ -194,6 +200,7 @@ private struct DailyHistoryCards: View {
                 }
                 .contentCardChrome(padding: 0)
                 .accessibilityIdentifier("history.day.\(SleepPreferences.dayKey(day.date, calendar: data.settings.calendar))")
+                .applyIf(dayHasWorkoutPhoto(day)) { $0.accessibilityLabel("Workout photo") }
             }
             if showsAllHistory { RecordHistoryArchiveLink(kind: kind, onReplay: onReplay, sessionSelection: sessionSelection).contentCardChrome(padding: 0) }
         }

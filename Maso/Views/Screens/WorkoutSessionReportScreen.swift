@@ -305,6 +305,11 @@ struct WorkoutSessionReportScreen: View {
                         .accessibilityElement(children: .contain)
                         .accessibilityIdentifier("workout.sessionReport.exercise.\(exercise.id)")
                         .id(exercise.id)
+                    if showsSixRM(exercise, section: muscle.muscle), let record = exercise.records.first(where: qualifiesForSixRM) {
+                        ConfirmedBenchSixRMButton(record: record)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.bottom, 8)
+                    }
                 }
             }
         }
@@ -315,6 +320,14 @@ struct WorkoutSessionReportScreen: View {
             guard let node, muscle.nodes.contains(node) else { return }
             proxy.scrollTo(muscle.id, anchor: .top)
         }
+    }
+
+    private func qualifiesForSixRM(_ record: SetRecord) -> Bool {
+        record.exerciseId == CrossExerciseLoadReference.anchorID && record.reps == 6 && (record.weight ?? 0) > 0
+    }
+
+    private func showsSixRM(_ exercise: SessionMuscleReport.ExerciseFacts, section: MuscleGroup) -> Bool {
+        data.exById[exercise.id]?.primaryMuscles.first == section
     }
 
     private func exerciseRow(_ exercise: SessionMuscleReport.ExerciseFacts, section: MuscleGroup) -> some View {
@@ -567,7 +580,7 @@ private struct ShareBitmap: View {
                 return (MasoColor.accent, amount)
             })
             SessionReportStats(report: report, identifier: "workout.sessionReport.exportStats")
-            ForEach(content.muscles) { muscle in
+            ForEach(content.muscles.filter { !$0.exercises.isEmpty || $0.heart != nil }) { muscle in
                 Text(muscle.name).font(.subheadline.weight(.semibold))
                 ForEach(muscle.exercises) { exercise in
                     Text(exercise.name).font(.caption)

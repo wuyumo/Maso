@@ -1293,8 +1293,7 @@ final class DailyRecordAggregationTests: XCTestCase {
 
     func testIdentifiedAndLegacySetsStaySeparateAndDeleteOneCard() throws {
         let data = DataStore.makeMock()
-        let day = data.settings.calendar.startOfDay(for: Date().addingTimeInterval(-3600))
-        let when = day.addingTimeInterval(10 * 3600)
+        let when = Date().addingTimeInterval(-3600)
         let exercise = try XCTUnwrap(data.exById.values.first)
         func set(_ id: String, session: String?) -> SetRecord {
             var record = SetRecord(id: id, exerciseId: exercise.id, exerciseName: exercise.name, category: exercise.category,
@@ -1830,7 +1829,7 @@ final class HomeCompositionSnapshotTests: XCTestCase {
                                                     defaultBetweenExerciseRest: data.settings.defaultBetweenExerciseRestSeconds))
             }
             let window = UIWindow(windowScene: scene)
-            window.rootViewController = UIHostingController(rootView: RootView().environment(data).environment(training).environment(\.colorScheme, .dark))
+            window.rootViewController = UIHostingController(rootView: RootView().environment(data).environment(training).environment(SubscriptionManager()).environment(\.colorScheme, .dark))
             window.makeKeyAndVisible()
             try await Task.sleep(for: .milliseconds(400))
             window.layoutIfNeeded()

@@ -143,7 +143,7 @@ final class HomeWidgetTests: XCTestCase {
         for metric in WidgetMetric.allCases {
             let selected = MassoWidgetEntry(date: Date(), snapshot: nil, metric: metric)
             XCTAssertEqual(MassoHomeWidgetView(entry: selected, layout: .single).tapURL, metric.destination.url)
-            XCTAssertEqual(MassoHomeWidgetView(entry: selected, layout: .overview).tapURL, MassoWidgetDestination.workout.url)
+            XCTAssertEqual(MassoHomeWidgetView(entry: selected, layout: .overview).tapURL, MassoWidgetDestination.home.url)
             XCTAssertNotEqual(MassoHomeWidgetView(entry: selected, layout: .single).tapURL, MassoWidgetDestination.start.url)
         }
         var entry = MassoWidgetEntry.preview

@@ -202,7 +202,7 @@ struct ExerciseLibraryUITestHost: View {
             }
         }
         if scene == "workout-history-cards", ProcessInfo.processInfo.environment["MASO_HISTORY_PHOTO"] == "1",
-           let session = data.recordedWorkoutSessions().first,
+           let session = data.recordedWorkoutSessions().max(by: { $0.firstPerformedAt < $1.firstPerformedAt }),
            let jpeg = Self.shareFixturePhoto().jpegData(compressionQuality: 0.8) {
             data.settings.sessionPhotos[session.id] = jpeg
         }
@@ -543,7 +543,9 @@ struct ExerciseLibraryUITestHost: View {
                         .padding(MasoMetrics.pagePaddingHorizontal)
                 }.background(MasoColor.background).navigationTitle("Sleep")
             }
-        } else if scene == "workout-history-detail" || scene == "workout-history-cards" {
+        } else if scene == "workout-history-detail", let session = data.recordedWorkoutSessions().max(by: { $0.firstPerformedAt < $1.firstPerformedAt }) {
+            RecordedSessionReport(session: session, onReplay: { _ in })
+        } else if scene == "workout-history-cards" {
             AppNavigationStack { RecordHistoryArchiveScreen(kind: .workout) }
         } else if scene == "workout-insights-history" {
             AppNavigationStack { HistoryScreen(onReplay: { _ in }, onOpenSettings: {}, mode: .insights) }

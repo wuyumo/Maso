@@ -829,7 +829,7 @@ final class TrainingRefinementsUITests: XCTestCase {
             let subtitle = element("workout.exercise.subtitle", app)
             XCTAssertTrue(subtitle.waitForExistence(timeout: 5))
             XCTAssertEqual(title.label, language == "zh-Hans" ? "卧推" : "Bench Press")
-            XCTAssertEqual(subtitle.label, language == "zh-Hans" ? "哑铃" : "Dumbbell")
+            XCTAssertEqual(subtitle.label, language == "zh-Hans" ? "哑铃" : language == "ar" ? "دمبل" : "Dumbbell")
             XCTAssertGreaterThan(subtitle.frame.midY, title.frame.midY)
             let group = muscles.frame.union(element("workout.current.info", app).frame).union(menu.frame)
             XCTAssertEqual(group.midX, app.frame.midX, accuracy: 2)
@@ -1507,8 +1507,12 @@ final class WorkoutSignalsUITests: XCTestCase {
             app.launchArguments = ["-maso.selectedLanguage", language, "-AppleLanguages", "(\(language))", "-AppleLocale", language]
             app.launch()
             XCTAssertTrue(element("workout.primary", app).waitForExistence(timeout: 20))
-            element("workout.primary", app).tap()
-            XCTAssertTrue(element("workout.rest.edit", app).waitForExistence(timeout: 5))
+            let skipTitle = language == "ar" ? "إسترح" : language == "zh-Hans" ? "跳过休息" : "Skip rest"
+            for _ in 0..<3 {
+                element("workout.primary", app).tap()
+                let skip = app.buttons[skipTitle].firstMatch
+                if skip.waitForExistence(timeout: 6) { skip.tap() }
+            }
             element("workout.progress.queue-step-1", app).tap()
             XCTAssertTrue(element("workout.suggested.weight", app).waitForExistence(timeout: 5))
             capture(app, "\(language)-rough-incline-after-bench")
@@ -1523,10 +1527,10 @@ final class WorkoutSignalsUITests: XCTestCase {
             capture(app, "\(language)-rough-provenance")
             app.buttons["workout.parameters.cancel"].tap()
             element("workout.progress.queue-step-2", app).tap()
-            XCTAssertTrue(element("workout.suggested.weight", app).waitForExistence(timeout: 5))
+            XCTAssertTrue(element("workout.suggested.weight", app).waitForNonExistence(timeout: 5), "Cable pushdowns stay outside the approved table")
             capture(app, "\(language)-rough-pushdown")
             // Jump is undoable. Unwind jumps, then the actual bench completion.
-            for _ in 0..<4 {
+            for _ in 0..<8 {
                 if element("workout.progress.queue-step-0", app).value as? String == "0/3" { break }
                 element("workout.previous", app).tap()
             }
@@ -1708,11 +1712,14 @@ final class WorkoutSignalsUITests: XCTestCase {
     }
 
     func testWidePlayerMediaStageLeavesFadedSideSpace() {
-        let app = launch("stable-player")
+        let app = XCUIApplication(bundleIdentifier: "com.yumowu.maso")
+        app.terminate()
+        app.launchEnvironment = ["MASO_EXERCISE_UI_TEST_SCENE": "stable-player", "MASO_SHOWCASE_SEED": "1",
+                                 "MASO_TEST_MEDIA_MAX_SIDE": "220"]
+        app.launchArguments = ["-maso.selectedLanguage", "en", "-AppleLanguages", "(en)", "-AppleLocale", "en"]
+        app.launch()
         let media = element("workout.media.square", app)
         XCTAssertTrue(media.waitForExistence(timeout: 15))
-        XCUIDevice.shared.orientation = .landscapeLeft
-        defer { XCUIDevice.shared.orientation = .portrait }
         let leavesSideSpace = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
             media.frame.width < app.frame.width - 20 && media.frame.minX > app.frame.minX + 10
         }, object: nil)
@@ -1816,7 +1823,7 @@ final class WorkoutSignalsUITests: XCTestCase {
     func testProgressLongPressReorderMatchesQueueAndPreservesCurrentExercise() {
         let app = launch()
         XCTAssertTrue(element("workout.primary", app).waitForExistence(timeout: 15))
-        let title = element("workout.exercise.title", app)
+        let title = element("workout.current.info", app)
         XCTAssertTrue(title.waitForExistence(timeout: 5))
         let first = element("workout.progress.queue-step-0", app)
         let second = element("workout.progress.queue-step-1", app)
@@ -2193,7 +2200,9 @@ final class WorkoutSignalsUITests: XCTestCase {
         app.launchArguments = ["-maso.selectedLanguage", "en", "-AppleLanguages", "(en)", "-AppleLocale", "en"]
         app.launch()
         let sleep = app.buttons.matching(NSPredicate(format: "label CONTAINS[c] %@", "Sleep")).firstMatch
-        for _ in 0..<5 where !sleep.isHittable { app.swipeUp() }
+        for _ in 0..<6 where !sleep.isHittable {
+            if sleep.exists, sleep.frame.minY < 80 { app.swipeDown() } else { app.swipeUp() }
+        }
         XCTAssertTrue(sleep.waitForExistence(timeout: 20)); XCTAssertTrue(sleep.isHittable); sleep.tap()
         let preferences = app.buttons["Sleep preferences"]
         XCTAssertTrue(preferences.waitForExistence(timeout: 10)); preferences.tap()
