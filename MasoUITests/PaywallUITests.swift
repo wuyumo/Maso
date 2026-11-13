@@ -453,8 +453,7 @@ final class PaywallUITests: XCTestCase {
         XCTAssertEqual(restore.label, "Restore Purchase")
         XCTAssertTrue(restore.isEnabled)
         restore.tap()
-        let busy = expectation(for: NSPredicate(format: "enabled == false"), evaluatedWith: restore)
-        XCTAssertEqual(XCTWaiter.wait(for: [busy], timeout: 2), .completed, "Restore stays busy while the request is in flight")
+        XCTAssertTrue(waitForValue("busy", on: restore, timeout: 2), "Restore stays busy while the request is in flight")
         XCTAssertTrue(app.activityIndicators.firstMatch.exists || app.progressIndicators.firstMatch.exists)
         let alert = app.alerts["Masso Pro"]
         XCTAssertTrue(alert.waitForExistence(timeout: 5))
@@ -471,10 +470,8 @@ final class PaywallUITests: XCTestCase {
         let transactions = Set(store.allTransactions().map { String($0.identifier) })
         XCTAssertFalse(transactions.isEmpty)
         restore.tap()
-        let busyAgain = expectation(for: NSPredicate(format: "enabled == false"), evaluatedWith: restore)
-        XCTAssertEqual(XCTWaiter.wait(for: [busyAgain], timeout: 2), .completed)
-        let finished = expectation(for: NSPredicate(format: "enabled == true"), evaluatedWith: restore)
-        XCTAssertEqual(XCTWaiter.wait(for: [finished], timeout: 5), .completed)
+        XCTAssertTrue(waitForValue("busy", on: restore, timeout: 2))
+        XCTAssertTrue(waitForValue("idle", on: restore, timeout: 5))
         XCTAssertEqual(Set(store.allTransactions().map { String($0.identifier) }), transactions, "Restore must call StoreKit without buying again")
         XCTAssertFalse(app.alerts["Masso Pro"].exists)
     }
@@ -498,6 +495,15 @@ final class PaywallUITests: XCTestCase {
             }
             app.terminate()
         }
+    }
+
+    private func waitForValue(_ value: String, on element: XCUIElement, timeout: TimeInterval) -> Bool {
+        let deadline = Date().addingTimeInterval(timeout)
+        while Date() < deadline {
+            if String(describing: element.value ?? "") == value { return true }
+            RunLoop.current.run(until: Date().addingTimeInterval(0.05))
+        }
+        return String(describing: element.value ?? "") == value
     }
 
     private func launch(_ scene: String, language: String = "en", largeType: Bool = false, narrow: Bool = false, light: Bool = false, increasedContrast: Bool = false, restoreDelayMS: String? = nil) -> XCUIApplication {

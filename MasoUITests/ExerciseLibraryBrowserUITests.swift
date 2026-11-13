@@ -1476,6 +1476,17 @@ final class WorkoutSignalsUITests: XCTestCase {
     private func element(_ id: String, _ app: XCUIApplication) -> XCUIElement {
         app.descendants(matching: .any).matching(identifier: id).firstMatch
     }
+    /// The recorded-day card is the control VoiceOver exposes. The row id is folded into it.
+    private func historyCard(in app: XCUIApplication) -> XCUIElement {
+        let card = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH %@", "history.day.")).firstMatch
+        XCTAssertTrue(card.waitForExistence(timeout: 12))
+        for _ in 0..<6 {
+            if card.isHittable, card.frame.minY > 90, card.frame.maxY < app.frame.height - 20 { break }
+            if card.frame.minY > app.frame.height * 0.55 { app.swipeUp(velocity: .slow) }
+            else { break }
+        }
+        return card
+    }
     private func launch(_ scene: String = "stable-player", language: String = "en", heartFixture: Bool = false) -> XCUIApplication {
         let app = XCUIApplication(bundleIdentifier: "com.yumowu.maso")
         app.terminate()
@@ -2358,8 +2369,7 @@ final class WorkoutSignalsUITests: XCTestCase {
     func testWorkoutHistoryCardOpensTheSessionReport() {
         for language in ["en", "zh-Hans", "ar"] {
             let app = launch("workout-history-cards", language: language)
-            let card = element("workout.history.card", app)
-            XCTAssertTrue(card.waitForExistence(timeout: 12))
+            let card = historyCard(in: app)
             XCTAssertFalse(element("workout.history.report", app).exists)
             capture(app, "\(language)-history-card")
             card.tap()
@@ -2376,9 +2386,7 @@ final class WorkoutSignalsUITests: XCTestCase {
     func testWorkoutInsightsHistoryOpensTheSameReport() {
         let app = launch("workout-insights-history", language: "en")
         XCTAssertTrue(app.navigationBars["Workout Insights"].waitForExistence(timeout: 12))
-        let card = element("workout.history.card", app)
-        XCTAssertTrue(card.waitForExistence(timeout: 12))
-        for _ in 0..<8 where !card.isHittable { app.swipeUp() }
+        let card = historyCard(in: app)
         card.tap()
         XCTAssertTrue(element("workout.sessionReport", app).waitForExistence(timeout: 8))
         XCTAssertTrue(element("workout.sessionReport.share", app).exists)
@@ -2389,8 +2397,7 @@ final class WorkoutSignalsUITests: XCTestCase {
 
     func testWorkoutHistoryMenuKeepsDeleteOffTheOldShare() {
         let app = launch("workout-history-cards", language: "en")
-        let card = element("workout.history.card", app)
-        XCTAssertTrue(card.waitForExistence(timeout: 12))
+        let card = historyCard(in: app)
         card.tap()
         let menu = element("workout.history.more", app)
         XCTAssertTrue(menu.waitForExistence(timeout: 8))

@@ -131,11 +131,15 @@ final class SessionReportUITests: XCTestCase {
     func testShareDefaultsStayPrivateAndBackReturnsToTheReport() throws {
         let app = launch("session-report-clean-player")
         openReportFromCelebration(app)
-        let setLine = app.staticTexts["workout.sessionReport.set.session-report-set"]
-        XCTAssertTrue(setLine.waitForExistence(timeout: 8))
+        let setLines = recordedSetLines(in: app)
+        XCTAssertEqual(setLines.count, 3, "The logged set stays visible on every muscle it trained")
+        let setLabel = setLines.element(boundBy: 0).label
+        for index in 0..<setLines.count {
+            XCTAssertEqual(setLines.element(boundBy: index).label, setLabel)
+        }
         let shareText = app.staticTexts["workout.sessionReport.shareText"]
         XCTAssertTrue(shareText.waitForExistence(timeout: 5))
-        XCTAssertFalse(shareText.label.contains(setLine.label), "viewing the set is not permission to export it")
+        XCTAssertFalse(shareText.label.contains(setLabel), "viewing the set is not permission to export it")
         XCTAssertFalse(shareText.label.contains("No heart rate"))
         XCTAssertFalse(shareText.label.contains("photo"))
         XCTAssertTrue(shareText.label.contains("0:40"))
@@ -145,12 +149,10 @@ final class SessionReportUITests: XCTestCase {
         XCTAssertFalse(app.descendants(matching: .any)["workout.sessionReport.sharePreview"].exists)
         XCTAssertEqual(sessionEndCount(app), "0")
 
-        let details = app.switches["workout.sessionReport.shareDetailsToggle"]
-        let heart = app.switches["workout.sessionReport.shareHeartToggle"]
-        details.tap()
-        heart.tap()
-        XCTAssertTrue(shareText.label.contains(setLine.label))
-        XCTAssertTrue(shareText.label.contains("130") || shareText.label.contains("No heart rate"))
+        revealAboveShare("workout.sessionReport.shareDetailsToggle", in: app).tap()
+        revealAboveShare("workout.sessionReport.shareHeartToggle", in: app).tap()
+        XCTAssertTrue(waitUntil(shareText) { $0.contains(setLabel) })
+        XCTAssertTrue(waitUntil(shareText) { $0.contains("130") })
         app.buttons["workout.sessionReport.share"].tap()
         XCTAssertTrue(app.buttons["workout.sessionReport.exit"].waitForExistence(timeout: 5))
         XCTAssertFalse(app.descendants(matching: .any)["workout.sessionReport.sharePreview"].exists)
@@ -178,7 +180,10 @@ final class SessionReportUITests: XCTestCase {
         let swiped = launch("session-report-clean-player")
         openReportFromCelebration(swiped)
         XCTAssertEqual(sessionEndCount(swiped), "0")
-        swiped.navigationBars["Workout report"].swipeDown()
+        let grabber = swiped.buttons.matching(NSPredicate(format: "label == %@", "Sheet Grabber")).firstMatch
+        XCTAssertTrue(grabber.waitForExistence(timeout: 5))
+        let origin = grabber.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+        origin.press(forDuration: 0.05, thenDragTo: origin.withOffset(CGVector(dx: 0, dy: 600)))
         XCTAssertTrue(swiped.staticTexts["Workout complete"].waitForExistence(timeout: 8))
         XCTAssertTrue(swiped.descendants(matching: .any)["workout.sessionReport"].waitForNonExistence(timeout: 8))
         XCTAssertEqual(sessionEndCount(swiped), "0")
@@ -252,16 +257,47 @@ final class SessionReportUITests: XCTestCase {
         let app = launch("session-report-clean-player", extra: ["MASO_SESSION_REPORT_EXPORT": "1"])
         openReportFromCelebration(app)
         XCTAssertTrue(app.buttons["workout.sessionReport.share"].waitForExistence(timeout: 30))
-        let before = app.staticTexts["workout.sessionReport.shareText"].label
-        XCTAssertFalse(before.contains("session-report-set") && before.contains("×"))
-        app.switches["workout.sessionReport.shareDetailsToggle"].tap()
-        let opted = app.staticTexts["workout.sessionReport.shareText"].label
-        XCTAssertTrue(opted.contains("×"))
+        let shareText = app.staticTexts["workout.sessionReport.shareText"]
+        XCTAssertTrue(shareText.waitForExistence(timeout: 8))
+        let before = shareText.label
+        XCTAssertFalse(before.contains("×"))
+        revealAboveShare("workout.sessionReport.shareDetailsToggle", in: app).tap()
+        XCTAssertTrue(waitUntil(shareText) { $0.contains("×") })
+        let opted = shareText.label
         app.buttons["workout.sessionReport.share"].tap()
         XCTAssertTrue(app.staticTexts["workout.sessionReport.shareExported"].waitForExistence(timeout: 8))
         XCTAssertEqual(app.staticTexts["workout.sessionReport.shareText"].label, opted)
         XCTAssertFalse(app.descendants(matching: .any)["workout.sessionReport.sharePreview"].exists)
         XCTAssertEqual(sessionEndCount(app), "0")
+    }
+
+    private func recordedSetLines(in app: XCUIApplication) -> XCUIElementQuery {
+        let lines = app.staticTexts.matching(NSPredicate(format: "identifier BEGINSWITH %@", "workout.sessionReport.set."))
+        XCTAssertTrue(lines.firstMatch.waitForExistence(timeout: 8))
+        return lines
+    }
+
+    /// The share toggles sit under the floating button until the report is scrolled.
+    private func revealAboveShare(_ identifier: String, in app: XCUIApplication) -> XCUIElement {
+        let share = app.buttons["workout.sessionReport.share"]
+        let control = app.switches[identifier]
+        XCTAssertTrue(control.waitForExistence(timeout: 8))
+        for _ in 0..<8 {
+            if control.isHittable, share.exists, control.frame.maxY > 80, control.frame.maxY < share.frame.minY - 4 {
+                return control
+            }
+            app.swipeUp(velocity: .slow)
+        }
+        return control
+    }
+
+    private func waitUntil(_ element: XCUIElement, timeout: TimeInterval = 3, where match: (String) -> Bool) -> Bool {
+        let deadline = Date().addingTimeInterval(timeout)
+        while Date() < deadline {
+            if match(element.label) { return true }
+            RunLoop.current.run(until: Date().addingTimeInterval(0.1))
+        }
+        return match(element.label)
     }
 
     private func openReportFromCelebration(_ app: XCUIApplication) {

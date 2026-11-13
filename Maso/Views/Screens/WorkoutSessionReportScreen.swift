@@ -347,7 +347,7 @@ struct WorkoutSessionReportScreen: View {
                     Text(verbatim: line)
                         .font(.caption.monospacedDigit())
                         .foregroundStyle(MasoColor.textDim)
-                        .accessibilityIdentifier("workout.sessionReport.set.\(record.id)")
+                        .accessibilityIdentifier("workout.sessionReport.set.\(section.rawValue).\(record.id)")
                 }
             }
             if exercise.heart.contains(where: \.drawsLine) {

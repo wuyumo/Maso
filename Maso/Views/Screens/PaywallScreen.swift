@@ -64,6 +64,7 @@ struct PaywallScreen: View {
                     .buttonStyle(.plain)
                     .disabled(processing)
                     .accessibilityLabel(Text("Restore Purchase"))
+                    .accessibilityValue(processing ? "busy" : "idle")
                     .accessibilityShowsLargeContentViewer { Text("Restore Purchase") }
                     .accessibilityIdentifier("paywall.restore")
                 }
