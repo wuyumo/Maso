@@ -82,3 +82,14 @@ Only A card width denominator changes1.5→1.8, same gap22×unit, same track pad
 ## t374 A-only 2.1-card refinement — 2026-11-13T16:46:17.403999+08:00
 
 Same available-width-minus-visible-gaps algorithm, target2.1: card=(V−2G)/2.1, compensating TWO existing gaps now that two full cards and10%third are shown. Gap value22×unit and all padding/fonts/device/B/otherpage settings unchanged; no new transforms. Existing RTL mirrors exposure; photos unchanged. All12suites pass including288geometry cases;468protectedhashes unchanged. Original8802zh/en/arA HTTP200 and compiled2.1formula verified. Actual A/BposterPNGs found: 0; no browser execution/visual验收, simulator work, acceptedImages change or upload. Local receipt `t374-stage.local.json`.
+
+
+## t375 selected design frozen to A — 2026-11-13T16:48:09.933670+08:00
+
+User explicitly adopts currentA2.1-card design (8b7948b7); no further A/Bdesign iterations. B retained for history only. This selects design, not finalPNGacceptance/03copyapproval/Duounlock/reviewsubmission. Obsidian sole new scoped handoff: `/Users/yumowu/Obsidian Vault/Agent-Knowledge/projects/masso/handoffs/20261113T164809+0800-agent-store-selection-160d03f2-cf4a-4b6f-a9fa-50c4cdb688c0.md`; INDEX/PROTOCOL and Massocontext read, no sharedindex/context overwritten. Normal page already defaultsA; batch inheritance from historicalB is being narrowly pinnedA. Final verification/commit is in `t375-stage.local.json`.
+
+### t375 completed source/export preparation — 2026-11-13T16:49:22.261100+08:00
+
+Default alreadyA, unchanged. Existing batch now explicitly setsA during show, waits exactA DOM identity, and passesA to capture; historicalBstate/closure cannot leak into batch. No new renderer/export entry.13suites pass, selectedA4formats×12locales source checks48, existing dimensions/API/source gates pass;468protectedSHA and2BrawSHA unchanged. Fourformats×zh/en/ar same8802HTTP200 and selectedAcompiledcode served. First-page complete posterPNGfiles found:0; acceptedImages=[]/upload0.
+
+Parent legalGUI minimum: on already-open Mac8802page refresh `?device=iphone&slide=plan&locale=zh&variant=A`, click **一键导出中英就绪页** once, keep tab open. SAME existing DOM pipeline writes10candidateposters (zh/en01–05), firstpage always01-plan-A.png, to `exports/candidates/pro-20261113/ios/iphone/1320x2868/{zh,en}/`; others02-recovery/03-training/04-diet/05-devices.png.03output remains proposed copy, not approved by Aselection. Need actualPNGfullsize/crop/font/dimensions/SHAreview and userview before acceptance/upload. No browser execution by executor, no simulator/data action, no copy/network bypass. No freshPNGexists to copy; do not retry previously denied transfers. Detailed `t375-stage.local.json`; Obsidian selection archived in unique note above.

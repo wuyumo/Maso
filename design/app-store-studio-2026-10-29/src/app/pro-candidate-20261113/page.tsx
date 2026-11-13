@@ -197,23 +197,24 @@ export default function RenderPage() {
     if(!target||busy||batchRef.current) return;
     batchRef.current=true;cancelBatchRef.current=false;setBatchRunning(true);setBatchStatus("中英候选批量导出准备中；不上传");
     const targets=reviewBatchTargets(target.device);
+    const batchVariant = "A" as const; // User-selected design; historical B must not leak into batch captures.
     try {
       const result=await runReviewBatch(targets,{
         cancelled:()=>cancelBatchRef.current,
-        show:async next=>{setError(null);setReady(false);document.documentElement.dataset.ready="0";window.history.replaceState(null,"",window.location.pathname+targetSearch(next)+`&variant=${variant}`);setTarget({...next});},
+        show:async next=>{setVariant(batchVariant);setError(null);setReady(false);document.documentElement.dataset.ready="0";window.history.replaceState(null,"",window.location.pathname+targetSearch(next)+`&variant=${batchVariant}`);setTarget({...next});},
         ready:async next=>{
           const start=Date.now();
           while(Date.now()-start<20000){
             if(cancelBatchRef.current)return;
             const root=document.documentElement;
-            const matching=root.dataset.device===next.device&&root.dataset.slide===next.slide&&root.dataset.locale===next.locale&&root.dataset.variant===variant;
+            const matching=root.dataset.device===next.device&&root.dataset.slide===next.slide&&root.dataset.locale===next.locale&&root.dataset.variant===batchVariant;
             if(matching&&root.dataset.ready==="1")return;
             if(matching&&root.dataset.ready==="error")throw new Error(root.dataset.status||"Candidate readiness failed");
             await new Promise(resolve=>window.setTimeout(resolve,50));
           }
           throw new Error("Candidate fonts/images readiness timed out; batch stopped");
         },
-        capture:next=>captureCandidatePoster(next,false),
+        capture:next=>captureCandidatePoster(next,false,batchVariant),
         progress:(saved,total,next)=>setBatchStatus(`已保存 ${saved.length}/${total} · ${next.locale} ${exportName(next)} · 仅候选，待逐页目检`),
       });
       setBatchStatus(`${result.status==="complete"?"中英候选已导出":"已停止"} ${result.saved.length}/${targets.length} 张 · exports/candidates/pro-20261113 · 未上传，待目检/用户确认`);
