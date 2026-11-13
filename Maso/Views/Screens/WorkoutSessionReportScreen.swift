@@ -48,7 +48,7 @@ struct WorkoutSessionReportScreen: View {
     var body: some View {
         let report = model
         VStack(spacing: 0) {
-            if presentation == .finish { finishBar }
+            if presentation == .finish { finishBar.zIndex(1) }
             ScrollViewReader { proxy in
                 ScrollView {
                     VStack(alignment: .leading, spacing: 12) {
@@ -145,6 +145,7 @@ struct WorkoutSessionReportScreen: View {
                 Button("Exit", action: requestExit)
                     .font(.body.weight(.semibold))
                     .frame(minWidth: 44, minHeight: 44)
+                    .contentShape(Rectangle())
                     .accessibilityIdentifier("workout.sessionReport.exit")
             }
         }
@@ -254,6 +255,8 @@ struct WorkoutSessionReportScreen: View {
                 ForEach(muscle.exercises) { exercise in
                     Button { detailID = exercise.id } label: { exerciseRow(exercise) }
                         .buttonStyle(.plain)
+                        .accessibilityElement(children: .contain)
+                        .accessibilityIdentifier("workout.sessionReport.exercise.\(exercise.id)")
                         .id(exercise.id)
                 }
             }
@@ -299,8 +302,6 @@ struct WorkoutSessionReportScreen: View {
         }
         .padding(.vertical, 8)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .accessibilityElement(children: .contain)
-        .accessibilityIdentifier("workout.sessionReport.exercise.\(exercise.id)")
     }
 
     private func tableLink(_ title: LocalizedStringKey, _ section: WorkoutReportSection) -> some View {

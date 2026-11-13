@@ -227,6 +227,7 @@ struct PlanPlayerScreen: View {
                         dismiss()
                     }
                 )
+                .padding(.top, playerSafeArea.top)
                 .transition(.opacity)
                 }
             } else if let seg = store.currentSegment {
