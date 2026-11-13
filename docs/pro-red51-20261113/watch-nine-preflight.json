@@ -1,0 +1,25 @@
+{
+  "version": "3.0.2(51)",
+  "artifact": "build/DerivedData-ProSource48-Simulator/Build/Products/Debug-watchsimulator/MasoWatch.app",
+  "dylibSHA256": "c1bb05a1d1c138d5182c867d3da6ff29444357193a7f7b94fa928e470c0d1936",
+  "targetWatch": "3915EE74-D7CB-460F-BB9D-28E841D3A080",
+  "locales": [
+    "ja",
+    "ko",
+    "es",
+    "fr",
+    "de",
+    "it",
+    "pt-BR",
+    "ru",
+    "ar"
+  ],
+  "weightKg": 50,
+  "reps": 8,
+  "sets": 3,
+  "exerciseHeartRate": 185,
+  "restHeartRate": 160,
+  "unchanged51WatchReleaseSource": true,
+  "exactDebugCatalogNamesVerified": true,
+  "checkOnly": true
+}

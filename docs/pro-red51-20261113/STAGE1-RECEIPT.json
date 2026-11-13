@@ -1,0 +1,26 @@
+{
+  "checkedAt": "2026-11-13T10:38:18.157500+08:00",
+  "version": "3.0.2(51)",
+  "releaseArchiveRebuiltOrUploaded": false,
+  "debugOnlyRebuiltForNativeFixtureTesting": true,
+  "authorizedIdle18ProShutdown": true,
+  "exactClosedUDID": "0BB4FEB8-0DC7-499F-91BD-AF307E342143",
+  "nativeUITestMethodsPassed": 2,
+  "phoneLanguagesWithActualEscalatedBackgroundAXPassed": 12,
+  "freshNativePhoneSources": 12,
+  "freshNativeWatchSources": 18,
+  "existingAcceptedThreeLocaleWatchSourcesReused": 6,
+  "original51GapsResolved": 27,
+  "original51GapsRemaining": 24,
+  "remaining": {
+    "ipad": 12,
+    "duo": 12
+  },
+  "historical43SourcesSHA256Unchanged": 51,
+  "physicalSyncProven": false,
+  "modelCalls": 0,
+  "purchases": 0,
+  "releaseSubmissions": 0,
+  "frontendFilesChanged": false,
+  "reviewNote": "Russian Watch training title naturally truncates tail with ellipsis; exact full catalog name used in DEBUG fixture, not English fallback. No product UI/name change."
+}

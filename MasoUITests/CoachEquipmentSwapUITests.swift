@@ -189,16 +189,25 @@ final class CoachEquipmentSwapUITests: XCTestCase {
 
 
     func testMachineChestPressChineseEnglishAndTraditionalNativeSource() throws {
-        for (language,name) in [("en","Chest Press"),("zh-Hans","\u{63a8}\u{80f8}"),("zh-Hant","\u{63a8}\u{80f8}")] {
+        try captureMachineChestPressNativeRedSources([("en","Chest Press"),("zh-Hans","推胸"),("zh-Hant","推胸")])
+    }
+
+    func testMachineChestPressRemainingNineNativeRedSources() throws {
+        try captureMachineChestPressNativeRedSources([("ja","チェストプレス"),("ko","가슴 압박"),("es","Chest Press"),("fr","Presse thoracique"),("de","Brustpresse"),("it","Chest Press"),("pt-BR","Prensa do tórax"),("ru","Чест-пресс"),("ar","Chest Press")])
+    }
+
+    private func captureMachineChestPressNativeRedSources(_ examples: [(String,String)]) throws {
+        for (language,name) in examples {
             let app = XCUIApplication()
             app.launchEnvironment = ["MASO_EXERCISE_UI_TEST_SCENE":"stable-player",
                 "MASO_MARKETING_PLAYER":"1", "MASO_MARKETING_EXERCISE_ID":"bench_press_machine",
                 "MASO_WORKOUT_HEART_FIXTURE":"1", "MASO_WORKOUT_HEART_CARD":"1",
-                "MASO_TEST_HEART_LIMIT":"180", "MASO_TEST_HEART_BPM":"185"]
+                "MASO_TEST_HEART_LIMIT":"155", "MASO_TEST_HEART_BPM":"185"]
             app.launchArguments = ["-maso.selectedLanguage",language,"-AppleLanguages","(\(language))","-AppleLocale",language]
             app.launch()
             XCTAssertTrue(app.staticTexts[name].waitForExistence(timeout:20))
             XCTAssertTrue(app.staticTexts["185"].waitForExistence(timeout:5))
+            XCTAssertTrue(app.descendants(matching: .any)["workout.heart.escalated-background"].waitForExistence(timeout:10), "Native escalated red background must actually exist; expanded heart card alone is not warning proof")
             snapshot(app,"51-machine-press-185-" + language + "-synthetic-native")
             app.terminate()
         }

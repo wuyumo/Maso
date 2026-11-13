@@ -1,0 +1,110 @@
+[
+  {
+    "locale": "ja",
+    "scene": "exercise",
+    "weight50AndCorrectBpmOCRPassed": true,
+    "nativeTitleEllipsisObserved": false
+  },
+  {
+    "locale": "ja",
+    "scene": "rest",
+    "weight50AndCorrectBpmOCRPassed": true,
+    "nativeTitleEllipsisObserved": false
+  },
+  {
+    "locale": "ko",
+    "scene": "exercise",
+    "weight50AndCorrectBpmOCRPassed": true,
+    "nativeTitleEllipsisObserved": false
+  },
+  {
+    "locale": "ko",
+    "scene": "rest",
+    "weight50AndCorrectBpmOCRPassed": true,
+    "nativeTitleEllipsisObserved": false
+  },
+  {
+    "locale": "es",
+    "scene": "exercise",
+    "weight50AndCorrectBpmOCRPassed": true,
+    "nativeTitleEllipsisObserved": false
+  },
+  {
+    "locale": "es",
+    "scene": "rest",
+    "weight50AndCorrectBpmOCRPassed": true,
+    "nativeTitleEllipsisObserved": false
+  },
+  {
+    "locale": "fr",
+    "scene": "exercise",
+    "weight50AndCorrectBpmOCRPassed": true,
+    "nativeTitleEllipsisObserved": false
+  },
+  {
+    "locale": "fr",
+    "scene": "rest",
+    "weight50AndCorrectBpmOCRPassed": true,
+    "nativeTitleEllipsisObserved": false
+  },
+  {
+    "locale": "de",
+    "scene": "exercise",
+    "weight50AndCorrectBpmOCRPassed": true,
+    "nativeTitleEllipsisObserved": false
+  },
+  {
+    "locale": "de",
+    "scene": "rest",
+    "weight50AndCorrectBpmOCRPassed": true,
+    "nativeTitleEllipsisObserved": false
+  },
+  {
+    "locale": "it",
+    "scene": "exercise",
+    "weight50AndCorrectBpmOCRPassed": true,
+    "nativeTitleEllipsisObserved": false
+  },
+  {
+    "locale": "it",
+    "scene": "rest",
+    "weight50AndCorrectBpmOCRPassed": true,
+    "nativeTitleEllipsisObserved": false
+  },
+  {
+    "locale": "pt-BR",
+    "scene": "exercise",
+    "weight50AndCorrectBpmOCRPassed": true,
+    "nativeTitleEllipsisObserved": false
+  },
+  {
+    "locale": "pt-BR",
+    "scene": "rest",
+    "weight50AndCorrectBpmOCRPassed": true,
+    "nativeTitleEllipsisObserved": false
+  },
+  {
+    "locale": "ru",
+    "scene": "exercise",
+    "weight50AndCorrectBpmOCRPassed": true,
+    "nativeTitleEllipsisObserved": true
+  },
+  {
+    "locale": "ru",
+    "scene": "rest",
+    "weight50AndCorrectBpmOCRPassed": true,
+    "nativeTitleEllipsisObserved": false
+  },
+  {
+    "locale": "ar",
+    "scene": "exercise",
+    "weight50AndCorrectBpmOCRPassed": true,
+    "nativeTitleEllipsisObserved": false
+  },
+  {
+    "locale": "ar",
+    "scene": "rest",
+    "weight50AndCorrectBpmOCRPassed": true,
+    "nativeTitleEllipsisObserved": false
+  }
+]
