@@ -26,9 +26,17 @@ final class SessionReportUITests: XCTestCase {
         XCTAssertFalse(app.staticTexts["Timing incomplete"].exists)
         XCTAssertFalse(app.descendants(matching: .any)["workout.report"].exists)
 
+        keepShot(app, "report-first")
+        let spark = app.descendants(matching: .any)["workout.sessionReport.spark.bench_press_barbell"]
+        for _ in 0..<4 where !spark.isHittable { app.swipeUp() }
+        keepShot(app, "report-muscle-hr")
+
         app.buttons["workout.sessionReport.info"].tap()
-        XCTAssertTrue(app.staticTexts["Report counting explanation"].waitForExistence(timeout: 5))
-        app.buttons["Close"].firstMatch.tap()
+        XCTAssertTrue(app.navigationBars["How this is counted"].waitForExistence(timeout: 5))
+        let counting = app.staticTexts["workout.sessionReport.counting"]
+        XCTAssertTrue(counting.waitForExistence(timeout: 5))
+        XCTAssertEqual(counting.label, "Green is this workout's relative training, not recovery over time. The three numbers are work time, completed sets, and loaded volume. Loaded volume is external weight times reps and each completed set is counted once. The number on a muscle is 1.0 for the main muscle and 0.4 for a muscle that assists; it is not kilograms. Bodyweight and timed sets are not converted to weight. Cardio is not drawn on the body. Heart-rate lines follow the timed parts of a set and break across pauses, rest, and gaps over 20 seconds. Saving routine changes updates the next plan only.")
+        app.buttons["workout.sessionReport.countingClose"].tap()
         XCTAssertTrue(report.waitForExistence(timeout: 5))
 
         let duration = app.buttons["workout.sessionReport.duration"]
@@ -80,11 +88,13 @@ final class SessionReportUITests: XCTestCase {
         XCTAssertTrue(matchingPrefix("workout.sessionReport.shareSummary.", in: app).waitForExistence(timeout: 5))
         XCTAssertFalse(matchingPrefix("workout.sessionReport.shareDetails.", in: app).exists)
         XCTAssertFalse(matchingPrefix("workout.sessionReport.shareSpark.", in: app).exists)
+        keepShot(app, "share-default")
 
         app.switches["workout.sessionReport.shareHeartToggle"].tap()
         XCTAssertTrue(matchingPrefix("workout.sessionReport.shareDetails.", in: app).waitForExistence(timeout: 5))
         XCTAssertTrue(app.descendants(matching: .any)["workout.sessionReport.shareSpark.bench_press_barbell"].waitForExistence(timeout: 5))
         XCTAssertFalse(matchingPrefix("workout.sessionReport.shareSummary.", in: app).exists)
+        keepShot(app, "share-heart")
 
         app.buttons["workout.sessionReport.shareBack"].tap()
         XCTAssertTrue(app.buttons["workout.sessionReport.exit"].waitForExistence(timeout: 5))
@@ -99,6 +109,7 @@ final class SessionReportUITests: XCTestCase {
         exit.tap()
         XCTAssertTrue(finished.staticTexts["Exercise UI test"].waitForExistence(timeout: 8))
         XCTAssertTrue(finished.buttons["workout.sessionReport.exit"].waitForNonExistence(timeout: 8))
+        XCTAssertTrue(finished.descendants(matching: .any)["workout.sessionReport"].waitForNonExistence(timeout: 8))
         finished.terminate()
 
         let history = launch("session-report-history")
@@ -132,6 +143,13 @@ final class SessionReportUITests: XCTestCase {
 
     private func matchingPrefix(_ prefix: String, in app: XCUIApplication) -> XCUIElement {
         app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH %@", prefix)).firstMatch
+    }
+
+    private func keepShot(_ app: XCUIApplication, _ name: String) {
+        let shot = XCTAttachment(screenshot: app.screenshot())
+        shot.name = name
+        shot.lifetime = .keepAlways
+        add(shot)
     }
 
     private func assertOff(_ identifier: String, in app: XCUIApplication) {

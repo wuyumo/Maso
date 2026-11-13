@@ -344,12 +344,16 @@ struct WorkoutSessionReportScreen: View {
                     .foregroundStyle(MasoColor.textDim)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(MasoMetrics.pagePaddingHorizontal)
+                    .accessibilityIdentifier("workout.sessionReport.counting")
             }
             .background(MasoColor.background.ignoresSafeArea())
             .navigationTitle("How this is counted")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .cancellationAction) { Button("Close") { showInfo = false } }
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Close") { showInfo = false }
+                        .accessibilityIdentifier("workout.sessionReport.countingClose")
+                }
             }
         }
         .presentationDetents([.medium, .large])
