@@ -438,6 +438,15 @@ struct UserSettings: Codable, Sendable {
     /// (退后台也复位, 防 isIdleTimerDisabled 泄漏耗电).
     var keepScreenAwakeDuringWorkout: Bool = true
 
+    /// Explicit same-family variant choices, local to this settings snapshot.
+    /// Key: programming-group ID (flat bench is not incline or close-grip).
+    /// Value: the variant exercise ID the user confirmed.
+    /// Written only after an explicit replacement, never by generation, preview, or cancellation.
+    /// Stored with the rest of UserSettings in the local data file (Documents, included in device backup).
+    /// There is no account system and this map is not added to AI prompts or analytics.
+    /// It is removed when that local file is reset or replaced by import. There is no separate clear control.
+    var preferredVariantByProgrammingGroup: [String: String]? = nil
+
     /// 收藏的动作 ID 集合 — 所有"选择动作"列表会把收藏动作排在最前.
     /// (e.g. Library / ExercisePickerSheet / QuickWorkout Step 2 都用.)
     /// Set<String> Codable 自动 work, 用 Array 持久化 (Set 跨语言 Codable 不稳).

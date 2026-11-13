@@ -391,12 +391,52 @@ extension Exercise {
     /// CJK 复合词 ("哑铃卧推""坐姿划船" 这类无空格连写) 单 token 子串必落空 → 走贪心切分覆盖分支.
     func matchesSearch(_ words: [String]) -> Bool {
         if words.isEmpty { return true }
+        // Titles say thrust / bridge / kickback. The reviewed hip_extension pattern
+        // is what "hip extension" / "髋伸展" means; equipment words still have to match.
+        if matchesHipExtensionQuery(words) { return true }
         let tokens = searchTokens
         return words.allSatisfy { w in
-            if tokens.contains(where: { $0.contains(w) }) { return true }
+            if tokens.contains(where: { Exercise.searchToken($0, matches: w) }) { return true }
             // 仅 CJK 词启用贪心覆盖 — 拉丁词 ("rdl") 会被切成单字母, 几乎匹配一切.
             if w.count >= 2, w.unicodeScalars.contains(where: { $0.properties.isIdeographic }) {
                 return Exercise.greedyCovered(w, tokens: tokens)
+            }
+            return false
+        }
+    }
+
+    /// "hip" is the hip joint. Spanish/Portuguese "hiper…" is "hyper" (hiperextensión)
+    /// and must not satisfy a hip query. Suffix compounds such as "midchest" still match "chest".
+    static func searchToken(_ token: String, matches word: String) -> Bool {
+        guard let range = token.range(of: word) else { return false }
+        if word == "hip", token[range.upperBound...].hasPrefix("er") { return false }
+        return true
+    }
+
+    /// Exact anatomical phrase, plus any leftover equipment/variation words.
+    /// A bare "extension" search stays on exercises whose names say extension.
+    private func matchesHipExtensionQuery(_ words: [String]) -> Bool {
+        let asksLatin = words.contains("hip") && words.contains("extension")
+        let asksCJK = words.contains { $0.contains("髋伸展") || $0.contains("髖伸展") }
+        guard asksLatin || asksCJK else { return false }
+        guard ExerciseSelectionPolicy.shared.metadata(for: self).pattern == "hip_extension" else { return false }
+        var remaining: [String] = []
+        for word in words {
+            if word == "hip" || word == "extension" { continue }
+            if word.contains("髋伸展") || word.contains("髖伸展") {
+                let rest = word
+                    .replacingOccurrences(of: "髋伸展", with: "")
+                    .replacingOccurrences(of: "髖伸展", with: "")
+                if !rest.isEmpty { remaining.append(rest) }
+                continue
+            }
+            remaining.append(word)
+        }
+        let tokens = searchTokens
+        return remaining.allSatisfy { word in
+            if tokens.contains(where: { Exercise.searchToken($0, matches: word) }) { return true }
+            if word.count >= 2, word.unicodeScalars.contains(where: { $0.properties.isIdeographic }) {
+                return Exercise.greedyCovered(word, tokens: tokens)
             }
             return false
         }
