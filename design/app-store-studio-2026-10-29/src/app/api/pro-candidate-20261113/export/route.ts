@@ -3,12 +3,15 @@ import sharp from "sharp";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 export const runtime = "nodejs";
-const sizes: Record<string,string> = {iphone:"1320x2868", "iphone-medium":"1206x2622", ipad:"2064x2752", duo:"2007x2853"};
+const sizes: Record<string,string> = {iphone:"1320x2868", "iphone-medium":"1206x2622", ipad:"2064x2752", duo:"2007x2853",watch:"416x496"};
 export async function POST(request: Request) {
   try {
     const {dataUrl,artifactPath} = await request.json();
-    const match = typeof artifactPath === "string" && /^ios\/(iphone|iphone-medium|ipad|duo)\/(\d{4}x\d{4})\/(zh|zh-Hant|en|ja|ko|es|fr|de|it|pt-BR|ru|ar)\/(01-plan|02-recovery)\.png$/.exec(artifactPath);
+    const match = typeof artifactPath === "string" && /^ios\/(iphone|iphone-medium|ipad|duo|watch)\/(\d{3,4}x\d{3,4})\/(zh|zh-Hant|en|ja|ko|es|fr|de|it|pt-BR|ru|ar)\/(01-plan|02-recovery|03-training|01-exercise-185|02-rest-160)\.png$/.exec(artifactPath);
     if (!match || sizes[match[1]] !== match[2] || typeof dataUrl !== "string" || !dataUrl.startsWith("data:image/png;base64,") || dataUrl.length > 40_000_000) return NextResponse.json({error:"Invalid candidate image/path"},{status:400});
+    const ready=["zh","en","zh-Hant"].includes(match[3]);
+    const allowed=match[1]==="watch"?ready&&["01-exercise-185","02-rest-160"].includes(match[4]):["01-plan","02-recovery"].includes(match[4])||(match[4]==="03-training"&&ready&&["iphone","iphone-medium"].includes(match[1]));
+    if(!allowed) return NextResponse.json({error:"Native source not ready for this locale/device/page"},{status:400});
     const bytes = Buffer.from(dataUrl.split(",")[1],"base64");
     const meta = await sharp(bytes,{limitInputPixels:20_000_000}).metadata();
     const [w,h] = match[2].split("x").map(Number);

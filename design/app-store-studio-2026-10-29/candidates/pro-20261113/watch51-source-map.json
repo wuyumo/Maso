@@ -1,0 +1,90 @@
+{
+  "assets": [
+    {
+      "locale": "zh",
+      "scene": "exercise-185",
+      "source": "docs/pro-watch51-20261113/candidate-native/zh-Hans/exercise-185.png",
+      "candidate": "public/candidate-assets/pro-20261113/native51/watch/zh/watch-exercise-185.png",
+      "sha256": "3eda998d2b78bc4f4d677676210b9a516b4cb0d89e1ec88bf22f803371d83871",
+      "dimensions": [
+        416,
+        496
+      ],
+      "pixelsEdited": false,
+      "clock": "actual10:11;phone09:41;independentdemonstrations",
+      "platform": "Watch46mmwatchOS26.5Simulator"
+    },
+    {
+      "locale": "zh",
+      "scene": "rest-160",
+      "source": "docs/pro-watch51-20261113/candidate-native/zh-Hans/rest-160.png",
+      "candidate": "public/candidate-assets/pro-20261113/native51/watch/zh/watch-rest-160.png",
+      "sha256": "100224b3d772b0fc65c65460b331268d9657eb1612710c3ca15a2446d76f0ff8",
+      "dimensions": [
+        416,
+        496
+      ],
+      "pixelsEdited": false,
+      "clock": "actual10:11;phone09:41;independentdemonstrations",
+      "platform": "Watch46mmwatchOS26.5Simulator"
+    },
+    {
+      "locale": "en",
+      "scene": "exercise-185",
+      "source": "docs/pro-watch51-20261113/candidate-native/en/exercise-185.png",
+      "candidate": "public/candidate-assets/pro-20261113/native51/watch/en/watch-exercise-185.png",
+      "sha256": "fd69b76aee4ad6b44ff08ca78b8348bd9f9995c96c534d928448c65ad13e13d3",
+      "dimensions": [
+        416,
+        496
+      ],
+      "pixelsEdited": false,
+      "clock": "actual10:11;phone09:41;independentdemonstrations",
+      "platform": "Watch46mmwatchOS26.5Simulator"
+    },
+    {
+      "locale": "en",
+      "scene": "rest-160",
+      "source": "docs/pro-watch51-20261113/candidate-native/en/rest-160.png",
+      "candidate": "public/candidate-assets/pro-20261113/native51/watch/en/watch-rest-160.png",
+      "sha256": "47f8ed657d0b7876219db61fe8c58792d4c13f31192eb40585a3302e2b893aea",
+      "dimensions": [
+        416,
+        496
+      ],
+      "pixelsEdited": false,
+      "clock": "actual10:11;phone09:41;independentdemonstrations",
+      "platform": "Watch46mmwatchOS26.5Simulator"
+    },
+    {
+      "locale": "zh-Hant",
+      "scene": "exercise-185",
+      "source": "docs/pro-watch51-20261113/candidate-native/zh-Hant/exercise-185.png",
+      "candidate": "public/candidate-assets/pro-20261113/native51/watch/zh-Hant/watch-exercise-185.png",
+      "sha256": "1143b4c0c35f345a422c0a79d744cf73ca07ff088201adc25725b59c0660d14a",
+      "dimensions": [
+        416,
+        496
+      ],
+      "pixelsEdited": false,
+      "clock": "actual10:11;phone09:41;independentdemonstrations",
+      "platform": "Watch46mmwatchOS26.5Simulator"
+    },
+    {
+      "locale": "zh-Hant",
+      "scene": "rest-160",
+      "source": "docs/pro-watch51-20261113/candidate-native/zh-Hant/rest-160.png",
+      "candidate": "public/candidate-assets/pro-20261113/native51/watch/zh-Hant/watch-rest-160.png",
+      "sha256": "6e21f57095bd8fc50d99e995566a2f84e5d8f6fcfb99dfbe7dfbdd32d487e2ee",
+      "dimensions": [
+        416,
+        496
+      ],
+      "pixelsEdited": false,
+      "clock": "actual10:11;phone09:41;independentdemonstrations",
+      "platform": "Watch46mmwatchOS26.5Simulator"
+    }
+  ],
+  "sameParameters": "exercise3sets8reps50kg185bpm;restnext8reps50kg160bpm",
+  "notPhysicalSynchronization": true
+}

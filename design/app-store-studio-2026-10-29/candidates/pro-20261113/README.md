@@ -60,3 +60,10 @@ Native51source regression also checks all3staged PNG hashes/dimensions and ensur
 ## t324 terminal punctuation
 All12languages share the same candidate text across4poster sizes. Removed exactly56terminal description sentence periods (224poster variants),0headlines needed changing;4device-page descriptions already had no final period. Interior punctuation, decimal points, chat/native UI and original image pixels are unchanged. StandaloneWatch24rawcaptures have no added editable marketing captions and were not pixel-edited. Full per-language/per-page before/after/field audit: `punctuation-audit.json`.
 The same preview/export project endpoint reads this updated file with no-store. Refresh the existing route; previously exported changed pages require re-export.03remains locked. No new PNG render or upload is claimed. Isolation checks16;preview grouped checks16including exact one-character deletion regression.
+
+## Native51paired assets connected (supersedes previous03blocked notes)
+Parent-approved three-language Watch originals are now paired with the3native51phone captures. Candidate-only screenshot paths activate the override in marketing-localized; canonical43slides retain their exact original resolved paths.03candidate export is enabled only for zh/en/zh-Hant×iPhone/iphone-medium(6variants). Other9localesandiPad/Duo03remain disabled in UI and API. Use the same route, select03and the target; no service/port changes.
+
+Device selector now also offers Watch416×496 with2raw-native pages. Its三语01exercise185/02rest160can export (6variants); other9languagesremainblocked. Watch10:11andphone09:41clocks are unaltered independentdemonstrations, never production synchronization proof. Original43screens/latest/canonical are unchanged.
+
+`material-readiness51.json` is the exact page-change/ready/blocked manifest; `watch51-source-map.json` carries6native hashes. `test-mapping51.cjs`:7checks,6eligible03variants/42blocked,6eligibleWatchvariants/18blocked,exactrawsourcehash/dimensionsandAPIgates. Existing16isolation+16previewgroupspass;264URLroundtrips. Browserpaint/fullposteracceptanceisstillpending. Re-exportold01/02;onlyoldzh02currentlyobserved.

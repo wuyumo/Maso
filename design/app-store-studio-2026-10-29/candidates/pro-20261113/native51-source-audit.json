@@ -24,8 +24,8 @@
         "heartLimit": 180
       },
       "pixelsEdited": false,
-      "activeInPoster": false,
-      "reasonNotActivated": "No matching51Watch capture; oldWatchname/60kgdoesnotmatch. No family-specific iPad/Duo or other9locale51phone captures."
+      "activeInPoster": true,
+      "reasonNotActivated": "Superseded: source now active only for three locales on iPhone/iphone-medium; othertargetsremainblocked"
     },
     {
       "locale": "en",
@@ -49,8 +49,8 @@
         "heartLimit": 180
       },
       "pixelsEdited": false,
-      "activeInPoster": false,
-      "reasonNotActivated": "No matching51Watch capture; oldWatchname/60kgdoesnotmatch. No family-specific iPad/Duo or other9locale51phone captures."
+      "activeInPoster": true,
+      "reasonNotActivated": "Superseded: source now active only for three locales on iPhone/iphone-medium; othertargetsremainblocked"
     },
     {
       "locale": "zh-Hant",
@@ -74,49 +74,36 @@
         "heartLimit": 180
       },
       "pixelsEdited": false,
-      "activeInPoster": false,
-      "reasonNotActivated": "No matching51Watch capture; oldWatchname/60kgdoesnotmatch. No family-specific iPad/Duo or other9locale51phone captures."
+      "activeInPoster": true,
+      "reasonNotActivated": "Superseded: source now active only for three locales on iPhone/iphone-medium; othertargetsremainblocked"
     }
   ],
-  "export03Enabled": false,
-  "matchingWatchCaptureExecuted": false,
+  "export03Enabled": "onlyzh/en/zh-Hantiphoneandiphone-medium",
+  "matchingWatchCaptureExecuted": true,
   "blockingFindings": [
     {
-      "scope": "03 old zh/zh-Hant Watch exercise-185",
-      "observed": "卧推（器械） / 臥推（器械）,8reps60kg185bpm",
-      "needed": "Authentic51Watch推胸（器械）,set1/3,8reps50kg185bpm with same native UI/media fixture"
-    },
-    {
-      "scope": "03 old en Watch exercise-185",
-      "observed": "Chest Press(Machine),8reps60kg185bpm",
-      "needed": "Authentic51Watch same name,set1/3,8reps50kg185bpm"
-    },
-    {
-      "scope": "03 remaining locales/devicefamilies",
-      "observed": "Only zh/en/zh-Hant native51phone1206x2622available",
-      "needed": "Real matching captures or explicitly documented legitimate adaptation policy; never relabel translated/retouched pixels as new native captures"
+      "scope": "other9localesandiPad/Duo03",
+      "needed": "matchinggenuine51captures;exportremainsblocked"
     }
   ],
   "otherPages": [
     {
       "page": "04diet/sleep",
-      "verdict": "No specific new51conflict identified in available evidence; no fresh51diet/sleep capture to prove complete UI equivalence. Existing basic feature copy retained."
+      "verdict": "Onlyterminalperiodchanges;oldverifiednativecapturesretained;nofresh51allpagepixelacceptanceclaimed"
     },
     {
-      "page": "05device lineup",
-      "verdict": "No additional specific51naming conflict visible in sampled zh/en/zh-Hant Watch rest160source; next8reps60kg is its own resting fixture, not measured synchronization. No fresh51all-device proof."
+      "page": "05devicelineup",
+      "verdict": "Onlyterminalperiodchanges;oldrest160lineupretained;newWatchrawsourcesusedforstandaloneWatchand03only"
     },
     {
-      "page": "StandaloneWatch01",
-      "verdict": "zh/zh-Hant source still has incorrect卧推/臥推name, also needs real replacement. Englishnamecorrect; no full12locale51pixelacceptance."
-    },
-    {
-      "page": "StandaloneWatch02",
-      "verdict": "Sampled3locales rest160has no exercise name.8reps60kg historical rest demo is not new51pair. If wholedeckuses50kgfixture,re-capture rest50kg too; do not edit digits."
+      "page": "StandaloneWatch01/02",
+      "verdict": "Candidate三语replacedwithnative51exercise185/rest160,50kg;original43imagesuntouched;other9localesblocked"
     }
   ],
   "nativeSourcesModified": false,
   "productionSynchronizationVerified": false,
   "originalPublicCaptureHashesPreserved": 551,
-  "browserOrNetworkActions": false
+  "browserOrNetworkActions": false,
+  "matchingWatchSources": "watch51-source-map.json",
+  "clockPolicy": "Phone09:41/Watch10:11unaltered;independentdemonstrations,nosimultaneoussyncclaim"
 }

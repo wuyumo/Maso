@@ -1,0 +1,72 @@
+{
+  "createdAt": "2026-11-13T10:21:18.537491+08:00",
+  "ownerAuthorization": "t326 user delegated App Store upload to Codex",
+  "status": "WAITING_FOR_FINAL_RENDER_ACCEPTANCE_AND_CORRECT_NEW_VERSION_TARGET",
+  "acceptedImages": [],
+  "existingExportRejected": [
+    {
+      "path": "design/app-store-studio-2026-10-29/exports/candidates/pro-20261113/ios/iphone/1320x2868/zh/02-recovery.png",
+      "sha256": "6888756f0f3acf72dcee1b4efcb38c373c99e850dad2d623f47a296912529393",
+      "reason": "obsoleteProcaptionandterminalperiod;notcurrentcandidate"
+    }
+  ],
+  "candidateSource": "design/app-store-studio-2026-10-29/candidates/pro-20261113/project.json",
+  "candidateSourceSHA256": "3d56c1957d7dbc434e15c51bb76c4535b1789ee6d4e670c4512388b2146e1fa4",
+  "candidateOutputRoot": "design/app-store-studio-2026-10-29/exports/candidates/pro-20261113/ios",
+  "mapping": [
+    "iphone/1320x2868",
+    "iphone-medium/1206x2622",
+    "ipad/2064x2752",
+    "duo/2007x2853",
+    "watch/416x496"
+  ],
+  "locales": [
+    "zh",
+    "zh-Hant",
+    "en",
+    "ja",
+    "ko",
+    "es",
+    "fr",
+    "de",
+    "it",
+    "pt-BR",
+    "ru",
+    "ar"
+  ],
+  "pageOrder": {
+    "phoneTabletDuo": [
+      "01-plan",
+      "02-recovery",
+      "03-training",
+      "04-diet",
+      "05-devices"
+    ],
+    "watch": [
+      "01-exercise-185",
+      "02-rest-160"
+    ]
+  },
+  "dependencies": [
+    "RealposterPNGexportwithcurrentcopy",
+    "Per-imagepixel/font/overflow/RTL/dimensionRGBinspectionandparentapproval",
+    "Anexplicitlyverified3.0.2draftscreen-targetwhichisnotpublished43",
+    "FinalimageSHA/order/locale/deviceacceptedmanifestfromparent"
+  ],
+  "forbidden": [
+    "No51binaryreupload;51alreadyVALIDperparent",
+    "Noformalreview/withdraw43/metadataorimagewriteonpublished43",
+    "NoDEPLOY/ads/purchase/contactthirdparty",
+    "No8838retry/alternateport/browserautomation/networkchanges",
+    "Nocredential/token/privatekeyreadsorJWTminting",
+    "NoresumingPAUSEDmassoautomationorfinish-releaseworkflow",
+    "NoclaimthatwritinghandoffmeansCodexaccepted",
+    "NoPNGsubstitutionfrom43orrawinnersasnewposters"
+  ],
+  "officialReadbackRequirements": [
+    "BeforeanyfutureuploadverifytargetversionID,state,localizationanddisplaytypeviaexistingsanctionedofficialsurface",
+    "OnlyacceptedImagesexactSHA,size,locale,sloteligible",
+    "Afteruploadreadbackeveryassetdelivery/state,sizeandorderedplacement;retainreceipt",
+    "Stoponmissingauth/tool,403,blockedactionorwrongtarget;donotusecookies/internalAPIworkarounds"
+  ]
+}

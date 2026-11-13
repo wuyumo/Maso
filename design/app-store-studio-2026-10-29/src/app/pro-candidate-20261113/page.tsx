@@ -12,8 +12,9 @@ import type { Device } from "@/lib/types";
 import { DeckCanvas, getCanvas } from "@/components/editor/slide-canvas";
 import { DeviceShowcase, STORE_DEVICES, type StoreDevice } from "@/components/editor/device-showcase";
 import type { ProjectState } from "@/lib/types";
+import { candidateWatchSource } from "@/lib/candidate51-assets";
 
-import { CandidatePreviewControls, parsePreviewTarget, targetSearch, fitScale, canExportPage, exportCaptureOptions, type PreviewTarget as Target, type PreviewDevice as RenderDevice } from "@/components/editor/candidate-preview-controls";
+import { CandidatePreviewControls, parsePreviewTarget, targetSearch, fitScale, canExportPage, exportName, exportCaptureOptions, type PreviewTarget as Target, type PreviewDevice as RenderDevice } from "@/components/editor/candidate-preview-controls";
 
 const PHONE_CANVAS: Record<StoreDevice, { w: number; h: number }> = {
   iphone: { w: getCanvas("iphone", "portrait").cW, h: getCanvas("iphone", "portrait").cH },
@@ -92,7 +93,7 @@ export default function RenderPage() {
     root.dataset.slide = target.slide;
     root.dataset.locale = target.locale;
     root.dataset.status = "loading";
-    const found = (state.slidesByDevice.iphone || []).find((s) => s.id === target.slide);
+    const found = target.device==="watch" || (state.slidesByDevice.iphone || []).find((s) => s.id === target.slide);
     if (!found) {
       root.dataset.ready = "error";
       root.dataset.status = "missing-slide";
@@ -151,14 +152,14 @@ export default function RenderPage() {
   const slide = slides.find((s) => s.id === target.slide);
 
   async function saveCandidatePoster() {
-    if (busy || !ready || !target || !canExportPage(target)) { alert("Only pages 01/02 are approved for this export batch. Page 03 awaits authentic corrected captures."); return; }
+    if (busy || !ready || !target || !canExportPage(target)) { alert("当前语言/设备源素材未齐，不能导出"); return; }
     const main = document.getElementById("candidate-poster");
     if (!main || document.documentElement.dataset.ready !== "1" || Array.from(main.querySelectorAll("img")).some(image => !image.complete || image.naturalWidth === 0)) { alert("Fonts/images not ready; no PNG saved."); return; }
     setBusy(true);
     try {
       await document.fonts.ready;
       const dataUrl = await toPng(main, exportCaptureOptions(canvas));
-      const name = (target.slide === "plan" ? "01" : "02") + "-" + target.slide + ".png";
+      const name = exportName(target);
       const artifactPath = `ios/${target.device}/${canvas.w}x${canvas.h}/${target.locale}/${name}`;
       const response = await fetch("/api/pro-candidate-20261113/export", {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({dataUrl,artifactPath})});
       const result = await response.json();
@@ -185,7 +186,7 @@ export default function RenderPage() {
         background: slide?.inverted ? "#212121" : "#EBECEC",
       }}
     >
-      {!slide || !phoneDeck ? (
+      {target.device==="watch" ? <img alt="Watch独立原生演示截图" src={candidateWatchSource(target.locale,target.slide)||`/screenshots/localized/watch/${target.locale}/${target.slide==="watch-exercise"?"exercise-185":"rest-160"}.png`} width={canvas.w} height={canvas.h} style={{display:"block",width:canvas.w,height:canvas.h}}/> : !slide || !phoneDeck ? (
         !slide ? null : (
           <DeviceShowcase slide={slide} device={target.device as StoreDevice} locale={target.locale} />
         )

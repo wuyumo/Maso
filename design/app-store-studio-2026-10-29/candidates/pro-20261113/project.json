@@ -928,7 +928,7 @@
           "ru": "Выше вашего порога?\nВы это увидите",
           "ar": "فوق حدك؟\nستعرف فورًا"
         },
-        "screenshot": "/screenshots/localized/iphone/{locale}/player-heart-warning.png",
+        "screenshot": "/candidate-assets/pro-20261113/native51/iphone/{locale}/player-heart-warning.png",
         "inverted": true,
         "transforms": {
           "caption": {
@@ -985,7 +985,7 @@
             "align": "left"
           }
         ],
-        "screenshotSecondary": "/screenshots/localized/watch/{locale}/exercise-185.png"
+        "screenshotSecondary": "/candidate-assets/pro-20261113/native51/watch/{locale}/watch-exercise-185.png"
       },
       {
         "id": "diet",

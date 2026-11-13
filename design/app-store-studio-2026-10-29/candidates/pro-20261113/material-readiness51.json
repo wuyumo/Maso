@@ -1,0 +1,106 @@
+{
+  "updatedAt": "2026-11-13T10:23:43.102660+08:00",
+  "candidateProjectSHA256": "3d56c1957d7dbc434e15c51bb76c4535b1789ee6d4e670c4512388b2146e1fa4",
+  "readyForCandidateExport": [
+    {
+      "page": "03-training",
+      "devices": [
+        "iphone",
+        "iphone-medium"
+      ],
+      "locales": [
+        "zh",
+        "en",
+        "zh-Hant"
+      ],
+      "variants": 6
+    },
+    {
+      "page": [
+        "01-exercise-185",
+        "02-rest-160"
+      ],
+      "devices": [
+        "watch"
+      ],
+      "locales": [
+        "zh",
+        "en",
+        "zh-Hant"
+      ],
+      "variants": 6
+    }
+  ],
+  "stillBlocked": [
+    {
+      "page": "03-training",
+      "devices": [
+        "ipad",
+        "duo"
+      ],
+      "locales": "all12"
+    },
+    {
+      "page": "03-training",
+      "devices": [
+        "iphone",
+        "iphone-medium"
+      ],
+      "locales": [
+        "ja",
+        "ko",
+        "es",
+        "fr",
+        "de",
+        "it",
+        "pt-BR",
+        "ru",
+        "ar"
+      ]
+    },
+    {
+      "page": "Watch01/02",
+      "locales": [
+        "ja",
+        "ko",
+        "es",
+        "fr",
+        "de",
+        "it",
+        "pt-BR",
+        "ru",
+        "ar"
+      ]
+    }
+  ],
+  "sourceAcceptance": "ParentapprovednativephoneandWatchcontacts;sourcehash/dimension/mappingchecks passed. This is NOT completeposterpixelacceptance.",
+  "clockPolicy": "Watch10:11phone09:41originalnativeclocksretained,independentdemonstrations;notphysicalsynchronization",
+  "newFinalPosterExportsVerified": 0,
+  "uploadAcceptedImages": 0,
+  "pageChanges": [
+    {
+      "page": "01",
+      "changes": "NoProqualification;terminalperiodremoved;othercopyandnative43sceneunchanged"
+    },
+    {
+      "page": "02",
+      "changes": "Estimateheadingretained;noProqualification;terminalperiodremoved;native43sourceunchanged"
+    },
+    {
+      "page": "03",
+      "changes": "Threelocalephone51推胸/ChestPress,185bpm3×8×50kg+matchingWatch51;newsourceonlyiphone/medium;copydoesnotclaimsimultaneoussync"
+    },
+    {
+      "page": "04",
+      "changes": "Terminalperiodonly;basicnutrition/sleepnative43capturesretained;referencepreviewnotfresh51proof"
+    },
+    {
+      "page": "05",
+      "changes": "Terminalperiodonlywherepresent;lineupsource43unchanged;referencepreviewnotnew51hardwareproof"
+    },
+    {
+      "page": "Watch01/02",
+      "changes": "三语native51exercise/restsource,correct推胸name50kg185/160bpm;raworiginalclock10:11retained"
+    }
+  ]
+}

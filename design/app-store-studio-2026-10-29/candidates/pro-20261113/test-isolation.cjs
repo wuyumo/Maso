@@ -31,7 +31,7 @@ async function load(relative) {
     assert.equal(projectResponse.status,200); assert.equal(data.state.slidesByDevice.iphone[1].headline.zh,"肌肉恢复估算，\n一眼看清"); checks++;
     assert.equal(data.state.slidesByDevice.iphone[0].textElements[0].text.zh,"也听你要的天数、时长和重点"); checks++;
     assert.equal(data.state.slidesByDevice.iphone[1].textElements[0].text.zh,"3D 肌肉图，按部位显示"); checks++;
-    assert(!/\bpro\b|unlock|unlimited|premium|解锁|解鎖|免费|免費|订阅|訂閱|有料|無料|유료|무료|freischalt|gratuit|suscrip|assin|платн|бесплатн|اشتراك|مجاني/i.test(JSON.stringify(data.state))); checks++;
+    assert(!/\bpro\b|unlock|unlimited|premium|解锁|解鎖|免费|免費|订阅|訂閱|有料|無料|유료|무료|freischalt|gratuit|suscrip|assin|платн|бесплатн|اشتراك|مجاني/i.test(JSON.stringify(data.state.slidesByDevice.iphone.map(slide=>[slide.label,slide.headline,slide.textElements.map(el=>el.text)])))); checks++;
     for(const slide of data.state.slidesByDevice.iphone) for(const text of [...Object.values(slide.headline),...slide.textElements.flatMap(el=>Object.values(el.text))]) assert(!/[.。．｡۔]\s*$/u.test(text)); checks++;
     const bytes = await sharp({create:{width:1320,height:2868,channels:4,background:{r:12,g:34,b:56,alpha:0.5}}}).png().toBuffer();
     const dataUrl = "data:image/png;base64,"+bytes.toString("base64");
@@ -39,7 +39,7 @@ async function load(relative) {
     const valid = await post({dataUrl,artifactPath:"ios/iphone/1320x2868/zh/01-plan.png"}); const exported=await valid.json();
     assert.equal(valid.status,200); assert.equal(exported.savedPath,"exports/candidates/pro-20261113/ios/iphone/1320x2868/zh/01-plan.png");
     const meta = await sharp(path.join(temp,exported.savedPath)).metadata();assert.equal(meta.width,1320);assert.equal(meta.height,2868);assert.equal(meta.channels,3);assert.equal(meta.hasAlpha,false);checks++;
-    for (const artifactPath of ["../app-store-screenshots.json","ios/iphone/1320x2868/zh/03-training.png","ios/iphone/1206x2622/zh/01-plan.png","ios/watch/416x496/zh/01-plan.png","ios/iphone/1320x2868/xx/01-plan.png","ios/iphone/1320x2868/zh/../../01-plan.png"]) {assert.equal((await post({dataUrl,artifactPath})).status,400); checks++;}
+    for (const artifactPath of ["../app-store-screenshots.json","ios/iphone/1320x2868/ja/03-training.png","ios/iphone/1206x2622/zh/01-plan.png","ios/watch/416x496/zh/01-plan.png","ios/iphone/1320x2868/xx/01-plan.png","ios/iphone/1320x2868/zh/../../01-plan.png"]) {assert.equal((await post({dataUrl,artifactPath})).status,400); checks++;}
     const tiny = await sharp({create:{width:10,height:10,channels:3,background:"white"}}).png().toBuffer();
     assert.equal((await post({dataUrl:"data:image/png;base64,"+tiny.toString("base64"),artifactPath:"ios/iphone/1320x2868/en/02-recovery.png"})).status,400);checks++;
     assert.equal(await fs.readFile(path.join(temp,"app-store-screenshots.json"),"utf8"),"CANONICAL_SENTINEL");

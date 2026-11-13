@@ -1,0 +1,19 @@
+{
+  "attemptedAt": "2026-11-13T10:23:43.103198+08:00",
+  "userDelegation": "t326",
+  "officialCLI": "/Users/yumowu/.npm-global/bin/codex exec --sandbox read-only --json",
+  "existingGUICodexProcess": "app-server,cwdMasso;notinjectedornavigated",
+  "oldMassoAutomation": "PAUSED;notresumed",
+  "threadStarted": "01a1d2b5-9a51-7732-aa05-d0d9ab3d3188",
+  "turnStarted": true,
+  "exitCode": 1,
+  "errorCode": "model_not_found",
+  "errorSummary": "ConfiguredCodexmodelisnotsupportedwiththecurrentChatGPTaccount",
+  "taskAccepted": false,
+  "actualUpload": false,
+  "acceptedImages": 0,
+  "workaroundOrRetry": false,
+  "status": "CLI_LAUNCHED_BUT_FAILED_BEFORE_TASK_ACCEPTANCE",
+  "userManualFallback": "InexistingCodexwindowwithavailablemodel,paste: Read docs/store-candidate-t315-20261113/codex-upload-t326/HANDOFF.md and upload-manifest.json; acknowledge upload delegation and wait for nonempty acceptedImages. Do not upload currentstalePNG,51binary,reviewsor43changes.",
+  "noCredentialReadOrMint": true
+}
