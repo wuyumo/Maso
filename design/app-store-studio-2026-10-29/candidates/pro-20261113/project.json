@@ -959,18 +959,18 @@
           {
             "id": "description",
             "text": {
-              "zh": "超过你设的上限就变红",
-              "zh-Hant": "超過你設的上限就變紅",
-              "en": "Turns red past your limit",
-              "ja": "上限を超えると赤くなる",
-              "ko": "정한 상한을 넘으면 붉게 표시됩니다",
-              "es": "Se pone en rojo al pasar tu límite",
-              "fr": "Passe au rouge au-delà de votre limite",
-              "de": "Wird rot, wenn du dein Limit überschreitest",
-              "it": "Diventa rosso oltre il tuo limite",
-              "pt-BR": "Fica vermelho acima do seu limite",
-              "ru": "Краснеет, если выше вашего порога",
-              "ar": "يحمرّ إذا تجاوزت حدك"
+              "zh": "持续超限，心率提醒自动展开",
+              "zh-Hant": "持續超限，心率提醒自動展開",
+              "en": "Stay above your limit, and the alert expands",
+              "ja": "上限超えが続くと、心拍アラートを自動表示",
+              "ko": "한도 초과가 지속되면 심박수 알림 자동 표시",
+              "es": "Si superas tu límite de forma sostenida, se abre la alerta",
+              "fr": "Dépassement prolongé : l’alerte s’ouvre automatiquement",
+              "de": "Bleibst du über deinem Limit, öffnet sich die Warnung",
+              "it": "Se resti oltre il limite, l’avviso si apre automaticamente",
+              "pt-BR": "Acima do limite por mais tempo, o alerta se abre",
+              "ru": "При устойчивом превышении порога уведомление раскрывается автоматически",
+              "ar": "عند استمرار تجاوز حدك، يظهر تنبيه النبض تلقائيًا"
             },
             "transform": {
               "x": 96,

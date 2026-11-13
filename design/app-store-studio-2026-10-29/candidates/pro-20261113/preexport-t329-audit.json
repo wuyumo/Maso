@@ -1,6 +1,6 @@
 {
   "time": "2026-11-13T02:45:38.794Z",
-  "candidateSHA256": "5190bef24d7772a6c5e090b596cb07318e9918d0f0d7696640c8c5ad42035ed3",
+  "candidateSHA256": "ec4b51727d12ec90c7bbb383597083d82aa689ab283fe82f3e2162a7e34c739d",
   "sourceOccurrences": 192,
   "uniqueNativeFiles": 180,
   "sourceRows": [
@@ -2608,7 +2608,8 @@
       "page": "training",
       "locale": "zh",
       "field": "description",
-      "text": "超过你设的上限就变红"
+      "text": "持续超限，心率提醒自动展开",
+      "status": "proposed,userapprovalpending"
     },
     {
       "page": "training",
@@ -2620,7 +2621,8 @@
       "page": "training",
       "locale": "zh-Hant",
       "field": "description",
-      "text": "超過你設的上限就變紅"
+      "text": "持續超限，心率提醒自動展開",
+      "status": "proposed,userapprovalpending"
     },
     {
       "page": "training",
@@ -2632,7 +2634,8 @@
       "page": "training",
       "locale": "en",
       "field": "description",
-      "text": "Turns red past your limit"
+      "text": "Stay above your limit, and the alert expands",
+      "status": "proposed,userapprovalpending"
     },
     {
       "page": "training",
@@ -2644,7 +2647,8 @@
       "page": "training",
       "locale": "ja",
       "field": "description",
-      "text": "上限を超えると赤くなる"
+      "text": "上限超えが続くと、心拍アラートを自動表示",
+      "status": "proposed,userapprovalpending"
     },
     {
       "page": "training",
@@ -2656,7 +2660,8 @@
       "page": "training",
       "locale": "ko",
       "field": "description",
-      "text": "정한 상한을 넘으면 붉게 표시됩니다"
+      "text": "한도 초과가 지속되면 심박수 알림 자동 표시",
+      "status": "proposed,userapprovalpending"
     },
     {
       "page": "training",
@@ -2668,7 +2673,8 @@
       "page": "training",
       "locale": "es",
       "field": "description",
-      "text": "Se pone en rojo al pasar tu límite"
+      "text": "Si superas tu límite de forma sostenida, se abre la alerta",
+      "status": "proposed,userapprovalpending"
     },
     {
       "page": "training",
@@ -2680,7 +2686,8 @@
       "page": "training",
       "locale": "fr",
       "field": "description",
-      "text": "Passe au rouge au-delà de votre limite"
+      "text": "Dépassement prolongé : l’alerte s’ouvre automatiquement",
+      "status": "proposed,userapprovalpending"
     },
     {
       "page": "training",
@@ -2692,7 +2699,8 @@
       "page": "training",
       "locale": "de",
       "field": "description",
-      "text": "Wird rot, wenn du dein Limit überschreitest"
+      "text": "Bleibst du über deinem Limit, öffnet sich die Warnung",
+      "status": "proposed,userapprovalpending"
     },
     {
       "page": "training",
@@ -2704,7 +2712,8 @@
       "page": "training",
       "locale": "it",
       "field": "description",
-      "text": "Diventa rosso oltre il tuo limite"
+      "text": "Se resti oltre il limite, l’avviso si apre automaticamente",
+      "status": "proposed,userapprovalpending"
     },
     {
       "page": "training",
@@ -2716,7 +2725,8 @@
       "page": "training",
       "locale": "pt-BR",
       "field": "description",
-      "text": "Fica vermelho acima do seu limite"
+      "text": "Acima do limite por mais tempo, o alerta se abre",
+      "status": "proposed,userapprovalpending"
     },
     {
       "page": "training",
@@ -2728,7 +2738,8 @@
       "page": "training",
       "locale": "ru",
       "field": "description",
-      "text": "Краснеет, если выше вашего порога"
+      "text": "При устойчивом превышении порога уведомление раскрывается автоматически",
+      "status": "proposed,userapprovalpending"
     },
     {
       "page": "training",
@@ -2740,7 +2751,8 @@
       "page": "training",
       "locale": "ar",
       "field": "description",
-      "text": "يحمرّ إذا تجاوزت حدك"
+      "text": "عند استمرار تجاوز حدك، يظهر تنبيه النبض تلقائيًا",
+      "status": "proposed,userapprovalpending"
     },
     {
       "page": "diet",
@@ -3034,7 +3046,7 @@
   "copyAudit": "12locales×5pages headline+subcopy verified; poster device variants share same copy; no Pro unlock prompt or terminal sentence period",
   "native51UIParity": "Not independently proven for unchanged scene sources; do not call source inspection finalposteracceptance",
   "newFindings": {
-    "page03": "native51ordinaryautomaticcard2/2verified; red51phone12AXpassed; iPadDuo24pending; ruWatchexerciseellipsisparentreviewpending",
+    "page03": "48nativeinputs indexed;12iPadnowconnected;Duo12pending;ruWatchtitlehold;precise03subcopyproposednotapproved",
     "page05": "Candidate lineage now selects native51 rest for all12locales; other3authenticnativefamilysourcesretained"
   },
   "acceptedImages": [],

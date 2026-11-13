@@ -123,16 +123,16 @@
       "activeInPoster": true
     }
   ],
-  "export03Enabled": "iphoneandmedium11locales;ruheldforWatchtitle;iPadDuo24pending",
+  "export03Enabled": "iphone/medium/ipad11locales;ruheldforWatchtitle;Duo12pending",
   "matchingWatchCaptureExecuted": true,
   "blockingFindings": [
     {
-      "scope": "iPad/Duo03:24variants",
-      "needed": "a807 real captures"
+      "scope": "Duo03:12variants",
+      "needed": "a807 genuine native captures"
     },
     {
-      "scope": "ru03andWatch-exercise",
-      "needed": "parentreviewofnaturalnativeWatchtitleellipsis"
+      "scope": "ru03threeformats+ruWatchExercise",
+      "needed": "parent visual acceptance of authentic title ellipsis"
     }
   ],
   "otherPages": [
@@ -157,5 +157,163 @@
   "clockPolicy": "Independent native demos; original clocks retained; no simultaneous/physical sync proof",
   "redWarningStateAccepted": "NativeAXverificationpassed12locales;finalposteranduserreviewpending",
   "newT328NativeCapsuleToCardVerified": true,
-  "copyPrecisionNote": "Existing03subcopy implies red at personal limit; nativepolicy distinguishes ordinaryauto-card at180/185 from red-escalation at155/185. Do not silently rewrite fixed12languagecopy; parent should confirm precise marketing wording before upload."
+  "copyPrecisionNote": "03description12localeleavesnowpreciseproposedcopy;NOTuserapproved;see copy03-precision-proposal-t340.json",
+  "rawTabletAssets": [
+    {
+      "locale": "zh-Hant",
+      "source": "docs/pro-tablet51-20261113/native/ipad/zh-Hant/player-heart-warning.png",
+      "candidateAsset": "public/candidate-assets/pro-20261113/native51/ipad/zh-Hant/player-heart-warning.png",
+      "sha256": "0c5eeae7bcf7720d5d487c07e2d43de5c2ffd5fcb2f6e6a4044ffae3941f60f4",
+      "dimensions": [
+        2064,
+        2752
+      ],
+      "nativeAXEscalatedBackgroundPassed": true,
+      "pixelsEdited": false,
+      "posterAccepted": false
+    },
+    {
+      "locale": "zh",
+      "source": "docs/pro-tablet51-20261113/native/ipad/zh/player-heart-warning.png",
+      "candidateAsset": "public/candidate-assets/pro-20261113/native51/ipad/zh/player-heart-warning.png",
+      "sha256": "8bd9627b503f4b23718e1b77d5088b92020086e39d6cd689c4bffad030999a5c",
+      "dimensions": [
+        2064,
+        2752
+      ],
+      "nativeAXEscalatedBackgroundPassed": true,
+      "pixelsEdited": false,
+      "posterAccepted": false
+    },
+    {
+      "locale": "en",
+      "source": "docs/pro-tablet51-20261113/native/ipad/en/player-heart-warning.png",
+      "candidateAsset": "public/candidate-assets/pro-20261113/native51/ipad/en/player-heart-warning.png",
+      "sha256": "4508e0e68b35a8019c258d6deadebb8f2743bd2a0037d005fa8b337e32e0b65f",
+      "dimensions": [
+        2064,
+        2752
+      ],
+      "nativeAXEscalatedBackgroundPassed": true,
+      "pixelsEdited": false,
+      "posterAccepted": false
+    },
+    {
+      "locale": "ar",
+      "source": "docs/pro-tablet51-20261113/native/ipad/ar/player-heart-warning.png",
+      "candidateAsset": "public/candidate-assets/pro-20261113/native51/ipad/ar/player-heart-warning.png",
+      "sha256": "ea080c69439cd883015744547a6061c9b4e0eb0513d9a3faa0bd557066f6af7f",
+      "dimensions": [
+        2064,
+        2752
+      ],
+      "nativeAXEscalatedBackgroundPassed": true,
+      "pixelsEdited": false,
+      "posterAccepted": false
+    },
+    {
+      "locale": "ru",
+      "source": "docs/pro-tablet51-20261113/native/ipad/ru/player-heart-warning.png",
+      "candidateAsset": "public/candidate-assets/pro-20261113/native51/ipad/ru/player-heart-warning.png",
+      "sha256": "59680cfd7952ad003aff28de1dda230605e0dc348cb4496eab66c9d8452ed511",
+      "dimensions": [
+        2064,
+        2752
+      ],
+      "nativeAXEscalatedBackgroundPassed": true,
+      "pixelsEdited": false,
+      "posterAccepted": false
+    },
+    {
+      "locale": "pt-BR",
+      "source": "docs/pro-tablet51-20261113/native/ipad/pt-BR/player-heart-warning.png",
+      "candidateAsset": "public/candidate-assets/pro-20261113/native51/ipad/pt-BR/player-heart-warning.png",
+      "sha256": "006db4f746b828c5808bcc813a0a8f0ab1c43c4d778b1971099676ebbe42c507",
+      "dimensions": [
+        2064,
+        2752
+      ],
+      "nativeAXEscalatedBackgroundPassed": true,
+      "pixelsEdited": false,
+      "posterAccepted": false
+    },
+    {
+      "locale": "it",
+      "source": "docs/pro-tablet51-20261113/native/ipad/it/player-heart-warning.png",
+      "candidateAsset": "public/candidate-assets/pro-20261113/native51/ipad/it/player-heart-warning.png",
+      "sha256": "f803406e538c98f610eaf38c8ab011ae9e3a9edcfafac59afe14ff942b986774",
+      "dimensions": [
+        2064,
+        2752
+      ],
+      "nativeAXEscalatedBackgroundPassed": true,
+      "pixelsEdited": false,
+      "posterAccepted": false
+    },
+    {
+      "locale": "de",
+      "source": "docs/pro-tablet51-20261113/native/ipad/de/player-heart-warning.png",
+      "candidateAsset": "public/candidate-assets/pro-20261113/native51/ipad/de/player-heart-warning.png",
+      "sha256": "b0ee9277a933282fecd4bc1eff7c59230577bb6c4cc1defa9a9ebf62e178101f",
+      "dimensions": [
+        2064,
+        2752
+      ],
+      "nativeAXEscalatedBackgroundPassed": true,
+      "pixelsEdited": false,
+      "posterAccepted": false
+    },
+    {
+      "locale": "fr",
+      "source": "docs/pro-tablet51-20261113/native/ipad/fr/player-heart-warning.png",
+      "candidateAsset": "public/candidate-assets/pro-20261113/native51/ipad/fr/player-heart-warning.png",
+      "sha256": "c3dfa52ea0bf09b707ae245bca48ef29b744fe547e8a426ba13e1bd554ded401",
+      "dimensions": [
+        2064,
+        2752
+      ],
+      "nativeAXEscalatedBackgroundPassed": true,
+      "pixelsEdited": false,
+      "posterAccepted": false
+    },
+    {
+      "locale": "es",
+      "source": "docs/pro-tablet51-20261113/native/ipad/es/player-heart-warning.png",
+      "candidateAsset": "public/candidate-assets/pro-20261113/native51/ipad/es/player-heart-warning.png",
+      "sha256": "e82ddb1179117f75853b09080a38321f6fe00ed0733b590f8628944e9840a1da",
+      "dimensions": [
+        2064,
+        2752
+      ],
+      "nativeAXEscalatedBackgroundPassed": true,
+      "pixelsEdited": false,
+      "posterAccepted": false
+    },
+    {
+      "locale": "ko",
+      "source": "docs/pro-tablet51-20261113/native/ipad/ko/player-heart-warning.png",
+      "candidateAsset": "public/candidate-assets/pro-20261113/native51/ipad/ko/player-heart-warning.png",
+      "sha256": "eabfa0332abf79737aa2c8a96e685a346ba06e2fad8ae1c5587ce0aa85b1ec7c",
+      "dimensions": [
+        2064,
+        2752
+      ],
+      "nativeAXEscalatedBackgroundPassed": true,
+      "pixelsEdited": false,
+      "posterAccepted": false
+    },
+    {
+      "locale": "ja",
+      "source": "docs/pro-tablet51-20261113/native/ipad/ja/player-heart-warning.png",
+      "candidateAsset": "public/candidate-assets/pro-20261113/native51/ipad/ja/player-heart-warning.png",
+      "sha256": "d0df4119fa2c876688c6b3d92afd8ae5d2e6e68b3023897e55d6410f188ba480",
+      "dimensions": [
+        2064,
+        2752
+      ],
+      "nativeAXEscalatedBackgroundPassed": true,
+      "pixelsEdited": false,
+      "posterAccepted": false
+    }
+  ]
 }

@@ -1,3 +1,5 @@
+> ACTIVE t340: iPad12genuine2064×2752sourcesconnected;03copy12-languageprecisionproposalNOTapproved. Existingone-clickbatchnow10foriPadalso;Duo12andruWatchtitleholdsremain. Actualphone/iPadpostersstill0new. See sameactivehandoff;oldcountsbelowhistorical.
+
 > ACTIVE native-red51: t328 native2/2 completed. Same candidate route now has user-clicked 一键导出中英就绪页 (10phone,8iPad/Duo,4Watch). 03phone22ready/26held;05all48ready;Watch23ready/1ruExerciseheld. No actual poster render or upload claimed. Active handoff: ../../../../docs/store-candidate-t315-20261113/WORKFLOW-HANDOFF.md. Older t329 hold notes below are superseded.
 
 > ACTIVE t329: assistant owns preparation/upload; Codex dependency canceled. See ../../../../docs/store-candidate-t315-20261113/WORKFLOW-HANDOFF.md (active handoff). 01/02/04 review export enabled;03ALL48heldfort328;05ALL48heldforoldWatchfixture. Historical notes below do not override current gates.

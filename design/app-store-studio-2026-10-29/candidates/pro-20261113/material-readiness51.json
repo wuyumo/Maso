@@ -1,16 +1,16 @@
 {
-  "updatedAt": "2026-11-13T10:59:05.453314+08:00",
-  "candidateProjectSHA256": "5190bef24d7772a6c5e090b596cb07318e9918d0f0d7696640c8c5ad42035ed3",
+  "updatedAt": "2026-11-13T12:09:05.011780+08:00",
+  "candidateProjectSHA256": "ec4b51727d12ec90c7bbb383597083d82aa689ab283fe82f3e2162a7e34c739d",
   "readyForCandidateExport": {
     "01/02/04/05": "12locales×4formats×4pages=192",
-    "03": "iphone/medium11localesexcludingru=22",
+    "03": "iphone/medium/ipad11localesexcludingru=33",
     "Watch": "24sources;23exporteligible;ruExerciseheld"
   },
   "stillBlocked": {
-    "03": "iPad/Duo24 +ruPhone/medium2=26",
+    "03": "Duo12+ruPhone/medium/iPad3=15",
     "Watch": "ruExercise1naturalellipsisparentreview"
   },
-  "sourceAcceptance": "12actualredphoneSHA/nativeAXpassed+24actualWatchsources; ordinaryautocard51native2/2. Finalposters/userapprovalpending.",
+  "sourceAcceptance": "48exactnativeinputsindexed12phone12iPad24Watch;Duo12pending;nativepolicy/UIAXsourceevidenceisnotposteracceptance",
   "clockPolicy": "Nativeclocksretained09:41phone;Watchvaries10:11/10:33/blank;independentexamples,notphysicalsynchronization",
   "newFinalPosterExportsVerified": 0,
   "uploadAcceptedImages": 0,
@@ -25,7 +25,7 @@
     },
     {
       "page": "03",
-      "changes": "12genuinered51phoneimagesreplacenonred3andold9;paired185Watchall12;nativeautocard2/2verified;ruWatchtitleholdand24iPad/Duoabsent"
+      "changes": "Realnative51phone12+iPad12+Watch24connected;03description12languageprecisionproposalactive,notapproved;only12JSONcopydiffleaves;Duo12/ru3posterholds"
     },
     {
       "page": "04",
@@ -42,5 +42,6 @@
   ],
   "realStandaloneWatchCandidatePNGsPrepared": 24,
   "watchCandidateManifest": "watch51-upload-candidates.json",
-  "codexDependency": false
+  "codexDependency": false,
+  "copy03Status": "12preciseproposeddescriptionleavesactiveincandidate;NOTuserapproved"
 }

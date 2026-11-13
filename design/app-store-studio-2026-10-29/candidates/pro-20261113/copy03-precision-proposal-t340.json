@@ -1,0 +1,104 @@
+{
+  "status": "PROPOSED_NOT_USER_APPROVED",
+  "reason": "ordinary sustained threshold breach expands the heart alert; stronger red escalation is distinct. Remove broad red-at-personallimit implication without new feature claims.",
+  "scope": "Only03description12localeleaves;headlines/layout/allothercopyunchanged",
+  "candidateProjectSHA256": "ec4b51727d12ec90c7bbb383597083d82aa689ab283fe82f3e2162a7e34c739d",
+  "rows": [
+    {
+      "locale": "zh",
+      "page": "03",
+      "field": "slidesByDevice.iphone[training].textElements[description].text.zh",
+      "before": "超过你设的上限就变红",
+      "proposed": "持续超限，心率提醒自动展开",
+      "userApproved": false
+    },
+    {
+      "locale": "zh-Hant",
+      "page": "03",
+      "field": "slidesByDevice.iphone[training].textElements[description].text.zh-Hant",
+      "before": "超過你設的上限就變紅",
+      "proposed": "持續超限，心率提醒自動展開",
+      "userApproved": false
+    },
+    {
+      "locale": "en",
+      "page": "03",
+      "field": "slidesByDevice.iphone[training].textElements[description].text.en",
+      "before": "Turns red past your limit",
+      "proposed": "Stay above your limit, and the alert expands",
+      "userApproved": false
+    },
+    {
+      "locale": "ja",
+      "page": "03",
+      "field": "slidesByDevice.iphone[training].textElements[description].text.ja",
+      "before": "上限を超えると赤くなる",
+      "proposed": "上限超えが続くと、心拍アラートを自動表示",
+      "userApproved": false
+    },
+    {
+      "locale": "ko",
+      "page": "03",
+      "field": "slidesByDevice.iphone[training].textElements[description].text.ko",
+      "before": "정한 상한을 넘으면 붉게 표시됩니다",
+      "proposed": "한도 초과가 지속되면 심박수 알림 자동 표시",
+      "userApproved": false
+    },
+    {
+      "locale": "es",
+      "page": "03",
+      "field": "slidesByDevice.iphone[training].textElements[description].text.es",
+      "before": "Se pone en rojo al pasar tu límite",
+      "proposed": "Si superas tu límite de forma sostenida, se abre la alerta",
+      "userApproved": false
+    },
+    {
+      "locale": "fr",
+      "page": "03",
+      "field": "slidesByDevice.iphone[training].textElements[description].text.fr",
+      "before": "Passe au rouge au-delà de votre limite",
+      "proposed": "Dépassement prolongé : l’alerte s’ouvre automatiquement",
+      "userApproved": false
+    },
+    {
+      "locale": "de",
+      "page": "03",
+      "field": "slidesByDevice.iphone[training].textElements[description].text.de",
+      "before": "Wird rot, wenn du dein Limit überschreitest",
+      "proposed": "Bleibst du über deinem Limit, öffnet sich die Warnung",
+      "userApproved": false
+    },
+    {
+      "locale": "it",
+      "page": "03",
+      "field": "slidesByDevice.iphone[training].textElements[description].text.it",
+      "before": "Diventa rosso oltre il tuo limite",
+      "proposed": "Se resti oltre il limite, l’avviso si apre automaticamente",
+      "userApproved": false
+    },
+    {
+      "locale": "pt-BR",
+      "page": "03",
+      "field": "slidesByDevice.iphone[training].textElements[description].text.pt-BR",
+      "before": "Fica vermelho acima do seu limite",
+      "proposed": "Acima do limite por mais tempo, o alerta se abre",
+      "userApproved": false
+    },
+    {
+      "locale": "ru",
+      "page": "03",
+      "field": "slidesByDevice.iphone[training].textElements[description].text.ru",
+      "before": "Краснеет, если выше вашего порога",
+      "proposed": "При устойчивом превышении порога уведомление раскрывается автоматически",
+      "userApproved": false
+    },
+    {
+      "locale": "ar",
+      "page": "03",
+      "field": "slidesByDevice.iphone[training].textElements[description].text.ar",
+      "before": "يحمرّ إذا تجاوزت حدك",
+      "proposed": "عند استمرار تجاوز حدك، يظهر تنبيه النبض تلقائيًا",
+      "userApproved": false
+    }
+  ]
+}

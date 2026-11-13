@@ -504,5 +504,7 @@
     "new18FullVisualAcceptance": false,
     "ruExerciseTitleEllipsisParentReviewPending": true,
     "userApproved": false
-  }
+  },
+  "candidateCopyStatus": "03precisionproposal12localesactive;NOTuserapproved",
+  "candidateProjectSHA256": "ec4b51727d12ec90c7bbb383597083d82aa689ab283fe82f3e2162a7e34c739d"
 }

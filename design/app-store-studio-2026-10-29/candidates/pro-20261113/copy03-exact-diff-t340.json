@@ -1,0 +1,79 @@
+{
+  "changedLeafCount": 12,
+  "only03DescriptionChanged": true,
+  "headlinesAndLayoutUnchanged": true,
+  "changes": [
+    {
+      "field": "/slidesByDevice/iphone/2/textElements/0/text/zh",
+      "before": "超过你设的上限就变红",
+      "proposed": "持续超限，心率提醒自动展开",
+      "userApproved": false
+    },
+    {
+      "field": "/slidesByDevice/iphone/2/textElements/0/text/zh-Hant",
+      "before": "超過你設的上限就變紅",
+      "proposed": "持續超限，心率提醒自動展開",
+      "userApproved": false
+    },
+    {
+      "field": "/slidesByDevice/iphone/2/textElements/0/text/en",
+      "before": "Turns red past your limit",
+      "proposed": "Stay above your limit, and the alert expands",
+      "userApproved": false
+    },
+    {
+      "field": "/slidesByDevice/iphone/2/textElements/0/text/ja",
+      "before": "上限を超えると赤くなる",
+      "proposed": "上限超えが続くと、心拍アラートを自動表示",
+      "userApproved": false
+    },
+    {
+      "field": "/slidesByDevice/iphone/2/textElements/0/text/ko",
+      "before": "정한 상한을 넘으면 붉게 표시됩니다",
+      "proposed": "한도 초과가 지속되면 심박수 알림 자동 표시",
+      "userApproved": false
+    },
+    {
+      "field": "/slidesByDevice/iphone/2/textElements/0/text/es",
+      "before": "Se pone en rojo al pasar tu límite",
+      "proposed": "Si superas tu límite de forma sostenida, se abre la alerta",
+      "userApproved": false
+    },
+    {
+      "field": "/slidesByDevice/iphone/2/textElements/0/text/fr",
+      "before": "Passe au rouge au-delà de votre limite",
+      "proposed": "Dépassement prolongé : l’alerte s’ouvre automatiquement",
+      "userApproved": false
+    },
+    {
+      "field": "/slidesByDevice/iphone/2/textElements/0/text/de",
+      "before": "Wird rot, wenn du dein Limit überschreitest",
+      "proposed": "Bleibst du über deinem Limit, öffnet sich die Warnung",
+      "userApproved": false
+    },
+    {
+      "field": "/slidesByDevice/iphone/2/textElements/0/text/it",
+      "before": "Diventa rosso oltre il tuo limite",
+      "proposed": "Se resti oltre il limite, l’avviso si apre automaticamente",
+      "userApproved": false
+    },
+    {
+      "field": "/slidesByDevice/iphone/2/textElements/0/text/pt-BR",
+      "before": "Fica vermelho acima do seu limite",
+      "proposed": "Acima do limite por mais tempo, o alerta se abre",
+      "userApproved": false
+    },
+    {
+      "field": "/slidesByDevice/iphone/2/textElements/0/text/ru",
+      "before": "Краснеет, если выше вашего порога",
+      "proposed": "При устойчивом превышении порога уведомление раскрывается автоматически",
+      "userApproved": false
+    },
+    {
+      "field": "/slidesByDevice/iphone/2/textElements/0/text/ar",
+      "before": "يحمرّ إذا تجاوزت حدك",
+      "proposed": "عند استمرار تجاوز حدك، يظهر تنبيه النبض تلقائيًا",
+      "userApproved": false
+    }
+  ]
+}
