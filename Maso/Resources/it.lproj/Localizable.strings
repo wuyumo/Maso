@@ -112,6 +112,7 @@
 "You're now Masso Pro!" = "Ora sei Masso Pro!";
 "Enjoy unlimited plans, full history, and everything else. Welcome aboard." = "Godetevi programma di allenamento illimitate, storia completa e tutto il resto. Benvenuti a bordo.";
 "Restore Purchases" = "Ripristinare gli acquisti";
+"Restore Purchase" = "Ripristinare gli acquisti";
 "Terms" = "Termini";
 "Privacy" = "Privacy";
 "Tell us about your training" = "Raccontaci della tua formazione";
@@ -1110,18 +1111,10 @@
 "Already up to date" = "Fino ad oggi";
 "Smart progression" = "Progressione intelligente";
 "Earn the next 2.5 kg — weight suggestions from your logged sets." = "Guadagnare i prossimi 2,5 kg — suggerimenti di peso dai vostri set registrati.";
-"Secure checkout on the web via Polar. %@ / %@, renews until cancelled — manage or cancel anytime on the Polar page." = "Checkout sicuro sul web tramite Polar. %@ / %@, rinnova fino alla cancellazione — gestire o cancellare in qualsiasi momento sulla pagina Polar.";
-"Enter code" = "Inserisci il codice";
-"Enter your activation code" = "Inserisci il codice di attivazione";
-"After buying on the web, your code was emailed to you (and shown on the confirmation page). Paste it here to unlock Pro on this device." = "Dopo aver acquistato sul web, il tuo codice è stato inviato via email (e mostrato nella pagina di conferma). Incolla qui per sbloccare Pro su questo dispositivo.";
-"Activate" = "Attivare";
-"That code isn't active yet. Double-check it, or try again in a moment." = "Quel codice non e' ancora attivo.";
-"Couldn't verify — check your connection and try again." = "Non è stato possibile verificare — controllare la connessione e riprovare.";
 "You're Pro now — thanks for supporting Masso." = "Sei Pro ora — grazie per il supporto Masso.";
 "That code isn't active yet. Check the email from your purchase, or try again in a moment." = "Questo codice non è ancora attivo. Controlla l'e-mail dal tuo acquisto, o riprova in un momento.";
 "Couldn't verify your code — check your connection and try again." = "Non è stato possibile verificare il codice: controlla la connessione e riprova.";
 "ACTIVE" = "ATTIVO";
-"Thanks for supporting Masso. Manage or cancel on the Polar page." = "Grazie per aver supportato Masso. Gestire o cancellare la pagina Polar.";
 "Scan to get this routine" = "Scansiona per ottenere lo stesso piano";
 "%lld days a week" = "%lld giorni alla settimana";
 "YOUR TRAINING" = "LA TUA FORMAZIONE";
@@ -1899,7 +1892,6 @@
 
 "Subscription options are unavailable right now" = "Gli abbonamenti non sono disponibili al momento";
 
-"Restore web purchase" = "Ripristina acquisto web";
 
 "Basic workout logging and history stay free" = "Il registro di base e la cronologia restano gratuiti";
 

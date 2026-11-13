@@ -129,6 +129,7 @@
 "You're now Masso Pro!" = "You're now Masso Pro!";
 "Enjoy unlimited plans, full history, and everything else. Welcome aboard." = "Enjoy unlimited workout plans, full history, and everything else. Welcome aboard.";
 "Restore Purchases" = "Restore Purchases";
+"Restore Purchase" = "Restore Purchase";
 "Terms" = "Terms";
 "Privacy" = "Privacy";
 
@@ -1402,18 +1403,10 @@
 "Earn the next 2.5 kg — weight suggestions from your logged sets." = "Earn the next 2.5 kg — weight suggestions from your logged sets.";
 
 /* 外部付费墙 (Polar) — 2026-07 */
-"Secure checkout on the web via Polar. %@ / %@, renews until cancelled — manage or cancel anytime on the Polar page." = "Secure checkout on the web via Polar. %@ / %@, renews until cancelled — manage or cancel anytime on the Polar page.";
-"Enter code" = "Enter code";
-"Enter your activation code" = "Enter your activation code";
-"After buying on the web, your code was emailed to you (and shown on the confirmation page). Paste it here to unlock Pro on this device." = "After buying on the web, your code was emailed to you (and shown on the confirmation page). Paste it here to unlock Pro on this device.";
-"Activate" = "Activate";
-"That code isn't active yet. Double-check it, or try again in a moment." = "That code isn't active yet. Double-check it, or try again in a moment.";
-"Couldn't verify — check your connection and try again." = "Couldn't verify — check your connection and try again.";
 "You're Pro now — thanks for supporting Masso." = "You're Pro now — thanks for supporting Masso.";
 "That code isn't active yet. Check the email from your purchase, or try again in a moment." = "That code isn't active yet. Check the email from your purchase, or try again in a moment.";
 "Couldn't verify your code — check your connection and try again." = "Couldn't verify your code — check your connection and try again.";
 "ACTIVE" = "ACTIVE";
-"Thanks for supporting Masso. Manage or cancel on the Polar page." = "Thanks for supporting Masso. Manage or cancel on the Polar page.";
 
 "Scan to get this routine" = "Scan to get the same workout plan";
 
@@ -2435,7 +2428,6 @@
 
 "Subscription options are unavailable right now" = "Subscription options are unavailable right now";
 
-"Restore web purchase" = "Restore web purchase";
 
 "Basic workout logging and history stay free" = "Basic workout logging and history stay free";
 
