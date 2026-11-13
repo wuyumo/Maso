@@ -77,9 +77,15 @@
     background: transparent; border: 0; font-weight: 650;
   }
   .tiny { min-width: 0; font-size: .8125rem; color: var(--dim); }
-  .stage { position: relative; height: 38vh; min-height: 250px; background: var(--stage); }
+  .stage { position: relative; height: 46vh; min-height: 360px; background: var(--stage); }
+  .pill { font-size: .75rem; font-weight: 700; color: var(--dim); }
+  .stats { display: flex; gap: 12px; padding: 2px 16px 10px; }
+  .stats b { display: block; font-size: 1.45rem; font-variant-numeric: tabular-nums; letter-spacing: -0.03em; }
+  .stats span, .tag { color: var(--dim); font-size: .75rem; font-weight: 650; }
+  .tag { color: var(--text); }
   body > #body-canvas { position: absolute; width: 0; height: 0; overflow: hidden; }
   #body-canvas { width: 100%; height: 100%; display: block; touch-action: pan-y; }
+  .demo-badge { position: absolute; z-index: 2; top: 10px; inset-inline-start: 12px; font-size: .75rem; font-weight: 700; color: var(--dim); }
   .stage-tools {
     position: absolute; z-index: 2; left: 8px; right: 8px; bottom: 8px;
     display: flex; justify-content: space-between; align-items: flex-end; gap: 8px; pointer-events: none;
@@ -96,7 +102,7 @@
   .summary { padding: 14px 14px 12px; }
   .summary strong { font-size: 1.05rem; }
   .summary p, .fine { margin: 6px 0 0; color: var(--dim); font-size: .8125rem; }
-  .group, .exercise { scroll-margin-top: calc(38vh + 150px); }
+  .group, .exercise { scroll-margin-top: 72px; }
   .group { overflow: hidden; }
   .group.selected { outline: 2px solid var(--accent); }
   .group-head, .exercise, .quiet button, .set-row {
@@ -176,6 +182,7 @@
 const COPY = {
   zh: {
     demo: "演示数据，非你的真实训练",
+    demoMark: "演示数据",
     demoLong: "下面所有数字、时间和心率都是编好的例子，不是测量，也不会上传。",
     complete: "训练完成",
     session: "推举与核心 · 示例",
@@ -210,7 +217,9 @@ const COPY = {
     synergist: "协同",
     bodyweight: "自重",
     reps: "次",
-    noHeart: "无心率记录",
+    noHeart: "无心率",
+    partialShort: "计时不完整",
+    info: "统计说明",
     peak: "峰值",
     oldKicker: "原来的两张表",
     duration: "动作时长",
@@ -247,6 +256,7 @@ const COPY = {
   },
   en: {
     demo: "Demo data, not your training",
+    demoMark: "Demo",
     demoLong: "Every number, time, and heart rate below is a made-up example. Nothing here was measured or uploaded.",
     complete: "Workout complete",
     session: "Push and core · example",
@@ -281,7 +291,9 @@ const COPY = {
     synergist: "Synergist",
     bodyweight: "Bodyweight",
     reps: "reps",
-    noHeart: "无心率记录",
+    noHeart: "无心率",
+    partialShort: "计时不完整",
+    info: "统计说明",
     peak: "Peak",
     oldKicker: "Original two tables",
     duration: "Exercise duration",
@@ -469,7 +481,8 @@ function derive() {
   const work = painted.reduce((sum, exercise) => sum + exerciseRaw(exercise).work, 0);
   const rest = painted.reduce((sum, exercise) => sum + exerciseRaw(exercise).rest, 0);
   const missing = painted.reduce((sum, exercise) => sum + exerciseRaw(exercise).missing, 0);
-  return { groups, sessionKg, work, rest, missing, maxShare: Math.max(...groups.map((group) => group.share), 1) };
+  const setCount = painted.reduce((sum, exercise) => sum + exercise.sets.length, 0);
+  return { groups, sessionKg, work, rest, missing, setCount, maxShare: Math.max(...groups.map((group) => group.share), 1) };
 }
 function intensity(share) { return share / derive().maxShare; }
 
@@ -653,19 +666,30 @@ function legendSwatches() {
     return `<span><i class="swatch" style="background:rgb(${rgb.join(",")})"></i>${t("legend")[index]}</span>`;
   }).join("");
 }
+function rowFacts(exercise) {
+  const raw = exerciseRaw(exercise);
+  let load = "";
+  if (exercise.category === "strength" && exercise.sets.every((set) => set.weightKg > 0 && set.reps > 0)) {
+    load = `${raw.sets} × ${exercise.sets[0].weightKg} kg · ${exercise.sets.map((set) => set.reps).join(state.lang === "zh" ? "、" : ", ")}`;
+  } else if (exercise.category === "strength") load = `${raw.sets} × ${raw.reps}`;
+  else if (exercise.category === "timed") load = clock(raw.timed);
+  const time = exercise.sets.some((set) => set.intervals) ? clock(raw.work) : "";
+  return { load, time, total: raw.kg != null ? `${raw.kg} ${t("kgUnit")}` : "", missing: raw.missing > 0 };
+}
 function heartBlock(exercise) {
   const drawn = spark(exercise);
   if (!drawn) return `<p class="missing">${t("noHeart")}</p>`;
-  return `<div class="hr-row" dir="ltr">${drawn.svg}<span class="peak">${t("peak")} ${drawn.peak}</span></div>`;
+  return `<div class="hr-row" dir="ltr">${drawn.svg}<span class="peak">${drawn.peak}</span></div>`;
 }
 function groupHtml(group) {
   const open = state.open[group.id] !== false;
   const rows = open ? group.rows.map((row) => {
+    const facts = rowFacts(row.exercise);
     const selected = state.selected === group.id && state.sheetExercise === row.exercise.id;
     return `<button class="exercise${selected ? " selected" : ""}" data-open-set="${row.exercise.id}" data-group="${group.id}" id="row-${group.id}-${row.exercise.id}">
-      <span class="row-top"><span class="who"><b>${L(row.exercise.name)}</b><span>${L(row.exercise.variant)} · ${t("role")[row.role]}</span></span>
-      <span class="spacer"></span><span class="share-num">${round1(row.share)}<span class="unit">${t("setsUnit")}</span></span></span>
-      <span class="meta">${metaLine(row.exercise)}</span>
+      <span class="row-top"><span class="who"><b>${L(row.exercise.name)}</b><span>${L(row.exercise.variant)}</span></span>
+      <span class="spacer"></span>${facts.total ? `<span class="share-num">${facts.total}</span>` : ""}</span>
+      <span class="meta">${[facts.load, facts.time].filter(Boolean).join(" · ")}${facts.missing ? ` <span class="tag">${t("partialShort")}</span>` : ""}</span>
       ${heartBlock(row.exercise)}
     </button>`;
   }).join("") : "";
@@ -678,10 +702,10 @@ function groupHtml(group) {
 function sheetHtml() {
   if (!state.sheet) return "";
   const title = state.sheet === "sets" ? L(FIXTURE.exercises.find((exercise) => exercise.id === state.sheetExercise).name)
-    : state.sheet === "duration" ? t("duration") : state.sheet === "heart" ? t("heart") : t("contract");
+    : state.sheet === "duration" ? t("duration") : state.sheet === "heart" ? t("heart") : t("info");
   return `<div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
     <div class="sheet-bar"><button class="icon-hit" data-close-sheet>${t("back")}</button><h2 id="sheet-title">${title}</h2><span class="icon-hit"></span></div>
-    <div class="banner">${t("demo")}</div>
+    <p class="note"><span class="pill">${t("demoMark")}</span></p>
     <main>${state.sheet === "sets" ? setsSheet() : state.sheet === "duration" ? durationSheet() : state.sheet === "heart" ? heartSheet() : contractSheet()}</main>
   </div>`;
 }
@@ -693,16 +717,16 @@ function setsSheet() {
     const pauses = [];
     if (set.intervals) for (let i = 1; i < set.intervals.length; i += 1) pauses.push(set.intervals[i][0] - set.intervals[i - 1][1]);
     const load = set.weightKg > 0 && set.reps ? `${set.weightKg} kg × ${set.reps}` : set.reps ? `${set.reps} ${t("reps")} · ${t("bodyweight")}` : set.durationSeconds ? clock(set.durationSeconds) : "";
-    const timing = work == null ? t("partial") : `${t("work")} ${clock(work)}` + (pauses.length ? ` · ${state.lang === "zh" ? "组内暂停" : "pause"} ${pauses.map(clock).join(", ")}` : "");
+    const timing = work == null ? t("partialShort") : clock(work) + (pauses.length ? ` · ${pauses.map(clock).join(", ")}` : "");
     const rest = set.restBefore != null ? `${t("rest")} ${clock(set.restBefore)}` : "";
     const hearts = samplesIn(set);
     const heart = hearts.length >= 2 ? `${hearts.length} · ${t("peak")} ${Math.max(...hearts.map((sample) => sample.bpm))}` : t("noHeart");
     return `<div class="set-row"><b>${state.lang === "zh" ? "第" : "Set "}${set.n}</b><div class="meta">${[load, timing, rest, heart].filter(Boolean).join(" · ")}</div></div>`;
   }).join("");
   const shares = Object.entries(exercise.roles).map(([id, role]) => `${nameOf(id)} ${round1(exercise.sets.length * (role === "primary" ? 1 : 0.4))} ${t("setsUnit")}`).join(" · ");
-  return `<article class="sheet-card"><p>${metaLine(exercise)}</p><p class="fine">${state.lang === "zh" ? "分到各肌群" : "Allocated"}: ${shares}</p>
-    <p class="fine">${raw.kg == null ? (state.lang === "zh" ? "这一动作没有公斤总量。" : "This exercise has no kilogram total.") : (state.lang === "zh" ? "动作总量只在全场负重里计算一次。" : "The exercise total is added to the session once.")}</p>
-    ${rows}${exercise.id === "bench" ? `<p class="fine">${L(FIXTURE.omitted)}</p>` : ""}</article>`;
+  return `<article class="sheet-card"><p class="meta">${[rowFacts(exercise).load, rowFacts(exercise).time, rowFacts(exercise).total].filter(Boolean).join(" · ")}</p>
+    <p class="meta">${shares}</p>
+    ${rows}${exercise.id === "bench" ? `<p class="meta">${state.lang === "zh" ? "第 3 组未完成" : "Set 3 not completed"}</p>` : ""}</article>`;
 }
 function durationSheet() {
   const rows = FIXTURE.exercises.map((exercise) => {
@@ -711,9 +735,9 @@ function durationSheet() {
   });
   const max = Math.max(...rows.map((row) => row.raw.work));
   return `<article class="sheet-card">${rows.map((row) => `<div class="set-row"><b>${L(row.exercise.name)}</b>
-    <div class="meta">${t("work")} ${clock(row.raw.work)} · ${t("rest")} ${row.raw.rest ? clock(row.raw.rest) : "—"}${row.raw.missing ? " · " + t("partial") : ""}</div>
+    <div class="meta">${clock(row.raw.work)}${row.raw.rest ? " · " + t("rest") + " " + clock(row.raw.rest) : ""}${row.raw.missing ? " · " + t("partialShort") : ""}</div>
     <div style="margin-top:6px;height:8px;border-radius:99px;background:var(--line)"><div style="height:8px;border-radius:99px;background:var(--accent);width:${max ? row.raw.work / max * 100 : 0}%"></div></div>
-    </div>`).join("")}<p class="fine">${state.lang === "zh" ? "条形用的是做组计时，不含休息。缺少计时的组不记成 0 秒。" : "Bars use tracked work time and leave rest out. A missing interval is not stored as zero seconds."}</p></article>`;
+    </div>`).join("")}</article>`;
 }
 function heartSheet() {
   const series = [];
@@ -730,22 +754,23 @@ function heartSheet() {
     `<text x="${x(time).toFixed(1)}" y="176" fill="#b3b3b3" font-size="10">${state.lang === "zh" ? zh : en}</text>`).join("");
   return `<article class="sheet-card"><p><b>${t("peak")} ${Math.max(...points.map((point) => point.bpm))}</b></p>
     <div class="chart-wrap"><svg viewBox="0 0 332 186" role="img" aria-label="${t("heart")}">${lines}${labels}</svg></div>
-    <p class="fine">${state.lang === "zh" ? "横轴是这场的真实时间。力量组只有几十秒，所以是短线；骑行在后半段。空白处没有连线。" : "The axis is real session time. Strength sets last seconds, so their lines are short; the ride is later. Empty gaps are not connected."}</p>
     ${FIXTURE.exercises.map((exercise) => {
       const count = exercise.sets.flatMap(samplesIn).length;
       return `<div class="set-row"><b>${L(exercise.name)}</b><div class="meta">${count >= 2 ? count + " · " + t("peak") + " " + Math.max(...exercise.sets.flatMap(samplesIn).map((sample) => sample.bpm)) : t("noHeart")}</div></div>`;
     }).join("")}
-    <p class="fine">${state.lang === "zh" ? "休息时段另有 " + FIXTURE.restSamples.length + " 个示例读数，不在这张图上，也不画进动作小图。缺口和不同做组区间之间没有连线。" : FIXTURE.restSamples.length + " example readings during rest are kept out of this chart and out of the row sparklines. Gaps and separate work intervals are not connected."}</p></article>`;
+    </article>`;
 }
 function contractSheet() {
   const zh = state.lang !== "en";
   const blocks = zh ? [
+    ["怎么看", "绿色是这次的相对训练量，点选不会缩放。心率不给肌肉上色。顶部三个数是工作时长、完成组数和负重总量。肌群右侧是分摊组数：主练 1.0，协同 0.4，不要和公斤相加。有氧不涂在肌肉上。保存计划只影响下次，不改这一场。"],
     ["训练量", "只统计实际完成的组。未完成的卧推第 3 组、休息和没写进记录的建议重量都不算。肌群右侧沿用恢复计算里的每组比例：主练 1.0、协同 0.4，但这里停在组数，不换成疲劳百分比。公斤只在外部重量大于 0 且有次数时按重量 × 次数计算，每个完成组进入全场总量一次。自重、计时和有氧不混进公斤。"],
     ["时长", "主数字是做组计时，也就是播放器停在这一组并且正在播放的区间之和。它不是肌肉张力时间，也不含休息。休息用已记录的休息秒数单列。组内暂停会切成多段。缺少计时的组仍然算完成，并标明未记录，不当作 0 秒。"],
     ["心率", "示例曲线不是 App 里存好的动作心率。现有样本按整场时间保存，再用组的做组区间去挑：session 相同，且时间落在区间内（含起点、不含终点）。不同区间、暂停、休息，以及间隔超过 20 秒，都不连线。能对上的读数少于 2 个就显示「无心率记录」。心率不给肌肉上色。"],
     ["现在已有", "组记录里已有动作、类别、重量、次数、目标时长、完成时间、session、step、组号、做组区间和休息秒数。心率样本在另一份本地记录里，有 id、session、时间、bpm、来源和可选提醒上限。动作时长是把这些组加起来，不是单独存的动作开始和结束。"],
     ["还没有", "没有动作级心率字段，没有休息的起止时刻，没有把「计时为何缺失」存下来，也没有按公斤测量到每块肌肉或左右侧。演示里的肌群组数是示例分摊，不是新的生理测量。"]
   ] : [
+    ["How to read", "Green is this session's relative volume. Selecting a muscle does not zoom, and heart rate does not color the body. The three numbers are work time, completed sets, and loaded volume. The number on a muscle is allocated sets, 1.0 primary and 0.4 synergist, separate from kilograms. Cardio is not painted. Saving the routine affects the next plan only."],
     ["Volume", "Only completed sets count. The unfinished third bench set, rest, and any suggested weight that was not logged are omitted. Muscle totals reuse the recovery split, 1.0 primary and 0.4 synergist per set, and stop there instead of becoming a fatigue percentage. Kilograms are weight × reps only when external weight is above 0 and reps exist. Each completed set joins the session total once. Bodyweight, timed work, and cardio are not converted to kilograms."],
     ["Duration", "The main number is tracked work: playback intervals while that set was the current step and playing. It is not time under tension and it excludes rest. Recorded rest is separate. A pause splits one set into intervals. A set with no intervals still counts as completed and is labeled missing, not as zero seconds."],
     ["Heart rate", "These curves are examples. The app stores samples for the whole session, then keeps a sample when its session matches and its time falls inside a set interval, including the start and excluding the end. Separate intervals, pauses, rest, and gaps over 20 seconds are not connected. Fewer than two matching readings says 无心率记录. Heart rate does not color muscles."],
@@ -771,8 +796,11 @@ function decidePlan(decision) {
 }
 function shareMuscle(group) {
   const names = group.rows.map((row) => L(row.exercise.name)).join(" · ");
-  const detail = state.shareDetails ? group.rows.map((row) => `<p class="meta">${L(row.exercise.name)} · ${metaLine(row.exercise)}</p>`).join("") : `<p class="meta">${names}</p>`;
-  const heart = state.shareHeart ? group.rows.map((row) => `<div>${L(row.exercise.name)}${heartBlock(row.exercise)}</div>`).join("") : "";
+  const detail = state.shareDetails ? group.rows.map((row) => {
+    const facts = rowFacts(row.exercise);
+    return `<p class="meta">${L(row.exercise.name)} · ${[facts.load, facts.time, facts.total].filter(Boolean).join(" · ")}${facts.missing ? " · " + t("partialShort") : ""}</p>`;
+  }).join("") : `<p class="meta">${names}</p>`;
+  const heart = state.shareHeart ? group.rows.map((row) => heartBlock(row.exercise)).join("") : "";
   return `<div class="share-block"><div class="row-top"><b>${nameOf(group.id)}</b><span class="spacer"></span><span class="share-num">${round1(group.share)} ${t("setsUnit")}</span></div>${detail}${heart}</div>`;
 }
 function mountStage(id) {
@@ -785,7 +813,8 @@ function mountStage(id) {
 }
 
 function render() {
-  const scroll = document.scrollingElement.scrollTop;
+  const scroll = state.screen === state.painted ? document.scrollingElement.scrollTop : 0;
+  state.painted = state.screen;
   document.documentElement.dataset.theme = state.theme;
   document.documentElement.dataset.large = state.large ? "1" : "0";
   document.documentElement.dir = state.rtl ? "rtl" : "ltr";
@@ -795,20 +824,18 @@ function render() {
   const model = derive();
   const displayRow = state.options ? `<div class="options"><button class="tiny" data-theme-toggle aria-pressed="${state.theme === "light"}">${state.theme === "light" ? t("dark") : t("light")}</button><button class="tiny" data-lang>${t("lang")}</button><button class="tiny" data-large aria-pressed="${state.large}">${t("large")}</button><button class="tiny" data-rtl aria-pressed="${state.rtl}">${t("rtl")}</button></div>` : "";
   if (state.screen === "home") {
-    app.innerHTML = `<section class="home" id="training-home"><p class="banner">${t("demo")}</p><h1>${t("homeTitle")}</h1><p class="sub">${t("session")}</p>
-      <p class="kicker">${t("scenarioLabel")}</p>
+    app.innerHTML = `<section class="home" id="training-home"><p class="pill">${t("demoMark")}</p><h1>${t("homeTitle")}</h1><p class="sub">${t("session")}</p>
       <div class="scenario" role="group" aria-label="${t("scenarioLabel")}">
         <button type="button" id="demo-scenario-changes" aria-pressed="${state.scenario === "changes"}">${t("withChanges")}</button>
         <button type="button" id="demo-scenario-none" aria-pressed="${state.scenario === "none"}">${t("noChanges")}</button>
       </div>
-      <p class="fine">${t("scenarioNote")}</p>
       <button class="share" id="end-workout">${state.finished ? t("replay") : t("endWorkout")}</button>
       ${state.finished ? `<button class="history-row" id="open-history"><b>${t("historyTitle")}</b><span class="meta">${t("session")} · ${model.sessionKg} ${t("kgUnit")}</span></button><p class="fine">${t("historyHint")}</p>` : ""}
       ${state.planDecision ? `<p class="fine">${state.planDecision === "saved" ? t("savedNote") : t("skippedNote")}</p>` : ""}
       </section>`;
   } else if (state.screen === "adjust") {
-    app.innerHTML = `<section class="adjust" id="routine-adjust"><p class="banner">${t("demo")}</p>
-      <h1 style="font-size:1.4rem">${t("saveRoutine")}</h1><p class="sub">${t("session")}</p><p class="fine">${t("saveExplain")}</p><p class="fine">${t("saveScope")}</p>
+    app.innerHTML = `<section class="adjust" id="routine-adjust"><p class="pill">${t("demoMark")}</p>
+      <h1 style="font-size:1.4rem">${t("saveRoutine")}</h1><p class="fine">${t("saveExplain")}</p>
       <div class="adjust-list">${ROUTINE_DIFF.map((row) => `<article class="diff ${row.kind === "updated" ? "changed" : "same"}">
         <div class="row-top"><b>${L(row.name)}</b><span class="spacer"></span>${row.kind === "updated" ? `<span class="badge">${state.lang === "zh" ? "已修改" : "Updated"}</span>` : ""}</div>
         <p class="meta">${row.kind === "updated" ? `${row.from} → ${row.to}` : row.summary}</p></article>`).join("")}</div>
@@ -816,14 +843,13 @@ function render() {
       <button class="choice secondary" id="skip-routine">${t("saveNo")}</button></section>`;
   } else if (state.screen === "share") {
     app.innerHTML = `<section class="page ${state.options ? "options-open" : ""}" id="share-preview" data-details="${state.shareDetails ? "1" : "0"}" data-heart="${state.shareHeart ? "1" : "0"}" data-session-kg="${model.sessionKg}">
-      <div class="fixed-top"><div class="topbar"><button class="icon-hit" id="share-back">${t("shareBack")}</button><h2>${t("share")}</h2><button class="tiny" id="toggle-options">${t("display")}</button></div>${displayRow}</div>
-      <div class="page-scroll"><p class="banner">${t("demo")}</p><p class="note">${t("shareProposal")}</p>
-        <div class="checks"><label><input id="share-details" type="checkbox" ${state.shareDetails ? "checked" : ""}>${t("optDetails")}</label><label><input id="share-heart" type="checkbox" ${state.shareHeart ? "checked" : ""}>${t("optHeart")}</label></div>
-        <article class="summary" id="report-summary" data-session-kg="${model.sessionKg}"><strong>${t("session")}</strong>
-          <p>${t("loaded")} ${model.sessionKg} ${t("kgUnit")} · ${t("work")} ${clock(model.work)} · ${t("rest")} ${clock(model.rest)}</p></article>
-        <div class="stage" id="stage-host"><div class="stage-tools"><div class="facing"><button class="tiny" data-face="front" aria-pressed="${state.facing === "front"}">${t("front")}</button><button class="tiny" data-face="back" aria-pressed="${state.facing === "back"}">${t("rear")}</button></div></div></div>
+      <div class="fixed-top"><div class="topbar"><button class="icon-hit" id="share-back">${t("shareBack")}</button><h2>${t("share")}</h2><span class="icon-hit"></span></div></div>
+      <div class="page-scroll">
+        <div class="stage" id="stage-host"><span class="demo-badge">${t("demoMark")}</span><div class="stage-tools"><div class="facing"><button class="tiny" data-face="front" aria-pressed="${state.facing === "front"}">${t("front")}</button><button class="tiny" data-face="back" aria-pressed="${state.facing === "back"}">${t("rear")}</button></div></div></div>
+        <div class="stats" id="report-summary" data-session-kg="${model.sessionKg}" data-sets="${model.setCount}"><div><b>${clock(model.work)}</b><span>${t("work")}</span></div><div><b>${model.setCount}</b><span>${t("setsUnit")}</span></div><div><b>${model.sessionKg}</b><span>${t("kgUnit")}</span></div></div>
         <div class="legend">${legendSwatches()}</div>
         <article class="summary">${model.groups.map(shareMuscle).join("")}</article>
+        <div class="checks"><label><input id="share-details" type="checkbox" ${state.shareDetails ? "checked" : ""}>${t("optDetails")}</label><label><input id="share-heart" type="checkbox" ${state.shareHeart ? "checked" : ""}>${t("optHeart")}</label></div>
       </div>
       <div class="fixed-bottom"><button class="share" id="save-share">${t("shareSave")}</button></div>
       </section>`;
@@ -832,24 +858,21 @@ function render() {
     const untouched = state.selected && !model.groups.some((group) => group.id === state.selected) ? `<p class="note">${t("untouched")} · ${nameOf(state.selected)}</p>` : "";
     const leading = state.reportMode === "history"
       ? `<button class="icon-hit" id="history-back">${t("back")}</button>`
-      : `<button class="tiny" id="toggle-options" aria-expanded="${state.options}">${t("display")}</button>`;
-    const trailing = state.reportMode === "history"
-      ? `<button class="tiny" id="toggle-options">${t("display")}</button>`
-      : `<button class="icon-hit" id="report-exit">${t("exit")}</button>`;
-    app.innerHTML = `<section class="page ${state.options ? "options-open" : ""}" id="workout.report" data-mode="${state.reportMode}">
-      <div class="fixed-top"><div class="topbar">${leading}<h2>${t("report")}</h2>${trailing}</div>${displayRow}</div>
-      <div class="page-scroll"><p class="banner">${t("demo")}. ${t("demoLong")}</p>
-      <div class="stage" id="stage-host"><div class="stage-tools"><div class="facing"><button class="tiny" data-face="front" aria-pressed="${state.facing === "front"}">${t("front")}</button><button class="tiny" data-face="back" aria-pressed="${state.facing === "back"}">${t("rear")}</button></div></div></div>
-      <div class="legend">${legendSwatches()}</div><p class="note">${t("fixed")} ${t("notFatigue")}</p><p class="note">${state.reportMode === "history" ? t("historyNote") : t("finishNote")}</p>
-      ${state.planDecision && state.reportMode === "finish" ? `<p class="note">${state.planDecision === "saved" ? t("savedNote") : t("skippedNote")}</p>` : ""}${untouched}
-      <main><article class="summary" id="report-summary" data-session-kg="${model.sessionKg}" data-work="${model.work}" data-rest="${model.rest}" data-missing="${model.missing}" data-share-sum="${model.groups.reduce((sum, group) => sum + group.share, 0)}">
-        <strong>${t("summaryTitle")}</strong>
-        <p>${t("loaded")} ${model.sessionKg} ${t("kgUnit")} · ${t("work")} ${clock(model.work)}${model.missing ? " · " + t("partial") : ""} · ${t("rest")} ${clock(model.rest)}</p>
-        <p>${t("shareNote")}</p><p>${t("cardioNote")}</p></article>
+      : `<button class="tiny" id="open-contract">${t("info")}</button>`;
+    const trailing = `<button class="icon-hit" id="report-exit">${t("exit")}</button>`;
+    app.innerHTML = `<section class="page" id="workout.report" data-mode="${state.reportMode}">
+      <div class="fixed-top"><div class="topbar">${leading}<h2>${t("report")}</h2>${state.reportMode === "history" ? `<button class="tiny" id="open-contract">${t("info")}</button>` : trailing}</div>${displayRow}</div>
+      <div class="page-scroll">${untouched}
+      <div class="stage" id="stage-host"><span class="demo-badge">${t("demoMark")}</span><div class="stage-tools"><div class="facing"><button class="tiny" data-face="front" aria-pressed="${state.facing === "front"}">${t("front")}</button><button class="tiny" data-face="back" aria-pressed="${state.facing === "back"}">${t("rear")}</button></div></div></div>
+      <div class="legend">${legendSwatches()}</div>
+      <div class="stats" id="report-summary" data-session-kg="${model.sessionKg}" data-work="${model.work}" data-rest="${model.rest}" data-missing="${model.missing}" data-sets="${model.setCount}" data-share-sum="${model.groups.reduce((sum, group) => sum + group.share, 0)}">
+        <div><b>${clock(model.work)}</b><span>${t("work")}${model.missing ? " · " + t("partialShort") : ""}</span></div>
+        <div><b>${model.setCount}</b><span>${t("setsUnit")}</span></div>
+        <div><b>${model.sessionKg}</b><span>${t("kgUnit")}</span></div>
+      </div>
       ${model.groups.map(groupHtml).join("")}
-      <p class="kicker">${t("oldKicker")}</p>
-      <div class="quiet"><button id="open-duration">${t("duration")}<span class="spacer"></span>›</button><button id="open-heart">${t("heart")}<span class="spacer"></span>›</button><button id="open-contract">${t("contract")}<span class="spacer"></span>›</button></div>
-      </main></div>
+      <div class="quiet"><button id="open-duration">${t("duration")}<span class="spacer"></span>›</button><button id="open-heart">${t("heart")}<span class="spacer"></span>›</button></div>
+      </div>
       <div class="fixed-bottom"><button class="share" id="open-share">${t("share")}</button></div>
       </section>${sheetHtml()}`;
     mountStage("stage-host");
