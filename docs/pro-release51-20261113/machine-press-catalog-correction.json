@@ -1,0 +1,35 @@
+{
+  "id": "bench_press_machine",
+  "oldNames": {
+    "en": "Chest Press (Machine)",
+    "zh-Hans": "\u5367\u63a8\uff08\u5668\u68b0\uff09",
+    "zh-Hant": "\u81e5\u63a8\uff08\u5668\u68b0\uff09",
+    "ja": "\u30c1\u30a7\u30b9\u30c8\u30d7\u30ec\u30b9 (\u30de\u30b7\u30f3 \u00b7 \u6a5f\u68b0)",
+    "ko": "\uac00\uc2b4 \uc555\ubc15 (\uba38\uc2e0)",
+    "es": "Chest Press (M\u00e1quina)",
+    "fr": "Presse thoracique (Machine)",
+    "de": "Brustpresse (Maschine)",
+    "it": "Chest Press (Macchina)",
+    "pt-BR": "Prensa do t\u00f3rax (M\u00e1quina)",
+    "ru": "\u0427\u0435\u0441\u0442-\u043f\u0440\u0435\u0441\u0441 (\u0422\u0440\u0435\u043d\u0430\u0436\u0451\u0440 \u00b7 \u043c\u0430\u0448\u0438\u043d\u0430)",
+    "ar": "Chest Press (\u062c\u0647\u0627\u0632)"
+  },
+  "newNames": {
+    "en": "Chest Press (Machine)",
+    "zh-Hans": "\u63a8\u80f8\uff08\u5668\u68b0\uff09",
+    "zh-Hant": "\u63a8\u80f8\uff08\u5668\u68b0\uff09",
+    "ja": "\u30c1\u30a7\u30b9\u30c8\u30d7\u30ec\u30b9 (\u30de\u30b7\u30f3 \u00b7 \u6a5f\u68b0)",
+    "ko": "\uac00\uc2b4 \uc555\ubc15 (\uba38\uc2e0)",
+    "es": "Chest Press (M\u00e1quina)",
+    "fr": "Presse thoracique (Machine)",
+    "de": "Brustpresse (Maschine)",
+    "it": "Chest Press (Macchina)",
+    "pt-BR": "Prensa do t\u00f3rax (M\u00e1quina)",
+    "ru": "\u0427\u0435\u0441\u0442-\u043f\u0440\u0435\u0441\u0441 (\u0422\u0440\u0435\u043d\u0430\u0436\u0451\u0440 \u00b7 \u043c\u0430\u0448\u0438\u043d\u0430)",
+    "ar": "Chest Press (\u062c\u0647\u0627\u0632)"
+  },
+  "baseChangedOnlyChinese": true,
+  "identityAndMediaUnchanged": true,
+  "mediaSHA256": "b3eb7903fa405a51497ef691dc8f4dfb896b37f99015f80c6ad3819a519f510e",
+  "reason": "Actual catalog full Chinese name said lying bench press while English name and seat-adjusted forward-press instructions identify seated machine chest press; preserve ID/history/media/old search aliases."
+}

@@ -1,0 +1,38 @@
+{
+  "changedExerciseIDs": [
+    "bench_press_machine"
+  ],
+  "sameExerciseCount": true,
+  "testSourceUnchanged": true,
+  "preexistingMilitaryRows": {
+    "military_press": {
+      "en": "Overhead Press (Barbell · Military)",
+      "zh-Hans": "军举（杠铃 · 军式）",
+      "zh-Hant": "軍舉（槓鈴 · 軍式）",
+      "ja": "オーバーヘッドプレス (バーベル · ミリタリー)",
+      "ko": "채용정보 (바벨 · 밀리터리)",
+      "es": "Overhead Press (Barra · Militar)",
+      "fr": "Presse directe (Barre · Militaire)",
+      "de": "Overhead Press (Langhantel · Military)",
+      "it": "Stampa sopraelevata (Bilanciere · Military)",
+      "pt-BR": "Imprensa Overhead (Barra · Militar)",
+      "ru": "Официальная пресса (Штанга · Армейский)",
+      "ar": "Overhead Press (بار · عسكري)"
+    },
+    "overhead_press_barbell": {
+      "en": "Overhead Press (Barbell)",
+      "zh-Hans": "推举（杠铃）",
+      "zh-Hant": "推舉（槓鈴）",
+      "ja": "オーバーヘッドプレス (バーベル)",
+      "ko": "채용정보 (바벨)",
+      "es": "Overhead Press (Barra)",
+      "fr": "Presse directe (Barre)",
+      "de": "Overhead Press (Langhantel)",
+      "it": "Stampa sopraelevata (Bilanciere)",
+      "pt-BR": "Imprensa Overhead (Barra)",
+      "ru": "Официальная пресса (Штанга)",
+      "ar": "Overhead Press (بار)"
+    }
+  },
+  "finding": "26 scoped tests:25 passed;existing collision test assumes military/ordinary displayName equal, but baseline names already differ. No fix to unrelated exercise names/test."
+}

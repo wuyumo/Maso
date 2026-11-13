@@ -1,0 +1,105 @@
+{
+  "recordedAt": "2026-11-13T09:51:43.544527+08:00",
+  "marketingVersion": "3.0.2",
+  "build": "51",
+  "productSHA": "944b3afb8b66973cb53a67971cc8285806496821",
+  "testFollowupSHA": "d8ddfe52a2d1a47b680d2082e521010917c1cb6f",
+  "branch": "masso/pro-device-48",
+  "nativeSourceInputCount": 1021,
+  "sourceChangesSinceArchive": [],
+  "archive": "build/Masso-3.0.2-51.xcarchive",
+  "signatureDeepStrictValid": true,
+  "AppWatchWidgetVersionConsistent": true,
+  "releaseDebugMarkersAbsent": true,
+  "ipa": {
+    "time": "2026-11-13T09:40:49.976512+08:00",
+    "path": "build/export51/Maso.ipa",
+    "bytes": 38915305,
+    "SHA256": "fa50e1c30ecbee0964190549697950983e5d6237fb73d6be61000bd777b902a3",
+    "version": "3.0.2",
+    "build": "51",
+    "bundleIDs": [
+      "com.yumowu.maso.widgets",
+      "com.yumowu.maso.watchkitapp",
+      "com.yumowu.maso"
+    ],
+    "exportSucceeded": true,
+    "uploaded": false
+  },
+  "officialValidation": {
+    "time": "2026-11-13T09:42:16.857822+08:00",
+    "action": "validate",
+    "exitCode": 0,
+    "version": "3.0.2",
+    "build": "51",
+    "ipaSHA256": "fa50e1c30ecbee0964190549697950983e5d6237fb73d6be61000bd777b902a3",
+    "reviewAssociationChanged": false,
+    "reviewSubmitted": false
+  },
+  "officialUpload": {
+    "time": "2026-11-13T09:44:56.017805+08:00",
+    "action": "upload",
+    "exitCode": 0,
+    "version": "3.0.2",
+    "build": "51",
+    "ipaSHA256": "fa50e1c30ecbee0964190549697950983e5d6237fb73d6be61000bd777b902a3",
+    "reviewAssociationChanged": false,
+    "reviewSubmitted": false
+  },
+  "deliveryUUID": "fe81cb70-ae76-45b7-bc87-f91312b22beb",
+  "AppleProcessing": {
+    "lastCheck": "2026-11-13T09:50:39.328236+08:00",
+    "state": "NOT_YET_VISIBLE",
+    "buildID": null,
+    "notVisibleDoesNotMeanFailed": true,
+    "mustNotDuplicateUpload": true
+  },
+  "physical17Pro": {
+    "time": "2026-11-13T09:42:50.813647+08:00",
+    "launchReceiptTime": "2026-11-13T09:40:11.595954+08:00",
+    "version": "3.0.2",
+    "build": "51",
+    "connection": "localNetwork",
+    "deviceHardware": "iPhone18,1 / iPhone17Pro",
+    "deviceDisplayNameMayBeRenamed": true,
+    "installOutcome": "success",
+    "launchOutcome": "success",
+    "processID": 12508,
+    "sameArchiveDeveloperSignedApp": true,
+    "uninstalled": false,
+    "containerCleared": false,
+    "resigned": false,
+    "privateTrainingDataRead": false
+  },
+  "tests": {
+    "acceptedDistinctNativeMethods": 8,
+    "acceptedMethodExecutionsAcrossScopedReruns": 11,
+    "catalogUnitPassed": 25,
+    "catalogUnitFailed": 1,
+    "catalogFailure": "Pre-existing assumption that military/ordinary overhead-press display names equal; baseline already differs. Source proof retained.",
+    "liveProductionTextGenerationsSucceeded": 1,
+    "liveWholeEndToEndPassed": false,
+    "liveTestFailure": "Obsolete start selector after successful one-card generation; selector fixed, non-generating recovery skipped because App not running. No second call.",
+    "liveRecoverySkipped": 1,
+    "realPurchasePerformed": false
+  },
+  "storePosters": {
+    "renderedByThisExecutor": 0,
+    "listingApplied": false,
+    "parentParallelLineMustBeMerged": true,
+    "original43ScreensUntouched": true
+  },
+  "metadata12Draft": "store-metadata12-candidate51.json",
+  "metadataApplied": false,
+  "formalReviewAssociated": false,
+  "reviewSubmitted": false,
+  "published43": {
+    "version": "3.0.1",
+    "state": "READY_FOR_SALE",
+    "buildID": "940991af-478a-4ed0-b22e-b71a7205f3c3",
+    "changedByThisTask": false
+  },
+  "productionBackendPortalAdsDeployed": false,
+  "blocked8838OrVercel403Bypassed": false,
+  "paidTaskCapsEnabled": false
+}
