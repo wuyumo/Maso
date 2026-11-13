@@ -45,9 +45,9 @@ export const CANDIDATE_PLAN_CSS = `
   overflow: hidden;
 }
 #candidate-poster[data-candidate-plan-device="low-angle-split"] [data-plan-variant="A"] [data-chat-plan] {
-  /* One full card + one gap + half the next card fill the track content width. */
-  flex: 0 0 calc((100% - var(--candidate-plan-gap)) / 1.5) !important;
-  width: calc((100% - var(--candidate-plan-gap)) / 1.5) !important;
+  /* One full card + one gap + 80% of the next card fill the track content width. */
+  flex: 0 0 calc((100% - var(--candidate-plan-gap)) / 1.8) !important;
+  width: calc((100% - var(--candidate-plan-gap)) / 1.8) !important;
   min-width: 0 !important;
   max-width: none !important;
   box-sizing: border-box;
