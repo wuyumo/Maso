@@ -355,9 +355,11 @@ struct ExerciseLibraryUITestHost: View {
                 Text(String(pickedIDs.count)).accessibilityIdentifier("exercise.ui-test.selection-count")
                 Text(pickedIDs.last ?? "none").accessibilityIdentifier("exercise.ui-test.selection-id")
                 Text(String(dismissalCount)).accessibilityIdentifier("exercise.ui-test.dismissal-count")
-                Text(String(session.endCount)).accessibilityIdentifier("exercise.ui-test.session-end-count")
-                Text(session.session == nil ? "none" : (session.session?.completed == true ? "completed" : "live"))
-                    .accessibilityIdentifier("exercise.ui-test.session-liveness")
+                if scene != "session-report-history" {
+                    Text(String(session.endCount)).accessibilityIdentifier("exercise.ui-test.session-end-count")
+                    Text(session.session == nil ? "none" : (session.session?.completed == true ? "completed" : "live"))
+                        .accessibilityIdentifier("exercise.ui-test.session-liveness")
+                }
                 Button("Open exercise scene") { presented = true }
                     .accessibilityIdentifier("exercise.ui-test.open")
             }

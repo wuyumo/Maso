@@ -1523,12 +1523,8 @@ struct WorkoutReportView: View {
         switch scope {
         case .duration:
             durationReportCard
-                .accessibilityElement(children: .contain)
-                .accessibilityIdentifier("workout.sessionReport.durationTable")
         case .heart:
             heartReportCard
-                .accessibilityElement(children: .contain)
-                .accessibilityIdentifier("workout.sessionReport.heartTableBody")
         case .page:
             reportPage
         }

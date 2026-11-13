@@ -143,20 +143,24 @@ struct WorkoutSessionReportScreen: View {
                 if durationExpanded {
                     WorkoutReportView(records: records, workoutName: workoutName, scope: .duration)
                         .padding(.bottom, MasoMetrics.rowPaddingV)
+                        .accessibilityElement(children: .contain)
+                        .accessibilityIdentifier("workout.sessionReport.durationTable")
                 }
             } label: {
                 Text("Exercise duration").font(.body).frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
+                    .accessibilityIdentifier("workout.sessionReport.duration")
             }
-            .accessibilityIdentifier("workout.sessionReport.duration")
             DisclosureGroup(isExpanded: $heartExpanded) {
                 if heartExpanded {
                     WorkoutReportView(records: records, workoutName: workoutName, scope: .heart)
                         .padding(.bottom, MasoMetrics.rowPaddingV)
+                        .accessibilityElement(children: .contain)
+                        .accessibilityIdentifier("workout.sessionReport.heartTableBody")
                 }
             } label: {
                 Text("Exercises and heart rate").font(.body).frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
+                    .accessibilityIdentifier("workout.sessionReport.heartTable")
             }
-            .accessibilityIdentifier("workout.sessionReport.heartTable")
         }
         .padding(.horizontal, MasoMetrics.rowPaddingH)
         .background(MasoColor.surface, in: RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
@@ -622,6 +626,15 @@ private struct ShareImageBox: Identifiable {
     let image: UIImage
 }
 
+/// The presenting cover's Dynamic Type does not cross into a sheet.
+private struct ReportSheetDynamicType: ViewModifier {
+    @Environment(\.dynamicTypeSize) private var current
+    func body(content: Content) -> some View {
+        let size: DynamicTypeSize = ProcessInfo.processInfo.environment["MASO_TEST_LARGE_TYPE"] == "1" ? .accessibility3 : current
+        content.environment(\.dynamicTypeSize, size)
+    }
+}
+
 extension View {
     /// Large native sheet used by both the finished-workout and history report.
     func sessionReportSheetChrome() -> some View {
@@ -631,6 +644,7 @@ extension View {
             .presentationBackground(MasoColor.background)
             .preferredColorScheme(.dark)
             .toolbarColorScheme(.dark, for: .navigationBar)
+            .modifier(ReportSheetDynamicType())
     }
 }
 
