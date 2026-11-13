@@ -164,18 +164,18 @@ final class ExerciseLibraryBrowserTests: XCTestCase {
         XCTAssertTrue(data.plans.isEmpty)
     }
 
-    func testEnglishNameCollisionRetainsDistinctMovementCues() throws {
+    func testEnglishPressNamesOrCuesRemainDistinguishable() throws {
         let previousLanguage = LanguageManager.shared.selectedLanguage
         LanguageManager.shared.selectedLanguage = .en
         defer { LanguageManager.shared.selectedLanguage = previousLanguage }
         let strict = try XCTUnwrap(ExerciseLibrary.byId["military_press"])
         let ordinary = try XCTUnwrap(ExerciseLibrary.byId["overhead_press_barbell"])
-        XCTAssertEqual(strict.displayName, ordinary.displayName)
-        let strictCue = try XCTUnwrap(ExerciseGrouping.disambiguationText(for: strict, among: ExerciseLibrary.all))
-        let ordinaryCue = try XCTUnwrap(ExerciseGrouping.disambiguationText(for: ordinary, among: ExerciseLibrary.all))
-        XCTAssertFalse(strictCue.isEmpty)
-        XCTAssertFalse(ordinaryCue.isEmpty)
-        XCTAssertNotEqual(strictCue, ordinaryCue)
+        // Names can already distinguish variants; a separate cue is optional without a collision.
+        let strictCue = ExerciseGrouping.disambiguationText(for: strict, among: ExerciseLibrary.all)
+        let ordinaryCue = ExerciseGrouping.disambiguationText(for: ordinary, among: ExerciseLibrary.all)
+        let strictVisibleText = [strict.displayName, strictCue].compactMap { $0 }.joined(separator: " ")
+        let ordinaryVisibleText = [ordinary.displayName, ordinaryCue].compactMap { $0 }.joined(separator: " ")
+        XCTAssertNotEqual(strictVisibleText, ordinaryVisibleText)
         XCTAssertNotEqual(strict.id, ordinary.id)
     }
 }

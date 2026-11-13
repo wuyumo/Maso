@@ -1,0 +1,1 @@
+{"batch":"native-100741","accepted":false,"finding":"zh-Hans and zh-Hant exercise frames are blank; byte-equality alone mistakenly treated the initial blank frame as ready. English and rest views readable but whole batch superseded. No originals changed or silently accepted."}
