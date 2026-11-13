@@ -178,7 +178,7 @@ export default function RenderPage() {
   return (
     <>
     <aside style={{position:"fixed",right:8,top:8,zIndex:99999,maxWidth:330,padding:12,background:"#fff",color:"#111",fontFamily:"system-ui",fontSize:14,border:"2px solid #a50"}}>
-      <strong>PRO CANDIDATE / 未验收，未上传</strong>
+      <strong>截图候选 / 未验收，未上传</strong>
       <p>文案候选；内屏保留43演示素材。03待真实重截。原工程与latest不会被此入口写入。</p>
       <div>{["plan","recovery","training","diet","devices"].map((id,i)=><a key={id} style={{marginRight:10}} href={`?device=${target.device}&slide=${id}&locale=${target.locale}`}>{i+1}</a>)}</div>
       <p><a href={`?device=${target.device}&slide=${target.slide}&locale=zh`}>中文</a> · <a href={`?device=${target.device}&slide=${target.slide}&locale=en`}>English</a></p>

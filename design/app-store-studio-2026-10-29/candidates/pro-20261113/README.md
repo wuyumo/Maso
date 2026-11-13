@@ -35,8 +35,11 @@ Only 22 recovery leaves now differ from canonical; all transforms/chat/native as
 03: `slidesByDevice.iphone[2].screenshot` is `/screenshots/localized/iphone/{locale}/player-heart-warning.png`; its actual native exercise label/media must be verified before any asset replacement. Phone/watch heart-rate values live inside native captures, not editable caption fields. Never paint over them. DeviceShowcase uses its own capture mapping for other families; obtain genuine corrected source before updating those references.
 
 ## Validation / limitations
-`node candidates/pro-20261113/test-isolation.cjs`:14checks pass; tests invoke handlers directly with no network. Generated synthetic test PNG exists only in a temporary sandbox removed after the test; it is not a poster or candidate export.
+`node candidates/pro-20261113/test-isolation.cjs`:15checks pass; tests invoke handlers directly with no network. Generated synthetic test PNG exists only in a temporary sandbox removed after the test; it is not a poster or candidate export.
 Tests: readonly candidate GET, output containment, RGB/no-alpha, exact dimensions, rejection of path traversal/wrong family/size/locale/page, no canonical writes, TSX syntax.
 Source-only TypeScript checking has3pre-existing `iphone-medium` missing-record errors in constants/defaults; no candidate-source errors. Full tsc also encounters generated `.next` route-type synchronization errors. A full green build/browser acceptance is NOT claimed.
 
 The broader pre-existing studio directory was untracked at task start. Only these6task-owned candidate files are intended for this change; do not bulk-stage the rest of studio, its assets, exports, or unrelated native work.
+
+## t320/t321 full marketing-copy audit
+`marketing-audit.json` lists24removed locale sentences,264source-mapped variants, no additional added marketing Pro/unlock/free-limit prompts, and explicit pixel-review limits. The preview workflow card now says “截图候选”, not “PRO CANDIDATE”; this card is never exported. Proper hardware names/in-app native pixels are not erased.

@@ -1,0 +1,3728 @@
+{
+  "auditedAt": "2026-11-13T09:45:02.292927+08:00",
+  "principle": "App Store marketing presents feature benefits, not extra Pro unlock/free-limit prompts. Preserve accurate estimates and authentic in-app badges/disclosures.",
+  "removed": [
+    {
+      "locale": "zh",
+      "path": "/slidesByDevice/iphone/0/textElements/0/text/zh",
+      "before": "也听你要的天数、时长和重点。 部分 AI 服务需 Pro。",
+      "after": "也听你要的天数、时长和重点。",
+      "deleted": " 部分 AI 服务需 Pro。",
+      "page": "01-plan",
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ],
+      "type": "REMOVED_ADDED_MARKETING_PRO_QUALIFIER"
+    },
+    {
+      "locale": "zh-Hant",
+      "path": "/slidesByDevice/iphone/0/textElements/0/text/zh-Hant",
+      "before": "也聽你要的天數、時長和重點。 部分 AI 服務需 Pro。",
+      "after": "也聽你要的天數、時長和重點。",
+      "deleted": " 部分 AI 服務需 Pro。",
+      "page": "01-plan",
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ],
+      "type": "REMOVED_ADDED_MARKETING_PRO_QUALIFIER"
+    },
+    {
+      "locale": "en",
+      "path": "/slidesByDevice/iphone/0/textElements/0/text/en",
+      "before": "Also the days, length, and focus you want. Some AI services require Pro.",
+      "after": "Also the days, length, and focus you want.",
+      "deleted": " Some AI services require Pro.",
+      "page": "01-plan",
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ],
+      "type": "REMOVED_ADDED_MARKETING_PRO_QUALIFIER"
+    },
+    {
+      "locale": "ja",
+      "path": "/slidesByDevice/iphone/0/textElements/0/text/ja",
+      "before": "日数・時間・重点も、希望どおり。 一部のAI機能にはProが必要です。",
+      "after": "日数・時間・重点も、希望どおり。",
+      "deleted": " 一部のAI機能にはProが必要です。",
+      "page": "01-plan",
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ],
+      "type": "REMOVED_ADDED_MARKETING_PRO_QUALIFIER"
+    },
+    {
+      "locale": "ko",
+      "path": "/slidesByDevice/iphone/0/textElements/0/text/ko",
+      "before": "일수, 시간, 중점도 원하는 대로. 일부 AI 기능은 Pro가 필요합니다.",
+      "after": "일수, 시간, 중점도 원하는 대로.",
+      "deleted": " 일부 AI 기능은 Pro가 필요합니다.",
+      "page": "01-plan",
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ],
+      "type": "REMOVED_ADDED_MARKETING_PRO_QUALIFIER"
+    },
+    {
+      "locale": "es",
+      "path": "/slidesByDevice/iphone/0/textElements/0/text/es",
+      "before": "También los días, la duración y el foco. Algunos servicios de IA requieren Pro.",
+      "after": "También los días, la duración y el foco.",
+      "deleted": " Algunos servicios de IA requieren Pro.",
+      "page": "01-plan",
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ],
+      "type": "REMOVED_ADDED_MARKETING_PRO_QUALIFIER"
+    },
+    {
+      "locale": "fr",
+      "path": "/slidesByDevice/iphone/0/textElements/0/text/fr",
+      "before": "Aussi les jours, la durée et le focus. Certains services IA nécessitent Pro.",
+      "after": "Aussi les jours, la durée et le focus.",
+      "deleted": " Certains services IA nécessitent Pro.",
+      "page": "01-plan",
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ],
+      "type": "REMOVED_ADDED_MARKETING_PRO_QUALIFIER"
+    },
+    {
+      "locale": "de",
+      "path": "/slidesByDevice/iphone/0/textElements/0/text/de",
+      "before": "Auch Tage, Dauer und Fokus. Einige KI-Dienste erfordern Pro.",
+      "after": "Auch Tage, Dauer und Fokus.",
+      "deleted": " Einige KI-Dienste erfordern Pro.",
+      "page": "01-plan",
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ],
+      "type": "REMOVED_ADDED_MARKETING_PRO_QUALIFIER"
+    },
+    {
+      "locale": "it",
+      "path": "/slidesByDevice/iphone/0/textElements/0/text/it",
+      "before": "Anche i giorni, la durata e il focus. Alcuni servizi IA richiedono Pro.",
+      "after": "Anche i giorni, la durata e il focus.",
+      "deleted": " Alcuni servizi IA richiedono Pro.",
+      "page": "01-plan",
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ],
+      "type": "REMOVED_ADDED_MARKETING_PRO_QUALIFIER"
+    },
+    {
+      "locale": "pt-BR",
+      "path": "/slidesByDevice/iphone/0/textElements/0/text/pt-BR",
+      "before": "Também os dias, a duração e o foco. Alguns serviços de IA exigem Pro.",
+      "after": "Também os dias, a duração e o foco.",
+      "deleted": " Alguns serviços de IA exigem Pro.",
+      "page": "01-plan",
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ],
+      "type": "REMOVED_ADDED_MARKETING_PRO_QUALIFIER"
+    },
+    {
+      "locale": "ru",
+      "path": "/slidesByDevice/iphone/0/textElements/0/text/ru",
+      "before": "Ещё дни, длительность и акцент. Для части ИИ-сервисов нужен Pro.",
+      "after": "Ещё дни, длительность и акцент.",
+      "deleted": " Для части ИИ-сервисов нужен Pro.",
+      "page": "01-plan",
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ],
+      "type": "REMOVED_ADDED_MARKETING_PRO_QUALIFIER"
+    },
+    {
+      "locale": "ar",
+      "path": "/slidesByDevice/iphone/0/textElements/0/text/ar",
+      "before": "وأيضًا الأيام والمدة والتركيز. تتطلب بعض خدمات الذكاء الاصطناعي ⁦Pro⁩.",
+      "after": "وأيضًا الأيام والمدة والتركيز.",
+      "deleted": " تتطلب بعض خدمات الذكاء الاصطناعي ⁦Pro⁩.",
+      "page": "01-plan",
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ],
+      "type": "REMOVED_ADDED_MARKETING_PRO_QUALIFIER"
+    },
+    {
+      "locale": "zh",
+      "path": "/slidesByDevice/iphone/1/textElements/0/text/zh",
+      "before": "3D 肌肉图，按部位显示。精细恢复估算需 Pro。",
+      "after": "3D 肌肉图，按部位显示。",
+      "deleted": "精细恢复估算需 Pro。",
+      "page": "02-recovery",
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ],
+      "type": "REMOVED_ADDED_MARKETING_PRO_QUALIFIER"
+    },
+    {
+      "locale": "zh-Hant",
+      "path": "/slidesByDevice/iphone/1/textElements/0/text/zh-Hant",
+      "before": "3D 肌肉圖，按部位顯示。精細恢復估算需 Pro。",
+      "after": "3D 肌肉圖，按部位顯示。",
+      "deleted": "精細恢復估算需 Pro。",
+      "page": "02-recovery",
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ],
+      "type": "REMOVED_ADDED_MARKETING_PRO_QUALIFIER"
+    },
+    {
+      "locale": "en",
+      "path": "/slidesByDevice/iphone/1/textElements/0/text/en",
+      "before": "A 3D muscle map. Detailed recovery estimates require Pro.",
+      "after": "A 3D muscle map.",
+      "deleted": " Detailed recovery estimates require Pro.",
+      "page": "02-recovery",
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ],
+      "type": "REMOVED_ADDED_MARKETING_PRO_QUALIFIER"
+    },
+    {
+      "locale": "ja",
+      "path": "/slidesByDevice/iphone/1/textElements/0/text/ja",
+      "before": "部位ごとの3Dマップ。詳細な回復推定はProで。",
+      "after": "部位ごとの3Dマップ。",
+      "deleted": "詳細な回復推定はProで。",
+      "page": "02-recovery",
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ],
+      "type": "REMOVED_ADDED_MARKETING_PRO_QUALIFIER"
+    },
+    {
+      "locale": "ko",
+      "path": "/slidesByDevice/iphone/1/textElements/0/text/ko",
+      "before": "부위별 3D 지도. 상세 회복 추정치는 Pro로.",
+      "after": "부위별 3D 지도.",
+      "deleted": " 상세 회복 추정치는 Pro로.",
+      "page": "02-recovery",
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ],
+      "type": "REMOVED_ADDED_MARKETING_PRO_QUALIFIER"
+    },
+    {
+      "locale": "es",
+      "path": "/slidesByDevice/iphone/1/textElements/0/text/es",
+      "before": "Mapa muscular 3D. Las estimaciones detalladas requieren Pro.",
+      "after": "Mapa muscular 3D.",
+      "deleted": " Las estimaciones detalladas requieren Pro.",
+      "page": "02-recovery",
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ],
+      "type": "REMOVED_ADDED_MARKETING_PRO_QUALIFIER"
+    },
+    {
+      "locale": "fr",
+      "path": "/slidesByDevice/iphone/1/textElements/0/text/fr",
+      "before": "Carte musculaire 3D. Les estimations détaillées nécessitent Pro.",
+      "after": "Carte musculaire 3D.",
+      "deleted": " Les estimations détaillées nécessitent Pro.",
+      "page": "02-recovery",
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ],
+      "type": "REMOVED_ADDED_MARKETING_PRO_QUALIFIER"
+    },
+    {
+      "locale": "de",
+      "path": "/slidesByDevice/iphone/1/textElements/0/text/de",
+      "before": "3D-Muskelkarte. Detaillierte Erholungsschätzungen mit Pro.",
+      "after": "3D-Muskelkarte.",
+      "deleted": " Detaillierte Erholungsschätzungen mit Pro.",
+      "page": "02-recovery",
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ],
+      "type": "REMOVED_ADDED_MARKETING_PRO_QUALIFIER"
+    },
+    {
+      "locale": "it",
+      "path": "/slidesByDevice/iphone/1/textElements/0/text/it",
+      "before": "Mappa muscolare 3D. Le stime dettagliate richiedono Pro.",
+      "after": "Mappa muscolare 3D.",
+      "deleted": " Le stime dettagliate richiedono Pro.",
+      "page": "02-recovery",
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ],
+      "type": "REMOVED_ADDED_MARKETING_PRO_QUALIFIER"
+    },
+    {
+      "locale": "pt-BR",
+      "path": "/slidesByDevice/iphone/1/textElements/0/text/pt-BR",
+      "before": "Mapa muscular 3D. Estimativas detalhadas exigem Pro.",
+      "after": "Mapa muscular 3D.",
+      "deleted": " Estimativas detalhadas exigem Pro.",
+      "page": "02-recovery",
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ],
+      "type": "REMOVED_ADDED_MARKETING_PRO_QUALIFIER"
+    },
+    {
+      "locale": "ru",
+      "path": "/slidesByDevice/iphone/1/textElements/0/text/ru",
+      "before": "3D-карта мышц. Подробные оценки восстановления — с Pro.",
+      "after": "3D-карта мышц.",
+      "deleted": " Подробные оценки восстановления — с Pro.",
+      "page": "02-recovery",
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ],
+      "type": "REMOVED_ADDED_MARKETING_PRO_QUALIFIER"
+    },
+    {
+      "locale": "ar",
+      "path": "/slidesByDevice/iphone/1/textElements/0/text/ar",
+      "before": "خريطة عضلية ثلاثية الأبعاد. التقديرات المفصلة تتطلب ⁦Pro⁩.",
+      "after": "خريطة عضلية ثلاثية الأبعاد.",
+      "deleted": " التقديرات المفصلة تتطلب ⁦Pro⁩.",
+      "page": "02-recovery",
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ],
+      "type": "REMOVED_ADDED_MARKETING_PRO_QUALIFIER"
+    }
+  ],
+  "additionalMarketingPromptsFound": 0,
+  "workflowLabelNeutralized": {
+    "source": "src/app/pro-candidate-20261113/page.tsx aside/strong",
+    "before": "PRO CANDIDATE / 未验收，未上传",
+    "after": "截图候选 / 未验收，未上传",
+    "includedInExport": false,
+    "reason": "Neutral workflow label, not a marketing upsell; removed Pro wording to avoid preview confusion."
+  },
+  "retainedProperNames": [
+    "iPad Pro in device-frame source comments; hardware name, not a Pro upsell"
+  ],
+  "retainedRecoveryEstimation": true,
+  "coverage": [
+    {
+      "device": "iphone",
+      "size": "1320x2868",
+      "locale": "zh",
+      "page": "01-plan",
+      "sourceFields": [
+        "/slidesByDevice/iphone/0/label/zh",
+        "/slidesByDevice/iphone/0/headline/zh",
+        "/slidesByDevice/iphone/0/textElements/0/text/zh"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone",
+      "size": "1320x2868",
+      "locale": "zh",
+      "page": "02-recovery",
+      "sourceFields": [
+        "/slidesByDevice/iphone/1/label/zh",
+        "/slidesByDevice/iphone/1/headline/zh",
+        "/slidesByDevice/iphone/1/textElements/0/text/zh"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone",
+      "size": "1320x2868",
+      "locale": "zh",
+      "page": "03-training",
+      "sourceFields": [
+        "/slidesByDevice/iphone/2/label/zh",
+        "/slidesByDevice/iphone/2/headline/zh",
+        "/slidesByDevice/iphone/2/textElements/0/text/zh"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone",
+      "size": "1320x2868",
+      "locale": "zh",
+      "page": "04-diet",
+      "sourceFields": [
+        "/slidesByDevice/iphone/3/label/zh",
+        "/slidesByDevice/iphone/3/headline/zh",
+        "/slidesByDevice/iphone/3/textElements/0/text/zh"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone",
+      "size": "1320x2868",
+      "locale": "zh",
+      "page": "05-devices",
+      "sourceFields": [
+        "/slidesByDevice/iphone/4/label/zh",
+        "/slidesByDevice/iphone/4/headline/zh",
+        "/slidesByDevice/iphone/4/textElements/0/text/zh"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone",
+      "size": "1320x2868",
+      "locale": "zh-Hant",
+      "page": "01-plan",
+      "sourceFields": [
+        "/slidesByDevice/iphone/0/label/zh-Hant",
+        "/slidesByDevice/iphone/0/headline/zh-Hant",
+        "/slidesByDevice/iphone/0/textElements/0/text/zh-Hant"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone",
+      "size": "1320x2868",
+      "locale": "zh-Hant",
+      "page": "02-recovery",
+      "sourceFields": [
+        "/slidesByDevice/iphone/1/label/zh-Hant",
+        "/slidesByDevice/iphone/1/headline/zh-Hant",
+        "/slidesByDevice/iphone/1/textElements/0/text/zh-Hant"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone",
+      "size": "1320x2868",
+      "locale": "zh-Hant",
+      "page": "03-training",
+      "sourceFields": [
+        "/slidesByDevice/iphone/2/label/zh-Hant",
+        "/slidesByDevice/iphone/2/headline/zh-Hant",
+        "/slidesByDevice/iphone/2/textElements/0/text/zh-Hant"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone",
+      "size": "1320x2868",
+      "locale": "zh-Hant",
+      "page": "04-diet",
+      "sourceFields": [
+        "/slidesByDevice/iphone/3/label/zh-Hant",
+        "/slidesByDevice/iphone/3/headline/zh-Hant",
+        "/slidesByDevice/iphone/3/textElements/0/text/zh-Hant"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone",
+      "size": "1320x2868",
+      "locale": "zh-Hant",
+      "page": "05-devices",
+      "sourceFields": [
+        "/slidesByDevice/iphone/4/label/zh-Hant",
+        "/slidesByDevice/iphone/4/headline/zh-Hant",
+        "/slidesByDevice/iphone/4/textElements/0/text/zh-Hant"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone",
+      "size": "1320x2868",
+      "locale": "en",
+      "page": "01-plan",
+      "sourceFields": [
+        "/slidesByDevice/iphone/0/label/en",
+        "/slidesByDevice/iphone/0/headline/en",
+        "/slidesByDevice/iphone/0/textElements/0/text/en"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone",
+      "size": "1320x2868",
+      "locale": "en",
+      "page": "02-recovery",
+      "sourceFields": [
+        "/slidesByDevice/iphone/1/label/en",
+        "/slidesByDevice/iphone/1/headline/en",
+        "/slidesByDevice/iphone/1/textElements/0/text/en"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone",
+      "size": "1320x2868",
+      "locale": "en",
+      "page": "03-training",
+      "sourceFields": [
+        "/slidesByDevice/iphone/2/label/en",
+        "/slidesByDevice/iphone/2/headline/en",
+        "/slidesByDevice/iphone/2/textElements/0/text/en"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone",
+      "size": "1320x2868",
+      "locale": "en",
+      "page": "04-diet",
+      "sourceFields": [
+        "/slidesByDevice/iphone/3/label/en",
+        "/slidesByDevice/iphone/3/headline/en",
+        "/slidesByDevice/iphone/3/textElements/0/text/en"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone",
+      "size": "1320x2868",
+      "locale": "en",
+      "page": "05-devices",
+      "sourceFields": [
+        "/slidesByDevice/iphone/4/label/en",
+        "/slidesByDevice/iphone/4/headline/en",
+        "/slidesByDevice/iphone/4/textElements/0/text/en"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone",
+      "size": "1320x2868",
+      "locale": "ja",
+      "page": "01-plan",
+      "sourceFields": [
+        "/slidesByDevice/iphone/0/label/ja",
+        "/slidesByDevice/iphone/0/headline/ja",
+        "/slidesByDevice/iphone/0/textElements/0/text/ja"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone",
+      "size": "1320x2868",
+      "locale": "ja",
+      "page": "02-recovery",
+      "sourceFields": [
+        "/slidesByDevice/iphone/1/label/ja",
+        "/slidesByDevice/iphone/1/headline/ja",
+        "/slidesByDevice/iphone/1/textElements/0/text/ja"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone",
+      "size": "1320x2868",
+      "locale": "ja",
+      "page": "03-training",
+      "sourceFields": [
+        "/slidesByDevice/iphone/2/label/ja",
+        "/slidesByDevice/iphone/2/headline/ja",
+        "/slidesByDevice/iphone/2/textElements/0/text/ja"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone",
+      "size": "1320x2868",
+      "locale": "ja",
+      "page": "04-diet",
+      "sourceFields": [
+        "/slidesByDevice/iphone/3/label/ja",
+        "/slidesByDevice/iphone/3/headline/ja",
+        "/slidesByDevice/iphone/3/textElements/0/text/ja"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone",
+      "size": "1320x2868",
+      "locale": "ja",
+      "page": "05-devices",
+      "sourceFields": [
+        "/slidesByDevice/iphone/4/label/ja",
+        "/slidesByDevice/iphone/4/headline/ja",
+        "/slidesByDevice/iphone/4/textElements/0/text/ja"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone",
+      "size": "1320x2868",
+      "locale": "ko",
+      "page": "01-plan",
+      "sourceFields": [
+        "/slidesByDevice/iphone/0/label/ko",
+        "/slidesByDevice/iphone/0/headline/ko",
+        "/slidesByDevice/iphone/0/textElements/0/text/ko"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone",
+      "size": "1320x2868",
+      "locale": "ko",
+      "page": "02-recovery",
+      "sourceFields": [
+        "/slidesByDevice/iphone/1/label/ko",
+        "/slidesByDevice/iphone/1/headline/ko",
+        "/slidesByDevice/iphone/1/textElements/0/text/ko"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone",
+      "size": "1320x2868",
+      "locale": "ko",
+      "page": "03-training",
+      "sourceFields": [
+        "/slidesByDevice/iphone/2/label/ko",
+        "/slidesByDevice/iphone/2/headline/ko",
+        "/slidesByDevice/iphone/2/textElements/0/text/ko"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone",
+      "size": "1320x2868",
+      "locale": "ko",
+      "page": "04-diet",
+      "sourceFields": [
+        "/slidesByDevice/iphone/3/label/ko",
+        "/slidesByDevice/iphone/3/headline/ko",
+        "/slidesByDevice/iphone/3/textElements/0/text/ko"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone",
+      "size": "1320x2868",
+      "locale": "ko",
+      "page": "05-devices",
+      "sourceFields": [
+        "/slidesByDevice/iphone/4/label/ko",
+        "/slidesByDevice/iphone/4/headline/ko",
+        "/slidesByDevice/iphone/4/textElements/0/text/ko"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone",
+      "size": "1320x2868",
+      "locale": "es",
+      "page": "01-plan",
+      "sourceFields": [
+        "/slidesByDevice/iphone/0/label/es",
+        "/slidesByDevice/iphone/0/headline/es",
+        "/slidesByDevice/iphone/0/textElements/0/text/es"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone",
+      "size": "1320x2868",
+      "locale": "es",
+      "page": "02-recovery",
+      "sourceFields": [
+        "/slidesByDevice/iphone/1/label/es",
+        "/slidesByDevice/iphone/1/headline/es",
+        "/slidesByDevice/iphone/1/textElements/0/text/es"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone",
+      "size": "1320x2868",
+      "locale": "es",
+      "page": "03-training",
+      "sourceFields": [
+        "/slidesByDevice/iphone/2/label/es",
+        "/slidesByDevice/iphone/2/headline/es",
+        "/slidesByDevice/iphone/2/textElements/0/text/es"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone",
+      "size": "1320x2868",
+      "locale": "es",
+      "page": "04-diet",
+      "sourceFields": [
+        "/slidesByDevice/iphone/3/label/es",
+        "/slidesByDevice/iphone/3/headline/es",
+        "/slidesByDevice/iphone/3/textElements/0/text/es"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone",
+      "size": "1320x2868",
+      "locale": "es",
+      "page": "05-devices",
+      "sourceFields": [
+        "/slidesByDevice/iphone/4/label/es",
+        "/slidesByDevice/iphone/4/headline/es",
+        "/slidesByDevice/iphone/4/textElements/0/text/es"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone",
+      "size": "1320x2868",
+      "locale": "fr",
+      "page": "01-plan",
+      "sourceFields": [
+        "/slidesByDevice/iphone/0/label/fr",
+        "/slidesByDevice/iphone/0/headline/fr",
+        "/slidesByDevice/iphone/0/textElements/0/text/fr"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone",
+      "size": "1320x2868",
+      "locale": "fr",
+      "page": "02-recovery",
+      "sourceFields": [
+        "/slidesByDevice/iphone/1/label/fr",
+        "/slidesByDevice/iphone/1/headline/fr",
+        "/slidesByDevice/iphone/1/textElements/0/text/fr"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone",
+      "size": "1320x2868",
+      "locale": "fr",
+      "page": "03-training",
+      "sourceFields": [
+        "/slidesByDevice/iphone/2/label/fr",
+        "/slidesByDevice/iphone/2/headline/fr",
+        "/slidesByDevice/iphone/2/textElements/0/text/fr"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone",
+      "size": "1320x2868",
+      "locale": "fr",
+      "page": "04-diet",
+      "sourceFields": [
+        "/slidesByDevice/iphone/3/label/fr",
+        "/slidesByDevice/iphone/3/headline/fr",
+        "/slidesByDevice/iphone/3/textElements/0/text/fr"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone",
+      "size": "1320x2868",
+      "locale": "fr",
+      "page": "05-devices",
+      "sourceFields": [
+        "/slidesByDevice/iphone/4/label/fr",
+        "/slidesByDevice/iphone/4/headline/fr",
+        "/slidesByDevice/iphone/4/textElements/0/text/fr"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone",
+      "size": "1320x2868",
+      "locale": "de",
+      "page": "01-plan",
+      "sourceFields": [
+        "/slidesByDevice/iphone/0/label/de",
+        "/slidesByDevice/iphone/0/headline/de",
+        "/slidesByDevice/iphone/0/textElements/0/text/de"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone",
+      "size": "1320x2868",
+      "locale": "de",
+      "page": "02-recovery",
+      "sourceFields": [
+        "/slidesByDevice/iphone/1/label/de",
+        "/slidesByDevice/iphone/1/headline/de",
+        "/slidesByDevice/iphone/1/textElements/0/text/de"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone",
+      "size": "1320x2868",
+      "locale": "de",
+      "page": "03-training",
+      "sourceFields": [
+        "/slidesByDevice/iphone/2/label/de",
+        "/slidesByDevice/iphone/2/headline/de",
+        "/slidesByDevice/iphone/2/textElements/0/text/de"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone",
+      "size": "1320x2868",
+      "locale": "de",
+      "page": "04-diet",
+      "sourceFields": [
+        "/slidesByDevice/iphone/3/label/de",
+        "/slidesByDevice/iphone/3/headline/de",
+        "/slidesByDevice/iphone/3/textElements/0/text/de"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone",
+      "size": "1320x2868",
+      "locale": "de",
+      "page": "05-devices",
+      "sourceFields": [
+        "/slidesByDevice/iphone/4/label/de",
+        "/slidesByDevice/iphone/4/headline/de",
+        "/slidesByDevice/iphone/4/textElements/0/text/de"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone",
+      "size": "1320x2868",
+      "locale": "it",
+      "page": "01-plan",
+      "sourceFields": [
+        "/slidesByDevice/iphone/0/label/it",
+        "/slidesByDevice/iphone/0/headline/it",
+        "/slidesByDevice/iphone/0/textElements/0/text/it"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone",
+      "size": "1320x2868",
+      "locale": "it",
+      "page": "02-recovery",
+      "sourceFields": [
+        "/slidesByDevice/iphone/1/label/it",
+        "/slidesByDevice/iphone/1/headline/it",
+        "/slidesByDevice/iphone/1/textElements/0/text/it"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone",
+      "size": "1320x2868",
+      "locale": "it",
+      "page": "03-training",
+      "sourceFields": [
+        "/slidesByDevice/iphone/2/label/it",
+        "/slidesByDevice/iphone/2/headline/it",
+        "/slidesByDevice/iphone/2/textElements/0/text/it"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone",
+      "size": "1320x2868",
+      "locale": "it",
+      "page": "04-diet",
+      "sourceFields": [
+        "/slidesByDevice/iphone/3/label/it",
+        "/slidesByDevice/iphone/3/headline/it",
+        "/slidesByDevice/iphone/3/textElements/0/text/it"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone",
+      "size": "1320x2868",
+      "locale": "it",
+      "page": "05-devices",
+      "sourceFields": [
+        "/slidesByDevice/iphone/4/label/it",
+        "/slidesByDevice/iphone/4/headline/it",
+        "/slidesByDevice/iphone/4/textElements/0/text/it"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone",
+      "size": "1320x2868",
+      "locale": "pt-BR",
+      "page": "01-plan",
+      "sourceFields": [
+        "/slidesByDevice/iphone/0/label/pt-BR",
+        "/slidesByDevice/iphone/0/headline/pt-BR",
+        "/slidesByDevice/iphone/0/textElements/0/text/pt-BR"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone",
+      "size": "1320x2868",
+      "locale": "pt-BR",
+      "page": "02-recovery",
+      "sourceFields": [
+        "/slidesByDevice/iphone/1/label/pt-BR",
+        "/slidesByDevice/iphone/1/headline/pt-BR",
+        "/slidesByDevice/iphone/1/textElements/0/text/pt-BR"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone",
+      "size": "1320x2868",
+      "locale": "pt-BR",
+      "page": "03-training",
+      "sourceFields": [
+        "/slidesByDevice/iphone/2/label/pt-BR",
+        "/slidesByDevice/iphone/2/headline/pt-BR",
+        "/slidesByDevice/iphone/2/textElements/0/text/pt-BR"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone",
+      "size": "1320x2868",
+      "locale": "pt-BR",
+      "page": "04-diet",
+      "sourceFields": [
+        "/slidesByDevice/iphone/3/label/pt-BR",
+        "/slidesByDevice/iphone/3/headline/pt-BR",
+        "/slidesByDevice/iphone/3/textElements/0/text/pt-BR"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone",
+      "size": "1320x2868",
+      "locale": "pt-BR",
+      "page": "05-devices",
+      "sourceFields": [
+        "/slidesByDevice/iphone/4/label/pt-BR",
+        "/slidesByDevice/iphone/4/headline/pt-BR",
+        "/slidesByDevice/iphone/4/textElements/0/text/pt-BR"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone",
+      "size": "1320x2868",
+      "locale": "ru",
+      "page": "01-plan",
+      "sourceFields": [
+        "/slidesByDevice/iphone/0/label/ru",
+        "/slidesByDevice/iphone/0/headline/ru",
+        "/slidesByDevice/iphone/0/textElements/0/text/ru"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone",
+      "size": "1320x2868",
+      "locale": "ru",
+      "page": "02-recovery",
+      "sourceFields": [
+        "/slidesByDevice/iphone/1/label/ru",
+        "/slidesByDevice/iphone/1/headline/ru",
+        "/slidesByDevice/iphone/1/textElements/0/text/ru"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone",
+      "size": "1320x2868",
+      "locale": "ru",
+      "page": "03-training",
+      "sourceFields": [
+        "/slidesByDevice/iphone/2/label/ru",
+        "/slidesByDevice/iphone/2/headline/ru",
+        "/slidesByDevice/iphone/2/textElements/0/text/ru"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone",
+      "size": "1320x2868",
+      "locale": "ru",
+      "page": "04-diet",
+      "sourceFields": [
+        "/slidesByDevice/iphone/3/label/ru",
+        "/slidesByDevice/iphone/3/headline/ru",
+        "/slidesByDevice/iphone/3/textElements/0/text/ru"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone",
+      "size": "1320x2868",
+      "locale": "ru",
+      "page": "05-devices",
+      "sourceFields": [
+        "/slidesByDevice/iphone/4/label/ru",
+        "/slidesByDevice/iphone/4/headline/ru",
+        "/slidesByDevice/iphone/4/textElements/0/text/ru"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone",
+      "size": "1320x2868",
+      "locale": "ar",
+      "page": "01-plan",
+      "sourceFields": [
+        "/slidesByDevice/iphone/0/label/ar",
+        "/slidesByDevice/iphone/0/headline/ar",
+        "/slidesByDevice/iphone/0/textElements/0/text/ar"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone",
+      "size": "1320x2868",
+      "locale": "ar",
+      "page": "02-recovery",
+      "sourceFields": [
+        "/slidesByDevice/iphone/1/label/ar",
+        "/slidesByDevice/iphone/1/headline/ar",
+        "/slidesByDevice/iphone/1/textElements/0/text/ar"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone",
+      "size": "1320x2868",
+      "locale": "ar",
+      "page": "03-training",
+      "sourceFields": [
+        "/slidesByDevice/iphone/2/label/ar",
+        "/slidesByDevice/iphone/2/headline/ar",
+        "/slidesByDevice/iphone/2/textElements/0/text/ar"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone",
+      "size": "1320x2868",
+      "locale": "ar",
+      "page": "04-diet",
+      "sourceFields": [
+        "/slidesByDevice/iphone/3/label/ar",
+        "/slidesByDevice/iphone/3/headline/ar",
+        "/slidesByDevice/iphone/3/textElements/0/text/ar"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone",
+      "size": "1320x2868",
+      "locale": "ar",
+      "page": "05-devices",
+      "sourceFields": [
+        "/slidesByDevice/iphone/4/label/ar",
+        "/slidesByDevice/iphone/4/headline/ar",
+        "/slidesByDevice/iphone/4/textElements/0/text/ar"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone-medium",
+      "size": "1206x2622",
+      "locale": "zh",
+      "page": "01-plan",
+      "sourceFields": [
+        "/slidesByDevice/iphone/0/label/zh",
+        "/slidesByDevice/iphone/0/headline/zh",
+        "/slidesByDevice/iphone/0/textElements/0/text/zh"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone-medium",
+      "size": "1206x2622",
+      "locale": "zh",
+      "page": "02-recovery",
+      "sourceFields": [
+        "/slidesByDevice/iphone/1/label/zh",
+        "/slidesByDevice/iphone/1/headline/zh",
+        "/slidesByDevice/iphone/1/textElements/0/text/zh"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone-medium",
+      "size": "1206x2622",
+      "locale": "zh",
+      "page": "03-training",
+      "sourceFields": [
+        "/slidesByDevice/iphone/2/label/zh",
+        "/slidesByDevice/iphone/2/headline/zh",
+        "/slidesByDevice/iphone/2/textElements/0/text/zh"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone-medium",
+      "size": "1206x2622",
+      "locale": "zh",
+      "page": "04-diet",
+      "sourceFields": [
+        "/slidesByDevice/iphone/3/label/zh",
+        "/slidesByDevice/iphone/3/headline/zh",
+        "/slidesByDevice/iphone/3/textElements/0/text/zh"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone-medium",
+      "size": "1206x2622",
+      "locale": "zh",
+      "page": "05-devices",
+      "sourceFields": [
+        "/slidesByDevice/iphone/4/label/zh",
+        "/slidesByDevice/iphone/4/headline/zh",
+        "/slidesByDevice/iphone/4/textElements/0/text/zh"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone-medium",
+      "size": "1206x2622",
+      "locale": "zh-Hant",
+      "page": "01-plan",
+      "sourceFields": [
+        "/slidesByDevice/iphone/0/label/zh-Hant",
+        "/slidesByDevice/iphone/0/headline/zh-Hant",
+        "/slidesByDevice/iphone/0/textElements/0/text/zh-Hant"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone-medium",
+      "size": "1206x2622",
+      "locale": "zh-Hant",
+      "page": "02-recovery",
+      "sourceFields": [
+        "/slidesByDevice/iphone/1/label/zh-Hant",
+        "/slidesByDevice/iphone/1/headline/zh-Hant",
+        "/slidesByDevice/iphone/1/textElements/0/text/zh-Hant"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone-medium",
+      "size": "1206x2622",
+      "locale": "zh-Hant",
+      "page": "03-training",
+      "sourceFields": [
+        "/slidesByDevice/iphone/2/label/zh-Hant",
+        "/slidesByDevice/iphone/2/headline/zh-Hant",
+        "/slidesByDevice/iphone/2/textElements/0/text/zh-Hant"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone-medium",
+      "size": "1206x2622",
+      "locale": "zh-Hant",
+      "page": "04-diet",
+      "sourceFields": [
+        "/slidesByDevice/iphone/3/label/zh-Hant",
+        "/slidesByDevice/iphone/3/headline/zh-Hant",
+        "/slidesByDevice/iphone/3/textElements/0/text/zh-Hant"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone-medium",
+      "size": "1206x2622",
+      "locale": "zh-Hant",
+      "page": "05-devices",
+      "sourceFields": [
+        "/slidesByDevice/iphone/4/label/zh-Hant",
+        "/slidesByDevice/iphone/4/headline/zh-Hant",
+        "/slidesByDevice/iphone/4/textElements/0/text/zh-Hant"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone-medium",
+      "size": "1206x2622",
+      "locale": "en",
+      "page": "01-plan",
+      "sourceFields": [
+        "/slidesByDevice/iphone/0/label/en",
+        "/slidesByDevice/iphone/0/headline/en",
+        "/slidesByDevice/iphone/0/textElements/0/text/en"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone-medium",
+      "size": "1206x2622",
+      "locale": "en",
+      "page": "02-recovery",
+      "sourceFields": [
+        "/slidesByDevice/iphone/1/label/en",
+        "/slidesByDevice/iphone/1/headline/en",
+        "/slidesByDevice/iphone/1/textElements/0/text/en"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone-medium",
+      "size": "1206x2622",
+      "locale": "en",
+      "page": "03-training",
+      "sourceFields": [
+        "/slidesByDevice/iphone/2/label/en",
+        "/slidesByDevice/iphone/2/headline/en",
+        "/slidesByDevice/iphone/2/textElements/0/text/en"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone-medium",
+      "size": "1206x2622",
+      "locale": "en",
+      "page": "04-diet",
+      "sourceFields": [
+        "/slidesByDevice/iphone/3/label/en",
+        "/slidesByDevice/iphone/3/headline/en",
+        "/slidesByDevice/iphone/3/textElements/0/text/en"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone-medium",
+      "size": "1206x2622",
+      "locale": "en",
+      "page": "05-devices",
+      "sourceFields": [
+        "/slidesByDevice/iphone/4/label/en",
+        "/slidesByDevice/iphone/4/headline/en",
+        "/slidesByDevice/iphone/4/textElements/0/text/en"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone-medium",
+      "size": "1206x2622",
+      "locale": "ja",
+      "page": "01-plan",
+      "sourceFields": [
+        "/slidesByDevice/iphone/0/label/ja",
+        "/slidesByDevice/iphone/0/headline/ja",
+        "/slidesByDevice/iphone/0/textElements/0/text/ja"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone-medium",
+      "size": "1206x2622",
+      "locale": "ja",
+      "page": "02-recovery",
+      "sourceFields": [
+        "/slidesByDevice/iphone/1/label/ja",
+        "/slidesByDevice/iphone/1/headline/ja",
+        "/slidesByDevice/iphone/1/textElements/0/text/ja"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone-medium",
+      "size": "1206x2622",
+      "locale": "ja",
+      "page": "03-training",
+      "sourceFields": [
+        "/slidesByDevice/iphone/2/label/ja",
+        "/slidesByDevice/iphone/2/headline/ja",
+        "/slidesByDevice/iphone/2/textElements/0/text/ja"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone-medium",
+      "size": "1206x2622",
+      "locale": "ja",
+      "page": "04-diet",
+      "sourceFields": [
+        "/slidesByDevice/iphone/3/label/ja",
+        "/slidesByDevice/iphone/3/headline/ja",
+        "/slidesByDevice/iphone/3/textElements/0/text/ja"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone-medium",
+      "size": "1206x2622",
+      "locale": "ja",
+      "page": "05-devices",
+      "sourceFields": [
+        "/slidesByDevice/iphone/4/label/ja",
+        "/slidesByDevice/iphone/4/headline/ja",
+        "/slidesByDevice/iphone/4/textElements/0/text/ja"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone-medium",
+      "size": "1206x2622",
+      "locale": "ko",
+      "page": "01-plan",
+      "sourceFields": [
+        "/slidesByDevice/iphone/0/label/ko",
+        "/slidesByDevice/iphone/0/headline/ko",
+        "/slidesByDevice/iphone/0/textElements/0/text/ko"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone-medium",
+      "size": "1206x2622",
+      "locale": "ko",
+      "page": "02-recovery",
+      "sourceFields": [
+        "/slidesByDevice/iphone/1/label/ko",
+        "/slidesByDevice/iphone/1/headline/ko",
+        "/slidesByDevice/iphone/1/textElements/0/text/ko"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone-medium",
+      "size": "1206x2622",
+      "locale": "ko",
+      "page": "03-training",
+      "sourceFields": [
+        "/slidesByDevice/iphone/2/label/ko",
+        "/slidesByDevice/iphone/2/headline/ko",
+        "/slidesByDevice/iphone/2/textElements/0/text/ko"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone-medium",
+      "size": "1206x2622",
+      "locale": "ko",
+      "page": "04-diet",
+      "sourceFields": [
+        "/slidesByDevice/iphone/3/label/ko",
+        "/slidesByDevice/iphone/3/headline/ko",
+        "/slidesByDevice/iphone/3/textElements/0/text/ko"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone-medium",
+      "size": "1206x2622",
+      "locale": "ko",
+      "page": "05-devices",
+      "sourceFields": [
+        "/slidesByDevice/iphone/4/label/ko",
+        "/slidesByDevice/iphone/4/headline/ko",
+        "/slidesByDevice/iphone/4/textElements/0/text/ko"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone-medium",
+      "size": "1206x2622",
+      "locale": "es",
+      "page": "01-plan",
+      "sourceFields": [
+        "/slidesByDevice/iphone/0/label/es",
+        "/slidesByDevice/iphone/0/headline/es",
+        "/slidesByDevice/iphone/0/textElements/0/text/es"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone-medium",
+      "size": "1206x2622",
+      "locale": "es",
+      "page": "02-recovery",
+      "sourceFields": [
+        "/slidesByDevice/iphone/1/label/es",
+        "/slidesByDevice/iphone/1/headline/es",
+        "/slidesByDevice/iphone/1/textElements/0/text/es"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone-medium",
+      "size": "1206x2622",
+      "locale": "es",
+      "page": "03-training",
+      "sourceFields": [
+        "/slidesByDevice/iphone/2/label/es",
+        "/slidesByDevice/iphone/2/headline/es",
+        "/slidesByDevice/iphone/2/textElements/0/text/es"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone-medium",
+      "size": "1206x2622",
+      "locale": "es",
+      "page": "04-diet",
+      "sourceFields": [
+        "/slidesByDevice/iphone/3/label/es",
+        "/slidesByDevice/iphone/3/headline/es",
+        "/slidesByDevice/iphone/3/textElements/0/text/es"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone-medium",
+      "size": "1206x2622",
+      "locale": "es",
+      "page": "05-devices",
+      "sourceFields": [
+        "/slidesByDevice/iphone/4/label/es",
+        "/slidesByDevice/iphone/4/headline/es",
+        "/slidesByDevice/iphone/4/textElements/0/text/es"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone-medium",
+      "size": "1206x2622",
+      "locale": "fr",
+      "page": "01-plan",
+      "sourceFields": [
+        "/slidesByDevice/iphone/0/label/fr",
+        "/slidesByDevice/iphone/0/headline/fr",
+        "/slidesByDevice/iphone/0/textElements/0/text/fr"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone-medium",
+      "size": "1206x2622",
+      "locale": "fr",
+      "page": "02-recovery",
+      "sourceFields": [
+        "/slidesByDevice/iphone/1/label/fr",
+        "/slidesByDevice/iphone/1/headline/fr",
+        "/slidesByDevice/iphone/1/textElements/0/text/fr"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone-medium",
+      "size": "1206x2622",
+      "locale": "fr",
+      "page": "03-training",
+      "sourceFields": [
+        "/slidesByDevice/iphone/2/label/fr",
+        "/slidesByDevice/iphone/2/headline/fr",
+        "/slidesByDevice/iphone/2/textElements/0/text/fr"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone-medium",
+      "size": "1206x2622",
+      "locale": "fr",
+      "page": "04-diet",
+      "sourceFields": [
+        "/slidesByDevice/iphone/3/label/fr",
+        "/slidesByDevice/iphone/3/headline/fr",
+        "/slidesByDevice/iphone/3/textElements/0/text/fr"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone-medium",
+      "size": "1206x2622",
+      "locale": "fr",
+      "page": "05-devices",
+      "sourceFields": [
+        "/slidesByDevice/iphone/4/label/fr",
+        "/slidesByDevice/iphone/4/headline/fr",
+        "/slidesByDevice/iphone/4/textElements/0/text/fr"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone-medium",
+      "size": "1206x2622",
+      "locale": "de",
+      "page": "01-plan",
+      "sourceFields": [
+        "/slidesByDevice/iphone/0/label/de",
+        "/slidesByDevice/iphone/0/headline/de",
+        "/slidesByDevice/iphone/0/textElements/0/text/de"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone-medium",
+      "size": "1206x2622",
+      "locale": "de",
+      "page": "02-recovery",
+      "sourceFields": [
+        "/slidesByDevice/iphone/1/label/de",
+        "/slidesByDevice/iphone/1/headline/de",
+        "/slidesByDevice/iphone/1/textElements/0/text/de"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone-medium",
+      "size": "1206x2622",
+      "locale": "de",
+      "page": "03-training",
+      "sourceFields": [
+        "/slidesByDevice/iphone/2/label/de",
+        "/slidesByDevice/iphone/2/headline/de",
+        "/slidesByDevice/iphone/2/textElements/0/text/de"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone-medium",
+      "size": "1206x2622",
+      "locale": "de",
+      "page": "04-diet",
+      "sourceFields": [
+        "/slidesByDevice/iphone/3/label/de",
+        "/slidesByDevice/iphone/3/headline/de",
+        "/slidesByDevice/iphone/3/textElements/0/text/de"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone-medium",
+      "size": "1206x2622",
+      "locale": "de",
+      "page": "05-devices",
+      "sourceFields": [
+        "/slidesByDevice/iphone/4/label/de",
+        "/slidesByDevice/iphone/4/headline/de",
+        "/slidesByDevice/iphone/4/textElements/0/text/de"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone-medium",
+      "size": "1206x2622",
+      "locale": "it",
+      "page": "01-plan",
+      "sourceFields": [
+        "/slidesByDevice/iphone/0/label/it",
+        "/slidesByDevice/iphone/0/headline/it",
+        "/slidesByDevice/iphone/0/textElements/0/text/it"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone-medium",
+      "size": "1206x2622",
+      "locale": "it",
+      "page": "02-recovery",
+      "sourceFields": [
+        "/slidesByDevice/iphone/1/label/it",
+        "/slidesByDevice/iphone/1/headline/it",
+        "/slidesByDevice/iphone/1/textElements/0/text/it"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone-medium",
+      "size": "1206x2622",
+      "locale": "it",
+      "page": "03-training",
+      "sourceFields": [
+        "/slidesByDevice/iphone/2/label/it",
+        "/slidesByDevice/iphone/2/headline/it",
+        "/slidesByDevice/iphone/2/textElements/0/text/it"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone-medium",
+      "size": "1206x2622",
+      "locale": "it",
+      "page": "04-diet",
+      "sourceFields": [
+        "/slidesByDevice/iphone/3/label/it",
+        "/slidesByDevice/iphone/3/headline/it",
+        "/slidesByDevice/iphone/3/textElements/0/text/it"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone-medium",
+      "size": "1206x2622",
+      "locale": "it",
+      "page": "05-devices",
+      "sourceFields": [
+        "/slidesByDevice/iphone/4/label/it",
+        "/slidesByDevice/iphone/4/headline/it",
+        "/slidesByDevice/iphone/4/textElements/0/text/it"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone-medium",
+      "size": "1206x2622",
+      "locale": "pt-BR",
+      "page": "01-plan",
+      "sourceFields": [
+        "/slidesByDevice/iphone/0/label/pt-BR",
+        "/slidesByDevice/iphone/0/headline/pt-BR",
+        "/slidesByDevice/iphone/0/textElements/0/text/pt-BR"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone-medium",
+      "size": "1206x2622",
+      "locale": "pt-BR",
+      "page": "02-recovery",
+      "sourceFields": [
+        "/slidesByDevice/iphone/1/label/pt-BR",
+        "/slidesByDevice/iphone/1/headline/pt-BR",
+        "/slidesByDevice/iphone/1/textElements/0/text/pt-BR"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone-medium",
+      "size": "1206x2622",
+      "locale": "pt-BR",
+      "page": "03-training",
+      "sourceFields": [
+        "/slidesByDevice/iphone/2/label/pt-BR",
+        "/slidesByDevice/iphone/2/headline/pt-BR",
+        "/slidesByDevice/iphone/2/textElements/0/text/pt-BR"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone-medium",
+      "size": "1206x2622",
+      "locale": "pt-BR",
+      "page": "04-diet",
+      "sourceFields": [
+        "/slidesByDevice/iphone/3/label/pt-BR",
+        "/slidesByDevice/iphone/3/headline/pt-BR",
+        "/slidesByDevice/iphone/3/textElements/0/text/pt-BR"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone-medium",
+      "size": "1206x2622",
+      "locale": "pt-BR",
+      "page": "05-devices",
+      "sourceFields": [
+        "/slidesByDevice/iphone/4/label/pt-BR",
+        "/slidesByDevice/iphone/4/headline/pt-BR",
+        "/slidesByDevice/iphone/4/textElements/0/text/pt-BR"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone-medium",
+      "size": "1206x2622",
+      "locale": "ru",
+      "page": "01-plan",
+      "sourceFields": [
+        "/slidesByDevice/iphone/0/label/ru",
+        "/slidesByDevice/iphone/0/headline/ru",
+        "/slidesByDevice/iphone/0/textElements/0/text/ru"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone-medium",
+      "size": "1206x2622",
+      "locale": "ru",
+      "page": "02-recovery",
+      "sourceFields": [
+        "/slidesByDevice/iphone/1/label/ru",
+        "/slidesByDevice/iphone/1/headline/ru",
+        "/slidesByDevice/iphone/1/textElements/0/text/ru"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone-medium",
+      "size": "1206x2622",
+      "locale": "ru",
+      "page": "03-training",
+      "sourceFields": [
+        "/slidesByDevice/iphone/2/label/ru",
+        "/slidesByDevice/iphone/2/headline/ru",
+        "/slidesByDevice/iphone/2/textElements/0/text/ru"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone-medium",
+      "size": "1206x2622",
+      "locale": "ru",
+      "page": "04-diet",
+      "sourceFields": [
+        "/slidesByDevice/iphone/3/label/ru",
+        "/slidesByDevice/iphone/3/headline/ru",
+        "/slidesByDevice/iphone/3/textElements/0/text/ru"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone-medium",
+      "size": "1206x2622",
+      "locale": "ru",
+      "page": "05-devices",
+      "sourceFields": [
+        "/slidesByDevice/iphone/4/label/ru",
+        "/slidesByDevice/iphone/4/headline/ru",
+        "/slidesByDevice/iphone/4/textElements/0/text/ru"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone-medium",
+      "size": "1206x2622",
+      "locale": "ar",
+      "page": "01-plan",
+      "sourceFields": [
+        "/slidesByDevice/iphone/0/label/ar",
+        "/slidesByDevice/iphone/0/headline/ar",
+        "/slidesByDevice/iphone/0/textElements/0/text/ar"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone-medium",
+      "size": "1206x2622",
+      "locale": "ar",
+      "page": "02-recovery",
+      "sourceFields": [
+        "/slidesByDevice/iphone/1/label/ar",
+        "/slidesByDevice/iphone/1/headline/ar",
+        "/slidesByDevice/iphone/1/textElements/0/text/ar"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone-medium",
+      "size": "1206x2622",
+      "locale": "ar",
+      "page": "03-training",
+      "sourceFields": [
+        "/slidesByDevice/iphone/2/label/ar",
+        "/slidesByDevice/iphone/2/headline/ar",
+        "/slidesByDevice/iphone/2/textElements/0/text/ar"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone-medium",
+      "size": "1206x2622",
+      "locale": "ar",
+      "page": "04-diet",
+      "sourceFields": [
+        "/slidesByDevice/iphone/3/label/ar",
+        "/slidesByDevice/iphone/3/headline/ar",
+        "/slidesByDevice/iphone/3/textElements/0/text/ar"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "iphone-medium",
+      "size": "1206x2622",
+      "locale": "ar",
+      "page": "05-devices",
+      "sourceFields": [
+        "/slidesByDevice/iphone/4/label/ar",
+        "/slidesByDevice/iphone/4/headline/ar",
+        "/slidesByDevice/iphone/4/textElements/0/text/ar"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "ipad",
+      "size": "2064x2752",
+      "locale": "zh",
+      "page": "01-plan",
+      "sourceFields": [
+        "/slidesByDevice/iphone/0/label/zh",
+        "/slidesByDevice/iphone/0/headline/zh",
+        "/slidesByDevice/iphone/0/textElements/0/text/zh"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "ipad",
+      "size": "2064x2752",
+      "locale": "zh",
+      "page": "02-recovery",
+      "sourceFields": [
+        "/slidesByDevice/iphone/1/label/zh",
+        "/slidesByDevice/iphone/1/headline/zh",
+        "/slidesByDevice/iphone/1/textElements/0/text/zh"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "ipad",
+      "size": "2064x2752",
+      "locale": "zh",
+      "page": "03-training",
+      "sourceFields": [
+        "/slidesByDevice/iphone/2/label/zh",
+        "/slidesByDevice/iphone/2/headline/zh",
+        "/slidesByDevice/iphone/2/textElements/0/text/zh"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "ipad",
+      "size": "2064x2752",
+      "locale": "zh",
+      "page": "04-diet",
+      "sourceFields": [
+        "/slidesByDevice/iphone/3/label/zh",
+        "/slidesByDevice/iphone/3/headline/zh",
+        "/slidesByDevice/iphone/3/textElements/0/text/zh"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "ipad",
+      "size": "2064x2752",
+      "locale": "zh",
+      "page": "05-devices",
+      "sourceFields": [
+        "/slidesByDevice/iphone/4/label/zh",
+        "/slidesByDevice/iphone/4/headline/zh",
+        "/slidesByDevice/iphone/4/textElements/0/text/zh"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "ipad",
+      "size": "2064x2752",
+      "locale": "zh-Hant",
+      "page": "01-plan",
+      "sourceFields": [
+        "/slidesByDevice/iphone/0/label/zh-Hant",
+        "/slidesByDevice/iphone/0/headline/zh-Hant",
+        "/slidesByDevice/iphone/0/textElements/0/text/zh-Hant"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "ipad",
+      "size": "2064x2752",
+      "locale": "zh-Hant",
+      "page": "02-recovery",
+      "sourceFields": [
+        "/slidesByDevice/iphone/1/label/zh-Hant",
+        "/slidesByDevice/iphone/1/headline/zh-Hant",
+        "/slidesByDevice/iphone/1/textElements/0/text/zh-Hant"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "ipad",
+      "size": "2064x2752",
+      "locale": "zh-Hant",
+      "page": "03-training",
+      "sourceFields": [
+        "/slidesByDevice/iphone/2/label/zh-Hant",
+        "/slidesByDevice/iphone/2/headline/zh-Hant",
+        "/slidesByDevice/iphone/2/textElements/0/text/zh-Hant"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "ipad",
+      "size": "2064x2752",
+      "locale": "zh-Hant",
+      "page": "04-diet",
+      "sourceFields": [
+        "/slidesByDevice/iphone/3/label/zh-Hant",
+        "/slidesByDevice/iphone/3/headline/zh-Hant",
+        "/slidesByDevice/iphone/3/textElements/0/text/zh-Hant"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "ipad",
+      "size": "2064x2752",
+      "locale": "zh-Hant",
+      "page": "05-devices",
+      "sourceFields": [
+        "/slidesByDevice/iphone/4/label/zh-Hant",
+        "/slidesByDevice/iphone/4/headline/zh-Hant",
+        "/slidesByDevice/iphone/4/textElements/0/text/zh-Hant"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "ipad",
+      "size": "2064x2752",
+      "locale": "en",
+      "page": "01-plan",
+      "sourceFields": [
+        "/slidesByDevice/iphone/0/label/en",
+        "/slidesByDevice/iphone/0/headline/en",
+        "/slidesByDevice/iphone/0/textElements/0/text/en"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "ipad",
+      "size": "2064x2752",
+      "locale": "en",
+      "page": "02-recovery",
+      "sourceFields": [
+        "/slidesByDevice/iphone/1/label/en",
+        "/slidesByDevice/iphone/1/headline/en",
+        "/slidesByDevice/iphone/1/textElements/0/text/en"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "ipad",
+      "size": "2064x2752",
+      "locale": "en",
+      "page": "03-training",
+      "sourceFields": [
+        "/slidesByDevice/iphone/2/label/en",
+        "/slidesByDevice/iphone/2/headline/en",
+        "/slidesByDevice/iphone/2/textElements/0/text/en"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "ipad",
+      "size": "2064x2752",
+      "locale": "en",
+      "page": "04-diet",
+      "sourceFields": [
+        "/slidesByDevice/iphone/3/label/en",
+        "/slidesByDevice/iphone/3/headline/en",
+        "/slidesByDevice/iphone/3/textElements/0/text/en"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "ipad",
+      "size": "2064x2752",
+      "locale": "en",
+      "page": "05-devices",
+      "sourceFields": [
+        "/slidesByDevice/iphone/4/label/en",
+        "/slidesByDevice/iphone/4/headline/en",
+        "/slidesByDevice/iphone/4/textElements/0/text/en"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "ipad",
+      "size": "2064x2752",
+      "locale": "ja",
+      "page": "01-plan",
+      "sourceFields": [
+        "/slidesByDevice/iphone/0/label/ja",
+        "/slidesByDevice/iphone/0/headline/ja",
+        "/slidesByDevice/iphone/0/textElements/0/text/ja"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "ipad",
+      "size": "2064x2752",
+      "locale": "ja",
+      "page": "02-recovery",
+      "sourceFields": [
+        "/slidesByDevice/iphone/1/label/ja",
+        "/slidesByDevice/iphone/1/headline/ja",
+        "/slidesByDevice/iphone/1/textElements/0/text/ja"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "ipad",
+      "size": "2064x2752",
+      "locale": "ja",
+      "page": "03-training",
+      "sourceFields": [
+        "/slidesByDevice/iphone/2/label/ja",
+        "/slidesByDevice/iphone/2/headline/ja",
+        "/slidesByDevice/iphone/2/textElements/0/text/ja"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "ipad",
+      "size": "2064x2752",
+      "locale": "ja",
+      "page": "04-diet",
+      "sourceFields": [
+        "/slidesByDevice/iphone/3/label/ja",
+        "/slidesByDevice/iphone/3/headline/ja",
+        "/slidesByDevice/iphone/3/textElements/0/text/ja"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "ipad",
+      "size": "2064x2752",
+      "locale": "ja",
+      "page": "05-devices",
+      "sourceFields": [
+        "/slidesByDevice/iphone/4/label/ja",
+        "/slidesByDevice/iphone/4/headline/ja",
+        "/slidesByDevice/iphone/4/textElements/0/text/ja"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "ipad",
+      "size": "2064x2752",
+      "locale": "ko",
+      "page": "01-plan",
+      "sourceFields": [
+        "/slidesByDevice/iphone/0/label/ko",
+        "/slidesByDevice/iphone/0/headline/ko",
+        "/slidesByDevice/iphone/0/textElements/0/text/ko"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "ipad",
+      "size": "2064x2752",
+      "locale": "ko",
+      "page": "02-recovery",
+      "sourceFields": [
+        "/slidesByDevice/iphone/1/label/ko",
+        "/slidesByDevice/iphone/1/headline/ko",
+        "/slidesByDevice/iphone/1/textElements/0/text/ko"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "ipad",
+      "size": "2064x2752",
+      "locale": "ko",
+      "page": "03-training",
+      "sourceFields": [
+        "/slidesByDevice/iphone/2/label/ko",
+        "/slidesByDevice/iphone/2/headline/ko",
+        "/slidesByDevice/iphone/2/textElements/0/text/ko"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "ipad",
+      "size": "2064x2752",
+      "locale": "ko",
+      "page": "04-diet",
+      "sourceFields": [
+        "/slidesByDevice/iphone/3/label/ko",
+        "/slidesByDevice/iphone/3/headline/ko",
+        "/slidesByDevice/iphone/3/textElements/0/text/ko"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "ipad",
+      "size": "2064x2752",
+      "locale": "ko",
+      "page": "05-devices",
+      "sourceFields": [
+        "/slidesByDevice/iphone/4/label/ko",
+        "/slidesByDevice/iphone/4/headline/ko",
+        "/slidesByDevice/iphone/4/textElements/0/text/ko"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "ipad",
+      "size": "2064x2752",
+      "locale": "es",
+      "page": "01-plan",
+      "sourceFields": [
+        "/slidesByDevice/iphone/0/label/es",
+        "/slidesByDevice/iphone/0/headline/es",
+        "/slidesByDevice/iphone/0/textElements/0/text/es"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "ipad",
+      "size": "2064x2752",
+      "locale": "es",
+      "page": "02-recovery",
+      "sourceFields": [
+        "/slidesByDevice/iphone/1/label/es",
+        "/slidesByDevice/iphone/1/headline/es",
+        "/slidesByDevice/iphone/1/textElements/0/text/es"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "ipad",
+      "size": "2064x2752",
+      "locale": "es",
+      "page": "03-training",
+      "sourceFields": [
+        "/slidesByDevice/iphone/2/label/es",
+        "/slidesByDevice/iphone/2/headline/es",
+        "/slidesByDevice/iphone/2/textElements/0/text/es"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "ipad",
+      "size": "2064x2752",
+      "locale": "es",
+      "page": "04-diet",
+      "sourceFields": [
+        "/slidesByDevice/iphone/3/label/es",
+        "/slidesByDevice/iphone/3/headline/es",
+        "/slidesByDevice/iphone/3/textElements/0/text/es"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "ipad",
+      "size": "2064x2752",
+      "locale": "es",
+      "page": "05-devices",
+      "sourceFields": [
+        "/slidesByDevice/iphone/4/label/es",
+        "/slidesByDevice/iphone/4/headline/es",
+        "/slidesByDevice/iphone/4/textElements/0/text/es"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "ipad",
+      "size": "2064x2752",
+      "locale": "fr",
+      "page": "01-plan",
+      "sourceFields": [
+        "/slidesByDevice/iphone/0/label/fr",
+        "/slidesByDevice/iphone/0/headline/fr",
+        "/slidesByDevice/iphone/0/textElements/0/text/fr"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "ipad",
+      "size": "2064x2752",
+      "locale": "fr",
+      "page": "02-recovery",
+      "sourceFields": [
+        "/slidesByDevice/iphone/1/label/fr",
+        "/slidesByDevice/iphone/1/headline/fr",
+        "/slidesByDevice/iphone/1/textElements/0/text/fr"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "ipad",
+      "size": "2064x2752",
+      "locale": "fr",
+      "page": "03-training",
+      "sourceFields": [
+        "/slidesByDevice/iphone/2/label/fr",
+        "/slidesByDevice/iphone/2/headline/fr",
+        "/slidesByDevice/iphone/2/textElements/0/text/fr"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "ipad",
+      "size": "2064x2752",
+      "locale": "fr",
+      "page": "04-diet",
+      "sourceFields": [
+        "/slidesByDevice/iphone/3/label/fr",
+        "/slidesByDevice/iphone/3/headline/fr",
+        "/slidesByDevice/iphone/3/textElements/0/text/fr"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "ipad",
+      "size": "2064x2752",
+      "locale": "fr",
+      "page": "05-devices",
+      "sourceFields": [
+        "/slidesByDevice/iphone/4/label/fr",
+        "/slidesByDevice/iphone/4/headline/fr",
+        "/slidesByDevice/iphone/4/textElements/0/text/fr"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "ipad",
+      "size": "2064x2752",
+      "locale": "de",
+      "page": "01-plan",
+      "sourceFields": [
+        "/slidesByDevice/iphone/0/label/de",
+        "/slidesByDevice/iphone/0/headline/de",
+        "/slidesByDevice/iphone/0/textElements/0/text/de"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "ipad",
+      "size": "2064x2752",
+      "locale": "de",
+      "page": "02-recovery",
+      "sourceFields": [
+        "/slidesByDevice/iphone/1/label/de",
+        "/slidesByDevice/iphone/1/headline/de",
+        "/slidesByDevice/iphone/1/textElements/0/text/de"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "ipad",
+      "size": "2064x2752",
+      "locale": "de",
+      "page": "03-training",
+      "sourceFields": [
+        "/slidesByDevice/iphone/2/label/de",
+        "/slidesByDevice/iphone/2/headline/de",
+        "/slidesByDevice/iphone/2/textElements/0/text/de"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "ipad",
+      "size": "2064x2752",
+      "locale": "de",
+      "page": "04-diet",
+      "sourceFields": [
+        "/slidesByDevice/iphone/3/label/de",
+        "/slidesByDevice/iphone/3/headline/de",
+        "/slidesByDevice/iphone/3/textElements/0/text/de"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "ipad",
+      "size": "2064x2752",
+      "locale": "de",
+      "page": "05-devices",
+      "sourceFields": [
+        "/slidesByDevice/iphone/4/label/de",
+        "/slidesByDevice/iphone/4/headline/de",
+        "/slidesByDevice/iphone/4/textElements/0/text/de"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "ipad",
+      "size": "2064x2752",
+      "locale": "it",
+      "page": "01-plan",
+      "sourceFields": [
+        "/slidesByDevice/iphone/0/label/it",
+        "/slidesByDevice/iphone/0/headline/it",
+        "/slidesByDevice/iphone/0/textElements/0/text/it"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "ipad",
+      "size": "2064x2752",
+      "locale": "it",
+      "page": "02-recovery",
+      "sourceFields": [
+        "/slidesByDevice/iphone/1/label/it",
+        "/slidesByDevice/iphone/1/headline/it",
+        "/slidesByDevice/iphone/1/textElements/0/text/it"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "ipad",
+      "size": "2064x2752",
+      "locale": "it",
+      "page": "03-training",
+      "sourceFields": [
+        "/slidesByDevice/iphone/2/label/it",
+        "/slidesByDevice/iphone/2/headline/it",
+        "/slidesByDevice/iphone/2/textElements/0/text/it"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "ipad",
+      "size": "2064x2752",
+      "locale": "it",
+      "page": "04-diet",
+      "sourceFields": [
+        "/slidesByDevice/iphone/3/label/it",
+        "/slidesByDevice/iphone/3/headline/it",
+        "/slidesByDevice/iphone/3/textElements/0/text/it"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "ipad",
+      "size": "2064x2752",
+      "locale": "it",
+      "page": "05-devices",
+      "sourceFields": [
+        "/slidesByDevice/iphone/4/label/it",
+        "/slidesByDevice/iphone/4/headline/it",
+        "/slidesByDevice/iphone/4/textElements/0/text/it"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "ipad",
+      "size": "2064x2752",
+      "locale": "pt-BR",
+      "page": "01-plan",
+      "sourceFields": [
+        "/slidesByDevice/iphone/0/label/pt-BR",
+        "/slidesByDevice/iphone/0/headline/pt-BR",
+        "/slidesByDevice/iphone/0/textElements/0/text/pt-BR"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "ipad",
+      "size": "2064x2752",
+      "locale": "pt-BR",
+      "page": "02-recovery",
+      "sourceFields": [
+        "/slidesByDevice/iphone/1/label/pt-BR",
+        "/slidesByDevice/iphone/1/headline/pt-BR",
+        "/slidesByDevice/iphone/1/textElements/0/text/pt-BR"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "ipad",
+      "size": "2064x2752",
+      "locale": "pt-BR",
+      "page": "03-training",
+      "sourceFields": [
+        "/slidesByDevice/iphone/2/label/pt-BR",
+        "/slidesByDevice/iphone/2/headline/pt-BR",
+        "/slidesByDevice/iphone/2/textElements/0/text/pt-BR"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "ipad",
+      "size": "2064x2752",
+      "locale": "pt-BR",
+      "page": "04-diet",
+      "sourceFields": [
+        "/slidesByDevice/iphone/3/label/pt-BR",
+        "/slidesByDevice/iphone/3/headline/pt-BR",
+        "/slidesByDevice/iphone/3/textElements/0/text/pt-BR"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "ipad",
+      "size": "2064x2752",
+      "locale": "pt-BR",
+      "page": "05-devices",
+      "sourceFields": [
+        "/slidesByDevice/iphone/4/label/pt-BR",
+        "/slidesByDevice/iphone/4/headline/pt-BR",
+        "/slidesByDevice/iphone/4/textElements/0/text/pt-BR"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "ipad",
+      "size": "2064x2752",
+      "locale": "ru",
+      "page": "01-plan",
+      "sourceFields": [
+        "/slidesByDevice/iphone/0/label/ru",
+        "/slidesByDevice/iphone/0/headline/ru",
+        "/slidesByDevice/iphone/0/textElements/0/text/ru"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "ipad",
+      "size": "2064x2752",
+      "locale": "ru",
+      "page": "02-recovery",
+      "sourceFields": [
+        "/slidesByDevice/iphone/1/label/ru",
+        "/slidesByDevice/iphone/1/headline/ru",
+        "/slidesByDevice/iphone/1/textElements/0/text/ru"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "ipad",
+      "size": "2064x2752",
+      "locale": "ru",
+      "page": "03-training",
+      "sourceFields": [
+        "/slidesByDevice/iphone/2/label/ru",
+        "/slidesByDevice/iphone/2/headline/ru",
+        "/slidesByDevice/iphone/2/textElements/0/text/ru"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "ipad",
+      "size": "2064x2752",
+      "locale": "ru",
+      "page": "04-diet",
+      "sourceFields": [
+        "/slidesByDevice/iphone/3/label/ru",
+        "/slidesByDevice/iphone/3/headline/ru",
+        "/slidesByDevice/iphone/3/textElements/0/text/ru"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "ipad",
+      "size": "2064x2752",
+      "locale": "ru",
+      "page": "05-devices",
+      "sourceFields": [
+        "/slidesByDevice/iphone/4/label/ru",
+        "/slidesByDevice/iphone/4/headline/ru",
+        "/slidesByDevice/iphone/4/textElements/0/text/ru"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "ipad",
+      "size": "2064x2752",
+      "locale": "ar",
+      "page": "01-plan",
+      "sourceFields": [
+        "/slidesByDevice/iphone/0/label/ar",
+        "/slidesByDevice/iphone/0/headline/ar",
+        "/slidesByDevice/iphone/0/textElements/0/text/ar"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "ipad",
+      "size": "2064x2752",
+      "locale": "ar",
+      "page": "02-recovery",
+      "sourceFields": [
+        "/slidesByDevice/iphone/1/label/ar",
+        "/slidesByDevice/iphone/1/headline/ar",
+        "/slidesByDevice/iphone/1/textElements/0/text/ar"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "ipad",
+      "size": "2064x2752",
+      "locale": "ar",
+      "page": "03-training",
+      "sourceFields": [
+        "/slidesByDevice/iphone/2/label/ar",
+        "/slidesByDevice/iphone/2/headline/ar",
+        "/slidesByDevice/iphone/2/textElements/0/text/ar"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "ipad",
+      "size": "2064x2752",
+      "locale": "ar",
+      "page": "04-diet",
+      "sourceFields": [
+        "/slidesByDevice/iphone/3/label/ar",
+        "/slidesByDevice/iphone/3/headline/ar",
+        "/slidesByDevice/iphone/3/textElements/0/text/ar"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "ipad",
+      "size": "2064x2752",
+      "locale": "ar",
+      "page": "05-devices",
+      "sourceFields": [
+        "/slidesByDevice/iphone/4/label/ar",
+        "/slidesByDevice/iphone/4/headline/ar",
+        "/slidesByDevice/iphone/4/textElements/0/text/ar"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "duo",
+      "size": "2007x2853",
+      "locale": "zh",
+      "page": "01-plan",
+      "sourceFields": [
+        "/slidesByDevice/iphone/0/label/zh",
+        "/slidesByDevice/iphone/0/headline/zh",
+        "/slidesByDevice/iphone/0/textElements/0/text/zh"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "duo",
+      "size": "2007x2853",
+      "locale": "zh",
+      "page": "02-recovery",
+      "sourceFields": [
+        "/slidesByDevice/iphone/1/label/zh",
+        "/slidesByDevice/iphone/1/headline/zh",
+        "/slidesByDevice/iphone/1/textElements/0/text/zh"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "duo",
+      "size": "2007x2853",
+      "locale": "zh",
+      "page": "03-training",
+      "sourceFields": [
+        "/slidesByDevice/iphone/2/label/zh",
+        "/slidesByDevice/iphone/2/headline/zh",
+        "/slidesByDevice/iphone/2/textElements/0/text/zh"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "duo",
+      "size": "2007x2853",
+      "locale": "zh",
+      "page": "04-diet",
+      "sourceFields": [
+        "/slidesByDevice/iphone/3/label/zh",
+        "/slidesByDevice/iphone/3/headline/zh",
+        "/slidesByDevice/iphone/3/textElements/0/text/zh"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "duo",
+      "size": "2007x2853",
+      "locale": "zh",
+      "page": "05-devices",
+      "sourceFields": [
+        "/slidesByDevice/iphone/4/label/zh",
+        "/slidesByDevice/iphone/4/headline/zh",
+        "/slidesByDevice/iphone/4/textElements/0/text/zh"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "duo",
+      "size": "2007x2853",
+      "locale": "zh-Hant",
+      "page": "01-plan",
+      "sourceFields": [
+        "/slidesByDevice/iphone/0/label/zh-Hant",
+        "/slidesByDevice/iphone/0/headline/zh-Hant",
+        "/slidesByDevice/iphone/0/textElements/0/text/zh-Hant"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "duo",
+      "size": "2007x2853",
+      "locale": "zh-Hant",
+      "page": "02-recovery",
+      "sourceFields": [
+        "/slidesByDevice/iphone/1/label/zh-Hant",
+        "/slidesByDevice/iphone/1/headline/zh-Hant",
+        "/slidesByDevice/iphone/1/textElements/0/text/zh-Hant"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "duo",
+      "size": "2007x2853",
+      "locale": "zh-Hant",
+      "page": "03-training",
+      "sourceFields": [
+        "/slidesByDevice/iphone/2/label/zh-Hant",
+        "/slidesByDevice/iphone/2/headline/zh-Hant",
+        "/slidesByDevice/iphone/2/textElements/0/text/zh-Hant"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "duo",
+      "size": "2007x2853",
+      "locale": "zh-Hant",
+      "page": "04-diet",
+      "sourceFields": [
+        "/slidesByDevice/iphone/3/label/zh-Hant",
+        "/slidesByDevice/iphone/3/headline/zh-Hant",
+        "/slidesByDevice/iphone/3/textElements/0/text/zh-Hant"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "duo",
+      "size": "2007x2853",
+      "locale": "zh-Hant",
+      "page": "05-devices",
+      "sourceFields": [
+        "/slidesByDevice/iphone/4/label/zh-Hant",
+        "/slidesByDevice/iphone/4/headline/zh-Hant",
+        "/slidesByDevice/iphone/4/textElements/0/text/zh-Hant"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "duo",
+      "size": "2007x2853",
+      "locale": "en",
+      "page": "01-plan",
+      "sourceFields": [
+        "/slidesByDevice/iphone/0/label/en",
+        "/slidesByDevice/iphone/0/headline/en",
+        "/slidesByDevice/iphone/0/textElements/0/text/en"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "duo",
+      "size": "2007x2853",
+      "locale": "en",
+      "page": "02-recovery",
+      "sourceFields": [
+        "/slidesByDevice/iphone/1/label/en",
+        "/slidesByDevice/iphone/1/headline/en",
+        "/slidesByDevice/iphone/1/textElements/0/text/en"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "duo",
+      "size": "2007x2853",
+      "locale": "en",
+      "page": "03-training",
+      "sourceFields": [
+        "/slidesByDevice/iphone/2/label/en",
+        "/slidesByDevice/iphone/2/headline/en",
+        "/slidesByDevice/iphone/2/textElements/0/text/en"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "duo",
+      "size": "2007x2853",
+      "locale": "en",
+      "page": "04-diet",
+      "sourceFields": [
+        "/slidesByDevice/iphone/3/label/en",
+        "/slidesByDevice/iphone/3/headline/en",
+        "/slidesByDevice/iphone/3/textElements/0/text/en"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "duo",
+      "size": "2007x2853",
+      "locale": "en",
+      "page": "05-devices",
+      "sourceFields": [
+        "/slidesByDevice/iphone/4/label/en",
+        "/slidesByDevice/iphone/4/headline/en",
+        "/slidesByDevice/iphone/4/textElements/0/text/en"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "duo",
+      "size": "2007x2853",
+      "locale": "ja",
+      "page": "01-plan",
+      "sourceFields": [
+        "/slidesByDevice/iphone/0/label/ja",
+        "/slidesByDevice/iphone/0/headline/ja",
+        "/slidesByDevice/iphone/0/textElements/0/text/ja"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "duo",
+      "size": "2007x2853",
+      "locale": "ja",
+      "page": "02-recovery",
+      "sourceFields": [
+        "/slidesByDevice/iphone/1/label/ja",
+        "/slidesByDevice/iphone/1/headline/ja",
+        "/slidesByDevice/iphone/1/textElements/0/text/ja"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "duo",
+      "size": "2007x2853",
+      "locale": "ja",
+      "page": "03-training",
+      "sourceFields": [
+        "/slidesByDevice/iphone/2/label/ja",
+        "/slidesByDevice/iphone/2/headline/ja",
+        "/slidesByDevice/iphone/2/textElements/0/text/ja"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "duo",
+      "size": "2007x2853",
+      "locale": "ja",
+      "page": "04-diet",
+      "sourceFields": [
+        "/slidesByDevice/iphone/3/label/ja",
+        "/slidesByDevice/iphone/3/headline/ja",
+        "/slidesByDevice/iphone/3/textElements/0/text/ja"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "duo",
+      "size": "2007x2853",
+      "locale": "ja",
+      "page": "05-devices",
+      "sourceFields": [
+        "/slidesByDevice/iphone/4/label/ja",
+        "/slidesByDevice/iphone/4/headline/ja",
+        "/slidesByDevice/iphone/4/textElements/0/text/ja"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "duo",
+      "size": "2007x2853",
+      "locale": "ko",
+      "page": "01-plan",
+      "sourceFields": [
+        "/slidesByDevice/iphone/0/label/ko",
+        "/slidesByDevice/iphone/0/headline/ko",
+        "/slidesByDevice/iphone/0/textElements/0/text/ko"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "duo",
+      "size": "2007x2853",
+      "locale": "ko",
+      "page": "02-recovery",
+      "sourceFields": [
+        "/slidesByDevice/iphone/1/label/ko",
+        "/slidesByDevice/iphone/1/headline/ko",
+        "/slidesByDevice/iphone/1/textElements/0/text/ko"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "duo",
+      "size": "2007x2853",
+      "locale": "ko",
+      "page": "03-training",
+      "sourceFields": [
+        "/slidesByDevice/iphone/2/label/ko",
+        "/slidesByDevice/iphone/2/headline/ko",
+        "/slidesByDevice/iphone/2/textElements/0/text/ko"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "duo",
+      "size": "2007x2853",
+      "locale": "ko",
+      "page": "04-diet",
+      "sourceFields": [
+        "/slidesByDevice/iphone/3/label/ko",
+        "/slidesByDevice/iphone/3/headline/ko",
+        "/slidesByDevice/iphone/3/textElements/0/text/ko"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "duo",
+      "size": "2007x2853",
+      "locale": "ko",
+      "page": "05-devices",
+      "sourceFields": [
+        "/slidesByDevice/iphone/4/label/ko",
+        "/slidesByDevice/iphone/4/headline/ko",
+        "/slidesByDevice/iphone/4/textElements/0/text/ko"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "duo",
+      "size": "2007x2853",
+      "locale": "es",
+      "page": "01-plan",
+      "sourceFields": [
+        "/slidesByDevice/iphone/0/label/es",
+        "/slidesByDevice/iphone/0/headline/es",
+        "/slidesByDevice/iphone/0/textElements/0/text/es"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "duo",
+      "size": "2007x2853",
+      "locale": "es",
+      "page": "02-recovery",
+      "sourceFields": [
+        "/slidesByDevice/iphone/1/label/es",
+        "/slidesByDevice/iphone/1/headline/es",
+        "/slidesByDevice/iphone/1/textElements/0/text/es"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "duo",
+      "size": "2007x2853",
+      "locale": "es",
+      "page": "03-training",
+      "sourceFields": [
+        "/slidesByDevice/iphone/2/label/es",
+        "/slidesByDevice/iphone/2/headline/es",
+        "/slidesByDevice/iphone/2/textElements/0/text/es"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "duo",
+      "size": "2007x2853",
+      "locale": "es",
+      "page": "04-diet",
+      "sourceFields": [
+        "/slidesByDevice/iphone/3/label/es",
+        "/slidesByDevice/iphone/3/headline/es",
+        "/slidesByDevice/iphone/3/textElements/0/text/es"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "duo",
+      "size": "2007x2853",
+      "locale": "es",
+      "page": "05-devices",
+      "sourceFields": [
+        "/slidesByDevice/iphone/4/label/es",
+        "/slidesByDevice/iphone/4/headline/es",
+        "/slidesByDevice/iphone/4/textElements/0/text/es"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "duo",
+      "size": "2007x2853",
+      "locale": "fr",
+      "page": "01-plan",
+      "sourceFields": [
+        "/slidesByDevice/iphone/0/label/fr",
+        "/slidesByDevice/iphone/0/headline/fr",
+        "/slidesByDevice/iphone/0/textElements/0/text/fr"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "duo",
+      "size": "2007x2853",
+      "locale": "fr",
+      "page": "02-recovery",
+      "sourceFields": [
+        "/slidesByDevice/iphone/1/label/fr",
+        "/slidesByDevice/iphone/1/headline/fr",
+        "/slidesByDevice/iphone/1/textElements/0/text/fr"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "duo",
+      "size": "2007x2853",
+      "locale": "fr",
+      "page": "03-training",
+      "sourceFields": [
+        "/slidesByDevice/iphone/2/label/fr",
+        "/slidesByDevice/iphone/2/headline/fr",
+        "/slidesByDevice/iphone/2/textElements/0/text/fr"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "duo",
+      "size": "2007x2853",
+      "locale": "fr",
+      "page": "04-diet",
+      "sourceFields": [
+        "/slidesByDevice/iphone/3/label/fr",
+        "/slidesByDevice/iphone/3/headline/fr",
+        "/slidesByDevice/iphone/3/textElements/0/text/fr"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "duo",
+      "size": "2007x2853",
+      "locale": "fr",
+      "page": "05-devices",
+      "sourceFields": [
+        "/slidesByDevice/iphone/4/label/fr",
+        "/slidesByDevice/iphone/4/headline/fr",
+        "/slidesByDevice/iphone/4/textElements/0/text/fr"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "duo",
+      "size": "2007x2853",
+      "locale": "de",
+      "page": "01-plan",
+      "sourceFields": [
+        "/slidesByDevice/iphone/0/label/de",
+        "/slidesByDevice/iphone/0/headline/de",
+        "/slidesByDevice/iphone/0/textElements/0/text/de"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "duo",
+      "size": "2007x2853",
+      "locale": "de",
+      "page": "02-recovery",
+      "sourceFields": [
+        "/slidesByDevice/iphone/1/label/de",
+        "/slidesByDevice/iphone/1/headline/de",
+        "/slidesByDevice/iphone/1/textElements/0/text/de"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "duo",
+      "size": "2007x2853",
+      "locale": "de",
+      "page": "03-training",
+      "sourceFields": [
+        "/slidesByDevice/iphone/2/label/de",
+        "/slidesByDevice/iphone/2/headline/de",
+        "/slidesByDevice/iphone/2/textElements/0/text/de"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "duo",
+      "size": "2007x2853",
+      "locale": "de",
+      "page": "04-diet",
+      "sourceFields": [
+        "/slidesByDevice/iphone/3/label/de",
+        "/slidesByDevice/iphone/3/headline/de",
+        "/slidesByDevice/iphone/3/textElements/0/text/de"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "duo",
+      "size": "2007x2853",
+      "locale": "de",
+      "page": "05-devices",
+      "sourceFields": [
+        "/slidesByDevice/iphone/4/label/de",
+        "/slidesByDevice/iphone/4/headline/de",
+        "/slidesByDevice/iphone/4/textElements/0/text/de"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "duo",
+      "size": "2007x2853",
+      "locale": "it",
+      "page": "01-plan",
+      "sourceFields": [
+        "/slidesByDevice/iphone/0/label/it",
+        "/slidesByDevice/iphone/0/headline/it",
+        "/slidesByDevice/iphone/0/textElements/0/text/it"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "duo",
+      "size": "2007x2853",
+      "locale": "it",
+      "page": "02-recovery",
+      "sourceFields": [
+        "/slidesByDevice/iphone/1/label/it",
+        "/slidesByDevice/iphone/1/headline/it",
+        "/slidesByDevice/iphone/1/textElements/0/text/it"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "duo",
+      "size": "2007x2853",
+      "locale": "it",
+      "page": "03-training",
+      "sourceFields": [
+        "/slidesByDevice/iphone/2/label/it",
+        "/slidesByDevice/iphone/2/headline/it",
+        "/slidesByDevice/iphone/2/textElements/0/text/it"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "duo",
+      "size": "2007x2853",
+      "locale": "it",
+      "page": "04-diet",
+      "sourceFields": [
+        "/slidesByDevice/iphone/3/label/it",
+        "/slidesByDevice/iphone/3/headline/it",
+        "/slidesByDevice/iphone/3/textElements/0/text/it"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "duo",
+      "size": "2007x2853",
+      "locale": "it",
+      "page": "05-devices",
+      "sourceFields": [
+        "/slidesByDevice/iphone/4/label/it",
+        "/slidesByDevice/iphone/4/headline/it",
+        "/slidesByDevice/iphone/4/textElements/0/text/it"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "duo",
+      "size": "2007x2853",
+      "locale": "pt-BR",
+      "page": "01-plan",
+      "sourceFields": [
+        "/slidesByDevice/iphone/0/label/pt-BR",
+        "/slidesByDevice/iphone/0/headline/pt-BR",
+        "/slidesByDevice/iphone/0/textElements/0/text/pt-BR"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "duo",
+      "size": "2007x2853",
+      "locale": "pt-BR",
+      "page": "02-recovery",
+      "sourceFields": [
+        "/slidesByDevice/iphone/1/label/pt-BR",
+        "/slidesByDevice/iphone/1/headline/pt-BR",
+        "/slidesByDevice/iphone/1/textElements/0/text/pt-BR"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "duo",
+      "size": "2007x2853",
+      "locale": "pt-BR",
+      "page": "03-training",
+      "sourceFields": [
+        "/slidesByDevice/iphone/2/label/pt-BR",
+        "/slidesByDevice/iphone/2/headline/pt-BR",
+        "/slidesByDevice/iphone/2/textElements/0/text/pt-BR"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "duo",
+      "size": "2007x2853",
+      "locale": "pt-BR",
+      "page": "04-diet",
+      "sourceFields": [
+        "/slidesByDevice/iphone/3/label/pt-BR",
+        "/slidesByDevice/iphone/3/headline/pt-BR",
+        "/slidesByDevice/iphone/3/textElements/0/text/pt-BR"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "duo",
+      "size": "2007x2853",
+      "locale": "pt-BR",
+      "page": "05-devices",
+      "sourceFields": [
+        "/slidesByDevice/iphone/4/label/pt-BR",
+        "/slidesByDevice/iphone/4/headline/pt-BR",
+        "/slidesByDevice/iphone/4/textElements/0/text/pt-BR"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "duo",
+      "size": "2007x2853",
+      "locale": "ru",
+      "page": "01-plan",
+      "sourceFields": [
+        "/slidesByDevice/iphone/0/label/ru",
+        "/slidesByDevice/iphone/0/headline/ru",
+        "/slidesByDevice/iphone/0/textElements/0/text/ru"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "duo",
+      "size": "2007x2853",
+      "locale": "ru",
+      "page": "02-recovery",
+      "sourceFields": [
+        "/slidesByDevice/iphone/1/label/ru",
+        "/slidesByDevice/iphone/1/headline/ru",
+        "/slidesByDevice/iphone/1/textElements/0/text/ru"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "duo",
+      "size": "2007x2853",
+      "locale": "ru",
+      "page": "03-training",
+      "sourceFields": [
+        "/slidesByDevice/iphone/2/label/ru",
+        "/slidesByDevice/iphone/2/headline/ru",
+        "/slidesByDevice/iphone/2/textElements/0/text/ru"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "duo",
+      "size": "2007x2853",
+      "locale": "ru",
+      "page": "04-diet",
+      "sourceFields": [
+        "/slidesByDevice/iphone/3/label/ru",
+        "/slidesByDevice/iphone/3/headline/ru",
+        "/slidesByDevice/iphone/3/textElements/0/text/ru"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "duo",
+      "size": "2007x2853",
+      "locale": "ru",
+      "page": "05-devices",
+      "sourceFields": [
+        "/slidesByDevice/iphone/4/label/ru",
+        "/slidesByDevice/iphone/4/headline/ru",
+        "/slidesByDevice/iphone/4/textElements/0/text/ru"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "duo",
+      "size": "2007x2853",
+      "locale": "ar",
+      "page": "01-plan",
+      "sourceFields": [
+        "/slidesByDevice/iphone/0/label/ar",
+        "/slidesByDevice/iphone/0/headline/ar",
+        "/slidesByDevice/iphone/0/textElements/0/text/ar"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "duo",
+      "size": "2007x2853",
+      "locale": "ar",
+      "page": "02-recovery",
+      "sourceFields": [
+        "/slidesByDevice/iphone/1/label/ar",
+        "/slidesByDevice/iphone/1/headline/ar",
+        "/slidesByDevice/iphone/1/textElements/0/text/ar"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "duo",
+      "size": "2007x2853",
+      "locale": "ar",
+      "page": "03-training",
+      "sourceFields": [
+        "/slidesByDevice/iphone/2/label/ar",
+        "/slidesByDevice/iphone/2/headline/ar",
+        "/slidesByDevice/iphone/2/textElements/0/text/ar"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "duo",
+      "size": "2007x2853",
+      "locale": "ar",
+      "page": "04-diet",
+      "sourceFields": [
+        "/slidesByDevice/iphone/3/label/ar",
+        "/slidesByDevice/iphone/3/headline/ar",
+        "/slidesByDevice/iphone/3/textElements/0/text/ar"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "duo",
+      "size": "2007x2853",
+      "locale": "ar",
+      "page": "05-devices",
+      "sourceFields": [
+        "/slidesByDevice/iphone/4/label/ar",
+        "/slidesByDevice/iphone/4/headline/ar",
+        "/slidesByDevice/iphone/4/textElements/0/text/ar"
+      ],
+      "marketingTextAudit": "PASS_NO_ADDED_UPSELL_OR_FREE_LIMIT_COPY",
+      "latestPosterPixels": "NOT_RENDERED_OR_REVALIDATED"
+    },
+    {
+      "device": "watch",
+      "size": "416x496",
+      "locale": "zh",
+      "page": "01-exercise-185",
+      "sourceFields": [],
+      "marketingTextAudit": "PASS_SOURCE_ROUTE_ADDS_NO_MARKETING_TEXT_RAW_NATIVE_CAPTURE",
+      "latestPosterPixels": "NOT_REVALIDATED_NO_OCR_CLAIM"
+    },
+    {
+      "device": "watch",
+      "size": "416x496",
+      "locale": "zh",
+      "page": "02-rest-160",
+      "sourceFields": [],
+      "marketingTextAudit": "PASS_SOURCE_ROUTE_ADDS_NO_MARKETING_TEXT_RAW_NATIVE_CAPTURE",
+      "latestPosterPixels": "NOT_REVALIDATED_NO_OCR_CLAIM"
+    },
+    {
+      "device": "watch",
+      "size": "416x496",
+      "locale": "zh-Hant",
+      "page": "01-exercise-185",
+      "sourceFields": [],
+      "marketingTextAudit": "PASS_SOURCE_ROUTE_ADDS_NO_MARKETING_TEXT_RAW_NATIVE_CAPTURE",
+      "latestPosterPixels": "NOT_REVALIDATED_NO_OCR_CLAIM"
+    },
+    {
+      "device": "watch",
+      "size": "416x496",
+      "locale": "zh-Hant",
+      "page": "02-rest-160",
+      "sourceFields": [],
+      "marketingTextAudit": "PASS_SOURCE_ROUTE_ADDS_NO_MARKETING_TEXT_RAW_NATIVE_CAPTURE",
+      "latestPosterPixels": "NOT_REVALIDATED_NO_OCR_CLAIM"
+    },
+    {
+      "device": "watch",
+      "size": "416x496",
+      "locale": "en",
+      "page": "01-exercise-185",
+      "sourceFields": [],
+      "marketingTextAudit": "PASS_SOURCE_ROUTE_ADDS_NO_MARKETING_TEXT_RAW_NATIVE_CAPTURE",
+      "latestPosterPixels": "NOT_REVALIDATED_NO_OCR_CLAIM"
+    },
+    {
+      "device": "watch",
+      "size": "416x496",
+      "locale": "en",
+      "page": "02-rest-160",
+      "sourceFields": [],
+      "marketingTextAudit": "PASS_SOURCE_ROUTE_ADDS_NO_MARKETING_TEXT_RAW_NATIVE_CAPTURE",
+      "latestPosterPixels": "NOT_REVALIDATED_NO_OCR_CLAIM"
+    },
+    {
+      "device": "watch",
+      "size": "416x496",
+      "locale": "ja",
+      "page": "01-exercise-185",
+      "sourceFields": [],
+      "marketingTextAudit": "PASS_SOURCE_ROUTE_ADDS_NO_MARKETING_TEXT_RAW_NATIVE_CAPTURE",
+      "latestPosterPixels": "NOT_REVALIDATED_NO_OCR_CLAIM"
+    },
+    {
+      "device": "watch",
+      "size": "416x496",
+      "locale": "ja",
+      "page": "02-rest-160",
+      "sourceFields": [],
+      "marketingTextAudit": "PASS_SOURCE_ROUTE_ADDS_NO_MARKETING_TEXT_RAW_NATIVE_CAPTURE",
+      "latestPosterPixels": "NOT_REVALIDATED_NO_OCR_CLAIM"
+    },
+    {
+      "device": "watch",
+      "size": "416x496",
+      "locale": "ko",
+      "page": "01-exercise-185",
+      "sourceFields": [],
+      "marketingTextAudit": "PASS_SOURCE_ROUTE_ADDS_NO_MARKETING_TEXT_RAW_NATIVE_CAPTURE",
+      "latestPosterPixels": "NOT_REVALIDATED_NO_OCR_CLAIM"
+    },
+    {
+      "device": "watch",
+      "size": "416x496",
+      "locale": "ko",
+      "page": "02-rest-160",
+      "sourceFields": [],
+      "marketingTextAudit": "PASS_SOURCE_ROUTE_ADDS_NO_MARKETING_TEXT_RAW_NATIVE_CAPTURE",
+      "latestPosterPixels": "NOT_REVALIDATED_NO_OCR_CLAIM"
+    },
+    {
+      "device": "watch",
+      "size": "416x496",
+      "locale": "es",
+      "page": "01-exercise-185",
+      "sourceFields": [],
+      "marketingTextAudit": "PASS_SOURCE_ROUTE_ADDS_NO_MARKETING_TEXT_RAW_NATIVE_CAPTURE",
+      "latestPosterPixels": "NOT_REVALIDATED_NO_OCR_CLAIM"
+    },
+    {
+      "device": "watch",
+      "size": "416x496",
+      "locale": "es",
+      "page": "02-rest-160",
+      "sourceFields": [],
+      "marketingTextAudit": "PASS_SOURCE_ROUTE_ADDS_NO_MARKETING_TEXT_RAW_NATIVE_CAPTURE",
+      "latestPosterPixels": "NOT_REVALIDATED_NO_OCR_CLAIM"
+    },
+    {
+      "device": "watch",
+      "size": "416x496",
+      "locale": "fr",
+      "page": "01-exercise-185",
+      "sourceFields": [],
+      "marketingTextAudit": "PASS_SOURCE_ROUTE_ADDS_NO_MARKETING_TEXT_RAW_NATIVE_CAPTURE",
+      "latestPosterPixels": "NOT_REVALIDATED_NO_OCR_CLAIM"
+    },
+    {
+      "device": "watch",
+      "size": "416x496",
+      "locale": "fr",
+      "page": "02-rest-160",
+      "sourceFields": [],
+      "marketingTextAudit": "PASS_SOURCE_ROUTE_ADDS_NO_MARKETING_TEXT_RAW_NATIVE_CAPTURE",
+      "latestPosterPixels": "NOT_REVALIDATED_NO_OCR_CLAIM"
+    },
+    {
+      "device": "watch",
+      "size": "416x496",
+      "locale": "de",
+      "page": "01-exercise-185",
+      "sourceFields": [],
+      "marketingTextAudit": "PASS_SOURCE_ROUTE_ADDS_NO_MARKETING_TEXT_RAW_NATIVE_CAPTURE",
+      "latestPosterPixels": "NOT_REVALIDATED_NO_OCR_CLAIM"
+    },
+    {
+      "device": "watch",
+      "size": "416x496",
+      "locale": "de",
+      "page": "02-rest-160",
+      "sourceFields": [],
+      "marketingTextAudit": "PASS_SOURCE_ROUTE_ADDS_NO_MARKETING_TEXT_RAW_NATIVE_CAPTURE",
+      "latestPosterPixels": "NOT_REVALIDATED_NO_OCR_CLAIM"
+    },
+    {
+      "device": "watch",
+      "size": "416x496",
+      "locale": "it",
+      "page": "01-exercise-185",
+      "sourceFields": [],
+      "marketingTextAudit": "PASS_SOURCE_ROUTE_ADDS_NO_MARKETING_TEXT_RAW_NATIVE_CAPTURE",
+      "latestPosterPixels": "NOT_REVALIDATED_NO_OCR_CLAIM"
+    },
+    {
+      "device": "watch",
+      "size": "416x496",
+      "locale": "it",
+      "page": "02-rest-160",
+      "sourceFields": [],
+      "marketingTextAudit": "PASS_SOURCE_ROUTE_ADDS_NO_MARKETING_TEXT_RAW_NATIVE_CAPTURE",
+      "latestPosterPixels": "NOT_REVALIDATED_NO_OCR_CLAIM"
+    },
+    {
+      "device": "watch",
+      "size": "416x496",
+      "locale": "pt-BR",
+      "page": "01-exercise-185",
+      "sourceFields": [],
+      "marketingTextAudit": "PASS_SOURCE_ROUTE_ADDS_NO_MARKETING_TEXT_RAW_NATIVE_CAPTURE",
+      "latestPosterPixels": "NOT_REVALIDATED_NO_OCR_CLAIM"
+    },
+    {
+      "device": "watch",
+      "size": "416x496",
+      "locale": "pt-BR",
+      "page": "02-rest-160",
+      "sourceFields": [],
+      "marketingTextAudit": "PASS_SOURCE_ROUTE_ADDS_NO_MARKETING_TEXT_RAW_NATIVE_CAPTURE",
+      "latestPosterPixels": "NOT_REVALIDATED_NO_OCR_CLAIM"
+    },
+    {
+      "device": "watch",
+      "size": "416x496",
+      "locale": "ru",
+      "page": "01-exercise-185",
+      "sourceFields": [],
+      "marketingTextAudit": "PASS_SOURCE_ROUTE_ADDS_NO_MARKETING_TEXT_RAW_NATIVE_CAPTURE",
+      "latestPosterPixels": "NOT_REVALIDATED_NO_OCR_CLAIM"
+    },
+    {
+      "device": "watch",
+      "size": "416x496",
+      "locale": "ru",
+      "page": "02-rest-160",
+      "sourceFields": [],
+      "marketingTextAudit": "PASS_SOURCE_ROUTE_ADDS_NO_MARKETING_TEXT_RAW_NATIVE_CAPTURE",
+      "latestPosterPixels": "NOT_REVALIDATED_NO_OCR_CLAIM"
+    },
+    {
+      "device": "watch",
+      "size": "416x496",
+      "locale": "ar",
+      "page": "01-exercise-185",
+      "sourceFields": [],
+      "marketingTextAudit": "PASS_SOURCE_ROUTE_ADDS_NO_MARKETING_TEXT_RAW_NATIVE_CAPTURE",
+      "latestPosterPixels": "NOT_REVALIDATED_NO_OCR_CLAIM"
+    },
+    {
+      "device": "watch",
+      "size": "416x496",
+      "locale": "ar",
+      "page": "02-rest-160",
+      "sourceFields": [],
+      "marketingTextAudit": "PASS_SOURCE_ROUTE_ADDS_NO_MARKETING_TEXT_RAW_NATIVE_CAPTURE",
+      "latestPosterPixels": "NOT_REVALIDATED_NO_OCR_CLAIM"
+    }
+  ],
+  "auditMethod": [
+    "Read all60 locale/page label/headline/description groups for marketing meaning",
+    "Searched all candidate JSON string values plus rendered poster/component sources for Pro/unlock/free/premium/subscription variants",
+    "Checked DeckCanvas and DeviceShowcase consumption of same candidate text for all4poster sizes",
+    "Checked composed CoachChat/device lineup/frames/fitted copy/headline helper sources",
+    "Watch source-route audit only: raw native image; no new per-image marketing caption layer",
+    "No new264poster-pixel or fullOCR/visual acceptance claim"
+  ],
+  "canonicalAndOriginal461FilesUnchanged": true,
+  "nativeAndPaywallUntouched": true,
+  "actualNewPNGsVerified": 0,
+  "noUnlimitedOrAllFreePromiseAdded": true
+}
