@@ -243,6 +243,8 @@ struct UserSettings: Codable, Sendable {
     var exerciseWeightInputOrder: [String]? = nil
     /// Legacy inputs may include auto-seeded values. Only new explicit edits earn this marker.
     var confirmedExerciseWeightInputIDs: [String]? = nil
+    /// Latest real 3-set anchor for the approved full-body rough table. Nil on older profiles.
+    var fullBodyLoadAnchor: FullBodyLoadAnchor? = nil
     var distanceUnit: DistanceUnit = .km
     /// Optional for older profiles; ordinary browsing folds specialist versions by default.
     var hideRareVariants: Bool? = nil

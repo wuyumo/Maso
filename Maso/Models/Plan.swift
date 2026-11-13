@@ -2,14 +2,18 @@ import Foundation
 
 /// A suggestion is a planned target, never evidence that a set was performed.
 struct ExerciseParameterSuggestion: Codable, Hashable, Sendable {
-    enum Source: String, Codable, Sendable { case history, preference, userInput, shared, crossExercise, personalHistory, roughEstimate }
+    enum Source: String, Codable, Sendable {
+        case history, preference, userInput, shared, crossExercise, personalHistory, roughEstimate, fullBodyRough
+    }
     let value: Double
     let source: Source
     var exerciseID: String?
     var recordID: String?
     var recordedAt: Date?
     var ruleID: String? = nil
-    var isCrossExerciseEstimate: Bool { source == .crossExercise || source == .personalHistory || source == .roughEstimate }
+    var isCrossExerciseEstimate: Bool {
+        source == .crossExercise || source == .personalHistory || source == .roughEstimate || source == .fullBodyRough
+    }
 }
 
 // 训练计划的一个步骤 (= web 端 PlanStep)
@@ -182,6 +186,8 @@ struct SetRecord: Identifiable, Hashable, Codable, Sendable {
     var activeIntervals: [WorkoutActiveInterval]? = nil
     var restBeforeSeconds: Double? = nil
     var sixRMReference: SixRMReference? = nil
+    /// True only when this completed load was a real entry, not an unconfirmed estimate.
+    var manualLoad: Bool? = nil
     var hasConfirmedSixRM: Bool {
         sixRMReference?.protocolID == "bench-press-6rm-2013-v1" && reps == 6
             && weight == sixRMReference?.kilograms && (weight ?? 0) > 0
