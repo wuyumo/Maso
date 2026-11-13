@@ -78,12 +78,16 @@
       "reasonNotActivated": "Superseded: source now active only for three locales on iPhone/iphone-medium; othertargetsremainblocked"
     }
   ],
-  "export03Enabled": "onlyzh/en/zh-Hantiphoneandiphone-medium",
+  "export03Enabled": "blockedpendingt328nativevalidation",
   "matchingWatchCaptureExecuted": true,
   "blockingFindings": [
     {
-      "scope": "other9localesandiPad/Duo03",
-      "needed": "matchinggenuine51captures;exportremainsblocked"
+      "scope": "all48page03variants",
+      "needed": "t328 actual capsule→automaticcard and red-warning verification; replacement native outputs before unlock"
+    },
+    {
+      "scope": "all48page05variants",
+      "needed": "replace oldWatchrestfixture through isolatedcandidate mapping after matchingnativecapture delivery"
     }
   ],
   "otherPages": [
@@ -105,5 +109,7 @@
   "originalPublicCaptureHashesPreserved": 551,
   "browserOrNetworkActions": false,
   "matchingWatchSources": "watch51-source-map.json",
-  "clockPolicy": "Phone09:41/Watch10:11unaltered;independentdemonstrations,nosimultaneoussyncclaim"
+  "clockPolicy": "Phone09:41/Watch10:11unaltered;independentdemonstrations,nosimultaneoussyncclaim",
+  "redWarningStateAccepted": false,
+  "newT328NativeCapsuleToCardVerified": false
 }

@@ -27,9 +27,9 @@ export function adjacentTarget(target:PreviewTarget,direction:number):PreviewTar
 export function canExportPage(target:PreviewTarget) {
   const ready=["zh","en","zh-Hant"].includes(target.locale);
   if(target.device==="watch") return ready&&["watch-exercise","watch-rest"].includes(target.slide);
-  return ["plan","recovery"].includes(target.slide)||(target.slide==="training"&&ready&&["iphone","iphone-medium"].includes(target.device));
+  return ["plan","recovery","diet"].includes(target.slide); // 03 held for t328 real native warning/card validation
 }
-export function exportName(target:PreviewTarget) {return target.device==="watch"?(target.slide==="watch-exercise"?"01-exercise-185.png":"02-rest-160.png"):target.slide==="training"?"03-training.png":target.slide==="plan"?"01-plan.png":"02-recovery.png";}
+export function exportName(target:PreviewTarget) {return target.device==="watch"?(target.slide==="watch-exercise"?"01-exercise-185.png":"02-rest-160.png"):target.slide==="training"?"03-training.png":target.slide==="diet"?"04-diet.png":target.slide==="plan"?"01-plan.png":"02-recovery.png";}
 
 export function fitScale(viewport:{w:number;h:number},canvas:{w:number;h:number}) {
   return Math.max(0.01,Math.min(1,Math.max(1,viewport.w-32)/canvas.w,Math.max(1,viewport.h-32)/canvas.h));
@@ -44,7 +44,7 @@ type Props = {
 const button:React.CSSProperties={minHeight:40,padding:"8px 12px",border:"1px solid #ccd2dc",borderRadius:8,background:"#fff",color:"#172233",fontSize:14,cursor:"pointer"};
 export function CandidatePreviewControls({target,mode,scale,ready,busy,error,onTarget,onMode,onExport}:Props) {
   const index=pageIndex(target); const allowed=canExportPage(target);const pages=pagesForDevice(target.device);
-  const status=error?error:!allowed?(target.slide==="training"||target.device==="watch"?"当前语言/设备51素材未齐 · 不能导出":"保留参考页 · 不在本批导出"):busy?"正在保存原尺寸 PNG…":ready?"源素材已核对 · 可导出候选，整张待验收":"正在加载字体与图片…";
+  const status=error?error:!allowed?(target.slide==="training"?"03 等待真实心率胶囊→自动卡片与红态验证 · 不能导出":target.slide==="devices"?"05 Watch内屏仍是旧fixture · 等待替换，不能导出":"当前语言/设备51素材未齐 · 不能导出"):busy?"正在保存原尺寸 PNG…":ready?"源素材已核对 · 可导出候选，整张待验收":"正在加载字体与图片…";
   return <header aria-label="截图预览控制栏" style={{flexShrink:0,maxHeight:"46dvh",overflowY:"auto",background:"#fff",borderBottom:"1px solid #cdd3dd",padding:"10px 16px",boxShadow:"0 2px 10px #17223312",zIndex:10}}>
     <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:8,flexWrap:"wrap",marginBottom:8}}>
       <strong>截图预览 · {index+1}/{pages.length} · {pages[index].label}</strong>

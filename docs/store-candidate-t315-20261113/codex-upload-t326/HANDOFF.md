@@ -1,3 +1,5 @@
+> HISTORICAL ONLY: usert329 returned ownership to this assistant. Do not launch/resume Codex. Active unique handoff: ../WORKFLOW-HANDOFF.md
+
 # Usert326 — Codex screenshot-upload delegation, single-task preflight
 
 The user explicitly delegated App Store screenshot upload to Codex. This is NOT permission to restart old paused routines or replay release43 submission scripts. ExistingMassoCodexGUIprocessisapp-server; do not inject into GUI or launch duplicate upload writers. This new CLI invocation is read-only preflight; no upload can proceed because acceptedImages is empty.

@@ -1,0 +1,3042 @@
+{
+  "time": "2026-11-13T02:45:38.794Z",
+  "candidateSHA256": "3d56c1957d7dbc434e15c51bb76c4535b1789ee6d4e670c4512388b2146e1fa4",
+  "sourceOccurrences": 192,
+  "uniqueNativeFiles": 180,
+  "sourceRows": [
+    {
+      "page": "01",
+      "locale": "zh",
+      "family": "iphone",
+      "scene": "plans",
+      "path": "public/screenshots/localized/iphone/zh/plans.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "715e68438ed15a8698119e0ca4eb9520ce0b6f582a9e5f7423b9bb6c48d7025f",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "02",
+      "locale": "zh",
+      "family": "iphone",
+      "scene": "muscle-selected",
+      "path": "public/screenshots/localized/iphone/zh/muscle-selected.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "29f5d38aec5c9248ea1288dff0582a809c0fa4b4d6d99aa87001030e2b1018e0",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "zh",
+      "family": "iphone",
+      "scene": "diet",
+      "path": "public/screenshots/localized/iphone/zh/diet.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "6922f9accfde3db54244499cebd1332a82d8890c964e07f8460a22ff99878781",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "zh",
+      "family": "iphone",
+      "scene": "sleep",
+      "path": "public/screenshots/localized/iphone/zh/sleep.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "aca3cf3970e37bc0ee30753bfa378d16b0897077a808f47041ce1c8a4d810da7",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "01",
+      "locale": "zh",
+      "family": "ipad",
+      "scene": "plans",
+      "path": "public/screenshots/localized/ipad/zh/plans.png",
+      "width": 2064,
+      "height": 2752,
+      "sha256": "82e9d71b2c1e5eccf90070f779a47571f20769810eccf3730dcc3d041029d39e",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "02",
+      "locale": "zh",
+      "family": "ipad",
+      "scene": "muscle-selected",
+      "path": "public/screenshots/localized/ipad/zh/muscle-selected.png",
+      "width": 2064,
+      "height": 2752,
+      "sha256": "7c416903ff72bf78310d216e7caafc8e99dda15901fdcab43a50fc61843c5e1c",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "zh",
+      "family": "ipad",
+      "scene": "diet",
+      "path": "public/screenshots/localized/ipad/zh/diet.png",
+      "width": 2064,
+      "height": 2752,
+      "sha256": "878bfe39708340e525392105a15208c850121b272d2fb02464006388557c8a65",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "zh",
+      "family": "ipad",
+      "scene": "sleep",
+      "path": "public/screenshots/localized/ipad/zh/sleep.png",
+      "width": 2064,
+      "height": 2752,
+      "sha256": "b959149f226779a85e49470483705a18a8cc5256cee4005def23ce10e2531e5a",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "01",
+      "locale": "zh",
+      "family": "duo",
+      "scene": "plans",
+      "path": "public/screenshots/localized/duo/zh/plans.png",
+      "width": 2007,
+      "height": 2853,
+      "sha256": "33c65de56a9b67d7f4201168b0b03f845b90b9d0ce0fa1c81119d11d623ba20a",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "02",
+      "locale": "zh",
+      "family": "duo",
+      "scene": "muscle-selected",
+      "path": "public/screenshots/localized/duo/zh/muscle-selected.png",
+      "width": 2007,
+      "height": 2853,
+      "sha256": "b22890f986cdba95cb3acf9e8e08aa8f8941b5cdd2e7583ae6eb23f3cf65ad04",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "zh",
+      "family": "duo",
+      "scene": "diet",
+      "path": "public/screenshots/localized/duo/zh/diet.png",
+      "width": 2007,
+      "height": 2853,
+      "sha256": "13a9db7b95a99378a0edd35356b84781720530a8064aac28556e1ba12d2aab03",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "zh",
+      "family": "duo",
+      "scene": "sleep",
+      "path": "public/screenshots/localized/duo/zh/sleep.png",
+      "width": 2007,
+      "height": 2853,
+      "sha256": "2663045d309c8e73fe0f3f181012459b8487f231a3a5e1b689ac05f7e8c9b3f8",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "05",
+      "locale": "zh",
+      "family": "iphone",
+      "scene": "today",
+      "path": "public/screenshots/localized/iphone/zh/today.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "ad8ce8d0d8d9d7399431760924c7c4ee1f04ec5092271bd359ba53210d9101fc",
+      "sourceGeneration": "existing authentic localized native captures; Watch retains old fixture and requires paired update",
+      "posterAccepted": false
+    },
+    {
+      "page": "05",
+      "locale": "zh",
+      "family": "ipad",
+      "scene": "insights",
+      "path": "public/screenshots/localized/ipad/zh/insights.png",
+      "width": 2064,
+      "height": 2752,
+      "sha256": "82dbc742864cf4f4ee36c910e10b6527fca34e8dffb015d0c4e4b9448828a706",
+      "sourceGeneration": "existing authentic localized native captures; Watch retains old fixture and requires paired update",
+      "posterAccepted": false
+    },
+    {
+      "page": "05",
+      "locale": "zh",
+      "family": "duo",
+      "scene": "diet",
+      "path": "public/screenshots/localized/duo/zh/diet.png",
+      "width": 2007,
+      "height": 2853,
+      "sha256": "13a9db7b95a99378a0edd35356b84781720530a8064aac28556e1ba12d2aab03",
+      "sourceGeneration": "existing authentic localized native captures; Watch retains old fixture and requires paired update",
+      "posterAccepted": false
+    },
+    {
+      "page": "05",
+      "locale": "zh",
+      "family": "watch",
+      "scene": "rest-160",
+      "path": "public/screenshots/localized/watch/zh/rest-160.png",
+      "width": 416,
+      "height": 496,
+      "sha256": "f261722822ce5879c04f775d461f43732000dcd23dfe716ef9e43b5a49a6b809",
+      "sourceGeneration": "existing authentic localized native captures; Watch retains old fixture and requires paired update",
+      "posterAccepted": false
+    },
+    {
+      "page": "01",
+      "locale": "zh-Hant",
+      "family": "iphone",
+      "scene": "plans",
+      "path": "public/screenshots/localized/iphone/zh-Hant/plans.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "f7217f2b1e2fbb386c4eeffee7c0d82e764f492f6613ed0c91878277c6f83cc1",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "02",
+      "locale": "zh-Hant",
+      "family": "iphone",
+      "scene": "muscle-selected",
+      "path": "public/screenshots/localized/iphone/zh-Hant/muscle-selected.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "aa74ed08190078f3d15b3cc2d0d94d5c8e7f93e20a4b23285c2575831c1ae786",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "zh-Hant",
+      "family": "iphone",
+      "scene": "diet",
+      "path": "public/screenshots/localized/iphone/zh-Hant/diet.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "2f69e08f720b2b8fb58a5bd7d82ee70fa9a5b7d6ac2f26f4bfb517e311a8a9d4",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "zh-Hant",
+      "family": "iphone",
+      "scene": "sleep",
+      "path": "public/screenshots/localized/iphone/zh-Hant/sleep.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "8d382e1dbe7ef19f41cdde81e224e423c4704eff6115c79c7b9ccafc9e31a816",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "01",
+      "locale": "zh-Hant",
+      "family": "ipad",
+      "scene": "plans",
+      "path": "public/screenshots/localized/ipad/zh-Hant/plans.png",
+      "width": 2064,
+      "height": 2752,
+      "sha256": "59794fcaeb736b1992cdea14202d9662f195233abed2c8b692d1feaa8f19419f",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "02",
+      "locale": "zh-Hant",
+      "family": "ipad",
+      "scene": "muscle-selected",
+      "path": "public/screenshots/localized/ipad/zh-Hant/muscle-selected.png",
+      "width": 2064,
+      "height": 2752,
+      "sha256": "e91083ecb7c069700a0ea6e11d8b873b4a46382e5b1cdf123df297588ab26436",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "zh-Hant",
+      "family": "ipad",
+      "scene": "diet",
+      "path": "public/screenshots/localized/ipad/zh-Hant/diet.png",
+      "width": 2064,
+      "height": 2752,
+      "sha256": "8ca651077f4e12db9c04cb970a283fc4123d669c14d7a9c36de9c21243988b73",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "zh-Hant",
+      "family": "ipad",
+      "scene": "sleep",
+      "path": "public/screenshots/localized/ipad/zh-Hant/sleep.png",
+      "width": 2064,
+      "height": 2752,
+      "sha256": "663929fd51f9d43d43845c8f81ba8f377bab4f119a890472f5ff3053157d9f9b",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "01",
+      "locale": "zh-Hant",
+      "family": "duo",
+      "scene": "plans",
+      "path": "public/screenshots/localized/duo/zh-Hant/plans.png",
+      "width": 2007,
+      "height": 2853,
+      "sha256": "1873c7e2a737db32f3e0e691178f053344c51d659c3f0ef40e35a36d806a19d1",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "02",
+      "locale": "zh-Hant",
+      "family": "duo",
+      "scene": "muscle-selected",
+      "path": "public/screenshots/localized/duo/zh-Hant/muscle-selected.png",
+      "width": 2007,
+      "height": 2853,
+      "sha256": "493f99b530c85459518dbe5b91f638888a39b5094432529a4f4103314a819678",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "zh-Hant",
+      "family": "duo",
+      "scene": "diet",
+      "path": "public/screenshots/localized/duo/zh-Hant/diet.png",
+      "width": 2007,
+      "height": 2853,
+      "sha256": "c28b19e21dea7d1cfeef17efadc5c8eef93e46d4ff4ead74bcf8011894f3886f",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "zh-Hant",
+      "family": "duo",
+      "scene": "sleep",
+      "path": "public/screenshots/localized/duo/zh-Hant/sleep.png",
+      "width": 2007,
+      "height": 2853,
+      "sha256": "7d6a001e16bf496700912d3a8689d57b3e4f26f69a9a9b396be39f5e9c2c6926",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "05",
+      "locale": "zh-Hant",
+      "family": "iphone",
+      "scene": "today",
+      "path": "public/screenshots/localized/iphone/zh-Hant/today.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "22e28bf2b29409a6aa570f5d762f4338ac700bbd3ea7cb5bbf9909bb10748478",
+      "sourceGeneration": "existing authentic localized native captures; Watch retains old fixture and requires paired update",
+      "posterAccepted": false
+    },
+    {
+      "page": "05",
+      "locale": "zh-Hant",
+      "family": "ipad",
+      "scene": "insights",
+      "path": "public/screenshots/localized/ipad/zh-Hant/insights.png",
+      "width": 2064,
+      "height": 2752,
+      "sha256": "9afc5f0a35af58fcc6f210e71f63260d3de84c6fc2dbbcf3ad5e6cb9203df884",
+      "sourceGeneration": "existing authentic localized native captures; Watch retains old fixture and requires paired update",
+      "posterAccepted": false
+    },
+    {
+      "page": "05",
+      "locale": "zh-Hant",
+      "family": "duo",
+      "scene": "diet",
+      "path": "public/screenshots/localized/duo/zh-Hant/diet.png",
+      "width": 2007,
+      "height": 2853,
+      "sha256": "c28b19e21dea7d1cfeef17efadc5c8eef93e46d4ff4ead74bcf8011894f3886f",
+      "sourceGeneration": "existing authentic localized native captures; Watch retains old fixture and requires paired update",
+      "posterAccepted": false
+    },
+    {
+      "page": "05",
+      "locale": "zh-Hant",
+      "family": "watch",
+      "scene": "rest-160",
+      "path": "public/screenshots/localized/watch/zh-Hant/rest-160.png",
+      "width": 416,
+      "height": 496,
+      "sha256": "066bf23dc5fed18d0fecdba504dfdf0b30ed1f10f4e799920a8a094501817ae0",
+      "sourceGeneration": "existing authentic localized native captures; Watch retains old fixture and requires paired update",
+      "posterAccepted": false
+    },
+    {
+      "page": "01",
+      "locale": "en",
+      "family": "iphone",
+      "scene": "plans",
+      "path": "public/screenshots/localized/iphone/en/plans.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "f386f4a6aea0e68b1b60fd65071689f57ba9c94186578a2d7bc90562f577a863",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "02",
+      "locale": "en",
+      "family": "iphone",
+      "scene": "muscle-selected",
+      "path": "public/screenshots/localized/iphone/en/muscle-selected.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "e72e509becb30d370d7b06460c74501d8415e87896a64b13bc6935d77a380a3c",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "en",
+      "family": "iphone",
+      "scene": "diet",
+      "path": "public/screenshots/localized/iphone/en/diet.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "f49a0afc8b352303c00f2927c4c2800d405d59d95bf932915c41efb3d21541c0",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "en",
+      "family": "iphone",
+      "scene": "sleep",
+      "path": "public/screenshots/localized/iphone/en/sleep.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "067dd4de2e2a33b33b5cf2b50b0d279b76ae347d90d0f2c4dc3998ff8637ff1c",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "01",
+      "locale": "en",
+      "family": "ipad",
+      "scene": "plans",
+      "path": "public/screenshots/localized/ipad/en/plans.png",
+      "width": 2064,
+      "height": 2752,
+      "sha256": "b93b6c5451d5dca38cfa1f76ef31f273ed7966720f01a0f110a24ea503806799",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "02",
+      "locale": "en",
+      "family": "ipad",
+      "scene": "muscle-selected",
+      "path": "public/screenshots/localized/ipad/en/muscle-selected.png",
+      "width": 2064,
+      "height": 2752,
+      "sha256": "9565dc2f4159c367d2dbe193a16c47da22d89a5be052edef758363d8f3468756",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "en",
+      "family": "ipad",
+      "scene": "diet",
+      "path": "public/screenshots/localized/ipad/en/diet.png",
+      "width": 2064,
+      "height": 2752,
+      "sha256": "c6047c9a9a644f5433818861a3fba34119f0553ad1aa21f47aae4bed027b214f",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "en",
+      "family": "ipad",
+      "scene": "sleep",
+      "path": "public/screenshots/localized/ipad/en/sleep.png",
+      "width": 2064,
+      "height": 2752,
+      "sha256": "f35e27597598b9f70066825c2eaf03cb9d3f683e1ca9c98401f5e441d24e1b9e",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "01",
+      "locale": "en",
+      "family": "duo",
+      "scene": "plans",
+      "path": "public/screenshots/localized/duo/en/plans.png",
+      "width": 2007,
+      "height": 2853,
+      "sha256": "b7200be9840adf106c6d28ccfa335f49b595d39f9f3a56965ac604c96a2791c4",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "02",
+      "locale": "en",
+      "family": "duo",
+      "scene": "muscle-selected",
+      "path": "public/screenshots/localized/duo/en/muscle-selected.png",
+      "width": 2007,
+      "height": 2853,
+      "sha256": "bf7360db7ec197996f113d02adc261a8deabb30091cefe6bda407503d04164a4",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "en",
+      "family": "duo",
+      "scene": "diet",
+      "path": "public/screenshots/localized/duo/en/diet.png",
+      "width": 2007,
+      "height": 2853,
+      "sha256": "c9b03b3655b1daa26e9aafd2727c1e590cf25ae1d1e5b0ee807104f1501260e4",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "en",
+      "family": "duo",
+      "scene": "sleep",
+      "path": "public/screenshots/localized/duo/en/sleep.png",
+      "width": 2007,
+      "height": 2853,
+      "sha256": "fa81719ea0fb515f7d251051e884b658a1b281f9ac5358127e0edb59cdd9a9fe",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "05",
+      "locale": "en",
+      "family": "iphone",
+      "scene": "today",
+      "path": "public/screenshots/localized/iphone/en/today.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "85e93bc913ea72e9e575854814bda7eb47bc4248f40e9c69177fa48369258c26",
+      "sourceGeneration": "existing authentic localized native captures; Watch retains old fixture and requires paired update",
+      "posterAccepted": false
+    },
+    {
+      "page": "05",
+      "locale": "en",
+      "family": "ipad",
+      "scene": "insights",
+      "path": "public/screenshots/localized/ipad/en/insights.png",
+      "width": 2064,
+      "height": 2752,
+      "sha256": "023643dfc95588c8eb54147219e24d362107c3c7b6a83024355d9ba7f8b5220e",
+      "sourceGeneration": "existing authentic localized native captures; Watch retains old fixture and requires paired update",
+      "posterAccepted": false
+    },
+    {
+      "page": "05",
+      "locale": "en",
+      "family": "duo",
+      "scene": "diet",
+      "path": "public/screenshots/localized/duo/en/diet.png",
+      "width": 2007,
+      "height": 2853,
+      "sha256": "c9b03b3655b1daa26e9aafd2727c1e590cf25ae1d1e5b0ee807104f1501260e4",
+      "sourceGeneration": "existing authentic localized native captures; Watch retains old fixture and requires paired update",
+      "posterAccepted": false
+    },
+    {
+      "page": "05",
+      "locale": "en",
+      "family": "watch",
+      "scene": "rest-160",
+      "path": "public/screenshots/localized/watch/en/rest-160.png",
+      "width": 416,
+      "height": 496,
+      "sha256": "2a0838af8fe11f60ea8a4e95a2f1cac788a378ba874cabb9140cd6cda044eb8f",
+      "sourceGeneration": "existing authentic localized native captures; Watch retains old fixture and requires paired update",
+      "posterAccepted": false
+    },
+    {
+      "page": "01",
+      "locale": "ja",
+      "family": "iphone",
+      "scene": "plans",
+      "path": "public/screenshots/localized/iphone/ja/plans.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "cfc29b26ca3c5428b59e53efe3eba591c77be18f9ce05951d7d1b5eff91df523",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "02",
+      "locale": "ja",
+      "family": "iphone",
+      "scene": "muscle-selected",
+      "path": "public/screenshots/localized/iphone/ja/muscle-selected.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "7e931bbaf96b251641beb6c890a703e122c9b59252c5be722c8ace76975847e3",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "ja",
+      "family": "iphone",
+      "scene": "diet",
+      "path": "public/screenshots/localized/iphone/ja/diet.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "7df30a28211b68e82a9e6fa587308ac5297cc034929e85adbba1696d9a49a5b7",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "ja",
+      "family": "iphone",
+      "scene": "sleep",
+      "path": "public/screenshots/localized/iphone/ja/sleep.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "3b62ecbad9a4d1ea3c641829395433507581b0c0cc7f7991571f4c2384d78aca",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "01",
+      "locale": "ja",
+      "family": "ipad",
+      "scene": "plans",
+      "path": "public/screenshots/localized/ipad/ja/plans.png",
+      "width": 2064,
+      "height": 2752,
+      "sha256": "a97ae73f039872b8ecc6070685016fefefe839d690dbca2ef8496ab59199b350",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "02",
+      "locale": "ja",
+      "family": "ipad",
+      "scene": "muscle-selected",
+      "path": "public/screenshots/localized/ipad/ja/muscle-selected.png",
+      "width": 2064,
+      "height": 2752,
+      "sha256": "4d1fa2ce23a194528b469b51db4ca83ada1dedf500454b59d287d80269534ef8",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "ja",
+      "family": "ipad",
+      "scene": "diet",
+      "path": "public/screenshots/localized/ipad/ja/diet.png",
+      "width": 2064,
+      "height": 2752,
+      "sha256": "98e5068e7ae2d67073711a0e73f85134f8e6c9886e307995287c6837fbc351dd",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "ja",
+      "family": "ipad",
+      "scene": "sleep",
+      "path": "public/screenshots/localized/ipad/ja/sleep.png",
+      "width": 2064,
+      "height": 2752,
+      "sha256": "c55c25315bcdb0f0c71b0ba98a813a5f3687602001c6099939b78e096e96eb52",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "01",
+      "locale": "ja",
+      "family": "duo",
+      "scene": "plans",
+      "path": "public/screenshots/localized/duo/ja/plans.png",
+      "width": 2007,
+      "height": 2853,
+      "sha256": "74e2987e9752d84af552635f89e4ae729f8eff870ec7bab550757727705e1649",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "02",
+      "locale": "ja",
+      "family": "duo",
+      "scene": "muscle-selected",
+      "path": "public/screenshots/localized/duo/ja/muscle-selected.png",
+      "width": 2007,
+      "height": 2853,
+      "sha256": "36e25bc419b6d828db9b6b11103e5f3c031e80b5ac7495894e0fc93cf5f34ca4",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "ja",
+      "family": "duo",
+      "scene": "diet",
+      "path": "public/screenshots/localized/duo/ja/diet.png",
+      "width": 2007,
+      "height": 2853,
+      "sha256": "4891eb59acc341bf3865e038a676807db85a20e41db67d4a6e81637bf28eca4f",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "ja",
+      "family": "duo",
+      "scene": "sleep",
+      "path": "public/screenshots/localized/duo/ja/sleep.png",
+      "width": 2007,
+      "height": 2853,
+      "sha256": "d031fe13fa49775e5623c9a958457f7cfba20f6d28b45dd81c7f3d1295891976",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "05",
+      "locale": "ja",
+      "family": "iphone",
+      "scene": "today",
+      "path": "public/screenshots/localized/iphone/ja/today.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "2f9e00a915cba4c2c06c9b9bd1bbec21638b39d189a14bc866314ef2692b22a1",
+      "sourceGeneration": "existing authentic localized native captures; Watch retains old fixture and requires paired update",
+      "posterAccepted": false
+    },
+    {
+      "page": "05",
+      "locale": "ja",
+      "family": "ipad",
+      "scene": "insights",
+      "path": "public/screenshots/localized/ipad/ja/insights.png",
+      "width": 2064,
+      "height": 2752,
+      "sha256": "413e0e9d1d231890199e8348ed24e2c8a55c6321871fbe8e44210a0b2eeda59b",
+      "sourceGeneration": "existing authentic localized native captures; Watch retains old fixture and requires paired update",
+      "posterAccepted": false
+    },
+    {
+      "page": "05",
+      "locale": "ja",
+      "family": "duo",
+      "scene": "diet",
+      "path": "public/screenshots/localized/duo/ja/diet.png",
+      "width": 2007,
+      "height": 2853,
+      "sha256": "4891eb59acc341bf3865e038a676807db85a20e41db67d4a6e81637bf28eca4f",
+      "sourceGeneration": "existing authentic localized native captures; Watch retains old fixture and requires paired update",
+      "posterAccepted": false
+    },
+    {
+      "page": "05",
+      "locale": "ja",
+      "family": "watch",
+      "scene": "rest-160",
+      "path": "public/screenshots/localized/watch/ja/rest-160.png",
+      "width": 416,
+      "height": 496,
+      "sha256": "4d82b93ed0a59ff65de0d5e04c823230ea8810321742e21d161859e450553b29",
+      "sourceGeneration": "existing authentic localized native captures; Watch retains old fixture and requires paired update",
+      "posterAccepted": false
+    },
+    {
+      "page": "01",
+      "locale": "ko",
+      "family": "iphone",
+      "scene": "plans",
+      "path": "public/screenshots/localized/iphone/ko/plans.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "cd54ed940fce9247b1e323e8118579a3e1862a5215a329c613ff6897bf000d3d",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "02",
+      "locale": "ko",
+      "family": "iphone",
+      "scene": "muscle-selected",
+      "path": "public/screenshots/localized/iphone/ko/muscle-selected.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "f42d86cd4e0f980fc542d0b213b3a2e7d9f0fabf26fccefcc4ccfd8a1f05ed53",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "ko",
+      "family": "iphone",
+      "scene": "diet",
+      "path": "public/screenshots/localized/iphone/ko/diet.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "4ca99b5cb9f5ee1d8194adf418f2ebdc91871fa07326986453bf49b17d1fe821",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "ko",
+      "family": "iphone",
+      "scene": "sleep",
+      "path": "public/screenshots/localized/iphone/ko/sleep.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "1a2461d3c88b716e16abfb5f5056c52a973444082b1819ded211893120df1b3f",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "01",
+      "locale": "ko",
+      "family": "ipad",
+      "scene": "plans",
+      "path": "public/screenshots/localized/ipad/ko/plans.png",
+      "width": 2064,
+      "height": 2752,
+      "sha256": "228bed5e608c7bd3440bde4f983533441434b8678038e19e949049db7837faaa",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "02",
+      "locale": "ko",
+      "family": "ipad",
+      "scene": "muscle-selected",
+      "path": "public/screenshots/localized/ipad/ko/muscle-selected.png",
+      "width": 2064,
+      "height": 2752,
+      "sha256": "7bce333cf5b6a1d74d4cfac5f020e627d87732e2b06013ded5d3fed38b3a34d7",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "ko",
+      "family": "ipad",
+      "scene": "diet",
+      "path": "public/screenshots/localized/ipad/ko/diet.png",
+      "width": 2064,
+      "height": 2752,
+      "sha256": "71c2b72a98b158999885654e78a021b3894697175a794681e29645341075e112",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "ko",
+      "family": "ipad",
+      "scene": "sleep",
+      "path": "public/screenshots/localized/ipad/ko/sleep.png",
+      "width": 2064,
+      "height": 2752,
+      "sha256": "629029cbb2d0fa5a6c65c9e65344c0e6eca62cdff0b9da50747be91ff33f918a",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "01",
+      "locale": "ko",
+      "family": "duo",
+      "scene": "plans",
+      "path": "public/screenshots/localized/duo/ko/plans.png",
+      "width": 2007,
+      "height": 2853,
+      "sha256": "8e6ad2fc5195100918f7003f3eecae0fd72d1b9ab5ed0d4d0fd5b8cf68a2db7d",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "02",
+      "locale": "ko",
+      "family": "duo",
+      "scene": "muscle-selected",
+      "path": "public/screenshots/localized/duo/ko/muscle-selected.png",
+      "width": 2007,
+      "height": 2853,
+      "sha256": "29f5a548155dfe3942bb1f762b441f2e5503e012decf81bcaa5c4767197dd62b",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "ko",
+      "family": "duo",
+      "scene": "diet",
+      "path": "public/screenshots/localized/duo/ko/diet.png",
+      "width": 2007,
+      "height": 2853,
+      "sha256": "b7b0a1baca635f61a07afc22e4bd1dabd7485646b446105f69207af7acddba96",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "ko",
+      "family": "duo",
+      "scene": "sleep",
+      "path": "public/screenshots/localized/duo/ko/sleep.png",
+      "width": 2007,
+      "height": 2853,
+      "sha256": "0d56ebeccf45fee20cab4b7de5983fff9bd83a4d9dd8a1b3225b4507ad745749",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "05",
+      "locale": "ko",
+      "family": "iphone",
+      "scene": "today",
+      "path": "public/screenshots/localized/iphone/ko/today.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "1101b3a9b2062a245858a283d0ccb05a974429c6d250ed5e27a5fb6babc56299",
+      "sourceGeneration": "existing authentic localized native captures; Watch retains old fixture and requires paired update",
+      "posterAccepted": false
+    },
+    {
+      "page": "05",
+      "locale": "ko",
+      "family": "ipad",
+      "scene": "insights",
+      "path": "public/screenshots/localized/ipad/ko/insights.png",
+      "width": 2064,
+      "height": 2752,
+      "sha256": "1d41efc42f714a134369275e70a563beac98188d6724fb7caabc50569d1fd7c7",
+      "sourceGeneration": "existing authentic localized native captures; Watch retains old fixture and requires paired update",
+      "posterAccepted": false
+    },
+    {
+      "page": "05",
+      "locale": "ko",
+      "family": "duo",
+      "scene": "diet",
+      "path": "public/screenshots/localized/duo/ko/diet.png",
+      "width": 2007,
+      "height": 2853,
+      "sha256": "b7b0a1baca635f61a07afc22e4bd1dabd7485646b446105f69207af7acddba96",
+      "sourceGeneration": "existing authentic localized native captures; Watch retains old fixture and requires paired update",
+      "posterAccepted": false
+    },
+    {
+      "page": "05",
+      "locale": "ko",
+      "family": "watch",
+      "scene": "rest-160",
+      "path": "public/screenshots/localized/watch/ko/rest-160.png",
+      "width": 416,
+      "height": 496,
+      "sha256": "4827ae29a6409c6e026e714d78539a4e633314638aecfd3d6754b4de516efec7",
+      "sourceGeneration": "existing authentic localized native captures; Watch retains old fixture and requires paired update",
+      "posterAccepted": false
+    },
+    {
+      "page": "01",
+      "locale": "es",
+      "family": "iphone",
+      "scene": "plans",
+      "path": "public/screenshots/localized/iphone/es/plans.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "41c906e3693b0fbce1466a5163d245a2643e0714bc0e3c2bbeeac7add298eb0a",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "02",
+      "locale": "es",
+      "family": "iphone",
+      "scene": "muscle-selected",
+      "path": "public/screenshots/localized/iphone/es/muscle-selected.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "81526921fa6edef18775378cdb56a1cd45551d0d8775ef8f291c636c911b9921",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "es",
+      "family": "iphone",
+      "scene": "diet",
+      "path": "public/screenshots/localized/iphone/es/diet.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "e3ffe553784f6a420f717af0553b17c13271fb12c6bf091b0d4be147b0aa8cfb",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "es",
+      "family": "iphone",
+      "scene": "sleep",
+      "path": "public/screenshots/localized/iphone/es/sleep.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "22c8b1ffc15f916013c732d3e260625ecb2755fdd9d71347c253f66a4246aa98",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "01",
+      "locale": "es",
+      "family": "ipad",
+      "scene": "plans",
+      "path": "public/screenshots/localized/ipad/es/plans.png",
+      "width": 2064,
+      "height": 2752,
+      "sha256": "a93c4ec69b256154571243cc7deb801712963e54e23b1e11f4fbd87c18f4c1f4",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "02",
+      "locale": "es",
+      "family": "ipad",
+      "scene": "muscle-selected",
+      "path": "public/screenshots/localized/ipad/es/muscle-selected.png",
+      "width": 2064,
+      "height": 2752,
+      "sha256": "abe84b1baf23f2f8ac20e88d8d6a451bac9997f34d1bf644adc04e831d9acb24",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "es",
+      "family": "ipad",
+      "scene": "diet",
+      "path": "public/screenshots/localized/ipad/es/diet.png",
+      "width": 2064,
+      "height": 2752,
+      "sha256": "d762a458119affba7e98e95110a979d8551e432dbccbd88f66a39bf80ceac525",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "es",
+      "family": "ipad",
+      "scene": "sleep",
+      "path": "public/screenshots/localized/ipad/es/sleep.png",
+      "width": 2064,
+      "height": 2752,
+      "sha256": "d0c58223835771c40dfb3f4dc6901fc8d49741f005b9b627765514e498099260",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "01",
+      "locale": "es",
+      "family": "duo",
+      "scene": "plans",
+      "path": "public/screenshots/localized/duo/es/plans.png",
+      "width": 2007,
+      "height": 2853,
+      "sha256": "961ab292deb8152830c228f518121f0df0db5b49508f04473a9d89c8500383c4",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "02",
+      "locale": "es",
+      "family": "duo",
+      "scene": "muscle-selected",
+      "path": "public/screenshots/localized/duo/es/muscle-selected.png",
+      "width": 2007,
+      "height": 2853,
+      "sha256": "ebfcac70db6da3cec36d195f3e3484cd45e1b2b5e2256b81b97d9b700f6043c7",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "es",
+      "family": "duo",
+      "scene": "diet",
+      "path": "public/screenshots/localized/duo/es/diet.png",
+      "width": 2007,
+      "height": 2853,
+      "sha256": "fa2b8300f16cb39f04d27c8caa8f4c703be930309e331499e3e68e5bfcd03a44",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "es",
+      "family": "duo",
+      "scene": "sleep",
+      "path": "public/screenshots/localized/duo/es/sleep.png",
+      "width": 2007,
+      "height": 2853,
+      "sha256": "adc951dd2dc308ae4b1b23ba0440d16f18aecedca539a342d93b2ab603712f55",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "05",
+      "locale": "es",
+      "family": "iphone",
+      "scene": "today",
+      "path": "public/screenshots/localized/iphone/es/today.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "b63c299ab07bca5afdf571156fd620d704e90b39b4e3d0c34ae252b19b3bf54a",
+      "sourceGeneration": "existing authentic localized native captures; Watch retains old fixture and requires paired update",
+      "posterAccepted": false
+    },
+    {
+      "page": "05",
+      "locale": "es",
+      "family": "ipad",
+      "scene": "insights",
+      "path": "public/screenshots/localized/ipad/es/insights.png",
+      "width": 2064,
+      "height": 2752,
+      "sha256": "142882be393dea174f3351e09a7c968913428a5b5ef46fd1ec498bbdb1ac2790",
+      "sourceGeneration": "existing authentic localized native captures; Watch retains old fixture and requires paired update",
+      "posterAccepted": false
+    },
+    {
+      "page": "05",
+      "locale": "es",
+      "family": "duo",
+      "scene": "diet",
+      "path": "public/screenshots/localized/duo/es/diet.png",
+      "width": 2007,
+      "height": 2853,
+      "sha256": "fa2b8300f16cb39f04d27c8caa8f4c703be930309e331499e3e68e5bfcd03a44",
+      "sourceGeneration": "existing authentic localized native captures; Watch retains old fixture and requires paired update",
+      "posterAccepted": false
+    },
+    {
+      "page": "05",
+      "locale": "es",
+      "family": "watch",
+      "scene": "rest-160",
+      "path": "public/screenshots/localized/watch/es/rest-160.png",
+      "width": 416,
+      "height": 496,
+      "sha256": "d08f195d63e44a4f52ed9d8b058be65926bf37d0e18de6737def840fa4fbbcd6",
+      "sourceGeneration": "existing authentic localized native captures; Watch retains old fixture and requires paired update",
+      "posterAccepted": false
+    },
+    {
+      "page": "01",
+      "locale": "fr",
+      "family": "iphone",
+      "scene": "plans",
+      "path": "public/screenshots/localized/iphone/fr/plans.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "75ff4518964c522514c2590a672b2c80e67f5500ca271ef40f677990fe384d64",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "02",
+      "locale": "fr",
+      "family": "iphone",
+      "scene": "muscle-selected",
+      "path": "public/screenshots/localized/iphone/fr/muscle-selected.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "e9c0d0133ff7b195899b6c2ac0348dbeec4cc00e2d9bc2a5ba90c9214d1610de",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "fr",
+      "family": "iphone",
+      "scene": "diet",
+      "path": "public/screenshots/localized/iphone/fr/diet.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "5005d18989dda5ed4d603077fcdee1bb140e526e8c41c1cdfd6a7c7da04f3f75",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "fr",
+      "family": "iphone",
+      "scene": "sleep",
+      "path": "public/screenshots/localized/iphone/fr/sleep.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "c1f0411f26600f475b163010b58b5ced140aff474a862bff43b3f568b54a47c1",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "01",
+      "locale": "fr",
+      "family": "ipad",
+      "scene": "plans",
+      "path": "public/screenshots/localized/ipad/fr/plans.png",
+      "width": 2064,
+      "height": 2752,
+      "sha256": "c8af9be15f9a8ee8a429245c36f2172dfbb81083967c0dcb8b7c969c93645249",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "02",
+      "locale": "fr",
+      "family": "ipad",
+      "scene": "muscle-selected",
+      "path": "public/screenshots/localized/ipad/fr/muscle-selected.png",
+      "width": 2064,
+      "height": 2752,
+      "sha256": "5d19ba7e7462b2732a6536ec85204420706e07945294abb6026539d4e0611f52",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "fr",
+      "family": "ipad",
+      "scene": "diet",
+      "path": "public/screenshots/localized/ipad/fr/diet.png",
+      "width": 2064,
+      "height": 2752,
+      "sha256": "9f071f7659c608e4262c45fd814d8099b540741f4088f3ad6f8bfeb40bf45821",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "fr",
+      "family": "ipad",
+      "scene": "sleep",
+      "path": "public/screenshots/localized/ipad/fr/sleep.png",
+      "width": 2064,
+      "height": 2752,
+      "sha256": "207667bc862f6445c9bb3f32048b41fa557d9c9f4acb8dca87522563a29a489b",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "01",
+      "locale": "fr",
+      "family": "duo",
+      "scene": "plans",
+      "path": "public/screenshots/localized/duo/fr/plans.png",
+      "width": 2007,
+      "height": 2853,
+      "sha256": "9c67738e5f7367107e49e1510ec58199977707f0efad053d651fb64b3b50d044",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "02",
+      "locale": "fr",
+      "family": "duo",
+      "scene": "muscle-selected",
+      "path": "public/screenshots/localized/duo/fr/muscle-selected.png",
+      "width": 2007,
+      "height": 2853,
+      "sha256": "405173a40c644cae50c2524549bcf6e4cb71dcaeb14c6890edee335adff2b541",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "fr",
+      "family": "duo",
+      "scene": "diet",
+      "path": "public/screenshots/localized/duo/fr/diet.png",
+      "width": 2007,
+      "height": 2853,
+      "sha256": "a4200b435f3b7eac0d543f03dbde3a189c44076baaa26a28602e59efbdae8a30",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "fr",
+      "family": "duo",
+      "scene": "sleep",
+      "path": "public/screenshots/localized/duo/fr/sleep.png",
+      "width": 2007,
+      "height": 2853,
+      "sha256": "4e8a8e8cea7445b2a342e59cde69b56b375c92006224450616f77d423fa37edd",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "05",
+      "locale": "fr",
+      "family": "iphone",
+      "scene": "today",
+      "path": "public/screenshots/localized/iphone/fr/today.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "57a35c0ff3cb657289de468050a4dc9561e0bdf3e20722db7c03ad5e8ced434f",
+      "sourceGeneration": "existing authentic localized native captures; Watch retains old fixture and requires paired update",
+      "posterAccepted": false
+    },
+    {
+      "page": "05",
+      "locale": "fr",
+      "family": "ipad",
+      "scene": "insights",
+      "path": "public/screenshots/localized/ipad/fr/insights.png",
+      "width": 2064,
+      "height": 2752,
+      "sha256": "1824e5626deced9fca2997ecb9354b5507b27ce2447ff44c8c3c07d203a9e620",
+      "sourceGeneration": "existing authentic localized native captures; Watch retains old fixture and requires paired update",
+      "posterAccepted": false
+    },
+    {
+      "page": "05",
+      "locale": "fr",
+      "family": "duo",
+      "scene": "diet",
+      "path": "public/screenshots/localized/duo/fr/diet.png",
+      "width": 2007,
+      "height": 2853,
+      "sha256": "a4200b435f3b7eac0d543f03dbde3a189c44076baaa26a28602e59efbdae8a30",
+      "sourceGeneration": "existing authentic localized native captures; Watch retains old fixture and requires paired update",
+      "posterAccepted": false
+    },
+    {
+      "page": "05",
+      "locale": "fr",
+      "family": "watch",
+      "scene": "rest-160",
+      "path": "public/screenshots/localized/watch/fr/rest-160.png",
+      "width": 416,
+      "height": 496,
+      "sha256": "b939453ad9aa2e156ec6ff30b3be204dc84655179cf276257bdff3d2dc28bb92",
+      "sourceGeneration": "existing authentic localized native captures; Watch retains old fixture and requires paired update",
+      "posterAccepted": false
+    },
+    {
+      "page": "01",
+      "locale": "de",
+      "family": "iphone",
+      "scene": "plans",
+      "path": "public/screenshots/localized/iphone/de/plans.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "69d120c545688cc54325e7732a511cf144dd38c0d4fdba08976078359f4a720a",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "02",
+      "locale": "de",
+      "family": "iphone",
+      "scene": "muscle-selected",
+      "path": "public/screenshots/localized/iphone/de/muscle-selected.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "0813641a8921ac15decc23532f1cfd6a16341ab0df76263d0adca79bad315019",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "de",
+      "family": "iphone",
+      "scene": "diet",
+      "path": "public/screenshots/localized/iphone/de/diet.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "1cacb6fd4bf935861da70f1263d4030517809ac23f02cd349e17b800e651f29f",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "de",
+      "family": "iphone",
+      "scene": "sleep",
+      "path": "public/screenshots/localized/iphone/de/sleep.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "5654a37d012cd2e8209512de51ac66089d026c3b817067a8ca89a9716ac14fbf",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "01",
+      "locale": "de",
+      "family": "ipad",
+      "scene": "plans",
+      "path": "public/screenshots/localized/ipad/de/plans.png",
+      "width": 2064,
+      "height": 2752,
+      "sha256": "8fe73578376d0fa8a95bb5c24bdc4dc55104dbfc8db3f4e15fa62397db22ae78",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "02",
+      "locale": "de",
+      "family": "ipad",
+      "scene": "muscle-selected",
+      "path": "public/screenshots/localized/ipad/de/muscle-selected.png",
+      "width": 2064,
+      "height": 2752,
+      "sha256": "048cf696aaef4fcdcb9eb18105f4e8651f426f0321c91ca1fb38b8c4700dde0e",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "de",
+      "family": "ipad",
+      "scene": "diet",
+      "path": "public/screenshots/localized/ipad/de/diet.png",
+      "width": 2064,
+      "height": 2752,
+      "sha256": "05683745d2bade3549bef81e8b229dfceaff1bfaf2fb747ada044cabfbbc99ed",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "de",
+      "family": "ipad",
+      "scene": "sleep",
+      "path": "public/screenshots/localized/ipad/de/sleep.png",
+      "width": 2064,
+      "height": 2752,
+      "sha256": "d738e4bd6c8106ddf6b26210cbdc2a2c5b521935003fb9aa1a2b86fafe31b80b",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "01",
+      "locale": "de",
+      "family": "duo",
+      "scene": "plans",
+      "path": "public/screenshots/localized/duo/de/plans.png",
+      "width": 2007,
+      "height": 2853,
+      "sha256": "5b0abedc5c231a754e06a5d3e45a969b80c3ed8311a14908e4bcabfbb947e245",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "02",
+      "locale": "de",
+      "family": "duo",
+      "scene": "muscle-selected",
+      "path": "public/screenshots/localized/duo/de/muscle-selected.png",
+      "width": 2007,
+      "height": 2853,
+      "sha256": "4c7464087e9b18dcb46d0b1f88103a757f08a03dee5ee1c3adbe41ab79ca2775",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "de",
+      "family": "duo",
+      "scene": "diet",
+      "path": "public/screenshots/localized/duo/de/diet.png",
+      "width": 2007,
+      "height": 2853,
+      "sha256": "b61ec1f6f195cc8c89d5c0ba88794ab631d87b5a88ab4b3b7a98ed3faeb25305",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "de",
+      "family": "duo",
+      "scene": "sleep",
+      "path": "public/screenshots/localized/duo/de/sleep.png",
+      "width": 2007,
+      "height": 2853,
+      "sha256": "5abcee1c55e51ef0e6cebf2d1a62eded2e53ceab93337bbfe60d393a80728469",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "05",
+      "locale": "de",
+      "family": "iphone",
+      "scene": "today",
+      "path": "public/screenshots/localized/iphone/de/today.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "f185d6897ffb47ba0334defdfb5237e7bd60d1fb52ed7d37d50ca1158015fa12",
+      "sourceGeneration": "existing authentic localized native captures; Watch retains old fixture and requires paired update",
+      "posterAccepted": false
+    },
+    {
+      "page": "05",
+      "locale": "de",
+      "family": "ipad",
+      "scene": "insights",
+      "path": "public/screenshots/localized/ipad/de/insights.png",
+      "width": 2064,
+      "height": 2752,
+      "sha256": "27dc9e8ce6bda2a43e134491c5ff6d515d3a3ce2889aef41d64ab057954eacdd",
+      "sourceGeneration": "existing authentic localized native captures; Watch retains old fixture and requires paired update",
+      "posterAccepted": false
+    },
+    {
+      "page": "05",
+      "locale": "de",
+      "family": "duo",
+      "scene": "diet",
+      "path": "public/screenshots/localized/duo/de/diet.png",
+      "width": 2007,
+      "height": 2853,
+      "sha256": "b61ec1f6f195cc8c89d5c0ba88794ab631d87b5a88ab4b3b7a98ed3faeb25305",
+      "sourceGeneration": "existing authentic localized native captures; Watch retains old fixture and requires paired update",
+      "posterAccepted": false
+    },
+    {
+      "page": "05",
+      "locale": "de",
+      "family": "watch",
+      "scene": "rest-160",
+      "path": "public/screenshots/localized/watch/de/rest-160.png",
+      "width": 416,
+      "height": 496,
+      "sha256": "42b4c0e93cbce908a2db74a476e37f1c576968f00432a150daf3d0304a8af058",
+      "sourceGeneration": "existing authentic localized native captures; Watch retains old fixture and requires paired update",
+      "posterAccepted": false
+    },
+    {
+      "page": "01",
+      "locale": "it",
+      "family": "iphone",
+      "scene": "plans",
+      "path": "public/screenshots/localized/iphone/it/plans.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "b38d29be7ae8b07fb4ed7c9cc94f20642b62254e0606f26dda826ae7c73f3be4",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "02",
+      "locale": "it",
+      "family": "iphone",
+      "scene": "muscle-selected",
+      "path": "public/screenshots/localized/iphone/it/muscle-selected.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "4ffad798a7eeb6fc36a54f64639558aa841bd69790df91ae4217e99a18a60952",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "it",
+      "family": "iphone",
+      "scene": "diet",
+      "path": "public/screenshots/localized/iphone/it/diet.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "93f9b0064e430dfa08ad315291900f1f038a24af1febeb7907b009125335b275",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "it",
+      "family": "iphone",
+      "scene": "sleep",
+      "path": "public/screenshots/localized/iphone/it/sleep.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "6125650e78d599b1d813aff94afcc590a2a31eb58069c09e63fed8556a7d42a4",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "01",
+      "locale": "it",
+      "family": "ipad",
+      "scene": "plans",
+      "path": "public/screenshots/localized/ipad/it/plans.png",
+      "width": 2064,
+      "height": 2752,
+      "sha256": "4dcdfc938e44cdb7f925375384bca16e178aa5071e605127b2761e3179476e4c",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "02",
+      "locale": "it",
+      "family": "ipad",
+      "scene": "muscle-selected",
+      "path": "public/screenshots/localized/ipad/it/muscle-selected.png",
+      "width": 2064,
+      "height": 2752,
+      "sha256": "8a318f4b3c9dd29ae6e1bc2dfce697381d146769461cb220c254d466a479b649",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "it",
+      "family": "ipad",
+      "scene": "diet",
+      "path": "public/screenshots/localized/ipad/it/diet.png",
+      "width": 2064,
+      "height": 2752,
+      "sha256": "ab4bc0732110c28730c13e10cb69eefda5088aa853e9a8593ea69f8b7989a959",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "it",
+      "family": "ipad",
+      "scene": "sleep",
+      "path": "public/screenshots/localized/ipad/it/sleep.png",
+      "width": 2064,
+      "height": 2752,
+      "sha256": "faeaf2febf3d1bdd0eb9f316e7450782db6e27183d54314ae09c919a3f5c26fc",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "01",
+      "locale": "it",
+      "family": "duo",
+      "scene": "plans",
+      "path": "public/screenshots/localized/duo/it/plans.png",
+      "width": 2007,
+      "height": 2853,
+      "sha256": "ae27b2f01861edc5526d2ccc2fd17c3578091b67798986960b82fced3b5655e3",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "02",
+      "locale": "it",
+      "family": "duo",
+      "scene": "muscle-selected",
+      "path": "public/screenshots/localized/duo/it/muscle-selected.png",
+      "width": 2007,
+      "height": 2853,
+      "sha256": "9628405880633de12142c388fc454d5df3319a6fe57e99efa529ad2675568e2b",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "it",
+      "family": "duo",
+      "scene": "diet",
+      "path": "public/screenshots/localized/duo/it/diet.png",
+      "width": 2007,
+      "height": 2853,
+      "sha256": "e1d3177f3c8daeed191735d0c0ac0666a2ecf29b6fce882e11abb1bb0396ee93",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "it",
+      "family": "duo",
+      "scene": "sleep",
+      "path": "public/screenshots/localized/duo/it/sleep.png",
+      "width": 2007,
+      "height": 2853,
+      "sha256": "f0bac0999e22dcc0da3c8afd375bb6faf3ec2eca2d4f23ea0299cbf647da1034",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "05",
+      "locale": "it",
+      "family": "iphone",
+      "scene": "today",
+      "path": "public/screenshots/localized/iphone/it/today.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "fc5be8c8750d07e3ef24136d458d7f3579c3e2ceb59a82ce166f0fb1ebfecbd3",
+      "sourceGeneration": "existing authentic localized native captures; Watch retains old fixture and requires paired update",
+      "posterAccepted": false
+    },
+    {
+      "page": "05",
+      "locale": "it",
+      "family": "ipad",
+      "scene": "insights",
+      "path": "public/screenshots/localized/ipad/it/insights.png",
+      "width": 2064,
+      "height": 2752,
+      "sha256": "e6364dd9799b8480b1fda913ba092f35e41751daba441ab825c1c785ccfcb8ab",
+      "sourceGeneration": "existing authentic localized native captures; Watch retains old fixture and requires paired update",
+      "posterAccepted": false
+    },
+    {
+      "page": "05",
+      "locale": "it",
+      "family": "duo",
+      "scene": "diet",
+      "path": "public/screenshots/localized/duo/it/diet.png",
+      "width": 2007,
+      "height": 2853,
+      "sha256": "e1d3177f3c8daeed191735d0c0ac0666a2ecf29b6fce882e11abb1bb0396ee93",
+      "sourceGeneration": "existing authentic localized native captures; Watch retains old fixture and requires paired update",
+      "posterAccepted": false
+    },
+    {
+      "page": "05",
+      "locale": "it",
+      "family": "watch",
+      "scene": "rest-160",
+      "path": "public/screenshots/localized/watch/it/rest-160.png",
+      "width": 416,
+      "height": 496,
+      "sha256": "14079496d9406a38274cda708ea220661fc31655f7710c6c4c82ef2abc829b3e",
+      "sourceGeneration": "existing authentic localized native captures; Watch retains old fixture and requires paired update",
+      "posterAccepted": false
+    },
+    {
+      "page": "01",
+      "locale": "pt-BR",
+      "family": "iphone",
+      "scene": "plans",
+      "path": "public/screenshots/localized/iphone/pt-BR/plans.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "7fac968c1f270751926a535544af218c85c38b3f357528ebab34d4867bca05f6",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "02",
+      "locale": "pt-BR",
+      "family": "iphone",
+      "scene": "muscle-selected",
+      "path": "public/screenshots/localized/iphone/pt-BR/muscle-selected.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "13852eef2b2125c7f248b8ab7ddb4799291bcd74b43fbfd7002126ecf2da808f",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "pt-BR",
+      "family": "iphone",
+      "scene": "diet",
+      "path": "public/screenshots/localized/iphone/pt-BR/diet.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "b5f512e688c6188cfb32f91e8490f433140be60cd752e38e725112a137c63c98",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "pt-BR",
+      "family": "iphone",
+      "scene": "sleep",
+      "path": "public/screenshots/localized/iphone/pt-BR/sleep.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "a600a70605b3c4bfd56774ab9af39e43e7d3b4727cf1460ee8dbb0ad18706dba",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "01",
+      "locale": "pt-BR",
+      "family": "ipad",
+      "scene": "plans",
+      "path": "public/screenshots/localized/ipad/pt-BR/plans.png",
+      "width": 2064,
+      "height": 2752,
+      "sha256": "396eddc022fb2a1c1d12d53ab48370c6581a5dc50a228971b61a983f5e04ba0b",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "02",
+      "locale": "pt-BR",
+      "family": "ipad",
+      "scene": "muscle-selected",
+      "path": "public/screenshots/localized/ipad/pt-BR/muscle-selected.png",
+      "width": 2064,
+      "height": 2752,
+      "sha256": "6526cf3f45fc63b797ec500b4f701a3b34c1ea7cd43c174f64f9d42fb90a10ca",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "pt-BR",
+      "family": "ipad",
+      "scene": "diet",
+      "path": "public/screenshots/localized/ipad/pt-BR/diet.png",
+      "width": 2064,
+      "height": 2752,
+      "sha256": "451c3f20aceb4b2d845836ee4dac69441e793f90180042f322826ef6cde6e435",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "pt-BR",
+      "family": "ipad",
+      "scene": "sleep",
+      "path": "public/screenshots/localized/ipad/pt-BR/sleep.png",
+      "width": 2064,
+      "height": 2752,
+      "sha256": "23b0c8065078cb70d5022bedadb205e0b474211a2b628f6ad36b8a5f6b7db651",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "01",
+      "locale": "pt-BR",
+      "family": "duo",
+      "scene": "plans",
+      "path": "public/screenshots/localized/duo/pt-BR/plans.png",
+      "width": 2007,
+      "height": 2853,
+      "sha256": "e1369210ce395318455de5114ced48e22d0f7444ae475f8c93dbed5411bd85de",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "02",
+      "locale": "pt-BR",
+      "family": "duo",
+      "scene": "muscle-selected",
+      "path": "public/screenshots/localized/duo/pt-BR/muscle-selected.png",
+      "width": 2007,
+      "height": 2853,
+      "sha256": "21cdffff5c27099bf923824dc8084c00375fe85c566731fac62896f5d84f9b08",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "pt-BR",
+      "family": "duo",
+      "scene": "diet",
+      "path": "public/screenshots/localized/duo/pt-BR/diet.png",
+      "width": 2007,
+      "height": 2853,
+      "sha256": "1746315b729824824299b349b05ba06544f4eba0578d89944b3314d33348f02c",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "pt-BR",
+      "family": "duo",
+      "scene": "sleep",
+      "path": "public/screenshots/localized/duo/pt-BR/sleep.png",
+      "width": 2007,
+      "height": 2853,
+      "sha256": "6eea341f13ba63499c2466ad4ffd005f1816dbf631e458c35f4adeac24f76186",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "05",
+      "locale": "pt-BR",
+      "family": "iphone",
+      "scene": "today",
+      "path": "public/screenshots/localized/iphone/pt-BR/today.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "0141c1abfe19986dd1bc326246ad2f320ba3d655ca55d5f9fb4d08449e8db5f4",
+      "sourceGeneration": "existing authentic localized native captures; Watch retains old fixture and requires paired update",
+      "posterAccepted": false
+    },
+    {
+      "page": "05",
+      "locale": "pt-BR",
+      "family": "ipad",
+      "scene": "insights",
+      "path": "public/screenshots/localized/ipad/pt-BR/insights.png",
+      "width": 2064,
+      "height": 2752,
+      "sha256": "bbf585e911f3e20974deb9527eeccea0dac883ed6b167b86fefa77ad34a91949",
+      "sourceGeneration": "existing authentic localized native captures; Watch retains old fixture and requires paired update",
+      "posterAccepted": false
+    },
+    {
+      "page": "05",
+      "locale": "pt-BR",
+      "family": "duo",
+      "scene": "diet",
+      "path": "public/screenshots/localized/duo/pt-BR/diet.png",
+      "width": 2007,
+      "height": 2853,
+      "sha256": "1746315b729824824299b349b05ba06544f4eba0578d89944b3314d33348f02c",
+      "sourceGeneration": "existing authentic localized native captures; Watch retains old fixture and requires paired update",
+      "posterAccepted": false
+    },
+    {
+      "page": "05",
+      "locale": "pt-BR",
+      "family": "watch",
+      "scene": "rest-160",
+      "path": "public/screenshots/localized/watch/pt-BR/rest-160.png",
+      "width": 416,
+      "height": 496,
+      "sha256": "299c21d7cb88ee3a33252bc68842a671df3eb687096dd3f9ee89f054eb39b09a",
+      "sourceGeneration": "existing authentic localized native captures; Watch retains old fixture and requires paired update",
+      "posterAccepted": false
+    },
+    {
+      "page": "01",
+      "locale": "ru",
+      "family": "iphone",
+      "scene": "plans",
+      "path": "public/screenshots/localized/iphone/ru/plans.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "38aa6ea1922e094a9d0fbee4856735d9afd9037e8d2c437fbf3cfd8b250d4cd7",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "02",
+      "locale": "ru",
+      "family": "iphone",
+      "scene": "muscle-selected",
+      "path": "public/screenshots/localized/iphone/ru/muscle-selected.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "2adbbba507dae7c9eb325328a5e42bd1dbce396e6cd6fa9b8d5ced7f47927998",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "ru",
+      "family": "iphone",
+      "scene": "diet",
+      "path": "public/screenshots/localized/iphone/ru/diet.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "704d2fee26713cfedad8caf5091eb151181308a98da2825d7c39a08e3764ce4c",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "ru",
+      "family": "iphone",
+      "scene": "sleep",
+      "path": "public/screenshots/localized/iphone/ru/sleep.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "4b7d6c5c033eda28aa3f26634004a658b3782a24f751691f7419773e88634172",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "01",
+      "locale": "ru",
+      "family": "ipad",
+      "scene": "plans",
+      "path": "public/screenshots/localized/ipad/ru/plans.png",
+      "width": 2064,
+      "height": 2752,
+      "sha256": "ac8d18d4c344a2dfca34e490a8d761804a90f8e018da35954f6deb5d1c6d4986",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "02",
+      "locale": "ru",
+      "family": "ipad",
+      "scene": "muscle-selected",
+      "path": "public/screenshots/localized/ipad/ru/muscle-selected.png",
+      "width": 2064,
+      "height": 2752,
+      "sha256": "5af5c25e0ca66780d1222a973a27524d31d0b74a97cae6343dfda75fe7ec006d",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "ru",
+      "family": "ipad",
+      "scene": "diet",
+      "path": "public/screenshots/localized/ipad/ru/diet.png",
+      "width": 2064,
+      "height": 2752,
+      "sha256": "2ff7f26247080dbf543f1c91817fc7c62bf1084e71f24f588606f5909148a2bc",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "ru",
+      "family": "ipad",
+      "scene": "sleep",
+      "path": "public/screenshots/localized/ipad/ru/sleep.png",
+      "width": 2064,
+      "height": 2752,
+      "sha256": "393ee8de40322d584c069482aeb3ee46af5ef90bf6a4479645093684dc9e2bb1",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "01",
+      "locale": "ru",
+      "family": "duo",
+      "scene": "plans",
+      "path": "public/screenshots/localized/duo/ru/plans.png",
+      "width": 2007,
+      "height": 2853,
+      "sha256": "e40c58f3982a1ba5b802442df3f896b68beaa16f0dcb2ae9c302dd2c49d44448",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "02",
+      "locale": "ru",
+      "family": "duo",
+      "scene": "muscle-selected",
+      "path": "public/screenshots/localized/duo/ru/muscle-selected.png",
+      "width": 2007,
+      "height": 2853,
+      "sha256": "70a0d4637c1533fda341a00ee4760e3ae1bb7514851e292c5acad39dce227a23",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "ru",
+      "family": "duo",
+      "scene": "diet",
+      "path": "public/screenshots/localized/duo/ru/diet.png",
+      "width": 2007,
+      "height": 2853,
+      "sha256": "9d9ded091ef7704918d1b06602c7a4e242d33f39a1bda75e6b704e37899d26db",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "ru",
+      "family": "duo",
+      "scene": "sleep",
+      "path": "public/screenshots/localized/duo/ru/sleep.png",
+      "width": 2007,
+      "height": 2853,
+      "sha256": "d4fc1eb2be0f6d84cb792869db6b5301d6a6ca3f42a712a36ac43ee3026c9bfe",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "05",
+      "locale": "ru",
+      "family": "iphone",
+      "scene": "today",
+      "path": "public/screenshots/localized/iphone/ru/today.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "f3da63a52d61e68c4b6b443b4ae47d697f9d848fd3358327b3e641663ab4f5cf",
+      "sourceGeneration": "existing authentic localized native captures; Watch retains old fixture and requires paired update",
+      "posterAccepted": false
+    },
+    {
+      "page": "05",
+      "locale": "ru",
+      "family": "ipad",
+      "scene": "insights",
+      "path": "public/screenshots/localized/ipad/ru/insights.png",
+      "width": 2064,
+      "height": 2752,
+      "sha256": "d209751227bc9801db814d2c546d9b1a9525824d9da646995e296e286b5a7c9c",
+      "sourceGeneration": "existing authentic localized native captures; Watch retains old fixture and requires paired update",
+      "posterAccepted": false
+    },
+    {
+      "page": "05",
+      "locale": "ru",
+      "family": "duo",
+      "scene": "diet",
+      "path": "public/screenshots/localized/duo/ru/diet.png",
+      "width": 2007,
+      "height": 2853,
+      "sha256": "9d9ded091ef7704918d1b06602c7a4e242d33f39a1bda75e6b704e37899d26db",
+      "sourceGeneration": "existing authentic localized native captures; Watch retains old fixture and requires paired update",
+      "posterAccepted": false
+    },
+    {
+      "page": "05",
+      "locale": "ru",
+      "family": "watch",
+      "scene": "rest-160",
+      "path": "public/screenshots/localized/watch/ru/rest-160.png",
+      "width": 416,
+      "height": 496,
+      "sha256": "a9cb22f470dbbfafbc0b5c506cb1c7c2c5a35e04eca8bdd679da958b9fda8a71",
+      "sourceGeneration": "existing authentic localized native captures; Watch retains old fixture and requires paired update",
+      "posterAccepted": false
+    },
+    {
+      "page": "01",
+      "locale": "ar",
+      "family": "iphone",
+      "scene": "plans",
+      "path": "public/screenshots/localized/iphone/ar/plans.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "aa23ef42e9fa97a899e9a6e6b2a604412ef0fee212fdb3aa4fc5255c2e68e93e",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "02",
+      "locale": "ar",
+      "family": "iphone",
+      "scene": "muscle-selected",
+      "path": "public/screenshots/localized/iphone/ar/muscle-selected.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "71662ab107f818f5d9e89258a23fc80f8309d35169e48c555da7c46e533b3bf3",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "ar",
+      "family": "iphone",
+      "scene": "diet",
+      "path": "public/screenshots/localized/iphone/ar/diet.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "13bd8d806a1885699da28de2f1d13751bbd96142bff262ec211d404b9fbb34ae",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "ar",
+      "family": "iphone",
+      "scene": "sleep",
+      "path": "public/screenshots/localized/iphone/ar/sleep.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "20d1dab73601d71969d99b4eb2ae98a2d0461cdb5e5f0cb7376d1bd3c6e06ead",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "01",
+      "locale": "ar",
+      "family": "ipad",
+      "scene": "plans",
+      "path": "public/screenshots/localized/ipad/ar/plans.png",
+      "width": 2064,
+      "height": 2752,
+      "sha256": "11e6f37960d68a484ee46882dbb24f7f250d547a1f304818a9a37e0ee918257b",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "02",
+      "locale": "ar",
+      "family": "ipad",
+      "scene": "muscle-selected",
+      "path": "public/screenshots/localized/ipad/ar/muscle-selected.png",
+      "width": 2064,
+      "height": 2752,
+      "sha256": "5e401c27926e3de9fd0f097ea89c96781661409a0c1de1861cfdcde9d1406138",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "ar",
+      "family": "ipad",
+      "scene": "diet",
+      "path": "public/screenshots/localized/ipad/ar/diet.png",
+      "width": 2064,
+      "height": 2752,
+      "sha256": "c7c2b5c02945cda35272fc43a16a79870b7a7329c5e2c38971beaba95066e52c",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "ar",
+      "family": "ipad",
+      "scene": "sleep",
+      "path": "public/screenshots/localized/ipad/ar/sleep.png",
+      "width": 2064,
+      "height": 2752,
+      "sha256": "900a029e3dcddb21b27aa27e47b1f883ff6c1e4e49284259da5aba99dbab20fc",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "01",
+      "locale": "ar",
+      "family": "duo",
+      "scene": "plans",
+      "path": "public/screenshots/localized/duo/ar/plans.png",
+      "width": 2007,
+      "height": 2853,
+      "sha256": "97f76bd006300f161efb18fd93937636e880ee9b5c8010ef57ec998aefbfcab7",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "02",
+      "locale": "ar",
+      "family": "duo",
+      "scene": "muscle-selected",
+      "path": "public/screenshots/localized/duo/ar/muscle-selected.png",
+      "width": 2007,
+      "height": 2853,
+      "sha256": "e3ca737565e05973210b5179de8e8cf10b15f9f7606bebf9e7b26ceed64c862c",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "ar",
+      "family": "duo",
+      "scene": "diet",
+      "path": "public/screenshots/localized/duo/ar/diet.png",
+      "width": 2007,
+      "height": 2853,
+      "sha256": "e2bc805bc21b751c66c5768cba0f74d1a191e6b5500d4698bcc2c707ee4f3252",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "04",
+      "locale": "ar",
+      "family": "duo",
+      "scene": "sleep",
+      "path": "public/screenshots/localized/duo/ar/sleep.png",
+      "width": 2007,
+      "height": 2853,
+      "sha256": "7e3f8cc6a89c704553d642c8f4a1852744d058fe5ca224ccf2dd8abed2212b80",
+      "sourceGeneration": "existing authentic localized native captures, not recaptured51",
+      "posterAccepted": false
+    },
+    {
+      "page": "05",
+      "locale": "ar",
+      "family": "iphone",
+      "scene": "today",
+      "path": "public/screenshots/localized/iphone/ar/today.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "408273a7522480e2749db847ecee3a460ed7ff8617883cdebad58ec3f7247476",
+      "sourceGeneration": "existing authentic localized native captures; Watch retains old fixture and requires paired update",
+      "posterAccepted": false
+    },
+    {
+      "page": "05",
+      "locale": "ar",
+      "family": "ipad",
+      "scene": "insights",
+      "path": "public/screenshots/localized/ipad/ar/insights.png",
+      "width": 2064,
+      "height": 2752,
+      "sha256": "82b801cf15964f0ee39d0f6bb50060045d049e8b1469ec7e4ff2f2a64935bb4b",
+      "sourceGeneration": "existing authentic localized native captures; Watch retains old fixture and requires paired update",
+      "posterAccepted": false
+    },
+    {
+      "page": "05",
+      "locale": "ar",
+      "family": "duo",
+      "scene": "diet",
+      "path": "public/screenshots/localized/duo/ar/diet.png",
+      "width": 2007,
+      "height": 2853,
+      "sha256": "e2bc805bc21b751c66c5768cba0f74d1a191e6b5500d4698bcc2c707ee4f3252",
+      "sourceGeneration": "existing authentic localized native captures; Watch retains old fixture and requires paired update",
+      "posterAccepted": false
+    },
+    {
+      "page": "05",
+      "locale": "ar",
+      "family": "watch",
+      "scene": "rest-160",
+      "path": "public/screenshots/localized/watch/ar/rest-160.png",
+      "width": 416,
+      "height": 496,
+      "sha256": "c42e76cdcfaa69ee6f95e0348230e893a65c5d1751b3607b0773d6aa7f49d388",
+      "sourceGeneration": "existing authentic localized native captures; Watch retains old fixture and requires paired update",
+      "posterAccepted": false
+    }
+  ],
+  "copyFields": [
+    {
+      "page": "plan",
+      "locale": "zh",
+      "field": "headline",
+      "text": "一张照片，\n就有一周计划"
+    },
+    {
+      "page": "plan",
+      "locale": "zh",
+      "field": "description",
+      "text": "也听你要的天数、时长和重点"
+    },
+    {
+      "page": "plan",
+      "locale": "zh-Hant",
+      "field": "headline",
+      "text": "一張照片，\n就有一週計畫"
+    },
+    {
+      "page": "plan",
+      "locale": "zh-Hant",
+      "field": "description",
+      "text": "也聽你要的天數、時長和重點"
+    },
+    {
+      "page": "plan",
+      "locale": "en",
+      "field": "headline",
+      "text": "One photo in,\na week planned out"
+    },
+    {
+      "page": "plan",
+      "locale": "en",
+      "field": "description",
+      "text": "Also the days, length, and focus you want"
+    },
+    {
+      "page": "plan",
+      "locale": "ja",
+      "field": "headline",
+      "text": "写真1枚で\n1週間のメニュー"
+    },
+    {
+      "page": "plan",
+      "locale": "ja",
+      "field": "description",
+      "text": "日数・時間・重点も、希望どおり"
+    },
+    {
+      "page": "plan",
+      "locale": "ko",
+      "field": "headline",
+      "text": "사진 한 장으로,\n일주일 계획"
+    },
+    {
+      "page": "plan",
+      "locale": "ko",
+      "field": "description",
+      "text": "일수, 시간, 중점도 원하는 대로"
+    },
+    {
+      "page": "plan",
+      "locale": "es",
+      "field": "headline",
+      "text": "Una foto,\nuna semana lista"
+    },
+    {
+      "page": "plan",
+      "locale": "es",
+      "field": "description",
+      "text": "También los días, la duración y el foco"
+    },
+    {
+      "page": "plan",
+      "locale": "fr",
+      "field": "headline",
+      "text": "Une photo,\nune semaine prête"
+    },
+    {
+      "page": "plan",
+      "locale": "fr",
+      "field": "description",
+      "text": "Aussi les jours, la durée et le focus"
+    },
+    {
+      "page": "plan",
+      "locale": "de",
+      "field": "headline",
+      "text": "Ein Foto,\neine Woche geplant"
+    },
+    {
+      "page": "plan",
+      "locale": "de",
+      "field": "description",
+      "text": "Auch Tage, Dauer und Fokus"
+    },
+    {
+      "page": "plan",
+      "locale": "it",
+      "field": "headline",
+      "text": "Una foto,\nuna settimana pronta"
+    },
+    {
+      "page": "plan",
+      "locale": "it",
+      "field": "description",
+      "text": "Anche i giorni, la durata e il focus"
+    },
+    {
+      "page": "plan",
+      "locale": "pt-BR",
+      "field": "headline",
+      "text": "Uma foto,\numa semana pronta"
+    },
+    {
+      "page": "plan",
+      "locale": "pt-BR",
+      "field": "description",
+      "text": "Também os dias, a duração e o foco"
+    },
+    {
+      "page": "plan",
+      "locale": "ru",
+      "field": "headline",
+      "text": "Одно фото —\nплан на неделю"
+    },
+    {
+      "page": "plan",
+      "locale": "ru",
+      "field": "description",
+      "text": "Ещё дни, длительность и акцент"
+    },
+    {
+      "page": "plan",
+      "locale": "ar",
+      "field": "headline",
+      "text": "صورة واحدة،\nخطة أسبوع"
+    },
+    {
+      "page": "plan",
+      "locale": "ar",
+      "field": "description",
+      "text": "وأيضًا الأيام والمدة والتركيز"
+    },
+    {
+      "page": "recovery",
+      "locale": "zh",
+      "field": "headline",
+      "text": "肌肉恢复估算，\n一眼看清"
+    },
+    {
+      "page": "recovery",
+      "locale": "zh",
+      "field": "description",
+      "text": "3D 肌肉图，按部位显示"
+    },
+    {
+      "page": "recovery",
+      "locale": "zh-Hant",
+      "field": "headline",
+      "text": "肌肉恢復估算，\n一眼看清"
+    },
+    {
+      "page": "recovery",
+      "locale": "zh-Hant",
+      "field": "description",
+      "text": "3D 肌肉圖，按部位顯示"
+    },
+    {
+      "page": "recovery",
+      "locale": "en",
+      "field": "headline",
+      "text": "Estimated muscle\nrecovery"
+    },
+    {
+      "page": "recovery",
+      "locale": "en",
+      "field": "description",
+      "text": "A 3D muscle map"
+    },
+    {
+      "page": "recovery",
+      "locale": "ja",
+      "field": "headline",
+      "text": "筋肉の回復を\n推定で確認"
+    },
+    {
+      "page": "recovery",
+      "locale": "ja",
+      "field": "description",
+      "text": "部位ごとの3Dマップ"
+    },
+    {
+      "page": "recovery",
+      "locale": "ko",
+      "field": "headline",
+      "text": "근육 회복을\n추정치로 확인"
+    },
+    {
+      "page": "recovery",
+      "locale": "ko",
+      "field": "description",
+      "text": "부위별 3D 지도"
+    },
+    {
+      "page": "recovery",
+      "locale": "es",
+      "field": "headline",
+      "text": "Recuperación muscular\nestimada"
+    },
+    {
+      "page": "recovery",
+      "locale": "es",
+      "field": "description",
+      "text": "Mapa muscular 3D"
+    },
+    {
+      "page": "recovery",
+      "locale": "fr",
+      "field": "headline",
+      "text": "Récupération musculaire\nestimée"
+    },
+    {
+      "page": "recovery",
+      "locale": "fr",
+      "field": "description",
+      "text": "Carte musculaire 3D"
+    },
+    {
+      "page": "recovery",
+      "locale": "de",
+      "field": "headline",
+      "text": "Geschätzte\nMuskelerholung"
+    },
+    {
+      "page": "recovery",
+      "locale": "de",
+      "field": "description",
+      "text": "3D-Muskelkarte"
+    },
+    {
+      "page": "recovery",
+      "locale": "it",
+      "field": "headline",
+      "text": "Recupero muscolare\nstimato"
+    },
+    {
+      "page": "recovery",
+      "locale": "it",
+      "field": "description",
+      "text": "Mappa muscolare 3D"
+    },
+    {
+      "page": "recovery",
+      "locale": "pt-BR",
+      "field": "headline",
+      "text": "Recuperação muscular\nestimada"
+    },
+    {
+      "page": "recovery",
+      "locale": "pt-BR",
+      "field": "description",
+      "text": "Mapa muscular 3D"
+    },
+    {
+      "page": "recovery",
+      "locale": "ru",
+      "field": "headline",
+      "text": "Восстановление мышц,\nпо оценке"
+    },
+    {
+      "page": "recovery",
+      "locale": "ru",
+      "field": "description",
+      "text": "3D-карта мышц"
+    },
+    {
+      "page": "recovery",
+      "locale": "ar",
+      "field": "headline",
+      "text": "تقديرات تعافي\nالعضلات"
+    },
+    {
+      "page": "recovery",
+      "locale": "ar",
+      "field": "description",
+      "text": "خريطة عضلية ثلاثية الأبعاد"
+    },
+    {
+      "page": "training",
+      "locale": "zh",
+      "field": "headline",
+      "text": "心率过高，\n立刻提醒"
+    },
+    {
+      "page": "training",
+      "locale": "zh",
+      "field": "description",
+      "text": "超过你设的上限就变红"
+    },
+    {
+      "page": "training",
+      "locale": "zh-Hant",
+      "field": "headline",
+      "text": "心率過高，\n立刻提醒"
+    },
+    {
+      "page": "training",
+      "locale": "zh-Hant",
+      "field": "description",
+      "text": "超過你設的上限就變紅"
+    },
+    {
+      "page": "training",
+      "locale": "en",
+      "field": "headline",
+      "text": "Past your limit?\nYou'll know"
+    },
+    {
+      "page": "training",
+      "locale": "en",
+      "field": "description",
+      "text": "Turns red past your limit"
+    },
+    {
+      "page": "training",
+      "locale": "ja",
+      "field": "headline",
+      "text": "心拍が高すぎたら\nすぐ知らせる"
+    },
+    {
+      "page": "training",
+      "locale": "ja",
+      "field": "description",
+      "text": "上限を超えると赤くなる"
+    },
+    {
+      "page": "training",
+      "locale": "ko",
+      "field": "headline",
+      "text": "심박이 높으면,\n바로 알려 줍니다"
+    },
+    {
+      "page": "training",
+      "locale": "ko",
+      "field": "description",
+      "text": "정한 상한을 넘으면 붉게 표시됩니다"
+    },
+    {
+      "page": "training",
+      "locale": "es",
+      "field": "headline",
+      "text": "¿Pasaste tu límite?\nLo vas a ver"
+    },
+    {
+      "page": "training",
+      "locale": "es",
+      "field": "description",
+      "text": "Se pone en rojo al pasar tu límite"
+    },
+    {
+      "page": "training",
+      "locale": "fr",
+      "field": "headline",
+      "text": "Au-dessus de votre limite ?\nVous le voyez"
+    },
+    {
+      "page": "training",
+      "locale": "fr",
+      "field": "description",
+      "text": "Passe au rouge au-delà de votre limite"
+    },
+    {
+      "page": "training",
+      "locale": "de",
+      "field": "headline",
+      "text": "Über dein Limit?\nDu siehst es"
+    },
+    {
+      "page": "training",
+      "locale": "de",
+      "field": "description",
+      "text": "Wird rot, wenn du dein Limit überschreitest"
+    },
+    {
+      "page": "training",
+      "locale": "it",
+      "field": "headline",
+      "text": "Oltre il tuo limite?\nLo vedi subito"
+    },
+    {
+      "page": "training",
+      "locale": "it",
+      "field": "description",
+      "text": "Diventa rosso oltre il tuo limite"
+    },
+    {
+      "page": "training",
+      "locale": "pt-BR",
+      "field": "headline",
+      "text": "Passou do seu limite?\nVocê vê na hora"
+    },
+    {
+      "page": "training",
+      "locale": "pt-BR",
+      "field": "description",
+      "text": "Fica vermelho acima do seu limite"
+    },
+    {
+      "page": "training",
+      "locale": "ru",
+      "field": "headline",
+      "text": "Выше вашего порога?\nВы это увидите"
+    },
+    {
+      "page": "training",
+      "locale": "ru",
+      "field": "description",
+      "text": "Краснеет, если выше вашего порога"
+    },
+    {
+      "page": "training",
+      "locale": "ar",
+      "field": "headline",
+      "text": "فوق حدك؟\nستعرف فورًا"
+    },
+    {
+      "page": "training",
+      "locale": "ar",
+      "field": "description",
+      "text": "يحمرّ إذا تجاوزت حدك"
+    },
+    {
+      "page": "diet",
+      "locale": "zh",
+      "field": "headline",
+      "text": "饮食与睡眠，一起照顾"
+    },
+    {
+      "page": "diet",
+      "locale": "zh",
+      "field": "description",
+      "text": "热量、营养，和睡眠时长"
+    },
+    {
+      "page": "diet",
+      "locale": "zh-Hant",
+      "field": "headline",
+      "text": "飲食與睡眠，一起照顧"
+    },
+    {
+      "page": "diet",
+      "locale": "zh-Hant",
+      "field": "description",
+      "text": "熱量、營養，和睡眠時長"
+    },
+    {
+      "page": "diet",
+      "locale": "en",
+      "field": "headline",
+      "text": "Nutrition and sleep,\ntogether"
+    },
+    {
+      "page": "diet",
+      "locale": "en",
+      "field": "description",
+      "text": "Calories, nutrients, and time asleep"
+    },
+    {
+      "page": "diet",
+      "locale": "ja",
+      "field": "headline",
+      "text": "食事と睡眠を\nまとめて管理"
+    },
+    {
+      "page": "diet",
+      "locale": "ja",
+      "field": "description",
+      "text": "カロリー、栄養、睡眠時間"
+    },
+    {
+      "page": "diet",
+      "locale": "ko",
+      "field": "headline",
+      "text": "식단과 수면,\n함께 관리"
+    },
+    {
+      "page": "diet",
+      "locale": "ko",
+      "field": "description",
+      "text": "열량, 영양, 수면 시간"
+    },
+    {
+      "page": "diet",
+      "locale": "es",
+      "field": "headline",
+      "text": "Nutrición y sueño,\njuntos"
+    },
+    {
+      "page": "diet",
+      "locale": "es",
+      "field": "description",
+      "text": "Calorías, nutrientes y tiempo de sueño"
+    },
+    {
+      "page": "diet",
+      "locale": "fr",
+      "field": "headline",
+      "text": "Nutrition et sommeil,\nensemble"
+    },
+    {
+      "page": "diet",
+      "locale": "fr",
+      "field": "description",
+      "text": "Calories, nutriments et temps de sommeil"
+    },
+    {
+      "page": "diet",
+      "locale": "de",
+      "field": "headline",
+      "text": "Ernährung und Schlaf,\nim Blick"
+    },
+    {
+      "page": "diet",
+      "locale": "de",
+      "field": "description",
+      "text": "Kalorien, Nährstoffe und Schlafdauer"
+    },
+    {
+      "page": "diet",
+      "locale": "it",
+      "field": "headline",
+      "text": "Alimentazione e sonno,\ninsieme"
+    },
+    {
+      "page": "diet",
+      "locale": "it",
+      "field": "description",
+      "text": "Calorie, nutrienti e tempo di sonno"
+    },
+    {
+      "page": "diet",
+      "locale": "pt-BR",
+      "field": "headline",
+      "text": "Nutrição e sono,\njuntos"
+    },
+    {
+      "page": "diet",
+      "locale": "pt-BR",
+      "field": "description",
+      "text": "Calorias, nutrientes e tempo de sono"
+    },
+    {
+      "page": "diet",
+      "locale": "ru",
+      "field": "headline",
+      "text": "Питание и сон,\nвместе"
+    },
+    {
+      "page": "diet",
+      "locale": "ru",
+      "field": "description",
+      "text": "Калории, нутриенты и время сна"
+    },
+    {
+      "page": "diet",
+      "locale": "ar",
+      "field": "headline",
+      "text": "التغذية والنوم،\nمعًا"
+    },
+    {
+      "page": "diet",
+      "locale": "ar",
+      "field": "description",
+      "text": "السعرات والمغذيات ومدة النوم"
+    },
+    {
+      "page": "devices",
+      "locale": "zh",
+      "field": "headline",
+      "text": "多设备，\n随你练"
+    },
+    {
+      "page": "devices",
+      "locale": "zh",
+      "field": "description",
+      "text": "iPhone、iPad、\niPhone Duo 和 Apple Watch"
+    },
+    {
+      "page": "devices",
+      "locale": "zh-Hant",
+      "field": "headline",
+      "text": "多裝置，\n想練就練"
+    },
+    {
+      "page": "devices",
+      "locale": "zh-Hant",
+      "field": "description",
+      "text": "iPhone、iPad、\niPhone Duo 和 Apple Watch"
+    },
+    {
+      "page": "devices",
+      "locale": "en",
+      "field": "headline",
+      "text": "Multiple devices,\ntrain your way"
+    },
+    {
+      "page": "devices",
+      "locale": "en",
+      "field": "description",
+      "text": "iPhone, iPad,\niPhone Duo, and Apple Watch"
+    },
+    {
+      "page": "devices",
+      "locale": "ja",
+      "field": "headline",
+      "text": "複数デバイス、\n好きなように"
+    },
+    {
+      "page": "devices",
+      "locale": "ja",
+      "field": "description",
+      "text": "iPhone、iPad、\niPhone Duo、Apple Watch"
+    },
+    {
+      "page": "devices",
+      "locale": "ko",
+      "field": "headline",
+      "text": "여러 기기,\n내 방식대로"
+    },
+    {
+      "page": "devices",
+      "locale": "ko",
+      "field": "description",
+      "text": "iPhone, iPad,\niPhone Duo, Apple Watch"
+    },
+    {
+      "page": "devices",
+      "locale": "es",
+      "field": "headline",
+      "text": "Varios dispositivos,\na tu manera"
+    },
+    {
+      "page": "devices",
+      "locale": "es",
+      "field": "description",
+      "text": "En iPhone, iPad, iPhone Duo\ny Apple Watch"
+    },
+    {
+      "page": "devices",
+      "locale": "fr",
+      "field": "headline",
+      "text": "Plusieurs appareils,\nà votre façon"
+    },
+    {
+      "page": "devices",
+      "locale": "fr",
+      "field": "description",
+      "text": "Sur iPhone, iPad, iPhone Duo\net Apple Watch"
+    },
+    {
+      "page": "devices",
+      "locale": "de",
+      "field": "headline",
+      "text": "Mehrere Geräte,\nwie du willst"
+    },
+    {
+      "page": "devices",
+      "locale": "de",
+      "field": "description",
+      "text": "Für iPhone, iPad, iPhone Duo\nund Apple Watch"
+    },
+    {
+      "page": "devices",
+      "locale": "it",
+      "field": "headline",
+      "text": "Più dispositivi,\ncome vuoi"
+    },
+    {
+      "page": "devices",
+      "locale": "it",
+      "field": "description",
+      "text": "Su iPhone, iPad, iPhone Duo\ne Apple Watch"
+    },
+    {
+      "page": "devices",
+      "locale": "pt-BR",
+      "field": "headline",
+      "text": "Vários dispositivos,\ndo seu jeito"
+    },
+    {
+      "page": "devices",
+      "locale": "pt-BR",
+      "field": "description",
+      "text": "No iPhone, iPad, iPhone Duo\ne no Apple Watch"
+    },
+    {
+      "page": "devices",
+      "locale": "ru",
+      "field": "headline",
+      "text": "Много устройств\nкак вам удобно"
+    },
+    {
+      "page": "devices",
+      "locale": "ru",
+      "field": "description",
+      "text": "На iPhone, iPad, iPhone Duo\nи Apple Watch"
+    },
+    {
+      "page": "devices",
+      "locale": "ar",
+      "field": "headline",
+      "text": "أجهزة متعددة،\nكما تشاء"
+    },
+    {
+      "page": "devices",
+      "locale": "ar",
+      "field": "description",
+      "text": "iPhone وiPad\nوiPhone Duo وApple Watch"
+    }
+  ],
+  "copyAudit": "12locales×5pages headline+subcopy verified; poster device variants share same copy; no Pro unlock prompt or terminal sentence period",
+  "native51UIParity": "Not independently proven for unchanged scene sources; do not call source inspection finalposteracceptance",
+  "newFindings": {
+    "page03": "Hold export pending t328 genuine capsule-to-card / red-warning validation and corrected native outputs",
+    "page05": "Existing lineup helper selects Watch rest-160 old fixture, not staged native51 rest; all page05 exports remain blocked"
+  },
+  "acceptedImages": [],
+  "codexDependency": false
+}

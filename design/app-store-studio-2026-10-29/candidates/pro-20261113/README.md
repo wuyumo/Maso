@@ -1,3 +1,5 @@
+> ACTIVE t329: assistant owns preparation/upload; Codex dependency canceled. See ../../../docs/store-candidate-t315-20261113/WORKFLOW-HANDOFF.md (active handoff). 01/02/04 review export enabled;03ALL48heldfort328;05ALL48heldforoldWatchfixture. Historical notes below do not override current gates.
+
 # Isolated Pro candidate — manual browser export
 
 Prepared 2026-11-13 Asia/Shanghai. Not visually verified, uploaded, or submitted.

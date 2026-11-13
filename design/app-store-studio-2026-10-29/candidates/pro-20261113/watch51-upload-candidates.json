@@ -116,5 +116,12 @@
     }
   ],
   "acceptedImages": [],
-  "note": "Six actual standalone Watch native screenshots, not posters. Source alpha was opaque255. Existing candidate export RGB normalization used verbatim; no RGB pixels altered, no HTML renderer. Upload acceptance remains pending."
+  "note": "Six actual standalone Watch native screenshots, not posters. Source alpha was opaque255. Existing candidate export RGB normalization used verbatim; no RGB pixels altered, no HTML renderer. Upload acceptance remains pending.",
+  "executorFullSizeVisualRead": "2026-11-13 10:47 Asia/Shanghai; all6actual416x496PNGs individually read onbox, SHA/dimensions/RGB verified",
+  "visualFindings": [
+    "No clipped exercise names/buttons identified in these6outputs",
+    "English exercise native clock area blank; other5show10:11; native pixels preserved",
+    "These are independent simulator examples; no physical/live synchronization claim"
+  ],
+  "userApproved": false
 }
