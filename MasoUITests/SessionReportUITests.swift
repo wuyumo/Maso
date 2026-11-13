@@ -55,7 +55,14 @@ final class SessionReportUITests: XCTestCase {
         XCTAssertGreaterThan(grabbers, 0)
         XCTAssertEqual(sheetGrabbers(in: app).count, grabbers)
         XCTAssertEqual(app.navigationBars.count, bars)
-        duration.tap()
+        let durationTable = app.otherElements["workout.sessionReport.durationTable"]
+        let durationRow = app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH %@", "workout.report.exercise.")).element(boundBy: 0)
+        showAboveShare(durationTable, in: app, name: "report-duration-above-share")
+        let reportBar = app.navigationBars["Workout report"]
+        XCTAssertGreaterThanOrEqual(durationRow.frame.minY, reportBar.frame.maxY - 1)
+        XCTAssertLessThanOrEqual(durationRow.frame.maxY, share.frame.minY + 1, "duration row \(durationRow.frame) share \(share.frame)")
+        XCTAssertEqual(sheetGrabbers(in: app).count, grabbers)
+        tapOnScreen(duration, scrolling: durationTable)
         XCTAssertEqual(identifierCount("workout.sessionReport.durationTable", in: app), 0)
         keepShot(app, "report-duration-collapsed")
 
@@ -70,7 +77,17 @@ final class SessionReportUITests: XCTestCase {
         XCTAssertEqual(identifierCount("workout.report", in: app), 0)
         XCTAssertEqual(sheetGrabbers(in: app).count, grabbers)
         XCTAssertEqual(app.navigationBars.count, bars)
-        heart.tap()
+        let heartBody = app.otherElements["workout.sessionReport.heartTableBody"]
+        let heartChart = app.descendants(matching: .any).matching(identifier: "workout.report.heart").element(boundBy: 0)
+        showAboveShare(heartBody, in: app, name: "report-heart-above-share")
+        let heartBar = app.navigationBars["Workout report"].frame.maxY
+        let heartShare = app.buttons["workout.sessionReport.share"].frame.minY
+        if heartBody.frame.minY >= heartBar - 1, heartBody.frame.maxY <= heartShare + 1 {
+            XCTAssertGreaterThanOrEqual(heartChart.frame.minY, heartBar - 1)
+            XCTAssertLessThanOrEqual(heartChart.frame.maxY, heartShare + 1, "heart chart \(heartChart.frame) share \(heartShare)")
+        }
+        XCTAssertEqual(sheetGrabbers(in: app).count, grabbers)
+        tapOnScreen(heart, scrolling: heartBody)
         XCTAssertEqual(identifierCount("workout.sessionReport.heartTableBody", in: app), 0)
         XCTAssertEqual(identifierCount("workout.report.heart", in: app), 0)
         keepShot(app, "report-heart-collapsed")
@@ -316,6 +333,61 @@ final class SessionReportUITests: XCTestCase {
 
     private func identifierCount(prefix: String, in app: XCUIApplication) -> Int {
         app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH %@", prefix)).count
+    }
+
+    /// Centers `swipeUp` the same way as `revealButton`, then reads frames in Swift.
+    /// A table taller than the open band is shot as `-top` and `-bottom`.
+    private func showAboveShare(_ element: XCUIElement, in app: XCUIApplication, name: String) {
+        let share = app.buttons["workout.sessionReport.share"]
+        let bar = app.navigationBars["Workout report"]
+        let room = share.frame.minY - bar.frame.maxY
+        if element.exists, element.frame.height > 0, element.frame.height <= room {
+            revealBand(element, in: app, top: true, bottom: true)
+            keepShot(app, name)
+            let frame = element.frame
+            XCTAssertGreaterThanOrEqual(frame.minY, bar.frame.maxY - 1, "\(name) \(frame)")
+            XCTAssertLessThanOrEqual(frame.maxY, share.frame.minY + 1, "\(name) \(frame) share \(share.frame)")
+            return
+        }
+        revealBand(element, in: app, top: true, bottom: false)
+        keepShot(app, name + "-top")
+        let top = element.frame
+        XCTAssertGreaterThanOrEqual(top.minY, bar.frame.maxY - 1, "\(name) top \(top)")
+        XCTAssertLessThan(top.minY, share.frame.minY, "\(name) top \(top)")
+        revealBand(element, in: app, top: false, bottom: true)
+        keepShot(app, name + "-bottom")
+        let bottom = element.frame
+        XCTAssertLessThanOrEqual(bottom.maxY, share.frame.minY + 1, "\(name) bottom \(bottom) share \(share.frame)")
+        XCTAssertGreaterThan(bottom.maxY, bar.frame.maxY, "\(name) bottom \(bottom)")
+    }
+
+    private func revealBand(_ element: XCUIElement, in app: XCUIApplication, top: Bool, bottom: Bool) {
+        let share = app.buttons["workout.sessionReport.share"]
+        let bar = app.navigationBars["Workout report"]
+        for _ in 0..<8 {
+            let frame = element.frame
+            let topOnScreen = frame.minY >= bar.frame.maxY - 1 && frame.minY < share.frame.minY
+            let bottomOnScreen = frame.maxY <= share.frame.minY + 1 && frame.maxY > bar.frame.maxY
+            if element.exists, frame.height > 0, (!top || topOnScreen), (!bottom || bottomOnScreen) { return }
+            if element.exists, frame.minY < bar.frame.maxY, bottomOnScreen {
+                element.swipeDown(velocity: .slow)
+            } else {
+                app.swipeUp(velocity: .slow)
+            }
+        }
+        XCTFail("\(element.identifier) stayed at \(element.frame), share \(share.frame)")
+    }
+
+    private func tapOnScreen(_ button: XCUIElement, scrolling anchor: XCUIElement) {
+        for _ in 0..<6 {
+            if button.isHittable {
+                button.tap()
+                return
+            }
+            anchor.swipeDown(velocity: .slow)
+        }
+        XCTAssertTrue(button.isHittable, "\(button.identifier) frame \(button.frame)")
+        button.tap()
     }
 
     private func revealButton(_ identifier: String, control: String, in app: XCUIApplication) -> XCUIElement {
