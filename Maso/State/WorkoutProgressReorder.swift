@@ -183,7 +183,7 @@ struct WorkoutProgressReorderGesture: UIGestureRecognizerRepresentable {
     var onChanged: (CGPoint) -> Void
     var onEnded: (_ location: CGPoint, _ cancelled: Bool) -> Void
 
-    final class Coordinator {
+    final class Coordinator: NSObject, UIGestureRecognizerDelegate {
         var onBegan: (CGPoint) -> Void
         var onChanged: (CGPoint) -> Void
         var onEnded: (CGPoint, Bool) -> Void
@@ -192,6 +192,10 @@ struct WorkoutProgressReorderGesture: UIGestureRecognizerRepresentable {
             self.onBegan = onBegan
             self.onChanged = onChanged
             self.onEnded = onEnded
+        }
+
+        func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+            true
         }
     }
 
@@ -208,6 +212,7 @@ struct WorkoutProgressReorderGesture: UIGestureRecognizerRepresentable {
         recognizer.cancelsTouchesInView = false
         recognizer.delaysTouchesBegan = false
         recognizer.delaysTouchesEnded = false
+        recognizer.delegate = context.coordinator
         return recognizer
     }
 
@@ -218,13 +223,14 @@ struct WorkoutProgressReorderGesture: UIGestureRecognizerRepresentable {
         recognizer.cancelsTouchesInView = false
         recognizer.delaysTouchesBegan = false
         recognizer.delaysTouchesEnded = false
+        recognizer.delegate = context.coordinator
         context.coordinator.onBegan = onBegan
         context.coordinator.onChanged = onChanged
         context.coordinator.onEnded = onEnded
     }
 
     func handleUIGestureRecognizerAction(_ recognizer: OriginLongPressRecognizer, context: Context) {
-        let current = recognizer.location(in: recognizer.view)
+        let current = recognizer.location(in: recognizer.view?.window)
         switch recognizer.state {
         case .began:
             context.coordinator.armed = true
@@ -254,7 +260,7 @@ final class OriginLongPressRecognizer: UILongPressGestureRecognizer {
     private(set) var origin: CGPoint?
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
         super.touchesBegan(touches, with: event)
-        origin = touches.first?.location(in: view)
+        origin = touches.first?.location(in: view?.window)
     }
     override func reset() {
         super.reset()

@@ -1,5 +1,6 @@
 import SwiftUI
 import StoreKit
+import UIKit
 
 private struct PlayerLayoutBoundsKey: PreferenceKey {
     static var defaultValue: [String: Anchor<CGRect>] { [:] }
@@ -2396,6 +2397,7 @@ private struct WorkoutExerciseProgressBar: View {
 
     private final class DragSession {
         var value: Drag?
+        var frame: CGRect = .zero
     }
 
     private struct Drag {
@@ -2414,58 +2416,24 @@ private struct WorkoutExerciseProgressBar: View {
             let rtl = layoutDirection == .rightToLeft
             HStack(spacing: WorkoutProgressReorder.spacing) {
                 ForEach(Array(steps.enumerated()), id: \.element.step.id) { index, item in
-                    segment(item.step, index: index, pitch: pitch, rightToLeft: rtl)
+                    segment(item.step, index: index, pitch: pitch, rightToLeft: rtl, barSize: geo.size)
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .contentShape(Rectangle())
-            .gesture(WorkoutProgressReorderGesture(
-                enabled: steps.count > 1,
-                onBegan: { origin in
-                    let source = WorkoutProgressReorder.slotIndex(
-                        x: origin.x, count: steps.count, width: width,
-                        rightToLeft: rtl)
-                    let value = Drag(sourceIndex: source, origin: origin, location: origin, finalIndex: source, inside: true)
-                    dragSession.value = value
-                    drag = value
-                    suppressTapUntil = Date().addingTimeInterval(30)
-                    Haptics.tap()
-                },
-                onChanged: { location in
-                    guard var value = dragSession.value else { return }
-                    value.location = location
-                    if let landing = WorkoutProgressReorder.landingIndex(
-                        count: steps.count, location: location, size: geo.size, rightToLeft: rtl) {
-                        if value.finalIndex != landing { Haptics.selection() }
-                        value.finalIndex = landing
-                        value.inside = true
-                    } else {
-                        value.finalIndex = value.sourceIndex
-                        value.inside = false
-                    }
-                    dragSession.value = value
-                    drag = value
-                },
-                onEnded: { location, cancelled in
-                    let finished = dragSession.value
-                    dragSession.value = nil
-                    drag = nil
-                    suppressTapUntil = Date().addingTimeInterval(0.45)
-                    guard let finished, !cancelled else { return }
-                    guard let landing = WorkoutProgressReorder.landingIndex(
-                        count: steps.count, location: location, size: geo.size, rightToLeft: rtl),
-                          let move = WorkoutProgressReorder.planMove(
-                            visiblePlanIndices: steps.map(\.planIndex),
-                            from: finished.sourceIndex, toFinalIndex: landing) else { return }
-                    onReorder(move.source, move.destination)
+            .background {
+                GeometryReader { proxy in
+                    Color.clear
+                        .onAppear { dragSession.frame = proxy.frame(in: .global) }
+                        .onChange(of: proxy.size) { _, _ in dragSession.frame = proxy.frame(in: .global) }
                 }
-            ))
+            }
         }
         .frame(height: 44)
         .animation(nil, value: drag?.location.x)
     }
 
-    private func segment(_ step: PlanStep, index: Int, pitch: CGFloat, rightToLeft: Bool) -> some View {
+    private func segment(_ step: PlanStep, index: Int, pitch: CGFloat, rightToLeft: Bool, barSize: CGSize) -> some View {
         let sets = segments.filter { $0.isExercise && $0.stepId == step.id }
         let done = sets.filter { segment in
             if case .exercise(_, let number, _, _, _, _, _) = segment.kind {
@@ -2516,7 +2484,57 @@ private struct WorkoutExerciseProgressBar: View {
         .accessibilityLabel(Text(title(step)))
         .accessibilityValue(Text("\(done)/\(sets.count)"))
         .accessibilityHint(Text(progressHint(canJump: done != sets.count)))
+        .gesture(reorderGesture(index: index, barSize: barSize, rightToLeft: rightToLeft))
         .modifier(ProgressReorderActions(canMoveEarlier: index > 0, canMoveLater: index + 1 < steps.count, earlier: { move(from: index, toFinalIndex: index - 1) }, later: { move(from: index, toFinalIndex: index + 1) }))
+    }
+
+    private func barLocal(_ windowPoint: CGPoint) -> CGPoint {
+        let frame = dragSession.frame
+        return CGPoint(x: windowPoint.x - frame.minX, y: windowPoint.y - frame.minY)
+    }
+
+    private func reorderGesture(index: Int, barSize: CGSize, rightToLeft: Bool) -> WorkoutProgressReorderGesture {
+        WorkoutProgressReorderGesture(
+            enabled: steps.count > 1,
+            onBegan: { windowPoint in
+                let local = barLocal(windowPoint)
+                let value = Drag(sourceIndex: index, origin: local, location: local, finalIndex: index, inside: true)
+                dragSession.value = value
+                drag = value
+                suppressTapUntil = Date().addingTimeInterval(30)
+                Haptics.tap()
+            },
+            onChanged: { windowPoint in
+                guard var value = dragSession.value else { return }
+                let local = barLocal(windowPoint)
+                value.location = local
+                if let landing = WorkoutProgressReorder.landingIndex(
+                    count: steps.count, location: local, size: barSize, rightToLeft: rightToLeft) {
+                    if value.finalIndex != landing { Haptics.selection() }
+                    value.finalIndex = landing
+                    value.inside = true
+                } else {
+                    value.finalIndex = value.sourceIndex
+                    value.inside = false
+                }
+                dragSession.value = value
+                drag = value
+            },
+            onEnded: { windowPoint, cancelled in
+                let finished = dragSession.value
+                dragSession.value = nil
+                drag = nil
+                suppressTapUntil = Date().addingTimeInterval(0.45)
+                guard let finished, !cancelled else { return }
+                let local = barLocal(windowPoint)
+                guard let landing = WorkoutProgressReorder.landingIndex(
+                    count: steps.count, location: local, size: barSize, rightToLeft: rightToLeft),
+                      let move = WorkoutProgressReorder.planMove(
+                        visiblePlanIndices: steps.map(\.planIndex),
+                        from: finished.sourceIndex, toFinalIndex: landing) else { return }
+                onReorder(move.source, move.destination)
+            }
+        )
     }
 
     private func progressHint(canJump: Bool) -> String {
@@ -4336,17 +4354,19 @@ struct WorkoutHeartRateSettingsSheet: View {
                         Spacer()
                         TextField("bpm", text: Binding(get: { limitText }, set: { newValue in
                             let seed = recommendationSeed
-                            if !seed.isEmpty, newValue.count > seed.count,
-                               newValue.hasPrefix(seed) || newValue.hasSuffix(seed) {
-                                limitText = newValue.hasPrefix(seed)
-                                    ? String(newValue.dropFirst(seed.count))
-                                    : String(newValue.dropLast(seed.count))
+                            if !seed.isEmpty, newValue.count > seed.count, newValue.hasPrefix(seed) {
+                                limitText = String(newValue.dropFirst(seed.count))
                                 usesRecommendation = false
                                 return
                             }
+                            if !seed.isEmpty, newValue.count > seed.count, newValue.hasSuffix(seed) {
+                                limitText = String(newValue.dropLast(seed.count))
+                                usesRecommendation = false
+                                return
+                            }
+                            if newValue == seed { return }
                             limitText = newValue
                             usesRecommendation = false
-                            recommendationSeed = ""
                         }))
                             .keyboardType(.numberPad).multilineTextAlignment(.trailing)
                             .frame(maxWidth: 110).accessibilityIdentifier("workout.heart.limit")
@@ -4357,7 +4377,9 @@ struct WorkoutHeartRateSettingsSheet: View {
                     } else {
                         Button("Reset to recommendation") {
                             usesRecommendation = true
-                            limitText = recommendation.bpm.formatted(.number.locale(LanguageManager.currentLocale))
+                            let text = recommendation.bpm.formatted(.number.locale(LanguageManager.currentLocale))
+                            limitText = text
+                            recommendationSeed = text
                             errorText = nil
                         }.accessibilityIdentifier("workout.heart.reset")
                     }
@@ -4395,6 +4417,10 @@ struct WorkoutHeartRateSettingsSheet: View {
                 let text = value.formatted(.number.locale(LanguageManager.currentLocale))
                 limitText = text
                 recommendationSeed = usesRecommendation ? text : ""
+            }
+            .onReceive(NotificationCenter.default.publisher(for: UITextField.textDidBeginEditingNotification)) { note in
+                guard !recommendationSeed.isEmpty, let field = note.object as? UITextField else { return }
+                field.selectedTextRange = field.textRange(from: field.beginningOfDocument, to: field.endOfDocument)
             }
             .onChange(of: recommendation.bpm) { _, value in
                 if usesRecommendation { limitText = value.formatted(.number.locale(LanguageManager.currentLocale)) }
