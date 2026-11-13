@@ -175,6 +175,21 @@ main a.cta {
   color: var(--accent-ink);
 }
 
+/* Body copy only: one step under the measured 400. Headings stay at the
+   user-agent 700; .cta and .brand stay 700 in the rules above. */
+main p,
+main li,
+main figcaption,
+main td,
+main blockquote {
+  font-weight: 300;
+}
+
+main strong,
+main b {
+  font-weight: 700;
+}
+
 .page-nav {
   display: flex;
   flex-wrap: wrap;
