@@ -1799,6 +1799,56 @@ final class WorkoutSignalsUITests: XCTestCase {
         XCTAssertEqual(first.value as? String, "1/3", "Jumping never completes another set")
         capture(app, "progress-first-unfinished")
     }
+
+    /// t387: long-press drag on the progress bar uses the same order as the queue.
+    /// A short drag and a drop outside the bar must not move steps or complete sets.
+    func testProgressLongPressReorderMatchesQueueAndPreservesCurrentExercise() {
+        let app = launch()
+        XCTAssertTrue(element("workout.primary", app).waitForExistence(timeout: 15))
+        let title = element("workout.exercise.title", app)
+        XCTAssertTrue(title.waitForExistence(timeout: 5))
+        let first = element("workout.progress.queue-step-0", app)
+        let second = element("workout.progress.queue-step-1", app)
+        XCTAssertTrue(first.waitForExistence(timeout: 5))
+        XCTAssertTrue(second.exists)
+        XCTAssertLessThan(first.frame.minX, second.frame.minX)
+        XCTAssertEqual(first.value as? String, "0/3")
+        XCTAssertEqual(second.value as? String, "0/3")
+        XCTAssertEqual(element("workout.progress", app).value as? String, "0/6")
+
+        first.press(forDuration: 0.15, thenDragTo: second)
+        XCTAssertLessThan(first.frame.minX, second.frame.minX, "A swipe shorter than the long-press hold must not reorder")
+        XCTAssertEqual(element("workout.progress", app).value as? String, "0/6")
+
+        let originalTitle = title.label
+        second.tap()
+        XCTAssertNotEqual(title.label, originalTitle)
+        XCTAssertLessThan(first.frame.minX, second.frame.minX, "Tap jumps and does not reorder")
+        XCTAssertEqual(first.value as? String, "0/3")
+        XCTAssertEqual(second.value as? String, "0/3")
+        let jumped = title.label
+
+        first.press(forDuration: 0.8, thenDragTo: second)
+        XCTAssertEqual(title.label, jumped, "Reordering must keep the exercise that was already open")
+        XCTAssertEqual(first.value as? String, "0/3")
+        XCTAssertEqual(second.value as? String, "0/3")
+        XCTAssertEqual(element("workout.progress", app).value as? String, "0/6")
+        XCTAssertLessThan(second.frame.minX, first.frame.minX)
+
+        element("workout.playlist.toggle", app).tap()
+        let row0 = element("workout.queue.row.queue-step-0", app)
+        let row1 = element("workout.queue.row.queue-step-1", app)
+        XCTAssertTrue(row1.waitForExistence(timeout: 5))
+        XCTAssertLessThan(row1.frame.minY, row0.frame.minY, "Queue order is the same plan order as the progress bar")
+        element("workout.playlist.toggle", app).tap()
+
+        let away = first.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 8))
+        first.press(forDuration: 0.8, thenDragTo: away)
+        XCTAssertLessThan(second.frame.minX, first.frame.minX, "Dragging out of the bar cancels")
+        XCTAssertEqual(title.label, jumped)
+        XCTAssertEqual(element("workout.progress", app).value as? String, "0/6")
+    }
+
     func testVariantListKeepsItsScrollPositionAcrossClockTicksAndOpensReplacement() {
         for language in ["en", "ar"] {
             let app = launch(language: language)

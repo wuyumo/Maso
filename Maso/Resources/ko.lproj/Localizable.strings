@@ -2097,6 +2097,9 @@
 
 /* Workout progress, observed timing and personal heart-rate reminders */
 "Jump to first unfinished set" = "첫 미완료 세트로 이동";
+"Move earlier" = "앞으로 이동";
+"Move later" = "뒤로 이동";
+"Long press and drag to reorder" = "길게 누른 뒤 끌어 순서 변경";
 "Rest duration" = "휴식 시간";
 "Applies to this rest only." = "이번 휴식에만 적용됩니다.";
 "Edit rest time" = "휴식 시간 수정";
