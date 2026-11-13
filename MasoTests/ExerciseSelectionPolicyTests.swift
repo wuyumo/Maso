@@ -361,7 +361,7 @@ final class ExerciseSelectionPolicyTests: XCTestCase {
         XCTAssertFalse(machineReplacements.contains { $0.id == "abduction_cable" })
     }
 
-    func testHipAbductionEquipmentVersionsShareOneGroupAndKeepSeparateIDs() throws {
+    @MainActor func testHipAbductionEquipmentVersionsShareOneGroupAndKeepSeparateIDs() throws {
         let machine = try exercise("abductor_machine")
         let cable = try exercise("abduction_cable")
         let lean = try exercise("abductor_machine_lean_forward")
@@ -451,7 +451,7 @@ final class ExerciseSelectionPolicyTests: XCTestCase {
         XCTAssertEqual(cableRows.filter { $0.id == cable.id }.count, 1)
     }
 
-    func testExplicitVariantPreferenceDrivesLaterCardsWithoutRecordingItself() throws {
+    @MainActor func testExplicitVariantPreferenceDrivesLaterCardsWithoutRecordingItself() throws {
         let barbell = try exercise("bench_press_barbell")
         let machine = try exercise("bench_press_machine")
         let dumbbell = try exercise("bench_press_dumbbell")
