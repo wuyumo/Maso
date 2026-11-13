@@ -24,9 +24,18 @@ export const CANDIDATE_PLAN_CSS = `
   transform: translateX(var(--candidate-plan-shift-x)) perspective(calc(4500px * var(--candidate-plan-unit))) rotateX(10deg) skewX(-3deg) scale(1.1);
   transform-origin: left bottom;
 }
+#candidate-poster[data-candidate-plan-device="low-angle-split"] [data-candidate-plan-mockup][data-phone-layout="recovery"] {
+  transform: none;
+  filter: none;
+}
 #candidate-poster[data-candidate-plan-device="low-angle-split"] [data-candidate-plan-mockup] [data-chat-root="1"] > div {
   box-sizing: border-box;
   padding: calc(36px * var(--candidate-plan-unit)) calc(28px * var(--candidate-plan-unit));
+}
+#candidate-poster[data-candidate-plan-device="low-angle-split"] [data-plan-variant="A"] [data-chat-root="1"] > div {
+  width: calc(100% / var(--candidate-thread-fit, 1)) !important;
+  transform: scale(var(--candidate-thread-fit, 1)) !important;
+  transform-origin: top left !important;
 }
 #candidate-poster[data-candidate-plan-device="low-angle-split"] [data-chat-photos="1"] {
   display: grid !important;
@@ -59,3 +68,15 @@ export const CANDIDATE_PLAN_CSS = `
   pointer-events: none;
 }
 `;
+
+/** Only these newly captured native51 viewports are available; never fall back by locale. */
+export function candidatePlanNativeSource(device: string, locale: string): string | null {
+  if (device !== "iphone" && device !== "iphone-medium") return null;
+  if (locale !== "zh" && locale !== "en") return null;
+  return `/candidate-assets/pro-20261113/native51/coach-${locale}-native51.png`;
+}
+
+export function candidateChatFit(previous: number, measured: string | undefined): number {
+  const value = Number(measured ?? 1);
+  return Number.isFinite(value) && value > 0 ? Math.min(previous, 1, Math.max(.05, value)) : previous;
+}

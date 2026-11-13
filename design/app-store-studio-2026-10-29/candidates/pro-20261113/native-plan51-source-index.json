@@ -1,0 +1,32 @@
+{
+  "version": "3.0.2(51)",
+  "device": "iPhone17Pro simulator",
+  "runtime": "iOS26.1",
+  "fixture": "existing MASO_SHOWCASE_SEED + MASO_MARKETING_COACH_NAVIGATION=report + MASO_SHOWCASE=coach_chat",
+  "nativeUI": "RootView real pushed Coach screen; synthetic local marketing conversation, no generation/consent action taken",
+  "sourcePhoto": "existing public/chat/body-front.jpg; rawB respects native single-photo layout",
+  "images": [
+    {
+      "locale": "zh",
+      "path": "public/candidate-assets/pro-20261113/native51/coach-zh-native51.png",
+      "sha256": "a0a6c5f8f2ee58b2e47478ac002946656b4fccfc5e1c5c509097b448de031c3e",
+      "width": 1206,
+      "height": 2622,
+      "capturedAtCST": "2026-11-13T15:50:39.520567+08:00",
+      "rawNativeReviewed": true
+    },
+    {
+      "locale": "en",
+      "path": "public/candidate-assets/pro-20261113/native51/coach-en-native51.png",
+      "sha256": "7598e1a03b48b1578d262ad820a8d27290c06db12659d487eebc598aaa78b08f",
+      "width": 1206,
+      "height": 2622,
+      "capturedAtCST": "2026-11-13T15:52:17.488368+08:00",
+      "rawNativeReviewed": true
+    }
+  ],
+  "viewportLimit": "single authentic viewport, not whole-conversation stitching; English viewport naturally scrolls photo above visible region and partly covers action beneath composer",
+  "simulatorPersistenceException": "existing fixture unexpectedly changed simulator maso-data.json; task app terminated, no simulator reset or invented restore; no physical device accessed",
+  "acceptedForUpload": false,
+  "actualPosterPNGs": 0
+}

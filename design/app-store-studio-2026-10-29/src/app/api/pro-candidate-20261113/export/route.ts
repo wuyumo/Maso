@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import sharp from "sharp";
+import { candidatePlanNativeSource } from "../../../../lib/candidate-plan-presentation";
 import { candidatePageReady } from "../../../../lib/candidate51-assets";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
@@ -8,10 +9,11 @@ const sizes: Record<string,string> = {iphone:"1320x2868", "iphone-medium":"1206x
 export async function POST(request: Request) {
   try {
     const {dataUrl,artifactPath} = await request.json();
-    const match = typeof artifactPath === "string" && /^ios\/(iphone|iphone-medium|ipad|duo|watch)\/(\d{3,4}x\d{3,4})\/(zh|zh-Hant|en|ja|ko|es|fr|de|it|pt-BR|ru|ar)\/(01-plan|02-recovery|03-training|04-diet|05-devices|01-exercise-185|02-rest-160)\.png$/.exec(artifactPath);
+    const match = typeof artifactPath === "string" && /^ios\/(iphone|iphone-medium|ipad|duo|watch)\/(\d{3,4}x\d{3,4})\/(zh|zh-Hant|en|ja|ko|es|fr|de|it|pt-BR|ru|ar)\/(01-plan(?:-[AB])?|02-recovery|03-training|04-diet|05-devices|01-exercise-185|02-rest-160)\.png$/.exec(artifactPath);
     if (!match || sizes[match[1]] !== match[2] || typeof dataUrl !== "string" || !dataUrl.startsWith("data:image/png;base64,") || dataUrl.length > 40_000_000) return NextResponse.json({error:"Invalid candidate image/path"},{status:400});
     const pageByName:Record<string,string>={"01-plan":"plan","02-recovery":"recovery","03-training":"training","04-diet":"diet","05-devices":"devices","01-exercise-185":"watch-exercise","02-rest-160":"watch-rest"};
-    const allowed=candidatePageReady(match[1],pageByName[match[4]],match[3]);
+    const pageName=match[4].replace(/-[AB]$/,"");
+    const allowed=candidatePageReady(match[1],pageByName[pageName],match[3]) && (match[4]!=="01-plan-B" || !!candidatePlanNativeSource(match[1],match[3]));
     if(!allowed) return NextResponse.json({error:"Native source not ready for this locale/device/page"},{status:400});
     const bytes = Buffer.from(dataUrl.split(",")[1],"base64");
     const meta = await sharp(bytes,{limitInputPixels:20_000_000}).metadata();
