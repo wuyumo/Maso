@@ -940,9 +940,21 @@ struct RootView: View {
         }
     }
 
+    /// A finished week still has a plan to train again. The launcher must not
+    /// stay visible while its action returns without a plan.
+    private var launchableTodayPlan: Plan? {
+        if let plan = data.todayRecommendedPlan { return plan }
+        let rotation = data.workoutRotation
+        if let id = rotation.defaultPlanID,
+           let plan = data.plans.first(where: { $0.id == id && !$0.steps.isEmpty }) {
+            return plan
+        }
+        return data.plans.first { !$0.steps.isEmpty }
+    }
+
     /// Both the Home launcher and the explicit Widget play link use this action.
     private func startTodayWorkout() {
-        guard let plan = data.todayRecommendedPlan else { return }
+        guard let plan = launchableTodayPlan else { return }
         Haptics.tap()
         startTraining(plan)
     }
@@ -958,7 +970,7 @@ struct RootView: View {
             Button("Today's Workout") {
                 Analytics.shared.track("home_workout_entry", ["entry": .string("today")])
                 startTodayWorkout()
-            }.disabled(data.todayRecommendedPlan == nil)
+            }.disabled(launchableTodayPlan == nil)
             Button("Start custom workout") {
                 Analytics.shared.track("home_workout_entry", ["entry": .string("custom")])
                 quickWorkoutPresented = true

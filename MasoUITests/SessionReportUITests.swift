@@ -8,11 +8,13 @@ final class SessionReportUITests: XCTestCase {
         continueAfterFailure = false
     }
 
-    func testCleanFinishOpensSessionReportNotTheOldCompletionPage() throws {
+    func testCleanFinishShowsCelebrationBeforeTheReport() throws {
         let app = launch("session-report-clean-player")
-        let report = try require("workout.sessionReport", in: app)
         XCTAssertFalse(app.descendants(matching: .any)["workout.saveChanges"].exists)
-        XCTAssertFalse(app.staticTexts["Workout complete"].exists)
+        XCTAssertTrue(app.staticTexts["Workout complete"].waitForExistence(timeout: 30))
+        XCTAssertFalse(app.descendants(matching: .any)["workout.sessionReport"].exists)
+        openReportFromCelebration(app)
+        let report = try require("workout.sessionReport", in: app)
         XCTAssertTrue(app.buttons["workout.sessionReport.exit"].exists)
         XCTAssertTrue(app.buttons["workout.sessionReport.share"].exists)
         XCTAssertTrue(app.descendants(matching: .any)["workout.sessionReport.body"].waitForExistence(timeout: 20))
@@ -107,10 +109,11 @@ final class SessionReportUITests: XCTestCase {
         XCTAssertTrue(skipped.staticTexts["2 × 8 · 62.5 kg"].exists)
         XCTAssertFalse(skipped.descendants(matching: .any)["workout.sessionReport"].exists)
         skip.tap()
-        XCTAssertTrue(skipped.descendants(matching: .any)["workout.sessionReport"].waitForExistence(timeout: 30))
+        XCTAssertTrue(skipped.staticTexts["Workout complete"].waitForExistence(timeout: 30))
+        XCTAssertFalse(skipped.descendants(matching: .any)["workout.sessionReport"].exists)
+        openReportFromCelebration(skipped)
         XCTAssertTrue(skipped.buttons["workout.sessionReport.exit"].exists)
         XCTAssertTrue(skipped.descendants(matching: .any)["workout.saveChanges"].waitForNonExistence(timeout: 8))
-        XCTAssertFalse(skipped.staticTexts["Workout complete"].exists)
         skipped.terminate()
 
         let saved = launch("session-report-changed-player")
@@ -118,15 +121,16 @@ final class SessionReportUITests: XCTestCase {
         XCTAssertTrue(save.waitForExistence(timeout: 30))
         XCTAssertEqual(saved.staticTexts["workout.saveChanges.title"].label, "Save changes to this workout plan?")
         save.tap()
-        XCTAssertTrue(saved.descendants(matching: .any)["workout.sessionReport"].waitForExistence(timeout: 30))
+        XCTAssertTrue(saved.staticTexts["Workout complete"].waitForExistence(timeout: 30))
+        XCTAssertFalse(saved.descendants(matching: .any)["workout.sessionReport"].exists)
+        openReportFromCelebration(saved)
         XCTAssertTrue(saved.buttons["workout.sessionReport.exit"].exists)
         XCTAssertTrue(saved.descendants(matching: .any)["workout.saveChanges"].waitForNonExistence(timeout: 8))
-        XCTAssertFalse(saved.staticTexts["Workout complete"].exists)
     }
 
     func testShareDefaultsStayPrivateAndBackReturnsToTheReport() throws {
         let app = launch("session-report-clean-player")
-        XCTAssertTrue(app.descendants(matching: .any)["workout.sessionReport"].waitForExistence(timeout: 30))
+        openReportFromCelebration(app)
         app.buttons["workout.sessionReport.share"].tap()
         XCTAssertTrue(app.descendants(matching: .any)["workout.sessionReport.sharePreview"].waitForExistence(timeout: 8))
         let shareStats = app.descendants(matching: .any)["workout.sessionReport.shareStats"]
@@ -180,6 +184,7 @@ final class SessionReportUITests: XCTestCase {
 
     func testFinishExitLeavesTheReportAndHistoryUsesBack() throws {
         let finished = launch("session-report-clean-player")
+        openReportFromCelebration(finished)
         let exit = finished.buttons["workout.sessionReport.exit"]
         XCTAssertTrue(exit.waitForExistence(timeout: 30))
         XCTAssertEqual(sessionEndCount(finished), "0")
@@ -195,18 +200,20 @@ final class SessionReportUITests: XCTestCase {
         finished.terminate()
 
         let swiped = launch("session-report-clean-player")
-        XCTAssertTrue(swiped.buttons["workout.sessionReport.exit"].waitForExistence(timeout: 30))
+        openReportFromCelebration(swiped)
         XCTAssertEqual(sessionEndCount(swiped), "0")
         swiped.navigationBars["Workout report"].swipeDown()
-        XCTAssertTrue(swiped.staticTexts["Exercise UI test"].waitForExistence(timeout: 8))
-        XCTAssertTrue(swiped.buttons["workout.sessionReport.exit"].waitForNonExistence(timeout: 8))
+        XCTAssertTrue(swiped.staticTexts["Workout complete"].waitForExistence(timeout: 8))
         XCTAssertTrue(swiped.descendants(matching: .any)["workout.sessionReport"].waitForNonExistence(timeout: 8))
+        XCTAssertEqual(sessionEndCount(swiped), "0")
+        swiped.buttons["workout.completed.exit"].tap()
+        XCTAssertTrue(swiped.staticTexts["Exercise UI test"].waitForExistence(timeout: 8))
         XCTAssertEqual(sessionEndCount(swiped), "1")
         XCTAssertEqual(sessionLiveness(swiped), "none")
         RunLoop.current.run(until: Date().addingTimeInterval(1))
         XCTAssertEqual(sessionEndCount(swiped), "1")
-        XCTAssertTrue(swiped.staticTexts["Exercise UI test"].exists)
         XCTAssertFalse(swiped.descendants(matching: .any)["workout.sessionReport"].exists)
+        XCTAssertFalse(swiped.staticTexts["Workout complete"].exists)
         swiped.terminate()
 
         let history = launch("session-report-history")
@@ -240,6 +247,7 @@ final class SessionReportUITests: XCTestCase {
         continueAfterFailure = true
         for (name, language, extra, arguments) in cases {
             let app = launch("session-report-clean-player", language: language, extra: extra, moreArguments: arguments)
+            openReportFromCelebration(app)
             let title = language == "zh-Hans" ? "训练报告" : "Workout report"
             let bar = app.navigationBars[title]
             let exit = app.buttons["workout.sessionReport.exit"]
@@ -266,11 +274,29 @@ final class SessionReportUITests: XCTestCase {
 
     func testShareExportWritesTheReportCardAndDoesNotOpenTheSystemSheet() {
         let app = launch("session-report-clean-player", extra: ["MASO_SESSION_REPORT_EXPORT": "1"])
+        openReportFromCelebration(app)
         XCTAssertTrue(app.buttons["workout.sessionReport.share"].waitForExistence(timeout: 30))
         app.buttons["workout.sessionReport.share"].tap()
         app.buttons["workout.sessionReport.shareSend"].tap()
         XCTAssertTrue(app.staticTexts["workout.sessionReport.shareExported"].waitForExistence(timeout: 8))
         XCTAssertTrue(app.buttons["workout.sessionReport.shareBack"].exists)
+    }
+
+    private func openReportFromCelebration(_ app: XCUIApplication) {
+        let continueToReport = app.buttons["workout.completed.report"]
+        XCTAssertTrue(continueToReport.waitForExistence(timeout: 30))
+        XCTAssertFalse(app.descendants(matching: .any)["workout.sessionReport"].exists)
+        continueToReport.tap()
+        XCTAssertTrue(app.descendants(matching: .any)["workout.sessionReport"].waitForExistence(timeout: 15))
+    }
+
+    func testHomeStartButtonOpensThePlayer() {
+        let app = launch("home-start")
+        let start = app.buttons["home.startTodayWorkout"]
+        XCTAssertTrue(start.waitForExistence(timeout: 30))
+        start.tap()
+        XCTAssertTrue(app.descendants(matching: .any)["workout.primary"].waitForExistence(timeout: 20))
+        XCTAssertFalse(app.staticTexts["Workout complete"].exists)
     }
 
     private func launch(_ scene: String, language: String = "en", extra: [String: String] = [:], moreArguments: [String] = []) -> XCUIApplication {

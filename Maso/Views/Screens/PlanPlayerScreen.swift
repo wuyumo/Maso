@@ -80,7 +80,6 @@ struct PlanPlayerScreen: View {
     /// 训练完成且 canSaveChangesToPlan 时, 这个标志 false → 先渲确认页.
     @State private var planSaveDecisionMade: Bool = false
     @State private var openWorkoutSaveCompleted = false
-    @State private var sessionReportPresented = false
     @State private var sessionReportDidEnd = false
     /// Playlist 右侧 i 打开详情；头像和名称始终选择动作。
     @State private var detailExercise: Exercise? = nil
@@ -217,12 +216,17 @@ struct PlanPlayerScreen: View {
                     )
                     .transition(.opacity)
                 } else {
-                Color.clear
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(MasoColor.background)
-                    .onAppear {
-                        if !sessionReportDidEnd { sessionReportPresented = true }
-                    }
+                CompletedView(
+                    planName: store.plan?.name ?? "",
+                    durationSeconds: completedDurationSeconds,
+                    sessionRecords: completedSessionSets,
+                    onSavePlan: canSaveCurrentPlan && !openWorkoutSaveCompleted ? {
+                        saveCurrentPlanToLibrary()
+                        openWorkoutSaveCompleted = true
+                    } : nil,
+                    onClose: { endFinishedSessionOnce() }
+                )
+                .transition(.opacity)
                 }
             } else if let seg = store.currentSegment {
                 activePlayer(seg: seg)
@@ -234,22 +238,6 @@ struct PlanPlayerScreen: View {
         .frame(maxWidth: .infinity)
         .background(MasoColor.background.ignoresSafeArea())
         .ignoresSafeArea(.container, edges: [.top, .bottom])
-        .sheet(isPresented: $sessionReportPresented, onDismiss: endFinishedSessionOnce) {
-            AppNavigationStack {
-                WorkoutSessionReportScreen(
-                    records: completedSessionSets,
-                    workoutName: store.plan?.name,
-                    presentation: .finish,
-                    onSavePlan: canSaveCurrentPlan && !openWorkoutSaveCompleted ? {
-                        saveCurrentPlanToLibrary()
-                        openWorkoutSaveCompleted = true
-                    } : nil,
-                    onExit: { sessionReportPresented = false }
-                )
-            }
-            .frame(maxWidth: ProcessInfo.processInfo.environment["MASO_TEST_NARROW"] == "1" ? 320 : .infinity)
-            .sessionReportSheetChrome()
-        }
         .overlay {
             if isActiveTraining && store.heartRate.warningPending && store.heartRate.hasEscalatedWarning {
                 TimelineView(.periodic(from: .now, by: 1)) { context in
@@ -3065,6 +3053,7 @@ private struct CompletedView: View {
                                 .contentShape(Rectangle())
                         }
                         .buttonStyle(.plain)
+                        .accessibilityIdentifier("workout.completed.exit")
                     }
                 }
                 .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
@@ -3089,9 +3078,19 @@ private struct CompletedView: View {
             .onChange(of: showWorkoutReport) { _, presented in if presented { celebrationFeedback.cancel() } }
             .sheet(isPresented: $showWorkoutReport) {
                 AppNavigationStack {
-                    WorkoutReportView(records: data.sets.filter { store.session?.recordedSetIDs?.contains($0.id) == true }, workoutName: planName)
-                        .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Done") { showWorkoutReport = false } } }
+                    WorkoutSessionReportScreen(
+                        records: sessionRecords,
+                        workoutName: planName,
+                        presentation: .finish,
+                        onSavePlan: onSavePlan,
+                        onExit: {
+                            showWorkoutReport = false
+                            onClose()
+                        }
+                    )
                 }
+                .frame(maxWidth: ProcessInfo.processInfo.environment["MASO_TEST_NARROW"] == "1" ? 320 : .infinity)
+                .sessionReportSheetChrome()
             }
             .sheet(isPresented: $showShare) {
                 let fact = AccomplishmentShare.sessionFact(

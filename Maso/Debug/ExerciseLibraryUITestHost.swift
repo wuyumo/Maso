@@ -500,6 +500,8 @@ struct ExerciseLibraryUITestHost: View {
                 }
         } else if scene == "classics-save" {
             AppNavigationStack { ClassicsScreen(onStart: { _ in }) }
+        } else if scene == "home-start" {
+            HomeStartProbe()
         } else if scene == "home-overview" {
             AppNavigationStack { ScrollView { DailyOverviewCard(onReplay: { _ in }).padding(16) } }
         } else if ["short-player", "long-player", "stable-player", "session-report-clean-player", "session-report-changed-player"].contains(scene) {
@@ -620,6 +622,35 @@ private struct SessionReportLargeType: ViewModifier {
         } else {
             content
         }
+    }
+}
+
+/// Real home launcher, including after every plan this week is already complete.
+private struct HomeStartProbe: View {
+    @Environment(DataStore.self) private var data
+    @State private var ready = false
+
+    var body: some View {
+        Group { if ready { RootView() } }
+            .task {
+                guard !ready else { return }
+                var settings = data.settings
+                settings.onboardingCompleted = true
+                settings.hasSeenWelcomePaywall = true
+                settings.hasOfferedReminderPrompt = true
+                settings.firstHomeMuscleIntroPending = false
+                settings.coachIntroTipPending = false
+                data.settings = settings
+                if let exercise = data.exById["bench_press_barbell"] {
+                    let now = Date()
+                    let plan = Plan(id: "home-start-plan", name: "Push", steps: [
+                        PlanStep(id: "step-bench", exerciseId: exercise.id, sets: 1, reps: 8, weight: 60, duration: nil)
+                    ], createdAt: now, updatedAt: now)
+                    data.plans = [plan]
+                    data.settings.workoutCompletions = [WorkoutCompletion(sessionID: "home-start-done", planID: plan.id, finishedAt: now)]
+                }
+                ready = true
+            }
     }
 }
 
