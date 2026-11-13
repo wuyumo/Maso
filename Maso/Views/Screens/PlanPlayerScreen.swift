@@ -113,8 +113,8 @@ struct PlanPlayerScreen: View {
                     playerSafeArea = insets
                 }
         }
-        .preferredColorScheme(.dark)
-        .toolbarColorScheme(.dark, for: .navigationBar)
+        .preferredColorScheme(store.session?.completed == true ? .dark : nil)
+        .toolbarColorScheme(store.session?.completed == true ? .dark : nil, for: .navigationBar)
     }
 
     private var playerContent: some View {

@@ -36,6 +36,7 @@ final class SessionReportUITests: XCTestCase {
         let counting = app.staticTexts["workout.sessionReport.counting"]
         XCTAssertTrue(counting.waitForExistence(timeout: 5))
         XCTAssertEqual(counting.label, "Green is this workout's relative training, not recovery over time. The three numbers are work time, completed sets, and loaded volume. Loaded volume is external weight times reps and each completed set is counted once. The number on a muscle is 1.0 for the main muscle and 0.4 for a muscle that assists; it is not kilograms. Bodyweight and timed sets are not converted to weight. Cardio is not drawn on the body. Heart-rate lines follow the timed parts of a set and break across pauses, rest, and gaps over 20 seconds. Saving routine changes updates the next plan only.")
+        keepShot(app, "counting-sheet")
         app.buttons["workout.sessionReport.countingClose"].tap()
         XCTAssertTrue(report.waitForExistence(timeout: 5))
 
@@ -102,12 +103,13 @@ final class SessionReportUITests: XCTestCase {
         XCTAssertTrue(app.descendants(matching: .any)["workout.sessionReport.shareSpark.bench_press_barbell"].waitForExistence(timeout: 5))
         XCTAssertFalse(matchingPrefix("workout.sessionReport.shareSummary.", in: app).exists)
         let shareBody = app.descendants(matching: .any)["workout.sessionReport.shareBody"]
-        let preview = app.descendants(matching: .any)["workout.sessionReport.sharePreview"]
-        for _ in 0..<6 where !shareBody.isHittable || shareBody.frame.minY > 220 { preview.swipeDown() }
-        XCTAssertTrue(shareBody.isHittable)
-        XCTAssertLessThan(shareBody.frame.minY, 220)
+        XCTAssertTrue(shareBody.waitForExistence(timeout: 5))
+        let backAtTop = NSPredicate(format: "exists == true AND hittable == true AND frame.minY < 220")
+        let top = XCTNSPredicateExpectation(predicate: backAtTop, object: shareBody)
+        XCTAssertEqual(XCTWaiter().wait(for: [top], timeout: 3), .completed, "share body minY \(shareBody.frame.minY) after scrollTo top")
         keepShot(app, "share-heart-scroll-top")
         let shareSpark = app.descendants(matching: .any)["workout.sessionReport.shareSpark.bench_press_barbell"]
+        let preview = app.descendants(matching: .any)["workout.sessionReport.sharePreview"]
         for _ in 0..<4 where !shareSpark.isHittable { preview.swipeUp() }
         keepShot(app, "share-heart-scrolled-to-spark")
 
@@ -161,10 +163,11 @@ final class SessionReportUITests: XCTestCase {
             XCTAssertGreaterThanOrEqual(info.frame.height, 44, name)
             XCTAssertGreaterThanOrEqual(exit.frame.height, 44, name)
             if extra["MASO_TEST_LARGE_TYPE"] == "1" {
-                let bench = app.staticTexts["Bench Press (Barbell)"]
+                let bench = app.staticTexts["workout.sessionReport.exerciseName.chest.bench_press_barbell"]
                 XCTAssertTrue(bench.waitForExistence(timeout: 5), name)
-                XCTAssertGreaterThan(bench.frame.height, 34, "accessibility3 body line was \(bench.frame.height)")
-                let metrics = XCTAttachment(string: "benchHeight=\(bench.frame.height) titleHeight=\(title.frame.height) infoHeight=\(info.frame.height)")
+                XCTAssertEqual(bench.label, "Bench Press (Barbell)")
+                XCTAssertGreaterThan(bench.frame.height, 34, "accessibility3 chest name was \(bench.frame.height)pt")
+                let metrics = XCTAttachment(string: "chestNameHeight=\(bench.frame.height) titleHeight=\(title.frame.height) infoHeight=\(info.frame.height)")
                 metrics.name = "large-type-metrics"
                 metrics.lifetime = .keepAlways
                 add(metrics)

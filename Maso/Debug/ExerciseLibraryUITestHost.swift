@@ -358,11 +358,15 @@ struct ExerciseLibraryUITestHost: View {
             page.presentationDetents([.large]).presentationDragIndicator(.visible)
         }
         .fullScreenCover(isPresented: Binding(get: { presented && scene.hasSuffix("-player") }, set: { presented = $0 }), onDismiss: { session.youtubePlayback.minimize() }) {
-            if ProcessInfo.processInfo.environment["MASO_TEST_NARROW"] == "1" {
-                page.frame(width: 320).frame(maxWidth: .infinity, maxHeight: .infinity)
-            } else {
-                page
+            // The cover does not inherit Dynamic Type from modifiers outside this closure.
+            Group {
+                if ProcessInfo.processInfo.environment["MASO_TEST_NARROW"] == "1" {
+                    page.frame(width: 320).frame(maxWidth: .infinity, maxHeight: .infinity)
+                } else {
+                    page
+                }
             }
+            .modifier(SessionReportLargeType())
         }
         .background {
             WorkoutYouTubeRetentionHost(playback: session.youtubePlayback)

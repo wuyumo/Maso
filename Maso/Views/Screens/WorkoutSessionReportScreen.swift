@@ -244,7 +244,7 @@ struct WorkoutSessionReportScreen: View {
             .accessibilityIdentifier("workout.sessionReport.muscle.\(muscle.muscle.rawValue)")
             if open {
                 ForEach(muscle.exercises) { exercise in
-                    Button { detailID = exercise.id } label: { exerciseRow(exercise) }
+                    Button { detailID = exercise.id } label: { exerciseRow(exercise, section: muscle.muscle) }
                         .buttonStyle(.plain)
                         .accessibilityElement(children: .contain)
                         .accessibilityIdentifier("workout.sessionReport.exercise.\(exercise.id)")
@@ -261,11 +261,13 @@ struct WorkoutSessionReportScreen: View {
         }
     }
 
-    private func exerciseRow(_ exercise: SessionMuscleReport.ExerciseFacts) -> some View {
+    private func exerciseRow(_ exercise: SessionMuscleReport.ExerciseFacts, section: MuscleGroup) -> some View {
         VStack(alignment: .leading, spacing: 4) {
             HStack(alignment: .firstTextBaseline) {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(exercise.name).font(.body.weight(.semibold))
+                    Text(exercise.name)
+                        .font(.body.weight(.semibold))
+                        .accessibilityIdentifier("workout.sessionReport.exerciseName.\(section.rawValue).\(exercise.id)")
                     if let variant = exercise.variant {
                         Text(variant).font(.caption).foregroundStyle(MasoColor.textDim)
                     }
@@ -517,6 +519,7 @@ private struct SharePreview: View {
                 Color.clear.frame(width: 44, height: 44)
             }
             .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
+            ScrollViewReader { proxy in
             ScrollView {
                 VStack(alignment: .leading, spacing: 12) {
                     MuscleBody3DView(
@@ -526,6 +529,7 @@ private struct SharePreview: View {
                         showsFatigueColors: true,
                         accessibilityID: "workout.sessionReport.shareBody"
                     )
+                    .id("workout.sessionReport.shareTop")
                     .frame(height: 380)
                     .overlay(alignment: .bottomLeading) {
                         HStack {
@@ -578,6 +582,9 @@ private struct SharePreview: View {
                 .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
                 .padding(.bottom, 12)
             }
+            .onChange(of: includeHeart) { _, _ in scrollToShareTop(proxy) }
+            .onChange(of: includeDetails) { _, _ in scrollToShareTop(proxy) }
+            }
         }
         .background(MasoColor.background.ignoresSafeArea())
         .preferredColorScheme(.dark)
@@ -603,6 +610,12 @@ private struct SharePreview: View {
                     .frame(width: 1, height: 1)
                     .accessibilityHidden(false)
             }
+        }
+    }
+
+    private func scrollToShareTop(_ proxy: ScrollViewProxy) {
+        Task { @MainActor in
+            proxy.scrollTo("workout.sessionReport.shareTop", anchor: .top)
         }
     }
 
