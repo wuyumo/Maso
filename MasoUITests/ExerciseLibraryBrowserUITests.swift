@@ -2324,7 +2324,9 @@ final class WorkoutSignalsUITests: XCTestCase {
             XCTAssertTrue(entry.waitForExistence(timeout: 12)); XCTAssertTrue(entry.isHittable)
             capture(app, "\(language)-workout-history-report-card")
             entry.tap()
-            XCTAssertTrue(element("workout.report", app).waitForExistence(timeout: 8))
+            XCTAssertTrue(element("workout.sessionReport", app).waitForExistence(timeout: 8))
+            XCTAssertFalse(element("workout.sessionReport.info", app).exists)
+            XCTAssertTrue(app.sheets.containing(.any, identifier: "workout.sessionReport").firstMatch.exists)
             app.terminate()
         }
     }
@@ -2336,7 +2338,8 @@ final class WorkoutSignalsUITests: XCTestCase {
             XCTAssertTrue(entry.waitForExistence(timeout: 12))
             capture(app, "\(language)-history-report-button")
             entry.tap()
-            XCTAssertTrue(element("workout.report", app).waitForExistence(timeout: 8))
+            XCTAssertTrue(element("workout.sessionReport", app).waitForExistence(timeout: 8))
+            XCTAssertFalse(element("workout.sessionReport.info", app).exists)
             XCTAssertFalse(element("workout.history.more", app).exists)
             app.buttons["workout.report.close"].firstMatch.tap()
             XCTAssertTrue(entry.waitForExistence(timeout: 8))

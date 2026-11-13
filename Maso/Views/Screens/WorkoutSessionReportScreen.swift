@@ -8,7 +8,7 @@ enum WorkoutReportPresentation {
     case history
 }
 
-/// Full-screen report for one finished session. The body stays framed; green is this session only.
+/// One finished session, shown as a native sheet. Green is this session only.
 struct WorkoutSessionReportScreen: View {
     @Environment(DataStore.self) private var data
     @Environment(\.requestReview) private var requestReview
@@ -22,8 +22,8 @@ struct WorkoutSessionReportScreen: View {
     @State private var selectedNode: String?
     @State private var collapsed: Set<String> = []
     @State private var detailID: String?
-    @State private var legacy: WorkoutReportSection?
-    @State private var showInfo = false
+    @State private var durationExpanded = false
+    @State private var heartExpanded = false
     @State private var showShare = false
     @State private var showSavePrompt = false
     @State private var planSaved = false
@@ -47,60 +47,54 @@ struct WorkoutSessionReportScreen: View {
 
     var body: some View {
         let report = model
-        VStack(spacing: 0) {
-            if presentation == .finish { finishBar.zIndex(1) }
-            ScrollViewReader { proxy in
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 12) {
-                        bodyStage(report)
-                        legend
-                        SessionReportStats(report: report)
-                        ForEach(report.muscles) { muscle in
-                            muscleSection(muscle, proxy: proxy)
-                        }
-                        VStack(spacing: 0) {
-                            tableLink("Exercise duration", .duration)
-                            tableLink("Exercises and heart rate", .heart)
-                        }
-                        .background(MasoColor.surface, in: RoundedRectangle(cornerRadius: 16))
+        ScrollViewReader { proxy in
+            ScrollView {
+                VStack(alignment: .leading, spacing: 12) {
+                    bodyStage(report)
+                    legend
+                    SessionReportStats(report: report)
+                    ForEach(report.muscles) { muscle in
+                        muscleSection(muscle, proxy: proxy)
                     }
-                    .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
-                    .padding(.top, presentation == .history ? 8 : 0)
-                    .padding(.bottom, 12)
+                    tables
                 }
+                .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
+                .padding(.top, MasoMetrics.rowPaddingV)
+                .padding(.bottom, MasoMetrics.pageBottomInset)
             }
         }
         .background(MasoColor.background.ignoresSafeArea())
-        .safeAreaInset(edge: .bottom, spacing: 0) { shareButton }
-        .navigationTitle(presentation == .history ? Text("Workout report") : Text(""))
+        .overlay(alignment: .bottom) { floatingShare(identifier: "workout.sessionReport.share") { showShare = true } }
+        .navigationTitle("Workout report")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            if presentation == .history {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: { showInfo = true }) {
-                        Image(systemName: "info.circle")
-                    }
-                    .accessibilityLabel("How this is counted")
-                    .accessibilityIdentifier("workout.sessionReport.info")
+            if presentation == .finish {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Exit", action: requestExit)
+                        .font(.body.weight(.semibold))
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.7)
+                        .frame(minWidth: 44, minHeight: 44)
+                        .accessibilityIdentifier("workout.sessionReport.exit")
                 }
             }
         }
-        .sheet(isPresented: $showInfo) { infoSheet }
         .sheet(isPresented: Binding(get: { detailID != nil }, set: { if !$0 { detailID = nil } })) {
             setDetail(report.muscles.flatMap(\.exercises).first { $0.id == detailID })
         }
-        .sheet(item: $legacy) { section in
+        .sheet(isPresented: $showShare) {
             AppNavigationStack {
-                WorkoutReportView(records: records, workoutName: workoutName, focus: section)
+                sharePreview(report)
+                    .navigationTitle("Share")
+                    .navigationBarTitleDisplayMode(.inline)
                     .toolbar {
                         ToolbarItem(placement: .cancellationAction) {
-                            Button("Close") { legacy = nil }
+                            Button("Back") { showShare = false }
+                                .accessibilityIdentifier("workout.sessionReport.shareBack")
                         }
                     }
             }
-        }
-        .sheet(isPresented: $showShare) {
-            sharePreview(report)
+            .sessionReportSheetChrome()
         }
         .sheet(item: $activity) { payload in
             ActivityViewController(activityItems: [payload.image]) { _ in activity = nil }
@@ -138,33 +132,43 @@ struct WorkoutSessionReportScreen: View {
         .toolbarColorScheme(.dark, for: .navigationBar)
     }
 
-    private var finishBar: some View {
-        HStack(alignment: .center, spacing: 0) {
-            Button(action: { showInfo = true }) {
-                Image(systemName: "info.circle")
-                    .font(.body.weight(.semibold))
-                    .frame(width: 44, height: 44)
-                    .contentShape(Rectangle())
+    private var tables: some View {
+        VStack(spacing: 0) {
+            DisclosureGroup(isExpanded: $durationExpanded) {
+                if durationExpanded {
+                    WorkoutReportView(records: records, workoutName: workoutName, scope: .duration)
+                        .padding(.bottom, MasoMetrics.rowPaddingV)
+                }
+            } label: {
+                Text("Exercise duration").font(.body).frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
             }
-            .accessibilityLabel("How this is counted")
-            .accessibilityIdentifier("workout.sessionReport.info")
-            Text("Workout report")
-                .font(.headline)
-                .lineLimit(2)
-                .minimumScaleFactor(0.8)
-                .multilineTextAlignment(.center)
-                .frame(maxWidth: .infinity)
-                .accessibilityIdentifier("workout.sessionReport.heading")
-            Button("Exit", action: requestExit)
-                .font(.body.weight(.semibold))
-                .lineLimit(1)
-                .minimumScaleFactor(0.7)
-                .frame(minWidth: 44, minHeight: 44)
-                .contentShape(Rectangle())
-                .accessibilityIdentifier("workout.sessionReport.exit")
+            .accessibilityIdentifier("workout.sessionReport.duration")
+            DisclosureGroup(isExpanded: $heartExpanded) {
+                if heartExpanded {
+                    WorkoutReportView(records: records, workoutName: workoutName, scope: .heart)
+                        .padding(.bottom, MasoMetrics.rowPaddingV)
+                }
+            } label: {
+                Text("Exercises and heart rate").font(.body).frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
+            }
+            .accessibilityIdentifier("workout.sessionReport.heartTable")
         }
+        .padding(.horizontal, MasoMetrics.rowPaddingH)
+        .background(MasoColor.surface, in: RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
+        .accessibilityElement(children: .contain)
+    }
+
+    private func floatingShare(identifier: String, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Text("Share").frame(maxWidth: .infinity)
+        }
+        .nativeGlassProminentButtonStyle()
+        .controlSize(.large)
+        .tint(MasoColor.accent)
+        .foregroundStyle(.black)
         .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
-        .padding(.top, 4)
+        .padding(.bottom, MasoMetrics.rowPaddingV)
+        .accessibilityIdentifier(identifier)
     }
 
     private func bodyStage(_ report: SessionMuscleReport) -> some View {
@@ -252,8 +256,8 @@ struct WorkoutSessionReportScreen: View {
                 }
             }
         }
-        .padding(.horizontal, 12)
-        .background(MasoColor.surface, in: RoundedRectangle(cornerRadius: 16))
+        .padding(.horizontal, MasoMetrics.rowPaddingH)
+        .background(MasoColor.surface, in: RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
         .id(muscle.id)
         .onChange(of: selectedNode) { _, node in
             guard let node, muscle.nodes.contains(node) else { return }
@@ -295,63 +299,6 @@ struct WorkoutSessionReportScreen: View {
         }
         .padding(.vertical, 8)
         .frame(maxWidth: .infinity, alignment: .leading)
-    }
-
-    private func tableLink(_ title: LocalizedStringKey, _ section: WorkoutReportSection) -> some View {
-        Button { legacy = section } label: {
-            HStack {
-                Text(title).font(.body)
-                Spacer()
-                Image(systemName: "chevron.right").font(.caption.weight(.semibold)).foregroundStyle(MasoColor.textDim)
-                    .flipsForRightToLeftLayoutDirection(true)
-            }
-            .frame(minHeight: 52)
-            .padding(.horizontal, 14)
-            .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain)
-        .accessibilityIdentifier(section == .duration ? "workout.sessionReport.duration" : "workout.sessionReport.heartTable")
-    }
-
-    private var shareButton: some View {
-        Button { showShare = true } label: {
-            Text("Share")
-                .font(.body.weight(.semibold))
-                .foregroundStyle(.black)
-                .frame(maxWidth: .infinity, minHeight: 56)
-                .background(MasoColor.accent, in: Capsule())
-        }
-        .buttonStyle(.plain)
-        .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
-        .padding(.top, 8)
-        .padding(.bottom, 8)
-        .background(MasoColor.background)
-        .accessibilityIdentifier("workout.sessionReport.share")
-    }
-
-    private var infoSheet: some View {
-        AppNavigationStack {
-            ScrollView {
-                Text("Report counting explanation")
-                    .font(.body)
-                    .foregroundStyle(MasoColor.textDim)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(MasoMetrics.pagePaddingHorizontal)
-                    .accessibilityIdentifier("workout.sessionReport.counting")
-            }
-            .background(MasoColor.background.ignoresSafeArea())
-            .navigationTitle("How this is counted")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Close") { showInfo = false }
-                        .accessibilityIdentifier("workout.sessionReport.countingClose")
-                }
-            }
-        }
-        .preferredColorScheme(.dark)
-        .toolbarColorScheme(.dark, for: .navigationBar)
-        .presentationDetents([.medium, .large])
     }
 
     private func setDetail(_ exercise: SessionMuscleReport.ExerciseFacts?) -> some View {
@@ -401,7 +348,6 @@ struct WorkoutSessionReportScreen: View {
         SharePreview(
             report: report,
             name: workoutName,
-            onBack: { showShare = false },
             onShare: { image in activity = ShareImageBox(image: image) }
         )
         .accessibilityElement(children: .contain)
@@ -501,7 +447,6 @@ private struct SessionReportStats: View {
 private struct SharePreview: View {
     let report: SessionMuscleReport
     let name: String?
-    let onBack: () -> Void
     let onShare: (UIImage) -> Void
     @State private var includeDetails = false
     @State private var includeHeart = false
@@ -510,15 +455,6 @@ private struct SharePreview: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            HStack {
-                Button("Back", action: onBack).frame(minWidth: 44, minHeight: 44)
-                    .accessibilityIdentifier("workout.sessionReport.shareBack")
-                Spacer()
-                Text("Share").font(.headline)
-                Spacer()
-                Color.clear.frame(width: 44, height: 44)
-            }
-            .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
             ScrollViewReader { proxy in
             ScrollView {
                 VStack(alignment: .leading, spacing: 12) {
@@ -571,8 +507,8 @@ private struct SharePreview: View {
                                     .accessibilityIdentifier("workout.sessionReport.shareSummary.\(muscle.id)")
                             }
                         }
-                        .padding(12)
-                        .background(MasoColor.surface, in: RoundedRectangle(cornerRadius: 16))
+                        .padding(MasoMetrics.rowPaddingH)
+                        .background(MasoColor.surface, in: RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
                     }
                     Toggle("Include exercise detail", isOn: $includeDetails)
                         .accessibilityIdentifier("workout.sessionReport.shareDetailsToggle")
@@ -580,7 +516,7 @@ private struct SharePreview: View {
                         .accessibilityIdentifier("workout.sessionReport.shareHeartToggle")
                 }
                 .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
-                .padding(.bottom, 12)
+                .padding(.bottom, MasoMetrics.pageBottomInset)
             }
             .onChange(of: includeHeart) { _, _ in scrollToShareTop(proxy) }
             .onChange(of: includeDetails) { _, _ in scrollToShareTop(proxy) }
@@ -589,18 +525,16 @@ private struct SharePreview: View {
         .background(MasoColor.background.ignoresSafeArea())
         .preferredColorScheme(.dark)
         .toolbarColorScheme(.dark, for: .navigationBar)
-        .safeAreaInset(edge: .bottom, spacing: 0) {
+        .overlay(alignment: .bottom) {
             Button(action: send) {
-                Text("Share")
-                    .font(.body.weight(.semibold))
-                    .foregroundStyle(.black)
-                    .frame(maxWidth: .infinity, minHeight: 56)
-                    .background(MasoColor.accent, in: Capsule())
+                Text("Share").frame(maxWidth: .infinity)
             }
-            .buttonStyle(.plain)
+            .nativeGlassProminentButtonStyle()
+            .controlSize(.large)
+            .tint(MasoColor.accent)
+            .foregroundStyle(.black)
             .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
-            .padding(.vertical, 8)
-            .background(MasoColor.background)
+            .padding(.bottom, MasoMetrics.rowPaddingV)
             .accessibilityIdentifier("workout.sessionReport.shareSend")
         }
         .overlay(alignment: .top) {
@@ -668,7 +602,7 @@ private struct ShareBitmap: View {
                 }
             }
         }
-        .padding(16)
+        .padding(MasoMetrics.pagePaddingHorizontal)
         .foregroundStyle(MasoColor.text)
         .preferredColorScheme(.dark)
     }
@@ -681,6 +615,18 @@ private func shareBitmap(report: SessionMuscleReport, name: String?, details: Bo
 private struct ShareImageBox: Identifiable {
     let id = UUID()
     let image: UIImage
+}
+
+extension View {
+    /// Large native sheet used by both the finished-workout and history report.
+    func sessionReportSheetChrome() -> some View {
+        presentationDetents([.large])
+            .presentationDragIndicator(.visible)
+            .presentationContentInteraction(.scrolls)
+            .presentationBackground(MasoColor.background)
+            .preferredColorScheme(.dark)
+            .toolbarColorScheme(.dark, for: .navigationBar)
+    }
 }
 
 private func reportClock(_ seconds: Double) -> String {

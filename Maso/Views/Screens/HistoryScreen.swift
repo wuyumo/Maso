@@ -858,14 +858,14 @@ struct WorkoutHistoryRecordRow: View {
                 AppNavigationStack {
                     WorkoutSessionReportScreen(records: data.recordedSets(for: session), workoutName: session.planName, presentation: .history)
                         .toolbar {
-                            ToolbarItem(placement: .topBarLeading) {
+                            ToolbarItem(placement: .cancellationAction) {
                                 Button { reportPresented = false } label: { Image(systemName: "xmark") }
                                     .accessibilityLabel("Close")
                                     .accessibilityIdentifier("workout.report.close")
                             }
                         }
                 }
-                .presentationDetents([.large]).presentationDragIndicator(.visible)
+                .sessionReportSheetChrome()
             }
     }
 }
@@ -1102,8 +1102,18 @@ struct SessionDetailSheet: View {
                         .background(MasoColor.background.ignoresSafeArea())
                 }
             }
-            .navigationDestination(isPresented: $showWorkoutReport) {
-                WorkoutSessionReportScreen(records: data.recordedSets(for: session), workoutName: session.planName, presentation: .history)
+            .sheet(isPresented: $showWorkoutReport) {
+                AppNavigationStack {
+                    WorkoutSessionReportScreen(records: data.recordedSets(for: session), workoutName: session.planName, presentation: .history)
+                        .toolbar {
+                            ToolbarItem(placement: .cancellationAction) {
+                                Button { showWorkoutReport = false } label: { Image(systemName: "xmark") }
+                                    .accessibilityLabel("Close")
+                                    .accessibilityIdentifier("workout.report.close")
+                            }
+                        }
+                }
+                .sessionReportSheetChrome()
             }
             .sheet(isPresented: $showShare) {
                 let records = data.recordedSets(for: session)
@@ -1395,6 +1405,12 @@ enum WorkoutReportSection: String, Identifiable {
     var id: String { rawValue }
 }
 
+enum WorkoutReportScope {
+    case page
+    case duration
+    case heart
+}
+
 /// A local set timeline. Sensor samples never enter share cards or AI payloads.
 struct WorkoutReportView: View {
     @Environment(DataStore.self) private var data
@@ -1408,6 +1424,7 @@ struct WorkoutReportView: View {
     let records: [SetRecord]
     var workoutName: String? = nil
     var focus: WorkoutReportSection? = nil
+    var scope: WorkoutReportScope = .page
     private var report: WorkoutTimelineReport { .init(records: records.sorted { $0.performedAt < $1.performedAt }) }
     private var blocks: [WorkoutReportExerciseBlock] { WorkoutReportExerciseBlock.group(records) }
     private var durationGroups: [WorkoutReportExerciseBlock] { WorkoutReportExerciseBlock.totalsByExercise(records) }
@@ -1503,6 +1520,21 @@ struct WorkoutReportView: View {
     }
 
     var body: some View {
+        switch scope {
+        case .duration:
+            durationReportCard
+                .accessibilityElement(children: .contain)
+                .accessibilityIdentifier("workout.sessionReport.durationTable")
+        case .heart:
+            heartReportCard
+                .accessibilityElement(children: .contain)
+                .accessibilityIdentifier("workout.sessionReport.heartTableBody")
+        case .page:
+            reportPage
+        }
+    }
+
+    private var reportPage: some View {
         ScrollViewReader { proxy in
         ScrollView {
             VStack(alignment: .leading, spacing: 28) {

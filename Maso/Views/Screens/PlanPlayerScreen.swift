@@ -80,6 +80,8 @@ struct PlanPlayerScreen: View {
     /// 训练完成且 canSaveChangesToPlan 时, 这个标志 false → 先渲确认页.
     @State private var planSaveDecisionMade: Bool = false
     @State private var openWorkoutSaveCompleted = false
+    @State private var sessionReportPresented = false
+    @State private var sessionReportDidEnd = false
     /// Playlist 右侧 i 打开详情；头像和名称始终选择动作。
     @State private var detailExercise: Exercise? = nil
     /// 右滑删除 step 的二次确认 — 跟 PlanDetailSheet 同模式, 存待删 stepId, alert 弹.
@@ -215,22 +217,12 @@ struct PlanPlayerScreen: View {
                     )
                     .transition(.opacity)
                 } else {
-                WorkoutSessionReportScreen(
-                    records: completedSessionSets,
-                    workoutName: store.plan?.name,
-                    presentation: .finish,
-                    onSavePlan: canSaveCurrentPlan && !openWorkoutSaveCompleted ? {
-                        saveCurrentPlanToLibrary()
-                        openWorkoutSaveCompleted = true
-                    } : nil,
-                    onExit: {
-                        store.endedExplicitly = true
-                        store.end()
-                        dismiss()
+                Color.clear
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(MasoColor.background)
+                    .onAppear {
+                        if !sessionReportDidEnd { sessionReportPresented = true }
                     }
-                )
-                .padding(.top, playerSafeArea.top)
-                .transition(.opacity)
                 }
             } else if let seg = store.currentSegment {
                 activePlayer(seg: seg)
@@ -242,6 +234,22 @@ struct PlanPlayerScreen: View {
         .frame(maxWidth: .infinity)
         .background(MasoColor.background.ignoresSafeArea())
         .ignoresSafeArea(.container, edges: [.top, .bottom])
+        .sheet(isPresented: $sessionReportPresented, onDismiss: endFinishedSessionOnce) {
+            AppNavigationStack {
+                WorkoutSessionReportScreen(
+                    records: completedSessionSets,
+                    workoutName: store.plan?.name,
+                    presentation: .finish,
+                    onSavePlan: canSaveCurrentPlan && !openWorkoutSaveCompleted ? {
+                        saveCurrentPlanToLibrary()
+                        openWorkoutSaveCompleted = true
+                    } : nil,
+                    onExit: { sessionReportPresented = false }
+                )
+            }
+            .frame(maxWidth: ProcessInfo.processInfo.environment["MASO_TEST_NARROW"] == "1" ? 320 : .infinity)
+            .sessionReportSheetChrome()
+        }
         .overlay {
             if isActiveTraining && store.heartRate.warningPending && store.heartRate.hasEscalatedWarning {
                 TimelineView(.periodic(from: .now, by: 1)) { context in
@@ -1237,6 +1245,15 @@ struct PlanPlayerScreen: View {
 
     /// 把当前临时 plan 保存到用户的 plan library
     @State private var planSavedFlash: Bool = false  // 显示"已保存"短暂 toast
+    /// Exit and swipe-down both dismiss the report sheet, so ending lives here once.
+    private func endFinishedSessionOnce() {
+        guard !sessionReportDidEnd else { return }
+        sessionReportDidEnd = true
+        store.endedExplicitly = true
+        store.end()
+        dismiss()
+    }
+
     private func saveCurrentPlanToLibrary() {
         guard let plan = store.plan else { return }
         var p = plan

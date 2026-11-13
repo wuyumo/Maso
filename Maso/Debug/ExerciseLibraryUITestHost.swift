@@ -294,8 +294,8 @@ struct ExerciseLibraryUITestHost: View {
         }
     }
 
-    /// Seeds the finished-session report. History stays a pushed screen; the player scenes
-    /// are a completed workout, with or without a real routine diff.
+    /// Seeds the finished-session report. History opens the same native sheet as production;
+    /// the player scenes are a completed workout, with or without a real routine diff.
     fileprivate static func sessionReportPlayer(scene: String, data: DataStore, player: TrainingSessionStore) -> TrainingSessionStore? {
         let history = scene == "session-report-history"
         let changed = scene == "session-report-changed-player"
@@ -613,26 +613,28 @@ private struct SessionReportLargeType: ViewModifier {
     }
 }
 
-/// Test-only stack around the history report. Production history keeps its own system Back.
+/// Test-only history list. Closing the report sheet must not end a workout.
 private struct SessionReportHistoryProbe: View {
     let records: [SetRecord]
-    @State private var path = NavigationPath()
+    @State private var presented = false
 
     var body: some View {
-        AppNavigationStack(path: $path) {
-            Button("Open session report") { path.append("report") }
+        AppNavigationStack {
+            Button("Open session report") { presented = true }
                 .accessibilityIdentifier("workout.sessionReport.openHistory")
                 .navigationTitle("History")
-                .navigationDestination(for: String.self) { _ in
-                    WorkoutSessionReportScreen(records: records, workoutName: "Push", presentation: .history)
-                        .navigationBarBackButtonHidden(true)
-                        .toolbar {
-                            ToolbarItem(placement: .topBarLeading) {
-                                Button("Back") { path.removeLast() }
-                                    .accessibilityIdentifier("workout.sessionReport.historyBack")
-                            }
+        }
+        .sheet(isPresented: $presented) {
+            AppNavigationStack {
+                WorkoutSessionReportScreen(records: records, workoutName: "Push", presentation: .history)
+                    .toolbar {
+                        ToolbarItem(placement: .cancellationAction) {
+                            Button("Close") { presented = false }
+                                .accessibilityIdentifier("workout.sessionReport.historyBack")
                         }
-                }
+                    }
+            }
+            .sessionReportSheetChrome()
         }
     }
 }
