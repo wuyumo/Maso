@@ -118,6 +118,30 @@ await check(`(() => { const aside = document.querySelector('aside'); const nav =
 await snap('shadcn-desktop-overview')
 await check(`(() => { document.getElementById('tab-statements').click(); return location.hash === '#statements' })()`)
 await snap('shadcn-desktop-statements')
+await go('/?lang=en&preview=dashboard#statements', 390, 844)
+await check(`(async () => {
+  await new Promise(resolve => setTimeout(resolve, 50))
+  if (!document.getElementById('panel-statements')) return 'deep link missed'
+  const posts = []
+  const orig = window.fetch
+  window.fetch = (url, opts) => { if (String((opts && opts.method) || 'GET').toUpperCase() === 'POST') posts.push(1); return orig(url, opts) }
+  document.getElementById('tab-account').click()
+  document.getElementById('tab-codes').click()
+  await new Promise(resolve => setTimeout(resolve, 80))
+  if (posts.length) return 'tab posted'
+  if (!document.body.innerText.includes('LOCALONLY')) return 'missing demo code'
+  document.getElementById('tab-account').click()
+  await new Promise(resolve => setTimeout(resolve, 40))
+  document.getElementById('logout').click()
+  await new Promise(resolve => setTimeout(resolve, 200))
+  const text = document.body.innerText
+  if (text.includes('LOCALONLY') || document.getElementById('metrics') || document.getElementById('panel-statements')) return 'private data remained after failed logout'
+  if (!text.includes('Sign-in required')) return 'logout message ' + text.slice(0, 180)
+  const nav = [...document.querySelectorAll('nav')].find(el => el.getBoundingClientRect().height > 0)
+  if (nav && !nav.className.includes('safe-area-inset-bottom')) return 'missing safe area'
+  return true
+})()`)
+await snap('shadcn-logout-cleared')
 
 chrome.kill()
 await new Promise(resolve => server.close(resolve))

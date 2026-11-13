@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
+import { notices as localizedNotices } from './src/i18n/notices.mjs';
 import { createPreviewServer, publicPolicySnapshot } from './preview-server.mjs';
 import {
   routes, gaps, summaryFields, settlementFields, localDemo, emptyDemo, notices,
@@ -178,4 +179,11 @@ test('tabs split the private page and do not add a write route', () => {
   assert.match(source, /clearSession/);
   assert.match(source, /safe-area-inset-bottom/);
   assert.match(source, /h-11/);
+  const logout = source.slice(source.indexOf('async function logout'), source.indexOf('const closedLogin'));
+  assert.match(logout, /catch[\s\S]*clearSession/);
+  const keys = Object.keys(localizedNotices.en);
+  for (const lang of Object.keys(localizedNotices)) {
+    assert.deepEqual(Object.keys(localizedNotices[lang]), keys, lang);
+  }
+  assert.equal(Object.keys(localizedNotices).length, 12);
 });

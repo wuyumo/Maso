@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { chooseLanguage, createT, offeredLanguages } from './i18n/index.mjs'
 import {
   countText, createDisabled, emptyDemo, knownStatus, localDemo, loginDisabled,
@@ -137,6 +137,8 @@ export default function App() {
   }
 
   function openPrivate(next: Dash, initial: string) {
+    memory.current = {}
+    seen.current = new Set()
     setData({ ...next, partner: { ...next.partner }, summary: { ...next.summary }, codes: next.codes.map(code => ({ ...code })), settlements: [...next.settlements] })
     setMode('private')
     setMessage('')
@@ -239,7 +241,12 @@ export default function App() {
   async function logout() {
     setBusy(true)
     try { await api('logout', {}); clearSession(); location.assign('/') }
-    catch (error) { setTone('error'); setMessage(explain(error as Error)); setBusy(false) }
+    catch (error) {
+      clearSession()
+      setTone('error')
+      setMessage(explain(error as Error))
+      setBusy(false)
+    }
   }
 
   const closedLogin = loginDisabled(policy, new URLSearchParams(location.search).has('pilot'))
@@ -466,7 +473,8 @@ function Statements({ data, t, lang }: { data: Dash, t: (key: string) => string,
       <p className="text-sm text-muted-foreground">{t('settlementReadonly')}</p>
       {rows.length ? (
         <Card><CardContent className="p-0"><Table>
-          <TableHeader><TableRow><TableHead>{t('colDate')}</TableHead><TableHead>{t('colCurrency')}</TableHead><TableHead className="text-end">{t('colAmount')}</TableHead><TableHead>{t('status')}</TableHead></TableRow></TableHeader>
+          <TableCaption className="sr-only">{t('statements')}</TableCaption>
+          <TableHeader><TableRow><TableHead scope="col" className="text-start">{t('colDate')}</TableHead><TableHead scope="col" className="text-start">{t('colCurrency')}</TableHead><TableHead scope="col" className="text-end">{t('colAmount')}</TableHead><TableHead scope="col" className="text-start">{t('status')}</TableHead></TableRow></TableHeader>
           <TableBody>{rows.map((row, index) => <TableRow key={index}><TableCell>{new Date(row.created).toLocaleDateString(lang)}</TableCell><TableCell>{row.currency}</TableCell><TableCell className="text-end tabular-nums">{new Intl.NumberFormat(lang, { style: 'currency', currency: row.currency }).format(row.commission_minor / 100)}</TableCell><TableCell>{t(row.status === 'paid' ? 'paidStatus' : row.status === 'refund adjustment' ? 'adjustment' : row.status)}</TableCell></TableRow>)}</TableBody>
         </Table></CardContent></Card>
       ) : <Card className="border-dashed"><CardContent className="py-10 text-center text-sm text-muted-foreground">{t('empty')}</CardContent></Card>}
