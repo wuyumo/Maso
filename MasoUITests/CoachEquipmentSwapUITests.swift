@@ -213,6 +213,55 @@ final class CoachEquipmentSwapUITests: XCTestCase {
         }
     }
 
+    func testOrdinarySustainedHeartReminderAutomaticallyExpandsWithoutForcedCard() throws {
+        let app = XCUIApplication()
+        app.launchEnvironment = ["MASO_EXERCISE_UI_TEST_SCENE":"stable-player", "MASO_MARKETING_PLAYER":"1",
+            "MASO_MARKETING_EXERCISE_ID":"bench_press_machine", "MASO_WORKOUT_HEART_FIXTURE":"1",
+            "MASO_TEST_HEART_LIMIT":"180", "MASO_TEST_HEART_BPM":"185",
+            "MASO_TEST_HEART_SAMPLE_DELAY":"8", "MASO_TEST_HEART_BRIEF_DIP":"1"]
+        // Deliberately no MASO_WORKOUT_HEART_CARD: production warningPending must expand it.
+        app.launchArguments = ["-maso.selectedLanguage","en","-AppleLanguages","(en)","-AppleLocale","en"]
+        app.launch()
+        let compact = app.buttons["workout.heart-rate"]
+        let card = app.buttons["workout.heart.warning"]
+        XCTAssertTrue(compact.waitForExistence(timeout:15))
+        XCTAssertFalse(card.exists)
+        snapshot(app,"autocard-normal-capsule-before-sustained-high")
+        XCTAssertTrue(card.waitForExistence(timeout:40), "Ordinary sustained reminder must automatically expand the actual production heart control")
+        XCTAssertTrue((card.value as? String ?? "").contains("Above your reminder limit"))
+        XCTAssertFalse(app.descendants(matching: .any)["workout.heart.escalated-background"].exists, "185/180 must prove ordinary reminder, not red-escalation-only behavior")
+        snapshot(app,"autocard-after-ordinary-high-not-red")
+        XCTAssertFalse(card.waitForNonExistence(timeout:7), "A brief160 reading must not abruptly retract the card")
+        snapshot(app,"autocard-remains-after-brief-dip")
+        card.tap()
+        XCTAssertTrue(app.switches["workout.heart.show-card"].waitForExistence(timeout:5))
+        snapshot(app,"autocard-manual-tap-still-opens-settings")
+        app.buttons["Cancel"].firstMatch.tap()
+        XCTAssertTrue(card.waitForExistence(timeout:5))
+        card.press(forDuration:0.8)
+        XCTAssertTrue(compact.waitForExistence(timeout:5))
+        XCTAssertFalse(card.waitForExistence(timeout:6), "Repeated high samples must not undo an explicit manual collapse each sample")
+        snapshot(app,"autocard-manual-collapse-respected")
+        compact.press(forDuration:0.8)
+        XCTAssertTrue(card.waitForExistence(timeout:5))
+        snapshot(app,"autocard-manual-expand-still-works")
+        app.terminate()
+    }
+
+    func testNoHeartSamplesDoNotAutomaticallyExpandCard() throws {
+        let app = XCUIApplication()
+        app.launchEnvironment = ["MASO_EXERCISE_UI_TEST_SCENE":"stable-player", "MASO_MARKETING_PLAYER":"1", "MASO_MARKETING_EXERCISE_ID":"bench_press_machine"]
+        app.launchArguments = ["-maso.selectedLanguage","en","-AppleLanguages","(en)","-AppleLocale","en"]
+        app.launch()
+        let compact = app.buttons["workout.heart-rate"]
+        let card = app.buttons["workout.heart.warning"]
+        XCTAssertTrue(compact.waitForExistence(timeout:15))
+        XCTAssertFalse(card.waitForExistence(timeout:8))
+        XCTAssertFalse(app.descendants(matching: .any)["workout.heart.escalated-background"].exists)
+        snapshot(app,"autocard-no-watch-no-samples-remains-capsule")
+        app.terminate()
+    }
+
     private func launchMessageMenu(_ language: String, largeType:Bool = false) -> XCUIApplication {
         let app = XCUIApplication()
         app.launchEnvironment = ["MASO_COACH_CHAT_UI_TEST": "1", "MASO_COACH_MESSAGE_MENU_TEST": "1", "MASO_COACH_LARGE_TYPE": largeType ? "1" : "0"]

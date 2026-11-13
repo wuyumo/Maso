@@ -310,6 +310,12 @@ struct ExerciseLibraryUITestHost: View {
                         }
                         return
                     }
+                    // Sensor-input fixture only: preserve a real compact-control phase before high readings.
+                    if let delay = Double(ProcessInfo.processInfo.environment["MASO_TEST_HEART_SAMPLE_DELAY"] ?? ""), delay > 0 {
+                        let initial = Date()
+                        session.heartRate.receive(.init(id: UUID().uuidString, sessionID: key, date: initial, bpm: 128, source: "Test fixture"), now: initial)
+                        try? await Task.sleep(for: .seconds(min(delay, 20)))
+                    }
                     let now = Date()
                     for offset in [-16.0, -8, 0] {
                         let bpm: Double = Double(ProcessInfo.processInfo.environment["MASO_TEST_HEART_BPM"] ?? "") ??
@@ -318,10 +324,14 @@ struct ExerciseLibraryUITestHost: View {
                         session.heartRate.receive(.init(id: UUID().uuidString, sessionID: key, date: now.addingTimeInterval(offset), bpm: bpm, source: "Test fixture"), now: now)
                     }
                     if ProcessInfo.processInfo.environment["MASO_MARKETING_PLAYER"] == "1" {
+                        var sentBriefDip = false
                         while !Task.isCancelled {
                             try? await Task.sleep(for: .seconds(5))
                             let sampleTime = Date()
-                            session.heartRate.receive(.init(id: UUID().uuidString, sessionID: key, date: sampleTime, bpm: Double(ProcessInfo.processInfo.environment["MASO_TEST_HEART_BPM"] ?? "") ?? 128, source: "Test fixture"), now: sampleTime)
+                            let dip = ProcessInfo.processInfo.environment["MASO_TEST_HEART_BRIEF_DIP"] == "1" && session.heartRate.warningPending && !sentBriefDip
+                            if dip { sentBriefDip = true }
+                            let bpm = dip ? 160 : (Double(ProcessInfo.processInfo.environment["MASO_TEST_HEART_BPM"] ?? "") ?? 128)
+                            session.heartRate.receive(.init(id: UUID().uuidString, sessionID: key, date: sampleTime, bpm: bpm, source: "Test fixture"), now: sampleTime)
                         }
                     }
                 }

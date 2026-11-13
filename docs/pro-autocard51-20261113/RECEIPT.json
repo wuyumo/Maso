@@ -1,0 +1,32 @@
+{
+  "checkedAt": "2026-11-13T10:44:36.123523+08:00",
+  "existingRelease51AlreadyImplementsAutomaticExpansion": true,
+  "release52RequiredForThisRequest": false,
+  "releaseProductSourceMatchesUploaded51": {
+    "Maso/Models/BodyActivityHealth.swift": "d19cda83cd3992ca6ea3e33ca5818f2ba3b0f39402422399285b553d0e6f1d48",
+    "Maso/Data/HealthKitService.swift": "fc735ffd504f3ecb80c6fbee6b2dc104dfc133e14ea66687c52068246995a2f8",
+    "Maso/Views/Screens/PlanPlayerScreen.swift": "46ed7c7451bac7eb11014e72fcc573b1d2589fcf8d8b1a2ee12caa944f810748"
+  },
+  "finalNativeUITestMethodsPassed": 2,
+  "finalNativeUITestMethodsFailed": 0,
+  "firstAttemptFailure": "AX identifier inherited by Button and multiple Other layers; ambiguous value query. Fixed test to unique native Button; no product workaround.",
+  "precondition": "128bpm normal compact control; no MASO_WORKOUT_HEART_CARD in launch",
+  "automaticTrigger": "synthetic continuous valid185 above personal180 through real production monitor; warning card value includes Above your reminder limit",
+  "redEscalationAbsent": true,
+  "brief160DipDoesNotRetract": true,
+  "manualTapStillOpensSettings": true,
+  "manualLongPressCollapseAndExpandPassed": true,
+  "freshHighSamplesDoNotOverrideManualCollapse": true,
+  "noSamplesDoNotExpand": true,
+  "haptics": "No physical vibration-count assertion; source policy cooldown120s, onChange only reacts to actual warning bool transitions.",
+  "physicalWatchSensorValidated": false,
+  "newReleaseArchiveUploadInstall": false,
+  "modelCalls": 0,
+  "purchases": 0,
+  "submission": false,
+  "remainingScreenshots": {
+    "ipad": 12,
+    "duo": 12
+  },
+  "screenshotStageCommit": "024622ca449f54cffed51e562469cee5541da9ef"
+}

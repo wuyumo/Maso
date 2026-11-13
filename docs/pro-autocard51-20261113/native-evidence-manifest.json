@@ -1,0 +1,79 @@
+[
+  {
+    "scene": "no-watch-no-samples-remains-capsule",
+    "source": "docs/pro-autocard51-20261113/native/no-watch-no-samples-remains-capsule.png",
+    "SHA256": "2b7e1776c23b97ef5cb973e989abc36606ba59f24605ce56d95487bba679c507",
+    "capturedAt": "2026-11-13T10:43:04.031000+08:00",
+    "testIdentifier": "CoachEquipmentSwapUITests/testNoHeartSamplesDoNotAutomaticallyExpandCard()",
+    "nativeSimulator": true,
+    "sensorInput": "synthetic samples through production HeartRate monitor; no forced card flag",
+    "pixelsEdited": false,
+    "physicalWatchValidated": false
+  },
+  {
+    "scene": "manual-expand-still-works",
+    "source": "docs/pro-autocard51-20261113/native/manual-expand-still-works.png",
+    "SHA256": "9cf12c532be5f3307fe272f7c3c710786bccf63b49be4dcb8efcb97b27663d3f",
+    "capturedAt": "2026-11-13T10:43:48.655000+08:00",
+    "testIdentifier": "CoachEquipmentSwapUITests/testOrdinarySustainedHeartReminderAutomaticallyExpandsWithoutForcedCard()",
+    "nativeSimulator": true,
+    "sensorInput": "synthetic samples through production HeartRate monitor; no forced card flag",
+    "pixelsEdited": false,
+    "physicalWatchValidated": false
+  },
+  {
+    "scene": "manual-collapse-respected",
+    "source": "docs/pro-autocard51-20261113/native/manual-collapse-respected.png",
+    "SHA256": "99109b17829e7939b5f28b435f7be35c030467dd304b3a3cdf4052082f12f3bb",
+    "capturedAt": "2026-11-13T10:43:46.425000+08:00",
+    "testIdentifier": "CoachEquipmentSwapUITests/testOrdinarySustainedHeartReminderAutomaticallyExpandsWithoutForcedCard()",
+    "nativeSimulator": true,
+    "sensorInput": "synthetic samples through production HeartRate monitor; no forced card flag",
+    "pixelsEdited": false,
+    "physicalWatchValidated": false
+  },
+  {
+    "scene": "manual-tap-still-opens-settings",
+    "source": "docs/pro-autocard51-20261113/native/manual-tap-still-opens-settings.png",
+    "SHA256": "e664e0d4c62107ff501d0413a996f2148d594f962824eb4e63998e8d253f6464",
+    "capturedAt": "2026-11-13T10:43:35.833000+08:00",
+    "testIdentifier": "CoachEquipmentSwapUITests/testOrdinarySustainedHeartReminderAutomaticallyExpandsWithoutForcedCard()",
+    "nativeSimulator": true,
+    "sensorInput": "synthetic samples through production HeartRate monitor; no forced card flag",
+    "pixelsEdited": false,
+    "physicalWatchValidated": false
+  },
+  {
+    "scene": "remains-after-brief-dip",
+    "source": "docs/pro-autocard51-20261113/native/remains-after-brief-dip.png",
+    "SHA256": "38f017eed05a06de565ab8ba0605b8313ad1352a7de627f8491f1d7af40fb991",
+    "capturedAt": "2026-11-13T10:43:34.094000+08:00",
+    "testIdentifier": "CoachEquipmentSwapUITests/testOrdinarySustainedHeartReminderAutomaticallyExpandsWithoutForcedCard()",
+    "nativeSimulator": true,
+    "sensorInput": "synthetic samples through production HeartRate monitor; no forced card flag",
+    "pixelsEdited": false,
+    "physicalWatchValidated": false
+  },
+  {
+    "scene": "after-ordinary-high-not-red",
+    "source": "docs/pro-autocard51-20261113/native/after-ordinary-high-not-red.png",
+    "SHA256": "eda4241577f1a9d1de7608f29c7b8b468b7415e21a2c22da3c849cd47bb61686",
+    "capturedAt": "2026-11-13T10:43:26.833000+08:00",
+    "testIdentifier": "CoachEquipmentSwapUITests/testOrdinarySustainedHeartReminderAutomaticallyExpandsWithoutForcedCard()",
+    "nativeSimulator": true,
+    "sensorInput": "synthetic samples through production HeartRate monitor; no forced card flag",
+    "pixelsEdited": false,
+    "physicalWatchValidated": false
+  },
+  {
+    "scene": "normal-capsule-before-sustained-high",
+    "source": "docs/pro-autocard51-20261113/native/normal-capsule-before-sustained-high.png",
+    "SHA256": "90abb956743ae081be8bf16061920eac1c44807666c8edcf0d2e3921aa46c183",
+    "capturedAt": "2026-11-13T10:43:08.615000+08:00",
+    "testIdentifier": "CoachEquipmentSwapUITests/testOrdinarySustainedHeartReminderAutomaticallyExpandsWithoutForcedCard()",
+    "nativeSimulator": true,
+    "sensorInput": "synthetic samples through production HeartRate monitor; no forced card flag",
+    "pixelsEdited": false,
+    "physicalWatchValidated": false
+  }
+]
