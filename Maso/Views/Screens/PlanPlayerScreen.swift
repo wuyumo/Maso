@@ -2686,6 +2686,7 @@ private struct SaveChangesConfirmView: View {
         .frame(width: geometry.size.width, height: geometry.size.height)
         }
         .background(MasoColor.background.ignoresSafeArea())
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("workout.saveChanges")
     }
 
@@ -2765,6 +2766,7 @@ private struct SaveChangesConfirmView: View {
         )
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .opacity(row.isChanged ? 1 : 0.55)
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("workout.saveChanges.row.\(row.id)")
     }
 

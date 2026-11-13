@@ -129,6 +129,7 @@ struct WorkoutSessionReportScreen: View {
         } message: {
             Text(NSLocalizedString("Masso can remind you to train once your muscles have recovered — all on your device. You can change this anytime in Settings.", comment: ""))
         }
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("workout.sessionReport")
     }
 
@@ -212,6 +213,7 @@ struct WorkoutSessionReportScreen: View {
             stat(report.loadedVolumeKg.map { weightLabel($0) } ?? "—", "Volume", tag: nil)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("workout.sessionReport.stats")
     }
 
@@ -297,6 +299,7 @@ struct WorkoutSessionReportScreen: View {
         }
         .padding(.vertical, 8)
         .frame(maxWidth: .infinity, alignment: .leading)
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("workout.sessionReport.exercise.\(exercise.id)")
     }
 
@@ -401,6 +404,7 @@ struct WorkoutSessionReportScreen: View {
             onBack: { showShare = false },
             onShare: { image in activity = ShareImageBox(image: image) }
         )
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("workout.sessionReport.sharePreview")
     }
 
@@ -529,6 +533,7 @@ private struct SharePreview: View {
                                         }
                                     }
                                 }
+                                .accessibilityElement(children: .contain)
                                 .accessibilityIdentifier("workout.sessionReport.shareDetails.\(muscle.id)")
                             } else {
                                 Text(muscle.exercises.map(\.name).joined(separator: " · "))
