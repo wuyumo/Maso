@@ -12,6 +12,7 @@ import type { Device } from "@/lib/types";
 import { DeckCanvas, getCanvas } from "@/components/editor/slide-canvas";
 import { DeviceShowcase, STORE_DEVICES, type StoreDevice } from "@/components/editor/device-showcase";
 import type { ProjectState } from "@/lib/types";
+import { reviewBatchTargets, runReviewBatch } from "@/lib/candidate-batch";
 import { candidateWatchSource } from "@/lib/candidate51-assets";
 
 import { CandidatePreviewControls, parsePreviewTarget, targetSearch, fitScale, canExportPage, exportName, exportCaptureOptions, type PreviewTarget as Target, type PreviewDevice as RenderDevice } from "@/components/editor/candidate-preview-controls";
@@ -42,6 +43,11 @@ export default function RenderPage() {
   const [ready,setReady] = React.useState(false);
   const [busy,setBusy] = React.useState(false);
   const [viewport,setViewport] = React.useState({w:320,h:640});
+  const [batchRunning,setBatchRunning]=React.useState(false);
+  const [batchStatus,setBatchStatus]=React.useState("");
+  const batchRef=React.useRef(false);
+  const cancelBatchRef=React.useRef(false);
+  const exportInFlightRef=React.useRef(false);
   const stageRef = React.useRef<HTMLElement | null>(null);
   React.useEffect(() => {
     const sync=()=>{setReady(false);document.documentElement.dataset.ready="0";setTarget(parsePreviewTarget(window.location.search));};
@@ -55,8 +61,8 @@ export default function RenderPage() {
     return ()=>observer.disconnect();
   },[state,target]);
   function navigate(next:Target) {
-    if(busy) return;
-    setReady(false);setError(null);document.documentElement.dataset.ready="0";
+    if(busy||batchRef.current) return;
+    setReady(false);setError(null);setBatchStatus("");document.documentElement.dataset.ready="0";
     window.history.pushState(null,"",window.location.pathname+targetSearch(next));setTarget(next);
     stageRef.current?.scrollTo({left:0,top:0});
   }
@@ -151,27 +157,58 @@ export default function RenderPage() {
   // under the requested slide name.
   const slide = slides.find((s) => s.id === target.slide);
 
-  async function saveCandidatePoster() {
-    if (busy || !ready || !target || !canExportPage(target)) { alert("当前语言/设备源素材未齐，不能导出"); return; }
-    const main = document.getElementById("candidate-poster");
-    if (!main || document.documentElement.dataset.ready !== "1" || Array.from(main.querySelectorAll("img")).some(image => !image.complete || image.naturalWidth === 0)) { alert("Fonts/images not ready; no PNG saved."); return; }
-    setBusy(true);
+  async function captureCandidatePoster(exportTarget:Target,download=true):Promise<string> {
+    if(exportInFlightRef.current||!canExportPage(exportTarget)) throw new Error("Blocked or concurrent candidate capture");
+    const main=document.getElementById("candidate-poster"),root=document.documentElement;
+    if(!main||root.dataset.ready!=="1"||root.dataset.device!==exportTarget.device||root.dataset.slide!==exportTarget.slide||root.dataset.locale!==exportTarget.locale||Array.from(main.querySelectorAll("img")).some(image=>!image.complete||image.naturalWidth===0)) throw new Error("Target/fonts/images not ready; no PNG saved");
+    exportInFlightRef.current=true;
     try {
       await document.fonts.ready;
-      const dataUrl = await toPng(main, exportCaptureOptions(canvas));
-      const name = exportName(target);
-      const artifactPath = `ios/${target.device}/${canvas.w}x${canvas.h}/${target.locale}/${name}`;
-      const response = await fetch("/api/pro-candidate-20261113/export", {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({dataUrl,artifactPath})});
-      const result = await response.json();
-      if (!response.ok || !result.dataUrl) throw new Error(result.error || "PNG export failed");
-      const a = document.createElement("a"); a.href = result.dataUrl; a.download = `CANDIDATE-${target.locale}-${target.device}-${name}`; a.click();
-      alert("Saved candidate only: " + result.savedPath + "\nNot uploaded. Visual review required.");
-    } catch (e) { alert(String(e)); } finally {setBusy(false);}
+      const canvas=canvasFor(exportTarget.device);
+      const dataUrl=await toPng(main, exportCaptureOptions(canvas));
+      if(root.dataset.ready!=="1"||root.dataset.device!==exportTarget.device||root.dataset.slide!==exportTarget.slide||root.dataset.locale!==exportTarget.locale) throw new Error("Target changed during capture; PNG discarded");
+      const name=exportName(exportTarget);
+      const artifactPath=`ios/${exportTarget.device}/${canvas.w}x${canvas.h}/${exportTarget.locale}/${name}`;
+      const response=await fetch("/api/pro-candidate-20261113/export",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({dataUrl,artifactPath})});
+      const result=await response.json();if(!response.ok||!result.dataUrl) throw new Error(result.error||"PNG export failed");
+      if(download){const a=document.createElement("a");a.href=result.dataUrl;a.download=`CANDIDATE-${exportTarget.locale}-${exportTarget.device}-${name}`;a.click();}
+      return result.savedPath as string;
+    } finally {exportInFlightRef.current=false;}
+  }
+  async function saveCandidatePoster() {
+    if(busy||batchRef.current||!ready||!target) return;
+    setBusy(true);try{const saved=await captureCandidatePoster(target);alert("Saved candidate only: "+saved+"\nNot uploaded. Visual review required.");}catch(e){alert(String(e));}finally{setBusy(false);}
+  }
+  async function startReviewBatch() {
+    if(!target||busy||batchRef.current) return;
+    batchRef.current=true;cancelBatchRef.current=false;setBatchRunning(true);setBatchStatus("中英候选批量导出准备中；不上传");
+    const targets=reviewBatchTargets(target.device);
+    try {
+      const result=await runReviewBatch(targets,{
+        cancelled:()=>cancelBatchRef.current,
+        show:async next=>{setError(null);setReady(false);document.documentElement.dataset.ready="0";window.history.replaceState(null,"",window.location.pathname+targetSearch(next));setTarget({...next});},
+        ready:async next=>{
+          const start=Date.now();
+          while(Date.now()-start<20000){
+            if(cancelBatchRef.current)return;
+            const root=document.documentElement;
+            const matching=root.dataset.device===next.device&&root.dataset.slide===next.slide&&root.dataset.locale===next.locale;
+            if(matching&&root.dataset.ready==="1")return;
+            if(matching&&root.dataset.ready==="error")throw new Error(root.dataset.status||"Candidate readiness failed");
+            await new Promise(resolve=>window.setTimeout(resolve,50));
+          }
+          throw new Error("Candidate fonts/images readiness timed out; batch stopped");
+        },
+        capture:next=>captureCandidatePoster(next,false),
+        progress:(saved,total,next)=>setBatchStatus(`已保存 ${saved.length}/${total} · ${next.locale} ${exportName(next)} · 仅候选，待逐页目检`),
+      });
+      setBatchStatus(`${result.status==="complete"?"中英候选已导出":"已停止"} ${result.saved.length}/${targets.length} 张 · exports/candidates/pro-20261113 · 未上传，待目检/用户确认`);
+    }catch(e){setError(String(e));setBatchStatus("批量导出已停止："+String(e));}finally{batchRef.current=false;setBatchRunning(false);}
   }
   const scale=mode==="fit" ? fitScale(viewport,canvas) : 1;
   return (
     <div style={{position:"fixed",inset:0,height:"100dvh",display:"flex",flexDirection:"column",background:"#e8ebf0",color:"#172233",fontFamily:"system-ui,-apple-system,sans-serif"}}>
-    <CandidatePreviewControls target={target} mode={mode} scale={scale} ready={ready} busy={busy} error={error} onTarget={navigate} onMode={setMode} onExport={saveCandidatePoster}/>
+    <CandidatePreviewControls target={target} mode={mode} scale={scale} ready={ready} busy={busy||batchRunning} error={error} onTarget={navigate} onMode={setMode} onExport={saveCandidatePoster} onBatch={startReviewBatch} batchRunning={batchRunning} batchStatus={batchStatus} onBatchCancel={()=>{cancelBatchRef.current=true;setBatchStatus("完成当前页后停止；已保存的候选保留，不上传");}}/>
     <section ref={stageRef} aria-label="海报预览区域" style={{flex:1,minHeight:0,overflow:"auto",overscrollBehavior:"contain"}}>
     <div style={{width:canvas.w*scale,height:canvas.h*scale,margin:"16px auto"}}>
     <div data-preview-scale={scale} style={{width:canvas.w,height:canvas.h,position:"relative",transform:`scale(${scale})`,transformOrigin:"top left"}}>

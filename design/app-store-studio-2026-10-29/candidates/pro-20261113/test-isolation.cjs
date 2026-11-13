@@ -6,6 +6,7 @@ const Module = require("node:module");
 const ts = require("typescript");
 const sharp = require("sharp");
 const root = path.resolve(__dirname,"../..");
+require.extensions[".ts"]=function(mod,file){const out=ts.transpileModule(require("node:fs").readFileSync(file,"utf8"),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022,esModuleInterop:true,jsx:ts.JsxEmit.ReactJSX}});mod._compile(out.outputText,file);};
 async function load(relative) {
   const filename = path.join(root,relative);
   const source = await fs.readFile(filename,"utf8");
@@ -39,7 +40,7 @@ async function load(relative) {
     const valid = await post({dataUrl,artifactPath:"ios/iphone/1320x2868/zh/01-plan.png"}); const exported=await valid.json();
     assert.equal(valid.status,200); assert.equal(exported.savedPath,"exports/candidates/pro-20261113/ios/iphone/1320x2868/zh/01-plan.png");
     const meta = await sharp(path.join(temp,exported.savedPath)).metadata();assert.equal(meta.width,1320);assert.equal(meta.height,2868);assert.equal(meta.channels,3);assert.equal(meta.hasAlpha,false);checks++;
-    for (const artifactPath of ["../app-store-screenshots.json","ios/iphone/1320x2868/ja/03-training.png","ios/iphone/1206x2622/zh/01-plan.png","ios/watch/416x496/zh/01-plan.png","ios/iphone/1320x2868/xx/01-plan.png","ios/iphone/1320x2868/zh/../../01-plan.png"]) {assert.equal((await post({dataUrl,artifactPath})).status,400); checks++;}
+    for (const artifactPath of ["../app-store-screenshots.json","ios/iphone/1320x2868/ru/03-training.png","ios/iphone/1206x2622/zh/01-plan.png","ios/watch/416x496/zh/01-plan.png","ios/iphone/1320x2868/xx/01-plan.png","ios/iphone/1320x2868/zh/../../01-plan.png"]) {assert.equal((await post({dataUrl,artifactPath})).status,400); checks++;}
     const tiny = await sharp({create:{width:10,height:10,channels:3,background:"white"}}).png().toBuffer();
     assert.equal((await post({dataUrl:"data:image/png;base64,"+tiny.toString("base64"),artifactPath:"ios/iphone/1320x2868/en/02-recovery.png"})).status,400);checks++;
     assert.equal(await fs.readFile(path.join(temp,"app-store-screenshots.json"),"utf8"),"CANONICAL_SENTINEL");

@@ -1,6 +1,6 @@
 {
   "time": "2026-11-13T02:45:38.794Z",
-  "candidateSHA256": "3d56c1957d7dbc434e15c51bb76c4535b1789ee6d4e670c4512388b2146e1fa4",
+  "candidateSHA256": "5190bef24d7772a6c5e090b596cb07318e9918d0f0d7696640c8c5ad42035ed3",
   "sourceOccurrences": 192,
   "uniqueNativeFiles": 180,
   "sourceRows": [
@@ -189,11 +189,11 @@
       "locale": "zh",
       "family": "watch",
       "scene": "rest-160",
-      "path": "public/screenshots/localized/watch/zh/rest-160.png",
+      "path": "public/candidate-assets/pro-20261113/native51/watch/zh/watch-rest-160.png",
       "width": 416,
       "height": 496,
-      "sha256": "f261722822ce5879c04f775d461f43732000dcd23dfe716ef9e43b5a49a6b809",
-      "sourceGeneration": "existing authentic localized native captures; Watch retains old fixture and requires paired update",
+      "sha256": "100224b3d772b0fc65c65460b331268d9657eb1612710c3ca15a2446d76f0ff8",
+      "sourceGeneration": "actual native51 rest160,50kg; independent simulator example; not production sync",
       "posterAccepted": false
     },
     {
@@ -381,11 +381,11 @@
       "locale": "zh-Hant",
       "family": "watch",
       "scene": "rest-160",
-      "path": "public/screenshots/localized/watch/zh-Hant/rest-160.png",
+      "path": "public/candidate-assets/pro-20261113/native51/watch/zh-Hant/watch-rest-160.png",
       "width": 416,
       "height": 496,
-      "sha256": "066bf23dc5fed18d0fecdba504dfdf0b30ed1f10f4e799920a8a094501817ae0",
-      "sourceGeneration": "existing authentic localized native captures; Watch retains old fixture and requires paired update",
+      "sha256": "6e21f57095bd8fc50d99e995566a2f84e5d8f6fcfb99dfbe7dfbdd32d487e2ee",
+      "sourceGeneration": "actual native51 rest160,50kg; independent simulator example; not production sync",
       "posterAccepted": false
     },
     {
@@ -573,11 +573,11 @@
       "locale": "en",
       "family": "watch",
       "scene": "rest-160",
-      "path": "public/screenshots/localized/watch/en/rest-160.png",
+      "path": "public/candidate-assets/pro-20261113/native51/watch/en/watch-rest-160.png",
       "width": 416,
       "height": 496,
-      "sha256": "2a0838af8fe11f60ea8a4e95a2f1cac788a378ba874cabb9140cd6cda044eb8f",
-      "sourceGeneration": "existing authentic localized native captures; Watch retains old fixture and requires paired update",
+      "sha256": "47f8ed657d0b7876219db61fe8c58792d4c13f31192eb40585a3302e2b893aea",
+      "sourceGeneration": "actual native51 rest160,50kg; independent simulator example; not production sync",
       "posterAccepted": false
     },
     {
@@ -765,11 +765,11 @@
       "locale": "ja",
       "family": "watch",
       "scene": "rest-160",
-      "path": "public/screenshots/localized/watch/ja/rest-160.png",
+      "path": "public/candidate-assets/pro-20261113/native51/watch/ja/watch-rest-160.png",
       "width": 416,
       "height": 496,
-      "sha256": "4d82b93ed0a59ff65de0d5e04c823230ea8810321742e21d161859e450553b29",
-      "sourceGeneration": "existing authentic localized native captures; Watch retains old fixture and requires paired update",
+      "sha256": "7cb995525641cb1c37e55511e263c979d6cdf443ac83bf95150f7922984a3e60",
+      "sourceGeneration": "actual native51 rest160,50kg; independent simulator example; not production sync",
       "posterAccepted": false
     },
     {
@@ -957,11 +957,11 @@
       "locale": "ko",
       "family": "watch",
       "scene": "rest-160",
-      "path": "public/screenshots/localized/watch/ko/rest-160.png",
+      "path": "public/candidate-assets/pro-20261113/native51/watch/ko/watch-rest-160.png",
       "width": 416,
       "height": 496,
-      "sha256": "4827ae29a6409c6e026e714d78539a4e633314638aecfd3d6754b4de516efec7",
-      "sourceGeneration": "existing authentic localized native captures; Watch retains old fixture and requires paired update",
+      "sha256": "28a6b8c11c84c1441dcf462b36ecc81066f40b0dc70f82976adfdbcf7f65172e",
+      "sourceGeneration": "actual native51 rest160,50kg; independent simulator example; not production sync",
       "posterAccepted": false
     },
     {
@@ -1149,11 +1149,11 @@
       "locale": "es",
       "family": "watch",
       "scene": "rest-160",
-      "path": "public/screenshots/localized/watch/es/rest-160.png",
+      "path": "public/candidate-assets/pro-20261113/native51/watch/es/watch-rest-160.png",
       "width": 416,
       "height": 496,
-      "sha256": "d08f195d63e44a4f52ed9d8b058be65926bf37d0e18de6737def840fa4fbbcd6",
-      "sourceGeneration": "existing authentic localized native captures; Watch retains old fixture and requires paired update",
+      "sha256": "d7d22c6228d17cb42a1f3d16402b785551e295aaedd45b96554ed2839b7762e2",
+      "sourceGeneration": "actual native51 rest160,50kg; independent simulator example; not production sync",
       "posterAccepted": false
     },
     {
@@ -1341,11 +1341,11 @@
       "locale": "fr",
       "family": "watch",
       "scene": "rest-160",
-      "path": "public/screenshots/localized/watch/fr/rest-160.png",
+      "path": "public/candidate-assets/pro-20261113/native51/watch/fr/watch-rest-160.png",
       "width": 416,
       "height": 496,
-      "sha256": "b939453ad9aa2e156ec6ff30b3be204dc84655179cf276257bdff3d2dc28bb92",
-      "sourceGeneration": "existing authentic localized native captures; Watch retains old fixture and requires paired update",
+      "sha256": "35db3cfb149729356b64c905f4447deb3f3c7458c283fe883eacac1de46aa657",
+      "sourceGeneration": "actual native51 rest160,50kg; independent simulator example; not production sync",
       "posterAccepted": false
     },
     {
@@ -1533,11 +1533,11 @@
       "locale": "de",
       "family": "watch",
       "scene": "rest-160",
-      "path": "public/screenshots/localized/watch/de/rest-160.png",
+      "path": "public/candidate-assets/pro-20261113/native51/watch/de/watch-rest-160.png",
       "width": 416,
       "height": 496,
-      "sha256": "42b4c0e93cbce908a2db74a476e37f1c576968f00432a150daf3d0304a8af058",
-      "sourceGeneration": "existing authentic localized native captures; Watch retains old fixture and requires paired update",
+      "sha256": "7458d69e0e29f54f668e358690f8c7781171b86317811081c618a3039955ebaf",
+      "sourceGeneration": "actual native51 rest160,50kg; independent simulator example; not production sync",
       "posterAccepted": false
     },
     {
@@ -1725,11 +1725,11 @@
       "locale": "it",
       "family": "watch",
       "scene": "rest-160",
-      "path": "public/screenshots/localized/watch/it/rest-160.png",
+      "path": "public/candidate-assets/pro-20261113/native51/watch/it/watch-rest-160.png",
       "width": 416,
       "height": 496,
-      "sha256": "14079496d9406a38274cda708ea220661fc31655f7710c6c4c82ef2abc829b3e",
-      "sourceGeneration": "existing authentic localized native captures; Watch retains old fixture and requires paired update",
+      "sha256": "60ec92b2f041d9f7dd636b26677e1e0c59aac3df4e91c31d85754b33138ac104",
+      "sourceGeneration": "actual native51 rest160,50kg; independent simulator example; not production sync",
       "posterAccepted": false
     },
     {
@@ -1917,11 +1917,11 @@
       "locale": "pt-BR",
       "family": "watch",
       "scene": "rest-160",
-      "path": "public/screenshots/localized/watch/pt-BR/rest-160.png",
+      "path": "public/candidate-assets/pro-20261113/native51/watch/pt-BR/watch-rest-160.png",
       "width": 416,
       "height": 496,
-      "sha256": "299c21d7cb88ee3a33252bc68842a671df3eb687096dd3f9ee89f054eb39b09a",
-      "sourceGeneration": "existing authentic localized native captures; Watch retains old fixture and requires paired update",
+      "sha256": "271beeaa18b84ce1eed3373324a64a423f898dfcaffc6b671917910e1eb3e679",
+      "sourceGeneration": "actual native51 rest160,50kg; independent simulator example; not production sync",
       "posterAccepted": false
     },
     {
@@ -2109,11 +2109,11 @@
       "locale": "ru",
       "family": "watch",
       "scene": "rest-160",
-      "path": "public/screenshots/localized/watch/ru/rest-160.png",
+      "path": "public/candidate-assets/pro-20261113/native51/watch/ru/watch-rest-160.png",
       "width": 416,
       "height": 496,
-      "sha256": "a9cb22f470dbbfafbc0b5c506cb1c7c2c5a35e04eca8bdd679da958b9fda8a71",
-      "sourceGeneration": "existing authentic localized native captures; Watch retains old fixture and requires paired update",
+      "sha256": "b531268290c3f6da79c059941785ac7a4ee436e818f3ee7f734bbf6a9cf457eb",
+      "sourceGeneration": "actual native51 rest160,50kg; independent simulator example; not production sync",
       "posterAccepted": false
     },
     {
@@ -2301,11 +2301,11 @@
       "locale": "ar",
       "family": "watch",
       "scene": "rest-160",
-      "path": "public/screenshots/localized/watch/ar/rest-160.png",
+      "path": "public/candidate-assets/pro-20261113/native51/watch/ar/watch-rest-160.png",
       "width": 416,
       "height": 496,
-      "sha256": "c42e76cdcfaa69ee6f95e0348230e893a65c5d1751b3607b0773d6aa7f49d388",
-      "sourceGeneration": "existing authentic localized native captures; Watch retains old fixture and requires paired update",
+      "sha256": "2b9cdb9ad19853461794021f88f8f9fb4190b01b2abcdc303a6d56319a34063c",
+      "sourceGeneration": "actual native51 rest160,50kg; independent simulator example; not production sync",
       "posterAccepted": false
     }
   ],
@@ -3034,8 +3034,8 @@
   "copyAudit": "12locales×5pages headline+subcopy verified; poster device variants share same copy; no Pro unlock prompt or terminal sentence period",
   "native51UIParity": "Not independently proven for unchanged scene sources; do not call source inspection finalposteracceptance",
   "newFindings": {
-    "page03": "Hold export pending t328 genuine capsule-to-card / red-warning validation and corrected native outputs",
-    "page05": "Existing lineup helper selects Watch rest-160 old fixture, not staged native51 rest; all page05 exports remain blocked"
+    "page03": "native51ordinaryautomaticcard2/2verified; red51phone12AXpassed; iPadDuo24pending; ruWatchexerciseellipsisparentreviewpending",
+    "page05": "Candidate lineage now selects native51 rest for all12locales; other3authenticnativefamilysourcesretained"
   },
   "acceptedImages": [],
   "codexDependency": false

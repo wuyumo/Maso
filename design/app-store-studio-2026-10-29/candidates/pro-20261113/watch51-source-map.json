@@ -83,6 +83,168 @@
       "pixelsEdited": false,
       "clock": "actual10:11;phone09:41;independentdemonstrations",
       "platform": "Watch46mmwatchOS26.5Simulator"
+    },
+    {
+      "locale": "ja",
+      "source": "docs/pro-red51-20261113/native/watch/ja/exercise.png",
+      "candidate": "public/candidate-assets/pro-20261113/native51/watch/ja/watch-exercise-185.png",
+      "sha256": "ae7c7930f24a29c195c67e1fb89e1cdf7dc3302838cc16d80683b2eb763a019e",
+      "pixelsEdited": false,
+      "physicalSyncProven": false,
+      "scene": "exercise-185"
+    },
+    {
+      "locale": "ja",
+      "source": "docs/pro-red51-20261113/native/watch/ja/rest.png",
+      "candidate": "public/candidate-assets/pro-20261113/native51/watch/ja/watch-rest-160.png",
+      "sha256": "7cb995525641cb1c37e55511e263c979d6cdf443ac83bf95150f7922984a3e60",
+      "pixelsEdited": false,
+      "physicalSyncProven": false,
+      "scene": "rest-160"
+    },
+    {
+      "locale": "ko",
+      "source": "docs/pro-red51-20261113/native/watch/ko/exercise.png",
+      "candidate": "public/candidate-assets/pro-20261113/native51/watch/ko/watch-exercise-185.png",
+      "sha256": "8c98c70bc72d750a571848b841b719636a9fe6b4652afed7a6aee7636b972ade",
+      "pixelsEdited": false,
+      "physicalSyncProven": false,
+      "scene": "exercise-185"
+    },
+    {
+      "locale": "ko",
+      "source": "docs/pro-red51-20261113/native/watch/ko/rest.png",
+      "candidate": "public/candidate-assets/pro-20261113/native51/watch/ko/watch-rest-160.png",
+      "sha256": "28a6b8c11c84c1441dcf462b36ecc81066f40b0dc70f82976adfdbcf7f65172e",
+      "pixelsEdited": false,
+      "physicalSyncProven": false,
+      "scene": "rest-160"
+    },
+    {
+      "locale": "es",
+      "source": "docs/pro-red51-20261113/native/watch/es/exercise.png",
+      "candidate": "public/candidate-assets/pro-20261113/native51/watch/es/watch-exercise-185.png",
+      "sha256": "e6a29ee2f8a98bb9044ae1ec567866a2c4553707e39f9d9b13a0bb242f3334f2",
+      "pixelsEdited": false,
+      "physicalSyncProven": false,
+      "scene": "exercise-185"
+    },
+    {
+      "locale": "es",
+      "source": "docs/pro-red51-20261113/native/watch/es/rest.png",
+      "candidate": "public/candidate-assets/pro-20261113/native51/watch/es/watch-rest-160.png",
+      "sha256": "d7d22c6228d17cb42a1f3d16402b785551e295aaedd45b96554ed2839b7762e2",
+      "pixelsEdited": false,
+      "physicalSyncProven": false,
+      "scene": "rest-160"
+    },
+    {
+      "locale": "fr",
+      "source": "docs/pro-red51-20261113/native/watch/fr/exercise.png",
+      "candidate": "public/candidate-assets/pro-20261113/native51/watch/fr/watch-exercise-185.png",
+      "sha256": "37c323005a6d19dab0647ab243f92e601c3a74827d939a67d7107ded3d7e3820",
+      "pixelsEdited": false,
+      "physicalSyncProven": false,
+      "scene": "exercise-185"
+    },
+    {
+      "locale": "fr",
+      "source": "docs/pro-red51-20261113/native/watch/fr/rest.png",
+      "candidate": "public/candidate-assets/pro-20261113/native51/watch/fr/watch-rest-160.png",
+      "sha256": "35db3cfb149729356b64c905f4447deb3f3c7458c283fe883eacac1de46aa657",
+      "pixelsEdited": false,
+      "physicalSyncProven": false,
+      "scene": "rest-160"
+    },
+    {
+      "locale": "de",
+      "source": "docs/pro-red51-20261113/native/watch/de/exercise.png",
+      "candidate": "public/candidate-assets/pro-20261113/native51/watch/de/watch-exercise-185.png",
+      "sha256": "3ba3ecce9f38d8db6f7c92a5c9c8258f00eb80223b0e35b2e4198c6c549c8528",
+      "pixelsEdited": false,
+      "physicalSyncProven": false,
+      "scene": "exercise-185"
+    },
+    {
+      "locale": "de",
+      "source": "docs/pro-red51-20261113/native/watch/de/rest.png",
+      "candidate": "public/candidate-assets/pro-20261113/native51/watch/de/watch-rest-160.png",
+      "sha256": "7458d69e0e29f54f668e358690f8c7781171b86317811081c618a3039955ebaf",
+      "pixelsEdited": false,
+      "physicalSyncProven": false,
+      "scene": "rest-160"
+    },
+    {
+      "locale": "it",
+      "source": "docs/pro-red51-20261113/native/watch/it/exercise.png",
+      "candidate": "public/candidate-assets/pro-20261113/native51/watch/it/watch-exercise-185.png",
+      "sha256": "982e71ecb9b7509fe22a9fe7e8cc56215229d06d66d9c2c3607880272ca3b093",
+      "pixelsEdited": false,
+      "physicalSyncProven": false,
+      "scene": "exercise-185"
+    },
+    {
+      "locale": "it",
+      "source": "docs/pro-red51-20261113/native/watch/it/rest.png",
+      "candidate": "public/candidate-assets/pro-20261113/native51/watch/it/watch-rest-160.png",
+      "sha256": "60ec92b2f041d9f7dd636b26677e1e0c59aac3df4e91c31d85754b33138ac104",
+      "pixelsEdited": false,
+      "physicalSyncProven": false,
+      "scene": "rest-160"
+    },
+    {
+      "locale": "pt-BR",
+      "source": "docs/pro-red51-20261113/native/watch/pt-BR/exercise.png",
+      "candidate": "public/candidate-assets/pro-20261113/native51/watch/pt-BR/watch-exercise-185.png",
+      "sha256": "297c813a369773ec59cec4036a3f9d7d669e3fe5ae6418c5c9bd5a6d8afc01d8",
+      "pixelsEdited": false,
+      "physicalSyncProven": false,
+      "scene": "exercise-185"
+    },
+    {
+      "locale": "pt-BR",
+      "source": "docs/pro-red51-20261113/native/watch/pt-BR/rest.png",
+      "candidate": "public/candidate-assets/pro-20261113/native51/watch/pt-BR/watch-rest-160.png",
+      "sha256": "271beeaa18b84ce1eed3373324a64a423f898dfcaffc6b671917910e1eb3e679",
+      "pixelsEdited": false,
+      "physicalSyncProven": false,
+      "scene": "rest-160"
+    },
+    {
+      "locale": "ru",
+      "source": "docs/pro-red51-20261113/native/watch/ru/exercise.png",
+      "candidate": "public/candidate-assets/pro-20261113/native51/watch/ru/watch-exercise-185.png",
+      "sha256": "52904de58035ae9dc7cb470a4875a0514af7329b527b0d845a262f223da6b588",
+      "pixelsEdited": false,
+      "physicalSyncProven": false,
+      "scene": "exercise-185"
+    },
+    {
+      "locale": "ru",
+      "source": "docs/pro-red51-20261113/native/watch/ru/rest.png",
+      "candidate": "public/candidate-assets/pro-20261113/native51/watch/ru/watch-rest-160.png",
+      "sha256": "b531268290c3f6da79c059941785ac7a4ee436e818f3ee7f734bbf6a9cf457eb",
+      "pixelsEdited": false,
+      "physicalSyncProven": false,
+      "scene": "rest-160"
+    },
+    {
+      "locale": "ar",
+      "source": "docs/pro-red51-20261113/native/watch/ar/exercise.png",
+      "candidate": "public/candidate-assets/pro-20261113/native51/watch/ar/watch-exercise-185.png",
+      "sha256": "8b4b683fec785171ae2bf4a4b5bafd106b28646148c42285e072187b74004245",
+      "pixelsEdited": false,
+      "physicalSyncProven": false,
+      "scene": "exercise-185"
+    },
+    {
+      "locale": "ar",
+      "source": "docs/pro-red51-20261113/native/watch/ar/rest.png",
+      "candidate": "public/candidate-assets/pro-20261113/native51/watch/ar/watch-rest-160.png",
+      "sha256": "2b9cdb9ad19853461794021f88f8f9fb4190b01b2abcdc303a6d56319a34063c",
+      "pixelsEdited": false,
+      "physicalSyncProven": false,
+      "scene": "rest-160"
     }
   ],
   "sameParameters": "exercise3sets8reps50kg185bpm;restnext8reps50kg160bpm",

@@ -1,4 +1,4 @@
-import { candidate51Override } from "./candidate51-assets";
+import { candidate51Override, candidateWatchSource } from "./candidate51-assets";
 import type { Slide } from './types';
 // Plan A deck (2026-11-08, revised): plan → recovery → training(+watch) → diet(+sleep) → devices.
 // The heart-rate card lives inside the training screen (player with a live bpm card),
@@ -60,8 +60,9 @@ export function marketingImage(slide: Slide, family: 'iphone'|'ipad'|'watch'|'du
  * `marketingImage` because that helper is keyed by slide story (one screen per
  * slide) while this page needs one screen per physical device.
  */
-export function lineupImage(family: 'iphone' | 'ipad' | 'duo' | 'watch', locale: string): string | undefined {
+export function lineupImage(family: 'iphone' | 'ipad' | 'duo' | 'watch', locale: string, candidateNative51=false): string | undefined {
   if (!LOCALIZED_LOCALES.includes(locale)) return undefined;
+  if(candidateNative51 && family==='watch') return candidateWatchSource(locale,'watch-rest');
   const scene = lineupScenes[family];
   if (!scene) return undefined;
   return `/screenshots/localized/${family}/${locale}/${scene}.png?v=${ASSET_VERSION}`;

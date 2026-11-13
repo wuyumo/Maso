@@ -3,105 +3,150 @@
   "sourceVersion": "3.0.2(51)",
   "rawPhoneAssets": [
     {
-      "locale": "zh",
-      "family": "iphone",
-      "sourceArtifact": "docs/pro-release51-20261113/final-review/normal-machine/9EA7ED28-2F9B-40FA-B0D3-E2DC093E92EA.png",
-      "candidateAsset": "public/candidate-assets/pro-20261113/native51/iphone/zh/player-heart-warning.png",
-      "sha256": "3ee7ffa65189d482742328e21efe1909bdeeb2ca6f0b391d7bdc2635e6c07a68",
-      "dimensions": [
-        1206,
-        2622
-      ],
-      "mode": "RGB",
-      "nativeFixture": {
-        "exerciseID": "bench_press_machine",
-        "exerciseName": "推胸（器械）",
-        "sets": 3,
-        "currentSet": 1,
-        "reps": 8,
-        "weightKg": 50,
-        "heartBPM": 185,
-        "heartLimit": 180
-      },
+      "locale": "zh-Hant",
+      "source": "docs/pro-red51-20261113/native/iphone/zh-Hant/player-heart-warning.png",
+      "candidate": "public/candidate-assets/pro-20261113/native51/iphone/zh-Hant/player-heart-warning.png",
+      "sha256": "d6673c9b6ae9fa0ec053c3a7cfd484fd5c00f08a6ffadc80386ccda3a9da933e",
       "pixelsEdited": false,
-      "activeInPoster": true,
-      "reasonNotActivated": "Superseded: source now active only for three locales on iPhone/iphone-medium; othertargetsremainblocked"
+      "physicalSyncProven": false,
+      "candidateAsset": "public/candidate-assets/pro-20261113/native51/iphone/zh-Hant/player-heart-warning.png",
+      "activeInPoster": true
+    },
+    {
+      "locale": "zh",
+      "source": "docs/pro-red51-20261113/native/iphone/zh/player-heart-warning.png",
+      "candidate": "public/candidate-assets/pro-20261113/native51/iphone/zh/player-heart-warning.png",
+      "sha256": "a3ea448e62b837b4a9e50bffafd681017e659ccdafeb3a0f7fba6e507bead691",
+      "pixelsEdited": false,
+      "physicalSyncProven": false,
+      "candidateAsset": "public/candidate-assets/pro-20261113/native51/iphone/zh/player-heart-warning.png",
+      "activeInPoster": true
     },
     {
       "locale": "en",
-      "family": "iphone",
-      "sourceArtifact": "docs/pro-release51-20261113/final-review/normal-machine/CEBD2C2E-1537-4EC7-9A8B-0B2DEABF0D8E.png",
-      "candidateAsset": "public/candidate-assets/pro-20261113/native51/iphone/en/player-heart-warning.png",
-      "sha256": "f236d222b8c9f741a13480a862740146bc9b86dea57aa16dd8e99a562422d9e7",
-      "dimensions": [
-        1206,
-        2622
-      ],
-      "mode": "RGB",
-      "nativeFixture": {
-        "exerciseID": "bench_press_machine",
-        "exerciseName": "Chest Press (Machine)",
-        "sets": 3,
-        "currentSet": 1,
-        "reps": 8,
-        "weightKg": 50,
-        "heartBPM": 185,
-        "heartLimit": 180
-      },
+      "source": "docs/pro-red51-20261113/native/iphone/en/player-heart-warning.png",
+      "candidate": "public/candidate-assets/pro-20261113/native51/iphone/en/player-heart-warning.png",
+      "sha256": "4314e603bddd9bdee4fbb7243d1bd9e33435e854d17034d144a9b188104976c5",
       "pixelsEdited": false,
-      "activeInPoster": true,
-      "reasonNotActivated": "Superseded: source now active only for three locales on iPhone/iphone-medium; othertargetsremainblocked"
+      "physicalSyncProven": false,
+      "candidateAsset": "public/candidate-assets/pro-20261113/native51/iphone/en/player-heart-warning.png",
+      "activeInPoster": true
     },
     {
-      "locale": "zh-Hant",
-      "family": "iphone",
-      "sourceArtifact": "docs/pro-release51-20261113/final-review/normal-machine/4A806A06-85C9-465E-BEF4-89AE4C0E6A7E.png",
-      "candidateAsset": "public/candidate-assets/pro-20261113/native51/iphone/zh-Hant/player-heart-warning.png",
-      "sha256": "12e90981646423157fb7db1ce969d693af08605b0d483b39947991de059e460d",
-      "dimensions": [
-        1206,
-        2622
-      ],
-      "mode": "RGB",
-      "nativeFixture": {
-        "exerciseID": "bench_press_machine",
-        "exerciseName": "推胸（器械）",
-        "sets": 3,
-        "currentSet": 1,
-        "reps": 8,
-        "weightKg": 50,
-        "heartBPM": 185,
-        "heartLimit": 180
-      },
+      "locale": "ar",
+      "source": "docs/pro-red51-20261113/native/iphone/ar/player-heart-warning.png",
+      "candidate": "public/candidate-assets/pro-20261113/native51/iphone/ar/player-heart-warning.png",
+      "sha256": "c0a600b3ec130af9aedae841bbaebc257fc2cc741bee0e680ade7cfa8e6723f2",
       "pixelsEdited": false,
-      "activeInPoster": true,
-      "reasonNotActivated": "Superseded: source now active only for three locales on iPhone/iphone-medium; othertargetsremainblocked"
+      "physicalSyncProven": false,
+      "candidateAsset": "public/candidate-assets/pro-20261113/native51/iphone/ar/player-heart-warning.png",
+      "activeInPoster": true
+    },
+    {
+      "locale": "ru",
+      "source": "docs/pro-red51-20261113/native/iphone/ru/player-heart-warning.png",
+      "candidate": "public/candidate-assets/pro-20261113/native51/iphone/ru/player-heart-warning.png",
+      "sha256": "bd0530dc364d39cbcce0d1a2eb34f101446a60cd562b8463e3c246308516dd68",
+      "pixelsEdited": false,
+      "physicalSyncProven": false,
+      "candidateAsset": "public/candidate-assets/pro-20261113/native51/iphone/ru/player-heart-warning.png",
+      "activeInPoster": true
+    },
+    {
+      "locale": "pt-BR",
+      "source": "docs/pro-red51-20261113/native/iphone/pt-BR/player-heart-warning.png",
+      "candidate": "public/candidate-assets/pro-20261113/native51/iphone/pt-BR/player-heart-warning.png",
+      "sha256": "a332096996b62300b5aaf213919f36f5bc503b0a670709ad1da4b5adfcbf1ed6",
+      "pixelsEdited": false,
+      "physicalSyncProven": false,
+      "candidateAsset": "public/candidate-assets/pro-20261113/native51/iphone/pt-BR/player-heart-warning.png",
+      "activeInPoster": true
+    },
+    {
+      "locale": "it",
+      "source": "docs/pro-red51-20261113/native/iphone/it/player-heart-warning.png",
+      "candidate": "public/candidate-assets/pro-20261113/native51/iphone/it/player-heart-warning.png",
+      "sha256": "9c4e3dd76fa697a4d2089df9713c41bb253177df4a7017fd821a605acf4b190b",
+      "pixelsEdited": false,
+      "physicalSyncProven": false,
+      "candidateAsset": "public/candidate-assets/pro-20261113/native51/iphone/it/player-heart-warning.png",
+      "activeInPoster": true
+    },
+    {
+      "locale": "de",
+      "source": "docs/pro-red51-20261113/native/iphone/de/player-heart-warning.png",
+      "candidate": "public/candidate-assets/pro-20261113/native51/iphone/de/player-heart-warning.png",
+      "sha256": "9ea97c4bb1b9b35995606a605b10f3dadb64f228edb46be137be5123f26de87e",
+      "pixelsEdited": false,
+      "physicalSyncProven": false,
+      "candidateAsset": "public/candidate-assets/pro-20261113/native51/iphone/de/player-heart-warning.png",
+      "activeInPoster": true
+    },
+    {
+      "locale": "fr",
+      "source": "docs/pro-red51-20261113/native/iphone/fr/player-heart-warning.png",
+      "candidate": "public/candidate-assets/pro-20261113/native51/iphone/fr/player-heart-warning.png",
+      "sha256": "17c978da5b1945add511d6cdd538e171ec73b762315189fc5bed9e076656fc63",
+      "pixelsEdited": false,
+      "physicalSyncProven": false,
+      "candidateAsset": "public/candidate-assets/pro-20261113/native51/iphone/fr/player-heart-warning.png",
+      "activeInPoster": true
+    },
+    {
+      "locale": "es",
+      "source": "docs/pro-red51-20261113/native/iphone/es/player-heart-warning.png",
+      "candidate": "public/candidate-assets/pro-20261113/native51/iphone/es/player-heart-warning.png",
+      "sha256": "36b37d2092d3498c9ca601e464eb6e26a13016a2f0bbc2715bb91bdc2818075a",
+      "pixelsEdited": false,
+      "physicalSyncProven": false,
+      "candidateAsset": "public/candidate-assets/pro-20261113/native51/iphone/es/player-heart-warning.png",
+      "activeInPoster": true
+    },
+    {
+      "locale": "ko",
+      "source": "docs/pro-red51-20261113/native/iphone/ko/player-heart-warning.png",
+      "candidate": "public/candidate-assets/pro-20261113/native51/iphone/ko/player-heart-warning.png",
+      "sha256": "a1cc5f46cb81e70746874a118d3049032a2e7328d818592f410a762cc5c07df7",
+      "pixelsEdited": false,
+      "physicalSyncProven": false,
+      "candidateAsset": "public/candidate-assets/pro-20261113/native51/iphone/ko/player-heart-warning.png",
+      "activeInPoster": true
+    },
+    {
+      "locale": "ja",
+      "source": "docs/pro-red51-20261113/native/iphone/ja/player-heart-warning.png",
+      "candidate": "public/candidate-assets/pro-20261113/native51/iphone/ja/player-heart-warning.png",
+      "sha256": "9d5e0788515e16ce7a348371b2697407ff0b878b3d6798d637b45f20e48d56d4",
+      "pixelsEdited": false,
+      "physicalSyncProven": false,
+      "candidateAsset": "public/candidate-assets/pro-20261113/native51/iphone/ja/player-heart-warning.png",
+      "activeInPoster": true
     }
   ],
-  "export03Enabled": "blockedpendingt328nativevalidation",
+  "export03Enabled": "iphoneandmedium11locales;ruheldforWatchtitle;iPadDuo24pending",
   "matchingWatchCaptureExecuted": true,
   "blockingFindings": [
     {
-      "scope": "all48page03variants",
-      "needed": "t328 actual capsule→automaticcard and red-warning verification; replacement native outputs before unlock"
+      "scope": "iPad/Duo03:24variants",
+      "needed": "a807 real captures"
     },
     {
-      "scope": "all48page05variants",
-      "needed": "replace oldWatchrestfixture through isolatedcandidate mapping after matchingnativecapture delivery"
+      "scope": "ru03andWatch-exercise",
+      "needed": "parentreviewofnaturalnativeWatchtitleellipsis"
     }
   ],
   "otherPages": [
     {
-      "page": "04diet/sleep",
-      "verdict": "Onlyterminalperiodchanges;oldverifiednativecapturesretained;nofresh51allpagepixelacceptanceclaimed"
+      "page": "04",
+      "verdict": "authenticdiet/sleepunchanged;48candidateexports;finalvisualpending"
     },
     {
-      "page": "05devicelineup",
-      "verdict": "Onlyterminalperiodchanges;oldrest160lineupretained;newWatchrawsourcesusedforstandaloneWatchand03only"
+      "page": "05",
+      "verdict": "all12Watchrestlineupsnowcandidate51;canonicalresolverunchanged;48candidateexports"
     },
     {
-      "page": "StandaloneWatch01/02",
-      "verdict": "Candidate三语replacedwithnative51exercise185/rest160,50kg;original43imagesuntouched;other9localesblocked"
+      "page": "Watch",
+      "verdict": "24realRGBcandidates;ruExerciseheldforparenttitleellipsisreview"
     }
   ],
   "nativeSourcesModified": false,
@@ -109,7 +154,8 @@
   "originalPublicCaptureHashesPreserved": 551,
   "browserOrNetworkActions": false,
   "matchingWatchSources": "watch51-source-map.json",
-  "clockPolicy": "Phone09:41/Watch10:11unaltered;independentdemonstrations,nosimultaneoussyncclaim",
-  "redWarningStateAccepted": false,
-  "newT328NativeCapsuleToCardVerified": false
+  "clockPolicy": "Independent native demos; original clocks retained; no simultaneous/physical sync proof",
+  "redWarningStateAccepted": "NativeAXverificationpassed12locales;finalposteranduserreviewpending",
+  "newT328NativeCapsuleToCardVerified": true,
+  "copyPrecisionNote": "Existing03subcopy implies red at personal limit; nativepolicy distinguishes ordinaryauto-card at180/185 from red-escalation at155/185. Do not silently rewrite fixed12languagecopy; parent should confirm precise marketing wording before upload."
 }

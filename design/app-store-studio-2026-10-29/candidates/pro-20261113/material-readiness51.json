@@ -1,17 +1,17 @@
 {
-  "updatedAt": "2026-11-13T10:46:29.136772+08:00",
-  "candidateProjectSHA256": "3d56c1957d7dbc434e15c51bb76c4535b1789ee6d4e670c4512388b2146e1fa4",
+  "updatedAt": "2026-11-13T10:59:05.453314+08:00",
+  "candidateProjectSHA256": "5190bef24d7772a6c5e090b596cb07318e9918d0f0d7696640c8c5ad42035ed3",
   "readyForCandidateExport": {
-    "01/02/04": "12locales ×4posterformats =144 variants; only source preflight passed, actual rendering and final acceptance pending",
-    "standaloneWatch": "zh/en/zh-Hant exercise/rest6; final upload acceptance pending"
+    "01/02/04/05": "12locales×4formats×4pages=192",
+    "03": "iphone/medium11localesexcludingru=22",
+    "Watch": "24sources;23exporteligible;ruExerciseheld"
   },
   "stillBlocked": {
-    "03": "all48variants pending new t328 native behavior and red-state evidence",
-    "05": "all48variants; lineup uses oldWatchrestfixture",
-    "standaloneWatch": "other9locales18variants"
+    "03": "iPad/Duo24 +ruPhone/medium2=26",
+    "Watch": "ruExercise1naturalellipsisparentreview"
   },
-  "sourceAcceptance": "Prior contact approval covers name/media/weight/bpm only; it does NOT prove phone red-warning or t328 behavior or final poster acceptance",
-  "clockPolicy": "Watch10:11phone09:41originalnativeclocksretained,independentdemonstrations;notphysicalsynchronization",
+  "sourceAcceptance": "12actualredphoneSHA/nativeAXpassed+24actualWatchsources; ordinaryautocard51native2/2. Finalposters/userapprovalpending.",
+  "clockPolicy": "Nativeclocksretained09:41phone;Watchvaries10:11/10:33/blank;independentexamples,notphysicalsynchronization",
   "newFinalPosterExportsVerified": 0,
   "uploadAcceptedImages": 0,
   "pageChanges": [
@@ -25,7 +25,7 @@
     },
     {
       "page": "03",
-      "changes": "Prior three-language sources staged for reference; all48exports now held for t328 actual capsule/card/redstate verification; no production sync claim"
+      "changes": "12genuinered51phoneimagesreplacenonred3andold9;paired185Watchall12;nativeautocard2/2verified;ruWatchtitleholdand24iPad/Duoabsent"
     },
     {
       "page": "04",
@@ -33,14 +33,14 @@
     },
     {
       "page": "05",
-      "changes": "Copyretainedwithoutterminalperiod;oldWatchrestfixtureinresolvedlineup;all48exportsheldpendingnativecandidatewiring"
+      "changes": "Candidate-onlylineupmetadata routes Watchrest to matchingnative51all12;phoneToday/iPadInsights/DuoDiet authenticinteriorsunchanged;all48reviewexportready"
     },
     {
       "page": "Watch01/02",
-      "changes": "Six actual native51-derived RGB screenshots,185/160bpm50kg;full-sizeexecutorinspectiondone,useracceptancepending;enexercisenativeclockblank,others10:11"
+      "changes": "24actualRGBnativecandidates;exact sourceSHA+RGBbyteequality;ruExerciseheld;notuserapproved"
     }
   ],
-  "realStandaloneWatchCandidatePNGsPrepared": 6,
+  "realStandaloneWatchCandidatePNGsPrepared": 24,
   "watchCandidateManifest": "watch51-upload-candidates.json",
   "codexDependency": false
 }

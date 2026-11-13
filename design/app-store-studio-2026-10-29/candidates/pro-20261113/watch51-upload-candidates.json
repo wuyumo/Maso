@@ -10,14 +10,15 @@
       "name": "01-exercise-185.png",
       "path": "design/app-store-studio-2026-10-29/exports/candidates/pro-20261113/ios/watch/416x496/zh/01-exercise-185.png",
       "sha256": "233e95ed1810cdee93e0837b217b602585c9bd76595d72e812acd6d2f827f050",
-      "mode": "RGB",
-      "provenance": "Authentic native Watch PNG, existing export Sharp flatten/removeAlpha encoding only. Source alpha is entirely255; RGB pixels byte-identical. No browser/DOM/poster rendering.",
-      "pixelsEdited": false,
-      "parentFinalUploadAcceptance": false,
       "sourceSha256": "3eda998d2b78bc4f4d677676210b9a516b4cb0d89e1ec88bf22f803371d83871",
+      "nativeRgbSha256": "c8c2d486e8a7a8e2c7917ab2b53d108c7849e00004ed15ac1432062e92de3471",
+      "mode": "RGB",
+      "pixelsEdited": false,
       "encodingOnly": true,
       "alphaRemoved": true,
-      "nativeRgbSha256": "c8c2d486e8a7a8e2c7917ab2b53d108c7849e00004ed15ac1432062e92de3471"
+      "provenance": "NativeWatchoutput; existingSharpRGBnormalization only; exact RGB pixels preserved",
+      "parentFinalUploadAcceptance": false,
+      "candidateExportReady": true
     },
     {
       "locale": "zh",
@@ -29,14 +30,15 @@
       "name": "02-rest-160.png",
       "path": "design/app-store-studio-2026-10-29/exports/candidates/pro-20261113/ios/watch/416x496/zh/02-rest-160.png",
       "sha256": "7f533d08418b88bc49664a6743a20d61417d54523e98a0d72f1d210fb0a491f2",
-      "mode": "RGB",
-      "provenance": "Authentic native Watch PNG, existing export Sharp flatten/removeAlpha encoding only. Source alpha is entirely255; RGB pixels byte-identical. No browser/DOM/poster rendering.",
-      "pixelsEdited": false,
-      "parentFinalUploadAcceptance": false,
       "sourceSha256": "100224b3d772b0fc65c65460b331268d9657eb1612710c3ca15a2446d76f0ff8",
+      "nativeRgbSha256": "86c478c91ed6c9d2589c68f27d9b7dd03aad33a046bcefd5a3854795dc30672a",
+      "mode": "RGB",
+      "pixelsEdited": false,
       "encodingOnly": true,
       "alphaRemoved": true,
-      "nativeRgbSha256": "86c478c91ed6c9d2589c68f27d9b7dd03aad33a046bcefd5a3854795dc30672a"
+      "provenance": "NativeWatchoutput; existingSharpRGBnormalization only; exact RGB pixels preserved",
+      "parentFinalUploadAcceptance": false,
+      "candidateExportReady": true
     },
     {
       "locale": "en",
@@ -48,14 +50,15 @@
       "name": "01-exercise-185.png",
       "path": "design/app-store-studio-2026-10-29/exports/candidates/pro-20261113/ios/watch/416x496/en/01-exercise-185.png",
       "sha256": "b80252913169d5589b7ee4b7e562914c479c29a2429c79f84ebf95e175c70e50",
-      "mode": "RGB",
-      "provenance": "Authentic native Watch PNG, existing export Sharp flatten/removeAlpha encoding only. Source alpha is entirely255; RGB pixels byte-identical. No browser/DOM/poster rendering.",
-      "pixelsEdited": false,
-      "parentFinalUploadAcceptance": false,
       "sourceSha256": "fd69b76aee4ad6b44ff08ca78b8348bd9f9995c96c534d928448c65ad13e13d3",
+      "nativeRgbSha256": "9ba8a0f9f1e0f43a098c0e7296cba35cb36926e4cf33e0c8708ba560a0a097a8",
+      "mode": "RGB",
+      "pixelsEdited": false,
       "encodingOnly": true,
       "alphaRemoved": true,
-      "nativeRgbSha256": "9ba8a0f9f1e0f43a098c0e7296cba35cb36926e4cf33e0c8708ba560a0a097a8"
+      "provenance": "NativeWatchoutput; existingSharpRGBnormalization only; exact RGB pixels preserved",
+      "parentFinalUploadAcceptance": false,
+      "candidateExportReady": true
     },
     {
       "locale": "en",
@@ -67,14 +70,15 @@
       "name": "02-rest-160.png",
       "path": "design/app-store-studio-2026-10-29/exports/candidates/pro-20261113/ios/watch/416x496/en/02-rest-160.png",
       "sha256": "fbb603e4ce024ab57f6e57ef52c3ab3ef96729d3902fceb73eb21901269a364b",
-      "mode": "RGB",
-      "provenance": "Authentic native Watch PNG, existing export Sharp flatten/removeAlpha encoding only. Source alpha is entirely255; RGB pixels byte-identical. No browser/DOM/poster rendering.",
-      "pixelsEdited": false,
-      "parentFinalUploadAcceptance": false,
       "sourceSha256": "47f8ed657d0b7876219db61fe8c58792d4c13f31192eb40585a3302e2b893aea",
+      "nativeRgbSha256": "b21d040ee2e2b7403f588a0af7dae545473b8b438616782cba511b388a766d0e",
+      "mode": "RGB",
+      "pixelsEdited": false,
       "encodingOnly": true,
       "alphaRemoved": true,
-      "nativeRgbSha256": "b21d040ee2e2b7403f588a0af7dae545473b8b438616782cba511b388a766d0e"
+      "provenance": "NativeWatchoutput; existingSharpRGBnormalization only; exact RGB pixels preserved",
+      "parentFinalUploadAcceptance": false,
+      "candidateExportReady": true
     },
     {
       "locale": "zh-Hant",
@@ -86,14 +90,15 @@
       "name": "01-exercise-185.png",
       "path": "design/app-store-studio-2026-10-29/exports/candidates/pro-20261113/ios/watch/416x496/zh-Hant/01-exercise-185.png",
       "sha256": "5cc28178f03c4da10e613d745d3077bcaa4014d0db16ee876df045578686250d",
-      "mode": "RGB",
-      "provenance": "Authentic native Watch PNG, existing export Sharp flatten/removeAlpha encoding only. Source alpha is entirely255; RGB pixels byte-identical. No browser/DOM/poster rendering.",
-      "pixelsEdited": false,
-      "parentFinalUploadAcceptance": false,
       "sourceSha256": "1143b4c0c35f345a422c0a79d744cf73ca07ff088201adc25725b59c0660d14a",
+      "nativeRgbSha256": "771910174d630443781e30035dbbd72458f2de562bc9312a4dd4dceee50f69c4",
+      "mode": "RGB",
+      "pixelsEdited": false,
       "encodingOnly": true,
       "alphaRemoved": true,
-      "nativeRgbSha256": "771910174d630443781e30035dbbd72458f2de562bc9312a4dd4dceee50f69c4"
+      "provenance": "NativeWatchoutput; existingSharpRGBnormalization only; exact RGB pixels preserved",
+      "parentFinalUploadAcceptance": false,
+      "candidateExportReady": true
     },
     {
       "locale": "zh-Hant",
@@ -105,23 +110,378 @@
       "name": "02-rest-160.png",
       "path": "design/app-store-studio-2026-10-29/exports/candidates/pro-20261113/ios/watch/416x496/zh-Hant/02-rest-160.png",
       "sha256": "daa9e257a2934e43673af1931eb6cc7db0af1572b8bdde0dc4927c62ee8495cd",
-      "mode": "RGB",
-      "provenance": "Authentic native Watch PNG, existing export Sharp flatten/removeAlpha encoding only. Source alpha is entirely255; RGB pixels byte-identical. No browser/DOM/poster rendering.",
-      "pixelsEdited": false,
-      "parentFinalUploadAcceptance": false,
       "sourceSha256": "6e21f57095bd8fc50d99e995566a2f84e5d8f6fcfb99dfbe7dfbdd32d487e2ee",
+      "nativeRgbSha256": "d59371790c4d8ef337e15aff29f64cbaa05fcbd3f4d8b63a9603ee46dfb47a60",
+      "mode": "RGB",
+      "pixelsEdited": false,
       "encodingOnly": true,
       "alphaRemoved": true,
-      "nativeRgbSha256": "d59371790c4d8ef337e15aff29f64cbaa05fcbd3f4d8b63a9603ee46dfb47a60"
+      "provenance": "NativeWatchoutput; existingSharpRGBnormalization only; exact RGB pixels preserved",
+      "parentFinalUploadAcceptance": false,
+      "candidateExportReady": true
+    },
+    {
+      "locale": "ja",
+      "device": "watch",
+      "dimensions": [
+        416,
+        496
+      ],
+      "name": "01-exercise-185.png",
+      "path": "design/app-store-studio-2026-10-29/exports/candidates/pro-20261113/ios/watch/416x496/ja/01-exercise-185.png",
+      "sha256": "61da13fff7197d9e40727138dd1a46d9a36348fb22dcf6d9516b30a07f9debbf",
+      "sourceSha256": "ae7c7930f24a29c195c67e1fb89e1cdf7dc3302838cc16d80683b2eb763a019e",
+      "nativeRgbSha256": "c59498d2893f56e4c0012522f920f7ef58f86047237197701bfe6a3bd346ef3f",
+      "mode": "RGB",
+      "pixelsEdited": false,
+      "encodingOnly": true,
+      "alphaRemoved": true,
+      "provenance": "NativeWatchoutput; existingSharpRGBnormalization only; exact RGB pixels preserved",
+      "parentFinalUploadAcceptance": false,
+      "candidateExportReady": true
+    },
+    {
+      "locale": "ja",
+      "device": "watch",
+      "dimensions": [
+        416,
+        496
+      ],
+      "name": "02-rest-160.png",
+      "path": "design/app-store-studio-2026-10-29/exports/candidates/pro-20261113/ios/watch/416x496/ja/02-rest-160.png",
+      "sha256": "28539d9f6fa247fe7166f48108e8f22666f424ed52280fcc5567b3707597d0d2",
+      "sourceSha256": "7cb995525641cb1c37e55511e263c979d6cdf443ac83bf95150f7922984a3e60",
+      "nativeRgbSha256": "4f12e16ea0d1c72e21826f33b436108e5c12366f7a5522553e2a2caad9462154",
+      "mode": "RGB",
+      "pixelsEdited": false,
+      "encodingOnly": true,
+      "alphaRemoved": true,
+      "provenance": "NativeWatchoutput; existingSharpRGBnormalization only; exact RGB pixels preserved",
+      "parentFinalUploadAcceptance": false,
+      "candidateExportReady": true
+    },
+    {
+      "locale": "ko",
+      "device": "watch",
+      "dimensions": [
+        416,
+        496
+      ],
+      "name": "01-exercise-185.png",
+      "path": "design/app-store-studio-2026-10-29/exports/candidates/pro-20261113/ios/watch/416x496/ko/01-exercise-185.png",
+      "sha256": "7e0d9034bbeb1e2d0f77d2494875942efaa3e7c3923f8f4da48e047c6fa4923e",
+      "sourceSha256": "8c98c70bc72d750a571848b841b719636a9fe6b4652afed7a6aee7636b972ade",
+      "nativeRgbSha256": "bc30489d44ab7efb1da89eb6b03f8aad83193edb24aa50ff83063785092634d0",
+      "mode": "RGB",
+      "pixelsEdited": false,
+      "encodingOnly": true,
+      "alphaRemoved": true,
+      "provenance": "NativeWatchoutput; existingSharpRGBnormalization only; exact RGB pixels preserved",
+      "parentFinalUploadAcceptance": false,
+      "candidateExportReady": true
+    },
+    {
+      "locale": "ko",
+      "device": "watch",
+      "dimensions": [
+        416,
+        496
+      ],
+      "name": "02-rest-160.png",
+      "path": "design/app-store-studio-2026-10-29/exports/candidates/pro-20261113/ios/watch/416x496/ko/02-rest-160.png",
+      "sha256": "7b176b38926e0e32053586627eaec808d5343980a8fc019bfd63580dbf21b4f9",
+      "sourceSha256": "28a6b8c11c84c1441dcf462b36ecc81066f40b0dc70f82976adfdbcf7f65172e",
+      "nativeRgbSha256": "c611366aaedf63966bba0dc72c6c88dab4a6497a085030a3adb36d6008049a4c",
+      "mode": "RGB",
+      "pixelsEdited": false,
+      "encodingOnly": true,
+      "alphaRemoved": true,
+      "provenance": "NativeWatchoutput; existingSharpRGBnormalization only; exact RGB pixels preserved",
+      "parentFinalUploadAcceptance": false,
+      "candidateExportReady": true
+    },
+    {
+      "locale": "es",
+      "device": "watch",
+      "dimensions": [
+        416,
+        496
+      ],
+      "name": "01-exercise-185.png",
+      "path": "design/app-store-studio-2026-10-29/exports/candidates/pro-20261113/ios/watch/416x496/es/01-exercise-185.png",
+      "sha256": "e460a2be1cd65e87f56e702385b00c389aa2b109f841172b6f53138207b659fb",
+      "sourceSha256": "e6a29ee2f8a98bb9044ae1ec567866a2c4553707e39f9d9b13a0bb242f3334f2",
+      "nativeRgbSha256": "3a8b13c55763df584b40230996abef4a5ff9f3bd4ab5877494d62858ee309bc2",
+      "mode": "RGB",
+      "pixelsEdited": false,
+      "encodingOnly": true,
+      "alphaRemoved": true,
+      "provenance": "NativeWatchoutput; existingSharpRGBnormalization only; exact RGB pixels preserved",
+      "parentFinalUploadAcceptance": false,
+      "candidateExportReady": true
+    },
+    {
+      "locale": "es",
+      "device": "watch",
+      "dimensions": [
+        416,
+        496
+      ],
+      "name": "02-rest-160.png",
+      "path": "design/app-store-studio-2026-10-29/exports/candidates/pro-20261113/ios/watch/416x496/es/02-rest-160.png",
+      "sha256": "f1e17f60598f7108249909338888d6263859cd651293ec307cdb3ed9552d0732",
+      "sourceSha256": "d7d22c6228d17cb42a1f3d16402b785551e295aaedd45b96554ed2839b7762e2",
+      "nativeRgbSha256": "e30c5a7b4c56ada6f7fbb2c6772e04b2cbcdca368414e30af0ec0833d25b4475",
+      "mode": "RGB",
+      "pixelsEdited": false,
+      "encodingOnly": true,
+      "alphaRemoved": true,
+      "provenance": "NativeWatchoutput; existingSharpRGBnormalization only; exact RGB pixels preserved",
+      "parentFinalUploadAcceptance": false,
+      "candidateExportReady": true
+    },
+    {
+      "locale": "fr",
+      "device": "watch",
+      "dimensions": [
+        416,
+        496
+      ],
+      "name": "01-exercise-185.png",
+      "path": "design/app-store-studio-2026-10-29/exports/candidates/pro-20261113/ios/watch/416x496/fr/01-exercise-185.png",
+      "sha256": "3c07dbce39c64852ca6e38f39a8a497e95bea27e22d98c1459c061e3cedcff49",
+      "sourceSha256": "37c323005a6d19dab0647ab243f92e601c3a74827d939a67d7107ded3d7e3820",
+      "nativeRgbSha256": "d9301ef5985a4291e2c0157e1d5ac4245ed123397d806f7e65496e0c78dbf70d",
+      "mode": "RGB",
+      "pixelsEdited": false,
+      "encodingOnly": true,
+      "alphaRemoved": true,
+      "provenance": "NativeWatchoutput; existingSharpRGBnormalization only; exact RGB pixels preserved",
+      "parentFinalUploadAcceptance": false,
+      "candidateExportReady": true
+    },
+    {
+      "locale": "fr",
+      "device": "watch",
+      "dimensions": [
+        416,
+        496
+      ],
+      "name": "02-rest-160.png",
+      "path": "design/app-store-studio-2026-10-29/exports/candidates/pro-20261113/ios/watch/416x496/fr/02-rest-160.png",
+      "sha256": "ababcac0fd6ae2753ac47f800b3e313f53041e4b83e8de5495327bc05428164f",
+      "sourceSha256": "35db3cfb149729356b64c905f4447deb3f3c7458c283fe883eacac1de46aa657",
+      "nativeRgbSha256": "b9216dfd48ee59d39cf4b302a46f0265aec728f5733d06a810f635739d280140",
+      "mode": "RGB",
+      "pixelsEdited": false,
+      "encodingOnly": true,
+      "alphaRemoved": true,
+      "provenance": "NativeWatchoutput; existingSharpRGBnormalization only; exact RGB pixels preserved",
+      "parentFinalUploadAcceptance": false,
+      "candidateExportReady": true
+    },
+    {
+      "locale": "de",
+      "device": "watch",
+      "dimensions": [
+        416,
+        496
+      ],
+      "name": "01-exercise-185.png",
+      "path": "design/app-store-studio-2026-10-29/exports/candidates/pro-20261113/ios/watch/416x496/de/01-exercise-185.png",
+      "sha256": "7fc97a23c06099195bfe2c0a46b2634f250c2e9521f7496e56385f5fa208a1d3",
+      "sourceSha256": "3ba3ecce9f38d8db6f7c92a5c9c8258f00eb80223b0e35b2e4198c6c549c8528",
+      "nativeRgbSha256": "7ad03393a79c9c381eff04fb0d5bbbf3f0267e2b89ff2c9c8b1978db3c5a881e",
+      "mode": "RGB",
+      "pixelsEdited": false,
+      "encodingOnly": true,
+      "alphaRemoved": true,
+      "provenance": "NativeWatchoutput; existingSharpRGBnormalization only; exact RGB pixels preserved",
+      "parentFinalUploadAcceptance": false,
+      "candidateExportReady": true
+    },
+    {
+      "locale": "de",
+      "device": "watch",
+      "dimensions": [
+        416,
+        496
+      ],
+      "name": "02-rest-160.png",
+      "path": "design/app-store-studio-2026-10-29/exports/candidates/pro-20261113/ios/watch/416x496/de/02-rest-160.png",
+      "sha256": "19ab5c0ddf847c8cb758650025d95e8b220234ffaf43a0a4fb6cd7ecc463fde1",
+      "sourceSha256": "7458d69e0e29f54f668e358690f8c7781171b86317811081c618a3039955ebaf",
+      "nativeRgbSha256": "d9e7175482d0b63aff69958ef66bad7c52e3b0b68ccc1ff3a97bb7fc025bda1f",
+      "mode": "RGB",
+      "pixelsEdited": false,
+      "encodingOnly": true,
+      "alphaRemoved": true,
+      "provenance": "NativeWatchoutput; existingSharpRGBnormalization only; exact RGB pixels preserved",
+      "parentFinalUploadAcceptance": false,
+      "candidateExportReady": true
+    },
+    {
+      "locale": "it",
+      "device": "watch",
+      "dimensions": [
+        416,
+        496
+      ],
+      "name": "01-exercise-185.png",
+      "path": "design/app-store-studio-2026-10-29/exports/candidates/pro-20261113/ios/watch/416x496/it/01-exercise-185.png",
+      "sha256": "90e279c07edc33acfdb704180b818f073bb2f707adcc506e10ed215d73a81719",
+      "sourceSha256": "982e71ecb9b7509fe22a9fe7e8cc56215229d06d66d9c2c3607880272ca3b093",
+      "nativeRgbSha256": "c39dfbd1be9651e90323cca445d47d1255ba1654035624ed83c7d35ff92dd675",
+      "mode": "RGB",
+      "pixelsEdited": false,
+      "encodingOnly": true,
+      "alphaRemoved": true,
+      "provenance": "NativeWatchoutput; existingSharpRGBnormalization only; exact RGB pixels preserved",
+      "parentFinalUploadAcceptance": false,
+      "candidateExportReady": true
+    },
+    {
+      "locale": "it",
+      "device": "watch",
+      "dimensions": [
+        416,
+        496
+      ],
+      "name": "02-rest-160.png",
+      "path": "design/app-store-studio-2026-10-29/exports/candidates/pro-20261113/ios/watch/416x496/it/02-rest-160.png",
+      "sha256": "5ab714dd68f3d60b947097fb0060e83626884ab890b762367e07c2105fc0977a",
+      "sourceSha256": "60ec92b2f041d9f7dd636b26677e1e0c59aac3df4e91c31d85754b33138ac104",
+      "nativeRgbSha256": "5bf12993cdd4d3ec655b817ddcf2af71133083eab8b9ef4fa0e32db30bee9e48",
+      "mode": "RGB",
+      "pixelsEdited": false,
+      "encodingOnly": true,
+      "alphaRemoved": true,
+      "provenance": "NativeWatchoutput; existingSharpRGBnormalization only; exact RGB pixels preserved",
+      "parentFinalUploadAcceptance": false,
+      "candidateExportReady": true
+    },
+    {
+      "locale": "pt-BR",
+      "device": "watch",
+      "dimensions": [
+        416,
+        496
+      ],
+      "name": "01-exercise-185.png",
+      "path": "design/app-store-studio-2026-10-29/exports/candidates/pro-20261113/ios/watch/416x496/pt-BR/01-exercise-185.png",
+      "sha256": "10d1b25a98b64d1cbd5f29ab11a63ebb5128eae56d59d7d96c80ffa8149a07bd",
+      "sourceSha256": "297c813a369773ec59cec4036a3f9d7d669e3fe5ae6418c5c9bd5a6d8afc01d8",
+      "nativeRgbSha256": "967c730a6dd86b2ebcc60ae908782c7daed7e2090232fa78d49d97b3f2bf02e6",
+      "mode": "RGB",
+      "pixelsEdited": false,
+      "encodingOnly": true,
+      "alphaRemoved": true,
+      "provenance": "NativeWatchoutput; existingSharpRGBnormalization only; exact RGB pixels preserved",
+      "parentFinalUploadAcceptance": false,
+      "candidateExportReady": true
+    },
+    {
+      "locale": "pt-BR",
+      "device": "watch",
+      "dimensions": [
+        416,
+        496
+      ],
+      "name": "02-rest-160.png",
+      "path": "design/app-store-studio-2026-10-29/exports/candidates/pro-20261113/ios/watch/416x496/pt-BR/02-rest-160.png",
+      "sha256": "470ff72196085206d8bda1244c8be130d66809f581ec7fd4846e31663432f9a5",
+      "sourceSha256": "271beeaa18b84ce1eed3373324a64a423f898dfcaffc6b671917910e1eb3e679",
+      "nativeRgbSha256": "a5af525c9acbbbf4e15e0f2129258796d3b64810a17cacc560f334920f3f0358",
+      "mode": "RGB",
+      "pixelsEdited": false,
+      "encodingOnly": true,
+      "alphaRemoved": true,
+      "provenance": "NativeWatchoutput; existingSharpRGBnormalization only; exact RGB pixels preserved",
+      "parentFinalUploadAcceptance": false,
+      "candidateExportReady": true
+    },
+    {
+      "locale": "ru",
+      "device": "watch",
+      "dimensions": [
+        416,
+        496
+      ],
+      "name": "01-exercise-185.png",
+      "path": "design/app-store-studio-2026-10-29/exports/candidates/pro-20261113/ios/watch/416x496/ru/01-exercise-185.png",
+      "sha256": "2b47ec525f4fca8a2fe5184340caebf8cd8018602d2507cc3d66b68c364bc6e1",
+      "sourceSha256": "52904de58035ae9dc7cb470a4875a0514af7329b527b0d845a262f223da6b588",
+      "nativeRgbSha256": "cd1946ac975f6c1d71498d628453d0bcc8c6157b62acbf0fe32d9d96b7927417",
+      "mode": "RGB",
+      "pixelsEdited": false,
+      "encodingOnly": true,
+      "alphaRemoved": true,
+      "provenance": "NativeWatchoutput; existingSharpRGBnormalization only; exact RGB pixels preserved",
+      "parentFinalUploadAcceptance": false,
+      "candidateExportReady": false
+    },
+    {
+      "locale": "ru",
+      "device": "watch",
+      "dimensions": [
+        416,
+        496
+      ],
+      "name": "02-rest-160.png",
+      "path": "design/app-store-studio-2026-10-29/exports/candidates/pro-20261113/ios/watch/416x496/ru/02-rest-160.png",
+      "sha256": "77f873ed667f9222b7e78febfa78fa4f5ed9ec59bc766aa85608bec12585c3af",
+      "sourceSha256": "b531268290c3f6da79c059941785ac7a4ee436e818f3ee7f734bbf6a9cf457eb",
+      "nativeRgbSha256": "73012cbb49d971bde53693ef19b6070429e2815a7c72aef6bc4d2055c4ae2fc0",
+      "mode": "RGB",
+      "pixelsEdited": false,
+      "encodingOnly": true,
+      "alphaRemoved": true,
+      "provenance": "NativeWatchoutput; existingSharpRGBnormalization only; exact RGB pixels preserved",
+      "parentFinalUploadAcceptance": false,
+      "candidateExportReady": true
+    },
+    {
+      "locale": "ar",
+      "device": "watch",
+      "dimensions": [
+        416,
+        496
+      ],
+      "name": "01-exercise-185.png",
+      "path": "design/app-store-studio-2026-10-29/exports/candidates/pro-20261113/ios/watch/416x496/ar/01-exercise-185.png",
+      "sha256": "17bde89d967852d7fd8164032537698bcfa1549b408213b9703b7edb9eef1e29",
+      "sourceSha256": "8b4b683fec785171ae2bf4a4b5bafd106b28646148c42285e072187b74004245",
+      "nativeRgbSha256": "fa6a51d94311d092c3193ca5f0e65b67cd1baa67a1eebf5061d800b14214d243",
+      "mode": "RGB",
+      "pixelsEdited": false,
+      "encodingOnly": true,
+      "alphaRemoved": true,
+      "provenance": "NativeWatchoutput; existingSharpRGBnormalization only; exact RGB pixels preserved",
+      "parentFinalUploadAcceptance": false,
+      "candidateExportReady": true
+    },
+    {
+      "locale": "ar",
+      "device": "watch",
+      "dimensions": [
+        416,
+        496
+      ],
+      "name": "02-rest-160.png",
+      "path": "design/app-store-studio-2026-10-29/exports/candidates/pro-20261113/ios/watch/416x496/ar/02-rest-160.png",
+      "sha256": "acd354ce63cdcb526c540fb9014a1329452f87e0987497cecd1ea110c07b2363",
+      "sourceSha256": "2b9cdb9ad19853461794021f88f8f9fb4190b01b2abcdc303a6d56319a34063c",
+      "nativeRgbSha256": "bcf0f57e00745212564380dfc4a7bff9a348e95be275c06464f4a7106f639f51",
+      "mode": "RGB",
+      "pixelsEdited": false,
+      "encodingOnly": true,
+      "alphaRemoved": true,
+      "provenance": "NativeWatchoutput; existingSharpRGBnormalization only; exact RGB pixels preserved",
+      "parentFinalUploadAcceptance": false,
+      "candidateExportReady": true
     }
   ],
   "acceptedImages": [],
-  "note": "Six actual standalone Watch native screenshots, not posters. Source alpha was opaque255. Existing candidate export RGB normalization used verbatim; no RGB pixels altered, no HTML renderer. Upload acceptance remains pending.",
-  "executorFullSizeVisualRead": "2026-11-13 10:47 Asia/Shanghai; all6actual416x496PNGs individually read onbox, SHA/dimensions/RGB verified",
-  "visualFindings": [
-    "No clipped exercise names/buttons identified in these6outputs",
-    "English exercise native clock area blank; other5show10:11; native pixels preserved",
-    "These are independent simulator examples; no physical/live synchronization claim"
-  ],
-  "userApproved": false
+  "userApproved": false,
+  "note": "24 actual independent nativeWatch RGB screenshots; ru training natural title ellipsis pending parentreview. No poster render or physical sync claim."
 }
