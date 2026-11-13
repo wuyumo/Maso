@@ -106,14 +106,14 @@ final class SessionReportUITests: XCTestCase {
         XCTAssertTrue(matchingPrefix("workout.sessionReport.shareDetails.", in: app).waitForExistence(timeout: 5))
         XCTAssertTrue(app.descendants(matching: .any)["workout.sessionReport.shareSpark.bench_press_barbell"].waitForExistence(timeout: 5))
         XCTAssertFalse(matchingPrefix("workout.sessionReport.shareSummary.", in: app).exists)
-        // The share body is a display-only accessibility image. descendants(.any)
-        // also matches a wrapper, and hittable stays false, so the top check uses
-        // that one image's frame: full stage height, starting in the upper screen.
+        // XCTNSPredicateExpectation only rechecks existence for an XCUIElement.
+        // frame.minY is not key-value coding on that element, so the predicate stays
+        // false while a later Swift read of the same frame reports the real rect.
         let shareBody = app.images["workout.sessionReport.shareBody"]
-        XCTAssertTrue(shareBody.waitForExistence(timeout: 5))
-        let fullBodyAtTop = NSPredicate(format: "exists == true AND frame.minY > 0 AND frame.minY < 220 AND frame.height > 300")
-        let top = XCTNSPredicateExpectation(predicate: fullBodyAtTop, object: shareBody)
-        XCTAssertEqual(XCTWaiter().wait(for: [top], timeout: 3), .completed, "share body minY \(shareBody.frame.minY) height \(shareBody.frame.height)")
+        let frame = waitForShareBodyAtTop(shareBody, timeout: 3)
+        XCTAssertGreaterThan(frame.minY, 0)
+        XCTAssertLessThan(frame.minY, 220)
+        XCTAssertGreaterThan(frame.height, 300, "share body \(frame)")
         keepShot(app, "share-heart-scroll-top")
         let shareSpark = app.descendants(matching: .any)["workout.sessionReport.shareSpark.bench_press_barbell"]
         let preview = app.descendants(matching: .any)["workout.sessionReport.sharePreview"]
@@ -211,6 +211,17 @@ final class SessionReportUITests: XCTestCase {
 
     private func matchingPrefix(_ prefix: String, in app: XCUIApplication) -> XCUIElement {
         app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH %@", prefix)).firstMatch
+    }
+
+    private func waitForShareBodyAtTop(_ body: XCUIElement, timeout: TimeInterval) -> CGRect {
+        let start = Date()
+        var frame = CGRect.null
+        while Date().timeIntervalSince(start) < timeout {
+            frame = body.frame
+            if body.exists, frame.minY > 0, frame.minY < 220, frame.height > 300 { return frame }
+            RunLoop.current.run(until: Date().addingTimeInterval(0.2))
+        }
+        return body.frame
     }
 
     private func keepShot(_ app: XCUIApplication, _ name: String) {
