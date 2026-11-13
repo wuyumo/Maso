@@ -3,6 +3,35 @@ import SwiftUI
 
 /// Explicitly launched by MasoUITests, never part of a Release build. The test
 /// process drives the production sheets through XCTest's public AX interface.
+/// SwiftUI re-executes this view's initializer on every parent update. The session
+/// report seed publishes `session`, and that publication was re-entering layout.
+/// Build the fixture once; later initializers only read it.
+private final class SessionReportUIFixture {
+    let data: DataStore
+    let session: TrainingSessionStore
+    private static var ready: [String: SessionReportUIFixture] = [:]
+    private static var partial: [String: SessionReportUIFixture] = [:]
+    private static let scenes: Set<String> = ["session-report-history", "session-report-clean-player", "session-report-changed-player"]
+
+    static func prepare(_ scene: String) -> SessionReportUIFixture? {
+        guard scenes.contains(scene) else { return nil }
+        if let existing = ready[scene] { return existing }
+        if let existing = partial[scene] { return existing }
+        let data = DataStore.makeMock()
+        let player = TrainingSessionStore(completionSound: {})
+        let fixture = SessionReportUIFixture(data: data, session: player)
+        partial[scene] = fixture
+        if ExerciseLibraryUITestHost.sessionReportPlayer(scene: scene, data: data, player: player) == nil,
+           scene != "session-report-history" {
+            partial[scene] = nil
+            return nil
+        }
+        ready[scene] = fixture
+        partial[scene] = nil
+        return fixture
+    }
+}
+
 struct ExerciseLibraryUITestHost: View {
     let scene: String
     @State private var data: DataStore
@@ -15,6 +44,11 @@ struct ExerciseLibraryUITestHost: View {
 
     init(scene: String) {
         self.scene = scene
+        if let fixture = SessionReportUIFixture.prepare(scene) {
+            _data = State(initialValue: fixture.data)
+            _session = State(initialValue: fixture.session)
+            return
+        }
         let data = DataStore.makeMock()
         if ProcessInfo.processInfo.environment["MASO_TEST_OLD_AI_CONSENT"] == "1" {
             AIDataConsent.shared.revoke()
@@ -251,14 +285,11 @@ struct ExerciseLibraryUITestHost: View {
             player.start(planId: plan.id, plan: plan, segments: expandPlan(plan, exById: data.exById, defaultRest: 90, defaultBetweenExerciseRest: 120))
             _session = State(initialValue: player)
         }
-        if let player = Self.sessionReportPlayer(scene: scene, data: data) {
-            _session = State(initialValue: player)
-        }
     }
 
     /// Seeds the finished-session report. History stays a pushed screen; the player scenes
     /// are a completed workout, with or without a real routine diff.
-    private static func sessionReportPlayer(scene: String, data: DataStore) -> TrainingSessionStore? {
+    fileprivate static func sessionReportPlayer(scene: String, data: DataStore, player: TrainingSessionStore) -> TrainingSessionStore? {
         let history = scene == "session-report-history"
         let changed = scene == "session-report-changed-player"
         guard history || changed || scene == "session-report-clean-player",
@@ -296,7 +327,6 @@ struct ExerciseLibraryUITestHost: View {
             PlanStep(id: "step-bench", exerciseId: exercise.id, sets: 2, reps: 8, weight: 60, duration: nil)
         ], createdAt: end, updatedAt: end)
         data.plans = [plan]
-        let player = TrainingSessionStore(completionSound: {})
         player.start(planId: plan.id, plan: plan, segments: expandPlan(plan, exById: data.exById, defaultRest: 90, defaultBetweenExerciseRest: 120))
         let sessionID = player.workoutSessionID ?? "ui-session-report"
         data.sets = [record(sessionID: sessionID)]
