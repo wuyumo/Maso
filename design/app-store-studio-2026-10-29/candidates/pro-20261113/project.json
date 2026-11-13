@@ -870,18 +870,18 @@
           {
             "id": "description",
             "text": {
-              "zh": "3D 肌肉图，按部位显示。精细恢复估算需 Pro。",
-              "zh-Hant": "3D 肌肉圖，按部位顯示。精細恢復估算需 Pro。",
-              "en": "A 3D muscle map. Detailed recovery estimates require Pro.",
-              "ja": "部位ごとの3Dマップ。詳細な回復推定はProで。",
-              "ko": "부위별 3D 지도. 상세 회복 추정치는 Pro로.",
-              "es": "Mapa muscular 3D. Las estimaciones detalladas requieren Pro.",
-              "fr": "Carte musculaire 3D. Les estimations détaillées nécessitent Pro.",
-              "de": "3D-Muskelkarte. Detaillierte Erholungsschätzungen mit Pro.",
-              "it": "Mappa muscolare 3D. Le stime dettagliate richiedono Pro.",
-              "pt-BR": "Mapa muscular 3D. Estimativas detalhadas exigem Pro.",
-              "ru": "3D-карта мышц. Подробные оценки восстановления — с Pro.",
-              "ar": "خريطة عضلية ثلاثية الأبعاد. التقديرات المفصلة تتطلب ⁦Pro⁩."
+              "zh": "3D 肌肉图，按部位显示。",
+              "zh-Hant": "3D 肌肉圖，按部位顯示。",
+              "en": "A 3D muscle map.",
+              "ja": "部位ごとの3Dマップ。",
+              "ko": "부위별 3D 지도.",
+              "es": "Mapa muscular 3D.",
+              "fr": "Carte musculaire 3D.",
+              "de": "3D-Muskelkarte.",
+              "it": "Mappa muscolare 3D.",
+              "pt-BR": "Mapa muscular 3D.",
+              "ru": "3D-карта мышц.",
+              "ar": "خريطة عضلية ثلاثية الأبعاد."
             },
             "transform": {
               "x": 96,

@@ -29,13 +29,13 @@ Pages1–5 are navigable. 03 export is deliberately disabled pending actual corr
 ## Exact fields and pending real capture
 `slidesByDevice.iphone[0].textElements[0].text`: t318 restores all12 plan descriptions to their original days/duration/focus wording; no Pro sentence.
 `slidesByDevice.iphone[1].headline` :12locale estimated-recovery wording.
-`slidesByDevice.iphone[1].textElements[0].text` :12locale detailed recovery Pro qualification.
-Only the24recovery leaves now differ from canonical; all transforms/chat/native asset references unchanged.
+`slidesByDevice.iphone[1].textElements[0].text`: t319 removes all12 detailed-recovery Pro sentences; retains each existing 3D-map sentence.
+Only 22 recovery leaves now differ from canonical; all transforms/chat/native asset references unchanged.
 
 03: `slidesByDevice.iphone[2].screenshot` is `/screenshots/localized/iphone/{locale}/player-heart-warning.png`; its actual native exercise label/media must be verified before any asset replacement. Phone/watch heart-rate values live inside native captures, not editable caption fields. Never paint over them. DeviceShowcase uses its own capture mapping for other families; obtain genuine corrected source before updating those references.
 
 ## Validation / limitations
-`node candidates/pro-20261113/test-isolation.cjs`:13checks pass; tests invoke handlers directly with no network. Generated synthetic test PNG exists only in a temporary sandbox removed after the test; it is not a poster or candidate export.
+`node candidates/pro-20261113/test-isolation.cjs`:14checks pass; tests invoke handlers directly with no network. Generated synthetic test PNG exists only in a temporary sandbox removed after the test; it is not a poster or candidate export.
 Tests: readonly candidate GET, output containment, RGB/no-alpha, exact dimensions, rejection of path traversal/wrong family/size/locale/page, no canonical writes, TSX syntax.
 Source-only TypeScript checking has3pre-existing `iphone-medium` missing-record errors in constants/defaults; no candidate-source errors. Full tsc also encounters generated `.next` route-type synchronization errors. A full green build/browser acceptance is NOT claimed.
 

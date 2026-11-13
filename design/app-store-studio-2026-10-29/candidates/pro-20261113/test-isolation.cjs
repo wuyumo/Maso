@@ -30,6 +30,7 @@ async function load(relative) {
     const projectResponse = await project.GET(); const data = await projectResponse.json();
     assert.equal(projectResponse.status,200); assert.equal(data.state.slidesByDevice.iphone[1].headline.zh,"肌肉恢复估算，\n一眼看清"); checks++;
     assert.equal(data.state.slidesByDevice.iphone[0].textElements[0].text.zh,"也听你要的天数、时长和重点。"); checks++;
+    assert.equal(data.state.slidesByDevice.iphone[1].textElements[0].text.zh,"3D 肌肉图，按部位显示。"); checks++;
     const bytes = await sharp({create:{width:1320,height:2868,channels:4,background:{r:12,g:34,b:56,alpha:0.5}}}).png().toBuffer();
     const dataUrl = "data:image/png;base64,"+bytes.toString("base64");
     const post = body => exporter.POST(new Request("http://unit.invalid",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)}));
