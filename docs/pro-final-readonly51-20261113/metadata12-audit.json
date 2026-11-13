@@ -1,0 +1,153 @@
+{
+  "checkedAt": "2026-11-13T12:11:21.620433+08:00",
+  "candidate": "docs/pro-release51-20261113/store-metadata12-clarified-candidate51.json",
+  "candidateSHA256": "3fa39ba8cf96a5641086ce43b1fe6b7a50900381cecbfc9061906cfd3925b998",
+  "applied": false,
+  "formattingOnlyIssue": "All locales append UTC reset sentence after Support email and place import capability paragraph after legal footer; factual rules align, but move these next to AI quota/source sections before final store copy approval. Candidate unchanged.",
+  "localizations": [
+    {
+      "locale": "en-US",
+      "characters": 3150,
+      "under4000": true,
+      "published43DescriptionMatchesDraftProvenance": true,
+      "containsUTCReset": true,
+      "containsAllFiveSupportedSourceNames": true,
+      "containsPrivacyTermsLinks": true,
+      "conditionalTrialRenewalMarkedPreserved": true,
+      "candidateNotPublished": true,
+      "monthly2andAdjustments2ManuallyChecked": true
+    },
+    {
+      "locale": "it",
+      "characters": 2448,
+      "under4000": true,
+      "published43DescriptionMatchesDraftProvenance": true,
+      "containsUTCReset": true,
+      "containsAllFiveSupportedSourceNames": true,
+      "containsPrivacyTermsLinks": true,
+      "conditionalTrialRenewalMarkedPreserved": true,
+      "candidateNotPublished": true,
+      "monthly2andAdjustments2ManuallyChecked": true
+    },
+    {
+      "locale": "zh-Hans",
+      "characters": 1157,
+      "under4000": true,
+      "published43DescriptionMatchesDraftProvenance": true,
+      "containsUTCReset": true,
+      "containsAllFiveSupportedSourceNames": true,
+      "containsPrivacyTermsLinks": true,
+      "conditionalTrialRenewalMarkedPreserved": true,
+      "candidateNotPublished": true,
+      "monthly2andAdjustments2ManuallyChecked": true
+    },
+    {
+      "locale": "pt-BR",
+      "characters": 2397,
+      "under4000": true,
+      "published43DescriptionMatchesDraftProvenance": true,
+      "containsUTCReset": true,
+      "containsAllFiveSupportedSourceNames": true,
+      "containsPrivacyTermsLinks": true,
+      "conditionalTrialRenewalMarkedPreserved": true,
+      "candidateNotPublished": true,
+      "monthly2andAdjustments2ManuallyChecked": true
+    },
+    {
+      "locale": "ko",
+      "characters": 1322,
+      "under4000": true,
+      "published43DescriptionMatchesDraftProvenance": true,
+      "containsUTCReset": true,
+      "containsAllFiveSupportedSourceNames": true,
+      "containsPrivacyTermsLinks": true,
+      "conditionalTrialRenewalMarkedPreserved": true,
+      "candidateNotPublished": true,
+      "monthly2andAdjustments2ManuallyChecked": true
+    },
+    {
+      "locale": "ja",
+      "characters": 1147,
+      "under4000": true,
+      "published43DescriptionMatchesDraftProvenance": true,
+      "containsUTCReset": true,
+      "containsAllFiveSupportedSourceNames": true,
+      "containsPrivacyTermsLinks": true,
+      "conditionalTrialRenewalMarkedPreserved": true,
+      "candidateNotPublished": true,
+      "monthly2andAdjustments2ManuallyChecked": true
+    },
+    {
+      "locale": "ru",
+      "characters": 2370,
+      "under4000": true,
+      "published43DescriptionMatchesDraftProvenance": true,
+      "containsUTCReset": true,
+      "containsAllFiveSupportedSourceNames": true,
+      "containsPrivacyTermsLinks": true,
+      "conditionalTrialRenewalMarkedPreserved": true,
+      "candidateNotPublished": true,
+      "monthly2andAdjustments2ManuallyChecked": true
+    },
+    {
+      "locale": "zh-Hant",
+      "characters": 908,
+      "under4000": true,
+      "published43DescriptionMatchesDraftProvenance": true,
+      "containsUTCReset": true,
+      "containsAllFiveSupportedSourceNames": true,
+      "containsPrivacyTermsLinks": true,
+      "conditionalTrialRenewalMarkedPreserved": true,
+      "candidateNotPublished": true,
+      "monthly2andAdjustments2ManuallyChecked": true
+    },
+    {
+      "locale": "es-ES",
+      "characters": 2479,
+      "under4000": true,
+      "published43DescriptionMatchesDraftProvenance": true,
+      "containsUTCReset": true,
+      "containsAllFiveSupportedSourceNames": true,
+      "containsPrivacyTermsLinks": true,
+      "conditionalTrialRenewalMarkedPreserved": true,
+      "candidateNotPublished": true,
+      "monthly2andAdjustments2ManuallyChecked": true
+    },
+    {
+      "locale": "fr-FR",
+      "characters": 2611,
+      "under4000": true,
+      "published43DescriptionMatchesDraftProvenance": true,
+      "containsUTCReset": true,
+      "containsAllFiveSupportedSourceNames": true,
+      "containsPrivacyTermsLinks": true,
+      "conditionalTrialRenewalMarkedPreserved": true,
+      "candidateNotPublished": true,
+      "monthly2andAdjustments2ManuallyChecked": true
+    },
+    {
+      "locale": "ar-SA",
+      "characters": 2010,
+      "under4000": true,
+      "published43DescriptionMatchesDraftProvenance": true,
+      "containsUTCReset": true,
+      "containsAllFiveSupportedSourceNames": true,
+      "containsPrivacyTermsLinks": true,
+      "conditionalTrialRenewalMarkedPreserved": true,
+      "candidateNotPublished": true,
+      "monthly2andAdjustments2ManuallyChecked": true
+    },
+    {
+      "locale": "de-DE",
+      "characters": 2551,
+      "under4000": true,
+      "published43DescriptionMatchesDraftProvenance": true,
+      "containsUTCReset": true,
+      "containsAllFiveSupportedSourceNames": true,
+      "containsPrivacyTermsLinks": true,
+      "conditionalTrialRenewalMarkedPreserved": true,
+      "candidateNotPublished": true,
+      "monthly2andAdjustments2ManuallyChecked": true
+    }
+  ]
+}

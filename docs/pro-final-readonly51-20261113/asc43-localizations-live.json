@@ -1,0 +1,517 @@
+{
+  "data": [
+    {
+      "type": "appStoreVersionLocalizations",
+      "id": "5ab2ac31-8d44-4cc7-9ed8-959d93283242",
+      "attributes": {
+        "description": "Train smart, your way.\n\nBuild workouts around your goals, equipment and recent training. Log every set, see estimated muscle recovery, and keep nutrition and sleep in view.\n\n• AI Coach that listens. Tell it your goals, available time and equipment. Create a plan, refine it in chat, and choose which preferences to remember.\n• A clearer view of recovery. Explore your muscles in 3D and see training-based recovery estimates and exercises for each muscle.\n• Focus on your workout. Log weight and reps, use rest timers, and follow your session on Apple Watch or Live Activities.\n• Progress you can see. Compare lifts, review muscle training volume and revisit your workout history.\n• Nutrition without the fuss. Describe a meal or add a photo to estimate protein, carbohydrates and fat against your personal targets.\n• Sleep in context. Connect Apple Health to see sleep duration, stages and progress toward your chosen sleep target.\n• Your day at a glance. Combine Workout, Diet and Sleep in one calendar, with widgets for your Home Screen.\n\nBasic workout logging and history stay free. Save up to five workout plans and continue free AI requests after closing the upgrade reminder. Masso Pro adds unlimited saved plans, AI without upgrade reminders, lift-progress analysis, detailed muscle recovery and custom exercises. Eligible subscribers can receive a 7-day free trial when offered. Apple shows eligibility, price and billing period before purchase. Subscriptions renew automatically unless canceled; manage them in your Apple account settings.\n\nAI features require internet access and your permission to share relevant data with our AI provider. Meal nutrients and recovery are estimates, not medical measurements or medical advice. Sleep stages require compatible Apple Health data.\n\nPrivacy: https://wuyumo.github.io/Maso/privacy-policy.html\nTerms: https://wuyumo.github.io/Maso/terms.html\nSupport: wuyumoawuyumo@gmail.com",
+        "locale": "en-US",
+        "keywords": "strength,training,bodybuilding,weights,lifting,exercise,sets,reps,protein,sleep",
+        "marketingUrl": null,
+        "promotionalText": null,
+        "supportUrl": "https://wuyumo.github.io/Maso/",
+        "whatsNew": "• Referral code checks connect more reliably.\n• Workout generation prioritizes your pinned exercises.\n• Selected exercises show adjustable starting-weight estimates after a completed set. Manual weights and completed records stay intact.\n• Clearer paywall actions, Watch translations and exercise media."
+      },
+      "relationships": {
+        "appScreenshotSets": {
+          "links": {
+            "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/5ab2ac31-8d44-4cc7-9ed8-959d93283242/relationships/appScreenshotSets",
+            "related": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/5ab2ac31-8d44-4cc7-9ed8-959d93283242/appScreenshotSets"
+          }
+        },
+        "appPreviewSets": {
+          "links": {
+            "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/5ab2ac31-8d44-4cc7-9ed8-959d93283242/relationships/appPreviewSets",
+            "related": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/5ab2ac31-8d44-4cc7-9ed8-959d93283242/appPreviewSets"
+          }
+        },
+        "searchKeywords": {
+          "links": {
+            "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/5ab2ac31-8d44-4cc7-9ed8-959d93283242/relationships/searchKeywords",
+            "related": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/5ab2ac31-8d44-4cc7-9ed8-959d93283242/searchKeywords"
+          }
+        },
+        "placements": {
+          "links": {
+            "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/5ab2ac31-8d44-4cc7-9ed8-959d93283242/relationships/placements",
+            "related": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/5ab2ac31-8d44-4cc7-9ed8-959d93283242/placements"
+          }
+        }
+      },
+      "links": {
+        "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/5ab2ac31-8d44-4cc7-9ed8-959d93283242"
+      }
+    },
+    {
+      "type": "appStoreVersionLocalizations",
+      "id": "cb20e7cb-412e-4040-82b7-9260e41b4f34",
+      "attributes": {
+        "description": "Allenati in modo intelligente, a modo tuo.\n\nCrea piani per i tuoi obiettivi e attrezzi con AI Coach. Registra pesi e ripetizioni, visualizza il recupero muscolare stimato in 3D, stima i nutrienti da foto o descrizioni e consulta i dati del sonno di Apple Salute e i widget.\n\nRegistrazione e cronologia degli allenamenti restano gratuite. Salva fino a cinque piani e continua le richieste IA gratuite dopo aver chiuso l’avviso di upgrade. Masso Pro offre piani salvati illimitati, IA senza avvisi di upgrade, analisi dei progressi, recupero dettagliato ed esercizi personalizzati.\n\nAbbonamenti mensili e annuali con rinnovo automatico salvo disdetta. Prova gratuita di 7 giorni per gli utenti idonei, quando offerta. Apple mostra prezzo, durata e idoneità prima dell’acquisto. Gestisci l’abbonamento nelle impostazioni dell’account Apple.\n\nL’IA richiede Internet e il consenso alla condivisione dei dati. Nutrizione e recupero sono stime, non misurazioni o consigli medici. Le fasi del sonno richiedono dati compatibili di Apple Salute.\n\nPrivacy: https://wuyumo.github.io/Maso/privacy-policy.html\nTerms: https://wuyumo.github.io/Maso/terms.html\nSupport: wuyumoawuyumo@gmail.com",
+        "locale": "it",
+        "keywords": "palestra,forza,allenamento,pesi,esercizi,muscoli,recupero,nutrizione,sonno",
+        "marketingUrl": null,
+        "promotionalText": null,
+        "supportUrl": "https://wuyumo.github.io/Maso/",
+        "whatsNew": "• Connessione più affidabile per verificare i codici invito.\n• I piani privilegiano gli esercizi fissati adatti alle tue preferenze.\n• Dopo una serie completata, alcuni esercizi mostrano carichi iniziali stimati e modificabili. Pesi manuali e registrazioni restano invariati.\n• Migliorati pulsanti di abbonamento, traduzioni Watch e contenuti degli esercizi."
+      },
+      "relationships": {
+        "appScreenshotSets": {
+          "links": {
+            "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/cb20e7cb-412e-4040-82b7-9260e41b4f34/relationships/appScreenshotSets",
+            "related": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/cb20e7cb-412e-4040-82b7-9260e41b4f34/appScreenshotSets"
+          }
+        },
+        "appPreviewSets": {
+          "links": {
+            "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/cb20e7cb-412e-4040-82b7-9260e41b4f34/relationships/appPreviewSets",
+            "related": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/cb20e7cb-412e-4040-82b7-9260e41b4f34/appPreviewSets"
+          }
+        },
+        "searchKeywords": {
+          "links": {
+            "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/cb20e7cb-412e-4040-82b7-9260e41b4f34/relationships/searchKeywords",
+            "related": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/cb20e7cb-412e-4040-82b7-9260e41b4f34/searchKeywords"
+          }
+        },
+        "placements": {
+          "links": {
+            "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/cb20e7cb-412e-4040-82b7-9260e41b4f34/relationships/placements",
+            "related": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/cb20e7cb-412e-4040-82b7-9260e41b4f34/placements"
+          }
+        }
+      },
+      "links": {
+        "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/cb20e7cb-412e-4040-82b7-9260e41b4f34"
+      }
+    },
+    {
+      "type": "appStoreVersionLocalizations",
+      "id": "f4f0dd18-14de-4616-adc6-02ad556f9b73",
+      "attributes": {
+        "description": "聪明训练，适合自己。\n\n让训练计划贴合你的目标、器械和近期训练。记录每一组，了解肌群恢复估算，也把饮食与睡眠照顾好。\n\n• 听懂你的 AI Coach：说出目标、时间和可用器械，生成训练计划，在聊天中调整，并由你决定要记住哪些偏好。\n• 直观的 3D 肌群恢复：查看基于训练记录的恢复估算，了解每块肌肉及相关动作。\n• 专注每一组：记录重量和次数，使用休息计时，也可通过 Apple Watch 或实时活动跟随训练。\n• 看得见的进步：比较动作表现，回顾肌群训练量和训练历史。\n• 轻松记录饮食：描述吃了什么或添加照片，估算蛋白质、碳水及脂肪，对照个人目标查看进度。\n• 睡眠与目标一起看：连接 Apple 健康，查看睡眠时长、阶段和目标完成度。\n• 一眼掌握每天：同一张日历整合训练、饮食与睡眠，主屏幕小组件随时查看关键数据。\n\n基础训练记录与历史免费，可保存最多 5 个训练计划；关闭升级提醒后仍可继续免费 AI 请求。Masso Pro 提供无限保存的计划、无升级提醒的 AI、动作进步分析、精细肌群恢复与自定义动作。符合 Apple 资格的用户可享所提供的 7 天免费试用。购买前显示资格、价格与周期；订阅自动续费，可在 Apple 账户设置中管理或取消。\n\nAI 功能需要联网，并在获得你的许可后向 AI 服务商发送相关资料。营养和肌肉恢复均为估算，不是医学测量或医疗建议。睡眠阶段需要兼容的 Apple 健康数据。\n\n隐私政策：https://wuyumo.github.io/Maso/privacy-policy.html\n使用条款：https://wuyumo.github.io/Maso/terms.html\n支持邮箱：wuyumoawuyumo@gmail.com",
+        "locale": "zh-Hans",
+        "keywords": "增肌训练,力量训练,健身记录,饮食记录,睡眠记录,训练日志,健身教练",
+        "marketingUrl": null,
+        "promotionalText": null,
+        "supportUrl": "https://wuyumo.github.io/Maso/",
+        "whatsNew": "• 优化推荐码检查的连接稳定性。\n• 生成训练计划时优先选择符合条件的置顶动作。\n• 完成一组后，部分动作可显示可调整的起始重量估算，保留手动重量与已完成记录。\n• 优化付费墙按钮、手表翻译和动作素材。"
+      },
+      "relationships": {
+        "appScreenshotSets": {
+          "links": {
+            "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/f4f0dd18-14de-4616-adc6-02ad556f9b73/relationships/appScreenshotSets",
+            "related": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/f4f0dd18-14de-4616-adc6-02ad556f9b73/appScreenshotSets"
+          }
+        },
+        "appPreviewSets": {
+          "links": {
+            "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/f4f0dd18-14de-4616-adc6-02ad556f9b73/relationships/appPreviewSets",
+            "related": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/f4f0dd18-14de-4616-adc6-02ad556f9b73/appPreviewSets"
+          }
+        },
+        "searchKeywords": {
+          "links": {
+            "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/f4f0dd18-14de-4616-adc6-02ad556f9b73/relationships/searchKeywords",
+            "related": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/f4f0dd18-14de-4616-adc6-02ad556f9b73/searchKeywords"
+          }
+        },
+        "placements": {
+          "links": {
+            "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/f4f0dd18-14de-4616-adc6-02ad556f9b73/relationships/placements",
+            "related": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/f4f0dd18-14de-4616-adc6-02ad556f9b73/placements"
+          }
+        }
+      },
+      "links": {
+        "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/f4f0dd18-14de-4616-adc6-02ad556f9b73"
+      }
+    },
+    {
+      "type": "appStoreVersionLocalizations",
+      "id": "8efd7c1b-5484-4fcc-b571-eac43e0a3e7e",
+      "attributes": {
+        "description": "Treine com inteligência, do seu jeito.\n\nCrie planos para seus objetivos e equipamentos com o AI Coach. Registre cargas e repetições, veja a recuperação muscular estimada em 3D, estime nutrientes por foto ou descrição e acompanhe o sono do Apple Saúde e os widgets.\n\nO registro e o histórico de treinos continuam gratuitos. Salve até cinco planos e continue os pedidos gratuitos de IA após fechar o aviso de upgrade. O Masso Pro oferece planos salvos ilimitados, IA sem avisos de upgrade, análise do progresso, recuperação detalhada e exercícios personalizados.\n\nAssinaturas mensais e anuais com renovação automática, salvo cancelamento. Teste grátis de 7 dias para usuários elegíveis, quando oferecido. A Apple mostra preço, período e elegibilidade antes da compra. Gerencie a assinatura nos ajustes da sua Conta Apple.\n\nA IA exige internet e consentimento para compartilhar dados. Nutrição e recuperação são estimativas, não medições nem orientações médicas. Os estágios do sono exigem dados compatíveis do Apple Saúde.\n\nPrivacy: https://wuyumo.github.io/Maso/privacy-policy.html\nTerms: https://wuyumo.github.io/Maso/terms.html\nSupport: wuyumoawuyumo@gmail.com",
+        "locale": "pt-BR",
+        "keywords": "musculação,academia,treino,pesos,exercícios,músculos,recuperação,nutrição,sono",
+        "marketingUrl": null,
+        "promotionalText": null,
+        "supportUrl": "https://wuyumo.github.io/Maso/",
+        "whatsNew": "• Conexão mais confiável ao verificar códigos de indicação.\n• Os planos priorizam os exercícios fixados que atendem aos seus critérios.\n• Após uma série concluída, alguns exercícios mostram estimativas ajustáveis de carga inicial. Pesos manuais e registros são preservados.\n• Melhorias nos botões de assinatura, traduções do Watch e mídias dos exercícios."
+      },
+      "relationships": {
+        "appScreenshotSets": {
+          "links": {
+            "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/8efd7c1b-5484-4fcc-b571-eac43e0a3e7e/relationships/appScreenshotSets",
+            "related": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/8efd7c1b-5484-4fcc-b571-eac43e0a3e7e/appScreenshotSets"
+          }
+        },
+        "appPreviewSets": {
+          "links": {
+            "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/8efd7c1b-5484-4fcc-b571-eac43e0a3e7e/relationships/appPreviewSets",
+            "related": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/8efd7c1b-5484-4fcc-b571-eac43e0a3e7e/appPreviewSets"
+          }
+        },
+        "searchKeywords": {
+          "links": {
+            "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/8efd7c1b-5484-4fcc-b571-eac43e0a3e7e/relationships/searchKeywords",
+            "related": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/8efd7c1b-5484-4fcc-b571-eac43e0a3e7e/searchKeywords"
+          }
+        },
+        "placements": {
+          "links": {
+            "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/8efd7c1b-5484-4fcc-b571-eac43e0a3e7e/relationships/placements",
+            "related": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/8efd7c1b-5484-4fcc-b571-eac43e0a3e7e/placements"
+          }
+        }
+      },
+      "links": {
+        "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/8efd7c1b-5484-4fcc-b571-eac43e0a3e7e"
+      }
+    },
+    {
+      "type": "appStoreVersionLocalizations",
+      "id": "3ce9c5cc-58ab-48b8-94ea-dfc444f37220",
+      "attributes": {
+        "description": "나에게 맞는 스마트한 운동.\n\nAI Coach로 목표와 장비에 맞는 운동 계획을 만들고 세트별 무게와 횟수를 기록하세요. 3D 근육 지도로 회복 추정치를 확인하고, 사진이나 설명으로 식사 영양소를 추정할 수 있습니다. Apple 건강의 수면 데이터와 홈 화면 위젯도 지원합니다.\n\n기본 운동 기록과 이력은 무료입니다. 운동 계획 5개까지 저장할 수 있으며 업그레이드 안내를 닫고 무료 AI 요청을 계속할 수 있습니다. Masso Pro는 무제한 계획 저장, AI 업그레이드 안내 제거, 진행 분석, 상세 근육 회복 정보 및 사용자 지정 운동을 제공합니다.\n\n월간·연간 자동 갱신 구독을 제공합니다. 화면에 제공되는 경우 대상 사용자에게 7일 무료 체험이 적용됩니다. 구매 전 Apple 화면에서 가격, 기간, 자격을 확인하세요. 취소하지 않으면 자동 갱신되며 Apple 계정 설정에서 관리할 수 있습니다.\n\nAI는 인터넷 연결과 데이터 공유 동의가 필요합니다. 영양 및 회복 정보는 추정치이며 의료 측정이나 조언이 아닙니다. 수면 단계에는 호환되는 Apple 건강 데이터가 필요합니다.\n\nPrivacy: https://wuyumo.github.io/Maso/privacy-policy.html\nTerms: https://wuyumo.github.io/Maso/terms.html\nSupport: wuyumoawuyumo@gmail.com",
+        "locale": "ko",
+        "keywords": "운동,헬스,근력,기록,계획,근육,회복,영양,수면",
+        "marketingUrl": null,
+        "promotionalText": null,
+        "supportUrl": "https://wuyumo.github.io/Maso/",
+        "whatsNew": "• 추천 코드 확인 연결을 개선했습니다.\n• 운동 계획 생성 시 조건에 맞는 고정 운동을 우선합니다.\n• 세트 완료 후 일부 운동에 조정 가능한 시작 중량 추정치를 표시합니다. 수동 중량과 완료 기록은 유지됩니다.\n• 구독 화면 버튼, Watch 번역과 운동 미디어를 개선했습니다."
+      },
+      "relationships": {
+        "appScreenshotSets": {
+          "links": {
+            "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/3ce9c5cc-58ab-48b8-94ea-dfc444f37220/relationships/appScreenshotSets",
+            "related": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/3ce9c5cc-58ab-48b8-94ea-dfc444f37220/appScreenshotSets"
+          }
+        },
+        "appPreviewSets": {
+          "links": {
+            "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/3ce9c5cc-58ab-48b8-94ea-dfc444f37220/relationships/appPreviewSets",
+            "related": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/3ce9c5cc-58ab-48b8-94ea-dfc444f37220/appPreviewSets"
+          }
+        },
+        "searchKeywords": {
+          "links": {
+            "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/3ce9c5cc-58ab-48b8-94ea-dfc444f37220/relationships/searchKeywords",
+            "related": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/3ce9c5cc-58ab-48b8-94ea-dfc444f37220/searchKeywords"
+          }
+        },
+        "placements": {
+          "links": {
+            "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/3ce9c5cc-58ab-48b8-94ea-dfc444f37220/relationships/placements",
+            "related": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/3ce9c5cc-58ab-48b8-94ea-dfc444f37220/placements"
+          }
+        }
+      },
+      "links": {
+        "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/3ce9c5cc-58ab-48b8-94ea-dfc444f37220"
+      }
+    },
+    {
+      "type": "appStoreVersionLocalizations",
+      "id": "fd765e74-441c-4c71-8ad4-baf07d7dc119",
+      "attributes": {
+        "description": "自分に合う、賢いトレーニング。\n\nAI Coachで目標や器具に合わせたトレーニングプランを作成。重量と回数を記録し、3D筋肉マップで回復の推定を確認できます。食事の写真や説明から栄養素を推定し、Appleヘルスケアの睡眠データやホーム画面のウィジェットも活用できます。\n\n基本のトレーニング記録と履歴は無料。プランは5件まで保存でき、アップグレード案内を閉じて無料のAIリクエストを続けられます。Masso Proではプランの保存数が無制限になり、AIのアップグレード案内非表示、進捗分析、詳しい筋肉の回復情報、カスタム種目を利用できます。\n\n月額・年額の自動更新サブスクリプション。対象者には表示された場合に7日間無料体験があります。購入前にAppleの画面で価格、期間、対象条件をご確認ください。解約しない限り自動更新され、Appleアカウントの設定で管理できます。\n\nAIにはインターネット接続とデータ共有への同意が必要です。栄養と筋肉の回復は推定値で、医療上の測定や助言ではありません。睡眠ステージには対応するAppleヘルスケアのデータが必要です。\n\nPrivacy: https://wuyumo.github.io/Maso/privacy-policy.html\nTerms: https://wuyumo.github.io/Maso/terms.html\nSupport: wuyumoawuyumo@gmail.com",
+        "locale": "ja",
+        "keywords": "筋トレ,トレーニング,記録,ジム,筋肉,回復,食事,睡眠",
+        "marketingUrl": null,
+        "promotionalText": null,
+        "supportUrl": "https://wuyumo.github.io/Maso/",
+        "whatsNew": "• 紹介コード確認時の接続を改善しました。\n• プラン作成で条件に合うピン留め種目を優先します。\n• セット完了後、一部の種目に調整可能な開始重量の目安を表示します。手動の重量と完了記録は保持されます。\n• 購読画面のボタン、Watchの翻訳、種目メディアを改善しました。"
+      },
+      "relationships": {
+        "appScreenshotSets": {
+          "links": {
+            "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/fd765e74-441c-4c71-8ad4-baf07d7dc119/relationships/appScreenshotSets",
+            "related": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/fd765e74-441c-4c71-8ad4-baf07d7dc119/appScreenshotSets"
+          }
+        },
+        "appPreviewSets": {
+          "links": {
+            "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/fd765e74-441c-4c71-8ad4-baf07d7dc119/relationships/appPreviewSets",
+            "related": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/fd765e74-441c-4c71-8ad4-baf07d7dc119/appPreviewSets"
+          }
+        },
+        "searchKeywords": {
+          "links": {
+            "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/fd765e74-441c-4c71-8ad4-baf07d7dc119/relationships/searchKeywords",
+            "related": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/fd765e74-441c-4c71-8ad4-baf07d7dc119/searchKeywords"
+          }
+        },
+        "placements": {
+          "links": {
+            "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/fd765e74-441c-4c71-8ad4-baf07d7dc119/relationships/placements",
+            "related": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/fd765e74-441c-4c71-8ad4-baf07d7dc119/placements"
+          }
+        }
+      },
+      "links": {
+        "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/fd765e74-441c-4c71-8ad4-baf07d7dc119"
+      }
+    },
+    {
+      "type": "appStoreVersionLocalizations",
+      "id": "10b79ed2-2276-4b9e-93f7-2dc0a4b3ba28",
+      "attributes": {
+        "description": "Тренируйтесь с умом, по-своему.\n\nСоздавайте планы под свои цели и оборудование с AI Coach. Записывайте вес и повторения, смотрите оценку восстановления мышц в 3D, оценивайте питательные вещества по фото или описанию еды и просматривайте сон из Apple Здоровье и виджеты.\n\nБазовый учёт и история тренировок бесплатны. Можно сохранить до пяти планов и продолжать бесплатные запросы ИИ после закрытия предложения обновления. Masso Pro даёт неограниченное сохранение планов, ИИ без напоминаний об обновлении, анализ прогресса, подробное восстановление мышц и собственные упражнения.\n\nМесячная и годовая подписки продлеваются автоматически, если их не отменить. Подходящим пользователям доступен бесплатный пробный период 7 дней, когда он предлагается. Apple показывает цену, срок и доступность пробного периода до покупки. Управление — в настройках Аккаунта Apple.\n\nДля ИИ нужны интернет и согласие на передачу данных. Питание и восстановление — оценки, а не медицинские измерения или рекомендации. Для стадий сна нужны совместимые данные Apple Здоровье.\n\nPrivacy: https://wuyumo.github.io/Maso/privacy-policy.html\nTerms: https://wuyumo.github.io/Maso/terms.html\nSupport: wuyumoawuyumo@gmail.com",
+        "locale": "ru",
+        "keywords": "фитнес,тренировка,план,силовые,вес,мышцы,восстановление,питание,сон",
+        "marketingUrl": null,
+        "promotionalText": null,
+        "supportUrl": "https://wuyumo.github.io/Maso/",
+        "whatsNew": "• Более надёжное соединение при проверке реферальных кодов.\n• Планы отдают приоритет подходящим закреплённым упражнениям.\n• После выполненного подхода для некоторых упражнений предлагается корректируемый начальный вес. Ручные значения и выполненные подходы сохраняются.\n• Улучшены кнопки подписки, переводы Watch и материалы упражнений."
+      },
+      "relationships": {
+        "appScreenshotSets": {
+          "links": {
+            "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/10b79ed2-2276-4b9e-93f7-2dc0a4b3ba28/relationships/appScreenshotSets",
+            "related": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/10b79ed2-2276-4b9e-93f7-2dc0a4b3ba28/appScreenshotSets"
+          }
+        },
+        "appPreviewSets": {
+          "links": {
+            "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/10b79ed2-2276-4b9e-93f7-2dc0a4b3ba28/relationships/appPreviewSets",
+            "related": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/10b79ed2-2276-4b9e-93f7-2dc0a4b3ba28/appPreviewSets"
+          }
+        },
+        "searchKeywords": {
+          "links": {
+            "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/10b79ed2-2276-4b9e-93f7-2dc0a4b3ba28/relationships/searchKeywords",
+            "related": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/10b79ed2-2276-4b9e-93f7-2dc0a4b3ba28/searchKeywords"
+          }
+        },
+        "placements": {
+          "links": {
+            "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/10b79ed2-2276-4b9e-93f7-2dc0a4b3ba28/relationships/placements",
+            "related": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/10b79ed2-2276-4b9e-93f7-2dc0a4b3ba28/placements"
+          }
+        }
+      },
+      "links": {
+        "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/10b79ed2-2276-4b9e-93f7-2dc0a4b3ba28"
+      }
+    },
+    {
+      "type": "appStoreVersionLocalizations",
+      "id": "f214ed19-ac05-42ca-943c-935f81c65d5e",
+      "attributes": {
+        "description": "聰明訓練，適合自己\n\n用 AI Coach 依照目標與器材建立訓練計畫，記錄每組重量與次數，透過 3D 肌群圖查看恢復估算。用照片或文字估算餐食營養，連結 Apple 健康查看睡眠資料，並用小工具掌握每日進度。\n\n基本訓練記錄與歷史免費。可儲存最多 5 個訓練計畫，關閉升級提示後可繼續免費 AI 請求。Masso Pro 提供不限數量的計畫儲存、免升級提示的 AI、進步分析、詳細肌群恢復與自訂動作。\n\n提供月付與年付自動續訂方案。符合資格且畫面有提供時，可享 7 天免費試用。購買前由 Apple 顯示價格、週期與資格；除非取消，訂閱會自動續訂，可在 Apple 帳號設定管理。\n\nAI 需要網路及你的資料分享同意。營養和恢復結果為估算，並非醫療測量或建議。睡眠階段需要相容的 Apple 健康資料。\n\nPrivacy: https://wuyumo.github.io/Maso/privacy-policy.html\nTerms: https://wuyumo.github.io/Maso/terms.html\nSupport: wuyumoawuyumo@gmail.com",
+        "locale": "zh-Hant",
+        "keywords": "健身,訓練,計畫,重訓,記錄,肌肉,恢復,飲食,睡眠",
+        "marketingUrl": null,
+        "promotionalText": null,
+        "supportUrl": "https://wuyumo.github.io/Maso/",
+        "whatsNew": "• 改善推薦碼檢查的連線穩定性。\n• 產生訓練計畫時優先選擇符合條件的釘選動作。\n• 完成一組後，部分動作會顯示可調整的起始重量估算，保留手動重量與已完成紀錄。\n• 改善訂閱頁按鈕、手錶翻譯與動作素材。"
+      },
+      "relationships": {
+        "appScreenshotSets": {
+          "links": {
+            "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/f214ed19-ac05-42ca-943c-935f81c65d5e/relationships/appScreenshotSets",
+            "related": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/f214ed19-ac05-42ca-943c-935f81c65d5e/appScreenshotSets"
+          }
+        },
+        "appPreviewSets": {
+          "links": {
+            "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/f214ed19-ac05-42ca-943c-935f81c65d5e/relationships/appPreviewSets",
+            "related": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/f214ed19-ac05-42ca-943c-935f81c65d5e/appPreviewSets"
+          }
+        },
+        "searchKeywords": {
+          "links": {
+            "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/f214ed19-ac05-42ca-943c-935f81c65d5e/relationships/searchKeywords",
+            "related": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/f214ed19-ac05-42ca-943c-935f81c65d5e/searchKeywords"
+          }
+        },
+        "placements": {
+          "links": {
+            "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/f214ed19-ac05-42ca-943c-935f81c65d5e/relationships/placements",
+            "related": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/f214ed19-ac05-42ca-943c-935f81c65d5e/placements"
+          }
+        }
+      },
+      "links": {
+        "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/f214ed19-ac05-42ca-943c-935f81c65d5e"
+      }
+    },
+    {
+      "type": "appStoreVersionLocalizations",
+      "id": "31862ada-7b85-45bb-9fac-ff63eb29ddfe",
+      "attributes": {
+        "description": "Entrena con inteligencia, a tu manera.\n\nCrea planes según tus objetivos y equipo con AI Coach. Registra peso y repeticiones, consulta la recuperación muscular estimada en 3D, estima nutrientes con fotos o descripciones y consulta el sueño de Salud de Apple y los widgets.\n\nEl registro y el historial de entrenamientos siguen siendo gratuitos. Guarda hasta cinco planes y continúa las solicitudes de IA gratuitas tras cerrar el aviso de mejora. Masso Pro ofrece planes guardados ilimitados, IA sin avisos de mejora, análisis del progreso, recuperación muscular detallada y ejercicios personalizados.\n\nSuscripciones mensuales y anuales con renovación automática salvo cancelación. Prueba gratuita de 7 días para usuarios que cumplan los requisitos cuando se ofrezca. Apple muestra precio, periodo y elegibilidad antes de comprar. Gestiona la suscripción en los ajustes de tu cuenta de Apple.\n\nLa IA requiere Internet y tu permiso para compartir datos. La nutrición y la recuperación son estimaciones, no mediciones ni consejos médicos. Las fases del sueño requieren datos compatibles de Salud de Apple.\n\nPrivacy: https://wuyumo.github.io/Maso/privacy-policy.html\nTerms: https://wuyumo.github.io/Maso/terms.html\nSupport: wuyumoawuyumo@gmail.com",
+        "locale": "es-ES",
+        "keywords": "fuerza,gimnasio,entrenamiento,pesas,ejercicio,músculos,recuperación,nutrición,sueño",
+        "marketingUrl": null,
+        "promotionalText": null,
+        "supportUrl": "https://wuyumo.github.io/Maso/",
+        "whatsNew": "• Conexión más fiable al comprobar códigos de recomendación.\n• Los planes priorizan los ejercicios fijados que cumplen tus condiciones.\n• Algunas actividades ofrecen estimaciones ajustables de peso inicial tras completar una serie. Se conservan los pesos manuales y los registros.\n• Mejoras en botones de suscripción, traducciones de Watch y contenido de ejercicios."
+      },
+      "relationships": {
+        "appScreenshotSets": {
+          "links": {
+            "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/31862ada-7b85-45bb-9fac-ff63eb29ddfe/relationships/appScreenshotSets",
+            "related": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/31862ada-7b85-45bb-9fac-ff63eb29ddfe/appScreenshotSets"
+          }
+        },
+        "appPreviewSets": {
+          "links": {
+            "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/31862ada-7b85-45bb-9fac-ff63eb29ddfe/relationships/appPreviewSets",
+            "related": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/31862ada-7b85-45bb-9fac-ff63eb29ddfe/appPreviewSets"
+          }
+        },
+        "searchKeywords": {
+          "links": {
+            "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/31862ada-7b85-45bb-9fac-ff63eb29ddfe/relationships/searchKeywords",
+            "related": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/31862ada-7b85-45bb-9fac-ff63eb29ddfe/searchKeywords"
+          }
+        },
+        "placements": {
+          "links": {
+            "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/31862ada-7b85-45bb-9fac-ff63eb29ddfe/relationships/placements",
+            "related": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/31862ada-7b85-45bb-9fac-ff63eb29ddfe/placements"
+          }
+        }
+      },
+      "links": {
+        "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/31862ada-7b85-45bb-9fac-ff63eb29ddfe"
+      }
+    },
+    {
+      "type": "appStoreVersionLocalizations",
+      "id": "d130f68b-9ebd-4a33-85b2-a32197a6f666",
+      "attributes": {
+        "description": "Entraînez-vous malin, à votre façon.\n\nCréez des programmes adaptés à vos objectifs et à votre matériel avec AI Coach. Notez charges et répétitions, consultez la récupération musculaire estimée en 3D, estimez les nutriments d’un repas par photo ou description et retrouvez votre sommeil Apple Santé dans l’app et vos widgets.\n\nLe suivi et l’historique des entraînements restent gratuits. Enregistrez jusqu’à cinq programmes et poursuivez vos demandes IA gratuites après avoir fermé l’offre de mise à niveau. Masso Pro ajoute des programmes enregistrés illimités, l’IA sans rappels de mise à niveau, l’analyse de progression, une récupération détaillée et des exercices personnalisés.\n\nAbonnements mensuel et annuel à renouvellement automatique, sauf résiliation. Essai gratuit de 7 jours pour les utilisateurs éligibles, lorsqu’il est proposé. Apple affiche le prix, la durée et l’éligibilité avant l’achat. Gérez l’abonnement dans les réglages du compte Apple.\n\nL’IA nécessite Internet et votre accord pour partager les données. Nutrition et récupération sont des estimations, pas des mesures ni des conseils médicaux. Les phases de sommeil nécessitent des données Apple Santé compatibles.\n\nPrivacy: https://wuyumo.github.io/Maso/privacy-policy.html\nTerms: https://wuyumo.github.io/Maso/terms.html\nSupport: wuyumoawuyumo@gmail.com",
+        "locale": "fr-FR",
+        "keywords": "musculation,fitness,programme,poids,exercice,récupération,nutrition,sommeil",
+        "marketingUrl": null,
+        "promotionalText": null,
+        "supportUrl": "https://wuyumo.github.io/Maso/",
+        "whatsNew": "• Connexion plus fiable pour vérifier les codes de parrainage.\n• Les plans privilégient vos exercices épinglés adaptés.\n• Certains exercices proposent une charge de départ estimée et ajustable après une série terminée. Les charges manuelles et les séances enregistrées sont conservées.\n• Améliorations des boutons d’abonnement, traductions Watch et médias des exercices."
+      },
+      "relationships": {
+        "appScreenshotSets": {
+          "links": {
+            "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/d130f68b-9ebd-4a33-85b2-a32197a6f666/relationships/appScreenshotSets",
+            "related": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/d130f68b-9ebd-4a33-85b2-a32197a6f666/appScreenshotSets"
+          }
+        },
+        "appPreviewSets": {
+          "links": {
+            "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/d130f68b-9ebd-4a33-85b2-a32197a6f666/relationships/appPreviewSets",
+            "related": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/d130f68b-9ebd-4a33-85b2-a32197a6f666/appPreviewSets"
+          }
+        },
+        "searchKeywords": {
+          "links": {
+            "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/d130f68b-9ebd-4a33-85b2-a32197a6f666/relationships/searchKeywords",
+            "related": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/d130f68b-9ebd-4a33-85b2-a32197a6f666/searchKeywords"
+          }
+        },
+        "placements": {
+          "links": {
+            "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/d130f68b-9ebd-4a33-85b2-a32197a6f666/relationships/placements",
+            "related": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/d130f68b-9ebd-4a33-85b2-a32197a6f666/placements"
+          }
+        }
+      },
+      "links": {
+        "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/d130f68b-9ebd-4a33-85b2-a32197a6f666"
+      }
+    },
+    {
+      "type": "appStoreVersionLocalizations",
+      "id": "e6eb9846-7c48-4ec8-8824-d39d77c136a6",
+      "attributes": {
+        "description": "تدرّب بذكاء، على طريقتك.\n\nأنشئ خططًا تناسب أهدافك ومعداتك مع AI Coach. سجّل الأوزان والتكرارات، وشاهد تقديرات تعافي العضلات ثلاثية الأبعاد، وقدّر المغذيات من صورة أو وصف للوجبة، وتابع بيانات النوم من تطبيق صحتي من Apple والأدوات على الشاشة الرئيسية.\n\nيبقى تسجيل التمارين وسجلها الأساسي مجانيين. يمكنك حفظ خمس خطط ومواصلة طلبات الذكاء الاصطناعي المجانية بعد إغلاق عرض الترقية. يتيح Masso Pro حفظ خطط بلا حدود، والذكاء الاصطناعي دون تذكيرات بالترقية، وتحليل التقدم، وتفاصيل تعافي العضلات، وتمارين مخصصة.\n\nاشتراكات شهرية وسنوية تتجدد تلقائيًا ما لم تُلغَ. تتوفر تجربة مجانية لمدة 7 أيام للمؤهلين عندما تُعرض. تعرض Apple السعر والمدة والأهلية قبل الشراء. يمكنك إدارة الاشتراك في إعدادات حساب Apple.\n\nيتطلب الذكاء الاصطناعي الإنترنت وموافقتك على مشاركة البيانات. التغذية والتعافي تقديرات وليست قياسات أو نصائح طبية. تتطلب مراحل النوم بيانات متوافقة من تطبيق صحتي من Apple.\n\nPrivacy: https://wuyumo.github.io/Maso/privacy-policy.html\nTerms: https://wuyumo.github.io/Maso/terms.html\nSupport: wuyumoawuyumo@gmail.com",
+        "locale": "ar-SA",
+        "keywords": "تمارين,لياقة,تدريب,عضلات,أوزان,تعافي,تغذية,نوم",
+        "marketingUrl": null,
+        "promotionalText": null,
+        "supportUrl": "https://wuyumo.github.io/Maso/",
+        "whatsNew": "• اتصال أكثر موثوقية عند التحقق من رموز الإحالة.\n• تعطي الخطط أولوية للتمارين المثبتة المناسبة لتفضيلاتك.\n• بعد إكمال مجموعة، تعرض بعض التمارين تقديرات قابلة للتعديل لوزن البداية. تُحفظ الأوزان اليدوية والسجلات المكتملة.\n• تحسين أزرار الاشتراك وترجمات Watch ووسائط التمارين."
+      },
+      "relationships": {
+        "appScreenshotSets": {
+          "links": {
+            "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/e6eb9846-7c48-4ec8-8824-d39d77c136a6/relationships/appScreenshotSets",
+            "related": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/e6eb9846-7c48-4ec8-8824-d39d77c136a6/appScreenshotSets"
+          }
+        },
+        "appPreviewSets": {
+          "links": {
+            "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/e6eb9846-7c48-4ec8-8824-d39d77c136a6/relationships/appPreviewSets",
+            "related": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/e6eb9846-7c48-4ec8-8824-d39d77c136a6/appPreviewSets"
+          }
+        },
+        "searchKeywords": {
+          "links": {
+            "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/e6eb9846-7c48-4ec8-8824-d39d77c136a6/relationships/searchKeywords",
+            "related": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/e6eb9846-7c48-4ec8-8824-d39d77c136a6/searchKeywords"
+          }
+        },
+        "placements": {
+          "links": {
+            "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/e6eb9846-7c48-4ec8-8824-d39d77c136a6/relationships/placements",
+            "related": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/e6eb9846-7c48-4ec8-8824-d39d77c136a6/placements"
+          }
+        }
+      },
+      "links": {
+        "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/e6eb9846-7c48-4ec8-8824-d39d77c136a6"
+      }
+    },
+    {
+      "type": "appStoreVersionLocalizations",
+      "id": "e5032f4d-fddd-4078-bc99-cd34a8893383",
+      "attributes": {
+        "description": "Trainiere smart. Auf deine Art.\n\nErstelle mit AI Coach Trainingspläne für deine Ziele und Geräte. Protokolliere Gewicht und Wiederholungen und sieh geschätzte Muskelerholung in 3D. Schätze Nährstoffe per Foto oder Beschreibung und nutze Schlafdaten aus Apple Health sowie Widgets.\n\nTraining und Verlauf bleiben kostenlos. Speichere bis zu fünf Pläne und setze kostenlose KI-Anfragen nach dem Schließen des Upgrade-Hinweises fort. Masso Pro bietet unbegrenzte gespeicherte Pläne, KI ohne Upgrade-Hinweise, Fortschrittsanalysen, detaillierte Muskelerholung und eigene Übungen.\n\nMonats- und Jahresabonnements verlängern sich automatisch, sofern sie nicht gekündigt werden. Berechtigte Nutzer erhalten eine kostenlose 7-Tage-Testphase, wenn angeboten. Apple zeigt vor dem Kauf Preis, Laufzeit und Berechtigung. Verwaltung in den Apple-Account-Einstellungen.\n\nKI erfordert Internet und deine Zustimmung zur Datenweitergabe. Nährwerte und Erholung sind Schätzungen, keine medizinischen Messungen oder Ratschläge. Schlafphasen benötigen kompatible Apple-Health-Daten.\n\nPrivacy: https://wuyumo.github.io/Maso/privacy-policy.html\nTerms: https://wuyumo.github.io/Maso/terms.html\nSupport: wuyumoawuyumo@gmail.com",
+        "locale": "de-DE",
+        "keywords": "krafttraining,fitness,trainingsplan,gewichte,muskeln,erholung,ernährung,schlaf",
+        "marketingUrl": null,
+        "promotionalText": null,
+        "supportUrl": "https://wuyumo.github.io/Maso/",
+        "whatsNew": "• Zuverlässigere Verbindung beim Prüfen von Empfehlungscodes.\n• Trainingspläne bevorzugen passende angeheftete Übungen.\n• Nach einem abgeschlossenen Satz erhalten ausgewählte Übungen anpassbare Startgewicht-Schätzungen. Manuelle Gewichte und absolvierte Sätze bleiben erhalten.\n• Verbesserte Abo-Schaltflächen, Watch-Übersetzungen und Übungsmedien."
+      },
+      "relationships": {
+        "appScreenshotSets": {
+          "links": {
+            "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/e5032f4d-fddd-4078-bc99-cd34a8893383/relationships/appScreenshotSets",
+            "related": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/e5032f4d-fddd-4078-bc99-cd34a8893383/appScreenshotSets"
+          }
+        },
+        "appPreviewSets": {
+          "links": {
+            "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/e5032f4d-fddd-4078-bc99-cd34a8893383/relationships/appPreviewSets",
+            "related": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/e5032f4d-fddd-4078-bc99-cd34a8893383/appPreviewSets"
+          }
+        },
+        "searchKeywords": {
+          "links": {
+            "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/e5032f4d-fddd-4078-bc99-cd34a8893383/relationships/searchKeywords",
+            "related": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/e5032f4d-fddd-4078-bc99-cd34a8893383/searchKeywords"
+          }
+        },
+        "placements": {
+          "links": {
+            "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/e5032f4d-fddd-4078-bc99-cd34a8893383/relationships/placements",
+            "related": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/e5032f4d-fddd-4078-bc99-cd34a8893383/placements"
+          }
+        }
+      },
+      "links": {
+        "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersionLocalizations/e5032f4d-fddd-4078-bc99-cd34a8893383"
+      }
+    }
+  ],
+  "links": {
+    "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersions/34f6ecc8-6c94-4407-8021-2433d7cedf1c/appStoreVersionLocalizations?limit=200"
+  },
+  "meta": {
+    "paging": {
+      "total": 12,
+      "limit": 200
+    }
+  }
+}

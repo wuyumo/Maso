@@ -1,0 +1,23 @@
+{
+  "checkedAt": "2026-11-13T12:14:34.181142+08:00",
+  "newDuoSources": 0,
+  "acceptedNativeSourceCount": 48,
+  "missingDuoLocales": 12,
+  "duoBackupUDID": "7CAEDB18-1E66-490C-AA49-56F5EC72DF86",
+  "duoFailure": "Data Migration Failed; NSPOSIXErrorDomain64 Host is down; test runner not launched",
+  "duoTestMethodsExecuted": 0,
+  "backupShutdownAndOwnedPhoneRestored": true,
+  "resetEraseRepairPerformed": false,
+  "catalog26": {
+    "passed": 26,
+    "failed": 0,
+    "skipped": 0
+  },
+  "candidate12Verified": true,
+  "published43LocaleProvenanceStillMatches": true,
+  "selectedUploaded51FingerprintsMatch": 9,
+  "metadataApplied": false,
+  "privacyOrWebsiteChanged": false,
+  "releaseBuildUploadReviewDeploy": false,
+  "newModelOrPurchaseCalls": 0
+}

@@ -1,0 +1,56 @@
+[
+  {
+    "path": "Maso/Models/BodyActivityHealth.swift",
+    "SHA256": "d19cda83cd3992ca6ea3e33ca5818f2ba3b0f39402422399285b553d0e6f1d48",
+    "uploaded51SHA256": "d19cda83cd3992ca6ea3e33ca5818f2ba3b0f39402422399285b553d0e6f1d48",
+    "unchangedFromUploaded51": true
+  },
+  {
+    "path": "Maso/Data/HealthKitService.swift",
+    "SHA256": "fc735ffd504f3ecb80c6fbee6b2dc104dfc133e14ea66687c52068246995a2f8",
+    "uploaded51SHA256": "fc735ffd504f3ecb80c6fbee6b2dc104dfc133e14ea66687c52068246995a2f8",
+    "unchangedFromUploaded51": true
+  },
+  {
+    "path": "Maso/Views/Screens/PlanPlayerScreen.swift",
+    "SHA256": "46ed7c7451bac7eb11014e72fcc573b1d2589fcf8d8b1a2ee12caa944f810748",
+    "uploaded51SHA256": "46ed7c7451bac7eb11014e72fcc573b1d2589fcf8d8b1a2ee12caa944f810748",
+    "unchangedFromUploaded51": true
+  },
+  {
+    "path": "Maso/Resources/exercises.json",
+    "SHA256": "30dd80731fefd01661d7bb41ba5020505d7c2bc54e033349120f00eb01aedbbc",
+    "uploaded51SHA256": "30dd80731fefd01661d7bb41ba5020505d7c2bc54e033349120f00eb01aedbbc",
+    "unchangedFromUploaded51": true
+  },
+  {
+    "path": "Maso/Resources/exercise-selection.json",
+    "SHA256": "1ccdfd7d2517d09a5b0f6d446dfa4b9b6877db2e689cde98231ac20133ac4033",
+    "uploaded51SHA256": "1ccdfd7d2517d09a5b0f6d446dfa4b9b6877db2e689cde98231ac20133ac4033",
+    "unchangedFromUploaded51": true
+  },
+  {
+    "path": "Maso/Data/DeviceAIQuota.swift",
+    "SHA256": "252106ad25ec6805e276c201c166cc2417b21febe5f5436fd056a5c42ca17a4f",
+    "uploaded51SHA256": "252106ad25ec6805e276c201c166cc2417b21febe5f5436fd056a5c42ca17a4f",
+    "unchangedFromUploaded51": true
+  },
+  {
+    "path": "Maso/Data/WorkoutSourceReader.swift",
+    "SHA256": "971a930cb2548e6ab1fe988a841ea3ff6338b12b0e82fab5db5deab6b1c6c371",
+    "uploaded51SHA256": "971a930cb2548e6ab1fe988a841ea3ff6338b12b0e82fab5db5deab6b1c6c371",
+    "unchangedFromUploaded51": true
+  },
+  {
+    "path": "Maso/PrivacyInfo.xcprivacy",
+    "SHA256": "5413c2b57f15cd9d1c9bf48ad1b99bf61702535335c3c65c0668710292989b36",
+    "uploaded51SHA256": "5413c2b57f15cd9d1c9bf48ad1b99bf61702535335c3c65c0668710292989b36",
+    "unchangedFromUploaded51": true
+  },
+  {
+    "path": "MasoWatch/PrivacyInfo.xcprivacy",
+    "SHA256": "f0cc224bd1438a8ca35c0082418c1a0518e22f21f6a808d2c3f957c5ac794452",
+    "uploaded51SHA256": "f0cc224bd1438a8ca35c0082418c1a0518e22f21f6a808d2c3f957c5ac794452",
+    "unchangedFromUploaded51": true
+  }
+]
