@@ -394,6 +394,27 @@ final class PaywallUITests: XCTestCase {
         }
     }
 
+
+    func testEnlargedBrandKeeps17ProInitialSubscribeVisibleWithoutScrolling() throws {
+        for language in ["en","zh-Hans","de","ar"] {
+            let app = launch("upgrade",language:language,light:language == "zh-Hans")
+            let yearly = app.buttons["paywall.plan.yearly"]
+            XCTAssertTrue(yearly.waitForExistence(timeout:15))
+            let purchase = app.buttons["paywall.purchase"]
+            for selection in ["yearly","monthly","yearly"] {
+                let card = app.buttons["paywall.plan." + selection]
+                XCTAssertTrue(card.isHittable)
+                card.tap()
+                XCTAssertTrue(purchase.isHittable,"CTA must be hittable without scrolling")
+                XCTAssertGreaterThanOrEqual(purchase.frame.minY, app.navigationBars.firstMatch.frame.maxY)
+                XCTAssertLessThanOrEqual(purchase.frame.maxY,app.frame.maxY - 34,"Entire CTA above bottom safe area")
+                capture(app,"51-" + language + "-initial-" + selection)
+                print("PAYWALL51_CTA " + language + " " + selection + " " + String(describing: purchase.frame))
+            }
+            app.terminate()
+        }
+    }
+
     private func launch(_ scene: String, language: String = "en", largeType: Bool = false, narrow: Bool = false, light: Bool = false, increasedContrast: Bool = false) -> XCUIApplication {
         let app = XCUIApplication(bundleIdentifier: "com.yumowu.maso")
         app.terminate()
@@ -497,9 +518,21 @@ final class ProBannerUITests: XCTestCase {
         app.terminate()
     }
 
-    private func launch(_ scene: String, language: String = "en") -> XCUIApplication {
+    func testBannerMarkAtActualSystemContrastInLightAndDark() throws {
+        for light in [false,true] {
+            let app = launch("banner",language:"en",light:light)
+            let banner = app.buttons["pro.banner"]
+            try reveal(banner,app:app)
+            XCTAssertTrue(banner.isHittable)
+            capture(app,light ? "51-system-contrast-light":"51-system-contrast-dark")
+            print("BANNER51_RECT " + String(describing:banner.frame))
+            app.terminate()
+        }
+    }
+
+    private func launch(_ scene: String, language: String = "en", light: Bool = false) -> XCUIApplication {
         let app = XCUIApplication(bundleIdentifier: "com.yumowu.maso")
-        app.launchEnvironment = ["MASO_PAYWALL_UI_TEST_SCENE": scene]
+        app.launchEnvironment = ["MASO_PAYWALL_UI_TEST_SCENE": scene, "MASO_UI_LIGHT": light ? "1":"0"]
         app.launchArguments = ["-maso.selectedLanguage", language, "-AppleLanguages", "(\(language))", "-AppleLocale", language]
         app.launch()
         return app

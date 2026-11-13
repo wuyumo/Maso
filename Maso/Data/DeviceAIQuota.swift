@@ -223,7 +223,7 @@ struct DeviceAIRulesText: View {
             Text("AI allowances are stored only on this device installation. Changing devices or reinstalling may reset them; they are not shared across devices.").accessibilityIdentifier("ai.policy.device-scope")
             Text("Each supported AI task has one successful free experience on this installation. Free also includes 2 shared text tasks per calendar month (UTC). Repeat images and ongoing reviews need Pro.")
             Text("A task includes 2 same-goal adjustments within 24 hours. Failed requests, clarification, local tools and reopening saved results do not use the allowance.")
-            Text("Existing purchased and lifetime rights are kept. No experimental 30-task or 10-image limit is applied to existing paid users.")
+            Text("Existing purchases keep their rights. AI needs internet access and your data-sharing permission.")
             Text("Automatic recommendations have a separate budget of one successful result per day; they do not spend your active AI allowance.")
         }.fixedSize(horizontal: false, vertical: true)
     }

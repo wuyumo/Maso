@@ -9873,8 +9873,8 @@
     "id": "bench_press_machine",
     "name": {
       "en": "Chest Press (Machine)",
-      "zh-Hans": "卧推（器械）",
-      "zh-Hant": "臥推（器械）",
+      "zh-Hans": "推胸（器械）",
+      "zh-Hant": "推胸（器械）",
       "ja": "チェストプレス (マシン · 機械)",
       "ko": "가슴 압박 (머신)",
       "es": "Chest Press (Máquina)",
@@ -10002,8 +10002,8 @@
       "equipment": "Machine",
       "localizedBase": {
         "en": "Chest Press",
-        "zh-Hans": "胸推",
-        "zh-Hant": "胸推",
+        "zh-Hans": "推胸",
+        "zh-Hant": "推胸",
         "ja": "チェストプレス",
         "ko": "가슴 압박",
         "es": "Chest Press",

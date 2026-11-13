@@ -181,13 +181,35 @@ final class CoachLiveDiagnosticUITests: XCTestCase {
         }, object: nil)
         XCTAssertEqual(XCTWaiter.wait(for: [finished], timeout: 150), .completed)
         XCTAssertEqual(status.label, "success: 1", app.debugDescription)
-        let start = app.buttons["workout.card.start"].firstMatch
+        let start = app.buttons.matching(NSPredicate(format:"label == %@", "\u{5f00}\u{59cb}\u{8bad}\u{7ec3}")).firstMatch
         for _ in 0..<6 { if start.isHittable { break }; app.swipeUp() }
         XCTAssertTrue(start.isHittable, app.debugDescription)
         let attachment = XCTAttachment(screenshot: app.screenshot())
         attachment.name = "zh-single-workout-live-generation"; attachment.lifetime = .keepAlways; add(attachment)
         start.tap()
         XCTAssertTrue(app.buttons["workout.end"].waitForExistence(timeout: 10))
+        app.terminate()
+    }
+
+
+    func testResumeExistingLiveResultWithoutAnotherModelRequest() throws {
+        guard ProcessInfo.processInfo.environment["MASO_LIVE_AI_DIAGNOSTIC"] == "1" else { throw XCTSkip("Explicit opt-in required") }
+        continueAfterFailure = false
+        let app = XCUIApplication(bundleIdentifier:"com.yumowu.maso")
+        guard app.state == .runningForeground || app.state == .runningBackground else {
+            throw XCTSkip("Previous live session not running; do not launch or generate another result")
+        }
+        app.activate()
+        let status = app.staticTexts["coach.test.status"]
+        XCTAssertEqual(status.label,"success: 1")
+        XCTAssertEqual(app.scrollViews["coach.planCarousel"].value as? String,"1")
+        let card = XCTAttachment(screenshot:app.screenshot()); card.name="51-existing-live-generated-result-no-new-request";card.lifetime = .keepAlways;add(card)
+        let start = app.buttons.matching(NSPredicate(format:"label == %@","\u{5f00}\u{59cb}\u{8bad}\u{7ec3}")).firstMatch
+        for _ in 0..<5 { if start.isHittable { break }; app.swipeUp() }
+        XCTAssertTrue(start.isHittable)
+        start.tap()
+        XCTAssertTrue(app.buttons["workout.end"].waitForExistence(timeout:10))
+        let player = XCTAttachment(screenshot:app.screenshot());player.name="51-existing-live-result-native-training-started";player.lifetime = .keepAlways;add(player)
         app.terminate()
     }
 

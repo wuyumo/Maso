@@ -26,6 +26,7 @@ struct CoachChatUITestHost: View {
         .environment(\.locale, LanguageManager.currentLocale)
         .environment(\.layoutDirection, LanguageManager.currentLanguageCode == "ar" ? .rightToLeft : .leftToRight)
         .environment(\.dynamicTypeSize, ProcessInfo.processInfo.environment["MASO_COACH_LARGE_TYPE"] == "1" ? .accessibility3 : .large)
+        .preferredColorScheme(ProcessInfo.processInfo.environment["MASO_UI_LIGHT"] == "1" ? .light : .dark)
         .task {
             if let mode = ProcessInfo.processInfo.environment["MASO_SOURCE_EXTRACT_UI_TEST"] {
                 let rows = Self.fixtureRows()
@@ -49,7 +50,9 @@ struct CoachChatUITestHost: View {
                 PlanStep(id: "row", exerciseId: "barbell_row", sets: 4, reps: 8, weight: 50, restBetweenSets: 90),
             ],
             createdAt: now, updatedAt: now, preservesExerciseVariants: true)
-        let store = DataStore(exercises: library, plans: [plan], sets: [], settings: UserSettings())
+        var settings = UserSettings()
+        settings.debugProUnlock = ProcessInfo.processInfo.environment["MASO_COACH_PRO_TEST"] == "1"
+        let store = DataStore(exercises: library, plans: [plan], sets: [], settings: settings)
         let url = FileManager.default.temporaryDirectory.appendingPathComponent("maso-coach-chat-ui.json")
         store.equipmentSwapSaveOverride = { [weak store] in
             guard let store else { return false }

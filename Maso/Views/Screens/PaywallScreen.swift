@@ -32,7 +32,7 @@ struct PaywallScreen: View {
                                center: .init(x: 0.5, y: 0.1), startRadius: 20, endRadius: 340)
                     .ignoresSafeArea().allowsHitTesting(false)
                 ScrollView {
-                    VStack(spacing: 14) {
+                    VStack(spacing: 12) {
                         marketingContent
                         HStack(spacing: 8) {
                             Text(String(format: NSLocalizedString("Free: %d plans and %d custom exercises", comment: ""),
@@ -50,7 +50,7 @@ struct PaywallScreen: View {
                         footer
                     }
                     .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
-                    .padding(.top, 12).padding(.bottom, 24)
+                    .padding(.top, 10).padding(.bottom, 24)
                 }
             }
             .toolbar {
@@ -101,9 +101,10 @@ struct PaywallScreen: View {
     }
 
     private var marketingContent: some View {
-        VStack(alignment: .leading, spacing: 18) {
-            VStack(spacing: 8) {
-                MasoMarkIcon(color: MasoColor.accent).frame(width: 48, height: 48)
+        VStack(alignment: .leading, spacing: 14) {
+            VStack(spacing: 6) {
+                MasoMarkIcon(color: MasoColor.accent).frame(width: 64, height: 64)
+                    .accessibilityIdentifier("paywall.brand-logo")
                     .environment(\.layoutDirection, .leftToRight)
                 Text("Masso Pro").font(.largeTitle.weight(.heavy))
             }.frame(maxWidth: .infinity)

@@ -45,7 +45,7 @@ struct ProBanner: View {
                     LinearGradient(colors: [MasoColor.accent.opacity(0.06), .clear],
                                    startPoint: .topLeading, endPoint: .bottomTrailing)
                     MasoMarkIcon(color: MasoColor.accent)
-                        .frame(width: 160, height: 160).opacity(0.07)
+                        .frame(width: 160, height: 160).opacity(0.28)
                         .environment(\.layoutDirection, .leftToRight)
                         .offset(x: layoutDirection == .rightToLeft ? -42 : 42, y: 12)
                         .accessibilityHidden(true)

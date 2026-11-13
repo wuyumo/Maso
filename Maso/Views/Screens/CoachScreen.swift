@@ -179,6 +179,7 @@ struct CoachScreen: View {
                         .font(.system(size: 16, weight: .regular))
                 }
                 .accessibilityLabel("Training Preferences")
+                .accessibilityIdentifier("coach.training-preferences")
             }
         }
         .onAppear {
@@ -913,12 +914,6 @@ struct CoachScreen: View {
 
     private var bottomBar: some View {
         VStack(spacing: 8) {
-            if !editingMessage {
-                NavigationLink { DeviceAIUsageView() } label: {
-                    Label("AI access and saved results", systemImage:"info.circle")
-                        .font(.footnote).fixedSize(horizontal:false,vertical:true).frame(minHeight:44)
-                }.accessibilityIdentifier("coach.ai-access")
-            }
             if let notice = data.aiAccess.notice { Text(notice).font(.footnote).foregroundStyle(.secondary) }
             if shouldShowUseCases { useCaseGuide }
             composerRow
@@ -995,9 +990,6 @@ struct CoachScreen: View {
                         .fixedSize(horizontal:false,vertical:true)
                         .accessibilityHint("Text only. New message. Draft kept.")
                     Spacer(minLength:0)
-                    NavigationLink { DeviceAIUsageView() } label: {
-                        Label("AI access and saved results",systemImage:"info.circle").labelStyle(.iconOnly).frame(width:44,height:44)
-                    }.accessibilityIdentifier("coach.ai-access")
                     Button { finishMessageEditing(restore:true) } label: {
                         Label("Cancel edit",systemImage:"xmark").labelStyle(.iconOnly).frame(width:44,height:44)
                     }.accessibilityIdentifier("coach.edit.cancel")

@@ -206,9 +206,9 @@ extension WatchBridge {
     private static func marketingName(_ id: String, language: String) -> String? {
         guard id == "bench_press_machine" else { return nil }
         if language.hasPrefix("zh-Hant") || language.hasPrefix("zh-TW") || language.hasPrefix("zh-HK") {
-            return "臥推（器械）"
+            return "推胸（器械）"
         }
-        if language.hasPrefix("zh") { return "卧推（器械）" }
+        if language.hasPrefix("zh") { return "推胸（器械）" }
         if language.hasPrefix("ja") { return "チェストプレス（マシン）" }
         return "Chest Press (Machine)"
     }

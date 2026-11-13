@@ -264,6 +264,7 @@ struct ClassicsScreen: View {
 struct TrainingPreferencesSheet: View {
     @Environment(DataStore.self) private var data
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.layoutDirection) private var layoutDirection
     /// 关层 + 重生成的回调 (= aiPage 的 startGenerateRoutines / Coach 的 send).
     var onConfirm: () -> Void
     @State private var draft = TrainingPreferenceDraft(settings: UserSettings())
@@ -276,6 +277,20 @@ struct TrainingPreferencesSheet: View {
         AppNavigationStack {
             Form {
                 TrainingSettingsSection(settings: $draft)
+                Section {} footer: {
+                    NavigationLink { DeviceAIUsageView() } label: {
+                        Text("AI access and saved results")
+                            .font(.footnote).foregroundStyle(Color.primary)
+                            .multilineTextAlignment(layoutDirection == .rightToLeft ? .trailing : .leading)
+                            .fixedSize(horizontal: false, vertical: true)
+                            // Physical left alignment, without changing Arabic text direction.
+                            .frame(maxWidth: .infinity, minHeight: 44,
+                                   alignment: layoutDirection == .rightToLeft ? .trailing : .leading)
+                            .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain).tint(.primary).textCase(nil)
+                    .accessibilityIdentifier("training-preferences.ai-access")
+                }
             }
             .navigationTitle("Training Preferences")
             .navigationBarTitleDisplayMode(.inline)

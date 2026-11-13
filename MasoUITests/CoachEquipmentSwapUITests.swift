@@ -121,8 +121,7 @@ final class CoachEquipmentSwapUITests: XCTestCase {
             edit.tap(); XCTAssertEqual(input.value as? String,"Fixture original message \u{2014} \u{539f}\u{6587} 3 \u{00d7} 10")
             let cancel = app.buttons["coach.edit.cancel"]
             XCTAssertTrue(cancel.isHittable); XCTAssertGreaterThanOrEqual(cancel.frame.width,44); XCTAssertGreaterThanOrEqual(cancel.frame.height,44)
-            let info = app.buttons["coach.ai-access"]
-            XCTAssertTrue(info.isHittable); XCTAssertGreaterThanOrEqual(info.frame.width,44); XCTAssertGreaterThanOrEqual(info.frame.height,44)
+            XCTAssertFalse(app.buttons["coach.ai-access"].exists)
             XCTAssertGreaterThanOrEqual(input.frame.minY,app.navigationBars.firstMatch.frame.maxY)
             XCTAssertLessThanOrEqual(input.frame.maxY,app.keyboards.firstMatch.frame.minY + 2)
             snapshot(app,language + "-large-edit49")
@@ -133,6 +132,74 @@ final class CoachEquipmentSwapUITests: XCTestCase {
             XCTAssertFalse(app.keyboards.firstMatch.exists)
             try app.performAccessibilityAudit(for:.sufficientElementDescription)
             snapshot(app,language + "-large-cancel49")
+            app.terminate()
+        }
+    }
+
+
+    func testAIRulesEntryInTrainingPreferencesNormalFreeAndPro() throws {
+        try verifyAIRulesEntryInPreferences(large: false)
+    }
+
+    // Run with simctl content_size accessibility-extra-extra-large, not only a presenter override.
+    func testAIRulesEntryInTrainingPreferencesAtSystemLargeSize() throws {
+        try verifyAIRulesEntryInPreferences(large: true)
+    }
+
+    private func verifyAIRulesEntryInPreferences(large: Bool) throws {
+        for (language, pro) in [("en", false), ("en", true), ("zh-Hans", false), ("ar", false)] {
+            let app = XCUIApplication()
+            app.launchEnvironment = ["MASO_COACH_CHAT_UI_TEST":"1", "MASO_COACH_MESSAGE_MENU_TEST":"1",
+                "MASO_COACH_PRO_TEST":pro ? "1":"0", "MASO_COACH_LARGE_TYPE":large ? "1":"0",
+                "MASO_UI_LIGHT":language == "zh-Hans" ? "1":"0"]
+            app.launchArguments = ["-maso.selectedLanguage", language, "-AppleLanguages", "(\(language))", "-AppleLocale", language]
+            app.launch()
+            let preferences = app.buttons["coach.training-preferences"]
+            XCTAssertTrue(preferences.waitForExistence(timeout:15))
+            XCTAssertFalse(app.buttons["coach.ai-access"].exists)
+            let name = "51-" + language + (pro ? "-pro":"-free") + (large ? "-system-large":"-normal")
+            snapshot(app, name + "-coach-no-old-link")
+            preferences.tap()
+            let entry = app.buttons["training-preferences.ai-access"]
+            for _ in 0..<12 {
+                if entry.exists && entry.isHittable { break }
+                app.swipeUp()
+            }
+            XCTAssertTrue(entry.exists && entry.isHittable)
+            XCTAssertGreaterThanOrEqual(entry.frame.height + 0.001,44)
+            XCTAssertGreaterThan(entry.label.count,5)
+            XCTAssertLessThan(entry.frame.minX,app.frame.midX)
+            snapshot(app,name + "-preferences-bottom")
+            entry.tap()
+            XCTAssertTrue(app.staticTexts["ai.policy.device-scope"].waitForExistence(timeout:8))
+            snapshot(app,name + "-actual-details")
+            let detailBar = app.navigationBars.element(boundBy: app.navigationBars.count - 1)
+            detailBar.buttons.firstMatch.tap()
+            XCTAssertTrue(entry.waitForExistence(timeout:5))
+            snapshot(app,name + "-back-to-preferences")
+            let preferenceBar = app.navigationBars.element(boundBy: app.navigationBars.count - 1)
+            preferenceBar.buttons.firstMatch.tap()
+            XCTAssertTrue(preferences.waitForExistence(timeout:5))
+            XCTAssertEqual(userMessages(app).count,1)
+            XCTAssertFalse(app.buttons["coach.ai-access"].exists)
+            snapshot(app,name + "-back-to-original-coach")
+            app.terminate()
+        }
+    }
+
+
+    func testMachineChestPressChineseEnglishAndTraditionalNativeSource() throws {
+        for (language,name) in [("en","Chest Press"),("zh-Hans","\u{63a8}\u{80f8}"),("zh-Hant","\u{63a8}\u{80f8}")] {
+            let app = XCUIApplication()
+            app.launchEnvironment = ["MASO_EXERCISE_UI_TEST_SCENE":"stable-player",
+                "MASO_MARKETING_PLAYER":"1", "MASO_MARKETING_EXERCISE_ID":"bench_press_machine",
+                "MASO_WORKOUT_HEART_FIXTURE":"1", "MASO_WORKOUT_HEART_CARD":"1",
+                "MASO_TEST_HEART_LIMIT":"180", "MASO_TEST_HEART_BPM":"185"]
+            app.launchArguments = ["-maso.selectedLanguage",language,"-AppleLanguages","(\(language))","-AppleLocale",language]
+            app.launch()
+            XCTAssertTrue(app.staticTexts[name].waitForExistence(timeout:20))
+            XCTAssertTrue(app.staticTexts["185"].waitForExistence(timeout:5))
+            snapshot(app,"51-machine-press-185-" + language + "-synthetic-native")
             app.terminate()
         }
     }
