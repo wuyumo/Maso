@@ -15,7 +15,8 @@ lang: en
 app_store_url: "https://apps.apple.com/us/app/masso-ai-workout-planner/id6776689750"
 support_email: "wuyumoawuyumo@gmail.com"
 social_image: /ph/thumbnail.png
-listing_checked: "9 November 2026"
+listing_checked: "13 November 2026"
+public_version: "3.0.1"
 
 defaults:
   - scope:

@@ -14,7 +14,7 @@ schema_app: true
   <h1 id="hero-heading">Masso — AI Workout Planner</h1>
   <p class="lede">Build a workout around your goals, equipment, and recent training. Log every set. Look back at progress, a training-based recovery estimate, meals, and sleep in one app.</p>
   <p><a class="cta" href="{{ site.app_store_url }}">Download on the App Store</a></p>
-  <p class="checked">Free to download. Optional Masso Pro is sold by Apple, not on this website. The United States listing checked on {{ site.listing_checked }} showed Masso Pro Monthly at US$4.99 and Masso Pro Yearly at US$29.99. Apple shows your price before you pay.</p>
+  <p class="checked">Free to download. Optional Masso Pro is sold by Apple, not on this website. On {{ site.listing_checked }} the public version was {{ site.public_version }}. The United States listing showed Masso Pro Monthly at US$4.99 and Yearly at US$29.99. Apple shows your price before you pay. Free AI requests after you close an upgrade reminder are not the same as every AI feature being free.</p>
   <ul class="page-nav">
     <li><a href="#features">Features</a></li>
     <li><a href="#screens">Screens</a></li>
@@ -78,9 +78,9 @@ schema_app: true
   <ul class="plain-list">
     <li>Basic workout logging and history stay free.</li>
     <li>You can save up to five workout plans.</li>
-    <li>Free AI requests continue after you close the upgrade reminder.</li>
-    <li>Masso Pro Monthly was listed at US$4.99.</li>
-    <li>Masso Pro Yearly was listed at US$29.99.</li>
+    <li>Free AI requests continue after you close the upgrade reminder. That sentence does not mean every AI feature is free or unlimited.</li>
+    <li>Masso Pro Monthly was listed at US$4.99 in the United States, HK$38 in Hong Kong, £4.99 in the United Kingdom, and S$6.98 in Singapore.</li>
+    <li>Masso Pro Yearly was listed at US$29.99, HK$228, £29.99, and S$39.98 on those same pages.</li>
     <li>Masso Pro adds unlimited saved plans, AI without upgrade reminders, lift-progress analysis, detailed muscle recovery, and custom exercises.</li>
     <li>Eligible subscribers can receive a 7-day free trial when Apple offers one.</li>
     <li>Subscriptions renew until you cancel them. No new lifetime plan is offered.</li>
@@ -91,13 +91,13 @@ schema_app: true
 
 <section id="data" aria-labelledby="data-heading">
   <h2 id="data-heading">Accounts, ads, and analytics</h2>
-  <p>No Masso account is required. The privacy policy says the app does not use advertising SDKs and does not sell personal data. Optional usage analytics is a separate choice, described in that policy, and the old “no analytics” line on this website is withdrawn.</p>
+  <p>No Masso account is required. The privacy policy says the app does not use advertising SDKs and does not sell personal data. The old “no analytics” line is withdrawn. The policy’s “off until you turn sharing on” sentence and the default in this repository’s older app source disagree. The public {{ site.public_version }} build was not inspected here, so the default stays unverified. Details are in the <a href="#analytics">analytics answer</a>.</p>
   <p><a href="{{ '/privacy-policy.html' | relative_url }}">Read the privacy policy</a> · <a href="{{ '/terms.html' | relative_url }}">Read the terms</a></p>
 </section>
 
 <section id="compatibility" aria-labelledby="compatibility-heading">
   <h2 id="compatibility-heading">Device, language, and age rating</h2>
-  <p>The listing checked on {{ site.listing_checked }} requires iOS 18.0 or later and watchOS 11.0 or later, and it lists iPhone, iPad, and Apple Watch. It says the app is designed for iPad and is not verified for macOS. Languages on that listing: English, Arabic, French, German, Italian, Japanese, Korean, Portuguese, Russian, Simplified Chinese, Spanish, and Traditional Chinese. Age rating: 4+.</p>
+  <p>The United States, Hong Kong, Singapore, and United Kingdom listings checked on {{ site.listing_checked }} showed version {{ site.public_version }}. They require iOS 18.0 or later and watchOS 11.0 or later, and they list iPhone, iPad, and Apple Watch. They say the app is designed for iPad and is not verified for macOS. Languages on those listings: English, Arabic, French, German, Italian, Japanese, Korean, Portuguese, Russian, Simplified Chinese, Spanish, and Traditional Chinese. Age rating: 4+. The mainland China product URL returned 404 that day.</p>
 </section>
 
 {% include faq.html %}
