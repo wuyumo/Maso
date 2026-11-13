@@ -38,11 +38,18 @@ export const CANDIDATE_PLAN_CSS = `
   transform-origin: top left !important;
 }
 #candidate-poster[data-candidate-plan-device="low-angle-split"] [data-plan-variant="A"] [data-chat-plan-grid="1"] {
+  --candidate-plan-gap: calc(22px * var(--candidate-plan-unit));
+  gap: var(--candidate-plan-gap) !important;
+  padding: 0;
+  min-width: 0;
   overflow: hidden;
 }
 #candidate-poster[data-candidate-plan-device="low-angle-split"] [data-plan-variant="A"] [data-chat-plan] {
-  flex: 0 0 78% !important;
-  max-width: calc(860px * var(--candidate-plan-unit) / var(--candidate-thread-fit, 1));
+  /* One full card + one gap + half the next card fill the track content width. */
+  flex: 0 0 calc((100% - var(--candidate-plan-gap)) / 1.5) !important;
+  width: calc((100% - var(--candidate-plan-gap)) / 1.5) !important;
+  min-width: 0 !important;
+  max-width: none !important;
   box-sizing: border-box;
 }
 #candidate-poster[data-candidate-plan-device="low-angle-split"] [data-plan-variant="A"] [data-chat-footnotes="1"] {
