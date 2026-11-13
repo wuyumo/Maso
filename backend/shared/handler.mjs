@@ -1,4 +1,4 @@
-// Maso AI / Pro 后端 — **唯一逻辑源**, 两个入口共用:
+// Masso AI / Pro 后端 — **唯一逻辑源**, 两个入口共用:
 //   - Cloudflare Worker : cloudflare-worker/worker.js  (wrangler deploy)
 //   - Vercel Edge       : api/index.js  → https://maso-two.vercel.app  (项目 maso, Root Directory = backend)
 //
@@ -26,6 +26,8 @@
 //   美区 app 内可放外链付费, 0 抽成). Polar 发 license key 当无账号的可携带凭证,
 //   app 拿 key 走这个 Worker 校验 (org token 不进 binary).
 
+import { handleDemoRequest } from "../demo/service.mjs";
+
 const AI_PATH = "/v1/chat/completions";
 // AI 后端 = Anthropic Claude (2026-07 从 DeepSeek 切换).
 // ⚠️ 路由和出入参形状**故意保持 OpenAI/DeepSeek 风格不变** — iOS 端 (AIWorkoutService) 发
@@ -43,6 +45,7 @@ const ANTHROPIC_VERSION = "2023-06-01";
 const CLAUDE_MODEL = "claude-haiku-5-5";
 const CLAUDE_FALLBACK_MODEL = "claude-sonnet-5";
 const CLIENT_TOKEN_HEADER = "X-Maso-Client-Token";
+const FEEDBACK_WORKER_URL = "https://maso-ai.wuyumo.workers.dev/feedback";
 
 const POLAR_VALIDATE = "https://api.polar.sh/v1/license-keys/validate";
 const POLAR_CHECKOUT = "https://api.polar.sh/v1/checkouts/";
@@ -66,6 +69,8 @@ export async function handleRequest(request, env) {
     const url = new URL(request.url);
     const path = url.pathname;
 
+    if (path.includes('/v1/exercise-demos/')) return handleDemoRequest(request, env);
+
     if (request.method === "POST" && path.endsWith(AI_PATH)) {
       return handleAI(request, env);
     }
@@ -78,9 +83,15 @@ export async function handleRequest(request, env) {
     if (request.method === "GET" && path.endsWith("/region")) {
       return handleRegion(request, env);
     }
+    if (path.endsWith("/feedback")) {
+      // Vercel is the app's primary endpoint; relay feedback to the Worker, which owns D1.
+      if (!env.FEEDBACK_DB) return relayFeedback(request, env);
+      if (request.method === "POST") return handleFeedback(request, env);
+    }
     return new Response("Not Found", { status: 404 });
   }
 }
+
 
 // Coarse country already attached by our own edge (Cloudflare request.cf or
 // Vercel's x-vercel-ip-country). Never reads or returns the client IP.
@@ -110,9 +121,109 @@ function handleRegion(request, env) {
   });
 }
 
+async function relayFeedback(request, env) {
+  const token = request.headers.get(CLIENT_TOKEN_HEADER);
+  if (!token || token !== env.MASO_CLIENT_TOKEN) return new Response("Unauthorized", { status: 401 });
+  if (request.method !== "POST") return new Response("Method Not Allowed", { status: 405 });
+  const raw = await request.arrayBuffer();
+  if (raw.byteLength > 8192) return new Response("Request too large", { status: 413 });
+  try {
+    return await fetch(FEEDBACK_WORKER_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", [CLIENT_TOKEN_HEADER]: token },
+      body: raw,
+      signal: AbortSignal.timeout(8000),
+    });
+  } catch {
+    return json({ error: "feedback_unavailable" }, 503);
+  }
+}
+
+async function handleFeedback(request, env) {
+  const token = request.headers.get(CLIENT_TOKEN_HEADER);
+  if (!token || token !== env.MASO_CLIENT_TOKEN) return new Response("Unauthorized", { status: 401 });
+  if (!env.FEEDBACK_DB) return json({ error: "feedback_store_unavailable" }, 503);
+  const raw = await request.arrayBuffer();
+  if (raw.byteLength > 8192) return new Response("Request too large", { status: 413 });
+  let report;
+  try { report = JSON.parse(new TextDecoder().decode(raw)); }
+  catch { return json({ error: "invalid_json" }, 400); }
+  const id = typeof report.id === "string" && /^[0-9a-f-]{36}$/i.test(report.id) ? report.id : "";
+  const body = typeof report.body === "string" ? report.body.trim() : "";
+  if (!id || !body || body.length > 4000) return json({ error: "invalid_report" }, 400);
+  const submittedAt = typeof report.submittedAt === "string" && Number.isFinite(Date.parse(report.submittedAt))
+    ? new Date(report.submittedAt).toISOString() : new Date().toISOString();
+  const appVersion = cleanMeta(report.appVersion, 80);
+  const osVersion = cleanMeta(report.osVersion, 80);
+  const language = cleanMeta(report.language, 32);
+  await env.FEEDBACK_DB.prepare(
+    "INSERT OR IGNORE INTO bug_reports (id, submitted_at, body, app_version, os_version, language) VALUES (?, ?, ?, ?, ?, ?)"
+  ).bind(id, submittedAt, body, appVersion, osVersion, language).run();
+  return json({ accepted: true, id }, 202);
+}
+
+function cleanMeta(value, maxLength) {
+  return typeof value === "string" ? value.trim().slice(0, maxLength) : "unknown";
+}
+
+export async function sendFeedbackDigest(env) {
+  const rows = await env.FEEDBACK_DB.prepare(
+    "SELECT id, submitted_at, body, app_version, os_version, language FROM bug_reports ORDER BY submitted_at ASC LIMIT 100"
+  ).all();
+  const reports = rows.results || [];
+  if (!reports.length) return { sent: true, count: 0 };
+  const sections = reports.map((r, i) =>
+    `[${i + 1}] ${r.submitted_at}\n${r.body}\n\nApp: ${r.app_version} · ${r.os_version} · ${r.language}`
+  );
+  const week = new Date().toISOString().slice(0, 10);
+  const form = new URLSearchParams({
+    _subject: `[Masso] Weekly bug reports — ${week} (${reports.length})`,
+    _template: "box", _captcha: "false", count: String(reports.length),
+    feedbacks: sections.join("\n\n────────────────────\n\n"),
+  });
+  let response;
+  try {
+    response = await fetch("https://formsubmit.co/ajax/wuyumoawuyumo@gmail.com", {
+      method: "POST", headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        Accept: "application/json",
+        Origin: "https://ai.replai.sh",
+        Referer: "https://ai.replai.sh/",
+        "User-Agent": "Masso-Feedback-Digest/1.0",
+      },
+      body: form, signal: AbortSignal.timeout(15000),
+    });
+  } catch { return { sent: false, count: reports.length }; }
+  if (!response.ok) return { sent: false, count: reports.length };
+  const result = await response.json().catch(() => ({}));
+  if (result.success !== "true" && result.success !== true) return { sent: false, count: reports.length };
+  const ids = reports.map(r => r.id);
+  const deletes = ids.map(id => env.FEEDBACK_DB.prepare("DELETE FROM bug_reports WHERE id = ?").bind(id));
+  if (env.FEEDBACK_DB.batch) await env.FEEDBACK_DB.batch(deletes);
+  else for (const statement of deletes) await statement.run();
+  return { sent: true, count: reports.length };
+}
+
 // ─────────────────────────────────────────────────────────────
 // 1) AI 代理 — 收 OpenAI 形状, 转 Anthropic Claude, 再转回 OpenAI 形状
 // ─────────────────────────────────────────────────────────────
+export function validateRoutineContract(value, contract) {
+  if (!contract) return true; // Older shipped clients remain supported.
+  if (contract.version !== 1 || !Array.isArray(contract.catalog) || contract.catalog.length > 500 ||
+      !Number.isInteger(contract.steps) || contract.steps < 1 || contract.steps > 8) return false;
+  const catalog = new Map(contract.catalog.filter(row => typeof row.id === "string" && typeof row.group === "string")
+    .map(row => [row.id, row.group]));
+  const routines = contract.single ? [value] : (Array.isArray(value) ? value : value?.routines);
+  if (!Array.isArray(routines) || !routines.length || routines.length > 7 ||
+      (contract.count != null && routines.length !== contract.count)) return false;
+  return routines.every(routine => {
+    if (typeof routine?.name !== "string" || !routine.name.trim() ||
+        !Array.isArray(routine.steps) || routine.steps.length !== contract.steps) return false;
+    const groups = routine.steps.map(step => catalog.get(step?.exercise_id));
+    return groups.every(group => group !== undefined) && new Set(groups).size === groups.length;
+  });
+}
+
 async function handleAI(request, env) {
   const clientToken = request.headers.get(CLIENT_TOKEN_HEADER);
   if (!clientToken || clientToken !== env.MASO_CLIENT_TOKEN) {
@@ -178,6 +289,14 @@ async function handleAI(request, env) {
     ? Math.min(Math.max(body.max_tokens, 1), 16000)
     : 2000;
 
+  const useQwen = Boolean(env.DASHSCOPE_API_KEY);
+  const qwenMessages = [
+    ...(systemParts.length ? [{ role: "system", content: systemParts.join("\n\n") }] : []),
+    ...convo.map(message => ({ ...message, content: Array.isArray(message.content)
+      ? message.content.map(block => block.type === "image" && block.source?.type === "base64"
+        ? { type: "image_url", image_url: { url: `data:${block.source.media_type};base64,${block.source.data}` } }
+        : block) : message.content })),
+  ];
   const upstreamPayload = {
     model: env.CLAUDE_MODEL || CLAUDE_MODEL, // Server controls model selection.
     max_tokens: maxTokens,        // Anthropic 必填
@@ -192,8 +311,8 @@ async function handleAI(request, env) {
   let parsed;
   let text;
   const models = [...new Set([
-    upstreamPayload.model,
-    env.CLAUDE_FALLBACK_MODEL || CLAUDE_FALLBACK_MODEL,
+    useQwen ? (env.MASSO_AI_MODEL || "qwen3.7-flash") : upstreamPayload.model,
+    useQwen ? (env.MASSO_AI_FALLBACK_MODEL || "qwen3.5-plus") : (env.CLAUDE_FALLBACK_MODEL || CLAUDE_FALLBACK_MODEL),
   ])];
   // Stay within the iOS client's 120s deadline, including the fallback.
   const deadline = Date.now() + 100_000;
@@ -201,14 +320,19 @@ async function handleAI(request, env) {
     try {
       const remaining = deadline - Date.now();
       if (remaining < 1000) throw new Error("AI request timed out");
-      const upstreamRes = await fetch(UPSTREAM, {
+      const upstreamRes = await fetch(useQwen ? "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions" : UPSTREAM, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-api-key": env.ANTHROPIC_API_KEY,
-          "anthropic-version": ANTHROPIC_VERSION,
+          ...(useQwen ? { Authorization: `Bearer ${env.DASHSCOPE_API_KEY}` }
+            : { "x-api-key": env.ANTHROPIC_API_KEY, "anthropic-version": ANTHROPIC_VERSION }),
         },
-        body: JSON.stringify({ ...upstreamPayload, model: models[i] }),
+        body: JSON.stringify(useQwen ? {
+          model: models[i], messages: qwenMessages, max_tokens: maxTokens, enable_thinking: false,
+          ...(typeof body.temperature === "number" && Number.isFinite(body.temperature) && body.temperature >= 0 && body.temperature <= 2
+            ? { temperature: body.temperature } : {}),
+          ...(body.response_format?.type === "json_object" ? { response_format: { type: "json_object" } } : {}),
+        } : { ...upstreamPayload, model: models[i] }),
         signal: AbortSignal.timeout(Math.min(remaining, i === 0 && models.length > 1 ? 60_000 : remaining)),
       });
       const raw = await upstreamRes.text();
@@ -220,18 +344,32 @@ async function handleAI(request, env) {
         });
       }
       parsed = JSON.parse(raw);
+      if (useQwen) {
+        const choice = parsed.choices?.[0];
+        parsed = { ...parsed, content: [{ type: "text", text: choice?.message?.content || "" }],
+          stop_reason: choice?.finish_reason === "length" ? "max_tokens" : choice?.finish_reason,
+          usage: { input_tokens: parsed.usage?.prompt_tokens, output_tokens: parsed.usage?.completion_tokens } };
+      }
       text = cleanJSONText((parsed.content || [])
         .filter(b => b?.type === "text").map(b => b.text || "").join(""));
       if (!text || parsed.stop_reason === "max_tokens") throw new Error("AI response was empty or truncated");
       if (body.response_format?.type === "json_object") {
         const value = JSON.parse(text);
         if (!value || typeof value !== "object") throw new Error("AI response was not a JSON object");
+        if (!validateRoutineContract(value, body.routine_contract)) {
+          const repair = `The previous model returned a routine violating the supplied catalog contract. Use ONLY exact exercise_id values from AVAILABLE EXERCISES; never infer IDs from names. Exactly ${body.routine_contract.steps} distinct groups per routine${body.routine_contract.count == null ? "" : `; exactly ${body.routine_contract.count} routines`}. Validate all IDs/counts before responding.`;
+          upstreamPayload.system = [upstreamPayload.system, repair].filter(Boolean).join("\n");
+          qwenMessages.push({role: "system", content: repair});
+          // Never log the athlete payload. A semantically invalid plan must reach the
+          // stronger fallback, rather than returning HTTP200 merely for valid JSON.
+          throw new Error("AI routine catalog contract rejected");
+        }
       }
       break;
     } catch (e) {
       if (i === models.length - 1) return json({ error: { message: "AI returned an unusable response" } }, 502);
       // Metadata only: prompts and athlete data must never enter logs.
-      console.warn("[maso:ai] falling back", { model: models[i] });
+      console.warn("[maso:ai] falling back", { model: models[i], reason: e.message === "AI routine catalog contract rejected" ? "routine_contract" : "invalid_response" });
     }
   }
 
