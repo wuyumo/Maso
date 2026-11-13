@@ -1,0 +1,8 @@
+--- a/src/components/editor/headline-highlight.tsx
++++ b/src/components/editor/headline-highlight.tsx
+@@ -1,0 +2 @@
++import { CandidateHeadlineScope, candidateHeadlinePhrase } from "@/lib/candidate-headline-emphasis";
+@@ -97 +98,2 @@
+-  const word = highlights[id]?.[locale];
++  const candidate = React.useContext(CandidateHeadlineScope);
++  const word = candidateHeadlinePhrase(candidate,id,locale,text) ?? highlights[id]?.[locale];

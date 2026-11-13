@@ -1,4 +1,5 @@
 "use client";
+import { CandidateHeadlineScope } from "@/lib/candidate-headline-emphasis";
 
 /** Manual isolated candidate preview. Only the outer viewport scales.
  * Export captures the unscaled poster subtree at native pixel dimensions.
@@ -254,7 +255,7 @@ export default function RenderPage() {
     <section ref={stageRef} aria-label="海报预览区域" style={{flex:1,minHeight:0,overflow:"auto",overscrollBehavior:"contain"}}>
     <div style={{width:canvas.w*scale,height:canvas.h*scale,margin:"16px auto"}}>
     <div data-preview-scale={scale} style={{width:canvas.w,height:canvas.h,position:"relative",transform:`scale(${scale})`,transformOrigin:"top left"}}>
-    <main id="candidate-poster"
+    <CandidateHeadlineScope.Provider value={true}><main id="candidate-poster"
       data-candidate-plan-device={slide?.id === "plan" && slide.chat && target.device !== "watch" ? "low-angle-split" : undefined}
       style={{
         "--candidate-plan-unit": candidatePlanUnit(canvas, !!phoneDeck, slide?.chat),
@@ -287,7 +288,7 @@ export default function RenderPage() {
       )}
       </div>
       {slide?.id === "plan" && slide.chat && target.device !== "watch" ? <CandidatePlanMockup device={target.device} canvas={canvas} chat={slide.chat} theme={theme} locale={target.locale} phoneRect={phoneRect} variant={variant} nativeSource={candidatePlanNativeSource(target.device,target.locale)} /> : null}
-    </main>
+    </main></CandidateHeadlineScope.Provider>
     </div>
     </div>
     </section>
