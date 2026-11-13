@@ -35,7 +35,7 @@ type Props = {
 const button:React.CSSProperties={minHeight:40,padding:"8px 12px",border:"1px solid #ccd2dc",borderRadius:8,background:"#fff",color:"#172233",fontSize:14,cursor:"pointer"};
 export function CandidatePreviewControls({target,mode,scale,ready,busy,error,onTarget,onMode,onExport}:Props) {
   const index=pageIndex(target); const allowed=canExportPage(target);
-  const status=error ? error : target.slide==="training" ? "03 待真实素材 · 不能导出" : !allowed ? "保留参考页 · 不在本批导出" : busy ? "正在保存原尺寸 PNG…" : ready ? "可导出候选 · 尚未验收/上传" : "正在加载字体与图片…";
+  const status=error ? error : target.slide==="training" ? "03 中英繁手机51源已备；缺匹配Watch与其余规格 · 不能导出" : !allowed ? "保留参考页 · 不在本批导出" : busy ? "正在保存原尺寸 PNG…" : ready ? "可导出候选 · 尚未验收/上传" : "正在加载字体与图片…";
   return <header aria-label="截图预览控制栏" style={{flexShrink:0,maxHeight:"46dvh",overflowY:"auto",background:"#fff",borderBottom:"1px solid #cdd3dd",padding:"10px 16px",boxShadow:"0 2px 10px #17223312",zIndex:10}}>
     <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:8,flexWrap:"wrap",marginBottom:8}}>
       <strong>截图预览 · {index+1}/5 · {PAGES[index].label}</strong>

@@ -1,0 +1,122 @@
+{
+  "preparedAt": "2026-11-13T09:58:18.704512+08:00",
+  "sourceVersion": "3.0.2(51)",
+  "rawPhoneAssets": [
+    {
+      "locale": "zh",
+      "family": "iphone",
+      "sourceArtifact": "docs/pro-release51-20261113/final-review/normal-machine/9EA7ED28-2F9B-40FA-B0D3-E2DC093E92EA.png",
+      "candidateAsset": "public/candidate-assets/pro-20261113/native51/iphone/zh/player-heart-warning.png",
+      "sha256": "3ee7ffa65189d482742328e21efe1909bdeeb2ca6f0b391d7bdc2635e6c07a68",
+      "dimensions": [
+        1206,
+        2622
+      ],
+      "mode": "RGB",
+      "nativeFixture": {
+        "exerciseID": "bench_press_machine",
+        "exerciseName": "推胸（器械）",
+        "sets": 3,
+        "currentSet": 1,
+        "reps": 8,
+        "weightKg": 50,
+        "heartBPM": 185,
+        "heartLimit": 180
+      },
+      "pixelsEdited": false,
+      "activeInPoster": false,
+      "reasonNotActivated": "No matching51Watch capture; oldWatchname/60kgdoesnotmatch. No family-specific iPad/Duo or other9locale51phone captures."
+    },
+    {
+      "locale": "en",
+      "family": "iphone",
+      "sourceArtifact": "docs/pro-release51-20261113/final-review/normal-machine/CEBD2C2E-1537-4EC7-9A8B-0B2DEABF0D8E.png",
+      "candidateAsset": "public/candidate-assets/pro-20261113/native51/iphone/en/player-heart-warning.png",
+      "sha256": "f236d222b8c9f741a13480a862740146bc9b86dea57aa16dd8e99a562422d9e7",
+      "dimensions": [
+        1206,
+        2622
+      ],
+      "mode": "RGB",
+      "nativeFixture": {
+        "exerciseID": "bench_press_machine",
+        "exerciseName": "Chest Press (Machine)",
+        "sets": 3,
+        "currentSet": 1,
+        "reps": 8,
+        "weightKg": 50,
+        "heartBPM": 185,
+        "heartLimit": 180
+      },
+      "pixelsEdited": false,
+      "activeInPoster": false,
+      "reasonNotActivated": "No matching51Watch capture; oldWatchname/60kgdoesnotmatch. No family-specific iPad/Duo or other9locale51phone captures."
+    },
+    {
+      "locale": "zh-Hant",
+      "family": "iphone",
+      "sourceArtifact": "docs/pro-release51-20261113/final-review/normal-machine/4A806A06-85C9-465E-BEF4-89AE4C0E6A7E.png",
+      "candidateAsset": "public/candidate-assets/pro-20261113/native51/iphone/zh-Hant/player-heart-warning.png",
+      "sha256": "12e90981646423157fb7db1ce969d693af08605b0d483b39947991de059e460d",
+      "dimensions": [
+        1206,
+        2622
+      ],
+      "mode": "RGB",
+      "nativeFixture": {
+        "exerciseID": "bench_press_machine",
+        "exerciseName": "推胸（器械）",
+        "sets": 3,
+        "currentSet": 1,
+        "reps": 8,
+        "weightKg": 50,
+        "heartBPM": 185,
+        "heartLimit": 180
+      },
+      "pixelsEdited": false,
+      "activeInPoster": false,
+      "reasonNotActivated": "No matching51Watch capture; oldWatchname/60kgdoesnotmatch. No family-specific iPad/Duo or other9locale51phone captures."
+    }
+  ],
+  "export03Enabled": false,
+  "matchingWatchCaptureExecuted": false,
+  "blockingFindings": [
+    {
+      "scope": "03 old zh/zh-Hant Watch exercise-185",
+      "observed": "卧推（器械） / 臥推（器械）,8reps60kg185bpm",
+      "needed": "Authentic51Watch推胸（器械）,set1/3,8reps50kg185bpm with same native UI/media fixture"
+    },
+    {
+      "scope": "03 old en Watch exercise-185",
+      "observed": "Chest Press(Machine),8reps60kg185bpm",
+      "needed": "Authentic51Watch same name,set1/3,8reps50kg185bpm"
+    },
+    {
+      "scope": "03 remaining locales/devicefamilies",
+      "observed": "Only zh/en/zh-Hant native51phone1206x2622available",
+      "needed": "Real matching captures or explicitly documented legitimate adaptation policy; never relabel translated/retouched pixels as new native captures"
+    }
+  ],
+  "otherPages": [
+    {
+      "page": "04diet/sleep",
+      "verdict": "No specific new51conflict identified in available evidence; no fresh51diet/sleep capture to prove complete UI equivalence. Existing basic feature copy retained."
+    },
+    {
+      "page": "05device lineup",
+      "verdict": "No additional specific51naming conflict visible in sampled zh/en/zh-Hant Watch rest160source; next8reps60kg is its own resting fixture, not measured synchronization. No fresh51all-device proof."
+    },
+    {
+      "page": "StandaloneWatch01",
+      "verdict": "zh/zh-Hant source still has incorrect卧推/臥推name, also needs real replacement. Englishnamecorrect; no full12locale51pixelacceptance."
+    },
+    {
+      "page": "StandaloneWatch02",
+      "verdict": "Sampled3locales rest160has no exercise name.8reps60kg historical rest demo is not new51pair. If wholedeckuses50kgfixture,re-capture rest50kg too; do not edit digits."
+    }
+  ],
+  "nativeSourcesModified": false,
+  "productionSynchronizationVerified": false,
+  "originalPublicCaptureHashesPreserved": 551,
+  "browserOrNetworkActions": false
+}
