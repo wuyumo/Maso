@@ -1473,12 +1473,15 @@ final class TrainingSessionStore {
 
     /// 训练中拖拽排序 plan.steps. 跟 updateCurrentStep 一样, 全程 session-local — 改 self.plan
     /// + 重新 expandPlan + 定位新 segmentIndex, 不写回 DataStore.plans.
+    /// 播放列表 onMove 和进度条长按拖拽都只走这里, 不另存一套顺序.
     ///
     /// 行为:
     ///   - completedSets 用 (stepId, setN) key, 不受顺序影响, 自动保留
-    ///   - 当前 step 跟着位置走 (用户在做 chest press, 拖到 plan 第一 → chest press 仍是当前)
-    ///   - segmentIndex 映射到 (curStepId, curSetN) 在新 segments 里的新位置
-    ///   - endsAt / pausedRemaining 都保留 — 拖排序不打断计时
+    ///   - 当前动作跟着 (stepId, setN) 走, 不因为下标变化改练别的动作
+    ///   - 组间 / 动作间休息按“这组后面”或“这个动作后面”定位, 不落到该动作的第一段休息
+    ///   - 同一处休息的 endsAt / pausedRemaining / 已编辑时长都保留
+    ///   - 动作被拖到末尾、身后的过渡休息消失时, 落到原来要开始的那一组, 不把休息倒计时带过去
+    ///   - 顺序没变 (松手回原位) 不改 session
     ///
     /// 用户长期想保存这个顺序 → 走 Plan 编辑器 (跟 updateCurrentStep 一致, 训练中改的都不持久).
     func reorderSteps(
@@ -1488,54 +1491,66 @@ final class TrainingSessionStore {
         defaultRest: Int,
         defaultBetweenExerciseRest: Int
     ) {
-        guard var s = session, var p = plan, let cur = currentSegment else { return }
-        let curStepId = cur.stepId
-        var curSetN: Int? = nil
-        if case .exercise(_, let sn, _, _, _, _, _) = cur.kind {
-            curSetN = sn
-        }
-        let wasRest = cur.isRest
-
-        // 移动 — SwiftUI ForEach.onMove 的语义跟 Array.move(fromOffsets:toOffset:) 一致
+        guard var s = session, var p = plan, segments.indices.contains(s.segmentIndex),
+              let anchor = WorkoutProgressReorder.anchor(in: segments, index: s.segmentIndex) else { return }
+        let current = segments[s.segmentIndex]
+        guard !source.isEmpty, source.allSatisfy({ p.steps.indices.contains($0) }),
+              (0...p.steps.count).contains(destination) else { return }
+        let originalIDs = p.steps.map(\.id)
         p.steps.move(fromOffsets: source, toOffset: destination)
-        self.plan = p
+        guard p.steps.map(\.id) != originalIDs else { return }
 
-        // 重新展开 segments. completedSets 是按 (stepId, setN) 索引, 不依赖顺序.
-        let newSegments = expandedSessionPlan(
+        var built = expandedSessionPlan(
             p,
             exById: exById,
             defaultRest: defaultRest,
             defaultBetweenExerciseRest: defaultBetweenExerciseRest,
             session: s
         )
-        self.segments = newSegments
+        guard let rawIndex = WorkoutProgressReorder.index(of: anchor, in: built) else { return }
+        let resolved = min(max(0, rawIndex), max(0, built.count - 1))
+        let landed = WorkoutProgressReorder.anchor(in: built, index: resolved)
+        let samePlace = landed?.place == anchor.place
+        let restOverride = s.currentRestDurationOverride
 
-        // 把 segmentIndex 重新映射到当前 (stepId, setN) 在新 segments 中的位置.
-        var newIdx: Int? = nil
-        if let sn = curSetN {
-            newIdx = newSegments.firstIndex(where: {
-                if $0.stepId == curStepId,
-                   case .exercise(_, let n, _, _, _, _, _) = $0.kind,
-                   n == sn { return true }
-                return false
-            })
-        } else if wasRest {
-            // 当前在 rest 段 — 找当前 step 的 rest segment (同 stepId + isRest).
-            newIdx = newSegments.firstIndex(where: { $0.stepId == curStepId && $0.isRest })
+        if samePlace {
+            let keptKind: Segment.Kind = {
+                if current.isRest, let restOverride { return .rest(duration: restOverride) }
+                return built[resolved].kind
+            }()
+            let keptID = current.id
+            if let clash = built.firstIndex(where: { $0.id == keptID }), clash != resolved {
+                let other = built[clash]
+                built[clash] = Segment(id: keptID + "-shift", stepId: other.stepId, kind: other.kind)
+            }
+            let kept = built[resolved]
+            built[resolved] = Segment(id: keptID, stepId: kept.stepId, kind: keptKind)
         }
 
-        guard let resolved = newIdx else {
-            // 不应发生 (move 不会让 curStepId 消失) — 兜底回 0.
-            s.segmentIndex = 0
-            session = s
-            syncLiveActivity()
-            return
+        self.plan = p
+        self.segments = built
+        s.segmentIndex = resolved
+        if samePlace {
+            if current.isRest { s.currentRestDurationOverride = restOverride }
+        } else {
+            // 休息缝被排掉了. 不要把休息的 endsAt 留在力量组上, 否则倒计时结束会误记一组.
+            s.currentRestDurationOverride = nil
+            let seg = built[resolved]
+            if s.playing {
+                s.endsAt = initialEndsAt(for: seg)
+                s.pausedRemaining = nil
+            } else {
+                s.endsAt = nil
+                s.pausedRemaining = initialPausedRemaining(for: seg)
+            }
         }
-
-        s.segmentIndex = min(max(0, resolved), max(0, newSegments.count - 1))
         s.lastActiveAt = Date()
         planParamsDirty = true  // 改了顺序 — 结束时提示保存 (先于 session 写: didSet 落盘快照它)
         session = s
+        if samePlace, current.isRest, session?.currentRestDurationOverride != restOverride {
+            // segmentIndex 变化时 didSet 会清掉 override, 这里放回同一段休息.
+            session?.currentRestDurationOverride = restOverride
+        }
         syncLiveActivity()
     }
 

@@ -2097,6 +2097,9 @@
 
 /* Workout progress, observed timing and personal heart-rate reminders */
 "Jump to first unfinished set" = "К первому незавершённому подходу";
+"Move earlier" = "Переместить раньше";
+"Move later" = "Переместить позже";
+"Long press and drag to reorder" = "Удерживайте и перетащите, чтобы изменить порядок";
 "Rest duration" = "Длительность отдыха";
 "Applies to this rest only." = "Только для этого отдыха.";
 "Edit rest time" = "Изменить время отдыха";

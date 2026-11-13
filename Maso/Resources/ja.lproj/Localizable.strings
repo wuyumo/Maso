@@ -2097,6 +2097,9 @@
 
 /* Workout progress, observed timing and personal heart-rate reminders */
 "Jump to first unfinished set" = "最初の未完了セットへ移動";
+"Move earlier" = "前へ移動";
+"Move later" = "後ろへ移動";
+"Long press and drag to reorder" = "長押ししてドラッグで並べ替え";
 "Rest duration" = "休憩時間";
 "Applies to this rest only." = "今回の休憩のみに適用。";
 "Edit rest time" = "休憩時間を変更";

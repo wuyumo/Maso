@@ -821,58 +821,32 @@ struct PlanPlayerScreen: View {
 
     /// Equal-width segments follow action occurrences, never muscle or exercise IDs.
     /// Fill only actual completed sets, so skipping ahead cannot claim completion.
+    /// Long-press drag reorders those same plan steps; a tap still jumps.
     private var exerciseProgress: some View {
-        let steps = (store.plan?.steps ?? []).filter { step in
-            store.segments.contains { $0.isExercise && $0.stepId == step.id }
+        let planSteps = store.plan?.steps ?? []
+        let visible: [(planIndex: Int, step: PlanStep)] = planSteps.enumerated().compactMap { index, step in
+            store.segments.contains { $0.isExercise && $0.stepId == step.id } ? (planIndex: index, step: step) : nil
         }
         let completed = store.session?.completedSets ?? []
         let pending = store.nextUnfinishedSegment()
-        return HStack(spacing: 4) {
-            ForEach(steps) { step in
-                let sets = store.segments.filter { $0.isExercise && $0.stepId == step.id }
-                let done = sets.filter { segment in
-                    if case .exercise(_, let number, _, _, _, _, _) = segment.kind {
-                        return completed.contains(.init(stepId: step.id, setN: number))
-                    }
-                    return false
-                }.count
-                Button {
-                    Haptics.tap()
-                    _ = store.jumpToFirstUnfinishedStep(stepId: step.id)
-                } label: {
-                    GeometryReader { geometry in
-                        if step.id == pending?.stepId {
-                            HStack(spacing: min(1, geometry.size.width / CGFloat(max(1, sets.count * 3)))) {
-                                ForEach(sets) { segment in
-                                    let isComplete: Bool = {
-                                        if case .exercise(_, let number, _, _, _, _, _) = segment.kind {
-                                            return completed.contains(.init(stepId: step.id, setN: number))
-                                        }
-                                        return false
-                                    }()
-                                    Rectangle().fill(isComplete ? MasoColor.accent : segment.id == pending?.id ? (store.currentSegment?.isExercise == true ? MasoColor.accent : MasoColor.accent.opacity(0.4)) : MasoColor.text.opacity(0.18))
-                                        .modifier(BreathingArc(active: !isComplete && segment.id == pending?.id && store.currentSegment?.isExercise == true && store.session?.playing == true))
-                                        .frame(maxWidth: .infinity)
-                                }
-                            }.clipShape(Capsule())
-                        } else {
-                            Capsule().fill(MasoColor.text.opacity(0.18))
-                                .overlay(alignment: .leading) {
-                                    Capsule().fill(MasoColor.accent)
-                                        .frame(width: geometry.size.width * CGFloat(done) / CGFloat(max(1, sets.count)))
-                                }
-                        }
-                    }.frame(height: 4)
-                    .frame(maxWidth: .infinity, minHeight: 44).contentShape(Rectangle())
-                }.buttonStyle(.plain)
-                .disabled(done == sets.count)
-                .accessibilityIdentifier("workout.progress.\(step.id)")
-                .accessibilityLabel(Text(data.exById[step.exerciseId]?.displayName ?? step.exerciseId))
-                .accessibilityValue(Text("\(done)/\(sets.count)"))
-                .accessibilityHint("Jump to first unfinished set")
+        return WorkoutExerciseProgressBar(
+            steps: visible,
+            segments: store.segments,
+            completed: completed,
+            pendingStepId: pending?.stepId,
+            pendingSegmentId: pending?.id,
+            currentIsExercise: store.currentSegment?.isExercise == true,
+            isPlaying: store.session?.playing == true,
+            title: { data.exById[$0.exerciseId]?.displayName ?? $0.exerciseId },
+            onJump: { stepId in
+                Haptics.tap()
+                _ = store.jumpToFirstUnfinishedStep(stepId: stepId)
+            },
+            onReorder: { source, destination in
+                reorderWorkoutSteps(from: source, to: destination)
+                Haptics.tap()
             }
-        }
-        .frame(height: 44)
+        )
         .accessibilityElement(children: .contain)
         .accessibilityLabel("Workout")
         .accessibilityValue(Text("\(completed.count)/\(store.segments.filter(\.isExercise).count)"))
@@ -1122,13 +1096,7 @@ struct PlanPlayerScreen: View {
                 onJump: { stepId in store.jumpToStep(stepId: stepId) },
                 onTapImage: { ex in detailExercise = ex },
                 onReorder: { source, destination in
-                    store.reorderSteps(
-                        from: source,
-                        to: destination,
-                        exById: data.exById,
-                        defaultRest: data.settings.defaultRestSeconds,
-                        defaultBetweenExerciseRest: data.settings.defaultBetweenExerciseRestSeconds
-                    )
+                    reorderWorkoutSteps(from: source, to: destination)
                 },
                 onDelete: { stepId in
                     pendingDeleteStepId = stepId  // 走二次确认 alert
@@ -1154,6 +1122,17 @@ struct PlanPlayerScreen: View {
             )
             .accessibilityIdentifier("workout.playlist.list")
         }
+    }
+
+    /// Playlist rows and progress segments both call this. The move is the session plan only.
+    private func reorderWorkoutSteps(from source: IndexSet, to destination: Int) {
+        store.reorderSteps(
+            from: source,
+            to: destination,
+            exById: data.exById,
+            defaultRest: data.settings.defaultRestSeconds,
+            defaultBetweenExerciseRest: data.settings.defaultBetweenExerciseRestSeconds
+        )
     }
 
     /// rest 段之后第一个 exercise 段 (= "UP NEXT" 那一组). 休息时 playlist 按它渲染 →
@@ -2349,6 +2328,7 @@ private struct InlinePlaylist: View {
           }
         }
         .padding(.horizontal, MasoMetrics.rowPaddingH)
+        .accessibilityIdentifier("workout.queue.row.\(step.id)")
     }
 
     /// 动作间休息行 — active/passive **固定同一总高 34pt**: ✓ 跨动作时 isActive 翻面, 两态
@@ -2396,6 +2376,187 @@ private struct InlinePlaylist: View {
     private func progressN(for step: PlanStep) -> Int {
         if step.id == currentStepId, let s = currentSet { return s }
         return completedSetsByStep[step.id, default: 0]
+    }
+}
+
+/// The thin workout bar. Visual size stays the existing 4pt capsules; the 44pt row is the hit target.
+/// Long-press then drag uses the playlist move. A tap still jumps, and leaving the bar cancels.
+private struct WorkoutExerciseProgressBar: View {
+    @Environment(\.layoutDirection) private var layoutDirection
+    let steps: [(planIndex: Int, step: PlanStep)]
+    let segments: [Segment]
+    let completed: Set<TrainingSessionStore.CompletedSet>
+    let pendingStepId: String?
+    let pendingSegmentId: String?
+    let currentIsExercise: Bool
+    let isPlaying: Bool
+    let title: (PlanStep) -> String
+    let onJump: (String) -> Void
+    let onReorder: (IndexSet, Int) -> Void
+
+    /// Gesture callbacks can arrive before the next SwiftUI state flush, so the
+    /// live drag is kept on a reference. `drag` is the rendered copy.
+    @State private var dragSession = DragSession()
+    @State private var drag: Drag?
+    @State private var suppressTapUntil = Date.distantPast
+
+    private final class DragSession {
+        var value: Drag?
+    }
+
+    private struct Drag {
+        var sourceIndex: Int
+        var origin: CGPoint
+        var location: CGPoint
+        var finalIndex: Int
+        var inside: Bool
+    }
+
+    var body: some View {
+        GeometryReader { geo in
+            let width = geo.size.width
+            let slot = steps.isEmpty ? 0 : max(0, (width - WorkoutProgressReorder.spacing * CGFloat(max(0, steps.count - 1))) / CGFloat(steps.count))
+            let pitch = slot + WorkoutProgressReorder.spacing
+            let rtl = layoutDirection == .rightToLeft
+            HStack(spacing: WorkoutProgressReorder.spacing) {
+                ForEach(Array(steps.enumerated()), id: \.element.step.id) { index, item in
+                    segment(item.step, index: index, pitch: pitch, rightToLeft: rtl)
+                }
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .contentShape(Rectangle())
+            .gesture(WorkoutProgressReorderGesture(
+                enabled: steps.count > 1,
+                onBegan: { origin in
+                    let source = WorkoutProgressReorder.slotIndex(
+                        x: origin.x, count: steps.count, width: width,
+                        rightToLeft: rtl)
+                    let value = Drag(sourceIndex: source, origin: origin, location: origin, finalIndex: source, inside: true)
+                    dragSession.value = value
+                    drag = value
+                    suppressTapUntil = Date().addingTimeInterval(30)
+                    Haptics.tap()
+                },
+                onChanged: { location in
+                    guard var value = dragSession.value else { return }
+                    value.location = location
+                    if let landing = WorkoutProgressReorder.landingIndex(
+                        count: steps.count, location: location, size: geo.size, rightToLeft: rtl) {
+                        if value.finalIndex != landing { Haptics.selection() }
+                        value.finalIndex = landing
+                        value.inside = true
+                    } else {
+                        value.finalIndex = value.sourceIndex
+                        value.inside = false
+                    }
+                    dragSession.value = value
+                    drag = value
+                },
+                onEnded: { location, cancelled in
+                    let finished = dragSession.value
+                    dragSession.value = nil
+                    drag = nil
+                    suppressTapUntil = Date().addingTimeInterval(0.45)
+                    guard let finished, !cancelled else { return }
+                    guard let landing = WorkoutProgressReorder.landingIndex(
+                        count: steps.count, location: location, size: geo.size, rightToLeft: rtl),
+                          let move = WorkoutProgressReorder.planMove(
+                            visiblePlanIndices: steps.map(\.planIndex),
+                            from: finished.sourceIndex, toFinalIndex: landing) else { return }
+                    onReorder(move.source, move.destination)
+                }
+            ))
+        }
+        .frame(height: 44)
+        .animation(nil, value: drag?.location.x)
+    }
+
+    private func segment(_ step: PlanStep, index: Int, pitch: CGFloat, rightToLeft: Bool) -> some View {
+        let sets = segments.filter { $0.isExercise && $0.stepId == step.id }
+        let done = sets.filter { segment in
+            if case .exercise(_, let number, _, _, _, _, _) = segment.kind {
+                return completed.contains(.init(stepId: step.id, setN: number))
+            }
+            return false
+        }.count
+        let shift = drag.map { drag in
+            drag.sourceIndex == index
+                ? drag.location.x - drag.origin.x
+                : WorkoutProgressReorder.neighborOffset(
+                    index: index, source: drag.sourceIndex, finalIndex: drag.inside ? drag.finalIndex : drag.sourceIndex,
+                    pitch: pitch, rightToLeft: rightToLeft)
+        } ?? 0
+        return Button {
+            guard Date() >= suppressTapUntil, done != sets.count else { return }
+            onJump(step.id)
+        } label: {
+            GeometryReader { geometry in
+                if step.id == pendingStepId {
+                    HStack(spacing: min(1, geometry.size.width / CGFloat(max(1, sets.count * 3)))) {
+                        ForEach(sets) { segment in
+                            let isComplete: Bool = {
+                                if case .exercise(_, let number, _, _, _, _, _) = segment.kind {
+                                    return completed.contains(.init(stepId: step.id, setN: number))
+                                }
+                                return false
+                            }()
+                            Rectangle().fill(isComplete ? MasoColor.accent : segment.id == pendingSegmentId ? (currentIsExercise ? MasoColor.accent : MasoColor.accent.opacity(0.4)) : MasoColor.text.opacity(0.18))
+                                .modifier(BreathingArc(active: !isComplete && segment.id == pendingSegmentId && currentIsExercise && isPlaying))
+                                .frame(maxWidth: .infinity)
+                        }
+                    }.clipShape(Capsule())
+                } else {
+                    Capsule().fill(MasoColor.text.opacity(0.18))
+                        .overlay(alignment: .leading) {
+                            Capsule().fill(MasoColor.accent)
+                                .frame(width: geometry.size.width * CGFloat(done) / CGFloat(max(1, sets.count)))
+                        }
+                }
+            }.frame(height: 4)
+            .frame(maxWidth: .infinity, minHeight: 44).contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .offset(x: shift)
+        .zIndex(drag?.sourceIndex == index ? 1 : 0)
+        .accessibilityIdentifier("workout.progress.\(step.id)")
+        .accessibilityLabel(Text(title(step)))
+        .accessibilityValue(Text("\(done)/\(sets.count)"))
+        .accessibilityHint(Text(progressHint(canJump: done != sets.count)))
+        .modifier(ProgressReorderActions(canMoveEarlier: index > 0, canMoveLater: index + 1 < steps.count, earlier: { move(from: index, toFinalIndex: index - 1) }, later: { move(from: index, toFinalIndex: index + 1) }))
+    }
+
+    private func progressHint(canJump: Bool) -> String {
+        let reorder = NSLocalizedString("Long press and drag to reorder", comment: "Workout progress segment")
+        guard canJump else { return reorder }
+        let jump = NSLocalizedString("Jump to first unfinished set", comment: "Workout progress segment")
+        return "\(jump) \(reorder)"
+    }
+
+    private func move(from index: Int, toFinalIndex final: Int) {
+        guard let move = WorkoutProgressReorder.planMove(
+            visiblePlanIndices: steps.map(\.planIndex), from: index, toFinalIndex: final) else { return }
+        onReorder(move.source, move.destination)
+    }
+}
+
+/// VoiceOver alternative to the long-press drag. End segments omit the action that would no-op.
+private struct ProgressReorderActions: ViewModifier {
+    let canMoveEarlier: Bool
+    let canMoveLater: Bool
+    let earlier: () -> Void
+    let later: () -> Void
+    @ViewBuilder func body(content: Content) -> some View {
+        if canMoveEarlier && canMoveLater {
+            content
+                .accessibilityAction(named: Text("Move earlier")) { earlier() }
+                .accessibilityAction(named: Text("Move later")) { later() }
+        } else if canMoveEarlier {
+            content.accessibilityAction(named: Text("Move earlier")) { earlier() }
+        } else if canMoveLater {
+            content.accessibilityAction(named: Text("Move later")) { later() }
+        } else {
+            content
+        }
     }
 }
 

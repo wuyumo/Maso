@@ -2637,6 +2637,9 @@
 
 /* Workout progress, observed timing and personal heart-rate reminders */
 "Jump to first unfinished set" = "跳到最早未完成的组";
+"Move earlier" = "移到更早";
+"Move later" = "移到更晚";
+"Long press and drag to reorder" = "长按后拖动以调整顺序";
 "Rest duration" = "休息时长";
 "Applies to this rest only." = "仅用于本次休息。";
 "Edit rest time" = "修改休息时间";
