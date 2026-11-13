@@ -135,6 +135,8 @@ function moveLanguage(privateView) {
   const slot = privateView ? $('account-language') : $('header-tools');
   if (select && slot && select.parentElement !== slot) slot.append(select);
 }
+const panelScroll = {};
+const panelSeen = {};
 function clearPrivate() {
   $('metrics').replaceChildren();
   $('codes').replaceChildren();
@@ -145,9 +147,15 @@ function clearPrivate() {
   $('overview-status').hidden = true;
   $('overview-status').textContent = '';
   $('create').reset();
+  for (const id of tabs) {
+    delete panelScroll[id];
+    delete panelSeen[id];
+  }
 }
 function showTab(name, fromHash) {
   const tab = tabs.includes(name) ? name : 'overview';
+  const current = tabs.find(id => !$('panel-' + id).hidden);
+  if (current) panelScroll[current] = window.scrollY;
   for (const id of tabs) {
     const on = id === tab;
     $('panel-' + id).hidden = !on;
@@ -157,9 +165,11 @@ function showTab(name, fromHash) {
     if (on) button.setAttribute('aria-current', 'page');
     else button.removeAttribute('aria-current');
   }
+  const y = panelSeen[tab] ? (panelScroll[tab] || 0) : 0;
+  panelSeen[tab] = true;
   if (!fromHash && location.hash !== '#' + tab) location.hash = tab;
-  if (!fromHash) $('tab-' + tab).focus();
   fitTabs();
+  requestAnimationFrame(() => window.scrollTo(0, y));
 }
 function fitTabs() {
   const bar = $('tabs');
@@ -177,9 +187,8 @@ function onTabKey(event) {
   else if (event.key === 'End') next = tabs.length - 1;
   else return;
   event.preventDefault();
-  const button = $('tab-' + tabs[next]);
-  button.focus();
   showTab(tabs[next], false);
+  $('tab-' + tabs[next]).focus();
 }
 function bindTabs() {
   if (bindTabs.done) return;
@@ -188,14 +197,22 @@ function bindTabs() {
     const button = event.target.closest('[data-tab]');
     if (!button) return;
     showTab(button.dataset.tab, false);
+    if (event.detail > 0) button.blur();
   });
   $('tabs').addEventListener('keydown', onTabKey);
   window.addEventListener('hashchange', () => {
     if ($('dashboard').hidden) return;
-    showTab(tabFromHash(location.hash), true);
+    const next = tabFromHash(location.hash);
+    const current = tabs.find(id => !$('panel-' + id).hidden);
+    if (current === next) return;
+    showTab(next, true);
   });
   document.addEventListener('focusin', event => {
-    if (event.target.matches('input')) event.target.scrollIntoView({block: 'center', inline: 'nearest'});
+    if (event.target.matches('input, select, textarea')) {
+      event.target.style.scrollMarginBottom = 'calc(var(--tab-h, 62px) + var(--keyboard, 0px) + 16px)';
+      event.target.style.scrollMarginTop = '72px';
+      event.target.scrollIntoView({block: 'nearest', inline: 'nearest'});
+    }
   });
   if (window.visualViewport) {
     const fit = () => {
@@ -323,7 +340,7 @@ function renderDashboard(data) {
   for (const [label, value] of rows) {
     const card = el('div', '');
     card.className = 'metric';
-    card.append(el('strong', value), el('span', tr(label)));
+    card.append(el('span', tr(label)), el('strong', value));
     $('metrics').append(card);
   }
   $('codes').replaceChildren();

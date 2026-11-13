@@ -184,4 +184,8 @@ test('tabs split the private page and do not add a write route', () => {
   assert.match(source, /clearPrivate/);
   assert.match(read('public/style.css'), /safe-area-inset-bottom/);
   assert.match(read('public/style.css'), /min-height: 44px/);
+  assert.match(read('public/style.css'), /--title: 26px/);
+  assert.match(read('public/style.css'), /--nav-h: 62px/);
+  assert.match(read('public/style.css'), /focus-visible/);
+  assert.match(read('public/app.js'), /panelSeen/);
 });

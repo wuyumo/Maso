@@ -143,6 +143,21 @@ await page(`(async () => {
   history.back();
   await new Promise(resolve => setTimeout(resolve, 250));
   if (location.hash !== '#overview' || document.getElementById('panel-codes').hidden === false) return 'back ' + location.hash;
+  window.scrollTo(0, 360);
+  document.getElementById('tab-codes').click();
+  await new Promise(resolve => setTimeout(resolve, 80));
+  if (window.scrollY > 4) return 'codes scroll ' + window.scrollY;
+  const selected = getComputedStyle(document.getElementById('tab-codes'));
+  if (selected.color !== 'rgb(30, 215, 96)') return 'selected color ' + selected.color;
+  if (selected.outlineStyle !== 'none' && Number.parseFloat(selected.outlineWidth) > 0) return 'selected outline ' + selected.outlineStyle;
+  const title = document.querySelector('#panel-codes h2').getBoundingClientRect();
+  const header = document.querySelector('header').getBoundingClientRect();
+  const nav = document.getElementById('tabs').getBoundingClientRect();
+  if (title.top < header.bottom - 1) return 'title ' + title.top + ' header ' + header.bottom;
+  if (nav.bottom < window.innerHeight - 2) return 'nav not at bottom ' + nav.bottom;
+  document.getElementById('tab-overview').click();
+  await new Promise(resolve => setTimeout(resolve, 80));
+  if (Math.abs(window.scrollY - 360) > 40) return 'restore ' + window.scrollY;
   return true;
 })()`);
 for (const id of ['overview', 'codes', 'statements', 'account']) {
@@ -168,8 +183,25 @@ await snap('tab-mobile-landscape');
 await cdp('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true }, sessionId);
 await cdp('Page.navigate', { url: base + '/?lang=zh-Hans&preview=dashboard#codes' }, sessionId);
 await new Promise(resolve => setTimeout(resolve, 800));
-await page(`(() => document.getElementById('tab-codes').textContent.includes('优惠码') && document.getElementById('panel-codes').hidden === false)()`);
-await snap('tab-mobile-zh-codes');
+await page(`(async () => {
+  const labels = {overview: '概览', codes: '优惠码', statements: '结算', account: '账户'};
+  for (const id of Object.keys(labels)) {
+    document.getElementById('tab-' + id).click();
+    await new Promise(resolve => setTimeout(resolve, 80));
+    const panel = document.getElementById('panel-' + id);
+    const heading = panel.querySelector('h1, h2');
+    const bar = document.getElementById('tabs').getBoundingClientRect();
+    if (panel.hidden || !heading || heading.getBoundingClientRect().top < 0) return id + ' title';
+    if (bar.bottom < window.innerHeight - 2 || bar.top < window.innerHeight * 0.5) return id + ' bar ' + bar.top;
+    if (!document.getElementById('tab-' + id).textContent.includes(labels[id])) return id + ' label';
+  }
+  return true;
+})()`);
+for (const id of ['overview', 'codes', 'statements', 'account']) {
+  await page(`(() => { document.getElementById('tab-${id}').click(); return document.getElementById('panel-${id}').hidden === false; })()`);
+  await new Promise(resolve => setTimeout(resolve, 60));
+  await snap('zh-tab-mobile-' + id);
+}
 await cdp('Page.navigate', { url: base + '/?lang=ar&preview=dashboard#account' }, sessionId);
 await new Promise(resolve => setTimeout(resolve, 800));
 await page(`(() => {
@@ -190,6 +222,17 @@ await page(`(() => {
 await snap('tab-desktop-overview');
 await page(`(() => { document.getElementById('tab-statements').click(); return location.hash === '#statements'; })()`);
 await snap('tab-desktop-statements');
+await cdp('Emulation.setDeviceMetricsOverride', { width: 320, height: 640, deviceScaleFactor: 1, mobile: true }, sessionId);
+await cdp('Page.navigate', { url: base + '/?lang=de&preview=dashboard#overview' }, sessionId);
+await new Promise(resolve => setTimeout(resolve, 800));
+await page(`(() => document.getElementById('tab-overview').textContent.includes('Übersicht') && document.documentElement.scrollWidth <= window.innerWidth + 1)()`);
+await snap('tab-mobile-de-320');
+await page(`(() => { document.documentElement.style.fontSize = '32px'; return document.documentElement.scrollWidth <= window.innerWidth + 1 && document.getElementById('tab-overview').getBoundingClientRect().height >= 44; })()`);
+await snap('tab-mobile-de-200');
+await cdp('Page.navigate', { url: base + '/?lang=en&preview=error' }, sessionId);
+await new Promise(resolve => setTimeout(resolve, 800));
+await page(`(() => document.getElementById('message').className === 'error' && document.getElementById('dashboard').hidden === true)()`);
+await snap('tab-mobile-error');
 await cdp('Page.navigate', { url: base + '/?lang=en' }, sessionId);
 await new Promise(resolve => setTimeout(resolve, 800));
 await page(`(() => document.getElementById('dashboard').hidden === true && document.getElementById('landing').hidden === false)()`);

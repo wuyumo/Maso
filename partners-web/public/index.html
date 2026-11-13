@@ -21,9 +21,11 @@
 <main id="content">
 <p id="demo-banner" class="demo-banner" hidden></p>
 <section id="landing">
-  <p class="eyebrow" data-i18n="tagline"></p>
-  <h1 data-i18n="title"></h1>
-  <p class="lede" data-i18n="intro"></p>
+  <div class="screen-head">
+    <p class="eyebrow" data-i18n="tagline"></p>
+    <h1 data-i18n="title"></h1>
+    <p class="lede" data-i18n="intro"></p>
+  </div>
   <div id="policy" class="panel"></div>
   <form id="login" class="card">
     <label>
@@ -68,16 +70,18 @@
     </button>
   </nav>
   <div id="panel-overview" role="tabpanel" aria-labelledby="tab-overview">
-    <p class="eyebrow" data-i18n="dashboard"></p>
-    <h1 id="greeting"></h1>
-    <p id="updated" class="muted"></p>
+    <div class="screen-head">
+      <p class="eyebrow" data-i18n="dashboard"></p>
+      <h1 id="greeting"></h1>
+      <p id="updated" class="muted"></p>
+    </div>
     <button id="refresh" class="secondary" type="button" data-i18n="refresh"></button>
     <div id="metrics" class="grid"></div>
     <p id="overview-status" class="notice" hidden></p>
     <p class="notice" data-i18n="trialNote"></p>
   </div>
   <div id="panel-codes" role="tabpanel" aria-labelledby="tab-codes" hidden>
-    <h2 data-i18n="codes"></h2>
+    <div class="screen-head"><h2 data-i18n="codes"></h2></div>
     <form id="create" class="card">
       <label>
         <span class="label-line"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 8h11v11H8z"></path><path d="M5 16V5h11"></path></svg><span data-i18n="newcode"></span></span>
@@ -91,24 +95,30 @@
     <p class="muted" data-i18n="codeNote"></p>
     <div id="codes"></div>
   </div>
-  <div id="panel-statements" role="tabpanel" aria-labelledby="tab-statements" hidden>
-    <h2 data-i18n="statements"></h2>
+  <div id="panel-statements" class="stack" role="tabpanel" aria-labelledby="tab-statements" hidden>
+    <div class="screen-head"><h2 data-i18n="statements"></h2></div>
     <p class="notice"><span data-i18n="payout"></span> <a href="mailto:wuyumoawuyumo@gmail.com">Masso Support</a></p>
     <p class="muted" data-i18n="statementNote"></p>
     <div id="settlements"></div>
   </div>
   <div id="panel-account" role="tabpanel" aria-labelledby="tab-account" hidden>
-    <p class="eyebrow" data-tab-label="account"></p>
-    <h1 id="account-name"></h1>
-    <div id="account-language"></div>
-    <p class="muted"><a href="/terms" data-i18n="terms"></a></p>
-    <p class="notice"><a href="mailto:wuyumoawuyumo@gmail.com">Masso Support</a></p>
-    <button id="logout" class="secondary" hidden type="button" data-i18n="logout"></button>
+    <div class="card account-card">
+      <div class="screen-head">
+        <p class="eyebrow" data-tab-label="account"></p>
+        <h1 id="account-name"></h1>
+      </div>
+      <div id="account-language"></div>
+      <p class="muted"><a href="/terms" data-i18n="terms"></a></p>
+      <p class="notice"><a href="mailto:wuyumoawuyumo@gmail.com">Masso Support</a></p>
+      <button id="logout" class="secondary" type="button" data-i18n="logout"></button>
+    </div>
   </div>
 </section>
 <section id="referral" hidden>
-  <p class="eyebrow" data-i18n="invite"></p>
-  <h1 data-i18n="train"></h1>
+  <div class="screen-head">
+    <p class="eyebrow" data-i18n="invite"></p>
+    <h1 data-i18n="train"></h1>
+  </div>
   <p><span data-i18n="code"></span>: <strong id="public-code" dir="ltr"></strong></p>
   <p id="public-offer" data-i18n="offer"></p>
   <p data-i18n="use"></p>
