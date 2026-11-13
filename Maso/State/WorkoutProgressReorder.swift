@@ -247,6 +247,9 @@ struct WorkoutProgressReorderGesture: UIGestureRecognizerRepresentable {
 }
 
 /// Remembers the first touch so a narrow segment is chosen from the press, not from later drift.
+/// The segment button would otherwise force this recognizer to fail, so a long press that
+/// starts on a segment never arms. It does not cancel that button: a short tap still jumps,
+/// and the bar ignores the tap only after this hold has begun.
 final class OriginLongPressRecognizer: UILongPressGestureRecognizer {
     private(set) var origin: CGPoint?
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
@@ -256,5 +259,11 @@ final class OriginLongPressRecognizer: UILongPressGestureRecognizer {
     override func reset() {
         super.reset()
         origin = nil
+    }
+    override func canPrevent(_ preventedGestureRecognizer: UIGestureRecognizer) -> Bool {
+        false
+    }
+    override func canBePrevented(by preventingGestureRecognizer: UIGestureRecognizer) -> Bool {
+        false
     }
 }

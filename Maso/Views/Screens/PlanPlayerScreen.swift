@@ -2419,7 +2419,7 @@ private struct WorkoutExerciseProgressBar: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .contentShape(Rectangle())
-            .simultaneousGesture(WorkoutProgressReorderGesture(
+            .gesture(WorkoutProgressReorderGesture(
                 enabled: steps.count > 1,
                 onBegan: { origin in
                     let source = WorkoutProgressReorder.slotIndex(
