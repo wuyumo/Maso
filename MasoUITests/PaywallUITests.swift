@@ -455,7 +455,9 @@ final class PaywallUITests: XCTestCase {
         restore.tap()
         let release = app.buttons["paywall.restore.release"]
         XCTAssertTrue(release.waitForExistence(timeout: 2), "Restore stays busy while the request is in flight")
-        XCTAssertTrue(app.activityIndicators["paywall.restore.progress"].waitForExistence(timeout: 2))
+        XCTAssertTrue(restoreSpinner(in: app).exists)
+        XCTAssertEqual(String(describing: restore.value ?? ""), "busy")
+        XCTAssertFalse(restore.isEnabled)
         XCTAssertFalse(app.alerts["Masso Pro"].exists)
         release.tap()
         let alert = app.alerts["Masso Pro"]
@@ -475,7 +477,9 @@ final class PaywallUITests: XCTestCase {
         restore.tap()
         let releaseAgain = app.buttons["paywall.restore.release"]
         XCTAssertTrue(releaseAgain.waitForExistence(timeout: 2))
-        XCTAssertTrue(app.activityIndicators["paywall.restore.progress"].waitForExistence(timeout: 2))
+        XCTAssertTrue(restoreSpinner(in: app).exists)
+        XCTAssertEqual(String(describing: restore.value ?? ""), "busy")
+        XCTAssertFalse(restore.isEnabled)
         releaseAgain.tap()
         XCTAssertTrue(releaseAgain.waitForNonExistence(timeout: 5))
         XCTAssertEqual(Set(store.allTransactions().map { String($0.identifier) }), transactions, "Restore must call StoreKit without buying again")
@@ -501,6 +505,15 @@ final class PaywallUITests: XCTestCase {
             }
             app.terminate()
         }
+    }
+
+    /// The progress id is on two Other containers. The spinner is the ActivityIndicator inside them and has no id of its own.
+    private func restoreSpinner(in app: XCUIApplication) -> XCUIElement {
+        let containers = app.otherElements.matching(identifier: "paywall.restore.progress")
+        XCTAssertGreaterThan(containers.count, 0)
+        let spinner = containers.activityIndicators.firstMatch
+        XCTAssertTrue(spinner.waitForExistence(timeout: 2))
+        return spinner
     }
 
     private func launch(_ scene: String, language: String = "en", largeType: Bool = false, narrow: Bool = false, light: Bool = false, increasedContrast: Bool = false, restoreHold: Bool = false) -> XCUIApplication {
