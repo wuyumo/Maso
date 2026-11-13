@@ -7,7 +7,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), 'public');
-const types = {'.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.svg': 'image/svg+xml'};
+const types = {'.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.mjs': 'text/javascript; charset=utf-8', '.svg': 'image/svg+xml'};
 
 // Snapshot of the public GET /api/policy response observed 2026-11-13.
 // Flags stay closed. This server does not flip registration or campaign switches.
@@ -39,13 +39,12 @@ function send(res, status, body, type = 'application/json; charset=utf-8') {
 }
 
 function demoQr(code) {
-  const safe = String(code).replace(/[^A-Za-z0-9]/g, '').slice(0, 20) || 'DEMO';
+  const safe = String(code).replace(/[^A-Za-z0-9]/g, '').slice(0, 20) || 'LOCAL';
   return `<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180" viewBox="0 0 180 180">
-  <rect width="180" height="180" fill="#ffffff"/>
-  <rect x="18" y="18" width="144" height="144" fill="none" stroke="#121212" stroke-width="4"/>
-  <text x="90" y="84" text-anchor="middle" font-family="ui-sans-serif,system-ui" font-size="14" font-weight="700" fill="#121212">LOCAL DEMO</text>
-  <text x="90" y="108" text-anchor="middle" font-family="ui-sans-serif,system-ui" font-size="13" fill="#121212">${safe}</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180" viewBox="0 0 180 180" role="img" aria-label="Not a scannable code">
+  <rect width="180" height="180" fill="#121212"/>
+  <text x="90" y="78" text-anchor="middle" font-family="ui-sans-serif,system-ui" font-size="13" font-weight="700" fill="#1ED760">NOT A SCANNABLE CODE</text>
+  <text x="90" y="104" text-anchor="middle" font-family="ui-sans-serif,system-ui" font-size="12" fill="#FFFFFF">LOCAL MOCK ${safe}</text>
 </svg>`;
 }
 

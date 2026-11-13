@@ -57,7 +57,7 @@ await cdp('Emulation.setEmulatedMedia', { media: 'screen', features: [{ name: 'p
 async function shoot(name, path, width, height, checks) {
   await cdp('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: 1, mobile: width < 500 }, sessionId);
   await cdp('Page.navigate', { url: base + path }, sessionId);
-  await new Promise(resolve => setTimeout(resolve, 400));
+  await new Promise(resolve => setTimeout(resolve, 800));
   const result = await cdp('Runtime.evaluate', { expression: checks, returnByValue: true }, sessionId);
   if (result.exceptionDetails) throw new Error(name + ' ' + JSON.stringify(result.exceptionDetails));
   const value = result.result.value;
@@ -71,7 +71,7 @@ async function shoot(name, path, width, height, checks) {
 const closed = `(() => {
   const btn = document.querySelector('#login button');
   const text = document.getElementById('policy').innerText;
-  return btn.disabled === true && text.includes('Partner enrollment is not open yet.') && getComputedStyle(document.body).backgroundColor === 'rgb(18, 18, 18)';
+  return btn.disabled === true && text.includes('Partner enrollment is not open yet.') && text.includes('not an approved commercial term') && text.includes('download is free') && getComputedStyle(document.body).backgroundColor === 'rgb(18, 18, 18)';
 })()`;
 const verify = `(() => {
   const form = document.getElementById('verify');
@@ -84,24 +84,31 @@ const verify = `(() => {
   return form.hidden === false && invalid && valid && document.getElementById('demo-banner').hidden === false;
 })()`;
 const dash = `(() => {
+  const text = document.body.innerText;
   const create = document.querySelector('#create button');
-  const greeting = document.getElementById('greeting').textContent;
-  return document.getElementById('dashboard').hidden === false && create.disabled && greeting.includes('Local demo') && document.body.innerText.includes('DEMOFIT') && document.body.innerText.includes('Local demonstration');
+  return document.getElementById('dashboard').hidden === false && create.disabled && text.includes('Local demo') && text.includes('LOCALONLY') && text.includes('Not a scannable code') && text.includes('not Apple-reconciled revenue') && text.includes('No reconciled statements yet') && !text.includes('$0.00');
 })()`;
-const referral = `(() => document.getElementById('public-code').textContent === 'DEMOFIT' && document.getElementById('referral').hidden === false)()`;
+const emptyDash = `(() => document.body.innerText.includes('No codes on this account.') && document.body.innerText.includes('No reconciled statements yet'))()`;
+const unauthorized = `(() => document.getElementById('message').textContent === 'Sign-in required.' && document.getElementById('landing').hidden === false)()`;
+const referral = `(() => {
+  const text = document.body.innerText;
+  return document.getElementById('public-code').textContent === 'LOCALONLY' && text.includes('not an approved commercial term') && text.includes('download is free') && text.includes('Local preview link only');
+})()`;
 const error = `(() => document.getElementById('message').className === 'error' && document.getElementById('message').textContent.includes('could not be completed'))()`;
 const zh = `(() => document.documentElement.lang === 'zh-Hans' && document.body.innerText.includes('合作计划尚未开放注册'))()`;
 
-await shoot('desktop-landing', '/?lang=en', 1280, 900, closed);
-await shoot('mobile-landing', '/?lang=en', 390, 844, closed);
-await shoot('desktop-verify', '/?lang=en&preview=verify', 1280, 900, verify);
-await shoot('mobile-verify', '/?lang=en&preview=verify', 390, 844, verify);
-await shoot('desktop-dashboard', '/?lang=en&preview=dashboard', 1280, 1400, dash);
-await shoot('mobile-dashboard', '/?lang=en&preview=dashboard', 390, 1600, dash);
-await shoot('desktop-referral', '/r/DEMOFIT?lang=en', 1280, 900, referral);
-await shoot('mobile-referral', '/r/DEMOFIT?lang=en', 390, 844, referral);
-await shoot('desktop-error', '/?lang=en&preview=error', 1280, 900, error);
-await shoot('mobile-zh-landing', '/?lang=zh-Hans', 390, 844, zh);
+await shoot('flow-desktop-landing', '/?lang=en', 1280, 1100, closed);
+await shoot('flow-mobile-landing', '/?lang=en', 390, 1000, closed);
+await shoot('flow-desktop-verify', '/?lang=en&preview=verify', 1280, 1000, verify);
+await shoot('flow-mobile-verify', '/?lang=en&preview=verify', 390, 1000, verify);
+await shoot('flow-desktop-dashboard', '/?lang=en&preview=dashboard', 1280, 1500, dash);
+await shoot('flow-mobile-dashboard', '/?lang=en&preview=dashboard', 390, 1700, dash);
+await shoot('flow-desktop-empty', '/?lang=en&preview=empty', 1280, 1100, emptyDash);
+await shoot('flow-mobile-unauthorized', '/?lang=en&preview=unauthorized', 390, 844, unauthorized);
+await shoot('flow-desktop-referral', '/r/LOCALONLY?lang=en', 1280, 1000, referral);
+await shoot('flow-mobile-referral', '/r/LOCALONLY?lang=en', 390, 900, referral);
+await shoot('flow-desktop-error', '/?lang=en&preview=error', 1280, 1100, error);
+await shoot('flow-mobile-zh-landing', '/?lang=zh-Hans', 390, 1100, zh);
 
 chrome.kill();
 await new Promise(resolve => server.close(resolve));

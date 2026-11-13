@@ -6,8 +6,6 @@
 <meta name="color-scheme" content="dark">
 <title>Masso Partners</title>
 <link rel="stylesheet" href="/style.css">
-<script src="/i18n.js" defer></script>
-<script src="/app.js" defer></script>
 </head>
 <body>
 <a class="skip" href="#content">Skip to content</a>
@@ -37,13 +35,15 @@
       <span class="label-line"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.2"></circle><path d="M5 19c1.4-3 3.8-4.5 7-4.5S17.6 16 19 19"></path></svg><span data-i18n="creator"></span></span>
       <input name="name" autocomplete="nickname" maxlength="80" required>
     </label>
+    <p id="login-error" class="field-error" role="alert" hidden></p>
     <button data-i18n="send"></button>
   </form>
   <form id="verify" class="card" hidden>
     <label>
       <span class="label-line"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V8a4 4 0 018 0v3"></path></svg><span data-i18n="otp"></span></span>
-      <input name="otp" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" required>
+      <input name="otp" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" required>
     </label>
+    <p id="verify-error" class="field-error" role="alert" hidden></p>
     <button data-i18n="signin"></button>
     <p class="muted" data-i18n="missing"></p>
   </form>
@@ -63,6 +63,8 @@
       <input name="code" pattern="[A-Za-z][A-Za-z0-9]{3,19}" minlength="4" maxlength="20" autocomplete="off" required placeholder="ALEXFIT" dir="ltr">
     </label>
     <label class="check"><input name="terms" type="checkbox" required><span data-i18n="accept"></span> <a href="/terms" data-i18n="terms"></a></label>
+    <p id="create-error" class="field-error" role="alert" hidden></p>
+    <p id="create-closed" class="muted" hidden></p>
     <button data-i18n="create"></button>
   </form>
   <p class="muted" data-i18n="codeNote"></p>
@@ -87,5 +89,12 @@
 <p id="message" role="status" aria-live="polite"></p>
 </main>
 <footer>Masso Partners · <a href="/terms" data-i18n="terms"></a></footer>
+<script type="module">
+import * as contract from '/contract.mjs';
+globalThis.MassoPartnerContract = contract;
+document.dispatchEvent(new Event('partner-contract'));
+</script>
+<script src="/i18n.js"></script>
+<script src="/app.js"></script>
 </body>
 </html>

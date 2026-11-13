@@ -3,7 +3,13 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { createHash } from 'node:crypto';
 import { createPreviewServer, publicPolicySnapshot } from './preview-server.mjs';
+import {
+  routes, gaps, summaryFields, settlementFields, localDemo, emptyDemo, notices,
+  validateEmail, validateName, validateOtp, validateCode, loginDisabled, createDisabled,
+  countText, ratioText, settlementReady, knownStatus, shareLink
+} from './public/contract.mjs';
 
 const dir = path.dirname(fileURLToPath(import.meta.url));
 const read = name => fs.readFileSync(path.join(dir, name), 'utf8');
@@ -61,12 +67,92 @@ test('local routes keep the closed contract and reject writes', async () => {
     assert.match(page, /id="landing"/);
     const referral = await (await fetch(base + '/r/DEMOFIT')).text();
     assert.match(referral, /id="referral"/);
-    const qr = await (await fetch(base + '/qr/DEMOFIT.svg')).text();
-    assert.match(qr, /LOCAL DEMO/);
+    const qr = await (await fetch(base + '/qr/LOCALONLY.svg')).text();
+    assert.match(qr, /NOT A SCANNABLE CODE/);
+    assert.match(qr, /LOCAL MOCK/);
     assert.doesNotMatch(qr, /apps\.apple\.com/);
+    assert.doesNotMatch(qr, /<path/);
+    const pilot = await (await fetch(base + '/api/policy?pilot=1')).json();
+    assert.equal(pilot.registrationOpen, false);
+    assert.equal((await fetch(base + '/api/login')).status, 404);
+    const invented = await fetch(base + '/api/payout', {method: 'POST', body: '{}'});
+    assert.equal(invented.status, 404);
     const terms = await (await fetch(base + '/terms')).text();
     assert.match(terms, /There is no lifetime renewal commission/);
   } finally {
     await new Promise(resolve => server.close(resolve));
   }
+});
+
+test('i18n commercial sentences stay byte-for-byte and are not treated as a new approval', () => {
+  assert.equal(createHash('sha256').update(read('public/i18n.js')).digest('hex'), 'e5f6e948d16a0ffc569ec8bf4b54aea22da67da3d1b850d0a0643eb776801057');
+  assert.match(notices.pendingFigures, /not an approved commercial term/);
+  assert.match(notices.downloadFree, /download is free/);
+  assert.match(notices.downloadFree, /eligible Pro subscription/);
+  assert.equal(read('public/app.js').includes('commissionBps'), false);
+});
+
+test('step: instagram invite has no client field and the share link is only a relative path', () => {
+  assert.equal(gaps.some(gap => gap.id === 'instagram-invite'), true);
+  assert.equal(shareLink('http://127.0.0.1:4173', 'LOCALONLY'), 'http://127.0.0.1:4173/r/LOCALONLY');
+  assert.equal(routes.some(route => route.path.includes('instagram')), false);
+});
+
+test('step: registration stays closed and input boundaries are rejected before a request', () => {
+  assert.equal(loginDisabled({registrationOpen: false}, false), true);
+  assert.equal(loginDisabled({registrationOpen: false}, true), false);
+  assert.equal(loginDisabled({registrationOpen: true}, false), false);
+  assert.equal(validateEmail(''), 'email');
+  assert.equal(validateEmail('a@b'), 'email');
+  assert.equal(validateEmail('person@example.com'), '');
+  assert.equal(validateEmail('  person@example.com  '), '');
+  assert.equal(validateEmail('a'.repeat(250) + '@b.co'), 'email');
+  assert.equal(validateName(''), 'name');
+  assert.equal(validateName('   '), 'name');
+  assert.equal(validateName('A'.repeat(81)), 'name');
+  assert.equal(validateName('Alex'), '');
+  assert.equal(validateOtp('12345'), 'otp');
+  assert.equal(validateOtp('1234567'), 'otp');
+  assert.equal(validateOtp('12 456'), 'otp');
+  assert.equal(validateOtp('123456'), '');
+});
+
+test('step: code boundaries and campaign gate do not invent a created code', () => {
+  assert.equal(createDisabled({campaignReady: false}, false), true);
+  assert.equal(createDisabled({campaignReady: false}, true), false);
+  assert.equal(validateCode('abc'), 'code');
+  assert.equal(validateCode('1ABCD'), 'code');
+  assert.equal(validateCode('abcd'), '');
+  assert.equal(validateCode('A'.repeat(21)), 'code');
+  assert.equal(localDemo.codes.some(code => code.code === 'LOCALONLY'), true);
+  assert.equal(localDemo.settlements.length, 0);
+  assert.equal(emptyDemo.codes.length, 0);
+});
+
+test('step: private stats and statements use only returned fields and refuse mock money', () => {
+  for (const field of summaryFields) assert.equal(localDemo.summary[field], null);
+  for (const field of settlementFields) assert.equal(Object.hasOwn(localDemo, field), false);
+  assert.equal(countText(null, 'en'), '—');
+  assert.equal(countText(undefined, 'en'), '—');
+  assert.equal(countText(0, 'en'), '0');
+  assert.equal(ratioText(null, 3, 'en'), '—');
+  assert.equal(ratioText(1, 0, 'en'), '—');
+  assert.equal(settlementReady({created: '2026-11-01', currency: 'USD', status: 'eligible'}), false);
+  assert.equal(settlementReady({created: '2026-11-01', commission_minor: 0, currency: 'USD', status: 'eligible'}), true);
+  assert.equal(knownStatus('active'), 'active');
+  assert.equal(knownStatus('paid'), '');
+  assert.equal(localDemo.mock, true);
+  assert.equal(gaps.some(gap => gap.id === 'apple-net'), true);
+  assert.equal(gaps.some(gap => gap.id === 'manual-confirm'), true);
+  assert.equal(gaps.some(gap => gap.id === 'apple-redeem'), true);
+  assert.equal(gaps.some(gap => gap.id === 'refund-detail'), true);
+  assert.equal(gaps.some(gap => gap.id === 'session'), true);
+  const source = read('public/app.js');
+  for (const path of ['/api/payout', '/api/instagram', '/api/redeem', '/api/confirm']) {
+    assert.equal(source.includes(path), false, path);
+  }
+  assert.match(source, /settlementReady/);
+  assert.match(notices.localDemo, /not Apple-reconciled revenue/);
+  assert.match(notices.notScannable, /Not a scannable code/);
+  assert.match(notices.settlementReadonly, /cannot confirm or send a payout/);
 });

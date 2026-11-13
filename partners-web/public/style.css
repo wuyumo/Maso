@@ -210,6 +210,8 @@ button:disabled {
   background: var(--text);
   border-radius: var(--radius-chip);
 }
+.code img.local-mark { background: transparent; border: 1px dashed rgba(255, 255, 255, 0.18); }
+.field-error { color: var(--negative); font-size: 14px; font-weight: 650; margin: 0; }
 #message { min-height: 1.4em; font-weight: 650; }
 #message.error { color: var(--negative); }
 #message.ok { color: var(--accent); }
