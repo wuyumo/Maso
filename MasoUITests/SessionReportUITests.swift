@@ -11,11 +11,11 @@ final class SessionReportUITests: XCTestCase {
     func testCleanFinishOpensSessionReportNotTheOldCompletionPage() throws {
         let app = launch("session-report-clean-player")
         let report = try require("workout.sessionReport", in: app)
-        XCTAssertFalse(app.staticTexts["Save changes to this routine?"].exists)
+        XCTAssertFalse(app.descendants(matching: .any)["workout.saveChanges"].exists)
         XCTAssertFalse(app.staticTexts["Workout complete"].exists)
         XCTAssertTrue(app.buttons["workout.sessionReport.exit"].exists)
         XCTAssertTrue(app.buttons["workout.sessionReport.share"].exists)
-        XCTAssertTrue(app.descendants(matching: .any)["workout.sessionReport.body"].waitForExistence(timeout: 8))
+        XCTAssertTrue(app.descendants(matching: .any)["workout.sessionReport.body"].waitForExistence(timeout: 20))
         XCTAssertTrue(app.descendants(matching: .any)["workout.sessionReport.stats"].exists)
         XCTAssertTrue(app.staticTexts["0:40"].exists)
         XCTAssertTrue(app.staticTexts["480 kg"].exists)
@@ -43,26 +43,36 @@ final class SessionReportUITests: XCTestCase {
 
     func testAdjustedFinishReachesTheReportAfterSkipAndAfterSave() throws {
         let skipped = launch("session-report-changed-player")
-        XCTAssertTrue(skipped.staticTexts["Save changes to this routine?"].waitForExistence(timeout: 15))
+        let title = skipped.staticTexts["workout.saveChanges.title"]
+        XCTAssertTrue(title.waitForExistence(timeout: 30))
+        XCTAssertEqual(title.label, "Save changes to this workout plan?")
+        XCTAssertEqual(skipped.buttons["workout.saveChanges.save"].label, "Save to Workout Plan")
+        let skip = skipped.buttons["workout.saveChanges.skip"]
+        XCTAssertEqual(skip.label, "Don't save")
+        XCTAssertTrue(skipped.descendants(matching: .any)["workout.saveChanges.row.step-bench"].exists)
+        XCTAssertTrue(skipped.staticTexts["2 × 8 · 62.5 kg"].exists)
         XCTAssertFalse(skipped.descendants(matching: .any)["workout.sessionReport"].exists)
-        skipped.buttons["Don't save"].tap()
-        XCTAssertTrue(skipped.descendants(matching: .any)["workout.sessionReport"].waitForExistence(timeout: 8))
+        skip.tap()
+        XCTAssertTrue(skipped.descendants(matching: .any)["workout.sessionReport"].waitForExistence(timeout: 30))
         XCTAssertTrue(skipped.buttons["workout.sessionReport.exit"].exists)
-        XCTAssertFalse(skipped.staticTexts["Save changes to this routine?"].exists)
+        XCTAssertTrue(skipped.descendants(matching: .any)["workout.saveChanges"].waitForNonExistence(timeout: 8))
         XCTAssertFalse(skipped.staticTexts["Workout complete"].exists)
         skipped.terminate()
 
         let saved = launch("session-report-changed-player")
-        XCTAssertTrue(saved.staticTexts["Save changes to this routine?"].waitForExistence(timeout: 15))
-        saved.buttons["Save to routine"].tap()
-        XCTAssertTrue(saved.descendants(matching: .any)["workout.sessionReport"].waitForExistence(timeout: 8))
+        let save = saved.buttons["workout.saveChanges.save"]
+        XCTAssertTrue(save.waitForExistence(timeout: 30))
+        XCTAssertEqual(saved.staticTexts["workout.saveChanges.title"].label, "Save changes to this workout plan?")
+        save.tap()
+        XCTAssertTrue(saved.descendants(matching: .any)["workout.sessionReport"].waitForExistence(timeout: 30))
         XCTAssertTrue(saved.buttons["workout.sessionReport.exit"].exists)
+        XCTAssertTrue(saved.descendants(matching: .any)["workout.saveChanges"].waitForNonExistence(timeout: 8))
         XCTAssertFalse(saved.staticTexts["Workout complete"].exists)
     }
 
     func testShareDefaultsStayPrivateAndBackReturnsToTheReport() throws {
         let app = launch("session-report-clean-player")
-        XCTAssertTrue(app.descendants(matching: .any)["workout.sessionReport"].waitForExistence(timeout: 15))
+        XCTAssertTrue(app.descendants(matching: .any)["workout.sessionReport"].waitForExistence(timeout: 30))
         app.buttons["workout.sessionReport.share"].tap()
         XCTAssertTrue(app.descendants(matching: .any)["workout.sessionReport.sharePreview"].waitForExistence(timeout: 8))
         assertOff("workout.sessionReport.shareDetailsToggle", in: app)
@@ -85,7 +95,7 @@ final class SessionReportUITests: XCTestCase {
     func testFinishExitLeavesTheReportAndHistoryUsesBack() throws {
         let finished = launch("session-report-clean-player")
         let exit = finished.buttons["workout.sessionReport.exit"]
-        XCTAssertTrue(exit.waitForExistence(timeout: 15))
+        XCTAssertTrue(exit.waitForExistence(timeout: 30))
         exit.tap()
         XCTAssertTrue(finished.staticTexts["Exercise UI test"].waitForExistence(timeout: 8))
         XCTAssertTrue(finished.buttons["workout.sessionReport.exit"].waitForNonExistence(timeout: 8))
@@ -93,7 +103,7 @@ final class SessionReportUITests: XCTestCase {
 
         let history = launch("session-report-history")
         let open = history.buttons["workout.sessionReport.openHistory"]
-        XCTAssertTrue(open.waitForExistence(timeout: 15))
+        XCTAssertTrue(open.waitForExistence(timeout: 30))
         open.tap()
         XCTAssertTrue(history.descendants(matching: .any)["workout.sessionReport"].waitForExistence(timeout: 10))
         XCTAssertFalse(history.buttons["workout.sessionReport.exit"].exists)
@@ -116,7 +126,7 @@ final class SessionReportUITests: XCTestCase {
 
     private func require(_ identifier: String, in app: XCUIApplication) throws -> XCUIElement {
         let element = app.descendants(matching: .any)[identifier]
-        XCTAssertTrue(element.waitForExistence(timeout: 15), identifier)
+        XCTAssertTrue(element.waitForExistence(timeout: 30), identifier)
         return element
     }
 

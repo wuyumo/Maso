@@ -2636,6 +2636,7 @@ private struct SaveChangesConfirmView: View {
                     .font(.system(size: 22, weight: .bold))
                     .foregroundStyle(MasoColor.text)
                     .multilineTextAlignment(.center)
+                    .accessibilityIdentifier("workout.saveChanges.title")
                 Text(sessionPlan.name)
                     .font(.system(size: 13))
                     .foregroundStyle(MasoColor.textDim)
@@ -2671,10 +2672,12 @@ private struct SaveChangesConfirmView: View {
                     decisionButtonLabel("Save to routine", primary: true)
                 }
                 .buttonStyle(.plain)
+                .accessibilityIdentifier("workout.saveChanges.save")
                 Button(action: onSkip) {
                     decisionButtonLabel("Don't save", primary: false)
                 }
                 .buttonStyle(.plain)
+                .accessibilityIdentifier("workout.saveChanges.skip")
             }
             .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
             .padding(.top, 6)
@@ -2683,6 +2686,7 @@ private struct SaveChangesConfirmView: View {
         .frame(width: geometry.size.width, height: geometry.size.height)
         }
         .background(MasoColor.background.ignoresSafeArea())
+        .accessibilityIdentifier("workout.saveChanges")
     }
 
     private func decisionButtonLabel(_ title: LocalizedStringKey, primary: Bool) -> some View {
@@ -2761,6 +2765,7 @@ private struct SaveChangesConfirmView: View {
         )
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .opacity(row.isChanged ? 1 : 0.55)
+        .accessibilityIdentifier("workout.saveChanges.row.\(row.id)")
     }
 
     @ViewBuilder
