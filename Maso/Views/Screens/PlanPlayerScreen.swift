@@ -3580,21 +3580,19 @@ struct PlayerExerciseTitleParts {
 /// cannot capture an independently initialized empty array.
 private struct PlayerVariantPickerSnapshot: Identifiable {
     let id = UUID()
-    let defaultVersion: Exercise
-    let variants: [Exercise]
+    let rows: [Exercise]
     let selectedID: String
     let sameTarget: [Exercise]
 
     init(current: Exercise, base: Exercise, candidates: [Exercise], library: [Exercise]) {
-        defaultVersion = base
         selectedID = current.id
-        var seen: Set<String> = [base.id]
-        variants = (candidates + [current]).filter { seen.insert($0.id).inserted }
+        rows = ExerciseGrouping.variantMenuRows(defaultVersion: base, candidates: candidates, current: current)
+        let shown = Set(rows.map(\.id))
         // Match the same specific primary target; broad section matches can imply
         // different training emphasis (for example upper vs lower chest).
         let targets = Set(current.primaryMuscles.filter { $0 != .fullBody })
         sameTarget = library.filter { item in
-            !seen.contains(item.id) && !targets.isDisjoint(with: item.primaryMuscles)
+            !shown.contains(item.id) && !targets.isDisjoint(with: item.primaryMuscles)
         }
     }
 }
@@ -3659,12 +3657,9 @@ private struct PlayerExerciseHeading: View {
             }) { snapshot in
                 AppNavigationStack {
                     List {
-                        Section("Default version") {
-                            variantButton(snapshot.defaultVersion, selectedID: snapshot.selectedID)
-                        }
-                        if !snapshot.variants.isEmpty {
+                        if !snapshot.rows.isEmpty {
                             Section("Variants") {
-                                ForEach(snapshot.variants) { variantButton($0, selectedID: snapshot.selectedID) }
+                                ForEach(snapshot.rows) { variantButton($0, selectedID: snapshot.selectedID) }
                             }
                         }
                         if !snapshot.sameTarget.isEmpty {

@@ -157,12 +157,45 @@ def main() -> int:
     check(not pattern_match(by_id["hip_thrust_barbell"], "hip_extension", "extension"), "bare extension swallowed hip thrust")
     check(pattern_match(by_id["leg_extension_machine"], meta["leg_extension_machine"]["pattern"], "extension"), "leg extension lost")
 
+    def prefix(name: str) -> str:
+        for mark in ("(", "（"):
+            if mark in name:
+                name = name.split(mark, 1)[0]
+        return name.strip().lower()
+
+    check(meta["abductor_machine"]["programmingGroupID"] == "hip_abduction", "machine group")
+    check(meta["abduction_cable"]["programmingGroupID"] == "hip_abduction", "cable group")
+    check(meta["abductor_machine"]["displayFamilyID"] == meta["abduction_cable"]["displayFamilyID"] == "hip_abduction", "family")
+    check(prefix(machine["name"]["en"]) == prefix(cable["name"]["en"]) == "hip abduction", "english group name")
+    check(prefix(machine["name"]["zh-Hans"]) == prefix(cable["name"]["zh-Hans"]) == "髋外展", "chinese group name")
+    check(meta["side_leg_raise"]["programmingGroupID"] != "hip_abduction", "side leg raise stays separate")
+    check(meta["side_leg_raise_cable"]["programmingGroupID"] == meta["side_leg_raise"]["programmingGroupID"], "side leg cable family")
+    check(meta["adductor_machine"]["programmingGroupID"] == "hip_adduction", "adduction group")
+
+    def menu_rows(default_id: str, candidate_ids: list[str], current_id: str) -> list[str]:
+        seen: set[str] = set()
+        rows: list[str] = []
+        for item_id in [default_id, *candidate_ids, current_id]:
+            if item_id not in seen:
+                seen.add(item_id)
+                rows.append(item_id)
+        return rows
+
+    visible = ["abductor_machine", "abduction_cable"]
+    check(menu_rows("abductor_machine", visible, "abductor_machine") == ["abductor_machine", "abduction_cable"], "default once")
+    check(menu_rows("abductor_machine", visible, "abduction_cable") == ["abductor_machine", "abduction_cable"], "current cable once")
+    check(menu_rows("abductor_machine", visible, "abductor_machine_lean_forward") == ["abductor_machine", "abduction_cable", "abductor_machine_lean_forward"], "filtered current kept once")
+    check(menu_rows("abductor_machine", ["abductor_machine"], "abductor_machine") == ["abductor_machine"], "single variant")
+
     print(f"exercises {len(exercises)} unique {len(by_id)}")
     print(f"hip_extension ids {len(extension_ids)}")
     print("before 'hip extension':", sorted(before))
     print("after 'hip extension':", len(after), "ids, includes",
           ", ".join(item for item in ("hip_thrust_barbell", "glute_bridge", "cable_kickback") if item in after))
     print("visible non-specialist Hip Abduction:", visible_named)
+    print("group entry en/zh: Hip Abduction / 髋外展")
+    print("equipment variants:", machine["id"], machine["name"]["en"], cable["id"], cable["name"]["en"])
+    print("variant menu:", menu_rows("abductor_machine", visible, "abductor_machine"))
     if failures:
         print("FAILED")
         for failure in failures:

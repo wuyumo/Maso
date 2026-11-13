@@ -360,4 +360,94 @@ final class ExerciseSelectionPolicyTests: XCTestCase {
         XCTAssertTrue(machineReplacements.allSatisfy { policy.equipmentAllows($0, selected: ["machine"]) })
         XCTAssertFalse(machineReplacements.contains { $0.id == "abduction_cable" })
     }
+
+    func testHipAbductionEquipmentVersionsShareOneGroupAndKeepSeparateIDs() throws {
+        let machine = try exercise("abductor_machine")
+        let cable = try exercise("abduction_cable")
+        let lean = try exercise("abductor_machine_lean_forward")
+        let side = try exercise("side_leg_raise")
+        let sideCable = try exercise("side_leg_raise_cable")
+        let adduction = try exercise("adductor_machine")
+        XCTAssertEqual(policy.programmingGroupID(for: machine), "hip_abduction")
+        XCTAssertEqual(policy.programmingGroupID(for: cable), policy.programmingGroupID(for: machine))
+        XCTAssertEqual(policy.displayFamilyID(for: cable), policy.displayFamilyID(for: machine))
+        XCTAssertNotEqual(policy.programmingGroupID(for: side), policy.programmingGroupID(for: machine))
+        XCTAssertEqual(policy.programmingGroupID(for: sideCable), policy.programmingGroupID(for: side))
+        XCTAssertEqual(policy.programmingGroupID(for: adduction), "hip_adduction")
+
+        let members = [machine, cable, lean, side, sideCable, adduction]
+        for groupByName in [true, false] {
+            let groups = ExerciseGrouping.group(members, groupByName: groupByName)
+            let hip = try XCTUnwrap(groups.first { $0.all.contains { $0.id == machine.id } })
+            XCTAssertEqual(groups.filter { $0.all.contains { $0.id == machine.id } }.count, 1)
+            XCTAssertEqual(Set(hip.all.map(\.id)), [machine.id, cable.id, lean.id], "groupByName \(groupByName)")
+            XCTAssertEqual(hip.canonical.id, machine.id)
+            XCTAssertEqual(hip.canonical.nameParts?.localizedBase?["en"], "Hip Abduction")
+            XCTAssertEqual(hip.canonical.nameParts?.localizedBase?["zh-Hans"], "髋外展")
+            XCTAssertTrue(hip.equipmentVariants.contains { $0.id == cable.id })
+            XCTAssertEqual(cable.equipment, "cable")
+            XCTAssertEqual(machine.equipment, "abductor_machine")
+            XCTAssertFalse(hip.all.contains { $0.id == side.id || $0.id == sideCable.id || $0.id == adduction.id })
+        }
+        XCTAssertEqual(ExerciseLibrary.byId["Thigh_Abductor"]?.id, machine.id)
+        XCTAssertEqual(ExerciseLibrary.byId[cable.id]?.id, cable.id)
+
+        let step = PlanStep(id: "hip-load", exerciseId: machine.id, sets: 3, reps: 12,
+                            weight: 40, setWeights: [40, 45, 50])
+        let plan = Plan(id: "hip-plan", name: "Hip", steps: [step], createdAt: Date(), updatedAt: Date())
+        var cableOnly = UserSettings()
+        cableOnly.availableEquipment = ["cable"]
+        let projected = policy.routineDefaults(plan, library: ExerciseLibrary.all, settings: cableOnly)
+        XCTAssertEqual(projected.steps.first?.exerciseId, cable.id)
+        XCTAssertNil(projected.steps.first?.weight)
+        XCTAssertNil(projected.steps.first?.setWeights)
+        XCTAssertEqual(plan.steps.first?.exerciseId, machine.id)
+        XCTAssertEqual(plan.steps.first?.weight, 40)
+        XCTAssertEqual(plan.steps.first?.setWeights, [40, 45, 50])
+
+        let store = TrainingSessionStore(completionSound: {})
+        store.start(planId: plan.id, plan: plan, segments: expandPlan(plan, exById: ExerciseLibrary.byId))
+        defer { store.end() }
+        store.replaceStepExercise(step.id, newExerciseId: cable.id, exById: ExerciseLibrary.byId,
+                                  defaultRest: 60, defaultBetweenExerciseRest: 90)
+        XCTAssertEqual(store.plan?.steps.first?.exerciseId, cable.id)
+        XCTAssertNil(store.plan?.steps.first?.weight)
+        XCTAssertNil(store.plan?.steps.first?.setWeights)
+        XCTAssertEqual(ExerciseLibrary.byId[machine.id]?.name, "Hip Abduction (Machine)")
+    }
+
+    func testWorkoutVariantMenuKeepsDefaultInsideTheVariantListOnce() throws {
+        let machine = try exercise("abductor_machine")
+        let cable = try exercise("abduction_cable")
+        let lean = try exercise("abductor_machine_lean_forward")
+        let settings = UserSettings()
+        let visible = policy.variants(for: machine, in: ExerciseLibrary.all, settings: settings)
+        XCTAssertTrue(visible.contains { $0.id == machine.id })
+        XCTAssertTrue(visible.contains { $0.id == cable.id })
+        XCTAssertFalse(visible.contains { $0.id == lean.id })
+
+        let currentIsDefault = ExerciseGrouping.variantMenuRows(defaultVersion: machine, candidates: visible, current: machine)
+        XCTAssertEqual(currentIsDefault.map(\.id).filter { $0 == machine.id }.count, 1)
+        XCTAssertEqual(currentIsDefault.map(\.id).filter { $0 == cable.id }.count, 1)
+        XCTAssertEqual(currentIsDefault.first?.id, machine.id)
+        XCTAssertFalse(currentIsDefault.contains { $0.id == lean.id })
+
+        let currentIsCable = ExerciseGrouping.variantMenuRows(defaultVersion: machine, candidates: visible, current: cable)
+        XCTAssertEqual(currentIsCable.map(\.id), currentIsDefault.map(\.id))
+
+        let currentIsFilteredSpecialist = ExerciseGrouping.variantMenuRows(defaultVersion: machine, candidates: visible, current: lean)
+        XCTAssertEqual(currentIsFilteredSpecialist.filter { $0.id == lean.id }.count, 1)
+        XCTAssertEqual(currentIsFilteredSpecialist.last?.id, lean.id)
+        XCTAssertEqual(currentIsFilteredSpecialist.filter { $0.id == machine.id }.count, 1)
+
+        let onlyDefault = ExerciseGrouping.variantMenuRows(defaultVersion: machine, candidates: [machine], current: machine)
+        XCTAssertEqual(onlyDefault.map(\.id), [machine.id])
+        let filteredDefaultStillShown = ExerciseGrouping.variantMenuRows(defaultVersion: machine, candidates: [cable], current: cable)
+        XCTAssertEqual(filteredDefaultStillShown.map(\.id), [machine.id, cable.id])
+        let cableOnlyCandidates = visible.filter { $0.equipment == "cable" }
+        let cableRows = ExerciseGrouping.variantMenuRows(defaultVersion: policy.defaultVersion(for: cable, in: cableOnlyCandidates + [cable], settings: settings),
+                                                         candidates: cableOnlyCandidates, current: cable)
+        XCTAssertFalse(cableRows.contains { $0.equipment == "abductor_machine" })
+        XCTAssertEqual(cableRows.filter { $0.id == cable.id }.count, 1)
+    }
 }
