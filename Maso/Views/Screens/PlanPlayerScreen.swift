@@ -385,6 +385,9 @@ struct PlanPlayerScreen: View {
             defer { replacementUsesAllMuscles = false }
             guard let replacement = pendingReplacement else { return }
             pendingReplacement = nil
+            if let currentID = store.plan?.steps.first(where: { $0.id == replacement.stepId })?.exerciseId {
+                data.rememberExplicitVariantChoice(from: currentID, to: replacement.exerciseId)
+            }
             store.replaceStepExercise(replacement.stepId, newExerciseId: replacement.exerciseId, suggestedStep: data.exById[replacement.exerciseId].map { data.makeSeededStep(for: $0, stepId: replacement.stepId) },
                                       exById: data.exById, defaultRest: data.settings.defaultRestSeconds,
                                       defaultBetweenExerciseRest: data.settings.defaultBetweenExerciseRestSeconds)
@@ -951,6 +954,9 @@ struct PlanPlayerScreen: View {
 
     private func selectVariant(_ exercise: Exercise, stepId: String) {
         Haptics.selection()
+        if let currentID = store.plan?.steps.first(where: { $0.id == stepId })?.exerciseId {
+            data.rememberExplicitVariantChoice(from: currentID, to: exercise.id)
+        }
         store.replaceStepExercise(stepId, newExerciseId: exercise.id,
                                   suggestedStep: data.makeSeededStep(for: exercise, stepId: stepId), exById: data.exById,
                                   defaultRest: data.settings.defaultRestSeconds,

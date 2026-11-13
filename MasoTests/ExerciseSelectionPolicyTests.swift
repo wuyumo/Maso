@@ -450,4 +450,106 @@ final class ExerciseSelectionPolicyTests: XCTestCase {
         XCTAssertFalse(cableRows.contains { $0.equipment == "abductor_machine" })
         XCTAssertEqual(cableRows.filter { $0.id == cable.id }.count, 1)
     }
+
+    func testExplicitVariantPreferenceDrivesLaterCardsWithoutRecordingItself() throws {
+        let barbell = try exercise("bench_press_barbell")
+        let machine = try exercise("bench_press_machine")
+        let dumbbell = try exercise("bench_press_dumbbell")
+        let incline = try exercise("incline_bench_press_barbell")
+        let close = try exercise("bench_press_close_grip")
+        let squat = try exercise("squat_barbell")
+        let library = ExerciseLibrary.all
+        XCTAssertEqual(policy.programmingGroupID(for: barbell), policy.programmingGroupID(for: machine))
+        XCTAssertEqual(policy.programmingGroupID(for: dumbbell), policy.programmingGroupID(for: barbell))
+        XCTAssertNotEqual(policy.programmingGroupID(for: incline), policy.programmingGroupID(for: barbell))
+        XCTAssertNotEqual(policy.programmingGroupID(for: close), policy.programmingGroupID(for: barbell))
+
+        var settings = UserSettings()
+        let unchanged = policy.explicitVariantPreference(recording: machine, replacing: machine, in: settings)
+        XCTAssertNil(unchanged.preferredVariantByProgrammingGroup)
+        let otherFamily = policy.explicitVariantPreference(recording: squat, replacing: barbell, in: settings)
+        XCTAssertNil(otherFamily.preferredVariantByProgrammingGroup)
+        settings = policy.explicitVariantPreference(recording: machine, replacing: barbell, in: settings)
+        XCTAssertEqual(settings.preferredVariantByProgrammingGroup, ["bench_press.flat": machine.id])
+        let decoded = try JSONDecoder().decode(UserSettings.self, from: JSONEncoder().encode(settings))
+        XCTAssertEqual(decoded.preferredVariantByProgrammingGroup, settings.preferredVariantByProgrammingGroup)
+        var otherAccount = UserSettings()
+        XCTAssertNil(otherAccount.preferredVariantByProgrammingGroup)
+        settings = policy.explicitVariantPreference(recording: dumbbell, replacing: machine, in: settings)
+        XCTAssertEqual(settings.preferredVariantByProgrammingGroup?["bench_press.flat"], dumbbell.id)
+        XCTAssertNil(otherAccount.preferredVariantByProgrammingGroup)
+        settings = policy.explicitVariantPreference(recording: machine, replacing: dumbbell, in: settings)
+
+        let step = PlanStep(id: "bench", exerciseId: barbell.id, sets: 3, reps: 8, weight: 80, setWeights: [80, 80, 80])
+        let existing = Plan(id: "saved-bench", name: "Saved", steps: [step], createdAt: Date(), updatedAt: Date())
+        let displayed = policy.routineDefaults(existing, library: library, settings: settings)
+        XCTAssertEqual(displayed.steps.first?.exerciseId, barbell.id)
+        XCTAssertEqual(displayed.steps.first?.weight, 80)
+        var preserved = existing
+        preserved.preservesExerciseVariants = true
+        let imported = policy.routineDefaults(preserved, library: library, settings: settings, useSavedVariantPreference: true)
+        XCTAssertEqual(imported.steps.first?.exerciseId, barbell.id)
+        XCTAssertEqual(imported.steps.first?.weight, 80)
+
+        let before = settings
+        let generated = policy.routineDefaults(existing, library: library, settings: settings, useSavedVariantPreference: true)
+        XCTAssertEqual(generated.steps.first?.exerciseId, machine.id)
+        XCTAssertNil(generated.steps.first?.weight)
+        XCTAssertNil(generated.steps.first?.setWeights)
+        XCTAssertEqual(existing.steps.first?.exerciseId, barbell.id)
+        XCTAssertEqual(existing.steps.first?.weight, 80)
+        XCTAssertEqual(settings.preferredVariantByProgrammingGroup, before.preferredVariantByProgrammingGroup)
+
+        let requested = policy.defaultVersion(for: barbell, in: library, settings: settings,
+                                              preferredIDs: [dumbbell.id], useSavedVariantPreference: true)
+        XCTAssertEqual(requested.id, dumbbell.id)
+        var dumbbellOnly = settings
+        dumbbellOnly.availableEquipment = ["dumbbell"]
+        let fallback = policy.defaultVersion(for: barbell, in: library, settings: dumbbellOnly, useSavedVariantPreference: true)
+        XCTAssertEqual(fallback.id, dumbbell.id)
+        XCTAssertEqual(dumbbellOnly.preferredVariantByProgrammingGroup?[policy.programmingGroupID(for: barbell)], machine.id)
+        let inclineVersion = policy.defaultVersion(for: incline, in: library, settings: settings, useSavedVariantPreference: true)
+        XCTAssertEqual(policy.programmingGroupID(for: inclineVersion), policy.programmingGroupID(for: incline))
+        let closeVersion = policy.defaultVersion(for: close, in: library, settings: settings, useSavedVariantPreference: true)
+        XCTAssertEqual(policy.programmingGroupID(for: closeVersion), policy.programmingGroupID(for: close))
+
+        var missing = settings
+        missing.preferredVariantByProgrammingGroup = ["bench_press.flat": "deleted-bench"]
+        let recovered = policy.defaultVersion(for: barbell, in: library, settings: missing, useSavedVariantPreference: true)
+        XCTAssertEqual(recovered.id, barbell.id)
+        XCTAssertEqual(missing.preferredVariantByProgrammingGroup?["bench_press.flat"], "deleted-bench")
+        let canonical = ExerciseLibrary.canonicalSettings(missing, using: ExerciseLibrary.byId)
+        XCTAssertEqual(canonical.preferredVariantByProgrammingGroup?["bench_press.flat"], "deleted-bench")
+
+        let ranked = policy.generationCandidates(from: [barbell, machine, dumbbell], settings: settings, maxPerProgrammingGroup: 1)
+        XCTAssertEqual(ranked.map(\.id), [machine.id])
+        let legs = policy.generationCandidates(from: [squat], settings: settings, maxPerProgrammingGroup: 1)
+        XCTAssertFalse(legs.contains { policy.programmingGroupID(for: $0) == policy.programmingGroupID(for: barbell) })
+
+        let data = DataStore(exercises: library, plans: [existing], sets: [
+            SetRecord(id: "history", exerciseId: barbell.id, exerciseName: barbell.name, category: barbell.category,
+                      weight: 80, reps: 8, duration: nil, performedAt: Date(), planId: existing.id)
+        ], settings: UserSettings())
+        data.rememberExplicitVariantChoice(from: barbell.id, to: machine.id)
+        XCTAssertEqual(data.settings.preferredVariantByProgrammingGroup?[policy.programmingGroupID(for: barbell)], machine.id)
+        XCTAssertEqual(data.plans.first?.steps.first?.exerciseId, barbell.id)
+        XCTAssertEqual(data.sets.first?.exerciseId, barbell.id)
+        XCTAssertEqual(data.sets.first?.weight, 80)
+        data.rememberExplicitVariantChoice(from: machine.id, to: machine.id)
+        data.rememberExplicitVariantChoice(from: barbell.id, to: squat.id)
+        XCTAssertEqual(data.settings.preferredVariantByProgrammingGroup, [policy.programmingGroupID(for: barbell): machine.id])
+
+        var payload = data.buildAIPayload()
+        payload.savedVariantByProgrammingGroup = ["bench_press.flat": "pref-secret-not-for-model"]
+        let prompt = AIWorkoutService.shared.buildPrompt(payload: payload, library: [barbell])
+        XCTAssertFalse(prompt.contains("pref-secret-not-for-model"))
+        let json = #"{"name":"Push","steps":[{"exercise_id":"bench_press_barbell","sets":3,"reps":8,"weight_kg":80}]}"#
+        let ai = try AIWorkoutService.shared.validatedPlan(fromJSON: json, candidates: [barbell, machine, dumbbell], maxExercises: 4, settings: settings)
+        XCTAssertEqual(ai?.steps.first?.exerciseId, machine.id)
+        XCTAssertNil(ai?.steps.first?.weight)
+        let locked = try AIWorkoutService.shared.validatedPlan(fromJSON: json, candidates: [barbell, machine, dumbbell], maxExercises: 4, settings: settings, lockedIDs: [barbell.id])
+        XCTAssertEqual(locked?.steps.first?.exerciseId, barbell.id)
+        XCTAssertEqual(locked?.steps.first?.weight, 80)
+        XCTAssertEqual(settings.preferredVariantByProgrammingGroup?[policy.programmingGroupID(for: barbell)], machine.id)
+    }
 }

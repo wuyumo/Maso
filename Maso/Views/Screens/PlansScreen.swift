@@ -826,6 +826,7 @@ struct PlanDetailSheet: View {
         guard let id = stepToReplaceId,
               let idx = draft.steps.firstIndex(where: { $0.id == id }) else { return }
         let old = draft.steps[idx]
+        data.rememberExplicitVariantChoice(from: old.exerciseId, to: newExercise.id)
         draft.steps[idx] = PlanStep(
             id: old.id,
             exerciseId: newExercise.id,

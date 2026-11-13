@@ -70,6 +70,9 @@ enum ExerciseLibrary {
         }
         copy.favoriteExerciseIds = resolve(copy.favoriteExerciseIds)
         copy.adoptedNicheExerciseIds = resolve(copy.adoptedNicheExerciseIds)
+        if let preferences = copy.preferredVariantByProgrammingGroup {
+            copy.preferredVariantByProgrammingGroup = preferences.mapValues { consolidatedID($0, using: lookup) }
+        }
         return copy
     }
 
