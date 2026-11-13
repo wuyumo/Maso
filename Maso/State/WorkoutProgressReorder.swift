@@ -64,22 +64,11 @@ enum WorkoutProgressReorder {
         return Move(source: IndexSet(integer: origin), destination: destination)
     }
 
-    /// Left edge of a segment inside the bar. The long-press recognizer sits on that
-    /// segment's button, so its points are button-local and need this origin added.
-    /// Right-to-left still uses a left-origin x; `slotIndex` flips it afterwards.
-    static func segmentOrigin(index: Int, count: Int, width: CGFloat, spacing: CGFloat = spacing, rightToLeft: Bool) -> CGFloat {
-        guard count > 0, width > 0 else { return 0 }
-        let slot = max(0, (width - spacing * CGFloat(max(0, count - 1))) / CGFloat(count))
-        let pitch = slot + spacing
-        let clamped = min(max(0, index), count - 1)
-        if rightToLeft { return width - slot - CGFloat(clamped) * pitch }
-        return CGFloat(clamped) * pitch
-    }
-
-    static func barPoint(segmentIndex: Int, local: CGPoint, count: Int, width: CGFloat, spacing: CGFloat = spacing, rightToLeft: Bool) -> CGPoint {
-        CGPoint(
-            x: local.x + segmentOrigin(index: segmentIndex, count: count, width: width, spacing: spacing, rightToLeft: rightToLeft),
-            y: local.y)
+    /// `point` is in the recognizer's view. That view is not the segment button:
+    /// the recorded bounds were the full screen, and the point's y was far below
+    /// the 44pt bar. Subtract the bar's frame in the same view.
+    static func pointInBar(_ point: CGPoint, barFrameInRecognizerView: CGRect) -> CGPoint {
+        CGPoint(x: point.x - barFrameInRecognizerView.minX, y: point.y - barFrameInRecognizerView.minY)
     }
 
     static func slotIndex(x: CGFloat, count: Int, width: CGFloat, spacing: CGFloat = spacing, rightToLeft: Bool) -> Int {
@@ -197,16 +186,19 @@ enum WorkoutProgressReorder {
 /// that moves before the hold fails the recognizer so it does not reorder.
 struct WorkoutProgressReorderGesture: UIGestureRecognizerRepresentable {
     var enabled: Bool
+    var locateBar: () -> UIView?
     var onBegan: (CGPoint) -> Void
     var onChanged: (CGPoint) -> Void
     var onEnded: (_ location: CGPoint, _ cancelled: Bool) -> Void
 
     final class Coordinator: NSObject, UIGestureRecognizerDelegate {
+        var locateBar: () -> UIView?
         var onBegan: (CGPoint) -> Void
         var onChanged: (CGPoint) -> Void
         var onEnded: (CGPoint, Bool) -> Void
         var armed = false
-        init(onBegan: @escaping (CGPoint) -> Void, onChanged: @escaping (CGPoint) -> Void, onEnded: @escaping (CGPoint, Bool) -> Void) {
+        init(locateBar: @escaping () -> UIView?, onBegan: @escaping (CGPoint) -> Void, onChanged: @escaping (CGPoint) -> Void, onEnded: @escaping (CGPoint, Bool) -> Void) {
+            self.locateBar = locateBar
             self.onBegan = onBegan
             self.onChanged = onChanged
             self.onEnded = onEnded
@@ -217,14 +209,13 @@ struct WorkoutProgressReorderGesture: UIGestureRecognizerRepresentable {
         }
     }
 
-    /// Xcode 27's representable requires this converter argument. Points stay in the
-    /// segment button that owns the recognizer. The bar adds `segmentOrigin`.
+    /// Xcode 27's representable requires this converter argument. Points from the
+    /// recognizer are converted into the bar view before the callbacks.
     func makeCoordinator(converter _: UIGestureRecognizerRepresentableCoordinateSpaceConverter) -> Coordinator {
-        Coordinator(onBegan: onBegan, onChanged: onChanged, onEnded: onEnded)
+        Coordinator(locateBar: locateBar, onBegan: onBegan, onChanged: onChanged, onEnded: onEnded)
     }
 
     func makeUIGestureRecognizer(context: Context) -> OriginLongPressRecognizer {
-        WorkoutInputDiagnostics.record("progress recognizer created")
         let recognizer = OriginLongPressRecognizer()
         recognizer.minimumPressDuration = WorkoutProgressReorder.armDuration
         recognizer.allowableMovement = WorkoutProgressReorder.armSlop
@@ -243,18 +234,19 @@ struct WorkoutProgressReorderGesture: UIGestureRecognizerRepresentable {
         recognizer.delaysTouchesBegan = false
         recognizer.delaysTouchesEnded = false
         recognizer.delegate = context.coordinator
+        context.coordinator.locateBar = locateBar
         context.coordinator.onBegan = onBegan
         context.coordinator.onChanged = onChanged
         context.coordinator.onEnded = onEnded
     }
 
     func handleUIGestureRecognizerAction(_ recognizer: OriginLongPressRecognizer, context: Context) {
-        let current = recognizer.location(in: recognizer.view)
-        WorkoutInputDiagnostics.record("progress gesture state=\(recognizer.state.rawValue) armed=\(context.coordinator.armed) local=\(current) bounds=\(String(describing: recognizer.view?.bounds))")
+        let current = inBar(recognizer.location(in: recognizer.view), recognizer: recognizer, context: context)
         switch recognizer.state {
         case .began:
             context.coordinator.armed = true
-            context.coordinator.onBegan(recognizer.origin ?? current)
+            let origin = inBar(recognizer.origin ?? recognizer.location(in: recognizer.view), recognizer: recognizer, context: context)
+            context.coordinator.onBegan(origin)
         case .changed:
             guard context.coordinator.armed else { return }
             context.coordinator.onChanged(current)
@@ -270,6 +262,11 @@ struct WorkoutProgressReorderGesture: UIGestureRecognizerRepresentable {
             break
         }
     }
+
+    private func inBar(_ point: CGPoint, recognizer: UIGestureRecognizer, context: Context) -> CGPoint {
+        guard let host = recognizer.view, let bar = context.coordinator.locateBar(), bar !== host else { return point }
+        return host.convert(point, to: bar)
+    }
 }
 
 /// Remembers the first touch so a narrow segment is chosen from the press, not from later drift.
@@ -281,8 +278,6 @@ final class OriginLongPressRecognizer: UILongPressGestureRecognizer {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
         super.touchesBegan(touches, with: event)
         origin = touches.first?.location(in: view)
-        let touch = touches.first
-        WorkoutInputDiagnostics.record("progress touchesBegan local=\(String(describing: touch?.location(in: view))) window=\(String(describing: touch?.location(in: view?.window))) bounds=\(String(describing: view?.bounds))")
     }
     override func reset() {
         super.reset()
@@ -294,31 +289,4 @@ final class OriginLongPressRecognizer: UILongPressGestureRecognizer {
     override func canBePrevented(by preventingGestureRecognizer: UIGestureRecognizer) -> Bool {
         false
     }
-}
-
-/// DEBUG-only trace of the heart-limit field and the progress-bar recognizer.
-/// Release builds record nothing. The callbacks keep their existing decisions.
-enum WorkoutInputDiagnostics {
-    static func record(_ message: String) {
-        #if DEBUG
-        let line = String(format: "%.3f %@", Date().timeIntervalSince1970, message)
-        NSLog("MASO-DIAG %@", line)
-        queue.async {
-            let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-                .appendingPathComponent("workout-input-diagnostics.log")
-            let data = Data((line + "\n").utf8)
-            if let handle = FileHandle(forWritingAtPath: url.path) {
-                defer { try? handle.close() }
-                _ = try? handle.seekToEnd()
-                try? handle.write(contentsOf: data)
-            } else {
-                try? data.write(to: url, options: .atomic)
-            }
-        }
-        #endif
-    }
-
-    #if DEBUG
-    private static let queue = DispatchQueue(label: "maso.workout.input.diagnostics")
-    #endif
 }

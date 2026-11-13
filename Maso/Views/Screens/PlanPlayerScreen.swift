@@ -835,7 +835,6 @@ struct PlanPlayerScreen: View {
                 _ = store.jumpToFirstUnfinishedStep(stepId: stepId)
             },
             onReorder: { source, destination in
-                WorkoutInputDiagnostics.record("progress reorder source=\(source.map { $0 }) destination=\(destination)")
                 reorderWorkoutSteps(from: source, to: destination)
                 Haptics.tap()
             }
@@ -2398,6 +2397,7 @@ private struct WorkoutExerciseProgressBar: View {
 
     private final class DragSession {
         var value: Drag?
+        weak var barView: UIView?
     }
 
     private struct Drag {
@@ -2421,6 +2421,7 @@ private struct WorkoutExerciseProgressBar: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .contentShape(Rectangle())
+            .background(ProgressBarAnchor { dragSession.barView = $0 })
         }
         .frame(height: 44)
         .animation(nil, value: drag?.location.x)
@@ -2477,31 +2478,25 @@ private struct WorkoutExerciseProgressBar: View {
         .accessibilityLabel(Text(title(step)))
         .accessibilityValue(Text("\(done)/\(sets.count)"))
         .accessibilityHint(Text(progressHint(canJump: done != sets.count)))
-        .gesture(reorderGesture(index: index, barSize: barSize, rightToLeft: rightToLeft))
+        .gesture(reorderGesture(barSize: barSize, rightToLeft: rightToLeft))
         .modifier(ProgressReorderActions(canMoveEarlier: index > 0, canMoveLater: index + 1 < steps.count, earlier: { move(from: index, toFinalIndex: index - 1) }, later: { move(from: index, toFinalIndex: index + 1) }))
     }
 
-    private func barPoint(_ buttonPoint: CGPoint, segmentIndex: Int, width: CGFloat, rightToLeft: Bool) -> CGPoint {
-        WorkoutProgressReorder.barPoint(
-            segmentIndex: segmentIndex, local: buttonPoint, count: steps.count,
-            width: width, rightToLeft: rightToLeft)
-    }
-
-    private func reorderGesture(index: Int, barSize: CGSize, rightToLeft: Bool) -> WorkoutProgressReorderGesture {
+    private func reorderGesture(barSize: CGSize, rightToLeft: Bool) -> WorkoutProgressReorderGesture {
         WorkoutProgressReorderGesture(
             enabled: steps.count > 1,
-            onBegan: { buttonPoint in
-                let local = barPoint(buttonPoint, segmentIndex: index, width: barSize.width, rightToLeft: rightToLeft)
-                WorkoutInputDiagnostics.record("progress began segment=\(index) button=\(buttonPoint) bar=\(local) size=\(barSize)")
-                let value = Drag(sourceIndex: index, origin: local, location: local, finalIndex: index, inside: true)
+            locateBar: { dragSession.barView },
+            onBegan: { local in
+                guard let source = WorkoutProgressReorder.landingIndex(
+                    count: steps.count, location: local, size: barSize, rightToLeft: rightToLeft) else { return }
+                let value = Drag(sourceIndex: source, origin: local, location: local, finalIndex: source, inside: true)
                 dragSession.value = value
                 drag = value
                 suppressTapUntil = Date().addingTimeInterval(30)
                 Haptics.tap()
             },
-            onChanged: { buttonPoint in
+            onChanged: { local in
                 guard var value = dragSession.value else { return }
-                let local = barPoint(buttonPoint, segmentIndex: index, width: barSize.width, rightToLeft: rightToLeft)
                 value.location = local
                 if let landing = WorkoutProgressReorder.landingIndex(
                     count: steps.count, location: local, size: barSize, rightToLeft: rightToLeft) {
@@ -2512,27 +2507,20 @@ private struct WorkoutExerciseProgressBar: View {
                     value.finalIndex = value.sourceIndex
                     value.inside = false
                 }
-                WorkoutInputDiagnostics.record("progress changed segment=\(index) bar=\(local) landing=\(value.finalIndex) inside=\(value.inside)")
                 dragSession.value = value
                 drag = value
             },
-            onEnded: { buttonPoint, cancelled in
+            onEnded: { local, cancelled in
                 let finished = dragSession.value
                 dragSession.value = nil
                 drag = nil
                 suppressTapUntil = Date().addingTimeInterval(0.45)
-                let local = barPoint(buttonPoint, segmentIndex: index, width: barSize.width, rightToLeft: rightToLeft)
-                let landing = WorkoutProgressReorder.landingIndex(
-                    count: steps.count, location: local, size: barSize, rightToLeft: rightToLeft)
-                let move = finished.flatMap { finished in
-                    landing.flatMap { landing in
-                        WorkoutProgressReorder.planMove(
-                            visiblePlanIndices: steps.map(\.planIndex),
-                            from: finished.sourceIndex, toFinalIndex: landing)
-                    }
-                }
-                WorkoutInputDiagnostics.record("progress ended segment=\(index) cancelled=\(cancelled) armed=\(finished != nil) bar=\(local) landing=\(String(describing: landing)) move=\(String(describing: move))")
-                guard let finished, !cancelled, let move else { return }
+                guard let finished, !cancelled,
+                      let landing = WorkoutProgressReorder.landingIndex(
+                        count: steps.count, location: local, size: barSize, rightToLeft: rightToLeft),
+                      let move = WorkoutProgressReorder.planMove(
+                        visiblePlanIndices: steps.map(\.planIndex),
+                        from: finished.sourceIndex, toFinalIndex: landing) else { return }
                 onReorder(move.source, move.destination)
             }
         )
@@ -2549,6 +2537,23 @@ private struct WorkoutExerciseProgressBar: View {
         guard let move = WorkoutProgressReorder.planMove(
             visiblePlanIndices: steps.map(\.planIndex), from: index, toFinalIndex: final) else { return }
         onReorder(move.source, move.destination)
+    }
+}
+
+/// The long-press recognizer is mounted on a full-screen view, so the bar keeps
+/// its own UIView and converts recognizer points into that view.
+private struct ProgressBarAnchor: UIViewRepresentable {
+    var attach: (UIView) -> Void
+
+    func makeUIView(context: Context) -> UIView {
+        let view = UIView()
+        view.isUserInteractionEnabled = false
+        view.backgroundColor = .clear
+        return view
+    }
+
+    func updateUIView(_ uiView: UIView, context: Context) {
+        attach(uiView)
     }
 }
 
@@ -4282,51 +4287,51 @@ struct WorkoutHeartRateButton: View {
     }
 }
 
-/// Editable reminder-limit text. A recommendation is special only until the user changes it.
-/// After that, every value is taken as typed, including empty and the recommendation's own digits.
+/// Editable reminder-limit text. `text` stays equal to the field's string so SwiftUI
+/// does not write a shorter model back into the native buffer. A recommendation that
+/// is still wrapped around the typed digits is read only when saving.
 struct WorkoutHeartLimitDraft: Equatable {
     var text: String
     /// The recommendation currently shown, before any edit. Nil for a saved custom value.
     private var untouchedRecommendation: String?
-    /// Digits that may still be glued to `text` by the field after the first replacement.
-    private var echoedRecommendation: String?
+    /// Recommendation digits still present at one end of `text` after editing starts.
+    private var carriedRecommendation: String?
 
     var usesRecommendation: Bool { untouchedRecommendation != nil }
 
+    /// Digits to validate. A field that still reads `180162` around recommendation `162` saves `180`.
+    var textForSave: String {
+        if let seed = carriedRecommendation, let extra = Self.insertedDigits(around: seed, in: text) {
+            return extra
+        }
+        return text
+    }
+
     static func showingRecommendation(_ text: String) -> WorkoutHeartLimitDraft {
-        WorkoutHeartLimitDraft(text: text, untouchedRecommendation: text.isEmpty ? nil : text, echoedRecommendation: nil)
+        WorkoutHeartLimitDraft(text: text, untouchedRecommendation: text.isEmpty ? nil : text, carriedRecommendation: nil)
     }
 
     static func showingCustom(_ text: String) -> WorkoutHeartLimitDraft {
-        WorkoutHeartLimitDraft(text: text, untouchedRecommendation: nil, echoedRecommendation: nil)
+        WorkoutHeartLimitDraft(text: text, untouchedRecommendation: nil, carriedRecommendation: nil)
     }
 
     mutating func replace(_ newValue: String) {
-        if let seed = untouchedRecommendation, !seed.isEmpty {
-            if newValue == seed { return }
-            if let typed = Self.insertedDigits(around: seed, in: newValue) {
-                text = typed
-                untouchedRecommendation = nil
-                echoedRecommendation = seed
-                return
-            }
-            text = newValue
-            untouchedRecommendation = nil
-            echoedRecommendation = nil
-            return
-        }
-        if let seed = echoedRecommendation, !text.isEmpty, text != seed,
-           newValue == text + seed || newValue == seed + text {
-            return
-        }
-        echoedRecommendation = nil
+        if let seed = untouchedRecommendation, !seed.isEmpty, newValue == seed { return }
+        if untouchedRecommendation == nil, text == newValue { return }
         text = newValue
+        if let seed = untouchedRecommendation {
+            carriedRecommendation = seed
+            untouchedRecommendation = nil
+        }
+        if let seed = carriedRecommendation, Self.insertedDigits(around: seed, in: newValue) == nil {
+            carriedRecommendation = nil
+        }
     }
 
     mutating func reset(to recommendation: String) {
         text = recommendation
         untouchedRecommendation = recommendation.isEmpty ? nil : recommendation
-        echoedRecommendation = nil
+        carriedRecommendation = nil
     }
 
     /// Digits added at one end of an untouched recommendation, leaving that recommendation intact.
@@ -4427,12 +4432,7 @@ struct WorkoutHeartRateSettingsSheet: View {
                     HStack {
                         Text("Reminder limit")
                         Spacer()
-                        TextField("bpm", text: Binding(get: { draft.text }, set: { newValue in
-                            let before = draft.text
-                            let beforeUse = draft.usesRecommendation
-                            draft.replace(newValue)
-                            WorkoutInputDiagnostics.record("limit set in=\(newValue) before=\(before) useBefore=\(beforeUse) after=\(draft.text) useAfter=\(draft.usesRecommendation)")
-                        }))
+                        TextField("bpm", text: Binding(get: { draft.text }, set: { draft.replace($0) }))
                             .keyboardType(.numberPad).multilineTextAlignment(.trailing)
                             .frame(maxWidth: 110).accessibilityIdentifier("workout.heart.limit")
                     }
@@ -4481,17 +4481,10 @@ struct WorkoutHeartRateSettingsSheet: View {
                     let value = data.settings.workoutHeartRateLimit ?? recommendation.bpm
                     draft = .showingCustom(value.formatted(.number.locale(LanguageManager.currentLocale)))
                 }
-                WorkoutInputDiagnostics.record("limit appear text=\(draft.text) use=\(draft.usesRecommendation) bpm=\(recommendation.bpm)")
             }
             .onReceive(NotificationCenter.default.publisher(for: UITextField.textDidBeginEditingNotification)) { note in
-                let field = note.object as? UITextField
-                WorkoutInputDiagnostics.record("limit begin field=\(field?.text ?? "nil") id=\(field?.accessibilityIdentifier ?? "nil") draft=\(draft.text) use=\(draft.usesRecommendation)")
-                guard draft.usesRecommendation, let field, field.text == draft.text else { return }
+                guard draft.usesRecommendation, let field = note.object as? UITextField, field.text == draft.text else { return }
                 field.selectedTextRange = field.textRange(from: field.beginningOfDocument, to: field.endOfDocument)
-            }
-            .onReceive(NotificationCenter.default.publisher(for: UITextField.textDidChangeNotification)) { note in
-                let field = note.object as? UITextField
-                WorkoutInputDiagnostics.record("limit change field=\(field?.text ?? "nil") id=\(field?.accessibilityIdentifier ?? "nil") draft=\(draft.text) use=\(draft.usesRecommendation)")
             }
             .onChange(of: recommendation.bpm) { _, value in
                 guard draft.usesRecommendation else { return }
@@ -4507,15 +4500,12 @@ struct WorkoutHeartRateSettingsSheet: View {
     }
     private func save() {
         if draft.usesRecommendation {
-            WorkoutInputDiagnostics.record("limit save branch=recommendation text=\(draft.text)")
             data.settings.workoutHeartRateUseRecommendation = true
             data.settings.workoutHeartRateLimit = nil
-        } else if let value = WorkoutHeartLimitValidation.acceptedBPM(draft.text, locale: LanguageManager.currentLocale) {
-            WorkoutInputDiagnostics.record("limit save branch=accepted value=\(value) text=\(draft.text)")
+        } else if let value = WorkoutHeartLimitValidation.acceptedBPM(draft.textForSave, locale: LanguageManager.currentLocale) {
             data.settings.workoutHeartRateLimit = value
             data.settings.workoutHeartRateUseRecommendation = false
         } else {
-            WorkoutInputDiagnostics.record("limit save branch=rejected text=\(draft.text) use=\(draft.usesRecommendation)")
             errorText = NSLocalizedString("Enter a limit from 40 to 240 bpm.", comment: "")
             return
         }
