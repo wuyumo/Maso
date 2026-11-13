@@ -191,7 +191,9 @@ struct WorkoutProgressReorderGesture: UIGestureRecognizerRepresentable {
         }
     }
 
-    func makeCoordinator() -> Coordinator {
+    /// Xcode 27's representable requires this converter argument. The recognizer
+    /// still reports points in its own view, which is the progress bar.
+    func makeCoordinator(converter _: UIGestureRecognizerRepresentableCoordinateSpaceConverter) -> Coordinator {
         Coordinator(onBegan: onBegan, onChanged: onChanged, onEnded: onEnded)
     }
 
