@@ -110,6 +110,17 @@ final class DataStore {
             legacyOnlyIDs: Set(ExerciseMediaPolicy.legacyOwners.values))
     }
 
+    /// Confirmed in-family replacement only. Preview, cancellation, and generated
+    /// choices do not call this. Another programming group is not stored.
+    func rememberExplicitVariantChoice(from currentID: String, to chosenID: String) {
+        guard let current = exById[currentID] ?? ExerciseLibrary.byId[currentID],
+              let chosen = exById[chosenID] ?? ExerciseLibrary.byId[chosenID] else { return }
+        let updated = ExerciseSelectionPolicy.shared.explicitVariantPreference(recording: chosen, replacing: current, in: settings)
+        guard updated.preferredVariantByProgrammingGroup != settings.preferredVariantByProgrammingGroup else { return }
+        settings = updated
+        save()
+    }
+
     func routinePlanDefaults(_ plan: Plan) -> Plan {
         let canonical = ExerciseLibrary.canonicalPlan(plan, using: exById)
         var result = ExerciseSelectionPolicy.shared.routineDefaults(canonical, library: userLibrary, settings: settings)
@@ -664,7 +675,7 @@ final class DataStore {
                     }, exById: exById)
                 }
             }
-            p = ExerciseSelectionPolicy.shared.routineDefaults(p, library: Array(exById.values), settings: settings, preferPinned: true)
+            p = ExerciseSelectionPolicy.shared.routineDefaults(p, library: Array(exById.values), settings: settings, preferPinned: true, useSavedVariantPreference: true)
             p.steps = DataStore.applyTrainingGoal(p.steps, settings: settings, exById: exById)
             p.steps = p.steps.map { step in
                 var step = step
@@ -2489,7 +2500,7 @@ final class DataStore {
         let repI = loading.defaultRepsForIsolation()
         let setsBase = max(1, settings.defaultSetsPerExercise)
 
-        return AIPayload(
+        var payload = AIPayload(
             gender: settings.gender?.rawValue,
             age: settings.age,
             weightKg: settings.weightForAI,
@@ -2522,6 +2533,8 @@ final class DataStore {
             trainingSessionMinutes: settings.trainingSessionMinutes,
             trainingEnvironment: settings.trainingEnvironment
         )
+        payload.savedVariantByProgrammingGroup = settings.preferredVariantByProgrammingGroup ?? [:]
+        return payload
     }
 
     /// 按当前 settings.weeklyTrainingDays 重新生成推荐计划.
