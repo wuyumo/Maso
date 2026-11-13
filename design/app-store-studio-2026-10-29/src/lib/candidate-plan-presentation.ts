@@ -5,18 +5,27 @@ export function candidatePlanUnit(canvas: { w: number; h: number }, phoneDeck: b
   return Math.min((canvas.w - 180) / chat.width, (canvas.h - 960) / (chat.height || 2050));
 }
 
+/** Put only the device's empty right margin into the 2% poster bleed. */
+export function candidatePlanShiftX(canvas: { w: number; h: number }, phoneDeck: boolean, chat?: { x?: number; width: number; height?: number }) {
+  if (!chat) return 0;
+  const unit = candidatePlanUnit(canvas, phoneDeck, chat);
+  const left = phoneDeck ? (chat.x ?? 96) * unit : (canvas.w - chat.width * unit) / 2;
+  return Math.max(0, canvas.w * 1.02 - left - chat.width * unit * 1.1);
+}
+
 // Match CoachChat's reference scale. Its existing measured fit includes the padding.
 export const CANDIDATE_PLAN_CSS = `
 #candidate-poster[data-candidate-plan-device="low-angle-split"] [data-chat-root="1"] {
   box-sizing: border-box;
-  border: calc(18px * var(--candidate-plan-unit)) solid #343c46;
-  border-radius: calc(64px * var(--candidate-plan-unit));
-  background: #141a20;
-  box-shadow: 0 calc(12px * var(--candidate-plan-unit)) 0 #252d36,
+  border: calc(22px * var(--candidate-plan-unit)) solid #090c10;
+  padding-right: calc(64px * var(--candidate-plan-unit));
+  border-radius: calc(72px * var(--candidate-plan-unit));
+  background: #111317;
+  box-shadow: 0 calc(12px * var(--candidate-plan-unit)) 0 #030507,
     0 calc(30px * var(--candidate-plan-unit)) calc(46px * var(--candidate-plan-unit)) rgba(0,0,0,.32),
     inset 0 0 0 calc(2px * var(--candidate-plan-unit)) rgba(255,255,255,.12);
-  transform: perspective(calc(7000px * var(--candidate-plan-unit))) rotateX(4deg) skewX(-1deg) scale(.95);
-  transform-origin: center center;
+  transform: translateX(var(--candidate-plan-shift-x)) perspective(calc(4500px * var(--candidate-plan-unit))) rotateX(10deg) skewX(-3deg) scale(1.1);
+  transform-origin: left bottom;
 }
 #candidate-poster[data-candidate-plan-device="low-angle-split"] [data-chat-root="1"] > div {
   box-sizing: border-box;

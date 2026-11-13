@@ -14,7 +14,7 @@ import { DeviceShowcase, STORE_DEVICES, type StoreDevice } from "@/components/ed
 import type { ProjectState } from "@/lib/types";
 import { reviewBatchTargets, runReviewBatch } from "@/lib/candidate-batch";
 import { candidateWatchSource } from "@/lib/candidate51-assets";
-import { CANDIDATE_PLAN_CSS, candidatePlanUnit } from "@/lib/candidate-plan-presentation";
+import { CANDIDATE_PLAN_CSS, candidatePlanUnit, candidatePlanShiftX } from "@/lib/candidate-plan-presentation";
 
 import { CandidatePreviewControls, parsePreviewTarget, targetSearch, fitScale, canExportPage, exportName, exportCaptureOptions, type PreviewTarget as Target, type PreviewDevice as RenderDevice } from "@/components/editor/candidate-preview-controls";
 
@@ -217,6 +217,7 @@ export default function RenderPage() {
       data-candidate-plan-device={slide?.id === "plan" && slide.chat && target.device !== "watch" ? "low-angle-split" : undefined}
       style={{
         "--candidate-plan-unit": candidatePlanUnit(canvas, !!phoneDeck, slide?.chat),
+        "--candidate-plan-shift-x": `${candidatePlanShiftX(canvas, !!phoneDeck, slide?.chat)}px`,
         position: "fixed",
         inset: 0,
         width: canvas.w,
