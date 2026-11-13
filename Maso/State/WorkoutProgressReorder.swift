@@ -224,6 +224,7 @@ struct WorkoutProgressReorderGesture: UIGestureRecognizerRepresentable {
     }
 
     func makeUIGestureRecognizer(context: Context) -> OriginLongPressRecognizer {
+        WorkoutInputDiagnostics.record("progress recognizer created")
         let recognizer = OriginLongPressRecognizer()
         recognizer.minimumPressDuration = WorkoutProgressReorder.armDuration
         recognizer.allowableMovement = WorkoutProgressReorder.armSlop
@@ -249,6 +250,7 @@ struct WorkoutProgressReorderGesture: UIGestureRecognizerRepresentable {
 
     func handleUIGestureRecognizerAction(_ recognizer: OriginLongPressRecognizer, context: Context) {
         let current = recognizer.location(in: recognizer.view)
+        WorkoutInputDiagnostics.record("progress gesture state=\(recognizer.state.rawValue) armed=\(context.coordinator.armed) local=\(current) bounds=\(String(describing: recognizer.view?.bounds))")
         switch recognizer.state {
         case .began:
             context.coordinator.armed = true
@@ -279,6 +281,8 @@ final class OriginLongPressRecognizer: UILongPressGestureRecognizer {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
         super.touchesBegan(touches, with: event)
         origin = touches.first?.location(in: view)
+        let touch = touches.first
+        WorkoutInputDiagnostics.record("progress touchesBegan local=\(String(describing: touch?.location(in: view))) window=\(String(describing: touch?.location(in: view?.window))) bounds=\(String(describing: view?.bounds))")
     }
     override func reset() {
         super.reset()
@@ -290,4 +294,31 @@ final class OriginLongPressRecognizer: UILongPressGestureRecognizer {
     override func canBePrevented(by preventingGestureRecognizer: UIGestureRecognizer) -> Bool {
         false
     }
+}
+
+/// DEBUG-only trace of the heart-limit field and the progress-bar recognizer.
+/// Release builds record nothing. The callbacks keep their existing decisions.
+enum WorkoutInputDiagnostics {
+    static func record(_ message: String) {
+        #if DEBUG
+        let line = String(format: "%.3f %@", Date().timeIntervalSince1970, message)
+        NSLog("MASO-DIAG %@", line)
+        queue.async {
+            let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+                .appendingPathComponent("workout-input-diagnostics.log")
+            let data = Data((line + "\n").utf8)
+            if let handle = FileHandle(forWritingAtPath: url.path) {
+                defer { try? handle.close() }
+                _ = try? handle.seekToEnd()
+                try? handle.write(contentsOf: data)
+            } else {
+                try? data.write(to: url, options: .atomic)
+            }
+        }
+        #endif
+    }
+
+    #if DEBUG
+    private static let queue = DispatchQueue(label: "maso.workout.input.diagnostics")
+    #endif
 }

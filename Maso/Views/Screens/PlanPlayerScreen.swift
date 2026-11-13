@@ -835,6 +835,7 @@ struct PlanPlayerScreen: View {
                 _ = store.jumpToFirstUnfinishedStep(stepId: stepId)
             },
             onReorder: { source, destination in
+                WorkoutInputDiagnostics.record("progress reorder source=\(source.map { $0 }) destination=\(destination)")
                 reorderWorkoutSteps(from: source, to: destination)
                 Haptics.tap()
             }
@@ -2491,6 +2492,7 @@ private struct WorkoutExerciseProgressBar: View {
             enabled: steps.count > 1,
             onBegan: { buttonPoint in
                 let local = barPoint(buttonPoint, segmentIndex: index, width: barSize.width, rightToLeft: rightToLeft)
+                WorkoutInputDiagnostics.record("progress began segment=\(index) button=\(buttonPoint) bar=\(local) size=\(barSize)")
                 let value = Drag(sourceIndex: index, origin: local, location: local, finalIndex: index, inside: true)
                 dragSession.value = value
                 drag = value
@@ -2510,6 +2512,7 @@ private struct WorkoutExerciseProgressBar: View {
                     value.finalIndex = value.sourceIndex
                     value.inside = false
                 }
+                WorkoutInputDiagnostics.record("progress changed segment=\(index) bar=\(local) landing=\(value.finalIndex) inside=\(value.inside)")
                 dragSession.value = value
                 drag = value
             },
@@ -2518,13 +2521,18 @@ private struct WorkoutExerciseProgressBar: View {
                 dragSession.value = nil
                 drag = nil
                 suppressTapUntil = Date().addingTimeInterval(0.45)
-                guard let finished, !cancelled else { return }
                 let local = barPoint(buttonPoint, segmentIndex: index, width: barSize.width, rightToLeft: rightToLeft)
-                guard let landing = WorkoutProgressReorder.landingIndex(
-                    count: steps.count, location: local, size: barSize, rightToLeft: rightToLeft),
-                      let move = WorkoutProgressReorder.planMove(
-                        visiblePlanIndices: steps.map(\.planIndex),
-                        from: finished.sourceIndex, toFinalIndex: landing) else { return }
+                let landing = WorkoutProgressReorder.landingIndex(
+                    count: steps.count, location: local, size: barSize, rightToLeft: rightToLeft)
+                let move = finished.flatMap { finished in
+                    landing.flatMap { landing in
+                        WorkoutProgressReorder.planMove(
+                            visiblePlanIndices: steps.map(\.planIndex),
+                            from: finished.sourceIndex, toFinalIndex: landing)
+                    }
+                }
+                WorkoutInputDiagnostics.record("progress ended segment=\(index) cancelled=\(cancelled) armed=\(finished != nil) bar=\(local) landing=\(String(describing: landing)) move=\(String(describing: move))")
+                guard let finished, !cancelled, let move else { return }
                 onReorder(move.source, move.destination)
             }
         )
@@ -4419,7 +4427,12 @@ struct WorkoutHeartRateSettingsSheet: View {
                     HStack {
                         Text("Reminder limit")
                         Spacer()
-                        TextField("bpm", text: Binding(get: { draft.text }, set: { draft.replace($0) }))
+                        TextField("bpm", text: Binding(get: { draft.text }, set: { newValue in
+                            let before = draft.text
+                            let beforeUse = draft.usesRecommendation
+                            draft.replace(newValue)
+                            WorkoutInputDiagnostics.record("limit set in=\(newValue) before=\(before) useBefore=\(beforeUse) after=\(draft.text) useAfter=\(draft.usesRecommendation)")
+                        }))
                             .keyboardType(.numberPad).multilineTextAlignment(.trailing)
                             .frame(maxWidth: 110).accessibilityIdentifier("workout.heart.limit")
                     }
@@ -4468,10 +4481,17 @@ struct WorkoutHeartRateSettingsSheet: View {
                     let value = data.settings.workoutHeartRateLimit ?? recommendation.bpm
                     draft = .showingCustom(value.formatted(.number.locale(LanguageManager.currentLocale)))
                 }
+                WorkoutInputDiagnostics.record("limit appear text=\(draft.text) use=\(draft.usesRecommendation) bpm=\(recommendation.bpm)")
             }
             .onReceive(NotificationCenter.default.publisher(for: UITextField.textDidBeginEditingNotification)) { note in
-                guard draft.usesRecommendation, let field = note.object as? UITextField, field.text == draft.text else { return }
+                let field = note.object as? UITextField
+                WorkoutInputDiagnostics.record("limit begin field=\(field?.text ?? "nil") id=\(field?.accessibilityIdentifier ?? "nil") draft=\(draft.text) use=\(draft.usesRecommendation)")
+                guard draft.usesRecommendation, let field, field.text == draft.text else { return }
                 field.selectedTextRange = field.textRange(from: field.beginningOfDocument, to: field.endOfDocument)
+            }
+            .onReceive(NotificationCenter.default.publisher(for: UITextField.textDidChangeNotification)) { note in
+                let field = note.object as? UITextField
+                WorkoutInputDiagnostics.record("limit change field=\(field?.text ?? "nil") id=\(field?.accessibilityIdentifier ?? "nil") draft=\(draft.text) use=\(draft.usesRecommendation)")
             }
             .onChange(of: recommendation.bpm) { _, value in
                 guard draft.usesRecommendation else { return }
@@ -4487,12 +4507,15 @@ struct WorkoutHeartRateSettingsSheet: View {
     }
     private func save() {
         if draft.usesRecommendation {
+            WorkoutInputDiagnostics.record("limit save branch=recommendation text=\(draft.text)")
             data.settings.workoutHeartRateUseRecommendation = true
             data.settings.workoutHeartRateLimit = nil
         } else if let value = WorkoutHeartLimitValidation.acceptedBPM(draft.text, locale: LanguageManager.currentLocale) {
+            WorkoutInputDiagnostics.record("limit save branch=accepted value=\(value) text=\(draft.text)")
             data.settings.workoutHeartRateLimit = value
             data.settings.workoutHeartRateUseRecommendation = false
         } else {
+            WorkoutInputDiagnostics.record("limit save branch=rejected text=\(draft.text) use=\(draft.usesRecommendation)")
             errorText = NSLocalizedString("Enter a limit from 40 to 240 bpm.", comment: "")
             return
         }
