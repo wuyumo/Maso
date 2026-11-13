@@ -112,6 +112,7 @@
 "You're now Masso Pro!" = "Masso Proを今すぐお試しください!";
 "Enjoy unlimited plans, full history, and everything else. Welcome aboard." = "無制限のトレーニングプラン、完全な歴史、その他すべてをお楽しみください。 ようこそアボード。";
 "Restore Purchases" = "購入を復元する";
+"Restore Purchase" = "購入を復元する";
 "Terms" = "利用規約";
 "Privacy" = "プライバシー";
 "Tell us about your training" = "あなたのトレーニングについて教えてください";
@@ -1110,18 +1111,10 @@
 "Already up to date" = "すでに最新";
 "Smart progression" = "スマートな進歩";
 "Earn the next 2.5 kg — weight suggestions from your logged sets." = "次の 2.5 kg を獲得します。 – 記録されたセットからの重量の提案.";
-"Secure checkout on the web via Polar. %@ / %@, renews until cancelled — manage or cancel anytime on the Polar page." = "ポーラ経由でWeb上での安全なチェックアウト。 %@ / %@は、キャンセルされるまで再更新し、極上のページでいつでも管理またはキャンセルします。";
-"Enter code" = "コードを入力してください";
-"Enter your activation code" = "アクティベーションコードを入力してください";
-"After buying on the web, your code was emailed to you (and shown on the confirmation page). Paste it here to unlock Pro on this device." = "ウェブで購入した後、あなたのコードはあなたに電子メールで送信されました(そして確認ページに表示されます)。 このデバイスでProのロックを解除するためにここに貼り付けます。";
-"Activate" = "アクティブ";
-"That code isn't active yet. Double-check it, or try again in a moment." = "そのコードはまだアクティブではありません。 それをダブルチェックするか、一度にもう一度お試しください。";
-"Couldn't verify — check your connection and try again." = "確認できません — 接続を確認し、もう一度お試しください。";
 "You're Pro now — thanks for supporting Masso." = "Massoをサポートしていただきありがとうございます。";
 "That code isn't active yet. Check the email from your purchase, or try again in a moment." = "そのコードはまだアクティブではありません。 購入からメールをチェックするか、一度にもう一度お試しください。";
 "Couldn't verify your code — check your connection and try again." = "コードを検証できません。接続を確認してもう一度お試しください。";
 "ACTIVE" = "アクション";
-"Thanks for supporting Masso. Manage or cancel on the Polar page." = "Massoをサポートしていただきありがとうございます。  Polarページを管理またはキャンセルします。";
 "Scan to get this routine" = "スキャンして同じワークアウトプランを入手";
 "%lld days a week" = "%lld 曜日";
 "YOUR TRAINING" = "あなたのトレーニング";
@@ -1899,7 +1892,6 @@
 
 "Subscription options are unavailable right now" = "現在サブスクリプションを読み込めません";
 
-"Restore web purchase" = "ウェブ購入を復元";
 
 "Basic workout logging and history stay free" = "基本のトレーニング記録と履歴は無料です";
 
@@ -2097,6 +2089,9 @@
 
 /* Workout progress, observed timing and personal heart-rate reminders */
 "Jump to first unfinished set" = "最初の未完了セットへ移動";
+"Move earlier" = "前へ移動";
+"Move later" = "後ろへ移動";
+"Long press and drag to reorder" = "長押ししてドラッグで並べ替え";
 "Rest duration" = "休憩時間";
 "Applies to this rest only." = "今回の休憩のみに適用。";
 "Edit rest time" = "休憩時間を変更";
@@ -2565,3 +2560,15 @@
 "AI access changed: 30-day transition. New limits start %@. Existing training stays available." = "AIのルールを更新しました。移行期間は30日間、新しい上限は%@から適用されます。既存のトレーニングは引き続き使えます。";
 
 "Details" = "詳細";
+
+"How this is counted" = "集計の説明";
+"No heart rate" = "心拍なし";
+"Timing incomplete" = "計測が不完全";
+"Work time" = "作業時間";
+"Include exercise detail" = "種目の詳細を含める";
+"Include heart rate" = "心拍を含める";
+"Most volume" = "最多";
+"Some volume" = "中程度";
+"Light volume" = "少なめ";
+"Not trained" = "未実施";
+"Report counting explanation" = "緑はこのワークアウトの相対的なトレーニング量で、過去の回復ではありません。3つの数字は作業時間、完了セット、負荷量です。負荷量は外部重量×回数で、完了したセットは1回だけ数えます。筋肉の数字は主働筋1.0、補助筋0.4のセット配分で、キログラムではありません。自重と時間制は重量に換算しません。有酸素は体に描きません。心拍の線はセットの計測区間だけを結び、一時停止、休憩、20秒を超える空白では切れます。プランの保存は次回だけに影響します。";

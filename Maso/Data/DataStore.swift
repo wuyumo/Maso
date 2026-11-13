@@ -110,6 +110,17 @@ final class DataStore {
             legacyOnlyIDs: Set(ExerciseMediaPolicy.legacyOwners.values))
     }
 
+    /// Confirmed in-family replacement only. Preview, cancellation, and generated
+    /// choices do not call this. Another programming group is not stored.
+    func rememberExplicitVariantChoice(from currentID: String, to chosenID: String) {
+        guard let current = exById[currentID] ?? ExerciseLibrary.byId[currentID],
+              let chosen = exById[chosenID] ?? ExerciseLibrary.byId[chosenID] else { return }
+        let updated = ExerciseSelectionPolicy.shared.explicitVariantPreference(recording: chosen, replacing: current, in: settings)
+        guard updated.preferredVariantByProgrammingGroup != settings.preferredVariantByProgrammingGroup else { return }
+        settings = updated
+        save()
+    }
+
     func routinePlanDefaults(_ plan: Plan) -> Plan {
         let canonical = ExerciseLibrary.canonicalPlan(plan, using: exById)
         var result = ExerciseSelectionPolicy.shared.routineDefaults(canonical, library: userLibrary, settings: settings)
@@ -402,7 +413,12 @@ final class DataStore {
                 store.aiTodayPlan != snapshot.aiTodayPlan {
                 store.flushSave()
             }
+            store.reconcileFullBodyLoadAnchor()
             store.aiAccess = DeviceAIQuota.installed(legacy: snapshot.settings.onboardingCompleted || !snapshot.plans.isEmpty || !snapshot.sets.isEmpty)
+            if store.plans != snapshot.plans || store.aiTodayPlan != snapshot.aiTodayPlan
+                || store.settings.fullBodyLoadAnchor != snapshot.settings.fullBodyLoadAnchor {
+                store.flushSave()
+            }
             return store
         }
         // 第一次启动 (磁盘无存档) → 全新空档: 空 plans/sets + onboardingCompleted=false.
@@ -430,12 +446,16 @@ final class DataStore {
 
     /// 全新安装 (无存档) 的起始数据 — 空 plans/sets, onboardingCompleted=false (UserSettings() 默认).
     /// 没有任何假历史 / 假画像 / 预生成计划; 这些等用户走完引导再由 onboarding 生成.
-    static func freshInstall() -> DataStore {
-        DataStore(
+    static func freshInstall(deviceCountry: String? = Locale.current.region?.identifier) -> DataStore {
+        var settings = UserSettings() // onboardingCompleted=false; gender/age/weight=nil
+        let provisional = WeightUnitDefaulting.provisional(deviceCountry: deviceCountry)
+        settings.weightUnit = provisional.unit
+        settings.weightUnitOrigin = provisional.origin.rawValue
+        return DataStore(
             exercises: ExerciseLibrary.all,
             plans: [],
             sets: [],
-            settings: UserSettings()   // onboardingCompleted=false; gender/age/weight=nil; wantStrengthen=[]
+            settings: settings
         )
     }
 
@@ -536,6 +556,9 @@ final class DataStore {
         // (开发时如果需要临时解锁所有 Pro 功能, 把 proSubscription 改成一个非 nil 的
         // ProSubscription 实例; 上线前必须改回 nil.)
         let settings = UserSettings(
+            // nil stays locked, the same as a saved profile with no origin key.
+            // The pending default belongs only to a real first launch.
+            weightUnitOrigin: nil,
             onboardingCompleted: true,
             weeklyTrainingDays: 3,
             // 默认必须用 MuscleSelector 暴露的 major 值, 不能用 sub (e.g. .lats).
@@ -664,7 +687,7 @@ final class DataStore {
                     }, exById: exById)
                 }
             }
-            p = ExerciseSelectionPolicy.shared.routineDefaults(p, library: Array(exById.values), settings: settings, preferPinned: true)
+            p = ExerciseSelectionPolicy.shared.routineDefaults(p, library: Array(exById.values), settings: settings, preferPinned: true, useSavedVariantPreference: true)
             p.steps = DataStore.applyTrainingGoal(p.steps, settings: settings, exById: exById)
             p.steps = p.steps.map { step in
                 var step = step
@@ -1221,6 +1244,7 @@ final class DataStore {
     /// A plan may be used repeatedly on the same day. Never discard by plan/day or elapsed time.
     func discardWorkout(_ session: TrainingSessionStore.Session, recordIDs: Set<String>) {
         sets.removeAll { recordIDs.contains($0.id) }
+        reconcileFullBodyLoadAnchor()
         let completionID = "\(session.planId)|\(session.startedAt.timeIntervalSince1970)"
         settings.workoutCompletions?.removeAll { $0.sessionID == completionID }
         // Commit removal before the player clears active-session.json, including immediate app exit.
@@ -1231,6 +1255,7 @@ final class DataStore {
     func removeSetRecord(id: String) {
         guard let index = sets.firstIndex(where: { $0.id == id }) else { return }
         sets.remove(at: index)
+        reconcileFullBodyLoadAnchor()
         save()
     }
 
@@ -1240,6 +1265,7 @@ final class DataStore {
             $0.exerciseId == exerciseId && $0.planId == planId && $0.performedAt >= since
         }) {
             sets.remove(at: idx)
+            reconcileFullBodyLoadAnchor()
             save()
         }
     }
@@ -1260,7 +1286,10 @@ final class DataStore {
                 idx += 1
             }
         }
-        if removed > 0 { save() }
+        if removed > 0 {
+            reconcileFullBodyLoadAnchor()
+            save()
+        }
     }
 
     /// 记录新的一组 — 同时:
@@ -1280,6 +1309,7 @@ final class DataStore {
             plans[idx].updatedAt = record.performedAt
         }
         if settings.calendar.isDate(record.performedAt, inSameDayAs: Date()) { captureWellnessGoal(updateDiet: true) }
+        reconcileFullBodyLoadAnchor()
         save()  // 持久化变更
     }
 
@@ -1373,6 +1403,7 @@ final class DataStore {
     }
 
     func referenceWeight(for exercise: Exercise, targetReps: Int? = nil, roughRecords: [SetRecord]? = nil) -> ExerciseWeightReference.Reference? {
+        _ = roughRecords
         let own = ExerciseWeightReference.latest(for: exercise, records: sets, library: exById)
         if let own, let date = own.recordedAt, Date().timeIntervalSince(date) <= 14 * 86400 { return own }
         // A cache matching the old completed load is history, not a new target.
@@ -1388,9 +1419,48 @@ final class DataStore {
            let value = settings.exerciseWeightInputs?[exercise.id], value.isFinite, value >= 0, value <= 500 {
             return .init(kilograms: value, sourceExerciseID: exercise.id, source: .userInput)
         }
-        return CrossExerciseLoadReference.reference(for: exercise, targetReps: targetReps,
-                                                     records: sets, settings: settings, library: exById)
-            ?? RoughExerciseLoadReference.reference(for: exercise, targetReps: targetReps, records: roughRecords ?? sets)
+        return FullBodyLoadEstimate.reference(for: exercise, anchor: settings.fullBodyLoadAnchor,
+                                              settings: settings, library: exById)
+    }
+
+    /// Recompute the one real anchor and write its one-time recommendations onto empty targets.
+    func reconcileFullBodyLoadAnchor() {
+        let next = FullBodyLoadEstimate.anchor(from: sets, library: exById)
+        if settings.fullBodyLoadAnchor != next { settings.fullBodyLoadAnchor = next }
+        func apply(_ plan: inout Plan) -> Bool {
+            var changed = false
+            for index in plan.steps.indices {
+                let updated = persistedFullBodyWeight(plan.steps[index])
+                if updated != plan.steps[index] {
+                    plan.steps[index] = updated
+                    changed = true
+                }
+            }
+            if changed { plan.updatedAt = Date() }
+            return changed
+        }
+        for index in plans.indices { _ = apply(&plans[index]) }
+        if var today = aiTodayPlan, apply(&today) { aiTodayPlan = today }
+    }
+
+    private func persistedFullBodyWeight(_ original: PlanStep) -> PlanStep {
+        guard let exercise = exById[original.exerciseId], exercise.category == .strength else { return original }
+        let suggestion = original.parameterSuggestions?["weight"]
+        let replacesEstimate = suggestion?.source == .fullBodyRough && original.isSuggested("weight")
+        guard original.weight == nil || replacesEstimate else { return original }
+        guard original.setWeights?.contains(where: { $0 != nil }) != true else { return original }
+        var step = original
+        if let reference = referenceWeight(for: exercise, targetReps: step.reps), reference.source == .fullBodyRough,
+           ExerciseWeightReference.expectsLoad(exercise) {
+            step.weight = reference.kilograms
+            step.markSuggested("weight", value: reference.kilograms, source: .fullBodyRough,
+                               exerciseID: reference.sourceExerciseID, recordedAt: reference.recordedAt,
+                               ruleID: reference.ruleID)
+        } else if replacesEstimate {
+            step.weight = nil
+            step.confirmParameter("weight")
+        }
+        return step
     }
 
     func lastSet(forExerciseId id: String) -> SetRecord? {
@@ -1635,9 +1705,26 @@ final class DataStore {
         save()
     }
 
-    /// 删除一个训练 session 的所有 SetRecord (同 day + 同 planId).
-    /// History 列表的"删除这次训练" — session 是 SetRecord 聚合而成, 删 session = 删它的 sets.
-    /// planId 用 `?? "free"` 跟 groupedSessions 保持一致 — nil 表自由训练(没绑 plan).
+    /// Removes one history card. A card with a session id does not delete records that have none.
+    func deleteRecordedSession(_ session: SessionSummary) {
+        let cal = settings.calendar
+        sets.removeAll { record in
+            cal.isDate(record.performedAt, inSameDayAs: session.day)
+                && record.planId == session.planId
+                && SessionMuscleReport.sessionID(record.workoutSessionID) == session.workoutSessionID
+        }
+        let remains = sets.contains {
+            cal.isDate($0.performedAt, inSameDayAs: session.day) && $0.planId == session.planId
+        }
+        if !remains {
+            settings.workoutCompletions?.removeAll {
+                $0.planID == session.planId && cal.isDate($0.finishedAt, inSameDayAs: session.day)
+            }
+        }
+        save()
+    }
+
+    /// 删除同一天、同一计划下的全部记录。历史菜单改走 deleteRecordedSession，按一场分开删。
     func deleteSession(planId: String?, day: Date) {
         let cal = settings.calendar
         settings.workoutCompletions?.removeAll {
@@ -2489,7 +2576,7 @@ final class DataStore {
         let repI = loading.defaultRepsForIsolation()
         let setsBase = max(1, settings.defaultSetsPerExercise)
 
-        return AIPayload(
+        var payload = AIPayload(
             gender: settings.gender?.rawValue,
             age: settings.age,
             weightKg: settings.weightForAI,
@@ -2522,6 +2609,8 @@ final class DataStore {
             trainingSessionMinutes: settings.trainingSessionMinutes,
             trainingEnvironment: settings.trainingEnvironment
         )
+        payload.savedVariantByProgrammingGroup = settings.preferredVariantByProgrammingGroup ?? [:]
+        return payload
     }
 
     /// 按当前 settings.weeklyTrainingDays 重新生成推荐计划.

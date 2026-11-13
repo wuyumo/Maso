@@ -239,8 +239,10 @@ final class AIWorkoutService {
             let query = [payload.focusNote, payload.coachMemory].compactMap { $0 }.joined(separator: "\n")
             let sessionLibrary = sessionRequest.map { request in library.filter(request.matches) } ?? library
             let candidates = routineCandidates(payload: payload, library: sessionLibrary, query: query)
+            let settings = selectionSettings(payload: payload, query: query)
+            let locked = payload.selectionFavoriteIDs.union(explicitlyRequestedExerciseIDs(in: query, library: library))
             let plans = try await requestValidatedPlans(candidates: candidates, expectedCount: 1,
-                maxExercises: maxExercises, single: true, surface: surface, preferredIDs: payload.selectionFavoriteIDs) { correction in
+                maxExercises: maxExercises, single: true, surface: surface, preferredIDs: locked, settings: settings) { correction in
                 try await self.callDeepSeek(payload: payload, library: candidates,
                                            maxExercises: maxExercises, correction: correction,
                                            sessionRequest: sessionRequest, previousSession: previousSession,
@@ -292,8 +294,10 @@ final class AIWorkoutService {
         do {
             let query = [payload.focusNote, payload.coachMemory].compactMap { $0 }.joined(separator: "\n")
             let candidates = routineCandidates(payload: payload, library: library, query: query)
+            let settings = selectionSettings(payload: payload, query: query)
+            let locked = payload.selectionFavoriteIDs.union(explicitlyRequestedExerciseIDs(in: query, library: library))
             let plans = try await requestValidatedPlans(candidates: candidates, expectedCount: count,
-                maxExercises: maxExercises, surface: surface, preferredIDs: payload.selectionFavoriteIDs) { correction in
+                maxExercises: maxExercises, surface: surface, preferredIDs: locked, settings: settings) { correction in
                 try await self.callDeepSeekRoutines(payload: payload, library: candidates,
                     count: count, perRoutine: maxExercises, correction: correction)
             }
@@ -363,8 +367,10 @@ final class AIWorkoutService {
             let query = [payload.focusNote, payload.coachMemory, feedback, onlyModify].compactMap { $0 }.joined(separator: "\n")
             let preservingIDs = Set(current.flatMap { $0.steps.map(\.exerciseId) })
             let candidates = routineCandidates(payload: payload, library: library, query: query, preservingIDs: preservingIDs)
+            let settings = selectionSettings(payload: payload, query: query)
+            let locked = payload.selectionFavoriteIDs.union(explicitlyRequestedExerciseIDs(in: query, library: library))
             let plans = try await requestValidatedPlans(candidates: candidates, expectedCount: nil,
-                maxExercises: maxExercises, surface: surface, preferredIDs: payload.selectionFavoriteIDs) { correction in
+                maxExercises: maxExercises, surface: surface, preferredIDs: locked, settings: settings) { correction in
                 try await self.callDeepSeekRoutines(payload: payload, library: candidates,
                     count: current.count, perRoutine: maxExercises, revision: spec, correction: correction)
             }
@@ -954,6 +960,9 @@ final class AIWorkoutService {
         settings.availableEquipment = payload.selectionEquipment
         settings.trainingEnvironment = payload.trainingEnvironment
         settings.favoriteExerciseIds = Array(payload.selectionFavoriteIDs)
+        if !payload.savedVariantByProgrammingGroup.isEmpty {
+            settings.preferredVariantByProgrammingGroup = payload.savedVariantByProgrammingGroup
+        }
         let clauses = query.lowercased().components(separatedBy: CharacterSet(charactersIn: "\n,，;；.。!?！？"))
         let exclusive = ["only", "仅", "只", "nur ", "solo ", "soltanto", "uniquement", "seulement", "apenas", "somente", "только", "のみ", "だけ", "만", "فقط"]
         let bodyOnly = ["徒手", "自重", "bodyweight", "body weight", "no equipment", "ohne geräte", "sin equipo", "sans matériel", "senza attrezzi", "sem equipamento", "без оборудования", "器具なし", "器具無し", "맨몸", "وزن الجسم", "بدون معدات"]
@@ -1411,7 +1420,7 @@ final class AIWorkoutService {
 
     // MARK: - Build Plan
 
-    private func buildPlan(from r: AIResponse, library: [Exercise], maxExercises: Int = 4, index: Int = 0, preferredIDs: Set<String> = []) -> Plan {
+    private func buildPlan(from r: AIResponse, library: [Exercise], maxExercises: Int = 4, index: Int = 0, preferredIDs: Set<String> = [], settings: UserSettings = UserSettings()) -> Plan {
         let now = Date()
         var steps: [PlanStep] = []
         var seenIDs = Set<String>()
@@ -1429,7 +1438,7 @@ final class AIWorkoutService {
             // The candidate pool has already applied the request's equipment constraints.
             // Use the ordinary version within its training-intent group, never flatten incline to flat.
             let ex = preferredIDs.contains(original.id) ? original
-                : ExerciseSelectionPolicy.shared.defaultVersion(for: original, in: library, settings: UserSettings())
+                : ExerciseSelectionPolicy.shared.defaultVersion(for: original, in: library, settings: settings, useSavedVariantPreference: true)
             guard seenIDs.insert(ex.id).inserted,
                   seenGroups.insert(ExerciseSelectionPolicy.shared.programmingGroupID(for: ex)).inserted else { continue }
             steps.append(PlanStep(
@@ -1493,6 +1502,7 @@ final class AIWorkoutService {
     /// never silently substitute an unknown ID or accept duplicate equipment variants.
     func requestValidatedPlans(candidates: [Exercise], expectedCount: Int?, maxExercises: Int,
                                single: Bool = false, surface: String = "coach_chat", preferredIDs: Set<String> = [],
+                               settings: UserSettings = UserSettings(),
                                request: (String?) async throws -> String) async throws -> [Plan] {
         guard !candidates.isEmpty else { throw invalidRoutineOutput() }
         var correction: String?
@@ -1501,7 +1511,7 @@ final class AIWorkoutService {
             let raw = try await request(correction)
             try Task.checkCancellation()
             let validation = validateRoutineOutput(raw, candidates: candidates, expectedCount: expectedCount,
-                                                  maxExercises: maxExercises, single: single, preferredIDs: preferredIDs)
+                                                  maxExercises: maxExercises, single: single, preferredIDs: preferredIDs, settings: settings)
             if let plans = validation.plans { return plans }
             let reason = validation.feedback.contains("JSON schema") ? "schema" :
                 (validation.feedback.contains("routines;") ? "routine_count" : "catalog_or_group_count")
@@ -1531,7 +1541,7 @@ final class AIWorkoutService {
     }
 
     private func validateRoutineOutput(_ raw: String, candidates: [Exercise], expectedCount: Int?,
-                                       maxExercises: Int, single: Bool, preferredIDs: Set<String>) -> (plans: [Plan]?, feedback: String) {
+                                       maxExercises: Int, single: Bool, preferredIDs: Set<String>, settings: UserSettings = UserSettings()) -> (plans: [Plan]?, feedback: String) {
         let routines: [AIResponse]
         do { routines = single ? [try parseResponse(raw)] : try parseRoutinesResponse(raw) }
         catch { return (nil, "The response did not match the required JSON schema. Include name and steps, and the routines array for a weekly plan.") }
@@ -1543,7 +1553,7 @@ final class AIWorkoutService {
         let byID = Dictionary(candidates.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
         let expectedSteps = min(max(1, min(8, maxExercises)), Set(candidates.map { ExerciseSelectionPolicy.shared.programmingGroupID(for: $0) }).count)
         let plans = routines.enumerated().map { index, response in
-            let plan = buildPlan(from: response, library: candidates, maxExercises: maxExercises, index: index, preferredIDs: preferredIDs)
+            let plan = buildPlan(from: response, library: candidates, maxExercises: maxExercises, index: index, preferredIDs: preferredIDs, settings: settings)
             if !isComplete(plan, candidates: candidates, requested: maxExercises) {
                 let unknown = response.steps.compactMap(\.exerciseID).filter { byID[$0] == nil }
                 let groups = response.steps.compactMap { $0.exerciseID.flatMap { byID[$0] } }
@@ -1565,8 +1575,8 @@ final class AIWorkoutService {
     }
 
     /// Runs response validation without a network request; also used by catalog contract tests.
-    func validatedPlan(fromJSON raw: String, candidates: [Exercise], maxExercises: Int) throws -> Plan? {
-        let plan = buildPlan(from: try parseResponse(raw), library: candidates, maxExercises: maxExercises)
+    func validatedPlan(fromJSON raw: String, candidates: [Exercise], maxExercises: Int, settings: UserSettings = UserSettings(), lockedIDs: Set<String> = []) throws -> Plan? {
+        let plan = buildPlan(from: try parseResponse(raw), library: candidates, maxExercises: maxExercises, preferredIDs: lockedIDs, settings: settings)
         return isComplete(plan, candidates: candidates, requested: maxExercises) ? plan : nil
     }
 
@@ -1625,6 +1635,8 @@ struct AIPayload {
     /// Optional time preference; old profiles do not acquire an invented target.
     var trainingSessionMinutes: Int? = nil
     var trainingEnvironment: TrainingEnvironment? = nil
+    /// Client-side only. Prompt builders must not interpolate this map.
+    var savedVariantByProgrammingGroup: [String: String] = [:]
     var sessionTransitionRestSeconds = 0
     var sessionSetRestSeconds: Int? = nil
 

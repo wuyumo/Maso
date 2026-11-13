@@ -112,6 +112,7 @@
 "You're now Masso Pro!" = "지금 Masso 프로!";
 "Enjoy unlimited plans, full history, and everything else. Welcome aboard." = "무제한 운동 계획, 전체 역사, 다른 모든 것을 즐길 수 있습니다. 환영 보드.";
 "Restore Purchases" = "구매 복원";
+"Restore Purchase" = "구매 복원";
 "Terms" = "제품 정보";
 "Privacy" = "제품 정보";
 "Tell us about your training" = "훈련에 대해 알려주십시오.";
@@ -1110,18 +1111,10 @@
 "Already up to date" = "최신 정보";
 "Smart progression" = "Smart 진행";
 "Earn the next 2.5 kg — weight suggestions from your logged sets." = "다음 2.5 kg을 적립 - 기록 된 세트에서 무게 제안.";
-"Secure checkout on the web via Polar. %@ / %@, renews until cancelled — manage or cancel anytime on the Polar page." = "Polar를 통해 웹에서 보안 체크 아웃. %@ / %@, 취소 될 때까지 갱신 - Polar 페이지에서 언제든지 관리 또는 취소.";
-"Enter code" = "비밀번호";
-"Enter your activation code" = "활성화 코드를 입력";
-"After buying on the web, your code was emailed to you (and shown on the confirmation page). Paste it here to unlock Pro on this device." = "웹에서 구입 한 후 코드를 이메일로 전송되었습니다 (확인 페이지에 표시). 이 장치에 대한 Pro를 잠금 해제하기 위해 여기에 붙여 넣으십시오.";
-"Activate" = "이름 *";
-"That code isn't active yet. Double-check it, or try again in a moment." = "그 코드는 아직 활성화되지 않습니다. 두 배 체크, 또는 다시 한번 시도.";
-"Couldn't verify — check your connection and try again." = "couldn't valid — 연결 확인 및 다시 시도.";
 "You're Pro now — thanks for supporting Masso." = "지금 Pro — Masso 지원 감사.";
 "That code isn't active yet. Check the email from your purchase, or try again in a moment." = "이 코드는 아직 활성화되지 않습니다. 구매에서 이메일을 확인하거나 다시 시도하십시오.";
 "Couldn't verify your code — check your connection and try again." = "코드를 확인하지 못했습니다 - 연결 확인 및 다시 시도하십시오.";
 "ACTIVE" = "관련 기사";
-"Thanks for supporting Masso. Manage or cancel on the Polar page." = "Masso 지원 감사합니다. Polar 페이지에서 관리하거나 취소하십시오.";
 "Scan to get this routine" = "스캔하여 같은 운동 계획 받기";
 "%lld days a week" = "%lld 일 일주일";
 "YOUR TRAINING" = "당신의 훈련";
@@ -1899,7 +1892,6 @@
 
 "Subscription options are unavailable right now" = "지금은 구독 옵션을 불러올 수 없어요";
 
-"Restore web purchase" = "웹 구매 복원";
 
 "Basic workout logging and history stay free" = "기본 운동 기록과 히스토리는 무료예요";
 
@@ -2097,6 +2089,9 @@
 
 /* Workout progress, observed timing and personal heart-rate reminders */
 "Jump to first unfinished set" = "첫 미완료 세트로 이동";
+"Move earlier" = "앞으로 이동";
+"Move later" = "뒤로 이동";
+"Long press and drag to reorder" = "길게 누른 뒤 끌어 순서 변경";
 "Rest duration" = "휴식 시간";
 "Applies to this rest only." = "이번 휴식에만 적용됩니다.";
 "Edit rest time" = "휴식 시간 수정";
@@ -2565,3 +2560,15 @@
 "AI access changed: 30-day transition. New limits start %@. Existing training stays available." = "AI 규칙이 변경되었습니다. 30일 전환 기간 후 %@부터 새 한도가 적용됩니다. 기존 운동은 계속 이용할 수 있습니다.";
 
 "Details" = "자세히";
+
+"How this is counted" = "집계 설명";
+"No heart rate" = "심박수 없음";
+"Timing incomplete" = "시간 기록 불완전";
+"Work time" = "운동 시간";
+"Include exercise detail" = "동작 상세 포함";
+"Include heart rate" = "심박수 포함";
+"Most volume" = "가장 많음";
+"Some volume" = "보통";
+"Light volume" = "적음";
+"Not trained" = "안 함";
+"Report counting explanation" = "녹색은 이번 운동의 상대 훈련량이며 지난 회복이 아닙니다. 세 숫자는 운동 시간, 완료 세트, 부하량입니다. 부하량은 외부 무게 곱하기 횟수이고 완료된 세트는 한 번만 계산합니다. 근육 숫자는 주동근 1.0, 협응근 0.4 세트 배분이며 킬로그램이 아닙니다. 맨몸과 시간 운동은 무게로 바꾸지 않습니다. 유산소는 몸에 표시하지 않습니다. 심박수 선은 세트의 측정 구간만 잇고, 일시정지, 휴식, 20초를 넘는 공백에서는 끊깁니다. 계획 저장은 다음 운동에만 영향을 줍니다.";

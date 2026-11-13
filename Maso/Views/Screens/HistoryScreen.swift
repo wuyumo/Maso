@@ -8,8 +8,8 @@ private struct HistoryWorkoutDetail: Hashable {
 
 // 训练状态页 — 显示 7 天活跃肌群 + 训练记录卡片
 //
-// 卡片设计: 按 "训练计划 (plan)" 维度展示, 而不是按动作组拆分.
-// 一张卡片 = 一次完整的训练 session (同一 planId + 同一 calendar 日).
+// 卡片设计: 按一次训练展示, 而不是按动作组拆分.
+// 有 workoutSessionID 的记录各自成卡。没有 session id 的旧记录单独成卡, 不并进有 id 的那场。
 // 没有 planId 的记录 (自由训练) 单独成卡, kicker 显示训练日期, 标题 "Free workout".
 //
 // 点卡片 → 从右侧推入该场训练详情, 可查看每个动作的组数 + 再次训练.
@@ -211,11 +211,10 @@ struct HistoryScreen: View {
             .accessibilityIdentifier("page.workoutDetail")
         }
         .navigationDestination(item: $selectedSession) { session in
-            SessionDetailSheet(session: session, exerciseStats: data.recordedExerciseStats(for: session),
-                               replayPlan: data.recordedReplayPlan(for: session), onReplay: { plan in
+            RecordedSessionReport(session: session, onReplay: { plan in
                 selectedSession = nil
                 DispatchQueue.main.async { onReplay(plan) }
-            }, pushed: true)
+            })
         }
         .sheet(isPresented: $targetInfoPresented) { GoalCompletionRulesSheet(kind: .workout) }
         .sheet(isPresented: $paywallPresented) {
@@ -566,20 +565,23 @@ struct HistoryScreen: View {
 
 extension DataStore {
     func recordedSets(for session: SessionSummary) -> [SetRecord] {
-        sets.filter { settings.calendar.isDate($0.performedAt, inSameDayAs: session.day) && $0.planId == session.planId && $0.performedAt <= Date() }
-            .sorted { $0.performedAt < $1.performedAt }
+        SessionMuscleReport.sets(in: sets, planID: session.planId, day: session.day, workoutSessionID: session.workoutSessionID, calendar: settings.calendar)
     }
     func recordedWorkoutSessions(on date: Date? = nil) -> [SessionSummary] {
         let cal = settings.calendar
-        struct Key: Hashable { let planId: String; let day: Date }
+        struct Key: Hashable { let planId: String; let day: Date; let sessionID: String? }
         var bucket: [Key: [SetRecord]] = [:]
         var order: [Key] = []
         for rec in sets where rec.performedAt <= Date() {
             if let date, !cal.isDate(rec.performedAt, inSameDayAs: date) { continue }
             let day = cal.startOfDay(for: rec.performedAt)
-            let key = Key(planId: rec.planId ?? "free", day: day)
+            let key = Key(planId: rec.planId ?? "free", day: day, sessionID: SessionMuscleReport.sessionID(rec.workoutSessionID))
             if bucket[key] == nil { order.append(key) }
             bucket[key, default: []].append(rec)
+        }
+        var siblings: [String: Int] = [:]
+        for key in order {
+            siblings["\(key.planId)-\(Int(key.day.timeIntervalSince1970))", default: 0] += 1
         }
         let summaries: [SessionSummary] = order.map { key in
             let recs = bucket[key] ?? []
@@ -601,9 +603,12 @@ extension DataStore {
             let categories = Set(recs.map { $0.category })
             // 数这一场训练里 PR 的组数 — Epley 1RM 估算超过之前历史最高
             let prCount = recs.reduce(0) { $0 + (isPR($1) ? 1 : 0) }
+            let base = "\(key.planId)-\(Int(key.day.timeIntervalSince1970))"
+            let id = (siblings[base] ?? 1) > 1 ? "\(base)-\(key.sessionID ?? "legacy")" : base
             return SessionSummary(
-                id: "\(key.planId)-\(Int(key.day.timeIntervalSince1970))",
+                id: id,
                 planId: key.planId == "free" ? nil : key.planId,
+                workoutSessionID: key.sessionID,
                 day: key.day,
                 planName: planName,
                 exerciseCount: uniqueExercises.count,
@@ -751,6 +756,8 @@ extension DataStore {
 struct SessionSummary: Identifiable, Hashable {
     let id: String
     let planId: String?     // nil = 自由组
+    /// Nil means the card is only records that were saved without a session id.
+    var workoutSessionID: String? = nil
     let day: Date
     /// nil 表示自由组训练
     let planName: String?
@@ -823,23 +830,22 @@ struct WorkoutHistoryRecordRow: View {
     var dayTopPadding: CGFloat = 0
     let onReplay: (Plan) -> Void
     var onOpenSession: ((SessionSummary) -> Void)? = nil
-    @State private var reportPresented = false
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            HStack {
-                if let dayHeader {
-                    Text(dayHeader, format: .dateTime.month(.abbreviated).day().weekday(.abbreviated))
-                        .font(.headline)
-                } else if showsDate {
-                    Text(relativeDay(session.day)).font(.caption).foregroundStyle(MasoColor.textDim)
+            if dayHeader != nil || showsDate {
+                HStack {
+                    if let dayHeader {
+                        Text(dayHeader, format: .dateTime.month(.abbreviated).day().weekday(.abbreviated))
+                            .font(.headline)
+                    } else if showsDate {
+                        Text(relativeDay(session.day)).font(.caption).foregroundStyle(MasoColor.textDim)
+                    }
+                    Spacer(minLength: 8)
                 }
-                Spacer(minLength: 8)
-                WorkoutReportButton { reportPresented = true }
-                    .accessibilityIdentifier("workout.history.report")
+                .padding(.horizontal, paddedInDay ? MasoMetrics.cardPadding : 0)
+                .padding(.top, paddedInDay ? MasoMetrics.cardPadding : 0)
+                .padding(.bottom, 8)
             }
-            .padding(.horizontal, paddedInDay ? MasoMetrics.cardPadding : 0)
-            .padding(.top, paddedInDay ? MasoMetrics.cardPadding : 0)
-            .padding(.bottom, 8)
             SessionCard(session: session, photo: data.sessionPhoto(forSessionId: session.id),
                         compact: true, embedded: embedded, showsDate: false, onReplay: nil)
                 .applyIf(paddedInDay) { view in
@@ -854,19 +860,6 @@ struct WorkoutHistoryRecordRow: View {
             .accessibilityAddTraits(.isButton)
             .accessibilityIdentifier("workout.history.card")
             .workoutRecordDeletion(session: session)
-            .sheet(isPresented: $reportPresented) {
-                AppNavigationStack {
-                    WorkoutReportView(records: data.recordedSets(for: session), workoutName: session.planName)
-                        .toolbar {
-                            ToolbarItem(placement: .topBarLeading) {
-                                Button { reportPresented = false } label: { Image(systemName: "xmark") }
-                                    .accessibilityLabel("Close")
-                                    .accessibilityIdentifier("workout.report.close")
-                            }
-                        }
-                }
-                .presentationDetents([.large]).presentationDragIndicator(.visible)
-            }
     }
 }
 
@@ -1059,301 +1052,59 @@ private struct SessionCard: View {
 // 复用 Theme/Formatters 的 relativeDay (Today / Yesterday / N days ago / "MMM d")
 private func prettyDay(_ d: Date) -> String { relativeDay(d) }
 
-// MARK: - SessionDetailSheet
+// MARK: - Recorded session
 
-struct SessionDetailSheet: View {
+/// History, Insights, and a day record open this one session page.
+struct RecordedSessionReport: View {
     @Environment(DataStore.self) private var data
-    let session: SessionSummary
-    let exerciseStats: [SessionExerciseStat]
-    /// 如果是基于 plan 的训练, 这里给出原 plan, 可以一键回放
-    let replayPlan: Plan?
-    let onReplay: (Plan) -> Void
-    var embedded = false
-    /// Shown by the surrounding navigation stack, with the system back button and swipe.
-    var pushed = false
-
     @Environment(\.dismiss) private var dismiss
-    /// list ↔ grid 切换 — 跟 PlanDetailSheet 共享同一 @AppStorage key, 两个 sheet 偏好同步.
-    @AppStorage("planStepCardLayout") private var useCardLayout: Bool = false
-    /// 点图片 → 弹动作详情 sheet
-    @State private var detailExercise: Exercise? = nil
-    /// 右滑删除 — 待删 exerciseId. 二次确认 alert 触发实际删除.
-    @State private var deleteWorkout = false
-    @State private var showWorkoutReport = false
-    @State private var showShare = false
-    @State private var pendingDeleteExerciseId: String? = nil
-    /// 加/换/删训练照片 — 跟 ShareCustomizeSheet 同款 confirmationDialog + PhotoPicker flow.
-    @State private var showPhotoOptions: Bool = false
-    @State private var activePicker: PhotoPickerSource? = nil
-    @State private var pickedPhoto: UIImage? = nil
-    @State private var isCameraAvailable: Bool = UIImagePickerController.isSourceTypeAvailable(.camera)
+    let session: SessionSummary
+    let onReplay: (Plan) -> Void
+    @State private var photoOptions = false
+    @State private var activePicker: PhotoPickerSource?
+    @State private var pickedPhoto: UIImage?
+    @State private var cameraAvailable = UIImagePickerController.isSourceTypeAvailable(.camera)
+
+    private var repeatAction: (() -> Void)? {
+        guard let plan = data.recordedReplayPlan(for: session) else { return nil }
+        return { onReplay(plan) }
+    }
 
     var body: some View {
-        NavStackIf(embedded: embedded || pushed) {
-            // List + Section 让 stepListSection 里的 ForEach 能用原生 .swipeActions (不支持 onMove —
-            // 历史时间顺序是 ground truth, 不允许重排). 跟 PlanDetailSheet 同模式, 用户跨 tab 体验一致.
-            Group {
-                if embedded { recordSections }
-                else {
-                    List { recordSections }
-                        .listStyle(.plain)
-                        .scrollContentBackground(.hidden)
-                        .contentMargins(.horizontal, MasoMetrics.pagePaddingHorizontal, for: .scrollContent)
-                        .background(MasoColor.background.ignoresSafeArea())
+        WorkoutSessionReportScreen(
+            records: data.recordedSets(for: session),
+            workoutName: session.planName,
+            presentation: .history,
+            sessionPhoto: data.sessionPhoto(forSessionId: session.id),
+            onRepeat: repeatAction,
+            onChangePhoto: { photoOptions = true },
+            onDelete: {
+                data.deleteRecordedSession(session)
+                dismiss()
+            }
+        )
+        .confirmationDialog(NSLocalizedString("Add photo", comment: ""), isPresented: $photoOptions, titleVisibility: .visible) {
+            if cameraAvailable {
+                Button(NSLocalizedString("Take Photo", comment: "")) { activePicker = .camera }
+            }
+            Button(NSLocalizedString("Choose from Library", comment: "")) { activePicker = .photoLibrary }
+            if data.sessionPhoto(forSessionId: session.id) != nil {
+                Button(NSLocalizedString("Remove Photo", comment: ""), role: .destructive) {
+                    data.removeSessionPhoto(forSessionId: session.id)
                 }
             }
-            .navigationDestination(isPresented: $showWorkoutReport) {
-                WorkoutReportView(records: data.recordedSets(for: session), workoutName: session.planName)
-            }
-            .sheet(isPresented: $showShare) {
-                let records = data.recordedSets(for: session)
-                let fact = AccomplishmentShare.sessionFact(
-                    records: records,
-                    name: session.planName ?? NSLocalizedString("Free workout", comment: ""),
-                    calendar: data.settings.calendar)
-                AccomplishmentShareSheet(title: "Share Workout", model: { privacy in
-                    .session(fact, AccomplishmentShare.present(fact, privacy: privacy))
-                }, allowsExactTime: !fact.isAggregate, allowsPhoto: true, canShare: fact.setCount > 0)
-            }
-            // 点图片弹详情 sheet
-            .sheet(item: $detailExercise) { ex in
-                ExerciseDetailSheet(exercise: ex)
-                .presentationDragIndicator(.visible)
-            }
-            // 加/换/删训练照片 dialog + picker — 跟 ShareCustomizeSheet 同一套 flow
-            .confirmationDialog(
-                NSLocalizedString("Add photo", comment: ""),
-                isPresented: $showPhotoOptions,
-                titleVisibility: .visible
-            ) {
-                if isCameraAvailable {
-                    Button(NSLocalizedString("Take Photo", comment: "")) {
-                        activePicker = .camera
-                    }
-                }
-                Button(NSLocalizedString("Choose from Library", comment: "")) {
-                    activePicker = .photoLibrary
-                }
-                if data.sessionPhoto(forSessionId: session.id) != nil {
-                    Button(NSLocalizedString("Remove Photo", comment: ""), role: .destructive) {
-                        data.removeSessionPhoto(forSessionId: session.id)
-                    }
-                }
-                Button("Cancel", role: .cancel) {}
-            }
-            .sheet(item: $activePicker) { source in
-                PhotoPicker(image: $pickedPhoto, source: source)
-                    .ignoresSafeArea()
-                .presentationDragIndicator(.visible)
-            }
-            .onChange(of: pickedPhoto) { _, newPhoto in
-                if let img = newPhoto {
-                    data.setSessionPhoto(img, forSessionId: session.id)
-                    pickedPhoto = nil   // 重置, 下次再 pick 还能触发 onChange
-                }
-            }
-            // 右滑 / contextMenu 删除单个 exercise 的二次确认
-            .alert("Delete exercise?", isPresented: Binding(
-                get: { pendingDeleteExerciseId != nil },
-                set: { if !$0 { pendingDeleteExerciseId = nil } }
-            )) {
-                Button("Delete", role: .destructive) {
-                    if let exId = pendingDeleteExerciseId {
-                        data.deleteExerciseFromSession(
-                            planId: session.planId,
-                            day: session.day,
-                            exerciseId: exId
-                        )
-                    }
-                    pendingDeleteExerciseId = nil
-                }
-                Button("Cancel", role: .cancel) { pendingDeleteExerciseId = nil }
-            } message: {
-                Text("All sets of this exercise from this workout will be removed.")
-            }
-            .alert("Delete workout?", isPresented: $deleteWorkout) {
-                Button("Delete", role: .destructive) {
-                    data.deleteSession(planId: session.planId, day: session.day)
-                    if !embedded || pushed { dismiss() }
-                }
-                Button("Cancel", role: .cancel) {}
-            } message: {
-                Text("All sets and PRs from this workout will be removed. Your plans stay.")
-            }
-            .applyIf(!embedded || pushed) { view in view.navigationBarTitleDisplayMode(.inline)
-            .accessibilityIdentifier("page.sessionDetail")
-            .toolbar {
-                if !pushed {
-                    ToolbarItem(placement: .topBarLeading) {
-                        Button { dismiss() } label: { Image(systemName: "xmark") }
-                            .accessibilityLabel("Close")
-                    }
-                }
-                ToolbarItem(placement: .topBarTrailing) {
-                    Menu {
-                        Button("Share", systemImage: "square.and.arrow.up") { showShare = true }
-                        Button("Workout report") { showWorkoutReport = true }
-                            .accessibilityIdentifier("workout.report.open")
-                    } label: { Image(systemName: "ellipsis") }
-                    .accessibilityLabel("More")
-                    .accessibilityIdentifier("workout.history.more")
-                }
-                ToolbarItem(placement: .principal) {
-                    Text(session.planName ?? NSLocalizedString("Free workout", comment: ""))
-                        .font(.headline)
-                        .lineLimit(1)
-                }
-            }
-            }
-            .tint(MasoColor.text)
+            Button("Cancel", role: .cancel) {}
         }
-    }
-
-    @ViewBuilder
-    private var recordSections: some View {
-                // 用户照片 banner — 有照片 tap 弹换/删 dialog; 没照片显示"加照片"占位也可点.
-                // 视觉跟 share card 顶部的 SharePhotoBanner 同款 (1:1 正方形).
-                Section {
-                    sessionPhotoBlock
-                        .listRowSeparator(.hidden)
-                        .listRowInsets(EdgeInsets(top: 12, leading: 0, bottom: 0, trailing: 0))
-                        .listRowBackground(Color.clear)
-                }
-                Section {
-                    sessionOverview
-                        .contextMenu {
-                            Button("Delete workout", systemImage: "trash", role: .destructive) { deleteWorkout = true }
-                        }
-
-                        .listRowSeparator(.hidden)
-                        .listRowInsets(EdgeInsets(top: 12, leading: 0, bottom: 20, trailing: 0))
-                        .listRowBackground(Color.clear)
-                }
-                exerciseStatsSection
-                Section {
-                    if let plan = replayPlan {
-                        PrimaryActionButton(title: "Repeat Workout", icon: "play.fill") { onReplay(plan) }
-                            .listRowSeparator(.hidden)
-                            .listRowInsets(EdgeInsets(top: 16, leading: 0, bottom: 0, trailing: 0))
-                            .listRowBackground(Color.clear)
-                    }
-                    Button(role: .destructive) { deleteWorkout = true } label: {
-                        TrainingCardActionLabel(title: "Delete workout", icon: "trash", accent: MasoColor.text,
-                                                prominent: false, fillsWidth: true)
-                    }
-                    .buttonStyle(.plain)
-                    .listRowSeparator(.hidden)
-                    .listRowInsets(EdgeInsets(top: 8, leading: 0, bottom: 24, trailing: 0))
-                    .listRowBackground(Color.clear)
-                }
-    }
-
-    /// 训练照片 block — 有照片显示 240pt 正方形, 没照片显示"加照片" row (跟动作列表行同款 row 高度).
-    @ViewBuilder
-    private var sessionPhotoBlock: some View {
-        if let photo = data.sessionPhoto(forSessionId: session.id) {
-            // 已加照片: 严格 1:1 圆角正方形 — 用 Color.clear 强制 aspect ratio,
-            // 图片 overlay 内 fill + clipped 裁中, 这样容器一定是正方形不会被父布局压扁.
-            Color.clear
-                .aspectRatio(1, contentMode: .fit)
-                .overlay {
-                    Image(uiImage: photo)
-                        .resizable()
-                        .scaledToFill()
-                }
-                .clipShape(RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
-                .overlay(
-                    RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium)
-                        .stroke(MasoColor.borderSoft, lineWidth: 1)
-                )
-                .contentShape(Rectangle())
-                .onTapGesture { showPhotoOptions = true }
-        } else {
-            Button(action: { showPhotoOptions = true }) {
-                AddPhotoPlaceholder(compact: true).frame(height: 56)
-            }
-            .buttonStyle(.plain)
+        .sheet(item: $activePicker) { source in
+            PhotoPicker(image: $pickedPhoto, source: source).ignoresSafeArea()
         }
-    }
-
-    private var exerciseStatsSection: some View {
-        let records = Dictionary(grouping: data.recordedSets(for: session), by: \.exerciseId)
-        return WorkoutExercisesSection(
-            items: data.recordedExerciseStats(for: session),
-            useCardLayout: $useCardLayout,
-            emptyTitle: "No exercises in this workout"
-        ) { stat in
-            if useCardLayout {
-                historyExerciseEntry(stat, records: records[stat.exercise.id] ?? [])
-                    .contextMenu {
-                        Button(role: .destructive) { pendingDeleteExerciseId = stat.exercise.id } label: {
-                            Label("Delete", systemImage: "trash")
-                        }
-                    }
-            } else {
-                historyExerciseEntry(stat, records: records[stat.exercise.id] ?? [])
-                    .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                        Button(role: .destructive) { pendingDeleteExerciseId = stat.exercise.id } label: {
-                            Image(systemName: "trash.fill")
-                        }
-                        .tint(MasoColor.negative)
-                        .accessibilityLabel(NSLocalizedString("Delete", comment: ""))
-                    }
+        .onChange(of: pickedPhoto) { _, image in
+            if let image {
+                data.setSessionPhoto(image, forSessionId: session.id)
+                pickedPhoto = nil
             }
         }
     }
-
-    private func historyExerciseEntry(_ stat: SessionExerciseStat, records: [SetRecord]) -> some View {
-        VStack(alignment: .leading, spacing: 0) {
-            Button { detailExercise = stat.exercise } label: {
-                if useCardLayout {
-                    WorkoutExerciseGridCard(detailLine: pluralizedSets(records.count), exercise: stat.exercise,
-                                            onTapImage: { detailExercise = stat.exercise })
-                } else {
-                    WorkoutExerciseRow(detailLine: pluralizedSets(records.count), exercise: stat.exercise,
-                                       onTapImage: { detailExercise = stat.exercise }, showsChevron: true)
-                }
-            }
-            .buttonStyle(.plain)
-            // Recorded-set controls must be siblings, never children of the detail button.
-            RecordedExerciseParameters(records: records)
-                .padding(.leading, useCardLayout ? 0 : 70)
-                .padding(.bottom, 8)
-        }
-    }
-
-    /// Direct page content, with native type styles rather than a nested card.
-    private var sessionOverview: some View {
-        HStack(alignment: .center, spacing: 16) {
-            BodyHint(muscles: session.muscles, height: 96, region: .full, square: true)
-            VStack(alignment: .leading, spacing: 8) {
-                HStack(alignment: .center, spacing: 8) {
-                    Text(prettyDay(session.day))
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                    Spacer(minLength: 0)
-                    if let plan = replayPlan {
-                        PlanSourceBadge(source: plan.resolvedSource)
-                    }
-                }
-                Text(session.planName ?? NSLocalizedString("Free workout", comment: ""))
-                    .font(.title2.bold())
-                    .foregroundStyle(MasoColor.text)
-                    .fixedSize(horizontal: false, vertical: true)
-                Text("\(pluralizedExercises(session.exerciseCount)) · \(pluralizedSets(session.setCount)) · \(session.durationMinutes)m")
-                    .font(.subheadline.monospacedDigit())
-                    .foregroundStyle(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-        }
-        .padding(.vertical, 8)
-    }
-
-    // MARK: - Share section data helpers
-
-    /// 这次 session 的 WorkoutSectionData — 主要分享内容.
-
 }
 
 // MARK: - 文件级 helper (给 @State 默认值用 — 不能在属性初始化器里调实例方法).
@@ -1375,7 +1126,7 @@ private struct WorkoutRecordDeletion: ViewModifier {
             Button("Delete workout", systemImage: "trash", role: .destructive) { confirming = true }
         }
         .alert("Delete workout?", isPresented: $confirming) {
-            Button("Delete", role: .destructive) { data.deleteSession(planId: session.planId, day: session.day) }
+            Button("Delete", role: .destructive) { data.deleteRecordedSession(session) }
             Button("Cancel", role: .cancel) {}
         } message: {
             Text("All sets and PRs from this workout will be removed. Your plans stay.")
@@ -1387,6 +1138,18 @@ extension View {
     func workoutRecordDeletion(session: SessionSummary) -> some View {
         modifier(WorkoutRecordDeletion(session: session))
     }
+}
+
+enum WorkoutReportSection: String, Identifiable {
+    case heart
+    case duration
+    var id: String { rawValue }
+}
+
+enum WorkoutReportScope {
+    case page
+    case duration
+    case heart
 }
 
 /// A local set timeline. Sensor samples never enter share cards or AI payloads.
@@ -1401,6 +1164,8 @@ struct WorkoutReportView: View {
     @State private var heartTooltipPosition: CGPoint?
     let records: [SetRecord]
     var workoutName: String? = nil
+    var focus: WorkoutReportSection? = nil
+    var scope: WorkoutReportScope = .page
     private var report: WorkoutTimelineReport { .init(records: records.sorted { $0.performedAt < $1.performedAt }) }
     private var blocks: [WorkoutReportExerciseBlock] { WorkoutReportExerciseBlock.group(records) }
     private var durationGroups: [WorkoutReportExerciseBlock] { WorkoutReportExerciseBlock.totalsByExercise(records) }
@@ -1496,6 +1261,18 @@ struct WorkoutReportView: View {
     }
 
     var body: some View {
+        switch scope {
+        case .duration:
+            durationReportCard
+        case .heart:
+            heartReportCard
+        case .page:
+            reportPage
+        }
+    }
+
+    private var reportPage: some View {
+        ScrollViewReader { proxy in
         ScrollView {
             VStack(alignment: .leading, spacing: 28) {
                 VStack(alignment: .leading, spacing: 16) {
@@ -1519,10 +1296,12 @@ struct WorkoutReportView: View {
                     Text("Exercises and heart rate").font(.title3.weight(.semibold))
                     heartReportCard.contentCardChrome()
                 }
+                .id(WorkoutReportSection.heart.id)
                 VStack(alignment: .leading, spacing: 12) {
                     Text("Exercise duration").font(.title3.weight(.semibold)).accessibilityIdentifier("workout.report.timeline")
                     durationReportCard.contentCardChrome()
                 }
+                .id(WorkoutReportSection.duration.id)
                 DisclosureGroup("Logged sets") {
                     VStack(alignment: .leading, spacing: 16) {
                         ForEach(report.records) { record in
@@ -1550,6 +1329,11 @@ struct WorkoutReportView: View {
             }
             .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
             .padding(.top, 16).padding(.bottom, 32)
+        }
+        .onAppear {
+            guard let focus else { return }
+            proxy.scrollTo(focus.id, anchor: .top)
+        }
         }
         .background(MasoColor.background.ignoresSafeArea())
         .sheet(isPresented: $heartSettingsPresented, onDismiss: { Task { await refreshHeart() } }) { WorkoutHeartRateSettingsSheet() }
@@ -1655,7 +1439,9 @@ struct WorkoutReportView: View {
                         Text(time(block.trackedSeconds)).font(.subheadline.monospacedDigit()).fixedSize()
                     }
                     if block.hasMissingTiming { Text("Some timing is unavailable").font(.caption).foregroundStyle(MasoColor.textDim) }
-                }.accessibilityIdentifier("workout.report.exercise.\(block.id)")
+                }
+                .accessibilityElement(children: .combine)
+                .accessibilityIdentifier("workout.report.exercise.\(block.id)")
             }
         }.frame(maxWidth: .infinity, alignment: .leading)
     }
@@ -1726,6 +1512,7 @@ struct WorkoutReportView: View {
                 AxisValueLabel(format: .dateTime.hour().minute())
             }
         }
+        .accessibilityElement(children: .ignore)
         .accessibilityIdentifier("workout.report.heart")
         .overlay {
             GeometryReader { geometry in

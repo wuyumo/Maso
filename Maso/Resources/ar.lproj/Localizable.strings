@@ -112,6 +112,7 @@
 "You're now Masso Pro!" = "أنت الآن (إم زبراندز) برو!";
 "Enjoy unlimited plans, full history, and everything else. Welcome aboard." = "استمتعوا بخطط التمرين الغير محدودة والتاريخ الكامل وكل شيء آخر";
 "Restore Purchases" = "استعادة المشتريات";
+"Restore Purchase" = "استعادة المشتريات";
 "Terms" = "الشروط";
 "Privacy" = "الخصوصية";
 "Tell us about your training" = "أخبرنا عن تدريبك";
@@ -1110,18 +1111,10 @@
 "Already up to date" = "حتى الآن";
 "Smart progression" = "تقدم ذكي";
 "Earn the next 2.5 kg — weight suggestions from your logged sets." = "إحصل على الإقتراحات الـ 2.5 كغ القادمة من أجهزتك";
-"Secure checkout on the web via Polar. %@ / %@, renews until cancelled — manage or cancel anytime on the Polar page." = "ادفع بأمان عبر الإنترنت من خلال Polar. %@ / %@، يتجدد الاشتراك حتى إلغائه. يمكنك إدارته أو إلغاؤه في أي وقت من صفحة Polar.";
-"Enter code" = "رمز الدخول";
-"Enter your activation code" = "أدخل رمز تفعيلك";
-"After buying on the web, your code was emailed to you (and shown on the confirmation page). Paste it here to unlock Pro on this device." = "بعد الشراء على الشبكة، تم إرسال رمزك إلى البريد الإلكتروني إليك (وعرض على صفحة التأكيد)";
-"Activate" = "النشاط";
-"That code isn't active yet. Double-check it, or try again in a moment." = "هذا الرمز ليس نشطاً بعد تفقده مرتين أو حاول مرة أخرى في لحظة";
-"Couldn't verify — check your connection and try again." = "لا يمكن التحقق - التحقق من اتصالك ومحاولة مرة أخرى.";
 "You're Pro now — thanks for supporting Masso." = "أنت (برو) الآن شكراً لدعم (إم زبراندز)";
 "That code isn't active yet. Check the email from your purchase, or try again in a moment." = "هذا الرمز ليس نشطاً بعد تفقد البريد الإلكتروني من شرائك أو حاول مرة أخرى في لحظة";
 "Couldn't verify your code — check your connection and try again." = "لا يمكن التحقق من شفرتك تحقق من تواصلك وحاول مرة أخرى";
 "ACTIVE" = "النشاط";
-"Thanks for supporting Masso. Manage or cancel on the Polar page." = "شكراً لدعم (إم زبراندز) إدارة أو إلغاء الصفحة القطبية";
 "Scan to get this routine" = "امسح الرمز للحصول على خطة التمرين نفسها";
 "%lld days a week" = "%lld أيام الأسبوع";
 "YOUR TRAINING" = "تدريبك";
@@ -1899,7 +1892,6 @@
 
 "Subscription options are unavailable right now" = "خيارات الاشتراك غير متاحة الآن";
 
-"Restore web purchase" = "استعادة شراء الويب";
 
 "Basic workout logging and history stay free" = "يبقى تسجيل التمارين الأساسي والسجل مجانًا";
 
@@ -2097,6 +2089,9 @@
 
 /* Workout progress, observed timing and personal heart-rate reminders */
 "Jump to first unfinished set" = "الانتقال إلى أول مجموعة غير مكتملة";
+"Move earlier" = "نقل إلى الأمام";
+"Move later" = "نقل إلى الخلف";
+"Long press and drag to reorder" = "اضغط مطولاً ثم اسحب لإعادة الترتيب";
 "Rest duration" = "مدة الراحة";
 "Applies to this rest only." = "لهذه الراحة فقط.";
 "Edit rest time" = "تعديل وقت الراحة";
@@ -2565,3 +2560,15 @@
 "AI access changed: 30-day transition. New limits start %@. Existing training stays available." = "تغيّرت قواعد الذكاء الاصطناعي مع فترة انتقالية مدتها 30 يومًا. تبدأ الحدود الجديدة في %@، وتبقى تدريباتك الحالية متاحة.";
 
 "Details" = "التفاصيل";
+
+"How this is counted" = "طريقة الحساب";
+"No heart rate" = "لا يوجد نبض";
+"Timing incomplete" = "الوقت غير مكتمل";
+"Work time" = "وقت العمل";
+"Include exercise detail" = "تضمين تفاصيل التمارين";
+"Include heart rate" = "تضمين النبض";
+"Most volume" = "الأكثر";
+"Some volume" = "متوسط";
+"Light volume" = "قليل";
+"Not trained" = "لم يُدرَّب";
+"Report counting explanation" = "الأخضر هو حجم هذا التمرين النسبي، وليس التعافي عبر الوقت. الأرقام الثلاثة هي وقت العمل والمجموعات المكتملة والحمل. الحمل هو الوزن الخارجي مضروبًا في العدّات، وتُحسب كل مجموعة مكتملة مرة واحدة. الرقم على العضلة هو 1.0 للعضلة الأساسية و0.4 للعضلة المساعدة، وليس كيلوغرامات. وزن الجسم والتمارين الزمنية لا تتحول إلى وزن. تمارين الكارديو لا تُرسم على الجسم. خطوط النبض تتبع الأجزاء الموقوتة من المجموعة وتنقطع عند التوقف والراحة والفجوات الأطول من 20 ثانية. حفظ الخطة يؤثر فقط على المرة القادمة.";

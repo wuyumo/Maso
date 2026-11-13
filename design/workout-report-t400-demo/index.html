@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="zh-Hans" data-theme="dark" data-large="0">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>训练报告演示 · Masso</title>
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #121212;
+    --surface: #191919;
+    --text: #fff;
+    --dim: #b3b3b3;
+    --faint: #8e8e8e;
+    --line: rgba(255,255,255,.08);
+    --accent: #1ed760;
+    --stage: #121212;
+    --neutral: #3d3d3d;
+  }
+  html[data-theme="light"] {
+    color-scheme: light;
+    --bg: #f3f3f3;
+    --surface: #fff;
+    --text: #121212;
+    --dim: #5c5c5c;
+    --faint: #6e6e6e;
+    --line: rgba(0,0,0,.08);
+    --stage: #ececec;
+    --neutral: #c7c7c7;
+  }
+  html { font-size: 16px; scroll-padding-top: calc(72px + env(safe-area-inset-top)); scroll-padding-bottom: calc(108px + env(safe-area-inset-bottom)); }
+  html[data-large="1"] { scroll-padding-bottom: calc(128px + env(safe-area-inset-bottom)); }
+  html[data-large="1"] { font-size: 19px; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    line-height: 1.35;
+  }
+  button, input { font: inherit; color: inherit; }
+  button { cursor: pointer; }
+  button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .app { width: min(100%, 480px); min-height: 100vh; margin: 0 auto; }
+  .banner {
+    margin: 0;
+    padding: 8px 16px;
+    background: color-mix(in srgb, var(--accent) 16%, var(--bg));
+    color: var(--text);
+    font-size: .8125rem;
+    font-weight: 650;
+  }
+  .complete { min-height: 100vh; display: flex; flex-direction: column; padding: 16px 16px calc(16px + env(safe-area-inset-bottom)); }
+  .grow { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; text-align: center; }
+  .mark { width: 72px; height: 72px; border-radius: 50%; display: grid; place-items: center; background: var(--accent); color: #000; font-size: 34px; font-weight: 700; }
+  h1 { font-size: 2rem; line-height: 1.15; margin: 8px 0 0; }
+  .sub { margin: 0; color: var(--dim); font-size: 1.15rem; }
+  .share {
+    width: 100%; min-height: 56px; border: 0; border-radius: 999px;
+    background: var(--accent); color: #000; font-weight: 700;
+  }
+  .pair { display: flex; align-items: stretch; margin-top: 4px; }
+  .pair button, .text-hit {
+    flex: 1 1 0; min-width: 44px; min-height: 44px; padding: 12px 8px;
+    background: transparent; border: 0; box-shadow: none; border-radius: 0;
+    font-weight: 650; font-size: 1.0625rem;
+  }
+  .sticky-hero { position: sticky; top: 0; z-index: 4; background: var(--bg); }
+  .topbar, .sheet-bar {
+    display: flex; align-items: center; gap: 8px; min-height: 52px; padding: 4px 8px;
+  }
+  .topbar h2, .sheet-bar h2 { flex: 1; margin: 0; font-size: 1.05rem; text-align: center; }
+  .icon-hit, .tiny {
+    min-width: 44px; min-height: 44px; padding: 0 8px;
+    background: transparent; border: 0; font-weight: 650;
+  }
+  .tiny { min-width: 0; font-size: .8125rem; color: var(--dim); }
+  .stage { position: relative; height: 46vh; min-height: 360px; background: var(--stage); }
+  .pill { font-size: .75rem; font-weight: 700; color: var(--dim); }
+  .stats { display: flex; gap: 12px; padding: 2px 16px 10px; }
+  .stats b { display: block; font-size: 1.45rem; font-variant-numeric: tabular-nums; letter-spacing: -0.03em; }
+  .stats span, .tag { color: var(--dim); font-size: .75rem; font-weight: 650; }
+  .tag { color: var(--text); }
+  body > #body-canvas { position: absolute; width: 0; height: 0; overflow: hidden; }
+  #body-canvas { width: 100%; height: 100%; display: block; touch-action: pan-y; }
+  .demo-badge { position: absolute; z-index: 2; top: 10px; inset-inline-start: 12px; font-size: .75rem; font-weight: 700; color: var(--dim); }
+  .stage-tools {
+    position: absolute; z-index: 2; left: 8px; right: 8px; bottom: 8px;
+    display: flex; justify-content: space-between; align-items: flex-end; gap: 8px; pointer-events: none;
+  }
+  .stage-tools button { pointer-events: auto; }
+  .facing { display: flex; gap: 4px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 8px 12px; padding: 8px 16px 10px; font-size: .75rem; color: var(--dim); }
+  .swatch { width: 10px; height: 10px; border-radius: 2px; display: inline-block; margin-inline-end: 4px; vertical-align: -1px; }
+  .note { margin: 0; padding: 0 16px 8px; color: var(--dim); font-size: .8125rem; }
+  main { padding: 4px 16px calc(28px + env(safe-area-inset-bottom)); }
+  .summary, .group, .quiet, .sheet-card {
+    background: var(--surface); border-radius: 16px; margin: 12px 0;
+  }
+  .summary { padding: 14px 14px 12px; }
+  .summary strong { font-size: 1.05rem; }
+  .summary p, .fine { margin: 6px 0 0; color: var(--dim); font-size: .8125rem; }
+  .group, .exercise { scroll-margin-top: 72px; }
+  .group { overflow: hidden; }
+  .group.selected { outline: 2px solid var(--accent); }
+  .group-head, .exercise, .quiet button, .set-row {
+    width: 100%; text-align: start; background: transparent; border: 0; color: inherit;
+  }
+  .group-head, .quiet button { min-height: 52px; padding: 10px 14px; display: flex; align-items: center; gap: 8px; }
+  .group-head .name { font-weight: 750; font-size: 1.05rem; }
+  .spacer { flex: 1; }
+  .share-num { font-variant-numeric: tabular-nums; font-weight: 750; white-space: nowrap; }
+  .unit { display: block; color: var(--dim); font-size: .75rem; font-weight: 500; text-align: end; }
+  .exercise { padding: 10px 14px 12px; border-top: 1px solid var(--line); }
+  .exercise.selected { background: color-mix(in srgb, var(--accent) 10%, transparent); }
+  .row-top { display: flex; align-items: flex-start; gap: 10px; }
+  .row-top .who { min-width: 0; }
+  .who b { display: block; font-size: 1rem; }
+  .who span, .meta { color: var(--dim); font-size: .8125rem; }
+  .meta { margin: 4px 0 0; }
+  .hr-row { display: flex; align-items: center; gap: 8px; margin-top: 8px; min-height: 36px; }
+  .hr-row svg { flex: 1; height: 36px; min-width: 0; }
+  .hr-row polyline { fill: none; stroke: var(--accent); stroke-width: 1.7; stroke-linejoin: round; stroke-linecap: round; }
+  .hr-row circle { fill: var(--accent); }
+  .missing { margin: 8px 0 0; color: var(--text); font-size: .8125rem; font-weight: 650; }
+  .peak { color: var(--dim); font-size: .75rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .quiet { padding: 4px 0; }
+  .kicker { margin: 18px 0 0; color: var(--faint); font-size: .75rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+  .sheet {
+    position: fixed; inset: 0; z-index: 8; background: var(--bg);
+    overflow: auto; padding-bottom: calc(24px + env(safe-area-inset-bottom));
+  }
+  .sheet-card { padding: 12px 14px; }
+  .set-row { padding: 10px 0; border-top: 1px solid var(--line); }
+  .set-row:first-child { border-top: 0; }
+  .chart-wrap { direction: ltr; }
+  .chart-wrap svg { width: 100%; height: 160px; }
+  .toast {
+    position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%);
+    width: min(440px, calc(100% - 32px)); padding: 12px 14px; border-radius: 12px;
+    background: var(--text); color: var(--bg); z-index: 9;
+  }
+  .fallback { height: 100%; display: grid; place-items: center; padding: 16px; text-align: center; color: var(--dim); }
+  .options { display: flex; flex-wrap: wrap; gap: 4px; padding: 0 8px 8px; }
+  .options button[aria-pressed="true"] { color: var(--accent); }
+  .fixed-top, .fixed-bottom {
+    position: fixed; left: 50%; transform: translateX(-50%); width: min(100%, 480px);
+    z-index: 6; background: var(--bg);
+  }
+  .fixed-top { top: 0; padding-top: env(safe-area-inset-top); border-bottom: 1px solid var(--line); }
+  .fixed-bottom { bottom: 0; padding: 8px 16px calc(8px + env(safe-area-inset-bottom)); border-top: 1px solid var(--line); }
+  .page-scroll { padding-top: calc(60px + env(safe-area-inset-top)); padding-bottom: calc(108px + env(safe-area-inset-bottom)); }
+  .page.options-open .page-scroll { padding-top: calc(112px + env(safe-area-inset-top)); }
+  html[data-large="1"] .page-scroll { padding-top: calc(72px + env(safe-area-inset-top)); padding-bottom: calc(128px + env(safe-area-inset-bottom)); }
+  .toast { bottom: calc(88px + env(safe-area-inset-bottom)); }
+  .home, .adjust { min-height: 100vh; display: flex; flex-direction: column; padding: 16px 16px calc(16px + env(safe-area-inset-bottom)); }
+  .scenario { display: flex; gap: 8px; margin: 16px 0; }
+  .scenario button, .choice.secondary {
+    flex: 1; min-height: 48px; border: 0; border-radius: 999px; background: var(--surface); font-weight: 700;
+  }
+  .scenario button[aria-pressed="true"] { background: var(--accent); color: #000; }
+  .history-row { width: 100%; min-height: 64px; text-align: start; border: 0; border-radius: 16px; background: var(--surface); padding: 12px 14px; }
+  .adjust-list { flex: 1; overflow: auto; display: flex; flex-direction: column; gap: 8px; margin: 16px 0; }
+  .diff { border-radius: 12px; padding: 10px 14px; border: 1px solid var(--line); }
+  .diff.changed { border-color: color-mix(in srgb, var(--accent) 45%, transparent); background: color-mix(in srgb, var(--accent) 8%, transparent); }
+  .diff.same { opacity: .55; }
+  .badge { font-size: .7rem; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; color: var(--accent); }
+  .choice { width: 100%; min-height: 48px; border: 0; border-radius: 999px; font-weight: 700; margin-top: 8px; }
+  .share-block { padding: 8px 0; border-top: 1px solid var(--line); }
+  .checks { display: flex; flex-direction: column; gap: 8px; margin: 8px 0 12px; }
+  .checks label { min-height: 44px; display: flex; align-items: center; gap: 8px; }
+</style>
+</head>
+<body>
+<div class="app" id="app"></div>
+<canvas id="body-canvas" aria-label="本次训练量的全身肌肉图"></canvas>
+<script src="vendor/three.min.js"></script>
+<script src="assets/muscle-body.js"></script>
+<script>
+const COPY = {
+  zh: {
+    demo: "演示数据，非你的真实训练",
+    demoMark: "演示数据",
+    demoLong: "下面所有数字、时间和心率都是编好的例子，不是测量，也不会上传。",
+    complete: "训练完成",
+    session: "推举与核心 · 示例",
+    share: "分享",
+    report: "训练报告",
+    exit: "退出",
+    exitToast: "演示：这里会关闭播放器。没有退出真实训练。",
+    shareToast: "演示：分享仍打开原来的分享页。此页不上传训练或心率。",
+    back: "返回",
+    front: "正面",
+    rear: "背面",
+    display: "显示",
+    light: "浅色",
+    dark: "深色",
+    large: "大字",
+    rtl: "从右到左",
+    lang: "EN",
+    legend: ["这次最多", "中等", "较少", "这次没练"],
+    fixed: "全身镜头固定，点选不会缩放。",
+    untouched: "这次没有练到",
+    summaryTitle: "这一场，每个完成组只计一次",
+    work: "工作",
+    rest: "休息",
+    loaded: "负重总量",
+    kgUnit: "kg·次",
+    setsUnit: "组",
+    partial: "有一组缺少计时",
+    cardioNote: "有氧 8:00 只出现在下面的原表里，不涂肌肉，也不换算公斤。",
+    shareNote: "肌群右侧是分摊组数：主练 1.0，协同 0.4。同一组可以出现在多块肌肉上，所以不要把这些组数加起来当成总吨位，也不要当成疲劳百分比。",
+    actionTotal: "动作",
+    primary: "主练",
+    synergist: "协同",
+    bodyweight: "自重",
+    reps: "次",
+    noHeart: "无心率",
+    partialShort: "计时不完整",
+    info: "统计说明",
+    peak: "峰值",
+    oldKicker: "原来的两张表",
+    duration: "动作时长",
+    heart: "动作与心率",
+    contract: "数据从哪来",
+    notFatigue: "绿色只表示这次的相对训练量。心率不参与上色。",
+    unavailable: "3D 模型不可用",
+    role: { primary: "主练", synergist: "协同" },
+    homeTitle: "训练",
+    endWorkout: "结束这场训练",
+    replay: "再看一遍结束流程",
+    scenarioLabel: "演示分支",
+    withChanges: "有动作调整",
+    noChanges: "无动作调整",
+    scenarioNote: "只在这个网页里切换两种结束路径，不是 App 里的新设置。",
+    historyTitle: "刚才的训练",
+    historyHint: "从历史再打开。返回只离开报告，不会把这场再保存一次。",
+    saveRoutine: "把修改保存到训练计划？",
+    saveExplain: "你在训练中调整过这个计划。要保存调整，下次按新参数练吗？",
+    saveScope: "这只决定下次的训练计划。已经记下的这一场组数、训练量和心率都不变。",
+    saveYes: "保存到训练计划",
+    saveNo: "不保存",
+    savedNote: "下次训练计划会带上这些调整。这一场已经记下的内容没有改。",
+    skippedNote: "下次训练计划保持原样。这一场已经记下的内容没有改。",
+    exitHome: "已回到训练首页。这场记录还在，可从下面再打开。",
+    shareBack: "返回报告",
+    shareSave: "保存图片到本机",
+    shareSaved: "演示：图片留在这台设备上，没有发到任何地方。",
+    shareProposal: "分享是这份报告的子集，同一套合计和同一张肌肉图。默认不含组明细、心率和两张原表。这是待确认的设计建议。",
+    optDetails: "加入动作明细",
+    optHeart: "加入心率",
+    finishNote: "刚练完：顶部退出回到首页，不重复结束或保存。",
+    historyNote: "从历史打开：顶部是返回，不是结束训练。"
+  },
+  en: {
+    demo: "Demo data, not your training",
+    demoMark: "Demo",
+    demoLong: "Every number, time, and heart rate below is a made-up example. Nothing here was measured or uploaded.",
+    complete: "Workout complete",
+    session: "Push and core · example",
+    share: "Share",
+    report: "Workout report",
+    exit: "Exit",
+    exitToast: "Demo: this would close the player. No real workout was exited.",
+    shareToast: "Demo: Share still opens the existing share sheet. This page uploads nothing.",
+    back: "Back",
+    front: "Front",
+    rear: "Back view",
+    display: "View",
+    light: "Light",
+    dark: "Dark",
+    large: "Large text",
+    rtl: "Right to left",
+    lang: "中文",
+    legend: ["Most", "Moderate", "Light", "Not this time"],
+    fixed: "The full body stays framed. Selecting a muscle does not zoom.",
+    untouched: "Not trained this time",
+    summaryTitle: "This session counts each completed set once",
+    work: "Work",
+    rest: "Rest",
+    loaded: "Loaded volume",
+    kgUnit: "kg·reps",
+    setsUnit: "sets",
+    partial: "One set has no timing",
+    cardioNote: "The 8:00 ride stays in the original tables. It is not painted and not converted to kilograms.",
+    shareNote: "The number on the right is allocated sets: 1.0 primary, 0.4 synergist. One set can appear under several muscles, so those numbers are not a tonnage and not a fatigue percentage.",
+    actionTotal: "Exercise",
+    primary: "Primary",
+    synergist: "Synergist",
+    bodyweight: "Bodyweight",
+    reps: "reps",
+    noHeart: "无心率",
+    partialShort: "计时不完整",
+    info: "统计说明",
+    peak: "Peak",
+    oldKicker: "Original two tables",
+    duration: "Exercise duration",
+    heart: "Exercises and heart rate",
+    contract: "Where the numbers come from",
+    notFatigue: "Green is relative volume for this session. Heart rate does not color the body.",
+    unavailable: "3D model unavailable",
+    role: { primary: "Primary", synergist: "Synergist" },
+    homeTitle: "Training",
+    endWorkout: "Finish this workout",
+    replay: "Replay the finish flow",
+    scenarioLabel: "Demo branch",
+    withChanges: "Routine was adjusted",
+    noChanges: "No routine changes",
+    scenarioNote: "This switch only chooses the two finish paths in the web demo. It is not a new app setting.",
+    historyTitle: "Workout just finished",
+    historyHint: "Open it again from history. Back leaves the report and does not save the workout a second time.",
+    saveRoutine: "Save changes to this routine?",
+    saveExplain: "You adjusted this routine during the workout. Save the adjustments for next time?",
+    saveScope: "This choice updates the next routine only. The completed sets, volume, and heart-rate examples stay as logged.",
+    saveYes: "Save to routine",
+    saveNo: "Don't save",
+    savedNote: "The next routine would include these adjustments. This completed session was not rewritten.",
+    skippedNote: "The next routine stays as it was. This completed session was not rewritten.",
+    exitHome: "Back on the training home. This session is still here and can be opened again.",
+    shareBack: "Back to report",
+    shareSave: "Save image on this device",
+    shareSaved: "Demo: the image stays on this device. Nothing was sent.",
+    shareProposal: "The share card is a subset of this same report, with the same totals and the same muscle map. Set details, heart rate, and the two original tables stay off until chosen. This subset is a proposal awaiting review.",
+    optDetails: "Include exercise detail",
+    optHeart: "Include heart rate",
+    finishNote: "Just finished: Exit at the top returns home and does not end or save the workout again.",
+    historyNote: "Opened from history: the top control is Back, not end-workout."
+  }
+};
+const NAMES = {
+  chest: ["胸", "Chest"], shoulders: ["肩", "Shoulders"], triceps: ["三头", "Triceps"],
+  abs: ["腹", "Abs"], obliques: ["腹斜肌", "Obliques"], quads: ["股四头", "Quads"],
+  lats: ["阔背", "Lats"], glutes: ["臀", "Glutes"], hamstrings: ["腘绳", "Hamstrings"],
+  biceps: ["二头", "Biceps"], forearms: ["前臂", "Forearms"], calves: ["小腿", "Calves"],
+  upperTraps: ["上背", "Upper traps"], lowerBack: ["下背", "Lower back"], neck: ["颈", "Neck"],
+  adductors: ["内收", "Adductors"], tibialisAnterior: ["胫骨前", "Tibialis"]
+};
+const LANDMARKS = new Set(["head", "hands", "feet"]);
+const FIXTURE = {
+  label: "demo-not-a-real-workout",
+  omitted: ["计划中的杠铃卧推第 3 组没有完成，所以没有记录、没有计时，也不计入训练量。", "Planned bench-press set 3 was not completed, so it has no record, no timing, and no volume."],
+  restSamples: [{ t: 60, bpm: 112 }, { t: 80, bpm: 108 }, { t: 100, bpm: 104 }],
+  exercises: [
+    {
+      id: "bench", paint: true, category: "strength",
+      name: ["杠铃卧推", "Bench Press"], variant: ["杠铃", "Barbell"],
+      roles: { chest: "primary", shoulders: "synergist", triceps: "synergist" },
+      sets: [
+        { n: 1, reps: 8, weightKg: 60, restBefore: null, intervals: [[0, 22], [28, 40]],
+          hr: [0, 4, 8, 12, 16, 20, 28, 32, 36].map((t, i) => ({ t, bpm: [118, 126, 134, 140, 146, 150, 138, 144, 149][i] })) },
+        { n: 2, reps: 6, weightKg: 60, restBefore: 75, intervals: [[115, 143]],
+          hr: [115, 119, 123, 127, 131, 135, 139].map((t, i) => ({ t, bpm: [122, 130, 138, 145, 151, 156, 154][i] })) }
+      ]
+    },
+    {
+      id: "press", paint: true, category: "strength",
+      name: ["哑铃推举", "Dumbbell Shoulder Press"], variant: ["哑铃", "Dumbbell"],
+      roles: { shoulders: "primary", triceps: "synergist" },
+      sets: [
+        { n: 1, reps: 8, weightKg: 20, restBefore: null, intervals: [[200, 228]],
+          hr: [200, 204, 208, 212, 216, 220, 224].map((t, i) => ({ t, bpm: [128, 136, 144, 150, 156, 160, 158][i] })) },
+        { n: 2, reps: 8, weightKg: 20, restBefore: 60, intervals: null, hr: [] }
+      ]
+    },
+    {
+      id: "pushup", paint: true, category: "strength",
+      name: ["俯卧撑", "Push-up"], variant: ["自重", "Bodyweight"],
+      roles: { chest: "primary", shoulders: "synergist", triceps: "synergist" },
+      sets: [
+        { n: 1, reps: 15, weightKg: null, restBefore: null, intervals: [[400, 420]], hr: [{ t: 404, bpm: 128 }] }
+      ]
+    },
+    {
+      id: "plank", paint: true, category: "timed",
+      name: ["平板支撑", "Plank"], variant: ["计时", "Timed"],
+      roles: { abs: "primary", obliques: "synergist" },
+      sets: [
+        { n: 1, reps: null, weightKg: null, durationSeconds: 45, restBefore: null, intervals: [[480, 525]], hr: [] }
+      ]
+    },
+    {
+      id: "cycle", paint: false, category: "cardio",
+      name: ["轻松骑行", "Easy Cycle"], variant: ["有氧", "Cardio"],
+      roles: {},
+      sets: [
+        { n: 1, reps: null, weightKg: null, durationSeconds: 480, restBefore: null, intervals: [[600, 1080]],
+          hr: Array.from({ length: 33 }, (_, i) => ({ t: 600 + i * 15, bpm: Math.round(112 + Math.sin(i / 4) * 10 + i * 0.3) })) }
+      ]
+    }
+  ]
+};
+
+const params = new URLSearchParams(location.search);
+const ROUTINE_DIFF = [
+  { kind: "updated", name: ["杠铃卧推", "Bench Press"], from: "3 × 8 · 60 kg", to: "2 × 8/6 · 60 kg" },
+  { kind: "updated", name: ["哑铃推举", "Dumbbell Shoulder Press"], from: "2 × 8 · 22 kg", to: "2 × 8 · 20 kg" },
+  { kind: "same", name: ["俯卧撑", "Push-up"], summary: "1 × 15" },
+  { kind: "same", name: ["平板支撑", "Plank"], summary: "1 × 45s" }
+];
+const requested = params.get("screen") || "home";
+const state = {
+  screen: requested === "history" ? "report" : (requested === "complete" ? "home" : requested),
+  reportMode: requested === "history" ? "history" : "finish",
+  scenario: params.get("scenario") === "none" ? "none" : "changes",
+  planDecision: params.get("decision") === "saved" || params.get("decision") === "skipped" ? params.get("decision") : null,
+  finished: requested !== "home" && requested !== "complete",
+  lang: params.get("lang") === "en" ? "en" : "zh",
+  theme: params.get("theme") === "light" ? "light" : "dark",
+  rtl: params.get("rtl") === "1",
+  large: params.get("large") === "1",
+  facing: params.get("facing") === "back" ? "back" : "front",
+  selected: params.get("select"),
+  open: {},
+  sheet: params.get("sheet") || null,
+  sheetExercise: params.get("exercise") || null,
+  options: false,
+  shareDetails: params.get("details") === "1",
+  shareHeart: params.get("heart") === "1",
+  toast: ""
+};
+
+function t(key) { return COPY[state.lang][key]; }
+function L(pair) { return pair[state.lang === "en" ? 1 : 0]; }
+function nameOf(id) { return L(NAMES[id] || [id, id]); }
+function clock(seconds) {
+  const sign = seconds < 0 ? "-" : "";
+  const whole = Math.round(Math.abs(seconds));
+  return sign + Math.floor(whole / 60) + ":" + String(whole % 60).padStart(2, "0");
+}
+function round1(value) { return (Math.round(value * 10) / 10).toFixed(1); }
+function groupId(node) { return node.replace(/_(left|right|center)$/, ""); }
+
+function samplesIn(set) {
+  if (!set.intervals || !set.hr) return [];
+  return set.hr.filter((sample) => set.intervals.some(([start, end]) => sample.t >= start && sample.t < end));
+}
+function segmentsFor(set) {
+  if (!set.intervals) return [];
+  const segments = [];
+  for (const [start, end] of set.intervals) {
+    const points = samplesIn(set).filter((sample) => sample.t >= start && sample.t < end).sort((a, b) => a.t - b.t);
+    let current = [];
+    for (const point of points) {
+      if (current.length && point.t - current[current.length - 1].t > 20) { segments.push(current); current = []; }
+      current.push(point);
+    }
+    if (current.length) segments.push(current);
+  }
+  return segments;
+}
+function exerciseRaw(exercise) {
+  let kg = 0, kgSets = 0, work = 0, timed = 0, missing = 0, rest = 0, reps = 0;
+  for (const set of exercise.sets) {
+    if (set.weightKg > 0 && set.reps > 0 && exercise.category === "strength") { kg += set.weightKg * set.reps; kgSets += 1; }
+    if (set.reps) reps += set.reps;
+    if (set.durationSeconds) timed += set.durationSeconds;
+    if (!set.intervals) missing += 1;
+    else work += set.intervals.reduce((sum, [start, end]) => sum + (end - start), 0);
+    if (set.restBefore != null) rest += set.restBefore;
+  }
+  return { kg: kgSets ? kg : null, work, missing, rest, reps, timed, sets: exercise.sets.length };
+}
+function derive() {
+  const muscles = new Map();
+  for (const exercise of FIXTURE.exercises) {
+    if (!exercise.paint) continue;
+    for (const [id, role] of Object.entries(exercise.roles)) {
+      const share = exercise.sets.length * (role === "primary" ? 1 : 0.4);
+      if (!muscles.has(id)) muscles.set(id, { id, share: 0, rows: [] });
+      const bucket = muscles.get(id);
+      bucket.share += share;
+      bucket.rows.push({ exercise, role, share });
+    }
+  }
+  const groups = [...muscles.values()].sort((a, b) => b.share - a.share || a.id.localeCompare(b.id));
+  for (const group of groups) group.rows.sort((a, b) => b.share - a.share || a.exercise.id.localeCompare(b.exercise.id));
+  const sessionKg = FIXTURE.exercises.reduce((sum, exercise) => sum + (exerciseRaw(exercise).kg || 0), 0);
+  const painted = FIXTURE.exercises.filter((exercise) => exercise.paint);
+  const work = painted.reduce((sum, exercise) => sum + exerciseRaw(exercise).work, 0);
+  const rest = painted.reduce((sum, exercise) => sum + exerciseRaw(exercise).rest, 0);
+  const missing = painted.reduce((sum, exercise) => sum + exerciseRaw(exercise).missing, 0);
+  const setCount = painted.reduce((sum, exercise) => sum + exercise.sets.length, 0);
+  return { groups, sessionKg, work, rest, missing, setCount, maxShare: Math.max(...groups.map((group) => group.share), 1) };
+}
+function intensity(share) { return share / derive().maxShare; }
+
+function metaLine(exercise) {
+  const raw = exerciseRaw(exercise);
+  const bits = [raw.sets + " " + t("setsUnit")];
+  if (exercise.category === "strength" && exercise.sets.every((set) => set.weightKg > 0 && set.reps > 0)) {
+    const reps = exercise.sets.map((set) => set.reps).join(state.lang === "zh" ? "、" : ", ");
+    bits.push(exercise.sets[0].weightKg + " kg × " + reps);
+  } else if (exercise.category === "strength") {
+    bits.push(raw.reps + " " + t("reps") + " · " + t("bodyweight"));
+  } else if (exercise.category === "timed") {
+    bits.push(clock(raw.timed) + " · " + exercise.variant[state.lang === "en" ? 1 : 0]);
+  }
+  if (exercise.sets.some((set) => set.intervals)) bits.push(t("work") + " " + clock(raw.work));
+  if (raw.missing) bits.push(t("partial"));
+  if (raw.kg != null) bits.push(t("actionTotal") + " " + raw.kg + " " + t("kgUnit"));
+  return bits.join(" · ");
+}
+function spark(exercise) {
+  const sets = exercise.sets.filter((set) => set.intervals);
+  const segments = sets.flatMap(segmentsFor);
+  const points = segments.flat();
+  if (points.length < 2) return null;
+  let minT = Infinity, maxT = -Infinity, minB = Infinity, maxB = -Infinity;
+  for (const set of sets) for (const [start, end] of set.intervals) { minT = Math.min(minT, start); maxT = Math.max(maxT, end); }
+  for (const point of points) { minB = Math.min(minB, point.bpm); maxB = Math.max(maxB, point.bpm); }
+  const width = 320, height = 36, pad = 3;
+  const x = (time) => pad + ((time - minT) / (maxT - minT || 1)) * (width - pad * 2);
+  const y = (bpm) => {
+    const low = minB - 4, high = maxB + 4;
+    return pad + (1 - (bpm - low) / (high - low || 1)) * (height - pad * 2);
+  };
+  const lines = segments.filter((segment) => segment.length >= 2).map((segment) =>
+    `<polyline points="${segment.map((point) => x(point.t).toFixed(1) + "," + y(point.bpm).toFixed(1)).join(" ")}"></polyline>`).join("");
+  const dots = points.map((point) => `<circle cx="${x(point.t).toFixed(1)}" cy="${y(point.bpm).toFixed(1)}" r="1.5"></circle>`).join("");
+  return { svg: `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="${t("peak")} ${maxB}">${lines}${dots}</svg>`, peak: maxB, segments: segments.length };
+}
+
+let renderer, scene, camera, body, raycaster, pointer, fitted, fittedSize, drag;
+const canvas = document.getElementById("body-canvas");
+
+function volumeRGB(amount) {
+  const gray = state.theme === "light" ? 0.78 : 0.24;
+  const clamped = Number.isFinite(amount) ? Math.min(1, Math.max(0, amount)) : 0;
+  const blend = (100 - Math.round((1 - clamped) * 100)) / 100;
+  const accent = [30 / 255, 215 / 255, 96 / 255];
+  return accent.map((channel) => gray + (channel - gray) * blend);
+}
+function paintBody() {
+  if (!body) return;
+  const model = derive();
+  const shares = Object.fromEntries(model.groups.map((group) => [group.id, group.share]));
+  for (const mesh of body.children) {
+    const id = groupId(mesh.name);
+    const selected = state.selected === id;
+    let rgb = LANDMARKS.has(id) ? [0.32, 0.32, 0.32] : volumeRGB(shares[id] ? intensity(shares[id]) : 0);
+    if (selected) rgb = rgb.map((channel) => channel + (1 - channel) * 0.28);
+    mesh.material.color.setRGB(rgb[0], rgb[1], rgb[2]);
+  }
+  const host = document.getElementById("stage-host");
+  if (host && camera) {
+    host.dataset.ready = "1";
+    host.dataset.yaw = body.rotation.y.toFixed(4);
+    host.dataset.half = camera.top.toFixed(4);
+    host.dataset.selected = state.selected || "";
+  }
+}
+function fit() {
+  const host = document.getElementById("stage-host");
+  if (!host || !renderer || !camera || !body) return;
+  const width = host.clientWidth || 320;
+  const height = host.clientHeight || 280;
+  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+  renderer.setSize(width, height, false);
+  if (!fitted) {
+    const box = new THREE.Box3().setFromObject(body);
+    body.position.sub(box.getCenter(new THREE.Vector3()));
+    fittedSize = box.getSize(new THREE.Vector3());
+    fitted = true;
+  }
+  const aspect = width / Math.max(1, height);
+  const pad = 1.06;
+  const half = Math.max(fittedSize.y * 0.5 * pad, fittedSize.x * 0.5 * pad / aspect, fittedSize.z * 0.5 * pad / aspect);
+  camera.left = -half * aspect; camera.right = half * aspect;
+  camera.top = half; camera.bottom = -half;
+  camera.near = 0.01; camera.far = 20;
+  camera.position.set(0, 0, 4);
+  camera.lookAt(0, 0, 0);
+  camera.updateProjectionMatrix();
+  paintBody();
+}
+function init3D() {
+  if (renderer || canvas.dataset.failed) return;
+  const host = document.getElementById("stage-host");
+  if (!window.THREE || !window.MUSCLE_BODY) { fallback(host); return; }
+  try {
+    renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+  } catch (error) { fallback(host); return; }
+  if ("outputColorSpace" in renderer && THREE.SRGBColorSpace) renderer.outputColorSpace = THREE.SRGBColorSpace;
+  scene = new THREE.Scene();
+  camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.01, 20);
+  body = new THREE.Group();
+  const bytes = (value) => Uint8Array.from(atob(value), (char) => char.charCodeAt(0));
+  for (const mesh of MUSCLE_BODY.meshes) {
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute("position", new THREE.BufferAttribute(new Float32Array(bytes(mesh.position).buffer), 3));
+    geometry.setIndex(new THREE.BufferAttribute(new Uint32Array(bytes(mesh.index).buffer), 1));
+    geometry.computeVertexNormals();
+    const material = new THREE.MeshBasicMaterial({ color: 0x3d3d3d, side: THREE.DoubleSide });
+    const node = new THREE.Mesh(geometry, material);
+    node.name = mesh.name;
+    body.add(node);
+  }
+  scene.add(body);
+  raycaster = new THREE.Raycaster();
+  pointer = new THREE.Vector2();
+  body.rotation.y = state.facing === "back" ? Math.PI : 0;
+  fit();
+  requestAnimationFrame(frame);
+}
+function frame() {
+  requestAnimationFrame(frame);
+  if (!renderer) return;
+  renderer.render(scene, camera);
+  paintBody();
+}
+function fallback(host) {
+  canvas.dataset.failed = "1";
+  if (host) host.innerHTML = `<div class="fallback">${t("unavailable")}</div>`;
+}
+function face(which) {
+  state.facing = which;
+  if (body) body.rotation.y = which === "back" ? Math.PI : 0;
+  document.querySelectorAll("[data-face]").forEach((button) => button.setAttribute("aria-pressed", button.dataset.face === which ? "true" : "false"));
+}
+function selectGroup(id, scroll) {
+  state.selected = id;
+  if (derive().groups.some((group) => group.id === id)) state.open[id] = true;
+  render();
+  if (scroll) document.getElementById("group-" + id)?.scrollIntoView({ block: "start" });
+}
+function pick(event) {
+  const rect = canvas.getBoundingClientRect();
+  pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+  pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+  raycaster.setFromCamera(pointer, camera);
+  return raycaster.intersectObjects(body.children, false)[0]?.object?.name || null;
+}
+canvas.addEventListener("pointerdown", (event) => {
+  if (!body) return;
+  drag = { x: event.clientX, y: event.clientY, yaw: body.rotation.y, mode: null, id: event.pointerId };
+  canvas.setPointerCapture(event.pointerId);
+});
+canvas.addEventListener("pointermove", (event) => {
+  if (!drag || drag.id !== event.pointerId) return;
+  const dx = event.clientX - drag.x, dy = event.clientY - drag.y;
+  if (!drag.mode && Math.hypot(dx, dy) > 8) drag.mode = Math.abs(dx) > Math.abs(dy) ? "yaw" : "scroll";
+  if (drag.mode === "scroll") { canvas.releasePointerCapture(event.pointerId); drag = null; return; }
+  if (drag.mode === "yaw") { body.rotation.y = drag.yaw + dx * 0.012; event.preventDefault(); }
+});
+canvas.addEventListener("pointerup", (event) => {
+  if (!drag || drag.id !== event.pointerId) return;
+  const moved = Math.hypot(event.clientX - drag.x, event.clientY - drag.y);
+  const mode = drag.mode;
+  drag = null;
+  if (mode !== "yaw" && moved < 8) {
+    const node = pick(event);
+    if (!node) return;
+    const id = groupId(node);
+    if (LANDMARKS.has(id)) return;
+    selectGroup(id, true);
+  }
+});
+canvas.addEventListener("pointercancel", () => { drag = null; });
+window.addEventListener("resize", fit);
+
+function legendSwatches() {
+  return [1, 0.55, 0.22, 0].map((amount, index) => {
+    const rgb = volumeRGB(amount).map((channel) => Math.round(channel * 255));
+    return `<span><i class="swatch" style="background:rgb(${rgb.join(",")})"></i>${t("legend")[index]}</span>`;
+  }).join("");
+}
+function rowFacts(exercise) {
+  const raw = exerciseRaw(exercise);
+  let load = "";
+  if (exercise.category === "strength" && exercise.sets.every((set) => set.weightKg > 0 && set.reps > 0)) {
+    load = `${raw.sets} × ${exercise.sets[0].weightKg} kg · ${exercise.sets.map((set) => set.reps).join(state.lang === "zh" ? "、" : ", ")}`;
+  } else if (exercise.category === "strength") load = `${raw.sets} × ${raw.reps}`;
+  else if (exercise.category === "timed") load = clock(raw.timed);
+  const time = exercise.sets.some((set) => set.intervals) ? clock(raw.work) : "";
+  return { load, time, total: raw.kg != null ? `${raw.kg} ${t("kgUnit")}` : "", missing: raw.missing > 0 };
+}
+function heartBlock(exercise) {
+  const drawn = spark(exercise);
+  if (!drawn) return `<p class="missing">${t("noHeart")}</p>`;
+  return `<div class="hr-row" dir="ltr">${drawn.svg}<span class="peak">${drawn.peak}</span></div>`;
+}
+function groupHtml(group) {
+  const open = state.open[group.id] !== false;
+  const rows = open ? group.rows.map((row) => {
+    const facts = rowFacts(row.exercise);
+    const selected = state.selected === group.id && state.sheetExercise === row.exercise.id;
+    return `<button class="exercise${selected ? " selected" : ""}" data-open-set="${row.exercise.id}" data-group="${group.id}" id="row-${group.id}-${row.exercise.id}">
+      <span class="row-top"><span class="who"><b>${L(row.exercise.name)}</b><span>${L(row.exercise.variant)}</span></span>
+      <span class="spacer"></span>${facts.total ? `<span class="share-num">${facts.total}</span>` : ""}</span>
+      <span class="meta">${[facts.load, facts.time].filter(Boolean).join(" · ")}${facts.missing ? ` <span class="tag">${t("partialShort")}</span>` : ""}</span>
+      ${heartBlock(row.exercise)}
+    </button>`;
+  }).join("") : "";
+  return `<section class="group${state.selected === group.id ? " selected" : ""}" id="group-${group.id}">
+    <button class="group-head" data-toggle="${group.id}" aria-expanded="${open}">
+      <span aria-hidden="true">${open ? "▾" : "▸"}</span><span class="name">${nameOf(group.id)}</span>
+      <span class="spacer"></span><span class="share-num">${round1(group.share)}<span class="unit">${t("setsUnit")}</span></span>
+    </button>${rows}</section>`;
+}
+function sheetHtml() {
+  if (!state.sheet) return "";
+  const title = state.sheet === "sets" ? L(FIXTURE.exercises.find((exercise) => exercise.id === state.sheetExercise).name)
+    : state.sheet === "duration" ? t("duration") : state.sheet === "heart" ? t("heart") : t("info");
+  return `<div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
+    <div class="sheet-bar"><button class="icon-hit" data-close-sheet>${t("back")}</button><h2 id="sheet-title">${title}</h2><span class="icon-hit"></span></div>
+    <p class="note"><span class="pill">${t("demoMark")}</span></p>
+    <main>${state.sheet === "sets" ? setsSheet() : state.sheet === "duration" ? durationSheet() : state.sheet === "heart" ? heartSheet() : contractSheet()}</main>
+  </div>`;
+}
+function setsSheet() {
+  const exercise = FIXTURE.exercises.find((item) => item.id === state.sheetExercise);
+  const raw = exerciseRaw(exercise);
+  const rows = exercise.sets.map((set) => {
+    const work = set.intervals ? set.intervals.reduce((sum, [start, end]) => sum + end - start, 0) : null;
+    const pauses = [];
+    if (set.intervals) for (let i = 1; i < set.intervals.length; i += 1) pauses.push(set.intervals[i][0] - set.intervals[i - 1][1]);
+    const load = set.weightKg > 0 && set.reps ? `${set.weightKg} kg × ${set.reps}` : set.reps ? `${set.reps} ${t("reps")} · ${t("bodyweight")}` : set.durationSeconds ? clock(set.durationSeconds) : "";
+    const timing = work == null ? t("partialShort") : clock(work) + (pauses.length ? ` · ${pauses.map(clock).join(", ")}` : "");
+    const rest = set.restBefore != null ? `${t("rest")} ${clock(set.restBefore)}` : "";
+    const hearts = samplesIn(set);
+    const heart = hearts.length >= 2 ? `${hearts.length} · ${t("peak")} ${Math.max(...hearts.map((sample) => sample.bpm))}` : t("noHeart");
+    return `<div class="set-row"><b>${state.lang === "zh" ? "第" : "Set "}${set.n}</b><div class="meta">${[load, timing, rest, heart].filter(Boolean).join(" · ")}</div></div>`;
+  }).join("");
+  const shares = Object.entries(exercise.roles).map(([id, role]) => `${nameOf(id)} ${round1(exercise.sets.length * (role === "primary" ? 1 : 0.4))} ${t("setsUnit")}`).join(" · ");
+  return `<article class="sheet-card"><p class="meta">${[rowFacts(exercise).load, rowFacts(exercise).time, rowFacts(exercise).total].filter(Boolean).join(" · ")}</p>
+    <p class="meta">${shares}</p>
+    ${rows}${exercise.id === "bench" ? `<p class="meta">${state.lang === "zh" ? "第 3 组未完成" : "Set 3 not completed"}</p>` : ""}</article>`;
+}
+function durationSheet() {
+  const rows = FIXTURE.exercises.map((exercise) => {
+    const raw = exerciseRaw(exercise);
+    return { exercise, raw };
+  });
+  const max = Math.max(...rows.map((row) => row.raw.work));
+  return `<article class="sheet-card">${rows.map((row) => `<div class="set-row"><b>${L(row.exercise.name)}</b>
+    <div class="meta">${clock(row.raw.work)}${row.raw.rest ? " · " + t("rest") + " " + clock(row.raw.rest) : ""}${row.raw.missing ? " · " + t("partialShort") : ""}</div>
+    <div style="margin-top:6px;height:8px;border-radius:99px;background:var(--line)"><div style="height:8px;border-radius:99px;background:var(--accent);width:${max ? row.raw.work / max * 100 : 0}%"></div></div>
+    </div>`).join("")}</article>`;
+}
+function heartSheet() {
+  const series = [];
+  for (const exercise of FIXTURE.exercises) for (const set of exercise.sets) for (const segment of segmentsFor(set)) if (segment.length) series.push(segment);
+  const points = series.flat();
+  const minT = Math.min(...FIXTURE.exercises.flatMap((exercise) => exercise.sets.flatMap((set) => set.intervals || [] )).map((interval) => interval[0]));
+  const maxT = Math.max(...FIXTURE.exercises.flatMap((exercise) => exercise.sets.flatMap((set) => set.intervals || [] )).map((interval) => interval[1]));
+  const minB = Math.min(...points.map((point) => point.bpm)) - 6;
+  const maxB = Math.max(...points.map((point) => point.bpm)) + 6;
+  const x = (time) => 16 + ((time - minT) / (maxT - minT)) * 300;
+  const y = (bpm) => 8 + (1 - (bpm - minB) / (maxB - minB)) * 140;
+  const lines = series.filter((segment) => segment.length >= 2).map((segment) => `<polyline points="${segment.map((point) => x(point.t).toFixed(1) + "," + y(point.bpm).toFixed(1)).join(" ")}" fill="none" stroke="#1ED760" stroke-width="2"></polyline>`).join("");
+  const labels = [[0, "卧推", "Bench"], [200, "推举", "Press"], [600, "骑行", "Ride"]].map(([time, zh, en]) =>
+    `<text x="${x(time).toFixed(1)}" y="176" fill="#b3b3b3" font-size="10">${state.lang === "zh" ? zh : en}</text>`).join("");
+  return `<article class="sheet-card"><p><b>${t("peak")} ${Math.max(...points.map((point) => point.bpm))}</b></p>
+    <div class="chart-wrap"><svg viewBox="0 0 332 186" role="img" aria-label="${t("heart")}">${lines}${labels}</svg></div>
+    ${FIXTURE.exercises.map((exercise) => {
+      const count = exercise.sets.flatMap(samplesIn).length;
+      return `<div class="set-row"><b>${L(exercise.name)}</b><div class="meta">${count >= 2 ? count + " · " + t("peak") + " " + Math.max(...exercise.sets.flatMap(samplesIn).map((sample) => sample.bpm)) : t("noHeart")}</div></div>`;
+    }).join("")}
+    </article>`;
+}
+function contractSheet() {
+  const zh = state.lang !== "en";
+  const blocks = zh ? [
+    ["怎么看", "绿色是这次的相对训练量，点选不会缩放。心率不给肌肉上色。顶部三个数是工作时长、完成组数和负重总量。肌群右侧是分摊组数：主练 1.0，协同 0.4，不要和公斤相加。有氧不涂在肌肉上。保存计划只影响下次，不改这一场。"],
+    ["训练量", "只统计实际完成的组。未完成的卧推第 3 组、休息和没写进记录的建议重量都不算。肌群右侧沿用恢复计算里的每组比例：主练 1.0、协同 0.4，但这里停在组数，不换成疲劳百分比。公斤只在外部重量大于 0 且有次数时按重量 × 次数计算，每个完成组进入全场总量一次。自重、计时和有氧不混进公斤。"],
+    ["时长", "主数字是做组计时，也就是播放器停在这一组并且正在播放的区间之和。它不是肌肉张力时间，也不含休息。休息用已记录的休息秒数单列。组内暂停会切成多段。缺少计时的组仍然算完成，并标明未记录，不当作 0 秒。"],
+    ["心率", "示例曲线不是 App 里存好的动作心率。现有样本按整场时间保存，再用组的做组区间去挑：session 相同，且时间落在区间内（含起点、不含终点）。不同区间、暂停、休息，以及间隔超过 20 秒，都不连线。能对上的读数少于 2 个就显示「无心率记录」。心率不给肌肉上色。"],
+    ["现在已有", "组记录里已有动作、类别、重量、次数、目标时长、完成时间、session、step、组号、做组区间和休息秒数。心率样本在另一份本地记录里，有 id、session、时间、bpm、来源和可选提醒上限。动作时长是把这些组加起来，不是单独存的动作开始和结束。"],
+    ["还没有", "没有动作级心率字段，没有休息的起止时刻，没有把「计时为何缺失」存下来，也没有按公斤测量到每块肌肉或左右侧。演示里的肌群组数是示例分摊，不是新的生理测量。"]
+  ] : [
+    ["How to read", "Green is this session's relative volume. Selecting a muscle does not zoom, and heart rate does not color the body. The three numbers are work time, completed sets, and loaded volume. The number on a muscle is allocated sets, 1.0 primary and 0.4 synergist, separate from kilograms. Cardio is not painted. Saving the routine affects the next plan only."],
+    ["Volume", "Only completed sets count. The unfinished third bench set, rest, and any suggested weight that was not logged are omitted. Muscle totals reuse the recovery split, 1.0 primary and 0.4 synergist per set, and stop there instead of becoming a fatigue percentage. Kilograms are weight × reps only when external weight is above 0 and reps exist. Each completed set joins the session total once. Bodyweight, timed work, and cardio are not converted to kilograms."],
+    ["Duration", "The main number is tracked work: playback intervals while that set was the current step and playing. It is not time under tension and it excludes rest. Recorded rest is separate. A pause splits one set into intervals. A set with no intervals still counts as completed and is labeled missing, not as zero seconds."],
+    ["Heart rate", "These curves are examples. The app stores samples for the whole session, then keeps a sample when its session matches and its time falls inside a set interval, including the start and excluding the end. Separate intervals, pauses, rest, and gaps over 20 seconds are not connected. Fewer than two matching readings says 无心率记录. Heart rate does not color muscles."],
+    ["Already stored", "A completed set can store exercise, category, weight, reps, target duration, completion time, session, step, set number, work intervals, and rest seconds. Heart samples live in a separate local file with id, session, time, bpm, source, and an optional reminder limit. Exercise duration is a sum of those sets, not its own saved start and end."],
+    ["Not stored", "There is no exercise-level heart-rate series, no rest start and end, no saved reason for missing timing, and no measured kilogram split by muscle or by side. The muscle numbers in this demo are the example allocation, not a new physiological measurement."]
+  ];
+  return blocks.map(([title, text]) => `<article class="sheet-card"><b>${title}</b><p class="fine">${text}</p></article>`).join("");
+}
+
+function endWorkout() {
+  state.finished = true;
+  state.reportMode = "finish";
+  state.sheet = null;
+  state.screen = state.scenario === "changes" ? "adjust" : "report";
+  render();
+}
+function decidePlan(decision) {
+  state.planDecision = decision;
+  state.finished = true;
+  state.reportMode = "finish";
+  state.screen = "report";
+  render();
+}
+function shareMuscle(group) {
+  const names = group.rows.map((row) => L(row.exercise.name)).join(" · ");
+  const detail = state.shareDetails ? group.rows.map((row) => {
+    const facts = rowFacts(row.exercise);
+    return `<p class="meta">${L(row.exercise.name)} · ${[facts.load, facts.time, facts.total].filter(Boolean).join(" · ")}${facts.missing ? " · " + t("partialShort") : ""}</p>`;
+  }).join("") : `<p class="meta">${names}</p>`;
+  const heart = state.shareHeart ? group.rows.map((row) => heartBlock(row.exercise)).join("") : "";
+  return `<div class="share-block"><div class="row-top"><b>${nameOf(group.id)}</b><span class="spacer"></span><span class="share-num">${round1(group.share)} ${t("setsUnit")}</span></div>${detail}${heart}</div>`;
+}
+function mountStage(id) {
+  const host = document.getElementById(id);
+  if (!host) return;
+  host.insertBefore(canvas, host.firstChild);
+  init3D();
+  fit();
+  requestAnimationFrame(fit);
+}
+
+function render() {
+  const scroll = state.screen === state.painted ? document.scrollingElement.scrollTop : 0;
+  state.painted = state.screen;
+  document.documentElement.dataset.theme = state.theme;
+  document.documentElement.dataset.large = state.large ? "1" : "0";
+  document.documentElement.dir = state.rtl ? "rtl" : "ltr";
+  document.documentElement.lang = state.lang === "en" ? "en" : "zh-Hans";
+  document.documentElement.dataset.screen = state.screen;
+  const app = document.getElementById("app");
+  const model = derive();
+  const displayRow = state.options ? `<div class="options"><button class="tiny" data-theme-toggle aria-pressed="${state.theme === "light"}">${state.theme === "light" ? t("dark") : t("light")}</button><button class="tiny" data-lang>${t("lang")}</button><button class="tiny" data-large aria-pressed="${state.large}">${t("large")}</button><button class="tiny" data-rtl aria-pressed="${state.rtl}">${t("rtl")}</button></div>` : "";
+  if (state.screen === "home") {
+    app.innerHTML = `<section class="home" id="training-home"><p class="pill">${t("demoMark")}</p><h1>${t("homeTitle")}</h1><p class="sub">${t("session")}</p>
+      <div class="scenario" role="group" aria-label="${t("scenarioLabel")}">
+        <button type="button" id="demo-scenario-changes" aria-pressed="${state.scenario === "changes"}">${t("withChanges")}</button>
+        <button type="button" id="demo-scenario-none" aria-pressed="${state.scenario === "none"}">${t("noChanges")}</button>
+      </div>
+      <button class="share" id="end-workout">${state.finished ? t("replay") : t("endWorkout")}</button>
+      ${state.finished ? `<button class="history-row" id="open-history"><b>${t("historyTitle")}</b><span class="meta">${t("session")} · ${model.sessionKg} ${t("kgUnit")}</span></button><p class="fine">${t("historyHint")}</p>` : ""}
+      ${state.planDecision ? `<p class="fine">${state.planDecision === "saved" ? t("savedNote") : t("skippedNote")}</p>` : ""}
+      </section>`;
+  } else if (state.screen === "adjust") {
+    app.innerHTML = `<section class="adjust" id="routine-adjust"><p class="pill">${t("demoMark")}</p>
+      <h1 style="font-size:1.4rem">${t("saveRoutine")}</h1><p class="fine">${t("saveExplain")}</p>
+      <div class="adjust-list">${ROUTINE_DIFF.map((row) => `<article class="diff ${row.kind === "updated" ? "changed" : "same"}">
+        <div class="row-top"><b>${L(row.name)}</b><span class="spacer"></span>${row.kind === "updated" ? `<span class="badge">${state.lang === "zh" ? "已修改" : "Updated"}</span>` : ""}</div>
+        <p class="meta">${row.kind === "updated" ? `${row.from} → ${row.to}` : row.summary}</p></article>`).join("")}</div>
+      <button class="share" id="save-routine">${t("saveYes")}</button>
+      <button class="choice secondary" id="skip-routine">${t("saveNo")}</button></section>`;
+  } else if (state.screen === "share") {
+    app.innerHTML = `<section class="page ${state.options ? "options-open" : ""}" id="share-preview" data-details="${state.shareDetails ? "1" : "0"}" data-heart="${state.shareHeart ? "1" : "0"}" data-session-kg="${model.sessionKg}">
+      <div class="fixed-top"><div class="topbar"><button class="icon-hit" id="share-back">${t("shareBack")}</button><h2>${t("share")}</h2><span class="icon-hit"></span></div></div>
+      <div class="page-scroll">
+        <div class="stage" id="stage-host"><span class="demo-badge">${t("demoMark")}</span><div class="stage-tools"><div class="facing"><button class="tiny" data-face="front" aria-pressed="${state.facing === "front"}">${t("front")}</button><button class="tiny" data-face="back" aria-pressed="${state.facing === "back"}">${t("rear")}</button></div></div></div>
+        <div class="stats" id="report-summary" data-session-kg="${model.sessionKg}" data-sets="${model.setCount}"><div><b>${clock(model.work)}</b><span>${t("work")}</span></div><div><b>${model.setCount}</b><span>${t("setsUnit")}</span></div><div><b>${model.sessionKg}</b><span>${t("kgUnit")}</span></div></div>
+        <div class="legend">${legendSwatches()}</div>
+        <article class="summary">${model.groups.map(shareMuscle).join("")}</article>
+        <div class="checks"><label><input id="share-details" type="checkbox" ${state.shareDetails ? "checked" : ""}>${t("optDetails")}</label><label><input id="share-heart" type="checkbox" ${state.shareHeart ? "checked" : ""}>${t("optHeart")}</label></div>
+      </div>
+      <div class="fixed-bottom"><button class="share" id="save-share">${t("shareSave")}</button></div>
+      </section>`;
+    mountStage("stage-host");
+  } else {
+    const untouched = state.selected && !model.groups.some((group) => group.id === state.selected) ? `<p class="note">${t("untouched")} · ${nameOf(state.selected)}</p>` : "";
+    const leading = state.reportMode === "history"
+      ? `<button class="icon-hit" id="history-back">${t("back")}</button>`
+      : `<button class="tiny" id="open-contract">${t("info")}</button>`;
+    const trailing = `<button class="icon-hit" id="report-exit">${t("exit")}</button>`;
+    app.innerHTML = `<section class="page" id="workout.report" data-mode="${state.reportMode}">
+      <div class="fixed-top"><div class="topbar">${leading}<h2>${t("report")}</h2>${state.reportMode === "history" ? `<button class="tiny" id="open-contract">${t("info")}</button>` : trailing}</div>${displayRow}</div>
+      <div class="page-scroll">${untouched}
+      <div class="stage" id="stage-host"><span class="demo-badge">${t("demoMark")}</span><div class="stage-tools"><div class="facing"><button class="tiny" data-face="front" aria-pressed="${state.facing === "front"}">${t("front")}</button><button class="tiny" data-face="back" aria-pressed="${state.facing === "back"}">${t("rear")}</button></div></div></div>
+      <div class="legend">${legendSwatches()}</div>
+      <div class="stats" id="report-summary" data-session-kg="${model.sessionKg}" data-work="${model.work}" data-rest="${model.rest}" data-missing="${model.missing}" data-sets="${model.setCount}" data-share-sum="${model.groups.reduce((sum, group) => sum + group.share, 0)}">
+        <div><b>${clock(model.work)}</b><span>${t("work")}${model.missing ? " · " + t("partialShort") : ""}</span></div>
+        <div><b>${model.setCount}</b><span>${t("setsUnit")}</span></div>
+        <div><b>${model.sessionKg}</b><span>${t("kgUnit")}</span></div>
+      </div>
+      ${model.groups.map(groupHtml).join("")}
+      <div class="quiet"><button id="open-duration">${t("duration")}<span class="spacer"></span>›</button><button id="open-heart">${t("heart")}<span class="spacer"></span>›</button></div>
+      </div>
+      <div class="fixed-bottom"><button class="share" id="open-share">${t("share")}</button></div>
+      </section>${sheetHtml()}`;
+    mountStage("stage-host");
+  }
+  if (state.toast) app.insertAdjacentHTML("beforeend", `<div class="toast" role="status">${state.toast}</div>`);
+  if (params.get("scroll") && !state.scrolled) {
+    state.scrolled = true;
+    document.getElementById(params.get("scroll"))?.scrollIntoView({ block: "start" });
+  } else document.scrollingElement.scrollTop = scroll;
+  paintBody();
+}
+document.getElementById("app").addEventListener("change", (event) => {
+  if (event.target.id === "share-details") { state.shareDetails = event.target.checked; render(); }
+  if (event.target.id === "share-heart") { state.shareHeart = event.target.checked; render(); }
+});
+document.getElementById("app").addEventListener("click", (event) => {
+  const target = event.target.closest("button");
+  if (!target) return;
+  if (target.id === "demo-scenario-changes") { state.scenario = "changes"; render(); }
+  else if (target.id === "demo-scenario-none") { state.scenario = "none"; render(); }
+  else if (target.id === "end-workout") endWorkout();
+  else if (target.id === "open-history") { state.screen = "report"; state.reportMode = "history"; state.sheet = null; render(); }
+  else if (target.id === "save-routine") decidePlan("saved");
+  else if (target.id === "skip-routine") decidePlan("skipped");
+  else if (target.id === "report-exit") { state.screen = "home"; state.sheet = null; toast(t("exitHome")); }
+  else if (target.id === "history-back" || target.id === "share-back") { state.screen = state.reportMode === "history" && target.id === "history-back" ? "home" : "report"; if (target.id === "share-back") state.screen = "report"; state.sheet = null; render(); }
+  else if (target.id === "open-share") { state.screen = "share"; state.sheet = null; render(); }
+  else if (target.id === "save-share") {
+    const card = document.getElementById("share-preview");
+    const blob = new Blob([`<?xml version="1.0"?><svg xmlns="http://www.w3.org/2000/svg" width="390" height="120"><rect width="100%" height="100%" fill="#121212"/><text x="16" y="48" fill="#1ED760" font-size="18">Masso demo share</text><text x="16" y="78" fill="#ffffff" font-size="14">${card?.dataset.sessionKg || ""} kg</text></svg>`], { type: "image/svg+xml" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "masso-share-demo.svg";
+    link.click();
+    toast(t("shareSaved"));
+  }
+  else if (target.id === "toggle-options") { state.options = !state.options; render(); }
+  else if (target.dataset.themeToggle) { state.theme = state.theme === "light" ? "dark" : "light"; render(); }
+  else if (target.dataset.lang) { state.lang = state.lang === "en" ? "zh" : "en"; render(); }
+  else if (target.dataset.large) { state.large = !state.large; render(); }
+  else if (target.dataset.rtl) { state.rtl = !state.rtl; render(); }
+  else if (target.dataset.face) face(target.dataset.face);
+  else if (target.dataset.toggle) {
+    const id = target.dataset.toggle;
+    state.selected = id;
+    state.open[id] = state.open[id] === false;
+    render();
+  } else if (target.dataset.openSet) {
+    state.selected = target.dataset.group;
+    state.sheet = "sets";
+    state.sheetExercise = target.dataset.openSet;
+    render();
+  } else if (target.id === "open-duration") { state.sheet = "duration"; render(); }
+  else if (target.id === "open-heart") { state.sheet = "heart"; render(); }
+  else if (target.id === "open-contract") { state.sheet = "contract"; render(); }
+  else if (target.dataset.closeSheet != null) { state.sheet = null; render(); }
+});
+function toast(text) {
+  state.toast = text;
+  render();
+  setTimeout(() => { if (state.toast === text) { state.toast = ""; render(); } }, 2400);
+}
+window.__demo = { state, FIXTURE, derive, exerciseRaw, samplesIn, segmentsFor, face, selectGroup, spark };
+render();
+</script>
+</body>
+</html>

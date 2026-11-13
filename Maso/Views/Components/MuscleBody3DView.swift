@@ -248,6 +248,12 @@ struct MuscleBody3DView: UIViewRepresentable {
                         self.focusOnSelectedRegion(animated: false)
                         if self.navigationTransfer != nil { self.beginNavigationHandoff() }
                         else { self.resumeAutoRotation() }
+                        // A still body renders one frame. Leaving playback running keeps a 60fps
+                        // display link up, and XCTest then never sees an idle event loop.
+                        if !self.autoRotationEnabled && self.navigationTransfer == nil && body.actionKeys.isEmpty {
+                            view.isPlaying = false
+                            view.setNeedsDisplay()
+                        }
                     }
                 } catch {
                     DispatchQueue.main.async { [weak self] in
@@ -462,10 +468,11 @@ struct MuscleBody3DView: UIViewRepresentable {
                 body.position = destination
                 body.scale = SCNVector3(Float(zoom), Float(zoom), Float(zoom))
                 body.eulerAngles = SCNVector3(0, angle, 0)
+                view.setNeedsDisplay()
             } else {
                 body.runAction(frame, forKey: "muscleBody.focus")
+                view.isPlaying = true
             }
-            view.isPlaying = true
         }
 
         func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
@@ -598,6 +605,7 @@ struct MuscleBody3DView: UIViewRepresentable {
             yaw = back ? .pi : 0
             body?.eulerAngles.y = yaw
             resumeAutoRotation(after: 4)
+            if autoRotationEnabled == false { view?.setNeedsDisplay() }
         }
 
         @objc func openDetails(_ gesture: UITapGestureRecognizer) {

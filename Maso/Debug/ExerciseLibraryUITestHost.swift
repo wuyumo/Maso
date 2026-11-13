@@ -3,6 +3,42 @@ import SwiftUI
 
 /// Explicitly launched by MasoUITests, never part of a Release build. The test
 /// process drives the production sheets through XCTest's public AX interface.
+/// SwiftUI re-executes this view's initializer on every parent update. The session
+/// report seed publishes `session`, and that publication was re-entering layout.
+/// Build the fixture once; later initializers only read it.
+@MainActor
+private final class SessionReportUIFixture {
+    let data: DataStore
+    let session: TrainingSessionStore
+
+    init(data: DataStore, session: TrainingSessionStore) {
+        self.data = data
+        self.session = session
+    }
+
+    private static var ready: [String: SessionReportUIFixture] = [:]
+    private static var partial: [String: SessionReportUIFixture] = [:]
+    private static let scenes: Set<String> = ["session-report-history", "session-report-clean-player", "session-report-changed-player"]
+
+    static func prepare(_ scene: String) -> SessionReportUIFixture? {
+        guard scenes.contains(scene) else { return nil }
+        if let existing = ready[scene] { return existing }
+        if let existing = partial[scene] { return existing }
+        let data = DataStore.makeMock()
+        let player = TrainingSessionStore(completionSound: {})
+        let fixture = SessionReportUIFixture(data: data, session: player)
+        partial[scene] = fixture
+        if ExerciseLibraryUITestHost.sessionReportPlayer(scene: scene, data: data, player: player) == nil,
+           scene != "session-report-history" {
+            partial[scene] = nil
+            return nil
+        }
+        ready[scene] = fixture
+        partial[scene] = nil
+        return fixture
+    }
+}
+
 struct ExerciseLibraryUITestHost: View {
     let scene: String
     @State private var data: DataStore
@@ -15,6 +51,11 @@ struct ExerciseLibraryUITestHost: View {
 
     init(scene: String) {
         self.scene = scene
+        if let fixture = SessionReportUIFixture.prepare(scene) {
+            _data = State(initialValue: fixture.data)
+            _session = State(initialValue: fixture.session)
+            return
+        }
         let data = DataStore.makeMock()
         if ProcessInfo.processInfo.environment["MASO_TEST_OLD_AI_CONSENT"] == "1" {
             AIDataConsent.shared.revoke()
@@ -161,7 +202,7 @@ struct ExerciseLibraryUITestHost: View {
             }
         }
         if scene == "workout-history-cards", ProcessInfo.processInfo.environment["MASO_HISTORY_PHOTO"] == "1",
-           let session = data.recordedWorkoutSessions().first,
+           let session = data.recordedWorkoutSessions().max(by: { $0.firstPerformedAt < $1.firstPerformedAt }),
            let jpeg = Self.shareFixturePhoto().jpegData(compressionQuality: 0.8) {
             data.settings.sessionPhotos[session.id] = jpeg
         }
@@ -170,6 +211,21 @@ struct ExerciseLibraryUITestHost: View {
             data.sets = [SetRecord(id: "cross-reference-ui", exerciseId: "bench_press_barbell", exerciseName: "Bench Press",
                 category: .strength, weight: 50, reps: 6, duration: nil,
                 performedAt: Date().addingTimeInterval(-86400), planId: nil)]
+        }
+        if scene == "home-start" {
+            data.settings.onboardingCompleted = true
+            data.settings.hasSeenWelcomePaywall = true
+            data.settings.hasOfferedReminderPrompt = true
+            data.settings.firstHomeMuscleIntroPending = false
+            data.settings.coachIntroTipPending = false
+            if let exercise = data.exById["bench_press_barbell"] {
+                let now = Date()
+                let plan = Plan(id: "home-start-plan", name: "Push", steps: [
+                    PlanStep(id: "step-bench", exerciseId: exercise.id, sets: 1, reps: 8, weight: 60, duration: nil)
+                ], createdAt: now, updatedAt: now)
+                data.plans = [plan]
+                data.settings.workoutCompletions = [WorkoutCompletion(sessionID: "home-start-done", planID: plan.id, finishedAt: now)]
+            }
         }
         _data = State(initialValue: data)
         if ["short-player", "long-player", "stable-player"].contains(scene), let exercise = data.exById[ProcessInfo.processInfo.environment["MASO_MARKETING_EXERCISE_ID"] ?? (ProcessInfo.processInfo.environment["MASO_MARKETING_PLAYER"] == "1" ? "barbell_row" : "bench_press_barbell")] {
@@ -183,7 +239,7 @@ struct ExerciseLibraryUITestHost: View {
             var exercises = scene == "stable-player" ? [exercise, data.exById["incline_bench_press_barbell"]!] :
                 (scene == "long-player" ? Array(data.exercises.prefix(12)) : [exercise])
             if ProcessInfo.processInfo.environment["MASO_CROSS_EXERCISE_ESTIMATE"] == "1" {
-                exercises = [data.exById["bicep_curl_barbell"]!, data.exById["overhead_extension_dumbbell_two_hand"]!]
+                exercises = [data.exById["incline_bench_press_barbell"]!, data.exById["overhead_extension_dumbbell_two_hand"]!]
             }
             var plan = Plan(id: "ui-short", name: "Playlist", steps: exercises.enumerated().map { index, ex in
                 PlanStep(id: "queue-step-\(index)", exerciseId: ex.id, sets: scene == "stable-player" ? 3 : 2, reps: 8, weight: ProcessInfo.processInfo.environment["MASO_TEST_EMPTY_WEIGHT"] == "1" ? nil : (ProcessInfo.processInfo.environment["MASO_MARKETING_PLAYER"] == "1" ? 50 : 60), duration: nil)
@@ -206,15 +262,29 @@ struct ExerciseLibraryUITestHost: View {
                 }
             }
             if ProcessInfo.processInfo.environment["MASO_CROSS_EXERCISE_ESTIMATE"] == "1" {
+                // Approved v0.2 anchor: three hand-entered 8–12 rep sets in one session.
+                // A single confirmed 6RM is not this anchor and must not fill a target.
                 data.plans = []; data.settings.gender = .male; data.settings.age = 25
                 data.settings.exerciseWeightInputs = nil
-                var record = SetRecord(id: "cross-reference-ui", exerciseId: "bench_press_barbell", exerciseName: "Bench Press",
-                    category: .strength, weight: 50, reps: 6, duration: nil,
-                    performedAt: Date().addingTimeInterval(-86400), planId: nil)
-                record.sixRMReference = SixRMReference(kilograms: 50)
-                data.sets = [record]
+                data.settings.confirmedExerciseWeightInputIDs = nil
+                data.settings.hasSeenWeightEstimateExplanation = nil
+                let when = Date().addingTimeInterval(-3600)
+                data.sets = (1...3).map { number in
+                    var record = SetRecord(id: "manual-anchor-\(number)", exerciseId: "bench_press_barbell",
+                        exerciseName: "Bench Press", category: .strength, weight: 60, reps: 8, duration: nil,
+                        performedAt: when.addingTimeInterval(Double(number)), planId: nil)
+                    record.workoutSessionID = "manual-anchor"
+                    record.stepID = "bench"
+                    record.setNumber = number
+                    record.manualLoad = true
+                    return record
+                }
+                data.reconcileFullBodyLoadAnchor()
                 plan.steps = exercises.enumerated().map { index, ex in
-                    data.makeSeededStep(for: ex, stepId: "queue-step-\(index)")
+                    var step = data.makeSeededStep(for: ex, stepId: "queue-step-\(index)")
+                    step.weight = nil
+                    step.confirmParameter("weight")
+                    return data.suggestingMissingParameters(for: step)
                 }
             }
             if ProcessInfo.processInfo.environment["MASO_PERSONAL_EXERCISE_ESTIMATE"] == "1" {
@@ -253,6 +323,60 @@ struct ExerciseLibraryUITestHost: View {
         }
     }
 
+    /// Seeds the finished-session report. History opens the same native sheet as production;
+    /// the player scenes are a completed workout, with or without a real routine diff.
+    fileprivate static func sessionReportPlayer(scene: String, data: DataStore, player: TrainingSessionStore) -> TrainingSessionStore? {
+        let history = scene == "session-report-history"
+        let changed = scene == "session-report-changed-player"
+        guard history || changed || scene == "session-report-clean-player",
+              let exercise = data.exById["bench_press_barbell"] else { return nil }
+        data.settings.hasOfferedReminderPrompt = true
+        data.settings.hasRequestedReview = true
+        let end = Date()
+        let start = end.addingTimeInterval(-40)
+        func record(sessionID: String) -> SetRecord {
+            var value = SetRecord(id: "session-report-set", exerciseId: exercise.id, exerciseName: exercise.name,
+                category: .strength, weight: 60, reps: 8, duration: nil, performedAt: end,
+                planId: "ui-session-report")
+            value.workoutSessionID = sessionID
+            value.stepID = "step-bench"
+            value.setNumber = 1
+            value.activeIntervals = [.init(start: start, end: end)]
+            return value
+        }
+        func heart(sessionID: String) {
+            for offset in [5.0, 10, 15, 20] {
+                WorkoutHeartLocalStore.shared.append(WorkoutHeartSample(
+                    id: "session-report-heart-\(sessionID)-\(Int(offset))",
+                    sessionID: sessionID,
+                    date: start.addingTimeInterval(offset),
+                    bpm: 110 + offset,
+                    source: "Test fixture"))
+            }
+        }
+        if history {
+            let plan = Plan(id: "ui-session-report", name: "Push", steps: [
+                PlanStep(id: "step-bench", exerciseId: exercise.id, sets: 2, reps: 8, weight: 60, duration: nil)
+            ], createdAt: end, updatedAt: end)
+            data.plans = [plan]
+            player.start(planId: plan.id, plan: plan, segments: expandPlan(plan, exById: data.exById, defaultRest: 90, defaultBetweenExerciseRest: 120))
+            data.sets = [record(sessionID: "ui-session-report")]
+            heart(sessionID: "ui-session-report")
+            return nil
+        }
+        let plan = Plan(id: "ui-session-report", name: "Push", steps: [
+            PlanStep(id: "step-bench", exerciseId: exercise.id, sets: 2, reps: 8, weight: 60, duration: nil)
+        ], createdAt: end, updatedAt: end)
+        data.plans = [plan]
+        player.start(planId: plan.id, plan: plan, segments: expandPlan(plan, exById: data.exById, defaultRest: 90, defaultBetweenExerciseRest: 120))
+        let sessionID = player.workoutSessionID ?? "ui-session-report"
+        data.sets = [record(sessionID: sessionID)]
+        heart(sessionID: sessionID)
+        if changed { player.updateStepWeight(stepId: "step-bench", weightKg: 62.5) }
+        player.finishEarly()
+        return player
+    }
+
     var body: some View {
         AppNavigationStack {
             VStack(spacing: 16) {
@@ -260,15 +384,28 @@ struct ExerciseLibraryUITestHost: View {
                 Text(String(pickedIDs.count)).accessibilityIdentifier("exercise.ui-test.selection-count")
                 Text(pickedIDs.last ?? "none").accessibilityIdentifier("exercise.ui-test.selection-id")
                 Text(String(dismissalCount)).accessibilityIdentifier("exercise.ui-test.dismissal-count")
+                if scene != "session-report-history" {
+                    Text(String(session.endCount)).accessibilityIdentifier("exercise.ui-test.session-end-count")
+                    Text(session.session == nil ? "none" : (session.session?.completed == true ? "completed" : "live"))
+                        .accessibilityIdentifier("exercise.ui-test.session-liveness")
+                }
                 Button("Open exercise scene") { presented = true }
                     .accessibilityIdentifier("exercise.ui-test.open")
             }
         }
-        .sheet(isPresented: Binding(get: { presented && !scene.hasSuffix("-player") }, set: { presented = $0 }), onDismiss: { dismissalCount += 1 }) {
+        .sheet(isPresented: Binding(get: { presented && !usesFullScreenScene }, set: { presented = $0 }), onDismiss: { dismissalCount += 1 }) {
             page.presentationDetents([.large]).presentationDragIndicator(.visible)
         }
-        .fullScreenCover(isPresented: Binding(get: { presented && scene.hasSuffix("-player") }, set: { presented = $0 }), onDismiss: { session.youtubePlayback.minimize() }) {
-            page
+        .fullScreenCover(isPresented: Binding(get: { presented && usesFullScreenScene }, set: { presented = $0 }), onDismiss: { session.youtubePlayback.minimize() }) {
+            // The cover does not inherit Dynamic Type from modifiers outside this closure.
+            Group {
+                if ProcessInfo.processInfo.environment["MASO_TEST_NARROW"] == "1" {
+                    page.frame(width: 320).frame(maxWidth: .infinity, maxHeight: .infinity)
+                } else {
+                    page
+                }
+            }
+            .modifier(SessionReportLargeType())
         }
         .background {
             WorkoutYouTubeRetentionHost(playback: session.youtubePlayback)
@@ -279,7 +416,8 @@ struct ExerciseLibraryUITestHost: View {
         .environment(subscriptions)
         .environment(\.locale, LanguageManager.currentLocale)
         .environment(\.layoutDirection, LanguageManager.currentLanguageCode == "ar" ? .rightToLeft : .leftToRight)
-        .preferredColorScheme(.dark)
+        .preferredColorScheme(ProcessInfo.processInfo.environment["MASO_TEST_COLOR_SCHEME"] == "light" ? .light : .dark)
+        .modifier(SessionReportLargeType())
         .tint(MasoColor.text)
         .task {
             presented = true
@@ -347,6 +485,11 @@ struct ExerciseLibraryUITestHost: View {
         }
     }
 
+    /// Home is the real root, not a sheet that stays empty until a later task.
+    private var usesFullScreenScene: Bool {
+        scene.hasSuffix("-player") || scene == "home-start"
+    }
+
     @ViewBuilder private var page: some View {
         if scene == "coach-live" || scene == "coach-frequency" || scene == "coach-save" || scene == "coach-session" || scene == "coach-photo-report" || scene.hasPrefix("coach-image-") {
             CoachScreen(onStart: { plan in
@@ -391,10 +534,14 @@ struct ExerciseLibraryUITestHost: View {
                 }
         } else if scene == "classics-save" {
             AppNavigationStack { ClassicsScreen(onStart: { _ in }) }
+        } else if scene == "home-start" {
+            RootView()
         } else if scene == "home-overview" {
             AppNavigationStack { ScrollView { DailyOverviewCard(onReplay: { _ in }).padding(16) } }
-        } else if ["short-player", "long-player", "stable-player"].contains(scene) {
+        } else if ["short-player", "long-player", "stable-player", "session-report-clean-player", "session-report-changed-player"].contains(scene) {
             PlanPlayerScreen()
+        } else if scene == "session-report-history" {
+            SessionReportHistoryProbe(records: data.sets)
         } else if scene == "workout-report" {
             AppNavigationStack { WorkoutReportView(records: data.sets) }
         } else if scene == "sleep-chart" {
@@ -410,11 +557,12 @@ struct ExerciseLibraryUITestHost: View {
                         .padding(MasoMetrics.pagePaddingHorizontal)
                 }.background(MasoColor.background).navigationTitle("Sleep")
             }
-        } else if scene == "workout-history-detail", let session = data.recordedWorkoutSessions().first {
-            SessionDetailSheet(session: session, exerciseStats: data.recordedExerciseStats(for: session),
-                               replayPlan: data.recordedReplayPlan(for: session), onReplay: { _ in })
+        } else if scene == "workout-history-detail", let session = data.recordedWorkoutSessions().max(by: { $0.firstPerformedAt < $1.firstPerformedAt }) {
+            RecordedSessionReport(session: session, onReplay: { _ in })
         } else if scene == "workout-history-cards" {
             AppNavigationStack { RecordHistoryArchiveScreen(kind: .workout) }
+        } else if scene == "workout-insights-history" {
+            AppNavigationStack { HistoryScreen(onReplay: { _ in }, onOpenSettings: {}, mode: .insights) }
         } else if scene == "free-picker" {
             ExercisePickerSheet(onPick: { pickedIDs.append($0.id) }, directPick: true,
                 pickerTitle: "What would you like to train next?", onFinishWorkout: { presented = false },
@@ -497,6 +645,49 @@ enum CoachImageTestFixture {
                     UIImage(cgImage: cg).draw(in: CGRect(x: 100, y: 140, width: 700, height: 700))
                 }
             }
+        }
+    }
+}
+
+/// Only the large-type fixture overrides Dynamic Type. Other scenes keep the system size.
+private struct SessionReportLargeType: ViewModifier {
+    func body(content: Content) -> some View {
+        if ProcessInfo.processInfo.environment["MASO_TEST_LARGE_TYPE"] == "1" {
+            content.environment(\.dynamicTypeSize, .accessibility3)
+        } else {
+            content
+        }
+    }
+}
+
+/// Test-only history list. Closing the report sheet must not end a workout.
+private struct SessionReportHistoryProbe: View {
+    let records: [SetRecord]
+    @Environment(TrainingSessionStore.self) private var session
+    @State private var presented = false
+
+    var body: some View {
+        AppNavigationStack {
+            VStack(spacing: 16) {
+                Button("Open session report") { presented = true }
+                    .accessibilityIdentifier("workout.sessionReport.openHistory")
+                Text(String(session.endCount)).accessibilityIdentifier("exercise.ui-test.session-end-count")
+                Text(session.session == nil ? "none" : (session.session?.completed == true ? "completed" : "live"))
+                    .accessibilityIdentifier("exercise.ui-test.session-liveness")
+            }
+            .navigationTitle("History")
+        }
+        .sheet(isPresented: $presented) {
+            AppNavigationStack {
+                WorkoutSessionReportScreen(records: records, workoutName: "Push", presentation: .history)
+                    .toolbar {
+                        ToolbarItem(placement: .cancellationAction) {
+                            Button("Close") { presented = false }
+                                .accessibilityIdentifier("workout.sessionReport.historyBack")
+                        }
+                    }
+            }
+            .sessionReportSheetChrome()
         }
     }
 }

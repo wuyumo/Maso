@@ -394,6 +394,14 @@ enum ExerciseGrouping {
         }
     }
 
+    /// In-workout switcher rows. The default version is first inside this one list,
+    /// never a separate section. The current exercise is included once even when it
+    /// is also the default, and candidates removed by a filter stay removed.
+    static func variantMenuRows(defaultVersion: Exercise, candidates: [Exercise], current: Exercise) -> [Exercise] {
+        var seen = Set<String>()
+        return ([defaultVersion] + candidates + [current]).filter { seen.insert($0.id).inserted }
+    }
+
     /// Exact names/aliases lead a family while broad terms keep its usual representative.
     /// Word-order tolerance accepts "Dumbbell Bench Press" for "Bench Press (Dumbbell)".
     static func exactSearchIDs(in exercises: [Exercise], query: String) -> [String] {

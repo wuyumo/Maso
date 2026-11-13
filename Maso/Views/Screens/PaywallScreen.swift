@@ -3,6 +3,12 @@ import StoreKit
 
 enum PaywallContext { case upgrade, welcome, aiReminder }
 
+#if DEBUG
+private final class RestoreGate {
+    var released = false
+}
+#endif
+
 /// Restores Claude Code's custom layout (f0ebc0e / 83277c3), with current
 /// StoreKit products, verified trial eligibility and the approved free/Pro split.
 struct PaywallScreen: View {
@@ -11,11 +17,14 @@ struct PaywallScreen: View {
     @Environment(\.dismiss) private var dismiss
     var source: String = "unknown"
     var context: PaywallContext = .upgrade
-    @State private var codeSheetShown = false
     @State private var referralSheetShown = false
     @State private var policyDetailsShown = false
     @State private var selectedPlan: SubscriptionTier = .yearly
     @State private var processing = false
+    #if DEBUG
+    /// Holds the real StoreKit restore until a debug test has observed the in-flight state.
+    @State private var restoreGate = RestoreGate()
+    #endif
     private struct Notice { let message: String; var canRetry = false }
     @State private var notice: Notice?
     @State private var eligibleTrials: Set<String> = []
@@ -59,22 +68,33 @@ struct PaywallScreen: View {
                         .labelStyle(.iconOnly).accessibilityIdentifier("paywall.close")
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Menu {
-                        if availableProducts.isEmpty && !subscriptions.isLoadingProducts {
-                            Button("Try again") { Task { await loadSubscriptionOptions() } }
+                    ZStack {
+                        Button(action: restorePurchases) {
+                            restorePurchaseLabel.opacity(processing ? 0 : 1)
                         }
-                        Button("Restore web purchase") { codeSheetShown = true }
-                    } label: { Image(systemName: "ellipsis") }
-                    .accessibilityIdentifier("paywall.more")
+                        .buttonStyle(.plain)
+                        .disabled(processing)
+                        .accessibilityLabel(Text("Restore Purchase"))
+                        .accessibilityValue(processing ? "busy" : "idle")
+                        .accessibilityShowsLargeContentViewer { Text("Restore Purchase") }
+                        .accessibilityIdentifier("paywall.restore")
+                        if processing {
+                            ProgressView()
+                                .frame(minWidth: 44, minHeight: 44)
+                                .allowsHitTesting(false)
+                                .accessibilityElement(children: .ignore)
+                                .accessibilityIdentifier("paywall.restore.progress")
+                                .accessibilityLabel("Restoring")
+                                .accessibilityAddTraits(.updatesFrequently)
+                        }
+                    }
                 }
             }
         }
         .preferredColorScheme(.dark).tint(MasoColor.text)
         .presentationDetents([.large])
         .accessibilityIdentifier("paywall.screen")
-        .sheet(isPresented: $codeSheetShown) {
-            ActivationCodeSheet { codeSheetShown = false; dismiss() }.environment(data)
-        }
+        .overlay(alignment: .bottom) { restoreReleaseControl }
         .sheet(isPresented: $referralSheetShown) { ReferralCodeSheet() }
         .sheet(isPresented: $policyDetailsShown) { ProPolicyDetailsSheet() }
         .alert("Masso Pro", isPresented: Binding(get: { notice != nil }, set: { if !$0 { notice = nil } }), presenting: notice) { item in
@@ -138,6 +158,17 @@ struct PaywallScreen: View {
         if availableProducts.isEmpty {
             if subscriptions.isLoadingProducts || !subscriptions.hasLoadedProducts {
                 ProgressView().accessibilityLabel("Loading price…")
+            } else {
+                Button { Task { await loadSubscriptionOptions() } } label: {
+                    Text("Try again")
+                        .font(.body.weight(.semibold))
+                        .multilineTextAlignment(.center)
+                        .frame(maxWidth: .infinity, minHeight: 44)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .foregroundStyle(MasoColor.accent)
+                .accessibilityIdentifier("paywall.retry")
             }
         } else {
             let layout = dynamicTypeSize.isAccessibilitySize ? AnyLayout(VStackLayout(spacing: 12)) : AnyLayout(HStackLayout(alignment: .top, spacing: 12))
@@ -255,13 +286,49 @@ struct PaywallScreen: View {
         Button { dismiss() } label: {
             Text("Continue free").fixedSize(horizontal:false,vertical:true).frame(minHeight: 44).contentShape(Rectangle())
         }.accessibilityIdentifier("paywall.continue-free")
-        Button {
-            guard !processing else { return }
-            processing = true
-            Task { await subscriptions.restore(); processing = false; if data.settings.isPro { dismiss() } }
-        } label: {
-            Text("Restore Purchases").fixedSize(horizontal:false,vertical:true).frame(minHeight: 44).contentShape(Rectangle())
-        }.accessibilityIdentifier("paywall.restore")
+    }
+
+    private var restorePurchaseLabel: some View {
+        Text("Restore Purchase")
+            .font(.subheadline.weight(.semibold))
+            .lineLimit(dynamicTypeSize.isAccessibilitySize ? 2 : 1)
+            .minimumScaleFactor(0.55)
+            .allowsTightening(true)
+            .multilineTextAlignment(.trailing)
+            .frame(maxWidth: dynamicTypeSize.isAccessibilitySize ? 150 : 210,
+                   minHeight: 44, alignment: .trailing)
+    }
+
+    private func restorePurchases() {
+        guard !processing else { return }
+        processing = true
+        #if DEBUG
+        let gate = restoreGate
+        gate.released = false
+        #endif
+        Task {
+            #if DEBUG
+            if ProcessInfo.processInfo.environment["MASO_RESTORE_HOLD"] == "1" {
+                while !gate.released {
+                    try? await Task.sleep(for: .milliseconds(50))
+                }
+            }
+            #endif
+            await subscriptions.restore()
+            processing = false
+            if data.settings.isPro { dismiss() }
+        }
+    }
+
+    @ViewBuilder private var restoreReleaseControl: some View {
+        #if DEBUG
+        if ProcessInfo.processInfo.environment["MASO_RESTORE_HOLD"] == "1", processing {
+            Button("Finish restore") { restoreGate.released = true }
+                .accessibilityIdentifier("paywall.restore.release")
+        }
+        #else
+        EmptyView()
+        #endif
     }
 
     private var footer: some View {
@@ -324,68 +391,6 @@ struct PaywallScreen: View {
     }
 
 }
-
-// MARK: - 激活码 sheet
-
-private struct ActivationCodeSheet: View {
-    @Environment(DataStore.self) private var data
-    @Environment(\.dismiss) private var dismiss
-    var onActivated: () -> Void
-
-    @State private var code: String = ""
-    @State private var checking = false
-    @State private var error: String?
-
-    var body: some View {
-
-        AppNavigationStack {
-            Form {
-                Section {
-                    TextField("XXXX-XXXX-XXXX", text: $code)
-                        .textInputAutocapitalization(.characters).autocorrectionDisabled()
-                        .font(.body.monospaced())
-                } footer: {
-                    Text("After buying on the web, your code was emailed to you (and shown on the confirmation page). Paste it here to unlock Pro on this device.")
-                }
-                if let error { Section { Text(error).foregroundStyle(MasoColor.negative) } }
-            }.scrollContentBackground(.hidden)
-            .safeAreaInset(edge: .bottom) {
-                PrimaryActionButton(title: "Activate", icon: "checkmark", loading: checking, action: activate)
-                    .disabled(checking || code.trimmingCharacters(in: .whitespaces).isEmpty)
-                    .padding(MasoMetrics.pagePaddingHorizontal)
-            }
-            .background(MasoColor.background.ignoresSafeArea())
-            .navigationTitle("Enter your activation code").navigationBarTitleDisplayMode(.inline)
-            .toolbar { ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } } }
-        }.preferredColorScheme(.dark).tint(MasoColor.text)
-
-
-    }
-
-    private func activate() {
-        error = nil
-        checking = true
-        Task {
-            do {
-                let ok = try await data.activatePolar(key: code)
-                checking = false
-                Analytics.shared.track("pro_activate_result", ["success": .bool(ok)])
-                if ok {
-                    Haptics.trainingComplete()
-                    dismiss()
-                    onActivated()
-                } else {
-                    error = NSLocalizedString("That code isn't active yet. Double-check it, or try again in a moment.", comment: "")
-                }
-            } catch {
-                checking = false
-                self.error = NSLocalizedString("Couldn't verify — check your connection and try again.", comment: "")
-            }
-        }
-    }
-}
-
-
 
 struct ReferralCodeSheet: View {
     @Environment(\.dismiss) private var dismiss

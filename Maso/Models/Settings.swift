@@ -153,6 +153,12 @@ enum MasoFlags {
 
 enum WeightUnit: String, Codable, Sendable { case kg, lb }
 
+/// Why the current display unit is what it is. Missing on profiles saved before
+/// this field means the stored unit is already theirs and must not be replaced.
+enum WeightUnitDefaultOrigin: String, Codable, Sendable {
+    case pending, ip, device, manual
+}
+
 extension WeightUnit {
     /// 显示用单位标签.
     var label: String { self == .kg ? "kg" : "lb" }
@@ -237,12 +243,16 @@ struct UserSettings: Codable, Sendable {
     var dietPreferences: DietPreferences? = nil
     var dailyDietPlan: DailyDietPlan? = nil
     var weightUnit: WeightUnit = .kg
+    /// New installs start pending. A missing key decodes as nil and stays locked.
+    var weightUnitOrigin: String? = WeightUnitDefaultOrigin.pending.rawValue
     /// Per-exercise inputs; legacy values and insertion order remain stored for compatibility.
     var exerciseWeightInputs: [String: Double]? = nil
     var loadProgression: LoadProgressionPreferences? = nil
     var exerciseWeightInputOrder: [String]? = nil
     /// Legacy inputs may include auto-seeded values. Only new explicit edits earn this marker.
     var confirmedExerciseWeightInputIDs: [String]? = nil
+    /// Latest real 3-set anchor for the approved full-body rough table. Nil on older profiles.
+    var fullBodyLoadAnchor: FullBodyLoadAnchor? = nil
     var distanceUnit: DistanceUnit = .km
     /// Optional for older profiles; ordinary browsing folds specialist versions by default.
     var hideRareVariants: Bool? = nil
@@ -427,6 +437,15 @@ struct UserSettings: Codable, Sendable {
     /// 生效条件在 RootView: 播放器全屏在前 + session 活跃 + app 在前台; 任一破即复位
     /// (退后台也复位, 防 isIdleTimerDisabled 泄漏耗电).
     var keepScreenAwakeDuringWorkout: Bool = true
+
+    /// Explicit same-family variant choices, local to this settings snapshot.
+    /// Key: programming-group ID (flat bench is not incline or close-grip).
+    /// Value: the variant exercise ID the user confirmed.
+    /// Written only after an explicit replacement, never by generation, preview, or cancellation.
+    /// Stored with the rest of UserSettings in the local data file (Documents, included in device backup).
+    /// There is no account system and this map is not added to AI prompts or analytics.
+    /// It is removed when that local file is reset or replaced by import. There is no separate clear control.
+    var preferredVariantByProgrammingGroup: [String: String]? = nil
 
     /// 收藏的动作 ID 集合 — 所有"选择动作"列表会把收藏动作排在最前.
     /// (e.g. Library / ExercisePickerSheet / QuickWorkout Step 2 都用.)
