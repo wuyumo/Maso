@@ -32,6 +32,7 @@ struct WorkoutSessionReportScreen: View {
     @State private var includeHeart = false
     @State private var includePhoto = false
     @State private var exported = false
+    @State private var exportName = ""
     @State private var confirmingDelete = false
     @State private var showSavePrompt = false
     @State private var planSaved = false
@@ -81,7 +82,7 @@ struct WorkoutSessionReportScreen: View {
         .overlay(alignment: .bottom) { floatingShare(identifier: "workout.sessionReport.share") { export(report) } }
         .overlay(alignment: .top) {
             if exported {
-                Text("session-report-share.png")
+                Text(verbatim: exportName)
                     .accessibilityIdentifier("workout.sessionReport.shareExported")
                     .frame(width: 1, height: 1)
             }
@@ -305,7 +306,7 @@ struct WorkoutSessionReportScreen: View {
                         .accessibilityElement(children: .contain)
                         .accessibilityIdentifier("workout.sessionReport.exercise.\(exercise.id)")
                         .id(exercise.id)
-                    if showsSixRM(exercise, section: muscle.muscle), let record = exercise.records.first(where: qualifiesForSixRM) {
+                    if showsSixRM(exercise, in: muscle), let record = exercise.records.first(where: qualifiesForSixRM) {
                         ConfirmedBenchSixRMButton(record: record)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.bottom, 8)
@@ -326,8 +327,11 @@ struct WorkoutSessionReportScreen: View {
         record.exerciseId == CrossExerciseLoadReference.anchorID && record.reps == 6 && (record.weight ?? 0) > 0
     }
 
-    private func showsSixRM(_ exercise: SessionMuscleReport.ExerciseFacts, section: MuscleGroup) -> Bool {
-        data.exById[exercise.id]?.primaryMuscles.first == section
+    /// Bench's primary tag is mid-chest, while the report section is the body region.
+    /// Show the existing confirmation once, on the first section that lists the exercise.
+    private func showsSixRM(_ exercise: SessionMuscleReport.ExerciseFacts, in muscle: SessionMuscleReport.MuscleRow) -> Bool {
+        guard exercise.records.contains(where: qualifiesForSixRM) else { return false }
+        return model.muscles.first { $0.exercises.contains { $0.id == exercise.id } }?.id == muscle.id
     }
 
     private func exerciseRow(_ exercise: SessionMuscleReport.ExerciseFacts, section: MuscleGroup) -> some View {
@@ -456,6 +460,14 @@ struct WorkoutSessionReportScreen: View {
         )
     }
 
+    /// Distinct Documents names so the three boundary exports do not overwrite each other.
+    static func exportFileName(_ selection: SessionMuscleReport.ShareContent) -> String {
+        if selection.includesPhoto { return "session-report-heart-photo.png" }
+        if selection.muscles.contains(where: { $0.heart != nil }) { return "session-report-heart.png" }
+        if selection.muscles.contains(where: { !$0.exercises.isEmpty }) { return "session-report-detail.png" }
+        return "session-report-default.png"
+    }
+
     private func export(_ report: SessionMuscleReport) {
         let selection = shareSelection(report)
         let card = ShareBitmap(report: report, content: selection, photo: selection.includesPhoto ? sessionPhoto : nil)
@@ -464,7 +476,9 @@ struct WorkoutSessionReportScreen: View {
         if ProcessInfo.processInfo.environment["MASO_SESSION_REPORT_EXPORT"] == "1",
            let directory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first,
            let data = image.pngData() {
-            try? data.write(to: directory.appendingPathComponent("session-report-share.png"))
+            let name = Self.exportFileName(selection)
+            try? data.write(to: directory.appendingPathComponent(name))
+            exportName = name
             exported = true
             return
         }

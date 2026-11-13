@@ -239,7 +239,7 @@ struct ExerciseLibraryUITestHost: View {
             var exercises = scene == "stable-player" ? [exercise, data.exById["incline_bench_press_barbell"]!] :
                 (scene == "long-player" ? Array(data.exercises.prefix(12)) : [exercise])
             if ProcessInfo.processInfo.environment["MASO_CROSS_EXERCISE_ESTIMATE"] == "1" {
-                exercises = [data.exById["bicep_curl_barbell"]!, data.exById["overhead_extension_dumbbell_two_hand"]!]
+                exercises = [data.exById["incline_bench_press_barbell"]!, data.exById["overhead_extension_dumbbell_two_hand"]!]
             }
             var plan = Plan(id: "ui-short", name: "Playlist", steps: exercises.enumerated().map { index, ex in
                 PlanStep(id: "queue-step-\(index)", exerciseId: ex.id, sets: scene == "stable-player" ? 3 : 2, reps: 8, weight: ProcessInfo.processInfo.environment["MASO_TEST_EMPTY_WEIGHT"] == "1" ? nil : (ProcessInfo.processInfo.environment["MASO_MARKETING_PLAYER"] == "1" ? 50 : 60), duration: nil)
@@ -262,15 +262,29 @@ struct ExerciseLibraryUITestHost: View {
                 }
             }
             if ProcessInfo.processInfo.environment["MASO_CROSS_EXERCISE_ESTIMATE"] == "1" {
+                // Approved v0.2 anchor: three hand-entered 8–12 rep sets in one session.
+                // A single confirmed 6RM is not this anchor and must not fill a target.
                 data.plans = []; data.settings.gender = .male; data.settings.age = 25
                 data.settings.exerciseWeightInputs = nil
-                var record = SetRecord(id: "cross-reference-ui", exerciseId: "bench_press_barbell", exerciseName: "Bench Press",
-                    category: .strength, weight: 50, reps: 6, duration: nil,
-                    performedAt: Date().addingTimeInterval(-86400), planId: nil)
-                record.sixRMReference = SixRMReference(kilograms: 50)
-                data.sets = [record]
+                data.settings.confirmedExerciseWeightInputIDs = nil
+                data.settings.hasSeenWeightEstimateExplanation = nil
+                let when = Date().addingTimeInterval(-3600)
+                data.sets = (1...3).map { number in
+                    var record = SetRecord(id: "manual-anchor-\(number)", exerciseId: "bench_press_barbell",
+                        exerciseName: "Bench Press", category: .strength, weight: 60, reps: 8, duration: nil,
+                        performedAt: when.addingTimeInterval(Double(number)), planId: nil)
+                    record.workoutSessionID = "manual-anchor"
+                    record.stepID = "bench"
+                    record.setNumber = number
+                    record.manualLoad = true
+                    return record
+                }
+                data.reconcileFullBodyLoadAnchor()
                 plan.steps = exercises.enumerated().map { index, ex in
-                    data.makeSeededStep(for: ex, stepId: "queue-step-\(index)")
+                    var step = data.makeSeededStep(for: ex, stepId: "queue-step-\(index)")
+                    step.weight = nil
+                    step.confirmParameter("weight")
+                    return data.suggestingMissingParameters(for: step)
                 }
             }
             if ProcessInfo.processInfo.environment["MASO_PERSONAL_EXERCISE_ESTIMATE"] == "1" {

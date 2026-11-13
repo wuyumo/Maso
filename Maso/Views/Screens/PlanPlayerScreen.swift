@@ -2419,7 +2419,7 @@ private struct WorkoutExerciseProgressBar: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .contentShape(Rectangle())
-            .gesture(WorkoutProgressReorderGesture(
+            .simultaneousGesture(WorkoutProgressReorderGesture(
                 enabled: steps.count > 1,
                 onBegan: { origin in
                     let source = WorkoutProgressReorder.slotIndex(
@@ -4268,6 +4268,8 @@ struct WorkoutHeartRateSettingsSheet: View {
     @Environment(TrainingSessionStore.self) private var store
     @Environment(\.dismiss) private var dismiss
     @State private var limitText = ""
+    /// The recommendation text still sitting in the field. Kept until typing no longer wraps it.
+    @State private var recommendationSeed = ""
     @State private var usesRecommendation = true
     @State private var showCard = false
     @State private var heartAssist = false
@@ -4333,19 +4335,18 @@ struct WorkoutHeartRateSettingsSheet: View {
                         Text("Reminder limit")
                         Spacer()
                         TextField("bpm", text: Binding(get: { limitText }, set: { newValue in
-                            if usesRecommendation {
-                                let previous = limitText
-                                if newValue.count > previous.count, newValue.hasPrefix(previous) {
-                                    limitText = String(newValue.dropFirst(previous.count))
-                                } else if newValue.count > previous.count, newValue.hasSuffix(previous) {
-                                    limitText = String(newValue.dropLast(previous.count))
-                                } else {
-                                    limitText = newValue
-                                }
+                            let seed = recommendationSeed
+                            if !seed.isEmpty, newValue.count > seed.count,
+                               newValue.hasPrefix(seed) || newValue.hasSuffix(seed) {
+                                limitText = newValue.hasPrefix(seed)
+                                    ? String(newValue.dropFirst(seed.count))
+                                    : String(newValue.dropLast(seed.count))
                                 usesRecommendation = false
-                            } else {
-                                limitText = newValue
+                                return
                             }
+                            limitText = newValue
+                            usesRecommendation = false
+                            recommendationSeed = ""
                         }))
                             .keyboardType(.numberPad).multilineTextAlignment(.trailing)
                             .frame(maxWidth: 110).accessibilityIdentifier("workout.heart.limit")
@@ -4391,7 +4392,9 @@ struct WorkoutHeartRateSettingsSheet: View {
                 heartAssist = data.settings.workoutHeartRateAutomaticEnabled == true
                 usesRecommendation = WorkoutHeartRecommendation.usesRecommendation(data.settings)
                 let value = usesRecommendation ? recommendation.bpm : (data.settings.workoutHeartRateLimit ?? recommendation.bpm)
-                limitText = value.formatted(.number.locale(LanguageManager.currentLocale))
+                let text = value.formatted(.number.locale(LanguageManager.currentLocale))
+                limitText = text
+                recommendationSeed = usesRecommendation ? text : ""
             }
             .onChange(of: recommendation.bpm) { _, value in
                 if usesRecommendation { limitText = value.formatted(.number.locale(LanguageManager.currentLocale)) }
