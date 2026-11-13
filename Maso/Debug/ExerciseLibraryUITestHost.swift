@@ -6,9 +6,16 @@ import SwiftUI
 /// SwiftUI re-executes this view's initializer on every parent update. The session
 /// report seed publishes `session`, and that publication was re-entering layout.
 /// Build the fixture once; later initializers only read it.
+@MainActor
 private final class SessionReportUIFixture {
     let data: DataStore
     let session: TrainingSessionStore
+
+    init(data: DataStore, session: TrainingSessionStore) {
+        self.data = data
+        self.session = session
+    }
+
     private static var ready: [String: SessionReportUIFixture] = [:]
     private static var partial: [String: SessionReportUIFixture] = [:]
     private static let scenes: Set<String> = ["session-report-history", "session-report-clean-player", "session-report-changed-player"]
