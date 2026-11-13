@@ -1,0 +1,1216 @@
+{
+  "schemaVersion": 2,
+  "appName": "Masso",
+  "themeId": "masso-portfolio",
+  "connectedCanvas": false,
+  "locales": [
+    "zh",
+    "zh-Hant",
+    "en",
+    "ja",
+    "ko",
+    "es",
+    "fr",
+    "de",
+    "it",
+    "pt-BR",
+    "ru",
+    "ar"
+  ],
+  "locale": "en",
+  "device": "iphone",
+  "orientation": "portrait",
+  "appIcon": "/app-icon.png",
+  "slidesByDevice": {
+    "iphone": [
+      {
+        "id": "plan",
+        "layout": "hero",
+        "label": {
+          "zh": "01 / AI 教练",
+          "zh-Hant": "01 / AI 教練",
+          "en": "01 / AI COACH",
+          "ja": "01 / AI コーチ",
+          "ko": "01 / AI 코치",
+          "es": "01 / COACH IA",
+          "fr": "01 / COACH IA",
+          "de": "01 / KI-COACH",
+          "it": "01 / COACH IA",
+          "pt-BR": "01 / COACH IA",
+          "ru": "01 / ИИ-ТРЕНЕР",
+          "ar": "01 / المدرب الذكي"
+        },
+        "headline": {
+          "zh": "一张照片，\n就有一周计划",
+          "zh-Hant": "一張照片，\n就有一週計畫",
+          "en": "One photo in,\na week planned out",
+          "ja": "写真1枚で\n1週間のメニュー",
+          "ko": "사진 한 장으로,\n일주일 계획",
+          "es": "Una foto,\nuna semana lista",
+          "fr": "Une photo,\nune semaine prête",
+          "de": "Ein Foto,\neine Woche geplant",
+          "it": "Una foto,\nuna settimana pronta",
+          "pt-BR": "Uma foto,\numa semana pronta",
+          "ru": "Одно фото —\nплан на неделю",
+          "ar": "صورة واحدة،\nخطة أسبوع"
+        },
+        "screenshot": "/screenshots/localized/iphone/{locale}/plans.png",
+        "inverted": true,
+        "transforms": {
+          "caption": {
+            "x": 112,
+            "y": 150,
+            "width": 1096,
+            "height": 545,
+            "zIndex": 4
+          },
+          "device": {
+            "x": 120,
+            "y": 900,
+            "width": 1080,
+            "height": 2208,
+            "rotation": 0,
+            "zIndex": 3
+          }
+        },
+        "textElements": [
+          {
+            "id": "description",
+            "text": {
+              "zh": "也听你要的天数、时长和重点。 部分 AI 服务需 Pro。",
+              "zh-Hant": "也聽你要的天數、時長和重點。 部分 AI 服務需 Pro。",
+              "en": "Also the days, length, and focus you want. Some AI services require Pro.",
+              "ja": "日数・時間・重点も、希望どおり。 一部のAI機能にはProが必要です。",
+              "ko": "일수, 시간, 중점도 원하는 대로. 일부 AI 기능은 Pro가 필요합니다.",
+              "es": "También los días, la duración y el foco. Algunos servicios de IA requieren Pro.",
+              "fr": "Aussi les jours, la durée et le focus. Certains services IA nécessitent Pro.",
+              "de": "Auch Tage, Dauer und Fokus. Einige KI-Dienste erfordern Pro.",
+              "it": "Anche i giorni, la durata e il focus. Alcuni servizi IA richiedono Pro.",
+              "pt-BR": "Também os dias, a duração e o foco. Alguns serviços de IA exigem Pro.",
+              "ru": "Ещё дни, длительность и акцент. Для части ИИ-сервисов нужен Pro.",
+              "ar": "وأيضًا الأيام والمدة والتركيز. تتطلب بعض خدمات الذكاء الاصطناعي ⁦Pro⁩."
+            },
+            "transform": {
+              "x": 96,
+              "y": 595,
+              "width": 1128,
+              "height": 150,
+              "zIndex": 5
+            },
+            "fontSize": 41,
+            "fontWeight": 400,
+            "align": "left"
+          }
+        ],
+        "chat": {
+          "x": 96,
+          "y": 745,
+          "width": 1128,
+          "height": 2050,
+          "bubbles": [
+            {
+              "role": "user",
+              "text": {
+                "zh": "帮我排个训练计划",
+                "zh-Hant": "幫我排個訓練計畫",
+                "en": "Build me a training plan",
+                "ja": "メニューを作って",
+                "ko": "운동 계획 짜 줘",
+                "es": "Ármame un plan de entrenamiento",
+                "fr": "Fais-moi un programme",
+                "de": "Erstell mir einen Trainingsplan",
+                "it": "Fammi un programma",
+                "pt-BR": "Monte um plano de treino",
+                "ru": "Составь план тренировок",
+                "ar": "رتّب لي خطة تدريب"
+              },
+              "photos": [
+                "/chat/body-front.jpg",
+                "/chat/body-back.jpg"
+              ],
+              "subtext": {
+                "zh": "3 天 · 每次 45 分钟",
+                "zh-Hant": "3 天 · 每次 45 分鐘",
+                "en": "3 days · 45 min each",
+                "ja": "週3日 · 1回45分",
+                "ko": "주 3일 · 회당 45분",
+                "es": "3 días · 45 min",
+                "fr": "3 jours · 45 min",
+                "de": "3 Tage · je 45 Min.",
+                "it": "3 giorni · 45 min",
+                "pt-BR": "3 dias · 45 min",
+                "ru": "3 дня · по 45 мин",
+                "ar": "⁦3⁩ أيام · ⁦45⁩ دقيقة"
+              }
+            },
+            {
+              "role": "coach",
+              "text": {
+                "zh": "正面看，胸肌中下束厚度够，上束偏薄；\n肩前束和手臂线条清楚。\n背面中下背比较平，背阔肌外展不足。\n腿的围度正常，先补胸和背。",
+                "zh-Hant": "正面看，胸肌中下束厚度夠，上束偏薄；\n肩前束和手臂線條清楚。\n背面中下背比較平，背闊肌外展不足。\n腿的圍度正常，先補胸和背。",
+                "en": "Front: chest is fuller mid-to-lower,\nthinner at the top.\nBack: mid-back looks flat, lats need width.\nLegs are on track — chest and back first.",
+                "ja": "正面：胸の中下部は厚みがあり、上部は薄め。\n肩と腕のラインは明瞭。\n背面：中背部は平ら、広背筋の張り出し不足。\n脚は現状維持、胸と背中を優先。",
+                "ko": "정면은 가슴 중·하부가 두껍고, 상부는 얇습니다.\n어깨 앞쪽과 팔 선은 분명합니다.\n후면 중간 등은 평평하고, 광배의 폭이 부족합니다.\n다리는 유지하고, 가슴과 등을 먼저 채웁니다.",
+                "es": "De frente: pecho más lleno abajo, arriba más fino.\nHombros y brazos se marcan.\nEspalda media plana; dorsales piden ancho.\nPiernas van bien: primero pecho y espalda.",
+                "fr": "De face : pecs plus pleins en bas, plus fins en haut.\nÉpaules et bras sont nets.\nMilieu du dos plat, dorsaux à élargir.\nJambes stables — pecs et dos d'abord.",
+                "de": "Vorne: Brust unten voller, oben dünner.\nSchultern und Arme sind klar.\nMitte Rücken flach, Latissimus schmal.\nBeine passen — zuerst Brust und Rücken.",
+                "it": "Davanti: petto più pieno in basso, più sottile in alto.\nSpalle e braccia sono definite.\nSchiena media piatta, dorsali da allargare.\nGambe ok — prima petto e schiena.",
+                "pt-BR": "De frente: peito mais cheio embaixo, fino em cima.\nOmbros e braços aparecem.\nMeio das costas plano; dorsais pedem largura.\nPernas no ritmo — peito e costas primeiro.",
+                "ru": "Спереди: грудь полнее снизу, сверху тоньше.\nПлечи и руки читаются.\nСередина спины плоская, широчайшие узкие.\nНоги в порядке — сначала грудь и спина.",
+                "ar": "من الأمام: الصدر أسمك بالأسفل وأرفع بالأعلى.\nالكتف الأمامي والذراع واضحان.\nمنتصف الظهر مسطّح، وعرض الظهر قليل.\nالساقان مناسبتان — ابدأ بالصدر والظهر."
+              },
+              "report": {
+                "muscles": [
+                  "chest",
+                  "back"
+                ],
+                "label": {
+                  "zh": "建议重点",
+                  "zh-Hant": "建議重點",
+                  "en": "Suggested focus",
+                  "ja": "おすすめの重点部位",
+                  "ko": "추천 중점",
+                  "es": "Prioridad sugerida",
+                  "fr": "Priorité suggérée",
+                  "de": "Vorschlag",
+                  "it": "Focus suggerito",
+                  "pt-BR": "Foco sugerido",
+                  "ru": "Что усилить",
+                  "ar": "تركيز مقترح"
+                },
+                "names": [
+                  {
+                    "zh": "胸",
+                    "zh-Hant": "胸",
+                    "en": "Chest",
+                    "ja": "胸",
+                    "ko": "가슴",
+                    "es": "Pecho",
+                    "fr": "Pecs",
+                    "de": "Brust",
+                    "it": "Petto",
+                    "pt-BR": "Peito",
+                    "ru": "Грудь",
+                    "ar": "صدر"
+                  },
+                  {
+                    "zh": "背",
+                    "zh-Hant": "背",
+                    "en": "Back",
+                    "ja": "背中",
+                    "ko": "등",
+                    "es": "Espalda",
+                    "fr": "Dos",
+                    "de": "Rücken",
+                    "it": "Schiena",
+                    "pt-BR": "Costas",
+                    "ru": "Спина",
+                    "ar": "ظهر"
+                  }
+                ],
+                "note": {
+                  "zh": "光线和站姿会影响判断，只作训练重点参考。",
+                  "zh-Hant": "光線和站姿會影響判斷，只作訓練重點參考。",
+                  "en": "Lighting and stance limit this read.",
+                  "ja": "光と姿勢で見え方は変わる。",
+                  "ko": "빛과 자세에 따라 달라집니다. 훈련 중점 참고용입니다.",
+                  "es": "La luz y la postura limitan esta lectura.",
+                  "fr": "Lumière et posture limitent cette lecture.",
+                  "de": "Licht und Haltung begrenzen diese Einschätzung.",
+                  "it": "Luce e postura limitano questa lettura.",
+                  "pt-BR": "Luz e postura limitam esta leitura.",
+                  "ru": "Свет и поза ограничивают эту оценку.",
+                  "ar": "الإضاءة والوقفة تحدّان هذه القراءة."
+                },
+                "compact": true
+              },
+              "plans": [
+                {
+                  "kicker": {
+                    "zh": "第 1 天",
+                    "zh-Hant": "第 1 天",
+                    "en": "Day 1",
+                    "ja": "1日目",
+                    "ko": "1일차",
+                    "es": "Día 1",
+                    "fr": "Jour 1",
+                    "de": "Tag 1",
+                    "it": "Giorno 1",
+                    "pt-BR": "Dia 1",
+                    "ru": "День 1",
+                    "ar": "اليوم ⁦1⁩"
+                  },
+                  "title": {
+                    "zh": "胸 + 三头",
+                    "zh-Hant": "胸 + 三頭",
+                    "en": "Chest + Triceps",
+                    "ja": "胸 + 三頭筋",
+                    "ko": "가슴 + 삼두",
+                    "es": "Pecho + tríceps",
+                    "fr": "Pecs + triceps",
+                    "de": "Brust + Trizeps",
+                    "it": "Petto + tricipiti",
+                    "pt-BR": "Peito + tríceps",
+                    "ru": "Грудь + трицепс",
+                    "ar": "صدر + تراي"
+                  },
+                  "meta": {
+                    "zh": "6 个动作 · 19 组",
+                    "zh-Hant": "6 個動作 · 19 組",
+                    "en": "6 exercises · 19 sets",
+                    "ja": "6種目 · 19セット",
+                    "ko": "6개 동작 · 19세트",
+                    "es": "6 ejercicios · 19 series",
+                    "fr": "6 exercices · 19 séries",
+                    "de": "6 Übungen · 19 Sätze",
+                    "it": "6 esercizi · 19 serie",
+                    "pt-BR": "6 exercícios · 19 séries",
+                    "ru": "6 упражнений · 19 подходов",
+                    "ar": "⁦6⁩ حركات · ⁦19⁩ مجموعات"
+                  },
+                  "muscles": [
+                    "chest",
+                    "triceps"
+                  ],
+                  "pills": [
+                    {
+                      "part": {
+                        "zh": "胸",
+                        "zh-Hant": "胸",
+                        "en": "Chest",
+                        "ja": "胸",
+                        "ko": "가슴",
+                        "es": "Pecho",
+                        "fr": "Pecs",
+                        "de": "Brust",
+                        "it": "Petto",
+                        "pt-BR": "Peito",
+                        "ru": "Грудь",
+                        "ar": "صدر"
+                      },
+                      "name": {
+                        "zh": "杠铃卧推",
+                        "zh-Hant": "槓鈴臥推",
+                        "en": "Bench Press",
+                        "ja": "バーベルベンチ",
+                        "ko": "벤치프레스",
+                        "es": "Press banca",
+                        "fr": "Développé couché",
+                        "de": "Bankdrücken",
+                        "it": "Panca piana",
+                        "pt-BR": "Supino reto",
+                        "ru": "Жим лёжа",
+                        "ar": "ضغط بنش"
+                      }
+                    },
+                    {
+                      "part": {
+                        "zh": "胸",
+                        "zh-Hant": "胸",
+                        "en": "Chest",
+                        "ja": "胸",
+                        "ko": "가슴",
+                        "es": "Pecho",
+                        "fr": "Pecs",
+                        "de": "Brust",
+                        "it": "Petto",
+                        "pt-BR": "Peito",
+                        "ru": "Грудь",
+                        "ar": "صدر"
+                      },
+                      "name": {
+                        "zh": "上斜杠铃卧推",
+                        "zh-Hant": "上斜槓鈴臥推",
+                        "en": "Incline Bench",
+                        "ja": "インクラインベンチ",
+                        "ko": "인클라인 벤치",
+                        "es": "Press inclinado",
+                        "fr": "Développé incliné",
+                        "de": "Schrägbank",
+                        "it": "Panca inclinata",
+                        "pt-BR": "Supino inclinado",
+                        "ru": "Жим наклон",
+                        "ar": "ضغط مائل"
+                      }
+                    },
+                    {
+                      "part": {
+                        "zh": "胸",
+                        "zh-Hant": "胸",
+                        "en": "Chest",
+                        "ja": "胸",
+                        "ko": "가슴",
+                        "es": "Pecho",
+                        "fr": "Pecs",
+                        "de": "Brust",
+                        "it": "Petto",
+                        "pt-BR": "Peito",
+                        "ru": "Грудь",
+                        "ar": "صدر"
+                      },
+                      "name": {
+                        "zh": "哑铃卧推",
+                        "zh-Hant": "啞鈴臥推",
+                        "en": "Dumbbell Bench",
+                        "ja": "ダンベルベンチ",
+                        "ko": "덤벨 벤치",
+                        "es": "Press mancuernas",
+                        "fr": "Développé haltères",
+                        "de": "KH-Bankdrücken",
+                        "it": "Panca manubri",
+                        "pt-BR": "Supino halteres",
+                        "ru": "Жим гантелей",
+                        "ar": "ضغط دمبل"
+                      }
+                    },
+                    {
+                      "part": {
+                        "zh": "胸",
+                        "zh-Hant": "胸",
+                        "en": "Chest",
+                        "ja": "胸",
+                        "ko": "가슴",
+                        "es": "Pecho",
+                        "fr": "Pecs",
+                        "de": "Brust",
+                        "it": "Petto",
+                        "pt-BR": "Peito",
+                        "ru": "Грудь",
+                        "ar": "صدر"
+                      },
+                      "name": {
+                        "zh": "绳索飞鸟",
+                        "zh-Hant": "繩索飛鳥",
+                        "en": "Cable Fly",
+                        "ja": "ケーブルフライ",
+                        "ko": "케이블 플라이",
+                        "es": "Aperturas",
+                        "fr": "Écarté poulie",
+                        "de": "Kabel-Flys",
+                        "it": "Croci ai cavi",
+                        "pt-BR": "Crucifixo",
+                        "ru": "Сведение",
+                        "ar": "فراشة"
+                      }
+                    },
+                    {
+                      "part": {
+                        "zh": "三头",
+                        "zh-Hant": "三頭",
+                        "en": "Triceps",
+                        "ja": "三頭",
+                        "ko": "삼두",
+                        "es": "Tríceps",
+                        "fr": "Triceps",
+                        "de": "Trizeps",
+                        "it": "Tricipiti",
+                        "pt-BR": "Tríceps",
+                        "ru": "Трицепс",
+                        "ar": "تراي"
+                      },
+                      "name": {
+                        "zh": "窄距卧推",
+                        "zh-Hant": "窄握槓鈴臥推",
+                        "en": "Close-Grip Bench",
+                        "ja": "ナローベンチ",
+                        "ko": "내로우 벤치",
+                        "es": "Press cerrado",
+                        "fr": "Développé serré",
+                        "de": "Engbankdrücken",
+                        "it": "Panca stretta",
+                        "pt-BR": "Supino fechado",
+                        "ru": "Узкий жим",
+                        "ar": "ضغط ضيق"
+                      }
+                    },
+                    {
+                      "part": {
+                        "zh": "三头",
+                        "zh-Hant": "三頭",
+                        "en": "Triceps",
+                        "ja": "三頭",
+                        "ko": "삼두",
+                        "es": "Tríceps",
+                        "fr": "Triceps",
+                        "de": "Trizeps",
+                        "it": "Tricipiti",
+                        "pt-BR": "Tríceps",
+                        "ru": "Трицепс",
+                        "ar": "تراي"
+                      },
+                      "name": {
+                        "zh": "绳索三头下压",
+                        "zh-Hant": "繩索三頭下壓",
+                        "en": "Pushdown",
+                        "ja": "ローププッシュダウン",
+                        "ko": "푸시다운",
+                        "es": "Jalón tríceps",
+                        "fr": "Pushdown",
+                        "de": "Trizepsdrücken",
+                        "it": "Pushdown",
+                        "pt-BR": "Tríceps pulley",
+                        "ru": "Разгибание",
+                        "ar": "دفع تراي"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "kicker": {
+                    "zh": "第 2 天",
+                    "zh-Hant": "第 2 天",
+                    "en": "Day 2",
+                    "ja": "2日目",
+                    "ko": "2일차",
+                    "es": "Día 2",
+                    "fr": "Jour 2",
+                    "de": "Tag 2",
+                    "it": "Giorno 2",
+                    "pt-BR": "Dia 2",
+                    "ru": "День 2",
+                    "ar": "اليوم ⁦2⁩"
+                  },
+                  "title": {
+                    "zh": "背 + 二头",
+                    "zh-Hant": "背 + 二頭",
+                    "en": "Back + Biceps",
+                    "ja": "背中 + 二頭筋",
+                    "ko": "등 + 이두",
+                    "es": "Espalda + bíceps",
+                    "fr": "Dos + biceps",
+                    "de": "Rücken + Bizeps",
+                    "it": "Schiena + bicipiti",
+                    "pt-BR": "Costas + bíceps",
+                    "ru": "Спина + бицепс",
+                    "ar": "ظهر + باي"
+                  },
+                  "meta": {
+                    "zh": "5 个动作 · 16 组",
+                    "zh-Hant": "5 個動作 · 16 組",
+                    "en": "5 exercises · 16 sets",
+                    "ja": "5種目 · 16セット",
+                    "ko": "5개 동작 · 16세트",
+                    "es": "5 ejercicios · 16 series",
+                    "fr": "5 exercices · 16 séries",
+                    "de": "5 Übungen · 16 Sätze",
+                    "it": "5 esercizi · 16 serie",
+                    "pt-BR": "5 exercícios · 16 séries",
+                    "ru": "5 упражнений · 16 подходов",
+                    "ar": "⁦5⁩ حركات · ⁦16⁩ مجموعات"
+                  },
+                  "muscles": [
+                    "back",
+                    "biceps"
+                  ],
+                  "pills": [
+                    {
+                      "part": {
+                        "zh": "背",
+                        "zh-Hant": "背",
+                        "en": "Back",
+                        "ja": "背中",
+                        "ko": "등",
+                        "es": "Espalda",
+                        "fr": "Dos",
+                        "de": "Rücken",
+                        "it": "Schiena",
+                        "pt-BR": "Costas",
+                        "ru": "Спина",
+                        "ar": "ظهر"
+                      },
+                      "name": {
+                        "zh": "引体向上",
+                        "zh-Hant": "引體向上",
+                        "en": "Pull-Up",
+                        "ja": "懸垂",
+                        "ko": "풀업",
+                        "es": "Dominadas",
+                        "fr": "Tractions",
+                        "de": "Klimmzüge",
+                        "it": "Trazioni",
+                        "pt-BR": "Barra fixa",
+                        "ru": "Подтягивания",
+                        "ar": "عقلة"
+                      }
+                    },
+                    {
+                      "part": {
+                        "zh": "背",
+                        "zh-Hant": "背",
+                        "en": "Back",
+                        "ja": "背中",
+                        "ko": "등",
+                        "es": "Espalda",
+                        "fr": "Dos",
+                        "de": "Rücken",
+                        "it": "Schiena",
+                        "pt-BR": "Costas",
+                        "ru": "Спина",
+                        "ar": "ظهر"
+                      },
+                      "name": {
+                        "zh": "杠铃划船",
+                        "zh-Hant": "槓鈴划船",
+                        "en": "Barbell Row",
+                        "ja": "バーベルロウ",
+                        "ko": "바벨 로우",
+                        "es": "Remo barra",
+                        "fr": "Rowing barre",
+                        "de": "Langhantelrudern",
+                        "it": "Rematore",
+                        "pt-BR": "Remada curvada",
+                        "ru": "Тяга штанги",
+                        "ar": "تجديف"
+                      }
+                    },
+                    {
+                      "part": {
+                        "zh": "背",
+                        "zh-Hant": "背",
+                        "en": "Back",
+                        "ja": "背中",
+                        "ko": "등",
+                        "es": "Espalda",
+                        "fr": "Dos",
+                        "de": "Rücken",
+                        "it": "Schiena",
+                        "pt-BR": "Costas",
+                        "ru": "Спина",
+                        "ar": "ظهر"
+                      },
+                      "name": {
+                        "zh": "高位下拉",
+                        "zh-Hant": "滑輪下拉",
+                        "en": "Lat Pulldown",
+                        "ja": "ラットプルダウン",
+                        "ko": "랫풀다운",
+                        "es": "Jalón pecho",
+                        "fr": "Tirage vertical",
+                        "de": "Latzug",
+                        "it": "Lat machine",
+                        "pt-BR": "Puxada alta",
+                        "ru": "Тяга блока",
+                        "ar": "سحب عالي"
+                      }
+                    },
+                    {
+                      "part": {
+                        "zh": "二头",
+                        "zh-Hant": "二頭",
+                        "en": "Biceps",
+                        "ja": "二頭",
+                        "ko": "이두",
+                        "es": "Bíceps",
+                        "fr": "Biceps",
+                        "de": "Bizeps",
+                        "it": "Bicipiti",
+                        "pt-BR": "Bíceps",
+                        "ru": "Бицепс",
+                        "ar": "باي"
+                      },
+                      "name": {
+                        "zh": "杠铃弯举",
+                        "zh-Hant": "槓鈴彎舉",
+                        "en": "Barbell Curl",
+                        "ja": "バーベルカール",
+                        "ko": "바벨 컬",
+                        "es": "Curl barra",
+                        "fr": "Curl barre",
+                        "de": "LH-Curls",
+                        "it": "Curl bilanciere",
+                        "pt-BR": "Rosca direta",
+                        "ru": "Подъём на бицепс",
+                        "ar": "ثني بار"
+                      }
+                    },
+                    {
+                      "part": {
+                        "zh": "二头",
+                        "zh-Hant": "二頭",
+                        "en": "Biceps",
+                        "ja": "二頭",
+                        "ko": "이두",
+                        "es": "Bíceps",
+                        "fr": "Biceps",
+                        "de": "Bizeps",
+                        "it": "Bicipiti",
+                        "pt-BR": "Bíceps",
+                        "ru": "Бицепс",
+                        "ar": "باي"
+                      },
+                      "name": {
+                        "zh": "锤式弯举",
+                        "zh-Hant": "錘式彎舉",
+                        "en": "Hammer Curl",
+                        "ja": "ハンマーカール",
+                        "ko": "해머 컬",
+                        "es": "Curl martillo",
+                        "fr": "Curl marteau",
+                        "de": "Hammercurls",
+                        "it": "Curl martello",
+                        "pt-BR": "Rosca martelo",
+                        "ru": "Молот",
+                        "ar": "مطرقة"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "kicker": {
+                    "zh": "第 3 天",
+                    "zh-Hant": "第 3 天",
+                    "en": "Day 3",
+                    "ja": "3日目",
+                    "ko": "3일차",
+                    "es": "Día 3",
+                    "fr": "Jour 3",
+                    "de": "Tag 3",
+                    "it": "Giorno 3",
+                    "pt-BR": "Dia 3",
+                    "ru": "День 3",
+                    "ar": "اليوم ⁦3⁩"
+                  },
+                  "title": {
+                    "zh": "腿 + 核心",
+                    "zh-Hant": "腿 + 核心",
+                    "en": "Legs + Core",
+                    "ja": "脚 + 体幹",
+                    "ko": "하체 + 코어",
+                    "es": "Piernas + core",
+                    "fr": "Jambes + gainage",
+                    "de": "Beine + Core",
+                    "it": "Gambe + core",
+                    "pt-BR": "Pernas + core",
+                    "ru": "Ноги + кор",
+                    "ar": "أرجل + جذع"
+                  },
+                  "meta": {
+                    "zh": "5 个动作 · 15 组",
+                    "zh-Hant": "5 個動作 · 15 組",
+                    "en": "5 exercises · 15 sets",
+                    "ja": "5種目 · 15セット",
+                    "ko": "5개 동작 · 15세트",
+                    "es": "5 ejercicios · 15 series",
+                    "fr": "5 exercices · 15 séries",
+                    "de": "5 Übungen · 15 Sätze",
+                    "it": "5 esercizi · 15 serie",
+                    "pt-BR": "5 exercícios · 15 séries",
+                    "ru": "5 упражнений · 15 подходов",
+                    "ar": "⁦5⁩ حركات · ⁦15⁩ مجموعات"
+                  },
+                  "muscles": [
+                    "legs",
+                    "core"
+                  ],
+                  "pills": [
+                    {
+                      "part": {
+                        "zh": "腿",
+                        "zh-Hant": "腿",
+                        "en": "Legs",
+                        "ja": "脚",
+                        "ko": "하체",
+                        "es": "Piernas",
+                        "fr": "Jambes",
+                        "de": "Beine",
+                        "it": "Gambe",
+                        "pt-BR": "Pernas",
+                        "ru": "Ноги",
+                        "ar": "أرجل"
+                      },
+                      "name": {
+                        "zh": "杠铃深蹲",
+                        "zh-Hant": "槓鈴深蹲",
+                        "en": "Back Squat",
+                        "ja": "バーベルスクワット",
+                        "ko": "백 스쿼트",
+                        "es": "Sentadilla",
+                        "fr": "Squat barre",
+                        "de": "Kniebeuge",
+                        "it": "Squat",
+                        "pt-BR": "Agachamento",
+                        "ru": "Приседания",
+                        "ar": "سكوات"
+                      }
+                    },
+                    {
+                      "part": {
+                        "zh": "腿",
+                        "zh-Hant": "腿",
+                        "en": "Legs",
+                        "ja": "脚",
+                        "ko": "하체",
+                        "es": "Piernas",
+                        "fr": "Jambes",
+                        "de": "Beine",
+                        "it": "Gambe",
+                        "pt-BR": "Pernas",
+                        "ru": "Ноги",
+                        "ar": "أرجل"
+                      },
+                      "name": {
+                        "zh": "罗马尼亚硬拉",
+                        "zh-Hant": "羅馬尼亞硬舉",
+                        "en": "Romanian Deadlift",
+                        "ja": "ルーマニアンデッドリフト",
+                        "ko": "루마니안 데드",
+                        "es": "Peso rumano",
+                        "fr": "Soulevé roumain",
+                        "de": "Rumänisches KH",
+                        "it": "Stacco rumeno",
+                        "pt-BR": "Stiff",
+                        "ru": "Румынская тяга",
+                        "ar": "رفعة رومانية"
+                      }
+                    },
+                    {
+                      "part": {
+                        "zh": "核心",
+                        "zh-Hant": "核心",
+                        "en": "Core",
+                        "ja": "体幹",
+                        "ko": "코어",
+                        "es": "Core",
+                        "fr": "Gainage",
+                        "de": "Core",
+                        "it": "Core",
+                        "pt-BR": "Core",
+                        "ru": "Кор",
+                        "ar": "جذع"
+                      },
+                      "name": {
+                        "zh": "悬垂举腿",
+                        "zh-Hant": "懸垂舉腿",
+                        "en": "Hanging Leg Raise",
+                        "ja": "レッグレイズ",
+                        "ko": "행잉 레그레이즈",
+                        "es": "Elevación piernas",
+                        "fr": "Relevé de jambes",
+                        "de": "Beinheben",
+                        "it": "Leg raise",
+                        "pt-BR": "Elevação pernas",
+                        "ru": "Подъём ног",
+                        "ar": "رفع رجلين"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "rowCards": true,
+              "ctaAfterCards": true,
+              "cta": {
+                "zh": "保存到我的训练计划",
+                "zh-Hant": "儲存到我的訓練計畫",
+                "en": "Save to My Workout Plans",
+                "ja": "マイプランに保存",
+                "ko": "내 운동 계획에 저장",
+                "es": "Guardar en mis planes",
+                "fr": "Enregistrer dans mes plans",
+                "de": "In meine Pläne sichern",
+                "it": "Salva nei miei piani",
+                "pt-BR": "Salvar nos meus planos",
+                "ru": "Сохранить в мои планы",
+                "ar": "حفظ في خططي"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "recovery",
+        "layout": "hero",
+        "label": {
+          "zh": "02 / 肌肉恢复",
+          "en": "02 / RECOVERY",
+          "zh-Hant": "02 / 肌肉恢復",
+          "ja": "02 / 回復",
+          "ko": "02 / 근육 회복",
+          "es": "02 / RECUPERACIÓN",
+          "fr": "02 / RÉCUPÉRATION",
+          "de": "02 / ERHOLUNG",
+          "it": "02 / RECUPERO",
+          "pt-BR": "02 / RECUPERAÇÃO",
+          "ru": "02 / ВОССТАНОВЛЕНИЕ",
+          "ar": "02 / التعافي"
+        },
+        "headline": {
+          "zh": "肌肉恢复估算，\n一眼看清",
+          "zh-Hant": "肌肉恢復估算，\n一眼看清",
+          "en": "Estimated muscle\nrecovery",
+          "ja": "筋肉の回復を\n推定で確認",
+          "ko": "근육 회복을\n추정치로 확인",
+          "es": "Recuperación muscular\nestimada",
+          "fr": "Récupération musculaire\nestimée",
+          "de": "Geschätzte\nMuskelerholung",
+          "it": "Recupero muscolare\nstimato",
+          "pt-BR": "Recuperação muscular\nestimada",
+          "ru": "Восстановление мышц,\nпо оценке",
+          "ar": "تقديرات تعافي\nالعضلات"
+        },
+        "screenshot": "/screenshots/localized/iphone/{locale}/muscle-selected.png",
+        "inverted": true,
+        "transforms": {
+          "caption": {
+            "x": 112,
+            "y": 150,
+            "width": 1096,
+            "height": 545,
+            "zIndex": 4
+          },
+          "device": {
+            "x": 120,
+            "y": 815,
+            "width": 1080,
+            "height": 2208,
+            "rotation": 0,
+            "zIndex": 3
+          }
+        },
+        "textElements": [
+          {
+            "id": "description",
+            "text": {
+              "zh": "3D 肌肉图，按部位显示。精细恢复估算需 Pro。",
+              "zh-Hant": "3D 肌肉圖，按部位顯示。精細恢復估算需 Pro。",
+              "en": "A 3D muscle map. Detailed recovery estimates require Pro.",
+              "ja": "部位ごとの3Dマップ。詳細な回復推定はProで。",
+              "ko": "부위별 3D 지도. 상세 회복 추정치는 Pro로.",
+              "es": "Mapa muscular 3D. Las estimaciones detalladas requieren Pro.",
+              "fr": "Carte musculaire 3D. Les estimations détaillées nécessitent Pro.",
+              "de": "3D-Muskelkarte. Detaillierte Erholungsschätzungen mit Pro.",
+              "it": "Mappa muscolare 3D. Le stime dettagliate richiedono Pro.",
+              "pt-BR": "Mapa muscular 3D. Estimativas detalhadas exigem Pro.",
+              "ru": "3D-карта мышц. Подробные оценки восстановления — с Pro.",
+              "ar": "خريطة عضلية ثلاثية الأبعاد. التقديرات المفصلة تتطلب ⁦Pro⁩."
+            },
+            "transform": {
+              "x": 96,
+              "y": 595,
+              "width": 1128,
+              "height": 140,
+              "zIndex": 5
+            },
+            "fontSize": 41,
+            "fontWeight": 400,
+            "color": "#60625C",
+            "align": "left"
+          }
+        ]
+      },
+      {
+        "id": "training",
+        "layout": "hero",
+        "label": {
+          "zh": "03 / 训练与心率",
+          "en": "03 / TRAINING & HEART RATE",
+          "zh-Hant": "03 / 訓練與心率",
+          "ja": "03 / トレーニングと心拍",
+          "ko": "03 / 운동과 심박",
+          "es": "03 / ENTRENO Y PULSO",
+          "fr": "03 / EFFORT ET FRÉQUENCE",
+          "de": "03 / TRAINING & PULS",
+          "it": "03 / ALLENAMENTO E BATTITO",
+          "pt-BR": "03 / TREINO E FREQUÊNCIA",
+          "ru": "03 / ТРЕНИРОВКА И ПУЛЬС",
+          "ar": "03 / التمرين والنبض"
+        },
+        "headline": {
+          "zh": "心率过高，\n立刻提醒",
+          "zh-Hant": "心率過高，\n立刻提醒",
+          "en": "Past your limit?\nYou'll know",
+          "ja": "心拍が高すぎたら\nすぐ知らせる",
+          "ko": "심박이 높으면,\n바로 알려 줍니다",
+          "es": "¿Pasaste tu límite?\nLo vas a ver",
+          "fr": "Au-dessus de votre limite ?\nVous le voyez",
+          "de": "Über dein Limit?\nDu siehst es",
+          "it": "Oltre il tuo limite?\nLo vedi subito",
+          "pt-BR": "Passou do seu limite?\nVocê vê na hora",
+          "ru": "Выше вашего порога?\nВы это увидите",
+          "ar": "فوق حدك؟\nستعرف فورًا"
+        },
+        "screenshot": "/screenshots/localized/iphone/{locale}/player-heart-warning.png",
+        "inverted": true,
+        "transforms": {
+          "caption": {
+            "x": 112,
+            "y": 150,
+            "width": 1096,
+            "height": 545,
+            "zIndex": 4
+          },
+          "device": {
+            "x": 400,
+            "y": 850,
+            "width": 820,
+            "height": 1676.4,
+            "rotation": 6,
+            "zIndex": 2
+          },
+          "deviceSecondary": {
+            "x": 80,
+            "y": 1907,
+            "width": 500,
+            "height": 785.71,
+            "rotation": -9,
+            "zIndex": 3
+          }
+        },
+        "textElements": [
+          {
+            "id": "description",
+            "text": {
+              "zh": "超过你设的上限就变红。",
+              "zh-Hant": "超過你設的上限就變紅。",
+              "en": "Turns red past your limit.",
+              "ja": "上限を超えると赤くなる。",
+              "ko": "정한 상한을 넘으면 붉게 표시됩니다.",
+              "es": "Se pone en rojo al pasar tu límite.",
+              "fr": "Passe au rouge au-delà de votre limite.",
+              "de": "Wird rot, wenn du dein Limit überschreitest.",
+              "it": "Diventa rosso oltre il tuo limite.",
+              "pt-BR": "Fica vermelho acima do seu limite.",
+              "ru": "Краснеет, если выше вашего порога.",
+              "ar": "يحمرّ إذا تجاوزت حدك."
+            },
+            "transform": {
+              "x": 96,
+              "y": 595,
+              "width": 1128,
+              "height": 140,
+              "zIndex": 5
+            },
+            "fontSize": 41,
+            "fontWeight": 400,
+            "color": "#B2B2B2",
+            "align": "left"
+          }
+        ],
+        "screenshotSecondary": "/screenshots/localized/watch/{locale}/exercise-185.png"
+      },
+      {
+        "id": "diet",
+        "layout": "two-devices",
+        "label": {
+          "zh": "04 / 饮食与睡眠",
+          "zh-Hant": "04 / 飲食與睡眠",
+          "en": "04 / NUTRITION & SLEEP",
+          "ja": "04 / 食事と睡眠",
+          "ko": "04 / 식단과 수면",
+          "es": "04 / NUTRICIÓN Y SUEÑO",
+          "fr": "04 / NUTRITION ET SOMMEIL",
+          "de": "04 / ERNÄHRUNG & SCHLAF",
+          "it": "04 / CIBO E SONNO",
+          "pt-BR": "04 / NUTRIÇÃO E SONO",
+          "ru": "04 / ПИТАНИЕ И СОН",
+          "ar": "04 / التغذية والنوم"
+        },
+        "headline": {
+          "zh": "饮食与睡眠，一起照顾",
+          "zh-Hant": "飲食與睡眠，一起照顧",
+          "en": "Nutrition and sleep,\ntogether",
+          "ja": "食事と睡眠を\nまとめて管理",
+          "ko": "식단과 수면,\n함께 관리",
+          "es": "Nutrición y sueño,\njuntos",
+          "fr": "Nutrition et sommeil,\nensemble",
+          "de": "Ernährung und Schlaf,\nim Blick",
+          "it": "Alimentazione e sonno,\ninsieme",
+          "pt-BR": "Nutrição e sono,\njuntos",
+          "ru": "Питание и сон,\nвместе",
+          "ar": "التغذية والنوم،\nمعًا"
+        },
+        "screenshot": "/screenshots/localized/iphone/{locale}/diet.png",
+        "inverted": true,
+        "transforms": {
+          "caption": {
+            "x": 112,
+            "y": 150,
+            "width": 1096,
+            "height": 545,
+            "zIndex": 4
+          },
+          "device": {
+            "x": 90,
+            "y": 1330,
+            "width": 660,
+            "height": 1349.33,
+            "rotation": -4,
+            "zIndex": 3
+          },
+          "deviceSecondary": {
+            "x": 565,
+            "y": 835,
+            "width": 620,
+            "height": 1267.56,
+            "rotation": 4,
+            "zIndex": 2
+          }
+        },
+        "textElements": [
+          {
+            "id": "description",
+            "text": {
+              "zh": "热量、营养，和睡眠时长。",
+              "zh-Hant": "熱量、營養，和睡眠時長。",
+              "en": "Calories, nutrients, and time asleep.",
+              "ja": "カロリー、栄養、睡眠時間。",
+              "ko": "열량, 영양, 수면 시간.",
+              "es": "Calorías, nutrientes y tiempo de sueño.",
+              "fr": "Calories, nutriments et temps de sommeil.",
+              "de": "Kalorien, Nährstoffe und Schlafdauer.",
+              "it": "Calorie, nutrienti e tempo di sonno.",
+              "pt-BR": "Calorias, nutrientes e tempo de sono.",
+              "ru": "Калории, нутриенты и время сна.",
+              "ar": "السعرات والمغذيات ومدة النوم."
+            },
+            "transform": {
+              "x": 96,
+              "y": 595,
+              "width": 1128,
+              "height": 140,
+              "zIndex": 5
+            },
+            "fontSize": 41,
+            "fontWeight": 400,
+            "color": "#60625C",
+            "align": "left"
+          }
+        ],
+        "screenshotSecondary": "/screenshots/localized/iphone/{locale}/sleep.png"
+      },
+      {
+        "id": "devices",
+        "layout": "no-device",
+        "label": {
+          "zh": "05 / 全设备",
+          "zh-Hant": "05 / 全裝置",
+          "en": "05 / EVERY DEVICE",
+          "ja": "05 / すべてのデバイス",
+          "ko": "05 / 모든 기기",
+          "es": "05 / DISPOSITIVOS",
+          "fr": "05 / APPAREILS",
+          "de": "05 / GERÄTE",
+          "it": "05 / DISPOSITIVI",
+          "pt-BR": "05 / DISPOSITIVOS",
+          "ru": "05 / УСТРОЙСТВА",
+          "ar": "05 / الأجهزة"
+        },
+        "headline": {
+          "en": "Multiple devices,\ntrain your way",
+          "zh": "多设备，\n随你练",
+          "zh-Hant": "多裝置，\n想練就練",
+          "ja": "複数デバイス、\n好きなように",
+          "ko": "여러 기기,\n내 방식대로",
+          "es": "Varios dispositivos,\na tu manera",
+          "fr": "Plusieurs appareils,\nà votre façon",
+          "de": "Mehrere Geräte,\nwie du willst",
+          "it": "Più dispositivi,\ncome vuoi",
+          "pt-BR": "Vários dispositivos,\ndo seu jeito",
+          "ru": "Много устройств\nкак вам удобно",
+          "ar": "أجهزة متعددة،\nكما تشاء"
+        },
+        "screenshot": "/screenshots/localized/iphone/{locale}/today.png",
+        "inverted": true,
+        "transforms": {
+          "caption": {
+            "x": 112,
+            "y": 150,
+            "width": 1096,
+            "height": 545,
+            "zIndex": 4
+          }
+        },
+        "textElements": [
+          {
+            "id": "description",
+            "text": {
+              "en": "iPhone, iPad,\niPhone Duo, and Apple Watch.",
+              "zh": "iPhone、iPad、\niPhone Duo 和 Apple Watch",
+              "zh-Hant": "iPhone、iPad、\niPhone Duo 和 Apple Watch",
+              "ja": "iPhone、iPad、\niPhone Duo、Apple Watch",
+              "ko": "iPhone, iPad,\niPhone Duo, Apple Watch",
+              "es": "En iPhone, iPad, iPhone Duo\ny Apple Watch.",
+              "fr": "Sur iPhone, iPad, iPhone Duo\net Apple Watch.",
+              "de": "Für iPhone, iPad, iPhone Duo\nund Apple Watch.",
+              "it": "Su iPhone, iPad, iPhone Duo\ne Apple Watch.",
+              "pt-BR": "No iPhone, iPad, iPhone Duo\ne no Apple Watch.",
+              "ru": "На iPhone, iPad, iPhone Duo\nи Apple Watch.",
+              "ar": "iPhone وiPad\nوiPhone Duo وApple Watch."
+            },
+            "transform": {
+              "x": 96,
+              "y": 595,
+              "width": 1128,
+              "height": 140,
+              "zIndex": 5
+            },
+            "fontSize": 41,
+            "fontWeight": 400,
+            "color": "#60625C",
+            "align": "left"
+          }
+        ],
+        "lineup": {
+          "slots": [
+            {
+              "id": "watch",
+              "x": 115,
+              "y": 2244,
+              "width": 270,
+              "height": 424.29,
+              "rotation": -14,
+              "zIndex": 4
+            },
+            {
+              "id": "iphone",
+              "x": 210,
+              "y": 1705,
+              "width": 420,
+              "height": 858.67,
+              "rotation": -4,
+              "zIndex": 3
+            },
+            {
+              "id": "duo",
+              "x": 355,
+              "y": 1348,
+              "width": 560,
+              "height": 781.55,
+              "rotation": 6,
+              "zIndex": 2
+            },
+            {
+              "id": "ipad",
+              "x": 390,
+              "y": 868,
+              "width": 780,
+              "height": 1018.39,
+              "rotation": 13,
+              "zIndex": 1
+            }
+          ]
+        }
+      }
+    ],
+    "android": [],
+    "ipad": [],
+    "android-7": [],
+    "android-10": [],
+    "feature-graphic": []
+  },
+  "approvedLocales": [
+    "zh",
+    "zh-Hant",
+    "en",
+    "ja"
+  ],
+  "pendingLocales": [
+    "ko",
+    "es",
+    "fr",
+    "de",
+    "it",
+    "pt-BR",
+    "ru",
+    "ar"
+  ]
+}
