@@ -134,10 +134,12 @@ struct WorkoutSessionReportScreen: View {
         }
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("workout.sessionReport")
+        .preferredColorScheme(.dark)
+        .toolbarColorScheme(.dark, for: .navigationBar)
     }
 
     private var finishBar: some View {
-        HStack(spacing: 0) {
+        HStack(alignment: .center, spacing: 0) {
             Button(action: { showInfo = true }) {
                 Image(systemName: "info.circle")
                     .font(.body.weight(.semibold))
@@ -148,8 +150,9 @@ struct WorkoutSessionReportScreen: View {
             .accessibilityIdentifier("workout.sessionReport.info")
             Text("Workout report")
                 .font(.headline)
-                .lineLimit(1)
-                .minimumScaleFactor(0.6)
+                .lineLimit(2)
+                .minimumScaleFactor(0.8)
+                .multilineTextAlignment(.center)
                 .frame(maxWidth: .infinity)
                 .accessibilityIdentifier("workout.sessionReport.heading")
             Button("Exit", action: requestExit)
@@ -344,6 +347,8 @@ struct WorkoutSessionReportScreen: View {
                 }
             }
         }
+        .preferredColorScheme(.dark)
+        .toolbarColorScheme(.dark, for: .navigationBar)
         .presentationDetents([.medium, .large])
     }
 
@@ -575,6 +580,8 @@ private struct SharePreview: View {
             }
         }
         .background(MasoColor.background.ignoresSafeArea())
+        .preferredColorScheme(.dark)
+        .toolbarColorScheme(.dark, for: .navigationBar)
         .safeAreaInset(edge: .bottom, spacing: 0) {
             Button(action: send) {
                 Text("Share")
@@ -650,6 +657,7 @@ private struct ShareBitmap: View {
         }
         .padding(16)
         .foregroundStyle(MasoColor.text)
+        .preferredColorScheme(.dark)
     }
 }
 

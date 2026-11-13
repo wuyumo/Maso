@@ -374,6 +374,7 @@ struct ExerciseLibraryUITestHost: View {
         .environment(\.locale, LanguageManager.currentLocale)
         .environment(\.layoutDirection, LanguageManager.currentLanguageCode == "ar" ? .rightToLeft : .leftToRight)
         .preferredColorScheme(ProcessInfo.processInfo.environment["MASO_TEST_COLOR_SCHEME"] == "light" ? .light : .dark)
+        .modifier(SessionReportLargeType())
         .tint(MasoColor.text)
         .task {
             presented = true
@@ -593,6 +594,17 @@ enum CoachImageTestFixture {
                     UIImage(cgImage: cg).draw(in: CGRect(x: 100, y: 140, width: 700, height: 700))
                 }
             }
+        }
+    }
+}
+
+/// Only the large-type fixture overrides Dynamic Type. Other scenes keep the system size.
+private struct SessionReportLargeType: ViewModifier {
+    func body(content: Content) -> some View {
+        if ProcessInfo.processInfo.environment["MASO_TEST_LARGE_TYPE"] == "1" {
+            content.environment(\.dynamicTypeSize, .accessibility3)
+        } else {
+            content
         }
     }
 }

@@ -101,9 +101,14 @@ final class SessionReportUITests: XCTestCase {
         XCTAssertTrue(matchingPrefix("workout.sessionReport.shareDetails.", in: app).waitForExistence(timeout: 5))
         XCTAssertTrue(app.descendants(matching: .any)["workout.sessionReport.shareSpark.bench_press_barbell"].waitForExistence(timeout: 5))
         XCTAssertFalse(matchingPrefix("workout.sessionReport.shareSummary.", in: app).exists)
+        let shareBody = app.descendants(matching: .any)["workout.sessionReport.shareBody"]
+        let preview = app.descendants(matching: .any)["workout.sessionReport.sharePreview"]
+        for _ in 0..<6 where !shareBody.isHittable || shareBody.frame.minY > 220 { preview.swipeDown() }
+        XCTAssertTrue(shareBody.isHittable)
+        XCTAssertLessThan(shareBody.frame.minY, 220)
         keepShot(app, "share-heart-scroll-top")
         let shareSpark = app.descendants(matching: .any)["workout.sessionReport.shareSpark.bench_press_barbell"]
-        for _ in 0..<4 where !shareSpark.isHittable { app.swipeUp() }
+        for _ in 0..<4 where !shareSpark.isHittable { preview.swipeUp() }
         keepShot(app, "share-heart-scrolled-to-spark")
 
         app.buttons["workout.sessionReport.shareBack"].tap()
@@ -142,7 +147,7 @@ final class SessionReportUITests: XCTestCase {
             ("zh-scroll-top", "zh-Hans", [:], []),
             ("light-scroll-top", "en", ["MASO_TEST_COLOR_SCHEME": "light"], []),
             ("narrow-scroll-top", "en", ["MASO_TEST_NARROW": "1"], []),
-            ("large-scroll-top", "en", [:], ["-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityExtraExtraExtraLarge"])
+            ("large-scroll-top", "en", ["MASO_TEST_LARGE_TYPE": "1"], [])
         ]
         for (name, language, extra, arguments) in cases {
             let app = launch("session-report-clean-player", language: language, extra: extra, moreArguments: arguments)
@@ -155,6 +160,15 @@ final class SessionReportUITests: XCTestCase {
             XCTAssertGreaterThanOrEqual(exit.frame.minX, title.frame.maxX - 1, name)
             XCTAssertGreaterThanOrEqual(info.frame.height, 44, name)
             XCTAssertGreaterThanOrEqual(exit.frame.height, 44, name)
+            if extra["MASO_TEST_LARGE_TYPE"] == "1" {
+                let bench = app.staticTexts["Bench Press (Barbell)"]
+                XCTAssertTrue(bench.waitForExistence(timeout: 5), name)
+                XCTAssertGreaterThan(bench.frame.height, 34, "accessibility3 body line was \(bench.frame.height)")
+                let metrics = XCTAttachment(string: "benchHeight=\(bench.frame.height) titleHeight=\(title.frame.height) infoHeight=\(info.frame.height)")
+                metrics.name = "large-type-metrics"
+                metrics.lifetime = .keepAlways
+                add(metrics)
+            }
             keepShot(app, "report-header-\(name)")
             app.terminate()
         }
