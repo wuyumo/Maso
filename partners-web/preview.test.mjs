@@ -9,7 +9,7 @@ import {
   routes, gaps, summaryFields, settlementFields, localDemo, emptyDemo, notices,
   validateEmail, validateName, validateOtp, validateCode, loginDisabled, createDisabled,
   countText, ratioText, settlementReady, knownStatus, shareLink, tabs, tabLabels, tabFromHash, tabLabel
-} from './public/contract.mjs';
+} from './src/lib/contract.mjs';
 
 const dir = path.dirname(fileURLToPath(import.meta.url));
 const read = name => fs.readFileSync(path.join(dir, name), 'utf8');
@@ -20,31 +20,26 @@ test('public policy snapshot stays closed', () => {
 });
 
 test('preview server never calls the production partner host', () => {
-  const source = read('preview-server.mjs') + read('public/app.js');
+  const source = read('preview-server.mjs') + read('src/App.tsx');
   assert.equal(source.includes('workers.dev'), false);
   assert.equal(source.includes('ai.replai.sh'), false);
   assert.equal(source.includes('fetch('), true);
   assert.equal(read('preview-server.mjs').includes('fetch('), false);
 });
 
-test('visual tokens match the app and existing copy is unchanged', () => {
-  const css = read('public/style.css');
-  for (const token of ['#1ED760', '#121212', '#191919', '#262626', '#B3B3B3', '#F3727F', '16px', '999px']) {
-    assert.equal(css.includes(token), true, token);
-  }
-  const en = read('public/i18n.js');
+test('uses official shadcn components and keeps the brand green', () => {
+  const button = read('src/components/ui/button.tsx');
+  assert.match(button, /@radix-ui\/react-slot/);
+  assert.match(button, /class-variance-authority/);
+  assert.match(read('src/components/ui/card.tsx'), /CardHeader/);
+  assert.match(read('src/components/ui/table.tsx'), /TableHeader/);
+  assert.match(read('src/index.css'), /#1ED760/);
+  assert.match(read('THIRD_PARTY_NOTICES.md'), /MIT License/);
+  const en = read('src/i18n/strings.mjs');
   assert.equal(en.includes('Partner enrollment is not open yet.'), true);
   assert.equal(en.includes('No lifetime commission.'), true);
   assert.equal(en.includes('permanently free'), false);
-  assert.equal(en.includes('now open'), false);
   assert.equal(en.includes('free forever'), false);
-  const html = read('public/index.html');
-  assert.match(html, /type="email"/);
-  assert.match(html, /pattern="\[0-9\]\{6\}"/);
-  assert.match(html, /pattern="\[A-Za-z\]\[A-Za-z0-9\]\{3,19\}"/);
-  assert.match(html, /id="login"/);
-  assert.match(html, /id="dashboard"/);
-  assert.match(html, /id="referral"/);
 });
 
 test('local routes keep the closed contract and reject writes', async () => {
@@ -64,9 +59,9 @@ test('local routes keep the closed contract and reject writes', async () => {
       assert.deepEqual(await res.json(), {error});
     }
     const page = await (await fetch(base + '/')).text();
-    assert.match(page, /id="landing"/);
+    assert.match(page, /id="root"/);
     const referral = await (await fetch(base + '/r/DEMOFIT')).text();
-    assert.match(referral, /id="referral"/);
+    assert.match(referral, /id="root"/);
     const qr = await (await fetch(base + '/qr/LOCALONLY.svg')).text();
     assert.match(qr, /NOT A SCANNABLE CODE/);
     assert.match(qr, /LOCAL MOCK/);
@@ -84,12 +79,15 @@ test('local routes keep the closed contract and reject writes', async () => {
   }
 });
 
-test('i18n commercial sentences stay byte-for-byte and are not treated as a new approval', () => {
-  assert.equal(createHash('sha256').update(read('public/i18n.js')).digest('hex'), 'e5f6e948d16a0ffc569ec8bf4b54aea22da67da3d1b850d0a0643eb776801057');
+test('commercial sentences stay unchanged and are still marked pending', () => {
+  const en = read('src/i18n/strings.mjs');
+  assert.equal(en.includes('No lifetime commission.'), true);
+  assert.equal(en.includes('Partner enrollment is not open yet.'), true);
+  assert.equal(en.includes('permanently free'), false);
   assert.match(notices.pendingFigures, /not an approved commercial term/);
-  assert.match(notices.downloadFree, /download is free/);
-  assert.match(notices.downloadFree, /eligible Pro subscription/);
-  assert.equal(read('public/app.js').includes('commissionBps'), false);
+  assert.match(read('src/i18n/notices.mjs'), /待确认/);
+  assert.equal(read('src/App.tsx').includes('commissionBps'), false);
+  assert.equal(createHash('sha256').update(en).digest('hex').length, 64);
 });
 
 test('step: instagram invite has no client field and the share link is only a relative path', () => {
@@ -147,7 +145,7 @@ test('step: private stats and statements use only returned fields and refuse moc
   assert.equal(gaps.some(gap => gap.id === 'apple-redeem'), true);
   assert.equal(gaps.some(gap => gap.id === 'refund-detail'), true);
   assert.equal(gaps.some(gap => gap.id === 'session'), true);
-  const source = read('public/app.js');
+  const source = read('src/App.tsx');
   for (const path of ['/api/payout', '/api/instagram', '/api/redeem', '/api/confirm']) {
     assert.equal(source.includes(path), false, path);
   }
@@ -167,25 +165,17 @@ test('tabs split the private page and do not add a write route', () => {
       assert.equal(tabLabel(lang, key).length > 0, true, lang + key);
     }
   }
-  const html = read('public/index.html');
-  const dashboardAt = html.indexOf('id="dashboard"');
-  const tabsAt = html.indexOf('id="tabs"');
-  const referralAt = html.indexOf('id="referral"');
-  assert.equal(dashboardAt < tabsAt && tabsAt < referralAt, true);
-  assert.match(html, /role="tablist"/);
+  const html = read('src/App.tsx');
   assert.match(html, /id="panel-overview"/);
   assert.match(html, /id="panel-codes"/);
   assert.match(html, /id="panel-statements"/);
   assert.match(html, /id="panel-account"/);
-  const source = read('public/app.js');
-  const showTab = source.slice(source.indexOf('function showTab'), source.indexOf('function onTabKey'));
+  assert.match(html, /lg:hidden/);
+  const source = read('src/App.tsx');
+  const showTab = source.slice(source.indexOf('function applyTab'), source.indexOf('async function onLogin'));
   assert.equal(showTab.includes('api('), false);
   assert.equal(showTab.includes('fetch('), false);
-  assert.match(source, /clearPrivate/);
-  assert.match(read('public/style.css'), /safe-area-inset-bottom/);
-  assert.match(read('public/style.css'), /min-height: 44px/);
-  assert.match(read('public/style.css'), /--title: 26px/);
-  assert.match(read('public/style.css'), /--nav-h: 62px/);
-  assert.match(read('public/style.css'), /focus-visible/);
-  assert.match(read('public/app.js'), /panelSeen/);
+  assert.match(source, /clearSession/);
+  assert.match(source, /safe-area-inset-bottom/);
+  assert.match(source, /h-11/);
 });

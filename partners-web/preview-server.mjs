@@ -6,8 +6,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const root = path.join(path.dirname(fileURLToPath(import.meta.url)), 'public');
-const types = {'.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.mjs': 'text/javascript; charset=utf-8', '.svg': 'image/svg+xml'};
+const root = path.join(path.dirname(fileURLToPath(import.meta.url)), 'dist');
+const types = {'.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.mjs': 'text/javascript; charset=utf-8', '.svg': 'image/svg+xml', '.woff2': 'font/woff2'};
 
 // Snapshot of the public GET /api/policy response observed 2026-11-13.
 // Flags stay closed. This server does not flip registration or campaign switches.
