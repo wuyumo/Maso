@@ -23,7 +23,7 @@ final class WorkoutProgressReorderTests: XCTestCase {
         XCTAssertNil(WorkoutProgressReorder.move(count: 4, from: 0, toFinalIndex: 4))
     }
 
-    func testGappedVisibleSegmentsMoveInPlanIndexSpace() {
+    func testGappedVisibleSegmentsMoveInPlanIndexSpace() throws {
         // Plan slots 0 and 2 are on the bar. Slot 1 is a step with no playable segments.
         let move = try! XCTUnwrap(WorkoutProgressReorder.planMove(visiblePlanIndices: [0, 2, 3], from: 0, toFinalIndex: 2))
         var items = ["visible-a", "hidden", "visible-b", "visible-c"]
