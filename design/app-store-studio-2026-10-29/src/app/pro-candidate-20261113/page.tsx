@@ -14,6 +14,7 @@ import { DeviceShowcase, STORE_DEVICES, type StoreDevice } from "@/components/ed
 import type { ProjectState } from "@/lib/types";
 import { reviewBatchTargets, runReviewBatch } from "@/lib/candidate-batch";
 import { candidateWatchSource } from "@/lib/candidate51-assets";
+import { CANDIDATE_PLAN_CSS, candidatePlanUnit } from "@/lib/candidate-plan-presentation";
 
 import { CandidatePreviewControls, parsePreviewTarget, targetSearch, fitScale, canExportPage, exportName, exportCaptureOptions, type PreviewTarget as Target, type PreviewDevice as RenderDevice } from "@/components/editor/candidate-preview-controls";
 
@@ -213,7 +214,9 @@ export default function RenderPage() {
     <div style={{width:canvas.w*scale,height:canvas.h*scale,margin:"16px auto"}}>
     <div data-preview-scale={scale} style={{width:canvas.w,height:canvas.h,position:"relative",transform:`scale(${scale})`,transformOrigin:"top left"}}>
     <main id="candidate-poster"
+      data-candidate-plan-device={slide?.id === "plan" && slide.chat && target.device !== "watch" ? "low-angle-split" : undefined}
       style={{
+        "--candidate-plan-unit": candidatePlanUnit(canvas, !!phoneDeck, slide?.chat),
         position: "fixed",
         inset: 0,
         width: canvas.w,
@@ -221,8 +224,9 @@ export default function RenderPage() {
         overflow: "hidden",
         margin: 0,
         background: slide?.inverted ? "#212121" : "#EBECEC",
-      }}
+      } as React.CSSProperties}
     >
+      <style>{CANDIDATE_PLAN_CSS}</style>
       {target.device==="watch" ? <img alt="Watch独立原生演示截图" src={candidateWatchSource(target.locale,target.slide)||`/screenshots/localized/watch/${target.locale}/${target.slide==="watch-exercise"?"exercise-185":"rest-160"}.png`} width={canvas.w} height={canvas.h} style={{display:"block",width:canvas.w,height:canvas.h}}/> : !slide || !phoneDeck ? (
         !slide ? null : (
           <DeviceShowcase slide={slide} device={target.device as StoreDevice} locale={target.locale} />
