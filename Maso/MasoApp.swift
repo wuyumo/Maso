@@ -223,6 +223,9 @@ struct MasoApp: App {
                     await dataStore.refreshStorefrontCountry()
                     await dataStore.refreshPolarEntitlement()
                 }
+                // First-run weight unit. Does not block onboarding; a late result
+                // cannot replace a unit the user already chose.
+                Task { await dataStore.resolveWeightUnitFromIPIfNeeded() }
                 // 冷启动恢复进行中的训练 — iOS 杀后台 (训练 60-90 分钟很常见) 后, 把
                 // active-session.json 里的 session 接回来; 已完成 / 闲置 6h+ 的静默丢弃.
                 // 必须在 pushWatchState() 之前 — 恢复出的训练帧要推给手表, 而不是 idle 帧.

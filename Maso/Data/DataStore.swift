@@ -430,12 +430,16 @@ final class DataStore {
 
     /// 全新安装 (无存档) 的起始数据 — 空 plans/sets, onboardingCompleted=false (UserSettings() 默认).
     /// 没有任何假历史 / 假画像 / 预生成计划; 这些等用户走完引导再由 onboarding 生成.
-    static func freshInstall() -> DataStore {
-        DataStore(
+    static func freshInstall(deviceCountry: String? = Locale.current.region?.identifier) -> DataStore {
+        var settings = UserSettings() // onboardingCompleted=false; gender/age/weight=nil
+        let provisional = WeightUnitDefaulting.provisional(deviceCountry: deviceCountry)
+        settings.weightUnit = provisional.unit
+        settings.weightUnitOrigin = provisional.origin.rawValue
+        return DataStore(
             exercises: ExerciseLibrary.all,
             plans: [],
             sets: [],
-            settings: UserSettings()   // onboardingCompleted=false; gender/age/weight=nil; wantStrengthen=[]
+            settings: settings
         )
     }
 
@@ -545,7 +549,8 @@ final class DataStore {
             gender: .male,
             age: 30,
             weight: 75,
-            proSubscription: nil
+            proSubscription: nil,
+            weightUnitOrigin: nil
         )
         // sample sets 先生成 (planId 是硬编码字符串, 不依赖最终 plan 数组),
         // 再用共享 helper 生成 settings-aware + LRU-backfilled 的推荐 plan.

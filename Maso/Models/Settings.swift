@@ -153,6 +153,12 @@ enum MasoFlags {
 
 enum WeightUnit: String, Codable, Sendable { case kg, lb }
 
+/// Why the current display unit is what it is. Missing on profiles saved before
+/// this field means the stored unit is already theirs and must not be replaced.
+enum WeightUnitDefaultOrigin: String, Codable, Sendable {
+    case pending, ip, device, manual
+}
+
 extension WeightUnit {
     /// 显示用单位标签.
     var label: String { self == .kg ? "kg" : "lb" }
@@ -237,6 +243,8 @@ struct UserSettings: Codable, Sendable {
     var dietPreferences: DietPreferences? = nil
     var dailyDietPlan: DailyDietPlan? = nil
     var weightUnit: WeightUnit = .kg
+    /// New installs start pending. A missing key decodes as nil and stays locked.
+    var weightUnitOrigin: String? = WeightUnitDefaultOrigin.pending.rawValue
     /// Per-exercise inputs; legacy values and insertion order remain stored for compatibility.
     var exerciseWeightInputs: [String: Double]? = nil
     var loadProgression: LoadProgressionPreferences? = nil
