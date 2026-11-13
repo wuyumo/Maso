@@ -68,5 +68,97 @@
     "OnlyacceptedImagesexactSHA,size,locale,sloteligible",
     "Afteruploadreadbackeveryassetdelivery/state,sizeandorderedplacement;retainreceipt",
     "Stoponmissingauth/tool,403,blockedactionorwrongtarget;donotusecookies/internalAPIworkarounds"
+  ],
+  "candidateImagesPendingParentFinalAcceptance": [
+    {
+      "locale": "zh",
+      "device": "watch",
+      "dimensions": [
+        416,
+        496
+      ],
+      "name": "01-exercise-185.png",
+      "path": "design/app-store-studio-2026-10-29/exports/candidates/pro-20261113/ios/watch/416x496/zh/01-exercise-185.png",
+      "sha256": "3eda998d2b78bc4f4d677676210b9a516b4cb0d89e1ec88bf22f803371d83871",
+      "mode": "RGB",
+      "provenance": "Exact copy of authentic native Watch output; raw standalone screenshot, not rendered poster",
+      "pixelsEdited": false,
+      "parentFinalUploadAcceptance": false
+    },
+    {
+      "locale": "zh",
+      "device": "watch",
+      "dimensions": [
+        416,
+        496
+      ],
+      "name": "02-rest-160.png",
+      "path": "design/app-store-studio-2026-10-29/exports/candidates/pro-20261113/ios/watch/416x496/zh/02-rest-160.png",
+      "sha256": "100224b3d772b0fc65c65460b331268d9657eb1612710c3ca15a2446d76f0ff8",
+      "mode": "RGB",
+      "provenance": "Exact copy of authentic native Watch output; raw standalone screenshot, not rendered poster",
+      "pixelsEdited": false,
+      "parentFinalUploadAcceptance": false
+    },
+    {
+      "locale": "en",
+      "device": "watch",
+      "dimensions": [
+        416,
+        496
+      ],
+      "name": "01-exercise-185.png",
+      "path": "design/app-store-studio-2026-10-29/exports/candidates/pro-20261113/ios/watch/416x496/en/01-exercise-185.png",
+      "sha256": "fd69b76aee4ad6b44ff08ca78b8348bd9f9995c96c534d928448c65ad13e13d3",
+      "mode": "RGB",
+      "provenance": "Exact copy of authentic native Watch output; raw standalone screenshot, not rendered poster",
+      "pixelsEdited": false,
+      "parentFinalUploadAcceptance": false
+    },
+    {
+      "locale": "en",
+      "device": "watch",
+      "dimensions": [
+        416,
+        496
+      ],
+      "name": "02-rest-160.png",
+      "path": "design/app-store-studio-2026-10-29/exports/candidates/pro-20261113/ios/watch/416x496/en/02-rest-160.png",
+      "sha256": "47f8ed657d0b7876219db61fe8c58792d4c13f31192eb40585a3302e2b893aea",
+      "mode": "RGB",
+      "provenance": "Exact copy of authentic native Watch output; raw standalone screenshot, not rendered poster",
+      "pixelsEdited": false,
+      "parentFinalUploadAcceptance": false
+    },
+    {
+      "locale": "zh-Hant",
+      "device": "watch",
+      "dimensions": [
+        416,
+        496
+      ],
+      "name": "01-exercise-185.png",
+      "path": "design/app-store-studio-2026-10-29/exports/candidates/pro-20261113/ios/watch/416x496/zh-Hant/01-exercise-185.png",
+      "sha256": "1143b4c0c35f345a422c0a79d744cf73ca07ff088201adc25725b59c0660d14a",
+      "mode": "RGB",
+      "provenance": "Exact copy of authentic native Watch output; raw standalone screenshot, not rendered poster",
+      "pixelsEdited": false,
+      "parentFinalUploadAcceptance": false
+    },
+    {
+      "locale": "zh-Hant",
+      "device": "watch",
+      "dimensions": [
+        416,
+        496
+      ],
+      "name": "02-rest-160.png",
+      "path": "design/app-store-studio-2026-10-29/exports/candidates/pro-20261113/ios/watch/416x496/zh-Hant/02-rest-160.png",
+      "sha256": "6e21f57095bd8fc50d99e995566a2f84e5d8f6fcfb99dfbe7dfbdd32d487e2ee",
+      "mode": "RGB",
+      "provenance": "Exact copy of authentic native Watch output; raw standalone screenshot, not rendered poster",
+      "pixelsEdited": false,
+      "parentFinalUploadAcceptance": false
+    }
   ]
 }
