@@ -1111,18 +1111,10 @@
 "Already up to date" = "Déjà à jour";
 "Smart progression" = "Progression intelligente";
 "Earn the next 2.5 kg — weight suggestions from your logged sets." = "Obtenez les 2,5 kg suivants — suggestions de poids de vos ensembles enregistrés.";
-"Secure checkout on the web via Polar. %@ / %@, renews until cancelled — manage or cancel anytime on the Polar page." = "Commande sécurisée sur le web via Polar. %@ / %@, renouvelle jusqu'à annulation — gérer ou annuler à tout moment sur la page Polar.";
-"Enter code" = "Entrez le code";
-"Enter your activation code" = "Saisissez votre code d'activation";
-"After buying on the web, your code was emailed to you (and shown on the confirmation page). Paste it here to unlock Pro on this device." = "Après avoir acheté sur le web, votre code vous a été envoyé par e-mail (et affiché sur la page de confirmation).";
-"Activate" = "Activer";
-"That code isn't active yet. Double-check it, or try again in a moment." = "Ce code n'est pas encore actif.";
-"Couldn't verify — check your connection and try again." = "Impossible de vérifier — vérifiez votre connexion et essayez à nouveau.";
 "You're Pro now — thanks for supporting Masso." = "Vous êtes Pro maintenant — merci de soutenir Masso.";
 "That code isn't active yet. Check the email from your purchase, or try again in a moment." = "Ce code n'est pas encore actif. Vérifiez l'e-mail de votre achat, ou essayez à nouveau en un instant.";
 "Couldn't verify your code — check your connection and try again." = "Impossible de vérifier votre code — vérifiez votre connexion et essayez à nouveau.";
 "ACTIVE" = "ACTIF";
-"Thanks for supporting Masso. Manage or cancel on the Polar page." = "Merci de soutenir Masso. Gérer ou annuler sur la page Polar.";
 "Scan to get this routine" = "Scannez pour obtenir le même programme";
 "%lld days a week" = "%lld jours par semaine";
 "YOUR TRAINING" = "VOTRE FORMATION";
@@ -1900,7 +1892,6 @@
 
 "Subscription options are unavailable right now" = "Les abonnements sont indisponibles pour le moment";
 
-"Restore web purchase" = "Restaurer un achat web";
 
 "Basic workout logging and history stay free" = "Le suivi de base et l’historique restent gratuits";
 

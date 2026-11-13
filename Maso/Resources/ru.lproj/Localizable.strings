@@ -1111,18 +1111,10 @@
 "Already up to date" = "Уже на сегодняшний день";
 "Smart progression" = "Умный прогресс";
 "Earn the next 2.5 kg — weight suggestions from your logged sets." = "Зарабатывайте следующие 2,5 кг — вес предложения из ваших зарегистрированных наборов.";
-"Secure checkout on the web via Polar. %@ / %@, renews until cancelled — manage or cancel anytime on the Polar page." = "Безопасная проверка в Интернете через Polar. %@ / %@, обновляется до отмены — управляйте или отменяйте в любое время на странице Polar.";
-"Enter code" = "Введите код";
-"Enter your activation code" = "Введите свой код активации";
-"After buying on the web, your code was emailed to you (and shown on the confirmation page). Paste it here to unlock Pro on this device." = "После покупки в Интернете ваш код был отправлен вам по электронной почте (и показан на странице подтверждения). Вставьте его здесь, чтобы разблокировать Pro на этом устройстве.";
-"Activate" = "активировать";
-"That code isn't active yet. Double-check it, or try again in a moment." = "Этот код еще не активен, дважды проверьте его или попробуйте еще раз.";
-"Couldn't verify — check your connection and try again." = "Не удалось проверить — проверьте соединение и попробуйте еще раз.";
 "You're Pro now — thanks for supporting Masso." = "Теперь вы Pro — спасибо за поддержку Masso.";
 "That code isn't active yet. Check the email from your purchase, or try again in a moment." = "Этот код еще не активен. Проверьте электронную почту с вашей покупки или попробуйте еще раз.";
 "Couldn't verify your code — check your connection and try again." = "Не удалось проверить код — проверьте соединение и попробуйте еще раз.";
 "ACTIVE" = "активный";
-"Thanks for supporting Masso. Manage or cancel on the Polar page." = "Спасибо за поддержку Masso. Управляйте или отменяйте на странице Polar.";
 "Scan to get this routine" = "Сканируйте, чтобы получить такой же план";
 "%lld days a week" = "%lld дней в неделю";
 "YOUR TRAINING" = "Твоё обучение";
@@ -1900,7 +1892,6 @@
 
 "Subscription options are unavailable right now" = "Подписки временно недоступны";
 
-"Restore web purchase" = "Восстановить покупку на сайте";
 
 "Basic workout logging and history stay free" = "Базовый учёт тренировок и история остаются бесплатными";
 

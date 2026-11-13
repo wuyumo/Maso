@@ -38,7 +38,7 @@ Camera and photo-library access are requested when you choose to add an image. A
 
 ### Purchases
 
-New subscriptions in version 3.0 use Apple In-App Purchase. Apple processes payment and provides signed entitlement information to restore and validate access. We do not receive your card or bank details. Earlier Polar subscribers can restore their existing licence; the licence key is sent through our backend to Polar for validation. Polar handles information provided during its checkout under [its privacy policy](https://polar.sh/legal/privacy).
+New subscriptions in version 3.0 use Apple In-App Purchase. Apple processes payment and provides signed entitlement information to restore and validate access. We do not receive your card or bank details. Restore Purchase on the upgrade screen restores Apple purchases for the signed-in Apple ID. The app does not show a web-purchase restore form. A Polar licence already saved on the device can still be rechecked through our backend. Polar handles information provided during its original checkout under [its privacy policy](https://polar.sh/legal/privacy).
 
 ### Optional usage analytics
 
@@ -96,7 +96,7 @@ Masso 将训练计划、组数、进步、餐食、所选照片、睡眠汇总�
 
 ### 购买
 
-3.0 版的新订阅通过 Apple 内购完成。Apple 处理付款并提供签名权益信息，用于恢复和验证权限；我们不会收到银行卡或银行账户资料。原 Polar 订阅用户可恢复原授权，授权码通过后端发送给 Polar 验证。Polar 按[其隐私政策](https://polar.sh/legal/privacy)处理结账资料。
+3.0 版的新订阅通过 Apple 内购完成。Apple 处理付款并提供签名权益信息，用于恢复和验证权限；我们不会收到银行卡或银行账户资料。升级页的「恢复购买」只恢复当前 Apple ID 的 Apple 购买。App 不提供网页购买恢复表单。已经保存在本机的 Polar 授权仍可通过我们的后端复核。Polar 按[其隐私政策](https://polar.sh/legal/privacy)处理其原始结账资料。
 
 ### 可关闭的使用统计
 

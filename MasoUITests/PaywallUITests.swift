@@ -420,7 +420,11 @@ final class PaywallUITests: XCTestCase {
             XCTAssertEqual(app.buttons.matching(identifier: "paywall.restore").count, 1)
             XCTAssertEqual(restore.label, try XCTUnwrap(labels[language]))
             XCTAssertFalse(app.buttons["paywall.more"].exists)
-            XCTAssertFalse(app.buttons[try XCTUnwrap(webLabels[language])].exists)
+            let webLabel = try XCTUnwrap(webLabels[language])
+            XCTAssertFalse(app.buttons[webLabel].exists)
+            XCTAssertFalse(app.staticTexts[webLabel].exists)
+            XCTAssertFalse(app.staticTexts["Enter your activation code"].exists)
+            XCTAssertFalse(app.textFields["XXXX-XXXX-XXXX"].exists)
             if language == "en" { XCTAssertFalse(app.buttons["Restore Purchases"].exists) }
             let bar = app.navigationBars.firstMatch
             XCTAssertTrue(bar.exists)
