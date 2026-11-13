@@ -23,7 +23,7 @@ No. Masso is offline-first — your workouts, plans, and history live on your de
 When you generate a routine, Masso sends your training preferences (goal, days/week, equipment, recent history) to our backend, which relays them to a language model. No account or personal identity is attached. See our [Privacy Policy](./privacy-policy.html).
 
 **How do I restore my Pro subscription?**
-In the app, open the upgrade screen and tap **Restore Purchases**. Purchases are tied to your Apple ID.
+In the app, open the upgrade screen and tap **Restore Purchase** at the top right. Purchases are tied to your Apple ID. There is no separate web-purchase restore form.
 
 **How do I cancel my subscription?**
 Subscriptions are managed by Apple: iPhone **Settings → [your name] → Subscriptions → Masso → Cancel**.
@@ -51,7 +51,7 @@ All data is stored locally. Deleting the app removes everything from your device
 点生成时,Masso 把你的训练偏好(目标、每周天数、器械、近期历史)发到后端,再转给语言模型。不绑定任何账号或个人身份。详见[隐私政策](./privacy-policy.html)。
 
 **怎么恢复 Pro 订阅?**
-在 App 里打开升级页,点**恢复购买**。购买跟你的 Apple ID 绑定。
+在 App 里打开升级页,点右上角**恢复购买**。购买跟你的 Apple ID 绑定。没有单独的网页购买恢复表单。
 
 **怎么取消订阅?**
 订阅由 Apple 管理:iPhone **设置 → 点你的名字 → 订阅 → Masso → 取消**。
