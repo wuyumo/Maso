@@ -77,3 +77,8 @@ Replaces78%/860px approximation ONLY in A plan track. Gap explicitly reuses22×c
 ## t373 A-only 1.8-card refinement — 2026-11-13T16:44:59.807752+08:00
 
 Only A card width denominator changes1.5→1.8, same gap22×unit, same track padding0/border-box/min-width guards. One full card + one gap +80% next card fill actual track viewport; no font/device/B/otherpage/pixel/resource change. Existing RTL mirroring and photo physical order unchanged. All12suites pass including288geometry cases;468protectedSHA unchanged. Existing8802zh/en/arA HTTP200 and new1.8compiled code served. No simulator actions/acceptance/upload. Actual A/BposterPNGfiles found: 0; no browser visual check. Refresh existing A preview; original export flow unchanged. Local evidence: `t373-stage.local.json`.
+
+
+## t374 A-only 2.1-card refinement — 2026-11-13T16:46:17.403999+08:00
+
+Same available-width-minus-visible-gaps algorithm, target2.1: card=(V−2G)/2.1, compensating TWO existing gaps now that two full cards and10%third are shown. Gap value22×unit and all padding/fonts/device/B/otherpage settings unchanged; no new transforms. Existing RTL mirrors exposure; photos unchanged. All12suites pass including288geometry cases;468protectedhashes unchanged. Original8802zh/en/arA HTTP200 and compiled2.1formula verified. Actual A/BposterPNGs found: 0; no browser execution/visual验收, simulator work, acceptedImages change or upload. Local receipt `t374-stage.local.json`.
