@@ -138,6 +138,7 @@ enum ExerciseWeightReference {
 
 }
 
+/// Superseded for product fill by FullBodyLoadEstimate. Kept so older direct checks still describe the previous three-lift table.
 /// Product heuristics, not measured maximums or research-backed individual ratios.
 /// A completed set is required. Suggestions themselves never enter this evidence input.
 enum RoughExerciseLoadReference {
@@ -172,6 +173,7 @@ enum RoughExerciseLoadReference {
     }
 }
 
+/// Retained for old snapshots and direct checks. Empty targets now use FullBodyLoadEstimate.
 /// Narrow, auditable population priors. Formula output is 6RM, not a working load.
 /// Wong et al. 2013, JSSM 12:38–43, PMID 24149723; Table 2 and Methods.
 /// Age/load windows, 30-day expiry, target 6–12, 75% starting margin and rounding

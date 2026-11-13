@@ -606,6 +606,7 @@ final class TrainingSessionStore {
             ])
             let observedAt = clock()
             let observedTiming = s.setTimings?[timingKey(for: cur)]
+            let sourceStep = plan?.steps.first { $0.id == cur.stepId }
             let rec = SetRecord(
                 id: UUID().uuidString,
                 exerciseId: ex.id,
@@ -629,7 +630,8 @@ final class TrainingSessionStore {
                 stepID: cur.stepId,
                 setNumber: setN,
                 activeIntervals: observedTiming?.completeCoverage == true ? observedTiming?.measuredIntervals(at: observedAt) : nil,
-                restBeforeSeconds: s.priorRestSeconds
+                restBeforeSeconds: s.priorRestSeconds,
+                manualLoad: FullBodyLoadEstimate.recordedLoadIsManual(step: sourceStep, weight: weight)
             )
             undo?.recordID = rec.id
             undo?.completedSet = CompletedSet(stepId: cur.stepId, setN: setN)
