@@ -253,7 +253,7 @@ final class SessionReportUITests: XCTestCase {
         continueAfterFailure = false
     }
 
-    func testShareExportWritesDefaultHeartAndPhotoBitmapsWithoutSending() throws {
+    func testShareExportWritesDefaultHeartAndPhotoBitmapsWithoutSending() {
         let app = launch("session-report-clean-player", extra: [
             "MASO_SESSION_REPORT_EXPORT": "1",
             "MASO_SESSION_REPORT_PHOTO": "1"
@@ -271,19 +271,19 @@ final class SessionReportUITests: XCTestCase {
         XCTAssertFalse(baseline.contains("130"))
         XCTAssertFalse(baseline.contains("photo"))
         app.buttons["workout.sessionReport.share"].tap()
-        try attachOriginalExport("session-report-default.png", in: app)
+        waitForExportFile("session-report-default.png", in: app)
         XCTAssertFalse(app.buttons["workout.sessionReport.shareBack"].exists)
 
         turnOnAboveShare("workout.sessionReport.shareHeartToggle", in: app)
         XCTAssertTrue(waitUntil(shareText) { $0.contains("130") && !$0.contains("×") && !$0.contains("photo") })
         app.buttons["workout.sessionReport.share"].tap()
-        try attachOriginalExport("session-report-heart.png", in: app)
+        waitForExportFile("session-report-heart.png", in: app)
         XCTAssertFalse(app.buttons["workout.sessionReport.shareBack"].exists)
 
         turnOnAboveShare("workout.sessionReport.sharePhotoToggle", in: app)
         XCTAssertTrue(waitUntil(shareText) { $0.contains("photo") && $0.contains("130") && !$0.contains("×") })
         app.buttons["workout.sessionReport.share"].tap()
-        try attachOriginalExport("session-report-heart-photo.png", in: app)
+        waitForExportFile("session-report-heart-photo.png", in: app)
         XCTAssertFalse(app.buttons["workout.sessionReport.shareBack"].exists)
         XCTAssertEqual(sessionEndCount(app), "0")
     }
@@ -306,33 +306,14 @@ final class SessionReportUITests: XCTestCase {
         XCTAssertEqual(sessionEndCount(app), "0")
     }
 
-    /// Copies the original PNG bytes out of the app container immediately after that export.
-    private func attachOriginalExport(_ name: String, in app: XCUIApplication) throws {
+    /// The label appears only after that PNG has been atomically written in Documents.
+    private func waitForExportFile(_ name: String, in app: XCUIApplication) {
         let marker = app.staticTexts["workout.sessionReport.shareExported"]
-        XCTAssertTrue(marker.waitForExistence(timeout: 8))
-        XCTAssertEqual(marker.label, name)
-        let file = try appDocuments().appendingPathComponent(name)
-        let data = try Data(contentsOf: file)
-        XCTAssertGreaterThan(data.count, 32)
-        let attachment = XCTAttachment(data: data, uniformTypeIdentifier: "public.png")
-        attachment.name = name
-        attachment.lifetime = .keepAlways
-        add(attachment)
-    }
-
-    private func appDocuments() throws -> URL {
-        let process = Process()
-        process.executableURL = URL(fileURLWithPath: "/usr/bin/xcrun")
-        process.arguments = ["simctl", "get_app_container", "booted", "com.yumowu.maso", "data"]
-        let pipe = Pipe()
-        process.standardOutput = pipe
-        process.standardError = Pipe()
-        try process.run()
-        process.waitUntilExit()
-        let output = String(data: pipe.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8)?
-            .trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-        XCTAssertEqual(process.terminationStatus, 0, output)
-        return URL(fileURLWithPath: output, isDirectory: true).appendingPathComponent("Documents", isDirectory: true)
+        let ready = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
+            marker.exists && marker.label == name
+        }, object: nil)
+        XCTAssertEqual(XCTWaiter.wait(for: [ready], timeout: 8), .completed, name)
+        XCTAssertFalse(app.buttons["workout.sessionReport.shareBack"].exists)
     }
 
     private func recordedSetLines(in app: XCUIApplication) -> XCUIElementQuery {

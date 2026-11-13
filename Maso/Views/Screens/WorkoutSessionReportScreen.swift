@@ -460,6 +460,7 @@ struct WorkoutSessionReportScreen: View {
         )
     }
 
+    #if DEBUG
     /// Distinct Documents names so the three boundary exports do not overwrite each other.
     static func exportFileName(_ selection: SessionMuscleReport.ShareContent) -> String {
         if selection.includesPhoto { return "session-report-heart-photo.png" }
@@ -467,6 +468,7 @@ struct WorkoutSessionReportScreen: View {
         if selection.muscles.contains(where: { !$0.exercises.isEmpty }) { return "session-report-detail.png" }
         return "session-report-default.png"
     }
+    #endif
 
     private func export(_ report: SessionMuscleReport) {
         let selection = shareSelection(report)
@@ -477,9 +479,11 @@ struct WorkoutSessionReportScreen: View {
            let directory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first,
            let data = image.pngData() {
             let name = Self.exportFileName(selection)
-            try? data.write(to: directory.appendingPathComponent(name))
-            exportName = name
-            exported = true
+            let url = directory.appendingPathComponent(name)
+            if (try? data.write(to: url, options: .atomic)) != nil {
+                exportName = name
+                exported = true
+            }
             return
         }
         #endif
