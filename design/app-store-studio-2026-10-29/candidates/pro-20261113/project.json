@@ -77,18 +77,18 @@
           {
             "id": "description",
             "text": {
-              "zh": "也听你要的天数、时长和重点。 部分 AI 服务需 Pro。",
-              "zh-Hant": "也聽你要的天數、時長和重點。 部分 AI 服務需 Pro。",
-              "en": "Also the days, length, and focus you want. Some AI services require Pro.",
-              "ja": "日数・時間・重点も、希望どおり。 一部のAI機能にはProが必要です。",
-              "ko": "일수, 시간, 중점도 원하는 대로. 일부 AI 기능은 Pro가 필요합니다.",
-              "es": "También los días, la duración y el foco. Algunos servicios de IA requieren Pro.",
-              "fr": "Aussi les jours, la durée et le focus. Certains services IA nécessitent Pro.",
-              "de": "Auch Tage, Dauer und Fokus. Einige KI-Dienste erfordern Pro.",
-              "it": "Anche i giorni, la durata e il focus. Alcuni servizi IA richiedono Pro.",
-              "pt-BR": "Também os dias, a duração e o foco. Alguns serviços de IA exigem Pro.",
-              "ru": "Ещё дни, длительность и акцент. Для части ИИ-сервисов нужен Pro.",
-              "ar": "وأيضًا الأيام والمدة والتركيز. تتطلب بعض خدمات الذكاء الاصطناعي ⁦Pro⁩."
+              "zh": "也听你要的天数、时长和重点。",
+              "zh-Hant": "也聽你要的天數、時長和重點。",
+              "en": "Also the days, length, and focus you want.",
+              "ja": "日数・時間・重点も、希望どおり。",
+              "ko": "일수, 시간, 중점도 원하는 대로.",
+              "es": "También los días, la duración y el foco.",
+              "fr": "Aussi les jours, la durée et le focus.",
+              "de": "Auch Tage, Dauer und Fokus.",
+              "it": "Anche i giorni, la durata e il focus.",
+              "pt-BR": "Também os dias, a duração e o foco.",
+              "ru": "Ещё дни, длительность и акцент.",
+              "ar": "وأيضًا الأيام والمدة والتركيز."
             },
             "transform": {
               "x": 96,
