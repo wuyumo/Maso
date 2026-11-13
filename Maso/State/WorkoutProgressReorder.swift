@@ -64,6 +64,24 @@ enum WorkoutProgressReorder {
         return Move(source: IndexSet(integer: origin), destination: destination)
     }
 
+    /// Left edge of a segment inside the bar. The long-press recognizer sits on that
+    /// segment's button, so its points are button-local and need this origin added.
+    /// Right-to-left still uses a left-origin x; `slotIndex` flips it afterwards.
+    static func segmentOrigin(index: Int, count: Int, width: CGFloat, spacing: CGFloat = spacing, rightToLeft: Bool) -> CGFloat {
+        guard count > 0, width > 0 else { return 0 }
+        let slot = max(0, (width - spacing * CGFloat(max(0, count - 1))) / CGFloat(count))
+        let pitch = slot + spacing
+        let clamped = min(max(0, index), count - 1)
+        if rightToLeft { return width - slot - CGFloat(clamped) * pitch }
+        return CGFloat(clamped) * pitch
+    }
+
+    static func barPoint(segmentIndex: Int, local: CGPoint, count: Int, width: CGFloat, spacing: CGFloat = spacing, rightToLeft: Bool) -> CGPoint {
+        CGPoint(
+            x: local.x + segmentOrigin(index: segmentIndex, count: count, width: width, spacing: spacing, rightToLeft: rightToLeft),
+            y: local.y)
+    }
+
     static func slotIndex(x: CGFloat, count: Int, width: CGFloat, spacing: CGFloat = spacing, rightToLeft: Bool) -> Int {
         guard count > 0, width > 0 else { return 0 }
         let logicalX = rightToLeft ? width - x : x
@@ -199,8 +217,8 @@ struct WorkoutProgressReorderGesture: UIGestureRecognizerRepresentable {
         }
     }
 
-    /// Xcode 27's representable requires this converter argument. The recognizer
-    /// still reports points in its own view, which is the progress bar.
+    /// Xcode 27's representable requires this converter argument. Points stay in the
+    /// segment button that owns the recognizer. The bar adds `segmentOrigin`.
     func makeCoordinator(converter _: UIGestureRecognizerRepresentableCoordinateSpaceConverter) -> Coordinator {
         Coordinator(onBegan: onBegan, onChanged: onChanged, onEnded: onEnded)
     }
@@ -230,7 +248,7 @@ struct WorkoutProgressReorderGesture: UIGestureRecognizerRepresentable {
     }
 
     func handleUIGestureRecognizerAction(_ recognizer: OriginLongPressRecognizer, context: Context) {
-        let current = recognizer.location(in: recognizer.view?.window)
+        let current = recognizer.location(in: recognizer.view)
         switch recognizer.state {
         case .began:
             context.coordinator.armed = true
@@ -260,7 +278,7 @@ final class OriginLongPressRecognizer: UILongPressGestureRecognizer {
     private(set) var origin: CGPoint?
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
         super.touchesBegan(touches, with: event)
-        origin = touches.first?.location(in: view?.window)
+        origin = touches.first?.location(in: view)
     }
     override func reset() {
         super.reset()

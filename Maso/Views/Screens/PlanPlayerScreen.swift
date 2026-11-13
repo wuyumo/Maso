@@ -2397,7 +2397,6 @@ private struct WorkoutExerciseProgressBar: View {
 
     private final class DragSession {
         var value: Drag?
-        var frame: CGRect = .zero
     }
 
     private struct Drag {
@@ -2421,13 +2420,6 @@ private struct WorkoutExerciseProgressBar: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .contentShape(Rectangle())
-            .background {
-                GeometryReader { proxy in
-                    Color.clear
-                        .onAppear { dragSession.frame = proxy.frame(in: .global) }
-                        .onChange(of: proxy.size) { _, _ in dragSession.frame = proxy.frame(in: .global) }
-                }
-            }
         }
         .frame(height: 44)
         .animation(nil, value: drag?.location.x)
@@ -2488,25 +2480,26 @@ private struct WorkoutExerciseProgressBar: View {
         .modifier(ProgressReorderActions(canMoveEarlier: index > 0, canMoveLater: index + 1 < steps.count, earlier: { move(from: index, toFinalIndex: index - 1) }, later: { move(from: index, toFinalIndex: index + 1) }))
     }
 
-    private func barLocal(_ windowPoint: CGPoint) -> CGPoint {
-        let frame = dragSession.frame
-        return CGPoint(x: windowPoint.x - frame.minX, y: windowPoint.y - frame.minY)
+    private func barPoint(_ buttonPoint: CGPoint, segmentIndex: Int, width: CGFloat, rightToLeft: Bool) -> CGPoint {
+        WorkoutProgressReorder.barPoint(
+            segmentIndex: segmentIndex, local: buttonPoint, count: steps.count,
+            width: width, rightToLeft: rightToLeft)
     }
 
     private func reorderGesture(index: Int, barSize: CGSize, rightToLeft: Bool) -> WorkoutProgressReorderGesture {
         WorkoutProgressReorderGesture(
             enabled: steps.count > 1,
-            onBegan: { windowPoint in
-                let local = barLocal(windowPoint)
+            onBegan: { buttonPoint in
+                let local = barPoint(buttonPoint, segmentIndex: index, width: barSize.width, rightToLeft: rightToLeft)
                 let value = Drag(sourceIndex: index, origin: local, location: local, finalIndex: index, inside: true)
                 dragSession.value = value
                 drag = value
                 suppressTapUntil = Date().addingTimeInterval(30)
                 Haptics.tap()
             },
-            onChanged: { windowPoint in
+            onChanged: { buttonPoint in
                 guard var value = dragSession.value else { return }
-                let local = barLocal(windowPoint)
+                let local = barPoint(buttonPoint, segmentIndex: index, width: barSize.width, rightToLeft: rightToLeft)
                 value.location = local
                 if let landing = WorkoutProgressReorder.landingIndex(
                     count: steps.count, location: local, size: barSize, rightToLeft: rightToLeft) {
@@ -2520,13 +2513,13 @@ private struct WorkoutExerciseProgressBar: View {
                 dragSession.value = value
                 drag = value
             },
-            onEnded: { windowPoint, cancelled in
+            onEnded: { buttonPoint, cancelled in
                 let finished = dragSession.value
                 dragSession.value = nil
                 drag = nil
                 suppressTapUntil = Date().addingTimeInterval(0.45)
                 guard let finished, !cancelled else { return }
-                let local = barLocal(windowPoint)
+                let local = barPoint(buttonPoint, segmentIndex: index, width: barSize.width, rightToLeft: rightToLeft)
                 guard let landing = WorkoutProgressReorder.landingIndex(
                     count: steps.count, location: local, size: barSize, rightToLeft: rightToLeft),
                       let move = WorkoutProgressReorder.planMove(
@@ -4281,14 +4274,88 @@ struct WorkoutHeartRateButton: View {
     }
 }
 
+/// Editable reminder-limit text. A recommendation is special only until the user changes it.
+/// After that, every value is taken as typed, including empty and the recommendation's own digits.
+struct WorkoutHeartLimitDraft: Equatable {
+    var text: String
+    /// The recommendation currently shown, before any edit. Nil for a saved custom value.
+    private var untouchedRecommendation: String?
+    /// Digits that may still be glued to `text` by the field after the first replacement.
+    private var echoedRecommendation: String?
+
+    var usesRecommendation: Bool { untouchedRecommendation != nil }
+
+    static func showingRecommendation(_ text: String) -> WorkoutHeartLimitDraft {
+        WorkoutHeartLimitDraft(text: text, untouchedRecommendation: text.isEmpty ? nil : text, echoedRecommendation: nil)
+    }
+
+    static func showingCustom(_ text: String) -> WorkoutHeartLimitDraft {
+        WorkoutHeartLimitDraft(text: text, untouchedRecommendation: nil, echoedRecommendation: nil)
+    }
+
+    mutating func replace(_ newValue: String) {
+        if let seed = untouchedRecommendation, !seed.isEmpty {
+            if newValue == seed { return }
+            if let typed = Self.insertedDigits(around: seed, in: newValue) {
+                text = typed
+                untouchedRecommendation = nil
+                echoedRecommendation = seed
+                return
+            }
+            text = newValue
+            untouchedRecommendation = nil
+            echoedRecommendation = nil
+            return
+        }
+        if let seed = echoedRecommendation, !text.isEmpty, text != seed,
+           newValue == text + seed || newValue == seed + text {
+            return
+        }
+        echoedRecommendation = nil
+        text = newValue
+    }
+
+    mutating func reset(to recommendation: String) {
+        text = recommendation
+        untouchedRecommendation = recommendation.isEmpty ? nil : recommendation
+        echoedRecommendation = nil
+    }
+
+    /// Digits added at one end of an untouched recommendation, leaving that recommendation intact.
+    private static func insertedDigits(around seed: String, in value: String) -> String? {
+        guard !seed.isEmpty, value.count > seed.count else { return nil }
+        let extra: Substring
+        if value.hasPrefix(seed) {
+            extra = value.dropFirst(seed.count)
+        } else if value.hasSuffix(seed) {
+            extra = value.dropLast(seed.count)
+        } else {
+            return nil
+        }
+        guard !extra.isEmpty, extra.allSatisfy(\.isNumber) else { return nil }
+        return String(extra)
+    }
+}
+
+/// Same 40...240 acceptance the heart-rate sheet uses before it stores a custom limit.
+enum WorkoutHeartLimitValidation {
+    static func acceptedBPM(_ text: String, locale: Locale) -> Int? {
+        let formatter = NumberFormatter()
+        formatter.locale = locale
+        formatter.numberStyle = .decimal
+        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard trimmed.allSatisfy({ $0.wholeNumberValue != nil }),
+              let value = formatter.number(from: trimmed)?.intValue,
+              (40...240).contains(value) else { return nil }
+        return value
+    }
+}
+
 struct WorkoutHeartRateSettingsSheet: View {
     @Environment(DataStore.self) private var data
     @Environment(TrainingSessionStore.self) private var store
     @Environment(\.dismiss) private var dismiss
-    @State private var limitText = ""
-    /// The recommendation text still sitting in the field. Kept until typing no longer wraps it.
-    @State private var recommendationSeed = ""
-    @State private var usesRecommendation = true
+    @State private var draft = WorkoutHeartLimitDraft.showingCustom("")
     @State private var showCard = false
     @State private var heartAssist = false
     @State private var errorText: String?
@@ -4352,34 +4419,16 @@ struct WorkoutHeartRateSettingsSheet: View {
                     HStack {
                         Text("Reminder limit")
                         Spacer()
-                        TextField("bpm", text: Binding(get: { limitText }, set: { newValue in
-                            let seed = recommendationSeed
-                            if !seed.isEmpty, newValue.count > seed.count, newValue.hasPrefix(seed) {
-                                limitText = String(newValue.dropFirst(seed.count))
-                                usesRecommendation = false
-                                return
-                            }
-                            if !seed.isEmpty, newValue.count > seed.count, newValue.hasSuffix(seed) {
-                                limitText = String(newValue.dropLast(seed.count))
-                                usesRecommendation = false
-                                return
-                            }
-                            if newValue == seed { return }
-                            limitText = newValue
-                            usesRecommendation = false
-                        }))
+                        TextField("bpm", text: Binding(get: { draft.text }, set: { draft.replace($0) }))
                             .keyboardType(.numberPad).multilineTextAlignment(.trailing)
                             .frame(maxWidth: 110).accessibilityIdentifier("workout.heart.limit")
                     }
                     LabeledContent("Recommended", value: "\(recommendation.bpm.formatted(.number.locale(LanguageManager.currentLocale))) bpm")
-                    if usesRecommendation {
+                    if draft.usesRecommendation {
                         Text("Using recommendation").font(.footnote).foregroundStyle(MasoColor.textDim)
                     } else {
                         Button("Reset to recommendation") {
-                            usesRecommendation = true
-                            let text = recommendation.bpm.formatted(.number.locale(LanguageManager.currentLocale))
-                            limitText = text
-                            recommendationSeed = text
+                            draft.reset(to: recommendation.bpm.formatted(.number.locale(LanguageManager.currentLocale)))
                             errorText = nil
                         }.accessibilityIdentifier("workout.heart.reset")
                     }
@@ -4412,18 +4461,21 @@ struct WorkoutHeartRateSettingsSheet: View {
             .onAppear {
                 showCard = data.settings.workoutHeartRateShowCard == true
                 heartAssist = data.settings.workoutHeartRateAutomaticEnabled == true
-                usesRecommendation = WorkoutHeartRecommendation.usesRecommendation(data.settings)
-                let value = usesRecommendation ? recommendation.bpm : (data.settings.workoutHeartRateLimit ?? recommendation.bpm)
-                let text = value.formatted(.number.locale(LanguageManager.currentLocale))
-                limitText = text
-                recommendationSeed = usesRecommendation ? text : ""
+                let text = recommendation.bpm.formatted(.number.locale(LanguageManager.currentLocale))
+                if WorkoutHeartRecommendation.usesRecommendation(data.settings) {
+                    draft = .showingRecommendation(text)
+                } else {
+                    let value = data.settings.workoutHeartRateLimit ?? recommendation.bpm
+                    draft = .showingCustom(value.formatted(.number.locale(LanguageManager.currentLocale)))
+                }
             }
             .onReceive(NotificationCenter.default.publisher(for: UITextField.textDidBeginEditingNotification)) { note in
-                guard !recommendationSeed.isEmpty, let field = note.object as? UITextField else { return }
+                guard draft.usesRecommendation, let field = note.object as? UITextField, field.text == draft.text else { return }
                 field.selectedTextRange = field.textRange(from: field.beginningOfDocument, to: field.endOfDocument)
             }
             .onChange(of: recommendation.bpm) { _, value in
-                if usesRecommendation { limitText = value.formatted(.number.locale(LanguageManager.currentLocale)) }
+                guard draft.usesRecommendation else { return }
+                draft.reset(to: value.formatted(.number.locale(LanguageManager.currentLocale)))
             }
         }.presentationDetents([.large]).presentationDragIndicator(.visible)
     }
@@ -4434,18 +4486,15 @@ struct WorkoutHeartRateSettingsSheet: View {
         store.pushWatchState()
     }
     private func save() {
-        if usesRecommendation {
+        if draft.usesRecommendation {
             data.settings.workoutHeartRateUseRecommendation = true
             data.settings.workoutHeartRateLimit = nil
-        } else {
-            let formatter = NumberFormatter(); formatter.locale = LanguageManager.currentLocale; formatter.numberStyle = .decimal
-            let trimmed = limitText.trimmingCharacters(in: .whitespacesAndNewlines)
-            guard trimmed.allSatisfy({ $0.wholeNumberValue != nil }),
-                  let value = formatter.number(from: trimmed)?.intValue, (40...240).contains(value) else {
-                errorText = NSLocalizedString("Enter a limit from 40 to 240 bpm.", comment: ""); return
-            }
+        } else if let value = WorkoutHeartLimitValidation.acceptedBPM(draft.text, locale: LanguageManager.currentLocale) {
             data.settings.workoutHeartRateLimit = value
             data.settings.workoutHeartRateUseRecommendation = false
+        } else {
+            errorText = NSLocalizedString("Enter a limit from 40 to 240 bpm.", comment: "")
+            return
         }
         data.settings.workoutHeartRateShowCard = showCard
         data.settings.workoutHeartRateAutomaticEnabled = heartAssist

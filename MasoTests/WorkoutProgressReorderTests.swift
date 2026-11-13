@@ -259,4 +259,82 @@ final class WorkoutProgressReorderTests: XCTestCase {
         }
         return nil
     }
+
+    func testSegmentButtonPointsLandUsingTheSlotOrigin() {
+        let width: CGFloat = 402
+        let count = 2
+        let size = CGSize(width: width, height: 44)
+        let press = WorkoutProgressReorder.barPoint(
+            segmentIndex: 0, local: CGPoint(x: 109.5, y: 22), count: count, width: width, rightToLeft: false)
+        XCTAssertEqual(WorkoutProgressReorder.landingIndex(count: count, location: press, size: size, rightToLeft: false), 0)
+        let dragged = WorkoutProgressReorder.barPoint(
+            segmentIndex: 0, local: CGPoint(x: 292.5, y: 22), count: count, width: width, rightToLeft: false)
+        XCTAssertEqual(WorkoutProgressReorder.landingIndex(count: count, location: dragged, size: size, rightToLeft: false), 1)
+
+        let fromSecond = WorkoutProgressReorder.barPoint(
+            segmentIndex: 1, local: CGPoint(x: 99.5 - 183, y: 22), count: count, width: width, rightToLeft: false)
+        XCTAssertEqual(WorkoutProgressReorder.landingIndex(count: count, location: fromSecond, size: size, rightToLeft: false), 0)
+        XCTAssertGreaterThan(WorkoutProgressReorder.segmentOrigin(index: 1, count: count, width: width, rightToLeft: false), 0)
+
+        let rtlPress = WorkoutProgressReorder.barPoint(
+            segmentIndex: 0, local: CGPoint(x: 99.5, y: 22), count: count, width: width, rightToLeft: true)
+        XCTAssertEqual(WorkoutProgressReorder.landingIndex(count: count, location: rtlPress, size: size, rightToLeft: true), 0)
+    }
+
+    func testHeartLimitDraftKeepsClearRoundTripAndWrappedTyping() {
+        var custom = WorkoutHeartLimitDraft.showingCustom("162")
+        custom.replace("")
+        XCTAssertEqual(custom.text, "")
+        XCTAssertFalse(custom.usesRecommendation)
+        custom.replace("180")
+        XCTAssertEqual(custom.text, "180")
+
+        var draft = WorkoutHeartLimitDraft.showingRecommendation("162")
+        XCTAssertTrue(draft.usesRecommendation)
+        draft.replace("162")
+        XCTAssertEqual(draft.text, "162")
+        XCTAssertTrue(draft.usesRecommendation)
+
+        draft.replace("180162")
+        XCTAssertEqual(draft.text, "180")
+        XCTAssertFalse(draft.usesRecommendation)
+        draft.replace("180162")
+        XCTAssertEqual(draft.text, "180")
+        draft.replace("162180")
+        XCTAssertEqual(draft.text, "180")
+        draft.replace("175")
+        XCTAssertEqual(draft.text, "175")
+        draft.replace("162")
+        XCTAssertEqual(draft.text, "162")
+        XCTAssertFalse(draft.usesRecommendation)
+        draft.replace("")
+        XCTAssertEqual(draft.text, "")
+        draft.replace("18")
+        draft.replace("180")
+        XCTAssertEqual(draft.text, "180")
+        draft.replace("40")
+        XCTAssertEqual(draft.text, "40")
+        draft.replace("240")
+        XCTAssertEqual(draft.text, "240")
+        draft.replace("241")
+        XCTAssertEqual(draft.text, "241")
+        draft.replace("180162")
+        XCTAssertEqual(draft.text, "180162")
+
+        draft.reset(to: "162")
+        XCTAssertTrue(draft.usesRecommendation)
+        draft.replace("162180")
+        XCTAssertEqual(draft.text, "180")
+        XCTAssertFalse(draft.usesRecommendation)
+
+        let english = Locale(identifier: "en_US")
+        XCTAssertEqual(WorkoutHeartLimitValidation.acceptedBPM("180", locale: english), 180)
+        XCTAssertEqual(WorkoutHeartLimitValidation.acceptedBPM("40", locale: english), 40)
+        XCTAssertEqual(WorkoutHeartLimitValidation.acceptedBPM("240", locale: english), 240)
+        XCTAssertNil(WorkoutHeartLimitValidation.acceptedBPM("39", locale: english))
+        XCTAssertNil(WorkoutHeartLimitValidation.acceptedBPM("241", locale: english))
+        XCTAssertNil(WorkoutHeartLimitValidation.acceptedBPM("180162", locale: english))
+        XCTAssertNil(WorkoutHeartLimitValidation.acceptedBPM("", locale: english))
+        XCTAssertNil(WorkoutHeartLimitValidation.acceptedBPM("162 bpm", locale: english))
+    }
 }
