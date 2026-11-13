@@ -26,10 +26,10 @@ final class SessionReportUITests: XCTestCase {
         XCTAssertFalse(app.staticTexts["Timing incomplete"].exists)
         XCTAssertFalse(app.descendants(matching: .any)["workout.report"].exists)
 
-        keepShot(app, "report-first")
+        keepShot(app, "report-finish-scroll-top")
         let spark = app.descendants(matching: .any)["workout.sessionReport.spark.bench_press_barbell"]
         for _ in 0..<4 where !spark.isHittable { app.swipeUp() }
-        keepShot(app, "report-muscle-hr")
+        keepShot(app, "report-finish-scrolled-to-bench-heart")
 
         app.buttons["workout.sessionReport.info"].tap()
         XCTAssertTrue(app.navigationBars["How this is counted"].waitForExistence(timeout: 5))
@@ -83,18 +83,28 @@ final class SessionReportUITests: XCTestCase {
         XCTAssertTrue(app.descendants(matching: .any)["workout.sessionReport"].waitForExistence(timeout: 30))
         app.buttons["workout.sessionReport.share"].tap()
         XCTAssertTrue(app.descendants(matching: .any)["workout.sessionReport.sharePreview"].waitForExistence(timeout: 8))
+        let shareStats = app.descendants(matching: .any)["workout.sessionReport.shareStats"]
+        XCTAssertTrue(shareStats.waitForExistence(timeout: 5))
+        XCTAssertTrue(shareStats.staticTexts["Work time"].exists)
+        XCTAssertTrue(shareStats.staticTexts["Sets"].exists)
+        XCTAssertTrue(shareStats.staticTexts["Volume"].exists)
+        XCTAssertTrue(shareStats.staticTexts["0:40"].exists)
+        XCTAssertTrue(shareStats.staticTexts["480 kg"].exists)
         assertOff("workout.sessionReport.shareDetailsToggle", in: app)
         assertOff("workout.sessionReport.shareHeartToggle", in: app)
         XCTAssertTrue(matchingPrefix("workout.sessionReport.shareSummary.", in: app).waitForExistence(timeout: 5))
         XCTAssertFalse(matchingPrefix("workout.sessionReport.shareDetails.", in: app).exists)
         XCTAssertFalse(matchingPrefix("workout.sessionReport.shareSpark.", in: app).exists)
-        keepShot(app, "share-default")
+        keepShot(app, "share-default-scroll-top")
 
         app.switches["workout.sessionReport.shareHeartToggle"].tap()
         XCTAssertTrue(matchingPrefix("workout.sessionReport.shareDetails.", in: app).waitForExistence(timeout: 5))
         XCTAssertTrue(app.descendants(matching: .any)["workout.sessionReport.shareSpark.bench_press_barbell"].waitForExistence(timeout: 5))
         XCTAssertFalse(matchingPrefix("workout.sessionReport.shareSummary.", in: app).exists)
-        keepShot(app, "share-heart")
+        keepShot(app, "share-heart-scroll-top")
+        let shareSpark = app.descendants(matching: .any)["workout.sessionReport.shareSpark.bench_press_barbell"]
+        for _ in 0..<4 where !shareSpark.isHittable { app.swipeUp() }
+        keepShot(app, "share-heart-scrolled-to-spark")
 
         app.buttons["workout.sessionReport.shareBack"].tap()
         XCTAssertTrue(app.buttons["workout.sessionReport.exit"].waitForExistence(timeout: 5))
@@ -127,10 +137,44 @@ final class SessionReportUITests: XCTestCase {
         XCTAssertTrue(history.descendants(matching: .any)["workout.sessionReport"].waitForNonExistence(timeout: 5))
     }
 
-    private func launch(_ scene: String) -> XCUIApplication {
+    func testFinishHeaderStaysApartInNarrowLightLargeAndChinese() {
+        let cases: [(String, String, [String: String], [String])] = [
+            ("zh-scroll-top", "zh-Hans", [:], []),
+            ("light-scroll-top", "en", ["MASO_TEST_COLOR_SCHEME": "light"], []),
+            ("narrow-scroll-top", "en", ["MASO_TEST_NARROW": "1"], []),
+            ("large-scroll-top", "en", [:], ["-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityExtraExtraExtraLarge"])
+        ]
+        for (name, language, extra, arguments) in cases {
+            let app = launch("session-report-clean-player", language: language, extra: extra, moreArguments: arguments)
+            let info = app.buttons["workout.sessionReport.info"]
+            let title = app.staticTexts["workout.sessionReport.heading"]
+            let exit = app.buttons["workout.sessionReport.exit"]
+            XCTAssertTrue(title.waitForExistence(timeout: 30), name)
+            XCTAssertEqual(info.label, language == "zh-Hans" ? "统计说明" : "How this is counted")
+            XCTAssertLessThanOrEqual(info.frame.maxX, title.frame.minX + 1, name)
+            XCTAssertGreaterThanOrEqual(exit.frame.minX, title.frame.maxX - 1, name)
+            XCTAssertGreaterThanOrEqual(info.frame.height, 44, name)
+            XCTAssertGreaterThanOrEqual(exit.frame.height, 44, name)
+            keepShot(app, "report-header-\(name)")
+            app.terminate()
+        }
+    }
+
+    func testShareExportWritesTheReportCardAndDoesNotOpenTheSystemSheet() {
+        let app = launch("session-report-clean-player", extra: ["MASO_SESSION_REPORT_EXPORT": "1"])
+        XCTAssertTrue(app.buttons["workout.sessionReport.share"].waitForExistence(timeout: 30))
+        app.buttons["workout.sessionReport.share"].tap()
+        app.buttons["workout.sessionReport.shareSend"].tap()
+        XCTAssertTrue(app.staticTexts["workout.sessionReport.shareExported"].waitForExistence(timeout: 8))
+        XCTAssertTrue(app.buttons["workout.sessionReport.shareBack"].exists)
+    }
+
+    private func launch(_ scene: String, language: String = "en", extra: [String: String] = [:], moreArguments: [String] = []) -> XCUIApplication {
         let app = XCUIApplication(bundleIdentifier: "com.yumowu.maso")
-        app.launchEnvironment = ["MASO_EXERCISE_UI_TEST_SCENE": scene]
-        app.launchArguments = ["-maso.selectedLanguage", "en", "-AppleLanguages", "(en)"]
+        var environment = ["MASO_EXERCISE_UI_TEST_SCENE": scene]
+        extra.forEach { environment[$0.key] = $0.value }
+        app.launchEnvironment = environment
+        app.launchArguments = ["-maso.selectedLanguage", language, "-AppleLanguages", "(\(language))"] + moreArguments
         app.launch()
         return app
     }

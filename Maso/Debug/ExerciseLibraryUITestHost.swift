@@ -358,7 +358,11 @@ struct ExerciseLibraryUITestHost: View {
             page.presentationDetents([.large]).presentationDragIndicator(.visible)
         }
         .fullScreenCover(isPresented: Binding(get: { presented && scene.hasSuffix("-player") }, set: { presented = $0 }), onDismiss: { session.youtubePlayback.minimize() }) {
-            page
+            if ProcessInfo.processInfo.environment["MASO_TEST_NARROW"] == "1" {
+                page.frame(width: 320).frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else {
+                page
+            }
         }
         .background {
             WorkoutYouTubeRetentionHost(playback: session.youtubePlayback)
@@ -369,7 +373,7 @@ struct ExerciseLibraryUITestHost: View {
         .environment(subscriptions)
         .environment(\.locale, LanguageManager.currentLocale)
         .environment(\.layoutDirection, LanguageManager.currentLanguageCode == "ar" ? .rightToLeft : .leftToRight)
-        .preferredColorScheme(.dark)
+        .preferredColorScheme(ProcessInfo.processInfo.environment["MASO_TEST_COLOR_SCHEME"] == "light" ? .light : .dark)
         .tint(MasoColor.text)
         .task {
             presented = true

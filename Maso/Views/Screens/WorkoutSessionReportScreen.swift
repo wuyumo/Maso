@@ -54,7 +54,7 @@ struct WorkoutSessionReportScreen: View {
                     VStack(alignment: .leading, spacing: 12) {
                         bodyStage(report)
                         legend
-                        stats(report)
+                        SessionReportStats(report: report)
                         ForEach(report.muscles) { muscle in
                             muscleSection(muscle, proxy: proxy)
                         }
@@ -77,8 +77,11 @@ struct WorkoutSessionReportScreen: View {
         .toolbar {
             if presentation == .history {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("How this is counted", systemImage: "info.circle") { showInfo = true }
-                        .accessibilityIdentifier("workout.sessionReport.info")
+                    Button(action: { showInfo = true }) {
+                        Image(systemName: "info.circle")
+                    }
+                    .accessibilityLabel("How this is counted")
+                    .accessibilityIdentifier("workout.sessionReport.info")
                 }
             }
         }
@@ -134,20 +137,28 @@ struct WorkoutSessionReportScreen: View {
     }
 
     private var finishBar: some View {
-        ZStack {
-            Text("Workout report").font(.headline).lineLimit(1).padding(.horizontal, 96)
-            HStack {
-                Button("How this is counted") { showInfo = true }
-                    .font(.subheadline.weight(.semibold))
-                    .frame(minWidth: 44, minHeight: 44)
-                    .accessibilityIdentifier("workout.sessionReport.info")
-                Spacer()
-                Button("Exit", action: requestExit)
+        HStack(spacing: 0) {
+            Button(action: { showInfo = true }) {
+                Image(systemName: "info.circle")
                     .font(.body.weight(.semibold))
-                    .frame(minWidth: 44, minHeight: 44)
+                    .frame(width: 44, height: 44)
                     .contentShape(Rectangle())
-                    .accessibilityIdentifier("workout.sessionReport.exit")
             }
+            .accessibilityLabel("How this is counted")
+            .accessibilityIdentifier("workout.sessionReport.info")
+            Text("Workout report")
+                .font(.headline)
+                .lineLimit(1)
+                .minimumScaleFactor(0.6)
+                .frame(maxWidth: .infinity)
+                .accessibilityIdentifier("workout.sessionReport.heading")
+            Button("Exit", action: requestExit)
+                .font(.body.weight(.semibold))
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
+                .frame(minWidth: 44, minHeight: 44)
+                .contentShape(Rectangle())
+                .accessibilityIdentifier("workout.sessionReport.exit")
         }
         .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
         .padding(.top, 4)
@@ -205,29 +216,6 @@ struct WorkoutSessionReportScreen: View {
             Text(title).lineLimit(1).minimumScaleFactor(0.7)
         }
         .accessibilityElement(children: .combine)
-    }
-
-    private func stats(_ report: SessionMuscleReport) -> some View {
-        HStack(alignment: .firstTextBaseline) {
-            stat(report.workSeconds.map(reportClock) ?? "—", "Work time", tag: report.timingIncomplete ? "Timing incomplete" : nil)
-            stat("\(report.setCount)", "Sets", tag: nil)
-            stat(report.loadedVolumeKg.map { weightLabel($0) } ?? "—", "Volume", tag: nil)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .accessibilityElement(children: .contain)
-        .accessibilityIdentifier("workout.sessionReport.stats")
-    }
-
-    private func stat(_ value: String, _ caption: LocalizedStringKey, tag: LocalizedStringKey?) -> some View {
-        VStack(alignment: .leading, spacing: 2) {
-            Text(verbatim: value).font(.title2.weight(.semibold)).monospacedDigit().lineLimit(1).minimumScaleFactor(0.6)
-            HStack(spacing: 4) {
-                Text(caption)
-                if let tag { Text(tag).fontWeight(.semibold).foregroundStyle(MasoColor.text) }
-            }
-            .font(.caption).foregroundStyle(MasoColor.textDim)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     private func muscleSection(_ muscle: SessionMuscleReport.MuscleRow, proxy: ScrollViewProxy) -> some View {
@@ -472,6 +460,37 @@ private struct HeartSparkline: View {
     }
 }
 
+/// The same three labeled numbers on the report, the share preview, and the exported card.
+private struct SessionReportStats: View {
+    let report: SessionMuscleReport
+    var identifier = "workout.sessionReport.stats"
+
+    var body: some View {
+        HStack(alignment: .firstTextBaseline) {
+            column(report.workSeconds.map(reportClock) ?? "—", "Work time", tag: report.timingIncomplete ? "Timing incomplete" : nil)
+            column("\(report.setCount)", "Sets", tag: nil)
+            column(report.loadedVolumeKg.map { weightLabel($0) } ?? "—", "Volume", tag: nil)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier(identifier)
+    }
+
+    private func column(_ value: String, _ caption: LocalizedStringKey, tag: LocalizedStringKey?) -> some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text(verbatim: value).font(.title2.weight(.semibold)).monospacedDigit().lineLimit(1).minimumScaleFactor(0.6)
+            HStack(spacing: 4) {
+                Text(caption)
+                if let tag { Text(tag).fontWeight(.semibold).foregroundStyle(MasoColor.text) }
+            }
+            .font(.caption).foregroundStyle(MasoColor.textDim)
+            .lineLimit(1)
+            .minimumScaleFactor(0.7)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
 private struct SharePreview: View {
     let report: SessionMuscleReport
     let name: String?
@@ -480,6 +499,7 @@ private struct SharePreview: View {
     @State private var includeDetails = false
     @State private var includeHeart = false
     @State private var showsBack = false
+    @State private var exported = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -510,11 +530,7 @@ private struct SharePreview: View {
                         .font(.subheadline.weight(.semibold))
                         .padding(8)
                     }
-                    HStack {
-                        Text(report.workSeconds.map(reportClock) ?? "—").font(.title3.weight(.semibold)).monospacedDigit()
-                        Text("\(report.setCount)").font(.title3.weight(.semibold)).monospacedDigit()
-                        Text(report.loadedVolumeKg.map { weightLabel($0) } ?? "—").font(.title3.weight(.semibold)).monospacedDigit()
-                    }
+                    SessionReportStats(report: report, identifier: "workout.sessionReport.shareStats")
                     ForEach(report.muscles) { muscle in
                         VStack(alignment: .leading, spacing: 4) {
                             HStack {
@@ -573,13 +589,29 @@ private struct SharePreview: View {
             .background(MasoColor.background)
             .accessibilityIdentifier("workout.sessionReport.shareSend")
         }
+        .overlay(alignment: .top) {
+            if exported {
+                Text("session-report-share.png")
+                    .accessibilityIdentifier("workout.sessionReport.shareExported")
+                    .frame(width: 1, height: 1)
+                    .accessibilityHidden(false)
+            }
+        }
     }
 
     private func send() {
         let card = shareBitmap(report: report, name: name, details: includeDetails, heart: includeHeart)
-        if let image = ShareImageRenderer.render(width: 390, { card }) {
-            onShare(image)
+        guard let image = ShareImageRenderer.render(width: 390, { card }) else { return }
+        #if DEBUG
+        if ProcessInfo.processInfo.environment["MASO_SESSION_REPORT_EXPORT"] == "1",
+           let directory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first,
+           let data = image.pngData() {
+            try? data.write(to: directory.appendingPathComponent("session-report-share.png"))
+            exported = true
+            return
         }
+        #endif
+        onShare(image)
     }
 }
 
@@ -595,12 +627,7 @@ private struct ShareBitmap: View {
                 guard let amount = report.intensity[muscle] else { return nil }
                 return (MasoColor.accent, amount)
             })
-            HStack {
-                Text(report.workSeconds.map(reportClock) ?? "—")
-                Text("\(report.setCount)")
-                Text(report.loadedVolumeKg.map { weightLabel($0) } ?? "—")
-            }
-            .font(.headline).monospacedDigit()
+            SessionReportStats(report: report, identifier: "workout.sessionReport.exportStats")
             ForEach(report.muscles) { muscle in
                 HStack {
                     Text(muscle.muscle.displayName)
