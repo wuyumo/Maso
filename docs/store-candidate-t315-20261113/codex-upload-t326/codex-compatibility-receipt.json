@@ -1,0 +1,10 @@
+{
+  "recordedAt": "2026-11-13T10:29:20.077932+08:00",
+  "CLI": "0.133.0",
+  "temporaryModel": "gpt-6-luna",
+  "evidence": "Same CODEX_HOME official models_cache refreshed2026-11-13 10:26CST client0.167 lists visible gpt-6-luna; official models docs recommends gpt-6-luna when available; CLI help documents per-run --model. No globalconfig/auth/provider changed. Exactlyone model override attempt.",
+  "exitCode": 1,
+  "taskFinalReceiptExists": false,
+  "acceptedImages": 0,
+  "uploadPerformed": false
+}
