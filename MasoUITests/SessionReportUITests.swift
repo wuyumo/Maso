@@ -98,15 +98,22 @@ final class SessionReportUITests: XCTestCase {
         XCTAssertFalse(matchingPrefix("workout.sessionReport.shareSpark.", in: app).exists)
         keepShot(app, "share-default-scroll-top")
 
-        app.switches["workout.sessionReport.shareHeartToggle"].tap()
+        let heart = app.switches["workout.sessionReport.shareHeartToggle"]
+        heart.tap()
+        XCTAssertTrue(heart.waitForExistence(timeout: 5))
+        let heartValue = String(describing: heart.value ?? "")
+        XCTAssertTrue(heartValue == "1" || heartValue == "on", "heart toggle stayed \(heartValue)")
         XCTAssertTrue(matchingPrefix("workout.sessionReport.shareDetails.", in: app).waitForExistence(timeout: 5))
         XCTAssertTrue(app.descendants(matching: .any)["workout.sessionReport.shareSpark.bench_press_barbell"].waitForExistence(timeout: 5))
         XCTAssertFalse(matchingPrefix("workout.sessionReport.shareSummary.", in: app).exists)
-        let shareBody = app.descendants(matching: .any)["workout.sessionReport.shareBody"]
+        // The share body is a display-only accessibility image. descendants(.any)
+        // also matches a wrapper, and hittable stays false, so the top check uses
+        // that one image's frame: full stage height, starting in the upper screen.
+        let shareBody = app.images["workout.sessionReport.shareBody"]
         XCTAssertTrue(shareBody.waitForExistence(timeout: 5))
-        let backAtTop = NSPredicate(format: "exists == true AND hittable == true AND frame.minY < 220")
-        let top = XCTNSPredicateExpectation(predicate: backAtTop, object: shareBody)
-        XCTAssertEqual(XCTWaiter().wait(for: [top], timeout: 3), .completed, "share body minY \(shareBody.frame.minY) after scrollTo top")
+        let fullBodyAtTop = NSPredicate(format: "exists == true AND frame.minY > 0 AND frame.minY < 220 AND frame.height > 300")
+        let top = XCTNSPredicateExpectation(predicate: fullBodyAtTop, object: shareBody)
+        XCTAssertEqual(XCTWaiter().wait(for: [top], timeout: 3), .completed, "share body minY \(shareBody.frame.minY) height \(shareBody.frame.height)")
         keepShot(app, "share-heart-scroll-top")
         let shareSpark = app.descendants(matching: .any)["workout.sessionReport.shareSpark.bench_press_barbell"]
         let preview = app.descendants(matching: .any)["workout.sessionReport.sharePreview"]
