@@ -102,7 +102,7 @@ struct SessionMuscleReport: Equatable {
                     result.append(exercise.name)
                     result.append(contentsOf: exercise.sets)
                 }
-                if let heart { result.append(heart) }
+                if let heart = muscle.heart { result.append(heart) }
             }
             if includesPhoto { result.append("photo") }
             return result
