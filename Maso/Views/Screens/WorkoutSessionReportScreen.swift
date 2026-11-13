@@ -139,32 +139,44 @@ struct WorkoutSessionReportScreen: View {
 
     private var tables: some View {
         VStack(spacing: 0) {
-            DisclosureGroup(isExpanded: $durationExpanded) {
-                if durationExpanded {
-                    WorkoutReportView(records: records, workoutName: workoutName, scope: .duration)
-                        .padding(.bottom, MasoMetrics.rowPaddingV)
-                        .accessibilityElement(children: .contain)
-                        .accessibilityIdentifier("workout.sessionReport.durationTable")
-                }
-            } label: {
-                Text("Exercise duration").font(.body).frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
-                    .accessibilityIdentifier("workout.sessionReport.duration")
+            tableButton("Exercise duration", expanded: durationExpanded, identifier: "workout.sessionReport.duration") {
+                durationExpanded.toggle()
             }
-            DisclosureGroup(isExpanded: $heartExpanded) {
-                if heartExpanded {
-                    WorkoutReportView(records: records, workoutName: workoutName, scope: .heart)
-                        .padding(.bottom, MasoMetrics.rowPaddingV)
-                        .accessibilityElement(children: .contain)
-                        .accessibilityIdentifier("workout.sessionReport.heartTableBody")
-                }
-            } label: {
-                Text("Exercises and heart rate").font(.body).frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
-                    .accessibilityIdentifier("workout.sessionReport.heartTable")
+            if durationExpanded {
+                WorkoutReportView(records: records, workoutName: workoutName, scope: .duration)
+                    .padding(.bottom, MasoMetrics.rowPaddingV)
+                    .accessibilityElement(children: .contain)
+                    .accessibilityIdentifier("workout.sessionReport.durationTable")
+            }
+            tableButton("Exercises and heart rate", expanded: heartExpanded, identifier: "workout.sessionReport.heartTable") {
+                heartExpanded.toggle()
+            }
+            if heartExpanded {
+                WorkoutReportView(records: records, workoutName: workoutName, scope: .heart)
+                    .padding(.bottom, MasoMetrics.rowPaddingV)
+                    .accessibilityElement(children: .contain)
+                    .accessibilityIdentifier("workout.sessionReport.heartTableBody")
             }
         }
         .padding(.horizontal, MasoMetrics.rowPaddingH)
         .background(MasoColor.surface, in: RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
         .accessibilityElement(children: .contain)
+    }
+
+    private func tableButton(_ title: LocalizedStringKey, expanded: Bool, identifier: String, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            HStack(spacing: MasoMetrics.cardHeaderGap) {
+                Image(systemName: expanded ? "chevron.down" : "chevron.right")
+                    .font(.caption.weight(.semibold))
+                    .accessibilityHidden(true)
+                Text(title).font(.body)
+                Spacer(minLength: 0)
+            }
+            .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityIdentifier(identifier)
     }
 
     private func floatingShare(identifier: String, action: @escaping () -> Void) -> some View {
@@ -213,7 +225,7 @@ struct WorkoutSessionReportScreen: View {
     }
 
     private var legend: some View {
-        HStack(spacing: 12) {
+        FlowLayout(spacing: MasoMetrics.rowPaddingH) {
             legendItem("Most volume", amount: 1)
             legendItem("Some volume", amount: 0.55)
             legendItem("Light volume", amount: 0.22)
@@ -225,11 +237,11 @@ struct WorkoutSessionReportScreen: View {
     }
 
     private func legendItem(_ title: LocalizedStringKey, amount: Double) -> some View {
-        HStack(spacing: 4) {
+        HStack(spacing: MasoMetrics.cardHeaderGap) {
             RoundedRectangle(cornerRadius: 2)
                 .fill(MasoColor.recoverySurfaceColor(fatigue: amount))
                 .frame(width: 10, height: 10)
-            Text(title).lineLimit(1).minimumScaleFactor(0.7)
+            Text(title)
         }
         .accessibilityElement(children: .combine)
     }

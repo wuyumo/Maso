@@ -33,41 +33,46 @@ final class SessionReportUITests: XCTestCase {
         for _ in 0..<4 where !spark.isHittable { app.swipeUp() }
         keepShot(app, "report-finish-scrolled-to-bench-heart")
 
-        let heartRow = revealAbove("workout.sessionReport.heartTable", control: "workout.sessionReport.share", in: app)
+        let heartRow = revealButton("workout.sessionReport.heartTable", control: "workout.sessionReport.share", in: app)
         let share = app.buttons["workout.sessionReport.share"]
+        XCTAssertEqual(identifierCount("workout.sessionReport.heartTable", in: app), 1)
         XCTAssertTrue(heartRow.exists)
         XCTAssertLessThanOrEqual(heartRow.frame.maxY, share.frame.minY + 1, "last row \(heartRow.frame) share \(share.frame)")
         keepShot(app, "report-sheet-share-over-last-row")
 
         let grabbers = sheetGrabbers(in: app).count
         let bars = app.navigationBars.count
-        let duration = app.descendants(matching: .any)["workout.sessionReport.duration"]
+        let duration = app.buttons["workout.sessionReport.duration"]
+        XCTAssertEqual(identifierCount("workout.sessionReport.duration", in: app), 1)
         duration.tap()
-        XCTAssertTrue(app.descendants(matching: .any)["workout.sessionReport.durationTable"].waitForExistence(timeout: 5))
-        XCTAssertTrue(matchingPrefix("workout.report.exercise.", in: app).exists)
+        XCTAssertTrue(app.otherElements["workout.sessionReport.durationTable"].waitForExistence(timeout: 5))
+        XCTAssertEqual(identifierCount("workout.sessionReport.durationTable", in: app), 1)
+        XCTAssertEqual(identifierCount(prefix: "workout.report.exercise.", in: app), 1)
         keepShot(app, "report-duration-expanded")
-        XCTAssertFalse(app.descendants(matching: .any)["workout.sessionReport.heartTableBody"].exists)
-        XCTAssertFalse(app.descendants(matching: .any)["workout.report.heart"].exists)
-        XCTAssertFalse(app.descendants(matching: .any)["workout.report"].exists)
+        XCTAssertEqual(identifierCount("workout.sessionReport.heartTableBody", in: app), 0)
+        XCTAssertEqual(identifierCount("workout.report.heart", in: app), 0)
+        XCTAssertEqual(identifierCount("workout.report", in: app), 0)
         XCTAssertGreaterThan(grabbers, 0)
         XCTAssertEqual(sheetGrabbers(in: app).count, grabbers)
         XCTAssertEqual(app.navigationBars.count, bars)
         duration.tap()
-        XCTAssertTrue(app.descendants(matching: .any)["workout.sessionReport.durationTable"].waitForNonExistence(timeout: 5))
+        XCTAssertEqual(identifierCount("workout.sessionReport.durationTable", in: app), 0)
         keepShot(app, "report-duration-collapsed")
 
-        let heart = app.descendants(matching: .any)["workout.sessionReport.heartTable"]
+        let heart = app.buttons["workout.sessionReport.heartTable"]
         heart.tap()
-        XCTAssertTrue(app.descendants(matching: .any)["workout.sessionReport.heartTableBody"].waitForExistence(timeout: 5))
-        XCTAssertTrue(app.descendants(matching: .any)["workout.report.heart"].exists)
+        XCTAssertTrue(app.otherElements["workout.sessionReport.heartTableBody"].waitForExistence(timeout: 5))
+        XCTAssertEqual(identifierCount("workout.sessionReport.heartTableBody", in: app), 1)
+        XCTAssertEqual(identifierCount("workout.report.heart", in: app), 1)
         keepShot(app, "report-heart-expanded")
-        XCTAssertFalse(app.descendants(matching: .any)["workout.sessionReport.durationTable"].exists)
-        XCTAssertFalse(matchingPrefix("workout.report.exercise.", in: app).exists)
-        XCTAssertFalse(app.descendants(matching: .any)["workout.report"].exists)
+        XCTAssertEqual(identifierCount("workout.sessionReport.durationTable", in: app), 0)
+        XCTAssertEqual(identifierCount(prefix: "workout.report.exercise.", in: app), 0)
+        XCTAssertEqual(identifierCount("workout.report", in: app), 0)
         XCTAssertEqual(sheetGrabbers(in: app).count, grabbers)
         XCTAssertEqual(app.navigationBars.count, bars)
         heart.tap()
-        XCTAssertTrue(app.descendants(matching: .any)["workout.sessionReport.heartTableBody"].waitForNonExistence(timeout: 5))
+        XCTAssertEqual(identifierCount("workout.sessionReport.heartTableBody", in: app), 0)
+        XCTAssertEqual(identifierCount("workout.report.heart", in: app), 0)
         keepShot(app, "report-heart-collapsed")
         XCTAssertTrue(report.exists)
         assertExpandedSheet(titled: "Workout report", in: app)
@@ -303,6 +308,24 @@ final class SessionReportUITests: XCTestCase {
         let element = app.staticTexts["exercise.ui-test.session-liveness"]
         XCTAssertTrue(element.waitForExistence(timeout: 5))
         return element.label
+    }
+
+    private func identifierCount(_ identifier: String, in app: XCUIApplication) -> Int {
+        app.descendants(matching: .any).matching(identifier: identifier).count
+    }
+
+    private func identifierCount(prefix: String, in app: XCUIApplication) -> Int {
+        app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH %@", prefix)).count
+    }
+
+    private func revealButton(_ identifier: String, control: String, in app: XCUIApplication) -> XCUIElement {
+        let bar = app.buttons[control]
+        let element = app.buttons[identifier]
+        for _ in 0..<8 {
+            if element.exists, bar.exists, element.frame.maxY > 0, element.frame.maxY <= bar.frame.minY + 1 { return element }
+            app.swipeUp()
+        }
+        return element
     }
 
     private func revealAbove(_ identifier: String, control: String, in app: XCUIApplication) -> XCUIElement {

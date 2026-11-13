@@ -1698,7 +1698,9 @@ struct WorkoutReportView: View {
                         Text(time(block.trackedSeconds)).font(.subheadline.monospacedDigit()).fixedSize()
                     }
                     if block.hasMissingTiming { Text("Some timing is unavailable").font(.caption).foregroundStyle(MasoColor.textDim) }
-                }.accessibilityIdentifier("workout.report.exercise.\(block.id)")
+                }
+                .accessibilityElement(children: .combine)
+                .accessibilityIdentifier("workout.report.exercise.\(block.id)")
             }
         }.frame(maxWidth: .infinity, alignment: .leading)
     }
@@ -1769,6 +1771,7 @@ struct WorkoutReportView: View {
                 AxisValueLabel(format: .dateTime.hour().minute())
             }
         }
+        .accessibilityElement(children: .ignore)
         .accessibilityIdentifier("workout.report.heart")
         .overlay {
             GeometryReader { geometry in
