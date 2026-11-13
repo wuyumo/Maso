@@ -33,6 +33,17 @@ final class WorkoutProgressReorderTests: XCTestCase {
         let reverse = try! XCTUnwrap(WorkoutProgressReorder.planMove(visiblePlanIndices: [1, 2, 3], from: 2, toFinalIndex: 0))
         back.move(fromOffsets: reverse.source, toOffset: reverse.destination)
         XCTAssertEqual(back, ["visible-a", "hidden", "visible-b", "visible-c"])
+
+        var across = ["visible-a", "hidden", "visible-b", "visible-c"]
+        let ontoNext = try XCTUnwrap(WorkoutProgressReorder.planMove(visiblePlanIndices: [0, 2, 3], from: 2, toFinalIndex: 1))
+        across.move(fromOffsets: ontoNext.source, toOffset: ontoNext.destination)
+        XCTAssertEqual(across, ["visible-a", "hidden", "visible-c", "visible-b"])
+        var restored = across
+        let backToGap = try XCTUnwrap(WorkoutProgressReorder.planMove(visiblePlanIndices: [0, 2, 3], from: 2, toFinalIndex: 1))
+        restored.move(fromOffsets: backToGap.source, toOffset: backToGap.destination)
+        XCTAssertEqual(restored, ["visible-a", "hidden", "visible-b", "visible-c"])
+        XCTAssertNil(WorkoutProgressReorder.planMove(visiblePlanIndices: [0, 2, 3], from: 1, toFinalIndex: 1))
+        XCTAssertNil(WorkoutProgressReorder.planMove(visiblePlanIndices: [1, 2], from: 0, toFinalIndex: -1))
     }
 
     func testNarrowSlotsEdgesAndCancellation() {

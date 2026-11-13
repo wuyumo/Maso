@@ -51,11 +51,15 @@ enum WorkoutProgressReorder {
     }
 
     /// `visiblePlanIndices` are indexes into `plan.steps` for the segments on screen,
-    /// in visual order. Hidden steps stay where they are.
+    /// in visual order. A later drop lands after that visible step. An earlier drop
+    /// lands on that visible step, except the first bar slot, which is the start of
+    /// the plan so the drag crosses a hidden step sitting in front of the bar.
     static func planMove(visiblePlanIndices: [Int], from source: Int, toFinalIndex final: Int) -> Move? {
         guard visiblePlanIndices.indices.contains(source), visiblePlanIndices.indices.contains(final), source != final else { return nil }
         let origin = visiblePlanIndices[source]
-        let destination = final > source ? visiblePlanIndices[final] + 1 : visiblePlanIndices[final]
+        let destination = final > source
+            ? visiblePlanIndices[final] + 1
+            : (final == 0 ? 0 : visiblePlanIndices[final])
         guard destination != origin, destination != origin + 1 else { return nil }
         return Move(source: IndexSet(integer: origin), destination: destination)
     }
