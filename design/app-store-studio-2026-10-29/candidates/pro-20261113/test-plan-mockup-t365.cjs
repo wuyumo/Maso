@@ -1,0 +1,21 @@
+const assert=require("node:assert/strict"),fs=require("node:fs"),path=require("node:path"),Module=require("node:module"),ts=require("typescript"),sharp=require("sharp"),crypto=require("node:crypto");
+const root=path.resolve(__dirname,"../..");const resolve=Module._resolveFilename;
+Module._resolveFilename=function(request,parent,...rest){return resolve.call(this,request.startsWith("@/")?path.join(root,"src",request.slice(2)):request,parent,...rest);};
+for(const ext of [".ts",".tsx"])require.extensions[ext]=function(mod,file){const out=ts.transpileModule(fs.readFileSync(file,"utf8"),{reportDiagnostics:true,compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022,jsx:ts.JsxEmit.ReactJSX,esModuleInterop:true}});assert.deepEqual((out.diagnostics||[]).filter(x=>x.category===ts.DiagnosticCategory.Error),[]);mod._compile(out.outputText,file);};
+const {candidatePlanFrame,candidatePlanMockupGeometry,CandidatePlanMockup}=require(path.join(root,"src/components/editor/candidate-plan-mockup.tsx"));
+const {PHONE_SCREEN}=require(path.join(root,"src/lib/constants.ts"));const {IPAD_SCREEN,DUO_SCREEN}=require(path.join(root,"src/components/editor/device-frames.tsx"));
+const project=JSON.parse(fs.readFileSync(path.join(root,"candidates/pro-20261113/project.json"))),chat=project.slidesByDevice.iphone[0].chat,locales=Object.keys(project.slidesByDevice.iphone[0].headline);
+function nodes(e,out=[]){if(e&&e.props){out.push(e);for(const c of [e.props.children].flat(Infinity))nodes(c,out);}return out;}
+(async()=>{let components=0,corners=0;const assetEvidence=[];
+for(const [device,canvas,src,screen] of [["iphone",{w:1320,h:2868},"/mockup.png",PHONE_SCREEN],["iphone-medium",{w:1260,h:2736},"/mockup.png",PHONE_SCREEN],["ipad",{w:2064,h:2752},"/ipad-frame.png",IPAD_SCREEN],["duo",{w:2007,h:2853},"/duo-frame.png",DUO_SCREEN]]){
+ const frame=candidatePlanFrame(device);assert.equal(frame.src,src);assert.strictEqual(frame.screen,screen);
+ const bytes=fs.readFileSync(path.join(root,"public",src));const meta=await sharp(bytes).metadata();assert(Math.abs(meta.width/meta.height-frame.aspect)<.001);assetEvidence.push({device,src,width:meta.width,height:meta.height,sha256:crypto.createHash("sha256").update(bytes).digest("hex")});
+ const g=candidatePlanMockupGeometry(device,canvas,chat);assert.equal(g.width/g.height,frame.aspect);assert(g.content.width>598+56);assert(g.content.height>0);
+ const projectPoint=(x,y)=>{y-=g.height;const z=y*1.1*Math.sin(Math.PI/18),w=1-z/(4500*g.unit);return {x:g.left+g.shift+(x*1.1+Math.tan(-Math.PI/60)*y*1.1)/w,y:g.top+g.height+y*1.1*Math.cos(Math.PI/18)/w};};
+ assert(Math.abs(projectPoint(g.width,g.height).x-canvas.w*1.02)<.001);
+ const L=g.width*screen.L/100,R=L+g.width*screen.W/100,T=g.height*screen.T/100,B=T+g.height*screen.H/100;
+ for(const x of [L+44*g.unit,R-44*g.unit])for(const y of [T+(frame.topInset+36)*g.unit,B-72*g.unit]){const p=projectPoint(x,y);assert(p.x>=0&&p.x<=canvas.w,JSON.stringify({device,p}));assert(p.y>=0&&p.y<=canvas.h,JSON.stringify({device,p}));corners++;}
+ for(const locale of locales){const tree=nodes(CandidatePlanMockup({device,canvas,chat,theme:{},locale}));assert.equal(tree.filter(e=>e.props["data-candidate-device-bezel"]).length,1);assert.equal(tree.filter(e=>e.props["data-candidate-chat-aperture"]).length,1);const c=tree.find(e=>e.props.chat);assert.strictEqual(c.props.chat.bubbles,chat.bubbles);assert.strictEqual(c.props.chat.footnotes,chat.footnotes);assert.equal(c.props.locale,locale);assert.equal(c.props.cW,1320*g.unit);assert.equal(tree.find(e=>e.props["data-candidate-device-bezel"]).props.src,src);components++;}
+}
+assert.equal(candidatePlanFrame("watch"),null);assert.equal(candidatePlanFrame("unknown"),null);
+console.log(JSON.stringify({components,RTLIncluded:locales.includes("ar"),projectedSafeContentCorners:corners,assetEvidence,existingChatContentReferencesPreserved:true,oneBezelPerCandidate:true,browserVisualTest:false,newPosterPNGs:0},null,2));})().catch(e=>{console.error(e);process.exitCode=1;});

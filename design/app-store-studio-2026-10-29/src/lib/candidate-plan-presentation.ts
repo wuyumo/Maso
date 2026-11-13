@@ -15,19 +15,16 @@ export function candidatePlanShiftX(canvas: { w: number; h: number }, phoneDeck:
 
 // Match CoachChat's reference scale. Its existing measured fit includes the padding.
 export const CANDIDATE_PLAN_CSS = `
-#candidate-poster[data-candidate-plan-device="low-angle-split"] [data-chat-root="1"] {
-  box-sizing: border-box;
-  border: calc(22px * var(--candidate-plan-unit)) solid #090c10;
-  padding-right: calc(64px * var(--candidate-plan-unit));
-  border-radius: calc(72px * var(--candidate-plan-unit));
-  background: #111317;
-  box-shadow: 0 calc(12px * var(--candidate-plan-unit)) 0 #030507,
-    0 calc(30px * var(--candidate-plan-unit)) calc(46px * var(--candidate-plan-unit)) rgba(0,0,0,.32),
-    inset 0 0 0 calc(2px * var(--candidate-plan-unit)) rgba(255,255,255,.12);
+#candidate-poster[data-candidate-plan-device="low-angle-split"] [data-candidate-original-layout] [data-chat-root="1"] {
+  display: none;
+}
+#candidate-poster[data-candidate-plan-device="low-angle-split"] [data-candidate-plan-mockup] {
+  position: absolute;
+  filter: drop-shadow(0 calc(20px * var(--candidate-plan-unit)) calc(30px * var(--candidate-plan-unit)) rgba(0,0,0,.4));
   transform: translateX(var(--candidate-plan-shift-x)) perspective(calc(4500px * var(--candidate-plan-unit))) rotateX(10deg) skewX(-3deg) scale(1.1);
   transform-origin: left bottom;
 }
-#candidate-poster[data-candidate-plan-device="low-angle-split"] [data-chat-root="1"] > div {
+#candidate-poster[data-candidate-plan-device="low-angle-split"] [data-candidate-plan-mockup] [data-chat-root="1"] > div {
   box-sizing: border-box;
   padding: calc(36px * var(--candidate-plan-unit)) calc(28px * var(--candidate-plan-unit));
 }

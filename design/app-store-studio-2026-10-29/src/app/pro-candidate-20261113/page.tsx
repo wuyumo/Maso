@@ -14,7 +14,9 @@ import { DeviceShowcase, STORE_DEVICES, type StoreDevice } from "@/components/ed
 import type { ProjectState } from "@/lib/types";
 import { reviewBatchTargets, runReviewBatch } from "@/lib/candidate-batch";
 import { candidateWatchSource } from "@/lib/candidate51-assets";
-import { CANDIDATE_PLAN_CSS, candidatePlanUnit, candidatePlanShiftX } from "@/lib/candidate-plan-presentation";
+import { CANDIDATE_PLAN_CSS, candidatePlanUnit } from "@/lib/candidate-plan-presentation";
+
+import { CandidatePlanMockup } from "@/components/editor/candidate-plan-mockup";
 
 import { CandidatePreviewControls, parsePreviewTarget, targetSearch, fitScale, canExportPage, exportName, exportCaptureOptions, type PreviewTarget as Target, type PreviewDevice as RenderDevice } from "@/components/editor/candidate-preview-controls";
 
@@ -217,7 +219,6 @@ export default function RenderPage() {
       data-candidate-plan-device={slide?.id === "plan" && slide.chat && target.device !== "watch" ? "low-angle-split" : undefined}
       style={{
         "--candidate-plan-unit": candidatePlanUnit(canvas, !!phoneDeck, slide?.chat),
-        "--candidate-plan-shift-x": `${candidatePlanShiftX(canvas, !!phoneDeck, slide?.chat)}px`,
         position: "fixed",
         inset: 0,
         width: canvas.w,
@@ -228,6 +229,7 @@ export default function RenderPage() {
       } as React.CSSProperties}
     >
       <style>{CANDIDATE_PLAN_CSS}</style>
+      <div data-candidate-original-layout="1">
       {target.device==="watch" ? <img alt="Watch独立原生演示截图" src={candidateWatchSource(target.locale,target.slide)||`/screenshots/localized/watch/${target.locale}/${target.slide==="watch-exercise"?"exercise-185":"rest-160"}.png`} width={canvas.w} height={canvas.h} style={{display:"block",width:canvas.w,height:canvas.h}}/> : !slide || !phoneDeck ? (
         !slide ? null : (
           <DeviceShowcase slide={slide} device={target.device as StoreDevice} locale={target.locale} />
@@ -244,6 +246,8 @@ export default function RenderPage() {
           hideEmpty
         />
       )}
+      </div>
+      {slide?.id === "plan" && slide.chat && target.device !== "watch" ? <CandidatePlanMockup device={target.device} canvas={canvas} chat={slide.chat} theme={theme} locale={target.locale} /> : null}
     </main>
     </div>
     </div>
