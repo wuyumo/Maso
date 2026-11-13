@@ -5,6 +5,7 @@ import type { ChatThread, Theme } from "@/lib/types";
 import { candidatePlanUnit, candidatePlanShiftX, candidateChatFit } from "@/lib/candidate-plan-presentation";
 import { IPAD_SCREEN, DUO_SCREEN, IPAD_FRAME_ASPECT, DUO_FRAME_ASPECT } from "./device-frames";
 import { CoachChat } from "./coach-chat";
+import { CandidateNativeCoachChrome } from "./candidate-native-coach-chrome";
 
 export function candidatePlanFrame(device: string) {
   if (device === "iphone" || device === "iphone-medium") return { src: "/mockup.png", aspect: 1350 / 2760, screen: PHONE_SCREEN, topInset: 80 };
@@ -28,10 +29,11 @@ export function candidatePlanMockupGeometry(device: string, canvas: { w: number;
   const shift = phone ? 0 : candidatePlanShiftX(canvas, phone, { ...chat, width: width / unit });
   const fullScreenHeight = height * frame.screen.H / 100;
   const visibleScreenHeight = phone ? Math.min(fullScreenHeight, canvas.h - top - height * frame.screen.T / 100) : fullScreenHeight;
-  const content: ChatThread = { ...chat, x: 16, y: frame.topInset,
+  const chatTop = frame.topInset + 64 + 108 + 16;
+  const content: ChatThread = { ...chat, x: 16, y: chatTop,
     width: width * frame.screen.W / 100 / unit - 32,
-    height: visibleScreenHeight / unit - frame.topInset - 36 };
-  return { frame, unit, width, height, left, top, shift, content, phone };
+    height: visibleScreenHeight / unit - chatTop - 444 };
+  return { frame, unit, width, height, left, top, shift, content, phone, visibleScreenHeight };
 }
 
 /** Uniform height fitting must compensate its layout width, not leave a blank right strip. */
@@ -69,7 +71,7 @@ export function CandidatePlanMockup({ device, canvas, chat, theme, locale, phone
       overflow: "hidden", background: "#111317", zIndex: 1 }}>
       {variant === "B" ? <img data-native-app-viewport="1" src={nativeSource!} alt="原生App演示截图" draggable={false}
         style={{ display: "block", width: "100%", height: "100%", objectFit: "cover", objectPosition: "top" }} /> :
-        <CandidateFittedChat chat={g.content} cW={1320 * unit} theme={theme} locale={locale} />}
+        <React.Fragment><CandidateFittedChat chat={g.content} cW={1320 * unit} theme={theme} locale={locale} /><CandidateNativeCoachChrome locale={locale} unit={unit} topInset={frame.topInset} visibleHeight={g.visibleScreenHeight}/></React.Fragment>}
     </div>
     <img data-candidate-device-bezel="1" src={frame.src} alt="" draggable={false}
       style={{ position: "absolute", inset: 0, width: "100%", height: "100%", zIndex: 2, pointerEvents: "none" }} />

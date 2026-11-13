@@ -37,6 +37,17 @@ export const CANDIDATE_PLAN_CSS = `
   transform: scale(var(--candidate-thread-fit, 1)) !important;
   transform-origin: top left !important;
 }
+#candidate-poster[data-candidate-plan-device="low-angle-split"] [data-plan-variant="A"] [data-chat-plan-grid="1"] {
+  overflow: hidden;
+}
+#candidate-poster[data-candidate-plan-device="low-angle-split"] [data-plan-variant="A"] [data-chat-plan] {
+  flex: 0 0 78% !important;
+  max-width: calc(860px * var(--candidate-plan-unit) / var(--candidate-thread-fit, 1));
+  box-sizing: border-box;
+}
+#candidate-poster[data-candidate-plan-device="low-angle-split"] [data-plan-variant="A"] [data-chat-footnotes="1"] {
+  display: none;
+}
 #candidate-poster[data-candidate-plan-device="low-angle-split"] [data-chat-photos="1"] {
   display: grid !important;
   grid-template-columns: minmax(0,1fr) minmax(0,1fr);
@@ -73,7 +84,7 @@ export const CANDIDATE_PLAN_CSS = `
 export function candidatePlanNativeSource(device: string, locale: string): string | null {
   if (device !== "iphone" && device !== "iphone-medium") return null;
   if (locale !== "zh" && locale !== "en") return null;
-  return `/candidate-assets/pro-20261113/native51/coach-${locale}-native51.png`;
+  return `/candidate-assets/pro-20261113/native51/coach-${locale}-complete-native51.png`;
 }
 
 export function candidateChatFit(previous: number, measured: string | undefined): number {

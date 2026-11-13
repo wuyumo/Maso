@@ -245,10 +245,10 @@ export default function RenderPage() {
     <div style={{position:"fixed",inset:0,height:"100dvh",display:"flex",flexDirection:"column",background:"#e8ebf0",color:"#172233",fontFamily:"system-ui,-apple-system,sans-serif"}}>
     <CandidatePreviewControls target={target} mode={mode} scale={scale} ready={ready} busy={busy||batchRunning} error={error} onTarget={navigate} onMode={setMode} onExport={saveCandidatePoster} onBatch={startReviewBatch} batchRunning={batchRunning} batchStatus={batchStatus} onBatchCancel={()=>{cancelBatchRef.current=true;setBatchStatus("完成当前页后停止；已保存的候选保留，不上传");}}/>
     {target.slide === "plan" && target.device !== "watch" ? <div aria-label="第一页A/B对照" style={{display:"flex",gap:8,alignItems:"center",flexWrap:"wrap",padding:"8px 12px",background:"#fff",borderBottom:"1px solid #cbd2da"}}>
-      <button type="button" aria-pressed={variant==="A"} disabled={busy||batchRunning} onClick={()=>changeVariant("A")}>A · 调整后的聊天</button>
-      <button type="button" aria-pressed={variant==="B"} disabled={busy||batchRunning||!candidatePlanNativeSource(target.device,target.locale)} onClick={()=>changeVariant("B")}>B · 原生App截图</button>
+      <button type="button" aria-pressed={variant==="A"} disabled={busy||batchRunning} onClick={()=>changeVariant("A")}>A · 原生UI风格 Mock</button>
+      <button type="button" aria-pressed={variant==="B"} disabled={busy||batchRunning||!candidatePlanNativeSource(target.device,target.locale)} onClick={()=>changeVariant("B")}>B · 原生计划完成态</button>
       <button type="button" disabled={busy||batchRunning||!ready||!candidatePlanNativeSource(target.device,target.locale)} onClick={saveComparison}>一次保存 A/B 两版 PNG</button>
-      <span style={{fontSize:12}}>同设备框、同位置尺寸 · B仅中英iPhone已具真实51演示截图 · 均待海报目检</span>
+      <span style={{fontSize:12}}>同设备框、同位置尺寸 · A为Mock，B为真实51演示计划完成态 · 均待海报目检</span>
     </div> : null}
     <section ref={stageRef} aria-label="海报预览区域" style={{flex:1,minHeight:0,overflow:"auto",overscrollBehavior:"contain"}}>
     <div style={{width:canvas.w*scale,height:canvas.h*scale,margin:"16px auto"}}>

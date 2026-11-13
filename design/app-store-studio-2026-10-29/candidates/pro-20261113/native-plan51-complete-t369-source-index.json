@@ -1,0 +1,42 @@
+{
+  "app": "3.0.2(51), unchanged installed simulator bundle",
+  "device": "iPhone17Pro",
+  "runtime": "iOS26.1",
+  "captureMode": "existing local-only MASO_SHOWCASE_SEED=1 + MASO_MARKETING_COACH_NAVIGATION=plans + MASO_SHOWCASE=coach_chat",
+  "dataMeaning": "seeded demonstration of generated-workout-plan completion UI, NOT online model generation quality acceptance",
+  "isolation": {
+    "freshDeviceUUID": "93FB9C33-FFEC-456A-8C40-491670F97C18",
+    "freshContainerConfirmed": true,
+    "originalDeviceUUID": "CD4768FB-469C-48BE-AB5E-2697DC81C483",
+    "originalDataSHA256Before": "a4574bf3295d5aab039373fe7eff91b1faaadeb1f557ad97479ebacfd76e4f10",
+    "originalDataSHA256After": "a4574bf3295d5aab039373fe7eff91b1faaadeb1f557ad97479ebacfd76e4f10",
+    "originalDeviceNeverLaunchedOrReset": true,
+    "onlyOwnNewDeviceShutdownAfterCapture": true
+  },
+  "images": [
+    {
+      "locale": "zh",
+      "path": "public/candidate-assets/pro-20261113/native51/coach-zh-complete-native51.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "b53857be0cfdbaf4e840b0dec50f452f2c6b61341e73981e6c6dc04683cebaa8",
+      "capturedAtCST": "2026-11-13T16:30:45.825011+08:00",
+      "rawNativeIndividuallyReviewed": true,
+      "visibleState": "weekly plan ready; DAY1 generated workout card, count8exercises/24sets, muscle diagrams and actual exercise pills; DAY2 carousel peek; lower content naturally outside native viewport"
+    },
+    {
+      "locale": "en",
+      "path": "public/candidate-assets/pro-20261113/native51/coach-en-complete-native51.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "6d2df97e5889c9289075c4ea167d135a3a8b4f41108f66e8f47181456e13eb49",
+      "capturedAtCST": "2026-11-13T16:31:05.249343+08:00",
+      "rawNativeIndividuallyReviewed": true,
+      "visibleState": "weekly plan ready; DAY1 generated workout card, count8exercises/24sets, muscle diagrams and actual exercise pills; DAY2 carousel peek; lower content naturally outside native viewport"
+    }
+  ],
+  "oldPreGenerationSources": "retained unchanged for history, not active B source",
+  "noProductionAppSourceChanges": true,
+  "acceptedForUpload": false,
+  "actualStorePosterPNGs": 0
+}
