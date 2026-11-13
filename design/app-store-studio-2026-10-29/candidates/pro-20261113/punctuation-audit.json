@@ -1,0 +1,2086 @@
+{
+  "task": "t324",
+  "recordedAt": "2026-11-13T10:08:39.337486+08:00",
+  "fieldAudit": [
+    {
+      "page": 1,
+      "slide": "plan",
+      "locale": "zh",
+      "kind": "headline",
+      "sourceField": "/slidesByDevice/iphone/0/headline/zh",
+      "before": "一张照片，\n就有一周计划",
+      "after": "一张照片，\n就有一周计划",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 1,
+      "slide": "plan",
+      "locale": "zh-Hant",
+      "kind": "headline",
+      "sourceField": "/slidesByDevice/iphone/0/headline/zh-Hant",
+      "before": "一張照片，\n就有一週計畫",
+      "after": "一張照片，\n就有一週計畫",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 1,
+      "slide": "plan",
+      "locale": "en",
+      "kind": "headline",
+      "sourceField": "/slidesByDevice/iphone/0/headline/en",
+      "before": "One photo in,\na week planned out",
+      "after": "One photo in,\na week planned out",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 1,
+      "slide": "plan",
+      "locale": "ja",
+      "kind": "headline",
+      "sourceField": "/slidesByDevice/iphone/0/headline/ja",
+      "before": "写真1枚で\n1週間のメニュー",
+      "after": "写真1枚で\n1週間のメニュー",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 1,
+      "slide": "plan",
+      "locale": "ko",
+      "kind": "headline",
+      "sourceField": "/slidesByDevice/iphone/0/headline/ko",
+      "before": "사진 한 장으로,\n일주일 계획",
+      "after": "사진 한 장으로,\n일주일 계획",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 1,
+      "slide": "plan",
+      "locale": "es",
+      "kind": "headline",
+      "sourceField": "/slidesByDevice/iphone/0/headline/es",
+      "before": "Una foto,\nuna semana lista",
+      "after": "Una foto,\nuna semana lista",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 1,
+      "slide": "plan",
+      "locale": "fr",
+      "kind": "headline",
+      "sourceField": "/slidesByDevice/iphone/0/headline/fr",
+      "before": "Une photo,\nune semaine prête",
+      "after": "Une photo,\nune semaine prête",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 1,
+      "slide": "plan",
+      "locale": "de",
+      "kind": "headline",
+      "sourceField": "/slidesByDevice/iphone/0/headline/de",
+      "before": "Ein Foto,\neine Woche geplant",
+      "after": "Ein Foto,\neine Woche geplant",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 1,
+      "slide": "plan",
+      "locale": "it",
+      "kind": "headline",
+      "sourceField": "/slidesByDevice/iphone/0/headline/it",
+      "before": "Una foto,\nuna settimana pronta",
+      "after": "Una foto,\nuna settimana pronta",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 1,
+      "slide": "plan",
+      "locale": "pt-BR",
+      "kind": "headline",
+      "sourceField": "/slidesByDevice/iphone/0/headline/pt-BR",
+      "before": "Uma foto,\numa semana pronta",
+      "after": "Uma foto,\numa semana pronta",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 1,
+      "slide": "plan",
+      "locale": "ru",
+      "kind": "headline",
+      "sourceField": "/slidesByDevice/iphone/0/headline/ru",
+      "before": "Одно фото —\nплан на неделю",
+      "after": "Одно фото —\nплан на неделю",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 1,
+      "slide": "plan",
+      "locale": "ar",
+      "kind": "headline",
+      "sourceField": "/slidesByDevice/iphone/0/headline/ar",
+      "before": "صورة واحدة،\nخطة أسبوع",
+      "after": "صورة واحدة،\nخطة أسبوع",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 1,
+      "slide": "plan",
+      "locale": "zh",
+      "kind": "description",
+      "sourceField": "/slidesByDevice/iphone/0/textElements/0/text/zh",
+      "before": "也听你要的天数、时长和重点。",
+      "after": "也听你要的天数、时长和重点",
+      "removedTerminalPeriod": "。",
+      "changed": true,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 1,
+      "slide": "plan",
+      "locale": "zh-Hant",
+      "kind": "description",
+      "sourceField": "/slidesByDevice/iphone/0/textElements/0/text/zh-Hant",
+      "before": "也聽你要的天數、時長和重點。",
+      "after": "也聽你要的天數、時長和重點",
+      "removedTerminalPeriod": "。",
+      "changed": true,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 1,
+      "slide": "plan",
+      "locale": "en",
+      "kind": "description",
+      "sourceField": "/slidesByDevice/iphone/0/textElements/0/text/en",
+      "before": "Also the days, length, and focus you want.",
+      "after": "Also the days, length, and focus you want",
+      "removedTerminalPeriod": ".",
+      "changed": true,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 1,
+      "slide": "plan",
+      "locale": "ja",
+      "kind": "description",
+      "sourceField": "/slidesByDevice/iphone/0/textElements/0/text/ja",
+      "before": "日数・時間・重点も、希望どおり。",
+      "after": "日数・時間・重点も、希望どおり",
+      "removedTerminalPeriod": "。",
+      "changed": true,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 1,
+      "slide": "plan",
+      "locale": "ko",
+      "kind": "description",
+      "sourceField": "/slidesByDevice/iphone/0/textElements/0/text/ko",
+      "before": "일수, 시간, 중점도 원하는 대로.",
+      "after": "일수, 시간, 중점도 원하는 대로",
+      "removedTerminalPeriod": ".",
+      "changed": true,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 1,
+      "slide": "plan",
+      "locale": "es",
+      "kind": "description",
+      "sourceField": "/slidesByDevice/iphone/0/textElements/0/text/es",
+      "before": "También los días, la duración y el foco.",
+      "after": "También los días, la duración y el foco",
+      "removedTerminalPeriod": ".",
+      "changed": true,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 1,
+      "slide": "plan",
+      "locale": "fr",
+      "kind": "description",
+      "sourceField": "/slidesByDevice/iphone/0/textElements/0/text/fr",
+      "before": "Aussi les jours, la durée et le focus.",
+      "after": "Aussi les jours, la durée et le focus",
+      "removedTerminalPeriod": ".",
+      "changed": true,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 1,
+      "slide": "plan",
+      "locale": "de",
+      "kind": "description",
+      "sourceField": "/slidesByDevice/iphone/0/textElements/0/text/de",
+      "before": "Auch Tage, Dauer und Fokus.",
+      "after": "Auch Tage, Dauer und Fokus",
+      "removedTerminalPeriod": ".",
+      "changed": true,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 1,
+      "slide": "plan",
+      "locale": "it",
+      "kind": "description",
+      "sourceField": "/slidesByDevice/iphone/0/textElements/0/text/it",
+      "before": "Anche i giorni, la durata e il focus.",
+      "after": "Anche i giorni, la durata e il focus",
+      "removedTerminalPeriod": ".",
+      "changed": true,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 1,
+      "slide": "plan",
+      "locale": "pt-BR",
+      "kind": "description",
+      "sourceField": "/slidesByDevice/iphone/0/textElements/0/text/pt-BR",
+      "before": "Também os dias, a duração e o foco.",
+      "after": "Também os dias, a duração e o foco",
+      "removedTerminalPeriod": ".",
+      "changed": true,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 1,
+      "slide": "plan",
+      "locale": "ru",
+      "kind": "description",
+      "sourceField": "/slidesByDevice/iphone/0/textElements/0/text/ru",
+      "before": "Ещё дни, длительность и акцент.",
+      "after": "Ещё дни, длительность и акцент",
+      "removedTerminalPeriod": ".",
+      "changed": true,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 1,
+      "slide": "plan",
+      "locale": "ar",
+      "kind": "description",
+      "sourceField": "/slidesByDevice/iphone/0/textElements/0/text/ar",
+      "before": "وأيضًا الأيام والمدة والتركيز.",
+      "after": "وأيضًا الأيام والمدة والتركيز",
+      "removedTerminalPeriod": ".",
+      "changed": true,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 2,
+      "slide": "recovery",
+      "locale": "zh",
+      "kind": "headline",
+      "sourceField": "/slidesByDevice/iphone/1/headline/zh",
+      "before": "肌肉恢复估算，\n一眼看清",
+      "after": "肌肉恢复估算，\n一眼看清",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 2,
+      "slide": "recovery",
+      "locale": "zh-Hant",
+      "kind": "headline",
+      "sourceField": "/slidesByDevice/iphone/1/headline/zh-Hant",
+      "before": "肌肉恢復估算，\n一眼看清",
+      "after": "肌肉恢復估算，\n一眼看清",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 2,
+      "slide": "recovery",
+      "locale": "en",
+      "kind": "headline",
+      "sourceField": "/slidesByDevice/iphone/1/headline/en",
+      "before": "Estimated muscle\nrecovery",
+      "after": "Estimated muscle\nrecovery",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 2,
+      "slide": "recovery",
+      "locale": "ja",
+      "kind": "headline",
+      "sourceField": "/slidesByDevice/iphone/1/headline/ja",
+      "before": "筋肉の回復を\n推定で確認",
+      "after": "筋肉の回復を\n推定で確認",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 2,
+      "slide": "recovery",
+      "locale": "ko",
+      "kind": "headline",
+      "sourceField": "/slidesByDevice/iphone/1/headline/ko",
+      "before": "근육 회복을\n추정치로 확인",
+      "after": "근육 회복을\n추정치로 확인",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 2,
+      "slide": "recovery",
+      "locale": "es",
+      "kind": "headline",
+      "sourceField": "/slidesByDevice/iphone/1/headline/es",
+      "before": "Recuperación muscular\nestimada",
+      "after": "Recuperación muscular\nestimada",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 2,
+      "slide": "recovery",
+      "locale": "fr",
+      "kind": "headline",
+      "sourceField": "/slidesByDevice/iphone/1/headline/fr",
+      "before": "Récupération musculaire\nestimée",
+      "after": "Récupération musculaire\nestimée",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 2,
+      "slide": "recovery",
+      "locale": "de",
+      "kind": "headline",
+      "sourceField": "/slidesByDevice/iphone/1/headline/de",
+      "before": "Geschätzte\nMuskelerholung",
+      "after": "Geschätzte\nMuskelerholung",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 2,
+      "slide": "recovery",
+      "locale": "it",
+      "kind": "headline",
+      "sourceField": "/slidesByDevice/iphone/1/headline/it",
+      "before": "Recupero muscolare\nstimato",
+      "after": "Recupero muscolare\nstimato",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 2,
+      "slide": "recovery",
+      "locale": "pt-BR",
+      "kind": "headline",
+      "sourceField": "/slidesByDevice/iphone/1/headline/pt-BR",
+      "before": "Recuperação muscular\nestimada",
+      "after": "Recuperação muscular\nestimada",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 2,
+      "slide": "recovery",
+      "locale": "ru",
+      "kind": "headline",
+      "sourceField": "/slidesByDevice/iphone/1/headline/ru",
+      "before": "Восстановление мышц,\nпо оценке",
+      "after": "Восстановление мышц,\nпо оценке",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 2,
+      "slide": "recovery",
+      "locale": "ar",
+      "kind": "headline",
+      "sourceField": "/slidesByDevice/iphone/1/headline/ar",
+      "before": "تقديرات تعافي\nالعضلات",
+      "after": "تقديرات تعافي\nالعضلات",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 2,
+      "slide": "recovery",
+      "locale": "zh",
+      "kind": "description",
+      "sourceField": "/slidesByDevice/iphone/1/textElements/0/text/zh",
+      "before": "3D 肌肉图，按部位显示。",
+      "after": "3D 肌肉图，按部位显示",
+      "removedTerminalPeriod": "。",
+      "changed": true,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 2,
+      "slide": "recovery",
+      "locale": "zh-Hant",
+      "kind": "description",
+      "sourceField": "/slidesByDevice/iphone/1/textElements/0/text/zh-Hant",
+      "before": "3D 肌肉圖，按部位顯示。",
+      "after": "3D 肌肉圖，按部位顯示",
+      "removedTerminalPeriod": "。",
+      "changed": true,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 2,
+      "slide": "recovery",
+      "locale": "en",
+      "kind": "description",
+      "sourceField": "/slidesByDevice/iphone/1/textElements/0/text/en",
+      "before": "A 3D muscle map.",
+      "after": "A 3D muscle map",
+      "removedTerminalPeriod": ".",
+      "changed": true,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 2,
+      "slide": "recovery",
+      "locale": "ja",
+      "kind": "description",
+      "sourceField": "/slidesByDevice/iphone/1/textElements/0/text/ja",
+      "before": "部位ごとの3Dマップ。",
+      "after": "部位ごとの3Dマップ",
+      "removedTerminalPeriod": "。",
+      "changed": true,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 2,
+      "slide": "recovery",
+      "locale": "ko",
+      "kind": "description",
+      "sourceField": "/slidesByDevice/iphone/1/textElements/0/text/ko",
+      "before": "부위별 3D 지도.",
+      "after": "부위별 3D 지도",
+      "removedTerminalPeriod": ".",
+      "changed": true,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 2,
+      "slide": "recovery",
+      "locale": "es",
+      "kind": "description",
+      "sourceField": "/slidesByDevice/iphone/1/textElements/0/text/es",
+      "before": "Mapa muscular 3D.",
+      "after": "Mapa muscular 3D",
+      "removedTerminalPeriod": ".",
+      "changed": true,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 2,
+      "slide": "recovery",
+      "locale": "fr",
+      "kind": "description",
+      "sourceField": "/slidesByDevice/iphone/1/textElements/0/text/fr",
+      "before": "Carte musculaire 3D.",
+      "after": "Carte musculaire 3D",
+      "removedTerminalPeriod": ".",
+      "changed": true,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 2,
+      "slide": "recovery",
+      "locale": "de",
+      "kind": "description",
+      "sourceField": "/slidesByDevice/iphone/1/textElements/0/text/de",
+      "before": "3D-Muskelkarte.",
+      "after": "3D-Muskelkarte",
+      "removedTerminalPeriod": ".",
+      "changed": true,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 2,
+      "slide": "recovery",
+      "locale": "it",
+      "kind": "description",
+      "sourceField": "/slidesByDevice/iphone/1/textElements/0/text/it",
+      "before": "Mappa muscolare 3D.",
+      "after": "Mappa muscolare 3D",
+      "removedTerminalPeriod": ".",
+      "changed": true,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 2,
+      "slide": "recovery",
+      "locale": "pt-BR",
+      "kind": "description",
+      "sourceField": "/slidesByDevice/iphone/1/textElements/0/text/pt-BR",
+      "before": "Mapa muscular 3D.",
+      "after": "Mapa muscular 3D",
+      "removedTerminalPeriod": ".",
+      "changed": true,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 2,
+      "slide": "recovery",
+      "locale": "ru",
+      "kind": "description",
+      "sourceField": "/slidesByDevice/iphone/1/textElements/0/text/ru",
+      "before": "3D-карта мышц.",
+      "after": "3D-карта мышц",
+      "removedTerminalPeriod": ".",
+      "changed": true,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 2,
+      "slide": "recovery",
+      "locale": "ar",
+      "kind": "description",
+      "sourceField": "/slidesByDevice/iphone/1/textElements/0/text/ar",
+      "before": "خريطة عضلية ثلاثية الأبعاد.",
+      "after": "خريطة عضلية ثلاثية الأبعاد",
+      "removedTerminalPeriod": ".",
+      "changed": true,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 3,
+      "slide": "training",
+      "locale": "zh",
+      "kind": "headline",
+      "sourceField": "/slidesByDevice/iphone/2/headline/zh",
+      "before": "心率过高，\n立刻提醒",
+      "after": "心率过高，\n立刻提醒",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 3,
+      "slide": "training",
+      "locale": "zh-Hant",
+      "kind": "headline",
+      "sourceField": "/slidesByDevice/iphone/2/headline/zh-Hant",
+      "before": "心率過高，\n立刻提醒",
+      "after": "心率過高，\n立刻提醒",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 3,
+      "slide": "training",
+      "locale": "en",
+      "kind": "headline",
+      "sourceField": "/slidesByDevice/iphone/2/headline/en",
+      "before": "Past your limit?\nYou'll know",
+      "after": "Past your limit?\nYou'll know",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 3,
+      "slide": "training",
+      "locale": "ja",
+      "kind": "headline",
+      "sourceField": "/slidesByDevice/iphone/2/headline/ja",
+      "before": "心拍が高すぎたら\nすぐ知らせる",
+      "after": "心拍が高すぎたら\nすぐ知らせる",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 3,
+      "slide": "training",
+      "locale": "ko",
+      "kind": "headline",
+      "sourceField": "/slidesByDevice/iphone/2/headline/ko",
+      "before": "심박이 높으면,\n바로 알려 줍니다",
+      "after": "심박이 높으면,\n바로 알려 줍니다",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 3,
+      "slide": "training",
+      "locale": "es",
+      "kind": "headline",
+      "sourceField": "/slidesByDevice/iphone/2/headline/es",
+      "before": "¿Pasaste tu límite?\nLo vas a ver",
+      "after": "¿Pasaste tu límite?\nLo vas a ver",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 3,
+      "slide": "training",
+      "locale": "fr",
+      "kind": "headline",
+      "sourceField": "/slidesByDevice/iphone/2/headline/fr",
+      "before": "Au-dessus de votre limite ?\nVous le voyez",
+      "after": "Au-dessus de votre limite ?\nVous le voyez",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 3,
+      "slide": "training",
+      "locale": "de",
+      "kind": "headline",
+      "sourceField": "/slidesByDevice/iphone/2/headline/de",
+      "before": "Über dein Limit?\nDu siehst es",
+      "after": "Über dein Limit?\nDu siehst es",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 3,
+      "slide": "training",
+      "locale": "it",
+      "kind": "headline",
+      "sourceField": "/slidesByDevice/iphone/2/headline/it",
+      "before": "Oltre il tuo limite?\nLo vedi subito",
+      "after": "Oltre il tuo limite?\nLo vedi subito",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 3,
+      "slide": "training",
+      "locale": "pt-BR",
+      "kind": "headline",
+      "sourceField": "/slidesByDevice/iphone/2/headline/pt-BR",
+      "before": "Passou do seu limite?\nVocê vê na hora",
+      "after": "Passou do seu limite?\nVocê vê na hora",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 3,
+      "slide": "training",
+      "locale": "ru",
+      "kind": "headline",
+      "sourceField": "/slidesByDevice/iphone/2/headline/ru",
+      "before": "Выше вашего порога?\nВы это увидите",
+      "after": "Выше вашего порога?\nВы это увидите",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 3,
+      "slide": "training",
+      "locale": "ar",
+      "kind": "headline",
+      "sourceField": "/slidesByDevice/iphone/2/headline/ar",
+      "before": "فوق حدك؟\nستعرف فورًا",
+      "after": "فوق حدك؟\nستعرف فورًا",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 3,
+      "slide": "training",
+      "locale": "zh",
+      "kind": "description",
+      "sourceField": "/slidesByDevice/iphone/2/textElements/0/text/zh",
+      "before": "超过你设的上限就变红。",
+      "after": "超过你设的上限就变红",
+      "removedTerminalPeriod": "。",
+      "changed": true,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 3,
+      "slide": "training",
+      "locale": "zh-Hant",
+      "kind": "description",
+      "sourceField": "/slidesByDevice/iphone/2/textElements/0/text/zh-Hant",
+      "before": "超過你設的上限就變紅。",
+      "after": "超過你設的上限就變紅",
+      "removedTerminalPeriod": "。",
+      "changed": true,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 3,
+      "slide": "training",
+      "locale": "en",
+      "kind": "description",
+      "sourceField": "/slidesByDevice/iphone/2/textElements/0/text/en",
+      "before": "Turns red past your limit.",
+      "after": "Turns red past your limit",
+      "removedTerminalPeriod": ".",
+      "changed": true,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 3,
+      "slide": "training",
+      "locale": "ja",
+      "kind": "description",
+      "sourceField": "/slidesByDevice/iphone/2/textElements/0/text/ja",
+      "before": "上限を超えると赤くなる。",
+      "after": "上限を超えると赤くなる",
+      "removedTerminalPeriod": "。",
+      "changed": true,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 3,
+      "slide": "training",
+      "locale": "ko",
+      "kind": "description",
+      "sourceField": "/slidesByDevice/iphone/2/textElements/0/text/ko",
+      "before": "정한 상한을 넘으면 붉게 표시됩니다.",
+      "after": "정한 상한을 넘으면 붉게 표시됩니다",
+      "removedTerminalPeriod": ".",
+      "changed": true,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 3,
+      "slide": "training",
+      "locale": "es",
+      "kind": "description",
+      "sourceField": "/slidesByDevice/iphone/2/textElements/0/text/es",
+      "before": "Se pone en rojo al pasar tu límite.",
+      "after": "Se pone en rojo al pasar tu límite",
+      "removedTerminalPeriod": ".",
+      "changed": true,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 3,
+      "slide": "training",
+      "locale": "fr",
+      "kind": "description",
+      "sourceField": "/slidesByDevice/iphone/2/textElements/0/text/fr",
+      "before": "Passe au rouge au-delà de votre limite.",
+      "after": "Passe au rouge au-delà de votre limite",
+      "removedTerminalPeriod": ".",
+      "changed": true,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 3,
+      "slide": "training",
+      "locale": "de",
+      "kind": "description",
+      "sourceField": "/slidesByDevice/iphone/2/textElements/0/text/de",
+      "before": "Wird rot, wenn du dein Limit überschreitest.",
+      "after": "Wird rot, wenn du dein Limit überschreitest",
+      "removedTerminalPeriod": ".",
+      "changed": true,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 3,
+      "slide": "training",
+      "locale": "it",
+      "kind": "description",
+      "sourceField": "/slidesByDevice/iphone/2/textElements/0/text/it",
+      "before": "Diventa rosso oltre il tuo limite.",
+      "after": "Diventa rosso oltre il tuo limite",
+      "removedTerminalPeriod": ".",
+      "changed": true,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 3,
+      "slide": "training",
+      "locale": "pt-BR",
+      "kind": "description",
+      "sourceField": "/slidesByDevice/iphone/2/textElements/0/text/pt-BR",
+      "before": "Fica vermelho acima do seu limite.",
+      "after": "Fica vermelho acima do seu limite",
+      "removedTerminalPeriod": ".",
+      "changed": true,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 3,
+      "slide": "training",
+      "locale": "ru",
+      "kind": "description",
+      "sourceField": "/slidesByDevice/iphone/2/textElements/0/text/ru",
+      "before": "Краснеет, если выше вашего порога.",
+      "after": "Краснеет, если выше вашего порога",
+      "removedTerminalPeriod": ".",
+      "changed": true,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 3,
+      "slide": "training",
+      "locale": "ar",
+      "kind": "description",
+      "sourceField": "/slidesByDevice/iphone/2/textElements/0/text/ar",
+      "before": "يحمرّ إذا تجاوزت حدك.",
+      "after": "يحمرّ إذا تجاوزت حدك",
+      "removedTerminalPeriod": ".",
+      "changed": true,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 4,
+      "slide": "diet",
+      "locale": "zh",
+      "kind": "headline",
+      "sourceField": "/slidesByDevice/iphone/3/headline/zh",
+      "before": "饮食与睡眠，一起照顾",
+      "after": "饮食与睡眠，一起照顾",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 4,
+      "slide": "diet",
+      "locale": "zh-Hant",
+      "kind": "headline",
+      "sourceField": "/slidesByDevice/iphone/3/headline/zh-Hant",
+      "before": "飲食與睡眠，一起照顧",
+      "after": "飲食與睡眠，一起照顧",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 4,
+      "slide": "diet",
+      "locale": "en",
+      "kind": "headline",
+      "sourceField": "/slidesByDevice/iphone/3/headline/en",
+      "before": "Nutrition and sleep,\ntogether",
+      "after": "Nutrition and sleep,\ntogether",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 4,
+      "slide": "diet",
+      "locale": "ja",
+      "kind": "headline",
+      "sourceField": "/slidesByDevice/iphone/3/headline/ja",
+      "before": "食事と睡眠を\nまとめて管理",
+      "after": "食事と睡眠を\nまとめて管理",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 4,
+      "slide": "diet",
+      "locale": "ko",
+      "kind": "headline",
+      "sourceField": "/slidesByDevice/iphone/3/headline/ko",
+      "before": "식단과 수면,\n함께 관리",
+      "after": "식단과 수면,\n함께 관리",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 4,
+      "slide": "diet",
+      "locale": "es",
+      "kind": "headline",
+      "sourceField": "/slidesByDevice/iphone/3/headline/es",
+      "before": "Nutrición y sueño,\njuntos",
+      "after": "Nutrición y sueño,\njuntos",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 4,
+      "slide": "diet",
+      "locale": "fr",
+      "kind": "headline",
+      "sourceField": "/slidesByDevice/iphone/3/headline/fr",
+      "before": "Nutrition et sommeil,\nensemble",
+      "after": "Nutrition et sommeil,\nensemble",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 4,
+      "slide": "diet",
+      "locale": "de",
+      "kind": "headline",
+      "sourceField": "/slidesByDevice/iphone/3/headline/de",
+      "before": "Ernährung und Schlaf,\nim Blick",
+      "after": "Ernährung und Schlaf,\nim Blick",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 4,
+      "slide": "diet",
+      "locale": "it",
+      "kind": "headline",
+      "sourceField": "/slidesByDevice/iphone/3/headline/it",
+      "before": "Alimentazione e sonno,\ninsieme",
+      "after": "Alimentazione e sonno,\ninsieme",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 4,
+      "slide": "diet",
+      "locale": "pt-BR",
+      "kind": "headline",
+      "sourceField": "/slidesByDevice/iphone/3/headline/pt-BR",
+      "before": "Nutrição e sono,\njuntos",
+      "after": "Nutrição e sono,\njuntos",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 4,
+      "slide": "diet",
+      "locale": "ru",
+      "kind": "headline",
+      "sourceField": "/slidesByDevice/iphone/3/headline/ru",
+      "before": "Питание и сон,\nвместе",
+      "after": "Питание и сон,\nвместе",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 4,
+      "slide": "diet",
+      "locale": "ar",
+      "kind": "headline",
+      "sourceField": "/slidesByDevice/iphone/3/headline/ar",
+      "before": "التغذية والنوم،\nمعًا",
+      "after": "التغذية والنوم،\nمعًا",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 4,
+      "slide": "diet",
+      "locale": "zh",
+      "kind": "description",
+      "sourceField": "/slidesByDevice/iphone/3/textElements/0/text/zh",
+      "before": "热量、营养，和睡眠时长。",
+      "after": "热量、营养，和睡眠时长",
+      "removedTerminalPeriod": "。",
+      "changed": true,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 4,
+      "slide": "diet",
+      "locale": "zh-Hant",
+      "kind": "description",
+      "sourceField": "/slidesByDevice/iphone/3/textElements/0/text/zh-Hant",
+      "before": "熱量、營養，和睡眠時長。",
+      "after": "熱量、營養，和睡眠時長",
+      "removedTerminalPeriod": "。",
+      "changed": true,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 4,
+      "slide": "diet",
+      "locale": "en",
+      "kind": "description",
+      "sourceField": "/slidesByDevice/iphone/3/textElements/0/text/en",
+      "before": "Calories, nutrients, and time asleep.",
+      "after": "Calories, nutrients, and time asleep",
+      "removedTerminalPeriod": ".",
+      "changed": true,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 4,
+      "slide": "diet",
+      "locale": "ja",
+      "kind": "description",
+      "sourceField": "/slidesByDevice/iphone/3/textElements/0/text/ja",
+      "before": "カロリー、栄養、睡眠時間。",
+      "after": "カロリー、栄養、睡眠時間",
+      "removedTerminalPeriod": "。",
+      "changed": true,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 4,
+      "slide": "diet",
+      "locale": "ko",
+      "kind": "description",
+      "sourceField": "/slidesByDevice/iphone/3/textElements/0/text/ko",
+      "before": "열량, 영양, 수면 시간.",
+      "after": "열량, 영양, 수면 시간",
+      "removedTerminalPeriod": ".",
+      "changed": true,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 4,
+      "slide": "diet",
+      "locale": "es",
+      "kind": "description",
+      "sourceField": "/slidesByDevice/iphone/3/textElements/0/text/es",
+      "before": "Calorías, nutrientes y tiempo de sueño.",
+      "after": "Calorías, nutrientes y tiempo de sueño",
+      "removedTerminalPeriod": ".",
+      "changed": true,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 4,
+      "slide": "diet",
+      "locale": "fr",
+      "kind": "description",
+      "sourceField": "/slidesByDevice/iphone/3/textElements/0/text/fr",
+      "before": "Calories, nutriments et temps de sommeil.",
+      "after": "Calories, nutriments et temps de sommeil",
+      "removedTerminalPeriod": ".",
+      "changed": true,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 4,
+      "slide": "diet",
+      "locale": "de",
+      "kind": "description",
+      "sourceField": "/slidesByDevice/iphone/3/textElements/0/text/de",
+      "before": "Kalorien, Nährstoffe und Schlafdauer.",
+      "after": "Kalorien, Nährstoffe und Schlafdauer",
+      "removedTerminalPeriod": ".",
+      "changed": true,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 4,
+      "slide": "diet",
+      "locale": "it",
+      "kind": "description",
+      "sourceField": "/slidesByDevice/iphone/3/textElements/0/text/it",
+      "before": "Calorie, nutrienti e tempo di sonno.",
+      "after": "Calorie, nutrienti e tempo di sonno",
+      "removedTerminalPeriod": ".",
+      "changed": true,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 4,
+      "slide": "diet",
+      "locale": "pt-BR",
+      "kind": "description",
+      "sourceField": "/slidesByDevice/iphone/3/textElements/0/text/pt-BR",
+      "before": "Calorias, nutrientes e tempo de sono.",
+      "after": "Calorias, nutrientes e tempo de sono",
+      "removedTerminalPeriod": ".",
+      "changed": true,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 4,
+      "slide": "diet",
+      "locale": "ru",
+      "kind": "description",
+      "sourceField": "/slidesByDevice/iphone/3/textElements/0/text/ru",
+      "before": "Калории, нутриенты и время сна.",
+      "after": "Калории, нутриенты и время сна",
+      "removedTerminalPeriod": ".",
+      "changed": true,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 4,
+      "slide": "diet",
+      "locale": "ar",
+      "kind": "description",
+      "sourceField": "/slidesByDevice/iphone/3/textElements/0/text/ar",
+      "before": "السعرات والمغذيات ومدة النوم.",
+      "after": "السعرات والمغذيات ومدة النوم",
+      "removedTerminalPeriod": ".",
+      "changed": true,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 5,
+      "slide": "devices",
+      "locale": "en",
+      "kind": "headline",
+      "sourceField": "/slidesByDevice/iphone/4/headline/en",
+      "before": "Multiple devices,\ntrain your way",
+      "after": "Multiple devices,\ntrain your way",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 5,
+      "slide": "devices",
+      "locale": "zh",
+      "kind": "headline",
+      "sourceField": "/slidesByDevice/iphone/4/headline/zh",
+      "before": "多设备，\n随你练",
+      "after": "多设备，\n随你练",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 5,
+      "slide": "devices",
+      "locale": "zh-Hant",
+      "kind": "headline",
+      "sourceField": "/slidesByDevice/iphone/4/headline/zh-Hant",
+      "before": "多裝置，\n想練就練",
+      "after": "多裝置，\n想練就練",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 5,
+      "slide": "devices",
+      "locale": "ja",
+      "kind": "headline",
+      "sourceField": "/slidesByDevice/iphone/4/headline/ja",
+      "before": "複数デバイス、\n好きなように",
+      "after": "複数デバイス、\n好きなように",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 5,
+      "slide": "devices",
+      "locale": "ko",
+      "kind": "headline",
+      "sourceField": "/slidesByDevice/iphone/4/headline/ko",
+      "before": "여러 기기,\n내 방식대로",
+      "after": "여러 기기,\n내 방식대로",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 5,
+      "slide": "devices",
+      "locale": "es",
+      "kind": "headline",
+      "sourceField": "/slidesByDevice/iphone/4/headline/es",
+      "before": "Varios dispositivos,\na tu manera",
+      "after": "Varios dispositivos,\na tu manera",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 5,
+      "slide": "devices",
+      "locale": "fr",
+      "kind": "headline",
+      "sourceField": "/slidesByDevice/iphone/4/headline/fr",
+      "before": "Plusieurs appareils,\nà votre façon",
+      "after": "Plusieurs appareils,\nà votre façon",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 5,
+      "slide": "devices",
+      "locale": "de",
+      "kind": "headline",
+      "sourceField": "/slidesByDevice/iphone/4/headline/de",
+      "before": "Mehrere Geräte,\nwie du willst",
+      "after": "Mehrere Geräte,\nwie du willst",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 5,
+      "slide": "devices",
+      "locale": "it",
+      "kind": "headline",
+      "sourceField": "/slidesByDevice/iphone/4/headline/it",
+      "before": "Più dispositivi,\ncome vuoi",
+      "after": "Più dispositivi,\ncome vuoi",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 5,
+      "slide": "devices",
+      "locale": "pt-BR",
+      "kind": "headline",
+      "sourceField": "/slidesByDevice/iphone/4/headline/pt-BR",
+      "before": "Vários dispositivos,\ndo seu jeito",
+      "after": "Vários dispositivos,\ndo seu jeito",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 5,
+      "slide": "devices",
+      "locale": "ru",
+      "kind": "headline",
+      "sourceField": "/slidesByDevice/iphone/4/headline/ru",
+      "before": "Много устройств\nкак вам удобно",
+      "after": "Много устройств\nкак вам удобно",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 5,
+      "slide": "devices",
+      "locale": "ar",
+      "kind": "headline",
+      "sourceField": "/slidesByDevice/iphone/4/headline/ar",
+      "before": "أجهزة متعددة،\nكما تشاء",
+      "after": "أجهزة متعددة،\nكما تشاء",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 5,
+      "slide": "devices",
+      "locale": "en",
+      "kind": "description",
+      "sourceField": "/slidesByDevice/iphone/4/textElements/0/text/en",
+      "before": "iPhone, iPad,\niPhone Duo, and Apple Watch.",
+      "after": "iPhone, iPad,\niPhone Duo, and Apple Watch",
+      "removedTerminalPeriod": ".",
+      "changed": true,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 5,
+      "slide": "devices",
+      "locale": "zh",
+      "kind": "description",
+      "sourceField": "/slidesByDevice/iphone/4/textElements/0/text/zh",
+      "before": "iPhone、iPad、\niPhone Duo 和 Apple Watch",
+      "after": "iPhone、iPad、\niPhone Duo 和 Apple Watch",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 5,
+      "slide": "devices",
+      "locale": "zh-Hant",
+      "kind": "description",
+      "sourceField": "/slidesByDevice/iphone/4/textElements/0/text/zh-Hant",
+      "before": "iPhone、iPad、\niPhone Duo 和 Apple Watch",
+      "after": "iPhone、iPad、\niPhone Duo 和 Apple Watch",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 5,
+      "slide": "devices",
+      "locale": "ja",
+      "kind": "description",
+      "sourceField": "/slidesByDevice/iphone/4/textElements/0/text/ja",
+      "before": "iPhone、iPad、\niPhone Duo、Apple Watch",
+      "after": "iPhone、iPad、\niPhone Duo、Apple Watch",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 5,
+      "slide": "devices",
+      "locale": "ko",
+      "kind": "description",
+      "sourceField": "/slidesByDevice/iphone/4/textElements/0/text/ko",
+      "before": "iPhone, iPad,\niPhone Duo, Apple Watch",
+      "after": "iPhone, iPad,\niPhone Duo, Apple Watch",
+      "removedTerminalPeriod": "",
+      "changed": false,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 5,
+      "slide": "devices",
+      "locale": "es",
+      "kind": "description",
+      "sourceField": "/slidesByDevice/iphone/4/textElements/0/text/es",
+      "before": "En iPhone, iPad, iPhone Duo\ny Apple Watch.",
+      "after": "En iPhone, iPad, iPhone Duo\ny Apple Watch",
+      "removedTerminalPeriod": ".",
+      "changed": true,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 5,
+      "slide": "devices",
+      "locale": "fr",
+      "kind": "description",
+      "sourceField": "/slidesByDevice/iphone/4/textElements/0/text/fr",
+      "before": "Sur iPhone, iPad, iPhone Duo\net Apple Watch.",
+      "after": "Sur iPhone, iPad, iPhone Duo\net Apple Watch",
+      "removedTerminalPeriod": ".",
+      "changed": true,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 5,
+      "slide": "devices",
+      "locale": "de",
+      "kind": "description",
+      "sourceField": "/slidesByDevice/iphone/4/textElements/0/text/de",
+      "before": "Für iPhone, iPad, iPhone Duo\nund Apple Watch.",
+      "after": "Für iPhone, iPad, iPhone Duo\nund Apple Watch",
+      "removedTerminalPeriod": ".",
+      "changed": true,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 5,
+      "slide": "devices",
+      "locale": "it",
+      "kind": "description",
+      "sourceField": "/slidesByDevice/iphone/4/textElements/0/text/it",
+      "before": "Su iPhone, iPad, iPhone Duo\ne Apple Watch.",
+      "after": "Su iPhone, iPad, iPhone Duo\ne Apple Watch",
+      "removedTerminalPeriod": ".",
+      "changed": true,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 5,
+      "slide": "devices",
+      "locale": "pt-BR",
+      "kind": "description",
+      "sourceField": "/slidesByDevice/iphone/4/textElements/0/text/pt-BR",
+      "before": "No iPhone, iPad, iPhone Duo\ne no Apple Watch.",
+      "after": "No iPhone, iPad, iPhone Duo\ne no Apple Watch",
+      "removedTerminalPeriod": ".",
+      "changed": true,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 5,
+      "slide": "devices",
+      "locale": "ru",
+      "kind": "description",
+      "sourceField": "/slidesByDevice/iphone/4/textElements/0/text/ru",
+      "before": "На iPhone, iPad, iPhone Duo\nи Apple Watch.",
+      "after": "На iPhone, iPad, iPhone Duo\nи Apple Watch",
+      "removedTerminalPeriod": ".",
+      "changed": true,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    },
+    {
+      "page": 5,
+      "slide": "devices",
+      "locale": "ar",
+      "kind": "description",
+      "sourceField": "/slidesByDevice/iphone/4/textElements/0/text/ar",
+      "before": "iPhone وiPad\nوiPhone Duo وApple Watch.",
+      "after": "iPhone وiPad\nوiPhone Duo وApple Watch",
+      "removedTerminalPeriod": ".",
+      "changed": true,
+      "appliesTo": [
+        "iphone",
+        "iphone-medium",
+        "ipad",
+        "duo"
+      ]
+    }
+  ],
+  "changedFields": 56,
+  "changedHeadlines": 0,
+  "changedDescriptions": 56,
+  "affectedPosterVariants": 224,
+  "unchangedDescriptionFields": 4,
+  "unchangedHeadlineFields": 60,
+  "perLocaleChanged": {
+    "zh": 4,
+    "zh-Hant": 4,
+    "en": 5,
+    "ja": 4,
+    "ko": 4,
+    "es": 5,
+    "fr": 5,
+    "de": 5,
+    "it": 5,
+    "pt-BR": 5,
+    "ru": 5,
+    "ar": 5
+  },
+  "perPageChanged": {
+    "plan": 12,
+    "recovery": 12,
+    "training": 12,
+    "diet": 12,
+    "devices": 8
+  },
+  "standaloneWatch": {
+    "locales": 12,
+    "pages": 2,
+    "variants": 24,
+    "editableMarketingHeadlineOrDescriptionFields": 0,
+    "action": "No period removal from original image pixels; source native captures retained"
+  },
+  "onlyTerminalSentencePeriodRemoved": true,
+  "interiorPunctuationAndDecimalsPreserved": true,
+  "chatAndOriginalScreensAndAllOtherDataUnchanged": true,
+  "03ExportLockPreserved": true,
+  "newPNGRenderedOrUploaded": false,
+  "projectSHA256": "ee36eeefa6803dd3bfe0dbb56ff888be9bb38b71634c618d633c3d7a10475eda"
+}

@@ -30,7 +30,7 @@ Pages1–5 are navigable. 03 export is deliberately disabled pending actual corr
 `slidesByDevice.iphone[0].textElements[0].text`: t318 restores all12 plan descriptions to their original days/duration/focus wording; no Pro sentence.
 `slidesByDevice.iphone[1].headline` :12locale estimated-recovery wording.
 `slidesByDevice.iphone[1].textElements[0].text`: t319 removes all12 detailed-recovery Pro sentences; retains each existing 3D-map sentence.
-Only 22 recovery leaves now differ from canonical; all transforms/chat/native asset references unchanged.
+At t319,22recovery leaves differed from canonical; t324terminal-period changes are recorded below; all transforms/chat/native asset references unchanged.
 
 03: `slidesByDevice.iphone[2].screenshot` is `/screenshots/localized/iphone/{locale}/player-heart-warning.png`; its actual native exercise label/media must be verified before any asset replacement. Phone/watch heart-rate values live inside native captures, not editable caption fields. Never paint over them. DeviceShowcase uses its own capture mapping for other families; obtain genuine corrected source before updating those references.
 
@@ -56,3 +56,7 @@ Refresh the same existing8802URL to load this UI. No browser was driven and no s
 The handoff explicitly says **no new Watch capture was executed**. OldWatchzh/zh-Hantstill says卧推/臥推; all3sampledWatchcaptures use60kg, vs51phone50kg.03must remain blocked until matching genuine Watch fixture and remaining locale/family sources exist. Same185bpm alone does not make these a consistent pair and proves no production synchronization. StandaloneWatch01Chinese naming likewise needs replacement. SampledWatchrest160has no wrong exercise label; standardize it through real capture only if a uniform50kgdeckfixture is intended.04/05have no further specific new51conflict established, but are not certified against fresh51captures.
 
 Native51source regression also checks all3staged PNG hashes/dimensions and ensures03remains locked; preview grouped checks now15.
+
+## t324 terminal punctuation
+All12languages share the same candidate text across4poster sizes. Removed exactly56terminal description sentence periods (224poster variants),0headlines needed changing;4device-page descriptions already had no final period. Interior punctuation, decimal points, chat/native UI and original image pixels are unchanged. StandaloneWatch24rawcaptures have no added editable marketing captions and were not pixel-edited. Full per-language/per-page before/after/field audit: `punctuation-audit.json`.
+The same preview/export project endpoint reads this updated file with no-store. Refresh the existing route; previously exported changed pages require re-export.03remains locked. No new PNG render or upload is claimed. Isolation checks16;preview grouped checks16including exact one-character deletion regression.

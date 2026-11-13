@@ -77,18 +77,18 @@
           {
             "id": "description",
             "text": {
-              "zh": "也听你要的天数、时长和重点。",
-              "zh-Hant": "也聽你要的天數、時長和重點。",
-              "en": "Also the days, length, and focus you want.",
-              "ja": "日数・時間・重点も、希望どおり。",
-              "ko": "일수, 시간, 중점도 원하는 대로.",
-              "es": "También los días, la duración y el foco.",
-              "fr": "Aussi les jours, la durée et le focus.",
-              "de": "Auch Tage, Dauer und Fokus.",
-              "it": "Anche i giorni, la durata e il focus.",
-              "pt-BR": "Também os dias, a duração e o foco.",
-              "ru": "Ещё дни, длительность и акцент.",
-              "ar": "وأيضًا الأيام والمدة والتركيز."
+              "zh": "也听你要的天数、时长和重点",
+              "zh-Hant": "也聽你要的天數、時長和重點",
+              "en": "Also the days, length, and focus you want",
+              "ja": "日数・時間・重点も、希望どおり",
+              "ko": "일수, 시간, 중점도 원하는 대로",
+              "es": "También los días, la duración y el foco",
+              "fr": "Aussi les jours, la durée et le focus",
+              "de": "Auch Tage, Dauer und Fokus",
+              "it": "Anche i giorni, la durata e il focus",
+              "pt-BR": "Também os dias, a duração e o foco",
+              "ru": "Ещё дни, длительность и акцент",
+              "ar": "وأيضًا الأيام والمدة والتركيز"
             },
             "transform": {
               "x": 96,
@@ -870,18 +870,18 @@
           {
             "id": "description",
             "text": {
-              "zh": "3D 肌肉图，按部位显示。",
-              "zh-Hant": "3D 肌肉圖，按部位顯示。",
-              "en": "A 3D muscle map.",
-              "ja": "部位ごとの3Dマップ。",
-              "ko": "부위별 3D 지도.",
-              "es": "Mapa muscular 3D.",
-              "fr": "Carte musculaire 3D.",
-              "de": "3D-Muskelkarte.",
-              "it": "Mappa muscolare 3D.",
-              "pt-BR": "Mapa muscular 3D.",
-              "ru": "3D-карта мышц.",
-              "ar": "خريطة عضلية ثلاثية الأبعاد."
+              "zh": "3D 肌肉图，按部位显示",
+              "zh-Hant": "3D 肌肉圖，按部位顯示",
+              "en": "A 3D muscle map",
+              "ja": "部位ごとの3Dマップ",
+              "ko": "부위별 3D 지도",
+              "es": "Mapa muscular 3D",
+              "fr": "Carte musculaire 3D",
+              "de": "3D-Muskelkarte",
+              "it": "Mappa muscolare 3D",
+              "pt-BR": "Mapa muscular 3D",
+              "ru": "3D-карта мышц",
+              "ar": "خريطة عضلية ثلاثية الأبعاد"
             },
             "transform": {
               "x": 96,
@@ -959,18 +959,18 @@
           {
             "id": "description",
             "text": {
-              "zh": "超过你设的上限就变红。",
-              "zh-Hant": "超過你設的上限就變紅。",
-              "en": "Turns red past your limit.",
-              "ja": "上限を超えると赤くなる。",
-              "ko": "정한 상한을 넘으면 붉게 표시됩니다.",
-              "es": "Se pone en rojo al pasar tu límite.",
-              "fr": "Passe au rouge au-delà de votre limite.",
-              "de": "Wird rot, wenn du dein Limit überschreitest.",
-              "it": "Diventa rosso oltre il tuo limite.",
-              "pt-BR": "Fica vermelho acima do seu limite.",
-              "ru": "Краснеет, если выше вашего порога.",
-              "ar": "يحمرّ إذا تجاوزت حدك."
+              "zh": "超过你设的上限就变红",
+              "zh-Hant": "超過你設的上限就變紅",
+              "en": "Turns red past your limit",
+              "ja": "上限を超えると赤くなる",
+              "ko": "정한 상한을 넘으면 붉게 표시됩니다",
+              "es": "Se pone en rojo al pasar tu límite",
+              "fr": "Passe au rouge au-delà de votre limite",
+              "de": "Wird rot, wenn du dein Limit überschreitest",
+              "it": "Diventa rosso oltre il tuo limite",
+              "pt-BR": "Fica vermelho acima do seu limite",
+              "ru": "Краснеет, если выше вашего порога",
+              "ar": "يحمرّ إذا تجاوزت حدك"
             },
             "transform": {
               "x": 96,
@@ -1049,18 +1049,18 @@
           {
             "id": "description",
             "text": {
-              "zh": "热量、营养，和睡眠时长。",
-              "zh-Hant": "熱量、營養，和睡眠時長。",
-              "en": "Calories, nutrients, and time asleep.",
-              "ja": "カロリー、栄養、睡眠時間。",
-              "ko": "열량, 영양, 수면 시간.",
-              "es": "Calorías, nutrientes y tiempo de sueño.",
-              "fr": "Calories, nutriments et temps de sommeil.",
-              "de": "Kalorien, Nährstoffe und Schlafdauer.",
-              "it": "Calorie, nutrienti e tempo di sonno.",
-              "pt-BR": "Calorias, nutrientes e tempo de sono.",
-              "ru": "Калории, нутриенты и время сна.",
-              "ar": "السعرات والمغذيات ومدة النوم."
+              "zh": "热量、营养，和睡眠时长",
+              "zh-Hant": "熱量、營養，和睡眠時長",
+              "en": "Calories, nutrients, and time asleep",
+              "ja": "カロリー、栄養、睡眠時間",
+              "ko": "열량, 영양, 수면 시간",
+              "es": "Calorías, nutrientes y tiempo de sueño",
+              "fr": "Calories, nutriments et temps de sommeil",
+              "de": "Kalorien, Nährstoffe und Schlafdauer",
+              "it": "Calorie, nutrienti e tempo di sonno",
+              "pt-BR": "Calorias, nutrientes e tempo de sono",
+              "ru": "Калории, нутриенты и время сна",
+              "ar": "السعرات والمغذيات ومدة النوم"
             },
             "transform": {
               "x": 96,
@@ -1123,18 +1123,18 @@
           {
             "id": "description",
             "text": {
-              "en": "iPhone, iPad,\niPhone Duo, and Apple Watch.",
+              "en": "iPhone, iPad,\niPhone Duo, and Apple Watch",
               "zh": "iPhone、iPad、\niPhone Duo 和 Apple Watch",
               "zh-Hant": "iPhone、iPad、\niPhone Duo 和 Apple Watch",
               "ja": "iPhone、iPad、\niPhone Duo、Apple Watch",
               "ko": "iPhone, iPad,\niPhone Duo, Apple Watch",
-              "es": "En iPhone, iPad, iPhone Duo\ny Apple Watch.",
-              "fr": "Sur iPhone, iPad, iPhone Duo\net Apple Watch.",
-              "de": "Für iPhone, iPad, iPhone Duo\nund Apple Watch.",
-              "it": "Su iPhone, iPad, iPhone Duo\ne Apple Watch.",
-              "pt-BR": "No iPhone, iPad, iPhone Duo\ne no Apple Watch.",
-              "ru": "На iPhone, iPad, iPhone Duo\nи Apple Watch.",
-              "ar": "iPhone وiPad\nوiPhone Duo وApple Watch."
+              "es": "En iPhone, iPad, iPhone Duo\ny Apple Watch",
+              "fr": "Sur iPhone, iPad, iPhone Duo\net Apple Watch",
+              "de": "Für iPhone, iPad, iPhone Duo\nund Apple Watch",
+              "it": "Su iPhone, iPad, iPhone Duo\ne Apple Watch",
+              "pt-BR": "No iPhone, iPad, iPhone Duo\ne no Apple Watch",
+              "ru": "На iPhone, iPad, iPhone Duo\nи Apple Watch",
+              "ar": "iPhone وiPad\nوiPhone Duo وApple Watch"
             },
             "transform": {
               "x": 96,
