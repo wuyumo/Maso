@@ -209,7 +209,16 @@ extension WatchBridge {
             return "推胸（器械）"
         }
         if language.hasPrefix("zh") { return "推胸（器械）" }
-        if language.hasPrefix("ja") { return "チェストプレス（マシン）" }
+        // DEBUG marketing previews mirror the real phone catalog, including intentional mixed-language names.
+        if language.hasPrefix("ja") { return "チェストプレス (マシン · 機械)" }
+        if language.hasPrefix("ko") { return "가슴 압박 (머신)" }
+        if language.hasPrefix("es") { return "Chest Press (Máquina)" }
+        if language.hasPrefix("fr") { return "Presse thoracique (Machine)" }
+        if language.hasPrefix("de") { return "Brustpresse (Maschine)" }
+        if language.hasPrefix("it") { return "Chest Press (Macchina)" }
+        if language.hasPrefix("pt-BR") { return "Prensa do tórax (Máquina)" }
+        if language.hasPrefix("ru") { return "Чест-пресс (Тренажёр · машина)" }
+        if language.hasPrefix("ar") { return "Chest Press (جهاز)" }
         return "Chest Press (Machine)"
     }
 }

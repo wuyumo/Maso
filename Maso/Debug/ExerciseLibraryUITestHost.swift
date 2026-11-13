@@ -321,7 +321,7 @@ struct ExerciseLibraryUITestHost: View {
                         while !Task.isCancelled {
                             try? await Task.sleep(for: .seconds(5))
                             let sampleTime = Date()
-                            session.heartRate.receive(.init(id: UUID().uuidString, sessionID: key, date: sampleTime, bpm: 128, source: "Test fixture"), now: sampleTime)
+                            session.heartRate.receive(.init(id: UUID().uuidString, sessionID: key, date: sampleTime, bpm: Double(ProcessInfo.processInfo.environment["MASO_TEST_HEART_BPM"] ?? "") ?? 128, source: "Test fixture"), now: sampleTime)
                         }
                     }
                 }

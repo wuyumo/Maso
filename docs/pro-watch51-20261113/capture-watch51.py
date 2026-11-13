@@ -1,13 +1,24 @@
 #!/usr/bin/env python3
 """Run through low_memory_build.py run. Isolated native Watch fixtures, never edits Studio/canonical assets."""
 import argparse,pathlib,json,hashlib,plistlib,subprocess,os,datetime,zoneinfo
-parser=argparse.ArgumentParser();parser.add_argument('--check-only',action='store_true');parser.add_argument('--locales',default='zh-Hans,en,zh-Hant');args=parser.parse_args()
-root=pathlib.Path('docs/pro-watch51-20261113');app=pathlib.Path('build/DerivedData-ProSource48-Simulator/Build/Products/Debug-watchsimulator/MasoWatch.app');watch='3915EE74-D7CB-460F-BB9D-28E841D3A080'
+parser=argparse.ArgumentParser();parser.add_argument('--check-only',action='store_true');parser.add_argument('--locales',default='zh-Hans,en,zh-Hant');parser.add_argument('--app',default='build/DerivedData-ProSource48-Simulator/Build/Products/Debug-watchsimulator/MasoWatch.app');args=parser.parse_args()
+root=pathlib.Path('docs/pro-watch51-20261113');app=pathlib.Path(args.app);watch='3915EE74-D7CB-460F-BB9D-28E841D3A080'
 d=plistlib.loads((app/'Info.plist').read_bytes());assert d['CFBundleVersion']=='51' and d['CFBundleShortVersionString']=='3.0.2'
 binary=app/'MasoWatch.debug.dylib';b=binary.read_bytes();assert '推胸（器械）'.encode() in b and '卧推（器械）'.encode() not in b and b'MASSO_WATCH_MARKETING_EXERCISE' in b
-frozen=json.loads(pathlib.Path('docs/pro-release51-20261113/archive-source-before.json').read_text());assert hashlib.sha256(pathlib.Path('MasoWatch/WatchBridge.swift').read_bytes()).hexdigest()==frozen['MasoWatch/WatchBridge.swift']
+frozen=json.loads(pathlib.Path('docs/pro-release51-20261113/archive-source-before.json').read_text())
+frozen_watch=subprocess.check_output(['git','show','41ebb514a2e6170786faa6f5a066601c46bf6b52:MasoWatch/WatchBridge.swift'])
+assert hashlib.sha256(frozen_watch).hexdigest()==frozen['MasoWatch/WatchBridge.swift']
+# Only the sole trailing compile-time DEBUG preview extension may differ from51.
+current_watch=pathlib.Path('MasoWatch/WatchBridge.swift').read_bytes()
+assert current_watch.count(b'\n#if DEBUG\n')==frozen_watch.count(b'\n#if DEBUG\n')==1
+assert current_watch.split(b'\n#if DEBUG\n')[0]==frozen_watch.split(b'\n#if DEBUG\n')[0]
+assert current_watch.rstrip().endswith(b'#endif') and frozen_watch.rstrip().endswith(b'#endif')
 locales=args.locales.split(',');assert set(locales)<=set('zh-Hans,en,zh-Hant,ja,ko,es,fr,de,it,pt-BR,ru,ar'.split(','))
-print(json.dumps({'version':'3.0.2(51)','artifact':str(app),'dylibSHA256':hashlib.sha256(b).hexdigest(),'targetWatch':watch,'locales':locales,'weightKg':50,'reps':8,'sets':3,'exerciseHeartRate':185,'restHeartRate':160,'unchanged51WatchSource':True,'checkOnly':args.check_only},indent=2),flush=True)
+catalog=json.loads(pathlib.Path('Maso/Resources/exercises.json').read_text())
+names=next(x for x in catalog if x['id']=='bench_press_machine')['name']
+for locale in locales:
+ assert names[locale].encode() in b, 'Artifact lacks exact catalog fixture name for '+locale+'; rebuild DEBUG Watch before accepting captures.'
+print(json.dumps({'version':'3.0.2(51)','artifact':str(app),'dylibSHA256':hashlib.sha256(b).hexdigest(),'targetWatch':watch,'locales':locales,'weightKg':50,'reps':8,'sets':3,'exerciseHeartRate':185,'restHeartRate':160,'unchanged51WatchReleaseSource':True,'exactDebugCatalogNamesVerified':True,'checkOnly':args.check_only},indent=2),flush=True)
 if args.check_only:raise SystemExit(0)
 # sim-prepare refuses to close any other running simulator; never bypass the owner gate.
 lockfd=int(os.environ['MASO_BUILD_LOCK_FD']);os.fstat(lockfd)

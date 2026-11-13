@@ -1,0 +1,16 @@
+{
+  "baseline": "41ebb514a2e6170786faa6f5a066601c46bf6b52",
+  "bothChangedSwiftFilesReleasePreprocessedTextIdentical": true,
+  "uiCaptureBlockedByOtherBootedSimulator": true,
+  "nativeScreenshotsCreated": 0,
+  "scope": "compile-time DEBUG marketing fixtures only",
+  "fixtureContractAssertionsPassed": 18,
+  "actualCatalogLanguageCases": 12,
+  "regionalAliasCases": 5,
+  "unrelatedIDNilCase": 1,
+  "captureHelperPythonSyntaxPassed": true,
+  "oldThreeLocaleArtifactPreflightPassed": true,
+  "oldNineLocaleArtifactCorrectlyRejected": true,
+  "historicalRawImagesUnchanged": 51,
+  "checkedAt": "2026-11-13T10:24:05.679158+08:00"
+}
