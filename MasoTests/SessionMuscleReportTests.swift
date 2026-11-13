@@ -103,7 +103,7 @@ final class SessionMuscleReportTests: XCTestCase {
         ).isEmpty)
     }
 
-    func testShareSelectionDoesNotChangeTheSessionTotal() {
+    func testShareSelectionDoesNotChangeTheSessionTotal() throws {
         let bench = exercise("bench", primary: [.chest], secondary: [.triceps])
         let report = SessionMuscleReport.make(
             records: [record("a", "bench", weight: 60, reps: 8, at: 0, intervals: [(0, 20)])],
@@ -120,6 +120,48 @@ final class SessionMuscleReportTests: XCTestCase {
         let unique = Dictionary(report.muscles.flatMap(\.exercises).map { ($0.id, $0.loadedVolumeKg ?? 0) }, uniquingKeysWith: { first, _ in first })
         XCTAssertEqual(unique.values.reduce(0, +), report.loadedVolumeKg ?? 0, accuracy: 0.001)
         XCTAssertGreaterThan(report.muscles.flatMap(\.exercises).count, unique.count)
+        let hidden = SessionMuscleReport.shareContent(report: report, workoutName: "Push", selection: selection)
+        XCTAssertEqual(hidden.work, "0:20")
+        XCTAssertEqual(hidden.sets, "1")
+        XCTAssertTrue(hidden.volume.contains("480"))
+        XCTAssertTrue(hidden.muscles.allSatisfy { $0.exercises.isEmpty && $0.heart == nil })
+        XCTAssertFalse(hidden.lines.contains("photo"))
+        XCTAssertFalse(hidden.lines.contains("×"))
+        var opted = selection
+        opted.includeDetails = true
+        opted.includeHeart = true
+        let shown = SessionMuscleReport.shareContent(report: report, workoutName: "Push", selection: opted)
+        let exercise = try XCTUnwrap(report.muscles.flatMap(\.exercises).first)
+        let logged = try XCTUnwrap(SessionMuscleReport.setLine(exercise.records[0]))
+        XCTAssertEqual(shown.muscles.first { !$0.exercises.isEmpty }?.exercises.first?.sets, [logged])
+        XCTAssertTrue(shown.muscles.allSatisfy { $0.heart == "No heart rate" })
+        XCTAssertNotEqual(hidden.lines, shown.lines)
+    }
+
+    func testRecordsWithoutASessionIDStayOutOfAnIdentifiedSession() {
+        var identified = record("known", "bench", weight: 40, reps: 8, at: 0)
+        identified.planId = "plan"
+        identified.workoutSessionID = "session-a"
+        var legacy = record("old", "bench", weight: 20, reps: 5, at: 30)
+        legacy.planId = "plan"
+        var other = record("other", "bench", weight: 80, reps: 3, at: 60)
+        other.planId = "plan"
+        other.workoutSessionID = "session-b"
+        let all = [identified, legacy, other]
+        let calendar = Calendar(identifier: .gregorian)
+        let day = calendar.startOfDay(for: start)
+        XCTAssertEqual(SessionMuscleReport.sets(in: all, planID: "plan", day: day, workoutSessionID: "session-a", calendar: calendar).map(\.id), ["known"])
+        XCTAssertEqual(SessionMuscleReport.sets(in: all, planID: "plan", day: day, workoutSessionID: nil, calendar: calendar).map(\.id), ["old"])
+        XCTAssertEqual(SessionMuscleReport.sets(in: all, planID: "plan", day: day, workoutSessionID: "session-b", calendar: calendar).map(\.id), ["other"])
+    }
+
+    func testASetWithoutWeightRepsOrDurationAddsNoInventedLine() {
+        let empty = record("empty", "bench", weight: nil, reps: nil, at: 0)
+        XCTAssertNil(SessionMuscleReport.setLine(empty))
+        var timed = record("timed", "bench", weight: nil, reps: nil, duration: 45, at: 0)
+        XCTAssertEqual(SessionMuscleReport.setLine(timed), "0:45")
+        timed.duration = nil
+        XCTAssertNil(SessionMuscleReport.setLine(timed))
     }
 
     private var regions: [MuscleBodyRegion] {

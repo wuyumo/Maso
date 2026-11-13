@@ -346,11 +346,10 @@ struct RecordHistoryArchiveScreen: View {
         .navigationBarTitleDisplayMode(.large)
         .applyIf(sessionSelection == nil) { view in
             view.navigationDestination(item: $ownedSession) { session in
-                SessionDetailSheet(session: session, exerciseStats: data.recordedExerciseStats(for: session),
-                                   replayPlan: data.recordedReplayPlan(for: session), onReplay: { plan in
+                RecordedSessionReport(session: session, onReplay: { plan in
                     ownedSession = nil
                     DispatchQueue.main.async { onReplay(plan) }
-                }, pushed: true)
+                })
             }
         }
     }

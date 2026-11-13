@@ -15,8 +15,12 @@ struct WorkoutSessionReportScreen: View {
     let records: [SetRecord]
     var workoutName: String?
     var presentation: WorkoutReportPresentation = .history
+    var sessionPhoto: UIImage? = nil
     var onSavePlan: (() -> Void)?
     var onExit: () -> Void = {}
+    var onRepeat: (() -> Void)? = nil
+    var onChangePhoto: (() -> Void)? = nil
+    var onDelete: (() -> Void)? = nil
 
     @State private var showsBack = false
     @State private var selectedNode: String?
@@ -24,7 +28,11 @@ struct WorkoutSessionReportScreen: View {
     @State private var detailID: String?
     @State private var durationExpanded = false
     @State private var heartExpanded = false
-    @State private var showShare = false
+    @State private var includeDetails = false
+    @State private var includeHeart = false
+    @State private var includePhoto = false
+    @State private var exported = false
+    @State private var confirmingDelete = false
     @State private var showSavePrompt = false
     @State private var planSaved = false
     @State private var showReminder = false
@@ -50,6 +58,7 @@ struct WorkoutSessionReportScreen: View {
         ScrollViewReader { proxy in
             ScrollView {
                 VStack(alignment: .leading, spacing: 12) {
+                    sessionHeading
                     bodyStage(report)
                     legend
                     SessionReportStats(report: report)
@@ -57,6 +66,11 @@ struct WorkoutSessionReportScreen: View {
                         muscleSection(muscle, proxy: proxy)
                     }
                     tables
+                    shareScope
+                    Text(verbatim: shareSelection(report).lines.joined(separator: "\n"))
+                        .font(.system(size: 1))
+                        .frame(width: 1, height: 1)
+                        .accessibilityIdentifier("workout.sessionReport.shareText")
                 }
                 .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
                 .padding(.top, MasoMetrics.rowPaddingV)
@@ -64,7 +78,14 @@ struct WorkoutSessionReportScreen: View {
             }
         }
         .background(MasoColor.background.ignoresSafeArea())
-        .overlay(alignment: .bottom) { floatingShare(identifier: "workout.sessionReport.share") { showShare = true } }
+        .overlay(alignment: .bottom) { floatingShare(identifier: "workout.sessionReport.share") { export(report) } }
+        .overlay(alignment: .top) {
+            if exported {
+                Text("session-report-share.png")
+                    .accessibilityIdentifier("workout.sessionReport.shareExported")
+                    .frame(width: 1, height: 1)
+            }
+        }
         .navigationTitle("Workout report")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -83,23 +104,27 @@ struct WorkoutSessionReportScreen: View {
                     .accessibilityIdentifier("workout.sessionReport.exit")
                 }
             }
+            if onRepeat != nil || onChangePhoto != nil || onDelete != nil {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Menu {
+                        if let onRepeat {
+                            Button("Repeat Workout", systemImage: "arrow.clockwise", action: onRepeat)
+                        }
+                        if let onChangePhoto {
+                            Button("Photo", systemImage: "photo", action: onChangePhoto)
+                        }
+                        if onDelete != nil {
+                            Button("Delete workout", systemImage: "trash", role: .destructive) { confirmingDelete = true }
+                        }
+                    } label: {
+                        Image(systemName: "ellipsis")
+                    }
+                    .accessibilityIdentifier("workout.history.more")
+                }
+            }
         }
         .sheet(isPresented: Binding(get: { detailID != nil }, set: { if !$0 { detailID = nil } })) {
             setDetail(report.muscles.flatMap(\.exercises).first { $0.id == detailID })
-        }
-        .sheet(isPresented: $showShare) {
-            AppNavigationStack {
-                sharePreview(report)
-                    .navigationTitle("Share")
-                    .navigationBarTitleDisplayMode(.inline)
-                    .toolbar {
-                        ToolbarItem(placement: .cancellationAction) {
-                            Button("Back") { showShare = false }
-                                .accessibilityIdentifier("workout.sessionReport.shareBack")
-                        }
-                    }
-            }
-            .sessionReportSheetChrome()
         }
         .sheet(item: $activity) { payload in
             ActivityViewController(activityItems: [payload.image]) { _ in activity = nil }
@@ -130,6 +155,12 @@ struct WorkoutSessionReportScreen: View {
             }
         } message: {
             Text(NSLocalizedString("Masso can remind you to train once your muscles have recovered — all on your device. You can change this anytime in Settings.", comment: ""))
+        }
+        .alert("Delete workout?", isPresented: $confirmingDelete) {
+            Button("Delete", role: .destructive) { onDelete?() }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("All sets and PRs from this workout will be removed. Your plans stay.")
         }
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("workout.sessionReport")
@@ -311,6 +342,14 @@ struct WorkoutSessionReportScreen: View {
                     Text("Timing incomplete").font(.caption.weight(.semibold))
                 }
             }
+            ForEach(exercise.records) { record in
+                if let line = SessionMuscleReport.setLine(record) {
+                    Text(verbatim: line)
+                        .font(.caption.monospacedDigit())
+                        .foregroundStyle(MasoColor.textDim)
+                        .accessibilityIdentifier("workout.sessionReport.set.\(record.id)")
+                }
+            }
             if exercise.heart.contains(where: \.drawsLine) {
                 HeartSparkline(segments: exercise.heart)
                     .accessibilityIdentifier("workout.sessionReport.spark.\(exercise.id)")
@@ -365,14 +404,59 @@ struct WorkoutSessionReportScreen: View {
         }
     }
 
-    private func sharePreview(_ report: SessionMuscleReport) -> some View {
-        SharePreview(
-            report: report,
-            name: workoutName,
-            onShare: { image in activity = ShareImageBox(image: image) }
-        )
+    private var sessionHeading: some View {
+        VStack(alignment: .leading, spacing: 2) {
+            if let workoutName, !workoutName.isEmpty {
+                Text(workoutName).font(.title2.bold()).foregroundStyle(MasoColor.text)
+            }
+            if let day = records.map(\.performedAt).min() {
+                Text(verbatim: SessionMuscleReport.dayLabel(day))
+                    .font(.subheadline)
+                    .foregroundStyle(MasoColor.textDim)
+            }
+        }
+        .accessibilityElement(children: .combine)
+        .accessibilityIdentifier("workout.sessionReport.heading")
+    }
+
+    private var shareScope: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Share").font(.headline)
+            Toggle("Include exercise detail", isOn: $includeDetails)
+                .accessibilityIdentifier("workout.sessionReport.shareDetailsToggle")
+            Toggle("Include heart rate", isOn: $includeHeart)
+                .accessibilityIdentifier("workout.sessionReport.shareHeartToggle")
+            if sessionPhoto != nil {
+                Toggle("Include photo", isOn: $includePhoto)
+                    .accessibilityIdentifier("workout.sessionReport.sharePhotoToggle")
+            }
+        }
         .accessibilityElement(children: .contain)
-        .accessibilityIdentifier("workout.sessionReport.sharePreview")
+        .accessibilityIdentifier("workout.sessionReport.shareScope")
+    }
+
+    private func shareSelection(_ report: SessionMuscleReport) -> SessionMuscleReport.ShareContent {
+        SessionMuscleReport.shareContent(
+            report: report,
+            workoutName: workoutName,
+            selection: .init(includeDetails: includeDetails, includeHeart: includeHeart, includePhoto: includePhoto && sessionPhoto != nil)
+        )
+    }
+
+    private func export(_ report: SessionMuscleReport) {
+        let selection = shareSelection(report)
+        let card = ShareBitmap(report: report, content: selection, photo: selection.includesPhoto ? sessionPhoto : nil)
+        guard let image = ShareImageRenderer.render(width: 390, { card }) else { return }
+        #if DEBUG
+        if ProcessInfo.processInfo.environment["MASO_SESSION_REPORT_EXPORT"] == "1",
+           let directory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first,
+           let data = image.pngData() {
+            try? data.write(to: directory.appendingPathComponent("session-report-share.png"))
+            exported = true
+            return
+        }
+        #endif
+        activity = ShareImageBox(image: image)
     }
 
     private func loadLine(_ exercise: SessionMuscleReport.ExerciseFacts) -> String {
@@ -465,161 +549,34 @@ private struct SessionReportStats: View {
     }
 }
 
-private struct SharePreview: View {
-    let report: SessionMuscleReport
-    let name: String?
-    let onShare: (UIImage) -> Void
-    @State private var includeDetails = false
-    @State private var includeHeart = false
-    @State private var showsBack = false
-    @State private var exported = false
-
-    var body: some View {
-        VStack(spacing: 0) {
-            ScrollViewReader { proxy in
-            ScrollView {
-                VStack(alignment: .leading, spacing: 12) {
-                    MuscleBody3DView(
-                        fatigueMap: report.intensity,
-                        showsBack: showsBack,
-                        autoRotates: false,
-                        showsFatigueColors: true,
-                        accessibilityID: "workout.sessionReport.shareBody"
-                    )
-                    .id("workout.sessionReport.shareTop")
-                    .frame(height: 380)
-                    .overlay(alignment: .bottomLeading) {
-                        HStack {
-                            Button("Body front") { showsBack = false }
-                            Button("Body back") { showsBack = true }
-                        }
-                        .font(.subheadline.weight(.semibold))
-                        .padding(8)
-                    }
-                    SessionReportStats(report: report, identifier: "workout.sessionReport.shareStats")
-                    ForEach(report.muscles) { muscle in
-                        VStack(alignment: .leading, spacing: 4) {
-                            HStack {
-                                Text(muscle.muscle.displayName).font(.headline)
-                                Spacer()
-                                Text(muscle.allocatedSets, format: .number.precision(.fractionLength(1)))
-                                    .monospacedDigit()
-                                Text("Sets").font(.caption).foregroundStyle(MasoColor.textDim)
-                            }
-                            if includeDetails || includeHeart {
-                                VStack(alignment: .leading, spacing: 4) {
-                                    ForEach(muscle.exercises) { exercise in
-                                        Text(exercise.name).font(.subheadline)
-                                        if includeHeart {
-                                            if exercise.heart.contains(where: \.drawsLine) {
-                                                HeartSparkline(segments: exercise.heart)
-                                                    .accessibilityIdentifier("workout.sessionReport.shareSpark.\(exercise.id)")
-                                            } else {
-                                                Text("No heart rate").font(.caption.weight(.semibold))
-                                            }
-                                        }
-                                    }
-                                }
-                                .accessibilityElement(children: .contain)
-                                .accessibilityIdentifier("workout.sessionReport.shareDetails.\(muscle.id)")
-                            } else {
-                                Text(muscle.exercises.map(\.name).joined(separator: " · "))
-                                    .font(.subheadline).foregroundStyle(MasoColor.textDim)
-                                    .accessibilityIdentifier("workout.sessionReport.shareSummary.\(muscle.id)")
-                            }
-                        }
-                        .padding(MasoMetrics.rowPaddingH)
-                        .background(MasoColor.surface, in: RoundedRectangle(cornerRadius: MasoMetrics.cornerRadiusMedium))
-                    }
-                    Toggle("Include exercise detail", isOn: $includeDetails)
-                        .accessibilityIdentifier("workout.sessionReport.shareDetailsToggle")
-                    Toggle("Include heart rate", isOn: $includeHeart)
-                        .accessibilityIdentifier("workout.sessionReport.shareHeartToggle")
-                }
-                .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
-                .padding(.bottom, MasoMetrics.pageBottomInset)
-            }
-            .onChange(of: includeHeart) { _, _ in scrollToShareTop(proxy) }
-            .onChange(of: includeDetails) { _, _ in scrollToShareTop(proxy) }
-            }
-        }
-        .background(MasoColor.background.ignoresSafeArea())
-        .preferredColorScheme(.dark)
-        .toolbarColorScheme(.dark, for: .navigationBar)
-        .overlay(alignment: .bottom) {
-            Button(action: send) {
-                Text("Share").frame(maxWidth: .infinity)
-            }
-            .nativeGlassProminentButtonStyle()
-            .controlSize(.large)
-            .tint(MasoColor.accent)
-            .foregroundStyle(.black)
-            .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
-            .padding(.bottom, MasoMetrics.rowPaddingV)
-            .accessibilityIdentifier("workout.sessionReport.shareSend")
-        }
-        .overlay(alignment: .top) {
-            if exported {
-                Text("session-report-share.png")
-                    .accessibilityIdentifier("workout.sessionReport.shareExported")
-                    .frame(width: 1, height: 1)
-                    .accessibilityHidden(false)
-            }
-        }
-    }
-
-    private func scrollToShareTop(_ proxy: ScrollViewProxy) {
-        Task { @MainActor in
-            proxy.scrollTo("workout.sessionReport.shareTop", anchor: .top)
-        }
-    }
-
-    private func send() {
-        let card = shareBitmap(report: report, name: name, details: includeDetails, heart: includeHeart)
-        guard let image = ShareImageRenderer.render(width: 390, { card }) else { return }
-        #if DEBUG
-        if ProcessInfo.processInfo.environment["MASO_SESSION_REPORT_EXPORT"] == "1",
-           let directory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first,
-           let data = image.pngData() {
-            try? data.write(to: directory.appendingPathComponent("session-report-share.png"))
-            exported = true
-            return
-        }
-        #endif
-        onShare(image)
-    }
-}
-
 private struct ShareBitmap: View {
     let report: SessionMuscleReport
-    let name: String?
-    let details: Bool
-    let heart: Bool
+    let content: SessionMuscleReport.ShareContent
+    var photo: UIImage? = nil
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            if let name, !name.isEmpty { Text(name).font(.title2.bold()) }
+            if let name = content.name, !name.isEmpty { Text(name).font(.title2.bold()) }
+            if let day = content.day {
+                Text(verbatim: SessionMuscleReport.dayLabel(day)).font(.subheadline)
+            }
+            if let photo {
+                Image(uiImage: photo).resizable().scaledToFit().frame(maxHeight: 220)
+            }
             ShareMuscleBody3D(muscleStyle: { muscle in
                 guard let amount = report.intensity[muscle] else { return nil }
                 return (MasoColor.accent, amount)
             })
             SessionReportStats(report: report, identifier: "workout.sessionReport.exportStats")
-            ForEach(report.muscles) { muscle in
-                HStack {
-                    Text(muscle.muscle.displayName)
-                    Spacer()
-                    Text(muscle.allocatedSets, format: .number.precision(.fractionLength(1)))
-                }
-                .font(.subheadline)
-                if details {
-                    Text(muscle.exercises.map(\.name).joined(separator: " · "))
-                        .font(.caption).foregroundStyle(MasoColor.textDim)
-                }
-                if heart {
-                    if let peak = muscle.exercises.flatMap(\.heart).flatMap(\.points).map(\.bpm).max() {
-                        Text("\(Int(peak.rounded()))").font(.caption).monospacedDigit()
-                    } else {
-                        Text("No heart rate").font(.caption)
+            ForEach(content.muscles) { muscle in
+                Text(muscle.name).font(.subheadline.weight(.semibold))
+                ForEach(muscle.exercises) { exercise in
+                    Text(exercise.name).font(.caption)
+                    ForEach(Array(exercise.sets.enumerated()), id: \.offset) { _, line in
+                        Text(verbatim: line).font(.caption.monospacedDigit())
                     }
+                }
+                if let heart = muscle.heart {
+                    Text(verbatim: heart).font(.caption.monospacedDigit())
                 }
             }
         }
@@ -627,10 +584,6 @@ private struct ShareBitmap: View {
         .foregroundStyle(MasoColor.text)
         .preferredColorScheme(.dark)
     }
-}
-
-private func shareBitmap(report: SessionMuscleReport, name: String?, details: Bool, heart: Bool) -> ShareBitmap {
-    ShareBitmap(report: report, name: name, details: details, heart: heart)
 }
 
 private struct ShareImageBox: Identifiable {

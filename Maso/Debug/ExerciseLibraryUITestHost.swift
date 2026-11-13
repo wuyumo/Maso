@@ -523,11 +523,10 @@ struct ExerciseLibraryUITestHost: View {
                         .padding(MasoMetrics.pagePaddingHorizontal)
                 }.background(MasoColor.background).navigationTitle("Sleep")
             }
-        } else if scene == "workout-history-detail", let session = data.recordedWorkoutSessions().first {
-            SessionDetailSheet(session: session, exerciseStats: data.recordedExerciseStats(for: session),
-                               replayPlan: data.recordedReplayPlan(for: session), onReplay: { _ in })
-        } else if scene == "workout-history-cards" {
+        } else if scene == "workout-history-detail" || scene == "workout-history-cards" {
             AppNavigationStack { RecordHistoryArchiveScreen(kind: .workout) }
+        } else if scene == "workout-insights-history" {
+            AppNavigationStack { HistoryScreen(onReplay: { _ in }, onOpenSettings: {}, mode: .insights) }
         } else if scene == "free-picker" {
             ExercisePickerSheet(onPick: { pickedIDs.append($0.id) }, directPick: true,
                 pickerTitle: "What would you like to train next?", onFinishWorkout: { presented = false },

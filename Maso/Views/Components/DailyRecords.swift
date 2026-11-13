@@ -614,11 +614,10 @@ struct DailyRecordSheet: View {
             }
         }
         .navigationDestination(item: $selectedSession) { route in
-            SessionDetailSheet(session: route.session, exerciseStats: data.recordedExerciseStats(for: route.session),
-                               replayPlan: data.recordedReplayPlan(for: route.session), onReplay: { plan in
+            RecordedSessionReport(session: route.session, onReplay: { plan in
                 selectedSession = nil
                 onReplay(plan)
-            }, pushed: true)
+            })
         }
         .sheet(isPresented: $showsShare) {
             FullPageShareSheet(title: NSLocalizedString("Share day", comment: ""), surface: "daily_record", imageOnly: true) {

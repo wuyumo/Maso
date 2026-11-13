@@ -131,55 +131,31 @@ final class SessionReportUITests: XCTestCase {
     func testShareDefaultsStayPrivateAndBackReturnsToTheReport() throws {
         let app = launch("session-report-clean-player")
         openReportFromCelebration(app)
-        app.buttons["workout.sessionReport.share"].tap()
-        XCTAssertTrue(app.descendants(matching: .any)["workout.sessionReport.sharePreview"].waitForExistence(timeout: 8))
-        let shareStats = app.descendants(matching: .any)["workout.sessionReport.shareStats"]
-        XCTAssertTrue(shareStats.waitForExistence(timeout: 5))
-        XCTAssertTrue(shareStats.staticTexts["Work time"].exists)
-        XCTAssertTrue(shareStats.staticTexts["Sets"].exists)
-        XCTAssertTrue(shareStats.staticTexts["Volume"].exists)
-        XCTAssertTrue(shareStats.staticTexts["0:40"].exists)
-        XCTAssertTrue(shareStats.staticTexts["480 kg"].exists)
+        let setLine = app.staticTexts["workout.sessionReport.set.session-report-set"]
+        XCTAssertTrue(setLine.waitForExistence(timeout: 8))
+        let shareText = app.staticTexts["workout.sessionReport.shareText"]
+        XCTAssertTrue(shareText.waitForExistence(timeout: 5))
+        XCTAssertFalse(shareText.label.contains(setLine.label), "viewing the set is not permission to export it")
+        XCTAssertFalse(shareText.label.contains("No heart rate"))
+        XCTAssertFalse(shareText.label.contains("photo"))
+        XCTAssertTrue(shareText.label.contains("0:40"))
+        XCTAssertTrue(shareText.label.contains("480 kg"))
         assertOff("workout.sessionReport.shareDetailsToggle", in: app)
         assertOff("workout.sessionReport.shareHeartToggle", in: app)
-        XCTAssertTrue(matchingPrefix("workout.sessionReport.shareSummary.", in: app).waitForExistence(timeout: 5))
-        XCTAssertFalse(matchingPrefix("workout.sessionReport.shareDetails.", in: app).exists)
-        XCTAssertFalse(matchingPrefix("workout.sessionReport.shareSpark.", in: app).exists)
-        keepShot(app, "share-default-scroll-top")
-        let heartToggle = revealAbove("workout.sessionReport.shareHeartToggle", control: "workout.sessionReport.shareSend", in: app)
-        let send = app.buttons["workout.sessionReport.shareSend"]
-        XCTAssertTrue(heartToggle.exists)
-        XCTAssertLessThanOrEqual(heartToggle.frame.maxY, send.frame.minY + 1, "share toggle \(heartToggle.frame) send \(send.frame)")
-        keepShot(app, "share-send-over-last-row")
+        XCTAssertFalse(app.descendants(matching: .any)["workout.sessionReport.sharePreview"].exists)
+        XCTAssertEqual(sessionEndCount(app), "0")
 
+        let details = app.switches["workout.sessionReport.shareDetailsToggle"]
         let heart = app.switches["workout.sessionReport.shareHeartToggle"]
+        details.tap()
         heart.tap()
-        XCTAssertTrue(heart.waitForExistence(timeout: 5))
-        let heartValue = String(describing: heart.value ?? "")
-        XCTAssertTrue(heartValue == "1" || heartValue == "on", "heart toggle stayed \(heartValue)")
-        XCTAssertTrue(matchingPrefix("workout.sessionReport.shareDetails.", in: app).waitForExistence(timeout: 5))
-        XCTAssertTrue(app.descendants(matching: .any)["workout.sessionReport.shareSpark.bench_press_barbell"].waitForExistence(timeout: 5))
-        XCTAssertFalse(matchingPrefix("workout.sessionReport.shareSummary.", in: app).exists)
-        // XCTNSPredicateExpectation only rechecks existence for an XCUIElement.
-        // frame.minY is not key-value coding on that element, so the predicate stays
-        // false while a later Swift read of the same frame reports the real rect.
-        let shareBody = app.images["workout.sessionReport.shareBody"]
-        let frame = waitForShareBodyAtTop(shareBody, timeout: 3)
-        XCTAssertGreaterThan(frame.minY, 0)
-        XCTAssertLessThan(frame.minY, 220)
-        XCTAssertGreaterThan(frame.height, 300, "share body \(frame)")
-        keepShot(app, "share-heart-scroll-top")
-        let shareSpark = app.descendants(matching: .any)["workout.sessionReport.shareSpark.bench_press_barbell"]
-        let preview = app.descendants(matching: .any)["workout.sessionReport.sharePreview"]
-        for _ in 0..<4 where !shareSpark.isHittable { preview.swipeUp() }
-        keepShot(app, "share-heart-scrolled-to-spark")
-
-        app.buttons["workout.sessionReport.shareBack"].tap()
+        XCTAssertTrue(shareText.label.contains(setLine.label))
+        XCTAssertTrue(shareText.label.contains("130") || shareText.label.contains("No heart rate"))
+        app.buttons["workout.sessionReport.share"].tap()
         XCTAssertTrue(app.buttons["workout.sessionReport.exit"].waitForExistence(timeout: 5))
-        XCTAssertTrue(app.descendants(matching: .any)["workout.sessionReport.sharePreview"].waitForNonExistence(timeout: 5))
-        XCTAssertFalse(app.buttons["workout.sessionReport.shareSend"].exists)
-        XCTAssertFalse(app.buttons["workout.sessionReport.info"].exists)
-        keepShot(app, "share-back-to-report")
+        XCTAssertFalse(app.descendants(matching: .any)["workout.sessionReport.sharePreview"].exists)
+        XCTAssertEqual(sessionEndCount(app), "0")
+        keepShot(app, "share-scope-on-report")
     }
 
     func testFinishExitLeavesTheReportAndHistoryUsesBack() throws {
@@ -276,10 +252,16 @@ final class SessionReportUITests: XCTestCase {
         let app = launch("session-report-clean-player", extra: ["MASO_SESSION_REPORT_EXPORT": "1"])
         openReportFromCelebration(app)
         XCTAssertTrue(app.buttons["workout.sessionReport.share"].waitForExistence(timeout: 30))
+        let before = app.staticTexts["workout.sessionReport.shareText"].label
+        XCTAssertFalse(before.contains("session-report-set") && before.contains("×"))
+        app.switches["workout.sessionReport.shareDetailsToggle"].tap()
+        let opted = app.staticTexts["workout.sessionReport.shareText"].label
+        XCTAssertTrue(opted.contains("×"))
         app.buttons["workout.sessionReport.share"].tap()
-        app.buttons["workout.sessionReport.shareSend"].tap()
         XCTAssertTrue(app.staticTexts["workout.sessionReport.shareExported"].waitForExistence(timeout: 8))
-        XCTAssertTrue(app.buttons["workout.sessionReport.shareBack"].exists)
+        XCTAssertEqual(app.staticTexts["workout.sessionReport.shareText"].label, opted)
+        XCTAssertFalse(app.descendants(matching: .any)["workout.sessionReport.sharePreview"].exists)
+        XCTAssertEqual(sessionEndCount(app), "0")
     }
 
     private func openReportFromCelebration(_ app: XCUIApplication) {

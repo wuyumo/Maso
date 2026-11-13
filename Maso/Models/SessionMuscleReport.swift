@@ -64,6 +64,49 @@ struct SessionMuscleReport: Equatable {
     struct ShareSelection: Equatable {
         var includeDetails = false
         var includeHeart = false
+        /// A photo on the page is not part of the image until this is on.
+        var includePhoto = false
+    }
+
+    struct ShareContent: Equatable {
+        var name: String?
+        var day: Date?
+        var work: String
+        var sets: String
+        var volume: String
+        var muscles: [MuscleShare]
+        var includesPhoto: Bool
+
+        struct MuscleShare: Equatable, Identifiable {
+            var id: String
+            var name: String
+            var exercises: [ExerciseShare]
+            var heart: String?
+        }
+
+        struct ExerciseShare: Equatable, Identifiable {
+            var id: String
+            var name: String
+            var sets: [String]
+        }
+
+        /// The words painted on the exported card. Opening a section does not add them.
+        var lines: [String] {
+            var result: [String] = []
+            if let name, !name.isEmpty { result.append(name) }
+            if let day { result.append(SessionMuscleReport.dayLabel(day)) }
+            result.append(contentsOf: [work, sets, volume])
+            for muscle in muscles {
+                result.append(muscle.name)
+                for exercise in muscle.exercises {
+                    result.append(exercise.name)
+                    result.append(contentsOf: exercise.sets)
+                }
+                if let heart { result.append(heart) }
+            }
+            if includesPhoto { result.append("photo") }
+            return result
+        }
     }
 
     static func make(
@@ -270,5 +313,61 @@ struct SessionMuscleReport: Equatable {
             )
         }
         return facts
+    }
+
+    /// One logged set, using only the weight, reps, or duration that were stored.
+    static func setLine(_ record: SetRecord) -> String? {
+        if let kilograms = record.weight, kilograms > 0, let reps = record.reps {
+            return "\(weightLabel(kilograms)) × \(reps)"
+        }
+        if let kilograms = record.weight, kilograms > 0 { return weightLabel(kilograms) }
+        if let reps = record.reps { return "\(reps)" }
+        if let duration = record.duration, duration > 0 { return clock(Double(duration)) }
+        return nil
+    }
+
+    static func dayLabel(_ date: Date) -> String {
+        date.formatted(.dateTime.year().month(.abbreviated).day())
+    }
+
+    static func clock(_ seconds: Double) -> String {
+        let whole = max(0, Int(seconds.rounded()))
+        return "\(whole / 60):" + String(format: "%02d", whole % 60)
+    }
+
+    /// Records for one history card. An empty session id never joins a card that has one.
+    static func sets(in records: [SetRecord], planID: String?, day: Date, workoutSessionID: String?, calendar: Calendar, now: Date = Date()) -> [SetRecord] {
+        records.filter { record in
+            guard record.performedAt <= now, calendar.isDate(record.performedAt, inSameDayAs: day), record.planId == planID else { return false }
+            return sessionID(record.workoutSessionID) == workoutSessionID
+        }.sorted { $0.performedAt < $1.performedAt }
+    }
+
+    static func sessionID(_ raw: String?) -> String? {
+        guard let raw, !raw.isEmpty else { return nil }
+        return raw
+    }
+
+    static func shareContent(report: SessionMuscleReport, workoutName: String?, selection: ShareSelection) -> ShareContent {
+        let records = report.muscles.flatMap(\.exercises).flatMap(\.records)
+        return ShareContent(
+            name: workoutName,
+            day: records.map(\.performedAt).min(),
+            work: report.workSeconds.map(clock) ?? "—",
+            sets: "\(report.setCount)",
+            volume: report.loadedVolumeKg.map(weightLabel) ?? "—",
+            muscles: report.muscles.map { muscle in
+                let peak = muscle.exercises.flatMap(\.heart).flatMap(\.points).map(\.bpm).max()
+                return ShareContent.MuscleShare(
+                    id: muscle.id,
+                    name: muscle.muscle.displayName,
+                    exercises: selection.includeDetails ? muscle.exercises.map { exercise in
+                        ShareContent.ExerciseShare(id: exercise.id, name: exercise.name, sets: exercise.records.compactMap(setLine))
+                    } : [],
+                    heart: selection.includeHeart ? (peak.map { "\(Int($0.rounded()))" } ?? "No heart rate") : nil
+                )
+            },
+            includesPhoto: selection.includePhoto
+        )
     }
 }

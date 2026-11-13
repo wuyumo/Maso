@@ -2999,7 +2999,6 @@ private struct CompletedView: View {
     @Environment(\.scenePhase) private var scenePhase
     private let celebration = WorkoutCelebrationConfiguration.approved
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @State private var showShare = false
     /// Exiting an unsaved temporary workout preserves the save decision.
     @State private var showSavePrompt = false
     /// 练满 2 次时软问一次"要不要开召回提醒" (正向时刻, 全生命周期一次).
@@ -3042,8 +3041,6 @@ private struct CompletedView: View {
                         WorkoutReportButton(title: "Workout report", keepsIntrinsicWidth: true) { showWorkoutReport = true }
                             .frame(maxWidth: .infinity)
                             .accessibilityIdentifier("workout.completed.report")
-                        PrimaryActionButton(title: "Share", icon: "square.and.arrow.up", size: .large) { showShare = true }
-                            .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
                         Button {
                             if onSavePlan != nil && !planSaved { showSavePrompt = true }
                             else { closeAndMaybeReview() }
@@ -3068,12 +3065,11 @@ private struct CompletedView: View {
                 do {
                     try await Task.sleep(for: .seconds(celebration.anchor))
                     try Task.checkCancellation()
-                    if scenePhase == .active && !showShare { celebrationFeedback.play() }
+                    if scenePhase == .active { celebrationFeedback.play() }
                     try await Task.sleep(for: .seconds(max(0, celebration.duration - celebration.anchor)))
                     animationFinished = true
                 } catch { animationFinished = true }
             }
-            .onChange(of: showShare) { _, showing in if showing { celebrationFeedback.cancel() } }
             .onDisappear { celebrationFeedback.cancel() }
             .onChange(of: showWorkoutReport) { _, presented in if presented { celebrationFeedback.cancel() } }
             .sheet(isPresented: $showWorkoutReport) {
@@ -3091,16 +3087,6 @@ private struct CompletedView: View {
                 }
                 .frame(maxWidth: ProcessInfo.processInfo.environment["MASO_TEST_NARROW"] == "1" ? 320 : .infinity)
                 .sessionReportSheetChrome()
-            }
-            .sheet(isPresented: $showShare) {
-                let fact = AccomplishmentShare.sessionFact(
-                    records: sessionRecords,
-                    name: planName,
-                    calendar: data.settings.calendar,
-                    durationSeconds: durationSeconds)
-                AccomplishmentShareSheet(title: "Share Workout", model: { privacy in
-                    .session(fact, AccomplishmentShare.present(fact, privacy: privacy))
-                }, allowsExactTime: !fact.isAggregate, allowsPhoto: true, canShare: fact.setCount > 0)
             }
             // 自由训练 (onSavePlan 非 nil): 分享页关掉后问一次是否存为 plan.
             .alert(NSLocalizedString("Save as plan?", comment: ""), isPresented: $showSavePrompt) {

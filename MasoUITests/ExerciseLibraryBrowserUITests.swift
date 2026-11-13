@@ -2345,64 +2345,59 @@ final class WorkoutSignalsUITests: XCTestCase {
                 XCTAssertFalse(card.label.contains(photoLabel), card.label)
             }
             capture(app, "\(language)-history-card-\(hasPhoto ? "photo" : "no-photo")")
-            if hasPhoto { card.coordinate(withNormalizedOffset: CGVector(dx: language == "ar" ? 0.62 : 0.38, dy: 0.85)).tap() }
-            else { card.coordinate(withNormalizedOffset: CGVector(dx: 0.15, dy: 0.5)).tap() }
-            XCTAssertTrue(element("workout.history.more", app).waitForExistence(timeout: 8))
-            if hasPhoto {
-                app.buttons[["en": "Close", "zh-Hans": "关闭", "ar": "إغلاق"][language]!].firstMatch.tap()
-                XCTAssertTrue(card.waitForExistence(timeout: 5))
-                card.coordinate(withNormalizedOffset: CGVector(dx: language == "ar" ? 0.85 : 0.15, dy: 0.5)).tap()
-                XCTAssertTrue(element("workout.history.more", app).waitForExistence(timeout: 8))
-                if language == "en" {
-                    app.buttons["Close"].firstMatch.tap()
-                    XCTAssertTrue(card.waitForExistence(timeout: 5))
-                    card.coordinate(withNormalizedOffset: CGVector(dx: 0.2, dy: 0.12)).tap()
-                    XCTAssertTrue(element("workout.history.more", app).waitForExistence(timeout: 8))
-                }
-            }
-            app.terminate()
-        }
-    }
-
-    func testWorkoutHistoryReportEntryOpensInSheet() {
-        for language in ["en", "zh-Hans", "ar"] {
-            let app = launch("workout-history-detail", language: language)
-            let menu = element("workout.history.more", app)
-            XCTAssertTrue(menu.waitForExistence(timeout: 12))
-            menu.tap()
-            let entry = element("workout.report.open", app)
-            XCTAssertTrue(entry.waitForExistence(timeout: 12)); XCTAssertTrue(entry.isHittable)
-            capture(app, "\(language)-workout-history-report-card")
-            entry.tap()
+            card.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.55)).tap()
             XCTAssertTrue(element("workout.sessionReport", app).waitForExistence(timeout: 8))
-            XCTAssertFalse(element("workout.sessionReport.info", app).exists)
+            XCTAssertTrue(element("workout.history.more", app).waitForExistence(timeout: 8))
+            XCTAssertFalse(element("workout.history.report", app).exists)
+            app.navigationBars.buttons.element(boundBy: 0).tap()
+            XCTAssertTrue(card.waitForExistence(timeout: 5))
             app.terminate()
         }
     }
 
-    func testWorkoutHistoryCardReportOpensDirectly() {
+    func testWorkoutHistoryCardOpensTheSessionReport() {
         for language in ["en", "zh-Hans", "ar"] {
             let app = launch("workout-history-cards", language: language)
-            let entry = element("workout.history.report", app)
-            XCTAssertTrue(entry.waitForExistence(timeout: 12))
-            capture(app, "\(language)-history-report-button")
-            entry.tap()
+            let card = element("workout.history.card", app)
+            XCTAssertTrue(card.waitForExistence(timeout: 12))
+            XCTAssertFalse(element("workout.history.report", app).exists)
+            capture(app, "\(language)-history-card")
+            card.tap()
             XCTAssertTrue(element("workout.sessionReport", app).waitForExistence(timeout: 8))
+            XCTAssertTrue(element("workout.sessionReport.heading", app).waitForExistence(timeout: 5))
             XCTAssertFalse(element("workout.sessionReport.info", app).exists)
-            XCTAssertFalse(element("workout.history.more", app).exists)
-            app.buttons["workout.report.close"].firstMatch.tap()
-            XCTAssertTrue(entry.waitForExistence(timeout: 8))
+            XCTAssertTrue(element("workout.history.more", app).waitForExistence(timeout: 5))
+            app.navigationBars.firstMatch.buttons.element(boundBy: 0).tap()
+            XCTAssertTrue(card.waitForExistence(timeout: 8))
             app.terminate()
         }
     }
 
-    func testWorkoutHistoryMenuOpensShare() {
-        let app = launch("workout-history-detail", language: "en")
+    func testWorkoutInsightsHistoryOpensTheSameReport() {
+        let app = launch("workout-insights-history", language: "en")
+        XCTAssertTrue(app.navigationBars["Workout Insights"].waitForExistence(timeout: 12))
+        let card = element("workout.history.card", app)
+        XCTAssertTrue(card.waitForExistence(timeout: 12))
+        for _ in 0..<8 where !card.isHittable { app.swipeUp() }
+        card.tap()
+        XCTAssertTrue(element("workout.sessionReport", app).waitForExistence(timeout: 8))
+        XCTAssertTrue(element("workout.sessionReport.share", app).exists)
+        XCTAssertFalse(element("workout.history.report", app).exists)
+        XCTAssertFalse(app.navigationBars["Share Workout"].exists)
+        app.terminate()
+    }
+
+    func testWorkoutHistoryMenuKeepsDeleteOffTheOldShare() {
+        let app = launch("workout-history-cards", language: "en")
+        let card = element("workout.history.card", app)
+        XCTAssertTrue(card.waitForExistence(timeout: 12))
+        card.tap()
         let menu = element("workout.history.more", app)
-        XCTAssertTrue(menu.waitForExistence(timeout: 12))
+        XCTAssertTrue(menu.waitForExistence(timeout: 8))
         menu.tap()
-        app.buttons["Share"].firstMatch.tap()
-        XCTAssertTrue(app.navigationBars["Share Workout"].waitForExistence(timeout: 8))
+        XCTAssertTrue(app.buttons["Delete workout"].waitForExistence(timeout: 5))
+        XCTAssertFalse(app.navigationBars["Share Workout"].exists)
+        XCTAssertTrue(app.buttons["workout.sessionReport.share"].exists)
         app.terminate()
     }
 }

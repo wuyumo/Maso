@@ -1290,6 +1290,31 @@ final class DailyRecordAggregationTests: XCTestCase {
         XCTAssertEqual(data.recordedExerciseStats(for: saved).first?.setCount, 1)
         XCTAssertEqual(data.dailyRecordSnapshots().first?.progress.count, 1)
     }
+
+    func testIdentifiedAndLegacySetsStaySeparateAndDeleteOneCard() throws {
+        let data = DataStore.makeMock()
+        let day = data.settings.calendar.startOfDay(for: Date().addingTimeInterval(-3600))
+        let when = day.addingTimeInterval(10 * 3600)
+        let exercise = try XCTUnwrap(data.exById.values.first)
+        func set(_ id: String, session: String?) -> SetRecord {
+            var record = SetRecord(id: id, exerciseId: exercise.id, exerciseName: exercise.name, category: exercise.category,
+                                   weight: 20, reps: 8, duration: nil, performedAt: when, planId: "same-plan")
+            record.workoutSessionID = session
+            return record
+        }
+        data.sets = [set("legacy", session: nil), set("blank", session: ""), set("one", session: "session-1"), set("two", session: "session-2")]
+        let sessions = data.recordedWorkoutSessions(on: when)
+        XCTAssertEqual(sessions.count, 3)
+        let legacy = try XCTUnwrap(sessions.first { $0.workoutSessionID == nil })
+        XCTAssertEqual(Set(data.recordedSets(for: legacy).map(\.id)), ["legacy", "blank"])
+        let first = try XCTUnwrap(sessions.first { $0.workoutSessionID == "session-1" })
+        XCTAssertEqual(data.recordedSets(for: first).map(\.id), ["one"])
+        data.deleteRecordedSession(first)
+        XCTAssertEqual(Set(data.sets.map(\.id)), ["legacy", "blank", "two"])
+        let remaining = data.recordedWorkoutSessions(on: when)
+        XCTAssertEqual(remaining.count, 2)
+        XCTAssertFalse(remaining.contains { $0.workoutSessionID == "session-1" })
+    }
 }
 
 @MainActor
@@ -2922,8 +2947,7 @@ final class WorkoutPageNavigationTests: XCTestCase {
                         case "workout":
                             PlanDetailSheet(initialPlan: pages.plan!, onStart: { pages.started = $0; pages.path = [] }, usesParentNavigation: true)
                         case "session":
-                            SessionDetailSheet(session: pages.session!, exerciseStats: pages.stats, replayPlan: pages.replay,
-                                               onReplay: { pages.started = $0; pages.path = [] }, pushed: true)
+                            RecordedSessionReport(session: pages.session!, onReplay: { pages.started = $0; pages.path = [] })
                         default:
                             EmptyView()
                         }

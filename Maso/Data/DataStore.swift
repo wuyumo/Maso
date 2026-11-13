@@ -1703,9 +1703,26 @@ final class DataStore {
         save()
     }
 
-    /// 删除一个训练 session 的所有 SetRecord (同 day + 同 planId).
-    /// History 列表的"删除这次训练" — session 是 SetRecord 聚合而成, 删 session = 删它的 sets.
-    /// planId 用 `?? "free"` 跟 groupedSessions 保持一致 — nil 表自由训练(没绑 plan).
+    /// Removes one history card. A card with a session id does not delete records that have none.
+    func deleteRecordedSession(_ session: SessionSummary) {
+        let cal = settings.calendar
+        sets.removeAll { record in
+            cal.isDate(record.performedAt, inSameDayAs: session.day)
+                && record.planId == session.planId
+                && SessionMuscleReport.sessionID(record.workoutSessionID) == session.workoutSessionID
+        }
+        let remains = sets.contains {
+            cal.isDate($0.performedAt, inSameDayAs: session.day) && $0.planId == session.planId
+        }
+        if !remains {
+            settings.workoutCompletions?.removeAll {
+                $0.planID == session.planId && cal.isDate($0.finishedAt, inSameDayAs: session.day)
+            }
+        }
+        save()
+    }
+
+    /// 删除同一天、同一计划下的全部记录。历史菜单改走 deleteRecordedSession，按一场分开删。
     func deleteSession(planId: String?, day: Date) {
         let cal = settings.calendar
         settings.workoutCompletions?.removeAll {
