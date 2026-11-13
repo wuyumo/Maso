@@ -66,6 +66,33 @@ export const gaps = [
   {id: 'commission-approval', step: 'Commission copy', missing: 'policy.commissionBps and the existing 20% sentence are pending confirmation, not an approved term.'}
 ];
 
+export const tabs = ['overview', 'codes', 'statements', 'account'];
+
+export const tabLabels = {
+  en: {nav: 'Sections', overview: 'Overview', codes: 'Codes', statements: 'Statements', account: 'Account'},
+  'zh-Hans': {nav: '分区', overview: '概览', codes: '优惠码', statements: '结算', account: '账户'},
+  'zh-Hant': {nav: '分區', overview: '概覽', codes: '優惠碼', statements: '結算', account: '帳戶'},
+  ja: {nav: 'セクション', overview: '概要', codes: 'コード', statements: '明細', account: 'アカウント'},
+  ko: {nav: '구역', overview: '개요', codes: '코드', statements: '명세', account: '계정'},
+  de: {nav: 'Bereiche', overview: 'Übersicht', codes: 'Codes', statements: 'Abrechnung', account: 'Konto'},
+  es: {nav: 'Secciones', overview: 'Resumen', codes: 'Códigos', statements: 'Extracto', account: 'Cuenta'},
+  fr: {nav: 'Sections', overview: 'Aperçu', codes: 'Codes', statements: 'Relevés', account: 'Compte'},
+  it: {nav: 'Sezioni', overview: 'Riepilogo', codes: 'Codici', statements: 'Rendiconti', account: 'Account'},
+  pt: {nav: 'Seções', overview: 'Resumo', codes: 'Códigos', statements: 'Extrato', account: 'Conta'},
+  ru: {nav: 'Разделы', overview: 'Обзор', codes: 'Коды', statements: 'Отчёты', account: 'Аккаунт'},
+  ar: {nav: 'أقسام', overview: 'نظرة', codes: 'رموز', statements: 'كشوف', account: 'الحساب'}
+};
+
+export function tabFromHash(hash) {
+  const name = String(hash || '').replace(/^#/, '');
+  return tabs.includes(name) ? name : 'overview';
+}
+
+export function tabLabel(lang, key) {
+  const pack = tabLabels[lang] || tabLabels.en;
+  return pack[key] || tabLabels.en[key] || key;
+}
+
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const codePattern = /^[A-Za-z][A-Za-z0-9]{3,19}$/;
 

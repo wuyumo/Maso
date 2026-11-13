@@ -8,7 +8,7 @@ import { createPreviewServer, publicPolicySnapshot } from './preview-server.mjs'
 import {
   routes, gaps, summaryFields, settlementFields, localDemo, emptyDemo, notices,
   validateEmail, validateName, validateOtp, validateCode, loginDisabled, createDisabled,
-  countText, ratioText, settlementReady, knownStatus, shareLink
+  countText, ratioText, settlementReady, knownStatus, shareLink, tabs, tabLabels, tabFromHash, tabLabel
 } from './public/contract.mjs';
 
 const dir = path.dirname(fileURLToPath(import.meta.url));
@@ -155,4 +155,33 @@ test('step: private stats and statements use only returned fields and refuse moc
   assert.match(notices.localDemo, /not Apple-reconciled revenue/);
   assert.match(notices.notScannable, /Not a scannable code/);
   assert.match(notices.settlementReadonly, /cannot confirm or send a payout/);
+});
+
+test('tabs split the private page and do not add a write route', () => {
+  assert.deepEqual(tabs, ['overview', 'codes', 'statements', 'account']);
+  assert.equal(tabFromHash('#codes'), 'codes');
+  assert.equal(tabFromHash('#nope'), 'overview');
+  assert.equal(tabFromHash(''), 'overview');
+  for (const lang of ['en', 'zh-Hans', 'zh-Hant', 'ja', 'ko', 'de', 'es', 'fr', 'it', 'pt', 'ru', 'ar']) {
+    for (const key of ['nav', 'overview', 'codes', 'statements', 'account']) {
+      assert.equal(tabLabel(lang, key).length > 0, true, lang + key);
+    }
+  }
+  const html = read('public/index.html');
+  const dashboardAt = html.indexOf('id="dashboard"');
+  const tabsAt = html.indexOf('id="tabs"');
+  const referralAt = html.indexOf('id="referral"');
+  assert.equal(dashboardAt < tabsAt && tabsAt < referralAt, true);
+  assert.match(html, /role="tablist"/);
+  assert.match(html, /id="panel-overview"/);
+  assert.match(html, /id="panel-codes"/);
+  assert.match(html, /id="panel-statements"/);
+  assert.match(html, /id="panel-account"/);
+  const source = read('public/app.js');
+  const showTab = source.slice(source.indexOf('function showTab'), source.indexOf('function onTabKey'));
+  assert.equal(showTab.includes('api('), false);
+  assert.equal(showTab.includes('fetch('), false);
+  assert.match(source, /clearPrivate/);
+  assert.match(read('public/style.css'), /safe-area-inset-bottom/);
+  assert.match(read('public/style.css'), /min-height: 44px/);
 });

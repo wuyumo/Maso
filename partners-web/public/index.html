@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
 <meta name="color-scheme" content="dark">
 <title>Masso Partners</title>
 <link rel="stylesheet" href="/style.css">
@@ -14,9 +14,8 @@
     <span class="mark" aria-hidden="true">M</span>
     <span class="brand-name">MASSO <span>Partners</span></span>
   </a>
-  <div class="header-actions">
+  <div class="header-actions" id="header-tools">
     <select id="language" aria-label="Language"></select>
-    <button id="logout" class="secondary" hidden type="button" data-i18n="logout"></button>
   </div>
 </header>
 <main id="content">
@@ -50,29 +49,62 @@
   <p class="muted"><span data-i18n="privacy"></span> <a href="/terms" data-i18n="terms"></a></p>
 </section>
 <section id="dashboard" hidden>
-  <p class="eyebrow" data-i18n="dashboard"></p>
-  <h1 id="greeting"></h1>
-  <p id="updated" class="muted"></p>
-  <button id="refresh" class="secondary" type="button" data-i18n="refresh"></button>
-  <div id="metrics" class="grid"></div>
-  <p class="notice" data-i18n="trialNote"></p>
-  <h2 data-i18n="codes"></h2>
-  <form id="create" class="card">
-    <label>
-      <span class="label-line"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 8h11v11H8z"></path><path d="M5 16V5h11"></path></svg><span data-i18n="newcode"></span></span>
-      <input name="code" pattern="[A-Za-z][A-Za-z0-9]{3,19}" minlength="4" maxlength="20" autocomplete="off" required placeholder="ALEXFIT" dir="ltr">
-    </label>
-    <label class="check"><input name="terms" type="checkbox" required><span data-i18n="accept"></span> <a href="/terms" data-i18n="terms"></a></label>
-    <p id="create-error" class="field-error" role="alert" hidden></p>
-    <p id="create-closed" class="muted" hidden></p>
-    <button data-i18n="create"></button>
-  </form>
-  <p class="muted" data-i18n="codeNote"></p>
-  <div id="codes"></div>
-  <h2 data-i18n="statements"></h2>
-  <p class="notice"><span data-i18n="payout"></span> <a href="mailto:wuyumoawuyumo@gmail.com">Masso Support</a></p>
-  <p class="muted" data-i18n="statementNote"></p>
-  <div id="settlements"></div>
+  <nav id="tabs" role="tablist">
+    <button type="button" role="tab" id="tab-overview" data-tab="overview" aria-controls="panel-overview" aria-selected="true">
+      <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="1.5"></rect><rect x="13" y="3" width="8" height="8" rx="1.5"></rect><rect x="3" y="13" width="8" height="8" rx="1.5"></rect><rect x="13" y="13" width="8" height="8" rx="1.5"></rect></svg>
+      <span data-tab-label="overview"></span>
+    </button>
+    <button type="button" role="tab" id="tab-codes" data-tab="codes" aria-controls="panel-codes" aria-selected="false" tabindex="-1">
+      <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 8h11v11H8z"></path><path d="M5 16V5h11"></path></svg>
+      <span data-tab-label="codes"></span>
+    </button>
+    <button type="button" role="tab" id="tab-statements" data-tab="statements" aria-controls="panel-statements" aria-selected="false" tabindex="-1">
+      <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6h12"></path><path d="M6 12h12"></path><path d="M6 18h8"></path></svg>
+      <span data-tab-label="statements"></span>
+    </button>
+    <button type="button" role="tab" id="tab-account" data-tab="account" aria-controls="panel-account" aria-selected="false" tabindex="-1">
+      <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.2"></circle><path d="M5 19c1.4-3 3.8-4.5 7-4.5S17.6 16 19 19"></path></svg>
+      <span data-tab-label="account"></span>
+    </button>
+  </nav>
+  <div id="panel-overview" role="tabpanel" aria-labelledby="tab-overview">
+    <p class="eyebrow" data-i18n="dashboard"></p>
+    <h1 id="greeting"></h1>
+    <p id="updated" class="muted"></p>
+    <button id="refresh" class="secondary" type="button" data-i18n="refresh"></button>
+    <div id="metrics" class="grid"></div>
+    <p id="overview-status" class="notice" hidden></p>
+    <p class="notice" data-i18n="trialNote"></p>
+  </div>
+  <div id="panel-codes" role="tabpanel" aria-labelledby="tab-codes" hidden>
+    <h2 data-i18n="codes"></h2>
+    <form id="create" class="card">
+      <label>
+        <span class="label-line"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 8h11v11H8z"></path><path d="M5 16V5h11"></path></svg><span data-i18n="newcode"></span></span>
+        <input name="code" pattern="[A-Za-z][A-Za-z0-9]{3,19}" minlength="4" maxlength="20" autocomplete="off" required placeholder="ALEXFIT" dir="ltr">
+      </label>
+      <label class="check"><input name="terms" type="checkbox" required><span data-i18n="accept"></span> <a href="/terms" data-i18n="terms"></a></label>
+      <p id="create-error" class="field-error" role="alert" hidden></p>
+      <p id="create-closed" class="muted" hidden></p>
+      <button data-i18n="create"></button>
+    </form>
+    <p class="muted" data-i18n="codeNote"></p>
+    <div id="codes"></div>
+  </div>
+  <div id="panel-statements" role="tabpanel" aria-labelledby="tab-statements" hidden>
+    <h2 data-i18n="statements"></h2>
+    <p class="notice"><span data-i18n="payout"></span> <a href="mailto:wuyumoawuyumo@gmail.com">Masso Support</a></p>
+    <p class="muted" data-i18n="statementNote"></p>
+    <div id="settlements"></div>
+  </div>
+  <div id="panel-account" role="tabpanel" aria-labelledby="tab-account" hidden>
+    <p class="eyebrow" data-tab-label="account"></p>
+    <h1 id="account-name"></h1>
+    <div id="account-language"></div>
+    <p class="muted"><a href="/terms" data-i18n="terms"></a></p>
+    <p class="notice"><a href="mailto:wuyumoawuyumo@gmail.com">Masso Support</a></p>
+    <button id="logout" class="secondary" hidden type="button" data-i18n="logout"></button>
+  </div>
 </section>
 <section id="referral" hidden>
   <p class="eyebrow" data-i18n="invite"></p>

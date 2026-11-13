@@ -23,11 +23,13 @@
 
 * { box-sizing: border-box; }
 html, body { margin: 0; background: var(--background); color: var(--text); }
+html { scroll-padding-bottom: calc(var(--tab-h, 88px) + var(--keyboard, 0px) + env(safe-area-inset-bottom)); }
 body {
   font-family: var(--font);
   font-size: 15px;
   line-height: 1.5;
   min-height: 100vh;
+  padding-bottom: var(--keyboard, 0px);
 }
 .skip {
   position: absolute;
@@ -50,7 +52,8 @@ header {
   align-items: center;
   gap: 12px;
   flex-wrap: wrap;
-  padding-block: 16px 8px;
+  padding-block: calc(16px + env(safe-area-inset-top)) 8px;
+  padding-inline: env(safe-area-inset-left) env(safe-area-inset-right);
 }
 .brand {
   display: inline-flex;
@@ -219,6 +222,53 @@ button:disabled {
 .terms h1 { font-size: 26px; }
 [hidden] { display: none !important; }
 :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+#tabs {
+  display: flex;
+  gap: 4px;
+  width: max-content;
+  max-width: 100%;
+  margin: 8px auto 12px;
+  padding: 4px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+#tabs button {
+  background: transparent;
+  color: var(--text-dim);
+  border-radius: 999px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 8px 12px;
+  font-size: 0.75rem;
+  font-weight: 650;
+  line-height: 1.15;
+  flex-direction: row;
+  gap: 8px;
+}
+#tabs button .icon { width: 18px; height: 18px; }
+#tabs button[aria-selected="true"] { color: var(--accent); background: var(--surface-hi); }
+#account-language { margin: 12px 0; }
+@media (max-width: 839px), (max-height: 520px) {
+  body.has-tabs { padding-bottom: calc(var(--tab-h, 76px) + var(--keyboard, 0px) + env(safe-area-inset-bottom)); }
+  body.has-tabs #tabs {
+    position: fixed;
+    z-index: 5;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: auto;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    border-radius: 0;
+    border: 0;
+    border-top: 1px solid var(--border);
+    background: var(--background);
+    padding: 4px calc(4px + env(safe-area-inset-right)) calc(4px + env(safe-area-inset-bottom)) calc(4px + env(safe-area-inset-left));
+  }
+  body.has-tabs #tabs button { flex-direction: column; gap: 2px; width: 100%; min-width: 0; padding: 6px 2px; }
+}
 @media (max-width: 480px) {
   h1 { font-size: 26px; }
   .actions, .actions .button, .actions button { width: 100%; }

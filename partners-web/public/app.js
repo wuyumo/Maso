@@ -20,9 +20,11 @@ function boot() {
 const {
   notices, errorI18n, localDemo, emptyDemo, knownStatus, countText, ratioText,
   settlementReady, shareLink, validateEmail, validateName, validateOtp, validateCode,
-  loginDisabled, createDisabled
+  loginDisabled, createDisabled, tabs, tabFromHash, tabLabel
 } = globalThis.MassoPartnerContract;
 localize();
+applyTabLabels();
+bindTabs();
 
 async function api(path, body) {
   let response;
@@ -123,10 +125,96 @@ function gateCreate() {
   closed.textContent = disabled ? tr('closed') : '';
   if (disabled) control.setAttribute('aria-describedby', 'create-closed');
 }
+function applyTabLabels() {
+  const nav = $('tabs');
+  if (nav) nav.setAttribute('aria-label', tabLabel(partnerLang, 'nav'));
+  for (const node of document.querySelectorAll('[data-tab-label]')) node.textContent = tabLabel(partnerLang, node.dataset.tabLabel);
+}
+function moveLanguage(privateView) {
+  const select = $('language');
+  const slot = privateView ? $('account-language') : $('header-tools');
+  if (select && slot && select.parentElement !== slot) slot.append(select);
+}
+function clearPrivate() {
+  $('metrics').replaceChildren();
+  $('codes').replaceChildren();
+  $('settlements').replaceChildren();
+  $('greeting').textContent = '';
+  $('account-name').textContent = '';
+  $('updated').textContent = '';
+  $('overview-status').hidden = true;
+  $('overview-status').textContent = '';
+  $('create').reset();
+}
+function showTab(name, fromHash) {
+  const tab = tabs.includes(name) ? name : 'overview';
+  for (const id of tabs) {
+    const on = id === tab;
+    $('panel-' + id).hidden = !on;
+    const button = $('tab-' + id);
+    button.setAttribute('aria-selected', on ? 'true' : 'false');
+    button.tabIndex = on ? 0 : -1;
+    if (on) button.setAttribute('aria-current', 'page');
+    else button.removeAttribute('aria-current');
+  }
+  if (!fromHash && location.hash !== '#' + tab) location.hash = tab;
+  if (!fromHash) $('tab-' + tab).focus();
+  fitTabs();
+}
+function fitTabs() {
+  const bar = $('tabs');
+  if (!bar) return;
+  document.documentElement.style.setProperty('--tab-h', Math.ceil(bar.getBoundingClientRect().height) + 'px');
+}
+function onTabKey(event) {
+  const current = tabs.indexOf(event.target.closest?.('[data-tab]')?.dataset.tab);
+  if (current < 0) return;
+  const forward = document.documentElement.dir === 'rtl' ? -1 : 1;
+  let next = null;
+  if (event.key === 'ArrowRight') next = (current + forward + tabs.length) % tabs.length;
+  else if (event.key === 'ArrowLeft') next = (current - forward + tabs.length) % tabs.length;
+  else if (event.key === 'Home') next = 0;
+  else if (event.key === 'End') next = tabs.length - 1;
+  else return;
+  event.preventDefault();
+  const button = $('tab-' + tabs[next]);
+  button.focus();
+  showTab(tabs[next], false);
+}
+function bindTabs() {
+  if (bindTabs.done) return;
+  bindTabs.done = true;
+  $('tabs').addEventListener('click', event => {
+    const button = event.target.closest('[data-tab]');
+    if (!button) return;
+    showTab(button.dataset.tab, false);
+  });
+  $('tabs').addEventListener('keydown', onTabKey);
+  window.addEventListener('hashchange', () => {
+    if ($('dashboard').hidden) return;
+    showTab(tabFromHash(location.hash), true);
+  });
+  document.addEventListener('focusin', event => {
+    if (event.target.matches('input')) event.target.scrollIntoView({block: 'center', inline: 'nearest'});
+  });
+  if (window.visualViewport) {
+    const fit = () => {
+      const overlap = Math.max(0, window.innerHeight - visualViewport.height - visualViewport.offsetTop);
+      document.documentElement.style.setProperty('--keyboard', overlap + 'px');
+    };
+    visualViewport.addEventListener('resize', fit);
+    visualViewport.addEventListener('scroll', fit);
+  }
+  window.addEventListener('resize', fitTabs);
+}
 function showLoggedOut() {
+  clearPrivate();
   $('dashboard').hidden = true;
+  document.body.classList.remove('has-tabs');
   $('landing').hidden = false;
   $('logout').hidden = true;
+  moveLanguage(false);
+  if (location.hash) history.replaceState(null, '', location.pathname + location.search);
   gateLogin();
 }
 
@@ -206,10 +294,15 @@ function renderDashboard(data) {
   const consent = $('create').querySelector('[name=terms]');
   consent.required = !acceptedTerms;
   consent.closest('label').hidden = acceptedTerms;
+  clearPrivate();
   $('landing').hidden = true;
   $('dashboard').hidden = false;
+  document.body.classList.add('has-tabs');
   $('logout').hidden = false;
-  $('greeting').textContent = tr('welcome') + ', ' + (data.partner?.name || '—');
+  moveLanguage(true);
+  const partnerName = data.partner?.name || '—';
+  $('greeting').textContent = tr('welcome') + ', ' + partnerName;
+  $('account-name').textContent = partnerName;
   $('updated').textContent = data.updatedAt ? tr('synced') + ' ' + new Date(data.updatedAt).toLocaleString(partnerLang) : '';
   const summary = data.summary || {};
   $('metrics').replaceChildren();
@@ -294,7 +387,13 @@ function renderDashboard(data) {
     line.className = 'statement';
     $('settlements').append(line);
   }
+  const status = $('overview-status');
+  status.hidden = !createDisabled(policy, dashboardPilot);
+  status.textContent = status.hidden ? '' : tr('closed');
   gateCreate();
+  const tab = tabFromHash(location.hash);
+  showTab(tab, true);
+  if (location.hash !== '#' + tab) history.replaceState(null, '', location.pathname + location.search + '#' + tab);
 }
 
 async function dashboard(source) {
@@ -338,6 +437,9 @@ async function start() {
     }
     if (preview === 'verify') {
       $('verify').hidden = false;
+      const otp = $('verify').querySelector('input');
+      otp.focus();
+      otp.scrollIntoView({block: 'center'});
       markDemo(notices.verifyDemo);
       say(tr('sent'), 'ok');
       return;

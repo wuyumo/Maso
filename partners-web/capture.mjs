@@ -84,11 +84,11 @@ const verify = `(() => {
   return form.hidden === false && invalid && valid && document.getElementById('demo-banner').hidden === false;
 })()`;
 const dash = `(() => {
+  const overview = document.getElementById('panel-overview');
   const text = document.body.innerText;
-  const create = document.querySelector('#create button');
-  return document.getElementById('dashboard').hidden === false && create.disabled && text.includes('Local demo') && text.includes('LOCALONLY') && text.includes('Not a scannable code') && text.includes('not Apple-reconciled revenue') && text.includes('No reconciled statements yet') && !text.includes('$0.00');
+  return document.getElementById('dashboard').hidden === false && overview.hidden === false && document.getElementById('panel-codes').hidden === true && document.getElementById('tabs').querySelectorAll('[role=tab]').length === 4 && text.includes('Local demo') && text.includes('—') && !text.includes('$0.00') && getComputedStyle(document.getElementById('tab-overview')).color === 'rgb(30, 215, 96)';
 })()`;
-const emptyDash = `(() => document.body.innerText.includes('No codes on this account.') && document.body.innerText.includes('No reconciled statements yet'))()`;
+const emptyDash = `(() => document.getElementById('codes').textContent.includes('No codes on this account.') && document.getElementById('settlements').textContent.includes('No reconciled statements yet') && document.getElementById('panel-overview').hidden === false)()`;
 const unauthorized = `(() => document.getElementById('message').textContent === 'Sign-in required.' && document.getElementById('landing').hidden === false)()`;
 const referral = `(() => {
   const text = document.body.innerText;
@@ -109,6 +109,90 @@ await shoot('flow-desktop-referral', '/r/LOCALONLY?lang=en', 1280, 1000, referra
 await shoot('flow-mobile-referral', '/r/LOCALONLY?lang=en', 390, 900, referral);
 await shoot('flow-desktop-error', '/?lang=en&preview=error', 1280, 1100, error);
 await shoot('flow-mobile-zh-landing', '/?lang=zh-Hans', 390, 1100, zh);
+
+async function page(expression) {
+  const result = await cdp('Runtime.evaluate', { expression, returnByValue: true, awaitPromise: true }, sessionId);
+  if (result.exceptionDetails) throw new Error(JSON.stringify(result.exceptionDetails));
+  if (result.result.value !== true) throw new Error(String(result.result.value));
+}
+async function snap(name) {
+  const { data } = await cdp('Page.captureScreenshot', { format: 'png' }, sessionId);
+  fs.writeFileSync(`${out}/${name}.png`, Buffer.from(data, 'base64'));
+  console.log(`${out}/${name}.png`);
+}
+await cdp('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true }, sessionId);
+await cdp('Page.navigate', { url: base + '/?lang=en&preview=dashboard' }, sessionId);
+await new Promise(resolve => setTimeout(resolve, 800));
+await page(`(async () => {
+  const posts = [];
+  const orig = window.fetch;
+  window.fetch = (url, opts) => { if (String((opts && opts.method) || 'GET').toUpperCase() === 'POST') posts.push(String(url)); return orig(url, opts); };
+  document.getElementById('metrics').textContent = 'SECRET-ACCOUNT';
+  document.getElementById('refresh').click();
+  await new Promise(resolve => setTimeout(resolve, 200));
+  if (document.getElementById('metrics').textContent.includes('SECRET-ACCOUNT')) return 'old metrics remained';
+  if (posts.length) return 'refresh wrote ' + posts.join(',');
+  for (const id of ['codes', 'statements', 'account', 'overview']) document.getElementById('tab-' + id).click();
+  if (posts.length) return 'tab click wrote ' + posts.join(',');
+  const visible = ['overview', 'codes', 'statements', 'account'].filter(id => !document.getElementById('panel-' + id).hidden);
+  if (visible.join() !== 'overview') return 'visible ' + visible.join();
+  document.getElementById('tab-overview').focus();
+  document.getElementById('tab-overview').dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+  if (document.activeElement.id !== 'tab-codes' || location.hash !== '#codes') return 'keyboard ' + document.activeElement.id + location.hash;
+  if (document.getElementById('tab-codes').getAttribute('aria-current') !== 'page') return 'missing aria-current';
+  history.back();
+  await new Promise(resolve => setTimeout(resolve, 250));
+  if (location.hash !== '#overview' || document.getElementById('panel-codes').hidden === false) return 'back ' + location.hash;
+  return true;
+})()`);
+for (const id of ['overview', 'codes', 'statements', 'account']) {
+  await page(`(() => { document.getElementById('tab-${id}').click(); return location.hash === '#${id}' && document.getElementById('panel-${id}').hidden === false; })()`);
+  await snap('tab-mobile-' + id);
+}
+await cdp('Page.reload', {}, sessionId);
+await new Promise(resolve => setTimeout(resolve, 800));
+await page(`(() => location.hash === '#account' && document.getElementById('panel-account').hidden === false && document.getElementById('panel-overview').hidden === true)()`);
+await cdp('Emulation.setDeviceMetricsOverride', { width: 844, height: 390, deviceScaleFactor: 1, mobile: true }, sessionId);
+await page(`(() => {
+  document.documentElement.style.fontSize = '24px';
+  const bar = document.getElementById('tabs');
+  const button = bar.querySelector('button');
+  const style = getComputedStyle(bar);
+  const link = document.querySelector('#panel-account a');
+  link.scrollIntoView({ block: 'center' });
+  const nav = document.getElementById('tabs').getBoundingClientRect();
+  const box = link.getBoundingClientRect();
+  return button.getBoundingClientRect().height >= 44 && style.position === 'fixed' && document.documentElement.scrollWidth <= window.innerWidth + 1 && box.bottom <= nav.top + 1;
+})()`);
+await snap('tab-mobile-landscape');
+await cdp('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true }, sessionId);
+await cdp('Page.navigate', { url: base + '/?lang=zh-Hans&preview=dashboard#codes' }, sessionId);
+await new Promise(resolve => setTimeout(resolve, 800));
+await page(`(() => document.getElementById('tab-codes').textContent.includes('优惠码') && document.getElementById('panel-codes').hidden === false)()`);
+await snap('tab-mobile-zh-codes');
+await cdp('Page.navigate', { url: base + '/?lang=ar&preview=dashboard#account' }, sessionId);
+await new Promise(resolve => setTimeout(resolve, 800));
+await page(`(() => {
+  if (document.documentElement.dir !== 'rtl') return 'dir ' + document.documentElement.dir;
+  document.getElementById('tab-account').focus();
+  document.getElementById('tab-account').dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+  return document.activeElement.id === 'tab-statements';
+})()`);
+await snap('tab-mobile-ar-account');
+await cdp('Emulation.setDeviceMetricsOverride', { width: 1280, height: 900, deviceScaleFactor: 1, mobile: false }, sessionId);
+await cdp('Page.navigate', { url: base + '/?lang=en&preview=dashboard#overview' }, sessionId);
+await new Promise(resolve => setTimeout(resolve, 800));
+await page(`(() => {
+  const bar = document.getElementById('tabs');
+  const box = bar.getBoundingClientRect();
+  return getComputedStyle(bar).position === 'static' && box.width < 560 && box.width > 200 && document.getElementById('dashboard').hidden === false;
+})()`);
+await snap('tab-desktop-overview');
+await page(`(() => { document.getElementById('tab-statements').click(); return location.hash === '#statements'; })()`);
+await snap('tab-desktop-statements');
+await cdp('Page.navigate', { url: base + '/?lang=en' }, sessionId);
+await new Promise(resolve => setTimeout(resolve, 800));
+await page(`(() => document.getElementById('dashboard').hidden === true && document.getElementById('landing').hidden === false)()`);
 
 chrome.kill();
 await new Promise(resolve => server.close(resolve));
