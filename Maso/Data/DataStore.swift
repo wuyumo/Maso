@@ -556,6 +556,9 @@ final class DataStore {
         // (开发时如果需要临时解锁所有 Pro 功能, 把 proSubscription 改成一个非 nil 的
         // ProSubscription 实例; 上线前必须改回 nil.)
         let settings = UserSettings(
+            // nil stays locked, the same as a saved profile with no origin key.
+            // The pending default belongs only to a real first launch.
+            weightUnitOrigin: nil,
             onboardingCompleted: true,
             weeklyTrainingDays: 3,
             // 默认必须用 MuscleSelector 暴露的 major 值, 不能用 sub (e.g. .lats).
@@ -565,8 +568,7 @@ final class DataStore {
             gender: .male,
             age: 30,
             weight: 75,
-            proSubscription: nil,
-            weightUnitOrigin: nil
+            proSubscription: nil
         )
         // sample sets 先生成 (planId 是硬编码字符串, 不依赖最终 plan 数组),
         // 再用共享 helper 生成 settings-aware + LRU-backfilled 的推荐 plan.
