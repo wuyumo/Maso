@@ -96,43 +96,66 @@ struct SessionMuscleReport: Equatable {
             }
         }
         let facts = exerciseFacts(records: ordered, exercises: exercises, samples: samples)
-        let rows = buckets.values
-            .filter { $0.share > 0 }
-            .map { bucket in
-                let listed = exerciseOrder.filter { (bucket.exerciseShare[$0] ?? 0) > 0 }
-                let sorted = listed.sorted {
-                    let left = bucket.exerciseShare[$0] ?? 0
-                    let right = bucket.exerciseShare[$1] ?? 0
-                    if left != right { return left > right }
-                    return (facts[$0]?.name ?? $0) < (facts[$1]?.name ?? $1)
-                }
-                return MuscleRow(
-                    id: bucket.nodes.sorted().joined(separator: "|"),
-                    muscle: bucket.muscle,
-                    nodes: bucket.nodes,
-                    allocatedSets: bucket.share,
-                    exercises: sorted.compactMap { facts[$0] }
-                )
-            }
-            .sorted { $0.allocatedSets == $1.allocatedSets ? $0.id < $1.id : $0.allocatedSets > $1.allocatedSets }
-        let peak = rows.map(\.allocatedSets).max() ?? 0
-        var intensity: [MuscleGroup: Double] = [:]
-        if peak > 0 {
-            for row in rows {
-                let value = row.allocatedSets / peak
-                if let key = buckets.first(where: { $0.value.nodes == row.nodes })?.key {
-                    for muscle in key { intensity[muscle] = value }
-                }
-            }
-        }
+        let built = muscleRows(buckets: buckets, exerciseOrder: exerciseOrder, facts: facts)
         return SessionMuscleReport(
             setCount: ordered.count,
             workSeconds: measured.isEmpty ? nil : measured.reduce(0, +),
             timingIncomplete: ordered.contains { $0.activeIntervals == nil },
             loadedVolumeKg: loaded.isEmpty ? nil : loaded.reduce(0, +),
-            muscles: rows,
-            intensity: intensity
+            muscles: built.rows,
+            intensity: built.intensity
         )
+    }
+
+    /// Statement-level on purpose. One nested `map`/`sorted` chain does not type-check in Xcode 27.1.
+    private static func muscleRows(
+        buckets: [Set<MuscleGroup>: Bucket],
+        exerciseOrder: [String],
+        facts: [String: ExerciseFacts]
+    ) -> (rows: [MuscleRow], intensity: [MuscleGroup: Double]) {
+        var rows: [MuscleRow] = []
+        for bucket in buckets.values where bucket.share > 0 {
+            var listed: [String] = []
+            for exerciseID in exerciseOrder {
+                let share = bucket.exerciseShare[exerciseID] ?? 0
+                if share > 0 { listed.append(exerciseID) }
+            }
+            listed.sort { (leftID: String, rightID: String) in
+                let leftShare = bucket.exerciseShare[leftID] ?? 0
+                let rightShare = bucket.exerciseShare[rightID] ?? 0
+                if leftShare != rightShare { return leftShare > rightShare }
+                let leftName = facts[leftID]?.name ?? leftID
+                let rightName = facts[rightID]?.name ?? rightID
+                return leftName < rightName
+            }
+            var exercises: [ExerciseFacts] = []
+            for exerciseID in listed {
+                if let fact = facts[exerciseID] { exercises.append(fact) }
+            }
+            let nodes = bucket.nodes.sorted()
+            rows.append(MuscleRow(
+                id: nodes.joined(separator: "|"),
+                muscle: bucket.muscle,
+                nodes: bucket.nodes,
+                allocatedSets: bucket.share,
+                exercises: exercises
+            ))
+        }
+        rows.sort { (left: MuscleRow, right: MuscleRow) in
+            if left.allocatedSets != right.allocatedSets { return left.allocatedSets > right.allocatedSets }
+            return left.id < right.id
+        }
+        var intensity: [MuscleGroup: Double] = [:]
+        let peak = rows.reduce(0) { partial, row in max(partial, row.allocatedSets) }
+        if peak > 0 {
+            for row in rows {
+                let value = row.allocatedSets / peak
+                for (key, bucket) in buckets where bucket.nodes == row.nodes {
+                    for muscle in key { intensity[muscle] = value }
+                }
+            }
+        }
+        return (rows, intensity)
     }
 
     static func countsAsMuscleWork(_ category: ExerciseCategory) -> Bool {
@@ -213,7 +236,6 @@ struct SessionMuscleReport: Equatable {
                 return (kilograms / Double(reps), reps)
             }
             let volume = sets.compactMap(loadedKilograms)
-            let reps = sets.compactMap(\.reps)
             let bodyweight = sets.filter { loadedKilograms($0) == nil }.compactMap(\.reps)
             let timed = sets.reduce(0) { sum, record in
                 guard loadedKilograms(record) == nil, record.reps == nil, let duration = record.duration, duration > 0 else { return sum }

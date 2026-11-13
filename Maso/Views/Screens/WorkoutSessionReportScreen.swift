@@ -290,6 +290,7 @@ struct WorkoutSessionReportScreen: View {
             }
             if exercise.heart.contains(where: \.drawsLine) {
                 HeartSparkline(segments: exercise.heart)
+                    .accessibilityIdentifier("workout.sessionReport.spark.\(exercise.id)")
             } else {
                 Text("No heart rate").font(.caption.weight(.semibold)).frame(maxWidth: .infinity, alignment: .leading).frame(minHeight: 28)
             }
@@ -515,26 +516,33 @@ private struct SharePreview: View {
                                 Text("Sets").font(.caption).foregroundStyle(MasoColor.textDim)
                             }
                             if includeDetails || includeHeart {
-                                ForEach(muscle.exercises) { exercise in
-                                    Text(exercise.name).font(.subheadline)
-                                    if includeHeart {
-                                        if exercise.heart.contains(where: \.drawsLine) {
-                                            HeartSparkline(segments: exercise.heart)
-                                        } else {
-                                            Text("No heart rate").font(.caption.weight(.semibold))
+                                VStack(alignment: .leading, spacing: 4) {
+                                    ForEach(muscle.exercises) { exercise in
+                                        Text(exercise.name).font(.subheadline)
+                                        if includeHeart {
+                                            if exercise.heart.contains(where: \.drawsLine) {
+                                                HeartSparkline(segments: exercise.heart)
+                                                    .accessibilityIdentifier("workout.sessionReport.shareSpark.\(exercise.id)")
+                                            } else {
+                                                Text("No heart rate").font(.caption.weight(.semibold))
+                                            }
                                         }
                                     }
                                 }
+                                .accessibilityIdentifier("workout.sessionReport.shareDetails.\(muscle.id)")
                             } else {
                                 Text(muscle.exercises.map(\.name).joined(separator: " · "))
                                     .font(.subheadline).foregroundStyle(MasoColor.textDim)
+                                    .accessibilityIdentifier("workout.sessionReport.shareSummary.\(muscle.id)")
                             }
                         }
                         .padding(12)
                         .background(MasoColor.surface, in: RoundedRectangle(cornerRadius: 16))
                     }
                     Toggle("Include exercise detail", isOn: $includeDetails)
+                        .accessibilityIdentifier("workout.sessionReport.shareDetailsToggle")
                     Toggle("Include heart rate", isOn: $includeHeart)
+                        .accessibilityIdentifier("workout.sessionReport.shareHeartToggle")
                 }
                 .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
                 .padding(.bottom, 12)

@@ -251,6 +251,59 @@ struct ExerciseLibraryUITestHost: View {
             player.start(planId: plan.id, plan: plan, segments: expandPlan(plan, exById: data.exById, defaultRest: 90, defaultBetweenExerciseRest: 120))
             _session = State(initialValue: player)
         }
+        if let player = Self.sessionReportPlayer(scene: scene, data: data) {
+            _session = State(initialValue: player)
+        }
+    }
+
+    /// Seeds the finished-session report. History stays a pushed screen; the player scenes
+    /// are a completed workout, with or without a real routine diff.
+    private static func sessionReportPlayer(scene: String, data: DataStore) -> TrainingSessionStore? {
+        let history = scene == "session-report-history"
+        let changed = scene == "session-report-changed-player"
+        guard history || changed || scene == "session-report-clean-player",
+              let exercise = data.exById["bench_press_barbell"] else { return nil }
+        data.settings.hasOfferedReminderPrompt = true
+        data.settings.hasRequestedReview = true
+        let end = Date()
+        let start = end.addingTimeInterval(-40)
+        func record(sessionID: String) -> SetRecord {
+            var value = SetRecord(id: "session-report-set", exerciseId: exercise.id, exerciseName: exercise.name,
+                category: .strength, weight: 60, reps: 8, duration: nil, performedAt: end,
+                planId: "ui-session-report")
+            value.workoutSessionID = sessionID
+            value.stepID = "step-bench"
+            value.setNumber = 1
+            value.activeIntervals = [.init(start: start, end: end)]
+            return value
+        }
+        func heart(sessionID: String) {
+            for offset in [5.0, 10, 15, 20] {
+                WorkoutHeartLocalStore.shared.append(WorkoutHeartSample(
+                    id: "session-report-heart-\(sessionID)-\(Int(offset))",
+                    sessionID: sessionID,
+                    date: start.addingTimeInterval(offset),
+                    bpm: 110 + offset,
+                    source: "Test fixture"))
+            }
+        }
+        if history {
+            data.sets = [record(sessionID: "ui-session-report")]
+            heart(sessionID: "ui-session-report")
+            return nil
+        }
+        let plan = Plan(id: "ui-session-report", name: "Push", steps: [
+            PlanStep(id: "step-bench", exerciseId: exercise.id, sets: 2, reps: 8, weight: 60, duration: nil)
+        ], createdAt: end, updatedAt: end)
+        data.plans = [plan]
+        let player = TrainingSessionStore(completionSound: {})
+        player.start(planId: plan.id, plan: plan, segments: expandPlan(plan, exById: data.exById, defaultRest: 90, defaultBetweenExerciseRest: 120))
+        let sessionID = player.workoutSessionID ?? "ui-session-report"
+        data.sets = [record(sessionID: sessionID)]
+        heart(sessionID: sessionID)
+        if changed { player.updateStepWeight(stepId: "step-bench", weightKg: 62.5) }
+        player.finishEarly()
+        return player
     }
 
     var body: some View {
@@ -393,8 +446,10 @@ struct ExerciseLibraryUITestHost: View {
             AppNavigationStack { ClassicsScreen(onStart: { _ in }) }
         } else if scene == "home-overview" {
             AppNavigationStack { ScrollView { DailyOverviewCard(onReplay: { _ in }).padding(16) } }
-        } else if ["short-player", "long-player", "stable-player"].contains(scene) {
+        } else if ["short-player", "long-player", "stable-player", "session-report-clean-player", "session-report-changed-player"].contains(scene) {
             PlanPlayerScreen()
+        } else if scene == "session-report-history" {
+            SessionReportHistoryProbe(records: data.sets)
         } else if scene == "workout-report" {
             AppNavigationStack { WorkoutReportView(records: data.sets) }
         } else if scene == "sleep-chart" {
@@ -497,6 +552,30 @@ enum CoachImageTestFixture {
                     UIImage(cgImage: cg).draw(in: CGRect(x: 100, y: 140, width: 700, height: 700))
                 }
             }
+        }
+    }
+}
+
+/// Test-only stack around the history report. Production history keeps its own system Back.
+private struct SessionReportHistoryProbe: View {
+    let records: [SetRecord]
+    @State private var path = NavigationPath()
+
+    var body: some View {
+        AppNavigationStack(path: $path) {
+            Button("Open session report") { path.append("report") }
+                .accessibilityIdentifier("workout.sessionReport.openHistory")
+                .navigationTitle("History")
+                .navigationDestination(for: String.self) { _ in
+                    WorkoutSessionReportScreen(records: records, workoutName: "Push", presentation: .history)
+                        .navigationBarBackButtonHidden(true)
+                        .toolbar {
+                            ToolbarItem(placement: .topBarLeading) {
+                                Button("Back") { path.removeLast() }
+                                    .accessibilityIdentifier("workout.sessionReport.historyBack")
+                            }
+                        }
+                }
         }
     }
 }
