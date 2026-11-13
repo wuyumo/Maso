@@ -447,14 +447,17 @@ final class PaywallUITests: XCTestCase {
     }
 
     func testRestorePurchaseShowsLoadingThenStoreKitResultWithoutAnotherPurchase() throws {
-        let app = launch("upgrade", restoreDelayMS: "800")
+        let app = launch("upgrade", restoreHold: true)
         let restore = app.buttons["paywall.restore"]
         XCTAssertTrue(restore.waitForExistence(timeout: 15))
         XCTAssertEqual(restore.label, "Restore Purchase")
         XCTAssertTrue(restore.isEnabled)
         restore.tap()
-        XCTAssertTrue(waitForValue("busy", on: restore, timeout: 2), "Restore stays busy while the request is in flight")
-        XCTAssertTrue(app.activityIndicators.firstMatch.exists || app.progressIndicators.firstMatch.exists)
+        let release = app.buttons["paywall.restore.release"]
+        XCTAssertTrue(release.waitForExistence(timeout: 2), "Restore stays busy while the request is in flight")
+        XCTAssertTrue(app.descendants(matching: .any)["paywall.restore.progress"].exists)
+        XCTAssertFalse(app.alerts["Masso Pro"].exists)
+        release.tap()
         let alert = app.alerts["Masso Pro"]
         XCTAssertTrue(alert.waitForExistence(timeout: 5))
         XCTAssertTrue(alert.staticTexts["No active subscription found"].exists)
@@ -470,8 +473,11 @@ final class PaywallUITests: XCTestCase {
         let transactions = Set(store.allTransactions().map { String($0.identifier) })
         XCTAssertFalse(transactions.isEmpty)
         restore.tap()
-        XCTAssertTrue(waitForValue("busy", on: restore, timeout: 2))
-        XCTAssertTrue(waitForValue("idle", on: restore, timeout: 5))
+        let releaseAgain = app.buttons["paywall.restore.release"]
+        XCTAssertTrue(releaseAgain.waitForExistence(timeout: 2))
+        XCTAssertTrue(app.descendants(matching: .any)["paywall.restore.progress"].exists)
+        releaseAgain.tap()
+        XCTAssertTrue(releaseAgain.waitForNonExistence(timeout: 5))
         XCTAssertEqual(Set(store.allTransactions().map { String($0.identifier) }), transactions, "Restore must call StoreKit without buying again")
         XCTAssertFalse(app.alerts["Masso Pro"].exists)
     }
@@ -497,23 +503,14 @@ final class PaywallUITests: XCTestCase {
         }
     }
 
-    private func waitForValue(_ value: String, on element: XCUIElement, timeout: TimeInterval) -> Bool {
-        let deadline = Date().addingTimeInterval(timeout)
-        while Date() < deadline {
-            if String(describing: element.value ?? "") == value { return true }
-            RunLoop.current.run(until: Date().addingTimeInterval(0.05))
-        }
-        return String(describing: element.value ?? "") == value
-    }
-
-    private func launch(_ scene: String, language: String = "en", largeType: Bool = false, narrow: Bool = false, light: Bool = false, increasedContrast: Bool = false, restoreDelayMS: String? = nil) -> XCUIApplication {
+    private func launch(_ scene: String, language: String = "en", largeType: Bool = false, narrow: Bool = false, light: Bool = false, increasedContrast: Bool = false, restoreHold: Bool = false) -> XCUIApplication {
         let app = XCUIApplication(bundleIdentifier: "com.yumowu.maso")
         app.terminate()
         var environment = ["MASO_PAYWALL_UI_TEST_SCENE": scene,
                            "MASO_PAYWALL_LARGE_TYPE": largeType ? "1" : "0",
                            "MASO_PAYWALL_NARROW": narrow ? "1" : "0",
                            "MASO_UI_LIGHT": light ? "1" : "0", "MASO_UI_CONTRAST": increasedContrast ? "1" : "0"]
-        if let restoreDelayMS { environment["MASO_RESTORE_DELAY_MS"] = restoreDelayMS }
+        if restoreHold { environment["MASO_RESTORE_HOLD"] = "1" }
         app.launchEnvironment = environment
         app.launchArguments = ["-maso.selectedLanguage", language, "-AppleLanguages", "(\(language))", "-AppleLocale", language]
         app.launch()

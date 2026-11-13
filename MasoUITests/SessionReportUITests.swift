@@ -149,8 +149,8 @@ final class SessionReportUITests: XCTestCase {
         XCTAssertFalse(app.descendants(matching: .any)["workout.sessionReport.sharePreview"].exists)
         XCTAssertEqual(sessionEndCount(app), "0")
 
-        revealAboveShare("workout.sessionReport.shareDetailsToggle", in: app).tap()
-        revealAboveShare("workout.sessionReport.shareHeartToggle", in: app).tap()
+        turnOnAboveShare("workout.sessionReport.shareDetailsToggle", in: app)
+        turnOnAboveShare("workout.sessionReport.shareHeartToggle", in: app)
         XCTAssertTrue(waitUntil(shareText) { $0.contains(setLabel) })
         XCTAssertTrue(waitUntil(shareText) { $0.contains("130") })
         app.buttons["workout.sessionReport.share"].tap()
@@ -261,7 +261,7 @@ final class SessionReportUITests: XCTestCase {
         XCTAssertTrue(shareText.waitForExistence(timeout: 8))
         let before = shareText.label
         XCTAssertFalse(before.contains("×"))
-        revealAboveShare("workout.sessionReport.shareDetailsToggle", in: app).tap()
+        turnOnAboveShare("workout.sessionReport.shareDetailsToggle", in: app)
         XCTAssertTrue(waitUntil(shareText) { $0.contains("×") })
         let opted = shareText.label
         app.buttons["workout.sessionReport.share"].tap()
@@ -277,18 +277,47 @@ final class SessionReportUITests: XCTestCase {
         return lines
     }
 
-    /// The share toggles sit under the floating button until the report is scrolled.
-    private func revealAboveShare(_ identifier: String, in app: XCUIApplication) -> XCUIElement {
+    /// Scrolls the report itself until the switch is clear of the floating Share button, then turns it on.
+    private func turnOnAboveShare(_ identifier: String, in app: XCUIApplication) {
         let share = app.buttons["workout.sessionReport.share"]
+        let report = app.descendants(matching: .any)["workout.sessionReport"]
         let control = app.switches[identifier]
         XCTAssertTrue(control.waitForExistence(timeout: 8))
-        for _ in 0..<8 {
-            if control.isHittable, share.exists, control.frame.maxY > 80, control.frame.maxY < share.frame.minY - 4 {
-                return control
-            }
-            app.swipeUp(velocity: .slow)
+        XCTAssertTrue(share.waitForExistence(timeout: 5))
+        var clear = false
+        for _ in 0..<12 {
+            if switchIsClear(control, of: share) { clear = true; break }
+            report.swipeUp(velocity: .slow)
         }
-        return control
+        XCTAssertTrue(clear, "\(identifier) frame \(control.frame) stayed under Share \(share.frame)")
+        let knob = control.switches.firstMatch
+        if knob.exists, knob.isHittable { knob.tap() } else { control.tap() }
+        XCTAssertTrue(waitUntilOn(control), "\(identifier) remained off after a hittable tap, value \(String(describing: control.value))")
+    }
+
+    private func switchIsClear(_ control: XCUIElement, of share: XCUIElement) -> Bool {
+        guard control.exists, share.exists, control.isHittable else { return false }
+        let frame = control.frame
+        return frame.width > 20 && frame.height > 20 && frame.minY > 80 && frame.maxY <= share.frame.minY - 8
+    }
+
+    private func waitUntilOn(_ control: XCUIElement, timeout: TimeInterval = 3) -> Bool {
+        let deadline = Date().addingTimeInterval(timeout)
+        while Date() < deadline {
+            if switchIsOn(control) { return true }
+            RunLoop.current.run(until: Date().addingTimeInterval(0.1))
+        }
+        return switchIsOn(control)
+    }
+
+    private func switchIsOn(_ control: XCUIElement) -> Bool {
+        func on(_ element: XCUIElement) -> Bool {
+            let value = String(describing: element.value ?? "").lowercased()
+            return value == "1" || value == "on"
+        }
+        if on(control) { return true }
+        let knob = control.switches.firstMatch
+        return knob.exists && on(knob)
     }
 
     private func waitUntil(_ element: XCUIElement, timeout: TimeInterval = 3, where match: (String) -> Bool) -> Bool {

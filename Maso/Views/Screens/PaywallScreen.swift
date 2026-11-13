@@ -3,6 +3,12 @@ import StoreKit
 
 enum PaywallContext { case upgrade, welcome, aiReminder }
 
+#if DEBUG
+private final class RestoreGate {
+    var released = false
+}
+#endif
+
 /// Restores Claude Code's custom layout (f0ebc0e / 83277c3), with current
 /// StoreKit products, verified trial eligibility and the approved free/Pro split.
 struct PaywallScreen: View {
@@ -15,6 +21,10 @@ struct PaywallScreen: View {
     @State private var policyDetailsShown = false
     @State private var selectedPlan: SubscriptionTier = .yearly
     @State private var processing = false
+    #if DEBUG
+    /// Holds the real StoreKit restore until a debug test has observed the in-flight state.
+    @State private var restoreGate = RestoreGate()
+    #endif
     private struct Notice { let message: String; var canRetry = false }
     @State private var notice: Notice?
     @State private var eligibleTrials: Set<String> = []
@@ -73,6 +83,7 @@ struct PaywallScreen: View {
         .preferredColorScheme(.dark).tint(MasoColor.text)
         .presentationDetents([.large])
         .accessibilityIdentifier("paywall.screen")
+        .overlay(alignment: .bottom) { restoreReleaseControl }
         .sheet(isPresented: $referralSheetShown) { ReferralCodeSheet() }
         .sheet(isPresented: $policyDetailsShown) { ProPolicyDetailsSheet() }
         .alert("Masso Pro", isPresented: Binding(get: { notice != nil }, set: { if !$0 { notice = nil } }), presenting: notice) { item in
@@ -269,7 +280,9 @@ struct PaywallScreen: View {
     private var restorePurchaseLabel: some View {
         Group {
             if processing {
-                ProgressView().frame(minWidth: 44, minHeight: 44)
+                ProgressView()
+                    .frame(minWidth: 44, minHeight: 44)
+                    .accessibilityIdentifier("paywall.restore.progress")
             } else {
                 Text("Restore Purchase")
                     .font(.subheadline.weight(.semibold))
@@ -286,17 +299,33 @@ struct PaywallScreen: View {
     private func restorePurchases() {
         guard !processing else { return }
         processing = true
+        #if DEBUG
+        let gate = restoreGate
+        gate.released = false
+        #endif
         Task {
             #if DEBUG
-            if let raw = ProcessInfo.processInfo.environment["MASO_RESTORE_DELAY_MS"],
-               let milliseconds = UInt64(raw), milliseconds > 0 {
-                try? await Task.sleep(nanoseconds: milliseconds * 1_000_000)
+            if ProcessInfo.processInfo.environment["MASO_RESTORE_HOLD"] == "1" {
+                while !gate.released {
+                    try? await Task.sleep(for: .milliseconds(50))
+                }
             }
             #endif
             await subscriptions.restore()
             processing = false
             if data.settings.isPro { dismiss() }
         }
+    }
+
+    @ViewBuilder private var restoreReleaseControl: some View {
+        #if DEBUG
+        if ProcessInfo.processInfo.environment["MASO_RESTORE_HOLD"] == "1", processing {
+            Button("Finish restore") { restoreGate.released = true }
+                .accessibilityIdentifier("paywall.restore.release")
+        }
+        #else
+        EmptyView()
+        #endif
     }
 
     private var footer: some View {
