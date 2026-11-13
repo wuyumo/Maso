@@ -2633,6 +2633,9 @@
 
 /* Workout progress, observed timing and personal heart-rate reminders */
 "Jump to first unfinished set" = "Jump to first unfinished set";
+"Move earlier" = "Move earlier";
+"Move later" = "Move later";
+"Long press and drag to reorder" = "Long press and drag to reorder";
 "Rest duration" = "Rest duration";
 "Applies to this rest only." = "Applies to this rest only.";
 "Edit rest time" = "Edit rest time";

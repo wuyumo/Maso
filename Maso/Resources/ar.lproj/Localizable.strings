@@ -2097,6 +2097,9 @@
 
 /* Workout progress, observed timing and personal heart-rate reminders */
 "Jump to first unfinished set" = "الانتقال إلى أول مجموعة غير مكتملة";
+"Move earlier" = "نقل إلى الأمام";
+"Move later" = "نقل إلى الخلف";
+"Long press and drag to reorder" = "اضغط مطولاً ثم اسحب لإعادة الترتيب";
 "Rest duration" = "مدة الراحة";
 "Applies to this rest only." = "لهذه الراحة فقط.";
 "Edit rest time" = "تعديل وقت الراحة";
