@@ -397,7 +397,8 @@ final class PaywallUITests: XCTestCase {
 
     func testEnlargedBrandKeeps17ProInitialSubscribeVisibleWithoutScrolling() throws {
         for language in ["en","zh-Hans","de","ar"] {
-            let app = launch("upgrade",language:language,light:language == "zh-Hans")
+            // Production Masso enforces dark appearance. A light-only Debug host is not the default product screen.
+            let app = launch("upgrade",language:language)
             let yearly = app.buttons["paywall.plan.yearly"]
             XCTAssertTrue(yearly.waitForExistence(timeout:15))
             let purchase = app.buttons["paywall.purchase"]
