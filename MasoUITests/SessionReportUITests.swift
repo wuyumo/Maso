@@ -27,9 +27,6 @@ final class SessionReportUITests: XCTestCase {
         XCTAssertFalse(app.buttons["workout.sessionReport.info"].exists)
         XCTAssertFalse(app.staticTexts["workout.sessionReport.counting"].exists)
         XCTAssertFalse(app.descendants(matching: .any)["workout.report"].exists)
-        let sheet = app.sheets.firstMatch
-        XCTAssertTrue(sheet.waitForExistence(timeout: 5))
-        XCTAssertTrue(sheet.descendants(matching: .any)["workout.sessionReport"].exists)
 
         keepShot(app, "report-sheet-first")
         let spark = app.descendants(matching: .any)["workout.sessionReport.spark.bench_press_barbell"]
@@ -42,18 +39,19 @@ final class SessionReportUITests: XCTestCase {
         XCTAssertLessThanOrEqual(heartRow.frame.maxY, share.frame.minY + 1, "last row \(heartRow.frame) share \(share.frame)")
         keepShot(app, "report-sheet-share-over-last-row")
 
-        let sheets = app.sheets.count
+        let grabbers = sheetGrabbers(in: app).count
         let bars = app.navigationBars.count
         let duration = app.descendants(matching: .any)["workout.sessionReport.duration"]
         duration.tap()
         XCTAssertTrue(app.descendants(matching: .any)["workout.sessionReport.durationTable"].waitForExistence(timeout: 5))
         XCTAssertTrue(matchingPrefix("workout.report.exercise.", in: app).exists)
+        keepShot(app, "report-duration-expanded")
         XCTAssertFalse(app.descendants(matching: .any)["workout.sessionReport.heartTableBody"].exists)
         XCTAssertFalse(app.descendants(matching: .any)["workout.report.heart"].exists)
         XCTAssertFalse(app.descendants(matching: .any)["workout.report"].exists)
-        XCTAssertEqual(app.sheets.count, sheets)
+        XCTAssertGreaterThan(grabbers, 0)
+        XCTAssertEqual(sheetGrabbers(in: app).count, grabbers)
         XCTAssertEqual(app.navigationBars.count, bars)
-        keepShot(app, "report-duration-expanded")
         duration.tap()
         XCTAssertTrue(app.descendants(matching: .any)["workout.sessionReport.durationTable"].waitForNonExistence(timeout: 5))
         keepShot(app, "report-duration-collapsed")
@@ -62,16 +60,17 @@ final class SessionReportUITests: XCTestCase {
         heart.tap()
         XCTAssertTrue(app.descendants(matching: .any)["workout.sessionReport.heartTableBody"].waitForExistence(timeout: 5))
         XCTAssertTrue(app.descendants(matching: .any)["workout.report.heart"].exists)
+        keepShot(app, "report-heart-expanded")
         XCTAssertFalse(app.descendants(matching: .any)["workout.sessionReport.durationTable"].exists)
         XCTAssertFalse(matchingPrefix("workout.report.exercise.", in: app).exists)
         XCTAssertFalse(app.descendants(matching: .any)["workout.report"].exists)
-        XCTAssertEqual(app.sheets.count, sheets)
+        XCTAssertEqual(sheetGrabbers(in: app).count, grabbers)
         XCTAssertEqual(app.navigationBars.count, bars)
-        keepShot(app, "report-heart-expanded")
         heart.tap()
         XCTAssertTrue(app.descendants(matching: .any)["workout.sessionReport.heartTableBody"].waitForNonExistence(timeout: 5))
         keepShot(app, "report-heart-collapsed")
         XCTAssertTrue(report.exists)
+        assertExpandedSheet(titled: "Workout report", in: app)
     }
 
     func testAdjustedFinishReachesTheReportAfterSkipAndAfterSave() throws {
@@ -161,21 +160,29 @@ final class SessionReportUITests: XCTestCase {
         let finished = launch("session-report-clean-player")
         let exit = finished.buttons["workout.sessionReport.exit"]
         XCTAssertTrue(exit.waitForExistence(timeout: 30))
+        XCTAssertEqual(sessionEndCount(finished), "0")
         exit.tap()
         XCTAssertTrue(finished.staticTexts["Exercise UI test"].waitForExistence(timeout: 8))
         XCTAssertTrue(finished.buttons["workout.sessionReport.exit"].waitForNonExistence(timeout: 8))
         XCTAssertTrue(finished.descendants(matching: .any)["workout.sessionReport"].waitForNonExistence(timeout: 8))
+        XCTAssertEqual(sessionEndCount(finished), "1")
+        XCTAssertEqual(sessionLiveness(finished), "none")
         RunLoop.current.run(until: Date().addingTimeInterval(1))
+        XCTAssertEqual(sessionEndCount(finished), "1")
         XCTAssertFalse(finished.descendants(matching: .any)["workout.sessionReport"].exists)
         finished.terminate()
 
         let swiped = launch("session-report-clean-player")
         XCTAssertTrue(swiped.buttons["workout.sessionReport.exit"].waitForExistence(timeout: 30))
+        XCTAssertEqual(sessionEndCount(swiped), "0")
         swiped.navigationBars["Workout report"].swipeDown()
         XCTAssertTrue(swiped.staticTexts["Exercise UI test"].waitForExistence(timeout: 8))
         XCTAssertTrue(swiped.buttons["workout.sessionReport.exit"].waitForNonExistence(timeout: 8))
         XCTAssertTrue(swiped.descendants(matching: .any)["workout.sessionReport"].waitForNonExistence(timeout: 8))
+        XCTAssertEqual(sessionEndCount(swiped), "1")
+        XCTAssertEqual(sessionLiveness(swiped), "none")
         RunLoop.current.run(until: Date().addingTimeInterval(1))
+        XCTAssertEqual(sessionEndCount(swiped), "1")
         XCTAssertTrue(swiped.staticTexts["Exercise UI test"].exists)
         XCTAssertFalse(swiped.descendants(matching: .any)["workout.sessionReport"].exists)
         swiped.terminate()
@@ -183,10 +190,11 @@ final class SessionReportUITests: XCTestCase {
         let history = launch("session-report-history")
         let open = history.buttons["workout.sessionReport.openHistory"]
         XCTAssertTrue(open.waitForExistence(timeout: 30))
-        let hostSheets = history.sheets.count
+        XCTAssertEqual(sessionEndCount(history), "0")
+        XCTAssertEqual(sessionLiveness(history), "live")
         open.tap()
         XCTAssertTrue(history.descendants(matching: .any)["workout.sessionReport"].waitForExistence(timeout: 10))
-        XCTAssertGreaterThan(history.sheets.count, hostSheets)
+        assertExpandedSheet(titled: "Workout report", in: history)
         XCTAssertFalse(history.buttons["workout.sessionReport.exit"].exists)
         XCTAssertFalse(history.buttons["workout.sessionReport.info"].exists)
         XCTAssertTrue(history.buttons["workout.sessionReport.share"].exists)
@@ -195,8 +203,9 @@ final class SessionReportUITests: XCTestCase {
         back.tap()
         XCTAssertTrue(open.waitForExistence(timeout: 5))
         XCTAssertTrue(history.descendants(matching: .any)["workout.sessionReport"].waitForNonExistence(timeout: 5))
-        XCTAssertEqual(history.sheets.count, hostSheets)
-        XCTAssertTrue(history.navigationBars["History"].exists)
+        assertExpandedSheet(titled: "History", in: history)
+        XCTAssertEqual(sessionEndCount(history), "0")
+        XCTAssertEqual(sessionLiveness(history), "live")
     }
 
     func testFinishHeaderStaysApartInNarrowLightLargeAndChinese() {
@@ -206,6 +215,7 @@ final class SessionReportUITests: XCTestCase {
             ("narrow-scroll-top", "en", ["MASO_TEST_NARROW": "1"], []),
             ("large-scroll-top", "en", ["MASO_TEST_LARGE_TYPE": "1"], [])
         ]
+        continueAfterFailure = true
         for (name, language, extra, arguments) in cases {
             let app = launch("session-report-clean-player", language: language, extra: extra, moreArguments: arguments)
             let title = language == "zh-Hans" ? "训练报告" : "Workout report"
@@ -214,8 +224,8 @@ final class SessionReportUITests: XCTestCase {
             XCTAssertTrue(bar.waitForExistence(timeout: 30), name)
             XCTAssertFalse(app.buttons["workout.sessionReport.info"].exists, name)
             XCTAssertFalse(app.staticTexts["workout.sessionReport.counting"].exists, name)
-            XCTAssertTrue(exit.exists, name)
-            XCTAssertGreaterThanOrEqual(exit.frame.height, 44, name)
+            XCTAssertTrue(exit.waitForExistence(timeout: 5), name)
+            XCTAssertGreaterThanOrEqual(exit.frame.height, 44, "\(name) exit height \(exit.frame.height)")
             if extra["MASO_TEST_LARGE_TYPE"] == "1" {
                 let bench = app.staticTexts["workout.sessionReport.exerciseName.chest.bench_press_barbell"]
                 XCTAssertTrue(bench.waitForExistence(timeout: 5), name)
@@ -229,6 +239,7 @@ final class SessionReportUITests: XCTestCase {
             keepShot(app, "report-header-\(name)")
             app.terminate()
         }
+        continueAfterFailure = false
     }
 
     func testShareExportWritesTheReportCardAndDoesNotOpenTheSystemSheet() {
@@ -258,6 +269,40 @@ final class SessionReportUITests: XCTestCase {
 
     private func matchingPrefix(_ prefix: String, in app: XCUIApplication) -> XCUIElement {
         app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH %@", prefix)).firstMatch
+    }
+
+    /// iOS 26 SwiftUI sheets publish a Sheet Grabber button, not XCUIElementTypeSheet.
+    private func sheetGrabbers(in app: XCUIApplication) -> XCUIElementQuery {
+        app.buttons.matching(NSPredicate(format: "label == %@", "Sheet Grabber"))
+    }
+
+    private func assertExpandedSheet(titled title: String, in app: XCUIApplication, file: StaticString = #filePath, line: UInt = #line) {
+        let bar = app.navigationBars[title]
+        XCTAssertTrue(bar.waitForExistence(timeout: 5), title, file: file, line: line)
+        let grabbers = sheetGrabbers(in: app)
+        var matched = false
+        for index in 0..<grabbers.count {
+            let grabber = grabbers.element(boundBy: index)
+            let value = String(describing: grabber.value ?? "")
+            let gap = bar.frame.minY - grabber.frame.maxY
+            if value.contains("Expanded"), grabber.frame.maxY <= bar.frame.minY + 12, gap < 40, gap > -30 {
+                matched = true
+                break
+            }
+        }
+        XCTAssertTrue(matched, "\(title) bar \(bar.frame) expanded grabbers \(grabbers.count)", file: file, line: line)
+    }
+
+    private func sessionEndCount(_ app: XCUIApplication) -> String {
+        let element = app.staticTexts["exercise.ui-test.session-end-count"]
+        XCTAssertTrue(element.waitForExistence(timeout: 5))
+        return element.label
+    }
+
+    private func sessionLiveness(_ app: XCUIApplication) -> String {
+        let element = app.staticTexts["exercise.ui-test.session-liveness"]
+        XCTAssertTrue(element.waitForExistence(timeout: 5))
+        return element.label
     }
 
     private func revealAbove(_ identifier: String, control: String, in app: XCUIApplication) -> XCUIElement {

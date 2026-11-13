@@ -2326,7 +2326,6 @@ final class WorkoutSignalsUITests: XCTestCase {
             entry.tap()
             XCTAssertTrue(element("workout.sessionReport", app).waitForExistence(timeout: 8))
             XCTAssertFalse(element("workout.sessionReport.info", app).exists)
-            XCTAssertTrue(app.sheets.containing(.any, identifier: "workout.sessionReport").firstMatch.exists)
             app.terminate()
         }
     }

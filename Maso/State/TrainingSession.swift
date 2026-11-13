@@ -734,7 +734,11 @@ final class TrainingSessionStore {
         end()
     }
 
+    /// Calls to `end()`, including a second call after the session is already cleared.
+    var endCount = 0
+
     func end() {
+        endCount += 1
         session = nil
         plan = nil
         segments = []

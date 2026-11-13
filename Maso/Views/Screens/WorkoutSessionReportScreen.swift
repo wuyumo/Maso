@@ -70,12 +70,17 @@ struct WorkoutSessionReportScreen: View {
         .toolbar {
             if presentation == .finish {
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Exit", action: requestExit)
-                        .font(.body.weight(.semibold))
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.7)
-                        .frame(minWidth: 44, minHeight: 44)
-                        .accessibilityIdentifier("workout.sessionReport.exit")
+                    Button(action: requestExit) {
+                        Text("Exit")
+                            .font(.body.weight(.semibold))
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.7)
+                            .frame(minWidth: 44, minHeight: 44)
+                            .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                    .fixedSize(horizontal: true, vertical: true)
+                    .accessibilityIdentifier("workout.sessionReport.exit")
                 }
             }
         }

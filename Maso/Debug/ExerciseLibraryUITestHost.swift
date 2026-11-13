@@ -326,6 +326,11 @@ struct ExerciseLibraryUITestHost: View {
             }
         }
         if history {
+            let plan = Plan(id: "ui-session-report", name: "Push", steps: [
+                PlanStep(id: "step-bench", exerciseId: exercise.id, sets: 2, reps: 8, weight: 60, duration: nil)
+            ], createdAt: end, updatedAt: end)
+            data.plans = [plan]
+            player.start(planId: plan.id, plan: plan, segments: expandPlan(plan, exById: data.exById, defaultRest: 90, defaultBetweenExerciseRest: 120))
             data.sets = [record(sessionID: "ui-session-report")]
             heart(sessionID: "ui-session-report")
             return nil
@@ -350,6 +355,9 @@ struct ExerciseLibraryUITestHost: View {
                 Text(String(pickedIDs.count)).accessibilityIdentifier("exercise.ui-test.selection-count")
                 Text(pickedIDs.last ?? "none").accessibilityIdentifier("exercise.ui-test.selection-id")
                 Text(String(dismissalCount)).accessibilityIdentifier("exercise.ui-test.dismissal-count")
+                Text(String(session.endCount)).accessibilityIdentifier("exercise.ui-test.session-end-count")
+                Text(session.session == nil ? "none" : (session.session?.completed == true ? "completed" : "live"))
+                    .accessibilityIdentifier("exercise.ui-test.session-liveness")
                 Button("Open exercise scene") { presented = true }
                     .accessibilityIdentifier("exercise.ui-test.open")
             }
@@ -616,13 +624,19 @@ private struct SessionReportLargeType: ViewModifier {
 /// Test-only history list. Closing the report sheet must not end a workout.
 private struct SessionReportHistoryProbe: View {
     let records: [SetRecord]
+    @Environment(TrainingSessionStore.self) private var session
     @State private var presented = false
 
     var body: some View {
         AppNavigationStack {
-            Button("Open session report") { presented = true }
-                .accessibilityIdentifier("workout.sessionReport.openHistory")
-                .navigationTitle("History")
+            VStack(spacing: 16) {
+                Button("Open session report") { presented = true }
+                    .accessibilityIdentifier("workout.sessionReport.openHistory")
+                Text(String(session.endCount)).accessibilityIdentifier("exercise.ui-test.session-end-count")
+                Text(session.session == nil ? "none" : (session.session?.completed == true ? "completed" : "live"))
+                    .accessibilityIdentifier("exercise.ui-test.session-liveness")
+            }
+            .navigationTitle("History")
         }
         .sheet(isPresented: $presented) {
             AppNavigationStack {
