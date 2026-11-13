@@ -8,9 +8,9 @@ The already-running Mac studio process uses `127.0.0.1:8802` in this exact proje
 In your own existing Mac browser, open:
 `http://127.0.0.1:8802/pro-candidate-20261113?device=iphone&slide=plan&locale=zh`
 
-1. Inspect the poster (browser zoom-out can help see the whole poster). This is new candidate caption data over retained 43 source captures, NOT a new native-app capture.
+1. The poster defaults to **适配 Fit**, showing the whole poster inside the remaining window. Use **100%** only when you want native-size scrolling. Inspect the poster. This is new candidate caption data over retained 43 source captures, NOT a new native-app capture.
 2. Click **保存本页候选 PNG（仅01/02）**. Wait for saved-path alert; the actual PNG is downloaded and also saved in the isolated output directory below.
-3. Click **2**, inspect and save; click **English**, inspect and save; click **1**, inspect and save. This yields Chinese/English pages01/02 for first visual acceptance. No bulk export is triggered.
+3. Use the fixed01–05tabs or 上一张/下一张. Save Chinese02, choose **English** in the language selector and save02, then choose01and save. Device selection stays in the same fixed toolbar. This yields Chinese/English pages01/02 for first visual acceptance. No bulk export is triggered.
 4. Stop and report any render error, font/image warning, missing photos, dark/blank inner screen, clipped/overlapping copy, or a failed export. Do not change ports/proxies/network settings. The source route is implemented but browser reachability/paint/export are still unverified until these real actions succeed.
 
 Pages1–5 are navigable. 03 export is deliberately disabled pending actual corrected native captures. 04/05 are unchanged reference-content previews, not accepted latest-native UI proof. No screenshot upload or review action exists in this route.
@@ -43,3 +43,9 @@ The broader pre-existing studio directory was untracked at task start. Only thes
 
 ## t320/t321 full marketing-copy audit
 `marketing-audit.json` lists24removed locale sentences,264source-mapped variants, no additional added marketing Pro/unlock/free-limit prompts, and explicit pixel-review limits. The preview workflow card now says “截图候选”, not “PRO CANDIDATE”; this card is never exported. Proper hardware names/in-app native pixels are not erased.
+
+## t322 preview usability
+The same route now has a fixed responsive toolbar, persistent current page/device/language labels,01–05tabs, previous/next, all12languages, all4poster devices, Fit/100%, and explicit blocked/loading/export states. Only the outer preview wrapper scales; the exact native poster subtree is unchanged. Export calls `exportCaptureOptions(canvas)` on the poster node only, forces transform:none, and retains native width/height/canvasWidth/canvasHeight and pixelRatio1. 03remains blocked;04/05remain reference previews outside the current01/02export batch.
+
+`node candidates/pro-20261113/test-preview.cjs`:14group checks;240query roundtrips,16fit cases including narrow viewports, component current-state/navigation/selector/disabled-export callbacks, and4actual handler dimension/RGB/isolation tests using temporary synthetic fixtures. Existing15isolation checks also pass. These are source/component/handler tests, NOT browser visual acceptance or actual DOM export proof.
+Refresh the same existing8802URL to load this UI. No browser was driven and no server/network configuration changed. A real current-candidate PNG still needs user-browser export and image inspection.

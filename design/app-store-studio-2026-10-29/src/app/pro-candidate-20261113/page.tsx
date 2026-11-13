@@ -1,20 +1,8 @@
 "use client";
 
-/**
- * Isolated manual candidate surface. Existing poster and html-to-image chain.
- * No canonical project/export API calls, autosave or localStorage.
- *
- * The editor is a full app shell (sidebar, inspector, zoom chrome) — fine for
- * hand editing, useless for a deterministic screenshot. This route draws one
- * poster at its exact native pixel size with nothing else on the page, then
- * flips `document.documentElement.dataset.ready` once fonts and every <img>
- * have decoded, so an external headless Chrome can wait on that flag and grab
- * a pixel-exact PNG.
- *
- *   /render?device=iphone&slide=diet&locale=zh
- *
- * It reads the same git-tracked `app-store-screenshots.json` as the editor
- * (via /api/project), so what you see here is what the editor would export.
+/** Manual isolated candidate preview. Only the outer viewport scales.
+ * Export captures the unscaled poster subtree at native pixel dimensions.
+ * No canonical API, autosave, localStorage or network/service configuration.
  */
 
 import * as React from "react";
@@ -25,8 +13,7 @@ import { DeckCanvas, getCanvas } from "@/components/editor/slide-canvas";
 import { DeviceShowcase, STORE_DEVICES, type StoreDevice } from "@/components/editor/device-showcase";
 import type { ProjectState } from "@/lib/types";
 
-type RenderDevice = StoreDevice | "iphone-medium";
-type Target = { device: RenderDevice; slide: string; locale: string };
+import { CandidatePreviewControls, parsePreviewTarget, targetSearch, fitScale, canExportPage, exportCaptureOptions, type PreviewTarget as Target, type PreviewDevice as RenderDevice } from "@/components/editor/candidate-preview-controls";
 
 const PHONE_CANVAS: Record<StoreDevice, { w: number; h: number }> = {
   iphone: { w: getCanvas("iphone", "portrait").cW, h: getCanvas("iphone", "portrait").cH },
@@ -34,20 +21,6 @@ const PHONE_CANVAS: Record<StoreDevice, { w: number; h: number }> = {
   duo: { w: STORE_DEVICES.duo.w, h: STORE_DEVICES.duo.h },
   watch: { w: STORE_DEVICES.watch.w, h: STORE_DEVICES.watch.h },
 };
-
-function parseTarget(): Target {
-  const q = new URLSearchParams(window.location.search);
-  const raw = q.get("device") || "iphone";
-  const device: RenderDevice =
-    raw === "iphone-medium" || raw === "iphone" || raw === "ipad" || raw === "duo" || raw === "watch"
-      ? raw
-      : "iphone";
-  return {
-    device,
-    slide: q.get("slide") || "diet",
-    locale: q.get("locale") || "zh",
-  };
-}
 
 function canvasFor(device: RenderDevice) {
   if (device === "iphone-medium") return { w: IPHONE_MEDIUM_CANVAS.w, h: IPHONE_MEDIUM_CANVAS.h };
@@ -64,12 +37,30 @@ export default function RenderPage() {
   const [state, setState] = React.useState<ProjectState | null>(null);
   const [error, setError] = React.useState<string | null>(null);
 
+  const [mode,setMode] = React.useState<"fit"|"actual">("fit");
+  const [ready,setReady] = React.useState(false);
+  const [busy,setBusy] = React.useState(false);
+  const [viewport,setViewport] = React.useState({w:320,h:640});
+  const stageRef = React.useRef<HTMLElement | null>(null);
   React.useEffect(() => {
-    setTarget(parseTarget());
+    const sync=()=>{setReady(false);document.documentElement.dataset.ready="0";setTarget(parsePreviewTarget(window.location.search));};
+    sync(); window.addEventListener("popstate",sync);
+    return ()=>window.removeEventListener("popstate",sync);
   }, []);
+  React.useEffect(()=>{
+    const stage=stageRef.current; if(!stage) return;
+    const measure=()=>setViewport({w:stage.clientWidth,h:stage.clientHeight});
+    measure(); const observer=new ResizeObserver(measure); observer.observe(stage);
+    return ()=>observer.disconnect();
+  },[state,target]);
+  function navigate(next:Target) {
+    if(busy) return;
+    setReady(false);setError(null);document.documentElement.dataset.ready="0";
+    window.history.pushState(null,"",window.location.pathname+targetSearch(next));setTarget(next);
+    stageRef.current?.scrollTo({left:0,top:0});
+  }
 
   React.useEffect(() => {
-    if (!target) return;
     let cancelled = false;
     void (async () => {
       try {
@@ -85,7 +76,7 @@ export default function RenderPage() {
     return () => {
       cancelled = true;
     };
-  }, [target]);
+  }, []);
 
   // Settle: fonts + every image decoded, then announce. requestAnimationFrame is
   // not the only gate — headless Mac Chrome can fail CVDisplayLink and never
@@ -95,6 +86,7 @@ export default function RenderPage() {
     if (!state || !target) return;
     let cancelled = false;
     const root = document.documentElement;
+    setReady(false);setError(null);
     root.dataset.ready = "0";
     root.dataset.device = target.device;
     root.dataset.slide = target.slide;
@@ -124,7 +116,7 @@ export default function RenderPage() {
         }
         return;
       }
-      const imgs = Array.from(document.images);
+      const imgs = Array.from(document.getElementById("candidate-poster")?.querySelectorAll("img") || []);
       await Promise.all(imgs.map((image) => (image.decode ? image.decode().catch(() => undefined) : Promise.resolve())));
       await new Promise<void>((resolve) => {
         let settled = false;
@@ -137,6 +129,8 @@ export default function RenderPage() {
         setTimeout(finish, 50);
       });
       if (cancelled) return;
+      if(imgs.some(image=>!image.complete||image.naturalWidth===0)) { root.dataset.ready="error";root.dataset.status="missing-image";setError("图片未完整加载；请切换页面或刷新重试。");return; }
+      setReady(true);
       root.dataset.status = "ready";
       root.dataset.ready = "1";
     })();
@@ -146,10 +140,7 @@ export default function RenderPage() {
     };
   }, [state, target]);
 
-  if (error) {
-    return <div style={{ padding: 24, fontFamily: "monospace", color: "#b00" }}>render error: {error}</div>;
-  }
-  if (!state || !target) return null;
+  if (!state || !target) return <div style={{padding:24,fontFamily:"system-ui"}}>{error || "正在载入截图候选…"}</div>;
 
   const canvas = canvasFor(target.device);
   const phoneDeck = deckDevice(target.device);
@@ -160,12 +151,13 @@ export default function RenderPage() {
   const slide = slides.find((s) => s.id === target.slide);
 
   async function saveCandidatePoster() {
-    if (!target || !["plan", "recovery"].includes(target.slide)) { alert("Only pages 01/02 are approved for this export batch. Page 03 awaits authentic corrected captures."); return; }
+    if (busy || !ready || !target || !canExportPage(target)) { alert("Only pages 01/02 are approved for this export batch. Page 03 awaits authentic corrected captures."); return; }
     const main = document.getElementById("candidate-poster");
     if (!main || document.documentElement.dataset.ready !== "1" || Array.from(main.querySelectorAll("img")).some(image => !image.complete || image.naturalWidth === 0)) { alert("Fonts/images not ready; no PNG saved."); return; }
+    setBusy(true);
     try {
       await document.fonts.ready;
-      const dataUrl = await toPng(main, { width: canvas.w, height: canvas.h, canvasWidth: canvas.w, canvasHeight: canvas.h, pixelRatio: 1, style: { position: "static", inset: "auto" } });
+      const dataUrl = await toPng(main, exportCaptureOptions(canvas));
       const name = (target.slide === "plan" ? "01" : "02") + "-" + target.slide + ".png";
       const artifactPath = `ios/${target.device}/${canvas.w}x${canvas.h}/${target.locale}/${name}`;
       const response = await fetch("/api/pro-candidate-20261113/export", {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({dataUrl,artifactPath})});
@@ -173,18 +165,15 @@ export default function RenderPage() {
       if (!response.ok || !result.dataUrl) throw new Error(result.error || "PNG export failed");
       const a = document.createElement("a"); a.href = result.dataUrl; a.download = `CANDIDATE-${target.locale}-${target.device}-${name}`; a.click();
       alert("Saved candidate only: " + result.savedPath + "\nNot uploaded. Visual review required.");
-    } catch (e) { alert(String(e)); }
+    } catch (e) { alert(String(e)); } finally {setBusy(false);}
   }
+  const scale=mode==="fit" ? fitScale(viewport,canvas) : 1;
   return (
-    <>
-    <aside style={{position:"fixed",right:8,top:8,zIndex:99999,maxWidth:330,padding:12,background:"#fff",color:"#111",fontFamily:"system-ui",fontSize:14,border:"2px solid #a50"}}>
-      <strong>截图候选 / 未验收，未上传</strong>
-      <p>文案候选；内屏保留43演示素材。03待真实重截。原工程与latest不会被此入口写入。</p>
-      <div>{["plan","recovery","training","diet","devices"].map((id,i)=><a key={id} style={{marginRight:10}} href={`?device=${target.device}&slide=${id}&locale=${target.locale}`}>{i+1}</a>)}</div>
-      <p><a href={`?device=${target.device}&slide=${target.slide}&locale=zh`}>中文</a> · <a href={`?device=${target.device}&slide=${target.slide}&locale=en`}>English</a></p>
-      <button onClick={saveCandidatePoster} disabled={!["plan","recovery"].includes(target.slide)} style={{padding:12,background:"#164",color:"#fff",border:0}}>保存本页候选 PNG（仅01/02）</button>
-      <p>导出仅捕获下方海报，不包含此控制卡。</p>
-    </aside>
+    <div style={{position:"fixed",inset:0,height:"100dvh",display:"flex",flexDirection:"column",background:"#e8ebf0",color:"#172233",fontFamily:"system-ui,-apple-system,sans-serif"}}>
+    <CandidatePreviewControls target={target} mode={mode} scale={scale} ready={ready} busy={busy} error={error} onTarget={navigate} onMode={setMode} onExport={saveCandidatePoster}/>
+    <section ref={stageRef} aria-label="海报预览区域" style={{flex:1,minHeight:0,overflow:"auto",overscrollBehavior:"contain"}}>
+    <div style={{width:canvas.w*scale,height:canvas.h*scale,margin:"16px auto"}}>
+    <div data-preview-scale={scale} style={{width:canvas.w,height:canvas.h,position:"relative",transform:`scale(${scale})`,transformOrigin:"top left"}}>
     <main id="candidate-poster"
       style={{
         position: "fixed",
@@ -213,6 +202,9 @@ export default function RenderPage() {
         />
       )}
     </main>
-    </>
+    </div>
+    </div>
+    </section>
+    </div>
   );
 }
