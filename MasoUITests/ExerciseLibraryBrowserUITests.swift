@@ -2401,6 +2401,37 @@ final class WorkoutSignalsUITests: XCTestCase {
         app.terminate()
     }
 
+    /// Closing the report from the same History and Insights cards must leave those
+    /// lists up and must not present the workout player. Absence of `workout.primary`
+    /// is only that visible check. It does not count `TrainingSessionStore.end()`.
+    func testClosingHistoryAndInsightsReportsStaysOnTheListAndDoesNotOpenThePlayer() {
+        let history = launch("workout-history-cards", language: "en")
+        XCTAssertFalse(element("workout.primary", history).exists)
+        let historyCard = historyCard(in: history)
+        XCTAssertTrue(history.navigationBars["Workout History"].waitForExistence(timeout: 8))
+        historyCard.tap()
+        XCTAssertTrue(element("workout.sessionReport", history).waitForExistence(timeout: 8))
+        history.navigationBars.firstMatch.buttons.element(boundBy: 0).tap()
+        XCTAssertTrue(historyCard.waitForExistence(timeout: 8))
+        XCTAssertTrue(history.navigationBars["Workout History"].waitForExistence(timeout: 8))
+        XCTAssertFalse(element("workout.sessionReport", history).exists)
+        XCTAssertFalse(element("workout.primary", history).exists)
+        history.terminate()
+
+        let insights = launch("workout-insights-history", language: "en")
+        XCTAssertTrue(insights.navigationBars["Workout Insights"].waitForExistence(timeout: 12))
+        XCTAssertFalse(element("workout.primary", insights).exists)
+        let insightsCard = historyCard(in: insights)
+        insightsCard.tap()
+        XCTAssertTrue(element("workout.sessionReport", insights).waitForExistence(timeout: 8))
+        insights.navigationBars.firstMatch.buttons.element(boundBy: 0).tap()
+        XCTAssertTrue(insights.navigationBars["Workout Insights"].waitForExistence(timeout: 8))
+        XCTAssertTrue(insightsCard.waitForExistence(timeout: 8))
+        XCTAssertFalse(element("workout.sessionReport", insights).exists)
+        XCTAssertFalse(element("workout.primary", insights).exists)
+        insights.terminate()
+    }
+
     func testWorkoutHistoryMenuKeepsDeleteOffTheOldShare() {
         let app = launch("workout-history-cards", language: "en")
         let card = historyCard(in: app)
