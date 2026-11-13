@@ -29,7 +29,8 @@
     --stage: #ececec;
     --neutral: #c7c7c7;
   }
-  html { font-size: 16px; }
+  html { font-size: 16px; scroll-padding-top: calc(72px + env(safe-area-inset-top)); scroll-padding-bottom: calc(108px + env(safe-area-inset-bottom)); }
+  html[data-large="1"] { scroll-padding-bottom: calc(128px + env(safe-area-inset-bottom)); }
   html[data-large="1"] { font-size: 19px; }
   * { box-sizing: border-box; }
   body {
@@ -138,6 +139,32 @@
   .fallback { height: 100%; display: grid; place-items: center; padding: 16px; text-align: center; color: var(--dim); }
   .options { display: flex; flex-wrap: wrap; gap: 4px; padding: 0 8px 8px; }
   .options button[aria-pressed="true"] { color: var(--accent); }
+  .fixed-top, .fixed-bottom {
+    position: fixed; left: 50%; transform: translateX(-50%); width: min(100%, 480px);
+    z-index: 6; background: var(--bg);
+  }
+  .fixed-top { top: 0; padding-top: env(safe-area-inset-top); border-bottom: 1px solid var(--line); }
+  .fixed-bottom { bottom: 0; padding: 8px 16px calc(8px + env(safe-area-inset-bottom)); border-top: 1px solid var(--line); }
+  .page-scroll { padding-top: calc(60px + env(safe-area-inset-top)); padding-bottom: calc(108px + env(safe-area-inset-bottom)); }
+  .page.options-open .page-scroll { padding-top: calc(112px + env(safe-area-inset-top)); }
+  html[data-large="1"] .page-scroll { padding-top: calc(72px + env(safe-area-inset-top)); padding-bottom: calc(128px + env(safe-area-inset-bottom)); }
+  .toast { bottom: calc(88px + env(safe-area-inset-bottom)); }
+  .home, .adjust { min-height: 100vh; display: flex; flex-direction: column; padding: 16px 16px calc(16px + env(safe-area-inset-bottom)); }
+  .scenario { display: flex; gap: 8px; margin: 16px 0; }
+  .scenario button, .choice.secondary {
+    flex: 1; min-height: 48px; border: 0; border-radius: 999px; background: var(--surface); font-weight: 700;
+  }
+  .scenario button[aria-pressed="true"] { background: var(--accent); color: #000; }
+  .history-row { width: 100%; min-height: 64px; text-align: start; border: 0; border-radius: 16px; background: var(--surface); padding: 12px 14px; }
+  .adjust-list { flex: 1; overflow: auto; display: flex; flex-direction: column; gap: 8px; margin: 16px 0; }
+  .diff { border-radius: 12px; padding: 10px 14px; border: 1px solid var(--line); }
+  .diff.changed { border-color: color-mix(in srgb, var(--accent) 45%, transparent); background: color-mix(in srgb, var(--accent) 8%, transparent); }
+  .diff.same { opacity: .55; }
+  .badge { font-size: .7rem; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; color: var(--accent); }
+  .choice { width: 100%; min-height: 48px; border: 0; border-radius: 999px; font-weight: 700; margin-top: 8px; }
+  .share-block { padding: 8px 0; border-top: 1px solid var(--line); }
+  .checks { display: flex; flex-direction: column; gap: 8px; margin: 8px 0 12px; }
+  .checks label { min-height: 44px; display: flex; align-items: center; gap: 8px; }
 </style>
 </head>
 <body>
@@ -191,7 +218,32 @@ const COPY = {
     contract: "数据从哪来",
     notFatigue: "绿色只表示这次的相对训练量。心率不参与上色。",
     unavailable: "3D 模型不可用",
-    role: { primary: "主练", synergist: "协同" }
+    role: { primary: "主练", synergist: "协同" },
+    homeTitle: "训练",
+    endWorkout: "结束这场训练",
+    replay: "再看一遍结束流程",
+    scenarioLabel: "演示分支",
+    withChanges: "有动作调整",
+    noChanges: "无动作调整",
+    scenarioNote: "只在这个网页里切换两种结束路径，不是 App 里的新设置。",
+    historyTitle: "刚才的训练",
+    historyHint: "从历史再打开。返回只离开报告，不会把这场再保存一次。",
+    saveRoutine: "把修改保存到训练计划？",
+    saveExplain: "你在训练中调整过这个计划。要保存调整，下次按新参数练吗？",
+    saveScope: "这只决定下次的训练计划。已经记下的这一场组数、训练量和心率都不变。",
+    saveYes: "保存到训练计划",
+    saveNo: "不保存",
+    savedNote: "下次训练计划会带上这些调整。这一场已经记下的内容没有改。",
+    skippedNote: "下次训练计划保持原样。这一场已经记下的内容没有改。",
+    exitHome: "已回到训练首页。这场记录还在，可从下面再打开。",
+    shareBack: "返回报告",
+    shareSave: "保存图片到本机",
+    shareSaved: "演示：图片留在这台设备上，没有发到任何地方。",
+    shareProposal: "分享是这份报告的子集，同一套合计和同一张肌肉图。默认不含组明细、心率和两张原表。这是待确认的设计建议。",
+    optDetails: "加入动作明细",
+    optHeart: "加入心率",
+    finishNote: "刚练完：顶部退出回到首页，不重复结束或保存。",
+    historyNote: "从历史打开：顶部是返回，不是结束训练。"
   },
   en: {
     demo: "Demo data, not your training",
@@ -237,7 +289,32 @@ const COPY = {
     contract: "Where the numbers come from",
     notFatigue: "Green is relative volume for this session. Heart rate does not color the body.",
     unavailable: "3D model unavailable",
-    role: { primary: "Primary", synergist: "Synergist" }
+    role: { primary: "Primary", synergist: "Synergist" },
+    homeTitle: "Training",
+    endWorkout: "Finish this workout",
+    replay: "Replay the finish flow",
+    scenarioLabel: "Demo branch",
+    withChanges: "Routine was adjusted",
+    noChanges: "No routine changes",
+    scenarioNote: "This switch only chooses the two finish paths in the web demo. It is not a new app setting.",
+    historyTitle: "Workout just finished",
+    historyHint: "Open it again from history. Back leaves the report and does not save the workout a second time.",
+    saveRoutine: "Save changes to this routine?",
+    saveExplain: "You adjusted this routine during the workout. Save the adjustments for next time?",
+    saveScope: "This choice updates the next routine only. The completed sets, volume, and heart-rate examples stay as logged.",
+    saveYes: "Save to routine",
+    saveNo: "Don't save",
+    savedNote: "The next routine would include these adjustments. This completed session was not rewritten.",
+    skippedNote: "The next routine stays as it was. This completed session was not rewritten.",
+    exitHome: "Back on the training home. This session is still here and can be opened again.",
+    shareBack: "Back to report",
+    shareSave: "Save image on this device",
+    shareSaved: "Demo: the image stays on this device. Nothing was sent.",
+    shareProposal: "The share card is a subset of this same report, with the same totals and the same muscle map. Set details, heart rate, and the two original tables stay off until chosen. This subset is a proposal awaiting review.",
+    optDetails: "Include exercise detail",
+    optHeart: "Include heart rate",
+    finishNote: "Just finished: Exit at the top returns home and does not end or save the workout again.",
+    historyNote: "Opened from history: the top control is Back, not end-workout."
   }
 };
 const NAMES = {
@@ -304,8 +381,19 @@ const FIXTURE = {
 };
 
 const params = new URLSearchParams(location.search);
+const ROUTINE_DIFF = [
+  { kind: "updated", name: ["杠铃卧推", "Bench Press"], from: "3 × 8 · 60 kg", to: "2 × 8/6 · 60 kg" },
+  { kind: "updated", name: ["哑铃推举", "Dumbbell Shoulder Press"], from: "2 × 8 · 22 kg", to: "2 × 8 · 20 kg" },
+  { kind: "same", name: ["俯卧撑", "Push-up"], summary: "1 × 15" },
+  { kind: "same", name: ["平板支撑", "Plank"], summary: "1 × 45s" }
+];
+const requested = params.get("screen") || "home";
 const state = {
-  screen: params.get("screen") === "report" || params.get("sheet") ? "report" : "complete",
+  screen: requested === "history" ? "report" : (requested === "complete" ? "home" : requested),
+  reportMode: requested === "history" ? "history" : "finish",
+  scenario: params.get("scenario") === "none" ? "none" : "changes",
+  planDecision: params.get("decision") === "saved" || params.get("decision") === "skipped" ? params.get("decision") : null,
+  finished: requested !== "home" && requested !== "complete",
   lang: params.get("lang") === "en" ? "en" : "zh",
   theme: params.get("theme") === "light" ? "light" : "dark",
   rtl: params.get("rtl") === "1",
@@ -316,6 +404,8 @@ const state = {
   sheet: params.get("sheet") || null,
   sheetExercise: params.get("exercise") || null,
   options: false,
+  shareDetails: params.get("details") === "1",
+  shareHeart: params.get("heart") === "1",
   toast: ""
 };
 
@@ -665,25 +755,93 @@ function contractSheet() {
   return blocks.map(([title, text]) => `<article class="sheet-card"><b>${title}</b><p class="fine">${text}</p></article>`).join("");
 }
 
+function endWorkout() {
+  state.finished = true;
+  state.reportMode = "finish";
+  state.sheet = null;
+  state.screen = state.scenario === "changes" ? "adjust" : "report";
+  render();
+}
+function decidePlan(decision) {
+  state.planDecision = decision;
+  state.finished = true;
+  state.reportMode = "finish";
+  state.screen = "report";
+  render();
+}
+function shareMuscle(group) {
+  const names = group.rows.map((row) => L(row.exercise.name)).join(" · ");
+  const detail = state.shareDetails ? group.rows.map((row) => `<p class="meta">${L(row.exercise.name)} · ${metaLine(row.exercise)}</p>`).join("") : `<p class="meta">${names}</p>`;
+  const heart = state.shareHeart ? group.rows.map((row) => `<div>${L(row.exercise.name)}${heartBlock(row.exercise)}</div>`).join("") : "";
+  return `<div class="share-block"><div class="row-top"><b>${nameOf(group.id)}</b><span class="spacer"></span><span class="share-num">${round1(group.share)} ${t("setsUnit")}</span></div>${detail}${heart}</div>`;
+}
+function mountStage(id) {
+  const host = document.getElementById(id);
+  if (!host) return;
+  host.insertBefore(canvas, host.firstChild);
+  init3D();
+  fit();
+  requestAnimationFrame(fit);
+}
+
 function render() {
   const scroll = document.scrollingElement.scrollTop;
   document.documentElement.dataset.theme = state.theme;
   document.documentElement.dataset.large = state.large ? "1" : "0";
   document.documentElement.dir = state.rtl ? "rtl" : "ltr";
   document.documentElement.lang = state.lang === "en" ? "en" : "zh-Hans";
+  document.documentElement.dataset.screen = state.screen;
   const app = document.getElementById("app");
-  if (state.screen === "complete") {
-    app.innerHTML = `<section class="complete"><p class="banner">${t("demo")}</p><div class="grow"><div class="mark" aria-hidden="true">✓</div><h1>${t("complete")}</h1><p class="sub">${t("session")}</p></div>
-      <button class="share" id="share-workout">${t("share")}</button>
-      <div class="pair"><button class="text-hit" id="workout.completed.report">${t("report")}</button><button class="text-hit" id="workout.completed.exit">${t("exit")}</button></div></section>`;
+  const model = derive();
+  const displayRow = state.options ? `<div class="options"><button class="tiny" data-theme-toggle aria-pressed="${state.theme === "light"}">${state.theme === "light" ? t("dark") : t("light")}</button><button class="tiny" data-lang>${t("lang")}</button><button class="tiny" data-large aria-pressed="${state.large}">${t("large")}</button><button class="tiny" data-rtl aria-pressed="${state.rtl}">${t("rtl")}</button></div>` : "";
+  if (state.screen === "home") {
+    app.innerHTML = `<section class="home" id="training-home"><p class="banner">${t("demo")}</p><h1>${t("homeTitle")}</h1><p class="sub">${t("session")}</p>
+      <p class="kicker">${t("scenarioLabel")}</p>
+      <div class="scenario" role="group" aria-label="${t("scenarioLabel")}">
+        <button type="button" id="demo-scenario-changes" aria-pressed="${state.scenario === "changes"}">${t("withChanges")}</button>
+        <button type="button" id="demo-scenario-none" aria-pressed="${state.scenario === "none"}">${t("noChanges")}</button>
+      </div>
+      <p class="fine">${t("scenarioNote")}</p>
+      <button class="share" id="end-workout">${state.finished ? t("replay") : t("endWorkout")}</button>
+      ${state.finished ? `<button class="history-row" id="open-history"><b>${t("historyTitle")}</b><span class="meta">${t("session")} · ${model.sessionKg} ${t("kgUnit")}</span></button><p class="fine">${t("historyHint")}</p>` : ""}
+      ${state.planDecision ? `<p class="fine">${state.planDecision === "saved" ? t("savedNote") : t("skippedNote")}</p>` : ""}
+      </section>`;
+  } else if (state.screen === "adjust") {
+    app.innerHTML = `<section class="adjust" id="routine-adjust"><p class="banner">${t("demo")}</p>
+      <h1 style="font-size:1.4rem">${t("saveRoutine")}</h1><p class="sub">${t("session")}</p><p class="fine">${t("saveExplain")}</p><p class="fine">${t("saveScope")}</p>
+      <div class="adjust-list">${ROUTINE_DIFF.map((row) => `<article class="diff ${row.kind === "updated" ? "changed" : "same"}">
+        <div class="row-top"><b>${L(row.name)}</b><span class="spacer"></span>${row.kind === "updated" ? `<span class="badge">${state.lang === "zh" ? "已修改" : "Updated"}</span>` : ""}</div>
+        <p class="meta">${row.kind === "updated" ? `${row.from} → ${row.to}` : row.summary}</p></article>`).join("")}</div>
+      <button class="share" id="save-routine">${t("saveYes")}</button>
+      <button class="choice secondary" id="skip-routine">${t("saveNo")}</button></section>`;
+  } else if (state.screen === "share") {
+    app.innerHTML = `<section class="page ${state.options ? "options-open" : ""}" id="share-preview" data-details="${state.shareDetails ? "1" : "0"}" data-heart="${state.shareHeart ? "1" : "0"}" data-session-kg="${model.sessionKg}">
+      <div class="fixed-top"><div class="topbar"><button class="icon-hit" id="share-back">${t("shareBack")}</button><h2>${t("share")}</h2><button class="tiny" id="toggle-options">${t("display")}</button></div>${displayRow}</div>
+      <div class="page-scroll"><p class="banner">${t("demo")}</p><p class="note">${t("shareProposal")}</p>
+        <div class="checks"><label><input id="share-details" type="checkbox" ${state.shareDetails ? "checked" : ""}>${t("optDetails")}</label><label><input id="share-heart" type="checkbox" ${state.shareHeart ? "checked" : ""}>${t("optHeart")}</label></div>
+        <article class="summary" id="report-summary" data-session-kg="${model.sessionKg}"><strong>${t("session")}</strong>
+          <p>${t("loaded")} ${model.sessionKg} ${t("kgUnit")} · ${t("work")} ${clock(model.work)} · ${t("rest")} ${clock(model.rest)}</p></article>
+        <div class="stage" id="stage-host"><div class="stage-tools"><div class="facing"><button class="tiny" data-face="front" aria-pressed="${state.facing === "front"}">${t("front")}</button><button class="tiny" data-face="back" aria-pressed="${state.facing === "back"}">${t("rear")}</button></div></div></div>
+        <div class="legend">${legendSwatches()}</div>
+        <article class="summary">${model.groups.map(shareMuscle).join("")}</article>
+      </div>
+      <div class="fixed-bottom"><button class="share" id="save-share">${t("shareSave")}</button></div>
+      </section>`;
+    mountStage("stage-host");
   } else {
-    const model = derive();
     const untouched = state.selected && !model.groups.some((group) => group.id === state.selected) ? `<p class="note">${t("untouched")} · ${nameOf(state.selected)}</p>` : "";
-    app.innerHTML = `<section id="workout.report"><p class="banner">${t("demo")}. ${t("demoLong")}</p>
-      <div class="sticky-hero"><div class="topbar"><button class="icon-hit" id="report-back">${t("back")}</button><h2>${t("report")}</h2><button class="tiny" id="toggle-options" aria-expanded="${state.options}">${t("display")}</button></div>
-      ${state.options ? `<div class="options"><button class="tiny" data-theme-toggle aria-pressed="${state.theme === "light"}">${state.theme === "light" ? t("dark") : t("light")}</button><button class="tiny" data-lang aria-pressed="false">${t("lang")}</button><button class="tiny" data-large aria-pressed="${state.large}">${t("large")}</button><button class="tiny" data-rtl aria-pressed="${state.rtl}">${t("rtl")}</button></div>` : ""}
+    const leading = state.reportMode === "history"
+      ? `<button class="icon-hit" id="history-back">${t("back")}</button>`
+      : `<button class="tiny" id="toggle-options" aria-expanded="${state.options}">${t("display")}</button>`;
+    const trailing = state.reportMode === "history"
+      ? `<button class="tiny" id="toggle-options">${t("display")}</button>`
+      : `<button class="icon-hit" id="report-exit">${t("exit")}</button>`;
+    app.innerHTML = `<section class="page ${state.options ? "options-open" : ""}" id="workout.report" data-mode="${state.reportMode}">
+      <div class="fixed-top"><div class="topbar">${leading}<h2>${t("report")}</h2>${trailing}</div>${displayRow}</div>
+      <div class="page-scroll"><p class="banner">${t("demo")}. ${t("demoLong")}</p>
       <div class="stage" id="stage-host"><div class="stage-tools"><div class="facing"><button class="tiny" data-face="front" aria-pressed="${state.facing === "front"}">${t("front")}</button><button class="tiny" data-face="back" aria-pressed="${state.facing === "back"}">${t("rear")}</button></div></div></div>
-      <div class="legend">${legendSwatches()}</div><p class="note">${t("fixed")} ${t("notFatigue")}</p>${untouched}</div>
+      <div class="legend">${legendSwatches()}</div><p class="note">${t("fixed")} ${t("notFatigue")}</p><p class="note">${state.reportMode === "history" ? t("historyNote") : t("finishNote")}</p>
+      ${state.planDecision && state.reportMode === "finish" ? `<p class="note">${state.planDecision === "saved" ? t("savedNote") : t("skippedNote")}</p>` : ""}${untouched}
       <main><article class="summary" id="report-summary" data-session-kg="${model.sessionKg}" data-work="${model.work}" data-rest="${model.rest}" data-missing="${model.missing}" data-share-sum="${model.groups.reduce((sum, group) => sum + group.share, 0)}">
         <strong>${t("summaryTitle")}</strong>
         <p>${t("loaded")} ${model.sessionKg} ${t("kgUnit")} · ${t("work")} ${clock(model.work)}${model.missing ? " · " + t("partial") : ""} · ${t("rest")} ${clock(model.rest)}</p>
@@ -691,27 +849,43 @@ function render() {
       ${model.groups.map(groupHtml).join("")}
       <p class="kicker">${t("oldKicker")}</p>
       <div class="quiet"><button id="open-duration">${t("duration")}<span class="spacer"></span>›</button><button id="open-heart">${t("heart")}<span class="spacer"></span>›</button><button id="open-contract">${t("contract")}<span class="spacer"></span>›</button></div>
-      </main></section>${sheetHtml()}${state.toast ? `<div class="toast" role="status">${state.toast}</div>` : ""}`;
-    const host = document.getElementById("stage-host");
-    host.insertBefore(canvas, host.firstChild);
-    init3D();
-    fit();
-    requestAnimationFrame(fit);
+      </main></div>
+      <div class="fixed-bottom"><button class="share" id="open-share">${t("share")}</button></div>
+      </section>${sheetHtml()}`;
+    mountStage("stage-host");
   }
-  if (state.screen === "complete" && state.toast) app.insertAdjacentHTML("beforeend", `<div class="toast" role="status">${state.toast}</div>`);
+  if (state.toast) app.insertAdjacentHTML("beforeend", `<div class="toast" role="status">${state.toast}</div>`);
   if (params.get("scroll") && !state.scrolled) {
     state.scrolled = true;
     document.getElementById(params.get("scroll"))?.scrollIntoView({ block: "start" });
   } else document.scrollingElement.scrollTop = scroll;
   paintBody();
 }
+document.getElementById("app").addEventListener("change", (event) => {
+  if (event.target.id === "share-details") { state.shareDetails = event.target.checked; render(); }
+  if (event.target.id === "share-heart") { state.shareHeart = event.target.checked; render(); }
+});
 document.getElementById("app").addEventListener("click", (event) => {
   const target = event.target.closest("button");
   if (!target) return;
-  if (target.id === "workout.completed.report") { state.screen = "report"; render(); }
-  else if (target.id === "workout.completed.exit") toast(t("exitToast"));
-  else if (target.id === "share-workout") toast(t("shareToast"));
-  else if (target.id === "report-back") { state.screen = "complete"; state.sheet = null; render(); }
+  if (target.id === "demo-scenario-changes") { state.scenario = "changes"; render(); }
+  else if (target.id === "demo-scenario-none") { state.scenario = "none"; render(); }
+  else if (target.id === "end-workout") endWorkout();
+  else if (target.id === "open-history") { state.screen = "report"; state.reportMode = "history"; state.sheet = null; render(); }
+  else if (target.id === "save-routine") decidePlan("saved");
+  else if (target.id === "skip-routine") decidePlan("skipped");
+  else if (target.id === "report-exit") { state.screen = "home"; state.sheet = null; toast(t("exitHome")); }
+  else if (target.id === "history-back" || target.id === "share-back") { state.screen = state.reportMode === "history" && target.id === "history-back" ? "home" : "report"; if (target.id === "share-back") state.screen = "report"; state.sheet = null; render(); }
+  else if (target.id === "open-share") { state.screen = "share"; state.sheet = null; render(); }
+  else if (target.id === "save-share") {
+    const card = document.getElementById("share-preview");
+    const blob = new Blob([`<?xml version="1.0"?><svg xmlns="http://www.w3.org/2000/svg" width="390" height="120"><rect width="100%" height="100%" fill="#121212"/><text x="16" y="48" fill="#1ED760" font-size="18">Masso demo share</text><text x="16" y="78" fill="#ffffff" font-size="14">${card?.dataset.sessionKg || ""} kg</text></svg>`], { type: "image/svg+xml" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "masso-share-demo.svg";
+    link.click();
+    toast(t("shareSaved"));
+  }
   else if (target.id === "toggle-options") { state.options = !state.options; render(); }
   else if (target.dataset.themeToggle) { state.theme = state.theme === "light" ? "dark" : "light"; render(); }
   else if (target.dataset.lang) { state.lang = state.lang === "en" ? "zh" : "en"; render(); }
