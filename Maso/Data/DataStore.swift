@@ -1419,10 +1419,6 @@ final class DataStore {
            let value = settings.exerciseWeightInputs?[exercise.id], value.isFinite, value >= 0, value <= 500 {
             return .init(kilograms: value, sourceExerciseID: exercise.id, source: .userInput)
         }
-        if let cross = CrossExerciseLoadReference.reference(for: exercise, targetReps: targetReps, records: sets,
-                                                            settings: settings, library: exById) {
-            return cross
-        }
         return FullBodyLoadEstimate.reference(for: exercise, anchor: settings.fullBodyLoadAnchor,
                                               settings: settings, library: exById)
     }

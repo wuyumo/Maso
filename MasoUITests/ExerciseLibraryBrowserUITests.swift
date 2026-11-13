@@ -1712,14 +1712,11 @@ final class WorkoutSignalsUITests: XCTestCase {
     }
 
     func testWidePlayerMediaStageLeavesFadedSideSpace() {
-        let app = XCUIApplication(bundleIdentifier: "com.yumowu.maso")
-        app.terminate()
-        app.launchEnvironment = ["MASO_EXERCISE_UI_TEST_SCENE": "stable-player", "MASO_SHOWCASE_SEED": "1",
-                                 "MASO_TEST_MEDIA_MAX_SIDE": "220"]
-        app.launchArguments = ["-maso.selectedLanguage", "en", "-AppleLanguages", "(en)", "-AppleLocale", "en"]
-        app.launch()
+        let app = launch("stable-player")
         let media = element("workout.media.square", app)
         XCTAssertTrue(media.waitForExistence(timeout: 15))
+        XCUIDevice.shared.orientation = .landscapeLeft
+        defer { XCUIDevice.shared.orientation = .portrait }
         let leavesSideSpace = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
             media.frame.width < app.frame.width - 20 && media.frame.minX > app.frame.minX + 10
         }, object: nil)
