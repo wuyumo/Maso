@@ -250,4 +250,114 @@ final class ExerciseSelectionPolicyTests: XCTestCase {
         XCTAssertTrue(counts.values.allSatisfy { $0 <= 2 })
         XCTAssertEqual(result.first.map { policy.metadata(for: $0).role }, "horizontal_press")
     }
+
+    func testCatalogIDsStayUniqueAndLegacyAbductorFolderResolves() {
+        let ids = ExerciseLibrary.all.map(\.id)
+        XCTAssertEqual(ids.count, Set(ids).count)
+        XCTAssertEqual(Set(ids).count, policy.sorted(ExerciseLibrary.all).count)
+        XCTAssertEqual(ExerciseLibrary.byId["Thigh_Abductor"]?.id, "abductor_machine")
+        XCTAssertEqual(ExerciseLibrary.byId["abductor_machine"]?.id, "abductor_machine")
+        XCTAssertEqual(ExerciseLibrary.byId["abduction_cable"]?.id, "abduction_cable")
+    }
+
+    func testHipAbductionVariantsStayDistinctFromAdduction() throws {
+        let machine = try exercise("abductor_machine")
+        let cable = try exercise("abduction_cable")
+        let adduction = try exercise("adductor_machine")
+        XCTAssertEqual(machine.name, "Hip Abduction (Machine)")
+        XCTAssertEqual(cable.name, "Hip Abduction (Cable)")
+        XCTAssertEqual(machine.localizedName?["zh-Hans"], "髋外展（器械）")
+        XCTAssertEqual(cable.localizedName?["zh-Hans"], "髋外展（绳索）")
+        XCTAssertNotEqual(machine.localizedName?["zh-Hans"], cable.localizedName?["zh-Hans"])
+        XCTAssertEqual(machine.equipment, "abductor_machine")
+        XCTAssertEqual(cable.equipment, "cable")
+        XCTAssertTrue(machine.instructions.contains { $0.localizedCaseInsensitiveContains("outward") })
+        XCTAssertTrue(cable.instructions.contains { $0.localizedCaseInsensitiveContains("out") })
+        XCTAssertEqual(policy.metadata(for: machine).pattern, "hip_abduction")
+        XCTAssertEqual(policy.metadata(for: cable).pattern, "hip_abduction")
+        XCTAssertEqual(policy.metadata(for: adduction).pattern, "hip_adduction")
+        XCTAssertEqual(adduction.localizedName?["zh-Hans"], "髋内收（器械）")
+
+        let visible = policy.visibleExercises(from: ExerciseLibrary.all, settings: UserSettings())
+        let namedAbduction = visible.filter { $0.name.hasPrefix("Hip Abduction") }
+        XCTAssertEqual(Set(namedAbduction.map(\.id)), ["abductor_machine", "abduction_cable"])
+
+        for query in ["hip abduction", "髋外展"] {
+            let hits = ExerciseLibrary.all.filter { $0.matchesSearch(exerciseSearchWords(query)) }
+            XCTAssertTrue(hits.contains { $0.id == machine.id }, query)
+            XCTAssertTrue(hits.contains { $0.id == cable.id }, query)
+            XCTAssertTrue(hits.allSatisfy { policy.metadata(for: $0).pattern == "hip_abduction" }, query)
+        }
+        for query in ["hip adduction", "髋内收"] {
+            let hits = ExerciseLibrary.all.filter { $0.matchesSearch(exerciseSearchWords(query)) }
+            XCTAssertTrue(hits.contains { $0.id == adduction.id }, query)
+            XCTAssertTrue(hits.contains { $0.id == "adduction_cable" }, query)
+            XCTAssertTrue(hits.allSatisfy { policy.metadata(for: $0).pattern == "hip_adduction" }, query)
+            XCTAssertFalse(hits.contains { $0.id == machine.id }, query)
+            XCTAssertFalse(hits.contains { $0.id == cable.id }, query)
+        }
+    }
+
+    func testHipExtensionSearchUsesReviewedPatternWithoutRenamingOrMixing() throws {
+        let expected = Set(ExerciseLibrary.all.filter { policy.metadata(for: $0).pattern == "hip_extension" }.map(\.id))
+        XCTAssertTrue(expected.contains("hip_thrust_barbell"))
+        XCTAssertTrue(expected.contains("glute_bridge"))
+        XCTAssertTrue(expected.contains("cable_kickback"))
+        XCTAssertFalse(expected.contains("abductor_machine"))
+        XCTAssertFalse(expected.contains("abduction_cable"))
+        XCTAssertFalse(expected.contains("adductor_machine"))
+        XCTAssertFalse(expected.contains("reverse_hyperextension"))
+        for query in ["hip extension", "髋伸展", "髖伸展"] {
+            let hits = Set(ExerciseLibrary.all.filter { $0.matchesSearch(exerciseSearchWords(query)) }.map(\.id))
+            XCTAssertEqual(hits, expected, query)
+        }
+        let cable = ExerciseLibrary.all.filter { $0.matchesSearch(exerciseSearchWords("cable hip extension")) }
+        XCTAssertTrue(cable.contains { $0.id == "cable_kickback" })
+        XCTAssertFalse(cable.contains { $0.id == "hip_thrust_barbell" })
+        XCTAssertFalse(cable.contains { $0.id == "abduction_cable" })
+        XCTAssertTrue(cable.allSatisfy { policy.metadata(for: $0).pattern == "hip_extension" })
+
+        let reverse = try exercise("reverse_hyperextension")
+        XCTAssertEqual(policy.metadata(for: reverse).role, "hip_hinge")
+        XCTAssertEqual(policy.metadata(for: reverse).pattern, "hinge")
+        XCTAssertFalse(reverse.matchesSearch(exerciseSearchWords("hip extension")))
+        XCTAssertFalse(reverse.matchesSearch(exerciseSearchWords("hip")))
+        XCTAssertTrue(reverse.matchesSearch(exerciseSearchWords("hyperextension")))
+        let thrust = try exercise("hip_thrust_barbell")
+        XCTAssertEqual(thrust.name, "Hip Thrust (Barbell)")
+        XCTAssertTrue(thrust.matchesSearch(exerciseSearchWords("hip")))
+        XCTAssertFalse(thrust.matchesSearch(exerciseSearchWords("extension")))
+        XCTAssertTrue(try exercise("leg_extension_machine").matchesSearch(exerciseSearchWords("extension")))
+    }
+
+    func testHipReplacementCandidatesKeepMovementAndEquipment() throws {
+        let machine = try exercise("abductor_machine")
+        let abductionReplacements = policy.replacementCandidates(for: machine, from: ExerciseLibrary.all, settings: UserSettings())
+        XCTAssertTrue(abductionReplacements.contains { $0.id == "abduction_cable" })
+        XCTAssertFalse(abductionReplacements.contains { $0.id == machine.id })
+        XCTAssertFalse(abductionReplacements.contains { policy.metadata(for: $0).pattern == "hip_extension" })
+        XCTAssertFalse(abductionReplacements.contains { policy.metadata(for: $0).pattern == "hip_adduction" })
+
+        var cableOnly = UserSettings()
+        cableOnly.availableEquipment = ["cable"]
+        let cableReplacements = policy.replacementCandidates(for: machine, from: ExerciseLibrary.all, settings: cableOnly)
+        XCTAssertTrue(cableReplacements.contains { $0.id == "abduction_cable" })
+        XCTAssertTrue(cableReplacements.allSatisfy { policy.equipmentAllows($0, selected: ["cable"]) })
+        XCTAssertFalse(cableReplacements.contains { $0.equipment == "abductor_machine" })
+
+        let thrust = try exercise("hip_thrust_barbell")
+        let extensionReplacements = policy.replacementCandidates(for: thrust, from: ExerciseLibrary.all, settings: UserSettings())
+        XCTAssertTrue(extensionReplacements.contains { $0.id == "glute_bridge" })
+        XCTAssertTrue(extensionReplacements.contains { $0.id == "cable_kickback" })
+        XCTAssertFalse(extensionReplacements.contains { $0.id == "abductor_machine" || $0.id == "abduction_cable" })
+        XCTAssertFalse(extensionReplacements.contains { $0.id == "adductor_machine" || $0.id == "adduction_cable" })
+        XCTAssertTrue(extensionReplacements.allSatisfy { policy.metadata(for: $0).pattern == "hip_extension" })
+
+        var machineOnly = UserSettings()
+        machineOnly.availableEquipment = ["machine"]
+        let machineReplacements = policy.replacementCandidates(for: try exercise("abduction_cable"), from: ExerciseLibrary.all, settings: machineOnly)
+        XCTAssertTrue(machineReplacements.contains { $0.id == "abductor_machine" })
+        XCTAssertTrue(machineReplacements.allSatisfy { policy.equipmentAllows($0, selected: ["machine"]) })
+        XCTAssertFalse(machineReplacements.contains { $0.id == "abduction_cable" })
+    }
 }
