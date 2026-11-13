@@ -68,15 +68,26 @@ struct PaywallScreen: View {
                         .labelStyle(.iconOnly).accessibilityIdentifier("paywall.close")
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: restorePurchases) {
-                        restorePurchaseLabel
+                    ZStack {
+                        Button(action: restorePurchases) {
+                            restorePurchaseLabel.opacity(processing ? 0 : 1)
+                        }
+                        .buttonStyle(.plain)
+                        .disabled(processing)
+                        .accessibilityLabel(Text("Restore Purchase"))
+                        .accessibilityValue(processing ? "busy" : "idle")
+                        .accessibilityShowsLargeContentViewer { Text("Restore Purchase") }
+                        .accessibilityIdentifier("paywall.restore")
+                        if processing {
+                            ProgressView()
+                                .frame(minWidth: 44, minHeight: 44)
+                                .allowsHitTesting(false)
+                                .accessibilityElement(children: .ignore)
+                                .accessibilityIdentifier("paywall.restore.progress")
+                                .accessibilityLabel("Restoring")
+                                .accessibilityAddTraits(.updatesFrequently)
+                        }
                     }
-                    .buttonStyle(.plain)
-                    .disabled(processing)
-                    .accessibilityLabel(Text("Restore Purchase"))
-                    .accessibilityValue(processing ? "busy" : "idle")
-                    .accessibilityShowsLargeContentViewer { Text("Restore Purchase") }
-                    .accessibilityIdentifier("paywall.restore")
                 }
             }
         }
@@ -278,22 +289,14 @@ struct PaywallScreen: View {
     }
 
     private var restorePurchaseLabel: some View {
-        Group {
-            if processing {
-                ProgressView()
-                    .frame(minWidth: 44, minHeight: 44)
-                    .accessibilityIdentifier("paywall.restore.progress")
-            } else {
-                Text("Restore Purchase")
-                    .font(.subheadline.weight(.semibold))
-                    .lineLimit(dynamicTypeSize.isAccessibilitySize ? 2 : 1)
-                    .minimumScaleFactor(0.55)
-                    .allowsTightening(true)
-                    .multilineTextAlignment(.trailing)
-                    .frame(maxWidth: dynamicTypeSize.isAccessibilitySize ? 150 : 210,
-                           minHeight: 44, alignment: .trailing)
-            }
-        }
+        Text("Restore Purchase")
+            .font(.subheadline.weight(.semibold))
+            .lineLimit(dynamicTypeSize.isAccessibilitySize ? 2 : 1)
+            .minimumScaleFactor(0.55)
+            .allowsTightening(true)
+            .multilineTextAlignment(.trailing)
+            .frame(maxWidth: dynamicTypeSize.isAccessibilitySize ? 150 : 210,
+                   minHeight: 44, alignment: .trailing)
     }
 
     private func restorePurchases() {

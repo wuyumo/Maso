@@ -3004,6 +3004,19 @@ private struct CompletedView: View {
     /// 练满 2 次时软问一次"要不要开召回提醒" (正向时刻, 全生命周期一次).
     @State private var showReminderOffer = false
 
+    #if DEBUG
+    /// A tiny fixture image so the photo opt-in can be rendered locally. Production passes no photo here.
+    private var reportExportPhoto: UIImage? {
+        guard ProcessInfo.processInfo.environment["MASO_SESSION_REPORT_PHOTO"] == "1" else { return nil }
+        return UIGraphicsImageRenderer(size: CGSize(width: 8, height: 8)).image { context in
+            UIColor.red.setFill()
+            context.fill(CGRect(x: 0, y: 0, width: 8, height: 8))
+        }
+    }
+    #else
+    private var reportExportPhoto: UIImage? { nil }
+    #endif
+
     /// 训练真正结束 (分享页关 / 自由训练存盘后) → 关播放器. 在这个正向时刻按里程碑做两件事之一:
     ///   - 练满 2 次且没开提醒 → 软问"要不要开召回提醒" (关播放器交给 alert 按钮).
     ///   - 否则练满 3 次 → 请求一次 App Store 评分.
@@ -3078,6 +3091,7 @@ private struct CompletedView: View {
                         records: sessionRecords,
                         workoutName: planName,
                         presentation: .finish,
+                        sessionPhoto: reportExportPhoto,
                         onSavePlan: onSavePlan,
                         onExit: {
                             showWorkoutReport = false

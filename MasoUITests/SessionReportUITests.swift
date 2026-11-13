@@ -253,6 +253,39 @@ final class SessionReportUITests: XCTestCase {
         continueAfterFailure = false
     }
 
+    func testShareExportWritesDefaultHeartAndPhotoBitmapsWithoutSending() {
+        let app = launch("session-report-clean-player", extra: [
+            "MASO_SESSION_REPORT_EXPORT": "1",
+            "MASO_SESSION_REPORT_PHOTO": "1"
+        ])
+        openReportFromCelebration(app)
+        let shareText = app.staticTexts["workout.sessionReport.shareText"]
+        XCTAssertTrue(shareText.waitForExistence(timeout: 8))
+        let photo = app.switches["workout.sessionReport.sharePhotoToggle"]
+        XCTAssertTrue(photo.waitForExistence(timeout: 5))
+        XCTAssertFalse(switchIsOn(photo))
+        let baseline = shareText.label
+        XCTAssertTrue(baseline.contains("0:40"))
+        XCTAssertTrue(baseline.contains("480 kg"))
+        XCTAssertFalse(baseline.contains("×"))
+        XCTAssertFalse(baseline.contains("130"))
+        XCTAssertFalse(baseline.contains("photo"))
+        app.buttons["workout.sessionReport.share"].tap()
+        XCTAssertTrue(app.staticTexts["workout.sessionReport.shareExported"].waitForExistence(timeout: 8))
+        XCTAssertFalse(app.buttons["workout.sessionReport.shareBack"].exists)
+
+        turnOnAboveShare("workout.sessionReport.shareHeartToggle", in: app)
+        XCTAssertTrue(waitUntil(shareText) { $0.contains("130") && !$0.contains("×") && !$0.contains("photo") })
+        app.buttons["workout.sessionReport.share"].tap()
+        XCTAssertFalse(app.buttons["workout.sessionReport.shareBack"].exists)
+
+        turnOnAboveShare("workout.sessionReport.sharePhotoToggle", in: app)
+        XCTAssertTrue(waitUntil(shareText) { $0.contains("photo") && $0.contains("130") && !$0.contains("×") })
+        app.buttons["workout.sessionReport.share"].tap()
+        XCTAssertFalse(app.buttons["workout.sessionReport.shareBack"].exists)
+        XCTAssertEqual(sessionEndCount(app), "0")
+    }
+
     func testShareExportWritesTheReportCardAndDoesNotOpenTheSystemSheet() {
         let app = launch("session-report-clean-player", extra: ["MASO_SESSION_REPORT_EXPORT": "1"])
         openReportFromCelebration(app)

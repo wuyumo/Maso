@@ -455,7 +455,7 @@ final class PaywallUITests: XCTestCase {
         restore.tap()
         let release = app.buttons["paywall.restore.release"]
         XCTAssertTrue(release.waitForExistence(timeout: 2), "Restore stays busy while the request is in flight")
-        XCTAssertTrue(app.descendants(matching: .any)["paywall.restore.progress"].exists)
+        XCTAssertTrue(app.activityIndicators["paywall.restore.progress"].waitForExistence(timeout: 2))
         XCTAssertFalse(app.alerts["Masso Pro"].exists)
         release.tap()
         let alert = app.alerts["Masso Pro"]
@@ -475,7 +475,7 @@ final class PaywallUITests: XCTestCase {
         restore.tap()
         let releaseAgain = app.buttons["paywall.restore.release"]
         XCTAssertTrue(releaseAgain.waitForExistence(timeout: 2))
-        XCTAssertTrue(app.descendants(matching: .any)["paywall.restore.progress"].exists)
+        XCTAssertTrue(app.activityIndicators["paywall.restore.progress"].waitForExistence(timeout: 2))
         releaseAgain.tap()
         XCTAssertTrue(releaseAgain.waitForNonExistence(timeout: 5))
         XCTAssertEqual(Set(store.allTransactions().map { String($0.identifier) }), transactions, "Restore must call StoreKit without buying again")
