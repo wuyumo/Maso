@@ -1843,7 +1843,7 @@ final class WorkoutSignalsUITests: XCTestCase {
         element("workout.playlist.toggle", app).tap()
 
         let away = first.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 8))
-        first.press(forDuration: 0.8, thenDragTo: away)
+        first.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).press(forDuration: 0.8, thenDragTo: away)
         XCTAssertLessThan(second.frame.minX, first.frame.minX, "Dragging out of the bar cancels")
         XCTAssertEqual(title.label, jumped)
         XCTAssertEqual(element("workout.progress", app).value as? String, "0/6")
