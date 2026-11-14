@@ -1,6 +1,6 @@
 # Masso — Privacy Policy / 隐私政策
 
-Last updated: 12 November 2026
+Last updated: 14 November 2026
 
 Contact: wuyumoawuyumo@gmail.com
 
@@ -25,6 +25,8 @@ Depending on the feature you use, AI requests may contain:
 Our backend forwards these requests to **Anthropic (Claude) or Alibaba Cloud Bailian (Qwen)**, depending on the configured service and fallback route. Bailian uses its Beijing endpoint, so processing may occur in mainland China; Anthropic processing is governed by its policy linked below. Information visible in the screenshots you select is included in image analysis. Cloudflare and Vercel host our request-routing infrastructure. Our application handler does not keep AI request bodies as a chat database; chat history and meal-analysis results are retained locally. Infrastructure and AI providers may retain operational or security records according to their terms. Do not submit information you do not want these providers to process.
 
 AI data-sharing permission does not grant permission to publish your photos. Share-card photos stay local unless you explicitly share the card. AI may be inaccurate: meal nutrients are estimates, and muscle recovery is a training estimate rather than a medical measurement.
+
+Starting with version 3.0.2, AI experience and allowance state is stored locally for this installation. It is separate from Apple purchase restoration and the optional referral identifier. These allowances are not an account-based cross-device counter and may reset after reinstalling or changing devices. Saved AI results remain available locally. When you choose a supported public article link, the app contacts that website directly to retrieve readable text; the website may receive your IP address and ordinary request metadata under its own policy. Only the explicit supported HTTPS sites are fetched, without login cookies. Extracted content sent for AI processing follows your AI data-sharing permission above.
 
 Provider information: [Anthropic privacy policy](https://www.anthropic.com/legal/privacy), [Bailian data privacy notice](https://help.aliyun.com/zh/model-studio/privacy-notice), [Alibaba Cloud privacy policy](https://help.aliyun.com/zh/document_detail/2705225.html), [Cloudflare privacy policy](https://www.cloudflare.com/privacypolicy/), [Vercel privacy policy](https://vercel.com/legal/privacy-policy). Bailian states that API data is not used for model training, but model/application call data is stored under its service agreement; this is not a zero-retention service.
 
@@ -87,6 +89,8 @@ Masso 将训练计划、组数、进步、餐食、所选照片、睡眠汇总�
 我们的后端根据配置和备用路由，将请求转发给 **Anthropic（Claude）或阿里云百炼（通义千问）**。百炼使用北京端点，数据可能在中国大陆处理；Anthropic 的处理方式见下方政策。你主动选择的截图中可见的信息也会包含在图片分析中。Cloudflare 和 Vercel 提供请求转发基础设施。我们的应用处理程序不将 AI 请求正文保存为服务器聊天数据库；聊天记录和餐食分析结果保存在本地。基础设施及 AI 服务商可能按其条款保留运行或安全记录。请勿提交你不希望这些服务商处理的信息。
 
 同意 AI 数据共享不等于同意公开照片。仅用于分享卡片的照片保留在本地，直到你主动分享。AI 可能出错：餐食营养为估算值，肌肉恢复也是训练参考，并非医学测量。
+
+从 3.0.2 版起，AI 体验与额度状态仅保存在本次设备安装中，与 Apple 购买恢复及可选推荐计划标识分开。该额度不是基于账户的跨设备计数，重新安装或更换设备后可能重置。已保存的 AI 结果仍保留在本地。你选择受支持的公开文章链接时，App 会直接向该网站获取可读正文；网站可能按其政策接收你的 IP 地址与普通请求信息。仅获取明确支持的 HTTPS 网站，不发送登录 Cookie。提取的正文如用于 AI 处理，仍遵守上述 AI 数据共享许可。
 
 服务商政策：[Anthropic 隐私政策](https://www.anthropic.com/legal/privacy)、[百炼数据隐私说明](https://help.aliyun.com/zh/model-studio/privacy-notice)、[阿里云隐私政策](https://help.aliyun.com/zh/document_detail/2705225.html)、[Cloudflare](https://www.cloudflare.com/privacypolicy/)、[Vercel](https://vercel.com/legal/privacy-policy)。百炼说明 API 数据不用于模型训练，但会按服务协议保存模型与应用调用数据，并非零留存服务。
 
