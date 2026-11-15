@@ -135,6 +135,7 @@ struct CoachScreen: View {
 
     /// 对话流自动滚到底的锚点 id.
     private static let bottomAnchor = "coach-bottom"
+    @State private var bottomBarHeight: CGFloat = 0
 
     /// composer 按钮玻璃的半透白 tint (owner 指定) — 素玻璃在深底上发黑不显眼,
     /// 掺一层很透的白让它在黑底上读作浅灰. [+|#] 药丸 / 发送禁用态 / 「下一空」胶囊 三处同值.
@@ -162,9 +163,14 @@ struct CoachScreen: View {
                 // 自己的 tap (点卡 = 收键盘 + 照常开详情), 也不挡 ScrollView 拖拽.
                 .simultaneousGesture(TapGesture().onEnded { composerFocused = false })
         }
-        // Reserve real scroll viewport for the composer/use-case shelf. The previous
-        // overlay + measured bottom padding could leave the last messages under the input.
-        .safeAreaInset(edge: .bottom, spacing: 0) { bottomBar }
+        // Keep the conversation visible behind the floating composer while reserving
+        // scrollable space below the final message.
+        .overlay(alignment: .bottom) {
+            bottomBar.background(GeometryReader { geometry in
+                Color.clear.preference(key: CoachBottomBarHeightKey.self, value: geometry.size.height)
+            })
+        }
+        .onPreferenceChange(CoachBottomBarHeightKey.self) { bottomBarHeight = $0 }
         // 试验性: 共享背景 = #121212 + 底部液态光斑.
         .background(AppBackground())
         .navigationTitle("AI Coach")
@@ -459,8 +465,8 @@ struct CoachScreen: View {
                     if let summaryApplyToast {
                         Text(summaryApplyToast).font(.footnote).foregroundStyle(MasoColor.textDim)
                     }
-                    Color.clear.frame(height: 1).id(Self.bottomAnchor)
                 }
+                Color.clear.frame(height: bottomBarHeight + 1).id(Self.bottomAnchor)
             }
             .scrollDismissesKeyboard(.interactively)
             .clipped()
@@ -689,65 +695,74 @@ struct CoachScreen: View {
     /// 但长按定向反馈只挂最新一轮卡 — onlyModify 针对的是 currentRoutines, 旧版动作可能已不在场.
     private func assistantMessage(_ msg: CoachMessage) -> some View {
         VStack(alignment: .leading, spacing: 12) {
-            // 正文跟用户气泡同 15pt + 舒展行距 (owner 指定做大).
-            Text(msg.text)
-                .font(.system(size: 15))
-                .lineSpacing(3)
-                .foregroundStyle(MasoColor.text)
-                .fixedSize(horizontal: false, vertical: true)
-            equipmentSwapActions(msg)
-            if let review = msg.photoReview {
-                coachImageActions(review, messageID: msg.id)
-            }
-            if !msg.bodyPhotoFocusMuscles.isEmpty {
-                HStack(alignment: .center, spacing: 12) {
-                    MuscleVisualBlock(muscles: msg.bodyPhotoFocusMuscles, sideLength: 130)
-                        .frame(width: 130)
-                        .accessibilityHidden(true)
-                    VStack(alignment: .leading, spacing: 6) {
-                        Text("Suggested focus").font(.subheadline.weight(.semibold))
-                        ForEach(msg.bodyPhotoFocusMuscles, id: \.self) { muscle in
-                            Text(muscle.displayName).font(.subheadline).foregroundStyle(MasoColor.accent)
-                        }
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                }
-                .accessibilityElement(children: .combine)
-                .accessibilityIdentifier("coach.photo.focusMap")
-            }
-            if msg.bodyPhotoPlanFocus != nil, msg.bodyPhotoPlanDecision == nil {
-                Button("Create a plan") {
-                    data.resolveBodyPhotoPlan(messageID: msg.id, accept: true)
-                }
-                .nativeGlassProminentButtonStyle().controlSize(.regular).tint(MasoColor.accent)
-                .accessibilityIdentifier("coach.photo.confirm")
-                .disabled(session.isGenerating)
-            }
-            if let proposal = msg.preferenceProposal {
+            if !msg.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || msg.plans == nil {
                 VStack(alignment: .leading, spacing: 12) {
-                    ForEach(proposal.changes, id: \.field) { change in
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(LocalizedStringKey(change.field.label)).font(.subheadline.weight(.semibold))
-                            Text(change.field.display(change.previous) + " → " + change.field.display(change.values))
-                                .font(.subheadline).foregroundStyle(.secondary)
+                    // 正文跟用户气泡同 15pt + 舒展行距 (owner 指定做大).
+                    Text(msg.text)
+                        .font(.system(size: 15))
+                        .lineSpacing(3)
+                        .foregroundStyle(MasoColor.text)
+                        .fixedSize(horizontal: false, vertical: true)
+                    equipmentSwapActions(msg)
+                    if let review = msg.photoReview {
+                        coachImageActions(review, messageID: msg.id)
+                    }
+                    if !msg.bodyPhotoFocusMuscles.isEmpty {
+                        HStack(alignment: .center, spacing: 12) {
+                            MuscleVisualBlock(muscles: msg.bodyPhotoFocusMuscles, sideLength: 130)
+                                .frame(width: 130)
+                                .accessibilityHidden(true)
+                            VStack(alignment: .leading, spacing: 6) {
+                                Text("Suggested focus").font(.subheadline.weight(.semibold))
+                                ForEach(msg.bodyPhotoFocusMuscles, id: \.self) { muscle in
+                                    Text(muscle.displayName).font(.subheadline).foregroundStyle(MasoColor.accent)
+                                }
+                            }
+                            .frame(maxWidth: .infinity, alignment: .leading)
                         }
+                        .accessibilityElement(children: .combine)
+                        .accessibilityIdentifier("coach.photo.focusMap")
                     }
-                    if proposal.decision == .pending {
-                        HStack {
-                            Button("Update and generate") { data.resolveCoachPreferences(messageID: msg.id, accept: true) }
-                                .accessibilityIdentifier("coach.preferences.confirm")
-                            Button("Not now") { data.resolveCoachPreferences(messageID: msg.id, accept: false) }
-                                .accessibilityIdentifier("coach.preferences.decline")
-                        }.nativeGlassButtonStyle().controlSize(.small)
-                    } else {
-                        Label(LocalizedStringKey(proposal.decision == .saved ? "Saved" : "Not saved"),
-                              systemImage: proposal.decision == .saved ? "checkmark" : "minus")
-                            .font(.subheadline).foregroundStyle(.secondary)
+                    if msg.bodyPhotoPlanFocus != nil, msg.bodyPhotoPlanDecision == nil {
+                        coachInlineActionButton("Create a plan", prominent: true) {
+                            data.resolveBodyPhotoPlan(messageID: msg.id, accept: true)
+                        }
+                        .accessibilityIdentifier("coach.photo.confirm")
+                        .disabled(session.isGenerating)
                     }
-                }.padding(MasoMetrics.cardPadding).frame(maxWidth: .infinity, alignment: .leading).glassCardBackground()
-            }
-            if let proposal = msg.memoryProposal {
-                memoryProposalCard(proposal, messageID: msg.id)
+                    if let proposal = msg.preferenceProposal {
+                        VStack(alignment: .leading, spacing: 12) {
+                            ForEach(proposal.changes, id: \.field) { change in
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text(LocalizedStringKey(change.field.label)).font(.subheadline.weight(.semibold))
+                                    Text(change.field.display(change.previous) + " → " + change.field.display(change.values))
+                                        .font(.subheadline).foregroundStyle(.secondary)
+                                }
+                            }
+                            if proposal.decision == .pending {
+                                HStack {
+                                    Button("Update and generate") { data.resolveCoachPreferences(messageID: msg.id, accept: true) }
+                                        .accessibilityIdentifier("coach.preferences.confirm")
+                                    Button("Not now") { data.resolveCoachPreferences(messageID: msg.id, accept: false) }
+                                        .accessibilityIdentifier("coach.preferences.decline")
+                                }.nativeGlassButtonStyle().controlSize(.small)
+                            } else {
+                                Label(LocalizedStringKey(proposal.decision == .saved ? "Saved" : "Not saved"),
+                                      systemImage: proposal.decision == .saved ? "checkmark" : "minus")
+                                    .font(.subheadline).foregroundStyle(.secondary)
+                            }
+                        }.padding(MasoMetrics.cardPadding).frame(maxWidth: .infinity, alignment: .leading).glassCardBackground()
+                    }
+                    if let proposal = msg.memoryProposal {
+                        memoryProposalCard(proposal, messageID: msg.id)
+                    }
+                }
+                .padding(14)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(MasoColor.surfaceHi, in: RoundedRectangle(cornerRadius: 18))
+                .padding(.trailing, 32)
+                .accessibilityElement(children: .contain)
+                .accessibilityIdentifier("coach.assistant-bubble." + msg.id)
             }
             if let plans = msg.plans {
                 let isLatest = msg.id == session.messages.last(where: { $0.plans != nil })?.id
@@ -755,7 +770,7 @@ struct CoachScreen: View {
                     if let plan = plans.first(where: { $0.id == id }) {
                         Task { await ExerciseDemoService.shared.prefetch(plan.steps.map(\.exerciseId), priority: true) }
                     }
-                }) { i, plan in
+                }, equalHeight: true, scalesDuringScroll: false) { i, plan, cardHeight in
                     let previousPlans = msg.previousPlans ?? []
                     let previousPlan = previousPlans.first(where: {
                         $0.name.caseInsensitiveCompare(plan.name) == .orderedSame
@@ -769,12 +784,14 @@ struct CoachScreen: View {
                         onShowDetail: { detailPlan = CoachWorkoutDetail(plan: plan) },
                         prominentStart: false,
                         addAction: msg.isSingleWorkout ? nil : { requestReplaceAll([plan]) },
+                        addActionTitle: data.isCoachPlanSaved(plan) ? "Saved" : "Save",
                         compactLayout: true,
                         savedOverride: data.isCoachPlanSaved(plan),
                         showsExercisePills: true,
                         previousPlan: previousPlan,
                         onExercisePillLongPress: isLatest
-                            ? { name in beginTargetedSwap(name) } : nil
+                            ? { name in beginTargetedSwap(name) } : nil,
+                        fixedHeight: cardHeight
                     )
                 }
                 .padding(.horizontal, -MasoMetrics.pagePaddingHorizontal)
@@ -786,7 +803,7 @@ struct CoachScreen: View {
                         // 保存这一轮生成的 routines 到用户的计划列表；已有计划时由确认弹窗说明会整体替换.
                         let saved = data.areCoachPlansSaved(plans)
                         AddToPlansButton(isSaved: saved,
-                                         titleOverride: saved ? "Saved to My Routines" : "Save to My Routines",
+                                         titleOverride: saved ? "Saved" : "Save all plans",
                                          action: { requestReplaceAll(plans, anchorID: msg.id) })
                         .workoutSaveConfirmation(flow: workoutSaveFlow, anchorID: msg.id) { paywallPresented = true }
                         .accessibilityIdentifier("coach.save-batch")
@@ -915,7 +932,6 @@ struct CoachScreen: View {
     private var bottomBar: some View {
         VStack(spacing: 8) {
             if let notice = data.aiAccess.notice { Text(notice).font(.footnote).foregroundStyle(.secondary) }
-            if shouldShowUseCases { useCaseGuide }
             composerRow
         }
         .frame(maxWidth: .infinity)
@@ -930,54 +946,6 @@ struct CoachScreen: View {
             && !isReportingBug && !isSubmittingBugReport
             && bodyPhoto == nil && currentPhysiquePhoto == nil && goalReferencePhoto == nil
             && !session.isGenerating
-    }
-
-    private var useCaseGuide: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 8) {
-                    ForEach(CoachUseCase.allCases) { useCase in
-                        Button { beginUseCase(useCase) } label: {
-                            Label(LocalizedStringKey(useCase.titleKey), systemImage: useCase.symbol)
-                                .font(.caption.weight(.medium))
-                                .foregroundStyle(MasoColor.text)
-                                .lineLimit(1)
-                                .padding(.horizontal, 10)
-                                .frame(height: 36)
-                                .background {
-                                    Capsule()
-                                        .fill(.regularMaterial)
-                                        .overlay {
-                                            Capsule()
-                                                .fill(MasoColor.background.opacity(0.22))
-                                        }
-                                }
-                                .overlay {
-                                    Capsule()
-                                        .stroke(MasoColor.borderSoft.opacity(0.7), lineWidth: 0.6)
-                                }
-                                .contentShape(Capsule())
-                        }
-                        .buttonStyle(.plain)
-                    }
-                    Button(action: beginBugReport) {
-                        Label("Report a bug", systemImage: "ladybug")
-                            .font(.caption.weight(.medium))
-                            .foregroundStyle(MasoColor.text)
-                            .lineLimit(1)
-                            .padding(.horizontal, 10)
-                            .frame(height: 36)
-                            .background {
-                                Capsule().fill(.regularMaterial)
-                                    .overlay { Capsule().fill(MasoColor.background.opacity(0.22)) }
-                            }
-                            .overlay { Capsule().stroke(MasoColor.borderSoft.opacity(0.7), lineWidth: 0.6) }
-                    }
-                    .buttonStyle(.plain)
-                }
-                .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
-            }
-        }
     }
 
     private var composerRow: some View {
@@ -995,7 +963,7 @@ struct CoachScreen: View {
                     }.accessibilityIdentifier("coach.edit.cancel")
                 }
             }
-            if selectedUseCase == .physiqueGoal {
+            if isPhysiqueComparison {
                 physiquePhotoInputs
             } else if let bodyPhoto {
                 HStack(alignment: .top, spacing: 12) {
@@ -1055,6 +1023,21 @@ struct CoachScreen: View {
 
                 Spacer(minLength: 0)
 
+                if templateActive || selectedUseCase != nil {
+                    Button {
+                        composerText = ""; composerSelection = nil; composerBlanks = []
+                        templateActive = false; selectedUseCase = nil
+                        pendingOnlyModify = nil; onlyModifyPrefix = nil
+                        bodyPhotoAnalysisRequested = false; muscleTrainingRequestActive = false
+                    } label: {
+                        Image(systemName: "xmark.circle.fill")
+                            .foregroundStyle(MasoColor.textDim)
+                            .frame(width: 44, height: 44).contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(Text("Clear template"))
+                    .accessibilityIdentifier("coach.clear-template")
+                }
                 sendButton
             }
         }
@@ -1080,9 +1063,12 @@ struct CoachScreen: View {
             && !isSubmittingBugReport
             && !hasPlaceholders
             && (!isPhysiqueComparison || (currentPhysiquePhoto != nil && goalReferencePhoto != nil))
+            && (selectedUseCase != .bodyAssessment || bodyPhoto != nil)
     }
 
-    private var isPhysiqueComparison: Bool { selectedUseCase == .physiqueGoal }
+    private var isPhysiqueComparison: Bool {
+        selectedUseCase == .physiqueGoal || currentPhysiquePhoto != nil || goalReferencePhoto != nil
+    }
 
     private var physiquePhotoInputs: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -1170,6 +1156,24 @@ struct CoachScreen: View {
             }
             .disabled(session.isGenerating)
             .accessibilityLabel(Text("Add"))
+            Menu {
+                ForEach(CoachUseCase.allCases) { useCase in
+                    Button { beginUseCase(useCase) } label: {
+                        Label(LocalizedStringKey(useCase.titleKey), systemImage: useCase.symbol)
+                    }
+                }
+                Divider()
+                Button(action: beginBugReport) { Label("Report a bug", systemImage: "ladybug") }
+            } label: {
+                Label("Ideas", systemImage: "lightbulb")
+                    .font(.subheadline.weight(.medium))
+                    .foregroundStyle(MasoColor.text)
+                    .padding(.horizontal, 12)
+                    .frame(minHeight: 44)
+                    .contentShape(Rectangle())
+            }
+            .disabled(!shouldShowUseCases)
+            .accessibilityIdentifier("coach.ideas")
 
         }
         return Group {
@@ -1331,7 +1335,12 @@ struct CoachScreen: View {
         goalReferencePhoto = nil
         selectedUseCase = useCase
         let prompt = NSLocalizedString(useCase.promptKey, comment: "AI coaching use case prompt")
-        if useCase == .physiqueGoal {
+        if useCase == .bodyAssessment {
+            composerText = prompt
+            templateActive = false
+            bodyPhotoAnalysisRequested = true
+            choosePhoto(.composer, source: .photoLibrary)
+        } else if useCase == .physiqueGoal {
             composerText = prompt
             templateActive = false
         } else {
@@ -1644,6 +1653,7 @@ private struct CoachPhotoRequest: Identifiable {
 }
 
 enum CoachUseCase: String, CaseIterable, Identifiable {
+    case bodyAssessment = "body_assessment"
     case physiqueGoal = "physique_goal"
     case focus = "focus"
     case time = "time"
@@ -1657,7 +1667,7 @@ enum CoachUseCase: String, CaseIterable, Identifiable {
         case .time: .time
         case .homeEquipment: .equipment
         case .returnToTraining: .returnToTraining
-        case .physiqueGoal: .physiqueGoal
+        case .bodyAssessment, .physiqueGoal: .physiqueGoal
         }
     }
 
@@ -1667,6 +1677,7 @@ enum CoachUseCase: String, CaseIterable, Identifiable {
         case .time: "I only have 30 minutes"
         case .homeEquipment: "I train at home"
         case .returnToTraining: "I’m getting back into training"
+        case .bodyAssessment: "Assess my physique"
         case .physiqueGoal: "I want to look like this"
         }
     }
@@ -1677,6 +1688,7 @@ enum CoachUseCase: String, CaseIterable, Identifiable {
         case .time: "I have [30] minutes per workout. Shorten my routines to fit while keeping the main training focus."
         case .homeEquipment: "I train at home with [dumbbells and bands]. Adapt my routines to the equipment I have."
         case .returnToTraining: "I’m returning after [a month away]. Ease my routines back in with balanced, gradual training."
+        case .bodyAssessment: "Review my body photo and suggest balanced training adjustments."
         case .physiqueGoal: "Compare my current photo with this goal reference. Suggest balanced training emphases based on visible muscle development, then adjust my routines. Keep the advice realistic; don’t estimate body fat or a timeline."
         }
     }
@@ -1687,6 +1699,7 @@ enum CoachUseCase: String, CaseIterable, Identifiable {
         case .time: "clock"
         case .homeEquipment: "house"
         case .returnToTraining: "arrow.uturn.backward"
+        case .bodyAssessment: "person.crop.rectangle"
         case .physiqueGoal: "person.crop.rectangle.stack"
         }
     }
@@ -1918,4 +1931,9 @@ struct CoachUserTextBubble: View {
 
 @MainActor enum CoachMessageTextActions {
     static func copy(_ text: String) { if !text.isEmpty { UIPasteboard.general.string = text } }
+}
+
+private struct CoachBottomBarHeightKey: PreferenceKey {
+    static var defaultValue: CGFloat = 0
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) { value = max(value, nextValue()) }
 }

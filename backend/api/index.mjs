@@ -15,6 +15,7 @@
 //   ANTHROPIC_API_KEY / MASO_CLIENT_TOKEN / POLAR_TOKEN / POLAR_ORG_ID
 // (跟 Cloudflare 那边 wrangler secret 的值完全一样.)
 import { handleRequest } from "../shared/handler.mjs";
+import { relayPartnerRequest } from "../shared/partner-relay.mjs";
 
 // ⚠️ 文件必须是 .mjs: backend/ 下没有 package.json, Node runtime 默认按 CommonJS 解析
 //    `import` 会直接 FUNCTION_INVOCATION_FAILED (2026-08-10 踩过, 1.9s 就 500)。
@@ -46,7 +47,9 @@ export default async function handler(req, res) {
       body: await readBody(req),
     });
 
-    const out = await handleRequest(request, process.env);
+    const out = new URL(request.url).pathname.startsWith("/partners/")
+      ? await relayPartnerRequest(request)
+      : await handleRequest(request, process.env);
 
     res.statusCode = out.status;
     out.headers.forEach((v, k) => res.setHeader(k, v));

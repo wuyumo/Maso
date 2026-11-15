@@ -33,6 +33,15 @@ LOC_PATTERNS = [
     re.compile(r'\bText\(\s*"([^"\\]+)"\s*\)'),
     re.compile(r'\bButton\(\s*"([^"\\]+)"'),
     re.compile(r'\bLabel\(\s*"([^"\\]+)"\s*,\s*systemImage'),
+    re.compile(r'\bToggle\(\s*"([^"\\]+)"'),
+    re.compile(r'\bPicker\(\s*"([^"\\]+)"'),
+    re.compile(r'\bTextField\(\s*"([^"\\]+)"'),
+    re.compile(r'\bSecureField\(\s*"([^"\\]+)"'),
+    re.compile(r'\bSection\(\s*"([^"\\]+)"'),
+    re.compile(r'\bProgressView\(\s*"([^"\\]+)"'),
+    re.compile(r'\bLabeledContent\(\s*"([^"\\]+)"'),
+    re.compile(r'\.alert\(\s*"([^"\\]+)"'),
+    re.compile(r'\.confirmationDialog\(\s*"([^"\\]+)"'),
     re.compile(r'\.navigationTitle\(\s*"([^"\\]+)"'),
     re.compile(r'\.accessibilityLabel\(\s*"([^"\\]+)"\s*\)'),
     re.compile(r'NSLocalizedString\(\s*"([^"\\]+)"'),
@@ -41,12 +50,25 @@ LOC_PATTERNS = [
 
 # 不需要翻译的字面量 — 品牌 / SF Symbol / a11y identifier
 SKIP_LITERALS = {
-    "MASO", "Maso", "PRO",  # 品牌
+    "MASSO", "Masso", "PRO",  # 品牌
     "exercise-set",         # accessibility identifier
+    "XXXX-XXXX-XXXX",      # placeholder / storefront test input
     "from $2.50/mo", "FROM $2.50/MO",  # 营销硬编码
     "Active forever — thanks for buying.",  # subscription mock
     "·", "•", "—", "–", "✓", "🏆",  # 单符号 separator / icon, 不需翻
 }
+
+# Keep this aligned with printf-style formats used by Localizable.strings. Whitespace is not
+# accepted before the conversion letter, so ordinary percentages like "45% / 55%" are ignored.
+PRINTF_PATTERN = re.compile(
+    r"%(?:\d+\$)?[-+#0]*(?:\d+|\*)?(?:\.(?:\d+|\*))?(?:hh|h|ll|l|q|z|t|j|L)?"
+    r"(d|i|u|o|x|X|f|F|e|E|g|G|a|A|c|C|s|S|p|@|%)"
+)
+
+
+def format_arguments(value: str) -> list[str]:
+    """Return format conversion types, allowing translators to reorder positional arguments."""
+    return sorted(arg for arg in PRINTF_PATTERN.findall(value) if arg != "%")
 
 
 def parse_strings(path: Path) -> dict:
@@ -103,12 +125,20 @@ def main():
     # 2. Missing per language
     per_lang_missing = {}
     per_lang_untranslated = {}
+    per_lang_placeholder_mismatch = {}
     for lang in LANGS:
         if lang == "en":
             continue
         strs = parse_strings(RESOURCES / f"{lang}.lproj/Localizable.strings")
         missing = sorted(en_keys - set(strs.keys()))
         per_lang_missing[lang] = missing
+        placeholder_mismatch = []
+        for key in en_keys & set(strs.keys()):
+            placeholders_en = format_arguments(en_strings[key])
+            placeholders_localized = format_arguments(strs[key])
+            if placeholders_en != placeholders_localized:
+                placeholder_mismatch.append(key)
+        per_lang_placeholder_mismatch[lang] = sorted(placeholder_mismatch)
         # 译文跟 en 一字不差 — 可能是占位漏翻
         untranslated = sorted([
             k for k in en_keys
@@ -127,7 +157,7 @@ def main():
 
     # Human-readable report
     print("=" * 70)
-    print(f"i18n Audit Report — Maso")
+    print(f"i18n Audit Report — Masso")
     print("=" * 70)
     print(f"\nSwift literals scanned:      {len(literals)}")
     print(f"en.lproj registered keys:    {len(en_keys)}")
@@ -157,6 +187,44 @@ def main():
     else:
         print("✅ All languages have all en.lproj keys")
 
+    total_placeholder_mismatch = sum(len(v) for v in per_lang_placeholder_mismatch.values())
+    if total_placeholder_mismatch:
+        has_issue = True
+        print("🔴 PLACEHOLDER MISMATCH — translated strings must preserve format arguments:")
+        for lang, keys in per_lang_placeholder_mismatch.items():
+            if keys:
+                print(f"  {lang}: {len(keys)} mismatched")
+                for key in keys[:5]:
+                    print(f"      • {key!r}")
+        print()
+
+    # The bundled exercise catalog is also localized data; check every map alongside UI copy.
+    exercise_path = RESOURCES / "exercises.json"
+    exercise_data = json.loads(exercise_path.read_text(encoding="utf-8"))
+    exercise_fields = ("name", "instructions", "danger_warnings")
+    exercise_missing = {lang: 0 for lang in LANGS if lang != "en"}
+    for exercise in exercise_data:
+        maps = [exercise.get(field) for field in exercise_fields]
+        localized_base = (exercise.get("nameParts") or {}).get("localizedBase")
+        if isinstance(localized_base, dict):
+            maps.append(localized_base)
+        for mapping in maps:
+            if not isinstance(mapping, dict) or not mapping.get("en"):
+                continue
+            for lang in exercise_missing:
+                if lang not in mapping or mapping[lang] in (None, "", []):
+                    exercise_missing[lang] += 1
+    total_exercise_missing = sum(exercise_missing.values())
+    if total_exercise_missing:
+        has_issue = True
+        print("🟡 MISSING EXERCISE LOCALIZATIONS:")
+        for lang, count in exercise_missing.items():
+            if count:
+                print(f"  {lang}: {count} missing localized exercise fields")
+        print()
+    else:
+        print(f"✅ Exercise names, instructions and cautions are localized ({len(exercise_data)} records)")
+
     total_untranslated = sum(len(v) for v in per_lang_untranslated.values())
     if total_untranslated > 0:
         print(f"⚠️  UNTRANSLATED — 翻译值跟 English 一样 (大概率占位漏翻):")
@@ -171,7 +239,7 @@ def main():
     else:
         print("All good ✓")
 
-    if args.check and (unregistered or total_missing > 0):
+    if args.check and (unregistered or total_missing > 0 or total_placeholder_mismatch > 0 or total_exercise_missing > 0):
         return 1
     return 0
 

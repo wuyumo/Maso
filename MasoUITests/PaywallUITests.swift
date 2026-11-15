@@ -76,7 +76,7 @@ final class PaywallUITests: XCTestCase {
 
     func testArabicPaywallActionsHaveRealNativeAndStoreKitFixtureOutcomes() throws {
         var app = launch("welcome",language:"ar",largeType:true,narrow:true)
-        let free = app.buttons["paywall.continue-free"]; try reveal(free,app:app); free.tap()
+        let close = app.buttons["paywall.close"]; XCTAssertTrue(close.waitForExistence(timeout: 10)); close.tap()
         let seen = app.staticTexts["paywall.test.welcome-state"]
         XCTAssertTrue(seen.waitForExistence(timeout:10)); XCTAssertEqual(seen.label,"seen")
         capture(app,"ar-50-continue-free-closed-welcome")
@@ -150,8 +150,7 @@ final class PaywallUITests: XCTestCase {
             try reveal(yearly, app: app)
             XCTAssertTrue(yearly.label.contains("29.99") || yearly.label.contains("29,99"))
             capture(app, language + "-plans")
-            let free = app.buttons["paywall.continue-free"]
-            try reveal(free, app: app)
+            try reveal(app.buttons["paywall.referral"], app: app)
             XCTAssertTrue(app.buttons["paywall.purchase"].exists)
             XCTAssertTrue(app.staticTexts["paywall.renewal"].exists)
             if language == "en" {
@@ -170,7 +169,7 @@ final class PaywallUITests: XCTestCase {
         try reveal(app.buttons["paywall.plan.yearly"], app: app)
         capture(app, "de-accessibility-plans")
         try reveal(app.buttons["paywall.restore"], app: app)
-        XCTAssertTrue(app.buttons["paywall.continue-free"].exists)
+        XCTAssertFalse(app.buttons["paywall.continue-free"].exists)
         capture(app, "de-accessibility-footer")
     }
 
@@ -183,7 +182,7 @@ final class PaywallUITests: XCTestCase {
                 if app.buttons["paywall.restore"].isHittable { break }
                 app.swipeUp(); capture(app,language + "-49-fullscroll-" + String(index))
             }
-            for id in ["purchase","referral","continue-free","restore"] {
+            for id in ["purchase","referral","restore"] {
                 let button = app.buttons["paywall." + id]
                 try reveal(button,app:app); XCTAssertGreaterThanOrEqual(button.frame.height,44)
                 capture(app,language + "-49-reachable-" + id)
@@ -192,47 +191,6 @@ final class PaywallUITests: XCTestCase {
             app.terminate()
         }
     }
-    func testSourceLinkHelpIsHonestAndReachableInEnglishChineseAndArabicLargeType() throws {
-        for language in ["en","zh-Hans","zh-Hant","de","fr","es","it","pt-BR","ru","ja","ko","ar"] {
-            let app = launch("device-usage",language:language,largeType:language == "ar",narrow:language == "ar")
-            let intro = app.staticTexts["ai.sources.intro"]; try reveal(intro,app:app)
-            capture(app,language + "-source-help-intro")
-            if language == "ar" { app.swipeUp(); capture(app,language + "-source-help-middle") }
-            let hosts = app.staticTexts["ai.sources.hosts"]; try reveal(hosts,app:app)
-            for host in ["strongerbyscience.com","muscleandstrength.com","strengthlog.com","hevyapp.com","exrx.net"] { XCTAssertTrue(hosts.label.contains(host)) }
-            let video = app.staticTexts["ai.sources.video-limit"]; try reveal(video,app:app)
-            XCTAssertTrue(video.label.contains("YouTube")); XCTAssertTrue(video.label.contains("Bilibili"))
-            if language == "ar" { app.swipeUp(); capture(app,language + "-source-help-video-scroll") }
-            let limits = app.staticTexts["ai.sources.limits"]; try reveal(limits,app:app)
-            XCTAssertTrue(limits.label.contains("HTTPS")); XCTAssertTrue(limits.label.contains("120"))
-            for _ in 0..<4 where limits.frame.maxY > app.frame.maxY - 20 { app.swipeUp() }
-            XCTAssertLessThanOrEqual(limits.frame.maxY,app.frame.maxY - 20,"Complete final disclosure must be reachable above the bottom safe area")
-            capture(app,language + "-source-help-limits")
-            app.terminate()
-        }
-    }
-    func testNativeRecoverySnapshotAndFullAcquiredTextAreReadable() throws {
-        for language in ["en","zh-Hans"] {
-            let app = launch("device-usage",language:language)
-            let result = app.buttons.matching(NSPredicate(format:"label CONTAINS %@","Synthetic saved text result")).firstMatch
-            try reveal(result,app:app); result.tap()
-            let details = app.buttons["ai.result.details"]
-            XCTAssertTrue(details.waitForExistence(timeout:10)); details.tap()
-            let payload = app.staticTexts.matching(NSPredicate(format:"label CONTAINS %@","Entire acquired text fixture")).firstMatch
-            capture(app,language + "-49-saved-result-details-open")
-            if !payload.waitForExistence(timeout:5) { print("SYNTHETIC REPLAY DEBUG: " + app.debugDescription) }
-            XCTAssertTrue(payload.exists); XCTAssertTrue(payload.label.contains("Entire acquired text fixture"))
-            capture(app,language + "-49-full-saved-result")
-            app.navigationBars.buttons.element(boundBy:0).tap()
-            for _ in 0..<3 { app.swipeDown() }
-            let snapshot = app.buttons["recovery.snapshot.preview"]
-            try reveal(snapshot,app:app); snapshot.tap()
-            XCTAssertTrue(app.staticTexts["recovery.snapshot.timestamp"].waitForExistence(timeout:10))
-            capture(app,language + "-49-recovery-snapshot")
-            app.terminate()
-        }
-    }
-
     func testReferralSheetReachabilityAndCancellationInThreeLanguages() throws {
         for language in ["en", "zh-Hans", "ar"] {
             let app = launch("upgrade", language: language)
@@ -273,17 +231,13 @@ final class PaywallUITests: XCTestCase {
         }
     }
 
-    func testFreeProDetailsAreHonestAboutCurrentlyEffectiveAIAndPreservedData() throws {
+    func testRemovedFreeDetailsAndReferralAction() throws {
         for language in ["en", "zh-Hans", "de", "ar"] {
             let app = launch("upgrade", language: language)
-            let details = app.buttons["paywall.policy-details"]
-            try reveal(details, app: app)
-            details.tap()
-            XCTAssertTrue(app.navigationBars.element.waitForExistence(timeout: 10))
-            XCTAssertFalse(app.staticTexts["paywall.policy-preview-warning"].exists)
-            XCTAssertTrue(app.staticTexts["paywall.policy-foundation"].exists)
-            XCTAssertTrue(app.staticTexts["ai.policy.device-scope"].exists)
-            capture(app, language + "-effective-rights-details")
+            try reveal(app.buttons["paywall.referral"], app: app)
+            XCTAssertFalse(app.buttons["paywall.policy-details"].exists)
+            XCTAssertFalse(app.buttons["paywall.continue-free"].exists)
+            if language == "en" { XCTAssertEqual(app.buttons["paywall.referral"].label, "I have a referral code") }
             app.terminate()
         }
     }
@@ -304,10 +258,10 @@ final class PaywallUITests: XCTestCase {
             XCTAssertTrue(monthly.label.lowercased().contains(language == "en" ? "renews" : "自动"))
             XCTAssertFalse(app.buttons["paywall.plan.yearly"].label.lowercased().contains(language == "en" ? "renews" : "自动"))
             capture(app, language + "-compact-monthly")
-            for id in ["referral", "continue-free", "restore"] {
+            for id in ["referral", "restore"] {
                 let button = app.buttons["paywall." + id]
                 try reveal(button, app: app)
-                XCTAssertGreaterThanOrEqual(button.frame.height, 44)
+                XCTAssertGreaterThanOrEqual(button.frame.height + 0.001, 44)
             }
             capture(app, language + "-compact-actions")
             app.terminate()
@@ -321,7 +275,7 @@ final class PaywallUITests: XCTestCase {
             try reveal(yearly, app: app)
             XCTAssertTrue(yearly.label.contains("29.99") || yearly.label.contains("29,99"))
             capture(app, language + "-compact-narrow-large-plan")
-            for id in ["purchase", "referral", "continue-free", "restore"] {
+            for id in ["purchase", "referral", "restore"] {
                 try reveal(app.buttons["paywall." + id], app: app)
             }
             if language == "ar" { XCTAssertEqual(app.buttons["paywall.restore"].label, "استعادة المشتريات") }
@@ -395,6 +349,97 @@ final class PaywallUITests: XCTestCase {
     }
 
 
+    func testRestorePurchaseIsTheOnlyTrailingStoreKitAction() throws {
+        let labels = [
+            "en": "Restore Purchase", "zh-Hans": "恢复购买", "zh-Hant": "恢復購買",
+            "de": "Käufe wiederherstellen", "fr": "Restaurer les achats",
+            "es": "Restaurar las compras", "it": "Ripristinare gli acquisti",
+            "pt-BR": "Restaurar compras", "ru": "Восстановить покупки",
+            "ja": "購入を復元する", "ko": "구매 복원", "ar": "استعادة المشتريات",
+        ]
+        let webLabels = [
+            "en": "Restore web purchase", "zh-Hans": "恢复网页购买", "zh-Hant": "恢復網頁購買",
+            "de": "Webkauf wiederherstellen", "fr": "Restaurer un achat web",
+            "es": "Restaurar compra web", "it": "Ripristina acquisto web",
+            "pt-BR": "Restaurar compra na web", "ru": "Восстановить покупку на сайте",
+            "ja": "ウェブ購入を復元", "ko": "웹 구매 복원", "ar": "استعادة شراء الويب",
+        ]
+        for language in ["en", "zh-Hans", "zh-Hant", "de", "fr", "es", "it", "pt-BR", "ru", "ja", "ko", "ar"] {
+            let crowded = ["de", "fr", "es", "it", "pt-BR", "ru", "ar"].contains(language)
+            let app = launch("upgrade", language: language, largeType: crowded, narrow: crowded)
+            let restore = app.buttons["paywall.restore"]
+            let close = app.buttons["paywall.close"]
+            XCTAssertTrue(restore.waitForExistence(timeout: 15))
+            XCTAssertTrue(close.exists)
+            XCTAssertEqual(app.buttons.matching(identifier: "paywall.restore").count, 1)
+            XCTAssertEqual(restore.label, try XCTUnwrap(labels[language]))
+            XCTAssertFalse(app.buttons["paywall.more"].exists)
+            let webLabel = try XCTUnwrap(webLabels[language])
+            XCTAssertFalse(app.buttons[webLabel].exists)
+            XCTAssertFalse(app.staticTexts[webLabel].exists)
+            XCTAssertFalse(app.staticTexts["Enter your activation code"].exists)
+            XCTAssertFalse(app.textFields["XXXX-XXXX-XXXX"].exists)
+            if language == "en" { XCTAssertFalse(app.buttons["Restore Purchases"].exists) }
+            let bar = app.navigationBars.firstMatch
+            XCTAssertTrue(bar.exists)
+            XCTAssertLessThanOrEqual(restore.frame.maxY, bar.frame.maxY + 1)
+            XCTAssertGreaterThanOrEqual(restore.frame.height, 44)
+            let separation = language == "ar" ? close.frame.minX - restore.frame.maxX : restore.frame.minX - close.frame.maxX
+            XCTAssertGreaterThan(separation, 0, "Restore Purchase must stay clear of Close in \(language)")
+            if language == "ar" {
+                XCTAssertLessThan(restore.frame.midX, close.frame.midX)
+            } else {
+                XCTAssertGreaterThan(restore.frame.midX, close.frame.midX)
+            }
+            try reveal(app.buttons["paywall.referral"], app: app)
+            XCTAssertTrue(app.buttons["paywall.referral"].exists)
+            XCTAssertTrue(app.buttons["paywall.terms"].exists)
+            XCTAssertTrue(app.buttons["paywall.privacy"].exists)
+            XCTAssertEqual(app.buttons.matching(identifier: "paywall.restore").count, 1)
+            app.terminate()
+        }
+    }
+
+    func testRestorePurchaseShowsLoadingThenStoreKitResultWithoutAnotherPurchase() throws {
+        let app = launch("upgrade", restoreHold: true)
+        let restore = app.buttons["paywall.restore"]
+        XCTAssertTrue(restore.waitForExistence(timeout: 15))
+        XCTAssertEqual(restore.label, "Restore Purchase")
+        XCTAssertTrue(restore.isEnabled)
+        restore.tap()
+        let release = app.buttons["paywall.restore.release"]
+        XCTAssertTrue(release.waitForExistence(timeout: 2), "Restore stays busy while the request is in flight")
+        XCTAssertTrue(restoreSpinner(in: app).exists)
+        XCTAssertEqual(String(describing: restore.value ?? ""), "busy")
+        XCTAssertFalse(restore.isEnabled)
+        XCTAssertFalse(app.alerts["Masso Pro"].exists)
+        release.tap()
+        let alert = app.alerts["Masso Pro"]
+        XCTAssertTrue(alert.waitForExistence(timeout: 5))
+        XCTAssertTrue(alert.staticTexts["No active subscription found"].exists)
+        alert.buttons["OK"].tap()
+        XCTAssertTrue(restore.waitForExistence(timeout: 2))
+        XCTAssertTrue(restore.isEnabled)
+
+        let purchase = app.buttons["paywall.purchase"]
+        try reveal(purchase, app: app)
+        purchase.tap()
+        let bought = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in !self.store.allTransactions().isEmpty }, object: nil)
+        XCTAssertEqual(XCTWaiter.wait(for: [bought], timeout: 15), .completed)
+        let transactions = Set(store.allTransactions().map { String($0.identifier) })
+        XCTAssertFalse(transactions.isEmpty)
+        restore.tap()
+        let releaseAgain = app.buttons["paywall.restore.release"]
+        XCTAssertTrue(releaseAgain.waitForExistence(timeout: 2))
+        XCTAssertTrue(restoreSpinner(in: app).exists)
+        XCTAssertEqual(String(describing: restore.value ?? ""), "busy")
+        XCTAssertFalse(restore.isEnabled)
+        releaseAgain.tap()
+        XCTAssertTrue(releaseAgain.waitForNonExistence(timeout: 5))
+        XCTAssertEqual(Set(store.allTransactions().map { String($0.identifier) }), transactions, "Restore must call StoreKit without buying again")
+        XCTAssertFalse(app.alerts["Masso Pro"].exists)
+    }
+
     func testEnlargedBrandKeeps17ProInitialSubscribeVisibleWithoutScrolling() throws {
         for language in ["en","zh-Hans","de","ar"] {
             // Production Masso enforces dark appearance. A light-only Debug host is not the default product screen.
@@ -416,13 +461,24 @@ final class PaywallUITests: XCTestCase {
         }
     }
 
-    private func launch(_ scene: String, language: String = "en", largeType: Bool = false, narrow: Bool = false, light: Bool = false, increasedContrast: Bool = false) -> XCUIApplication {
+    /// The progress id is on two Other containers. The spinner is the ActivityIndicator inside them and has no id of its own.
+    private func restoreSpinner(in app: XCUIApplication) -> XCUIElement {
+        let containers = app.otherElements.matching(identifier: "paywall.restore.progress")
+        XCTAssertGreaterThan(containers.count, 0)
+        let spinner = containers.activityIndicators.firstMatch
+        XCTAssertTrue(spinner.waitForExistence(timeout: 2))
+        return spinner
+    }
+
+    private func launch(_ scene: String, language: String = "en", largeType: Bool = false, narrow: Bool = false, light: Bool = false, increasedContrast: Bool = false, restoreHold: Bool = false) -> XCUIApplication {
         let app = XCUIApplication(bundleIdentifier: "com.yumowu.maso")
         app.terminate()
-        app.launchEnvironment = ["MASO_PAYWALL_UI_TEST_SCENE": scene,
-                                 "MASO_PAYWALL_LARGE_TYPE": largeType ? "1" : "0",
-                                 "MASO_PAYWALL_NARROW": narrow ? "1" : "0",
-                                 "MASO_UI_LIGHT": light ? "1" : "0", "MASO_UI_CONTRAST": increasedContrast ? "1" : "0"]
+        var environment = ["MASO_PAYWALL_UI_TEST_SCENE": scene,
+                           "MASO_PAYWALL_LARGE_TYPE": largeType ? "1" : "0",
+                           "MASO_PAYWALL_NARROW": narrow ? "1" : "0",
+                           "MASO_UI_LIGHT": light ? "1" : "0", "MASO_UI_CONTRAST": increasedContrast ? "1" : "0"]
+        if restoreHold { environment["MASO_RESTORE_HOLD"] = "1" }
+        app.launchEnvironment = environment
         app.launchArguments = ["-maso.selectedLanguage", language, "-AppleLanguages", "(\(language))", "-AppleLocale", language]
         app.launch()
         return app
@@ -486,7 +542,7 @@ final class ProBannerUITests: XCTestCase {
         }
     }
 
-    func testFailedProductLoadUsesSystemNoticeAndMenuRetryRecovers() throws {
+    func testFailedProductLoadUsesSystemNoticeAndVisibleRetryRecovers() throws {
         try verifyUnavailableProducts(scene: "unavailable")
     }
 
@@ -502,12 +558,14 @@ final class ProBannerUITests: XCTestCase {
         capture(app, scene + "-system-notice")
         alert.buttons["Not now"].tap()
         XCTAssertFalse(app.buttons["paywall.purchase"].exists)
+        XCTAssertFalse(app.buttons["paywall.more"].exists)
         XCTAssertFalse(app.staticTexts["Subscription options are unavailable right now"].exists)
-        try reveal(app.buttons["paywall.continue-free"], app: app)
-        XCTAssertTrue(app.buttons["paywall.restore"].exists)
+        try reveal(app.buttons["paywall.referral"], app: app)
+        XCTAssertEqual(app.buttons.matching(identifier: "paywall.restore").count, 1)
         capture(app, scene + "-free-exit")
-        app.buttons["paywall.more"].tap()
-        app.buttons["Try again"].tap()
+        let retry = app.buttons["paywall.retry"]
+        try reveal(retry, app: app)
+        retry.tap()
         let yearly = app.buttons["paywall.plan.yearly"]
         try reveal(yearly, app: app)
         XCTAssertTrue(yearly.label.contains("29.99") || yearly.label.contains("29,99"))

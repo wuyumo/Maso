@@ -19,6 +19,7 @@ enum MasoLinks {
 /// Photo editing affordance only; the actual share photo is rendered once in the footer.
 struct SharePhotoBanner: View {
     let photo: UIImage?
+    var compact = false
     var onTapToAdd: (() -> Void)? = nil
     var body: some View {
         if let onTapToAdd {
@@ -32,10 +33,10 @@ struct SharePhotoBanner: View {
                         Text("Replace photo").font(.body).foregroundStyle(MasoColor.text)
                         Spacer(minLength: 0)
                     }
-                    .padding(MasoMetrics.cardPadding)
+                    .padding(compact ? 4 : MasoMetrics.cardPadding)
                     .contentCardChrome(padding: 0)
                 } else {
-                    AddPhotoPlaceholder().frame(height: 160)
+                    AddPhotoPlaceholder(compact: compact).frame(height: compact ? 56 : 160)
                 }
             }
             .buttonStyle(.plain)

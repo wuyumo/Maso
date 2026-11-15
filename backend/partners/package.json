@@ -1,0 +1,1 @@
+{"name":"masso-partners","private":true,"type":"module","scripts":{"test":"node --test test.mjs","dev":"wrangler dev","deploy":"wrangler deploy"},"dependencies":{"@apple/app-store-server-library":"^3.0.0","qrcode":"^1.5.4"},"devDependencies":{"wrangler":"^4.0.0"}}

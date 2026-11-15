@@ -30,11 +30,6 @@ struct PaywallUITestHost: View {
             return try await Product.products(for: SubscriptionManager.allProductIDs)
         }))
         let data = DataStore(exercises: ExerciseLibrary.all, plans: [], sets: [], settings: settings)
-        if scene == "device-usage", let exercise = data.exById["bench_press_barbell"] {
-            data.sets = (0..<7).map { index in
-                SetRecord(id:"snapshot-fixture-" + String(index),exerciseId:exercise.id,exerciseName:exercise.name,category:exercise.category,weight:60,reps:8,duration:nil,performedAt:Date().addingTimeInterval(index == 0 ? -15*86400 : -3600),planId:nil)
-            }
-        }
         if scene == "device-notice" { data.aiAccess = DeviceAIQuota(legacy: true, acknowledged: false) }
         if scene == "banner" { data.aiTodayPlanEditedAt = .now } // No background AI during UI checks.
         if scene == "custom-full", let original = ExerciseLibrary.all.first {
@@ -55,7 +50,6 @@ struct PaywallUITestHost: View {
     var body: some View {
         Group {
             if scene == "device-quota" { DeviceAIQuotaUITestView() }
-            else if scene == "device-usage" { AppNavigationStack { DeviceAIUsageView() } }
             else if scene == "device-notice" {
                 VStack {
                     DeviceAIChangeNotice()
@@ -97,9 +91,6 @@ struct PaywallUITestHost: View {
         .environment(\.dynamicTypeSize, ProcessInfo.processInfo.environment["MASO_PAYWALL_LARGE_TYPE"] == "1" ? .accessibility3 : .large)
         .preferredColorScheme(ProcessInfo.processInfo.environment["MASO_UI_LIGHT"] == "1" ? .light : .dark).tint(MasoColor.text)
         .task {
-            if scene == "device-usage" {
-                let _:String? = try? await data.aiAccess.perform(kind:.sourceImport,isPro:false,valid:{ !$0.isEmpty },summary:{ _ in "Synthetic saved text result" }) { "Entire acquired text fixture: sets 3, reps 8, rest 90. Reopened without any model request." }
-            }
             if ["unavailable", "empty"].contains(scene) { await subscriptions.refreshEntitlements() }
             else { subscriptions.configure { data.settings.proSubscription = $0 } }
         }

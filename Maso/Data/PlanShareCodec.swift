@@ -98,7 +98,7 @@ enum PlanShareCodec {
             lastUsedAt: nil,        // 接收方还没练
             source: plan.resolvedSource,   // 保留 AI/Classics 来源 → 导入后徽章不丢 (原 id 前缀会随新 id 丢, 故落成显式值)
             rationale: plan.rationale,      // 保留 AI 理由行 → 导入后卡上仍显示
-            constraints: plan.constraints, preservesExerciseVariants: plan.preservesExerciseVariants
+            constraints: plan.constraints, preservesExerciseVariants: true
         )
     }
 

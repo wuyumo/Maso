@@ -299,7 +299,10 @@ struct SettingsScreen: View {
                     .buttonStyle(.plain)
 
                     LabeledContent("Weight") {
-                        NativeSettingsChoice(value: $data.settings.weightUnit, options: [(.kg, "kg"), (.lb, "lb")])
+                        NativeSettingsChoice(value: Binding(
+                            get: { data.settings.weightUnit },
+                            set: { data.selectWeightUnit($0) }
+                        ), options: [(.kg, "kg"), (.lb, "lb")])
                     }
                     LabeledContent("Distance") {
                         NativeSettingsChoice(value: $data.settings.distanceUnit, options: [(.km, "km"), (.mi, "mi")])

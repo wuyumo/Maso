@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# Maso — iOS product verification driver (Simulator).
+# Masso — iOS product verification driver (Simulator).
 #
 # iOS can't use a headless browser, so this drives the iOS Simulator and asserts
-# state at each step. Maso has almost no accessibilityIdentifiers, so instead of
+# state at each step. Masso has almost no accessibilityIdentifiers, so instead of
 # fragile taps we exploit the app's built-in deterministic showcase routing
 # (SIMCTL_CHILD_MASO_SHOWCASE_SEED=1 + SIMCTL_CHILD_MASO_SHOWCASE=<route>, the same
 # mechanism scripts/shoot_screenshots_auto.sh uses) to jump straight to each key
@@ -18,13 +18,23 @@
 #          SpringBoard, not stuck on a splash). Status bar pinned to 9:41 so the clock
 #          can't fake a difference.
 #
-# Usage:  bash .claude/skills/verify-app/driver.sh ["iPhone 17 Pro Max"]
+# Usage: bash .claude/skills/verify-app/driver.sh [--ui ["iPhone 17 Pro Max"]]
 # Exit:   0 = every hard assertion held · 1 = a hard assertion failed
 
 set -uo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/../../.." && pwd)"
+if [ -z "${MASO_BUILD_LOCK_FD:-}" ]; then
+  exec python3 "$REPO_ROOT/scripts/low_memory_build.py" run -- bash "$REPO_ROOT/.claude/skills/verify-app/driver.sh" "$@"
+fi
 cd "$REPO_ROOT"
+# Release our owned device before a parent nightly workflow starts its device build.
+trap 'python3 "$REPO_ROOT/scripts/low_memory_build.py" sim-release' EXIT
+UI_MODE=false
+if [ "${1:-}" = "--ui" ]; then UI_MODE=true; shift; fi
+if [ "$#" -gt 1 ] || { [ "$#" -gt 0 ] && [ "$UI_MODE" != true ]; }; then
+  echo "Usage: $0 [--ui [device-name]]" >&2; exit 2
+fi
 
 SCHEME="Maso"
 PROJECT="Maso.xcodeproj"
@@ -42,26 +52,6 @@ head() { n=$((n+1)); echo ""; echo "[$n] $1"; }
 ok()   { echo "    ✓ $1"; }
 bad()  { echo "    ✗ $1"; fails+=("$1"); }
 chk()  { if eval "$1"; then ok "$2"; else bad "$2"; fi; }
-
-# ── pick a simulator (prefer one already booted) ───────────────────────────
-# node-parsed JSON, not regex — avoids whitespace/format surprises in the udid.
-DEVICE_NAME="${1:-iPhone 17 Pro Max}"
-pick() { xcrun simctl list devices "$1" -j 2>/dev/null | node -e '
-  const d=JSON.parse(require("fs").readFileSync(0,"utf8")).devices; const want=process.argv[1];
-  let u="";
-  for (const list of Object.values(d)) for (const x of list) {
-    if (want==="__booted__") { if (x.state==="Booted") u=x.udid; }
-    else if ((x.name||"").includes(want)) { u=x.udid; }
-  }
-  process.stdout.write(u);' "$2"; }
-SIM="$(pick booted __booted__)"
-[ -z "$SIM" ] && SIM="$(pick available "$DEVICE_NAME")"
-[ -z "$SIM" ] && { echo "✗ no usable simulator found"; exit 1; }
-echo "simulator: $SIM"
-xcrun simctl boot "$SIM" >/dev/null 2>&1 || true   # idempotent; ok if already booted
-open -a Simulator >/dev/null 2>&1 || true
-xcrun simctl bootstatus "$SIM" -b >/dev/null 2>&1 || true
-mkdir -p "$OUT"
 
 # ── 1. generate ────────────────────────────────────────────────────────────
 head "xcodegen generate"
@@ -81,17 +71,54 @@ else
   bad "$DATA not found (the app would launch with an empty library)"
 fi
 
+# Keep the generated media register aligned with the same resources this build uses.
+head "sync exercise media ledger"
+if python3 "$REPO_ROOT/scripts/exercise_media_ledger.py" sync; then
+  ok "media register generated from current App resources"
+else
+  bad "media register validation failed"; exit 1
+fi
+
 # ── 3. build ───────────────────────────────────────────────────────────────
 head "build for Simulator"
 BLOG=$(mktemp -t maso-build.XXXX.log)
-xcodebuild -project "$PROJECT" -scheme "$SCHEME" -configuration Debug \
-  -destination "platform=iOS Simulator,id=$SIM" -derivedDataPath "$DERIVED" build \
+python3 "$REPO_ROOT/scripts/low_memory_build.py" xcodebuild -- -project "$PROJECT" -scheme "$SCHEME" -configuration Debug \
+  -destination "generic/platform=iOS Simulator" -derivedDataPath "$DERIVED" ARCHS=arm64 ONLY_ACTIVE_ARCH=YES build \
   >"$BLOG" 2>&1
-if [ $? -eq 0 ] && [ -d "$APP" ]; then
+BUILD_EXIT=$?
+BUILD_OK=false
+if [ "$BUILD_EXIT" -eq 0 ] && [ -d "$APP" ]; then
+  BUILD_OK=true
   ok "compiled → $(basename "$APP")"
 else
   bad "build failed"; echo "    --- errors ---"; grep -E "error:" "$BLOG" | head -15; echo "    full log: $BLOG"
 fi
+
+# Do not launch an old product after a failed build or failed hard preflight.
+if [ "$BUILD_OK" != true ] || [ ${#fails[@]} -ne 0 ]; then
+  echo "FAIL — compile/data preflight failed; simulator not started."; exit 1
+fi
+if [ "$UI_MODE" != true ]; then
+  echo "PASS — compile/data checks only; UI verification was not requested."; exit 0
+fi
+
+# ── pick a simulator (prefer one already booted) ───────────────────────────
+# node-parsed JSON, not regex — avoids whitespace/format surprises in the udid.
+DEVICE_NAME="${1:-iPhone 17 Pro Max}"
+pick() { xcrun simctl list devices "$1" -j 2>/dev/null | node -e '
+  const d=JSON.parse(require("fs").readFileSync(0,"utf8")).devices; const want=process.argv[1];
+  let u="";
+  for (const list of Object.values(d)) for (const x of list) {
+    if (want==="__booted__") { if (x.state==="Booted" && (x.name||"").includes("iPhone")) u=x.udid; }
+    else if ((x.name||"").includes(want)) { u=x.udid; }
+  }
+  process.stdout.write(u);' "$2"; }
+SIM="$(pick booted __booted__)"
+[ -z "$SIM" ] && SIM="$(pick available "$DEVICE_NAME")"
+[ -z "$SIM" ] && { echo "✗ no usable simulator found"; exit 1; }
+echo "simulator: $SIM"
+python3 "$REPO_ROOT/scripts/low_memory_build.py" sim-prepare "$SIM" || exit $?
+mkdir -p "$OUT"
 
 # ── 4. drive showcase routes + screenshot ──────────────────────────────────
 if [ -d "$APP" ]; then

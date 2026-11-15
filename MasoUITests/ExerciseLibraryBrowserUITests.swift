@@ -829,7 +829,7 @@ final class TrainingRefinementsUITests: XCTestCase {
             let subtitle = element("workout.exercise.subtitle", app)
             XCTAssertTrue(subtitle.waitForExistence(timeout: 5))
             XCTAssertEqual(title.label, language == "zh-Hans" ? "卧推" : "Bench Press")
-            XCTAssertEqual(subtitle.label, language == "zh-Hans" ? "哑铃" : "Dumbbell")
+            XCTAssertEqual(subtitle.label, language == "zh-Hans" ? "哑铃" : language == "ar" ? "دمبل" : "Dumbbell")
             XCTAssertGreaterThan(subtitle.frame.midY, title.frame.midY)
             let group = muscles.frame.union(element("workout.current.info", app).frame).union(menu.frame)
             XCTAssertEqual(group.midX, app.frame.midX, accuracy: 2)
@@ -1145,8 +1145,10 @@ final class TrainingRefinementsUITests: XCTestCase {
 
 @MainActor
 final class RoutineSavePopoverUITests: XCTestCase {
+    private var saveLanguage = "en"
     override func setUpWithError() throws { continueAfterFailure = false }
     private func launch(_ scene: String, language: String = "en") -> XCUIApplication {
+        saveLanguage = language
         let app = XCUIApplication(bundleIdentifier: "com.yumowu.maso")
         app.terminate()
         app.launchEnvironment = ["MASO_EXERCISE_UI_TEST_SCENE": scene]
@@ -1165,13 +1167,26 @@ final class RoutineSavePopoverUITests: XCTestCase {
     private func capture(_ app: XCUIApplication, _ name: String) {
         let a = XCTAttachment(screenshot: app.screenshot()); a.name = name; a.lifetime = .keepAlways; add(a)
     }
+    private func choice(_ action: String, app: XCUIApplication) -> XCUIElement {
+        let labels = [
+            "en": ["add": "Add to existing workout plans", "replace": "Replace all workout plans", "cancel": "Cancel"],
+            "zh-Hans": ["add": "添加到现有训练计划", "replace": "替换现有训练计划", "cancel": "取消"],
+            "de": ["add": "Zu bestehenden Trainingsplänen hinzufügen", "replace": "Alle Trainingspläne ersetzen", "cancel": "Stornierung"],
+            "ar": ["add": "الإضافة إلى خطط التمرين الحالية", "replace": "استبدال جميع خطط التمرين", "cancel": "إلغاء"]]
+        return app.buttons.matching(NSPredicate(format: "identifier == %@ OR label == %@", "routine.save." + action, labels[saveLanguage]![action]!)).firstMatch
+    }
+    private func dismissChoices(_ app: XCUIApplication) {
+        let cancel = choice("cancel", app: app)
+        if cancel.exists && cancel.isHittable { cancel.tap() }
+        else { app.coordinate(withNormalizedOffset: CGVector(dx: 0.95, dy: 0.1)).tap() }
+        XCTAssertTrue(choice("add", app: app).waitForNonExistence(timeout: 4))
+    }
     private func assertAbove(_ anchor: CGRect, app: XCUIApplication) {
-        let choices = app.descendants(matching: .any).matching(identifier: "routine.save.choices").firstMatch
-        XCTAssertTrue(choices.waitForExistence(timeout: 8))
-        XCTAssertLessThanOrEqual(choices.frame.maxY, anchor.minY + 4, "Popover must open above the source save button")
-        XCTAssertLessThan(anchor.minY - choices.frame.maxY, 64, "Popover must stay near its source")
-        XCTAssertTrue(app.buttons["routine.save.add"].isHittable)
-        XCTAssertTrue(app.buttons["routine.save.replace"].isHittable)
+        // Native confirmation presentation chooses its own placement for the device.
+        XCTAssertTrue(choice("add", app: app).waitForExistence(timeout: 8), app.debugDescription)
+        XCTAssertTrue(choice("add", app: app).isHittable)
+        XCTAssertTrue(choice("replace", app: app).isHittable)
+        XCTAssertFalse(app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH %@", "Choose whether to replace")).firstMatch.exists)
     }
     func testCoachBatchPopoverIsAboveItsButtonAndCancelDoesNotSaveInFourLanguages() {
         for language in ["en", "zh-Hans", "de", "ar"] {
@@ -1183,9 +1198,9 @@ final class RoutineSavePopoverUITests: XCTestCase {
             save.tap(); assertAbove(anchor, app: app)
             let title = ["en": "Save to My Workout Plans", "zh-Hans": "保存到我的训练计划",
                          "de": "In meinen Trainingsplänen speichern", "ar": "حفظ في خطط التمرين الخاصة بي"][language]!
-            XCTAssertTrue(app.staticTexts[title].waitForExistence(timeout: 3), app.debugDescription)
+            XCTAssertLessThanOrEqual(app.staticTexts.matching(identifier: title).count, 1, "Only the underlying save-button label may remain; the dialog adds no heading")
             capture(app, "\(language)-coach-save-above")
-            app.buttons["routine.save.cancel"].tap()
+            dismissChoices(app)
             XCTAssertEqual(app.staticTexts["routine.test.saved-count"].label, count)
             app.terminate()
         }
@@ -1198,7 +1213,7 @@ final class RoutineSavePopoverUITests: XCTestCase {
             let oldCount = Int(app.staticTexts["routine.test.saved-count"].label) ?? -1
             let anchor = save.frame
             save.tap(); assertAbove(anchor, app: app)
-            app.buttons[replacing ? "routine.save.replace" : "routine.save.add"].tap()
+            choice(replacing ? "replace" : "add", app: app).tap()
             let expected = replacing ? 3 : oldCount + 3
             let updated = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
                 app.staticTexts["routine.test.saved-count"].label == String(expected)
@@ -1215,7 +1230,7 @@ final class RoutineSavePopoverUITests: XCTestCase {
         let anchor = save.frame
             save.tap(); assertAbove(anchor, app: app)
         capture(app, "classics-save-above")
-        app.buttons["routine.save.cancel"].tap()
+        dismissChoices(app)
     }
 }
 
@@ -1476,6 +1491,17 @@ final class WorkoutSignalsUITests: XCTestCase {
     private func element(_ id: String, _ app: XCUIApplication) -> XCUIElement {
         app.descendants(matching: .any).matching(identifier: id).firstMatch
     }
+    /// The recorded-day card is the control VoiceOver exposes. The row id is folded into it.
+    private func historyCard(in app: XCUIApplication) -> XCUIElement {
+        let card = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH %@", "history.day.")).firstMatch
+        XCTAssertTrue(card.waitForExistence(timeout: 12))
+        for _ in 0..<6 {
+            if card.isHittable, card.frame.minY > 90, card.frame.maxY < app.frame.height - 20 { break }
+            if card.frame.minY > app.frame.height * 0.55 { app.swipeUp(velocity: .slow) }
+            else { break }
+        }
+        return card
+    }
     private func launch(_ scene: String = "stable-player", language: String = "en", heartFixture: Bool = false) -> XCUIApplication {
         let app = XCUIApplication(bundleIdentifier: "com.yumowu.maso")
         app.terminate()
@@ -1496,8 +1522,12 @@ final class WorkoutSignalsUITests: XCTestCase {
             app.launchArguments = ["-maso.selectedLanguage", language, "-AppleLanguages", "(\(language))", "-AppleLocale", language]
             app.launch()
             XCTAssertTrue(element("workout.primary", app).waitForExistence(timeout: 20))
-            element("workout.primary", app).tap()
-            XCTAssertTrue(element("workout.rest.edit", app).waitForExistence(timeout: 5))
+            let skipTitle = language == "ar" ? "إسترح" : language == "zh-Hans" ? "跳过休息" : "Skip rest"
+            for _ in 0..<3 {
+                element("workout.primary", app).tap()
+                let skip = app.buttons[skipTitle].firstMatch
+                if skip.waitForExistence(timeout: 6) { skip.tap() }
+            }
             element("workout.progress.queue-step-1", app).tap()
             XCTAssertTrue(element("workout.suggested.weight", app).waitForExistence(timeout: 5))
             capture(app, "\(language)-rough-incline-after-bench")
@@ -1512,10 +1542,10 @@ final class WorkoutSignalsUITests: XCTestCase {
             capture(app, "\(language)-rough-provenance")
             app.buttons["workout.parameters.cancel"].tap()
             element("workout.progress.queue-step-2", app).tap()
-            XCTAssertTrue(element("workout.suggested.weight", app).waitForExistence(timeout: 5))
+            XCTAssertTrue(element("workout.suggested.weight", app).waitForNonExistence(timeout: 5), "Cable pushdowns stay outside the approved table")
             capture(app, "\(language)-rough-pushdown")
             // Jump is undoable. Unwind jumps, then the actual bench completion.
-            for _ in 0..<4 {
+            for _ in 0..<8 {
                 if element("workout.progress.queue-step-0", app).value as? String == "0/3" { break }
                 element("workout.previous", app).tap()
             }
@@ -1799,6 +1829,56 @@ final class WorkoutSignalsUITests: XCTestCase {
         XCTAssertEqual(first.value as? String, "1/3", "Jumping never completes another set")
         capture(app, "progress-first-unfinished")
     }
+
+    /// t387: long-press drag on the progress bar uses the same order as the queue.
+    /// A short drag and a drop outside the bar must not move steps or complete sets.
+    func testProgressLongPressReorderMatchesQueueAndPreservesCurrentExercise() {
+        let app = launch()
+        XCTAssertTrue(element("workout.primary", app).waitForExistence(timeout: 15))
+        let title = element("workout.current.info", app)
+        XCTAssertTrue(title.waitForExistence(timeout: 5))
+        let first = element("workout.progress.queue-step-0", app)
+        let second = element("workout.progress.queue-step-1", app)
+        XCTAssertTrue(first.waitForExistence(timeout: 5))
+        XCTAssertTrue(second.exists)
+        XCTAssertLessThan(first.frame.minX, second.frame.minX)
+        XCTAssertEqual(first.value as? String, "0/3")
+        XCTAssertEqual(second.value as? String, "0/3")
+        XCTAssertEqual(element("workout.progress", app).value as? String, "0/6")
+
+        first.press(forDuration: 0.15, thenDragTo: second)
+        XCTAssertLessThan(first.frame.minX, second.frame.minX, "A swipe shorter than the long-press hold must not reorder")
+        XCTAssertEqual(element("workout.progress", app).value as? String, "0/6")
+
+        let originalTitle = title.label
+        second.tap()
+        XCTAssertNotEqual(title.label, originalTitle)
+        XCTAssertLessThan(first.frame.minX, second.frame.minX, "Tap jumps and does not reorder")
+        XCTAssertEqual(first.value as? String, "0/3")
+        XCTAssertEqual(second.value as? String, "0/3")
+        let jumped = title.label
+
+        first.press(forDuration: 0.8, thenDragTo: second)
+        XCTAssertEqual(title.label, jumped, "Reordering must keep the exercise that was already open")
+        XCTAssertEqual(first.value as? String, "0/3")
+        XCTAssertEqual(second.value as? String, "0/3")
+        XCTAssertEqual(element("workout.progress", app).value as? String, "0/6")
+        XCTAssertLessThan(second.frame.minX, first.frame.minX)
+
+        element("workout.playlist.toggle", app).tap()
+        let row0 = element("workout.queue.row.queue-step-0", app)
+        let row1 = element("workout.queue.row.queue-step-1", app)
+        XCTAssertTrue(row1.waitForExistence(timeout: 5))
+        XCTAssertLessThan(row1.frame.minY, row0.frame.minY, "Queue order is the same plan order as the progress bar")
+        element("workout.playlist.toggle", app).tap()
+
+        let away = first.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 8))
+        first.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).press(forDuration: 0.8, thenDragTo: away)
+        XCTAssertLessThan(second.frame.minX, first.frame.minX, "Dragging out of the bar cancels")
+        XCTAssertEqual(title.label, jumped)
+        XCTAssertEqual(element("workout.progress", app).value as? String, "0/6")
+    }
+
     func testVariantListKeepsItsScrollPositionAcrossClockTicksAndOpensReplacement() {
         for language in ["en", "ar"] {
             let app = launch(language: language)
@@ -2044,7 +2124,7 @@ final class WorkoutSignalsUITests: XCTestCase {
             capture(app, "heart-alert-diagnostic")
             XCTAssertTrue(card.waitForExistence(timeout: 15), app.debugDescription)
             let compactCard = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in card.frame.height < 130 }, object: nil)
-            XCTAssertEqual(XCTWaiter.wait(for: [compactCard], timeout: 5), .completed, "The heart value and unit should remain compact")
+            XCTAssertEqual(XCTWaiter.wait(for: [compactCard], timeout: 5), .completed, "The heart value and unit should remain compact: \(card.frame)")
             XCTAssertEqual(card.frame.maxX, app.frame.maxX - 20, accuracy: 3)
             let panel = element("workout.current.edit", app)
             let variants = element("workout.variants", app)
@@ -2075,7 +2155,7 @@ final class WorkoutSignalsUITests: XCTestCase {
         let originalY = card.frame.minY
         start.press(forDuration: 0.1, thenDragTo: start.withOffset(CGVector(dx: 0, dy: 85)), withVelocity: .slow, thenHoldForDuration: 1)
         let returned = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in abs(card.frame.minY - originalY) <= 3 }, object: nil)
-        XCTAssertEqual(XCTWaiter.wait(for: [returned], timeout: 5), .completed, "The warning card returns with the player sheet")
+        XCTAssertEqual(XCTWaiter.wait(for: [returned], timeout: 5), .completed, "The warning card returns with the player sheet: initialY=\(originalY), actual=\(card.frame)")
         XCTAssertTrue(card.isHittable)
         card.tap()
         XCTAssertTrue(element("workout.heart.enable", app).waitForExistence(timeout: 8))
@@ -2132,7 +2212,9 @@ final class WorkoutSignalsUITests: XCTestCase {
         app.launchArguments = ["-maso.selectedLanguage", "en", "-AppleLanguages", "(en)", "-AppleLocale", "en"]
         app.launch()
         let sleep = app.buttons.matching(NSPredicate(format: "label CONTAINS[c] %@", "Sleep")).firstMatch
-        for _ in 0..<5 where !sleep.isHittable { app.swipeUp() }
+        for _ in 0..<6 where !sleep.isHittable {
+            if sleep.exists, sleep.frame.minY < 80 { app.swipeDown() } else { app.swipeUp() }
+        }
         XCTAssertTrue(sleep.waitForExistence(timeout: 20)); XCTAssertTrue(sleep.isHittable); sleep.tap()
         let preferences = app.buttons["Sleep preferences"]
         XCTAssertTrue(preferences.waitForExistence(timeout: 10)); preferences.tap()
@@ -2295,62 +2377,55 @@ final class WorkoutSignalsUITests: XCTestCase {
                 XCTAssertFalse(card.label.contains(photoLabel), card.label)
             }
             capture(app, "\(language)-history-card-\(hasPhoto ? "photo" : "no-photo")")
-            if hasPhoto { card.coordinate(withNormalizedOffset: CGVector(dx: language == "ar" ? 0.62 : 0.38, dy: 0.85)).tap() }
-            else { card.coordinate(withNormalizedOffset: CGVector(dx: 0.15, dy: 0.5)).tap() }
+            card.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.55)).tap()
+            XCTAssertTrue(element("workout.sessionReport", app).waitForExistence(timeout: 8))
             XCTAssertTrue(element("workout.history.more", app).waitForExistence(timeout: 8))
-            if hasPhoto {
-                app.buttons[["en": "Close", "zh-Hans": "关闭", "ar": "إغلاق"][language]!].firstMatch.tap()
-                XCTAssertTrue(card.waitForExistence(timeout: 5))
-                card.coordinate(withNormalizedOffset: CGVector(dx: language == "ar" ? 0.85 : 0.15, dy: 0.5)).tap()
-                XCTAssertTrue(element("workout.history.more", app).waitForExistence(timeout: 8))
-                if language == "en" {
-                    app.buttons["Close"].firstMatch.tap()
-                    XCTAssertTrue(card.waitForExistence(timeout: 5))
-                    card.coordinate(withNormalizedOffset: CGVector(dx: 0.2, dy: 0.12)).tap()
-                    XCTAssertTrue(element("workout.history.more", app).waitForExistence(timeout: 8))
-                }
-            }
+            XCTAssertFalse(element("workout.history.report", app).exists)
+            app.navigationBars.buttons.element(boundBy: 0).tap()
+            XCTAssertTrue(card.waitForExistence(timeout: 5))
             app.terminate()
         }
     }
 
-    func testWorkoutHistoryReportEntryOpensInSheet() {
-        for language in ["en", "zh-Hans", "ar"] {
-            let app = launch("workout-history-detail", language: language)
-            let menu = element("workout.history.more", app)
-            XCTAssertTrue(menu.waitForExistence(timeout: 12))
-            menu.tap()
-            let entry = element("workout.report.open", app)
-            XCTAssertTrue(entry.waitForExistence(timeout: 12)); XCTAssertTrue(entry.isHittable)
-            capture(app, "\(language)-workout-history-report-card")
-            entry.tap()
-            XCTAssertTrue(element("workout.report", app).waitForExistence(timeout: 8))
-            app.terminate()
-        }
-    }
-
-    func testWorkoutHistoryCardReportOpensDirectly() {
+    func testWorkoutHistoryCardOpensTheSessionReport() {
         for language in ["en", "zh-Hans", "ar"] {
             let app = launch("workout-history-cards", language: language)
-            let entry = element("workout.history.report", app)
-            XCTAssertTrue(entry.waitForExistence(timeout: 12))
-            capture(app, "\(language)-history-report-button")
-            entry.tap()
-            XCTAssertTrue(element("workout.report", app).waitForExistence(timeout: 8))
-            XCTAssertFalse(element("workout.history.more", app).exists)
-            app.buttons["workout.report.close"].firstMatch.tap()
-            XCTAssertTrue(entry.waitForExistence(timeout: 8))
+            let card = historyCard(in: app)
+            XCTAssertFalse(element("workout.history.report", app).exists)
+            capture(app, "\(language)-history-card")
+            card.tap()
+            XCTAssertTrue(element("workout.sessionReport", app).waitForExistence(timeout: 8))
+            XCTAssertTrue(element("workout.sessionReport.heading", app).waitForExistence(timeout: 5))
+            XCTAssertFalse(element("workout.sessionReport.info", app).exists)
+            XCTAssertTrue(element("workout.history.more", app).waitForExistence(timeout: 5))
+            app.navigationBars.firstMatch.buttons.element(boundBy: 0).tap()
+            XCTAssertTrue(card.waitForExistence(timeout: 8))
             app.terminate()
         }
     }
 
-    func testWorkoutHistoryMenuOpensShare() {
-        let app = launch("workout-history-detail", language: "en")
+    func testWorkoutInsightsHistoryOpensTheSameReport() {
+        let app = launch("workout-insights-history", language: "en")
+        XCTAssertTrue(app.navigationBars["Workout Insights"].waitForExistence(timeout: 12))
+        let card = historyCard(in: app)
+        card.tap()
+        XCTAssertTrue(element("workout.sessionReport", app).waitForExistence(timeout: 8))
+        XCTAssertTrue(element("workout.sessionReport.share", app).exists)
+        XCTAssertFalse(element("workout.history.report", app).exists)
+        XCTAssertFalse(app.navigationBars["Share Workout"].exists)
+        app.terminate()
+    }
+
+    func testWorkoutHistoryMenuKeepsDeleteOffTheOldShare() {
+        let app = launch("workout-history-cards", language: "en")
+        let card = historyCard(in: app)
+        card.tap()
         let menu = element("workout.history.more", app)
-        XCTAssertTrue(menu.waitForExistence(timeout: 12))
+        XCTAssertTrue(menu.waitForExistence(timeout: 8))
         menu.tap()
-        app.buttons["Share"].firstMatch.tap()
-        XCTAssertTrue(app.navigationBars["Share Workout"].waitForExistence(timeout: 8))
+        XCTAssertTrue(app.buttons["Delete workout"].waitForExistence(timeout: 5))
+        XCTAssertFalse(app.navigationBars["Share Workout"].exists)
+        XCTAssertTrue(app.buttons["workout.sessionReport.share"].exists)
         app.terminate()
     }
 }

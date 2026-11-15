@@ -103,6 +103,18 @@ final class SubscriptionTests: XCTestCase {
         XCTAssertNil(recreated.currentSubscription)
     }
 
+    func testRestoreWithoutSubscriptionReportsTheExistingFailure() async throws {
+        let configuration = try XCTUnwrap(Bundle(for: Self.self).url(forResource: "Maso", withExtension: "storekit"))
+        let session = try SKTestSession(contentsOf: configuration)
+        session.disableDialogs = true
+        session.clearTransactions()
+        defer { session.clearTransactions() }
+        let manager = SubscriptionManager()
+        await manager.restore()
+        XCTAssertNil(manager.currentSubscription)
+        XCTAssertEqual(manager.lastError, "No active subscription found")
+    }
+
     func testStoreKitCancelledAndFailedPurchasesDoNotUnlock() async throws {
         let configuration = try XCTUnwrap(Bundle(for: Self.self).url(forResource: "Maso", withExtension: "storekit"))
         let session = try SKTestSession(contentsOf: configuration)

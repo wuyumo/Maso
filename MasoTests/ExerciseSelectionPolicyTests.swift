@@ -250,4 +250,306 @@ final class ExerciseSelectionPolicyTests: XCTestCase {
         XCTAssertTrue(counts.values.allSatisfy { $0 <= 2 })
         XCTAssertEqual(result.first.map { policy.metadata(for: $0).role }, "horizontal_press")
     }
+
+    func testCatalogIDsStayUniqueAndLegacyAbductorFolderResolves() {
+        let ids = ExerciseLibrary.all.map(\.id)
+        XCTAssertEqual(ids.count, Set(ids).count)
+        XCTAssertEqual(Set(ids).count, policy.sorted(ExerciseLibrary.all).count)
+        XCTAssertEqual(ExerciseLibrary.byId["Thigh_Abductor"]?.id, "abductor_machine")
+        XCTAssertEqual(ExerciseLibrary.byId["abductor_machine"]?.id, "abductor_machine")
+        XCTAssertEqual(ExerciseLibrary.byId["abduction_cable"]?.id, "abduction_cable")
+    }
+
+    func testHipAbductionVariantsStayDistinctFromAdduction() throws {
+        let machine = try exercise("abductor_machine")
+        let cable = try exercise("abduction_cable")
+        let adduction = try exercise("adductor_machine")
+        XCTAssertEqual(machine.name, "Hip Abduction (Machine)")
+        XCTAssertEqual(cable.name, "Hip Abduction (Cable)")
+        XCTAssertEqual(machine.localizedName?["zh-Hans"], "髋外展（器械）")
+        XCTAssertEqual(cable.localizedName?["zh-Hans"], "髋外展（绳索）")
+        XCTAssertNotEqual(machine.localizedName?["zh-Hans"], cable.localizedName?["zh-Hans"])
+        XCTAssertEqual(machine.equipment, "abductor_machine")
+        XCTAssertEqual(cable.equipment, "cable")
+        XCTAssertTrue(machine.instructions.contains { $0.localizedCaseInsensitiveContains("outward") })
+        XCTAssertTrue(cable.instructions.contains { $0.localizedCaseInsensitiveContains("out") })
+        XCTAssertEqual(policy.metadata(for: machine).pattern, "hip_abduction")
+        XCTAssertEqual(policy.metadata(for: cable).pattern, "hip_abduction")
+        XCTAssertEqual(policy.metadata(for: adduction).pattern, "hip_adduction")
+        XCTAssertEqual(adduction.localizedName?["zh-Hans"], "髋内收（器械）")
+
+        let visible = policy.visibleExercises(from: ExerciseLibrary.all, settings: UserSettings())
+        let namedAbduction = visible.filter { $0.name.hasPrefix("Hip Abduction") }
+        XCTAssertEqual(Set(namedAbduction.map(\.id)), ["abductor_machine", "abduction_cable"])
+
+        for query in ["hip abduction", "髋外展"] {
+            let hits = ExerciseLibrary.all.filter { $0.matchesSearch(exerciseSearchWords(query)) }
+            XCTAssertTrue(hits.contains { $0.id == machine.id }, query)
+            XCTAssertTrue(hits.contains { $0.id == cable.id }, query)
+            XCTAssertTrue(hits.allSatisfy { policy.metadata(for: $0).pattern == "hip_abduction" }, query)
+        }
+        for query in ["hip adduction", "髋内收"] {
+            let hits = ExerciseLibrary.all.filter { $0.matchesSearch(exerciseSearchWords(query)) }
+            XCTAssertTrue(hits.contains { $0.id == adduction.id }, query)
+            XCTAssertTrue(hits.contains { $0.id == "adduction_cable" }, query)
+            XCTAssertTrue(hits.allSatisfy { policy.metadata(for: $0).pattern == "hip_adduction" }, query)
+            XCTAssertFalse(hits.contains { $0.id == machine.id }, query)
+            XCTAssertFalse(hits.contains { $0.id == cable.id }, query)
+        }
+    }
+
+    func testHipExtensionSearchUsesReviewedPatternWithoutRenamingOrMixing() throws {
+        let expected = Set(ExerciseLibrary.all.filter { policy.metadata(for: $0).pattern == "hip_extension" }.map(\.id))
+        XCTAssertTrue(expected.contains("hip_thrust_barbell"))
+        XCTAssertTrue(expected.contains("glute_bridge"))
+        XCTAssertTrue(expected.contains("cable_kickback"))
+        XCTAssertFalse(expected.contains("abductor_machine"))
+        XCTAssertFalse(expected.contains("abduction_cable"))
+        XCTAssertFalse(expected.contains("adductor_machine"))
+        XCTAssertFalse(expected.contains("reverse_hyperextension"))
+        for query in ["hip extension", "髋伸展", "髖伸展"] {
+            let hits = Set(ExerciseLibrary.all.filter { $0.matchesSearch(exerciseSearchWords(query)) }.map(\.id))
+            XCTAssertEqual(hits, expected, query)
+        }
+        let cable = ExerciseLibrary.all.filter { $0.matchesSearch(exerciseSearchWords("cable hip extension")) }
+        XCTAssertTrue(cable.contains { $0.id == "cable_kickback" })
+        XCTAssertFalse(cable.contains { $0.id == "hip_thrust_barbell" })
+        XCTAssertFalse(cable.contains { $0.id == "abduction_cable" })
+        XCTAssertTrue(cable.allSatisfy { policy.metadata(for: $0).pattern == "hip_extension" })
+
+        let reverse = try exercise("reverse_hyperextension")
+        XCTAssertEqual(policy.metadata(for: reverse).role, "hip_hinge")
+        XCTAssertEqual(policy.metadata(for: reverse).pattern, "hinge")
+        XCTAssertFalse(reverse.matchesSearch(exerciseSearchWords("hip extension")))
+        XCTAssertFalse(reverse.matchesSearch(exerciseSearchWords("hip")))
+        XCTAssertTrue(reverse.matchesSearch(exerciseSearchWords("hyperextension")))
+        let thrust = try exercise("hip_thrust_barbell")
+        XCTAssertEqual(thrust.name, "Hip Thrust (Barbell)")
+        XCTAssertTrue(thrust.matchesSearch(exerciseSearchWords("hip")))
+        XCTAssertFalse(thrust.matchesSearch(exerciseSearchWords("extension")))
+        XCTAssertTrue(try exercise("leg_extension_machine").matchesSearch(exerciseSearchWords("extension")))
+    }
+
+    func testHipReplacementCandidatesKeepMovementAndEquipment() throws {
+        let machine = try exercise("abductor_machine")
+        let abductionReplacements = policy.replacementCandidates(for: machine, from: ExerciseLibrary.all, settings: UserSettings())
+        XCTAssertTrue(abductionReplacements.contains { $0.id == "abduction_cable" })
+        XCTAssertFalse(abductionReplacements.contains { $0.id == machine.id })
+        XCTAssertFalse(abductionReplacements.contains { policy.metadata(for: $0).pattern == "hip_extension" })
+        XCTAssertFalse(abductionReplacements.contains { policy.metadata(for: $0).pattern == "hip_adduction" })
+
+        var cableOnly = UserSettings()
+        cableOnly.availableEquipment = ["cable"]
+        let cableReplacements = policy.replacementCandidates(for: machine, from: ExerciseLibrary.all, settings: cableOnly)
+        XCTAssertTrue(cableReplacements.contains { $0.id == "abduction_cable" })
+        XCTAssertTrue(cableReplacements.allSatisfy { policy.equipmentAllows($0, selected: ["cable"]) })
+        XCTAssertFalse(cableReplacements.contains { $0.equipment == "abductor_machine" })
+
+        let thrust = try exercise("hip_thrust_barbell")
+        let extensionReplacements = policy.replacementCandidates(for: thrust, from: ExerciseLibrary.all, settings: UserSettings())
+        XCTAssertTrue(extensionReplacements.contains { $0.id == "glute_bridge" })
+        XCTAssertTrue(extensionReplacements.contains { $0.id == "cable_kickback" })
+        XCTAssertFalse(extensionReplacements.contains { $0.id == "abductor_machine" || $0.id == "abduction_cable" })
+        XCTAssertFalse(extensionReplacements.contains { $0.id == "adductor_machine" || $0.id == "adduction_cable" })
+        XCTAssertTrue(extensionReplacements.allSatisfy { policy.metadata(for: $0).pattern == "hip_extension" })
+
+        var machineOnly = UserSettings()
+        machineOnly.availableEquipment = ["machine"]
+        let machineReplacements = policy.replacementCandidates(for: try exercise("abduction_cable"), from: ExerciseLibrary.all, settings: machineOnly)
+        XCTAssertTrue(machineReplacements.contains { $0.id == "abductor_machine" })
+        XCTAssertTrue(machineReplacements.allSatisfy { policy.equipmentAllows($0, selected: ["machine"]) })
+        XCTAssertFalse(machineReplacements.contains { $0.id == "abduction_cable" })
+    }
+
+    @MainActor func testHipAbductionEquipmentVersionsShareOneGroupAndKeepSeparateIDs() throws {
+        let machine = try exercise("abductor_machine")
+        let cable = try exercise("abduction_cable")
+        let lean = try exercise("abductor_machine_lean_forward")
+        let side = try exercise("side_leg_raise")
+        let sideCable = try exercise("side_leg_raise_cable")
+        let adduction = try exercise("adductor_machine")
+        XCTAssertEqual(policy.programmingGroupID(for: machine), "hip_abduction")
+        XCTAssertEqual(policy.programmingGroupID(for: cable), policy.programmingGroupID(for: machine))
+        XCTAssertEqual(policy.displayFamilyID(for: cable), policy.displayFamilyID(for: machine))
+        XCTAssertNotEqual(policy.programmingGroupID(for: side), policy.programmingGroupID(for: machine))
+        XCTAssertEqual(policy.programmingGroupID(for: sideCable), policy.programmingGroupID(for: side))
+        XCTAssertEqual(policy.programmingGroupID(for: adduction), "hip_adduction")
+
+        let members = [machine, cable, lean, side, sideCable, adduction]
+        for groupByName in [true, false] {
+            let groups = ExerciseGrouping.group(members, groupByName: groupByName)
+            let hip = try XCTUnwrap(groups.first { $0.all.contains { $0.id == machine.id } })
+            XCTAssertEqual(groups.filter { $0.all.contains { $0.id == machine.id } }.count, 1)
+            XCTAssertEqual(Set(hip.all.map(\.id)), [machine.id, cable.id, lean.id], "groupByName \(groupByName)")
+            XCTAssertEqual(hip.canonical.id, machine.id)
+            XCTAssertEqual(hip.canonical.nameParts?.localizedBase?["en"], "Hip Abduction")
+            XCTAssertEqual(hip.canonical.nameParts?.localizedBase?["zh-Hans"], "髋外展")
+            XCTAssertTrue(hip.equipmentVariants.contains { $0.id == cable.id })
+            XCTAssertEqual(cable.equipment, "cable")
+            XCTAssertEqual(machine.equipment, "abductor_machine")
+            XCTAssertFalse(hip.all.contains { $0.id == side.id || $0.id == sideCable.id || $0.id == adduction.id })
+        }
+        XCTAssertEqual(ExerciseLibrary.byId["Thigh_Abductor"]?.id, machine.id)
+        XCTAssertEqual(ExerciseLibrary.byId[cable.id]?.id, cable.id)
+
+        let step = PlanStep(id: "hip-load", exerciseId: machine.id, sets: 3, reps: 12,
+                            weight: 40, setWeights: [40, 45, 50])
+        let plan = Plan(id: "hip-plan", name: "Hip", steps: [step], createdAt: Date(), updatedAt: Date())
+        var cableOnly = UserSettings()
+        cableOnly.availableEquipment = ["cable"]
+        let projected = policy.routineDefaults(plan, library: ExerciseLibrary.all, settings: cableOnly)
+        XCTAssertEqual(projected.steps.first?.exerciseId, cable.id)
+        XCTAssertNil(projected.steps.first?.weight)
+        XCTAssertNil(projected.steps.first?.setWeights)
+        XCTAssertEqual(plan.steps.first?.exerciseId, machine.id)
+        XCTAssertEqual(plan.steps.first?.weight, 40)
+        XCTAssertEqual(plan.steps.first?.setWeights, [40, 45, 50])
+
+        let store = TrainingSessionStore(completionSound: {})
+        store.start(planId: plan.id, plan: plan, segments: expandPlan(plan, exById: ExerciseLibrary.byId))
+        defer { store.end() }
+        store.replaceStepExercise(step.id, newExerciseId: cable.id, exById: ExerciseLibrary.byId,
+                                  defaultRest: 60, defaultBetweenExerciseRest: 90)
+        XCTAssertEqual(store.plan?.steps.first?.exerciseId, cable.id)
+        XCTAssertNil(store.plan?.steps.first?.weight)
+        XCTAssertNil(store.plan?.steps.first?.setWeights)
+        XCTAssertEqual(ExerciseLibrary.byId[machine.id]?.name, "Hip Abduction (Machine)")
+    }
+
+    func testWorkoutVariantMenuKeepsDefaultInsideTheVariantListOnce() throws {
+        let machine = try exercise("abductor_machine")
+        let cable = try exercise("abduction_cable")
+        let lean = try exercise("abductor_machine_lean_forward")
+        let settings = UserSettings()
+        let visible = policy.variants(for: machine, in: ExerciseLibrary.all, settings: settings)
+        XCTAssertTrue(visible.contains { $0.id == machine.id })
+        XCTAssertTrue(visible.contains { $0.id == cable.id })
+        XCTAssertFalse(visible.contains { $0.id == lean.id })
+
+        let currentIsDefault = ExerciseGrouping.variantMenuRows(defaultVersion: machine, candidates: visible, current: machine)
+        XCTAssertEqual(currentIsDefault.map(\.id).filter { $0 == machine.id }.count, 1)
+        XCTAssertEqual(currentIsDefault.map(\.id).filter { $0 == cable.id }.count, 1)
+        XCTAssertEqual(currentIsDefault.first?.id, machine.id)
+        XCTAssertFalse(currentIsDefault.contains { $0.id == lean.id })
+
+        let currentIsCable = ExerciseGrouping.variantMenuRows(defaultVersion: machine, candidates: visible, current: cable)
+        XCTAssertEqual(currentIsCable.map(\.id), currentIsDefault.map(\.id))
+
+        let currentIsFilteredSpecialist = ExerciseGrouping.variantMenuRows(defaultVersion: machine, candidates: visible, current: lean)
+        XCTAssertEqual(currentIsFilteredSpecialist.filter { $0.id == lean.id }.count, 1)
+        XCTAssertEqual(currentIsFilteredSpecialist.last?.id, lean.id)
+        XCTAssertEqual(currentIsFilteredSpecialist.filter { $0.id == machine.id }.count, 1)
+
+        let onlyDefault = ExerciseGrouping.variantMenuRows(defaultVersion: machine, candidates: [machine], current: machine)
+        XCTAssertEqual(onlyDefault.map(\.id), [machine.id])
+        let filteredDefaultStillShown = ExerciseGrouping.variantMenuRows(defaultVersion: machine, candidates: [cable], current: cable)
+        XCTAssertEqual(filteredDefaultStillShown.map(\.id), [machine.id, cable.id])
+        let cableOnlyCandidates = visible.filter { $0.equipment == "cable" }
+        let cableRows = ExerciseGrouping.variantMenuRows(defaultVersion: policy.defaultVersion(for: cable, in: cableOnlyCandidates + [cable], settings: settings),
+                                                         candidates: cableOnlyCandidates, current: cable)
+        XCTAssertFalse(cableRows.contains { $0.equipment == "abductor_machine" })
+        XCTAssertEqual(cableRows.filter { $0.id == cable.id }.count, 1)
+    }
+
+    @MainActor func testExplicitVariantPreferenceDrivesLaterCardsWithoutRecordingItself() throws {
+        let barbell = try exercise("bench_press_barbell")
+        let machine = try exercise("bench_press_machine")
+        let dumbbell = try exercise("bench_press_dumbbell")
+        let incline = try exercise("incline_bench_press_barbell")
+        let close = try exercise("bench_press_close_grip")
+        let squat = try exercise("squat_barbell")
+        let library = ExerciseLibrary.all
+        XCTAssertEqual(policy.programmingGroupID(for: barbell), policy.programmingGroupID(for: machine))
+        XCTAssertEqual(policy.programmingGroupID(for: dumbbell), policy.programmingGroupID(for: barbell))
+        XCTAssertNotEqual(policy.programmingGroupID(for: incline), policy.programmingGroupID(for: barbell))
+        XCTAssertNotEqual(policy.programmingGroupID(for: close), policy.programmingGroupID(for: barbell))
+
+        var settings = UserSettings()
+        let unchanged = policy.explicitVariantPreference(recording: machine, replacing: machine, in: settings)
+        XCTAssertNil(unchanged.preferredVariantByProgrammingGroup)
+        let otherFamily = policy.explicitVariantPreference(recording: squat, replacing: barbell, in: settings)
+        XCTAssertNil(otherFamily.preferredVariantByProgrammingGroup)
+        settings = policy.explicitVariantPreference(recording: machine, replacing: barbell, in: settings)
+        XCTAssertEqual(settings.preferredVariantByProgrammingGroup, ["bench_press.flat": machine.id])
+        let decoded = try JSONDecoder().decode(UserSettings.self, from: JSONEncoder().encode(settings))
+        XCTAssertEqual(decoded.preferredVariantByProgrammingGroup, settings.preferredVariantByProgrammingGroup)
+        var otherAccount = UserSettings()
+        XCTAssertNil(otherAccount.preferredVariantByProgrammingGroup)
+        settings = policy.explicitVariantPreference(recording: dumbbell, replacing: machine, in: settings)
+        XCTAssertEqual(settings.preferredVariantByProgrammingGroup?["bench_press.flat"], dumbbell.id)
+        XCTAssertNil(otherAccount.preferredVariantByProgrammingGroup)
+        settings = policy.explicitVariantPreference(recording: machine, replacing: dumbbell, in: settings)
+
+        let step = PlanStep(id: "bench", exerciseId: barbell.id, sets: 3, reps: 8, weight: 80, setWeights: [80, 80, 80])
+        let existing = Plan(id: "saved-bench", name: "Saved", steps: [step], createdAt: Date(), updatedAt: Date())
+        let displayed = policy.routineDefaults(existing, library: library, settings: settings)
+        XCTAssertEqual(displayed.steps.first?.exerciseId, barbell.id)
+        XCTAssertEqual(displayed.steps.first?.weight, 80)
+        var preserved = existing
+        preserved.preservesExerciseVariants = true
+        let imported = policy.routineDefaults(preserved, library: library, settings: settings, useSavedVariantPreference: true)
+        XCTAssertEqual(imported.steps.first?.exerciseId, barbell.id)
+        XCTAssertEqual(imported.steps.first?.weight, 80)
+
+        let before = settings
+        let generated = policy.routineDefaults(existing, library: library, settings: settings, useSavedVariantPreference: true)
+        XCTAssertEqual(generated.steps.first?.exerciseId, machine.id)
+        XCTAssertNil(generated.steps.first?.weight)
+        XCTAssertNil(generated.steps.first?.setWeights)
+        XCTAssertEqual(existing.steps.first?.exerciseId, barbell.id)
+        XCTAssertEqual(existing.steps.first?.weight, 80)
+        XCTAssertEqual(settings.preferredVariantByProgrammingGroup, before.preferredVariantByProgrammingGroup)
+
+        let requested = policy.defaultVersion(for: barbell, in: library, settings: settings,
+                                              preferredIDs: [dumbbell.id], useSavedVariantPreference: true)
+        XCTAssertEqual(requested.id, dumbbell.id)
+        var dumbbellOnly = settings
+        dumbbellOnly.availableEquipment = ["dumbbell"]
+        let fallback = policy.defaultVersion(for: barbell, in: library, settings: dumbbellOnly, useSavedVariantPreference: true)
+        XCTAssertEqual(fallback.id, dumbbell.id)
+        XCTAssertEqual(dumbbellOnly.preferredVariantByProgrammingGroup?[policy.programmingGroupID(for: barbell)], machine.id)
+        let inclineVersion = policy.defaultVersion(for: incline, in: library, settings: settings, useSavedVariantPreference: true)
+        XCTAssertEqual(policy.programmingGroupID(for: inclineVersion), policy.programmingGroupID(for: incline))
+        let closeVersion = policy.defaultVersion(for: close, in: library, settings: settings, useSavedVariantPreference: true)
+        XCTAssertEqual(policy.programmingGroupID(for: closeVersion), policy.programmingGroupID(for: close))
+
+        var missing = settings
+        missing.preferredVariantByProgrammingGroup = ["bench_press.flat": "deleted-bench"]
+        let recovered = policy.defaultVersion(for: barbell, in: library, settings: missing, useSavedVariantPreference: true)
+        XCTAssertEqual(recovered.id, barbell.id)
+        XCTAssertEqual(missing.preferredVariantByProgrammingGroup?["bench_press.flat"], "deleted-bench")
+        let canonical = ExerciseLibrary.canonicalSettings(missing, using: ExerciseLibrary.byId)
+        XCTAssertEqual(canonical.preferredVariantByProgrammingGroup?["bench_press.flat"], "deleted-bench")
+
+        let ranked = policy.generationCandidates(from: [barbell, machine, dumbbell], settings: settings, maxPerProgrammingGroup: 1)
+        XCTAssertEqual(ranked.map(\.id), [machine.id])
+        let legs = policy.generationCandidates(from: [squat], settings: settings, maxPerProgrammingGroup: 1)
+        XCTAssertFalse(legs.contains { policy.programmingGroupID(for: $0) == policy.programmingGroupID(for: barbell) })
+
+        let data = DataStore(exercises: library, plans: [existing], sets: [
+            SetRecord(id: "history", exerciseId: barbell.id, exerciseName: barbell.name, category: barbell.category,
+                      weight: 80, reps: 8, duration: nil, performedAt: Date(), planId: existing.id)
+        ], settings: UserSettings())
+        data.rememberExplicitVariantChoice(from: barbell.id, to: machine.id)
+        XCTAssertEqual(data.settings.preferredVariantByProgrammingGroup?[policy.programmingGroupID(for: barbell)], machine.id)
+        XCTAssertEqual(data.plans.first?.steps.first?.exerciseId, barbell.id)
+        XCTAssertEqual(data.sets.first?.exerciseId, barbell.id)
+        XCTAssertEqual(data.sets.first?.weight, 80)
+        data.rememberExplicitVariantChoice(from: machine.id, to: machine.id)
+        data.rememberExplicitVariantChoice(from: barbell.id, to: squat.id)
+        XCTAssertEqual(data.settings.preferredVariantByProgrammingGroup, [policy.programmingGroupID(for: barbell): machine.id])
+
+        var payload = data.buildAIPayload()
+        payload.savedVariantByProgrammingGroup = ["bench_press.flat": "pref-secret-not-for-model"]
+        let prompt = AIWorkoutService.shared.buildPrompt(payload: payload, library: [barbell])
+        XCTAssertFalse(prompt.contains("pref-secret-not-for-model"))
+        let json = #"{"name":"Push","steps":[{"exercise_id":"bench_press_barbell","sets":3,"reps":8,"weight_kg":80}]}"#
+        let ai = try AIWorkoutService.shared.validatedPlan(fromJSON: json, candidates: [barbell, machine, dumbbell], maxExercises: 4, settings: settings)
+        XCTAssertEqual(ai?.steps.first?.exerciseId, machine.id)
+        XCTAssertNil(ai?.steps.first?.weight)
+        let locked = try AIWorkoutService.shared.validatedPlan(fromJSON: json, candidates: [barbell, machine, dumbbell], maxExercises: 4, settings: settings, lockedIDs: [barbell.id])
+        XCTAssertEqual(locked?.steps.first?.exerciseId, barbell.id)
+        XCTAssertEqual(locked?.steps.first?.weight, 80)
+        XCTAssertEqual(settings.preferredVariantByProgrammingGroup?[policy.programmingGroupID(for: barbell)], machine.id)
+    }
 }

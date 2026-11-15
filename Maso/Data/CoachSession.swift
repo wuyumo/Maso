@@ -962,7 +962,9 @@ extension DataStore {
         }
         defer { progress.cancel() }
 
-        if let text = note, let intent = WorkoutSourceIntent.parse(text) ?? (WorkoutSourceReader.firstURL(text) == nil ? nil : WorkoutSourceIntent(cardCount:nil)) {
+        // Explicit physique-photo requests and their confirmed plan continuation are not source imports.
+        if surface != "body_photo_report", !(photoData != nil && (photoIsGoalComparison || photoIntent == .body)),
+           let text = note, let intent = WorkoutSourceIntent.parse(text) ?? (WorkoutSourceReader.firstURL(text) == nil ? nil : WorkoutSourceIntent(cardCount:nil)) {
             do {
                 let required = intent.cardCount ?? 1
                 let prepared: WorkoutSourcePrepared = try await aiAccess.perform(kind: photoData == nil ? .sourceImport : .routineImage, isPro: settings.isPro,

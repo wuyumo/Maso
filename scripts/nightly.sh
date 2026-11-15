@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# Maso — 夜间自动流水线 (launchd @ 23:00).
+# Masso — 夜间自动流水线 (launchd @ 23:00).
 #
 # 做的是「绿了通知我」那一档 (Yumo 2026-06-24 选定):
-#   1. verify-app 烟测 (xcodegen + 编译 + 数据 + 各关键页渲染断言)
+#   1. verify-app 工程 + 数据 + 编译检查；MASO_NIGHTLY_UI=1 时才验证关键页渲染
 #   2. 装到 iPhone (best-effort — 手机没插就跳过, 不算失败)
 #   3. 写报告 build/nightly/latest.md + 弹 macOS 通知
 #
@@ -17,7 +17,9 @@
 export PATH="/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 
 REPO="/Users/yumowu/Projects/Maso-iOS"
-SIM="5617AC82-D030-4E55-8A5D-26A3067DF06E"   # 固定模拟器 (项目惯用, 见 CLAUDE.md)
+if [ -z "${MASO_BUILD_LOCK_FD:-}" ]; then
+  exec python3 "$REPO/scripts/low_memory_build.py" run -- bash "$REPO/scripts/nightly.sh" "$@"
+fi
 cd "$REPO" || exit 1
 
 OUTDIR="$REPO/build/nightly"
@@ -34,27 +36,26 @@ note()   { echo "[$(date '+%H:%M:%S')] $*" | tee -a "$LOG"; }
 notify() { /usr/bin/osascript -e "display notification \"$2\" with title \"$1\" sound name \"Glass\"" >/dev/null 2>&1 || true; }
 
 : > "$LOG"
-note "=== Maso nightly $STAMP — v$VER ($BUILD) ==="
+note "=== Masso nightly $STAMP — v$VER ($BUILD) ==="
 
 # 只在源码真的变过时才继续 —— 没变的夜晚静默退出, 不启模拟器、不弹通知 (2026-09-08).
 # 签名 = HEAD + 源码目录的工作区状态; 未提交的改动也算"变了"(正是最该验的时候),
 # build/ 等产物不算 (已在 .gitignore, 本来也不进 status).
 # 失败的夜晚故意不记签名 —— 代码没改也要每晚重试, 直到绿为止.
 SIGFILE="$OUTDIR/.last-verified"
-SIG="$(git rev-parse HEAD 2>/dev/null)|$(git status --porcelain -- Maso MasoWatch MasoWidgets project.yml 2>/dev/null | shasum | cut -d' ' -f1)"
+SIG="ui=${MASO_NIGHTLY_UI:-0}|$(git rev-parse HEAD 2>/dev/null)|$(git status --porcelain -- Maso MasoWatch MasoWidgets project.yml 2>/dev/null | shasum | cut -d' ' -f1)"
 if [ "$SIG" = "$(cat "$SIGFILE" 2>/dev/null)" ]; then
   note "源码自上次绿灯以来没有变化 — 跳过 (不启模拟器)。"
   exit 0
 fi
 
-# 先把固定模拟器 boot 起来, 让 driver.sh 直接挑这台 (避免设备名漂移).
-xcrun simctl bootstatus "$SIM" -b >/dev/null 2>&1 || xcrun simctl boot "$SIM" >>"$LOG" 2>&1
-xcrun simctl bootstatus "$SIM" -b >>"$LOG" 2>&1
-
 # 1) verify-app 烟测
 note "running verify-app driver..."
 VERIFY_OK=1
-if bash .claude/skills/verify-app/driver.sh >>"$LOG" 2>&1; then
+VERIFY_ARGS=()
+# UI smoke checks are explicit opt-in; ordinary nightly verification never boots a device.
+[ "${MASO_NIGHTLY_UI:-0}" = "1" ] && VERIFY_ARGS+=(--ui)
+if bash .claude/skills/verify-app/driver.sh "${VERIFY_ARGS[@]}" >>"$LOG" 2>&1; then
   note "verify-app: PASS"
 else
   VERIFY_OK=0
@@ -64,7 +65,7 @@ fi
 # 2) 装机 (best-effort)
 note "installing to iPhone (best-effort)..."
 INSTALL="未装 (iPhone 不在线?)"
-if bash scripts/install_iphone.sh >>"$LOG" 2>&1; then
+if [ "$VERIFY_OK" = "1" ] && bash scripts/install_iphone.sh >>"$LOG" 2>&1; then
   INSTALL="已装机 ✅"
   note "install: OK"
 else
@@ -76,10 +77,11 @@ DIRTY="$(git status --porcelain 2>/dev/null | wc -l | tr -d ' ')"
 
 # 4) 报告
 {
-  echo "# Maso 夜间构建 — $STAMP"
+  echo "# Masso 夜间构建 — $STAMP"
   echo ""
   echo "- 版本: **$VER ($BUILD)**"
   if [ "$VERIFY_OK" = "1" ]; then echo "- 验证 (verify-app): ✅ 通过"; else echo "- 验证 (verify-app): ❌ 失败 — 看 \`build/nightly/$DAY.log\`"; fi
+  echo "- UI 烟测: ${MASO_NIGHTLY_UI:-0} (1=显式启用，0=未运行)"
   echo "- 装机: $INSTALL"
   echo "- 工作区改动文件数: $DIRTY"
   echo ""
@@ -93,9 +95,9 @@ DIRTY="$(git status --porcelain 2>/dev/null | wc -l | tr -d ' ')"
 
 # 5) 通知
 if [ "$VERIFY_OK" = "1" ]; then
-  notify "Maso 夜间构建 ✅" "v$VER($BUILD) 验证通过 · $INSTALL · 待发版改动 $DIRTY 处。要发版跟 Claude 说「提交」。"
+  notify "Masso 夜间构建 ✅" "v$VER($BUILD) 验证通过 · $INSTALL · 待发版改动 $DIRTY 处。要发版跟 Claude 说「提交」。"
 else
-  notify "Maso 夜间构建 ❌" "v$VER($BUILD) 验证失败, 看 build/nightly/$DAY.log。别发版。"
+  notify "Masso 夜间构建 ❌" "v$VER($BUILD) 验证失败, 看 build/nightly/$DAY.log。别发版。"
 fi
 
 [ "$VERIFY_OK" = "1" ] && echo "$SIG" > "$SIGFILE"

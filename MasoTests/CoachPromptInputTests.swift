@@ -13,7 +13,7 @@ final class CoachPromptInputTests: XCTestCase {
             for useCase in CoachUseCase.allCases {
                 let prompt = bundle.localizedString(forKey: useCase.promptKey, value: nil, table: nil)
                 let ranges = CoachTemplates.editablePlaceholderRanges(in: prompt)
-                if useCase == .physiqueGoal {
+                if useCase == .physiqueGoal || useCase == .bodyAssessment {
                     XCTAssertTrue(ranges.isEmpty, "\(locale): photo flow does not need a text blank")
                     continue
                 }

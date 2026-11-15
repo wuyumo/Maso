@@ -1,0 +1,31 @@
+name = "masso-partners"
+main = "worker.mjs"
+compatibility_date = "2026-11-01"
+compatibility_flags = ["nodejs_compat"]
+[assets]
+directory = "./public"
+binding = "ASSETS"
+run_worker_first = true
+[[d1_databases]]
+binding = "DB"
+database_name = "maso-feedback"
+database_id = "499ba6e9-5958-4d4b-8ee5-8ffecd3321e0"
+migrations_dir = "migrations"
+[vars]
+APPLE_APP_ID = "6776689750"
+BUNDLE_ID = "com.yumowu.maso"
+MAIL_FROM = "Masso Partners <login@mail.massofit.cn>"
+REGISTRATION_OPEN = "false"
+CAMPAIGN_READY = "false"
+COMMISSION_BPS = "2000"
+APPLE_OFFER_ID = "c6acf739-84bd-4f82-942a-10dfec4026d0"
+APPLE_OFFER_REFERENCE = "MASSO_PARTNER_YEAR1_20261112"
+OFFER_DESCRIPTION = "New subscribers: US annual plan $23.99 for the first year, then standard pricing. Eligible introductory trial may apply first. Local prices and availability are confirmed by Apple."
+IAP_KEY_ID = "SB3695GPYD"
+ASC_KEY_ID = "SB3695GPYD"
+ASC_ISSUER = "29f7fc6b-0be6-4a52-b8e2-0a5ddffa2823"
+[triggers]
+crons = ["*/15 * * * *"]
+
+[alias]
+"node-fetch" = "./fetch.mjs"

@@ -1,8 +1,8 @@
-# Cloudflare Worker 配置 — Maso AI proxy + Polar 付费校验
+# Cloudflare Worker 配置 — Masso AI proxy + Polar 付费校验
 #
 # 部署前要做的:
 #   1. wrangler login                            ← Cloudflare OAuth (会开浏览器)
-#   2. wrangler secret put DEEPSEEK_API_KEY      ← DeepSeek API key (已设过, 换机才需重设)
+#   2. wrangler secret put DASHSCOPE_API_KEY     ← 百炼北京 API key
 #   3. wrangler secret put MASO_CLIENT_TOKEN     ← 跟 iOS app baked token 一致 (已设过)
 #   4. wrangler secret put POLAR_TOKEN           ← Polar Organization Access Token (License Keys 权限)
 #   5. wrangler deploy                           ← POLAR_ORG_ID 走下面 [vars], 无需 secret
@@ -14,9 +14,25 @@ name = "maso-ai"
 main = "worker.js"
 compatibility_date = "2025-01-01"
 
+[[r2_buckets]]
+binding = "DEMO_BUCKET"
+bucket_name = "masso-exercise-demos"
+
+[[d1_databases]]
+binding = "FEEDBACK_DB"
+database_name = "maso-feedback"
+database_id = "499ba6e9-5958-4d4b-8ee5-8ffecd3321e0"
+migrations_dir = "migrations"
+
+[triggers]
+crons = ["0 1 * * 1", "*/15 * * * *"] # Digest weekly; release expired demo reservations every 15 minutes.
+
 # 非敏感常量 (org UUID 不是密钥, 可进 git). Masso org (slug masso).
 [vars]
 POLAR_ORG_ID = "2d965d03-f2f8-4de6-9ea0-307f818ea9d3"
+DEMO_GENERATION_ENABLED = "false"
+DEMO_STYLE_APPROVED = "false"
+DEMO_GPU_READY = "false"
 
 # 如果你想绑自定义域 (e.g. api.maso.app/v1/chat/completions):
 # routes = [

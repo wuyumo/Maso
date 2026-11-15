@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Maso App Store 截图自动化脚本.
+# Masso App Store 截图自动化脚本.
 #
 # App Store 要求 iPhone 6.7" 截图 (1290 × 2796) — iPhone 15 Pro Max Simulator 自带这个尺寸.
 # 这个脚本:
@@ -17,6 +17,14 @@
 # 拍完所有图后, 文件在 build/screenshots/, 直接拖进 App Store Connect.
 
 set -eu  # 不开 pipefail — grep 没命中时 silent exit 隐藏不了错误
+
+# Hold the shared lock through build, install and simulator use (nested calls reuse it).
+REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+if [ -z "${MASO_BUILD_LOCK_FD:-}" ]; then
+    exec python3 "$REPO_ROOT/scripts/low_memory_build.py" run -- bash "$REPO_ROOT/scripts/screenshot_simulator.sh" "$@"
+fi
+cd "$REPO_ROOT"
+
 
 # ━━━ 配置 ━━━
 # 默认用 iPhone 17 Pro Max (6.9" 屏, App Store 接受为 6.7"+ 类别).
@@ -48,29 +56,21 @@ if [ -z "$DEVICE_UDID" ]; then
 fi
 echo "✓ Simulator UDID: $DEVICE_UDID"
 
-# 启动 Simulator (如果没开)
-SIM_STATE=$(xcrun simctl list devices | grep "$DEVICE_UDID" | grep -oE 'Booted|Shutdown' | head -1)
-if [ "$SIM_STATE" != "Booted" ]; then
-    echo "🚀 Booting simulator..."
-    xcrun simctl boot "$DEVICE_UDID"
-    open -a Simulator
-    sleep 3
-fi
-
-# 设置 Simulator 语言
-echo "🌍 Setting language to $LANGUAGE..."
-xcrun simctl spawn "$DEVICE_UDID" defaults write -g AppleLanguages -array "$LANGUAGE"
-xcrun simctl spawn "$DEVICE_UDID" defaults write -g AppleLocale "$LANGUAGE"
-
 # Build for simulator
 echo "🔨 Building for Simulator..."
-xcodebuild \
+python3 "$REPO_ROOT/scripts/low_memory_build.py" xcodebuild -- \
     -project "$PROJECT" \
     -scheme "$SCHEME" \
     -configuration Debug \
     -destination "platform=iOS Simulator,id=$DEVICE_UDID" \
     -derivedDataPath "build/DerivedData" \
     build > /dev/null 2>&1
+
+# Boot only after successful compilation; the outer workflow cleans up devices it owns.
+python3 "$REPO_ROOT/scripts/low_memory_build.py" sim-prepare "$DEVICE_UDID"
+open -a Simulator
+xcrun simctl spawn "$DEVICE_UDID" defaults write -g AppleLanguages -array "$LANGUAGE"
+xcrun simctl spawn "$DEVICE_UDID" defaults write -g AppleLocale "$LANGUAGE"
 
 # 装 app
 APP_PATH="build/DerivedData/Build/Products/Debug-iphonesimulator/Maso.app"

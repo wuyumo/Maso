@@ -133,7 +133,11 @@ final class HomeHeaderBlurTests: XCTestCase {
                 }
                 for scroll in scrolls {
                     XCTAssertEqual(scroll.topEdgeEffect.style, .soft, "\(language.rawValue) \(name)")
-                    XCTAssertFalse(scroll.topEdgeEffect.isHidden, name)
+                    if name == "muscle-exercises" {
+                        XCTAssertTrue(scroll.topEdgeEffect.isHidden, "Full-bleed muscle media explicitly removes the header backdrop")
+                    } else {
+                        XCTAssertFalse(scroll.topEdgeEffect.isHidden, name)
+                    }
                 }
                 for position in ["top", "scrolled"] {
                     if position == "scrolled", let scroll = scrolls.max(by: { $0.bounds.height < $1.bounds.height }) {

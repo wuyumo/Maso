@@ -1,6 +1,12 @@
-# Maso — iOS native
+# Masso — iOS native
 
 Web App (`/Users/yumowu/Projects/Maso - iOS & Watch OS/`) 的 iOS 原生版,SwiftUI + Observation。
+
+## 品牌文案
+
+Masso · **Train smart, your way.**
+
+中文：**聪明训练，适合自己**。聊天功能保持 **AI Coach**；App 文案与分享统一读取 `MasoBrand.slogan`，覆盖全部 12 种语言。
 
 ## 跑起来
 
@@ -17,8 +23,7 @@ open Maso.xcodeproj
 
 命令行验证编译:
 ```bash
-xcodebuild -project Maso.xcodeproj -scheme Maso -sdk iphonesimulator \
-  -destination 'generic/platform=iOS Simulator' -configuration Debug build
+python3 scripts/low_memory_build.py build
 ```
 
 ## 目录结构
@@ -42,7 +47,7 @@ Maso/
 ├── State/
 │   └── TrainingSession.swift  全局训练会话状态 + 1Hz 自动倒计时 ticker
 └── Views/
-    ├── RootView.swift         顶级路由 (onboarding ? OnboardingScreen : Tab+sheets)
+    ├── RootView.swift         顶级路由 (onboarding → Today 单页，Insights / Coach 二级入口 + sheets)
     ├── Tabs/
     │   ├── TabBarView.swift   3-tab 底栏, 中间 Tab 训练时变药丸
     │   └── ActiveTrainingPill.swift   训练中那个横向 pill

@@ -186,12 +186,12 @@ final class LocalExerciseSelectionTests: XCTestCase {
         XCTAssertNil(store.session?.endsAt)
     }
 
-    func testFreshDefaultLibraryContainsOnlyTheCoreSet() {
+    func testFreshDefaultLibraryContainsCoreAndReviewedMediaVariants() {
         let store = DataStore(exercises: ExerciseLibrary.all, plans: [], sets: [], settings: UserSettings())
         let curated = store.curatedExerciseLibrary
-        XCTAssertEqual(curated.count, 134)
-        XCTAssertEqual(Set(curated.map { policy.displayFamilyID(for: $0) }).count, 64)
-        XCTAssertTrue(curated.allSatisfy { policy.tier(for: $0) == .core })
+        XCTAssertEqual(curated.count, 421)
+        XCTAssertEqual(Set(curated.map { policy.displayFamilyID(for: $0) }).count, 172)
+        XCTAssertTrue(curated.allSatisfy { policy.tier(for: $0) == .core || (policy.tier(for: $0).isSpecialist && ExerciseDemoService.shared.availableMediaIDs.contains($0.id)) })
         XCTAssertEqual(store.userLibrary.count, ExerciseLibrary.all.count)
     }
 
@@ -321,6 +321,7 @@ final class LocalExerciseSelectionTests: XCTestCase {
         let specialist = try XCTUnwrap(ExerciseLibrary.all.first { policy.tier(for: $0).isSpecialist })
         let unused = try XCTUnwrap(ExerciseLibrary.all.first {
             $0.id != specialist.id && policy.tier(for: $0).isSpecialist
+                && !ExerciseDemoService.shared.availableMediaIDs.contains($0.id)
         })
         let custom = Exercise(id: "custom-local-review", name: "My exercise", category: .strength,
                               tags: [], primaryMuscles: [.chest], muscleGroups: [.chest], imageFolder: nil, instructions: [])

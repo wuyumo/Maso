@@ -277,20 +277,6 @@ struct TrainingPreferencesSheet: View {
         AppNavigationStack {
             Form {
                 TrainingSettingsSection(settings: $draft)
-                Section {} footer: {
-                    NavigationLink { DeviceAIUsageView() } label: {
-                        Text("AI access and saved results")
-                            .font(.footnote).foregroundStyle(Color.primary)
-                            .multilineTextAlignment(layoutDirection == .rightToLeft ? .trailing : .leading)
-                            .fixedSize(horizontal: false, vertical: true)
-                            // Physical left alignment, without changing Arabic text direction.
-                            .frame(maxWidth: .infinity, minHeight: 44,
-                                   alignment: layoutDirection == .rightToLeft ? .trailing : .leading)
-                            .contentShape(Rectangle())
-                    }
-                    .buttonStyle(.plain).tint(.primary).textCase(nil)
-                    .accessibilityIdentifier("training-preferences.ai-access")
-                }
             }
             .navigationTitle("Training Preferences")
             .navigationBarTitleDisplayMode(.inline)
@@ -826,6 +812,7 @@ struct PlanDetailSheet: View {
         guard let id = stepToReplaceId,
               let idx = draft.steps.firstIndex(where: { $0.id == id }) else { return }
         let old = draft.steps[idx]
+        data.rememberExplicitVariantChoice(from: old.exerciseId, to: newExercise.id)
         draft.steps[idx] = PlanStep(
             id: old.id,
             exerciseId: newExercise.id,

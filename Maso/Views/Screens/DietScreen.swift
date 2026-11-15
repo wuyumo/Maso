@@ -702,7 +702,6 @@ struct SleepHomeSection: View {
     var detail = false
     @Environment(DataStore.self) private var data
     @Environment(\.scenePhase) private var scenePhase
-    @State private var editing = false
     @State private var infoPresented = false
     @State private var recordsPresented = false
     @State private var lastNightDetailsExpanded = false
@@ -723,16 +722,6 @@ struct SleepHomeSection: View {
             Button { infoPresented = true } label: {
                 Label("Why this sleep target?", systemImage: "info.circle").font(.footnote)
             }.tint(MasoColor.textFaint)
-        }
-        .navigationTitle("Sleep").navigationBarTitleDisplayMode(.large).toolbarRole(.navigationStack)
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button { editing = true } label: { Image(systemName: "slider.horizontal.3") }
-                    .tint(MasoColor.text).accessibilityLabel("Sleep preferences")
-            }
-        }
-        .sheet(isPresented: $editing) {
-            SleepScheduleSheet(initial: preferences) { updated in data.settings.applySleepPreferences(updated); data.save() }
         }
         .sheet(isPresented: $infoPresented) { SleepInfoSheet() }
         .sheet(isPresented: $recordsPresented) { SleepHealthRecordsSheet() }
@@ -1711,6 +1700,8 @@ struct MealEditorSheet: View {
 
 
 struct SleepScreen: View {
+    @Environment(DataStore.self) private var data
+    @State private var editingSleep = false
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: MasoMetrics.cardPadding) {
@@ -1719,7 +1710,23 @@ struct SleepScreen: View {
             }
                 .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
                 .padding(.vertical, 16)
-        }.background(AppBackground())
+        }
+        .background(AppBackground())
+        .navigationTitle("Sleep")
+        .navigationBarTitleDisplayMode(.large)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button { editingSleep = true } label: { Image(systemName: "slider.horizontal.3") }
+                    .tint(MasoColor.text)
+                    .accessibilityLabel("Sleep preferences")
+            }
+        }
+        .sheet(isPresented: $editingSleep) {
+            SleepScheduleSheet(initial: data.settings.sleepPreferences ?? SleepPreferences()) { updated in
+                data.settings.applySleepPreferences(updated)
+                data.save()
+            }
+        }
     }
 }
 

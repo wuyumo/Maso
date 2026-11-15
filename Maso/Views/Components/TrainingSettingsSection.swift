@@ -67,7 +67,7 @@ struct TrainingSettingsSection: View {
     /// 选肌群 sheet 内部 own — 两处使用都能"点 → 弹 picker", caller 不需要管
     @State private var showMusclePicker = false
     @State private var moreTrainingSettingsExpanded = false
-    @State private var heartRateSettingsPresented = false
+    @State private var confirmClearNotes = false
 
     var body: some View {
         Section {
@@ -103,13 +103,6 @@ struct TrainingSettingsSection: View {
             }
         }
         Section {
-            Toggle("Maintain current weights", isOn: $settings.maintainWeights)
-                .toggleStyle(.switch).tint(MasoColor.toggleAccent)
-                .accessibilityIdentifier("training.progression.maintain")
-        } footer: {
-            Text("Pause weight suggestions for all exercises. Your workout targets stay unchanged.")
-        }
-        Section {
             DisclosureGroup("More training settings", isExpanded: $moreTrainingSettingsExpanded) {
                 Stepper(value: $settings.exercisesPerSession, in: 1...8) {
                     LabeledContent("Exercises per plan", value: "\(settings.exercisesPerSession)")
@@ -123,20 +116,37 @@ struct TrainingSettingsSection: View {
                 Stepper(value: $settings.defaultBetweenExerciseRestSeconds, in: 0...600, step: 15) {
                     LabeledContent("Exercise rest", value: "\(settings.defaultBetweenExerciseRestSeconds) s")
                 }
+                Toggle("Weight increase suggestions", isOn: Binding(
+                    get: { !settings.maintainWeights },
+                    set: { settings.maintainWeights = !$0 }
+                ))
+                    .toggleStyle(.switch).tint(MasoColor.toggleAccent)
+                    .accessibilityIdentifier("training.progression.suggestions")
                 Toggle("Keep screen awake during workouts", isOn: $settings.keepScreenAwakeDuringWorkout)
                     .toggleStyle(.switch).tint(MasoColor.toggleAccent)
             }
         }
-        Section {
-            Button("Heart rate", systemImage: "heart") { heartRateSettingsPresented = true }
-                .sheet(isPresented: $heartRateSettingsPresented) { WorkoutHeartRateSettingsSheet() }
-        }
         Section("Notes for your AI coach") {
             TextField("Coach memory examples", text: $settings.coachMemory, axis: .vertical)
                 .lineLimit(4...8)
+                .accessibilityIdentifier("training-preferences.notes")
             if !settings.coachMemory.isEmpty {
-                Button("Clear", role: .destructive) { settings.coachMemory = "" }
+                Button("Clear", role: .destructive) { confirmClearNotes = true }
+                    .accessibilityIdentifier("training-preferences.notes.clear")
+                    .confirmationDialog("Clear notes?", isPresented: $confirmClearNotes, titleVisibility: .visible) {
+                        Button("Clear", role: .destructive) { settings.coachMemory = "" }
+                            .accessibilityIdentifier("training-preferences.notes.confirm-clear")
+                        Button("Cancel", role: .cancel) { }
+                    }
             }
+        }
+        Section {
+            NavigationLink {
+                WorkoutHeartRateSettingsSheet(embeddedInNavigation: true)
+            } label: {
+                Label("Heart rate", systemImage: "heart")
+            }
+            .accessibilityIdentifier("training-preferences.heart-rate")
         }
     }
 

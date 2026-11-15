@@ -46,43 +46,8 @@
 			</array>
 		</dict>
 	</array>
-	<key>UIApplicationShortcutItems</key>
-	<array>
-		<dict>
-			<key>UIApplicationShortcutItemType</key>
-			<string>com.yumowu.maso.quickAction.workout</string>
-			<key>UIApplicationShortcutItemTitle</key>
-			<string>Start workout</string>
-			<key>UIApplicationShortcutItemIconSymbolName</key>
-			<string>play.fill</string>
-		</dict>
-		<dict>
-			<key>UIApplicationShortcutItemType</key>
-			<string>com.yumowu.maso.quickAction.addMeal</string>
-			<key>UIApplicationShortcutItemTitle</key>
-			<string>Add meal</string>
-			<key>UIApplicationShortcutItemIconSymbolName</key>
-			<string>fork.knife</string>
-		</dict>
-		<dict>
-			<key>UIApplicationShortcutItemType</key>
-			<string>com.yumowu.maso.quickAction.freeWorkout</string>
-			<key>UIApplicationShortcutItemTitle</key>
-			<string>Free workout</string>
-			<key>UIApplicationShortcutItemIconSymbolName</key>
-			<string>figure.strengthtraining.traditional</string>
-		</dict>
-		<dict>
-			<key>UIApplicationShortcutItemType</key>
-			<string>com.yumowu.maso.quickAction.coach</string>
-			<key>UIApplicationShortcutItemTitle</key>
-			<string>AI Coach</string>
-			<key>UIApplicationShortcutItemIconSymbolName</key>
-			<string>bubble.left.and.bubble.right</string>
-		</dict>
-	</array>
 	<key>CFBundleVersion</key>
-	<string>51</string>
+	<string>54</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>MasoAIProxyFallbackURL</key>
@@ -112,6 +77,45 @@
 		<key>UIApplicationSupportsMultipleScenes</key>
 		<false/>
 	</dict>
+	<key>UIApplicationShortcutItems</key>
+	<array>
+		<dict>
+			<key>UIApplicationShortcutItemIconSymbolName</key>
+			<string>play.fill</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>Start workout</string>
+			<key>UIApplicationShortcutItemType</key>
+			<string>com.yumowu.maso.quickAction.workout</string>
+		</dict>
+		<dict>
+			<key>UIApplicationShortcutItemIconSymbolName</key>
+			<string>fork.knife</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>Add meal</string>
+			<key>UIApplicationShortcutItemType</key>
+			<string>com.yumowu.maso.quickAction.addMeal</string>
+		</dict>
+		<dict>
+			<key>UIApplicationShortcutItemIconSymbolName</key>
+			<string>figure.strengthtraining.traditional</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>Free workout</string>
+			<key>UIApplicationShortcutItemType</key>
+			<string>com.yumowu.maso.quickAction.freeWorkout</string>
+		</dict>
+		<dict>
+			<key>UIApplicationShortcutItemIconSymbolName</key>
+			<string>bubble.left.and.bubble.right</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>AI Coach</string>
+			<key>UIApplicationShortcutItemType</key>
+			<string>com.yumowu.maso.quickAction.coach</string>
+		</dict>
+	</array>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>audio</string>
+	</array>
 	<key>UILaunchScreen</key>
 	<dict>
 		<key>UIColorName</key>
@@ -119,6 +123,12 @@
 	</dict>
 	<key>UIRequiresFullScreen</key>
 	<false/>
+	<key>UIStatusBarStyle</key>
+	<string>UIStatusBarStyleLightContent</string>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
@@ -126,17 +136,7 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>UIStatusBarStyle</key>
-	<string>UIStatusBarStyleLightContent</string>
-	<key>UISupportedInterfaceOrientations</key>
-	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-	</array>
 	<key>UIUserInterfaceStyle</key>
 	<string>Dark</string>
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>audio</string>
-	</array>
 </dict>
 </plist>

@@ -4,6 +4,29 @@ import XCTest
 /// Never part of the ordinary UI regression suite or a real user's saved profile.
 @MainActor
 final class CoachLiveDiagnosticUITests: XCTestCase {
+    func testAssistantReportBubbleContainsTextFocusAndCompactAction() {
+        continueAfterFailure = false
+        for language in ["en", "zh-Hans", "de", "ar"] {
+            let app = XCUIApplication(bundleIdentifier: "com.yumowu.maso")
+            app.launchEnvironment = ["MASO_EXERCISE_UI_TEST_SCENE": "coach-photo-report", "MASO_SHOWCASE_SEED": "1"]
+            app.launchArguments = ["-maso.selectedLanguage", language, "-AppleLanguages", "(\(language))", "-AppleLocale", language]
+            app.terminate(); app.launch()
+            let bubble = app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH %@", "coach.assistant-bubble.")).firstMatch
+            XCTAssertTrue(bubble.waitForExistence(timeout: 20))
+            let map = app.descendants(matching: .any)["coach.photo.focusMap"].firstMatch
+            let create = app.buttons["coach.photo.confirm"]
+            XCTAssertTrue(map.exists); XCTAssertTrue(create.isHittable)
+            XCTAssertGreaterThanOrEqual(create.frame.height, 44)
+            XCTAssertGreaterThanOrEqual(create.frame.minX, bubble.frame.minX)
+            XCTAssertLessThanOrEqual(create.frame.maxX, bubble.frame.maxX + 1)
+            XCTAssertGreaterThanOrEqual(map.frame.minY, bubble.frame.minY)
+            XCTAssertLessThanOrEqual(map.frame.maxY, bubble.frame.maxY + 1)
+            XCTAssertFalse(app.buttons["coach.save-batch"].exists)
+            let shot = XCTAttachment(screenshot: app.screenshot()); shot.name = "\(language)-assistant-bubble-focus-action"; shot.lifetime = .keepAlways; add(shot)
+            app.terminate()
+        }
+    }
+
     func testMarketingMuscleFromHome() {
         continueAfterFailure = false
         let app = XCUIApplication(bundleIdentifier: "com.yumowu.maso")
@@ -120,6 +143,44 @@ final class CoachLiveDiagnosticUITests: XCTestCase {
         XCTAssertEqual(app.staticTexts["routine.test.saved-count"].label, count, "Generating cards must not replace saved plans")
         let screenshot = XCTAttachment(screenshot: app.screenshot())
         screenshot.name = "photo-report-real-plans"; screenshot.lifetime = .keepAlways; add(screenshot)
+    }
+
+    func testLiveIdeasTextFlowsCreatePlans() throws {
+        guard ProcessInfo.processInfo.environment["MASO_LIVE_AI_DIAGNOSTIC"] == "1" else {
+            throw XCTSkip("Real AI generation requires opt-in")
+        }
+        let cases: [(String, String)] = [
+            ("I want to focus on…", "shoulders and back"),
+            ("I only have 30 minutes", "30"),
+            ("I train at home", "dumbbells and bands"),
+            ("I’m getting back into training", "a month away")
+        ]
+        for (title, replacement) in cases {
+            let app = XCUIApplication(bundleIdentifier: "com.yumowu.maso")
+            app.launchEnvironment = ["MASO_EXERCISE_UI_TEST_SCENE": "coach-live", "MASO_SHOWCASE_SEED": "1", "MASO_COACH_TEST_DAYS": "2", "MASO_COACH_TEST_EXERCISES": "4"]
+            app.launchArguments = ["-maso.selectedLanguage", "en", "-AppleLanguages", "(en)", "-AppleLocale", "en"]
+            app.launch()
+            let ideas = app.buttons["coach.ideas"]
+            XCTAssertTrue(ideas.waitForExistence(timeout: 15), title)
+            ideas.tap()
+            let option = app.buttons[title]
+            XCTAssertTrue(option.waitForExistence(timeout: 5), title)
+            option.tap()
+            let input = app.textViews.firstMatch
+            XCTAssertTrue(input.waitForExistence(timeout: 5), title)
+            input.typeText(replacement)
+            app.buttons["coach.send"].tap()
+            if app.alerts["AI data sharing"].waitForExistence(timeout: 3) { app.alerts["AI data sharing"].buttons["Allow"].tap() }
+            let confirm = app.buttons["coach.preferences.confirm"]
+            if confirm.waitForExistence(timeout: 12) { confirm.tap() }
+            let status = app.staticTexts["coach.test.status"]
+            let complete = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
+                status.exists && (status.label.hasPrefix("success:") || status.label.hasPrefix("fallback:"))
+            }, object: nil)
+            XCTAssertEqual(XCTWaiter.wait(for: [complete], timeout: 150), .completed, title)
+            XCTAssertEqual(status.label, "success: 2", "\(title): \(status.label)")
+            app.terminate()
+        }
     }
 
     func testSingleWorkoutStartsWithoutSavingAndSavingStaysOptional() throws {

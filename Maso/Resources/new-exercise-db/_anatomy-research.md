@@ -2,7 +2,7 @@
 
 ## Background
 
-Maso's current anatomy diagram (`Maso/Data/Anatomy.swift` + `Maso/Views/Components/BodyHint.swift`) reuses polygon data verbatim from `react-body-highlighter` (MIT). The upstream only ships major-muscle polygons (~17 distinct: chest, back, shoulders, arms, legs, core, calves, etc.) — there is no separate polygon for `upperChest`, `frontDelts`, `tricepsLong`, `gluteusMedius`, or 23 of the other 27 sub-muscles in the plan §0.2. The code "lies" about this with `proxyAnatomy` (Anatomy.swift L106–138): pick `Upper Chest` and the whole chest polygon lights up, identical to picking `Chest`.
+Masso's current anatomy diagram (`Maso/Data/Anatomy.swift` + `Maso/Views/Components/BodyHint.swift`) reuses polygon data verbatim from `react-body-highlighter` (MIT). The upstream only ships major-muscle polygons (~17 distinct: chest, back, shoulders, arms, legs, core, calves, etc.) — there is no separate polygon for `upperChest`, `frontDelts`, `tricepsLong`, `gluteusMedius`, or 23 of the other 27 sub-muscles in the plan §0.2. The code "lies" about this with `proxyAnatomy` (Anatomy.swift L106–138): pick `Upper Chest` and the whole chest polygon lights up, identical to picking `Chest`.
 
 User wants to extend BodyHint to 27 sub-muscle granularity for the exercise-db overhaul (so e.g. selecting "Incline Bench Press" lights up *upper* chest, not the whole chest). User has tried 4 hand-redraws of the anatomy and rejected each as "完全不能用" — bar for visual quality is high, anatomical correctness matters, and ad-hoc polygon splits (the `splitHorizontalY` helper at Anatomy.swift L179) yielded the rejected results. **The previous failure mode was visual quality**: hand-drawn 5–12-vertex polygons cut into thirds along a horizontal line produced rectangular blocks that didn't look like muscle bellies — they looked like flat stacked bricks.
 
@@ -21,17 +21,17 @@ What it ships:
 - **36 muscle groups** = 22 base + 14 sub-groups, declared in `Sources/MuscleMap/Data/Muscle.swift`
 - Sub-groups already present in the path data: `upperChest`, `lowerChest`, `frontDeltoid`, `rearDeltoid`, `upperTrapezius`, `lowerTrapezius`, `innerQuad`, `outerQuad`, `hipFlexors`, `upperAbs`, `lowerAbs`, `serratus`, `ankles`, `adductors`, `neck`
 - Polygon data is **bezier-path SVG strings** (M/C/Q/Z commands), not 5–12-vertex coarse polygons. Verified by reading `Sources/MuscleMap/Data/MaleFrontPaths.swift` — each muscle has anatomically-shaped curves, not boxy outlines.
-- Rendered via SwiftUI **Canvas + Path** (same primitive Maso already uses). Self-contained SVG path parser (`Core/SVGPathParser.swift`), no UIKit/external dep.
-- Built-in features Maso could opt into or ignore: heatmap, gradient fills, multi-select, drag-to-select, pinch-zoom, undo/redo, 4 preset styles (`default`, `minimal`, `neon`, `medical`), VoiceOver accessibility, localization (11 languages incl. ZH).
+- Rendered via SwiftUI **Canvas + Path** (same primitive Masso already uses). Self-contained SVG path parser (`Core/SVGPathParser.swift`), no UIKit/external dep.
+- Built-in features Masso could opt into or ignore: heatmap, gradient fills, multi-select, drag-to-select, pinch-zoom, undo/redo, 4 preset styles (`default`, `minimal`, `neon`, `medical`), VoiceOver accessibility, localization (11 languages incl. ZH).
 
-Mapping to Maso's 27-sub-muscle list:
+Mapping to Masso's 27-sub-muscle list:
 
 | Maso target | MuscleMap coverage | Notes |
 |---|---|---|
 | upper_chest, middle_chest, lower_chest | ✅ `upperChest`, `chest`, `lowerChest` | "middle" = the main `chest` polygon (anatomically the sternocostal head) |
 | front_delt, side_delt, rear_delt | 🟡 `frontDeltoid`, `deltoids`, `rearDeltoid` (back side only) | "side delt" missing as separate path — would need to be derived as `deltoids` minus front/rear, or accept proxy (deltoids → side_delt visually) |
 | traps_upper, traps_middle, traps_lower | 🟡 Front: `upperTrapezius`, `lowerTrapezius` (no middle); Back: only `trapezius` aggregate | Back view needs trap split — degraded but acceptable |
-| lats | ❌ Only `upperBack` aggregate | No lats / rhomboids split — same gap as current Maso |
+| lats | ❌ Only `upperBack` aggregate | No lats / rhomboids split — same gap as current Masso |
 | rhomboids | ❌ Not split out | Same gap as current |
 | lower_back | ✅ `lowerBack` | |
 | biceps, triceps, forearms, brachialis | 🟡 `biceps`, `triceps`, `forearm` — no brachialis, no triceps-head split | Brachialis is anatomically a strip between biceps & brachioradialis — can proxy to biceps |
@@ -41,7 +41,7 @@ Mapping to Maso's 27-sub-muscle list:
 | abs_upper, abs_lower, obliques, serratus | ✅ all present | |
 | transverse (deep core) | ❌ Not visualizable | Drop from visual; show as label only |
 
-**Net coverage: ~21 of 27 sub-muscles with dedicated polygons. The remaining 6 (side_delt, traps_middle, lats, rhomboids, glutes_med, abductors, transverse, brachialis, triceps heads) get the same proxy-to-parent treatment Maso already has** — but instead of *all* 23 sub-muscles being proxied, only ~6–8 are. That's a 70 %+ improvement.
+**Net coverage: ~21 of 27 sub-muscles with dedicated polygons. The remaining 6 (side_delt, traps_middle, lats, rhomboids, glutes_med, abductors, transverse, brachialis, triceps heads) get the same proxy-to-parent treatment Masso already has** — but instead of *all* 23 sub-muscles being proxied, only ~6–8 are. That's a 70 %+ improvement.
 
 ### Visual
 
@@ -52,7 +52,7 @@ See `/tmp/musclemap_front.png` and `/tmp/musclemap_neon.png` (downloaded during 
 - **`neon` style: black background, dark gray idle, red+cyan glow highlight — already matches Spotify-dark + accent green if you swap the highlight color.** Drop-in fit.
 - Edge: anti-aliased bezier paths, no jagged edges.
 
-Compared to current Maso BodyHint: this is a *qualitative leap*. Current polygons are visibly low-poly (chest is two 5-vertex blobs); MuscleMap polygons read as actual muscles even at 80pt thumbnail size.
+Compared to current Masso BodyHint: this is a *qualitative leap*. Current polygons are visibly low-poly (chest is two 5-vertex blobs); MuscleMap polygons read as actual muscles even at 80pt thumbnail size.
 
 ### Effort
 
@@ -71,11 +71,11 @@ Existing `proxyAnatomy` table in Anatomy.swift becomes a shorter, justified tabl
 **This is genuinely different from the 4 prior failures.** The prior attempts were *hand-drawn polygons by Claude*, where the failure mode was "5–12 vertex hand-drawn shapes can't represent a muscle without looking blocky / fake". MuscleMap was drawn by a human designer using a vector tool, with 30–80 control points per muscle, anatomically referenced. The output is visibly *correct anatomy*, not approximation.
 
 Remaining risks:
-1. **Style mismatch.** MuscleMap's `default` style has a light head/skin tone that may clash with Maso's `#121212` background. Mitigation: use the `neon` preset or a custom `BodyViewStyle` with `headColor: idleGray, hairColor: idleGray` to neutralize. Verified the API supports this.
-2. **Side-by-side panel layout.** Current Maso draws anterior + posterior in one Canvas at fixed aspect. MuscleMap renders one `BodyView` per side; we wrap two in an HStack. Aspect-fit math is straightforward (each panel is 727×1280 viewport).
+1. **Style mismatch.** MuscleMap's `default` style has a light head/skin tone that may clash with Masso's `#121212` background. Mitigation: use the `neon` preset or a custom `BodyViewStyle` with `headColor: idleGray, hairColor: idleGray` to neutralize. Verified the API supports this.
+2. **Side-by-side panel layout.** Current Masso draws anterior + posterior in one Canvas at fixed aspect. MuscleMap renders one `BodyView` per side; we wrap two in an HStack. Aspect-fit math is straightforward (each panel is 727×1280 viewport).
 3. **Hit-testing precision changes.** MuscleMap's tap recognition uses its own point-in-path; means `onMuscleTap` is now bezier-precise (not ray-cast on coarse polygons). Should be a strict improvement.
 4. **SPM transitive bloat.** MuscleMap has zero external deps — safe.
-5. **Drift if MuscleMap is abandoned.** Mitigation: vendor the path data files (4 swift files, ~120 KB total) into Maso. They're MIT, just include the license. Even if upstream dies, Maso owns a frozen copy of the polygons.
+5. **Drift if MuscleMap is abandoned.** Mitigation: vendor the path data files (4 swift files, ~120 KB total) into Maso. They're MIT, just include the license. Even if upstream dies, Masso owns a frozen copy of the polygons.
 
 ### Sample code
 
@@ -154,7 +154,7 @@ struct BodyHint: View {
 
 ---
 
-## Approach 2: Vendor MuscleMap's path data only, keep Maso's custom renderer
+## Approach 2: Vendor MuscleMap's path data only, keep Masso's custom renderer
 
 ### Source
 
@@ -162,9 +162,9 @@ Same as Approach 1, but instead of `.package(url:)` we copy `MaleFrontPaths.swif
 
 ### Visual
 
-Identical to Approach 1 *if* Maso's renderer is updated to handle bezier paths (not just polygons). The current `roundedPolygonPath()` helper at BodyHint.swift L266 only handles vertex lists; MuscleMap path data is already curved, so feeding parsed `Path` directly into `ctx.fill(path)` works without the rounding step.
+Identical to Approach 1 *if* Masso's renderer is updated to handle bezier paths (not just polygons). The current `roundedPolygonPath()` helper at BodyHint.swift L266 only handles vertex lists; MuscleMap path data is already curved, so feeding parsed `Path` directly into `ctx.fill(path)` works without the rounding step.
 
-Slight regression vs Approach 1: lose the gestures (zoom, drag-select, undo), the 4 preset styles, and accessibility/localization — Maso has to re-implement any of these it wants. But Maso doesn't use most of those anyway; the relevant features (highlight color, opacity, tap, hit-test) are simple to keep in BodyHint.
+Slight regression vs Approach 1: lose the gestures (zoom, drag-select, undo), the 4 preset styles, and accessibility/localization — Masso has to re-implement any of these it wants. But Masso doesn't use most of those anyway; the relevant features (highlight color, opacity, tap, hit-test) are simple to keep in BodyHint.
 
 ### Effort
 
@@ -222,7 +222,7 @@ Honestly admits "we don't have the polygon detail" and uses text/icons to convey
 
 ## Recommendation
 
-**Adopt Approach 1 (MuscleMap SwiftUI SDK)** with the `neon` style customized to Maso's accent green.
+**Adopt Approach 1 (MuscleMap SwiftUI SDK)** with the `neon` style customized to Masso's accent green.
 
 Why this matters and why it's not the 5th failure:
 
@@ -230,9 +230,9 @@ Why this matters and why it's not the 5th failure:
 
 2. **It already supports 21 of 27 target sub-muscles natively** with anatomically-correct polygons (incl. `upperChest`/`lowerChest`, `frontDeltoid`/`rearDeltoid`, `upperAbs`/`lowerAbs`, `serratus`, `innerQuad`/`outerQuad`, `hipFlexors`). The current code already gracefully handles the remaining 6 via `proxyAnatomy` — that fallback shrinks from 23 entries to ~6.
 
-3. **It's SwiftUI Canvas-native**, MIT, zero deps, iOS 17+ — same baseline Maso targets. Drop-in replacement for `BodyHint.swift`.
+3. **It's SwiftUI Canvas-native**, MIT, zero deps, iOS 17+ — same baseline Masso targets. Drop-in replacement for `BodyHint.swift`.
 
-4. **The `neon` preset** already renders on a black background with a glow effect — that's Maso's Spotify-dark aesthetic out of the box. Swap the highlight color to `MasoColor.accent` (#1ED760) and it looks bespoke.
+4. **The `neon` preset** already renders on a black background with a glow effect — that's Masso's Spotify-dark aesthetic out of the box. Swap the highlight color to `MasoColor.accent` (#1ED760) and it looks bespoke.
 
 5. **Effort is bounded at ~3 days**, mostly QA. The data is not Claude-generated, so the failure mode of "Claude can't draw" is not in play.
 
@@ -240,7 +240,7 @@ Why this matters and why it's not the 5th failure:
 
 If user wants extra safety: stage as a Settings toggle for the first release. Add `Settings.useDetailedAnatomy: Bool` (default `false`), let early users opt in, gather feedback before flipping default. The current BodyHint stays as the fallback path.
 
-**Do NOT recommend Approach 3 alone** — labels on top of fake polygons is what Apple Fitness+ does, but Maso is more anatomically focused (per the exercise-db overhaul plan §0.2 itself). Users who care about upper-vs-lower-chest *want to see* upper-vs-lower-chest highlighted. A text label is a UX surrender.
+**Do NOT recommend Approach 3 alone** — labels on top of fake polygons is what Apple Fitness+ does, but Masso is more anatomically focused (per the exercise-db overhaul plan §0.2 itself). Users who care about upper-vs-lower-chest *want to see* upper-vs-lower-chest highlighted. A text label is a UX surrender.
 
 If Approach 1 fails QA: fall back to Approach 3 (1.5 d) rather than retry hand-redraw. Hand-redraw is a known failure mode.
 
@@ -248,9 +248,9 @@ If Approach 1 fails QA: fall back to Approach 3 (1.5 d) rather than retry hand-r
 
 ## Sources / Links
 
-- [`melihcolpan/MuscleMap`](https://github.com/melihcolpan/MuscleMap) — primary recommendation. MIT, SwiftUI, 174 stars, iOS 17+. Has the 14 sub-muscle paths Maso needs.
+- [`melihcolpan/MuscleMap`](https://github.com/melihcolpan/MuscleMap) — primary recommendation. MIT, SwiftUI, 174 stars, iOS 17+. Has the 14 sub-muscle paths Masso needs.
 - [`HichamELBSI/react-native-body-highlighter`](https://github.com/HichamELBSI/react-native-body-highlighter) — RN version, 226 stars, same polygon source as MuscleMap (verified by reading both path files; same SVG strings). MIT. Useful as a reference for the SVG path data.
-- [`giavinh79/react-body-highlighter`](https://github.com/giavinh79/react-body-highlighter) — current Maso source. Last release v2.0.5 in 2021, **no sub-muscle polygons in v1.x or v2.x**. Maso has already extracted everything available.
+- [`giavinh79/react-body-highlighter`](https://github.com/giavinh79/react-body-highlighter) — current Masso source. Last release v2.0.5 in 2021, **no sub-muscle polygons in v1.x or v2.x**. Masso has already extracted everything available.
 - [`soroojshehryar/react-muscle-highlighter`](https://github.com/soroojshehryar/react-muscle-highlighter) — newer (May 2026) React port. Has Male/Female + Front/Back but only major muscles (~17), no sub-muscle granularity. Not useful for Maso.
 - [`gossamr/swift-body-highlighter`](https://github.com/gossamr/swift-body-highlighter) — small Swift port (2 stars). Outdated, no sub-muscles.
 - [`Obaloluwa-Obidoyin/bodychart_heatmap`](https://github.com/Obaloluwa-Obidoyin/bodychart_heatmap) — Flutter, very coarse (~8 body regions), not useful.
@@ -258,6 +258,6 @@ If Approach 1 fails QA: fall back to Approach 3 (1.5 d) rather than retry hand-r
 Files in this repo touched/relevant:
 - `/Users/yumowu/Projects/Maso-iOS/Maso/Data/Anatomy.swift` — current polygon data + `proxyAnatomy` fallback
 - `/Users/yumowu/Projects/Maso-iOS/Maso/Views/Components/BodyHint.swift` — current Canvas renderer
-- `/Users/yumowu/Projects/Maso-iOS/Maso/Models/MuscleGroup.swift` — Maso's enum (target of new mapping table)
+- `/Users/yumowu/Projects/Maso-iOS/Maso/Models/MuscleGroup.swift` — Masso's enum (target of new mapping table)
 - `/Users/yumowu/Projects/Maso-iOS/docs/exercise-db-overhaul-plan.md` §0.2 — 27 sub-muscle taxonomy
 - `/Users/yumowu/Projects/Maso-iOS/docs/session-memory-2026-05-22.md` L57-60, L197-201 — context on the 4 prior rejections

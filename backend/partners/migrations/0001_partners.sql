@@ -1,0 +1,18 @@
+PRAGMA foreign_keys=ON;
+CREATE TABLE IF NOT EXISTS partner_partners(id TEXT PRIMARY KEY,email TEXT NOT NULL UNIQUE,name TEXT NOT NULL,created INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS partner_sessions(hash TEXT PRIMARY KEY,partner TEXT NOT NULL REFERENCES partner_partners(id),expires INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS partner_logins(email TEXT PRIMARY KEY,hash TEXT NOT NULL,expires INTEGER NOT NULL,attempts INTEGER NOT NULL DEFAULT 0);
+CREATE TABLE IF NOT EXISTS partner_limits(key TEXT PRIMARY KEY,count INTEGER NOT NULL,expires INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS partner_codes(code TEXT PRIMARY KEY,partner TEXT NOT NULL REFERENCES partner_partners(id),status TEXT NOT NULL CHECK(status IN ('creating','active','disabling','disabled','archived','failed')),created INTEGER NOT NULL,apple_id TEXT);
+CREATE TABLE IF NOT EXISTS partner_devices(id TEXT PRIMARY KEY,secret TEXT NOT NULL,created INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS partner_claims(device TEXT PRIMARY KEY REFERENCES partner_devices(id),code TEXT NOT NULL REFERENCES partner_codes(code),created INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS partner_clicks(id TEXT PRIMARY KEY,code TEXT NOT NULL,day TEXT NOT NULL,visitor TEXT NOT NULL,UNIQUE(code,day,visitor));
+CREATE TABLE IF NOT EXISTS partner_transactions(id TEXT PRIMARY KEY,original TEXT NOT NULL,environment TEXT NOT NULL,product TEXT NOT NULL,purchased INTEGER NOT NULL,expires INTEGER,revoked INTEGER,trial INTEGER NOT NULL,amount INTEGER,currency TEXT,token TEXT,offer TEXT,received INTEGER NOT NULL);
+CREATE INDEX IF NOT EXISTS transactions_original ON partner_transactions(original);
+CREATE TABLE IF NOT EXISTS partner_attributions(original TEXT PRIMARY KEY,device TEXT NOT NULL,code TEXT NOT NULL REFERENCES partner_codes(code),created INTEGER NOT NULL,commission_bps INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS partner_settlements(id TEXT PRIMARY KEY,original TEXT NOT NULL UNIQUE,net_minor INTEGER NOT NULL,currency TEXT NOT NULL,commission_minor INTEGER NOT NULL,status TEXT NOT NULL CHECK(status IN ('eligible','paid','reversed')),reference TEXT NOT NULL,created INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS partner_notifications(id TEXT PRIMARY KEY,received INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS partner_sync(original TEXT PRIMARY KEY,revision TEXT,checked INTEGER NOT NULL DEFAULT 0);
+CREATE TABLE IF NOT EXISTS partner_acceptances(partner TEXT NOT NULL,version TEXT NOT NULL,accepted INTEGER NOT NULL,PRIMARY KEY(partner,version));
+CREATE TABLE IF NOT EXISTS partner_adjustments(id TEXT PRIMARY KEY,settlement TEXT NOT NULL UNIQUE REFERENCES partner_settlements(id),commission_minor INTEGER NOT NULL,currency TEXT NOT NULL,created INTEGER NOT NULL);
+CREATE UNIQUE INDEX IF NOT EXISTS partner_one_acquisition_per_installation ON partner_attributions(device);

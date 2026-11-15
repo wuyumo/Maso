@@ -104,8 +104,6 @@ struct ExerciseGridContent: View {
 /// Shared read-only parameters for the recorded list and grid variants.
 struct RecordedExerciseParameters: View {
     let records: [SetRecord]
-    @Environment(DataStore.self) private var data
-    @State private var editingRecord: SetRecord? = nil
     var body: some View {
         VStack(spacing: 6) {
             ForEach(Array(records.enumerated()), id: \.element.id) { index, record in
@@ -118,27 +116,42 @@ struct RecordedExerciseParameters: View {
                         Text(recordedSetDetailLine(record)).foregroundStyle(.secondary)
                             .multilineTextAlignment(.trailing)
                     }.accessibilityElement(children: .combine)
-                    if record.exerciseId == CrossExerciseLoadReference.anchorID, record.reps == 6, (record.weight ?? 0) > 0 {
-                        Button { editingRecord = record } label: {
-                            if record.hasConfirmedSixRM { Label { Text(verbatim: "6RM") } icon: { Image(systemName: "checkmark") } }
-                            else { Text(verbatim: "6RM") }
-                        }
-                        .buttonStyle(.bordered).controlSize(.mini)
-                        .frame(minWidth: 44, minHeight: 44).contentShape(Rectangle())
-                        .tint(record.hasConfirmedSixRM ? MasoColor.accent : MasoColor.textDim)
-                        .accessibilityLabel("Confirmed bench press 6RM")
-                        .accessibilityIdentifier("workout.record.reference." + record.id)
-                    }
+                    ConfirmedBenchSixRMButton(record: record)
                 }
             }
         }.font(.footnote.monospacedDigit()).padding(.top, 4)
-        .sheet(item: $editingRecord) { record in
-            AdjustLastSetSheet(record: record) { reps, weight, duration, confirmed in
-                data.updateSetRecord(id: record.id, reps: reps, weight: weight, duration: duration,
-                                     sixRMConfirmed: confirmed)
+    }
+}
+
+/// The existing bench 6RM confirmation. History detail and recorded rows share it.
+struct ConfirmedBenchSixRMButton: View {
+    let record: SetRecord
+    @Environment(DataStore.self) private var data
+    @State private var editing = false
+
+    private var qualifies: Bool {
+        record.exerciseId == CrossExerciseLoadReference.anchorID && record.reps == 6 && (record.weight ?? 0) > 0
+    }
+
+    var body: some View {
+        if qualifies {
+            Button { editing = true } label: {
+                if record.hasConfirmedSixRM { Label { Text(verbatim: "6RM") } icon: { Image(systemName: "checkmark") } }
+                else { Text(verbatim: "6RM") }
             }
-            .presentationDetents([.medium, .large])
-            .presentationDragIndicator(.visible)
+            .buttonStyle(.bordered).controlSize(.mini)
+            .frame(minWidth: 44, minHeight: 44).contentShape(Rectangle())
+            .tint(record.hasConfirmedSixRM ? MasoColor.accent : MasoColor.textDim)
+            .accessibilityLabel("Confirmed bench press 6RM")
+            .accessibilityIdentifier("workout.record.reference." + record.id)
+            .sheet(isPresented: $editing) {
+                AdjustLastSetSheet(record: record) { reps, weight, duration, confirmed in
+                    data.updateSetRecord(id: record.id, reps: reps, weight: weight, duration: duration,
+                                         sixRMConfirmed: confirmed)
+                }
+                .presentationDetents([.medium, .large])
+                .presentationDragIndicator(.visible)
+            }
         }
     }
 }
@@ -340,11 +353,11 @@ struct CrossExerciseSuggestionBasis: View {
     @Environment(DataStore.self) private var data
     @State private var expanded = false
     var body: some View {
-        if let suggestion, [.history, .userInput, .crossExercise, .personalHistory, .roughEstimate].contains(suggestion.source),
+        if let suggestion, [.history, .userInput, .crossExercise, .personalHistory, .roughEstimate, .fullBodyRough].contains(suggestion.source),
            let id = suggestion.exerciseID, let source = data.exById[id] {
             DisclosureGroup(isExpanded: $expanded) {
                 VStack(alignment: .leading, spacing: 8) {
-                    if suggestion.source == .roughEstimate {
+                    if suggestion.source == .roughEstimate || suggestion.source == .fullBodyRough {
                         Text(String(format: NSLocalizedString("Rough starting weight from your completed set of %@ and reps, using a product ratio and a 70%% multiplier. Not a measured maximum or safety guarantee; adjust for your equipment and first set.", comment: "rough weight provenance"), source.displayName))
                     } else if suggestion.source == .personalHistory {
                         Text(String(format: NSLocalizedString("Estimated from your recorded working weights for %@ across multiple workouts at the same reps. Adjust after the first set.", comment: "personal exercise relationship"), source.displayName))
@@ -384,6 +397,24 @@ struct PlanParameterSummary: View {
         Text(text).foregroundColor(step.isSuggested(field) ? MasoColor.parameterSuggestion : MasoColor.textDim)
     }
     private var summary: Text {
+        if step.hasPerSetOverrides {
+            let groups = planStepSummaryGroups(step)
+            guard !groups.isEmpty else { return number(pluralizedSets(0), field: "sets") }
+            var result = Text("")
+            for (index, group) in groups.enumerated() {
+                if index > 0 { result = result + Text(" · ") }
+                result = result + number(pluralizedSets(group.count), field: "sets")
+                if let duration = group.duration {
+                    result = result + Text(" · ") + number("\(duration)s", field: "duration")
+                } else {
+                    if let weight = group.weight {
+                        result = result + Text(" · ") + number(weightLabel(weight), field: "weight") + Text(" × ")
+                    } else { result = result + Text(" × ") }
+                    result = result + number(group.reps.map(String.init) ?? "?", field: "reps")
+                }
+            }
+            return step.sets > 100 ? result + Text(" · …") : result
+        }
         let sets = number(pluralizedSets(step.sets), field: "sets")
         if let duration = step.duration { return sets + Text(" · ") + number("\(duration)s", field: "duration") }
         let reps = number(step.reps.map(String.init) ?? "?", field: "reps")
@@ -406,7 +437,39 @@ struct PlanParameterSummary: View {
     }
 }
 
+private struct PlanStepSummaryGroup {
+    let reps: Int?
+    let weight: Double?
+    let duration: Int?
+    var count: Int
+}
+
+private func planStepSummaryGroups(_ step: PlanStep) -> [PlanStepSummaryGroup] {
+    guard step.sets > 0 else { return [] }
+    var groups: [PlanStepSummaryGroup] = []
+    // A shared plan may be untrusted; cap display work without changing its data.
+    for index in 1...min(step.sets, 100) {
+        let reps = step.repsForSet(index), weight = step.weightForSet(index), duration = step.durationForSet(index)
+        if let last = groups.last, last.reps == reps, last.weight == weight, last.duration == duration {
+            groups[groups.count - 1].count += 1
+        } else { groups.append(.init(reps: reps, weight: weight, duration: duration, count: 1)) }
+    }
+    return groups
+}
+
 func planStepDetailLine(_ step: PlanStep) -> String {
+    if step.hasPerSetOverrides {
+        let groups = planStepSummaryGroups(step)
+        guard !groups.isEmpty else { return pluralizedSets(0) }
+        let summary = groups.map { group in
+            let sets = pluralizedSets(group.count)
+            if let duration = group.duration { return "\(sets) · \(duration)s" }
+            let reps = group.reps.map(String.init) ?? "?"
+            if let weight = group.weight { return "\(sets) · \(weightLabel(weight)) × \(reps)" }
+            return "\(sets) × \(reps)"
+        }.joined(separator: " · ")
+        return step.sets > 100 ? summary + " · …" : summary
+    }
     if let d = step.duration {
         return "\(pluralizedSets(step.sets)) · \(d)s"
     }

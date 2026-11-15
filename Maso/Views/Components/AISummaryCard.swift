@@ -172,10 +172,10 @@ struct AISummaryCard: View {
 
     @ViewBuilder private func adviceActions(_ card: CoachAdvice) -> some View {
         if card.source == .upgrade {
-            matchingRowButton("View Pro", prominent: true, action: onUnlock)
+            coachInlineActionButton("View Pro", prominent: true, action: onUnlock)
                 .accessibilityIdentifier("coach.applyAdvice")
         } else if card.action != .none {
-            matchingRowButton("Apply", prominent: true) {
+            coachInlineActionButton("Apply", prominent: true) {
                 let accepted: Bool
                 if card.source == .suggestion, let localSuggestion {
                     accepted = onApplyLocal(localSuggestion)
@@ -186,30 +186,8 @@ struct AISummaryCard: View {
             }
             .accessibilityIdentifier("coach.applyAdvice")
         }
-        matchingRowButton("Skip") { dismiss(card) }
+        coachInlineActionButton("Skip") { dismiss(card) }
             .accessibilityIdentifier("coach.skipAdvice")
-    }
-
-    /// Apply stays accent glass; Skip stays neutral. Vertical padding 8 captured
-    /// about 34pt, above the run15 suggestion pill (about 30pt), so this uses 6.
-    /// The 44pt frame is the hit target outside the glass.
-    private func matchingRowButton(_ title: LocalizedStringKey, prominent: Bool = false, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            Text(title)
-                .font(.footnote.weight(.semibold))
-                .lineLimit(1)
-                .fixedSize(horizontal: true, vertical: false)
-                .foregroundStyle(prominent ? Color.black : MasoColor.text)
-                .padding(.horizontal, 14)
-                .padding(.vertical, 6)
-                .glassCapsuleButtonBackground(
-                    tint: prominent ? MasoColor.accent.opacity(0.85) : nil,
-                    fallback: prominent ? MasoColor.accent : MasoColor.surfaceHi)
-                .frame(minWidth: 44, minHeight: 44)
-                .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain)
-        .fixedSize(horizontal: true, vertical: true)
     }
 
     private func dismiss(_ card: CoachAdvice, allowsUndo: Bool = true) {
@@ -246,3 +224,26 @@ struct AISummaryCard: View {
         if result == nil { errorNote = NSLocalizedString("AI summary unavailable — Retry", comment: "") }
     }
 }
+
+/// Apply stays accent glass; Skip stays neutral. Vertical padding 8 captured
+/// about 34pt, above the run15 suggestion pill (about 30pt), so this uses 6.
+/// The 44pt frame is the hit target outside the glass.
+@MainActor func coachInlineActionButton(_ title: LocalizedStringKey, prominent: Bool = false, action: @escaping () -> Void) -> some View {
+    Button(action: action) {
+        Text(title)
+            .font(.footnote.weight(.semibold))
+            .lineLimit(1)
+            .fixedSize(horizontal: true, vertical: false)
+            .foregroundStyle(prominent ? Color.black : MasoColor.text)
+            .padding(.horizontal, 14)
+            .padding(.vertical, 6)
+            .glassCapsuleButtonBackground(
+                tint: prominent ? MasoColor.accent.opacity(0.85) : nil,
+                fallback: prominent ? MasoColor.accent : MasoColor.surfaceHi)
+            .frame(minWidth: 44, minHeight: 44)
+            .contentShape(Rectangle())
+    }
+    .buttonStyle(.plain)
+    .fixedSize(horizontal: true, vertical: true)
+}
+

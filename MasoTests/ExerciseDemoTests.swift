@@ -205,7 +205,7 @@ private final class DemoURLProtocol: URLProtocol, @unchecked Sendable {
                 try await Task.sleep(for: .milliseconds(50))
             }
             let video = try XCTUnwrap(layer, "No video in training stage \(index)")
-            XCTAssertEqual(video.videoGravity, .resizeAspectFill)
+            XCTAssertEqual(video.videoGravity, .resizeAspect, "Training media must show the complete movement without cropping")
             XCTAssertEqual(video.player?.isMuted, true)
             XCTAssertEqual(video.player?.currentItem?.status, .readyToPlay)
             window.layoutIfNeeded()
@@ -252,20 +252,29 @@ private final class DemoURLProtocol: URLProtocol, @unchecked Sendable {
 
     private func service() -> ExerciseDemoService {
         let config = URLSessionConfiguration.ephemeral; config.protocolClasses = [DemoURLProtocol.self]
-        return ExerciseDemoService(session: URLSession(configuration: config), baseURLs: [URL(string:"https://demo.test")!])
+        let defaults = UserDefaults(suiteName: "ExerciseDemoTests." + UUID().uuidString)!
+        return ExerciseDemoService(session: URLSession(configuration: config), baseURLs: [URL(string:"https://demo.test")!], catalogDefaults: defaults)
     }
     func testCoreDeliveryCatalogAndRealDownloadSurvivesOfflineReopen() async throws {
-        XCTAssertEqual(CoreExerciseDemos.assets.count, 91)
-        XCTAssertNil(CoreExerciseDemos.assets["inverted_row"])
-        XCTAssertNil(CoreExerciseDemos.assets["arnold_press"])
+        XCTAssertEqual(CoreExerciseDemos.assets.count, 696, "Reviewed adopted media catalog; ID/cover/hash invariants below must also hold")
+        XCTAssertNotNil(CoreExerciseDemos.assets["inverted_row"], "Later reviewed exact-ID adoption replaces the earlier absence")
+        XCTAssertNotNil(CoreExerciseDemos.assets["arnold_press"])
         XCTAssertNotNil(CoreExerciseDemos.assets["arnold_press_seated"])
         XCTAssertTrue(CoreExerciseDemos.revokedHashes.contains("3057a31465c0198465f8a5f8cd43569ada9580bb6da018d6c244ea277cd065af"))
-        XCTAssertNil(CoreExerciseDemos.assets["hamstring_stretch_supine"])
+        XCTAssertNotNil(CoreExerciseDemos.assets["hamstring_stretch_supine"])
         XCTAssertNotNil(CoreExerciseDemos.assets["hamstring_stretch_supine_strap"])
+        let posterURL = try XCTUnwrap(Bundle.main.url(forResource: "poster-catalog", withExtension: "json", subdirectory: "CoreExerciseDemos"))
+        let posters = try JSONDecoder().decode([String: String].self, from: Data(contentsOf: posterURL))
         for (id, row) in CoreExerciseDemos.assets {
             XCTAssertEqual(row.exerciseId, id)
-            XCTAssertNotNil(CoreExerciseDemos.thumbnail(id), id)
+            if posters[id] == row.sha256 {
+                XCTAssertNotNil(CoreExerciseDemos.thumbnail(id), id)
+            } else {
+                // A replaced demo must never reuse a cover from a different SHA.
+                XCTAssertNil(CoreExerciseDemos.thumbnail(id), id)
+            }
             XCTAssertEqual(row.sha256?.count, 64)
+            XCTAssertFalse(CoreExerciseDemos.revokedHashes.contains(row.sha256 ?? ""), id)
         }
         let live = ExerciseDemoService()
         await live.loadMedia("overhead_press_barbell")
@@ -317,8 +326,8 @@ private final class DemoURLProtocol: URLProtocol, @unchecked Sendable {
             let payload: [String: Any] = ["status": "ready", "sha256": sha, "bytes": 2048, "videoPath": "/v1/exercise-demos/video/" + sha]
             return (200, try JSONSerialization.data(withJSONObject: payload))
         }
-        await offline.loadMedia("arnold_press", force: true)
-        XCTAssertNil(offline.files["arnold_press"])
+        await offline.loadMedia("revoked-server-metadata-fixture", force: true)
+        XCTAssertNil(offline.files["revoked-server-metadata-fixture"])
         XCTAssertEqual(videoRequests, 0)
         XCTAssertTrue(CoreExerciseDemos.assets.values.allSatisfy { !CoreExerciseDemos.revokedHashes.contains($0.sha256 ?? "") })
     }
@@ -428,7 +437,9 @@ final class ExerciseMediaOwnershipTests: XCTestCase {
 @MainActor
 final class ExerciseMediaLayoutTests: XCTestCase {
     func testHeroUsesDisplayedSourceInsteadOfMerelyHavingAYouTubeLink() throws {
-        let youtube = try XCTUnwrap(ExerciseLibrary.byId["leg_extension_single_leg"])
+        let youtube = Exercise(id: "youtube-fallback-fixture", name: "Unadopted video", category: .strength,
+                               tags: [], primaryMuscles: [.legs], muscleGroups: [.legs], imageFolder: nil,
+                               instructions: [], videoURL: URL(string: "https://youtu.be/abcdefghijk"))
         let core = try XCTUnwrap(ExerciseLibrary.byId["bicep_curl_dumbbell"])
         XCTAssertTrue(ExerciseMediaPolicy.usesYouTubeThumbnail(for: youtube))
         XCTAssertEqual(ExerciseMediaHero.height(for: youtube, width: 400), 240)

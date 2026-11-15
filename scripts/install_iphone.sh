@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Maso → 实机 iPhone 一键安装.
+# Masso → 实机 iPhone 一键安装.
 #
 # 干啥:
 #   1. 自动发现已连接的 iPhone (USB / Wi-Fi pair 都行)
@@ -21,6 +21,9 @@
 set -euo pipefail   # pipefail — 让 `xcodebuild | tail` 仍然能传出 build 失败的 exit code
                     # (之前没设, build 失败时脚本继续, 把旧 .app 装上去, 看着像更新了其实没.)
 
+REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+cd "$REPO_ROOT"
+
 # ━━━ 解析参数 ━━━
 DEVICE_HINT=""
 LIST_ONLY=false
@@ -37,7 +40,7 @@ done
 
 # ━━━ 发现 iPhone ━━━
 echo "🔍 Scanning connected devices..."
-DEVICE_TABLE=$(xcrun devicectl list devices 2>/dev/null | grep -E "iPhone|iPad" || true)
+DEVICE_TABLE=$(xcrun devicectl list devices 2>/dev/null | grep -E "iPhone|iPad" | grep -i "physical" || true)
 if [ -z "$DEVICE_TABLE" ]; then
     echo "❌ No connected iPhone/iPad found."
     echo "   Make sure:"
@@ -69,7 +72,7 @@ fi
 #   Name                Hostname                              Identifier                            State       Model
 #   Yumo's iPhone ...   yumos-iphone.coredevice.local         BFB1C437-2F15-5ACB-9364-E3CD058FF066  connected   iPhone 17 Pro (...)
 DEVICE_UDID=$(echo "$DEVICE_LINE" | awk '{
-    for (i=1; i<=NF; i++) if ($i ~ /^[A-F0-9]{8}-[A-F0-9]{4}-/) print $i
+    for (i=1; i<=NF; i++) if ($i ~ /^[A-F0-9]{8}-[A-F0-9]{4}-/ || $i ~ /^[A-F0-9]{8}-[A-F0-9]{16}$/) print $i
 }' | head -1)
 
 if [ -z "$DEVICE_UDID" ]; then
@@ -89,7 +92,7 @@ fi
 # 再从中找一台 iPhone (跟 devicectl 找到的对应). 不靠 name fuzzy match — 设备名
 # 里的 apostrophe / 非 ASCII 字符在不同 tool 输出里被替代成 ? 会导致 grep miss.
 PHYSICAL_DEVICES=$(xcrun xctrace list devices 2>&1 | awk '/^== Devices ==$/{f=1;next} /^== Simulators ==$/{f=0} f')
-HW_ID=$(echo "$PHYSICAL_DEVICES" | grep -i iPhone | head -1 | grep -oE '\([0-9A-F]{8}-[0-9A-F]{16}\)' | tr -d '()')
+HW_ID=$(echo "$PHYSICAL_DEVICES" | grep -F "$DEVICE_UDID" | head -1 | grep -oE '\([0-9A-F]{8}-[0-9A-F]{16}\)' | tr -d '()')
 if [ -z "$HW_ID" ]; then
     # Fallback: 用 devicectl 那个 UUID — xcodebuild 17.0+ 支持 coredevice UUID,
     # 但实测有时还是不识别, 会 fallback 到 simulator build. 警告用户.
@@ -104,15 +107,22 @@ echo "✓ Target: $DEVICE_NAME"
 echo "  Hardware ID: $HW_ID"
 echo "  devicectl UUID: $DEVICE_UDID"
 
+
+# Hold the shared lock through build, install and simulator use (nested calls reuse it).
+if [ -z "${MASO_BUILD_LOCK_FD:-}" ]; then
+    exec python3 "$REPO_ROOT/scripts/low_memory_build.py" run -- bash "$REPO_ROOT/scripts/install_iphone.sh" "$@"
+fi
+cd "$REPO_ROOT"
+
 # ━━━ Build ━━━
 echo ""
-echo "🔨 Building Maso for device (Debug)..."
+echo "🔨 Building Masso for device (Debug)..."
 DERIVED="build/DerivedData-Device"
 # 把 build log 落到临时文件 — failure 时 dump errors 给用户看, success 时只显示尾 3 行.
 BUILD_LOG=$(mktemp -t maso-build.XXXX.log)
 trap 'rm -f "$BUILD_LOG"' EXIT
 set +e   # 先关掉 pipefail 的硬终止, 自己 handle 退出码
-xcodebuild \
+python3 "$REPO_ROOT/scripts/low_memory_build.py" xcodebuild -- \
     -project Maso.xcodeproj \
     -scheme Maso \
     -configuration Debug \
@@ -146,7 +156,7 @@ xcrun devicectl device install app --device "$DEVICE_UDID" "$APP_PATH"
 echo ""
 echo "✅ Installed."
 echo ""
-echo "Open Maso on your iPhone now."
+echo "Open Masso on your iPhone now."
 echo ""
 echo "If iOS shows 'Untrusted Developer':"
 echo "  Settings → General → VPN & Device Management → trust your Apple Developer profile"

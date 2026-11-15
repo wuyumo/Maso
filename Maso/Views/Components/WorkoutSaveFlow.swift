@@ -47,7 +47,6 @@ private struct WorkoutSaveConfirmation: ViewModifier {
     @Bindable var flow: WorkoutSaveFlow
     var anchorID: String?
     let onLimit: () -> Void
-    @State private var pendingLimit = false
 
     private var presented: Binding<Bool> {
         Binding(get: { flow.candidate != nil && flow.confirmationAnchorID == anchorID },
@@ -58,60 +57,22 @@ private struct WorkoutSaveConfirmation: ViewModifier {
                     }
                 })
     }
-    private var message: String {
-        String(format: NSLocalizedString("Choose whether to replace your %lld saved routines or add these %lld routines alongside them.", comment: ""), data.plans.count, flow.candidate?.count ?? 0)
-    }
-
-    @ViewBuilder func body(content: Content) -> some View {
-        if anchorID != nil {
-            content.popover(isPresented: presented, attachmentAnchor: .rect(.bounds), arrowEdge: .bottom) {
-                ViewThatFits(in: .vertical) {
-                    choices
-                    ScrollView { choices }.scrollBounceBehavior(.basedOnSize)
-                }
-                .frame(idealWidth: 280, maxWidth: 280, alignment: .leading)
-                .padding(16)
-                .presentationCompactAdaptation(.popover)
-                .onDisappear {
-                    if pendingLimit { pendingLimit = false; onLimit() }
-                }
-            }
-        } else {
-            // Deferred saves from a closed detail sheet keep their native dialog;
-            // there is no longer a visible source button to anchor to.
-            content.confirmationDialog("Save to My Routines", isPresented: presented, titleVisibility: .visible) {
-                Button("Add to existing routines") { commit(replacing: false, anchored: false) }
-                Button("Replace all routines", role: .destructive) { commit(replacing: true, anchored: false) }
-                Button("Cancel", role: .cancel) { presented.wrappedValue = false }
-            } message: { Text(message) }
-        }
-    }
-
-    private var choices: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Save to My Routines").font(.headline)
-            Text(message).font(.subheadline).foregroundStyle(.secondary)
-                .fixedSize(horizontal: false, vertical: true)
-            Button { commit(replacing: false, anchored: true) } label: {
-                Text("Add to existing routines").frame(maxWidth: .infinity, alignment: .leading)
-            }.nativeGlassButtonStyle().accessibilityIdentifier("routine.save.add")
-            Button(role: .destructive) { commit(replacing: true, anchored: true) } label: {
-                Text("Replace all routines").frame(maxWidth: .infinity, alignment: .leading)
-            }.nativeGlassButtonStyle().accessibilityIdentifier("routine.save.replace")
+    func body(content: Content) -> some View {
+        content.confirmationDialog("Save to My Routines", isPresented: presented, titleVisibility: .hidden) {
+            let plans = flow.candidate ?? []
+            Button("Add to existing routines") { commit(plans, replacing: false) }
+                .accessibilityIdentifier("routine.save.add")
+            Button("Replace all routines", role: .destructive) { commit(plans, replacing: true) }
+                .accessibilityIdentifier("routine.save.replace")
             Button("Cancel", role: .cancel) { presented.wrappedValue = false }
-                .frame(maxWidth: .infinity).accessibilityIdentifier("routine.save.cancel")
+                .accessibilityIdentifier("routine.save.cancel")
         }
-        .fixedSize(horizontal: false, vertical: true)
-        .accessibilityElement(children: .contain)
-        .accessibilityIdentifier("routine.save.choices")
     }
 
-    private func commit(replacing: Bool, anchored: Bool) {
-        let plans = flow.candidate ?? []
-        flow.commit(plans, replacing: replacing, data: data) {
-            if anchored { pendingLimit = true } else { onLimit() }
-        }
+    private func commit(_ plans: [Plan], replacing: Bool) {
+        flow.commit(plans, replacing: replacing, data: data, onLimit: onLimit)
     }
+
 }
 
 extension View {

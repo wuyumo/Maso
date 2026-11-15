@@ -7,7 +7,7 @@ final class CoachAdviceTests: XCTestCase {
         for useCase in CoachUseCase.allCases {
             let prompt = NSLocalizedString(useCase.promptKey, bundle: .main, comment: "AI Coach use case prompt")
             let editableRanges = CoachTemplates.editablePlaceholderRanges(in: prompt)
-            let expectedCount = useCase == .physiqueGoal ? 0 : 1
+            let expectedCount = (useCase == .physiqueGoal || useCase == .bodyAssessment) ? 0 : 1
 
             XCTAssertEqual(editableRanges.count, expectedCount, "Unexpected placeholder count for \(useCase.rawValue): \(prompt)")
             for range in editableRanges {

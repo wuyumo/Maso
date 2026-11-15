@@ -1,11 +1,11 @@
 ---
 name: verify-app
-description: 端到端验证 Maso iOS app——驱动模拟器、用内置 showcase 种子路由逐屏启动+截图,断言编译通过、exercises.json 数据完整、各关键页(today/动作列表/计划详情/训练中)真渲染且互不相同。改完 Swift 代码、动了 exercises.json、或重构了 ExerciseLibraryBrowser/ExercisePickerSheet/播放器后,装真机前先跑它当烟测。
+description: 默认检查 Masso 工程、数据与编译；显式 --ui 时端到端验证——驱动模拟器、用内置 showcase 种子路由逐屏启动+截图,断言编译通过、exercises.json 数据完整、各关键页(today/动作列表/计划详情/训练中)真渲染且互不相同。改完 Swift 代码、动了 exercises.json、或重构了 ExerciseLibraryBrowser/ExercisePickerSheet/播放器后,装真机前先跑它当烟测。
 ---
 
-# verify-app — Maso iOS 验证(Simulator)
+# verify-app — Masso iOS 验证(Simulator)
 
-iOS 没法用 headless 浏览器,所以用**模拟器**驱动。Maso 几乎没有 accessibilityIdentifier,
+iOS 没法用 headless 浏览器,所以用**模拟器**驱动。Masso 几乎没有 accessibilityIdentifier,
 硬点按钮很脆,所以改用 app 自带的**确定性 showcase 路由**(`SIMCTL_CHILD_MASO_SHOWCASE_SEED=1` +
 `SIMCTL_CHILD_MASO_SHOWCASE=<route>`,跟 `scripts/shoot_screenshots_auto.sh` 同一机制)直接跳到每个
 关键页 + 种子数据,截图后断言它真的渲染出来了。
@@ -13,11 +13,16 @@ iOS 没法用 headless 浏览器,所以用**模拟器**驱动。Maso 几乎没�
 ## 怎么跑
 
 ```bash
+# 默认只检查工程、数据和编译，不启模拟器
 bash .claude/skills/verify-app/driver.sh
-# 或指定模拟器: bash .claude/skills/verify-app/driver.sh "iPhone 17 Pro"
+# 按需验证真实 UI，或指定模拟器名
+bash .claude/skills/verify-app/driver.sh --ui
+bash .claude/skills/verify-app/driver.sh --ui "iPhone 17 Pro"
 ```
 
-自动:挑一台已启动的模拟器(没有就按名字启)→ xcodegen generate → 数据体检 → 编译 → 逐路由跑。
+所有入口先取得共享构建锁，等待已有构建／测试完成，不中断它们。默认执行 xcodegen generate → 数据体检 → 限制 2 路编译，编译通过不等于 UI 验证通过。
+
+显式 `--ui` 时，编译成功后才选择一台模拟器并逐路由验证。已有其他模拟器时拒绝再启动一台；仅在退出时关闭本流程启动的设备，保留原先已启动的设备。构建失败不安装旧产物。
 截图落在 `build/verify-screens/`。模拟器构建**不需签名**,CLI 直接能跑。
 
 ## 断言了什么(硬断言,失败即 exit 1)
@@ -43,4 +48,4 @@ bash .claude/skills/verify-app/driver.sh
 
 - 改 showcase 路由集合 → 编辑 driver.sh 的 `ROUTES`。
 - 想更强的"内容"断言(目前只到"非空+互不相同"):可在某路由截图后接 OCR 或 pixel 区域比对;
-  但别依赖硬点按钮——Maso 没有稳定 identifier。
+  但别依赖硬点按钮——Masso 没有稳定 identifier。

@@ -257,7 +257,7 @@ private struct SectionDivider: View {
 
 /// 内联 section toggle — 缩放到 ~40×24 跟 22pt bold 标题在同一行显得不喧宾夺主.
 /// 仅编辑模式 (toggleBinding 非 nil) 出现.
-private struct InlineSectionToggle: View {
+struct InlineSectionToggle: View {
     @Binding var isOn: Bool
     var body: some View {
         Toggle("", isOn: $isOn)

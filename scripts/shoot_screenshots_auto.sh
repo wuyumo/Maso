@@ -5,10 +5,17 @@
 #   zh: ./scripts/shoot_screenshots_auto.sh <udid> zh-Hans zh_CN
 # 6.9" 素材 (1320×2868) 要用 iPhone Pro Max 级模拟器跑.
 set -eu
+
+# Hold the shared lock through build, install and simulator use (nested calls reuse it).
+REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+if [ -z "${MASO_BUILD_LOCK_FD:-}" ]; then
+    exec python3 "$REPO_ROOT/scripts/low_memory_build.py" run -- bash "$REPO_ROOT/scripts/shoot_screenshots_auto.sh" "$@"
+fi
+cd "$REPO_ROOT"
 SIM="$1"; LANG_TAG="$2"; LOCALE="${3:-en_US}"
 APP="build/DerivedData/Build/Products/Debug-iphonesimulator/Maso.app"
 OUT="build/screenshots/$LANG_TAG"; mkdir -p "$OUT"
-xcrun simctl bootstatus "$SIM" -b >/dev/null
+python3 "$REPO_ROOT/scripts/low_memory_build.py" sim-prepare "$SIM"
 # 状态栏钉死 marketing 标准样 (9:41 / 满电 / 满格) — 不然每张时间都不一样.
 xcrun simctl status_bar "$SIM" override --time "9:41" --batteryState charged --batteryLevel 100 \
   --cellularMode active --cellularBars 4 --wifiBars 3 >/dev/null 2>&1 || true

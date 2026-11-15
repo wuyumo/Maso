@@ -209,7 +209,8 @@ struct DeviceAIChangeNotice: View {
             .onAppear { data.aiAccess.recordNoticePresentation() }
             .sheet(isPresented:$details) {
                 AppNavigationStack {
-                    DeviceAIUsageView()
+                    Form { Section { DeviceAIRulesText() } }
+                        .navigationTitle("AI access")
                         .toolbar { ToolbarItem(placement:.confirmationAction) { Button("Done") { details = false }.accessibilityIdentifier("ai.policy.details.close") } }
                 }.tint(.primary)
             }
@@ -226,137 +227,6 @@ struct DeviceAIRulesText: View {
             Text("Existing purchases keep their rights. AI needs internet access and your data-sharing permission.")
             Text("Automatic recommendations have a separate budget of one successful result per day; they do not spend your active AI allowance.")
         }.fixedSize(horizontal: false, vertical: true)
-    }
-}
-
-struct DeviceAIUsageView: View {
-    @Environment(DataStore.self) private var data
-    @State private var paywall = false
-    var body: some View {
-        List {
-            Section("AI access on this device") {
-                DeviceAIRulesText()
-                Text(String(format: NSLocalizedString("Monthly text tasks used: %d of 2", comment: ""), data.aiAccess.monthlyTextUsed))
-                if data.aiAccess.legacy {
-                    Text("Existing users have 30 days from this notice before the new AI limits apply. Previous use is not counted retroactively.")
-                        .fixedSize(horizontal:false,vertical:true)
-                }
-                if let end = data.aiAccess.graceEnds {
-                    Text(end, format: .dateTime.year().month().day()).accessibilityIdentifier("ai.policy.grace-end")
-                }
-                if let notice = data.aiAccess.notice { Text(notice).foregroundStyle(.secondary) }
-            }
-            Section("Recovery snapshot") { DeviceRecoveryPreviewButton() }
-            if data.summaryMinDataMet {
-                Button("AI Coach Summary") {
-                    Task { _ = await data.generateSummary(); await data.aiAccess.refresh() }
-                }.frame(minHeight: 44)
-            }
-            Section("Saved AI results") {
-                if data.aiAccess.results.isEmpty { Text("No saved AI results yet.") }
-                ForEach(data.aiAccess.results, id: \.jobID) { result in
-                    NavigationLink {
-                        DeviceAIResultView(result: result)
-                    } label: {
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text((try? JSONDecoder().decode(DeviceAIResultEnvelope.self, from: Data(result.content.utf8)))?.summary ?? NSLocalizedString("Saved AI result", comment: ""))
-                            Text(result.completedAt, format: .dateTime.year().month().day().hour().minute()).font(.caption).foregroundStyle(.secondary)
-                        }
-                    }
-                }
-            }
-            if !data.settings.isPro { Button("Masso Pro") { paywall = true }.frame(minHeight: 44) }
-            Section("Supported workout sources") {
-                Text("Paste text or attach a workout photo. Direct links can read public article text or subtitle files from the listed sites when readable text is available.")
-                    .fixedSize(horizontal:false,vertical:true).accessibilityIdentifier("ai.sources.intro")
-                Text(verbatim:WorkoutSourceReader.hosts.filter { !$0.hasPrefix("www.") }.sorted().joined(separator:"\n"))
-                    .font(.footnote).fixedSize(horizontal:false,vertical:true).textSelection(.enabled).accessibilityIdentifier("ai.sources.hosts")
-                Text("Video pages, including YouTube and Bilibili, are not watched or transcribed. Login-only or restricted pages are unsupported. Paste text, a transcript or screenshots instead; an unsuccessful extraction uses no successful experience.")
-                    .fixedSize(horizontal:false,vertical:true).accessibilityIdentifier("ai.sources.video-limit")
-                Text("Direct-link limits: HTTPS, 2 MB, 120–60,000 readable characters. Some pages on these sites may still be unreadable.")
-                    .font(.footnote).fixedSize(horizontal:false,vertical:true).accessibilityIdentifier("ai.sources.limits")
-            }
-        }
-        .tint(.primary)
-        .navigationTitle("AI access and saved results")
-        .task { await data.aiAccess.refresh() }
-        .sheet(isPresented: $paywall) { PaywallScreen(source: "device_ai_access") }
-    }
-}
-
-private struct DeviceAIResultView: View {
-    let result: CoachStoredResult
-    @Environment(DataStore.self) private var data
-    private var envelope: DeviceAIResultEnvelope? { try? JSONDecoder().decode(DeviceAIResultEnvelope.self, from: Data(result.content.utf8)) }
-    private var plans: [Plan] {
-        guard let bytes = envelope?.payload else { return [] }
-        if let p = try? JSONDecoder().decode(Plan.self, from: bytes) { return [p] }
-        if let p = try? JSONDecoder().decode([Plan].self, from: bytes) { return p }
-        if let object = (try? JSONSerialization.jsonObject(with: bytes)) as? [String: Any],
-           let array = object["plans"], let encoded = try? JSONSerialization.data(withJSONObject: array),
-           let p = try? JSONDecoder().decode([Plan].self, from: encoded) { return p }
-        return []
-    }
-    private var meal: MealPhotoEstimate? {
-        guard let bytes = envelope?.payload else { return nil }
-        if let direct = try? JSONDecoder().decode(MealPhotoEstimate.self, from: bytes) { return direct }
-        if let object = (try? JSONSerialization.jsonObject(with: bytes)) as? [String: Any],
-           let value = object["meal"], !(value is NSNull),
-           let nested = try? JSONSerialization.data(withJSONObject: value) {
-            return try? JSONDecoder().decode(MealPhotoEstimate.self, from: nested)
-        }
-        return nil
-    }
-    private var review: AISummary? {
-        envelope.flatMap { try? JSONDecoder().decode(AISummary.self, from: $0.payload) }
-    }
-    private var pickedExercises: [String] {
-        guard let bytes = envelope?.payload else { return [] }
-        return (try? JSONDecoder().decode([String].self, from: bytes)) ?? []
-    }
-    var body: some View {
-        List {
-            Text(envelope?.summary ?? "").textSelection(.enabled)
-            DisclosureGroup("Details") {
-                if let bytes = envelope?.payload, let object = try? JSONSerialization.jsonObject(with:bytes, options:.fragmentsAllowed),
-                   let pretty = try? JSONSerialization.data(withJSONObject:object, options:[.prettyPrinted,.sortedKeys,.fragmentsAllowed]),
-                   let text = String(data:pretty, encoding:.utf8) {
-                    Text(text).accessibilityIdentifier("ai.result.full-payload").font(.body.monospaced()).textSelection(.enabled).fixedSize(horizontal:false, vertical:true)
-                }
-            }.accessibilityIdentifier("ai.result.details") // Full acquired typed result, including source defaults; no request or entitlement check.
-
-            if let meal {
-                Text(meal.foods).textSelection(.enabled)
-                LabeledContent("Protein", value: meal.nutrition.protein.formatted() + " g")
-                LabeledContent("Carbs", value: meal.nutrition.carbs.formatted() + " g")
-                LabeledContent("Fat", value: meal.nutrition.fat.formatted() + " g")
-            }
-            if let review {
-                ForEach(review.recommendations) { recommendation in
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(recommendation.title).font(.headline)
-                        Text(recommendation.detail).textSelection(.enabled)
-                    }
-                }
-            }
-            ForEach(Array(pickedExercises.enumerated()), id: \.offset) { _, id in
-                Text(data.exById[id]?.displayName ?? id)
-            }
-            ForEach(plans) { plan in
-                Section(plan.name) {
-                    ForEach(Array(plan.steps.enumerated()), id: \.offset) { _, step in
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(data.exById[step.exerciseId]?.displayName ?? step.exerciseId)
-                            Text(planStepDetailLine(step)).font(.footnote).foregroundStyle(.secondary)
-                        }
-                    }
-                    Button("Save to My Plans") {
-                        if !data.saveCoachPlan(plan) { data.aiAccess.notice = DeviceAIQuotaError.capacity.localizedDescription }
-                    }.frame(minHeight: 44)
-                }
-            }
-            Text("Existing plans, exercises and acquired results remain usable after Pro expires.").font(.footnote).foregroundStyle(.secondary)
-        }.navigationTitle("Saved AI result")
     }
 }
 
@@ -379,7 +249,6 @@ struct DeviceAIQuotaUITestView: View {
                         } catch { status = error.localizedDescription }
                     }
                 }.accessibilityIdentifier("quota.fixture.run")
-                NavigationLink("AI access and saved results") { DeviceAIUsageView() }
             }
         }
     }

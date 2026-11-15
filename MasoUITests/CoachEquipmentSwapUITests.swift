@@ -160,23 +160,14 @@ final class CoachEquipmentSwapUITests: XCTestCase {
             let name = "51-" + language + (pro ? "-pro":"-free") + (large ? "-system-large":"-normal")
             snapshot(app, name + "-coach-no-old-link")
             preferences.tap()
-            let entry = app.buttons["training-preferences.ai-access"]
-            for _ in 0..<12 {
-                if entry.exists && entry.isHittable { break }
-                app.swipeUp()
-            }
-            XCTAssertTrue(entry.exists && entry.isHittable)
-            XCTAssertGreaterThanOrEqual(entry.frame.height + 0.001,44)
-            XCTAssertGreaterThan(entry.label.count,5)
-            XCTAssertLessThan(entry.frame.minX,app.frame.midX)
-            snapshot(app,name + "-preferences-bottom")
-            entry.tap()
-            XCTAssertTrue(app.staticTexts["ai.policy.device-scope"].waitForExistence(timeout:8))
-            snapshot(app,name + "-actual-details")
-            let detailBar = app.navigationBars.element(boundBy: app.navigationBars.count - 1)
-            detailBar.buttons.firstMatch.tap()
-            XCTAssertTrue(entry.waitForExistence(timeout:5))
-            snapshot(app,name + "-back-to-preferences")
+            XCTAssertFalse(app.buttons["training-preferences.ai-access"].exists)
+            let heart = app.buttons["training-preferences.heart-rate"]
+            for _ in 0..<12 where !heart.isHittable { app.swipeUp() }
+            XCTAssertTrue(heart.isHittable)
+            heart.tap()
+            XCTAssertTrue(app.buttons["workout.heart.save"].waitForExistence(timeout: 8))
+            app.navigationBars.buttons.firstMatch.tap()
+            XCTAssertTrue(heart.waitForExistence(timeout: 5))
             let preferenceBar = app.navigationBars.element(boundBy: app.navigationBars.count - 1)
             preferenceBar.buttons.firstMatch.tap()
             XCTAssertTrue(preferences.waitForExistence(timeout:5))
@@ -187,6 +178,36 @@ final class CoachEquipmentSwapUITests: XCTestCase {
         }
     }
 
+
+    func testTrainingNotesRequireClearConfirmation() throws {
+        for language in ["en", "ar"] {
+            let app = XCUIApplication()
+            app.launchEnvironment = ["MASO_COACH_CHAT_UI_TEST":"1", "MASO_COACH_MESSAGE_MENU_TEST":"1"]
+            app.launchArguments = ["-maso.selectedLanguage", language, "-AppleLanguages", "(\(language))", "-AppleLocale", language]
+            app.launch()
+            let preferences = app.buttons["coach.training-preferences"]
+            XCTAssertTrue(preferences.waitForExistence(timeout: 15))
+            preferences.tap()
+            let notes = app.descendants(matching: .any)["training-preferences.notes"].firstMatch
+            for _ in 0..<10 where !notes.isHittable { app.swipeUp() }
+            XCTAssertTrue(notes.isHittable)
+            notes.tap(); notes.typeText("keep these notes")
+            app.swipeUp()
+            let clear = app.buttons["training-preferences.notes.clear"]
+            for _ in 0..<5 where !clear.isHittable { app.swipeUp() }
+            XCTAssertTrue(clear.isHittable)
+            clear.tap()
+            let dialog = app.sheets.containing(.button, identifier: "training-preferences.notes.confirm-clear").firstMatch
+            XCTAssertTrue(dialog.waitForExistence(timeout: 5))
+            app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.10)).tap()
+            XCTAssertTrue((notes.value as? String ?? "").contains("keep these notes"))
+            clear.tap()
+            let confirm = app.buttons.matching(identifier: "training-preferences.notes.confirm-clear").firstMatch
+            XCTAssertTrue(confirm.waitForExistence(timeout: 5)); confirm.tap()
+            XCTAssertFalse((notes.value as? String ?? "").contains("keep these notes"))
+            app.terminate()
+        }
+    }
 
     func testMachineChestPressChineseEnglishAndTraditionalNativeSource() throws {
         try captureMachineChestPressNativeRedSources([("en","Chest Press"),("zh-Hans","推胸"),("zh-Hant","推胸")])

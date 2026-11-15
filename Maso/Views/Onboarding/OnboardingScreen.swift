@@ -404,7 +404,7 @@ struct OnboardingScreen: View {
                     if let plan = previewPlans.first(where: { $0.id == id }) {
                         Task { await ExerciseDemoService.shared.prefetch(plan.steps.map(\.exerciseId), priority: true) }
                     }
-                }) { index, plan in
+                }) { index, plan, _ in
                     WorkoutCard(
                         plan: plan, exById: data.exById,
                         kicker: String(format: NSLocalizedString("DAY %lld", comment: "coach chat day-card kicker"), index + 1),

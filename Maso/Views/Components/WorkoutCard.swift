@@ -58,6 +58,7 @@ struct WorkoutCard: View {
     var addAction: (() -> Void)? = nil
     /// 多日经典计划可在保存按钮上显示将加入的 routine 数量。
     var addActionRoutineCount: Int? = nil
+    var addActionTitle: String? = nil
     /// 计划浏览场景可将保存操作居中；其它调用点默认靠右。
     var centersAddAction = false
     /// Today's Workout 主卡专用 — true → accent 描边 + 绿色辉光, 跟弱化的 My Plans 计划卡拉开视觉层级
@@ -272,6 +273,7 @@ struct WorkoutCard: View {
             if let addAction {
                 AddToPlansButton(isSaved: savedOverride ?? data.isPlanSaved(plan),
                                  routineCount: addActionRoutineCount,
+                                 titleOverride: addActionTitle,
                                  action: addAction)
                     .disabled(savedOverride == true)
                     .frame(maxWidth: .infinity, alignment: centersAddAction ? .center : .trailing)
@@ -515,21 +517,24 @@ struct PlanCardCarousel<Card: View>: View {
     let plans: [Plan]
     var horizontalInset: CGFloat = 0
     var onSelectionChange: (String) -> Void = { _ in }
-    @ViewBuilder var card: (Int, Plan) -> Card
+    var equalHeight = false
+    var scalesDuringScroll = true
+    @ViewBuilder var card: (Int, Plan, CGFloat?) -> Card
     @State private var position: String?
+    @State private var measuredHeight: CGFloat?
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         ScrollView(.horizontal) {
             HStack(alignment: .top, spacing: 12) {
                 ForEach(Array(plans.enumerated()), id: \.element.id) { index, plan in
-                    card(index, plan)
+                    card(index, plan, equalHeight ? measuredHeight : nil)
                         .accessibilityIdentifier("plan.carousel.card.\(index)")
                         .containerRelativeFrame(.horizontal) { width, _ in
                             max(0, width - horizontalInset * 2 - (plans.count > 1 ? 32 : 0))
                         }
                         .scrollTransition(.interactive, axis: .horizontal) { content, phase in
-                            content.scaleEffect(reduceMotion || phase.isIdentity ? 1 : 0.97, anchor: .center)
+                            content.scaleEffect(!scalesDuringScroll || reduceMotion || phase.isIdentity ? 1 : 0.97, anchor: .center)
                         }
                         .id(plan.id)
                 }
@@ -540,8 +545,34 @@ struct PlanCardCarousel<Card: View>: View {
         .scrollIndicators(.hidden)
         .scrollTargetBehavior(.viewAligned)
         .scrollPosition(id: $position)
+        .background {
+            if equalHeight {
+                GeometryReader { geo in
+                    HStack(alignment: .top, spacing: 0) {
+                        ForEach(Array(plans.enumerated()), id: \.element.id) { index, plan in
+                            card(index, plan, nil)
+                                .frame(width: max(0, geo.size.width - horizontalInset * 2 - (plans.count > 1 ? 32 : 0)))
+                                .fixedSize(horizontal: false, vertical: true)
+                                .background(GeometryReader { size in
+                                    Color.clear.preference(key: PlanCarouselHeightKey.self, value: size.size.height)
+                                })
+                        }
+                    }
+                    .frame(width: 1, height: 1, alignment: .topLeading)
+                    .clipped().hidden().allowsHitTesting(false).accessibilityHidden(true)
+                }
+            }
+        }
+        .onPreferenceChange(PlanCarouselHeightKey.self) { height in
+            if equalHeight && height > 0 && measuredHeight != height { measuredHeight = height }
+        }
         .onChange(of: position) { _, value in
             if let value { onSelectionChange(value) }
         }
     }
+}
+
+private struct PlanCarouselHeightKey: PreferenceKey {
+    static var defaultValue: CGFloat = 0
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) { value = max(value, nextValue()) }
 }

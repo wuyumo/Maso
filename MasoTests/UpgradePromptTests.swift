@@ -25,6 +25,48 @@ final class UpgradePromptTests: XCTestCase {
         XCTAssertFalse(WelcomePaywallPolicy.shouldPresent(hasSeen: nil, onboardingCompleted: false, isPro: true))
     }
 
+    func testSharedPlanImportKeepsExactParametersAndDeduplicatesOnlyIdenticalContent() throws {
+        let now = Date()
+        let step = PlanStep(id: "bench", exerciseId: "bench_press_barbell", sets: 1, reps: nil, weight: nil,
+                            setReps: [8], setWeights: [60], duration: nil)
+        let source = Plan(id: "legacy-source", name: "Push", steps: [step], createdAt: now, updatedAt: now)
+        var different = Plan(id: "existing", name: source.name, steps: source.steps,
+                             createdAt: now, updatedAt: now, preservesExerciseVariants: true)
+        different.steps[0].setWeights = [70]
+        var settings = UserSettings()
+        settings.availableEquipment = ["dumbbell"]
+        let store = DataStore(exercises: ExerciseLibrary.all, plans: [different], sets: [], settings: settings)
+        let code = try XCTUnwrap(PlanShareCodec.encode(source))
+        let received = try XCTUnwrap(PlanShareCodec.decode(code))
+        XCTAssertEqual(received.preservesExerciseVariants, true)
+        XCTAssertTrue(store.saveImportedPlans([received]))
+        XCTAssertEqual(store.plans.count, 2, "Same name and movements with different loads must not be dropped")
+        let saved = try XCTUnwrap(store.plans.last)
+        XCTAssertEqual(saved.steps[0].exerciseId, "bench_press_barbell")
+        XCTAssertEqual(saved.steps[0].weightForSet(1), 60)
+        XCTAssertEqual(saved.steps[0].repsForSet(1), 8)
+        let segment = try XCTUnwrap(expandPlan(saved, exById: store.exById).first)
+        guard case let .exercise(_, setNumber, totalSets, reps, weight, _, _) = segment.kind else {
+            return XCTFail("Expected the imported exercise")
+        }
+        XCTAssertEqual(setNumber, 1)
+        XCTAssertEqual(totalSets, 1)
+        XCTAssertEqual(reps, 8)
+        XCTAssertEqual(weight, 60)
+        let rescan = try XCTUnwrap(PlanShareCodec.decode(code))
+        XCTAssertTrue(store.saveImportedPlans([rescan]))
+        XCTAssertEqual(store.plans.count, 2, "Rescanning the identical plan remains idempotent")
+
+        var unknownStep = step
+        unknownStep.setWeights = [nil]; unknownStep.setReps = [nil]
+        let unknown = Plan(id: "legacy-unknown", name: "Unknown", steps: [unknownStep], createdAt: now, updatedAt: now)
+        let unknownReceived = try XCTUnwrap(PlanShareCodec.decode(try XCTUnwrap(PlanShareCodec.encode(unknown))))
+        XCTAssertTrue(store.saveImportedPlans([unknownReceived]))
+        let savedUnknown = try XCTUnwrap(store.plans.last?.steps.first)
+        XCTAssertNil(savedUnknown.weightForSet(1))
+        XCTAssertNil(savedUnknown.repsForSet(1))
+    }
+
     func testImportLimitIsAtomicAndDoesNotDeleteExistingRoutinesAfterDowngrade() throws {
         let data = DataStore(exercises: ExerciseLibrary.all, plans: [], sets: [], settings: UserSettings())
         func plan(_ index: Int) -> Plan {

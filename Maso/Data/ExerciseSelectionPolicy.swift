@@ -86,7 +86,8 @@ struct ExerciseSelectionPolicy: Sendable {
     /// Stable ordinary form, independent of favorites and translations. Equipment constraints
     /// apply before ranking; a home profile never receives unavailable gym equipment.
     func defaultVersion(for original: Exercise, in library: [Exercise], settings: UserSettings,
-                        preserveProgrammingGroup: Bool = true, preferredIDs: Set<String> = []) -> Exercise {
+                        preserveProgrammingGroup: Bool = true, preferredIDs: Set<String> = [],
+                        useSavedVariantPreference: Bool = false) -> Exercise {
         let family = displayFamilyID(for: original)
         let members = library.filter {
             displayFamilyID(for: $0) == family && compatibleCategory($0, with: original) &&
@@ -94,15 +95,34 @@ struct ExerciseSelectionPolicy: Sendable {
             equipmentAllows($0, selected: Set(settings.availableEquipment), environment: settings.trainingEnvironment)
         }
         if let pinned = sorted(members.filter { preferredIDs.contains($0.id) && tier(for: $0) != .specialist }).first { return pinned }
+        if useSavedVariantPreference,
+           let saved = settings.preferredVariantByProgrammingGroup?[programmingGroupID(for: original)],
+           let chosen = members.first(where: { $0.id == saved }) {
+            return chosen
+        }
         let preferred: [String: String] = ["squat": "squat_barbell", "bench_press": "bench_press_barbell", "row": "barbell_row"]
         if let id = preferred[family], let base = members.first(where: { $0.id == id }) { return base }
         return sorted(members).first ?? original
     }
 
+    /// Records one confirmed in-family replacement. Same ID, another family, and custom
+    /// groups leave the snapshot unchanged. Generation must not call this.
+    func explicitVariantPreference(recording chosen: Exercise, replacing current: Exercise, in settings: UserSettings) -> UserSettings {
+        guard current.id != chosen.id else { return settings }
+        let group = programmingGroupID(for: current)
+        guard group == programmingGroupID(for: chosen), !group.hasPrefix("custom.") else { return settings }
+        var copy = settings
+        var preferences = copy.preferredVariantByProgrammingGroup ?? [:]
+        preferences[group] = chosen.id
+        copy.preferredVariantByProgrammingGroup = preferences
+        return copy
+    }
+
     /// Defaults are a plan projection; actual historical records and restored live sessions
     /// are never rewritten. When identity changes, its load cannot be copied blindly.
     func routineDefaults(_ plan: Plan, library: [Exercise], settings: UserSettings,
-                         preserveProgrammingGroup: Bool = true, preferPinned: Bool = false) -> Plan {
+                         preserveProgrammingGroup: Bool = true, preferPinned: Bool = false,
+                         useSavedVariantPreference: Bool = false) -> Plan {
         if plan.preservesExerciseVariants == true || plan.id.hasPrefix("qw-") || plan.id.hasPrefix("session-replay-") { return plan }
         let lookup = Dictionary(library.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
         let equipment = Set((plan.constraints ?? []).filter { $0.kind == .equipment }.map(\.value))
@@ -119,7 +139,8 @@ struct ExerciseSelectionPolicy: Sendable {
             guard let original = lookup[step.exerciseId] ?? ExerciseLibrary.byId[step.exerciseId].flatMap({ lookup[$0.id] }) else { return step }
             let base = defaultVersion(for: original, in: eligible, settings: effectiveSettings,
                                       preserveProgrammingGroup: preserveProgrammingGroup,
-                                      preferredIDs: preferPinned ? Set(settings.favoriteExerciseIds) : [])
+                                      preferredIDs: preferPinned ? Set(settings.favoriteExerciseIds) : [],
+                                      useSavedVariantPreference: useSavedVariantPreference)
             guard base.id != original.id else { return step }
             return PlanStep(id: step.id, exerciseId: base.id, sets: step.sets, reps: step.reps,
                             weight: nil, setReps: step.setReps, setWeights: nil,
@@ -170,6 +191,10 @@ struct ExerciseSelectionPolicy: Sendable {
             let lf = settings?.favoriteExerciseIds.contains(lhs.id) == true
             let rf = settings?.favoriteExerciseIds.contains(rhs.id) == true
             if lf != rf { return lf }
+            let saved = settings?.preferredVariantByProgrammingGroup ?? [:]
+            let ls = saved[programmingGroupID(for: lhs)] == lhs.id
+            let rs = saved[programmingGroupID(for: rhs)] == rhs.id
+            if ls != rs { return ls }
             let lt = tier(for: lhs).order, rt = tier(for: rhs).order
             if lt != rt { return lt < rt }
             let lp = preferredIDs.contains(lhs.id), rp = preferredIDs.contains(rhs.id)

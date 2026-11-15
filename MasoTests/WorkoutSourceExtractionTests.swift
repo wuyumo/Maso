@@ -77,6 +77,7 @@ import XCTest
             requests += 1
             let messages = try XCTUnwrap(body["messages"] as? [[String:Any]])
             XCTAssertTrue((messages[0]["content"] as? String)?.contains("Do NOT design") == true)
+            XCTAssertTrue((messages[0]["content"] as? String)?.contains("USER-VISIBLE WRITING") == true)
             let content = String(decoding:try JSONEncoder().encode(doc),as:UTF8.self)
             let bytes = try JSONSerialization.data(withJSONObject:["choices":[["message":["content":content]]]])
             return (bytes,HTTPURLResponse(url:URL(string:"https://fixture.invalid")!,statusCode:200,httpVersion:nil,headerFields:nil)!)
@@ -91,7 +92,13 @@ import XCTest
     }
     func testActualImageIntentDeniesBeforeAnyModelRequestAndKeepsRoot() async throws {
         var requests = 0
-        AIWorkoutService.requestFixture = { _ in
+        AIWorkoutService.requestFixture = { body in
+            let instructions = (body["messages"] as? [[String: Any]])?.first?["content"] as? String ?? ""
+            // The hosted App may refresh its home advice while this test awaits image analysis.
+            guard instructions.contains("You route user-uploaded images inside Masso") else {
+                print("IMAGE-QUOTA-IGNORED-HOST-REQUEST", instructions.prefix(100))
+                throw URLError(.notConnectedToInternet)
+            }
             requests += 1
             let content = #"{"kind":"equipment","summary":"Synthetic equipment fixture","needsClarification":false,"exerciseNames":[],"possibleKinds":[]}"#
             let bytes = try JSONSerialization.data(withJSONObject:["choices":[["message":["content":content]]]])
@@ -170,15 +177,22 @@ import XCTest
     }
     func testPhotoGoalReportAndConfirmationKeepCanonicalRoot() async throws {
         var requests = 0
-        AIWorkoutService.requestFixture = { _ in
+        AIWorkoutService.requestFixture = { body in
             requests += 1
-            if requests > 1 { throw URLError(.notConnectedToInternet) }
+            let messages = try XCTUnwrap(body["messages"] as? [[String: Any]])
+            if requests > 1 {
+                XCTAssertFalse((messages.first?["content"] as? String)?.contains("Do NOT design") == true,
+                               "The confirmed physique report must generate a plan, not extract a workout source")
+                throw URLError(.notConnectedToInternet)
+            }
+            let content = try XCTUnwrap(messages.first(where: { $0["role"] as? String == "user" })?["content"] as? [[String: Any]] )
+            XCTAssertTrue(content.contains { ($0["text"] as? String)?.contains("side-by-side comparison") == true })
             let text = #"{"summary":"Synthetic optional chest focus","focusNote":"Chest focus fixture","canSuggestPlan":true,"focusAreas":["chest"]}"#
             let bytes = try JSONSerialization.data(withJSONObject:["choices":[["message":["content":text]]]])
             return (bytes,HTTPURLResponse(url:URL(string:"https://fixture.invalid")!,statusCode:200,httpVersion:nil,headerFields:nil)!)
         }
         let data = DataStore(exercises:library,plans:[],sets:[],settings:UserSettings())
-        await data.coachGenerate(feedback:"Goal comparison",photoData:Data("fixture image".utf8),photoIsGoalComparison:true)
+        await data.coachGenerate(feedback: CoachUseCase.physiqueGoal.promptKey, photoData: Data("fixture image".utf8), photoIsGoalComparison: true)
         let report = try XCTUnwrap(data.coachSession.messages.last)
         let root = try XCTUnwrap(report.quotaRootID)
         XCTAssertEqual(data.coachSession.quotaKind,.physiqueGoal)
