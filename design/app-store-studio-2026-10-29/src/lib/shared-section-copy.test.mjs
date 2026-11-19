@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
-import { LOCALES, SECTION_ORDER, canonicalRows, copyRevision, projectCandidate, webDocument } from "./shared-section-copy.mjs";
+import { LOCALES, SECTION_ORDER, canonicalRows, copyRevision, payloadDocument, payloadSHA, projectCandidate, webDocument } from "./shared-section-copy.mjs";
 
 const file = new URL("../../candidates/pro-20261113/project.json", import.meta.url);
 const originalRows = "f33f436ef6aca6c390458f6be87342b1f8514c8337e6f57739f802983ce14570";
@@ -74,4 +74,36 @@ test("a website body does not change the store short copy", () => {
   assert.equal(projected.web.sections.find((section) => section.id === "training").copyApproval, "unapproved");
   assert.equal(projected.web.sections.find((section) => section.id === "devices").copyApproval, "unapproved");
   assert.equal(projected.web.sections.find((section) => section.id === "devices").mediaCapture, "no-capture");
+});
+
+test("the store and website projections read one website body without changing short copy", () => {
+  const project = load();
+  const projected = projectCandidate(project);
+  assert.equal(projected.revision, originalRows);
+  assert.equal(copyRevision(project.sharedSections), originalRows);
+  assert.deepEqual(projected.web, webDocument(project));
+  for (const id of SECTION_ORDER) {
+    const section = project.sharedSections.find((item) => item.id === id);
+    assert.deepEqual(projected.web.sections.find((item) => item.id === id).websiteBody, section.websiteBody);
+  }
+  const plan = projected.store.slidesByDevice.iphone.find((slide) => slide.id === "plan");
+  assert.equal(JSON.stringify(plan.headline), JSON.stringify(project.sharedSections[0].title));
+  assert.equal(JSON.stringify(plan).includes("Free AI tasks"), false);
+  for (const [family, slides] of Object.entries(projected.store.slidesByDevice)) {
+    if (family !== "iphone") assert.deepEqual(slides, []);
+  }
+  assert.equal(projected.web.sections.find((section) => section.id === "training").copyApproval, "unapproved");
+  assert.equal(projected.web.sections.find((section) => section.id === "training").mediaCapture, "no-capture");
+  assert.equal(projected.web.sections.find((section) => section.id === "training").websiteBody.publication, "withheld");
+  assert.equal(projected.web.sections.find((section) => section.id === "devices").websiteBody.publication, "withheld");
+  const before = payloadSHA(project);
+  project.sharedSections[0].websiteBody = { ...project.sharedSections[0].websiteBody, publication: "fixture" };
+  assert.equal(copyRevision(project.sharedSections), originalRows);
+  assert.notEqual(payloadSHA(project), before);
+  const payload = JSON.parse(readFileSync(new URL("../../candidates/pro-20261113/payload.json", import.meta.url), "utf8"));
+  const fresh = load();
+  assert.equal(payload.payloadSHA, payloadSHA(fresh));
+  assert.deepEqual(payload.document, payloadDocument(fresh));
+  assert.equal(payload.shortCopyRevision, originalRows);
+  assert.equal(payload.document.sections.find((section) => section.id === "training").mediaRefs[0].screenshot.includes("player-heart-warning"), true);
 });
