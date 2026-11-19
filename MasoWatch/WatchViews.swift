@@ -145,13 +145,12 @@ struct WatchPlayerView: View {
                     }.buttonStyle(.plain).frame(minHeight: 18)
                     WatchCountdown(state: state, big: true)
                     HStack(spacing: 3) { Text("Next"); prescription }
-                        .font(.system(size: 10)).foregroundStyle(WatchTheme.dim).lineLimit(1)
-                    primary("Skip rest", symbol: "forward.end.fill") { bridge.command(.advance) }
+                        .font(.system(size: 10)).foregroundStyle(WatchTheme.dim).lineLimit(1).minimumScaleFactor(0.7)
                 } else {
                     VStack(alignment: .leading, spacing: 0) {
-                        Text(state.exerciseName).font(.system(size: 14, weight: .semibold)).lineLimit(2).minimumScaleFactor(0.8)
+                        Text(state.exerciseName).font(.system(size: 14, weight: .semibold)).lineLimit(2).minimumScaleFactor(0.7)
                         Text(String(format: NSLocalizedString("SET %d/%d", comment: ""), state.setN, state.setTotal))
-                            .font(.system(size: 9)).foregroundStyle(WatchTheme.dim)
+                            .font(.system(size: 9)).foregroundStyle(WatchTheme.dim).lineLimit(1).minimumScaleFactor(0.7)
                     }.frame(maxWidth: .infinity, alignment: .leading)
                     if state.manualConfirm {
                         HStack(spacing: 0) {
@@ -161,23 +160,23 @@ struct WatchPlayerView: View {
                                 parameter(state.weightUnit == "lb" ? "lb" : "kg", value: weightText, page: .weight)
                             }
                         }.padding(.vertical, 2).background(.white.opacity(0.07), in: RoundedRectangle(cornerRadius: 13))
-                        primary("Log set", symbol: "checkmark") { bridge.command(.advance) }
-                            .padding(.top, 4)
                     } else {
                         WatchCountdown(state: state, big: true)
-                        primary(state.paused ? "Resume" : "Pause", symbol: state.paused ? "play.fill" : "pause.fill") {
-                            bridge.command(.togglePlay)
-                        }
                     }
                 }
-            }.padding(.horizontal, 4)
+            }
+            .padding(.horizontal, 12)
             #if DEBUG
             .modifier(WatchPreviewTextScale(scale: Self.previewContentScale(dynamicTypeSize)))
             #endif
             }
             .scrollIndicators(.hidden)
+            pinnedPrimary
+                .padding(.horizontal, 12)
+                .layoutPriority(1)
             bottomControls
                 .padding(.horizontal, WatchPlayerLayout.horizontalInset)
+                .layoutPriority(1)
         }
         .onAppear {
             #if DEBUG
@@ -212,6 +211,18 @@ struct WatchPlayerView: View {
         Text([state.reps.map { String(format: NSLocalizedString("%d reps", comment: ""), $0) },
               state.weight.map { _ in weightText + " " + (state.weightUnit ?? "kg") }].compactMap { $0 }.joined(separator: " · "))
     }
+    @ViewBuilder private var pinnedPrimary: some View {
+        if state.mode == .rest {
+            primary("Skip rest", symbol: "forward.end.fill") { bridge.command(.advance) }
+        } else if state.manualConfirm {
+            primary("Log set", symbol: "checkmark") { bridge.command(.advance) }
+        } else {
+            primary(state.paused ? "Resume" : "Pause", symbol: state.paused ? "play.fill" : "pause.fill") {
+                bridge.command(.togglePlay)
+            }
+        }
+    }
+
     private var bottomControls: some View {
         HStack(spacing: 0) {
             Button { page = .queue } label: {
@@ -269,6 +280,7 @@ struct WatchPlayerView: View {
     private func primaryButton(_ title: String, symbol: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Label(LocalizedStringKey(title), systemImage: symbol).font(.system(size: 13, weight: .semibold))
+                .lineLimit(1).minimumScaleFactor(0.7)
                 .frame(maxWidth: .infinity, minHeight: 34)
         }
     }

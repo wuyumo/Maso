@@ -155,6 +155,20 @@ final class DataStore {
         }
     }
 
+    /// Exercises with at least one logged set. Planned, skipped, and discarded work is absent.
+    var performedExerciseIDs: [String] { Self.performedExerciseIDs(in: sets, exById: exById) }
+
+    nonisolated static func performedExerciseIDs(in sets: [SetRecord], exById: [String: Exercise]) -> [String] {
+        var seen = Set<String>()
+        return sets.sorted { lhs, rhs in
+            if lhs.performedAt != rhs.performedAt { return lhs.performedAt > rhs.performedAt }
+            return lhs.id < rhs.id
+        }.compactMap { record in
+            guard let exercise = exById[record.exerciseId] else { return nil }
+            return seen.insert(exercise.id).inserted ? exercise.id : nil
+        }
+    }
+
     /// Compact default browsing, with personal and saved-plan exercises kept discoverable.
     /// Searching still uses userLibrary, so less common variants remain available.
     var curatedExerciseLibrary: [Exercise] {
@@ -630,6 +644,7 @@ final class DataStore {
             return min(1.3, max(0.5, w / 75.0))
         }()
         let goal = settings.trainingGoal
+        let familiar = settings.prefersPerformedExercises ? Set(performedExerciseIDs(in: sets, exById: exById)) : []
         // wantStrengthen 折叠到大肌群 section — 给"cap 时优先保留聚焦肌群动作"打分用.
         let focusSections: Set<MuscleGroup> = Set(settings.wantStrengthen.map { $0.section ?? $0 })
         func hitsFocus(_ step: PlanStep) -> Bool {
@@ -664,22 +679,22 @@ final class DataStore {
                 }
                 return s
             }
-            p.steps = DataStore.applyEquipmentPreference(p.steps, settings: settings, exById: exById)
+            p.steps = DataStore.applyEquipmentPreference(p.steps, settings: settings, exById: exById, familiarExerciseIDs: familiar)
             // 3. 科学化兜底: 复合优先 + 同 section ≤2 + slot-1 复合 + push≥pull (先于 pad, 这样若丢了同 section
             //    第 3 个, 下面 pad 会按用户 exercises-per-plan 用别的 section 补回, 不让总数掉档).
             p.steps = DataStore.enforceScience(p.steps, exById: exById)
             // 防御性补足: 模板正常是 8 step (cap≤8 不会触发), 但万一某 step ID 失效被 compactMap
             // 丢掉导致不足 (或被 enforceScience 丢了同 section 多余项), 也按 exercises-per-plan 补回.
-            p.steps = DataStore.padStepsToTarget(p.steps, target: cap, settings: settings, exById: exById)
+            p.steps = DataStore.padStepsToTarget(p.steps, target: cap, settings: settings, exById: exById, familiarExerciseIDs: familiar)
             // #1 器械约束: 把所选器械做不了的动作换成可用替代 (availableEquipment 空时无操作).
-            p.steps = DataStore.applyEquipmentPreference(p.steps, settings: settings, exById: exById)
+            p.steps = DataStore.applyEquipmentPreference(p.steps, settings: settings, exById: exById, familiarExerciseIDs: familiar)
             if p.steps.isEmpty {
                 // A strict no-equipment profile can remove every pull-day step.
                 // Keep a usable card by choosing a familiar, equipment-compatible
                 // full-body session rather than returning an empty day or borrowing a bar.
                 let targets = settings.wantStrengthen + [.chest, .legs, .back, .shoulders, .core, .arms]
                 let safe = suggestedTrainingExercises(targetMuscles: targets, library: Array(exById.values),
-                    settings: settings, preferredIDs: Set(settings.favoriteExerciseIds), perMuscleLimit: 1, limit: cap)
+                    settings: settings, preferredIDs: Set(settings.favoriteExerciseIds).union(familiar), perMuscleLimit: 1, limit: cap)
                 if !safe.isEmpty {
                     p.name = NSLocalizedString("Full body", comment: "Equipment-compatible fallback workout")
                     p.steps = enforceScience(safe.enumerated().map { index, exercise in
@@ -791,6 +806,7 @@ final class DataStore {
             return tunedRecommendedPlans(forDays: days, settings: settings, exById: exById, sets: sets, now: now)
         }
         let cap = max(1, min(8, settings.exercisesPerSession))
+        let familiar = settings.prefersPerformedExercises ? Set(performedExerciseIDs(in: sets, exById: exById)) : []
         let focusSections: Set<MuscleGroup> = Set(settings.wantStrengthen.map { $0.section ?? $0 })
         func hitsFocus(_ step: PlanStep) -> Bool {
             guard !focusSections.isEmpty, let ex = exById[step.exerciseId] else { return false }
@@ -810,14 +826,14 @@ final class DataStore {
                     p.steps = p.steps.indices.filter { keep.contains($0) }.map { p.steps[$0] }
                 }
             }
-            p.steps = applyEquipmentPreference(p.steps, settings: settings, exById: exById)
+            p.steps = applyEquipmentPreference(p.steps, settings: settings, exById: exById, familiarExerciseIDs: familiar)
             // 科学化兜底 (先于 pad): 复合优先 + 同 section ≤2 + slot-1 复合 + push≥pull.
             p.steps = enforceScience(p.steps, exById: exById)
             // 反向: 动作数 < 用户设定时补足配件 —— 社区计划自身偏短 (一个 session 只有 5 个动作) 也
             // 严格兑现 exercises-per-plan, 不让用户设了 7 却只看到 5.
-            p.steps = padStepsToTarget(p.steps, target: cap, settings: settings, exById: exById)
+            p.steps = padStepsToTarget(p.steps, target: cap, settings: settings, exById: exById, familiarExerciseIDs: familiar)
             // #1 器械约束.
-            p.steps = applyEquipmentPreference(p.steps, settings: settings, exById: exById)
+            p.steps = applyEquipmentPreference(p.steps, settings: settings, exById: exById, familiarExerciseIDs: familiar)
             p.lastUsedAt = sets.filter { $0.planId == p.id }.map(\.performedAt).max()
             return p
         }
@@ -833,7 +849,8 @@ final class DataStore {
         _ steps: [PlanStep],
         target: Int,
         settings: UserSettings,
-        exById: [String: Exercise]
+        exById: [String: Exercise],
+        familiarExerciseIDs: Set<String> = []
     ) -> [PlanStep] {
         guard steps.count < target else { return steps }
         let policy = ExerciseSelectionPolicy.shared
@@ -853,7 +870,7 @@ final class DataStore {
         let pool = policy.generationCandidates(
             from: Array(exById.values).filter { $0.category == .strength || $0.category == .hypertrophyFocus || $0.category == .calisthenics },
             settings: settings, maxPerProgrammingGroup: Int.max,
-            preferredIDs: Set(settings.favoriteExerciseIds))
+            preferredIDs: Set(settings.favoriteExerciseIds), familiarIDs: familiarExerciseIDs)
         let pools = sections.map { section in
             pool.enumerated().filter { item in
                 item.element.primaryMuscles.contains { ($0.section ?? $0) == section }
@@ -889,12 +906,13 @@ final class DataStore {
     /// Substituting a concrete variant clears load overrides; equipment loads are not interchangeable.
     static func applyEquipmentPreference(
         _ steps: [PlanStep], settings: UserSettings, exById: [String: Exercise],
-        allowSpecialistIDs: Set<String> = []
+        allowSpecialistIDs: Set<String> = [], familiarExerciseIDs: Set<String> = []
     ) -> [PlanStep] {
         let policy = ExerciseSelectionPolicy.shared
         let pool = policy.generationCandidates(from: Array(exById.values), settings: settings,
                                                maxPerProgrammingGroup: Int.max,
-                                               preferredIDs: Set(settings.favoriteExerciseIds))
+                                               preferredIDs: Set(settings.favoriteExerciseIds),
+                                               familiarIDs: familiarExerciseIDs)
         let eligibleIDs = Set(pool.map(\.id))
         var usedGroups = Set<String>()
         var result: [PlanStep] = []
@@ -904,13 +922,23 @@ final class DataStore {
             let retainedSpecialist = allowSpecialistIDs.contains(original.id)
                 && policy.equipmentAllows(original, selected: Set(settings.availableEquipment), environment: settings.trainingEnvironment)
             if (eligibleIDs.contains(original.id) || retainedSpecialist), !usedGroups.contains(group) {
+                if let familiar = pool.first(where: {
+                    familiarExerciseIDs.contains($0.id) && policy.programmingGroupID(for: $0) == group
+                }), !familiarExerciseIDs.contains(original.id) {
+                    usedGroups.insert(group)
+                    result.append(PlanStep(
+                        id: step.id, exerciseId: familiar.id, sets: step.sets, reps: step.reps,
+                        weight: nil, duration: step.duration,
+                        restBetweenSets: step.restBetweenSets, rest: step.rest))
+                    continue
+                }
                 usedGroups.insert(group)
                 result.append(step)
                 continue
             }
             let available = pool.filter { !usedGroups.contains(policy.programmingGroupID(for: $0)) }
             guard let replacement = policy.replacementCandidates(
-                for: original, from: available, settings: settings, limit: 1).first else { continue }
+                for: original, from: available, settings: settings, recentIDs: Array(familiarExerciseIDs), limit: 1).first else { continue }
             usedGroups.insert(policy.programmingGroupID(for: replacement))
             result.append(PlanStep(
                 id: step.id, exerciseId: replacement.id, sets: step.sets, reps: step.reps,
@@ -1887,7 +1915,8 @@ final class DataStore {
             return s
         }
         let intent = LocalRoutineRules.parse(settings.coachMemory)
-        p = LocalRoutineRules.apply(to: [p], intent: intent, settings: settings, exById: exById).first ?? p
+        let familiar = settings.prefersPerformedExercises ? Set(performedExerciseIDs) : []
+        p = LocalRoutineRules.apply(to: [p], intent: intent, settings: settings, exById: exById, familiarExerciseIDs: familiar).first ?? p
         return p
     }
 
@@ -1979,11 +2008,12 @@ final class DataStore {
         //    (workers.dev 和 vercel.app 都可能被 DNS 污染), 兜底不能对用户的要求装聋.
         //    解析不到任何关键词 → Intent 为空 → apply 原样返回, 行为跟以前完全一致.
         let localIntent = LocalRoutineRules.parse([settings.coachMemory, focusNote ?? ""].joined(separator: "\n"))
+        let familiar = settings.prefersPerformedExercises ? Set(performedExerciseIDs) : []
         let local = DataStore.markBuiltIn(LocalRoutineRules.apply(
             to: DataStore.tunedRecommendedPlans(
                 forDays: settings.weeklyTrainingDays, settings: settings,
                 exById: exById, sets: sets, now: Date()),
-            intent: localIntent, settings: settings, exById: exById))
+            intent: localIntent, settings: settings, exById: exById, familiarExerciseIDs: familiar))
         guard AIWorkoutService.isConfigured else { return (local, true) }
         // 一次 LLM 调用产出多套真 AI routine (各带 rationale, 组成周分化) — 标签页每张都是真 AI,
         // 不再 [aiPlan] + local 混本地凑数计划. 套数严格等于每周训练天数（1...7），由响应校验约束。
@@ -1999,7 +2029,7 @@ final class DataStore {
             //    prompt 里写了"只用哑铃"不等于模型会照做 (竞品调研: 6 个不同 app 的用户在骂同一件事).
             //    所以拿到 LLM 结果后再过一遍同一套规则: 器械不符的替换掉、明说不练的剔掉、
             //    超时长的裁掉. 模型听话 → 这一步什么都不改; 模型不听话 → 用户依然拿到他要的东西.
-            out = LocalRoutineRules.apply(to: out, intent: localIntent, settings: settings, exById: exById)
+            out = LocalRoutineRules.apply(to: out, intent: localIntent, settings: settings, exById: exById, familiarExerciseIDs: familiar)
             out = attachConstraints(out, intent: localIntent)
             return (out, false)
         }
@@ -2640,6 +2670,7 @@ final class DataStore {
             selectionEquipment: settings.availableEquipment,
             selectionFavoriteIDs: canonicalFavoriteExerciseIDs,
             selectionRecentIDs: Array(recentExerciseIDs.prefix(40)),
+            selectionPerformedIDs: settings.prefersPerformedExercises ? performedExerciseIDs : [],
             // 教练记忆 — 空白时传 nil (prompt 不注入这块). prompt 侧再做长度截断.
             coachMemory: {
                 let trimmed = settings.coachMemory.trimmingCharacters(in: .whitespacesAndNewlines)

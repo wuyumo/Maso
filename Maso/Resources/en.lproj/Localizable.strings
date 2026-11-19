@@ -325,6 +325,8 @@
 "Off" = "Off";
 "Synced %d workout(s) to Health" = "Synced %d workout(s) to Health";
 "Days per week" = "Days per week";
+"Prefer exercises you've done" = "Prefer exercises you've done";
+"New plans reuse exercises from workouts you actually completed when they still fit." = "New plans reuse exercises from workouts you actually completed when they still fit.";
 
 /* ── center-tab hint ── */
 "Tap to start today's workout" = "Tap to start today's workout";

@@ -298,6 +298,31 @@ final class ExerciseSelectionPolicyTests: XCTestCase {
         }
     }
 
+    func testPerformedPreferenceDefaultsOffAndFamiliarExerciseStaysInsideHardLimits() throws {
+        var settings = UserSettings()
+        XCTAssertFalse(settings.prefersPerformedExercises)
+        var object = try JSONSerialization.jsonObject(with: JSONEncoder().encode(settings)) as! [String: Any]
+        object.removeValue(forKey: "preferPerformedExercises")
+        let restored = try JSONDecoder().decode(UserSettings.self, from: JSONSerialization.data(withJSONObject: object))
+        XCTAssertFalse(restored.prefersPerformedExercises)
+        settings.preferPerformedExercises = true
+        let saved = try JSONDecoder().decode(UserSettings.self, from: JSONEncoder().encode(settings))
+        XCTAssertTrue(saved.prefersPerformedExercises)
+
+        let barbell = try exercise("bench_press_barbell")
+        let dumbbell = try exercise("bench_press_dumbbell")
+        settings.availableEquipment = ["barbell", "dumbbell"]
+        let unchanged = policy.generationCandidates(from: [barbell, dumbbell], settings: settings, maxPerProgrammingGroup: 2)
+        let same = policy.generationCandidates(from: [barbell, dumbbell], settings: settings, maxPerProgrammingGroup: 2, familiarIDs: [])
+        XCTAssertEqual(unchanged.map(\.id), same.map(\.id))
+        let preferred = policy.generationCandidates(from: [barbell, dumbbell], settings: settings, maxPerProgrammingGroup: 2, familiarIDs: [dumbbell.id])
+        XCTAssertEqual(preferred.first?.id, dumbbell.id)
+        settings.availableEquipment = ["dumbbell"]
+        let blocked = policy.generationCandidates(from: [barbell, dumbbell], settings: settings, maxPerProgrammingGroup: 2, familiarIDs: [barbell.id])
+        XCTAssertFalse(blocked.contains { $0.id == barbell.id })
+        XCTAssertEqual(blocked.first?.id, dumbbell.id)
+    }
+
     func testInnerThighWordsFindAdductionWithoutMergingAbduction() throws {
         let adduction = try exercise("adductor_machine")
         let cable = try exercise("adduction_cable")

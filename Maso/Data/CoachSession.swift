@@ -1141,7 +1141,8 @@ extension DataStore {
                         let focus = LocalRoutineRules.parse([settings.coachMemory, note ?? ""].joined(separator: "\n"))
                         if !focus.focusMuscles.isEmpty {
                             let indices = reconciled.indices.filter { reconciled[$0] != previous[$0] }
-                            let targeted = LocalRoutineRules.apply(to: indices.map { reconciled[$0] }, intent: focus, settings: settings, exById: exById)
+                            let familiar = settings.prefersPerformedExercises ? Set(performedExerciseIDs) : []
+                            let targeted = LocalRoutineRules.apply(to: indices.map { reconciled[$0] }, intent: focus, settings: settings, exById: exById, familiarExerciseIDs: familiar)
                             for (index, plan) in zip(indices, targeted) { reconciled[index] = plan }
                         }
                         return reconciled

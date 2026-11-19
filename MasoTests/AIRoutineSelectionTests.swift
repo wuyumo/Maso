@@ -279,6 +279,41 @@ final class AIRoutineSelectionTests: XCTestCase {
         XCTAssertNil(try service.validatedPlan(fromJSON: guessed, candidates: [bench], maxExercises: 1))
     }
 
+    func testPreferPerformedExercisesUsesCompletedSetsWithoutChangingSavedPlans() throws {
+        let bench = try exercise("bench_press_dumbbell")
+        let squat = try exercise("squat_barbell")
+        let stretch = try exercise("chest_stretch_doorway")
+        let done = SetRecord(id: "done-bench", exerciseId: bench.id, exerciseName: bench.name, category: bench.category,
+                             weight: nil, reps: nil, performedAt: Date(), planId: "saved")
+        let invalid = SetRecord(id: "missing", exerciseId: "not-a-real-exercise", exerciseName: "Missing", category: .strength,
+                                weight: nil, reps: nil, performedAt: Date().addingTimeInterval(10), planId: "saved")
+        let saved = Plan(id: "saved", name: "Saved", steps: [
+            PlanStep(id: "planned-only", exerciseId: squat.id, sets: 3, reps: 5)
+        ], createdAt: Date(), updatedAt: Date())
+        var settings = UserSettings()
+        let off = DataStore(exercises: [bench, squat, stretch], plans: [saved], sets: [done, invalid], settings: settings)
+        XCTAssertEqual(off.performedExerciseIDs, [bench.id])
+        XCTAssertTrue(off.buildAIPayload().selectionPerformedIDs.isEmpty)
+        XCTAssertFalse(service.buildPrompt(payload: off.buildAIPayload(), library: [bench, squat]).contains("PREVIOUSLY PERFORMED"))
+        let before = off.plans.first?.steps.map(\.exerciseId)
+        settings.preferPerformedExercises = true
+        let on = DataStore(exercises: [bench, squat, stretch], plans: [saved], sets: [done, invalid], settings: settings)
+        XCTAssertEqual(on.plans.first?.steps.map(\.exerciseId), before)
+        XCTAssertEqual(on.buildAIPayload().selectionPerformedIDs, [bench.id])
+        var payload = on.buildAIPayload()
+        payload.selectionPerformedIDs = [bench.id, stretch.id]
+        let prompt = service.buildPrompt(payload: payload, library: [bench, squat, stretch])
+        XCTAssertTrue(prompt.contains("PREVIOUSLY PERFORMED EXERCISES: \(bench.id)"))
+        XCTAssertFalse(prompt.contains("80"))
+        let candidates = service.routineCandidates(payload: payload, library: [bench, squat, stretch])
+        XCTAssertFalse(candidates.contains { $0.id == stretch.id })
+        XCTAssertTrue(candidates.contains { $0.id == squat.id })
+        settings.preferPerformedExercises = true
+        let emptyHistory = DataStore.tunedRecommendedPlans(forDays: 2, settings: settings, exById: ExerciseLibrary.byId, sets: [], now: Date())
+        XCTAssertFalse(emptyHistory.isEmpty)
+        XCTAssertTrue(emptyHistory.allSatisfy { !$0.steps.isEmpty })
+    }
+
     func testCoverageNoteKeepsStretchOutOfTheStrengthCatalog() throws {
         let note = "合成备注，不是用户原文：覆盖五个主要的肌肉部位"
         var payload = payload()

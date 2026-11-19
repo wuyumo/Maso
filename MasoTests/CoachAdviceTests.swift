@@ -272,6 +272,30 @@ final class CoachAdviceTests: XCTestCase {
         XCTAssertEqual(plan.steps.map(\.exerciseId), [bench.id, squat.id])
     }
 
+    @MainActor
+    func testFamiliarExerciseCannotOverrideAvoidOrShrinkCoverage() throws {
+        let bench = try XCTUnwrap(ExerciseLibrary.byId["bench_press_barbell"])
+        let squat = try XCTUnwrap(ExerciseLibrary.byId["squat_barbell"])
+        let row = try XCTUnwrap(ExerciseLibrary.byId["barbell_row"])
+        let stretch = try XCTUnwrap(ExerciseLibrary.byId["chest_stretch_doorway"])
+        let known = [bench.id: bench, squat.id: squat, row.id: row, stretch.id: stretch]
+        let plan = Plan(id: "familiar-plan", name: "Generated", steps: [
+            PlanStep(id: "bench", exerciseId: bench.id, sets: 3, reps: 8),
+            PlanStep(id: "squat", exerciseId: squat.id, sets: 3, reps: 5)
+        ], createdAt: Date(), updatedAt: Date())
+        let saved = plan
+        let intent = LocalRoutineRules.parse("合成：不练腿，覆盖两个主要的肌肉部位")
+        let result = try XCTUnwrap(LocalRoutineRules.apply(
+            to: [plan], intent: intent, settings: UserSettings(), exById: known,
+            coverage: .sessionEach, familiarExerciseIDs: [squat.id, bench.id, stretch.id]).first)
+        XCTAssertEqual(saved.steps.map(\.exerciseId), [bench.id, squat.id])
+        XCTAssertFalse(result.steps.contains { $0.exerciseId == squat.id || $0.exerciseId == stretch.id })
+        let sections = Set(result.steps.compactMap { known[$0.exerciseId].flatMap(LocalRoutineRules.strengthSection(of:)) })
+        XCTAssertTrue(sections.contains(.chest))
+        XCTAssertTrue(sections.contains(.back))
+        XCTAssertFalse(sections.contains(.legs))
+    }
+
     func testEnforceScienceStaysPureAndStillCapsARepeatedSection() throws {
         let bench = try XCTUnwrap(ExerciseLibrary.byId["bench_press_barbell"])
         let incline = try XCTUnwrap(ExerciseLibrary.byId["incline_bench_press_barbell"])

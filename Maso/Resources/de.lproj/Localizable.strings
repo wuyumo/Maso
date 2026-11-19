@@ -287,6 +287,8 @@
 "Off" = "Ausgeschaltet";
 "Synced %d workout(s) to Health" = "Synced %d Training (s) zu Gesundheit";
 "Days per week" = "Tage pro Woche";
+"Prefer exercises you've done" = "Bereits gemachte Übungen bevorzugen";
+"New plans reuse exercises from workouts you actually completed when they still fit." = "Neue Pläne nutzen abgeschlossene Übungen erneut, wenn sie weiterhin passen.";
 "Tap to start today's workout" = "Tippen Sie auf das heutige Workout";
 "All %@" = "Alle %@";
 "AI Workout" = "AI Workout";

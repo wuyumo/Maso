@@ -946,7 +946,8 @@ final class AIWorkoutService {
         let preserved = Set(preservingIDs.compactMap { byID[$0]?.id })
         let allowedSpecialists = requested.union(preserved)
         let ordinary = policy.generationCandidates(from: library, settings: settings,
-            maxPerProgrammingGroup: 2, preferredIDs: payload.selectionFavoriteIDs.union(payload.selectionRecentIDs))
+            maxPerProgrammingGroup: 2, preferredIDs: payload.selectionFavoriteIDs.union(payload.selectionRecentIDs),
+            familiarIDs: Set(payload.selectionPerformedIDs))
         // Explicit/preserved variants pass equipment constraints before joining the capped
         // ordinary pool. A third equipment version must not disappear behind two defaults.
         let required = policy.generationCandidates(from: library, settings: settings,
@@ -1200,6 +1201,15 @@ final class AIWorkoutService {
         return "\n        - PINNED EXERCISE PRIORITY: \(ids.joined(separator: ", ")). Prefer these exact IDs over unpinned alternatives when compatible with the requested muscles, equipment, recovery and plan balance. Explicit current requests and unchanged revision steps take precedence; do not add unrelated muscles or duplicate movement groups merely to include pins."
     }
 
+    /// IDs only. Weights, times, and the rest of the log stay out of the prompt.
+    private func performedExerciseBlock(payload: AIPayload, library: [Exercise]) -> String {
+        let allowed = Set(library.map(\.id))
+        var seen = Set<String>()
+        let ids = payload.selectionPerformedIDs.filter { allowed.contains($0) && seen.insert($0).inserted }
+        guard !ids.isEmpty else { return "" }
+        return "\n        - PREVIOUSLY PERFORMED EXERCISES: \(ids.joined(separator: ", ")). These are soft preferences. When several catalog IDs fit the same role, equipment and muscle, prefer one of these. Do not break equipment limits, avoided muscles, coverage, stretch exclusion, or plan balance to reuse them, and do not drop a required muscle that has no previously performed exercise."
+    }
+
     /// `library` is already the exact validated candidate pool, including preserved revision IDs.
     private func catalogBlock(library: [Exercise], query: String?, mustInclude: [String] = []) -> String {
         library.map(catalogLine).joined(separator: "\n")
@@ -1276,7 +1286,7 @@ final class AIWorkoutService {
         - Training days per week: \(p.daysPerWeek)\(p.trainingScheduleLine)\(p.trainingSessionLengthLine)
         - Wants to strengthen: \(strengthen)
         - Primary goal: \(p.goalLabel)
-        - Available equipment: \(p.equipmentLine)\(p.coachMemoryBlock)\(pinnedExerciseBlock(payload: p, library: library))
+        - Available equipment: \(p.equipmentLine)\(p.coachMemoryBlock)\(pinnedExerciseBlock(payload: p, library: library))\(performedExerciseBlock(payload: p, library: library))
 
         RECENT WORKOUTS (last 14 days)
         \(recent)\(p.bestSetsBlock)\(previousBlock)
@@ -1367,7 +1377,7 @@ final class AIWorkoutService {
         - Training days per week: \(p.daysPerWeek)\(p.trainingScheduleLine)\(p.trainingSessionLengthLine)
         - Wants to strengthen: \(strengthen)
         - Primary goal: \(p.goalLabel)
-        - Available equipment: \(p.equipmentLine)\(p.coachMemoryBlock)\(pinnedExerciseBlock(payload: p, library: library))
+        - Available equipment: \(p.equipmentLine)\(p.coachMemoryBlock)\(pinnedExerciseBlock(payload: p, library: library))\(performedExerciseBlock(payload: p, library: library))
 
         RECENT WORKOUTS (last 14 days)
         \(recent)\(p.bestSetsBlock)\(revisionContext)
@@ -1688,6 +1698,8 @@ struct AIPayload {
     var selectionEquipment: [String] = []
     var selectionFavoriteIDs: Set<String> = []
     var selectionRecentIDs: [String] = []
+    /// Soft preference. Empty when the user has not asked to reuse completed exercises.
+    var selectionPerformedIDs: [String] = []
 
     /// 本次生成的优先侧重 (optimize 建议卡注入) — e.g. "bias the split toward legs".
     /// 非空时往 GUIDELINES 末尾追加一条强优先级行, 让这次 routine 偏向修复诊断出的问题. 默认 nil = 不加.

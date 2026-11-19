@@ -296,7 +296,8 @@ enum LocalRoutineRules {
         intent: Intent,
         settings: UserSettings,
         exById: [String: Exercise],
-        coverage: CoverageApplication? = nil
+        coverage: CoverageApplication? = nil,
+        familiarExerciseIDs: Set<String> = []
     ) -> [Plan] {
         let stripped = strengthMainPlans(plans, exById: exById, intent: intent)
         guard !intent.isEmpty else { return stripped }
@@ -335,7 +336,8 @@ enum LocalRoutineRules {
                 return exercise.id
             })
             steps = DataStore.applyEquipmentPreference(steps, settings: effective, exById: exById,
-                                                       allowSpecialistIDs: retainedSpecialistIDs)
+                                                       allowSpecialistIDs: retainedSpecialistIDs,
+                                                       familiarExerciseIDs: familiarExerciseIDs)
 
             // 2. avoid: drop every explicitly avoided section, even when that empties the result.
             steps = droppingAvoided(steps, intent: intent, section: section)
@@ -363,7 +365,8 @@ enum LocalRoutineRules {
                         $0.primaryMuscles.contains(muscle) &&
                         !usedGroups.contains(policy.programmingGroupID(for: $0))
                     }, settings: effective, maxPerProgrammingGroup: 1,
-                    preferredIDs: Set(settings.favoriteExerciseIds))
+                    preferredIDs: Set(settings.favoriteExerciseIds),
+                    familiarIDs: familiarExerciseIDs)
                 for candidate in candidates {
                     var replacement = PlanStep(id: template.id, exerciseId: candidate.id, sets: template.sets,
                                                reps: template.reps, weight: nil,
@@ -396,7 +399,7 @@ enum LocalRoutineRules {
             return p
         }
         let application = coverage ?? application(for: intent, generatedPlanCount: adjusted.count)
-        let covered = satisfyCoverage(adjusted, intent: intent, settings: effective, exById: exById, coverage: application)
+        let covered = satisfyCoverage(adjusted, intent: intent, settings: effective, exById: exById, coverage: application, familiarExerciseIDs: familiarExerciseIDs)
         return annotateAvoidedEmpty(covered, before: stripped, intent: intent, exById: exById)
     }
 
@@ -536,7 +539,7 @@ enum LocalRoutineRules {
                                   available: available, satisfied: satisfied, retryable: !withheld && !satisfied && !structural, feedback: feedback)
     }
 
-    private static func satisfyCoverage(_ plans: [Plan], intent: Intent, settings: UserSettings, exById: [String: Exercise], coverage: CoverageApplication) -> [Plan] {
+    private static func satisfyCoverage(_ plans: [Plan], intent: Intent, settings: UserSettings, exById: [String: Exercise], coverage: CoverageApplication, familiarExerciseIDs: Set<String> = []) -> [Plan] {
         let cleaned = plans.map { plan -> Plan in
             var copy = plan
             copy.steps = droppingAvoided(plan.steps, intent: intent) { step in
@@ -563,7 +566,7 @@ enum LocalRoutineRules {
             guard let target = report.missingNamed.first ?? majorSections.first(where: { report.available.contains($0) && !report.covered.contains($0) }),
                   let candidate = policy.generationCandidates(
                     from: known.values.filter { strengthSection(of: $0) == target },
-                    settings: settings, maxPerProgrammingGroup: 1).first else { break }
+                    settings: settings, maxPerProgrammingGroup: 1, familiarIDs: familiarExerciseIDs).first else { break }
             guard let index = plans.indices.min(by: { plans[$0].steps.count < plans[$1].steps.count }) else { break }
             var steps = plans[index].steps
             let groups = Set(steps.compactMap { known[$0.exerciseId].map { policy.programmingGroupID(for: $0) } })

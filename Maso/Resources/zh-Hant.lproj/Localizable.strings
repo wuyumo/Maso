@@ -287,6 +287,8 @@
 "Off" = "已關閉";
 "Synced %d workout(s) to Health" = "已同步 %d 次訓練到「健康」";
 "Days per week" = "每週訓練天數";
+"Prefer exercises you've done" = "優先使用練過的動作";
+"New plans reuse exercises from workouts you actually completed when they still fit." = "產生新計畫時，在仍然合適的情況下優先用你已經完成過的動作。";
 "Tap to start today's workout" = "點這裡開始今天的訓練";
 "All %@" = "全部 %@";
 "AI Workout" = "AI 訓練計畫";

@@ -477,7 +477,8 @@ private final class DemoURLProtocol: URLProtocol, @unchecked Sendable {
         let saved = try Data(contentsOf: url)
         XCTAssertEqual(saved, clip.data)
         XCTAssertGreaterThan(saved.count, 1024)
-        XCTAssertEqual(try await AVURLAsset(url: url).load(.isPlayable), true)
+        let playable = try await AVURLAsset(url: url).load(.isPlayable)
+        XCTAssertTrue(playable)
         var networkRequests = 0
         DemoURLProtocol.handler = { _ in networkRequests += 1; throw URLError(.notConnectedToInternet) }
         DemoURLProtocol.rangedHandler = { _ in networkRequests += 1; throw URLError(.notConnectedToInternet) }
