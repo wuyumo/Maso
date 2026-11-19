@@ -1,0 +1,7 @@
+--- before/zh-Hans/subtitle.txt
++++ after/zh-Hans/subtitle.txt
+@@ -1 +1 @@
+-训练记录、肌肉恢复与饮食睡眠
+\ No newline at end of file
++力量训练记录与肌群恢复估算
+\ No newline at end of file

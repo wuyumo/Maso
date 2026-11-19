@@ -1,0 +1,496 @@
+{
+  "package_version": 1,
+  "created_at": "2026-11-19T17:04:37+08:00",
+  "app_id": "6776689750",
+  "authorization": "pt432u: 好的，按照你的建议执行; this package implements preparation only; final review submission requires confirmation",
+  "status": "PREPARED_ONLY_NOT_APPLIED_TO_ASC",
+  "source": {
+    "path": "/workspace/masso-aso-audit-20261119/asc-metadata-2026-11-19.txt",
+    "snapshot": "snapshots/asc-metadata-2026-11-19.txt",
+    "sha256": "d325b800df9150ebc235eaa2f7053e09e415746da6c1fc67958607bb506ce1c6",
+    "observation": "2026-11-19 ASC read-only audit; supplied timestamp 16:29 UTC+8; not a new live read",
+    "live_version_reported": "3.0.2",
+    "live_build_reported": "54",
+    "draft_303_reported": "not listed at observation"
+  },
+  "scope": {
+    "locales": [
+      "en-US",
+      "zh-Hans"
+    ],
+    "fields": [
+      "name",
+      "subtitle",
+      "keywords",
+      "promotional_text",
+      "description"
+    ],
+    "description_change": "Replace the introductory slogan plus following introduction paragraph only; preserve every byte starting with first existing feature bullet through final compatibility/import statement.",
+    "unchanged": [
+      "category Health & Fitness",
+      "secondary category none selected",
+      "regions and China availability",
+      "other 10 localizations",
+      "pricing and in-app purchases",
+      "release scheduling",
+      "build selection",
+      "all source/repository files",
+      "advertising and routines"
+    ],
+    "proposed_version": "3.0.3, NOT created/uploaded by this package"
+  },
+  "keyword_assumptions": [
+    "Selected for fit to verified logging/strength-training/equipment/Watch capabilities, not verified query frequency.",
+    "No claim of greater impressions, ranking weights, keyword order weighting, or lower advertising cost.",
+    "English uses the approved 97-ASCII primary proposal, not yesterday's A or comparison alternative.",
+    "Chinese uses the previously proposed relevance candidate; no frequency claim or automatic translation."
+  ],
+  "validation": {
+    "keyword_limit_policy": "both <=100 Unicode characters and <=100 UTF-8 bytes; conservative compatibility with conflicting Apple guidance",
+    "scalar_files": "UTF-8 without BOM or added terminal newline; blank live promotional text is a zero-byte file",
+    "description_tail": "byte-for-byte comparison from first bullet against captured ASC text",
+    "validator": "python3 validate.py (read-only, offline); python3 validate.py --self-test (in-memory mutation tests)",
+    "executed_results": "validation-results.json; package PASS and 7/7 self-tests PASS"
+  },
+  "fields": [
+    {
+      "locale": "en-US",
+      "field": "name",
+      "before_path": "before/en-US/name.txt",
+      "after_path": "after/en-US/name.txt",
+      "rollback_path": "rollback/en-US/name.txt",
+      "changed": true,
+      "before": {
+        "characters": 26,
+        "utf8_bytes": 28
+      },
+      "after": {
+        "characters": 23,
+        "utf8_bytes": 25
+      },
+      "limit_characters": 30,
+      "limit_utf8_bytes": null,
+      "diff_path": "diffs/en-US/name.diff",
+      "description_tail_sha256": null
+    },
+    {
+      "locale": "en-US",
+      "field": "subtitle",
+      "before_path": "before/en-US/subtitle.txt",
+      "after_path": "after/en-US/subtitle.txt",
+      "rollback_path": "rollback/en-US/subtitle.txt",
+      "changed": true,
+      "before": {
+        "characters": 29,
+        "utf8_bytes": 29
+      },
+      "after": {
+        "characters": 29,
+        "utf8_bytes": 29
+      },
+      "limit_characters": 30,
+      "limit_utf8_bytes": null,
+      "diff_path": "diffs/en-US/subtitle.diff",
+      "description_tail_sha256": null
+    },
+    {
+      "locale": "en-US",
+      "field": "keywords",
+      "before_path": "before/en-US/keywords.txt",
+      "after_path": "after/en-US/keywords.txt",
+      "rollback_path": "rollback/en-US/keywords.txt",
+      "changed": true,
+      "before": {
+        "characters": 79,
+        "utf8_bytes": 79
+      },
+      "after": {
+        "characters": 97,
+        "utf8_bytes": 97
+      },
+      "limit_characters": 100,
+      "limit_utf8_bytes": 100,
+      "diff_path": "diffs/en-US/keywords.diff",
+      "description_tail_sha256": null
+    },
+    {
+      "locale": "en-US",
+      "field": "promotional_text",
+      "before_path": "before/en-US/promotional_text.txt",
+      "after_path": "after/en-US/promotional_text.txt",
+      "rollback_path": "rollback/en-US/promotional_text.txt",
+      "changed": true,
+      "before": {
+        "characters": 0,
+        "utf8_bytes": 0
+      },
+      "after": {
+        "characters": 104,
+        "utf8_bytes": 104
+      },
+      "limit_characters": 170,
+      "limit_utf8_bytes": null,
+      "diff_path": "diffs/en-US/promotional_text.diff",
+      "description_tail_sha256": null
+    },
+    {
+      "locale": "en-US",
+      "field": "description",
+      "before_path": "before/en-US/description.txt",
+      "after_path": "after/en-US/description.txt",
+      "rollback_path": "rollback/en-US/description.txt",
+      "changed": true,
+      "before": {
+        "characters": 3072,
+        "utf8_bytes": 3086
+      },
+      "after": {
+        "characters": 3115,
+        "utf8_bytes": 3129
+      },
+      "limit_characters": 4000,
+      "limit_utf8_bytes": null,
+      "diff_path": "diffs/en-US/description.diff",
+      "description_tail_sha256": "a8960d8984fec5663f34b7904122216dfddaf3698cd16a5d0be0065e2197570b"
+    },
+    {
+      "locale": "zh-Hans",
+      "field": "name",
+      "before_path": "before/zh-Hans/name.txt",
+      "after_path": "after/zh-Hans/name.txt",
+      "rollback_path": "rollback/zh-Hans/name.txt",
+      "changed": false,
+      "before": {
+        "characters": 14,
+        "utf8_bytes": 22
+      },
+      "after": {
+        "characters": 14,
+        "utf8_bytes": 22
+      },
+      "limit_characters": 30,
+      "limit_utf8_bytes": null,
+      "diff_path": "diffs/zh-Hans/name.diff",
+      "description_tail_sha256": null
+    },
+    {
+      "locale": "zh-Hans",
+      "field": "subtitle",
+      "before_path": "before/zh-Hans/subtitle.txt",
+      "after_path": "after/zh-Hans/subtitle.txt",
+      "rollback_path": "rollback/zh-Hans/subtitle.txt",
+      "changed": true,
+      "before": {
+        "characters": 14,
+        "utf8_bytes": 42
+      },
+      "after": {
+        "characters": 13,
+        "utf8_bytes": 39
+      },
+      "limit_characters": 30,
+      "limit_utf8_bytes": null,
+      "diff_path": "diffs/zh-Hans/subtitle.diff",
+      "description_tail_sha256": null
+    },
+    {
+      "locale": "zh-Hans",
+      "field": "keywords",
+      "before_path": "before/zh-Hans/keywords.txt",
+      "after_path": "after/zh-Hans/keywords.txt",
+      "rollback_path": "rollback/zh-Hans/keywords.txt",
+      "changed": true,
+      "before": {
+        "characters": 34,
+        "utf8_bytes": 90
+      },
+      "after": {
+        "characters": 33,
+        "utf8_bytes": 79
+      },
+      "limit_characters": 100,
+      "limit_utf8_bytes": 100,
+      "diff_path": "diffs/zh-Hans/keywords.diff",
+      "description_tail_sha256": null
+    },
+    {
+      "locale": "zh-Hans",
+      "field": "promotional_text",
+      "before_path": "before/zh-Hans/promotional_text.txt",
+      "after_path": "after/zh-Hans/promotional_text.txt",
+      "rollback_path": "rollback/zh-Hans/promotional_text.txt",
+      "changed": true,
+      "before": {
+        "characters": 0,
+        "utf8_bytes": 0
+      },
+      "after": {
+        "characters": 51,
+        "utf8_bytes": 137
+      },
+      "limit_characters": 170,
+      "limit_utf8_bytes": null,
+      "diff_path": "diffs/zh-Hans/promotional_text.diff",
+      "description_tail_sha256": null
+    },
+    {
+      "locale": "zh-Hans",
+      "field": "description",
+      "before_path": "before/zh-Hans/description.txt",
+      "after_path": "after/zh-Hans/description.txt",
+      "rollback_path": "rollback/zh-Hans/description.txt",
+      "changed": true,
+      "before": {
+        "characters": 1133,
+        "utf8_bytes": 2751
+      },
+      "after": {
+        "characters": 1139,
+        "utf8_bytes": 2757
+      },
+      "limit_characters": 4000,
+      "limit_utf8_bytes": null,
+      "diff_path": "diffs/zh-Hans/description.diff",
+      "description_tail_sha256": "987ea8f907e3cea1c17833620076b06bbe9e52f8c31e11b35e3beab6255f09c3"
+    }
+  ],
+  "review_only": {
+    "whats_new": "review-only/{locale}/whats_new.txt; metadata-update wording only, NOT final approved build notes; reconcile with actual 3.0.3 build before application"
+  },
+  "blocking_decisions": [
+    "Confirm safe 3.0.3 source/build and required regression independently; this text package cannot prove build readiness.",
+    "Re-read current ASC values before applying; abort/merge deliberately if capture differs, never overwrite intervening changes.",
+    "Review What's New against final build; final submission requires user confirmation."
+  ],
+  "warnings": [
+    "Source audit records Ready for Distribution and a release-scheduling time of 2026-11-19 17:00 UTC+8; not resolved here and release settings are out of scope.",
+    "No separate ICP field visible in captured pages does not prove ICP not required. China distribution and filing-name alignment remain separate review items.",
+    "Rollback files preserve prior text; published App Store metadata cannot necessarily be reverted instantly or without a new permitted edit/review."
+  ],
+  "files": {
+    "README.md": {
+      "sha256": "a4547c4483f3de55ac27015e5f5506bfb19e07e7af3f610823f0a84576bd7642",
+      "bytes": 1817
+    },
+    "after/en-US/description.txt": {
+      "sha256": "52cb597c81882f470038f2bd9c3b9b669abcf9a63c4970ef70339bba9c08df01",
+      "bytes": 3129
+    },
+    "after/en-US/keywords.txt": {
+      "sha256": "2783627c07464712bb480fe3b240498faadeac9c768feb1328560479bfb77a0d",
+      "bytes": 97
+    },
+    "after/en-US/name.txt": {
+      "sha256": "031742db675070a4a516f24739831b1ce29dc946b78411a9e0f46d3be48b81f8",
+      "bytes": 25
+    },
+    "after/en-US/promotional_text.txt": {
+      "sha256": "aea42b9a8a672ebfdaccd4fa0ee2ea6b7330b091bbcf5d348d4dfbff1982e77d",
+      "bytes": 104
+    },
+    "after/en-US/subtitle.txt": {
+      "sha256": "9ac595d1b7fa69e6ca9f5c9c1072610041d3670789805779ce56bb19afa2fa80",
+      "bytes": 29
+    },
+    "after/zh-Hans/description.txt": {
+      "sha256": "3cda84cb406365e295d4d332f109bee41b113e7e4ad2e8bf79d29c6297c58864",
+      "bytes": 2757
+    },
+    "after/zh-Hans/keywords.txt": {
+      "sha256": "3b299b89b9ec98959b981ec5aaaf87093a26e578742bf437b66e9e8b0e6bc543",
+      "bytes": 79
+    },
+    "after/zh-Hans/name.txt": {
+      "sha256": "d9af78c7338b8bc7445c635ab2fca59a462872943aae9ef2f30ee79cc58fb6b0",
+      "bytes": 22
+    },
+    "after/zh-Hans/promotional_text.txt": {
+      "sha256": "6292a80ff313229dc402f0be863b933992e1a12d1b1e6afa7a3c7f463f1b5a2e",
+      "bytes": 137
+    },
+    "after/zh-Hans/subtitle.txt": {
+      "sha256": "450687c547c0b9c5315739af2845d8952c7f84de95c255704f01f28972105040",
+      "bytes": 39
+    },
+    "before/en-US/description.txt": {
+      "sha256": "d726531b8b9f6c6126ab53f98d302902a35629cb37b733bc682a64d06ab29b14",
+      "bytes": 3086
+    },
+    "before/en-US/keywords.txt": {
+      "sha256": "9e1b5d13188a12383fd5c7e569053278ed4228a0d1d2f574cd12e354eb7908bb",
+      "bytes": 79
+    },
+    "before/en-US/name.txt": {
+      "sha256": "e596bac0fbc6f8520aaf3677bcb70f654bf31f3ffe9056b80f762a6b3cfa60ff",
+      "bytes": 28
+    },
+    "before/en-US/promotional_text.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "before/en-US/subtitle.txt": {
+      "sha256": "11a5998a3bc77be0eeec100a8470b5588282a267d0becaa31ea0a02dd92dd097",
+      "bytes": 29
+    },
+    "before/en-US/whats_new.txt": {
+      "sha256": "0c27e2f32e253cbadfb2ce5b0602269bfacb02bbe77a6c821d6c8bb9424d19aa",
+      "bytes": 217
+    },
+    "before/zh-Hans/description.txt": {
+      "sha256": "46a50b784bb88dda80234be4515ee755a00cb4eef7dbe0f4f65dea756eca600f",
+      "bytes": 2751
+    },
+    "before/zh-Hans/keywords.txt": {
+      "sha256": "e8a3585e758088910a321da79640b45d7b1018442a5ba02b84b66f562f777056",
+      "bytes": 90
+    },
+    "before/zh-Hans/name.txt": {
+      "sha256": "d9af78c7338b8bc7445c635ab2fca59a462872943aae9ef2f30ee79cc58fb6b0",
+      "bytes": 22
+    },
+    "before/zh-Hans/promotional_text.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "before/zh-Hans/subtitle.txt": {
+      "sha256": "4c02f587bfa84a9ccae808c6ad04734ebd040f87a4afc316c23d013f44d909cd",
+      "bytes": 42
+    },
+    "before/zh-Hans/whats_new.txt": {
+      "sha256": "e8b0fe65ae0bbb6675c6233b8e3a86a0efcf5393e102226cbf5aa2d062978b32",
+      "bytes": 174
+    },
+    "diffs/en-US/description.diff": {
+      "sha256": "70878cb38ec1f5825ad2f7b14186b9bc07358ebcecec8fc89bbd8fd6444410a5",
+      "bytes": 763
+    },
+    "diffs/en-US/keywords.diff": {
+      "sha256": "456b042189acae824faa4409298e87381452798e7e4b73f067a30f306a902f4a",
+      "bytes": 307
+    },
+    "diffs/en-US/name.diff": {
+      "sha256": "30ace435616c4677cabc05bab3c3fe601cbb893346fc48505a2faa7596437137",
+      "bytes": 176
+    },
+    "diffs/en-US/promotional_text.diff": {
+      "sha256": "76031565196c0a5281521aca1ae709dbca39b5202c2cf8c11929b9b0fb6da64c",
+      "bytes": 223
+    },
+    "diffs/en-US/subtitle.diff": {
+      "sha256": "48c1f8752abb4fb188e2be7260e37f7ea62a43b57b9b2f6303225e0229310597",
+      "bytes": 189
+    },
+    "diffs/zh-Hans/description.diff": {
+      "sha256": "d4c75190d7720f6c2e0d546601ef9584b59c2e4b9df8670c79b229209d3ca806",
+      "bytes": 701
+    },
+    "diffs/zh-Hans/keywords.diff": {
+      "sha256": "0c7cfd380aeabfdde5aff8f4c51cae990263c432f9a454b6ea01ebdff7ef6fd4",
+      "bytes": 304
+    },
+    "diffs/zh-Hans/name.diff": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "diffs/zh-Hans/promotional_text.diff": {
+      "sha256": "9d994db49ac28c3a7b80be93fac62050429ec3bbb1df7f6317261a370be31a0c",
+      "bytes": 260
+    },
+    "diffs/zh-Hans/subtitle.diff": {
+      "sha256": "55e3b19d211259d0d8cb85ca0e68749b9554f3610a68418800a6790000471ffc",
+      "bytes": 216
+    },
+    "review-only/en-US/whats_new.txt": {
+      "sha256": "587713f2a50209d9f19eb3fe6c14bfceef22147d00e14c66c103b39c81d8e32e",
+      "bytes": 97
+    },
+    "review-only/zh-Hans/whats_new.txt": {
+      "sha256": "3f472fc49d6d28d77451164140cb09246df53a6a73c77b3920828ee7fe4b3c72",
+      "bytes": 92
+    },
+    "rollback/en-US/description.txt": {
+      "sha256": "d726531b8b9f6c6126ab53f98d302902a35629cb37b733bc682a64d06ab29b14",
+      "bytes": 3086
+    },
+    "rollback/en-US/keywords.txt": {
+      "sha256": "9e1b5d13188a12383fd5c7e569053278ed4228a0d1d2f574cd12e354eb7908bb",
+      "bytes": 79
+    },
+    "rollback/en-US/name.txt": {
+      "sha256": "e596bac0fbc6f8520aaf3677bcb70f654bf31f3ffe9056b80f762a6b3cfa60ff",
+      "bytes": 28
+    },
+    "rollback/en-US/promotional_text.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "rollback/en-US/subtitle.txt": {
+      "sha256": "11a5998a3bc77be0eeec100a8470b5588282a267d0becaa31ea0a02dd92dd097",
+      "bytes": 29
+    },
+    "rollback/en-US/whats_new.txt": {
+      "sha256": "0c27e2f32e253cbadfb2ce5b0602269bfacb02bbe77a6c821d6c8bb9424d19aa",
+      "bytes": 217
+    },
+    "rollback/zh-Hans/description.txt": {
+      "sha256": "46a50b784bb88dda80234be4515ee755a00cb4eef7dbe0f4f65dea756eca600f",
+      "bytes": 2751
+    },
+    "rollback/zh-Hans/keywords.txt": {
+      "sha256": "e8a3585e758088910a321da79640b45d7b1018442a5ba02b84b66f562f777056",
+      "bytes": 90
+    },
+    "rollback/zh-Hans/name.txt": {
+      "sha256": "d9af78c7338b8bc7445c635ab2fca59a462872943aae9ef2f30ee79cc58fb6b0",
+      "bytes": 22
+    },
+    "rollback/zh-Hans/promotional_text.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "rollback/zh-Hans/subtitle.txt": {
+      "sha256": "4c02f587bfa84a9ccae808c6ad04734ebd040f87a4afc316c23d013f44d909cd",
+      "bytes": 42
+    },
+    "rollback/zh-Hans/whats_new.txt": {
+      "sha256": "e8b0fe65ae0bbb6675c6233b8e3a86a0efcf5393e102226cbf5aa2d062978b32",
+      "bytes": 174
+    },
+    "snapshots/asc-metadata-2026-11-19.txt": {
+      "sha256": "d325b800df9150ebc235eaa2f7053e09e415746da6c1fc67958607bb506ce1c6",
+      "bytes": 9077
+    },
+    "snapshots/en-US-description-opening-before.txt": {
+      "sha256": "0b922b054bcbdf4ae8ee986cb59a1986513ab55d70fe50d4744c9109b171154a",
+      "bytes": 174
+    },
+    "snapshots/en-US-description-tail-preserved.txt": {
+      "sha256": "a8960d8984fec5663f34b7904122216dfddaf3698cd16a5d0be0065e2197570b",
+      "bytes": 2912
+    },
+    "snapshots/masso-aso-candidates-20261119.json": {
+      "sha256": "5bdf85c4ccf119f540e43d8070c04093ae16b256ea306d98471b0fbd6e171e94",
+      "bytes": 2460
+    },
+    "snapshots/masso-aso-independent-review-20261119.json": {
+      "sha256": "cc5c881a0cd964dadee1dd030b8837ae766c3fb47a3fe066cc815ac293f8f707",
+      "bytes": 2209
+    },
+    "snapshots/zh-Hans-description-opening-before.txt": {
+      "sha256": "150fb1fa57f0d86110ac0d8e1f29b5825b85d688684db4b55f81d49445ac9613",
+      "bytes": 172
+    },
+    "snapshots/zh-Hans-description-tail-preserved.txt": {
+      "sha256": "987ea8f907e3cea1c17833620076b06bbe9e52f8c31e11b35e3beab6255f09c3",
+      "bytes": 2579
+    },
+    "validate.py": {
+      "sha256": "c9934c8dd47d40113526d0dbb6505b1ea224d94bb514ef8bf7f25b8af369fa7f",
+      "bytes": 7821
+    },
+    "validation-results.json": {
+      "sha256": "797d146bf80d762840779bb6a5488ddf7383fc87d55a38b964c4cf0f6d822931",
+      "bytes": 1244
+    }
+  }
+}

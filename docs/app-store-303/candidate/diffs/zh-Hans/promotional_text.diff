@@ -1,0 +1,5 @@
+--- before/zh-Hans/promotional_text.txt
++++ after/zh-Hans/promotional_text.txt
+@@ -0,0 +1 @@
++用 AI 按目标与器械生成训练计划，记录每组重量和次数，在 3D 肌群图中查看基于训练记录的恢复估算。
+\ No newline at end of file

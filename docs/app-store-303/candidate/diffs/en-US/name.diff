@@ -1,0 +1,7 @@
+--- before/en-US/name.txt
++++ after/en-US/name.txt
+@@ -1 +1 @@
+-Masso — AI Workout Planner
+\ No newline at end of file
++Masso — Workout Tracker
+\ No newline at end of file
