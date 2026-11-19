@@ -200,7 +200,12 @@ final class SubscriptionManager {
     func restore() async {
         lastError = nil
         do {
-            try await AppStore.sync()
+            // StoreKit sync can wait on the main actor for a dialog the test session
+            // has disabled. Suspending off this actor lets the real sync finish and
+            // the paywall present its result.
+            try await Task.detached(priority: .userInitiated) {
+                try await AppStore.sync()
+            }.value
             await refreshEntitlements()
             if currentSubscription == nil {
                 lastError = NSLocalizedString("No active subscription found", comment: "")

@@ -458,8 +458,10 @@ final class SessionReportUITests: XCTestCase {
                 proExtra["MASO_HOME_PRO"] = "1"
                 let pro = launch("home-start", language: language, extra: proExtra)
                 XCTAssertFalse(pro.buttons["pro.banner"].waitForExistence(timeout: 2))
-                let card = pro.descendants(matching: .any)["home.daily-overview"]
-                XCTAssertTrue(card.waitForExistence(timeout: 25), "\(language) large=\(large)")
+                let cards = pro.descendants(matching: .any).matching(identifier: "home.daily-overview")
+                let oneCard = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in cards.count == 1 }, object: nil)
+                XCTAssertEqual(XCTWaiter.wait(for: [oneCard], timeout: 25), .completed, "\(language) large=\(large) \(pro.debugDescription)")
+                let card = cards.element(boundBy: 0)
                 XCTAssertEqual(card.frame.minY, bannerY, accuracy: 1, "\(bannerNote); pro card \(card.frame)")
                 let proof = XCTAttachment(string: "\(bannerNote); pro card minY \(card.frame.minY) frame \(card.frame)")
                 proof.name = "home-top-\(language)-\(large ? "large" : "regular")"

@@ -190,7 +190,14 @@ struct DailyOverviewCard: View {
         }
         .padding(MasoMetrics.cardPadding)
         .contentCardChrome(padding: 0)
-        .accessibilityIdentifier("home.daily-overview")
+        // One element owns this id. Putting it on the card made Workout, Diet, Sleep,
+        // Add meal and the calendar scroll view inherit it.
+        .background {
+            Color.clear
+                .accessibilityElement(children: .ignore)
+                .accessibilityIdentifier("home.daily-overview")
+                .accessibilityLabel("Daily overview")
+        }
         .navigationDestination(item: $selectedDay) { route in
             DailyRecordSheet(day: route.day, onReplay: { plan in
                 selectedDay = nil

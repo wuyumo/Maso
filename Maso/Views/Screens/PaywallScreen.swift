@@ -301,6 +301,10 @@ struct PaywallScreen: View {
             }
             #endif
             await subscriptions.restore()
+            if let error = subscriptions.lastError {
+                notice = Notice(message: error)
+                subscriptions.lastError = nil
+            }
             if data.settings.isPro { dismiss() }
         }
     }

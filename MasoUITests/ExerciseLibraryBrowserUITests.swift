@@ -216,6 +216,7 @@ final class ExerciseLibraryBrowserUITests: XCTestCase {
     private func launch(scene: String, language: String = "en") throws -> XCUIApplication {
         let app = XCUIApplication(bundleIdentifier: "com.yumowu.maso")
         app.terminate()
+        _ = app.wait(for: .notRunning, timeout: 5)
         app.launchEnvironment = ["MASO_EXERCISE_UI_TEST_SCENE": scene, "MASO_SHOWCASE_SEED": "1"]
         // Standard launch arguments override the app preference only in this
         // process; LanguageManager then applies its normal localization pathway.
@@ -223,7 +224,16 @@ final class ExerciseLibraryBrowserUITests: XCTestCase {
         print("EXERCISE_UI_LAUNCH \(scene) \(language) \(app.launchEnvironment)")
         app.launch()
         let scope = element("exercise.library.filters", in: app)
-        guard wait(timeout: 20, { scope.exists && scope.isHittable }) else {
+        let ready = wait(timeout: 20) {
+            if app.buttons["ai.policy.notice.dismiss"].exists { app.buttons["ai.policy.notice.dismiss"].tap() }
+            let photo = app.alerts.firstMatch
+            if photo.exists, photo.label.localizedCaseInsensitiveContains("photo") {
+                let deny = photo.buttons["Don’t Allow"].exists ? photo.buttons["Don’t Allow"] : photo.buttons["Don't Allow"]
+                if deny.exists { deny.tap() }
+            }
+            return scope.exists && scope.isHittable
+        }
+        guard ready else {
             capture(app, name: "\(language)-\(scene)-launch-failure")
             let hierarchy = XCTAttachment(string: app.debugDescription)
             hierarchy.name = "exercise-ui-launch-hierarchy"; hierarchy.lifetime = .keepAlways; add(hierarchy)

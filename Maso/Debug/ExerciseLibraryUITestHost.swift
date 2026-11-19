@@ -47,13 +47,15 @@ struct ExerciseLibraryUITestHost: View {
     @State private var data: DataStore
     @State private var session = TrainingSessionStore()
     @State private var subscriptions = SubscriptionManager()
-    @State private var presented = false
+    @State private var presented: Bool
     @State private var pickedIDs: [String] = []
     @State private var dismissalCount = 0
     @State private var coachWorkoutPresented = false
 
     init(scene: String) {
         self.scene = scene
+        let fullScreen = scene.hasSuffix("-player") || scene == "home-start"
+        _presented = State(initialValue: !fullScreen)
         if let fixture = SessionReportUIFixture.prepare(scene) {
             _data = State(initialValue: fixture.data)
             _session = State(initialValue: fixture.session)
