@@ -50,6 +50,81 @@ final class CoachAdviceTests: XCTestCase {
         XCTAssertNil(result.first?.steps.first?.weight)
     }
 
+    func testSyntheticCoverageNotesDoNotInventFiveGroupsForEveryone() {
+        let chinese = LocalRoutineRules.parse("合成备注，不是用户原文：覆盖五个主要的肌肉部位")
+        let english = LocalRoutineRules.parse("synthetic note, not a user plan: cover the five major muscle groups")
+        XCTAssertEqual(chinese.majorCoverageMinimum, 5)
+        XCTAssertEqual(english.majorCoverageMinimum, 5)
+        XCTAssertTrue(chinese.namedCoverageSections.isEmpty)
+        XCTAssertTrue(english.namedCoverageSections.isEmpty)
+        XCTAssertTrue(LocalRoutineRules.parse("多练胸").majorCoverageMinimum == nil)
+        XCTAssertEqual(LocalRoutineRules.parse("多练胸").focusSections, [.chest])
+        XCTAssertEqual(LocalRoutineRules.parse("每次都要覆盖五个主要肌群").coverageScope, .session)
+        XCTAssertEqual(LocalRoutineRules.parse("每周覆盖五个主要肌群").coverageScope, .week)
+        XCTAssertTrue(LocalRoutineRules.parse("覆盖胸和背").namedCoverageSections.isSuperset(of: [.chest, .back]))
+        XCTAssertTrue(LocalRoutineRules.parse("保留一段拉伸").allowsPreparatory)
+        XCTAssertFalse(chinese.allowsPreparatory)
+        XCTAssertTrue(LocalRoutineRules.parse("").isEmpty)
+    }
+
+    func testStretchDoesNotCoverChestAndSecondaryMuscleDoesNotEither() throws {
+        let stretch = try XCTUnwrap(ExerciseLibrary.byId["chest_stretch_doorway"])
+        let bench = try XCTUnwrap(ExerciseLibrary.byId["bench_press_barbell"])
+        XCTAssertTrue(stretch.category.isPreparatory)
+        XCTAssertNil(LocalRoutineRules.strengthSection(of: stretch))
+        XCTAssertEqual(LocalRoutineRules.strengthSection(of: bench), .chest)
+        XCTAssertTrue(bench.muscleGroups.contains { ($0.section ?? $0) != .chest })
+        let onlyStretch = Plan(id: "synthetic-stretch", name: "Synthetic", steps: [
+            PlanStep(id: "s", exerciseId: stretch.id, sets: 3, reps: 1)
+        ], createdAt: Date(), updatedAt: Date())
+        let intent = LocalRoutineRules.parse("合成：覆盖胸")
+        let report = LocalRoutineRules.assess(plans: [onlyStretch], intent: intent, pool: [stretch, bench],
+                                              exById: [stretch.id: stretch, bench.id: bench], stepBudget: 4, application: .sessionEach)
+        XCTAssertFalse(report.satisfied)
+        XCTAssertTrue(report.missingNamed.contains(.chest))
+        XCTAssertTrue(report.retryable)
+    }
+
+    @MainActor
+    func testFiveGroupGapIsIdentifiedAndWeekIsNotTheSameAsOneSession() throws {
+        let ids = ["bench_press_barbell", "barbell_row", "overhead_press_barbell", "squat_barbell"]
+        let exercises = try ids.map { try XCTUnwrap(ExerciseLibrary.byId[$0]) }
+        var known = Dictionary(uniqueKeysWithValues: exercises.map { ($0.id, $0) })
+        let steps = exercises.enumerated().map { PlanStep(id: "g\($0.offset)", exerciseId: $0.element.id, sets: 3, reps: 8) }
+        let one = Plan(id: "synthetic-four", name: "Synthetic", steps: steps, createdAt: Date(), updatedAt: Date())
+        let intent = LocalRoutineRules.parse("合成：覆盖五个主要的肌肉部位")
+        let short = LocalRoutineRules.assess(plans: [one], intent: intent, pool: exercises, exById: known, stepBudget: 4, application: .sessionEach)
+        XCTAssertFalse(short.satisfied)
+        XCTAssertFalse(short.retryable)
+        let curl = try XCTUnwrap(ExerciseLibrary.byId["bicep_curl_barbell"])
+        known[curl.id] = curl
+        let arms = Plan(id: "synthetic-arms", name: "Synthetic", steps: [
+            PlanStep(id: "arm", exerciseId: curl.id, sets: 3, reps: 8)
+        ], createdAt: Date(), updatedAt: Date())
+        let week = LocalRoutineRules.assess(plans: [one, arms], intent: intent, pool: Array(known.values), exById: known, stepBudget: 8, application: .weekUnion)
+        XCTAssertTrue(week.satisfied)
+        let each = LocalRoutineRules.assess(plans: [one, arms], intent: intent, pool: Array(known.values), exById: known, stepBudget: 4, application: .sessionEach)
+        XCTAssertFalse(each.satisfied)
+    }
+
+    @MainActor
+    func testFallbackReplacesChestStretchAndRecordsAnImpossibleRequest() throws {
+        let stretch = try XCTUnwrap(ExerciseLibrary.byId["chest_stretch_doorway"])
+        let bench = try XCTUnwrap(ExerciseLibrary.byId["bench_press_barbell"])
+        let plan = Plan(id: "synthetic-fallback", name: "Synthetic", steps: [
+            PlanStep(id: "stretch", exerciseId: stretch.id, sets: 3, reps: 1)
+        ], createdAt: Date(), updatedAt: Date())
+        let replaced = try XCTUnwrap(LocalRoutineRules.apply(to: [plan], intent: LocalRoutineRules.parse("合成：覆盖胸"),
+            settings: UserSettings(), exById: [stretch.id: stretch, bench.id: bench]).first)
+        XCTAssertEqual(replaced.steps.first?.exerciseId, bench.id)
+        XCTAssertNil(replaced.constraints?.first { $0.kind == .unmet })
+        let blocked = LocalRoutineRules.parse("合成：不练腿，不练肩，不练手臂，不练核心，不练背，覆盖五个主要的肌肉部位")
+        XCTAssertEqual(blocked.majorCoverageMinimum, 5)
+        let impossible = LocalRoutineRules.apply(to: [plan], intent: blocked, settings: UserSettings(),
+                                                 exById: [stretch.id: stretch, bench.id: bench], coverage: .sessionEach)
+        XCTAssertEqual(impossible.first?.constraints?.first { $0.kind == .unmet }?.value, "coverage")
+    }
+
     func testMemoryRequiresSourceAndRejectsTemporaryOrDuplicatePreferences() {
         let proposal = CoachMemoryProposal(note: "Focus on upper chest", sourceQuote: "focus on upper chest")
         XCTAssertNotNil(CoachMemoryProposal.validated(proposal, userText: "I prefer to focus on upper chest", existing: "", declined: []))

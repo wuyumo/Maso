@@ -104,6 +104,8 @@ struct PlanConstraint: Codable, Hashable, Identifiable, Sendable {
         case duration      // 45 分钟以内
         case avoid         // 不练腿 (含伤病规避)
         case focus         // 多练胸
+        case coverage      // 覆盖 N 个主要肌群 / 点名的肌群
+        case unmet         // 器械、伤病或时长让覆盖无法完成
     }
     let kind: Kind
     /// 机器可读值 (equipment=EquipmentCategory.rawValue / duration=分钟数 / avoid|focus=MuscleGroup.rawValue)
@@ -119,6 +121,8 @@ struct PlanConstraint: Codable, Hashable, Identifiable, Sendable {
         case .duration:  return "clock"
         case .avoid:     return "hand.raised"
         case .focus:     return "target"
+        case .coverage:  return "square.grid.3x3"
+        case .unmet:     return "exclamationmark.triangle"
         }
     }
 }

@@ -10,6 +10,32 @@ import AVFoundation
             ["squat", "row", "squat"], ["row", "press", "curl"]
         ), ["squat", "row", "press", "curl"])
     }
+
+    func testUnverifiedMotionStaysStaticOnlyWhenAReviewedStillExists() throws {
+        let target = "chest_press_machine_iso_lateral"
+        XCTAssertEqual(CoreExerciseDemos.assets[target]?.verification, "unverified")
+        XCTAssertTrue(CoreExerciseDemos.reviewedStillIDs.isEmpty)
+        XCTAssertNil(CoreExerciseDemos.verifiedStill(target))
+        XCTAssertEqual(CoreExerciseDemos.motion(id: target, remote: nil), .holdWithoutUnverifiedLoop)
+        if !ExerciseDemoService.shared.hasRemoteCatalog {
+            XCTAssertEqual(demoMotion(target), .holdWithoutUnverifiedLoop)
+        }
+        var repeated = try XCTUnwrap(CoreExerciseDemos.assets[target])
+        repeated.verification = nil
+        XCTAssertEqual(CoreExerciseDemos.motion(id: target, remote: repeated), .holdWithoutUnverifiedLoop)
+        repeated.sha256 = String(repeating: "ab", count: 32)
+        XCTAssertEqual(CoreExerciseDemos.motion(id: target, remote: repeated), .play)
+        let played = try XCTUnwrap(CoreExerciseDemos.assets.first { $0.value.verification != "unverified" })
+        XCTAssertEqual(CoreExerciseDemos.motion(id: played.key, remote: nil), .play)
+        if !ExerciseDemoService.shared.hasRemoteCatalog {
+            XCTAssertEqual(demoMotion(played.key), .play)
+        }
+        defer { CoreExerciseDemos.reviewedStillIDs.remove(target) }
+        CoreExerciseDemos.reviewedStillIDs.insert(target)
+        XCTAssertEqual(CoreExerciseDemos.motion(id: target, remote: nil), .verifiedStill)
+        XCTAssertNotNil(CoreExerciseDemos.verifiedStill(target))
+        XCTAssertEqual(demoMotion(target), .verifiedStill)
+    }
 }
 
 @MainActor final class ExerciseTutorialTests: XCTestCase {

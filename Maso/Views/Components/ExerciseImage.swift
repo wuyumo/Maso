@@ -129,6 +129,11 @@ enum ExerciseMediaPolicy {
     }
 }
 
+func demoMotion(_ id: String) -> CoreExerciseDemos.Motion {
+    let service = ExerciseDemoService.shared
+    return CoreExerciseDemos.motion(id: id, remote: service.hasRemoteCatalog ? service.remoteAssets[id] : nil)
+}
+
 /// The player and both exercise-detail heroes share measured bounds, centered
 /// aspect-fill cropping, and media loading. Screen-specific fades stay outside.
 struct FullBleedExerciseImage: View {
@@ -143,13 +148,15 @@ struct FullBleedExerciseImage: View {
                                startPoint: .top, endPoint: .bottom)
                 if let bytes = exercise.customImageData, let image = UIImage(data: bytes) {
                     ExerciseAspectFillPhoto(image: image, contentMode: contentMode)
-                } else if let url = ExerciseDemoService.shared.files[exercise.id] {
+                } else if demoMotion(exercise.id) == .verifiedStill, let image = CoreExerciseDemos.verifiedStill(exercise.id) {
+                    ExerciseAspectFillPhoto(image: image, contentMode: contentMode)
+                } else if demoMotion(exercise.id) == .play, let url = ExerciseDemoService.shared.files[exercise.id] {
                     if url.pathExtension.lowercased() == "gif" {
                         GeneratedExerciseGIF(url: url, playbackEnabled: playbackEnabled, contentMode: contentMode)
                     } else {
                         GeneratedExerciseVideo(url: url, playbackEnabled: playbackEnabled, contentMode: contentMode)
                     }
-                } else if let thumbnail = CoreExerciseDemos.thumbnail(exercise.id) {
+                } else if demoMotion(exercise.id) == .play, let thumbnail = CoreExerciseDemos.thumbnail(exercise.id) {
                     ExerciseAspectFillPhoto(image: thumbnail, contentMode: contentMode)
                 } else if let folder = exercise.imageFolder, ExerciseMediaPolicy.ownsLegacy(exercise.id, folder: folder) {
                     CrossFadeFrames(folder: folder, animated: playbackEnabled, contentMode: contentMode)
@@ -173,7 +180,7 @@ struct FullBleedExerciseImage: View {
             .clipped()
         }
         .task(id: "\(exercise.id)|\(ExerciseDemoService.shared.remoteAssets[exercise.id]?.sha256 ?? "")") {
-            guard exercise.customImageData == nil else { return }
+            guard exercise.customImageData == nil, demoMotion(exercise.id) == .play else { return }
             await ExerciseDemoService.shared.loadMedia(exercise.id)
             // A transient network failure should not leave the poster in place
             // for the entire time the detail/player remains visible.
@@ -220,6 +227,11 @@ struct ExerciseImage: View {
         return CoreExerciseDemos.thumbnail(id)
     }
 
+    private var motion: CoreExerciseDemos.Motion {
+        guard let id = exerciseID else { return .play }
+        return demoMotion(id)
+    }
+
     private var hasAdoptedMedia: Bool {
         guard let id = exerciseID else { return false }
         let service = ExerciseDemoService.shared
@@ -240,15 +252,17 @@ struct ExerciseImage: View {
             // 自创动作图片 — 优先级最高. PhotosPicker 拿到的 JPEG bytes, 直接 UIImage(data:).
             if let imageData = customImageData, let ui = UIImage(data: imageData) {
                 ExerciseAspectFillPhoto(image: ui)
-            } else if let id = exerciseID, let url = ExerciseDemoService.shared.files[id] {
+            } else if motion == .verifiedStill, let image = CoreExerciseDemos.verifiedStill(exerciseID) {
+                ExerciseAspectFillPhoto(image: image)
+            } else if motion == .play, let id = exerciseID, let url = ExerciseDemoService.shared.files[id] {
                 if url.pathExtension.lowercased() == "gif" && animated {
                     GeneratedExerciseGIF(url: url, maxPixelSize: max(120, Int(size * displayScale)))
                 } else {
                     ExerciseDemoThumbnail(url: url, fallback: currentBundledPoster).id(url)
                 }
-            } else if let thumbnail = currentBundledPoster {
+            } else if motion == .play, let thumbnail = currentBundledPoster {
                 ExerciseAspectFillPhoto(image: thumbnail)
-            } else if hasAdoptedMedia {
+            } else if motion == .play, hasAdoptedMedia {
                 // An approved newer image is loading: never show an older unrelated fallback.
                 Color.clear
             } else if let folder = imageFolder, ExerciseMediaPolicy.ownsLegacy(exerciseID, folder: folder) {
@@ -283,7 +297,7 @@ struct ExerciseImage: View {
         }
         .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
         .task(id: "\(exerciseID ?? "")|\(ExerciseDemoService.shared.remoteAssets[exerciseID ?? ""]?.sha256 ?? "")") {
-            guard customImageData == nil, let id = exerciseID,
+            guard customImageData == nil, motion == .play, let id = exerciseID,
                   CoreExerciseDemos.assets[id] != nil || ExerciseDemoService.shared.remoteAssets[id] != nil else { return }
             await ExerciseDemoService.shared.loadMedia(id)
         }

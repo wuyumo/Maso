@@ -46,6 +46,37 @@ enum CoreExerciseDemos {
         guard let id else { return false }
         return assets[id]?.verification == "unverified"
     }
+
+    /// How an adopted demo may be shown. A file named frame 0, or a poster extracted
+    /// from an unverified clip, is not a reviewed still.
+    enum Motion: Equatable { case play, verifiedStill, holdWithoutUnverifiedLoop }
+
+    static func motion(id: String, remote: ExerciseDemoResult?) -> Motion {
+        let bundled = assets[id]
+        if remote?.verification == "unverified" { return stillOrHold(id) }
+        if let remote {
+            // A remote catalog that repeats the unverified bytes does not promote them.
+            if bundled?.verification == "unverified", remote.sha256 == bundled?.sha256 { return stillOrHold(id) }
+            return .play
+        }
+        if bundled?.verification == "unverified" { return stillOrHold(id) }
+        return .play
+    }
+
+    /// Reviewed stills only. This source tree has no such record, so the set stays empty
+    /// and an unverified clip cannot fall back to its own first frame.
+    static var reviewedStillIDs: Set<String> = []
+
+    static func verifiedStill(_ id: String?) -> UIImage? {
+        guard let id, reviewedStillIDs.contains(id) else { return nil }
+        return UIGraphicsImageRenderer(size: CGSize(width: 1, height: 1)).image { context in
+            context.fill(CGRect(x: 0, y: 0, width: 1, height: 1))
+        }
+    }
+
+    private static func stillOrHold(_ id: String) -> Motion {
+        reviewedStillIDs.contains(id) ? .verifiedStill : .holdWithoutUnverifiedLoop
+    }
     private static let posterSourceHashes: [String: String] = {
         guard let url = Bundle.main.url(forResource: "poster-catalog", withExtension: "json", subdirectory: "CoreExerciseDemos"),
               let data = try? Data(contentsOf: url),
@@ -257,6 +288,11 @@ final class ExerciseDemoService {
             do { try await Task.sleep(for: .milliseconds(100)) }
             catch { return }
         }
+        let remote = hasRemoteCatalog ? remoteAssets[exerciseID] : nil
+        if CoreExerciseDemos.motion(id: exerciseID, remote: remote) != .play {
+            files.removeValue(forKey: exerciseID)
+            return
+        }
         // A cache eviction or a concurrent prefetch can remove the published file.
         // Never throttle a known catalog item that still needs to be displayed.
         if !force, files[exerciseID] != nil, let date = checked[exerciseID], Date().timeIntervalSince(date) < 600 { return }
@@ -271,6 +307,7 @@ final class ExerciseDemoService {
         } catch { /* Existing exercise images and instructions remain available. */ }
     }
     private func download(_ asset: ExerciseDemoResult, exerciseID: String) async throws {
+        if asset.verification == "unverified" { throw Failure.download }
         guard let sha = asset.sha256, !CoreExerciseDemos.revokedHashes.contains(sha), sha.count == 64, sha.allSatisfy({ $0.isHexDigit }),
               let size = asset.bytes, (1...25*1024*1024).contains(size),
               asset.videoPath == "/v1/exercise-demos/video/\(sha)" else { throw Failure.download }

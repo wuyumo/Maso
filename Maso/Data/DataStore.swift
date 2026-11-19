@@ -1888,8 +1888,11 @@ final class DataStore {
             return s
         }
         let intent = LocalRoutineRules.parse(settings.coachMemory)
-        if !intent.focusMuscles.isEmpty {
-            p = LocalRoutineRules.apply(to: [p], intent: intent, settings: settings, exById: exById).first ?? p
+        if intent.requestsCoverage || !intent.focusMuscles.isEmpty {
+            // 4 天及以上、又没写“每次/全身”时，五个主要肌群是整周要求，不拿今天这一练硬凑。
+            let weeklyOnly = intent.requestsCoverage && intent.coverageScope != .session && settings.weeklyTrainingDays >= 4
+            let coverage: LocalRoutineRules.CoverageApplication? = weeklyOnly ? .skip : nil
+            p = LocalRoutineRules.apply(to: [p], intent: intent, settings: settings, exById: exById, coverage: coverage).first ?? p
         }
         return p
     }
@@ -2007,7 +2010,11 @@ final class DataStore {
         let cs = LocalRoutineRules.constraints(from: intent)
         return plans.map { original in
             var p = original
-            if !cs.isEmpty { p.constraints = cs }
+            var merged = cs
+            for existing in original.constraints ?? [] where existing.kind == .unmet && !merged.contains(where: { $0.id == existing.id }) {
+                merged.append(existing)
+            }
+            if !merged.isEmpty { p.constraints = merged }
             return routinePlanDefaults(p)
         }
     }

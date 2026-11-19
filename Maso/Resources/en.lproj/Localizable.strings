@@ -1462,6 +1462,9 @@
 "Under %d min" = "Under %d min";
 "No %@" = "No %@";
 "More %@" = "More %@";
+"Cover %d major muscle groups" = "Cover %d major muscle groups";
+"Cover %@" = "Cover %@";
+"Major-muscle coverage is not met" = "Major-muscle coverage is not met";
 "Your data" = "Your data";
 "Export my data" = "Export my data";
 "A JSON backup of everything plus a CSV of every set you've logged — open it in Numbers, Excel, or any other app. Your data is yours; you can take it and go." = "A JSON backup of everything plus a CSV of every set you've logged — open it in Numbers, Excel, or any other app. Your data is yours; you can take it and go.";

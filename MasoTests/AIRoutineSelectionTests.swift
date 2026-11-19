@@ -348,4 +348,41 @@ final class WeeklyRoutineCountTests: XCTestCase {
         XCTAssertEqual(data.settings.weeklyTrainingDays, 4)
         XCTAssertFalse(data.coachSession.isGenerating)
     }
+
+    func testCoverageNoteKeepsStretchOutOfTheStrengthCatalog() throws {
+        let note = "合成备注，不是用户原文：覆盖五个主要的肌肉部位"
+        var payload = payload()
+        payload.coachMemory = note
+        payload.daysPerWeek = 3
+        let candidates = service.routineCandidates(payload: payload, library: ExerciseLibrary.all, query: note)
+        XCTAssertFalse(candidates.contains { $0.id == "chest_stretch_doorway" })
+        XCTAssertTrue(candidates.contains { LocalRoutineRules.strengthSection(of: $0) == .chest })
+        let prompt = service.buildPrompt(payload: payload, library: candidates)
+        XCTAssertTrue(prompt.contains("STRENGTH COVERAGE"))
+        XCTAssertTrue(prompt.contains("at least 5"))
+        XCTAssertTrue(service.routineContractProbe(payload: payload, count: 3, maxExercises: 4).contains("across the set of routines"))
+    }
+
+    func testMissingCoverageRetriesOnceAndAnImpossibleCountDoesNot() async throws {
+        let bench = try exercise("bench_press_barbell")
+        let stretch = try exercise("chest_stretch_doorway")
+        let named = LocalRoutineRules.parse("合成：覆盖胸")
+        var attempts = 0
+        do {
+            _ = try await service.requestValidatedPlans(candidates: [bench, stretch], expectedCount: 1, maxExercises: 1, single: true, coverageIntent: named, coverageApplication: .sessionEach) { _ in
+                attempts += 1
+                return #"{"name":"Synthetic","steps":[{"exercise_id":"chest_stretch_doorway","sets":2,"reps":1}]}"#
+            }
+            XCTFail("stretch must not satisfy chest coverage")
+        } catch { XCTAssertEqual(attempts, 2) }
+        attempts = 0
+        let five = LocalRoutineRules.parse("合成：覆盖五个主要的肌肉部位")
+        do {
+            _ = try await service.requestValidatedPlans(candidates: [bench], expectedCount: 1, maxExercises: 1, single: true, coverageIntent: five, coverageApplication: .sessionEach) { _ in
+                attempts += 1
+                return #"{"name":"Synthetic","steps":[{"exercise_id":"bench_press_barbell","sets":3,"reps":8}]}"#
+            }
+            XCTFail("four missing majors cannot be repaired by another model call")
+        } catch { XCTAssertEqual(attempts, 1) }
+    }
 }
