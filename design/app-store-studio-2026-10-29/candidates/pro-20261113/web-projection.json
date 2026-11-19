@@ -2,6 +2,14 @@
   "contract": "masso-shared-sections-v1",
   "authoring": "candidates/pro-20261113/project.json#sharedSections",
   "revision": "f33f436ef6aca6c390458f6be87342b1f8514c8337e6f57739f802983ce14570",
+  "websiteHero": {
+    "publication": "candidate",
+    "demoOnly": true,
+    "copyApproval": "unapproved",
+    "locale": "zh",
+    "title": "从计划到恢复，\n训练更有方向",
+    "body": "AI 训练计划、训练记录、肌肉恢复估算与饮食建议，在一个 App 里衔接起来"
+  },
   "sections": [
     {
       "id": "plan",

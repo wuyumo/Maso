@@ -40,11 +40,16 @@ export function storeSlides(project) {
   return slidesByDevice;
 }
 
+export function websiteHero(project) {
+  return project.websiteHero ?? null;
+}
+
 export function webDocument(project) {
   return {
     contract: "masso-shared-sections-v1",
     authoring: "candidates/pro-20261113/project.json#sharedSections",
     revision: copyRevision(project.sharedSections),
+    websiteHero: websiteHero(project),
     sections: SECTION_ORDER.map((id) => {
       const section = project.sharedSections.find((item) => item.id === id);
       return {
@@ -68,6 +73,7 @@ export function payloadDocument(project) {
     contract: "masso-shared-sections-v1",
     authoring: "candidates/pro-20261113/project.json#sharedSections",
     shortCopyRevision: copyRevision(project.sharedSections),
+    websiteHero: websiteHero(project),
     sections: SECTION_ORDER.map((id) => {
       const section = project.sharedSections.find((item) => item.id === id);
       const mediaRefs = [];

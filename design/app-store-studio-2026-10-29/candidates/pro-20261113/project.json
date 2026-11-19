@@ -1362,6 +1362,14 @@
       }
     }
   ],
+  "websiteHero": {
+    "publication": "candidate",
+    "demoOnly": true,
+    "copyApproval": "unapproved",
+    "locale": "zh",
+    "title": "从计划到恢复，\n训练更有方向",
+    "body": "AI 训练计划、训练记录、肌肉恢复估算与饮食建议，在一个 App 里衔接起来"
+  },
   "sharedSectionNotes": {
     "copyApproval": "approved is the owner-selected A2.1 text for plan, recovery, and diet only. It is not ASC upload acceptance.",
     "notApproved": [

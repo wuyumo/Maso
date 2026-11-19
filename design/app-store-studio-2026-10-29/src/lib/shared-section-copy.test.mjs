@@ -149,3 +149,34 @@ test("website demo captions stay bound to the four file hashes", () => {
   const payload = payloadDocument(project);
   assert.deepEqual(payload.sections.find((section) => section.id === "training").mediaAnnotations, bySection.training.mediaAnnotations);
 });
+
+test("the website hero is a Chinese demo and stays outside the 180 short strings", () => {
+  const project = load();
+  const hero = {
+    publication: "candidate",
+    demoOnly: true,
+    copyApproval: "unapproved",
+    locale: "zh",
+    title: "从计划到恢复，\n训练更有方向",
+    body: "AI 训练计划、训练记录、肌肉恢复估算与饮食建议，在一个 App 里衔接起来",
+  };
+  assert.deepEqual(project.websiteHero, hero);
+  assert.equal(canonicalRows(project.sharedSections).flatMap((row) => row.slice(2)).includes(hero.title), false);
+  assert.equal(canonicalRows(project.sharedSections).flatMap((row) => row.slice(2)).includes(hero.body), false);
+  const projected = projectCandidate(project);
+  assert.equal(projected.revision, originalRows);
+  assert.deepEqual(projected.web.websiteHero, hero);
+  assert.equal(projected.store.slidesByDevice.iphone.length, 5);
+  assert.equal(projected.store.slidesByDevice.iphone.some((slide) => slide.headline?.zh === hero.title), false);
+  assert.equal(projected.web.sections.find((section) => section.id === "training").copyApproval, "unapproved");
+  assert.equal(projected.web.sections.find((section) => section.id === "devices").copyApproval, "unapproved");
+  const before = payloadSHA(project);
+  const changed = { ...project, websiteHero: { ...hero, title: "Fixture hero" } };
+  assert.equal(copyRevision(changed.sharedSections), originalRows);
+  assert.equal(projectCandidate(changed).web.websiteHero.title, "Fixture hero");
+  assert.notEqual(payloadSHA(changed), before);
+  const without = { ...project };
+  delete without.websiteHero;
+  assert.equal(webDocument(without).websiteHero, null);
+  assert.equal(copyRevision(without.sharedSections), originalRows);
+});
