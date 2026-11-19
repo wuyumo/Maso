@@ -148,6 +148,130 @@ final class CoachAdviceTests: XCTestCase {
         XCTAssertFalse(conflict.steps.contains { $0.exerciseId == stretch.id })
     }
 
+    @MainActor
+    func testFullAvoidDropsEveryStepAndDoesNotOverwriteSavedData() throws {
+        let squat = try XCTUnwrap(ExerciseLibrary.byId["squat_barbell"])
+        let saved = Plan(id: "saved-user-plan", name: "Saved", steps: [
+            PlanStep(id: "saved-squat", exerciseId: squat.id, sets: 3, reps: 5)
+        ], createdAt: Date(), updatedAt: Date())
+        let log = SetRecord(id: "saved-set", exerciseId: squat.id, exerciseName: squat.name, category: squat.category,
+                            weight: 100, reps: 5, performedAt: Date(), planId: saved.id)
+        let store = DataStore(exercises: [squat], plans: [saved], sets: [log], settings: UserSettings())
+        let generated = Plan(id: "generated-legs", name: "Generated", steps: [
+            PlanStep(id: "gen-squat", exerciseId: squat.id, sets: 5, reps: 5)
+        ], createdAt: Date(), updatedAt: Date())
+        let result = try XCTUnwrap(LocalRoutineRules.apply(to: [generated], intent: LocalRoutineRules.parse("合成：不练腿"),
+                                                           settings: store.settings, exById: store.exById).first)
+        XCTAssertEqual(generated.steps.map(\.exerciseId), [squat.id])
+        XCTAssertTrue(result.steps.isEmpty)
+        XCTAssertFalse(result.steps.contains { $0.exerciseId == squat.id })
+        XCTAssertEqual(result.constraints?.first { $0.kind == .unmet }?.value, "avoid")
+        XCTAssertEqual(store.plans.map(\.id), [saved.id])
+        XCTAssertEqual(store.plans.first?.steps.map(\.exerciseId), [squat.id])
+        XCTAssertEqual(store.sets.map(\.id), [log.id])
+        XCTAssertFalse(store.saveCoachPlan(result))
+        XCTAssertEqual(store.replaceSavedPlans(withCoach: [result]), 0)
+        XCTAssertEqual(store.plans.map(\.id), [saved.id])
+        XCTAssertEqual(store.sets.map(\.id), [log.id])
+    }
+
+    @MainActor
+    func testPartialAvoidMeetsCoverageOnlyWithAllowedSections() throws {
+        let bench = try XCTUnwrap(ExerciseLibrary.byId["bench_press_barbell"])
+        let squat = try XCTUnwrap(ExerciseLibrary.byId["squat_barbell"])
+        let known = [bench.id: bench, squat.id: squat]
+        let plan = Plan(id: "generated-partial", name: "Generated", steps: [
+            PlanStep(id: "bench", exerciseId: bench.id, sets: 3, reps: 8),
+            PlanStep(id: "squat", exerciseId: squat.id, sets: 3, reps: 5)
+        ], createdAt: Date(), updatedAt: Date())
+        let exact = LocalRoutineRules.parse("合成：不练腿，覆盖一个主要的肌肉部位")
+        XCTAssertEqual(exact.avoidSections, [.legs])
+        XCTAssertEqual(exact.majorCoverageMinimum, 1)
+        let dirty = LocalRoutineRules.assess(plans: [plan], intent: exact, pool: [bench, squat], exById: known, stepBudget: 4, application: .sessionEach)
+        XCTAssertEqual(dirty.covered, [.chest])
+        XCTAssertFalse(dirty.satisfied)
+        var two = exact
+        two.majorCoverageMinimum = 2
+        let inflated = LocalRoutineRules.assess(plans: [plan], intent: two, pool: [bench, squat], exById: known, stepBudget: 4, application: .sessionEach)
+        XCTAssertFalse(inflated.covered.contains(.legs))
+        XCTAssertEqual(inflated.covered.count, 1)
+        XCTAssertFalse(inflated.satisfied)
+        let result = try XCTUnwrap(LocalRoutineRules.apply(to: [plan], intent: exact, settings: UserSettings(), exById: known).first)
+        XCTAssertEqual(result.steps.map(\.exerciseId), [bench.id])
+        XCTAssertNil(result.constraints?.first { $0.kind == .unmet })
+        let clean = LocalRoutineRules.assess(plans: [result], intent: exact, pool: [bench, squat], exById: known, stepBudget: 4, application: .sessionEach)
+        XCTAssertEqual(clean.covered, [.chest])
+        XCTAssertTrue(clean.satisfied)
+    }
+
+    @MainActor
+    func testNoReplacementLeavesRealUnmetAndNoForbiddenStep() throws {
+        let squat = try XCTUnwrap(ExerciseLibrary.byId["squat_barbell"])
+        let plan = Plan(id: "generated-no-replacement", name: "Generated", steps: [
+            PlanStep(id: "squat", exerciseId: squat.id, sets: 3, reps: 5)
+        ], createdAt: Date(), updatedAt: Date())
+        let intent = LocalRoutineRules.parse("合成：不练腿，覆盖一个主要的肌肉部位")
+        let known = [squat.id: squat]
+        let result = try XCTUnwrap(LocalRoutineRules.apply(to: [plan], intent: intent, settings: UserSettings(), exById: known, coverage: .sessionEach).first)
+        XCTAssertTrue(result.steps.isEmpty)
+        XCTAssertFalse(result.steps.contains { $0.exerciseId == squat.id })
+        XCTAssertEqual(result.constraints?.first { $0.kind == .unmet }?.value, "coverage")
+        let report = LocalRoutineRules.assess(plans: [result], intent: intent, pool: [squat], exById: known, stepBudget: 4, application: .sessionEach)
+        XCTAssertTrue(report.covered.isEmpty)
+        XCTAssertFalse(report.covered.contains(.legs))
+        XCTAssertFalse(report.satisfied)
+        XCTAssertEqual(plan.steps.map(\.exerciseId), [squat.id])
+    }
+
+    @MainActor
+    func testLocalTemplateDropsAvoidedExercisesWithoutChangingSavedPlans() throws {
+        let bench = try XCTUnwrap(ExerciseLibrary.byId["bench_press_barbell"])
+        let squat = try XCTUnwrap(ExerciseLibrary.byId["squat_barbell"])
+        let saved = Plan(id: "saved-template-user", name: "Saved", steps: [
+            PlanStep(id: "saved-bench", exerciseId: bench.id, sets: 3, reps: 8),
+            PlanStep(id: "saved-squat", exerciseId: squat.id, sets: 3, reps: 5)
+        ], createdAt: Date(), updatedAt: Date())
+        let log = SetRecord(id: "template-log", exerciseId: squat.id, exerciseName: squat.name, category: squat.category,
+                            weight: 80, reps: 5, performedAt: Date(), planId: saved.id)
+        let store = DataStore(exercises: [bench, squat], plans: [saved], sets: [log], settings: UserSettings())
+        var template = Plan(id: "generated-template", name: "Template", steps: [
+            PlanStep(id: "tpl-bench", exerciseId: bench.id, sets: 3, reps: 8),
+            PlanStep(id: "tpl-squat", exerciseId: squat.id, sets: 3, reps: 5)
+        ], createdAt: Date(), updatedAt: Date())
+        template.source = .classics
+        let result = try XCTUnwrap(LocalRoutineRules.apply(to: [template], intent: LocalRoutineRules.parse("合成：不练腿"),
+                                                           settings: store.settings, exById: store.exById).first)
+        XCTAssertEqual(template.steps.map(\.exerciseId), [bench.id, squat.id])
+        XCTAssertEqual(result.steps.map(\.exerciseId), [bench.id])
+        XCTAssertFalse(result.steps.contains { $0.exerciseId == squat.id })
+        XCTAssertNil(result.constraints?.first { $0.kind == .unmet })
+        XCTAssertEqual(store.plans.map(\.id), [saved.id])
+        XCTAssertEqual(store.plans.first?.steps.map(\.exerciseId), [bench.id, squat.id])
+        XCTAssertEqual(store.sets.map(\.id), [log.id])
+    }
+
+    @MainActor
+    func testConflictingCoverageDropsAvoidedStepsAndKeepsRealUnmet() throws {
+        let bench = try XCTUnwrap(ExerciseLibrary.byId["bench_press_barbell"])
+        let squat = try XCTUnwrap(ExerciseLibrary.byId["squat_barbell"])
+        let known = [bench.id: bench, squat.id: squat]
+        let plan = Plan(id: "generated-conflict", name: "Generated", steps: [
+            PlanStep(id: "bench", exerciseId: bench.id, sets: 3, reps: 8),
+            PlanStep(id: "squat", exerciseId: squat.id, sets: 3, reps: 5)
+        ], createdAt: Date(), updatedAt: Date())
+        let intent = LocalRoutineRules.parse("合成：不练腿，每天覆盖五个主要肌群，也要整周覆盖")
+        XCTAssertEqual(intent.coverageScope, .conflict)
+        XCTAssertEqual(intent.avoidSections, [.legs])
+        let result = try XCTUnwrap(LocalRoutineRules.apply(to: [plan], intent: intent, settings: UserSettings(), exById: known).first)
+        XCTAssertEqual(result.steps.map(\.exerciseId), [bench.id])
+        XCTAssertFalse(result.steps.contains { $0.exerciseId == squat.id })
+        XCTAssertEqual(result.constraints?.first { $0.kind == .unmet }?.value, "coverage-scope")
+        let report = LocalRoutineRules.assess(plans: [result], intent: intent, pool: [bench, squat], exById: known, stepBudget: 8, application: .unresolved)
+        XCTAssertFalse(report.satisfied)
+        XCTAssertFalse(report.covered.contains(.legs))
+        XCTAssertEqual(plan.steps.map(\.exerciseId), [bench.id, squat.id])
+    }
+
     func testMemoryRequiresSourceAndRejectsTemporaryOrDuplicatePreferences() {
         let proposal = CoachMemoryProposal(note: "Focus on upper chest", sourceQuote: "focus on upper chest")
         XCTAssertNotNil(CoachMemoryProposal.validated(proposal, userText: "I prefer to focus on upper chest", existing: "", declined: []))

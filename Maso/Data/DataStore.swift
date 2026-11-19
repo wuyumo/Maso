@@ -1869,10 +1869,7 @@ final class DataStore {
                     maxExercises: settings.exercisesPerSession)
             }
         if let plan {
-            aiTodayPlan = applyScience(to: plan)   // 科学化兜底: 复合优先 + 同 section ≤2 + slot-1 + push≥pull
-            aiTodayPlanEditedAt = nil              // 新生成的还没被手调过 — 清脏标
-            lastAIRefreshAt = Date()
-            aiTodayFailed = false
+            publishGeneratedToday(plan)
         } else {
             aiTodayFailed = true   // 网络/服务失败 → Today 露提示 + fallback 推荐
         }
@@ -1892,6 +1889,20 @@ final class DataStore {
         return p
     }
 
+    /// Writes a new generated recommendation only. An empty result does not replace
+    /// today's card or any saved routine.
+    private func publishGeneratedToday(_ plan: Plan) {
+        let tuned = applyScience(to: plan)
+        guard !tuned.steps.isEmpty else {
+            aiTodayFailed = true
+            return
+        }
+        aiTodayPlan = tuned
+        aiTodayPlanEditedAt = nil
+        lastAIRefreshAt = Date()
+        aiTodayFailed = false
+    }
+
     /// 强制重新生成 (用户主动点 "Refresh"/"Retry" 时调). 跳过同日 cache 检查.
     func forceRefreshAIWorkout() async {
         guard AIWorkoutService.isConfigured else { return }
@@ -1902,10 +1913,7 @@ final class DataStore {
                     maxExercises: settings.exercisesPerSession)
             }
         if let plan {
-            aiTodayPlan = applyScience(to: plan)
-            aiTodayPlanEditedAt = nil   // 用户主动重生成 = 放弃之前的手调 — 清脏标
-            lastAIRefreshAt = Date()
-            aiTodayFailed = false
+            publishGeneratedToday(plan)
         } else {
             aiTodayFailed = true
         }
@@ -1932,10 +1940,7 @@ final class DataStore {
                     maxExercises: settings.exercisesPerSession, surface: "onboarding")
             }
         if let plan = generated {
-            aiTodayPlan = applyScience(to: plan)
-            aiTodayPlanEditedAt = nil
-            lastAIRefreshAt = Date()
-            aiTodayFailed = false
+            publishGeneratedToday(plan)
         } else {
             aiTodayFailed = true
         }

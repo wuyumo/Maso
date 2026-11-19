@@ -77,6 +77,56 @@ final class WatchPlayerTests: XCTestCase {
         XCTAssertNil(store.session)
         XCTAssertEqual(store.makeWatchState().discarded, true)
     }
+    func testWatchPreviewEnvMapsLongNameTimedAndHeartWithoutRenderingUI() {
+        let now = Date(timeIntervalSince1970: 1_700_000_000)
+        let long = WatchPreviewFixture.snapshot(environment: [
+            "MASSO_WATCH_PREVIEW": "exercise",
+            "MASSO_WATCH_PREVIEW_NAME": "long"
+        ], language: "en", now: now)
+        XCTAssertEqual(long?.scene, "exercise")
+        XCTAssertEqual(long?.state.exerciseName, WatchPreviewFixture.longExerciseName)
+        XCTAssertEqual(long?.state.manualConfirm, true)
+        XCTAssertEqual(long?.state.rows?.first?.name, WatchPreviewFixture.longExerciseName)
+        XCTAssertTrue(long?.textSizeComesFromSystemSettings == true)
+        XCTAssertNil(long?.heart)
+
+        let timed = WatchPreviewFixture.snapshot(environment: [
+            "MASSO_WATCH_PREVIEW": "timed",
+            "MASSO_WATCH_MARKETING_HEART": "0"
+        ], language: "en", now: now)
+        XCTAssertEqual(timed?.state.mode, .exercise)
+        XCTAssertEqual(timed?.state.manualConfirm, false)
+        XCTAssertEqual(timed?.state.paused, true)
+        XCTAssertEqual(timed?.state.pausedRemaining, 45)
+        XCTAssertNil(timed?.state.reps)
+        XCTAssertNil(timed?.heart)
+        XCTAssertNil(WatchPreviewFixture.heartSample(environment: ["MASSO_WATCH_MARKETING_HEART": "0"], now: now))
+        XCTAssertNil(WatchPreviewFixture.heartSample(environment: [:], now: now))
+
+        let valued = WatchPreviewFixture.snapshot(environment: [
+            "MASSO_WATCH_PREVIEW": "exercise",
+            "MASSO_WATCH_MARKETING_HEART": "1",
+            "MASSO_WATCH_MARKETING_BPM": "126"
+        ], language: "en", now: now)
+        XCTAssertEqual(valued?.heart?.bpm, 126)
+        XCTAssertEqual(valued?.heart?.date, now)
+        XCTAssertEqual(WatchPreviewFixture.heartSample(environment: ["MASSO_WATCH_MARKETING_HEART": "1"], now: now)?.bpm, 128)
+
+        let rest = WatchPreviewFixture.snapshot(environment: ["MASSO_WATCH_PREVIEW": "rest"], language: "en", now: now)
+        XCTAssertEqual(rest?.state.mode, .rest)
+        let queue = WatchPreviewFixture.snapshot(environment: ["MASSO_WATCH_PREVIEW": "queue"], language: "en", now: now)
+        XCTAssertEqual(queue?.scene, "queue")
+        XCTAssertEqual(queue?.state.mode, .exercise)
+        XCTAssertNil(WatchPreviewFixture.snapshot(environment: [:], language: "en", now: now))
+        XCTAssertEqual(WatchPreviewFixture.marketingName("bench_press_machine", language: "zh"), "推胸（器械）")
+        let marketed = WatchPreviewFixture.snapshot(environment: [
+            "MASSO_WATCH_PREVIEW": "exercise",
+            "MASSO_WATCH_MARKETING_EXERCISE": "bench_press_machine"
+        ], language: "en", now: now)
+        XCTAssertEqual(marketed?.state.exerciseName, "Chest Press (Machine)")
+    }
+
+    /// Point-geometry unit over recorded watch sizes. It does not launch or render the Watch UI.
     func testPinnedFooterStaysInsideEverySupportedWatchSafeArea() {
         XCTAssertFalse(WatchPlayerLayout.supportedScreens.isEmpty)
         for screen in WatchPlayerLayout.supportedScreens {

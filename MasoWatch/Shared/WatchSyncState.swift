@@ -143,3 +143,113 @@ struct WatchPlayerLayout {
             && footer.minY + footer.height <= screen.height - screen.safeBottom + 0.5
     }
 }
+
+/// DEBUG watch preview. Production sync never reads these keys.
+///
+/// - `MASSO_WATCH_PREVIEW`: `exercise` (default), `rest`, `timed`, `queue`, `more`, `edit`
+/// - `MASSO_WATCH_PREVIEW_NAME`: title override. The token `long` uses `longExerciseName`.
+/// - `MASSO_WATCH_MARKETING_HEART`: `0` means no sample (the heart shows —). `1` means a synthetic sample.
+/// - `MASSO_WATCH_MARKETING_BPM`: bpm used when the heart key is `1`. Missing or invalid falls back to 128.
+/// - `MASSO_WATCH_MARKETING_EXERCISE` / `_REPS` / `_WEIGHT` / `_SET`: existing marketing capture fields.
+/// Large text has no environment key. A DEBUG preview reads the simulator's Text Size setting.
+enum WatchPreviewFixture {
+    static let longExerciseName = "Single-Arm Half-Kneeling Landmine Press to a Long Catalog Name"
+
+    struct HeartSample: Equatable {
+        var bpm: Int
+        var date: Date
+    }
+
+    struct Snapshot: Equatable {
+        var scene: String
+        var state: WatchSyncState
+        var heart: HeartSample?
+        /// True for every preview. The simulator Text Size setting supplies the size.
+        var textSizeComesFromSystemSettings: Bool
+    }
+
+    static func snapshot(environment: [String: String], language: String, now: Date) -> Snapshot? {
+        guard let raw = environment["MASSO_WATCH_PREVIEW"] else { return nil }
+        let scene = raw.isEmpty ? "exercise" : raw
+        let zh = language.hasPrefix("zh")
+        let ar = language.hasPrefix("ar")
+        let de = language.hasPrefix("de")
+        let hant = language.hasPrefix("zh-Hant") || language.hasPrefix("zh-TW") || language.hasPrefix("zh-HK")
+        var state = WatchSyncState()
+        state.mode = scene == "rest" ? .rest : .exercise
+        state.exerciseName = zh ? (hant ? "彎舉（啞鈴）" : "弯举（哑铃）") : ar ? "ثني الذراع (دمبل)" : de ? "Bizeps-Curl (Kurzhantel)" : "Bicep Curl (Dumbbell)"
+        state.setN = 2
+        state.setTotal = 3
+        state.weightUnit = "kg"
+        state.stepID = "one"
+        state.workoutSessionID = "preview"
+        state.context = "preview"
+        state.sentAt = now
+        state.doneSets = 1
+        state.totalSets = 9
+        state.canUndo = true
+        state.restDuration = 90
+        if scene == "timed" {
+            state.manualConfirm = false
+            state.reps = nil
+            state.weight = nil
+            state.expectsWeight = false
+            state.paused = true
+            state.pausedRemaining = 45
+            state.detail = "45s"
+        } else {
+            state.manualConfirm = true
+            state.reps = 8
+            state.weight = 20
+            state.expectsWeight = true
+            state.paused = true
+            state.pausedRemaining = 75
+        }
+        if let exercise = environment["MASSO_WATCH_MARKETING_EXERCISE"] {
+            state.exerciseName = marketingName(exercise, language: language) ?? state.exerciseName
+            if let reps = Int(environment["MASSO_WATCH_MARKETING_REPS"] ?? "") { state.reps = reps }
+            if let weight = Double(environment["MASSO_WATCH_MARKETING_WEIGHT"] ?? "") { state.weight = weight }
+            if let set = Int(environment["MASSO_WATCH_MARKETING_SET"] ?? "") {
+                state.setN = set
+                state.doneSets = max(0, set - 1)
+            }
+        }
+        if let name = environment["MASSO_WATCH_PREVIEW_NAME"], !name.isEmpty {
+            state.exerciseName = name == "long" ? longExerciseName : name
+        }
+        state.rows = [
+            WatchExerciseRow(id: "one", name: state.exerciseName, detail: "", completed: 1, total: 3),
+            WatchExerciseRow(id: "two", name: zh ? (hant ? "上斜臥推（啞鈴）" : "上斜卧推（哑铃）") : ar ? "ضغط مائل (دمبل)" : "Incline Press (Dumbbell)", detail: "", completed: 0, total: 3),
+            WatchExerciseRow(id: "three", name: zh ? (hant ? "伏地挺身" : "俯卧撑") : ar ? "تمرين الضغط" : "Push Up", detail: "", completed: 0, total: 3)
+        ]
+        return Snapshot(scene: scene, state: state, heart: heartSample(environment: environment, now: now), textSizeComesFromSystemSettings: true)
+    }
+
+    /// `1` publishes a sample. `0`, a blank value, or a missing key publishes none.
+    static func heartSample(environment: [String: String], now: Date) -> HeartSample? {
+        guard environment["MASSO_WATCH_MARKETING_HEART"] == "1" else { return nil }
+        let bpm = Int(environment["MASSO_WATCH_MARKETING_BPM"] ?? "") ?? 128
+        guard bpm > 0 else { return nil }
+        return HeartSample(bpm: bpm, date: now)
+    }
+
+    /// Names as the phone renders the same exercise, so a capture pairing both devices
+    /// reads as one moment. Only the exercises used by marketing captures need entries.
+    static func marketingName(_ id: String, language: String) -> String? {
+        guard id == "bench_press_machine" else { return nil }
+        if language.hasPrefix("zh-Hant") || language.hasPrefix("zh-TW") || language.hasPrefix("zh-HK") {
+            return "推胸（器械）"
+        }
+        if language.hasPrefix("zh") { return "推胸（器械）" }
+        if language.hasPrefix("ja") { return "チェストプレス (マシン · 機械)" }
+        if language.hasPrefix("ko") { return "가슴 압박 (머신)" }
+        if language.hasPrefix("es") { return "Chest Press (Máquina)" }
+        if language.hasPrefix("fr") { return "Presse thoracique (Machine)" }
+        if language.hasPrefix("de") { return "Brustpresse (Maschine)" }
+        if language.hasPrefix("it") { return "Chest Press (Macchina)" }
+        if language.hasPrefix("pt-BR") { return "Prensa do tórax (Máquina)" }
+        if language.hasPrefix("ru") { return "Чест-пресс (Тренажёр · машина)" }
+        if language.hasPrefix("ar") { return "Chest Press (جهاز)" }
+        return "Chest Press (Machine)"
+    }
+}

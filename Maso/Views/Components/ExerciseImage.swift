@@ -129,8 +129,9 @@ enum ExerciseMediaPolicy {
     }
 }
 
+@MainActor
 func demoPresentation(_ id: String) -> CoreExerciseDemos.DemoPresentation {
-    CoreExerciseDemos.presentation(id: id)
+    ExerciseDemoService.shared.presentation(for: id)
 }
 
 /// The player and both exercise-detail heroes share measured bounds, centered

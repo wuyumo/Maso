@@ -1468,6 +1468,7 @@
 "Coverage timing conflicts and was not applied" = "覆盖范围互相冲突，没有套用";
 "Weekly coverage was not judged on this one session" = "整周覆盖不能用这一次训练代替判定";
 "Major-muscle coverage is not met" = "主要肌群覆盖没有完成";
+"Avoided muscles left no exercise in this result" = "避开的肌群使这份结果里没有可练动作";
 "Your data" = "你的数据";
 "Export my data" = "导出我的数据";
 "A JSON backup of everything plus a CSV of every set you've logged — open it in Numbers, Excel, or any other app. Your data is yours; you can take it and go." = "一份完整的 JSON 备份，加一份逐组明细 CSV —— 用 Numbers、Excel 或任何软件都能打开。数据是你的，你随时可以带走。";

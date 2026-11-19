@@ -286,7 +286,7 @@ enum LocalRoutineRules {
     /// 把 Intent 应用到本地模板产出上. 复用 DataStore 现成的器械替换 + 科学化,
     /// 这里只负责"按用户这次说的话重新挑/裁动作".
     ///
-    /// - avoid: 直接剔掉该区动作 (剔空了就保留原样 —— 宁可不听话也不给空计划)
+    /// - avoid: 直接剔掉该区动作。全部被避开时保留空结果，不把原步骤加回去。
     /// - focus: 命中的动作排前面, 裁剪时优先保留
     /// - 器械 / 徒手: 覆盖 settings.availableEquipment 走同一套替换逻辑
     /// - maxExercises: 覆盖 exercisesPerSession 的裁剪上限
@@ -337,14 +337,8 @@ enum LocalRoutineRules {
             steps = DataStore.applyEquipmentPreference(steps, settings: effective, exById: exById,
                                                        allowSpecialistIDs: retainedSpecialistIDs)
 
-            // 2. avoid: 剔掉明确不想练的区 (剔空则保留)
-            if !intent.avoidSections.isEmpty {
-                let kept = steps.filter { s in
-                    guard let sec = section(of: s) else { return true }
-                    return !intent.avoidSections.contains(sec)
-                }
-                if !kept.isEmpty { steps = kept }
-            }
+            // 2. avoid: drop every explicitly avoided section, even when that empties the result.
+            steps = droppingAvoided(steps, intent: intent, section: section)
 
             // Prefer exact subdivisions over generic major-muscle work on applicable days.
             for muscle in intent.focusMuscles.sorted(by: { $0.rawValue < $1.rawValue }) {
@@ -402,7 +396,17 @@ enum LocalRoutineRules {
             return p
         }
         let application = coverage ?? application(for: intent, generatedPlanCount: adjusted.count)
-        return satisfyCoverage(adjusted, intent: intent, settings: effective, exById: exById, coverage: application)
+        let covered = satisfyCoverage(adjusted, intent: intent, settings: effective, exById: exById, coverage: application)
+        return annotateAvoidedEmpty(covered, before: stripped, intent: intent, exById: exById)
+    }
+
+    /// Removes steps whose primary section was explicitly avoided. An empty list stays empty.
+    static func droppingAvoided(_ steps: [PlanStep], intent: Intent, section: (PlanStep) -> MuscleGroup?) -> [PlanStep] {
+        guard !intent.avoidSections.isEmpty else { return steps }
+        return steps.filter { step in
+            guard let sec = section(step) else { return true }
+            return !intent.avoidSections.contains(sec)
+        }
     }
 
     static let majorSections: [MuscleGroup] = [.chest, .back, .shoulders, .arms, .core, .legs]
@@ -477,7 +481,18 @@ enum LocalRoutineRules {
 
     static func assess(plans: [Plan], intent: Intent, pool: [Exercise], exById: [String: Exercise], stepBudget: Int, application: CoverageApplication) -> CoverageAssessment {
         func sections(of plan: Plan) -> Set<MuscleGroup> {
-            Set(plan.steps.compactMap { exById[$0.exerciseId].flatMap(strengthSection(of:)) })
+            Set(plan.steps.compactMap { step -> MuscleGroup? in
+                guard let exercise = exById[step.exerciseId],
+                      let section = strengthSection(of: exercise),
+                      !intent.avoidSections.contains(section) else { return nil }
+                return section
+            })
+        }
+        let blocked = plans.contains { plan in
+            plan.steps.contains { step in
+                guard let section = exById[step.exerciseId].flatMap(strengthSection(of:)) else { return false }
+                return intent.avoidSections.contains(section)
+            }
         }
         let perPlan = plans.map(sections(of:))
         let covered: Set<MuscleGroup>
@@ -508,7 +523,7 @@ enum LocalRoutineRules {
         } ?? false
         let structural = !unsatisfiableNamed.isEmpty || structuralCount
         let withheld = application == .unresolved || application == .notThisObject
-        let satisfied = !withheld && (!intent.requestsCoverage || application == .skip || (countMet && namedMet && !structural))
+        let satisfied = !blocked && !withheld && (!intent.requestsCoverage || application == .skip || (countMet && namedMet && !structural))
         var feedback = ""
         if !satisfied {
             let names = covered.map(\.rawValue).sorted().joined(separator: ", ")
@@ -522,14 +537,22 @@ enum LocalRoutineRules {
     }
 
     private static func satisfyCoverage(_ plans: [Plan], intent: Intent, settings: UserSettings, exById: [String: Exercise], coverage: CoverageApplication) -> [Plan] {
+        let cleaned = plans.map { plan -> Plan in
+            var copy = plan
+            copy.steps = droppingAvoided(plan.steps, intent: intent) { step in
+                guard let exercise = exById[step.exerciseId] else { return nil }
+                return exercise.primaryMuscles.first.flatMap { $0.section ?? $0 }
+            }
+            return copy
+        }
         if coverage == .unresolved {
-            return annotate(plans, value: "coverage-scope", label: NSLocalizedString("Coverage timing conflicts and was not applied", comment: "per-session and weekly coverage were both requested"))
+            return annotate(cleaned, value: "coverage-scope", label: NSLocalizedString("Coverage timing conflicts and was not applied", comment: "per-session and weekly coverage were both requested"))
         }
         if coverage == .notThisObject {
-            return annotate(plans, value: "coverage-week-not-this-session", label: NSLocalizedString("Weekly coverage was not judged on this one session", comment: "a weekly coverage note cannot be decided from one generated session"))
+            return annotate(cleaned, value: "coverage-week-not-this-session", label: NSLocalizedString("Weekly coverage was not judged on this one session", comment: "a weekly coverage note cannot be decided from one generated session"))
         }
-        guard intent.requestsCoverage, coverage != .skip else { return plans }
-        var plans = plans
+        guard intent.requestsCoverage, coverage != .skip else { return cleaned }
+        var plans = cleaned
         var known = exById
         let cap = intent.maxExercises ?? max(1, min(8, settings.exercisesPerSession))
         let policy = ExerciseSelectionPolicy.shared
@@ -556,6 +579,25 @@ enum LocalRoutineRules {
         let final = assess(plans: plans, intent: intent, pool: Array(known.values), exById: known, stepBudget: budget, application: coverage)
         guard !final.satisfied else { return plans }
         return annotate(plans, value: "coverage", label: NSLocalizedString("Major-muscle coverage is not met", comment: "plan constraint — coverage could not be completed"))
+    }
+
+    /// An explicit avoid that removes every working step is unmet. A later real replacement clears it.
+    private static func annotateAvoidedEmpty(_ plans: [Plan], before: [Plan], intent: Intent, exById: [String: Exercise]) -> [Plan] {
+        guard !intent.avoidSections.isEmpty, plans.count == before.count else { return plans }
+        return zip(plans, before).map { plan, original in
+            let hadAvoided = original.steps.contains { step in
+                guard let exercise = exById[step.exerciseId], let section = strengthSection(of: exercise) else { return false }
+                return intent.avoidSections.contains(section)
+            }
+            let hasStrength = plan.steps.contains { exById[$0.exerciseId].flatMap(strengthSection(of:)) != nil }
+            guard hadAvoided, !hasStrength, plan.constraints?.contains(where: { $0.kind == .unmet }) != true else { return plan }
+            var copy = plan
+            var labels = copy.constraints ?? []
+            labels.append(PlanConstraint(kind: .unmet, value: "avoid",
+                label: NSLocalizedString("Avoided muscles left no exercise in this result", comment: "explicit avoid removed every working exercise")))
+            copy.constraints = labels
+            return copy
+        }
     }
 
     private static func annotate(_ plans: [Plan], value: String, label: String) -> [Plan] {

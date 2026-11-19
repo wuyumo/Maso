@@ -70,6 +70,7 @@ enum CoreExerciseDemos {
         return rows
     }()
 
+    /// Pure decision. It does not read `ExerciseDemoService` or any other main-actor instance.
     /// `cachedSHA` is ignored on purpose: a cached or replacement motion file cannot promote itself.
     static func presentation(id: String, motionSHA: String?, cachedSHA: String? = nil, reviews ledger: [DemoReview]) -> DemoPresentation {
         _ = cachedSHA
@@ -80,12 +81,6 @@ enum CoreExerciseDemos {
             return .approvedMotion
         }
         return .placeholder
-    }
-
-    static func presentation(id: String) -> DemoPresentation {
-        let remote = ExerciseDemoService.shared.hasRemoteCatalog ? ExerciseDemoService.shared.remoteAssets[id]?.sha256 : nil
-        let cached = ExerciseDemoService.shared.files[id]?.deletingPathExtension().lastPathComponent
-        return presentation(id: id, motionSHA: remote ?? assets[id]?.sha256, cachedSHA: cached, reviews: reviews)
     }
 
     /// Shows the still only when its bytes match the user-approved hash. The motion sha is not consulted.
@@ -300,6 +295,17 @@ final class ExerciseDemoService {
             }
         }
     }
+    /// Main-actor read of this service, then the pure presentation decision.
+    func presentation(for exerciseID: String) -> CoreExerciseDemos.DemoPresentation {
+        let remote = hasRemoteCatalog ? remoteAssets[exerciseID]?.sha256 : nil
+        let cached = files[exerciseID]?.deletingPathExtension().lastPathComponent
+        return CoreExerciseDemos.presentation(
+            id: exerciseID,
+            motionSHA: remote ?? CoreExerciseDemos.assets[exerciseID]?.sha256,
+            cachedSHA: cached,
+            reviews: CoreExerciseDemos.reviews)
+    }
+
     func loadMedia(_ exerciseID: String, force: Bool = false) async {
         // A newer catalog may arrive while an older version is downloading.
         // Wait for that request, then resolve the current approved version again.
@@ -307,8 +313,7 @@ final class ExerciseDemoService {
             do { try await Task.sleep(for: .milliseconds(100)) }
             catch { return }
         }
-        let remote = hasRemoteCatalog ? remoteAssets[exerciseID] : nil
-        if CoreExerciseDemos.presentation(id: exerciseID, motionSHA: remote?.sha256 ?? CoreExerciseDemos.assets[exerciseID]?.sha256, cachedSHA: files[exerciseID]?.deletingPathExtension().lastPathComponent, reviews: CoreExerciseDemos.reviews) != .approvedMotion {
+        if presentation(for: exerciseID) != .approvedMotion {
             files.removeValue(forKey: exerciseID)
             return
         }

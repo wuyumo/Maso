@@ -24,6 +24,20 @@ import AVFoundation
         XCTAssertEqual(CoreExerciseDemos.presentation(id: "bench_press_barbell", motionSHA: motion, cachedSHA: "other", reviews: [approved]), .approvedMotion)
         XCTAssertEqual(CoreExerciseDemos.presentation(id: "bench_press_barbell", motionSHA: String(repeating: "ef", count: 32), reviews: [approved]), .placeholder)
     }
+
+    func testMainActorPresentationMatchesPureOverload() {
+        let service = ExerciseDemoService.shared
+        let id = "bench_press_barbell"
+        let remote = service.hasRemoteCatalog ? service.remoteAssets[id]?.sha256 : nil
+        let cached = service.files[id]?.deletingPathExtension().lastPathComponent
+        let pure = CoreExerciseDemos.presentation(
+            id: id,
+            motionSHA: remote ?? CoreExerciseDemos.assets[id]?.sha256,
+            cachedSHA: cached,
+            reviews: CoreExerciseDemos.reviews)
+        XCTAssertEqual(service.presentation(for: id), pure)
+        XCTAssertEqual(demoPresentation(id), pure)
+    }
 }
 
 @MainActor final class ExerciseTutorialTests: XCTestCase {

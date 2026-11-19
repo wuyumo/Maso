@@ -96,11 +96,43 @@ private enum WatchPage: String, Identifiable { case queue, more, reps, weight, r
     var id: String { rawValue }
 }
 
+#if DEBUG
+private struct WatchPreviewTextScale: ViewModifier {
+    var scale: CGFloat
+    func body(content: Content) -> some View {
+        if scale > 1 { content.scaleEffect(scale, anchor: .top) } else { content }
+    }
+}
+#endif
+
 struct WatchPlayerView: View {
     @Environment(WatchBridge.self) private var bridge
+    #if DEBUG
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    #endif
     @State private var page: WatchPage?
     @State private var confirmEnd = false
     private var state: WatchSyncState { bridge.state }
+
+    #if DEBUG
+    /// Scales only the scrolling exercise block. The pinned footer stays at 44pt.
+    /// Size comes from the simulator Text Size setting; there is no preview env for it.
+    static func previewContentScale(_ size: DynamicTypeSize) -> CGFloat {
+        guard ProcessInfo.processInfo.environment["MASSO_WATCH_PREVIEW"] != nil else { return 1 }
+        switch size {
+        case .xSmall, .small, .medium, .large: return 1
+        case .xLarge: return 1.12
+        case .xxLarge: return 1.24
+        case .xxxLarge: return 1.38
+        case .accessibility1: return 1.55
+        case .accessibility2: return 1.75
+        case .accessibility3: return 1.95
+        case .accessibility4: return 2.15
+        case .accessibility5: return 2.35
+        @unknown default: return 1
+        }
+    }
+    #endif
 
     var body: some View {
         VStack(spacing: 4) {
@@ -139,6 +171,9 @@ struct WatchPlayerView: View {
                     }
                 }
             }.padding(.horizontal, 4)
+            #if DEBUG
+            .modifier(WatchPreviewTextScale(scale: Self.previewContentScale(dynamicTypeSize)))
+            #endif
             }
             .scrollIndicators(.hidden)
             bottomControls
