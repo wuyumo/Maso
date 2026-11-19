@@ -51,6 +51,9 @@
             </BuildableReference>
          </TestableReference>
       </Testables>
+      <StoreKitConfigurationFileReference
+         identifier = "../../Maso.storekit">
+      </StoreKitConfigurationFileReference>
       <CommandLineArguments>
       </CommandLineArguments>
    </TestAction>

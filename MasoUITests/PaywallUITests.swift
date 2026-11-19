@@ -1,6 +1,22 @@
 import XCTest
 import StoreKitTest
 
+/// Creating `SKTestSession` can succeed while saving the configuration, turning off
+/// dialogs, and clearing transactions all fail with `SKInternalErrorDomain` code 3.
+/// That is not a usable local fixture. Stop before any restore or purchase call.
+func prepareLocalStoreKitFixture(_ session: SKTestSession) throws {
+    session.disableDialogs = true
+    do {
+        try session.resetToDefaultState()
+    } catch {
+        let ns = error as NSError
+        throw NSError(domain: "MasoStoreKitFixture", code: ns.code, userInfo: [
+            NSLocalizedDescriptionKey: "SKTestSession precondition failed \(ns.domain) \(ns.code). The local StoreKit configuration was not saved, so this test will not call AppStore.sync or purchase. \(ns.localizedDescription)"
+        ])
+    }
+    session.clearTransactions()
+}
+
 @MainActor
 final class PaywallUITests: XCTestCase {
     private var store: SKTestSession!
@@ -9,11 +25,13 @@ final class PaywallUITests: XCTestCase {
         continueAfterFailure = false
         let url = try XCTUnwrap(Bundle(for: Self.self).url(forResource: "Maso", withExtension: "storekit"))
         store = try SKTestSession(contentsOf: url)
-        store.disableDialogs = true
-        store.clearTransactions()
+        try prepareLocalStoreKitFixture(store)
     }
 
-    override func tearDownWithError() throws { store.clearTransactions(); store = nil }
+    override func tearDownWithError() throws {
+        store.clearTransactions()
+        store = nil
+    }
 
     func testWelcomeCanBeClosedAndDoesNotRepeatWhenRootReappears() throws {
         let app = launch("welcome")
@@ -521,11 +539,13 @@ final class ProBannerUITests: XCTestCase {
         continueAfterFailure = false
         let url = try XCTUnwrap(Bundle(for: Self.self).url(forResource: "Maso", withExtension: "storekit"))
         store = try SKTestSession(contentsOf: url)
-        store.disableDialogs = true
-        store.clearTransactions()
+        try prepareLocalStoreKitFixture(store)
     }
 
-    override func tearDownWithError() throws { store.clearTransactions(); store = nil }
+    override func tearDownWithError() throws {
+        store.clearTransactions()
+        store = nil
+    }
 
     func testBannerInHomeAndSettingsAcrossLanguages() throws {
         for language in ["en", "zh-Hans", "de", "ar"] {
