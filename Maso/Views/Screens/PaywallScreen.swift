@@ -7,6 +7,23 @@ enum PaywallContext { case upgrade, welcome, aiReminder }
 private final class RestoreGate {
     var released = false
 }
+
+/// Off unless `MASO_RESTORE_TRACE=1`. Release builds omit it.
+@Observable
+final class RestoreTrace {
+    static let shared = RestoreTrace()
+    var text = ""
+    var enabled: Bool { ProcessInfo.processInfo.environment["MASO_RESTORE_TRACE"] == "1" }
+    @MainActor func mark(_ stage: String) {
+        guard enabled else { return }
+        let line = String(format: "%.3f %@", Date().timeIntervalSince1970, stage)
+        text = text.isEmpty ? line : text + " | " + line
+        print("RESTORE_TRACE \(line)")
+    }
+    @MainActor static func mark(_ stage: String) { shared.mark(stage) }
+}
+#else
+enum RestoreTrace { static func mark(_ stage: String) {} }
 #endif
 
 /// Restores Claude Code's custom layout (f0ebc0e / 83277c3), with current
@@ -69,6 +86,15 @@ struct PaywallScreen: View {
         .presentationDetents([.large])
         .accessibilityIdentifier("paywall.screen")
         .overlay(alignment: .bottom) { restoreReleaseControl }
+        #if DEBUG
+        .overlay(alignment: .top) {
+            if RestoreTrace.shared.enabled {
+                Text(RestoreTrace.shared.text)
+                    .font(.caption2)
+                    .accessibilityIdentifier("paywall.restore.trace")
+            }
+        }
+        #endif
         .sheet(isPresented: $referralSheetShown) { ReferralCodeSheet() }
         .alert("Masso Pro", isPresented: Binding(get: { notice != nil }, set: { if !$0 { notice = nil } }), presenting: notice) { item in
             if item.canRetry {
@@ -292,20 +318,32 @@ struct PaywallScreen: View {
         gate.released = false
         #endif
         Task {
-            defer { processing = false }
+            defer {
+                processing = false
+                RestoreTrace.mark("paywall.processing.cleared")
+            }
             #if DEBUG
             if ProcessInfo.processInfo.environment["MASO_RESTORE_HOLD"] == "1" {
+                RestoreTrace.mark("paywall.gate.wait")
                 while !gate.released {
                     try? await Task.sleep(for: .milliseconds(50))
                 }
+                RestoreTrace.mark("paywall.gate.released")
             }
             #endif
+            RestoreTrace.mark("paywall.restore.call")
             await subscriptions.restore()
             if let error = subscriptions.lastError {
                 notice = Notice(message: error)
                 subscriptions.lastError = nil
+                RestoreTrace.mark("paywall.notice:\(error)")
+            } else {
+                RestoreTrace.mark("paywall.notice:none")
             }
-            if data.settings.isPro { dismiss() }
+            if data.settings.isPro {
+                RestoreTrace.mark("paywall.dismiss.pro")
+                dismiss()
+            }
         }
     }
 

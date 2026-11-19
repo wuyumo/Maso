@@ -401,7 +401,7 @@ final class PaywallUITests: XCTestCase {
     }
 
     func testRestorePurchaseShowsLoadingThenStoreKitResultWithoutAnotherPurchase() throws {
-        let app = launch("upgrade", restoreHold: true)
+        let app = launch("upgrade", restoreHold: true, restoreTrace: true)
         let restore = app.buttons["paywall.restore"]
         XCTAssertTrue(restore.waitForExistence(timeout: 15))
         XCTAssertEqual(restore.label, "Restore Purchase")
@@ -415,7 +415,14 @@ final class PaywallUITests: XCTestCase {
         XCTAssertFalse(app.alerts["Masso Pro"].exists)
         release.tap()
         let alert = app.alerts["Masso Pro"]
-        XCTAssertTrue(alert.waitForExistence(timeout: 5))
+        let appeared = alert.waitForExistence(timeout: 5)
+        let trace = app.staticTexts["paywall.restore.trace"]
+        let traceText = trace.exists ? trace.label : "trace element missing"
+        let traceNote = XCTAttachment(string: traceText)
+        traceNote.name = "paywall-restore-trace"
+        traceNote.lifetime = .keepAlways
+        add(traceNote)
+        XCTAssertTrue(appeared, "Masso Pro alert missing after restore release. RESTORE_TRACE \(traceText)")
         XCTAssertTrue(alert.staticTexts["No active subscription found"].exists)
         alert.buttons["OK"].tap()
         XCTAssertTrue(restore.waitForExistence(timeout: 2))
@@ -470,7 +477,7 @@ final class PaywallUITests: XCTestCase {
         return spinner
     }
 
-    private func launch(_ scene: String, language: String = "en", largeType: Bool = false, narrow: Bool = false, light: Bool = false, increasedContrast: Bool = false, restoreHold: Bool = false) -> XCUIApplication {
+    private func launch(_ scene: String, language: String = "en", largeType: Bool = false, narrow: Bool = false, light: Bool = false, increasedContrast: Bool = false, restoreHold: Bool = false, restoreTrace: Bool = false) -> XCUIApplication {
         let app = XCUIApplication(bundleIdentifier: "com.yumowu.maso")
         app.terminate()
         var environment = ["MASO_PAYWALL_UI_TEST_SCENE": scene,
@@ -478,6 +485,7 @@ final class PaywallUITests: XCTestCase {
                            "MASO_PAYWALL_NARROW": narrow ? "1" : "0",
                            "MASO_UI_LIGHT": light ? "1" : "0", "MASO_UI_CONTRAST": increasedContrast ? "1" : "0"]
         if restoreHold { environment["MASO_RESTORE_HOLD"] = "1" }
+        if restoreTrace { environment["MASO_RESTORE_TRACE"] = "1" }
         app.launchEnvironment = environment
         app.launchArguments = ["-maso.selectedLanguage", language, "-AppleLanguages", "(\(language))", "-AppleLocale", language]
         app.launch()

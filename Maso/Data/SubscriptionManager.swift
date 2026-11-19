@@ -200,18 +200,21 @@ final class SubscriptionManager {
     func restore() async {
         lastError = nil
         do {
-            // StoreKit sync can wait on the main actor for a dialog the test session
-            // has disabled. Suspending off this actor lets the real sync finish and
-            // the paywall present its result.
-            try await Task.detached(priority: .userInitiated) {
-                try await AppStore.sync()
-            }.value
+            // The native run still saw no result alert after this call left the main
+            // actor. Keep the real sync on the caller and record the stage when asked.
+            RestoreTrace.mark("storekit.sync.start")
+            try await AppStore.sync()
+            RestoreTrace.mark("storekit.sync.return")
+            RestoreTrace.mark("entitlements.start")
             await refreshEntitlements()
+            RestoreTrace.mark("entitlements.return:\(currentSubscription?.tier.rawValue ?? "nil")")
             if currentSubscription == nil {
                 lastError = NSLocalizedString("No active subscription found", comment: "")
             }
+            RestoreTrace.mark("result.lastError:\(lastError ?? "none")")
         } catch {
             lastError = error.localizedDescription
+            RestoreTrace.mark("storekit.sync.throw:\(error.localizedDescription)")
         }
     }
 
