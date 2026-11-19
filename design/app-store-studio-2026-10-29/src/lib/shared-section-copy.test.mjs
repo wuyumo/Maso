@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
 import { LOCALES, SECTION_ORDER, canonicalRows, copyRevision, payloadDocument, payloadSHA, projectCandidate, webDocument } from "./shared-section-copy.mjs";
@@ -106,4 +107,45 @@ test("the store and website projections read one website body without changing s
   assert.deepEqual(payload.document, payloadDocument(fresh));
   assert.equal(payload.shortCopyRevision, originalRows);
   assert.equal(payload.document.sections.find((section) => section.id === "training").mediaRefs[0].screenshot.includes("player-heart-warning"), true);
+});
+
+test("website demo captions stay bound to the four file hashes", () => {
+  const project = load();
+  const bodies = JSON.stringify(project.sharedSections.map((section) => section.websiteBody));
+  assert.equal(createHash("sha256").update(bodies).digest("hex"), "cab1c9c77f86e9de60139309ce59b821620a16373a8e87ae026097a979fee486");
+  const projected = projectCandidate(project);
+  const bySection = Object.fromEntries(projected.web.sections.map((section) => [section.id, section]));
+  assert.deepEqual(bySection.recovery.mediaAnnotations, project.sharedSections.find((section) => section.id === "recovery").mediaAnnotations);
+  assert.deepEqual(bySection.training.mediaAnnotations, project.sharedSections.find((section) => section.id === "training").mediaAnnotations);
+  assert.deepEqual(bySection.plan.mediaAnnotations, []);
+  assert.equal(bySection.training.copyApproval, "unapproved");
+  assert.equal(bySection.training.mediaCapture, "no-capture");
+  assert.equal(bySection.devices.copyApproval, "unapproved");
+  const recoveryBody = JSON.stringify(bySection.recovery.websiteBody);
+  assert.equal(recoveryBody.includes("49"), false);
+  for (const note of bySection.recovery.mediaAnnotations) {
+    assert.equal(note.websiteDemoOnly, true);
+    assert.equal(note.release, false);
+    assert.equal(note.caption.includes("49"), true);
+  }
+  const trainingBody = bySection.training.websiteBody.candidate.en.body;
+  assert.equal(trainingBody.includes("128"), false);
+  assert.match(trainingBody, /No heart-rate sample/);
+  const enWatch = bySection.training.mediaAnnotations.find((note) => note.locale === "en");
+  const zhWatch = bySection.training.mediaAnnotations.find((note) => note.locale === "zh");
+  assert.equal(enWatch.pairsWithBody, false);
+  assert.equal(enWatch.sha256, "9c0ebb80249563d9d805184fd031b2c0f95ab648dc5b5b0e6a016f7d4bacd73c");
+  assert.equal(enWatch.caption.includes("128"), true);
+  assert.equal(zhWatch.pairsWithBody, true);
+  assert.equal(zhWatch.sha256, "c3da92be94dc89c25b728875650ed3fdc7ea4422128d9442c523c81302e13f1e");
+  assert.equal(zhWatch.caption.includes("128"), false);
+  const root = new URL("../../candidates/pro-20261113/", import.meta.url);
+  for (const note of [...bySection.recovery.mediaAnnotations, ...bySection.training.mediaAnnotations]) {
+    const bytes = readFileSync(new URL(note.file, root));
+    assert.equal(createHash("sha256").update(bytes).digest("hex"), note.sha256);
+    assert.equal(note.websiteDemoOnly, true);
+    assert.equal(note.release, false);
+  }
+  const payload = payloadDocument(project);
+  assert.deepEqual(payload.sections.find((section) => section.id === "training").mediaAnnotations, bySection.training.mediaAnnotations);
 });

@@ -1,7 +1,7 @@
 {
   "contract": "masso-shared-sections-v1",
   "shortCopyRevision": "f33f436ef6aca6c390458f6be87342b1f8514c8337e6f57739f802983ce14570",
-  "payloadSHA": "f3fc3269ed35eaade4120f27d967e2d6d7ea94116b448bf5685805c6c686722f",
+  "payloadSHA": "2e7cd36724f33aa148aed03b624dc0d8cf57e65af9fb7046ffd49035cdaddd03",
   "document": {
     "contract": "masso-shared-sections-v1",
     "authoring": "candidates/pro-20261113/project.json#sharedSections",
@@ -26,6 +26,7 @@
             }
           }
         },
+        "mediaAnnotations": [],
         "mediaRefs": [
           {
             "family": "iphone",
@@ -53,6 +54,30 @@
             }
           }
         },
+        "mediaAnnotations": [
+          {
+            "sha256": "e72e509becb30d370d7b06460c74501d8415e87896a64b13bc6935d77a380a3c",
+            "file": "media/muscle-recovery-en-demo.png",
+            "role": "iphone-screen",
+            "locale": "en",
+            "websiteDemoOnly": true,
+            "release": false,
+            "pairsWithBody": true,
+            "visible": "49%",
+            "caption": "This frame shows 49% and the label Recovering, keep it light. That figure is what this capture displays. It is not a medical measurement."
+          },
+          {
+            "sha256": "29f5d38aec5c9248ea1288dff0582a809c0fa4b4d6d99aa87001030e2b1018e0",
+            "file": "media/muscle-recovery-zh-demo.png",
+            "role": "iphone-screen",
+            "locale": "zh",
+            "websiteDemoOnly": true,
+            "release": false,
+            "pairsWithBody": true,
+            "visible": "49%",
+            "caption": "这张图上是 49%，并写着恢复中、建议轻练。这是这张截图里的数字，不是医学测量。"
+          }
+        ],
         "mediaRefs": [
           {
             "family": "iphone",
@@ -79,6 +104,30 @@
             }
           }
         },
+        "mediaAnnotations": [
+          {
+            "sha256": "9c0ebb80249563d9d805184fd031b2c0f95ab648dc5b5b0e6a016f7d4bacd73c",
+            "file": "media/a0fc651-watchOS26.5-46mm-en-exercise-HR128-demo.png",
+            "role": "watch-screen",
+            "locale": "en",
+            "websiteDemoOnly": true,
+            "release": false,
+            "pairsWithBody": false,
+            "visible": "heart rate 128",
+            "caption": "Watch demo. 8 reps, 20 kg and heart rate 128 are sample figures, not a live measurement."
+          },
+          {
+            "sha256": "c3da92be94dc89c25b728875650ed3fdc7ea4422128d9442c523c81302e13f1e",
+            "file": "media/caa8183-watchOS26.5-46mm-zh-exercise-cold-noHR.png",
+            "role": "watch-screen",
+            "locale": "zh",
+            "websiteDemoOnly": true,
+            "release": false,
+            "pairsWithBody": true,
+            "visible": "heart-rate dash, no sample",
+            "caption": "手表演示。第 2/3 组、8 次数和 20 kg 是演示数据。心率没有样本，显示横线。"
+          }
+        ],
         "mediaRefs": [
           {
             "family": "iphone",
@@ -106,6 +155,7 @@
             }
           }
         },
+        "mediaAnnotations": [],
         "mediaRefs": [
           {
             "family": "iphone",
@@ -132,6 +182,7 @@
             }
           }
         },
+        "mediaAnnotations": [],
         "mediaRefs": [
           {
             "family": "iphone",

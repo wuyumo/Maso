@@ -55,6 +55,7 @@ export function webDocument(project) {
         title: section.title,
         subtitle: section.subtitle,
         websiteBody: section.websiteBody || {},
+        mediaAnnotations: section.mediaAnnotations || [],
       };
     }),
   };
@@ -85,6 +86,7 @@ export function payloadDocument(project) {
         copyApproval: section.copyApproval,
         mediaCapture: section.mediaCapture,
         websiteBody: section.websiteBody || {},
+        mediaAnnotations: section.mediaAnnotations || [],
         mediaRefs,
       };
     }),
