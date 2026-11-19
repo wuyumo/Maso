@@ -211,21 +211,23 @@ struct GeneratedExerciseVideo: View {
     var contentMode: ContentMode = .fill
     @State private var pair: [UIImage] = []
     @State private var interval: TimeInterval = 0.9
-    @State private var frame = 0
+    @State private var started = Date()
 
     var body: some View {
         Group {
             if pair.count == 2 {
-                ExerciseAspectFillPhoto(image: pair[playbackEnabled ? frame : 0], contentMode: contentMode)
-                    .onReceive(Timer.publish(every: interval, on: .main, in: .common).autoconnect()) { _ in
-                        if playbackEnabled { frame = 1 - frame }
-                    }
+                TimelineView(.periodic(from: started, by: max(interval, 0.1))) { context in
+                    let step = max(interval, 0.1)
+                    let raw = Int((context.date.timeIntervalSince(started) / step).rounded(.down))
+                    let index = playbackEnabled ? ((raw % pair.count) + pair.count) % pair.count : 0
+                    ExerciseAspectFillPhoto(image: pair[index], contentMode: contentMode)
+                }
             } else {
                 GeneratedExercisePlayer(url: url, playbackEnabled: playbackEnabled, contentMode: contentMode)
             }
         }
         .task(id: url) {
-            pair = []; frame = 0
+            pair = []
             let asset = AVURLAsset(url: url)
             do {
                 guard let track = try await asset.loadTracks(withMediaType: .video).first,
@@ -253,8 +255,14 @@ struct GeneratedExerciseVideo: View {
                 let first = try await generator.image(at: times[0]).image
                 let second = try await generator.image(at: times[1]).image
                 guard !Task.isCancelled else { return }
+                let firstImage = UIImage(cgImage: first)
+                let secondImage = UIImage(cgImage: second)
+                // Identical seeks are one picture. Leave the player in place rather
+                // than toggling a frozen still inside the detail hero.
+                guard firstImage.pngData() != secondImage.pngData() else { return }
                 interval = max(0.1, CMTimeGetSeconds(times[1] - times[0]))
-                pair = [UIImage(cgImage: first), UIImage(cgImage: second)]
+                started = Date()
+                pair = [firstImage, secondImage]
                 #if DEBUG
                 print("[ExerciseMedia] Two-frame renderer ready: \(url.lastPathComponent)")
                 #endif

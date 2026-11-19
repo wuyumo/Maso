@@ -201,6 +201,9 @@ private final class DemoURLProtocol: URLProtocol, @unchecked Sendable {
             }
         }
         input.markAsFinished()
+        // The last sample needs a duration. Ending on its own timestamp makes both
+        // generator reads return the first picture, so a detail hero never changes.
+        writer.endSession(atSourceTime: CMTime(value: CMTimeValue(colors.count), timescale: scale))
         await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
             writer.finishWriting { continuation.resume() }
         }
@@ -276,6 +279,14 @@ private final class DemoURLProtocol: URLProtocol, @unchecked Sendable {
         XCTAssertEqual(ExerciseDemoService.shared.files[exercise.id], clip.url)
         XCTAssertEqual(ExerciseDemoService.shared.presentation(for: exercise.id), .approvedMotion)
         XCTAssertFalse(CoreExerciseDemos.reviews.contains { $0.kind == "approved-animation" })
+        let probed = AVAssetImageGenerator(asset: AVURLAsset(url: clip.url))
+        probed.appliesPreferredTrackTransform = true
+        probed.requestedTimeToleranceBefore = .zero
+        probed.requestedTimeToleranceAfter = .zero
+        let opening = try await probed.image(at: CMTime(value: 0, timescale: 1)).image
+        let following = try await probed.image(at: CMTime(value: 1, timescale: 1)).image
+        XCTAssertNotEqual(UIImage(cgImage: opening).pngData(), UIImage(cgImage: following).pngData(),
+                          "The approved clip's two timestamps must be different pictures before the detail sheet opens")
         let scene = try XCTUnwrap(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
         let previous = scene.windows.first(where: \.isKeyWindow)
         let window = UIWindow(windowScene: scene)
@@ -286,19 +297,52 @@ private final class DemoURLProtocol: URLProtocol, @unchecked Sendable {
         window.makeKeyAndVisible()
         try await Task.sleep(for: .seconds(2))
         func mediaCrop() throws -> Data {
-            window.layoutIfNeeded()
-            let image = UIGraphicsImageRenderer(bounds: window.bounds).image { _ in
-                window.drawHierarchy(in: window.bounds, afterScreenUpdates: true)
+            let scenes = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }
+            var hero: (UIWindow, UIView)?
+            for scene in scenes {
+                for candidate in scene.windows where !candidate.isHidden {
+                    candidate.layoutIfNeeded()
+                    if let view = Self.view(identified: "exercise.media.hero", in: candidate, visited: []) {
+                        hero = (candidate, view)
+                        break
+                    }
+                }
+                if hero != nil { break }
+            }
+            let (host, view) = try XCTUnwrap(hero, "The real detail hero was not on screen")
+            let frame = view.convert(view.bounds, to: host)
+            XCTAssertGreaterThan(frame.width, 40)
+            XCTAssertGreaterThan(frame.height, 40)
+            host.layoutIfNeeded()
+            let image = UIGraphicsImageRenderer(bounds: host.bounds).image { _ in
+                host.drawHierarchy(in: host.bounds, afterScreenUpdates: true)
             }
             let cg = try XCTUnwrap(image.cgImage)
-            let rect = CGRect(x: CGFloat(cg.width) * 0.15, y: CGFloat(cg.height) * 0.14,
-                              width: CGFloat(cg.width) * 0.7, height: CGFloat(cg.width) * 0.55).integral
+            let scale = image.scale
+            var rect = CGRect(x: frame.minX * scale, y: frame.minY * scale,
+                              width: frame.width * scale, height: frame.height * scale).integral
+            rect = rect.intersection(CGRect(x: 0, y: 0, width: CGFloat(cg.width), height: CGFloat(cg.height)))
+            XCTAssertGreaterThan(rect.width, 40)
+            XCTAssertGreaterThan(rect.height, 40)
             return try XCTUnwrap(UIImage(cgImage: try XCTUnwrap(cg.cropping(to: rect))).pngData())
         }
         let first = try mediaCrop()
         XCTAssertGreaterThan(first.count, 1000)
         try await Task.sleep(for: .seconds(1.3))
         XCTAssertNotEqual(first, try mediaCrop(), "The exercise detail hero should change frames")
+    }
+
+    private static func view(identified id: String, in root: UIView, visited: Set<ObjectIdentifier>) -> UIView? {
+        var visited = visited
+        guard visited.insert(ObjectIdentifier(root)).inserted else { return nil }
+        if root.accessibilityIdentifier == id, root.bounds.width > 1, root.bounds.height > 1 { return root }
+        for subview in root.subviews {
+            if let found = view(identified: id, in: subview, visited: visited) { return found }
+        }
+        for case let child as UIView in root.accessibilityElements ?? [] {
+            if let found = view(identified: id, in: child, visited: visited) { return found }
+        }
+        return nil
     }
     func testCurrentAndUpcomingExercisesUseTheSameFilledVideoInPlayer() async throws {
         let data = DataStore.makeMock()

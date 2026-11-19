@@ -285,6 +285,9 @@ final class CoachAdviceTests: XCTestCase {
         ], createdAt: Date(), updatedAt: Date())
         let saved = plan
         let intent = LocalRoutineRules.parse("合成：不练腿，覆盖两个主要的肌肉部位")
+        XCTAssertEqual(intent.majorCoverageMinimum, 2, "「两个」is a real coverage count, not a familiar-preference waiver")
+        XCTAssertTrue(intent.avoidSections.contains(.legs))
+        XCTAssertTrue(intent.requestsCoverage)
         let result = try XCTUnwrap(LocalRoutineRules.apply(
             to: [plan], intent: intent, settings: UserSettings(), exById: known,
             coverage: .sessionEach, familiarExerciseIDs: [squat.id, bench.id, stretch.id]).first)

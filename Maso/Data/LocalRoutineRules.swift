@@ -157,12 +157,12 @@ enum LocalRoutineRules {
     /// “五个主要肌群 / five major muscles” 是数量要求，不代表用户点了哪五块。
     private static func coverageMinimum(in text: String, clauses: [Substring]) -> Int? {
         let patterns = [
-            #"([1-6一二三四五六])\s*大(?:肌群|肌肉)"#,
-            #"([1-6一二三四五六])\s*个\s*主要(?:的)?(?:肌肉部位|肌群|肌肉|部位)"#,
+            #"([1-6一二两三四五六兩])\s*大(?:肌群|肌肉)"#,
+            #"([1-6一二两三四五六兩])\s*个\s*主要(?:的)?(?:肌肉部位|肌群|肌肉|部位)"#,
             #"\b(one|two|three|four|five|six|[1-6])\s+major\s+muscles?\b"#,
         ]
         let words = ["one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6,
-                     "一": 1, "二": 2, "三": 3, "四": 4, "五": 5, "六": 6]
+                     "一": 1, "二": 2, "两": 2, "兩": 2, "三": 3, "四": 4, "五": 5, "六": 6]
         for pattern in patterns {
             guard let expression = try? NSRegularExpression(pattern: pattern),
                   let match = expression.firstMatch(in: text, range: NSRange(text.startIndex..., in: text)),
@@ -557,20 +557,27 @@ enum LocalRoutineRules {
         guard intent.requestsCoverage, coverage != .skip else { return cleaned }
         var plans = cleaned
         var known = exById
+        var blockedTargets = Set<MuscleGroup>()
         let cap = intent.maxExercises ?? max(1, min(8, settings.exercisesPerSession))
         let policy = ExerciseSelectionPolicy.shared
-        for _ in majorSections {
+        // Familiar ordering may put an already-used variant first. That preference
+        // cannot abandon the missing section or the sections after it.
+        for _ in 0..<(majorSections.count * 2) {
             let budget = coverage == .sessionEach ? cap : cap * max(plans.count, 1)
             let report = assess(plans: plans, intent: intent, pool: Array(known.values), exById: known, stepBudget: budget, application: coverage)
             if report.satisfied || !report.retryable { break }
-            guard let target = report.missingNamed.first ?? majorSections.first(where: { report.available.contains($0) && !report.covered.contains($0) }),
-                  let candidate = policy.generationCandidates(
-                    from: known.values.filter { strengthSection(of: $0) == target },
-                    settings: settings, maxPerProgrammingGroup: 1, familiarIDs: familiarExerciseIDs).first else { break }
+            guard let target = report.missingNamed.first(where: { !blockedTargets.contains($0) })
+                    ?? majorSections.first(where: { report.available.contains($0) && !report.covered.contains($0) && !blockedTargets.contains($0) }) else { break }
+            let candidates = policy.generationCandidates(
+                from: known.values.filter { strengthSection(of: $0) == target },
+                settings: settings, maxPerProgrammingGroup: 1, familiarIDs: familiarExerciseIDs)
             guard let index = plans.indices.min(by: { plans[$0].steps.count < plans[$1].steps.count }) else { break }
             var steps = plans[index].steps
             let groups = Set(steps.compactMap { known[$0.exerciseId].map { policy.programmingGroupID(for: $0) } })
-            if groups.contains(policy.programmingGroupID(for: candidate)) { break }
+            guard let candidate = candidates.first(where: { !groups.contains(policy.programmingGroupID(for: $0)) }) else {
+                blockedTargets.insert(target)
+                continue
+            }
             let replacement = PlanStep(id: "coverage-\(candidate.id)", exerciseId: candidate.id, sets: max(1, settings.defaultSetsPerExercise), reps: 8, restBetweenSets: settings.defaultRestSeconds)
             if steps.count < cap {
                 steps.append(replacement)
