@@ -255,7 +255,7 @@
     }
   ],
   "review_only": {
-    "whats_new": "review-only/{locale}/whats_new.txt; metadata-update wording only, NOT final approved build notes; reconcile with actual 3.0.3 build before application"
+    "whats_new": "review-only/{locale}/whats_new.txt; describes the strength-list, coverage-check, reviewed-demo, confirmed chest-press still, and Watch footer changes. Approved name, subtitle, keywords, and description stay immutable."
   },
   "blocking_decisions": [
     "Confirm safe 3.0.3 source/build and required regression independently; this text package cannot prove build readiness.",
@@ -401,12 +401,12 @@
       "bytes": 216
     },
     "review-only/en-US/whats_new.txt": {
-      "sha256": "587713f2a50209d9f19eb3fe6c14bfceef22147d00e14c66c103b39c81d8e32e",
-      "bytes": 97
+      "sha256": "a12e91d56811da272a0851ed71cce4833575e2a91b5d4f7a81f184b02a8a2404",
+      "bytes": 352
     },
     "review-only/zh-Hans/whats_new.txt": {
-      "sha256": "3f472fc49d6d28d77451164140cb09246df53a6a73c77b3920828ee7fe4b3c72",
-      "bytes": 92
+      "sha256": "ed7416a1b4a515f23e1483ed9b427f5c1ba3e4e5a138342f1ccd0809278bc042",
+      "bytes": 310
     },
     "rollback/en-US/description.txt": {
       "sha256": "d726531b8b9f6c6126ab53f98d302902a35629cb37b733bc682a64d06ab29b14",

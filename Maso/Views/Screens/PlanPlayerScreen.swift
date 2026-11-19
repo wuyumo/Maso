@@ -878,11 +878,11 @@ struct PlanPlayerScreen: View {
             if let exercise = backgroundExercise {
                 if let bytes = exercise.customImageData, let image = UIImage(data: bytes) {
                     ExerciseAspectFillPhoto(image: image)
-                } else if demoMotion(exercise.id) == .verifiedStill, let image = CoreExerciseDemos.verifiedStill(exercise.id) {
+                } else if demoPresentation(exercise.id) == .approvedStill, let image = CoreExerciseDemos.approvedStill(exercise.id) {
                     ExerciseAspectFillPhoto(image: image)
-                } else if demoMotion(exercise.id) == .play, let url = ExerciseDemoService.shared.files[exercise.id] {
+                } else if demoPresentation(exercise.id) == .approvedMotion, let url = ExerciseDemoService.shared.files[exercise.id] {
                     ExerciseDemoThumbnail(url: url, fallback: CoreExerciseDemos.thumbnail(exercise.id))
-                } else if demoMotion(exercise.id) == .play, let image = CoreExerciseDemos.thumbnail(exercise.id) {
+                } else if demoPresentation(exercise.id) == .approvedMotion, let image = CoreExerciseDemos.thumbnail(exercise.id) {
                     ExerciseAspectFillPhoto(image: image)
                 }
             }

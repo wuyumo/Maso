@@ -45,9 +45,9 @@ enum LocalRoutineRules {
         }
     }
 
-    enum CoverageScope: Equatable { case unspecified, session, week }
+    enum CoverageScope: Equatable { case unspecified, session, week, conflict }
     /// `.skip` 保留原计划内容，不在这一份结果上裁决整周覆盖。
-    enum CoverageApplication: Equatable { case sessionEach, weekUnion, skip }
+    enum CoverageApplication: Equatable { case sessionEach, weekUnion, skip, unresolved, notThisObject }
 
     // MARK: - 词表
 
@@ -190,10 +190,14 @@ enum LocalRoutineRules {
     }
 
     private static func coverageScope(in text: String) -> CoverageScope {
-        let session = ["每次", "每一个训练", "每个训练", "单次", "each session", "every session", "every workout", "this workout", "全身", "full body", "full-body"]
-        let week = ["一周", "每周", "整周", "这周", "weekly", "each week", "across the week"]
-        if session.contains(where: { text.contains($0) }) { return .session }
-        if week.contains(where: { text.contains($0) }) { return .week }
+        // 只认明确用词。训练天数不能推出范围。中英是同一组词的对应，不是额外规则。
+        let session = ["每次", "每天", "单次", "全身", "each session", "every session", "every workout", "each workout", "every day", "each day", "full body", "full-body"]
+        let week = ["每周", "整周", "each week", "every week", "whole week"]
+        let wantsSession = session.contains { text.contains($0) }
+        let wantsWeek = week.contains { text.contains($0) }
+        if wantsSession && wantsWeek { return .conflict }
+        if wantsSession { return .session }
+        if wantsWeek { return .week }
         return .unspecified
     }
 
@@ -205,12 +209,14 @@ enum LocalRoutineRules {
         }
     }
 
-    private static func inferredCoverage(_ intent: Intent, planCount: Int) -> CoverageApplication {
+    /// 范围来自这句话和当前这份生成结果。一份计划就查这一份；一次生成的多份计划查它们的合计。
+    static func application(for intent: Intent, generatedPlanCount: Int) -> CoverageApplication {
         guard intent.requestsCoverage else { return .skip }
         switch intent.coverageScope {
+        case .conflict: return .unresolved
         case .session: return .sessionEach
-        case .week: return .weekUnion
-        case .unspecified: return planCount > 1 ? .weekUnion : .sessionEach
+        case .week: return generatedPlanCount > 1 ? .weekUnion : .notThisObject
+        case .unspecified: return generatedPlanCount > 1 ? .weekUnion : .sessionEach
         }
     }
 
@@ -292,7 +298,8 @@ enum LocalRoutineRules {
         exById: [String: Exercise],
         coverage: CoverageApplication? = nil
     ) -> [Plan] {
-        guard !intent.isEmpty else { return plans }
+        let stripped = strengthMainPlans(plans, exById: exById, intent: intent)
+        guard !intent.isEmpty else { return stripped }
 
         // 器械约束: 用 intent 覆盖出一份临时 settings, 复用 applyEquipmentPreference.
         var effective = settings
@@ -315,7 +322,7 @@ enum LocalRoutineRules {
             return e.isEmpty || e.contains("body") || e.contains("none")
         }
 
-        let adjusted = plans.map { plan -> Plan in
+        let adjusted = stripped.map { plan -> Plan in
             var p = plan
             var steps = p.steps
 
@@ -394,7 +401,7 @@ enum LocalRoutineRules {
             p.steps = DataStore.enforceScience(steps, exById: exById)
             return p
         }
-        let application = coverage ?? inferredCoverage(intent, planCount: adjusted.count)
+        let application = coverage ?? application(for: intent, generatedPlanCount: adjusted.count)
         return satisfyCoverage(adjusted, intent: intent, settings: effective, exById: exById, coverage: application)
     }
 
@@ -417,11 +424,42 @@ enum LocalRoutineRules {
         return majorSections.contains(section) ? section : nil
     }
 
+    static func isStrengthMain(_ exercise: Exercise) -> Bool {
+        if exercise.category.isPreparatory { return false }
+        if ExerciseSelectionPolicy.shared.metadata(for: exercise).role == "stretch" { return false }
+        return true
+    }
+
+    static func strengthMainPlans(_ plans: [Plan], exById: [String: Exercise], intent: Intent) -> [Plan] {
+        let note = PlanConstraint(kind: .coverage, value: "warmup-not-in-list",
+            label: NSLocalizedString("Warmup stays out of the strength list", comment: "explicit warmup is not a working exercise"))
+        return plans.map { plan in
+            var copy = plan
+            let kept = copy.steps.filter { step in
+                guard let exercise = exById[step.exerciseId] else { return true }
+                return isStrengthMain(exercise)
+            }
+            copy.steps = kept
+            if intent.allowsPreparatory {
+                var labels = copy.constraints ?? []
+                if !labels.contains(where: { $0.id == note.id }) { labels.append(note) }
+                copy.constraints = labels
+            }
+            return copy
+        }
+    }
+
     static func promptLine(for intent: Intent, application: CoverageApplication) -> String {
         guard intent.requestsCoverage, application != .skip else { return "" }
+        if application == .unresolved {
+            return "\n        - STRENGTH COVERAGE: the note asks for both a per-session and a weekly scope. Do not invent which one applies. Keep stretches and mobility out of the working list."
+        }
+        if application == .notThisObject {
+            return "\n        - STRENGTH COVERAGE: the note asks for weekly coverage, but this output is one session. Do not claim this session satisfies the week, and do not stuff every major section into it. Keep stretches and mobility out of the working list."
+        }
         let whereText = application == .sessionEach
-            ? "in EACH session"
-            : "across the set of routines, not necessarily in every session"
+            ? "in EACH session of this generated result"
+            : "across this generated set of routines"
         var line = "\n        - STRENGTH COVERAGE (\(whereText)): count only the primary muscle section of strength, hypertrophy, or calisthenics exercises. Stretching, mobility, and warmup never satisfy it. A compound exercise's secondary muscles do not count."
         if let minimum = intent.majorCoverageMinimum {
             line += " Cover at least \(minimum) distinct major sections. The user did not name which ones."
@@ -446,7 +484,7 @@ enum LocalRoutineRules {
         let countMet: Bool
         let namedMet: Bool
         switch application {
-        case .skip:
+        case .skip, .unresolved, .notThisObject:
             covered = []
             countMet = true
             namedMet = true
@@ -469,7 +507,8 @@ enum LocalRoutineRules {
             !countMet && (minimum > available.count || minimum > stepBudget)
         } ?? false
         let structural = !unsatisfiableNamed.isEmpty || structuralCount
-        let satisfied = !intent.requestsCoverage || application == .skip || (countMet && namedMet && !structural)
+        let withheld = application == .unresolved || application == .notThisObject
+        let satisfied = !withheld && (!intent.requestsCoverage || application == .skip || (countMet && namedMet && !structural))
         var feedback = ""
         if !satisfied {
             let names = covered.map(\.rawValue).sorted().joined(separator: ", ")
@@ -479,10 +518,16 @@ enum LocalRoutineRules {
             if structural { feedback += " This request cannot be met with the available equipment, avoided muscles, or exercise limit." }
         }
         return CoverageAssessment(covered: covered, missingNamed: missingNamed, unsatisfiableNamed: unsatisfiableNamed,
-                                  available: available, satisfied: satisfied, retryable: !satisfied && !structural, feedback: feedback)
+                                  available: available, satisfied: satisfied, retryable: !withheld && !satisfied && !structural, feedback: feedback)
     }
 
     private static func satisfyCoverage(_ plans: [Plan], intent: Intent, settings: UserSettings, exById: [String: Exercise], coverage: CoverageApplication) -> [Plan] {
+        if coverage == .unresolved {
+            return annotate(plans, value: "coverage-scope", label: NSLocalizedString("Coverage timing conflicts and was not applied", comment: "per-session and weekly coverage were both requested"))
+        }
+        if coverage == .notThisObject {
+            return annotate(plans, value: "coverage-week-not-this-session", label: NSLocalizedString("Weekly coverage was not judged on this one session", comment: "a weekly coverage note cannot be decided from one generated session"))
+        }
         guard intent.requestsCoverage, coverage != .skip else { return plans }
         var plans = plans
         var known = exById
@@ -501,9 +546,7 @@ enum LocalRoutineRules {
             let groups = Set(steps.compactMap { known[$0.exerciseId].map { policy.programmingGroupID(for: $0) } })
             if groups.contains(policy.programmingGroupID(for: candidate)) { break }
             let replacement = PlanStep(id: "coverage-\(candidate.id)", exerciseId: candidate.id, sets: max(1, settings.defaultSetsPerExercise), reps: 8, restBetweenSets: settings.defaultRestSeconds)
-            if !intent.allowsPreparatory, let preparatory = steps.firstIndex(where: { known[$0.exerciseId]?.category.isPreparatory == true }) {
-                steps[preparatory] = replacement
-            } else if steps.count < cap {
+            if steps.count < cap {
                 steps.append(replacement)
             } else { break }
             known[candidate.id] = candidate
@@ -512,8 +555,11 @@ enum LocalRoutineRules {
         let budget = coverage == .sessionEach ? cap : cap * max(plans.count, 1)
         let final = assess(plans: plans, intent: intent, pool: Array(known.values), exById: known, stepBudget: budget, application: coverage)
         guard !final.satisfied else { return plans }
-        let unmet = PlanConstraint(kind: .unmet, value: "coverage",
-                                  label: NSLocalizedString("Major-muscle coverage is not met", comment: "plan constraint — coverage could not be completed"))
+        return annotate(plans, value: "coverage", label: NSLocalizedString("Major-muscle coverage is not met", comment: "plan constraint — coverage could not be completed"))
+    }
+
+    private static func annotate(_ plans: [Plan], value: String, label: String) -> [Plan] {
+        let unmet = PlanConstraint(kind: .unmet, value: value, label: label)
         return plans.map { plan in
             var copy = plan
             var labels = copy.constraints ?? []

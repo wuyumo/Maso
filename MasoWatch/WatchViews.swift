@@ -103,8 +103,9 @@ struct WatchPlayerView: View {
     private var state: WatchSyncState { bridge.state }
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: 7) {
+        VStack(spacing: 4) {
+            ScrollView {
+                VStack(spacing: 7) {
                 if state.mode == .rest {
                     Button { page = .rest } label: {
                         HStack(spacing: 3) { Text("Rest"); Image(systemName: "chevron.right").font(.system(size: 8, weight: .semibold)) }
@@ -116,7 +117,7 @@ struct WatchPlayerView: View {
                     primary("Skip rest", symbol: "forward.end.fill") { bridge.command(.advance) }
                 } else {
                     VStack(alignment: .leading, spacing: 0) {
-                        Text(state.exerciseName).font(.system(size: 14, weight: .semibold)).lineLimit(1)
+                        Text(state.exerciseName).font(.system(size: 14, weight: .semibold)).lineLimit(2).minimumScaleFactor(0.8)
                         Text(String(format: NSLocalizedString("SET %d/%d", comment: ""), state.setN, state.setTotal))
                             .font(.system(size: 9)).foregroundStyle(WatchTheme.dim)
                     }.frame(maxWidth: .infinity, alignment: .leading)
@@ -137,15 +138,12 @@ struct WatchPlayerView: View {
                         }
                     }
                 }
-                HStack(spacing: 0) {
-                    Button { page = .queue } label: { Image(systemName: "list.bullet").font(.system(size: 15, weight: .semibold)).frame(maxWidth: .infinity, minHeight: 52).contentShape(Rectangle()) }
-                        .accessibilityLabel(Text("This Workout"))
-                    heart.frame(minWidth: 28)
-                    Button { page = .more } label: { Image(systemName: "ellipsis").font(.system(size: 15, weight: .semibold)).frame(maxWidth: .infinity, minHeight: 52).contentShape(Rectangle()) }
-                        .accessibilityLabel(Text("More"))
-                }.font(.system(size: 12)).buttonStyle(.plain).foregroundStyle(WatchTheme.dim)
             }.padding(.horizontal, 4)
-        }.scrollIndicators(.hidden)
+            }
+            .scrollIndicators(.hidden)
+            bottomControls
+                .padding(.horizontal, WatchPlayerLayout.horizontalInset)
+        }
         .onAppear {
             #if DEBUG
             switch ProcessInfo.processInfo.environment["MASSO_WATCH_PREVIEW"] {
@@ -179,6 +177,33 @@ struct WatchPlayerView: View {
         Text([state.reps.map { String(format: NSLocalizedString("%d reps", comment: ""), $0) },
               state.weight.map { _ in weightText + " " + (state.weightUnit ?? "kg") }].compactMap { $0 }.joined(separator: " · "))
     }
+    private var bottomControls: some View {
+        HStack(spacing: 0) {
+            Button { page = .queue } label: {
+                Image(systemName: "list.bullet").font(.system(size: 15, weight: .semibold))
+                    .frame(maxWidth: .infinity, minHeight: WatchPlayerLayout.footerHeight)
+                    .contentShape(Rectangle())
+            }
+            .accessibilityLabel(Text("This Workout"))
+            .accessibilityIdentifier("watch.player.queue")
+            heart
+                .frame(maxWidth: .infinity, minHeight: WatchPlayerLayout.footerHeight)
+                .accessibilityIdentifier("watch.player.heart")
+            Button { page = .more } label: {
+                Image(systemName: "ellipsis").font(.system(size: 15, weight: .semibold))
+                    .frame(maxWidth: .infinity, minHeight: WatchPlayerLayout.footerHeight)
+                    .contentShape(Rectangle())
+            }
+            .accessibilityLabel(Text("More"))
+            .accessibilityIdentifier("watch.player.more")
+        }
+        .font(.system(size: 12))
+        .buttonStyle(.plain)
+        .foregroundStyle(WatchTheme.dim)
+        .lineLimit(1)
+        .minimumScaleFactor(0.7)
+    }
+
     private var heart: some View {
         TimelineView(.periodic(from: .now, by: 5)) { context in
             let workout = WatchWorkoutManager.shared

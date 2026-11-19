@@ -47,35 +47,54 @@ enum CoreExerciseDemos {
         return assets[id]?.verification == "unverified"
     }
 
-    /// How an adopted demo may be shown. A file named frame 0, or a poster extracted
-    /// from an unverified clip, is not a reviewed still.
-    enum Motion: Equatable { case play, verifiedStill, holdWithoutUnverifiedLoop }
-
-    static func motion(id: String, remote: ExerciseDemoResult?) -> Motion {
-        let bundled = assets[id]
-        if remote?.verification == "unverified" { return stillOrHold(id) }
-        if let remote {
-            // A remote catalog that repeats the unverified bytes does not promote them.
-            if bundled?.verification == "unverified", remote.sha256 == bundled?.sha256 { return stillOrHold(id) }
-            return .play
-        }
-        if bundled?.verification == "unverified" { return stillOrHold(id) }
-        return .play
+    /// Explicit review records. A missing catalog field is not approval.
+    /// `user-approved-static` authorizes one still hash only. It does not authorize the motion file.
+    struct DemoReview: Codable, Equatable {
+        var exerciseId: String
+        var kind: String
+        var assetSHA256: String
+        var approvedAt: String?
+        var scope: String?
     }
 
-    /// Reviewed stills only. This source tree has no such record, so the set stays empty
-    /// and an unverified clip cannot fall back to its own first frame.
-    static var reviewedStillIDs: Set<String> = []
-
-    static func verifiedStill(_ id: String?) -> UIImage? {
-        guard let id, reviewedStillIDs.contains(id) else { return nil }
-        return UIGraphicsImageRenderer(size: CGSize(width: 1, height: 1)).image { context in
-            context.fill(CGRect(x: 0, y: 0, width: 1, height: 1))
-        }
+    enum DemoPresentation: Equatable {
+        case approvedMotion
+        case approvedStill
+        case placeholder
     }
 
-    private static func stillOrHold(_ id: String) -> Motion {
-        reviewedStillIDs.contains(id) ? .verifiedStill : .holdWithoutUnverifiedLoop
+    static let reviews: [DemoReview] = {
+        guard let url = Bundle.main.url(forResource: "review-ledger", withExtension: "json", subdirectory: "CoreExerciseDemos"),
+              let data = try? Data(contentsOf: url),
+              let rows = try? JSONDecoder().decode([DemoReview].self, from: data) else { return [] }
+        return rows
+    }()
+
+    /// `cachedSHA` is ignored on purpose: a cached or replacement motion file cannot promote itself.
+    static func presentation(id: String, motionSHA: String?, cachedSHA: String? = nil, reviews ledger: [DemoReview]) -> DemoPresentation {
+        _ = cachedSHA
+        if ledger.contains(where: { $0.exerciseId == id && $0.kind == "user-approved-static" && !$0.assetSHA256.isEmpty }) {
+            return .approvedStill
+        }
+        if let motionSHA, ledger.contains(where: { $0.exerciseId == id && $0.kind == "approved-animation" && $0.assetSHA256 == motionSHA }) {
+            return .approvedMotion
+        }
+        return .placeholder
+    }
+
+    static func presentation(id: String) -> DemoPresentation {
+        let remote = ExerciseDemoService.shared.hasRemoteCatalog ? ExerciseDemoService.shared.remoteAssets[id]?.sha256 : nil
+        let cached = ExerciseDemoService.shared.files[id]?.deletingPathExtension().lastPathComponent
+        return presentation(id: id, motionSHA: remote ?? assets[id]?.sha256, cachedSHA: cached, reviews: reviews)
+    }
+
+    /// Shows the still only when its bytes match the user-approved hash. The motion sha is not consulted.
+    static func approvedStill(_ id: String) -> UIImage? {
+        guard let record = reviews.first(where: { $0.exerciseId == id && $0.kind == "user-approved-static" }),
+              let url = Bundle.main.url(forResource: id, withExtension: "jpg", subdirectory: "CoreExerciseDemos"),
+              let data = try? Data(contentsOf: url),
+              SHA256.hash(data: data).map({ String(format: "%02x", $0) }).joined() == record.assetSHA256 else { return nil }
+        return UIImage(data: data)
     }
     private static let posterSourceHashes: [String: String] = {
         guard let url = Bundle.main.url(forResource: "poster-catalog", withExtension: "json", subdirectory: "CoreExerciseDemos"),
@@ -289,7 +308,7 @@ final class ExerciseDemoService {
             catch { return }
         }
         let remote = hasRemoteCatalog ? remoteAssets[exerciseID] : nil
-        if CoreExerciseDemos.motion(id: exerciseID, remote: remote) != .play {
+        if CoreExerciseDemos.presentation(id: exerciseID, motionSHA: remote?.sha256 ?? CoreExerciseDemos.assets[exerciseID]?.sha256, cachedSHA: files[exerciseID]?.deletingPathExtension().lastPathComponent, reviews: CoreExerciseDemos.reviews) != .approvedMotion {
             files.removeValue(forKey: exerciseID)
             return
         }

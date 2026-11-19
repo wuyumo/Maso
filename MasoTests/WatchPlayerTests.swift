@@ -77,6 +77,16 @@ final class WatchPlayerTests: XCTestCase {
         XCTAssertNil(store.session)
         XCTAssertEqual(store.makeWatchState().discarded, true)
     }
+    func testPinnedFooterStaysInsideEverySupportedWatchSafeArea() {
+        XCTAssertFalse(WatchPlayerLayout.supportedScreens.isEmpty)
+        for screen in WatchPlayerLayout.supportedScreens {
+            let footer = WatchPlayerLayout.footer(on: screen)
+            XCTAssertTrue(WatchPlayerLayout.footerIsReachable(footer, on: screen), screen.name)
+            XCTAssertGreaterThanOrEqual(footer.height, 44, screen.name)
+            XCTAssertGreaterThanOrEqual(footer.controlWidth, 36, screen.name)
+        }
+    }
+
     func testMirrorContextStableAcrossRepeatedReads() throws {
         let (store, _) = try fixture(); defer { store.end() }
         let context = store.makeWatchState().context

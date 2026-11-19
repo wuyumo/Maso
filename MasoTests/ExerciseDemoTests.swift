@@ -11,30 +11,18 @@ import AVFoundation
         ), ["squat", "row", "press", "curl"])
     }
 
-    func testUnverifiedMotionStaysStaticOnlyWhenAReviewedStillExists() throws {
-        let target = "chest_press_machine_iso_lateral"
-        XCTAssertEqual(CoreExerciseDemos.assets[target]?.verification, "unverified")
-        XCTAssertTrue(CoreExerciseDemos.reviewedStillIDs.isEmpty)
-        XCTAssertNil(CoreExerciseDemos.verifiedStill(target))
-        XCTAssertEqual(CoreExerciseDemos.motion(id: target, remote: nil), .holdWithoutUnverifiedLoop)
-        if !ExerciseDemoService.shared.hasRemoteCatalog {
-            XCTAssertEqual(demoMotion(target), .holdWithoutUnverifiedLoop)
-        }
-        var repeated = try XCTUnwrap(CoreExerciseDemos.assets[target])
-        repeated.verification = nil
-        XCTAssertEqual(CoreExerciseDemos.motion(id: target, remote: repeated), .holdWithoutUnverifiedLoop)
-        repeated.sha256 = String(repeating: "ab", count: 32)
-        XCTAssertEqual(CoreExerciseDemos.motion(id: target, remote: repeated), .play)
-        let played = try XCTUnwrap(CoreExerciseDemos.assets.first { $0.value.verification != "unverified" })
-        XCTAssertEqual(CoreExerciseDemos.motion(id: played.key, remote: nil), .play)
-        if !ExerciseDemoService.shared.hasRemoteCatalog {
-            XCTAssertEqual(demoMotion(played.key), .play)
-        }
-        defer { CoreExerciseDemos.reviewedStillIDs.remove(target) }
-        CoreExerciseDemos.reviewedStillIDs.insert(target)
-        XCTAssertEqual(CoreExerciseDemos.motion(id: target, remote: nil), .verifiedStill)
-        XCTAssertNotNil(CoreExerciseDemos.verifiedStill(target))
-        XCTAssertEqual(demoMotion(target), .verifiedStill)
+    func testConfirmedChestPressStillDoesNotPlayAnyMotion() {
+        let id = "chest_press_machine_iso_lateral"
+        let still = "1aa57235a0e8946f7cf5952004605919fcf1a33b9fb45abef5c3b571ec57dffd"
+        let motion = "7118307bd064dc744bedf8dd7a108189aacca2d13e46f8534a8fca853bc33e9d"
+        let record = CoreExerciseDemos.DemoReview(exerciseId: id, kind: "user-approved-static", assetSHA256: still, approvedAt: "2026-11-19T18:13:00+08:00", scope: "static-demo-visual")
+        XCTAssertEqual(CoreExerciseDemos.presentation(id: id, motionSHA: motion, cachedSHA: motion, reviews: [record]), .approvedStill)
+        XCTAssertEqual(CoreExerciseDemos.presentation(id: id, motionSHA: String(repeating: "ab", count: 32), cachedSHA: String(repeating: "cd", count: 32), reviews: [record]), .approvedStill)
+        XCTAssertEqual(CoreExerciseDemos.assets[id]?.verification, "unverified")
+        XCTAssertEqual(CoreExerciseDemos.presentation(id: "unknown-demo", motionSHA: motion, reviews: []), .placeholder)
+        let approved = CoreExerciseDemos.DemoReview(exerciseId: "bench_press_barbell", kind: "approved-animation", assetSHA256: motion, approvedAt: nil, scope: nil)
+        XCTAssertEqual(CoreExerciseDemos.presentation(id: "bench_press_barbell", motionSHA: motion, cachedSHA: "other", reviews: [approved]), .approvedMotion)
+        XCTAssertEqual(CoreExerciseDemos.presentation(id: "bench_press_barbell", motionSHA: String(repeating: "ef", count: 32), reviews: [approved]), .placeholder)
     }
 }
 

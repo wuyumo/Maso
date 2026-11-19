@@ -1464,6 +1464,9 @@
 "More %@" = "More %@";
 "Cover %d major muscle groups" = "Cover %d major muscle groups";
 "Cover %@" = "Cover %@";
+"Warmup stays out of the strength list" = "Warmup stays out of the strength list";
+"Coverage timing conflicts and was not applied" = "Coverage timing conflicts and was not applied";
+"Weekly coverage was not judged on this one session" = "Weekly coverage was not judged on this one session";
 "Major-muscle coverage is not met" = "Major-muscle coverage is not met";
 "Your data" = "Your data";
 "Export my data" = "Export my data";

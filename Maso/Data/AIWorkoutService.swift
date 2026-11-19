@@ -260,13 +260,9 @@ final class AIWorkoutService {
             let settings = selectionSettings(payload: payload, query: query)
             let locked = payload.selectionFavoriteIDs.union(explicitlyRequestedExerciseIDs(in: query, library: library))
             let coverageIntent = LocalRoutineRules.parse(query)
-            let coverageApplication: LocalRoutineRules.CoverageApplication = {
-                if sessionRequest != nil { return .skip }
-                if coverageIntent.coverageScope == .session || (coverageIntent.coverageScope == .unspecified && payload.daysPerWeek <= 3) {
-                    return .sessionEach
-                }
-                return .weekUnion
-            }()
+            let coverageApplication = sessionRequest == nil
+                ? LocalRoutineRules.application(for: coverageIntent, generatedPlanCount: 1)
+                : LocalRoutineRules.CoverageApplication.skip
             let plans = try await requestValidatedPlans(candidates: candidates, expectedCount: 1,
                 maxExercises: maxExercises, single: true, surface: surface, preferredIDs: locked, settings: settings,
                 coverageIntent: coverageIntent, coverageApplication: coverageApplication) { correction in
@@ -324,7 +320,7 @@ final class AIWorkoutService {
             let settings = selectionSettings(payload: payload, query: query)
             let locked = payload.selectionFavoriteIDs.union(explicitlyRequestedExerciseIDs(in: query, library: library))
             let coverageIntent = LocalRoutineRules.parse(query)
-            let coverageApplication: LocalRoutineRules.CoverageApplication = coverageIntent.coverageScope == .session ? .sessionEach : .weekUnion
+            let coverageApplication = LocalRoutineRules.application(for: coverageIntent, generatedPlanCount: count)
             let plans = try await requestValidatedPlans(candidates: candidates, expectedCount: count,
                 maxExercises: maxExercises, surface: surface, preferredIDs: locked, settings: settings,
                 coverageIntent: coverageIntent, coverageApplication: coverageApplication) { correction in
@@ -963,9 +959,8 @@ final class AIWorkoutService {
         var selected: [Exercise] = []
         var ids = Set<String>()
         var familyCounts: [String: Int] = [:]
-        let preparatoryRequested = LocalRoutineRules.parse(query).allowsPreparatory
         func add(_ exercise: Exercise, requested: Bool = false) {
-            if exercise.category.isPreparatory && !preparatoryRequested && !allowedSpecialists.contains(exercise.id) { return }
+            if !LocalRoutineRules.isStrengthMain(exercise) { return }
             let family = policy.displayFamilyID(for: exercise)
             guard !ids.contains(exercise.id), requested || familyCounts[family, default: 0] < 4 else { return }
             ids.insert(exercise.id)
@@ -1261,13 +1256,9 @@ final class AIWorkoutService {
             """
         }
         let coverageIntent = LocalRoutineRules.parse([p.focusNote, p.coachMemory].compactMap { $0 }.joined(separator: "\n"))
-        let coverageApplication: LocalRoutineRules.CoverageApplication = {
-            if sessionRequest != nil { return .skip }
-            if coverageIntent.coverageScope == .session || (coverageIntent.coverageScope == .unspecified && p.daysPerWeek <= 3) {
-                return .sessionEach
-            }
-            return .weekUnion
-        }()
+        let coverageApplication = sessionRequest == nil
+            ? LocalRoutineRules.application(for: coverageIntent, generatedPlanCount: 1)
+            : LocalRoutineRules.CoverageApplication.skip
         let coverageLine = LocalRoutineRules.promptLine(for: coverageIntent, application: coverageApplication)
         let previousBlock = previousSession.map { plan in
             "\nCURRENT SINGLE WORKOUT (revise this workout only; do not change the user's weekly routines):\n" + currentRoutinesBlock([plan], library: library)
@@ -1390,7 +1381,7 @@ final class AIWorkoutService {
         - This user's goal is \(p.goalLabel). Write COMPOUND lifts at \(p.goalRepCompound)-\(p.goalRepCompoundHi) reps and ISOLATION lifts at \(p.goalRepIso)-\(p.goalRepIsoHi) reps. Use \(p.goalSetsLo)-\(p.goalSetsHi) sets per exercise. Stop ~1-3 reps short of failure (do not write 'to failure').\(p.acsmGuideline)\(p.acsmWeeklyGuideline)
         - Set "duration_seconds" only for timed holds/cardio; otherwise null. Rest between sets is \(p.goalRest)s (handled by the app).
         - Pick ONLY exercises the user can perform with: \(p.equipmentLine). Pick weights conservatively if no history; scale to recent volume if any.\(p.bestSetsGuideline)
-        - Respect the "wants to strengthen" focus by giving those muscles an extra exercise / earlier slot where it fits, without breaking the rules above.\(p.focusNote.map { "\n        - PRIORITY THIS TIME (OVERRIDES the profile): \($0). This is what the user just asked for in their own words — when it conflicts with the profile's equipment / focus-muscle defaults above, THIS wins (e.g. 'dumbbells only' beats the profile equipment list; 'upper body' beats a profile legs focus). Skew the split, equipment picks and volume to address it directly. Only the safety/balance rules and the exercise catalog stay non-negotiable." } ?? "")\(LocalRoutineRules.promptLine(for: LocalRoutineRules.parse(retrievalQuery), application: LocalRoutineRules.parse(retrievalQuery).coverageScope == .session ? .sessionEach : .weekUnion))
+        - Respect the "wants to strengthen" focus by giving those muscles an extra exercise / earlier slot where it fits, without breaking the rules above.\(p.focusNote.map { "\n        - PRIORITY THIS TIME (OVERRIDES the profile): \($0). This is what the user just asked for in their own words — when it conflicts with the profile's equipment / focus-muscle defaults above, THIS wins (e.g. 'dumbbells only' beats the profile equipment list; 'upper body' beats a profile legs focus). Skew the split, equipment picks and volume to address it directly. Only the safety/balance rules and the exercise catalog stay non-negotiable." } ?? "")\(LocalRoutineRules.promptLine(for: LocalRoutineRules.parse(retrievalQuery), application: LocalRoutineRules.application(for: LocalRoutineRules.parse(retrievalQuery), generatedPlanCount: count)))
         - EXACTLY \(perRoutine) exercises in EVERY routine — no more, no fewer.
 
         AVAILABLE EXERCISES — one JSON object per line. Return ONLY an exact "exercise_id" from this list. Prefer core exercises and use supporting exercises when needed for equipment, focus or variety. Choose at most one exercise per "group" in each routine; changing equipment alone is not a reason to repeat a group. Specialist rows are present only for an explicit request or an existing routine being revised. Match specific muscle requests to "primary_muscles". Never invent an ID or substitute a similarly named exercise:
@@ -1620,6 +1611,13 @@ final class AIWorkoutService {
             }
             return plan
         }
+        let preparatorySteps = plans.flatMap(\.steps).filter { step in
+            guard let exercise = byID[step.exerciseId] else { return false }
+            return !LocalRoutineRules.isStrengthMain(exercise)
+        }
+        if !preparatorySteps.isEmpty {
+            problems.append("Stretching, mobility, and warmup cannot be working exercises. Remove them from the strength list.")
+        }
         let catalogProblems = !problems.isEmpty
         var retryable = true
         if let coverageIntent, coverageIntent.requestsCoverage, coverageApplication != .skip {
@@ -1628,7 +1626,7 @@ final class AIWorkoutService {
             let known = Dictionary(candidates.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
             let coverage = LocalRoutineRules.assess(plans: plans, intent: coverageIntent, pool: candidates, exById: known,
                                                    stepBudget: budget, application: coverageApplication)
-            if !coverage.satisfied {
+            if !coverage.satisfied && coverageApplication != .unresolved && coverageApplication != .notThisObject {
                 problems.append(coverage.feedback)
                 retryable = coverage.retryable || catalogProblems
             }

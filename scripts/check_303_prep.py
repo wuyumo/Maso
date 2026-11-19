@@ -43,8 +43,8 @@ FILE_HASHES = {
     "Maso.xcodeproj/project.pbxproj": "f03346d3a1955862743ebfc33e672f304d0b7d2d35f2d89e83ba4dbee7f994a8",
 }
 WHATS_NEW = {
-    "en-US": "Updated App Store information to clarify workout logging, AI plans and muscle recovery estimates.",
-    "zh-Hans": "更新 App Store 信息，更清楚地介绍训练记录、AI 计划与肌群恢复估算。",
+    "en-US": "Strength workouts leave stretches and mobility off the working list. A request to cover major muscle groups is checked on the plan being generated. Exercise demos play only after an explicit review of that exact file. The iso-lateral machine chest press shows the confirmed still. On Apple Watch, heart rate, the workout list, and More stay on screen.\n",
+    "zh-Hans": "力量训练的正式动作不再包含拉伸和活动度。要求覆盖主要肌群时，会按正在生成的这份计划检查。动作演示须有该文件的明确审验记录才会播放。分臂推胸展示已确认的静图。Apple Watch 训练时，心率、训练列表和更多保持在屏幕内。\n",
 }
 EN_KEYWORDS = "strength,training,gym,log,planner,weightlifting,sets,reps,routine,progress,dumbbell,barbell,watch"
 ZH_SUBTITLE = "力量训练记录与肌群恢复估算"

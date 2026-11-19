@@ -97,3 +97,49 @@ struct WatchCommand: Codable {
     var stepID: String? = nil
     var value: Double? = nil
 }
+
+/// Pinned training footer. The list, heart rate, and More controls stay inside
+/// the safe area instead of scrolling away with the exercise content.
+struct WatchPlayerLayout {
+    static let footerHeight: CGFloat = 44
+    static let horizontalInset: CGFloat = 8
+
+    struct Screen: Equatable {
+        var name: String
+        var width: CGFloat
+        var height: CGFloat
+        var safeTop: CGFloat
+        var safeBottom: CGFloat
+        var safeLeading: CGFloat
+        var safeTrailing: CGFloat
+    }
+
+    struct Footer: Equatable {
+        var minY: CGFloat
+        var height: CGFloat
+        var controlWidth: CGFloat
+    }
+
+    /// watchOS 11 point sizes. Safe insets leave the system clock and the round bezel.
+    static let supportedScreens: [Screen] = [
+        .init(name: "40mm", width: 162, height: 197, safeTop: 28, safeBottom: 14, safeLeading: 8, safeTrailing: 8),
+        .init(name: "41mm", width: 176, height: 215, safeTop: 30, safeBottom: 16, safeLeading: 10, safeTrailing: 10),
+        .init(name: "42mm", width: 187, height: 223, safeTop: 32, safeBottom: 16, safeLeading: 10, safeTrailing: 10),
+        .init(name: "44mm", width: 184, height: 224, safeTop: 32, safeBottom: 16, safeLeading: 10, safeTrailing: 10),
+        .init(name: "45mm", width: 198, height: 242, safeTop: 34, safeBottom: 18, safeLeading: 12, safeTrailing: 12),
+        .init(name: "46mm", width: 208, height: 248, safeTop: 34, safeBottom: 18, safeLeading: 12, safeTrailing: 12),
+        .init(name: "49mm", width: 205, height: 251, safeTop: 36, safeBottom: 20, safeLeading: 14, safeTrailing: 14)
+    ]
+
+    static func footer(on screen: Screen) -> Footer {
+        let width = screen.width - screen.safeLeading - screen.safeTrailing - horizontalInset * 2
+        return Footer(minY: screen.height - screen.safeBottom - footerHeight, height: footerHeight, controlWidth: width / 3)
+    }
+
+    static func footerIsReachable(_ footer: Footer, on screen: Screen) -> Bool {
+        footer.height >= 44
+            && footer.controlWidth >= 36
+            && footer.minY >= screen.safeTop
+            && footer.minY + footer.height <= screen.height - screen.safeBottom + 0.5
+    }
+}

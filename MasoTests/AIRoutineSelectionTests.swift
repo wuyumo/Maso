@@ -356,6 +356,8 @@ final class WeeklyRoutineCountTests: XCTestCase {
         payload.daysPerWeek = 3
         let candidates = service.routineCandidates(payload: payload, library: ExerciseLibrary.all, query: note)
         XCTAssertFalse(candidates.contains { $0.id == "chest_stretch_doorway" })
+        let retained = service.routineCandidates(payload: payload, library: ExerciseLibrary.all, query: "合成：请保留胸部拉伸", preservingIDs: ["chest_stretch_doorway"])
+        XCTAssertFalse(retained.contains { $0.id == "chest_stretch_doorway" })
         XCTAssertTrue(candidates.contains { LocalRoutineRules.strengthSection(of: $0) == .chest })
         let prompt = service.buildPrompt(payload: payload, library: candidates)
         XCTAssertTrue(prompt.contains("STRENGTH COVERAGE"))

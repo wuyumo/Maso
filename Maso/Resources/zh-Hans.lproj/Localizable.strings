@@ -1464,6 +1464,9 @@
 "More %@" = "多练%@";
 "Cover %d major muscle groups" = "覆盖 %d 个主要肌群";
 "Cover %@" = "覆盖%@";
+"Warmup stays out of the strength list" = "热身或拉伸不进入力量动作列表";
+"Coverage timing conflicts and was not applied" = "覆盖范围互相冲突，没有套用";
+"Weekly coverage was not judged on this one session" = "整周覆盖不能用这一次训练代替判定";
 "Major-muscle coverage is not met" = "主要肌群覆盖没有完成";
 "Your data" = "你的数据";
 "Export my data" = "导出我的数据";

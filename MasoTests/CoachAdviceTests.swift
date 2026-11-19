@@ -63,7 +63,11 @@ final class CoachAdviceTests: XCTestCase {
         XCTAssertEqual(LocalRoutineRules.parse("每周覆盖五个主要肌群").coverageScope, .week)
         XCTAssertTrue(LocalRoutineRules.parse("覆盖胸和背").namedCoverageSections.isSuperset(of: [.chest, .back]))
         XCTAssertTrue(LocalRoutineRules.parse("保留一段拉伸").allowsPreparatory)
+        XCTAssertFalse(LocalRoutineRules.parse("不要拉伸").allowsPreparatory)
+        XCTAssertFalse(LocalRoutineRules.parse("不要把拉伸当训练").allowsPreparatory)
         XCTAssertFalse(chinese.allowsPreparatory)
+        XCTAssertEqual(LocalRoutineRules.parse("每天覆盖五个主要肌群").coverageScope, .session)
+        XCTAssertEqual(LocalRoutineRules.parse("每天覆盖五个主要肌群，也要整周覆盖").coverageScope, .conflict)
         XCTAssertTrue(LocalRoutineRules.parse("").isEmpty)
     }
 
@@ -123,6 +127,25 @@ final class CoachAdviceTests: XCTestCase {
         let impossible = LocalRoutineRules.apply(to: [plan], intent: blocked, settings: UserSettings(),
                                                  exById: [stretch.id: stretch, bench.id: bench], coverage: .sessionEach)
         XCTAssertEqual(impossible.first?.constraints?.first { $0.kind == .unmet }?.value, "coverage")
+    }
+
+    @MainActor
+    func testExplicitStretchRequestAndSatisfiedTemplateStayOutOfTheStrengthList() throws {
+        let stretch = try XCTUnwrap(ExerciseLibrary.byId["chest_stretch_doorway"])
+        let bench = try XCTUnwrap(ExerciseLibrary.byId["bench_press_barbell"])
+        let plan = Plan(id: "synthetic-keep", name: "Synthetic", steps: [
+            PlanStep(id: "bench", exerciseId: bench.id, sets: 3, reps: 8),
+            PlanStep(id: "stretch", exerciseId: stretch.id, sets: 2, reps: 1)
+        ], createdAt: Date(), updatedAt: Date())
+        let known = [stretch.id: stretch, bench.id: bench]
+        let asked = try XCTUnwrap(LocalRoutineRules.apply(to: [plan], intent: LocalRoutineRules.parse("合成：请加一段拉伸，覆盖胸"), settings: UserSettings(), exById: known).first)
+        XCTAssertFalse(asked.steps.contains { $0.exerciseId == stretch.id })
+        XCTAssertEqual(asked.constraints?.first { $0.value == "warmup-not-in-list" }?.kind, .coverage)
+        let kept = try XCTUnwrap(LocalRoutineRules.apply(to: [plan], intent: LocalRoutineRules.parse("合成：覆盖胸"), settings: UserSettings(), exById: known).first)
+        XCTAssertEqual(kept.steps.map(\.exerciseId), [bench.id])
+        let conflict = try XCTUnwrap(LocalRoutineRules.apply(to: [plan], intent: LocalRoutineRules.parse("合成：每天覆盖五个主要肌群，也要整周覆盖"), settings: UserSettings(), exById: known).first)
+        XCTAssertEqual(conflict.constraints?.first { $0.kind == .unmet }?.value, "coverage-scope")
+        XCTAssertFalse(conflict.steps.contains { $0.exerciseId == stretch.id })
     }
 
     func testMemoryRequiresSourceAndRejectsTemporaryOrDuplicatePreferences() {
