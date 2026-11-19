@@ -33,6 +33,14 @@ final class PaywallUITests: XCTestCase {
         store = nil
     }
 
+    /// Local configuration preflight only. It does not launch the app, restore, sync, or purchase.
+    /// A return from setUp is not proof that stderr is free of SKInternalErrorDomain code 3.
+    func testStoreKitConfigurationPreflightStopsBeforeRestore() throws {
+        print("STOREKIT_PREFLIGHT resetToDefaultState=returned")
+        print("STOREKIT_PREFLIGHT not-a-validity-pass; if stderr still contains SKInternalErrorDomain Code 3, do not run restore")
+        XCTAssertNotNil(store)
+    }
+
     func testWelcomeCanBeClosedAndDoesNotRepeatWhenRootReappears() throws {
         let app = launch("welcome")
         XCTAssertTrue(app.buttons["paywall.close"].waitForExistence(timeout: 15))
