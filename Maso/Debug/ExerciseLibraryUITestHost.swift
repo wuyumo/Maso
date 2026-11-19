@@ -47,13 +47,15 @@ struct ExerciseLibraryUITestHost: View {
     @State private var data: DataStore
     @State private var session = TrainingSessionStore()
     @State private var subscriptions = SubscriptionManager()
-    @State private var presented = false
+    @State private var presented: Bool
     @State private var pickedIDs: [String] = []
     @State private var dismissalCount = 0
     @State private var coachWorkoutPresented = false
 
     init(scene: String) {
         self.scene = scene
+        let fullScreen = scene.hasSuffix("-player") || scene == "home-start"
+        _presented = State(initialValue: !fullScreen)
         if let fixture = SessionReportUIFixture.prepare(scene) {
             _data = State(initialValue: fixture.data)
             _session = State(initialValue: fixture.session)
@@ -223,6 +225,7 @@ struct ExerciseLibraryUITestHost: View {
             data.settings.hasOfferedReminderPrompt = true
             data.settings.firstHomeMuscleIntroPending = false
             data.settings.coachIntroTipPending = false
+            data.settings.debugProUnlock = ProcessInfo.processInfo.environment["MASO_HOME_PRO"] == "1"
             if let exercise = data.exById["bench_press_barbell"] {
                 let now = Date()
                 let plan = Plan(id: "home-start-plan", name: "Push", steps: [
@@ -230,6 +233,8 @@ struct ExerciseLibraryUITestHost: View {
                 ], createdAt: now, updatedAt: now)
                 data.plans = [plan]
                 data.settings.workoutCompletions = [WorkoutCompletion(sessionID: "home-start-done", planID: plan.id, finishedAt: now)]
+                data.sets = [SetRecord(id: "home-start-set", exerciseId: exercise.id, exerciseName: exercise.name,
+                    category: .strength, weight: 60, reps: 8, duration: nil, performedAt: now, planId: plan.id)]
             }
         }
         _data = State(initialValue: data)

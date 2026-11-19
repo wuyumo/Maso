@@ -129,6 +129,11 @@ enum ExerciseMediaPolicy {
     }
 }
 
+@MainActor
+func demoPresentation(_ id: String) -> CoreExerciseDemos.DemoPresentation {
+    ExerciseDemoService.shared.presentation(for: id)
+}
+
 /// The player and both exercise-detail heroes share measured bounds, centered
 /// aspect-fill cropping, and media loading. Screen-specific fades stay outside.
 struct FullBleedExerciseImage: View {
@@ -143,13 +148,15 @@ struct FullBleedExerciseImage: View {
                                startPoint: .top, endPoint: .bottom)
                 if let bytes = exercise.customImageData, let image = UIImage(data: bytes) {
                     ExerciseAspectFillPhoto(image: image, contentMode: contentMode)
-                } else if let url = ExerciseDemoService.shared.files[exercise.id] {
+                } else if demoPresentation(exercise.id) == .approvedStill, let image = CoreExerciseDemos.approvedStill(exercise.id) {
+                    ExerciseAspectFillPhoto(image: image, contentMode: contentMode)
+                } else if demoPresentation(exercise.id) == .approvedMotion, let url = ExerciseDemoService.shared.files[exercise.id] {
                     if url.pathExtension.lowercased() == "gif" {
                         GeneratedExerciseGIF(url: url, playbackEnabled: playbackEnabled, contentMode: contentMode)
                     } else {
                         GeneratedExerciseVideo(url: url, playbackEnabled: playbackEnabled, contentMode: contentMode)
                     }
-                } else if let thumbnail = CoreExerciseDemos.thumbnail(exercise.id) {
+                } else if demoPresentation(exercise.id) == .approvedMotion, let thumbnail = CoreExerciseDemos.thumbnail(exercise.id) {
                     ExerciseAspectFillPhoto(image: thumbnail, contentMode: contentMode)
                 } else if let folder = exercise.imageFolder, ExerciseMediaPolicy.ownsLegacy(exercise.id, folder: folder) {
                     CrossFadeFrames(folder: folder, animated: playbackEnabled, contentMode: contentMode)
@@ -161,7 +168,7 @@ struct FullBleedExerciseImage: View {
             }
             .frame(width: geometry.size.width, height: geometry.size.height)
             .overlay(alignment: .topLeading) {
-                if exercise.customImageData == nil && CoreExerciseDemos.isUnverified(exercise.id) {
+                if exercise.customImageData == nil && demoPresentation(exercise.id) != .approvedStill && CoreExerciseDemos.isUnverified(exercise.id) {
                     Text("exercise.media.unverified")
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(.white)
@@ -173,7 +180,7 @@ struct FullBleedExerciseImage: View {
             .clipped()
         }
         .task(id: "\(exercise.id)|\(ExerciseDemoService.shared.remoteAssets[exercise.id]?.sha256 ?? "")") {
-            guard exercise.customImageData == nil else { return }
+            guard exercise.customImageData == nil, demoPresentation(exercise.id) == .approvedMotion else { return }
             await ExerciseDemoService.shared.loadMedia(exercise.id)
             // A transient network failure should not leave the poster in place
             // for the entire time the detail/player remains visible.
@@ -220,6 +227,11 @@ struct ExerciseImage: View {
         return CoreExerciseDemos.thumbnail(id)
     }
 
+    private var presentation: CoreExerciseDemos.DemoPresentation {
+        guard let id = exerciseID else { return .placeholder }
+        return demoPresentation(id)
+    }
+
     private var hasAdoptedMedia: Bool {
         guard let id = exerciseID else { return false }
         let service = ExerciseDemoService.shared
@@ -240,15 +252,17 @@ struct ExerciseImage: View {
             // 自创动作图片 — 优先级最高. PhotosPicker 拿到的 JPEG bytes, 直接 UIImage(data:).
             if let imageData = customImageData, let ui = UIImage(data: imageData) {
                 ExerciseAspectFillPhoto(image: ui)
-            } else if let id = exerciseID, let url = ExerciseDemoService.shared.files[id] {
+            } else if presentation == .approvedStill, let image = CoreExerciseDemos.approvedStill(exerciseID ?? "") {
+                ExerciseAspectFillPhoto(image: image)
+            } else if presentation == .approvedMotion, let id = exerciseID, let url = ExerciseDemoService.shared.files[id] {
                 if url.pathExtension.lowercased() == "gif" && animated {
                     GeneratedExerciseGIF(url: url, maxPixelSize: max(120, Int(size * displayScale)))
                 } else {
                     ExerciseDemoThumbnail(url: url, fallback: currentBundledPoster).id(url)
                 }
-            } else if let thumbnail = currentBundledPoster {
+            } else if presentation == .approvedMotion, let thumbnail = currentBundledPoster {
                 ExerciseAspectFillPhoto(image: thumbnail)
-            } else if hasAdoptedMedia {
+            } else if presentation == .approvedMotion, hasAdoptedMedia {
                 // An approved newer image is loading: never show an older unrelated fallback.
                 Color.clear
             } else if let folder = imageFolder, ExerciseMediaPolicy.ownsLegacy(exerciseID, folder: folder) {
@@ -273,7 +287,7 @@ struct ExerciseImage: View {
         }
         .frame(width: size, height: size)
         .overlay(alignment: .topTrailing) {
-            if customImageData == nil && CoreExerciseDemos.isUnverified(exerciseID) {
+            if customImageData == nil && presentation != .approvedStill && CoreExerciseDemos.isUnverified(exerciseID) {
                 Image(systemName: "exclamationmark.circle.fill")
                     .font(.system(size: max(10, size * 0.2)))
                     .foregroundStyle(.white, .orange)
@@ -283,7 +297,7 @@ struct ExerciseImage: View {
         }
         .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
         .task(id: "\(exerciseID ?? "")|\(ExerciseDemoService.shared.remoteAssets[exerciseID ?? ""]?.sha256 ?? "")") {
-            guard customImageData == nil, let id = exerciseID,
+            guard customImageData == nil, presentation == .approvedMotion, let id = exerciseID,
                   CoreExerciseDemos.assets[id] != nil || ExerciseDemoService.shared.remoteAssets[id] != nil else { return }
             await ExerciseDemoService.shared.loadMedia(id)
         }

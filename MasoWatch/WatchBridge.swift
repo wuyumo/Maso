@@ -171,55 +171,11 @@ extension WatchBridge: WCSessionDelegate {
 #if DEBUG
 extension WatchBridge {
     static func previewState() -> WatchSyncState {
-        let language = Locale.preferredLanguages.first ?? "en"
-        let zh = language.hasPrefix("zh"), ar = language.hasPrefix("ar"), de = language.hasPrefix("de")
-        let hant = language.hasPrefix("zh-Hant") || language.hasPrefix("zh-TW") || language.hasPrefix("zh-HK")
-        var state = WatchSyncState()
-        state.mode = ProcessInfo.processInfo.environment["MASSO_WATCH_PREVIEW"] == "rest" ? .rest : .exercise
-        state.exerciseName = zh ? (hant ? "彎舉（啞鈴）" : "弯举（哑铃）") : ar ? "ثني الذراع (دمبل)" : de ? "Bizeps-Curl (Kurzhantel)" : "Bicep Curl (Dumbbell)"
-        state.manualConfirm = true; state.setN = 2; state.setTotal = 3; state.reps = 8; state.weight = 20
-        state.weightUnit = "kg"; state.expectsWeight = true; state.stepID = "one"
-        state.workoutSessionID = "preview"; state.context = "preview"; state.sentAt = Date()
-        state.doneSets = 1; state.totalSets = 9; state.canUndo = true; state.restDuration = 90
-        state.paused = true; state.pausedRemaining = 75
-        // Marketing capture: App Store page 3 puts this watch next to the phone, so both
-        // must show one moment. Mirror the phone capture's exercise, set, reps and load
-        // instead of the standalone preview numbers above.
-        if let exercise = ProcessInfo.processInfo.environment["MASSO_WATCH_MARKETING_EXERCISE"] {
-            state.exerciseName = marketingName(exercise, language: language) ?? state.exerciseName
-            if let reps = Int(ProcessInfo.processInfo.environment["MASSO_WATCH_MARKETING_REPS"] ?? "") { state.reps = reps }
-            if let weight = Double(ProcessInfo.processInfo.environment["MASSO_WATCH_MARKETING_WEIGHT"] ?? "") { state.weight = weight }
-            if let set = Int(ProcessInfo.processInfo.environment["MASSO_WATCH_MARKETING_SET"] ?? "") {
-                state.setN = set; state.doneSets = max(0, set - 1)
-            }
-        }
-        state.rows = [WatchExerciseRow(id: "one", name: state.exerciseName, detail: "", completed: 1, total: 3),
-                      WatchExerciseRow(id: "two", name: zh ? (hant ? "上斜臥推（啞鈴）" : "上斜卧推（哑铃）") : ar ? "ضغط مائل (دمبل)" : "Incline Press (Dumbbell)", detail: "", completed: 0, total: 3),
-                      WatchExerciseRow(id: "three", name: zh ? (hant ? "伏地挺身" : "俯卧撑") : ar ? "تمرين الضغط" : "Push Up", detail: "", completed: 0, total: 3)]
-        return state
-    }
-
-    /// Names as the phone renders the same exercise, so a capture pairing both devices
-    /// reads as one moment. Only the exercises used by marketing captures need entries.
-    /// Keep these identical to `exercises.json` (zh-Hant is generated from zh-Hans by
-    /// scripts/rebuild_zh_hant.py; the watch target does not bundle the catalog).
-    private static func marketingName(_ id: String, language: String) -> String? {
-        guard id == "bench_press_machine" else { return nil }
-        if language.hasPrefix("zh-Hant") || language.hasPrefix("zh-TW") || language.hasPrefix("zh-HK") {
-            return "推胸（器械）"
-        }
-        if language.hasPrefix("zh") { return "推胸（器械）" }
-        // DEBUG marketing previews mirror the real phone catalog, including intentional mixed-language names.
-        if language.hasPrefix("ja") { return "チェストプレス (マシン · 機械)" }
-        if language.hasPrefix("ko") { return "가슴 압박 (머신)" }
-        if language.hasPrefix("es") { return "Chest Press (Máquina)" }
-        if language.hasPrefix("fr") { return "Presse thoracique (Machine)" }
-        if language.hasPrefix("de") { return "Brustpresse (Maschine)" }
-        if language.hasPrefix("it") { return "Chest Press (Macchina)" }
-        if language.hasPrefix("pt-BR") { return "Prensa do tórax (Máquina)" }
-        if language.hasPrefix("ru") { return "Чест-пресс (Тренажёр · машина)" }
-        if language.hasPrefix("ar") { return "Chest Press (جهاز)" }
-        return "Chest Press (Machine)"
+        WatchPreviewFixture.snapshot(
+            environment: ProcessInfo.processInfo.environment,
+            language: Locale.preferredLanguages.first ?? "en",
+            now: Date()
+        )?.state ?? WatchSyncState()
     }
 }
 #endif

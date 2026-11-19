@@ -25,11 +25,9 @@ final class WatchWorkoutManager: NSObject, @unchecked Sendable {
     override init() {
         super.init()
         #if DEBUG
-        if ProcessInfo.processInfo.environment["MASSO_WATCH_MARKETING_HEART"] == "1" {
-            // Marketing captures pin a synthetic reading; an explicit BPM keeps the
-            // watch and the paired iPhone capture from showing two different numbers.
-            heartRate = Int(ProcessInfo.processInfo.environment["MASSO_WATCH_MARKETING_BPM"] ?? "") ?? 128
-            heartRateDate = Date()
+        if let sample = WatchPreviewFixture.heartSample(environment: ProcessInfo.processInfo.environment, now: Date()) {
+            heartRate = sample.bpm
+            heartRateDate = sample.date
         }
         #endif
     }

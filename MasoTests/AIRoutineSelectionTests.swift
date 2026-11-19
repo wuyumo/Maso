@@ -278,6 +278,85 @@ final class AIRoutineSelectionTests: XCTestCase {
         let guessed = #"{"name":"Workout","steps":[{"exercise_name":"bench press","sets":3}]}"#
         XCTAssertNil(try service.validatedPlan(fromJSON: guessed, candidates: [bench], maxExercises: 1))
     }
+
+    func testPreferPerformedExercisesUsesCompletedSetsWithoutChangingSavedPlans() throws {
+        let bench = try exercise("bench_press_dumbbell")
+        let squat = try exercise("squat_barbell")
+        let stretch = try exercise("chest_stretch_doorway")
+        let done = SetRecord(id: "done-bench", exerciseId: bench.id, exerciseName: bench.name, category: bench.category,
+                             weight: nil, reps: nil, performedAt: Date(), planId: "saved")
+        let invalid = SetRecord(id: "missing", exerciseId: "not-a-real-exercise", exerciseName: "Missing", category: .strength,
+                                weight: nil, reps: nil, performedAt: Date().addingTimeInterval(10), planId: "saved")
+        let saved = Plan(id: "saved", name: "Saved", steps: [
+            PlanStep(id: "planned-only", exerciseId: squat.id, sets: 3, reps: 5)
+        ], createdAt: Date(), updatedAt: Date())
+        var settings = UserSettings()
+        let off = DataStore(exercises: [bench, squat, stretch], plans: [saved], sets: [done, invalid], settings: settings)
+        XCTAssertEqual(off.performedExerciseIDs, [bench.id])
+        XCTAssertTrue(off.buildAIPayload().selectionPerformedIDs.isEmpty)
+        XCTAssertFalse(service.buildPrompt(payload: off.buildAIPayload(), library: [bench, squat]).contains("PREVIOUSLY PERFORMED"))
+        let before = off.plans.first?.steps.map(\.exerciseId)
+        settings.preferPerformedExercises = true
+        let on = DataStore(exercises: [bench, squat, stretch], plans: [saved], sets: [done, invalid], settings: settings)
+        XCTAssertEqual(on.plans.first?.steps.map(\.exerciseId), before)
+        XCTAssertEqual(on.buildAIPayload().selectionPerformedIDs, [bench.id])
+        var payload = on.buildAIPayload()
+        payload.selectionPerformedIDs = [bench.id, stretch.id]
+        let prompt = service.buildPrompt(payload: payload, library: [bench, squat, stretch])
+        XCTAssertTrue(prompt.contains("PREVIOUSLY PERFORMED EXERCISES: \(bench.id)"))
+        XCTAssertFalse(prompt.contains("80"))
+        let candidates = service.routineCandidates(payload: payload, library: [bench, squat, stretch])
+        XCTAssertFalse(candidates.contains { $0.id == stretch.id })
+        XCTAssertTrue(candidates.contains { $0.id == squat.id })
+        settings.preferPerformedExercises = true
+        let emptyHistory = DataStore.tunedRecommendedPlans(forDays: 2, settings: settings, exById: ExerciseLibrary.byId, sets: [], now: Date())
+        XCTAssertFalse(emptyHistory.isEmpty)
+        XCTAssertTrue(emptyHistory.allSatisfy { !$0.steps.isEmpty })
+    }
+
+    func testCoverageNoteKeepsStretchOutOfTheStrengthCatalog() throws {
+        let note = "合成备注，不是用户原文：覆盖五个主要的肌肉部位"
+        var payload = payload()
+        payload.coachMemory = note
+        XCTAssertEqual(payload.daysPerWeek, 3)
+        let candidates = service.routineCandidates(payload: payload, library: ExerciseLibrary.all, query: note)
+        XCTAssertFalse(candidates.contains { $0.id == "chest_stretch_doorway" })
+        let retained = service.routineCandidates(payload: payload, library: ExerciseLibrary.all, query: "合成：请保留胸部拉伸", preservingIDs: ["chest_stretch_doorway"])
+        XCTAssertFalse(retained.contains { $0.id == "chest_stretch_doorway" })
+        XCTAssertTrue(candidates.contains { LocalRoutineRules.strengthSection(of: $0) == .chest })
+        let prompt = service.buildPrompt(payload: payload, library: candidates)
+        XCTAssertTrue(prompt.contains("STRENGTH COVERAGE"))
+        XCTAssertTrue(prompt.contains("at least 5"))
+        let weekly = service.routineContractProbe(payload: payload, count: 3, maxExercises: 4)
+        XCTAssertTrue(weekly.contains("across this generated set of routines"))
+        XCTAssertFalse(weekly.contains("in EACH session of this generated result"))
+        let oneSession = service.routineContractProbe(payload: payload, count: 1, maxExercises: 4)
+        XCTAssertTrue(oneSession.contains("in EACH session of this generated result"))
+        XCTAssertFalse(oneSession.contains("across this generated set of routines"))
+    }
+
+    func testMissingCoverageRetriesOnceAndAnImpossibleCountDoesNot() async throws {
+        let bench = try exercise("bench_press_barbell")
+        let stretch = try exercise("chest_stretch_doorway")
+        let named = LocalRoutineRules.parse("合成：覆盖胸")
+        var attempts = 0
+        do {
+            _ = try await service.requestValidatedPlans(candidates: [bench, stretch], expectedCount: 1, maxExercises: 1, single: true, coverageIntent: named, coverageApplication: .sessionEach) { _ in
+                attempts += 1
+                return #"{"name":"Synthetic","steps":[{"exercise_id":"chest_stretch_doorway","sets":2,"reps":1}]}"#
+            }
+            XCTFail("stretch must not satisfy chest coverage")
+        } catch { XCTAssertEqual(attempts, 2) }
+        attempts = 0
+        let five = LocalRoutineRules.parse("合成：覆盖五个主要的肌肉部位")
+        do {
+            _ = try await service.requestValidatedPlans(candidates: [bench], expectedCount: 1, maxExercises: 1, single: true, coverageIntent: five, coverageApplication: .sessionEach) { _ in
+                attempts += 1
+                return #"{"name":"Synthetic","steps":[{"exercise_id":"bench_press_barbell","sets":3,"reps":8}]}"#
+            }
+            XCTFail("four missing majors cannot be repaired by another model call")
+        } catch { XCTAssertEqual(attempts, 1) }
+    }
 }
 
 @MainActor

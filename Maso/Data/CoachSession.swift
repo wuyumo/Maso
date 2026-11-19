@@ -1141,7 +1141,8 @@ extension DataStore {
                         let focus = LocalRoutineRules.parse([settings.coachMemory, note ?? ""].joined(separator: "\n"))
                         if !focus.focusMuscles.isEmpty {
                             let indices = reconciled.indices.filter { reconciled[$0] != previous[$0] }
-                            let targeted = LocalRoutineRules.apply(to: indices.map { reconciled[$0] }, intent: focus, settings: settings, exById: exById)
+                            let familiar = settings.prefersPerformedExercises ? Set(performedExerciseIDs) : []
+                            let targeted = LocalRoutineRules.apply(to: indices.map { reconciled[$0] }, intent: focus, settings: settings, exById: exById, familiarExerciseIDs: familiar)
                             for (index, plan) in zip(indices, targeted) { reconciled[index] = plan }
                         }
                         return reconciled
@@ -1348,6 +1349,7 @@ extension DataStore {
     /// 幂等: 已存 → 直接成功. 返回 false = 撞免费上限 (调用方弹 paywall).
     @discardableResult
     func saveCoachPlan(_ plan: Plan) -> Bool {
+        guard !plan.steps.isEmpty else { return false }
         if isCoachPlanSaved(plan) { return true }
         guard let copy = savePlanReturningCopy(plan) else { return false }
         coachSession.savedIdMap[plan.id] = copy.id
@@ -1361,12 +1363,13 @@ extension DataStore {
     /// 返回实际存入张数, 调用方可校验 (正常 == newPlans.count).
     @discardableResult
     func replaceSavedPlans(withCoach newPlans: [Plan]) -> Int {
-        guard !newPlans.isEmpty else { return 0 }
+        let usable = newPlans.filter { !$0.steps.isEmpty }
+        guard !usable.isEmpty else { return 0 }
         let removedCount = plans.count
         plans.removeAll()
         // 映射整体作废 —— 旧副本已经不存在, 留着会让 isCoachPlanSaved 对旧卡误报已存.
         coachSession.savedIdMap.removeAll()
-        for p in newPlans { _ = saveCoachPlan(p) }
+        for p in usable { _ = saveCoachPlan(p) }
         Analytics.shared.track("routines_replace_all", [
             "removed": .int(removedCount),
             "added": .int(plans.count),

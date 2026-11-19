@@ -1,0 +1,141 @@
+{
+  "environment": "Linux cloud checkout. python3 only. swift and xcodebuild are not installed.",
+  "does_not_mean": [
+    "iOS compile",
+    "simulator",
+    "code signing",
+    "archive",
+    "IPA",
+    "App Store Connect read or write",
+    "upload",
+    "review submission",
+    "release"
+  ],
+  "commands": [
+    {
+      "command": "python3 scripts/check_303_prep.py",
+      "exit_code": 0,
+      "result": {
+        "status": "PASS",
+        "errors": [],
+        "marketing_version": "3.0.3",
+        "bundle_version_candidate": "55",
+        "bundle_version_status": "PENDING_LIVE_ASC_CONFIRMATION",
+        "lock_state": "absent",
+        "historical_lock_sha256": "da7cc237d2f4afcbd74ecdb944b6f35681dfb2c8f51f39305f85f5ea61142e72",
+        "musclemap_revision_statement": "7dc03071e03052e8bd4f6351e9176994cd28aa7d",
+        "musclemap_requirement": "from 1.6.4 / upToNextMajorVersion, unchanged",
+        "aso_status": "PASS",
+        "aso_self_test": "PASS",
+        "paywall_storekit_session_constructors": 2,
+        "subscription_storekit_session_constructors": 4,
+        "session_report_storekit_constructors": 0,
+        "session_report_tests": [
+          "testRecordNaturalHeartSummary",
+          "testRecordFiveExercisePreview",
+          "testRecordAppStorePreview",
+          "testRecordPreviewWorkoutRetake",
+          "testImportedQRCodePreviewShowsRecordedWeightAndRepetitions",
+          "testAggregateRowsAndNativeSharePreviewAcrossLanguages",
+          "testPhotoConsentAndSummaryExport",
+          "testPhotoPickerCanBeCancelledWithoutChangingReport",
+          "testSystemShareCancelReturnsToPreviewAndReport",
+          "testPhotoCanBeTurnedOffAfterReturningFromSystemShare",
+          "testNarrowLargeTypeToolbarAndPhotoRemainReachable",
+          "testFinishExitLeavesTheReportAndHistoryUsesBack",
+          "testFinishedReportExitsThroughProductionRootAndCanStartAgain",
+          "testHomeStartButtonOpensThePlayer"
+        ],
+        "native_compilation": "not run; this checker is static",
+        "network": "none by this checker; ASO validator is offline",
+        "writes": "none"
+      }
+    },
+    {
+      "command": "python3 scripts/check_303_prep.py --self-test",
+      "exit_code": 0,
+      "result": {
+        "status": "PASS",
+        "tests": 9,
+        "mutations": [
+          "old version",
+          "store display name",
+          "tracked secret",
+          "wrong lock",
+          "tracked lock",
+          "upgrade declaration",
+          "invented fix",
+          "aso failure"
+        ]
+      }
+    },
+    {
+      "command": "python3 docs/app-store-303/candidate/validate.py",
+      "exit_code": 0,
+      "result": {
+        "status": "PASS",
+        "errors": [],
+        "field_counts": {
+          "en-US/name": {
+            "characters": 23,
+            "utf8_bytes": 25
+          },
+          "en-US/subtitle": {
+            "characters": 29,
+            "utf8_bytes": 29
+          },
+          "en-US/keywords": {
+            "characters": 97,
+            "utf8_bytes": 97
+          },
+          "en-US/promotional_text": {
+            "characters": 104,
+            "utf8_bytes": 104
+          },
+          "en-US/description": {
+            "characters": 3115,
+            "utf8_bytes": 3129
+          },
+          "zh-Hans/name": {
+            "characters": 14,
+            "utf8_bytes": 22
+          },
+          "zh-Hans/subtitle": {
+            "characters": 13,
+            "utf8_bytes": 39
+          },
+          "zh-Hans/keywords": {
+            "characters": 33,
+            "utf8_bytes": 79
+          },
+          "zh-Hans/promotional_text": {
+            "characters": 51,
+            "utf8_bytes": 137
+          },
+          "zh-Hans/description": {
+            "characters": 1139,
+            "utf8_bytes": 2757
+          }
+        },
+        "description_tail": "byte-identical to captured ASC source",
+        "network": "none",
+        "writes": "none"
+      }
+    },
+    {
+      "command": "python3 docs/app-store-303/candidate/validate.py --self-test",
+      "exit_code": 0,
+      "result": {
+        "status": "PASS",
+        "tests": 7,
+        "details": "baseline plus six in-memory negative tests; no files written"
+      }
+    },
+    {
+      "command": "python3 scripts/lint_translations.py --check",
+      "exit_code": 1,
+      "introduced_by_this_branch": false,
+      "summary": "Pre-existing. 19 unregistered Swift literals. zh-Hans is not in the missing-key list. The other 10 locales each miss Include photo. zh-Hans identical-to-English keys are units, brand, and one credit name."
+    }
+  ]
+}

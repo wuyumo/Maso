@@ -2,6 +2,7 @@ import XCTest
 import SwiftUI
 import UIKit
 import AVFoundation
+import CryptoKit
 @testable import Maso
 
 @MainActor final class ExercisePrefetchPriorityTests: XCTestCase {
@@ -9,6 +10,35 @@ import AVFoundation
         XCTAssertEqual(ExerciseDemoService.mergedPrefetchIDs(
             ["squat", "row", "squat"], ["row", "press", "curl"]
         ), ["squat", "row", "press", "curl"])
+    }
+
+    func testConfirmedChestPressStillDoesNotPlayAnyMotion() {
+        let id = "chest_press_machine_iso_lateral"
+        let still = "1aa57235a0e8946f7cf5952004605919fcf1a33b9fb45abef5c3b571ec57dffd"
+        let motion = "7118307bd064dc744bedf8dd7a108189aacca2d13e46f8534a8fca853bc33e9d"
+        let record = CoreExerciseDemos.DemoReview(exerciseId: id, kind: "user-approved-static", assetSHA256: still, approvedAt: "2026-11-19T18:13:00+08:00", scope: "static-demo-visual")
+        XCTAssertEqual(CoreExerciseDemos.presentation(id: id, motionSHA: motion, cachedSHA: motion, reviews: [record]), .approvedStill)
+        XCTAssertEqual(CoreExerciseDemos.presentation(id: id, motionSHA: String(repeating: "ab", count: 32), cachedSHA: String(repeating: "cd", count: 32), reviews: [record]), .approvedStill)
+        XCTAssertEqual(CoreExerciseDemos.assets[id]?.verification, "unverified")
+        XCTAssertEqual(CoreExerciseDemos.presentation(id: "unknown-demo", motionSHA: motion, reviews: []), .placeholder)
+        let approved = CoreExerciseDemos.DemoReview(exerciseId: "bench_press_barbell", kind: "approved-animation", assetSHA256: motion, approvedAt: nil, scope: nil)
+        XCTAssertEqual(CoreExerciseDemos.presentation(id: "bench_press_barbell", motionSHA: motion, cachedSHA: "other", reviews: [approved]), .approvedMotion)
+        XCTAssertEqual(CoreExerciseDemos.presentation(id: "bench_press_barbell", motionSHA: String(repeating: "ef", count: 32), reviews: [approved]), .placeholder)
+    }
+
+    func testMainActorPresentationMatchesPureOverload() {
+        let service = ExerciseDemoService.shared
+        let id = "bench_press_barbell"
+        let remote = service.hasRemoteCatalog ? service.remoteAssets[id]?.sha256 : nil
+        let cached = service.files[id]?.deletingPathExtension().lastPathComponent
+        XCTAssertNil(CoreExerciseDemos.reviewOverrideForTests)
+        let pure = CoreExerciseDemos.presentation(
+            id: id,
+            motionSHA: remote ?? CoreExerciseDemos.assets[id]?.sha256,
+            cachedSHA: cached,
+            reviews: CoreExerciseDemos.decisionReviews)
+        XCTAssertEqual(service.presentation(for: id), pure)
+        XCTAssertEqual(demoPresentation(id), pure)
     }
 }
 
@@ -91,31 +121,135 @@ import AVFoundation
 
 private final class DemoURLProtocol: URLProtocol, @unchecked Sendable {
     nonisolated(unsafe) static var handler: ((URLRequest) throws -> (Int, Data))?
+    nonisolated(unsafe) static var rangedHandler: ((URLRequest) throws -> (Int, Data, [String: String]))?
     override class func canInit(with request: URLRequest) -> Bool { true }
     override class func canonicalRequest(for request: URLRequest) -> URLRequest { request }
     override func startLoading() {
         do {
-            let (status, data) = try Self.handler!(request)
-            client?.urlProtocol(self, didReceive: HTTPURLResponse(url: request.url!, statusCode: status, httpVersion: nil, headerFields: ["Content-Type":"application/json"])!, cacheStoragePolicy: .notAllowed)
-            client?.urlProtocol(self, didLoad: data); client?.urlProtocolDidFinishLoading(self)
+            let status: Int
+            let data: Data
+            var headers = ["Content-Type": "application/json"]
+            if request.url?.path.contains("/video/") == true, let ranged = Self.rangedHandler {
+                let result = try ranged(request)
+                status = result.0
+                data = result.1
+                for (key, value) in result.2 { headers[key] = value }
+            } else {
+                let result = try Self.handler!(request)
+                status = result.0
+                data = result.1
+            }
+            client?.urlProtocol(self, didReceive: HTTPURLResponse(url: request.url!, statusCode: status, httpVersion: nil, headerFields: headers)!, cacheStoragePolicy: .notAllowed)
+            client?.urlProtocol(self, didLoad: data)
+            client?.urlProtocolDidFinishLoading(self)
         } catch { client?.urlProtocol(self, didFailWithError: error) }
     }
     override func stopLoading() { }
 }
 @MainActor final class ExerciseDemoTests: XCTestCase {
+    override func tearDown() async throws {
+        CoreExerciseDemos.reviewOverrideForTests = nil
+        ExerciseDemoService.shared.clearTestMotionFixtures()
+        DemoURLProtocol.handler = nil
+        DemoURLProtocol.rangedHandler = nil
+        try await super.tearDown()
+    }
+
+    private struct TestClip { var url: URL; var data: Data; var sha: String }
+
+    private static func testMotionReview(_ id: String, sha: String) -> CoreExerciseDemos.DemoReview {
+        CoreExerciseDemos.DemoReview(exerciseId: id, kind: "approved-animation", assetSHA256: sha,
+                                     approvedAt: "2026-11-19T00:00:00Z", scope: "test-only")
+    }
+
+    /// Two or more solid frames. One frame per second stays on the two-frame renderer; faster clips use the player.
+    private static func testVideo(colors: [UIColor], framesPerSecond: Int) async throws -> TestClip {
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("maso-demo-test-\(UUID().uuidString).mp4")
+        let writer = try AVAssetWriter(outputURL: url, fileType: .mp4)
+        let side = 160
+        let input = AVAssetWriterInput(mediaType: .video, outputSettings: [
+            AVVideoCodecKey: AVVideoCodecType.h264,
+            AVVideoWidthKey: side,
+            AVVideoHeightKey: side,
+            AVVideoCompressionPropertiesKey: [AVVideoExpectedSourceFrameRateKey: framesPerSecond]
+        ])
+        input.expectsMediaDataInRealTime = false
+        let adaptor = AVAssetWriterInputPixelBufferAdaptor(assetWriterInput: input, sourcePixelBufferAttributes: [
+            kCVPixelBufferPixelFormatTypeKey as String: Int(kCVPixelFormatType_32BGRA),
+            kCVPixelBufferWidthKey as String: side,
+            kCVPixelBufferHeightKey as String: side
+        ])
+        writer.add(input)
+        guard writer.startWriting() else { throw writer.error ?? URLError(.cannotCreateFile) }
+        writer.startSession(atSourceTime: .zero)
+        let scale = CMTimeScale(framesPerSecond)
+        for (index, color) in colors.enumerated() {
+            var spins = 0
+            while !input.isReadyForMoreMediaData, spins < 200 {
+                try await Task.sleep(for: .milliseconds(5))
+                spins += 1
+            }
+            let time = CMTime(value: CMTimeValue(index), timescale: scale)
+            guard let pool = adaptor.pixelBufferPool else { throw URLError(.cannotCreateFile) }
+            var pooled: CVPixelBuffer?
+            guard CVPixelBufferPoolCreatePixelBuffer(nil, pool, &pooled) == kCVReturnSuccess, let buffer = pooled else {
+                throw URLError(.cannotCreateFile)
+            }
+            try fill(buffer, color: color, mark: index)
+            guard adaptor.append(buffer, withPresentationTime: time) else {
+                throw writer.error ?? URLError(.cannotWriteToFile)
+            }
+        }
+        input.markAsFinished()
+        // The last sample needs a duration. Ending on its own timestamp makes both
+        // generator reads return the first picture, so a detail hero never changes.
+        writer.endSession(atSourceTime: CMTime(value: CMTimeValue(colors.count), timescale: scale))
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            writer.finishWriting { continuation.resume() }
+        }
+        guard writer.status == .completed else { throw writer.error ?? URLError(.cannotWriteToFile) }
+        let data = try Data(contentsOf: url)
+        let sha = SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined()
+        return TestClip(url: url, data: data, sha: sha)
+    }
+
+    private static func fill(_ buffer: CVPixelBuffer, color: UIColor, mark: Int) throws {
+        CVPixelBufferLockBaseAddress(buffer, [])
+        defer { CVPixelBufferUnlockBaseAddress(buffer, []) }
+        guard let base = CVPixelBufferGetBaseAddress(buffer) else { throw URLError(.cannotCreateFile) }
+        let rowBytes = CVPixelBufferGetBytesPerRow(buffer)
+        var red: CGFloat = 0, green: CGFloat = 0, blue: CGFloat = 0, alpha: CGFloat = 0
+        color.getRed(&red, green: &green, blue: &blue, alpha: &alpha)
+        let b = UInt8(blue * 255), g = UInt8(green * 255), r = UInt8(red * 255)
+        let width = CVPixelBufferGetWidth(buffer)
+        let height = CVPixelBufferGetHeight(buffer)
+        for y in 0..<height {
+            let row = base.advanced(by: y * rowBytes).assumingMemoryBound(to: UInt8.self)
+            for x in 0..<width {
+                let offset = x * 4
+                let marked = mark % 2 == 1 && x < width / 2
+                row[offset] = marked ? 255 : b
+                row[offset + 1] = marked ? 255 : g
+                row[offset + 2] = marked ? 255 : r
+                row[offset + 3] = 255
+            }
+        }
+    }
+
     func testTwoFrameDemosChangeOnScreen() async throws {
-        let paths = [
-            "docs/gif-import-2026-10-31/clamshell_banded.mp4",
-            "docs/gif-review-decisions-2026-11-02/banded_lateral_walk.mp4"
+        let clips = [
+            try await Self.testVideo(colors: [.red, .blue], framesPerSecond: 1),
+            try await Self.testVideo(colors: [.green, .yellow], framesPerSecond: 1)
         ]
         let scene = try XCTUnwrap(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
         let previous = scene.windows.first(where: \.isKeyWindow)
         let window = UIWindow(windowScene: scene)
         defer { window.isHidden = true; previous?.makeKeyAndVisible() }
-        for path in paths {
-            let url = URL(fileURLWithPath: "/Users/yumowu/Projects/Maso-iOS/" + path)
-            XCTAssertTrue(FileManager.default.fileExists(atPath: url.path))
-            window.rootViewController = UIHostingController(rootView: GeneratedExerciseVideo(url: url).frame(width: 240, height: 240))
+        for clip in clips {
+            XCTAssertGreaterThan(clip.data.count, 1024)
+            let rate = try await AVURLAsset(url: clip.url).loadTracks(withMediaType: .video).first?.load(.nominalFrameRate) ?? 99
+            XCTAssertLessThanOrEqual(rate, Float(2))
+            window.rootViewController = UIHostingController(rootView: GeneratedExerciseVideo(url: clip.url).frame(width: 240, height: 240))
             window.makeKeyAndVisible()
             try await Task.sleep(for: .seconds(1.5))
             func capture() -> Data? {
@@ -124,54 +258,146 @@ private final class DemoURLProtocol: URLProtocol, @unchecked Sendable {
                     window.drawHierarchy(in: window.bounds, afterScreenUpdates: true)
                 }.pngData()
             }
-            let first = capture()
-            try await Task.sleep(for: .seconds(0.95))
-            XCTAssertNotEqual(first, capture(), "Two-frame demo must visibly advance: \(path)")
+            let first = try XCTUnwrap(capture())
+            XCTAssertGreaterThan(first.count, 1000)
+            try await Task.sleep(for: .seconds(1.3))
+            let second = try XCTUnwrap(capture())
+            XCTAssertNotEqual(first, second, "Two-frame demo must visibly advance")
         }
     }
 
     func testTwoFrameDemoInRealDetailSheet() async throws {
         let data = DataStore.makeMock()
         let exercise = try XCTUnwrap(data.exById["clamshell_banded"])
-        let sha = try XCTUnwrap(CoreExerciseDemos.assets[exercise.id]?.sha256)
-        let source = URL(fileURLWithPath: "/Users/yumowu/Projects/Maso-iOS/docs/gif-import-2026-10-31/clamshell_banded.mp4")
-        let directory = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0].appendingPathComponent("ExerciseDemos")
-        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
-        let cached = directory.appendingPathComponent(sha + ".mp4")
-        try Data(contentsOf: source).write(to: cached, options: .atomic)
+        let clip = try await Self.testVideo(colors: [.red, .blue], framesPerSecond: 1)
+        defer {
+            CoreExerciseDemos.reviewOverrideForTests = nil
+            ExerciseDemoService.shared.clearTestMotionFixtures()
+            ExerciseDemoFrameProbe.readyClip = nil
+        }
+        ExerciseDemoFrameProbe.readyClip = nil
+        XCTAssertNil(ExerciseDemoService.shared.files[exercise.id])
+        XCTAssertNotEqual(ExerciseDemoService.shared.presentation(for: exercise.id), .approvedMotion)
+        CoreExerciseDemos.reviewOverrideForTests = [Self.testMotionReview(exercise.id, sha: clip.sha)]
+        ExerciseDemoService.shared.stageTestMotion(exerciseID: exercise.id, file: clip.url, sha: clip.sha)
         await ExerciseDemoService.shared.loadMedia(exercise.id, force: true)
-        XCTAssertEqual(ExerciseDemoService.shared.files[exercise.id], cached)
+        XCTAssertEqual(ExerciseDemoService.shared.files[exercise.id], clip.url)
+        XCTAssertEqual(ExerciseDemoService.shared.presentation(for: exercise.id), .approvedMotion)
+        XCTAssertFalse(CoreExerciseDemos.reviews.contains { $0.kind == "approved-animation" })
+        let probed = AVAssetImageGenerator(asset: AVURLAsset(url: clip.url))
+        probed.appliesPreferredTrackTransform = true
+        probed.requestedTimeToleranceBefore = .zero
+        probed.requestedTimeToleranceAfter = .zero
+        let opening = try await probed.image(at: CMTime(value: 0, timescale: 1)).image
+        let following = try await probed.image(at: CMTime(value: 1, timescale: 1)).image
+        XCTAssertNotEqual(UIImage(cgImage: opening).pngData(), UIImage(cgImage: following).pngData(),
+                          "The approved clip's two timestamps must be different pictures before the detail sheet opens")
         let scene = try XCTUnwrap(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
         let previous = scene.windows.first(where: \.isKeyWindow)
         let window = UIWindow(windowScene: scene)
         defer { window.isHidden = true; previous?.makeKeyAndVisible() }
-        window.rootViewController = UIHostingController(rootView: Color.clear.sheet(isPresented: .constant(true)) {
+        window.frame = scene.screen.bounds
+        window.rootViewController = UIHostingController(rootView: Color.black.ignoresSafeArea().sheet(isPresented: .constant(true)) {
             ExerciseDetailSheet(exercise: exercise).environment(data).presentationDetents([.large])
         })
         window.makeKeyAndVisible()
-        try await Task.sleep(for: .seconds(2))
+        var hero: (UIWindow, UIView)?
+        for _ in 0..<40 {
+            hero = Self.heroOnScreen()
+            if hero != nil { break }
+            try await Task.sleep(for: .milliseconds(100))
+        }
+        let (host, view) = try XCTUnwrap(hero, "The real detail hero was not on screen")
+        for _ in 0..<30 where ExerciseDemoFrameProbe.readyClip != clip.url {
+            try await Task.sleep(for: .milliseconds(100))
+        }
+        XCTAssertEqual(ExerciseDemoFrameProbe.readyClip, clip.url, "The real detail hero did not reach its two different frames")
         func mediaCrop() throws -> Data {
-            window.layoutIfNeeded()
-            let image = UIGraphicsImageRenderer(bounds: window.bounds).image { _ in
-                window.drawHierarchy(in: window.bounds, afterScreenUpdates: true)
+            host.layoutIfNeeded()
+            let frame = view.convert(view.bounds, to: host)
+            XCTAssertGreaterThan(frame.width, 40)
+            XCTAssertGreaterThan(frame.height, 40)
+            let image = UIGraphicsImageRenderer(bounds: host.bounds).image { _ in
+                host.drawHierarchy(in: host.bounds, afterScreenUpdates: true)
             }
             let cg = try XCTUnwrap(image.cgImage)
-            let rect = CGRect(x: CGFloat(cg.width) * 0.15, y: CGFloat(cg.height) * 0.14,
-                              width: CGFloat(cg.width) * 0.7, height: CGFloat(cg.width) * 0.55).integral
+            let scale = image.scale
+            var rect = CGRect(x: frame.minX * scale, y: frame.minY * scale,
+                              width: frame.width * scale, height: frame.height * scale).integral
+            rect = rect.intersection(CGRect(x: 0, y: 0, width: CGFloat(cg.width), height: CGFloat(cg.height)))
+            XCTAssertGreaterThan(rect.width, 40)
+            XCTAssertGreaterThan(rect.height, 40)
             return try XCTUnwrap(UIImage(cgImage: try XCTUnwrap(cg.cropping(to: rect))).pngData())
         }
         let first = try mediaCrop()
-        try await Task.sleep(for: .seconds(0.95))
+        XCTAssertGreaterThan(first.count, 1000)
+        try await Task.sleep(for: .seconds(1.3))
         XCTAssertNotEqual(first, try mediaCrop(), "The exercise detail hero should change frames")
+    }
+
+    /// The hero locator is a real UIView inside the presented detail sheet, which may
+    /// not be a direct subview of the window that created the sheet.
+    private static func heroOnScreen() -> (UIWindow, UIView)? {
+        let scenes = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }
+        for scene in scenes {
+            for window in scene.windows where !window.isHidden {
+                window.layoutIfNeeded()
+                if let view = locatedHero(in: window.rootViewController), let host = view.window, !host.isHidden {
+                    let frame = view.convert(view.bounds, to: host)
+                    if frame.width > 40, frame.height > 40 { return (host, view) }
+                }
+            }
+        }
+        return nil
+    }
+
+    private static func locatedHero(in controller: UIViewController?) -> UIView? {
+        guard let controller else { return nil }
+        if let found = view(identified: "exercise.media.hero", in: controller.view, visited: []) { return found }
+        for child in controller.children {
+            if let found = locatedHero(in: child) { return found }
+        }
+        return locatedHero(in: controller.presentedViewController)
+    }
+
+    private static func view(identified id: String, in root: UIView, visited: Set<ObjectIdentifier>) -> UIView? {
+        var visited = visited
+        guard visited.insert(ObjectIdentifier(root)).inserted else { return nil }
+        if root.accessibilityIdentifier == id, root.bounds.width > 1, root.bounds.height > 1 { return root }
+        for subview in root.subviews {
+            if let found = view(identified: id, in: subview, visited: visited) { return found }
+        }
+        for case let child as UIView in root.accessibilityElements ?? [] {
+            if let found = view(identified: id, in: child, visited: visited) { return found }
+        }
+        return nil
     }
     func testCurrentAndUpcomingExercisesUseTheSameFilledVideoInPlayer() async throws {
         let data = DataStore.makeMock()
         let first = try XCTUnwrap(data.exById["bicep_curl_dumbbell"])
         let next = try XCTUnwrap(data.exById["squat_bodyweight"])
+        defer { CoreExerciseDemos.reviewOverrideForTests = nil; ExerciseDemoService.shared.clearTestMotionFixtures() }
         for exercise in [first, next] {
-            await ExerciseDemoService.shared.loadMedia(exercise.id)
-            XCTAssertNotNil(ExerciseDemoService.shared.files[exercise.id])
+            await ExerciseDemoService.shared.loadMedia(exercise.id, force: true)
+            XCTAssertNil(ExerciseDemoService.shared.files[exercise.id])
+            XCTAssertNotEqual(ExerciseDemoService.shared.presentation(for: exercise.id), .approvedMotion)
         }
+        let firstClip = try await Self.testVideo(colors: [.red, .red, .orange, .orange], framesPerSecond: 10)
+        let nextClip = try await Self.testVideo(colors: [.blue, .blue, .purple, .purple], framesPerSecond: 10)
+        let firstStill = try await AVAssetImageGenerator(asset: AVURLAsset(url: firstClip.url)).image(at: .zero).image
+        let nextStill = try await AVAssetImageGenerator(asset: AVURLAsset(url: nextClip.url)).image(at: .zero).image
+        XCTAssertNotEqual(UIImage(cgImage: firstStill).pngData(), UIImage(cgImage: nextStill).pngData())
+        CoreExerciseDemos.reviewOverrideForTests = [
+            Self.testMotionReview(first.id, sha: firstClip.sha),
+            Self.testMotionReview(next.id, sha: nextClip.sha)
+        ]
+        ExerciseDemoService.shared.stageTestMotion(exerciseID: first.id, file: firstClip.url, sha: firstClip.sha)
+        ExerciseDemoService.shared.stageTestMotion(exerciseID: next.id, file: nextClip.url, sha: nextClip.sha)
+        await ExerciseDemoService.shared.loadMedia(first.id, force: true)
+        await ExerciseDemoService.shared.loadMedia(next.id, force: true)
+        XCTAssertEqual(ExerciseDemoService.shared.files[first.id], firstClip.url)
+        XCTAssertEqual(ExerciseDemoService.shared.files[next.id], nextClip.url)
+        XCTAssertFalse(CoreExerciseDemos.reviews.contains { $0.kind == "approved-animation" })
         let plan = Plan(id: "media-regression", name: "Media regression", steps: [
             PlanStep(id: "first", exerciseId: first.id, sets: 1, reps: 8),
             PlanStep(id: "next", exerciseId: next.id, sets: 1, reps: 8)
@@ -215,7 +441,9 @@ private final class DemoURLProtocol: URLProtocol, @unchecked Sendable {
             }
             let attachment = XCTAttachment(image: image)
             attachment.name = "training-media-stage-\(index)"; attachment.lifetime = .keepAlways; add(attachment)
-            try image.pngData()?.write(to: FileManager.default.temporaryDirectory.appendingPathComponent("training-media-stage-\(index).png"))
+            let png = try XCTUnwrap(image.pngData())
+            XCTAssertGreaterThan(png.count, 8000, "Training stage \(index) did not render")
+            try png.write(to: FileManager.default.temporaryDirectory.appendingPathComponent("training-media-stage-\(index).png"))
         }
         XCTAssertEqual(mediaFrames[0], mediaFrames[1])
         XCTAssertEqual(mediaFrames[1], mediaFrames[2])
@@ -276,16 +504,61 @@ private final class DemoURLProtocol: URLProtocol, @unchecked Sendable {
             XCTAssertEqual(row.sha256?.count, 64)
             XCTAssertFalse(CoreExerciseDemos.revokedHashes.contains(row.sha256 ?? ""), id)
         }
-        let live = ExerciseDemoService()
-        await live.loadMedia("overhead_press_barbell")
-        let url = try XCTUnwrap(live.files["overhead_press_barbell"])
-        XCTAssertGreaterThan(try Data(contentsOf: url).count, 1024)
-        let offline = service()
+        XCTAssertFalse(CoreExerciseDemos.reviews.contains { $0.kind == "approved-animation" })
+        let blocked = ExerciseDemoService()
+        await blocked.loadMedia("overhead_press_barbell", force: true)
+        XCTAssertNil(blocked.files["overhead_press_barbell"])
+        XCTAssertNotEqual(blocked.presentation(for: "overhead_press_barbell"), .approvedMotion)
+
+        let clip = try await Self.testVideo(colors: [.red, .blue, .red, .blue], framesPerSecond: 8)
+        XCTAssertGreaterThan(clip.data.count, 1024)
+        XCTAssertFalse(CoreExerciseDemos.revokedHashes.contains(clip.sha))
+        let exerciseID = "overhead_press_barbell"
+        let suite = "ExerciseDemoTests.approved-motion." + UUID().uuidString
+        let defaults = UserDefaults(suiteName: suite)!
+        defer {
+            defaults.removePersistentDomain(forName: suite)
+            CoreExerciseDemos.reviewOverrideForTests = nil
+            DemoURLProtocol.handler = nil
+            DemoURLProtocol.rangedHandler = nil
+        }
+        let catalog = try JSONSerialization.data(withJSONObject: ["version": 1, "assets": [[
+            "exerciseId": exerciseID, "status": "ready", "sha256": clip.sha, "bytes": clip.data.count,
+            "videoPath": "/v1/exercise-demos/video/" + clip.sha, "mediaType": "video"
+        ]]])
+        CoreExerciseDemos.reviewOverrideForTests = [Self.testMotionReview(exerciseID, sha: clip.sha)]
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [DemoURLProtocol.self]
+        let session = URLSession(configuration: config)
+        let bases = [URL(string: "https://demo.test")!]
+        DemoURLProtocol.handler = { _ in (200, catalog) }
+        DemoURLProtocol.rangedHandler = { request in
+            let header = request.value(forHTTPHeaderField: "Range") ?? "bytes=0-\(clip.data.count - 1)"
+            let span = header.replacingOccurrences(of: "bytes=", with: "")
+            let parts = span.split(separator: "-")
+            let start = Int(parts.first ?? "0") ?? 0
+            let end = Int(parts.dropFirst().first ?? "") ?? (clip.data.count - 1)
+            let slice = clip.data.subdata(in: start..<(end + 1))
+            return (206, slice, ["Content-Range": "bytes \(start)-\(end)/\(clip.data.count)", "Content-Type": "video/mp4"])
+        }
+        let live = ExerciseDemoService(session: session, baseURLs: bases, catalogDefaults: defaults)
+        await live.refreshAvailableCatalog(force: true)
+        XCTAssertEqual(live.remoteAssets[exerciseID]?.sha256, clip.sha)
+        await live.loadMedia(exerciseID, force: true)
+        let url = try XCTUnwrap(live.files[exerciseID])
+        let saved = try Data(contentsOf: url)
+        XCTAssertEqual(saved, clip.data)
+        XCTAssertGreaterThan(saved.count, 1024)
+        let playable = try await AVURLAsset(url: url).load(.isPlayable)
+        XCTAssertTrue(playable)
         var networkRequests = 0
         DemoURLProtocol.handler = { _ in networkRequests += 1; throw URLError(.notConnectedToInternet) }
-        await offline.loadMedia("overhead_press_barbell")
-        XCTAssertEqual(offline.files["overhead_press_barbell"], url)
+        DemoURLProtocol.rangedHandler = { _ in networkRequests += 1; throw URLError(.notConnectedToInternet) }
+        let offline = ExerciseDemoService(session: session, baseURLs: bases, catalogDefaults: defaults)
+        await offline.loadMedia(exerciseID, force: true)
+        XCTAssertEqual(offline.files[exerciseID], url)
         XCTAssertEqual(networkRequests, 0)
+        XCTAssertFalse(CoreExerciseDemos.reviews.contains { $0.assetSHA256 == clip.sha })
     }
     func testDeliveredVideoInRealExerciseDetailSheet() async throws {
         let priorLanguage = LanguageManager.shared.selectedLanguage
@@ -293,8 +566,16 @@ private final class DemoURLProtocol: URLProtocol, @unchecked Sendable {
         defer { LanguageManager.shared.selectedLanguage = priorLanguage }
         let data = DataStore.makeMock()
         let exercise = try XCTUnwrap(data.exById["incline_curl"])
-        await ExerciseDemoService.shared.loadMedia(exercise.id)
-        XCTAssertNotNil(ExerciseDemoService.shared.files[exercise.id])
+        defer { CoreExerciseDemos.reviewOverrideForTests = nil; ExerciseDemoService.shared.clearTestMotionFixtures() }
+        await ExerciseDemoService.shared.loadMedia(exercise.id, force: true)
+        XCTAssertNil(ExerciseDemoService.shared.files[exercise.id])
+        let clip = try await Self.testVideo(colors: [.red, .blue], framesPerSecond: 1)
+        CoreExerciseDemos.reviewOverrideForTests = [Self.testMotionReview(exercise.id, sha: clip.sha)]
+        ExerciseDemoService.shared.stageTestMotion(exerciseID: exercise.id, file: clip.url, sha: clip.sha)
+        await ExerciseDemoService.shared.loadMedia(exercise.id, force: true)
+        XCTAssertEqual(ExerciseDemoService.shared.files[exercise.id], clip.url)
+        XCTAssertEqual(ExerciseDemoService.shared.presentation(for: exercise.id), .approvedMotion)
+        XCTAssertFalse(CoreExerciseDemos.reviews.contains { $0.kind == "approved-animation" })
         let scene = try XCTUnwrap(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
         let previous = scene.windows.first(where: \.isKeyWindow)
         let window = UIWindow(windowScene: scene)
@@ -304,13 +585,23 @@ private final class DemoURLProtocol: URLProtocol, @unchecked Sendable {
         }
         window.rootViewController = UIHostingController(rootView: view)
         window.makeKeyAndVisible()
-        try await Task.sleep(for: .milliseconds(1000))
-        window.layoutIfNeeded()
-        let image = UIGraphicsImageRenderer(bounds: window.bounds).image { _ in
-            window.drawHierarchy(in: window.bounds, afterScreenUpdates: true)
+        try await Task.sleep(for: .seconds(1.5))
+        func capture() -> Data? {
+            window.layoutIfNeeded()
+            let image = UIGraphicsImageRenderer(bounds: window.bounds).image { _ in
+                window.drawHierarchy(in: window.bounds, afterScreenUpdates: true)
+            }
+            return image.pngData()
         }
-        let attachment = XCTAttachment(image: image); attachment.name = "priority66-exercise-detail"; attachment.lifetime = .keepAlways; add(attachment)
-        try image.pngData()?.write(to: FileManager.default.temporaryDirectory.appendingPathComponent("priority66-exercise-detail.png"))
+        let first = try XCTUnwrap(capture())
+        XCTAssertGreaterThan(first.count, 8000)
+        let attachment = XCTAttachment(image: try XCTUnwrap(UIImage(data: first)))
+        attachment.name = "priority66-exercise-detail"
+        attachment.lifetime = .keepAlways
+        add(attachment)
+        try first.write(to: FileManager.default.temporaryDirectory.appendingPathComponent("priority66-exercise-detail.png"))
+        try await Task.sleep(for: .seconds(1.3))
+        XCTAssertNotEqual(first, try XCTUnwrap(capture()), "Approved test motion should change the detail hero")
     }
     func testRevokedDemoPurgesCachedFileAndRejectsStaleServerMetadata() async throws {
         let sha = try XCTUnwrap(CoreExerciseDemos.revokedHashes.first)

@@ -1,0 +1,56 @@
+{
+  "package_validation": {
+    "status": "PASS",
+    "errors": [],
+    "field_counts": {
+      "en-US/name": {
+        "characters": 23,
+        "utf8_bytes": 25
+      },
+      "en-US/subtitle": {
+        "characters": 29,
+        "utf8_bytes": 29
+      },
+      "en-US/keywords": {
+        "characters": 97,
+        "utf8_bytes": 97
+      },
+      "en-US/promotional_text": {
+        "characters": 104,
+        "utf8_bytes": 104
+      },
+      "en-US/description": {
+        "characters": 3115,
+        "utf8_bytes": 3129
+      },
+      "zh-Hans/name": {
+        "characters": 14,
+        "utf8_bytes": 22
+      },
+      "zh-Hans/subtitle": {
+        "characters": 13,
+        "utf8_bytes": 39
+      },
+      "zh-Hans/keywords": {
+        "characters": 33,
+        "utf8_bytes": 79
+      },
+      "zh-Hans/promotional_text": {
+        "characters": 51,
+        "utf8_bytes": 137
+      },
+      "zh-Hans/description": {
+        "characters": 1139,
+        "utf8_bytes": 2757
+      }
+    },
+    "description_tail": "byte-identical to captured ASC source",
+    "network": "none",
+    "writes": "none"
+  },
+  "self_test": {
+    "status": "PASS",
+    "tests": 7,
+    "details": "baseline plus six in-memory negative tests; no files written"
+  }
+}

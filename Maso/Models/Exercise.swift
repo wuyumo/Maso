@@ -24,6 +24,17 @@ extension ExerciseCategory {
     /// Backwards compat helper — old code that branches on `.flexibility` (e.g. stretching detection)
     /// should keep working. Returns true for both `.flexibility` (legacy) and `.stretching` (new).
     var isStretching: Bool { self == .flexibility || self == .stretching }
+
+    /// Resistance work that can satisfy a muscle-coverage request.
+    var countsAsStrengthWork: Bool {
+        switch normalized {
+        case .strength, .hypertrophyFocus, .calisthenics: return true
+        case .cardio, .stretching, .mobility, .plyometric, .flexibility: return false
+        }
+    }
+
+    /// Stretch, mobility, and legacy flexibility. These stay in the library.
+    var isPreparatory: Bool { normalized == .stretching || normalized == .mobility }
 }
 
 enum ExerciseLevel: String, Codable, Hashable, Sendable {

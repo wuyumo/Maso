@@ -319,6 +319,11 @@ struct ExerciseMediaHero: View {
         FullBleedExerciseImage(exercise: exercise)
             .frame(width: width, height: Self.height(for: exercise, width: width))
             .clipped()
+            #if DEBUG
+            // SwiftUI's identifier is not a UIView property. Debug tests locate the real
+            // hero through this clear view. Release builds do not include it.
+            .background(ExerciseHeroLocator(identifier: "exercise.media.hero"))
+            #endif
             .accessibilityIdentifier("exercise.media.hero")
             .detailHeroFade()
             .overlay(alignment: .bottomTrailing) {
@@ -334,6 +339,24 @@ struct ExerciseMediaHero: View {
         width * (ExerciseMediaPolicy.usesYouTubeThumbnail(for: exercise) ? 3.0 / 5.0 : 1)
     }
 }
+
+#if DEBUG
+/// Clear UIKit anchor occupying the hero's layout bounds. It does not draw or take hits.
+private struct ExerciseHeroLocator: UIViewRepresentable {
+    var identifier: String
+    func makeUIView(context: Context) -> UIView {
+        let view = UIView()
+        view.backgroundColor = .clear
+        view.isUserInteractionEnabled = false
+        view.accessibilityIdentifier = identifier
+        return view
+    }
+    func updateUIView(_ uiView: UIView, context: Context) {
+        uiView.accessibilityIdentifier = identifier
+        uiView.isUserInteractionEnabled = false
+    }
+}
+#endif
 
 extension View {
     func detailHeroFade(height: CGFloat = 170) -> some View {

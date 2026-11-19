@@ -274,6 +274,9 @@ struct UserSettings: Codable, Sendable {
     var coachBodyPhotoTipSeen: Bool? = nil
     /// Consumed only when the shared weight-source explanation first appears.
     var hasSeenWeightEstimateExplanation: Bool? = nil
+    /// Missing on older profiles. Off until the user turns it on.
+    var preferPerformedExercises: Bool? = nil
+    var prefersPerformedExercises: Bool { preferPerformedExercises ?? false }
     var weeklyTrainingDays: Int = 3 {
         didSet {
             if oldValue != weeklyTrainingDays, trainingWeekdays != nil {

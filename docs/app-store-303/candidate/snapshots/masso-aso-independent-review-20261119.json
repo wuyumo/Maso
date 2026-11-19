@@ -1,0 +1,62 @@
+{
+  "status": "Independent second review; suggestions only, not applied; supersedes prior preference for unchanged A",
+  "checked_at": "2026-11-19T16:35:09+08:00",
+  "primary_en-US": {
+    "name": "Masso — Workout Tracker",
+    "subtitle": "AI Plans & 3D Muscle Recovery",
+    "keywords": "strength,training,gym,log,planner,weightlifting,sets,reps,routine,progress,dumbbell,barbell,watch",
+    "promotionalText": "Log every set, build strength plans with AI, and explore training-based muscle recovery estimates in 3D.",
+    "descriptionOpening": "Log your strength workouts and see your training in context. Record weight and reps, review progress, and explore training-based muscle recovery estimates in 3D. Build a plan with AI around your goals and equipment."
+  },
+  "comparison_only_en-US": {
+    "name": "Masso — AI Workout Planner",
+    "subtitle": "Gym Log & 3D Muscle Recovery",
+    "keywords": "strength,training,weightlifting,exercise,routine,progress,tracker,watch,sets,reps,dumbbell,barbell",
+    "promotionalText": "Log every set, build strength plans with AI, and explore training-based muscle recovery estimates in 3D.",
+    "descriptionOpening": "Log your strength workouts and see your training in context. Record weight and reps, review progress, and explore training-based muscle recovery estimates in 3D. Build a plan with AI around your goals and equipment."
+  },
+  "primary_en-US_lengths": {
+    "name": {
+      "characters": 23,
+      "utf8Bytes": 25
+    },
+    "subtitle": {
+      "characters": 29,
+      "utf8Bytes": 29
+    },
+    "keywords": {
+      "characters": 97,
+      "utf8Bytes": 97
+    },
+    "promotionalText": {
+      "characters": 104,
+      "utf8Bytes": 104
+    },
+    "descriptionOpening": {
+      "characters": 215,
+      "utf8Bytes": 215
+    }
+  },
+  "comparison_only_en-US_lengths": {
+    "name": {
+      "characters": 26,
+      "utf8Bytes": 28
+    },
+    "subtitle": {
+      "characters": 28,
+      "utf8Bytes": 28
+    },
+    "keywords": {
+      "characters": 98,
+      "utf8Bytes": 98
+    },
+    "promotionalText": {
+      "characters": 104,
+      "utf8Bytes": 104
+    },
+    "descriptionOpening": {
+      "characters": 215,
+      "utf8Bytes": 215
+    }
+  }
+}

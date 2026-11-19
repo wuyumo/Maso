@@ -1,0 +1,25 @@
+Log your strength workouts and see your training in context. Record weight and reps, review progress, and explore training-based muscle recovery estimates in 3D. Build a plan with AI around your goals and equipment.
+
+• AI Coach that listens. Tell it your goals, available time and equipment. Create a plan, refine it in chat, and choose which preferences to remember.
+• A clearer view of recovery. Explore your muscles in 3D and see training-based recovery estimates and exercises for each muscle.
+• Focus on your workout. Log weight and reps, use rest timers, and follow your session on Apple Watch or Live Activities.
+• Progress you can see. Compare lifts, review muscle training volume and revisit your workout history.
+• Nutrition without the fuss. Describe a meal or add a photo to estimate protein, carbohydrates and fat against your personal targets.
+• Sleep in context. Connect Apple Health to see sleep duration, stages and progress toward your chosen sleep target.
+• Your day at a glance. Combine Workout, Diet and Sleep in one calendar, with widgets for your Home Screen.
+
+Complete workouts, history, basic charts and data export stay available. Free: 5 plans and 3 custom exercises. Existing plans and exercises remain usable after Pro expires.
+
+Masso Pro: Ongoing AI adjustments, more saved plans and custom exercises, lift progress and detailed recovery estimates.
+
+AI allowances are stored only on this device installation. Changing devices or reinstalling may reset them; they are not shared across devices. Each supported AI task has one successful free experience on this installation. The 2 shared monthly tasks apply to eligible text generation. Beyond the first experience and included adjustments, further image analysis and ongoing reports require Pro. Existing paid and lifetime rights are retained. A task includes 2 same-goal adjustments within 24 hours. Failed requests, clarification, and local tools do not use the allowance. The 30-day transition is for existing free installations and starts when the change notice is first presented. Previous use is not counted retroactively. Eligible subscribers can receive a 7-day free trial when offered. Apple shows eligibility, price and billing period before purchase. Subscriptions renew automatically unless canceled; manage them in your Apple account settings.
+
+AI features require internet access and your permission to share relevant data with our AI provider. Meal nutrients and recovery are estimates, not medical measurements or medical advice. Sleep stages require compatible Apple Health data.
+
+Privacy: https://wuyumo.github.io/Maso/privacy-policy.html
+Terms: https://wuyumo.github.io/Maso/terms.html
+Support: wuyumoawuyumo@gmail.com
+
+The monthly allowance resets by calendar month in UTC.
+
+Paste workout lists or article text, or select a photo. Direct links support readable public HTTPS articles/text from Stronger by Science, Muscle & Strength, StrengthLog, Hevy and ExRx only. Automatic video/audio transcription is not supported; provide text, subtitles or screenshots instead. Preview one or N requested cards before saving.

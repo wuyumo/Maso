@@ -180,7 +180,7 @@ struct ExerciseSelectionPolicy: Sendable {
     func generationCandidates(
         from exercises: [Exercise], settings: UserSettings? = nil, maximumLevel: ExerciseLevel? = nil,
         allowSpecialistIDs: Set<String> = [], maxPerProgrammingGroup: Int = 2,
-        limit: Int? = nil, preferredIDs: Set<String> = []
+        limit: Int? = nil, preferredIDs: Set<String> = [], familiarIDs: Set<String> = []
     ) -> [Exercise] {
         let equipment = Set(settings?.availableEquipment ?? [])
         let filtered = unique(exercises).filter { exercise in
@@ -195,6 +195,8 @@ struct ExerciseSelectionPolicy: Sendable {
             let ls = saved[programmingGroupID(for: lhs)] == lhs.id
             let rs = saved[programmingGroupID(for: rhs)] == rhs.id
             if ls != rs { return ls }
+            let lfam = familiarIDs.contains(lhs.id), rfam = familiarIDs.contains(rhs.id)
+            if lfam != rfam { return lfam }
             let lt = tier(for: lhs).order, rt = tier(for: rhs).order
             if lt != rt { return lt < rt }
             let lp = preferredIDs.contains(lhs.id), rp = preferredIDs.contains(rhs.id)

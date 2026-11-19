@@ -12,6 +12,7 @@ struct TrainingPreferenceDraft: Equatable {
     var maintainWeights: Bool
     var keepScreenAwakeDuringWorkout: Bool
     var coachMemory: String
+    var preferPerformedExercises: Bool
     var wantStrengthen: [MuscleGroup]
     var equipment: TrainingEquipmentDraft
 
@@ -26,6 +27,7 @@ struct TrainingPreferenceDraft: Equatable {
         maintainWeights = settings.loadProgression?.maintain ?? false
         keepScreenAwakeDuringWorkout = settings.keepScreenAwakeDuringWorkout
         coachMemory = settings.coachMemory
+        preferPerformedExercises = settings.prefersPerformedExercises
         wantStrengthen = settings.wantStrengthen.sorted { $0.rawValue < $1.rawValue }
         equipment = TrainingEquipmentDraft(settings: settings)
     }
@@ -43,6 +45,7 @@ struct TrainingPreferenceDraft: Equatable {
         settings.loadProgression = progression
         settings.keepScreenAwakeDuringWorkout = keepScreenAwakeDuringWorkout
         settings.coachMemory = coachMemory
+        settings.preferPerformedExercises = preferPerformedExercises
         settings.wantStrengthen = wantStrengthen
         equipment.apply(to: &settings)
     }
@@ -101,6 +104,13 @@ struct TrainingSettingsSection: View {
                     Text(goal.displayName).tag(goal)
                 }
             }
+            Toggle("Prefer exercises you've done", isOn: $settings.preferPerformedExercises)
+                .toggleStyle(.switch).tint(MasoColor.toggleAccent)
+                .accessibilityIdentifier("training.prefer-performed")
+            Text("New plans reuse exercises from workouts you actually completed when they still fit.")
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+                .accessibilityIdentifier("training.prefer-performed.detail")
         }
         Section {
             DisclosureGroup("More training settings", isExpanded: $moreTrainingSettingsExpanded) {

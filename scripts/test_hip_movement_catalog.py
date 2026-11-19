@@ -171,6 +171,21 @@ def main() -> int:
     check(meta["side_leg_raise"]["programmingGroupID"] != "hip_abduction", "side leg raise stays separate")
     check(meta["side_leg_raise_cable"]["programmingGroupID"] == meta["side_leg_raise"]["programmingGroupID"], "side leg cable family")
     check(meta["adductor_machine"]["programmingGroupID"] == "hip_adduction", "adduction group")
+    check(meta["adduction_cable"]["programmingGroupID"] == "hip_adduction", "cable adduction group")
+    check(meta["adductor_machine"]["displayFamilyID"] != meta["abductor_machine"]["displayFamilyID"], "families merged")
+    spoken = ["Inner Thigh", "inner thigh", "内收", "內收", "夹腿", "夾腿", "大腿内侧", "大腿內側"]
+    for query in spoken:
+        hits = {item["id"] for item in exercises if pattern_match(item, meta[item["id"]]["pattern"], query)}
+        check("adductor_machine" in hits, f"{query} missed the adduction machine")
+        check("abductor_machine" not in hits and "abduction_cable" not in hits, f"{query} matched abduction: {sorted(hits)}")
+        check(all(meta[item_id]["pattern"] == "hip_adduction" for item_id in hits), f"{query} mixed patterns")
+    machine_hits = {item["id"] for item in exercises if pattern_match(item, meta[item["id"]]["pattern"], "inner thigh machine")}
+    check("adductor_machine" in machine_hits, "inner thigh machine missed adductor_machine")
+    check("adduction_cable" not in machine_hits, "cable matched inner thigh machine")
+    check("abductor_machine" not in machine_hits, "abduction matched inner thigh machine")
+    check(adduction["muscles"]["primary"] == [{"major": "legs", "sub": "adductors"}], "adduction muscles changed")
+    check(adduction.get("imageFolder") is None, "adduction media changed")
+    check(adduction["id"] == "adductor_machine", "adduction id changed")
 
     def menu_rows(default_id: str, candidate_ids: list[str], current_id: str) -> list[str]:
         seen: set[str] = set()

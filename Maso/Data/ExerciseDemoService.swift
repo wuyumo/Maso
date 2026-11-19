@@ -46,6 +46,64 @@ enum CoreExerciseDemos {
         guard let id else { return false }
         return assets[id]?.verification == "unverified"
     }
+
+    /// Explicit review records. A missing catalog field is not approval.
+    /// `user-approved-static` authorizes one still hash only. It does not authorize the motion file.
+    struct DemoReview: Codable, Equatable {
+        var exerciseId: String
+        var kind: String
+        var assetSHA256: String
+        var approvedAt: String?
+        var scope: String?
+    }
+
+    enum DemoPresentation: Equatable {
+        case approvedMotion
+        case approvedStill
+        case placeholder
+    }
+
+    static let reviews: [DemoReview] = {
+        guard let url = Bundle.main.url(forResource: "review-ledger", withExtension: "json", subdirectory: "CoreExerciseDemos"),
+              let data = try? Data(contentsOf: url),
+              let rows = try? JSONDecoder().decode([DemoReview].self, from: data) else { return [] }
+        return rows
+    }()
+
+    #if DEBUG
+    /// Tests may substitute a ledger for one case. Nil keeps the bundled production ledger.
+    /// Production code never assigns this, and Release builds do not include it.
+    @MainActor static var reviewOverrideForTests: [DemoReview]?
+    #endif
+
+    @MainActor static var decisionReviews: [DemoReview] {
+        #if DEBUG
+        if let reviewOverrideForTests { return reviewOverrideForTests }
+        #endif
+        return reviews
+    }
+
+    /// Pure decision. It does not read `ExerciseDemoService` or any other main-actor instance.
+    /// `cachedSHA` is ignored on purpose: a cached or replacement motion file cannot promote itself.
+    static func presentation(id: String, motionSHA: String?, cachedSHA: String? = nil, reviews ledger: [DemoReview]) -> DemoPresentation {
+        _ = cachedSHA
+        if ledger.contains(where: { $0.exerciseId == id && $0.kind == "user-approved-static" && !$0.assetSHA256.isEmpty }) {
+            return .approvedStill
+        }
+        if let motionSHA, ledger.contains(where: { $0.exerciseId == id && $0.kind == "approved-animation" && $0.assetSHA256 == motionSHA }) {
+            return .approvedMotion
+        }
+        return .placeholder
+    }
+
+    /// Shows the still only when its bytes match the user-approved hash. The motion sha is not consulted.
+    static func approvedStill(_ id: String) -> UIImage? {
+        guard let record = reviews.first(where: { $0.exerciseId == id && $0.kind == "user-approved-static" }),
+              let url = Bundle.main.url(forResource: id, withExtension: "jpg", subdirectory: "CoreExerciseDemos"),
+              let data = try? Data(contentsOf: url),
+              SHA256.hash(data: data).map({ String(format: "%02x", $0) }).joined() == record.assetSHA256 else { return nil }
+        return UIImage(data: data)
+    }
     private static let posterSourceHashes: [String: String] = {
         guard let url = Bundle.main.url(forResource: "poster-catalog", withExtension: "json", subdirectory: "CoreExerciseDemos"),
               let data = try? Data(contentsOf: url),
@@ -65,6 +123,21 @@ final class ExerciseDemoService {
     private(set) var files: [String: URL] = [:]
     private(set) var remoteAssets: [String: ExerciseDemoResult] = [:]
     private(set) var hasRemoteCatalog = false
+    #if DEBUG
+    /// Local motion used only when a test ledger already approves that exact SHA.
+    private var testMotionSHA: [String: String] = [:]
+    private var stagedTestMotion: [String: URL] = [:]
+    func stageTestMotion(exerciseID: String, file: URL, sha: String) {
+        testMotionSHA[exerciseID] = sha
+        stagedTestMotion[exerciseID] = file
+    }
+    func clearTestMotionFixtures() {
+        let ids = Set(testMotionSHA.keys).union(stagedTestMotion.keys)
+        testMotionSHA.removeAll()
+        stagedTestMotion.removeAll()
+        for id in ids { files.removeValue(forKey: id) }
+    }
+    #endif
     var availableMediaIDs: Set<String> {
         if hasRemoteCatalog { return Set(remoteAssets.keys) }
         return Set(CoreExerciseDemos.assets.compactMap { id, asset in
@@ -250,6 +323,22 @@ final class ExerciseDemoService {
             }
         }
     }
+    /// Main-actor read of this service, then the pure presentation decision.
+    func presentation(for exerciseID: String) -> CoreExerciseDemos.DemoPresentation {
+        let remote = hasRemoteCatalog ? remoteAssets[exerciseID]?.sha256 : nil
+        let cached = files[exerciseID]?.deletingPathExtension().lastPathComponent
+        #if DEBUG
+        let motion = testMotionSHA[exerciseID] ?? remote ?? CoreExerciseDemos.assets[exerciseID]?.sha256
+        #else
+        let motion = remote ?? CoreExerciseDemos.assets[exerciseID]?.sha256
+        #endif
+        return CoreExerciseDemos.presentation(
+            id: exerciseID,
+            motionSHA: motion,
+            cachedSHA: cached,
+            reviews: CoreExerciseDemos.decisionReviews)
+    }
+
     func loadMedia(_ exerciseID: String, force: Bool = false) async {
         // A newer catalog may arrive while an older version is downloading.
         // Wait for that request, then resolve the current approved version again.
@@ -257,6 +346,19 @@ final class ExerciseDemoService {
             do { try await Task.sleep(for: .milliseconds(100)) }
             catch { return }
         }
+        if presentation(for: exerciseID) != .approvedMotion {
+            files.removeValue(forKey: exerciseID)
+            return
+        }
+        #if DEBUG
+        if let staged = stagedTestMotion[exerciseID], let expected = testMotionSHA[exerciseID],
+           let data = try? Data(contentsOf: staged),
+           SHA256.hash(data: data).map({ String(format: "%02x", $0) }).joined() == expected,
+           await Self.isPlayable(staged, isGIF: false) {
+            files[exerciseID] = staged
+            return
+        }
+        #endif
         // A cache eviction or a concurrent prefetch can remove the published file.
         // Never throttle a known catalog item that still needs to be displayed.
         if !force, files[exerciseID] != nil, let date = checked[exerciseID], Date().timeIntervalSince(date) < 600 { return }
@@ -271,6 +373,7 @@ final class ExerciseDemoService {
         } catch { /* Existing exercise images and instructions remain available. */ }
     }
     private func download(_ asset: ExerciseDemoResult, exerciseID: String) async throws {
+        if asset.verification == "unverified" { throw Failure.download }
         guard let sha = asset.sha256, !CoreExerciseDemos.revokedHashes.contains(sha), sha.count == 64, sha.allSatisfy({ $0.isHexDigit }),
               let size = asset.bytes, (1...25*1024*1024).contains(size),
               asset.videoPath == "/v1/exercise-demos/video/\(sha)" else { throw Failure.download }

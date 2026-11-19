@@ -1,0 +1,374 @@
+{
+  "contract": "masso-shared-sections-v1",
+  "authoring": "candidates/pro-20261113/project.json#sharedSections",
+  "revision": "f33f436ef6aca6c390458f6be87342b1f8514c8337e6f57739f802983ce14570",
+  "websiteHero": {
+    "publication": "candidate",
+    "demoOnly": true,
+    "copyApproval": "unapproved",
+    "locale": "zh",
+    "title": "从计划到恢复，\n训练更有方向",
+    "body": "AI 训练计划、训练记录、肌肉恢复估算与饮食建议，在一个 App 里衔接起来"
+  },
+  "sections": [
+    {
+      "id": "plan",
+      "copyApproval": "approved",
+      "mediaCapture": "selected-a2.1",
+      "label": {
+        "zh": "01 / AI 教练",
+        "zh-Hant": "01 / AI 教練",
+        "en": "01 / AI COACH",
+        "ja": "01 / AI コーチ",
+        "ko": "01 / AI 코치",
+        "es": "01 / COACH IA",
+        "fr": "01 / COACH IA",
+        "de": "01 / KI-COACH",
+        "it": "01 / COACH IA",
+        "pt-BR": "01 / COACH IA",
+        "ru": "01 / ИИ-ТРЕНЕР",
+        "ar": "01 / المدرب الذكي"
+      },
+      "title": {
+        "zh": "一张照片，\n就有一周计划",
+        "zh-Hant": "一張照片，\n就有一週計畫",
+        "en": "One photo in,\na week planned out",
+        "ja": "写真1枚で\n1週間のメニュー",
+        "ko": "사진 한 장으로,\n일주일 계획",
+        "es": "Una foto,\nuna semana lista",
+        "fr": "Une photo,\nune semaine prête",
+        "de": "Ein Foto,\neine Woche geplant",
+        "it": "Una foto,\nuna settimana pronta",
+        "pt-BR": "Uma foto,\numa semana pronta",
+        "ru": "Одно фото —\nплан на неделю",
+        "ar": "صورة واحدة،\nخطة أسبوع"
+      },
+      "subtitle": {
+        "zh": "也听你要的天数、时长和重点",
+        "zh-Hant": "也聽你要的天數、時長和重點",
+        "en": "Also the days, length, and focus you want",
+        "ja": "日数・時間・重点も、希望どおり",
+        "ko": "일수, 시간, 중점도 원하는 대로",
+        "es": "También los días, la duración y el foco",
+        "fr": "Aussi les jours, la durée et le focus",
+        "de": "Auch Tage, Dauer und Fokus",
+        "it": "Anche i giorni, la durata e il focus",
+        "pt-BR": "Também os dias, a duração e o foco",
+        "ru": "Ещё дни, длительность и акцент",
+        "ar": "وأيضًا الأيام والمدة والتركيز"
+      },
+      "websiteBody": {
+        "publication": "authored",
+        "locales": {
+          "en": {
+            "body": "The screen shows a suggested week you can read before you save it. You can set the days, the session length, and the focus. An AI suggestion is requested over a connection, and Masso asks you to review AI access on this device before continuing. Free AI tasks on this device are limited.",
+            "scenario": "You tell AI Coach what you want to train. The card on the screen is one suggested plan, not a prescription or medical advice.",
+            "faq": "Generating an AI plan is requested over a connection after you review AI access on this device. Free AI tasks on this device are limited."
+          },
+          "zh": {
+            "body": "画面里是一份可以先看再保存的建议周计划。你可以设定天数、单次时长和重点。AI 建议通过网络请求，并且要你先在这台设备上查看 AI 访问说明。这台设备上的免费 AI 次数有限。",
+            "scenario": "你告诉 AI Coach 想怎么练。卡片上的是一份训练建议，不是处方，也不是医疗建议。",
+            "faq": "生成 AI 计划会在你查看本机 AI 访问说明之后通过网络请求。这台设备上的免费 AI 次数有限。"
+          }
+        }
+      },
+      "mediaAnnotations": []
+    },
+    {
+      "id": "recovery",
+      "copyApproval": "approved",
+      "mediaCapture": "selected-a2.1",
+      "label": {
+        "zh": "02 / 肌肉恢复",
+        "en": "02 / RECOVERY",
+        "zh-Hant": "02 / 肌肉恢復",
+        "ja": "02 / 回復",
+        "ko": "02 / 근육 회복",
+        "es": "02 / RECUPERACIÓN",
+        "fr": "02 / RÉCUPÉRATION",
+        "de": "02 / ERHOLUNG",
+        "it": "02 / RECUPERO",
+        "pt-BR": "02 / RECUPERAÇÃO",
+        "ru": "02 / ВОССТАНОВЛЕНИЕ",
+        "ar": "02 / التعافي"
+      },
+      "title": {
+        "zh": "肌肉恢复估算，\n一眼看清",
+        "zh-Hant": "肌肉恢復估算，\n一眼看清",
+        "en": "Estimated muscle\nrecovery",
+        "ja": "筋肉の回復を\n推定で確認",
+        "ko": "근육 회복을\n추정치로 확인",
+        "es": "Recuperación muscular\nestimada",
+        "fr": "Récupération musculaire\nestimée",
+        "de": "Geschätzte\nMuskelerholung",
+        "it": "Recupero muscolare\nstimato",
+        "pt-BR": "Recuperação muscular\nestimada",
+        "ru": "Восстановление мышц,\nпо оценке",
+        "ar": "تقديرات تعافي\nالعضلات"
+      },
+      "subtitle": {
+        "zh": "3D 肌肉图，按部位显示",
+        "zh-Hant": "3D 肌肉圖，按部位顯示",
+        "en": "A 3D muscle map",
+        "ja": "部位ごとの3Dマップ",
+        "ko": "부위별 3D 지도",
+        "es": "Mapa muscular 3D",
+        "fr": "Carte musculaire 3D",
+        "de": "3D-Muskelkarte",
+        "it": "Mappa muscolare 3D",
+        "pt-BR": "Mapa muscular 3D",
+        "ru": "3D-карта мышц",
+        "ar": "خريطة عضلية ثلاثية الأبعاد"
+      },
+      "websiteBody": {
+        "publication": "authored",
+        "locales": {
+          "en": {
+            "body": "The colors and the percentage estimate recovery from training you logged. The percentage is an estimate, not a body scan and not a medical measurement.",
+            "scenario": "After you log the work, the muscle view shows which areas that estimate still treats as recovering.",
+            "faq": "Recovery estimates are based on training you logged, not a body scan or a medical measurement."
+          },
+          "zh": {
+            "body": "颜色和百分比是根据你记下的训练估算的。这个百分比是估算，不是身体扫描，也不是医学测量。",
+            "scenario": "记下训练之后，肌群视图会标出这份估算里仍在恢复的部位。",
+            "faq": "恢复状态由记下的训练估算，不是身体扫描，也不是医学测量。"
+          }
+        }
+      },
+      "mediaAnnotations": [
+        {
+          "sha256": "e72e509becb30d370d7b06460c74501d8415e87896a64b13bc6935d77a380a3c",
+          "file": "media/muscle-recovery-en-demo.png",
+          "role": "iphone-screen",
+          "locale": "en",
+          "websiteDemoOnly": true,
+          "release": false,
+          "pairsWithBody": true,
+          "visible": "49%",
+          "caption": "This frame shows 49% and the label Recovering, keep it light. That figure is what this capture displays. It is not a medical measurement."
+        },
+        {
+          "sha256": "29f5d38aec5c9248ea1288dff0582a809c0fa4b4d6d99aa87001030e2b1018e0",
+          "file": "media/muscle-recovery-zh-demo.png",
+          "role": "iphone-screen",
+          "locale": "zh",
+          "websiteDemoOnly": true,
+          "release": false,
+          "pairsWithBody": true,
+          "visible": "49%",
+          "caption": "这张图上是 49%，并写着恢复中、建议轻练。这是这张截图里的数字，不是医学测量。"
+        }
+      ]
+    },
+    {
+      "id": "training",
+      "copyApproval": "unapproved",
+      "mediaCapture": "no-capture",
+      "label": {
+        "zh": "03 / 训练与心率",
+        "en": "03 / TRAINING & HEART RATE",
+        "zh-Hant": "03 / 訓練與心率",
+        "ja": "03 / トレーニングと心拍",
+        "ko": "03 / 운동과 심박",
+        "es": "03 / ENTRENO Y PULSO",
+        "fr": "03 / EFFORT ET FRÉQUENCE",
+        "de": "03 / TRAINING & PULS",
+        "it": "03 / ALLENAMENTO E BATTITO",
+        "pt-BR": "03 / TREINO E FREQUÊNCIA",
+        "ru": "03 / ТРЕНИРОВКА И ПУЛЬС",
+        "ar": "03 / التمرين والنبض"
+      },
+      "title": {
+        "zh": "心率过高，\n立刻提醒",
+        "zh-Hant": "心率過高，\n立刻提醒",
+        "en": "Past your limit?\nYou'll know",
+        "ja": "心拍が高すぎたら\nすぐ知らせる",
+        "ko": "심박이 높으면,\n바로 알려 줍니다",
+        "es": "¿Pasaste tu límite?\nLo vas a ver",
+        "fr": "Au-dessus de votre limite ?\nVous le voyez",
+        "de": "Über dein Limit?\nDu siehst es",
+        "it": "Oltre il tuo limite?\nLo vedi subito",
+        "pt-BR": "Passou do seu limite?\nVocê vê na hora",
+        "ru": "Выше вашего порога?\nВы это увидите",
+        "ar": "فوق حدك؟\nستعرف فورًا"
+      },
+      "subtitle": {
+        "zh": "持续超限，心率提醒自动展开",
+        "zh-Hant": "持續超限，心率提醒自動展開",
+        "en": "Stay above your limit, and the alert expands",
+        "ja": "上限超えが続くと、心拍アラートを自動表示",
+        "ko": "한도 초과가 지속되면 심박수 알림 자동 표시",
+        "es": "Si superas tu límite de forma sostenida, se abre la alerta",
+        "fr": "Dépassement prolongé : l’alerte s’ouvre automatiquement",
+        "de": "Bleibst du über deinem Limit, öffnet sich die Warnung",
+        "it": "Se resti oltre il limite, l’avviso si apre automaticamente",
+        "pt-BR": "Acima do limite por mais tempo, o alerta se abre",
+        "ru": "При устойчивом превышении порога уведомление раскрывается автоматически",
+        "ar": "عند استمرار تجاوز حدك، يظهر تنبيه النبض تلقائيًا"
+      },
+      "websiteBody": {
+        "publication": "withheld",
+        "reason": "Studio short copy stays unapproved, including the heart-rate subtitle. The heart-warning phone frame is not published. A pending watch frame that shows 185 is not published. The text below is the debug watch preview's default set, not an approval of section 03.",
+        "candidate": {
+          "en": {
+            "title": "Log every set",
+            "body": "The Watch preview shows one set: Bicep Curl (Dumbbell), set 2 of 3, 8 reps, 20 kg. No heart-rate sample is on that preview; the heart shows —."
+          },
+          "zh": {
+            "title": "记录每一组",
+            "body": "手表预览是一组演示：弯举（哑铃），第 2/3 组，8 次、20 kg。这个预览没有心率样本，心率显示横线。"
+          }
+        }
+      },
+      "mediaAnnotations": [
+        {
+          "sha256": "9c0ebb80249563d9d805184fd031b2c0f95ab648dc5b5b0e6a016f7d4bacd73c",
+          "file": "media/a0fc651-watchOS26.5-46mm-en-exercise-HR128-demo.png",
+          "role": "watch-screen",
+          "locale": "en",
+          "websiteDemoOnly": true,
+          "release": false,
+          "pairsWithBody": false,
+          "visible": "heart rate 128",
+          "caption": "Watch demo. 8 reps, 20 kg and heart rate 128 are sample figures, not a live measurement."
+        },
+        {
+          "sha256": "c3da92be94dc89c25b728875650ed3fdc7ea4422128d9442c523c81302e13f1e",
+          "file": "media/caa8183-watchOS26.5-46mm-zh-exercise-cold-noHR.png",
+          "role": "watch-screen",
+          "locale": "zh",
+          "websiteDemoOnly": true,
+          "release": false,
+          "pairsWithBody": true,
+          "visible": "heart-rate dash, no sample",
+          "caption": "手表演示。第 2/3 组、8 次数和 20 kg 是演示数据。心率没有样本，显示横线。"
+        }
+      ]
+    },
+    {
+      "id": "diet",
+      "copyApproval": "approved",
+      "mediaCapture": "selected-a2.1",
+      "label": {
+        "zh": "04 / 饮食与睡眠",
+        "zh-Hant": "04 / 飲食與睡眠",
+        "en": "04 / NUTRITION & SLEEP",
+        "ja": "04 / 食事と睡眠",
+        "ko": "04 / 식단과 수면",
+        "es": "04 / NUTRICIÓN Y SUEÑO",
+        "fr": "04 / NUTRITION ET SOMMEIL",
+        "de": "04 / ERNÄHRUNG & SCHLAF",
+        "it": "04 / CIBO E SONNO",
+        "pt-BR": "04 / NUTRIÇÃO E SONO",
+        "ru": "04 / ПИТАНИЕ И СОН",
+        "ar": "04 / التغذية والنوم"
+      },
+      "title": {
+        "zh": "饮食与睡眠，一起照顾",
+        "zh-Hant": "飲食與睡眠，一起照顧",
+        "en": "Nutrition and sleep,\ntogether",
+        "ja": "食事と睡眠を\nまとめて管理",
+        "ko": "식단과 수면,\n함께 관리",
+        "es": "Nutrición y sueño,\njuntos",
+        "fr": "Nutrition et sommeil,\nensemble",
+        "de": "Ernährung und Schlaf,\nim Blick",
+        "it": "Alimentazione e sonno,\ninsieme",
+        "pt-BR": "Nutrição e sono,\njuntos",
+        "ru": "Питание и сон,\nвместе",
+        "ar": "التغذية والنوم،\nمعًا"
+      },
+      "subtitle": {
+        "zh": "热量、营养，和睡眠时长",
+        "zh-Hant": "熱量、營養，和睡眠時長",
+        "en": "Calories, nutrients, and time asleep",
+        "ja": "カロリー、栄養、睡眠時間",
+        "ko": "열량, 영양, 수면 시간",
+        "es": "Calorías, nutrientes y tiempo de sueño",
+        "fr": "Calories, nutriments et temps de sommeil",
+        "de": "Kalorien, Nährstoffe und Schlafdauer",
+        "it": "Calorie, nutrienti e tempo di sonno",
+        "pt-BR": "Calorias, nutrientes e tempo de sono",
+        "ru": "Калории, нутриенты и время сна",
+        "ar": "السعرات والمغذيات ومدة النوم"
+      },
+      "websiteBody": {
+        "publication": "authored",
+        "locales": {
+          "en": {
+            "body": "Diet targets are starting estimates from body weight and common sports-nutrition guidance. They are not a measurement of what you need and not medical advice. The sleep screen compares deep sleep with your recent nights and calls that a personal reference, not a medical target. Connecting Apple Health starts on that screen.",
+            "scenario": "You can look at meals and a night of sleep beside training. Neither is a diagnosis or a lab result.",
+            "faq": "Do not read calories, nutrients, sleep time, or Sleep score in the pictures as lab results."
+          },
+          "zh": {
+            "body": "饮食目标是按体重和常见运动营养建议给出的起步估算。它不是你所需热量的测量，也不是医疗建议。睡眠页把深睡眠和你最近几晚比较，并写明这是个人参考，不是医疗目标。连接 Apple 健康从这一页开始。",
+            "scenario": "训练旁边，你可以看到餐食和一晚睡眠。它们都不做诊断，也不是化验结果。",
+            "faq": "不要把画面里的热量、营养、睡眠时长或睡眠得分读成化验结果。"
+          }
+        }
+      },
+      "mediaAnnotations": []
+    },
+    {
+      "id": "devices",
+      "copyApproval": "unapproved",
+      "mediaCapture": "no-capture",
+      "label": {
+        "zh": "05 / 全设备",
+        "zh-Hant": "05 / 全裝置",
+        "en": "05 / EVERY DEVICE",
+        "ja": "05 / すべてのデバイス",
+        "ko": "05 / 모든 기기",
+        "es": "05 / DISPOSITIVOS",
+        "fr": "05 / APPAREILS",
+        "de": "05 / GERÄTE",
+        "it": "05 / DISPOSITIVI",
+        "pt-BR": "05 / DISPOSITIVOS",
+        "ru": "05 / УСТРОЙСТВА",
+        "ar": "05 / الأجهزة"
+      },
+      "title": {
+        "en": "Multiple devices,\ntrain your way",
+        "zh": "多设备，\n随你练",
+        "zh-Hant": "多裝置，\n想練就練",
+        "ja": "複数デバイス、\n好きなように",
+        "ko": "여러 기기,\n내 방식대로",
+        "es": "Varios dispositivos,\na tu manera",
+        "fr": "Plusieurs appareils,\nà votre façon",
+        "de": "Mehrere Geräte,\nwie du willst",
+        "it": "Più dispositivi,\ncome vuoi",
+        "pt-BR": "Vários dispositivos,\ndo seu jeito",
+        "ru": "Много устройств\nкак вам удобно",
+        "ar": "أجهزة متعددة،\nكما تشاء"
+      },
+      "subtitle": {
+        "en": "iPhone, iPad,\niPhone Duo, and Apple Watch",
+        "zh": "iPhone、iPad、\niPhone Duo 和 Apple Watch",
+        "zh-Hant": "iPhone、iPad、\niPhone Duo 和 Apple Watch",
+        "ja": "iPhone、iPad、\niPhone Duo、Apple Watch",
+        "ko": "iPhone, iPad,\niPhone Duo, Apple Watch",
+        "es": "En iPhone, iPad, iPhone Duo\ny Apple Watch",
+        "fr": "Sur iPhone, iPad, iPhone Duo\net Apple Watch",
+        "de": "Für iPhone, iPad, iPhone Duo\nund Apple Watch",
+        "it": "Su iPhone, iPad, iPhone Duo\ne Apple Watch",
+        "pt-BR": "No iPhone, iPad, iPhone Duo\ne no Apple Watch",
+        "ru": "На iPhone, iPad, iPhone Duo\nи Apple Watch",
+        "ar": "iPhone وiPad\nوiPhone Duo وApple Watch"
+      },
+      "websiteBody": {
+        "publication": "withheld",
+        "reason": "No final approval was found. iPad, iPhone Duo, and the old poster inputs are not published. The text below names only iPhone and Apple Watch and does not approve section 05.",
+        "candidate": {
+          "en": {
+            "title": "iPhone and Apple Watch",
+            "body": "The public text names only the iPhone and Apple Watch demos that were checked. Other device layouts are not shown."
+          },
+          "zh": {
+            "title": "iPhone 和 Apple Watch",
+            "body": "这里只写已经核对过的 iPhone 和 Apple Watch 演示。其他设备画面没有放上来。"
+          }
+        }
+      },
+      "mediaAnnotations": []
+    }
+  ]
+}

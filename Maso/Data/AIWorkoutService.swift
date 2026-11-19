@@ -259,8 +259,13 @@ final class AIWorkoutService {
             let candidates = routineCandidates(payload: payload, library: sessionLibrary, query: query)
             let settings = selectionSettings(payload: payload, query: query)
             let locked = payload.selectionFavoriteIDs.union(explicitlyRequestedExerciseIDs(in: query, library: library))
+            let coverageIntent = LocalRoutineRules.parse(query)
+            let coverageApplication = sessionRequest == nil
+                ? LocalRoutineRules.application(for: coverageIntent, generatedPlanCount: 1)
+                : LocalRoutineRules.CoverageApplication.skip
             let plans = try await requestValidatedPlans(candidates: candidates, expectedCount: 1,
-                maxExercises: maxExercises, single: true, surface: surface, preferredIDs: locked, settings: settings) { correction in
+                maxExercises: maxExercises, single: true, surface: surface, preferredIDs: locked, settings: settings,
+                coverageIntent: coverageIntent, coverageApplication: coverageApplication) { correction in
                 try await self.callDeepSeek(payload: payload, library: candidates,
                                            maxExercises: maxExercises, correction: correction,
                                            sessionRequest: sessionRequest, previousSession: previousSession,
@@ -314,8 +319,11 @@ final class AIWorkoutService {
             let candidates = routineCandidates(payload: payload, library: library, query: query)
             let settings = selectionSettings(payload: payload, query: query)
             let locked = payload.selectionFavoriteIDs.union(explicitlyRequestedExerciseIDs(in: query, library: library))
+            let coverageIntent = LocalRoutineRules.parse(query)
+            let coverageApplication = LocalRoutineRules.application(for: coverageIntent, generatedPlanCount: count)
             let plans = try await requestValidatedPlans(candidates: candidates, expectedCount: count,
-                maxExercises: maxExercises, surface: surface, preferredIDs: locked, settings: settings) { correction in
+                maxExercises: maxExercises, surface: surface, preferredIDs: locked, settings: settings,
+                coverageIntent: coverageIntent, coverageApplication: coverageApplication) { correction in
                 try await self.callDeepSeekRoutines(payload: payload, library: candidates,
                     count: count, perRoutine: maxExercises, correction: correction)
             }
@@ -938,7 +946,8 @@ final class AIWorkoutService {
         let preserved = Set(preservingIDs.compactMap { byID[$0]?.id })
         let allowedSpecialists = requested.union(preserved)
         let ordinary = policy.generationCandidates(from: library, settings: settings,
-            maxPerProgrammingGroup: 2, preferredIDs: payload.selectionFavoriteIDs.union(payload.selectionRecentIDs))
+            maxPerProgrammingGroup: 2, preferredIDs: payload.selectionFavoriteIDs.union(payload.selectionRecentIDs),
+            familiarIDs: Set(payload.selectionPerformedIDs))
         // Explicit/preserved variants pass equipment constraints before joining the capped
         // ordinary pool. A third equipment version must not disappear behind two defaults.
         let required = policy.generationCandidates(from: library, settings: settings,
@@ -952,6 +961,7 @@ final class AIWorkoutService {
         var ids = Set<String>()
         var familyCounts: [String: Int] = [:]
         func add(_ exercise: Exercise, requested: Bool = false) {
+            if !LocalRoutineRules.isStrengthMain(exercise) { return }
             let family = policy.displayFamilyID(for: exercise)
             guard !ids.contains(exercise.id), requested || familyCounts[family, default: 0] < 4 else { return }
             ids.insert(exercise.id)
@@ -1191,6 +1201,15 @@ final class AIWorkoutService {
         return "\n        - PINNED EXERCISE PRIORITY: \(ids.joined(separator: ", ")). Prefer these exact IDs over unpinned alternatives when compatible with the requested muscles, equipment, recovery and plan balance. Explicit current requests and unchanged revision steps take precedence; do not add unrelated muscles or duplicate movement groups merely to include pins."
     }
 
+    /// IDs only. Weights, times, and the rest of the log stay out of the prompt.
+    private func performedExerciseBlock(payload: AIPayload, library: [Exercise]) -> String {
+        let allowed = Set(library.map(\.id))
+        var seen = Set<String>()
+        let ids = payload.selectionPerformedIDs.filter { allowed.contains($0) && seen.insert($0).inserted }
+        guard !ids.isEmpty else { return "" }
+        return "\n        - PREVIOUSLY PERFORMED EXERCISES: \(ids.joined(separator: ", ")). These are soft preferences. When several catalog IDs fit the same role, equipment and muscle, prefer one of these. Do not break equipment limits, avoided muscles, coverage, stretch exclusion, or plan balance to reuse them, and do not drop a required muscle that has no previously performed exercise."
+    }
+
     /// `library` is already the exact validated candidate pool, including preserved revision IDs.
     private func catalogBlock(library: [Exercise], query: String?, mustInclude: [String] = []) -> String {
         library.map(catalogLine).joined(separator: "\n")
@@ -1246,6 +1265,11 @@ final class AIWorkoutService {
             - MUSCLE BALANCE: no more than 2 exercises whose PRIMARY muscle is the same in this session (never 3 chest moves in one day). If two exercises share a primary muscle, they must differ in angle, equipment, or movement plane. Isolation exercises must be at most 40% of the session. Prefer including a pull for every push.
             """
         }
+        let coverageIntent = LocalRoutineRules.parse([p.focusNote, p.coachMemory].compactMap { $0 }.joined(separator: "\n"))
+        let coverageApplication = sessionRequest == nil
+            ? LocalRoutineRules.application(for: coverageIntent, generatedPlanCount: 1)
+            : LocalRoutineRules.CoverageApplication.skip
+        let coverageLine = LocalRoutineRules.promptLine(for: coverageIntent, application: coverageApplication)
         let previousBlock = previousSession.map { plan in
             "\nCURRENT SINGLE WORKOUT (revise this workout only; do not change the user's weekly routines):\n" + currentRoutinesBlock([plan], library: library)
                 + (onlyModify.map { "\nONLY MODIFY: \($0). Keep other compatible exercises and prescriptions unchanged." } ?? "")
@@ -1262,7 +1286,7 @@ final class AIWorkoutService {
         - Training days per week: \(p.daysPerWeek)\(p.trainingScheduleLine)\(p.trainingSessionLengthLine)
         - Wants to strengthen: \(strengthen)
         - Primary goal: \(p.goalLabel)
-        - Available equipment: \(p.equipmentLine)\(p.coachMemoryBlock)\(pinnedExerciseBlock(payload: p, library: library))
+        - Available equipment: \(p.equipmentLine)\(p.coachMemoryBlock)\(pinnedExerciseBlock(payload: p, library: library))\(performedExerciseBlock(payload: p, library: library))
 
         RECENT WORKOUTS (last 14 days)
         \(recent)\(p.bestSetsBlock)\(previousBlock)
@@ -1273,7 +1297,7 @@ final class AIWorkoutService {
         \(sessionRules)
         - This user's goal is \(p.goalLabel). Write COMPOUND lifts at \(p.goalRepCompound)-\(p.goalRepCompoundHi) reps and ISOLATION lifts at \(p.goalRepIso)-\(p.goalRepIsoHi) reps. Use \(p.goalSetsLo)-\(p.goalSetsHi) sets per exercise. Stop ~1-3 reps short of failure (do not write 'to failure').\(p.acsmGuideline)
         - Set "duration_seconds" only for timed holds/cardio; otherwise null. Rest between sets is \(p.sessionSetRestSeconds ?? p.goalRest)s (handled by the app).
-        - Explicit sub-muscle requests applicable to THIS workout require an equipment-compatible exercise with that exact primary-muscle label. Generic major-muscle work is not a substitute. Saved COACH NOTES cannot add unrelated muscles to an explicitly focused single workout. If no match exists, explain the limitation.
+        - Explicit sub-muscle requests applicable to THIS workout require an equipment-compatible exercise with that exact primary-muscle label. Generic major-muscle work is not a substitute. Saved COACH NOTES cannot add unrelated muscles to an explicitly focused single workout. If no match exists, explain the limitation.\(coverageLine)
         - Pick ONLY exercises the user can perform with: \(p.equipmentLine). Pick weights conservatively if no history; scale to recent volume if any.\(p.bestSetsGuideline)\(p.focusNote.map { "\n        - PRIORITY TODAY: \($0). Bias this session to address it directly without breaking the rules above." } ?? "")
         - EXACTLY \(maxExercises) exercises in this session — no more, no fewer.
 
@@ -1353,7 +1377,7 @@ final class AIWorkoutService {
         - Training days per week: \(p.daysPerWeek)\(p.trainingScheduleLine)\(p.trainingSessionLengthLine)
         - Wants to strengthen: \(strengthen)
         - Primary goal: \(p.goalLabel)
-        - Available equipment: \(p.equipmentLine)\(p.coachMemoryBlock)\(pinnedExerciseBlock(payload: p, library: library))
+        - Available equipment: \(p.equipmentLine)\(p.coachMemoryBlock)\(pinnedExerciseBlock(payload: p, library: library))\(performedExerciseBlock(payload: p, library: library))
 
         RECENT WORKOUTS (last 14 days)
         \(recent)\(p.bestSetsBlock)\(revisionContext)
@@ -1367,7 +1391,7 @@ final class AIWorkoutService {
         - This user's goal is \(p.goalLabel). Write COMPOUND lifts at \(p.goalRepCompound)-\(p.goalRepCompoundHi) reps and ISOLATION lifts at \(p.goalRepIso)-\(p.goalRepIsoHi) reps. Use \(p.goalSetsLo)-\(p.goalSetsHi) sets per exercise. Stop ~1-3 reps short of failure (do not write 'to failure').\(p.acsmGuideline)\(p.acsmWeeklyGuideline)
         - Set "duration_seconds" only for timed holds/cardio; otherwise null. Rest between sets is \(p.goalRest)s (handled by the app).
         - Pick ONLY exercises the user can perform with: \(p.equipmentLine). Pick weights conservatively if no history; scale to recent volume if any.\(p.bestSetsGuideline)
-        - Respect the "wants to strengthen" focus by giving those muscles an extra exercise / earlier slot where it fits, without breaking the rules above.\(p.focusNote.map { "\n        - PRIORITY THIS TIME (OVERRIDES the profile): \($0). This is what the user just asked for in their own words — when it conflicts with the profile's equipment / focus-muscle defaults above, THIS wins (e.g. 'dumbbells only' beats the profile equipment list; 'upper body' beats a profile legs focus). Skew the split, equipment picks and volume to address it directly. Only the safety/balance rules and the exercise catalog stay non-negotiable." } ?? "")
+        - Respect the "wants to strengthen" focus by giving those muscles an extra exercise / earlier slot where it fits, without breaking the rules above.\(p.focusNote.map { "\n        - PRIORITY THIS TIME (OVERRIDES the profile): \($0). This is what the user just asked for in their own words — when it conflicts with the profile's equipment / focus-muscle defaults above, THIS wins (e.g. 'dumbbells only' beats the profile equipment list; 'upper body' beats a profile legs focus). Skew the split, equipment picks and volume to address it directly. Only the safety/balance rules and the exercise catalog stay non-negotiable." } ?? "")\(LocalRoutineRules.promptLine(for: LocalRoutineRules.parse(retrievalQuery), application: LocalRoutineRules.application(for: LocalRoutineRules.parse(retrievalQuery), generatedPlanCount: count)))
         - EXACTLY \(perRoutine) exercises in EVERY routine — no more, no fewer.
 
         AVAILABLE EXERCISES — one JSON object per line. Return ONLY an exact "exercise_id" from this list. Prefer core exercises and use supporting exercises when needed for equipment, focus or variety. Choose at most one exercise per "group" in each routine; changing equipment alone is not a reason to repeat a group. Specialist rows are present only for an explicit request or an existing routine being revised. Match specific muscle requests to "primary_muscles". Never invent an ID or substitute a similarly named exercise:
@@ -1528,6 +1552,8 @@ final class AIWorkoutService {
     func requestValidatedPlans(candidates: [Exercise], expectedCount: Int?, maxExercises: Int,
                                single: Bool = false, surface: String = "coach_chat", preferredIDs: Set<String> = [],
                                settings: UserSettings = UserSettings(),
+                               coverageIntent: LocalRoutineRules.Intent? = nil,
+                               coverageApplication: LocalRoutineRules.CoverageApplication = .weekUnion,
                                request: (String?) async throws -> String) async throws -> [Plan] {
         guard !candidates.isEmpty else { throw invalidRoutineOutput() }
         var correction: String?
@@ -1536,14 +1562,17 @@ final class AIWorkoutService {
             let raw = try await request(correction)
             try Task.checkCancellation()
             let validation = validateRoutineOutput(raw, candidates: candidates, expectedCount: expectedCount,
-                                                  maxExercises: maxExercises, single: single, preferredIDs: preferredIDs, settings: settings)
+                                                  maxExercises: maxExercises, single: single, preferredIDs: preferredIDs, settings: settings,
+                                                  coverageIntent: coverageIntent, coverageApplication: coverageApplication)
             if let plans = validation.plans { return plans }
             let reason = validation.feedback.contains("JSON schema") ? "schema" :
-                (validation.feedback.contains("routines;") ? "routine_count" : "catalog_or_group_count")
+                (validation.feedback.contains("Strength coverage") ? "strength_coverage" :
+                    (validation.feedback.contains("routines;") ? "routine_count" : "catalog_or_group_count"))
             Analytics.shared.track("ai_routine_contract_rejected", ["surface": .string(surface),
                 "reason": .string(reason), "attempt": .int(attempt + 1),
                 "catalog_count": .int(candidates.count)])
-            guard attempt == 0 else { break }
+            // One correction only, and never a second model call when equipment, injury, or the step limit makes coverage impossible.
+            guard attempt == 0, validation.retryable else { break }
             correction = validation.feedback + " Allowed exercise_id values: " + candidates.map(\.id).joined(separator: ", ")
             Analytics.shared.track("ai_routine_output_retry", ["surface": .string(surface), "reason": .string("output_validation")])
         }
@@ -1566,10 +1595,12 @@ final class AIWorkoutService {
     }
 
     private func validateRoutineOutput(_ raw: String, candidates: [Exercise], expectedCount: Int?,
-                                       maxExercises: Int, single: Bool, preferredIDs: Set<String>, settings: UserSettings = UserSettings()) -> (plans: [Plan]?, feedback: String) {
+                                       maxExercises: Int, single: Bool, preferredIDs: Set<String>, settings: UserSettings = UserSettings(),
+                                       coverageIntent: LocalRoutineRules.Intent? = nil,
+                                       coverageApplication: LocalRoutineRules.CoverageApplication = .weekUnion) -> (plans: [Plan]?, feedback: String, retryable: Bool) {
         let routines: [AIResponse]
         do { routines = single ? [try parseResponse(raw)] : try parseRoutinesResponse(raw) }
-        catch { return (nil, "The response did not match the required JSON schema. Include name and steps, and the routines array for a weekly plan.") }
+        catch { return (nil, "The response did not match the required JSON schema. Include name and steps, and the routines array for a weekly plan.", true) }
         var problems: [String] = []
         if routines.isEmpty { problems.append("The routines array was empty.") }
         if let expectedCount, routines.count != expectedCount {
@@ -1590,13 +1621,33 @@ final class AIWorkoutService {
             }
             return plan
         }
+        let preparatorySteps = plans.flatMap(\.steps).filter { step in
+            guard let exercise = byID[step.exerciseId] else { return false }
+            return !LocalRoutineRules.isStrengthMain(exercise)
+        }
+        if !preparatorySteps.isEmpty {
+            problems.append("Stretching, mobility, and warmup cannot be working exercises. Remove them from the strength list.")
+        }
+        let catalogProblems = !problems.isEmpty
+        var retryable = true
+        if let coverageIntent, coverageIntent.requestsCoverage, coverageApplication != .skip {
+            let expected = routineStepCount(candidates, requested: maxExercises)
+            let budget = coverageApplication == .sessionEach ? expected : expected * max(routines.count, 1)
+            let known = Dictionary(candidates.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
+            let coverage = LocalRoutineRules.assess(plans: plans, intent: coverageIntent, pool: candidates, exById: known,
+                                                   stepBudget: budget, application: coverageApplication)
+            if !coverage.satisfied && coverageApplication != .unresolved && coverageApplication != .notThisObject {
+                problems.append(coverage.feedback)
+                retryable = coverage.retryable || catalogProblems
+            }
+        }
         guard problems.isEmpty else {
             // A rejected attempt must not leave a memory proposal attached to a
             // plan ID that a corrected response may reuse in the same second.
             for plan in plans { memoryProposals.removeValue(forKey: plan.id) }
-            return (nil, problems.joined(separator: "\n"))
+            return (nil, problems.joined(separator: "\n"), retryable)
         }
-        return (plans, "")
+        return (plans, "", true)
     }
 
     /// Runs response validation without a network request; also used by catalog contract tests.
@@ -1647,6 +1698,8 @@ struct AIPayload {
     var selectionEquipment: [String] = []
     var selectionFavoriteIDs: Set<String> = []
     var selectionRecentIDs: [String] = []
+    /// Soft preference. Empty when the user has not asked to reuse completed exercises.
+    var selectionPerformedIDs: [String] = []
 
     /// 本次生成的优先侧重 (optimize 建议卡注入) — e.g. "bias the split toward legs".
     /// 非空时往 GUIDELINES 末尾追加一条强优先级行, 让这次 routine 偏向修复诊断出的问题. 默认 nil = 不加.

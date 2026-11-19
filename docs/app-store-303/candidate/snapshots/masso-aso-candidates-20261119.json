@@ -1,0 +1,58 @@
+{
+  "en-US": {
+    "name": "Masso — AI Workout Planner",
+    "subtitle": "Strength Training & Gym Log",
+    "keywords": "bodybuilding,weight,weightlifting,exercise,routine,coach,home,muscle,recovery,progress,tracker,watch",
+    "promotionalText": "Plan strength workouts with AI, log every set, and explore training-based muscle recovery estimates in 3D.",
+    "descriptionOpening": "Build a strength training plan around your goals and equipment. Log every set, track your progress, and explore training-based muscle recovery estimates in 3D.",
+    "descriptionEditScope": "Replace only the current opening paragraph, then retain all existing feature bullets, free/Pro limits, allowance rules, trial/renewal, privacy/terms and limitations verbatim after reconciliation with live ASC. Do not apply keyword-stuffing replacements.",
+    "name_length": {
+      "characters": 26,
+      "utf8Bytes": 28
+    },
+    "subtitle_length": {
+      "characters": 27,
+      "utf8Bytes": 27
+    },
+    "keywords_length": {
+      "characters": 100,
+      "utf8Bytes": 100
+    },
+    "promotionalText_length": {
+      "characters": 106,
+      "utf8Bytes": 106
+    },
+    "descriptionOpening_length": {
+      "characters": 159,
+      "utf8Bytes": 159
+    }
+  },
+  "zh-Hans": {
+    "name": "Masso - AI健身计划",
+    "subtitle": "力量训练记录与肌群恢复估算",
+    "keywords": "增肌,举铁,健美,哑铃,杠铃,组数,次数,健身房,器械,居家,日志",
+    "promotionalText": "用 AI 按目标与器械生成训练计划，记录每组重量和次数，在 3D 肌群图中查看基于训练记录的恢复估算。",
+    "descriptionOpening": "按目标和可用器械，用 AI 制定力量训练计划。记录每组重量与次数，回顾训练进步，并通过 3D 肌群图查看基于训练记录的恢复估算。",
+    "descriptionEditScope": "仅替换现有介绍段；与ASC实值逐字核对后保留全部功能列表、免费与Pro权益、额度、试用续费、隐私条款及限制说明。不删除估算及非医疗提示。",
+    "name_length": {
+      "characters": 14,
+      "utf8Bytes": 22
+    },
+    "subtitle_length": {
+      "characters": 13,
+      "utf8Bytes": 39
+    },
+    "keywords_length": {
+      "characters": 33,
+      "utf8Bytes": 79
+    },
+    "promotionalText_length": {
+      "characters": 51,
+      "utf8Bytes": 137
+    },
+    "descriptionOpening_length": {
+      "characters": 64,
+      "utf8Bytes": 176
+    }
+  }
+}

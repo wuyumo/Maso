@@ -1,6 +1,22 @@
 import XCTest
 import StoreKitTest
 
+/// Creating `SKTestSession` can succeed while saving the configuration, turning off
+/// dialogs, and clearing transactions all fail with `SKInternalErrorDomain` code 3.
+/// That is not a usable local fixture. Stop before any restore or purchase call.
+func prepareLocalStoreKitFixture(_ session: SKTestSession) throws {
+    session.disableDialogs = true
+    do {
+        try session.resetToDefaultState()
+    } catch {
+        let ns = error as NSError
+        throw NSError(domain: "MasoStoreKitFixture", code: ns.code, userInfo: [
+            NSLocalizedDescriptionKey: "SKTestSession precondition failed \(ns.domain) \(ns.code). The local StoreKit configuration was not saved, so this test will not call AppStore.sync or purchase. \(ns.localizedDescription)"
+        ])
+    }
+    session.clearTransactions()
+}
+
 @MainActor
 final class PaywallUITests: XCTestCase {
     private var store: SKTestSession!
@@ -9,11 +25,21 @@ final class PaywallUITests: XCTestCase {
         continueAfterFailure = false
         let url = try XCTUnwrap(Bundle(for: Self.self).url(forResource: "Maso", withExtension: "storekit"))
         store = try SKTestSession(contentsOf: url)
-        store.disableDialogs = true
-        store.clearTransactions()
+        try prepareLocalStoreKitFixture(store)
     }
 
-    override func tearDownWithError() throws { store.clearTransactions(); store = nil }
+    override func tearDownWithError() throws {
+        store.clearTransactions()
+        store = nil
+    }
+
+    /// Local configuration preflight only. It does not launch the app, restore, sync, or purchase.
+    /// A return from setUp is not proof that stderr is free of SKInternalErrorDomain code 3.
+    func testStoreKitConfigurationPreflightStopsBeforeRestore() throws {
+        print("STOREKIT_PREFLIGHT resetToDefaultState=returned")
+        print("STOREKIT_PREFLIGHT not-a-validity-pass; if stderr still contains SKInternalErrorDomain Code 3, do not run restore")
+        XCTAssertNotNil(store)
+    }
 
     func testWelcomeCanBeClosedAndDoesNotRepeatWhenRootReappears() throws {
         let app = launch("welcome")
@@ -401,7 +427,7 @@ final class PaywallUITests: XCTestCase {
     }
 
     func testRestorePurchaseShowsLoadingThenStoreKitResultWithoutAnotherPurchase() throws {
-        let app = launch("upgrade", restoreHold: true)
+        let app = launch("upgrade", restoreHold: true, restoreTrace: true)
         let restore = app.buttons["paywall.restore"]
         XCTAssertTrue(restore.waitForExistence(timeout: 15))
         XCTAssertEqual(restore.label, "Restore Purchase")
@@ -415,7 +441,14 @@ final class PaywallUITests: XCTestCase {
         XCTAssertFalse(app.alerts["Masso Pro"].exists)
         release.tap()
         let alert = app.alerts["Masso Pro"]
-        XCTAssertTrue(alert.waitForExistence(timeout: 5))
+        let appeared = alert.waitForExistence(timeout: 5)
+        let trace = app.staticTexts["paywall.restore.trace"]
+        let traceText = trace.exists ? trace.label : "trace element missing"
+        let traceNote = XCTAttachment(string: traceText)
+        traceNote.name = "paywall-restore-trace"
+        traceNote.lifetime = .keepAlways
+        add(traceNote)
+        XCTAssertTrue(appeared, "Masso Pro alert missing after restore release. RESTORE_TRACE \(traceText)")
         XCTAssertTrue(alert.staticTexts["No active subscription found"].exists)
         alert.buttons["OK"].tap()
         XCTAssertTrue(restore.waitForExistence(timeout: 2))
@@ -470,7 +503,7 @@ final class PaywallUITests: XCTestCase {
         return spinner
     }
 
-    private func launch(_ scene: String, language: String = "en", largeType: Bool = false, narrow: Bool = false, light: Bool = false, increasedContrast: Bool = false, restoreHold: Bool = false) -> XCUIApplication {
+    private func launch(_ scene: String, language: String = "en", largeType: Bool = false, narrow: Bool = false, light: Bool = false, increasedContrast: Bool = false, restoreHold: Bool = false, restoreTrace: Bool = false) -> XCUIApplication {
         let app = XCUIApplication(bundleIdentifier: "com.yumowu.maso")
         app.terminate()
         var environment = ["MASO_PAYWALL_UI_TEST_SCENE": scene,
@@ -478,6 +511,7 @@ final class PaywallUITests: XCTestCase {
                            "MASO_PAYWALL_NARROW": narrow ? "1" : "0",
                            "MASO_UI_LIGHT": light ? "1" : "0", "MASO_UI_CONTRAST": increasedContrast ? "1" : "0"]
         if restoreHold { environment["MASO_RESTORE_HOLD"] = "1" }
+        if restoreTrace { environment["MASO_RESTORE_TRACE"] = "1" }
         app.launchEnvironment = environment
         app.launchArguments = ["-maso.selectedLanguage", language, "-AppleLanguages", "(\(language))", "-AppleLocale", language]
         app.launch()
@@ -513,11 +547,13 @@ final class ProBannerUITests: XCTestCase {
         continueAfterFailure = false
         let url = try XCTUnwrap(Bundle(for: Self.self).url(forResource: "Maso", withExtension: "storekit"))
         store = try SKTestSession(contentsOf: url)
-        store.disableDialogs = true
-        store.clearTransactions()
+        try prepareLocalStoreKitFixture(store)
     }
 
-    override func tearDownWithError() throws { store.clearTransactions(); store = nil }
+    override func tearDownWithError() throws {
+        store.clearTransactions()
+        store = nil
+    }
 
     func testBannerInHomeAndSettingsAcrossLanguages() throws {
         for language in ["en", "zh-Hans", "de", "ar"] {

@@ -1,0 +1,102 @@
+MASSO APP STORE CONNECT READ-ONLY AUDIT
+Observed: 2026-11-19 (user-provided task timestamp: 4:29 PM UTC+8)
+Scope: App Store Connect UI only; no fields edited, saved, submitted, uploaded, approved, or released.
+
+CURRENT IOS VERSION
+URL: https://appstoreconnect.apple.com/apps/6776689750/distribution/ios/version/deliverable
+App Store Connect sidebar: 3.0.2 — Ready for Distribution.
+Version field: 3.0.2. Build table: build 54, version 3.0.2, Has App Clip: No.
+The App Store Version Release section showed automatic release, no earlier than Nov 19, 2026 at 5:00 PM GMT+8. At the supplied 4:29 PM timestamp, that scheduled time was still in the future; this audit does not assert public storefront availability.
+No 3.0.3 draft was listed. The iOS version sidebar showed only 3.0.2; iOS History listed 3.0.2 and prior versions, not 3.0.3.
+
+APP INFORMATION (applies to all platforms; URL: https://appstoreconnect.apple.com/apps/6776689750/distribution/info)
+Primary language: English (U.S.). Primary category: Health & Fitness. Secondary category: none selected.
+
+English (U.S.)
+Name: Masso — AI Workout Planner
+Subtitle: Gym tracker & muscle recovery
+
+Chinese (Simplified / zh-Hans)
+Name: Masso - AI健身计划
+Subtitle: 训练记录、肌肉恢复与饮食睡眠
+
+App Information localization menu also listed: Arabic, Chinese (Traditional), French, German, Italian, Japanese, Korean, Portuguese (Brazil), Russian, Spanish (Spain), in addition to English (U.S.) and Chinese (Simplified). These other locales were not audited.
+
+3.0.2 PRODUCT PAGE METADATA — ENGLISH (U.S.)
+URL: https://appstoreconnect.apple.com/apps/6776689750/distribution/ios/version/deliverable
+Promotional Text: [blank]
+Keywords: strength,training,bodybuilding,weights,lifting,exercise,sets,reps,protein,sleep
+What's New in This Version: Clearer free and Pro options, improved AI workout imports and message editing. New workout summaries, conservative suggested weights and smoother training controls. Existing records and purchased rights are preserved.
+Description:
+Train smart, your way.
+
+Build workouts around your goals, equipment and recent training. Log every set, see estimated muscle recovery, and keep nutrition and sleep in view.
+
+• AI Coach that listens. Tell it your goals, available time and equipment. Create a plan, refine it in chat, and choose which preferences to remember.
+• A clearer view of recovery. Explore your muscles in 3D and see training-based recovery estimates and exercises for each muscle.
+• Focus on your workout. Log weight and reps, use rest timers, and follow your session on Apple Watch or Live Activities.
+• Progress you can see. Compare lifts, review muscle training volume and revisit your workout history.
+• Nutrition without the fuss. Describe a meal or add a photo to estimate protein, carbohydrates and fat against your personal targets.
+• Sleep in context. Connect Apple Health to see sleep duration, stages and progress toward your chosen sleep target.
+• Your day at a glance. Combine Workout, Diet and Sleep in one calendar, with widgets for your Home Screen.
+
+Complete workouts, history, basic charts and data export stay available. Free: 5 plans and 3 custom exercises. Existing plans and exercises remain usable after Pro expires.
+
+Masso Pro: Ongoing AI adjustments, more saved plans and custom exercises, lift progress and detailed recovery estimates.
+
+AI allowances are stored only on this device installation. Changing devices or reinstalling may reset them; they are not shared across devices. Each supported AI task has one successful free experience on this installation. The 2 shared monthly tasks apply to eligible text generation. Beyond the first experience and included adjustments, further image analysis and ongoing reports require Pro. Existing paid and lifetime rights are retained. A task includes 2 same-goal adjustments within 24 hours. Failed requests, clarification, and local tools do not use the allowance. The 30-day transition is for existing free installations and starts when the change notice is first presented. Previous use is not counted retroactively. Eligible subscribers can receive a 7-day free trial when offered. Apple shows eligibility, price and billing period before purchase. Subscriptions renew automatically unless canceled; manage them in your Apple account settings.
+
+AI features require internet access and your permission to share relevant data with our AI provider. Meal nutrients and recovery are estimates, not medical measurements or medical advice. Sleep stages require compatible Apple Health data.
+
+Privacy: https://wuyumo.github.io/Maso/privacy-policy.html
+Terms: https://wuyumo.github.io/Maso/terms.html
+Support: wuyumoawuyumo@gmail.com
+
+The monthly allowance resets by calendar month in UTC.
+
+Paste workout lists or article text, or select a photo. Direct links support readable public HTTPS articles/text from Stronger by Science, Muscle & Strength, StrengthLog, Hevy and ExRx only. Automatic video/audio transcription is not supported; provide text, subtitles or screenshots instead. Preview one or N requested cards before saving.
+
+3.0.2 PRODUCT PAGE METADATA — CHINESE (SIMPLIFIED / zh-Hans)
+Promotional Text: [blank]
+Keywords: 增肌训练,力量训练,健身记录,饮食记录,睡眠记录,训练日志,健身教练
+What's New in This Version: 明确免费与 Pro 权益，改进 AI 训练计划导入与消息编辑。新增训练总结、保守重量建议并优化训练操作。保留既有记录和已购权益。
+Description:
+聪明训练，适合自己。
+
+让训练计划贴合你的目标、器械和近期训练。记录每一组，了解肌群恢复估算，也把饮食与睡眠照顾好。
+
+• 听懂你的 AI Coach：说出目标、时间和可用器械，生成训练计划，在聊天中调整，并由你决定要记住哪些偏好。
+• 直观的 3D 肌群恢复：查看基于训练记录的恢复估算，了解每块肌肉及相关动作。
+• 专注每一组：记录重量和次数，使用休息计时，也可通过 Apple Watch 或实时活动跟随训练。
+• 看得见的进步：比较动作表现，回顾肌群训练量和训练历史。
+• 轻松记录饮食：描述吃了什么或添加照片，估算蛋白质、碳水及脂肪，对照个人目标查看进度。
+• 睡眠与目标一起看：连接 Apple 健康，查看睡眠时长、阶段和目标完成度。
+• 一眼掌握每天：同一张日历整合训练、饮食与睡眠，主屏幕小组件随时查看关键数据。
+
+完成训练、原始历史、基础图表与数据导出始终可用。 免费：5 个计划与 3 个自定义动作。 Pro 到期后，已有计划和动作仍可使用。
+
+Masso Pro: 持续 AI 调整、更多计划与自定义动作、力量进步分析及精细肌群恢复估算。
+
+AI 额度仅保存在本设备的这次安装中。换设备或重装可能重置，不跨设备共享。 每种支持的 AI 任务在本次安装可免费成功体验一次；每月共用2次额度仅适用于支持的文字生成任务。首次体验及所含微调之外的图片分析与持续总结需Pro。保留既有付费及终身权益。 每个任务含同目标 24 小时内 2 次微调。失败、澄清和本地工具不扣额度。 30天过渡期适用于既有免费安装，从首次展示权益变更提示时开始。 不追溯扣除旧使用次数。 符合 Apple 资格的用户可享所提供的 7 天免费试用。购买前显示资格、价格与周期；订阅自动续费，可在 Apple 账户设置中管理或取消。
+
+AI 功能需要联网，并在获得你的许可后向 AI 服务商发送相关资料。营养和肌肉恢复均为估算，不是医学测量或医疗建议。睡眠阶段需要兼容的 Apple 健康数据。
+
+隐私政策：https://wuyumo.github.io/Maso/privacy-policy.html
+使用条款：https://wuyumo.github.io/Maso/terms.html
+支持邮箱：wuyumoawuyumo@gmail.com
+
+月度额度按UTC自然月重置。
+
+可粘贴动作清单或文章正文，或选择照片。直链仅支持Stronger by Science、Muscle & Strength、StrengthLog、Hevy和ExRx的可读取公开HTTPS文章／文本。不支持自动解析视频或音频；请补充正文、字幕或截图。按指定的一张或N张卡预览，确认后保存。
+
+CHINA / ICP PROMPT
+The App Review Information page showed this prompt: “Chinese law requires apps with news, religious, book, and magazine content to have relevant permits in order to be available on the App Store in China mainland. If applicable, enter information about your permits below.” No separate ICP-number field was visible on the pages reviewed.
+
+SCREENSHOTS
+app-info-zh-Hans.png — Chinese Simplified name/subtitle.
+version-3.0.2-metadata-zh-Hans.png — 3.0.2 Chinese Simplified product fields.
+version-3.0.2-build-54.png — build table showing build 54 / version 3.0.2.
+
+version-3.0.2-metadata-en-US.png — English (U.S.) 3.0.2 product fields.
+version-3.0.2-status.png — sidebar status Ready for Distribution.
+app-info-en-US.png — English (U.S.) name/subtitle.

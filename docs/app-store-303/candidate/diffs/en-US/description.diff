@@ -1,0 +1,10 @@
+--- before/en-US/description.txt
++++ after/en-US/description.txt
+@@ -1,6 +1,4 @@
+-Train smart, your way.
+-
+-Build workouts around your goals, equipment and recent training. Log every set, see estimated muscle recovery, and keep nutrition and sleep in view.
++Log your strength workouts and see your training in context. Record weight and reps, review progress, and explore training-based muscle recovery estimates in 3D. Build a plan with AI around your goals and equipment.
+ 
+ • AI Coach that listens. Tell it your goals, available time and equipment. Create a plan, refine it in chat, and choose which preferences to remember.
+ • A clearer view of recovery. Explore your muscles in 3D and see training-based recovery estimates and exercises for each muscle.

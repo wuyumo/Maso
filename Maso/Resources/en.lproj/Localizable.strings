@@ -325,6 +325,8 @@
 "Off" = "Off";
 "Synced %d workout(s) to Health" = "Synced %d workout(s) to Health";
 "Days per week" = "Days per week";
+"Prefer exercises you've done" = "Prefer exercises you've done";
+"New plans reuse exercises from workouts you actually completed when they still fit." = "New plans reuse exercises from workouts you actually completed when they still fit.";
 
 /* ── center-tab hint ── */
 "Tap to start today's workout" = "Tap to start today's workout";
@@ -1462,6 +1464,13 @@
 "Under %d min" = "Under %d min";
 "No %@" = "No %@";
 "More %@" = "More %@";
+"Cover %d major muscle groups" = "Cover %d major muscle groups";
+"Cover %@" = "Cover %@";
+"Warmup stays out of the strength list" = "Warmup stays out of the strength list";
+"Coverage timing conflicts and was not applied" = "Coverage timing conflicts and was not applied";
+"Weekly coverage was not judged on this one session" = "Weekly coverage was not judged on this one session";
+"Major-muscle coverage is not met" = "Major-muscle coverage is not met";
+"Avoided muscles left no exercise in this result" = "Avoided muscles left no exercise in this result";
 "Your data" = "Your data";
 "Export my data" = "Export my data";
 "A JSON backup of everything plus a CSV of every set you've logged — open it in Numbers, Excel, or any other app. Your data is yours; you can take it and go." = "A JSON backup of everything plus a CSV of every set you've logged — open it in Numbers, Excel, or any other app. Your data is yours; you can take it and go.";

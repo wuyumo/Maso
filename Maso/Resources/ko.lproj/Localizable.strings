@@ -287,6 +287,8 @@
 "Off" = "이름 *";
 "Synced %d workout(s) to Health" = "%d 운동 (s)를 건강에 동기화";
 "Days per week" = "주 당 일";
+"Prefer exercises you've done" = "해본 동작을 우선";
+"New plans reuse exercises from workouts you actually completed when they still fit." = "새 계획에서는 조건에 맞을 때 실제로 완료한 동작을 우선합니다.";
 "Tap to start today's workout" = "오늘의 운동을 시작하려면 탭";
 "All %@" = "모든 %@";
 "AI Workout" = "AI 운동";

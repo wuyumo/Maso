@@ -1,0 +1,16 @@
+{
+  "marketing_version": "3.0.3",
+  "bundle_version_candidate": "55",
+  "bundle_version_status": "PENDING_LIVE_ASC_CONFIRMATION",
+  "highest_known_uploaded_build": "54",
+  "highest_known_source": "2026-11-19 baseline intake historical receipt for 3.0.2 build 54. This file is not a live App Store Connect query.",
+  "display_names": {
+    "Maso": "Masso",
+    "MasoWidgets": "Masso Widgets",
+    "MasoWatch": "Masso"
+  },
+  "store_names_not_copied_into_display_name": {
+    "en-US": "Masso — Workout Tracker",
+    "zh-Hans": "Masso - AI健身计划"
+  }
+}

@@ -878,9 +878,11 @@ struct PlanPlayerScreen: View {
             if let exercise = backgroundExercise {
                 if let bytes = exercise.customImageData, let image = UIImage(data: bytes) {
                     ExerciseAspectFillPhoto(image: image)
-                } else if let url = ExerciseDemoService.shared.files[exercise.id] {
+                } else if demoPresentation(exercise.id) == .approvedStill, let image = CoreExerciseDemos.approvedStill(exercise.id) {
+                    ExerciseAspectFillPhoto(image: image)
+                } else if demoPresentation(exercise.id) == .approvedMotion, let url = ExerciseDemoService.shared.files[exercise.id] {
                     ExerciseDemoThumbnail(url: url, fallback: CoreExerciseDemos.thumbnail(exercise.id))
-                } else if let image = CoreExerciseDemos.thumbnail(exercise.id) {
+                } else if demoPresentation(exercise.id) == .approvedMotion, let image = CoreExerciseDemos.thumbnail(exercise.id) {
                     ExerciseAspectFillPhoto(image: image)
                 }
             }
@@ -3076,25 +3078,32 @@ private struct CompletedView: View {
                         .multilineTextAlignment(.center)
                         .opacity(frame.titleOpacity)
                     Spacer()
-                    VStack(spacing: 8) {
-                        PrimaryActionButton(title: "Workout report", icon: "chart.bar.xaxis", size: .large) { showWorkoutReport = true }
-                            .frame(maxWidth: .infinity)
-                            .accessibilityIdentifier("workout.completed.report")
-                        Button {
-                            if onSavePlan != nil && !planSaved { showSavePrompt = true }
-                            else { closeAndMaybeReview() }
-                        } label: {
-                            TrainingCardActionLabel(title: "Exit", icon: "", accent: MasoColor.text,
-                                                    prominent: false, fillsWidth: true)
-                                .contentShape(Rectangle())
-                        }
-                        .buttonStyle(.plain)
-                        .accessibilityIdentifier("workout.completed.exit")
-                    }
                 }
                 .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
                 .padding(.vertical, MasoMetrics.cardPadding)
+                .allowsHitTesting(false)
             }
+        }
+        .overlay(alignment: .bottom) {
+            // The report entry stays outside the 60fps celebration timeline. While that
+            // timeline is running, XCTest can miss the button for the whole wait.
+            VStack(spacing: 8) {
+                PrimaryActionButton(title: "Workout report", icon: "chart.bar.xaxis", size: .large) { showWorkoutReport = true }
+                    .frame(maxWidth: .infinity, minHeight: 56)
+                    .accessibilityIdentifier("workout.completed.report")
+                Button {
+                    if onSavePlan != nil && !planSaved { showSavePrompt = true }
+                    else { closeAndMaybeReview() }
+                } label: {
+                    TrainingCardActionLabel(title: "Exit", icon: "", accent: MasoColor.text,
+                                            prominent: false, fillsWidth: true)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityIdentifier("workout.completed.exit")
+            }
+            .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
+            .padding(.vertical, MasoMetrics.cardPadding)
         }
             .task {
                 guard !didCelebrate else { return }

@@ -1,0 +1,7 @@
+--- before/en-US/keywords.txt
++++ after/en-US/keywords.txt
+@@ -1 +1 @@
+-strength,training,bodybuilding,weights,lifting,exercise,sets,reps,protein,sleep
+\ No newline at end of file
++strength,training,gym,log,planner,weightlifting,sets,reps,routine,progress,dumbbell,barbell,watch
+\ No newline at end of file
