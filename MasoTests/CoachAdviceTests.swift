@@ -272,6 +272,32 @@ final class CoachAdviceTests: XCTestCase {
         XCTAssertEqual(plan.steps.map(\.exerciseId), [bench.id, squat.id])
     }
 
+    func testEnforceScienceStaysPureAndStillCapsARepeatedSection() throws {
+        let bench = try XCTUnwrap(ExerciseLibrary.byId["bench_press_barbell"])
+        let incline = try XCTUnwrap(ExerciseLibrary.byId["incline_bench_press_barbell"])
+        let fly = try XCTUnwrap(ExerciseLibrary.byId["dumbbell_fly_flat"])
+        let known = [bench.id: bench, incline.id: incline, fly.id: fly]
+        let flyStep = PlanStep(id: "fly", exerciseId: fly.id, sets: 3, reps: 12)
+        XCTAssertEqual(DataStore.enforceScience([], exById: known), [])
+        XCTAssertEqual(DataStore.enforceScience([flyStep], exById: known).map(\.id), ["fly"])
+        let crowded = [fly, bench, incline].enumerated().map { index, exercise in
+            PlanStep(id: "chest-\(index)", exerciseId: exercise.id, sets: 3, reps: 8)
+        }
+        let ruled = DataStore.enforceScience(crowded, exById: known)
+        XCTAssertFalse(ruled.isEmpty)
+        XCTAssertLessThanOrEqual(ruled.count, 2)
+        XCTAssertEqual(known[ruled[0].exerciseId]?.mechanic, .compound)
+        let intent = LocalRoutineRules.parse("合成：不练腿")
+        let kept = LocalRoutineRules.droppingAvoided(crowded, intent: intent) { step in
+            known[step.exerciseId]?.primaryMuscles.first.flatMap { $0.section ?? $0 }
+        }
+        XCTAssertEqual(kept.map(\.exerciseId), crowded.map(\.exerciseId))
+        let report = LocalRoutineRules.assess(plans: [Plan(id: "pure", name: "Pure", steps: crowded, createdAt: Date(), updatedAt: Date())],
+                                              intent: intent, pool: Array(known.values), exById: known, stepBudget: 3, application: .sessionEach)
+        XCTAssertEqual(report.covered, [.chest])
+        XCTAssertFalse(report.covered.contains(.legs))
+    }
+
     func testMemoryRequiresSourceAndRejectsTemporaryOrDuplicatePreferences() {
         let proposal = CoachMemoryProposal(note: "Focus on upper chest", sourceQuote: "focus on upper chest")
         XCTAssertNotNil(CoachMemoryProposal.validated(proposal, userText: "I prefer to focus on upper chest", existing: "", declined: []))

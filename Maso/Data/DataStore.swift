@@ -933,7 +933,9 @@ final class DataStore {
     // 步骤: (a) 复合优先稳定排序 → (b) 同 section ≤2 上限 (丢第 3+ 个) → (c) slot-1 复合保证 →
     //       (d) push≥pull 偏好 (pull 不足时不主动丢 pull).
     // 在 1-3 个动作的小 routine 上必须优雅 no-op, 且永不把 routine 砍到 0 个 step.
-    static func enforceScience(_ steps: [PlanStep], exById: [String: Exercise]) -> [PlanStep] {
+    /// Pure ordering of the steps it is given. It does not read DataStore state, so a
+    /// nonisolated coverage pass can keep the same rules without hopping actors.
+    nonisolated static func enforceScience(_ steps: [PlanStep], exById: [String: Exercise]) -> [PlanStep] {
         guard steps.count > 1 else { return steps }   // 0/1 个 step: 无可排无可丢, 直接返回
 
         func sectionKey(_ s: PlanStep) -> MuscleGroup? {

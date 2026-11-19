@@ -298,6 +298,50 @@ final class ExerciseSelectionPolicyTests: XCTestCase {
         }
     }
 
+    func testInnerThighWordsFindAdductionWithoutMergingAbduction() throws {
+        let adduction = try exercise("adductor_machine")
+        let cable = try exercise("adduction_cable")
+        let abduction = try exercise("abductor_machine")
+        XCTAssertEqual(adduction.id, "adductor_machine")
+        XCTAssertEqual(adduction.name, "Hip Adduction (Machine)")
+        XCTAssertEqual(adduction.primaryMuscles.first, .adductors)
+        XCTAssertEqual(policy.metadata(for: adduction).pattern, "hip_adduction")
+        XCTAssertEqual(policy.programmingGroupID(for: adduction), "hip_adduction")
+        XCTAssertEqual(policy.programmingGroupID(for: cable), "hip_adduction")
+        XCTAssertEqual(policy.programmingGroupID(for: abduction), "hip_abduction")
+        XCTAssertNotEqual(policy.displayFamilyID(for: adduction), policy.displayFamilyID(for: abduction))
+        XCTAssertNotEqual(abduction.primaryMuscles.first, .adductors)
+
+        let spoken = ["Inner Thigh", "inner thigh", "内收", "內收", "夹腿", "夾腿", "大腿内侧", "大腿內側"]
+        for query in spoken {
+            let hits = ExerciseLibrary.all.filter { $0.matchesSearch(exerciseSearchWords(query)) }
+            XCTAssertTrue(hits.contains { $0.id == adduction.id }, query)
+            XCTAssertTrue(hits.allSatisfy { policy.metadata(for: $0).pattern == "hip_adduction" }, query)
+            XCTAssertFalse(hits.contains { $0.id == abduction.id || $0.id == "abduction_cable" }, query)
+            XCTAssertTrue(ExerciseGrouping.exactSearchIDs(in: ExerciseLibrary.all, query: query).contains(adduction.id), query)
+        }
+        let machineQuery = ExerciseLibrary.all.filter { $0.matchesSearch(exerciseSearchWords("inner thigh machine")) }
+        XCTAssertTrue(machineQuery.contains { $0.id == adduction.id })
+        XCTAssertFalse(machineQuery.contains { $0.id == cable.id })
+        XCTAssertFalse(machineQuery.contains { $0.id == abduction.id })
+        XCTAssertTrue(machineQuery.allSatisfy { policy.metadata(for: $0).pattern == "hip_adduction" })
+
+        let visible = policy.variants(for: adduction, in: ExerciseLibrary.all, settings: UserSettings())
+        XCTAssertTrue(visible.contains { $0.id == adduction.id })
+        XCTAssertTrue(visible.contains { $0.id == cable.id })
+        XCTAssertFalse(visible.contains { $0.id == abduction.id })
+        let rows = ExerciseGrouping.variantMenuRows(defaultVersion: adduction, candidates: visible, current: adduction)
+        XCTAssertEqual(rows.filter { $0.id == adduction.id }.count, 1)
+        XCTAssertFalse(rows.contains { $0.id == abduction.id })
+
+        let groups = ExerciseGrouping.group([adduction, cable, abduction], groupByName: true)
+        let family = try XCTUnwrap(groups.first { $0.all.contains { $0.id == adduction.id } })
+        XCTAssertEqual(Set(family.all.map(\.id)), [adduction.id, cable.id])
+        XCTAssertFalse(family.all.contains { $0.id == abduction.id })
+        XCTAssertEqual(ExerciseLibrary.byId[adduction.id]?.id, adduction.id)
+        XCTAssertEqual(ExerciseLibrary.all.filter { $0.id == adduction.id }.count, 1)
+    }
+
     func testHipExtensionSearchUsesReviewedPatternWithoutRenamingOrMixing() throws {
         let expected = Set(ExerciseLibrary.all.filter { policy.metadata(for: $0).pattern == "hip_extension" }.map(\.id))
         XCTAssertTrue(expected.contains("hip_thrust_barbell"))
