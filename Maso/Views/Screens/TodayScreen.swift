@@ -5,6 +5,33 @@ private struct TodayWorkoutDetail: Hashable {
     let plan: Plan
 }
 
+/// Shared home placement for the free Pro banner and the Pro daily overview.
+/// Subscription state does not change the first card's top. The banner uses this
+/// slot only on the history home; Settings and the other home states keep their
+/// existing containers.
+enum HomeHeroCardPlacement {
+    /// Legend block the first card covers: section gap, legend, gap, label.
+    static let heroLegendOverlap: CGFloat = 16 + 44 + 10 + 32
+
+    static func overlapsHero(showsHistory: Bool, embeddedInScroll: Bool, myPlans: Bool, aiFailed: Bool) -> Bool {
+        showsHistory && !embeddedInScroll && !myPlans && !aiFailed
+    }
+
+    static func contentOverlap(overlapsHero: Bool) -> CGFloat {
+        (overlapsHero ? heroLegendOverlap : 0) + MasoMetrics.homePostHeroLift
+    }
+
+    static func firstCardTopInset(showsHistory: Bool) -> CGFloat {
+        showsHistory ? MasoMetrics.homeOverviewTopInset : 0
+    }
+
+    /// Top of the first card relative to the muscle hero's layout bottom.
+    /// Free banner and Pro overview both use this when `overlapsHero` is true.
+    static func firstCardTopRelativeToHeroBottom(overlapsHero: Bool, showsHistory: Bool, sectionSpacing: CGFloat = 16) -> CGFloat {
+        sectionSpacing - contentOverlap(overlapsHero: overlapsHero) + firstCardTopInset(showsHistory: showsHistory)
+    }
+}
+
 struct TodayScreen: View {
     @Environment(DataStore.self) private var data
     @Environment(TrainingSessionStore.self) private var training
@@ -138,13 +165,21 @@ struct TodayScreen: View {
     }
 
     private var overlapsMuscleHero: Bool {
-        showsHistory && !embeddedInScroll && mode != .myPlans
-            && !data.settings.showProUpsell && !data.aiTodayFailed
+        HomeHeroCardPlacement.overlapsHero(
+            showsHistory: showsHistory,
+            embeddedInScroll: embeddedInScroll,
+            myPlans: mode == .myPlans,
+            aiFailed: data.aiTodayFailed)
     }
 
-    /// Share the overlap calculation so moving the overview preserves the legend gap.
+    /// Free subscription banner occupies the Pro overview's slot on this home.
+    private var bannerSharesOverviewSlot: Bool {
+        data.settings.showProUpsell && overlapsMuscleHero
+    }
+
+    /// Share the overlap calculation so moving the first card preserves the legend gap.
     private var homeContentOverlap: CGFloat {
-        (overlapsMuscleHero ? (16 + 44 + 10 + 32) : 0) + MasoMetrics.homePostHeroLift
+        HomeHeroCardPlacement.contentOverlap(overlapsHero: overlapsMuscleHero)
     }
 
     // MARK: - 我的训练 section (从 Plans 页迁来)
@@ -199,8 +234,9 @@ struct TodayScreen: View {
                 }
                 // ===== Today tab 内容: 肌肉状态 + 今日推荐 + 自由训练 (mode != .myPlans) =====
                 if mode != .myPlans {
-                    // Shared marketing banner; paid and valid legacy users are excluded.
-                    if data.settings.showProUpsell {
+                    // History home puts this banner in the overview slot below.
+                    // Every other placement keeps the banner in its existing container.
+                    if data.settings.showProUpsell && !bannerSharesOverviewSlot {
                         ProBanner { paywallPresented = true }
                     }
 
@@ -251,9 +287,13 @@ struct TodayScreen: View {
                     // ── 今日训练轮播 ── (#today-carousel): 全部已存 routine 横滑成卡组,
                     // 首卡 = 今日 (卡内自带 "TODAY'S WORKOUT" kicker), 右缘 peek 暗示可滑.
                     VStack(alignment: .leading, spacing: 16) {
+                        if bannerSharesOverviewSlot {
+                            ProBanner { paywallPresented = true }
+                                .padding(.top, HomeHeroCardPlacement.firstCardTopInset(showsHistory: showsHistory))
+                        }
                         if showsHistory {
                             DailyOverviewCard(onReplay: onStart)
-                                .padding(.top, MasoMetrics.homeOverviewTopInset)
+                                .padding(.top, bannerSharesOverviewSlot ? 0 : HomeHeroCardPlacement.firstCardTopInset(showsHistory: true))
                         }
                         workoutCarousel
                     }

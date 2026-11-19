@@ -190,6 +190,7 @@ struct DailyOverviewCard: View {
         }
         .padding(MasoMetrics.cardPadding)
         .contentCardChrome(padding: 0)
+        .accessibilityIdentifier("home.daily-overview")
         .navigationDestination(item: $selectedDay) { route in
             DailyRecordSheet(day: route.day, onReplay: { plan in
                 selectedDay = nil

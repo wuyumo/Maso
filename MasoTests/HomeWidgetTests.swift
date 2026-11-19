@@ -6,6 +6,21 @@ import WidgetKit
 
 @MainActor
 final class HomeWidgetTests: XCTestCase {
+    func testFreeProBannerAndProOverviewShareTheSameHomeTop() {
+        let overlaps = HomeHeroCardPlacement.overlapsHero(
+            showsHistory: true, embeddedInScroll: false, myPlans: false, aiFailed: false)
+        let sharedTop = HomeHeroCardPlacement.firstCardTopRelativeToHeroBottom(
+            overlapsHero: overlaps, showsHistory: true)
+        XCTAssertTrue(overlaps)
+        XCTAssertEqual(sharedTop, 16 - (HomeHeroCardPlacement.heroLegendOverlap + MasoMetrics.homePostHeroLift) + MasoMetrics.homeOverviewTopInset)
+        XCTAssertEqual(HomeHeroCardPlacement.firstCardTopInset(showsHistory: true), MasoMetrics.homeOverviewTopInset)
+        XCTAssertEqual(HomeHeroCardPlacement.firstCardTopInset(showsHistory: false), 0)
+        XCTAssertFalse(HomeHeroCardPlacement.overlapsHero(showsHistory: true, embeddedInScroll: false, myPlans: false, aiFailed: true))
+        XCTAssertFalse(HomeHeroCardPlacement.overlapsHero(showsHistory: true, embeddedInScroll: true, myPlans: false, aiFailed: false))
+        XCTAssertFalse(HomeHeroCardPlacement.overlapsHero(showsHistory: false, embeddedInScroll: false, myPlans: false, aiFailed: false))
+        XCTAssertFalse(HomeHeroCardPlacement.overlapsHero(showsHistory: true, embeddedInScroll: false, myPlans: true, aiFailed: false))
+    }
+
     func testCalorieOverTargetColorsInterpolateAndClamp() {
         func check(_ input: Double?, _ expected: (Double, Double, Double)) {
             let result = DietProgressColor.components(for: input)
