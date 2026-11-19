@@ -319,9 +319,11 @@ struct ExerciseMediaHero: View {
         FullBleedExerciseImage(exercise: exercise)
             .frame(width: width, height: Self.height(for: exercise, width: width))
             .clipped()
-            // SwiftUI's identifier is not a UIView property. This clear view fills the
-            // same hero bounds so a real detail sheet can be located without a substitute page.
+            #if DEBUG
+            // SwiftUI's identifier is not a UIView property. Debug tests locate the real
+            // hero through this clear view. Release builds do not include it.
             .background(ExerciseHeroLocator(identifier: "exercise.media.hero"))
+            #endif
             .accessibilityIdentifier("exercise.media.hero")
             .detailHeroFade()
             .overlay(alignment: .bottomTrailing) {
@@ -338,6 +340,7 @@ struct ExerciseMediaHero: View {
     }
 }
 
+#if DEBUG
 /// Clear UIKit anchor occupying the hero's layout bounds. It does not draw or take hits.
 private struct ExerciseHeroLocator: UIViewRepresentable {
     var identifier: String
@@ -353,6 +356,7 @@ private struct ExerciseHeroLocator: UIViewRepresentable {
         uiView.isUserInteractionEnabled = false
     }
 }
+#endif
 
 extension View {
     func detailHeroFade(height: CGFloat = 170) -> some View {

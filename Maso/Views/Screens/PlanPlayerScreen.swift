@@ -3078,25 +3078,32 @@ private struct CompletedView: View {
                         .multilineTextAlignment(.center)
                         .opacity(frame.titleOpacity)
                     Spacer()
-                    VStack(spacing: 8) {
-                        PrimaryActionButton(title: "Workout report", icon: "chart.bar.xaxis", size: .large) { showWorkoutReport = true }
-                            .frame(maxWidth: .infinity)
-                            .accessibilityIdentifier("workout.completed.report")
-                        Button {
-                            if onSavePlan != nil && !planSaved { showSavePrompt = true }
-                            else { closeAndMaybeReview() }
-                        } label: {
-                            TrainingCardActionLabel(title: "Exit", icon: "", accent: MasoColor.text,
-                                                    prominent: false, fillsWidth: true)
-                                .contentShape(Rectangle())
-                        }
-                        .buttonStyle(.plain)
-                        .accessibilityIdentifier("workout.completed.exit")
-                    }
                 }
                 .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
                 .padding(.vertical, MasoMetrics.cardPadding)
+                .allowsHitTesting(false)
             }
+        }
+        .overlay(alignment: .bottom) {
+            // The report entry stays outside the 60fps celebration timeline. While that
+            // timeline is running, XCTest can miss the button for the whole wait.
+            VStack(spacing: 8) {
+                PrimaryActionButton(title: "Workout report", icon: "chart.bar.xaxis", size: .large) { showWorkoutReport = true }
+                    .frame(maxWidth: .infinity, minHeight: 56)
+                    .accessibilityIdentifier("workout.completed.report")
+                Button {
+                    if onSavePlan != nil && !planSaved { showSavePrompt = true }
+                    else { closeAndMaybeReview() }
+                } label: {
+                    TrainingCardActionLabel(title: "Exit", icon: "", accent: MasoColor.text,
+                                            prominent: false, fillsWidth: true)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityIdentifier("workout.completed.exit")
+            }
+            .padding(.horizontal, MasoMetrics.pagePaddingHorizontal)
+            .padding(.vertical, MasoMetrics.cardPadding)
         }
             .task {
                 guard !didCelebrate else { return }

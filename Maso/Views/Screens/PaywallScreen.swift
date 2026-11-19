@@ -292,6 +292,7 @@ struct PaywallScreen: View {
         gate.released = false
         #endif
         Task {
+            defer { processing = false }
             #if DEBUG
             if ProcessInfo.processInfo.environment["MASO_RESTORE_HOLD"] == "1" {
                 while !gate.released {
@@ -300,7 +301,6 @@ struct PaywallScreen: View {
             }
             #endif
             await subscriptions.restore()
-            processing = false
             if data.settings.isPro { dismiss() }
         }
     }

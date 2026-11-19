@@ -107,8 +107,10 @@ struct WatchPlayerLayout {
     static let stackSpacing: CGFloat = 2
     static let setLineHeight: CGFloat = 14
     static let parameterHeight: CGFloat = 30
-    static let primaryHeight: CGFloat = 36
-    static let titleLineHeight: CGFloat = 18
+    /// Green capsule drawn inside the hit slot. The hit slot is the control's frame.
+    static let primaryVisualHeight: CGFloat = 36
+    static let primaryHeight: CGFloat = 44
+    static let titleLineHeight: CGFloat = 15
 
     struct Screen: Equatable {
         var name: String

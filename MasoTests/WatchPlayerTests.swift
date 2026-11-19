@@ -136,7 +136,9 @@ final class WatchPlayerTests: XCTestCase {
             XCTAssertLessThanOrEqual(page.setMaxY, page.parameterMinY, screen.name)
             XCTAssertLessThanOrEqual(page.parameterMaxY, page.primaryMinY, screen.name)
             XCTAssertGreaterThanOrEqual(page.parameterHeight, 24, screen.name)
-            XCTAssertGreaterThanOrEqual(page.primaryHeight, 34, screen.name)
+            XCTAssertEqual(page.primaryHeight, 44, screen.name)
+            XCTAssertEqual(WatchPlayerLayout.primaryVisualHeight, 36, screen.name)
+            XCTAssertLessThan(WatchPlayerLayout.primaryVisualHeight, page.primaryHeight, screen.name)
             XCTAssertEqual(page.footerHeight, WatchPlayerLayout.footerHeight, screen.name)
             XCTAssertLessThanOrEqual(page.footerMinY + page.footerHeight, page.contentHeight + 0.5, screen.name)
         }

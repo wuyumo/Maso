@@ -441,6 +441,35 @@ final class SessionReportUITests: XCTestCase {
         keepShot(app, "production-root-finish-and-restart")
     }
 
+    /// Real Today root, same simulator, scroll left at 0. Not the standalone overview card.
+    func testHistoryHomeFreeBannerAndProOverviewShareTheTopEdge() throws {
+        for language in ["en", "zh-Hans"] {
+            for large in [false, true] {
+                var freeExtra: [String: String] = ["MASO_HOME_PRO": "0"]
+                if large { freeExtra["MASO_TEST_LARGE_TYPE"] = "1" }
+                let free = launch("home-start", language: language, extra: freeExtra)
+                let banner = free.buttons["pro.banner"]
+                XCTAssertTrue(banner.waitForExistence(timeout: 25), "\(language) large=\(large)")
+                let bannerY = banner.frame.minY
+                XCTAssertGreaterThan(banner.frame.height, 40)
+                let bannerNote = "\(language) large=\(large) free banner minY \(bannerY) frame \(banner.frame)"
+                free.terminate()
+                var proExtra = freeExtra
+                proExtra["MASO_HOME_PRO"] = "1"
+                let pro = launch("home-start", language: language, extra: proExtra)
+                XCTAssertFalse(pro.buttons["pro.banner"].waitForExistence(timeout: 2))
+                let card = pro.descendants(matching: .any)["home.daily-overview"]
+                XCTAssertTrue(card.waitForExistence(timeout: 25), "\(language) large=\(large)")
+                XCTAssertEqual(card.frame.minY, bannerY, accuracy: 1, "\(bannerNote); pro card \(card.frame)")
+                let proof = XCTAttachment(string: "\(bannerNote); pro card minY \(card.frame.minY) frame \(card.frame)")
+                proof.name = "home-top-\(language)-\(large ? "large" : "regular")"
+                proof.lifetime = .keepAlways
+                add(proof)
+                pro.terminate()
+            }
+        }
+    }
+
     func testHomeStartButtonOpensThePlayer() {
         let app = launch("home-start")
         let start = app.buttons["home.startTodayWorkout"]

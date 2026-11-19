@@ -112,24 +112,31 @@ struct WatchPlayerView: View {
                             .font(.caption).foregroundStyle(WatchTheme.accent)
                             .lineLimit(1).minimumScaleFactor(0.7)
                     }.buttonStyle(.plain)
-                        .frame(maxWidth: .infinity, maxHeight: WatchPlayerLayout.titleLineHeight * CGFloat(lines), alignment: .leading)
-                    nextLine
+                        .frame(maxWidth: .infinity, maxHeight: WatchPlayerLayout.titleLineHeight * CGFloat(lines), alignment: .topLeading)
+                        .layoutPriority(-1)
+                        .clipped()
+                    nextLine.layoutPriority(1)
                 } else {
                     Text(state.exerciseName).font(.system(size: 14, weight: .semibold))
                         .lineLimit(lines).minimumScaleFactor(0.65)
-                        .frame(maxWidth: .infinity, maxHeight: WatchPlayerLayout.titleLineHeight * CGFloat(lines), alignment: .leading)
+                        .frame(maxWidth: .infinity, maxHeight: WatchPlayerLayout.titleLineHeight * CGFloat(lines), alignment: .topLeading)
+                        .layoutPriority(-1)
+                        .clipped()
                     Text(String(format: NSLocalizedString("SET %d/%d", comment: ""), state.setN, state.setTotal))
                         .font(.system(size: 11, weight: .medium)).foregroundStyle(WatchTheme.dim)
                         .lineLimit(1).minimumScaleFactor(0.7)
                         .frame(maxWidth: .infinity, minHeight: WatchPlayerLayout.setLineHeight, maxHeight: WatchPlayerLayout.setLineHeight, alignment: .leading)
+                        .layoutPriority(1)
                 }
                 Group {
                     if state.mode != .rest && state.manualConfirm {
                         HStack(spacing: 0) {
                             parameter("Reps", value: state.reps.map { String($0) } ?? "—", page: .reps)
+                                .layoutPriority(1)
                             if state.expectsWeight == true {
                                 Divider().frame(height: 16)
                                 parameter(state.weightUnit == "lb" ? "lb" : "kg", value: weightText, page: .weight)
+                                    .layoutPriority(1)
                             }
                         }.background(.white.opacity(0.07), in: RoundedRectangle(cornerRadius: 10))
                     } else {
@@ -138,10 +145,13 @@ struct WatchPlayerView: View {
                     }
                 }
                 .frame(height: WatchPlayerLayout.parameterHeight)
+                .layoutPriority(1)
                 pinnedPrimary
                     .frame(height: WatchPlayerLayout.primaryHeight)
+                    .layoutPriority(1)
                 bottomControls
                     .frame(height: WatchPlayerLayout.footerHeight)
+                    .layoutPriority(1)
             }
             .padding(.horizontal, 12)
             .frame(width: geometry.size.width, height: geometry.size.height, alignment: .top)
@@ -251,11 +261,15 @@ struct WatchPlayerView: View {
         Button(action: action) {
             Label(LocalizedStringKey(title), systemImage: symbol).font(.system(size: 13, weight: .semibold))
                 .lineLimit(1).minimumScaleFactor(0.7)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .frame(maxWidth: .infinity)
+                .frame(height: WatchPlayerLayout.primaryVisualHeight)
+                .background(Capsule().fill(WatchTheme.accent))
         }
         .buttonStyle(.plain)
-        .background(Capsule().fill(WatchTheme.accent))
         .foregroundStyle(.black)
+        .frame(maxWidth: .infinity, minHeight: WatchPlayerLayout.primaryHeight, maxHeight: WatchPlayerLayout.primaryHeight)
+        .contentShape(Rectangle())
+        .accessibilityIdentifier("watch.player.primary")
         .disabled(bridge.sending)
     }
     private var queue: some View {

@@ -117,6 +117,22 @@ final class ExerciseLibraryBrowserUITests: XCTestCase {
         XCTAssertEqual(app.staticTexts["exercise.ui-test.dismissal-count"].label, "1")
     }
 
+    func testInnerThighSearchFindsAdductionNotAbduction() throws {
+        let queries = [("en", "Inner Thigh"), ("zh-Hans", "夹腿"), ("zh-Hans", "大腿内侧")]
+        for (language, query) in queries {
+            let app = try launch(scene: "choose", language: language)
+            let search = app.searchFields.firstMatch
+            try requireHittable(search)
+            search.tap()
+            search.typeText(query)
+            let adduct = element("exercise.primary.adductor_machine", in: app)
+            XCTAssertTrue(adduct.waitForExistence(timeout: 8), "\(language) \(query) \(app.debugDescription)")
+            XCTAssertFalse(element("exercise.primary.abductor_machine", in: app).exists, query)
+            capture(app, name: "\(language)-inner-thigh-\(query)")
+            app.terminate()
+        }
+    }
+
     func testExactSearchShowsConcreteVersionInTheRealPicker() throws {
         let app = try launch(scene: "choose")
         let search = app.searchFields.firstMatch
