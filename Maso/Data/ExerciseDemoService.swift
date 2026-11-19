@@ -70,6 +70,19 @@ enum CoreExerciseDemos {
         return rows
     }()
 
+    #if DEBUG
+    /// Tests may substitute a ledger for one case. Nil keeps the bundled production ledger.
+    /// Production code never assigns this, and Release builds do not include it.
+    @MainActor static var reviewOverrideForTests: [DemoReview]?
+    #endif
+
+    @MainActor static var decisionReviews: [DemoReview] {
+        #if DEBUG
+        if let reviewOverrideForTests { return reviewOverrideForTests }
+        #endif
+        return reviews
+    }
+
     /// Pure decision. It does not read `ExerciseDemoService` or any other main-actor instance.
     /// `cachedSHA` is ignored on purpose: a cached or replacement motion file cannot promote itself.
     static func presentation(id: String, motionSHA: String?, cachedSHA: String? = nil, reviews ledger: [DemoReview]) -> DemoPresentation {
@@ -110,6 +123,21 @@ final class ExerciseDemoService {
     private(set) var files: [String: URL] = [:]
     private(set) var remoteAssets: [String: ExerciseDemoResult] = [:]
     private(set) var hasRemoteCatalog = false
+    #if DEBUG
+    /// Local motion used only when a test ledger already approves that exact SHA.
+    private var testMotionSHA: [String: String] = [:]
+    private var stagedTestMotion: [String: URL] = [:]
+    func stageTestMotion(exerciseID: String, file: URL, sha: String) {
+        testMotionSHA[exerciseID] = sha
+        stagedTestMotion[exerciseID] = file
+    }
+    func clearTestMotionFixtures() {
+        let ids = Set(testMotionSHA.keys).union(stagedTestMotion.keys)
+        testMotionSHA.removeAll()
+        stagedTestMotion.removeAll()
+        for id in ids { files.removeValue(forKey: id) }
+    }
+    #endif
     var availableMediaIDs: Set<String> {
         if hasRemoteCatalog { return Set(remoteAssets.keys) }
         return Set(CoreExerciseDemos.assets.compactMap { id, asset in
@@ -299,11 +327,16 @@ final class ExerciseDemoService {
     func presentation(for exerciseID: String) -> CoreExerciseDemos.DemoPresentation {
         let remote = hasRemoteCatalog ? remoteAssets[exerciseID]?.sha256 : nil
         let cached = files[exerciseID]?.deletingPathExtension().lastPathComponent
+        #if DEBUG
+        let motion = testMotionSHA[exerciseID] ?? remote ?? CoreExerciseDemos.assets[exerciseID]?.sha256
+        #else
+        let motion = remote ?? CoreExerciseDemos.assets[exerciseID]?.sha256
+        #endif
         return CoreExerciseDemos.presentation(
             id: exerciseID,
-            motionSHA: remote ?? CoreExerciseDemos.assets[exerciseID]?.sha256,
+            motionSHA: motion,
             cachedSHA: cached,
-            reviews: CoreExerciseDemos.reviews)
+            reviews: CoreExerciseDemos.decisionReviews)
     }
 
     func loadMedia(_ exerciseID: String, force: Bool = false) async {
@@ -317,6 +350,15 @@ final class ExerciseDemoService {
             files.removeValue(forKey: exerciseID)
             return
         }
+        #if DEBUG
+        if let staged = stagedTestMotion[exerciseID], let expected = testMotionSHA[exerciseID],
+           let data = try? Data(contentsOf: staged),
+           SHA256.hash(data: data).map({ String(format: "%02x", $0) }).joined() == expected,
+           await Self.isPlayable(staged, isGIF: false) {
+            files[exerciseID] = staged
+            return
+        }
+        #endif
         // A cache eviction or a concurrent prefetch can remove the published file.
         // Never throttle a known catalog item that still needs to be displayed.
         if !force, files[exerciseID] != nil, let date = checked[exerciseID], Date().timeIntervalSince(date) < 600 { return }

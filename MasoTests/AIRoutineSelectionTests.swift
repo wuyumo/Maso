@@ -292,7 +292,12 @@ final class AIRoutineSelectionTests: XCTestCase {
         let prompt = service.buildPrompt(payload: payload, library: candidates)
         XCTAssertTrue(prompt.contains("STRENGTH COVERAGE"))
         XCTAssertTrue(prompt.contains("at least 5"))
-        XCTAssertTrue(service.routineContractProbe(payload: payload, count: 3, maxExercises: 4).contains("across the set of routines"))
+        let weekly = service.routineContractProbe(payload: payload, count: 3, maxExercises: 4)
+        XCTAssertTrue(weekly.contains("across this generated set of routines"))
+        XCTAssertFalse(weekly.contains("in EACH session of this generated result"))
+        let oneSession = service.routineContractProbe(payload: payload, count: 1, maxExercises: 4)
+        XCTAssertTrue(oneSession.contains("in EACH session of this generated result"))
+        XCTAssertFalse(oneSession.contains("across this generated set of routines"))
     }
 
     func testMissingCoverageRetriesOnceAndAnImpossibleCountDoesNot() async throws {
