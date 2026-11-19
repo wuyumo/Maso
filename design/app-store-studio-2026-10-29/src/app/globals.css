@@ -1,0 +1,134 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 240 14% 99%;
+    --foreground: 240 10% 10%;
+    --card: 240 14% 99%;
+    --card-foreground: 240 10% 10%;
+    --popover: 240 16% 99%;
+    --popover-foreground: 240 10% 10%;
+    --primary: 240 8% 12%;
+    --primary-foreground: 240 14% 98%;
+    --secondary: 240 9% 95%;
+    --secondary-foreground: 240 8% 14%;
+    --muted: 240 9% 95%;
+    --muted-foreground: 240 5% 32%;
+    --accent: 240 9% 94%;
+    --accent-foreground: 240 8% 14%;
+    --destructive: 0 78% 56%;
+    --destructive-foreground: 240 14% 98%;
+    --border: 240 9% 90%;
+    --input: 240 9% 90%;
+    --ring: 240 6% 62%;
+    --radius: 0.625rem;
+  }
+
+  .dark {
+    --background: 240 12% 5%;
+    --foreground: 240 12% 96%;
+    --card: 240 12% 5%;
+    --card-foreground: 240 12% 96%;
+    --popover: 240 12% 6%;
+    --popover-foreground: 240 12% 96%;
+    --primary: 240 12% 96%;
+    --primary-foreground: 240 10% 10%;
+    --secondary: 240 8% 16%;
+    --secondary-foreground: 240 12% 96%;
+    --muted: 240 8% 14%;
+    --muted-foreground: 240 6% 75%;
+    --accent: 240 8% 16%;
+    --accent-foreground: 240 12% 96%;
+    --destructive: 0 70% 38%;
+    --destructive-foreground: 240 12% 96%;
+    --border: 240 8% 16%;
+    --input: 240 8% 16%;
+    --ring: 240 8% 70%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  [contenteditable]:empty::before {
+    content: attr(data-placeholder);
+    opacity: 0.4;
+  }
+}
+
+/* react-rnd editable element hint: subtle outline + visible resize handles on hover */
+.rnd-editable {
+  cursor: move;
+  outline: 2px dashed transparent;
+  outline-offset: 4px;
+  transition: outline-color 120ms ease;
+}
+.rnd-editable:hover {
+  outline-color: rgba(91, 124, 250, 0.55);
+}
+.rnd-editable:focus-within,
+.rnd-editable.rnd-selected {
+  outline-color: rgba(91, 124, 250, 0.9);
+  outline-style: solid;
+}
+
+.rnd-rotate-handle {
+  position: absolute;
+  right: -14px;
+  top: -14px;
+  z-index: 20;
+  display: flex;
+  height: 28px;
+  width: 28px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: 1px solid rgba(91, 124, 250, 0.65);
+  background: rgba(255, 255, 255, 0.92);
+  color: rgba(30, 41, 59, 0.92);
+  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.2);
+  cursor: grab;
+  opacity: 0;
+  transition:
+    opacity 120ms ease,
+    transform 120ms ease;
+}
+
+.rnd-editable:hover .rnd-rotate-handle,
+.rnd-editable.rnd-selected .rnd-rotate-handle,
+.rnd-rotate-handle:focus-visible {
+  opacity: 1;
+}
+
+.rnd-rotate-handle:hover,
+.rnd-rotate-handle:focus-visible {
+  transform: scale(1.05);
+}
+
+.rnd-rotate-handle:active {
+  cursor: grabbing;
+}
+
+/* Show a visible cursor outline on contenteditable text inside Rnd while focused. */
+.rnd-editable [contenteditable]:focus {
+  box-shadow: 0 0 0 2px rgba(91, 124, 250, 0.45);
+  border-radius: 2px;
+}
+
+@font-face{font-family:Manrope;font-style:normal;font-weight:200 800;font-display:swap;src:url('/fonts/manrope-latin.woff2') format('woff2')}
+@font-face{font-family:Manrope;font-style:normal;font-weight:200 800;font-display:swap;src:url('/fonts/manrope-latin-ext.woff2') format('woff2');unicode-range:U+0100-02FF,U+1E00-1EFF,U+2020-20CF}
+/* Dev-only Next indicator. Hidden even if a future Next build injects it into /render. */
+nextjs-portal,#__next-build-watcher,[data-nextjs-dev-tools-button],[data-next-badge-root]{display:none !important}
+.masso-font{font-family:Manrope,"Noto Kufi Arabic","Noto Naskh Arabic","DejaVu Sans","Droid Sans Fallback","WenQuanYi Micro Hei",-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans","Apple SD Gothic Neo","Microsoft YaHei",sans-serif}.studio-shell{min-height:100vh;background:#ebecec;color:#212121}.studio-header{height:80px;position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:0 32px;border-bottom:1px solid #21212120;background:#ebececf2;backdrop-filter:blur(14px);gap:16px}.studio-brand{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:750;letter-spacing:2px}.studio-brand img{width:26px;height:30px;background:#212121;padding:4px;border-radius:5px}.studio-brand span{font-size:10px;font-weight:500;letter-spacing:1px;color:#60625c;margin-left:8px}.studio-actions{display:flex;gap:10px;align-items:center;font-size:11px}.studio-actions select,.studio-actions button{border:1px solid #21212122;background:transparent;border-radius:8px;padding:10px 12px;font:inherit;cursor:pointer}.studio-actions .studio-export{background:#1ed760;border-color:#1ed760;font-weight:700;color:#102518;min-width:148px}.studio-actions button:disabled{opacity:.5;cursor:wait}.studio-dual{display:flex;align-items:center;gap:5px;white-space:nowrap}.studio-nav{position:fixed;top:126px;left:32px;width:180px;font-size:11px}.studio-nav>p{font-size:9px;letter-spacing:1.5px;color:#60625c;margin-bottom:24px}.studio-nav a{display:flex;gap:14px;padding:12px 0;color:#60625c;border-bottom:1px solid #21212110}.studio-nav a:hover{color:#157236}.studio-nav a span{color:#199b48;font-size:10px}.studio-save{font-size:10px;color:#60625c;margin-top:30px}.studio-feed{margin:0 auto 0 max(240px,calc((100vw - 600px)/2));width:min(600px,calc(100vw - 300px));padding-top:62px;padding-bottom:60px}.studio-intro{margin-bottom:54px}.studio-intro>p{font-size:10px;letter-spacing:1.5px;color:#60625c}.studio-intro h1{font-size:42px;font-weight:700;line-height:1.25;letter-spacing:-.04em;margin:18px 0 20px}.studio-intro h1 span{color:#1ed760}.studio-intro>div{font-size:10px;color:#60625c}.studio-page{scroll-margin-top:110px;margin-bottom:64px}.studio-page-head{display:flex;justify-content:space-between;align-items:center;font-size:11px;color:#60625c;margin-bottom:15px}.studio-page-head button{border:0;background:none;font:inherit;cursor:pointer}.studio-sheet{position:relative;width:100%;aspect-ratio:1320/2868;overflow:hidden;box-shadow:0 12px 45px #2121210c;outline:1px solid #21212118}.studio-footer{font-size:11px;line-height:2;color:#60625c}.studio-footer a{border-bottom:1px solid #60625c55}.studio-back{height:30px;flex-shrink:0;background:#212121;color:#ebecec;font-size:11px;text-align:left;padding-left:20px}.studio-shell button:focus-visible,.studio-shell select:focus-visible,.studio-shell a:focus-visible{outline:2px solid #16823d;outline-offset:3px}@media(max-width:1000px){.studio-brand span,.studio-dual{display:none}.studio-header{padding:0 18px;gap:8px}.studio-actions{gap:5px}.studio-actions select{max-width:145px}.studio-nav{width:130px;left:20px}.studio-feed{width:calc(100vw - 210px);margin-left:180px}.studio-intro h1{font-size:36px}}@media(max-width:650px){.studio-header{height:auto;min-height:92px;flex-wrap:wrap;padding:14px 16px;gap:12px}.studio-brand{font-size:12px}.studio-actions{width:100%;justify-content:space-between}.studio-actions select{max-width:145px;font-size:10px}.studio-actions button{padding:8px;font-size:10px}.studio-actions .studio-export{min-width:130px}.studio-nav{display:none}.studio-feed{width:calc(100vw - 32px);margin:0 16px;padding-top:36px}.studio-intro h1{font-size:32px}.studio-page{scroll-margin-top:125px;margin-bottom:35px}.studio-intro{margin-bottom:35px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+.studio-selection{margin-bottom:30px;padding:18px;border:1px solid #21212125;border-radius:12px;font-size:12px}.studio-selection summary{cursor:pointer;font-weight:700}.studio-selection p,.studio-selection small{color:#60625c;line-height:1.6}.studio-selection fieldset{display:flex;flex-wrap:wrap;gap:10px 16px;margin:14px 0}.studio-selection legend{font-weight:700;margin-bottom:7px}.studio-selection label{display:flex;align-items:center;gap:5px}.studio-selection input{accent-color:#199b48}
+.studio-strip{margin-bottom:48px}.studio-strip p{font-size:11px;color:#60625c;margin-bottom:12px}.studio-strip-scroll{display:flex;gap:12px;overflow-x:auto;padding-bottom:12px}.studio-strip-item{width:150px;flex:0 0 150px}.studio-strip-item .studio-sheet{box-shadow:none}
