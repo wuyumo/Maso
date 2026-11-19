@@ -96,87 +96,55 @@ private enum WatchPage: String, Identifiable { case queue, more, reps, weight, r
     var id: String { rawValue }
 }
 
-#if DEBUG
-private struct WatchPreviewTextScale: ViewModifier {
-    var scale: CGFloat
-    func body(content: Content) -> some View {
-        if scale > 1 { content.scaleEffect(scale, anchor: .top) } else { content }
-    }
-}
-#endif
-
 struct WatchPlayerView: View {
     @Environment(WatchBridge.self) private var bridge
-    #if DEBUG
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-    #endif
     @State private var page: WatchPage?
     @State private var confirmEnd = false
     private var state: WatchSyncState { bridge.state }
 
-    #if DEBUG
-    /// Scales only the scrolling exercise block. The pinned footer stays at 44pt.
-    /// Size comes from the simulator Text Size setting; there is no preview env for it.
-    static func previewContentScale(_ size: DynamicTypeSize) -> CGFloat {
-        guard ProcessInfo.processInfo.environment["MASSO_WATCH_PREVIEW"] != nil else { return 1 }
-        switch size {
-        case .xSmall, .small, .medium, .large: return 1
-        case .xLarge: return 1.12
-        case .xxLarge: return 1.24
-        case .xxxLarge: return 1.38
-        case .accessibility1: return 1.55
-        case .accessibility2: return 1.75
-        case .accessibility3: return 1.95
-        case .accessibility4: return 2.15
-        case .accessibility5: return 2.35
-        @unknown default: return 1
-        }
-    }
-    #endif
-
     var body: some View {
-        VStack(spacing: 4) {
-            ScrollView {
-                VStack(spacing: 7) {
+        GeometryReader { geometry in
+            let lines = WatchPlayerLayout.titleLineCount(contentHeight: geometry.size.height)
+            VStack(spacing: WatchPlayerLayout.stackSpacing) {
                 if state.mode == .rest {
                     Button { page = .rest } label: {
                         HStack(spacing: 3) { Text("Rest"); Image(systemName: "chevron.right").font(.system(size: 8, weight: .semibold)) }
                             .font(.caption).foregroundStyle(WatchTheme.accent)
-                    }.buttonStyle(.plain).frame(minHeight: 18)
-                    WatchCountdown(state: state, big: true)
-                    HStack(spacing: 3) { Text("Next"); prescription }
-                        .font(.system(size: 10)).foregroundStyle(WatchTheme.dim).lineLimit(1).minimumScaleFactor(0.7)
+                            .lineLimit(1).minimumScaleFactor(0.7)
+                    }.buttonStyle(.plain)
+                        .frame(maxWidth: .infinity, maxHeight: WatchPlayerLayout.titleLineHeight * CGFloat(lines), alignment: .leading)
+                    nextLine
                 } else {
-                    VStack(alignment: .leading, spacing: 0) {
-                        Text(state.exerciseName).font(.system(size: 14, weight: .semibold)).lineLimit(2).minimumScaleFactor(0.7)
-                        Text(String(format: NSLocalizedString("SET %d/%d", comment: ""), state.setN, state.setTotal))
-                            .font(.system(size: 9)).foregroundStyle(WatchTheme.dim).lineLimit(1).minimumScaleFactor(0.7)
-                    }.frame(maxWidth: .infinity, alignment: .leading)
-                    if state.manualConfirm {
+                    Text(state.exerciseName).font(.system(size: 14, weight: .semibold))
+                        .lineLimit(lines).minimumScaleFactor(0.65)
+                        .frame(maxWidth: .infinity, maxHeight: WatchPlayerLayout.titleLineHeight * CGFloat(lines), alignment: .leading)
+                    Text(String(format: NSLocalizedString("SET %d/%d", comment: ""), state.setN, state.setTotal))
+                        .font(.system(size: 11, weight: .medium)).foregroundStyle(WatchTheme.dim)
+                        .lineLimit(1).minimumScaleFactor(0.7)
+                        .frame(maxWidth: .infinity, minHeight: WatchPlayerLayout.setLineHeight, maxHeight: WatchPlayerLayout.setLineHeight, alignment: .leading)
+                }
+                Group {
+                    if state.mode != .rest && state.manualConfirm {
                         HStack(spacing: 0) {
                             parameter("Reps", value: state.reps.map { String($0) } ?? "—", page: .reps)
                             if state.expectsWeight == true {
-                                Divider().frame(height: 25)
+                                Divider().frame(height: 16)
                                 parameter(state.weightUnit == "lb" ? "lb" : "kg", value: weightText, page: .weight)
                             }
-                        }.padding(.vertical, 2).background(.white.opacity(0.07), in: RoundedRectangle(cornerRadius: 13))
+                        }.background(.white.opacity(0.07), in: RoundedRectangle(cornerRadius: 10))
                     } else {
-                        WatchCountdown(state: state, big: true)
+                        WatchCountdown(state: state, big: false)
+                            .frame(maxWidth: .infinity)
                     }
                 }
+                .frame(height: WatchPlayerLayout.parameterHeight)
+                pinnedPrimary
+                    .frame(height: WatchPlayerLayout.primaryHeight)
+                bottomControls
+                    .frame(height: WatchPlayerLayout.footerHeight)
             }
             .padding(.horizontal, 12)
-            #if DEBUG
-            .modifier(WatchPreviewTextScale(scale: Self.previewContentScale(dynamicTypeSize)))
-            #endif
-            }
-            .scrollIndicators(.hidden)
-            pinnedPrimary
-                .padding(.horizontal, 12)
-                .layoutPriority(1)
-            bottomControls
-                .padding(.horizontal, WatchPlayerLayout.horizontalInset)
-                .layoutPriority(1)
+            .frame(width: geometry.size.width, height: geometry.size.height, alignment: .top)
         }
         .onAppear {
             #if DEBUG
@@ -207,6 +175,12 @@ struct WatchPlayerView: View {
         let value = state.weightUnit == "lb" ? kg * 2.2046226218 : kg
         return value.formatted(.number.precision(.fractionLength(0...1)))
     }
+    private var nextLine: some View {
+        HStack(spacing: 3) { Text("Next"); prescription }
+            .font(.system(size: 11)).foregroundStyle(WatchTheme.dim)
+            .lineLimit(1).minimumScaleFactor(0.7)
+            .frame(maxWidth: .infinity, minHeight: WatchPlayerLayout.setLineHeight, maxHeight: WatchPlayerLayout.setLineHeight, alignment: .leading)
+    }
     private var prescription: some View {
         Text([state.reps.map { String(format: NSLocalizedString("%d reps", comment: ""), $0) },
               state.weight.map { _ in weightText + " " + (state.weightUnit ?? "kg") }].compactMap { $0 }.joined(separator: " · "))
@@ -227,17 +201,17 @@ struct WatchPlayerView: View {
         HStack(spacing: 0) {
             Button { page = .queue } label: {
                 Image(systemName: "list.bullet").font(.system(size: 15, weight: .semibold))
-                    .frame(maxWidth: .infinity, minHeight: WatchPlayerLayout.footerHeight)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .contentShape(Rectangle())
             }
             .accessibilityLabel(Text("This Workout"))
             .accessibilityIdentifier("watch.player.queue")
             heart
-                .frame(maxWidth: .infinity, minHeight: WatchPlayerLayout.footerHeight)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .accessibilityIdentifier("watch.player.heart")
             Button { page = .more } label: {
                 Image(systemName: "ellipsis").font(.system(size: 15, weight: .semibold))
-                    .frame(maxWidth: .infinity, minHeight: WatchPlayerLayout.footerHeight)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .contentShape(Rectangle())
             }
             .accessibilityLabel(Text("More"))
@@ -262,27 +236,27 @@ struct WatchPlayerView: View {
     }
     private func parameter(_ label: String, value: String, page: WatchPage) -> some View {
         Button { self.page = page } label: {
-            VStack(spacing: 0) {
-                Text(LocalizedStringKey(label)).font(.system(size: 10)).foregroundStyle(WatchTheme.dim)
-                Text(value).font(.system(size: 22, weight: .semibold).monospacedDigit())
-            }.frame(maxWidth: .infinity, minHeight: 38)
+            HStack(spacing: 4) {
+                Text(value).font(.system(size: 20, weight: .semibold).monospacedDigit())
+                    .lineLimit(1).minimumScaleFactor(0.6)
+                Text(LocalizedStringKey(label)).font(.system(size: 11)).foregroundStyle(WatchTheme.dim)
+                    .lineLimit(1).minimumScaleFactor(0.7)
+            }.frame(maxWidth: .infinity, maxHeight: .infinity)
         }.buttonStyle(.plain)
+            .accessibilityIdentifier(page == .reps ? "watch.player.reps" : "watch.player.weight")
     }
     private func primary(_ title: String, symbol: String, action: @escaping () -> Void) -> some View {
-        Group {
-            if #available(watchOS 26.0, *) {
-                primaryButton(title, symbol: symbol, action: action).buttonStyle(.glassProminent)
-            } else {
-                primaryButton(title, symbol: symbol, action: action).buttonStyle(.borderedProminent)
-            }
-        }.tint(WatchTheme.accent).foregroundStyle(.black).disabled(bridge.sending)
-    }
-    private func primaryButton(_ title: String, symbol: String, action: @escaping () -> Void) -> some View {
+        // An explicit capsule keeps a full pill. glassProminent's own height pushed the
+        // load digits under the button on the 40mm and 46mm captures.
         Button(action: action) {
             Label(LocalizedStringKey(title), systemImage: symbol).font(.system(size: 13, weight: .semibold))
                 .lineLimit(1).minimumScaleFactor(0.7)
-                .frame(maxWidth: .infinity, minHeight: 34)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
+        .buttonStyle(.plain)
+        .background(Capsule().fill(WatchTheme.accent))
+        .foregroundStyle(.black)
+        .disabled(bridge.sending)
     }
     private var queue: some View {
         List {
@@ -403,7 +377,8 @@ struct WatchCountdown: View {
 
     private func text(_ seconds: Int) -> some View {
         Text(verbatim: String(format: "%d:%02d", seconds / 60, seconds % 60))
-            .font(.system(size: big ? 32 : 24, weight: .heavy).monospacedDigit())
+            .font(.system(size: big ? 32 : 22, weight: .heavy).monospacedDigit())
+            .lineLimit(1).minimumScaleFactor(0.6)
             .foregroundStyle(state.paused ? WatchTheme.dim : .white)
             .contentTransition(.numericText(countsDown: true))
     }

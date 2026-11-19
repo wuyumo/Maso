@@ -203,6 +203,15 @@ struct GeneratedExerciseGIF: UIViewRepresentable {
     }
 }
 
+#if DEBUG
+/// Set only after the detail/player renderer is showing two different pictures.
+/// Release builds omit it. A nil value is the production default.
+enum ExerciseDemoFrameProbe {
+    static var readyClip: URL?
+    static var interval: TimeInterval = 0
+}
+#endif
+
 /// Same approved, downloaded asset is used by exercise details and active training.
 struct GeneratedExerciseVideo: View {
     typealias PlayerView = GeneratedExercisePlayer.PlayerView
@@ -228,6 +237,9 @@ struct GeneratedExerciseVideo: View {
         }
         .task(id: url) {
             pair = []
+            #if DEBUG
+            if ExerciseDemoFrameProbe.readyClip == url { ExerciseDemoFrameProbe.readyClip = nil }
+            #endif
             let asset = AVURLAsset(url: url)
             do {
                 guard let track = try await asset.loadTracks(withMediaType: .video).first,
@@ -264,6 +276,8 @@ struct GeneratedExerciseVideo: View {
                 started = Date()
                 pair = [firstImage, secondImage]
                 #if DEBUG
+                ExerciseDemoFrameProbe.interval = interval
+                ExerciseDemoFrameProbe.readyClip = url
                 print("[ExerciseMedia] Two-frame renderer ready: \(url.lastPathComponent)")
                 #endif
             } catch {

@@ -103,6 +103,12 @@ struct WatchCommand: Codable {
 struct WatchPlayerLayout {
     static let footerHeight: CGFloat = 44
     static let horizontalInset: CGFloat = 8
+    /// Slots reserved before the title. They stay on the first screen on every supported watch.
+    static let stackSpacing: CGFloat = 2
+    static let setLineHeight: CGFloat = 14
+    static let parameterHeight: CGFloat = 30
+    static let primaryHeight: CGFloat = 36
+    static let titleLineHeight: CGFloat = 18
 
     struct Screen: Equatable {
         var name: String
@@ -142,6 +148,56 @@ struct WatchPlayerLayout {
             && footer.minY >= screen.safeTop
             && footer.minY + footer.height <= screen.height - screen.safeBottom + 0.5
     }
+
+    struct FirstScreen: Equatable {
+        var titleLines: Int
+        var titleHeight: CGFloat
+        var setMinY: CGFloat
+        var setHeight: CGFloat
+        var parameterMinY: CGFloat
+        var parameterHeight: CGFloat
+        var primaryMinY: CGFloat
+        var primaryHeight: CGFloat
+        var footerMinY: CGFloat
+        var footerHeight: CGFloat
+        var contentHeight: CGFloat
+        var fits: Bool
+        var setMaxY: CGFloat { setMinY + setHeight }
+        var parameterMaxY: CGFloat { parameterMinY + parameterHeight }
+    }
+
+    /// Safe-area content box. The system clock and round bezel sit outside it.
+    static func contentHeight(on screen: Screen) -> CGFloat {
+        screen.height - screen.safeTop - screen.safeBottom
+    }
+
+    /// Height of set line, load digits, primary capsule, footer, and the four gaps.
+    /// The title only receives what remains, so a second title line cannot cover the load.
+    static func fixedCriticalHeight() -> CGFloat {
+        setLineHeight + parameterHeight + primaryHeight + footerHeight + stackSpacing * 4
+    }
+
+    static func titleLineCount(contentHeight: CGFloat) -> Int {
+        contentHeight - fixedCriticalHeight() + 0.5 >= titleLineHeight * 2 ? 2 : 1
+    }
+
+    /// Top-aligned title, set line, and load digits, then the primary and footer.
+    /// Nothing in this stack scrolls, so the digits cannot sit under the button.
+    static func firstScreen(on screen: Screen) -> FirstScreen {
+        let content = contentHeight(on: screen)
+        let lines = titleLineCount(contentHeight: content)
+        let titleHeight = titleLineHeight * CGFloat(lines)
+        let setMinY = titleHeight + stackSpacing
+        let parameterMinY = setMinY + setLineHeight + stackSpacing
+        let primaryMinY = parameterMinY + parameterHeight + stackSpacing
+        let footerMinY = primaryMinY + primaryHeight + stackSpacing
+        let fits = content - fixedCriticalHeight() + 0.5 >= titleLineHeight
+            && footerMinY + footerHeight <= content + 0.5
+        return FirstScreen(titleLines: lines, titleHeight: titleHeight, setMinY: setMinY, setHeight: setLineHeight,
+                           parameterMinY: parameterMinY, parameterHeight: parameterHeight,
+                           primaryMinY: primaryMinY, primaryHeight: primaryHeight,
+                           footerMinY: footerMinY, footerHeight: footerHeight, contentHeight: content, fits: fits)
+    }
 }
 
 /// DEBUG watch preview. Production sync never reads these keys.
@@ -151,7 +207,8 @@ struct WatchPlayerLayout {
 /// - `MASSO_WATCH_MARKETING_HEART`: `0` means no sample (the heart shows —). `1` means a synthetic sample.
 /// - `MASSO_WATCH_MARKETING_BPM`: bpm used when the heart key is `1`. Missing or invalid falls back to 128.
 /// - `MASSO_WATCH_MARKETING_EXERCISE` / `_REPS` / `_WEIGHT` / `_SET`: existing marketing capture fields.
-/// Large text has no environment key. A DEBUG preview reads the simulator's Text Size setting.
+/// Large text has no environment key. The first screen keeps the set line and load digits
+/// in fixed slots and truncates the title; it does not scale that block over the button.
 enum WatchPreviewFixture {
     static let longExerciseName = "Single-Arm Half-Kneeling Landmine Press to a Long Catalog Name"
 

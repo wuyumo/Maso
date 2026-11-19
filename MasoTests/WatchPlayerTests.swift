@@ -126,6 +126,26 @@ final class WatchPlayerTests: XCTestCase {
         XCTAssertEqual(marketed?.state.exerciseName, "Chest Press (Machine)")
     }
 
+    /// Reserved slots, not a rendered watch. The 40mm and 46mm captures hid the load
+    /// digits because a second title line and a tall button consumed the first screen.
+    func testSetAndLoadStayAboveThePrimaryOnEveryWatch() throws {
+        XCTAssertFalse(WatchPlayerLayout.supportedScreens.isEmpty)
+        for screen in WatchPlayerLayout.supportedScreens {
+            let page = WatchPlayerLayout.firstScreen(on: screen)
+            XCTAssertTrue(page.fits, screen.name)
+            XCTAssertLessThanOrEqual(page.setMaxY, page.parameterMinY, screen.name)
+            XCTAssertLessThanOrEqual(page.parameterMaxY, page.primaryMinY, screen.name)
+            XCTAssertGreaterThanOrEqual(page.parameterHeight, 24, screen.name)
+            XCTAssertGreaterThanOrEqual(page.primaryHeight, 34, screen.name)
+            XCTAssertEqual(page.footerHeight, WatchPlayerLayout.footerHeight, screen.name)
+            XCTAssertLessThanOrEqual(page.footerMinY + page.footerHeight, page.contentHeight + 0.5, screen.name)
+        }
+        let small = try XCTUnwrap(WatchPlayerLayout.supportedScreens.first { $0.name == "40mm" })
+        XCTAssertEqual(WatchPlayerLayout.firstScreen(on: small).titleLines, 1)
+        let wide = try XCTUnwrap(WatchPlayerLayout.supportedScreens.first { $0.name == "46mm" })
+        XCTAssertEqual(WatchPlayerLayout.firstScreen(on: wide).titleLines, 2)
+    }
+
     /// Point-geometry unit over recorded watch sizes. It does not launch or render the Watch UI.
     func testPinnedFooterStaysInsideEverySupportedWatchSafeArea() {
         XCTAssertFalse(WatchPlayerLayout.supportedScreens.isEmpty)

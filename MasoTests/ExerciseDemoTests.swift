@@ -270,7 +270,12 @@ private final class DemoURLProtocol: URLProtocol, @unchecked Sendable {
         let data = DataStore.makeMock()
         let exercise = try XCTUnwrap(data.exById["clamshell_banded"])
         let clip = try await Self.testVideo(colors: [.red, .blue], framesPerSecond: 1)
-        defer { CoreExerciseDemos.reviewOverrideForTests = nil; ExerciseDemoService.shared.clearTestMotionFixtures() }
+        defer {
+            CoreExerciseDemos.reviewOverrideForTests = nil
+            ExerciseDemoService.shared.clearTestMotionFixtures()
+            ExerciseDemoFrameProbe.readyClip = nil
+        }
+        ExerciseDemoFrameProbe.readyClip = nil
         XCTAssertNil(ExerciseDemoService.shared.files[exercise.id])
         XCTAssertNotEqual(ExerciseDemoService.shared.presentation(for: exercise.id), .approvedMotion)
         CoreExerciseDemos.reviewOverrideForTests = [Self.testMotionReview(exercise.id, sha: clip.sha)]
@@ -291,29 +296,27 @@ private final class DemoURLProtocol: URLProtocol, @unchecked Sendable {
         let previous = scene.windows.first(where: \.isKeyWindow)
         let window = UIWindow(windowScene: scene)
         defer { window.isHidden = true; previous?.makeKeyAndVisible() }
-        window.rootViewController = UIHostingController(rootView: Color.clear.sheet(isPresented: .constant(true)) {
+        window.frame = scene.screen.bounds
+        window.rootViewController = UIHostingController(rootView: Color.black.ignoresSafeArea().sheet(isPresented: .constant(true)) {
             ExerciseDetailSheet(exercise: exercise).environment(data).presentationDetents([.large])
         })
         window.makeKeyAndVisible()
-        try await Task.sleep(for: .seconds(2))
+        var hero: (UIWindow, UIView)?
+        for _ in 0..<40 {
+            hero = Self.heroOnScreen()
+            if hero != nil { break }
+            try await Task.sleep(for: .milliseconds(100))
+        }
+        let (host, view) = try XCTUnwrap(hero, "The real detail hero was not on screen")
+        for _ in 0..<30 where ExerciseDemoFrameProbe.readyClip != clip.url {
+            try await Task.sleep(for: .milliseconds(100))
+        }
+        XCTAssertEqual(ExerciseDemoFrameProbe.readyClip, clip.url, "The real detail hero did not reach its two different frames")
         func mediaCrop() throws -> Data {
-            let scenes = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }
-            var hero: (UIWindow, UIView)?
-            for scene in scenes {
-                for candidate in scene.windows where !candidate.isHidden {
-                    candidate.layoutIfNeeded()
-                    if let view = Self.view(identified: "exercise.media.hero", in: candidate, visited: []) {
-                        hero = (candidate, view)
-                        break
-                    }
-                }
-                if hero != nil { break }
-            }
-            let (host, view) = try XCTUnwrap(hero, "The real detail hero was not on screen")
+            host.layoutIfNeeded()
             let frame = view.convert(view.bounds, to: host)
             XCTAssertGreaterThan(frame.width, 40)
             XCTAssertGreaterThan(frame.height, 40)
-            host.layoutIfNeeded()
             let image = UIGraphicsImageRenderer(bounds: host.bounds).image { _ in
                 host.drawHierarchy(in: host.bounds, afterScreenUpdates: true)
             }
@@ -330,6 +333,31 @@ private final class DemoURLProtocol: URLProtocol, @unchecked Sendable {
         XCTAssertGreaterThan(first.count, 1000)
         try await Task.sleep(for: .seconds(1.3))
         XCTAssertNotEqual(first, try mediaCrop(), "The exercise detail hero should change frames")
+    }
+
+    /// The hero locator is a real UIView inside the presented detail sheet, which may
+    /// not be a direct subview of the window that created the sheet.
+    private static func heroOnScreen() -> (UIWindow, UIView)? {
+        let scenes = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }
+        for scene in scenes {
+            for window in scene.windows where !window.isHidden {
+                window.layoutIfNeeded()
+                if let view = locatedHero(in: window.rootViewController), let host = view.window, !host.isHidden {
+                    let frame = view.convert(view.bounds, to: host)
+                    if frame.width > 40, frame.height > 40 { return (host, view) }
+                }
+            }
+        }
+        return nil
+    }
+
+    private static func locatedHero(in controller: UIViewController?) -> UIView? {
+        guard let controller else { return nil }
+        if let found = view(identified: "exercise.media.hero", in: controller.view, visited: []) { return found }
+        for child in controller.children {
+            if let found = locatedHero(in: child) { return found }
+        }
+        return locatedHero(in: controller.presentedViewController)
     }
 
     private static func view(identified id: String, in root: UIView, visited: Set<ObjectIdentifier>) -> UIView? {
